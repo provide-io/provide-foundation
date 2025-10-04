@@ -66,6 +66,54 @@ def parse_list(
     return items
 
 
+def parse_tuple(
+    value: str | tuple[str, ...],
+    separator: str = ",",
+    strip: bool = True,
+) -> tuple[str, ...]:
+    """Parse a tuple from a string.
+
+    Args:
+        value: String or tuple to parse
+        separator: Separator character
+        strip: Whether to strip whitespace from items
+
+    Returns:
+        Tuple of strings
+
+    """
+    if isinstance(value, tuple):
+        return value
+
+    # Reuse list parsing logic
+    items = parse_list(value, separator=separator, strip=strip)
+    return tuple(items)
+
+
+def parse_set(
+    value: str | set[str],
+    separator: str = ",",
+    strip: bool = True,
+) -> set[str]:
+    """Parse a set from a string.
+
+    Args:
+        value: String or set to parse
+        separator: Separator character
+        strip: Whether to strip whitespace from items
+
+    Returns:
+        Set of strings (duplicates removed)
+
+    """
+    if isinstance(value, set):
+        return value
+
+    # Reuse list parsing logic, then convert to set
+    items = parse_list(value, separator=separator, strip=strip)
+    return set(items)
+
+
 def parse_dict(
     value: str | dict[str, str],
     item_separator: str = ",",
@@ -146,17 +194,43 @@ def _parse_list_type(value: str, target_type: type) -> list[Any]:
 
 
 def _parse_generic_type(value: str, target_type: type) -> Any:
-    """Parse generic types (list, dict, etc.)."""
+    """Parse generic types (list, dict, tuple, set, etc.)."""
     origin = get_origin(target_type)
 
     if origin is list:
         return _parse_list_type(value, target_type)
+    elif origin is tuple:
+        # Handle parameterized tuples like tuple[int, ...]
+        args = get_args(target_type)
+        if args and len(args) > 0:
+            item_type = args[0]
+            str_tuple = parse_tuple(value)
+            try:
+                return tuple(parse_typed_value(item, item_type) for item in str_tuple)
+            except (ValueError, TypeError) as e:
+                raise ValueError(f"Cannot convert tuple items to {item_type.__name__}: {e}") from e
+        return parse_tuple(value)
+    elif origin is set:
+        # Handle parameterized sets like set[int]
+        args = get_args(target_type)
+        if args and len(args) > 0:
+            item_type = args[0]
+            str_set = parse_set(value)
+            try:
+                return {parse_typed_value(item, item_type) for item in str_set}
+            except (ValueError, TypeError) as e:
+                raise ValueError(f"Cannot convert set items to {item_type.__name__}: {e}") from e
+        return parse_set(value)
     elif origin is dict:
         return parse_dict(value)
     elif origin is None:
         # Not a generic type, try direct conversion
         if target_type is list:
             return parse_list(value)
+        if target_type is tuple:
+            return parse_tuple(value)
+        if target_type is set:
+            return parse_set(value)
         if target_type is dict:
             return parse_dict(value)
 
