@@ -58,6 +58,7 @@ from provide.foundation.hub.registry import (
     RegistryEntry,
 )
 
+
 # CLI features - Delayed import to avoid circular dependency
 def build_click_command(name: str, registry: Any = None) -> Any:
     """Build click command (delayed import to avoid circular dependency)."""
