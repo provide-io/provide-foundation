@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.transport.base import Request, Response
@@ -135,8 +136,15 @@ class TestRetryMiddlewareEdgeCases(FoundationTestCase):
         """Test RetryMiddleware with non-retryable errors."""
         from provide.foundation.resilience.retry import RetryPolicy
 
+        # Create controlled time for testing
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=3, retryable_errors=(ValueError,))
-        middleware = RetryMiddleware(policy=policy)
+        middleware = RetryMiddleware(
+            policy=policy,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
         request = Request(uri="https://api.example.com/test", method="GET")
 
@@ -148,7 +156,13 @@ class TestRetryMiddlewareEdgeCases(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_retry_middleware_execute_success_first_try(self) -> None:
         """Test RetryMiddleware when request succeeds on first try."""
-        middleware = RetryMiddleware()
+        # Create controlled time for testing
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
+        middleware = RetryMiddleware(
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
         request = Request(uri="https://api.example.com/test", method="GET")
 
         async def success_execute(req: Request) -> Response:
@@ -162,8 +176,15 @@ class TestRetryMiddlewareEdgeCases(FoundationTestCase):
         """Test RetryMiddleware when retries are exhausted."""
         from provide.foundation.resilience.retry import RetryPolicy
 
+        # Create controlled time for testing
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=2, base_delay=0.01, retryable_status_codes={500})
-        middleware = RetryMiddleware(policy=policy)
+        middleware = RetryMiddleware(
+            policy=policy,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
         request = Request(uri="https://api.example.com/test", method="GET")
 
         async def always_fail_execute(req: Request) -> Response:
@@ -176,7 +197,13 @@ class TestRetryMiddlewareEdgeCases(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_retry_middleware_execute_transport_error_passthrough(self) -> None:
         """Test RetryMiddleware passes through non-synthetic TransportError."""
-        middleware = RetryMiddleware()
+        # Create controlled time for testing
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
+        middleware = RetryMiddleware(
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
         request = Request(uri="https://api.example.com/test", method="GET")
 
         async def error_execute(req: Request) -> Response:
