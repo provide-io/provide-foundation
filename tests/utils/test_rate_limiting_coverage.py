@@ -6,6 +6,7 @@ import asyncio
 import time
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
@@ -14,9 +15,15 @@ from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 class TestTokenBucketRateLimiter(FoundationTestCase):
     """Test TokenBucketRateLimiter class."""
 
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        # Create controlled time for all tests
+        self.get_time, self.advance_time, self.fake_sleep, self.fake_async_sleep = make_controlled_time()
+
     def test_init_valid_parameters(self) -> None:
         """Test initialization with valid parameters."""
-        limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5)
+        limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5, time_source=self.get_time)
         assert limiter._capacity == 10.0
         assert limiter._refill_rate == 5.0
         assert limiter._tokens == 10.0  # Starts full
@@ -25,22 +32,22 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     def test_init_invalid_capacity(self) -> None:
         """Test initialization with invalid capacity."""
         with pytest.raises(ValueError, match="Capacity must be positive"):
-            TokenBucketRateLimiter(capacity=0, refill_rate=1)
+            TokenBucketRateLimiter(capacity=0, refill_rate=1, time_source=self.get_time)
 
         with pytest.raises(ValueError, match="Capacity must be positive"):
-            TokenBucketRateLimiter(capacity=-1, refill_rate=1)
+            TokenBucketRateLimiter(capacity=-1, refill_rate=1, time_source=self.get_time)
 
     def test_init_invalid_refill_rate(self) -> None:
         """Test initialization with invalid refill rate."""
         with pytest.raises(ValueError, match="Refill rate must be positive"):
-            TokenBucketRateLimiter(capacity=10, refill_rate=0)
+            TokenBucketRateLimiter(capacity=10, refill_rate=0, time_source=self.get_time)
 
         with pytest.raises(ValueError, match="Refill rate must be positive"):
-            TokenBucketRateLimiter(capacity=10, refill_rate=-1)
+            TokenBucketRateLimiter(capacity=10, refill_rate=-1, time_source=self.get_time)
 
     def test_init_float_conversion(self) -> None:
         """Test that parameters are converted to float."""
-        limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5)
+        limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5, time_source=self.get_time)
         assert isinstance(limiter._capacity, float)
         assert isinstance(limiter._refill_rate, float)
         assert isinstance(limiter._tokens, float)
@@ -48,20 +55,20 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     def test_init_with_logger_available(self) -> None:
         """Test initialization when logger is available."""
         # Just test that the limiter initializes correctly
-        limiter = TokenBucketRateLimiter(capacity=5, refill_rate=2)
+        limiter = TokenBucketRateLimiter(capacity=5, refill_rate=2, time_source=self.get_time)
         # Logger should be set (or None if import fails)
         assert limiter._logger is not None or limiter._logger is None
 
     def test_init_with_logger_import_error(self) -> None:
         """Test initialization when logger import fails."""
         # Just ensure initialization works regardless of logger availability
-        limiter = TokenBucketRateLimiter(capacity=5, refill_rate=2)
+        limiter = TokenBucketRateLimiter(capacity=5, refill_rate=2, time_source=self.get_time)
         assert isinstance(limiter, TokenBucketRateLimiter)
 
     @pytest.mark.asyncio
     async def test_is_allowed_initial_tokens(self) -> None:
         """Test that initial requests are allowed with full bucket."""
-        limiter = TokenBucketRateLimiter(capacity=3, refill_rate=1)
+        limiter = TokenBucketRateLimiter(capacity=3, refill_rate=1, time_source=self.get_time)
 
         # Should allow 3 requests initially
         assert await limiter.is_allowed() is True
