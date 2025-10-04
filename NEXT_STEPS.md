@@ -189,6 +189,39 @@ After thorough ecosystem analysis (`provide-foundation`, `plating`, `pyvider-rpc
 - ✅ Zero breaking changes (DualLock was internal-only)
 - ✅ Better reflects actual usage patterns
 
+## ✅ COMPLETED - Optional Dependency Pattern Documentation
+
+### Background
+After analyzing 38 files with optional dependencies, found **4 distinct patterns**, each serving a legitimate purpose. Rather than force standardization to a single pattern (which would harm performance/UX), documented **when to use each pattern**.
+
+**Patterns Identified**:
+1. **`_HAS_*` Flags** (38 files) - Internal conditionals, fast boolean checks
+2. **`__getattr__` Lazy Loading** (5 files) - Public API, helpful error messages
+3. **Stub Classes** (2 uses) - Type safety, IDE support, graceful degradation
+4. **Dynamic `__all__`** (1 file) - Module export control
+
+### Resolution
+**Status**: ✅ Complete
+
+Created comprehensive documentation: `docs/contributing/optional-dependencies.md`
+
+**Decision Tree Documented**:
+- Internal logic → Use `_HAS_*` flags (performance)
+- Public API → Use `__getattr__` (user experience)
+- Type checking → Use stub classes (IDE support)
+- Export control → Use dynamic `__all__` (clean imports)
+
+**Key Insight**: Each pattern optimizes for different concerns. Using the wrong pattern would sacrifice either:
+- Performance (unnecessary overhead)
+- User experience (unclear errors)
+- Type safety (missing IDE hints)
+- Export cleanliness (polluted namespace)
+
+### Optional Future Improvement
+**crypto/__init__.py** has 337 lines of manual stubs that could be replaced with 1 line using `create_dependency_stub()`. Trade-off:
+- ✅ 336 lines removed, consistent pattern
+- ❌ Loses method-specific error messages (acceptable for pre-release)
+
 ## 🔄 POST-RELEASE WORK
 
 ### Priority 1: Type Safety
@@ -215,8 +248,8 @@ Consider refactoring if issues arise:
 Based on external code review, the following architectural issues were identified:
 1. **Global State Complexity** - 27 reset functions, 724 lines of testmode code
 2. **Circular Dependencies** - Hub ↔ Logger, requiring local imports
-3. **Inconsistent Optional Dependencies** - 3 different patterns
-4. ~~**Misleading Abstractions** - DualLock name implies mutual exclusion (doesn't provide it)~~ ✅ **RESOLVED** (see above)
+3. ~~**Inconsistent Optional Dependencies** - 3 different patterns~~ ✅ **RESOLVED** (see below)
+4. ~~**Misleading Abstractions** - DualLock name implies mutual exclusion (doesn't provide it)~~ ✅ **RESOLVED** (DualLock removal above)
 5. **Security Concerns** - `shell()` function warnings don't prevent injection
 
 ### Recommended Approach: **Hybrid Strategy (Pragmatic v2.0)**
