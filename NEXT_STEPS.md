@@ -140,7 +140,7 @@ timeout: float = field(default_factory=lambda: DEFAULT_BULKHEAD_TIMEOUT)
 
 #### 5.1 Ruff Issues (3 total)
 
-**Run:** `PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/`
+**Run:** `ruff check --fix --unsafe-fixes src/provide/foundation/`
 
 **Known Issues:**
 1. `crypto/certificates/generator.py:126` - Duplicate imports (ec, rsa appear on lines 121 AND 126)
@@ -148,7 +148,7 @@ timeout: float = field(default_factory=lambda: DEFAULT_BULKHEAD_TIMEOUT)
 
 #### 5.2 MyPy Type Errors (~30 total)
 
-**Run:** `PYTHONPATH=src .venv/bin/mypy src/provide/foundation/`
+**Run:** `mypy src/provide/foundation/`
 
 **Common patterns to fix:**
 - Overloaded function signatures in decorators
@@ -182,16 +182,16 @@ bin/mypy src/provide/foundation/ | head -50
 ### Testing
 ```bash
 # Quick test of modified areas
-timeout 120 .venv/bin/pytest tests/crypto/ tests/eventsets/ tests/context/ -q
+timeout 120 pytest tests/crypto/ tests/eventsets/ tests/context/ -q
 
 # Test concurrency/resilience
-timeout 120 .venv/bin/pytest tests/concurrency/ tests/resilience/ -q
+timeout 120 pytest tests/concurrency/ tests/resilience/ -q
 
 # Full test suite
-timeout 300 .venv/bin/pytest -n auto -q --tb=line
+timeout 300 pytest -n auto -q --tb=line
 
 # Coverage check (must be >80%)
-timeout 300 .venv/bin/pytest --cov=src/provide/foundation --cov-report=term-missing
+timeout 300 pytest --cov=src/provide/foundation --cov-report=term-missing
 ```
 
 ### Verification Searches
