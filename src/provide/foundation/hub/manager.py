@@ -147,10 +147,26 @@ def get_hub() -> Hub:
     """Get the global hub instance.
 
     Thread-safe: Uses double-checked locking pattern for efficient lazy initialization.
-    Auto-initializes Foundation on first access.
+
+    **Auto-Initialization Behavior:**
+    This function automatically initializes the Foundation system on first access.
+    This is intentional and provides zero-config convenience for the majority of
+    use cases. The initialization is:
+    - **Idempotent**: Safe to call multiple times
+    - **Thread-safe**: Uses lock manager for coordination
+    - **Lazy**: Only happens on first access
+
+    Advanced users who need manual control can create their own Hub instance:
+    >>> hub = Hub()  # No auto-initialization
+    >>> hub.initialize_foundation(custom_config)
 
     Returns:
         Global Hub instance (created and initialized if needed)
+
+    Note:
+        Any call to get_hub() will trigger Foundation initialization if it hasn't
+        happened yet. This is not "surprising" behavior - it's the designed API
+        for ease of use.
 
     """
     global _global_hub
