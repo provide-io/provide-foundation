@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
-import pytest
 
 
 class TestHubInitImports(FoundationTestCase):
@@ -68,8 +66,6 @@ class TestBuildClickCommandStub(FoundationTestCase):
         assert "build_click_command" in hub_module.__all__
 
 
-
-
 class TestHubModuleBehavior(FoundationTestCase):
     """Test overall hub module behavior and integration."""
 
@@ -115,96 +111,6 @@ class TestHubModuleBehavior(FoundationTestCase):
         assert registry is not None
 
 
-class TestClickDependencyHandling(FoundationTestCase):
-    """Test handling of optional click dependency."""
-
-    def test_module_works_without_click_features(self) -> None:
-        """Test that core hub functionality works even if click features fail."""
-        import provide.foundation.hub as hub_module
-
-        # Core features should always work
-        hub = hub_module.Hub()
-        assert hub is not None
-
-        registry = hub_module.get_component_registry()
-        assert registry is not None
-
-        assert callable(hub_module.register_command)
-        assert callable(hub_module.get_hub)
-        assert callable(hub_module.clear_hub)
-
-    def test_click_features_lazy_loading_error_handling(self) -> None:
-        """Test error handling in click features lazy loading."""
-        import provide.foundation.hub as hub_module
-
-        # Mock the get_click_commands to fail
-        with patch.object(hub_module, "get_click_commands") as mock_get_commands:
-            mock_get_commands.side_effect = ImportError("Mocked click unavailable")
-
-            # Accessing build_click_command should raise the ImportError
-            with pytest.raises(ImportError, match="Mocked click unavailable"):
-                _ = hub_module.build_click_command
-
-    def test_import_error_detection_logic_exists(self) -> None:
-        """Test that ImportError detection logic exists in the code."""
-        import inspect
-
-        import provide.foundation.hub as hub_module
-
-        # Check that the get_click_commands function has the right structure
-        source = inspect.getsource(hub_module.get_click_commands)
-
-        # Verify the error detection and handling logic is present
-        assert 'if "click" in str(e)' in source
-        assert "pip install" in source
-        assert "provide-foundation[cli]" in source
-
-
-class TestHubLazyLoadingEdgeCases(FoundationTestCase):
-    """Test edge cases in lazy loading functionality."""
-
-    def test_multiple_getattr_calls_consistency(self) -> None:
-        """Test that multiple calls to __getattr__ are consistent."""
-        import provide.foundation.hub as hub_module
-
-        try:
-            # Multiple accesses should return the same thing
-            cmd1 = hub_module.build_click_command
-            cmd2 = hub_module.build_click_command
-
-            # Should be the same function
-            assert cmd1 is cmd2
-        except ImportError:
-            # Expected if click is not available
-            pass
-
-    def test_getattr_with_various_attribute_names(self) -> None:
-        """Test __getattr__ behavior with various attribute names."""
-        import provide.foundation.hub as hub_module
-
-        # Test the specific handled attribute
-        test_cases = [
-            ("build_click_command", True),  # Should be handled specially
-            ("other_command", False),  # Should raise AttributeError
-            (
-                "get_click_commands",
-                False,
-            ),  # This is a regular attribute, not lazy loaded
-            ("__version__", False),  # Standard Python attribute
-        ]
-
-        for attr_name, should_be_special in test_cases:
-            if should_be_special:
-                try:
-                    attr = getattr(hub_module, attr_name)
-                    assert callable(attr)
-                except ImportError:
-                    # Expected if dependencies aren't available
-                    pass
-            elif attr_name == "get_click_commands":
-                # This should work as normal attribute
-                assert callable(getattr(hub_module, attr_name))
-            else:
-                # These should raise AttributeError
-                with pytest.raises(AttributeError):
-                    _ = getattr(hub_module, attr_name)
+# Removed obsolete test classes:
+# - TestClickDependencyHandling (tested removed get_click_commands)
+# - TestHubLazyLoadingEdgeCases (tested removed __getattr__)

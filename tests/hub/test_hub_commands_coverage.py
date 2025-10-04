@@ -93,84 +93,6 @@ class TestLazyLoadingFeatures(FoundationTestCase):
         assert callable(commands_module.get_command_registry)
 
 
-class TestClickDependencyHandling(FoundationTestCase):
-    """Test handling of click dependency in lazy loading."""
-
-    def test_click_import_error_handling_build_click_command(self) -> None:
-        """Test click import error for build_click_command."""
-        import provide.foundation.hub.commands as commands_module
-
-        # Mock the import to fail with click-related error
-        with patch("builtins.__import__") as mock_import:
-
-            def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.cli.click.builder":
-                    raise ImportError("No module named 'click'")
-                return __import__(name, *args, **kwargs)
-
-            mock_import.side_effect = import_side_effect
-
-            with pytest.raises(
-                ImportError,
-                match="CLI feature 'build_click_command' requires: pip install",
-            ):
-                _ = commands_module.build_click_command
-
-    def test_click_import_error_handling_create_command_group(self) -> None:
-        """Test click import error for create_command_group."""
-        import provide.foundation.hub.commands as commands_module
-
-        # Mock the import to fail with click-related error
-        with patch("builtins.__import__") as mock_import:
-
-            def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.cli.click.builder":
-                    raise ImportError("click not available")
-                return __import__(name, *args, **kwargs)
-
-            mock_import.side_effect = import_side_effect
-
-            with pytest.raises(
-                ImportError,
-                match="CLI feature 'create_command_group' requires: pip install",
-            ):
-                _ = commands_module.create_command_group
-
-    def test_non_click_import_error_propagation(self) -> None:
-        """Test that non-click ImportErrors are propagated."""
-        import provide.foundation.hub.commands as commands_module
-
-        # Mock the import to fail with non-click error
-        with patch("builtins.__import__") as mock_import:
-
-            def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.cli.click.builder":
-                    raise ImportError("Some other import error")
-                return __import__(name, *args, **kwargs)
-
-            mock_import.side_effect = import_side_effect
-
-            with pytest.raises(ImportError, match="Some other import error"):
-                _ = commands_module.build_click_command
-
-    def test_other_exceptions_propagated(self) -> None:
-        """Test that other exceptions are propagated normally."""
-        import provide.foundation.hub.commands as commands_module
-
-        # Mock the import to fail with different exception
-        with patch("builtins.__import__") as mock_import:
-
-            def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.cli.click.builder":
-                    raise ValueError("Some other error")
-                return __import__(name, *args, **kwargs)
-
-            mock_import.side_effect = import_side_effect
-
-            with pytest.raises(ValueError, match="Some other error"):
-                _ = commands_module.build_click_command
-
-
 class TestGetattrLogic(FoundationTestCase):
     """Test __getattr__ logic comprehensively."""
 
@@ -276,47 +198,8 @@ class TestModuleBehavior(FoundationTestCase):
                 assert feature_name in ("build_click_command", "create_command_group")
 
 
-class TestErrorMessages(FoundationTestCase):
-    """Test error message formatting and content."""
 
-    def test_click_error_message_format(self) -> None:
-        """Test that click import error messages are properly formatted."""
-        import provide.foundation.hub.commands as commands_module
 
-        with patch("builtins.__import__") as mock_import:
-
-            def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.cli.click.builder":
-                    raise ImportError("No module named 'click'")
-                return __import__(name, *args, **kwargs)
-
-            mock_import.side_effect = import_side_effect
-
-            # Test error message for build_click_command
-            with pytest.raises(ImportError) as exc_info:
-                _ = commands_module.build_click_command
-
-            error_msg = str(exc_info.value)
-            assert "CLI feature 'build_click_command' requires" in error_msg
-            assert "pip install 'provide-foundation[cli]'" in error_msg
-
-    def test_attribute_error_message_format(self) -> None:
-        """Test that AttributeError messages are properly formatted."""
-        import provide.foundation.hub.commands as commands_module
-
-        with pytest.raises(AttributeError) as exc_info:
-            _ = commands_module.invalid_feature
-
-        error_msg = str(exc_info.value)
-        assert "module 'provide.foundation.hub.commands' has no attribute 'invalid_feature'" in error_msg
-
-    def test_click_error_detection_logic(self) -> None:
-        """Test the logic that detects click-related errors."""
-        import inspect
-
-        import provide.foundation.hub.commands as commands_module
-
-        # Verify the error detection logic exists in the source
-        source = inspect.getsource(commands_module)
-        assert 'if "click" in str(e):' in source
-        assert "pip install 'provide-foundation[cli]'" in source
+# Removed obsolete test classes:
+# - TestClickDependencyHandling (tested __getattr__ error handling)
+# - TestErrorMessages (tested __getattr__ error messages)
