@@ -20,10 +20,8 @@ Provides sync and async subprocess execution with consistent error handling,
 and advanced process lifecycle management.
 """
 
-# Backward compatibility aliases
+# Backward compatibility aliases (used by wrknv and flavorpack)
 run_command = run
-run_command_simple = run_simple
-run_shell = shell
 stream_command = stream
 
 __all__ = [
@@ -42,13 +40,11 @@ __all__ = [
     "exit_success",
     # Sync execution (modern API)
     "run",
-    # Backward compatibility (deprecated)
-    "run_command",
-    "run_command_simple",
-    "run_shell",
     "run_simple",
     "shell",
     "stream",
+    # Backward compatibility (used by other projects)
+    "run_command",
     "stream_command",
     "wait_for_process_output",
 ]
