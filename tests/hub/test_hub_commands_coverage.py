@@ -104,7 +104,7 @@ class TestClickDependencyHandling(FoundationTestCase):
         with patch("builtins.__import__") as mock_import:
 
             def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.hub.click_builder":
+                if name == "provide.foundation.cli.click.builder":
                     raise ImportError("No module named 'click'")
                 return __import__(name, *args, **kwargs)
 
@@ -124,7 +124,7 @@ class TestClickDependencyHandling(FoundationTestCase):
         with patch("builtins.__import__") as mock_import:
 
             def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.hub.click_builder":
+                if name == "provide.foundation.cli.click.builder":
                     raise ImportError("click not available")
                 return __import__(name, *args, **kwargs)
 
@@ -144,7 +144,7 @@ class TestClickDependencyHandling(FoundationTestCase):
         with patch("builtins.__import__") as mock_import:
 
             def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.hub.click_builder":
+                if name == "provide.foundation.cli.click.builder":
                     raise ImportError("Some other import error")
                 return __import__(name, *args, **kwargs)
 
@@ -161,7 +161,7 @@ class TestClickDependencyHandling(FoundationTestCase):
         with patch("builtins.__import__") as mock_import:
 
             def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.hub.click_builder":
+                if name == "provide.foundation.cli.click.builder":
                     raise ValueError("Some other error")
                 return __import__(name, *args, **kwargs)
 
@@ -251,7 +251,7 @@ class TestModuleBehavior(FoundationTestCase):
         with patch("builtins.__import__") as mock_import:
 
             def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.hub.click_builder":
+                if name == "provide.foundation.cli.click.builder":
                     raise ImportError("click not available")
                 return __import__(name, *args, **kwargs)
 
@@ -286,7 +286,7 @@ class TestErrorMessages(FoundationTestCase):
         with patch("builtins.__import__") as mock_import:
 
             def import_side_effect(name, *args, **kwargs):
-                if name == "provide.foundation.hub.click_builder":
+                if name == "provide.foundation.cli.click.builder":
                     raise ImportError("No module named 'click'")
                 return __import__(name, *args, **kwargs)
 
