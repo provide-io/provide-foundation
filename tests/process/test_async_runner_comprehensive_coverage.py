@@ -13,11 +13,7 @@ import pytest
 
 from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
-from provide.foundation.process.async_runner import (
-    async_run_command,
-    async_run_shell,
-    async_stream_command,
-)
+from provide.foundation.process.aio import async_run, async_shell, async_stream
 from provide.foundation.process.runner import CompletedProcess
 
 # Mark all tests in this file to run serially to avoid event loop issues
@@ -26,11 +22,11 @@ pytestmark = pytest.mark.serial
 
 @pytest.mark.asyncio
 class TestAsyncRunCommand(FoundationTestCase):
-    """Test async_run_command function."""
+    """Test async_run function."""
 
     async def test_basic_command_success(self) -> None:
         """Test successful basic command execution."""
-        result = await async_run_command(["echo", "hello world"])
+        result = await async_run(["echo", "hello world"])
 
         assert isinstance(result, CompletedProcess)
         assert result.returncode == 0
@@ -40,7 +36,7 @@ class TestAsyncRunCommand(FoundationTestCase):
 
     async def test_command_with_string_cmd(self) -> None:
         """Test command execution with string command."""
-        result = await async_run_command("echo hello", shell=True)
+        result = await async_run("echo hello", shell=True)
 
         assert isinstance(result, CompletedProcess)
         assert result.returncode == 0
@@ -49,7 +45,7 @@ class TestAsyncRunCommand(FoundationTestCase):
     async def test_command_with_cwd_string(self) -> None:
         """Test command execution with cwd as string."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            result = await async_run_command(["pwd"], cwd=tmpdir)
+            result = await async_run(["pwd"], cwd=tmpdir)
 
             assert tmpdir in result.stdout
 
@@ -57,7 +53,7 @@ class TestAsyncRunCommand(FoundationTestCase):
         """Test command execution with cwd as Path."""
         with tempfile.TemporaryDirectory() as tmpdir:
             cwd_path = Path(tmpdir)
-            result = await async_run_command(["pwd"], cwd=cwd_path)
+            result = await async_run(["pwd"], cwd=cwd_path)
 
             assert tmpdir in result.stdout
             assert result.cwd == tmpdir
@@ -65,7 +61,7 @@ class TestAsyncRunCommand(FoundationTestCase):
     async def test_command_with_custom_env(self) -> None:
         """Test command execution with custom environment."""
         custom_env = {"TEST_ASYNC_VAR": "test_value_async"}
-        result = await async_run_command(
+        result = await async_run(
             [
                 sys.executable,
                 "-c",
@@ -80,13 +76,13 @@ class TestAsyncRunCommand(FoundationTestCase):
 
     async def test_command_env_none(self) -> None:
         """Test command execution with env=None."""
-        result = await async_run_command(["echo", "test"], env=None)
+        result = await async_run(["echo", "test"], env=None)
 
         assert result.env is None
 
     async def test_command_with_input(self) -> None:
         """Test command execution with input."""
-        result = await async_run_command(
+        result = await async_run(
             [
                 sys.executable,
                 "-c",
@@ -99,7 +95,7 @@ class TestAsyncRunCommand(FoundationTestCase):
 
     async def test_command_no_capture_output(self) -> None:
         """Test command execution without capturing output."""
-        result = await async_run_command(["echo", "test"], capture_output=False)
+        result = await async_run(["echo", "test"], capture_output=False)
 
         assert result.stdout == ""
         assert result.stderr == ""
@@ -107,7 +103,7 @@ class TestAsyncRunCommand(FoundationTestCase):
 
     async def test_command_check_false_with_failure(self) -> None:
         """Test command execution with check=False on failing command."""
-        result = await async_run_command(
+        result = await async_run(
             [sys.executable, "-c", "import sys; sys.exit(1)"],
             check=False,
         )
@@ -118,14 +114,14 @@ class TestAsyncRunCommand(FoundationTestCase):
     async def test_command_check_true_with_failure(self) -> None:
         """Test command execution with check=True on failing command."""
         with pytest.raises(ProcessError, match="Command failed with exit code 1"):
-            await async_run_command(
+            await async_run(
                 [sys.executable, "-c", "import sys; sys.exit(1)"],
                 check=True,
             )
 
     async def test_command_with_timeout_success(self) -> None:
         """Test command execution with timeout that completes in time."""
-        result = await async_run_command(["echo", "fast"], timeout=5.0)
+        result = await async_run(["echo", "fast"], timeout=5.0)
 
         assert result.returncode == 0
         assert "fast" in result.stdout
@@ -133,35 +129,35 @@ class TestAsyncRunCommand(FoundationTestCase):
     async def test_command_with_timeout_exceeded(self) -> None:
         """Test command execution that exceeds timeout."""
         with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
-            await async_run_command(
+            await async_run(
                 [sys.executable, "-c", "import time; time.sleep(2)"],
                 timeout=0.5,
             )
 
     async def test_command_shell_true(self) -> None:
         """Test command execution with shell=True."""
-        result = await async_run_command("echo 'shell command'", shell=True)
+        result = await async_run("echo 'shell command'", shell=True)
 
         assert result.returncode == 0
         assert "shell command" in result.stdout
 
     async def test_command_shell_false_list_cmd(self) -> None:
         """Test command execution with shell=False and list command."""
-        result = await async_run_command(["echo", "no shell"])
+        result = await async_run(["echo", "no shell"])
 
         assert result.returncode == 0
         assert "no shell" in result.stdout
 
     async def test_command_shell_false_list_cmd(self) -> None:
         """Test command execution with shell=False and list command."""
-        result = await async_run_command(["echo", "test"], shell=False)
+        result = await async_run(["echo", "test"], shell=False)
 
         assert result.returncode == 0
 
     async def test_command_with_kwargs(self) -> None:
         """Test command execution with additional kwargs."""
         # Test that kwargs are passed through (excluding 'shell')
-        result = await async_run_command(
+        result = await async_run(
             ["echo", "test"],
             shell=False,
             some_kwarg="value",
@@ -172,7 +168,7 @@ class TestAsyncRunCommand(FoundationTestCase):
 
     async def test_telemetry_disabled_by_default(self) -> None:
         """Test that telemetry is disabled by default in subprocess environment."""
-        result = await async_run_command(
+        result = await async_run(
             [
                 sys.executable,
                 "-c",
@@ -185,7 +181,7 @@ class TestAsyncRunCommand(FoundationTestCase):
     async def test_telemetry_env_override(self) -> None:
         """Test that custom env can override telemetry setting."""
         custom_env = {"PROVIDE_TELEMETRY_DISABLED": "false"}
-        result = await async_run_command(
+        result = await async_run(
             [
                 sys.executable,
                 "-c",
@@ -199,7 +195,7 @@ class TestAsyncRunCommand(FoundationTestCase):
     async def test_command_execution_exception(self) -> None:
         """Test handling of command execution exceptions."""
         with pytest.raises(ProcessError, match="Failed to execute async command"):
-            await async_run_command(["/nonexistent/command"])
+            await async_run(["/nonexistent/command"])
 
     async def test_process_error_is_wrapped(self) -> None:
         """Test that a non-ProcessError is wrapped in ProcessError."""
@@ -210,7 +206,7 @@ class TestAsyncRunCommand(FoundationTestCase):
             ),
             pytest.raises(ProcessError) as exc_info,
         ):
-            await async_run_command(["echo", "test"])
+            await async_run(["echo", "test"])
 
         assert isinstance(exc_info.value.__cause__, OSError)
 
@@ -223,19 +219,19 @@ class TestAsyncRunCommand(FoundationTestCase):
             ),
             pytest.raises(ProcessError) as exc_info,
         ):
-            await async_run_command(["echo", "test"])
+            await async_run(["echo", "test"])
 
         assert isinstance(exc_info.value.__cause__, TimeoutError)
 
 
 @pytest.mark.asyncio
 class TestAsyncStreamCommand(FoundationTestCase):
-    """Test async_stream_command function."""
+    """Test async_stream function."""
 
     async def test_basic_stream_success(self) -> None:
         """Test successful basic stream execution."""
         lines = []
-        async for line in async_stream_command(
+        async for line in async_stream(
             [
                 sys.executable,
                 "-c",
@@ -252,7 +248,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
         """Test stream execution with cwd as string."""
         with tempfile.TemporaryDirectory() as tmpdir:
             lines = []
-            async for line in async_stream_command(["pwd"], cwd=tmpdir):
+            async for line in async_stream(["pwd"], cwd=tmpdir):
                 lines.append(line)
 
             assert any(tmpdir in line for line in lines)
@@ -262,7 +258,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             cwd_path = Path(tmpdir)
             lines = []
-            async for line in async_stream_command(["pwd"], cwd=cwd_path):
+            async for line in async_stream(["pwd"], cwd=cwd_path):
                 lines.append(line)
 
             assert any(tmpdir in line for line in lines)
@@ -271,7 +267,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
         """Test stream execution with custom environment."""
         custom_env = {"TEST_STREAM_VAR": "stream_value"}
         lines = []
-        async for line in async_stream_command(
+        async for line in async_stream(
             [
                 sys.executable,
                 "-c",
@@ -286,7 +282,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
     async def test_stream_env_none(self) -> None:
         """Test stream execution with env=None."""
         lines = []
-        async for line in async_stream_command(["echo", "test"], env=None):
+        async for line in async_stream(["echo", "test"], env=None):
             lines.append(line)
 
         assert len(lines) > 0
@@ -294,7 +290,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
     async def test_stream_with_timeout_success(self) -> None:
         """Test stream execution with timeout that completes in time."""
         lines = []
-        async for line in async_stream_command(
+        async for line in async_stream(
             [sys.executable, "-c", "print('fast output')"],
             timeout=5.0,
         ):
@@ -306,7 +302,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
         """Test stream execution that exceeds timeout."""
         with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
             lines = []
-            async for line in async_stream_command(
+            async for line in async_stream(
                 [sys.executable, "-c", "import time; time.sleep(2); print('slow')"],
                 timeout=0.5,
             ):
@@ -315,7 +311,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
     async def test_stream_stderr_true(self) -> None:
         """Test stream execution with stderr merged to stdout."""
         lines = []
-        async for line in async_stream_command(
+        async for line in async_stream(
             [
                 sys.executable,
                 "-c",
@@ -333,7 +329,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
     async def test_stream_stderr_false(self) -> None:
         """Test stream execution with stderr separate."""
         lines = []
-        async for line in async_stream_command(
+        async for line in async_stream(
             [
                 sys.executable,
                 "-c",
@@ -350,7 +346,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
         """Test stream execution with command failure (no timeout)."""
         with pytest.raises(ProcessError, match="Command failed with exit code 1"):
             lines = []
-            async for line in async_stream_command(
+            async for line in async_stream(
                 [sys.executable, "-c", "import sys; sys.exit(1)"],
             ):
                 lines.append(line)
@@ -359,7 +355,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
         """Test stream execution with command failure (with timeout)."""
         with pytest.raises(ProcessError, match="Command failed with exit code 1"):
             lines = []
-            async for line in async_stream_command(
+            async for line in async_stream(
                 [sys.executable, "-c", "import sys; sys.exit(1)"],
                 timeout=5.0,
             ):
@@ -368,7 +364,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
     async def test_stream_with_kwargs(self) -> None:
         """Test stream execution with additional kwargs."""
         lines = []
-        async for line in async_stream_command(["echo", "test"], some_kwarg="value"):
+        async for line in async_stream(["echo", "test"], some_kwarg="value"):
             lines.append(line)
 
         assert any("test" in line for line in lines)
@@ -376,7 +372,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
     async def test_stream_telemetry_disabled(self) -> None:
         """Test that telemetry is disabled in stream environment."""
         lines = []
-        async for line in async_stream_command(
+        async for line in async_stream(
             [
                 sys.executable,
                 "-c",
@@ -390,7 +386,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
     async def test_stream_empty_stdout(self) -> None:
         """Test stream execution with no stdout."""
         lines = []
-        async for line in async_stream_command([sys.executable, "-c", "pass"]):
+        async for line in async_stream([sys.executable, "-c", "pass"]):
             lines.append(line)
 
         # Should complete without error even with no output
@@ -400,7 +396,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
         """Test handling of stream execution exceptions."""
         with pytest.raises(ProcessError, match="Failed to stream async command"):
             lines = []
-            async for line in async_stream_command(["/nonexistent/command"]):
+            async for line in async_stream(["/nonexistent/command"]):
                 lines.append(line)
 
     async def test_stream_process_error_is_wrapped(self) -> None:
@@ -413,7 +409,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
             pytest.raises(ProcessError) as exc_info,
         ):
             lines = []
-            async for line in async_stream_command(["echo", "test"]):
+            async for line in async_stream(["echo", "test"]):
                 lines.append(line)
 
         assert isinstance(exc_info.value.__cause__, OSError)
@@ -428,7 +424,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
             pytest.raises(ProcessError) as exc_info,
         ):
             lines = []
-            async for line in async_stream_command(["echo", "test"]):
+            async for line in async_stream(["echo", "test"]):
                 lines.append(line)
 
         assert isinstance(exc_info.value.__cause__, TimeoutError)
@@ -436,7 +432,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
     async def test_stream_string_command(self) -> None:
         """Test stream execution with string command."""
         lines = []
-        async for line in async_stream_command("echo test"):
+        async for line in async_stream("echo test"):
             lines.append(line)
 
         assert any("test" in line for line in lines)
@@ -444,11 +440,11 @@ class TestAsyncStreamCommand(FoundationTestCase):
 
 @pytest.mark.asyncio
 class TestAsyncRunShell(FoundationTestCase):
-    """Test async_run_shell function."""
+    """Test async_shell function."""
 
     async def test_basic_shell_command(self) -> None:
         """Test basic shell command execution."""
-        result = await async_run_shell("echo 'shell test'")
+        result = await async_shell("echo 'shell test'")
 
         assert isinstance(result, CompletedProcess)
         assert result.returncode == 0
@@ -457,7 +453,7 @@ class TestAsyncRunShell(FoundationTestCase):
     async def test_shell_with_cwd(self) -> None:
         """Test shell command with working directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
-            result = await async_run_shell("pwd", cwd=tmpdir)
+            result = await async_shell("pwd", cwd=tmpdir)
 
             assert tmpdir in result.stdout
             assert result.cwd == tmpdir
@@ -465,13 +461,13 @@ class TestAsyncRunShell(FoundationTestCase):
     async def test_shell_with_env(self) -> None:
         """Test shell command with environment."""
         custom_env = {"SHELL_TEST_VAR": "shell_value"}
-        result = await async_run_shell("echo $SHELL_TEST_VAR", env=custom_env)
+        result = await async_shell("echo $SHELL_TEST_VAR", env=custom_env)
 
         assert "shell_value" in result.stdout
 
     async def test_shell_no_capture_output(self) -> None:
         """Test shell command without capturing output."""
-        result = await async_run_shell("echo test", capture_output=False)
+        result = await async_shell("echo test", capture_output=False)
 
         assert result.stdout == ""
         assert result.stderr == ""
@@ -479,18 +475,18 @@ class TestAsyncRunShell(FoundationTestCase):
 
     async def test_shell_check_false(self) -> None:
         """Test shell command with check=False."""
-        result = await async_run_shell("exit 1", check=False)
+        result = await async_shell("exit 1", check=False)
 
         assert result.returncode == 1
 
     async def test_shell_check_true_failure(self) -> None:
         """Test shell command with check=True on failure."""
         with pytest.raises(ProcessError, match="Command failed with exit code 1"):
-            await async_run_shell("exit 1", check=True)
+            await async_shell("exit 1", check=True)
 
     async def test_shell_with_timeout(self) -> None:
         """Test shell command with timeout."""
-        result = await async_run_shell("echo quick", timeout=5.0)
+        result = await async_shell("echo quick", timeout=5.0)
 
         assert result.returncode == 0
         assert "quick" in result.stdout
@@ -498,17 +494,17 @@ class TestAsyncRunShell(FoundationTestCase):
     async def test_shell_timeout_exceeded(self) -> None:
         """Test shell command that exceeds timeout."""
         with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
-            await async_run_shell("sleep 1", timeout=0.5)
+            await async_shell("sleep 1", timeout=0.5)
 
     async def test_shell_with_kwargs(self) -> None:
         """Test shell command with additional kwargs."""
-        result = await async_run_shell("echo kwargs", some_kwarg="value")
+        result = await async_shell("echo kwargs", some_kwarg="value")
 
         assert result.returncode == 0
         assert "kwargs" in result.stdout
 
-    async def test_shell_delegates_to_async_run_command(self) -> None:
-        """Test that async_run_shell properly delegates to async_run_command."""
+    async def test_shell_delegates_to_async_run(self) -> None:
+        """Test that async_shell properly delegates to async_run."""
         with patch(
             "provide.foundation.process.aio.shell.async_run",
         ) as mock_run:
@@ -521,7 +517,7 @@ class TestAsyncRunShell(FoundationTestCase):
                 env=None,
             )
 
-            await async_run_shell(
+            await async_shell(
                 "test command",
                 cwd="/tmp",
                 env={"TEST": "value"},
@@ -550,12 +546,12 @@ class TestAsyncRunnerEdgeCases(FoundationTestCase):
     async def test_empty_command_list(self) -> None:
         """Test execution with empty command list."""
         with pytest.raises(ProcessError):
-            await async_run_command([])
+            await async_run([])
 
     async def test_none_command(self) -> None:
         """Test execution with None command."""
         with pytest.raises(ProcessError):
-            await async_run_command(None)
+            await async_run(None)
 
     async def test_mock_process_creation_failure(self) -> None:
         """Test handling of process creation failure."""
@@ -566,7 +562,7 @@ class TestAsyncRunnerEdgeCases(FoundationTestCase):
             ),
             pytest.raises(ProcessError, match="Failed to execute async command"),
         ):
-            await async_run_command(["echo", "test"])
+            await async_run(["echo", "test"])
 
     async def test_mock_communicate_timeout(self) -> None:
         """Test timeout handling in communicate method."""
@@ -578,7 +574,7 @@ class TestAsyncRunnerEdgeCases(FoundationTestCase):
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
             with patch("asyncio.wait_for", side_effect=builtins.TimeoutError()):
                 with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
-                    await async_run_command(["echo", "test"], timeout=1.0)
+                    await async_run(["echo", "test"], timeout=1.0)
 
                 mock_process.kill.assert_called_once()
                 # wait() is called twice: once after kill, once in cleanup
@@ -597,7 +593,7 @@ class TestAsyncRunnerEdgeCases(FoundationTestCase):
         mock_process.returncode = 0
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
-            result = await async_run_command(["echo", "test"])
+            result = await async_run(["echo", "test"])
 
             # Should handle decode with errors='replace' or similar
             assert result.returncode == 0
@@ -615,7 +611,7 @@ class TestAsyncRunnerEdgeCases(FoundationTestCase):
             with patch("asyncio.wait_for", side_effect=builtins.TimeoutError()):
                 with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
                     lines = []
-                    async for line in async_stream_command(
+                    async for line in async_stream(
                         ["echo", "test"],
                         timeout=1.0,
                     ):
@@ -638,7 +634,7 @@ class TestAsyncRunnerEdgeCases(FoundationTestCase):
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
             lines = []
-            async for line in async_stream_command(["echo", "test"]):
+            async for line in async_stream(["echo", "test"]):
                 lines.append(line)
 
             assert len(lines) == 0
@@ -651,7 +647,7 @@ class TestAsyncRunnerEdgeCases(FoundationTestCase):
             mock_process.returncode = 0
             mock_shell.return_value = mock_process
 
-            await async_run_command(
+            await async_run(
                 "echo test",
                 shell=True,
                 extra_kwarg="value",

@@ -1,11 +1,7 @@
 from __future__ import annotations
 
 from provide.foundation.errors.process import ProcessError
-from provide.foundation.process.async_runner import (
-    async_run_command,
-    async_run_shell,
-    async_stream_command,
-)
+from provide.foundation.process.aio import async_run, async_shell, async_stream
 from provide.foundation.process.exit import (
     exit_error,
     exit_interrupted,
@@ -34,10 +30,10 @@ __all__ = [
     # Process lifecycle management
     "ManagedProcess",
     "ProcessError",
-    # Async execution
-    "async_run_command",
-    "async_run_shell",
-    "async_stream_command",
+    # Async execution (modern API)
+    "async_run",
+    "async_shell",
+    "async_stream",
     "exit_error",
     "exit_interrupted",
     # Exit utilities
