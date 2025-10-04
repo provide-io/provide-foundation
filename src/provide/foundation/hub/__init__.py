@@ -58,19 +58,20 @@ from provide.foundation.hub.registry import (
     RegistryEntry,
 )
 
-# CLI features (require click) - Pattern 2: stub function with helpful error
-try:
-    from provide.foundation.cli.click.builder import build_click_command
+# CLI features - Delayed import to avoid circular dependency
+def build_click_command(name: str, registry: Any = None) -> Any:
+    """Build click command (delayed import to avoid circular dependency)."""
+    try:
+        from provide.foundation.cli.click.builder import build_click_command as real_func
 
-    _HAS_CLICK = True
-except ImportError:
-    _HAS_CLICK = False
-
-    def build_click_command(name: str, registry: Any = None) -> Any:  # type: ignore[misc]
-        raise ImportError(
-            "CLI command building requires optional dependencies. Install with: "
-            "pip install 'provide-foundation[cli]'"
-        )
+        return real_func(name, registry)
+    except ImportError as e:
+        if "click" in str(e).lower():
+            raise ImportError(
+                "CLI command building requires optional dependencies. Install with: "
+                "pip install 'provide-foundation[cli]'"
+            ) from e
+        raise
 
 
 __all__ = [
