@@ -4,9 +4,9 @@ import gzip
 import shutil
 from typing import BinaryIO
 
-from attrs import define
+from attrs import define, validators
 
-from provide.foundation.archive.base import BaseCompressor
+from provide.foundation.archive.base import BaseCompressor, _validate_compression_level
 from provide.foundation.config import defaults
 from provide.foundation.config.base import field
 
@@ -21,7 +21,10 @@ class GzipCompressor(BaseCompressor):
     Does not handle bundling - use with TarArchive for .tar.gz files.
     """
 
-    level: int = field(default=defaults.DEFAULT_GZIP_COMPRESSION_LEVEL)
+    level: int = field(
+        default=defaults.DEFAULT_GZIP_COMPRESSION_LEVEL,
+        validator=[validators.instance_of(int), _validate_compression_level],  # type: ignore[arg-type]
+    )
 
     @property
     def format_name(self) -> str:
