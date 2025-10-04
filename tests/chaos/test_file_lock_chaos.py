@@ -9,15 +9,12 @@ from __future__ import annotations
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import json
-import os
 from pathlib import Path
 import threading
 import time
 from typing import Any
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
-import psutil
+from hypothesis import given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     chaos_timings,
@@ -62,11 +59,10 @@ class TestFileLockChaos(FoundationTestCase):
         def thread_worker(thread_id: int) -> None:
             try:
                 lock = FileLock(lock_file, timeout=timeout)
-                with lock:
+                with lock, access_count:
                     # Verify exclusive access
-                    with access_count:
-                        acquired_by.append(thread_id)
-                        time.sleep(lock_duration)
+                    acquired_by.append(thread_id)
+                    time.sleep(lock_duration)
             except LockError as e:
                 errors.append(e)
             except Exception as e:
@@ -205,7 +201,7 @@ class TestFileLockChaos(FoundationTestCase):
         try:
             acquired = lock.acquire(blocking=True)
             # If we get here, acquisition succeeded
-            assert acquired or not acquired  # Either outcome is acceptable
+            assert True  # Either outcome is acceptable
             if acquired:
                 lock.release()
         except LockError:
