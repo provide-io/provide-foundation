@@ -7,13 +7,10 @@ including burst patterns, time manipulation, and concurrent access.
 from __future__ import annotations
 
 import asyncio
-from typing import Any
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
+from hypothesis import given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
-    chaos_timings,
     edge_values,
     rate_burst_patterns,
     time_advances,

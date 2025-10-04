@@ -8,11 +8,10 @@ from __future__ import annotations
 
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+import contextlib
 import time
-from typing import Any
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
+from hypothesis import given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     chaos_timings,
@@ -53,8 +52,8 @@ class TestCircuitBreakerChaos(FoundationTestCase):
         for i in range(num_calls):
             should_fail = (i / num_calls) < failure_rate
 
-            def operation() -> str:
-                if should_fail:
+            def operation(fail: bool = should_fail) -> str:
+                if fail:
                     raise ValueError("Chaos failure")
                 return "success"
 
@@ -160,10 +159,8 @@ class TestCircuitBreakerChaos(FoundationTestCase):
             raise ValueError("Test failure")
 
         for _ in range(2):
-            try:
+            with contextlib.suppress(ValueError):
                 breaker.call(failing_func)
-            except ValueError:
-                pass
 
         assert breaker.state == CircuitState.OPEN
 
@@ -192,9 +189,9 @@ class TestCircuitBreakerChaos(FoundationTestCase):
             should_fail = any(when == i for when, _ in patterns)
             exc_type = next((exc for when, exc in patterns if when == i), ValueError)
 
-            def operation() -> str:
-                if should_fail:
-                    raise exc_type("Pattern failure")
+            def operation(fail: bool = should_fail, exception_type: type[Exception] = exc_type) -> str:
+                if fail:
+                    raise exception_type("Pattern failure")
                 return "success"
 
             try:

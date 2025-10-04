@@ -6,12 +6,9 @@ including emoji processing, Unicode handling, and rate-limited logging.
 
 from __future__ import annotations
 
-import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from io import StringIO
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
+from hypothesis import given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     malformed_inputs,
@@ -44,7 +41,7 @@ class TestLoggerUnicodeChaos(FoundationTestCase):
             logger.debug("Debug unicode", content=text)
         except Exception as e:
             # Log the exception for debugging, but shouldn't raise
-            assert False, f"Logger crashed with Unicode: {e}"
+            raise AssertionError(f"Logger crashed with Unicode: {e}") from e
 
     @given(
         emoji_text=unicode_chaos(include_emoji=True),
@@ -68,7 +65,7 @@ class TestLoggerUnicodeChaos(FoundationTestCase):
         try:
             logger.info("Mixed content", emoji=emoji_text, text=regular_text)
         except Exception as e:
-            assert False, f"Logger failed with mixed content: {e}"
+            raise AssertionError(f"Logger failed with mixed content: {e}") from e
 
     @given(data=malformed_inputs())
     @settings(max_examples=50)
@@ -85,7 +82,7 @@ class TestLoggerUnicodeChaos(FoundationTestCase):
         try:
             logger.info("Malformed data test", data=data)
             logger.debug("Debug malformed", value=data)
-        except Exception as e:
+        except Exception:
             # Some extreme values might fail, but shouldn't crash the process
             # Just verify we can handle it gracefully
             pass
@@ -178,11 +175,11 @@ class TestLoggerConcurrencyChaos(FoundationTestCase):
         for i in range(dict_size):
             nested_data[f"key_{i}"] = f"value_{i}"
 
-        try:
-            logger.info("Nested data test", data=nested_data, depth=nested_depth)
-        except Exception as e:
+        import contextlib
+
+        with contextlib.suppress(Exception):
             # Very deep structures might hit recursion limits, but shouldn't crash
-            pass
+            logger.info("Nested data test", data=nested_data, depth=nested_depth)
 
 
 __all__ = [

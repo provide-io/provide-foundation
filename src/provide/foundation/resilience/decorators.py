@@ -32,7 +32,7 @@ def _get_circuit_breaker_registry() -> Registry:
     """Get the Hub registry for circuit breakers."""
     from provide.foundation.hub.manager import get_hub
 
-    return get_hub().registry
+    return get_hub()._component_registry  # type: ignore[attr-defined]
 
 
 def _should_register_for_global_reset() -> bool:

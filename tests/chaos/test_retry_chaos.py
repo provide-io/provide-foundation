@@ -9,8 +9,7 @@ from __future__ import annotations
 import asyncio
 from typing import Any
 
-from hypothesis import given, settings
-from hypothesis import strategies as st
+from hypothesis import given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     chaos_timings,
@@ -62,7 +61,9 @@ class TestRetryPolicyChaos(FoundationTestCase):
 
     @given(
         attempt=st.integers(min_value=0, max_value=50),
-        backoff_type=st.sampled_from([BackoffStrategy.CONSTANT, BackoffStrategy.LINEAR, BackoffStrategy.EXPONENTIAL]),
+        backoff_type=st.sampled_from(
+            [BackoffStrategy.CONSTANT, BackoffStrategy.LINEAR, BackoffStrategy.EXPONENTIAL]
+        ),
     )
     @settings(max_examples=30)
     def test_delay_calculation_chaos(
