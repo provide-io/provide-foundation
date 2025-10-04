@@ -581,7 +581,8 @@ class TestAsyncRunnerEdgeCases(FoundationTestCase):
                     await async_run_command(["echo", "test"], timeout=1.0)
 
                 mock_process.kill.assert_called_once()
-                mock_process.wait.assert_called_once()
+                # wait() is called twice: once after kill, once in cleanup
+                assert mock_process.wait.call_count == 2
 
     async def test_decode_error_handling(self) -> None:
         """Test handling of decode errors in output."""
