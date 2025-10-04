@@ -171,3 +171,194 @@ Consider refactoring if issues arise:
 ### Priority 3: Feature Completion (If needed)
 - OpenObserve HTTP API (if required by users)
 - Transport streaming support (if required by use cases)
+
+---
+
+## 🏗️ V2.0 ARCHITECTURE REFACTORING ROADMAP
+
+### Context: Addressing Technical Debt
+Based on external code review, the following architectural issues were identified:
+1. **Global State Complexity** - 27 reset functions, 724 lines of testmode code
+2. **Circular Dependencies** - Hub ↔ Logger, requiring local imports
+3. **Inconsistent Optional Dependencies** - 3 different patterns
+4. **Misleading Abstractions** - DualLock name implies mutual exclusion (doesn't provide it)
+5. **Security Concerns** - `shell()` function warnings don't prevent injection
+
+### Recommended Approach: **Hybrid Strategy (Pragmatic v2.0)**
+
+#### Phase 1: Foundation Refactor (v2.0.0-alpha)
+**Goal**: Introduce explicit context API alongside existing global API
+
+**Changes**:
+1. **Add Explicit Context API**:
+   ```python
+   # New explicit API (preferred)
+   from provide.foundation import Hub
+
+   hub = Hub()  # Explicit creation
+   logger = hub.get_logger(__name__)
+   ```
+
+2. **Make Global State Opt-In**:
+   ```python
+   # Global mode requires explicit activation
+   from provide.foundation import use_global_context
+   use_global_context()  # Explicit opt-in
+
+   # Now convenience imports work
+   from provide.foundation import logger
+   ```
+
+3. **Deprecate Implicit Global Access**:
+   - Add warnings to `get_hub()`, `get_logger()` convenience functions
+   - Update docs to show explicit API as preferred
+   - Maintain backward compatibility
+
+**Benefits**:
+- Testing becomes trivial (no reset functions needed)
+- Dependencies are traceable (no magic globals)
+- Backward compatible (existing code works with warnings)
+
+#### Phase 2: Migration Period (v2.0.0-beta → v2.0.0)
+**Timeline**: 6-12 months
+
+**Activities**:
+1. Louder deprecation warnings
+2. Comprehensive migration guide
+3. Automated migration tools (codemod scripts)
+4. Update ecosystem projects (pyvider, plating, etc.)
+5. Example projects showing explicit context usage
+
+#### Phase 3: Clean Architecture (v3.0.0)
+**Timeline**: 18+ months from v2.0 release
+
+**Changes**:
+1. Remove global context mode entirely
+2. Pure explicit dependency injection required
+3. Eliminate all singleton patterns
+4. Clean layered architecture:
+   - **Core** (protocols, no dependencies)
+   - **Infrastructure** (implementations depend on core)
+   - **Application** (orchestration, depends on infrastructure)
+   - **Adapters** (CLI, telemetry, depend on core)
+
+### Specific Improvements
+
+#### 1. Eliminate Testmode Complexity
+**Current**: 27 reset functions, 724 lines of orchestration code
+**Future**:
+```python
+def test_my_feature():
+    hub = Hub()  # Fresh instance, no global state
+    logger = hub.get_logger(__name__)
+    # test code
+    # No cleanup needed - garbage collected
+```
+**Reduction**: 724 → ~50 lines (~93% reduction)
+
+#### 2. Break Circular Dependencies
+**Current**: Hub ↔ Logger circular import requiring local imports
+**Future**:
+```python
+# Both depend on protocols, not each other
+class FoundationContext(Protocol):
+    def get_logger(self, name: str) -> Logger: ...
+
+class Hub(FoundationContext):
+    # Implementation
+    pass
+
+def get_logger(name: str, context: FoundationContext) -> Logger:
+    return context.get_logger(name)  # No Hub import!
+```
+
+#### 3. Rename Misleading Abstractions
+**Current**: `DualLock` - implies mutual exclusion (doesn't provide it)
+**Future**: `ContextualLock` or `SeparateLocks`
+```python
+class ContextualLock:
+    """Separate locks for sync and async contexts.
+
+    ⚠️ WARNING: Does NOT provide mutual exclusion between sync and async code.
+    Use this only when sync and async code don't share state.
+    """
+```
+
+#### 4. Standardize Optional Dependencies
+**Current**: 3 patterns (`_HAS_*` flags, `__getattr__`, stub classes)
+**Future**: Document decision tree in `docs/contributing/optional-dependencies.md`:
+- **`_HAS_*` flags** → Internal conditionals (fast boolean checks)
+- **`__getattr__`** → Public API features (helpful errors for users)
+- **Stub classes** → Complete API surface (type checking, graceful degradation)
+
+#### 5. Enforce Shell Security
+**Current**: `shell()` logs warning but proceeds
+**Future**: Add enforcement options:
+```python
+def shell(
+    cmd: str,
+    allow_dangerous: bool = False,  # Explicit opt-in
+    raise_on_dangerous: bool = True,  # Prevent by default
+    ...
+):
+    if not allow_dangerous and has_dangerous_patterns(cmd):
+        if raise_on_dangerous:
+            raise SecurityError("Dangerous shell patterns detected")
+        else:
+            plog.warning("...")
+```
+
+### Success Metrics
+
+**Quantitative**:
+- ✅ Reduce testmode code: 724 → ~50 lines (~93%)
+- ✅ Eliminate reset functions: 27 → 0
+- ✅ Eliminate circular imports: 8 → 0
+- ✅ Eliminate mandatory global state: 5 singletons → 0
+
+**Qualitative**:
+- ✅ Tests are simple (no complex cleanup)
+- ✅ Dependencies are explicit (traceable)
+- ✅ Isolation by default (independent Hub instances)
+- ✅ Security by default (shell injection prevented)
+
+### Migration Strategy
+
+**Backward Compatibility Path**:
+```python
+# v1.x code (still works in v2.x with warnings)
+from provide.foundation import logger
+logger.info("message")
+
+# v2.x preferred (explicit context)
+from provide.foundation import Hub
+hub = Hub()
+logger = hub.get_logger(__name__)
+logger.info("message")
+
+# v2.x backward compat mode (opt-in)
+from provide.foundation import use_global_context
+use_global_context()
+from provide.foundation import logger
+logger.info("message")  # Works, no warning
+
+# v3.x (global mode removed)
+# Only explicit context supported
+```
+
+### Risk Mitigation
+
+1. **User Confusion** → Clear docs, examples for both patterns
+2. **Migration Burden** → Gradual deprecation (18+ months), automated tools
+3. **Ecosystem Breakage** → Coordinate releases, maintain v1.x LTS
+
+### Conclusion
+
+This refactoring addresses the core architectural issues identified in the code review:
+- Global state becomes explicit and optional
+- Circular dependencies are eliminated via protocols
+- Testing becomes simple (no global cleanup)
+- Security improves (enforcement by default)
+- Migration is gradual and backward compatible
+
+The troll's criticisms were harsh but accurate. This plan addresses them pragmatically without forcing immediate breaking changes.
