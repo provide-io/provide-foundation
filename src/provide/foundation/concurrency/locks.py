@@ -82,7 +82,7 @@ class SmartLock:
         """Acquire lock in asynchronous context.
 
         Use with 'async with' statement in asynchronous methods.
-        Uses non-blocking acquisition with exponential backoff to avoid thread pool exhaustion.
+        Uses non-blocking polling to avoid thread pool exhaustion.
 
         Yields:
             None when lock is acquired
@@ -96,24 +96,28 @@ class SmartLock:
             ...         pass
             >>> asyncio.run(main())
         """
-        # Use non-blocking acquire with polling to avoid thread pool deadlocks
+        # Non-blocking polling with exponential backoff
         delay = 0.0001  # Start with 0.1ms
-        max_delay = 0.01  # Cap at 10ms
+        max_delay = 0.005  # Cap at 5ms
+        max_wait = 30.0  # Maximum total wait time
+        start_time = time.time()
 
         while True:
-            # Try to acquire without blocking
-            acquired = self._lock.acquire(blocking=False)
-            if acquired:
+            # Try non-blocking acquire
+            if self._lock.acquire(blocking=False):
                 break
 
-            # Wait before retrying, with exponential backoff
+            # Check for timeout
+            if time.time() - start_time > max_wait:
+                raise RuntimeError(f"Failed to acquire lock within {max_wait} seconds - possible deadlock")
+
+            # Yield control to event loop before retrying
             await asyncio.sleep(delay)
-            delay = min(delay * 1.5, max_delay)  # Exponential backoff with cap
+            delay = min(delay * 1.5, max_delay)
 
         try:
             yield
         finally:
-            # Release the lock
             self._lock.release()
 
 
