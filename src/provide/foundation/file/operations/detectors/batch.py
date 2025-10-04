@@ -98,21 +98,21 @@ class BatchOperationDetector:
             time_span = (dir_events[-1].timestamp - dir_events[0].timestamp).total_seconds()
             if time_span <= 5.0 and self._files_are_related(dir_events):
                 return FileOperation(
-                        operation_type=OperationType.BATCH_UPDATE,
-                        primary_path=directory,
-                        events=dir_events,
-                        confidence=0.85,
-                        description=f"Batch operation on {len(dir_events)} files",
-                        start_time=dir_events[0].timestamp,
-                        end_time=dir_events[-1].timestamp,
-                        is_atomic=False,
-                        is_safe=True,
-                        files_affected=[e.path for e in dir_events],
-                        metadata={
-                            "file_count": len(dir_events),
-                            "pattern": "batch_update",
-                        },
-                    )
+                    operation_type=OperationType.BATCH_UPDATE,
+                    primary_path=directory,
+                    events=dir_events,
+                    confidence=0.85,
+                    description=f"Batch operation on {len(dir_events)} files",
+                    start_time=dir_events[0].timestamp,
+                    end_time=dir_events[-1].timestamp,
+                    is_atomic=False,
+                    is_safe=True,
+                    files_affected=[e.path for e in dir_events],
+                    metadata={
+                        "file_count": len(dir_events),
+                        "pattern": "batch_update",
+                    },
+                )
 
         return None
 
@@ -195,7 +195,7 @@ class BatchOperationDetector:
 
     def _determine_batch_operation_type(self, events: list[FileEvent]) -> OperationType:
         """Determine the primary operation type for a batch."""
-        type_counts = defaultdict(int)
+        type_counts: dict[str, int] = defaultdict(int)
         for event in events:
             type_counts[event.event_type] += 1
 

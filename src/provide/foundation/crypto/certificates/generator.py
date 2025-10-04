@@ -118,7 +118,6 @@ def _serialize_to_pem(
 if TYPE_CHECKING:
     from cryptography import x509
     from cryptography.hazmat.primitives import serialization
-    from cryptography.hazmat.primitives.asymmetric import ec, rsa
 
 try:
     from cryptography import x509
