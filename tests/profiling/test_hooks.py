@@ -190,7 +190,7 @@ class TestProfilingComponent(FoundationTestCase):
         reset_streams_state()
         reset_logger_state()
         reset_hub_state()
-        clear_hub()
+        clear_shared_hub()
 
     def test_component_initialization(self) -> None:
         """Test component initializes in disabled state."""
@@ -271,7 +271,7 @@ class TestProfilingCLI(FoundationTestCase):
         reset_streams_state()
         reset_logger_state()
         reset_hub_state()
-        clear_hub()
+        clear_shared_hub()
 
     def test_profile_command_no_profiler(self) -> None:
         """Test profile command when profiler not enabled."""
@@ -346,7 +346,7 @@ class TestProfilingIntegration(FoundationTestCase):
         reset_streams_state()
         reset_logger_state()
         reset_hub_state()
-        clear_hub()
+        clear_shared_hub()
 
     def test_end_to_end_profiling(self) -> None:
         """Test complete profiling workflow."""
