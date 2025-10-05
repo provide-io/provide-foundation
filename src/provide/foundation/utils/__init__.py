@@ -32,6 +32,7 @@ from provide.foundation.utils.parsing import (
     parse_typed_value,
 )
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
+from provide.foundation.utils.scoped_cache import ContextScopedCache
 from provide.foundation.utils.stubs import (
     create_dependency_stub,
     create_function_stub,
@@ -45,6 +46,8 @@ Common utilities that can be used across the foundation and by other packages.
 """
 
 __all__ = [
+    # Caching utilities
+    "ContextScopedCache",
     "DependencyStatus",
     "EnvPrefix",
     # Rate limiting utilities

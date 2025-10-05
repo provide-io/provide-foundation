@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import socket
+import threading
 import time
 
 import psutil
@@ -15,6 +16,7 @@ from provide.foundation.logger import get_logger
 """File-based locking for concurrent access control.
 
 Uses psutil for robust process validation to prevent PID recycling attacks.
+Thread-safe for concurrent access within a single process.
 """
 
 log = get_logger(__name__)
@@ -25,6 +27,10 @@ class FileLock:
 
     Uses exclusive file creation as the locking mechanism.
     The lock file contains the PID of the process holding the lock.
+
+    Thread-safe: Multiple threads can safely use the same FileLock instance.
+    The internal thread lock protects instance state while the file lock
+    provides inter-process synchronization.
 
     Example:
         with FileLock("/tmp/myapp.lock"):
@@ -52,8 +58,9 @@ class FileLock:
         self.check_interval = check_interval
         self.locked = False
         self.pid = os.getpid()
+        self._thread_lock = threading.RLock()  # Protect instance state from concurrent threads
 
-    def acquire(self, blocking: bool = True) -> bool:
+    def acquire(self, blocking: bool = True) -> bool:  # noqa: C901
         """Acquire the lock.
 
         Args:
@@ -66,130 +73,140 @@ class FileLock:
             LockError: If timeout exceeded (blocking mode)
 
         """
-        if self.timeout <= 0:
-            raise LockError("Timeout must be positive", code="INVALID_TIMEOUT", path=str(self.path))
+        with self._thread_lock:
+            if self.timeout <= 0:
+                raise LockError("Timeout must be positive", code="INVALID_TIMEOUT", path=str(self.path))
 
-        # Use a finite loop with hard limits to prevent any possibility of hanging
-        start_time = time.time()
-        end_time = start_time + self.timeout
-        max_iterations = 1000  # Hard limit regardless of timeout
-        iteration = 0
-
-        while iteration < max_iterations:
-            iteration += 1
-            current_time = time.time()
-
-            # Hard timeout check - exit immediately if time is up
-            if current_time >= end_time:
-                elapsed = current_time - start_time
-                raise LockError(
-                    f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, iterations: {iteration})",
-                    code="LOCK_TIMEOUT",
-                    path=str(self.path),
-                ) from None
-
-            try:
-                # Try to create lock file exclusively
-                fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
-                try:
-                    # Write lock metadata as JSON for robust validation
-                    lock_info = {
-                        "pid": self.pid,
-                        "hostname": socket.gethostname(),
-                        "created": current_time,
-                    }
-                    # Add process start time for PID recycling protection
-                    try:
-                        proc = psutil.Process(self.pid)
-                        lock_info["start_time"] = proc.create_time()
-                    except (psutil.NoSuchProcess, psutil.AccessDenied):
-                        pass
-                    os.write(fd, json.dumps(lock_info).encode())
-                finally:
-                    os.close(fd)
-
-                self.locked = True
-                elapsed = current_time - start_time
-                log.debug(
-                    "Acquired lock", path=str(self.path), pid=self.pid, iterations=iteration, elapsed=elapsed
-                )
+            # If already locked by this instance, treat as re-entrant
+            if self.locked:
                 return True
 
-            except FileExistsError:
-                # Lock file exists, check if holder is still alive
-                if self._check_stale_lock():
-                    continue  # Retry after removing stale lock
+            # Use a finite loop with hard limits to prevent any possibility of hanging
+            start_time = time.time()
+            end_time = start_time + self.timeout
+            max_iterations = 1000  # Hard limit regardless of timeout
+            iteration = 0
 
-                if not blocking:
-                    log.debug("Lock unavailable (non-blocking)", path=str(self.path))
-                    return False
+            while iteration < max_iterations:
+                iteration += 1
+                current_time = time.time()
 
-                # Calculate remaining time
-                remaining = end_time - current_time
-                if remaining <= 0:
-                    # Time is up
-                    break
+                # Hard timeout check - exit immediately if time is up
+                if current_time >= end_time:
+                    elapsed = current_time - start_time
+                    raise LockError(
+                        f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, iterations: {iteration})",
+                        code="LOCK_TIMEOUT",
+                        path=str(self.path),
+                    ) from None
 
-                # Sleep for a small fixed interval or remaining time, whichever is smaller
-                sleep_time = min(0.01, remaining * 0.5)  # Never sleep more than 10ms
-                if sleep_time > 0:
-                    time.sleep(sleep_time)
+                try:
+                    # Try to create lock file exclusively
+                    fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
+                    try:
+                        # Write lock metadata as JSON for robust validation
+                        lock_info = {
+                            "pid": self.pid,
+                            "hostname": socket.gethostname(),
+                            "created": current_time,
+                        }
+                        # Add process start time for PID recycling protection
+                        try:
+                            proc = psutil.Process(self.pid)
+                            lock_info["start_time"] = proc.create_time()
+                        except (psutil.NoSuchProcess, psutil.AccessDenied):
+                            pass
+                        os.write(fd, json.dumps(lock_info).encode())
+                    finally:
+                        os.close(fd)
 
-        # If we exit the loop without acquiring the lock
-        elapsed = time.time() - start_time
-        raise LockError(
-            f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, iterations: {iteration})",
-            code="LOCK_TIMEOUT",
-            path=str(self.path),
-        ) from None
+                    self.locked = True
+                    elapsed = current_time - start_time
+                    log.debug(
+                        "Acquired lock",
+                        path=str(self.path),
+                        pid=self.pid,
+                        iterations=iteration,
+                        elapsed=elapsed,
+                    )
+                    return True
+
+                except FileExistsError:
+                    # Lock file exists, check if holder is still alive
+                    if self._check_stale_lock():
+                        continue  # Retry after removing stale lock
+
+                    if not blocking:
+                        log.debug("Lock unavailable (non-blocking)", path=str(self.path))
+                        return False
+
+                    # Calculate remaining time
+                    remaining = end_time - current_time
+                    if remaining <= 0:
+                        # Time is up
+                        break
+
+                    # Sleep for a small fixed interval or remaining time, whichever is smaller
+                    sleep_time = min(0.01, remaining * 0.5)  # Never sleep more than 10ms
+                    if sleep_time > 0:
+                        time.sleep(sleep_time)
+
+            # If we exit the loop without acquiring the lock
+            elapsed = time.time() - start_time
+            raise LockError(
+                f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, iterations: {iteration})",
+                code="LOCK_TIMEOUT",
+                path=str(self.path),
+            ) from None
 
     def release(self) -> None:
         """Release the lock.
 
         Only removes the lock file if we own it.
         """
-        if not self.locked:
-            return
+        with self._thread_lock:
+            if not self.locked:
+                return
 
-        try:
-            # Verify we own the lock before removing
-            if self.path.exists():
-                try:
-                    content = self.path.read_text().strip()
+            try:
+                # Verify we own the lock before removing
+                if self.path.exists():
                     try:
-                        lock_info = json.loads(content)
-                        if isinstance(lock_info, dict):
-                            owner_pid = lock_info.get("pid")
-                        else:
-                            owner_pid = lock_info if isinstance(lock_info, int) else None
-                    except (json.JSONDecodeError, ValueError):
-                        owner_pid = int(content) if content.isdigit() else None
+                        content = self.path.read_text().strip()
+                        try:
+                            lock_info = json.loads(content)
+                            if isinstance(lock_info, dict):
+                                owner_pid = lock_info.get("pid")
+                            else:
+                                owner_pid = lock_info if isinstance(lock_info, int) else None
+                        except (json.JSONDecodeError, ValueError):
+                            owner_pid = int(content) if content.isdigit() else None
 
-                    if owner_pid == self.pid:
-                        self.path.unlink()
-                        log.debug("Released lock", path=str(self.path), pid=self.pid)
-                    else:
+                        if owner_pid == self.pid:
+                            self.path.unlink()
+                            log.debug("Released lock", path=str(self.path), pid=self.pid)
+                        else:
+                            log.warning(
+                                "Lock owned by different process",
+                                path=str(self.path),
+                                owner_pid=owner_pid,
+                                our_pid=self.pid,
+                            )
+                    except Exception as e:
                         log.warning(
-                            "Lock owned by different process",
+                            "Error checking lock ownership",
                             path=str(self.path),
-                            owner_pid=owner_pid,
-                            our_pid=self.pid,
+                            error=str(e),
                         )
-                except Exception as e:
-                    log.warning(
-                        "Error checking lock ownership",
-                        path=str(self.path),
-                        error=str(e),
-                    )
-                    # Still try to remove if we think we own it
-                    if self.locked:
-                        self.path.unlink()
-        except FileNotFoundError:
-            pass  # Lock already released
-        except Exception as e:
-            log.error("Failed to release lock", path=str(self.path), error=str(e))
-        finally:
-            self.locked = False
+                        # Still try to remove if we think we own it
+                        if self.locked:
+                            self.path.unlink()
+            except FileNotFoundError:
+                pass  # Lock already released
+            except Exception as e:
+                log.error("Failed to release lock", path=str(self.path), error=str(e))
+            finally:
+                self.locked = False
 
     def _check_stale_lock(self) -> bool:  # noqa: C901
         """Check if lock file is stale and remove if so.

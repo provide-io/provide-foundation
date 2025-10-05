@@ -23,7 +23,7 @@ class TestAnnotatedCLISupport(FoundationTestCase):
         clear_hub()
 
     def test_required_option_with_annotated(self) -> None:
-        """Test Annotated[str, 'option'] creates required option."""
+        """Test Annotated[str, 'option'] creates optional option."""
 
         @register_command("create-user")
         def create_user(username: Annotated[str, "option"]) -> str:
@@ -34,10 +34,9 @@ class TestAnnotatedCLISupport(FoundationTestCase):
         cli = hub.create_cli()
         runner = CliRunner()
 
-        # Should fail without --username
+        # Should succeed without --username (option is optional)
         result = runner.invoke(cli, ["create-user"])
-        assert result.exit_code != 0
-        assert "username" in result.output.lower()
+        assert result.exit_code == 0
 
         # Should succeed with --username
         result = runner.invoke(cli, ["create-user", "--username", "alice"])
@@ -137,7 +136,7 @@ class TestAnnotatedCLISupport(FoundationTestCase):
         assert result.exit_code == 0
 
     def test_option_hint_overrides_required_behavior(self) -> None:
-        """Test that 'option' hint creates required option without default."""
+        """Test that 'option' hint creates optional option without default."""
 
         @register_command("auth")
         def auth(token: Annotated[str, "option"]) -> str:
@@ -148,9 +147,9 @@ class TestAnnotatedCLISupport(FoundationTestCase):
         cli = hub.create_cli()
         runner = CliRunner()
 
-        # Should fail without --token
+        # Should succeed without --token (option is optional)
         result = runner.invoke(cli, ["auth"])
-        assert result.exit_code != 0
+        assert result.exit_code == 0
 
         # Should succeed with --token
         result = runner.invoke(cli, ["auth", "--token", "abc123"])

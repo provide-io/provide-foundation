@@ -435,6 +435,27 @@ class TestBoolStrictParsing(FoundationTestCase):
         assert parse_bool_strict(True) is True
         assert parse_bool_strict(False) is False
 
+    def test_parse_bool_strict_numeric_input(self) -> None:
+        """Test parsing numeric boolean values (int and float)."""
+        # Valid numeric booleans
+        assert parse_bool_strict(1) is True
+        assert parse_bool_strict(0) is False
+        assert parse_bool_strict(1.0) is True
+        assert parse_bool_strict(0.0) is False
+
+        # Invalid numeric values
+        with pytest.raises(ValueError, match="Numeric boolean must be 0 or 1"):
+            parse_bool_strict(42)
+
+        with pytest.raises(ValueError, match="Numeric boolean must be 0 or 1"):
+            parse_bool_strict(-1)
+
+        with pytest.raises(ValueError, match="Numeric boolean must be 0 or 1"):
+            parse_bool_strict(2.0)
+
+        with pytest.raises(ValueError, match="Numeric boolean must be 0 or 1"):
+            parse_bool_strict(0.5)
+
     def test_parse_bool_strict_invalid_value(self) -> None:
         """Test strict parsing rejects invalid string values."""
         with pytest.raises(ValueError, match="Invalid boolean"):
@@ -447,15 +468,15 @@ class TestBoolStrictParsing(FoundationTestCase):
             parse_bool_strict("maybe")
 
     def test_parse_bool_strict_invalid_type(self) -> None:
-        """Test strict parsing rejects non-string, non-bool types."""
-        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
-            parse_bool_strict(42)
-
-        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
+        """Test strict parsing rejects invalid types."""
+        with pytest.raises(TypeError, match="Boolean field requires str, bool, int, or float"):
             parse_bool_strict([])
 
-        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
+        with pytest.raises(TypeError, match="Boolean field requires str, bool, int, or float"):
             parse_bool_strict(None)
+
+        with pytest.raises(TypeError, match="Boolean field requires str, bool, int, or float"):
+            parse_bool_strict({"key": "value"})
 
     def test_parse_bool_strict_whitespace(self) -> None:
         """Test whitespace handling in strict mode."""

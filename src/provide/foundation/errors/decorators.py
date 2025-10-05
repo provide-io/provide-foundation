@@ -87,10 +87,31 @@ class ResilientErrorHandler:
         The error_mapper is applied to all exceptions, including FoundationError types.
         This allows translating low-level foundation errors into higher-level,
         domain-specific exceptions while preserving error handling benefits.
+
+        If the original exception is a FoundationError and the mapped exception is also
+        a FoundationError, the rich diagnostic context (code, context, cause) is
+        automatically preserved.
         """
         if self.error_mapper:
             mapped = self.error_mapper(exception)
             if mapped is not exception:
+                # Auto-preserve FoundationError context when mapping between FoundationError types
+                from provide.foundation.errors.base import FoundationError
+
+                if isinstance(exception, FoundationError) and isinstance(mapped, FoundationError):
+                    # Preserve code if mapped error doesn't have custom code
+                    if mapped.code == mapped._default_code() and exception.code != exception._default_code():
+                        mapped.code = exception.code
+
+                    # Merge contexts (mapped error's context takes precedence)
+                    merged_context = {**exception.context, **mapped.context}
+                    mapped.context = merged_context
+
+                    # Preserve cause chain if not already set
+                    if not mapped.cause and exception.cause:
+                        mapped.cause = exception.cause
+                        mapped.__cause__ = exception.cause
+
                 return mapped
         return exception
 

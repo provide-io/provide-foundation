@@ -269,3 +269,65 @@ class TestFileLock(MinimalTestCase):
 
         # Invalid content should still be there
         assert lock_path.exists()
+
+    def test_file_lock_thread_safety_same_instance(self, temp_directory: Path) -> None:
+        """Test thread safety when multiple threads use the same FileLock instance."""
+        worker_id = os.environ.get("PYTEST_XDIST_WORKER", "gw0")
+        lock_path = temp_directory / f"test_thread_safety_{worker_id}.lock"
+        lock = FileLock(lock_path, timeout=2.0)
+        results = []
+        errors = []
+
+        def worker(thread_id: int) -> None:
+            try:
+                # Multiple threads trying to acquire the same FileLock instance
+                # The internal thread lock should serialize access
+                if lock.acquire(blocking=True):
+                    results.append(thread_id)
+                    time.sleep(0.01)  # Minimal critical section
+                    lock.release()
+            except Exception as e:
+                errors.append((thread_id, str(e)))
+
+        # Start multiple threads using the SAME lock instance
+        threads = []
+        try:
+            for i in range(3):
+                t = threading.Thread(daemon=True, target=worker, args=(i,))
+                threads.append(t)
+                t.start()
+
+            # Wait for completion
+            for i, t in enumerate(threads):
+                t.join(timeout=5.0)
+                if t.is_alive():
+                    pytest.fail(f"Thread {i} did not complete within timeout")
+
+            # No errors should occur
+            assert len(errors) == 0, f"Errors occurred: {errors}"
+            # All workers should have completed
+            assert len(results) == 3
+            assert set(results) == {0, 1, 2}
+        finally:
+            # Cleanup
+            if lock_path.exists():
+                with contextlib.suppress(FileNotFoundError, PermissionError):
+                    lock_path.unlink()
+
+    def test_file_lock_reentrant_behavior(self, temp_directory: Path) -> None:
+        """Test that acquiring an already-held lock returns True (re-entrant)."""
+        lock_path = temp_directory / "test.lock"
+        lock = FileLock(lock_path)
+
+        # First acquire
+        assert lock.acquire()
+        assert lock.locked
+
+        # Second acquire on same instance (re-entrant)
+        assert lock.acquire()
+        assert lock.locked
+
+        # Single release
+        lock.release()
+        assert not lock.locked
+        assert not lock_path.exists()

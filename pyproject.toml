@@ -114,6 +114,11 @@ markers = [
     "network: network/transport tests",
     "config: configuration tests",
     "logger: logging tests",
+    # Chaos testing markers
+    "chaos: property-based chaos testing with Hypothesis",
+    "chaos_slow: long-running chaos tests",
+    "chaos_concurrent: concurrency chaos tests",
+    "chaos_io: I/O chaos tests",
     # Skip conditions
     "requires_docker: skip if docker not available",
     "requires_network: skip if offline",
