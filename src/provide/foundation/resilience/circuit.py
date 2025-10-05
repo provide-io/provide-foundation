@@ -7,7 +7,7 @@ from functools import wraps
 import time
 from typing import Any
 
-from provide.foundation.concurrency.locks import SmartLock
+from provide.foundation.concurrency.locks import DualLock
 from provide.foundation.errors import FoundationError
 
 
@@ -42,7 +42,7 @@ class CircuitBreaker:
         self.recovery_timeout = recovery_timeout
         self.expected_exception = expected_exception
         self._time_source = time_source or time.time
-        self._lock = SmartLock()
+        self._lock = DualLock()
         # Initialize state attributes (will be set properly in reset())
         self._state: CircuitState
         self._failure_count: int
