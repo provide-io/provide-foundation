@@ -22,7 +22,9 @@ from provide.foundation.utils.environment.getters import (
     get_int,
     get_list,
     get_path,
+    get_set,
     get_str,
+    get_tuple,
     require,
 )
 
@@ -555,3 +557,126 @@ class TestIntegrationScenarios(FoundationTestCase):
 
         origin = get_origin(str)
         assert origin is None
+
+
+class TestGetTuple(FoundationTestCase):
+    """Test get_tuple function edge cases."""
+
+    def test_get_tuple_missing_with_default(self, clean_env: Any) -> None:
+        """Test get_tuple returns default when env var missing."""
+        result = get_tuple("MISSING", ("default", "tuple"))
+        assert result == ("default", "tuple")
+
+    def test_get_tuple_missing_no_default(self, clean_env: Any) -> None:
+        """Test get_tuple returns empty tuple when no default."""
+        result = get_tuple("MISSING")
+        assert result == ()
+
+    def test_get_tuple_empty_items_filtered(self, clean_env: Any) -> None:
+        """Test get_tuple filters empty items."""
+        os.environ["TEST"] = "a,,b,,"
+        assert get_tuple("TEST") == ("a", "b")
+
+    def test_get_tuple_custom_separator(self, clean_env: Any) -> None:
+        """Test get_tuple with custom separator."""
+        os.environ["TEST"] = "a|b|c"
+        result = get_tuple("TEST", separator="|")
+        assert result == ("a", "b", "c")
+
+    def test_get_tuple_whitespace_handling(self, clean_env: Any) -> None:
+        """Test get_tuple whitespace handling."""
+        os.environ["TEST"] = " a , b , c "
+        result = get_tuple("TEST")
+        assert result == ("a", "b", "c")
+
+    def test_get_tuple_single_item(self, clean_env: Any) -> None:
+        """Test get_tuple with single item."""
+        os.environ["TEST"] = "single"
+        result = get_tuple("TEST")
+        assert result == ("single",)
+
+
+class TestGetSet(FoundationTestCase):
+    """Test get_set function edge cases."""
+
+    def test_get_set_missing_with_default(self, clean_env: Any) -> None:
+        """Test get_set returns default when env var missing."""
+        result = get_set("MISSING", {"default", "set"})
+        assert result == {"default", "set"}
+
+    def test_get_set_missing_no_default(self, clean_env: Any) -> None:
+        """Test get_set returns empty set when no default."""
+        result = get_set("MISSING")
+        assert result == set()
+
+    def test_get_set_duplicates_removed(self, clean_env: Any) -> None:
+        """Test get_set removes duplicates."""
+        os.environ["TEST"] = "a,b,a,c,b"
+        result = get_set("TEST")
+        assert result == {"a", "b", "c"}
+
+    def test_get_set_empty_items_filtered(self, clean_env: Any) -> None:
+        """Test get_set filters empty items."""
+        os.environ["TEST"] = "a,,b,,"
+        result = get_set("TEST")
+        assert result == {"a", "b"}
+
+    def test_get_set_custom_separator(self, clean_env: Any) -> None:
+        """Test get_set with custom separator."""
+        os.environ["TEST"] = "a|b|c"
+        result = get_set("TEST", separator="|")
+        assert result == {"a", "b", "c"}
+
+    def test_get_set_whitespace_handling(self, clean_env: Any) -> None:
+        """Test get_set whitespace handling."""
+        os.environ["TEST"] = " a , b , c "
+        result = get_set("TEST")
+        assert result == {"a", "b", "c"}
+
+
+class TestGetDictEdgeCases(FoundationTestCase):
+    """Test additional get_dict edge cases for coverage."""
+
+    def test_get_dict_items_without_separator_skipped(self, clean_env: Any) -> None:
+        """Test get_dict skips items without key=value separator."""
+        os.environ["TEST_DICT"] = "key1=val1,no_separator,key2=val2"
+        result = get_dict("TEST_DICT")
+        # Should skip 'no_separator' and only include key1 and key2
+        assert result == {"key1": "val1", "key2": "val2"}
+
+    def test_get_dict_mixed_invalid_items(self, clean_env: Any) -> None:
+        """Test get_dict handles mix of valid and invalid items."""
+        os.environ["TEST_DICT"] = "valid=1,no_eq,another=2,also_no_eq,final=3"
+        result = get_dict("TEST_DICT")
+        # Should only include items with '=' separator
+        assert result == {"valid": "1", "another": "2", "final": "3"}
+
+
+class TestParseComplexTypeExtended(FoundationTestCase):
+    """Test _parse_complex_type with tuple and set types."""
+
+    def test_parse_complex_type_tuple(self, clean_env: Any) -> None:
+        """Test _parse_complex_type with tuple origin."""
+        os.environ["TEST_VAR"] = "a,b,c"
+        result = _parse_complex_type("TEST_VAR", tuple)
+        assert result == ("a", "b", "c")
+        assert isinstance(result, tuple)
+
+    def test_parse_complex_type_set(self, clean_env: Any) -> None:
+        """Test _parse_complex_type with set origin."""
+        os.environ["TEST_VAR"] = "a,b,a,c"
+        result = _parse_complex_type("TEST_VAR", set)
+        assert result == {"a", "b", "c"}
+        assert isinstance(result, set)
+
+    def test_parse_complex_type_tuple_empty(self, clean_env: Any) -> None:
+        """Test _parse_complex_type with tuple for empty value."""
+        os.environ["TEST_VAR"] = ""
+        result = _parse_complex_type("TEST_VAR", tuple)
+        assert result == ()
+
+    def test_parse_complex_type_set_empty(self, clean_env: Any) -> None:
+        """Test _parse_complex_type with set for empty value."""
+        os.environ["TEST_VAR"] = ""
+        result = _parse_complex_type("TEST_VAR", set)
+        assert result == set()
