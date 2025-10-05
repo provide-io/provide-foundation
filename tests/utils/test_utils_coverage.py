@@ -63,7 +63,8 @@ class TestParsingCoverage(FoundationTestCase):
     def test_parse_typed_value_unsupported_origin(self) -> None:
         """Test parse_typed_value with a type origin it doesn't handle."""
         # It should fall back to returning the original string value.
-        result = parse_typed_value("some_value", set)
+        # Using frozenset as it's not currently supported
+        result = parse_typed_value("some_value", frozenset)
         assert result == "some_value"
 
     def test_auto_parse_with_string_type_hints(self) -> None:

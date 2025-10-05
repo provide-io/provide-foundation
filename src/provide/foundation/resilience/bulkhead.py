@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Awaitable, Callable
+import contextlib
 import threading
 import time
 from typing import Any, TypeVar
 
 from attrs import define, field
 
-from provide.foundation.concurrency.locks import DualLock
 from provide.foundation.config.defaults import (
     DEFAULT_BULKHEAD_MAX_CONCURRENT,
     DEFAULT_BULKHEAD_MAX_QUEUE_SIZE,
@@ -27,40 +27,44 @@ T = TypeVar("T")
 
 @define(kw_only=True, slots=True)
 class ResourcePool:
-    """Resource pool with limited capacity for isolation."""
+    """Resource pool with limited capacity for isolation.
+
+    Enforces max_concurrent limit across BOTH sync and async contexts.
+    Uses a shared atomic counter protected by threading.Lock to prevent oversubscription.
+    """
 
     max_concurrent: int = field(default=DEFAULT_BULKHEAD_MAX_CONCURRENT)
     max_queue_size: int = field(default=DEFAULT_BULKHEAD_MAX_QUEUE_SIZE)
     timeout: float = field(default=DEFAULT_BULKHEAD_TIMEOUT)
 
-    # Internal state
-    _semaphore: threading.Semaphore = field(init=False)
-    _async_semaphore: asyncio.Semaphore | None = field(default=None, init=False)
+    # Internal state - shared atomic counter for true concurrency limit
     _active_count: int = field(default=0, init=False)
-    _queue_size: int = field(default=0, init=False)
-    _lock: DualLock = field(factory=DualLock, init=False)
+    _waiting_count: int = field(default=0, init=False)
+    _counter_lock: threading.Lock = field(factory=threading.Lock, init=False)
+    _sync_waiters: list[threading.Event] = field(factory=list, init=False)
+    _async_waiters: list[asyncio.Event] = field(factory=list, init=False)
 
     def __attrs_post_init__(self) -> None:
-        """Initialize semaphores after object creation."""
-        self._semaphore = threading.Semaphore(self.max_concurrent)
+        """Initialize internal state."""
+        pass
 
     @property
     def active_count(self) -> int:
-        """Number of currently active operations."""
-        with self._lock.sync():
+        """Number of currently active operations (across sync and async)."""
+        with self._counter_lock:
             return self._active_count
 
     @property
     def available_capacity(self) -> int:
         """Number of available slots."""
-        with self._lock.sync():
-            return self.max_concurrent - self._active_count
+        with self._counter_lock:
+            return max(0, self.max_concurrent - self._active_count)
 
     @property
     def queue_size(self) -> int:
-        """Current queue size."""
-        with self._lock.sync():
-            return self._queue_size
+        """Current number of waiting operations."""
+        with self._counter_lock:
+            return self._waiting_count
 
     def acquire(self, timeout: float | None = None) -> bool:
         """Acquire a resource slot (blocking).
@@ -76,27 +80,37 @@ class ResourcePool:
         """
         actual_timeout = timeout if timeout is not None else self.timeout
 
-        with self._lock.sync():
-            if self._queue_size >= self.max_queue_size:
-                raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
-            self._queue_size += 1
+        # Try to acquire immediately
+        with self._counter_lock:
+            if self._active_count < self.max_concurrent:
+                self._active_count += 1
+                return True
 
+            # Check queue limit
+            if self._waiting_count >= self.max_queue_size:
+                raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
+
+            # Add to wait queue
+            self._waiting_count += 1
+            waiter = threading.Event()
+            self._sync_waiters.append(waiter)
+
+        # Wait for signal from release
         try:
-            acquired = self._semaphore.acquire(timeout=actual_timeout)
-            if acquired:
-                with self._lock.sync():
-                    self._active_count += 1
-            return acquired
+            if waiter.wait(timeout=actual_timeout):
+                # Successfully signaled, we now have the slot
+                return True
+            # Timeout - remove from queue
+            with self._counter_lock, contextlib.suppress(ValueError):
+                self._sync_waiters.remove(waiter)
+            return False
         finally:
-            with self._lock.sync():
-                self._queue_size -= 1
+            with self._counter_lock:
+                self._waiting_count -= 1
 
     def release(self) -> None:
         """Release a resource slot."""
-        with self._lock.sync():
-            if self._active_count > 0:
-                self._active_count -= 1
-        self._semaphore.release()
+        self._release_and_signal()
 
     async def acquire_async(self, timeout: float | None = None) -> bool:
         """Acquire a resource slot (async).
@@ -112,46 +126,86 @@ class ResourcePool:
         """
         actual_timeout = timeout if timeout is not None else self.timeout
 
-        # Initialize async semaphore on first use
-        if self._async_semaphore is None:
-            self._async_semaphore = asyncio.Semaphore(self.max_concurrent)
+        # Try to acquire immediately using atomic counter access
+        waiter = None
+        acquired = await asyncio.to_thread(self._try_acquire_or_queue_async)
+        if acquired is True:
+            return True
+        elif isinstance(acquired, asyncio.Event):
+            waiter = acquired
+        else:
+            # Queue is full
+            raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
 
-        async with self._lock.async_():
-            if self._queue_size >= self.max_queue_size:
-                raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
-            self._queue_size += 1
-
+        # Wait for signal from release
         try:
-            acquired = await asyncio.wait_for(self._async_semaphore.acquire(), timeout=actual_timeout)
-            if acquired:
-                async with self._lock.async_():
-                    self._active_count += 1
+            await asyncio.wait_for(waiter.wait(), timeout=actual_timeout)
+            # Successfully signaled, we now have the slot
             return True
         except TimeoutError:
+            # Timeout - remove from queue
+            await asyncio.to_thread(self._remove_async_waiter, waiter)
             return False
         finally:
-            async with self._lock.async_():
-                self._queue_size -= 1
+            await asyncio.to_thread(self._decrement_waiting)
+
+    def _try_acquire_or_queue_async(self) -> bool | asyncio.Event | None:
+        """Helper for async acquire - returns True if acquired, Event if queued, None if queue full."""
+        with self._counter_lock:
+            if self._active_count < self.max_concurrent:
+                self._active_count += 1
+                return True
+
+            # Check queue limit
+            if self._waiting_count >= self.max_queue_size:
+                return None  # Queue full
+
+            # Add to wait queue
+            self._waiting_count += 1
+            waiter = asyncio.Event()
+            self._async_waiters.append(waiter)
+            return waiter
+
+    def _remove_async_waiter(self, waiter: asyncio.Event) -> None:
+        """Helper to remove async waiter from queue."""
+        with self._counter_lock, contextlib.suppress(ValueError):
+            self._async_waiters.remove(waiter)
+
+    def _decrement_waiting(self) -> None:
+        """Helper to decrement waiting count."""
+        with self._counter_lock:
+            self._waiting_count -= 1
 
     async def release_async(self) -> None:
         """Release a resource slot (async)."""
-        async with self._lock.async_():
+        await asyncio.to_thread(self._release_and_signal)
+
+    def _release_and_signal(self) -> None:
+        """Helper to release slot and signal next waiter atomically."""
+        with self._counter_lock:
             if self._active_count > 0:
                 self._active_count -= 1
 
-        if self._async_semaphore is not None:
-            self._async_semaphore.release()
+            # Signal next waiter (prefer sync over async for fairness)
+            if self._sync_waiters:
+                sync_waiter = self._sync_waiters.pop(0)
+                self._active_count += 1
+                sync_waiter.set()
+            elif self._async_waiters:
+                async_waiter = self._async_waiters.pop(0)
+                self._active_count += 1
+                async_waiter.set()
 
     def get_stats(self) -> dict[str, Any]:
         """Get pool statistics."""
-        with self._lock.sync():
+        with self._counter_lock:
             return {
                 "max_concurrent": self.max_concurrent,
                 "active_count": self._active_count,
                 "available_capacity": self.max_concurrent - self._active_count,
-                "queue_size": self._queue_size,
+                "waiting_count": self._waiting_count,
                 "max_queue_size": self.max_queue_size,
-                "utilization": self._active_count / self.max_concurrent,
+                "utilization": self._active_count / self.max_concurrent if self.max_concurrent > 0 else 0.0,
             }
 
 

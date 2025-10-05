@@ -35,8 +35,8 @@
 - ✅ **Observation 7:** Error mapper (`@resilient` decorator) now works with FoundationError
 
 **Remaining:**
-- 🔄 **Observation 2:** Circular dependency fragility (CURRENT TASK)
-- ⏳ **Observation 3:** Inconsistent state management patterns
+- ✅ **Observation 2:** Circular dependency fragility
+- ✅ **Observation 3:** ResourcePool concurrency oversubscription - FIXED
 - ⏳ **Observation 4:** Limited type coercion for environment variables
 - ⏳ **Observation 5:** Path traversal vulnerability in archive extraction
 
@@ -90,7 +90,7 @@
 
 ## ✅ COMPLETED: Pre-Release Observations (7/7)
 
-All pre-release observations have been addressed:
+All pre-release observations have been fully addressed:
 
 ### Observation 2: Circular Dependency Fragility ✅
 **Status:** Documented as acceptable
@@ -116,8 +116,21 @@ All pre-release observations have been addressed:
 - Prevents: path traversal (..), absolute paths, malicious symlinks
 - No code changes needed
 
-### Observation 3: Inconsistent State Management
-**Status:** Deferred (lower priority, no security/correctness issues)
+### Observation 3: ResourcePool Concurrency Oversubscription ✅
+**Status:** Fixed
+
+**Problem:** ResourcePool used DualLock (separate threading.RLock and asyncio.Lock) to protect `_active_count`, allowing both sync and async to simultaneously check/increment the counter, leading to 2x oversubscription (max_concurrent * 2 operations).
+
+**Solution:** Replaced DualLock with atomic counter using threading.Lock:
+- Sync code: Uses lock directly
+- Async code: Uses `asyncio.to_thread()` for atomic access
+- Added helper methods: `_try_acquire_or_queue_async()`, `_remove_async_waiter()`, `_decrement_waiting()`, `_release_and_signal()`
+
+**Files Modified:**
+- `src/provide/foundation/resilience/bulkhead.py` - Atomic counter implementation
+- `tests/resilience/test_bulkhead.py` - Comprehensive tests including `test_mixed_sync_async_no_oversubscription`
+
+**Tests:** 132/132 resilience tests passing, including critical oversubscription test
 
 ---
 
