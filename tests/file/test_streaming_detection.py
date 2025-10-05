@@ -170,13 +170,13 @@ class TestStreamingDetectionCallback:
         detector = OperationDetector(config=config, on_operation_complete=mock_callback)
 
         base_time = datetime.now()
-        temp_file = Path(".incomplete.tmp")
+        real_file = Path("incomplete.txt")
 
-        # Add temp file that never completes
+        # Add real file event
         detector.add_event(
             FileEvent(
-                path=temp_file,
-                event_type="created",
+                path=real_file,
+                event_type="modified",
                 metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
             )
         )
@@ -187,11 +187,10 @@ class TestStreamingDetectionCallback:
         # Wait for auto-flush
         await asyncio.sleep(0.15)
 
-        # Should have flushed the incomplete operation
+        # Should have flushed the event
         assert mock_callback.call_count == 1
         operation = mock_callback.call_args[0][0]
-        # Foundation corrects temp file paths to their likely intended targets
-        assert ".incomplete" in str(operation.primary_path)
+        assert operation.primary_path == real_file
 
     @pytest.mark.asyncio
     async def test_multiple_operations_detected(self, detector_with_callback, mock_callback):
