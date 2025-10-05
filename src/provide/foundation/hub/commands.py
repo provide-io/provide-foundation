@@ -5,41 +5,65 @@ This module re-exports from the split modules for convenience.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 # Core hub features (always available)
 from provide.foundation.hub.decorators import register_command
 from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.registry import get_command_registry
 
+# Delay CLI imports to avoid circular dependency (cli.click.builder imports hub.registry)
+if TYPE_CHECKING:
+    from provide.foundation.cli.click.builder import (
+        build_click_command as _build_click_command,
+        create_command_group as _create_command_group,
+    )
 
-# CLI features (require click) - lazy loaded
-def __getattr__(name: str) -> Any:
-    """Support lazy loading of CLI-dependent features."""
-    if name in ("build_click_command", "create_command_group"):
+# Pattern 1: Check for click at runtime (delayed to avoid circular import)
+_HAS_CLICK: bool | None = None
+
+
+def _check_click() -> bool:
+    """Check if click is available (cached)."""
+    global _HAS_CLICK
+    if _HAS_CLICK is None:
         try:
-            from provide.foundation.cli.click.builder import (
-                build_click_command,
-                create_command_group,
-            )
+            import click  # noqa: F401
 
-            if name == "build_click_command":
-                return build_click_command
-            if name == "create_command_group":
-                return create_command_group
-        except ImportError as e:
-            if "click" in str(e):
-                raise ImportError(
-                    f"CLI feature '{name}' requires: pip install 'provide-foundation[cli]'",
-                ) from e
-            raise
-    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+            _HAS_CLICK = True
+        except ImportError:
+            _HAS_CLICK = False
+    return _HAS_CLICK
+
+
+# Pattern 2: Stub functions that import on first call (avoids circular import)
+def build_click_command(name: str, registry: Any = None) -> Any:
+    """Build click command (imports on first call to avoid circular import)."""
+    if not _check_click():
+        raise ImportError("CLI feature 'build_click_command' requires: pip install 'provide-foundation[cli]'")
+    from provide.foundation.cli.click.builder import build_click_command as real_func
+
+    return real_func(name, registry)
+
+
+def create_command_group(
+    name: str = "cli",
+    commands: list[str] | None = None,
+    registry: Any = None,
+    **kwargs: Any,
+) -> Any:
+    """Create command group (imports on first call to avoid circular import)."""
+    if not _check_click():
+        raise ImportError("CLI feature 'create_command_group' requires: pip install 'provide-foundation[cli]'")
+    from provide.foundation.cli.click.builder import create_command_group as real_func
+
+    return real_func(name, commands, registry, **kwargs)
 
 
 __all__ = [
     "CommandInfo",
-    "build_click_command",  # noqa: F822
-    "create_command_group",  # noqa: F822
+    "build_click_command",
+    "create_command_group",
     "get_command_registry",
     "register_command",
 ]
