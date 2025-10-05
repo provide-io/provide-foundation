@@ -5,9 +5,11 @@ Coordinates detector functions via registry to identify the best match for file 
 
 from __future__ import annotations
 
+import asyncio
 from datetime import datetime
 from pathlib import Path
 import re
+from typing import Any
 
 from provide.foundation.file.operations.detectors.helpers import (
     extract_base_name,
@@ -18,6 +20,7 @@ from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
     FileOperation,
+    OperationType,
 )
 from provide.foundation.logger import get_logger
 
@@ -27,12 +30,22 @@ log = get_logger(__name__)
 class OperationDetector:
     """Detects and classifies file operations from events."""
 
-    def __init__(self, config: DetectorConfig | None = None) -> None:
-        """Initialize with optional configuration."""
+    def __init__(
+        self, config: DetectorConfig | None = None, on_operation_complete: Any = None
+    ) -> None:
+        """Initialize with optional configuration and callback.
+
+        Args:
+            config: Detector configuration
+            on_operation_complete: Callback function(operation: FileOperation) called
+                                 when an operation is detected. Used for streaming mode.
+        """
         self.config = config or DetectorConfig()
         self._pattern_cache: dict[str, re.Pattern] = {}
         self._pending_events: list[FileEvent] = []
         self._last_flush = datetime.now()
+        self.on_operation_complete = on_operation_complete
+        self._flush_timer: Any = None  # asyncio.TimerHandle for auto-flush
 
     def detect(self, events: list[FileEvent]) -> list[FileOperation]:
         """Detect all operations from a list of events.
@@ -79,6 +92,183 @@ class OperationDetector:
             return self._flush_pending()
 
         return None
+
+    def add_event(self, event: FileEvent) -> None:
+        """Add event with auto-flush and callback support.
+
+        This is the recommended method for streaming detection with automatic
+        temp file hiding and callback-based operation reporting.
+
+        Args:
+            event: File event to process
+
+        Behavior:
+            - Hides temp files automatically (no callback until operation completes)
+            - Schedules auto-flush timer for pending operations
+            - Calls on_operation_complete(operation) when pattern detected
+            - Emits non-temp files immediately if no operation pattern found
+        """
+        # Add to pending events
+        self._pending_events.append(event)
+
+        # Check if this is a temp file
+        is_temp = is_temp_file(event.path) or (event.dest_path and is_temp_file(event.dest_path))
+
+        log.trace(
+            "Event added to detector",
+            path=str(event.path),
+            dest_path=str(event.dest_path) if event.dest_path else None,
+            is_temp=is_temp,
+            pending_count=len(self._pending_events),
+        )
+
+        # All events are buffered and processed via auto-flush
+        # This allows the detector to analyze event sequences and detect patterns
+        log.trace(
+            "Event buffered for auto-flush",
+            path=str(event.path),
+            is_temp=is_temp,
+            pending_count=len(self._pending_events),
+        )
+
+        # Schedule auto-flush timer to detect operations after time window
+        self._schedule_auto_flush()
+
+    def _schedule_auto_flush(self) -> None:
+        """Schedule auto-flush timer."""
+        # Cancel existing timer
+        if self._flush_timer:
+            self._flush_timer.cancel()
+
+        # Schedule new timer
+        try:
+            loop = asyncio.get_event_loop()
+            self._flush_timer = loop.call_later(
+                self.config.time_window_ms / 1000.0, self._auto_flush
+            )
+            log.trace(
+                "Auto-flush scheduled",
+                window_ms=self.config.time_window_ms,
+            )
+        except RuntimeError:
+            # No event loop running - can't schedule timer
+            log.warning("Cannot schedule auto-flush: no event loop running")
+
+    def _auto_flush(self) -> None:
+        """Auto-flush callback - emits pending operations."""
+        if not self._pending_events:
+            return
+
+        log.debug(
+            "Auto-flush triggered",
+            pending_events=len(self._pending_events),
+        )
+
+        # Try to detect operation from pending events
+        operation = self._analyze_event_group(self._pending_events)
+
+        if operation:
+            # Check if operation touches any real files
+            # Only hide if ALL events involve ONLY temp files
+            has_real_file = any(
+                not is_temp_file(event.path)
+                or (event.dest_path and not is_temp_file(event.dest_path))
+                for event in operation.events
+            )
+
+            if has_real_file:
+                # Operation touches at least one real file - emit it
+                log.debug(
+                    "Operation detected on auto-flush",
+                    operation_type=operation.operation_type.value,
+                )
+                if self.on_operation_complete:
+                    self.on_operation_complete(operation)
+            else:
+                # Pure temp file operation - hide it
+                log.debug(
+                    "Hiding temp-only operation",
+                    operation_type=operation.operation_type.value,
+                    event_count=len(operation.events),
+                )
+
+            # Check if there are events not included in the detected operation
+            # This can happen when detector matches a subset of events
+            operation_event_ids = {id(event) for event in operation.events}
+            remaining_events = [
+                event for event in self._pending_events
+                if id(event) not in operation_event_ids
+            ]
+
+            if remaining_events:
+                log.debug(
+                    "Emitting remaining events not included in detected operation",
+                    remaining_count=len(remaining_events),
+                )
+                # Emit remaining events individually (with temp filtering)
+                for event in remaining_events:
+                    is_temp_source = is_temp_file(event.path)
+                    is_temp_dest = event.dest_path and is_temp_file(event.dest_path)
+
+                    if not (is_temp_source and (not event.dest_path or is_temp_dest)):
+                        # Event touches a real file - emit it
+                        if self.on_operation_complete:
+                            single_op = self._create_single_event_operation(event)
+                            self.on_operation_complete(single_op)
+        else:
+            # No operation detected, emit individual events
+            # BUT: Filter out pure temp file events to reduce noise
+            log.debug(
+                "No operation detected, filtering and emitting individual events",
+                event_count=len(self._pending_events),
+            )
+
+            emitted_count = 0
+            hidden_count = 0
+
+            for event in self._pending_events:
+                # Check if this event involves only temp files
+                is_temp_source = is_temp_file(event.path)
+                is_temp_dest = event.dest_path and is_temp_file(event.dest_path)
+
+                # Hide event if BOTH source and dest (if exists) are temp files
+                if is_temp_source and (not event.dest_path or is_temp_dest):
+                    # Pure temp file event - hide it
+                    log.trace(
+                        "Hiding temp-only event",
+                        path=str(event.path),
+                        dest_path=str(event.dest_path) if event.dest_path else None,
+                    )
+                    hidden_count += 1
+                else:
+                    # Event touches a real file - emit it
+                    if self.on_operation_complete:
+                        single_op = self._create_single_event_operation(event)
+                        self.on_operation_complete(single_op)
+                        emitted_count += 1
+
+            log.debug(
+                "Auto-flush complete",
+                emitted=emitted_count,
+                hidden=hidden_count,
+            )
+
+        self._pending_events.clear()
+        self._last_flush = datetime.now()
+        self._flush_timer = None
+
+    def _create_single_event_operation(self, event: FileEvent) -> FileOperation:
+        """Create a FileOperation from a single event."""
+        return FileOperation(
+            operation_type=OperationType.UNKNOWN,
+            primary_path=event.path,
+            events=[event],
+            confidence=1.0,
+            description=f"{event.event_type} {event.path.name}",
+            start_time=event.timestamp,
+            end_time=event.timestamp,
+            files_affected=[event.path],
+        )
 
     def flush(self) -> list[FileOperation]:
         """Get any pending operations and clear buffer."""

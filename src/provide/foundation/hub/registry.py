@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Iterator
-import threading
 from typing import Any
 
 from attrs import define, field

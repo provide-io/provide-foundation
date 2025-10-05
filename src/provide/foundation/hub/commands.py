@@ -14,10 +14,7 @@ from provide.foundation.hub.registry import get_command_registry
 
 # Delay CLI imports to avoid circular dependency (cli.click.builder imports hub.registry)
 if TYPE_CHECKING:
-    from provide.foundation.cli.click.builder import (
-        build_click_command as _build_click_command,
-        create_command_group as _create_command_group,
-    )
+    pass
 
 # Pattern 1: Check for click at runtime (delayed to avoid circular import)
 _HAS_CLICK: bool | None = None

@@ -46,14 +46,20 @@ class TestParseBool(FoundationTestCase):
 
     def test_parse_bool_non_string_types(self) -> None:
         """Test parsing bool from non-string types."""
-        # parse_bool now uses parse_bool_strict which rejects non-bool/non-str types
-        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
-            parse_bool(1)
-        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
-            parse_bool(0)
-        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
+        # parse_bool_strict accepts int/float for 0 and 1 only
+        assert parse_bool(1) is True
+        assert parse_bool(0) is False
+        assert parse_bool(1.0) is True
+        assert parse_bool(0.0) is False
+
+        # Invalid numeric values raise ValueError
+        with pytest.raises(ValueError, match="Numeric boolean must be 0 or 1"):
+            parse_bool(2)
+
+        # Non-str/bool/int/float types raise TypeError
+        with pytest.raises(TypeError, match="Boolean field requires"):
             parse_bool([])
-        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
+        with pytest.raises(TypeError, match="Boolean field requires"):
             parse_bool([1])
 
     def test_parse_bool_strict_mode(self) -> None:

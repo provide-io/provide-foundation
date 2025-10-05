@@ -40,11 +40,11 @@ __all__ = [
     "exit_success",
     # Sync execution (modern API)
     "run",
+    # Backward compatibility (used by other projects)
+    "run_command",
     "run_simple",
     "shell",
     "stream",
-    # Backward compatibility (used by other projects)
-    "run_command",
     "stream_command",
     "wait_for_process_output",
 ]

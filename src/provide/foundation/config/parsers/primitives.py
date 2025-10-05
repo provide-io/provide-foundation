@@ -51,7 +51,7 @@ def parse_bool_extended(value: str | bool) -> bool:
     return value_lower in ("true", "yes", "1", "on")
 
 
-def parse_bool_strict(value: str | bool) -> bool:
+def parse_bool_strict(value: str | bool | int | float) -> bool:
     """Parse boolean from string with strict validation and clear error messages.
 
     This is the **strict** boolean parser - designed for internal APIs and critical
@@ -63,36 +63,50 @@ def parse_bool_strict(value: str | bool) -> bool:
     - Critical system configurations where misconfiguration is dangerous
     - Programmatic configuration where clear validation errors help developers
 
-    **Recognized True Values:** true, yes, 1, on, enabled (case-insensitive)
-    **Recognized False Values:** false, no, 0, off, disabled (case-insensitive)
+    **Recognized True Values:** true, yes, 1, on, enabled (case-insensitive), 1.0
+    **Recognized False Values:** false, no, 0, off, disabled (case-insensitive), 0.0
     **Error Behavior:** Raises ValueError with helpful message for invalid values
 
     Args:
-        value: Boolean string representation or actual bool
+        value: Boolean value as string, bool, int, or float
 
     Returns:
         Boolean value (never defaults - raises on invalid input)
 
     Raises:
-        TypeError: If value is not a string or bool
-        ValueError: If string value cannot be parsed as boolean
+        TypeError: If value is not a string, bool, int, or float
+        ValueError: If value cannot be parsed as boolean
 
     Examples:
         >>> parse_bool_strict("yes")  # True
         >>> parse_bool_strict("FALSE")  # False
+        >>> parse_bool_strict(1)  # True
+        >>> parse_bool_strict(0.0)  # False
         >>> parse_bool_strict("invalid")  # ValueError with helpful message
-        >>> parse_bool_strict(42)  # TypeError
+        >>> parse_bool_strict(42)  # ValueError - only 0/1 valid for numbers
 
     """
     # Check type first for clear error messages
-    if not isinstance(value, (str, bool)):
+    if not isinstance(value, str | bool | int | float):
         raise TypeError(
-            f"Boolean field requires str or bool, got {type(value).__name__}. Received value: {value!r}",
+            f"Boolean field requires str, bool, int, or float, got {type(value).__name__}. "
+            f"Received value: {value!r}",
         )
 
     # If already a bool, return as-is
     if isinstance(value, bool):
         return value
+
+    # Handle numeric types - only 0 and 1 are valid
+    if isinstance(value, int | float):
+        if value == 1 or value == 1.0:
+            return True
+        if value == 0 or value == 0.0:
+            return False
+        raise ValueError(
+            f"Numeric boolean must be 0 or 1, got {value}. "
+            f"Use parse_bool_extended() for lenient parsing that defaults to False",
+        )
 
     # Convert to string and parse
     value_lower = value.lower().strip()
