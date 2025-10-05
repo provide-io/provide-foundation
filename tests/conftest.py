@@ -72,7 +72,7 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
     correct time.monotonic references, not frozen ones.
 
     PERFORMANCE: Only activates when test uses time_machine fixture (0.2% of tests).
-    This avoids expensive gc.get_objects() scans for 99.8% of tests.
+    Uses efficient registry lookup instead of gc.get_objects() scans.
     """
     # Only activate if test actually uses time_machine
     # This avoids expensive patching for 4,063 of 4,071 tests (99.8%)
@@ -81,30 +81,19 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
         return
 
     import asyncio
-    import gc
-    from unittest.mock import _patch
 
     original_new_event_loop = asyncio.new_event_loop
 
     def ensure_time_unfrozen() -> None:
         """Ensure time is unfrozen before event loop operations."""
         try:
-            from provide.testkit.time.fixtures import TimeMachine
+            from provide.testkit.time.classes import get_active_time_machines
 
-            # Find all TimeMachine instances and force cleanup
-            for obj in gc.get_objects():
-                if isinstance(obj, TimeMachine) and obj.is_frozen:
+            # Use registry instead of gc.get_objects() - O(1) instead of O(n)
+            for machine in get_active_time_machines():
+                if machine.is_frozen:
                     with contextlib.suppress(Exception):
-                        obj.cleanup()
-
-            # Also find and stop any active _patch objects for time functions
-            for obj in gc.get_objects():
-                if isinstance(obj, _patch):
-                    try:
-                        if hasattr(obj, "attribute") and obj.attribute in ("time", "monotonic"):
-                            obj.stop()
-                    except Exception:
-                        pass
+                        machine.cleanup()
 
         except Exception:
             pass
