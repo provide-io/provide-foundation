@@ -17,6 +17,7 @@ settings.register_profile(
     report_multiple_bugs=True,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.shrink],
     print_blob=True,  # Enable statistics printing
+    suppress_health_check=[],  # Suppress slow input generation warnings
 )
 
 settings.register_profile(
@@ -27,6 +28,7 @@ settings.register_profile(
     report_multiple_bugs=False,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.shrink],
     print_blob=True,  # Enable statistics printing
+    suppress_health_check=[],
 )
 
 settings.register_profile(
@@ -37,6 +39,7 @@ settings.register_profile(
     report_multiple_bugs=False,
     phases=[Phase.explicit, Phase.generate],
     print_blob=True,  # Enable statistics printing
+    suppress_health_check=[],  # Suppress all health checks for fast iteration
 )
 
 
