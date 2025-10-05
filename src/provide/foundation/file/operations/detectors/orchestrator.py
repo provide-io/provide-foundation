@@ -168,28 +168,29 @@ class OperationDetector:
         operation = self._analyze_event_group(self._pending_events)
 
         if operation:
-            # Check if operation only involves temp files
-            all_temp = all(
-                is_temp_file(event.path)
-                and (not event.dest_path or is_temp_file(event.dest_path))
+            # Check if operation touches any real files
+            # Only hide if ALL events involve ONLY temp files
+            has_real_file = any(
+                not is_temp_file(event.path)
+                or (event.dest_path and not is_temp_file(event.dest_path))
                 for event in operation.events
             )
 
-            if all_temp:
-                # Pure temp file operation - hide it
-                log.debug(
-                    "Hiding temp-only operation",
-                    operation_type=operation.operation_type.value,
-                    event_count=len(operation.events),
-                )
-            else:
-                # Operation touches real files - emit it
+            if has_real_file:
+                # Operation touches at least one real file - emit it
                 log.debug(
                     "Operation detected on auto-flush",
                     operation_type=operation.operation_type.value,
                 )
                 if self.on_operation_complete:
                     self.on_operation_complete(operation)
+            else:
+                # Pure temp file operation - hide it
+                log.debug(
+                    "Hiding temp-only operation",
+                    operation_type=operation.operation_type.value,
+                    event_count=len(operation.events),
+                )
         else:
             # No operation detected, emit individual events
             # BUT: Filter out pure temp file events to reduce noise
