@@ -10,7 +10,7 @@ import pytest
 
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
-from provide.foundation.process.runner import ProcessError
+from provide.foundation.errors.process import ProcessError
 
 
 class TestManagedProcess(FoundationTestCase):

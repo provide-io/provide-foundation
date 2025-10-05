@@ -110,7 +110,7 @@ if _HAS_CLICK:
         client = ctx.obj.get("client")
         if not client:
             click.echo("Error: OpenObserve not configured.", err=True)
-            return 1
+            ctx.exit(1)
 
         try:
             filters = _parse_filter_string(filter_str)
@@ -135,7 +135,7 @@ if _HAS_CLICK:
             click.echo("\n✋ Stopped tailing logs.")
         except Exception as e:
             click.echo(f"Tail failed: {e}", err=True)
-            return 1
+            ctx.exit(1)
 
 else:
 
