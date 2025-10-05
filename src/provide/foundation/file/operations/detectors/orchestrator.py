@@ -159,9 +159,15 @@ class OperationDetector:
         if not self._pending_events:
             return
 
-        log.debug(
-            "Auto-flush triggered",
+        event_summary = [
+            f"{e.event_type}:{e.path.name}" + (f"→{e.dest_path.name}" if e.dest_path else "")
+            for e in self._pending_events
+        ]
+
+        log.info(
+            "⏰ AUTO-FLUSH TRIGGERED",
             pending_events=len(self._pending_events),
+            events=event_summary,
         )
 
         # Try to detect operation from pending events
@@ -178,17 +184,20 @@ class OperationDetector:
 
             if has_real_file:
                 # Operation touches at least one real file - emit it
-                log.debug(
-                    "Operation detected on auto-flush",
+                log.info(
+                    "✅ OPERATION DETECTED - EMITTING",
                     operation_type=operation.operation_type.value,
+                    primary_file=operation.primary_path.name,
+                    event_count=len(operation.events),
                 )
                 if self.on_operation_complete:
                     self.on_operation_complete(operation)
             else:
                 # Pure temp file operation - hide it
-                log.debug(
-                    "Hiding temp-only operation",
+                log.info(
+                    "🚫 TEMP-ONLY OPERATION - HIDING",
                     operation_type=operation.operation_type.value,
+                    primary_file=operation.primary_path.name,
                     event_count=len(operation.events),
                 )
 
@@ -218,8 +227,8 @@ class OperationDetector:
         else:
             # No operation detected, emit individual events
             # BUT: Filter out pure temp file events to reduce noise
-            log.debug(
-                "No operation detected, filtering and emitting individual events",
+            log.info(
+                "❓ NO OPERATION DETECTED - Filtering individual events",
                 event_count=len(self._pending_events),
             )
 
@@ -234,20 +243,25 @@ class OperationDetector:
                 # Hide event if BOTH source and dest (if exists) are temp files
                 if is_temp_source and (not event.dest_path or is_temp_dest):
                     # Pure temp file event - hide it
-                    log.trace(
-                        "Hiding temp-only event",
-                        path=str(event.path),
-                        dest_path=str(event.dest_path) if event.dest_path else None,
+                    log.info(
+                        "  🚫 Hiding temp-only event",
+                        file=event.path.name,
+                        event_type=event.event_type,
                     )
                     hidden_count += 1
                 else:
                     # Event touches a real file - emit it
+                    log.info(
+                        "  ✅ Emitting real file event",
+                        file=event.path.name,
+                        event_type=event.event_type,
+                    )
                     if self.on_operation_complete:
                         single_op = self._create_single_event_operation(event)
                         self.on_operation_complete(single_op)
                         emitted_count += 1
 
-            log.debug(
+            log.info(
                 "Auto-flush complete",
                 emitted=emitted_count,
                 hidden=hidden_count,
