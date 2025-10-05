@@ -52,7 +52,7 @@ class Bzip2Compressor:
             with bz2.BZ2File(output_stream, "wb", compresslevel=self.level) as bz:
                 shutil.copyfileobj(input_stream, bz)
             logger.debug(f"Compressed data with BZIP2 level {self.level}")
-        except Exception as e:
+        except (OSError, IOError, ValueError) as e:
             raise ArchiveError(f"Failed to compress with BZIP2: {e}") from e
 
     def decompress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
@@ -70,7 +70,7 @@ class Bzip2Compressor:
             with bz2.BZ2File(input_stream, "rb") as bz:
                 shutil.copyfileobj(bz, output_stream)
             logger.debug("Decompressed BZIP2 data")
-        except Exception as e:
+        except (OSError, IOError, ValueError) as e:
             raise ArchiveError(f"Failed to decompress BZIP2: {e}") from e
 
     def compress_file(self, input_path: Path, output_path: Path) -> Path:
@@ -96,7 +96,7 @@ class Bzip2Compressor:
             logger.debug(f"Compressed {input_path} to {output_path}")
             return output_path
 
-        except Exception as e:
+        except (OSError, IOError, ValueError) as e:
             raise ArchiveError(f"Failed to compress file: {e}") from e
 
     def decompress_file(self, input_path: Path, output_path: Path) -> Path:
@@ -122,7 +122,7 @@ class Bzip2Compressor:
             logger.debug(f"Decompressed {input_path} to {output_path}")
             return output_path
 
-        except Exception as e:
+        except (OSError, IOError, ValueError) as e:
             raise ArchiveError(f"Failed to decompress file: {e}") from e
 
     def compress_bytes(self, data: bytes) -> bytes:
@@ -140,7 +140,7 @@ class Bzip2Compressor:
         """
         try:
             return bz2.compress(data, compresslevel=self.level)
-        except Exception as e:
+        except (OSError, IOError, ValueError) as e:
             raise ArchiveError(f"Failed to compress bytes: {e}") from e
 
     def decompress_bytes(self, data: bytes) -> bytes:
@@ -158,5 +158,5 @@ class Bzip2Compressor:
         """
         try:
             return bz2.decompress(data)
-        except Exception as e:
+        except (OSError, IOError, ValueError) as e:
             raise ArchiveError(f"Failed to decompress bytes: {e}") from e

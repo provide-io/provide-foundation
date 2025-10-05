@@ -33,33 +33,24 @@ class TestHubInitBasicCoverage(FoundationTestCase):
         assert clear_hub is not None
         assert get_hub is not None
 
-    def test_get_click_commands_function_exists(self) -> None:
-        """Test get_click_commands function exists."""
-        from provide.foundation.hub import get_click_commands
+    def test_build_click_command_function_exists(self) -> None:
+        """Test build_click_command function exists."""
+        from provide.foundation.hub import build_click_command
 
-        assert get_click_commands is not None
-        assert callable(get_click_commands)
+        assert build_click_command is not None
+        assert callable(build_click_command)
 
-    def test_get_click_commands_with_click_available(self) -> None:
-        """Test get_click_commands when click is available."""
+    def test_build_click_command_with_click_available(self) -> None:
+        """Test build_click_command when click is available."""
         try:
             import click  # noqa: F401
 
-            from provide.foundation.hub import get_click_commands
+            from provide.foundation.hub import build_click_command
 
-            result = get_click_commands()
-            assert isinstance(result, dict)
-            assert "build_click_command" in result
+            # Should be callable
+            assert callable(build_click_command)
         except ImportError:
             pytest.skip("Click not available")
-
-    def test_get_click_commands_without_click(self) -> None:
-        """Test get_click_commands raises ImportError when click not available."""
-        # This test is hard to execute reliably since click might be installed
-        # Just ensure the function exists
-        from provide.foundation.hub import get_click_commands
-
-        assert callable(get_click_commands)
 
     def test_getattr_build_click_command(self) -> None:
         """Test __getattr__ for build_click_command."""
@@ -96,7 +87,7 @@ class TestHubInitBasicCoverage(FoundationTestCase):
             "clear_hub",
             "get_hub",
             "register_command",
-            "get_click_commands",
+            "build_click_command",
         ]
 
         for export in expected_exports:
