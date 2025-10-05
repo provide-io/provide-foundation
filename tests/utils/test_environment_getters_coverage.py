@@ -6,9 +6,9 @@ from collections.abc import Generator
 import os
 from pathlib import Path
 from typing import Any, get_origin
-from provide.testkit.mocking import Mock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.errors.config import ValidationError
