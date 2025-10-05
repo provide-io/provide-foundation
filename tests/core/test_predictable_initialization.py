@@ -16,7 +16,7 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
 import pytest
 
-from provide.foundation.hub.manager import Hub, clear_hub, get_hub
+from provide.foundation.hub.manager import Hub, clear_shared_hub, get_shared_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
 

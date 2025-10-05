@@ -10,8 +10,8 @@ from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub import (
-    clear_hub,
-    get_hub,
+    clear_shared_hub,
+    get_shared_hub,
     register_command,
 )
 from provide.foundation.hub.registry import Registry
