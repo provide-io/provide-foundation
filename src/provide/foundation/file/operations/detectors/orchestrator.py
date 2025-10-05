@@ -191,6 +191,30 @@ class OperationDetector:
                     operation_type=operation.operation_type.value,
                     event_count=len(operation.events),
                 )
+
+            # Check if there are events not included in the detected operation
+            # This can happen when detector matches a subset of events
+            operation_event_ids = {id(event) for event in operation.events}
+            remaining_events = [
+                event for event in self._pending_events
+                if id(event) not in operation_event_ids
+            ]
+
+            if remaining_events:
+                log.debug(
+                    "Emitting remaining events not included in detected operation",
+                    remaining_count=len(remaining_events),
+                )
+                # Emit remaining events individually (with temp filtering)
+                for event in remaining_events:
+                    is_temp_source = is_temp_file(event.path)
+                    is_temp_dest = event.dest_path and is_temp_file(event.dest_path)
+
+                    if not (is_temp_source and (not event.dest_path or is_temp_dest)):
+                        # Event touches a real file - emit it
+                        if self.on_operation_complete:
+                            single_op = self._create_single_event_operation(event)
+                            self.on_operation_complete(single_op)
         else:
             # No operation detected, emit individual events
             # BUT: Filter out pure temp file events to reduce noise
