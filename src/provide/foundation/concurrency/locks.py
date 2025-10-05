@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import asyncio
-from collections.abc import AsyncIterator, Generator
+from collections.abc import Generator
 import contextlib
 import threading
 import time
@@ -15,110 +14,7 @@ from provide.foundation.errors.runtime import RuntimeError as FoundationRuntimeE
 
 This module provides a LockManager that enforces lock ordering and provides
 timeout mechanisms to prevent deadlocks across the entire foundation.
-
-It also provides DualLock for classes that need both sync and async APIs
-with separate isolation in each domain.
 """
-
-
-class DualLock:
-    """Lock that supports both synchronous and asynchronous contexts.
-
-    Warning:
-        This class provides **SEPARATE** locks for sync and async contexts.
-        It does NOT provide mutual exclusion between sync and async code accessing
-        the same resource. The sync lock only protects against other sync code,
-        and the async lock only protects against other async code.
-
-        If you need true mutual exclusion across both sync and async code paths,
-        ensure your code uses ONLY sync OR ONLY async access patterns - never mix them
-        on the same shared resource.
-
-    This class prevents event loop blocking while maintaining thread safety within
-    each execution domain (sync or async).
-
-    Correct Usage Example:
-        >>> class MyClass:
-        ...     def __init__(self):
-        ...         self._lock = DualLock()
-        ...         self._value = 0
-        ...
-        ...     def increment(self):  # ONLY sync methods access _value
-        ...         with self._lock.sync():
-        ...             self._value += 1
-        ...
-        ...     async def get_async(self):  # Different resource, separate lock
-        ...         async with self._lock.aio():
-        ...             return await self._fetch_data()
-
-    INCORRECT Usage (Race Condition):
-        >>> class BadClass:
-        ...     def __init__(self):
-        ...         self._lock = DualLock()
-        ...         self._shared = 0
-        ...
-        ...     def increment_sync(self):
-        ...         with self._lock.sync():
-        ...             self._shared += 1  # Not protected from async_increment!
-        ...
-        ...     async def increment_async(self):
-        ...         async with self._lock.aio():
-        ...             self._shared += 1  # Not protected from increment_sync!
-    """
-
-    def __init__(self) -> None:
-        """Initialize DualLock with both sync and async locks."""
-        self._sync_lock = threading.RLock()
-        self._async_lock: asyncio.Lock | None = None
-        self._async_init_lock = threading.Lock()
-
-    @contextlib.contextmanager
-    def sync(self) -> Generator[None, None, None]:
-        """Acquire lock in synchronous context.
-
-        Use with standard 'with' statement in synchronous methods.
-        Provides thread-safety for synchronous code only.
-
-        Yields:
-            None when lock is acquired
-
-        Example:
-            >>> lock = DualLock()
-            >>> with lock.sync():
-            ...     # Critical section protected from other sync code
-            ...     pass
-        """
-        with self._sync_lock:
-            yield
-
-    @contextlib.asynccontextmanager
-    async def aio(self) -> AsyncIterator[None]:
-        """Acquire lock in asynchronous context.
-
-        Use with 'async with' statement in asynchronous methods.
-        The async lock is lazily initialized on first use.
-        Provides concurrency-safety for async code only.
-
-        Yields:
-            None when lock is acquired
-
-        Example:
-            >>> import asyncio
-            >>> lock = DualLock()
-            >>> async def main():
-            ...     async with lock.aio():
-            ...         # Critical section protected from other async code
-            ...         pass
-            >>> asyncio.run(main())
-        """
-        # Lazy initialization of async lock (thread-safe)
-        if self._async_lock is None:
-            with self._async_init_lock:
-                if self._async_lock is None:
-                    self._async_lock = asyncio.Lock()
-
-        async with self._async_lock:
-            yield
 
 
 @define
@@ -393,4 +289,4 @@ def register_foundation_locks() -> None:
     manager.register_lock("foundation.hub.components", order=220, description="Hub component management")
 
 
-__all__ = ["DualLock", "LockInfo", "LockManager", "get_lock_manager", "register_foundation_locks"]
+__all__ = ["LockInfo", "LockManager", "get_lock_manager", "register_foundation_locks"]
