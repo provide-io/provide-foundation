@@ -122,30 +122,17 @@ class OperationDetector:
             pending_count=len(self._pending_events),
         )
 
+        # All events are buffered and processed via auto-flush
+        # This allows the detector to analyze event sequences and detect patterns
+        log.trace(
+            "Event buffered for auto-flush",
+            path=str(event.path),
+            is_temp=is_temp,
+            pending_count=len(self._pending_events),
+        )
+
         # Schedule auto-flush timer to detect operations after time window
         self._schedule_auto_flush()
-
-        # For non-temp single events, emit immediately
-        if not is_temp and len(self._pending_events) == 1:
-            log.trace(
-                "Single non-temp event, emitting immediately",
-                path=str(event.path),
-            )
-            self._pending_events.clear()
-            if self._flush_timer:
-                self._flush_timer.cancel()
-                self._flush_timer = None
-            if self.on_operation_complete:
-                # Create single-event operation
-                single_op = self._create_single_event_operation(event)
-                self.on_operation_complete(single_op)
-        else:
-            # Keep buffering - will be analyzed on auto-flush
-            log.trace(
-                "Event buffered for auto-flush",
-                path=str(event.path),
-                is_temp=is_temp,
-            )
 
     def _schedule_auto_flush(self) -> None:
         """Schedule auto-flush timer."""

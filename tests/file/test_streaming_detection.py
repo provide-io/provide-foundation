@@ -136,10 +136,10 @@ class TestStreamingDetectionCallback:
         assert operation.event_count == 3
 
     @pytest.mark.asyncio
-    async def test_non_temp_file_emits_immediately(
+    async def test_non_temp_file_emits_after_flush(
         self, detector_with_callback, mock_callback
     ):
-        """Test that non-temp files emit immediately if no operation detected."""
+        """Test that non-temp files emit after auto-flush if no operation detected."""
         base_time = datetime.now()
         regular_file = Path("test.py")
 
@@ -152,7 +152,13 @@ class TestStreamingDetectionCallback:
             )
         )
 
-        # Should emit immediately
+        # Not immediate - need to wait for auto-flush
+        assert mock_callback.call_count == 0
+
+        # Wait for auto-flush
+        await asyncio.sleep(0.15)
+
+        # Should emit after flush
         assert mock_callback.call_count == 1
         operation = mock_callback.call_args[0][0]
         assert operation.primary_path == regular_file
