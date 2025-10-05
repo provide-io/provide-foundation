@@ -87,6 +87,12 @@ try:
         sign_data,
         verify_signature,
     )
+    from provide.foundation.crypto.signers import (
+        Ed25519Signer,
+        Ed25519Verifier,
+        RSASigner,
+        RSAVerifier,
+    )
 
     if not _HAS_CRYPTO:
         _HAS_CRYPTO = True
@@ -188,6 +194,51 @@ if not _HAS_CRYPTO:
         """Stub for verify_signature when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
+    # OOP Signer/Verifier stubs
+    class Ed25519Signer:
+        """Stub for Ed25519Signer when cryptography is not installed."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise DependencyError("cryptography", feature="crypto")
+
+        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
+        @classmethod
+        def generate(cls) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
+    class Ed25519Verifier:
+        """Stub for Ed25519Verifier when cryptography is not installed."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise DependencyError("cryptography", feature="crypto")
+
+        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
+    class RSASigner:
+        """Stub for RSASigner when cryptography is not installed."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise DependencyError("cryptography", feature="crypto")
+
+        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
+        @classmethod
+        def generate(cls, *args: Any, **kwargs: Any) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
+    class RSAVerifier:
+        """Stub for RSAVerifier when cryptography is not installed."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise DependencyError("cryptography", feature="crypto")
+
+        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
     # Import constants from centralized defaults
     from provide.foundation.config.defaults import (
         DEFAULT_CERTIFICATE_KEY_TYPE,
@@ -243,7 +294,12 @@ __all__ = [
     "CertificateConfig",
     "CertificateError",
     "CurveType",
+    # OOP Signers/Verifiers (modern API)
+    "Ed25519Signer",
+    "Ed25519Verifier",
     "KeyType",
+    "RSASigner",
+    "RSAVerifier",
     "calculate_checksums",
     # Utility functions
     "compare_hash",

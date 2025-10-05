@@ -190,6 +190,27 @@ def resilient(
     Returns:
         Decorated function.
 
+    Note:
+        **Preserving Context in error_mapper:**
+        When using error_mapper with FoundationError exceptions, the original
+        exception's context dictionary is not automatically transferred to the
+        mapped exception. To preserve rich context, manually copy it:
+
+        >>> from provide.foundation.errors import FoundationError
+        >>> @resilient(
+        ...     error_mapper=lambda e: (
+        ...         ValidationError(
+        ...             str(e),
+        ...             context=e.context if isinstance(e, FoundationError) else {}
+        ...         ) if isinstance(e, FoundationError)
+        ...         else DomainError(str(e))
+        ...     )
+        ... )
+        ... def process_data(data):
+        ...     # Low-level FoundationError will be mapped to ValidationError
+        ...     # with context preserved
+        ...     pass
+
     Examples:
         >>> @resilient(fallback=None, suppress=(KeyError,))
         ... def get_value(data, key):

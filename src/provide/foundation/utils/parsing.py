@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import types
+import typing
 from typing import Any, TypeVar, get_args, get_origin
 
 """Type parsing and conversion utilities.
@@ -243,6 +245,91 @@ def _parse_generic_type(value: str, target_type: type) -> Any:
             return parse_dict(value)
 
     return None  # Not a recognized generic type
+
+
+def extract_concrete_type(annotation: Any) -> type:
+    """Extract concrete type from type annotation, handling unions, optionals, and string annotations.
+
+    This function handles:
+    - Union types (str | None, Union[str, None])
+    - Optional types (str | None)
+    - Regular types (str, int, bool)
+    - String annotations (from __future__ import annotations)
+    - Generic types (list[int], dict[str, str])
+
+    Args:
+        annotation: Type annotation from function signature or attrs field
+
+    Returns:
+        Concrete type that can be used for parsing
+
+    Examples:
+        >>> extract_concrete_type(str | None)
+        <class 'str'>
+        >>> extract_concrete_type('str | None')
+        <class 'str'>
+        >>> extract_concrete_type(list[int])
+        list[int]
+    """
+    # Handle string annotations (from __future__ import annotations)
+    if isinstance(annotation, str):
+        annotation = annotation.strip()
+
+        # Handle Union types as strings (e.g., "str | None")
+        if " | " in annotation:
+            parts = [part.strip() for part in annotation.split(" | ")]
+            non_none_parts = [part for part in parts if part != "None"]
+            if non_none_parts:
+                annotation = non_none_parts[0]
+            else:
+                return str  # Default to str if only None
+
+        # Map string type names to actual types
+        type_mapping = {
+            "str": str,
+            "int": int,
+            "bool": bool,
+            "float": float,
+            "list": list,
+            "dict": dict,
+            "tuple": tuple,
+            "set": set,
+            "Path": str,  # Path objects are handled as strings
+            "pathlib.Path": str,
+        }
+
+        return type_mapping.get(annotation, str)
+
+    # Handle None type
+    if annotation is type(None):
+        return str  # Default to str
+
+    # Get origin and args for generic types
+    origin = get_origin(annotation)
+    args = get_args(annotation)
+
+    # Handle Union types (including Optional which is Union[T, None])
+    if origin is typing.Union or (hasattr(types, "UnionType") and isinstance(annotation, types.UnionType)):
+        # For Python 3.10+ union syntax (str | None)
+        if hasattr(annotation, "__args__"):
+            args = annotation.__args__
+
+        # Filter out None type to get the actual type
+        non_none_types = [t for t in args if t is not type(None)]
+
+        if non_none_types:
+            # Return the first non-None type
+            return non_none_types[0]
+
+        # If only None, default to str
+        return str
+
+    # For generic types, return as-is (e.g., list[int])
+    if origin is not None:
+        return annotation
+
+    # For non-generic types, return as-is
+    return annotation
 
 
 def parse_typed_value(value: str, target_type: type) -> Any:

@@ -79,7 +79,7 @@ class TestDualLockAsync(FoundationTestCase):
         lock = DualLock()
         shared_value = 0
 
-        async with lock.async_():
+        async with lock.aio():
             shared_value += 1
 
         assert shared_value == 1
@@ -93,7 +93,7 @@ class TestDualLockAsync(FoundationTestCase):
         async def increment() -> None:
             nonlocal counter
             for _ in range(iterations):
-                async with lock.async_():
+                async with lock.aio():
                     current = counter
                     await asyncio.sleep(0.001)  # Force context switch
                     counter = current + 1
@@ -108,13 +108,13 @@ class TestDualLockAsync(FoundationTestCase):
         lock = DualLock()
 
         try:
-            async with lock.async_():
+            async with lock.aio():
                 raise ValueError("Test exception")
         except ValueError:
             pass
 
         # Should be able to acquire again
-        async with lock.async_():
+        async with lock.aio():
             assert True
 
 
@@ -131,7 +131,7 @@ class TestDualLockEdgeCases(FoundationTestCase):
         async def increment() -> None:
             nonlocal counter
             for _ in range(iterations_per_task):
-                async with lock.async_():
+                async with lock.aio():
                     counter += 1
 
         tasks = [asyncio.create_task(increment()) for _ in range(num_tasks)]
@@ -165,7 +165,7 @@ class TestDualLockEdgeCases(FoundationTestCase):
         lock = DualLock()
 
         for _ in range(1000):
-            async with lock.async_():
+            async with lock.aio():
                 pass
 
     def test_rapid_acquire_release_sync(self) -> None:
@@ -194,7 +194,7 @@ class TestDualLockRealWorld(FoundationTestCase):
                     return self._value
 
             async def increment_async(self) -> int:
-                async with self._lock.async_():
+                async with self._lock.aio():
                     self._value += 1
                     return self._value
 

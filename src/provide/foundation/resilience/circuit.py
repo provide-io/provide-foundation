@@ -86,7 +86,7 @@ class CircuitBreaker:
 
     async def call_async(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
         """Execute an asynchronous function through the circuit breaker."""
-        async with self._lock.async_():
+        async with self._lock.aio():
             # Check state directly to avoid deadlock
             if self._state == CircuitState.OPEN and not self._can_attempt_recovery():
                 raise RuntimeError("Circuit breaker is open")
@@ -125,14 +125,14 @@ class CircuitBreaker:
 
     async def _on_success_async(self) -> None:
         """Handle a successful call (async version)."""
-        async with self._lock.async_():
+        async with self._lock.aio():
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = None
 
     async def _on_failure_async(self) -> None:
         """Handle a failed call (async version)."""
-        async with self._lock.async_():
+        async with self._lock.aio():
             self._failure_count += 1
             if self._failure_count >= self.failure_threshold:
                 self._state = CircuitState.OPEN

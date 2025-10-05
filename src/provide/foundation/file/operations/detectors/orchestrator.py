@@ -1,23 +1,19 @@
 """File operation detector orchestrator.
 
-Coordinates specialized detector classes to identify the best match for file events.
+Coordinates detector functions via registry to identify the best match for file events.
 """
 
 from __future__ import annotations
 
-from collections.abc import Callable
 from datetime import datetime
 from pathlib import Path
 import re
 
-from provide.foundation.file.operations.detectors.atomic import AtomicOperationDetector
-from provide.foundation.file.operations.detectors.batch import BatchOperationDetector
 from provide.foundation.file.operations.detectors.helpers import (
     extract_base_name,
     is_temp_file,
 )
-from provide.foundation.file.operations.detectors.simple import SimpleOperationDetector
-from provide.foundation.file.operations.detectors.temp import TempPatternDetector
+from provide.foundation.file.operations.detectors.registry import get_all_detectors
 from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
@@ -37,13 +33,6 @@ class OperationDetector:
         self._pattern_cache: dict[str, re.Pattern] = {}
         self._pending_events: list[FileEvent] = []
         self._last_flush = datetime.now()
-
-        # Pre-instantiate specialized detectors to avoid repeated initialization
-        # This improves performance when processing many event groups
-        self._atomic_detector = AtomicOperationDetector()
-        self._temp_detector = TempPatternDetector()
-        self._batch_detector = BatchOperationDetector()
-        self._simple_detector = SimpleOperationDetector()
 
     def detect(self, events: list[FileEvent]) -> list[FileOperation]:
         """Detect all operations from a list of events.
@@ -141,54 +130,34 @@ class OperationDetector:
         return groups
 
     def _analyze_event_group(self, events: list[FileEvent]) -> FileOperation | None:
-        """Analyze a group of events to detect an operation using specialized detectors.
+        """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
-        - Pre-instantiated detectors (avoid repeated initialization)
+        - Registry-based detector lookup (extensible)
+        - Priority-ordered execution (highest priority first)
         - Early termination on high-confidence matches (>=0.95)
-        - Detectors ordered by specificity for faster matching
         """
         if not events:
             return None
 
-        # Try detectors in order of specificity (most specific patterns first)
-        # This ensures that editor-specific patterns are detected before generic ones
-        detection_attempts: list[
-            tuple[Callable[[list[FileEvent]], FileOperation | None], tuple[list[FileEvent]]]
-        ] = [
-            # Temp file patterns (highest specificity for atomic saves)
-            (self._temp_detector.detect_temp_rename_pattern, (events,)),
-            (self._temp_detector.detect_delete_temp_pattern, (events,)),
-            (self._temp_detector.detect_temp_modify_pattern, (events,)),
-            (self._temp_detector.detect_temp_create_delete_pattern, (events,)),
-            # Atomic save patterns
-            (self._atomic_detector.detect_atomic_save, (events,)),
-            (self._atomic_detector.detect_safe_write, (events,)),
-            # Batch and sequence patterns
-            (self._batch_detector.detect_rename_sequence, (events,)),
-            (self._batch_detector.detect_backup_create, (events,)),
-            (self._batch_detector.detect_batch_update, (events,)),
-            # Simple patterns (lower specificity)
-            (self._simple_detector.detect_same_file_delete_create_pattern, (events,)),
-            (self._simple_detector.detect_direct_modification, (events,)),
-            # Fallback for unmatched events
-            (self._simple_detector.detect_simple_operation, (events,)),
-        ]
+        # Get all registered detectors sorted by priority (highest first)
+        detectors = get_all_detectors()
 
         best_operation = None
         best_confidence = 0.0
         # Early termination threshold - stop searching if we find a very high confidence match
         HIGH_CONFIDENCE_THRESHOLD = 0.95
 
-        for detect_func, args in detection_attempts:
+        for detector_name, detect_func, priority in detectors:
             try:
-                operation = detect_func(*args)
+                operation = detect_func(events)
                 if operation and operation.confidence > best_confidence:
                     best_operation = operation
                     best_confidence = operation.confidence
                     log.debug(
                         "Found better operation match",
-                        detector=detect_func.__name__,
+                        detector=detector_name,
+                        priority=priority,
                         confidence=operation.confidence,
                         operation_type=operation.operation_type.value,
                         primary_path=str(operation.primary_path),
@@ -199,14 +168,15 @@ class OperationDetector:
                         log.debug(
                             "Early termination on high confidence match",
                             confidence=best_confidence,
-                            detector=detect_func.__name__,
+                            detector=detector_name,
                         )
                         break
 
             except Exception as e:
                 log.warning(
                     "Detector failed",
-                    detector=detect_func.__name__,
+                    detector=detector_name,
+                    priority=priority,
                     error=str(e),
                 )
 
