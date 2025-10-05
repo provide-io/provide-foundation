@@ -206,10 +206,10 @@ class TestExtractClickTypeEdgeCases(FoundationTestCase):
         # Mock get_origin and get_args to simulate edge case
         with (
             patch(
-                "provide.foundation.utils.parsing.get_origin",
+                "provide.foundation.parsers.get_origin",
                 return_value=typing.Union,
             ),
-            patch("provide.foundation.utils.parsing.get_args", return_value=()),
+            patch("provide.foundation.parsers.get_args", return_value=()),
         ):
             result = extract_click_type(MockUnion)
             # Should return str as safe default when union has no args
@@ -224,10 +224,10 @@ class TestExtractClickTypeEdgeCases(FoundationTestCase):
         # Mock to simulate Python 3.10+ union
         with (
             patch(
-                "provide.foundation.utils.parsing.get_origin",
+                "provide.foundation.parsers.get_origin",
                 return_value=typing.Union,
             ),
-            patch("provide.foundation.utils.parsing.get_args", return_value=()),
+            patch("provide.foundation.parsers.get_args", return_value=()),
         ):
             # Should use __args__ when available
             mock_union = MockUnionWithArgs()
@@ -239,11 +239,11 @@ class TestExtractClickTypeEdgeCases(FoundationTestCase):
         # Create a mock annotation with only None types
         with (
             patch(
-                "provide.foundation.utils.parsing.get_origin",
+                "provide.foundation.parsers.get_origin",
                 return_value=typing.Union,
             ),
             patch(
-                "provide.foundation.utils.parsing.get_args",
+                "provide.foundation.parsers.get_args",
                 return_value=(type(None), type(None)),
             ),
         ):
@@ -254,10 +254,10 @@ class TestExtractClickTypeEdgeCases(FoundationTestCase):
         """Test union with empty args list."""
         with (
             patch(
-                "provide.foundation.utils.parsing.get_origin",
+                "provide.foundation.parsers.get_origin",
                 return_value=typing.Union,
             ),
-            patch("provide.foundation.utils.parsing.get_args", return_value=()),
+            patch("provide.foundation.parsers.get_args", return_value=()),
         ):
             result = extract_click_type("mock_annotation")
             # Should return str as safe default when union has no args
