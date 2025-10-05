@@ -26,6 +26,8 @@ os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
+import contextlib
+
 from provide.testkit import set_log_stream_for_testing  # noqa: E402 # type: ignore
 
 # Restore original warning suppression state
@@ -92,10 +94,8 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
             # Find all TimeMachine instances and force cleanup
             for obj in gc.get_objects():
                 if isinstance(obj, TimeMachine) and obj.is_frozen:
-                    try:
+                    with contextlib.suppress(Exception):
                         obj.cleanup()
-                    except Exception:
-                        pass
 
             # Also find and stop any active _patch objects for time functions
             for obj in gc.get_objects():
@@ -163,8 +163,8 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
     2. Any state from the test is fully cleared before the next test starts
     3. Environment variables set by the test don't affect the next test
     """
+
     from provide.testkit import reset_foundation_setup_for_testing
-    import sys
 
     try:
         yield
