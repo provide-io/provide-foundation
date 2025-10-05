@@ -63,15 +63,18 @@ try:
                 from provide.foundation.streams.console import write_to_console
 
                 write_to_console(formatted_msg + "\n", stream=self._file, log_fallback=True)
-            except Exception:
+            except (OSError, AttributeError, UnicodeEncodeError):
                 # Fallback for trace logging when console write fails
+                # OSError/IOError: stream write errors
+                # AttributeError: stream unavailable
+                # UnicodeEncodeError: encoding failures
                 # Use direct stderr as last resort to maintain logging contract
                 try:
                     import sys
 
                     sys.stderr.write(formatted_msg + "\n")
                     sys.stderr.flush()
-                except Exception:
+                except (OSError, AttributeError, UnicodeEncodeError):
                     # Even stderr failed, but we cannot raise from a logging method
                     pass
 

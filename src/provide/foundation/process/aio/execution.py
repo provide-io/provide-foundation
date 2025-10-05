@@ -82,8 +82,12 @@ async def read_stream_continuously(
             if not chunk:
                 break
             chunks.append(chunk)
-    except Exception:
+    except (asyncio.CancelledError, OSError, EOFError, ValueError):
         # Stream closed or error, return what we have
+        # OSError: stream/file errors
+        # EOFError: end of stream
+        # ValueError: invalid stream state
+        # CancelledError: task cancelled
         pass
     return b"".join(chunks)
 
