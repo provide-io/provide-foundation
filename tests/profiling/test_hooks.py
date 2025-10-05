@@ -7,7 +7,7 @@ from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.context import CLIContext
-from provide.foundation.hub.manager import clear_hub, get_hub
+from provide.foundation.hub.manager import clear_shared_hub, get_shared_hub
 from provide.foundation.profiling.component import ProfilingComponent
 from provide.foundation.profiling.metrics import ProfileMetrics
 from provide.foundation.profiling.processor import ProfilingProcessor
