@@ -8,6 +8,7 @@ try:
 except ImportError:
     _HAS_CLICK = False
 
+from provide.foundation.cli.base import CLIAdapter
 from provide.foundation.cli.decorators import (
     config_options,
     error_handler,
@@ -17,6 +18,12 @@ from provide.foundation.cli.decorators import (
     pass_context,
     standard_options,
     version_option,
+)
+from provide.foundation.cli.errors import (
+    CLIAdapterNotFoundError,
+    CLIBuildError,
+    CLIError,
+    InvalidCLIHintError,
 )
 from provide.foundation.cli.utils import (
     CliTestRunner,
@@ -31,17 +38,23 @@ from provide.foundation.cli.utils import (
     setup_cli_logging,
 )
 
-"""Foundation CLI utilities for consistent command-line interfaces.
+"""Foundation CLI utilities and adapter system.
 
-Provides standard decorators, utilities, and patterns for building
-CLI tools in the provide-io ecosystem.
+Provides standard decorators, utilities, and framework-agnostic CLI building
+through the adapter pattern. Supports multiple CLI frameworks with a unified interface.
 """
 
 __all__ = [
-    # Dependency flags
-    "_HAS_CLICK",
+    # Adapter system
+    "CLIAdapter",
+    "CLIAdapterNotFoundError",
+    "CLIBuildError",
+    "CLIError",
     # Utilities
     "CliTestRunner",
+    "InvalidCLIHintError",
+    # Dependency flags
+    "_HAS_CLICK",
     "assert_cli_error",
     "assert_cli_success",
     # Decorators
@@ -54,6 +67,7 @@ __all__ = [
     "echo_warning",
     "error_handler",
     "flexible_options",
+    "get_cli_adapter",
     "logging_options",
     "output_options",
     "pass_context",
@@ -61,3 +75,42 @@ __all__ = [
     "standard_options",
     "version_option",
 ]
+
+
+def get_cli_adapter(framework: str = "click") -> CLIAdapter:
+    """Get CLI adapter for specified framework.
+
+    Args:
+        framework: CLI framework name ('click', 'typer', etc.)
+
+    Returns:
+        CLIAdapter instance for the framework
+
+    Raises:
+        CLIAdapterNotFoundError: If framework adapter is not available
+        ValueError: If framework name is unknown
+
+    Examples:
+        >>> adapter = get_cli_adapter('click')
+        >>> command = adapter.build_command(command_info)
+
+    """
+    if framework == "click":
+        try:
+            from provide.foundation.cli.click import ClickAdapter
+
+            return ClickAdapter()
+        except ImportError as e:
+            if "click" in str(e).lower():
+                raise CLIAdapterNotFoundError(
+                    framework="click",
+                    package="cli",
+                ) from e
+            raise
+
+    # Future framework support:
+    # elif framework == "typer":
+    #     from provide.foundation.cli.typer import TyperAdapter
+    #     return TyperAdapter()
+
+    raise ValueError(f"Unknown CLI framework: {framework}. Supported frameworks: click")

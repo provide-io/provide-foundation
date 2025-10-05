@@ -237,7 +237,6 @@ class CoreHub:
             hidden=kwargs.get("hidden", False),
             category=kwargs.get("category"),
             metadata=kwargs,
-            click_command=click_command,
         )
 
         self._command_registry.register(

@@ -3,27 +3,36 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from types import ModuleType
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    pass
+    from provide.foundation.hub.introspection import ParameterInfo
 
 from attrs import define, field
 
-try:
-    import click
-
-    _HAS_CLICK = True
-    _click_module: ModuleType | None = click
-except ImportError:
-    _HAS_CLICK = False
-    _click_module = None
+__all__ = ["CommandInfo"]
 
 
 @define(frozen=True, slots=True)
 class CommandInfo:
-    """Information about a registered command."""
+    """Framework-agnostic command information.
+
+    Stores metadata about a registered command without framework-specific
+    dependencies. The parameters field contains introspected parameter
+    information that can be used by any CLI adapter.
+
+    Attributes:
+        name: Command name
+        func: Command function/callable
+        description: Command description (help text)
+        aliases: Alternative names for the command
+        hidden: Whether command is hidden from help
+        category: Command category for organization
+        metadata: Additional custom metadata
+        parent: Parent command path (for nested commands)
+        parameters: Introspected parameter information (lazy-loaded)
+
+    """
 
     name: str
     func: Callable[..., Any]
@@ -32,8 +41,5 @@ class CommandInfo:
     hidden: bool = False
     category: str | None = None
     metadata: dict[str, Any] = field(factory=dict)
-    click_command: click.Command | None = None
     parent: str | None = None  # Parent path extracted from dot notation
-
-
-__all__ = ["CommandInfo"]
+    parameters: list[ParameterInfo] | None = None
