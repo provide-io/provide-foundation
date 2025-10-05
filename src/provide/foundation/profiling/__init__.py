@@ -17,9 +17,9 @@ for Foundation's logging and telemetry infrastructure.
 
 Example:
     >>> from provide.foundation.profiling import register_profiling
-    >>> from provide.foundation.hub import get_hub
+    >>> from provide.foundation.hub import Hub
     >>>
-    >>> hub = get_hub()
+    >>> hub = Hub()
     >>> register_profiling(hub)
     >>> profiler = hub.get_component("profiler")
     >>> profiler.enable()

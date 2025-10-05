@@ -234,9 +234,9 @@ def reset_profiling_state() -> None:
     to ensure clean state between tests.
     """
     try:
-        from provide.foundation.hub.manager import get_hub
+        from provide.foundation.hub.manager import get_shared_hub
 
-        hub = get_hub()
+        hub = get_shared_hub()
         profiler = hub.get_component("profiler")
         if profiler:
             profiler.reset()
@@ -339,9 +339,9 @@ def reset_state_managers() -> None:
     components to ensure clean test isolation.
     """
     try:
-        from provide.foundation.hub.manager import get_hub
+        from provide.foundation.hub.manager import get_shared_hub
 
-        hub = get_hub()
+        hub = get_shared_hub()
 
         # Reset logger state manager if available
         try:
@@ -364,9 +364,9 @@ def reset_configuration_state() -> None:
     to ensure clean state between tests.
     """
     try:
-        from provide.foundation.hub.manager import get_hub
+        from provide.foundation.hub.manager import get_shared_hub
 
-        hub = get_hub()
+        hub = get_shared_hub()
 
         # Reset config manager if available
         try:

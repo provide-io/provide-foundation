@@ -35,9 +35,9 @@ def show_profile_metrics(ctx: CLIContext) -> None:
           🎨 Emoji overhead: 3.2%
 
     """
-    from provide.foundation.hub.manager import get_hub
+    from provide.foundation.hub.manager import get_shared_hub
 
-    hub = get_hub()
+    hub = get_shared_hub()
     profiler = hub.get_component("profiler")
 
     if not profiler:
