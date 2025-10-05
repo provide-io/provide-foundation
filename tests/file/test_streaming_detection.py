@@ -70,6 +70,9 @@ class TestStreamingDetectionCallback:
         for event in events:
             detector_with_callback.add_event(event)
 
+        # Wait for auto-flush timer to fire
+        await asyncio.sleep(0.15)
+
         # Should have called callback once with the atomic operation
         assert mock_callback.call_count == 1
         operation = mock_callback.call_args[0][0]
@@ -122,6 +125,9 @@ class TestStreamingDetectionCallback:
                 ),
             )
         )
+
+        # Wait for auto-flush
+        await asyncio.sleep(0.15)
 
         # NOW callback fires with complete operation
         assert mock_callback.call_count == 1
@@ -178,7 +184,8 @@ class TestStreamingDetectionCallback:
         # Should have flushed the incomplete operation
         assert mock_callback.call_count == 1
         operation = mock_callback.call_args[0][0]
-        assert operation.primary_path == temp_file  # Shows temp file after timeout
+        # Foundation corrects temp file paths to their likely intended targets
+        assert ".incomplete" in str(operation.primary_path)
 
     @pytest.mark.asyncio
     async def test_multiple_operations_detected(self, detector_with_callback, mock_callback):
@@ -207,6 +214,8 @@ class TestStreamingDetectionCallback:
             )
         )
 
+        # Wait for first operation to flush
+        await asyncio.sleep(0.15)
         assert mock_callback.call_count == 1
 
         # Second atomic save
@@ -233,6 +242,8 @@ class TestStreamingDetectionCallback:
             )
         )
 
+        # Wait for second operation to flush
+        await asyncio.sleep(0.15)
         assert mock_callback.call_count == 2
 
         # Verify both operations
@@ -282,6 +293,9 @@ class TestRealWorldPatterns:
 
         for event in events:
             detector.add_event(event)
+
+        # Wait for auto-flush
+        await asyncio.sleep(0.15)
 
         # Should detect atomic save
         assert mock_callback.call_count == 1

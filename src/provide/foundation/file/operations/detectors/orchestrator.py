@@ -122,54 +122,30 @@ class OperationDetector:
             pending_count=len(self._pending_events),
         )
 
-        # Try to detect operation with current events
-        operation = self._analyze_event_group(self._pending_events)
+        # Schedule auto-flush timer to detect operations after time window
+        self._schedule_auto_flush()
 
-        if operation:
-            # Operation detected! Clear pending events and emit
-            log.debug(
-                "Operation detected",
-                operation_type=operation.operation_type.value,
-                primary_path=str(operation.primary_path),
-                event_count=operation.event_count,
+        # For non-temp single events, emit immediately
+        if not is_temp and len(self._pending_events) == 1:
+            log.trace(
+                "Single non-temp event, emitting immediately",
+                path=str(event.path),
             )
             self._pending_events.clear()
-            self._last_flush = datetime.now()
-
-            # Cancel any pending flush timer
             if self._flush_timer:
                 self._flush_timer.cancel()
                 self._flush_timer = None
-
-            # Call callback if provided
             if self.on_operation_complete:
-                self.on_operation_complete(operation)
+                # Create single-event operation
+                single_op = self._create_single_event_operation(event)
+                self.on_operation_complete(single_op)
         else:
-            # No operation yet
-            if not is_temp:
-                # Non-temp file with no operation detected
-                # Check if we should emit it individually or keep waiting
-                # If we have ONLY this event (no other pending), emit it
-                if len(self._pending_events) == 1:
-                    log.trace(
-                        "Single non-temp event, emitting immediately",
-                        path=str(event.path),
-                    )
-                    self._pending_events.clear()
-                    if self.on_operation_complete:
-                        # Create single-event operation
-                        single_op = self._create_single_event_operation(event)
-                        self.on_operation_complete(single_op)
-                else:
-                    # Keep buffering, schedule flush
-                    self._schedule_auto_flush()
-            else:
-                # Temp file, keep buffering silently
-                log.trace(
-                    "Temp file buffered",
-                    path=str(event.path),
-                )
-                self._schedule_auto_flush()
+            # Keep buffering - will be analyzed on auto-flush
+            log.trace(
+                "Event buffered for auto-flush",
+                path=str(event.path),
+                is_temp=is_temp,
+            )
 
     def _schedule_auto_flush(self) -> None:
         """Schedule auto-flush timer."""
