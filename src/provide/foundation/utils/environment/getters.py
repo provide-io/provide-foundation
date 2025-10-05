@@ -6,7 +6,7 @@ from typing import Any, TypeVar, get_origin
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.logger import get_logger
-from provide.foundation.utils.parsing import parse_bool, parse_dict, parse_list
+from provide.foundation.utils.parsing import parse_bool, parse_dict, parse_list, parse_set, parse_tuple
 
 """Basic environment variable getters with type coercion.
 
@@ -192,6 +192,56 @@ def get_list(name: str, default: list[str] | None = None, separator: str = ",") 
     return [item for item in items if item]
 
 
+def get_tuple(name: str, default: tuple[str, ...] | None = None, separator: str = ",") -> tuple[str, ...]:
+    """Get tuple from environment variable.
+
+    Args:
+        name: Environment variable name
+        default: Default tuple if not set
+        separator: String separator (default: comma)
+
+    Returns:
+        Tuple of strings
+
+    Examples:
+        >>> os.environ['COORDINATES'] = '1.0,2.0,3.0'
+        >>> get_tuple('COORDINATES')
+        ('1.0', '2.0', '3.0')
+
+    """
+    value = os.environ.get(name)
+    if value is None:
+        return default or ()
+
+    items = parse_tuple(value, separator=separator, strip=True)
+    return tuple(item for item in items if item)
+
+
+def get_set(name: str, default: set[str] | None = None, separator: str = ",") -> set[str]:
+    """Get set from environment variable (duplicates removed).
+
+    Args:
+        name: Environment variable name
+        default: Default set if not set
+        separator: String separator (default: comma)
+
+    Returns:
+        Set of strings
+
+    Examples:
+        >>> os.environ['TAGS'] = 'dev,test,dev,prod'
+        >>> get_set('TAGS')
+        {'dev', 'test', 'prod'}
+
+    """
+    value = os.environ.get(name)
+    if value is None:
+        return default or set()
+
+    items = parse_set(value, separator=separator, strip=True)
+    return {item for item in items if item}
+
+
 def get_dict(
     name: str,
     default: dict[str, str] | None = None,
@@ -268,6 +318,10 @@ def _parse_complex_type(name: str, origin: type) -> Any:
     """Parse environment variable for complex types."""
     if origin is list:
         return get_list(name)
+    if origin is tuple:
+        return get_tuple(name)
+    if origin is set:
+        return get_set(name)
     if origin is dict:
         return get_dict(name)
     # Fallback to string for unknown complex types
