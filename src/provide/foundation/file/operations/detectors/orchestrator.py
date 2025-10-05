@@ -5,12 +5,11 @@ Coordinates detector functions via registry to identify the best match for file 
 
 from __future__ import annotations
 
-import asyncio
 from datetime import datetime
 from pathlib import Path
-import re
 from typing import Any
 
+from provide.foundation.file.operations.detectors.auto_flush import AutoFlushHandler
 from provide.foundation.file.operations.detectors.helpers import (
     extract_base_name,
     is_temp_file,
@@ -20,7 +19,6 @@ from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
     FileOperation,
-    OperationType,
 )
 from provide.foundation.logger import get_logger
 
@@ -41,11 +39,16 @@ class OperationDetector:
                                  when an operation is detected. Used for streaming mode.
         """
         self.config = config or DetectorConfig()
-        self._pattern_cache: dict[str, re.Pattern] = {}
+        self.on_operation_complete = on_operation_complete
         self._pending_events: list[FileEvent] = []
         self._last_flush = datetime.now()
-        self.on_operation_complete = on_operation_complete
-        self._flush_timer: Any = None  # asyncio.TimerHandle for auto-flush
+
+        # Create auto-flush handler for streaming mode
+        self._auto_flush_handler = AutoFlushHandler(
+            time_window_ms=self.config.time_window_ms,
+            on_operation_complete=on_operation_complete,
+            analyze_func=self._analyze_event_group,
+        )
 
     def detect(self, events: list[FileEvent]) -> list[FileOperation]:
         """Detect all operations from a list of events.
@@ -108,181 +111,9 @@ class OperationDetector:
             - Calls on_operation_complete(operation) when pattern detected
             - Emits non-temp files immediately if no operation pattern found
         """
-        # Add to pending events
-        self._pending_events.append(event)
+        # Delegate to auto-flush handler
+        self._auto_flush_handler.add_event(event)
 
-        # Check if this is a temp file
-        is_temp = is_temp_file(event.path) or (event.dest_path and is_temp_file(event.dest_path))
-
-        log.trace(
-            "Event added to detector",
-            path=str(event.path),
-            dest_path=str(event.dest_path) if event.dest_path else None,
-            is_temp=is_temp,
-            pending_count=len(self._pending_events),
-        )
-
-        # All events are buffered and processed via auto-flush
-        # This allows the detector to analyze event sequences and detect patterns
-        log.trace(
-            "Event buffered for auto-flush",
-            path=str(event.path),
-            is_temp=is_temp,
-            pending_count=len(self._pending_events),
-        )
-
-        # Schedule auto-flush timer to detect operations after time window
-        self._schedule_auto_flush()
-
-    def _schedule_auto_flush(self) -> None:
-        """Schedule auto-flush timer."""
-        # Cancel existing timer
-        if self._flush_timer:
-            self._flush_timer.cancel()
-
-        # Schedule new timer
-        try:
-            loop = asyncio.get_event_loop()
-            self._flush_timer = loop.call_later(
-                self.config.time_window_ms / 1000.0, self._auto_flush
-            )
-            log.trace(
-                "Auto-flush scheduled",
-                window_ms=self.config.time_window_ms,
-            )
-        except RuntimeError:
-            # No event loop running - can't schedule timer
-            log.warning("Cannot schedule auto-flush: no event loop running")
-
-    def _auto_flush(self) -> None:
-        """Auto-flush callback - emits pending operations."""
-        if not self._pending_events:
-            return
-
-        event_summary = [
-            f"{e.event_type}:{e.path.name}" + (f"→{e.dest_path.name}" if e.dest_path else "")
-            for e in self._pending_events
-        ]
-
-        log.info(
-            "⏰ AUTO-FLUSH TRIGGERED",
-            pending_events=len(self._pending_events),
-            events=event_summary,
-        )
-
-        # Try to detect operation from pending events
-        operation = self._analyze_event_group(self._pending_events)
-
-        if operation:
-            # Check if operation touches any real files
-            # Only hide if ALL events involve ONLY temp files
-            has_real_file = any(
-                not is_temp_file(event.path)
-                or (event.dest_path and not is_temp_file(event.dest_path))
-                for event in operation.events
-            )
-
-            if has_real_file:
-                # Operation touches at least one real file - emit it
-                log.info(
-                    "✅ OPERATION DETECTED - EMITTING",
-                    operation_type=operation.operation_type.value,
-                    primary_file=operation.primary_path.name,
-                    event_count=len(operation.events),
-                )
-                if self.on_operation_complete:
-                    self.on_operation_complete(operation)
-            else:
-                # Pure temp file operation - hide it
-                log.info(
-                    "🚫 TEMP-ONLY OPERATION - HIDING",
-                    operation_type=operation.operation_type.value,
-                    primary_file=operation.primary_path.name,
-                    event_count=len(operation.events),
-                )
-
-            # Check if there are events not included in the detected operation
-            # This can happen when detector matches a subset of events
-            operation_event_ids = {id(event) for event in operation.events}
-            remaining_events = [
-                event for event in self._pending_events
-                if id(event) not in operation_event_ids
-            ]
-
-            if remaining_events:
-                log.debug(
-                    "Emitting remaining events not included in detected operation",
-                    remaining_count=len(remaining_events),
-                )
-                # Emit remaining events individually (with temp filtering)
-                for event in remaining_events:
-                    is_temp_source = is_temp_file(event.path)
-                    is_temp_dest = event.dest_path and is_temp_file(event.dest_path)
-
-                    if not (is_temp_source and (not event.dest_path or is_temp_dest)):
-                        # Event touches a real file - emit it
-                        if self.on_operation_complete:
-                            single_op = self._create_single_event_operation(event)
-                            self.on_operation_complete(single_op)
-        else:
-            # No operation detected, emit individual events
-            # BUT: Filter out pure temp file events to reduce noise
-            log.info(
-                "❓ NO OPERATION DETECTED - Filtering individual events",
-                event_count=len(self._pending_events),
-            )
-
-            emitted_count = 0
-            hidden_count = 0
-
-            for event in self._pending_events:
-                # Check if this event involves only temp files
-                is_temp_source = is_temp_file(event.path)
-                is_temp_dest = event.dest_path and is_temp_file(event.dest_path)
-
-                # Hide event if BOTH source and dest (if exists) are temp files
-                if is_temp_source and (not event.dest_path or is_temp_dest):
-                    # Pure temp file event - hide it
-                    log.info(
-                        "  🚫 Hiding temp-only event",
-                        file=event.path.name,
-                        event_type=event.event_type,
-                    )
-                    hidden_count += 1
-                else:
-                    # Event touches a real file - emit it
-                    log.info(
-                        "  ✅ Emitting real file event",
-                        file=event.path.name,
-                        event_type=event.event_type,
-                    )
-                    if self.on_operation_complete:
-                        single_op = self._create_single_event_operation(event)
-                        self.on_operation_complete(single_op)
-                        emitted_count += 1
-
-            log.info(
-                "Auto-flush complete",
-                emitted=emitted_count,
-                hidden=hidden_count,
-            )
-
-        self._pending_events.clear()
-        self._last_flush = datetime.now()
-        self._flush_timer = None
-
-    def _create_single_event_operation(self, event: FileEvent) -> FileOperation:
-        """Create a FileOperation from a single event."""
-        return FileOperation(
-            operation_type=OperationType.UNKNOWN,
-            primary_path=event.path,
-            events=[event],
-            confidence=1.0,
-            description=f"{event.event_type} {event.path.name}",
-            start_time=event.timestamp,
-            end_time=event.timestamp,
-            files_affected=[event.path],
-        )
 
     def flush(self) -> list[FileOperation]:
         """Get any pending operations and clear buffer."""
@@ -450,62 +281,3 @@ class OperationDetector:
                     return real_path
 
         return None
-
-    def _is_temp_file(self, path: Path) -> bool:
-        """Check if path matches any temp file pattern."""
-        filename = path.name
-        for pattern_str in self.config.temp_patterns:
-            if pattern_str not in self._pattern_cache:
-                self._pattern_cache[pattern_str] = re.compile(pattern_str)
-
-            pattern = self._pattern_cache[pattern_str]
-            if pattern.search(filename):
-                return True
-        return False
-
-    def _extract_base_name(self, path: Path) -> str | None:
-        """Extract base filename from temp file path."""
-        filename = path.name
-
-        # Try each pattern to extract base name
-        patterns: list[tuple[str, int | object]] = [
-            (r"^\.(.*)\.tmp\.\w+$", 1),  # .file.tmp.xxxxx -> file
-            (r"^(.*)\.tmp\.\d+$", 1),  # file.tmp.12345 -> file
-            (r"^(.*)~$", 1),  # file~ -> file
-            (r"^\.(.*)\.sw[po]$", lambda m: f".{m.group(1)}"),  # .file.swp -> .file
-            (r"^#(.*)#$", 1),  # #file# -> file
-            (r"^(.*)\.bak$", 1),  # file.bak -> file
-            (r"^(.*)\.orig$", 1),  # file.orig -> file
-            (r"^(.*)\.tmp$", 1),  # file.tmp -> file
-        ]
-
-        for pattern_str, extractor in patterns:
-            if pattern_str not in self._pattern_cache:
-                self._pattern_cache[pattern_str] = re.compile(pattern_str)
-
-            pattern = self._pattern_cache[pattern_str]
-            match = pattern.match(filename)
-            if match:
-                if callable(extractor):
-                    return extractor(match)
-                elif isinstance(extractor, int):
-                    return match.group(extractor)
-
-        return None
-
-    def _files_related(self, path1: Path, path2: Path) -> bool:
-        """Check if two file paths are related (same base name)."""
-        base1 = extract_base_name(path1)
-        base2 = extract_base_name(path2)
-
-        if base1 and base2:
-            return base1 == base2
-
-        # Fallback: check if one path's base name matches the other's full name
-        if base1:
-            return base1 == path2.name
-        if base2:
-            return base2 == path1.name
-
-        # Final fallback: check if stems are the same
-        return path1.stem == path2.stem
