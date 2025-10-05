@@ -112,7 +112,7 @@ def mock_hub():
 @pytest.fixture
 def registry(mock_hub):
     """Create a tool registry with mocked hub."""
-    with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+    with patch("provide.foundation.tools.registry.get_shared_hub", return_value=mock_hub):
         with patch.object(ToolRegistry, "_discover_tools"):
             return ToolRegistry()
 
@@ -122,7 +122,7 @@ class TestToolRegistry(FoundationTestCase):
 
     def test_init(self, mock_hub) -> None:
         """Test registry initialization."""
-        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub) as patch_get_hub:
+        with patch("provide.foundation.tools.registry.get_shared_hub", return_value=mock_hub) as patch_get_hub:
             with patch.object(ToolRegistry, "_discover_tools") as patch_discover:
                 registry = ToolRegistry()
 
@@ -302,7 +302,7 @@ class TestDiscoverTools(FoundationTestCase):
         mock_eps = Mock()
         mock_eps.select.return_value = [mock_ep]
 
-        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+        with patch("provide.foundation.tools.registry.get_shared_hub", return_value=mock_hub):
             with patch("importlib.metadata.entry_points", return_value=mock_eps) as patch_entry_points:
                 ToolRegistry()
 
@@ -334,7 +334,7 @@ class TestDiscoverTools(FoundationTestCase):
 
         mock_eps = {"provide.foundation.tools": [mock_ep]}
 
-        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+        with patch("provide.foundation.tools.registry.get_shared_hub", return_value=mock_hub):
             with patch("importlib.metadata.entry_points", return_value=mock_eps) as patch_entry_points:
                 ToolRegistry()
 
@@ -352,7 +352,7 @@ class TestDiscoverTools(FoundationTestCase):
         mock_eps = Mock()
         mock_eps.select.return_value = [mock_ep]
 
-        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+        with patch("provide.foundation.tools.registry.get_shared_hub", return_value=mock_hub):
             with patch("importlib.metadata.entry_points", return_value=mock_eps):
                 # Should not crash, just log warning
                 registry = ToolRegistry()
@@ -361,7 +361,7 @@ class TestDiscoverTools(FoundationTestCase):
     def test_discover_tools_no_entry_points(self, mock_hub) -> None:
         """Test when entry points are not available."""
         with (
-            patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub),
+            patch("provide.foundation.tools.registry.get_shared_hub", return_value=mock_hub),
             patch(
                 "importlib.metadata.entry_points",
                 side_effect=AttributeError("No entry_points"),
@@ -377,7 +377,7 @@ class TestGlobalFunctions(FoundationTestCase):
 
     def test_get_tool_registry_singleton(self) -> None:
         """Test that get_tool_registry returns a singleton."""
-        with patch("provide.foundation.tools.registry.get_hub"):
+        with patch("provide.foundation.tools.registry.get_shared_hub"):
             with patch.object(ToolRegistry, "_discover_tools"):
                 registry1 = get_tool_registry()
                 registry2 = get_tool_registry()
