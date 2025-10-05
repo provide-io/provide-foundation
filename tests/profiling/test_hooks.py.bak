@@ -243,7 +243,7 @@ class TestProfilingComponent(FoundationTestCase):
         registry.register(name="profiler", value=component, dimension="component")
 
         # Retrieve component via Hub
-        hub = get_shared_hub()
+        hub = get_hub()
         retrieved = hub.get_component("profiler")
         assert retrieved is component
 
@@ -251,7 +251,7 @@ class TestProfilingComponent(FoundationTestCase):
         """Test component auto-registration via register_profiling."""
         from provide.foundation.profiling.component import register_profiling
 
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
 
         # Should have profiler component
@@ -290,7 +290,7 @@ class TestProfilingCLI(FoundationTestCase):
         from provide.foundation.profiling.component import register_profiling
 
         # Setup profiler
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
         profiler = hub.get_component("profiler")
         profiler.enable()
@@ -317,7 +317,7 @@ class TestProfilingCLI(FoundationTestCase):
         from provide.foundation.profiling.component import register_profiling
 
         # Setup profiler
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
         profiler = hub.get_component("profiler")
         profiler.enable()
@@ -354,7 +354,7 @@ class TestProfilingIntegration(FoundationTestCase):
         from provide.foundation.profiling.component import register_profiling
 
         # Setup profiler
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
         profiler = hub.get_component("profiler")
 
@@ -379,7 +379,7 @@ class TestProfilingIntegration(FoundationTestCase):
         from provide.foundation.testmode.internal import reset_profiling_state
 
         # Setup profiler
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
         profiler = hub.get_component("profiler")
 
