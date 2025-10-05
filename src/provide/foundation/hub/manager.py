@@ -139,36 +139,74 @@ class Hub(CoreHub):
             self._command_registry.dispose_all()
 
 
-# Global hub instance for thread-safe initialization
+# Global hub instance for thread-safe initialization (deprecated)
 _global_hub: Hub | None = None
 
 
 def get_hub() -> Hub:
-    """Get the global hub instance.
+    """Get an isolated Hub instance (new default behavior).
+
+    **Breaking Change (Phase 2):**
+    This function now returns an isolated Hub instance by default, NOT a global singleton.
+    Each call creates a new, independent Hub with its own registries.
+
+    For the old singleton behavior, use `get_shared_hub()` instead.
+
+    **Benefits of Isolated Instances:**
+    - Better testability (no global state to reset)
+    - Parallel test execution without interference
+    - Explicit dependency management
+    - No memory leaks from lingering global state
+
+    Example (Recommended):
+        >>> hub = get_hub()  # New isolated instance
+        >>> hub.initialize_foundation()
+        >>> cli = hub.create_cli()
+
+    For shared/global behavior:
+        >>> hub = get_shared_hub()  # Old singleton behavior
+
+    Returns:
+        New isolated Hub instance (not auto-initialized)
+
+    """
+    # Return new isolated instance
+    return Hub(use_shared_registries=False)
+
+
+def get_shared_hub() -> Hub:
+    """Get the global shared hub instance.
+
+    .. deprecated:: 2.0
+       Use `get_hub()` for isolated instances (recommended) or create
+       `Hub(use_shared_registries=True)` explicitly for shared state.
 
     Thread-safe: Uses double-checked locking pattern for efficient lazy initialization.
 
     **Auto-Initialization Behavior:**
     This function automatically initializes the Foundation system on first access.
-    This is intentional and provides zero-config convenience for the majority of
-    use cases. The initialization is:
+    The initialization is:
     - **Idempotent**: Safe to call multiple times
     - **Thread-safe**: Uses lock manager for coordination
     - **Lazy**: Only happens on first access
 
-    Advanced users who need manual control can create their own Hub instance:
-    >>> hub = Hub()  # No auto-initialization
-    >>> hub.initialize_foundation(custom_config)
-
     Returns:
         Global Hub instance (created and initialized if needed)
 
-    Note:
-        Any call to get_hub() will trigger Foundation initialization if it hasn't
-        happened yet. This is not "surprising" behavior - it's the designed API
-        for ease of use.
+    Warning:
+        Global singletons complicate testing and parallel execution.
+        Prefer isolated instances via `get_hub()` for better testability.
 
     """
+    import warnings
+
+    warnings.warn(
+        "get_shared_hub() is deprecated. Use get_hub() for isolated instances "
+        "or Hub(use_shared_registries=True) for explicit shared state.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
     global _global_hub
 
     # Fast path: hub already initialized
@@ -201,7 +239,26 @@ def get_hub() -> Hub:
 
 
 def clear_hub() -> None:
-    """Clear the global hub instance."""
+    """Clear the global hub instance.
+
+    .. deprecated:: 2.0
+       Use `clear_shared_hub()` for the global singleton.
+       Isolated instances from `get_hub()` don't need manual clearing.
+
+    """
+    import warnings
+
+    warnings.warn(
+        "clear_hub() is deprecated. Use clear_shared_hub() for global singleton, "
+        "or let isolated instances from get_hub() be garbage collected.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    clear_shared_hub()
+
+
+def clear_shared_hub() -> None:
+    """Clear the global shared hub instance."""
     global _global_hub
     if _global_hub:
         _global_hub.clear()
