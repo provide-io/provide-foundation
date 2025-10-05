@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import Annotated
 
-import click
-import pytest
 from click.testing import CliRunner
 from provide.testkit import FoundationTestCase
 

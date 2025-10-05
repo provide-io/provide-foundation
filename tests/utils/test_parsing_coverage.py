@@ -2,12 +2,10 @@
 
 from __future__ import annotations
 
-from typing import Any
-
-import pytest
+from attrs import define, field, fields
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock
-from attrs import define, field, fields
+import pytest
 
 from provide.foundation.utils.parsing import (
     auto_parse,
@@ -194,22 +192,20 @@ class TestParseTypedValue(FoundationTestCase):
 
     def test_parse_typed_value_parameterized_list(self) -> None:
         """Test parsing parameterized list types."""
-        from typing import List
 
         # list[int]
-        result = parse_typed_value("1,2,3", List[int])
+        result = parse_typed_value("1,2,3", list[int])
         assert result == [1, 2, 3]
 
         # list[bool]
-        result = parse_typed_value("true,false,1", List[bool])
+        result = parse_typed_value("true,false,1", list[bool])
         assert result == [True, False, True]
 
     def test_parse_typed_value_parameterized_list_conversion_error(self) -> None:
         """Test parsing parameterized list with conversion errors."""
-        from typing import List
 
         with pytest.raises(ValueError, match="Cannot convert list items to int"):
-            parse_typed_value("1,invalid,3", List[int])
+            parse_typed_value("1,invalid,3", list[int])
 
     def test_parse_typed_value_unknown_type(self) -> None:
         """Test parsing with unknown type."""
@@ -241,11 +237,11 @@ class TestInternalHelpers:
 
     def test_parse_list_type(self) -> None:
         """Test _parse_list_type function."""
-        from typing import List
+
         from provide.foundation.utils.parsing import _parse_list_type
 
         # Parameterized list
-        result = _parse_list_type("1,2,3", List[int])
+        result = _parse_list_type("1,2,3", list[int])
         assert result == [1, 2, 3]
 
         # Non-parameterized list
@@ -254,15 +250,15 @@ class TestInternalHelpers:
 
     def test_parse_generic_type(self) -> None:
         """Test _parse_generic_type function."""
-        from typing import Dict, List
+
         from provide.foundation.utils.parsing import _parse_generic_type
 
         # Parameterized list
-        result = _parse_generic_type("1,2,3", List[int])
+        result = _parse_generic_type("1,2,3", list[int])
         assert result == [1, 2, 3]
 
         # Dict
-        result = _parse_generic_type("a=1,b=2", Dict[str, str])
+        result = _parse_generic_type("a=1,b=2", dict[str, str])
         assert result == {"a": "1", "b": "2"}
 
         # Non-generic types
