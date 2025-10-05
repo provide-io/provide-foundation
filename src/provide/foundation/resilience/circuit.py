@@ -4,10 +4,10 @@ import asyncio
 from collections.abc import Callable
 from enum import Enum, auto
 from functools import wraps
+import threading
 import time
 from typing import Any
 
-from provide.foundation.concurrency.locks import DualLock
 from provide.foundation.errors import FoundationError
 
 
@@ -42,17 +42,33 @@ class CircuitBreaker:
         self.recovery_timeout = recovery_timeout
         self.expected_exception = expected_exception
         self._time_source = time_source or time.time
-        self._lock = DualLock()
+        self._sync_lock = threading.RLock()
+        self._async_lock: asyncio.Lock | None = None
+        self._async_init_lock = threading.Lock()
         # Initialize state attributes (will be set properly in reset())
         self._state: CircuitState
         self._failure_count: int
         self._last_failure_time: float | None
         self.reset()
 
+    def _get_async_lock(self) -> asyncio.Lock:
+        """Get or create the async lock (lazy initialization)."""
+        if self._async_lock is None:
+            with self._async_init_lock:
+                if self._async_lock is None:
+                    try:
+                        self._async_lock = asyncio.Lock()
+                    except RuntimeError:
+                        # No event loop running, create without loop
+                        loop = asyncio.new_event_loop()
+                        asyncio.set_event_loop(loop)
+                        self._async_lock = asyncio.Lock()
+        return self._async_lock
+
     @property
     def state(self) -> CircuitState:
         """Get the current state of the circuit breaker."""
-        with self._lock.sync():
+        with self._sync_lock:
             if self._state == CircuitState.OPEN and self._can_attempt_recovery():
                 # This is a view of the state; the actual transition happens in call()
                 return CircuitState.HALF_OPEN
@@ -61,7 +77,7 @@ class CircuitBreaker:
     @property
     def failure_count(self) -> int:
         """Get the current failure count."""
-        with self._lock.sync():
+        with self._sync_lock:
             return self._failure_count
 
     def _can_attempt_recovery(self) -> bool:
@@ -70,7 +86,7 @@ class CircuitBreaker:
 
     def call(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
         """Execute a synchronous function through the circuit breaker."""
-        with self._lock.sync():
+        with self._sync_lock:
             current_state = self.state
             if current_state == CircuitState.OPEN:
                 raise RuntimeError("Circuit breaker is open")
@@ -86,7 +102,7 @@ class CircuitBreaker:
 
     async def call_async(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
         """Execute an asynchronous function through the circuit breaker."""
-        async with self._lock.aio():
+        async with self._get_async_lock():
             # Check state directly to avoid deadlock
             if self._state == CircuitState.OPEN and not self._can_attempt_recovery():
                 raise RuntimeError("Circuit breaker is open")
@@ -102,13 +118,15 @@ class CircuitBreaker:
 
     def _on_success(self) -> None:
         """Handle a successful call."""
-        with self._lock.sync():
+        with self._sync_lock:
             # Success in either CLOSED or HALF_OPEN state resets the breaker.
-            self.reset()
+            self._state = CircuitState.CLOSED
+            self._failure_count = 0
+            self._last_failure_time = None
 
     def _on_failure(self) -> None:
         """Handle a failed call."""
-        with self._lock.sync():
+        with self._sync_lock:
             self._failure_count += 1
             if self._failure_count >= self.failure_threshold:
                 # This transition happens for failures in CLOSED state
@@ -118,21 +136,21 @@ class CircuitBreaker:
 
     def reset(self) -> None:
         """Reset the circuit breaker to its initial state."""
-        with self._lock.sync():
+        with self._sync_lock:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = None
 
     async def _on_success_async(self) -> None:
         """Handle a successful call (async version)."""
-        async with self._lock.aio():
+        async with self._get_async_lock():
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = None
 
     async def _on_failure_async(self) -> None:
         """Handle a failed call (async version)."""
-        async with self._lock.aio():
+        async with self._get_async_lock():
             self._failure_count += 1
             if self._failure_count >= self.failure_threshold:
                 self._state = CircuitState.OPEN

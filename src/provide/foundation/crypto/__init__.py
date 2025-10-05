@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Never
+from typing import TYPE_CHECKING
 
 # Standard crypto imports (always available - use hashlib)
 from provide.foundation.crypto.algorithms import (
@@ -101,146 +101,43 @@ except ImportError:
 
 # Provide stub implementations when cryptography is not available
 if not _HAS_CRYPTO:
-    from provide.foundation.errors import DependencyError
+    from provide.foundation.utils.stubs import create_dependency_stub, create_function_stub
 
     # Certificate-related stubs
-    class Certificate:
-        """Stub for Certificate when cryptography is not installed."""
+    Certificate = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
+    CertificateBase = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
+    CertificateConfig = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
 
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError("cryptography", feature="crypto")
-
-        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError("cryptography", feature="crypto")
-
-        @classmethod
-        def create_self_signed_client_cert(cls, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError("cryptography", feature="crypto")
-
-        @classmethod
-        def create_self_signed_server_cert(cls, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError("cryptography", feature="crypto")
-
-    class CertificateBase:
-        """Stub for CertificateBase when cryptography is not installed."""
-
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError("cryptography", feature="crypto")
-
-    class CertificateConfig:
-        """Stub for CertificateConfig when cryptography is not installed."""
-
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError("cryptography", feature="crypto")
-
-    class CertificateError(Exception):
+    # Exception stub (keep as regular exception for compatibility)
+    class CertificateError(Exception):  # type: ignore[no-redef]
         """Stub for CertificateError when cryptography is not installed."""
 
-        pass  # Keep as regular exception for compatibility
+        pass
 
     # Enum stubs
-    class CurveType:
-        """Stub for CurveType when cryptography is not installed."""
+    CurveType = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
+    KeyType = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
 
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError("cryptography", feature="crypto")
-
-    class KeyType:
-        """Stub for KeyType when cryptography is not installed."""
-
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError("cryptography", feature="crypto")
-
-    # Certificate function stubs
-    def create_ca(*args: Any, **kwargs: Any) -> Never:
-        """Stub for create_ca when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    def create_self_signed(*args: Any, **kwargs: Any) -> Never:
-        """Stub for create_self_signed when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    # Key generation function stubs
-    def generate_ec_keypair(*args: Any, **kwargs: Any) -> Never:
-        """Stub for generate_ec_keypair when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    def generate_ed25519_keypair(*args: Any, **kwargs: Any) -> Never:
-        """Stub for generate_ed25519_keypair when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    def generate_keypair(*args: Any, **kwargs: Any) -> Never:
-        """Stub for generate_keypair when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    def generate_rsa_keypair(*args: Any, **kwargs: Any) -> Never:
-        """Stub for generate_rsa_keypair when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    def generate_signing_keypair(*args: Any, **kwargs: Any) -> Never:
-        """Stub for generate_signing_keypair when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    def generate_tls_keypair(*args: Any, **kwargs: Any) -> Never:
-        """Stub for generate_tls_keypair when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    # Signature function stubs
-    def sign_data(*args: Any, **kwargs: Any) -> Never:
-        """Stub for sign_data when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    def verify_signature(*args: Any, **kwargs: Any) -> Never:
-        """Stub for verify_signature when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
+    # Function stubs
+    create_ca = create_function_stub("cryptography", "crypto")
+    create_self_signed = create_function_stub("cryptography", "crypto")
+    generate_ec_keypair = create_function_stub("cryptography", "crypto")
+    generate_ed25519_keypair = create_function_stub("cryptography", "crypto")
+    generate_keypair = create_function_stub("cryptography", "crypto")
+    generate_rsa_keypair = create_function_stub("cryptography", "crypto")
+    generate_signing_keypair = create_function_stub("cryptography", "crypto")
+    generate_tls_keypair = create_function_stub("cryptography", "crypto")
+    sign_data = create_function_stub("cryptography", "crypto")
+    verify_signature = create_function_stub("cryptography", "crypto")
 
     # OOP Signer/Verifier stubs
-    class Ed25519Signer:
-        """Stub for Ed25519Signer when cryptography is not installed."""
-
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError("cryptography", feature="crypto")
-
-        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError("cryptography", feature="crypto")
-
-        @classmethod
-        def generate(cls) -> Never:
-            raise DependencyError("cryptography", feature="crypto")
-
-    class Ed25519Verifier:
-        """Stub for Ed25519Verifier when cryptography is not installed."""
-
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError("cryptography", feature="crypto")
-
-        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError("cryptography", feature="crypto")
-
-    class RSASigner:
-        """Stub for RSASigner when cryptography is not installed."""
-
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError("cryptography", feature="crypto")
-
-        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError("cryptography", feature="crypto")
-
-        @classmethod
-        def generate(cls, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError("cryptography", feature="crypto")
-
-    class RSAVerifier:
-        """Stub for RSAVerifier when cryptography is not installed."""
-
-        def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError("cryptography", feature="crypto")
-
-        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError("cryptography", feature="crypto")
+    Ed25519Signer = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
+    Ed25519Verifier = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
+    RSASigner = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
+    RSAVerifier = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
 
     # Import constants from centralized defaults
-    from provide.foundation.config.defaults import (
+    from provide.foundation.config.defaults import (  # type: ignore[assignment]
         DEFAULT_CERTIFICATE_KEY_TYPE,
         DEFAULT_CERTIFICATE_VALIDITY_DAYS,
         DEFAULT_ECDSA_CURVE,
@@ -255,17 +152,13 @@ if not _HAS_CRYPTO:
     )
 
     # Call factory functions to get mutable defaults
-    SUPPORTED_EC_CURVES = default_supported_ec_curves()
-    SUPPORTED_KEY_TYPES = default_supported_key_types()
-    SUPPORTED_RSA_SIZES = default_supported_rsa_sizes()
+    SUPPORTED_EC_CURVES = default_supported_ec_curves()  # type: ignore[misc]
+    SUPPORTED_KEY_TYPES = default_supported_key_types()  # type: ignore[misc]
+    SUPPORTED_RSA_SIZES = default_supported_rsa_sizes()  # type: ignore[misc]
 
-    def get_default_hash_algorithm() -> Never:
-        """Stub for get_default_hash_algorithm when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    def get_default_signature_algorithm() -> Never:
-        """Stub for get_default_signature_algorithm when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
+    # Algorithm getter stubs
+    get_default_hash_algorithm = create_function_stub("cryptography", "crypto")
+    get_default_signature_algorithm = create_function_stub("cryptography", "crypto")
 
 
 # Public API organized by use case frequency
