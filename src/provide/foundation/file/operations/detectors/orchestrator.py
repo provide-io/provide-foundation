@@ -28,9 +28,7 @@ log = get_logger(__name__)
 class OperationDetector:
     """Detects and classifies file operations from events."""
 
-    def __init__(
-        self, config: DetectorConfig | None = None, on_operation_complete: Any = None
-    ) -> None:
+    def __init__(self, config: DetectorConfig | None = None, on_operation_complete: Any = None) -> None:
         """Initialize with optional configuration and callback.
 
         Args:
@@ -113,7 +111,6 @@ class OperationDetector:
         """
         # Delegate to auto-flush handler
         self._auto_flush_handler.add_event(event)
-
 
     def flush(self) -> list[FileOperation]:
         """Get any pending operations and clear buffer."""

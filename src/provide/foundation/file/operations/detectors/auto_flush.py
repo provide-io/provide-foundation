@@ -52,9 +52,7 @@ class AutoFlushHandler:
         self._pending_events.append(event)
 
         # Check if this is a temp file
-        is_temp = is_temp_file(event.path) or (
-            event.dest_path and is_temp_file(event.dest_path)
-        )
+        is_temp = is_temp_file(event.path) or (event.dest_path and is_temp_file(event.dest_path))
 
         log.trace(
             "Event added to auto-flush buffer",
@@ -80,9 +78,7 @@ class AutoFlushHandler:
         # Schedule new timer
         try:
             loop = asyncio.get_event_loop()
-            self._flush_timer = loop.call_later(
-                self.time_window_ms / 1000.0, self._auto_flush
-            )
+            self._flush_timer = loop.call_later(self.time_window_ms / 1000.0, self._auto_flush)
             log.trace(
                 "Auto-flush scheduled",
                 window_ms=self.time_window_ms,
@@ -97,8 +93,7 @@ class AutoFlushHandler:
             return
 
         event_summary = [
-            f"{e.event_type}:{e.path.name}"
-            + (f"→{e.dest_path.name}" if e.dest_path else "")
+            f"{e.event_type}:{e.path.name}" + (f"→{e.dest_path.name}" if e.dest_path else "")
             for e in self._pending_events
         ]
 
@@ -130,8 +125,7 @@ class AutoFlushHandler:
         """
         # Check if operation touches any real files
         has_real_file = any(
-            not is_temp_file(event.path)
-            or (event.dest_path and not is_temp_file(event.dest_path))
+            not is_temp_file(event.path) or (event.dest_path and not is_temp_file(event.dest_path))
             for event in operation.events
         )
 
@@ -156,11 +150,7 @@ class AutoFlushHandler:
 
         # Check for remaining events not included in the detected operation
         operation_event_ids = {id(event) for event in operation.events}
-        remaining_events = [
-            event
-            for event in self._pending_events
-            if id(event) not in operation_event_ids
-        ]
+        remaining_events = [event for event in self._pending_events if id(event) not in operation_event_ids]
 
         if remaining_events:
             log.debug(
@@ -221,11 +211,10 @@ class AutoFlushHandler:
             is_temp_source = is_temp_file(event.path)
             is_temp_dest = event.dest_path and is_temp_file(event.dest_path)
 
-            if not (is_temp_source and (not event.dest_path or is_temp_dest)):
+            if not (is_temp_source and (not event.dest_path or is_temp_dest)) and self.on_operation_complete:
                 # Event touches a real file - emit it
-                if self.on_operation_complete:
-                    single_op = self._create_single_event_operation(event)
-                    self.on_operation_complete(single_op)
+                single_op = self._create_single_event_operation(event)
+                self.on_operation_complete(single_op)
 
     def _create_single_event_operation(self, event: FileEvent) -> FileOperation:
         """Create a FileOperation from a single event.
