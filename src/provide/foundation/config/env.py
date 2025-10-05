@@ -150,7 +150,7 @@ class RuntimeConfig(BaseConfig):
                         raise ValueError(f"Failed to parse {env_var}: {e}") from e
                 else:
                     # Try to infer parser from type
-                    from provide.foundation.utils.parsing import auto_parse
+                    from provide.foundation.parsers import auto_parse
 
                     value = auto_parse(attr, value)
 

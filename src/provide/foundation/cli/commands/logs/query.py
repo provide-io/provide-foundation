@@ -70,7 +70,7 @@ def _build_query_sql(
 
     if level:
         # Sanitize level using Foundation's existing validation
-        from provide.foundation.config.parsers.base import _VALID_LOG_LEVEL_TUPLE
+        from provide.foundation.parsers.errors import _VALID_LOG_LEVEL_TUPLE
 
         if level not in _VALID_LOG_LEVEL_TUPLE:
             raise ValueError(f"Invalid log level: {level}")

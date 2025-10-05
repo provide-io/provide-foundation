@@ -71,14 +71,14 @@ class TestUtilsBasicCoverage(FoundationTestCase):
 
     def test_parsing_module_imports(self) -> None:
         """Test parsing module can be imported."""
-        from provide.foundation.utils import parsing
+        from provide.foundation import parsers
 
-        assert parsing is not None
+        assert parsers is not None
 
     def test_parse_bool_function_exists(self) -> None:
         """Test parse_bool function exists."""
         try:
-            from provide.foundation.utils.parsing import parse_bool
+            from provide.foundation.parsers import parse_bool
 
             assert parse_bool is not None
             assert callable(parse_bool)

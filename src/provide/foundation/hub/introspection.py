@@ -14,7 +14,7 @@ from typing import Annotated, Any, get_args, get_origin
 from attrs import define, field
 
 from provide.foundation.cli.errors import InvalidCLIHintError
-from provide.foundation.utils.parsing import extract_concrete_type
+from provide.foundation.parsers import extract_concrete_type
 
 __all__ = ["ParameterInfo", "extract_cli_hint", "introspect_parameters"]
 

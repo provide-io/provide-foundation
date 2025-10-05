@@ -24,7 +24,7 @@ from provide.foundation.utils.environment import (
     require,
 )
 from provide.foundation.utils.importer import lazy_import
-from provide.foundation.utils.parsing import (
+from provide.foundation.parsers import (
     auto_parse,
     parse_bool,
     parse_dict,
