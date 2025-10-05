@@ -16,12 +16,12 @@ from provide.foundation.errors.runtime import RuntimeError as FoundationRuntimeE
 This module provides a LockManager that enforces lock ordering and provides
 timeout mechanisms to prevent deadlocks across the entire foundation.
 
-It also provides SmartLock for classes that need both sync and async APIs
-with true mutual exclusion between sync threads and async tasks.
+It also provides DualLock for classes that need both sync and async APIs
+with separate isolation in each domain.
 """
 
 
-class SmartLock:
+class DualLock:
     """Lock that supports both synchronous and asynchronous contexts.
 
     This class provides separate locking mechanisms for sync and async code,
@@ -33,7 +33,7 @@ class SmartLock:
     Example:
         >>> class MyClass:
         ...     def __init__(self):
-        ...         self._lock = SmartLock()
+        ...         self._lock = DualLock()
         ...         self._value = 0
         ...
         ...     def increment(self):
@@ -46,7 +46,7 @@ class SmartLock:
     """
 
     def __init__(self) -> None:
-        """Initialize SmartLock with both sync and async locks."""
+        """Initialize DualLock with both sync and async locks."""
         self._sync_lock = threading.RLock()
         self._async_lock: asyncio.Lock | None = None
         self._async_init_lock = threading.Lock()
@@ -61,7 +61,7 @@ class SmartLock:
             None when lock is acquired
 
         Example:
-            >>> lock = SmartLock()
+            >>> lock = DualLock()
             >>> with lock.sync():
             ...     # Critical section for sync code
             ...     pass
@@ -81,7 +81,7 @@ class SmartLock:
 
         Example:
             >>> import asyncio
-            >>> lock = SmartLock()
+            >>> lock = DualLock()
             >>> async def main():
             ...     async with lock.async_():
             ...         # Critical section for async code
@@ -369,4 +369,4 @@ def register_foundation_locks() -> None:
     manager.register_lock("foundation.hub.components", order=220, description="Hub component management")
 
 
-__all__ = ["LockInfo", "LockManager", "SmartLock", "get_lock_manager", "register_foundation_locks"]
+__all__ = ["DualLock", "LockInfo", "LockManager", "get_lock_manager", "register_foundation_locks"]
