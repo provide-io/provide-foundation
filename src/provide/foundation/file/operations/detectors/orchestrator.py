@@ -153,7 +153,9 @@ class OperationDetector:
 
         # Try detectors in order of specificity (most specific patterns first)
         # This ensures that editor-specific patterns are detected before generic ones
-        detection_attempts: list[tuple[Callable[[list[FileEvent]], FileOperation | None], tuple[list[FileEvent]]]] = [
+        detection_attempts: list[
+            tuple[Callable[[list[FileEvent]], FileOperation | None], tuple[list[FileEvent]]]
+        ] = [
             # Temp file patterns (highest specificity for atomic saves)
             (self._temp_detector.detect_temp_rename_pattern, (events,)),
             (self._temp_detector.detect_delete_temp_pattern, (events,)),

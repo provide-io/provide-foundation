@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import builtins
 from collections.abc import AsyncIterator, Mapping
+import contextlib
 import os
 from pathlib import Path
 from typing import Any
@@ -80,59 +81,94 @@ async def _create_subprocess(
         return await asyncio.create_subprocess_exec(*(cmd if isinstance(cmd, list) else [cmd]), **common_args)
 
 
+async def _read_stream_continuously(
+    stream: asyncio.StreamReader | None,
+) -> bytes:
+    """Continuously read from a stream until EOF."""
+    if stream is None:
+        return b""
+
+    chunks: list[bytes] = []
+    try:
+        while True:
+            chunk = await stream.read(8192)  # Read in 8KB chunks
+            if not chunk:
+                break
+            chunks.append(chunk)
+    except Exception:
+        # Stream closed or error, return what we have
+        pass
+    return b"".join(chunks)
+
+
 async def _communicate_with_timeout(
     process: asyncio.subprocess.Process,
     input: bytes | None,
     timeout: float | None,
     cmd_str: str,
 ) -> tuple[bytes | None, bytes | None]:
-    """Communicate with process with optional timeout."""
+    """Communicate with process with optional timeout.
+
+    Uses background tasks to continuously read stdout/stderr to ensure
+    no output is lost on timeout.
+    """
     if timeout:
+        # Start background tasks to continuously read output streams
+        stdout_task = asyncio.create_task(_read_stream_continuously(process.stdout))
+        stderr_task = asyncio.create_task(_read_stream_continuously(process.stderr))
+
+        # Write input if provided
+        if input and process.stdin:
+            process.stdin.write(input)
+            await process.stdin.drain()
+            process.stdin.close()
+            await process.stdin.wait_closed()
+
+        # Wait for process to complete with timeout
         try:
-            return await asyncio.wait_for(
-                process.communicate(input=input),
-                timeout=timeout,
-            )
+            await asyncio.wait_for(process.wait(), timeout=timeout)
+            # Process completed successfully, get output from background tasks
+            stdout = await stdout_task
+            stderr = await stderr_task
+            return (stdout if stdout else None, stderr if stderr else None)
         except builtins.TimeoutError as e:
-            # Try to capture partial output before killing the process
-            # Note: This may not capture all output if pipes are buffered
-            partial_stdout: bytes | None = None
-            partial_stderr: bytes | None = None
-
-            try:
-                # Try to read any available output without blocking
-                if process.stdout:
-                    try:
-                        # Use a very short timeout to avoid hanging
-                        partial_stdout = await asyncio.wait_for(process.stdout.read(), timeout=0.1)
-                    except TimeoutError:
-                        pass  # No output available
-
-                if process.stderr:
-                    try:
-                        partial_stderr = await asyncio.wait_for(process.stderr.read(), timeout=0.1)
-                    except TimeoutError:
-                        pass  # No output available
-            except Exception:
-                # If we fail to read partial output, continue with kill
-                pass
-
+            # Process timed out - kill it and capture whatever output we've accumulated
             process.kill()
-            await process.wait()
+
+            # Wait a bit for background tasks to finish reading any remaining data
+            try:
+                await asyncio.wait_for(
+                    asyncio.gather(stdout_task, stderr_task, return_exceptions=True),
+                    timeout=0.5,
+                )
+            except builtins.TimeoutError:
+                # Even the cleanup timed out, cancel the tasks
+                stdout_task.cancel()
+                stderr_task.cancel()
+
+            # Ensure process is cleaned up
+            with contextlib.suppress(builtins.TimeoutError):
+                # Process still won't die after 1s, not much more we can do
+                await asyncio.wait_for(process.wait(), timeout=1.0)
+
+            # Get whatever output was captured
+            partial_stdout = stdout_task.result() if stdout_task.done() else b""
+            partial_stderr = stderr_task.result() if stderr_task.done() else b""
+
             plog.error(
                 "⏱️ Async command timed out",
                 command=cmd_str,
                 timeout=timeout,
-                partial_stdout_size=len(partial_stdout) if partial_stdout else 0,
-                partial_stderr_size=len(partial_stderr) if partial_stderr else 0,
+                captured_stdout_size=len(partial_stdout),
+                captured_stderr_size=len(partial_stderr),
             )
             raise ProcessTimeoutError(
                 f"Command timed out after {timeout}s: {cmd_str}",
                 code="PROCESS_ASYNC_TIMEOUT",
                 command=cmd_str,
                 timeout_seconds=timeout,
-                stdout=partial_stdout,
-                stderr=partial_stderr,
+                stdout=partial_stdout if partial_stdout else None,
+                stderr=partial_stderr if partial_stderr else None,
             ) from e
     else:
         return await process.communicate(input=input)

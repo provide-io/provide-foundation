@@ -358,6 +358,7 @@ def register_foundation_locks() -> None:
     manager.register_lock(
         "foundation.init.coordinator", order=10, description="Master initialization coordinator"
     )
+    manager.register_lock("foundation.stream", order=20, description="Log stream management lock")
 
     # Early subsystems (order 100-199) - needed early for debugging
     manager.register_lock("foundation.logger.lazy", order=100, description="Lazy logger initialization")

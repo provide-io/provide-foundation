@@ -150,12 +150,19 @@ class TransportBase(ABC):
         self._logger.trace("Transport disconnecting")
 
     async def stream(self, request: Request) -> AsyncIterator[bytes]:
-        """Default streaming implementation.
+        """Stream response data incrementally.
+
+        Note: This is an intentional design limitation. The base Transport class
+        does not implement streaming. Subclasses may override this method to provide
+        streaming support if needed for specific use cases.
 
         Raises:
-            NotImplementedError: Streaming is not supported by this transport
+            NotImplementedError: Streaming is not supported by this transport implementation
         """
-        raise NotImplementedError(f"{self.__class__.__name__} does not support streaming")
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not support streaming. "
+            f"Override this method in a subclass to implement streaming support."
+        )
 
     async def __aenter__(self) -> TransportBase:
         await self.connect()

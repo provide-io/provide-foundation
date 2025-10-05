@@ -8,6 +8,7 @@ from provide.foundation.crypto.constants import (
     ED25519_PUBLIC_KEY_SIZE,
     ED25519_SIGNATURE_SIZE,
 )
+from provide.foundation.errors.crypto import CryptoKeyError, CryptoSignatureError
 
 """Digital signature operations using Ed25519."""
 
@@ -62,12 +63,14 @@ def generate_ed25519_keypair() -> tuple[bytes, bytes]:
 
     # Validate key sizes
     if len(private_key_bytes) != ED25519_PRIVATE_KEY_SIZE:
-        raise ValueError(
-            f"Invalid private key size: expected {ED25519_PRIVATE_KEY_SIZE} bytes, got {len(private_key_bytes)}"
+        raise CryptoKeyError(
+            f"Invalid private key size: expected {ED25519_PRIVATE_KEY_SIZE} bytes, got {len(private_key_bytes)}",
+            code="CRYPTO_INVALID_PRIVATE_KEY_SIZE",
         )
     if len(public_key_bytes) != ED25519_PUBLIC_KEY_SIZE:
-        raise ValueError(
-            f"Invalid public key size: expected {ED25519_PUBLIC_KEY_SIZE} bytes, got {len(public_key_bytes)}"
+        raise CryptoKeyError(
+            f"Invalid public key size: expected {ED25519_PUBLIC_KEY_SIZE} bytes, got {len(public_key_bytes)}",
+            code="CRYPTO_INVALID_PUBLIC_KEY_SIZE",
         )
 
     logger.debug(f"✅ Generated Ed25519 key pair (public: {len(public_key_bytes)} bytes)")
@@ -85,12 +88,16 @@ def sign_data(data: bytes, private_key: bytes) -> bytes:
         bytes: 64-byte Ed25519 signature
 
     Raises:
-        ValueError: If private key is wrong size
+        CryptoKeyError: If private key is wrong size
+        CryptoSignatureError: If signature generation fails
 
     """
     _require_crypto()
     if len(private_key) != ED25519_PRIVATE_KEY_SIZE:
-        raise ValueError(f"Private key must be {ED25519_PRIVATE_KEY_SIZE} bytes, got {len(private_key)}")
+        raise CryptoKeyError(
+            f"Private key must be {ED25519_PRIVATE_KEY_SIZE} bytes, got {len(private_key)}",
+            code="CRYPTO_INVALID_PRIVATE_KEY_SIZE",
+        )
 
     logger.debug(f"🔏 Signing {len(data)} bytes of data with Ed25519")
 
@@ -102,8 +109,9 @@ def sign_data(data: bytes, private_key: bytes) -> bytes:
 
     # Validate signature size
     if len(signature) != ED25519_SIGNATURE_SIZE:
-        raise ValueError(
-            f"Invalid signature size: expected {ED25519_SIGNATURE_SIZE} bytes, got {len(signature)}"
+        raise CryptoSignatureError(
+            f"Invalid signature size: expected {ED25519_SIGNATURE_SIZE} bytes, got {len(signature)}",
+            code="CRYPTO_INVALID_SIGNATURE_SIZE",
         )
 
     logger.debug(f"✅ Created Ed25519 signature ({len(signature)} bytes)")
