@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+from collections import deque
 from collections.abc import Awaitable, Callable
 import contextlib
+from enum import Enum
 import threading
 import time
 from typing import Any, TypeVar
@@ -25,6 +27,13 @@ resources and provides isolation boundaries.
 T = TypeVar("T")
 
 
+class WaiterType(Enum):
+    """Type of waiter in the queue."""
+
+    SYNC = "sync"
+    ASYNC = "async"
+
+
 @define(kw_only=True, slots=True)
 class ResourcePool:
     """Resource pool with limited capacity for isolation.
@@ -41,8 +50,8 @@ class ResourcePool:
     _active_count: int = field(default=0, init=False)
     _waiting_count: int = field(default=0, init=False)
     _counter_lock: threading.Lock = field(factory=threading.Lock, init=False)
-    _sync_waiters: list[threading.Event] = field(factory=list, init=False)
-    _async_waiters: list[asyncio.Event] = field(factory=list, init=False)
+    # Unified FIFO queue for fair scheduling between sync and async waiters
+    _waiters: deque[tuple[WaiterType, threading.Event | asyncio.Event]] = field(factory=deque, init=False)
 
     def __attrs_post_init__(self) -> None:
         """Initialize internal state."""
@@ -90,10 +99,10 @@ class ResourcePool:
             if self._waiting_count >= self.max_queue_size:
                 raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
 
-            # Add to wait queue
+            # Add to unified wait queue with waiter type
             self._waiting_count += 1
             waiter = threading.Event()
-            self._sync_waiters.append(waiter)
+            self._waiters.append((WaiterType.SYNC, waiter))
 
         # Wait for signal from release
         try:
@@ -102,7 +111,8 @@ class ResourcePool:
                 return True
             # Timeout - remove from queue
             with self._counter_lock, contextlib.suppress(ValueError):
-                self._sync_waiters.remove(waiter)
+                # Remove from queue if still present (already removed by signal if not found)
+                self._waiters.remove((WaiterType.SYNC, waiter))
             return False
         finally:
             with self._counter_lock:
@@ -160,16 +170,17 @@ class ResourcePool:
             if self._waiting_count >= self.max_queue_size:
                 return None  # Queue full
 
-            # Add to wait queue
+            # Add to unified wait queue with waiter type
             self._waiting_count += 1
             waiter = asyncio.Event()
-            self._async_waiters.append(waiter)
+            self._waiters.append((WaiterType.ASYNC, waiter))
             return waiter
 
     def _remove_async_waiter(self, waiter: asyncio.Event) -> None:
         """Helper to remove async waiter from queue."""
         with self._counter_lock, contextlib.suppress(ValueError):
-            self._async_waiters.remove(waiter)
+            # Remove from queue if still present (already removed by signal if not found)
+            self._waiters.remove((WaiterType.ASYNC, waiter))
 
     def _decrement_waiting(self) -> None:
         """Helper to decrement waiting count."""
@@ -181,20 +192,19 @@ class ResourcePool:
         await asyncio.to_thread(self._release_and_signal)
 
     def _release_and_signal(self) -> None:
-        """Helper to release slot and signal next waiter atomically."""
+        """Helper to release slot and signal next waiter atomically.
+
+        Uses unified FIFO queue to ensure fair ordering between sync and async waiters.
+        """
         with self._counter_lock:
             if self._active_count > 0:
                 self._active_count -= 1
 
-            # Signal next waiter (prefer sync over async for fairness)
-            if self._sync_waiters:
-                sync_waiter = self._sync_waiters.pop(0)
+            # Signal next waiter in FIFO order from unified queue
+            if self._waiters:
+                _waiter_type, waiter_event = self._waiters.popleft()
                 self._active_count += 1
-                sync_waiter.set()
-            elif self._async_waiters:
-                async_waiter = self._async_waiters.pop(0)
-                self._active_count += 1
-                async_waiter.set()
+                waiter_event.set()
 
     def get_stats(self) -> dict[str, Any]:
         """Get pool statistics."""

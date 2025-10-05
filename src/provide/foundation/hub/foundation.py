@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import threading
 from typing import TYPE_CHECKING, Any
 
@@ -119,15 +120,11 @@ class FoundationManager:
 
         # Clear Foundation config from registry to prevent stale state
         if hasattr(self, "_registry") and self._registry:
-            # Remove foundation config entries that might have stale state
-            try:
+            # Remove foundation config entries that might have stale state (entry might not exist)
+            with contextlib.suppress(Exception):
                 self._registry.remove("foundation.config", "singleton")
-            except Exception:
-                pass  # Entry might not exist
-            try:
+            with contextlib.suppress(Exception):
                 self._registry.remove("foundation.logger.instance", "singleton")
-            except Exception:
-                pass  # Entry might not exist
 
         # Reset global coordinator state only in test mode
         from provide.foundation.testmode.detection import is_in_test_mode

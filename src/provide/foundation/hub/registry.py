@@ -43,7 +43,11 @@ class Registry:
 
     def __init__(self) -> None:
         """Initialize an empty registry."""
-        self._lock = threading.RLock()  # Reentrant lock for thread safety
+        # Use managed lock for deadlock prevention
+        # Lock is registered during Foundation initialization via register_foundation_locks()
+        from provide.foundation.concurrency.locks import get_lock_manager
+
+        self._lock = get_lock_manager().get_lock("foundation.registry")
         self._registry: dict[str, dict[str, RegistryEntry]] = defaultdict(dict)
         self._aliases: dict[str, tuple[str, str]] = {}
 

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, AsyncContextManager, Protocol, runtime_checkable
+from contextlib import AbstractAsyncContextManager
+from typing import Any, Protocol, runtime_checkable
 
 """Resource management protocols for proper component lifecycle."""
 
@@ -89,7 +90,7 @@ class AsyncResourceManager(ABC):
         pass
 
 
-class AsyncContextResource(AsyncContextManager[Any]):
+class AsyncContextResource(AbstractAsyncContextManager[Any]):
     """Base class for async context-managed resources."""
 
     def __init__(self, resource_factory: Any) -> None:

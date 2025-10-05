@@ -57,8 +57,6 @@ __all__ = [
     "create_dependency_stub",
     "create_function_stub",
     "create_module_stub",
-    # Lazy import utilities
-    "lazy_import",
     # Module exports
     "environment",
     "get_available_features",
@@ -72,6 +70,8 @@ __all__ = [
     "get_path",
     "get_str",
     "has_dependency",
+    # Lazy import utilities
+    "lazy_import",
     "parse_bool",
     "parse_dict",
     "parse_duration",

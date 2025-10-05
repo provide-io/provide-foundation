@@ -7,22 +7,30 @@ import sys
 import threading
 from typing import TextIO
 
+from provide.foundation.concurrency.locks import get_lock_manager
+
 """Core stream management for Foundation.
 Handles log streams, file handles, and output configuration.
 """
 
 _PROVIDE_LOG_STREAM: TextIO = sys.stderr
 _LOG_FILE_HANDLE: TextIO | None = None
-_STREAM_LOCK = threading.Lock()
 
 
-def _get_stream_lock() -> threading.Lock:
-    """Get the stream lock."""
-    return _STREAM_LOCK
+def _get_stream_lock() -> threading.RLock:
+    """Get the stream lock from LockManager.
+
+    Returns managed lock to prevent deadlocks and enable monitoring.
+    """
+    # Lock is registered during Foundation initialization via register_foundation_locks()
+    return get_lock_manager().get_lock("foundation.stream")
 
 
-def get_log_stream() -> TextIO:
-    """Get the current log stream."""
+def get_log_stream() -> TextIO:  # noqa: C901
+    """Get the current log stream.
+
+    Note: High complexity is intentional for robust stream handling across test/prod.
+    """
     global _PROVIDE_LOG_STREAM
     if not _get_stream_lock().acquire(timeout=5.0):
         # If we can't acquire the lock within 5 seconds, return stderr as fallback
