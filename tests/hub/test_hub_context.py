@@ -241,8 +241,8 @@ json_output: true
         with pytest.raises(ValueError):
             CLIContext(debug="not_a_bool")
 
-        # Non-string/non-bool types should raise TypeError
-        with pytest.raises(TypeError):
+        # Invalid numeric values (not 0 or 1) should raise ValueError
+        with pytest.raises(ValueError, match="Numeric boolean must be 0 or 1"):
             CLIContext(json_output=123)
 
     def test_context_environment_precedence(self) -> None:
