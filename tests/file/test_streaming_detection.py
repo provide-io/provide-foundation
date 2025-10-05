@@ -260,6 +260,114 @@ class TestStreamingDetectionCallback:
         assert second_op.primary_path == final2
 
 
+class TestTempFileFiltering:
+    """Test filtering of pure temp file events."""
+
+    @pytest.mark.asyncio
+    async def test_temp_file_churn_hidden(self, mock_callback):
+        """Test that temp file create/delete churn is hidden."""
+        config = DetectorConfig(time_window_ms=100)
+        detector = OperationDetector(config=config, on_operation_complete=mock_callback)
+
+        base_time = datetime.now()
+        temp_file = Path(".build_cache.tmp")
+
+        # Temp file created and deleted - pure noise
+        events = [
+            FileEvent(
+                path=temp_file,
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+            FileEvent(
+                path=temp_file,
+                event_type="deleted",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=5), sequence_number=2
+                ),
+            ),
+        ]
+
+        for event in events:
+            detector.add_event(event)
+
+        # Wait for auto-flush
+        await asyncio.sleep(0.15)
+
+        # Should NOT emit anything - pure temp file churn
+        assert mock_callback.call_count == 0
+
+    @pytest.mark.asyncio
+    async def test_temp_to_temp_move_hidden(self, mock_callback):
+        """Test that temp to temp moves are hidden."""
+        config = DetectorConfig(time_window_ms=100)
+        detector = OperationDetector(config=config, on_operation_complete=mock_callback)
+
+        base_time = datetime.now()
+        temp1 = Path(".foo.tmp.1")
+        temp2 = Path(".foo.tmp.2")
+
+        # Move between temp files - still noise
+        detector.add_event(
+            FileEvent(
+                path=temp1,
+                event_type="moved",
+                dest_path=temp2,
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            )
+        )
+
+        # Wait for auto-flush
+        await asyncio.sleep(0.15)
+
+        # Should NOT emit - both source and dest are temp
+        assert mock_callback.call_count == 0
+
+    @pytest.mark.asyncio
+    async def test_real_file_with_temp_churn_emitted(self, mock_callback):
+        """Test that real file events are emitted even with temp file churn."""
+        config = DetectorConfig(time_window_ms=100)
+        detector = OperationDetector(config=config, on_operation_complete=mock_callback)
+
+        base_time = datetime.now()
+        temp_file = Path(".cache.tmp")
+        real_file = Path("data.json")
+
+        # Mix of temp churn and real file change
+        events = [
+            FileEvent(
+                path=temp_file,
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+            FileEvent(
+                path=real_file,
+                event_type="modified",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=5), sequence_number=2
+                ),
+            ),
+            FileEvent(
+                path=temp_file,
+                event_type="deleted",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=10), sequence_number=3
+                ),
+            ),
+        ]
+
+        for event in events:
+            detector.add_event(event)
+
+        # Wait for auto-flush
+        await asyncio.sleep(0.15)
+
+        # Should emit only the real file event
+        assert mock_callback.call_count == 1
+        operation = mock_callback.call_args[0][0]
+        assert operation.primary_path == real_file
+
+
 class TestRealWorldPatterns:
     """Test real-world editor save patterns."""
 

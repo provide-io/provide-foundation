@@ -176,14 +176,41 @@ class OperationDetector:
                 self.on_operation_complete(operation)
         else:
             # No operation detected, emit individual events
+            # BUT: Filter out pure temp file events to reduce noise
             log.debug(
-                "No operation detected, emitting individual events",
+                "No operation detected, filtering and emitting individual events",
                 event_count=len(self._pending_events),
             )
+
+            emitted_count = 0
+            hidden_count = 0
+
             for event in self._pending_events:
-                if self.on_operation_complete:
-                    single_op = self._create_single_event_operation(event)
-                    self.on_operation_complete(single_op)
+                # Check if this event involves only temp files
+                is_temp_source = is_temp_file(event.path)
+                is_temp_dest = event.dest_path and is_temp_file(event.dest_path)
+
+                # Hide event if BOTH source and dest (if exists) are temp files
+                if is_temp_source and (not event.dest_path or is_temp_dest):
+                    # Pure temp file event - hide it
+                    log.trace(
+                        "Hiding temp-only event",
+                        path=str(event.path),
+                        dest_path=str(event.dest_path) if event.dest_path else None,
+                    )
+                    hidden_count += 1
+                else:
+                    # Event touches a real file - emit it
+                    if self.on_operation_complete:
+                        single_op = self._create_single_event_operation(event)
+                        self.on_operation_complete(single_op)
+                        emitted_count += 1
+
+            log.debug(
+                "Auto-flush complete",
+                emitted=emitted_count,
+                hidden=hidden_count,
+            )
 
         self._pending_events.clear()
         self._last_flush = datetime.now()
