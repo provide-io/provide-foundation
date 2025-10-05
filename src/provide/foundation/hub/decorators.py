@@ -194,7 +194,6 @@ def _register_command_func(
         hidden=hidden,
         category=category,
         metadata=cmd_metadata,
-        click_command=click_cmd,
         parent=parent,
     )
 

@@ -18,7 +18,7 @@ def __getattr__(name: str) -> Any:
     """Support lazy loading of CLI-dependent features."""
     if name in ("build_click_command", "create_command_group"):
         try:
-            from provide.foundation.hub.click_builder import (
+            from provide.foundation.cli.click.builder import (
                 build_click_command,
                 create_command_group,
             )
