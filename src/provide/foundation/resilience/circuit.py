@@ -4,10 +4,10 @@ import asyncio
 from collections.abc import Callable
 from enum import Enum, auto
 from functools import wraps
-import threading
 import time
 from typing import Any
 
+from provide.foundation.concurrency.locks import SmartLock
 from provide.foundation.errors import FoundationError
 
 
@@ -42,8 +42,7 @@ class CircuitBreaker:
         self.recovery_timeout = recovery_timeout
         self.expected_exception = expected_exception
         self._time_source = time_source or time.time
-        self._sync_lock = threading.Lock()
-        self._async_lock = asyncio.Lock()
+        self._lock = SmartLock()
         # Initialize state attributes (will be set properly in reset())
         self._state: CircuitState
         self._failure_count: int
@@ -53,7 +52,7 @@ class CircuitBreaker:
     @property
     def state(self) -> CircuitState:
         """Get the current state of the circuit breaker."""
-        with self._sync_lock:
+        with self._lock.sync():
             if self._state == CircuitState.OPEN and self._can_attempt_recovery():
                 # This is a view of the state; the actual transition happens in call()
                 return CircuitState.HALF_OPEN
@@ -62,7 +61,7 @@ class CircuitBreaker:
     @property
     def failure_count(self) -> int:
         """Get the current failure count."""
-        with self._sync_lock:
+        with self._lock.sync():
             return self._failure_count
 
     def _can_attempt_recovery(self) -> bool:

@@ -22,13 +22,13 @@ with true mutual exclusion between sync threads and async tasks.
 
 
 class SmartLock:
-    """Unified lock providing true mutual exclusion between sync and async contexts.
+    """Lock that supports both synchronous and asynchronous contexts.
 
-    SmartLock uses a threading.Lock for mutual exclusion between sync and async code,
-    with non-blocking async acquisition to avoid thread pool exhaustion and deadlocks.
+    This class provides separate locking mechanisms for sync and async code,
+    preventing event loop blocking while maintaining thread safety within each domain.
 
-    This is the recommended locking mechanism for classes that expose both
-    sync and async APIs accessing shared state.
+    Note: This does NOT provide mutual exclusion between sync and async contexts.
+    For true mutual exclusion, ensure your code uses only sync or only async access patterns.
 
     Example:
         >>> class MyClass:
@@ -43,21 +43,13 @@ class SmartLock:
         ...     async def increment_async(self):
         ...         async with self._lock.async_():
         ...             self._value += 1
-
-    Note:
-        The async context manager uses non-blocking acquisition with polling
-        to prevent blocking the event loop or exhausting thread pools.
-
-        For pure async code, use asyncio.Lock directly.
-        For pure sync code, use threading.Lock/RLock directly.
-        Only use SmartLock when you have mixed sync/async access to shared state.
-
-        This lock is NOT reentrant.
     """
 
     def __init__(self) -> None:
-        """Initialize SmartLock with a single non-reentrant lock."""
-        self._lock = threading.Lock()
+        """Initialize SmartLock with both sync and async locks."""
+        self._sync_lock = threading.RLock()
+        self._async_lock: asyncio.Lock | None = None
+        self._async_init_lock = threading.Lock()
 
     @contextlib.contextmanager
     def sync(self) -> Generator[None, None, None]:
@@ -71,10 +63,10 @@ class SmartLock:
         Example:
             >>> lock = SmartLock()
             >>> with lock.sync():
-            ...     # Critical section - protected from both sync and async access
+            ...     # Critical section for sync code
             ...     pass
         """
-        with self._lock:
+        with self._sync_lock:
             yield
 
     @contextlib.asynccontextmanager
@@ -82,7 +74,7 @@ class SmartLock:
         """Acquire lock in asynchronous context.
 
         Use with 'async with' statement in asynchronous methods.
-        Uses non-blocking acquisition with exponential backoff to avoid thread pool exhaustion.
+        The async lock is lazily initialized on first use.
 
         Yields:
             None when lock is acquired
@@ -92,29 +84,18 @@ class SmartLock:
             >>> lock = SmartLock()
             >>> async def main():
             ...     async with lock.async_():
-            ...         # Critical section - protected from both sync and async access
+            ...         # Critical section for async code
             ...         pass
             >>> asyncio.run(main())
         """
-        # Use non-blocking acquire with polling to avoid thread pool deadlocks
-        delay = 0.0001  # Start with 0.1ms
-        max_delay = 0.01  # Cap at 10ms
+        # Lazy initialization of async lock (thread-safe)
+        if self._async_lock is None:
+            with self._async_init_lock:
+                if self._async_lock is None:
+                    self._async_lock = asyncio.Lock()
 
-        while True:
-            # Try to acquire without blocking
-            acquired = self._lock.acquire(blocking=False)
-            if acquired:
-                break
-
-            # Wait before retrying, with exponential backoff
-            await asyncio.sleep(delay)
-            delay = min(delay * 1.5, max_delay)  # Exponential backoff with cap
-
-        try:
+        async with self._async_lock:
             yield
-        finally:
-            # Release the lock
-            self._lock.release()
 
 
 @define
