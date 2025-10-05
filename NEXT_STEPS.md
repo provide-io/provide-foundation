@@ -121,6 +121,39 @@ def create_user(
 
 ---
 
+## ✅ COMPLETED - Post-LLM Review Improvements
+
+### Observation 4: Optional Dependencies (Targeted Approach)
+**Status**: ✅ Complete
+- Assessed 5 `__init__.py` files for optional dependency patterns
+- **Decision**: Keep existing patterns - all are appropriate for their use cases
+  - `crypto/__init__.py` - Stub pattern (337 lines) provides complete fallback API
+  - `transport/__init__.py` - Stub pattern with `create_dependency_stub()`
+  - `docs/__init__.py` - Conditional imports work well
+  - `observability/__init__.py` - Dynamic `__all__` pattern appropriate
+  - `metrics/__init__.py` - Factory functions handle optional OTEL internally
+  - `tracer/__init__.py` - TYPE_CHECKING + conditional imports pattern works well
+- **Existing gold standards preserved**:
+  - `hub/commands.py` - `__getattr__` pattern with helpful errors ✅
+  - `hub/__init__.py` - `__getattr__` pattern ✅
+
+### Observation 6: Exception Handling (Critical Paths)
+**Status**: ✅ Complete
+- **Updated 3 process module locations** with specific exceptions:
+  - `process/aio/execution.py:85` - Changed to `(asyncio.CancelledError, OSError, EOFError, ValueError)`
+  - `process/lifecycle.py:309` - Changed to `(OSError, ValueError, AttributeError)`
+  - `process/lifecycle.py:388` - Changed to `(ProcessLookupError, PermissionError, OSError)`
+- **Updated 2 logger trace locations** with specific exceptions:
+  - `logger/trace.py:66` - Changed to `(OSError, AttributeError, UnicodeEncodeError)`
+  - `logger/trace.py:77` - Changed to `(OSError, AttributeError, UnicodeEncodeError)`
+- **Kept broad catching where appropriate**:
+  - `testmode/*` - Reset functions must be resilient to all errors
+  - `logger/core.py` - Fallback initialization must handle all cases
+  - `resilience/decorators.py` - Defensive inspection checks
+- **Testing**: All process and logger tests passing ✅
+
+**Note**: Ruff automatically removed `IOError` (legacy alias for `OSError` in Python 3)
+
 ## 🔄 POST-RELEASE WORK
 
 ### Priority 1: Type Safety
