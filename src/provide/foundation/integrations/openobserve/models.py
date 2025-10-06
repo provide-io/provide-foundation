@@ -8,7 +8,7 @@ from attrs import define, field
 """Data models for OpenObserve API requests and responses."""
 
 
-@define
+@define(slots=True)
 class SearchQuery:
     """Search query parameters for OpenObserve."""
 
@@ -31,7 +31,7 @@ class SearchQuery:
         }
 
 
-@define
+@define(slots=True)
 class SearchResponse:
     """Response from OpenObserve search API."""
 
@@ -61,7 +61,7 @@ class SearchResponse:
         )
 
 
-@define
+@define(slots=True)
 class StreamInfo:
     """Information about an OpenObserve stream."""
 

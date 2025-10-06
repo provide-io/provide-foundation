@@ -17,7 +17,7 @@ timeout mechanisms to prevent deadlocks across the entire foundation.
 """
 
 
-@define
+@define(slots=True)
 class LockInfo:
     """Information about a registered lock."""
 
