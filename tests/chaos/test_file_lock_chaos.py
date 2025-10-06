@@ -73,20 +73,28 @@ class TestFileLockChaos(FoundationTestCase):
             except Exception as e:
                 errors.append(e)
 
-        # Run concurrent threads
-        with ThreadPoolExecutor(max_workers=num_threads) as executor:
-            futures = [executor.submit(thread_worker, i) for i in range(num_threads)]
-            for future in futures:
-                future.result(timeout=timeout * 2)
+        try:
+            # Run concurrent threads
+            with ThreadPoolExecutor(max_workers=num_threads) as executor:
+                futures = [executor.submit(thread_worker, i) for i in range(num_threads)]
+                for future in futures:
+                    future.result(timeout=timeout * 2)
 
-        # Verify: Some threads succeeded (unless timeout too short)
-        # If timeouts occurred, they should be LockErrors
-        for error in errors:
-            assert isinstance(error, LockError), f"Unexpected error type: {type(error)}"
+            # Verify: Some threads succeeded (unless timeout too short)
+            # If timeouts occurred, they should be LockErrors
+            for error in errors:
+                assert isinstance(error, LockError), f"Unexpected error type: {type(error)}"
 
-        # Verify exclusive access: acquired_by should have sequential access
-        # (no concurrent access violations)
-        assert len(acquired_by) > 0, "At least one thread should acquire lock"
+            # Verify exclusive access: acquired_by should have sequential access
+            # (no concurrent access violations)
+            assert len(acquired_by) > 0, "At least one thread should acquire lock"
+        finally:
+            # Ensure cleanup: remove lock file if it exists to prevent tmp_path cleanup hanging
+            try:
+                if lock_file.exists():
+                    lock_file.unlink()
+            except Exception:
+                pass
 
     @pytest.mark.chaos_slow
     @given(
@@ -122,13 +130,27 @@ class TestFileLockChaos(FoundationTestCase):
 
         # Try to acquire - should detect stale lock and succeed
         lock = FileLock(lock_file, timeout=stale_threshold)
-        acquired = lock.acquire(blocking=True)
+        try:
+            acquired = lock.acquire(blocking=True)
 
-        assert acquired, "Should acquire after removing stale lock"
-        assert lock.locked
+            assert acquired, "Should acquire after removing stale lock"
+            assert lock.locked
 
-        lock.release()
-        assert not lock.locked
+            lock.release()
+            assert not lock.locked
+        finally:
+            # Ensure cleanup: release lock and remove lock file
+            try:
+                if lock.locked:
+                    lock.release()
+            except Exception:
+                pass
+            # Remove lock file if it exists to prevent tmp_path cleanup hanging
+            try:
+                if lock_file.exists():
+                    lock_file.unlink()
+            except Exception:
+                pass
 
     @pytest.mark.chaos_slow
     @given(scenario=pid_recycling_scenarios())
@@ -162,16 +184,29 @@ class TestFileLockChaos(FoundationTestCase):
         # The lock should detect this is a different process despite same PID
         lock = FileLock(lock_file, timeout=2.0)
 
-        if scenario["should_detect_recycling"]:
-            # Should detect recycling and remove stale lock
-            acquired = lock.acquire(blocking=True)
-            assert acquired, "Should acquire after detecting PID recycling"
-        else:
-            # Time difference within tolerance - might not detect
-            # This is expected behavior
-            pass
-
-        lock.release()
+        try:
+            if scenario["should_detect_recycling"]:
+                # Should detect recycling and remove stale lock
+                acquired = lock.acquire(blocking=True)
+                assert acquired, "Should acquire after detecting PID recycling"
+                lock.release()
+            else:
+                # Time difference within tolerance - might not detect
+                # This is expected behavior
+                pass
+        finally:
+            # Ensure cleanup: release lock and remove lock file
+            try:
+                if lock.locked:
+                    lock.release()
+            except Exception:
+                pass
+            # Remove lock file if it exists to prevent tmp_path cleanup hanging
+            try:
+                if lock_file.exists():
+                    lock_file.unlink()
+            except Exception:
+                pass
 
     @pytest.mark.chaos_slow
     @given(
@@ -223,6 +258,19 @@ class TestFileLockChaos(FoundationTestCase):
         except LockError:
             # Timeout is acceptable for corrupted locks
             pass
+        finally:
+            # Ensure cleanup: release lock and remove lock file
+            try:
+                if lock.locked:
+                    lock.release()
+            except Exception:
+                pass
+            # Remove lock file if it exists to prevent tmp_path cleanup hanging
+            try:
+                if lock_file.exists():
+                    lock_file.unlink()
+            except Exception:
+                pass
 
     @pytest.mark.chaos_slow
     @given(scenario=lock_file_scenarios())
@@ -231,7 +279,7 @@ class TestFileLockChaos(FoundationTestCase):
         suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
         deadline=None,
     )
-    def test_lock_file_scenarios_chaos(
+    def test_lock_file_scenarios_chaos(  # noqa: C901
         self,
         tmp_path: Path,
         scenario: dict[str, Any],
@@ -282,6 +330,19 @@ class TestFileLockChaos(FoundationTestCase):
         except LockError as e:
             # Timeout or acquisition failure is acceptable
             assert "timeout" in str(e).lower() or "lock" in str(e).lower()
+        finally:
+            # Ensure cleanup: release lock and remove lock file
+            try:
+                if lock.locked:
+                    lock.release()
+            except Exception:
+                pass
+            # Remove lock file if it exists to prevent tmp_path cleanup hanging
+            try:
+                if lock_file.exists():
+                    lock_file.unlink()
+            except Exception:
+                pass
 
     @pytest.mark.slow
     @given(
@@ -307,15 +368,29 @@ class TestFileLockChaos(FoundationTestCase):
         lock_file = tmp_path / "test.lock"
         lock = FileLock(lock_file, timeout=timeout)
 
-        # Acquire multiple times from same instance
-        for _ in range(iterations):
-            acquired = lock.acquire()
-            assert acquired
-            assert lock.locked
+        try:
+            # Acquire multiple times from same instance
+            for _ in range(iterations):
+                acquired = lock.acquire()
+                assert acquired
+                assert lock.locked
 
-        # Single release should unlock (current implementation)
-        lock.release()
-        assert not lock.locked
+            # Single release should unlock (current implementation)
+            lock.release()
+            assert not lock.locked
+        finally:
+            # Ensure cleanup: release lock and remove lock file
+            try:
+                if lock.locked:
+                    lock.release()
+            except Exception:
+                pass
+            # Remove lock file if it exists to prevent tmp_path cleanup hanging
+            try:
+                if lock_file.exists():
+                    lock_file.unlink()
+            except Exception:
+                pass
 
     # Note: reentrant_locking_chaos test removed - it was already marked as @pytest.mark.slow above
     # and has been included in the chaos_slow category
@@ -365,12 +440,20 @@ class TestFileLockAsyncChaos(FoundationTestCase):
             except LockError:
                 pass  # Timeout acceptable
 
-        # Run concurrent tasks
-        tasks = [async_worker(i) for i in range(num_tasks)]
-        await asyncio.gather(*tasks, return_exceptions=True)
+        try:
+            # Run concurrent tasks
+            tasks = [async_worker(i) for i in range(num_tasks)]
+            await asyncio.gather(*tasks, return_exceptions=True)
 
-        # At least some tasks should succeed
-        assert len(acquired_by) > 0
+            # At least some tasks should succeed
+            assert len(acquired_by) > 0
+        finally:
+            # Ensure cleanup: remove lock file if it exists to prevent tmp_path cleanup hanging
+            try:
+                if lock_file.exists():
+                    lock_file.unlink()
+            except Exception:
+                pass
 
 
 __all__ = [
