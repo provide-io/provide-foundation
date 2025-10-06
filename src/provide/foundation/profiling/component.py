@@ -25,10 +25,10 @@ class ProfilingComponent:
     performance monitoring.
 
     Example:
-        >>> from provide.foundation.hub import get_hub
+        >>> from provide.foundation.hub import Hub
         >>> from provide.foundation.profiling import register_profiling
         >>>
-        >>> hub = get_hub()
+        >>> hub = Hub()
         >>> register_profiling(hub)
         >>> profiler = hub.get_component("profiler")
         >>> profiler.enable()
@@ -147,10 +147,10 @@ def register_profiling(hub: Hub, sample_rate: float = DEFAULT_PROFILING_SAMPLE_R
         sample_rate: Sampling rate for metrics collection
 
     Example:
-        >>> from provide.foundation.hub import get_hub
+        >>> from provide.foundation.hub import Hub
         >>> from provide.foundation.profiling.component import register_profiling
         >>>
-        >>> hub = get_hub()
+        >>> hub = Hub()
         >>> register_profiling(hub)
 
     """

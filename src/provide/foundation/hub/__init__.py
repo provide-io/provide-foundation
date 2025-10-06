@@ -41,7 +41,9 @@ from provide.foundation.hub.decorators import register_command
 from provide.foundation.hub.manager import (
     Hub,
     clear_hub,
+    clear_shared_hub,
     get_hub,
+    get_shared_hub,
 )
 from provide.foundation.hub.protocols import (
     AsyncContextResource,
@@ -94,9 +96,11 @@ __all__ = [
     # CLI features (stub function if click not available)
     "build_click_command",
     "clear_hub",
+    "clear_shared_hub",
     # Components
     "get_component_registry",
     "get_hub",
+    "get_shared_hub",
     # Commands (core)
     "register_command",
 ]

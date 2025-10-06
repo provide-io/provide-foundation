@@ -157,11 +157,11 @@ def get_foundation_logger(name: str | None = None) -> Any:
     Returns:
         Logger instance
     """
-    from provide.foundation.hub.manager import get_hub
+    from provide.foundation.hub.manager import get_shared_hub
 
-    hub = get_hub()
-    if hasattr(hub, "_foundation_manager") and hub._foundation_manager._logger_instance:
-        return hub._foundation_manager._logger_instance.get_logger(name)
+    hub = get_shared_hub()
+    if hasattr(hub, "_foundation") and hub._foundation._logger_instance:
+        return hub._foundation._logger_instance.get_logger(name)
 
     # Fallback to direct logger import during bootstrap
     from provide.foundation.logger import logger

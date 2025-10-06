@@ -312,9 +312,9 @@ def get_global_logger() -> FoundationLogger:
         FoundationLogger instance from Hub
 
     """
-    from provide.foundation.hub.manager import get_hub
+    from provide.foundation.hub.manager import get_shared_hub
 
-    hub = get_hub()
+    hub = get_shared_hub()
     logger_instance = hub._component_registry.get("foundation.logger.instance", "singleton")
 
     if logger_instance:
