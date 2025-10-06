@@ -314,10 +314,12 @@ class ArchiveOperations:
                 return ["unzip"]
             if magic[:3] == b"ustar":  # tar (at offset 257)
                 return ["untar"]
-        except Exception:
-            # Intentionally ignore all errors (file not found, IO errors, etc.)
-            # and return None to indicate format detection failed
-            pass  # nosec B110
+        except Exception:  # nosec B110
+            # Generic catch is intentional for robust format detection.
+            # Any file access error (FileNotFoundError, PermissionError, IOError, etc.)
+            # should result in detection failure (return None), allowing fallback
+            # to extension-based detection or final ArchiveError.
+            pass
 
         return None
 
