@@ -63,61 +63,7 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
     conftest_diag_logger.debug("⚙️➡️🔍 Conftest loaded.")
 
 
-@pytest.hookimpl(hookwrapper=True, tryfirst=True)
-def pytest_pyfunc_call(pyfuncitem: pytest.Item):
-    """Disable coverage tracing for tests marked with no_cover.
-
-    Workaround for coverage + time_machine + asyncio deadlock. When coverage tracing is
-    active and time_machine is used, subsequent async tests deadlock due to corrupted
-    event loop time tracking. The solution is to disable coverage tracing for these tests.
-
-    Tests marked with @pytest.mark.no_cover will:
-    - Still execute normally
-    - Not have coverage tracing active during execution
-    - Not contribute to coverage metrics
-    """
-    if pyfuncitem.get_closest_marker("no_cover"):
-        import sys
-
-        # Save current trace function
-        old_trace = sys.gettrace()
-
-        # Print debug info
-        print(f"\n🔕 Disabling coverage for: {pyfuncitem.nodeid}")
-
-        # Disable tracing for this test
-        sys.settrace(None)
-
-        try:
-            # Let pytest run the test without coverage
-            yield
-        finally:
-            # Clean up event loop BEFORE re-enabling coverage
-            # time_machine may have corrupted loop state even without coverage active
-            try:
-                import asyncio
-                try:
-                    loop = asyncio.get_event_loop()
-                    if loop and not loop.is_closed():
-                        if hasattr(loop, '_ready'):
-                            loop._ready.clear()
-                        if hasattr(loop, '_scheduled'):
-                            loop._scheduled.clear()
-                        loop.close()
-                except RuntimeError:
-                    pass
-                # Set None so pytest-asyncio creates fresh loop
-                asyncio.set_event_loop(None)
-            except Exception:
-                pass
-
-            # Print debug info
-            print(f"🔔 Re-enabling coverage after: {pyfuncitem.nodeid}")
-            # Restore tracing after test
-            sys.settrace(old_trace)
-    else:
-        # Normal execution with coverage
-        yield
+# Removed no_cover hook - not needed, issue is time_machine + asyncio, not coverage
 
 
 @pytest.fixture(autouse=True, scope="function")
@@ -228,15 +174,33 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         # This ensures clean state for the next test in the worker
         reset_foundation_setup_for_testing()
 
-        # SPECIAL CASE: Close event loop if test used time_machine with coverage enabled
-        # Coverage tracing + time manipulation corrupts event loop state, causing async tests to freeze
-        # This only happens in serial execution with coverage (not parallel, not without coverage)
-        import sys
-
-        coverage_enabled = sys.gettrace() is not None
+        # CRITICAL FIX: Clean up event loop after time_machine tests
+        # time_machine corrupts asyncio event loop state, causing subsequent async tests to freeze
+        # This happens even without coverage - it's purely time_machine + asyncio interaction
         used_time_machine = "time_machine" in request.fixturenames
+        if used_time_machine:
+            try:
+                import asyncio
+                # Close and clear corrupted event loop
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop and not loop.is_closed():
+                        # Clear pending callbacks (corrupted by time manipulation)
+                        if hasattr(loop, '_ready'):
+                            loop._ready.clear()
+                        if hasattr(loop, '_scheduled'):
+                            loop._scheduled.clear()
+                        # Close the corrupted loop
+                        loop.close()
+                except RuntimeError:
+                    pass  # No current event loop
 
-        # NOTE: We do NOT close event loops because:
+                # Clear event loop - pytest-asyncio will create fresh one
+                asyncio.set_event_loop(None)
+            except Exception:
+                pass  # Best effort cleanup
+
+        # NOTE: We do NOT close event loops in normal cases because:
         # 1. pytest-asyncio manages event loop lifecycle
         # 2. Closing loops interferes with pytest-asyncio's cleanup
         # 3. Clearing event loop policy breaks subsequent async tests
