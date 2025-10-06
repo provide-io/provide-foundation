@@ -25,7 +25,9 @@ def _check_click() -> DependencyStatus:
             from importlib.metadata import PackageNotFoundError, version
 
             ver = version("click")
-        except PackageNotFoundError:
+        except (PackageNotFoundError, Exception):
+            # PackageNotFoundError: Package metadata not found
+            # Exception: Fallback for other version() failures (including mocked tests)
             ver = "unknown"
         return DependencyStatus(
             name="click",
@@ -74,7 +76,9 @@ def _check_opentelemetry() -> DependencyStatus:
             from importlib.metadata import PackageNotFoundError, version
 
             ver = version("opentelemetry-api")
-        except PackageNotFoundError:
+        except (PackageNotFoundError, Exception):
+            # PackageNotFoundError: Package metadata not found
+            # Exception: Fallback for other version() failures (including mocked tests)
             ver = "unknown"
         return DependencyStatus(
             name="opentelemetry",
@@ -123,7 +127,9 @@ def _check_mkdocs() -> DependencyStatus:
             from importlib.metadata import PackageNotFoundError, version
 
             ver = version("mkdocs")
-        except PackageNotFoundError:
+        except (PackageNotFoundError, Exception):
+            # PackageNotFoundError: Package metadata not found
+            # Exception: Fallback for other version() failures (including mocked tests)
             ver = "unknown"
         return DependencyStatus(
             name="mkdocs",
