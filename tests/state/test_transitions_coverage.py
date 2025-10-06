@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import pytest
 from provide.testkit import FoundationTestCase
 
 from provide.foundation.state._internal.transitions import (
@@ -83,6 +84,7 @@ class TestCircuitBreakerStateEdgeCases(FoundationTestCase):
         assert not half_open_state.is_open()
         assert half_open_state.is_half_open()
 
+    @pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
     def test_should_attempt_reset_conditions(self, time_machine: TimeMachine) -> None:
         """Test should_attempt_reset under various conditions."""
         current_time = 1000.0  # Fixed time for test
@@ -125,6 +127,7 @@ class TestCircuitBreakerStateEdgeCases(FoundationTestCase):
         new_state = open_state.record_success()
         assert new_state is open_state  # Should be unchanged
 
+@pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
     def test_record_failure_from_different_states(self, time_machine: TimeMachine) -> None:
         """Test record_failure behavior from different states."""
         current_time = 1000.0
@@ -163,6 +166,7 @@ class TestCircuitBreakerStateEdgeCases(FoundationTestCase):
         assert new_state.last_failure_time == current_time
         assert new_state.next_attempt_time == current_time + 45.0
 
+@pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
     def test_attempt_reset_conditions(self, time_machine: TimeMachine) -> None:
         """Test attempt_reset under various conditions."""
         current_time = 1000.0  # Fixed time for test
@@ -232,6 +236,7 @@ class TestCircuitBreakerStateMachineEdgeCases(FoundationTestCase):
         assert isinstance(circuit_state, CircuitBreakerState)
         assert circuit_state.is_closed()
 
+@pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
     def test_guard_function_behavior(self, time_machine: TimeMachine) -> None:
         """Test the guard function behavior."""
         time_machine.freeze()
@@ -301,6 +306,7 @@ class TestCircuitBreakerStateMachineEdgeCases(FoundationTestCase):
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
 
+@pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
     def test_transitions_from_all_states_to_reset(self, time_machine: TimeMachine) -> None:
         """Test reset transitions work from all states."""
         time_machine.freeze()
@@ -332,6 +338,7 @@ class TestCircuitBreakerStateMachineEdgeCases(FoundationTestCase):
         machine.transition(CircuitBreakerEvent.RESET)
         assert machine.current_state == "closed"
 
+@pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
     def test_attempt_reset_action_method(self, time_machine: TimeMachine) -> None:
         """Test _attempt_reset action method."""
         time_machine.freeze()
