@@ -72,8 +72,8 @@ class ProfilingComponent:
             from provide.foundation import logger
 
             logger.info("Profiling enabled", emoji="📊", component="profiler")
-        except Exception:
-            # Don't fail if logging isn't available
+        except (ImportError, AttributeError):
+            # Don't fail if logging isn't available or not fully initialized
             pass
 
     @resilient(
@@ -94,8 +94,8 @@ class ProfilingComponent:
             from provide.foundation import logger
 
             logger.info("Profiling disabled", emoji="📊", component="profiler")
-        except Exception:
-            # Don't fail if logging isn't available
+        except (ImportError, AttributeError):
+            # Don't fail if logging isn't available or not fully initialized
             pass
 
     def get_metrics(self) -> ProfileMetrics:
@@ -124,8 +124,8 @@ class ProfilingComponent:
             from provide.foundation import logger
 
             logger.debug("Profiling metrics reset", emoji="🔄", component="profiler")
-        except Exception:
-            # Don't fail if logging isn't available
+        except (ImportError, AttributeError):
+            # Don't fail if logging isn't available or not fully initialized
             pass
 
     def __repr__(self) -> str:
