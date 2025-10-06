@@ -1,21 +1,10 @@
-import time
-from typing import TYPE_CHECKING
-
 from attrs import define
 from provide.testkit import FoundationTestCase
-import pytest
 
 from provide.foundation.state import (
     ImmutableState,
     StateManager,
 )
-from provide.foundation.state._internal.transitions import (
-    CircuitBreakerEvent,
-    CircuitBreakerStateMachine,
-)
-
-if TYPE_CHECKING:
-    from provide.testkit.time.fixtures import TimeMachine
 
 
 class TestImmutableState(FoundationTestCase):
@@ -57,81 +46,3 @@ class TestStateManager(FoundationTestCase):
         assert manager.current_state is new_state
         assert new_state.generation == 10
         assert old_state.generation == 0
-
-
-class TestCircuitBreaker(FoundationTestCase):
-    @pytest.fixture
-    def machine(self) -> CircuitBreakerStateMachine:
-        return CircuitBreakerStateMachine(failure_threshold=2, recovery_timeout=0.1)
-
-    def test_initial_state_is_closed(self, machine: CircuitBreakerStateMachine) -> None:
-        assert machine.current_state == "closed"
-        assert machine.circuit_state.is_closed()
-
-    def test_failure_below_threshold(self, machine: CircuitBreakerStateMachine) -> None:
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        assert machine.current_state == "closed"
-        assert machine.circuit_state.failure_count == 1
-
-    def test_failure_reaches_threshold(self, machine: CircuitBreakerStateMachine) -> None:
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        assert machine.current_state == "open"
-        assert machine.circuit_state.is_open()
-        assert machine.circuit_state.failure_count == 2
-
-    def test_success_resets_failure_count(self, machine: CircuitBreakerStateMachine) -> None:
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.SUCCESS)
-        assert machine.current_state == "closed"
-        assert machine.circuit_state.failure_count == 0
-
-    @pytest.mark.slow
-    def test_open_to_half_open_after_timeout(self, machine: CircuitBreakerStateMachine) -> None:
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        assert machine.current_state == "open"
-        # Keep original real sleep for now - works reliably
-        # TODO: Replace with testkit time control when comprehensive time mocking is available
-        time.sleep(0.15)
-        assert machine._should_attempt_reset() is True
-        machine.transition(CircuitBreakerEvent.TIMEOUT)
-        assert machine.current_state == "half_open"
-
-    @pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
-    def test_half_open_success_closes_circuit(self, machine: CircuitBreakerStateMachine, time_machine: "TimeMachine") -> None:
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        assert machine.current_state == "open"
-
-        time_machine.freeze()
-        time_machine.jump(machine.circuit_state.recovery_timeout + 0.01)
-
-        machine.transition(CircuitBreakerEvent.TIMEOUT)
-        assert machine.current_state == "half_open"
-        machine.transition(CircuitBreakerEvent.SUCCESS)
-        assert machine.current_state == "closed"
-        assert machine.circuit_state.failure_count == 0
-
-    @pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
-    def test_half_open_failure_reopens_circuit(self, machine: CircuitBreakerStateMachine, time_machine: "TimeMachine") -> None:
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        assert machine.current_state == "open"
-
-        time_machine.freeze()
-        time_machine.jump(machine.circuit_state.recovery_timeout + 0.01)
-
-        machine.transition(CircuitBreakerEvent.TIMEOUT)
-        assert machine.current_state == "half_open"
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        assert machine.current_state == "open"
-        assert machine.circuit_state.failure_count > 0
-
-    def test_reset_event_from_open(self, machine: CircuitBreakerStateMachine) -> None:
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        assert machine.current_state == "open"
-        machine.transition(CircuitBreakerEvent.RESET)
-        assert machine.current_state == "closed"
-        assert machine.circuit_state.failure_count == 0

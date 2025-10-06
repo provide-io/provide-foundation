@@ -85,17 +85,13 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
     def ensure_time_unfrozen() -> None:
         """Ensure time is unfrozen before event loop operations."""
         try:
-            import sys
             from unittest.mock import _patch
 
             from provide.testkit.time.classes import get_active_time_machines
 
             # Use registry to find and cleanup frozen TimeMachines - O(1) instead of O(n)
-            machines_found = 0
             for machine in get_active_time_machines():
-                machines_found += 1
                 if machine.is_frozen:
-                    print(f"[CONFTEST] Found frozen time machine, calling cleanup...", file=sys.stderr)
                     with contextlib.suppress(Exception):
                         machine.cleanup()
 
@@ -103,54 +99,39 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
             # This handles edge cases where patches exist without associated TimeMachines
             import gc
 
-            patches_stopped = 0
             for obj in gc.get_objects():
                 if isinstance(obj, _patch):
                     try:
                         if hasattr(obj, "attribute") and obj.attribute in ("time", "monotonic"):
-                            print(f"[CONFTEST] Found orphaned time patch on {obj.attribute}, stopping...", file=sys.stderr)
                             obj.stop()
-                            patches_stopped += 1
                     except Exception:
                         pass
 
-            if machines_found > 0 or patches_stopped > 0:
-                print(f"[CONFTEST] Cleaned up {machines_found} machines, {patches_stopped} patches", file=sys.stderr)
-
-        except Exception as e:
-            print(f"[CONFTEST] Error in ensure_time_unfrozen: {e}", file=sys.stderr)
+        except Exception:
+            pass
 
     def patched_new_event_loop() -> asyncio.AbstractEventLoop:
         """Create new event loop after ensuring time is unfrozen."""
-        import sys
-        print("[CONFTEST] patched_new_event_loop() called", file=sys.stderr)
         ensure_time_unfrozen()
-        loop = original_new_event_loop()
-        print(f"[CONFTEST] Created new event loop: {id(loop)}", file=sys.stderr)
-        return loop
+        return original_new_event_loop()
 
     original_get_event_loop = asyncio.get_event_loop
 
     def patched_get_event_loop() -> asyncio.AbstractEventLoop:
         """Get event loop after ensuring time is unfrozen."""
-        import sys
-        print("[CONFTEST] patched_get_event_loop() called", file=sys.stderr)
         # If there's no current loop, we'll create a new one - ensure time is unfrozen first
         try:
             loop = original_get_event_loop()
-            print(f"[CONFTEST] Got existing event loop: {id(loop)}, closed={loop.is_closed()}", file=sys.stderr)
             # Loop exists and is not closed, ensure it wasn't created with frozen time
             if not loop.is_closed():
                 ensure_time_unfrozen()
             return loop
-        except RuntimeError as e:
+        except RuntimeError:
             # No current event loop - create a new one with unfrozen time
-            print(f"[CONFTEST] No current event loop ({e}), creating new one with unfrozen time", file=sys.stderr)
             ensure_time_unfrozen()
             # Create and set a new loop (don't call get_event_loop again - it will just error)
             new_loop = original_new_event_loop()
             asyncio.set_event_loop(new_loop)
-            print(f"[CONFTEST] Created and set new event loop: {id(new_loop)}", file=sys.stderr)
             return new_loop
 
     # Patch both new and get
