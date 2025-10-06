@@ -142,13 +142,10 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
         asyncio.new_event_loop = original_new_event_loop
         asyncio.get_event_loop = original_get_event_loop
 
-        # Close any remaining loops
-        try:
-            loop = asyncio.get_event_loop()
-            if not loop.is_running() and not loop.is_closed():
-                loop.close()
-        except RuntimeError:
-            pass
+        # NOTE: We do NOT close event loops here because:
+        # 1. Pytest manages event loop lifecycle for async tests
+        # 2. Closing loops here can interfere with subsequent async tests in serial execution
+        # 3. The reset_foundation_for_all_tests fixture handles cleanup after each test
 
 
 @pytest.fixture(autouse=True)
