@@ -39,7 +39,7 @@ except ImportError:
 log = get_logger(__name__)
 
 
-@define
+@define(slots=True, kw_only=True)
 class Span:
     """Enhanced span implementation with optional OpenTelemetry integration.
 
@@ -55,7 +55,7 @@ class Span:
     tags: dict[str, Any] = field(factory=dict)
     status: str = "ok"
     error: str | None = None
-    time_source: Any = field(default=None, kw_only=True)
+    time_source: Any = field(default=None)
 
     # Internal OpenTelemetry span (when available)
     _otel_span: otel_trace.Span | None = field(default=DEFAULT_TRACER_OTEL_SPAN, init=False, repr=False)
