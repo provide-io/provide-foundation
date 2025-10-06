@@ -171,22 +171,30 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         # This ensures clean state for the next test in the worker
         reset_foundation_setup_for_testing()
 
-        # If this test used time_machine, aggressively cleanup time patches and event loop
-        # This must happen IMMEDIATELY after test completes, not before next test starts
+        # If this test used time_machine, aggressively stop all time patches
+        # This must happen IMMEDIATELY after test completes
         used_time_machine = "time_machine" in request.fixturenames
         if used_time_machine:
             try:
-                # Force stop all active time machines
-                from provide.testkit.time.classes import get_active_time_machines
-
-                for machine in get_active_time_machines():
-                    with contextlib.suppress(Exception):
-                        machine.cleanup()
-
-                # Stop any orphaned time patches
                 import gc
                 from unittest.mock import _patch
 
+                # Force stop all active time machines using testkit registry
+                try:
+                    from provide.testkit.time.classes import get_active_time_machines
+
+                    for machine in get_active_time_machines():
+                        with contextlib.suppress(Exception):
+                            # Try stop() first (more forceful), then cleanup()
+                            if hasattr(machine, "stop"):
+                                machine.stop()
+                            elif hasattr(machine, "cleanup"):
+                                machine.cleanup()
+                except Exception:
+                    pass
+
+                # Aggressively stop ANY mock patches on time functions
+                # This handles cases where testkit's registry might not catch everything
                 for obj in gc.get_objects():
                     if isinstance(obj, _patch):
                         try:
@@ -195,30 +203,17 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
                                 "monotonic",
                                 "perf_counter",
                                 "sleep",
+                                "gmtime",
+                                "localtime",
+                                "strftime",
                             ):
                                 with contextlib.suppress(Exception):
                                     obj.stop()
                         except Exception:
                             pass
 
-                # Close and clear the potentially corrupted event loop
-                import asyncio
-
-                try:
-                    loop = asyncio.get_event_loop()
-                    if loop and not loop.is_closed():
-                        # Cancel all tasks
-                        if hasattr(loop, "_ready"):
-                            loop._ready.clear()
-                        if hasattr(loop, "_scheduled"):
-                            loop._scheduled.clear()
-                        loop.close()
-                except Exception:
-                    pass
-
-                # Clear the event loop so pytest-asyncio creates a fresh one
-                with contextlib.suppress(Exception):
-                    asyncio.set_event_loop(None)
+                # Force gc to clean up any remaining patch references
+                gc.collect()
 
             except Exception:
                 pass
