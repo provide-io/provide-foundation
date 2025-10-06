@@ -167,37 +167,22 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
 
     from provide.testkit import reset_foundation_setup_for_testing
 
-    # BEFORE test: Check if previous test used time_machine and force fresh loop
-    # This must happen BEFORE yield so next test gets completely clean loop
+    # BEFORE test: Check if previous test used time_machine and close corrupted loop
+    # This must happen BEFORE yield so pytest-asyncio creates fresh loop for next test
     try:
         if hasattr(reset_foundation_for_all_tests, '_last_test_used_time_machine'):
             if reset_foundation_for_all_tests._last_test_used_time_machine:
                 import asyncio
-                import gc
-                # Aggressively clean up old loop
+                #  Only close old loop - let pytest-asyncio create new one
                 try:
                     old_loop = asyncio.get_event_loop()
                     if old_loop and not old_loop.is_closed():
-                        # Stop if running
-                        if old_loop.is_running():
-                            old_loop.stop()
-                        # Clear all pending
-                        if hasattr(old_loop, '_ready'):
-                            old_loop._ready.clear()
-                        if hasattr(old_loop, '_scheduled'):
-                            old_loop._scheduled.clear()
                         old_loop.close()
                 except Exception:
                     pass
-
-                # Force garbage collection
-                gc.collect()
-
-                # Create completely fresh loop and policy
+                # Clear loop so pytest-asyncio creates new one
                 try:
-                    asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
-                    new_loop = asyncio.new_event_loop()
-                    asyncio.set_event_loop(new_loop)
+                    asyncio.set_event_loop(None)
                 except Exception:
                     pass
 
