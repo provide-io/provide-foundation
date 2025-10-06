@@ -44,7 +44,7 @@ class Middleware(ABC):
         """Process errors during request."""
 
 
-@define
+@define(slots=True)
 class LoggingMiddleware(Middleware):
     """Built-in telemetry middleware using foundation.logger."""
 
@@ -120,7 +120,7 @@ class LoggingMiddleware(Middleware):
         return "❓"
 
 
-@define
+@define(slots=True)
 class RetryMiddleware(Middleware):
     """Automatic retry middleware using unified retry logic."""
 
@@ -177,7 +177,7 @@ class RetryMiddleware(Middleware):
             raise
 
 
-@define
+@define(slots=True)
 class MetricsMiddleware(Middleware):
     """Middleware for collecting transport metrics using foundation.metrics."""
 
@@ -234,7 +234,7 @@ class MetricsMiddleware(Middleware):
         return error
 
 
-@define
+@define(slots=True)
 class MiddlewarePipeline:
     """Pipeline for executing middleware in order."""
 

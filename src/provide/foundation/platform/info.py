@@ -24,7 +24,7 @@ from provide.foundation.utils.caching import cached
 plog = get_logger(__name__)
 
 
-@define
+@define(slots=True)
 class SystemInfo:
     """System information container."""
 

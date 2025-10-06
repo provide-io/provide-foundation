@@ -12,7 +12,7 @@ from provide.foundation.config.types import ConfigDict
 from provide.foundation.errors import ConfigValidationError
 
 
-@define
+@define(slots=True)
 class SchemaField:
     """Schema definition for a configuration field."""
 
