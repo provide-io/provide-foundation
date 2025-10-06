@@ -144,10 +144,14 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
                 ensure_time_unfrozen()
             return loop
         except RuntimeError as e:
-            # No current event loop - will create new one
-            print(f"[CONFTEST] No current event loop ({e}), ensuring time unfrozen", file=sys.stderr)
+            # No current event loop - create a new one with unfrozen time
+            print(f"[CONFTEST] No current event loop ({e}), creating new one with unfrozen time", file=sys.stderr)
             ensure_time_unfrozen()
-            return original_get_event_loop()
+            # Create and set a new loop (don't call get_event_loop again - it will just error)
+            new_loop = original_new_event_loop()
+            asyncio.set_event_loop(new_loop)
+            print(f"[CONFTEST] Created and set new event loop: {id(new_loop)}", file=sys.stderr)
+            return new_loop
 
     # Patch both new and get
     asyncio.new_event_loop = patched_new_event_loop
