@@ -171,12 +171,13 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         # This ensures clean state for the next test in the worker
         reset_foundation_setup_for_testing()
 
-        # If this test used time_machine, aggressively stop all time patches
-        # This must happen IMMEDIATELY after test completes
+        # If this test used time_machine, aggressively cleanup to prevent event loop corruption
+        # This must happen IMMEDIATELY after test completes, before next test starts
         used_time_machine = "time_machine" in request.fixturenames
         if used_time_machine:
             try:
                 import gc
+                import asyncio
                 from unittest.mock import _patch
 
                 # Force stop all active time machines using testkit registry
@@ -214,6 +215,31 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
 
                 # Force gc to clean up any remaining patch references
                 gc.collect()
+
+                # CRITICAL: Close and clear the event loop that may have been corrupted by time_machine
+                # The event loop was created with frozen time.monotonic, so it must be discarded
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop and not loop.is_closed():
+                        # Stop all running tasks
+                        tasks = [t for t in asyncio.all_tasks(loop) if not t.done()]
+                        for task in tasks:
+                            task.cancel()
+                        # Clear internal queues
+                        if hasattr(loop, "_ready"):
+                            loop._ready.clear()
+                        if hasattr(loop, "_scheduled"):
+                            loop._scheduled.clear()
+                        # Close the loop
+                        loop.close()
+                except Exception:
+                    pass
+
+                # Clear the event loop so pytest-asyncio creates a fresh one for the next test
+                try:
+                    asyncio.set_event_loop(None)
+                except Exception:
+                    pass
 
             except Exception:
                 pass
