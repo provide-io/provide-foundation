@@ -82,6 +82,9 @@ def pytest_pyfunc_call(pyfuncitem: pytest.Item):
         # Save current trace function
         old_trace = sys.gettrace()
 
+        # Print debug info
+        print(f"\n🔕 Disabling coverage for: {pyfuncitem.nodeid}")
+
         # Disable tracing for this test
         sys.settrace(None)
 
@@ -89,6 +92,8 @@ def pytest_pyfunc_call(pyfuncitem: pytest.Item):
             # Let pytest run the test without coverage
             yield
         finally:
+            # Print debug info
+            print(f"🔔 Re-enabling coverage after: {pyfuncitem.nodeid}")
             # Restore tracing after test
             sys.settrace(old_trace)
     else:
