@@ -39,7 +39,7 @@ class TestTraceContext(FoundationTestCase):
 
     def test_set_and_get_current_span(self) -> None:
         """Test setting and getting current span."""
-        span = Span(name="test_op")
+        span = Span("test_op")
 
         set_current_span(span)
 
@@ -48,7 +48,7 @@ class TestTraceContext(FoundationTestCase):
 
     def test_set_current_span_to_none(self) -> None:
         """Test setting current span to None."""
-        span = Span(name="test_op")
+        span = Span("test_op")
         set_current_span(span)
 
         set_current_span(None)
@@ -58,7 +58,7 @@ class TestTraceContext(FoundationTestCase):
 
     def test_create_child_span_with_parent(self) -> None:
         """Test creating child span with explicit parent."""
-        parent_span = Span(name="parent_op")
+        parent_span = Span("parent_op")
 
         child_span = create_child_span("child_op", parent=parent_span)
 
@@ -69,7 +69,7 @@ class TestTraceContext(FoundationTestCase):
 
     def test_create_child_span_with_current_parent(self) -> None:
         """Test creating child span using current span as parent."""
-        parent_span = Span(name="parent_op")
+        parent_span = Span("parent_op")
         set_current_span(parent_span)
 
         child_span = create_child_span("child_op")
@@ -89,7 +89,7 @@ class TestTraceContext(FoundationTestCase):
 
     def test_get_trace_context_with_span(self) -> None:
         """Test getting trace context when span is active."""
-        span = Span(name="test_op")
+        span = Span("test_op")
         set_current_span(span)
 
         context = get_trace_context()
@@ -118,7 +118,7 @@ class TestSpanContext(FoundationTestCase):
 
     def test_span_context_lifecycle(self) -> None:
         """Test SpanContext lifecycle management."""
-        span = Span(name="test_op")
+        span = Span("test_op")
 
         with SpanContext(span) as active_span:
             assert active_span == span
@@ -131,7 +131,7 @@ class TestSpanContext(FoundationTestCase):
 
     def test_span_context_with_exception(self) -> Never:
         """Test SpanContext handling exceptions."""
-        span = Span(name="test_op")
+        span = Span("test_op")
 
         with pytest.raises(ValueError), SpanContext(span):
             raise ValueError("Test error")
@@ -142,10 +142,10 @@ class TestSpanContext(FoundationTestCase):
 
     def test_span_context_restores_previous_span(self) -> None:
         """Test that SpanContext restores previous span."""
-        outer_span = Span(name="outer_op")
+        outer_span = Span("outer_op")
         set_current_span(outer_span)
 
-        inner_span = Span(name="inner_op")
+        inner_span = Span("inner_op")
 
         with SpanContext(inner_span):
             assert get_current_span() == inner_span
@@ -155,7 +155,7 @@ class TestSpanContext(FoundationTestCase):
 
     def test_span_context_no_previous_span(self) -> None:
         """Test SpanContext when no previous span exists."""
-        span = Span(name="test_op")
+        span = Span("test_op")
 
         with SpanContext(span):
             assert get_current_span() == span
@@ -183,7 +183,7 @@ class TestWithSpanHelper(FoundationTestCase):
 
     def test_with_span_creates_child_span(self) -> None:
         """Test with_span creates child span when parent exists."""
-        parent_span = Span(name="parent_op")
+        parent_span = Span("parent_op")
         set_current_span(parent_span)
 
         with with_span("child_op") as child_span:
@@ -238,8 +238,8 @@ class TestContextVarIsolation(FoundationTestCase):
 
     def test_context_isolation(self) -> None:
         """Test that spans are isolated in different contexts."""
-        span1 = Span(name="span1")
-        span2 = Span(name="span2")
+        span1 = Span("span1")
+        span2 = Span("span2")
 
         # Create a new context
         ctx = contextvars.copy_context()
