@@ -92,6 +92,25 @@ def pytest_pyfunc_call(pyfuncitem: pytest.Item):
             # Let pytest run the test without coverage
             yield
         finally:
+            # Clean up event loop BEFORE re-enabling coverage
+            # time_machine may have corrupted loop state even without coverage active
+            try:
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop and not loop.is_closed():
+                        if hasattr(loop, '_ready'):
+                            loop._ready.clear()
+                        if hasattr(loop, '_scheduled'):
+                            loop._scheduled.clear()
+                        loop.close()
+                except RuntimeError:
+                    pass
+                # Set None so pytest-asyncio creates fresh loop
+                asyncio.set_event_loop(None)
+            except Exception:
+                pass
+
             # Print debug info
             print(f"🔔 Re-enabling coverage after: {pyfuncitem.nodeid}")
             # Restore tracing after test
