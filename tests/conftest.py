@@ -184,23 +184,36 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
             # Under coverage tracing, time manipulation corrupts event loop's time tracking
             try:
                 import asyncio
+                import gc
 
                 # Close existing corrupted loop
                 try:
                     loop = asyncio.get_event_loop()
                     if loop and not loop.is_closed():
-                        # Clear pending callbacks (corrupted by time manipulation)
+                        # Stop the loop if running
+                        if loop.is_running():
+                            loop.stop()
+                        # Clear all pending callbacks and timers (corrupted by time manipulation)
                         if hasattr(loop, '_ready'):
                             loop._ready.clear()
                         if hasattr(loop, '_scheduled'):
                             loop._scheduled.clear()
-                        # Close the loop - pytest-asyncio will create a fresh one
+                        # Clear selector if it exists
+                        if hasattr(loop, '_selector') and loop._selector:
+                            try:
+                                loop._selector.close()
+                            except Exception:
+                                pass
+                        # Close the loop
                         loop.close()
                 except RuntimeError:
                     pass  # No current event loop exists
 
-                # Clear the current event loop without setting a new one
-                # Let pytest-asyncio create a fresh loop when needed
+                # Force garbage collection of any loop-related objects
+                gc.collect()
+
+                # Reset event loop policy completely - creates virgin state
+                asyncio.set_event_loop_policy(None)
                 asyncio.set_event_loop(None)
             except Exception:
                 pass  # Best effort cleanup
