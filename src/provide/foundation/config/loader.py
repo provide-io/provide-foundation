@@ -119,10 +119,8 @@ class FileConfigLoader(ConfigLoader):
 
             return yaml.safe_load(content)
         if self.format == ConfigFormat.TOML:
-            try:
-                import tomllib
-            except ImportError:
-                import tomli as tomllib  # type: ignore[no-redef]
+            import tomllib
+
             return tomllib.loads(content)
         if self.format == ConfigFormat.INI:
             import configparser
