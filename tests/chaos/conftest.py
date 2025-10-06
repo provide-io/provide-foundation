@@ -5,7 +5,7 @@ Configures Hypothesis settings and provides chaos-specific fixtures.
 
 from __future__ import annotations
 
-from hypothesis import Phase, Verbosity, settings
+from hypothesis import HealthCheck, Phase, Verbosity, settings
 import pytest
 
 # Register Hypothesis profiles for chaos testing
@@ -17,7 +17,7 @@ settings.register_profile(
     report_multiple_bugs=True,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.shrink],
     print_blob=True,  # Enable statistics printing
-    suppress_health_check=[],  # Suppress slow input generation warnings
+    suppress_health_check=[HealthCheck.too_slow],  # Suppress slow input generation warnings
 )
 
 settings.register_profile(
@@ -28,7 +28,7 @@ settings.register_profile(
     report_multiple_bugs=False,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.shrink],
     print_blob=True,  # Enable statistics printing
-    suppress_health_check=[],
+    suppress_health_check=[HealthCheck.too_slow],
 )
 
 settings.register_profile(
@@ -39,7 +39,7 @@ settings.register_profile(
     report_multiple_bugs=False,
     phases=[Phase.explicit, Phase.generate],
     print_blob=True,  # Enable statistics printing
-    suppress_health_check=[],  # Suppress all health checks for fast iteration
+    suppress_health_check=[HealthCheck.too_slow],  # Suppress slow input generation for fast iteration
 )
 
 
