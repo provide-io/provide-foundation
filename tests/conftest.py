@@ -167,6 +167,26 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
 
     from provide.testkit import reset_foundation_setup_for_testing
 
+    # BEFORE test: Check if previous test used time_machine and clean up
+    # This must happen BEFORE yield so next test gets clean loop
+    try:
+        if hasattr(reset_foundation_for_all_tests, '_last_test_used_time_machine'):
+            if reset_foundation_for_all_tests._last_test_used_time_machine:
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop and not loop.is_closed():
+                        loop.close()
+                except Exception:
+                    pass
+                try:
+                    asyncio.set_event_loop(None)
+                except Exception:
+                    pass
+            reset_foundation_for_all_tests._last_test_used_time_machine = False
+    except Exception:
+        pass
+
     try:
         yield
     finally:
@@ -174,31 +194,9 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         # This ensures clean state for the next test in the worker
         reset_foundation_setup_for_testing()
 
-        # CRITICAL FIX: Clean up event loop after time_machine tests
-        # time_machine corrupts asyncio event loop state, causing subsequent async tests to freeze
-        # This happens even without coverage - it's purely time_machine + asyncio interaction
+        # Mark if this test used time_machine so NEXT test can clean up before starting
         used_time_machine = "time_machine" in request.fixturenames
-        if used_time_machine:
-            try:
-                import asyncio
-                # Close and clear corrupted event loop
-                try:
-                    loop = asyncio.get_event_loop()
-                    if loop and not loop.is_closed():
-                        # Clear pending callbacks (corrupted by time manipulation)
-                        if hasattr(loop, '_ready'):
-                            loop._ready.clear()
-                        if hasattr(loop, '_scheduled'):
-                            loop._scheduled.clear()
-                        # Close the corrupted loop
-                        loop.close()
-                except RuntimeError:
-                    pass  # No current event loop
-
-                # Clear event loop - pytest-asyncio will create fresh one
-                asyncio.set_event_loop(None)
-            except Exception:
-                pass  # Best effort cleanup
+        reset_foundation_for_all_tests._last_test_used_time_machine = used_time_machine
 
         # NOTE: We do NOT close event loops in normal cases because:
         # 1. pytest-asyncio manages event loop lifecycle
