@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-"""Base utilities and constants for configuration parsers.
+"""Error formatting utilities and validation constants for parsers.
 
 Provides shared error formatting functions and common constants
 used across all parser modules.

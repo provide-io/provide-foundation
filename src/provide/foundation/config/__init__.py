@@ -59,7 +59,7 @@ from provide.foundation.errors.config import (
     ConfigurationError as ConfigError,
     ValidationError as ConfigValidationError,
 )
-from provide.foundation.utils.parsing import (
+from provide.foundation.parsers import (
     parse_bool,
     parse_dict,
     parse_list,

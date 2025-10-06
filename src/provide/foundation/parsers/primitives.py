@@ -3,12 +3,12 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from provide.foundation.config.parsers.base import _format_invalid_value_error, _format_validation_error
+from provide.foundation.parsers.errors import _format_invalid_value_error, _format_validation_error
 
-"""Basic type parsing functions for configuration values.
+"""Basic type parsing functions for primitive types.
 
-Handles parsing of primitive types (bool, float, int) and simple
-data structures (lists) from string configuration values.
+Handles parsing of primitive types (bool, float, int) and JSON
+data structures from string configuration values.
 """
 
 
@@ -125,6 +125,29 @@ def parse_bool_strict(value: str | bool | int | float) -> bool:
     )
 
 
+def parse_bool(value: Any, strict: bool = False) -> bool:
+    """Parse a boolean value from string or other types.
+
+    Accepts: true/false, yes/no, 1/0, on/off (case-insensitive)
+
+    Args:
+        value: Value to parse as boolean
+        strict: If True, only accept bool or string types (raise TypeError otherwise)
+
+    Returns:
+        Boolean value
+
+    Raises:
+        TypeError: If strict=True and value is not bool or string, or if value is not bool/str
+        ValueError: If value cannot be parsed as boolean
+
+    """
+    if strict and not isinstance(value, (bool, str)):
+        raise TypeError(f"Cannot convert {type(value).__name__} to bool: {value!r}")
+
+    return parse_bool_strict(value)
+
+
 def parse_float_with_validation(
     value: str,
     min_val: float | None = None,
@@ -178,22 +201,6 @@ def parse_sample_rate(value: str) -> float:
 
     """
     return parse_float_with_validation(value, min_val=0.0, max_val=1.0)
-
-
-def parse_comma_list(value: str) -> list[str]:
-    """Parse comma-separated list of strings.
-
-    Args:
-        value: Comma-separated string
-
-    Returns:
-        List of trimmed non-empty strings
-
-    """
-    if not value or not value.strip():
-        return []
-
-    return [item.strip() for item in value.split(",") if item.strip()]
 
 
 def parse_json_dict(value: str) -> dict[str, Any]:
@@ -263,9 +270,9 @@ def parse_json_list(value: str) -> list[Any]:
 
 
 __all__ = [
+    "parse_bool",
     "parse_bool_extended",
     "parse_bool_strict",
-    "parse_comma_list",
     "parse_float_with_validation",
     "parse_json_dict",
     "parse_json_list",

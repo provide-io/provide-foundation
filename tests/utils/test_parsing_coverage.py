@@ -7,7 +7,7 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock
 import pytest
 
-from provide.foundation.utils.parsing import (
+from provide.foundation.parsers import (
     auto_parse,
     parse_bool,
     parse_dict,
@@ -227,7 +227,7 @@ class TestInternalHelpers:
 
     def test_parse_basic_type(self) -> None:
         """Test _parse_basic_type function."""
-        from provide.foundation.utils.parsing import _parse_basic_type
+        from provide.foundation.parsers import _parse_basic_type
 
         assert _parse_basic_type("42", int) == 42
         assert _parse_basic_type("3.14", float) == 3.14
@@ -238,7 +238,7 @@ class TestInternalHelpers:
     def test_parse_list_type(self) -> None:
         """Test _parse_list_type function."""
 
-        from provide.foundation.utils.parsing import _parse_list_type
+        from provide.foundation.parsers import _parse_list_type
 
         # Parameterized list
         result = _parse_list_type("1,2,3", list[int])
@@ -251,7 +251,7 @@ class TestInternalHelpers:
     def test_parse_generic_type(self) -> None:
         """Test _parse_generic_type function."""
 
-        from provide.foundation.utils.parsing import _parse_generic_type
+        from provide.foundation.parsers import _parse_generic_type
 
         # Parameterized list
         result = _parse_generic_type("1,2,3", list[int])
@@ -274,7 +274,7 @@ class TestInternalHelpers:
 
     def test_try_converter(self) -> None:
         """Test _try_converter function."""
-        from provide.foundation.utils.parsing import _try_converter
+        from provide.foundation.parsers import _try_converter
 
         # Successful converter
         success, result = _try_converter(str.upper, "hello")
@@ -304,7 +304,7 @@ class TestInternalHelpers:
 
     def test_resolve_string_type(self) -> None:
         """Test _resolve_string_type function."""
-        from provide.foundation.utils.parsing import _resolve_string_type
+        from provide.foundation.parsers import _resolve_string_type
 
         assert _resolve_string_type("int") is int
         assert _resolve_string_type("float") is float
@@ -316,7 +316,7 @@ class TestInternalHelpers:
 
     def test_extract_field_type(self) -> None:
         """Test _extract_field_type function."""
-        from provide.foundation.utils.parsing import _extract_field_type
+        from provide.foundation.parsers import _extract_field_type
 
         # Mock attrs field
         field_with_type = Mock()

@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-from provide.foundation.config.parsers.base import (
+from provide.foundation.parsers.errors import (
     _VALID_LOG_LEVEL_TUPLE,
     _VALID_OVERFLOW_POLICY_TUPLE,
     _format_invalid_value_error,
