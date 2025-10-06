@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from provide.foundation.config.parsers import (
+from provide.foundation.parsers import (
     parse_bool_extended,
     parse_bool_strict,
     parse_comma_list,
@@ -15,6 +15,8 @@ from provide.foundation.config.parsers import (
     parse_module_levels,
     parse_rate_limits,
     parse_sample_rate,
+)
+from provide.foundation.config.validators import (
     validate_choice,
     # Validators
     validate_log_level,

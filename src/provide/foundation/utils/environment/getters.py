@@ -6,7 +6,7 @@ from typing import Any, TypeVar, get_origin
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.logger import get_logger
-from provide.foundation.utils.parsing import parse_bool, parse_dict, parse_list, parse_set, parse_tuple
+from provide.foundation.parsers import parse_bool, parse_dict, parse_list, parse_set, parse_tuple
 
 """Basic environment variable getters with type coercion.
 

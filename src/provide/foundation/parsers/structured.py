@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-"""Complex data structure parsers for configuration values.
+"""Complex data structure parsers for structured configuration values.
 
 Handles parsing of structured data like dictionaries with specific formats
 (headers, module levels, rate limits) from string configuration values.
@@ -16,7 +16,7 @@ else:
 
 def parse_log_level(value: str) -> LogLevelStr:
     """Import parse_log_level from telemetry module to avoid circular imports."""
-    from provide.foundation.config.parsers.telemetry import parse_log_level as _parse_log_level
+    from provide.foundation.parsers.telemetry import parse_log_level as _parse_log_level
 
     return _parse_log_level(value)
 

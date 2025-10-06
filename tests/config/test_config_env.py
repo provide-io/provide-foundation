@@ -12,7 +12,7 @@ from provide.foundation.config.env import (
     env_field,
     get_env,
 )
-from provide.foundation.utils.parsing import (
+from provide.foundation.parsers import (
     parse_bool,
     parse_dict,
     parse_list,

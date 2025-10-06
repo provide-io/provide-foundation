@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from provide.foundation.utils.parsing import extract_concrete_type
+from provide.foundation.parsers import extract_concrete_type
 
 
 def extract_click_type(annotation: Any) -> type:
