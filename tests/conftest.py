@@ -180,29 +180,28 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         used_time_machine = "time_machine" in request.fixturenames
 
         if coverage_enabled and used_time_machine:
-            # Close and cleanup any existing event loop to prevent corruption
+            # Close and cleanup event loop corrupted by time_machine + coverage
+            # Under coverage tracing, time manipulation corrupts event loop's time tracking
             try:
                 import asyncio
 
-                # Get and close existing loop
+                # Close existing corrupted loop
                 try:
                     loop = asyncio.get_event_loop()
                     if loop and not loop.is_closed():
-                        # Cancel all pending tasks
+                        # Clear pending callbacks (corrupted by time manipulation)
                         if hasattr(loop, '_ready'):
                             loop._ready.clear()
                         if hasattr(loop, '_scheduled'):
                             loop._scheduled.clear()
-                        # Close the corrupted loop
+                        # Close the loop - pytest-asyncio will create a fresh one
                         loop.close()
                 except RuntimeError:
-                    pass  # No current event loop
+                    pass  # No current event loop exists
 
-                # Force creation of a fresh event loop with clean state
-                # This is critical: we must both clear the policy AND set a new loop
-                asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
-                new_loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(new_loop)
+                # Clear the current event loop without setting a new one
+                # Let pytest-asyncio create a fresh loop when needed
+                asyncio.set_event_loop(None)
             except Exception:
                 pass  # Best effort cleanup
 
