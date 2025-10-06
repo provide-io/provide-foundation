@@ -122,22 +122,30 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
 
     def patched_new_event_loop() -> asyncio.AbstractEventLoop:
         """Create new event loop after ensuring time is unfrozen."""
+        import sys
+        print("[CONFTEST] patched_new_event_loop() called", file=sys.stderr)
         ensure_time_unfrozen()
-        return original_new_event_loop()
+        loop = original_new_event_loop()
+        print(f"[CONFTEST] Created new event loop: {id(loop)}", file=sys.stderr)
+        return loop
 
     original_get_event_loop = asyncio.get_event_loop
 
     def patched_get_event_loop() -> asyncio.AbstractEventLoop:
         """Get event loop after ensuring time is unfrozen."""
+        import sys
+        print("[CONFTEST] patched_get_event_loop() called", file=sys.stderr)
         # If there's no current loop, we'll create a new one - ensure time is unfrozen first
         try:
             loop = original_get_event_loop()
+            print(f"[CONFTEST] Got existing event loop: {id(loop)}, closed={loop.is_closed()}", file=sys.stderr)
             # Loop exists and is not closed, ensure it wasn't created with frozen time
             if not loop.is_closed():
                 ensure_time_unfrozen()
             return loop
-        except RuntimeError:
+        except RuntimeError as e:
             # No current event loop - will create new one
+            print(f"[CONFTEST] No current event loop ({e}), ensuring time unfrozen", file=sys.stderr)
             ensure_time_unfrozen()
             return original_get_event_loop()
 
