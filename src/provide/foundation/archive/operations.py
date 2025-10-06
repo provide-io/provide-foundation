@@ -304,16 +304,22 @@ class ArchiveOperations:
         """Detect archive format by magic numbers."""
         try:
             with file.open("rb") as f:
+                # Read first 4 bytes for common formats
                 magic = f.read(4)
 
-            if magic[:2] == b"\x1f\x8b":  # gzip
-                return ["gunzip"]
-            if magic[:3] == b"BZh":  # bzip2
-                return ["bunzip2"]
-            if magic[:4] == b"PK\x03\x04":  # zip
-                return ["unzip"]
-            if magic[:3] == b"ustar":  # tar (at offset 257)
-                return ["untar"]
+                # Check common formats first
+                if magic[:2] == b"\x1f\x8b":  # gzip
+                    return ["gunzip"]
+                if magic[:3] == b"BZh":  # bzip2
+                    return ["bunzip2"]
+                if magic[:4] == b"PK\x03\x04":  # zip
+                    return ["unzip"]
+
+                # Check for tar (ustar magic at offset 257)
+                f.seek(257)
+                ustar_magic = f.read(5)
+                if ustar_magic == b"ustar":
+                    return ["untar"]
         except Exception:  # nosec B110
             # Generic catch is intentional for robust format detection.
             # Any file access error (FileNotFoundError, PermissionError, IOError, etc.)
