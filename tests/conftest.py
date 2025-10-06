@@ -183,21 +183,26 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
             # Close and cleanup any existing event loop to prevent corruption
             try:
                 import asyncio
+
+                # Get and close existing loop
                 try:
                     loop = asyncio.get_event_loop()
                     if loop and not loop.is_closed():
-                        # Cancel all tasks
+                        # Cancel all pending tasks
                         if hasattr(loop, '_ready'):
                             loop._ready.clear()
                         if hasattr(loop, '_scheduled'):
                             loop._scheduled.clear()
-                        # Close the loop
+                        # Close the corrupted loop
                         loop.close()
                 except RuntimeError:
                     pass  # No current event loop
 
-                # Clear the event loop policy to force new loop creation
-                asyncio.set_event_loop_policy(None)
+                # Force creation of a fresh event loop with clean state
+                # This is critical: we must both clear the policy AND set a new loop
+                asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
+                new_loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(new_loop)
             except Exception:
                 pass  # Best effort cleanup
 
