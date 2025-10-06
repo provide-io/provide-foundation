@@ -273,6 +273,7 @@ class TestFileLockChaos(FoundationTestCase):
                 pass
 
     @pytest.mark.chaos_slow
+    @pytest.mark.xdist_group(name="file_lock_serial")  # Force serial execution to avoid deadlock
     @given(scenario=lock_file_scenarios())
     @settings(
         max_examples=20,
