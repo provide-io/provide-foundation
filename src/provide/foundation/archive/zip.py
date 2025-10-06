@@ -137,14 +137,39 @@ class ZipArchive(BaseArchive):
                     zf.setpassword(self.password)
 
                 # Enhanced security check - prevent path traversal, symlinks, absolute paths
-                for member in zf.namelist():
-                    if not _is_safe_path(output, member):
+                for info in zf.infolist():
+                    # Basic path safety check
+                    if not _is_safe_path(output, info.filename):
                         raise ArchiveError(
-                            f"Unsafe path in archive: {member}. "
+                            f"Unsafe path in archive: {info.filename}. "
                             "Archive may contain path traversal, symlinks, or absolute paths."
                         )
 
-                # Extract all
+                    # Check for symlinks (Unix file mode in external_attr)
+                    # ZIP stores Unix permissions in the high 16 bits of external_attr
+                    # Symlink mode is 0o120000 (S_IFLNK)
+                    if info.external_attr:
+                        mode = info.external_attr >> 16
+                        is_symlink = (mode & 0o170000) == 0o120000  # S_IFLNK check
+
+                        if is_symlink:
+                            # Read the symlink target from the ZIP data
+                            link_target = zf.read(info.filename).decode("utf-8")
+
+                            # Validate the link target is safe
+                            if not _is_safe_path(output, link_target):
+                                raise ArchiveError(
+                                    f"Unsafe symlink target in archive: {info.filename} -> {link_target}. "
+                                    "Link target may escape extraction directory."
+                                )
+
+                            # Prevent absolute paths in link target
+                            if Path(link_target).is_absolute():
+                                raise ArchiveError(
+                                    f"Absolute path in symlink target: {info.filename} -> {link_target}"
+                                )
+
+                # Extract all (all members have been security-checked above)
                 zf.extractall(output)
 
             logger.debug(f"Extracted ZIP archive to: {output}")
@@ -242,6 +267,27 @@ class ZipArchive(BaseArchive):
                     raise ArchiveError(
                         f"Unsafe path: {member}. Path may contain traversal, symlinks, or absolute paths."
                     )
+
+                # Check for symlinks
+                info = zf.getinfo(member)
+                if info.external_attr:
+                    mode = info.external_attr >> 16
+                    is_symlink = (mode & 0o170000) == 0o120000  # S_IFLNK check
+
+                    if is_symlink:
+                        # Read the symlink target
+                        link_target = zf.read(member).decode("utf-8")
+
+                        # Validate the link target is safe
+                        if not _is_safe_path(extract_base, link_target):
+                            raise ArchiveError(
+                                f"Unsafe symlink target: {member} -> {link_target}. "
+                                "Link target may escape extraction directory."
+                            )
+
+                        # Prevent absolute paths in link target
+                        if Path(link_target).is_absolute():
+                            raise ArchiveError(f"Absolute path in symlink target: {member} -> {link_target}")
 
                 if output.is_dir():
                     zf.extract(member, output)
