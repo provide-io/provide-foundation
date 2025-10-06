@@ -167,6 +167,23 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
     try:
         yield
     finally:
+        # Close any event loops created by async tests to prevent accumulation
+        # This is critical for serial execution where loops can pile up
+        import asyncio
+        try:
+            loop = asyncio.get_event_loop()
+            if not loop.is_running() and not loop.is_closed():
+                loop.close()
+        except (RuntimeError, AttributeError):
+            # No event loop or already closed
+            pass
+
+        # Try to set a new event loop policy to clear any cached loops
+        try:
+            asyncio.set_event_loop_policy(None)
+        except Exception:
+            pass
+
         # ALWAYS reset Foundation after each test, regardless of test type
         # This ensures clean state for the next test in the worker
         reset_foundation_setup_for_testing()
