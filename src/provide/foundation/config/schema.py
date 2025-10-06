@@ -266,9 +266,10 @@ def validate_path(value: str) -> bool:
     try:
         Path(value)
         return True
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, Exception):
         # ValueError: Invalid path characters or format
         # TypeError: Non-string input
+        # Exception: Any other path creation errors
         return False
 
 
