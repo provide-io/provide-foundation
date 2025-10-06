@@ -74,15 +74,10 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
     patches BEFORE creating new event loops. This ensures loops are created with
     correct time.monotonic references, not frozen ones.
 
-    PERFORMANCE: Only activates when test uses time_machine fixture (0.2% of tests).
-    Uses efficient registry lookup instead of gc.get_objects() scans.
+    CRITICAL FIX: Must ALWAYS activate (not just for time_machine tests) because
+    time_machine patches can persist from PREVIOUS tests, corrupting async tests
+    that follow time_machine tests in serial execution.
     """
-    # Only activate if test actually uses time_machine
-    # This avoids expensive patching for 4,063 of 4,071 tests (99.8%)
-    if "time_machine" not in request.fixturenames:
-        yield
-        return
-
     import asyncio
 
     original_new_event_loop = asyncio.new_event_loop
