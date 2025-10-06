@@ -208,13 +208,20 @@ class TestContextScopedCacheAsyncSafety:
         cache = ContextScopedCache[str, int]("test")
 
         async def task(task_id: int) -> bool:
-            with cache.scope():
-                cache.set("id", task_id)
-                await asyncio.sleep(0.01)  # Yield control
-                # Should still get own task's value
-                return cache.get("id") == task_id
+            try:
+                with cache.scope():
+                    cache.set("id", task_id)
+                    await asyncio.sleep(0.01)  # Yield control
+                    # Should still get own task's value
+                    return cache.get("id") == task_id
+            except Exception:
+                return False
 
-        results = await asyncio.gather(*[task(i) for i in range(4)])
+        # Use timeout to prevent indefinite hanging
+        results = await asyncio.wait_for(
+            asyncio.gather(*[task(i) for i in range(4)]),
+            timeout=5.0,
+        )
         assert all(results)
 
     @pytest.mark.asyncio
@@ -239,7 +246,8 @@ class TestContextScopedCacheAsyncSafety:
                 assert cache.get("inner") == 99
                 return result
 
-        result = await outer()
+        # Use timeout to prevent indefinite hanging
+        result = await asyncio.wait_for(outer(), timeout=5.0)
         assert result == 99
 
 
