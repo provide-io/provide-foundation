@@ -17,6 +17,7 @@ settings.register_profile(
     report_multiple_bugs=True,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.shrink],
     print_blob=True,  # Enable statistics printing
+    suppress_health_check=[],  # Suppress slow input generation warnings
 )
 
 settings.register_profile(
@@ -27,6 +28,7 @@ settings.register_profile(
     report_multiple_bugs=False,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.shrink],
     print_blob=True,  # Enable statistics printing
+    suppress_health_check=[],
 )
 
 settings.register_profile(
@@ -37,11 +39,14 @@ settings.register_profile(
     report_multiple_bugs=False,
     phases=[Phase.explicit, Phase.generate],
     print_blob=True,  # Enable statistics printing
+    suppress_health_check=[],  # Suppress all health checks for fast iteration
 )
 
 
 @pytest.fixture(scope="session", autouse=True)
 def configure_hypothesis_for_chaos() -> None:
     """Auto-configure Hypothesis for chaos testing."""
-    # Load chaos profile by default for this test suite
-    settings.load_profile("chaos")
+    # Load chaos_smoke profile by default for faster dev iterations
+    # Use --hypothesis-profile=chaos for full testing
+    # Use --hypothesis-profile=chaos_ci for CI
+    settings.load_profile("chaos_smoke")
