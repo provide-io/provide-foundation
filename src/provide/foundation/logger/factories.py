@@ -72,9 +72,9 @@ def get_logger(name: str | None = None) -> Any:
         # Increment recursion depth
         _is_initializing.depth = depth + 1
 
-        from provide.foundation.hub.manager import get_hub
+        from provide.foundation.hub.manager import get_shared_hub
 
-        hub = get_hub()
+        hub = get_shared_hub()
         return hub.get_foundation_logger(name)
     except (ImportError, RecursionError):
         # Fallback to basic structlog if hub is not available or circular import detected
