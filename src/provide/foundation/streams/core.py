@@ -77,14 +77,16 @@ def get_log_stream() -> TextIO:  # noqa: C901
                         f"{e.__class__.__name__}: {e}"
                     )
                 except Exception:
-                    # perr() also failed, try direct stderr as last resort
+                    # Generic catch intentional: perr() import/call failed.
+                    # Try direct stderr write as absolute last resort.
                     try:
                         sys.stderr.write(
                             f"[STREAM ERROR] Stream operation failed: {e.__class__.__name__}: {e}\n"
                         )
                         sys.stderr.flush()
                     except Exception:
-                        # Can't even log to stderr, proceed with fallback anyway
+                        # Generic catch intentional: Even stderr.write() failed.
+                        # Suppress all errors - this is low-level stream infrastructure.
                         pass
 
                 # Try stderr one more time before giving up
@@ -123,7 +125,9 @@ def _reconfigure_structlog_stream() -> None:
             new_config["logger_factory"] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
             structlog.configure(**new_config)
     except Exception:
-        # Structlog not configured yet or reconfiguration failed, that's fine
+        # Generic catch intentional: structlog might not be configured yet,
+        # might not be installed, or reconfiguration may fail.
+        # All cases are acceptable - just proceed without reconfiguration.
         pass
 
 
