@@ -171,7 +171,37 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         # This ensures clean state for the next test in the worker
         reset_foundation_setup_for_testing()
 
-        # NOTE: We do NOT close event loops here because:
+        # SPECIAL CASE: Close event loop if test used time_machine with coverage enabled
+        # Coverage tracing + time manipulation corrupts event loop state, causing async tests to freeze
+        # This only happens in serial execution with coverage (not parallel, not without coverage)
+        import sys
+
+        coverage_enabled = sys.gettrace() is not None
+        used_time_machine = "time_machine" in request.fixturenames
+
+        if coverage_enabled and used_time_machine:
+            # Close and cleanup any existing event loop to prevent corruption
+            try:
+                import asyncio
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop and not loop.is_closed():
+                        # Cancel all tasks
+                        if hasattr(loop, '_ready'):
+                            loop._ready.clear()
+                        if hasattr(loop, '_scheduled'):
+                            loop._scheduled.clear()
+                        # Close the loop
+                        loop.close()
+                except RuntimeError:
+                    pass  # No current event loop
+
+                # Clear the event loop policy to force new loop creation
+                asyncio.set_event_loop_policy(None)
+            except Exception:
+                pass  # Best effort cleanup
+
+        # NOTE: We do NOT close event loops in normal cases because:
         # 1. pytest-asyncio manages event loop lifecycle
         # 2. Closing loops interferes with pytest-asyncio's cleanup
         # 3. Clearing event loop policy breaks subsequent async tests
