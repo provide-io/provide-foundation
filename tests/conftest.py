@@ -85,13 +85,17 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
     def ensure_time_unfrozen() -> None:
         """Ensure time is unfrozen before event loop operations."""
         try:
+            import sys
             from unittest.mock import _patch
 
             from provide.testkit.time.classes import get_active_time_machines
 
             # Use registry to find and cleanup frozen TimeMachines - O(1) instead of O(n)
+            machines_found = 0
             for machine in get_active_time_machines():
+                machines_found += 1
                 if machine.is_frozen:
+                    print(f"[CONFTEST] Found frozen time machine, calling cleanup...", file=sys.stderr)
                     with contextlib.suppress(Exception):
                         machine.cleanup()
 
@@ -99,16 +103,22 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
             # This handles edge cases where patches exist without associated TimeMachines
             import gc
 
+            patches_stopped = 0
             for obj in gc.get_objects():
                 if isinstance(obj, _patch):
                     try:
                         if hasattr(obj, "attribute") and obj.attribute in ("time", "monotonic"):
+                            print(f"[CONFTEST] Found orphaned time patch on {obj.attribute}, stopping...", file=sys.stderr)
                             obj.stop()
+                            patches_stopped += 1
                     except Exception:
                         pass
 
-        except Exception:
-            pass
+            if machines_found > 0 or patches_stopped > 0:
+                print(f"[CONFTEST] Cleaned up {machines_found} machines, {patches_stopped} patches", file=sys.stderr)
+
+        except Exception as e:
+            print(f"[CONFTEST] Error in ensure_time_unfrozen: {e}", file=sys.stderr)
 
     def patched_new_event_loop() -> asyncio.AbstractEventLoop:
         """Create new event loop after ensuring time is unfrozen."""
