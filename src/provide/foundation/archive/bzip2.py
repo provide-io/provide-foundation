@@ -23,7 +23,7 @@ class Bzip2Compressor(BaseCompressor):
 
     level: int = field(
         default=defaults.DEFAULT_BZIP2_COMPRESSION_LEVEL,
-        validator=[validators.instance_of(int), _validate_compression_level],  # type: ignore[arg-type]
+        validator=validators.and_(validators.instance_of(int), _validate_compression_level),
     )
 
     @property
