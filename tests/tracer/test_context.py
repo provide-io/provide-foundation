@@ -6,6 +6,7 @@
 import contextvars
 from typing import Never
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.tracer.context import (
@@ -20,7 +21,6 @@ from provide.foundation.tracer.context import (
     with_span,
 )
 from provide.foundation.tracer.spans import Span
-from provide.testkit import FoundationTestCase
 
 
 class TestTraceContext(FoundationTestCase):

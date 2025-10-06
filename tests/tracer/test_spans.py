@@ -228,7 +228,7 @@ class TestSpanIntegration(FoundationTestCase):
             outer_span.set_tag("level", "outer")
 
             with Span(
-                "inner_op",
+                name="inner_op",
                 parent_id=outer_span.span_id,
                 trace_id=outer_span.trace_id,
                 time_source=self.get_time,
