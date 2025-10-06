@@ -18,18 +18,16 @@ def detect_atomic_save(events: list[FileEvent]) -> FileOperation | None:
 
 def is_temp_file(path: Path) -> bool:
     """Check if a path represents a temporary file."""
-    from provide.foundation.file.operations.detectors.orchestrator import OperationDetector
+    from provide.foundation.file.operations.detectors.helpers import is_temp_file as helper_is_temp_file
 
-    detector = OperationDetector()
-    return detector._is_temp_file(path)
+    return helper_is_temp_file(path)
 
 
 def extract_original_path(temp_path: Path) -> Path | None:
     """Extract the original filename from a temp file path."""
-    from provide.foundation.file.operations.detectors.orchestrator import OperationDetector
+    from provide.foundation.file.operations.detectors.helpers import extract_base_name
 
-    detector = OperationDetector()
-    base_name = detector._extract_base_name(temp_path)
+    base_name = extract_base_name(temp_path)
     if base_name:
         return temp_path.parent / base_name
     else:
