@@ -243,10 +243,11 @@ def validate_url(value: str) -> bool:
     try:
         result = urlparse(value)
         return all([result.scheme, result.netloc])
-    except (ValueError, TypeError, AttributeError):
+    except (ValueError, TypeError, AttributeError, Exception):
         # ValueError: Invalid URL format
         # TypeError: Non-string input
         # AttributeError: Missing required attributes
+        # Exception: Any other parsing errors
         return False
 
 
