@@ -87,13 +87,25 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
     def ensure_time_unfrozen() -> None:
         """Ensure time is unfrozen before event loop operations."""
         try:
+            from unittest.mock import _patch
             from provide.testkit.time.classes import get_active_time_machines
 
-            # Use registry instead of gc.get_objects() - O(1) instead of O(n)
+            # Use registry to find and cleanup frozen TimeMachines - O(1) instead of O(n)
             for machine in get_active_time_machines():
                 if machine.is_frozen:
                     with contextlib.suppress(Exception):
                         machine.cleanup()
+
+            # Also scan for any orphaned _patch objects for time functions
+            # This handles edge cases where patches exist without associated TimeMachines
+            import gc
+            for obj in gc.get_objects():
+                if isinstance(obj, _patch):
+                    try:
+                        if hasattr(obj, "attribute") and obj.attribute in ("time", "monotonic"):
+                            obj.stop()
+                    except Exception:
+                        pass
 
         except Exception:
             pass
@@ -130,13 +142,10 @@ def _intercept_event_loop_creation(request: pytest.FixtureRequest) -> Generator[
         asyncio.new_event_loop = original_new_event_loop
         asyncio.get_event_loop = original_get_event_loop
 
-        # Close any remaining loops
-        try:
-            loop = asyncio.get_event_loop()
-            if not loop.is_running() and not loop.is_closed():
-                loop.close()
-        except RuntimeError:
-            pass
+        # NOTE: We do NOT close event loops here because:
+        # 1. Pytest manages event loop lifecycle for async tests
+        # 2. Closing loops here can interfere with subsequent async tests in serial execution
+        # 3. The reset_foundation_for_all_tests fixture handles cleanup after each test
 
 
 @pytest.fixture(autouse=True)
