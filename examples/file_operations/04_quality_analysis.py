@@ -7,8 +7,8 @@ and evaluate the effectiveness of file operation detection algorithms.
 
 from __future__ import annotations
 
-import sys
 from pathlib import Path
+import sys
 
 # Add src to path for example
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
@@ -98,6 +98,7 @@ def main():
     print("-" * 30)
 
     from datetime import datetime, timedelta
+
     from provide.foundation.file.operations import FileEvent, FileEventMetadata
     from provide.foundation.file.quality import OperationTestCase
 

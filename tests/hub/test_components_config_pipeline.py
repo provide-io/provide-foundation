@@ -12,7 +12,6 @@ from provide.foundation.hub.components import (
     get_processor_pipeline,
     get_processors_for_stage,
     load_all_configs,
-    
 )
 
 

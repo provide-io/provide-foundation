@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import tempfile
 import time
-from typing import ClassVar, Generator
+from typing import ClassVar
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch

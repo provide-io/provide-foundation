@@ -2,8 +2,9 @@
 
 import sys
 
-import pytest
+from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+import pytest
 
 from provide.foundation.tracer.otel import (
     _HAS_OTEL,
@@ -12,7 +13,6 @@ from provide.foundation.tracer.otel import (
     setup_opentelemetry_tracing,
     shutdown_opentelemetry,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestRequireOtel(FoundationTestCase):

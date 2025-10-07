@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import FileEvent, FileEventMetadata
@@ -15,7 +16,6 @@ from provide.foundation.file.quality import (
     QualityResult,
     create_scenarios_from_patterns,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestQualityAnalyzer(FoundationTestCase):

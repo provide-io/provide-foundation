@@ -9,9 +9,9 @@ import io
 import sys
 from typing import Any
 
-import pytest
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
+import pytest
 from pytest import CaptureFixture
 
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig

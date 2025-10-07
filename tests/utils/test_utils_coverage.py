@@ -6,12 +6,12 @@ import io
 from typing import Any
 
 from attrs import define, field, fields
+from provide.testkit import FoundationTestCase
 
 from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 from provide.foundation.formatting import format_table, to_camel_case
-from provide.foundation.utils import timed_block
 from provide.foundation.parsers import auto_parse, parse_typed_value
-from provide.testkit import FoundationTestCase
+from provide.foundation.utils import timed_block
 
 
 class TestCaseConversionCoverage(FoundationTestCase):
@@ -72,11 +72,11 @@ class TestParsingCoverage(FoundationTestCase):
 
         @define
         class DummyConfig:
-            int_val: "int"
-            bool_val: "bool"
-            list_val: "list"
-            dict_val: "dict"
-            unknown_val: "str"  # Changed from "SomeUnknownType" to test a real type
+            int_val: int
+            bool_val: bool
+            list_val: list
+            dict_val: dict
+            unknown_val: str  # Changed from "SomeUnknownType" to test a real type
 
         attrs_fields = {f.name: f for f in fields(DummyConfig)}
 
@@ -176,6 +176,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_bool_edge_cases(self) -> None:
         """Test edge cases for get_bool function."""
         import os
+
         from provide.testkit.mocking import patch
 
         from provide.foundation.errors.config import ValidationError
@@ -200,6 +201,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_int_edge_cases(self) -> None:
         """Test edge cases for get_int function."""
         import os
+
         from provide.testkit.mocking import patch
 
         from provide.foundation.errors.config import ValidationError
@@ -224,6 +226,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_float_edge_cases(self) -> None:
         """Test edge cases for get_float function."""
         import os
+
         from provide.testkit.mocking import patch
 
         from provide.foundation.errors.config import ValidationError
@@ -248,6 +251,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_str_with_default(self) -> None:
         """Test get_str with default value."""
         import os
+
         from provide.testkit.mocking import patch
 
         from provide.foundation.utils.environment import get_str

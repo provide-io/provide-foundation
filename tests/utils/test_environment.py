@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.utils.environment import (

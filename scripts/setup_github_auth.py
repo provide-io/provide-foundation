@@ -11,7 +11,6 @@ import json
 import os
 import subprocess
 import sys
-from typing import Any
 
 
 def setup_git_auth() -> None:

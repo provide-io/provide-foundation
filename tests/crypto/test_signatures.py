@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.crypto import (
     ED25519_PRIVATE_KEY_SIZE,

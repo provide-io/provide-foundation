@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
 import itertools
+from unittest.mock import MagicMock, patch
 
-import pytest
 from click.testing import CliRunner
+import pytest
 
 from provide.foundation.cli.commands.logs.generate import generate_logs_command
 

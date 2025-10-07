@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 
 class TestCLIMainCoverage(FoundationTestCase):

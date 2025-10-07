@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-import pytest
 from click.testing import CliRunner
+import pytest
 
 from provide.foundation.cli.commands.logs.tail import (
     _parse_filter_string,

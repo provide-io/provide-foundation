@@ -179,8 +179,8 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         used_time_machine = "time_machine" in request.fixturenames
         if used_time_machine:
             try:
-                import gc
                 import asyncio
+                import gc
                 from unittest.mock import _patch
 
                 # Force stop all active time machines using testkit registry

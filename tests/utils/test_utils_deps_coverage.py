@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from provide.testkit.mocking import Mock, patch
-
-import pytest
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
+import pytest
 
 from provide.foundation.utils.deps import (
     DependencyStatus,

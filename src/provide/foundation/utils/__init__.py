@@ -2,6 +2,13 @@ from __future__ import annotations
 
 from typing import Any
 
+from provide.foundation.parsers import (
+    auto_parse,
+    parse_bool,
+    parse_dict,
+    parse_list,
+    parse_typed_value,
+)
 from provide.foundation.utils.deps import (
     DependencyStatus,
     check_optional_deps,
@@ -24,13 +31,6 @@ from provide.foundation.utils.environment import (
     require,
 )
 from provide.foundation.utils.importer import lazy_import
-from provide.foundation.parsers import (
-    auto_parse,
-    parse_bool,
-    parse_dict,
-    parse_list,
-    parse_typed_value,
-)
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 from provide.foundation.utils.scoped_cache import ContextScopedCache
 from provide.foundation.utils.stubs import (

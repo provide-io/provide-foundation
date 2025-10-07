@@ -10,7 +10,6 @@ from provide.foundation.hub.components import (
     execute_error_handlers,
     get_component_registry,
     get_handlers_for_exception,
-    
     resolve_component_dependencies,
 )
 

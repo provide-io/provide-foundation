@@ -8,6 +8,7 @@ from typing import Never
 
 import click
 from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.cli.decorators import (
@@ -21,7 +22,6 @@ from provide.foundation.cli.decorators import (
     version_option,
 )
 from provide.foundation.context import CLIContext
-from provide.testkit import FoundationTestCase
 
 
 class TestLoggingOptions(FoundationTestCase):
