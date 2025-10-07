@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 import contextlib
+import threading
 from typing import Any
 import weakref
 
@@ -51,6 +52,7 @@ class EventBus:
         self._handlers: dict[str, list[weakref.ReferenceType]] = {}
         self._cleanup_threshold = 10  # Clean up after this many operations
         self._operation_count = 0
+        self._lock = threading.RLock()  # RLock for thread safety
 
     def subscribe(self, event_name: str, handler: Callable[[Event], None]) -> None:
         """Subscribe to events by name.
@@ -59,12 +61,13 @@ class EventBus:
             event_name: Name of event to subscribe to
             handler: Function to call when event occurs
         """
-        if event_name not in self._handlers:
-            self._handlers[event_name] = []
+        with self._lock:
+            if event_name not in self._handlers:
+                self._handlers[event_name] = []
 
-        # Use weak reference to prevent memory leaks
-        weak_handler = weakref.ref(handler)
-        self._handlers[event_name].append(weak_handler)
+            # Use weak reference to prevent memory leaks
+            weak_handler = weakref.ref(handler)
+            self._handlers[event_name].append(weak_handler)
 
     def emit(self, event: Event | RegistryEvent) -> None:
         """Emit an event to all subscribers.
