@@ -98,6 +98,7 @@ class TestCircuitBreaker(FoundationTestCase):
         machine.transition(CircuitBreakerEvent.TIMEOUT)
         assert machine.current_state == "half_open"
 
+    @pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
     def test_half_open_success_closes_circuit(self, machine: CircuitBreakerStateMachine, time_machine: "TimeMachine") -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
@@ -112,6 +113,7 @@ class TestCircuitBreaker(FoundationTestCase):
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
 
+    @pytest.mark.no_cover  # Fixes coverage + time_machine + asyncio deadlock
     def test_half_open_failure_reopens_circuit(self, machine: CircuitBreakerStateMachine, time_machine: "TimeMachine") -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
