@@ -234,9 +234,9 @@ def reset_profiling_state() -> None:
     to ensure clean state between tests.
     """
     try:
-        from provide.foundation.hub.manager import get_shared_hub
+        from provide.foundation.hub.manager import get_hub
 
-        hub = get_shared_hub()
+        hub = get_hub()
         profiler = hub.get_component("profiler")
         if profiler:
             profiler.reset()
@@ -274,11 +274,11 @@ def _reset_direct_circuit_breaker_instances() -> None:
     import gc
 
     try:
-        from provide.foundation.hub.manager import get_shared_hub
+        from provide.foundation.hub.manager import get_hub
         from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
         from provide.foundation.resilience.circuit_sync import SyncCircuitBreaker
 
-        registry = get_shared_hub()._component_registry  # type: ignore[attr-defined]
+        registry = get_hub()._component_registry  # type: ignore[attr-defined]
 
         # Get all decorator-tracked instances from registry
         decorator_tracked_ids = set()
@@ -362,9 +362,9 @@ def reset_state_managers() -> None:
     components to ensure clean test isolation.
     """
     try:
-        from provide.foundation.hub.manager import get_shared_hub
+        from provide.foundation.hub.manager import get_hub
 
-        hub = get_shared_hub()
+        hub = get_hub()
 
         # Reset logger state manager if available
         try:
@@ -387,9 +387,9 @@ def reset_configuration_state() -> None:
     to ensure clean state between tests.
     """
     try:
-        from provide.foundation.hub.manager import get_shared_hub
+        from provide.foundation.hub.manager import get_hub
 
-        hub = get_shared_hub()
+        hub = get_hub()
 
         # Reset config manager if available
         try:

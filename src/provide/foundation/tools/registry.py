@@ -4,7 +4,7 @@ import importlib.metadata
 from typing import Any
 
 from provide.foundation.config import BaseConfig
-from provide.foundation.hub import get_shared_hub
+from provide.foundation.hub import get_hub
 from provide.foundation.logger import get_logger
 from provide.foundation.tools.base import BaseToolManager
 
@@ -29,7 +29,7 @@ class ToolRegistry:
 
     def __init__(self) -> None:
         """Initialize the tool registry."""
-        self.hub = get_shared_hub()
+        self.hub = get_hub()
         self._discover_tools()
 
     def _discover_tools(self) -> None:
