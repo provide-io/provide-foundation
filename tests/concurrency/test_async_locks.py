@@ -325,6 +325,67 @@ class TestAsyncLockManagerCrossEventLoop(FoundationTestCase):
         finally:
             module.register_foundation_async_locks = original_register
 
+    def test_high_concurrency_initialization(self) -> None:
+        """Test high concurrency with 10 threads each with own event loop.
+
+        This regression test ensures the coordination logic handles many
+        concurrent callers without deadlock, race conditions, or errors.
+        """
+        import threading
+
+        import provide.foundation.concurrency.async_locks as module
+
+        original_register = module.register_foundation_async_locks
+
+        async def slow_register() -> None:
+            """Simulate slow registration to create race window."""
+            await asyncio.sleep(0.15)
+            await original_register()
+
+        module.register_foundation_async_locks = slow_register
+
+        try:
+            results: dict[str, str] = {}
+            thread_count = 10
+
+            def thread_task(thread_id: int) -> None:
+                """Thread with its own event loop."""
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+
+                async def run() -> None:
+                    # Stagger start times to create race window
+                    await asyncio.sleep(0.02 * thread_id)
+                    try:
+                        manager = await module.get_async_lock_manager()
+                        # Verify manager is fully initialized
+                        status = await manager.get_lock_status()
+                        assert len(status) == 8
+                        results[f"thread{thread_id}"] = "success"
+                    except Exception as e:
+                        results[f"thread{thread_id}"] = f"error: {type(e).__name__}: {e}"
+
+                loop.run_until_complete(run())
+                loop.close()
+
+            # Create and start all threads
+            threads = [threading.Thread(target=thread_task, args=(i,)) for i in range(thread_count)]
+            for t in threads:
+                t.start()
+
+            # Wait for all threads to complete
+            for t in threads:
+                t.join(timeout=10.0)
+
+            # All threads should succeed
+            for i in range(thread_count):
+                thread_name = f"thread{i}"
+                assert thread_name in results, f"{thread_name} did not complete"
+                assert results[thread_name] == "success", f"{thread_name} failed: {results[thread_name]}"
+
+        finally:
+            module.register_foundation_async_locks = original_register
+
 
 __all__ = [
     "TestAsyncLockManagerConcurrentInitialization",
