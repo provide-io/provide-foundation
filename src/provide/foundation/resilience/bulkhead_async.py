@@ -94,9 +94,10 @@ class AsyncResourcePool:
             return True
         except TimeoutError:
             # Timeout - remove from queue
-            async with self._lock, contextlib.suppress(ValueError):
-                # Remove from queue if still present (already removed by signal if not found)
-                self._waiters.remove(waiter)
+            async with self._lock:
+                with contextlib.suppress(ValueError):
+                    # Remove from queue if still present (already removed by signal if not found)
+                    self._waiters.remove(waiter)
             return False
         finally:
             async with self._lock:
