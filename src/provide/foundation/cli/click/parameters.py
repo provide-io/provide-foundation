@@ -8,8 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import click
-
+from provide.foundation.cli.deps import click
 from provide.foundation.hub.introspection import ParameterInfo
 
 __all__ = [

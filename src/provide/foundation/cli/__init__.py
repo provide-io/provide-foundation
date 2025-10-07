@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-# Centralized Click dependency handling
-from provide.foundation.cli.deps import _HAS_CLICK, click  # noqa: F401
-
 from provide.foundation.cli.base import CLIAdapter
 from provide.foundation.cli.decorators import (
     config_options,
@@ -14,6 +11,9 @@ from provide.foundation.cli.decorators import (
     standard_options,
     version_option,
 )
+
+# Centralized Click dependency handling
+from provide.foundation.cli.deps import _HAS_CLICK, click  # noqa: F401
 from provide.foundation.cli.errors import (
     CLIAdapterNotFoundError,
     CLIBuildError,

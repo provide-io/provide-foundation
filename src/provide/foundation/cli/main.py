@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from provide.foundation.cli.deps import _HAS_CLICK, click
 
 

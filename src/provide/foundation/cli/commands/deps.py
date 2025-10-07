@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.console.output import pout
 from provide.foundation.process import exit_error, exit_success

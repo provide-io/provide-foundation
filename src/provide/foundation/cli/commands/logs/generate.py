@@ -3,20 +3,10 @@ from __future__ import annotations
 import random
 import threading
 import time
-from typing import TYPE_CHECKING, Any, NoReturn
+from typing import Any, NoReturn
 
+from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.logger import get_logger
-
-if TYPE_CHECKING:
-    import click
-
-try:
-    import click
-
-    _HAS_CLICK = True
-except ImportError:
-    click = None  # type: ignore[assignment]
-    _HAS_CLICK = False
 
 """Command to generate logs for testing OpenObserve integration with Foundation's rate limiting."""
 
@@ -341,6 +331,7 @@ def _generate_fixed_count_logs(count: int, rate: float, style: str, error_rate: 
 
 
 if _HAS_CLICK:
+
     @click.command(name="generate")
     @click.option("-n", "--count", default=100, help="Number of logs to generate (0 for continuous)")
     @click.option("-r", "--rate", default=10.0, help="Logs per second rate")

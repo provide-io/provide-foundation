@@ -10,7 +10,7 @@ helpful ImportErrors with installation instructions.
 """
 
 if TYPE_CHECKING:
-    import click as click_module
+    pass
 
 # Try to import click
 try:
