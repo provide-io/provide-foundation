@@ -216,7 +216,6 @@ class TestSendLogEntry(FoundationTestCase):
                 attributes={"key": "value"},
                 trace_id="trace123",
                 span_id="span456",
-                use_otlp=True,
             )
 
             assert result_code == 0
@@ -229,77 +228,6 @@ class TestSendLogEntry(FoundationTestCase):
                 span_id="span456",
             )
             mock_echo.assert_called_once_with("✓ Log sent via OTLP")
-
-    def test_send_via_http_api_success(self) -> None:
-        """Test successful HTTP API log sending."""
-        from provide.foundation.cli.commands.logs.send import _send_log_entry
-
-        # Mock the ingest_logs import since it doesn't exist yet
-        mock_ingest = Mock()
-        with (
-            patch.dict(
-                "sys.modules", {"provide.foundation.integrations.openobserve": Mock(ingest_logs=mock_ingest)}
-            ),
-            patch("click.echo") as mock_echo,
-            patch("time.time", return_value=1234567890.123456),
-        ):
-            result_code = _send_log_entry(
-                message="HTTP test message",
-                level="ERROR",
-                service="http-service",
-                attributes={"error_code": 500},
-                trace_id="http_trace",
-                span_id="http_span",
-                use_otlp=False,
-            )
-
-            assert result_code == 0
-
-            # Check the log record structure
-            expected_log_record = {
-                "timestamp": 1234567890123456,  # microseconds
-                "message": "HTTP test message",
-                "level": "ERROR",
-                "error_code": 500,
-                "service": "http-service",
-                "trace_id": "http_trace",
-                "span_id": "http_span",
-            }
-            mock_ingest.assert_called_once_with([expected_log_record])
-            mock_echo.assert_called_once_with("✓ Log sent via HTTP API")
-
-    def test_send_via_http_api_minimal_data(self) -> None:
-        """Test HTTP API sending with minimal data."""
-        from provide.foundation.cli.commands.logs.send import _send_log_entry
-
-        # Mock the ingest_logs import since it doesn't exist yet
-        mock_ingest = Mock()
-        with (
-            patch.dict(
-                "sys.modules", {"provide.foundation.integrations.openobserve": Mock(ingest_logs=mock_ingest)}
-            ),
-            patch("click.echo"),
-            patch("time.time", return_value=1234567890.0),
-        ):
-            result_code = _send_log_entry(
-                message="Minimal message",
-                level="DEBUG",
-                service=None,
-                attributes={},
-                trace_id=None,
-                span_id=None,
-                use_otlp=False,
-            )
-
-            assert result_code == 0
-
-            # Should only include required fields
-            expected_log_record = {
-                "timestamp": 1234567890000000,
-                "message": "Minimal message",
-                "level": "DEBUG",
-            }
-            mock_ingest.assert_called_once_with([expected_log_record])
 
     def test_send_otlp_exception_handling(self) -> None:
         """Test exception handling for OTLP sending."""
@@ -319,7 +247,6 @@ class TestSendLogEntry(FoundationTestCase):
                 attributes={},
                 trace_id=None,
                 span_id=None,
-                use_otlp=True,
             )
 
             assert result_code == 1
