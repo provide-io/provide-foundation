@@ -5,8 +5,7 @@ from __future__ import annotations
 from io import StringIO
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
-import pytest
+from provide.testkit.mocking import patch
 
 
 class TestGetMessageFromInput(FoundationTestCase):

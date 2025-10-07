@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import sys
-import time
 from typing import Any, NoReturn
 
 from provide.foundation.cli.deps import _HAS_CLICK, click
