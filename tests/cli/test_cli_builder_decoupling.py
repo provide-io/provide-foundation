@@ -15,7 +15,8 @@ import pytest
 from provide.foundation.cli.click.adapter import ClickAdapter
 from provide.foundation.cli.click.commands import build_click_command_from_info
 from provide.foundation.cli.errors import CLIBuildError
-from provide.foundation.hub.info import CommandInfo, ParameterInfo
+from provide.foundation.hub.info import CommandInfo
+from provide.foundation.hub.introspection import ParameterInfo
 
 
 class TestBuildClickCommandFromInfo(FoundationTestCase):
