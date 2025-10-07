@@ -90,7 +90,7 @@ class BaseCompressor(ABC):
     """
 
     level: int = field(
-        validator=[validators.instance_of(int), _validate_compression_level],  # type: ignore[arg-type]
+        validator=validators.and_(validators.instance_of(int), _validate_compression_level),
     )  # Compression level 1-9 (1=fast, 9=best)
 
     @property

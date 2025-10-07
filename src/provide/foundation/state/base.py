@@ -7,7 +7,7 @@ import threading
 import time
 from typing import Any, Generic, TypeVar
 
-from attrs import define, field, frozen
+from attrs import define, field
 
 """Base classes for immutable state management and state machines."""
 
@@ -15,7 +15,7 @@ StateT = TypeVar("StateT")
 EventT = TypeVar("EventT")
 
 
-@frozen
+@define(frozen=True, slots=True, kw_only=True)
 class ImmutableState:
     """Base class for immutable state objects.
 

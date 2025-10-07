@@ -12,7 +12,7 @@ from provide.foundation.config.types import ConfigDict
 from provide.foundation.errors import ConfigValidationError
 
 
-@define
+@define(slots=True)
 class SchemaField:
     """Schema definition for a configuration field."""
 
@@ -243,7 +243,11 @@ def validate_url(value: str) -> bool:
     try:
         result = urlparse(value)
         return all([result.scheme, result.netloc])
-    except Exception:
+    except (ValueError, TypeError, AttributeError, Exception):
+        # ValueError: Invalid URL format
+        # TypeError: Non-string input
+        # AttributeError: Missing required attributes
+        # Exception: Any other parsing errors
         return False
 
 
@@ -262,7 +266,10 @@ def validate_path(value: str) -> bool:
     try:
         Path(value)
         return True
-    except Exception:
+    except (ValueError, TypeError, Exception):
+        # ValueError: Invalid path characters or format
+        # TypeError: Non-string input
+        # Exception: Any other path creation errors
         return False
 
 

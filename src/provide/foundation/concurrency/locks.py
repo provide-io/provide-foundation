@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from collections.abc import Generator
+import asyncio
+from collections.abc import AsyncGenerator, Generator
 import contextlib
 import threading
 import time
@@ -17,7 +18,7 @@ timeout mechanisms to prevent deadlocks across the entire foundation.
 """
 
 
-@define
+@define(slots=True)
 class LockInfo:
     """Information about a registered lock."""
 

@@ -19,7 +19,7 @@ from provide.foundation.transport.types import Data, Headers, HTTPMethod, Params
 log = get_logger(__name__)
 
 
-@define
+@define(slots=True)
 class UniversalClient:
     """Universal client that works with any transport via Hub registry."""
 

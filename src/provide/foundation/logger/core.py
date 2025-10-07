@@ -63,6 +63,8 @@ class FoundationLogger:
                     _LAZY_SETUP_STATE["done"] = True
                 return True
         except Exception:
+            # Broad catch intentional: structlog config check may fail for various reasons
+            # Return False to indicate we should continue with standard setup
             pass
         return False
 

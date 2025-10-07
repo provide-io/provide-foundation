@@ -129,7 +129,8 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
         else:
             slog.debug("📊 OpenTelemetry meter provider already configured")
     except Exception:
-        # If get_meter_provider fails for any reason, proceed with setup
+        # Broad catch intentional: get_meter_provider() may fail in various OTEL environments
+        # Proceed with setup if provider check fails
         otel_metrics.set_meter_provider(meter_provider)
 
         # Set the global meter for our metrics module

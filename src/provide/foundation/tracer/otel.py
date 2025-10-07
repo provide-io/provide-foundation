@@ -132,7 +132,8 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
         else:
             slog.debug("🔍 OpenTelemetry tracer provider already configured")
     except Exception:
-        # If get_tracer_provider fails for any reason, proceed with setup
+        # Broad catch intentional: get_tracer_provider() may fail in various OTEL environments
+        # Proceed with setup if provider check fails
         otel_trace.set_tracer_provider(tracer_provider)
         slog.info("🔍✅ OpenTelemetry tracing setup complete")
 
@@ -153,6 +154,7 @@ def get_otel_tracer(name: str) -> otel_trace.Tracer | None:
     try:
         return otel_trace.get_tracer(name)
     except Exception:
+        # Broad catch intentional: OTEL tracing is optional, return None on any failure
         return None
 
 

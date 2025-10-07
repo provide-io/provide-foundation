@@ -50,7 +50,14 @@ def resolve_config_value(key: str) -> Any:
                 value = source.get_value(key)
                 if value is not None:
                     return value
-            except Exception:
+            except Exception as e:
+                # Log but continue - config sources may legitimately not have this key
+                get_foundation_logger().debug(
+                    "Config source failed to get value",
+                    source=entry.name,
+                    key=key,
+                    error=str(e),
+                )
                 continue
 
     return None

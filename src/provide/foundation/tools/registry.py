@@ -39,20 +39,9 @@ class ToolRegistry:
         and automatically registers them.
         """
         try:
-            # Get entry points for tool managers
-            if hasattr(importlib.metadata, "entry_points"):
-                # Python 3.10+
-                eps = importlib.metadata.entry_points()
-                if hasattr(eps, "select"):
-                    # Python 3.10+ with select method
-                    group_eps = eps.select(group="provide.foundation.tools")
-                else:
-                    # Fallback for older API
-                    group_eps = eps.get("provide.foundation.tools", [])
-            else:
-                # Python 3.8-3.9
-                eps = importlib.metadata.entry_points()
-                group_eps = eps.get("provide.foundation.tools", [])
+            # Get entry points for tool managers (Python 3.11+)
+            eps = importlib.metadata.entry_points()
+            group_eps = eps.select(group="provide.foundation.tools")
 
             for ep in group_eps:
                 try:

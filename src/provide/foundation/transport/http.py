@@ -21,7 +21,7 @@ from provide.foundation.transport.types import TransportType
 log = get_logger(__name__)
 
 
-@define
+@define(slots=True)
 class HTTPTransport(TransportBase):
     """HTTP/HTTPS transport using httpx backend."""
 

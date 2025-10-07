@@ -4,7 +4,7 @@ from enum import Enum, auto
 import time
 from typing import Any
 
-from attrs import field, frozen
+from attrs import define, field
 
 from provide.foundation.config.defaults import (
     DEFAULT_CIRCUIT_BREAKER_FAILURE_COUNT,
@@ -28,7 +28,7 @@ class CircuitBreakerEvent(Enum):
     RESET = auto()
 
 
-@frozen
+@define(frozen=True, slots=True, kw_only=True)
 class CircuitBreakerState(ImmutableState):
     """Immutable circuit breaker state."""
 

@@ -14,7 +14,7 @@ from provide.foundation.transport.types import Data, Headers, Params, TransportT
 log = get_logger(__name__)
 
 
-@define
+@define(slots=True)
 class Request:
     """Protocol-agnostic request."""
 
@@ -45,7 +45,7 @@ class Request:
         return self.uri
 
 
-@define
+@define(slots=True)
 class Response:
     """Protocol-agnostic response."""
 
