@@ -78,10 +78,6 @@ def build_click_command_from_info(info: Any) -> click.Command:
             hidden=info.hidden,
         )
 
-        # Copy over the params from the decorated function
-        if hasattr(decorated_func, "__click_params__"):
-            cmd.params = list(reversed(decorated_func.__click_params__))
-
         return cmd
 
     except Exception as e:
