@@ -233,8 +233,102 @@ class TestAsyncLockManagerFailureRecovery(FoundationTestCase):
             module.register_foundation_async_locks = original_register
 
 
+class TestAsyncLockManagerCrossEventLoop(FoundationTestCase):
+    """Test cross-event-loop initialization scenarios.
+
+    These tests verify that the async lock manager can handle initialization
+    from different threads, each with their own event loop. This is critical
+    for applications that use thread pools or multiple asyncio contexts.
+    """
+
+    def setup_method(self) -> None:
+        """Reset async lock manager before each test."""
+        super().setup_method()
+        import provide.foundation.concurrency.async_locks as module
+
+        module._async_lock_manager = None
+        module._async_locks_registered = False
+        module._async_locks_registration_event = None
+
+    def test_cross_event_loop_initialization(self) -> None:
+        """Test that different event loops in different threads can both initialize.
+
+        This test verifies that when Thread 1 starts registration in its event loop,
+        and Thread 2 calls get_async_lock_manager() in a different event loop,
+        Thread 2 properly waits using threading.Event (not asyncio.Event) and
+        both threads succeed without RuntimeError.
+        """
+        import threading
+
+        import provide.foundation.concurrency.async_locks as module
+
+        original_register = module.register_foundation_async_locks
+
+        async def slow_register() -> None:
+            """Simulate slow registration to create race window."""
+            await asyncio.sleep(0.2)  # Delay to allow Thread 2 to enter
+            await original_register()
+
+        module.register_foundation_async_locks = slow_register
+
+        try:
+            results: dict[str, str] = {}
+
+            def thread1_task() -> None:
+                """Thread 1 with its own event loop."""
+                loop1 = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop1)
+
+                async def run() -> None:
+                    try:
+                        await module.get_async_lock_manager()
+                        results["thread1"] = "success"
+                    except Exception as e:
+                        results["thread1"] = f"error: {type(e).__name__}: {e}"
+
+                loop1.run_until_complete(run())
+                loop1.close()
+
+            def thread2_task() -> None:
+                """Thread 2 with its own event loop."""
+                loop2 = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop2)
+
+                async def run() -> None:
+                    await asyncio.sleep(0.1)  # Start after thread1
+                    try:
+                        manager = await module.get_async_lock_manager()
+                        # Verify manager is fully initialized
+                        status = await manager.get_lock_status()
+                        assert len(status) == 8
+                        results["thread2"] = "success"
+                    except Exception as e:
+                        results["thread2"] = f"error: {type(e).__name__}: {e}"
+
+                loop2.run_until_complete(run())
+                loop2.close()
+
+            # Run both threads
+            t1 = threading.Thread(target=thread1_task)
+            t2 = threading.Thread(target=thread2_task)
+
+            t1.start()
+            t2.start()
+
+            t1.join(timeout=5.0)
+            t2.join(timeout=5.0)
+
+            # Both threads should succeed
+            assert results["thread1"] == "success", f"Thread 1 failed: {results.get('thread1')}"
+            assert results["thread2"] == "success", f"Thread 2 failed: {results.get('thread2')}"
+
+        finally:
+            module.register_foundation_async_locks = original_register
+
+
 __all__ = [
     "TestAsyncLockManagerConcurrentInitialization",
+    "TestAsyncLockManagerCrossEventLoop",
     "TestAsyncLockManagerFailureRecovery",
     "TestAsyncLockManagerInitialization",
 ]
