@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from provide.foundation.cli.deps import _HAS_CLICK, click
+if TYPE_CHECKING:
+    import click
+
 from provide.foundation.context import CLIContext
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.decorators import resilient
@@ -17,6 +19,21 @@ from provide.foundation.hub.registry import Registry, get_command_registry
 This module provides the core Hub functionality for registering and
 managing components and commands, without Foundation-specific features.
 """
+
+# Lazy import to avoid circular dependency
+_click_module: Any = None
+_HAS_CLICK: bool | None = None
+
+
+def _get_click() -> tuple[Any, bool]:
+    """Get click module and availability flag."""
+    global _click_module, _HAS_CLICK
+    if _HAS_CLICK is None:
+        from provide.foundation.cli.deps import _HAS_CLICK as has_click, click
+
+        _click_module = click
+        _HAS_CLICK = has_click
+    return _click_module, _HAS_CLICK
 
 
 class CoreHub:
@@ -209,7 +226,8 @@ class CoreHub:
             CommandInfo for the registered command
 
         """
-        if _HAS_CLICK and isinstance(func, click.Command):
+        click_module, has_click = _get_click()
+        if has_click and isinstance(func, click_module.Command):
             command_name = name or func.name
             command_func = func.callback
             click_command = func
