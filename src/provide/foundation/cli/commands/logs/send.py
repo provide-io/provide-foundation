@@ -69,7 +69,6 @@ def _send_log_entry(
     attributes: dict[str, Any],
     trace_id: str | None,
     span_id: str | None,
-    use_otlp: bool,
 ) -> int:
     """Send the log entry using appropriate method."""
     try:
@@ -79,39 +78,16 @@ def _send_log_entry(
         from provide.foundation.integrations.openobserve import send_log
 
     try:
-        if use_otlp:
-            # Send via OTLP
-            send_log(
-                message=message,
-                level=level,
-                service_name=service,
-                attributes=attributes,
-                trace_id=trace_id,
-                span_id=span_id,
-            )
-            click.echo("✓ Log sent via OTLP")
-        else:
-            # Send via HTTP API
-            from provide.foundation.integrations.openobserve import ingest_logs
-
-            # Build log record
-            log_record = {
-                "timestamp": int(time.time() * 1000000),  # microseconds
-                "message": message,
-                "level": level,
-                **attributes,
-            }
-
-            if service:
-                log_record["service"] = service
-            if trace_id:
-                log_record["trace_id"] = trace_id
-            if span_id:
-                log_record["span_id"] = span_id
-
-            ingest_logs([log_record])
-            click.echo("✓ Log sent via HTTP API")
-
+        # Send via OTLP (only supported method)
+        send_log(
+            message=message,
+            level=level,
+            service_name=service,
+            attributes=attributes,
+            trace_id=trace_id,
+            span_id=span_id,
+        )
+        click.echo("✓ Log sent via OTLP")
         return 0
     except Exception as e:
         click.echo(f"✗ Failed to send log: {e}", err=True)
@@ -158,12 +134,6 @@ if _HAS_CLICK:
         "--span-id",
         help="Explicit span ID to use",
     )
-    @click.option(
-        "--otlp/--bulk",
-        "use_otlp",
-        default=True,
-        help="Use OTLP (default) or bulk API",
-    )
     @click.pass_context
     def send_command(
         ctx: click.Context,
@@ -174,7 +144,6 @@ if _HAS_CLICK:
         attr: tuple[str, ...],
         trace_id: str | None,
         span_id: str | None,
-        use_otlp: bool,
     ) -> int | None:
         """Send a log entry to OpenObserve.
 
@@ -203,7 +172,7 @@ if _HAS_CLICK:
             return error_code
 
         # Send the log entry
-        return _send_log_entry(final_message, level, service, attributes, trace_id, span_id, use_otlp)
+        return _send_log_entry(final_message, level, service, attributes, trace_id, span_id)
 
 else:
 

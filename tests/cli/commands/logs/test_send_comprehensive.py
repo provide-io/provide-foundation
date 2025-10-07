@@ -325,11 +325,6 @@ class TestSendLogEntry(FoundationTestCase):
             assert result_code == 1
             mock_echo.assert_called_once_with("✗ Failed to send log: OTLP connection failed", err=True)
 
-    @pytest.mark.skip(reason="ingest_logs function was removed as NotImplementedError stub")
-    def test_send_http_api_exception_handling(self) -> None:
-        """Test exception handling for HTTP API sending."""
-        pass
-
 
 class TestSendCommandWithoutClick(FoundationTestCase):
     """Test send command behavior when click is not available."""
