@@ -246,12 +246,8 @@ class TestCircuitBreakerCounterThreadSafety(FoundationTestCase):
 
         registry = get_shared_hub()._component_registry  # type: ignore[attr-defined]
 
-        # Clear any existing breakers
-        for name in list(registry.list_dimension("circuit_breaker_test")):
-            registry.unregister(name, dimension="circuit_breaker_test")
-
-        breaker_names: list[str] = []
-        lock = threading.Lock()
+        # Get initial breaker names
+        initial_names = set(registry.list_dimension("circuit_breaker_test"))
 
         def create_decorated_function(thread_id: int) -> None:
             """Create a circuit breaker decorated function in a thread."""
@@ -263,11 +259,6 @@ class TestCircuitBreakerCounterThreadSafety(FoundationTestCase):
             # Execute function to ensure decorator completes
             result = func()
             assert result == thread_id
-
-            # Find the breaker name that was registered
-            all_names = registry.list_dimension("circuit_breaker_test")
-            with lock:
-                breaker_names.extend(all_names)
 
         # Create 50 decorated functions in parallel threads
         threads = []
@@ -282,10 +273,13 @@ class TestCircuitBreakerCounterThreadSafety(FoundationTestCase):
         for thread in threads:
             thread.join()
 
-        # All breaker names should be unique (no duplicate IDs from race condition)
-        unique_names = set(breaker_names)
-        assert len(unique_names) == len(breaker_names), (
-            f"Found {len(breaker_names) - len(unique_names)} duplicate breaker IDs"
+        # Get final breaker names
+        final_names = set(registry.list_dimension("circuit_breaker_test"))
+        new_names = final_names - initial_names
+
+        # Should have created exactly num_threads unique breakers
+        assert len(new_names) == num_threads, (
+            f"Expected {num_threads} unique breakers, got {len(new_names)}"
         )
 
     def test_counter_increments_correctly_under_contention(self) -> None:
