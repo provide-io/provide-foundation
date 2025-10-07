@@ -64,7 +64,7 @@ def build_click_command_from_info(info: Any) -> click.Command:
         import functools
 
         @functools.wraps(info.func)
-        def wrapper(*args, **kwargs):  # type: ignore[no-untyped-def]
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             return info.func(*args, **kwargs)
 
         # Start with the wrapper function
