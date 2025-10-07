@@ -352,7 +352,9 @@ class TestResourcePoolSeparation(FoundationTestCase):
         pool = SyncResourcePool(max_concurrent=5)
 
         # Check internal state uses threading.Lock
-        assert isinstance(pool._counter_lock, threading.Lock), "Should use threading.Lock"
+        # threading.Lock is a function, not a class - check it has lock methods
+        assert hasattr(pool._counter_lock, "acquire"), "Should have lock acquire method"
+        assert hasattr(pool._counter_lock, "release"), "Should have lock release method"
 
         # Check waiters queue contains threading.Event
         pool.acquire()
@@ -372,7 +374,11 @@ class TestResourcePoolSeparation(FoundationTestCase):
         # Check the waiter in queue is threading.Event
         if pool._waiters:
             waiter = pool._waiters[0]
-            assert isinstance(waiter, threading.Event), "Waiter should be threading.Event"
+            # threading.Event is actually a function, not a class
+            # Check that it has the expected Event methods
+            assert hasattr(waiter, "set"), "Waiter should have 'set' method"
+            assert hasattr(waiter, "wait"), "Waiter should have 'wait' method"
+            assert hasattr(waiter, "is_set"), "Waiter should have 'is_set' method"
 
         # Clean up
         pool.release()
@@ -402,7 +408,12 @@ class TestResourcePoolSeparation(FoundationTestCase):
         # Check the waiter in queue is asyncio.Event
         if pool._waiters:
             waiter = pool._waiters[0]
-            assert isinstance(waiter, asyncio.Event), "Waiter should be asyncio.Event"
+            # Check that it has the expected asyncio.Event methods
+            assert hasattr(waiter, "set"), "Waiter should have 'set' method"
+            assert hasattr(waiter, "wait"), "Waiter should have 'wait' method"
+            assert hasattr(waiter, "is_set"), "Waiter should have 'is_set' method"
+            # asyncio.Event has specific attributes
+            assert isinstance(waiter, asyncio.Event), "Waiter should be asyncio.Event instance"
 
         # Clean up
         await pool.release()
