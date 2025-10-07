@@ -282,8 +282,9 @@ async def get_async_lock_manager() -> AsyncLockManager:
         _async_locks_registered = True  # Set BEFORE await to prevent recursion
         try:
             await register_foundation_async_locks()
-        except Exception:
-            # Reset flag on failure so registration can be retried
+        except BaseException:
+            # Reset flag on failure/cancellation so registration can be retried
+            # Catches both Exception and CancelledError
             _async_locks_registered = False
             raise
     return _async_lock_manager
