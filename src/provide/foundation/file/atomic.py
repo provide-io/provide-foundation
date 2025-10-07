@@ -87,8 +87,14 @@ def atomic_write(
             size=len(data),
             mode=oct(mode) if mode else None,
         )
-    except Exception:
+    except (OSError, PermissionError) as e:
         # Clean up temp file on error
+        log.error(
+            "Atomic write failed, cleaning up temp file",
+            path=str(path),
+            temp_path=temp_path,
+            error=str(e),
+        )
         with contextlib.suppress(OSError):
             Path(temp_path).unlink()
         raise

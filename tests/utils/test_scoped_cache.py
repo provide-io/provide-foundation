@@ -202,7 +202,7 @@ class TestContextScopedCacheThreadSafety:
 class TestContextScopedCacheAsyncSafety:
     """Test async/await compatibility."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.asyncio(loop_scope="function")
     async def test_async_isolation(self) -> None:
         """Each async task should have isolated cache."""
         cache = ContextScopedCache[str, int]("test")

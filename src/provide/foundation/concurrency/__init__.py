@@ -1,10 +1,22 @@
 from __future__ import annotations
 
+from provide.foundation.concurrency.async_locks import (
+    AsyncLockInfo,
+    AsyncLockManager,
+    get_async_lock_manager,
+    register_foundation_async_locks,
+)
 from provide.foundation.concurrency.core import (
     async_gather,
     async_run,
     async_sleep,
     async_wait_for,
+)
+from provide.foundation.concurrency.locks import (
+    LockInfo,
+    LockManager,
+    get_lock_manager,
+    register_foundation_locks,
 )
 
 """Concurrency utilities for Foundation.
@@ -14,8 +26,19 @@ and concurrency utilities for Foundation applications.
 """
 
 __all__ = [
+    # Async utilities
     "async_gather",
     "async_run",
     "async_sleep",
     "async_wait_for",
+    # Sync lock management
+    "LockInfo",
+    "LockManager",
+    "get_lock_manager",
+    "register_foundation_locks",
+    # Async lock management
+    "AsyncLockInfo",
+    "AsyncLockManager",
+    "get_async_lock_manager",
+    "register_foundation_async_locks",
 ]

@@ -292,8 +292,8 @@ class TestToolRegistry(FoundationTestCase):
 class TestDiscoverTools(FoundationTestCase):
     """Tests for tool discovery via entry points."""
 
-    def test_discover_tools_python_310_plus(self, mock_hub) -> None:
-        """Test tool discovery on Python 3.10+."""
+    def test_discover_tools_python_311_plus(self, mock_hub) -> None:
+        """Test tool discovery on Python 3.11+."""
         # Mock entry points
         mock_ep = Mock()
         mock_ep.name = "discovered_tool"
@@ -324,23 +324,6 @@ class TestDiscoverTools(FoundationTestCase):
                     aliases=None,
                     replace=True,
                 )
-
-    def test_discover_tools_fallback(self, mock_hub) -> None:
-        """Test tool discovery with fallback for older API."""
-        # Mock entry points
-        mock_ep = Mock()
-        mock_ep.name = "discovered_tool"
-        mock_ep.load.return_value = MockToolManager
-
-        mock_eps = {"provide.foundation.tools": [mock_ep]}
-
-        with patch("provide.foundation.tools.registry.get_shared_hub", return_value=mock_hub):
-            with patch("importlib.metadata.entry_points", return_value=mock_eps) as patch_entry_points:
-                ToolRegistry()
-
-                # Verify discovery
-                patch_entry_points.assert_called_once()
-                mock_ep.load.assert_called_once()
 
     def test_discover_tools_load_error(self, mock_hub) -> None:
         """Test handling of tool load errors during discovery."""

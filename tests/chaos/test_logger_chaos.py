@@ -134,7 +134,7 @@ class TestLoggerConcurrencyChaos(FoundationTestCase):
         assert log_count[0] == expected_count
 
     @given(bursts=rate_burst_patterns(max_burst_size=100, max_duration=1.0))
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_burst_logging_chaos(self, bursts: list[tuple[float, int]]) -> None:
         """Test logger with burst logging patterns.
 

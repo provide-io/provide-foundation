@@ -35,7 +35,7 @@ class ToolVerificationError(ToolError):
     """Raised when tool verification fails."""
 
 
-@define
+@define(slots=True, kw_only=True)
 class ToolMetadata:
     """Metadata about a tool version.
 

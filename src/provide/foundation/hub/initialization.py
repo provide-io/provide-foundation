@@ -5,7 +5,7 @@ from enum import Enum, auto
 import threading
 from typing import Any
 
-from attrs import frozen
+from attrs import define
 
 from provide.foundation.concurrency.locks import get_lock_manager
 from provide.foundation.errors.runtime import RuntimeError as FoundationRuntimeError
@@ -36,7 +36,7 @@ class InitEvent(Enum):
     RESET = auto()
 
 
-@frozen
+@define(frozen=True, slots=True, kw_only=True)
 class InitializationState(ImmutableState):
     """Immutable initialization state."""
 

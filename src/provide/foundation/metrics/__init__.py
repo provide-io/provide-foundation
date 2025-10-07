@@ -63,6 +63,7 @@ def counter(name: str, description: str = "", unit: str = "") -> SimpleCounter:
             otel_counter = _meter.create_counter(name=name, description=description, unit=unit)
             return SimpleCounter(name, otel_counter=otel_counter)
         except Exception:
+            # Broad catch intentional: OTEL metrics are optional, gracefully fall back to simple counter
             pass
 
     return SimpleCounter(name)
@@ -85,6 +86,7 @@ def gauge(name: str, description: str = "", unit: str = "") -> SimpleGauge:
             otel_gauge = _meter.create_up_down_counter(name=name, description=description, unit=unit)
             return SimpleGauge(name, otel_gauge=otel_gauge)
         except Exception:
+            # Broad catch intentional: OTEL metrics are optional, gracefully fall back to simple gauge
             pass
 
     return SimpleGauge(name)
@@ -107,6 +109,7 @@ def histogram(name: str, description: str = "", unit: str = "") -> SimpleHistogr
             otel_histogram = _meter.create_histogram(name=name, description=description, unit=unit)
             return SimpleHistogram(name, otel_histogram=otel_histogram)
         except Exception:
+            # Broad catch intentional: OTEL metrics are optional, gracefully fall back to simple histogram
             pass
 
     return SimpleHistogram(name)

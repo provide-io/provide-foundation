@@ -173,14 +173,7 @@ def read_toml(
         Parsed TOML data or default value
 
     """
-    try:
-        import tomllib
-    except ImportError:
-        try:
-            import tomli as tomllib
-        except ImportError:
-            log.warning("tomllib/tomli not available, returning default")
-            return default if default is not None else {}
+    import tomllib
 
     content = safe_read_text(path, default="", encoding=encoding)
 

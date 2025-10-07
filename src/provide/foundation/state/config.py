@@ -6,7 +6,7 @@ import threading
 import time
 from typing import Any
 
-from attrs import define, field, frozen
+from attrs import define, field
 
 from provide.foundation.config.defaults import DEFAULT_STATE_CONFIG_NAME
 from provide.foundation.state.base import ImmutableState, StateManager
@@ -14,7 +14,7 @@ from provide.foundation.state.base import ImmutableState, StateManager
 """Immutable configuration management with versioning."""
 
 
-@frozen
+@define(frozen=True, slots=True, kw_only=True)
 class VersionedConfig(ImmutableState):
     """Immutable configuration with generation tracking.
 

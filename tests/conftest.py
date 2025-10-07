@@ -171,6 +171,11 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         # This ensures clean state for the next test in the worker
         reset_foundation_setup_for_testing()
 
+        # NOTE: We do NOT close event loops here because:
+        # 1. pytest-asyncio manages event loop lifecycle
+        # 2. Closing loops interferes with pytest-asyncio's cleanup
+        # 3. Clearing event loop policy breaks subsequent async tests
+
         # NOTE: We do NOT remove modules from sys.modules because:
         # 1. Removing modules causes them to be re-imported
         # 2. Re-importing triggers module-level initialization code

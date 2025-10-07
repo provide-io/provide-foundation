@@ -13,7 +13,7 @@ from provide.foundation.errors.process import ProcessError
 """Shared utilities for both sync and async subprocess execution."""
 
 
-@define
+@define(slots=True)
 class CompletedProcess:
     """Result of a completed process."""
 

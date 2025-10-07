@@ -203,7 +203,8 @@ class FileLock:
                             self.path.unlink()
             except FileNotFoundError:
                 pass  # Lock already released
-            except Exception as e:
+            except (OSError, PermissionError) as e:
+                # Failed to unlink lock file due to permission or filesystem error
                 log.error("Failed to release lock", path=str(self.path), error=str(e))
             finally:
                 self.locked = False
@@ -230,7 +231,9 @@ class FileLock:
             # Read content with a fallback to prevent hanging on I/O
             try:
                 content = self.path.read_text().strip()
-            except Exception:
+            except (OSError, PermissionError, UnicodeDecodeError):
+                # OSError/PermissionError: Can't read file
+                # UnicodeDecodeError: File has invalid encoding
                 # If we can't read the file, assume it's not stale
                 return False
 
@@ -280,7 +283,8 @@ class FileLock:
                         return True
                     except FileNotFoundError:
                         return True
-                    except Exception:
+                    except (OSError, PermissionError):
+                        # Failed to remove stale lock (permission denied, etc.)
                         return False
 
                 # Process exists and start time matches (or no start time available)
@@ -294,7 +298,8 @@ class FileLock:
                     return True
                 except FileNotFoundError:
                     return True
-                except Exception:
+                except (OSError, PermissionError):
+                    # Failed to remove stale lock (permission denied, etc.)
                     return False
 
             except psutil.AccessDenied:
@@ -302,6 +307,9 @@ class FileLock:
                 return False
 
         except Exception as e:
+            # Generic catch intentional: Safety net for security-critical lock validation.
+            # Catches any unexpected errors (psutil errors, filesystem issues, etc.)
+            # Fail-safe: return False to assume lock is valid rather than risk corruption.
             log.debug("Error checking stale lock", path=str(self.path), error=str(e))
             return False
 
