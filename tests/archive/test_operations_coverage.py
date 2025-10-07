@@ -72,7 +72,7 @@ class TestOperationChainConfiguration(FoundationTestCase):
 
         chain = OperationChain(
             operations=["zip"],
-            operation_config={"zip": {"deterministic": True}},
+            operation_config={"zip": {"compression_level": 9}},
         )
         result = chain.execute(source, output)
 
@@ -89,7 +89,7 @@ class TestOperationChainConfiguration(FoundationTestCase):
         chain = OperationChain(
             operations=["zip"],
             operation_config={
-                "zip": {"deterministic": True},
+                "zip": {"compression_level": 6},
                 "tar": {"deterministic": True},  # Not used but shouldn't cause issues
             },
         )
