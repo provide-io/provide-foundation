@@ -34,12 +34,13 @@ from provide.foundation.logger.types import (
     LogLevelStr,
 )
 from provide.foundation.resilience import (
+    AsyncCircuitBreaker,
     BackoffStrategy,
-    CircuitBreaker,
     CircuitState,
     FallbackChain,
     RetryExecutor,
     RetryPolicy,
+    SyncCircuitBreaker,
     circuit_breaker,
     fallback,
     retry,
@@ -98,10 +99,11 @@ def __getattr__(name: str) -> object:
 
 
 __all__ = [
+    # Resilience - Circuit Breaker (async)
+    "AsyncCircuitBreaker",
     "BackoffStrategy",
     # New foundation modules
     "CLIContext",
-    "CircuitBreaker",
     "CircuitState",
     "ComponentCategory",
     "ConsoleFormatterStr",
@@ -121,6 +123,8 @@ __all__ = [
     "RegistryEntry",
     "RetryExecutor",
     "RetryPolicy",
+    # Resilience - Circuit Breaker (sync)
+    "SyncCircuitBreaker",
     # Configuration classes
     "TelemetryConfig",
     # Rate limiting utilities

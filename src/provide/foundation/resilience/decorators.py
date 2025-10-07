@@ -293,6 +293,8 @@ def circuit_breaker(
     """
 
     def decorator(func: F) -> F:
+        global _circuit_breaker_counter
+
         # Create appropriate breaker type based on function type
         if asyncio.iscoroutinefunction(func):
             breaker = AsyncCircuitBreaker(
@@ -307,7 +309,6 @@ def circuit_breaker(
                 return await breaker.call_async(func, *args, **kwargs)
 
             # Register async circuit breaker
-            global _circuit_breaker_counter
             _circuit_breaker_counter += 1
             breaker_name = f"cb_{_circuit_breaker_counter}"
             registry = _get_circuit_breaker_registry()
@@ -330,7 +331,6 @@ def circuit_breaker(
                 return breaker.call(func, *args, **kwargs)
 
             # Register sync circuit breaker
-            global _circuit_breaker_counter
             _circuit_breaker_counter += 1
             breaker_name = f"cb_{_circuit_breaker_counter}"
             registry = _get_circuit_breaker_registry()
