@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-import click
+from provide.foundation.cli.deps import click
 from click.testing import CliRunner, Result
 
 from provide.foundation import get_shared_hub

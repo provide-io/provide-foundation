@@ -1,12 +1,7 @@
 from __future__ import annotations
 
-# Check for Click availability
-try:
-    import click  # noqa: F401
-
-    _HAS_CLICK = True
-except ImportError:
-    _HAS_CLICK = False
+# Centralized Click dependency handling
+from provide.foundation.cli.deps import _HAS_CLICK, click  # noqa: F401
 
 from provide.foundation.cli.base import CLIAdapter
 from provide.foundation.cli.decorators import (

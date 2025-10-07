@@ -1,24 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
+from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.console.output import pout
 from provide.foundation.process import exit_error, exit_success
 from provide.foundation.utils.deps import check_optional_deps, has_dependency
 
 """CLI command for checking optional dependencies."""
-
-if TYPE_CHECKING:
-    import click
-
-# Optional click import
-try:
-    import click
-
-    _HAS_CLICK = True
-except ImportError:
-    click: Any = None
-    _HAS_CLICK = False
 
 
 def _require_click() -> None:

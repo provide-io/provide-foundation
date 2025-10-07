@@ -2,19 +2,9 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
-if TYPE_CHECKING:
-    import click
-
-# Click feature detection
-try:
-    import click
-
-    _HAS_CLICK = True
-except ImportError:
-    click: Any = None
-    _HAS_CLICK = False
+from provide.foundation.cli.deps import _HAS_CLICK, click
 
 
 def _require_click() -> None:
