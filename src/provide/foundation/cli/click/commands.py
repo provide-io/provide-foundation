@@ -90,6 +90,10 @@ def build_click_command_from_info(info: Any) -> click.Command:
         if hasattr(decorated_func, "__click_params__"):
             cmd.params = list(reversed(decorated_func.__click_params__))
 
+        # Restore the original function as the callback
+        # The wrapper was only needed to collect parameters without modifying info.func
+        cmd.callback = info.func
+
         return cmd
 
     except Exception as e:
