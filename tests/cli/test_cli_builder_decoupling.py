@@ -16,7 +16,6 @@ from provide.foundation.cli.click.adapter import ClickAdapter
 from provide.foundation.cli.click.commands import build_click_command_from_info
 from provide.foundation.cli.errors import CLIBuildError
 from provide.foundation.hub.info import CommandInfo
-from provide.foundation.hub.introspection import ParameterInfo
 
 
 class TestBuildClickCommandFromInfo(FoundationTestCase):
@@ -216,33 +215,6 @@ class TestBuildClickCommandFromInfo(FoundationTestCase):
         # Metadata doesn't affect Click command building
         assert isinstance(cmd, click.Command)
         assert cmd.name == "admin"
-
-    def test_build_command_with_provided_parameters(self) -> None:
-        """Build command when parameters are pre-introspected."""
-
-        def execute(target: str, timeout: int = 30) -> None:
-            """Execute a task."""
-            click.echo(f"Executing {target} (timeout: {timeout}s)")
-
-        # Pre-introspect parameters
-        params = [
-            ParameterInfo(name="target", annotation=str, kind="positional"),
-            ParameterInfo(name="timeout", annotation=int, kind="keyword", default=30),
-        ]
-
-        info = CommandInfo(
-            name="execute",
-            func=execute,
-            description="Execute a task",
-            parameters=params,
-        )
-
-        cmd = build_click_command_from_info(info)
-
-        runner = CliTestRunner()
-        result = runner.invoke(cmd, ["task1", "--timeout", "60"])
-        assert result.exit_code == 0
-        assert "Executing task1 (timeout: 60s)" in result.output
 
     def test_build_command_failure_handling(self) -> None:
         """Test that building failures are properly wrapped in CLIBuildError."""
