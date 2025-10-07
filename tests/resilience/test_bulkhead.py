@@ -1,4 +1,4 @@
-"""Tests for bulkhead pattern and ResourcePool."""
+"""Tests for bulkhead pattern and resource pools."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import time
 from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.foundation.resilience.bulkhead import Bulkhead, ResourcePool
+from provide.foundation.resilience.bulkhead import AsyncResourcePool, Bulkhead, SyncResourcePool
 
 
 class TestResourcePool(FoundationTestCase):
