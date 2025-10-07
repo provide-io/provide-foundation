@@ -117,7 +117,9 @@ class FileConfigLoader(ConfigLoader):
         if self.format == ConfigFormat.YAML:
             import yaml
 
-            return yaml.safe_load(content)
+            data = yaml.safe_load(content)
+            # yaml.safe_load returns None for empty content or comments-only files
+            return data if data is not None else {}
         if self.format == ConfigFormat.TOML:
             import tomllib
 
