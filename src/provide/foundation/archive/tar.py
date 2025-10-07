@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-import os
 from pathlib import Path
 import tarfile
 
 from attrs import define
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.foundation.archive.security import is_safe_path
 from provide.foundation.config import defaults
 from provide.foundation.config.base import field
 from provide.foundation.file import ensure_parent_dir
@@ -15,41 +15,6 @@ from provide.foundation.logger import get_logger
 """TAR archive implementation."""
 
 logger = get_logger(__name__)
-
-
-def _is_safe_path(base_dir: Path, target_path: str) -> bool:
-    """Validate that a path is safe for extraction.
-
-    Prevents:
-    - Path traversal attacks (..)
-    - Absolute paths
-    - Symlinks that point outside base directory
-
-    Args:
-        base_dir: Base extraction directory
-        target_path: Path to validate
-
-    Returns:
-        True if path is safe, False otherwise
-    """
-    # Check for absolute paths
-    if Path(target_path).is_absolute():
-        return False
-
-    # Check for path traversal patterns
-    if ".." in Path(target_path).parts:
-        return False
-
-    # Normalize and resolve the full path
-    try:
-        full_path = (base_dir / target_path).resolve()
-        base_resolved = base_dir.resolve()
-
-        # Ensure the resolved path is within base directory
-        # This catches symlinks and other tricks
-        return str(full_path).startswith(str(base_resolved) + os.sep) or full_path == base_resolved
-    except (ValueError, OSError):
-        return False
 
 
 @define(slots=True)
@@ -120,7 +85,7 @@ class TarArchive(BaseArchive):
                 safe_members = []
                 for member in tar.getmembers():
                     # Use unified path validation
-                    if not _is_safe_path(output, member.name):
+                    if not is_safe_path(output, member.name):
                         raise ArchiveError(
                             f"Unsafe path in archive: {member.name}. "
                             "Archive may contain path traversal, symlinks, or absolute paths."
@@ -129,7 +94,7 @@ class TarArchive(BaseArchive):
                     # Additional checks for symlinks and hardlinks
                     if member.islnk() or member.issym():
                         # Check that link targets are also safe
-                        if not _is_safe_path(output, member.linkname):
+                        if not is_safe_path(output, member.linkname):
                             raise ArchiveError(
                                 f"Unsafe link target in archive: {member.name} -> {member.linkname}. "
                                 "Link target may escape extraction directory."
