@@ -59,8 +59,16 @@ def build_click_command_from_info(info: Any) -> click.Command:
         # Separate into arguments and options
         arguments, options = separate_arguments_and_options(params)
 
-        # Start with the base function
-        decorated_func = info.func
+        # Create a wrapper to avoid modifying the original function
+        # Click decorators modify functions in-place, so we need to protect info.func
+        import functools
+
+        @functools.wraps(info.func)
+        def wrapper(*args, **kwargs):  # type: ignore[no-untyped-def]
+            return info.func(*args, **kwargs)
+
+        # Start with the wrapper function
+        decorated_func = wrapper
 
         # Process options in reverse order (for decorator stacking)
         for param in reversed(options):
