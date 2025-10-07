@@ -221,6 +221,42 @@ class TestArchiveOperationsNonDeterministic(FoundationTestCase):
         assert output.read_bytes()[:3] == b"BZh"
 
 
+class TestOperationChainWithSubdirectories(FoundationTestCase):
+    """Test that operation chains handle subdirectories correctly."""
+
+    def test_tar_gz_preserves_subdirectory_structure(self, temp_directory: Path) -> None:
+        """Test that tar.gz chain preserves subdirectory structure."""
+        temp_path = temp_directory
+
+        # Create structure with subdirectories
+        source = temp_path / "source"
+        source.mkdir()
+        (source / "file1.txt").write_text("content1")
+
+        subdir = source / "subdir"
+        subdir.mkdir()
+        (subdir / "file2.txt").write_text("content2")
+
+        nested = subdir / "nested"
+        nested.mkdir()
+        (nested / "file3.txt").write_text("content3")
+
+        # Create archive
+        archive = temp_path / "archive.tar.gz"
+        chain = OperationChain(operations=["tar", "gzip"])
+        chain.execute(source, archive)
+
+        # Extract
+        extracted = temp_path / "extracted"
+        chain.reverse(archive, extracted)
+
+        # Verify subdirectory structure preserved
+        assert (extracted / "source").exists()
+        assert (extracted / "source" / "file1.txt").read_text() == "content1"
+        assert (extracted / "source" / "subdir" / "file2.txt").read_text() == "content2"
+        assert (extracted / "source" / "subdir" / "nested" / "file3.txt").read_text() == "content3"
+
+
 class TestOperationChainTemporaryFileManagement(FoundationTestCase):
     """Test that OperationChain properly manages temporary files."""
 
@@ -308,4 +344,5 @@ __all__ = [
     "TestOperationChainConfiguration",
     "TestOperationChainEdgeCases",
     "TestOperationChainTemporaryFileManagement",
+    "TestOperationChainWithSubdirectories",
 ]
