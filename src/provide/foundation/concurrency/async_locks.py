@@ -279,8 +279,8 @@ async def get_async_lock_manager() -> AsyncLockManager:
     if _async_lock_manager is None:
         _async_lock_manager = AsyncLockManager()
     if not _async_locks_registered:
+        _async_locks_registered = True  # Set BEFORE await to prevent recursion
         await register_foundation_async_locks()
-        _async_locks_registered = True
     return _async_lock_manager
 
 
@@ -293,7 +293,14 @@ async def register_foundation_async_locks() -> None:
     - 200-299: Core infrastructure (config, registry, components)
     - 300+: Reserved for future subsystems
     """
-    manager = await get_async_lock_manager()
+    global _async_lock_manager
+
+    # Use global directly - manager is guaranteed to exist because
+    # get_async_lock_manager() creates it before calling this function
+    if _async_lock_manager is None:
+        raise RuntimeError("AsyncLockManager not initialized. Call get_async_lock_manager() first.")
+
+    manager = _async_lock_manager
 
     # Orchestration (order 0-99) - most fundamental, acquired first
     await manager.register_lock("foundation.async.hub.init", order=0, description="Async hub initialization")
