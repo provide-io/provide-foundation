@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from provide.foundation.cli.click.builder import create_command_group
-from provide.foundation.cli.click.commands import build_click_command
+from provide.foundation.cli.click.commands import build_click_command, build_click_command_from_info
 from provide.foundation.cli.click.hierarchy import ensure_parent_groups
 from provide.foundation.cli.deps import click
 
@@ -44,29 +44,7 @@ class ClickAdapter:
             CLIBuildError: If command building fails
 
         """
-        # For now, we need the command to be in the registry
-        # In the future, we could build directly from CommandInfo
-        # without requiring registry registration
-        from provide.foundation.hub.registry import get_command_registry
-
-        registry = get_command_registry()
-
-        # Try to find command in registry
-        entry = registry.get_entry(info.name, dimension="command")
-        if entry:
-            cmd = build_click_command(info.name, registry=registry)
-            if cmd:
-                return cmd
-
-        # If not in registry, we'd build directly from CommandInfo
-        # This would require refactoring build_click_command to accept CommandInfo
-        # For now, raise an error
-        from provide.foundation.cli.errors import CLIBuildError
-
-        raise CLIBuildError(
-            f"Command '{info.name}' not found in registry",
-            command_name=info.name,
-        )
+        return build_click_command_from_info(info)
 
     def build_group(
         self,
