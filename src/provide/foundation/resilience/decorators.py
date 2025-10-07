@@ -8,7 +8,8 @@ from typing import TYPE_CHECKING, Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
 from provide.foundation.errors.config import ConfigurationError
-from provide.foundation.resilience.circuit import CircuitBreaker
+from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
+from provide.foundation.resilience.circuit_sync import SyncCircuitBreaker
 from provide.foundation.resilience.retry import (
     BackoffStrategy,
     RetryExecutor,
@@ -260,9 +261,6 @@ def retry(
     return decorator
 
 
-# Import CircuitBreaker from circuit module
-
-
 def circuit_breaker(
     failure_threshold: int = 5,
     recovery_timeout: float = DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT,
@@ -270,6 +268,9 @@ def circuit_breaker(
     time_source: Callable[[], float] | None = None,
 ) -> Callable[[F], F]:
     """Create a circuit breaker decorator.
+
+    Creates a SyncCircuitBreaker for synchronous functions and an
+    AsyncCircuitBreaker for asynchronous functions to avoid locking issues.
 
     Args:
         failure_threshold: Number of failures before opening circuit.
@@ -285,40 +286,60 @@ def circuit_breaker(
         ... def unreliable_service():
         ...     return external_api_call()
 
+        >>> @circuit_breaker(failure_threshold=3, recovery_timeout=30)
+        ... async def async_unreliable_service():
+        ...     return await async_api_call()
+
     """
-    breaker = CircuitBreaker(
-        failure_threshold=failure_threshold,
-        recovery_timeout=recovery_timeout,
-        expected_exception=expected_exception,
-        time_source=time_source,
-    )
-
-    # Register circuit breaker in Hub registry with unique name
-    global _circuit_breaker_counter
-    _circuit_breaker_counter += 1
-    breaker_name = f"cb_{_circuit_breaker_counter}"
-
-    # Register for appropriate cleanup based on context
-    registry = _get_circuit_breaker_registry()
-    if _should_register_for_global_reset():
-        # Production circuit breakers
-        registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
-    else:
-        # Test circuit breakers go to separate registry for isolated reset
-        registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
 
     def decorator(func: F) -> F:
-        @functools.wraps(func)
-        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-            return breaker.call(func, *args, **kwargs)
-
-        @functools.wraps(func)
-        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
-            return await breaker.call_async(func, *args, **kwargs)
-
+        # Create appropriate breaker type based on function type
         if asyncio.iscoroutinefunction(func):
+            breaker = AsyncCircuitBreaker(
+                failure_threshold=failure_threshold,
+                recovery_timeout=recovery_timeout,
+                expected_exception=expected_exception,
+                time_source=time_source,
+            )
+
+            @functools.wraps(func)
+            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+                return await breaker.call_async(func, *args, **kwargs)
+
+            # Register async circuit breaker
+            global _circuit_breaker_counter
+            _circuit_breaker_counter += 1
+            breaker_name = f"cb_{_circuit_breaker_counter}"
+            registry = _get_circuit_breaker_registry()
+            if _should_register_for_global_reset():
+                registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
+            else:
+                registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
+
             return async_wrapper  # type: ignore
-        return sync_wrapper  # type: ignore
+        else:
+            breaker = SyncCircuitBreaker(
+                failure_threshold=failure_threshold,
+                recovery_timeout=recovery_timeout,
+                expected_exception=expected_exception,
+                time_source=time_source,
+            )
+
+            @functools.wraps(func)
+            def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+                return breaker.call(func, *args, **kwargs)
+
+            # Register sync circuit breaker
+            global _circuit_breaker_counter
+            _circuit_breaker_counter += 1
+            breaker_name = f"cb_{_circuit_breaker_counter}"
+            registry = _get_circuit_breaker_registry()
+            if _should_register_for_global_reset():
+                registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
+            else:
+                registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
+
+            return sync_wrapper  # type: ignore
 
     return decorator
 
