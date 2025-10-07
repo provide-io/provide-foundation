@@ -280,7 +280,12 @@ async def get_async_lock_manager() -> AsyncLockManager:
         _async_lock_manager = AsyncLockManager()
     if not _async_locks_registered:
         _async_locks_registered = True  # Set BEFORE await to prevent recursion
-        await register_foundation_async_locks()
+        try:
+            await register_foundation_async_locks()
+        except Exception:
+            # Reset flag on failure so registration can be retried
+            _async_locks_registered = False
+            raise
     return _async_lock_manager
 
 
