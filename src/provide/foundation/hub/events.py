@@ -75,27 +75,28 @@ class EventBus:
         Args:
             event: Event to emit
         """
-        if event.name not in self._handlers:
-            return
+        with self._lock:
+            if event.name not in self._handlers:
+                return
 
-        # Clean up dead references and call live handlers
-        live_handlers = []
-        for weak_handler in self._handlers[event.name]:
-            handler = weak_handler()
-            if handler is not None:
-                live_handlers.append(weak_handler)
-                with contextlib.suppress(Exception):
-                    # Silently ignore handler errors to prevent cascading failures
-                    handler(event)
+            # Clean up dead references and call live handlers
+            live_handlers = []
+            for weak_handler in self._handlers[event.name]:
+                handler = weak_handler()
+                if handler is not None:
+                    live_handlers.append(weak_handler)
+                    with contextlib.suppress(Exception):
+                        # Silently ignore handler errors to prevent cascading failures
+                        handler(event)
 
-        # Update handler list with only live references
-        self._handlers[event.name] = live_handlers
+            # Update handler list with only live references
+            self._handlers[event.name] = live_handlers
 
-        # Periodic cleanup of all dead references
-        self._operation_count += 1
-        if self._operation_count >= self._cleanup_threshold:
-            self._cleanup_dead_references()
-            self._operation_count = 0
+            # Periodic cleanup of all dead references
+            self._operation_count += 1
+            if self._operation_count >= self._cleanup_threshold:
+                self._cleanup_dead_references()
+                self._operation_count = 0
 
     def unsubscribe(self, event_name: str, handler: Callable[[Event], None]) -> None:
         """Unsubscribe from events.
@@ -104,13 +105,14 @@ class EventBus:
             event_name: Name of event to unsubscribe from
             handler: Handler function to remove
         """
-        if event_name not in self._handlers:
-            return
+        with self._lock:
+            if event_name not in self._handlers:
+                return
 
-        # Remove handler by comparing actual functions
-        self._handlers[event_name] = [
-            weak_ref for weak_ref in self._handlers[event_name] if weak_ref() is not handler
-        ]
+            # Remove handler by comparing actual functions
+            self._handlers[event_name] = [
+                weak_ref for weak_ref in self._handlers[event_name] if weak_ref() is not handler
+            ]
 
     def _cleanup_dead_references(self) -> None:
         """Clean up all dead weak references across all event types."""
@@ -128,27 +130,29 @@ class EventBus:
 
     def get_memory_stats(self) -> dict[str, Any]:
         """Get memory usage statistics for the event bus."""
-        total_handlers = 0
-        dead_handlers = 0
+        with self._lock:
+            total_handlers = 0
+            dead_handlers = 0
 
-        for handlers in self._handlers.values():
-            for weak_handler in handlers:
-                total_handlers += 1
-                if weak_handler() is None:
-                    dead_handlers += 1
+            for handlers in self._handlers.values():
+                for weak_handler in handlers:
+                    total_handlers += 1
+                    if weak_handler() is None:
+                        dead_handlers += 1
 
-        return {
-            "event_types": len(self._handlers),
-            "total_handlers": total_handlers,
-            "live_handlers": total_handlers - dead_handlers,
-            "dead_handlers": dead_handlers,
-            "operation_count": self._operation_count,
-        }
+            return {
+                "event_types": len(self._handlers),
+                "total_handlers": total_handlers,
+                "live_handlers": total_handlers - dead_handlers,
+                "dead_handlers": dead_handlers,
+                "operation_count": self._operation_count,
+            }
 
     def force_cleanup(self) -> None:
         """Force immediate cleanup of all dead references."""
-        self._cleanup_dead_references()
-        self._operation_count = 0
+        with self._lock:
+            self._cleanup_dead_references()
+            self._operation_count = 0
 
     def clear(self) -> None:
         """Clear all event subscriptions.
@@ -156,8 +160,9 @@ class EventBus:
         This is primarily used during test resets to prevent duplicate
         event handlers from accumulating across test runs.
         """
-        self._handlers.clear()
-        self._operation_count = 0
+        with self._lock:
+            self._handlers.clear()
+            self._operation_count = 0
 
 
 # Global event bus instance
