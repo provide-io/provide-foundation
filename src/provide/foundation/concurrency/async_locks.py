@@ -303,9 +303,9 @@ async def get_async_lock_manager() -> AsyncLockManager:
 
     # If we're waiting for another task/thread's registration
     if event is not None:
-        # Poll threading.Event in async-friendly way (works across event loops)
-        while not event.is_set():
-            await asyncio.sleep(0.01)  # Small sleep to avoid busy-wait
+        # Wait on threading.Event in async-friendly way (works across event loops)
+        # Use to_thread to avoid blocking the event loop
+        await asyncio.to_thread(event.wait)
 
         # After waking, check if registration succeeded
         if _async_locks_registered:
