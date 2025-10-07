@@ -272,7 +272,7 @@ class AsyncLockManager:
 # Global async lock manager instance
 _async_lock_manager: AsyncLockManager | None = None
 _async_locks_registered = False
-_async_locks_registration_event: asyncio.Event | None = None
+_async_locks_registration_event: threading.Event | None = None  # Thread-safe, loop-agnostic
 _async_locks_registration_lock = threading.Lock()  # Thread-safe state machine coordination
 
 
@@ -297,13 +297,16 @@ async def get_async_lock_manager() -> AsyncLockManager:
         if _async_locks_registration_event is not None:
             event = _async_locks_registration_event
         else:
-            # This task will perform registration - create event
-            _async_locks_registration_event = asyncio.Event()
+            # This task will perform registration - create threading.Event (loop-agnostic)
+            _async_locks_registration_event = threading.Event()
             event = None
 
-    # If we're waiting for another task's registration
+    # If we're waiting for another task/thread's registration
     if event is not None:
-        await event.wait()
+        # Poll threading.Event in async-friendly way (works across event loops)
+        while not event.is_set():
+            await asyncio.sleep(0.01)  # Small sleep to avoid busy-wait
+
         # After waking, check if registration succeeded
         if _async_locks_registered:
             return _async_lock_manager
@@ -320,7 +323,7 @@ async def get_async_lock_manager() -> AsyncLockManager:
             _async_lock_manager._locks.clear()
         raise
     finally:
-        # Always unblock waiting tasks and clear event
+        # Always unblock waiting tasks/threads and clear event
         if _async_locks_registration_event is not None:
             _async_locks_registration_event.set()
         _async_locks_registration_event = None
