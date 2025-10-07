@@ -11,7 +11,6 @@ import pytest
 from provide.foundation.hub import (
     clear_hub,
     get_hub,
-    get_shared_hub,
     register_command,
 )
 from provide.foundation.hub.registry import Registry
@@ -209,12 +208,12 @@ class TestHubThreadSafety(FoundationTestCase):
 
     @pytest.mark.slow
     def test_concurrent_hub_initialization(self) -> None:
-        """Test that get_shared_hub() is thread-safe during initialization."""
+        """Test that get_hub() is thread-safe during initialization."""
         hub_instances = []
 
         def get_hub_instance() -> None:
             """Get hub instance and store it."""
-            hub = get_shared_hub()
+            hub = get_hub()
             hub_instances.append(hub)
 
         # Create multiple threads that all try to get hub at once

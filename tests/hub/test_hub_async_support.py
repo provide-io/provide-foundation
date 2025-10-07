@@ -10,8 +10,8 @@ from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub import (
-    clear_shared_hub,
-    get_shared_hub,
+    clear_hub,
+    get_hub,
     register_command,
 )
 from provide.foundation.hub.registry import Registry
@@ -107,16 +107,16 @@ class TestAsyncHubCompatibility(FoundationTestCase):
 
     def setup_method(self) -> None:
         """Clear hub before each test."""
-        clear_shared_hub()
+        clear_hub()
 
     def teardown_method(self) -> None:
         """Clear hub after each test."""
-        clear_shared_hub()
+        clear_hub()
 
     @pytest.mark.asyncio
     async def test_hub_operations_in_async_context(self) -> None:
         """Test Hub operations work within async functions."""
-        hub = get_shared_hub()
+        hub = get_hub()
 
         # Legacy test removed - register_component decorator no longer exists in current hub architecture
         # This test was testing component registration via decorator which has been replaced
@@ -126,7 +126,7 @@ class TestAsyncHubCompatibility(FoundationTestCase):
         async def test_hub_access() -> bool:
             for _i in range(5):
                 # Test hub access doesn't fail in async context
-                current_hub = get_shared_hub()
+                current_hub = get_hub()
                 assert current_hub is hub
                 await asyncio.sleep(0)
             return True
@@ -139,21 +139,21 @@ class TestAsyncHubCompatibility(FoundationTestCase):
         """Test multiple async tasks can access hub concurrently."""
 
         async def task1() -> str:
-            hub = get_shared_hub()
+            hub = get_hub()
             for i in range(10):
                 hub.add_command(lambda idx=i: f"cmd1_{idx}", f"async_cmd1_{i}")
                 await asyncio.sleep(0)  # Minimal async yield
             return "task1_done"
 
         async def task2() -> str:
-            hub = get_shared_hub()
+            hub = get_hub()
             for i in range(10):
                 hub.add_command(lambda idx=i: f"cmd2_{idx}", f"async_cmd2_{i}")
                 await asyncio.sleep(0)  # Minimal async yield
             return "task2_done"
 
         async def task3() -> str:
-            hub = get_shared_hub()
+            hub = get_hub()
             for _ in range(20):
                 commands = hub.list_commands()
                 await asyncio.sleep(0)  # Minimal async yield
@@ -166,7 +166,7 @@ class TestAsyncHubCompatibility(FoundationTestCase):
         assert "task2_done" in results
 
         # Verify all commands registered
-        hub = get_shared_hub()
+        hub = get_hub()
         commands = hub.list_commands()
         cmd1_count = sum(1 for c in commands if c.startswith("async_cmd1_"))
         cmd2_count = sum(1 for c in commands if c.startswith("async_cmd2_"))
@@ -320,7 +320,7 @@ class TestAsyncTaskCoordination(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_async_event_handling(self) -> None:
         """Test async event handling with Hub."""
-        hub = get_shared_hub()
+        hub = get_hub()
         events = []
 
         async def event_handler(event_type: str, data: Any) -> None:
@@ -383,7 +383,7 @@ class TestAsyncMixedOperations(FoundationTestCase):
     async def test_concurrent_sync_async_access(self) -> None:
         """Test concurrent access from sync and async contexts."""
         registry = Registry()
-        get_shared_hub()
+        get_hub()
 
         async def async_writer() -> str:
             for i in range(10):
