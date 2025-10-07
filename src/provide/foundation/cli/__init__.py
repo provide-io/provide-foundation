@@ -108,9 +108,4 @@ def get_cli_adapter(framework: str = "click") -> CLIAdapter:
                 ) from e
             raise
 
-    # Future framework support:
-    # elif framework == "typer":
-    #     from provide.foundation.cli.typer import TyperAdapter
-    #     return TyperAdapter()
-
     raise ValueError(f"Unknown CLI framework: {framework}. Supported frameworks: click")
