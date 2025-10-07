@@ -318,7 +318,8 @@ class CoreHub:
             Click Group with registered commands
 
         """
-        if not _HAS_CLICK:
+        click_module, has_click = _get_click()
+        if not has_click:
             raise ImportError("CLI creation requires: pip install 'provide-foundation[cli]'")
 
         from provide.foundation.hub.commands import create_command_group
@@ -328,7 +329,7 @@ class CoreHub:
 
         # Add version option if provided
         if version:
-            cli = click.version_option(version=version)(cli)
+            cli = click_module.version_option(version=version)(cli)
 
         self._cli_group = cli
         return cli
