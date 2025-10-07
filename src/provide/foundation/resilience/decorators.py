@@ -4,6 +4,7 @@ import asyncio
 from collections.abc import Callable
 import functools
 import inspect
+import threading
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
@@ -25,8 +26,9 @@ if TYPE_CHECKING:
 CIRCUIT_BREAKER_DIMENSION = "circuit_breaker"
 CIRCUIT_BREAKER_TEST_DIMENSION = "circuit_breaker_test"
 
-# Counter for generating unique circuit breaker names
+# Counter for generating unique circuit breaker names (protected by lock)
 _circuit_breaker_counter = 0
+_circuit_breaker_counter_lock = threading.Lock()
 
 
 def _get_circuit_breaker_registry() -> Registry:
@@ -264,7 +266,7 @@ def retry(
 def circuit_breaker(
     failure_threshold: int = 5,
     recovery_timeout: float = DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT,
-    expected_exception: tuple[type[Exception], ...] = (Exception,),
+    expected_exception: type[Exception] | tuple[type[Exception], ...] = Exception,
     time_source: Callable[[], float] | None = None,
 ) -> Callable[[F], F]:
     """Create a circuit breaker decorator.
@@ -275,7 +277,8 @@ def circuit_breaker(
     Args:
         failure_threshold: Number of failures before opening circuit.
         recovery_timeout: Seconds to wait before attempting recovery.
-        expected_exception: Exception types that trigger the breaker.
+        expected_exception: Exception type(s) that trigger the breaker.
+            Can be a single exception type or a tuple of exception types.
         time_source: Optional callable that returns current time (for testing).
 
     Returns:
@@ -286,11 +289,20 @@ def circuit_breaker(
         ... def unreliable_service():
         ...     return external_api_call()
 
-        >>> @circuit_breaker(failure_threshold=3, recovery_timeout=30)
+        >>> @circuit_breaker(expected_exception=ValueError)
+        ... def parse_data():
+        ...     return risky_parse()
+
+        >>> @circuit_breaker(expected_exception=(ValueError, TypeError))
         ... async def async_unreliable_service():
         ...     return await async_api_call()
 
     """
+    # Normalize expected_exception to tuple
+    if not isinstance(expected_exception, tuple):
+        expected_exception_tuple = (expected_exception,)
+    else:
+        expected_exception_tuple = expected_exception
 
     def decorator(func: F) -> F:
         global _circuit_breaker_counter
@@ -300,7 +312,7 @@ def circuit_breaker(
             breaker = AsyncCircuitBreaker(
                 failure_threshold=failure_threshold,
                 recovery_timeout=recovery_timeout,
-                expected_exception=expected_exception,
+                expected_exception=expected_exception_tuple,
                 time_source=time_source,
             )
 
@@ -308,9 +320,11 @@ def circuit_breaker(
             async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
                 return await breaker.call_async(func, *args, **kwargs)
 
-            # Register async circuit breaker
-            _circuit_breaker_counter += 1
-            breaker_name = f"cb_{_circuit_breaker_counter}"
+            # Register async circuit breaker (thread-safe)
+            with _circuit_breaker_counter_lock:
+                _circuit_breaker_counter += 1
+                breaker_name = f"cb_{_circuit_breaker_counter}"
+
             registry = _get_circuit_breaker_registry()
             if _should_register_for_global_reset():
                 registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
@@ -322,7 +336,7 @@ def circuit_breaker(
             breaker = SyncCircuitBreaker(
                 failure_threshold=failure_threshold,
                 recovery_timeout=recovery_timeout,
-                expected_exception=expected_exception,
+                expected_exception=expected_exception_tuple,
                 time_source=time_source,
             )
 
@@ -330,9 +344,11 @@ def circuit_breaker(
             def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
                 return breaker.call(func, *args, **kwargs)
 
-            # Register sync circuit breaker
-            _circuit_breaker_counter += 1
-            breaker_name = f"cb_{_circuit_breaker_counter}"
+            # Register sync circuit breaker (thread-safe)
+            with _circuit_breaker_counter_lock:
+                _circuit_breaker_counter += 1
+                breaker_name = f"cb_{_circuit_breaker_counter}"
+
             registry = _get_circuit_breaker_registry()
             if _should_register_for_global_reset():
                 registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
@@ -344,30 +360,42 @@ def circuit_breaker(
     return decorator
 
 
-def reset_circuit_breakers_for_testing() -> None:
+async def reset_circuit_breakers_for_testing() -> None:
     """Reset all circuit breaker instances for test isolation.
 
     This function is called by the test framework to ensure
     circuit breaker state doesn't leak between tests.
+
+    Note: This is an async function because AsyncCircuitBreaker only provides
+    async reset. For sync circuit breakers, the sync reset is called directly.
     """
     registry = _get_circuit_breaker_registry()
     for name in registry.list_dimension(CIRCUIT_BREAKER_DIMENSION):
         breaker = registry.get(name, dimension=CIRCUIT_BREAKER_DIMENSION)
         if breaker:
-            breaker.reset()
+            if isinstance(breaker, AsyncCircuitBreaker):
+                await breaker.reset_async()
+            else:
+                breaker.reset()
 
 
-def reset_test_circuit_breakers() -> None:
+async def reset_test_circuit_breakers() -> None:
     """Reset circuit breaker instances created in test files.
 
     This function resets circuit breakers that were created within test files
     to ensure proper test isolation without affecting production circuit breakers.
+
+    Note: This is an async function because AsyncCircuitBreaker only provides
+    async reset. For sync circuit breakers, the sync reset is called directly.
     """
     registry = _get_circuit_breaker_registry()
     for name in registry.list_dimension(CIRCUIT_BREAKER_TEST_DIMENSION):
         breaker = registry.get(name, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
         if breaker:
-            breaker.reset()
+            if isinstance(breaker, AsyncCircuitBreaker):
+                await breaker.reset_async()
+            else:
+                breaker.reset()
 
 
 def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
