@@ -160,7 +160,9 @@ class ZipArchive(BaseArchive):
                 # Test the archive
                 result = zf.testzip()
                 return result is None  # None means no bad files
-        except Exception:
+        except Exception:  # nosec B110
+            # Broad catch is intentional for validation: any error means invalid archive.
+            # Possible exceptions: zipfile.BadZipFile, OSError, PermissionError, etc.
             return False
 
     def list_contents(self, archive: Path) -> list[str]:

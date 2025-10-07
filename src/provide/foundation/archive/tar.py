@@ -136,7 +136,9 @@ class TarArchive(BaseArchive):
                     # Just checking we can read the metadata
                     pass
             return True
-        except Exception:
+        except Exception:  # nosec B110
+            # Broad catch is intentional for validation: any error means invalid archive.
+            # Possible exceptions: tarfile.ReadError, OSError, PermissionError, etc.
             return False
 
     def list_contents(self, archive: Path) -> list[str]:
