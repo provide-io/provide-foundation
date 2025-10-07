@@ -3,26 +3,19 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, TypeVar, overload
 
+from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
 
 """Command registration decorators."""
 
-try:
-    import click
 
-    _HAS_CLICK = True
-except ImportError:
-    click: Any = None
-    _HAS_CLICK = False
-
-
-# Defer click_builder import to avoid circular dependency
+# Defer click hierarchy import to avoid circular dependency
 def _get_ensure_parent_groups() -> Any:
     if not _HAS_CLICK:
         return None
-    from provide.foundation.hub.click_builder import ensure_parent_groups
+    from provide.foundation.cli.click.hierarchy import ensure_parent_groups
 
     return ensure_parent_groups
 

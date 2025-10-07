@@ -3,14 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-try:
-    import click
-
-    _HAS_CLICK = True
-except ImportError:
-    click: Any = None
-    _HAS_CLICK = False
-
+from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.context import CLIContext
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.decorators import resilient
