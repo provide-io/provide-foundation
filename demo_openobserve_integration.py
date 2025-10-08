@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Demonstrate OpenObserve integration with Foundation.
 
 This script:
