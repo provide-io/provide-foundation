@@ -194,6 +194,21 @@ hub = get_hub()
 hub.initialize_foundation()  # Configures logging + optional tracing/metrics
 ```
 
+#### **Metrics**
+Lightweight and extensible metrics collection with optional OpenTelemetry integration.
+
+```python
+from provide.foundation.metrics import counter, gauge
+
+# Create and increment a counter
+request_counter = counter("http_requests_total", "Total HTTP requests")
+request_counter.add(1, {"method": "GET", "path": "/api/users"})
+
+# Set a gauge
+active_users = gauge("active_users", "Number of active users")
+active_users.set(123)
+```
+
 #### **CLI Framework**
 Build command-line interfaces with automatic help generation and component registration.
 
@@ -229,22 +244,6 @@ manager.register("app", config=AppConfig())
 config = manager.get("app")
 ```
 
-#### **CLI Context Management**
-Manages runtime state for CLI applications, including configuration, logging, and output settings.
-
-```python
-from provide.foundation.context import CLIContext
-
-# Initialize a context, often from environment variables
-ctx = CLIContext.from_env()
-
-# Access context properties
-if ctx.debug:
-    print("Debug mode is enabled.")
-
-# The context is passed through the CLI framework automatically.
-```
-
 #### **Error Handling**
 Comprehensive error handling with retry logic and error boundaries.
 
@@ -261,7 +260,7 @@ def risky_operation():
 ```
 
 #### **Resilience Patterns**
-A suite of decorators and utilities for building reliable applications, including retry, circuit breaker, and bulkhead patterns.
+A suite of decorators for building reliable applications, including retry, circuit breaker, and bulkhead patterns.
 
 ```python
 from provide.foundation.resilience import retry
@@ -275,6 +274,21 @@ def unreliable_task():
     return "Success!"
 
 unreliable_task()
+```
+
+#### **Concurrency Utilities**
+High-level utilities for managing asynchronous tasks and thread-safe operations.
+
+```python
+import asyncio
+from provide.foundation.concurrency import async_gather
+
+async def my_coroutine(delay):
+    await asyncio.sleep(delay)
+    return delay
+
+# Run multiple coroutines concurrently
+results = asyncio.run(async_gather(my_coroutine(1), my_coroutine(2)))
 ```
 
 #### **Cryptographic Utilities**
@@ -309,6 +323,22 @@ data = read_json("config.json")
 safe_copy("source.txt", "backup.txt")
 ```
 
+#### **Archive Operations**
+Create and extract archives with support for various formats like TAR, ZIP, GZIP, and BZIP2.
+
+```python
+from provide.foundation.archive import TarArchive
+
+# Create a TAR archive
+with TarArchive("my_archive.tar.gz", "w:gz") as archive:
+    archive.add("my_file.txt")
+    archive.add("my_directory/")
+
+# Extract an archive
+with TarArchive("my_archive.tar.gz", "r:gz") as archive:
+    archive.extractall("output_directory")
+```
+
 #### **Serialization**
 Safe and consistent JSON serialization and deserialization.
 
@@ -338,6 +368,19 @@ password = pin("Enter password:", password=True)
 
 # JSON mode for scripts
 pout({"status": "ok", "data": results}, json=True)
+```
+
+#### **Formatting Utilities**
+A collection of helpers for formatting text, numbers, and data structures.
+
+```python
+from provide.foundation.formatting import format_duration, to_camel_case
+
+# Format time durations
+print(format_duration(123.45))
+
+# Convert string cases
+print(to_camel_case("hello_world"))
 ```
 
 #### **Platform Utilities**
@@ -370,8 +413,8 @@ for line in process.stream_command(["tail", "-f", "app.log"]):
     logger.info("Log line", line=line)
 ```
 
-#### **Registry Pattern**
-Flexible registry system for managing components and commands.
+#### **Hub and Registry**
+A central system for managing application components, commands, and resources.
 
 ```python
 # From examples/cli/01_cli_application.py
