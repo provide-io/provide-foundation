@@ -32,7 +32,9 @@ class TestGenerateLogsCommand:
     ) -> None:
         """Test that the command calls the fixed-count generator."""
         mock_generate_fixed_count.return_value = (10, 0, 0)
-        result = runner.invoke(generate_logs_command, ["--count", "10", "--rate", "0"])
+        result = runner.invoke(
+            generate_logs_command, ["--count", "10", "--rate", "0"], catch_exceptions=False, standalone_mode=False
+        )
 
         assert result.exit_code == 0
         mock_generate_fixed_count.assert_called_once_with(10, 0.0, "normal", 0.1)
@@ -50,7 +52,7 @@ class TestGenerateLogsCommand:
     ) -> None:
         """Test that the command calls the continuous generator and handles KeyboardInterrupt."""
         mock_generate_continuous.side_effect = KeyboardInterrupt
-        result = runner.invoke(generate_logs_command, ["--count", "0"])
+        result = runner.invoke(generate_logs_command, ["--count", "0"], catch_exceptions=False, standalone_mode=False)
 
         assert result.exit_code == 0
         # Verify the interrupt message was echoed (includes emoji and newlines)
