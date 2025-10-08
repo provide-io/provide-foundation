@@ -123,15 +123,14 @@ async def test_streaming_request_sanitizes_uri(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test that streaming requests also sanitize URIs in logs."""
-    uri = "https://api.example.com/stream?api_key=stream_secret&limit=100"
-
     httpx_mock.add_response(
         method="GET",
-        url=uri,
+        url="https://api.example.com/stream",
         content=b"chunk1chunk2chunk3",
         status_code=200,
     )
 
+    uri = "https://api.example.com/stream?api_key=stream_secret&limit=100"
     request = Request(uri=uri, method="GET")
 
     chunks = []
@@ -167,7 +166,7 @@ async def test_actual_request_sent_with_real_values(
         requests_received.append(request)
         return httpx.Response(200, json={"ok": True})
 
-    httpx_mock.add_callback(callback)
+    httpx_mock.add_callback(callback, url="https://api.example.com/data")
 
     uri = "https://api.example.com/data?api_key=real_key123&page=1"
     request = Request(uri=uri, method="GET")
@@ -191,15 +190,14 @@ async def test_uri_with_fragment_preserved(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test that URI fragments are preserved during sanitization."""
-    uri = "https://api.example.com/docs?token=secret#section"
-
     httpx_mock.add_response(
         method="GET",
-        url=uri,
+        url="https://api.example.com/docs",
         content=b"documentation",
         status_code=200,
     )
 
+    uri = "https://api.example.com/docs?token=secret#section"
     request = Request(uri=uri, method="GET")
 
     async with http_transport:
@@ -223,16 +221,15 @@ async def test_case_insensitive_param_matching(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test that sensitive param matching is case-insensitive."""
-    # Use different cases for sensitive params
-    uri = "https://api.example.com/auth?API_KEY=upper&Token=mixed&password=lower"
-
     httpx_mock.add_response(
         method="GET",
-        url=uri,
+        url="https://api.example.com/auth",
         json={"authenticated": True},
         status_code=200,
     )
 
+    # Use different cases for sensitive params
+    uri = "https://api.example.com/auth?API_KEY=upper&Token=mixed&password=lower"
     request = Request(uri=uri, method="GET")
 
     async with http_transport:
@@ -256,15 +253,14 @@ async def test_empty_param_values_handled(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test that empty parameter values are handled correctly."""
-    uri = "https://api.example.com/test?api_key=&normal_param=value"
-
     httpx_mock.add_response(
         method="GET",
-        url=uri,
+        url="https://api.example.com/test",
         json={"result": "ok"},
         status_code=200,
     )
 
+    uri = "https://api.example.com/test?api_key=&normal_param=value"
     request = Request(uri=uri, method="GET")
 
     async with http_transport:
