@@ -16,7 +16,8 @@ CLI Tool Example
 Demonstrates CLI command registration and argument handling.
 """
 
-from provide.foundation import Context, logger, setup_telemetry
+from provide.foundation.context import CLIContext
+from provide.foundation import logger, setup_telemetry
 from provide.foundation.hub import register_command
 from provide.foundation.console import pout, perr
 from pathlib import Path
@@ -90,7 +91,7 @@ def process_file_command(file_path: Path, output_dir: Path = Path("./output")):
 @register_command("status")
 def status_command():
     """Show application status and configuration."""
-    ctx = Context.from_env()
+    ctx = CLIContext.from_env()
     
     pout("📊 Application Status")
     pout(f"Profile: {ctx.profile}")
@@ -106,7 +107,7 @@ def status_command():
 
 def setup_cli():
     """Setup CLI application with telemetry."""
-    ctx = Context.from_env()
+    ctx = CLIContext.from_env()
     setup_telemetry()
     
     logger.info("cli_initialized", 
@@ -215,7 +216,7 @@ export FOUNDATION_JSON_OUTPUT=true
 ```python
 def setup_cli_with_custom_context():
     """Setup CLI with custom context configuration."""
-    ctx = Context(
+    ctx = CLIContext(
         profile="cli",
         log_level="INFO",
         service_name="advanced-cli-tool",
