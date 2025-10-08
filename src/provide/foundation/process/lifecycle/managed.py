@@ -11,7 +11,7 @@ import threading
 import traceback
 from typing import Any
 
-from provide.foundation.config.defaults import (
+from provide.foundation.process.defaults import (
     DEFAULT_PROCESS_READCHAR_TIMEOUT,
     DEFAULT_PROCESS_READLINE_TIMEOUT,
     DEFAULT_PROCESS_TERMINATE_TIMEOUT,

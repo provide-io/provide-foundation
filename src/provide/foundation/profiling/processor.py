@@ -6,7 +6,7 @@ from typing import Any
 
 import structlog
 
-from provide.foundation.config.defaults import DEFAULT_PROFILING_SAMPLE_RATE
+from provide.foundation.profiling.defaults import DEFAULT_PROFILING_SAMPLE_RATE
 from provide.foundation.errors.profiling import SamplingError
 from provide.foundation.profiling.metrics import ProfileMetrics
 

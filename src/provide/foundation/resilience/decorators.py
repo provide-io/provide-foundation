@@ -7,7 +7,7 @@ import inspect
 import threading
 from typing import TYPE_CHECKING, Any, TypeVar
 
-from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
+from provide.foundation.resilience.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
 from provide.foundation.errors.config import ConfigurationError
 from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
 from provide.foundation.resilience.circuit_sync import SyncCircuitBreaker

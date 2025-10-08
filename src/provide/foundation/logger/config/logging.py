@@ -18,7 +18,8 @@ from provide.foundation.config.converters import (
     validate_overflow_policy,
     validate_positive,
 )
-from provide.foundation.config.defaults import (
+from provide.foundation.config.defaults import path_converter
+from provide.foundation.logger.defaults import (
     DEFAULT_CONSOLE_FORMATTER,
     DEFAULT_DAS_EMOJI_ENABLED,
     DEFAULT_FOUNDATION_LOG_OUTPUT,
@@ -33,7 +34,6 @@ from provide.foundation.config.defaults import (
     DEFAULT_RATE_LIMIT_OVERFLOW_POLICY,
     default_module_levels,
     default_rate_limits,
-    path_converter,
 )
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.types import (

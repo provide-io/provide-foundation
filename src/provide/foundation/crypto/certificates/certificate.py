@@ -21,7 +21,7 @@ except ImportError:
     _HAS_CRYPTO = False
 
 from provide.foundation import logger
-from provide.foundation.config.defaults import (
+from provide.foundation.crypto.defaults import (
     DEFAULT_CERTIFICATE_COMMON_NAME,
     DEFAULT_CERTIFICATE_GENERATE_KEYPAIR,
     DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
