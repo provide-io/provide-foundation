@@ -19,14 +19,22 @@ def enable_stream_redirect(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("FOUNDATION_FORCE_STREAM_REDIRECT", "true")
     # Reset stream config to pick up new environment variable
     from provide.foundation.streams.config import reset_stream_config
+
     reset_stream_config()
 
 
 @pytest.fixture
 def log_stream() -> io.StringIO:
     """StringIO stream for capturing Foundation logs."""
+    # Reset Foundation FIRST to clear any existing configuration
+    from provide.testkit import reset_foundation_setup_for_testing
+
+    reset_foundation_setup_for_testing()
+
+    # Set the test stream BEFORE Foundation lazy-initializes
     stream = io.StringIO()
     set_log_stream_for_testing(stream)
+
     yield stream
     set_log_stream_for_testing(None)
 
