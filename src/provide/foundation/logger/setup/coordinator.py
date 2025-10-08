@@ -192,7 +192,7 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
                 if oo_config.is_configured():
                     # OpenObserve auto-configured OTLP
                     core_setup_logger.debug(
-                        "📡 OpenObserve integration enabled - OTLP auto-configured",
+                        "📡 OpenObserve integration enabled - OTLP log export active",
                         otlp_endpoint=current_config.otlp_endpoint,
                         openobserve_org=oo_config.org,
                         openobserve_stream=oo_config.stream,
@@ -200,14 +200,14 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
                 else:
                     # Manually configured OTLP
                     core_setup_logger.debug(
-                        "📡 OpenTelemetry OTLP configured",
+                        "📡 OpenTelemetry OTLP log export active",
                         otlp_endpoint=current_config.otlp_endpoint,
                         otlp_traces_endpoint=current_config.otlp_traces_endpoint,
                     )
             except ImportError:
                 # OpenObserve not available, just log basic OTLP config
                 core_setup_logger.debug(
-                    "📡 OpenTelemetry OTLP configured",
+                    "📡 OpenTelemetry OTLP log export active",
                     otlp_endpoint=current_config.otlp_endpoint,
                     otlp_traces_endpoint=current_config.otlp_traces_endpoint,
                 )

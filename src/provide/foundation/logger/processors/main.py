@@ -163,6 +163,14 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
     if config.tracing_enabled and not config.globally_disabled:
         processors.append(cast("StructlogProcessor", inject_trace_context))
 
+    # Add OTLP processor if configured (sends logs to OpenTelemetry/OpenObserve)
+    if config.otlp_endpoint:
+        from provide.foundation.logger.processors.otlp import create_otlp_processor
+
+        otlp_processor = create_otlp_processor(config)
+        if otlp_processor is not None:
+            processors.append(cast("StructlogProcessor", otlp_processor))
+
     processors.extend(_config_create_event_enrichment_processors(log_cfg))
     return processors
 

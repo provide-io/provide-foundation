@@ -1,0 +1,141 @@
+from __future__ import annotations
+
+import contextlib
+from typing import Any
+
+"""OTLP processor for sending logs to OpenTelemetry endpoints (like OpenObserve)."""
+
+# Check if OpenTelemetry is available
+try:
+    from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
+    from opentelemetry.sdk._logs import LoggerProvider
+    from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
+    from opentelemetry.sdk.resources import Resource
+    from opentelemetry.semconv.resource import ResourceAttributes
+
+    _HAS_OTEL = True
+except ImportError:
+    _HAS_OTEL = False
+    LoggerProvider = None
+    BatchLogRecordProcessor = None
+    OTLPLogExporter = None
+    Resource = None
+    ResourceAttributes = None
+
+# Global logger provider instance
+_OTLP_LOGGER_PROVIDER: Any = None
+
+
+def create_otlp_processor(config: Any) -> Any | None:
+    """Create an OTLP processor for structlog that sends logs to OpenTelemetry.
+
+    Args:
+        config: TelemetryConfig with OTLP settings
+
+    Returns:
+        Structlog processor function or None if OTLP not available/configured
+
+    """
+    if not _HAS_OTEL:
+        return None
+
+    if not config.otlp_endpoint:
+        return None
+
+    try:
+        global _OTLP_LOGGER_PROVIDER
+
+        # Create logger provider if not already created
+        if _OTLP_LOGGER_PROVIDER is None:
+            # Create resource
+            resource_attrs = {
+                ResourceAttributes.SERVICE_NAME: config.service_name or "foundation",
+            }
+            if config.service_version:
+                resource_attrs[ResourceAttributes.SERVICE_VERSION] = config.service_version
+
+            resource = Resource.create(resource_attrs)
+
+            # Configure exporter
+            logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
+            if config.otlp_traces_endpoint:
+                logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", "/v1/logs")
+
+            exporter = OTLPLogExporter(
+                endpoint=logs_endpoint,
+                headers=config.get_otlp_headers_dict(),
+            )
+
+            # Create provider
+            _OTLP_LOGGER_PROVIDER = LoggerProvider(resource=resource)
+            _OTLP_LOGGER_PROVIDER.add_log_record_processor(BatchLogRecordProcessor(exporter))
+
+        # Get the OTLP logger
+        otlp_logger = _OTLP_LOGGER_PROVIDER.get_logger(__name__)
+
+        # Map structlog levels to OTLP severity numbers
+        SEVERITY_MAP = {
+            "trace": 1,
+            "debug": 5,
+            "info": 9,
+            "warning": 13,
+            "warn": 13,
+            "error": 17,
+            "critical": 21,
+            "fatal": 21,
+        }
+
+        def otlp_processor(logger: Any, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+            """Structlog processor that sends logs to OTLP.
+
+            This processor sends the log to OpenTelemetry, then returns the event_dict
+            unchanged so that console output still works.
+
+            Args:
+                logger: Structlog logger instance
+                method_name: Log method name (debug, info, etc.)
+                event_dict: Log event dictionary
+
+            Returns:
+                Unchanged event_dict (so other processors can continue)
+
+            """
+            try:
+                # Extract message and attributes
+                message = event_dict.get("event", "")
+                level = event_dict.get("level", "info").lower()
+                severity = SEVERITY_MAP.get(level, 9)
+
+                # Build attributes (everything except 'event' and 'level')
+                attributes = {
+                    k: str(v) for k, v in event_dict.items() if k not in ("event", "level", "timestamp")
+                }
+
+                # Emit to OTLP
+                otlp_logger.emit(
+                    severity_number=severity,
+                    severity_text=level.upper(),
+                    body=message,
+                    attributes=attributes,
+                )
+
+            except Exception:
+                # Silently ignore OTLP errors to not break logging
+                pass
+
+            # Return event_dict unchanged for other processors
+            return event_dict
+
+        return otlp_processor
+
+    except Exception:
+        # If OTLP setup fails, return None
+        return None
+
+
+def flush_otlp_logs() -> None:
+    """Flush any pending OTLP logs."""
+    global _OTLP_LOGGER_PROVIDER
+    if _OTLP_LOGGER_PROVIDER is not None:
+        with contextlib.suppress(Exception):
+            _OTLP_LOGGER_PROVIDER.force_flush(timeout_millis=5000)
