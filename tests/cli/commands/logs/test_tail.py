@@ -6,7 +6,7 @@ from click.testing import CliRunner
 import pytest
 
 from provide.foundation.cli.commands.logs.tail import (
-    _parse_filter_string_for_tail_for_tail,
+    _parse_filter_string_for_tail,
     tail_command,
 )
 
