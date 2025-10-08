@@ -362,12 +362,12 @@ def create_default_pipeline(
     if enable_retry:
         # Use sensible retry defaults
         retry_policy = RetryPolicy(
-            max_retries=3,
-            backoff_strategy=BackoffStrategy.EXPONENTIAL,
-            initial_delay=1.0,
+            max_attempts=3,
+            backoff=BackoffStrategy.EXPONENTIAL,
+            base_delay=1.0,
             max_delay=10.0,
             # Retry on common transient failures
-            retry_on_status_codes=[408, 429, 500, 502, 503, 504],
+            retryable_status_codes={408, 429, 500, 502, 503, 504},
         )
         pipeline.add(RetryMiddleware(policy=retry_policy))
 
