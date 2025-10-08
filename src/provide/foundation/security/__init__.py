@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Security utilities for Foundation."""
-
 from provide.foundation.security.masking import (
     DEFAULT_SECRET_PATTERNS,
     MASKED_VALUE,
@@ -18,6 +16,8 @@ from provide.foundation.security.sanitization import (
     sanitize_uri,
     should_sanitize_body,
 )
+
+"""Security utilities for Foundation."""
 
 __all__ = [
     "DEFAULT_SECRET_PATTERNS",

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import TYPE_CHECKING
 import zipfile
 
 from attrs import Attribute, define, validators
@@ -11,6 +12,9 @@ from provide.foundation.config import defaults
 from provide.foundation.config.base import field
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
+
+if TYPE_CHECKING:
+    from provide.foundation.archive.limits import ArchiveLimits
 
 """ZIP archive implementation."""
 
@@ -80,22 +84,32 @@ class ZipArchive(BaseArchive):
         except Exception as e:
             raise ArchiveError(f"Failed to create ZIP archive: {e}") from e
 
-    def extract(self, archive: Path, output: Path) -> Path:
-        """Extract ZIP archive to output directory.
+    def extract(self, archive: Path, output: Path, limits: ArchiveLimits | None = None) -> Path:  # noqa: C901
+        """Extract ZIP archive to output directory with decompression bomb protection.
 
         Args:
             archive: ZIP archive file path
             output: Output directory path
+            limits: Optional extraction limits (uses DEFAULT_LIMITS if None)
 
         Returns:
             Path to extraction directory
 
         Raises:
-            ArchiveError: If extraction fails or archive contains unsafe paths
+            ArchiveError: If extraction fails, archive contains unsafe paths, or exceeds limits
 
         """
+        from provide.foundation.archive.limits import DEFAULT_LIMITS, ExtractionTracker, get_archive_size
+
+        if limits is None:
+            limits = DEFAULT_LIMITS
+
         try:
             output.mkdir(parents=True, exist_ok=True)
+
+            # Initialize extraction tracker
+            tracker = ExtractionTracker(limits)
+            tracker.set_compressed_size(get_archive_size(archive))
 
             with zipfile.ZipFile(archive, "r") as zf:
                 if self.password:
@@ -103,6 +117,15 @@ class ZipArchive(BaseArchive):
 
                 # Enhanced security check - prevent path traversal, symlinks, absolute paths
                 for info in zf.infolist():
+                    # Check file count limit
+                    tracker.check_file_count(1)
+
+                    # Validate member size and compression ratio
+                    tracker.validate_member_size(info.file_size, info.compress_size)
+
+                    # Track extracted size
+                    tracker.add_extracted_size(info.file_size)
+
                     # Basic path safety check
                     if not is_safe_path(output, info.filename):
                         raise ArchiveError(
@@ -133,6 +156,9 @@ class ZipArchive(BaseArchive):
                                 raise ArchiveError(
                                     f"Absolute path in symlink target: {info.filename} -> {link_target}"
                                 )
+
+                # Check overall compression ratio
+                tracker.check_compression_ratio()
 
                 # Extract all (all members have been security-checked above)
                 zf.extractall(output)

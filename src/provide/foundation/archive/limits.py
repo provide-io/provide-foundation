@@ -35,7 +35,7 @@ DEFAULT_LIMITS = ArchiveLimits()
 class ExtractionTracker:
     """Track extraction progress to enforce limits."""
 
-    def __init__(self, limits: ArchiveLimits):
+    def __init__(self, limits: ArchiveLimits) -> None:
         """Initialize tracker with limits.
 
         Args:
@@ -178,8 +178,8 @@ def get_archive_size(archive_path: Path) -> int:
 
 
 __all__ = [
-    "ArchiveLimits",
     "DEFAULT_LIMITS",
+    "ArchiveLimits",
     "ExtractionTracker",
     "get_archive_size",
 ]

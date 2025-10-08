@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import tarfile
+from typing import TYPE_CHECKING
 
 from attrs import define
 
@@ -11,6 +12,9 @@ from provide.foundation.config import defaults
 from provide.foundation.config.base import field
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
+
+if TYPE_CHECKING:
+    from provide.foundation.archive.limits import ArchiveLimits
 
 """TAR archive implementation."""
 

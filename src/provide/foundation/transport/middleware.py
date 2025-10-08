@@ -340,13 +340,43 @@ def get_middleware_by_category(
     return [mw[0] for mw in middleware]
 
 
-def create_default_pipeline() -> MiddlewarePipeline:
-    """Create pipeline with default middleware."""
+def create_default_pipeline(
+    enable_retry: bool = True,
+    enable_logging: bool = True,
+    enable_metrics: bool = True,
+) -> MiddlewarePipeline:
+    """Create pipeline with default middleware.
+
+    Args:
+        enable_retry: Enable automatic retry middleware (default: True)
+        enable_logging: Enable request/response logging middleware (default: True)
+        enable_metrics: Enable metrics collection middleware (default: True)
+
+    Returns:
+        Configured middleware pipeline
+
+    """
     pipeline = MiddlewarePipeline()
 
+    # Add retry middleware first (so retries happen before logging each attempt)
+    if enable_retry:
+        # Use sensible retry defaults
+        retry_policy = RetryPolicy(
+            max_retries=3,
+            backoff_strategy=BackoffStrategy.EXPONENTIAL,
+            initial_delay=1.0,
+            max_delay=10.0,
+            # Retry on common transient failures
+            retry_on_status_codes=[408, 429, 500, 502, 503, 504],
+        )
+        pipeline.add(RetryMiddleware(policy=retry_policy))
+
     # Add built-in middleware
-    pipeline.add(LoggingMiddleware())
-    pipeline.add(MetricsMiddleware())
+    if enable_logging:
+        pipeline.add(LoggingMiddleware())
+
+    if enable_metrics:
+        pipeline.add(MetricsMiddleware())
 
     return pipeline
 

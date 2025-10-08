@@ -87,10 +87,7 @@ def mask_command(
 
     """
     # Convert to string if list
-    if isinstance(cmd, list):
-        cmd_str = " ".join(cmd)
-    else:
-        cmd_str = cmd
+    cmd_str = " ".join(cmd) if isinstance(cmd, list) else cmd
 
     return mask_secrets(cmd_str, secret_patterns, masked)
 
@@ -109,11 +106,7 @@ def should_mask(text: str, secret_patterns: list[str] | None = None) -> bool:
     if secret_patterns is None:
         secret_patterns = DEFAULT_SECRET_PATTERNS
 
-    for pattern in secret_patterns:
-        if re.search(pattern, text, flags=re.IGNORECASE):
-            return True
-
-    return False
+    return any(re.search(pattern, text, flags=re.IGNORECASE) for pattern in secret_patterns)
 
 
 __all__ = [
