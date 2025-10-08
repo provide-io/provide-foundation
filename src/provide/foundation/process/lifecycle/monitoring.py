@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import asyncio
 
-from provide.foundation.process.defaults import DEFAULT_PROCESS_WAIT_TIMEOUT
 from provide.foundation.errors.process import ProcessError
 from provide.foundation.logger import get_logger
+from provide.foundation.process.defaults import DEFAULT_PROCESS_WAIT_TIMEOUT
 from provide.foundation.process.lifecycle.managed import ManagedProcess
 
 """Process output monitoring utilities.

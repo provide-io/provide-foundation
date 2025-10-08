@@ -21,12 +21,6 @@ except ImportError:
     _HAS_CRYPTO = False
 
 from provide.foundation import logger
-from provide.foundation.crypto.defaults import (
-    DEFAULT_CERTIFICATE_COMMON_NAME,
-    DEFAULT_CERTIFICATE_GENERATE_KEYPAIR,
-    DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
-    default_certificate_alt_names,
-)
 from provide.foundation.crypto.certificates.base import (
     CertificateBase,
     CertificateError,
@@ -43,6 +37,12 @@ from provide.foundation.crypto.constants import (
     DEFAULT_CERTIFICATE_KEY_TYPE,
     DEFAULT_CERTIFICATE_VALIDITY_DAYS,
     DEFAULT_RSA_KEY_SIZE,
+)
+from provide.foundation.crypto.defaults import (
+    DEFAULT_CERTIFICATE_COMMON_NAME,
+    DEFAULT_CERTIFICATE_GENERATE_KEYPAIR,
+    DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
+    default_certificate_alt_names,
 )
 
 """Main Certificate class."""

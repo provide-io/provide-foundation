@@ -19,6 +19,7 @@ from provide.foundation.config.converters import (
     validate_positive,
 )
 from provide.foundation.config.defaults import path_converter
+from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.defaults import (
     DEFAULT_CONSOLE_FORMATTER,
     DEFAULT_DAS_EMOJI_ENABLED,
@@ -35,7 +36,6 @@ from provide.foundation.logger.defaults import (
     default_module_levels,
     default_rate_limits,
 )
-from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.types import (
     ConsoleFormatterStr,
     LogLevelStr,

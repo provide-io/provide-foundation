@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from provide.foundation.profiling.defaults import DEFAULT_PROFILING_SAMPLE_RATE
 from provide.foundation.errors.decorators import resilient
+from provide.foundation.profiling.defaults import DEFAULT_PROFILING_SAMPLE_RATE
 from provide.foundation.profiling.metrics import ProfileMetrics
 from provide.foundation.profiling.processor import ProfilingProcessor
 
