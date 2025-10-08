@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from provide.foundation.errors.archive import ArchiveError
+from provide.foundation.archive.base import ArchiveError
 
 """Archive extraction limits for decompression bomb protection."""
 
