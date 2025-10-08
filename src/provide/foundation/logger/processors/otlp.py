@@ -26,6 +26,38 @@ except ImportError:
 _OTLP_LOGGER_PROVIDER: Any = None
 
 
+def _build_otlp_headers(config: Any) -> dict[str, str]:
+    """Build OTLP headers including authentication if available.
+
+    Args:
+        config: TelemetryConfig with OTLP settings
+
+    Returns:
+        Dictionary of headers for OTLP requests
+
+    """
+    headers = dict(config.get_otlp_headers_dict())
+
+    # Check if OpenObserve credentials are available
+    try:
+        from provide.foundation.integrations.openobserve.config import OpenObserveConfig
+
+        oo_config = OpenObserveConfig.from_env()
+        if oo_config.user and oo_config.password:
+            # Add Basic auth header for OpenObserve
+            import base64
+
+            auth_str = f"{oo_config.user}:{oo_config.password}"
+            auth_bytes = auth_str.encode("ascii")
+            auth_b64 = base64.b64encode(auth_bytes).decode("ascii")
+            headers["Authorization"] = f"Basic {auth_b64}"
+    except ImportError:
+        # OpenObserve integration not available
+        pass
+
+    return headers
+
+
 def create_otlp_processor(config: Any) -> Any | None:
     """Create an OTLP processor for structlog that sends logs to OpenTelemetry.
 
@@ -61,9 +93,12 @@ def create_otlp_processor(config: Any) -> Any | None:
             if config.otlp_traces_endpoint:
                 logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", "/v1/logs")
 
+            # Build headers with authentication if OpenObserve is configured
+            headers = _build_otlp_headers(config)
+
             exporter = OTLPLogExporter(
                 endpoint=logs_endpoint,
-                headers=config.get_otlp_headers_dict(),
+                headers=headers,
             )
 
             # Create provider
