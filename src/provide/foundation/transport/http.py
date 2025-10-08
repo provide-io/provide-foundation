@@ -102,7 +102,7 @@ class HTTPTransport(TransportBase):
                 params=request.params,
                 json=json_data,
                 data=data,
-                timeout=request.timeout or self.config.timeout,
+                timeout=request.timeout if request.timeout is not None else self.config.timeout,
             )
 
             elapsed_ms = (time.perf_counter() - start_time) * 1000
@@ -161,7 +161,7 @@ class HTTPTransport(TransportBase):
                 url=request.uri,
                 headers=request.headers,
                 params=request.params,
-                timeout=request.timeout or self.config.timeout,
+                timeout=request.timeout if request.timeout is not None else self.config.timeout,
             ) as response:
                 # Log response start
                 status_emoji = self._get_status_emoji(response.status_code)

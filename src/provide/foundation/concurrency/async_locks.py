@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import AsyncGenerator
 import contextlib
+import threading
 import time
 from typing import Any
 
@@ -271,16 +272,62 @@ class AsyncLockManager:
 # Global async lock manager instance
 _async_lock_manager: AsyncLockManager | None = None
 _async_locks_registered = False
+_async_locks_registration_event: threading.Event | None = None  # Thread-safe, loop-agnostic
+_async_locks_registration_lock = threading.Lock()  # Thread-safe state machine coordination
 
 
 async def get_async_lock_manager() -> AsyncLockManager:
     """Get the global async lock manager instance."""
-    global _async_lock_manager, _async_locks_registered
+    global _async_lock_manager, _async_locks_registered, _async_locks_registration_event
+
     if _async_lock_manager is None:
         _async_lock_manager = AsyncLockManager()
-    if not _async_locks_registered:
+
+    # Fast path: registration already complete
+    if _async_locks_registered:
+        return _async_lock_manager
+
+    # Coordinate registration with threading lock for state machine
+    with _async_locks_registration_lock:
+        # Re-check after acquiring lock (another task may have completed it)
+        if _async_locks_registered:
+            return _async_lock_manager
+
+        # If registration is in progress by another task, get the event
+        if _async_locks_registration_event is not None:
+            event = _async_locks_registration_event
+        else:
+            # This task will perform registration - create threading.Event (loop-agnostic)
+            _async_locks_registration_event = threading.Event()
+            event = None
+
+    # If we're waiting for another task/thread's registration
+    if event is not None:
+        # Wait on threading.Event in async-friendly way (works across event loops)
+        # Use to_thread to avoid blocking the event loop
+        await asyncio.to_thread(event.wait)
+
+        # After waking, check if registration succeeded
+        if _async_locks_registered:
+            return _async_lock_manager
+        # Registration failed, retry
+        return await get_async_lock_manager()
+
+    # This task performs registration
+    try:
         await register_foundation_async_locks()
         _async_locks_registered = True
+    except BaseException:
+        # Clean up partial registration on failure
+        if _async_lock_manager is not None:
+            _async_lock_manager._locks.clear()
+        raise
+    finally:
+        # Always unblock waiting tasks/threads and clear event
+        if _async_locks_registration_event is not None:
+            _async_locks_registration_event.set()
+        _async_locks_registration_event = None
+
     return _async_lock_manager
 
 
@@ -293,7 +340,14 @@ async def register_foundation_async_locks() -> None:
     - 200-299: Core infrastructure (config, registry, components)
     - 300+: Reserved for future subsystems
     """
-    manager = await get_async_lock_manager()
+    global _async_lock_manager
+
+    # Use global directly - manager is guaranteed to exist because
+    # get_async_lock_manager() creates it before calling this function
+    if _async_lock_manager is None:
+        raise RuntimeError("AsyncLockManager not initialized. Call get_async_lock_manager() first.")
+
+    manager = _async_lock_manager
 
     # Orchestration (order 0-99) - most fundamental, acquired first
     await manager.register_lock("foundation.async.hub.init", order=0, description="Async hub initialization")

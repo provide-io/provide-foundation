@@ -83,10 +83,7 @@ def should_use_shared_registries(
     component_registry: object | None,
     command_registry: object | None,
 ) -> bool:
-    """Determine if Hub should use shared registries based on context.
-
-    This function auto-detects test mode and applies Hub-specific logic
-    for registry sharing to ensure proper test isolation and compatibility.
+    """Determine if Hub should use shared registries based on explicit parameters.
 
     Args:
         use_shared_registries: Explicit user preference
@@ -96,20 +93,5 @@ def should_use_shared_registries(
     Returns:
         True if shared registries should be used
     """
-    # Auto-detect test mode and use shared registries for test compatibility
-    # Only auto-enable if user hasn't explicitly specified independent behavior
-    if not use_shared_registries and not component_registry and not command_registry:
-        # Check if this is a test that explicitly wants independence
-        for frame_info in inspect.stack():
-            frame_code = frame_info.frame.f_code
-            if "test_multiple_hubs_independent" in frame_code.co_name:
-                # This test explicitly requires independent Hubs
-                return False
-            if "test_hub_logger_access_with_output" in frame_code.co_name:
-                # This test requires shared registries for output capture
-                return True
-
-        # Default: use shared registries in test mode for compatibility
-        return is_in_test_mode()
-
+    # Return explicit preference - no auto-detection magic
     return use_shared_registries

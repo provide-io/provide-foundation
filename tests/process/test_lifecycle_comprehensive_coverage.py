@@ -327,9 +327,14 @@ class TestManagedProcessTermination(FoundationTestCase):
         )
         proc.launch()
 
-        # Should timeout and force kill
+        # Give process time to install signal handler
+        import time
+
+        time.sleep(0.1)
+
+        # Should timeout and force kill (returns False because force-killed)
         result = proc.terminate_gracefully(timeout=0.5)
-        assert result is True
+        assert result is False  # False = force-killed (expected behavior)
         assert not proc.is_running()
 
         proc.cleanup()

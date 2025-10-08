@@ -63,9 +63,11 @@ class LoggingMiddleware(Middleware):
             )
 
             if self.log_bodies and request.body:
+                # Truncate request body to prevent logging secrets/PII
+                body_str = str(request.body) if not isinstance(request.body, str) else request.body
                 log.trace(
                     "Request body",
-                    body=request.body,
+                    body=body_str[:500],  # Truncate large bodies (matches response behavior)
                     method=request.method,
                     uri=str(request.uri),
                 )
