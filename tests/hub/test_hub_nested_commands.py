@@ -127,7 +127,7 @@ class TestNestedCommandRegistration(FoundationTestCase):
         assert "clear" in cache_cmd.list_commands(None)
 
     def test_nested_command_execution(self) -> None:
-        """Test executing nested commands through CLI."""
+        """Test executing nested commands through CLI with Position-Based Hybrid."""
 
         @register_command("server", group=True)
         def server_group() -> None:
@@ -149,8 +149,8 @@ class TestNestedCommandRegistration(FoundationTestCase):
         cli = create_command_group("app")
         runner = CliRunner()
 
-        # Test server start command
-        result = runner.invoke(cli, ["server", "start", "--port", "9000"])
+        # Test server start command (port is optional positional with Position-Based Hybrid)
+        result = runner.invoke(cli, ["server", "start", "9000"])
         assert result.exit_code == 0
         assert "Server started on port 9000" in result.output
 
@@ -469,18 +469,24 @@ class TestNestedCommandIntegration(FoundationTestCase):
         cli = create_command_group("myapp", help="My Application CLI")
         runner = CliRunner()
 
-        # Test various command paths
-        # Note: direction is an option with default value, not a required argument
+        # Test various command paths with Position-Based Hybrid mapping
         tests = [
+            # db_migrate(direction: str = "up") - Position-Based Hybrid: direction is optional arg
             (["db", "migrate"], "Running migrations up"),  # Using default direction
-            (["db", "seed", "--count", "50"], "Seeding 50 records"),
+            # db_seed(count: int = 100) - Position-Based Hybrid: count is optional arg
+            (["db", "seed", "50"], "Seeding 50 records"),
+            # server_start(port: int = 8000, host: str = "localhost") - Position-Based Hybrid: port is optional arg
             (
-                ["server", "start", "--port", "3000"],
+                ["server", "start", "3000"],
                 "Starting server on localhost:3000",
             ),
-            (["server", "logs", "show", "--lines", "200"], "Showing last 200 lines"),
+            # server_logs_show(lines: int = 100) - Position-Based Hybrid: lines is optional arg
+            (["server", "logs", "show", "200"], "Showing last 200 lines"),
+            # server_logs_clear() - no args
             (["server", "logs", "clear"], "Clearing logs"),
+            # config_get(key: str) - required arg
             (["config", "get", "api_key"], "Config api_key = value"),
+            # config_set(key: str, value: str) - required args
             (["config", "set", "api_key", "secret"], "Setting api_key = secret"),
         ]
 
