@@ -5,13 +5,12 @@ from __future__ import annotations
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.transport.cache import TransportCache, TransportHealth
 from provide.foundation.transport.errors import TransportCacheEvictedError, TransportError
 
 
-class TestTransportHealth(FoundationTestCase):
+class TestTransportHealth:
     """Test TransportHealth tracking."""
 
     def test_initial_state(self) -> None:
@@ -66,7 +65,7 @@ class TestTransportHealth(FoundationTestCase):
         assert health.failure_rate == 0.6  # 3/5
 
 
-class TestTransportCacheBasics(FoundationTestCase):
+class TestTransportCacheBasics:
     """Test basic transport cache operations."""
 
     @pytest.mark.asyncio
@@ -124,7 +123,7 @@ class TestTransportCacheBasics(FoundationTestCase):
         assert http_result is not https_result
 
 
-class TestTransportCacheHealthTracking(FoundationTestCase):
+class TestTransportCacheHealthTracking:
     """Test cache health tracking."""
 
     @pytest.mark.asyncio
@@ -176,7 +175,7 @@ class TestTransportCacheHealthTracking(FoundationTestCase):
         assert health is None
 
 
-class TestTransportCacheEviction(FoundationTestCase):
+class TestTransportCacheEviction:
     """Test automatic cache eviction."""
 
     @pytest.mark.asyncio
@@ -275,7 +274,7 @@ class TestTransportCacheEviction(FoundationTestCase):
             await cache.get_or_create("http", factory)
 
 
-class TestTransportCacheClear(FoundationTestCase):
+class TestTransportCacheClear:
     """Test cache clearing."""
 
     @pytest.mark.asyncio
@@ -344,7 +343,7 @@ class TestTransportCacheClear(FoundationTestCase):
         assert cache.get_health("http") is None
 
 
-class TestTransportCacheCustomThreshold(FoundationTestCase):
+class TestTransportCacheCustomThreshold:
     """Test custom failure thresholds."""
 
     @pytest.mark.asyncio
