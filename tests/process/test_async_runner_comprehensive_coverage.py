@@ -461,7 +461,7 @@ class TestAsyncRunShell(FoundationTestCase):
     async def test_shell_with_env(self) -> None:
         """Test shell command with environment."""
         custom_env = {"SHELL_TEST_VAR": "shell_value"}
-        result = await async_shell("echo $SHELL_TEST_VAR", env=custom_env)
+        result = await async_shell("echo $SHELL_TEST_VAR", env=custom_env, allow_shell_features=True)
 
         assert "shell_value" in result.stdout
 

@@ -88,7 +88,7 @@ class TestAsyncShellExecution(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_async_shell_with_complex_command(self) -> None:
         """Test async shell execution with complex commands."""
-        result = await async_shell("echo 'hello world' | grep hello")
+        result = await async_shell("echo 'hello world' | grep hello", allow_shell_features=True)
 
         assert result.returncode == 0
         assert "hello" in result.stdout
@@ -96,7 +96,7 @@ class TestAsyncShellExecution(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_async_shell_with_environment_variables(self) -> None:
         """Test async shell execution with custom environment."""
-        result = await async_shell("echo $TEST_VAR", env={"TEST_VAR": "test_value"})
+        result = await async_shell("echo $TEST_VAR", env={"TEST_VAR": "test_value"}, allow_shell_features=True)
 
         assert result.returncode == 0
         assert "test_value" in result.stdout

@@ -1955,7 +1955,7 @@ wheels = [
 
 [[package]]
 name = "provide-foundation"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "aiofiles" },
     { name = "attrs" },
