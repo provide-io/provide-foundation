@@ -58,9 +58,7 @@ class TestTailCommand:
         """Test successful log tailing with default options."""
         mock_client = MagicMock()
         mock_tail_logs.return_value = [{"message": "log1"}, {"message": "log2"}]
-        mock_format_output.side_effect = (
-            lambda log_entry, format_type: log_entry["message"]
-        )
+        mock_format_output.side_effect = lambda log_entry, format_type: log_entry["message"]
 
         result = runner.invoke(tail_command, obj={"client": mock_client})
 

@@ -263,6 +263,7 @@ class TestModuleStructure:
 
         # _build_attributes was moved to cli.helpers
         from provide.foundation import cli
+
         assert hasattr(cli.helpers, "build_attributes_from_args")
 
     def test_module_logger_instance(self) -> None:
