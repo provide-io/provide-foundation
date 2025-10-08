@@ -46,7 +46,13 @@ def stream_logs(
         client = OpenObserveClient.from_config()
 
     # Track the last seen timestamp to avoid duplicates
-    last_timestamp = parse_relative_time(start_time) if start_time else parse_relative_time("-1m")
+    if start_time is None:
+        last_timestamp = parse_relative_time("-1m")
+    elif isinstance(start_time, str):
+        last_timestamp = parse_relative_time(start_time)
+    else:
+        # Already an int (microseconds)
+        last_timestamp = start_time
     seen_ids = set()
 
     log.info(f"Starting log stream with query: {sql}")
@@ -122,8 +128,19 @@ def stream_search_http2(
         client = OpenObserveClient.from_config()
 
     # Parse times
-    start_ts = parse_relative_time(start_time) if start_time else parse_relative_time("-1h")
-    end_ts = parse_relative_time(end_time) if end_time else parse_relative_time("now")
+    if start_time is None:
+        start_ts = parse_relative_time("-1h")
+    elif isinstance(start_time, str):
+        start_ts = parse_relative_time(start_time)
+    else:
+        start_ts = start_time
+
+    if end_time is None:
+        end_ts = parse_relative_time("now")
+    elif isinstance(end_time, str):
+        end_ts = parse_relative_time(end_time)
+    else:
+        end_ts = end_time
 
     # Prepare request
     url = f"{client.url}/api/{client.organization}/_search_stream"
