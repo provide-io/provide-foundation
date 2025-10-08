@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import sys
 
+from provide.foundation.config.defaults import EXIT_ERROR, EXIT_SIGINT, EXIT_SUCCESS
 from provide.foundation.hub.foundation import get_foundation_logger
-from provide.foundation.process.defaults import EXIT_ERROR, EXIT_SIGINT, EXIT_SUCCESS
 
 """Process exit utilities for standardized exit handling."""
 
