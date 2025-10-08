@@ -22,10 +22,10 @@ def default_otlp_headers() -> dict[str, str]:
 
 
 __all__ = [
-    "DEFAULT_TELEMETRY_GLOBALLY_DISABLED",
-    "DEFAULT_TRACING_ENABLED",
     "DEFAULT_METRICS_ENABLED",
     "DEFAULT_OTLP_PROTOCOL",
+    "DEFAULT_TELEMETRY_GLOBALLY_DISABLED",
     "DEFAULT_TRACE_SAMPLE_RATE",
+    "DEFAULT_TRACING_ENABLED",
     "default_otlp_headers",
 ]
