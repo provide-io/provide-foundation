@@ -170,7 +170,7 @@ def create_otlp_processor(config: Any) -> Any | None:
                 # Extract message and attributes
                 message = event_dict.get("event", "")
                 level = event_dict.get("level", "info").lower()
-                severity = SEVERITY_MAP.get(level, 9)
+                SEVERITY_MAP.get(level, 9)
 
                 # Build attributes (everything except 'event' and 'timestamp')
                 attributes = {k: str(v) for k, v in event_dict.items() if k not in ("event", "timestamp")}
@@ -191,8 +191,8 @@ def create_otlp_processor(config: Any) -> Any | None:
                     trace_id=0,
                     span_id=0,
                     trace_flags=0,
-                    severity_text=level.upper(),
-                    severity_number=severity,
+                    severity_text=None,  # Not used - level is in attributes
+                    severity_number=0,  # Not used - level is in attributes
                     body=None,  # No body - message is in attributes
                     resource=_OTLP_LOGGER_PROVIDER.resource,
                     attributes=attributes,
