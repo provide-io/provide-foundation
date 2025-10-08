@@ -25,14 +25,15 @@ async def test_sensitive_query_params_redacted_in_logs(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test that sensitive query parameters are redacted in logs."""
-    # Mock response
+    # Mock response - match any GET to this URL
     httpx_mock.add_response(
         method="GET",
-        url="https://api.example.com/users?api_key=secret123&user_id=456",
+        url="https://api.example.com/users",
         json={"result": "success"},
         status_code=200,
     )
 
+    # Request with sensitive params in URI
     request = Request(
         uri="https://api.example.com/users?api_key=secret123&user_id=456",
         method="GET",
@@ -57,15 +58,14 @@ async def test_multiple_sensitive_params_redacted(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
     """Test that multiple sensitive query parameters are all redacted."""
-    uri = "https://api.example.com/auth?api_key=key123&token=tok456&password=pass789&user=john"
-
     httpx_mock.add_response(
         method="POST",
-        url=uri,
+        url="https://api.example.com/auth",
         json={"authenticated": True},
         status_code=200,
     )
 
+    uri = "https://api.example.com/auth?api_key=key123&token=tok456&password=pass789&user=john"
     request = Request(uri=uri, method="POST")
 
     async with http_transport:
