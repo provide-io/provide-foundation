@@ -26,6 +26,9 @@ def enable_stream_redirect(monkeypatch: pytest.MonkeyPatch) -> None:
 @pytest.fixture
 def log_stream() -> io.StringIO:
     """StringIO stream for capturing Foundation logs."""
+    import sys
+    import importlib
+
     # Create stream and set it BEFORE reset so it gets preserved
     stream = io.StringIO()
     set_log_stream_for_testing(stream)
@@ -34,6 +37,11 @@ def log_stream() -> io.StringIO:
     from provide.testkit import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
+
+    # Reload http module to pick up new stream
+    # This is necessary because http.py creates a logger at module level
+    if "provide.foundation.transport.http" in sys.modules:
+        importlib.reload(sys.modules["provide.foundation.transport.http"])
 
     yield stream
     set_log_stream_for_testing(None)
