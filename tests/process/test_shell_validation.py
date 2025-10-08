@@ -142,7 +142,7 @@ class TestValidateShellSafety(FoundationTestCase):
     def test_dangerous_subshell_denied(self) -> None:
         """Test subshell execution is denied."""
         with pytest.raises(ShellFeatureError) as exc_info:
-            validate_shell_safety("(cd /tmp && ls)", allow_shell_features=False)
+            validate_shell_safety("(cd /tmp)", allow_shell_features=False)
 
         assert exc_info.value.pattern == "("
 

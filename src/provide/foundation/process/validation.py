@@ -39,14 +39,17 @@ class ShellFeatureError(ProcessError):
             command: The command that contained the pattern
 
         """
+        # Truncate command for safety
+        truncated_command = command[:100]
+
         super().__init__(
             message,
             code="SHELL_FEATURE_NOT_ALLOWED",
             pattern=pattern,
-            command=command[:100],  # Truncate for safety
+            command=truncated_command,
         )
         self.pattern = pattern
-        self.command = command
+        self.command = truncated_command
 
 
 def validate_shell_safety(cmd: str, allow_shell_features: bool = False) -> None:
