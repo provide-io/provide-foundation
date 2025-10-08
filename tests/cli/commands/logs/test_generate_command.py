@@ -20,12 +20,14 @@ def runner() -> CliRunner:
 class TestGenerateLogsCommand:
     """Tests for the generate_logs_command Click command."""
 
+    @patch("provide.foundation.cli.commands.logs.generate.click.echo")
     @patch("provide.foundation.cli.commands.logs.generate._generate_fixed_count_logs")
     @patch("provide.foundation.cli.commands.logs.generate._print_final_stats")
     def test_generate_fixed_count_logs(
         self,
         mock_print_final_stats: MagicMock,
         mock_generate_fixed_count: MagicMock,
+        mock_echo: MagicMock,
         runner: CliRunner,
     ) -> None:
         """Test that the command calls the fixed-count generator."""
@@ -36,12 +38,14 @@ class TestGenerateLogsCommand:
         mock_generate_fixed_count.assert_called_once_with(10, 0.0, "normal", 0.1)
         mock_print_final_stats.assert_called_once()
 
+    @patch("provide.foundation.cli.commands.logs.generate.click.echo")
     @patch("provide.foundation.cli.commands.logs.generate._generate_continuous_logs")
     @patch("provide.foundation.cli.commands.logs.generate._print_final_stats")
     def test_generate_continuous_logs(
         self,
         mock_print_final_stats: MagicMock,
         mock_generate_continuous: MagicMock,
+        mock_echo: MagicMock,
         runner: CliRunner,
     ) -> None:
         """Test that the command calls the continuous generator and handles KeyboardInterrupt."""
