@@ -76,7 +76,7 @@ if _HAS_CLICK:
             client = OpenObserveClient.from_config()
             ctx.obj = client
         except Exception as e:
-            log.warning(f"Failed to initialize OpenObserve client: {e}")
+            perr(f"Failed to initialize OpenObserve client: {e}")
             ctx.obj = None
 
     @openobserve_group.command("query")
