@@ -96,11 +96,11 @@ class HTTPConfig(TransportConfig):
     )
 
 
-async def register_transport_configs() -> None:
+def register_transport_configs() -> None:
     """Register transport configurations with the global ConfigManager."""
     try:
         # Register TransportConfig
-        await register_config(
+        register_config(
             name="transport",
             config=None,  # Will be loaded on demand
             loader=RuntimeConfigLoader(prefix="PROVIDE_TRANSPORT"),
@@ -113,7 +113,7 @@ async def register_transport_configs() -> None:
         )
 
         # Register HTTPConfig
-        await register_config(
+        register_config(
             name="transport.http",
             config=None,  # Will be loaded on demand
             loader=RuntimeConfigLoader(prefix="PROVIDE_HTTP"),

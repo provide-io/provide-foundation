@@ -250,14 +250,16 @@ class LockManager:
 # Global lock manager instance
 _lock_manager = LockManager()
 _locks_registered = False
+_registration_lock = threading.Lock()
 
 
 def get_lock_manager() -> LockManager:
     """Get the global lock manager instance."""
     global _locks_registered
-    if not _locks_registered:
-        register_foundation_locks()
-        _locks_registered = True
+    with _registration_lock:
+        if not _locks_registered:
+            register_foundation_locks()
+            _locks_registered = True
     return _lock_manager
 
 

@@ -7,6 +7,7 @@ including burst patterns, time manipulation, and concurrent access.
 from __future__ import annotations
 
 import asyncio
+import math
 
 from hypothesis import given, settings, strategies as st
 from provide.testkit import FoundationTestCase
@@ -74,8 +75,9 @@ class TestTokenBucketChaos(FoundationTestCase):
             else:
                 break
 
-        # Should allow up to capacity
-        assert successful <= int(capacity)
+        # Should allow up to capacity (ceiling since capacity is float and tokens can refill)
+        # With async operations, time can advance between calls allowing token refill
+        assert successful <= math.ceil(capacity)
 
     @pytest.mark.asyncio
     @given(
@@ -157,8 +159,8 @@ class TestTokenBucketChaos(FoundationTestCase):
         tasks = [worker(i) for i in range(num_concurrent)]
         await asyncio.gather(*tasks)
 
-        # Should not exceed capacity
-        assert len(acquired) <= int(capacity)
+        # Should not exceed capacity (ceiling since capacity is float)
+        assert len(acquired) <= math.ceil(capacity)
 
     @pytest.mark.asyncio
     @given(

@@ -22,7 +22,7 @@ from provide.foundation.hub import (
     get_hub,
 )
 from provide.foundation.hub.events import get_event_bus
-from provide.foundation.resilience import CircuitBreaker
+from provide.foundation.resilience import SyncCircuitBreaker
 
 
 class ExampleResource(Disposable):
@@ -133,7 +133,7 @@ def example_circuit_breaker() -> None:
     print("=" * 50)
 
     # Create a circuit breaker
-    circuit_breaker = CircuitBreaker(failure_threshold=3, recovery_timeout=5.0)
+    circuit_breaker = SyncCircuitBreaker(failure_threshold=3, recovery_timeout=5.0)
 
     # Function that sometimes fails
     call_count = 0

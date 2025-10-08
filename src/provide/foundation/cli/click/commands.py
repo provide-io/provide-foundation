@@ -24,7 +24,72 @@ if TYPE_CHECKING:
 __all__ = [
     "add_command_to_group",
     "build_click_command",
+    "build_click_command_from_info",
 ]
+
+
+def build_click_command_from_info(info: Any) -> click.Command:
+    """Build a Click command directly from CommandInfo.
+
+    This is a pure builder function that creates a Click command from
+    a CommandInfo object without requiring registry access. Supports
+    typing.Annotated for explicit argument/option control.
+
+    Args:
+        info: CommandInfo object with command metadata
+
+    Returns:
+        Click Command object
+
+    Raises:
+        CLIBuildError: If command building fails
+
+    Example:
+        >>> from provide.foundation.hub.info import CommandInfo
+        >>> info = CommandInfo(name="greet", func=greet_func, description="Greet someone")
+        >>> click_cmd = build_click_command_from_info(info)
+        >>> isinstance(click_cmd, click.Command)
+        True
+
+    """
+    try:
+        # Introspect parameters if not already done
+        params = introspect_parameters(info.func) if info.parameters is None else info.parameters
+
+        # Separate into arguments and options
+        arguments, options = separate_arguments_and_options(params)
+
+        # Start with the base function
+        decorated_func = info.func
+
+        # Process options in reverse order (for decorator stacking)
+        for param in reversed(options):
+            decorated_func = apply_click_option(decorated_func, param)
+
+        # Process arguments in reverse order
+        for param in reversed(arguments):
+            decorated_func = apply_click_argument(decorated_func, param)
+
+        # Create the Click command with the decorated function
+        cmd = click.Command(
+            name=info.name,
+            callback=decorated_func,
+            help=info.description,
+            hidden=info.hidden,
+        )
+
+        # Copy over the params from the decorated function
+        if hasattr(decorated_func, "__click_params__"):
+            cmd.params = list(reversed(decorated_func.__click_params__))
+
+        return cmd
+
+    except Exception as e:
+        raise CLIBuildError(
+            f"Failed to build Click command '{info.name}': {e}",
+            command_name=info.name,
+            cause=e,
+        ) from e
 
 
 def build_click_command(
@@ -65,44 +130,8 @@ def build_click_command(
     if not info:
         return None
 
-    try:
-        # Introspect parameters if not already done
-        params = introspect_parameters(info.func) if info.parameters is None else info.parameters
-
-        # Separate into arguments and options
-        arguments, options = separate_arguments_and_options(params)
-
-        # Start with the base function
-        decorated_func = info.func
-
-        # Process options in reverse order (for decorator stacking)
-        for param in reversed(options):
-            decorated_func = apply_click_option(decorated_func, param)
-
-        # Process arguments in reverse order
-        for param in reversed(arguments):
-            decorated_func = apply_click_argument(decorated_func, param)
-
-        # Create the Click command with the decorated function
-        cmd = click.Command(
-            name=info.name,
-            callback=decorated_func,
-            help=info.description,
-            hidden=info.hidden,
-        )
-
-        # Copy over the params from the decorated function
-        if hasattr(decorated_func, "__click_params__"):
-            cmd.params = list(reversed(decorated_func.__click_params__))
-
-        return cmd
-
-    except Exception as e:
-        raise CLIBuildError(
-            f"Failed to build Click command '{name}': {e}",
-            command_name=name,
-            cause=e,
-        ) from e
+    # Build the command using the pure builder function
+    return build_click_command_from_info(info)
 
 
 def add_command_to_group(

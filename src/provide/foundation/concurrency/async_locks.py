@@ -174,6 +174,9 @@ class AsyncLockManager:
                     and lock_info in self._task_local[current_task]
                 ):
                     self._task_local[current_task].remove(lock_info)
+                    # Clean up empty task entries to prevent memory leak
+                    if not self._task_local[current_task]:
+                        del self._task_local[current_task]
             except Exception:
                 # Continue releasing other locks even if one fails
                 pass

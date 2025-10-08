@@ -27,6 +27,7 @@ class OperationChain:
     """
 
     operations: list[str] = field(factory=list)
+    operation_config: dict[str, dict[str, bool]] = field(factory=dict)
 
     def execute(self, source: Path, output: Path) -> Path:
         """Execute operation chain on source.
@@ -103,17 +104,20 @@ class OperationChain:
             reversed_op = reverse_map.get(op.lower(), op)
             reversed_ops.append(reversed_op)
 
-        reversed_chain = OperationChain(operations=reversed_ops)
+        reversed_chain = OperationChain(operations=reversed_ops, operation_config=self.operation_config)
         return reversed_chain.execute(source, output)
 
     def _execute_operation(self, operation: str, source: Path, output: Path) -> Path:
         """Execute a single operation."""
-        match operation.lower():
+        op_lower = operation.lower()
+        config = self.operation_config.get(op_lower, {})
+
+        match op_lower:
             case "tar":
-                tar = TarArchive()
+                tar = TarArchive(**config)
                 return tar.create(source, output)
             case "untar":
-                tar = TarArchive()
+                tar = TarArchive(**config)
                 return tar.extract(source, output)
             case "gzip":
                 gzip = GzipCompressor()
@@ -128,10 +132,10 @@ class OperationChain:
                 bz2 = Bzip2Compressor()
                 return bz2.decompress_file(source, output)
             case "zip":
-                zip_archive = ZipArchive()
+                zip_archive = ZipArchive(**config)
                 return zip_archive.create(source, output)
             case "unzip":
-                zip_archive = ZipArchive()
+                zip_archive = ZipArchive(**config)
                 return zip_archive.extract(source, output)
             case _:
                 raise ArchiveError(f"Unknown operation: {operation}")
@@ -171,19 +175,11 @@ class ArchiveOperations:
         """
         ensure_parent_dir(output)
 
-        # Create temp tar file
-        temp_tar = output.with_suffix(".tar")
-        try:
-            tar = TarArchive(deterministic=deterministic)
-            tar.create(source, temp_tar)
-
-            # Compress to final output
-            gzip = GzipCompressor()
-            return gzip.compress_file(temp_tar, output)
-        finally:
-            # Clean up temp file
-            if temp_tar.exists():
-                temp_tar.unlink()
+        chain = OperationChain(
+            operations=["tar", "gzip"],
+            operation_config={"tar": {"deterministic": deterministic}},
+        )
+        return chain.execute(source, output)
 
     @staticmethod
     def extract_tar_gz(archive: Path, output: Path) -> Path:
@@ -202,19 +198,8 @@ class ArchiveOperations:
         """
         output.mkdir(parents=True, exist_ok=True)
 
-        # Decompress to temp file
-        with temp_file(suffix=".tar", cleanup=False) as temp_tar:
-            try:
-                gzip = GzipCompressor()
-                gzip.decompress_file(archive, temp_tar)
-
-                # Extract tar
-                tar = TarArchive()
-                return tar.extract(temp_tar, output)
-            finally:
-                # Clean up temp file
-                if temp_tar.exists():
-                    temp_tar.unlink()
+        chain = OperationChain(operations=["tar", "gzip"])
+        return chain.reverse(archive, output)
 
     @staticmethod
     def create_tar_bz2(source: Path, output: Path, deterministic: bool = True) -> Path:
@@ -234,19 +219,11 @@ class ArchiveOperations:
         """
         ensure_parent_dir(output)
 
-        # Create temp tar file
-        temp_tar = output.with_suffix(".tar")
-        try:
-            tar = TarArchive(deterministic=deterministic)
-            tar.create(source, temp_tar)
-
-            # Compress to final output
-            bz2 = Bzip2Compressor()
-            return bz2.compress_file(temp_tar, output)
-        finally:
-            # Clean up temp file
-            if temp_tar.exists():
-                temp_tar.unlink()
+        chain = OperationChain(
+            operations=["tar", "bzip2"],
+            operation_config={"tar": {"deterministic": deterministic}},
+        )
+        return chain.execute(source, output)
 
     @staticmethod
     def extract_tar_bz2(archive: Path, output: Path) -> Path:
@@ -265,19 +242,8 @@ class ArchiveOperations:
         """
         output.mkdir(parents=True, exist_ok=True)
 
-        # Decompress to temp file
-        with temp_file(suffix=".tar", cleanup=False) as temp_tar:
-            try:
-                bz2 = Bzip2Compressor()
-                bz2.decompress_file(archive, temp_tar)
-
-                # Extract tar
-                tar = TarArchive()
-                return tar.extract(temp_tar, output)
-            finally:
-                # Clean up temp file
-                if temp_tar.exists():
-                    temp_tar.unlink()
+        chain = OperationChain(operations=["tar", "bzip2"])
+        return chain.reverse(archive, output)
 
     @staticmethod
     def _detect_format_by_extension(filename: str) -> list[str] | None:
