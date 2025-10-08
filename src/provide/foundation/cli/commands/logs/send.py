@@ -22,13 +22,8 @@ def _get_message_from_input(message: str | None) -> tuple[str | None, int]:
     if message:
         return message, 0
 
-    # Try to read from stdin using shared helper
-    stdin_message, error_code = get_message_from_stdin()
-    if error_code != 0:
-        click.echo("Error: No message provided. Use -m or pipe input.", err=True)
-        return None, 1
-
-    return stdin_message, 0
+    # Try to read from stdin using shared helper (it handles error messages)
+    return get_message_from_stdin()
 
 
 def _send_log_entry(

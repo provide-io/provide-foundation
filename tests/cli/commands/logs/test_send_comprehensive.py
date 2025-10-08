@@ -56,7 +56,7 @@ class TestGetMessageFromInput:
 
             assert result_msg is None
             assert result_code == 1
-            mock_echo.assert_called_once_with("Error: Empty message from stdin.", err=True)
+            mock_echo.assert_called_once_with("Error: Empty input from stdin.", err=True)
 
 
 class TestBuildAttributes:
