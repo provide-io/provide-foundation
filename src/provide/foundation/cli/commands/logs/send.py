@@ -22,8 +22,14 @@ def _get_message_from_input(message: str | None) -> tuple[str | None, int]:
     if message:
         return message, 0
 
-    # Try to read from stdin using shared helper (it handles error messages)
-    return get_message_from_stdin()
+    # Try to read from stdin using shared helper
+    stdin_message, error_code = get_message_from_stdin()
+
+    # If stdin is TTY (no piped input), show helpful error
+    if error_code != 0 and sys.stdin.isatty():
+        click.echo("Error: No message provided. Use -m or pipe input.", err=True)
+
+    return stdin_message, error_code
 
 
 def _send_log_entry(
