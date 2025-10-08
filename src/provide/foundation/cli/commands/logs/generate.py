@@ -380,6 +380,15 @@ if _HAS_CLICK:
         except KeyboardInterrupt:
             click.echo("\n\n⛔ Generation interrupted by user")
         finally:
+            # Flush OTLP logs before exiting
+            try:
+                from provide.foundation.logger.processors.otlp import flush_otlp_logs
+
+                flush_otlp_logs()
+            except ImportError:
+                # OTLP not available
+                pass
+
             total_time = time.time() - start_time
             _print_final_stats(logs_sent, logs_failed, logs_rate_limited, total_time, rate, enable_rate_limit)
 
