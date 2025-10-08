@@ -189,12 +189,12 @@ def prepare_subprocess_environment(
         - PROVIDE_TELEMETRY_DISABLED always added to prevent recursive logging
 
     """
-    if scrub:
-        # Start with scrubbed base environment
-        run_env = scrub_environment(os.environ, allowlist=allowlist, enabled=True)
-    else:
-        # Use full environment (not recommended)
-        run_env = os.environ.copy()
+    # Start with either scrubbed or full environment
+    run_env = (
+        scrub_environment(os.environ, allowlist=allowlist, enabled=True)
+        if scrub
+        else os.environ.copy()  # Not recommended - use scrub=True
+    )
 
     # Merge caller-provided overrides (always trusted)
     if caller_overrides is not None:
