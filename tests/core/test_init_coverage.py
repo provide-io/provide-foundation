@@ -64,6 +64,7 @@ class TestFoundationInit(FoundationTestCase):
     def test_aaa_getattr_cli_click_missing(self) -> None:
         """Test __getattr__ CLI import with missing click dependency."""
         import builtins
+
         import provide.foundation
 
         # Clear any existing CLI module from cache
@@ -91,6 +92,7 @@ class TestFoundationInit(FoundationTestCase):
     def test_aaa_getattr_cli_other_import_error(self) -> None:
         """Test __getattr__ CLI import with other ImportError."""
         import builtins
+
         import provide.foundation
 
         # Clear any existing CLI module from cache

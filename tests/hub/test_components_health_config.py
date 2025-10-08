@@ -13,7 +13,6 @@ from provide.foundation.hub.components import (
     get_or_initialize_component,
     initialize_all_async_components,
     initialize_async_component,
-    
 )
 
 

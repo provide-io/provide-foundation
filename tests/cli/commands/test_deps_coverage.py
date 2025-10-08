@@ -171,12 +171,11 @@ class TestDepsCommandWithoutClick(FoundationTestCase):
         # Test _require_click function directly since the stub calls it
         from provide.foundation.cli.commands.deps import _require_click
 
-        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False):
-            with pytest.raises(
-                ImportError,
-                match="CLI commands require optional dependencies",
-            ):
-                _require_click()
+        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False), pytest.raises(
+            ImportError,
+            match="CLI commands require optional dependencies",
+        ):
+            _require_click()
 
     def test_require_click_raises_error(self) -> None:
         """Test _require_click raises appropriate error."""
@@ -200,12 +199,11 @@ class TestDepsCommandWithoutClick(FoundationTestCase):
             _require_click()
 
         # Test that it accepts any arguments but raises the expected error
-        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False):
-            with pytest.raises(
-                ImportError,
-                match="CLI commands require optional dependencies",
-            ):
-                deps_command_stub("arg1", "arg2", some_kwarg="value")
+        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False), pytest.raises(
+            ImportError,
+            match="CLI commands require optional dependencies",
+        ):
+            deps_command_stub("arg1", "arg2", some_kwarg="value")
 
 
 class TestDepsCommandDecorators(FoundationTestCase):

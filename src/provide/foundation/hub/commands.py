@@ -38,7 +38,7 @@ def build_click_command(name: str, registry: Any = None) -> Any:
     """Build click command (imports on first call to avoid circular import)."""
     if not _check_click():
         raise ImportError("CLI feature 'build_click_command' requires: pip install 'provide-foundation[cli]'")
-    from provide.foundation.cli.click.builder import build_click_command as real_func
+    from provide.foundation.cli.click.commands import build_click_command as real_func
 
     return real_func(name, registry)
 

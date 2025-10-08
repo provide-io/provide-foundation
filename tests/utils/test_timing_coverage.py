@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import contextvars
 import time
-from typing import Any
 
-import pytest
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+import pytest
 
 from provide.foundation.utils.timing import _PROVIDE_CONTEXT_TRACE_ID, timed_block
 
@@ -252,10 +251,9 @@ class TestTimedBlock(FoundationTestCase):
         """Test that duration is rounded to 3 decimal places on exception."""
         mock_logger = Mock()
 
-        with patch("time.perf_counter", side_effect=[1.0, 1.5678901]):
-            with pytest.raises(RuntimeError):
-                with timed_block(mock_logger, "test_operation"):
-                    raise RuntimeError("test error")
+        with patch("time.perf_counter", side_effect=[1.0, 1.5678901]), pytest.raises(RuntimeError):
+            with timed_block(mock_logger, "test_operation"):
+                raise RuntimeError("test error")
 
         error_call = mock_logger.error.call_args
         error_kwargs = error_call[1]
@@ -289,9 +287,8 @@ class TestTimedBlock(FoundationTestCase):
                 super().__init__(message)
                 self.code = code
 
-        with pytest.raises(CustomError):
-            with timed_block(mock_logger, "test_operation"):
-                raise CustomError("Custom error message", 404)
+        with pytest.raises(CustomError), timed_block(mock_logger, "test_operation"):
+            raise CustomError("Custom error message", 404)
 
         error_call = mock_logger.error.call_args
         error_kwargs = error_call[1]
@@ -358,7 +355,7 @@ class TestModuleConstants:
     def test_module_exports(self) -> None:
         """Test that expected functions are importable."""
         # These should be importable from the module
-        from provide.foundation.utils.timing import timed_block, _PROVIDE_CONTEXT_TRACE_ID
+        from provide.foundation.utils.timing import _PROVIDE_CONTEXT_TRACE_ID, timed_block
 
         assert callable(timed_block)
         assert isinstance(_PROVIDE_CONTEXT_TRACE_ID, contextvars.ContextVar)
@@ -396,9 +393,8 @@ class TestTimedBlockIntegration:
 
         token = _PROVIDE_CONTEXT_TRACE_ID.set(trace_id)
         try:
-            with timed_block(mock_logger, "operation_1"):
-                with timed_block(mock_logger, "operation_2"):
-                    pass
+            with timed_block(mock_logger, "operation_1"), timed_block(mock_logger, "operation_2"):
+                pass
         finally:
             _PROVIDE_CONTEXT_TRACE_ID.reset(token)
 

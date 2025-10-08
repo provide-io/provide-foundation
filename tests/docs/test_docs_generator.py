@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 import tempfile
-from provide.testkit.mocking import Mock, mock_open, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, mock_open, patch
 import pytest
 
 from provide.foundation.docs.generator import APIDocGenerator, generate_api_docs

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
 from provide.testkit import FoundationTestCase
 
 from provide.foundation.utils.formatting import (

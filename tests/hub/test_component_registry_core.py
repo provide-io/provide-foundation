@@ -305,7 +305,6 @@ class TestFoundationBootstrapIntegration(FoundationTestCase):
         """Each test must have isolated registry state."""
         from provide.foundation.hub.components import (
             get_component_registry,
-            
         )
 
         registry = get_component_registry()

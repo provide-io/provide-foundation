@@ -1,7 +1,7 @@
 """Basic coverage tests for utils modules."""
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 
 class TestUtilsBasicCoverage(FoundationTestCase):

@@ -6,7 +6,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, MagicMock, patch
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 # Removed: import sys

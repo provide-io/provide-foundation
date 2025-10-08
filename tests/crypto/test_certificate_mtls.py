@@ -4,9 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-import pytest
-
 from provide.testkit import FoundationTestCase
+import pytest
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert

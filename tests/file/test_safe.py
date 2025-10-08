@@ -4,9 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.file.safe import (
     safe_copy,

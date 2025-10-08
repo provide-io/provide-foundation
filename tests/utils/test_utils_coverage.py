@@ -6,12 +6,12 @@ import io
 from typing import Any
 
 from attrs import define, field, fields
+from provide.testkit import FoundationTestCase
 
 from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 from provide.foundation.formatting import format_table, to_camel_case
-from provide.foundation.utils import timed_block
 from provide.foundation.parsers import auto_parse, parse_typed_value
-from provide.testkit import FoundationTestCase
+from provide.foundation.utils import timed_block
 
 
 class TestCaseConversionCoverage(FoundationTestCase):
@@ -68,23 +68,23 @@ class TestParsingCoverage(FoundationTestCase):
         assert result == "some_value"
 
     def test_auto_parse_with_string_type_hints(self) -> None:
-        """Test auto_parse for attrs fields with string type hints."""
+        """Test auto_parse for attrs fields with normal type hints."""
 
         @define
         class DummyConfig:
-            int_val: "int"
-            bool_val: "bool"
-            list_val: "list"
-            dict_val: "dict"
-            unknown_val: "str"  # Changed from "SomeUnknownType" to test a real type
+            int_val: int
+            bool_val: bool
+            list_val: list
+            dict_val: dict
+            unknown_val: str
 
         attrs_fields = {f.name: f for f in fields(DummyConfig)}
 
-        # String type hints are treated as strings, not triggers for parsing
-        assert auto_parse(attrs_fields["int_val"], "42") == "42"
-        assert auto_parse(attrs_fields["bool_val"], "true") == "true"
-        assert auto_parse(attrs_fields["list_val"], "a,b") == "a,b"
-        assert auto_parse(attrs_fields["dict_val"], "k=v") == "k=v"
+        # Type hints trigger appropriate parsing
+        assert auto_parse(attrs_fields["int_val"], "42") == 42
+        assert auto_parse(attrs_fields["bool_val"], "true") is True
+        assert auto_parse(attrs_fields["list_val"], "a,b") == ["a", "b"]
+        assert auto_parse(attrs_fields["dict_val"], "k=v") == {"k": "v"}
         assert auto_parse(attrs_fields["unknown_val"], "some_string") == "some_string"
 
     def test_auto_parse_no_type_hint(self) -> None:
@@ -176,6 +176,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_bool_edge_cases(self) -> None:
         """Test edge cases for get_bool function."""
         import os
+
         from provide.testkit.mocking import patch
 
         from provide.foundation.errors.config import ValidationError
@@ -200,6 +201,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_int_edge_cases(self) -> None:
         """Test edge cases for get_int function."""
         import os
+
         from provide.testkit.mocking import patch
 
         from provide.foundation.errors.config import ValidationError
@@ -224,6 +226,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_float_edge_cases(self) -> None:
         """Test edge cases for get_float function."""
         import os
+
         from provide.testkit.mocking import patch
 
         from provide.foundation.errors.config import ValidationError
@@ -248,6 +251,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_str_with_default(self) -> None:
         """Test get_str with default value."""
         import os
+
         from provide.testkit.mocking import patch
 
         from provide.foundation.utils.environment import get_str

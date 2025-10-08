@@ -6,9 +6,8 @@ import hashlib
 from io import BytesIO
 from pathlib import Path
 
-import pytest
-
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.crypto import (
     hash_data,

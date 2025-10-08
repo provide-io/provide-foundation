@@ -16,9 +16,9 @@ import json
 import os
 import threading
 import time
-from provide.testkit.mocking import patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 from pytest import CaptureFixture  # Added for capsys
 

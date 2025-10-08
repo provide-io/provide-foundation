@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import io
 import sys
+
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
 

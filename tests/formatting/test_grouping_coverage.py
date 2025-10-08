@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.formatting.grouping import format_grouped
-from provide.testkit import FoundationTestCase
 
 
 class TestFormatGrouped(FoundationTestCase):

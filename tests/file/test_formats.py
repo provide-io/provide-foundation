@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import json
 
+from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.testkit import FoundationTestCase
 from provide.foundation.file.formats import (
     read_json,
     read_toml,

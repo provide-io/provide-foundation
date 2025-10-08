@@ -7,6 +7,7 @@ from pathlib import Path
 import tempfile
 
 import click
+from provide.testkit import CliTestRunner, FoundationTestCase
 
 from provide.foundation.cli.decorators import (
     flexible_options,
@@ -14,10 +15,8 @@ from provide.foundation.cli.decorators import (
     pass_context,
 )
 from provide.foundation.cli.utils import setup_cli_logging
-from provide.testkit import CliTestRunner
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
-from provide.testkit import FoundationTestCase
 
 
 class TestCompleteCliIntegration(FoundationTestCase):

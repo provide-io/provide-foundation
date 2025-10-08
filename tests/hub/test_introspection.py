@@ -5,8 +5,8 @@ from __future__ import annotations
 import inspect
 from typing import Annotated
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.cli.errors import InvalidCLIHintError
 from provide.foundation.hub.introspection import (
