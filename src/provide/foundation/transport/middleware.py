@@ -3,7 +3,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Awaitable, Callable
 import time
-from typing import Any
 
 from attrs import define, field
 
@@ -173,7 +172,9 @@ class RetryMiddleware(Middleware):
         """Handle error, potentially with retries (this is called by client)."""
         return error
 
-    async def execute_with_retry(self, execute_func: Any, request: Request) -> Response:
+    async def execute_with_retry(
+        self, execute_func: Callable[[Request], Awaitable[Response]], request: Request
+    ) -> Response:
         """Execute request with retry logic using unified RetryExecutor."""
         executor = RetryExecutor(
             self.policy,
@@ -181,7 +182,7 @@ class RetryMiddleware(Middleware):
             async_sleep_func=self.async_sleep_func,
         )
 
-        async def wrapped() -> Any:
+        async def wrapped() -> Response:
             response = await execute_func(request)
 
             # Check if status code is retryable
@@ -302,7 +303,7 @@ def register_middleware(
     name: str,
     middleware_class: type[Middleware],
     category: str = "transport.middleware",
-    **metadata: Any,
+    **metadata: str | int | bool | None,
 ) -> None:
     """Register middleware in the Hub."""
     registry = get_component_registry()
