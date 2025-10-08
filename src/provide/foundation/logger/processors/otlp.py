@@ -26,6 +26,33 @@ except ImportError:
 _OTLP_LOGGER_PROVIDER: Any = None
 
 
+def _convert_timestamp_to_nanos(timestamp: Any) -> int | None:
+    """Convert timestamp to nanoseconds for OTLP.
+
+    Args:
+        timestamp: Timestamp in various formats (string, int, float, None)
+
+    Returns:
+        Timestamp in nanoseconds or None
+
+    """
+    if not timestamp:
+        return None
+
+    if isinstance(timestamp, str):
+        # Parse ISO format timestamp and convert to nanoseconds
+        from datetime import datetime
+
+        dt = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+        return int(dt.timestamp() * 1_000_000_000)
+
+    if isinstance(timestamp, (int, float)):
+        # If less than year 2286 in seconds, convert to nanos; otherwise assume already nanos
+        return int(timestamp * 1_000_000_000) if timestamp < 10_000_000_000 else int(timestamp)
+
+    return None
+
+
 def _build_otlp_headers(config: Any) -> dict[str, str]:
     """Build OTLP headers including authentication if available.
 
@@ -141,17 +168,22 @@ def create_otlp_processor(config: Any) -> Any | None:
                 level = event_dict.get("level", "info").lower()
                 severity = SEVERITY_MAP.get(level, 9)
 
-                # Build attributes (everything except 'event' and 'level')
-                attributes = {
-                    k: str(v) for k, v in event_dict.items() if k not in ("event", "level", "timestamp")
-                }
+                # Build attributes (everything except 'event' and 'timestamp')
+                attributes = {k: str(v) for k, v in event_dict.items() if k not in ("event", "timestamp")}
+
+                # Add message and level attributes for OpenObserve compatibility
+                attributes["message"] = message  # Emoji-enriched message
+                attributes["level"] = level.upper()  # Log level
+
+                # Convert timestamp to nanoseconds
+                timestamp = _convert_timestamp_to_nanos(event_dict.get("timestamp"))
 
                 # Emit to OTLP using LogRecord
                 from opentelemetry.sdk._logs import LogRecord
 
                 log_record = LogRecord(
-                    timestamp=event_dict.get("timestamp"),
-                    observed_timestamp=event_dict.get("timestamp"),
+                    timestamp=timestamp,
+                    observed_timestamp=timestamp,
                     trace_id=0,
                     span_id=0,
                     trace_flags=0,
