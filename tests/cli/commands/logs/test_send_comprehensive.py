@@ -250,23 +250,6 @@ class TestSendLogEntry:
             mock_echo.assert_called_once_with("✗ Failed to send log: OTLP connection failed", err=True)
 
 
-class TestSendCommandWithoutClick:
-    """Test send command behavior when click is not available."""
-
-    def test_command_import_availability(self) -> None:
-        """Test that the command function can be imported and _HAS_CLICK exists."""
-        from provide.foundation.cli.commands.logs.send import _HAS_CLICK, send_command
-
-        # Function should exist regardless of click availability
-        assert callable(send_command)
-        assert isinstance(_HAS_CLICK, bool)
-
-        # If click is available (which it should be in test environment)
-        if _HAS_CLICK:
-            # The command should be the click-decorated function
-            assert hasattr(send_command, "__click_params__") or callable(send_command)
-
-
 class TestModuleStructure:
     """Test basic module structure and imports."""
 
@@ -275,10 +258,12 @@ class TestModuleStructure:
         from provide.foundation.cli.commands.logs import send
 
         assert hasattr(send, "_get_message_from_input")
-        assert hasattr(send, "_build_attributes")
         assert hasattr(send, "_send_log_entry")
         assert hasattr(send, "send_command")
-        assert hasattr(send, "_HAS_CLICK")
+
+        # _build_attributes was moved to cli.helpers
+        from provide.foundation import cli
+        assert hasattr(cli.helpers, "build_attributes_from_args")
 
     def test_module_logger_instance(self) -> None:
         """Test that module has logger instance."""
