@@ -45,20 +45,9 @@ class FileOperationSimulator:
         # Ensure built-in detectors are registered (idempotent)
         # This is needed because test teardown may clear the registry
         if HAS_OPERATIONS_MODULE:
-            from provide.foundation.file.operations.detectors import (
-                _auto_register_builtin_detectors,
-                get_all_detectors,
-            )
+            from provide.foundation.file.operations.detectors import _auto_register_builtin_detectors
 
             _auto_register_builtin_detectors()
-
-            # Debug: Check if detectors were registered
-            detectors = get_all_detectors()
-            if not detectors:
-                # Log warning if no detectors were registered
-                import sys
-
-                print(f"WARNING: No detectors registered after _auto_register_builtin_detectors()", file=sys.stderr)
 
         self.detector = OperationDetector(detector_config or DetectorConfig())
         self.sequence_counter = 0
@@ -298,22 +287,7 @@ class FileOperationSimulator:
         if not HAS_OPERATIONS_MODULE or not events:
             return []
 
-        # Debug logging
-        import sys
-
-        from provide.foundation.file.operations.detectors import get_all_detectors
-
-        detectors = get_all_detectors()
-        print(f"DEBUG: detect_operations called with {len(events)} events, {len(detectors)} detectors registered", file=sys.stderr)
-
-        # Debug: print event details
-        for i, event in enumerate(events):
-            print(f"DEBUG: Event {i}: type={event.event_type}, path={event.path.name}, ts={event.timestamp}, dest={event.dest_path.name if event.dest_path else None}", file=sys.stderr)
-
-        operations = self.detector.detect(events)
-        print(f"DEBUG: Detected {len(operations)} operations", file=sys.stderr)
-
-        return operations
+        return self.detector.detect(events)
 
 
 class FileOperationValidator:
