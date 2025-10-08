@@ -1,23 +1,11 @@
 from __future__ import annotations
 
 import re
-from typing import TYPE_CHECKING, Any
 
+from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.logger import get_logger
 
 """Tail logs command for Foundation CLI."""
-
-if TYPE_CHECKING:
-    import click
-
-# Click feature detection
-try:
-    import click
-
-    _HAS_CLICK = True
-except ImportError:
-    click: Any = None
-    _HAS_CLICK = False
 
 log = get_logger(__name__)
 

@@ -1,13 +1,5 @@
 from __future__ import annotations
 
-# Check for Click availability
-try:
-    import click  # noqa: F401
-
-    _HAS_CLICK = True
-except ImportError:
-    _HAS_CLICK = False
-
 from provide.foundation.cli.base import CLIAdapter
 from provide.foundation.cli.decorators import (
     config_options,
@@ -19,6 +11,9 @@ from provide.foundation.cli.decorators import (
     standard_options,
     version_option,
 )
+
+# Centralized Click dependency handling
+from provide.foundation.cli.deps import _HAS_CLICK, click  # noqa: F401
 from provide.foundation.cli.errors import (
     CLIAdapterNotFoundError,
     CLIBuildError,
@@ -107,10 +102,5 @@ def get_cli_adapter(framework: str = "click") -> CLIAdapter:
                     package="cli",
                 ) from e
             raise
-
-    # Future framework support:
-    # elif framework == "typer":
-    #     from provide.foundation.cli.typer import TyperAdapter
-    #     return TyperAdapter()
 
     raise ValueError(f"Unknown CLI framework: {framework}. Supported frameworks: click")

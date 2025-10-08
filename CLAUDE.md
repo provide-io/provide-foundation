@@ -37,6 +37,97 @@ uv build                        # Build package
 uv publish                      # Publish to PyPI
 ```
 
+## Environment Variables
+
+The library provides two distinct APIs for working with environment variables, each serving different purposes:
+
+### Direct Environment Variable Access (`utils/environment`)
+
+Use for simple, one-off environment variable access with automatic type coercion:
+
+```python
+from provide.foundation.utils.environment import get_bool, get_int, get_str, get_list
+
+# Simple direct access
+debug = get_bool("DEBUG", default=False)
+port = get_int("PORT", default=8080)
+api_key = get_str("API_KEY", required=True)
+allowed_hosts = get_list("ALLOWED_HOSTS", default=["localhost"])
+```
+
+**When to use**:
+- Scripts and utilities
+- Simple configuration needs
+- One-off environment variable reads
+- Quick prototyping
+
+**Available functions**:
+- `get_bool(name, default=None, required=False)` - Parse boolean values ("true", "1", "yes")
+- `get_int(name, default=None, required=False)` - Parse integers
+- `get_float(name, default=None, required=False)` - Parse floating point numbers
+- `get_str(name, default=None, required=False)` - Get string values
+- `get_list(name, default=None, separator=",", required=False)` - Parse comma-separated lists
+- `get_dict(name, default=None, required=False)` - Parse key=value pairs
+- `get_path(name, default=None, required=False)` - Get filesystem paths
+- `require(name)` - Require an environment variable (raises if missing)
+
+### Structured Configuration Classes (`config/env`)
+
+Use for building structured, validated configuration objects with file-based secret support:
+
+```python
+from provide.foundation.config import BaseConfig, env_field
+from attrs import define
+
+@define
+class DatabaseConfig(BaseConfig):
+    host: str = env_field(env_var="DB_HOST", default="localhost")
+    port: int = env_field(env_var="DB_PORT", default=5432)
+    # Supports file:// prefix for reading secrets from files
+    password: str = env_field(env_var="DB_PASSWORD")  # Can be "file:///secrets/db_pass"
+    ssl_enabled: bool = env_field(env_var="DB_SSL", default=False)
+
+# Load from environment
+config = DatabaseConfig.from_env()
+```
+
+**When to use**:
+- Application-wide configuration
+- Configuration classes with validation
+- Secret management (supports `file://` prefix for reading from secret files)
+- Complex configuration with multiple related values
+- Type safety and IDE autocomplete
+
+**Features**:
+- Type validation through attrs
+- Support for `file://` prefix to read secrets from files
+- Automatic parsing based on field types
+- Integration with BaseConfig for additional features
+
+### Examples
+
+**Simple script**:
+```python
+from provide.foundation.utils.environment import get_int, get_bool
+
+workers = get_int("WORKERS", default=4)
+debug = get_bool("DEBUG", default=False)
+```
+
+**Application configuration**:
+```python
+from provide.foundation.config import BaseConfig, env_field
+from attrs import define
+
+@define
+class AppConfig(BaseConfig):
+    api_key: str = env_field(env_var="API_KEY")  # Required
+    timeout: int = env_field(env_var="TIMEOUT", default=30)
+    retry_enabled: bool = env_field(env_var="RETRY", default=True)
+
+config = AppConfig.from_env()
+```
+
 ## Architecture & Code Structure
 
 ### Core Components

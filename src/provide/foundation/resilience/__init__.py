@@ -6,7 +6,8 @@ from provide.foundation.resilience.bulkhead import (
     ResourcePool,
     get_bulkhead_manager,
 )
-from provide.foundation.resilience.circuit import CircuitBreaker, CircuitState
+from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
+from provide.foundation.resilience.circuit_sync import CircuitState, SyncCircuitBreaker
 from provide.foundation.resilience.decorators import circuit_breaker, fallback, retry
 from provide.foundation.resilience.fallback import FallbackChain
 from provide.foundation.resilience.retry import (
@@ -28,12 +29,13 @@ and provide consistent failure handling.
 """
 
 __all__ = [
+    # Circuit breaker - async
+    "AsyncCircuitBreaker",
     "BackoffStrategy",
     # Bulkhead pattern
     "Bulkhead",
     "BulkheadManager",
-    # Circuit breaker
-    "CircuitBreaker",
+    # Circuit breaker - state enum
     "CircuitState",
     # Fallback
     "FallbackChain",
@@ -41,6 +43,8 @@ __all__ = [
     "RetryExecutor",
     # Core retry functionality
     "RetryPolicy",
+    # Circuit breaker - sync
+    "SyncCircuitBreaker",
     "circuit_breaker",
     "fallback",
     "get_bulkhead_manager",

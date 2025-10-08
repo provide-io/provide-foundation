@@ -8,9 +8,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import click
-
 from provide.foundation import logger
+from provide.foundation.cli.deps import click
 
 if TYPE_CHECKING:
     from provide.foundation.hub.info import CommandInfo

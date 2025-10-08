@@ -3,23 +3,12 @@ from __future__ import annotations
 import json
 import sys
 import time
-from typing import TYPE_CHECKING, Any, NoReturn
+from typing import Any, NoReturn
 
+from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.logger import get_logger
 
 """Send logs command for Foundation CLI."""
-
-if TYPE_CHECKING:
-    import click
-
-# Click feature detection
-try:
-    import click
-
-    _HAS_CLICK = True
-except ImportError:
-    click: Any = None
-    _HAS_CLICK = False
 
 log = get_logger(__name__)
 
