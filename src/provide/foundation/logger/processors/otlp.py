@@ -163,11 +163,9 @@ def create_otlp_processor(config: Any) -> Any | None:
                 )
                 otlp_logger.emit(log_record)
 
-            except Exception as e:
-                # Log OTLP errors to stderr for debugging
-                import sys
-
-                print(f"OTLP export error: {e}", file=sys.stderr)
+            except Exception:
+                # Silently ignore OTLP errors to not break logging
+                pass
 
             # Return event_dict unchanged for other processors
             return event_dict
