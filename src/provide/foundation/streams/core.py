@@ -123,8 +123,6 @@ def _reconfigure_structlog_stream() -> None:
             # Reconfigure with the new stream while preserving other config
             new_config = {**current_config}
             new_config["logger_factory"] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
-            # Set cache_logger_on_first_use=False to prevent caching with old stream
-            new_config["cache_logger_on_first_use"] = False
             structlog.configure(**new_config)
     except Exception:
         # Generic catch intentional: structlog might not be configured yet,
