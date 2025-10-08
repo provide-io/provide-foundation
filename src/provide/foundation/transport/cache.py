@@ -7,7 +7,7 @@ from attrs import define, field
 
 from provide.foundation.logger import get_logger
 from provide.foundation.transport.defaults import DEFAULT_TRANSPORT_FAILURE_THRESHOLD
-from provide.foundation.transport.errors import TransportCacheEvictedError, TransportError
+from provide.foundation.transport.errors import TransportCacheEvictedError
 
 """Transport cache with health tracking and automatic eviction."""
 
@@ -83,7 +83,7 @@ class TransportCache:
 
         # Get or create transport
         if scheme not in self._transports:
-            log.debug(f"🏗️ Creating new transport", scheme=scheme)
+            log.debug("🏗️ Creating new transport", scheme=scheme)
             transport = factory(scheme)
             await transport.connect()
             self._transports[scheme] = transport
@@ -99,7 +99,7 @@ class TransportCache:
         """
         if scheme in self._health:
             self._health[scheme].record_success()
-            log.trace(f"✅ Transport request succeeded", scheme=scheme)
+            log.trace("✅ Transport request succeeded", scheme=scheme)
 
     def mark_failure(self, scheme: str, error: Exception) -> None:
         """Mark a failed request for scheme.
@@ -118,7 +118,7 @@ class TransportCache:
         health.record_failure()
 
         log.warning(
-            f"⚠️ Transport request failed",
+            "⚠️ Transport request failed",
             scheme=scheme,
             consecutive_failures=health.consecutive_failures,
             failure_rate=f"{health.failure_rate:.2%}",
@@ -129,7 +129,7 @@ class TransportCache:
         if health.consecutive_failures >= self.failure_threshold:
             self.evict(scheme)
             log.error(
-                f"🚫 Transport evicted due to consecutive failures",
+                "🚫 Transport evicted due to consecutive failures",
                 scheme=scheme,
                 consecutive_failures=health.consecutive_failures,
                 total_failures=health.total_failures,
@@ -143,7 +143,7 @@ class TransportCache:
             scheme: Transport scheme to evict
         """
         if scheme in self._transports:
-            log.info(f"🗑️ Evicting transport", scheme=scheme)
+            log.info("🗑️ Evicting transport", scheme=scheme)
             # Don't await disconnect - caller handles cleanup
             self._transports.pop(scheme, None)
             self._health.pop(scheme, None)
@@ -166,7 +166,7 @@ class TransportCache:
         Returns:
             Dictionary of evicted transports for cleanup
         """
-        log.debug(f"🧹 Clearing transport cache", count=len(self._transports))
+        log.debug("🧹 Clearing transport cache", count=len(self._transports))
         transports = dict(self._transports)
         self._transports.clear()
         self._health.clear()
