@@ -127,6 +127,19 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
     processors: list[StructlogProcessor] = [
         structlog.contextvars.merge_contextvars,
         cast("StructlogProcessor", add_log_level_custom),
+    ]
+
+    # Add OTLP processor BEFORE level filtering so all logs are sent to OpenTelemetry/OpenObserve
+    # regardless of console log level
+    if config.otlp_endpoint:
+        from provide.foundation.logger.processors.otlp import create_otlp_processor
+
+        otlp_processor = create_otlp_processor(config)
+        if otlp_processor is not None:
+            processors.append(cast("StructlogProcessor", otlp_processor))
+
+    # Add level filter for console output (this doesn't affect OTLP which is already processed)
+    processors.append(
         cast(
             "StructlogProcessor",
             filter_by_level_custom(
@@ -134,10 +147,15 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
                 module_levels=log_cfg.module_levels,
                 level_to_numeric_map=LEVEL_TO_NUMERIC,
             ),
-        ),
-        structlog.processors.StackInfoRenderer(),
-        structlog.dev.set_exc_info,
-    ]
+        )
+    )
+
+    processors.extend(
+        [
+            structlog.processors.StackInfoRenderer(),
+            structlog.dev.set_exc_info,
+        ]
+    )
 
     # Add rate limiting processor if enabled
     if log_cfg.rate_limit_enabled:
@@ -162,14 +180,6 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
     # Add trace context injection if tracing is enabled
     if config.tracing_enabled and not config.globally_disabled:
         processors.append(cast("StructlogProcessor", inject_trace_context))
-
-    # Add OTLP processor if configured (sends logs to OpenTelemetry/OpenObserve)
-    if config.otlp_endpoint:
-        from provide.foundation.logger.processors.otlp import create_otlp_processor
-
-        otlp_processor = create_otlp_processor(config)
-        if otlp_processor is not None:
-            processors.append(cast("StructlogProcessor", otlp_processor))
 
     processors.extend(_config_create_event_enrichment_processors(log_cfg))
     return processors
