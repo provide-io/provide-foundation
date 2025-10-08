@@ -8,14 +8,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import click
-
 from provide.foundation.cli.click.hierarchy import validate_command_entry
 from provide.foundation.cli.click.parameters import (
     apply_click_argument,
     apply_click_option,
     separate_arguments_and_options,
 )
+from provide.foundation.cli.deps import click
 from provide.foundation.cli.errors import CLIBuildError
 from provide.foundation.hub.introspection import introspect_parameters
 

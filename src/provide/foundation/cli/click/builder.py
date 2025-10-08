@@ -8,14 +8,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-import click
-
 from provide.foundation.cli.click.commands import add_command_to_group
 from provide.foundation.cli.click.hierarchy import (
     create_subgroup,
     should_skip_command,
     should_skip_entry,
 )
+from provide.foundation.cli.deps import click
 from provide.foundation.cli.errors import CLIBuildError
 
 if TYPE_CHECKING:

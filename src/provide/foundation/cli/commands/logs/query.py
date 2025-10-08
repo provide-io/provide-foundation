@@ -2,17 +2,10 @@ from __future__ import annotations
 
 from typing import Any, NoReturn
 
+from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.logger import get_logger
 
 """Query logs command for Foundation CLI."""
-
-try:
-    import click
-
-    _HAS_CLICK = True
-except ImportError:
-    click: Any = None
-    _HAS_CLICK = False
 
 log = get_logger(__name__)
 

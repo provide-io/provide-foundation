@@ -3,20 +3,13 @@ from __future__ import annotations
 from collections.abc import Callable
 import functools
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import Any, TypeVar
 
+from provide.foundation.cli.deps import click
 from provide.foundation.context import CLIContext
 from provide.foundation.process import exit_error, exit_interrupted
 
 """Standard CLI decorators for consistent option handling."""
-
-if TYPE_CHECKING:
-    import click
-
-try:
-    import click
-except ImportError:
-    click: Any = None
 
 F = TypeVar("F", bound=Callable[..., Any])
 
