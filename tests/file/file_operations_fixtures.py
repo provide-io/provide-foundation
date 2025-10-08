@@ -306,6 +306,10 @@ class FileOperationSimulator:
         detectors = get_all_detectors()
         print(f"DEBUG: detect_operations called with {len(events)} events, {len(detectors)} detectors registered", file=sys.stderr)
 
+        # Debug: print event details
+        for i, event in enumerate(events):
+            print(f"DEBUG: Event {i}: type={event.event_type}, path={event.path.name}, ts={event.timestamp}, dest={event.dest_path.name if event.dest_path else None}", file=sys.stderr)
+
         operations = self.detector.detect(events)
         print(f"DEBUG: Detected {len(operations)} operations", file=sys.stderr)
 
