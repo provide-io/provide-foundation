@@ -162,6 +162,10 @@ def create_otlp_processor(config: Any) -> Any | None:
                 Unchanged event_dict (so other processors can continue)
 
             """
+            # Skip OTLP if explicitly flagged (e.g., for logs retrieved from OpenObserve)
+            if event_dict.pop("_skip_otlp", False):
+                return event_dict
+
             try:
                 # Extract message and attributes
                 message = event_dict.get("event", "")

@@ -8,6 +8,7 @@ from typing import Any
 
 import requests
 
+from provide.foundation.console.output import perr
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.integrations.openobserve.auth import get_auth_headers
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
@@ -15,11 +16,8 @@ from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveStreamingError,
 )
 from provide.foundation.integrations.openobserve.models import parse_relative_time
-from provide.foundation.logger import get_logger
 
 """Streaming search operations for OpenObserve."""
-
-log = get_logger(__name__)
 
 
 def stream_logs(
@@ -55,7 +53,7 @@ def stream_logs(
         last_timestamp = start_time
     seen_ids = set()
 
-    log.info(f"Starting log stream with query: {sql}")
+    # Starting log stream (internal operation - no user output needed)
 
     while True:
         try:
@@ -84,8 +82,7 @@ def stream_logs(
                     if timestamp > last_timestamp:
                         last_timestamp = timestamp + 1  # Add 1 microsecond to avoid duplicates
 
-            if new_count > 0:
-                log.debug(f"Streamed {new_count} new log entries")
+            # Debug: {new_count} new entries (removed to avoid noise)
 
             # Clean up old seen IDs to prevent memory growth
             # Keep only IDs from the last minute
@@ -96,10 +93,10 @@ def stream_logs(
             time.sleep(poll_interval)
 
         except KeyboardInterrupt:
-            log.info("Stream interrupted by user")
+            # Stream interrupted by user (no output needed)
             break
         except Exception as e:
-            log.error(f"Error during streaming: {e}")
+            perr(f"Error during streaming: {e}")
             raise OpenObserveStreamingError(f"Streaming failed: {e}") from e
 
 
@@ -156,7 +153,7 @@ def stream_search_http2(
 
     headers = get_auth_headers(client.username, client.password)
 
-    log.info(f"Starting HTTP/2 stream with query: {sql}")
+    # Starting HTTP/2 stream (internal operation - no user output needed)
 
     try:
         # Make streaming request
@@ -185,8 +182,8 @@ def stream_search_http2(
                             else:
                                 # Single result
                                 yield data
-                    except json.JSONDecodeError as e:
-                        log.warning(f"Failed to parse stream line: {e}")
+                    except json.JSONDecodeError:
+                        # Failed to parse stream line - skip silently
                         continue
 
     except requests.exceptions.RequestException as e:
@@ -250,8 +247,7 @@ def tail_logs(
     if client is None:
         client = OpenObserveClient.from_config()
 
-    # Get initial logs
-    log.info(f"Fetching last {lines} logs from {stream}")
+    # Get initial logs (internal operation - no user output needed)
     response = client.search(sql=sql, start_time="-1h")
 
     # Yield initial logs in reverse order (oldest first)

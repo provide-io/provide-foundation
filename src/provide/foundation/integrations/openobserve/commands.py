@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from provide.foundation.console.output import perr, pout
 from provide.foundation.logger import get_logger
 
 """CLI commands for OpenObserve integration.
@@ -200,12 +201,12 @@ if _HAS_CLICK:
             return 1
 
         try:
-            click.echo(f"Tailing logs from stream '{stream}'...")
+            pout(f"Tailing logs from stream '{stream}'...")
 
             # Parse filter_sql into filters dict
             filters = None
             if filter_sql:
-                click.echo(f"Filter: {filter_sql}")
+                pout(f"Filter: {filter_sql}")
                 filters = _parse_filter_to_dict(filter_sql)
 
             for log_entry in tail_logs(
@@ -215,13 +216,21 @@ if _HAS_CLICK:
                 lines=lines,
                 client=client,
             ):
-                output = format_output(log_entry, format_type=format)
-                click.echo(output)
+                # Emit through structlog for consistent formatting, but skip OTLP to prevent feedback loop
+                # Extract the message and metadata from the log entry
+                message = log_entry.get("message", log_entry.get("body", ""))
+
+                # Get all other fields as context
+                context = {k: v for k, v in log_entry.items() if k not in ("message", "body")}
+                context["_skip_otlp"] = True  # Prevent sending back to OpenObserve
+
+                # Emit through structlog
+                log.info(message, **context)
 
         except KeyboardInterrupt:
-            click.echo("\nStopped tailing logs.")
+            pout("\nStopped tailing logs.")
         except Exception as e:
-            click.echo(f"Tail failed: {e}", err=True)
+            perr(f"Tail failed: {e}")
             return 1
 
     @openobserve_group.command("errors")
