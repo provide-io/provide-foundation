@@ -7,11 +7,6 @@ from typing import Any
 
 from attrs import define, field
 
-from provide.foundation.transport.defaults import (
-    DEFAULT_TRANSPORT_LOG_BODIES,
-    DEFAULT_TRANSPORT_LOG_REQUESTS,
-    DEFAULT_TRANSPORT_LOG_RESPONSES,
-)
 from provide.foundation.hub import get_component_registry
 from provide.foundation.logger import get_logger
 from provide.foundation.metrics import counter, histogram
@@ -22,6 +17,11 @@ from provide.foundation.resilience.retry import (
 )
 from provide.foundation.security import sanitize_headers, sanitize_uri
 from provide.foundation.transport.base import Request, Response
+from provide.foundation.transport.defaults import (
+    DEFAULT_TRANSPORT_LOG_BODIES,
+    DEFAULT_TRANSPORT_LOG_REQUESTS,
+    DEFAULT_TRANSPORT_LOG_RESPONSES,
+)
 from provide.foundation.transport.errors import TransportError
 
 """Transport middleware system with Hub registration."""
