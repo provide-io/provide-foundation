@@ -74,14 +74,13 @@ def extract_base_name(path: Path) -> str | None:
         base_name = base_name[1:-1]
         return base_name if base_name else None
 
-    # Handle vim swap files: .document.txt.swp -> .document.txt (preserve leading dot for dotfiles)
-    vim_swap_pattern = r"^(\.?)(.+)\.(swp|swo|swx)$"
+    # Handle vim swap files: .document.txt.swp -> document.txt
+    # Vim swap files always have a leading dot as part of the temp pattern
+    vim_swap_pattern = r"^\.(.+)\.(swp|swo|swx)$"
     match = re.match(vim_swap_pattern, base_name)
     if match:
-        leading_dot = match.group(1)
-        filename = match.group(2)
-        base_name = leading_dot + filename
-        return base_name if base_name and base_name != name else None
+        filename = match.group(1)
+        return filename if filename and filename != base_name else None
 
     # Remove common temp/backup suffixes
     suffixes_to_remove = [".tmp", ".temp", ".bak", ".backup", ".orig", "~"]
