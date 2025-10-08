@@ -322,37 +322,6 @@ from provide.testkit import (  # noqa: E402
     valid_key_pem,
 )
 
-# Stub classes for tests that expect FoundationTestCase from provide-testkit
-# These provide minimal compatibility without requiring the full testkit base class
-
-
-class FoundationTestCase:
-    """Stub for FoundationTestCase from provide-testkit.
-
-    This is a lightweight replacement that provides the same interface
-    but doesn't require the full provide-testkit test base class.
-    Tests can inherit from this class to maintain compatibility.
-    """
-
-    def setup_method(self) -> None:
-        """Set up test environment."""
-        pass
-
-    def teardown_method(self) -> None:
-        """Clean up after test."""
-        pass
-
-
-class CliTestRunner:
-    """Stub for CliTestRunner from provide-testkit.
-
-    This is a lightweight replacement that provides the same interface
-    but doesn't require the full provide-testkit CLI runner.
-    """
-
-    pass
-
-
 # Re-export for pytest discovery
 __all__ = [
     "async_stream_reader",
