@@ -95,7 +95,7 @@ class TestRegisterTransport(FoundationTestCase):
             assert metadata["class_name"] == "MockTransport"
 
     def test_register_transport_logging(self) -> None:
-        """Test that transport registration logs debug message."""
+        """Test that transport registration logs trace message."""
         mock_registry = Mock()
 
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
@@ -106,7 +106,7 @@ class TestRegisterTransport(FoundationTestCase):
                     schemes=["http", "https"],
                 )
 
-                mock_log.debug.assert_called_once_with(
+                mock_log.trace.assert_called_once_with(
                     "Registered transport MockTransport for schemes: ['http', 'https']",
                 )
 
@@ -486,7 +486,9 @@ class TestIntegration(FoundationTestCase):
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
 
-        def mock_register(name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool) -> None:
+        def mock_register(
+            name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool
+        ) -> None:
             entry = Mock()
             entry.name = name
             entry.value = value
@@ -541,7 +543,9 @@ class TestIntegration(FoundationTestCase):
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
 
-        def mock_register(name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool) -> None:
+        def mock_register(
+            name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool
+        ) -> None:
             entry = Mock()
             entry.name = name
             entry.value = value
