@@ -20,6 +20,7 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
+from provide.foundation.security import sanitize_headers, sanitize_uri
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.errors import TransportError
 
@@ -51,15 +52,24 @@ class LoggingMiddleware(Middleware):
     log_requests: bool = field(default=DEFAULT_TRANSPORT_LOG_REQUESTS)
     log_responses: bool = field(default=DEFAULT_TRANSPORT_LOG_RESPONSES)
     log_bodies: bool = field(default=DEFAULT_TRANSPORT_LOG_BODIES)
+    sanitize_logs: bool = field(default=True)
 
     async def process_request(self, request: Request) -> Request:
         """Log outgoing request."""
         if self.log_requests:
+            # Sanitize URI and headers if enabled
+            uri_str = str(request.uri)
+            if self.sanitize_logs:
+                uri_str = sanitize_uri(uri_str)
+                headers = sanitize_headers(dict(request.headers)) if hasattr(request, "headers") else {}
+            else:
+                headers = dict(request.headers) if hasattr(request, "headers") else {}
+
             log.info(
-                f"🚀 {request.method} {request.uri}",
+                f"🚀 {request.method} {uri_str}",
                 method=request.method,
-                uri=str(request.uri),
-                headers=dict(request.headers) if hasattr(request, "headers") else {},
+                uri=uri_str,
+                headers=headers,
             )
 
             if self.log_bodies and request.body:
@@ -69,7 +79,7 @@ class LoggingMiddleware(Middleware):
                     "Request body",
                     body=body_str[:500],  # Truncate large bodies (matches response behavior)
                     method=request.method,
-                    uri=str(request.uri),
+                    uri=uri_str,
                 )
 
         return request
@@ -77,14 +87,22 @@ class LoggingMiddleware(Middleware):
     async def process_response(self, response: Response) -> Response:
         """Log incoming response."""
         if self.log_responses:
+            # Sanitize URI and headers if enabled
+            uri_str = str(response.request.uri) if response.request else None
+            if self.sanitize_logs and uri_str:
+                uri_str = sanitize_uri(uri_str)
+                headers = sanitize_headers(dict(response.headers)) if hasattr(response, "headers") else {}
+            else:
+                headers = dict(response.headers) if hasattr(response, "headers") else {}
+
             status_emoji = self._get_status_emoji(response.status)
             log.info(
                 f"{status_emoji} {response.status} ({response.elapsed_ms:.0f}ms)",
                 status_code=response.status,
                 elapsed_ms=response.elapsed_ms,
                 method=response.request.method if response.request else None,
-                uri=str(response.request.uri) if response.request else None,
-                headers=dict(response.headers) if hasattr(response, "headers") else {},
+                uri=uri_str,
+                headers=headers,
             )
 
             if self.log_bodies and response.body:
@@ -93,17 +111,22 @@ class LoggingMiddleware(Middleware):
                     body=response.text[:500],  # Truncate large bodies
                     status_code=response.status,
                     method=response.request.method if response.request else None,
-                    uri=str(response.request.uri) if response.request else None,
+                    uri=uri_str,
                 )
 
         return response
 
     async def process_error(self, error: Exception, request: Request) -> Exception:
         """Log errors."""
+        # Sanitize URI if enabled
+        uri_str = str(request.uri)
+        if self.sanitize_logs:
+            uri_str = sanitize_uri(uri_str)
+
         log.error(
-            f"❌ {request.method} {request.uri} failed: {error}",
+            f"❌ {request.method} {uri_str} failed: {error}",
             method=request.method,
-            uri=str(request.uri),
+            uri=uri_str,
             error_type=error.__class__.__name__,
             error_message=str(error),
         )
