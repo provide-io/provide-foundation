@@ -157,7 +157,7 @@ def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
     return result
 
 
-def parse_headers(value: str) -> dict[str, str]:
+def parse_headers(value: str | dict[str, str]) -> dict[str, str]:
     """Parse HTTP headers from string format.
 
     **Format Requirements:**
@@ -181,7 +181,7 @@ def parse_headers(value: str) -> dict[str, str]:
         {'empty-value': ''}
 
     Args:
-        value: Comma-separated key=value pairs for HTTP headers
+        value: Comma-separated key=value pairs for HTTP headers, or dict if already parsed
 
     Returns:
         Dictionary of header name-value pairs.
@@ -192,6 +192,10 @@ def parse_headers(value: str) -> dict[str, str]:
         raising errors to allow partial configuration success in production environments.
 
     """
+    # If already a dict (from factory default), return as-is
+    if isinstance(value, dict):
+        return value
+
     if not value or not value.strip():
         return {}
 
