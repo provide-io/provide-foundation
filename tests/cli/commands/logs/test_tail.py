@@ -6,7 +6,7 @@ from click.testing import CliRunner
 import pytest
 
 from provide.foundation.cli.commands.logs.tail import (
-    _parse_filter_string,
+    _parse_filter_string_for_tail_for_tail,
     tail_command,
 )
 
@@ -18,30 +18,30 @@ def runner() -> CliRunner:
 
 
 class TestParseFilterString:
-    """Tests for the _parse_filter_string function."""
+    """Tests for the _parse_filter_string_for_tail function."""
 
     def test_parse_valid_filter(self) -> None:
         """Test parsing of a valid filter string."""
         filter_str = "level='ERROR', service='api'"
         expected = {"level": "ERROR", "service": "api"}
-        assert _parse_filter_string(filter_str) == expected
+        assert _parse_filter_string_for_tail(filter_str) == expected
 
     def test_parse_empty_and_none_filter(self) -> None:
         """Test parsing of empty and None filter strings."""
-        assert _parse_filter_string("") == {}
-        assert _parse_filter_string(None) == {}
+        assert _parse_filter_string_for_tail("") == {}
+        assert _parse_filter_string_for_tail(None) == {}
 
     def test_parse_with_extra_whitespace(self) -> None:
         """Test parsing with varied whitespace and quote types."""
         filter_str = "  key = 'value' ,  another = \"value2\"  "
         expected = {"key": "value", "another": "value2"}
-        assert _parse_filter_string(filter_str) == expected
+        assert _parse_filter_string_for_tail(filter_str) == expected
 
     def test_parse_malformed_filter_ignores_invalid_parts(self) -> None:
         """Test that malformed parts of a filter string are ignored."""
         filter_str = "key='value', malformed, another='value2'"
         expected = {"key": "value", "another": "value2"}
-        assert _parse_filter_string(filter_str) == expected
+        assert _parse_filter_string_for_tail(filter_str) == expected
 
 
 @patch("provide.foundation.cli.commands.logs.tail._HAS_CLICK", True)
