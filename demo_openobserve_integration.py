@@ -14,12 +14,14 @@ Requirements:
 from __future__ import annotations
 
 import asyncio
+import json
+from datetime import datetime
 
 from provide.foundation import get_hub, logger
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.config import OpenObserveConfig
 from provide.foundation.integrations.openobserve.formatters import (
-    format_json,
+    format_json as format_json_response,
     format_output,
     format_summary,
     format_table,
@@ -32,76 +34,174 @@ from provide.foundation.integrations.openobserve.search import (
 )
 
 
-def generate_test_logs() -> None:
-    """Generate varied test logs to send to OpenObserve."""
-    logger.info("Starting log generation", domain="demo", action="start")
+def send_log_to_openobserve(
+    client: OpenObserveClient,
+    stream: str,
+    message: str,
+    level: str = "INFO",
+    **attributes,
+) -> bool:
+    """Send a log entry to OpenObserve using the _json endpoint.
 
-    # Generate logs at different levels
-    logger.debug(
-        "Debug message for testing",
+    Args:
+        client: OpenObserve client
+        stream: Stream name
+        message: Log message
+        level: Log level
+        **attributes: Additional log attributes
+
+    Returns:
+        True if successful
+
+    """
+    try:
+        # Build log entry with current timestamp
+        log_entry = {
+            "_timestamp": int(datetime.now().timestamp() * 1_000_000),
+            "level": level.upper(),
+            "message": message,
+            **attributes,
+        }
+
+        # Send to OpenObserve _json endpoint
+        endpoint = f"{stream}/_json"
+        response = client._make_request(
+            method="POST",
+            endpoint=endpoint,
+            json=[log_entry],
+        )
+
+        return response.get("code") == 200
+    except Exception as e:
+        print(f"Failed to send log: {e}")
+        return False
+
+
+def generate_test_logs(client: OpenObserveClient, stream: str) -> int:
+    """Generate varied test logs and send them to OpenObserve.
+
+    Args:
+        client: OpenObserve client
+        stream: Stream name
+
+    Returns:
+        Number of logs successfully sent
+
+    """
+    logs_sent = 0
+
+    # Test log 1: Debug message
+    if send_log_to_openobserve(
+        client=client,
+        stream=stream,
+        message="Debug message for testing",
+        level="DEBUG",
         domain="demo",
         action="debug",
         component="test_logger",
-    )
+    ):
+        logs_sent += 1
 
-    logger.info(
-        "Processing user request",
+    # Test log 2: API request processing
+    if send_log_to_openobserve(
+        client=client,
+        stream=stream,
+        message="Processing user request",
+        level="INFO",
+        service="api",
         domain="api",
         action="process",
         user_id="user_123",
         endpoint="/api/users",
-    )
+    ):
+        logs_sent += 1
 
-    logger.warning(
-        "Rate limit approaching",
+    # Test log 3: Rate limit warning
+    if send_log_to_openobserve(
+        client=client,
+        stream=stream,
+        message="Rate limit approaching",
+        level="WARNING",
+        service="api",
         domain="api",
         action="check",
         current_rate=95,
         limit=100,
-    )
+    ):
+        logs_sent += 1
 
-    logger.error(
-        "Database connection failed",
+    # Test log 4: Database error
+    if send_log_to_openobserve(
+        client=client,
+        stream=stream,
+        message="Database connection failed",
+        level="ERROR",
+        service="database",
         domain="database",
         action="connect",
         error_code="CONN_TIMEOUT",
         retry_count=3,
-    )
+    ):
+        logs_sent += 1
 
-    logger.info(
-        "User authentication successful",
+    # Test log 5: Auth success
+    if send_log_to_openobserve(
+        client=client,
+        stream=stream,
+        message="User authentication successful",
+        level="INFO",
+        service="auth",
         domain="auth",
         action="login",
         user_id="user_456",
         method="oauth",
-    )
+    ):
+        logs_sent += 1
 
-    logger.info(
-        "Cache hit",
+    # Test log 6: Cache hit
+    if send_log_to_openobserve(
+        client=client,
+        stream=stream,
+        message="Cache hit",
+        level="INFO",
+        service="cache",
         domain="cache",
         action="get",
         key="user:123",
         ttl=3600,
-    )
+    ):
+        logs_sent += 1
 
-    logger.error(
-        "Payment processing failed",
+    # Test log 7: Payment error
+    if send_log_to_openobserve(
+        client=client,
+        stream=stream,
+        message="Payment processing failed",
+        level="ERROR",
+        service="payment",
         domain="payment",
         action="charge",
         amount=99.99,
         currency="USD",
         error="CARD_DECLINED",
-    )
+    ):
+        logs_sent += 1
 
-    logger.info(
-        "Email sent successfully",
+    # Test log 8: Email notification
+    if send_log_to_openobserve(
+        client=client,
+        stream=stream,
+        message="Email sent successfully",
+        level="INFO",
+        service="notification",
         domain="notification",
         action="send",
         recipient="user@example.com",
         template="welcome",
-    )
+    ):
+        logs_sent += 1
 
-    logger.info("Log generation complete", domain="demo", action="complete", count=8)
+    return logs_sent
 
 
 async def query_logs() -> None:
@@ -236,7 +336,7 @@ async def query_logs() -> None:
     )
 
     if recent.hits:
-        print(format_json(recent, pretty=True))
+        print(format_json_response(recent, pretty=True))
 
 
 async def main() -> None:
@@ -244,14 +344,29 @@ async def main() -> None:
     print("🚀 OpenObserve Integration Demo")
     print("=" * 80)
 
-    # Initialize Foundation with OTLP enabled
+    # Initialize Foundation
     hub = get_hub()
     hub.initialize_foundation()
 
-    print("\n📝 Generating test logs...")
-    generate_test_logs()
+    # Create OpenObserve client
+    print("\n📡 Connecting to OpenObserve...")
+    config = OpenObserveConfig.from_env()
+    client = OpenObserveClient.from_config()
 
-    print("\n✅ Logs generated and sent to OpenObserve via OTLP")
+    if not client.test_connection():
+        print("❌ Failed to connect to OpenObserve")
+        print("   Please ensure OpenObserve is running and credentials are correct")
+        return
+
+    stream = config.stream or "default"
+    print(f"✅ Connected to OpenObserve at {config.url}")
+    print(f"   Organization: {config.org or 'default'}")
+    print(f"   Stream: {stream}")
+
+    # Generate and send test logs
+    print("\n📝 Generating and sending test logs...")
+    logs_sent = generate_test_logs(client, stream)
+    print(f"✅ Successfully sent {logs_sent} logs to OpenObserve")
 
     # Query the logs
     await query_logs()
@@ -262,7 +377,7 @@ async def main() -> None:
     print("  1. Open http://localhost:5080")
     print("  2. Login with your credentials")
     print("  3. Navigate to Logs section")
-    print("  4. Select the 'default' stream")
+    print(f"  4. Select the '{stream}' stream")
 
 
 if __name__ == "__main__":
