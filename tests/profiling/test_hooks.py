@@ -7,7 +7,7 @@ from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.context import CLIContext
-from provide.foundation.hub.manager import clear_shared_hub, get_shared_hub
+from provide.foundation.hub.manager import clear_hub, get_hub
 from provide.foundation.profiling.component import ProfilingComponent
 from provide.foundation.profiling.metrics import ProfileMetrics
 from provide.foundation.profiling.processor import ProfilingProcessor
@@ -190,7 +190,7 @@ class TestProfilingComponent(FoundationTestCase):
         reset_streams_state()
         reset_logger_state()
         reset_hub_state()
-        clear_shared_hub()
+        clear_hub()
 
     def test_component_initialization(self) -> None:
         """Test component initializes in disabled state."""
@@ -243,7 +243,7 @@ class TestProfilingComponent(FoundationTestCase):
         registry.register(name="profiler", value=component, dimension="component")
 
         # Retrieve component via Hub
-        hub = get_shared_hub()
+        hub = get_hub()
         retrieved = hub.get_component("profiler")
         assert retrieved is component
 
@@ -251,7 +251,7 @@ class TestProfilingComponent(FoundationTestCase):
         """Test component auto-registration via register_profiling."""
         from provide.foundation.profiling.component import register_profiling
 
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
 
         # Should have profiler component
@@ -271,7 +271,7 @@ class TestProfilingCLI(FoundationTestCase):
         reset_streams_state()
         reset_logger_state()
         reset_hub_state()
-        clear_shared_hub()
+        clear_hub()
 
     def test_profile_command_no_profiler(self) -> None:
         """Test profile command when profiler not enabled."""
@@ -290,7 +290,7 @@ class TestProfilingCLI(FoundationTestCase):
         from provide.foundation.profiling.component import register_profiling
 
         # Setup profiler
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
         profiler = hub.get_component("profiler")
         profiler.enable()
@@ -317,7 +317,7 @@ class TestProfilingCLI(FoundationTestCase):
         from provide.foundation.profiling.component import register_profiling
 
         # Setup profiler
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
         profiler = hub.get_component("profiler")
         profiler.enable()
@@ -346,7 +346,7 @@ class TestProfilingIntegration(FoundationTestCase):
         reset_streams_state()
         reset_logger_state()
         reset_hub_state()
-        clear_shared_hub()
+        clear_hub()
 
     def test_end_to_end_profiling(self) -> None:
         """Test complete profiling workflow."""
@@ -354,7 +354,7 @@ class TestProfilingIntegration(FoundationTestCase):
         from provide.foundation.profiling.component import register_profiling
 
         # Setup profiler
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
         profiler = hub.get_component("profiler")
 
@@ -379,7 +379,7 @@ class TestProfilingIntegration(FoundationTestCase):
         from provide.foundation.testmode.internal import reset_profiling_state
 
         # Setup profiler
-        hub = get_shared_hub()
+        hub = get_hub()
         register_profiling(hub)
         profiler = hub.get_component("profiler")
 
