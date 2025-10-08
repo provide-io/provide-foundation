@@ -68,7 +68,7 @@ def send_log_to_openobserve(
         response = client._make_request(
             method="POST",
             endpoint=endpoint,
-            json=[log_entry],
+            json_data=[log_entry],
         )
 
         return response.get("code") == 200
