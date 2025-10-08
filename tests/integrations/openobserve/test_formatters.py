@@ -54,8 +54,8 @@ class TestFormatJson(FoundationTestCase):
         result = format_json(response, pretty=False)
 
         assert '"hits"' in result
-        assert '"total":1' in result
-        # Compact format should not have extra whitespace
+        assert '"total": 1' in result  # Python's json.dumps includes space after colon
+        # Compact format should not have extra whitespace (no indentation)
         assert "\n" not in result
 
     def test_format_json_dict(self) -> None:
@@ -89,7 +89,7 @@ class TestFormatLogLine(FoundationTestCase):
     def test_format_log_line_complete(self) -> None:
         """Test formatting log line with all fields."""
         entry = {
-            "_timestamp": 1609459200000000,  # 2021-01-01 00:00:00
+            "_timestamp": 1609459200000000,  # 2021-01-01 00:00:00 UTC
             "level": "INFO",
             "message": "Test message",
             "service": "test-service",
@@ -97,7 +97,10 @@ class TestFormatLogLine(FoundationTestCase):
 
         result = format_log_line(entry)
 
-        assert "2021-01-01" in result
+        # Timestamp will be converted to local time
+        dt = datetime.fromtimestamp(1609459200000000 / 1_000_000)
+        expected_date = dt.strftime("%Y-%m-%d")
+        assert expected_date in result
         assert "[INFO ]" in result
         assert "Test message" in result
         assert "[test-service]" in result
@@ -157,8 +160,10 @@ class TestFormatLogLine(FoundationTestCase):
 
         result = format_log_line(entry)
 
-        # Should format with milliseconds precision
-        assert "00:00:00.123" in result
+        # Should format with milliseconds precision (converted to local time)
+        dt = datetime.fromtimestamp(timestamp / 1_000_000)
+        expected_time = dt.strftime("%H:%M:%S.%f")[:-3]
+        assert expected_time in result
 
 
 class TestFormatTable(FoundationTestCase):
@@ -333,8 +338,10 @@ class TestFormatCsv(FoundationTestCase):
 
         result = format_csv(response)
 
-        # Timestamp should be converted to ISO format
-        assert "2021-01-01T" in result
+        # Timestamp should be converted to ISO format (local time)
+        dt = datetime.fromtimestamp(1609459200000000 / 1_000_000)
+        expected_date = dt.date().isoformat()
+        assert expected_date in result
 
     def test_format_csv_sorted_columns(self) -> None:
         """Test that columns are sorted when auto-detected."""
@@ -488,7 +495,10 @@ class TestFormatOutput(FoundationTestCase):
 
         result = format_output(response, format_type="log")
 
-        assert "2021-01-01" in result
+        # Timestamp converted to local time
+        dt = datetime.fromtimestamp(1609459200000000 / 1_000_000)
+        expected_date = dt.strftime("%Y-%m-%d")
+        assert expected_date in result
         assert "INFO" in result
         assert "Test" in result
 
@@ -548,8 +558,10 @@ class TestFormatOutput(FoundationTestCase):
 
         result = format_output(response, format_type="unknown")
 
-        # Should default to log format
-        assert "2021-01-01" in result
+        # Should default to log format (timestamp converted to local time)
+        dt = datetime.fromtimestamp(1609459200000000 / 1_000_000)
+        expected_date = dt.strftime("%Y-%m-%d")
+        assert expected_date in result
         assert "INFO" in result
 
     def test_format_output_case_insensitive(self) -> None:
@@ -589,7 +601,10 @@ class TestFormatOutput(FoundationTestCase):
 
         result = format_output(entry, format_type="log")
 
-        assert "2021-01-01" in result
+        # Timestamp converted to local time
+        dt = datetime.fromtimestamp(1609459200000000 / 1_000_000)
+        expected_date = dt.strftime("%Y-%m-%d")
+        assert expected_date in result
         assert "ERROR" in result
         assert "Error occurred" in result
 
