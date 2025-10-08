@@ -183,6 +183,35 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
             formatter=current_config.logging.console_formatter,
         )
 
+        # Log OpenTelemetry/OTLP configuration
+        if current_config.otlp_endpoint:
+            try:
+                from provide.foundation.integrations.openobserve.config import OpenObserveConfig
+
+                oo_config = OpenObserveConfig.from_env()
+                if oo_config.is_configured():
+                    # OpenObserve auto-configured OTLP
+                    core_setup_logger.debug(
+                        "📡 OpenObserve integration enabled - OTLP auto-configured",
+                        otlp_endpoint=current_config.otlp_endpoint,
+                        openobserve_org=oo_config.org,
+                        openobserve_stream=oo_config.stream,
+                    )
+                else:
+                    # Manually configured OTLP
+                    core_setup_logger.debug(
+                        "📡 OpenTelemetry OTLP configured",
+                        otlp_endpoint=current_config.otlp_endpoint,
+                        otlp_traces_endpoint=current_config.otlp_traces_endpoint,
+                    )
+            except ImportError:
+                # OpenObserve not available, just log basic OTLP config
+                core_setup_logger.debug(
+                    "📡 OpenTelemetry OTLP configured",
+                    otlp_endpoint=current_config.otlp_endpoint,
+                    otlp_traces_endpoint=current_config.otlp_traces_endpoint,
+                )
+
     if current_config.globally_disabled:
         core_setup_logger.trace("Setting up globally disabled telemetry")
         handle_globally_disabled_setup()

@@ -116,35 +116,9 @@ class TelemetryConfig(RuntimeConfig):
         # Load base configuration
         config = super().from_env(prefix=prefix, delimiter=delimiter, case_sensitive=case_sensitive)
 
-        # Track if OTLP was manually configured
-        manually_configured = bool(config.otlp_endpoint)
-
         # Auto-configure OTLP if OpenObserve is available and OTLP not already configured
         if not config.otlp_endpoint:
             config = cls._auto_configure_openobserve_otlp(config)
-
-        # Log OTLP configuration status
-        if config.otlp_endpoint:
-            import sys
-
-            if not manually_configured:
-                # Already logged by _auto_configure_openobserve_otlp
-                pass
-            else:
-                # Manually configured OTLP
-                print(
-                    f"📡 OpenTelemetry OTLP configured",
-                    file=sys.stderr,
-                )
-                print(
-                    f"   Endpoint: {config.otlp_endpoint}",
-                    file=sys.stderr,
-                )
-                if config.otlp_traces_endpoint:
-                    print(
-                        f"   Traces endpoint: {config.otlp_traces_endpoint}",
-                        file=sys.stderr,
-                    )
 
         return config
 
@@ -179,22 +153,6 @@ class TelemetryConfig(RuntimeConfig):
                 otlp_headers["organization"] = oo_config.org
             if oo_config.stream:
                 otlp_headers["stream-name"] = oo_config.stream
-
-            # Log the auto-configuration
-            import sys
-
-            print(
-                f"🔧 OpenObserve detected - auto-configuring OTLP",
-                file=sys.stderr,
-            )
-            print(
-                f"   OTLP endpoint: {otlp_endpoint}",
-                file=sys.stderr,
-            )
-            if oo_config.org:
-                print(f"   Organization: {oo_config.org}", file=sys.stderr)
-            if oo_config.stream:
-                print(f"   Stream: {oo_config.stream}", file=sys.stderr)
 
             # Create updated config with OTLP settings
             # Use attrs.evolve to create a new instance with updated fields
