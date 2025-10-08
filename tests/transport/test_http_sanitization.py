@@ -32,6 +32,12 @@ def log_stream(monkeypatch: pytest.MonkeyPatch) -> io.StringIO:
 
     stream = io.StringIO()
     set_log_stream_for_testing(stream)
+
+    # Force Foundation initialization with the test stream
+    from provide.foundation.hub.manager import get_hub
+
+    get_hub().initialize_foundation()
+
     yield stream
 
     # Cleanup
