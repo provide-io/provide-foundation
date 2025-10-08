@@ -20,6 +20,44 @@ except ImportError:
 log = get_logger(__name__)
 
 
+def _parse_filter_to_dict(filter_str: str) -> dict[str, str]:
+    """Parse simple filter string into dict format.
+
+    Supports formats like:
+    - "level=ERROR" → {"level": "ERROR"}
+    - "level='ERROR'" → {"level": "ERROR"}
+    - "level=ERROR,service=api" → {"level": "ERROR", "service": "api"}
+
+    Args:
+        filter_str: Filter string to parse
+
+    Returns:
+        Dictionary of key-value pairs
+
+    """
+    import re
+
+    filters = {}
+
+    # Split by comma for multiple filters
+    parts = filter_str.split(",")
+
+    for part in parts:
+        part = part.strip()
+        # Match key=value or key='value' or key="value"
+        match = re.match(r"^([a-zA-Z0-9_]+)\s*=\s*['\"]?([^'\"]+)['\"]?$", part)
+        if match:
+            key, value = match.groups()
+            filters[key] = value.strip()
+        else:
+            # Try simple key=value without quotes
+            if "=" in part:
+                key, value = part.split("=", 1)
+                filters[key.strip()] = value.strip()
+
+    return filters
+
+
 if _HAS_CLICK:
     from provide.foundation.integrations.openobserve import (
         OpenObserveClient,
@@ -122,7 +160,7 @@ if _HAS_CLICK:
         "--filter",
         "-f",
         "filter_sql",
-        help="SQL WHERE clause for filtering (e.g., \"level='ERROR'\")",
+        help="Filter condition (e.g., \"level=ERROR\" or \"service=api\")",
     )
     @click.option(
         "--lines",
@@ -163,12 +201,16 @@ if _HAS_CLICK:
 
         try:
             click.echo(f"Tailing logs from stream '{stream}'...")
+
+            # Parse filter_sql into filters dict
+            filters = None
             if filter_sql:
                 click.echo(f"Filter: {filter_sql}")
+                filters = _parse_filter_to_dict(filter_sql)
 
             for log_entry in tail_logs(
                 stream=stream,
-                filter_sql=filter_sql,
+                filters=filters,
                 follow=follow,
                 lines=lines,
                 client=client,
