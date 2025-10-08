@@ -189,7 +189,7 @@ def create_otlp_processor(config: Any) -> Any | None:
                     trace_flags=0,
                     severity_text=level.upper(),
                     severity_number=severity,
-                    body="",  # Empty body - message is in attributes
+                    body=None,  # No body - message is in attributes
                     resource=_OTLP_LOGGER_PROVIDER.resource,
                     attributes=attributes,
                 )
