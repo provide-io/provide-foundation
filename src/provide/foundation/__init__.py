@@ -18,9 +18,7 @@ from provide.foundation.hub.components import ComponentCategory, get_component_r
 from provide.foundation.hub.manager import (
     Hub,
     clear_hub,
-    clear_shared_hub,
     get_hub,
-    get_shared_hub,
 )
 from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import (
@@ -135,7 +133,6 @@ __all__ = [
     "check_optional_deps",
     "circuit_breaker",
     "clear_hub",
-    "clear_shared_hub",
     # Config module
     "config",
     # Crypto module (lazy loaded)
@@ -150,7 +147,6 @@ __all__ = [
     "get_component_registry",
     "get_hub",
     "get_logger",
-    "get_shared_hub",
     "hub",
     # Core setup and logger
     "logger",

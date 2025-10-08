@@ -242,9 +242,9 @@ class TestCircuitBreakerCounterThreadSafety(FoundationTestCase):
 
     def test_counter_thread_safety_multiple_decorators(self) -> None:
         """Counter should be thread-safe when decorating multiple functions in parallel."""
-        from provide.foundation.hub.manager import get_shared_hub
+        from provide.foundation.hub.manager import get_hub
 
-        registry = get_shared_hub()._component_registry  # type: ignore[attr-defined]
+        registry = get_hub()._component_registry  # type: ignore[attr-defined]
 
         # Get initial breaker names
         initial_names = set(registry.list_dimension("circuit_breaker_test"))
@@ -278,9 +278,7 @@ class TestCircuitBreakerCounterThreadSafety(FoundationTestCase):
         new_names = final_names - initial_names
 
         # Should have created exactly num_threads unique breakers
-        assert len(new_names) == num_threads, (
-            f"Expected {num_threads} unique breakers, got {len(new_names)}"
-        )
+        assert len(new_names) == num_threads, f"Expected {num_threads} unique breakers, got {len(new_names)}"
 
     def test_counter_increments_correctly_under_contention(self) -> None:
         """Counter should increment correctly even under thread contention."""

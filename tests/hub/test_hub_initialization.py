@@ -15,7 +15,7 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
 import pytest
 
-from provide.foundation.hub.manager import Hub, clear_shared_hub, get_shared_hub
+from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
 
@@ -25,11 +25,11 @@ class TestHubInitialization(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset Hub state before each test."""
         super().setup_method()
-        clear_shared_hub()
+        clear_hub()
 
     def teardown_method(self) -> None:
         """Clean up after each test."""
-        clear_shared_hub()
+        clear_hub()
         super().teardown_method()
 
     @pytest.fixture(autouse=True)
@@ -40,7 +40,7 @@ class TestHubInitialization(FoundationTestCase):
     def test_hub_lazy_initialization(self) -> None:
         """Test that Hub auto-initializes Foundation on first access."""
         # Getting shared hub should auto-initialize Foundation
-        hub = get_shared_hub()
+        hub = get_hub()
         assert hub.is_foundation_initialized()
 
         # Should have logger and config registered
@@ -95,7 +95,7 @@ class TestHubInitialization(FoundationTestCase):
 
         def get_hub_thread() -> None:
             try:
-                hub = get_shared_hub()
+                hub = get_hub()
                 hubs.append(hub)
             except Exception as e:
                 errors.append(e)
@@ -118,7 +118,7 @@ class TestHubInitialization(FoundationTestCase):
 
     def test_hub_logger_access_with_output(self) -> None:
         """Test getting loggers through Hub and verify output."""
-        hub = get_shared_hub()
+        hub = get_hub()
 
         # Should be able to get loggers
         logger1 = hub.get_foundation_logger("test.module1")
@@ -147,7 +147,7 @@ class TestHubInitialization(FoundationTestCase):
         logger1 = get_logger("test1")
 
         # Get shared hub
-        hub = get_shared_hub()
+        hub = get_hub()
 
         # Get another logger through hub
         logger2 = hub.get_foundation_logger("test2")
@@ -200,7 +200,7 @@ class TestHubInitialization(FoundationTestCase):
 
     def test_hub_concurrent_logger_creation(self) -> None:
         """Test concurrent logger creation through Hub."""
-        hub = get_shared_hub()
+        hub = get_hub()
         loggers = []
         errors = []
 

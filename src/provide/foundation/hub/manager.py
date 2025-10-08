@@ -139,47 +139,12 @@ class Hub(CoreHub):
             self._command_registry.dispose_all()
 
 
-# Global hub instance for thread-safe initialization (deprecated)
+# Global hub instance for thread-safe singleton initialization
 _global_hub: Hub | None = None
 
 
 def get_hub() -> Hub:
-    """Get an isolated Hub instance (new default behavior).
-
-    **Breaking Change (Phase 2):**
-    This function now returns an isolated Hub instance by default, NOT a global singleton.
-    Each call creates a new, independent Hub with its own registries.
-
-    For the old singleton behavior, use `get_shared_hub()` instead.
-
-    **Benefits of Isolated Instances:**
-    - Better testability (no global state to reset)
-    - Parallel test execution without interference
-    - Explicit dependency management
-    - No memory leaks from lingering global state
-
-    Example (Recommended):
-        >>> hub = get_hub()  # New isolated instance
-        >>> hub.initialize_foundation()
-        >>> cli = hub.create_cli()
-
-    For shared/global behavior:
-        >>> hub = get_shared_hub()  # Old singleton behavior
-
-    Returns:
-        New isolated Hub instance (not auto-initialized)
-
-    """
-    # Return new isolated instance
-    return Hub(use_shared_registries=False)
-
-
-def get_shared_hub() -> Hub:
-    """Get the global shared hub instance.
-
-    .. deprecated:: 2.0
-       Use `get_hub()` for isolated instances (recommended) or create
-       `Hub(use_shared_registries=True)` explicitly for shared state.
+    """Get the global shared hub instance (singleton pattern).
 
     Thread-safe: Uses double-checked locking pattern for efficient lazy initialization.
 
@@ -193,20 +158,15 @@ def get_shared_hub() -> Hub:
     Returns:
         Global Hub instance (created and initialized if needed)
 
-    Warning:
-        Global singletons complicate testing and parallel execution.
-        Prefer isolated instances via `get_hub()` for better testability.
+    Example:
+        >>> hub = get_hub()
+        >>> hub.register_command("my_command", my_function)
+
+    Note:
+        For isolated Hub instances (testing, advanced use cases), use:
+        >>> hub = Hub(use_shared_registries=False)
 
     """
-    import warnings
-
-    warnings.warn(
-        "get_shared_hub() is deprecated. Use get_hub() for isolated instances "
-        "or Hub(use_shared_registries=True) for explicit shared state.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-
     global _global_hub
 
     # Fast path: hub already initialized
@@ -241,24 +201,10 @@ def get_shared_hub() -> Hub:
 def clear_hub() -> None:
     """Clear the global hub instance.
 
-    .. deprecated:: 2.0
-       Use `clear_shared_hub()` for the global singleton.
-       Isolated instances from `get_hub()` don't need manual clearing.
+    This is primarily used for testing to reset Foundation state
+    between test runs.
 
     """
-    import warnings
-
-    warnings.warn(
-        "clear_hub() is deprecated. Use clear_shared_hub() for global singleton, "
-        "or let isolated instances from get_hub() be garbage collected.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    clear_shared_hub()
-
-
-def clear_shared_hub() -> None:
-    """Clear the global shared hub instance."""
     global _global_hub
     if _global_hub:
         _global_hub.clear()

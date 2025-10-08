@@ -6,7 +6,7 @@ from typing import Any
 
 from click.testing import CliRunner, Result
 
-from provide.foundation import get_shared_hub
+from provide.foundation import get_hub
 from provide.foundation.cli.deps import click
 from provide.foundation.console.output import perr, pout
 from provide.foundation.context import CLIContext
@@ -118,7 +118,7 @@ def setup_cli_logging(
         logging=logging_config,
     )
 
-    hub = get_shared_hub()
+    hub = get_hub()
     hub.initialize_foundation(config=telemetry_config, force=True)
 
 

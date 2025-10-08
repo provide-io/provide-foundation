@@ -140,12 +140,12 @@ class TestCliAssertions(FoundationTestCase):
 class TestCliLogging(FoundationTestCase):
     """Test CLI logging setup."""
 
-    @patch("provide.foundation.cli.utils.get_shared_hub")
-    def test_setup_cli_logging_default(self, mock_get_shared_hub: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_default(self, mock_get_hub: MagicMock) -> None:
         """Test default CLI logging setup."""
         ctx = create_cli_context()
         setup_cli_logging(ctx)
-        mock_hub = mock_get_shared_hub.return_value
+        mock_hub = mock_get_hub.return_value
         mock_hub.initialize_foundation.assert_called_once()
         config_arg = mock_hub.initialize_foundation.call_args.kwargs["config"]
         assert isinstance(config_arg, TelemetryConfig)
@@ -154,32 +154,32 @@ class TestCliLogging(FoundationTestCase):
         assert config_arg.logging.default_level == expected_level
         assert config_arg.logging.console_formatter == "key_value"
 
-    @patch("provide.foundation.cli.utils.get_shared_hub")
-    def test_setup_cli_logging_verbose(self, mock_get_shared_hub: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_verbose(self, mock_get_hub: MagicMock) -> None:
         """Test verbose CLI logging setup."""
         ctx = create_cli_context(log_level="DEBUG")
         setup_cli_logging(ctx)
-        mock_hub = mock_get_shared_hub.return_value
+        mock_hub = mock_get_hub.return_value
         mock_hub.initialize_foundation.assert_called_once()
         config_arg = mock_hub.initialize_foundation.call_args.kwargs["config"]
         assert config_arg.logging.default_level == "DEBUG"
 
-    @patch("provide.foundation.cli.utils.get_shared_hub")
-    def test_setup_cli_logging_quiet(self, mock_get_shared_hub: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_quiet(self, mock_get_hub: MagicMock) -> None:
         """Test quiet CLI logging setup."""
         ctx = create_cli_context(log_level="ERROR")
         setup_cli_logging(ctx)
-        mock_hub = mock_get_shared_hub.return_value
+        mock_hub = mock_get_hub.return_value
         mock_hub.initialize_foundation.assert_called_once()
         config_arg = mock_hub.initialize_foundation.call_args.kwargs["config"]
         assert config_arg.logging.default_level == "ERROR"
 
-    @patch("provide.foundation.cli.utils.get_shared_hub")
-    def test_setup_cli_logging_json(self, mock_get_shared_hub: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_json(self, mock_get_hub: MagicMock) -> None:
         """Test JSON CLI logging setup."""
         ctx = create_cli_context(json_output=True)
         setup_cli_logging(ctx)
-        mock_hub = mock_get_shared_hub.return_value
+        mock_hub = mock_get_hub.return_value
         mock_hub.initialize_foundation.assert_called_once()
         config_arg = mock_hub.initialize_foundation.call_args.kwargs["config"]
         assert config_arg.logging.console_formatter == "json"

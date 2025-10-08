@@ -16,7 +16,7 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
 import pytest
 
-from provide.foundation.hub.manager import Hub, clear_shared_hub, get_shared_hub
+from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
 
@@ -25,11 +25,11 @@ class TestPredictableInitialization(FoundationTestCase):
 
     def setup_method(self) -> None:
         """Reset state before each test."""
-        clear_shared_hub()
+        clear_hub()
 
     def teardown_method(self) -> None:
         """Clean up after each test."""
-        clear_shared_hub()
+        clear_hub()
 
     def test_initialization_order_independence(self) -> None:
         """Test that components work regardless of initialization order."""
@@ -39,7 +39,7 @@ class TestPredictableInitialization(FoundationTestCase):
         logger1 = get_logger("test.order1")
 
         # Get hub
-        hub = get_shared_hub()
+        hub = get_hub()
         assert hub.is_foundation_initialized()
 
         # Get another logger through hub
@@ -50,9 +50,9 @@ class TestPredictableInitialization(FoundationTestCase):
         logger2.info("Logger after hub")
 
         # Scenario 2: Get hub first, then logger
-        clear_shared_hub()
+        clear_hub()
 
-        hub = get_shared_hub()
+        hub = get_hub()
         logger3 = get_logger("test.order3")
         logger3.info("Logger after hub first")
 
@@ -77,7 +77,7 @@ class TestPredictableInitialization(FoundationTestCase):
             assert config.logging.default_level == "CRITICAL"
 
         # 2. Environment should be used when no explicit config
-        clear_shared_hub()
+        clear_hub()
         # Also reset Foundation state to ensure clean environment
         from provide.testkit import reset_foundation_setup_for_testing
 
@@ -87,19 +87,19 @@ class TestPredictableInitialization(FoundationTestCase):
         reset_global_coordinator()
 
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "WARNING"}):
-            hub = get_shared_hub()  # Auto-initialize with env config
+            hub = get_hub()  # Auto-initialize with env config
 
             config = hub.get_foundation_config()
             assert config is not None
             assert config.logging.default_level == "WARNING"
 
         # 3. Defaults should be used when nothing specified
-        clear_shared_hub()
+        clear_hub()
         reset_foundation_setup_for_testing()
         reset_global_coordinator()
 
         with patch.dict(os.environ, {}, clear=True):
-            hub = get_shared_hub()
+            hub = get_hub()
 
             config = hub.get_foundation_config()
             assert config is not None
@@ -146,7 +146,7 @@ class TestPredictableInitialization(FoundationTestCase):
         }
 
         # Reset and initialize again with same config
-        clear_shared_hub()
+        clear_hub()
 
         hub2 = Hub()
         hub2.initialize_foundation(config)
@@ -169,7 +169,7 @@ class TestPredictableInitialization(FoundationTestCase):
 
         def init_worker(worker_id: int) -> None:
             try:
-                hub = get_shared_hub()
+                hub = get_hub()
                 logger = hub.get_foundation_logger(f"worker.{worker_id}")
 
                 result = {
@@ -200,7 +200,7 @@ class TestPredictableInitialization(FoundationTestCase):
 
     def test_resource_cleanup_predictable(self) -> None:
         """Test predictable resource cleanup."""
-        hub = get_shared_hub()
+        hub = get_hub()
 
         # Create some loggers
         loggers = [hub.get_foundation_logger(f"test.cleanup.{i}") for i in range(10)]
@@ -210,10 +210,10 @@ class TestPredictableInitialization(FoundationTestCase):
             logger.info(f"Pre-cleanup message {i}")
 
         # Clear hub
-        clear_shared_hub()
+        clear_hub()
 
         # After clear, new hub should initialize cleanly
-        new_hub = get_shared_hub()
+        new_hub = get_hub()
         assert new_hub.is_foundation_initialized()
 
         # New loggers should work
@@ -286,10 +286,10 @@ class TestPredictableInitialization(FoundationTestCase):
         times = []
 
         for _ in range(5):
-            clear_shared_hub()
+            clear_hub()
 
             start_time = time.time()
-            hub = get_shared_hub()
+            hub = get_hub()
             logger = hub.get_foundation_logger("performance.test")
             logger.info("Performance test")
             end_time = time.time()
@@ -317,14 +317,14 @@ class TestPredictableInitialization(FoundationTestCase):
 
         # Create and clear hubs multiple times
         for _i in range(10):
-            hub = get_shared_hub()
+            hub = get_hub()
             loggers = [hub.get_foundation_logger(f"memory.test.{j}") for j in range(100)]
 
             # Use loggers
             for logger in loggers:
                 logger.info("Memory test message")
 
-            clear_shared_hub()
+            clear_hub()
             gc.collect()
 
         # Check final memory
@@ -339,7 +339,7 @@ class TestPredictableInitialization(FoundationTestCase):
 
     def test_logger_naming_consistent(self) -> None:
         """Test that logger naming is consistent and predictable."""
-        hub = get_shared_hub()
+        hub = get_hub()
 
         # Test various naming patterns
         test_cases = [
@@ -371,7 +371,7 @@ class TestPredictableInitialization(FoundationTestCase):
 
     def test_exception_handling_predictable(self) -> None:
         """Test that exception handling is predictable."""
-        hub = get_shared_hub()
+        hub = get_hub()
         logger = hub.get_foundation_logger("test.exceptions")
 
         # Should handle various exception types gracefully
