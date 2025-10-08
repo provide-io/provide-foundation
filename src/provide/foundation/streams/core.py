@@ -137,15 +137,15 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
     This function not only sets the stream but also reconfigures structlog
     if it's already configured to ensure logs actually go to the test stream.
     """
-    from provide.foundation.testmode.detection import is_in_click_testing
+    from provide.foundation.testmode.detection import should_allow_stream_redirect
 
     global _PROVIDE_LOG_STREAM
     if not _get_stream_lock().acquire(timeout=5.0):
         # If we can't acquire the lock within 5 seconds, skip the operation
         return
     try:
-        # Don't modify streams if we're in Click testing context
-        if is_in_click_testing():
+        # Use testmode to determine if redirect is allowed
+        if not should_allow_stream_redirect():
             return
 
         _PROVIDE_LOG_STREAM = stream if stream is not None else sys.stderr

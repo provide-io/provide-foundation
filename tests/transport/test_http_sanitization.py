@@ -5,8 +5,8 @@ from __future__ import annotations
 import io
 
 import httpx
-import pytest
 from provide.testkit import set_log_stream_for_testing
+import pytest
 from pytest_httpx import HTTPXMock
 
 from provide.foundation.transport import HTTPTransport, Request
@@ -16,18 +16,27 @@ from provide.foundation.transport.config import HTTPConfig
 @pytest.fixture
 def log_stream(monkeypatch: pytest.MonkeyPatch) -> io.StringIO:
     """StringIO stream for capturing Foundation logs."""
-    # Set environment variable BEFORE Foundation initializes
+    # Enable force stream redirect to bypass Click testing guard
+    monkeypatch.setenv("FOUNDATION_FORCE_STREAM_REDIRECT", "true")
     monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
 
-    # Reset Foundation to pick up new environment
+    # Reset stream config to pick up new environment variable
+    from provide.foundation.streams.config import reset_stream_config
+
+    reset_stream_config()
+
+    # Reset Foundation to ensure clean state
     from provide.testkit import reset_foundation_setup_for_testing
+
     reset_foundation_setup_for_testing()
 
     stream = io.StringIO()
     set_log_stream_for_testing(stream)
     yield stream
-    # Reset to None after test
+
+    # Cleanup
     set_log_stream_for_testing(None)
+    reset_stream_config()
 
 
 @pytest.fixture
