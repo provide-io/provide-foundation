@@ -125,8 +125,8 @@ class TransportCache:
             error=str(error),
         )
 
-        # Check if we should evict
-        if health.consecutive_failures >= self.failure_threshold:
+        # Check if we should evict (threshold=0 disables eviction)
+        if self.failure_threshold > 0 and health.consecutive_failures >= self.failure_threshold:
             self.evict(scheme)
             log.error(
                 "🚫 Transport evicted due to consecutive failures",
