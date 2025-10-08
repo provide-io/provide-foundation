@@ -24,10 +24,16 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, pro
 - Type-safe with attrs classes
 - YAML, JSON, and TOML support
 
+### CLI Context Management
+- Unified runtime context for CLI applications
+- Manages settings like logging, profiles, and output formats
+- Loads from files, environment, and code
+
 ### System Utilities
 - **Platform Detection**: OS and architecture detection
 - **Process Execution**: Safe subprocess handling with async support
 - **File Operations**: Atomic operations with format support
+- **Serialization**: Safe and consistent JSON serialization
 - **Console I/O**: Standardized input/output with color support
 - **Registry Pattern**: Thread-safe component management
 
@@ -42,6 +48,12 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, pro
 - Retry decorators
 - Error boundaries for graceful degradation
 - Structured error logging
+
+### Resilience Patterns
+- **Retry**: Automated retries with configurable backoff
+- **Circuit Breaker**: Fail-fast mechanism for unreliable services
+- **Bulkhead**: Isolate resources to prevent cascading failures
+- **Fallback**: Graceful degradation with fallback functions
 
 ## Quick Start
 
@@ -97,11 +109,13 @@ Complete API documentation for all modules:
 - Configuration system
 - Cryptographic utilities
 - File operations
+- Serialization
 - Platform utilities
 - Process execution
 - Console I/O
 - Hub and registry
 - Error handling
+- Resilience
 - Context management
 
 ### [User Guide](guide/index.md)

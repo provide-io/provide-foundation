@@ -229,6 +229,22 @@ manager.register("app", config=AppConfig())
 config = manager.get("app")
 ```
 
+#### **CLI Context Management**
+Manages runtime state for CLI applications, including configuration, logging, and output settings.
+
+```python
+from provide.foundation.context import CLIContext
+
+# Initialize a context, often from environment variables
+ctx = CLIContext.from_env()
+
+# Access context properties
+if ctx.debug:
+    print("Debug mode is enabled.")
+
+# The context is passed through the CLI framework automatically.
+```
+
 #### **Error Handling**
 Comprehensive error handling with retry logic and error boundaries.
 
@@ -242,6 +258,23 @@ def risky_operation():
     result = perform_calculation()
     logger.info("operation_succeeded", result=result)
     return result
+```
+
+#### **Resilience Patterns**
+A suite of decorators and utilities for building reliable applications, including retry, circuit breaker, and bulkhead patterns.
+
+```python
+from provide.foundation.resilience import retry
+import random
+
+@retry(attempts=3, delay_seconds=1)
+def unreliable_task():
+    """This task might fail, but it's resilient!"""
+    if random.random() < 0.7:  # 70% chance of failure
+        raise ValueError("Something went wrong")
+    return "Success!"
+
+unreliable_task()
 ```
 
 #### **Cryptographic Utilities**
@@ -274,6 +307,19 @@ data = read_json("config.json")
 
 # Safe file operations
 safe_copy("source.txt", "backup.txt")
+```
+
+#### **Serialization**
+Safe and consistent JSON serialization and deserialization.
+
+```python
+from provide.foundation.serialization import provide_dumps, provide_loads
+
+# Serialize a dictionary to a JSON string
+json_string = provide_dumps({"key": "value"})
+
+# Deserialize a JSON string to a Python object
+data = provide_loads(json_string)
 ```
 
 #### **Console I/O**

@@ -118,8 +118,6 @@ class EventSet:
 - `provide.foundation.cli`
 - `provide.foundation.config`
 - `provide.foundation.platform`
-
-### Stable APIs  
 - `provide.foundation.tracer` - Distributed tracing functionality
 
 ### Deprecated APIs
