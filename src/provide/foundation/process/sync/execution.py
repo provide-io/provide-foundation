@@ -96,7 +96,7 @@ def run(
             stdout=result.stdout if capture_output else "",
             stderr=result.stderr if capture_output else "",
             cwd=cwd,
-            env=dict(run_env) if env else None,
+            env=dict(env) if env else None,  # Only store caller overrides, not full run_env
         )
 
         if check and result.returncode != 0:

@@ -15,7 +15,13 @@ DEFAULT_PROCESS_WAIT_TIMEOUT = 10.0
 # =================================
 DEFAULT_SHELL_ALLOW_FEATURES = False
 
+# =================================
+# Environment Scrubbing Defaults
+# =================================
+DEFAULT_ENV_SCRUBBING_ENABLED = True
+
 __all__ = [
+    "DEFAULT_ENV_SCRUBBING_ENABLED",
     "DEFAULT_PROCESS_READCHAR_TIMEOUT",
     "DEFAULT_PROCESS_READLINE_TIMEOUT",
     "DEFAULT_PROCESS_TERMINATE_TIMEOUT",
