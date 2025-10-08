@@ -26,14 +26,14 @@ def enable_stream_redirect(monkeypatch: pytest.MonkeyPatch) -> None:
 @pytest.fixture
 def log_stream() -> io.StringIO:
     """StringIO stream for capturing Foundation logs."""
-    # Reset Foundation FIRST to clear any existing configuration
+    # Create stream and set it BEFORE reset so it gets preserved
+    stream = io.StringIO()
+    set_log_stream_for_testing(stream)
+
+    # Reset Foundation - it will preserve our test stream
     from provide.testkit import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
-
-    # Set the test stream BEFORE Foundation lazy-initializes
-    stream = io.StringIO()
-    set_log_stream_for_testing(stream)
 
     yield stream
     set_log_stream_for_testing(None)
