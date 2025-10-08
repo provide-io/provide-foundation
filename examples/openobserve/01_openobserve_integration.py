@@ -29,7 +29,6 @@ Usage:
 from __future__ import annotations
 
 import asyncio
-import json
 from datetime import datetime
 from pathlib import Path
 import sys
@@ -41,7 +40,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from provide.foundation import get_hub, logger  # noqa: E402
+from provide.foundation import get_hub  # noqa: E402
 from provide.foundation.integrations.openobserve.client import OpenObserveClient  # noqa: E402
 from provide.foundation.integrations.openobserve.config import OpenObserveConfig  # noqa: E402
 from provide.foundation.integrations.openobserve.formatters import (  # noqa: E402
@@ -63,7 +62,7 @@ def send_log_to_openobserve(
     stream: str,
     message: str,
     level: str = "INFO",
-    **attributes,
+    **attributes: str | int | float,
 ) -> bool:
     """Send a log entry to OpenObserve using the _json endpoint.
 

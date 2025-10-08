@@ -109,8 +109,67 @@ class TelemetryConfig(RuntimeConfig):
 
         This method explicitly provides the from_env() interface
         to ensure it's available on TelemetryConfig directly.
+
+        If OpenObserve is configured and reachable, OTLP settings are
+        automatically configured if not already set.
         """
-        return super().from_env(prefix=prefix, delimiter=delimiter, case_sensitive=case_sensitive)
+        # Load base configuration
+        config = super().from_env(prefix=prefix, delimiter=delimiter, case_sensitive=case_sensitive)
+
+        # Auto-configure OTLP if OpenObserve is available and OTLP not already configured
+        if not config.otlp_endpoint:
+            config = cls._auto_configure_openobserve_otlp(config)
+
+        return config
+
+    @classmethod
+    def _auto_configure_openobserve_otlp(cls, config: TelemetryConfig) -> TelemetryConfig:
+        """Auto-configure OTLP from OpenObserve if available.
+
+        Args:
+            config: Base TelemetryConfig
+
+        Returns:
+            Updated config with OTLP settings if OpenObserve is available
+
+        """
+        try:
+            from provide.foundation.integrations.openobserve.config import OpenObserveConfig
+
+            oo_config = OpenObserveConfig.from_env()
+
+            # Only auto-configure if OpenObserve is configured
+            if not oo_config.is_configured():
+                return config
+
+            # Get OTLP endpoint from OpenObserve
+            otlp_endpoint = oo_config.get_otlp_endpoint()
+            if not otlp_endpoint:
+                return config
+
+            # Build OTLP headers with OpenObserve metadata
+            otlp_headers = dict(config.otlp_headers)  # Copy existing headers
+            if oo_config.org:
+                otlp_headers["organization"] = oo_config.org
+            if oo_config.stream:
+                otlp_headers["stream-name"] = oo_config.stream
+
+            # Create updated config with OTLP settings
+            # Use attrs.evolve to create a new instance with updated fields
+            from attrs import evolve
+
+            return evolve(
+                config,
+                otlp_endpoint=otlp_endpoint,
+                otlp_headers=otlp_headers,
+            )
+
+        except ImportError:
+            # OpenObserve integration not available
+            return config
+        except Exception:
+            # Any error in auto-configuration should not break config loading
+            return config
 
     def get_otlp_headers_dict(self) -> dict[str, str]:
         """Get OTLP headers dictionary.

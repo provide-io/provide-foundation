@@ -160,7 +160,7 @@ if _HAS_CLICK:
         "--filter",
         "-f",
         "filter_sql",
-        help="Filter condition (e.g., \"level=ERROR\" or \"service=api\")",
+        help='Filter condition (e.g., "level=ERROR" or "service=api")',
     )
     @click.option(
         "--lines",

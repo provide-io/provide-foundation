@@ -37,3 +37,56 @@ class OpenObserveConfig(RuntimeConfig):
         env_var="OPENOBSERVE_STREAM",
         description="OpenObserve stream name",
     )
+
+    def is_configured(self) -> bool:
+        """Check if OpenObserve is configured with required settings.
+
+        Returns:
+            True if URL, user, and password are all set
+
+        """
+        return bool(self.url and self.user and self.password)
+
+    def get_otlp_endpoint(self) -> str | None:
+        """Get OTLP endpoint derived from OpenObserve URL.
+
+        Returns:
+            OTLP endpoint URL or None if not configured
+
+        """
+        if not self.url:
+            return None
+
+        # Remove /api/{org} suffix if present
+        base_url = self.url
+        if "/api/" in base_url:
+            # Extract base URL before /api/
+            base_url = base_url.split("/api/")[0]
+
+        # Construct OTLP endpoint
+        org = self.org or "default"
+        return f"{base_url}/api/{org}"
+
+    def is_available(self) -> bool:
+        """Test if OpenObserve is available and reachable.
+
+        Returns:
+            True if connection test succeeds
+
+        """
+        if not self.is_configured():
+            return False
+
+        try:
+            # Import here to avoid circular dependency
+            from provide.foundation.integrations.openobserve.client import OpenObserveClient
+
+            client = OpenObserveClient(
+                url=self.url,  # type: ignore[arg-type]
+                username=self.user,  # type: ignore[arg-type]
+                password=self.password,  # type: ignore[arg-type]
+                organization=self.org or "default",
+            )
+            return client.test_connection()
+        except Exception:
+            return False
