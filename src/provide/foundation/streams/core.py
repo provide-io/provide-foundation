@@ -120,9 +120,16 @@ def _reconfigure_structlog_stream() -> None:
 
         current_config = structlog.get_config()
         if current_config and "logger_factory" in current_config:
+            # Check if force stream redirect is enabled
+            from provide.foundation.streams.config import get_stream_config
+
+            stream_config = get_stream_config()
+            cache_loggers = not stream_config.force_stream_redirect
+
             # Reconfigure with the new stream while preserving other config
             new_config = {**current_config}
             new_config["logger_factory"] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
+            new_config["cache_logger_on_first_use"] = cache_loggers
             structlog.configure(**new_config)
     except Exception:
         # Generic catch intentional: structlog might not be configured yet,
