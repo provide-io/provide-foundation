@@ -24,8 +24,10 @@ class TestGenerateLogsCommand:
     @patch("provide.foundation.cli.commands.logs.generate._configure_rate_limiter")
     @patch("provide.foundation.cli.commands.logs.generate._generate_fixed_count_logs")
     @patch("provide.foundation.cli.commands.logs.generate._print_final_stats")
+    @patch("provide.foundation.logger.processors.otlp.flush_otlp_logs")
     def test_generate_fixed_count_logs(
         self,
+        mock_flush_otlp: MagicMock,
         mock_print_final_stats: MagicMock,
         mock_generate_fixed_count: MagicMock,
         mock_configure_limiter: MagicMock,
@@ -50,8 +52,10 @@ class TestGenerateLogsCommand:
     @patch("provide.foundation.cli.commands.logs.generate._generate_continuous_logs")
     @patch("provide.foundation.cli.commands.logs.generate._print_final_stats")
     @patch("provide.foundation.cli.commands.logs.generate.click.echo")
+    @patch("provide.foundation.logger.processors.otlp.flush_otlp_logs")
     def test_generate_continuous_logs(
         self,
+        mock_flush_otlp: MagicMock,
         mock_echo: MagicMock,
         mock_print_final_stats: MagicMock,
         mock_generate_continuous: MagicMock,
