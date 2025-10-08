@@ -41,6 +41,13 @@ class FileOperationSimulator:
             detector_config: Configuration for the operation detector
         """
         self.base_path = base_path
+
+        # Ensure built-in detectors are registered (idempotent)
+        # This is needed because test teardown may clear the registry
+        if HAS_OPERATIONS_MODULE:
+            from provide.foundation.file.operations.detectors import _auto_register_builtin_detectors
+            _auto_register_builtin_detectors()
+
         self.detector = OperationDetector(detector_config or DetectorConfig())
         self.sequence_counter = 0
         self.operations_detected: list[Any] = []
