@@ -65,9 +65,9 @@ class TestAnnotatedCLISupport(FoundationTestCase):
 
         @register_command("process")
         def process(
-            file: Annotated[str, "option"],  # Required option
-            format: str = "json",  # Optional option (default behavior)
-            verbose: bool = False,  # Flag
+            file: Annotated[str, "option"],  # Explicit option
+            format: str = "json",  # Option (Position-Based Hybrid: subsequent param with default)
+            verbose: bool = False,  # Flag (booleans always flags)
         ) -> str:
             """Process file."""
             return f"Processing {file} as {format}"
@@ -98,7 +98,7 @@ class TestAnnotatedCLISupport(FoundationTestCase):
         assert hasattr(adapter, "ensure_parent_groups")
 
     def test_backward_compatibility_without_annotated(self) -> None:
-        """Test that functions without Annotated still work."""
+        """Test that functions without Annotated still work with Position-Based Hybrid."""
 
         @register_command("old-style")
         def old_style(name: str, greeting: str = "Hello") -> str:
@@ -109,7 +109,8 @@ class TestAnnotatedCLISupport(FoundationTestCase):
         cli = hub.create_cli()
         runner = CliRunner()
 
-        # name should be argument, greeting should be option
+        # name (no default) → argument
+        # greeting (has default, but comes after required arg) → option
         result = runner.invoke(cli, ["old-style", "Alice", "--greeting", "Hi"])
         assert result.exit_code == 0
 
@@ -151,4 +152,33 @@ class TestAnnotatedCLISupport(FoundationTestCase):
 
         # Should succeed with --token
         result = runner.invoke(cli, ["auth", "--token", "abc123"])
+        assert result.exit_code == 0
+
+    def test_position_based_hybrid_behavior(self) -> None:
+        """Test Position-Based Hybrid: first param with default becomes optional argument."""
+
+        @register_command("send")
+        def send(message: str | None = None, level: str = "INFO", verbose: bool = False) -> str:
+            """Send a message."""
+            return f"Sending {message or 'empty'} at {level}"
+
+        hub = get_hub()
+        cli = hub.create_cli()
+        runner = CliRunner()
+
+        # Position-Based Hybrid:
+        # - message (first param with default, non-bool) → optional argument
+        # - level (subsequent param with default) → option
+        # - verbose (bool) → flag
+
+        # Test with positional message
+        result = runner.invoke(cli, ["send", "Hello"])
+        assert result.exit_code == 0
+
+        # Test with positional message and options
+        result = runner.invoke(cli, ["send", "Hello", "--level", "DEBUG", "--verbose"])
+        assert result.exit_code == 0
+
+        # Test without message (uses default None)
+        result = runner.invoke(cli, ["send", "--level", "ERROR"])
         assert result.exit_code == 0
