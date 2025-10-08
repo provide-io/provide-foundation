@@ -48,7 +48,8 @@ def register_transport(
         replace=True,  # Allow re-registration
     )
 
-    log.trace(f"Registered transport {transport_class.__name__} for schemes: {schemes}")
+    # Logging removed - transport registration happens frequently during test setup
+    # and doesn't provide actionable information
 
 
 def get_transport_for_scheme(scheme: str) -> type[Transport]:

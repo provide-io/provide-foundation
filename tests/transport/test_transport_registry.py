@@ -94,8 +94,8 @@ class TestRegisterTransport(FoundationTestCase):
             assert metadata["schemes"] == ["http"]
             assert metadata["class_name"] == "MockTransport"
 
-    def test_register_transport_logging(self) -> None:
-        """Test that transport registration logs trace message."""
+    def test_register_transport_no_logging(self) -> None:
+        """Test that transport registration no longer logs (to reduce test noise)."""
         mock_registry = Mock()
 
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
@@ -106,9 +106,10 @@ class TestRegisterTransport(FoundationTestCase):
                     schemes=["http", "https"],
                 )
 
-                mock_log.trace.assert_called_once_with(
-                    "Registered transport MockTransport for schemes: ['http', 'https']",
-                )
+                # Verify no logging occurred
+                mock_log.trace.assert_not_called()
+                mock_log.debug.assert_not_called()
+                mock_log.info.assert_not_called()
 
 
 class TestGetTransportForScheme(FoundationTestCase):
