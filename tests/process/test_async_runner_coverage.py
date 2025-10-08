@@ -256,7 +256,6 @@ class TestAsyncContextualBehavior(FoundationTestCase):
     """Test async-specific contextual behaviors."""
 
     @pytest.mark.asyncio
-    @pytest.mark.skip(reason="Test hangs in serial execution - subprocess not terminating on cancel")
     async def test_async_cancel_during_execution(self) -> None:
         """Test that async operations can be cancelled."""
         # This tests the asyncio integration
@@ -269,8 +268,10 @@ class TestAsyncContextualBehavior(FoundationTestCase):
         # Cancel the task
         task.cancel()
 
+        # Add timeout protection to prevent test hang
+        # Cleanup should happen quickly (< 2s)
         with pytest.raises(asyncio.CancelledError):
-            await task
+            await asyncio.wait_for(task, timeout=2.0)
 
     @pytest.mark.asyncio
     async def test_async_concurrent_commands(self) -> None:
