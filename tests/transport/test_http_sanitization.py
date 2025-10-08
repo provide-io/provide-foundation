@@ -14,23 +14,30 @@ from provide.foundation.transport.config import HTTPConfig
 
 
 @pytest.fixture
-def http_transport() -> HTTPTransport:
-    """HTTP transport instance for testing."""
-    config = HTTPConfig(timeout=30.0)
-    return HTTPTransport(config=config)
-
-
-@pytest.fixture
 def log_stream(monkeypatch: pytest.MonkeyPatch) -> io.StringIO:
     """StringIO stream for capturing Foundation logs."""
     # Set environment variable BEFORE Foundation initializes
     monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
+
+    # Reset Foundation to pick up new environment
+    from provide.testkit import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     stream = io.StringIO()
     set_log_stream_for_testing(stream)
     yield stream
     # Reset to None after test
     set_log_stream_for_testing(None)
+
+
+@pytest.fixture
+def http_transport(log_stream: io.StringIO) -> HTTPTransport:
+    """HTTP transport instance for testing.
+
+    Depends on log_stream to ensure stream is set before Foundation initializes.
+    """
+    config = HTTPConfig(timeout=30.0)
+    return HTTPTransport(config=config)
 
 
 @pytest.mark.asyncio
