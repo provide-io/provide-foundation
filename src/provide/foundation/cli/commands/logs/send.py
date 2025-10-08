@@ -1,11 +1,16 @@
 from __future__ import annotations
 
-import json
-import sys
-from typing import Any, NoReturn
+from typing import Any
 
-from provide.foundation.cli.deps import _HAS_CLICK, click
+from provide.foundation.cli.deps import click
+from provide.foundation.cli.helpers import (
+    build_attributes_from_args,
+    get_message_from_stdin,
+    requires_click,
+)
+from provide.foundation.cli.shutdown import with_cleanup
 from provide.foundation.logger import get_logger
+from provide.foundation.process import exit_error, exit_success
 
 """Send logs command for Foundation CLI."""
 
@@ -17,48 +22,13 @@ def _get_message_from_input(message: str | None) -> tuple[str | None, int]:
     if message:
         return message, 0
 
-    if sys.stdin.isatty():
+    # Try to read from stdin using shared helper
+    stdin_message, error_code = get_message_from_stdin()
+    if error_code != 0:
         click.echo("Error: No message provided. Use -m or pipe input.", err=True)
         return None, 1
 
-    stdin_message = sys.stdin.read().strip()
-    if not stdin_message:
-        click.echo("Error: Empty message from stdin.", err=True)
-        return None, 1
-
     return stdin_message, 0
-
-
-def _build_attributes(json_attrs: str | None, attr: tuple[str, ...]) -> tuple[dict[str, Any], int]:
-    """Build attributes dict from JSON and key=value pairs. Returns (attributes, error_code)."""
-    attributes = {}
-
-    # Add JSON attributes
-    if json_attrs:
-        try:
-            attributes.update(json.loads(json_attrs))
-        except json.JSONDecodeError as e:
-            click.echo(f"Error: Invalid JSON attributes: {e}", err=True)
-            return {}, 1
-
-    # Add key=value attributes
-    for kv_pair in attr:
-        try:
-            key, value = kv_pair.split("=", 1)
-            # Try to parse as number, boolean, or keep as string
-            if value.lower() in ("true", "false"):
-                attributes[key] = value.lower() == "true"
-            elif value.isdigit():
-                attributes[key] = int(value)
-            elif "." in value and value.replace(".", "").replace("-", "").isdigit():
-                attributes[key] = float(value)
-            else:
-                attributes[key] = value
-        except ValueError:
-            click.echo(f"Error: Invalid attribute format '{kv_pair}'. Use key=value.", err=True)
-            return {}, 1
-
-    return attributes, 0
 
 
 def _send_log_entry(
@@ -93,90 +63,96 @@ def _send_log_entry(
         return 1
 
 
-if _HAS_CLICK:
+@click.command("send")
+@click.option(
+    "--message",
+    "-m",
+    help="Log message to send (reads from stdin if not provided)",
+)
+@click.option(
+    "--level",
+    "-l",
+    type=click.Choice(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "CRITICAL"]),
+    default="INFO",
+    help="Log level",
+)
+@click.option(
+    "--service",
+    "-s",
+    help="Service name (uses config default if not provided)",
+)
+@click.option(
+    "--json",
+    "-j",
+    "json_attrs",
+    help="Additional attributes as JSON",
+)
+@click.option(
+    "--attr",
+    "-a",
+    multiple=True,
+    help="Additional attributes as key=value pairs",
+)
+@click.option(
+    "--trace-id",
+    help="Explicit trace ID to use",
+)
+@click.option(
+    "--span-id",
+    help="Explicit span ID to use",
+)
+@click.pass_context
+@requires_click
+@with_cleanup
+def send_command(
+    ctx: click.Context,
+    message: str | None,
+    level: str,
+    service: str | None,
+    json_attrs: str | None,
+    attr: tuple[str, ...],
+    trace_id: str | None,
+    span_id: str | None,
+) -> int | None:
+    """Send a log entry to OpenObserve.
 
-    @click.command("send")
-    @click.option(
-        "--message",
-        "-m",
-        help="Log message to send (reads from stdin if not provided)",
+    Examples:
+        # Send a simple log
+        foundation logs send -m "User logged in" -l INFO
+
+        # Send with attributes
+        foundation logs send -m "Payment processed" --attr user_id=123 --attr amount=99.99
+
+        # Send from stdin
+        echo "Application started" | foundation logs send -l INFO
+
+        # Send with JSON attributes
+        foundation logs send -m "Error occurred" -j '{"error_code": 500, "path": "/api/users"}'
+
+    """
+    # Get message from input
+    final_message, error_code = _get_message_from_input(message)
+    if error_code != 0:
+        exit_error("No message provided", code=error_code)
+
+    # Build attributes using shared helper
+    attributes, error_code = build_attributes_from_args(json_attrs, attr)
+    if error_code != 0:
+        exit_error("Invalid attributes", code=error_code)
+
+    # Send the log entry
+    result = _send_log_entry(
+        final_message,  # type: ignore[arg-type]
+        level,
+        service,
+        attributes,
+        trace_id,
+        span_id,
     )
-    @click.option(
-        "--level",
-        "-l",
-        type=click.Choice(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "CRITICAL"]),
-        default="INFO",
-        help="Log level",
-    )
-    @click.option(
-        "--service",
-        "-s",
-        help="Service name (uses config default if not provided)",
-    )
-    @click.option(
-        "--json",
-        "-j",
-        "json_attrs",
-        help="Additional attributes as JSON",
-    )
-    @click.option(
-        "--attr",
-        "-a",
-        multiple=True,
-        help="Additional attributes as key=value pairs",
-    )
-    @click.option(
-        "--trace-id",
-        help="Explicit trace ID to use",
-    )
-    @click.option(
-        "--span-id",
-        help="Explicit span ID to use",
-    )
-    @click.pass_context
-    def send_command(
-        ctx: click.Context,
-        message: str | None,
-        level: str,
-        service: str | None,
-        json_attrs: str | None,
-        attr: tuple[str, ...],
-        trace_id: str | None,
-        span_id: str | None,
-    ) -> int | None:
-        """Send a log entry to OpenObserve.
 
-        Examples:
-            # Send a simple log
-            foundation logs send -m "User logged in" -l INFO
+    if result == 0:
+        exit_success()
+    else:
+        exit_error("Failed to send log", code=result)
 
-            # Send with attributes
-            foundation logs send -m "Payment processed" --attr user_id=123 --attr amount=99.99
-
-            # Send from stdin
-            echo "Application started" | foundation logs send -l INFO
-
-            # Send with JSON attributes
-            foundation logs send -m "Error occurred" -j '{"error_code": 500, "path": "/api/users"}'
-
-        """
-        # Get message from input
-        final_message, error_code = _get_message_from_input(message)
-        if error_code != 0:
-            return error_code
-
-        # Build attributes
-        attributes, error_code = _build_attributes(json_attrs, attr)
-        if error_code != 0:
-            return error_code
-
-        # Send the log entry
-        return _send_log_entry(final_message, level, service, attributes, trace_id, span_id)
-
-else:
-
-    def send_command(*args: object, **kwargs: object) -> NoReturn:
-        """Send command stub when click is not available."""
-        raise ImportError(
-            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
-        )
+    return None
