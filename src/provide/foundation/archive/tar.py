@@ -63,27 +63,46 @@ class TarArchive(BaseArchive):
         except Exception as e:
             raise ArchiveError(f"Failed to create TAR archive: {e}") from e
 
-    def extract(self, archive: Path, output: Path) -> Path:
-        """Extract TAR archive to output directory.
+    def extract(self, archive: Path, output: Path, limits: ArchiveLimits | None = None) -> Path:
+        """Extract TAR archive to output directory with decompression bomb protection.
 
         Args:
             archive: TAR archive file path
             output: Output directory path
+            limits: Optional extraction limits (uses DEFAULT_LIMITS if None)
 
         Returns:
             Path to extraction directory
 
         Raises:
-            ArchiveError: If extraction fails or archive contains unsafe paths
+            ArchiveError: If extraction fails, archive contains unsafe paths, or exceeds limits
 
         """
+        from provide.foundation.archive.limits import DEFAULT_LIMITS, ExtractionTracker, get_archive_size
+
+        if limits is None:
+            limits = DEFAULT_LIMITS
+
         try:
             output.mkdir(parents=True, exist_ok=True)
+
+            # Initialize extraction tracker
+            tracker = ExtractionTracker(limits)
+            tracker.set_compressed_size(get_archive_size(archive))
 
             with tarfile.open(archive, "r") as tar:
                 # Enhanced security check - prevent path traversal and validate members
                 safe_members = []
                 for member in tar.getmembers():
+                    # Check file count limit
+                    tracker.check_file_count(1)
+
+                    # Validate member size and compression ratio
+                    tracker.validate_member_size(member.size)
+
+                    # Track extracted size
+                    tracker.add_extracted_size(member.size)
+
                     # Use unified path validation
                     if not is_safe_path(output, member.name):
                         raise ArchiveError(
@@ -107,6 +126,9 @@ class TarArchive(BaseArchive):
                             )
 
                     safe_members.append(member)
+
+                # Check overall compression ratio
+                tracker.check_compression_ratio()
 
                 # Extract only validated members (all members have been security-checked above)
                 tar.extractall(output, members=safe_members)  # nosec B202
