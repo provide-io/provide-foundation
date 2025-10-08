@@ -21,8 +21,11 @@ def http_transport() -> HTTPTransport:
 
 
 @pytest.fixture
-def log_stream() -> io.StringIO:
+def log_stream(monkeypatch: pytest.MonkeyPatch) -> io.StringIO:
     """StringIO stream for capturing Foundation logs."""
+    # Set environment variable BEFORE Foundation initializes
+    monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
+
     stream = io.StringIO()
     set_log_stream_for_testing(stream)
     yield stream
