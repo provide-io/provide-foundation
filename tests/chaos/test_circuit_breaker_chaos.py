@@ -21,7 +21,7 @@ from provide.testkit.chaos import (
 )
 import pytest
 
-from provide.foundation.resilience.circuit import CircuitBreaker, CircuitState
+from provide.foundation.resilience.circuit_sync import CircuitState, SyncCircuitBreaker
 
 
 class TestCircuitBreakerChaos(FoundationTestCase):
@@ -46,7 +46,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
         - State transitions are correct
         - Failure counting is accurate
         """
-        breaker = CircuitBreaker(failure_threshold=failure_threshold)
+        breaker = SyncCircuitBreaker(failure_threshold=failure_threshold)
 
         failures = 0
         for i in range(num_calls):
@@ -91,7 +91,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
         - Consistent failure counting
         - Proper state transitions under load
         """
-        breaker = CircuitBreaker(
+        breaker = SyncCircuitBreaker(
             failure_threshold=failure_threshold,
             recovery_timeout=recovery_timeout,
         )
@@ -148,7 +148,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
         def time_source() -> float:
             return time_source_value[0]
 
-        breaker = CircuitBreaker(
+        breaker = SyncCircuitBreaker(
             failure_threshold=2,
             recovery_timeout=recovery_timeout,
             time_source=time_source,
@@ -181,7 +181,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
 
         Verifies behavior with various failure sequences.
         """
-        breaker = CircuitBreaker(failure_threshold=3)
+        breaker = SyncCircuitBreaker(failure_threshold=3)
         call_count = 0
 
         for i in range(15):
@@ -228,7 +228,7 @@ class TestAsyncCircuitBreakerChaos(FoundationTestCase):
         - Concurrent async operations
         - Proper exception handling
         """
-        breaker = CircuitBreaker(failure_threshold=failure_threshold)
+        breaker = SyncCircuitBreaker(failure_threshold=failure_threshold)
         results: list[str] = []
         errors: list[Exception] = []
 

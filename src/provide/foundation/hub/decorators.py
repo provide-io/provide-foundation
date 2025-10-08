@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import Any, TypeVar, overload
+from typing import TYPE_CHECKING, Any, TypeVar, overload
 
 from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.info import CommandInfo
@@ -9,20 +9,32 @@ from provide.foundation.hub.registry import Registry, get_command_registry
 
 """Command registration decorators."""
 
-try:
-    import click
+# Lazy import to avoid circular dependency
+if TYPE_CHECKING:
+    pass
 
-    _HAS_CLICK = True
-except ImportError:
-    click: Any = None
-    _HAS_CLICK = False
+# Import click lazily to avoid circular imports
+_click_module: Any = None
+_HAS_CLICK: bool | None = None
 
 
-# Defer click_builder import to avoid circular dependency
+def _get_click() -> tuple[Any, bool]:
+    """Get click module and availability flag."""
+    global _click_module, _HAS_CLICK
+    if _HAS_CLICK is None:
+        from provide.foundation.cli.deps import _HAS_CLICK as has_click, click
+
+        _click_module = click
+        _HAS_CLICK = has_click
+    return _click_module, _HAS_CLICK
+
+
+# Defer click hierarchy import to avoid circular dependency
 def _get_ensure_parent_groups() -> Any:
-    if not _HAS_CLICK:
+    _, has_click = _get_click()
+    if not has_click:
         return None
-    from provide.foundation.hub.click_builder import ensure_parent_groups
+    from provide.foundation.cli.click.hierarchy import ensure_parent_groups
 
     return ensure_parent_groups
 
@@ -162,7 +174,8 @@ def _register_command_func(
             command_name = parts[-1]
 
             # Auto-create parent groups if they don't exist (click only)
-            if _HAS_CLICK:
+            _, has_click = _get_click()
+            if has_click:
                 ensure_parent_groups_fn = _get_ensure_parent_groups()
                 if ensure_parent_groups_fn:
                     ensure_parent_groups_fn(parent, reg)
@@ -176,7 +189,8 @@ def _register_command_func(
 
     # Check if it's already a Click command
     click_cmd = None
-    if isinstance(func, click.Command):
+    click_module, has_click = _get_click()
+    if has_click and isinstance(func, click_module.Command):
         click_cmd = func
         actual_func = func.callback
     else:

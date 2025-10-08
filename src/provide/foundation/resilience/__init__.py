@@ -3,7 +3,6 @@ from __future__ import annotations
 from provide.foundation.resilience.bulkhead import (
     Bulkhead,
     BulkheadManager,
-    ResourcePool,
     get_bulkhead_manager,
 )
 from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
@@ -39,7 +38,6 @@ __all__ = [
     "CircuitState",
     # Fallback
     "FallbackChain",
-    "ResourcePool",
     "RetryExecutor",
     # Core retry functionality
     "RetryPolicy",

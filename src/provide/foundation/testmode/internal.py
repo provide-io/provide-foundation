@@ -274,20 +274,28 @@ def _reset_direct_circuit_breaker_instances() -> None:
     import gc
 
     try:
-        from provide.foundation.resilience.circuit import CircuitBreaker
-        from provide.foundation.resilience.decorators import (
-            _circuit_breaker_instances,
-            _test_circuit_breaker_instances,
-        )
+        from provide.foundation.hub.manager import get_shared_hub
+        from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
+        from provide.foundation.resilience.circuit_sync import SyncCircuitBreaker
 
-        # Combine both registries to get all decorator-tracked instances
-        decorator_tracked_instances = _circuit_breaker_instances + _test_circuit_breaker_instances
+        registry = get_shared_hub()._component_registry  # type: ignore[attr-defined]
+
+        # Get all decorator-tracked instances from registry
+        decorator_tracked_ids = set()
+        for dimension in ["circuit_breaker", "circuit_breaker_test"]:
+            for name in registry.list_dimension(dimension):
+                breaker = registry.get(name, dimension=dimension)
+                if breaker:
+                    decorator_tracked_ids.add(id(breaker))
 
         # Find all CircuitBreaker instances in memory using garbage collector
         # Only reset those NOT tracked by decorators (i.e., created directly)
         instances_found = 0
         for obj in gc.get_objects():
-            if isinstance(obj, CircuitBreaker) and obj not in decorator_tracked_instances:
+            if (
+                isinstance(obj, (SyncCircuitBreaker, AsyncCircuitBreaker))
+                and id(obj) not in decorator_tracked_ids
+            ):
                 try:
                     # Only reset instances that are still alive and not tracked by decorators
                     if obj is not None:
@@ -319,14 +327,29 @@ def reset_circuit_breaker_state() -> None:
     _reset_direct_circuit_breaker_instances()
 
     try:
+        import asyncio
+
         from provide.foundation.resilience.decorators import (
             reset_circuit_breakers_for_testing,
             reset_test_circuit_breakers,
         )
 
         # Reset both production and test circuit breakers
-        reset_circuit_breakers_for_testing()
-        reset_test_circuit_breakers()
+        # These are now async functions, so we need to run them in an event loop
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # We're in an async context, create a task
+                # This shouldn't happen in practice since reset is called from sync fixtures
+                pass
+            else:
+                # Run in the existing event loop
+                loop.run_until_complete(reset_circuit_breakers_for_testing())
+                loop.run_until_complete(reset_test_circuit_breakers())
+        except RuntimeError:
+            # No event loop, create a new one
+            asyncio.run(reset_circuit_breakers_for_testing())
+            asyncio.run(reset_test_circuit_breakers())
     except ImportError:
         # Resilience decorators module not available, skip
         pass
