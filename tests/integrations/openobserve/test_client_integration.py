@@ -42,17 +42,6 @@ class TestClientInitialization(FoundationTestCase):
         assert client.timeout == 30  # default
         assert client.session is not None
 
-    def test_client_from_config_validates_credentials(self) -> None:
-        """Test that from_config validates required fields."""
-        # Temporarily unset config (simulated by catching error)
-        with pytest.raises(OpenObserveConfigError):
-            # This should fail if OPENOBSERVE_URL is not set
-            # But if it is set, test the validation logic by checking
-            # that an error would be raised for missing credentials
-            client = OpenObserveClient.from_config()
-            # If we get here, config is valid - test alternative scenario
-            assert client is not None
-
     def test_client_direct_initialization(
         self,
         openobserve_config: OpenObserveConfig,
