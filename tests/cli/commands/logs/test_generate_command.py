@@ -53,7 +53,8 @@ class TestGenerateLogsCommand:
         result = runner.invoke(generate_logs_command, ["--count", "0"])
 
         assert result.exit_code == 0
-        assert "Generation interrupted by user" in result.output
+        # Verify the interrupt message was echoed (includes emoji and newlines)
+        mock_echo.assert_any_call("\n\n⛔ Generation interrupted by user")
         mock_generate_continuous.assert_called_once()
         mock_print_final_stats.assert_called_once()
 
