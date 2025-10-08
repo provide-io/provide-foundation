@@ -63,9 +63,11 @@ class TestSanitizationFunctions(FoundationTestCase):
     def test_sanitize_log_level_valid(self) -> None:
         """Test log level sanitization with valid inputs."""
         assert _sanitize_log_level("ERROR") == "ERROR"
-        assert _sanitize_log_level("WARN") == "WARN"
+        assert _sanitize_log_level("WARNING") == "WARNING"
         assert _sanitize_log_level("INFO") == "INFO"
         assert _sanitize_log_level("DEBUG") == "DEBUG"
+        assert _sanitize_log_level("TRACE") == "TRACE"
+        assert _sanitize_log_level("CRITICAL") == "CRITICAL"
 
     def test_sanitize_log_level_invalid(self) -> None:
         """Test log level sanitization rejects invalid inputs."""
