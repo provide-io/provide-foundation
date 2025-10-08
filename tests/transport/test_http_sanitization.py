@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import io
 
+import httpx
 import pytest
+from provide.testkit import set_log_stream_for_testing
 from pytest_httpx import HTTPXMock
 
 from provide.foundation.transport import HTTPTransport, Request
@@ -18,11 +20,21 @@ def http_transport() -> HTTPTransport:
     return HTTPTransport(config=config)
 
 
+@pytest.fixture
+def log_stream() -> io.StringIO:
+    """StringIO stream for capturing Foundation logs."""
+    stream = io.StringIO()
+    set_log_stream_for_testing(stream)
+    yield stream
+    # Reset to None after test
+    set_log_stream_for_testing(None)
+
+
 @pytest.mark.asyncio
 async def test_sensitive_query_params_redacted_in_logs(
     http_transport: HTTPTransport,
     httpx_mock: HTTPXMock,
-    caplog: pytest.LogCaptureFixture,
+    log_stream: io.StringIO,
 ) -> None:
     """Test that sensitive query parameters are redacted in logs."""
     # Mock response - match any GET to this URL
@@ -45,7 +57,7 @@ async def test_sensitive_query_params_redacted_in_logs(
     assert response.status == 200
 
     # Check logs - api_key should be redacted but user_id should be visible
-    log_output = caplog.text
+    log_output = log_stream.getvalue()
     assert "[REDACTED]" in log_output, "Sensitive param not redacted in logs"
     assert "secret123" not in log_output, "Secret value leaked in logs"
     assert "user_id=456" in log_output, "Safe param not present in logs"
@@ -55,7 +67,7 @@ async def test_sensitive_query_params_redacted_in_logs(
 async def test_multiple_sensitive_params_redacted(
     http_transport: HTTPTransport,
     httpx_mock: HTTPXMock,
-    caplog: pytest.LogCaptureFixture,
+    log_stream: io.StringIO,
 ) -> None:
     """Test that multiple sensitive query parameters are all redacted."""
     httpx_mock.add_response(
@@ -73,7 +85,7 @@ async def test_multiple_sensitive_params_redacted(
 
     assert response.status == 200
 
-    log_output = caplog.text
+    log_output = log_stream.getvalue()
 
     # All sensitive values should be redacted
     assert "key123" not in log_output
@@ -91,7 +103,7 @@ async def test_multiple_sensitive_params_redacted(
 async def test_uri_without_params_unchanged(
     http_transport: HTTPTransport,
     httpx_mock: HTTPXMock,
-    caplog: pytest.LogCaptureFixture,
+    log_stream: io.StringIO,
 ) -> None:
     """Test that URIs without query params are logged unchanged."""
     httpx_mock.add_response(
@@ -111,7 +123,7 @@ async def test_uri_without_params_unchanged(
 
     assert response.status == 200
 
-    log_output = caplog.text
+    log_output = log_stream.getvalue()
     assert "https://api.example.com/users" in log_output
     assert "[REDACTED]" not in log_output
 
@@ -120,7 +132,7 @@ async def test_uri_without_params_unchanged(
 async def test_streaming_request_sanitizes_uri(
     http_transport: HTTPTransport,
     httpx_mock: HTTPXMock,
-    caplog: pytest.LogCaptureFixture,
+    log_stream: io.StringIO,
 ) -> None:
     """Test that streaming requests also sanitize URIs in logs."""
     httpx_mock.add_response(
@@ -140,7 +152,7 @@ async def test_streaming_request_sanitizes_uri(
 
     assert b"".join(chunks) == b"chunk1chunk2chunk3"
 
-    log_output = caplog.text
+    log_output = log_stream.getvalue()
 
     # Sensitive param should be redacted
     assert "stream_secret" not in log_output
@@ -187,7 +199,7 @@ async def test_actual_request_sent_with_real_values(
 async def test_uri_with_fragment_preserved(
     http_transport: HTTPTransport,
     httpx_mock: HTTPXMock,
-    caplog: pytest.LogCaptureFixture,
+    log_stream: io.StringIO,
 ) -> None:
     """Test that URI fragments are preserved during sanitization."""
     httpx_mock.add_response(
@@ -205,7 +217,7 @@ async def test_uri_with_fragment_preserved(
 
     assert response.status == 200
 
-    log_output = caplog.text
+    log_output = log_stream.getvalue()
 
     # Token should be redacted
     assert "secret" not in log_output
@@ -218,7 +230,7 @@ async def test_uri_with_fragment_preserved(
 async def test_case_insensitive_param_matching(
     http_transport: HTTPTransport,
     httpx_mock: HTTPXMock,
-    caplog: pytest.LogCaptureFixture,
+    log_stream: io.StringIO,
 ) -> None:
     """Test that sensitive param matching is case-insensitive."""
     httpx_mock.add_response(
@@ -237,7 +249,7 @@ async def test_case_insensitive_param_matching(
 
     assert response.status == 200
 
-    log_output = caplog.text
+    log_output = log_stream.getvalue()
 
     # All variations should be redacted
     assert "upper" not in log_output
@@ -250,7 +262,7 @@ async def test_case_insensitive_param_matching(
 async def test_empty_param_values_handled(
     http_transport: HTTPTransport,
     httpx_mock: HTTPXMock,
-    caplog: pytest.LogCaptureFixture,
+    log_stream: io.StringIO,
 ) -> None:
     """Test that empty parameter values are handled correctly."""
     httpx_mock.add_response(
@@ -268,7 +280,7 @@ async def test_empty_param_values_handled(
 
     assert response.status == 200
 
-    log_output = caplog.text
+    log_output = log_stream.getvalue()
 
     # Empty api_key should still be redacted
     assert "api_key=[REDACTED]" in log_output
