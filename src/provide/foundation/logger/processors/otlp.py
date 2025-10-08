@@ -171,7 +171,7 @@ def create_otlp_processor(config: Any) -> Any | None:
                 # Build attributes (everything except 'event' and 'timestamp')
                 attributes = {k: str(v) for k, v in event_dict.items() if k not in ("event", "timestamp")}
 
-                # Add message and level attributes for OpenObserve compatibility
+                # Add message and level attributes for OpenObserve
                 attributes["message"] = message  # Emoji-enriched message
                 attributes["level"] = level.upper()  # Log level
 
@@ -189,7 +189,7 @@ def create_otlp_processor(config: Any) -> Any | None:
                     trace_flags=0,
                     severity_text=level.upper(),
                     severity_number=severity,
-                    body=message,
+                    body="",  # Empty body - message is in attributes
                     resource=_OTLP_LOGGER_PROVIDER.resource,
                     attributes=attributes,
                 )
