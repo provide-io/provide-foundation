@@ -4,36 +4,13 @@ from collections.abc import Mapping
 from typing import Any
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
+from provide.foundation.security.defaults import (
+    DEFAULT_SENSITIVE_HEADERS,
+    DEFAULT_SENSITIVE_PARAMS,
+    REDACTED_VALUE,
+)
+
 """Sanitization utilities for sensitive data redaction in logs and outputs."""
-
-# Default sensitive header names (case-insensitive)
-DEFAULT_SENSITIVE_HEADERS = [
-    "authorization",
-    "x-api-key",
-    "x-auth-token",
-    "cookie",
-    "set-cookie",
-    "x-csrf-token",
-    "x-session-token",
-    "proxy-authorization",
-]
-
-# Default sensitive URL parameter names (case-insensitive)
-DEFAULT_SENSITIVE_PARAMS = [
-    "token",
-    "key",
-    "password",
-    "secret",
-    "apikey",
-    "api_key",
-    "access_token",
-    "refresh_token",
-    "auth",
-    "credentials",
-]
-
-# Redaction placeholder
-REDACTED_VALUE = "[REDACTED]"
 
 
 def sanitize_headers(

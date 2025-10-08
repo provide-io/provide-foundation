@@ -7,7 +7,7 @@ from typing import BinaryIO
 from attrs import define, validators
 
 from provide.foundation.archive.base import BaseCompressor, _validate_compression_level
-from provide.foundation.config import defaults
+from provide.foundation.archive.defaults import DEFAULT_GZIP_COMPRESSION_LEVEL
 from provide.foundation.config.base import field
 
 """GZIP compression implementation."""
@@ -22,7 +22,7 @@ class GzipCompressor(BaseCompressor):
     """
 
     level: int = field(
-        default=defaults.DEFAULT_GZIP_COMPRESSION_LEVEL,
+        default=DEFAULT_GZIP_COMPRESSION_LEVEL,
         validator=validators.and_(validators.instance_of(int), _validate_compression_level),
     )
 

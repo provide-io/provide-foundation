@@ -2,39 +2,9 @@ from __future__ import annotations
 
 import re
 
+from provide.foundation.security.defaults import DEFAULT_SECRET_PATTERNS, MASKED_VALUE
+
 """Secret masking utilities for command execution and sensitive strings."""
-
-# Default secret patterns (case-insensitive regex patterns)
-DEFAULT_SECRET_PATTERNS = [
-    # Key-value patterns (key=value, key:value, key value)
-    r"(password[=:\s]+)([^\s]+)",
-    r"(passwd[=:\s]+)([^\s]+)",
-    r"(pwd[=:\s]+)([^\s]+)",
-    r"(token[=:\s]+)([^\s]+)",
-    r"(api[_-]?key[=:\s]+)([^\s]+)",
-    r"(api[_-]?token[=:\s]+)([^\s]+)",
-    r"(access[_-]?key[=:\s]+)([^\s]+)",
-    r"(secret[_-]?key[=:\s]+)([^\s]+)",
-    r"(secret[=:\s]+)([^\s]+)",
-    r"(auth[=:\s]+)([^\s]+)",
-    r"(credentials?[=:\s]+)([^\s]+)",
-    # CLI flag patterns (--flag value, --flag=value, -f value)
-    r"(--password[=\s]+)([^\s]+)",
-    r"(--token[=\s]+)([^\s]+)",
-    r"(--api-key[=\s]+)([^\s]+)",
-    r"(--api-token[=\s]+)([^\s]+)",
-    r"(--secret[=\s]+)([^\s]+)",
-    r"(--auth[=\s]+)([^\s]+)",
-    r"(-p\s+)([^\s]+)",  # Common -p flag for password
-    # Environment variable patterns
-    r"([A-Z_]+PASSWORD[=:])([^\s]+)",
-    r"([A-Z_]+TOKEN[=:])([^\s]+)",
-    r"([A-Z_]+KEY[=:])([^\s]+)",
-    r"([A-Z_]+SECRET[=:])([^\s]+)",
-]
-
-# Masked placeholder
-MASKED_VALUE = "[MASKED]"
 
 
 def mask_secrets(

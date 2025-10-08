@@ -4,6 +4,13 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from provide.foundation.archive.base import ArchiveError
+from provide.foundation.archive.defaults import (
+    DEFAULT_ARCHIVE_LIMITS_ENABLED,
+    DEFAULT_ARCHIVE_MAX_COMPRESSION_RATIO,
+    DEFAULT_ARCHIVE_MAX_FILE_COUNT,
+    DEFAULT_ARCHIVE_MAX_SINGLE_FILE_SIZE,
+    DEFAULT_ARCHIVE_MAX_TOTAL_SIZE,
+)
 
 """Archive extraction limits for decompression bomb protection."""
 
@@ -21,11 +28,11 @@ class ArchiveLimits:
 
     """
 
-    max_total_size: int = 1_000_000_000  # 1GB
-    max_file_count: int = 10_000
-    max_compression_ratio: float = 100.0
-    max_single_file_size: int = 100_000_000  # 100MB
-    enabled: bool = True
+    max_total_size: int = DEFAULT_ARCHIVE_MAX_TOTAL_SIZE
+    max_file_count: int = DEFAULT_ARCHIVE_MAX_FILE_COUNT
+    max_compression_ratio: float = DEFAULT_ARCHIVE_MAX_COMPRESSION_RATIO
+    max_single_file_size: int = DEFAULT_ARCHIVE_MAX_SINGLE_FILE_SIZE
+    enabled: bool = DEFAULT_ARCHIVE_LIMITS_ENABLED
 
 
 # Global default limits instance

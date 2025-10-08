@@ -7,7 +7,7 @@ from typing import Any
 
 from attrs import define, field
 
-from provide.foundation.config.defaults import (
+from provide.foundation.transport.defaults import (
     DEFAULT_TRANSPORT_LOG_BODIES,
     DEFAULT_TRANSPORT_LOG_REQUESTS,
     DEFAULT_TRANSPORT_LOG_RESPONSES,

@@ -7,8 +7,12 @@ from typing import TYPE_CHECKING
 from attrs import define
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.foundation.archive.defaults import (
+    DEFAULT_ARCHIVE_DETERMINISTIC,
+    DEFAULT_ARCHIVE_PRESERVE_METADATA,
+    DEFAULT_ARCHIVE_PRESERVE_PERMISSIONS,
+)
 from provide.foundation.archive.security import is_safe_path
-from provide.foundation.config import defaults
 from provide.foundation.config.base import field
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
@@ -29,9 +33,9 @@ class TarArchive(BaseArchive):
     and deterministic output for reproducible builds.
     """
 
-    deterministic: bool = field(default=defaults.DEFAULT_ARCHIVE_DETERMINISTIC)
-    preserve_metadata: bool = field(default=defaults.DEFAULT_ARCHIVE_PRESERVE_METADATA)
-    preserve_permissions: bool = field(default=defaults.DEFAULT_ARCHIVE_PRESERVE_PERMISSIONS)
+    deterministic: bool = field(default=DEFAULT_ARCHIVE_DETERMINISTIC)
+    preserve_metadata: bool = field(default=DEFAULT_ARCHIVE_PRESERVE_METADATA)
+    preserve_permissions: bool = field(default=DEFAULT_ARCHIVE_PRESERVE_PERMISSIONS)
 
     def create(self, source: Path, output: Path) -> Path:
         """Create TAR archive from source.
