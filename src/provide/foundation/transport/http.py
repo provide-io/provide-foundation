@@ -8,7 +8,7 @@ from attrs import define, field
 import httpx
 
 from provide.foundation.logger import get_logger
-from provide.foundation.security import sanitize_headers, sanitize_uri
+from provide.foundation.security import sanitize_uri
 from provide.foundation.transport.base import Request, Response, TransportBase
 from provide.foundation.transport.config import HTTPConfig
 from provide.foundation.transport.errors import (
