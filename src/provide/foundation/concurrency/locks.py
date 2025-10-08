@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import asyncio
-from collections.abc import AsyncGenerator, Generator
+from collections.abc import Generator
 import contextlib
 import threading
 import time

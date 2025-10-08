@@ -2,10 +2,10 @@
 
 import asyncio
 from typing import Any, Never
-from provide.testkit.mocking import ANY, AsyncMock, MagicMock, patch
-from provide.testkit.time import make_controlled_time
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import ANY, AsyncMock, MagicMock, patch
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.decorators import retry

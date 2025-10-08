@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import os
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.cli.utils import (
@@ -19,8 +21,6 @@ from provide.foundation.cli.utils import (
 )
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import TelemetryConfig
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 
 
 class TestCliEchoFunctions(FoundationTestCase):

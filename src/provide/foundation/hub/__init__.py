@@ -65,7 +65,7 @@ from provide.foundation.hub.registry import (
 def build_click_command(name: str, registry: Any = None) -> Any:
     """Build click command (delayed import to avoid circular dependency)."""
     try:
-        from provide.foundation.cli.click.builder import build_click_command as real_func
+        from provide.foundation.cli.click.commands import build_click_command as real_func
 
         return real_func(name, registry)
     except ImportError as e:

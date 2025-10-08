@@ -3,10 +3,10 @@
 import asyncio
 import time
 from typing import Never
-from provide.testkit.mocking import AsyncMock, patch
 
-import pytest
 from provide.testkit import MinimalTestCase
+from provide.testkit.mocking import AsyncMock, patch
+import pytest
 
 from provide.foundation.concurrency import (
     async_gather,

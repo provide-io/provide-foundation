@@ -8,9 +8,9 @@ from pathlib import Path
 from provide.testkit import FoundationTestCase
 import pytest
 
+from provide.foundation.errors.process import ProcessError
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
-from provide.foundation.errors.process import ProcessError
 
 
 class TestManagedProcess(FoundationTestCase):

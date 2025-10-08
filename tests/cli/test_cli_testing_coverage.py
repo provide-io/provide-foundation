@@ -11,14 +11,14 @@ import click
 from click.testing import CliRunner
 from provide.testkit import (
     CliTestCase,
+    FoundationTestCase,
     MockContext,
     create_test_cli,
     isolated_cli_runner,
     temp_config_file,
 )
-import pytest
-from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+import pytest
 
 
 class TestMockContext(FoundationTestCase):

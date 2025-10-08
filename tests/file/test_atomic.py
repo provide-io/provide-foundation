@@ -5,9 +5,9 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.testkit import FoundationTestCase
 from provide.foundation.file.atomic import (
     atomic_replace,
     atomic_write,

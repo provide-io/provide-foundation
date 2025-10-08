@@ -46,23 +46,25 @@ try:
         get_default_hash_algorithm,
         get_default_signature_algorithm,
     )
+    from provide.foundation.crypto.ed25519 import (
+        Ed25519Signer,
+        Ed25519Verifier,
+    )
     from provide.foundation.crypto.keys import (
         generate_ec_keypair,
         generate_keypair,
         generate_rsa_keypair,
         generate_tls_keypair,
     )
+    from provide.foundation.crypto.rsa import (
+        RSASigner,
+        RSAVerifier,
+    )
     from provide.foundation.crypto.signatures import (
         generate_ed25519_keypair,
         generate_signing_keypair,
         sign_data,
         verify_signature,
-    )
-    from provide.foundation.crypto.signers import (
-        Ed25519Signer,
-        Ed25519Verifier,
-        RSASigner,
-        RSAVerifier,
     )
 
     if not _HAS_CRYPTO:
