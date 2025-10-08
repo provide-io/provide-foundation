@@ -74,8 +74,18 @@ def extract_base_name(path: Path) -> str | None:
         base_name = base_name[1:-1]
         return base_name if base_name else None
 
-    # Handle vim swap files: .document.txt.swp -> document.txt
-    # Vim swap files always have a leading dot as part of the temp pattern
+    # Handle vim swap files:
+    # - Regular file (document.txt) -> .document.txt.swp
+    # - Dotfile (.document.txt) -> ..document.txt.swp (double leading dot)
+
+    # First check for dotfile pattern (double dot)
+    vim_dotfile_pattern = r"^\.\.(.+)\.(swp|swo|swx)$"
+    match = re.match(vim_dotfile_pattern, base_name)
+    if match:
+        filename = "." + match.group(1)
+        return filename if filename and filename != base_name else None
+
+    # Then check for regular file pattern (single dot)
     vim_swap_pattern = r"^\.(.+)\.(swp|swo|swx)$"
     match = re.match(vim_swap_pattern, base_name)
     if match:

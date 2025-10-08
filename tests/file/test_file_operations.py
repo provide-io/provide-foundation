@@ -497,7 +497,9 @@ class TestConvenienceFunctions(FoundationTestCase):
         """Test extracting original path from temp files."""
         assert extract_original_path(Path("document.txt.tmp.12345")) == Path("document.txt")
         assert extract_original_path(Path("document.txt~")) == Path("document.txt")
-        assert extract_original_path(Path(".document.txt.swp")) == Path(".document.txt")
+        # Vim swap files: .filename.swp is for regular file, ..filename.swp is for dotfile
+        assert extract_original_path(Path(".document.txt.swp")) == Path("document.txt")
+        assert extract_original_path(Path("..document.txt.swp")) == Path(".document.txt")
         assert extract_original_path(Path("#document.txt#")) == Path("document.txt")
         assert extract_original_path(Path("document.txt.bak")) == Path("document.txt")
         assert extract_original_path(Path("document.txt")) == Path("document.txt")
