@@ -7,6 +7,8 @@ require a running OpenObserve instance.
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from provide.testkit import FoundationTestCase
 
 from provide.foundation.integrations.openobserve.formatters import (
