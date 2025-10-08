@@ -13,32 +13,22 @@ from provide.foundation.transport import HTTPTransport, Request
 from provide.foundation.transport.config import HTTPConfig
 
 
-@pytest.fixture
-def log_stream(monkeypatch: pytest.MonkeyPatch) -> io.StringIO:
-    """StringIO stream for capturing Foundation logs."""
-    # Enable force stream redirect to bypass Click testing guard
+@pytest.fixture(autouse=True)
+def enable_stream_redirect(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Enable force stream redirect for these tests."""
     monkeypatch.setenv("FOUNDATION_FORCE_STREAM_REDIRECT", "true")
-    monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
-
     # Reset stream config to pick up new environment variable
     from provide.foundation.streams.config import reset_stream_config
-
     reset_stream_config()
 
-    # Reset Foundation to ensure clean state
-    from provide.testkit import reset_foundation_setup_for_testing
 
-    reset_foundation_setup_for_testing()
-
-    # Create stream and set it AFTER reset
+@pytest.fixture
+def log_stream() -> io.StringIO:
+    """StringIO stream for capturing Foundation logs."""
     stream = io.StringIO()
     set_log_stream_for_testing(stream)
-
     yield stream
-
-    # Cleanup
     set_log_stream_for_testing(None)
-    reset_stream_config()
 
 
 @pytest.fixture
