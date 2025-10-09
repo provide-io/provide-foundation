@@ -11,6 +11,11 @@ def is_temp_file(path: Path) -> bool:
     name = path.name.lower()
     stem = path.stem.lower()
 
+    # VSCode-specific pattern: .filename.ext.tmp.XXXX (must check original case)
+    # Example: .orchestrator.py.tmp.84
+    if re.match(r'^\..+\.tmp\.\w+$', path.name):
+        return True
+
     # Common temp file patterns
     temp_patterns = [
         name.startswith(".tmp"),
@@ -57,15 +62,24 @@ def extract_base_name(path: Path) -> str | None:
 
     base_name = name
 
+    # Handle VSCode temp pattern FIRST: .filename.ext.tmp.XXXX -> filename.ext
+    # This must come before other patterns since the leading dot is part of the temp name
+    vscode_pattern = r'^\.(.+)\.tmp\.\w+$'
+    if re.match(vscode_pattern, base_name):
+        base_name = re.sub(vscode_pattern, r'\1', base_name)
+        return base_name if base_name else None
+
     # Handle emacs autosave files: #document.txt# -> document.txt
     if base_name.startswith("#") and base_name.endswith("#"):
         base_name = base_name[1:-1]
         return base_name if base_name else None
 
-    # Handle vim swap files: .document.txt.swp -> .document.txt
-    vim_swap_pattern = r"\.(swp|swo|swx)$"
-    if re.search(vim_swap_pattern, base_name):
-        base_name = re.sub(vim_swap_pattern, "", base_name)
+    # Handle vim swap files: .document.txt.swp -> document.txt
+    # Remove both the swap extension AND the leading dot if present
+    vim_swap_pattern = r"^\.?(.+)\.(swp|swo|swx)$"
+    match = re.match(vim_swap_pattern, base_name)
+    if match:
+        base_name = match.group(1)
         return base_name if base_name and base_name != name else None
 
     # Remove common temp/backup suffixes
@@ -83,7 +97,7 @@ def extract_base_name(path: Path) -> str | None:
             base_name = base_name[len(prefix) :]
             break
 
-    # Remove temp file ID patterns like .tmp.84
-    base_name = re.sub(r"\.tmp\.\d+$", "", base_name)
+    # Remove temp file ID patterns like .tmp.84 (for any remaining patterns)
+    base_name = re.sub(r"\.tmp\.\w+$", "", base_name)
 
     return base_name if base_name and base_name != name else None

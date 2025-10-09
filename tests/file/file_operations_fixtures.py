@@ -9,6 +9,7 @@ from __future__ import annotations
 from collections.abc import Generator
 from datetime import datetime, timedelta
 from pathlib import Path
+import random
 import tempfile
 import time
 from typing import Any
@@ -96,7 +97,8 @@ class FileOperationSimulator:
             return []
 
         final_file = self.base_path / filename
-        temp_file = self.base_path / f"{filename}.tmp.vscode{int(time.time())}"
+        # VSCode uses pattern: .filename.ext.tmp.XXXX (leading dot + random suffix)
+        temp_file = self.base_path / f".{filename}.tmp.{random.randint(1, 999)}"
         base_time = self._get_next_operation_time()
 
         events = [

@@ -317,7 +317,7 @@ from provide.testkit import (  # noqa: E402
     temporary_key_file,
     test_files_structure,
     # Time fixtures
-    time_machine,
+    # time_machine,  # Not available in current testkit version
     valid_cert_pem,
     valid_key_pem,
 )
@@ -369,7 +369,7 @@ __all__ = [
     "temporary_key_file",
     "test_files_structure",
     # Time fixtures
-    "time_machine",
+    # "time_machine",  # Not available in current testkit version
     "valid_cert_pem",
     "valid_key_pem",
 ]

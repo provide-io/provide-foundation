@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from typing import Any, NoReturn
+from typing import Any
 
-from provide.foundation.cli.deps import _HAS_CLICK, click
+from provide.foundation.cli.deps import click
+from provide.foundation.cli.helpers import get_client_from_context, requires_click
+from provide.foundation.cli.shutdown import with_cleanup
 from provide.foundation.logger import get_logger
+from provide.foundation.process import exit_error
 
 """Query logs command for Foundation CLI."""
 
@@ -110,112 +113,108 @@ def _execute_and_display_query(sql: str, last: str, size: int, format: str, clie
         return 1
 
 
-if _HAS_CLICK:
+@click.command("query")
+@click.option(
+    "--sql",
+    help="SQL query to execute (if not provided, builds from other options)",
+)
+@click.option(
+    "--current-trace",
+    is_flag=True,
+    help="Query logs for the current active trace",
+)
+@click.option(
+    "--trace-id",
+    help="Query logs for a specific trace ID",
+)
+@click.option(
+    "--level",
+    type=click.Choice(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "CRITICAL"]),
+    help="Filter by log level",
+)
+@click.option(
+    "--service",
+    help="Filter by service name",
+)
+@click.option(
+    "--last",
+    help="Time range (e.g., 1h, 30m, 5m)",
+    default="1h",
+)
+@click.option(
+    "--stream",
+    default="default",
+    help="Stream to query",
+)
+@click.option(
+    "--size",
+    "-n",
+    type=int,
+    default=100,
+    help="Number of results",
+)
+@click.option(
+    "--format",
+    "-f",
+    type=click.Choice(["json", "log", "table", "csv", "summary"]),
+    default="log",
+    help="Output format",
+)
+@click.pass_context
+@requires_click
+@with_cleanup
+def query_command(
+    ctx: click.Context,
+    sql: str | None,
+    current_trace: bool,
+    trace_id: str | None,
+    level: str | None,
+    service: str | None,
+    last: str,
+    stream: str,
+    size: int,
+    format: str,
+) -> int | None:
+    """Query logs from OpenObserve.
 
-    @click.command("query")
-    @click.option(
-        "--sql",
-        help="SQL query to execute (if not provided, builds from other options)",
-    )
-    @click.option(
-        "--current-trace",
-        is_flag=True,
-        help="Query logs for the current active trace",
-    )
-    @click.option(
-        "--trace-id",
-        help="Query logs for a specific trace ID",
-    )
-    @click.option(
-        "--level",
-        type=click.Choice(["TRACE", "DEBUG", "INFO", "WARN", "ERROR", "CRITICAL"]),
-        help="Filter by log level",
-    )
-    @click.option(
-        "--service",
-        help="Filter by service name",
-    )
-    @click.option(
-        "--last",
-        help="Time range (e.g., 1h, 30m, 5m)",
-        default="1h",
-    )
-    @click.option(
-        "--stream",
-        default="default",
-        help="Stream to query",
-    )
-    @click.option(
-        "--size",
-        "-n",
-        type=int,
-        default=100,
-        help="Number of results",
-    )
-    @click.option(
-        "--format",
-        "-f",
-        type=click.Choice(["json", "log", "table", "csv", "summary"]),
-        default="log",
-        help="Output format",
-    )
-    @click.pass_context
-    def query_command(
-        ctx: click.Context,
-        sql: str | None,
-        current_trace: bool,
-        trace_id: str | None,
-        level: str | None,
-        service: str | None,
-        last: str,
-        stream: str,
-        size: int,
-        format: str,
-    ) -> int | None:
-        """Query logs from OpenObserve.
+    Examples:
+        # Query recent logs
+        foundation logs query --last 30m
 
-        Examples:
-            # Query recent logs
-            foundation logs query --last 30m
+        # Query errors
+        foundation logs query --level ERROR --last 1h
 
-            # Query errors
-            foundation logs query --level ERROR --last 1h
+        # Query by current trace
+        foundation logs query --current-trace
 
-            # Query by current trace
-            foundation logs query --current-trace
+        # Query by specific trace
+        foundation logs query --trace-id abc123def456
 
-            # Query by specific trace
-            foundation logs query --trace-id abc123def456
+        # Query by service
+        foundation logs query --service auth-service --last 15m
 
-            # Query by service
-            foundation logs query --service auth-service --last 15m
+        # Custom SQL query
+        foundation logs query --sql "SELECT * FROM default WHERE duration_ms > 1000"
 
-            # Custom SQL query
-            foundation logs query --sql "SELECT * FROM default WHERE duration_ms > 1000"
+    """
+    # Get client from context using shared helper
+    client, error_code = get_client_from_context(ctx)
+    if error_code != 0:
+        exit_error("OpenObserve client not configured", code=error_code)
 
-        """
-        client = ctx.obj.get("client")
-        if not client:
-            click.echo("Error: OpenObserve not configured.", err=True)
-            return 1
+    # Build SQL query if not provided
+    if not sql:
+        trace_id_result = _get_trace_id_if_needed(current_trace, trace_id)
+        if trace_id_result is None:
+            exit_error("Trace ID not available", code=1)
+        if trace_id_result:
+            trace_id = trace_id_result
 
-        # Build SQL query if not provided
-        if not sql:
-            trace_id_result = _get_trace_id_if_needed(current_trace, trace_id)
-            if trace_id_result is None:
-                return 1
-            if trace_id_result:
-                trace_id = trace_id_result
+        sql = _build_query_sql(trace_id, level, service, stream, size)
 
-            sql = _build_query_sql(trace_id, level, service, stream, size)
+    # Execute query and display results
+    result = _execute_and_display_query(sql, last, size, format, client)
+    if result != 0:
+        exit_error("Query execution failed", code=result)
 
-        # Execute query and display results
-        return _execute_and_display_query(sql, last, size, format, client)
-
-else:
-
-    def query_command(*args: object, **kwargs: object) -> NoReturn:
-        """Query command stub when click is not available."""
-        raise ImportError(
-            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
-        )
+    return None
