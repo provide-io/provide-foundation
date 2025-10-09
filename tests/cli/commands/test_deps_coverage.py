@@ -58,7 +58,7 @@ class TestDepsCommandWithClick(FoundationTestCase):
                 "provide.foundation.cli.commands.deps.has_dependency",
                 return_value=True,
             ),
-            patch("provide.foundation.console.output.pout") as mock_pout,
+            patch("provide.foundation.cli.commands.deps.pout") as mock_pout,
         ):
             with pytest.raises(SystemExit) as exc_info:
                 _deps_command_impl(quiet=False, check="crypto")
@@ -75,7 +75,7 @@ class TestDepsCommandWithClick(FoundationTestCase):
                 "provide.foundation.cli.commands.deps.has_dependency",
                 return_value=False,
             ),
-            patch("provide.foundation.console.output.pout") as mock_pout,
+            patch("provide.foundation.cli.commands.deps.pout") as mock_pout,
         ):
             with pytest.raises(SystemExit) as exc_info:
                 _deps_command_impl(quiet=False, check="crypto")
@@ -96,7 +96,7 @@ class TestDepsCommandWithClick(FoundationTestCase):
                 "provide.foundation.cli.commands.deps.has_dependency",
                 return_value=True,
             ),
-            patch("provide.foundation.console.output.pout") as mock_pout,
+            patch("provide.foundation.cli.commands.deps.pout") as mock_pout,
         ):
             with pytest.raises(SystemExit) as exc_info:
                 _deps_command_impl(quiet=True, check="cli")
@@ -254,7 +254,7 @@ class TestDepsCommandEdgeCases(FoundationTestCase):
 
         with (
             patch("provide.foundation.cli.commands.deps.has_dependency", return_value=False),
-            patch("provide.foundation.console.output.pout"),
+            patch("provide.foundation.cli.commands.deps.pout"),
         ):
             with pytest.raises(SystemExit) as exc_info:
                 _deps_command_impl(quiet=False, check="nonexistent")
