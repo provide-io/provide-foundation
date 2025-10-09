@@ -217,7 +217,7 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
         from provide.foundation.crypto.certificates import Certificate, CertificateError
 
         with pytest.raises(CertificateError):  # Certificate wraps underlying errors
-            Certificate(generate_keypair=False, cert_pem="dummy")
+            Certificate.from_pem(cert_pem="dummy")
 
     def test_crypto_module_resilience(self) -> None:
         """Test that the crypto module is resilient to import issues."""
