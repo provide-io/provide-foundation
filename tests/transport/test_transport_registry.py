@@ -94,8 +94,8 @@ class TestRegisterTransport(FoundationTestCase):
             assert metadata["schemes"] == ["http"]
             assert metadata["class_name"] == "MockTransport"
 
-    def test_register_transport_logging(self) -> None:
-        """Test that transport registration logs debug message."""
+    def test_register_transport_no_logging(self) -> None:
+        """Test that transport registration no longer logs (to reduce test noise)."""
         mock_registry = Mock()
 
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
@@ -106,9 +106,10 @@ class TestRegisterTransport(FoundationTestCase):
                     schemes=["http", "https"],
                 )
 
-                mock_log.debug.assert_called_once_with(
-                    "Registered transport MockTransport for schemes: ['http', 'https']",
-                )
+                # Verify no logging occurred
+                mock_log.trace.assert_not_called()
+                mock_log.debug.assert_not_called()
+                mock_log.info.assert_not_called()
 
 
 class TestGetTransportForScheme(FoundationTestCase):
@@ -486,7 +487,9 @@ class TestIntegration(FoundationTestCase):
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
 
-        def mock_register(name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool) -> None:
+        def mock_register(
+            name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool
+        ) -> None:
             entry = Mock()
             entry.name = name
             entry.value = value
@@ -541,7 +544,9 @@ class TestIntegration(FoundationTestCase):
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
 
-        def mock_register(name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool) -> None:
+        def mock_register(
+            name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool
+        ) -> None:
             entry = Mock()
             entry.name = name
             entry.value = value

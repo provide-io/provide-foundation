@@ -115,6 +115,22 @@ def reset_coordinator_state() -> None:
     reset_foundation_log_level_cache()
 
 
+def _configure_stdlib_module_logging(module_levels: dict[str, str]) -> None:
+    """Configure Python stdlib logging for module-level suppression.
+
+    This suppresses DEBUG messages from third-party modules like asyncio.
+
+    Args:
+        module_levels: Dictionary mapping module names to log levels
+
+    """
+    for module_name, level_str in module_levels.items():
+        module_logger = stdlib_logging.getLogger(module_name)
+        numeric_level = stdlib_logging.getLevelName(level_str.upper())
+        if isinstance(numeric_level, int):
+            module_logger.setLevel(numeric_level)
+
+
 def get_vanilla_logger(name: str) -> object:
     """Get a vanilla Python logger without Foundation enhancements.
 
@@ -229,6 +245,10 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
     foundation_logger.__dict__["_is_configured_by_setup"] = is_explicit_call
     foundation_logger.__dict__["_active_config"] = current_config
     _LAZY_SETUP_STATE["done"] = True
+
+    # Configure Python stdlib logging for module-level suppression
+    if not current_config.globally_disabled and current_config.logging.module_levels:
+        _configure_stdlib_module_logging(current_config.logging.module_levels)
 
     if not current_config.globally_disabled:
         core_setup_logger.debug(
