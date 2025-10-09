@@ -42,7 +42,7 @@ class TestConstants(FoundationTestCase):
 
     def test_has_click_flag_exists(self) -> None:
         """Test that _HAS_CLICK flag is defined."""
-        from provide.foundation.cli.commands.logs.generate import _HAS_CLICK
+        from provide.foundation.cli.deps import _HAS_CLICK
 
         assert isinstance(_HAS_CLICK, bool)
 
@@ -341,10 +341,11 @@ class TestHelperFunctions(FoundationTestCase):
     def test_send_log_entry_rate_limited(self, mock_get_logger: Mock) -> None:
         """Test _send_log_entry rate limit case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
+        from provide.foundation.errors import RateLimitExceededError
 
         # Mock logger to raise rate limit exception
         mock_logger = Mock()
-        mock_logger.info.side_effect = Exception("Rate limit exceeded")
+        mock_logger.info.side_effect = RateLimitExceededError("Rate limit exceeded")
         mock_get_logger.return_value = mock_logger
 
         entry = {
@@ -362,7 +363,7 @@ class TestHelperFunctions(FoundationTestCase):
 
         assert logs_sent == 0
         assert logs_failed == 1
-        assert logs_rate_limited == 1  # Should detect rate limit in error message
+        assert logs_rate_limited == 1  # Should detect RateLimitExceededError
 
     @patch("provide.foundation.cli.commands.logs.generate.click")
     @patch("provide.foundation.cli.commands.logs.generate.time")
@@ -419,7 +420,7 @@ class TestClickIntegration(FoundationTestCase):
 
     def test_has_click_flag_consistency(self) -> None:
         """Test _HAS_CLICK flag matches actual click availability."""
-        from provide.foundation.cli.commands.logs.generate import _HAS_CLICK
+        from provide.foundation.cli.deps import _HAS_CLICK
 
         try:
             import click  # noqa: F401
@@ -434,13 +435,13 @@ class TestClickIntegration(FoundationTestCase):
         """Test command stub behavior when click is missing."""
         # This test verifies that the stub function exists
         # We can't easily test the actual ImportError behavior without mocking imports
-        from provide.foundation.cli.commands.logs.generate import _HAS_CLICK
+        from provide.foundation.cli.deps import _HAS_CLICK
 
         if not _HAS_CLICK:
             # If click is not available, the command should be a stub
             from provide.foundation.cli.commands.logs.generate import generate_logs_command
 
-            with pytest.raises(ImportError, match="Click is required"):
+            with pytest.raises(ImportError, match="CLI commands require optional dependencies"):
                 generate_logs_command()
 
 

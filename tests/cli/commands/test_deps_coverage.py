@@ -168,42 +168,42 @@ class TestDepsCommandWithoutClick(FoundationTestCase):
 
     def test_deps_command_without_click(self, module_reload_isolation: Any) -> None:
         """Test deps_command behavior when click not available."""
-        # Test _require_click function directly since the stub calls it
-        from provide.foundation.cli.commands.deps import _require_click
+        # The requires_click decorator is what prevents execution without click
+        from provide.foundation.cli.commands.deps import deps_command
 
-        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False), pytest.raises(
-            ImportError,
-            match="CLI commands require optional dependencies",
+        with (
+            patch("provide.foundation.cli.deps._HAS_CLICK", False),
+            pytest.raises(
+                ImportError,
+                match="CLI commands require optional dependencies",
+            ),
         ):
-            _require_click()
+            deps_command(quiet=False, check=None)
 
     def test_require_click_raises_error(self) -> None:
-        """Test _require_click raises appropriate error."""
-        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False):
-            from provide.foundation.cli.commands.deps import _require_click
+        """Test requires_click decorator raises appropriate error."""
+        from provide.foundation.cli.commands.deps import deps_command
 
+        with patch("provide.foundation.cli.deps._HAS_CLICK", False):
             with pytest.raises(ImportError) as exc_info:
-                _require_click()
+                deps_command(quiet=False, check=None)
 
             assert "CLI commands require optional dependencies" in str(exc_info.value)
             assert "pip install 'provide-foundation[cli]'" in str(exc_info.value)
 
     def test_deps_command_stub_with_args(self, module_reload_isolation: Any) -> None:
-        """Test that stub function signature accepts arbitrary arguments."""
-        # Test the stub function behavior by directly creating and testing a replica
-        from provide.foundation.cli.commands.deps import _require_click
-
-        # Create a replica of the stub function from the source code
-        def deps_command_stub(*args: object, **kwargs: object) -> None:
-            """Deps command stub when click is not available."""
-            _require_click()
+        """Test that command accepts arguments but raises error when click is not available."""
+        from provide.foundation.cli.commands.deps import deps_command
 
         # Test that it accepts any arguments but raises the expected error
-        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False), pytest.raises(
-            ImportError,
-            match="CLI commands require optional dependencies",
+        with (
+            patch("provide.foundation.cli.deps._HAS_CLICK", False),
+            pytest.raises(
+                ImportError,
+                match="CLI commands require optional dependencies",
+            ),
         ):
-            deps_command_stub("arg1", "arg2", some_kwarg="value")
+            deps_command(quiet=True, check="some_dep")
 
 
 class TestDepsCommandDecorators(FoundationTestCase):
@@ -229,22 +229,18 @@ class TestDepsCommandModuleImport(FoundationTestCase):
         assert provide.foundation.cli.commands.deps.__all__ == ["deps_command"]
 
     def test_has_click_flag_exists(self) -> None:
-        """Test _HAS_CLICK flag exists."""
-        from provide.foundation.cli.commands import deps
+        """Test _HAS_CLICK flag exists in cli.deps."""
+        from provide.foundation.cli.deps import _HAS_CLICK
 
-        assert hasattr(deps, "_HAS_CLICK")
-        assert isinstance(deps._HAS_CLICK, bool)
+        assert isinstance(_HAS_CLICK, bool)
 
     def test_click_import_handling(self, module_reload_isolation: Any) -> None:
         """Test click import is handled properly."""
-        # Test that the module handles click import correctly
-        import provide.foundation.cli.commands.deps as deps_module
-
-        # The module should have the _HAS_CLICK flag
-        assert hasattr(deps_module, "_HAS_CLICK")
+        # Test that the CLI deps module handles click import correctly
+        from provide.foundation.cli.deps import _HAS_CLICK
 
         # Since click is installed in our test environment, it should be True
-        assert deps_module._HAS_CLICK
+        assert _HAS_CLICK is True
 
 
 class TestDepsCommandEdgeCases(FoundationTestCase):
