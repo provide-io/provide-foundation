@@ -54,9 +54,11 @@ def send_log_otlp(
         return False
 
     try:
+        from provide.foundation.integrations.openobserve.config import OpenObserveConfig
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         config = TelemetryConfig.from_env()
+        oo_config = OpenObserveConfig.from_env()
 
         if not config.otlp_endpoint:
             return False
@@ -72,10 +74,11 @@ def send_log_otlp(
 
         # Configure OTLP exporter
         headers = config.get_otlp_headers_dict()
-        if config.openobserve_org:
+        if oo_config.org:
             # Add organization header for OpenObserve
-            headers["organization"] = config.openobserve_org
-            headers["stream-name"] = config.openobserve_stream
+            headers["organization"] = oo_config.org
+        if oo_config.stream:
+            headers["stream-name"] = oo_config.stream
 
         # Determine endpoint for logs
         if config.otlp_traces_endpoint:
@@ -222,15 +225,17 @@ def send_log_bulk(
         if client is None:
             client = OpenObserveClient.from_config()
 
+        from provide.foundation.integrations.openobserve.config import OpenObserveConfig
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         config = TelemetryConfig.from_env()
+        oo_config = OpenObserveConfig.from_env()
 
         # Build log entry
         log_entry = _build_log_entry(message, level, service, attributes, config)
 
         # Format as bulk request
-        stream = config.openobserve_stream
+        stream = oo_config.stream or "default"
         bulk_data = json.dumps({"index": {"_index": stream}}) + "\n" + json.dumps(log_entry) + "\n"
 
         # Send via bulk API
@@ -296,9 +301,11 @@ def create_otlp_logger_provider() -> Any | None:
         return None
 
     try:
+        from provide.foundation.integrations.openobserve.config import OpenObserveConfig
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         config = TelemetryConfig.from_env()
+        oo_config = OpenObserveConfig.from_env()
 
         if not config.otlp_endpoint:
             return None
@@ -314,9 +321,10 @@ def create_otlp_logger_provider() -> Any | None:
 
         # Configure exporter
         headers = config.get_otlp_headers_dict()
-        if config.openobserve_org:
-            headers["organization"] = config.openobserve_org
-            headers["stream-name"] = config.openobserve_stream
+        if oo_config.org:
+            headers["organization"] = oo_config.org
+        if oo_config.stream:
+            headers["stream-name"] = oo_config.stream
 
         logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
         if config.otlp_traces_endpoint:
