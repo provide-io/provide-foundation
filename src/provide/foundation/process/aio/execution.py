@@ -209,7 +209,7 @@ def create_completed_process_result(
         stdout=stdout_str,
         stderr=stderr_str,
         cwd=cwd,
-        env=dict(run_env) if env else None,
+        env=dict(env) if env else None,  # Only store caller overrides, not full run_env
     )
 
 
