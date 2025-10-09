@@ -26,8 +26,8 @@ def enable_stream_redirect(monkeypatch: pytest.MonkeyPatch) -> None:
 @pytest.fixture
 def log_stream() -> io.StringIO:
     """StringIO stream for capturing Foundation logs."""
-    import sys
     import importlib
+    import sys
 
     # Create stream and set it BEFORE reset so it gets preserved
     stream = io.StringIO()
@@ -64,10 +64,12 @@ async def test_sensitive_query_params_redacted_in_logs(
     log_stream: io.StringIO,
 ) -> None:
     """Test that sensitive query parameters are redacted in logs."""
-    # Mock response - match any GET to this URL
+    import re
+
+    # Mock response - match URL with query params
     httpx_mock.add_response(
         method="GET",
-        url="https://api.example.com/users",
+        url=re.compile(r"https://api\.example\.com/users.*"),
         json={"result": "success"},
         status_code=200,
     )
@@ -97,9 +99,11 @@ async def test_multiple_sensitive_params_redacted(
     log_stream: io.StringIO,
 ) -> None:
     """Test that multiple sensitive query parameters are all redacted."""
+    import re
+
     httpx_mock.add_response(
         method="POST",
-        url="https://api.example.com/auth",
+        url=re.compile(r"https://api\.example\.com/auth.*"),
         json={"authenticated": True},
         status_code=200,
     )
@@ -162,9 +166,11 @@ async def test_streaming_request_sanitizes_uri(
     log_stream: io.StringIO,
 ) -> None:
     """Test that streaming requests also sanitize URIs in logs."""
+    import re
+
     httpx_mock.add_response(
         method="GET",
-        url="https://api.example.com/stream",
+        url=re.compile(r"https://api\.example\.com/stream.*"),
         content=b"chunk1chunk2chunk3",
         status_code=200,
     )
@@ -279,9 +285,11 @@ async def test_case_insensitive_param_matching(
     log_stream: io.StringIO,
 ) -> None:
     """Test that sensitive param matching is case-insensitive."""
+    import re
+
     httpx_mock.add_response(
         method="GET",
-        url="https://api.example.com/auth",
+        url=re.compile(r"https://api\.example\.com/auth.*"),
         json={"authenticated": True},
         status_code=200,
     )
@@ -311,9 +319,11 @@ async def test_empty_param_values_handled(
     log_stream: io.StringIO,
 ) -> None:
     """Test that empty parameter values are handled correctly."""
+    import re
+
     httpx_mock.add_response(
         method="GET",
-        url="https://api.example.com/test",
+        url=re.compile(r"https://api\.example\.com/test.*"),
         json={"result": "ok"},
         status_code=200,
     )
