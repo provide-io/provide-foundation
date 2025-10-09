@@ -12,8 +12,9 @@ def is_temp_file(path: Path) -> bool:
     stem = path.stem.lower()
 
     # VSCode-specific pattern: .filename.ext.tmp.XXXX (must check original case)
-    # Example: .orchestrator.py.tmp.84
-    if re.match(r'^\..+\.tmp\.\w+$', path.name):
+    # Examples: .orchestrator.py.tmp.84, .test.txt.tmp.vscode.123
+    # Allow dots in the suffix to support patterns like .tmp.vscode.123
+    if re.match(r'^\..+\.tmp\.[\w.]+$', path.name):
         return True
 
     # Common temp file patterns
