@@ -9,10 +9,12 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
 import pytest
 
-from provide.foundation.cli.commands.logs.generate import (
+from provide.foundation.cli.commands.logs.constants import (
     BURROUGHS_PHRASES,
     OPERATIONS,
     SERVICE_NAMES,
+)
+from provide.foundation.cli.commands.logs.generate import (
     generate_log_entry,
     generate_span_id,
     generate_trace_id,
@@ -53,10 +55,10 @@ class TestTraceSpanGeneration(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset counters before each test."""
         super().setup_method()
-        import provide.foundation.cli.commands.logs.generate as generate_module
+        import provide.foundation.cli.commands.logs.generator as generator_module
 
-        generate_module._trace_counter = 0
-        generate_module._span_counter = 0
+        generator_module._default_generator._trace_counter = 0
+        generator_module._default_generator._span_counter = 0
 
     def test_generate_trace_id(self) -> None:
         """Test trace ID generation."""
@@ -121,10 +123,10 @@ class TestGenerateLogEntry(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset counters and random seed before each test."""
         super().setup_method()
-        import provide.foundation.cli.commands.logs.generate as generate_module
+        import provide.foundation.cli.commands.logs.generator as generator_module
 
-        generate_module._trace_counter = 0
-        generate_module._span_counter = 0
+        generator_module._default_generator._trace_counter = 0
+        generator_module._default_generator._span_counter = 0
         random.seed(42)  # For deterministic tests
 
     def test_generate_log_entry_basic(self) -> None:
@@ -239,12 +241,12 @@ class TestGenerateLogEntry(FoundationTestCase):
 class TestHelperFunctions(FoundationTestCase):
     """Test helper functions from the generate module."""
 
-    @patch("provide.foundation.cli.commands.logs.generate.click")
+    @patch("provide.foundation.cli.commands.logs.stats.click")
     def test_print_generation_config(self, mock_click: Mock) -> None:
-        """Test _print_generation_config function."""
-        from provide.foundation.cli.commands.logs.generate import _print_generation_config
+        """Test print_generation_config function."""
+        from provide.foundation.cli.commands.logs.stats import print_generation_config
 
-        _print_generation_config(
+        print_generation_config(
             count=100,
             rate=10.0,
             stream="test",
@@ -280,10 +282,10 @@ class TestHelperFunctions(FoundationTestCase):
         # Should not raise any errors
         _configure_rate_limiter(enable_rate_limit=False, rate_limit=100.0)
 
-    @patch("provide.foundation.cli.commands.logs.generate.get_logger")
+    @patch("provide.foundation.cli.commands.logs.generator.get_logger")
     def test_send_log_entry_success(self, mock_get_logger: Mock) -> None:
-        """Test _send_log_entry success case."""
-        from provide.foundation.cli.commands.logs.generate import _send_log_entry
+        """Test send_log_entry success case."""
+        from provide.foundation.cli.commands.logs.generator import LogGenerator
 
         # Mock logger
         mock_logger = Mock()
@@ -296,7 +298,8 @@ class TestHelperFunctions(FoundationTestCase):
             "extra_field": "value",
         }
 
-        logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
+        generator = LogGenerator()
+        logs_sent, logs_failed, logs_rate_limited = generator.send_log_entry(
             entry,
             0,
             0,
@@ -310,10 +313,10 @@ class TestHelperFunctions(FoundationTestCase):
         mock_get_logger.assert_called_once_with("generated.test-service")
         mock_logger.info.assert_called_once_with("test message", service="test-service", extra_field="value")
 
-    @patch("provide.foundation.cli.commands.logs.generate.get_logger")
+    @patch("provide.foundation.cli.commands.logs.generator.get_logger")
     def test_send_log_entry_failure(self, mock_get_logger: Mock) -> None:
-        """Test _send_log_entry failure case."""
-        from provide.foundation.cli.commands.logs.generate import _send_log_entry
+        """Test send_log_entry failure case."""
+        from provide.foundation.cli.commands.logs.generator import LogGenerator
 
         # Mock logger to raise exception
         mock_logger = Mock()
@@ -326,7 +329,8 @@ class TestHelperFunctions(FoundationTestCase):
             "message": "test message",
         }
 
-        logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
+        generator = LogGenerator()
+        logs_sent, logs_failed, logs_rate_limited = generator.send_log_entry(
             entry,
             0,
             0,
@@ -337,10 +341,10 @@ class TestHelperFunctions(FoundationTestCase):
         assert logs_failed == 1
         assert logs_rate_limited == 0
 
-    @patch("provide.foundation.cli.commands.logs.generate.get_logger")
+    @patch("provide.foundation.cli.commands.logs.generator.get_logger")
     def test_send_log_entry_rate_limited(self, mock_get_logger: Mock) -> None:
-        """Test _send_log_entry rate limit case."""
-        from provide.foundation.cli.commands.logs.generate import _send_log_entry
+        """Test send_log_entry rate limit case."""
+        from provide.foundation.cli.commands.logs.generator import LogGenerator
         from provide.foundation.errors import RateLimitExceededError
 
         # Mock logger to raise rate limit exception
@@ -354,7 +358,8 @@ class TestHelperFunctions(FoundationTestCase):
             "message": "test message",
         }
 
-        logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
+        generator = LogGenerator()
+        logs_sent, logs_failed, logs_rate_limited = generator.send_log_entry(
             entry,
             0,
             0,
@@ -365,15 +370,12 @@ class TestHelperFunctions(FoundationTestCase):
         assert logs_failed == 1
         assert logs_rate_limited == 1  # Should detect RateLimitExceededError
 
-    @patch("provide.foundation.cli.commands.logs.generate.click")
-    @patch("provide.foundation.cli.commands.logs.generate.time")
-    def test_print_stats(self, mock_time: Mock, mock_click: Mock) -> None:
-        """Test _print_stats function."""
-        from provide.foundation.cli.commands.logs.generate import _print_stats
+    @patch("provide.foundation.cli.commands.logs.stats.click")
+    def test_print_stats(self, mock_click: Mock) -> None:
+        """Test print_stats function."""
+        from provide.foundation.cli.commands.logs.stats import print_stats
 
-        mock_time.time.return_value = 10.0
-
-        last_stats_time, last_stats_sent = _print_stats(
+        last_stats_time, last_stats_sent = print_stats(
             current_time=10.0,
             last_stats_time=9.0,
             logs_sent=100,
@@ -387,12 +389,12 @@ class TestHelperFunctions(FoundationTestCase):
         assert last_stats_sent == 100
         mock_click.echo.assert_called_once()
 
-    @patch("provide.foundation.cli.commands.logs.generate.click")
+    @patch("provide.foundation.cli.commands.logs.stats.click")
     def test_print_final_stats(self, mock_click: Mock) -> None:
-        """Test _print_final_stats function."""
-        from provide.foundation.cli.commands.logs.generate import _print_final_stats
+        """Test print_final_stats function."""
+        from provide.foundation.cli.commands.logs.stats import print_final_stats
 
-        _print_final_stats(
+        print_final_stats(
             logs_sent=1000,
             logs_failed=50,
             logs_rate_limited=10,
