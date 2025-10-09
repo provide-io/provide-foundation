@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from functools import cached_property
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Self, TypeAlias
 
 from attrs import define, field
 
@@ -19,6 +19,12 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     _HAS_CRYPTO = False
+
+# Type alias for private keys
+if TYPE_CHECKING or _HAS_CRYPTO:
+    KeyPair: TypeAlias = "rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None"
+else:
+    KeyPair: TypeAlias = "None"
 
 from provide.foundation import logger
 from provide.foundation.crypto.certificates.base import (
@@ -435,7 +441,3 @@ class Certificate:
             f"common_name='{self.common_name}', valid={valid_str}, ca={ca_str}, "
             f"key_type='{self.key_type}')"
         )
-
-
-# Type alias for backwards compatibility
-KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None if _HAS_CRYPTO else None
