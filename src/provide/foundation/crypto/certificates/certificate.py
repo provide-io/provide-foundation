@@ -165,16 +165,38 @@ class Certificate:
             key_pem,
         )
 
+        # Extract metadata from certificate
+        common_name = DEFAULT_CERTIFICATE_COMMON_NAME
+        organization_name = DEFAULT_CERTIFICATE_ORGANIZATION_NAME
+
+        # Try to extract CN from subject
+        for attr in x509_cert.subject:
+            if attr.oid == x509.oid.NameOID.COMMON_NAME:
+                common_name = str(attr.value)
+            elif attr.oid == x509.oid.NameOID.ORGANIZATION_NAME:
+                organization_name = str(attr.value)
+
+        # Calculate validity days
+        validity_days = (base.not_valid_after - base.not_valid_before).days
+
+        # Determine key type from public key
+        if isinstance(base.public_key, rsa.RSAPublicKey):
+            key_type = "rsa"
+        elif isinstance(base.public_key, ec.EllipticCurvePublicKey):
+            key_type = "ecdsa"
+        else:
+            key_type = DEFAULT_CERTIFICATE_KEY_TYPE
+
         return cls(
             _base=base,
             _cert=x509_cert,
             _private_key=private_key,
             cert=cert_pem_str,
             key=key_pem_str,
-            common_name=base.common_name,
-            organization_name=base.organization_name,
-            validity_days=base.validity_days,
-            key_type=base.key_type,
+            common_name=common_name,
+            organization_name=organization_name,
+            validity_days=validity_days,
+            key_type=key_type,
         )
 
     @classmethod
