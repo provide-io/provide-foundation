@@ -178,7 +178,7 @@ class TestDepsCommandWithoutClick(FoundationTestCase):
                 match="CLI commands require optional dependencies",
             ),
         ):
-            deps_command(quiet=False, check=None)
+            deps_command.callback(quiet=False, check=None)
 
     def test_require_click_raises_error(self) -> None:
         """Test requires_click decorator raises appropriate error."""
@@ -186,7 +186,7 @@ class TestDepsCommandWithoutClick(FoundationTestCase):
 
         with patch("provide.foundation.cli.deps._HAS_CLICK", False):
             with pytest.raises(ImportError) as exc_info:
-                deps_command(quiet=False, check=None)
+                deps_command.callback(quiet=False, check=None)
 
             assert "CLI commands require optional dependencies" in str(exc_info.value)
             assert "pip install 'provide-foundation[cli]'" in str(exc_info.value)
@@ -203,7 +203,7 @@ class TestDepsCommandWithoutClick(FoundationTestCase):
                 match="CLI commands require optional dependencies",
             ),
         ):
-            deps_command(quiet=True, check="some_dep")
+            deps_command.callback(quiet=True, check="some_dep")
 
 
 class TestDepsCommandDecorators(FoundationTestCase):
