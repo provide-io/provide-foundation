@@ -135,7 +135,8 @@ class TestCertificateChains(FoundationTestCase):
     async def test_certificate_invalid_trust_chain_signature(self) -> None:
         """Ensure certificate trust chain fails on signature mismatch when signature check is performed."""
         # Create a self-trusted CA. Ensure key_type is ecdsa for the mock to apply.
-        ca_cert = Certificate.generate(
+        ca_cert = Certificate.from_pem(
+            generate_keypair=True,
             common_name="Test Root CA",
             key_type="ecdsa",
         )
@@ -143,7 +144,8 @@ class TestCertificateChains(FoundationTestCase):
 
         # Create an end-entity certificate that will be checked against the CA.
         # Ensure key_type is ecdsa.
-        cert_to_check = Certificate.generate(
+        cert_to_check = Certificate.from_pem(
+            generate_keypair=True,
             common_name="End Entity Cert",
             key_type="ecdsa",
         )
