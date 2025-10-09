@@ -80,26 +80,6 @@ class Certificate:
 
     # Properties
     @property
-    def cert(self) -> str:
-        """Alias for cert_pem for backwards compatibility."""
-        return self.cert_pem
-
-    @cert.setter
-    def cert(self, value: str) -> None:
-        """Alias for cert_pem for backwards compatibility."""
-        object.__setattr__(self, "cert_pem", value)
-
-    @property
-    def key(self) -> str | None:
-        """Alias for key_pem for backwards compatibility."""
-        return self.key_pem
-
-    @key.setter
-    def key(self, value: str | None) -> None:
-        """Alias for key_pem for backwards compatibility."""
-        object.__setattr__(self, "key_pem", value)
-
-    @property
     def trust_chain(self) -> list[Certificate]:
         """Returns the list of trusted certificates associated with this one."""
         return self._trust_chain
