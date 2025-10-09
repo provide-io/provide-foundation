@@ -23,7 +23,6 @@ except ImportError:
 from provide.foundation import logger
 from provide.foundation.crypto.certificates.base import (
     CertificateBase,
-    CertificateError,
     PublicKey,
 )
 from provide.foundation.crypto.certificates.generator import generate_certificate
@@ -40,7 +39,6 @@ from provide.foundation.crypto.constants import (
 )
 from provide.foundation.crypto.defaults import (
     DEFAULT_CERTIFICATE_COMMON_NAME,
-    DEFAULT_CERTIFICATE_GENERATE_KEYPAIR,
     DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
     default_certificate_alt_names,
 )
