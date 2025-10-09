@@ -45,11 +45,18 @@ def apply_structlog_configuration(processors: list[Any], log_stream: TextIO) -> 
         log_stream: Output stream for logging
 
     """
+    # Check if force stream redirect is enabled (for testing)
+    # Disable caching to allow stream redirection to work properly
+    from provide.foundation.streams.config import get_stream_config
+
+    stream_config = get_stream_config()
+    cache_loggers = not stream_config.force_stream_redirect
+
     structlog.configure(
         processors=processors,
         logger_factory=structlog.PrintLoggerFactory(file=log_stream),
         wrapper_class=cast("type[structlog.types.BindableLogger]", structlog.BoundLogger),
-        cache_logger_on_first_use=True,
+        cache_logger_on_first_use=cache_loggers,
     )
 
 
