@@ -77,7 +77,7 @@ class TestDotNotationCommands(FoundationTestCase):
         assert install is tools_install
 
     def test_command_with_parameters(self) -> None:
-        """Test nested commands with parameters are properly converted to Click options."""
+        """Test nested commands with Position-Based Hybrid parameter mapping."""
 
         @register_command("db.migrate")
         def db_migrate(direction: str = "up", steps: int = 1):
@@ -88,10 +88,10 @@ class TestDotNotationCommands(FoundationTestCase):
         cli = create_command_group("app")
         runner = CliRunner()
 
-        # Test with options
+        # Test with positional direction and option steps (Position-Based Hybrid)
         result = runner.invoke(
             cli,
-            ["db", "migrate", "--direction", "down", "--steps", "3"],
+            ["db", "migrate", "down", "--steps", "3"],
         )
         assert result.exit_code == 0
         assert "Migrating down 3 steps" in result.output
@@ -196,7 +196,7 @@ class TestDotNotationCommands(FoundationTestCase):
         assert "Format Python code" in result.output
 
     def test_boolean_flags(self) -> None:
-        """Test boolean parameters become flags."""
+        """Test boolean parameters become flags with Position-Based Hybrid."""
 
         @register_command("deploy.app")
         def deploy_app(
@@ -214,10 +214,10 @@ class TestDotNotationCommands(FoundationTestCase):
         cli = create_command_group("deploy-cli")
         runner = CliRunner()
 
-        # Test with flags
+        # Test with positional env and boolean flags (Position-Based Hybrid)
         result = runner.invoke(
             cli,
-            ["deploy", "app", "--env", "prod", "--force", "--verbose"],
+            ["deploy", "app", "prod", "--force", "--verbose"],
         )
         assert result.exit_code == 0
         assert "Deploying to prod" in result.output
@@ -393,19 +393,27 @@ class TestDotNotationIntegration(FoundationTestCase):
         runner = CliRunner()
 
         tests = [
-            (["db", "migrate", "--version", "v2.0"], "Migrating to v2.0"),
+            # db_migrate(version: str = "latest") - Position-Based Hybrid: version is optional arg
+            (["db", "migrate", "v2.0"], "Migrating to v2.0"),
+            # db_backup(output: str = "backup.sql") - Position-Based Hybrid: output is optional arg
             (["db", "backup"], "Backing up to backup.sql"),
+            # db_restore(input: str) - required arg
             (["db", "restore", "old.sql"], "Restoring from old.sql"),
+            # server_start(port: int = 8000, host: str = "localhost") - Position-Based Hybrid: port is optional arg
             (
-                ["server", "start", "--port", "3000"],
+                ["server", "start", "3000"],
                 "Server starting on localhost:3000",
             ),
+            # server_stop() - no args
             (["server", "stop"], "Server stopped"),
+            # server_logs_show(lines: int = 100, follow: bool = False) - Position-Based Hybrid: lines is optional arg
             (
-                ["server", "logs", "show", "--lines", "50", "--follow"],
+                ["server", "logs", "show", "50", "--follow"],
                 "Showing 50 lines",
             ),
-            (["cache", "clear", "--pattern", "*.tmp"], "Clearing cache: *.tmp"),
+            # cache_clear(pattern: str = "*") - Position-Based Hybrid: pattern is optional arg
+            (["cache", "clear", "*.tmp"], "Clearing cache: *.tmp"),
+            # cache_stats() - no args
             (["cache", "stats"], "Cache stats: 100 entries"),
         ]
 
