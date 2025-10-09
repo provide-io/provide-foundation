@@ -50,61 +50,35 @@ from provide.foundation.crypto.defaults import (
 
 @define(slots=True, eq=False, hash=False, repr=False)
 class Certificate:
-    """X.509 certificate management using attrs."""
+    """X.509 certificate management using attrs.
 
-    cert_pem_or_uri: str | None = field(default=None, kw_only=True)
-    key_pem_or_uri: str | None = field(default=None, kw_only=True)
-    generate_keypair: bool = field(default=DEFAULT_CERTIFICATE_GENERATE_KEYPAIR, kw_only=True)
-    key_type: str = field(default=DEFAULT_CERTIFICATE_KEY_TYPE, kw_only=True)
+    This class should be instantiated via factory methods:
+    - Certificate.from_pem() - Load from PEM strings
+    - Certificate.generate() - Generate new certificate
+    - Certificate.create_ca() - Generate CA certificate
+    - Certificate.create_signed_certificate() - Generate signed certificate
+    - Certificate.create_self_signed_server_cert() - Generate self-signed server cert
+    - Certificate.create_self_signed_client_cert() - Generate self-signed client cert
+    """
+
+    # Core certificate components - required for initialization
+    _base: CertificateBase = field(repr=False)
+    _cert: X509Certificate = field(repr=False)
+    _private_key: KeyPair | None = field(repr=False)
+    cert: str = field(repr=True)
+    key: str | None = field(repr=False)
+
+    # Certificate metadata
+    common_name: str = field(kw_only=True)
+    organization_name: str = field(kw_only=True)
+    validity_days: int = field(kw_only=True)
+    key_type: str = field(kw_only=True)
     key_size: int = field(default=DEFAULT_RSA_KEY_SIZE, kw_only=True)
     ecdsa_curve: str = field(default=DEFAULT_CERTIFICATE_CURVE, kw_only=True)
-    common_name: str = field(default=DEFAULT_CERTIFICATE_COMMON_NAME, kw_only=True)
-    alt_names: list[str] | None = field(factory=default_certificate_alt_names, kw_only=True)
-    organization_name: str = field(default=DEFAULT_CERTIFICATE_ORGANIZATION_NAME, kw_only=True)
-    validity_days: int = field(default=DEFAULT_CERTIFICATE_VALIDITY_DAYS, kw_only=True)
+    alt_names: list[str] | None = field(default=None, kw_only=True)
 
-    _base: CertificateBase = field(init=False, repr=False)
-    _private_key: KeyPair | None = field(init=False, default=None, repr=False)
-    _cert: X509Certificate = field(init=False, repr=False)
+    # Trust chain
     _trust_chain: list[Certificate] = field(init=False, factory=list, repr=False)
-
-    cert: str = field(init=False, default="", repr=True)
-    key: str | None = field(init=False, default=None, repr=False)
-
-    def __attrs_post_init__(self) -> None:
-        """Handle loading or generation logic after attrs initialization."""
-        if self.generate_keypair:
-            # Generate new certificate
-            base, x509_cert, private_key, cert_pem, key_pem = generate_certificate(
-                common_name=self.common_name,
-                organization_name=self.organization_name,
-                validity_days=self.validity_days,
-                key_type=self.key_type,
-                key_size=self.key_size,
-                ecdsa_curve=self.ecdsa_curve,
-                alt_names=self.alt_names,
-                is_ca=False,
-                is_client_cert=True,
-            )
-            self._base = base
-            self._cert = x509_cert
-            self._private_key = private_key
-            self.cert = cert_pem
-            self.key = key_pem
-        else:
-            # Load existing certificate
-            if not self.cert_pem_or_uri:
-                raise CertificateError("cert_pem_or_uri required when not generating")
-
-            base, x509_cert, private_key, cert_pem, key_pem = load_certificate_from_pem(
-                self.cert_pem_or_uri,
-                self.key_pem_or_uri,
-            )
-            self._base = base
-            self._cert = x509_cert
-            self._private_key = private_key
-            self.cert = cert_pem
-            self.key = key_pem
 
     # Properties
     @property
@@ -167,6 +141,107 @@ class Certificate:
         if not hasattr(self, "_base"):
             return None
         return self._base.serial_number
+
+    # Primary factory methods for explicit initialization
+    @classmethod
+    def from_pem(cls, cert_pem: str, key_pem: str | None = None) -> Certificate:
+        """Load certificate from PEM strings.
+
+        Args:
+            cert_pem: Certificate in PEM format (string or URI)
+            key_pem: Optional private key in PEM format (string or URI)
+
+        Returns:
+            Certificate instance
+
+        Raises:
+            CertificateError: If loading fails
+
+        Example:
+            >>> cert = Certificate.from_pem(cert_pem_string, key_pem_string)
+            >>> assert cert.is_valid
+        """
+        base, x509_cert, private_key, cert_pem_str, key_pem_str = load_certificate_from_pem(
+            cert_pem,
+            key_pem,
+        )
+
+        return cls(
+            _base=base,
+            _cert=x509_cert,
+            _private_key=private_key,
+            cert=cert_pem_str,
+            key=key_pem_str,
+            common_name=base.common_name,
+            organization_name=base.organization_name,
+            validity_days=base.validity_days,
+            key_type=base.key_type,
+        )
+
+    @classmethod
+    def generate(
+        cls,
+        common_name: str = DEFAULT_CERTIFICATE_COMMON_NAME,
+        organization_name: str = DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
+        validity_days: int = DEFAULT_CERTIFICATE_VALIDITY_DAYS,
+        key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
+        key_size: int = DEFAULT_RSA_KEY_SIZE,
+        ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
+        alt_names: list[str] | None = None,
+        is_ca: bool = False,
+        is_client_cert: bool = True,
+    ) -> Certificate:
+        """Generate a new certificate with a new keypair.
+
+        Args:
+            common_name: Certificate common name
+            organization_name: Organization name
+            validity_days: Number of days certificate is valid
+            key_type: Key type ("rsa" or "ecdsa")
+            key_size: RSA key size in bits
+            ecdsa_curve: ECDSA curve name
+            alt_names: Subject alternative names
+            is_ca: Whether this is a CA certificate
+            is_client_cert: Whether this is a client certificate
+
+        Returns:
+            New Certificate instance
+
+        Example:
+            >>> cert = Certificate.generate(
+            ...     common_name="example.com",
+            ...     organization_name="Example Corp",
+            ... )
+            >>> assert cert._private_key is not None
+        """
+        alt_names = alt_names or default_certificate_alt_names()
+
+        base, x509_cert, private_key, cert_pem, key_pem = generate_certificate(
+            common_name=common_name,
+            organization_name=organization_name,
+            validity_days=validity_days,
+            key_type=key_type,
+            key_size=key_size,
+            ecdsa_curve=ecdsa_curve,
+            alt_names=alt_names,
+            is_ca=is_ca,
+            is_client_cert=is_client_cert,
+        )
+
+        return cls(
+            _base=base,
+            _cert=x509_cert,
+            _private_key=private_key,
+            cert=cert_pem,
+            key=key_pem,
+            common_name=common_name,
+            organization_name=organization_name,
+            validity_days=validity_days,
+            key_type=key_type,
+            key_size=key_size,
+            ecdsa_curve=ecdsa_curve,
+            alt_names=alt_names,
+        )
 
     # Factory methods - moved to factory.py but kept as classmethods for compatibility
     @classmethod
