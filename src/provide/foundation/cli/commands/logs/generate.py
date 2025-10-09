@@ -2,17 +2,7 @@ from __future__ import annotations
 
 import time
 
-from provide.foundation.cli.commands.logs.constants import (
-    BURROUGHS_PHRASES,
-    OPERATIONS,
-    SERVICE_NAMES,
-)
-from provide.foundation.cli.commands.logs.generator import (
-    LogGenerator,
-    generate_log_entry,
-    generate_span_id,
-    generate_trace_id,
-)
+from provide.foundation.cli.commands.logs.generator import LogGenerator
 from provide.foundation.cli.commands.logs.stats import (
     print_final_stats,
     print_generation_config,
@@ -23,16 +13,7 @@ from provide.foundation.cli.shutdown import with_cleanup
 
 """Command to generate logs for testing OpenObserve integration with Foundation's rate limiting."""
 
-# Export constants and functions for backwards compatibility
-__all__ = [
-    "BURROUGHS_PHRASES",
-    "OPERATIONS",
-    "SERVICE_NAMES",
-    "generate_log_entry",
-    "generate_logs_command",
-    "generate_span_id",
-    "generate_trace_id",
-]
+__all__ = ["generate_logs_command"]
 
 
 def _configure_rate_limiter(enable_rate_limit: bool, rate_limit: float) -> None:

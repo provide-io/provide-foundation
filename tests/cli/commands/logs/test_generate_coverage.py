@@ -14,11 +14,7 @@ from provide.foundation.cli.commands.logs.constants import (
     OPERATIONS,
     SERVICE_NAMES,
 )
-from provide.foundation.cli.commands.logs.generate import (
-    generate_log_entry,
-    generate_span_id,
-    generate_trace_id,
-)
+from provide.foundation.cli.commands.logs.generator import LogGenerator
 
 
 class TestConstants(FoundationTestCase):
@@ -52,39 +48,34 @@ class TestConstants(FoundationTestCase):
 class TestTraceSpanGeneration(FoundationTestCase):
     """Test trace and span ID generation."""
 
-    def setup_method(self) -> None:
-        """Reset counters before each test."""
-        super().setup_method()
-        import provide.foundation.cli.commands.logs.generator as generator_module
-
-        generator_module._default_generator._trace_counter = 0
-        generator_module._default_generator._span_counter = 0
-
     def test_generate_trace_id(self) -> None:
         """Test trace ID generation."""
-        trace_id = generate_trace_id()
+        generator = LogGenerator()
+        trace_id = generator.generate_trace_id()
         assert trace_id == "trace_00000000"
 
         # Second call should increment
-        trace_id_2 = generate_trace_id()
+        trace_id_2 = generator.generate_trace_id()
         assert trace_id_2 == "trace_00000001"
 
     def test_generate_span_id(self) -> None:
         """Test span ID generation."""
-        span_id = generate_span_id()
+        generator = LogGenerator()
+        span_id = generator.generate_span_id()
         assert span_id == "span_00000000"
 
         # Second call should increment
-        span_id_2 = generate_span_id()
+        span_id_2 = generator.generate_span_id()
         assert span_id_2 == "span_00000001"
 
     def test_trace_id_thread_safety(self) -> None:
         """Test that trace ID generation is thread-safe."""
+        generator = LogGenerator()
         trace_ids = []
 
         def generate_multiple() -> None:
             for _ in range(10):
-                trace_ids.append(generate_trace_id())
+                trace_ids.append(generator.generate_trace_id())
 
         threads = [threading.Thread(daemon=True, target=generate_multiple) for _ in range(5)]
 
@@ -99,11 +90,12 @@ class TestTraceSpanGeneration(FoundationTestCase):
 
     def test_span_id_thread_safety(self) -> None:
         """Test that span ID generation is thread-safe."""
+        generator = LogGenerator()
         span_ids = []
 
         def generate_multiple() -> None:
             for _ in range(10):
-                span_ids.append(generate_span_id())
+                span_ids.append(generator.generate_span_id())
 
         threads = [threading.Thread(daemon=True, target=generate_multiple) for _ in range(5)]
 
@@ -123,15 +115,12 @@ class TestGenerateLogEntry(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset counters and random seed before each test."""
         super().setup_method()
-        import provide.foundation.cli.commands.logs.generator as generator_module
-
-        generator_module._default_generator._trace_counter = 0
-        generator_module._default_generator._span_counter = 0
         random.seed(42)  # For deterministic tests
+        self.generator = LogGenerator()
 
     def test_generate_log_entry_basic(self) -> None:
         """Test basic log entry generation."""
-        entry = generate_log_entry(0)
+        entry = self.generator.generate_log_entry(0)
 
         assert isinstance(entry, dict)
         assert "message" in entry
