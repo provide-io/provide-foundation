@@ -8,7 +8,6 @@ from attrs import define, field
 import httpx
 
 from provide.foundation.logger import get_logger
-from provide.foundation.security import sanitize_uri
 from provide.foundation.transport.base import Request, Response, TransportBase
 from provide.foundation.transport.config import HTTPConfig
 from provide.foundation.transport.errors import (
@@ -76,9 +75,8 @@ class HTTPTransport(TransportBase):
         if self._client is None:
             raise TransportConnectionError("HTTP client not connected")
 
-        # Log request with sanitized URI (redacts sensitive query params)
-        sanitized_uri = sanitize_uri(request.uri)
-        log.info(f"🚀 {request.method} {sanitized_uri}")
+        # Log request with emoji
+        log.info(f"🚀 {request.method} {request.uri}")
 
         start_time = time.perf_counter()
 
@@ -155,9 +153,7 @@ class HTTPTransport(TransportBase):
         if self._client is None:
             raise TransportConnectionError("HTTP client not connected")
 
-        # Log streaming request with sanitized URI
-        sanitized_uri = sanitize_uri(request.uri)
-        log.info(f"🌊 Streaming {request.method} {sanitized_uri}")
+        log.info(f"🌊 Streaming {request.method} {request.uri}")
 
         try:
             async with self._client.stream(

@@ -194,6 +194,21 @@ hub = get_hub()
 hub.initialize_foundation()  # Configures logging + optional tracing/metrics
 ```
 
+#### **Metrics**
+Lightweight and extensible metrics collection with optional OpenTelemetry integration.
+
+```python
+from provide.foundation.metrics import counter, gauge
+
+# Create and increment a counter
+request_counter = counter("http_requests_total", "Total HTTP requests")
+request_counter.add(1, {"method": "GET", "path": "/api/users"})
+
+# Set a gauge
+active_users = gauge("active_users", "Number of active users")
+active_users.set(123)
+```
+
 #### **CLI Framework**
 Build command-line interfaces with automatic help generation and component registration.
 
@@ -244,6 +259,38 @@ def risky_operation():
     return result
 ```
 
+#### **Resilience Patterns**
+A suite of decorators for building reliable applications, including retry, circuit breaker, and bulkhead patterns.
+
+```python
+from provide.foundation.resilience import retry
+import random
+
+@retry(attempts=3, delay_seconds=1)
+def unreliable_task():
+    """This task might fail, but it's resilient!"""
+    if random.random() < 0.7:  # 70% chance of failure
+        raise ValueError("Something went wrong")
+    return "Success!"
+
+unreliable_task()
+```
+
+#### **Concurrency Utilities**
+High-level utilities for managing asynchronous tasks and thread-safe operations.
+
+```python
+import asyncio
+from provide.foundation.concurrency import async_gather
+
+async def my_coroutine(delay):
+    await asyncio.sleep(delay)
+    return delay
+
+# Run multiple coroutines concurrently
+results = asyncio.run(async_gather(my_coroutine(1), my_coroutine(2)))
+```
+
 #### **Cryptographic Utilities**
 Comprehensive cryptographic operations with modern algorithms and secure defaults.
 
@@ -276,6 +323,35 @@ data = read_json("config.json")
 safe_copy("source.txt", "backup.txt")
 ```
 
+#### **Archive Operations**
+Create and extract archives with support for various formats like TAR, ZIP, GZIP, and BZIP2.
+
+```python
+from provide.foundation.archive import TarArchive
+
+# Create a TAR archive
+with TarArchive("my_archive.tar.gz", "w:gz") as archive:
+    archive.add("my_file.txt")
+    archive.add("my_directory/")
+
+# Extract an archive
+with TarArchive("my_archive.tar.gz", "r:gz") as archive:
+    archive.extractall("output_directory")
+```
+
+#### **Serialization**
+Safe and consistent JSON serialization and deserialization.
+
+```python
+from provide.foundation.serialization import provide_dumps, provide_loads
+
+# Serialize a dictionary to a JSON string
+json_string = provide_dumps({"key": "value"})
+
+# Deserialize a JSON string to a Python object
+data = provide_loads(json_string)
+```
+
 #### **Console I/O**
 Enhanced console input/output with color support, JSON mode, and interactive prompts.
 
@@ -292,6 +368,19 @@ password = pin("Enter password:", password=True)
 
 # JSON mode for scripts
 pout({"status": "ok", "data": results}, json=True)
+```
+
+#### **Formatting Utilities**
+A collection of helpers for formatting text, numbers, and data structures.
+
+```python
+from provide.foundation.formatting import format_duration, to_camel_case
+
+# Format time durations
+print(format_duration(123.45))
+
+# Convert string cases
+print(to_camel_case("hello_world"))
 ```
 
 #### **Platform Utilities**
@@ -324,8 +413,8 @@ for line in process.stream_command(["tail", "-f", "app.log"]):
     logger.info("Log line", line=line)
 ```
 
-#### **Registry Pattern**
-Flexible registry system for managing components and commands.
+#### **Hub and Registry**
+A central system for managing application components, commands, and resources.
 
 ```python
 # From examples/cli/01_cli_application.py
