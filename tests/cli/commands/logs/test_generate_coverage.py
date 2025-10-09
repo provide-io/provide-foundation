@@ -139,7 +139,8 @@ class TestGenerateLogEntry(FoundationTestCase):
 
     def test_generate_log_entry_normal_style(self) -> None:
         """Test log entry generation with normal style."""
-        entry = generate_log_entry(0, style="normal")
+        generator = LogGenerator(style="normal")
+        entry = generator.generate_log_entry(0)
 
         message = entry["message"]
         assert "Successfully" in message
@@ -152,16 +153,18 @@ class TestGenerateLogEntry(FoundationTestCase):
 
     def test_generate_log_entry_burroughs_style(self) -> None:
         """Test log entry generation with Burroughs style."""
-        entry = generate_log_entry(0, style="burroughs")
+        generator = LogGenerator(style="burroughs")
+        entry = generator.generate_log_entry(0)
 
         message = entry["message"]
         assert message in BURROUGHS_PHRASES
 
     def test_generate_log_entry_error_rate_zero(self) -> None:
         """Test log entry generation with zero error rate."""
+        generator = LogGenerator(error_rate=0.0)
         # Generate multiple entries to ensure no errors
         for i in range(20):
-            entry = generate_log_entry(i, error_rate=0.0)
+            entry = generator.generate_log_entry(i)
 
             # Should not have error-specific fields
             assert "error_code" not in entry
@@ -171,7 +174,8 @@ class TestGenerateLogEntry(FoundationTestCase):
 
     def test_generate_log_entry_error_rate_one(self) -> None:
         """Test log entry generation with 100% error rate."""
-        entry = generate_log_entry(0, error_rate=1.0)
+        generator = LogGenerator(error_rate=1.0)
+        entry = generator.generate_log_entry(0)
 
         # Should always be an error
         assert entry["level"] == "error"
@@ -189,7 +193,7 @@ class TestGenerateLogEntry(FoundationTestCase):
 
     def test_generate_log_entry_domain_action_status(self) -> None:
         """Test DAS (Domain-Action-Status) fields."""
-        entry = generate_log_entry(0)
+        entry = self.generator.generate_log_entry(0)
 
         assert "domain" in entry
         assert "action" in entry
@@ -205,21 +209,21 @@ class TestGenerateLogEntry(FoundationTestCase):
     def test_generate_log_entry_trace_id_logic(self) -> None:
         """Test trace ID assignment logic."""
         # Index 0 should generate new trace ID
-        entry_0 = generate_log_entry(0)
+        entry_0 = self.generator.generate_log_entry(0)
         assert entry_0["trace_id"] == "trace_00000000"
 
         # Indices 1-9 should reuse the same trace ID
         for i in range(1, 10):
-            entry = generate_log_entry(i)
+            entry = self.generator.generate_log_entry(i)
             assert entry["trace_id"] == "trace_00000000"
 
         # Index 10 should generate a new trace ID
-        entry_10 = generate_log_entry(10)
+        entry_10 = self.generator.generate_log_entry(10)
         assert entry_10["trace_id"] == "trace_00000001"
 
     def test_generate_log_entry_unique_span_ids(self) -> None:
         """Test that each entry gets a unique span ID."""
-        entries = [generate_log_entry(i) for i in range(5)]
+        entries = [self.generator.generate_log_entry(i) for i in range(5)]
         span_ids = [entry["span_id"] for entry in entries]
 
         assert len(set(span_ids)) == 5  # All unique
