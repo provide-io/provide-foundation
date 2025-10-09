@@ -20,7 +20,6 @@ class TestCertificateMTLS(FoundationTestCase):
         assert client_cert.subject, "Client certificate subject should not be empty"
         assert client_cert.issuer, "Client certificate issuer should not be empty"
 
-
     @pytest.mark.asyncio
     async def test_load_server_certificate(self, server_cert: Any) -> None:
         """Ensure the server certificate loads correctly."""
