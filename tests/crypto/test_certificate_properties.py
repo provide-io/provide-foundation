@@ -148,9 +148,9 @@ async def test_certificate_extended_key_usage(client_cert) -> None:
 async def test_certificate_subject_empty_fallback() -> None:
     """Ensure the certificate subject fallback for invalid certificates."""
     with pytest.raises(CertificateError):
-        invalid_cert = Certificate(
-            cert_pem_or_uri="-----BEGIN CERTIFICATE-----\nINVALID\n-----END CERTIFICATE-----",
-            key_pem_or_uri=None,
+        invalid_cert = Certificate.from_pem(
+            cert_pem="-----BEGIN CERTIFICATE-----\nINVALID\n-----END CERTIFICATE-----",
+            key_pem=None,
         )
         assert invalid_cert.subject == "<Invalid Certificate>", (
             "Subject should fallback to <Invalid Certificate>"
@@ -161,9 +161,9 @@ async def test_certificate_subject_empty_fallback() -> None:
 async def test_certificate_issuer_empty_fallback() -> None:
     """Ensure the certificate issuer fallback for invalid certificates."""
     with pytest.raises(CertificateError):
-        invalid_cert = Certificate(
-            cert_pem_or_uri="-----BEGIN CERTIFICATE-----\nINVALID\n-----END CERTIFICATE-----",
-            key_pem_or_uri=None,
+        invalid_cert = Certificate.from_pem(
+            cert_pem="-----BEGIN CERTIFICATE-----\nINVALID\n-----END CERTIFICATE-----",
+            key_pem=None,
         )
         assert invalid_cert.issuer == "<Invalid Certificate>", (
             "Issuer should fallback to <Invalid Certificate>"

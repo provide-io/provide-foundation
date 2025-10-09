@@ -26,7 +26,7 @@ class TestCertificateCreate(FoundationTestCase):
             patch("cryptography.x509.Name", side_effect=Exception("Name error")),
             pytest.raises(CertificateError, match="Failed to initialize certificate"),
         ):
-            Certificate(generate_keypair=True)
+            Certificate.generate()
 
     @pytest.mark.asyncio
     async def test_create_x509_cert_serial_error(self) -> None:
@@ -35,12 +35,12 @@ class TestCertificateCreate(FoundationTestCase):
             patch("os.urandom", side_effect=Exception("urandom failed")),
             pytest.raises(CertificateError, match="Failed to initialize certificate"),
         ):
-            Certificate(generate_keypair=True)
+            Certificate.generate()
 
     @pytest.mark.asyncio
     async def test_certificate_extension_failure(self) -> None:
         """Ensure extension addition failures raise CertificateError."""
-        cert = Certificate(generate_keypair=True)
+        cert = Certificate.generate()
 
         with (
             patch(
@@ -61,12 +61,12 @@ class TestCertificateCreate(FoundationTestCase):
             ),
             pytest.raises(CertificateError, match="Failed to initialize certificate"),
         ):
-            Certificate(generate_keypair=True)
+            Certificate.generate()
 
     @pytest.mark.asyncio
     async def test_create_x509_cert_extension_error(self) -> None:
         """Test error in adding certificate extensions."""
-        cert = Certificate(generate_keypair=True)
+        cert = Certificate.generate()
 
         with (
             patch(
@@ -135,8 +135,7 @@ class TestCertificateCreate(FoundationTestCase):
         )
 
         with pytest.raises(CertificateError) as excinfo:
-            Certificate(
-                generate_keypair=True,
+            Certificate.generate(
                 key_type="ecdsa",
                 ecdsa_curve="invalid_curve_name",
             )
