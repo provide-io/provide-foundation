@@ -242,14 +242,7 @@ def _register_command_func(
     func.__registry_dimension__ = "command"
     func.__registry_info__ = info
 
-    get_foundation_logger().info(
-        "Registered command",
-        name=command_name,
-        parent=parent,
-        aliases=aliases,
-        hidden=hidden,
-        category=category,
-    )
+    get_foundation_logger().trace(f"Registered command: {full_name}")
 
     return func
 
