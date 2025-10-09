@@ -127,6 +127,31 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
     processors: list[StructlogProcessor] = [
         structlog.contextvars.merge_contextvars,
         cast("StructlogProcessor", add_log_level_custom),
+    ]
+
+    # Add timestamps, service name, and trace context early
+    processors.extend(_config_create_timestamp_processors(log_cfg.omit_timestamp))
+    if config.service_name is not None:
+        processors.append(_config_create_service_name_processor(config.service_name))
+
+    # Add trace context injection if tracing is enabled
+    if config.tracing_enabled and not config.globally_disabled:
+        processors.append(cast("StructlogProcessor", inject_trace_context))
+
+    # Add event enrichment (emojis) BEFORE OTLP so enriched logs are exported
+    processors.extend(_config_create_event_enrichment_processors(log_cfg))
+
+    # Add OTLP processor AFTER enrichment but BEFORE level filtering
+    # This ensures emoji-enriched logs are sent to OpenTelemetry/OpenObserve for ALL log levels
+    if config.otlp_endpoint:
+        from provide.foundation.logger.processors.otlp import create_otlp_processor
+
+        otlp_processor = create_otlp_processor(config)
+        if otlp_processor is not None:
+            processors.append(cast("StructlogProcessor", otlp_processor))
+
+    # Add level filter for console output (this doesn't affect OTLP which already processed logs)
+    processors.append(
         cast(
             "StructlogProcessor",
             filter_by_level_custom(
@@ -134,10 +159,15 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
                 module_levels=log_cfg.module_levels,
                 level_to_numeric_map=LEVEL_TO_NUMERIC,
             ),
-        ),
-        structlog.processors.StackInfoRenderer(),
-        structlog.dev.set_exc_info,
-    ]
+        )
+    )
+
+    processors.extend(
+        [
+            structlog.processors.StackInfoRenderer(),
+            structlog.dev.set_exc_info,
+        ]
+    )
 
     # Add rate limiting processor if enabled
     if log_cfg.rate_limit_enabled:
@@ -155,15 +185,6 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
         )
         processors.append(cast("StructlogProcessor", rate_limiter_processor))
 
-    processors.extend(_config_create_timestamp_processors(log_cfg.omit_timestamp))
-    if config.service_name is not None:
-        processors.append(_config_create_service_name_processor(config.service_name))
-
-    # Add trace context injection if tracing is enabled
-    if config.tracing_enabled and not config.globally_disabled:
-        processors.append(cast("StructlogProcessor", inject_trace_context))
-
-    processors.extend(_config_create_event_enrichment_processors(log_cfg))
     return processors
 
 
