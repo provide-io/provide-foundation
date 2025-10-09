@@ -248,7 +248,7 @@ class TestClickAdapterDecoupling(FoundationTestCase):
         super().teardown_method()
 
     def test_adapter_build_command_without_registry(self) -> None:
-        """ClickAdapter should build commands without registry lookup."""
+        """ClickAdapter should build commands without registry lookup with Position-Based Hybrid."""
 
         def hello(name: str = "World") -> None:
             """Say hello."""
@@ -267,9 +267,9 @@ class TestClickAdapterDecoupling(FoundationTestCase):
         assert cmd.name == "hello"
         assert cmd.help == "Say hello"
 
-        # Test execution
+        # Test execution (name is optional positional with Position-Based Hybrid)
         runner = CliTestRunner()
-        result = runner.invoke(cmd, ["--name", "Alice"])
+        result = runner.invoke(cmd, ["Alice"])
         assert result.exit_code == 0
         assert "Hello, Alice!" in result.output
 
