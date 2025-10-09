@@ -23,6 +23,7 @@ except ImportError:
 from provide.foundation import logger
 from provide.foundation.crypto.certificates.base import (
     CertificateBase,
+    CertificateError,
     PublicKey,
 )
 from provide.foundation.crypto.certificates.generator import generate_certificate
