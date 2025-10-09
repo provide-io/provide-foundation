@@ -214,8 +214,10 @@ def _send_log_entry(
         getattr(service_logger, level)(message, **entry)
         logs_sent += 1
     except Exception as e:
+        from provide.foundation.errors import RateLimitExceededError
+
         logs_failed += 1
-        if "rate limit" in str(e).lower():
+        if isinstance(e, RateLimitExceededError):
             logs_rate_limited += 1
     return logs_sent, logs_failed, logs_rate_limited
 
