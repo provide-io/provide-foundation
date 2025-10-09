@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from enum import Enum
 from typing import Any, Protocol
 
 from attrs import define, field
 
 from provide.foundation.config.defaults import DEFAULT_COMPONENT_DIMENSION
 from provide.foundation.errors.decorators import resilient
+
+# Import ComponentCategory from its own module (no circular deps)
+from provide.foundation.hub.categories import ComponentCategory
 
 # Import functions from specialized modules for re-export
 from provide.foundation.hub.config import (
@@ -55,36 +57,6 @@ class ComponentInfo:
     author: str | None = field(default=None)
     tags: list[str] = field(factory=list)
     metadata: dict[str, Any] = field(factory=dict)
-
-
-class ComponentCategory(Enum):
-    """Predefined component categories for Foundation.
-
-    These are the standard dimension values used internally by Foundation.
-    External components can still use custom string dimensions for compatibility.
-    """
-
-    # Core categories
-    COMMAND = "command"
-    COMPONENT = "component"
-
-    # Configuration and data sources
-    CONFIG_SOURCE = "config_source"
-
-    # Processing pipeline
-    PROCESSOR = "processor"
-    ERROR_HANDLER = "error_handler"
-    FORMATTER = "formatter"
-    FILTER = "filter"
-
-    # Transport layer
-    TRANSPORT = "transport"
-    TRANSPORT_MIDDLEWARE = "transport.middleware"
-    TRANSPORT_AUTH = "transport.auth"
-    TRANSPORT_CACHE = "transport.cache"
-
-    # Event system
-    EVENT_SET = "eventset"
 
 
 class ComponentLifecycle(Protocol):

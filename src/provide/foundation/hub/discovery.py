@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from provide.foundation.hub.categories import ComponentCategory
 from provide.foundation.hub.registry import Registry
 
 """Hub component discovery and dependency resolution utilities.
@@ -60,10 +61,8 @@ def discover_components(
         Dictionary mapping component names to their classes
 
     """
-    # Import ComponentCategory here to avoid circular dependency
+    # Use ComponentCategory default if not specified
     if dimension is None:
-        from provide.foundation.hub.components import ComponentCategory
-
         dimension = ComponentCategory.COMPONENT.value
 
     try:
