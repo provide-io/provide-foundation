@@ -46,20 +46,26 @@ def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
 
 def discover_components(
     group: str,
-    dimension: str = ComponentCategory.COMPONENT.value,
+    dimension: str | None = None,
     registry: Registry | None = None,
 ) -> dict[str, type[Any]]:
     """Discover and register components from entry points.
 
     Args:
         group: Entry point group name (e.g., 'provide.components')
-        dimension: Registry dimension for components
+        dimension: Registry dimension for components (defaults to "component")
         registry: Optional registry to use (defaults to global registry)
 
     Returns:
         Dictionary mapping component names to their classes
 
     """
+    # Import ComponentCategory here to avoid circular dependency
+    if dimension is None:
+        from provide.foundation.hub.components import ComponentCategory
+
+        dimension = ComponentCategory.COMPONENT.value
+
     try:
         from importlib import metadata
     except ImportError:
