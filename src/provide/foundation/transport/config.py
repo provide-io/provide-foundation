@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from attrs import define
 
-from provide.foundation.config import defaults
+from provide.foundation.transport import defaults
 from provide.foundation.config.base import field
 from provide.foundation.config.converters import (
     parse_bool_extended,

@@ -1,12 +1,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING
-import zipfile
-
-if TYPE_CHECKING:
-    from provide.foundation.logger.config.logging import LoggingConfig
-    from provide.foundation.resilience.types import BackoffStrategy
 
 """Centralized default values for Foundation configuration.
 All defaults are defined here instead of inline in field definitions.
@@ -25,157 +19,12 @@ DEFAULT_CONTEXT_LOG_FORMAT = "key_value"
 DEFAULT_CONTEXT_NO_COLOR = False
 DEFAULT_CONTEXT_NO_EMOJI = False
 
-
 # =================================
-# Archive Defaults
+# Exit codes
 # =================================
-DEFAULT_ARCHIVE_DETERMINISTIC = True
-DEFAULT_ARCHIVE_PRESERVE_METADATA = True
-DEFAULT_ARCHIVE_PRESERVE_PERMISSIONS = True
-DEFAULT_BZIP2_COMPRESSION_LEVEL = 9
-DEFAULT_GZIP_COMPRESSION_LEVEL = 6
-DEFAULT_ZIP_COMPRESSION_LEVEL = 6
-DEFAULT_ZIP_COMPRESSION_TYPE = zipfile.ZIP_DEFLATED
-DEFAULT_ZIP_PASSWORD = None
-
-
-# =================================
-# Transport Defaults
-# =================================
-DEFAULT_TRANSPORT_TIMEOUT = 30.0
-DEFAULT_TRANSPORT_MAX_RETRIES = 3
-DEFAULT_TRANSPORT_RETRY_BACKOFF_FACTOR = 0.5
-DEFAULT_TRANSPORT_VERIFY_SSL = True
-DEFAULT_HTTP_POOL_CONNECTIONS = 10
-DEFAULT_HTTP_POOL_MAXSIZE = 100
-DEFAULT_HTTP_FOLLOW_REDIRECTS = True
-DEFAULT_HTTP_USE_HTTP2 = False
-DEFAULT_HTTP_MAX_REDIRECTS = 5
-
-# Transport middleware defaults
-DEFAULT_TRANSPORT_LOG_REQUESTS = True
-DEFAULT_TRANSPORT_LOG_RESPONSES = True
-DEFAULT_TRANSPORT_LOG_BODIES = False
-
-
-# =================================
-# Logging defaults
-# =================================
-DEFAULT_LOG_LEVEL = "WARNING"
-DEFAULT_CONSOLE_FORMATTER = "key_value"
-DEFAULT_LOGGER_NAME_EMOJI_ENABLED = True
-DEFAULT_DAS_EMOJI_ENABLED = True
-DEFAULT_OMIT_TIMESTAMP = False
-DEFAULT_FOUNDATION_SETUP_LOG_LEVEL = "INFO"
-DEFAULT_FOUNDATION_LOG_OUTPUT = "stderr"
-DEFAULT_RATE_LIMIT_ENABLED = False
-DEFAULT_RATE_LIMIT_EMIT_WARNINGS = True
-DEFAULT_RATE_LIMIT_GLOBAL = 5.0
-DEFAULT_RATE_LIMIT_GLOBAL_CAPACITY = 1000
-DEFAULT_RATE_LIMIT_OVERFLOW_POLICY = "drop_oldest"
-
-# Logger system specific defaults
-DEFAULT_FALLBACK_LOG_LEVEL = "INFO"
-DEFAULT_FALLBACK_LOG_LEVEL_NUMERIC = 20
-
-# =================================
-# Telemetry defaults
-# =================================
-DEFAULT_TELEMETRY_GLOBALLY_DISABLED = False
-DEFAULT_TRACING_ENABLED = True
-DEFAULT_METRICS_ENABLED = True
-DEFAULT_OTLP_PROTOCOL = "http/protobuf"
-DEFAULT_TRACE_SAMPLE_RATE = 1.0
-
-# =================================
-# Profiling defaults
-# =================================
-DEFAULT_PROFILING_SAMPLE_RATE = 0.01  # 1% sampling
-DEFAULT_PROFILING_ENABLED = False
-DEFAULT_PROFILING_TRACK_MEMORY = False
-DEFAULT_PROFILING_BUFFER_SIZE = 1000
-DEFAULT_PROFILING_FLUSH_INTERVAL_SECONDS = 30
-DEFAULT_PROFILING_MAX_MEMORY_MB = 100
-DEFAULT_PROFILING_ENABLE_FAST_PATH = True
-DEFAULT_PROFILING_BACKGROUND_PROCESSING = True
-DEFAULT_PROFILING_CLI_ENABLED = True
-
-# Export defaults
-DEFAULT_PROFILING_BATCH_SIZE = 100
-DEFAULT_PROFILING_EXPORT_TIMEOUT_SECONDS = 30
-DEFAULT_PROFILING_MAX_RETRIES = 3
-
-# =================================
-# Process defaults
-# =================================
-DEFAULT_PROCESS_READLINE_TIMEOUT = 2.0
-DEFAULT_PROCESS_READCHAR_TIMEOUT = 1.0
-DEFAULT_PROCESS_TERMINATE_TIMEOUT = 7.0
-DEFAULT_PROCESS_WAIT_TIMEOUT = 10.0
-
-# =================================
-# File/Lock defaults
-# =================================
-DEFAULT_FILE_LOCK_TIMEOUT = 10.0
-
-# =================================
-# Resilience defaults
-# =================================
-DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT = 60.0
-DEFAULT_CIRCUIT_BREAKER_STATE = "closed"
-DEFAULT_CIRCUIT_BREAKER_FAILURE_COUNT = 0
-DEFAULT_CIRCUIT_BREAKER_LAST_FAILURE_TIME = None
-DEFAULT_CIRCUIT_BREAKER_NEXT_ATTEMPT_TIME = 0.0
-DEFAULT_CIRCUIT_BREAKER_FAILURE_THRESHOLD = 5
-
-# Retry policy defaults
-DEFAULT_RETRY_MAX_ATTEMPTS = 3
-DEFAULT_RETRY_BASE_DELAY = 1.0
-DEFAULT_RETRY_MAX_DELAY = 60.0
-DEFAULT_RETRY_JITTER = True
-DEFAULT_RETRY_RETRYABLE_ERRORS = None
-DEFAULT_RETRY_RETRYABLE_STATUS_CODES = None
-
-# Bulkhead defaults
-DEFAULT_BULKHEAD_MAX_CONCURRENT = 10
-DEFAULT_BULKHEAD_MAX_QUEUE_SIZE = 100
-DEFAULT_BULKHEAD_TIMEOUT = 30.0
-
-
-def default_retry_backoff_strategy() -> BackoffStrategy:
-    """Factory for default retry backoff strategy."""
-    from provide.foundation.resilience.types import BackoffStrategy
-
-    return BackoffStrategy.EXPONENTIAL
-
-
-# =================================
-# Integration defaults (OpenObserve)
-# =================================
-DEFAULT_OPENOBSERVE_TIMEOUT = 30
-DEFAULT_OPENOBSERVE_MAX_RETRIES = 3
-
-# =================================
-# EventSet defaults
-# =================================
-DEFAULT_EVENT_KEY = "default"
-
-# =================================
-# Component defaults
-# =================================
-DEFAULT_COMPONENT_DIMENSION = "component"
-
-# =================================
-# State config defaults
-# =================================
-DEFAULT_STATE_CONFIG_NAME = ""
-
-# =================================
-# File operation defaults
-# =================================
-DEFAULT_FILE_OP_IS_ATOMIC = False
-DEFAULT_FILE_OP_IS_SAFE = True
-DEFAULT_FILE_OP_HAS_BACKUP = False
+EXIT_SUCCESS = 0
+EXIT_ERROR = 1
+EXIT_SIGINT = 130  # Standard exit code for SIGINT
 
 # =================================
 # Testing defaults
@@ -185,11 +34,16 @@ DEFAULT_TEST_PARALLEL_TIMEOUT = 10.0
 DEFAULT_TEST_CHECKPOINT_TIMEOUT = 5.0
 
 # =================================
-# Exit codes
+# File/Lock defaults
 # =================================
-EXIT_SUCCESS = 0
-EXIT_ERROR = 1
-EXIT_SIGINT = 130  # Standard exit code for SIGINT
+DEFAULT_FILE_LOCK_TIMEOUT = 10.0
+
+# =================================
+# File operation defaults
+# =================================
+DEFAULT_FILE_OP_IS_ATOMIC = False
+DEFAULT_FILE_OP_IS_SAFE = True
+DEFAULT_FILE_OP_HAS_BACKUP = False
 
 # =================================
 # Temporary file/directory defaults
@@ -213,6 +67,27 @@ DEFAULT_ATOMIC_MODE = 0o644
 DEFAULT_ATOMIC_ENCODING = "utf-8"
 
 # =================================
+# EventSet defaults
+# =================================
+DEFAULT_EVENT_KEY = "default"
+
+# =================================
+# Component defaults
+# =================================
+DEFAULT_COMPONENT_DIMENSION = "component"
+
+# =================================
+# State config defaults
+# =================================
+DEFAULT_STATE_CONFIG_NAME = ""
+
+# =================================
+# Tracer defaults
+# =================================
+DEFAULT_TRACER_OTEL_SPAN = None
+DEFAULT_TRACER_ACTIVE = True
+
+# =================================
 # Factory functions for mutable defaults
 # =================================
 
@@ -220,80 +95,6 @@ DEFAULT_ATOMIC_ENCODING = "utf-8"
 def default_empty_dict() -> dict[str, str]:
     """Factory for empty string dictionaries."""
     return {}
-
-
-def default_module_levels() -> dict[str, str]:
-    """Factory for module log levels dictionary."""
-    return {
-        "asyncio": "INFO",  # Suppress asyncio DEBUG messages (e.g., selector events)
-    }
-
-
-def default_rate_limits() -> dict[str, tuple[float, float]]:
-    """Factory for per-logger rate limits dictionary."""
-    return {}
-
-
-def default_otlp_headers() -> dict[str, str]:
-    """Factory for OTLP headers dictionary."""
-    return {}
-
-
-def default_logging_config() -> LoggingConfig:
-    """Factory for LoggingConfig instance."""
-    # Import here to avoid circular imports
-    from provide.foundation.logger.config.logging import LoggingConfig
-
-    return LoggingConfig.from_env()
-
-
-# =================================
-# Crypto module defaults
-# =================================
-DEFAULT_CERTIFICATE_KEY_TYPE = None
-DEFAULT_CERTIFICATE_VALIDITY_DAYS = 365
-DEFAULT_CERTIFICATE_COMMON_NAME = "localhost"
-DEFAULT_CERTIFICATE_GENERATE_KEYPAIR = False
-DEFAULT_CERTIFICATE_ORGANIZATION_NAME = "Default Organization"
-
-
-# Factory functions for certificate defaults
-def default_certificate_alt_names() -> list[str]:
-    """Factory for default certificate alternative names."""
-    return ["localhost"]
-
-
-# =================================
-# Tracer defaults
-# =================================
-DEFAULT_TRACER_OTEL_SPAN = None
-DEFAULT_TRACER_ACTIVE = True
-DEFAULT_ECDSA_CURVE = None
-DEFAULT_RSA_KEY_SIZE = 2048
-DEFAULT_SIGNATURE_ALGORITHM = None
-DEFAULT_ED25519_PRIVATE_KEY_SIZE = 32
-DEFAULT_ED25519_PUBLIC_KEY_SIZE = 32
-DEFAULT_ED25519_SIGNATURE_SIZE = 64
-
-
-def default_supported_ec_curves() -> set[str]:
-    """Factory for supported EC curves set."""
-    return set()
-
-
-def default_supported_key_types() -> set[str]:
-    """Factory for supported key types set."""
-    return set()
-
-
-def default_supported_rsa_sizes() -> set[int]:
-    """Factory for supported RSA sizes set."""
-    return set()
-
-
-# =================================
-# Converter functions (to replace lambdas)
-# =================================
 
 
 def path_converter(x: str | None) -> Path | None:

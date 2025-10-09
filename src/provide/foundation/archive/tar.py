@@ -2,15 +2,23 @@ from __future__ import annotations
 
 from pathlib import Path
 import tarfile
+from typing import TYPE_CHECKING
 
 from attrs import define
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.foundation.archive.defaults import (
+    DEFAULT_ARCHIVE_DETERMINISTIC,
+    DEFAULT_ARCHIVE_PRESERVE_METADATA,
+    DEFAULT_ARCHIVE_PRESERVE_PERMISSIONS,
+)
 from provide.foundation.archive.security import is_safe_path
-from provide.foundation.config import defaults
 from provide.foundation.config.base import field
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
+
+if TYPE_CHECKING:
+    from provide.foundation.archive.limits import ArchiveLimits
 
 """TAR archive implementation."""
 
@@ -25,9 +33,9 @@ class TarArchive(BaseArchive):
     and deterministic output for reproducible builds.
     """
 
-    deterministic: bool = field(default=defaults.DEFAULT_ARCHIVE_DETERMINISTIC)
-    preserve_metadata: bool = field(default=defaults.DEFAULT_ARCHIVE_PRESERVE_METADATA)
-    preserve_permissions: bool = field(default=defaults.DEFAULT_ARCHIVE_PRESERVE_PERMISSIONS)
+    deterministic: bool = field(default=DEFAULT_ARCHIVE_DETERMINISTIC)
+    preserve_metadata: bool = field(default=DEFAULT_ARCHIVE_PRESERVE_METADATA)
+    preserve_permissions: bool = field(default=DEFAULT_ARCHIVE_PRESERVE_PERMISSIONS)
 
     def create(self, source: Path, output: Path) -> Path:
         """Create TAR archive from source.
@@ -63,27 +71,46 @@ class TarArchive(BaseArchive):
         except Exception as e:
             raise ArchiveError(f"Failed to create TAR archive: {e}") from e
 
-    def extract(self, archive: Path, output: Path) -> Path:
-        """Extract TAR archive to output directory.
+    def extract(self, archive: Path, output: Path, limits: ArchiveLimits | None = None) -> Path:
+        """Extract TAR archive to output directory with decompression bomb protection.
 
         Args:
             archive: TAR archive file path
             output: Output directory path
+            limits: Optional extraction limits (uses DEFAULT_LIMITS if None)
 
         Returns:
             Path to extraction directory
 
         Raises:
-            ArchiveError: If extraction fails or archive contains unsafe paths
+            ArchiveError: If extraction fails, archive contains unsafe paths, or exceeds limits
 
         """
+        from provide.foundation.archive.limits import DEFAULT_LIMITS, ExtractionTracker, get_archive_size
+
+        if limits is None:
+            limits = DEFAULT_LIMITS
+
         try:
             output.mkdir(parents=True, exist_ok=True)
+
+            # Initialize extraction tracker
+            tracker = ExtractionTracker(limits)
+            tracker.set_compressed_size(get_archive_size(archive))
 
             with tarfile.open(archive, "r") as tar:
                 # Enhanced security check - prevent path traversal and validate members
                 safe_members = []
                 for member in tar.getmembers():
+                    # Check file count limit
+                    tracker.check_file_count(1)
+
+                    # Validate member size and compression ratio
+                    tracker.validate_member_size(member.size)
+
+                    # Track extracted size
+                    tracker.add_extracted_size(member.size)
+
                     # Use unified path validation
                     if not is_safe_path(output, member.name):
                         raise ArchiveError(
@@ -107,6 +134,9 @@ class TarArchive(BaseArchive):
                             )
 
                     safe_members.append(member)
+
+                # Check overall compression ratio
+                tracker.check_compression_ratio()
 
                 # Extract only validated members (all members have been security-checked above)
                 tar.extractall(output, members=safe_members)  # nosec B202
