@@ -20,7 +20,7 @@ class TestCertificateLoading(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_load_invalid_pem(self) -> None:
         with pytest.raises(CertificateError):
-            Certificate(cert_pem="INVALID DATA", key_pem="INVALID DATA")
+            Certificate.from_pem(cert_pem="INVALID DATA", key_pem="INVALID DATA")
 
     @pytest.mark.asyncio
     async def test_load_pem_certificate(self, client_cert: Any) -> None:
@@ -36,7 +36,7 @@ class TestCertificateLoading(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_load_certificate_from_file(self, temporary_cert_file: Any) -> None:
         """Ensure a certificate loads correctly from a file:// path."""
-        cert = Certificate(cert_pem=temporary_cert_file)
+        cert = Certificate.from_pem(cert_pem=temporary_cert_file)
         assert cert.subject, "Certificate subject should not be empty"
 
     @pytest.mark.asyncio
@@ -67,14 +67,14 @@ class TestCertificateLoading(FoundationTestCase):
             ),
             pytest.raises(CertificateError, match="Failed to initialize certificate"),
         ):
-            Certificate(cert_pem=valid_cert_pem, key_pem="SOME_KEY")
+            Certificate.from_pem(cert_pem=valid_cert_pem, key_pem="SOME_KEY")
 
     @pytest.mark.asyncio
     async def test_load_cert_with_windows_line_endings(self, client_cert: Any) -> None:
         """Ensure certificate loading works with Windows-style line endings."""
         # Use the actual certificate content from the fixture
         cert_pem = client_cert.cert.replace("\n", "\r\n")
-        cert = Certificate(cert_pem=cert_pem)
+        cert = Certificate.from_pem(cert_pem=cert_pem)
         assert cert.subject, "Windows line endings should not break parsing"
 
     @pytest.mark.asyncio
@@ -91,31 +91,31 @@ class TestCertificateLoading(FoundationTestCase):
     async def test_invalid_certificate_raises_error(self, invalid_cert_pem: Any) -> None:
         """Ensure an invalid PEM certificate raises CertificateError."""
         with pytest.raises(CertificateError):
-            Certificate(cert_pem=invalid_cert_pem)
+            Certificate.from_pem(cert_pem=invalid_cert_pem)
 
     @pytest.mark.asyncio
     async def test_load_cert_with_malformed_pem(self, malformed_cert_pem: Any) -> None:
         """Test loading certificate with malformed PEM format."""
         with pytest.raises(CertificateError, match="Failed to initialize certificate"):
-            Certificate(cert_pem=malformed_cert_pem)
+            Certificate.from_pem(cert_pem=malformed_cert_pem)
 
     @pytest.mark.asyncio
     async def test_malformed_certificate_raises_error(self, malformed_cert_pem: Any) -> None:
         """Ensure a malformed PEM certificate raises CertificateError."""
         with pytest.raises(CertificateError):
-            Certificate(cert_pem=malformed_cert_pem)
+            Certificate.from_pem(cert_pem=malformed_cert_pem)
 
     @pytest.mark.asyncio
     async def test_empty_certificate_raises_error(self, empty_cert: Any) -> None:
         """Ensure an empty certificate raises CertificateError."""
         with pytest.raises(CertificateError):
-            Certificate(cert_pem=empty_cert)
+            Certificate.from_pem(cert_pem=empty_cert)
 
     @pytest.mark.asyncio
     async def test_missing_certificate_file_raises_error(self) -> None:
         """Ensure a missing certificate file raises CertificateError."""
         with pytest.raises(CertificateError):
-            Certificate(cert_pem="file:///nonexistent/path/cert.pem")
+            Certificate.from_pem(cert_pem="file:///nonexistent/path/cert.pem")
 
     @pytest.mark.asyncio
     async def test_load_cert_with_utf8_bom(
@@ -124,7 +124,7 @@ class TestCertificateLoading(FoundationTestCase):
     ) -> None:  # Added client_cert fixture
         """Ensure certificate loading works with UTF-8 BOM characters."""
         cert_with_bom = "\ufeff" + client_cert.cert  # Correctly use the cert string from the fixture
-        cert = Certificate(cert_pem=cert_with_bom)  # Use the modified string
+        cert = Certificate.from_pem(cert_pem=cert_with_bom)  # Use the modified string
         assert cert.subject, "UTF-8 BOM should not break certificate parsing"
 
     @pytest.mark.asyncio
@@ -140,7 +140,7 @@ class TestCertificateLoading(FoundationTestCase):
         """Ensure certificate loading is robust against extra whitespace."""
         # Use cert.cert instead of cert directly
         cert_pem = f"\n\n{client_cert.cert}\n\n"
-        cert = Certificate(cert_pem=cert_pem)
+        cert = Certificate.from_pem(cert_pem=cert_pem)
         assert cert.subject, "Whitespace should not affect certificate loading"
 
 
