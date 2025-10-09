@@ -62,11 +62,11 @@ class Certificate:
     """
 
     # Core certificate components - required for initialization
-    _base: CertificateBase = field(repr=False)
-    _cert: X509Certificate = field(repr=False)
-    _private_key: KeyPair | None = field(repr=False)
-    cert: str = field(repr=True)
-    key: str | None = field(repr=False)
+    _base: CertificateBase = field(repr=False, alias="_base")
+    _cert: X509Certificate = field(repr=False, alias="_cert")
+    _private_key: KeyPair | None = field(repr=False, alias="_private_key")
+    cert_pem: str = field(repr=True)
+    key_pem: str | None = field(repr=False)
 
     # Certificate metadata
     common_name: str = field(kw_only=True)
@@ -81,6 +81,26 @@ class Certificate:
     _trust_chain: list[Certificate] = field(init=False, factory=list, repr=False)
 
     # Properties
+    @property
+    def cert(self) -> str:
+        """Alias for cert_pem for backwards compatibility."""
+        return self.cert_pem
+
+    @cert.setter
+    def cert(self, value: str) -> None:
+        """Alias for cert_pem for backwards compatibility."""
+        object.__setattr__(self, "cert_pem", value)
+
+    @property
+    def key(self) -> str | None:
+        """Alias for key_pem for backwards compatibility."""
+        return self.key_pem
+
+    @key.setter
+    def key(self, value: str | None) -> None:
+        """Alias for key_pem for backwards compatibility."""
+        object.__setattr__(self, "key_pem", value)
+
     @property
     def trust_chain(self) -> list[Certificate]:
         """Returns the list of trusted certificates associated with this one."""
@@ -170,8 +190,8 @@ class Certificate:
             _base=base,
             _cert=x509_cert,
             _private_key=private_key,
-            cert=cert_pem_str,
-            key=key_pem_str,
+            cert_pem=cert_pem_str,
+            key_pem=key_pem_str,
             common_name=base.common_name,
             organization_name=base.organization_name,
             validity_days=base.validity_days,
@@ -232,8 +252,8 @@ class Certificate:
             _base=base,
             _cert=x509_cert,
             _private_key=private_key,
-            cert=cert_pem,
-            key=key_pem,
+            cert_pem=cert_pem,
+            key_pem=key_pem,
             common_name=common_name,
             organization_name=organization_name,
             validity_days=validity_days,

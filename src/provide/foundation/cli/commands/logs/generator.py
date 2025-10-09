@@ -269,7 +269,7 @@ def generate_span_id() -> str:
 
 
 def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.1) -> dict[str, Any]:
-    """Generate a single log entry using a temporary generator.
+    """Generate a single log entry using the default generator.
 
     Args:
         index: Log entry index
@@ -280,8 +280,17 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
         Dict containing log entry data
 
     """
-    generator = LogGenerator(style=style, error_rate=error_rate)
-    # Sync counters from default generator for trace ID consistency
-    generator._trace_counter = _default_generator._trace_counter
-    generator._span_counter = _default_generator._span_counter
-    return generator.generate_log_entry(index)
+    # Temporarily update default generator's style and error_rate
+    old_style = _default_generator.style
+    old_error_rate = _default_generator.error_rate
+
+    _default_generator.style = style
+    _default_generator.error_rate = error_rate
+
+    result = _default_generator.generate_log_entry(index)
+
+    # Restore original values
+    _default_generator.style = old_style
+    _default_generator.error_rate = old_error_rate
+
+    return result

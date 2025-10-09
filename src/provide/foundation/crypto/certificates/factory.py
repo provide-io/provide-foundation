@@ -63,7 +63,7 @@ def create_ca_certificate(
         is_client_cert=False,
     )
     ca_cert_obj._cert = actual_ca_x509_cert
-    ca_cert_obj.cert = actual_ca_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+    ca_cert_obj.cert_pem = actual_ca_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
     return ca_cert_obj
 
 
@@ -119,7 +119,7 @@ def create_signed_certificate(
     )
 
     new_cert_obj._cert = signed_x509_cert
-    new_cert_obj.cert = signed_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+    new_cert_obj.cert_pem = signed_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
     logger.info(
         f"📜🔑✅ Successfully created and signed certificate for "
@@ -168,7 +168,7 @@ def create_self_signed_server_cert(
     )
 
     cert_obj._cert = actual_x509_cert
-    cert_obj.cert = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+    cert_obj.cert_pem = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
     logger.info(f"📜🔑✅ Successfully created self-signed SERVER certificate for CN={common_name}")
     return cert_obj
@@ -214,7 +214,7 @@ def create_self_signed_client_cert(
     )
 
     cert_obj._cert = actual_x509_cert
-    cert_obj.cert = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+    cert_obj.cert_pem = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
     logger.info(f"📜🔑✅ Successfully created self-signed CLIENT certificate for CN={common_name}")
     return cert_obj
