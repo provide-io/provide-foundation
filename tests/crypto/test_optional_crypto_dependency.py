@@ -40,14 +40,13 @@ class TestOptionalCryptoDependency(FoundationTestCase):
                 CertificateError,
             )
 
-            # Any attempt to create/use Certificate with generate_keypair should fail with helpful error
+            # Any attempt to generate certificate should fail with helpful error
             # The Certificate wraps ImportError in CertificateError but the original cause should mention crypto
             with pytest.raises(
                 CertificateError,
                 match="Failed to initialize certificate",
             ):
-                Certificate.from_pem(
-                    generate_keypair=True,
+                Certificate.generate(
                     key_type="rsa",
                 )  # This should trigger _require_crypto
 
