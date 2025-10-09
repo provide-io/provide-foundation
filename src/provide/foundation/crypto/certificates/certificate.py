@@ -61,9 +61,9 @@ class Certificate:
     """
 
     # Core certificate components - required for initialization
-    _base: CertificateBase = field(repr=False)
-    _cert: X509Certificate = field(repr=False)
-    _private_key: KeyPair | None = field(repr=False)
+    _base: CertificateBase = field(repr=False, alias="_base")
+    _cert: X509Certificate = field(repr=False, alias="_cert")
+    _private_key: KeyPair | None = field(repr=False, alias="_private_key")
     cert: str = field(repr=True)
     key: str | None = field(repr=False)
 
