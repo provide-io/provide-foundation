@@ -248,8 +248,7 @@ class TestCertificateVerify(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_certificate_self_signature_validation(self) -> None:
         """Ensure a generated self-signed certificate's signature is valid."""
-        cert = Certificate.from_pem(
-            generate_keypair=True,
+        cert = Certificate.generate(
             key_type="ecdsa",
             ecdsa_curve="secp384r1",
         )  # Using a common type
