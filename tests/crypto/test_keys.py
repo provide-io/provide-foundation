@@ -125,7 +125,7 @@ class TestKeys(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_key_generation_performance(self) -> None:
         start_time = time.time()
-        Certificate(generate_keypair=True, key_type=KEY_TYPE_RSA, key_size=2048)
+        Certificate.generate(key_type=KEY_TYPE_RSA, key_size=2048)
         generation_time = time.time() - start_time
         assert generation_time < 1.0  # Should complete within 1 second
 

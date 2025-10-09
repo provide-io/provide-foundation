@@ -111,12 +111,12 @@ class TestCertificateChains(FoundationTestCase):
     async def test_generate_certificate_invalid_type(self) -> None:
         """Test error handling for invalid key type."""
         with pytest.raises(CertificateError):
-            Certificate(generate_keypair=True, key_type="invalid_type")
+            Certificate.generate(key_type="invalid_type")
 
     @pytest.mark.asyncio
     async def test_certificate_repr(self) -> None:
         """Ensure repr() includes subject, issuer, and validity."""
-        cert = Certificate(generate_keypair=True)
+        cert = Certificate.generate()
         cert_repr = repr(cert)
         assert "subject=" in cert_repr
         assert "issuer=" in cert_repr
@@ -135,7 +135,7 @@ class TestCertificateChains(FoundationTestCase):
     async def test_certificate_invalid_trust_chain_signature(self) -> None:
         """Ensure certificate trust chain fails on signature mismatch when signature check is performed."""
         # Create a self-trusted CA. Ensure key_type is ecdsa for the mock to apply.
-        ca_cert = Certificate(
+        ca_cert = Certificate.from_pem(
             generate_keypair=True,
             common_name="Test Root CA",
             key_type="ecdsa",
@@ -144,7 +144,7 @@ class TestCertificateChains(FoundationTestCase):
 
         # Create an end-entity certificate that will be checked against the CA.
         # Ensure key_type is ecdsa.
-        cert_to_check = Certificate(
+        cert_to_check = Certificate.from_pem(
             generate_keypair=True,
             common_name="End Entity Cert",
             key_type="ecdsa",

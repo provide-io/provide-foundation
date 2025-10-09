@@ -46,7 +46,7 @@ class TestOptionalCryptoDependency(FoundationTestCase):
                 CertificateError,
                 match="Failed to initialize certificate",
             ):
-                Certificate(
+                Certificate.from_pem(
                     generate_keypair=True,
                     key_type="rsa",
                 )  # This should trigger _require_crypto
@@ -217,7 +217,7 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
         from provide.foundation.crypto.certificates import Certificate, CertificateError
 
         with pytest.raises(CertificateError):  # Certificate wraps underlying errors
-            Certificate(generate_keypair=False, cert_pem_or_uri="dummy")
+            Certificate(generate_keypair=False, cert_pem="dummy")
 
     def test_crypto_module_resilience(self) -> None:
         """Test that the crypto module is resilient to import issues."""

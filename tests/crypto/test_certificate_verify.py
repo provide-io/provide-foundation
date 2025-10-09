@@ -167,21 +167,21 @@ class TestCertificateVerify(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_verify_self_signed_rsa(self) -> None:
         """Test verification of RSA self-signed certificate."""
-        cert = Certificate(generate_keypair=True, key_type="rsa")
+        cert = Certificate.generate(key_type="rsa")
         cert.trust_chain = [cert]
         assert cert.verify_trust(cert)
 
     @pytest.mark.asyncio
     async def test_verify_self_signed_ec(self) -> None:
         """Test verification of EC self-signed certificate."""
-        cert = Certificate(generate_keypair=True, key_type="ecdsa")
+        cert = Certificate.generate(key_type="ecdsa")
         cert.trust_chain = [cert]
         assert cert.verify_trust(cert)
 
     @pytest.mark.asyncio
     async def test_verify_unsupported_key_type(self) -> None:
         """Test verification with unsupported key type."""
-        cert = Certificate(generate_keypair=True)
+        cert = Certificate.generate()
 
         # Create a new mock certificate for verification
         mock_cert = MagicMock()
@@ -197,7 +197,7 @@ class TestCertificateVerify(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_self_signed_certificate_verification(self) -> None:
         """Ensure self-signed certificates are properly recognized and verify themselves."""
-        cert = Certificate(generate_keypair=True, key_type="rsa")
+        cert = Certificate.generate(key_type="rsa")
 
         assert cert.subject == cert.issuer, "Certificate should be self-signed"
 
@@ -208,14 +208,14 @@ class TestCertificateVerify(FoundationTestCase):
     async def test_corrupt_certificate(self) -> None:
         """Ensure corrupted certificates raise errors."""
         with pytest.raises(CertificateError):
-            Certificate(
-                cert_pem_or_uri="-----BEGIN CERTIFICATE-----\nINVALID DATA\n-----END CERTIFICATE-----",
+            Certificate.from_pem(
+                cert_pem="-----BEGIN CERTIFICATE-----\nINVALID DATA\n-----END CERTIFICATE-----",
             )
 
     @pytest.mark.asyncio
     async def test_verify_invalid_public_key(self) -> None:
         """Ensure verification fails when public key is None."""
-        cert = Certificate(generate_keypair=True)
+        cert = Certificate.generate()
         with pytest.raises(CertificateError, match="Cannot verify trust"):
             cert.verify_trust(None)  # type: ignore[arg-type]
 
@@ -237,8 +237,8 @@ class TestCertificateVerify(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_certificate_mismatched_issuer(self) -> None:
-        cert1 = Certificate(generate_keypair=True, key_type="rsa", common_name="Cert1")
-        cert2 = Certificate(generate_keypair=True, key_type="rsa", common_name="Cert2")
+        cert1 = Certificate.generate(key_type="rsa", common_name="Cert1")
+        cert2 = Certificate.generate(key_type="rsa", common_name="Cert2")
         cert1.trust_chain = []
         assert not cert1.verify_trust(cert2), "Expected verification to fail due to mismatched issuer"
 
@@ -248,7 +248,7 @@ class TestCertificateVerify(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_certificate_self_signature_validation(self) -> None:
         """Ensure a generated self-signed certificate's signature is valid."""
-        cert = Certificate(
+        cert = Certificate.from_pem(
             generate_keypair=True,
             key_type="ecdsa",
             ecdsa_curve="secp384r1",
@@ -267,7 +267,7 @@ class TestCertificateVerify(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_certificate_key_usage_extension_failure(self) -> None:
         """Ensure Key Usage extension failure raises CertificateError."""
-        cert = Certificate(generate_keypair=True)
+        cert = Certificate.generate()
 
         with (
             patch(
@@ -281,8 +281,8 @@ class TestCertificateVerify(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_certificate_equality(self) -> None:
         """Ensure certificates are equal only if subject and serial number match."""
-        cert1 = Certificate(generate_keypair=True)
-        cert2 = Certificate(generate_keypair=True)
+        cert1 = Certificate.generate()
+        cert2 = Certificate.generate()
 
         assert cert1 != cert2, "Different certificates should not be equal"
 
