@@ -176,7 +176,7 @@ class TestCertificateProperties(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_is_ca_extension_not_found(self) -> None:
         """Test is_ca property when basic constraints extension is not found."""
-        cert = Certificate(generate_keypair=True)
+        cert = Certificate.generate()
 
         # Create a mock certificate that raises ExtensionNotFound
         mock_cert = MagicMock()
@@ -195,7 +195,7 @@ class TestCertificateProperties(FoundationTestCase):
     async def test_is_ca_extension_not_found_logs_debug(self, mocker) -> None:
         """Test is_ca property logs debug when BasicConstraints extension is not found."""
         # Create a Certificate instance (it will generate a real cert initially)
-        cert_instance = Certificate(generate_keypair=True)
+        cert_instance = Certificate.generate()
 
         # Mock the internal _cert object's extensions attribute
         mock_extensions = mocker.MagicMock()
@@ -241,8 +241,8 @@ class TestCertificateProperties(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_certificate_hash_collision(self) -> None:
         """Ensure certificates with identical serial numbers hash the same."""
-        cert1 = Certificate(generate_keypair=True, key_type="rsa")
-        cert2 = Certificate(generate_keypair=True, key_type="rsa")
+        cert1 = Certificate.generate(key_type="rsa")
+        cert2 = Certificate.generate(key_type="rsa")
 
         # Force serial numbers to be identical
         cert2._base = cert1._base
