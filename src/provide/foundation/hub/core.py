@@ -10,8 +10,8 @@ from provide.foundation.context import CLIContext
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.resources import AlreadyExistsError
-from provide.foundation.hub.commands import CommandInfo
 from provide.foundation.hub.categories import ComponentCategory
+from provide.foundation.hub.commands import CommandInfo
 from provide.foundation.hub.components import ComponentInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
 

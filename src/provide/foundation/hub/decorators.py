@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, TypeVar, overload
 
+from provide.foundation.hub.categories import ComponentCategory
 from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
