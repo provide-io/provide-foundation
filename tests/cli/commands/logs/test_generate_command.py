@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import itertools
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 from click.testing import CliRunner
@@ -52,17 +53,21 @@ class TestGenerateLogsCommand:
         mock_generate_continuous.assert_called_once()
         mock_print_final_stats.assert_called_once()
 
+    @patch("provide.foundation.cli.commands.logs.generate.click.echo")
     @patch("provide.foundation.cli.commands.logs.generate.time.sleep")
     @patch("provide.foundation.cli.commands.logs.generate._send_log_entry")
     def test_generate_fixed_count_logs_implementation(
         self,
         mock_send_log_entry: MagicMock,
         mock_sleep: MagicMock,
+        mock_echo: MagicMock,
         runner: CliRunner,
     ) -> None:
         """Test the implementation of the fixed-count log generation."""
 
-        def send_log_entry_side_effect(entry, logs_sent, logs_failed, logs_rate_limited):
+        def send_log_entry_side_effect(
+            entry: dict[str, Any], logs_sent: int, logs_failed: int, logs_rate_limited: int
+        ) -> tuple[int, int, int]:
             return logs_sent + 1, logs_failed, logs_rate_limited
 
         mock_send_log_entry.side_effect = send_log_entry_side_effect
@@ -75,9 +80,13 @@ class TestGenerateLogsCommand:
         assert result.exit_code == 0
         assert mock_send_log_entry.call_count == 5
         mock_sleep.assert_called_with(0.1)
-        assert "Generation complete" in result.output
-        assert "Total sent: 5 logs" in result.output
 
+        # Check that echo was called with expected messages
+        echo_calls = [str(call) for call in mock_echo.call_args_list]
+        assert any("Generation complete" in str(call) for call in echo_calls)
+        assert any("Total sent: 5 logs" in str(call) for call in echo_calls)
+
+    @patch("provide.foundation.cli.commands.logs.generate.click.echo")
     @patch("provide.foundation.cli.commands.logs.generate.time.time")
     @patch("provide.foundation.cli.commands.logs.generate.time.sleep")
     @patch("provide.foundation.cli.commands.logs.generate._send_log_entry")
@@ -88,13 +97,16 @@ class TestGenerateLogsCommand:
         mock_send_log_entry: MagicMock,
         mock_sleep: MagicMock,
         mock_time: MagicMock,
+        mock_echo: MagicMock,
         runner: CliRunner,
     ) -> None:
         """Test the implementation of continuous log generation."""
 
         call_counter = {"count": 0}
 
-        def send_log_entry_side_effect(entry, logs_sent, logs_failed, logs_rate_limited):
+        def send_log_entry_side_effect(
+            entry: dict[str, Any], logs_sent: int, logs_failed: int, logs_rate_limited: int
+        ) -> tuple[int, int, int]:
             call_counter["count"] += 1
             if call_counter["count"] >= 3:
                 raise KeyboardInterrupt
@@ -103,7 +115,15 @@ class TestGenerateLogsCommand:
         mock_send_log_entry.side_effect = send_log_entry_side_effect
         mock_time.side_effect = itertools.count(start=0, step=1.0)
 
-        def print_stats_side_effect(current_time, last_stats_time, logs_sent, last_stats_sent, logs_failed, enable_rate_limit, logs_rate_limited):
+        def print_stats_side_effect(
+            current_time: float,
+            last_stats_time: float,
+            logs_sent: int,
+            last_stats_sent: int,
+            logs_failed: int,
+            enable_rate_limit: bool,
+            logs_rate_limited: int,
+        ) -> tuple[float, int]:
             return current_time, logs_sent
 
         mock_print_stats.side_effect = print_stats_side_effect
@@ -115,15 +135,25 @@ class TestGenerateLogsCommand:
 
         assert result.exit_code == 0
         assert mock_send_log_entry.call_count == 3
-        assert "Generation interrupted by user" in result.output
 
+        # Check that echo was called with the interrupt message
+        echo_calls = [str(call) for call in mock_echo.call_args_list]
+        assert any("Generation interrupted by user" in str(call) for call in echo_calls)
+
+    @patch("provide.foundation.cli.commands.logs.generate.click.echo")
+    @patch("provide.foundation.cli.commands.logs.generate._send_log_entry")
     @patch("provide.foundation.cli.commands.logs.generate._configure_rate_limiter")
     def test_rate_limit_options(
         self,
         mock_configure_limiter: MagicMock,
+        mock_send_log_entry: MagicMock,
+        mock_echo: MagicMock,
         runner: CliRunner,
     ) -> None:
         """Test that rate limiting options are correctly passed."""
+        # Mock send_log_entry to prevent actual logging
+        mock_send_log_entry.return_value = (1, 0, 0)
+
         runner.invoke(
             generate_logs_command,
             ["--count", "1", "--enable-rate-limit", "--rate-limit", "50"],

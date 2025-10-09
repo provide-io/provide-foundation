@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-"""Comprehensive tests for OpenObserve OTLP integration module."""
-
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+
+"""Comprehensive tests for OpenObserve OTLP integration module."""
 
 
 class TestOTLPConstants(FoundationTestCase):
@@ -56,15 +56,18 @@ class TestSendLogOTLP(FoundationTestCase):
         """Test successful OTLP log sending with basic configuration."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
-        # Mock configuration
+        # Mock TelemetryConfig
         mock_config = Mock()
         mock_config.otlp_endpoint = "http://localhost:4318"
         mock_config.otlp_traces_endpoint = None
         mock_config.service_name = "test-service"
         mock_config.service_version = "1.0.0"
-        mock_config.openobserve_org = "default"
-        mock_config.openobserve_stream = "default"
         mock_config.get_otlp_headers_dict.return_value = {"Authorization": "Bearer token"}
+
+        # Mock OpenObserveConfig
+        mock_oo_config = Mock()
+        mock_oo_config.org = "default"
+        mock_oo_config.stream = "default"
 
         # Mock OpenTelemetry components
         mock_resource = Mock()
@@ -80,7 +83,10 @@ class TestSendLogOTLP(FoundationTestCase):
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_tel_from_env,
+            patch(
+                "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+            ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.Resource") as mock_resource_class,
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter") as mock_exporter_class,
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
@@ -90,7 +96,8 @@ class TestSendLogOTLP(FoundationTestCase):
             ) as mock_resource_attrs,
             patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
         ):
-            mock_from_env.return_value = mock_config
+            mock_tel_from_env.return_value = mock_config
+            mock_oo_from_env.return_value = mock_oo_config
             mock_resource_class.create.return_value = mock_resource
             mock_exporter_class.return_value = mock_exporter
             mock_provider_class.return_value = mock_logger_provider
@@ -474,14 +481,18 @@ class TestCreateOTLPLoggerProvider(FoundationTestCase):
         """Test successful OTLP logger provider creation."""
         from provide.foundation.integrations.openobserve.otlp import create_otlp_logger_provider
 
+        # Mock TelemetryConfig
         mock_config = Mock()
         mock_config.otlp_endpoint = "http://localhost:4318"
         mock_config.otlp_traces_endpoint = None
         mock_config.service_name = "provider-service"
         mock_config.service_version = "2.0.0"
-        mock_config.openobserve_org = "test-org"
-        mock_config.openobserve_stream = "test-stream"
         mock_config.get_otlp_headers_dict.return_value = {"auth": "token"}
+
+        # Mock OpenObserveConfig
+        mock_oo_config = Mock()
+        mock_oo_config.org = "test-org"
+        mock_oo_config.stream = "test-stream"
 
         mock_logger_provider = Mock()
         mock_resource = Mock()
@@ -489,7 +500,10 @@ class TestCreateOTLPLoggerProvider(FoundationTestCase):
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_tel_from_env,
+            patch(
+                "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+            ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.Resource") as mock_resource_class,
             patch(
                 "provide.foundation.integrations.openobserve.otlp.ResourceAttributes"
@@ -498,7 +512,8 @@ class TestCreateOTLPLoggerProvider(FoundationTestCase):
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
             patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
         ):
-            mock_from_env.return_value = mock_config
+            mock_tel_from_env.return_value = mock_config
+            mock_oo_from_env.return_value = mock_oo_config
             mock_resource_attrs.SERVICE_NAME = "service.name"
             mock_resource_attrs.SERVICE_VERSION = "service.version"
             mock_resource_class.create.return_value = mock_resource
@@ -637,19 +652,27 @@ class TestOTLPIntegration(FoundationTestCase):
         mock_client.session.headers = {"Authorization": "Bearer test-token"}
         mock_client.timeout = 30
 
+        # Mock TelemetryConfig
         mock_config = Mock()
         mock_config.service_name = "structure-test"
-        mock_config.openobserve_stream = "test-stream"
+
+        # Mock OpenObserveConfig
+        mock_oo_config = Mock()
+        mock_oo_config.stream = "test-stream"
 
         mock_response = Mock()
         mock_response.status_code = 200
 
         with (
-            patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_tel_from_env,
+            patch(
+                "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+            ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
             patch("requests.post") as mock_post,
         ):
-            mock_from_env.return_value = mock_config
+            mock_tel_from_env.return_value = mock_config
+            mock_oo_from_env.return_value = mock_oo_config
             mock_datetime.now.return_value.timestamp.return_value = 1609459200.0  # 2021-01-01 00:00:00
             mock_post.return_value = mock_response
 
