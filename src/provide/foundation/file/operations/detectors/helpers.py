@@ -14,7 +14,7 @@ def is_temp_file(path: Path) -> bool:
     # VSCode-specific pattern: .filename.ext.tmp.XXXX (must check original case)
     # Examples: .orchestrator.py.tmp.84, .test.txt.tmp.vscode.123
     # Allow dots in the suffix to support patterns like .tmp.vscode.123
-    if re.match(r'^\..+\.tmp\.[\w.]+$', path.name):
+    if re.match(r"^\..+\.tmp\.[\w.]+$", path.name):
         return True
 
     # Common temp file patterns
@@ -65,9 +65,9 @@ def extract_base_name(path: Path) -> str | None:
 
     # Handle VSCode temp pattern FIRST: .filename.ext.tmp.XXXX -> filename.ext
     # This must come before other patterns since the leading dot is part of the temp name
-    vscode_pattern = r'^\.(.+)\.tmp\.\w+$'
+    vscode_pattern = r"^\.(.+)\.tmp\.\w+$"
     if re.match(vscode_pattern, base_name):
-        base_name = re.sub(vscode_pattern, r'\1', base_name)
+        base_name = re.sub(vscode_pattern, r"\1", base_name)
         return base_name if base_name else None
 
     # Handle emacs autosave files: #document.txt# -> document.txt
