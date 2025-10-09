@@ -137,24 +137,31 @@ register_cleanup_handlers(manage_signals=False)  # Library mode
 
 ### Circular Import Resolution
 
-**Issue Found**: `ComponentCategory` referenced before definition in `hub/discovery.py`
+**Issue Found**: `ComponentCategory` defined in `components.py` but imported by modules that `components.py` imports, creating circular dependency
 
-**Fix Applied**:
+**Fix Applied**: Extracted `ComponentCategory` to its own module (`hub/categories.py`) with no dependencies
+
 ```python
-# Before
-def discover_components(
-    dimension: str = ComponentCategory.COMPONENT.value,  # ❌ Circular import
-):
-    ...
+# NEW FILE: hub/categories.py (42 lines)
+from enum import Enum
 
-# After
-def discover_components(
-    dimension: str | None = None,  # ✅ Optional, imported inside function
-):
-    if dimension is None:
-        from provide.foundation.hub.components import ComponentCategory
-        dimension = ComponentCategory.COMPONENT.value
+class ComponentCategory(Enum):
+    """Predefined component categories for Foundation."""
+    COMMAND = "command"
+    COMPONENT = "component"
+    CONFIG_SOURCE = "config_source"
+    PROCESSOR = "processor"
+    ERROR_HANDLER = "error_handler"
+    # ... (8 more categories)
 ```
+
+**Files Updated**:
+- `hub/components.py` - Now imports ComponentCategory instead of defining it
+- `hub/core.py` - Imports from categories module
+- `hub/decorators.py` - Imports from categories module
+- `hub/discovery.py` - Imports from categories module
+
+**Result**: ✅ **8 previously failing tests** now pass
 
 ---
 
@@ -232,16 +239,20 @@ pytest tests/cli/test_shutdown_signal_handling.py -v
 ## Files Modified
 
 ### Production Code
-- `src/provide/foundation/cli/shutdown.py` - Signal handler management
-- `src/provide/foundation/hub/discovery.py` - Fixed circular import
+- `src/provide/foundation/cli/shutdown.py` - Signal handler management (updated)
+- `src/provide/foundation/hub/categories.py` - **NEW** (42 lines) - ComponentCategory enum
+- `src/provide/foundation/hub/components.py` - Import ComponentCategory from categories
+- `src/provide/foundation/hub/core.py` - Import from categories module
+- `src/provide/foundation/hub/decorators.py` - Import from categories module
+- `src/provide/foundation/hub/discovery.py` - Import from categories module
 
 ### Tests
-- `tests/integrations/test_openobserve_sql_injection.py` - NEW (18 tests)
-- `tests/cli/test_shutdown_signal_handling.py` - NEW (6 tests)
+- `tests/integrations/test_openobserve_sql_injection.py` - **NEW** (295 lines, 18 tests)
+- `tests/cli/test_shutdown_signal_handling.py` - **NEW** (143 lines, 6 tests)
 
 ### Documentation
-- `docs/integration/signal-handlers.md` - NEW (comprehensive guide)
-- `CRITIQUE-RESPONSE.md` - THIS FILE
+- `docs/integration/signal-handlers.md` - **NEW** (172 lines) - Comprehensive guide
+- `CRITIQUE-RESPONSE.md` - **NEW** (248 lines) - THIS FILE
 
 ---
 
