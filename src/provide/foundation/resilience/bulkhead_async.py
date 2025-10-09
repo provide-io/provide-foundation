@@ -7,7 +7,7 @@ from typing import Any
 
 from attrs import define, field
 
-from provide.foundation.config.defaults import (
+from provide.foundation.resilience.defaults import (
     DEFAULT_BULKHEAD_MAX_CONCURRENT,
     DEFAULT_BULKHEAD_MAX_QUEUE_SIZE,
     DEFAULT_BULKHEAD_TIMEOUT,

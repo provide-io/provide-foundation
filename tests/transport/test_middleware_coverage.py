@@ -398,10 +398,11 @@ class TestDefaultPipeline(FoundationTestCase):
         pipeline = create_default_pipeline()
 
         assert isinstance(pipeline, MiddlewarePipeline)
-        assert len(pipeline.middleware) == 2
+        assert len(pipeline.middleware) == 3
 
         # Check middleware types
         middleware_types = [type(mw) for mw in pipeline.middleware]
+        assert RetryMiddleware in middleware_types
         assert LoggingMiddleware in middleware_types
         assert MetricsMiddleware in middleware_types
 

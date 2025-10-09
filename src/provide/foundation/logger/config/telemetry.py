@@ -12,13 +12,13 @@ from provide.foundation.config.converters import (
     parse_sample_rate,
     validate_sample_rate,
 )
-from provide.foundation.config.defaults import (
+from provide.foundation.logger.defaults import default_logging_config
+from provide.foundation.telemetry.defaults import (
     DEFAULT_METRICS_ENABLED,
     DEFAULT_OTLP_PROTOCOL,
     DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
     DEFAULT_TRACE_SAMPLE_RATE,
     DEFAULT_TRACING_ENABLED,
-    default_logging_config,
     default_otlp_headers,
 )
 from provide.foundation.config.env import RuntimeConfig

@@ -54,8 +54,12 @@ def run(
         ProcessTimeoutError: If timeout is exceeded
 
     """
+    # Mask secrets in command for logging
+    from provide.foundation.security import mask_command
+
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    plog.info("🚀 Running command", command=cmd_str, cwd=str(cwd) if cwd else None)
+    masked_cmd = mask_command(cmd_str)
+    plog.trace("🚀 Running command", command=masked_cmd, cwd=str(cwd) if cwd else None)
 
     # Validate command type and shell parameter
     validate_command_type(cmd, shell)

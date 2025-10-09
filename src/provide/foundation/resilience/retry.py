@@ -8,7 +8,7 @@ from typing import Any, TypeVar
 
 from attrs import define, field, validators
 
-from provide.foundation.config.defaults import (
+from provide.foundation.resilience.defaults import (
     DEFAULT_RETRY_BASE_DELAY,
     DEFAULT_RETRY_JITTER,
     DEFAULT_RETRY_MAX_ATTEMPTS,

@@ -109,8 +109,8 @@ if not _HAS_CRYPTO:
     RSASigner = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
     RSAVerifier = create_dependency_stub("cryptography", "crypto")  # type: ignore[assignment,misc]
 
-    # Import constants from centralized defaults
-    from provide.foundation.config.defaults import (  # type: ignore[assignment]
+    # Import constants from crypto defaults module
+    from provide.foundation.crypto.defaults import (  # type: ignore[assignment]
         DEFAULT_CERTIFICATE_KEY_TYPE,
         DEFAULT_CERTIFICATE_VALIDITY_DAYS,
         DEFAULT_ECDSA_CURVE,
