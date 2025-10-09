@@ -16,7 +16,6 @@ def runner() -> CliRunner:
     return CliRunner()
 
 
-@patch("provide.foundation.cli.commands.logs.generate._HAS_CLICK", True)
 class TestGenerateLogsCommand:
     """Tests for the generate_logs_command Click command."""
 
@@ -187,22 +186,3 @@ class TestGenerateLogsCommand:
             ["--count", "1", "--enable-rate-limit", "--rate-limit", "50"],
         )
         mock_configure_limiter.assert_called_once_with(True, 50.0)
-
-
-def test_generate_command_raises_importerror_if_click_is_missing() -> None:
-    """Test that generate_logs_command stub raises ImportError if Click is not installed.
-
-    Note: This test can only verify the stub exists. The actual Click import check
-    happens at module load time, so we cannot properly test Click being missing
-    when Click is actually installed in the test environment.
-    """
-    from provide.foundation.cli.commands.logs import generate
-
-    # Verify the module has the _HAS_CLICK flag
-    assert hasattr(generate, "_HAS_CLICK")
-
-    # Verify it's True in our test environment (Click is installed)
-    assert generate._HAS_CLICK is True
-
-    # The else branch (stub function) cannot be tested when Click is installed,
-    # as it's defined at module load time based on import success

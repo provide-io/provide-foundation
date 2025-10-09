@@ -7,6 +7,8 @@ from attrs import define, field
 
 from provide.foundation.logger import get_logger
 from provide.foundation.transport.base import Request, Response
+from provide.foundation.transport.cache import TransportCache
+from provide.foundation.transport.errors import TransportError
 from provide.foundation.transport.middleware import (
     MiddlewarePipeline,
     create_default_pipeline,
@@ -21,12 +23,16 @@ log = get_logger(__name__)
 
 @define(slots=True)
 class UniversalClient:
-    """Universal client that works with any transport via Hub registry."""
+    """Universal client that works with any transport via Hub registry.
+
+    The client uses a TransportCache that automatically evicts transports
+    that exceed the failure threshold (default: 3 consecutive failures).
+    """
 
     middleware: MiddlewarePipeline = field(factory=create_default_pipeline)
     default_headers: Headers = field(factory=dict)
     default_timeout: float | None = field(default=None)
-    _transports: dict[str, Any] = field(factory=dict, init=False)
+    _cache: TransportCache = field(factory=TransportCache, init=False)
 
     async def request(
         self,
@@ -84,12 +90,19 @@ class UniversalClient:
             # Execute request
             response = await transport.execute(request)
 
+            # Mark success in cache
+            self._cache.mark_success(request.transport_type.value)
+
             # Process response through middleware
             response = await self.middleware.process_response(response)
 
             return response
 
         except Exception as e:
+            # Mark failure if it's a transport error
+            if isinstance(e, TransportError):
+                self._cache.mark_failure(request.transport_type.value, e)
+
             # Process error through middleware
             e = await self.middleware.process_error(e, request)
             raise e
@@ -155,14 +168,17 @@ class UniversalClient:
         return await self.request(uri, HTTPMethod.OPTIONS, **kwargs)
 
     async def _get_transport(self, scheme: str) -> Any:
-        """Get or create transport for scheme."""
-        if scheme not in self._transports:
-            # Get transport class from registry
-            transport = get_transport(f"{scheme}://example.com")
-            await transport.connect()
-            self._transports[scheme] = transport
+        """Get or create transport for scheme.
 
-        return self._transports[scheme]
+        Raises:
+            TransportCacheEvictedError: If transport was evicted due to failures
+        """
+
+        def _factory(s: str) -> Any:
+            """Factory to create transport from registry."""
+            return get_transport(f"{s}://example.com")
+
+        return await self._cache.get_or_create(scheme, _factory)
 
     async def __aenter__(self) -> UniversalClient:
         """Context manager entry."""
@@ -172,12 +188,20 @@ class UniversalClient:
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any
     ) -> None:
         """Context manager exit - cleanup all transports."""
-        for transport in self._transports.values():
+        transports = self._cache.clear()
+        for transport in transports.values():
             try:
                 await transport.disconnect()
             except Exception as e:
                 log.error(f"Error disconnecting transport: {e}")
-        self._transports.clear()
+
+    def reset_transport_cache(self) -> None:
+        """Reset the transport cache.
+
+        Useful for testing or forcing reconnection after configuration changes.
+        """
+        log.info("🔄 Resetting transport cache")
+        self._cache.clear()
 
 
 # Global client instance for convenience functions
