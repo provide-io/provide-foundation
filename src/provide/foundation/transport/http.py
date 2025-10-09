@@ -213,17 +213,9 @@ def _register_http_transport() -> None:
     try:
         from provide.foundation.transport.registry import register_transport
 
+        # Register once for both HTTP and HTTPS schemes
         register_transport(
             TransportType.HTTP,
-            HTTPTransport,
-            schemes=HTTPTransport.SCHEMES,
-            description="HTTP/HTTPS transport using httpx",
-            version="1.0.0",
-        )
-
-        # Also register HTTPS explicitly
-        register_transport(
-            TransportType.HTTPS,
             HTTPTransport,
             schemes=HTTPTransport.SCHEMES,
             description="HTTP/HTTPS transport using httpx",
