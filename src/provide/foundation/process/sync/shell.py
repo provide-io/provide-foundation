@@ -6,10 +6,8 @@ from typing import Any
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.logger import get_logger
-from provide.foundation.process.defaults import DEFAULT_SHELL_ALLOW_FEATURES
 from provide.foundation.process.shared import CompletedProcess
 from provide.foundation.process.sync.execution import run
-from provide.foundation.process.validation import validate_shell_safety
 
 """Shell command execution wrapper."""
 
@@ -23,39 +21,29 @@ def shell(
     capture_output: bool = True,
     check: bool = True,
     timeout: float | None = None,
-    allow_shell_features: bool = DEFAULT_SHELL_ALLOW_FEATURES,
     **kwargs: Any,
 ) -> CompletedProcess:
-    """Run a shell command with safety validation.
+    """Run a shell command.
 
-    WARNING: This function uses shell=True. By default, shell metacharacters
-    are DENIED to prevent command injection. Use allow_shell_features=True
-    only with trusted input.
+    WARNING: This function uses shell=True, which can be dangerous with
+    unsanitized input. Only use with trusted commands or properly sanitized input.
 
     Args:
-        cmd: Shell command string
+        cmd: Shell command string (MUST be trusted/sanitized)
         cwd: Working directory
         env: Environment variables
         capture_output: Whether to capture output
         check: Whether to raise on non-zero exit
         timeout: Command timeout
-        allow_shell_features: Allow shell metacharacters (default: False)
         **kwargs: Additional subprocess arguments
 
     Returns:
         CompletedProcess with results
 
-    Raises:
-        ValidationError: If cmd is not a string
-        ShellFeatureError: If shell features used without explicit permission
-
     Security Note:
-        For maximum security, use run() with a list of arguments instead.
-        Only set allow_shell_features=True if you fully trust the command source.
-
-        Safe:   shell("ls -la", allow_shell_features=False)  # OK
-        Unsafe: shell(user_input)  # Will raise ShellFeatureError if metacharacters present
-        Risky:  shell(user_input, allow_shell_features=True)  # DO NOT DO THIS
+        This function enables shell interpretation of the command string,
+        which allows shell features but also creates injection risks.
+        Use run() with a list for safer execution.
 
     """
     if not isinstance(cmd, str):
@@ -66,8 +54,10 @@ def shell(
             actual_type=type(cmd).__name__,
         )
 
-    # Validate shell safety - raises ShellFeatureError if dangerous patterns found
-    validate_shell_safety(cmd, allow_shell_features=allow_shell_features)
+    # Basic validation - log warning for potentially dangerous patterns
+    dangerous_patterns = [";", "&&", "||", "|", ">", "<", "&", "$", "`"]
+    if any(pattern in cmd for pattern in dangerous_patterns):
+        plog.warning("Shell command contains potentially dangerous characters", command=cmd)
 
     return run(
         cmd,
