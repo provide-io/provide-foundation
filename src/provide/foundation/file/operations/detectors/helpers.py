@@ -12,8 +12,9 @@ def is_temp_file(path: Path) -> bool:
     stem = path.stem.lower()
 
     # VSCode-specific pattern: .filename.ext.tmp.XXXX (must check original case)
-    # Example: .orchestrator.py.tmp.84
-    if re.match(r'^\..+\.tmp\.\w+$', path.name):
+    # Examples: .orchestrator.py.tmp.84, .test.txt.tmp.vscode.123
+    # Allow dots in the suffix to support patterns like .tmp.vscode.123
+    if re.match(r"^\..+\.tmp\.[\w.]+$", path.name):
         return True
 
     # Common temp file patterns
@@ -64,9 +65,9 @@ def extract_base_name(path: Path) -> str | None:
 
     # Handle VSCode temp pattern FIRST: .filename.ext.tmp.XXXX -> filename.ext
     # This must come before other patterns since the leading dot is part of the temp name
-    vscode_pattern = r'^\.(.+)\.tmp\.\w+$'
+    vscode_pattern = r"^\.(.+)\.tmp\.\w+$"
     if re.match(vscode_pattern, base_name):
-        base_name = re.sub(vscode_pattern, r'\1', base_name)
+        base_name = re.sub(vscode_pattern, r"\1", base_name)
         return base_name if base_name else None
 
     # Handle emacs autosave files: #document.txt# -> document.txt
@@ -74,14 +75,23 @@ def extract_base_name(path: Path) -> str | None:
         base_name = base_name[1:-1]
         return base_name if base_name else None
 
-    # Handle vim swap files: .document.txt.swp -> .document.txt (preserve leading dot for dotfiles)
-    vim_swap_pattern = r"^(\.?)(.+)\.(swp|swo|swx)$"
+    # Handle vim swap files:
+    # - Regular file (document.txt) -> .document.txt.swp
+    # - Dotfile (.document.txt) -> ..document.txt.swp (double leading dot)
+
+    # First check for dotfile pattern (double dot)
+    vim_dotfile_pattern = r"^\.\.(.+)\.(swp|swo|swx)$"
+    match = re.match(vim_dotfile_pattern, base_name)
+    if match:
+        filename = "." + match.group(1)
+        return filename if filename and filename != base_name else None
+
+    # Then check for regular file pattern (single dot)
+    vim_swap_pattern = r"^\.(.+)\.(swp|swo|swx)$"
     match = re.match(vim_swap_pattern, base_name)
     if match:
-        leading_dot = match.group(1)
-        filename = match.group(2)
-        base_name = leading_dot + filename
-        return base_name if base_name and base_name != name else None
+        filename = match.group(1)
+        return filename if filename and filename != base_name else None
 
     # Remove common temp/backup suffixes
     suffixes_to_remove = [".tmp", ".temp", ".bak", ".backup", ".orig", "~"]
