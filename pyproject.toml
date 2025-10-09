@@ -235,6 +235,9 @@ directory = "htmlcov" # Using an absolute path
 [tool.coverage.xml]
 output = "coverage.xml"
 
+[tool.setuptools]
+packages = {find = {where = ["src"]}}
+
 [tool.setuptools.dynamic]
 version = {file = "VERSION"}
 
