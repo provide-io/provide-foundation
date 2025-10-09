@@ -46,7 +46,7 @@ def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
 
 def discover_components(
     group: str,
-    dimension: str = "component",
+    dimension: str = ComponentCategory.COMPONENT.value,
     registry: Registry | None = None,
 ) -> dict[str, type[Any]]:
     """Discover and register components from entry points.

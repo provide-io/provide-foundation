@@ -58,17 +58,32 @@ class ComponentInfo:
 
 
 class ComponentCategory(Enum):
-    """Predefined component categories for Foundation."""
+    """Predefined component categories for Foundation.
 
+    These are the standard dimension values used internally by Foundation.
+    External components can still use custom string dimensions for compatibility.
+    """
+
+    # Core categories
+    COMMAND = "command"
+    COMPONENT = "component"
+
+    # Configuration and data sources
     CONFIG_SOURCE = "config_source"
+
+    # Processing pipeline
     PROCESSOR = "processor"
     ERROR_HANDLER = "error_handler"
     FORMATTER = "formatter"
     FILTER = "filter"
+
+    # Transport layer
     TRANSPORT = "transport"
     TRANSPORT_MIDDLEWARE = "transport.middleware"
     TRANSPORT_AUTH = "transport.auth"
     TRANSPORT_CACHE = "transport.cache"
+
+    # Event system
     EVENT_SET = "eventset"
 
 

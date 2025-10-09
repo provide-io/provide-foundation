@@ -231,7 +231,7 @@ def _register_command_func(
     reg.register(
         name=full_name,
         value=func,
-        dimension="command",
+        dimension=ComponentCategory.COMMAND.value,
         metadata=reg_metadata,
         aliases=aliases,
         replace=replace,
@@ -239,7 +239,7 @@ def _register_command_func(
 
     # Add metadata to the function
     func.__registry_name__ = command_name
-    func.__registry_dimension__ = "command"
+    func.__registry_dimension__ = ComponentCategory.COMMAND.value
     func.__registry_info__ = info
 
     get_foundation_logger().trace(f"Registered command: {full_name}")
