@@ -97,15 +97,19 @@ class HTTPTransport(TransportBase):
                     json_data = request.body
 
             # Make the request
-            httpx_response = await self._client.request(
-                method=request.method,
-                url=request.uri,
-                headers=request.headers,
-                params=request.params,
-                json=json_data,
-                data=data,
-                timeout=request.timeout if request.timeout is not None else self.config.timeout,
-            )
+            # Only pass params if explicitly set (empty dict would override URI query params)
+            request_kwargs = {
+                "method": request.method,
+                "url": request.uri,
+                "headers": request.headers,
+                "json": json_data,
+                "data": data,
+                "timeout": request.timeout if request.timeout is not None else self.config.timeout,
+            }
+            if request.params:
+                request_kwargs["params"] = request.params
+
+            httpx_response = await self._client.request(**request_kwargs)
 
             elapsed_ms = (time.perf_counter() - start_time) * 1000
 
@@ -160,13 +164,17 @@ class HTTPTransport(TransportBase):
         log.info(f"🌊 Streaming {request.method} {sanitized_uri}")
 
         try:
-            async with self._client.stream(
-                method=request.method,
-                url=request.uri,
-                headers=request.headers,
-                params=request.params,
-                timeout=request.timeout if request.timeout is not None else self.config.timeout,
-            ) as response:
+            # Only pass params if explicitly set (empty dict would override URI query params)
+            stream_kwargs = {
+                "method": request.method,
+                "url": request.uri,
+                "headers": request.headers,
+                "timeout": request.timeout if request.timeout is not None else self.config.timeout,
+            }
+            if request.params:
+                stream_kwargs["params"] = request.params
+
+            async with self._client.stream(**stream_kwargs) as response:
                 # Log response start
                 status_emoji = self._get_status_emoji(response.status_code)
                 log.info(f"{status_emoji} {response.status_code} (streaming)")
