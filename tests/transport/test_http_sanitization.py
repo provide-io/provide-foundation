@@ -223,11 +223,17 @@ async def test_actual_request_sent_with_real_values(
     actual_request = requests_received[0]
     # The key test: ensure real values are in the request, not [REDACTED]
     full_url = str(actual_request.url)
-    # httpx URL objects include query params in the full string representation
-    # The main assertion: we sent real values, not [REDACTED]
+
+    # Check URL base doesn't contain REDACTED
     assert "[REDACTED]" not in full_url, "Request URL should have real values, not redacted"
-    assert "REDACTED" not in str(actual_request.url.raw), "Request should not contain REDACTED"
-    # Verify we're actually making a request (not empty)
+
+    # Verify the actual query params contain the real api_key (not redacted)
+    # httpx stores query params separately, so check them directly
+    query_params = actual_request.url.params
+    assert query_params.get("api_key") == "real_key123", "Request should contain real api_key value"
+    assert "REDACTED" not in str(query_params), "Query params should not contain REDACTED"
+
+    # Verify we're actually making a request to the right endpoint
     assert "api.example.com/data" in full_url
 
 
