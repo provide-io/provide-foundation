@@ -19,10 +19,10 @@ def runner() -> CliRunner:
 class TestGenerateLogsCommand:
     """Tests for the generate_logs_command Click command."""
 
-    @patch("provide.foundation.cli.commands.logs.stats.print_generation_config")
+    @patch("provide.foundation.cli.commands.logs.generate.print_generation_config")
     @patch("provide.foundation.cli.commands.logs.generate._configure_rate_limiter")
     @patch("provide.foundation.cli.commands.logs.generator.LogGenerator.generate_fixed_count")
-    @patch("provide.foundation.cli.commands.logs.stats.print_final_stats")
+    @patch("provide.foundation.cli.commands.logs.generate.print_final_stats")
     @patch("provide.foundation.logger.processors.otlp.flush_otlp_logs")
     def test_generate_fixed_count_logs(
         self,
@@ -46,10 +46,10 @@ class TestGenerateLogsCommand:
         mock_generate_fixed_count.assert_called_once_with(10, 0.0)
         mock_print_final_stats.assert_called_once()
 
-    @patch("provide.foundation.cli.commands.logs.stats.print_generation_config")
+    @patch("provide.foundation.cli.commands.logs.generate.print_generation_config")
     @patch("provide.foundation.cli.commands.logs.generate._configure_rate_limiter")
     @patch("provide.foundation.cli.commands.logs.generator.LogGenerator.generate_continuous")
-    @patch("provide.foundation.cli.commands.logs.stats.print_final_stats")
+    @patch("provide.foundation.cli.commands.logs.generate.print_final_stats")
     @patch("provide.foundation.cli.commands.logs.generate.click.echo")
     @patch("provide.foundation.logger.processors.otlp.flush_otlp_logs")
     def test_generate_continuous_logs(
