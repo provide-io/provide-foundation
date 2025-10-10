@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Tests for Foundation serialization utilities."""
-
 import json
 from typing import Any
 
@@ -11,6 +9,8 @@ import pytest
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.serialization import provide_dumps, provide_loads
+
+"""Tests for Foundation serialization utilities."""
 
 
 class TestProvideDumps(FoundationTestCase):
