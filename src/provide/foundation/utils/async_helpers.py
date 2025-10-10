@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Awaitable, Coroutine
+import contextlib
 from typing import TypeVar
 
 T = TypeVar("T")
@@ -62,10 +63,8 @@ def run_async(coro: Coroutine[None, None, T] | Awaitable[T]) -> T:
     finally:
         # Clean up - only close if we created it
         if not loop.is_running():
-            try:
+            with contextlib.suppress(Exception):
                 loop.close()
-            except Exception:
-                pass
 
 
 __all__ = ["run_async"]
