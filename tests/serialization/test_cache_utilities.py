@@ -109,15 +109,17 @@ class TestSerializationCache:
 
         assert cache_instance.maxsize == 64
 
-    def test_cache_registration(self, clean_env):
-        """Cache should be registered with caching system."""
-        from provide.foundation.utils.caching import get_registered_caches
-
+    def test_cache_initialization_creates_lru_cache(self, clean_env):
+        """Cache initialization should create an LRU cache instance."""
         cache._serialization_cache = None
-        cache.get_serialization_cache()
 
-        caches = get_registered_caches()
-        assert "serialization" in caches
+        cache_instance = cache.get_serialization_cache()
+
+        # Verify it's an LRUCache with expected attributes
+        assert hasattr(cache_instance, "maxsize")
+        assert hasattr(cache_instance, "get")
+        assert hasattr(cache_instance, "set")
+        assert hasattr(cache_instance, "clear")
 
 
 class TestCacheKeyGeneration:

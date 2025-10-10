@@ -25,6 +25,15 @@ def clear_serialization_cache():
 
 
 @pytest.fixture
+def clean_env(monkeypatch):
+    """Clean environment for cache configuration tests."""
+    # Remove all FOUNDATION_SERIALIZATION_* env vars
+    for key in list(os.environ.keys()):
+        if key.startswith("FOUNDATION_SERIALIZATION_"):
+            monkeypatch.delenv(key, raising=False)
+
+
+@pytest.fixture
 def mock_env_no_cache(monkeypatch):
     """Mock environment to disable caching."""
     monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_ENABLED", "false")
