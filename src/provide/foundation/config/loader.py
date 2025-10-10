@@ -141,7 +141,9 @@ class FileConfigLoader(ConfigLoader):
         if self.format == ConfigFormat.INI:
             return ini_loads(content)
         if self.format == ConfigFormat.ENV:
-            return env_loads(content)
+            env_data = env_loads(content)
+            # Lowercase keys for consistency with Python conventions
+            return {key.lower(): value for key, value in env_data.items()}
         raise ConfigurationError(
             f"Unsupported format: {self.format}",
             code="CONFIG_FORMAT_UNSUPPORTED",
