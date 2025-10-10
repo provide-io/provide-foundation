@@ -222,11 +222,12 @@ def send_log_bulk(
 
     """
     try:
-        if client is None:
-            client = OpenObserveClient.from_config()
-
         from provide.foundation.integrations.openobserve.config import OpenObserveConfig
         from provide.foundation.logger.config.telemetry import TelemetryConfig
+        from provide.foundation.utils.async_helpers import run_async
+
+        if client is None:
+            client = OpenObserveClient.from_config()
 
         config = TelemetryConfig.from_env()
         oo_config = OpenObserveConfig.from_env()
@@ -238,22 +239,25 @@ def send_log_bulk(
         stream = oo_config.stream or "default"
         bulk_data = json.dumps({"index": {"_index": stream}}) + "\n" + json.dumps(log_entry) + "\n"
 
-        # Send via bulk API
-        import requests
-
+        # Send via bulk API using Foundation transport
         url = _build_bulk_url(client)
-        response = requests.post(
-            url,
-            headers=client.session.headers,
-            data=bulk_data,
-            timeout=client.timeout,
-        )
 
-        if response.status_code == 200:
-            log.debug(f"Sent log via bulk API: {message[:50]}...")
-            return True
-        log.debug(f"Failed to send via bulk API: {response.status_code}")
-        return False
+        async def _send_bulk() -> bool:
+            """Send bulk request using async client."""
+            response = await client._client.request(
+                uri=url,
+                method="POST",
+                body=bulk_data,
+                headers={"Content-Type": "application/x-ndjson"},
+            )
+
+            if response.is_success():
+                log.debug(f"Sent log via bulk API: {message[:50]}...")
+                return True
+            log.debug(f"Failed to send via bulk API: {response.status}")
+            return False
+
+        return run_async(_send_bulk())
 
     except Exception as e:
         log.debug(f"Failed to send via bulk API: {e}")
