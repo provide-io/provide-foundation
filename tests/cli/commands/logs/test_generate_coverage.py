@@ -14,11 +14,7 @@ from provide.foundation.cli.commands.logs.constants import (
     OPERATIONS,
     SERVICE_NAMES,
 )
-from provide.foundation.cli.commands.logs.generate import (
-    generate_log_entry,
-    generate_span_id,
-    generate_trace_id,
-)
+from provide.foundation.cli.commands.logs.generator import LogGenerator
 
 
 class TestConstants(FoundationTestCase):
@@ -52,39 +48,34 @@ class TestConstants(FoundationTestCase):
 class TestTraceSpanGeneration(FoundationTestCase):
     """Test trace and span ID generation."""
 
-    def setup_method(self) -> None:
-        """Reset counters before each test."""
-        super().setup_method()
-        import provide.foundation.cli.commands.logs.generator as generator_module
-
-        generator_module._default_generator._trace_counter = 0
-        generator_module._default_generator._span_counter = 0
-
     def test_generate_trace_id(self) -> None:
         """Test trace ID generation."""
-        trace_id = generate_trace_id()
+        generator = LogGenerator()
+        trace_id = generator.generate_trace_id()
         assert trace_id == "trace_00000000"
 
         # Second call should increment
-        trace_id_2 = generate_trace_id()
+        trace_id_2 = generator.generate_trace_id()
         assert trace_id_2 == "trace_00000001"
 
     def test_generate_span_id(self) -> None:
         """Test span ID generation."""
-        span_id = generate_span_id()
+        generator = LogGenerator()
+        span_id = generator.generate_span_id()
         assert span_id == "span_00000000"
 
         # Second call should increment
-        span_id_2 = generate_span_id()
+        span_id_2 = generator.generate_span_id()
         assert span_id_2 == "span_00000001"
 
     def test_trace_id_thread_safety(self) -> None:
         """Test that trace ID generation is thread-safe."""
+        generator = LogGenerator()
         trace_ids = []
 
         def generate_multiple() -> None:
             for _ in range(10):
-                trace_ids.append(generate_trace_id())
+                trace_ids.append(generator.generate_trace_id())
 
         threads = [threading.Thread(daemon=True, target=generate_multiple) for _ in range(5)]
 
@@ -99,11 +90,12 @@ class TestTraceSpanGeneration(FoundationTestCase):
 
     def test_span_id_thread_safety(self) -> None:
         """Test that span ID generation is thread-safe."""
+        generator = LogGenerator()
         span_ids = []
 
         def generate_multiple() -> None:
             for _ in range(10):
-                span_ids.append(generate_span_id())
+                span_ids.append(generator.generate_span_id())
 
         threads = [threading.Thread(daemon=True, target=generate_multiple) for _ in range(5)]
 
@@ -123,15 +115,12 @@ class TestGenerateLogEntry(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset counters and random seed before each test."""
         super().setup_method()
-        import provide.foundation.cli.commands.logs.generator as generator_module
-
-        generator_module._default_generator._trace_counter = 0
-        generator_module._default_generator._span_counter = 0
         random.seed(42)  # For deterministic tests
+        self.generator = LogGenerator()
 
     def test_generate_log_entry_basic(self) -> None:
         """Test basic log entry generation."""
-        entry = generate_log_entry(0)
+        entry = self.generator.generate_log_entry(0)
 
         assert isinstance(entry, dict)
         assert "message" in entry
@@ -150,7 +139,8 @@ class TestGenerateLogEntry(FoundationTestCase):
 
     def test_generate_log_entry_normal_style(self) -> None:
         """Test log entry generation with normal style."""
-        entry = generate_log_entry(0, style="normal")
+        generator = LogGenerator(style="normal")
+        entry = generator.generate_log_entry(0)
 
         message = entry["message"]
         assert "Successfully" in message
@@ -163,16 +153,18 @@ class TestGenerateLogEntry(FoundationTestCase):
 
     def test_generate_log_entry_burroughs_style(self) -> None:
         """Test log entry generation with Burroughs style."""
-        entry = generate_log_entry(0, style="burroughs")
+        generator = LogGenerator(style="burroughs")
+        entry = generator.generate_log_entry(0)
 
         message = entry["message"]
         assert message in BURROUGHS_PHRASES
 
     def test_generate_log_entry_error_rate_zero(self) -> None:
         """Test log entry generation with zero error rate."""
+        generator = LogGenerator(error_rate=0.0)
         # Generate multiple entries to ensure no errors
         for i in range(20):
-            entry = generate_log_entry(i, error_rate=0.0)
+            entry = generator.generate_log_entry(i)
 
             # Should not have error-specific fields
             assert "error_code" not in entry
@@ -182,7 +174,8 @@ class TestGenerateLogEntry(FoundationTestCase):
 
     def test_generate_log_entry_error_rate_one(self) -> None:
         """Test log entry generation with 100% error rate."""
-        entry = generate_log_entry(0, error_rate=1.0)
+        generator = LogGenerator(error_rate=1.0)
+        entry = generator.generate_log_entry(0)
 
         # Should always be an error
         assert entry["level"] == "error"
@@ -200,7 +193,7 @@ class TestGenerateLogEntry(FoundationTestCase):
 
     def test_generate_log_entry_domain_action_status(self) -> None:
         """Test DAS (Domain-Action-Status) fields."""
-        entry = generate_log_entry(0)
+        entry = self.generator.generate_log_entry(0)
 
         assert "domain" in entry
         assert "action" in entry
@@ -216,21 +209,21 @@ class TestGenerateLogEntry(FoundationTestCase):
     def test_generate_log_entry_trace_id_logic(self) -> None:
         """Test trace ID assignment logic."""
         # Index 0 should generate new trace ID
-        entry_0 = generate_log_entry(0)
+        entry_0 = self.generator.generate_log_entry(0)
         assert entry_0["trace_id"] == "trace_00000000"
 
         # Indices 1-9 should reuse the same trace ID
         for i in range(1, 10):
-            entry = generate_log_entry(i)
+            entry = self.generator.generate_log_entry(i)
             assert entry["trace_id"] == "trace_00000000"
 
         # Index 10 should generate a new trace ID
-        entry_10 = generate_log_entry(10)
+        entry_10 = self.generator.generate_log_entry(10)
         assert entry_10["trace_id"] == "trace_00000001"
 
     def test_generate_log_entry_unique_span_ids(self) -> None:
         """Test that each entry gets a unique span ID."""
-        entries = [generate_log_entry(i) for i in range(5)]
+        entries = [self.generator.generate_log_entry(i) for i in range(5)]
         span_ids = [entry["span_id"] for entry in entries]
 
         assert len(set(span_ids)) == 5  # All unique

@@ -99,7 +99,7 @@ INVERSE_OPERATIONS: dict[ArchiveOperation, str] = {
     ArchiveOperation.ZIP: "unzip",
 }
 
-# String operation names (for backward compatibility with existing code)
+# String operation name mapping (includes extraction aliases for convenience)
 OPERATION_NAMES: dict[str, ArchiveOperation] = {
     "tar": ArchiveOperation.TAR,
     "untar": ArchiveOperation.TAR,
