@@ -28,6 +28,8 @@ def toml_dumps(obj: dict[str, Any]) -> str:
         'key = "value"\\n'
 
     """
+    from provide.foundation.errors import ValidationError
+
     try:
         import tomli_w
     except ImportError as e:
@@ -60,6 +62,8 @@ def toml_loads(s: str, *, use_cache: bool = True) -> dict[str, Any]:
         {'key': 'value'}
 
     """
+    from provide.foundation.errors import ValidationError
+
     if not isinstance(s, str):
         raise ValidationError("Input must be a string")
 
