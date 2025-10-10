@@ -368,7 +368,7 @@ class TestEdgeCases(FoundationTestCase):
 
         with (
             patch("sys.stdin", StringIO(test_input)),
-            patch("provide.foundation.console.input.plog") as mock_log,
+            patch("provide.foundation.console.input.log") as mock_log,
         ):
             list(pin_stream())
 
@@ -392,7 +392,7 @@ class TestEdgeCases(FoundationTestCase):
         with (
             patch("asyncio.StreamReader", return_value=reader),
             patch("asyncio.get_event_loop") as mock_loop,
-            patch("provide.foundation.console.input.plog") as mock_log,
+            patch("provide.foundation.console.input.log") as mock_log,
         ):
             mock_loop.return_value.connect_read_pipe = mock_connect
             reader.readline = cancel_after_delay
@@ -419,7 +419,7 @@ class TestEdgeCases(FoundationTestCase):
         with (
             patch("asyncio.StreamReader", return_value=reader),
             patch("asyncio.get_event_loop") as mock_loop,
-            patch("provide.foundation.console.input.plog") as mock_log,
+            patch("provide.foundation.console.input.log") as mock_log,
         ):
             mock_loop.return_value.connect_read_pipe = mock_connect
             reader.readline = raise_error
