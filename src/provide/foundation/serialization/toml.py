@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 import tomllib
-from typing import Any
-
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from provide.foundation.errors import ValidationError
-from provide.foundation.serialization.cache import get_cache_key, get_cache_enabled, get_serialization_cache
+from provide.foundation.serialization.cache import get_cache_enabled, get_cache_key, get_serialization_cache
 
 """TOML serialization with caching support."""
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from provide.foundation.errors import ValidationError
 
-from provide.foundation.serialization.cache import get_cache_key, get_cache_enabled, get_serialization_cache
+from provide.foundation.serialization.cache import get_cache_enabled, get_cache_key, get_serialization_cache
 
 """.env file format serialization with caching support."""
 
