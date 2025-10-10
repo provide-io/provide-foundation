@@ -79,6 +79,9 @@ def _infer_and_parse_value(value: str) -> Any:
     Tries to detect the type in order: bool, int, float, str.
     Uses the parsers module for consistent parsing behavior.
 
+    Note: Negative numbers are treated as strings to maintain
+    compatibility with existing behavior.
+
     Args:
         value: String value to parse
 
@@ -93,8 +96,8 @@ def _infer_and_parse_value(value: str) -> Any:
         except (ValueError, TypeError):
             pass
 
-    # Try int (handles digits and negative numbers)
-    if value.lstrip("-").isdigit():
+    # Try int (positive numbers only, negative numbers treated as strings)
+    if value.isdigit():
         try:
             return parse_typed_value(value, int)
         except (ValueError, TypeError):
@@ -107,7 +110,7 @@ def _infer_and_parse_value(value: str) -> Any:
         except (ValueError, TypeError):
             pass
 
-    # Default to string
+    # Default to string (includes negative numbers)
     return value
 
 
