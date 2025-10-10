@@ -37,9 +37,7 @@ class TestEnvDumps:
 
     def test_no_spaces_no_quotes(self):
         """Should not quote values without spaces even when quote_values=True."""
-        result = env.env_dumps({"KEY": "valuenosp
-
-aces"}, quote_values=True)
+        result = env.env_dumps({"KEY": "valuenospaces"}, quote_values=True)
         assert result == "KEY=valuenospaces\n"
 
     def test_numeric_values(self):
