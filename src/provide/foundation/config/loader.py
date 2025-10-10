@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from configparser import ConfigParser
 import os
 from pathlib import Path
 from typing import TypeVar
@@ -13,7 +12,7 @@ from provide.foundation.errors.config import ConfigurationError
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.resources import NotFoundError
 from provide.foundation.file.safe import safe_read_text
-from provide.foundation.serialization import json_loads
+from provide.foundation.serialization import env_loads, ini_loads, json_loads, toml_loads, yaml_loads
 
 """Configuration loaders for various sources."""
 
@@ -134,69 +133,20 @@ class FileConfigLoader(ConfigLoader):
         if self.format == ConfigFormat.JSON:
             return json_loads(content)
         if self.format == ConfigFormat.YAML:
-            import yaml
-
-            data = yaml.safe_load(content)
-            # yaml.safe_load returns None for empty content or comments-only files
+            data = yaml_loads(content)
+            # yaml_loads returns None for empty content or comments-only files
             return data if data is not None else {}
         if self.format == ConfigFormat.TOML:
-            import tomllib
-
-            return tomllib.loads(content)
+            return toml_loads(content)
         if self.format == ConfigFormat.INI:
-            import configparser
-
-            parser = configparser.ConfigParser()
-            parser.read_string(content)
-            return self._ini_to_dict(parser)
+            return ini_loads(content)
         if self.format == ConfigFormat.ENV:
-            return self._parse_env_file(content)
+            return env_loads(content)
         raise ConfigurationError(
             f"Unsupported format: {self.format}",
             code="CONFIG_FORMAT_UNSUPPORTED",
             format=str(self.format),
         )
-
-    def _ini_to_dict(self, parser: ConfigParser) -> ConfigDict:
-        """Convert INI parser to dictionary."""
-        result: ConfigDict = {}
-        for section in parser.sections():
-            section_dict = dict(parser.items(section))
-            result[section] = section_dict
-
-        # Include DEFAULT section if present
-        if parser.defaults():
-            default_dict = dict(parser.defaults())
-            result["DEFAULT"] = default_dict
-
-        return result
-
-    def _parse_env_file(self, content: str) -> ConfigDict:
-        """Parse .env file format."""
-        result: ConfigDict = {}
-
-        for line in content.splitlines():
-            line = line.strip()
-
-            # Skip comments and empty lines
-            if not line or line.startswith("#"):
-                continue
-
-            # Parse key=value
-            if "=" in line:
-                key, value = line.split("=", 1)
-                key = key.strip().lower()  # Convert to lowercase for compatibility
-                value = value.strip()
-
-                # Remove quotes if present
-                if (value.startswith('"') and value.endswith('"')) or (
-                    value.startswith("'") and value.endswith("'")
-                ):
-                    value = value[1:-1]
-
-                result[key] = value
-
-        return result
 
 
 class RuntimeConfigLoader(ConfigLoader):

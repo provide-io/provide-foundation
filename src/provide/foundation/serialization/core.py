@@ -1,72 +1,64 @@
 from __future__ import annotations
 
-import json
-from typing import Any
+# Re-export cache utilities
+from provide.foundation.serialization.cache import (
+    CACHE_ENABLED,
+    CACHE_SIZE,
+    get_cache_key,
+    serialization_cache,
+)
 
-from provide.foundation.errors import ValidationError
+# Re-export ENV format
+from provide.foundation.serialization.env import env_dumps, env_loads
 
-"""Core serialization utilities for Foundation."""
+# Re-export INI format
+from provide.foundation.serialization.ini import ini_dumps, ini_loads
 
+# Re-export JSON format
+from provide.foundation.serialization.json import json_dumps, json_loads
 
-def json_dumps(
-    obj: Any,
-    *,
-    ensure_ascii: bool = False,
-    indent: int | None = None,
-    sort_keys: bool = False,
-    default: Any = None,
-) -> str:
-    """Serialize object to JSON string with Foundation tracking.
+# Re-export TOML format
+from provide.foundation.serialization.toml import toml_dumps, toml_loads
 
-    Args:
-        obj: Object to serialize
-        ensure_ascii: If True, non-ASCII characters are escaped
-        indent: Number of spaces for indentation (None for compact)
-        sort_keys: Whether to sort dictionary keys
-        default: Function called for objects that can't be serialized
+# Re-export YAML format
+from provide.foundation.serialization.yaml import yaml_dumps, yaml_loads
 
-    Returns:
-        JSON string representation
+"""Core serialization utilities for Foundation.
 
-    Raises:
-        ValidationError: If object cannot be serialized
+This module provides a unified interface for serialization operations
+across multiple formats (JSON, YAML, TOML, INI, ENV) with optional
+caching support for improved performance.
 
-    Example:
-        >>> json_dumps({"key": "value"})
-        '{"key": "value"}'
-        >>> json_dumps({"b": 1, "a": 2}, sort_keys=True, indent=2)
-        '{\\n  "a": 2,\\n  "b": 1\\n}'
+All serialization functions follow consistent patterns:
+- _loads() functions deserialize strings to Python objects
+- _dumps() functions serialize Python objects to strings
+- Caching is configurable via environment variables
+- Consistent error handling using ValidationError
 
-    """
-    try:
-        return json.dumps(obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys, default=default)
-    except (TypeError, ValueError) as e:
-        raise ValidationError(f"Cannot serialize object to JSON: {e}") from e
+Environment Variables:
+    FOUNDATION_SERIALIZATION_CACHE_ENABLED: Enable/disable caching (default: True)
+    FOUNDATION_SERIALIZATION_CACHE_SIZE: Cache size limit (default: 128)
+"""
 
-
-def json_loads(s: str) -> Any:
-    """Deserialize JSON string to Python object with Foundation tracking.
-
-    Args:
-        s: JSON string to deserialize
-
-    Returns:
-        Deserialized Python object
-
-    Raises:
-        ValidationError: If string is not valid JSON
-
-    Example:
-        >>> json_loads('{"key": "value"}')
-        {'key': 'value'}
-        >>> json_loads('[1, 2, 3]')
-        [1, 2, 3]
-
-    """
-    if not isinstance(s, str):
-        raise ValidationError("Input must be a string")
-
-    try:
-        return json.loads(s)
-    except json.JSONDecodeError as e:
-        raise ValidationError(f"Invalid JSON string: {e}") from e
+__all__ = [
+    # Cache utilities
+    "CACHE_ENABLED",
+    "CACHE_SIZE",
+    # ENV
+    "env_dumps",
+    "env_loads",
+    "get_cache_key",
+    # INI
+    "ini_dumps",
+    "ini_loads",
+    # JSON
+    "json_dumps",
+    "json_loads",
+    "serialization_cache",
+    # TOML
+    "toml_dumps",
+    "toml_loads",
+    # YAML
+    "yaml_dumps",
+    "yaml_loads",
+]

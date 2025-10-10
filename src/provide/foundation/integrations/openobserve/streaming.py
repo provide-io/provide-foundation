@@ -8,7 +8,6 @@ import time
 from typing import Any
 
 from provide.foundation.console.output import perr
-from provide.foundation.errors.config import ValidationError
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveStreamingError,
@@ -111,7 +110,7 @@ def _process_stream_line(line: str) -> list[dict[str, Any]]:
             if "hits" in parsed_data:
                 return parsed_data["hits"]
             return [parsed_data]
-    except ValidationError:
+    except Exception:
         pass
 
     return []
