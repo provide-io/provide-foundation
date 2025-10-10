@@ -29,8 +29,6 @@ def ini_dumps(obj: dict[str, dict[str, str]], *, include_default: bool = False) 
         '[section]\\nkey = value\\n\\n'
 
     """
-    from provide.foundation.errors import ValidationError
-
     if not isinstance(obj, dict):
         raise ValidationError("INI serialization requires a dictionary")
 
@@ -76,7 +74,6 @@ def ini_loads(s: str, *, use_cache: bool = True) -> dict[str, dict[str, str]]:
         {'section': {'key': 'value'}}
 
     """
-    from provide.foundation.errors import ValidationError
     if not isinstance(s, str):
         raise ValidationError("Input must be a string")
 
