@@ -4,13 +4,19 @@ from provide.foundation.archive.base import ArchiveError, BaseArchive
 from provide.foundation.archive.bzip2 import Bzip2Compressor
 from provide.foundation.archive.gzip import GzipCompressor
 from provide.foundation.archive.limits import (
-    ArchiveLimits,
     DEFAULT_LIMITS,
+    ArchiveLimits,
     ExtractionTracker,
     get_archive_size,
 )
 from provide.foundation.archive.operations import ArchiveOperations, OperationChain
 from provide.foundation.archive.tar import TarArchive
+from provide.foundation.archive.types import (
+    INVERSE_OPERATIONS,
+    OPERATION_NAMES,
+    ArchiveOperation,
+    get_operation_from_string,
+)
 from provide.foundation.archive.zip import ZipArchive
 
 """Archive operations for provide-foundation.
@@ -20,16 +26,20 @@ Tools for creating, extracting, and manipulating archives in various formats.
 """
 
 __all__ = [
+    "DEFAULT_LIMITS",
+    "INVERSE_OPERATIONS",
+    "OPERATION_NAMES",
     "ArchiveError",
     "ArchiveLimits",
+    "ArchiveOperation",
     "ArchiveOperations",
     "BaseArchive",
     "Bzip2Compressor",
-    "DEFAULT_LIMITS",
     "ExtractionTracker",
     "GzipCompressor",
     "OperationChain",
     "TarArchive",
     "ZipArchive",
     "get_archive_size",
+    "get_operation_from_string",
 ]
