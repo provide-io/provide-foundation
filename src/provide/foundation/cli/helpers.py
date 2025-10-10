@@ -7,6 +7,7 @@ import sys
 from typing import Any, ParamSpec, TypeVar
 
 from provide.foundation.cli.deps import _HAS_CLICK, click
+from provide.foundation.parsers import parse_dict, parse_typed_value
 
 """Shared utilities for CLI commands.
 
