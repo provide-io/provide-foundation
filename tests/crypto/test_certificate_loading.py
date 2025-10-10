@@ -73,7 +73,7 @@ class TestCertificateLoading(FoundationTestCase):
     async def test_load_cert_with_windows_line_endings(self, client_cert: Any) -> None:
         """Ensure certificate loading works with Windows-style line endings."""
         # Use the actual certificate content from the fixture
-        cert_pem = client_cert.cert.replace("\n", "\r\n")
+        cert_pem = client_cert.cert_pem.replace("\n", "\r\n")
         cert = Certificate.from_pem(cert_pem=cert_pem)
         assert cert.subject, "Windows line endings should not break parsing"
 
@@ -82,7 +82,7 @@ class TestCertificateLoading(FoundationTestCase):
         """Ensure a private key loads correctly from a file:// path."""
         # Create cert from the fixture's actual certificate
         cert = Certificate.from_pem(
-            cert_pem=client_cert.cert,
+            cert_pem=client_cert.cert_pem,
             key_pem=temporary_key_file,
         )
         assert cert.public_key, "Certificate should have a valid private key"
@@ -123,7 +123,7 @@ class TestCertificateLoading(FoundationTestCase):
         client_cert: Any,
     ) -> None:  # Added client_cert fixture
         """Ensure certificate loading works with UTF-8 BOM characters."""
-        cert_with_bom = "\ufeff" + client_cert.cert  # Correctly use the cert string from the fixture
+        cert_with_bom = "\ufeff" + client_cert.cert_pem  # Correctly use the cert string from the fixture
         cert = Certificate.from_pem(cert_pem=cert_with_bom)  # Use the modified string
         assert cert.subject, "UTF-8 BOM should not break certificate parsing"
 
@@ -138,8 +138,8 @@ class TestCertificateLoading(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_load_cert_with_extra_whitespace(self, client_cert: Any) -> None:
         """Ensure certificate loading is robust against extra whitespace."""
-        # Use cert.cert instead of cert directly
-        cert_pem = f"\n\n{client_cert.cert}\n\n"
+        # Use cert.cert_pem instead of cert directly
+        cert_pem = f"\n\n{client_cert.cert_pem}\n\n"
         cert = Certificate.from_pem(cert_pem=cert_pem)
         assert cert.subject, "Whitespace should not affect certificate loading"
 
