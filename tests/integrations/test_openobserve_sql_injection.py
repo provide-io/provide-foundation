@@ -64,8 +64,14 @@ class TestSanitization:
         """Test valid trace IDs pass sanitization."""
         assert _sanitize_trace_id("abc123def456") == "abc123def456"
         assert _sanitize_trace_id("ABCDEF0123456789") == "ABCDEF0123456789"
-        assert _sanitize_trace_id("12345678-1234-1234-1234-123456789012") == "12345678-1234-1234-1234-123456789012"
-        assert _sanitize_trace_id("a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6") == "a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6"
+        assert (
+            _sanitize_trace_id("12345678-1234-1234-1234-123456789012")
+            == "12345678-1234-1234-1234-123456789012"
+        )
+        assert (
+            _sanitize_trace_id("a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6")
+            == "a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6"
+        )
 
     def test_sanitize_trace_id_injection_attempts(self) -> None:
         """Test SQL injection attempts in trace ID are blocked."""

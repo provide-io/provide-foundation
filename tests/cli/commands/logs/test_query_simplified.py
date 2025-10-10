@@ -136,6 +136,7 @@ class TestExecuteAndDisplayQuery(FoundationTestCase):
     def test_successful_query_with_results(self) -> None:
         """Test successful query execution with results."""
         from unittest.mock import AsyncMock
+
         from provide.foundation.cli.commands.logs.query import _execute_and_display_query
 
         # Mock the search_logs and format_output functions
@@ -146,7 +147,7 @@ class TestExecuteAndDisplayQuery(FoundationTestCase):
         with (
             patch(
                 "provide.foundation.integrations.openobserve.search_logs",
-                new=AsyncMock(return_value=mock_response)
+                new=AsyncMock(return_value=mock_response),
             ) as mock_search,
             patch(
                 "provide.foundation.integrations.openobserve.format_output", return_value="formatted_logs"
@@ -165,13 +166,17 @@ class TestExecuteAndDisplayQuery(FoundationTestCase):
     def test_successful_query_no_results(self) -> None:
         """Test successful query with no results."""
         from unittest.mock import AsyncMock
+
         from provide.foundation.cli.commands.logs.query import _execute_and_display_query
 
         mock_response = Mock()
         mock_response.total = 0
 
         with (
-            patch("provide.foundation.integrations.openobserve.search_logs", new=AsyncMock(return_value=mock_response)),
+            patch(
+                "provide.foundation.integrations.openobserve.search_logs",
+                new=AsyncMock(return_value=mock_response),
+            ),
             patch("click.echo") as mock_echo,
         ):
             mock_client = Mock()
@@ -183,6 +188,7 @@ class TestExecuteAndDisplayQuery(FoundationTestCase):
     def test_query_exception_handling(self) -> None:
         """Test exception handling in query execution."""
         from unittest.mock import AsyncMock
+
         from provide.foundation.cli.commands.logs.query import _execute_and_display_query
 
         with (
