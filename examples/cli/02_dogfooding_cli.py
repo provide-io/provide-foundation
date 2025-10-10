@@ -5,15 +5,19 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from attrs import define
+
 from provide.foundation.cli import echo_error, echo_info, echo_success, echo_warning
-from provide.foundation.config import BaseConfig, env_field
+from provide.foundation.config import RuntimeConfig, env_field
 from provide.foundation.console.output import perr, pout
 from provide.foundation.crypto.hashing import hash_file
 from provide.foundation.errors.decorators import resilient
-from provide.foundation.file.safe import atomic_write, safe_read_text
+from provide.foundation.file.atomic import atomic_write_text
+from provide.foundation.file.safe import safe_read_text
 from provide.foundation.hub import Hub, register_command
 from provide.foundation.logger import get_logger
-from provide.foundation.parsers.primitives import parse_typed_value
+from provide.foundation.parsers.primitives import parse_bool
+from provide.foundation.parsers.typed import parse_typed_value
 from provide.foundation.process.sync.execution import run, run_simple
 from provide.foundation.utils.environment import get_bool, get_int, get_str
 
@@ -37,11 +41,11 @@ Features Demonstrated:
    - Better than os.environ.get() with manual parsing
 
 2. Structured Configuration (config):
-   - BaseConfig and env_field for type-safe configuration
+   - RuntimeConfig and env_field for type-safe configuration
    - Better than manual environment variable parsing
 
-3. File I/O (file/safe):
-   - atomic_write() to prevent file corruption
+3. File I/O (file/atomic and file/safe):
+   - atomic_write_text() to prevent file corruption
    - safe_read_text() for error handling
    - Better than direct Path.open()
 
@@ -81,7 +85,8 @@ log = get_logger(__name__)
 # ==============================================================================
 
 
-class AppConfig(BaseConfig):
+@define
+class AppConfig(RuntimeConfig):
     """Application configuration using Foundation's config system.
 
     Better than manual os.environ.get() because:
@@ -89,12 +94,13 @@ class AppConfig(BaseConfig):
     - Supports file:// prefix for secrets
     - Automatic parsing based on field types
     - IDE autocomplete
+    - Loads from environment variables via from_env()
     """
 
     app_name: str = env_field(env_var="APP_NAME", default="dogfooding-demo")
-    port: int = env_field(env_var="APP_PORT", default=8000)
-    debug: bool = env_field(env_var="APP_DEBUG", default=False)
-    workers: int = env_field(env_var="APP_WORKERS", default=4)
+    port: int = env_field(env_var="APP_PORT", default=8000, parser=int)
+    debug: bool = env_field(env_var="APP_DEBUG", default=False, parser=parse_bool)
+    workers: int = env_field(env_var="APP_WORKERS", default=4, parser=int)
     log_level: str = env_field(env_var="LOG_LEVEL", default="INFO")
 
 
@@ -116,7 +122,7 @@ def config_demo_command() -> None:
     pout("=" * 60)
 
     # Method 1: Structured configuration class (best for application config)
-    pout("\n1️⃣  Structured Configuration (BaseConfig):")
+    pout("\n1️⃣  Structured Configuration (RuntimeConfig):")
     pout("-" * 60)
     config = AppConfig.from_env()
     pout(f"   App Name:   {config.app_name}")
@@ -146,7 +152,7 @@ def file_demo_command() -> None:
     """Demonstrate safe file I/O operations.
 
     Shows:
-    - atomic_write() to prevent corruption
+    - atomic_write_text() to prevent corruption
     - safe_read_text() with error handling
     - hash_file() for checksums
     """
@@ -161,7 +167,7 @@ def file_demo_command() -> None:
     content = "Hello from Foundation!\nAtomic writes prevent corruption."
 
     try:
-        atomic_write(demo_file, content)
+        atomic_write_text(demo_file, content)
         pout(f"   ✅ Wrote to: {demo_file}")
         pout(f"   ✅ Content: {len(content)} bytes")
     except Exception as e:
@@ -233,7 +239,7 @@ def parse_demo_command(value: str = "42") -> None:
     """Demonstrate typed value parsing.
 
     Shows:
-    - parse_typed_value() for automatic type detection
+    - parse_typed_value() with type hints
     - Better than manual value.isdigit() checks
 
     Args:
@@ -242,28 +248,28 @@ def parse_demo_command(value: str = "42") -> None:
     pout("\n🔤 Parsing Dogfooding Demo\n")
     pout("=" * 60)
 
-    test_values = [
-        value,  # User-provided value
-        "123",
-        "true",
-        "false",
-        "3.14",
-        "hello world",
-        "[1, 2, 3]",
-        '{"key": "value"}',
+    # Examples of parsing to specific types
+    test_cases = [
+        ("123", int, "Integer"),
+        ("true", bool, "Boolean"),
+        ("3.14", float, "Float"),
+        ("hello", str, "String"),
+        ("1,2,3", list, "List"),
+        ('{"key": "value"}', dict, "Dict"),
+        (value, str, f"User value '{value}'"),
     ]
 
-    pout("\nParsing values with automatic type detection:")
+    pout("\nParsing values with type hints:")
     pout("-" * 60)
 
-    for test_val in test_values:
+    for test_val, target_type, description in test_cases:
         try:
-            parsed = parse_typed_value(test_val)
-            pout(f"   '{test_val}' → {type(parsed).__name__}: {parsed}")
+            parsed = parse_typed_value(test_val, target_type)
+            pout(f"   {description:20s} '{test_val}' → {type(parsed).__name__}: {parsed}")
         except Exception as e:
-            perr(f"   '{test_val}' → Error: {e}")
+            perr(f"   {description:20s} '{test_val}' → Error: {e}")
 
-    pout("\n✅ Benefits: Automatic type detection, consistent parsing\n")
+    pout("\n✅ Benefits: Type-safe parsing, consistent conversion\n")
 
 
 @register_command("hash-demo", category="demo")

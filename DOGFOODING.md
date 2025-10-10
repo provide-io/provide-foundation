@@ -398,8 +398,8 @@ except Exception:
 ### Dogfooding Demo Application
 See `examples/cli/02_dogfooding_cli.py` for a comprehensive demonstration of using Foundation's own features:
 
-- **Environment Variables**: BaseConfig with env_field vs. utils/environment helpers
-- **File I/O**: atomic_write(), safe_read_text(), hash_file()
+- **Environment Variables**: RuntimeConfig with env_field vs. utils/environment helpers
+- **File I/O**: atomic_write_text(), safe_read_text(), hash_file()
 - **Process Execution**: run() and run_simple() with error handling
 - **Parsing**: parse_typed_value() for CLI arguments
 - **Error Handling**: @resilient decorator for graceful degradation
