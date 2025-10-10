@@ -53,6 +53,7 @@ def register_command(
     category: str | None = None,
     group: bool = False,
     replace: bool = False,
+    force_options: bool = False,
     registry: Registry | None = None,
 ) -> Callable[[F], F]: ...
 
@@ -110,7 +111,10 @@ def register_command(
         category: Command category for grouping
         group: Whether this is a command group (not a command)
         replace: Whether to replace existing registration
+        force_options: If True, all parameters with defaults become --options
+                      (disables Position-Based Hybrid for first parameter)
         registry: Custom registry (defaults to global)
+        **metadata: Additional metadata stored in CommandInfo.metadata
 
     Returns:
         Decorator function or decorated function
