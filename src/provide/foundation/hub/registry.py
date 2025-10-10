@@ -38,6 +38,14 @@ class Registry:
     used for any type of object storage and retrieval.
 
     Thread-safe: All operations are protected by an RLock for safe concurrent access.
+
+    Note: Uses threading.RLock (not asyncio.Lock) for thread safety. For async-only
+    applications with high-frequency registry access in request hot-paths (>10k req/sec
+    with runtime registration), consider using an async-native registry implementation
+    with asyncio.Lock. For typical use cases (initialization-time registration, CLI apps,
+    read-heavy workloads), the threading lock has negligible impact.
+
+    See: docs/architecture/design-decisions.md#threading-model
     """
 
     def __init__(self) -> None:

@@ -21,7 +21,18 @@ T = TypeVar("T", bound=BaseConfig)
 
 
 class ConfigLoader(ABC):
-    """Abstract base class for configuration loaders."""
+    """Abstract base class for configuration loaders.
+
+    Built-in implementations:
+    - FileConfigLoader: YAML, JSON, TOML, .env files
+    - RuntimeConfigLoader: Environment variables
+    - DictConfigLoader: In-memory dictionaries
+
+    For cloud secret managers (Vault, AWS Secrets, Azure Key Vault), implement
+    custom loaders following this protocol.
+
+    Examples: docs/guide/advanced/integration-patterns.md#custom-configuration-sources
+    """
 
     @abstractmethod
     def load(self, config_class: type[T]) -> T:
