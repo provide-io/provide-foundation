@@ -7,6 +7,13 @@
 - **Change**: Replaced custom `format_duration()` with import from `formatting.numbers`
 - **Tests**: All 115 CLI tests passing
 - **Benefit**: Single source of truth for duration formatting
+- **Documentation**: Added entry to DOGFOODING.md
+
+### 2. Created Logger Sanitization Processor
+- **File**: `src/provide/foundation/logger/processors/sanitization.py`
+- **Status**: Processor implementation complete
+- **Features**: Auto-masks secrets using Foundation's security utilities
+- **Next**: Integration into logger pipeline requires config changes
 
 ## In Progress 🚧
 
