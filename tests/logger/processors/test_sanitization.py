@@ -128,8 +128,8 @@ class TestSanitizationProcessorBasicBehavior(FoundationTestCase):
 class TestSanitizationProcessorPatternMasking(FoundationTestCase):
     """Test pattern-based secret masking."""
 
-    def test_mask_api_key_pattern(self) -> None:
-        """Test masking API key patterns."""
+    def test_mask_api_key_pattern_in_string(self) -> None:
+        """Test masking API key patterns within strings."""
         from provide.foundation.logger.processors.sanitization import (
             create_sanitization_processor,
         )
@@ -142,16 +142,17 @@ class TestSanitizationProcessorPatternMasking(FoundationTestCase):
 
         event_dict = {
             "event": "test",
-            "api_key": "sk-1234567890abcdef",
+            "message": "Connecting with api_key=sk-1234567890abcdef",
         }
 
         result = processor(None, "info", event_dict)
 
-        # API key should be masked
-        assert result["api_key"] == "***"
+        # API key in message should be masked
+        assert "api_key=[MASKED]" in result["message"]
+        assert "sk-1234567890abcdef" not in result["message"]
 
-    def test_mask_token_pattern(self) -> None:
-        """Test masking token patterns."""
+    def test_mask_token_pattern_in_string(self) -> None:
+        """Test masking token patterns within strings."""
         from provide.foundation.logger.processors.sanitization import (
             create_sanitization_processor,
         )
@@ -164,16 +165,17 @@ class TestSanitizationProcessorPatternMasking(FoundationTestCase):
 
         event_dict = {
             "event": "test",
-            "token": "Bearer abc123def456",
+            "message": "Using token=abc123def456 for auth",
         }
 
         result = processor(None, "info", event_dict)
 
         # Token should be masked
-        assert result["token"] == "***"
+        assert "token=[MASKED]" in result["message"]
+        assert "abc123def456" not in result["message"]
 
-    def test_mask_password_pattern(self) -> None:
-        """Test masking password patterns."""
+    def test_mask_password_pattern_in_string(self) -> None:
+        """Test masking password patterns within strings."""
         from provide.foundation.logger.processors.sanitization import (
             create_sanitization_processor,
         )
@@ -186,16 +188,17 @@ class TestSanitizationProcessorPatternMasking(FoundationTestCase):
 
         event_dict = {
             "event": "test",
-            "password": "secret123",
+            "message": "Logging in with password=secret123",
         }
 
         result = processor(None, "info", event_dict)
 
         # Password should be masked
-        assert result["password"] == "***"
+        assert "password=[MASKED]" in result["message"]
+        assert "secret123" not in result["message"]
 
-    def test_mask_multiple_secrets(self) -> None:
-        """Test masking multiple secrets in same event."""
+    def test_mask_multiple_secrets_in_string(self) -> None:
+        """Test masking multiple secrets in same string."""
         from provide.foundation.logger.processors.sanitization import (
             create_sanitization_processor,
         )
@@ -208,17 +211,16 @@ class TestSanitizationProcessorPatternMasking(FoundationTestCase):
 
         event_dict = {
             "event": "test",
-            "api_key": "sk-1234567890abcdef",
-            "password": "secret123",
-            "token": "Bearer xyz789",
+            "message": "Connecting with api_key=sk-12345 and password=secret123",
         }
 
         result = processor(None, "info", event_dict)
 
         # All secrets should be masked
-        assert result["api_key"] == "***"
-        assert result["password"] == "***"
-        assert result["token"] == "***"
+        assert "api_key=[MASKED]" in result["message"]
+        assert "password=[MASKED]" in result["message"]
+        assert "sk-12345" not in result["message"]
+        assert "secret123" not in result["message"]
 
     def test_no_masking_when_disabled(self) -> None:
         """Test no masking when pattern masking is disabled."""
@@ -234,13 +236,13 @@ class TestSanitizationProcessorPatternMasking(FoundationTestCase):
 
         event_dict = {
             "event": "test",
-            "api_key": "sk-1234567890abcdef",
+            "message": "api_key=sk-1234567890abcdef",
         }
 
         result = processor(None, "info", event_dict)
 
         # Should not mask when feature is disabled
-        assert result["api_key"] == "sk-1234567890abcdef"
+        assert result["message"] == "api_key=sk-1234567890abcdef"
 
 
 class TestSanitizationProcessorDictSanitization(FoundationTestCase):
@@ -269,7 +271,7 @@ class TestSanitizationProcessorDictSanitization(FoundationTestCase):
         result = processor(None, "info", event_dict)
 
         # Authorization should be sanitized
-        assert result["headers"]["Authorization"] == "Bearer ***"
+        assert result["headers"]["Authorization"] == "[REDACTED]"
         # Other headers should remain unchanged
         assert result["headers"]["Content-Type"] == "application/json"
 
@@ -296,7 +298,7 @@ class TestSanitizationProcessorDictSanitization(FoundationTestCase):
         result = processor(None, "info", event_dict)
 
         # API key should be sanitized
-        assert result["headers"]["X-API-Key"] == "***"
+        assert result["headers"]["X-API-Key"] == "[REDACTED]"
         # Other headers should remain unchanged
         assert result["headers"]["User-Agent"] == "TestClient/1.0"
 
@@ -325,8 +327,8 @@ class TestSanitizationProcessorDictSanitization(FoundationTestCase):
         result = processor(None, "info", event_dict)
 
         # Sensitive keys should be sanitized
-        assert result["config"]["api_key"] == "***"
-        assert result["config"]["password"] == "***"
+        assert result["config"]["api_key"] == "[REDACTED]"
+        assert result["config"]["password"] == "[REDACTED]"
         # Non-sensitive keys should remain unchanged
         assert result["config"]["username"] == "testuser"
         assert result["config"]["timeout"] == 30
@@ -373,7 +375,7 @@ class TestSanitizationProcessorCombinedFeatures(FoundationTestCase):
 
         event_dict = {
             "event": "test",
-            "api_key": "sk-1234567890abcdef",  # String value - pattern masked
+            "message": "Connecting with api_key=sk-1234567890abcdef",  # String value - pattern masked
             "headers": {
                 "Authorization": "Bearer secret123",  # Dict value - sanitized
             },
@@ -382,9 +384,9 @@ class TestSanitizationProcessorCombinedFeatures(FoundationTestCase):
         result = processor(None, "info", event_dict)
 
         # String should be pattern masked
-        assert result["api_key"] == "***"
+        assert "api_key=[MASKED]" in result["message"]
         # Dict value should be sanitized
-        assert result["headers"]["Authorization"] == "Bearer ***"
+        assert result["headers"]["Authorization"] == "[REDACTED]"
 
     def test_combined_on_complex_structure(self) -> None:
         """Test sanitization on complex nested structure."""
@@ -400,6 +402,7 @@ class TestSanitizationProcessorCombinedFeatures(FoundationTestCase):
 
         event_dict = {
             "event": "api_call",
+            "message": "Using api_key=sk-abcdef123456",
             "request": {
                 "headers": {
                     "Authorization": "Bearer token123",
@@ -407,16 +410,15 @@ class TestSanitizationProcessorCombinedFeatures(FoundationTestCase):
                 },
                 "body": "some data",
             },
-            "api_key": "sk-abcdef123456",
             "user_id": 42,
         }
 
         result = processor(None, "info", event_dict)
 
         # Check string masking
-        assert result["api_key"] == "***"
+        assert "api_key=[MASKED]" in result["message"]
         # Check dict sanitization
-        assert result["request"]["headers"]["Authorization"] == "Bearer ***"
+        assert result["request"]["headers"]["Authorization"] == "[REDACTED]"
         # Check non-sensitive data preserved
         assert result["request"]["headers"]["Content-Type"] == "application/json"
         assert result["request"]["body"] == "some data"
@@ -532,12 +534,12 @@ class TestSanitizationProcessorIntegration(FoundationTestCase):
             "event": "API call made",
             "method": "POST",
             "url": "/api/v1/users",
+            "message": "Using api_key=sk-prod-1234567890abcdef",
             "headers": {
                 "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
                 "Content-Type": "application/json",
                 "X-Request-ID": "req-123",
             },
-            "api_key": "sk-prod-1234567890abcdef",
             "status_code": 200,
             "duration_ms": 123.45,
         }
@@ -545,8 +547,8 @@ class TestSanitizationProcessorIntegration(FoundationTestCase):
         result = processor(None, "info", event_dict)
 
         # Verify sensitive data is sanitized
-        assert result["api_key"] == "***"
-        assert result["headers"]["Authorization"] == "Bearer ***"
+        assert "api_key=[MASKED]" in result["message"]
+        assert result["headers"]["Authorization"] == "[REDACTED]"
         # Verify non-sensitive data is preserved
         assert result["method"] == "POST"
         assert result["url"] == "/api/v1/users"
@@ -569,24 +571,29 @@ class TestSanitizationProcessorIntegration(FoundationTestCase):
 
         event_dict = {
             "event": "Database connection established",
-            "host": "db.example.com",
-            "port": 5432,
-            "database": "myapp",
-            "username": "app_user",
-            "password": "super_secret_password",
-            "ssl_mode": "require",
+            "message": "Connecting with password=super_secret_password",
+            "connection_config": {
+                "host": "db.example.com",
+                "port": 5432,
+                "database": "myapp",
+                "username": "app_user",
+                "password": "actual_secret",
+                "ssl_mode": "require",
+            },
         }
 
         result = processor(None, "info", event_dict)
 
-        # Verify password is masked
-        assert result["password"] == "***"
+        # Verify password in message is masked
+        assert "password=[MASKED]" in result["message"]
+        # Verify password in dict is sanitized
+        assert result["connection_config"]["password"] == "[REDACTED]"
         # Verify other connection details are preserved
-        assert result["host"] == "db.example.com"
-        assert result["port"] == 5432
-        assert result["database"] == "myapp"
-        assert result["username"] == "app_user"
-        assert result["ssl_mode"] == "require"
+        assert result["connection_config"]["host"] == "db.example.com"
+        assert result["connection_config"]["port"] == 5432
+        assert result["connection_config"]["database"] == "myapp"
+        assert result["connection_config"]["username"] == "app_user"
+        assert result["connection_config"]["ssl_mode"] == "require"
 
 
 class TestSanitizationProcessorModuleImports(FoundationTestCase):
