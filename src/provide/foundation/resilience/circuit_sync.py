@@ -51,7 +51,6 @@ class SyncCircuitBreaker:
         self._last_failure_time: float | None
         self.reset()
 
-    @property
     def state(self) -> CircuitState:
         """Get the current state of the circuit breaker."""
         with self._lock:
@@ -60,7 +59,6 @@ class SyncCircuitBreaker:
                 return CircuitState.HALF_OPEN
             return self._state
 
-    @property
     def failure_count(self) -> int:
         """Get the current failure count."""
         with self._lock:
@@ -86,7 +84,7 @@ class SyncCircuitBreaker:
             Exception: Whatever exception func raises
         """
         with self._lock:
-            current_state = self.state
+            current_state = self.state()
             if current_state == CircuitState.OPEN:
                 raise RuntimeError("Circuit breaker is open")
             # If HALF_OPEN, we proceed with the call

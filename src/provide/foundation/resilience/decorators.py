@@ -318,7 +318,7 @@ def circuit_breaker(
 
             @functools.wraps(func)
             async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
-                return await breaker.call_async(func, *args, **kwargs)
+                return await breaker.call(func, *args, **kwargs)
 
             # Register async circuit breaker (thread-safe)
             with _circuit_breaker_counter_lock:
@@ -366,15 +366,15 @@ async def reset_circuit_breakers_for_testing() -> None:
     This function is called by the test framework to ensure
     circuit breaker state doesn't leak between tests.
 
-    Note: This is an async function because AsyncCircuitBreaker only provides
-    async reset. For sync circuit breakers, the sync reset is called directly.
+    Note: This is an async function because AsyncCircuitBreaker has async methods.
+    Both sync and async circuit breakers are reset using their reset() method.
     """
     registry = _get_circuit_breaker_registry()
     for name in registry.list_dimension(CIRCUIT_BREAKER_DIMENSION):
         breaker = registry.get(name, dimension=CIRCUIT_BREAKER_DIMENSION)
         if breaker:
             if isinstance(breaker, AsyncCircuitBreaker):
-                await breaker.reset_async()
+                await breaker.reset()
             else:
                 breaker.reset()
 
@@ -385,15 +385,15 @@ async def reset_test_circuit_breakers() -> None:
     This function resets circuit breakers that were created within test files
     to ensure proper test isolation without affecting production circuit breakers.
 
-    Note: This is an async function because AsyncCircuitBreaker only provides
-    async reset. For sync circuit breakers, the sync reset is called directly.
+    Note: This is an async function because AsyncCircuitBreaker has async methods.
+    Both sync and async circuit breakers are reset using their reset() method.
     """
     registry = _get_circuit_breaker_registry()
     for name in registry.list_dimension(CIRCUIT_BREAKER_TEST_DIMENSION):
         breaker = registry.get(name, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
         if breaker:
             if isinstance(breaker, AsyncCircuitBreaker):
-                await breaker.reset_async()
+                await breaker.reset()
             else:
                 breaker.reset()
 
