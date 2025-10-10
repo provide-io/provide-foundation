@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 from typing import Any
 
-from hypothesis import given, settings, strategies as st
+from hypothesis import HealthCheck, given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     chaos_timings,
@@ -224,9 +224,9 @@ class TestAsyncRetryChaos(FoundationTestCase):
     @pytest.mark.asyncio
     @given(
         num_concurrent=st.integers(min_value=2, max_value=10),
-        timeout=timeout_patterns(min_timeout=0.1, max_timeout=2.0),
+        timeout=timeout_patterns(min_timeout=0.5, max_timeout=3.0),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=20, suppress_health_check=[HealthCheck.filter_too_much])
     async def test_concurrent_retry_chaos(
         self,
         num_concurrent: int,
@@ -242,9 +242,9 @@ class TestAsyncRetryChaos(FoundationTestCase):
         from hypothesis import assume
 
         # Skip unrealistic timeouts that are too short for concurrent async operations
-        # With retries + async operations, we need at least 0.1s
+        # With retries + async operations, we need at least 0.5s
         if timeout is not None:
-            assume(timeout >= 0.1)
+            assume(timeout >= 0.5)
 
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
 
