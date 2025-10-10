@@ -40,11 +40,11 @@ class TestAsyncCircuitBreakerAPIConsistency(FoundationTestCase):
         breaker = AsyncCircuitBreaker(failure_threshold=3)
 
         # Should NOT have a sync 'state' property
-        assert not hasattr(breaker, "state"), "AsyncCircuitBreaker should not have sync 'state' property"
+        assert not hasattr(breaker, "_state_property"), "AsyncCircuitBreaker should not have sync 'state' property"
 
-        # Should have async get_state() method
-        assert hasattr(breaker, "get_state"), "AsyncCircuitBreaker should have async get_state() method"
-        assert asyncio.iscoroutinefunction(breaker.get_state), "get_state() should be async"
+        # Should have async state() method
+        assert hasattr(breaker, "state"), "AsyncCircuitBreaker should have async state() method"
+        assert asyncio.iscoroutinefunction(breaker.state), "state() should be async"
 
     def test_async_circuit_breaker_no_sync_failure_count_property(self) -> None:
         """AsyncCircuitBreaker should not have a synchronous failure_count property."""
@@ -52,36 +52,31 @@ class TestAsyncCircuitBreakerAPIConsistency(FoundationTestCase):
 
         # Should NOT have a sync 'failure_count' property
         # Note: We check if accessing it would give us the async method, not a property
-        assert hasattr(breaker, "get_failure_count"), (
-            "AsyncCircuitBreaker should have get_failure_count() method"
+        assert hasattr(breaker, "failure_count"), (
+            "AsyncCircuitBreaker should have failure_count() method"
         )
-        assert asyncio.iscoroutinefunction(breaker.get_failure_count), "get_failure_count() should be async"
+        assert asyncio.iscoroutinefunction(breaker.failure_count), "failure_count() should be async"
 
     def test_async_circuit_breaker_no_sync_reset(self) -> None:
         """AsyncCircuitBreaker should not have a synchronous reset() method."""
         breaker = AsyncCircuitBreaker(failure_threshold=3)
 
-        # Should NOT have sync reset() method
-        assert not hasattr(breaker, "reset") or asyncio.iscoroutinefunction(getattr(breaker, "reset", None)), (
-            "AsyncCircuitBreaker should not have sync reset()"
-        )
-
-        # Should have async reset_async() method
-        assert hasattr(breaker, "reset_async"), "AsyncCircuitBreaker should have reset_async() method"
-        assert asyncio.iscoroutinefunction(breaker.reset_async), "reset_async() should be async"
+        # Should have reset() method that is async
+        assert hasattr(breaker, "reset"), "AsyncCircuitBreaker should have reset() method"
+        assert asyncio.iscoroutinefunction(breaker.reset), "reset() should be async"
 
     async def test_async_circuit_breaker_api_works(self) -> None:
         """Verify AsyncCircuitBreaker async API works correctly."""
         breaker = AsyncCircuitBreaker(failure_threshold=3)
 
         # All API methods should be async
-        state = await breaker.get_state()
+        state = await breaker.state()
         assert state is not None
 
-        count = await breaker.get_failure_count()
+        count = await breaker.failure_count()
         assert count == 0
 
-        await breaker.reset_async()
+        await breaker.reset()
 
 
 class TestAsyncCircuitBreakerEventLoopSafety(FoundationTestCase):
@@ -114,14 +109,14 @@ class TestAsyncCircuitBreakerEventLoopSafety(FoundationTestCase):
         breaker = AsyncCircuitBreaker(failure_threshold=3)
 
         # Now use it in async context - lock should bind to this event loop
-        state = await breaker.get_state()
+        state = await breaker.state()
         assert state is not None
 
         # Lock should work properly
         async with breaker._lock:
             breaker._failure_count = 5
 
-        count = await breaker.get_failure_count()
+        count = await breaker.failure_count()
         assert count == 5
 
     def test_multiple_async_circuit_breakers_no_event_loop_pollution(self) -> None:
@@ -329,18 +324,20 @@ class TestSyncCircuitBreakerStillWorks(FoundationTestCase):
         """Clean up after test."""
         super().teardown_method()
 
-    def test_sync_circuit_breaker_has_sync_properties(self) -> None:
-        """SyncCircuitBreaker should still have synchronous properties."""
+    def test_sync_circuit_breaker_has_sync_methods(self) -> None:
+        """SyncCircuitBreaker should have synchronous methods."""
         breaker = SyncCircuitBreaker(failure_threshold=3)
 
-        # Should have sync state property
-        assert hasattr(breaker, "state"), "SyncCircuitBreaker should have state property"
-        state = breaker.state
+        # Should have sync state method
+        assert hasattr(breaker, "state"), "SyncCircuitBreaker should have state method"
+        assert callable(breaker.state), "state should be callable"
+        state = breaker.state()
         assert state is not None
 
-        # Should have sync failure_count property
-        assert hasattr(breaker, "failure_count"), "SyncCircuitBreaker should have failure_count property"
-        count = breaker.failure_count
+        # Should have sync failure_count method
+        assert hasattr(breaker, "failure_count"), "SyncCircuitBreaker should have failure_count method"
+        assert callable(breaker.failure_count), "failure_count should be callable"
+        count = breaker.failure_count()
         assert count == 0
 
         # Should have sync reset method
