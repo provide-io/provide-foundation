@@ -32,8 +32,7 @@ class TestCertificateLifecycle(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_expired_certificate(self) -> None:
         """Ensure expired certificates fail validation."""
-        expired_cert = Certificate.from_pem(
-            generate_keypair=True,
+        expired_cert = Certificate.generate(
             key_type="rsa",
             validity_days=-1,  # Set to expire yesterday relative to its creation 'now'
         )
@@ -60,8 +59,7 @@ class TestCertificateLifecycle(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_verify_expired_certificate(self) -> None:
         """Ensure verification fails when certificate is expired."""
-        expired_cert = Certificate.from_pem(
-            generate_keypair=True,
+        expired_cert = Certificate.generate(
             key_type="rsa",
             validity_days=-1,  # Set to make it expired
         )
@@ -88,21 +86,18 @@ class TestCertificateLifecycle(FoundationTestCase):
         # Ensure 'mock' is imported from unittest (already imported at file level)
         # from unittest import mock
 
-        relying_party_cert = Certificate.from_pem(
-            generate_keypair=True,
+        relying_party_cert = Certificate.generate(
             common_name="RelyingPartyCert",
             key_type="ecdsa",
         )
-        ca_cert = Certificate.from_pem(
-            generate_keypair=True,
+        ca_cert = Certificate.generate(
             common_name="TestCACert",
             key_type="ecdsa",
         )
 
         relying_party_cert.trust_chain = [ca_cert]  # relying_party_cert trusts ca_cert
 
-        end_entity_cert = Certificate.from_pem(
-            generate_keypair=True,
+        end_entity_cert = Certificate.generate(
             common_name="EndEntityToVerify",
             key_type="ecdsa",
         )
