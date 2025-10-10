@@ -40,7 +40,9 @@ class TestAsyncCircuitBreakerAPIConsistency(FoundationTestCase):
         breaker = AsyncCircuitBreaker(failure_threshold=3)
 
         # Should NOT have a sync 'state' property
-        assert not hasattr(breaker, "_state_property"), "AsyncCircuitBreaker should not have sync 'state' property"
+        assert not hasattr(breaker, "_state_property"), (
+            "AsyncCircuitBreaker should not have sync 'state' property"
+        )
 
         # Should have async state() method
         assert hasattr(breaker, "state"), "AsyncCircuitBreaker should have async state() method"
@@ -52,9 +54,7 @@ class TestAsyncCircuitBreakerAPIConsistency(FoundationTestCase):
 
         # Should NOT have a sync 'failure_count' property
         # Note: We check if accessing it would give us the async method, not a property
-        assert hasattr(breaker, "failure_count"), (
-            "AsyncCircuitBreaker should have failure_count() method"
-        )
+        assert hasattr(breaker, "failure_count"), "AsyncCircuitBreaker should have failure_count() method"
         assert asyncio.iscoroutinefunction(breaker.failure_count), "failure_count() should be async"
 
     def test_async_circuit_breaker_no_sync_reset(self) -> None:

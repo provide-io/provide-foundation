@@ -31,25 +31,28 @@ class TestSyncResourcePoolAPI(FoundationTestCase):
         """Clean up after test."""
         super().teardown_method()
 
-    def test_sync_pool_has_sync_properties(self) -> None:
-        """SyncResourcePool should have synchronous properties."""
-        pool = SyncResourcePool(max_concurrent=5)
-
-        # Should have sync properties
-        assert hasattr(pool, "active_count"), "SyncResourcePool should have active_count property"
-        count = pool.active_count
-        assert count == 0
-
-        assert hasattr(pool, "available_capacity"), "SyncResourcePool should have available_capacity property"
-        capacity = pool.available_capacity
-        assert capacity == 5
-
-        assert hasattr(pool, "queue_size"), "SyncResourcePool should have queue_size property"
-        size = pool.queue_size
-        assert size == 0
-
     def test_sync_pool_has_sync_methods(self) -> None:
         """SyncResourcePool should have synchronous methods."""
+        pool = SyncResourcePool(max_concurrent=5)
+
+        # Should have sync methods
+        assert hasattr(pool, "active_count"), "SyncResourcePool should have active_count method"
+        assert callable(pool.active_count), "active_count should be callable"
+        count = pool.active_count()
+        assert count == 0
+
+        assert hasattr(pool, "available_capacity"), "SyncResourcePool should have available_capacity method"
+        assert callable(pool.available_capacity), "available_capacity should be callable"
+        capacity = pool.available_capacity()
+        assert capacity == 5
+
+        assert hasattr(pool, "queue_size"), "SyncResourcePool should have queue_size method"
+        assert callable(pool.queue_size), "queue_size should be callable"
+        size = pool.queue_size()
+        assert size == 0
+
+    def test_sync_pool_acquire_release_methods(self) -> None:
+        """SyncResourcePool should have synchronous acquire/release methods."""
         pool = SyncResourcePool(max_concurrent=5)
 
         # Should have sync acquire/release
@@ -77,20 +80,20 @@ class TestSyncResourcePoolAPI(FoundationTestCase):
 
         # Acquire slots
         assert pool.acquire()
-        assert pool.active_count == 1
+        assert pool.active_count() == 1
 
         assert pool.acquire()
-        assert pool.active_count == 2
+        assert pool.active_count() == 2
 
         # Third acquire should timeout
         assert not pool.acquire(timeout=0.1)
 
         # Release slots
         pool.release()
-        assert pool.active_count == 1
+        assert pool.active_count() == 1
 
         pool.release()
-        assert pool.active_count == 0
+        assert pool.active_count() == 0
 
 
 class TestAsyncResourcePoolAPI(FoundationTestCase):
@@ -104,22 +107,25 @@ class TestAsyncResourcePoolAPI(FoundationTestCase):
         """Clean up after test."""
         super().teardown_method()
 
-    def test_async_pool_has_no_sync_properties(self) -> None:
-        """AsyncResourcePool should not have synchronous properties."""
+    def test_async_pool_has_no_sync_methods(self) -> None:
+        """AsyncResourcePool should not have synchronous methods."""
         pool = AsyncResourcePool(max_concurrent=5)
 
-        # Should NOT have sync properties (they're async methods instead)
-        assert not hasattr(pool, "active_count") or asyncio.iscoroutinefunction(
-            getattr(pool, "get_active_count", None)
-        ), "AsyncResourcePool should not have sync active_count property"
+        # Should have async methods only
+        assert hasattr(pool, "active_count"), "AsyncResourcePool should have active_count method"
+        assert asyncio.iscoroutinefunction(getattr(pool, "active_count", None)), (
+            "AsyncResourcePool active_count should be async"
+        )
 
-        assert not hasattr(pool, "available_capacity") or asyncio.iscoroutinefunction(
-            getattr(pool, "get_available_capacity", None)
-        ), "AsyncResourcePool should not have sync available_capacity property"
+        assert hasattr(pool, "available_capacity"), "AsyncResourcePool should have available_capacity method"
+        assert asyncio.iscoroutinefunction(getattr(pool, "available_capacity", None)), (
+            "AsyncResourcePool available_capacity should be async"
+        )
 
-        assert not hasattr(pool, "queue_size") or asyncio.iscoroutinefunction(
-            getattr(pool, "get_queue_size", None)
-        ), "AsyncResourcePool should not have sync queue_size property"
+        assert hasattr(pool, "queue_size"), "AsyncResourcePool should have queue_size method"
+        assert asyncio.iscoroutinefunction(getattr(pool, "queue_size", None)), (
+            "AsyncResourcePool queue_size should be async"
+        )
 
     async def test_async_pool_has_async_methods(self) -> None:
         """AsyncResourcePool should have asynchronous methods."""
@@ -141,20 +147,20 @@ class TestAsyncResourcePoolAPI(FoundationTestCase):
 
         # Acquire slots
         assert await pool.acquire()
-        assert await pool.get_active_count() == 1
+        assert await pool.active_count() == 1
 
         assert await pool.acquire()
-        assert await pool.get_active_count() == 2
+        assert await pool.active_count() == 2
 
         # Third acquire should timeout
         assert not await pool.acquire(timeout=0.1)
 
         # Release slots
         await pool.release()
-        assert await pool.get_active_count() == 1
+        assert await pool.active_count() == 1
 
         await pool.release()
-        assert await pool.get_active_count() == 0
+        assert await pool.active_count() == 0
 
 
 class TestSyncResourcePoolThreadSafety(FoundationTestCase):
@@ -179,7 +185,7 @@ class TestSyncResourcePoolThreadSafety(FoundationTestCase):
             if pool.acquire(timeout=2.0):
                 try:
                     with lock:
-                        current = pool.active_count
+                        current = pool.active_count()
                         if current > peak_active:
                             peak_active = current
                     time.sleep(0.05)
@@ -195,7 +201,7 @@ class TestSyncResourcePoolThreadSafety(FoundationTestCase):
 
         # Peak should never exceed max_concurrent
         assert peak_active <= 5
-        assert pool.active_count == 0
+        assert pool.active_count() == 0
 
     def test_sync_pool_queue_management(self) -> None:
         """SyncResourcePool should manage waiting queue correctly."""
@@ -244,7 +250,7 @@ class TestAsyncResourcePoolAsyncSafety(FoundationTestCase):
             if await pool.acquire(timeout=2.0):
                 try:
                     async with lock:
-                        current = await pool.get_active_count()
+                        current = await pool.active_count()
                         if current > peak_active:
                             peak_active = current
                     await asyncio.sleep(0.05)
@@ -257,7 +263,7 @@ class TestAsyncResourcePoolAsyncSafety(FoundationTestCase):
 
         # Peak should never exceed max_concurrent
         assert peak_active <= 5
-        assert await pool.get_active_count() == 0
+        assert await pool.active_count() == 0
 
     async def test_async_pool_queue_management(self) -> None:
         """AsyncResourcePool should manage waiting queue correctly."""
