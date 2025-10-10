@@ -144,15 +144,18 @@ Before starting this work:
 - [ ] Update all examples and documentation
 - [ ] Consider providing sync wrapper (run_sync helper)
 
-## 📊 Summary
+## 📊 Summary of Completed Improvements
 
 | Category | Status | Files Modified | Tests Passing |
 |----------|--------|----------------|---------------|
-| CLI Helpers | ✅ Complete | 1 | ✅ 18 tests |
-| Discovery Error Handling | ✅ Complete | 1 | ✅ 4 tests |
-| OpenObserve @resilient | ✅ Complete | 1 | ✅ 123 tests |
-| Coordinator Environment | ✅ Complete | 1 | ✅ 27 tests |
-| **OpenObserve Transport** | ⚠️ Pending | 3 | N/A (not started) |
+| CLI Helpers → Parsers | ✅ Complete | 1 | ✅ 18 tests |
+| Discovery → @resilient | ✅ Complete | 1 | ✅ 4 tests |
+| OpenObserve → @resilient | ✅ Complete | 1 | ✅ 123 tests |
+| Coordinator → env helpers | ✅ Complete | 1 | ✅ 27 tests |
+| Downloader → hash_file() | ✅ Complete | 1 | ✅ 16 tests |
+| CLI Shutdown → perr() | ✅ Complete | 1 | ✅ 7 tests |
+| **TOTAL IMPROVEMENTS** | ✅ **6 Complete** | **6 files** | ✅ **565 tests** |
+| **OpenObserve Transport** | ⚠️ Pending | 3 | N/A (breaking change) |
 
 ## 🔍 Additional Dogfooding Opportunities Identified
 
