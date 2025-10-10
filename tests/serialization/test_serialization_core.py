@@ -8,80 +8,80 @@ from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors import ValidationError
-from provide.foundation.serialization import provide_dumps, provide_loads
+from provide.foundation.serialization import json_dumps, json_loads
 
 """Tests for Foundation serialization utilities."""
 
 
-class TestProvideDumps(FoundationTestCase):
-    """Test provide_dumps function."""
+class TestJsonDumps(FoundationTestCase):
+    """Test json_dumps function."""
 
-    def test_provide_dumps_basic_dict(self) -> None:
-        """Test provide_dumps with basic dictionary."""
+    def test_json_dumps_basic_dict(self) -> None:
+        """Test json_dumps with basic dictionary."""
         data = {"key": "value", "number": 42}
-        result = provide_dumps(data)
+        result = json_dumps(data)
         assert isinstance(result, str)
         # Parse back to verify structure
         parsed = json.loads(result)
         assert parsed == data
 
-    def test_provide_dumps_basic_list(self) -> None:
-        """Test provide_dumps with basic list."""
+    def test_json_dumps_basic_list(self) -> None:
+        """Test json_dumps with basic list."""
         data = [1, 2, "three", None, True]
-        result = provide_dumps(data)
+        result = json_dumps(data)
         assert isinstance(result, str)
         parsed = json.loads(result)
         assert parsed == data
 
-    def test_provide_dumps_nested_structure(self) -> None:
-        """Test provide_dumps with nested data structures."""
+    def test_json_dumps_nested_structure(self) -> None:
+        """Test json_dumps with nested data structures."""
         data = {
             "users": [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}],
             "metadata": {"version": "1.0", "created": None},
         }
-        result = provide_dumps(data)
+        result = json_dumps(data)
         parsed = json.loads(result)
         assert parsed == data
 
-    def test_provide_dumps_with_indent(self) -> None:
-        """Test provide_dumps with indentation."""
+    def test_json_dumps_with_indent(self) -> None:
+        """Test json_dumps with indentation."""
         data = {"a": 1, "b": {"c": 2}}
-        result = provide_dumps(data, indent=2)
+        result = json_dumps(data, indent=2)
 
         # Check that result is properly formatted
         lines = result.split("\n")
         assert len(lines) > 1  # Multi-line output
         assert "  " in result  # Contains indentation
 
-    def test_provide_dumps_with_sort_keys(self) -> None:
-        """Test provide_dumps with sorted keys."""
+    def test_json_dumps_with_sort_keys(self) -> None:
+        """Test json_dumps with sorted keys."""
         data = {"zebra": 1, "apple": 2, "banana": 3}
-        result = provide_dumps(data, sort_keys=True)
+        result = json_dumps(data, sort_keys=True)
 
         # Keys should be in alphabetical order
         expected = '{"apple": 2, "banana": 3, "zebra": 1}'
         assert result == expected
 
-    def test_provide_dumps_with_ensure_ascii_false(self) -> None:
-        """Test provide_dumps with ensure_ascii=False."""
+    def test_json_dumps_with_ensure_ascii_false(self) -> None:
+        """Test json_dumps with ensure_ascii=False."""
         data = {"message": "こんにちは", "emoji": "🎉"}
-        result = provide_dumps(data, ensure_ascii=False)
+        result = json_dumps(data, ensure_ascii=False)
 
         # Non-ASCII characters should be preserved
         assert "こんにちは" in result
         assert "🎉" in result
 
-    def test_provide_dumps_with_ensure_ascii_true(self) -> None:
-        """Test provide_dumps with ensure_ascii=True."""
+    def test_json_dumps_with_ensure_ascii_true(self) -> None:
+        """Test json_dumps with ensure_ascii=True."""
         data = {"message": "こんにちは"}
-        result = provide_dumps(data, ensure_ascii=True)
+        result = json_dumps(data, ensure_ascii=True)
 
         # Non-ASCII characters should be escaped
         assert "こんにちは" not in result
         assert "\\u" in result  # Unicode escape sequences
 
-    def test_provide_dumps_primitive_types(self) -> None:
-        """Test provide_dumps with primitive types."""
+    def test_json_dumps_primitive_types(self) -> None:
+        """Test json_dumps with primitive types."""
         test_cases = [
             (None, "null"),
             (True, "true"),
@@ -92,39 +92,39 @@ class TestProvideDumps(FoundationTestCase):
         ]
 
         for value, expected in test_cases:
-            result = provide_dumps(value)
+            result = json_dumps(value)
             assert result == expected
 
-    def test_provide_dumps_empty_structures(self) -> None:
-        """Test provide_dumps with empty structures."""
-        assert provide_dumps({}) == "{}"
-        assert provide_dumps([]) == "[]"
-        assert provide_dumps("") == '""'
+    def test_json_dumps_empty_structures(self) -> None:
+        """Test json_dumps with empty structures."""
+        assert json_dumps({}) == "{}"
+        assert json_dumps([]) == "[]"
+        assert json_dumps("") == '""'
 
-    def test_provide_dumps_non_serializable_raises_error(self) -> None:
-        """Test provide_dumps raises ValidationError for non-serializable objects."""
+    def test_json_dumps_non_serializable_raises_error(self) -> None:
+        """Test json_dumps raises ValidationError for non-serializable objects."""
 
         class NonSerializable:
             pass
 
         with pytest.raises(ValidationError, match="Cannot serialize object to JSON"):
-            provide_dumps(NonSerializable())
+            json_dumps(NonSerializable())
 
-    def test_provide_dumps_circular_reference_raises_error(self) -> None:
-        """Test provide_dumps raises ValidationError for circular references."""
+    def test_json_dumps_circular_reference_raises_error(self) -> None:
+        """Test json_dumps raises ValidationError for circular references."""
         data = {}
         data["self"] = data
 
         with pytest.raises(ValidationError, match="Cannot serialize object to JSON"):
-            provide_dumps(data)
+            json_dumps(data)
 
     @patch("provide.foundation.serialization.core.json")
-    def test_provide_dumps_uses_json_module(self, mock_json: Any) -> None:
-        """Test provide_dumps calls json.dumps()."""
+    def test_json_dumps_uses_json_module(self, mock_json: Any) -> None:
+        """Test json_dumps calls json.dumps()."""
         mock_json.dumps.return_value = '{"test": "value"}'
 
         data = {"test": "value"}
-        result = provide_dumps(data, indent=2, sort_keys=True)
+        result = json_dumps(data, indent=2, sort_keys=True)
 
         assert result == '{"test": "value"}'
         mock_json.dumps.assert_called_once_with(
@@ -135,36 +135,36 @@ class TestProvideDumps(FoundationTestCase):
             default=None,
         )
 
-    def test_provide_dumps_complex_numbers_raises_error(self) -> None:
-        """Test provide_dumps raises error for complex numbers."""
+    def test_json_dumps_complex_numbers_raises_error(self) -> None:
+        """Test json_dumps raises error for complex numbers."""
         with pytest.raises(ValidationError):
-            provide_dumps(3 + 4j)
+            json_dumps(3 + 4j)
 
-    def test_provide_dumps_set_raises_error(self) -> None:
-        """Test provide_dumps raises error for sets."""
+    def test_json_dumps_set_raises_error(self) -> None:
+        """Test json_dumps raises error for sets."""
         with pytest.raises(ValidationError):
-            provide_dumps({1, 2, 3})
+            json_dumps({1, 2, 3})
 
 
-class TestProvideLoads(FoundationTestCase):
-    """Test provide_loads function."""
+class TestJsonLoads(FoundationTestCase):
+    """Test json_loads function."""
 
-    def test_provide_loads_basic_dict(self) -> None:
-        """Test provide_loads with basic dictionary JSON."""
+    def test_json_loads_basic_dict(self) -> None:
+        """Test json_loads with basic dictionary JSON."""
         json_str = '{"key": "value", "number": 42}'
-        result = provide_loads(json_str)
+        result = json_loads(json_str)
         expected = {"key": "value", "number": 42}
         assert result == expected
 
-    def test_provide_loads_basic_list(self) -> None:
-        """Test provide_loads with basic list JSON."""
+    def test_json_loads_basic_list(self) -> None:
+        """Test json_loads with basic list JSON."""
         json_str = '[1, 2, "three", null, true, false]'
-        result = provide_loads(json_str)
+        result = json_loads(json_str)
         expected = [1, 2, "three", None, True, False]
         assert result == expected
 
-    def test_provide_loads_nested_structure(self) -> None:
-        """Test provide_loads with nested JSON structure."""
+    def test_json_loads_nested_structure(self) -> None:
+        """Test json_loads with nested JSON structure."""
         json_str = """
         {
             "users": [
@@ -177,15 +177,15 @@ class TestProvideLoads(FoundationTestCase):
             }
         }
         """
-        result = provide_loads(json_str)
+        result = json_loads(json_str)
         expected = {
             "users": [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}],
             "metadata": {"version": "1.0", "created": None},
         }
         assert result == expected
 
-    def test_provide_loads_primitive_types(self) -> None:
-        """Test provide_loads with primitive JSON types."""
+    def test_json_loads_primitive_types(self) -> None:
+        """Test json_loads with primitive JSON types."""
         test_cases = [
             ("null", None),
             ("true", True),
@@ -196,31 +196,31 @@ class TestProvideLoads(FoundationTestCase):
         ]
 
         for json_str, expected in test_cases:
-            result = provide_loads(json_str)
+            result = json_loads(json_str)
             assert result == expected
 
-    def test_provide_loads_empty_structures(self) -> None:
-        """Test provide_loads with empty JSON structures."""
-        assert provide_loads("{}") == {}
-        assert provide_loads("[]") == []
-        assert provide_loads('""') == ""
+    def test_json_loads_empty_structures(self) -> None:
+        """Test json_loads with empty JSON structures."""
+        assert json_loads("{}") == {}
+        assert json_loads("[]") == []
+        assert json_loads('""') == ""
 
-    def test_provide_loads_unicode_characters(self) -> None:
-        """Test provide_loads with Unicode characters."""
+    def test_json_loads_unicode_characters(self) -> None:
+        """Test json_loads with Unicode characters."""
         json_str = '{"message": "こんにちは", "emoji": "🎉"}'
-        result = provide_loads(json_str)
+        result = json_loads(json_str)
         expected = {"message": "こんにちは", "emoji": "🎉"}
         assert result == expected
 
-    def test_provide_loads_escaped_unicode(self) -> None:
-        """Test provide_loads with escaped Unicode characters."""
+    def test_json_loads_escaped_unicode(self) -> None:
+        """Test json_loads with escaped Unicode characters."""
         json_str = r'{"message": "\u3053\u3093\u306b\u3061\u306f"}'
-        result = provide_loads(json_str)
+        result = json_loads(json_str)
         expected = {"message": "こんにちは"}
         assert result == expected
 
-    def test_provide_loads_invalid_json_raises_error(self) -> None:
-        """Test provide_loads raises ValidationError for invalid JSON."""
+    def test_json_loads_invalid_json_raises_error(self) -> None:
+        """Test json_loads raises ValidationError for invalid JSON."""
         invalid_json_cases = [
             '{"key": value}',  # Unquoted value
             '{"key": "value",}',  # Trailing comma
@@ -233,47 +233,47 @@ class TestProvideLoads(FoundationTestCase):
 
         for invalid_json in invalid_json_cases[:-1]:  # Skip duplicate keys test
             with pytest.raises(ValidationError, match="Invalid JSON string"):
-                provide_loads(invalid_json)
+                json_loads(invalid_json)
 
-    def test_provide_loads_empty_string_raises_error(self) -> None:
-        """Test provide_loads raises ValidationError for empty string."""
+    def test_json_loads_empty_string_raises_error(self) -> None:
+        """Test json_loads raises ValidationError for empty string."""
         with pytest.raises(ValidationError, match="Invalid JSON string"):
-            provide_loads("")
+            json_loads("")
 
-    def test_provide_loads_non_string_raises_error(self) -> None:
-        """Test provide_loads raises ValidationError for non-string input."""
+    def test_json_loads_non_string_raises_error(self) -> None:
+        """Test json_loads raises ValidationError for non-string input."""
         non_string_inputs = [None, 123, [], {}, True]
 
         for invalid_input in non_string_inputs:
             with pytest.raises(ValidationError, match="Input must be a string"):
-                provide_loads(invalid_input)
+                json_loads(invalid_input)
 
-    def test_provide_loads_whitespace_only_raises_error(self) -> None:
-        """Test provide_loads raises ValidationError for whitespace-only string."""
+    def test_json_loads_whitespace_only_raises_error(self) -> None:
+        """Test json_loads raises ValidationError for whitespace-only string."""
         with pytest.raises(ValidationError, match="Invalid JSON string"):
-            provide_loads("   ")
+            json_loads("   ")
 
     @patch("provide.foundation.serialization.core.json")
-    def test_provide_loads_uses_json_module(self, mock_json: Any) -> None:
-        """Test provide_loads calls json.loads()."""
+    def test_json_loads_uses_json_module(self, mock_json: Any) -> None:
+        """Test json_loads calls json.loads()."""
         mock_json.loads.return_value = {"test": "value"}
 
         json_str = '{"test": "value"}'
-        result = provide_loads(json_str)
+        result = json_loads(json_str)
 
         assert result == {"test": "value"}
         mock_json.loads.assert_called_once_with(json_str)
 
-    def test_provide_loads_large_numbers(self) -> None:
-        """Test provide_loads with large numbers."""
+    def test_json_loads_large_numbers(self) -> None:
+        """Test json_loads with large numbers."""
         json_str = '{"small": 1, "large": 9007199254740991, "float": 1.7976931348623157e+308}'
-        result = provide_loads(json_str)
+        result = json_loads(json_str)
         assert result["small"] == 1
         assert result["large"] == 9007199254740991
         assert result["float"] == 1.7976931348623157e308
 
-    def test_provide_loads_special_float_values(self) -> None:
-        """Test provide_loads handles special float values in JSON."""
+    def test_json_loads_special_float_values(self) -> None:
+        """Test json_loads handles special float values in JSON."""
         # Python's json.loads actually accepts these values
         test_cases = [
             ("Infinity", float("inf")),
@@ -282,7 +282,7 @@ class TestProvideLoads(FoundationTestCase):
         ]
 
         for json_str, expected in test_cases:
-            result = provide_loads(json_str)
+            result = json_loads(json_str)
             if expected != expected:  # Check for NaN
                 assert result != result  # NaN != NaN
             else:
@@ -304,8 +304,8 @@ class TestSerializationRoundTrip(FoundationTestCase):
             "nested": {"key": "value"},
         }
 
-        serialized = provide_dumps(test_data)
-        deserialized = provide_loads(serialized)
+        serialized = json_dumps(test_data)
+        deserialized = json_loads(serialized)
 
         assert deserialized == test_data
 
@@ -314,10 +314,10 @@ class TestSerializationRoundTrip(FoundationTestCase):
         test_data = {"z": 1, "a": 2, "m": 3}
 
         # Serialize with formatting
-        serialized = provide_dumps(test_data, indent=2, sort_keys=True)
+        serialized = json_dumps(test_data, indent=2, sort_keys=True)
 
         # Deserialize should still give original data
-        deserialized = provide_loads(serialized)
+        deserialized = json_loads(serialized)
         assert deserialized == test_data
 
     def test_roundtrip_unicode_data(self) -> None:
@@ -329,8 +329,8 @@ class TestSerializationRoundTrip(FoundationTestCase):
             "mixed": "Hello 世界 🌍",
         }
 
-        serialized = provide_dumps(test_data)
-        deserialized = provide_loads(serialized)
+        serialized = json_dumps(test_data)
+        deserialized = json_loads(serialized)
 
         assert deserialized == test_data
 
@@ -346,8 +346,8 @@ class TestSerializationRoundTrip(FoundationTestCase):
         ]
 
         for test_data in test_cases:
-            serialized = provide_dumps(test_data)
-            deserialized = provide_loads(serialized)
+            serialized = json_dumps(test_data)
+            deserialized = json_loads(serialized)
             assert deserialized == test_data
 
 
@@ -369,8 +369,8 @@ class TestSerializationIntegration(FoundationTestCase):
             "tags": ["test", "foundation"],
         }
 
-        serialized = provide_dumps(log_data, sort_keys=True, indent=2)
-        deserialized = provide_loads(serialized)
+        serialized = json_dumps(log_data, sort_keys=True, indent=2)
+        deserialized = json_loads(serialized)
 
         assert deserialized == log_data
         # Verify it's properly formatted
@@ -390,8 +390,8 @@ class TestSerializationIntegration(FoundationTestCase):
         }
 
         # Should complete without timeout
-        serialized = provide_dumps(test_data)
-        deserialized = provide_loads(serialized)
+        serialized = json_dumps(test_data)
+        deserialized = json_loads(serialized)
 
         assert deserialized == test_data
         assert isinstance(serialized, str)
@@ -401,20 +401,20 @@ class TestSerializationIntegration(FoundationTestCase):
         """Test that error messages are helpful."""
         # Test non-serializable object
         try:
-            provide_dumps(object())
+            json_dumps(object())
         except ValidationError as e:
             assert "Cannot serialize object to JSON" in str(e)
             assert "object" in str(e).lower()
 
         # Test invalid JSON
         try:
-            provide_loads('{"invalid": json}')
+            json_loads('{"invalid": json}')
         except ValidationError as e:
             assert "Invalid JSON string" in str(e)
 
         # Test non-string input
         try:
-            provide_loads(123)
+            json_loads(123)
         except ValidationError as e:
             assert "Input must be a string" in str(e)
 
@@ -431,8 +431,8 @@ class TestSerializationIntegration(FoundationTestCase):
             "dict": {"nested": "value"},
         }
 
-        serialized = provide_dumps(original_data)
-        result = provide_loads(serialized)
+        serialized = json_dumps(original_data)
+        result = json_loads(serialized)
 
         # Check types are preserved
         assert isinstance(result["int"], int)
