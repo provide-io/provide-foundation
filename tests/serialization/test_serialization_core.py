@@ -132,6 +132,7 @@ class TestProvideDumps(FoundationTestCase):
             ensure_ascii=False,
             indent=2,
             sort_keys=True,
+            default=None,
         )
 
     def test_provide_dumps_complex_numbers_raises_error(self) -> None:
