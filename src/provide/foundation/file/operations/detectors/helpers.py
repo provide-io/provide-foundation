@@ -7,38 +7,54 @@ import re
 
 
 def is_temp_file(path: Path) -> bool:
-    """Check if path looks like a temporary file."""
+    """Check if path looks like a temporary file.
+
+    Detects temp files from various sources:
+    - Editors: VSCode, Vim, Emacs, Sublime, etc.
+    - Build tools: Python tempfile, system tmp, etc.
+    - Atomic write patterns: .tmp.{PID}.{timestamp}
+    """
     name = path.name.lower()
     stem = path.stem.lower()
 
-    # VSCode-specific pattern: .filename.ext.tmp.XXXX (must check original case)
-    # Examples: .orchestrator.py.tmp.84, .test.txt.tmp.vscode.123
-    # Allow dots in the suffix to support patterns like .tmp.vscode.123
-    if re.match(r"^\..+\.tmp\.[\w.]+$", path.name):
+    # BROAD PATTERN: Any file with .tmp. followed by anything
+    # Catches: filename.tmp.123, filename.tmp.58540.1760056690894, .file.tmp.84
+    # This is the most important pattern - covers most atomic write patterns
+    if ".tmp." in name:
         return True
 
-    # Generic temp pattern: filename.ext.tmp.XXXXX (Python tempfile, etc.)
-    # Examples: base.py.tmp.58540.1760056690894, file.txt.tmp.123.456
-    # Matches any file with .tmp. followed by numbers/IDs
-    if re.search(r"\.tmp\.[\w.]+$", name):
-        return True
-
-    # Common temp file patterns
+    # Editor-specific patterns
     temp_patterns = [
+        # Generic temp markers
         name.startswith(".tmp"),
         name.startswith("tmp"),
         name.endswith(".tmp"),
         name.endswith(".temp"),
         name.endswith("~"),
-        ".$" in name,  # .$ prefix (common in Windows)
-        stem.endswith(".tmp"),
-        ".swp" in name,  # vim swap files
-        ".swx" in name,  # vim swap files
-        ".swo" in name,  # vim swap files
-        ".#" in name,  # emacs temp files
-        name.startswith("#") and name.endswith("#"),  # emacs autosave files
-        name.endswith(".bak"),  # backup files
-        name.endswith(".orig"),  # backup files
+
+        # Vim swap files
+        ".swp" in name,
+        ".swx" in name,
+        ".swo" in name,
+        name.endswith(".swn"),
+
+        # Emacs temp files
+        ".#" in name,
+        name.startswith("#") and name.endswith("#"),
+
+        # Backup files
+        name.endswith(".bak"),
+        name.endswith(".backup"),
+        name.endswith(".orig"),
+        name.endswith(".old"),
+
+        # System temp markers
+        ".$" in name,  # Windows
+        name.startswith("~$"),  # Office temp files
+
+        # Build/cache artifacts (common patterns)
+        ".cache" in name,
+        ".lock" in name and not name.endswith(".lock"),  # .lock.123 but not package.lock
     ]
 
     return any(temp_patterns)
