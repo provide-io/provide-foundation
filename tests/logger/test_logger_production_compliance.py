@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import io
 import json
 import os
 import threading
@@ -37,7 +38,7 @@ pytestmark = pytest.mark.serial
 class TestProductionReadinessScenarios(FoundationTestCase):
     """Tests that verify production readiness of lazy initialization."""
 
-    def test_high_throughput_scenario(self, captured_stderr_for_foundation) -> None:
+    def test_high_throughput_scenario(self, captured_stderr_for_foundation: io.StringIO) -> None:
         """Test lazy initialization under high throughput."""
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -197,6 +198,7 @@ class TestDocumentedBehaviorCompliance(FoundationTestCase):
         with patch.dict(os.environ, documented_env_vars):
             # Force re-initialization with new environment variables
             from provide.testkit import reset_foundation_setup_for_testing
+
             reset_foundation_setup_for_testing()
             set_log_stream_for_testing(sys.stderr)
 
@@ -450,6 +452,7 @@ class TestLazyInitializationDocumentation(FoundationTestCase):
         ):
             # Force re-initialization with new environment variables
             from provide.testkit import reset_foundation_setup_for_testing
+
             reset_foundation_setup_for_testing()
             set_log_stream_for_testing(sys.stderr)
 
