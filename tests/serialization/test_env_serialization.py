@@ -1,0 +1,289 @@
+from __future__ import annotations
+
+import pytest
+
+from provide.foundation.errors import ValidationError
+from provide.foundation.serialization import env
+
+
+class TestEnvDumps:
+    """Test env_dumps serialization."""
+
+    def test_basic_dict(self):
+        """Should serialize basic dictionary."""
+        result = env.env_dumps({"KEY": "value"})
+        assert result == 'KEY="value"\n'
+
+    def test_multiple_keys(self):
+        """Should serialize multiple key-value pairs."""
+        result = env.env_dumps({"KEY1": "value1", "KEY2": "value2"})
+        assert "KEY1=" in result
+        assert "KEY2=" in result
+
+    def test_quote_values_true_with_spaces(self):
+        """Should quote values with spaces when quote_values=True."""
+        result = env.env_dumps({"KEY": "value with spaces"}, quote_values=True)
+        assert result == 'KEY="value with spaces"\n'
+
+    def test_quote_values_true_with_tabs(self):
+        """Should quote values with tabs when quote_values=True."""
+        result = env.env_dumps({"KEY": "value\twith\ttabs"}, quote_values=True)
+        assert result == 'KEY="value\twith\ttabs"\n'
+
+    def test_quote_values_false(self):
+        """Should not quote values when quote_values=False."""
+        result = env.env_dumps({"KEY": "value with spaces"}, quote_values=False)
+        assert result == "KEY=value with spaces\n"
+
+    def test_no_spaces_no_quotes(self):
+        """Should not quote values without spaces even when quote_values=True."""
+        result = env.env_dumps({"KEY": "valuenosp
+
+aces"}, quote_values=True)
+        assert result == "KEY=valuenospaces\n"
+
+    def test_numeric_values(self):
+        """Should convert numeric values to strings."""
+        result = env.env_dumps({"PORT": 8080})
+        assert "PORT=8080\n" in result
+
+    def test_boolean_values(self):
+        """Should convert boolean values to strings."""
+        result = env.env_dumps({"DEBUG": True})
+        assert "DEBUG=True\n" in result
+
+    def test_empty_dict(self):
+        """Should handle empty dictionary."""
+        result = env.env_dumps({})
+        assert result == "\n"
+
+    def test_invalid_input_not_dict(self):
+        """Should raise ValidationError for non-dict input."""
+        with pytest.raises(ValidationError, match="ENV serialization requires a dictionary"):
+            env.env_dumps("not a dict")
+
+    def test_invalid_key_empty_string(self):
+        """Should raise ValidationError for empty string key."""
+        with pytest.raises(ValidationError, match="Invalid environment variable name"):
+            env.env_dumps({"": "value"})
+
+    def test_invalid_key_not_string(self):
+        """Should raise ValidationError for non-string key."""
+        with pytest.raises(ValidationError, match="Invalid environment variable name"):
+            env.env_dumps({123: "value"})
+
+    def test_exception_handling(self):
+        """Should wrap unexpected exceptions in ValidationError."""
+        # This tests the broad except clause
+        with pytest.raises(ValidationError, match="Cannot serialize object to ENV format"):
+            env.env_dumps({None: "value"})
+
+
+class TestParseEnvLine:
+    """Test _parse_env_line helper function."""
+
+    def test_valid_line(self):
+        """Should parse valid key=value line."""
+        result = env._parse_env_line("KEY=value", 1)
+        assert result == ("KEY", "value")
+
+    def test_value_with_spaces(self):
+        """Should parse value with spaces."""
+        result = env._parse_env_line("KEY=value with spaces", 1)
+        assert result == ("KEY", "value with spaces")
+
+    def test_double_quoted_value(self):
+        """Should remove double quotes from value."""
+        result = env._parse_env_line('KEY="quoted value"', 1)
+        assert result == ("KEY", "quoted value")
+
+    def test_single_quoted_value(self):
+        """Should remove single quotes from value."""
+        result = env._parse_env_line("KEY='quoted value'", 1)
+        assert result == ("KEY", "quoted value")
+
+    def test_whitespace_around_equals(self):
+        """Should strip whitespace around key and value."""
+        result = env._parse_env_line("  KEY  =  value  ", 1)
+        assert result == ("KEY", "value")
+
+    def test_empty_line(self):
+        """Should return None for empty line."""
+        result = env._parse_env_line("", 1)
+        assert result is None
+
+    def test_whitespace_only_line(self):
+        """Should return None for whitespace-only line."""
+        result = env._parse_env_line("   ", 1)
+        assert result is None
+
+    def test_comment_line(self):
+        """Should return None for comment line."""
+        result = env._parse_env_line("# This is a comment", 1)
+        assert result is None
+
+    def test_missing_equals(self):
+        """Should raise ValidationError for line without '='."""
+        with pytest.raises(ValidationError, match="missing '='"):
+            env._parse_env_line("INVALID_LINE", 1)
+
+    def test_empty_key(self):
+        """Should raise ValidationError for empty key."""
+        with pytest.raises(ValidationError, match="empty key"):
+            env._parse_env_line("=value", 1)
+
+    def test_equals_in_value(self):
+        """Should handle '=' in value."""
+        result = env._parse_env_line("KEY=value=with=equals", 1)
+        assert result == ("KEY", "value=with=equals")
+
+    def test_empty_value(self):
+        """Should handle empty value."""
+        result = env._parse_env_line("KEY=", 1)
+        assert result == ("KEY", "")
+
+
+class TestEnvLoads:
+    """Test env_loads deserialization."""
+
+    def test_basic_parsing(self):
+        """Should parse basic env content."""
+        result = env.env_loads("KEY=value")
+        assert result == {"KEY": "value"}
+
+    def test_multiple_lines(self):
+        """Should parse multiple lines."""
+        content = "KEY1=value1\nKEY2=value2"
+        result = env.env_loads(content)
+        assert result == {"KEY1": "value1", "KEY2": "value2"}
+
+    def test_quoted_values(self):
+        """Should parse quoted values."""
+        content = 'KEY="quoted value"'
+        result = env.env_loads(content)
+        assert result == {"KEY": "quoted value"}
+
+    def test_comments(self):
+        """Should skip comment lines."""
+        content = "# Comment\nKEY=value\n# Another comment"
+        result = env.env_loads(content)
+        assert result == {"KEY": "value"}
+
+    def test_empty_lines(self):
+        """Should skip empty lines."""
+        content = "KEY1=value1\n\nKEY2=value2\n"
+        result = env.env_loads(content)
+        assert result == {"KEY1": "value1", "KEY2": "value2"}
+
+    def test_whitespace_lines(self):
+        """Should skip whitespace-only lines."""
+        content = "KEY1=value1\n   \nKEY2=value2"
+        result = env.env_loads(content)
+        assert result == {"KEY1": "value1", "KEY2": "value2"}
+
+    def test_empty_string(self):
+        """Should return empty dict for empty string."""
+        result = env.env_loads("")
+        assert result == {}
+
+    def test_caching_enabled(self, mock_env_small_cache):
+        """Should use cache when enabled."""
+        content = "KEY=value"
+
+        # First call should cache
+        result1 = env.env_loads(content, use_cache=True)
+
+        # Second call should hit cache
+        result2 = env.env_loads(content, use_cache=True)
+
+        assert result1 == result2 == {"KEY": "value"}
+
+    def test_caching_disabled(self):
+        """Should not use cache when disabled."""
+        content = "KEY=value"
+        result = env.env_loads(content, use_cache=False)
+        assert result == {"KEY": "value"}
+
+    def test_cache_hit(self, mock_env_small_cache):
+        """Should return cached result on cache hit."""
+        from provide.foundation.serialization.cache import get_cache_key, get_serialization_cache
+
+        content = "KEY=value"
+        expected = {"KEY": "value"}
+
+        # Manually populate cache
+        cache = get_serialization_cache()
+        cache_key = get_cache_key(content, "env")
+        cache.set(cache_key, expected)
+
+        # Should return cached value
+        result = env.env_loads(content, use_cache=True)
+        assert result == expected
+
+    def test_invalid_input_not_string(self):
+        """Should raise ValidationError for non-string input."""
+        with pytest.raises(ValidationError, match="Input must be a string"):
+            env.env_loads(123)
+
+    def test_invalid_format_missing_equals(self):
+        """Should raise ValidationError for invalid format."""
+        with pytest.raises(ValidationError, match="missing '='"):
+            env.env_loads("INVALID_LINE")
+
+    def test_invalid_format_empty_key(self):
+        """Should raise ValidationError for empty key."""
+        with pytest.raises(ValidationError, match="empty key"):
+            env.env_loads("=value")
+
+    def test_propagates_validation_error(self):
+        """Should propagate ValidationError from parser."""
+        with pytest.raises(ValidationError):
+            env.env_loads("INVALID")
+
+    def test_unexpected_exception_wrapped(self):
+        """Should wrap unexpected exceptions."""
+        # This is hard to trigger naturally, but tests the except Exception clause
+        # We can mock the splitlines to raise an exception
+        import unittest.mock as mock
+
+        with mock.patch("str.splitlines", side_effect=RuntimeError("Unexpected")):
+            with pytest.raises(ValidationError, match="Invalid .env format string"):
+                env.env_loads("KEY=value")
+
+
+class TestEnvRoundTrip:
+    """Test round-trip serialization."""
+
+    def test_round_trip_basic(self):
+        """Should round-trip basic data."""
+        original = {"KEY": "value", "PORT": "8080"}
+        serialized = env.env_dumps(original, quote_values=False)
+        deserialized = env.env_loads(serialized)
+        assert deserialized == original
+
+    def test_round_trip_with_quotes(self):
+        """Should round-trip data with quotes."""
+        original = {"KEY": "value with spaces"}
+        serialized = env.env_dumps(original, quote_values=True)
+        deserialized = env.env_loads(serialized)
+        assert deserialized == original
+
+    def test_round_trip_empty(self):
+        """Should round-trip empty dictionary."""
+        original = {}
+        serialized = env.env_dumps(original)
+        deserialized = env.env_loads(serialized)
+        assert deserialized == original
+
+
+class TestModuleExports:
+    """Test module exports."""
+
+    def test_all_exports(self):
+        """Module should export expected symbols."""
+        assert set(env.__all__) == {"env_dumps", "env_loads"}
+
+    def test_exported_symbols_callable(self):
+        """All exported symbols should be callable."""
+        for symbol in env.__all__:
+            assert callable(getattr(env, symbol))
