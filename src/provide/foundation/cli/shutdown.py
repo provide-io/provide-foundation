@@ -22,8 +22,9 @@ log = get_foundation_logger()
 
 # Track if cleanup has already run
 _cleanup_executed = False
-_original_sigint_handler = signal.getsignal(signal.SIGINT)
-_original_sigterm_handler = signal.getsignal(signal.SIGTERM)
+_original_sigint_handler: Any = None
+_original_sigterm_handler: Any = None
+_handlers_registered = False
 
 
 def _flush_otlp_logs() -> None:
@@ -41,6 +42,7 @@ def _cleanup_foundation_resources() -> None:
 
     This is the central cleanup function called on exit, interrupt, or error.
     It ensures all resources are properly cleaned up exactly once.
+    Automatically restores original signal handlers.
     """
     global _cleanup_executed
 
@@ -55,6 +57,9 @@ def _cleanup_foundation_resources() -> None:
 
         # Clean up all registered components
         cleanup_all_components()
+
+        # Restore original signal handlers automatically
+        _restore_signal_handlers()
 
     except Exception as e:
         # Log cleanup errors but don't raise - we're already exiting
@@ -83,20 +88,61 @@ def _signal_handler(signum: int, frame: Any) -> None:
     sys.exit(EXIT_SIGINT if signum == signal.SIGINT else 1)
 
 
-def register_cleanup_handlers() -> None:
+def _restore_signal_handlers() -> None:
+    """Restore original signal handlers.
+
+    This is called automatically during cleanup to ensure we don't
+    leave Foundation's handlers active when we shouldn't.
+    """
+    global _handlers_registered
+
+    if not _handlers_registered:
+        return
+
+    if _original_sigint_handler is not None:
+        signal.signal(signal.SIGINT, _original_sigint_handler)
+
+    if _original_sigterm_handler is not None:
+        signal.signal(signal.SIGTERM, _original_sigterm_handler)
+
+    _handlers_registered = False
+    log.trace("Restored original signal handlers")
+
+
+def register_cleanup_handlers(*, manage_signals: bool = True) -> None:
     """Register signal handlers and atexit cleanup.
 
     This should be called once at CLI startup to ensure cleanup
     happens on all exit paths.
+
+    Args:
+        manage_signals: If True, register signal handlers. If False, only
+            register atexit cleanup. Set to False if you're using Foundation
+            as a library and want to manage signals yourself.
+
+    Note:
+        Signal handlers are automatically restored during cleanup.
+
     """
+    global _original_sigint_handler, _original_sigterm_handler, _handlers_registered
+
     # Register atexit cleanup
     atexit.register(_cleanup_foundation_resources)
 
-    # Register signal handlers
-    signal.signal(signal.SIGINT, _signal_handler)
-    signal.signal(signal.SIGTERM, _signal_handler)
+    # Register signal handlers if requested
+    if manage_signals:
+        # Save original handlers
+        _original_sigint_handler = signal.getsignal(signal.SIGINT)
+        _original_sigterm_handler = signal.getsignal(signal.SIGTERM)
 
-    log.trace("Registered cleanup handlers")
+        # Register our handlers
+        signal.signal(signal.SIGINT, _signal_handler)
+        signal.signal(signal.SIGTERM, _signal_handler)
+
+        _handlers_registered = True
+        log.trace("Registered cleanup handlers with signal management")
+    else:
+        log.trace("Registered cleanup handlers (signal management disabled)")
 
 
 def unregister_cleanup_handlers() -> None:
@@ -107,8 +153,7 @@ def unregister_cleanup_handlers() -> None:
     global _cleanup_executed
 
     # Restore original signal handlers
-    signal.signal(signal.SIGINT, _original_sigint_handler)
-    signal.signal(signal.SIGTERM, _original_sigterm_handler)
+    _restore_signal_handlers()
 
     # Remove atexit handler
     with contextlib.suppress(ValueError):
@@ -117,7 +162,7 @@ def unregister_cleanup_handlers() -> None:
     # Reset cleanup flag
     _cleanup_executed = False
 
-    log.trace("Unregistered cleanup handlers")
+    log.trace("Unregister cleanup handlers")
 
 
 # Type variables for decorator
