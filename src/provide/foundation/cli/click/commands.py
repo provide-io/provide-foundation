@@ -16,6 +16,7 @@ from provide.foundation.cli.click.parameters import (
 )
 from provide.foundation.cli.deps import click
 from provide.foundation.cli.errors import CLIBuildError
+from provide.foundation.hub.categories import ComponentCategory
 from provide.foundation.hub.introspection import introspect_parameters
 
 if TYPE_CHECKING:
@@ -136,7 +137,7 @@ def build_click_command(
     from provide.foundation.hub.registry import get_command_registry
 
     reg = registry or get_command_registry()
-    entry = reg.get_entry(name, dimension="command")
+    entry = reg.get_entry(name, dimension=ComponentCategory.COMMAND.value)
 
     info = validate_command_entry(entry)
     if not info:

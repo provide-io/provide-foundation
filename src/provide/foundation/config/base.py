@@ -176,6 +176,9 @@ class BaseConfig:
         Returns:
             Configuration instance
 
+        Raises:
+            ValidationError: If validation fails
+
         """
         # Filter data to only include fields defined in the class, excluding private fields
         field_names = {f.name for f in fields(cls) if not f.name.startswith("_")}
@@ -189,6 +192,9 @@ class BaseConfig:
             instance._source_map[key] = source
             instance._original_values[key] = filtered_data[key]
 
+        # Validate configuration
+        instance.validate()
+
         return instance
 
     def update(self, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
@@ -197,6 +203,9 @@ class BaseConfig:
         Args:
             updates: Dictionary of updates
             source: Source of the updates
+
+        Raises:
+            ValidationError: If validation fails after update
 
         """
         for key, value in updates.items():
@@ -208,7 +217,8 @@ class BaseConfig:
                     self._source_map[key] = source
                     self._original_values[key] = value
 
-        # Note: validate() is async, must be called separately if needed
+        # Validate configuration after updates
+        self.validate()
 
     def get_source(self, field_name: str) -> ConfigSource | None:
         """Get the source of a configuration field.
@@ -238,12 +248,12 @@ class BaseConfig:
         self._source_map.clear()
         self._original_values.clear()
 
-        # Note: validate() is async, must be called separately if needed
+        # Note: validate() should be called separately if validation is needed after reset
 
     def clone(self) -> Self:
         """Create a deep copy of the configuration."""
         cloned = copy.deepcopy(self)
-        # Note: validate() is async, must be called separately if needed
+        # Cloned configuration inherits validation state from original
         return cloned
 
     def diff(self, other: BaseConfig) -> dict[str, tuple[Any, Any]]:

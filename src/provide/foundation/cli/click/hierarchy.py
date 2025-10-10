@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Any
 
 from provide.foundation import logger
 from provide.foundation.cli.deps import click
+from provide.foundation.hub.categories import ComponentCategory
 
 if TYPE_CHECKING:
     from provide.foundation.hub.info import CommandInfo
@@ -40,7 +41,7 @@ def ensure_parent_groups(parent_path: str, registry: Registry) -> None:
         registry_key = group_path
 
         # Check if this group already exists
-        if not registry.get_entry(registry_key, dimension="command"):
+        if not registry.get_entry(registry_key, dimension=ComponentCategory.COMMAND.value):
             # Create a placeholder group
             def group_func() -> None:
                 """Auto-generated command group."""
@@ -64,7 +65,7 @@ def ensure_parent_groups(parent_path: str, registry: Registry) -> None:
             registry.register(
                 name=registry_key,
                 value=group_func,
-                dimension="command",
+                dimension=ComponentCategory.COMMAND.value,
                 metadata={
                     "info": info,
                     "description": info.description,

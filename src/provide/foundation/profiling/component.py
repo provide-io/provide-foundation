@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from provide.foundation.errors.decorators import resilient
+from provide.foundation.hub.categories import ComponentCategory
 from provide.foundation.profiling.defaults import DEFAULT_PROFILING_SAMPLE_RATE
 from provide.foundation.profiling.metrics import ProfileMetrics
 from provide.foundation.profiling.processor import ProfilingProcessor
@@ -161,7 +162,7 @@ def register_profiling(hub: Hub, sample_rate: float = DEFAULT_PROFILING_SAMPLE_R
     hub._component_registry.register(
         name="profiler",
         value=profiler,
-        dimension="component",
+        dimension=ComponentCategory.COMPONENT.value,
         metadata={"type": "profiling", "sample_rate": sample_rate},
     )
 
