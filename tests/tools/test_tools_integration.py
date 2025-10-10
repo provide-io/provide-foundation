@@ -405,6 +405,7 @@ class TestBackoffRetryIntegration(FoundationTestCase):
 
         # Create a new downloader with the mock client
         from provide.foundation.tools.downloader import ToolDownloader
+
         test_downloader = ToolDownloader(mock_client)
 
         # Should eventually succeed

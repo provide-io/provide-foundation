@@ -22,11 +22,15 @@ class TestComponentHealth(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
+        from provide.foundation.testmode.internal import reset_hub_state
+
+        reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
+        from provide.foundation.testmode.internal import reset_hub_state
+
+        reset_hub_state()
 
     def test_check_component_health_not_found(self) -> None:
         """Test check_component_health with non-existent component."""
@@ -108,11 +112,15 @@ class TestComponentConfigSchema(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
+        from provide.foundation.testmode.internal import reset_hub_state
+
+        reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
+        from provide.foundation.testmode.internal import reset_hub_state
+
+        reset_hub_state()
 
     def test_get_component_config_schema(self) -> None:
         """Test get_component_config_schema returns schema from metadata."""
@@ -159,11 +167,15 @@ class TestComponentInitialization(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
+        from provide.foundation.testmode.internal import reset_hub_state
+
+        reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
+        from provide.foundation.testmode.internal import reset_hub_state
+
+        reset_hub_state()
 
     def test_get_or_initialize_component_already_initialized(self) -> None:
         """Test get_or_initialize_component returns cached component."""

@@ -231,6 +231,7 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
 
         # Test that the module can be imported safely
         import provide.foundation.crypto.certificates
+
         assert hasattr(provide.foundation.crypto.certificates, "_HAS_CRYPTO")
 
         # Test error handling when _require_crypto is patched

@@ -73,7 +73,9 @@ class TestEditorSpecificPatterns(FoundationTestCase):
         assert len(operations) >= 1
 
         # Should detect atomic save or safe write (Vim pattern can be detected as either)
-        atomic_operations = [op for op in operations if op.operation_type.value in ("atomic_save", "safe_write")]
+        atomic_operations = [
+            op for op in operations if op.operation_type.value in ("atomic_save", "safe_write")
+        ]
         assert len(atomic_operations) >= 1
 
         operation = atomic_operations[0]

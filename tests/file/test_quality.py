@@ -54,9 +54,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         """Test running analysis with VSCode atomic save scenario."""
         analyzer = QualityAnalyzer()
         scenarios = create_scenarios_from_patterns()
-        vscode_scenario = next(
-            s for s in scenarios if s.name == "vscode_atomic_save"
-        )
+        vscode_scenario = next(s for s in scenarios if s.name == "vscode_atomic_save")
         analyzer.add_scenario(vscode_scenario)
         results = analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.DETECTION_TIME])
         assert len(results) == 2
