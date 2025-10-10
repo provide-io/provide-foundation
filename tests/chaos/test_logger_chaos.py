@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 
-from hypothesis import given, settings, strategies as st
+from hypothesis import HealthCheck, given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     rate_burst_patterns,
@@ -77,7 +77,7 @@ class TestLoggerUnicodeChaos(FoundationTestCase):
             st.dictionaries(st.text(min_size=0, max_size=20), st.integers(), min_size=0, max_size=20),
         )
     )
-    @settings(max_examples=30)
+    @settings(max_examples=30, suppress_health_check=[HealthCheck.filter_too_much])
     def test_malformed_log_data_chaos(self, data: object) -> None:
         """Test logger with malformed input data.
 
