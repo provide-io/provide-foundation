@@ -73,11 +73,51 @@ def get_message_from_stdin() -> tuple[str | None, int]:
         return None, 1
 
 
+def _infer_and_parse_value(value: str) -> Any:
+    """Infer type from string value and parse using parsers module.
+
+    Tries to detect the type in order: bool, int, float, str.
+    Uses the parsers module for consistent parsing behavior.
+
+    Args:
+        value: String value to parse
+
+    Returns:
+        Parsed value with inferred type
+
+    """
+    # Try bool (handles "true", "false", "yes", "no", "1", "0")
+    if value.lower() in ("true", "false", "yes", "no", "1", "0"):
+        try:
+            return parse_typed_value(value, bool)
+        except (ValueError, TypeError):
+            pass
+
+    # Try int (handles digits and negative numbers)
+    if value.lstrip("-").isdigit():
+        try:
+            return parse_typed_value(value, int)
+        except (ValueError, TypeError):
+            pass
+
+    # Try float (handles decimal numbers)
+    if "." in value:
+        try:
+            return parse_typed_value(value, float)
+        except (ValueError, TypeError):
+            pass
+
+    # Default to string
+    return value
+
+
 def build_attributes_from_args(
     json_attrs: str | None,
     attr: tuple[str, ...],
 ) -> tuple[dict[str, Any], int]:
     """Build attributes dictionary from JSON and key=value arguments.
+
+    Uses the parsers module for consistent type inference and parsing.
 
     Args:
         json_attrs: JSON string of attributes
@@ -101,19 +141,11 @@ def build_attributes_from_args(
             click.echo(f"Error: Invalid JSON attributes: {e}", err=True)
             return {}, 1
 
-    # Add key=value attributes
+    # Add key=value attributes with automatic type inference
     for kv_pair in attr:
         try:
             key, value = kv_pair.split("=", 1)
-            # Try to parse as number, boolean, or keep as string
-            if value.lower() in ("true", "false"):
-                attributes[key] = value.lower() == "true"
-            elif value.isdigit():
-                attributes[key] = int(value)
-            elif "." in value and value.replace(".", "").replace("-", "").isdigit():
-                attributes[key] = float(value)
-            else:
-                attributes[key] = value
+            attributes[key] = _infer_and_parse_value(value)
         except ValueError:
             click.echo(
                 f"Error: Invalid attribute format '{kv_pair}'. Use key=value.",
@@ -127,6 +159,8 @@ def build_attributes_from_args(
 def parse_filter_string(filter_str: str) -> dict[str, str]:
     """Parse filter string into key-value dictionary.
 
+    Uses the parsers module for consistent parsing behavior.
+
     Args:
         filter_str: Filter string in format 'key1=value1,key2=value2'
 
@@ -134,18 +168,14 @@ def parse_filter_string(filter_str: str) -> dict[str, str]:
         Dictionary of filter key-value pairs
 
     """
-    filters = {}
     if not filter_str:
-        return filters
+        return {}
 
-    for pair in filter_str.split(","):
-        try:
-            key, value = pair.split("=", 1)
-            filters[key.strip()] = value.strip()
-        except ValueError:
-            click.echo(f"Warning: Invalid filter pair '{pair}', skipping.", err=True)
-
-    return filters
+    try:
+        return parse_dict(filter_str, item_separator=",", key_separator="=", strip=True)
+    except ValueError as e:
+        click.echo(f"Warning: Invalid filter format: {e}", err=True)
+        return {}
 
 
 def format_duration(seconds: float) -> str:
