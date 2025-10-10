@@ -70,6 +70,8 @@ def _parse_env_line(line: str, line_num: int) -> tuple[str, str] | None:
         ValidationError: If line is invalid
 
     """
+    from provide.foundation.errors import ValidationError
+
     line = line.strip()
 
     # Skip comments and empty lines
@@ -115,6 +117,8 @@ def env_loads(s: str, *, use_cache: bool = True) -> dict[str, str]:
         {'KEY': 'value'}
 
     """
+    from provide.foundation.errors import ValidationError
+
     if not isinstance(s, str):
         raise ValidationError("Input must be a string")
 

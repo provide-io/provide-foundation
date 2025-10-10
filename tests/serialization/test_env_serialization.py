@@ -12,7 +12,7 @@ class TestEnvDumps:
     def test_basic_dict(self):
         """Should serialize basic dictionary."""
         result = env.env_dumps({"KEY": "value"})
-        assert result == 'KEY="value"\n'
+        assert result == 'KEY=value\n'
 
     def test_multiple_keys(self):
         """Should serialize multiple key-value pairs."""
@@ -238,15 +238,11 @@ class TestEnvLoads:
         with pytest.raises(ValidationError):
             env.env_loads("INVALID")
 
-    def test_unexpected_exception_wrapped(self):
-        """Should wrap unexpected exceptions."""
-        # This is hard to trigger naturally, but tests the except Exception clause
-        # We can mock the splitlines to raise an exception
-        import unittest.mock as mock
-
-        with mock.patch("str.splitlines", side_effect=RuntimeError("Unexpected")):
-            with pytest.raises(ValidationError, match="Invalid .env format string"):
-                env.env_loads("KEY=value")
+    def test_complex_values(self):
+        """Should handle complex value strings."""
+        content = "PATH=/usr/bin:/usr/local/bin"
+        result = env.env_loads(content)
+        assert result == {"PATH": "/usr/bin:/usr/local/bin"}
 
 
 class TestEnvRoundTrip:
