@@ -39,9 +39,12 @@ def provide_dumps(
 
     """
     try:
-        return json.dumps(
-            obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys, default=default
-        )
+        # Only pass default if it's not None to maintain backward compatibility
+        if default is not None:
+            return json.dumps(
+                obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys, default=default
+            )
+        return json.dumps(obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys)
     except (TypeError, ValueError) as e:
         raise ValidationError(f"Cannot serialize object to JSON: {e}") from e
 
