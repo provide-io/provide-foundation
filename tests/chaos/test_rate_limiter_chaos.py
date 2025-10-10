@@ -10,7 +10,7 @@ import asyncio
 import math
 import sys
 
-from hypothesis import given, settings, strategies as st
+from hypothesis import HealthCheck, given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     rate_burst_patterns,
@@ -51,7 +51,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         refill_rate=st.floats(min_value=1.0, max_value=50.0, allow_nan=False, allow_infinity=False),
         burst_size=st.integers(min_value=1, max_value=20),
     )
-    @settings(max_examples=20, suppress_health_check=[])
+    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
     async def test_burst_pattern_chaos(
         self,
         capacity: float,
