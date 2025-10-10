@@ -14,7 +14,6 @@ from provide.foundation.errors.config import ConfigurationError
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.resources import NotFoundError
 from provide.foundation.file.safe import safe_read_text
-from provide.foundation.utils.timing import timed_block
 
 """Configuration loaders for various sources."""
 
@@ -104,7 +103,14 @@ class FileConfigLoader(ConfigLoader):
     )
     def load(self, config_class: type[T]) -> T:
         """Load configuration from file."""
-        with timed_block(f"Load config from {self.path.name}"):
+        from provide.foundation.logger.setup.coordinator import (
+            create_foundation_internal_logger,
+        )
+        from provide.foundation.utils.timing import timed_block
+
+        setup_logger = create_foundation_internal_logger()
+
+        with timed_block(setup_logger, f"Load config from {self.path.name}"):
             if not self.exists():
                 raise NotFoundError(
                     f"Configuration file not found: {self.path}",
