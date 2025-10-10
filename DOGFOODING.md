@@ -213,13 +213,105 @@ streams = run_async(client.list_streams())
 | **OpenObserve Transport** | ✅ **Complete** | **4 files** | ✅ **97 tests** |
 | **TOTAL IMPROVEMENTS** | ✅ **7 Complete** | **10 files** | ✅ **All tests passing** |
 
+## 🔍 Analysis of Dogfooding Opportunities
+
+### Summary of Analysis
+
+After thorough analysis of the codebase, many suggested dogfooding improvements fall into three categories:
+
+1. **✅ Already Implemented**: Code already uses Foundation features correctly
+2. **❌ Would Reduce Quality**: Using Foundation feature would actually make code worse
+3. **⚠️ Requires Trade-offs**: Valid but has significant complexity or performance implications
+
+### Category 1: Already Implemented Correctly ✅
+
+#### tools/downloader.py - Already Uses hash_file()
+- **Line 163**: ✅ Already uses `hash_file(file_path, algorithm="sha256")`
+- **Analysis**: Dogfooding suggestion was based on outdated code review
+- **Status**: No changes needed
+
+### Category 2: Would Reduce Code Quality ❌
+
+#### process/sync/execution.py - Should NOT Use @resilient
+**Suggestion**: Add @resilient decorator to run() function
+
+**Analysis**: Current implementation is BETTER without @resilient because:
+
+1. **Contextual Logging**: Current code logs different messages for different error types:
+   - ProcessError: "❌ Command failed" with exit code
+   - ProcessTimeoutError: "⏱️ Command timed out" with timeout duration
+   - Generic errors: "💥 Command execution failed"
+
+2. **Command Masking**: Uses `mask_command()` to hide secrets in logs
+   - Example: `run(["curl", "-H", "Authorization: Bearer secret123"])` logs as `curl -H "Authorization: Bearer ***"`
+
+3. **Structured Error Types**: Raises specific exceptions (ProcessError, ProcessTimeoutError) with rich metadata
+
+4. **Error Context**: Includes command, return code, stdout/stderr in exceptions
+
+**@resilient would**:
+- Lose contextual emoji and messages
+- Lose command masking (security issue)
+- Flatten all errors to generic handling
+- Lose structured error metadata
+
+**Conclusion**: Current implementation demonstrates SUPERIOR error handling patterns. Keep as-is.
+
+**Documentation**: See `src/provide/foundation/process/sync/execution.py:23-150`
+
+### Category 3: Valid But Complex Trade-offs ⚠️
+
+#### tools/downloader.py - atomic_write() Has Trade-offs
+**Suggestion**: Use `atomic_write()` instead of `dest.open("wb")` (line 127)
+
+**Analysis**: Valid suggestion but significant complexity:
+
+**Current Implementation** (line 127-131):
+```python
+with dest.open("wb") as f:
+    async for chunk in self.client.stream(url, "GET"):
+        f.write(chunk)
+        downloaded += len(chunk)
+        self._report_progress(downloaded, total_size)
+```
+
+**Benefits**:
+- ✅ Streams large files without memory buffering
+- ✅ Reports progress during download
+- ✅ Efficient for multi-GB downloads
+
+**atomic_write() Approach**:
+```python
+# Would require buffering entire file
+content = b""
+async for chunk in self.client.stream(url, "GET"):
+    content += chunk  # Memory issue for large files!
+    self._report_progress(downloaded, total_size)
+atomic_write(dest, content)
+```
+
+**Trade-offs**:
+- ❌ Would require buffering entire file in memory (defeats streaming)
+- ❌ No progress callbacks during write (atomic_write happens at end)
+- ✅ Would prevent partial downloads on failure
+
+**Current Error Handling**:
+- Has manual cleanup on exceptions (lines 134-136, 139-141, 231-232)
+- Deletes partial files on checksum mismatch
+- Deletes partial files on download errors
+
+**Conclusion**: Current implementation is appropriate for streaming downloads. atomic_write() would require architectural changes and lose streaming benefits.
+
+**Recommendation**: Document this design decision rather than change implementation.
+
 ## 🔍 Additional Dogfooding Opportunities Identified
 
 ### File I/O Improvements
 
 #### tools/downloader.py
-- **Line 127**: Uses `dest.open("wb")` for downloads → Should use `atomic_write()` to prevent corruption
-- **Lines 163-167**: Manual hashlib.sha256() → Should use `hash_file()` from crypto/hashing
+- **Line 127**: Uses `dest.open("wb")` for downloads
+  - **Status**: ⚠️ Could use `atomic_write()` but requires architectural changes (see analysis above)
+- **Line 163**: ✅ Already uses `hash_file()` correctly
 
 #### tools/verifier.py
 - **Line 63**: Direct file reading → Could use `safe_read()` for better error handling
@@ -301,10 +393,38 @@ except Exception:
 2. Additional @resilient decorators for simple error suppression
 3. Manual validation patterns → config/validators usage
 
+## Examples and Documentation
+
+### Dogfooding Demo Application
+See `examples/cli/02_dogfooding_cli.py` for a comprehensive demonstration of using Foundation's own features:
+
+- **Environment Variables**: BaseConfig with env_field vs. utils/environment helpers
+- **File I/O**: atomic_write(), safe_read_text(), hash_file()
+- **Process Execution**: run() and run_simple() with error handling
+- **Parsing**: parse_typed_value() for CLI arguments
+- **Error Handling**: @resilient decorator for graceful degradation
+- **Console Output**: pout()/perr() with JSON mode support
+
+Run the demo:
+```bash
+python examples/cli/02_dogfooding_cli.py --help
+python examples/cli/02_dogfooding_cli.py config-demo
+python examples/cli/02_dogfooding_cli.py file-demo
+python examples/cli/02_dogfooding_cli.py process-demo
+```
+
 ## Next Steps
 
-1. **File I/O**: Update downloader.py to use atomic_write() and hash_file()
-2. **Console Output**: Replace print() in CLI commands with pout()/perr()
-3. **JSON Operations**: Use read_json()/write_json() for file-based JSON
-4. **Testing**: Ensure 100% coverage on modified code
-5. **Breaking Change**: Plan OpenObserve async transport migration separately
+### High Priority
+1. ✅ **Process Execution Analysis**: Documented why @resilient would reduce quality
+2. ✅ **Downloader Analysis**: Documented atomic_write() trade-offs
+3. ✅ **Dogfooding Example**: Created comprehensive CLI example
+
+### Medium Priority (Future Work)
+1. **Console Output**: Replace print() in CLI commands with pout()/perr()
+2. **JSON Operations**: Use read_json()/write_json() for file-based JSON
+3. **Environment Variables**: Replace remaining os.environ direct access
+
+### Low Priority
+1. Additional @resilient decorators for simple error suppression
+2. Manual validation patterns → config/validators usage
