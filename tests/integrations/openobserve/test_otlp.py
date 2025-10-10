@@ -260,8 +260,9 @@ class TestSendLogBulk(FoundationTestCase):
 
     def test_send_log_bulk_success(self) -> None:
         """Test successful bulk API log sending with async transport."""
-        from provide.foundation.integrations.openobserve.otlp import send_log_bulk
         from unittest.mock import AsyncMock
+
+        from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
         # Mock OpenObserve client with async transport
         mock_transport_client = Mock()
@@ -284,7 +285,9 @@ class TestSendLogBulk(FoundationTestCase):
 
         with (
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
-            patch("provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env") as mock_oo_from_env,
+            patch(
+                "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+            ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
         ):
             mock_from_env.return_value = mock_config
@@ -319,8 +322,9 @@ class TestSendLogBulk(FoundationTestCase):
 
     def test_send_log_bulk_creates_client_when_none_provided(self) -> None:
         """Test that bulk function creates client when none provided."""
-        from provide.foundation.integrations.openobserve.otlp import send_log_bulk
         from unittest.mock import AsyncMock
+
+        from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
         # Mock transport client
         mock_transport_client = Mock()
@@ -343,7 +347,9 @@ class TestSendLogBulk(FoundationTestCase):
 
         with (
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
-            patch("provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env") as mock_oo_from_env,
+            patch(
+                "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+            ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.OpenObserveClient") as mock_client_class,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
         ):
@@ -359,8 +365,9 @@ class TestSendLogBulk(FoundationTestCase):
 
     def test_send_log_bulk_exception_handling(self) -> None:
         """Test exception handling in bulk log sending."""
-        from provide.foundation.integrations.openobserve.otlp import send_log_bulk
         from unittest.mock import AsyncMock
+
+        from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
         # Mock transport client that raises exception
         mock_transport_client = Mock()
@@ -381,7 +388,9 @@ class TestSendLogBulk(FoundationTestCase):
 
         with (
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
-            patch("provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env") as mock_oo_from_env,
+            patch(
+                "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+            ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
         ):
             mock_from_env.return_value = mock_config
@@ -659,8 +668,9 @@ class TestOTLPIntegration(FoundationTestCase):
 
     def test_bulk_api_log_structure(self) -> None:
         """Test the structure of logs sent via bulk API."""
-        from provide.foundation.integrations.openobserve.otlp import send_log_bulk
         from unittest.mock import AsyncMock
+
+        from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
         # Mock transport client
         mock_transport_client = Mock()
