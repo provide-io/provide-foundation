@@ -8,6 +8,7 @@ import time
 from typing import Any
 
 from provide.foundation.console.output import perr
+from provide.foundation.errors import ValidationError
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveStreamingError,
