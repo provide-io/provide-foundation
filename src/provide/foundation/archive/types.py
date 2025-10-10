@@ -142,8 +142,8 @@ def get_operation_from_string(op_string: str) -> ArchiveOperation:
 
 
 __all__ = [
-    "ArchiveOperation",
     "INVERSE_OPERATIONS",
     "OPERATION_NAMES",
+    "ArchiveOperation",
     "get_operation_from_string",
 ]
