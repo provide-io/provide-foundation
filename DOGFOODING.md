@@ -134,15 +134,71 @@ Foundation provides a complete, battle-tested HTTP transport system with:
    - Breaking change release
    - Migration guide
 
-### Decision Points
+### ✅ Decision: No Backward Compatibility Required
 
-Before starting this work:
+**User confirmed**: OpenObserve integration is only used internally by Foundation itself. No external users exist.
 
-- [ ] Confirm breaking change is acceptable
-- [ ] Plan migration strategy for existing users
-- [ ] Document async migration guide
-- [ ] Update all examples and documentation
-- [ ] Consider providing sync wrapper (run_sync helper)
+**Therefore**: We can do a complete async rewrite without migration concerns.
+
+###  Implementation Plan (Ready to Execute)
+
+#### Phase 1: Core Client (`client.py`)
+```python
+# Replace imports
+from provide.foundation.transport import UniversalClient
+from provide.foundation.transport.errors import TransportConnectionError, TransportTimeoutError
+
+# Update __init__
+def __init__(self, url, username, password, organization="default", timeout=30, max_retries=3):
+    self._client = UniversalClient(
+        default_headers=get_auth_headers(username, password),
+        default_timeout=float(timeout)
+    )
+    # Note: UniversalClient uses Foundation's RetryMiddleware automatically
+
+# Convert all methods to async
+async def _make_request(...)
+async def search(...)
+async def list_streams(...)
+async def test_connection(...)
+```
+
+#### Phase 2: CLI Bridge (`commands.py`)
+```python
+import asyncio
+
+def run_async(coro):
+    """Run async client calls from sync CLI commands."""
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+    return loop.run_until_complete(coro)
+
+# Update all command calls
+streams = run_async(client.list_streams())
+```
+
+#### Phase 3: Supporting Files
+- **streaming.py**: Replace `requests.post()` with Foundation transport
+- **otlp.py**: Replace `requests.post()` with Foundation transport
+
+#### Phase 4: Tests
+- Add `pytest-asyncio` markers to async tests
+- Mock Foundation's transport instead of requests
+- Maintain 100% test coverage
+
+### Implementation Checklist
+
+- [ ] Convert OpenObserveClient to use UniversalClient
+- [ ] Create async-to-sync bridge for CLI commands
+- [ ] Update all CLI command calls
+- [ ] Convert streaming.py to use Foundation transport
+- [ ] Convert otlp.py to use Foundation transport
+- [ ] Update all tests for async client
+- [ ] Run comprehensive test suite (target: 565+ tests passing)
+- [ ] Remove requests dependency entirely
 
 ## 📊 Summary of Completed Improvements
 
