@@ -48,7 +48,7 @@ def requires_click(func: Callable[P, R]) -> Callable[P, R]:
             )
         return func(*args, **kwargs)
 
-    return wrapper  # type: ignore[return-value]
+    return wrapper
 
 
 def get_message_from_stdin() -> tuple[str | None, int]:
