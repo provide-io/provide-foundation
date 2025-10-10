@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 """TAR archive implementation."""
 
-logger = get_logger(__name__)
+log = get_logger(__name__)
 
 
 @define(slots=True)
@@ -65,7 +65,7 @@ class TarArchive(BaseArchive):
                     # Add single file
                     self._add_file(tar, source, source.name)
 
-            logger.debug(f"Created TAR archive: {output}")
+            log.debug(f"Created TAR archive: {output}")
             return output
 
         except Exception as e:
@@ -141,7 +141,7 @@ class TarArchive(BaseArchive):
                 # Extract only validated members (all members have been security-checked above)
                 tar.extractall(output, members=safe_members)  # nosec B202
 
-            logger.debug(f"Extracted TAR archive to: {output}")
+            log.debug(f"Extracted TAR archive to: {output}")
             return output
 
         except ArchiveError:

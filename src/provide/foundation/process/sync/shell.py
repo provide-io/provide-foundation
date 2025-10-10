@@ -13,7 +13,7 @@ from provide.foundation.process.validation import validate_shell_safety
 
 """Shell command execution wrapper."""
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 
 def shell(

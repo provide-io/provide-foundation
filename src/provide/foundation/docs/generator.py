@@ -8,7 +8,7 @@ from typing import Any
 from provide.foundation.errors import DependencyError
 from provide.foundation.logger import get_logger
 
-logger = get_logger(__name__)
+log = get_logger(__name__)
 
 try:
     import mkdocs_gen_files
@@ -17,7 +17,7 @@ try:
 except ImportError:
     mkdocs_gen_files = None  # type: ignore[assignment]
     _HAS_MKDOCS = False
-    logger.warning("mkdocs_gen_files not available - doc generation disabled")
+    log.warning("mkdocs_gen_files not available - doc generation disabled")
 
 
 class APIDocGenerator:
@@ -74,24 +74,24 @@ class APIDocGenerator:
         path_str = str(path)
         for pattern in self.skip_patterns:
             if pattern in path_str:
-                logger.debug(f"Skipping {path} - matches pattern '{pattern}'")
+                log.debug(f"Skipping {path} - matches pattern '{pattern}'")
                 return True
 
         # Skip empty __init__.py files
         if path.name == "__init__.py":
             try:
                 if path.stat().st_size < self.min_init_size:
-                    logger.debug(f"Skipping {path} - too small ({path.stat().st_size} bytes)")
+                    log.debug(f"Skipping {path} - too small ({path.stat().st_size} bytes)")
                     return True
             except OSError:
-                logger.warning(f"Could not stat {path}")
+                log.warning(f"Could not stat {path}")
                 return True
 
         # Skip private modules (but allow __init__.py)
         parts = path.relative_to(self.src_root).parts
         for part in parts:
             if part.startswith("_") and part != "__init__.py":
-                logger.debug(f"Skipping {path} - contains private module '{part}'")
+                log.debug(f"Skipping {path} - contains private module '{part}'")
                 return True
 
         return False
@@ -139,7 +139,7 @@ class APIDocGenerator:
         if path in self._processed_files:
             return
 
-        logger.debug(f"Processing {path}")
+        log.debug(f"Processing {path}")
 
         # Convert to module path
         module_path = path.relative_to(self.src_root).with_suffix("")
@@ -167,14 +167,14 @@ class APIDocGenerator:
         mkdocs_gen_files.set_edit_path(doc_path, path)
 
         self._processed_files.add(path)
-        logger.debug(f"Generated documentation for {identifier} -> {doc_path}")
+        log.debug(f"Generated documentation for {identifier} -> {doc_path}")
 
     def generate_navigation(self) -> None:
         """Generate the navigation summary file."""
         nav_path = f"{self.api_dir}/SUMMARY.md"
         with mkdocs_gen_files.open(nav_path, "w") as nav_file:
             nav_file.writelines(self.nav.build_literate_nav())
-        logger.debug(f"Generated navigation file: {nav_path}")
+        log.debug(f"Generated navigation file: {nav_path}")
 
     def generate_index(self) -> None:
         """Generate the API index page."""
@@ -184,7 +184,7 @@ class APIDocGenerator:
 
         with mkdocs_gen_files.open(index_path, "w") as f:
             f.write(content)
-        logger.debug(f"Generated API index: {index_path}")
+        log.debug(f"Generated API index: {index_path}")
 
     def _generate_default_index_content(self) -> str:
         """Generate default index content."""
@@ -214,7 +214,7 @@ All modules are documented with their public APIs, including:
         Returns:
             Dictionary with generation statistics
         """
-        logger.info(f"🏗️ Generating API documentation from {self.src_root}")
+        log.info(f"🏗️ Generating API documentation from {self.src_root}")
 
         stats = {
             "processed_files": 0,
@@ -238,7 +238,7 @@ All modules are documented with their public APIs, including:
         self.generate_navigation()
         self.generate_index()
 
-        logger.info(
+        log.info(
             f"✅ Documentation generation complete: "
             f"{stats['processed_files']} processed, {stats['skipped_files']} skipped"
         )

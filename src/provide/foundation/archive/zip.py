@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 """ZIP archive implementation."""
 
-logger = get_logger(__name__)
+log = get_logger(__name__)
 
 
 def _validate_compression_level(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
@@ -82,7 +82,7 @@ class ZipArchive(BaseArchive):
                     # Add single file
                     zf.write(source, source.name)
 
-            logger.debug(f"Created ZIP archive: {output}")
+            log.debug(f"Created ZIP archive: {output}")
             return output
 
         except Exception as e:
@@ -128,7 +128,7 @@ class ZipArchive(BaseArchive):
                 # Extract all (all members have been security-checked above)
                 zf.extractall(output)
 
-            logger.debug(f"Extracted ZIP archive to: {output}")
+            log.debug(f"Extracted ZIP archive to: {output}")
             return output
 
         except ArchiveError:
@@ -273,7 +273,7 @@ class ZipArchive(BaseArchive):
 
                 zf.write(file, arcname or file.name)
 
-            logger.debug(f"Added {file} to ZIP archive {archive}")
+            log.debug(f"Added {file} to ZIP archive {archive}")
 
         except Exception as e:
             raise ArchiveError(f"Failed to add file to ZIP: {e}") from e

@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 """Event set display utilities for Foundation."""
 
-logger = get_logger(__name__)
+log = get_logger(__name__)
 
 
 def _format_event_set_config(config: EventSet, lines: list[str]) -> None:
@@ -102,4 +102,4 @@ def show_event_matrix() -> None:
     _format_resolver_state(resolver, lines)
 
     # Log the complete display
-    logger.info("\n".join(lines))
+    log.info("\n".join(lines))

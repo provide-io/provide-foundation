@@ -14,7 +14,7 @@ from provide.foundation.logger import get_logger
 
 """Core hashing operations."""
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 # Default chunk size for file reading (8KB)
 DEFAULT_CHUNK_SIZE = 8192
@@ -66,7 +66,7 @@ def hash_file(
                 hasher.update(chunk)
 
         hash_value = hasher.hexdigest()
-        plog.debug(
+        log.debug(
             "🔐 Hashed file",
             path=str(path),
             algorithm=algorithm,
@@ -104,7 +104,7 @@ def hash_data(
     hasher.update(data)
 
     hash_value = hasher.hexdigest()
-    plog.debug(
+    log.debug(
         "🔐 Hashed data",
         algorithm=algorithm,
         size=len(data),
@@ -163,7 +163,7 @@ def hash_stream(
         bytes_read += len(chunk)
 
     hash_value = hasher.hexdigest()
-    plog.debug(
+    log.debug(
         "🔐 Hashed stream",
         algorithm=algorithm,
         bytes_read=bytes_read,
@@ -220,7 +220,7 @@ def hash_file_multiple(
         # Get results
         results = {algo: hasher.hexdigest() for algo, hasher in hashers.items()}
 
-        plog.debug(
+        log.debug(
             "🔐 Hashed file with multiple algorithms",
             path=str(path),
             algorithms=algorithms,
@@ -264,7 +264,7 @@ def hash_chunks(
         bytes_processed += len(chunk)
 
     hash_value = hasher.hexdigest()
-    plog.debug(
+    log.debug(
         "🔐 Hashed chunks",
         algorithm=algorithm,
         bytes_processed=bytes_processed,

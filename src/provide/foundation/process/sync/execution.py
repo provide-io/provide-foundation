@@ -17,7 +17,7 @@ from provide.foundation.process.shared import (
 
 """Core sync subprocess execution."""
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 
 def run(
@@ -59,7 +59,7 @@ def run(
 
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     masked_cmd = mask_command(cmd_str)
-    plog.trace("🚀 Running command", command=masked_cmd, cwd=str(cwd) if cwd else None)
+    log.trace("🚀 Running command", command=masked_cmd, cwd=str(cwd) if cwd else None)
 
     # Validate command type and shell parameter
     validate_command_type(cmd, shell)
@@ -100,7 +100,7 @@ def run(
         )
 
         if check and result.returncode != 0:
-            plog.error(
+            log.error(
                 "❌ Command failed",
                 command=cmd_str,
                 returncode=result.returncode,
@@ -115,7 +115,7 @@ def run(
                 stderr=result.stderr if capture_output else None,
             )
 
-        plog.debug(
+        log.debug(
             "✅ Command completed",
             command=cmd_str,
             returncode=result.returncode,
@@ -124,7 +124,7 @@ def run(
         return completed
 
     except subprocess.TimeoutExpired as e:
-        plog.error(
+        log.error(
             "⏱️ Command timed out",
             command=cmd_str,
             timeout=timeout,
@@ -138,7 +138,7 @@ def run(
     except Exception as e:
         if isinstance(e, ProcessError | ProcessTimeoutError):
             raise
-        plog.error(
+        log.error(
             "💥 Command execution failed",
             command=cmd_str,
             error=str(e),

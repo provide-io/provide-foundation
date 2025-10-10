@@ -18,7 +18,7 @@ from provide.foundation.process.shared import (
 
 """Core async subprocess execution."""
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 
 async def create_subprocess(
@@ -158,7 +158,7 @@ async def communicate_with_timeout(
             partial_stdout = stdout_task.result() if stdout_task.done() else b""
             partial_stderr = stderr_task.result() if stderr_task.done() else b""
 
-            plog.error(
+            log.error(
                 "⏱️ Async command timed out",
                 command=cmd_str,
                 timeout=timeout,
@@ -235,7 +235,7 @@ def check_process_success(
         ProcessError: If check=True and process failed
     """
     if check and process.returncode != 0:
-        plog.error(
+        log.error(
             "❌ Async command failed",
             command=cmd_str,
             returncode=process.returncode,
@@ -315,7 +315,7 @@ async def async_run(
 
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     masked_cmd = mask_command(cmd_str)
-    plog.trace("🚀 Running async command", command=masked_cmd, cwd=str(cwd) if cwd else None)
+    log.trace("🚀 Running async command", command=masked_cmd, cwd=str(cwd) if cwd else None)
 
     # Validate command type and shell parameter
     if isinstance(cmd, str) and not shell:
@@ -346,7 +346,7 @@ async def async_run(
             # Check for success
             check_process_success(process, cmd_str, capture_output, completed.stdout, completed.stderr, check)
 
-            plog.debug(
+            log.debug(
                 "✅ Async command completed",
                 command=cmd_str,
                 returncode=process.returncode,
@@ -360,7 +360,7 @@ async def async_run(
         if isinstance(e, ProcessError | ProcessTimeoutError | ValidationError):
             raise
 
-        plog.error(
+        log.error(
             "💥 Async command execution failed",
             command=cmd_str,
             error=str(e),

@@ -21,7 +21,7 @@ from provide.foundation.utils.caching import cached
 
 """System information gathering utilities."""
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 
 @define(slots=True)
@@ -90,9 +90,9 @@ def get_system_info() -> SystemInfo:
         total_memory = mem.total
         available_memory = mem.available
     except ImportError:
-        plog.debug("psutil not available, memory info limited")
+        log.debug("psutil not available, memory info limited")
     except Exception as e:
-        plog.debug("Failed to get memory info", error=str(e))
+        log.debug("Failed to get memory info", error=str(e))
 
     # Disk usage
     disk_usage = None
@@ -107,7 +107,7 @@ def get_system_info() -> SystemInfo:
                     "free": usage.free,
                 }
     except Exception as e:
-        plog.debug("Failed to get disk usage", error=str(e))
+        log.debug("Failed to get disk usage", error=str(e))
 
     info = SystemInfo(
         os_name=os_name,
@@ -126,7 +126,7 @@ def get_system_info() -> SystemInfo:
         disk_usage=disk_usage,
     )
 
-    plog.debug(
+    log.debug(
         "System information gathered",
         platform=platform_str,
         os=os_name,
