@@ -8,11 +8,11 @@ from __future__ import annotations
 
 import asyncio
 import math
+import sys
 
 from hypothesis import given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
-    edge_values,
     rate_burst_patterns,
     time_advances,
 )
@@ -47,11 +47,11 @@ class TestTokenBucketChaos(FoundationTestCase):
 
     @pytest.mark.asyncio
     @given(
-        capacity=st.floats(min_value=5.0, max_value=100.0),
-        refill_rate=st.floats(min_value=1.0, max_value=50.0),
+        capacity=st.floats(min_value=5.0, max_value=100.0, allow_nan=False, allow_infinity=False),
+        refill_rate=st.floats(min_value=1.0, max_value=50.0, allow_nan=False, allow_infinity=False),
         burst_size=st.integers(min_value=1, max_value=20),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=20, suppress_health_check=[])
     async def test_burst_pattern_chaos(
         self,
         capacity: float,
@@ -164,10 +164,19 @@ class TestTokenBucketChaos(FoundationTestCase):
 
     @pytest.mark.asyncio
     @given(
-        capacity=edge_values(value_type=float),
-        refill_rate=st.floats(min_value=0.1, max_value=10.0),
+        # Use specific edge values that are valid instead of filtering with assume()
+        capacity=st.one_of(
+            st.just(0.01),  # Very small
+            st.just(1.0),  # Minimum useful
+            st.just(10.0),  # Normal
+            st.just(100.0),  # Large
+            st.just(1000.0),  # Very large
+            st.just(sys.float_info.min),  # Min positive float
+            st.just(sys.float_info.max / 1e10),  # Large but not infinity
+        ),
+        refill_rate=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=20, suppress_health_check=[])
     async def test_edge_value_capacity_chaos(
         self,
         capacity: float,
@@ -180,16 +189,6 @@ class TestTokenBucketChaos(FoundationTestCase):
         - Boundary conditions work
         - Invalid values are skipped (implementation accepts them but they're not useful)
         """
-        import math
-
-        from hypothesis import assume
-
-        # Skip invalid values that aren't useful for testing
-        # The implementation accepts NaN/inf but they don't provide meaningful behavior
-        assume(not math.isnan(capacity))
-        assume(not math.isinf(capacity))
-        assume(capacity > 0)
-
         limiter = TokenBucketRateLimiter(capacity=capacity, refill_rate=refill_rate)
         assert limiter._capacity == capacity
 
