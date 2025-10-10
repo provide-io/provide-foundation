@@ -65,12 +65,12 @@ class TestCircuitBreakerChaos(FoundationTestCase):
                     failures += 1
                 elif isinstance(e, RuntimeError):
                     # Circuit is open
-                    assert breaker.state == CircuitState.OPEN
-                    assert breaker.failure_count >= failure_threshold
+                    assert breaker.state() == CircuitState.OPEN
+                    assert breaker.failure_count() >= failure_threshold
 
         # Verify failure count tracking
         if failures < failure_threshold:
-            assert breaker.state == CircuitState.CLOSED
+            assert breaker.state() == CircuitState.CLOSED
 
     @given(
         num_threads=thread_counts(min_threads=2, max_threads=10),
@@ -119,8 +119,8 @@ class TestCircuitBreakerChaos(FoundationTestCase):
                 future.result(timeout=5.0)
 
         # Verify state consistency
-        final_state = breaker.state
-        final_count = breaker.failure_count
+        final_state = breaker.state()
+        final_count = breaker.failure_count()
 
         # State should be consistent with failure count
         if final_count >= failure_threshold:
@@ -162,13 +162,13 @@ class TestCircuitBreakerChaos(FoundationTestCase):
             with contextlib.suppress(ValueError):
                 breaker.call(failing_func)
 
-        assert breaker.state == CircuitState.OPEN
+        assert breaker.state() == CircuitState.OPEN
 
         # Advance time
         time_source_value[0] += time_advance
 
         # Check state after time advance
-        current_state = breaker.state
+        current_state = breaker.state()
         if time_advance >= recovery_timeout:
             assert current_state == CircuitState.HALF_OPEN
         else:
@@ -203,7 +203,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
 
         # Circuit should have reacted to failure patterns
         # State depends on failure distribution
-        final_state = breaker.state
+        final_state = breaker.state()
         assert final_state in (CircuitState.CLOSED, CircuitState.OPEN, CircuitState.HALF_OPEN)
 
 
@@ -228,7 +228,9 @@ class TestAsyncCircuitBreakerChaos(FoundationTestCase):
         - Concurrent async operations
         - Proper exception handling
         """
-        breaker = SyncCircuitBreaker(failure_threshold=failure_threshold)
+        from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
+
+        breaker = AsyncCircuitBreaker(failure_threshold=failure_threshold)
         results: list[str] = []
         errors: list[Exception] = []
 
@@ -242,7 +244,7 @@ class TestAsyncCircuitBreakerChaos(FoundationTestCase):
                 return f"success-{task_id}"
 
             try:
-                result = await breaker.call_async(async_operation)
+                result = await breaker.call(async_operation)
                 results.append(result)
             except (ValueError, RuntimeError) as e:
                 errors.append(e)
