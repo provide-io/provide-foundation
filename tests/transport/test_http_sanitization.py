@@ -17,6 +17,9 @@ from provide.foundation.transport.config import HTTPConfig
 def enable_stream_redirect(monkeypatch: pytest.MonkeyPatch) -> None:
     """Enable force stream redirect for these tests."""
     monkeypatch.setenv("FOUNDATION_FORCE_STREAM_REDIRECT", "true")
+    # Disable the new sanitization processor to avoid double-sanitization
+    # The HTTP transport already handles URI sanitization
+    monkeypatch.setenv("PROVIDE_LOG_SANITIZATION_ENABLED", "false")
     # Reset stream config to pick up new environment variable
     from provide.foundation.streams.config import reset_stream_config
 
