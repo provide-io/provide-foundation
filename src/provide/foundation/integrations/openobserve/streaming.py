@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections.abc import AsyncGenerator, Generator
-import json
 import re
 import time
 from typing import Any
@@ -15,6 +14,7 @@ from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveStreamingError,
 )
 from provide.foundation.integrations.openobserve.models import parse_relative_time
+from provide.foundation.serialization import json_dumps, json_loads
 from provide.foundation.utils.async_helpers import run_async
 
 
@@ -67,7 +67,7 @@ def stream_logs(
             for hit in response.hits:
                 # Create a unique ID for deduplication
                 timestamp = hit.get("_timestamp", 0)
-                log_id = f"{timestamp}:{hash(json.dumps(hit, sort_keys=True))}"
+                log_id = f"{timestamp}:{hash(json_dumps(hit, sort_keys=True))}"
 
                 if log_id not in seen_ids:
                     seen_ids.add(log_id)
@@ -106,12 +106,12 @@ def _process_stream_line(line: str) -> list[dict[str, Any]]:
         return []
 
     try:
-        parsed_data = json.loads(line)
+        parsed_data = json_loads(line)
         if isinstance(parsed_data, dict):
             if "hits" in parsed_data:
                 return parsed_data["hits"]
             return [parsed_data]
-    except json.JSONDecodeError:
+    except ValidationError:
         pass
 
     return []
