@@ -445,7 +445,8 @@ class TestLogEntryDataIntegrity(FoundationTestCase):
 
     def test_log_entry_field_types(self) -> None:
         """Test that log entry fields have correct types."""
-        entry = generate_log_entry(5, style="normal", error_rate=0.5)
+        generator = LogGenerator(style="normal", error_rate=0.5)
+        entry = generator.generate_log_entry(5)
 
         # Required fields with expected types
         assert isinstance(entry["message"], str)
@@ -466,9 +467,10 @@ class TestLogEntryDataIntegrity(FoundationTestCase):
 
     def test_error_entry_consistency(self) -> None:
         """Test that error entries have consistent fields."""
+        generator = LogGenerator(error_rate=0.8)
         # Generate entries until we get an error (with high error rate)
         for _ in range(50):  # Try up to 50 times
-            entry = generate_log_entry(0, error_rate=0.8)
+            entry = generator.generate_log_entry(0)
             if entry["level"] == "error":
                 assert "error_code" in entry
                 assert "error_type" in entry
@@ -488,11 +490,13 @@ class TestLogEntryDataIntegrity(FoundationTestCase):
     def test_message_generation_consistency(self) -> None:
         """Test message generation consistency across styles."""
         # Normal style messages
-        normal_entries = [generate_log_entry(i, style="normal") for i in range(10)]
+        normal_generator = LogGenerator(style="normal")
+        normal_entries = [normal_generator.generate_log_entry(i) for i in range(10)]
         for entry in normal_entries:
             assert "Successfully" in entry["message"]
 
         # Burroughs style messages
-        burroughs_entries = [generate_log_entry(i, style="burroughs") for i in range(10)]
+        burroughs_generator = LogGenerator(style="burroughs")
+        burroughs_entries = [burroughs_generator.generate_log_entry(i) for i in range(10)]
         for entry in burroughs_entries:
             assert entry["message"] in BURROUGHS_PHRASES
