@@ -6,6 +6,7 @@ import sys
 from typing import Any, ParamSpec, TypeVar
 
 from provide.foundation.cli.deps import _HAS_CLICK, click
+from provide.foundation.errors import ValidationError
 from provide.foundation.formatting import format_duration as _format_duration
 from provide.foundation.parsers import parse_dict, parse_typed_value
 from provide.foundation.serialization import provide_loads
@@ -141,7 +142,7 @@ def build_attributes_from_args(
                 click.echo("Error: JSON attributes must be an object.", err=True)
                 return {}, 1
             attributes.update(json_dict)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError, ValidationError) as e:
             click.echo(f"Error: Invalid JSON attributes: {e}", err=True)
             return {}, 1
 
