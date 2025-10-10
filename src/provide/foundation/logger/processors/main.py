@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # processors.py
 #
-import json
 from typing import Any, TextIO, cast
 
 import structlog
@@ -17,6 +16,7 @@ from provide.foundation.logger.custom_processors import (
     filter_by_level_custom,
 )
 from provide.foundation.logger.processors.trace import inject_trace_context
+from provide.foundation.serialization import provide_dumps
 
 """Structlog processors for Foundation Telemetry."""
 
@@ -204,7 +204,7 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
 def _config_create_json_formatter_processors() -> list[StructlogProcessor]:
     return [
         structlog.processors.format_exc_info,
-        structlog.processors.JSONRenderer(serializer=json.dumps, sort_keys=False),
+        structlog.processors.JSONRenderer(serializer=provide_dumps, sort_keys=False),
     ]
 
 

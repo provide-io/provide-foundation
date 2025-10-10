@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from configparser import ConfigParser
-import json
 import os
 from pathlib import Path
 from typing import TypeVar
@@ -14,6 +13,7 @@ from provide.foundation.errors.config import ConfigurationError
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.resources import NotFoundError
 from provide.foundation.file.safe import safe_read_text
+from provide.foundation.serialization import provide_loads
 
 """Configuration loaders for various sources."""
 
@@ -132,7 +132,7 @@ class FileConfigLoader(ConfigLoader):
             )
 
         if self.format == ConfigFormat.JSON:
-            return json.loads(content)
+            return provide_loads(content)
         if self.format == ConfigFormat.YAML:
             import yaml
 
