@@ -43,26 +43,38 @@ def run_async(coro: Coroutine[None, None, T] | Awaitable[T]) -> T:
         from contexts where an event loop may or may not exist.
 
     """
+    # Try to get the current running loop (will raise if not in async context)
     try:
-        # Try to get existing loop
-        loop = asyncio.get_event_loop()
-        if loop.is_running():
-            # If loop is running, we're already in async context - this shouldn't happen
-            # in CLI context, but handle it gracefully
-            raise RuntimeError(
-                "Cannot use run_async() from within an already-running event loop. "
-                "Use 'await' directly instead."
-            )
+        loop = asyncio.get_running_loop()
+        # If we get here, we're in an async context - should use await instead
+        raise RuntimeError(
+            "Cannot use run_async() from within an already-running event loop. Use 'await' directly instead."
+        )
     except RuntimeError:
-        # No event loop exists, create a new one
+        pass  # No running loop, which is what we expect
+
+    # Try to get or create an event loop
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_closed():
+            # Loop exists but is closed, create a new one
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            created_loop = True
+        else:
+            # Reuse existing loop
+            created_loop = False
+    except RuntimeError:
+        # No loop exists, create one
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+        created_loop = True
 
     try:
         return loop.run_until_complete(coro)
     finally:
-        # Clean up - only close if we created it
-        if not loop.is_running():
+        # Only close the loop if we created it
+        if created_loop:
             with contextlib.suppress(Exception):
                 loop.close()
 
