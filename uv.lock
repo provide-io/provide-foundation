@@ -2026,7 +2026,7 @@ protobuf = [{ name = "protobuf", specifier = ">=6.32.0" }]
 
 [[package]]
 name = "provide-testkit"
-version = "0.0.31"
+version = "0.0.32"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -2038,9 +2038,9 @@ dependencies = [
     { name = "pytest-mock" },
     { name = "pytest-xdist" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/19/6f/e50ecae9deed3628de22647f0813cc45d002021324928a72a84dff1c3096/provide_testkit-0.0.31.tar.gz", hash = "sha256:14822875df4eb52ac6743f1622f1f059c3f4d4c700f4e1867f8ef5331808a7c8", size = 99774, upload-time = "2025-10-08T19:03:47.053Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/07/62dd9b9ce5b33583904b889cddf53fc34b8ea3a2db5d19026e09782b3008/provide_testkit-0.0.32.tar.gz", hash = "sha256:63f8061fce0bbb151634d2e2147c0be449f7acf39dd0b7bb9b57a77fc0b76a23", size = 99796, upload-time = "2025-10-10T01:13:36.15Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/34/81/b5ba2e5ac453ca55631e482fe0050d0509b69ae62115d2bbdc4aa7b8a9e3/provide_testkit-0.0.31-py3-none-any.whl", hash = "sha256:0ce0a0c94005c47b8d835377acdf8bf2bd2a5322d9bb48820b4a19a484136aea", size = 130835, upload-time = "2025-10-08T19:03:45.736Z" },
+    { url = "https://files.pythonhosted.org/packages/de/23/4a2e396a445efda4e381bd0647330c2d04322b8e4e08f94a6ca49cede0a5/provide_testkit-0.0.32-py3-none-any.whl", hash = "sha256:973a7ea601a5560600b4ea0eb7937d19417e5a6dc85506fde9bc336a8ddd3ba0", size = 130837, upload-time = "2025-10-10T01:13:34.302Z" },
 ]
 
 [package.optional-dependencies]

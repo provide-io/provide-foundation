@@ -48,6 +48,26 @@ This document tracks where provide.foundation should use its own robust features
 - **Impact**: More consistent environment variable access
 - **Note**: Limited to `get_str()` to avoid circular dependencies (other getters use the logger)
 
+### 5. Utils/Caching: Uses utils/environment Helpers
+**Status**: ✅ Completed
+**Files Changed**: `src/provide/foundation/utils/caching.py`
+
+- **Before**: Manual boolean and integer parsing from environment
+  ```python
+  _CACHE_ENABLED = os.environ.get("FOUNDATION_CACHE_ENABLED", "true").lower() in ("true", "1", "yes", "on")
+  _DEFAULT_CACHE_SIZE = int(os.environ.get("FOUNDATION_CACHE_SIZE", "128"))
+  ```
+- **After**: Uses `get_bool()` and `get_int()` from utils/environment
+  ```python
+  _CACHE_ENABLED = get_bool("FOUNDATION_CACHE_ENABLED", default=True)
+  _DEFAULT_CACHE_SIZE = get_int("FOUNDATION_CACHE_SIZE", default=128)
+  ```
+- **Impact**: Consistent environment variable parsing
+- **Benefits**:
+  - Eliminates manual type conversion
+  - Consistent parsing logic across codebase
+  - Better error handling
+
 ## 🚨 Critical Priority: OpenObserve Integration Should Use Foundation Transport
 
 **Status**: ✅ COMPLETED
@@ -210,8 +230,9 @@ streams = run_async(client.list_streams())
 | Coordinator → env helpers | ✅ Complete | 1 | ✅ 27 tests |
 | Downloader → hash_file() | ✅ Complete | 1 | ✅ 16 tests |
 | CLI Shutdown → perr() | ✅ Complete | 1 | ✅ 7 tests |
+| Utils/Caching → env helpers | ✅ Complete | 1 | ✅ 108 tests |
 | **OpenObserve Transport** | ✅ **Complete** | **4 files** | ✅ **97 tests** |
-| **TOTAL IMPROVEMENTS** | ✅ **7 Complete** | **10 files** | ✅ **All tests passing** |
+| **TOTAL IMPROVEMENTS** | ✅ **8 Complete** | **11 files** | ✅ **1193+ tests passing** |
 
 ## 🔍 Analysis of Dogfooding Opportunities
 
@@ -420,10 +441,15 @@ python examples/cli/02_dogfooding_cli.py process-demo
 2. ✅ **Downloader Analysis**: Documented atomic_write() trade-offs
 3. ✅ **Dogfooding Example**: Created comprehensive CLI example
 
-### Medium Priority (Future Work)
-1. **Console Output**: Replace print() in CLI commands with pout()/perr()
-2. **JSON Operations**: Use read_json()/write_json() for file-based JSON
-3. **Environment Variables**: Replace remaining os.environ direct access
+### Medium Priority (Completed ✅)
+1. ✅ **Console Output**: All user-facing CLI commands already use pout()/perr()
+   - Infrastructure files (console/output.py, streams/file.py) correctly use print() for implementation
+2. ✅ **JSON Operations**: Verified all JSON usage is appropriate
+   - File operations use read_json()/write_json() helpers
+   - String serialization correctly uses json.loads()/dumps()
+3. ✅ **Environment Variables**: All safe os.environ usage replaced
+   - utils/caching.py now uses get_bool() and get_int()
+   - Infrastructure files (config/env.py, utils/environment/getters.py) correctly use os.environ for implementation
 
 ### Low Priority
 1. Additional @resilient decorators for simple error suppression
