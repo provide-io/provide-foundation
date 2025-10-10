@@ -5,7 +5,6 @@ from pathlib import Path
 import subprocess
 from typing import Any
 
-from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.logger import get_logger
 from provide.foundation.process.shared import (
@@ -19,33 +18,6 @@ from provide.foundation.process.shared import (
 """Core sync subprocess execution."""
 
 plog = get_logger(__name__)
-
-
-def _map_process_errors(e: Exception) -> Exception:
-    """Map subprocess errors to Foundation error types.
-
-    This error mapper is used with @resilient decorator to transform
-    subprocess exceptions into Foundation's structured error types.
-
-    Args:
-        e: Exception to map
-
-    Returns:
-        Mapped exception (ProcessTimeoutError for timeouts, original otherwise)
-    """
-    if isinstance(e, subprocess.TimeoutExpired):
-        cmd_str = e.cmd if isinstance(e, str) else (" ".join(e.cmd) if isinstance(e.cmd, list) else str(e.cmd))
-        return ProcessTimeoutError(
-            f"Command timed out after {e.timeout}s: {cmd_str}",
-            code="PROCESS_TIMEOUT",
-            command=cmd_str,
-            timeout_seconds=e.timeout,
-        )
-    # For ProcessError and ProcessTimeoutError, pass through unchanged
-    if isinstance(e, ProcessError | ProcessTimeoutError):
-        return e
-    # For other exceptions, wrap in ProcessError
-    return e  # Let caller handle conversion
 
 
 def run(
