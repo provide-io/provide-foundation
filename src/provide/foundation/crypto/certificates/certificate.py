@@ -40,6 +40,7 @@ from provide.foundation.crypto.constants import (
 )
 from provide.foundation.crypto.defaults import (
     DEFAULT_CERTIFICATE_COMMON_NAME,
+    DEFAULT_CERTIFICATE_GENERATE_KEYPAIR,
     DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
     default_certificate_alt_names,
 )
@@ -64,8 +65,8 @@ class Certificate:
     _base: CertificateBase = field(repr=False, alias="_base")
     _cert: X509Certificate = field(repr=False, alias="_cert")
     _private_key: KeyPair | None = field(repr=False, alias="_private_key")
-    cert: str = field(repr=True)
-    key: str | None = field(repr=False)
+    cert_pem: str = field(repr=True)
+    key_pem: str | None = field(repr=False)
 
     # Certificate metadata
     common_name: str = field(kw_only=True)
@@ -80,6 +81,26 @@ class Certificate:
     _trust_chain: list[Certificate] = field(init=False, factory=list, repr=False)
 
     # Properties
+    @property
+    def cert(self) -> str:
+        """Alias for cert_pem for backwards compatibility."""
+        return self.cert_pem
+
+    @cert.setter
+    def cert(self, value: str) -> None:
+        """Alias for cert_pem for backwards compatibility."""
+        object.__setattr__(self, "cert_pem", value)
+
+    @property
+    def key(self) -> str | None:
+        """Alias for key_pem for backwards compatibility."""
+        return self.key_pem
+
+    @key.setter
+    def key(self, value: str | None) -> None:
+        """Alias for key_pem for backwards compatibility."""
+        object.__setattr__(self, "key_pem", value)
+
     @property
     def trust_chain(self) -> list[Certificate]:
         """Returns the list of trusted certificates associated with this one."""
@@ -165,38 +186,16 @@ class Certificate:
             key_pem,
         )
 
-        # Extract metadata from certificate
-        common_name = DEFAULT_CERTIFICATE_COMMON_NAME
-        organization_name = DEFAULT_CERTIFICATE_ORGANIZATION_NAME
-
-        # Try to extract CN from subject
-        for attr in x509_cert.subject:
-            if attr.oid == x509.oid.NameOID.COMMON_NAME:
-                common_name = str(attr.value)
-            elif attr.oid == x509.oid.NameOID.ORGANIZATION_NAME:
-                organization_name = str(attr.value)
-
-        # Calculate validity days
-        validity_days = (base.not_valid_after - base.not_valid_before).days
-
-        # Determine key type from public key
-        if isinstance(base.public_key, rsa.RSAPublicKey):
-            key_type = "rsa"
-        elif isinstance(base.public_key, ec.EllipticCurvePublicKey):
-            key_type = "ecdsa"
-        else:
-            key_type = DEFAULT_CERTIFICATE_KEY_TYPE
-
         return cls(
             _base=base,
             _cert=x509_cert,
             _private_key=private_key,
-            cert=cert_pem_str,
-            key=key_pem_str,
-            common_name=common_name,
-            organization_name=organization_name,
-            validity_days=validity_days,
-            key_type=key_type,
+            cert_pem=cert_pem_str,
+            key_pem=key_pem_str,
+            common_name=base.common_name,
+            organization_name=base.organization_name,
+            validity_days=base.validity_days,
+            key_type=base.key_type,
         )
 
     @classmethod
@@ -253,8 +252,8 @@ class Certificate:
             _base=base,
             _cert=x509_cert,
             _private_key=private_key,
-            cert=cert_pem,
-            key=key_pem,
+            cert_pem=cert_pem,
+            key_pem=key_pem,
             common_name=common_name,
             organization_name=organization_name,
             validity_days=validity_days,
