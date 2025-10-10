@@ -17,6 +17,12 @@ def is_temp_file(path: Path) -> bool:
     if re.match(r"^\..+\.tmp\.[\w.]+$", path.name):
         return True
 
+    # Generic temp pattern: filename.ext.tmp.XXXXX (Python tempfile, etc.)
+    # Examples: base.py.tmp.58540.1760056690894, file.txt.tmp.123.456
+    # Matches any file with .tmp. followed by numbers/IDs
+    if re.search(r"\.tmp\.[\w.]+$", name):
+        return True
+
     # Common temp file patterns
     temp_patterns = [
         name.startswith(".tmp"),
