@@ -44,7 +44,7 @@ class TestLoggerSetupInit(FoundationTestCase):
         from provide.foundation.logger.setup import __all__
 
         # Only core setup functionality should be exported
-        expected_exports = ["get_vanilla_logger", "internal_setup"]
+        expected_exports = ["get_system_logger", "internal_setup"]
         assert set(__all__) == set(expected_exports)
 
     def test_all_exports_accessible(self) -> None:
