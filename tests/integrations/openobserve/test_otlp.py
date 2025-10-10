@@ -259,31 +259,37 @@ class TestSendLogBulk(FoundationTestCase):
     """Test send_log_bulk function."""
 
     def test_send_log_bulk_success(self) -> None:
-        """Test successful bulk API log sending."""
+        """Test successful bulk API log sending with async transport."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
+        from unittest.mock import AsyncMock
 
-        # Mock dependencies
+        # Mock OpenObserve client with async transport
+        mock_transport_client = Mock()
+
+        # Create async mock for request
+        mock_response = Mock()
+        mock_response.is_success.return_value = True
+        mock_transport_client.request = AsyncMock(return_value=mock_response)
+
         mock_client = Mock()
         mock_client.url = "http://localhost:5080"
         mock_client.organization = "default"
-        mock_client.timeout = 30
-        mock_client.session.headers = {"Authorization": "Basic token"}
+        mock_client._client = mock_transport_client
 
         mock_config = Mock()
         mock_config.service_name = "bulk-service"
-        mock_config.openobserve_stream = "logs"
 
-        mock_response = Mock()
-        mock_response.status_code = 200
+        mock_oo_config = Mock()
+        mock_oo_config.stream = "logs"
 
         with (
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+            patch("provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env") as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
-            patch("requests.post") as mock_post,
         ):
             mock_from_env.return_value = mock_config
+            mock_oo_from_env.return_value = mock_oo_config
             mock_datetime.now.return_value.timestamp.return_value = 1234567890.123456
-            mock_post.return_value = mock_response
 
             result = send_log_bulk(
                 message="Bulk test message",
@@ -295,19 +301,18 @@ class TestSendLogBulk(FoundationTestCase):
 
             assert result is True
 
-            # Verify requests.post call
-            mock_post.assert_called_once()
-            call_args = mock_post.call_args
+            # Verify async transport call
+            mock_transport_client.request.assert_called_once()
+            call_args = mock_transport_client.request.call_args
 
-            # First argument is the URL
-            assert call_args[0][0] == "http://localhost:5080/api/default/_bulk"
+            # Verify URL
+            assert call_args[1]["uri"] == "http://localhost:5080/api/default/_bulk"
 
-            # Keyword arguments
-            assert call_args[1]["headers"] == {"Authorization": "Basic token"}
-            assert call_args[1]["timeout"] == 30
+            # Verify method
+            assert call_args[1]["method"] == "POST"
 
-            # Verify bulk data format contains expected log entry
-            bulk_data = call_args[1]["data"]
+            # Verify bulk data format
+            bulk_data = call_args[1]["body"]
             assert "Bulk test message" in bulk_data
             assert "ERROR" in bulk_data
             assert "custom-service" in bulk_data
@@ -315,33 +320,37 @@ class TestSendLogBulk(FoundationTestCase):
     def test_send_log_bulk_creates_client_when_none_provided(self) -> None:
         """Test that bulk function creates client when none provided."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
+        from unittest.mock import AsyncMock
+
+        # Mock transport client
+        mock_transport_client = Mock()
+        mock_response = Mock()
+        mock_response.is_success.return_value = True
+        mock_transport_client.request = AsyncMock(return_value=mock_response)
 
         # Mock client with required attributes
         mock_client = Mock()
         mock_client.url = "http://test-client:5080"
         mock_client.organization = "test-org"
-        mock_client.timeout = 30
-        mock_client.session.headers = {"Authorization": "Bearer test-token"}
+        mock_client._client = mock_transport_client
 
         # Mock config
         mock_config = Mock()
         mock_config.service_name = "test-service"
-        mock_config.openobserve_stream = "test-stream"
 
-        # Mock successful response
-        mock_response = Mock()
-        mock_response.status_code = 200
+        mock_oo_config = Mock()
+        mock_oo_config.stream = "test-stream"
 
         with (
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+            patch("provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env") as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.OpenObserveClient") as mock_client_class,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
-            patch("requests.post") as mock_post,
         ):
             mock_from_env.return_value = mock_config
+            mock_oo_from_env.return_value = mock_oo_config
             mock_client_class.from_config.return_value = mock_client
             mock_datetime.now.return_value.timestamp.return_value = 1234567890.0
-            mock_post.return_value = mock_response
 
             result = send_log_bulk("Test message")
 
@@ -351,27 +360,33 @@ class TestSendLogBulk(FoundationTestCase):
     def test_send_log_bulk_exception_handling(self) -> None:
         """Test exception handling in bulk log sending."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
+        from unittest.mock import AsyncMock
+
+        # Mock transport client that raises exception
+        mock_transport_client = Mock()
+        mock_transport_client.request = AsyncMock(side_effect=Exception("Bulk API error"))
 
         # Mock client with required attributes
         mock_client = Mock()
         mock_client.url = "http://error-test:5080"
         mock_client.organization = "error-org"
-        mock_client.timeout = 30
-        mock_client.session.headers = {"Authorization": "Bearer error-token"}
+        mock_client._client = mock_transport_client
 
         # Mock config
         mock_config = Mock()
         mock_config.service_name = "error-service"
-        mock_config.openobserve_stream = "error-stream"
+
+        mock_oo_config = Mock()
+        mock_oo_config.stream = "error-stream"
 
         with (
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+            patch("provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env") as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
-            patch("requests.post") as mock_post,
         ):
             mock_from_env.return_value = mock_config
+            mock_oo_from_env.return_value = mock_oo_config
             mock_datetime.now.return_value.timestamp.return_value = 1234567890.0
-            mock_post.side_effect = Exception("Bulk API error")
 
             result = send_log_bulk("Test message", client=mock_client)
 
@@ -645,12 +660,18 @@ class TestOTLPIntegration(FoundationTestCase):
     def test_bulk_api_log_structure(self) -> None:
         """Test the structure of logs sent via bulk API."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
+        from unittest.mock import AsyncMock
+
+        # Mock transport client
+        mock_transport_client = Mock()
+        mock_response = Mock()
+        mock_response.is_success.return_value = True
+        mock_transport_client.request = AsyncMock(return_value=mock_response)
 
         mock_client = Mock()
         mock_client.url = "http://localhost:5080"
         mock_client.organization = "test-org"
-        mock_client.session.headers = {"Authorization": "Bearer test-token"}
-        mock_client.timeout = 30
+        mock_client._client = mock_transport_client
 
         # Mock TelemetryConfig
         mock_config = Mock()
@@ -660,21 +681,16 @@ class TestOTLPIntegration(FoundationTestCase):
         mock_oo_config = Mock()
         mock_oo_config.stream = "test-stream"
 
-        mock_response = Mock()
-        mock_response.status_code = 200
-
         with (
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_tel_from_env,
             patch(
                 "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
             ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
-            patch("requests.post") as mock_post,
         ):
             mock_tel_from_env.return_value = mock_config
             mock_oo_from_env.return_value = mock_oo_config
             mock_datetime.now.return_value.timestamp.return_value = 1609459200.0  # 2021-01-01 00:00:00
-            mock_post.return_value = mock_response
 
             result = send_log_bulk(
                 message="Structure test",
@@ -686,22 +702,19 @@ class TestOTLPIntegration(FoundationTestCase):
 
             assert result is True
 
-            # Verify the requests.post was called correctly
-            mock_post.assert_called_once()
-            call_args = mock_post.call_args
+            # Verify the async transport was called correctly
+            mock_transport_client.request.assert_called_once()
+            call_args = mock_transport_client.request.call_args
 
             # Check URL construction
             expected_url = "http://localhost:5080/api/test-org/_bulk"
-            assert call_args[0][0] == expected_url
+            assert call_args[1]["uri"] == expected_url
 
-            # Check headers
-            assert call_args[1]["headers"] == {"Authorization": "Bearer test-token"}
-
-            # Check timeout
-            assert call_args[1]["timeout"] == 30
+            # Check method
+            assert call_args[1]["method"] == "POST"
 
             # Check bulk data structure
-            bulk_data = call_args[1]["data"]
+            bulk_data = call_args[1]["body"]
             lines = bulk_data.strip().split("\n")
             assert len(lines) == 2  # Index line + data line
 
