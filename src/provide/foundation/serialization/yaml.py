@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from provide.foundation.errors import ValidationError
-from provide.foundation.serialization.cache import CACHE_ENABLED, get_cache_key, serialization_cache
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from provide.foundation.errors import ValidationError
+from provide.foundation.serialization.cache import get_cache_key, get_cache_enabled, get_serialization_cache
 
 """YAML serialization with caching support."""
 
@@ -81,9 +84,9 @@ def yaml_loads(s: str, *, use_cache: bool = True) -> Any:
         raise ImportError("PyYAML is required for YAML operations") from e
 
     # Check cache first if enabled
-    if use_cache and CACHE_ENABLED:
+    if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "yaml")
-        cached = serialization_cache.get(cache_key)
+        cached = get_serialization_cache().get(cache_key)
         if cached is not None:
             return cached
 
@@ -93,9 +96,9 @@ def yaml_loads(s: str, *, use_cache: bool = True) -> Any:
         raise ValidationError(f"Invalid YAML string: {e}") from e
 
     # Cache result
-    if use_cache and CACHE_ENABLED:
+    if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "yaml")
-        serialization_cache.set(cache_key, result)
+        get_serialization_cache().set(cache_key, result)
 
     return result
 

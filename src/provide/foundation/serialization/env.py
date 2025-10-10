@@ -1,7 +1,11 @@
 from __future__ import annotations
 
-from provide.foundation.errors import ValidationError
-from provide.foundation.serialization.cache import CACHE_ENABLED, get_cache_key, serialization_cache
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from provide.foundation.errors import ValidationError
+
+from provide.foundation.serialization.cache import get_cache_key, get_cache_enabled, get_serialization_cache
 
 """.env file format serialization with caching support."""
 
@@ -26,6 +30,8 @@ def env_dumps(obj: dict[str, str], *, quote_values: bool = True) -> str:
         'KEY=value\\n'
 
     """
+    from provide.foundation.errors import ValidationError
+
     if not isinstance(obj, dict):
         raise ValidationError("ENV serialization requires a dictionary")
 
@@ -113,9 +119,9 @@ def env_loads(s: str, *, use_cache: bool = True) -> dict[str, str]:
         raise ValidationError("Input must be a string")
 
     # Check cache first if enabled
-    if use_cache and CACHE_ENABLED:
+    if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "env")
-        cached = serialization_cache.get(cache_key)
+        cached = get_serialization_cache().get(cache_key)
         if cached is not None:
             return cached
 
@@ -133,9 +139,9 @@ def env_loads(s: str, *, use_cache: bool = True) -> dict[str, str]:
         raise ValidationError(f"Invalid .env format string: {e}") from e
 
     # Cache result
-    if use_cache and CACHE_ENABLED:
+    if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "env")
-        serialization_cache.set(cache_key, result)
+        get_serialization_cache().set(cache_key, result)
 
     return result
 

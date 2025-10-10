@@ -3,8 +3,11 @@ from __future__ import annotations
 import tomllib
 from typing import Any
 
-from provide.foundation.errors import ValidationError
-from provide.foundation.serialization.cache import CACHE_ENABLED, get_cache_key, serialization_cache
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from provide.foundation.errors import ValidationError
+from provide.foundation.serialization.cache import get_cache_key, get_cache_enabled, get_serialization_cache
 
 """TOML serialization with caching support."""
 
@@ -63,9 +66,9 @@ def toml_loads(s: str, *, use_cache: bool = True) -> dict[str, Any]:
         raise ValidationError("Input must be a string")
 
     # Check cache first if enabled
-    if use_cache and CACHE_ENABLED:
+    if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "toml")
-        cached = serialization_cache.get(cache_key)
+        cached = get_serialization_cache().get(cache_key)
         if cached is not None:
             return cached
 
@@ -75,9 +78,9 @@ def toml_loads(s: str, *, use_cache: bool = True) -> dict[str, Any]:
         raise ValidationError(f"Invalid TOML string: {e}") from e
 
     # Cache result
-    if use_cache and CACHE_ENABLED:
+    if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "toml")
-        serialization_cache.set(cache_key, result)
+        get_serialization_cache().set(cache_key, result)
 
     return result
 
