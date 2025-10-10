@@ -42,6 +42,8 @@ def json_dumps(
         '{\\n  "a": 2,\\n  "b": 1\\n}'
 
     """
+    from provide.foundation.errors import ValidationError
+
     try:
         return json.dumps(obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys, default=default)
     except (TypeError, ValueError) as e:
@@ -68,6 +70,8 @@ def json_loads(s: str, *, use_cache: bool = True) -> Any:
         [1, 2, 3]
 
     """
+    from provide.foundation.errors import ValidationError
+
     if not isinstance(s, str):
         raise ValidationError("Input must be a string")
 
