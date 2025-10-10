@@ -445,6 +445,7 @@ class TestLazyInitializationDocumentation(FoundationTestCase):
                 "PROVIDE_LOG_LEVEL": "INFO",
                 "PROVIDE_LOG_CONSOLE_FORMATTER": "json",
                 "PROVIDE_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
+                "PROVIDE_LOG_SANITIZATION_ENABLED": "false",  # Disable to avoid masking test messages
             },
         ):
             # Force re-initialization with new environment variables
