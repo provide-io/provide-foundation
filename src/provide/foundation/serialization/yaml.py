@@ -41,6 +41,8 @@ def yaml_dumps(
     except ImportError as e:
         raise ImportError("PyYAML is required for YAML operations") from e
 
+    from provide.foundation.errors import ValidationError
+
     try:
         return yaml.dump(
             obj,
@@ -73,6 +75,8 @@ def yaml_loads(s: str, *, use_cache: bool = True) -> Any:
         [1, 2, 3]
 
     """
+    from provide.foundation.errors import ValidationError
+
     if not isinstance(s, str):
         raise ValidationError("Input must be a string")
 
