@@ -45,7 +45,7 @@ class AsyncCircuitBreaker:
         self._failure_count = 0
         self._last_failure_time = None
 
-    async def get_state(self) -> CircuitState:
+    async def state(self) -> CircuitState:
         """Get the current state of the circuit breaker.
 
         Returns:
@@ -53,11 +53,11 @@ class AsyncCircuitBreaker:
         """
         async with self._lock:
             if self._state == CircuitState.OPEN and self._can_attempt_recovery():
-                # This is a view of the state; the actual transition happens in call_async()
+                # This is a view of the state; the actual transition happens in call()
                 return CircuitState.HALF_OPEN
             return self._state
 
-    async def get_failure_count(self) -> int:
+    async def failure_count(self) -> int:
         """Get the current failure count.
 
         Returns:
@@ -70,7 +70,7 @@ class AsyncCircuitBreaker:
         """Check if the circuit can attempt recovery."""
         return self._time_source() >= (self._last_failure_time or 0) + self.recovery_timeout
 
-    async def call_async(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
+    async def call(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
         """Execute an asynchronous function through the circuit breaker.
 
         Args:
@@ -93,13 +93,13 @@ class AsyncCircuitBreaker:
 
         try:
             result = await func(*args, **kwargs)
-            await self._on_success_async()
+            await self._on_success()
             return result
         except self.expected_exception as e:
-            await self._on_failure_async()
+            await self._on_failure()
             raise e
 
-    async def _on_success_async(self) -> None:
+    async def _on_success(self) -> None:
         """Handle a successful call."""
         async with self._lock:
             # Success in either CLOSED or HALF_OPEN state resets the breaker.
@@ -107,7 +107,7 @@ class AsyncCircuitBreaker:
             self._failure_count = 0
             self._last_failure_time = None
 
-    async def _on_failure_async(self) -> None:
+    async def _on_failure(self) -> None:
         """Handle a failed call."""
         async with self._lock:
             self._failure_count += 1
@@ -117,7 +117,7 @@ class AsyncCircuitBreaker:
                 self._state = CircuitState.OPEN
                 self._last_failure_time = self._time_source()
 
-    async def reset_async(self) -> None:
+    async def reset(self) -> None:
         """Reset the circuit breaker to its initial state."""
         async with self._lock:
             self._state = CircuitState.CLOSED

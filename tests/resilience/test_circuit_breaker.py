@@ -19,8 +19,8 @@ class TestCircuitBreaker(FoundationTestCase):
         """Test initial circuit breaker state."""
         breaker = SyncCircuitBreaker()
 
-        assert breaker.state == CircuitState.CLOSED
-        assert breaker.failure_count == 0
+        assert breaker.state() == CircuitState.CLOSED
+        assert breaker.failure_count() == 0
 
     def test_successful_calls_keep_circuit_closed(self) -> None:
         """Test successful calls don't affect circuit state."""
@@ -33,8 +33,8 @@ class TestCircuitBreaker(FoundationTestCase):
         for _ in range(5):
             result = breaker.call(success_func)
             assert result == "success"
-            assert breaker.state == CircuitState.CLOSED
-            assert breaker.failure_count == 0
+            assert breaker.state() == CircuitState.CLOSED
+            assert breaker.failure_count() == 0
 
     def test_failures_increment_count(self) -> None:
         """Test failures increment failure count."""
@@ -47,15 +47,15 @@ class TestCircuitBreaker(FoundationTestCase):
         with pytest.raises(ValueError):
             breaker.call(failing_func)
 
-        assert breaker.state == CircuitState.CLOSED
-        assert breaker.failure_count == 1
+        assert breaker.state() == CircuitState.CLOSED
+        assert breaker.failure_count() == 1
 
         # Second failure
         with pytest.raises(ValueError):
             breaker.call(failing_func)
 
-        assert breaker.state == CircuitState.CLOSED
-        assert breaker.failure_count == 2
+        assert breaker.state() == CircuitState.CLOSED
+        assert breaker.failure_count() == 2
 
     def test_circuit_opens_after_threshold(self) -> None:
         """Test circuit opens when failure threshold is reached."""
@@ -69,8 +69,8 @@ class TestCircuitBreaker(FoundationTestCase):
             with pytest.raises(ValueError):
                 breaker.call(failing_func)
 
-        assert breaker.state == CircuitState.OPEN
-        assert breaker.failure_count == 2
+        assert breaker.state() == CircuitState.OPEN
+        assert breaker.failure_count() == 2
 
         # Circuit should now be open and fail fast
         with pytest.raises(RuntimeError, match="Circuit breaker is open"):
@@ -91,7 +91,7 @@ class TestCircuitBreaker(FoundationTestCase):
         with pytest.raises(ValueError):
             breaker.call(failing_func)
 
-        assert breaker.state == CircuitState.OPEN
+        assert breaker.state() == CircuitState.OPEN
 
         # Wait for recovery timeout
         time.sleep(0.15)
@@ -100,8 +100,8 @@ class TestCircuitBreaker(FoundationTestCase):
         result = breaker.call(success_func)
 
         assert result == "recovered"
-        assert breaker.state == CircuitState.CLOSED
-        assert breaker.failure_count == 0
+        assert breaker.state() == CircuitState.CLOSED
+        assert breaker.failure_count() == 0
 
     @pytest.mark.time_sensitive
     def test_half_open_failure_reopens_circuit(self) -> None:
@@ -122,7 +122,7 @@ class TestCircuitBreaker(FoundationTestCase):
         with pytest.raises(ValueError):
             breaker.call(failing_func)
 
-        assert breaker.state == CircuitState.OPEN
+        assert breaker.state() == CircuitState.OPEN
 
         # Should fail fast again
         with pytest.raises(RuntimeError, match="Circuit breaker is open"):
@@ -145,15 +145,15 @@ class TestCircuitBreaker(FoundationTestCase):
         with pytest.raises(RuntimeError):
             breaker.call(runtime_error_func)
 
-        assert breaker.state == CircuitState.CLOSED
-        assert breaker.failure_count == 0
+        assert breaker.state() == CircuitState.CLOSED
+        assert breaker.failure_count() == 0
 
         # ValueError should trigger circuit breaker
         with pytest.raises(ValueError):
             breaker.call(value_error_func)
 
-        assert breaker.state == CircuitState.OPEN
-        assert breaker.failure_count == 1
+        assert breaker.state() == CircuitState.OPEN
+        assert breaker.failure_count() == 1
 
     def test_manual_reset(self) -> None:
         """Test manual circuit breaker reset."""
@@ -166,13 +166,13 @@ class TestCircuitBreaker(FoundationTestCase):
         with pytest.raises(ValueError):
             breaker.call(failing_func)
 
-        assert breaker.state == CircuitState.OPEN
+        assert breaker.state() == CircuitState.OPEN
 
         # Manual reset
         breaker.reset()
 
-        assert breaker.state == CircuitState.CLOSED
-        assert breaker.failure_count == 0
+        assert breaker.state() == CircuitState.CLOSED
+        assert breaker.failure_count() == 0
 
     @pytest.mark.asyncio
     async def test_async_circuit_breaker(self) -> None:
@@ -188,17 +188,17 @@ class TestCircuitBreaker(FoundationTestCase):
         # Test failures
         for _ in range(2):
             with pytest.raises(ValueError):
-                await breaker.call_async(async_failing_func)
+                await breaker.call(async_failing_func)
 
-        assert await breaker.get_state() == CircuitState.OPEN
+        assert await breaker.state() == CircuitState.OPEN
 
         # Test fast failure
         with pytest.raises(RuntimeError):
-            await breaker.call_async(async_failing_func)
+            await breaker.call(async_failing_func)
 
         # Test success
-        await breaker.reset_async()
-        result = await breaker.call_async(async_success_func)
+        await breaker.reset()
+        result = await breaker.call(async_success_func)
         assert result == "async success"
 
     @pytest.mark.time_sensitive
@@ -213,7 +213,7 @@ class TestCircuitBreaker(FoundationTestCase):
         with pytest.raises(ValueError):
             breaker.call(failing_func)
 
-        assert breaker.state == CircuitState.OPEN
+        assert breaker.state() == CircuitState.OPEN
 
         # Should still be closed before timeout
         time.sleep(0.5)
@@ -228,4 +228,4 @@ class TestCircuitBreaker(FoundationTestCase):
             breaker.call(failing_func)
 
         # Should be open again
-        assert breaker.state == CircuitState.OPEN
+        assert breaker.state() == CircuitState.OPEN

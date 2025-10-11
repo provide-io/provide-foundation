@@ -43,19 +43,16 @@ class SyncResourcePool:
         """Initialize internal state."""
         pass
 
-    @property
     def active_count(self) -> int:
         """Number of currently active operations."""
         with self._counter_lock:
             return self._active_count
 
-    @property
     def available_capacity(self) -> int:
         """Number of available slots."""
         with self._counter_lock:
             return max(0, self.max_concurrent - self._active_count)
 
-    @property
     def queue_size(self) -> int:
         """Current number of waiting operations."""
         with self._counter_lock:

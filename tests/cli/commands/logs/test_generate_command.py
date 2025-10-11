@@ -16,14 +16,13 @@ def runner() -> CliRunner:
     return CliRunner()
 
 
-@patch("provide.foundation.cli.commands.logs.generate._HAS_CLICK", True)
 class TestGenerateLogsCommand:
     """Tests for the generate_logs_command Click command."""
 
-    @patch("provide.foundation.cli.commands.logs.generate._print_generation_config")
+    @patch("provide.foundation.cli.commands.logs.generate.print_generation_config")
     @patch("provide.foundation.cli.commands.logs.generate._configure_rate_limiter")
-    @patch("provide.foundation.cli.commands.logs.generate._generate_fixed_count_logs")
-    @patch("provide.foundation.cli.commands.logs.generate._print_final_stats")
+    @patch("provide.foundation.cli.commands.logs.generator.LogGenerator.generate_fixed_count")
+    @patch("provide.foundation.cli.commands.logs.generate.print_final_stats")
     @patch("provide.foundation.logger.processors.otlp.flush_otlp_logs")
     def test_generate_fixed_count_logs(
         self,
@@ -44,13 +43,13 @@ class TestGenerateLogsCommand:
         )
 
         assert result.exit_code == 0
-        mock_generate_fixed_count.assert_called_once_with(10, 0.0, "normal", 0.1)
+        mock_generate_fixed_count.assert_called_once_with(10, 0.0)
         mock_print_final_stats.assert_called_once()
 
-    @patch("provide.foundation.cli.commands.logs.generate._print_generation_config")
+    @patch("provide.foundation.cli.commands.logs.generate.print_generation_config")
     @patch("provide.foundation.cli.commands.logs.generate._configure_rate_limiter")
-    @patch("provide.foundation.cli.commands.logs.generate._generate_continuous_logs")
-    @patch("provide.foundation.cli.commands.logs.generate._print_final_stats")
+    @patch("provide.foundation.cli.commands.logs.generator.LogGenerator.generate_continuous")
+    @patch("provide.foundation.cli.commands.logs.generate.print_final_stats")
     @patch("provide.foundation.cli.commands.logs.generate.click.echo")
     @patch("provide.foundation.logger.processors.otlp.flush_otlp_logs")
     def test_generate_continuous_logs(
@@ -75,9 +74,9 @@ class TestGenerateLogsCommand:
         mock_generate_continuous.assert_called_once()
         mock_print_final_stats.assert_called_once()
 
-    @patch("provide.foundation.cli.commands.logs.generate.click.echo")
-    @patch("provide.foundation.cli.commands.logs.generate.time.sleep")
-    @patch("provide.foundation.cli.commands.logs.generate._send_log_entry")
+    @patch("provide.foundation.cli.commands.logs.stats.click.echo")
+    @patch("provide.foundation.cli.commands.logs.generator.time.sleep")
+    @patch("provide.foundation.cli.commands.logs.generator.LogGenerator.send_log_entry")
     @patch("provide.foundation.logger.processors.otlp.flush_otlp_logs")
     def test_generate_fixed_count_logs_implementation(
         self,
@@ -110,11 +109,11 @@ class TestGenerateLogsCommand:
         assert any("Generation complete" in str(call) for call in echo_calls)
         assert any("Total sent: 5 logs" in str(call) for call in echo_calls)
 
-    @patch("provide.foundation.cli.commands.logs.generate.click.echo")
-    @patch("provide.foundation.cli.commands.logs.generate.time.time")
-    @patch("provide.foundation.cli.commands.logs.generate.time.sleep")
-    @patch("provide.foundation.cli.commands.logs.generate._send_log_entry")
-    @patch("provide.foundation.cli.commands.logs.generate._print_stats")
+    @patch("provide.foundation.cli.commands.logs.stats.click.echo")
+    @patch("provide.foundation.cli.commands.logs.generator.time.time")
+    @patch("provide.foundation.cli.commands.logs.generator.time.sleep")
+    @patch("provide.foundation.cli.commands.logs.generator.LogGenerator.send_log_entry")
+    @patch("provide.foundation.cli.commands.logs.stats.print_stats")
     @patch("provide.foundation.logger.processors.otlp.flush_otlp_logs")
     def test_generate_continuous_logs_implementation(
         self,
@@ -166,8 +165,8 @@ class TestGenerateLogsCommand:
         echo_calls = [str(call) for call in mock_echo.call_args_list]
         assert any("Generation interrupted by user" in str(call) for call in echo_calls)
 
-    @patch("provide.foundation.cli.commands.logs.generate.click.echo")
-    @patch("provide.foundation.cli.commands.logs.generate._send_log_entry")
+    @patch("provide.foundation.cli.commands.logs.stats.click.echo")
+    @patch("provide.foundation.cli.commands.logs.generator.LogGenerator.send_log_entry")
     @patch("provide.foundation.cli.commands.logs.generate._configure_rate_limiter")
     @patch("provide.foundation.logger.processors.otlp.flush_otlp_logs")
     def test_rate_limit_options(
@@ -187,22 +186,3 @@ class TestGenerateLogsCommand:
             ["--count", "1", "--enable-rate-limit", "--rate-limit", "50"],
         )
         mock_configure_limiter.assert_called_once_with(True, 50.0)
-
-
-def test_generate_command_raises_importerror_if_click_is_missing() -> None:
-    """Test that generate_logs_command stub raises ImportError if Click is not installed.
-
-    Note: This test can only verify the stub exists. The actual Click import check
-    happens at module load time, so we cannot properly test Click being missing
-    when Click is actually installed in the test environment.
-    """
-    from provide.foundation.cli.commands.logs import generate
-
-    # Verify the module has the _HAS_CLICK flag
-    assert hasattr(generate, "_HAS_CLICK")
-
-    # Verify it's True in our test environment (Click is installed)
-    assert generate._HAS_CLICK is True
-
-    # The else branch (stub function) cannot be tested when Click is installed,
-    # as it's defined at module load time based on import success

@@ -18,7 +18,7 @@ from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
 
 if TYPE_CHECKING:
-    from provide.foundation.archive.limits import ArchiveLimits
+    from provide.foundation.archive.limits import ArchiveLimits, ExtractionTracker
 
 """ZIP archive implementation."""
 
@@ -88,7 +88,7 @@ class ZipArchive(BaseArchive):
         except Exception as e:
             raise ArchiveError(f"Failed to create ZIP archive: {e}") from e
 
-    def extract(self, archive: Path, output: Path, limits: ArchiveLimits | None = None) -> Path:  # noqa: C901
+    def extract(self, archive: Path, output: Path, limits: ArchiveLimits | None = None) -> Path:
         """Extract ZIP archive to output directory with decompression bomb protection.
 
         Args:
@@ -119,47 +119,8 @@ class ZipArchive(BaseArchive):
                 if self.password:
                     zf.setpassword(self.password)
 
-                # Enhanced security check - prevent path traversal, symlinks, absolute paths
-                for info in zf.infolist():
-                    # Check file count limit
-                    tracker.check_file_count(1)
-
-                    # Validate member size and compression ratio
-                    tracker.validate_member_size(info.file_size, info.compress_size)
-
-                    # Track extracted size
-                    tracker.add_extracted_size(info.file_size)
-
-                    # Basic path safety check
-                    if not is_safe_path(output, info.filename):
-                        raise ArchiveError(
-                            f"Unsafe path in archive: {info.filename}. "
-                            "Archive may contain path traversal, symlinks, or absolute paths."
-                        )
-
-                    # Check for symlinks (Unix file mode in external_attr)
-                    # ZIP stores Unix permissions in the high 16 bits of external_attr
-                    # Symlink mode is 0o120000 (S_IFLNK)
-                    if info.external_attr:
-                        mode = info.external_attr >> 16
-                        is_symlink = (mode & 0o170000) == 0o120000  # S_IFLNK check
-
-                        if is_symlink:
-                            # Read the symlink target from the ZIP data
-                            link_target = zf.read(info.filename).decode("utf-8")
-
-                            # Validate the link target is safe
-                            if not is_safe_path(output, link_target):
-                                raise ArchiveError(
-                                    f"Unsafe symlink target in archive: {info.filename} -> {link_target}. "
-                                    "Link target may escape extraction directory."
-                                )
-
-                            # Prevent absolute paths in link target
-                            if Path(link_target).is_absolute():
-                                raise ArchiveError(
-                                    f"Absolute path in symlink target: {info.filename} -> {link_target}"
-                                )
+                # Validate all members before extraction
+                self._validate_zip_members(zf, output, tracker)
 
                 # Check overall compression ratio
                 tracker.check_compression_ratio()
@@ -174,6 +135,85 @@ class ZipArchive(BaseArchive):
             raise
         except Exception as e:
             raise ArchiveError(f"Failed to extract ZIP archive: {e}") from e
+
+    def _validate_zip_members(self, zf: zipfile.ZipFile, output: Path, tracker: ExtractionTracker) -> None:
+        """Validate all ZIP members for security and limits.
+
+        Args:
+            zf: Open ZipFile object
+            output: Extraction output directory
+            tracker: ExtractionTracker for tracking limits
+
+        Raises:
+            ArchiveError: If any member is invalid or exceeds limits
+
+        """
+        for info in zf.infolist():
+            # Check file count limit
+            tracker.check_file_count(1)
+
+            # Validate member size and compression ratio
+            tracker.validate_member_size(info.file_size, info.compress_size)
+
+            # Track extracted size
+            tracker.add_extracted_size(info.file_size)
+
+            # Validate path safety
+            self._validate_member_path(output, info.filename)
+
+            # Check for and validate symlinks
+            if info.external_attr:
+                self._validate_symlink_if_present(zf, output, info)
+
+    def _validate_member_path(self, output: Path, filename: str) -> None:
+        """Validate that a ZIP member path is safe.
+
+        Args:
+            output: Extraction output directory
+            filename: Member filename to validate
+
+        Raises:
+            ArchiveError: If path is unsafe (traversal, absolute, etc.)
+
+        """
+        if not is_safe_path(output, filename):
+            raise ArchiveError(
+                f"Unsafe path in archive: {filename}. "
+                "Archive may contain path traversal, symlinks, or absolute paths."
+            )
+
+    def _validate_symlink_if_present(self, zf: zipfile.ZipFile, output: Path, info: zipfile.ZipInfo) -> None:
+        """Check if member is a symlink and validate if so.
+
+        ZIP stores Unix permissions in the high 16 bits of external_attr.
+        Symlink mode is 0o120000 (S_IFLNK).
+
+        Args:
+            zf: Open ZipFile object
+            output: Extraction output directory
+            info: ZipInfo for the member to check
+
+        Raises:
+            ArchiveError: If symlink target is unsafe
+
+        """
+        mode = info.external_attr >> 16
+        is_symlink = (mode & 0o170000) == 0o120000  # S_IFLNK check
+
+        if is_symlink:
+            # Read the symlink target from the ZIP data
+            link_target = zf.read(info.filename).decode("utf-8")
+
+            # Validate the link target is safe
+            if not is_safe_path(output, link_target):
+                raise ArchiveError(
+                    f"Unsafe symlink target in archive: {info.filename} -> {link_target}. "
+                    "Link target may escape extraction directory."
+                )
+
+            # Prevent absolute paths in link target
+            if Path(link_target).is_absolute():
+                raise ArchiveError(f"Absolute path in symlink target: {info.filename} -> {link_target}")
 
     def validate(self, archive: Path) -> bool:
         """Validate ZIP archive integrity.
@@ -260,31 +300,12 @@ class ZipArchive(BaseArchive):
 
                 # Enhanced security check
                 extract_base = output if output.is_dir() else output.parent
-                if not is_safe_path(extract_base, member):
-                    raise ArchiveError(
-                        f"Unsafe path: {member}. Path may contain traversal, symlinks, or absolute paths."
-                    )
+                self._validate_member_path(extract_base, member)
 
                 # Check for symlinks
                 info = zf.getinfo(member)
                 if info.external_attr:
-                    mode = info.external_attr >> 16
-                    is_symlink = (mode & 0o170000) == 0o120000  # S_IFLNK check
-
-                    if is_symlink:
-                        # Read the symlink target
-                        link_target = zf.read(member).decode("utf-8")
-
-                        # Validate the link target is safe
-                        if not is_safe_path(extract_base, link_target):
-                            raise ArchiveError(
-                                f"Unsafe symlink target: {member} -> {link_target}. "
-                                "Link target may escape extraction directory."
-                            )
-
-                        # Prevent absolute paths in link target
-                        if Path(link_target).is_absolute():
-                            raise ArchiveError(f"Absolute path in symlink target: {member} -> {link_target}")
+                    self._validate_symlink_if_present(zf, extract_base, info)
 
                 if output.is_dir():
                     zf.extract(member, output)

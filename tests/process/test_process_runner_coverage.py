@@ -132,7 +132,7 @@ class TestProcessRunnerCoverage(FoundationTestCase):
 
     def test_shell_with_pipes(self) -> None:
         """Test shell with shell pipes."""
-        result = shell("echo 'hello world' | grep hello")
+        result = shell("echo 'hello world' | grep hello", allow_shell_features=True)
         assert "hello" in result.stdout
 
     def test_shell_failure_handling(self) -> None:
@@ -153,6 +153,7 @@ class TestProcessRunnerCoverage(FoundationTestCase):
         result = shell(
             f"{sys.executable} -c \"import os; print(os.environ.get('SHELL_TEST_VAR', 'not_found'))\"",
             env=env,
+            allow_shell_features=True,
         )
         assert "shell_value" in result.stdout
 

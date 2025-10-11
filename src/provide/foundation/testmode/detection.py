@@ -78,6 +78,28 @@ def is_in_click_testing() -> bool:
     return False
 
 
+def should_allow_stream_redirect() -> bool:
+    """Check if stream redirection should be allowed in testing.
+
+    Stream redirection is normally blocked when in Click testing context
+    to prevent interference with Click's output capture. This can be
+    overridden with FOUNDATION_FORCE_STREAM_REDIRECT=true.
+
+    Returns:
+        True if stream redirect is allowed (not in Click testing OR force enabled)
+    """
+    from provide.foundation.streams.config import get_stream_config
+
+    config = get_stream_config()
+
+    # Allow if force flag is set
+    if config.force_stream_redirect:
+        return True
+
+    # Otherwise, block if in Click testing
+    return not is_in_click_testing()
+
+
 def should_use_shared_registries(
     use_shared_registries: bool,
     component_registry: object | None,

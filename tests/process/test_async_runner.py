@@ -153,7 +153,7 @@ class TestAsyncRunShell(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_shell_command(self) -> None:
         """Test running shell command."""
-        result = await async_shell("echo hello && echo world")
+        result = await async_shell("echo hello && echo world", allow_shell_features=True)
 
         assert result.returncode == 0
         assert "hello" in result.stdout
@@ -162,7 +162,7 @@ class TestAsyncRunShell(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_shell_pipes(self) -> None:
         """Test shell with pipes."""
-        result = await async_shell("echo hello | tr a-z A-Z")
+        result = await async_shell("echo hello | tr a-z A-Z", allow_shell_features=True)
 
         assert "HELLO" in result.stdout
 

@@ -16,8 +16,7 @@ Web Service Example
 Demonstrates HTTP service with structured logging and request tracking.
 """
 
-from provide.foundation.context import CLIContext
-from provide.foundation import logger, setup_telemetry
+from provide.foundation import Context, logger, setup_telemetry
 from provide.foundation.console import pout, perr
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -203,7 +202,7 @@ async def create_user(user_data: dict[str, Any]):
 @app.on_event("startup")
 async def startup_event():
     """Application startup event."""
-    ctx = CLIContext.from_env()
+    ctx = Context.from_env()
     setup_telemetry()
     
     logger.info("service_startup",
@@ -227,7 +226,7 @@ async def shutdown_event():
 
 def main():
     """Main entry point for running the web service."""
-    ctx = CLIContext.from_env()
+    ctx = Context.from_env()
     
     # Configure server settings
     host = "0.0.0.0"
@@ -359,7 +358,7 @@ export FOUNDATION_PROFILE=production
 ```python
 def create_production_app():
     """Create app with production configuration."""
-    ctx = CLIContext(
+    ctx = Context(
         profile="production",
         log_level="INFO",
         debug=False,

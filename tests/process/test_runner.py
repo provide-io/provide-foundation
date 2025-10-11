@@ -129,7 +129,7 @@ class TestRunShell(FoundationTestCase):
 
     def test_shell_command(self) -> None:
         """Test running shell command."""
-        result = shell("echo hello && echo world")
+        result = shell("echo hello && echo world", allow_shell_features=True)
 
         assert result.returncode == 0
         assert "hello" in result.stdout
@@ -137,7 +137,7 @@ class TestRunShell(FoundationTestCase):
 
     def test_shell_pipes(self) -> None:
         """Test shell with pipes."""
-        result = shell("echo hello | tr a-z A-Z")
+        result = shell("echo hello | tr a-z A-Z", allow_shell_features=True)
 
         assert "HELLO" in result.stdout
 
@@ -160,6 +160,7 @@ class TestRunShell(FoundationTestCase):
         result = shell(
             "echo $TEST_VAR",
             env={"TEST_VAR": "test_value", "PATH": "/usr/bin:/bin", "SHELL": "/bin/sh"},
+            allow_shell_features=True,
         )
 
         assert "test_value" in result.stdout

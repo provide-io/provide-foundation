@@ -136,6 +136,15 @@ def reset_hub_state() -> None:
         except ImportError:
             # Components module not available, skip
             pass
+
+        try:
+            # Clear the global command registry (where @register_command decorator registers commands)
+            from provide.foundation.hub.registry import _command_registry
+
+            _command_registry.clear()
+        except ImportError:
+            # Registry module not available, skip
+            pass
     finally:
         _hub_reset_in_progress = False
 
