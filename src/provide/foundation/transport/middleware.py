@@ -321,7 +321,10 @@ def register_middleware(
         replace=True,
     )
 
-    log.debug(f"Registered middleware {middleware_class.__name__} as '{name}'")
+    # Defer logging to avoid stderr output during module import
+    # which breaks Terraform's go-plugin handshake protocol
+    # The registry.register() call above already handles the registration
+    # Logging can be enabled later if needed via trace level
 
 
 def get_middleware_by_category(
