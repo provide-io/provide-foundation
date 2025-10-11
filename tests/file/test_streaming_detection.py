@@ -35,9 +35,7 @@ class TestStreamingDetectionCallback:
     """Test streaming detection with callback API."""
 
     @pytest.mark.asyncio
-    async def test_callback_fires_on_operation_complete(
-        self, detector_with_callback, mock_callback
-    ):
+    async def test_callback_fires_on_operation_complete(self, detector_with_callback, mock_callback):
         """Test that callback is called when operation is detected."""
         base_time = datetime.now()
         temp_file = Path(".test.py.tmp.123")
@@ -53,9 +51,7 @@ class TestStreamingDetectionCallback:
             FileEvent(
                 path=temp_file,
                 event_type="modified",
-                metadata=FileEventMetadata(
-                    timestamp=base_time + timedelta(milliseconds=5), sequence_number=2
-                ),
+                metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=5), sequence_number=2),
             ),
             FileEvent(
                 path=temp_file,
@@ -80,9 +76,7 @@ class TestStreamingDetectionCallback:
         assert operation.primary_path == final_file
 
     @pytest.mark.asyncio
-    async def test_temp_files_hidden_until_completion(
-        self, detector_with_callback, mock_callback
-    ):
+    async def test_temp_files_hidden_until_completion(self, detector_with_callback, mock_callback):
         """Test that temp file events don't trigger callback until operation completes."""
         base_time = datetime.now()
         temp_file = Path(".test.py.tmp.456")
@@ -105,9 +99,7 @@ class TestStreamingDetectionCallback:
             FileEvent(
                 path=temp_file,
                 event_type="modified",
-                metadata=FileEventMetadata(
-                    timestamp=base_time + timedelta(milliseconds=5), sequence_number=2
-                ),
+                metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=5), sequence_number=2),
             )
         )
 
@@ -136,9 +128,7 @@ class TestStreamingDetectionCallback:
         assert operation.event_count == 3
 
     @pytest.mark.asyncio
-    async def test_non_temp_file_emits_after_flush(
-        self, detector_with_callback, mock_callback
-    ):
+    async def test_non_temp_file_emits_after_flush(self, detector_with_callback, mock_callback):
         """Test that non-temp files emit after auto-flush if no operation detected."""
         base_time = datetime.now()
         regular_file = Path("test.py")
@@ -213,9 +203,7 @@ class TestStreamingDetectionCallback:
                 path=temp1,
                 event_type="moved",
                 dest_path=final1,
-                metadata=FileEventMetadata(
-                    timestamp=base_time + timedelta(milliseconds=5), sequence_number=2
-                ),
+                metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=5), sequence_number=2),
             )
         )
 
@@ -281,9 +269,7 @@ class TestTempFileFiltering:
             FileEvent(
                 path=temp_file,
                 event_type="deleted",
-                metadata=FileEventMetadata(
-                    timestamp=base_time + timedelta(milliseconds=5), sequence_number=2
-                ),
+                metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=5), sequence_number=2),
             ),
         ]
 
@@ -342,9 +328,7 @@ class TestTempFileFiltering:
             FileEvent(
                 path=real_file,
                 event_type="modified",
-                metadata=FileEventMetadata(
-                    timestamp=base_time + timedelta(milliseconds=5), sequence_number=2
-                ),
+                metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=5), sequence_number=2),
             ),
             FileEvent(
                 path=temp_file,
@@ -390,17 +374,13 @@ class TestRealWorldPatterns:
             FileEvent(
                 path=temp_file,
                 event_type="modified",
-                metadata=FileEventMetadata(
-                    timestamp=base_time + timedelta(milliseconds=2), sequence_number=2
-                ),
+                metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=2), sequence_number=2),
             ),
             FileEvent(
                 path=temp_file,
                 event_type="moved",
                 dest_path=final_file,
-                metadata=FileEventMetadata(
-                    timestamp=base_time + timedelta(milliseconds=5), sequence_number=3
-                ),
+                metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=5), sequence_number=3),
             ),
         ]
 
@@ -437,9 +417,7 @@ class TestRealWorldPatterns:
             FileEvent(
                 path=main_file,
                 event_type="modified",
-                metadata=FileEventMetadata(
-                    timestamp=base_time + timedelta(milliseconds=5), sequence_number=2
-                ),
+                metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=5), sequence_number=2),
             ),
         ]
 

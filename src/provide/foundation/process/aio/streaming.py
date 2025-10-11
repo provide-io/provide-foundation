@@ -12,7 +12,7 @@ from provide.foundation.process.shared import filter_subprocess_kwargs, prepare_
 
 """Async subprocess streaming execution."""
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 
 async def create_stream_subprocess(
@@ -83,7 +83,7 @@ async def read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) ->
     except builtins.TimeoutError as e:
         process.kill()
         await process.wait()
-        plog.error("⏱️ Async stream timed out", command=cmd_str, timeout=timeout)
+        log.error("⏱️ Async stream timed out", command=cmd_str, timeout=timeout)
         raise ProcessTimeoutError(
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_ASYNC_STREAM_TIMEOUT",
@@ -166,7 +166,7 @@ async def async_stream(
         ProcessTimeoutError: If timeout is exceeded
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    plog.info("🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None)
+    log.info("🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
     # Prepare environment and working directory
     run_env = prepare_environment(env)
@@ -197,7 +197,7 @@ async def async_stream(
                 await process.wait()
                 check_stream_exit_code(process, cmd_str)
 
-            plog.debug("✅ Async stream completed", command=cmd_str)
+            log.debug("✅ Async stream completed", command=cmd_str)
         finally:
             await cleanup_stream_process(process)
 
@@ -205,7 +205,7 @@ async def async_stream(
         if isinstance(e, ProcessError | ProcessTimeoutError):
             raise
 
-        plog.error("💥 Async stream failed", command=cmd_str, error=str(e))
+        log.error("💥 Async stream failed", command=cmd_str, error=str(e))
         raise ProcessError(
             f"Failed to stream async command: {cmd_str}",
             code="PROCESS_ASYNC_STREAM_ERROR",

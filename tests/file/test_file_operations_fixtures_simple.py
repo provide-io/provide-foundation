@@ -63,7 +63,9 @@ class TestFileOperationFixtures(FoundationTestCase):
         atomic_saves = [op for op in operations if op.operation_type.value == "atomic_save"]
         assert len(atomic_saves) >= 1
 
-    def test_validation_works(self, simulator: FileOperationSimulator, validator: FileOperationValidator) -> None:
+    def test_validation_works(
+        self, simulator: FileOperationSimulator, validator: FileOperationValidator
+    ) -> None:
         """Test validation functionality."""
         events = simulator.simulate_vscode_save("test.txt")
         operations = simulator.detect_operations(events)

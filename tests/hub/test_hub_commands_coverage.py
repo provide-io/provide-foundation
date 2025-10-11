@@ -198,8 +198,6 @@ class TestModuleBehavior(FoundationTestCase):
                 assert feature_name in ("build_click_command", "create_command_group")
 
 
-
-
 # Removed obsolete test classes:
 # - TestClickDependencyHandling (tested __getattr__ error handling)
 # - TestErrorMessages (tested __getattr__ error messages)

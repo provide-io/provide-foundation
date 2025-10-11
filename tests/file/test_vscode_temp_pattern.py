@@ -76,7 +76,9 @@ class TestVSCodeTempFileDetection:
 
         for temp_path, expected in test_cases:
             result = extract_base_name(temp_path)
-            assert result == expected, f"extract_base_name({temp_path}) should preserve dots: '{expected}', got '{result}'"
+            assert result == expected, (
+                f"extract_base_name({temp_path}) should preserve dots: '{expected}', got '{result}'"
+            )
 
     def test_extract_base_name_handles_vim_pattern(self):
         """Test that extract_base_name() also handles vim swap files correctly."""
@@ -136,8 +138,9 @@ class TestVSCodeAtomicSaveDetection:
         assert len(atomic_ops) >= 1, "Should detect ATOMIC_SAVE operation"
 
         operation = atomic_ops[0]
-        assert operation.primary_path == final_file, \
+        assert operation.primary_path == final_file, (
             f"Primary path should be '{final_file}', got '{operation.primary_path}'"
+        )
         assert operation.confidence >= 0.9, f"Confidence should be >= 0.9, got {operation.confidence}"
         assert operation.is_atomic is True, "Operation should be marked as atomic"
 
@@ -172,8 +175,9 @@ class TestVSCodeAtomicSaveDetection:
         assert len(atomic_ops) >= 1
 
         operation = atomic_ops[0]
-        assert operation.primary_path == final_file, \
+        assert operation.primary_path == final_file, (
             f"Primary path should preserve all dots: '{final_file}', got '{operation.primary_path}'"
+        )
 
     def test_vscode_pattern_returns_correct_file_in_operation(self):
         """Test that the detected operation contains the correct final file, not the temp file."""
@@ -205,16 +209,19 @@ class TestVSCodeAtomicSaveDetection:
         operation = operations[0]
 
         # Verify primary_path is NOT a temp file
-        assert not is_temp_file(operation.primary_path), \
+        assert not is_temp_file(operation.primary_path), (
             f"Primary path should not be a temp file: {operation.primary_path}"
+        )
 
         # Verify primary_path matches the final file
-        assert operation.primary_path == final_file, \
+        assert operation.primary_path == final_file, (
             f"Primary path should be '{final_file}', got '{operation.primary_path}'"
+        )
 
         # Verify files_affected contains the final file
-        assert final_file in operation.files_affected, \
+        assert final_file in operation.files_affected, (
             f"Files affected should contain '{final_file}', got {operation.files_affected}"
+        )
 
 
 @pytest.mark.asyncio
@@ -261,8 +268,9 @@ class TestVSCodeStreamingDetection:
         # Verify callback was called with correct operation
         assert mock_callback.call_count == 1, "Callback should be called once"
         operation = mock_callback.call_args[0][0]
-        assert operation.primary_path == final_file, \
+        assert operation.primary_path == final_file, (
             f"Primary path should be '{final_file}', got '{operation.primary_path}'"
+        )
         assert operation.operation_type == OperationType.ATOMIC_SAVE
 
 

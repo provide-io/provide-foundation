@@ -314,7 +314,9 @@ class TestFoundationBootstrapIntegration(FoundationTestCase):
         registry.register(name="test_isolation", value=test_component, dimension="test")
 
         # Reset registry
-        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
+        from provide.foundation.testmode.internal import reset_hub_state
+
+        reset_hub_state()
 
         # Component should be gone
         retrieved = registry.get("test_isolation", "test")

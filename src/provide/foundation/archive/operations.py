@@ -18,7 +18,7 @@ from provide.foundation.logger import get_logger
 
 """Archive operation chains and helpers."""
 
-logger = get_logger(__name__)
+log = get_logger(__name__)
 
 
 @define(slots=True)
@@ -65,7 +65,7 @@ class OperationChain:
 
                 # Execute operation
                 current = self._execute_operation(op, current, next_output)
-                logger.debug(f"Executed operation '{op}': {current}")
+                log.debug(f"Executed operation '{op}': {current}")
 
             return current
 

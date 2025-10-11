@@ -11,7 +11,7 @@ from provide.foundation.process.shared import normalize_cwd, prepare_environment
 
 """Sync subprocess streaming execution."""
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 
 def _make_stdout_nonblocking(stdout: Any) -> None:
@@ -32,7 +32,7 @@ def _check_timeout_expired(start_time: float, timeout: float, cmd_str: str, proc
     if elapsed >= timeout:
         process.kill()
         process.wait()
-        plog.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
+        log.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
         raise ProcessTimeoutError(
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_STREAM_TIMEOUT",
@@ -163,7 +163,7 @@ def stream(
 
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    plog.info("🌊 Streaming command", command=cmd_str, cwd=str(cwd) if cwd else None)
+    log.info("🌊 Streaming command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
     run_env = prepare_environment(env)
     cwd = normalize_cwd(cwd)
@@ -197,14 +197,14 @@ def stream(
                     return_code=returncode,
                 )
 
-            plog.debug("✅ Stream completed", command=cmd_str)
+            log.debug("✅ Stream completed", command=cmd_str)
         finally:
             _cleanup_process(process)
 
     except Exception as e:
         if isinstance(e, ProcessError | ProcessTimeoutError):
             raise
-        plog.error("💥 Stream failed", command=cmd_str, error=str(e))
+        log.error("💥 Stream failed", command=cmd_str, error=str(e))
         raise ProcessError(
             f"Failed to stream command: {cmd_str}",
             code="PROCESS_STREAM_ERROR",

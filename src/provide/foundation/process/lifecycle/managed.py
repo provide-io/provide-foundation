@@ -27,7 +27,7 @@ This module provides the ManagedProcess class for managing long-running
 subprocesses with proper lifecycle management and graceful shutdown.
 """
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 
 class ManagedProcess:
@@ -80,7 +80,7 @@ class ManagedProcess:
         self._stderr_thread: threading.Thread | None = None
         self._started = False
 
-        plog.debug(
+        log.debug(
             "🚀 ManagedProcess initialized",
             command=" ".join(command),
             cwd=self.cwd,
@@ -125,7 +125,7 @@ class ManagedProcess:
                 "Process has already been started", code="PROCESS_ALREADY_STARTED", process_state="started"
             )
 
-        plog.debug("🚀 Launching managed process", command=" ".join(self.command))
+        log.debug("🚀 Launching managed process", command=" ".join(self.command))
 
         self._process = subprocess.Popen(
             self.command,
@@ -139,7 +139,7 @@ class ManagedProcess:
         )
         self._started = True
 
-        plog.info(
+        log.info(
             "🚀 Managed process started successfully",
             pid=self._process.pid,
             command=" ".join(self.command),
@@ -170,11 +170,11 @@ class ManagedProcess:
                     )
                     sys.stderr.flush()
             except Exception as e:
-                plog.debug("Error in stderr relay", error=str(e))
+                log.debug("Error in stderr relay", error=str(e))
 
         self._stderr_thread = threading.Thread(target=relay_stderr, daemon=True)
         self._stderr_thread.start()
-        plog.debug("🚀 Started stderr relay thread")
+        log.debug("🚀 Started stderr relay thread")
 
     async def read_line_async(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
         """Read a line from stdout asynchronously with timeout."""
@@ -192,7 +192,7 @@ class ManagedProcess:
                 line_data.decode("utf-8", errors="replace") if isinstance(line_data, bytes) else str(line_data)
             ).strip()
         except TimeoutError as e:
-            plog.debug("Read timeout on managed process stdout")
+            log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
     async def read_char_async(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
@@ -213,7 +213,7 @@ class ManagedProcess:
                 char_data.decode("utf-8", errors="replace") if isinstance(char_data, bytes) else str(char_data)
             )
         except TimeoutError as e:
-            plog.debug("Character read timeout on managed process stdout")
+            log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
     def terminate_gracefully(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
@@ -230,23 +230,23 @@ class ManagedProcess:
             return True
 
         if self._process.poll() is not None:
-            plog.debug("Process already terminated", returncode=self._process.returncode)
+            log.debug("Process already terminated", returncode=self._process.returncode)
             return True
 
-        plog.debug("🛑 Terminating managed process gracefully", pid=self._process.pid)
+        log.debug("🛑 Terminating managed process gracefully", pid=self._process.pid)
 
         try:
             # Send SIGTERM
             self._process.terminate()
-            plog.debug("🛑 Sent SIGTERM to process", pid=self._process.pid)
+            log.debug("🛑 Sent SIGTERM to process", pid=self._process.pid)
 
             # Wait for graceful termination
             try:
                 self._process.wait(timeout=timeout)
-                plog.info("🛑 Process terminated gracefully", pid=self._process.pid)
+                log.info("🛑 Process terminated gracefully", pid=self._process.pid)
                 return True
             except subprocess.TimeoutExpired:
-                plog.warning(
+                log.warning(
                     "🛑 Process did not terminate gracefully, force killing",
                     pid=self._process.pid,
                 )
@@ -254,14 +254,14 @@ class ManagedProcess:
                 self._process.kill()
                 try:
                     self._process.wait(timeout=2.0)
-                    plog.info("🛑 Process force killed", pid=self._process.pid)
+                    log.info("🛑 Process force killed", pid=self._process.pid)
                     return False
                 except subprocess.TimeoutExpired:
-                    plog.error("🛑 Process could not be killed", pid=self._process.pid)
+                    log.error("🛑 Process could not be killed", pid=self._process.pid)
                     return False
 
         except Exception as e:
-            plog.error(
+            log.error(
                 "🛑❌ Error terminating process",
                 pid=self._process.pid if self._process else None,
                 error=str(e),
@@ -280,7 +280,7 @@ class ManagedProcess:
         if self._process:
             self._process = None
 
-        plog.debug("🧹 Managed process cleanup completed")
+        log.debug("🧹 Managed process cleanup completed")
 
     def __enter__(self) -> ManagedProcess:
         """Context manager entry."""

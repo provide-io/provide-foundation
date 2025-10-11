@@ -13,7 +13,7 @@ from provide.foundation.logger import get_logger
 
 """Base classes and interfaces for archive operations."""
 
-logger = get_logger(__name__)
+log = get_logger(__name__)
 
 
 class ArchiveError(FoundationError):
@@ -127,7 +127,7 @@ class BaseCompressor(ABC):
         """
         try:
             self._compress_stream(input_stream, output_stream)
-            logger.debug(f"Compressed data with {self.format_name} level {self.level}")
+            log.debug(f"Compressed data with {self.format_name} level {self.level}")
         except (OSError, ValueError) as e:
             raise ArchiveError(f"Failed to compress with {self.format_name}: {e}") from e
 
@@ -144,7 +144,7 @@ class BaseCompressor(ABC):
         """
         try:
             self._decompress_stream(input_stream, output_stream)
-            logger.debug(f"Decompressed {self.format_name} data")
+            log.debug(f"Decompressed {self.format_name} data")
         except (OSError, ValueError) as e:
             raise ArchiveError(f"Failed to decompress {self.format_name}: {e}") from e
 
@@ -168,7 +168,7 @@ class BaseCompressor(ABC):
             with input_path.open("rb") as f_in, output_path.open("wb") as f_out:
                 self._compress_stream(f_in, f_out)
 
-            logger.debug(f"Compressed {input_path} to {output_path}")
+            log.debug(f"Compressed {input_path} to {output_path}")
             return output_path
 
         except (OSError, ValueError) as e:
@@ -194,7 +194,7 @@ class BaseCompressor(ABC):
             with input_path.open("rb") as f_in, output_path.open("wb") as f_out:
                 self._decompress_stream(f_in, f_out)
 
-            logger.debug(f"Decompressed {input_path} to {output_path}")
+            log.debug(f"Decompressed {input_path} to {output_path}")
             return output_path
 
         except (OSError, ValueError) as e:

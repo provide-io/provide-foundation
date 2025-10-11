@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from provide.foundation.logger.config.telemetry import TelemetryConfig
-from provide.foundation.logger.setup import get_vanilla_logger
+from provide.foundation.logger.setup import get_system_logger
 
 """OpenTelemetry integration for Foundation tracer."""
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
     from opentelemetry.sdk.trace.sampling import TraceIdRatioBased
 
-slog = get_vanilla_logger(__name__)
+slog = get_system_logger(__name__)
 
 # Feature detection
 try:

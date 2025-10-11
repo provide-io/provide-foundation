@@ -27,7 +27,7 @@ Provides pin() and async variants for consistent input handling with support
 for JSON mode, streaming, and proper integration with the foundation's patterns.
 """
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 T = TypeVar("T")
 
@@ -87,7 +87,7 @@ def _handle_json_input(prompt: str, kwargs: dict[str, Any]) -> str | dict[str, A
         return data  # type: ignore[no-any-return]
 
     except Exception as e:
-        plog.error("Failed to read JSON input", error=str(e))
+        log.error("Failed to read JSON input", error=str(e))
         if json_key := kwargs.get("json_key"):
             return {json_key: None, "error": str(e)}
         return None
@@ -252,16 +252,16 @@ def pin_stream() -> Iterator[str]:
                     yield line
     else:
         # Regular mode - yield lines as they come
-        plog.debug("📥 Starting input stream")
+        log.debug("📥 Starting input stream")
         line_count = 0
         try:
             for line in sys.stdin:
                 line = line.rstrip("\n\r")
                 line_count += 1
-                plog.trace("📥 Stream line", line_num=line_count, length=len(line))
+                log.trace("📥 Stream line", line_num=line_count, length=len(line))
                 yield line
         finally:
-            plog.debug("📥 Input stream ended", lines=line_count)
+            log.debug("📥 Input stream ended", lines=line_count)
 
 
 async def apin(prompt: str = "", **kwargs: Any) -> str | Any:
@@ -322,7 +322,7 @@ async def apin_stream() -> AsyncIterator[str]:
             yield line
     else:
         # Regular mode - async line streaming
-        plog.debug("📥 Starting async input stream")
+        log.debug("📥 Starting async input stream")
         line_count = 0
 
         # Create async reader for stdin
@@ -341,17 +341,17 @@ async def apin_stream() -> AsyncIterator[str]:
 
                     line = line_bytes.decode("utf-8").rstrip("\n\r")
                     line_count += 1
-                    plog.trace("📥 Async stream line", line_num=line_count, length=len(line))
+                    log.trace("📥 Async stream line", line_num=line_count, length=len(line))
                     yield line
 
                 except asyncio.CancelledError:
-                    plog.debug("📥 Async stream cancelled", lines=line_count)
+                    log.debug("📥 Async stream cancelled", lines=line_count)
                     break
                 except Exception as e:
-                    plog.error("📥 Async stream error", error=str(e), lines=line_count)
+                    log.error("📥 Async stream error", error=str(e), lines=line_count)
                     break
         finally:
-            plog.debug("📥 Async input stream ended", lines=line_count)
+            log.debug("📥 Async input stream ended", lines=line_count)
 
 
 def pin_lines(count: int | None = None) -> list[str]:

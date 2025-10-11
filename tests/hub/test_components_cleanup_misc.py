@@ -23,11 +23,13 @@ class TestAdvancedCleanup(FoundationTestCase):
         """Set up test environment."""
         super().setup_method()
         from provide.foundation.testmode.internal import reset_hub_state
+
         reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
         from provide.foundation.testmode.internal import reset_hub_state
+
         reset_hub_state()
 
     def test_cleanup_all_components_with_async_cleanup(self) -> None:
@@ -93,11 +95,13 @@ class TestConfigFromRegistry(FoundationTestCase):
         """Set up test environment."""
         super().setup_method()
         from provide.foundation.testmode.internal import reset_hub_state
+
         reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
         from provide.foundation.testmode.internal import reset_hub_state
+
         reset_hub_state()
 
     def test_load_config_from_registry_sync_sources(self) -> None:
@@ -159,11 +163,13 @@ class TestMiscellaneousFunctionality(FoundationTestCase):
         """Set up test environment."""
         super().setup_method()
         from provide.foundation.testmode.internal import reset_hub_state
+
         reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
         from provide.foundation.testmode.internal import reset_hub_state
+
         reset_hub_state()
 
     def test_discover_components_stub(self) -> None:
@@ -185,6 +191,7 @@ class TestMiscellaneousFunctionality(FoundationTestCase):
 
         # Reset should clear everything
         from provide.foundation.testmode.internal import reset_hub_state
+
         reset_hub_state()
 
         assert len(list(registry)) == 0

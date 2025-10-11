@@ -10,7 +10,7 @@ from provide.foundation.logger import get_logger
 
 """Checksum verification and management."""
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 
 def verify_file(
@@ -41,13 +41,13 @@ def verify_file(
         matches = compare_hash(actual_hash, expected_hash)
 
         if matches:
-            plog.debug(
+            log.debug(
                 "✅ Checksum verified",
                 path=str(path),
                 algorithm=algorithm,
             )
         else:
-            plog.warning(
+            log.warning(
                 "❌ Checksum mismatch",
                 path=str(path),
                 algorithm=algorithm,
@@ -58,7 +58,7 @@ def verify_file(
         return matches
 
     except ResourceError:
-        plog.error(
+        log.error(
             "❌ Failed to verify checksum - file not found",
             path=str(path),
         )
@@ -88,13 +88,13 @@ def verify_data(
     matches = compare_hash(actual_hash, expected_hash)
 
     if matches:
-        plog.debug(
+        log.debug(
             "✅ Data checksum verified",
             algorithm=algorithm,
             size=len(data),
         )
     else:
-        plog.warning(
+        log.warning(
             "❌ Data checksum mismatch",
             algorithm=algorithm,
             expected=expected_hash[:16] + "...",
@@ -129,7 +129,7 @@ def calculate_checksums(
 
     checksums = hash_file_multiple(path, algorithms)
 
-    plog.debug(
+    log.debug(
         "📝 Calculated checksums",
         path=str(path),
         algorithms=algorithms,
@@ -191,7 +191,7 @@ def parse_checksum_file(
                 filename = filename.removeprefix("*")
                 checksums[filename] = hash_value.lower()
 
-        plog.debug(
+        log.debug(
             "📄 Parsed checksum file",
             path=str(path),
             entries=len(checksums),
@@ -249,7 +249,7 @@ def write_checksum_file(
         content = "\n".join(lines) + "\n"
         atomic_write_text(path, content, encoding="utf-8")
 
-        plog.debug(
+        log.debug(
             "📝 Wrote checksum file",
             path=str(path),
             entries=len(checksums),
@@ -308,7 +308,7 @@ def verify_checksum_file(
             if stop_on_error:
                 break
 
-    plog.info(
+    log.info(
         "📊 Checksum verification complete",
         verified=len(verified),
         failed=len(failed),

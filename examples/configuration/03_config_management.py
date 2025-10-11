@@ -144,7 +144,7 @@ class ServerConfig(BaseConfig):
 
     def __attrs_post_init__(self) -> None:
         if self.cors_origins is None:
-            object.__setattr__(self, 'cors_origins', ["http://localhost:3000"])
+            object.__setattr__(self, "cors_origins", ["http://localhost:3000"])
 
 
 @define
@@ -159,13 +159,13 @@ class FullConfig(RuntimeConfig):
 
     def __attrs_post_init__(self) -> None:
         if self.app is None:
-            object.__setattr__(self, 'app', AppConfig())
+            object.__setattr__(self, "app", AppConfig())
         if self.database is None:
-            object.__setattr__(self, 'database', DatabaseConfig())
+            object.__setattr__(self, "database", DatabaseConfig())
         if self.server is None:
-            object.__setattr__(self, 'server', ServerConfig())
+            object.__setattr__(self, "server", ServerConfig())
         if self.features is None:
-            object.__setattr__(self, 'features', {"new_ui": False, "analytics": True})
+            object.__setattr__(self, "features", {"new_ui": False, "analytics": True})
 
 
 def example_basic_usage() -> None:
