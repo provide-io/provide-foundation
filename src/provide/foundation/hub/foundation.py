@@ -38,11 +38,32 @@ class FoundationManager:
         Single initialization method replacing all setup_* functions.
         Thread-safe and idempotent, unless force=True.
 
+        Smart initialization: If explicit config is provided and Foundation
+        was auto-initialized with defaults, automatically upgrades to force=True
+        to ensure explicit config takes precedence.
+
         Args:
             config: Optional TelemetryConfig (defaults to from_env)
             force: If True, force re-initialization even if already initialized
 
         """
+        # Smart initialization: Auto-upgrade to force=True when explicit config
+        # is provided but Foundation is already auto-initialized with defaults
+        if (
+            config is not None  # Explicit config provided
+            and self._initialized  # Already initialized (likely auto-init)
+            and not force  # User didn't explicitly set force
+            and self._config is not None  # Have existing config to check
+            and getattr(self._config, 'service_name', 'not-none') is None  # Auto-init indicator
+        ):
+            force = True
+            # Use basic print for early bootstrap (logger might not be ready)
+            import sys
+            print(
+                "Foundation: Auto-upgrading to force=True (explicit config overriding auto-init)",
+                file=sys.stderr
+            )
+
         # Use the new simplified coordinator
         from provide.foundation.hub.initialization import get_initialization_coordinator
 
