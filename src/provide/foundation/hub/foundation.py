@@ -64,15 +64,16 @@ class FoundationManager:
                 or getattr(config, 'otlp_endpoint', None) is not None
             )
 
+            # Use system logger for init-time logging (safe during Foundation setup)
+            from provide.foundation.logger.setup.coordinator import get_system_logger
+            setup_log = get_system_logger("provide.foundation.hub.init")
+
             if otlp_configured:
                 # Force full re-initialization to recreate LoggerProvider with new service_name
                 force = True
-                try:
-                    from provide.foundation.console.output import perr
-                    perr("Foundation: Re-initializing with OTLP (explicit service_name overriding auto-init)")
-                except Exception:
-                    import sys
-                    print("Foundation: Re-initializing with OTLP (explicit service_name overriding auto-init)", file=sys.stderr)
+                setup_log.info(
+                    "Foundation: Re-initializing with OTLP (explicit service_name overriding auto-init)"
+                )
             else:
                 # Try lightweight config update (avoids expensive re-initialization)
                 from provide.foundation.hub.initialization import get_initialization_coordinator
@@ -81,12 +82,9 @@ class FoundationManager:
                 if coordinator.update_config_if_default(self._registry, config):
                     # Config updated successfully - no need to re-initialize
                     self._config = config
-                    try:
-                        from provide.foundation.console.output import perr
-                        perr("Foundation: Updated config (explicit service_name overriding auto-init default)")
-                    except Exception:
-                        import sys
-                        print("Foundation: Updated config (explicit service_name overriding auto-init default)", file=sys.stderr)
+                    setup_log.info(
+                        "Foundation: Updated config (explicit service_name overriding auto-init default)"
+                    )
                     return
                 # If lightweight update failed, fall through to normal initialization
 
