@@ -9,10 +9,21 @@ from datetime import datetime
 from pathlib import Path
 import threading
 
+import pytest
 from provide.testkit import FoundationTestCase
 
 from provide.foundation.file.operations.detectors.auto_flush import AutoFlushHandler
 from provide.foundation.file.operations.types import FileEvent, FileEventMetadata, FileOperation, OperationType
+
+
+@pytest.fixture
+def handler_cleanup():
+    """Fixture to track and cleanup AutoFlushHandlers after each test."""
+    handlers = []
+    yield handlers
+    # Cleanup all handlers
+    for handler in handlers:
+        handler.clear()
 
 
 class TestEventLossRecovery(FoundationTestCase):
@@ -24,14 +35,6 @@ class TestEventLossRecovery(FoundationTestCase):
         self.operations_emitted: list[FileOperation] = []
         self.callback_fail_count = 0
         self.lock = threading.Lock()
-        self.handlers: list[AutoFlushHandler] = []
-
-    def teardown_method(self) -> None:
-        """Clean up test environment."""
-        for handler in self.handlers:
-            handler.clear()
-        self.handlers.clear()
-        super().teardown_method()
 
     def _create_event(self, filename: str) -> FileEvent:
         """Create test event."""
