@@ -11,7 +11,9 @@ from provide.foundation.archive.tar import TarArchive
 from provide.foundation.archive.types import (
     ArchiveOperation,
 )
+from provide.foundation.archive.xz import XzCompressor
 from provide.foundation.archive.zip import ZipArchive
+from provide.foundation.archive.zstd import ZstdCompressor
 from provide.foundation.file import ensure_parent_dir, temp_file
 from provide.foundation.file.safe import safe_delete
 from provide.foundation.logger import get_logger
@@ -119,6 +121,16 @@ class OperationChain:
                 if source.suffix in (".bz2", ".bzip2"):
                     return bz2.decompress_file(source, output)
                 return bz2.compress_file(source, output)
+            case ArchiveOperation.XZ:
+                xz = XzCompressor()
+                if source.suffix == ".xz":
+                    return xz.decompress_file(source, output)
+                return xz.compress_file(source, output)
+            case ArchiveOperation.ZSTD:
+                zstd = ZstdCompressor()
+                if source.suffix in (".zst", ".zstd"):
+                    return zstd.decompress_file(source, output)
+                return zstd.compress_file(source, output)
             case ArchiveOperation.ZIP:
                 zip_archive = ZipArchive(**config)
                 if source.is_dir():
@@ -243,12 +255,20 @@ class ArchiveOperations:
             return [ArchiveOperation.GZIP, ArchiveOperation.TAR]
         if name.endswith(".tar.bz2") or name.endswith(".tbz2"):
             return [ArchiveOperation.BZIP2, ArchiveOperation.TAR]
+        if name.endswith(".tar.xz") or name.endswith(".txz"):
+            return [ArchiveOperation.XZ, ArchiveOperation.TAR]
+        if name.endswith(".tar.zst") or name.endswith(".tzst"):
+            return [ArchiveOperation.ZSTD, ArchiveOperation.TAR]
         if name.endswith(".tar"):
             return [ArchiveOperation.TAR]
         if name.endswith(".gz"):
             return [ArchiveOperation.GZIP]
         if name.endswith(".bz2"):
             return [ArchiveOperation.BZIP2]
+        if name.endswith(".xz"):
+            return [ArchiveOperation.XZ]
+        if name.endswith(".zst") or name.endswith(".zstd"):
+            return [ArchiveOperation.ZSTD]
         if name.endswith(".zip"):
             return [ArchiveOperation.ZIP]
 
