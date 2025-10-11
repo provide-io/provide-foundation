@@ -10,8 +10,8 @@ from pathlib import Path
 import threading
 import time
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.file.operations.detectors.auto_flush import AutoFlushHandler
 from provide.foundation.file.operations.types import FileEvent, FileEventMetadata, FileOperation

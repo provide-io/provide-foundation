@@ -9,8 +9,8 @@ from datetime import datetime
 from pathlib import Path
 import threading
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.file.operations.detectors.auto_flush import AutoFlushHandler
 from provide.foundation.file.operations.types import FileEvent, FileEventMetadata, FileOperation, OperationType
@@ -118,6 +118,7 @@ class TestEventLossRecovery(FoundationTestCase):
         # Operation should be emitted
         assert len(self.operations_emitted) == 1
 
+    @pytest.mark.xdist_group(name="serial_recovery")
     def test_retry_failed_operations_persistent_failure(self, handler_cleanup: list) -> None:
         """Test that persistently failing operations stay in queue."""
 
@@ -143,6 +144,7 @@ class TestEventLossRecovery(FoundationTestCase):
         assert retried == 0
         assert handler.failed_operations_count == 1
 
+    @pytest.mark.xdist_group(name="serial_recovery")
     def test_clear_failed_operations(self, handler_cleanup: list) -> None:
         """Test clearing failed operations."""
 
