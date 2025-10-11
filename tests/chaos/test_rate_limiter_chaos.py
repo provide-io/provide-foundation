@@ -85,7 +85,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         refill_rate=st.floats(min_value=1.0, max_value=20.0),
         time_advance=time_advances(min_advance=0.0, max_advance=10.0),
     )
-    @settings(max_examples=30)
+    @settings(max_examples=30, suppress_health_check=[HealthCheck.too_slow])
     async def test_time_advance_refill_chaos(
         self,
         capacity: float,

@@ -118,7 +118,7 @@ class TestJsonDumps(FoundationTestCase):
         with pytest.raises(ValidationError, match="Cannot serialize object to JSON"):
             json_dumps(data)
 
-    @patch("provide.foundation.serialization.core.json")
+    @patch("provide.foundation.serialization.json.json")
     def test_json_dumps_uses_json_module(self, mock_json: Any) -> None:
         """Test json_dumps calls json.dumps()."""
         mock_json.dumps.return_value = '{"test": "value"}'
@@ -253,7 +253,7 @@ class TestJsonLoads(FoundationTestCase):
         with pytest.raises(ValidationError, match="Invalid JSON string"):
             json_loads("   ")
 
-    @patch("provide.foundation.serialization.core.json")
+    @patch("provide.foundation.serialization.json.json")
     def test_json_loads_uses_json_module(self, mock_json: Any) -> None:
         """Test json_loads calls json.loads()."""
         mock_json.loads.return_value = {"test": "value"}
