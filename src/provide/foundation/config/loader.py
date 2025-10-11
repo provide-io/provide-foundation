@@ -13,7 +13,7 @@ from provide.foundation.errors.config import ConfigurationError
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.resources import NotFoundError
 from provide.foundation.file.safe import safe_read_text
-from provide.foundation.serialization import provide_loads
+from provide.foundation.serialization import json_loads
 
 """Configuration loaders for various sources."""
 
@@ -132,7 +132,7 @@ class FileConfigLoader(ConfigLoader):
             )
 
         if self.format == ConfigFormat.JSON:
-            return provide_loads(content)
+            return json_loads(content)
         if self.format == ConfigFormat.YAML:
             import yaml
 

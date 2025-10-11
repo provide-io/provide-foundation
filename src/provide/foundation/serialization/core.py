@@ -8,7 +8,7 @@ from provide.foundation.errors import ValidationError
 """Core serialization utilities for Foundation."""
 
 
-def provide_dumps(
+def json_dumps(
     obj: Any,
     *,
     ensure_ascii: bool = False,
@@ -32,21 +32,19 @@ def provide_dumps(
         ValidationError: If object cannot be serialized
 
     Example:
-        >>> provide_dumps({"key": "value"})
+        >>> json_dumps({"key": "value"})
         '{"key": "value"}'
-        >>> provide_dumps({"b": 1, "a": 2}, sort_keys=True, indent=2)
+        >>> json_dumps({"b": 1, "a": 2}, sort_keys=True, indent=2)
         '{\\n  "a": 2,\\n  "b": 1\\n}'
 
     """
     try:
-        return json.dumps(
-            obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys, default=default
-        )
+        return json.dumps(obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys, default=default)
     except (TypeError, ValueError) as e:
         raise ValidationError(f"Cannot serialize object to JSON: {e}") from e
 
 
-def provide_loads(s: str) -> Any:
+def json_loads(s: str) -> Any:
     """Deserialize JSON string to Python object with Foundation tracking.
 
     Args:
@@ -59,9 +57,9 @@ def provide_loads(s: str) -> Any:
         ValidationError: If string is not valid JSON
 
     Example:
-        >>> provide_loads('{"key": "value"}')
+        >>> json_loads('{"key": "value"}')
         {'key': 'value'}
-        >>> provide_loads('[1, 2, 3]')
+        >>> json_loads('[1, 2, 3]')
         [1, 2, 3]
 
     """
