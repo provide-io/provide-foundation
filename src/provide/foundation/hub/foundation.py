@@ -47,8 +47,8 @@ class FoundationManager:
             force: If True, force re-initialization even if already initialized
 
         """
-        # Smart initialization: Try lightweight config update first when explicit config
-        # is provided but Foundation is already auto-initialized with defaults
+        # Smart initialization: Try lightweight config update OR force re-init when explicit
+        # config is provided but Foundation is already auto-initialized with defaults
         if (
             config is not None  # Explicit config provided
             and self._initialized  # Already initialized (likely auto-init)
@@ -56,23 +56,39 @@ class FoundationManager:
             and self._config is not None  # Have existing config to check
             and getattr(self._config, 'service_name', 'not-none') is None  # Auto-init indicator
         ):
-            # Try lightweight config update (avoids expensive re-initialization)
-            from provide.foundation.hub.initialization import get_initialization_coordinator
-            coordinator = get_initialization_coordinator()
+            # Check if OTLP is configured - if so, we MUST do full re-init to recreate LoggerProvider
+            # The LoggerProvider bakes service_name into its Resource during creation, so we can't
+            # just update the config - we need to recreate it
+            otlp_configured = (
+                getattr(self._config, 'otlp_endpoint', None) is not None
+                or getattr(config, 'otlp_endpoint', None) is not None
+            )
 
-            if coordinator.update_config_if_default(self._registry, config):
-                # Config updated successfully - no need to re-initialize
-                self._config = config
-                # Use perr for feedback
+            if otlp_configured:
+                # Force full re-initialization to recreate LoggerProvider with new service_name
+                force = True
                 try:
                     from provide.foundation.console.output import perr
-                    perr("Foundation: Updated config (explicit service_name overriding auto-init default)")
+                    perr("Foundation: Re-initializing with OTLP (explicit service_name overriding auto-init)")
                 except Exception:
-                    # Fallback to print if perr fails
                     import sys
-                    print("Foundation: Updated config (explicit service_name overriding auto-init default)", file=sys.stderr)
-                return
-            # If lightweight update failed, fall through to normal initialization
+                    print("Foundation: Re-initializing with OTLP (explicit service_name overriding auto-init)", file=sys.stderr)
+            else:
+                # Try lightweight config update (avoids expensive re-initialization)
+                from provide.foundation.hub.initialization import get_initialization_coordinator
+                coordinator = get_initialization_coordinator()
+
+                if coordinator.update_config_if_default(self._registry, config):
+                    # Config updated successfully - no need to re-initialize
+                    self._config = config
+                    try:
+                        from provide.foundation.console.output import perr
+                        perr("Foundation: Updated config (explicit service_name overriding auto-init default)")
+                    except Exception:
+                        import sys
+                        print("Foundation: Updated config (explicit service_name overriding auto-init default)", file=sys.stderr)
+                    return
+                # If lightweight update failed, fall through to normal initialization
 
         # Use the new simplified coordinator
         from provide.foundation.hub.initialization import get_initialization_coordinator
