@@ -67,12 +67,22 @@ def send_log_otlp(
 
         oo_config = OpenObserveConfig.from_env()
 
+        # Determine service name for this export
+        actual_service_name = service or config.service_name or "foundation"
+        log.debug(
+            "OTLP preparing log export",
+            service_name=actual_service_name,
+            config_service_name=config.service_name,
+            service_param=service,
+            has_otlp_endpoint=config.otlp_endpoint is not None,
+        )
+
         if not config.otlp_endpoint:
             return False
 
         # Create resource with service info
         resource_attrs = {
-            ResourceAttributes.SERVICE_NAME: service or config.service_name or "foundation",
+            ResourceAttributes.SERVICE_NAME: actual_service_name,
         }
         if config.service_version:
             resource_attrs[ResourceAttributes.SERVICE_VERSION] = config.service_version
