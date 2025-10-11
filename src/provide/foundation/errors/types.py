@@ -6,6 +6,8 @@ from typing import Any
 
 from attrs import define, field
 
+from provide.foundation.serialization import json_dumps
+
 """Type definitions and constants for error handling.
 
 Provides error codes, metadata structures, and retry policies.
@@ -177,9 +179,7 @@ class ErrorResponse:
             JSON representation of error response.
 
         """
-        import json
-
-        return json.dumps(self.to_dict(), indent=2)
+        return json_dumps(self.to_dict(), indent=2)
 
 
 # Import datetime at module level for the factory

@@ -8,6 +8,7 @@ from typing import Any, TypeVar
 from provide.foundation.cli.deps import click
 from provide.foundation.context import CLIContext
 from provide.foundation.process import exit_error, exit_interrupted
+from provide.foundation.serialization import json_dumps
 
 """Standard CLI decorators for consistent option handling."""
 
@@ -158,13 +159,11 @@ def error_handler(f: F) -> F:
                 raise
 
             if json_output:
-                import json
-
                 error_data = {
                     "error": str(e),
                     "type": type(e).__name__,
                 }
-                click.echo(json.dumps(error_data), err=True)
+                click.echo(json_dumps(error_data), err=True)
             else:
                 click.secho(f"Error: {e}", fg="red", err=True)
 
