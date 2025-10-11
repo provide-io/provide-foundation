@@ -2,6 +2,32 @@
 
 This section documents the technical specifications, protocols, and enhancement proposals for provide.foundation.
 
+## Design Philosophy & Trade-offs
+
+Understanding provide.foundation's architectural decisions helps teams evaluate fit:
+
+### [Design Decisions](design-decisions.md)
+**Intentional design choices** behind provide.foundation's architecture:
+- Threading model and async considerations
+- Tool stack philosophy (attrs, structlog, click)
+- Global state patterns and singletons
+- Intentional scope boundaries
+
+### [Limitations & Trade-offs](limitations.md)
+**Honest assessment** of current limitations and mitigations:
+- Async context considerations
+- CLI adapter ecosystem
+- Configuration source extensibility
+- Performance characteristics
+
+### [When to Use](../guide/when-to-use.md)
+**Decision guide** for evaluating provide.foundation:
+- ✅ Excellent fit: CLI apps, microservices, data pipelines
+- ✅ Good fit: Web APIs, task processors, libraries
+- ⚠️ Consider alternatives: Ultra-low latency, full-stack needs
+
+---
+
 ## Core Specifications
 
 ### [Telemetry Format](telemetry-format.md)

@@ -18,7 +18,7 @@ from provide.foundation.logger import get_logger
 
 """Unified context for configuration and CLI state management."""
 
-VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
+VALID_LOG_LEVELS = {"TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
 @define(slots=True, repr=False)

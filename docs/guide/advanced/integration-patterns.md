@@ -323,3 +323,363 @@ ctx = AdvancedContext()
 ctx.load_remote_config(remote_source)
 ctx.load_vault_secrets(vault_source, "secret/myapp/config")
 ```
+
+#### AWS Secrets Manager Integration
+
+```python
+from provide.foundation.config import BaseConfig, env_field
+from attrs import define
+import boto3
+import json
+from typing import Any
+
+class AWSSecretsConfigLoader:
+    """Load secrets from AWS Secrets Manager."""
+
+    def __init__(self, region_name: str = "us-east-1"):
+        self.client = boto3.client("secretsmanager", region_name=region_name)
+
+    def load_secret(self, secret_name: str) -> dict[str, Any]:
+        """Load and parse secret from AWS Secrets Manager."""
+        try:
+            response = self.client.get_secret_value(SecretId=secret_name)
+
+            # Parse secret string (assumes JSON format)
+            if "SecretString" in response:
+                return json.loads(response["SecretString"])
+            else:
+                # Binary secrets (base64 decoded)
+                import base64
+                return json.loads(base64.b64decode(response["SecretBinary"]))
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to load secret {secret_name}: {e}")
+
+@define
+class AppConfigWithAWS(BaseConfig):
+    """Application configuration with AWS Secrets Manager integration."""
+
+    database_url: str = env_field(env_var="DATABASE_URL")
+    api_key: str = env_field(env_var="API_KEY")
+    cache_ttl: int = env_field(env_var="CACHE_TTL", default=3600)
+
+    @classmethod
+    def from_aws_secrets(cls, secret_name: str, region: str = "us-east-1"):
+        """Load configuration from AWS Secrets Manager."""
+        loader = AWSSecretsConfigLoader(region_name=region)
+        secrets = loader.load_secret(secret_name)
+
+        # Merge with environment variables (env vars take precedence)
+        import os
+        config_dict = {
+            "database_url": os.getenv("DATABASE_URL", secrets.get("database_url")),
+            "api_key": os.getenv("API_KEY", secrets.get("api_key")),
+            "cache_ttl": int(os.getenv("CACHE_TTL", secrets.get("cache_ttl", 3600))),
+        }
+
+        return cls(**config_dict)
+
+# Usage
+config = AppConfigWithAWS.from_aws_secrets("myapp/production", region="us-west-2")
+print(f"Database: {config.database_url}")
+print(f"Cache TTL: {config.cache_ttl}")
+```
+
+**Best Practices:**
+- Use IAM roles for authentication (avoid hardcoded credentials)
+- Enable secret rotation in AWS Secrets Manager
+- Cache secrets locally with TTL to reduce API calls
+- Use environment variables for non-sensitive configuration
+
+#### Azure Key Vault Integration
+
+```python
+from provide.foundation.config import BaseConfig, env_field
+from attrs import define
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
+from typing import Any
+
+class AzureKeyVaultLoader:
+    """Load secrets from Azure Key Vault."""
+
+    def __init__(self, vault_url: str):
+        """
+        Initialize Azure Key Vault client.
+
+        Args:
+            vault_url: Azure Key Vault URL (e.g., "https://myvault.vault.azure.net")
+        """
+        self.credential = DefaultAzureCredential()
+        self.client = SecretClient(vault_url=vault_url, credential=self.credential)
+
+    def load_secret(self, secret_name: str) -> str:
+        """Load a single secret from Azure Key Vault."""
+        try:
+            secret = self.client.get_secret(secret_name)
+            return secret.value
+        except Exception as e:
+            raise RuntimeError(f"Failed to load secret {secret_name}: {e}")
+
+    def load_secrets(self, secret_names: list[str]) -> dict[str, str]:
+        """Load multiple secrets from Azure Key Vault."""
+        return {name: self.load_secret(name) for name in secret_names}
+
+@define
+class AppConfigWithAzure(BaseConfig):
+    """Application configuration with Azure Key Vault integration."""
+
+    database_host: str = env_field(env_var="DB_HOST")
+    database_password: str = env_field(env_var="DB_PASSWORD")
+    api_secret_key: str = env_field(env_var="API_SECRET_KEY")
+    redis_url: str = env_field(env_var="REDIS_URL", default="redis://localhost:6379")
+
+    @classmethod
+    def from_azure_keyvault(cls, vault_url: str, secret_mapping: dict[str, str]):
+        """
+        Load configuration from Azure Key Vault.
+
+        Args:
+            vault_url: Azure Key Vault URL
+            secret_mapping: Map of field names to Key Vault secret names
+                           Example: {"database_password": "db-password", ...}
+        """
+        loader = AzureKeyVaultLoader(vault_url)
+
+        # Load secrets from Key Vault
+        secrets = {}
+        for field_name, secret_name in secret_mapping.items():
+            try:
+                secrets[field_name] = loader.load_secret(secret_name)
+            except Exception as e:
+                # Log error but continue (allow env vars as fallback)
+                print(f"Warning: Could not load {secret_name} from Key Vault: {e}")
+
+        # Merge with environment variables (env vars take precedence)
+        import os
+        config_dict = {
+            "database_host": os.getenv("DB_HOST", secrets.get("database_host", "localhost")),
+            "database_password": os.getenv("DB_PASSWORD", secrets.get("database_password")),
+            "api_secret_key": os.getenv("API_SECRET_KEY", secrets.get("api_secret_key")),
+            "redis_url": os.getenv("REDIS_URL", secrets.get("redis_url", "redis://localhost:6379")),
+        }
+
+        return cls(**config_dict)
+
+# Usage
+config = AppConfigWithAzure.from_azure_keyvault(
+    vault_url="https://myapp-vault.vault.azure.net",
+    secret_mapping={
+        "database_password": "myapp-db-password",
+        "api_secret_key": "myapp-api-secret",
+    }
+)
+
+print(f"Database host: {config.database_host}")
+print(f"Redis URL: {config.redis_url}")
+```
+
+**Best Practices:**
+- Use Managed Identity for Azure authentication (no credentials in code)
+- Enable soft-delete and purge protection on Key Vault
+- Use separate Key Vaults for different environments (dev/staging/prod)
+- Cache secrets locally with TTL to reduce Key Vault API calls
+- Use Azure RBAC for fine-grained access control
+
+#### Comparison: Cloud Secret Managers
+
+| Feature | AWS Secrets Manager | Azure Key Vault | HashiCorp Vault |
+|---------|---------------------|-----------------|-----------------|
+| **Authentication** | IAM roles, access keys | Managed Identity, Service Principal | Token, AppRole, K8s auth |
+| **Secret Rotation** | ✅ Automatic | ✅ Automatic | ✅ Manual/automated |
+| **Versioning** | ✅ Automatic | ✅ Automatic | ✅ Explicit versions |
+| **Cost** | $0.40/secret/month | $0.03/10k operations | Self-hosted or Cloud |
+| **Integration** | Native AWS SDK | Azure SDK | HTTP API, SDKs |
+| **Best For** | AWS-native apps | Azure-native apps | Multi-cloud, K8s |
+
+### Custom CLI Adapters
+
+provide.foundation currently provides `ClickAdapter` for Click-based CLIs. You can create custom adapters for other CLI frameworks like Typer or argparse.
+
+#### Creating a Typer Adapter
+
+```python
+from provide.foundation.cli.base import CLIAdapter
+from provide.foundation.cli.registry import get_command_registry
+from provide.foundation import logger
+import typer
+from typing import Any
+
+class TyperAdapter(CLIAdapter):
+    """CLI adapter for Typer framework."""
+
+    def __init__(self, app_name: str = "app"):
+        self.app = typer.Typer(name=app_name, help="CLI application powered by provide.foundation")
+        self.registry = get_command_registry()
+        self._register_commands()
+
+    def _register_commands(self):
+        """Register all commands from the command registry into Typer."""
+        for command_name in self.registry.list_commands():
+            command = self.registry.get_command(command_name)
+
+            # Create Typer command wrapper
+            def make_command_func(cmd):
+                def command_func(**kwargs: Any):
+                    """Execute command with provided arguments."""
+                    try:
+                        logger.info(f"Executing command: {cmd.name}", args=kwargs)
+                        result = cmd.execute(**kwargs)
+
+                        if result is not None:
+                            typer.echo(result)
+
+                        logger.info(f"Command completed: {cmd.name}")
+
+                    except Exception as e:
+                        logger.error(f"Command failed: {cmd.name}", error=str(e))
+                        typer.echo(f"Error: {e}", err=True)
+                        raise typer.Exit(code=1)
+
+                return command_func
+
+            # Register command with Typer
+            self.app.command(name=command_name, help=command.description)(
+                make_command_func(command)
+            )
+
+    def run(self, args: list[str] | None = None):
+        """Run the Typer CLI application."""
+        self.app()
+
+    def add_command(self, name: str, func: Any, **kwargs: Any):
+        """Add a command to the Typer app."""
+        self.app.command(name=name, **kwargs)(func)
+
+# Usage
+from provide.foundation.cli.commands import Command
+
+class GreetCommand(Command):
+    """Greet a user."""
+
+    name = "greet"
+    description = "Greet a user by name"
+
+    def execute(self, name: str, formal: bool = False):
+        """Execute the greet command."""
+        if formal:
+            return f"Good day, {name}!"
+        else:
+            return f"Hello, {name}!"
+
+# Register command
+registry = get_command_registry()
+registry.register(GreetCommand())
+
+# Create and run Typer adapter
+adapter = TyperAdapter(app_name="myapp")
+adapter.run()
+```
+
+**Running the Typer CLI:**
+```bash
+$ python myapp.py greet --name "Alice"
+Hello, Alice!
+
+$ python myapp.py greet --name "Bob" --formal
+Good day, Bob!
+
+$ python myapp.py --help
+Usage: myapp [OPTIONS] COMMAND [ARGS]...
+
+  CLI application powered by provide.foundation
+
+Commands:
+  greet  Greet a user by name
+```
+
+#### Creating an argparse Adapter
+
+```python
+from provide.foundation.cli.base import CLIAdapter
+from provide.foundation.cli.registry import get_command_registry
+from provide.foundation import logger
+import argparse
+from typing import Any
+
+class ArgparseAdapter(CLIAdapter):
+    """CLI adapter for argparse."""
+
+    def __init__(self, prog: str = "app", description: str = "CLI application"):
+        self.parser = argparse.ArgumentParser(prog=prog, description=description)
+        self.subparsers = self.parser.add_subparsers(dest="command", help="Available commands")
+        self.registry = get_command_registry()
+        self._register_commands()
+
+    def _register_commands(self):
+        """Register all commands from the command registry into argparse."""
+        for command_name in self.registry.list_commands():
+            command = self.registry.get_command(command_name)
+
+            # Create subparser for this command
+            subparser = self.subparsers.add_parser(
+                command_name,
+                help=command.description
+            )
+
+            # Add command-specific arguments
+            # (In a real implementation, introspect command.execute signature)
+            subparser.add_argument("--verbose", action="store_true", help="Verbose output")
+
+            # Store command reference
+            subparser.set_defaults(command_obj=command)
+
+    def run(self, args: list[str] | None = None):
+        """Run the argparse CLI application."""
+        parsed_args = self.parser.parse_args(args)
+
+        if not parsed_args.command:
+            self.parser.print_help()
+            return
+
+        # Execute the command
+        command = parsed_args.command_obj
+        try:
+            logger.info(f"Executing command: {command.name}")
+
+            # Convert parsed args to kwargs (excluding internal fields)
+            kwargs = {k: v for k, v in vars(parsed_args).items()
+                     if k not in ["command", "command_obj"]}
+
+            result = command.execute(**kwargs)
+
+            if result is not None:
+                print(result)
+
+            logger.info(f"Command completed: {command.name}")
+
+        except Exception as e:
+            logger.error(f"Command failed: {command.name}", error=str(e))
+            print(f"Error: {e}", file=sys.stderr)
+            sys.exit(1)
+
+    def add_command(self, name: str, func: Any, **kwargs: Any):
+        """Add a custom command to argparse."""
+        subparser = self.subparsers.add_parser(name, **kwargs)
+        subparser.set_defaults(func=func)
+
+# Usage
+adapter = ArgparseAdapter(prog="myapp", description="My CLI Application")
+adapter.run()
+```
+
+**Comparison: CLI Frameworks**
+
+| Framework | Adapter Status | Type Hints | Async Support | Complexity |
+|-----------|---------------|------------|---------------|------------|
+| **Click** | ✅ Built-in (`ClickAdapter`) | Limited | ✅ Yes | Low |
+| **Typer** | ⚠️ Custom (example above) | ✅ Native | ✅ Yes | Low |
+| **argparse** | ⚠️ Custom (example above) | ❌ No | ❌ No | Medium |
+| **Fire** | ⚠️ Custom (community) | ✅ Introspection | ❌ No | Very Low |
+
+**See also:** [Limitations: CLI Adapter Ecosystem](../../architecture/limitations.md#cli-adapter-ecosystem)

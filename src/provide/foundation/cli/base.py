@@ -24,6 +24,11 @@ class CLIAdapter(Protocol):
     framework-specific CLI commands and groups. This allows the hub
     to work with any CLI framework without tight coupling.
 
+    Currently provides ClickAdapter. Custom adapters for other frameworks (Typer, argparse)
+    can be implemented by following the CLIAdapter protocol.
+
+    See: docs/guide/advanced/integration-patterns.md#custom-cli-adapters
+
     Examples:
         >>> from provide.foundation.cli import get_cli_adapter
         >>> adapter = get_cli_adapter('click')

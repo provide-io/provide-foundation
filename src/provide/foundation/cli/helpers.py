@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from collections.abc import Callable
 import functools
-import json
 import sys
 from typing import Any, ParamSpec, TypeVar
 
 from provide.foundation.cli.deps import _HAS_CLICK, click
+from provide.foundation.formatting import format_duration as _format_duration
 from provide.foundation.parsers import parse_dict, parse_typed_value
+from provide.foundation.serialization import provide_loads
 
 """Shared utilities for CLI commands.
 
@@ -135,12 +136,12 @@ def build_attributes_from_args(
     # Parse JSON attributes first
     if json_attrs:
         try:
-            json_dict = json.loads(json_attrs)
+            json_dict = provide_loads(json_attrs)
             if not isinstance(json_dict, dict):
                 click.echo("Error: JSON attributes must be an object.", err=True)
                 return {}, 1
             attributes.update(json_dict)
-        except json.JSONDecodeError as e:
+        except (ValueError, TypeError) as e:
             click.echo(f"Error: Invalid JSON attributes: {e}", err=True)
             return {}, 1
 
@@ -184,6 +185,9 @@ def parse_filter_string(filter_str: str) -> dict[str, str]:
 def format_duration(seconds: float) -> str:
     """Format duration in seconds to human-readable string.
 
+    Delegates to formatting.numbers.format_duration() with short format
+    and adds spaces between components for CLI readability.
+
     Args:
         seconds: Duration in seconds
 
@@ -191,18 +195,18 @@ def format_duration(seconds: float) -> str:
         Formatted duration string (e.g., "1h 23m 45s", "45s", "1.5s")
 
     """
+    # Handle sub-minute durations with decimal precision
     if seconds < 60:
         return f"{seconds:.1f}s"
 
-    minutes = int(seconds // 60)
-    remaining_seconds = int(seconds % 60)
+    # Use formatting module for consistency, with short format
+    # The formatting module produces "1h23m45s", we want "1h 23m 45s"
+    formatted = _format_duration(seconds, short=True)
 
-    if minutes < 60:
-        return f"{minutes}m {remaining_seconds}s"
-
-    hours = minutes // 60
-    remaining_minutes = minutes % 60
-    return f"{hours}h {remaining_minutes}m {remaining_seconds}s"
+    # Add spaces between components for better CLI readability
+    # Transform "1h23m45s" → "1h 23m 45s"
+    result = formatted.replace("h", "h ").replace("m", "m ").replace("d", "d ")
+    return result.rstrip()  # Remove trailing space
 
 
 def get_client_from_context(ctx: Any) -> tuple[Any | None, int]:

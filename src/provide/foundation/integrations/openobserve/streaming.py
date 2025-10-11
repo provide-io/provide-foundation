@@ -1,23 +1,21 @@
+"""Streaming search operations for OpenObserve using Foundation transport."""
+
 from __future__ import annotations
 
-from collections.abc import Generator
+from collections.abc import AsyncGenerator, Generator
 import json
 import re
 import time
 from typing import Any
 
-import requests
-
 from provide.foundation.console.output import perr
 from provide.foundation.errors.config import ValidationError
-from provide.foundation.integrations.openobserve.auth import get_auth_headers
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveStreamingError,
 )
 from provide.foundation.integrations.openobserve.models import parse_relative_time
-
-"""Streaming search operations for OpenObserve."""
+from provide.foundation.utils.async_helpers import run_async
 
 
 def stream_logs(
@@ -53,39 +51,33 @@ def stream_logs(
         last_timestamp = start_time
     seen_ids = set()
 
-    # Starting log stream (internal operation - no user output needed)
-
     while True:
         try:
-            # Search for new logs since last timestamp
-            response = client.search(
-                sql=sql,
-                start_time=last_timestamp,
-                end_time="now",
-                size=1000,
+            # Search for new logs since last timestamp using async client
+            response = run_async(
+                client.search(
+                    sql=sql,
+                    start_time=last_timestamp,
+                    end_time="now",
+                    size=1000,
+                )
             )
 
             # Process new logs
-            new_count = 0
             for hit in response.hits:
                 # Create a unique ID for deduplication
-                # Use combination of timestamp and a hash of content
                 timestamp = hit.get("_timestamp", 0)
                 log_id = f"{timestamp}:{hash(json.dumps(hit, sort_keys=True))}"
 
                 if log_id not in seen_ids:
                     seen_ids.add(log_id)
-                    new_count += 1
                     yield hit
 
                     # Update last timestamp
                     if timestamp > last_timestamp:
                         last_timestamp = timestamp + 1  # Add 1 microsecond to avoid duplicates
 
-            # Debug: {new_count} new entries (removed to avoid noise)
-
             # Clean up old seen IDs to prevent memory growth
-            # Keep only IDs from the last minute
             cutoff_time = parse_relative_time("-1m")
             seen_ids = {lid for lid in seen_ids if int(lid.split(":")[0]) > cutoff_time}
 
@@ -93,23 +85,47 @@ def stream_logs(
             time.sleep(poll_interval)
 
         except KeyboardInterrupt:
-            # Stream interrupted by user (no output needed)
             break
         except Exception as e:
             perr(f"Error during streaming: {e}")
             raise OpenObserveStreamingError(f"Streaming failed: {e}") from e
 
 
-def stream_search_http2(
+def _parse_time_param(time_param: str | int | None, default: str) -> int:
+    """Parse time parameter to microseconds."""
+    if time_param is None:
+        return parse_relative_time(default)
+    if isinstance(time_param, str):
+        return parse_relative_time(time_param)
+    return time_param
+
+
+def _process_stream_line(line: str) -> list[dict[str, Any]]:
+    """Process a single line from stream response."""
+    if not line:
+        return []
+
+    try:
+        parsed_data = json.loads(line)
+        if isinstance(parsed_data, dict):
+            if "hits" in parsed_data:
+                return parsed_data["hits"]
+            return [parsed_data]
+    except json.JSONDecodeError:
+        pass
+
+    return []
+
+
+async def stream_search_http2_async(
     sql: str,
     start_time: str | int | None = None,
     end_time: str | int | None = None,
     client: OpenObserveClient | None = None,
-) -> Generator[dict[str, Any], None, None]:
-    """Stream search results using HTTP/2 streaming endpoint.
+) -> AsyncGenerator[dict[str, Any], None]:
+    """Stream search results using HTTP/2 streaming endpoint (async version).
 
-    This uses the native HTTP/2 streaming capability of OpenObserve
-    for real-time log streaming.
+    Uses Foundation's transport for HTTP/2 streaming.
 
     Args:
         sql: SQL query to execute
@@ -125,22 +141,11 @@ def stream_search_http2(
         client = OpenObserveClient.from_config()
 
     # Parse times
-    if start_time is None:
-        start_ts = parse_relative_time("-1h")
-    elif isinstance(start_time, str):
-        start_ts = parse_relative_time(start_time)
-    else:
-        start_ts = start_time
-
-    if end_time is None:
-        end_ts = parse_relative_time("now")
-    elif isinstance(end_time, str):
-        end_ts = parse_relative_time(end_time)
-    else:
-        end_ts = end_time
+    start_ts = _parse_time_param(start_time, "-1h")
+    end_ts = _parse_time_param(end_time, "now")
 
     # Prepare request
-    url = f"{client.url}/api/{client.organization}/_search_stream"
+    uri = f"{client.url}/api/{client.organization}/_search_stream"
     params = {
         "is_ui_histogram": "false",
         "is_multi_stream_search": "false",
@@ -151,43 +156,50 @@ def stream_search_http2(
         "end_time": end_ts,
     }
 
-    headers = get_auth_headers(client.username, client.password)
-
-    # Starting HTTP/2 stream (internal operation - no user output needed)
-
     try:
-        # Make streaming request
-        with requests.post(
-            url,
-            params=params,
-            json=data,
-            headers=headers,
-            stream=True,
-            timeout=client.timeout,
-        ) as response:
-            response.raise_for_status()
+        # Use Foundation's transport for streaming
+        async for chunk in client._client.stream(uri=uri, method="POST", params=params, body=data):
+            # Decode chunk and process lines
+            lines = chunk.decode("utf-8").strip().split("\n")
+            for line in lines:
+                for hit in _process_stream_line(line):
+                    yield hit
 
-            # Process streaming response
-            for line in response.iter_lines():
-                if line:
-                    try:
-                        # Decode and parse JSON line
-                        data = json.loads(line.decode("utf-8"))
-
-                        # Handle different response formats
-                        if isinstance(data, dict):
-                            if "hits" in data:
-                                # Batch of results
-                                yield from data["hits"]
-                            else:
-                                # Single result
-                                yield data
-                    except json.JSONDecodeError:
-                        # Failed to parse stream line - skip silently
-                        continue
-
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         raise OpenObserveStreamingError(f"HTTP/2 streaming failed: {e}") from e
+
+
+def stream_search_http2(
+    sql: str,
+    start_time: str | int | None = None,
+    end_time: str | int | None = None,
+    client: OpenObserveClient | None = None,
+) -> Generator[dict[str, Any], None, None]:
+    """Stream search results using HTTP/2 streaming endpoint (sync wrapper).
+
+    This is a sync wrapper around the async streaming function for CLI use.
+
+    Args:
+        sql: SQL query to execute
+        start_time: Start time
+        end_time: End time
+        client: OpenObserve client
+
+    Yields:
+        Log entries as they stream
+
+    """
+
+    async def _stream() -> list[dict[str, Any]]:
+        results = []
+        async for item in stream_search_http2_async(
+            sql=sql, start_time=start_time, end_time=end_time, client=client
+        ):
+            results.append(item)
+        return results
+
+    results = run_async(_stream())
+    yield from results
 
 
 def _build_where_clause_from_filters(filters: dict[str, str]) -> str:
@@ -247,8 +259,8 @@ def tail_logs(
     if client is None:
         client = OpenObserveClient.from_config()
 
-    # Get initial logs (internal operation - no user output needed)
-    response = client.search(sql=sql, start_time="-1h")
+    # Get initial logs using async client
+    response = run_async(client.search(sql=sql, start_time="-1h"))
 
     # Yield initial logs in reverse order (oldest first)
     yield from reversed(response.hits)

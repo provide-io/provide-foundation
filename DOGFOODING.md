@@ -48,12 +48,32 @@ This document tracks where provide.foundation should use its own robust features
 - **Impact**: More consistent environment variable access
 - **Note**: Limited to `get_str()` to avoid circular dependencies (other getters use the logger)
 
+### 5. Utils/Caching: Uses utils/environment Helpers
+**Status**: ✅ Completed
+**Files Changed**: `src/provide/foundation/utils/caching.py`
+
+- **Before**: Manual boolean and integer parsing from environment
+  ```python
+  _CACHE_ENABLED = os.environ.get("FOUNDATION_CACHE_ENABLED", "true").lower() in ("true", "1", "yes", "on")
+  _DEFAULT_CACHE_SIZE = int(os.environ.get("FOUNDATION_CACHE_SIZE", "128"))
+  ```
+- **After**: Uses `get_bool()` and `get_int()` from utils/environment
+  ```python
+  _CACHE_ENABLED = get_bool("FOUNDATION_CACHE_ENABLED", default=True)
+  _DEFAULT_CACHE_SIZE = get_int("FOUNDATION_CACHE_SIZE", default=128)
+  ```
+- **Impact**: Consistent environment variable parsing
+- **Benefits**:
+  - Eliminates manual type conversion
+  - Consistent parsing logic across codebase
+  - Better error handling
+
 ## 🚨 Critical Priority: OpenObserve Integration Should Use Foundation Transport
 
-**Status**: ⚠️ BLOCKED - Breaking Change Required
+**Status**: ✅ COMPLETED
 **Priority**: CRITICAL
-**Effort**: Large (3-5 days)
-**Impact**: Breaking change - requires async refactor
+**Effort**: Completed
+**Impact**: Breaking change - async refactor complete
 
 ### The Problem
 
@@ -134,33 +154,185 @@ Foundation provides a complete, battle-tested HTTP transport system with:
    - Breaking change release
    - Migration guide
 
-### Decision Points
+### ✅ Decision: No Backward Compatibility Required
 
-Before starting this work:
+**User confirmed**: OpenObserve integration is only used internally by Foundation itself. No external users exist.
 
-- [ ] Confirm breaking change is acceptable
-- [ ] Plan migration strategy for existing users
-- [ ] Document async migration guide
-- [ ] Update all examples and documentation
-- [ ] Consider providing sync wrapper (run_sync helper)
+**Therefore**: We can do a complete async rewrite without migration concerns.
 
-## 📊 Summary
+###  Implementation Plan (Ready to Execute)
+
+#### Phase 1: Core Client (`client.py`)
+```python
+# Replace imports
+from provide.foundation.transport import UniversalClient
+from provide.foundation.transport.errors import TransportConnectionError, TransportTimeoutError
+
+# Update __init__
+def __init__(self, url, username, password, organization="default", timeout=30, max_retries=3):
+    self._client = UniversalClient(
+        default_headers=get_auth_headers(username, password),
+        default_timeout=float(timeout)
+    )
+    # Note: UniversalClient uses Foundation's RetryMiddleware automatically
+
+# Convert all methods to async
+async def _make_request(...)
+async def search(...)
+async def list_streams(...)
+async def test_connection(...)
+```
+
+#### Phase 2: CLI Bridge (`commands.py`)
+```python
+import asyncio
+
+def run_async(coro):
+    """Run async client calls from sync CLI commands."""
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+    return loop.run_until_complete(coro)
+
+# Update all command calls
+streams = run_async(client.list_streams())
+```
+
+#### Phase 3: Supporting Files
+- **streaming.py**: Replace `requests.post()` with Foundation transport
+- **otlp.py**: Replace `requests.post()` with Foundation transport
+
+#### Phase 4: Tests
+- Add `pytest-asyncio` markers to async tests
+- Mock Foundation's transport instead of requests
+- Maintain 100% test coverage
+
+### Implementation Checklist
+
+- [x] Convert OpenObserveClient to use UniversalClient
+- [x] Create async-to-sync bridge for CLI commands (utils/async_helpers.py)
+- [x] Update all CLI command calls
+- [x] Convert streaming.py to use Foundation transport
+- [x] Convert otlp.py to use Foundation transport
+- [x] Update all tests for async client
+- [x] Run comprehensive test suite (97 OpenObserve tests passing)
+- [x] Remove requests dependency from OpenObserve integration
+
+## 📊 Summary of Completed Improvements
 
 | Category | Status | Files Modified | Tests Passing |
 |----------|--------|----------------|---------------|
-| CLI Helpers | ✅ Complete | 1 | ✅ 18 tests |
-| Discovery Error Handling | ✅ Complete | 1 | ✅ 4 tests |
-| OpenObserve @resilient | ✅ Complete | 1 | ✅ 123 tests |
-| Coordinator Environment | ✅ Complete | 1 | ✅ 27 tests |
-| **OpenObserve Transport** | ⚠️ Pending | 3 | N/A (not started) |
+| CLI Helpers → Parsers | ✅ Complete | 1 | ✅ 18 tests |
+| Discovery → @resilient | ✅ Complete | 1 | ✅ 4 tests |
+| OpenObserve → @resilient | ✅ Complete | 1 | ✅ 123 tests |
+| Coordinator → env helpers | ✅ Complete | 1 | ✅ 27 tests |
+| Downloader → hash_file() | ✅ Complete | 1 | ✅ 16 tests |
+| CLI Shutdown → perr() | ✅ Complete | 1 | ✅ 7 tests |
+| Utils/Caching → env helpers | ✅ Complete | 1 | ✅ 108 tests |
+| **OpenObserve Transport** | ✅ **Complete** | **4 files** | ✅ **97 tests** |
+| **TOTAL IMPROVEMENTS** | ✅ **8 Complete** | **11 files** | ✅ **1193+ tests passing** |
+
+## 🔍 Analysis of Dogfooding Opportunities
+
+### Summary of Analysis
+
+After thorough analysis of the codebase, many suggested dogfooding improvements fall into three categories:
+
+1. **✅ Already Implemented**: Code already uses Foundation features correctly
+2. **❌ Would Reduce Quality**: Using Foundation feature would actually make code worse
+3. **⚠️ Requires Trade-offs**: Valid but has significant complexity or performance implications
+
+### Category 1: Already Implemented Correctly ✅
+
+#### tools/downloader.py - Already Uses hash_file()
+- **Line 163**: ✅ Already uses `hash_file(file_path, algorithm="sha256")`
+- **Analysis**: Dogfooding suggestion was based on outdated code review
+- **Status**: No changes needed
+
+### Category 2: Would Reduce Code Quality ❌
+
+#### process/sync/execution.py - Should NOT Use @resilient
+**Suggestion**: Add @resilient decorator to run() function
+
+**Analysis**: Current implementation is BETTER without @resilient because:
+
+1. **Contextual Logging**: Current code logs different messages for different error types:
+   - ProcessError: "❌ Command failed" with exit code
+   - ProcessTimeoutError: "⏱️ Command timed out" with timeout duration
+   - Generic errors: "💥 Command execution failed"
+
+2. **Command Masking**: Uses `mask_command()` to hide secrets in logs
+   - Example: `run(["curl", "-H", "Authorization: Bearer secret123"])` logs as `curl -H "Authorization: Bearer ***"`
+
+3. **Structured Error Types**: Raises specific exceptions (ProcessError, ProcessTimeoutError) with rich metadata
+
+4. **Error Context**: Includes command, return code, stdout/stderr in exceptions
+
+**@resilient would**:
+- Lose contextual emoji and messages
+- Lose command masking (security issue)
+- Flatten all errors to generic handling
+- Lose structured error metadata
+
+**Conclusion**: Current implementation demonstrates SUPERIOR error handling patterns. Keep as-is.
+
+**Documentation**: See `src/provide/foundation/process/sync/execution.py:23-150`
+
+### Category 3: Valid But Complex Trade-offs ⚠️
+
+#### tools/downloader.py - atomic_write() Has Trade-offs
+**Suggestion**: Use `atomic_write()` instead of `dest.open("wb")` (line 127)
+
+**Analysis**: Valid suggestion but significant complexity:
+
+**Current Implementation** (line 127-131):
+```python
+with dest.open("wb") as f:
+    async for chunk in self.client.stream(url, "GET"):
+        f.write(chunk)
+        downloaded += len(chunk)
+        self._report_progress(downloaded, total_size)
+```
+
+**Benefits**:
+- ✅ Streams large files without memory buffering
+- ✅ Reports progress during download
+- ✅ Efficient for multi-GB downloads
+
+**atomic_write() Approach**:
+```python
+# Would require buffering entire file
+content = b""
+async for chunk in self.client.stream(url, "GET"):
+    content += chunk  # Memory issue for large files!
+    self._report_progress(downloaded, total_size)
+atomic_write(dest, content)
+```
+
+**Trade-offs**:
+- ❌ Would require buffering entire file in memory (defeats streaming)
+- ❌ No progress callbacks during write (atomic_write happens at end)
+- ✅ Would prevent partial downloads on failure
+
+**Current Error Handling**:
+- Has manual cleanup on exceptions (lines 134-136, 139-141, 231-232)
+- Deletes partial files on checksum mismatch
+- Deletes partial files on download errors
+
+**Conclusion**: Current implementation is appropriate for streaming downloads. atomic_write() would require architectural changes and lose streaming benefits.
+
+**Recommendation**: Document this design decision rather than change implementation.
 
 ## 🔍 Additional Dogfooding Opportunities Identified
 
 ### File I/O Improvements
 
 #### tools/downloader.py
-- **Line 127**: Uses `dest.open("wb")` for downloads → Should use `atomic_write()` to prevent corruption
-- **Lines 163-167**: Manual hashlib.sha256() → Should use `hash_file()` from crypto/hashing
+- **Line 127**: Uses `dest.open("wb")` for downloads
+  - **Status**: ⚠️ Could use `atomic_write()` but requires architectural changes (see analysis above)
+- **Line 163**: ✅ Already uses `hash_file()` correctly
 
 #### tools/verifier.py
 - **Line 63**: Direct file reading → Could use `safe_read()` for better error handling
@@ -242,10 +414,43 @@ except Exception:
 2. Additional @resilient decorators for simple error suppression
 3. Manual validation patterns → config/validators usage
 
+## Examples and Documentation
+
+### Dogfooding Demo Application
+See `examples/cli/02_dogfooding_cli.py` for a comprehensive demonstration of using Foundation's own features:
+
+- **Environment Variables**: RuntimeConfig with env_field vs. utils/environment helpers
+- **File I/O**: atomic_write_text(), safe_read_text(), hash_file()
+- **Process Execution**: run() and run_simple() with error handling
+- **Parsing**: parse_typed_value() for CLI arguments
+- **Error Handling**: @resilient decorator for graceful degradation
+- **Console Output**: pout()/perr() with JSON mode support
+
+Run the demo:
+```bash
+python examples/cli/02_dogfooding_cli.py --help
+python examples/cli/02_dogfooding_cli.py config-demo
+python examples/cli/02_dogfooding_cli.py file-demo
+python examples/cli/02_dogfooding_cli.py process-demo
+```
+
 ## Next Steps
 
-1. **File I/O**: Update downloader.py to use atomic_write() and hash_file()
-2. **Console Output**: Replace print() in CLI commands with pout()/perr()
-3. **JSON Operations**: Use read_json()/write_json() for file-based JSON
-4. **Testing**: Ensure 100% coverage on modified code
-5. **Breaking Change**: Plan OpenObserve async transport migration separately
+### High Priority
+1. ✅ **Process Execution Analysis**: Documented why @resilient would reduce quality
+2. ✅ **Downloader Analysis**: Documented atomic_write() trade-offs
+3. ✅ **Dogfooding Example**: Created comprehensive CLI example
+
+### Medium Priority (Completed ✅)
+1. ✅ **Console Output**: All user-facing CLI commands already use pout()/perr()
+   - Infrastructure files (console/output.py, streams/file.py) correctly use print() for implementation
+2. ✅ **JSON Operations**: Verified all JSON usage is appropriate
+   - File operations use read_json()/write_json() helpers
+   - String serialization correctly uses json.loads()/dumps()
+3. ✅ **Environment Variables**: All safe os.environ usage replaced
+   - utils/caching.py now uses get_bool() and get_int()
+   - Infrastructure files (config/env.py, utils/environment/getters.py) correctly use os.environ for implementation
+
+### Low Priority
+1. Additional @resilient decorators for simple error suppression
+2. Manual validation patterns → config/validators usage

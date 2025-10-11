@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
-import hashlib
 from pathlib import Path
 
+from provide.foundation.crypto.hashing import hash_file
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger
 from provide.foundation.resilience import RetryExecutor, RetryPolicy
@@ -149,6 +149,8 @@ class ToolDownloader:
     def verify_checksum(self, file_path: Path, expected: str) -> bool:
         """Verify file checksum.
 
+        Uses Foundation's hash_file() for consistent hashing behavior.
+
         Args:
             file_path: Path to file to verify.
             expected: Expected checksum (hex string).
@@ -157,14 +159,8 @@ class ToolDownloader:
             True if checksum matches, False otherwise.
 
         """
-        # Default to SHA256
-        hasher = hashlib.sha256()
-
-        with file_path.open("rb") as f:
-            for chunk in iter(lambda: f.read(8192), b""):
-                hasher.update(chunk)
-
-        actual = hasher.hexdigest()
+        # Use Foundation's hash_file with SHA256 (default)
+        actual = hash_file(file_path, algorithm="sha256")
         return actual == expected
 
     async def download_parallel(self, urls: list[tuple[str, Path]]) -> list[Path]:

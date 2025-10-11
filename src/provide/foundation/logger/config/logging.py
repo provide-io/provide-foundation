@@ -33,6 +33,9 @@ from provide.foundation.logger.defaults import (
     DEFAULT_RATE_LIMIT_GLOBAL,
     DEFAULT_RATE_LIMIT_GLOBAL_CAPACITY,
     DEFAULT_RATE_LIMIT_OVERFLOW_POLICY,
+    DEFAULT_SANITIZATION_ENABLED,
+    DEFAULT_SANITIZATION_MASK_PATTERNS,
+    DEFAULT_SANITIZATION_SANITIZE_DICTS,
     default_module_levels,
     default_rate_limits,
 )
@@ -160,4 +163,23 @@ class LoggingConfig(RuntimeConfig):
         env_var="PROVIDE_LOG_RATE_LIMIT_OVERFLOW_POLICY",
         validator=validate_overflow_policy,
         description="Policy when queue is full: drop_oldest, drop_newest, or block",
+    )
+    # Sanitization configuration
+    sanitization_enabled: bool = field(
+        default=DEFAULT_SANITIZATION_ENABLED,
+        env_var="PROVIDE_LOG_SANITIZATION_ENABLED",
+        converter=parse_bool_extended,
+        description="Enable automatic sanitization of sensitive data in logs",
+    )
+    sanitization_mask_patterns: bool = field(
+        default=DEFAULT_SANITIZATION_MASK_PATTERNS,
+        env_var="PROVIDE_LOG_SANITIZATION_MASK_PATTERNS",
+        converter=parse_bool_extended,
+        description="Enable pattern-based secret masking (API keys, tokens, passwords)",
+    )
+    sanitization_sanitize_dicts: bool = field(
+        default=DEFAULT_SANITIZATION_SANITIZE_DICTS,
+        env_var="PROVIDE_LOG_SANITIZATION_SANITIZE_DICTS",
+        converter=parse_bool_extended,
+        description="Enable sanitization of dictionary values (headers, config, etc.)",
     )

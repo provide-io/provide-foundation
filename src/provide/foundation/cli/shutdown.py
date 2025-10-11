@@ -9,6 +9,7 @@ import sys
 from typing import Any, ParamSpec, TypeVar
 
 from provide.foundation.config.defaults import EXIT_SIGINT
+from provide.foundation.console.output import perr
 from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.lifecycle import cleanup_all_components
 
@@ -66,8 +67,8 @@ def _cleanup_foundation_resources() -> None:
         try:
             log.error("Error during cleanup", error=str(e))
         except Exception:
-            # If logging fails, write to stderr as last resort
-            print(f"Error during cleanup: {e}", file=sys.stderr)
+            # If logging fails, use Foundation's console output as last resort
+            perr(f"Error during cleanup: {e}")
 
 
 def _signal_handler(signum: int, frame: Any) -> None:
@@ -207,7 +208,8 @@ def with_cleanup(func: Callable[P, R]) -> Callable[P, R]:
 
                 click.echo("\n⛔ Command interrupted by user")
             except ImportError:
-                print("\n⛔ Command interrupted by user", file=sys.stderr)
+                # Use Foundation's console output
+                perr("\n⛔ Command interrupted by user")
 
             # Cleanup will be handled by atexit/signal handlers
             sys.exit(EXIT_SIGINT)
