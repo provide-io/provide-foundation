@@ -10,10 +10,21 @@ from pathlib import Path
 import threading
 import time
 
+import pytest
 from provide.testkit import FoundationTestCase
 
 from provide.foundation.file.operations.detectors.auto_flush import AutoFlushHandler
 from provide.foundation.file.operations.types import FileEvent, FileEventMetadata, FileOperation
+
+
+@pytest.fixture
+def handler_cleanup():
+    """Fixture to track and cleanup AutoFlushHandlers after each test."""
+    handlers = []
+    yield handlers
+    # Cleanup all handlers
+    for handler in handlers:
+        handler.clear()
 
 
 class TestAutoFlushHandlerConcurrency(FoundationTestCase):
@@ -25,15 +36,6 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
         self.base_time = datetime.now()
         self.operations_emitted: list[FileOperation] = []
         self.lock = threading.Lock()
-        self.handlers: list[AutoFlushHandler] = []
-
-    def teardown_method(self) -> None:
-        """Clean up test environment."""
-        # Clean up all handlers to cancel timers
-        for handler in self.handlers:
-            handler.clear()
-        self.handlers.clear()
-        super().teardown_method()
 
     def _create_test_event(self, filename: str, event_type: str = "modified") -> FileEvent:
         """Create a test file event."""
@@ -51,13 +53,13 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
         with self.lock:
             self.operations_emitted.append(operation)
 
-    def test_concurrent_add_event_from_multiple_threads(self) -> None:
+    def test_concurrent_add_event_from_multiple_threads(self, handler_cleanup: list) -> None:
         """Test concurrent add_event() calls from 10+ threads."""
         handler = AutoFlushHandler(
             time_window_ms=1000,
             on_operation_complete=self._emit_operation,
         )
-        self.handlers.append(handler)
+        handler_cleanup.append(handler)
 
         num_threads = 20
         events_per_thread = 50
@@ -83,7 +85,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
         pending = handler.pending_events
         assert len(pending) == num_threads * events_per_thread, "All events should be added"
 
-    def test_concurrent_add_and_clear(self) -> None:
+    def test_concurrent_add_and_clear(self, handler_cleanup: list) -> None:
         """Test concurrent add_event() and clear() calls."""
         handler = AutoFlushHandler(
             time_window_ms=1000,
@@ -130,7 +132,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
         # Should not have any errors
         assert len(errors) == 0, f"Should not have threading errors: {errors}"
 
-    def test_timer_cancellation_race(self) -> None:
+    def test_timer_cancellation_race(self, handler_cleanup: list) -> None:
         """Test timer cancellation during concurrent adds."""
         handler = AutoFlushHandler(
             time_window_ms=100,  # Short window
@@ -166,7 +168,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
         final_events = handler.pending_events
         assert isinstance(final_events, list), "Should safely return event list"
 
-    def test_pending_events_property_thread_safety(self) -> None:
+    def test_pending_events_property_thread_safety(self, handler_cleanup: list) -> None:
         """Test that pending_events property is thread-safe."""
         handler = AutoFlushHandler(
             time_window_ms=1000,
@@ -203,7 +205,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
         final = handler.pending_events
         assert len(final) == num_threads * 50, "All events should be present"
 
-    def test_schedule_flush_concurrent_calls(self) -> None:
+    def test_schedule_flush_concurrent_calls(self, handler_cleanup: list) -> None:
         """Test concurrent calls to schedule_flush()."""
         handler = AutoFlushHandler(
             time_window_ms=1000,
@@ -232,7 +234,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
         # Should not crash
         assert True, "Should handle concurrent schedule_flush calls"
 
-    def test_concurrent_clear_and_pending_events_read(self) -> None:
+    def test_concurrent_clear_and_pending_events_read(self, handler_cleanup: list) -> None:
         """Test reading pending_events while clear() is called."""
         handler = AutoFlushHandler(
             time_window_ms=1000,
@@ -282,7 +284,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
         # Should not have errors
         assert len(errors) == 0, f"Should handle concurrent read/clear: {errors}"
 
-    def test_no_event_loop_handling(self) -> None:
+    def test_no_event_loop_handling(self, handler_cleanup: list) -> None:
         """Test behavior when no event loop is available."""
         # This test runs without an asyncio event loop
         handler = AutoFlushHandler(
@@ -329,7 +331,7 @@ class TestAutoFlushHandlerStressTest(FoundationTestCase):
         with self.lock:
             self.operations_emitted.append(operation)
 
-    def test_high_frequency_adds(self) -> None:
+    def test_high_frequency_adds(self, handler_cleanup: list) -> None:
         """Test high-frequency event additions."""
         handler = AutoFlushHandler(
             time_window_ms=50,
@@ -344,7 +346,7 @@ class TestAutoFlushHandlerStressTest(FoundationTestCase):
         # Should handle all events
         assert len(handler.pending_events) == num_events
 
-    def test_many_threads_contention(self) -> None:
+    def test_many_threads_contention(self, handler_cleanup: list) -> None:
         """Test many threads competing for lock."""
         handler = AutoFlushHandler(
             time_window_ms=1000,
@@ -389,7 +391,7 @@ class TestAutoFlushHandlerEdgeCases(FoundationTestCase):
         self.handlers.clear()
         super().teardown_method()
 
-    def test_clear_during_callback(self) -> None:
+    def test_clear_during_callback(self, handler_cleanup: list) -> None:
         """Test clearing events while callback is executing."""
         handler = AutoFlushHandler(
             time_window_ms=50,
@@ -420,7 +422,7 @@ class TestAutoFlushHandlerEdgeCases(FoundationTestCase):
         handler.clear()
         assert len(handler.pending_events) == 0
 
-    def test_add_event_with_temp_files(self) -> None:
+    def test_add_event_with_temp_files(self, handler_cleanup: list) -> None:
         """Test adding events for temp files doesn't crash."""
         handler = AutoFlushHandler(time_window_ms=1000)
         self.handlers.append(handler)
