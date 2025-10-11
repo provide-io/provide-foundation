@@ -47,10 +47,6 @@ class FoundationManager:
             force: If True, force re-initialization even if already initialized
 
         """
-        # DEBUG: Trace entry
-        import sys
-        print(f"DEBUG: FoundationManager.initialize_foundation called (config={config is not None}, force={force}, initialized={self._initialized})", file=sys.stderr)
-
         # Smart initialization: Auto-upgrade to force=True when explicit config
         # is provided but Foundation is already auto-initialized with defaults
         if (
@@ -60,7 +56,6 @@ class FoundationManager:
             and self._config is not None  # Have existing config to check
             and getattr(self._config, 'service_name', 'not-none') is None  # Auto-init indicator
         ):
-            print(f"DEBUG: All conditions met, upgrading force=True", file=sys.stderr)
             force = True
             # Use perr for early bootstrap output (logger might not be ready)
             try:
