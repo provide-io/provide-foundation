@@ -9,7 +9,7 @@ from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.errors import ValidationError
 from provide.foundation.formatting import format_duration as _format_duration
 from provide.foundation.parsers import parse_dict, parse_typed_value
-from provide.foundation.serialization import provide_loads
+from provide.foundation.serialization import json_loads
 
 """Shared utilities for CLI commands.
 
@@ -137,7 +137,7 @@ def build_attributes_from_args(
     # Parse JSON attributes first
     if json_attrs:
         try:
-            json_dict = provide_loads(json_attrs)
+            json_dict = json_loads(json_attrs)
             if not isinstance(json_dict, dict):
                 click.echo("Error: JSON attributes must be an object.", err=True)
                 return {}, 1
