@@ -18,9 +18,9 @@ from provide.foundation.file.operations.types import FileEvent, FileEventMetadat
 
 
 @pytest.fixture
-def handler_cleanup():
+def handler_cleanup() -> list[AutoFlushHandler]:  # noqa: ANN201
     """Fixture to track and cleanup AutoFlushHandlers after each test."""
-    handlers = []
+    handlers: list[AutoFlushHandler] = []
     yield handlers
     # Cleanup all handlers
     for handler in handlers:
