@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import shutil
-from typing import BinaryIO
+from typing import Any, BinaryIO
 
-from attrs import define, validators
+from attrs import Attribute, define, validators
 
 from provide.foundation.archive.base import BaseCompressor
 from provide.foundation.archive.defaults import DEFAULT_ZSTD_COMPRESSION_LEVEL
@@ -12,7 +12,7 @@ from provide.foundation.config.base import field
 """Zstandard compression implementation (requires zstandard package)."""
 
 
-def _validate_zstd_level(instance: ZstdCompressor, attribute: str, value: int) -> None:
+def _validate_zstd_level(instance: Any, attribute: Attribute[int], value: int) -> None:
     """Validate ZSTD compression level (1-22)."""
     if not (1 <= value <= 22):
         raise ValueError(f"ZSTD compression level must be between 1 and 22, got {value}")
