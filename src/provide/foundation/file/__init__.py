@@ -22,6 +22,12 @@ from provide.foundation.file.directory import (
     ensure_parent_dir,
     safe_rmtree,
 )
+from provide.foundation.file.disk import (
+    check_disk_space,
+    format_bytes,
+    get_available_space,
+    get_disk_usage,
+)
 from provide.foundation.file.formats import (
     read_json,
     read_toml,
@@ -79,6 +85,7 @@ This module provides comprehensive file operations including:
 - File locking for concurrent access
 - File permissions utilities
 - Memory/file alignment utilities for binary I/O and mmap
+- Disk space checking and management
 - Various utility functions
 """
 
@@ -110,6 +117,7 @@ __all__ = [
     "atomic_write_text",
     "backup_file",
     "calculate_padding",
+    "check_disk_space",
     "detect_atomic_save",
     # From directory
     "ensure_dir",
@@ -117,7 +125,10 @@ __all__ = [
     "ensure_secure_permissions",
     "extract_original_path",
     "find_files",
+    "format_bytes",
     "format_permissions",
+    "get_available_space",
+    "get_disk_usage",
     "get_mtime",
     "get_permissions",
     "get_system_page_size",
