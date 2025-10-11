@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 from datetime import datetime
+import threading
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
@@ -21,7 +22,11 @@ log = get_logger(__name__)
 
 
 class AutoFlushHandler:
-    """Handles automatic flushing of pending events with temp file filtering."""
+    """Handles automatic flushing of pending events with temp file filtering.
+
+    Thread-safe: Uses internal locking to protect shared state from concurrent access.
+    Multiple threads can safely call add_event() simultaneously.
+    """
 
     def __init__(
         self,
@@ -42,35 +47,46 @@ class AutoFlushHandler:
         self._pending_events: list[FileEvent] = []
         self._last_flush = datetime.now()
         self._flush_timer: Any = None  # asyncio.TimerHandle
+        self._lock = threading.RLock()  # Protect shared state from concurrent threads
 
     def add_event(self, event: FileEvent) -> None:
         """Add event and schedule auto-flush.
 
+        Thread-safe: Uses internal locking for concurrent add_event() calls.
+
         Args:
             event: File event to buffer for processing
         """
-        self._pending_events.append(event)
+        with self._lock:
+            self._pending_events.append(event)
 
-        # Check if this is a temp file
-        is_temp = is_temp_file(event.path) or (event.dest_path and is_temp_file(event.dest_path))
+            # Check if this is a temp file
+            is_temp = is_temp_file(event.path) or (event.dest_path and is_temp_file(event.dest_path))
 
-        log.trace(
-            "Event added to auto-flush buffer",
-            path=str(event.path),
-            dest_path=str(event.dest_path) if event.dest_path else None,
-            is_temp=is_temp,
-            pending_count=len(self._pending_events),
-        )
+            log.trace(
+                "Event added to auto-flush buffer",
+                path=str(event.path),
+                dest_path=str(event.dest_path) if event.dest_path else None,
+                is_temp=is_temp,
+                pending_count=len(self._pending_events),
+            )
 
-        # Schedule auto-flush timer
-        self._schedule_auto_flush()
+            # Schedule auto-flush timer
+            self._schedule_auto_flush()
 
     def schedule_flush(self) -> None:
-        """Schedule auto-flush timer (public interface)."""
-        self._schedule_auto_flush()
+        """Schedule auto-flush timer (public interface).
+
+        Thread-safe: Uses internal locking.
+        """
+        with self._lock:
+            self._schedule_auto_flush()
 
     def _schedule_auto_flush(self) -> None:
-        """Schedule auto-flush timer."""
+        """Schedule auto-flush timer.
+
+        Note: Must be called with self._lock held.
+        """
         # Cancel existing timer
         if self._flush_timer:
             self._flush_timer.cancel()
@@ -88,34 +104,38 @@ class AutoFlushHandler:
             log.warning("Cannot schedule auto-flush: no event loop running")
 
     def _auto_flush(self) -> None:
-        """Auto-flush callback - emits pending operations."""
-        if not self._pending_events:
-            return
+        """Auto-flush callback - emits pending operations.
 
-        event_summary = [
-            f"{e.event_type}:{e.path.name}" + (f"→{e.dest_path.name}" if e.dest_path else "")
-            for e in self._pending_events
-        ]
+        Thread-safe: Uses internal locking to protect state during callback.
+        """
+        with self._lock:
+            if not self._pending_events:
+                return
 
-        log.info(
-            "⏰ AUTO-FLUSH TRIGGERED",
-            pending_events=len(self._pending_events),
-            events=event_summary,
-        )
+            event_summary = [
+                f"{e.event_type}:{e.path.name}" + (f"→{e.dest_path.name}" if e.dest_path else "")
+                for e in self._pending_events
+            ]
 
-        # Try to detect operation from pending events
-        operation = None
-        if self.analyze_func:
-            operation = self.analyze_func(self._pending_events)
+            log.info(
+                "⏰ AUTO-FLUSH TRIGGERED",
+                pending_events=len(self._pending_events),
+                events=event_summary,
+            )
 
-        if operation:
-            self._handle_detected_operation(operation)
-        else:
-            self._handle_no_operation()
+            # Try to detect operation from pending events
+            operation = None
+            if self.analyze_func:
+                operation = self.analyze_func(self._pending_events)
 
-        self._pending_events.clear()
-        self._last_flush = datetime.now()
-        self._flush_timer = None
+            if operation:
+                self._handle_detected_operation(operation)
+            else:
+                self._handle_no_operation()
+
+            self._pending_events.clear()
+            self._last_flush = datetime.now()
+            self._flush_timer = None
 
     def _handle_detected_operation(self, operation: FileOperation) -> None:
         """Handle a detected operation with temp file filtering.
@@ -240,12 +260,20 @@ class AutoFlushHandler:
 
     @property
     def pending_events(self) -> list[FileEvent]:
-        """Get pending events (read-only access)."""
-        return self._pending_events.copy()
+        """Get pending events (read-only access).
+
+        Thread-safe: Returns a copy to prevent external modification.
+        """
+        with self._lock:
+            return self._pending_events.copy()
 
     def clear(self) -> None:
-        """Clear pending events and cancel timer."""
-        self._pending_events.clear()
-        if self._flush_timer:
-            self._flush_timer.cancel()
-            self._flush_timer = None
+        """Clear pending events and cancel timer.
+
+        Thread-safe: Uses internal locking.
+        """
+        with self._lock:
+            self._pending_events.clear()
+            if self._flush_timer:
+                self._flush_timer.cancel()
+                self._flush_timer = None
