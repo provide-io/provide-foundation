@@ -25,6 +25,45 @@ if TYPE_CHECKING:
 log = get_logger(__name__)
 
 
+def deterministic_filter(tarinfo: tarfile.TarInfo) -> tarfile.TarInfo:
+    """Tarfile filter for deterministic/reproducible archives.
+
+    Resets user/group info and modification time to ensure consistent
+    output for reproducible builds.
+
+    Args:
+        tarinfo: TarInfo object to modify
+
+    Returns:
+        Modified TarInfo object with deterministic metadata
+
+    Examples:
+        >>> import tarfile
+        >>> with tarfile.open("archive.tar", "w") as tar:
+        ...     tar.add("myfile.txt", filter=deterministic_filter)
+
+    Notes:
+        This filter sets:
+        - uid/gid to 0 (root)
+        - uname/gname to empty strings
+        - mtime to 0 (1970-01-01)
+
+        This ensures archives are byte-for-byte identical when created
+        from the same source, regardless of filesystem timestamps or
+        ownership.
+    """
+    # Reset user/group info
+    tarinfo.uid = 0
+    tarinfo.gid = 0
+    tarinfo.uname = ""
+    tarinfo.gname = ""
+
+    # Reset modification time
+    tarinfo.mtime = 0
+
+    return tarinfo
+
+
 @define(slots=True)
 class TarArchive(BaseArchive):
     """TAR archive implementation.
