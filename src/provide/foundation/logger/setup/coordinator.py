@@ -31,10 +31,10 @@ def get_foundation_log_level() -> int:
     """Get Foundation log level for setup phase, safely."""
     global _FOUNDATION_LOG_LEVEL
     if _FOUNDATION_LOG_LEVEL is None:
-        import os
+        # Use Foundation's environment helper (get_str is safe, doesn't trigger logger)
+        from provide.foundation.utils.environment.getters import get_str
 
-        # Direct env read - avoid config imports that cause circular deps
-        level_str = os.environ.get("FOUNDATION_LOG_LEVEL", "INFO").upper()
+        level_str = (get_str("FOUNDATION_LOG_LEVEL") or "INFO").upper()
 
         # Validate and map to numeric level
         valid_levels = {
@@ -151,8 +151,10 @@ def get_vanilla_logger(name: str) -> object:
 
     """
     import logging
-    import os
     import sys
+
+    # Use Foundation's environment helper (get_str is safe, doesn't trigger logger)
+    from provide.foundation.utils.environment.getters import get_str
 
     slog = logging.getLogger(name)
 
@@ -162,7 +164,7 @@ def get_vanilla_logger(name: str) -> object:
         slog.setLevel(log_level)
 
         # Respect FOUNDATION_LOG_OUTPUT setting
-        output = os.environ.get("FOUNDATION_LOG_OUTPUT", "stderr").lower()
+        output = (get_str("FOUNDATION_LOG_OUTPUT") or "stderr").lower()
         stream = sys.stderr if output != "stdout" else sys.stdout
 
         handler = logging.StreamHandler(stream)
