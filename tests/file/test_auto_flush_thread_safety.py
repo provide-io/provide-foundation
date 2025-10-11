@@ -25,6 +25,15 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
         self.base_time = datetime.now()
         self.operations_emitted: list[FileOperation] = []
         self.lock = threading.Lock()
+        self.handlers: list[AutoFlushHandler] = []
+
+    def teardown_method(self) -> None:
+        """Clean up test environment."""
+        # Clean up all handlers to cancel timers
+        for handler in self.handlers:
+            handler.clear()
+        self.handlers.clear()
+        super().teardown_method()
 
     def _create_test_event(self, filename: str, event_type: str = "modified") -> FileEvent:
         """Create a test file event."""
@@ -48,6 +57,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
             time_window_ms=1000,
             on_operation_complete=self._emit_operation,
         )
+        self.handlers.append(handler)
 
         num_threads = 20
         events_per_thread = 50
@@ -79,6 +89,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
             time_window_ms=1000,
             on_operation_complete=self._emit_operation,
         )
+        self.handlers.append(handler)
 
         stop_flag = threading.Event()
         errors = []
@@ -125,6 +136,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
             time_window_ms=100,  # Short window
             on_operation_complete=self._emit_operation,
         )
+        self.handlers.append(handler)
 
         num_threads = 10
         events_per_thread = 20
@@ -160,6 +172,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
             time_window_ms=1000,
             on_operation_complete=self._emit_operation,
         )
+        self.handlers.append(handler)
 
         num_threads = 10
         threads = []
@@ -196,6 +209,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
             time_window_ms=1000,
             on_operation_complete=self._emit_operation,
         )
+        self.handlers.append(handler)
 
         num_threads = 20
         threads = []
@@ -224,6 +238,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
             time_window_ms=1000,
             on_operation_complete=self._emit_operation,
         )
+        self.handlers.append(handler)
 
         # Add some initial events
         for i in range(100):
@@ -274,6 +289,7 @@ class TestAutoFlushHandlerConcurrency(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=self._emit_operation,
         )
+        self.handlers.append(handler)
 
         # Should not crash when adding events without event loop
         for i in range(10):
@@ -291,6 +307,14 @@ class TestAutoFlushHandlerStressTest(FoundationTestCase):
         super().setup_method()
         self.operations_emitted: list[FileOperation] = []
         self.lock = threading.Lock()
+        self.handlers: list[AutoFlushHandler] = []
+
+    def teardown_method(self) -> None:
+        """Clean up test environment."""
+        for handler in self.handlers:
+            handler.clear()
+        self.handlers.clear()
+        super().teardown_method()
 
     def _create_event(self, filename: str) -> FileEvent:
         """Create test event."""
@@ -311,6 +335,7 @@ class TestAutoFlushHandlerStressTest(FoundationTestCase):
             time_window_ms=50,
             on_operation_complete=self._emit_operation,
         )
+        self.handlers.append(handler)
 
         num_events = 1000
         for i in range(num_events):
@@ -325,6 +350,7 @@ class TestAutoFlushHandlerStressTest(FoundationTestCase):
             time_window_ms=1000,
             on_operation_complete=self._emit_operation,
         )
+        self.handlers.append(handler)
 
         num_threads = 50
         events_per_thread = 20
@@ -354,12 +380,21 @@ class TestAutoFlushHandlerEdgeCases(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
+        self.handlers: list[AutoFlushHandler] = []
+
+    def teardown_method(self) -> None:
+        """Clean up test environment."""
+        for handler in self.handlers:
+            handler.clear()
+        self.handlers.clear()
+        super().teardown_method()
 
     def test_clear_during_callback(self) -> None:
         """Test clearing events while callback is executing."""
         handler = AutoFlushHandler(
             time_window_ms=50,
         )
+        self.handlers.append(handler)
 
         callback_started = threading.Event()
         callback_done = threading.Event()
@@ -388,6 +423,7 @@ class TestAutoFlushHandlerEdgeCases(FoundationTestCase):
     def test_add_event_with_temp_files(self) -> None:
         """Test adding events for temp files doesn't crash."""
         handler = AutoFlushHandler(time_window_ms=1000)
+        self.handlers.append(handler)
 
         # Add temp file event
         temp_event = FileEvent(

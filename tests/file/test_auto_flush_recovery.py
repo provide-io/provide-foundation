@@ -24,6 +24,14 @@ class TestEventLossRecovery(FoundationTestCase):
         self.operations_emitted: list[FileOperation] = []
         self.callback_fail_count = 0
         self.lock = threading.Lock()
+        self.handlers: list[AutoFlushHandler] = []
+
+    def teardown_method(self) -> None:
+        """Clean up test environment."""
+        for handler in self.handlers:
+            handler.clear()
+        self.handlers.clear()
+        super().teardown_method()
 
     def _create_event(self, filename: str) -> FileEvent:
         """Create test event."""
@@ -58,6 +66,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=failing_callback,
         )
+        self.handlers.append(handler)
 
         # Emit an operation that will fail
         operation = self._create_operation("test.txt")
@@ -89,6 +98,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=sometimes_failing_callback,
         )
+        self.handlers.append(handler)
 
         # Emit operation (will fail first time)
         operation = self._create_operation("test.txt")
@@ -116,6 +126,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=always_failing_callback,
         )
+        self.handlers.append(handler)
 
         # Emit operation
         operation = self._create_operation("test.txt")
@@ -139,6 +150,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=failing_callback,
         )
+        self.handlers.append(handler)
 
         # Create multiple failed operations
         for i in range(5):
@@ -170,6 +182,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=counting_callback,
         )
+        self.handlers.append(handler)
 
         # Emit operation (will fail)
         operation = self._create_operation("test.txt")
@@ -194,6 +207,7 @@ class TestEventLossRecovery(FoundationTestCase):
     def test_no_callback_no_failures(self) -> None:
         """Test that no callback means no failures."""
         handler = AutoFlushHandler(time_window_ms=100)
+        self.handlers.append(handler)
 
         # Emit without callback
         operation = self._create_operation("test.txt")
@@ -241,6 +255,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=failing_callback,
         )
+        self.handlers.append(handler)
 
         # Create failed operation
         operation = self._create_operation("test.txt")
