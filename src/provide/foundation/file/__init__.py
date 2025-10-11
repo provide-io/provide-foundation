@@ -1,5 +1,17 @@
 from __future__ import annotations
 
+from provide.foundation.file.alignment import (
+    CACHE_LINE_SIZE,
+    DEFAULT_ALIGNMENT,
+    PAGE_SIZE_16K,
+    PAGE_SIZE_4K,
+    align_offset,
+    align_to_page,
+    calculate_padding,
+    get_system_page_size,
+    is_aligned,
+    is_power_of_two,
+)
 from provide.foundation.file.atomic import (
     atomic_replace,
     atomic_write,
@@ -66,14 +78,20 @@ This module provides comprehensive file operations including:
 - Format-specific helpers for JSON, YAML, TOML
 - File locking for concurrent access
 - File permissions utilities
+- Memory/file alignment utilities for binary I/O and mmap
 - Various utility functions
 """
 
 __all__ = [
+    # From alignment
+    "CACHE_LINE_SIZE",
+    "DEFAULT_ALIGNMENT",
     # From permissions
     "DEFAULT_DIR_PERMS",
     "DEFAULT_EXECUTABLE_PERMS",
     "DEFAULT_FILE_PERMS",
+    "PAGE_SIZE_16K",
+    "PAGE_SIZE_4K",
     # From operations
     "DetectorConfig",
     "FileEvent",
@@ -84,11 +102,14 @@ __all__ = [
     "LockError",
     "OperationDetector",
     "OperationType",
+    "align_offset",
+    "align_to_page",
     "atomic_replace",
     # From atomic
     "atomic_write",
     "atomic_write_text",
     "backup_file",
+    "calculate_padding",
     "detect_atomic_save",
     # From directory
     "ensure_dir",
@@ -99,9 +120,12 @@ __all__ = [
     "format_permissions",
     "get_mtime",
     "get_permissions",
+    "get_system_page_size",
     # From utils
     "get_size",
     "group_related_events",
+    "is_aligned",
+    "is_power_of_two",
     "is_temp_file",
     "parse_permissions",
     # From formats
