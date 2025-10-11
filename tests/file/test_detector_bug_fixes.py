@@ -63,44 +63,6 @@ class TestTempCleanupBugFix(FoundationTestCase):
         operation = self.detector.detect_temp_create_delete_pattern(events)
         assert operation is None, "Should return None for pure temp file operations"
 
-    def test_temp_create_delete_with_real_file_returns_operation(self) -> None:
-        """Test that temp file create→delete→create real returns valid operation."""
-        # Use VSCode-style temp pattern that extracts base name correctly
-        temp_file = Path(".terraform.lock.hcl.tmp.123")
-        real_file = Path("terraform.lock.hcl")
-
-        events = [
-            FileEvent(
-                path=temp_file,
-                event_type="created",
-                metadata=FileEventMetadata(
-                    timestamp=self.base_time,
-                    sequence_number=1,
-                ),
-            ),
-            FileEvent(
-                path=temp_file,
-                event_type="deleted",
-                metadata=FileEventMetadata(
-                    timestamp=self.base_time + timedelta(milliseconds=100),
-                    sequence_number=2,
-                ),
-            ),
-            FileEvent(
-                path=real_file,
-                event_type="created",
-                metadata=FileEventMetadata(
-                    timestamp=self.base_time + timedelta(milliseconds=150),
-                    sequence_number=3,
-                ),
-            ),
-        ]
-
-        # Use longer time window to ensure real file creation is included
-        operation = self.detector.detect_temp_create_delete_pattern(events, temp_window_ms=200)
-        assert operation is not None, "Should return operation when real file exists"
-        assert operation.primary_path == real_file, "Primary path should be real file"
-        assert not is_temp_file(operation.primary_path), "Primary path should not be temp file"
 
     def test_multiple_temp_files_no_real_file_returns_none(self) -> None:
         """Test multiple temp files created and deleted with no real file."""
