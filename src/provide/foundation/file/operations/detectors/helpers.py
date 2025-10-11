@@ -31,27 +31,22 @@ def is_temp_file(path: Path) -> bool:
         name.endswith(".tmp"),
         name.endswith(".temp"),
         name.endswith("~"),
-
         # Vim swap files
         ".swp" in name,
         ".swx" in name,
         ".swo" in name,
         name.endswith(".swn"),
-
         # Emacs temp files
         ".#" in name,
         name.startswith("#") and name.endswith("#"),
-
         # Backup files
         name.endswith(".bak"),
         name.endswith(".backup"),
         name.endswith(".orig"),
         name.endswith(".old"),
-
         # System temp markers
         ".$" in name,  # Windows
         name.startswith("~$"),  # Office temp files
-
         # Build/cache artifacts (common patterns)
         ".cache" in name,
         ".lock" in name and not name.endswith(".lock"),  # .lock.123 but not package.lock

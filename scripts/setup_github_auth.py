@@ -38,11 +38,11 @@ def setup_git_auth() -> None:
         insteadof_url = f"https://github.com/{org}/"
 
         try:
-            subprocess.run([
-                "git", "config", "--global",
-                f"url.{git_url}.insteadOf",
-                insteadof_url
-            ], check=True, capture_output=True)
+            subprocess.run(
+                ["git", "config", "--global", f"url.{git_url}.insteadOf", insteadof_url],
+                check=True,
+                capture_output=True,
+            )
 
             configured_orgs.append(org)
 

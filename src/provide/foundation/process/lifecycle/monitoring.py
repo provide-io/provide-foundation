@@ -13,7 +13,7 @@ This module provides async utilities for monitoring and waiting for specific
 output patterns from managed processes.
 """
 
-plog = get_logger(__name__)
+log = get_logger(__name__)
 
 
 def _drain_remaining_output(process: ManagedProcess, buffer: str) -> str:
@@ -27,7 +27,7 @@ def _drain_remaining_output(process: ManagedProcess, buffer: str) -> str:
                     if isinstance(remaining, bytes)
                     else str(remaining)
                 )
-                plog.debug("Read remaining output from exited process", size=len(remaining))
+                log.debug("Read remaining output from exited process", size=len(remaining))
         except (OSError, ValueError, AttributeError):
             # OSError: stream/file read errors
             # ValueError: invalid stream state or decoding errors
@@ -43,13 +43,13 @@ def _check_pattern_found(buffer: str, expected_parts: list[str]) -> bool:
 
 def _handle_process_error_exit(exit_code: int, buffer: str) -> None:
     """Handle process exit with error code."""
-    plog.error("Process exited with error", returncode=exit_code, buffer=buffer[:200])
+    log.error("Process exited with error", returncode=exit_code, buffer=buffer[:200])
     raise ProcessError(f"Process exited with code {exit_code}")
 
 
 def _handle_process_clean_exit_without_pattern(exit_code: int | None, buffer: str) -> None:
     """Handle process clean exit but expected pattern not found."""
-    plog.error("Process exited without expected output", returncode=0, buffer=buffer[:200])
+    log.error("Process exited without expected output", returncode=0, buffer=buffer[:200])
     raise ProcessError(f"Process exited with code {exit_code} before expected output found")
 
 
@@ -65,7 +65,7 @@ async def _handle_exited_process(
 
     # Check buffer after draining
     if _check_pattern_found(buffer, expected_parts):
-        plog.debug("Found expected pattern after process exit")
+        log.debug("Found expected pattern after process exit")
         return buffer
 
     # If process exited and we don't have the pattern, handle error cases
@@ -80,7 +80,7 @@ async def _handle_exited_process(
 
         # Final check
         if _check_pattern_found(buffer, expected_parts):
-            plog.debug("Found expected pattern after final drain")
+            log.debug("Found expected pattern after final drain")
             return buffer
 
         # Process exited cleanly but pattern not found
@@ -98,11 +98,11 @@ async def _try_read_process_line(
         line = await process.read_line_async(timeout=0.1)
         if line:
             buffer += line + "\n"  # Add newline back since readline strips it
-            plog.debug("Read line from process", line=line[:100])
+            log.debug("Read line from process", line=line[:100])
 
             # Check if we have all expected parts
             if _check_pattern_found(buffer, expected_parts):
-                plog.debug("Found expected pattern in buffer")
+                log.debug("Found expected pattern in buffer")
                 return buffer, True
 
     except TimeoutError:
@@ -146,7 +146,7 @@ async def wait_for_process_output(
     buffer = ""
     last_exit_code = None
 
-    plog.debug(
+    log.debug(
         "⏳ Waiting for process output pattern",
         expected_parts=expected_parts,
         timeout=timeout,
@@ -156,7 +156,7 @@ async def wait_for_process_output(
         # Check if process has exited
         if not process.is_running():
             last_exit_code = process.returncode
-            plog.debug("Process exited", returncode=last_exit_code)
+            log.debug("Process exited", returncode=last_exit_code)
             return await _handle_exited_process(process, buffer, expected_parts, last_exit_code)
 
         # Try to read line from running process
@@ -172,7 +172,7 @@ async def wait_for_process_output(
         return buffer
 
     # If process exited with 0 but we didn't get output, that's still a timeout
-    plog.error(
+    log.error(
         "Timeout waiting for pattern",
         expected_parts=expected_parts,
         buffer=buffer[:200],

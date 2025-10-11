@@ -31,10 +31,10 @@ def _get_logger_safely() -> Any:
 
     try:
         # Use vanilla Python logger which doesn't trigger any Foundation initialization
-        # Per coordinator.py docs: "Components should use get_vanilla_logger() instead"
-        from provide.foundation.logger.setup.coordinator import get_vanilla_logger
+        # Per coordinator.py docs: "Components should use get_system_logger() instead"
+        from provide.foundation.logger.setup.coordinator import get_system_logger
 
-        return get_vanilla_logger("provide.foundation.hub.events")
+        return get_system_logger("provide.foundation.hub.events")
     except Exception:
         # If logger isn't ready yet, gracefully ignore
         return None

@@ -54,7 +54,7 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
     """Create Foundation's internal setup logger (structlog).
 
     This is used internally by Foundation during its own initialization.
-    Components should use get_vanilla_logger() instead.
+    Components should use get_system_logger() instead.
 
     Returns the same logger instance when called multiple times (singleton pattern).
     """
@@ -131,7 +131,7 @@ def _configure_stdlib_module_logging(module_levels: dict[str, str]) -> None:
             module_logger.setLevel(numeric_level)
 
 
-def get_vanilla_logger(name: str) -> object:
+def get_system_logger(name: str) -> object:
     """Get a vanilla Python logger without Foundation enhancements.
 
     This provides a plain Python logger that respects FOUNDATION_LOG_LEVEL
