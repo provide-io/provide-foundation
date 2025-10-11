@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from typing import Any
 
-from provide.foundation.hub.categories import ComponentCategory
 from provide.foundation.hub.registry import Registry
 
 """Hub component discovery and dependency resolution utilities.
@@ -47,24 +46,20 @@ def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
 
 def discover_components(
     group: str,
-    dimension: str | None = None,
+    dimension: str = "component",
     registry: Registry | None = None,
 ) -> dict[str, type[Any]]:
     """Discover and register components from entry points.
 
     Args:
         group: Entry point group name (e.g., 'provide.components')
-        dimension: Registry dimension for components (defaults to "component")
+        dimension: Registry dimension for components
         registry: Optional registry to use (defaults to global registry)
 
     Returns:
         Dictionary mapping component names to their classes
 
     """
-    # Use ComponentCategory default if not specified
-    if dimension is None:
-        dimension = ComponentCategory.COMPONENT.value
-
     try:
         from importlib import metadata
     except ImportError:

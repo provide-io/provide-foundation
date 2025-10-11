@@ -8,7 +8,6 @@ from attrs import define, field
 import httpx
 
 from provide.foundation.logger import get_logger
-from provide.foundation.security import sanitize_uri
 from provide.foundation.transport.base import Request, Response, TransportBase
 from provide.foundation.transport.config import HTTPConfig
 from provide.foundation.transport.errors import (
@@ -76,9 +75,8 @@ class HTTPTransport(TransportBase):
         if self._client is None:
             raise TransportConnectionError("HTTP client not connected")
 
-        # Log request with sanitized URI (redacts sensitive query params)
-        sanitized_uri = sanitize_uri(request.uri)
-        log.info(f"🚀 {request.method} {sanitized_uri}")
+        # Log request with emoji
+        log.info(f"🚀 {request.method} {request.uri}")
 
         start_time = time.perf_counter()
 
@@ -97,19 +95,15 @@ class HTTPTransport(TransportBase):
                     json_data = request.body
 
             # Make the request
-            # Only pass params if explicitly set (empty dict would override URI query params)
-            request_kwargs = {
-                "method": request.method,
-                "url": request.uri,
-                "headers": request.headers,
-                "json": json_data,
-                "data": data,
-                "timeout": request.timeout if request.timeout is not None else self.config.timeout,
-            }
-            if request.params:
-                request_kwargs["params"] = request.params
-
-            httpx_response = await self._client.request(**request_kwargs)
+            httpx_response = await self._client.request(
+                method=request.method,
+                url=request.uri,
+                headers=request.headers,
+                params=request.params,
+                json=json_data,
+                data=data,
+                timeout=request.timeout if request.timeout is not None else self.config.timeout,
+            )
 
             elapsed_ms = (time.perf_counter() - start_time) * 1000
 
@@ -159,22 +153,16 @@ class HTTPTransport(TransportBase):
         if self._client is None:
             raise TransportConnectionError("HTTP client not connected")
 
-        # Log streaming request with sanitized URI
-        sanitized_uri = sanitize_uri(request.uri)
-        log.info(f"🌊 Streaming {request.method} {sanitized_uri}")
+        log.info(f"🌊 Streaming {request.method} {request.uri}")
 
         try:
-            # Only pass params if explicitly set (empty dict would override URI query params)
-            stream_kwargs = {
-                "method": request.method,
-                "url": request.uri,
-                "headers": request.headers,
-                "timeout": request.timeout if request.timeout is not None else self.config.timeout,
-            }
-            if request.params:
-                stream_kwargs["params"] = request.params
-
-            async with self._client.stream(**stream_kwargs) as response:
+            async with self._client.stream(
+                method=request.method,
+                url=request.uri,
+                headers=request.headers,
+                params=request.params,
+                timeout=request.timeout if request.timeout is not None else self.config.timeout,
+            ) as response:
                 # Log response start
                 status_emoji = self._get_status_emoji(response.status_code)
                 log.info(f"{status_emoji} {response.status_code} (streaming)")

@@ -238,8 +238,7 @@ class TestQueryCommandWithoutClick(FoundationTestCase):
 
     def test_command_import_availability(self) -> None:
         """Test that the module can be imported and function exists."""
-        from provide.foundation.cli.commands.logs.query import query_command
-        from provide.foundation.cli.deps import _HAS_CLICK
+        from provide.foundation.cli.commands.logs.query import _HAS_CLICK, query_command
 
         # Function should exist regardless of click availability
         assert callable(query_command)
@@ -261,7 +260,7 @@ class TestModuleImports(FoundationTestCase):
         assert hasattr(query, "_build_query_sql")
         assert hasattr(query, "_execute_and_display_query")
         assert hasattr(query, "query_command")
-        # _HAS_CLICK is in cli.deps, not in the query module
+        assert hasattr(query, "_HAS_CLICK")
 
     def test_module_logger_instance(self) -> None:
         """Test that module has logger instance."""

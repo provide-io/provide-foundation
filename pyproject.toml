@@ -2,10 +2,6 @@
 # pyproject.toml
 #
 
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "provide-foundation"
 description = "Foundation Telemetry: An opinionated, developer-friendly telemetry wrapper for Python."
@@ -238,9 +234,6 @@ directory = "htmlcov" # Using an absolute path
 
 [tool.coverage.xml]
 output = "coverage.xml"
-
-[tool.setuptools]
-packages = {find = {where = ["src"]}}
 
 [tool.setuptools.dynamic]
 version = {file = "VERSION"}

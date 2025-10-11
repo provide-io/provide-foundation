@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+import os
 from pathlib import Path
 from typing import Any
 
@@ -14,44 +15,31 @@ from provide.foundation.errors.process import ProcessError
 
 @define(slots=True)
 class CompletedProcess:
-    """Result of a completed process.
-
-    Note:
-        The `env` field only stores caller-provided environment variable overrides,
-        not the full subprocess environment. This prevents credential leakage when
-        CompletedProcess objects are logged or stored.
-    """
+    """Result of a completed process."""
 
     args: list[str]
     returncode: int
     stdout: str
     stderr: str
     cwd: str | None = None
-    env: dict[str, str] | None = None  # Only caller overrides, not full environment
+    env: dict[str, str] | None = None
 
 
 def prepare_environment(env: Mapping[str, str] | None) -> dict[str, str]:
-    """Prepare environment for subprocess execution with security scrubbing.
-
-    This function uses environment scrubbing by default to prevent credential
-    leakage. Only allowlisted safe variables plus caller overrides are included.
+    """Prepare environment for subprocess execution.
 
     Args:
-        env: Optional environment variables provided by caller (always included)
+        env: Optional environment variables to merge with current environment
 
     Returns:
-        Scrubbed environment dictionary for subprocess
-
-    Security Note:
-        - System environment is scrubbed to allowlist only
-        - Caller overrides (env parameter) are always included
-        - Sensitive credentials in os.environ are excluded
-        - Result contains <50 vars instead of 100+ from os.environ
-
+        Dictionary of environment variables with telemetry disabled
     """
-    from provide.foundation.process.env import prepare_subprocess_environment
-
-    return prepare_subprocess_environment(caller_overrides=env, scrub=True)
+    run_env = os.environ.copy()
+    if env is not None:
+        run_env.update(env)
+    # Disable telemetry in subprocesses to avoid recursive logging
+    run_env.setdefault("PROVIDE_TELEMETRY_DISABLED", "true")
+    return run_env
 
 
 def create_completed_process(

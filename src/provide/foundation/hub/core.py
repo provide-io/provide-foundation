@@ -10,7 +10,6 @@ from provide.foundation.context import CLIContext
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.resources import AlreadyExistsError
-from provide.foundation.hub.categories import ComponentCategory
 from provide.foundation.hub.commands import CommandInfo
 from provide.foundation.hub.components import ComponentInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
@@ -82,7 +81,7 @@ class CoreHub:
         self,
         component_class: type[Any],
         name: str | None = None,
-        dimension: str = ComponentCategory.COMPONENT.value,
+        dimension: str = "component",
         **metadata: Any,
     ) -> ComponentInfo:
         """Add a component to the hub.
@@ -185,14 +184,14 @@ class CoreHub:
         all_items = self._component_registry.list_all()
         components = []
         for dim, names in all_items.items():
-            if dim != ComponentCategory.COMMAND.value:
+            if dim != "command":
                 components.extend(names)
         return components
 
     def discover_components(
         self,
         group: str,
-        dimension: str = ComponentCategory.COMPONENT.value,
+        dimension: str = "component",
     ) -> dict[str, type[Any]]:
         """Discover and register components from entry points.
 
@@ -254,7 +253,7 @@ class CoreHub:
         self._command_registry.register(
             name=command_name,
             value=func,
-            dimension=ComponentCategory.COMMAND.value,
+            dimension="command",
             metadata={
                 "info": info,
                 "click_command": click_command,
@@ -287,7 +286,7 @@ class CoreHub:
             Command function or None
 
         """
-        return self._command_registry.get(name, dimension=ComponentCategory.COMMAND.value)
+        return self._command_registry.get(name, dimension="command")
 
     def list_commands(self) -> list[str]:
         """List all command names.
@@ -296,7 +295,7 @@ class CoreHub:
             List of command names
 
         """
-        return self._command_registry.list_dimension(ComponentCategory.COMMAND.value)
+        return self._command_registry.list_dimension("command")
 
     # CLI Integration
 
@@ -352,7 +351,7 @@ class CoreHub:
     def initialize(self) -> None:
         """Initialize all components that support initialization."""
         for entry in self._component_registry:
-            if entry.dimension == ComponentCategory.COMMAND.value:
+            if entry.dimension == "command":
                 continue
 
             component_class = entry.value
@@ -370,7 +369,7 @@ class CoreHub:
     def cleanup(self) -> None:
         """Cleanup all components that support cleanup."""
         for entry in self._component_registry:
-            if entry.dimension == ComponentCategory.COMMAND.value:
+            if entry.dimension == "command":
                 continue
 
             component_class = entry.value
@@ -392,11 +391,11 @@ class CoreHub:
             dimension: Optional dimension to clear (None = all)
 
         """
-        if dimension == ComponentCategory.COMMAND.value or dimension is None:
-            self._command_registry.clear(dimension=ComponentCategory.COMMAND.value if dimension else None)
+        if dimension == "command" or dimension is None:
+            self._command_registry.clear(dimension="command" if dimension else None)
             self._cli_group = None
 
-        if dimension != ComponentCategory.COMMAND.value or dimension is None:
+        if dimension != "command" or dimension is None:
             self._component_registry.clear(dimension=dimension)
 
     def __enter__(self) -> CoreHub:

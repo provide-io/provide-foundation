@@ -8,9 +8,6 @@ from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.bzip2 import Bzip2Compressor
 from provide.foundation.archive.gzip import GzipCompressor
 from provide.foundation.archive.tar import TarArchive
-from provide.foundation.archive.types import (
-    ArchiveOperation,
-)
 from provide.foundation.archive.zip import ZipArchive
 from provide.foundation.file import ensure_parent_dir, temp_file
 from provide.foundation.file.safe import safe_delete
@@ -29,8 +26,8 @@ class OperationChain:
     Operations are executed in order for creation, reversed for extraction.
     """
 
-    operations: list[ArchiveOperation] = field(factory=list)
-    operation_config: dict[ArchiveOperation, dict[str, bool]] = field(factory=dict)
+    operations: list[str] = field(factory=list)
+    operation_config: dict[str, dict[str, bool]] = field(factory=dict)
 
     def execute(self, source: Path, output: Path) -> Path:
         """Execute operation chain on source.
@@ -90,54 +87,68 @@ class OperationChain:
             ArchiveError: If any operation fails
 
         """
-        # Operations are the same when reversed; the _execute_operation
-        # method will handle whether to create or extract based on context
-        reversed_chain = OperationChain(
-            operations=list(reversed(self.operations)), operation_config=self.operation_config
-        )
+        # Reverse the operations and invert them
+        reverse_map = {
+            "tar": "untar",
+            "untar": "tar",
+            "gzip": "gunzip",
+            "gunzip": "gzip",
+            "bzip2": "bunzip2",
+            "bunzip2": "bzip2",
+            "zip": "unzip",
+            "unzip": "zip",
+        }
+
+        reversed_ops = []
+        for op in reversed(self.operations):
+            reversed_op = reverse_map.get(op.lower(), op)
+            reversed_ops.append(reversed_op)
+
+        reversed_chain = OperationChain(operations=reversed_ops, operation_config=self.operation_config)
         return reversed_chain.execute(source, output)
 
-    def _execute_operation(self, operation: ArchiveOperation, source: Path, output: Path) -> Path:
+    def _execute_operation(self, operation: str, source: Path, output: Path) -> Path:
         """Execute a single operation."""
-        config = self.operation_config.get(operation, {})
+        op_lower = operation.lower()
+        config = self.operation_config.get(op_lower, {})
 
-        match operation:
-            case ArchiveOperation.TAR:
+        match op_lower:
+            case "tar":
                 tar = TarArchive(**config)
-                # Detect if we're creating or extracting based on source type
-                if source.is_dir():
-                    return tar.create(source, output)
+                return tar.create(source, output)
+            case "untar":
+                tar = TarArchive(**config)
                 return tar.extract(source, output)
-            case ArchiveOperation.GZIP:
+            case "gzip":
                 gzip = GzipCompressor()
-                # Detect if we're compressing or decompressing based on source
-                if source.suffix == ".gz":
-                    return gzip.decompress_file(source, output)
                 return gzip.compress_file(source, output)
-            case ArchiveOperation.BZIP2:
+            case "gunzip":
+                gzip = GzipCompressor()
+                return gzip.decompress_file(source, output)
+            case "bzip2":
                 bz2 = Bzip2Compressor()
-                if source.suffix in (".bz2", ".bzip2"):
-                    return bz2.decompress_file(source, output)
                 return bz2.compress_file(source, output)
-            case ArchiveOperation.ZIP:
+            case "bunzip2":
+                bz2 = Bzip2Compressor()
+                return bz2.decompress_file(source, output)
+            case "zip":
                 zip_archive = ZipArchive(**config)
-                if source.is_dir():
-                    return zip_archive.create(source, output)
+                return zip_archive.create(source, output)
+            case "unzip":
+                zip_archive = ZipArchive(**config)
                 return zip_archive.extract(source, output)
             case _:
                 raise ArchiveError(f"Unknown operation: {operation}")
 
-    def _get_suffix_for_operation(self, operation: ArchiveOperation) -> str:
+    def _get_suffix_for_operation(self, operation: str) -> str:
         """Get file suffix for operation."""
         suffixes = {
-            ArchiveOperation.TAR: ".tar",
-            ArchiveOperation.GZIP: ".gz",
-            ArchiveOperation.BZIP2: ".bz2",
-            ArchiveOperation.ZIP: ".zip",
-            ArchiveOperation.XZ: ".xz",
-            ArchiveOperation.ZSTD: ".zst",
+            "tar": ".tar",
+            "gzip": ".gz",
+            "bzip2": ".bz2",
+            "zip": ".zip",
         }
-        return suffixes.get(operation, ".tmp")
+        return suffixes.get(operation.lower(), ".tmp")
 
 
 class ArchiveOperations:
@@ -165,8 +176,8 @@ class ArchiveOperations:
         ensure_parent_dir(output)
 
         chain = OperationChain(
-            operations=[ArchiveOperation.TAR, ArchiveOperation.GZIP],
-            operation_config={ArchiveOperation.TAR: {"deterministic": deterministic}},
+            operations=["tar", "gzip"],
+            operation_config={"tar": {"deterministic": deterministic}},
         )
         return chain.execute(source, output)
 
@@ -187,7 +198,7 @@ class ArchiveOperations:
         """
         output.mkdir(parents=True, exist_ok=True)
 
-        chain = OperationChain(operations=[ArchiveOperation.TAR, ArchiveOperation.GZIP])
+        chain = OperationChain(operations=["tar", "gzip"])
         return chain.reverse(archive, output)
 
     @staticmethod
@@ -209,8 +220,8 @@ class ArchiveOperations:
         ensure_parent_dir(output)
 
         chain = OperationChain(
-            operations=[ArchiveOperation.TAR, ArchiveOperation.BZIP2],
-            operation_config={ArchiveOperation.TAR: {"deterministic": deterministic}},
+            operations=["tar", "bzip2"],
+            operation_config={"tar": {"deterministic": deterministic}},
         )
         return chain.execute(source, output)
 
@@ -231,31 +242,31 @@ class ArchiveOperations:
         """
         output.mkdir(parents=True, exist_ok=True)
 
-        chain = OperationChain(operations=[ArchiveOperation.TAR, ArchiveOperation.BZIP2])
+        chain = OperationChain(operations=["tar", "bzip2"])
         return chain.reverse(archive, output)
 
     @staticmethod
-    def _detect_format_by_extension(filename: str) -> list[ArchiveOperation] | None:
+    def _detect_format_by_extension(filename: str) -> list[str] | None:
         """Detect archive format by file extension."""
         name = filename.lower()
 
         if name.endswith(".tar.gz") or name.endswith(".tgz"):
-            return [ArchiveOperation.GZIP, ArchiveOperation.TAR]
+            return ["gunzip", "untar"]
         if name.endswith(".tar.bz2") or name.endswith(".tbz2"):
-            return [ArchiveOperation.BZIP2, ArchiveOperation.TAR]
+            return ["bunzip2", "untar"]
         if name.endswith(".tar"):
-            return [ArchiveOperation.TAR]
+            return ["untar"]
         if name.endswith(".gz"):
-            return [ArchiveOperation.GZIP]
+            return ["gunzip"]
         if name.endswith(".bz2"):
-            return [ArchiveOperation.BZIP2]
+            return ["bunzip2"]
         if name.endswith(".zip"):
-            return [ArchiveOperation.ZIP]
+            return ["unzip"]
 
         return None
 
     @staticmethod
-    def _detect_format_by_magic(file: Path) -> list[ArchiveOperation] | None:
+    def _detect_format_by_magic(file: Path) -> list[str] | None:
         """Detect archive format by magic numbers."""
         try:
             with file.open("rb") as f:
@@ -264,17 +275,17 @@ class ArchiveOperations:
 
                 # Check common formats first
                 if magic[:2] == b"\x1f\x8b":  # gzip
-                    return [ArchiveOperation.GZIP]
+                    return ["gunzip"]
                 if magic[:3] == b"BZh":  # bzip2
-                    return [ArchiveOperation.BZIP2]
+                    return ["bunzip2"]
                 if magic[:4] == b"PK\x03\x04":  # zip
-                    return [ArchiveOperation.ZIP]
+                    return ["unzip"]
 
                 # Check for tar (ustar magic at offset 257)
                 f.seek(257)
                 ustar_magic = f.read(5)
                 if ustar_magic == b"ustar":
-                    return [ArchiveOperation.TAR]
+                    return ["untar"]
         except Exception:  # nosec B110
             # Generic catch is intentional for robust format detection.
             # Any file access error (FileNotFoundError, PermissionError, IOError, etc.)
@@ -285,7 +296,7 @@ class ArchiveOperations:
         return None
 
     @staticmethod
-    def detect_format(file: Path) -> list[ArchiveOperation]:
+    def detect_format(file: Path) -> list[str]:
         """Detect archive format and return operation chain.
 
         Args:

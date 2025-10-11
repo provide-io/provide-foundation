@@ -9,7 +9,6 @@ import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.operations import ArchiveOperations, OperationChain
-from provide.foundation.archive.types import ArchiveOperation
 
 
 class TestOperationChainConfiguration(FoundationTestCase):
@@ -21,8 +20,8 @@ class TestOperationChainConfiguration(FoundationTestCase):
         output = temp_path / "archive.tar.gz"
 
         chain = OperationChain(
-            operations=[ArchiveOperation.TAR, ArchiveOperation.GZIP],
-            operation_config={ArchiveOperation.TAR: {"deterministic": True}},
+            operations=["tar", "gzip"],
+            operation_config={"tar": {"deterministic": True}},
         )
         result = chain.execute(source, output)
 
@@ -35,8 +34,8 @@ class TestOperationChainConfiguration(FoundationTestCase):
         output = temp_path / "archive.tar.gz"
 
         chain = OperationChain(
-            operations=[ArchiveOperation.TAR, ArchiveOperation.GZIP],
-            operation_config={ArchiveOperation.TAR: {"deterministic": False}},
+            operations=["tar", "gzip"],
+            operation_config={"tar": {"deterministic": False}},
         )
         result = chain.execute(source, output)
 
@@ -50,8 +49,8 @@ class TestOperationChainConfiguration(FoundationTestCase):
         # Create with deterministic config
         archive = temp_path / "archive.tar.gz"
         chain = OperationChain(
-            operations=[ArchiveOperation.TAR, ArchiveOperation.GZIP],
-            operation_config={ArchiveOperation.TAR: {"deterministic": True}},
+            operations=["tar", "gzip"],
+            operation_config={"tar": {"deterministic": True}},
         )
         chain.execute(source, archive)
 
@@ -68,8 +67,8 @@ class TestOperationChainConfiguration(FoundationTestCase):
         output = temp_path / "archive.zip"
 
         chain = OperationChain(
-            operations=[ArchiveOperation.ZIP],
-            operation_config={ArchiveOperation.ZIP: {"compression_level": 9}},
+            operations=["zip"],
+            operation_config={"zip": {"compression_level": 9}},
         )
         result = chain.execute(source, output)
 
@@ -82,10 +81,10 @@ class TestOperationChainConfiguration(FoundationTestCase):
         output = temp_path / "archive.zip"
 
         chain = OperationChain(
-            operations=[ArchiveOperation.ZIP],
+            operations=["zip"],
             operation_config={
-                ArchiveOperation.ZIP: {"compression_level": 6},
-                ArchiveOperation.TAR: {"deterministic": True},  # Not used but shouldn't cause issues
+                "zip": {"compression_level": 6},
+                "tar": {"deterministic": True},  # Not used but shouldn't cause issues
             },
         )
         result = chain.execute(source, output)
@@ -102,7 +101,7 @@ class TestOperationChainEdgeCases(FoundationTestCase):
         temp_path, source = test_files_structure
         output = temp_path / "archive.tar.bz2"
 
-        chain = OperationChain(operations=[ArchiveOperation.TAR, ArchiveOperation.BZIP2])
+        chain = OperationChain(operations=["tar", "bzip2"])
         result = chain.execute(source, output)
 
         assert result == output
@@ -115,7 +114,7 @@ class TestOperationChainEdgeCases(FoundationTestCase):
         temp_path, source = test_files_structure
         output = temp_path / "archive.zip"
 
-        chain = OperationChain(operations=[ArchiveOperation.ZIP])
+        chain = OperationChain(operations=["zip"])
         result = chain.execute(source, output)
 
         assert result == output
@@ -129,12 +128,12 @@ class TestOperationChainEdgeCases(FoundationTestCase):
 
         # Create zip
         archive = temp_path / "archive.zip"
-        create_chain = OperationChain(operations=[ArchiveOperation.ZIP])
+        create_chain = OperationChain(operations=["zip"])
         create_chain.execute(source, archive)
 
         # Extract with unzip
         extracted = temp_path / "extracted"
-        extract_chain = OperationChain(operations=[ArchiveOperation.ZIP])
+        extract_chain = OperationChain(operations=["unzip"])
         result = extract_chain.execute(archive, extracted)
 
         assert result == extracted
@@ -150,7 +149,7 @@ class TestOperationChainEdgeCases(FoundationTestCase):
         source.write_text("Test content for bzip2\n" * 100)
         output = temp_path / "test.bz2"
 
-        chain = OperationChain(operations=[ArchiveOperation.BZIP2])
+        chain = OperationChain(operations=["bzip2"])
         result = chain.execute(source, output)
 
         assert result == output
@@ -166,12 +165,12 @@ class TestOperationChainEdgeCases(FoundationTestCase):
         source.write_text("Test content for bunzip2\n" * 100)
         compressed = temp_path / "test.bz2"
 
-        chain = OperationChain(operations=[ArchiveOperation.BZIP2])
+        chain = OperationChain(operations=["bzip2"])
         chain.execute(source, compressed)
 
         # Decompress
         decompressed = temp_path / "decompressed.txt"
-        decompress_chain = OperationChain(operations=[ArchiveOperation.BZIP2])
+        decompress_chain = OperationChain(operations=["bunzip2"])
         result = decompress_chain.execute(compressed, decompressed)
 
         assert result == decompressed
@@ -183,7 +182,7 @@ class TestOperationChainEdgeCases(FoundationTestCase):
 
         # Create tar.bz2
         archive = temp_path / "archive.tar.bz2"
-        chain = OperationChain(operations=[ArchiveOperation.TAR, ArchiveOperation.BZIP2])
+        chain = OperationChain(operations=["tar", "bzip2"])
         chain.execute(source, archive)
 
         # Reverse to extract
@@ -244,7 +243,7 @@ class TestOperationChainWithSubdirectories(FoundationTestCase):
 
         # Create archive
         archive = temp_path / "archive.tar.gz"
-        chain = OperationChain(operations=[ArchiveOperation.TAR, ArchiveOperation.GZIP])
+        chain = OperationChain(operations=["tar", "gzip"])
         chain.execute(source, archive)
 
         # Extract
@@ -270,7 +269,7 @@ class TestOperationChainTemporaryFileManagement(FoundationTestCase):
 
         # Run chain
         output = temp_path / "archive.tar.gz"
-        chain = OperationChain(operations=[ArchiveOperation.TAR, ArchiveOperation.GZIP])
+        chain = OperationChain(operations=["tar", "gzip"])
         chain.execute(source, output)
 
         # Count files after - should only have output and source
@@ -288,9 +287,9 @@ class TestOperationChainTemporaryFileManagement(FoundationTestCase):
         # Count temp files before
         temp_files_before = list(Path("/tmp").glob("provide_*"))
 
-        # Run chain with XZ operation (not implemented in _execute_operation yet)
+        # Run chain with invalid operation
         output = temp_path / "output"
-        chain = OperationChain(operations=[ArchiveOperation.TAR, ArchiveOperation.XZ])
+        chain = OperationChain(operations=["tar", "invalid_op"])
 
         with pytest.raises(ArchiveError):
             chain.execute(source, output)
@@ -314,7 +313,7 @@ class TestFormatDetectionEdgeCases(FoundationTestCase):
         tar_like.write_bytes(b"\x00" * 257 + b"ustar" + b"\x00" * 100)
 
         ops = ArchiveOperations.detect_format(tar_like)
-        assert ops == [ArchiveOperation.TAR]
+        assert ops == ["untar"]
 
     def test_detect_format_extension_precedence(self, temp_directory: Path) -> None:
         """Test that extension detection takes precedence over magic."""
@@ -326,17 +325,17 @@ class TestFormatDetectionEdgeCases(FoundationTestCase):
 
         # Should still detect based on extension
         ops = ArchiveOperations.detect_format(fake_targz)
-        assert ops == [ArchiveOperation.GZIP, ArchiveOperation.TAR]
+        assert ops == ["gunzip", "untar"]
 
     def test_detect_tgz_extension(self) -> None:
         """Test detecting .tgz extension."""
         ops = ArchiveOperations.detect_format(Path("archive.tgz"))
-        assert ops == [ArchiveOperation.GZIP, ArchiveOperation.TAR]
+        assert ops == ["gunzip", "untar"]
 
     def test_detect_tbz2_extension(self) -> None:
         """Test detecting .tbz2 extension."""
         ops = ArchiveOperations.detect_format(Path("archive.tbz2"))
-        assert ops == [ArchiveOperation.BZIP2, ArchiveOperation.TAR]
+        assert ops == ["bunzip2", "untar"]
 
 
 __all__ = [

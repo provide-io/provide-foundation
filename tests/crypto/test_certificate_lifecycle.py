@@ -22,7 +22,7 @@ class TestCertificateLifecycle(FoundationTestCase):
     async def test_cleanup_after_failed_generation(self) -> None:
         """Test proper cleanup after failed certificate generation."""
         with pytest.raises(CertificateError):
-            Certificate.generate(key_type="invalid_type")
+            Certificate(generate_keypair=True, key_type="invalid_type")
 
     @pytest.mark.asyncio
     async def test_certificate_is_valid(self, client_cert: Any) -> None:
@@ -32,7 +32,8 @@ class TestCertificateLifecycle(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_expired_certificate(self) -> None:
         """Ensure expired certificates fail validation."""
-        expired_cert = Certificate.generate(
+        expired_cert = Certificate(
+            generate_keypair=True,
             key_type="rsa",
             validity_days=-1,  # Set to expire yesterday relative to its creation 'now'
         )
@@ -59,7 +60,8 @@ class TestCertificateLifecycle(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_verify_expired_certificate(self) -> None:
         """Ensure verification fails when certificate is expired."""
-        expired_cert = Certificate.generate(
+        expired_cert = Certificate(
+            generate_keypair=True,
             key_type="rsa",
             validity_days=-1,  # Set to make it expired
         )
@@ -69,7 +71,7 @@ class TestCertificateLifecycle(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_certificate_extension_addition_failure(self) -> None:
         """Ensure failures in adding extensions raise CertificateError."""
-        cert = Certificate.generate()
+        cert = Certificate(generate_keypair=True)
 
         with (
             patch(
@@ -86,18 +88,21 @@ class TestCertificateLifecycle(FoundationTestCase):
         # Ensure 'mock' is imported from unittest (already imported at file level)
         # from unittest import mock
 
-        relying_party_cert = Certificate.generate(
+        relying_party_cert = Certificate(
+            generate_keypair=True,
             common_name="RelyingPartyCert",
             key_type="ecdsa",
         )
-        ca_cert = Certificate.generate(
+        ca_cert = Certificate(
+            generate_keypair=True,
             common_name="TestCACert",
             key_type="ecdsa",
         )
 
         relying_party_cert.trust_chain = [ca_cert]  # relying_party_cert trusts ca_cert
 
-        end_entity_cert = Certificate.generate(
+        end_entity_cert = Certificate(
+            generate_keypair=True,
             common_name="EndEntityToVerify",
             key_type="ecdsa",
         )
