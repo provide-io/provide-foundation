@@ -57,12 +57,9 @@ class FoundationManager:
             and getattr(self._config, 'service_name', 'not-none') is None  # Auto-init indicator
         ):
             force = True
-            # Use basic print for early bootstrap (logger might not be ready)
-            import sys
-            print(
-                "Foundation: Auto-upgrading to force=True (explicit config overriding auto-init)",
-                file=sys.stderr
-            )
+            # Use perr for early bootstrap output (logger might not be ready)
+            from provide.foundation.console.output import perr
+            perr("Foundation: Auto-upgrading to force=True (explicit config overriding auto-init)")
 
         # Use the new simplified coordinator
         from provide.foundation.hub.initialization import get_initialization_coordinator
