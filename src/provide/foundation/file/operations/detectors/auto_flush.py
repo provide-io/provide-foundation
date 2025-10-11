@@ -48,6 +48,8 @@ class AutoFlushHandler:
         self._last_flush = datetime.now()
         self._flush_timer: Any = None  # asyncio.TimerHandle
         self._lock = threading.RLock()  # Protect shared state from concurrent threads
+        self._failed_operations: list[FileOperation] = []  # Queue for retry on callback failure
+        self._no_loop_buffer: list[FileOperation] = []  # Buffer when no event loop available
 
     def add_event(self, event: FileEvent) -> None:
         """Add event and schedule auto-flush.
@@ -137,6 +139,33 @@ class AutoFlushHandler:
             self._last_flush = datetime.now()
             self._flush_timer = None
 
+    def _emit_operation_safe(self, operation: FileOperation) -> bool:
+        """Safely emit operation with error handling and recovery.
+
+        Args:
+            operation: Operation to emit
+
+        Returns:
+            True if emission succeeded, False otherwise
+        """
+        if not self.on_operation_complete:
+            return True
+
+        try:
+            self.on_operation_complete(operation)
+            return True
+        except Exception as e:
+            log.error(
+                "Callback failed - queueing operation for retry",
+                error=str(e),
+                operation_type=operation.operation_type.value,
+                primary_file=operation.primary_path.name,
+            )
+            # Queue for retry
+            with self._lock:
+                self._failed_operations.append(operation)
+            return False
+
     def _handle_detected_operation(self, operation: FileOperation) -> None:
         """Handle a detected operation with temp file filtering.
 
@@ -157,8 +186,7 @@ class AutoFlushHandler:
                 primary_file=operation.primary_path.name,
                 event_count=len(operation.events),
             )
-            if self.on_operation_complete:
-                self.on_operation_complete(operation)
+            self._emit_operation_safe(operation)
         else:
             # Pure temp file operation - hide it
             log.info(
@@ -210,9 +238,8 @@ class AutoFlushHandler:
                     file=event.path.name,
                     event_type=event.event_type,
                 )
-                if self.on_operation_complete:
-                    single_op = self._create_single_event_operation(event)
-                    self.on_operation_complete(single_op)
+                single_op = self._create_single_event_operation(event)
+                if self._emit_operation_safe(single_op):
                     emitted_count += 1
 
         log.info(
@@ -231,10 +258,10 @@ class AutoFlushHandler:
             is_temp_source = is_temp_file(event.path)
             is_temp_dest = event.dest_path and is_temp_file(event.dest_path)
 
-            if not (is_temp_source and (not event.dest_path or is_temp_dest)) and self.on_operation_complete:
+            if not (is_temp_source and (not event.dest_path or is_temp_dest)):
                 # Event touches a real file - emit it
                 single_op = self._create_single_event_operation(event)
-                self.on_operation_complete(single_op)
+                self._emit_operation_safe(single_op)
 
     def _create_single_event_operation(self, event: FileEvent) -> FileOperation:
         """Create a FileOperation from a single event.
@@ -277,3 +304,69 @@ class AutoFlushHandler:
             if self._flush_timer:
                 self._flush_timer.cancel()
                 self._flush_timer = None
+
+    def retry_failed_operations(self) -> int:
+        """Retry failed operations.
+
+        Thread-safe: Uses internal locking.
+
+        Returns:
+            Number of operations successfully retried
+        """
+        with self._lock:
+            if not self._failed_operations:
+                return 0
+
+            retry_count = 0
+            remaining = []
+
+            for operation in self._failed_operations:
+                if self._emit_operation_safe(operation):
+                    retry_count += 1
+                    log.info(
+                        "Retry successful",
+                        operation_type=operation.operation_type.value,
+                        primary_file=operation.primary_path.name,
+                    )
+                else:
+                    # Still failing, keep for next retry
+                    remaining.append(operation)
+
+            self._failed_operations = remaining
+
+            if retry_count > 0:
+                log.info(f"Retried {retry_count} failed operations, {len(remaining)} still pending")
+
+            return retry_count
+
+    @property
+    def failed_operations_count(self) -> int:
+        """Get count of failed operations awaiting retry.
+
+        Thread-safe: Uses internal locking.
+        """
+        with self._lock:
+            return len(self._failed_operations)
+
+    def get_failed_operations(self) -> list[FileOperation]:
+        """Get copy of failed operations list for inspection.
+
+        Thread-safe: Returns a copy.
+        """
+        with self._lock:
+            return self._failed_operations.copy()
+
+    def clear_failed_operations(self) -> int:
+        """Clear all failed operations (data loss - use carefully).
+
+        Thread-safe: Uses internal locking.
+
+        Returns:
+            Number of operations that were cleared
+        """
+        with self._lock:
+            count = len(self._failed_operations)
+            self._failed_operations.clear()
+            if count > 0:
+                log.warning(f"Cleared {count} failed operations - data loss!")
+            return count
