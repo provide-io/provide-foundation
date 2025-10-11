@@ -20,6 +20,7 @@ __all__ = [
 
 def separate_arguments_and_options(
     params: list[ParameterInfo],
+    force_options: bool = False,
 ) -> tuple[list[ParameterInfo], list[ParameterInfo]]:
     """Separate parameters into arguments and options using Position-Based Hybrid.
 
@@ -29,6 +30,7 @@ def separate_arguments_and_options(
     3. No hint + no default → argument
     4. No hint + has default + bool → option (flag)
     5. No hint + has default + non-bool → first becomes optional argument, rest become options
+       (unless force_options=True, then all become options)
 
     Position-Based Hybrid provides natural UX:
     - First parameter feels like the "main thing" → optional positional argument
@@ -42,8 +44,13 @@ def separate_arguments_and_options(
         Becomes CLI:
             send [MESSAGE] --level INFO --verbose
 
+        With force_options=True:
+            send --message TEXT --level INFO --verbose
+
     Args:
         params: List of ParameterInfo objects
+        force_options: If True, all parameters with defaults become options
+                      (disables Position-Based Hybrid for first parameter)
 
     Returns:
         (arguments, options) tuple of parameter lists
@@ -68,12 +75,13 @@ def separate_arguments_and_options(
         else:
             # Has default, non-boolean → Position-Based Hybrid
             # First param becomes optional argument, rest become options
-            if not arguments and not options:
-                # This is the first parameter overall → make it an optional argument
-                arguments.append(param)
-            else:
-                # Subsequent parameters → make them options
+            # (unless force_options is True)
+            if force_options or arguments or options:
+                # force_options enabled OR subsequent parameters → make them options
                 options.append(param)
+            else:
+                # First parameter overall → make it an optional argument
+                arguments.append(param)
 
     return arguments, options
 

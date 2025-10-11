@@ -57,8 +57,11 @@ def build_click_command_from_info(info: Any) -> click.Command:
         # Introspect parameters if not already done
         params = introspect_parameters(info.func) if info.parameters is None else info.parameters
 
+        # Check if command wants to force all defaults to be options
+        force_options = info.metadata.get("force_options", False)
+
         # Separate into arguments and options
-        arguments, options = separate_arguments_and_options(params)
+        arguments, options = separate_arguments_and_options(params, force_options=force_options)
 
         # Create a wrapper to avoid modifying the original function
         # Click decorators modify functions in-place, so we need to protect info.func
