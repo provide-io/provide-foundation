@@ -19,6 +19,10 @@ if _HAS_CLICK:
     @click.version_option()
     def cli() -> None:
         """Foundation CLI - Telemetry and observability tools."""
+        # Register cleanup handlers on CLI startup
+        from provide.foundation.cli.shutdown import register_cleanup_handlers
+
+        register_cleanup_handlers()
 
     # Register commands from commands module
     try:

@@ -129,14 +129,14 @@ class TestShellExecution(FoundationTestCase):
 
     def test_shell_with_complex_command(self) -> None:
         """Test shell execution with complex commands."""
-        result = shell("echo 'hello world' | grep hello")
+        result = shell("echo 'hello world' | grep hello", allow_shell_features=True)
 
         assert result.returncode == 0
         assert "hello" in result.stdout
 
     def test_shell_with_environment_variables(self) -> None:
         """Test shell execution with custom environment."""
-        result = shell("echo $TEST_VAR", env={"TEST_VAR": "test_value"})
+        result = shell("echo $TEST_VAR", env={"TEST_VAR": "test_value"}, allow_shell_features=True)
 
         assert result.returncode == 0
         assert "test_value" in result.stdout

@@ -17,8 +17,7 @@ Demonstrates data processing with error handling, resilience patterns,
 and progress tracking using provide-foundation.
 """
 
-from provide.foundation.context import CLIContext
-from provide.foundation import logger, setup_telemetry
+from provide.foundation import Context, logger, setup_telemetry
 from provide.foundation.console import pout, perr
 from provide.foundation.resilience import retry, circuit_breaker
 from pathlib import Path
@@ -375,7 +374,7 @@ class DataProcessor:
 async def main():
     """Main entry point for the data pipeline."""
     # Setup context and telemetry
-    ctx = CLIContext.from_env()
+    ctx = Context.from_env()
     setup_telemetry()
     
     logger.info("application_start",
@@ -511,7 +510,7 @@ processor = DataProcessor(
 )
 
 # Custom context for production
-ctx = CLIContext(
+ctx = Context(
     profile="production",
     log_level="INFO", 
     debug=False,

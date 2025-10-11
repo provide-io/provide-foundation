@@ -111,3 +111,40 @@ class ConcurrencyError(FoundationError):
 
     def _default_code(self) -> str:
         return "CONCURRENCY_ERROR"
+
+
+class RateLimitExceededError(FoundationError):
+    """Raised when a rate limit is exceeded.
+
+    Args:
+        message: Error message describing the rate limit violation.
+        limit: The rate limit that was exceeded (requests/messages per time unit).
+        retry_after: Seconds to wait before retrying.
+        current_rate: Optional current rate at time of error.
+        **kwargs: Additional context passed to FoundationError.
+
+    Examples:
+        >>> raise RateLimitExceededError("Log rate limit exceeded", limit=100.0, retry_after=1.0)
+        >>> raise RateLimitExceededError("API rate limit", limit=1000, retry_after=60, current_rate=1050)
+
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        limit: float | None = None,
+        retry_after: float | None = None,
+        current_rate: float | None = None,
+        **kwargs: Any,
+    ) -> None:
+        if limit is not None:
+            kwargs.setdefault("context", {})["rate_limit.limit"] = limit
+        if retry_after is not None:
+            kwargs.setdefault("context", {})["rate_limit.retry_after"] = retry_after
+        if current_rate is not None:
+            kwargs.setdefault("context", {})["rate_limit.current_rate"] = current_rate
+        super().__init__(message, **kwargs)
+
+    def _default_code(self) -> str:
+        return "INTEGRATION_RATE_LIMIT"

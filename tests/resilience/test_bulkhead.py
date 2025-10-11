@@ -20,19 +20,19 @@ class TestSyncResourcePool(FoundationTestCase):
         pool = SyncResourcePool(max_concurrent=2)
 
         assert pool.acquire()
-        assert pool.active_count == 1
+        assert pool.active_count() == 1
 
         assert pool.acquire()
-        assert pool.active_count == 2
+        assert pool.active_count() == 2
 
         # Third acquire should fail (no timeout)
         assert not pool.acquire(timeout=0.1)
 
         pool.release()
-        assert pool.active_count == 1
+        assert pool.active_count() == 1
 
         pool.release()
-        assert pool.active_count == 0
+        assert pool.active_count() == 0
 
     def test_queue_full_error(self) -> None:
         """Test that queue full raises error."""
@@ -74,19 +74,19 @@ class TestAsyncResourcePool(FoundationTestCase):
         pool = AsyncResourcePool(max_concurrent=2)
 
         assert await pool.acquire()
-        assert await pool.get_active_count() == 1
+        assert await pool.active_count() == 1
 
         assert await pool.acquire()
-        assert await pool.get_active_count() == 2
+        assert await pool.active_count() == 2
 
         # Third acquire should fail (no timeout)
         assert not await pool.acquire(timeout=0.1)
 
         await pool.release()
-        assert await pool.get_active_count() == 1
+        assert await pool.active_count() == 1
 
         await pool.release()
-        assert await pool.get_active_count() == 0
+        assert await pool.active_count() == 0
 
     async def test_async_queue_full_error(self) -> None:
         """Test that async queue full raises error."""

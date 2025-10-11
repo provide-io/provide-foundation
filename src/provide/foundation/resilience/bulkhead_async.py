@@ -43,17 +43,17 @@ class AsyncResourcePool:
         """Initialize internal state."""
         pass
 
-    async def get_active_count(self) -> int:
+    async def active_count(self) -> int:
         """Number of currently active operations."""
         async with self._lock:
             return self._active_count
 
-    async def get_available_capacity(self) -> int:
+    async def available_capacity(self) -> int:
         """Number of available slots."""
         async with self._lock:
             return max(0, self.max_concurrent - self._active_count)
 
-    async def get_queue_size(self) -> int:
+    async def queue_size(self) -> int:
         """Current number of waiting operations."""
         async with self._lock:
             return self._waiting_count

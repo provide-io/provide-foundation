@@ -28,10 +28,12 @@ class TestObservabilityModule(FoundationTestCase):
 
     def test_has_otel_detection_with_otel(self) -> None:
         """Test OpenTelemetry detection when available."""
-        # Create a mock trace module
+        # Create mock modules for opentelemetry package
+        mock_otel = Mock()
         mock_trace = Mock()
+        mock_otel.trace = mock_trace
 
-        with patch.dict("sys.modules", {"opentelemetry.trace": mock_trace}):
+        with patch.dict("sys.modules", {"opentelemetry": mock_otel, "opentelemetry.trace": mock_trace}):
             # Re-import the module to trigger detection logic
             import importlib
 
@@ -314,10 +316,12 @@ class TestRealWorldScenarios:
     def test_production_environment_simulation(self) -> None:
         """Test behavior in a production-like environment."""
         # Simulate production where OpenTelemetry might be available
+        mock_otel = Mock()
         mock_trace = Mock()
         mock_trace.__name__ = "opentelemetry.trace"
+        mock_otel.trace = mock_trace
 
-        with patch.dict("sys.modules", {"opentelemetry.trace": mock_trace}):
+        with patch.dict("sys.modules", {"opentelemetry": mock_otel, "opentelemetry.trace": mock_trace}):
             import importlib
 
             import provide.foundation.observability

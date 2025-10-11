@@ -120,9 +120,16 @@ def _reconfigure_structlog_stream() -> None:
 
         current_config = structlog.get_config()
         if current_config and "logger_factory" in current_config:
+            # Check if force stream redirect is enabled
+            from provide.foundation.streams.config import get_stream_config
+
+            stream_config = get_stream_config()
+            cache_loggers = not stream_config.force_stream_redirect
+
             # Reconfigure with the new stream while preserving other config
             new_config = {**current_config}
             new_config["logger_factory"] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
+            new_config["cache_logger_on_first_use"] = cache_loggers
             structlog.configure(**new_config)
     except Exception:
         # Generic catch intentional: structlog might not be configured yet,
@@ -137,15 +144,15 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
     This function not only sets the stream but also reconfigures structlog
     if it's already configured to ensure logs actually go to the test stream.
     """
-    from provide.foundation.testmode.detection import is_in_click_testing
+    from provide.foundation.testmode.detection import should_allow_stream_redirect
 
     global _PROVIDE_LOG_STREAM
     if not _get_stream_lock().acquire(timeout=5.0):
         # If we can't acquire the lock within 5 seconds, skip the operation
         return
     try:
-        # Don't modify streams if we're in Click testing context
-        if is_in_click_testing():
+        # Use testmode to determine if redirect is allowed
+        if not should_allow_stream_redirect():
             return
 
         _PROVIDE_LOG_STREAM = stream if stream is not None else sys.stderr

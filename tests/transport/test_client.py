@@ -258,8 +258,8 @@ async def test_universal_client_connection_pooling(httpx_mock: HTTPXMock) -> Non
         await client.get("https://api.example.com/test2")
 
         # Should have created only one transport instance (check inside context)
-        assert len(client._transports) == 1
-        assert "https" in client._transports
+        assert len(client._cache._transports) == 1
+        assert "https" in client._cache._transports
 
 
 @pytest.mark.asyncio

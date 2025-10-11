@@ -16,6 +16,7 @@ from provide.foundation.cli.click.hierarchy import (
 )
 from provide.foundation.cli.deps import click
 from provide.foundation.cli.errors import CLIBuildError
+from provide.foundation.hub.categories import ComponentCategory
 
 if TYPE_CHECKING:
     from provide.foundation.hub.registry import Registry
@@ -69,14 +70,14 @@ def create_command_group(
 
         # Get commands to include
         if commands is None:
-            commands = reg.list_dimension("command")
+            commands = reg.list_dimension(ComponentCategory.COMMAND.value)
 
         # Sort commands to ensure parents are created before children
         sorted_commands = sorted(commands, key=lambda x: x.count("."))
 
         # First pass: create all groups
         for cmd_name in sorted_commands:
-            entry = reg.get_entry(cmd_name, dimension="command")
+            entry = reg.get_entry(cmd_name, dimension=ComponentCategory.COMMAND.value)
             if should_skip_entry(entry):
                 continue
 
@@ -86,7 +87,7 @@ def create_command_group(
 
         # Second pass: add commands to groups
         for cmd_name in sorted_commands:
-            entry = reg.get_entry(cmd_name, dimension="command")
+            entry = reg.get_entry(cmd_name, dimension=ComponentCategory.COMMAND.value)
             if should_skip_entry(entry) or should_skip_command(entry):
                 continue
 

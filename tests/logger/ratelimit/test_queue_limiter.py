@@ -108,18 +108,19 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
     def test_queued_rate_limiter_memory_limit(self, ensure_limiter_cleanup: any) -> None:
         """Test memory limit enforcement."""
-        # Very small memory limit
+        # Very small memory limit (0.0005 MB = ~512 bytes)
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
                 capacity=10.0,
                 refill_rate=5.0,
                 max_queue_size=100,
-                max_memory_mb=0.001,
+                max_memory_mb=0.0005,
             )
         )
 
-        # Try to add items that exceed memory limit
-        large_item = "x" * 1000  # ~1KB item
+        # Try to add items that clearly exceed memory limit
+        # 10KB item vs 512 byte limit = clear failure
+        large_item = "x" * 10000  # ~10KB item
 
         accepted, reason = limiter.enqueue(large_item)
         assert accepted is False

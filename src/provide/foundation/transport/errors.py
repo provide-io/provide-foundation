@@ -47,8 +47,25 @@ class TransportNotFoundError(TransportError):
         self.scheme = scheme
 
 
+class TransportCacheEvictedError(TransportError):
+    """Transport was evicted from cache due to failures."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        scheme: str,
+        consecutive_failures: int,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(message, **kwargs)
+        self.scheme = scheme
+        self.consecutive_failures = consecutive_failures
+
+
 __all__ = [
     "HTTPResponseError",
+    "TransportCacheEvictedError",
     "TransportConfigurationError",
     "TransportConnectionError",
     "TransportError",

@@ -9,6 +9,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
+from provide.foundation.errors.decorators import resilient
 from provide.foundation.integrations.openobserve.auth import (
     get_auth_headers,
     validate_credentials,
@@ -288,17 +289,21 @@ class OpenObserveClient:
 
         return SearchResponse.from_dict(response)
 
+    @resilient(
+        fallback=False,
+        suppress=(Exception,),
+        reraise=False,
+        context={"method": "test_connection"},
+    )
     def test_connection(self) -> bool:
         """Test connection to OpenObserve.
 
+        Uses the @resilient decorator for standardized error handling and logging.
+
         Returns:
-            True if connection successful
+            True if connection successful, False otherwise
 
         """
-        try:
-            # Try to list streams as a simple test
-            self.list_streams()
-            return True
-        except Exception as e:
-            log.error(f"Connection test failed: {e}")
-            return False
+        # Try to list streams as a simple test
+        self.list_streams()
+        return True

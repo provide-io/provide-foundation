@@ -38,6 +38,13 @@ class StreamConfig(RuntimeConfig):
         description="Indicates if running inside Click testing framework",
     )
 
+    force_stream_redirect: bool = field(
+        default=False,
+        env_var="FOUNDATION_FORCE_STREAM_REDIRECT",
+        converter=parse_bool_extended,
+        description="Force stream redirection in testing (bypasses Click testing guard)",
+    )
+
     def supports_color(self) -> bool:
         """Determine if the console supports color output.
 

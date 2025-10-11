@@ -1,19 +1,13 @@
 from __future__ import annotations
 
-from provide.foundation.cli.deps import _HAS_CLICK, click
+from provide.foundation.cli.deps import click
+from provide.foundation.cli.helpers import requires_click
+from provide.foundation.cli.shutdown import with_cleanup
 from provide.foundation.console.output import pout
 from provide.foundation.process import exit_error, exit_success
 from provide.foundation.utils.deps import check_optional_deps, has_dependency
 
 """CLI command for checking optional dependencies."""
-
-
-def _require_click() -> None:
-    """Ensure click is available for CLI commands."""
-    if not _HAS_CLICK:
-        raise ImportError(
-            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
-        )
 
 
 def _deps_command_impl(quiet: bool, check: str | None) -> None:
@@ -44,27 +38,22 @@ def _deps_command_impl(quiet: bool, check: str | None) -> None:
             exit_error(f"Missing {total_count - available_count} dependencies")
 
 
-if _HAS_CLICK:
+@click.command("deps")
+@click.option("--quiet", "-q", is_flag=True, help="Suppress output, just return exit code")
+@click.option("--check", metavar="DEPENDENCY", help="Check specific dependency only")
+@requires_click
+@with_cleanup
+def deps_command(quiet: bool, check: str | None) -> None:
+    """Check optional dependency status.
 
-    @click.command("deps")
-    @click.option("--quiet", "-q", is_flag=True, help="Suppress output, just return exit code")
-    @click.option("--check", metavar="DEPENDENCY", help="Check specific dependency only")
-    def deps_command(quiet: bool, check: str | None) -> None:
-        """Check optional dependency status.
+    Shows which optional dependencies are available and provides
+    installation instructions for missing ones.
 
-        Shows which optional dependencies are available and provides
-        installation instructions for missing ones.
-
-        Exit codes:
-        - 0: All dependencies available (or specific one if --check used)
-        - 1: Some dependencies missing (or specific one missing if --check used)
-        """
-        _deps_command_impl(quiet, check)
-else:
-    # Stub for when click is not available
-    def deps_command(*args: object, **kwargs: object) -> None:
-        """Deps command stub when click is not available."""
-        _require_click()
+    Exit codes:
+    - 0: All dependencies available (or specific one if --check used)
+    - 1: Some dependencies missing (or specific one missing if --check used)
+    """
+    _deps_command_impl(quiet, check)
 
 
 # Export the command
