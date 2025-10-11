@@ -6,9 +6,8 @@ ensuring one failing handler doesn't break the entire event system.
 
 from __future__ import annotations
 
-import threading
-import time
 from io import StringIO
+import threading
 from unittest.mock import patch
 
 from provide.testkit import FoundationTestCase
@@ -181,7 +180,7 @@ class TestEventBusErrorHandling(FoundationTestCase):
     def test_weakref_cleanup_works_after_handler_error(self) -> None:
         """Test that weakref cleanup still works when handlers fail."""
 
-        def create_failing_handler():
+        def create_failing_handler() -> callable:
             def handler(event: Event) -> None:
                 raise ValueError("Test error")
 
