@@ -47,7 +47,7 @@ class FoundationManager:
             force: If True, force re-initialization even if already initialized
 
         """
-        # Smart initialization: Auto-upgrade to force=True when explicit config
+        # Smart initialization: Try lightweight config update first when explicit config
         # is provided but Foundation is already auto-initialized with defaults
         if (
             config is not None  # Explicit config provided
@@ -56,15 +56,23 @@ class FoundationManager:
             and self._config is not None  # Have existing config to check
             and getattr(self._config, 'service_name', 'not-none') is None  # Auto-init indicator
         ):
-            force = True
-            # Use perr for early bootstrap output (logger might not be ready)
-            try:
-                from provide.foundation.console.output import perr
-                perr("Foundation: Auto-upgrading to force=True (explicit config overriding auto-init)")
-            except Exception:
-                # Fallback to print if perr fails
-                import sys
-                print("Foundation: Auto-upgrading to force=True (explicit config overriding auto-init)", file=sys.stderr)
+            # Try lightweight config update (avoids expensive re-initialization)
+            from provide.foundation.hub.initialization import get_initialization_coordinator
+            coordinator = get_initialization_coordinator()
+
+            if coordinator.update_config_if_default(self._registry, config):
+                # Config updated successfully - no need to re-initialize
+                self._config = config
+                # Use perr for feedback
+                try:
+                    from provide.foundation.console.output import perr
+                    perr("Foundation: Updated config (explicit service_name overriding auto-init default)")
+                except Exception:
+                    # Fallback to print if perr fails
+                    import sys
+                    print("Foundation: Updated config (explicit service_name overriding auto-init default)", file=sys.stderr)
+                return
+            # If lightweight update failed, fall through to normal initialization
 
         # Use the new simplified coordinator
         from provide.foundation.hub.initialization import get_initialization_coordinator
