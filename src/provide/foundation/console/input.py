@@ -3,12 +3,13 @@ from __future__ import annotations
 import asyncio
 from collections.abc import AsyncIterator, Iterator
 import contextlib
-import json
 import sys
 from typing import TYPE_CHECKING, Any, TypeVar
 
 from provide.foundation.context import CLIContext
+from provide.foundation.errors import ValidationError
 from provide.foundation.logger import get_logger
+from provide.foundation.serialization import json_dumps, json_loads
 
 try:
     import click
@@ -72,8 +73,8 @@ def _handle_json_input(prompt: str, kwargs: dict[str, Any]) -> str | dict[str, A
 
         # Try to parse as JSON first
         try:
-            data: Any = json.loads(line)
-        except json.JSONDecodeError:
+            data: Any = json_loads(line)
+        except ValidationError:
             # Treat as plain string
             data = line
 
@@ -239,13 +240,13 @@ def pin_stream() -> Iterator[str]:
         stdin_content = sys.stdin.read()
         try:
             # Try to parse as JSON array/object
-            data = json.loads(stdin_content)
+            data = json_loads(stdin_content)
             if isinstance(data, list):
                 for item in data:
-                    yield json.dumps(item) if not isinstance(item, str) else item
+                    yield json_dumps(item) if not isinstance(item, str) else item
             else:
-                yield json.dumps(data)
-        except json.JSONDecodeError:
+                yield json_dumps(data)
+        except ValidationError:
             # Fall back to line-by-line reading
             for line in stdin_content.splitlines():
                 if line:  # Skip empty lines
@@ -309,13 +310,14 @@ async def apin_stream() -> AsyncIterator[str]:
 
         def read_json() -> list[str]:
             try:
-                data = json.load(sys.stdin)
+                stdin_content = sys.stdin.read()
+                data = json_loads(stdin_content)
                 if isinstance(data, list):
-                    return [json.dumps(item) if not isinstance(item, str) else item for item in data]
-                return [json.dumps(data)]
-            except json.JSONDecodeError:
-                # Fall back to line-by-line reading
-                return [line.rstrip("\n\r") for line in sys.stdin]
+                    return [json_dumps(item) if not isinstance(item, str) else item for item in data]
+                return [json_dumps(data)]
+            except ValidationError:
+                # Fall back to line-by-line reading - content already read
+                return [line.rstrip("\n\r") for line in stdin_content.splitlines() if line]
 
         lines = await loop.run_in_executor(None, read_json)
         for line in lines:

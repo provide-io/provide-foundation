@@ -1,12 +1,19 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
 from provide.foundation.file.atomic import atomic_write_text
 from provide.foundation.file.safe import safe_read_text
 from provide.foundation.logger import get_logger
+from provide.foundation.serialization import (
+    json_dumps,
+    json_loads,
+    toml_dumps,
+    toml_loads,
+    yaml_dumps,
+    yaml_loads,
+)
 
 """Format-specific file operations for JSON, YAML, TOML."""
 
@@ -36,8 +43,8 @@ def read_json(
         return default
 
     try:
-        return json.loads(content)
-    except json.JSONDecodeError as e:
+        return json_loads(content)
+    except Exception as e:
         log.warning("Invalid JSON file", path=str(path), error=str(e))
         return default
 
@@ -64,7 +71,7 @@ def write_json(
     path = Path(path)
 
     try:
-        content = json.dumps(data, indent=indent, sort_keys=sort_keys, ensure_ascii=False)
+        content = json_dumps(data, indent=indent, sort_keys=sort_keys, ensure_ascii=False)
 
         if atomic:
             atomic_write_text(path, content, encoding=encoding)
@@ -95,7 +102,7 @@ def read_yaml(
 
     """
     try:
-        import yaml
+        import yaml  # noqa: F401
     except ImportError:
         log.warning("PyYAML not installed, returning default")
         return default
@@ -107,8 +114,8 @@ def read_yaml(
         return default
 
     try:
-        return yaml.safe_load(content)
-    except yaml.YAMLError as e:
+        return yaml_loads(content)
+    except Exception as e:
         log.warning("Invalid YAML file", path=str(path), error=str(e))
         return default
 
@@ -131,14 +138,14 @@ def write_yaml(
 
     """
     try:
-        import yaml
+        import yaml  # noqa: F401
     except ImportError as e:
         raise ImportError("PyYAML is required for YAML operations") from e
 
     path = Path(path)
 
     try:
-        content = yaml.dump(
+        content = yaml_dumps(
             data,
             default_flow_style=default_flow_style,
             allow_unicode=True,
@@ -173,8 +180,6 @@ def read_toml(
         Parsed TOML data or default value
 
     """
-    import tomllib
-
     content = safe_read_text(path, default="", encoding=encoding)
 
     if not content:
@@ -182,7 +187,7 @@ def read_toml(
         return default if default is not None else {}
 
     try:
-        return tomllib.loads(content)
+        return toml_loads(content)
     except Exception as e:
         log.warning("Invalid TOML file", path=str(path), error=str(e))
         return default if default is not None else {}
@@ -204,14 +209,14 @@ def write_toml(
 
     """
     try:
-        import tomli_w
+        import tomli_w  # noqa: F401
     except ImportError as e:
         raise ImportError("tomli-w is required for TOML write operations") from e
 
     path = Path(path)
 
     try:
-        content = tomli_w.dumps(data)
+        content = toml_dumps(data)
 
         if atomic:
             atomic_write_text(path, content, encoding=encoding)

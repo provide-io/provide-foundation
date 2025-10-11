@@ -3,10 +3,10 @@ from __future__ import annotations
 import csv
 from datetime import datetime
 import io
-import json
 from typing import Any
 
 from provide.foundation.integrations.openobserve.models import SearchResponse
+from provide.foundation.serialization import json_dumps
 
 """Output formatting utilities for OpenObserve results."""
 
@@ -33,8 +33,8 @@ def format_json(response: SearchResponse | dict[str, Any], pretty: bool = True) 
         data = response
 
     if pretty:
-        return json.dumps(data, indent=2, sort_keys=False)
-    return json.dumps(data)
+        return json_dumps(data, indent=2, sort_keys=False)
+    return json_dumps(data)
 
 
 def format_log_line(entry: dict[str, Any]) -> str:

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime
-import json
 from typing import Any
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.logger import get_logger
+from provide.foundation.serialization import json_dumps
 
 """OTLP integration for sending logs to OpenObserve."""
 
@@ -237,7 +237,7 @@ def send_log_bulk(
 
         # Format as bulk request
         stream = oo_config.stream or "default"
-        bulk_data = json.dumps({"index": {"_index": stream}}) + "\n" + json.dumps(log_entry) + "\n"
+        bulk_data = json_dumps({"index": {"_index": stream}}) + "\n" + json_dumps(log_entry) + "\n"
 
         # Send via bulk API using Foundation transport
         url = _build_bulk_url(client)

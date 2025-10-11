@@ -7,6 +7,7 @@ from typing import Any, Protocol, runtime_checkable
 from attrs import define, field
 
 from provide.foundation.logger import get_logger
+from provide.foundation.serialization import json_loads
 from provide.foundation.transport.types import Data, Headers, Params, TransportType
 
 """Core transport abstractions."""
@@ -62,12 +63,10 @@ class Response:
 
     def json(self) -> Any:
         """Parse response body as JSON."""
-        import json
-
         if isinstance(self.body, bytes):
-            return json.loads(self.body.decode("utf-8"))
+            return json_loads(self.body.decode("utf-8"))
         if isinstance(self.body, str):
-            return json.loads(self.body)
+            return json_loads(self.body)
         raise ValueError("Response body is not JSON-parseable")
 
     @property

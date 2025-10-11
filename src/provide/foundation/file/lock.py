@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import os
 from pathlib import Path
 import socket
@@ -12,6 +11,7 @@ import psutil
 from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
 from provide.foundation.errors.resources import LockError
 from provide.foundation.logger import get_logger
+from provide.foundation.serialization import json_dumps, json_loads
 
 """File-based locking for concurrent access control.
 
@@ -116,7 +116,7 @@ class FileLock:
                             lock_info["start_time"] = proc.create_time()
                         except (psutil.NoSuchProcess, psutil.AccessDenied):
                             pass
-                        os.write(fd, json.dumps(lock_info).encode())
+                        os.write(fd, json_dumps(lock_info).encode())
                     finally:
                         os.close(fd)
 
@@ -174,12 +174,12 @@ class FileLock:
                     try:
                         content = self.path.read_text().strip()
                         try:
-                            lock_info = json.loads(content)
+                            lock_info = json_loads(content)
                             if isinstance(lock_info, dict):
                                 owner_pid = lock_info.get("pid")
                             else:
                                 owner_pid = lock_info if isinstance(lock_info, int) else None
-                        except (json.JSONDecodeError, ValueError):
+                        except (ValueError, Exception):
                             owner_pid = int(content) if content.isdigit() else None
 
                         if owner_pid == self.pid:
@@ -240,7 +240,7 @@ class FileLock:
             lock_pid = None
             lock_start_time = None
             try:
-                lock_info = json.loads(content)
+                lock_info = json_loads(content)
                 if isinstance(lock_info, dict):
                     lock_pid = lock_info.get("pid")
                     lock_start_time = lock_info.get("start_time")
@@ -249,7 +249,7 @@ class FileLock:
                 else:
                     log.debug("Invalid lock file content", path=str(self.path), content=content[:50])
                     return False
-            except (json.JSONDecodeError, ValueError):
+            except (ValueError, Exception):
                 if content.isdigit():
                     lock_pid = int(content)
                 else:

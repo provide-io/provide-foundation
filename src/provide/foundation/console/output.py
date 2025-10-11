@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-import json
-import os
 import sys
 from typing import Any
 
 from provide.foundation.context import CLIContext
 from provide.foundation.errors.decorators import resilient
+from provide.foundation.serialization import json_dumps
 from provide.foundation.utils.caching import cached
+from provide.foundation.utils.environment import get_bool, get_str
 
 """Core console output functions for standardized CLI output.
 
@@ -52,10 +52,10 @@ def _get_color_env_settings() -> tuple[bool | None, bool]:
         - force_color is True if FORCE_COLOR is set, None otherwise
         - no_color is True if NO_COLOR is set, False otherwise
     """
-    force_color = os.environ.get("FORCE_COLOR", "").lower()
+    force_color = get_str("FORCE_COLOR", "").lower()
     force = True if force_color in ("1", "true", "yes") else None
 
-    no_color = bool(os.environ.get("NO_COLOR"))
+    no_color = get_bool("NO_COLOR", False)
 
     return (force, no_color)
 
@@ -90,7 +90,7 @@ def _should_use_color(ctx: CLIContext | None = None, stream: Any = None) -> bool
 @resilient(fallback=None, suppress=(TypeError, ValueError, AttributeError))
 def _output_json(data: Any, stream: Any = sys.stdout) -> None:
     """Output data as JSON."""
-    json_str = json.dumps(data, indent=2, default=str)
+    json_str = json_dumps(data, indent=2, default=str)
     if _HAS_CLICK:
         click.echo(json_str, file=stream)
     else:

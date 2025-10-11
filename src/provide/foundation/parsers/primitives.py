@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import json
 from typing import Any
 
 from provide.foundation.parsers.errors import _format_invalid_value_error, _format_validation_error
+from provide.foundation.serialization import json_loads
 
 """Basic type parsing functions for primitive types.
 
@@ -220,7 +220,7 @@ def parse_json_dict(value: str) -> dict[str, Any]:
         return {}
 
     try:
-        result = json.loads(value)
+        result = json_loads(value)
         if not isinstance(result, dict):
             raise ValueError(
                 _format_invalid_value_error(
@@ -230,7 +230,7 @@ def parse_json_dict(value: str) -> dict[str, Any]:
                 ),
             )
         return result
-    except json.JSONDecodeError as e:
+    except Exception as e:
         raise ValueError(
             _format_invalid_value_error("json_dict", value, expected_type="valid JSON"),
         ) from e
@@ -253,7 +253,7 @@ def parse_json_list(value: str) -> list[Any]:
         return []
 
     try:
-        result = json.loads(value)
+        result = json_loads(value)
         if not isinstance(result, list):
             raise ValueError(
                 _format_invalid_value_error(
@@ -263,7 +263,7 @@ def parse_json_list(value: str) -> list[Any]:
                 ),
             )
         return result
-    except json.JSONDecodeError as e:
+    except Exception as e:
         raise ValueError(
             _format_invalid_value_error("json_list", value, expected_type="valid JSON"),
         ) from e
