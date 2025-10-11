@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-import contextlib
 import threading
 from typing import Any
 import weakref
