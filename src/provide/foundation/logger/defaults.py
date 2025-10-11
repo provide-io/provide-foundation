@@ -28,6 +28,13 @@ DEFAULT_RATE_LIMIT_GLOBAL_CAPACITY = 1000
 DEFAULT_RATE_LIMIT_OVERFLOW_POLICY = "drop_oldest"
 
 # =================================
+# Sanitization Defaults
+# =================================
+DEFAULT_SANITIZATION_ENABLED = True
+DEFAULT_SANITIZATION_MASK_PATTERNS = True
+DEFAULT_SANITIZATION_SANITIZE_DICTS = True
+
+# =================================
 # Logger System Defaults
 # =================================
 DEFAULT_FALLBACK_LOG_LEVEL = "INFO"
@@ -72,6 +79,9 @@ __all__ = [
     "DEFAULT_RATE_LIMIT_GLOBAL",
     "DEFAULT_RATE_LIMIT_GLOBAL_CAPACITY",
     "DEFAULT_RATE_LIMIT_OVERFLOW_POLICY",
+    "DEFAULT_SANITIZATION_ENABLED",
+    "DEFAULT_SANITIZATION_MASK_PATTERNS",
+    "DEFAULT_SANITIZATION_SANITIZE_DICTS",
     "default_logging_config",
     "default_module_levels",
     "default_rate_limits",

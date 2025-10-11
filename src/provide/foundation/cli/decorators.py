@@ -13,15 +13,15 @@ from provide.foundation.process import exit_error, exit_interrupted
 
 F = TypeVar("F", bound=Callable[..., Any])
 
-# Standard log level choices
-LOG_LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+# Standard log level choices (including custom TRACE level)
+LOG_LEVELS = ["TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 def logging_options(f: F) -> F:
     """Add standard logging options to a Click command.
 
     Adds:
-    - --log-level/-l: Set logging verbosity (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    - --log-level/-l: Set logging verbosity (TRACE, DEBUG, INFO, WARNING, ERROR, CRITICAL)
     - --log-file: Write logs to file
     - --log-format: Choose log output format (json, text, key_value)
     """

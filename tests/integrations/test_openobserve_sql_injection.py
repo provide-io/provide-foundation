@@ -64,8 +64,14 @@ class TestSanitization:
         """Test valid trace IDs pass sanitization."""
         assert _sanitize_trace_id("abc123def456") == "abc123def456"
         assert _sanitize_trace_id("ABCDEF0123456789") == "ABCDEF0123456789"
-        assert _sanitize_trace_id("12345678-1234-1234-1234-123456789012") == "12345678-1234-1234-1234-123456789012"
-        assert _sanitize_trace_id("a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6") == "a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6"
+        assert (
+            _sanitize_trace_id("12345678-1234-1234-1234-123456789012")
+            == "12345678-1234-1234-1234-123456789012"
+        )
+        assert (
+            _sanitize_trace_id("a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6")
+            == "a1b2c3d4-e5f6-a7b8-c9d0-e1f2a3b4c5d6"
+        )
 
     def test_sanitize_trace_id_injection_attempts(self) -> None:
         """Test SQL injection attempts in trace ID are blocked."""
@@ -150,41 +156,45 @@ class TestSanitization:
 class TestSQLQueryConstruction:
     """Test that SQL queries are safely constructed."""
 
-    def test_search_by_trace_id_safe_construction(self) -> None:
+    @pytest.mark.asyncio
+    async def test_search_by_trace_id_safe_construction(self) -> None:
         """Test that search_by_trace_id constructs safe SQL."""
         # This should raise during sanitization before SQL construction
         with pytest.raises(ValueError, match="Invalid trace_id format"):
-            search_by_trace_id(
+            await search_by_trace_id(
                 trace_id="abc'; DROP TABLE logs;--",
                 stream="default",
                 client=None,  # Won't reach client call due to sanitization
             )
 
-    def test_search_by_level_safe_construction(self) -> None:
+    @pytest.mark.asyncio
+    async def test_search_by_level_safe_construction(self) -> None:
         """Test that search_by_level constructs safe SQL."""
         # This should raise during sanitization
         with pytest.raises(ValueError, match="Invalid log level"):
-            search_by_level(
+            await search_by_level(
                 level="ERROR'; DELETE FROM logs;--",
                 stream="default",
                 client=None,
             )
 
-    def test_search_by_service_safe_construction(self) -> None:
+    @pytest.mark.asyncio
+    async def test_search_by_service_safe_construction(self) -> None:
         """Test that search_by_service constructs safe SQL."""
         # This should raise during sanitization
         with pytest.raises(ValueError, match="Invalid service name"):
-            search_by_service(
+            await search_by_service(
                 service="auth'; DROP TABLE users;--",
                 stream="default",
                 client=None,
             )
 
-    def test_aggregate_by_level_safe_construction(self) -> None:
+    @pytest.mark.asyncio
+    async def test_aggregate_by_level_safe_construction(self) -> None:
         """Test that aggregate_by_level constructs safe SQL."""
         # This should raise during sanitization
         with pytest.raises(ValueError, match="Invalid stream name"):
-            aggregate_by_level(
+            await aggregate_by_level(
                 stream="default'; DROP TABLE logs;--",
                 client=None,
             )
@@ -193,11 +203,12 @@ class TestSQLQueryConstruction:
 class TestMultipleInjectionVectors:
     """Test multiple parameters with injection attempts."""
 
-    def test_combined_injection_attempts_blocked(self) -> None:
+    @pytest.mark.asyncio
+    async def test_combined_injection_attempts_blocked(self) -> None:
         """Test multiple injection vectors are all blocked."""
         # Stream injection
         with pytest.raises(ValueError, match="Invalid stream name"):
-            search_by_trace_id(
+            await search_by_trace_id(
                 trace_id="abc123",
                 stream="default'; DROP TABLE logs;--",
                 client=None,
@@ -205,17 +216,18 @@ class TestMultipleInjectionVectors:
 
         # Trace ID injection
         with pytest.raises(ValueError, match="Invalid trace_id format"):
-            search_by_trace_id(
+            await search_by_trace_id(
                 trace_id="abc'; SELECT * FROM users;--",
                 stream="default",
                 client=None,
             )
 
-    def test_encoded_injection_attempts_blocked(self) -> None:
+    @pytest.mark.asyncio
+    async def test_encoded_injection_attempts_blocked(self) -> None:
         """Test URL-encoded and escaped injection attempts are blocked."""
         # URL-encoded apostrophe
         with pytest.raises(ValueError, match="Invalid stream name"):
-            search_by_level(
+            await search_by_level(
                 level="ERROR",
                 stream="default%27%3B--",
                 client=None,
@@ -223,17 +235,18 @@ class TestMultipleInjectionVectors:
 
         # Escaped characters
         with pytest.raises(ValueError, match="Invalid service name"):
-            search_by_service(
+            await search_by_service(
                 service="auth\\\\'--",
                 stream="default",
                 client=None,
             )
 
-    def test_unicode_injection_attempts_blocked(self) -> None:
+    @pytest.mark.asyncio
+    async def test_unicode_injection_attempts_blocked(self) -> None:
         """Test unicode and special character injection attempts are blocked."""
         # Unicode apostrophe
         with pytest.raises(ValueError, match="Invalid stream name"):
-            search_by_level(
+            await search_by_level(
                 level="ERROR",
                 stream="default\u0027; DROP",
                 client=None,
@@ -241,7 +254,7 @@ class TestMultipleInjectionVectors:
 
         # Null byte
         with pytest.raises(ValueError, match="Invalid service name"):
-            search_by_service(
+            await search_by_service(
                 service="auth\x00; DROP",
                 stream="default",
                 client=None,

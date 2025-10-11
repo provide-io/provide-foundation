@@ -14,6 +14,7 @@ def provide_dumps(
     ensure_ascii: bool = False,
     indent: int | None = None,
     sort_keys: bool = False,
+    default: Any = None,
 ) -> str:
     """Serialize object to JSON string with Foundation tracking.
 
@@ -22,6 +23,7 @@ def provide_dumps(
         ensure_ascii: If True, non-ASCII characters are escaped
         indent: Number of spaces for indentation (None for compact)
         sort_keys: Whether to sort dictionary keys
+        default: Function called for objects that can't be serialized
 
     Returns:
         JSON string representation
@@ -37,7 +39,9 @@ def provide_dumps(
 
     """
     try:
-        return json.dumps(obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys)
+        return json.dumps(
+            obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys, default=default
+        )
     except (TypeError, ValueError) as e:
         raise ValidationError(f"Cannot serialize object to JSON: {e}") from e
 

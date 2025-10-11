@@ -619,6 +619,47 @@ Complete working examples are available in the [examples/](examples/) directory:
 
 ---
 
+## Architecture & Design Philosophy
+
+provide.foundation is intentionally designed as a **foundation layer**, not a full-stack framework. Understanding our architectural decisions helps teams evaluate whether the library aligns with their requirements.
+
+### When to Use provide.foundation
+
+**Excellent fit:**
+- CLI applications and developer tools
+- Microservices with structured logging needs
+- Data processing pipelines
+- Background task processors
+
+**Good fit (with awareness):**
+- Web APIs (use for logging, not HTTP server)
+- Task processors (Celery, RQ)
+- Libraries needing structured logging
+
+**Consider alternatives:**
+- Ultra-low latency systems (<100μs requirements)
+- Full-stack framework needs (use Django, Rails)
+- Tool stack incompatibility (Pydantic-only, loguru-only projects)
+
+### Key Design Decisions
+
+**Tool Stack Philosophy**: Built on proven tools (attrs, structlog, click) with strong opinions for consistency. Trade-off: less flexibility, but cohesive and well-tested stack.
+
+**Threading Model**: Registry uses `threading.RLock` (not `asyncio.Lock`). Negligible impact for typical use cases (CLI apps, initialization-time registration, read-heavy workloads). For high-throughput async web services (>10k req/sec) with runtime registration in hot paths, consider async-native alternatives.
+
+**Global State Pattern**: Singletons (`get_hub()`, `logger`) for ergonomic APIs. Mitigation: `provide-testkit` provides `reset_foundation_setup_for_testing()` for clean test state.
+
+**Intentional Scope**: Provides logging, configuration, CLI patterns. Does NOT provide web frameworks, databases, auth, or templates. Integrate with FastAPI/Flask/Django for web applications.
+
+### Documentation
+
+- **[Architecture & Design Decisions](docs/architecture/design-decisions.md)** - Intentional design choices explained
+- **[Limitations & Trade-offs](docs/architecture/limitations.md)** - Honest assessment of current limitations
+- **[When to Use Guide](docs/guide/when-to-use.md)** - Decision matrix for evaluating fit
+- **[Integration Patterns](docs/guide/advanced/integration-patterns.md)** - FastAPI, Django, Celery, AWS Secrets, Azure Key Vault, custom CLI adapters
+
+---
+
 <p align="center">
   Built by <a href="https://provide.io">provide.io</a>
 </p>

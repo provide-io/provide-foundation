@@ -9,13 +9,14 @@ from __future__ import annotations
 from collections import OrderedDict
 from collections.abc import Callable
 from functools import wraps
-import os
 import threading
 from typing import Any, TypeVar, cast
 
+from provide.foundation.utils.environment import get_bool, get_int
+
 # Configuration from environment
-_CACHE_ENABLED = os.environ.get("FOUNDATION_CACHE_ENABLED", "true").lower() in ("true", "1", "yes", "on")
-_DEFAULT_CACHE_SIZE = int(os.environ.get("FOUNDATION_CACHE_SIZE", "128"))
+_CACHE_ENABLED = get_bool("FOUNDATION_CACHE_ENABLED", default=True)
+_DEFAULT_CACHE_SIZE = get_int("FOUNDATION_CACHE_SIZE", default=128)
 
 T = TypeVar("T")
 

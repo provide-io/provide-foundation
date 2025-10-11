@@ -86,14 +86,17 @@ def _build_query_sql(
 def _execute_and_display_query(sql: str, last: str, size: int, format: str, client: Any) -> int:
     """Execute query and display results."""
     from provide.foundation.integrations.openobserve import format_output, search_logs
+    from provide.foundation.utils.async_helpers import run_async
 
     try:
-        response = search_logs(
-            sql=sql,
-            start_time=f"-{last}" if last else "-1h",
-            end_time="now",
-            size=size,
-            client=client,
+        response = run_async(
+            search_logs(
+                sql=sql,
+                start_time=f"-{last}" if last else "-1h",
+                end_time="now",
+                size=size,
+                client=client,
+            )
         )
 
         # Format and display results

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from configparser import ConfigParser
-import json
 import os
 from pathlib import Path
 from typing import TypeVar
@@ -14,6 +13,7 @@ from provide.foundation.errors.config import ConfigurationError
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.resources import NotFoundError
 from provide.foundation.file.safe import safe_read_text
+from provide.foundation.serialization import provide_loads
 
 """Configuration loaders for various sources."""
 
@@ -21,7 +21,18 @@ T = TypeVar("T", bound=BaseConfig)
 
 
 class ConfigLoader(ABC):
-    """Abstract base class for configuration loaders."""
+    """Abstract base class for configuration loaders.
+
+    Built-in implementations:
+    - FileConfigLoader: YAML, JSON, TOML, .env files
+    - RuntimeConfigLoader: Environment variables
+    - DictConfigLoader: In-memory dictionaries
+
+    For cloud secret managers (Vault, AWS Secrets, Azure Key Vault), implement
+    custom loaders following this protocol.
+
+    Examples: docs/guide/advanced/integration-patterns.md#custom-configuration-sources
+    """
 
     @abstractmethod
     def load(self, config_class: type[T]) -> T:
@@ -92,15 +103,23 @@ class FileConfigLoader(ConfigLoader):
     )
     def load(self, config_class: type[T]) -> T:
         """Load configuration from file."""
-        if not self.exists():
-            raise NotFoundError(
-                f"Configuration file not found: {self.path}",
-                code="CONFIG_FILE_NOT_FOUND",
-                path=str(self.path),
-            )
+        from provide.foundation.logger.setup.coordinator import (
+            create_foundation_internal_logger,
+        )
+        from provide.foundation.utils.timing import timed_block
 
-        data = self._read_file()
-        return config_class.from_dict(data, source=ConfigSource.FILE)
+        setup_logger = create_foundation_internal_logger()
+
+        with timed_block(setup_logger, f"Load config from {self.path.name}"):
+            if not self.exists():
+                raise NotFoundError(
+                    f"Configuration file not found: {self.path}",
+                    code="CONFIG_FILE_NOT_FOUND",
+                    path=str(self.path),
+                )
+
+            data = self._read_file()
+            return config_class.from_dict(data, source=ConfigSource.FILE)
 
     def _read_file(self) -> ConfigDict:
         """Read and parse configuration file."""
@@ -113,7 +132,7 @@ class FileConfigLoader(ConfigLoader):
             )
 
         if self.format == ConfigFormat.JSON:
-            return json.loads(content)
+            return provide_loads(content)
         if self.format == ConfigFormat.YAML:
             import yaml
 

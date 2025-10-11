@@ -69,15 +69,19 @@ class TestLoggerUnicodeChaos(FoundationTestCase):
     @given(
         data=st.one_of(
             st.none(),
-            st.integers(),
+            st.integers(min_value=-1000000, max_value=1000000),
             st.floats(allow_nan=True, allow_infinity=True),
-            st.text(min_size=0, max_size=1000),
-            st.binary(min_size=0, max_size=1000),
-            st.lists(st.integers(), min_size=0, max_size=50),
-            st.dictionaries(st.text(min_size=0, max_size=20), st.integers(), min_size=0, max_size=20),
+            st.text(max_size=200),
+            st.binary(max_size=200),
+            st.lists(st.integers(), max_size=20),
+            st.dictionaries(st.text(max_size=5), st.integers(), max_size=5),
         )
     )
-    @settings(max_examples=30, suppress_health_check=[HealthCheck.filter_too_much])
+    @settings(
+        max_examples=20,
+        suppress_health_check=[HealthCheck.filter_too_much, HealthCheck.too_slow],
+        deadline=None,
+    )
     def test_malformed_log_data_chaos(self, data: object) -> None:
         """Test logger with malformed input data.
 

@@ -1,13 +1,10 @@
+"""OpenObserve API client using Foundation's transport system."""
+
 from __future__ import annotations
 
 from datetime import datetime
-import json
 from typing import Any
 from urllib.parse import urljoin
-
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
 
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.integrations.openobserve.auth import (
@@ -26,14 +23,21 @@ from provide.foundation.integrations.openobserve.models import (
     parse_relative_time,
 )
 from provide.foundation.logger import get_logger
-
-"""OpenObserve API client."""
+from provide.foundation.transport import UniversalClient
+from provide.foundation.transport.errors import (
+    TransportConnectionError,
+    TransportError,
+    TransportTimeoutError,
+)
 
 log = get_logger(__name__)
 
 
 class OpenObserveClient:
-    """Client for interacting with OpenObserve API."""
+    """Async client for interacting with OpenObserve API.
+
+    Uses Foundation's transport system for all HTTP operations.
+    """
 
     def __init__(
         self,
@@ -42,7 +46,6 @@ class OpenObserveClient:
         password: str,
         organization: str = "default",
         timeout: int = 30,
-        max_retries: int = 3,
     ) -> None:
         """Initialize OpenObserve client.
 
@@ -52,27 +55,20 @@ class OpenObserveClient:
             password: Password for authentication
             organization: Organization name (default: "default")
             timeout: Request timeout in seconds
-            max_retries: Maximum number of retry attempts
+
+        Note:
+            Retry logic is handled automatically by UniversalClient's middleware.
 
         """
         self.url = url.rstrip("/")
         self.username, self.password = validate_credentials(username, password)
         self.organization = organization
-        self.timeout = timeout
 
-        # Setup session with retry logic
-        self.session = requests.Session()
-        retry = Retry(
-            total=max_retries,
-            backoff_factor=0.3,
-            status_forcelist=[500, 502, 503, 504],
+        # Create UniversalClient with auth headers and timeout
+        self._client = UniversalClient(
+            default_headers=get_auth_headers(self.username, self.password),
+            default_timeout=float(timeout),
         )
-        adapter = HTTPAdapter(max_retries=retry)
-        self.session.mount("http://", adapter)
-        self.session.mount("https://", adapter)
-
-        # Set default headers
-        self.session.headers.update(get_auth_headers(self.username, self.password))
 
     @classmethod
     def from_config(cls) -> OpenObserveClient:
@@ -107,7 +103,44 @@ class OpenObserveClient:
             organization=config.org or "default",
         )
 
-    def _make_request(
+    def _extract_error_message(self, response: Any, default_msg: str) -> str:
+        """Extract error message from response.
+
+        Args:
+            response: Response object
+            default_msg: Default message if extraction fails
+
+        Returns:
+            Error message string
+
+        """
+        try:
+            error_data = response.json()
+            if isinstance(error_data, dict) and "message" in error_data:
+                return error_data["message"]
+        except Exception:
+            pass
+        return default_msg
+
+    def _check_response_errors(self, response: Any) -> None:
+        """Check response for errors and raise appropriate exceptions.
+
+        Args:
+            response: Response object to check
+
+        Raises:
+            OpenObserveConnectionError: On authentication errors
+            OpenObserveQueryError: On HTTP errors
+
+        """
+        if response.status == 401:
+            raise OpenObserveConnectionError("Authentication failed. Check credentials.")
+
+        if not response.is_success():
+            error_msg = self._extract_error_message(response, f"HTTP {response.status} error")
+            raise OpenObserveQueryError(f"API error: {error_msg}")
+
+    async def _make_request(
         self,
         method: str,
         endpoint: str,
@@ -130,46 +163,36 @@ class OpenObserveClient:
             OpenObserveQueryError: On API errors
 
         """
-        url = urljoin(self.url, f"/api/{self.organization}/{endpoint}")
+        uri = urljoin(self.url, f"/api/{self.organization}/{endpoint}")
 
         try:
-            response = self.session.request(
+            response = await self._client.request(
+                uri=uri,
                 method=method,
-                url=url,
                 params=params,
-                json=json_data,
-                timeout=self.timeout,
+                body=json_data,
             )
 
-            if response.status_code == 401:
-                raise OpenObserveConnectionError("Authentication failed. Check credentials.")
-
-            response.raise_for_status()
+            self._check_response_errors(response)
 
             # Handle empty responses
-            if not response.content:
+            if not response.body:
                 return {}
 
             return response.json()
 
-        except requests.exceptions.ConnectionError as e:
+        except TransportConnectionError as e:
             raise OpenObserveConnectionError(f"Failed to connect to OpenObserve: {e}") from e
-        except requests.exceptions.Timeout as e:
+        except TransportTimeoutError as e:
             raise OpenObserveConnectionError(f"Request timed out: {e}") from e
-        except requests.exceptions.HTTPError as e:
-            # Try to extract error message from response
-            error_msg = str(e)
-            try:
-                error_data = e.response.json()
-                if "message" in error_data:
-                    error_msg = error_data["message"]
-            except (json.JSONDecodeError, AttributeError):
-                pass
-            raise OpenObserveQueryError(f"API error: {error_msg}") from e
+        except TransportError as e:
+            raise OpenObserveQueryError(f"Transport error: {e}") from e
+        except (OpenObserveConnectionError, OpenObserveQueryError):
+            raise
         except Exception as e:
             raise OpenObserveQueryError(f"Unexpected error: {e}") from e
 
-    def search(
+    async def search(
         self,
         sql: str,
         start_time: str | int | None = None,
@@ -213,7 +236,7 @@ class OpenObserveClient:
         log.debug(f"Executing search query: {sql}")
 
         # Make request
-        response = self._make_request(
+        response = await self._make_request(
             method="POST",
             endpoint="_search",
             params={"is_ui_histogram": "false", "is_multi_stream_search": "false"},
@@ -235,14 +258,14 @@ class OpenObserveClient:
 
         return result
 
-    def list_streams(self) -> list[StreamInfo]:
+    async def list_streams(self) -> list[StreamInfo]:
         """List available streams.
 
         Returns:
             List of StreamInfo objects
 
         """
-        response = self._make_request(
+        response = await self._make_request(
             method="GET",
             endpoint="streams",
         )
@@ -259,7 +282,7 @@ class OpenObserveClient:
 
         return streams
 
-    def get_search_history(
+    async def get_search_history(
         self,
         stream_name: str | None = None,
         size: int = 100,
@@ -274,14 +297,14 @@ class OpenObserveClient:
             SearchResponse with history entries
 
         """
-        request_data = {
+        request_data: dict[str, Any] = {
             "size": size,
         }
 
         if stream_name:
             request_data["stream_name"] = stream_name
 
-        response = self._make_request(
+        response = await self._make_request(
             method="POST",
             endpoint="_search_history",
             json_data=request_data,
@@ -295,7 +318,7 @@ class OpenObserveClient:
         reraise=False,
         context={"method": "test_connection"},
     )
-    def test_connection(self) -> bool:
+    async def test_connection(self) -> bool:
         """Test connection to OpenObserve.
 
         Uses the @resilient decorator for standardized error handling and logging.
@@ -305,5 +328,5 @@ class OpenObserveClient:
 
         """
         # Try to list streams as a simple test
-        self.list_streams()
+        await self.list_streams()
         return True

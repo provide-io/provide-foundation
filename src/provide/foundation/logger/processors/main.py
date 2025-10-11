@@ -138,6 +138,19 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
     if config.tracing_enabled and not config.globally_disabled:
         processors.append(cast("StructlogProcessor", inject_trace_context))
 
+    # Add sanitization processor early to sanitize all logged data
+    if log_cfg.sanitization_enabled:
+        from provide.foundation.logger.processors.sanitization import (
+            create_sanitization_processor,
+        )
+
+        sanitization_processor = create_sanitization_processor(
+            enabled=log_cfg.sanitization_enabled,
+            mask_patterns=log_cfg.sanitization_mask_patterns,
+            sanitize_dicts=log_cfg.sanitization_sanitize_dicts,
+        )
+        processors.append(cast("StructlogProcessor", sanitization_processor))
+
     # Add event enrichment (emojis) BEFORE OTLP so enriched logs are exported
     processors.extend(_config_create_event_enrichment_processors(log_cfg))
 

@@ -192,15 +192,28 @@ class InitializationCoordinator:
             self._state_machine.transition(InitEvent.START)
 
             try:
-                # Single initialization path
-                actual_config = self._initialize_config(config)
-                logger_instance = self._initialize_logger(actual_config, registry)
+                # Get foundation internal logger for timing
+                from provide.foundation.logger.setup.coordinator import (
+                    create_foundation_internal_logger,
+                )
+                from provide.foundation.utils.timing import timed_block
 
-                # Register with registry
-                self._register_components(registry, actual_config, logger_instance)
+                setup_logger = create_foundation_internal_logger()
 
-                # Set up event handlers
-                self._setup_event_handlers()
+                # Single initialization path with performance monitoring
+                with timed_block(setup_logger, "Foundation config initialization"):
+                    actual_config = self._initialize_config(config)
+
+                with timed_block(setup_logger, "Foundation logger initialization"):
+                    logger_instance = self._initialize_logger(actual_config, registry)
+
+                with timed_block(setup_logger, "Foundation component registration"):
+                    # Register with registry
+                    self._register_components(registry, actual_config, logger_instance)
+
+                with timed_block(setup_logger, "Foundation event handler setup"):
+                    # Set up event handlers
+                    self._setup_event_handlers()
 
                 # Mark complete (transitions to INITIALIZED)
                 self._state_machine.mark_complete(actual_config, logger_instance)

@@ -1,3 +1,5 @@
+"""Search operations for OpenObserve."""
+
 from __future__ import annotations
 
 import re
@@ -5,8 +7,6 @@ import re
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.models import SearchResponse
 from provide.foundation.logger import get_logger
-
-"""Search operations for OpenObserve."""
 
 log = get_logger(__name__)
 
@@ -42,7 +42,7 @@ def _sanitize_service_name(service: str) -> str:
     return service
 
 
-def search_logs(
+async def search_logs(
     sql: str,
     start_time: str | int | None = None,
     end_time: str | int | None = None,
@@ -65,7 +65,7 @@ def search_logs(
     if client is None:
         client = OpenObserveClient.from_config()
 
-    return client.search(
+    return await client.search(
         sql=sql,
         start_time=start_time,
         end_time=end_time,
@@ -73,7 +73,7 @@ def search_logs(
     )
 
 
-def search_by_trace_id(
+async def search_by_trace_id(
     trace_id: str,
     stream: str = "default",
     client: OpenObserveClient | None = None,
@@ -93,10 +93,10 @@ def search_by_trace_id(
     safe_stream = _sanitize_stream_name(stream)
     safe_trace_id = _sanitize_trace_id(trace_id)
     sql = f"SELECT * FROM {safe_stream} WHERE trace_id = '{safe_trace_id}' ORDER BY _timestamp ASC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
-    return search_logs(sql=sql, start_time="-24h", client=client)
+    return await search_logs(sql=sql, start_time="-24h", client=client)
 
 
-def search_by_level(
+async def search_by_level(
     level: str,
     stream: str = "default",
     start_time: str | int | None = None,
@@ -122,7 +122,7 @@ def search_by_level(
     safe_stream = _sanitize_stream_name(stream)
     safe_level = _sanitize_log_level(level)
     sql = f"SELECT * FROM {safe_stream} WHERE level = '{safe_level}' ORDER BY _timestamp DESC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
-    return search_logs(
+    return await search_logs(
         sql=sql,
         start_time=start_time,
         end_time=end_time,
@@ -131,7 +131,7 @@ def search_by_level(
     )
 
 
-def search_errors(
+async def search_errors(
     stream: str = "default",
     start_time: str | int | None = None,
     size: int = 100,
@@ -149,7 +149,7 @@ def search_errors(
         SearchResponse with error logs
 
     """
-    return search_by_level(
+    return await search_by_level(
         level="ERROR",
         stream=stream,
         start_time=start_time,
@@ -158,7 +158,7 @@ def search_errors(
     )
 
 
-def search_by_service(
+async def search_by_service(
     service: str,
     stream: str = "default",
     start_time: str | int | None = None,
@@ -184,7 +184,7 @@ def search_by_service(
     safe_stream = _sanitize_stream_name(stream)
     safe_service = _sanitize_service_name(service)
     sql = f"SELECT * FROM {safe_stream} WHERE service = '{safe_service}' ORDER BY _timestamp DESC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
-    return search_logs(
+    return await search_logs(
         sql=sql,
         start_time=start_time,
         end_time=end_time,
@@ -193,7 +193,7 @@ def search_by_service(
     )
 
 
-def aggregate_by_level(
+async def aggregate_by_level(
     stream: str = "default",
     start_time: str | int | None = None,
     end_time: str | int | None = None,
@@ -214,7 +214,7 @@ def aggregate_by_level(
     # Sanitize stream name to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
     sql = f"SELECT level, COUNT(*) as count FROM {safe_stream} GROUP BY level"  # nosec B608 - Inputs sanitized via _sanitize_* functions
-    response = search_logs(
+    response = await search_logs(
         sql=sql,
         start_time=start_time,
         end_time=end_time,
@@ -231,7 +231,7 @@ def aggregate_by_level(
     return result
 
 
-def get_current_trace_logs(
+async def get_current_trace_logs(
     stream: str = "default",
     client: OpenObserveClient | None = None,
 ) -> SearchResponse | None:
@@ -253,7 +253,7 @@ def get_current_trace_logs(
         if current_span and current_span.is_recording():
             span_context = current_span.get_span_context()
             trace_id = f"{span_context.trace_id:032x}"
-            return search_by_trace_id(trace_id, stream=stream, client=client)
+            return await search_by_trace_id(trace_id, stream=stream, client=client)
     except ImportError:
         pass
 
@@ -263,7 +263,7 @@ def get_current_trace_logs(
 
         trace_id = get_current_trace_id()
         if trace_id:
-            return search_by_trace_id(trace_id, stream=stream, client=client)
+            return await search_by_trace_id(trace_id, stream=stream, client=client)
     except ImportError:
         pass
 

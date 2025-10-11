@@ -1,14 +1,15 @@
+"""CLI commands for OpenObserve integration.
+
+These commands are auto-registered by Foundation's command discovery system.
+"""
+
 from __future__ import annotations
 
 from typing import Any
 
 from provide.foundation.console.output import perr, pout
 from provide.foundation.logger import get_logger
-
-"""CLI commands for OpenObserve integration.
-
-These commands are auto-registered by Foundation's command discovery system.
-"""
+from provide.foundation.utils.async_helpers import run_async
 
 try:
     import click
@@ -135,12 +136,14 @@ if _HAS_CLICK:
             return 1
 
         try:
-            response = search_logs(
-                sql=sql,
-                start_time=start,
-                end_time=end,
-                size=size,
-                client=client,
+            response = run_async(
+                search_logs(
+                    sql=sql,
+                    start_time=start,
+                    end_time=end,
+                    size=size,
+                    client=client,
+                )
             )
 
             output = format_output(response, format_type=format, pretty=pretty)
@@ -275,11 +278,13 @@ if _HAS_CLICK:
         try:
             from provide.foundation.integrations.openobserve import search_errors
 
-            response = search_errors(
-                stream=stream,
-                start_time=start,
-                size=size,
-                client=client,
+            response = run_async(
+                search_errors(
+                    stream=stream,
+                    start_time=start,
+                    size=size,
+                    client=client,
+                )
             )
 
             if response.total == 0:
@@ -322,10 +327,12 @@ if _HAS_CLICK:
         try:
             from provide.foundation.integrations.openobserve import search_by_trace_id
 
-            response = search_by_trace_id(
-                trace_id=trace_id,
-                stream=stream,
-                client=client,
+            response = run_async(
+                search_by_trace_id(
+                    trace_id=trace_id,
+                    stream=stream,
+                    client=client,
+                )
             )
 
             if response.total == 0:
@@ -347,7 +354,7 @@ if _HAS_CLICK:
             return 1
 
         try:
-            streams = client.list_streams()
+            streams = run_async(client.list_streams())
 
             if not streams:
                 click.echo("No streams found.")
@@ -384,9 +391,11 @@ if _HAS_CLICK:
             return 1
 
         try:
-            response = client.get_search_history(
-                stream_name=stream,
-                size=size,
+            response = run_async(
+                client.get_search_history(
+                    stream_name=stream,
+                    size=size,
+                )
             )
 
             if response.total == 0:
@@ -414,7 +423,7 @@ if _HAS_CLICK:
 
         click.echo(f"Testing connection to {client.url}...")
 
-        if client.test_connection():
+        if run_async(client.test_connection()):
             click.echo("✅ Connection successful!")
             click.echo(f"Organization: {client.organization}")
             click.echo(f"User: {client.username}")

@@ -64,10 +64,12 @@ class TestBuildCoreProcessorsList(FoundationTestCase):
         discover_event_sets()
         processors = _build_core_processors_list(config)
         proc_names = [get_proc_name(p) for p in processors]
-        assert len(processors) == 9
+        assert len(processors) == 10  # Added sanitization processor
         # Check that inject_trace_context and add_logger_name_emoji_prefix are present
         assert "inject_trace_context" in proc_names
         assert "add_logger_name_emoji_prefix" in proc_names
+        # Check that sanitization processor is present
+        assert "sanitization_processor" in proc_names
 
 
 class TestTelemetryConfigFromEnvEventSets(FoundationTestCase):
