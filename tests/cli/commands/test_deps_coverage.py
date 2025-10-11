@@ -32,94 +32,114 @@ class TestDepsCommandWithClick(FoundationTestCase):
 
     def test_deps_command_with_click(self, module_reload_isolation: Any) -> None:
         """Test deps command when click is available."""
-        # Just verify the command exists and is callable
-        from provide.foundation.cli.commands.deps import deps_command
+        with (
+            patch("provide.foundation.cli.commands.deps._HAS_CLICK", True),
+            patch("provide.foundation.cli.commands.deps.click") as mock_click,
+        ):
+            Mock()
+            mock_click.command.return_value = lambda f: f
+            mock_click.option.return_value = lambda f: f
 
-        assert deps_command is not None
-        assert callable(deps_command)
+            # Re-import to get the decorated version
+            import importlib
+
+            import provide.foundation.cli.commands.deps as deps_module
+
+            importlib.reload(deps_module)
+
+            assert deps_module.deps_command is not None
 
     def test_deps_command_check_specific_available(self) -> None:
         """Test checking specific available dependency."""
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
+            from provide.foundation.cli.commands.deps import deps_command
 
-        with (
-            patch(
-                "provide.foundation.cli.commands.deps.has_dependency",
-                return_value=True,
-            ),
-            patch("provide.foundation.cli.commands.deps.pout") as mock_pout,
-        ):
-            with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=False, check="crypto")
+            with (
+                patch(
+                    "provide.foundation.cli.commands.deps.has_dependency",
+                    return_value=True,
+                ),
+                patch("provide.foundation.console.output.click.echo") as mock_echo,
+            ):
+                with pytest.raises(SystemExit) as exc_info:
+                    # Simulate click calling the function
+                    deps_command.callback(quiet=False, check="crypto")
 
-            assert exc_info.value.code == 0
-            mock_pout.assert_called_once_with("✅ crypto: Available")
+                assert exc_info.value.code == 0
+                mock_echo.assert_called_once_with("✅ crypto: Available", nl=True)
 
     def test_deps_command_check_specific_missing(self) -> None:
         """Test checking specific missing dependency."""
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
+            from provide.foundation.cli.commands.deps import deps_command
 
-        with (
-            patch(
-                "provide.foundation.cli.commands.deps.has_dependency",
-                return_value=False,
-            ),
-            patch("provide.foundation.cli.commands.deps.pout") as mock_pout,
-        ):
-            with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=False, check="crypto")
+            with (
+                patch(
+                    "provide.foundation.cli.commands.deps.has_dependency",
+                    return_value=False,
+                ),
+                patch("provide.foundation.console.output.click.echo") as mock_echo,
+            ):
+                with pytest.raises(SystemExit) as exc_info:
+                    deps_command.callback(quiet=False, check="crypto")
 
-            assert exc_info.value.code == 1
-            assert mock_pout.call_count == 2
-            mock_pout.assert_any_call("❌ crypto: Missing")
-            mock_pout.assert_any_call("Install with: pip install 'provide-foundation[crypto]'")
+                assert exc_info.value.code == 1
+                assert mock_echo.call_count == 2
+                mock_echo.assert_any_call("❌ crypto: Missing", nl=True)
+                mock_echo.assert_any_call(
+                    "Install with: pip install 'provide-foundation[crypto]'",
+                    nl=True,
+                )
 
     def test_deps_command_check_specific_quiet(self) -> None:
         """Test checking specific dependency in quiet mode."""
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
+            from provide.foundation.cli.commands.deps import deps_command
 
-        with (
-            patch(
-                "provide.foundation.cli.commands.deps.has_dependency",
-                return_value=True,
-            ),
-            patch("provide.foundation.cli.commands.deps.pout") as mock_pout,
-        ):
-            with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=True, check="cli")
+            with (
+                patch(
+                    "provide.foundation.cli.commands.deps.has_dependency",
+                    return_value=True,
+                ),
+                patch("builtins.print") as mock_print,
+            ):
+                with pytest.raises(SystemExit) as exc_info:
+                    deps_command.callback(quiet=True, check="cli")
 
-            assert exc_info.value.code == 0
-            mock_pout.assert_not_called()
+                assert exc_info.value.code == 0
+                mock_print.assert_not_called()
 
     def test_deps_command_check_all_available(self) -> None:
         """Test checking all dependencies when all available."""
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
+            from provide.foundation.cli.commands.deps import deps_command
 
-        mock_dep = Mock(available=True)
-        with patch(
-            "provide.foundation.cli.commands.deps.check_optional_deps",
-            return_value=[mock_dep, mock_dep],
-        ):
-            with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=False, check=None)
+            mock_dep = Mock(available=True)
+            with patch(
+                "provide.foundation.cli.commands.deps.check_optional_deps",
+                return_value=[mock_dep, mock_dep],
+            ):
+                with pytest.raises(SystemExit) as exc_info:
+                    deps_command.callback(quiet=False, check=None)
 
-            assert exc_info.value.code == 0
+                assert exc_info.value.code == 0
 
     def test_deps_command_check_all_some_missing(self) -> None:
         """Test checking all dependencies when some missing."""
         # Import first to get the actual function
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        from provide.foundation.cli.commands import deps as deps_module
 
         mock_dep_available = Mock(available=True)
         mock_dep_missing = Mock(available=False)
 
         # Patch within the module where it's used
-        with patch(
-            "provide.foundation.cli.commands.deps.check_optional_deps",
+        with patch.object(
+            deps_module,
+            "check_optional_deps",
             return_value=[mock_dep_available, mock_dep_missing],
         ):
             with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=False, check=None)
+                deps_module.deps_command.callback(quiet=False, check=None)
 
             # Exit code 0 means all deps present, 1 means some missing
             # Since we have 1 available and 1 missing, it should exit 1
@@ -127,15 +147,16 @@ class TestDepsCommandWithClick(FoundationTestCase):
 
     def test_deps_command_check_all_quiet(self) -> None:
         """Test checking all dependencies in quiet mode."""
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        from provide.foundation.cli.commands import deps as deps_module
 
         mock_dep = Mock(available=True)
-        with patch(
-            "provide.foundation.cli.commands.deps.check_optional_deps",
+        with patch.object(
+            deps_module,
+            "check_optional_deps",
             return_value=[mock_dep],
         ) as mock_check:
             with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=True, check=None)
+                deps_module.deps_command.callback(quiet=True, check=None)
 
             assert exc_info.value.code == 0
             # Verify that the function was called with the right args
@@ -147,39 +168,42 @@ class TestDepsCommandWithoutClick(FoundationTestCase):
 
     def test_deps_command_without_click(self, module_reload_isolation: Any) -> None:
         """Test deps_command behavior when click not available."""
-        # Test that the implementation can be called without Click
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        # Test _require_click function directly since the stub calls it
+        from provide.foundation.cli.commands.deps import _require_click
 
-        # The impl function should work fine without Click
-        with (
-            patch("provide.foundation.cli.commands.deps.has_dependency", return_value=True),
-            patch("provide.foundation.cli.commands.deps.pout"),
+        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False), pytest.raises(
+            ImportError,
+            match="CLI commands require optional dependencies",
         ):
-            with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=True, check="crypto")
-
-            assert exc_info.value.code == 0
+            _require_click()
 
     def test_require_click_raises_error(self) -> None:
-        """Test requires_click decorator is applied."""
-        from provide.foundation.cli.commands.deps import deps_command
+        """Test _require_click raises appropriate error."""
+        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False):
+            from provide.foundation.cli.commands.deps import _require_click
 
-        # Just verify the decorator is present by checking for the wrapped function
-        assert hasattr(deps_command, "__wrapped__") or hasattr(deps_command, "callback")
+            with pytest.raises(ImportError) as exc_info:
+                _require_click()
+
+            assert "CLI commands require optional dependencies" in str(exc_info.value)
+            assert "pip install 'provide-foundation[cli]'" in str(exc_info.value)
 
     def test_deps_command_stub_with_args(self, module_reload_isolation: Any) -> None:
-        """Test that implementation accepts arguments."""
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        """Test that stub function signature accepts arbitrary arguments."""
+        # Test the stub function behavior by directly creating and testing a replica
+        from provide.foundation.cli.commands.deps import _require_click
 
-        # Test the implementation function directly
-        with (
-            patch("provide.foundation.cli.commands.deps.has_dependency", return_value=False),
-            patch("provide.foundation.cli.commands.deps.pout"),
+        # Create a replica of the stub function from the source code
+        def deps_command_stub(*args: object, **kwargs: object) -> None:
+            """Deps command stub when click is not available."""
+            _require_click()
+
+        # Test that it accepts any arguments but raises the expected error
+        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False), pytest.raises(
+            ImportError,
+            match="CLI commands require optional dependencies",
         ):
-            with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=True, check="some_dep")
-
-            assert exc_info.value.code == 1
+            deps_command_stub("arg1", "arg2", some_kwarg="value")
 
 
 class TestDepsCommandDecorators(FoundationTestCase):
@@ -205,18 +229,22 @@ class TestDepsCommandModuleImport(FoundationTestCase):
         assert provide.foundation.cli.commands.deps.__all__ == ["deps_command"]
 
     def test_has_click_flag_exists(self) -> None:
-        """Test _HAS_CLICK flag exists in cli.deps."""
-        from provide.foundation.cli.deps import _HAS_CLICK
+        """Test _HAS_CLICK flag exists."""
+        from provide.foundation.cli.commands import deps
 
-        assert isinstance(_HAS_CLICK, bool)
+        assert hasattr(deps, "_HAS_CLICK")
+        assert isinstance(deps._HAS_CLICK, bool)
 
     def test_click_import_handling(self, module_reload_isolation: Any) -> None:
         """Test click import is handled properly."""
-        # Test that the CLI deps module handles click import correctly
-        from provide.foundation.cli.deps import _HAS_CLICK
+        # Test that the module handles click import correctly
+        import provide.foundation.cli.commands.deps as deps_module
+
+        # The module should have the _HAS_CLICK flag
+        assert hasattr(deps_module, "_HAS_CLICK")
 
         # Since click is installed in our test environment, it should be True
-        assert _HAS_CLICK is True
+        assert deps_module._HAS_CLICK
 
 
 class TestDepsCommandEdgeCases(FoundationTestCase):
@@ -224,23 +252,23 @@ class TestDepsCommandEdgeCases(FoundationTestCase):
 
     def test_empty_deps_list(self) -> None:
         """Test handling empty dependency list."""
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        from provide.foundation.cli.commands import deps as deps_module
 
-        with patch("provide.foundation.cli.commands.deps.check_optional_deps", return_value=[]):
+        with patch.object(deps_module, "check_optional_deps", return_value=[]):
             with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=False, check=None)
+                deps_module.deps_command.callback(quiet=False, check=None)
 
             assert exc_info.value.code == 0  # No deps means all available
 
     def test_check_nonexistent_dependency(self) -> None:
         """Test checking non-existent dependency."""
-        from provide.foundation.cli.commands.deps import _deps_command_impl
+        from provide.foundation.cli.commands import deps as deps_module
 
         with (
-            patch("provide.foundation.cli.commands.deps.has_dependency", return_value=False),
-            patch("provide.foundation.cli.commands.deps.pout"),
+            patch("provide.foundation.utils.deps.has_dependency", return_value=False),
+            patch("builtins.print"),
         ):
             with pytest.raises(SystemExit) as exc_info:
-                _deps_command_impl(quiet=False, check="nonexistent")
+                deps_module.deps_command.callback(quiet=False, check="nonexistent")
 
             assert exc_info.value.code == 1

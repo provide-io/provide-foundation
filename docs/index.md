@@ -24,12 +24,23 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, pro
 - Type-safe with attrs classes
 - YAML, JSON, and TOML support
 
+### Metrics
+- Lightweight and extensible metrics collection
+- Optional OpenTelemetry integration for counters, gauges, and histograms
+
 ### System Utilities
 - **Platform Detection**: OS and architecture detection
 - **Process Execution**: Safe subprocess handling with async support
 - **File Operations**: Atomic operations with format support
+- **Archive Operations**: Create and extract archives
+- **Serialization**: Safe and consistent JSON serialization
+- **Formatting**: Rich utilities for text, numbers, and data structures
 - **Console I/O**: Standardized input/output with color support
-- **Registry Pattern**: Thread-safe component management
+
+### Hub and Registry
+- Central system for managing application components and commands
+- Extensible plugin system via entry points
+- Thread-safe by default
 
 ### Cryptographic Operations
 - **Hash Functions**: SHA-256, SHA-512, Blake2b with file/stream support
@@ -42,6 +53,16 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, pro
 - Retry decorators
 - Error boundaries for graceful degradation
 - Structured error logging
+
+### Resilience Patterns
+- **Retry**: Automated retries with configurable backoff
+- **Circuit Breaker**: Fail-fast mechanism for unreliable services
+- **Bulkhead**: Isolate resources to prevent cascading failures
+- **Fallback**: Graceful degradation with fallback functions
+
+### Concurrency Utilities
+- **Async Helpers**: High-level utilities for running and gathering async tasks
+- **Lock Management**: Thread-safe sync and async lock management
 
 ## Quick Start
 
@@ -92,17 +113,23 @@ logger.info("File verified", hash=file_hash.hex_digest)
 
 ### [API Reference](api/api-index.md)
 Complete API documentation for all modules:
-- Logger and telemetry
-- CLI framework  
-- Configuration system
-- Cryptographic utilities
-- File operations
-- Platform utilities
-- Process execution
+- Logger and Telemetry
+- Metrics
+- CLI Framework
+- Configuration System
+- Hub and Registry
+- Error Handling
+- Resilience
+- Concurrency
+- Cryptographic Utilities
+- File Operations
+- Archive
+- Serialization
+- Formatting
+- Platform Utilities
+- Process Execution
 - Console I/O
-- Hub and registry
-- Error handling
-- Context management
+- Context Management
 
 ### [User Guide](guide/index.md)
 Practical guides for common tasks:

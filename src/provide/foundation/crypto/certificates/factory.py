@@ -43,7 +43,8 @@ def create_ca_certificate(
     from provide.foundation.crypto.certificates.certificate import Certificate
 
     logger.info(f"📜🔑🏭 Creating new CA certificate: CN={common_name}, Org={organization_name}")
-    ca_cert_obj = Certificate.generate(
+    ca_cert_obj = Certificate(
+        generate_keypair=True,
         common_name=common_name,
         organization_name=organization_name,
         validity_days=validity_days,
@@ -51,8 +52,6 @@ def create_ca_certificate(
         key_size=key_size,
         ecdsa_curve=ecdsa_curve,
         alt_names=[common_name],
-        is_ca=False,  # Will be re-signed with is_ca=True below
-        is_client_cert=False,
     )
     # Re-sign to ensure CA flags are correctly set for a CA
     logger.info("📜🔑🏭 Re-signing generated CA certificate to ensure is_ca=True")
@@ -64,7 +63,7 @@ def create_ca_certificate(
         is_client_cert=False,
     )
     ca_cert_obj._cert = actual_ca_x509_cert
-    ca_cert_obj.cert_pem = actual_ca_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+    ca_cert_obj.cert = actual_ca_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
     return ca_cert_obj
 
 
@@ -98,7 +97,8 @@ def create_signed_certificate(
             "is not marked as a CA. This might lead to validation issues.",
         )
 
-    new_cert_obj = Certificate.generate(
+    new_cert_obj = Certificate(
+        generate_keypair=True,
         common_name=common_name,
         organization_name=organization_name,
         validity_days=validity_days,
@@ -106,8 +106,6 @@ def create_signed_certificate(
         key_type=key_type,
         key_size=key_size,
         ecdsa_curve=ecdsa_curve,
-        is_ca=False,
-        is_client_cert=is_client_cert,
     )
 
     signed_x509_cert = create_x509_certificate(
@@ -121,7 +119,7 @@ def create_signed_certificate(
     )
 
     new_cert_obj._cert = signed_x509_cert
-    new_cert_obj.cert_pem = signed_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+    new_cert_obj.cert = signed_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
     logger.info(
         f"📜🔑✅ Successfully created and signed certificate for "
@@ -147,7 +145,8 @@ def create_self_signed_server_cert(
         f"📜🔑🏭 Creating new self-signed SERVER certificate: CN={common_name}, Org={organization_name}",
     )
 
-    cert_obj = Certificate.generate(
+    cert_obj = Certificate(
+        generate_keypair=True,
         common_name=common_name,
         organization_name=organization_name,
         validity_days=validity_days,
@@ -155,9 +154,21 @@ def create_self_signed_server_cert(
         key_type=key_type,
         key_size=key_size,
         ecdsa_curve=ecdsa_curve,
+    )
+
+    if not cert_obj._private_key:
+        raise CertificateError("Private key not generated for self-signed server certificate")
+
+    actual_x509_cert = create_x509_certificate(
+        base=cert_obj._base,
+        private_key=cert_obj._private_key,
+        alt_names=cert_obj.alt_names,
         is_ca=False,
         is_client_cert=False,
     )
+
+    cert_obj._cert = actual_x509_cert
+    cert_obj.cert = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
     logger.info(f"📜🔑✅ Successfully created self-signed SERVER certificate for CN={common_name}")
     return cert_obj
@@ -180,7 +191,8 @@ def create_self_signed_client_cert(
         f"📜🔑🏭 Creating new self-signed CLIENT certificate: CN={common_name}, Org={organization_name}",
     )
 
-    cert_obj = Certificate.generate(
+    cert_obj = Certificate(
+        generate_keypair=True,
         common_name=common_name,
         organization_name=organization_name,
         validity_days=validity_days,
@@ -188,9 +200,21 @@ def create_self_signed_client_cert(
         key_type=key_type,
         key_size=key_size,
         ecdsa_curve=ecdsa_curve,
+    )
+
+    if not cert_obj._private_key:
+        raise CertificateError("Private key not generated for self-signed client certificate")
+
+    actual_x509_cert = create_x509_certificate(
+        base=cert_obj._base,
+        private_key=cert_obj._private_key,
+        alt_names=cert_obj.alt_names,
         is_ca=False,
         is_client_cert=True,  # This is the key difference from server cert
     )
+
+    cert_obj._cert = actual_x509_cert
+    cert_obj.cert = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
     logger.info(f"📜🔑✅ Successfully created self-signed CLIENT certificate for CN={common_name}")
     return cert_obj

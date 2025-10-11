@@ -43,12 +43,7 @@ from provide.foundation.errors.resources import (
     NotFoundError,
     ResourceError,
 )
-from provide.foundation.errors.runtime import (
-    ConcurrencyError,
-    RateLimitExceededError,
-    RuntimeError,
-    StateError,
-)
+from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
 from provide.foundation.errors.safe_decorators import log_only_error_context
 from provide.foundation.errors.types import (
     ErrorCode,
@@ -87,7 +82,6 @@ __all__ = [
     "NotFoundError",
     "ProcessError",
     "ProcessTimeoutError",
-    "RateLimitExceededError",
     "ResourceError",
     "RuntimeError",
     "StateError",

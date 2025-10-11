@@ -16,14 +16,15 @@ Basic Application Example
 Demonstrates minimal setup for provide-foundation with structured logging.
 """
 
-from provide.foundation import Context, logger, setup_telemetry
+from provide.foundation.context import CLIContext
+from provide.foundation import logger, setup_telemetry
 from provide.foundation.console import pout
 
 
 def main():
     """Main application entry point."""
     # Create context from environment
-    ctx = Context.from_env()
+    ctx = CLIContext.from_env()
     
     # Setup telemetry (uses environment configuration automatically)
     setup_telemetry()

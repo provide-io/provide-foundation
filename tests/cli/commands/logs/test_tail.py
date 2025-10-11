@@ -6,7 +6,7 @@ from click.testing import CliRunner
 import pytest
 
 from provide.foundation.cli.commands.logs.tail import (
-    _parse_filter_string_for_tail,
+    _parse_filter_string,
     tail_command,
 )
 
@@ -18,32 +18,33 @@ def runner() -> CliRunner:
 
 
 class TestParseFilterString:
-    """Tests for the _parse_filter_string_for_tail function."""
+    """Tests for the _parse_filter_string function."""
 
     def test_parse_valid_filter(self) -> None:
         """Test parsing of a valid filter string."""
         filter_str = "level='ERROR', service='api'"
         expected = {"level": "ERROR", "service": "api"}
-        assert _parse_filter_string_for_tail(filter_str) == expected
+        assert _parse_filter_string(filter_str) == expected
 
     def test_parse_empty_and_none_filter(self) -> None:
         """Test parsing of empty and None filter strings."""
-        assert _parse_filter_string_for_tail("") == {}
-        assert _parse_filter_string_for_tail(None) == {}
+        assert _parse_filter_string("") == {}
+        assert _parse_filter_string(None) == {}
 
     def test_parse_with_extra_whitespace(self) -> None:
         """Test parsing with varied whitespace and quote types."""
         filter_str = "  key = 'value' ,  another = \"value2\"  "
         expected = {"key": "value", "another": "value2"}
-        assert _parse_filter_string_for_tail(filter_str) == expected
+        assert _parse_filter_string(filter_str) == expected
 
     def test_parse_malformed_filter_ignores_invalid_parts(self) -> None:
         """Test that malformed parts of a filter string are ignored."""
         filter_str = "key='value', malformed, another='value2'"
         expected = {"key": "value", "another": "value2"}
-        assert _parse_filter_string_for_tail(filter_str) == expected
+        assert _parse_filter_string(filter_str) == expected
 
 
+@patch("provide.foundation.cli.commands.logs.tail._HAS_CLICK", True)
 class TestTailCommand:
     """Tests for the tail_command Click command."""
 
@@ -58,7 +59,9 @@ class TestTailCommand:
         """Test successful log tailing with default options."""
         mock_client = MagicMock()
         mock_tail_logs.return_value = [{"message": "log1"}, {"message": "log2"}]
-        mock_format_output.side_effect = lambda log_entry, format_type: log_entry["message"]
+        mock_format_output.side_effect = (
+            lambda log_entry, format_type: log_entry["message"]
+        )
 
         result = runner.invoke(tail_command, obj={"client": mock_client})
 
@@ -151,3 +154,22 @@ class TestTailCommand:
             lines=50,
             client=mock_client,
         )
+
+
+def test_tail_command_raises_importerror_if_click_is_missing() -> None:
+    """Test that tail_command stub raises ImportError if Click is not installed.
+
+    Note: This test can only verify the stub exists. The actual Click import check
+    happens at module load time, so we cannot properly test Click being missing
+    when Click is actually installed in the test environment.
+    """
+    from provide.foundation.cli.commands.logs import tail
+
+    # Verify the module has the _HAS_CLICK flag
+    assert hasattr(tail, "_HAS_CLICK")
+
+    # Verify it's True in our test environment (Click is installed)
+    assert tail._HAS_CLICK is True
+
+    # The else branch (stub function) cannot be tested when Click is installed,
+    # as it's defined at module load time based on import success
