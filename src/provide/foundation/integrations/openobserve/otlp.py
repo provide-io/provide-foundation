@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any
 
+from provide.foundation.hub import get_hub
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.logger import get_logger
 from provide.foundation.serialization import json_dumps
@@ -57,7 +58,12 @@ def send_log_otlp(
         from provide.foundation.integrations.openobserve.config import OpenObserveConfig
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
-        config = TelemetryConfig.from_env()
+        # Use initialized config from hub, fallback to from_env() for backwards compatibility
+        hub = get_hub()
+        config = hub.get_foundation_config()
+        if config is None or not hasattr(config, "otlp_endpoint"):
+            config = TelemetryConfig.from_env()
+
         oo_config = OpenObserveConfig.from_env()
 
         if not config.otlp_endpoint:
@@ -229,7 +235,12 @@ def send_log_bulk(
         if client is None:
             client = OpenObserveClient.from_config()
 
-        config = TelemetryConfig.from_env()
+        # Use initialized config from hub, fallback to from_env() for backwards compatibility
+        hub = get_hub()
+        config = hub.get_foundation_config()
+        if config is None or not hasattr(config, "service_name"):
+            config = TelemetryConfig.from_env()
+
         oo_config = OpenObserveConfig.from_env()
 
         # Build log entry
@@ -308,7 +319,12 @@ def create_otlp_logger_provider() -> Any | None:
         from provide.foundation.integrations.openobserve.config import OpenObserveConfig
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
-        config = TelemetryConfig.from_env()
+        # Use initialized config from hub, fallback to from_env() for backwards compatibility
+        hub = get_hub()
+        config = hub.get_foundation_config()
+        if config is None or not hasattr(config, "otlp_endpoint"):
+            config = TelemetryConfig.from_env()
+
         oo_config = OpenObserveConfig.from_env()
 
         if not config.otlp_endpoint:
