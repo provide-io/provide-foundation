@@ -154,10 +154,98 @@ Before starting this work:
 | Coordinator Environment | ✅ Complete | 1 | ✅ 27 tests |
 | **OpenObserve Transport** | ⚠️ Pending | 3 | N/A (not started) |
 
+## 🔍 Additional Dogfooding Opportunities Identified
+
+### File I/O Improvements
+
+#### tools/downloader.py
+- **Line 127**: Uses `dest.open("wb")` for downloads → Should use `atomic_write()` to prevent corruption
+- **Lines 163-167**: Manual hashlib.sha256() → Should use `hash_file()` from crypto/hashing
+
+#### tools/verifier.py
+- **Line 63**: Direct file reading → Could use `safe_read()` for better error handling
+
+#### crypto/certificates/loader.py
+- **Line 46**: Direct `path.open("r")` → Should use `safe_read_text()`
+
+**Note**: crypto/hashing.py correctly uses direct I/O because it needs chunked reads for efficiency
+
+### JSON Operations Not Dogfooding
+
+#### Multiple Files (14+)
+Currently using `json.dumps()` and `json.loads()` directly instead of Foundation's helpers:
+- cli/helpers.py
+- integrations/openobserve/streaming.py
+- file/formats.py (this IS the implementation - appropriate)
+- transport/base.py
+- parsers/primitives.py
+- errors/types.py
+
+**Action**: Replace with `read_json()`, `write_json()` where appropriate (file operations)
+
+### Console Output Not Dogfooding
+
+#### Files Using print() Instead of pout()/perr()
+Priority targets:
+- **cli/shutdown.py** (line 70, 210) - Error messages to stderr
+- **integrations/openobserve/commands.py** - User-facing output
+- **formatting/tables.py** - Table output
+- **console/input.py** (line 69) - Prompt output
+
+**Skip**: streams/file.py, hub/discovery.py (infrastructure, circular dependency risk)
+
+### Environment Variable Access
+
+#### Still Using os.environ Directly
+- config/env.py
+- platform/info.py
+- console/output.py (lines 55, 58)
+- testmode/orchestration.py
+- utils/caching.py
+
+**Action**: Replace with `get_str()`, `get_bool()` where safe (no circular deps)
+
+### Manual Error Handling
+
+#### try/except Blocks That Could Use @resilient
+Found in 22+ files with patterns like:
+```python
+try:
+    something()
+except Exception:
+    pass  # or continue
+```
+
+**Examples**:
+- cli/helpers.py
+- cli/shutdown.py
+- hub/core.py
+- process/lifecycle/monitoring.py
+- concurrency locks (appropriate as-is)
+- file/lock.py (appropriate as-is)
+
+## Implementation Priorities
+
+### Phase 1: High-Impact, Low-Risk (Completed ✅)
+1. ✅ CLI helpers → parsers module
+2. ✅ Discovery → @resilient decorator
+3. ✅ OpenObserve client → @resilient decorator
+4. ✅ Coordinator → environment helpers
+
+### Phase 2: Medium-Impact (Recommended Next)
+1. **File I/O Improvements** - Prevent corruption with atomic writes
+2. **Console Output** - Replace print() with pout()/perr() for JSON mode support
+3. **JSON Operations** - Use Foundation's serialization helpers
+
+### Phase 3: Lower-Impact (Future Work)
+1. Remaining environment variable access
+2. Additional @resilient decorators for simple error suppression
+3. Manual validation patterns → config/validators usage
+
 ## Next Steps
 
-1. **Immediate**: Get approval for breaking change in OpenObserve integration
-2. **Planning**: Design async migration strategy
-3. **Implementation**: Create `OpenObserveAsyncClient` using Foundation transport
-4. **Documentation**: Write migration guide for users
-5. **Testing**: Comprehensive async integration tests
+1. **File I/O**: Update downloader.py to use atomic_write() and hash_file()
+2. **Console Output**: Replace print() in CLI commands with pout()/perr()
+3. **JSON Operations**: Use read_json()/write_json() for file-based JSON
+4. **Testing**: Ensure 100% coverage on modified code
+5. **Breaking Change**: Plan OpenObserve async transport migration separately
