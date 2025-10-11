@@ -58,7 +58,7 @@ class TestEventLossRecovery(FoundationTestCase):
             files_affected=[event.path],
         )
 
-    def test_callback_exception_queues_for_retry(self) -> None:
+    def test_callback_exception_queues_for_retry(self, handler_cleanup: list) -> None:
         """Test that callback exceptions queue operations for retry."""
 
         def failing_callback(operation: FileOperation) -> None:
@@ -69,7 +69,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=failing_callback,
         )
-        self.handlers.append(handler)
+        handler_cleanup.append(handler)
 
         # Emit an operation that will fail
         operation = self._create_operation("test.txt")
@@ -83,7 +83,7 @@ class TestEventLossRecovery(FoundationTestCase):
         assert len(failed) == 1
         assert failed[0].primary_path == operation.primary_path
 
-    def test_retry_failed_operations_success(self) -> None:
+    def test_retry_failed_operations_success(self, handler_cleanup: list) -> None:
         """Test retrying failed operations succeeds when callback works."""
         fail_count = 0
 
@@ -101,7 +101,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=sometimes_failing_callback,
         )
-        self.handlers.append(handler)
+        handler_cleanup.append(handler)
 
         # Emit operation (will fail first time)
         operation = self._create_operation("test.txt")
@@ -118,7 +118,7 @@ class TestEventLossRecovery(FoundationTestCase):
         # Operation should be emitted
         assert len(self.operations_emitted) == 1
 
-    def test_retry_failed_operations_persistent_failure(self) -> None:
+    def test_retry_failed_operations_persistent_failure(self, handler_cleanup: list) -> None:
         """Test that persistently failing operations stay in queue."""
 
         def always_failing_callback(operation: FileOperation) -> None:
@@ -129,7 +129,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=always_failing_callback,
         )
-        self.handlers.append(handler)
+        handler_cleanup.append(handler)
 
         # Emit operation
         operation = self._create_operation("test.txt")
@@ -143,7 +143,7 @@ class TestEventLossRecovery(FoundationTestCase):
         assert retried == 0
         assert handler.failed_operations_count == 1
 
-    def test_clear_failed_operations(self) -> None:
+    def test_clear_failed_operations(self, handler_cleanup: list) -> None:
         """Test clearing failed operations."""
 
         def failing_callback(operation: FileOperation) -> None:
@@ -153,7 +153,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=failing_callback,
         )
-        self.handlers.append(handler)
+        handler_cleanup.append(handler)
 
         # Create multiple failed operations
         for i in range(5):
@@ -167,7 +167,7 @@ class TestEventLossRecovery(FoundationTestCase):
         assert cleared == 5
         assert handler.failed_operations_count == 0
 
-    def test_concurrent_retry_operations(self) -> None:
+    def test_concurrent_retry_operations(self, handler_cleanup: list) -> None:
         """Test concurrent retry attempts are thread-safe."""
         attempts = 0
 
@@ -185,7 +185,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=counting_callback,
         )
-        self.handlers.append(handler)
+        handler_cleanup.append(handler)
 
         # Emit operation (will fail)
         operation = self._create_operation("test.txt")
@@ -207,10 +207,10 @@ class TestEventLossRecovery(FoundationTestCase):
         assert handler.failed_operations_count == 0
         assert len(self.operations_emitted) >= 1
 
-    def test_no_callback_no_failures(self) -> None:
+    def test_no_callback_no_failures(self, handler_cleanup: list) -> None:
         """Test that no callback means no failures."""
         handler = AutoFlushHandler(time_window_ms=100)
-        self.handlers.append(handler)
+        handler_cleanup.append(handler)
 
         # Emit without callback
         operation = self._create_operation("test.txt")
@@ -220,7 +220,7 @@ class TestEventLossRecovery(FoundationTestCase):
         assert result is True
         assert handler.failed_operations_count == 0
 
-    def test_failed_operations_not_lost_on_clear(self) -> None:
+    def test_failed_operations_not_lost_on_clear(self, handler_cleanup: list) -> None:
         """Test that clear() doesn't affect failed operations."""
 
         def failing_callback(operation: FileOperation) -> None:
@@ -248,7 +248,7 @@ class TestEventLossRecovery(FoundationTestCase):
         assert handler.failed_operations_count == 1
         assert len(handler.pending_events) == 0
 
-    def test_get_failed_operations_returns_copy(self) -> None:
+    def test_get_failed_operations_returns_copy(self, handler_cleanup: list) -> None:
         """Test that get_failed_operations returns a copy, not the original."""
 
         def failing_callback(operation: FileOperation) -> None:
@@ -258,7 +258,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=failing_callback,
         )
-        self.handlers.append(handler)
+        handler_cleanup.append(handler)
 
         # Create failed operation
         operation = self._create_operation("test.txt")
