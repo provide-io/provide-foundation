@@ -31,6 +31,16 @@ from provide.foundation.file.operations import (
     group_related_events,
     is_temp_file,
 )
+from provide.foundation.file.permissions import (
+    DEFAULT_DIR_PERMS,
+    DEFAULT_EXECUTABLE_PERMS,
+    DEFAULT_FILE_PERMS,
+    ensure_secure_permissions,
+    format_permissions,
+    get_permissions,
+    parse_permissions,
+    set_file_permissions,
+)
 from provide.foundation.file.safe import (
     safe_copy,
     safe_delete,
@@ -55,10 +65,15 @@ This module provides comprehensive file operations including:
 - Directory management utilities
 - Format-specific helpers for JSON, YAML, TOML
 - File locking for concurrent access
+- File permissions utilities
 - Various utility functions
 """
 
 __all__ = [
+    # From permissions
+    "DEFAULT_DIR_PERMS",
+    "DEFAULT_EXECUTABLE_PERMS",
+    "DEFAULT_FILE_PERMS",
     # From operations
     "DetectorConfig",
     "FileEvent",
@@ -78,13 +93,17 @@ __all__ = [
     # From directory
     "ensure_dir",
     "ensure_parent_dir",
+    "ensure_secure_permissions",
     "extract_original_path",
     "find_files",
+    "format_permissions",
     "get_mtime",
+    "get_permissions",
     # From utils
     "get_size",
     "group_related_events",
     "is_temp_file",
+    "parse_permissions",
     # From formats
     "read_json",
     "read_toml",
@@ -96,6 +115,7 @@ __all__ = [
     "safe_read",
     "safe_read_text",
     "safe_rmtree",
+    "set_file_permissions",
     # From temp
     "secure_temp_file",
     "system_temp_dir",
