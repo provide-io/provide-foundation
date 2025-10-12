@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from provide.foundation.utils.versioning import get_version, reset_version_cache
+from provide.foundation.utils.versioning import (
+    _find_project_root,
+    get_version,
+    reset_version_cache,
+)
 
 """Version handling for provide-foundation.
 
@@ -8,7 +12,7 @@ This module uses the shared versioning utility with lazy initialization
 to avoid blocking I/O at import time, making it safe to import in async contexts.
 """
 
-__all__ = ["get_version", "reset_version_cache"]
+__all__ = ["get_version", "reset_version_cache", "_find_project_root"]
 
 
 def __getattr__(name: str) -> str:
