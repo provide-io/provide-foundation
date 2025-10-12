@@ -27,6 +27,7 @@ from provide.foundation.logger.otlp.circuit import (
     get_otlp_circuit_breaker,
     reset_otlp_circuit_breaker,
 )
+from provide.foundation.logger.otlp.client import OTLPLogClient
 from provide.foundation.logger.otlp.helpers import (
     add_trace_context_to_attributes,
     build_otlp_endpoint,
@@ -44,6 +45,8 @@ from provide.foundation.logger.otlp.severity import (
 )
 
 __all__ = [
+    # Main client
+    "OTLPLogClient",
     # Circuit breaker
     "OTLPCircuitBreaker",
     "get_otlp_circuit_breaker",
