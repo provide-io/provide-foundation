@@ -59,21 +59,22 @@ def send_log_otlp(
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         # Use initialized config from hub, fallback to from_env() for backwards compatibility
+        # Only fall back if hub has no config at all, not if otlp_endpoint is missing
         hub = get_hub()
         config = hub.get_foundation_config()
-        if config is None or not hasattr(config, "otlp_endpoint"):
+        if config is None:
             config = TelemetryConfig.from_env()
 
         oo_config = OpenObserveConfig.from_env()
 
-        # Debug logging to see what service_name we're using
+        # Determine service name for this export
         actual_service_name = service or config.service_name or "foundation"
         log.debug(
-            "OTLP sending log with service_name",
+            "OTLP preparing log export",
             service_name=actual_service_name,
             config_service_name=config.service_name,
             service_param=service,
-            config_source="hub" if hub.get_foundation_config() else "env",
+            has_otlp_endpoint=config.otlp_endpoint is not None,
         )
 
         if not config.otlp_endpoint:
@@ -246,9 +247,10 @@ def send_log_bulk(
             client = OpenObserveClient.from_config()
 
         # Use initialized config from hub, fallback to from_env() for backwards compatibility
+        # Only fall back if hub has no config at all, preserves service_name from explicit config
         hub = get_hub()
         config = hub.get_foundation_config()
-        if config is None or not hasattr(config, "service_name"):
+        if config is None:
             config = TelemetryConfig.from_env()
 
         oo_config = OpenObserveConfig.from_env()
@@ -330,9 +332,10 @@ def create_otlp_logger_provider() -> Any | None:
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         # Use initialized config from hub, fallback to from_env() for backwards compatibility
+        # Only fall back if hub has no config at all, preserves service_name from explicit config
         hub = get_hub()
         config = hub.get_foundation_config()
-        if config is None or not hasattr(config, "otlp_endpoint"):
+        if config is None:
             config = TelemetryConfig.from_env()
 
         oo_config = OpenObserveConfig.from_env()

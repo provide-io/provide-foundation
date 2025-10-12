@@ -47,8 +47,8 @@ class FoundationManager:
             force: If True, force re-initialization even if already initialized
 
         """
-        # Smart initialization: Auto-upgrade to force=True when explicit config
-        # is provided but Foundation is already auto-initialized with defaults
+        # Smart initialization: Try lightweight config update OR force re-init when explicit
+        # config is provided but Foundation is already auto-initialized with defaults
         if (
             config is not None  # Explicit config provided
             and self._initialized  # Already initialized (likely auto-init)
@@ -56,15 +56,37 @@ class FoundationManager:
             and self._config is not None  # Have existing config to check
             and getattr(self._config, 'service_name', 'not-none') is None  # Auto-init indicator
         ):
-            force = True
-            # Use perr for early bootstrap output (logger might not be ready)
-            try:
-                from provide.foundation.console.output import perr
-                perr("Foundation: Auto-upgrading to force=True (explicit config overriding auto-init)")
-            except Exception:
-                # Fallback to print if perr fails
-                import sys
-                print("Foundation: Auto-upgrading to force=True (explicit config overriding auto-init)", file=sys.stderr)
+            # Check if OTLP is configured - if so, we MUST do full re-init to recreate LoggerProvider
+            # The LoggerProvider bakes service_name into its Resource during creation, so we can't
+            # just update the config - we need to recreate it
+            otlp_configured = (
+                getattr(self._config, 'otlp_endpoint', None) is not None
+                or getattr(config, 'otlp_endpoint', None) is not None
+            )
+
+            # Use system logger for init-time logging (safe during Foundation setup)
+            from provide.foundation.logger.setup.coordinator import get_system_logger
+            setup_log = get_system_logger("provide.foundation.hub.init")
+
+            if otlp_configured:
+                # Force full re-initialization to recreate LoggerProvider with new service_name
+                force = True
+                setup_log.info(
+                    "Foundation: Re-initializing with OTLP (explicit service_name overriding auto-init)"
+                )
+            else:
+                # Try lightweight config update (avoids expensive re-initialization)
+                from provide.foundation.hub.initialization import get_initialization_coordinator
+                coordinator = get_initialization_coordinator()
+
+                if coordinator.update_config_if_default(self._registry, config):
+                    # Config updated successfully - no need to re-initialize
+                    self._config = config
+                    setup_log.info(
+                        "Foundation: Updated config (explicit service_name overriding auto-init default)"
+                    )
+                    return
+                # If lightweight update failed, fall through to normal initialization
 
         # Use the new simplified coordinator
         from provide.foundation.hub.initialization import get_initialization_coordinator

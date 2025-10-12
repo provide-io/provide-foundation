@@ -10,9 +10,9 @@ if TYPE_CHECKING:
     pass
 
 # Note: Cannot import get_logger here due to circular dependency during setup
-# Use structlog directly for foundation-internal logging
+# Use structlog directly but bind logger_name for OTLP exports
 
-log = structlog.get_logger(__name__)
+log = structlog.get_logger().bind(logger_name=__name__)
 
 # Note: Internal trace injection logging removed to avoid circular dependencies
 # and level registration issues during logger setup

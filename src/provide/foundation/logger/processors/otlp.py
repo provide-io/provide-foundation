@@ -219,3 +219,21 @@ def flush_otlp_logs() -> None:
     if _OTLP_LOGGER_PROVIDER is not None:
         with contextlib.suppress(Exception):
             _OTLP_LOGGER_PROVIDER.force_flush(timeout_millis=5000)
+
+
+def reset_otlp_provider() -> None:
+    """Reset the global OTLP logger provider.
+
+    This should be called when Foundation re-initializes to ensure
+    a new LoggerProvider is created with updated configuration.
+    The old provider is flushed before being reset to ensure no logs are lost.
+
+    This is particularly important when service_name changes, as the
+    OpenTelemetry Resource with service_name is immutable and baked into
+    the LoggerProvider at creation time.
+    """
+    global _OTLP_LOGGER_PROVIDER
+    if _OTLP_LOGGER_PROVIDER is not None:
+        # Flush any pending logs before resetting
+        flush_otlp_logs()
+        _OTLP_LOGGER_PROVIDER = None
