@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Never
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -281,16 +282,28 @@ class TestOperationChainTemporaryFileManagement(FoundationTestCase):
         assert len(new_files) == 1
         assert output in new_files
 
-    def test_temp_files_cleaned_up_on_error(self, test_files_structure: tuple[Path, Path]) -> None:
+    def test_temp_files_cleaned_up_on_error(
+        self, test_files_structure: tuple[Path, Path], monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         """Test that temporary files are cleaned up even on error."""
         temp_path, source = test_files_structure
 
         # Count temp files before
         temp_files_before = list(Path("/tmp").glob("provide_*"))
 
-        # Run chain with XZ operation (not implemented in _execute_operation yet)
-        output = temp_path / "output"
-        chain = OperationChain(operations=[ArchiveOperation.TAR, ArchiveOperation.XZ])
+        # Mock the GzipCompressor to raise an error during compression
+        from typing import Any
+
+        from provide.foundation.archive.gzip import GzipCompressor
+
+        def mock_compress_file(*args: Any, **kwargs: Any) -> Never:
+            raise RuntimeError("Simulated compression failure")
+
+        monkeypatch.setattr(GzipCompressor, "compress_file", mock_compress_file)
+
+        # Run chain - should fail during GZIP operation
+        output = temp_path / "archive.tar.gz"
+        chain = OperationChain(operations=[ArchiveOperation.TAR, ArchiveOperation.GZIP])
 
         with pytest.raises(ArchiveError):
             chain.execute(source, output)
