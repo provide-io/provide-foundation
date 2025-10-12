@@ -1973,9 +1973,13 @@ all = [
     { name = "opentelemetry-exporter-otlp-proto-grpc" },
     { name = "opentelemetry-exporter-otlp-proto-http" },
     { name = "opentelemetry-sdk" },
+    { name = "zstandard" },
 ]
 cli = [
     { name = "click" },
+]
+compression = [
+    { name = "zstandard" },
 ]
 crypto = [
     { name = "cryptography" },
@@ -2012,12 +2016,13 @@ requires-dist = [
     { name = "opentelemetry-exporter-otlp-proto-grpc", marker = "extra == 'opentelemetry'", specifier = ">=1.22.0" },
     { name = "opentelemetry-exporter-otlp-proto-http", marker = "extra == 'opentelemetry'", specifier = ">=1.22.0" },
     { name = "opentelemetry-sdk", marker = "extra == 'opentelemetry'", specifier = ">=1.22.0" },
-    { name = "provide-foundation", extras = ["cli", "crypto", "opentelemetry", "transport"], marker = "extra == 'all'" },
+    { name = "provide-foundation", extras = ["cli", "compression", "crypto", "opentelemetry", "transport"], marker = "extra == 'all'" },
     { name = "psutil", specifier = ">=3.3.11" },
     { name = "structlog", specifier = ">=25.3.0" },
     { name = "tomli-w", specifier = ">=1.0.0" },
+    { name = "zstandard", marker = "extra == 'compression'", specifier = ">=0.22.0" },
 ]
-provides-extras = ["cli", "crypto", "transport", "opentelemetry", "all"]
+provides-extras = ["cli", "compression", "crypto", "transport", "opentelemetry", "all"]
 
 [package.metadata.requires-dev]
 dev = [{ name = "provide-testkit", extras = ["advanced-testing", "build", "standard", "typecheck", "utils"] }]
