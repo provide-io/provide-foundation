@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 
-from provide.foundation.file.operations.detectors.helpers import is_backup_file
+from provide.foundation.file.operations.detectors.helpers import is_backup_file, is_temp_file
 from provide.foundation.file.operations.types import (
     FileEvent,
     FileOperation,
@@ -131,6 +131,7 @@ class BatchOperationDetector:
                 and create_event.event_type == "created"
                 and is_backup_file(move_event.dest_path or move_event.path)
                 and move_event.path == create_event.path
+                and not is_temp_file(create_event.path)
             ):
                 # Time window check (backup operations usually happen quickly)
                 time_diff = (create_event.timestamp - move_event.timestamp).total_seconds()
