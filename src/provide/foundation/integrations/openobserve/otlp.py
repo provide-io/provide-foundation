@@ -1,16 +1,21 @@
 from __future__ import annotations
 
 from datetime import datetime
+import logging as stdlib_logging
 from typing import Any
 
 from provide.foundation.hub import get_hub
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
+from provide.foundation.integrations.openobserve.otlp_circuit import get_otlp_circuit_breaker
 from provide.foundation.logger import get_logger
 from provide.foundation.serialization import json_dumps
 
 """OTLP integration for sending logs to OpenObserve."""
 
 log = get_logger(__name__)
+
+# Suppress OpenTelemetry internal error logging after circuit opens
+_otlp_logging_suppressed = False
 
 # OpenTelemetry feature detection
 try:
@@ -33,6 +38,18 @@ except ImportError:
     trace = None
 
 
+def _suppress_otlp_internal_logging() -> None:
+    """Suppress OpenTelemetry internal error logging to prevent spam."""
+    global _otlp_logging_suppressed
+
+    if not _otlp_logging_suppressed:
+        # Suppress OpenTelemetry SDK internal errors
+        stdlib_logging.getLogger("opentelemetry.sdk._logs").setLevel(stdlib_logging.CRITICAL)
+        stdlib_logging.getLogger("opentelemetry.sdk._shared_internal").setLevel(stdlib_logging.CRITICAL)
+        stdlib_logging.getLogger("opentelemetry.exporter.otlp").setLevel(stdlib_logging.CRITICAL)
+        _otlp_logging_suppressed = True
+
+
 def send_log_otlp(
     message: str,
     level: str = "INFO",
@@ -40,6 +57,11 @@ def send_log_otlp(
     attributes: dict[str, Any] | None = None,
 ) -> bool:
     """Send a log via OTLP if available.
+
+    Uses circuit breaker pattern to prevent spam when endpoint is unreachable:
+    - Tracks failure count and automatically disables OTLP after threshold
+    - Implements exponential backoff for retry attempts
+    - Auto-recovers after cooldown period when service is back
 
     Args:
         message: Log message
@@ -52,6 +74,12 @@ def send_log_otlp(
 
     """
     if not _HAS_OTEL_LOGS:
+        return False
+
+    # Check circuit breaker before attempting
+    circuit_breaker = get_otlp_circuit_breaker()
+    if not circuit_breaker.can_attempt():
+        # Circuit is open, don't spam logs
         return False
 
     try:
@@ -148,11 +176,37 @@ def send_log_otlp(
         # Force flush to ensure delivery
         logger_provider.force_flush()
 
+        # Record success with circuit breaker
+        circuit_breaker.record_success()
+
         log.debug(f"Sent log via OTLP: {message[:50]}...")
         return True
 
     except Exception as e:
-        log.debug(f"Failed to send via OTLP: {e}")
+        # Record failure with circuit breaker
+        circuit_breaker.record_failure(e)
+
+        # Get circuit state for logging
+        breaker_stats = circuit_breaker.get_stats()
+
+        if breaker_stats["state"] == "open":
+            # Circuit just opened, log a warning once
+            log.warning(
+                "OTLP circuit breaker opened due to repeated failures",
+                failure_count=breaker_stats["failure_count"],
+                timeout=breaker_stats["current_timeout"],
+                error=str(e),
+            )
+            # Suppress internal OpenTelemetry error logging
+            _suppress_otlp_internal_logging()
+        else:
+            # Circuit still closed or half-open, log at debug level
+            log.debug(
+                f"Failed to send via OTLP: {e}",
+                circuit_state=breaker_stats["state"],
+                failure_count=breaker_stats["failure_count"],
+            )
+
         return False
 
 
