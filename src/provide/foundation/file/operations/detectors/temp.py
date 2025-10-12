@@ -239,24 +239,14 @@ class TempPatternDetector:
                                         },
                                     )
 
-                # If no real file found, treat as temp cleanup
-                time_span = (temp_events[-1].timestamp - temp_events[0].timestamp).total_seconds() * 1000
-
-                if time_span <= temp_window_ms:
-                    return FileOperation(
-                        operation_type=OperationType.TEMP_CLEANUP,
-                        primary_path=Path(temp_path_str),
-                        events=temp_events,
-                        confidence=0.85,
-                        description="Temporary file created and deleted",
-                        start_time=temp_events[0].timestamp,
-                        end_time=temp_events[-1].timestamp,
-                        is_atomic=True,
-                        is_safe=True,
-                        files_affected=[Path(temp_path_str)],
-                        metadata={
-                            "pattern": "temp_create_delete",
-                        },
-                    )
+                # If no real file found, don't return an operation
+                # Pure temp file operations (create→delete with no real file) should be
+                # filtered by the auto-flush handler, not returned as invalid operations
+                log.debug(
+                    "Temp file created and deleted with no real file - not returning operation",
+                    temp_file=temp_path_str,
+                    event_count=len(temp_events),
+                )
+                # Return None - let auto-flush handler filter these temp-only events
 
         return None

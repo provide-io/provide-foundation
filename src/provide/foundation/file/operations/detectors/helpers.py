@@ -15,7 +15,7 @@ def is_temp_file(path: Path) -> bool:
     - Atomic write patterns: .tmp.{PID}.{timestamp}
     """
     name = path.name.lower()
-    stem = path.stem.lower()
+    path.stem.lower()
 
     # BROAD PATTERN: Any file with .tmp. followed by anything
     # Catches: filename.tmp.123, filename.tmp.58540.1760056690894, .file.tmp.84
@@ -129,3 +129,40 @@ def extract_base_name(path: Path) -> str | None:
     base_name = re.sub(r"\.tmp\.\w+$", "", base_name)
 
     return base_name if base_name and base_name != name else None
+
+
+def find_real_file_from_events(events: list) -> Path | None:
+    """Find the real (non-temp) file path from a list of events.
+
+    Args:
+        events: List of FileEvent objects
+
+    Returns:
+        Real file path if found, None otherwise
+    """
+    # Look for non-temp files in the events
+    for event in reversed(events):  # Start from most recent
+        # Check dest_path first (for move/rename operations)
+        if hasattr(event, "dest_path") and event.dest_path and not is_temp_file(event.dest_path):
+            return event.dest_path
+        # Then check regular path
+        if not is_temp_file(event.path):
+            return event.path
+
+    # If all files are temp files, try to extract the base name
+    for event in events:
+        if hasattr(event, "dest_path") and event.dest_path:
+            base_name = extract_base_name(event.dest_path)
+            if base_name:
+                # Try to construct real path from base name
+                real_path = event.dest_path.parent / base_name
+                if real_path != event.dest_path:
+                    return real_path
+
+        base_name = extract_base_name(event.path)
+        if base_name:
+            real_path = event.path.parent / base_name
+            if real_path != event.path:
+                return real_path
+
+    return None
