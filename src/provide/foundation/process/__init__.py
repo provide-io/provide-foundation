@@ -14,10 +14,12 @@ from provide.foundation.process.lifecycle import (
 from provide.foundation.process.shared import CompletedProcess
 from provide.foundation.process.sync import run, run_simple, shell, stream
 
-"""Process execution utilities.
+"""Process Execution Subsystem.
 
-Provides sync and async subprocess execution with consistent error handling,
-and advanced process lifecycle management.
+Provides an opinionated system for sync and async subprocess execution,
+integrated with the framework's security model (command validation,
+environment scrubbing) and logging. It also includes components for
+advanced process lifecycle management.
 """
 
 # Backward compatibility aliases (used by wrknv and flavorpack)
