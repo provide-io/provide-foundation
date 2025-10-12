@@ -27,14 +27,37 @@ _FOUNDATION_LOG_LEVEL: int | None = None
 _CACHED_SETUP_LOGGER: Any | None = None
 
 
-def get_foundation_log_level() -> int:
-    """Get Foundation log level for setup phase, safely."""
-    global _FOUNDATION_LOG_LEVEL
-    if _FOUNDATION_LOG_LEVEL is None:
-        # Use Foundation's environment helper (get_str is safe, doesn't trigger logger)
-        from provide.foundation.utils.environment.getters import get_str
+def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
+    """Get Foundation log level for setup phase, safely.
 
-        level_str = (get_str("FOUNDATION_LOG_LEVEL") or "INFO").upper()
+    Args:
+        config: Optional TelemetryConfig to use. If provided, uses config value.
+               If None, loads from environment and caches.
+
+    Returns:
+        Numeric log level from stdlib logging module
+
+    """
+    global _FOUNDATION_LOG_LEVEL
+
+    # If config provided, use it directly (no caching)
+    if config is not None:
+        level_str = config.logging.foundation_setup_log_level.upper()
+        valid_levels = {
+            "CRITICAL": stdlib_logging.CRITICAL,
+            "ERROR": stdlib_logging.ERROR,
+            "WARNING": stdlib_logging.WARNING,
+            "INFO": stdlib_logging.INFO,
+            "DEBUG": stdlib_logging.DEBUG,
+            "NOTSET": stdlib_logging.NOTSET,
+        }
+        return valid_levels.get(level_str, stdlib_logging.INFO)
+
+    # Otherwise use cached value or load from config
+    if _FOUNDATION_LOG_LEVEL is None:
+        # Load config to get foundation_setup_log_level
+        temp_config = TelemetryConfig.from_env()
+        level_str = temp_config.logging.foundation_setup_log_level.upper()
 
         # Validate and map to numeric level
         valid_levels = {
@@ -115,7 +138,7 @@ def reset_coordinator_state() -> None:
     reset_foundation_log_level_cache()
 
 
-def _configure_stdlib_module_logging(module_levels: dict[str, str]) -> None:
+def _configure_stdlib_module_logging(module_levels: dict[str, str] | dict[str, Any]) -> None:
     """Configure Python stdlib logging for module-level suppression.
 
     This suppresses DEBUG messages from third-party modules like asyncio.
@@ -126,12 +149,12 @@ def _configure_stdlib_module_logging(module_levels: dict[str, str]) -> None:
     """
     for module_name, level_str in module_levels.items():
         module_logger = stdlib_logging.getLogger(module_name)
-        numeric_level = stdlib_logging.getLevelName(level_str.upper())
+        numeric_level = stdlib_logging.getLevelName(str(level_str).upper())
         if isinstance(numeric_level, int):
             module_logger.setLevel(numeric_level)
 
 
-def get_system_logger(name: str) -> object:
+def get_system_logger(name: str, config: TelemetryConfig | None = None) -> object:
     """Get a vanilla Python logger without Foundation enhancements.
 
     This provides a plain Python logger that respects FOUNDATION_LOG_LEVEL
@@ -141,6 +164,7 @@ def get_system_logger(name: str) -> object:
 
     Args:
         name: Logger name (e.g., "provide.foundation.otel.setup")
+        config: Optional TelemetryConfig to use for log level and output
 
     Returns:
         A standard Python logging.Logger instance
@@ -153,18 +177,21 @@ def get_system_logger(name: str) -> object:
     import logging
     import sys
 
-    # Use Foundation's environment helper (get_str is safe, doesn't trigger logger)
-    from provide.foundation.utils.environment.getters import get_str
-
     slog = logging.getLogger(name)
 
     # Configure only once per logger
     if not slog.handlers:
-        log_level = get_foundation_log_level()
+        log_level = get_foundation_log_level(config)
         slog.setLevel(log_level)
 
-        # Respect FOUNDATION_LOG_OUTPUT setting
-        output = (get_str("FOUNDATION_LOG_OUTPUT") or "stderr").lower()
+        # Respect FOUNDATION_LOG_OUTPUT setting from config or env
+        if config is not None:
+            output = config.logging.foundation_log_output.lower()
+        else:
+            # Load config to get foundation_log_output
+            temp_config = TelemetryConfig.from_env()
+            output = temp_config.logging.foundation_log_output.lower()
+
         stream = sys.stderr if output != "stdout" else sys.stdout
 
         handler = logging.StreamHandler(stream)
@@ -190,6 +217,7 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
     # This is critical when service_name changes, as OpenTelemetry's Resource is immutable
     try:
         from provide.foundation.logger.processors.otlp import reset_otlp_provider
+
         reset_otlp_provider()
     except ImportError:
         # OTLP not available (missing opentelemetry packages), skip reset

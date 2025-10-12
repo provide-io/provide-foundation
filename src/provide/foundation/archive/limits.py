@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
+
+from attrs import define, field
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.defaults import (
@@ -15,7 +16,7 @@ from provide.foundation.archive.defaults import (
 """Archive extraction limits for decompression bomb protection."""
 
 
-@dataclass
+@define(slots=True)
 class ArchiveLimits:
     """Configurable limits for archive extraction to prevent decompression bombs.
 
@@ -28,11 +29,11 @@ class ArchiveLimits:
 
     """
 
-    max_total_size: int = DEFAULT_ARCHIVE_MAX_TOTAL_SIZE
-    max_file_count: int = DEFAULT_ARCHIVE_MAX_FILE_COUNT
-    max_compression_ratio: float = DEFAULT_ARCHIVE_MAX_COMPRESSION_RATIO
-    max_single_file_size: int = DEFAULT_ARCHIVE_MAX_SINGLE_FILE_SIZE
-    enabled: bool = DEFAULT_ARCHIVE_LIMITS_ENABLED
+    max_total_size: int = field(default=DEFAULT_ARCHIVE_MAX_TOTAL_SIZE)
+    max_file_count: int = field(default=DEFAULT_ARCHIVE_MAX_FILE_COUNT)
+    max_compression_ratio: float = field(default=DEFAULT_ARCHIVE_MAX_COMPRESSION_RATIO)
+    max_single_file_size: int = field(default=DEFAULT_ARCHIVE_MAX_SINGLE_FILE_SIZE)
+    enabled: bool = field(default=DEFAULT_ARCHIVE_LIMITS_ENABLED)
 
 
 # Global default limits instance
