@@ -197,6 +197,9 @@ class TarArchive(BaseArchive):
         Returns:
             True if archive is valid, False otherwise
 
+        Note: This method intentionally catches all exceptions and returns False.
+        This is NOT an error suppression case - returning False on any exception
+        is the expected validation behavior. Do NOT replace this with @resilient decorator.
         """
         try:
             with tarfile.open(archive, "r") as tar:

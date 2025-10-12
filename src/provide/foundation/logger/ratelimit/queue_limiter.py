@@ -31,10 +31,15 @@ class QueuedRateLimiter:
         ... finally:
         ...     limiter.stop()  # Clean shutdown
 
-        >>> # Or use as a context manager (if implemented)
+        >>> # Or use as a context manager
         >>> with QueuedRateLimiter(100.0, 10.0) as limiter:
-        ...     limiter.start()
-        ...     limiter.enqueue(log_item)
+        ...     limiter.enqueue(log_item)  # Automatically starts and stops
+
+    Note on Threading:
+        This implementation uses threading.Thread for background processing.
+        Foundation's preferred concurrency model is asyncio (see utils/rate_limiting.py
+        for the async TokenBucketRateLimiter). This threading approach is maintained
+        for backward compatibility with synchronous logging contexts.
     """
 
     def __init__(
@@ -130,6 +135,29 @@ class QueuedRateLimiter:
         self.running = False
         if self.worker_thread and self.worker_thread.is_alive():
             self.worker_thread.join(timeout=timeout)
+
+    def __enter__(self) -> QueuedRateLimiter:
+        """Enter context manager, automatically starting the worker thread.
+
+        Returns:
+            Self for use in with statement
+
+        Example:
+            >>> with QueuedRateLimiter(100.0, 10.0) as limiter:
+            ...     limiter.enqueue(item)
+        """
+        self.start()
+        return self
+
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+        """Exit context manager, automatically stopping the worker thread.
+
+        Args:
+            exc_type: Exception type (if any)
+            exc_val: Exception value (if any)
+            exc_tb: Exception traceback (if any)
+        """
+        self.stop()
 
     def _estimate_size(self, item: Any) -> int:
         """Estimate memory size of an item."""
