@@ -50,6 +50,7 @@ class AutoFlushHandler:
         self._lock = threading.RLock()  # Protect shared state from concurrent threads
         self._failed_operations: list[FileOperation] = []  # Queue for retry on callback failure
         self._no_loop_buffer: list[FileOperation] = []  # Buffer when no event loop available
+        self._currently_retrying: set[int] = set()  # Track operations being retried to prevent infinite loops
 
     def add_event(self, event: FileEvent) -> None:
         """Add event and schedule auto-flush.
@@ -161,9 +162,12 @@ class AutoFlushHandler:
                 operation_type=operation.operation_type.value,
                 primary_file=operation.primary_path.name,
             )
-            # Queue for retry
+            # Queue for retry only if this operation is NOT currently being retried
+            # (prevents infinite loop in retry_failed_operations)
             with self._lock:
-                self._failed_operations.append(operation)
+                op_id = id(operation)
+                if op_id not in self._currently_retrying:
+                    self._failed_operations.append(operation)
             return False
 
     def _handle_detected_operation(self, operation: FileOperation) -> None:
@@ -320,24 +324,32 @@ class AutoFlushHandler:
             retry_count = 0
             remaining = []
 
+            # Mark all operations as being retried to prevent infinite loop
             for operation in self._failed_operations:
-                if self._emit_operation_safe(operation):
-                    retry_count += 1
-                    log.info(
-                        "Retry successful",
-                        operation_type=operation.operation_type.value,
-                        primary_file=operation.primary_path.name,
-                    )
-                else:
-                    # Still failing, keep for next retry
-                    remaining.append(operation)
+                self._currently_retrying.add(id(operation))
 
-            self._failed_operations = remaining
+            try:
+                for operation in self._failed_operations:
+                    if self._emit_operation_safe(operation):
+                        retry_count += 1
+                        log.info(
+                            "Retry successful",
+                            operation_type=operation.operation_type.value,
+                            primary_file=operation.primary_path.name,
+                        )
+                    else:
+                        # Still failing, keep for next retry
+                        remaining.append(operation)
 
-            if retry_count > 0:
-                log.info(f"Retried {retry_count} failed operations, {len(remaining)} still pending")
+                self._failed_operations = remaining
 
-            return retry_count
+                if retry_count > 0:
+                    log.info(f"Retried {retry_count} failed operations, {len(remaining)} still pending")
+
+                return retry_count
+            finally:
+                # Clear retry tracking
+                self._currently_retrying.clear()
 
     @property
     def failed_operations_count(self) -> int:
