@@ -525,8 +525,13 @@ class TestCreateOTLPLoggerProvider(FoundationTestCase):
         mock_config = Mock()
         mock_config.otlp_endpoint = None
 
+        # Mock Hub to return None, forcing fallback to from_env()
+        mock_hub = Mock()
+        mock_hub.get_foundation_config.return_value = None
+
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.integrations.openobserve.otlp.get_hub", return_value=mock_hub),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
         ):
             mock_from_env.return_value = mock_config
@@ -598,8 +603,13 @@ class TestCreateOTLPLoggerProvider(FoundationTestCase):
         """Test exception handling in logger provider creation."""
         from provide.foundation.integrations.openobserve.otlp import create_otlp_logger_provider
 
+        # Mock Hub to return None, forcing fallback to from_env()
+        mock_hub = Mock()
+        mock_hub.get_foundation_config.return_value = None
+
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.integrations.openobserve.otlp.get_hub", return_value=mock_hub),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
         ):
             mock_from_env.side_effect = Exception("Provider creation error")
