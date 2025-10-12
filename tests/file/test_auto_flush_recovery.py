@@ -232,6 +232,7 @@ class TestEventLossRecovery(FoundationTestCase):
             time_window_ms=100,
             on_operation_complete=failing_callback,
         )
+        handler_cleanup.append(handler)
 
         # Create failed operation
         operation = self._create_operation("test.txt")
