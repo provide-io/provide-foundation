@@ -30,12 +30,12 @@ try:
 except ImportError:
     _HAS_OTEL_LOGS = False
     # Create mock classes for testing compatibility
-    Resource = None
-    ResourceAttributes = None
-    OTLPLogExporter = None
-    LoggerProvider = None
-    BatchLogRecordProcessor = None
-    trace = None
+    Resource = None  # type: ignore[misc,assignment]
+    ResourceAttributes = None  # type: ignore[misc,assignment]
+    OTLPLogExporter = None  # type: ignore[misc,assignment]
+    LoggerProvider = None  # type: ignore[misc,assignment]
+    BatchLogRecordProcessor = None  # type: ignore[misc,assignment]
+    trace = None  # type: ignore[assignment]
 
 
 def _suppress_otlp_internal_logging() -> None:
@@ -48,6 +48,85 @@ def _suppress_otlp_internal_logging() -> None:
         stdlib_logging.getLogger("opentelemetry.sdk._shared_internal").setLevel(stdlib_logging.CRITICAL)
         stdlib_logging.getLogger("opentelemetry.exporter.otlp").setLevel(stdlib_logging.CRITICAL)
         _otlp_logging_suppressed = True
+
+
+def _configure_otlp_exporter(config: Any, oo_config: Any) -> tuple[str, dict[str, str]]:
+    """Configure OTLP exporter endpoint and headers.
+
+    Args:
+        config: Telemetry configuration
+        oo_config: OpenObserve configuration
+
+    Returns:
+        Tuple of (logs_endpoint, headers)
+    """
+    headers = config.get_otlp_headers_dict()
+    if oo_config.org:
+        headers["organization"] = oo_config.org
+    if oo_config.stream:
+        headers["stream-name"] = oo_config.stream
+
+    # Determine endpoint for logs
+    if config.otlp_traces_endpoint:
+        logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", "/v1/logs")
+    else:
+        logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
+
+    return logs_endpoint, headers
+
+
+def _create_otlp_resource(service_name: str, service_version: str | None) -> Any:
+    """Create OTLP resource with service information.
+
+    Args:
+        service_name: Service name
+        service_version: Optional service version
+
+    Returns:
+        Resource instance
+    """
+    resource_attrs = {
+        ResourceAttributes.SERVICE_NAME: service_name,
+    }
+    if service_version:
+        resource_attrs[ResourceAttributes.SERVICE_VERSION] = service_version
+
+    return Resource.create(resource_attrs)
+
+
+def _add_trace_attributes(attributes: dict[str, Any]) -> None:
+    """Add trace context to attributes if available.
+
+    Args:
+        attributes: Dictionary to update with trace context
+    """
+    current_span = trace.get_current_span()
+    if current_span and current_span.is_recording():
+        span_context = current_span.get_span_context()
+        attributes["trace_id"] = f"{span_context.trace_id:032x}"
+        attributes["span_id"] = f"{span_context.span_id:016x}"
+
+
+def _map_level_to_severity(level: str) -> int:
+    """Map log level string to OTLP severity number.
+
+    Args:
+        level: Log level string (e.g., "INFO", "ERROR")
+
+    Returns:
+        OTLP severity number (1-21)
+    """
+    severity_map = {
+        "TRACE": 1,
+        "DEBUG": 5,
+        "INFO": 9,
+        "WARN": 13,
+        "WARNING": 13,
+        "ERROR": 17,
+        "FATAL": 21,
+        "CRITICAL": 21,
+    }
+    return severity_map.get(level.upper(), 9)
 
 
 def send_log_otlp(
@@ -95,75 +174,28 @@ def send_log_otlp(
 
         oo_config = OpenObserveConfig.from_env()
 
-        # Determine service name for this export
-        actual_service_name = service or config.service_name or "foundation"
-        log.debug(
-            "OTLP preparing log export",
-            service_name=actual_service_name,
-            config_service_name=config.service_name,
-            service_param=service,
-            has_otlp_endpoint=config.otlp_endpoint is not None,
-        )
-
         if not config.otlp_endpoint:
             return False
 
-        # Create resource with service info
-        resource_attrs = {
-            ResourceAttributes.SERVICE_NAME: actual_service_name,
-        }
-        if config.service_version:
-            resource_attrs[ResourceAttributes.SERVICE_VERSION] = config.service_version
+        # Determine service name and create resource
+        actual_service_name = service or config.service_name or "foundation"
+        resource = _create_otlp_resource(actual_service_name, config.service_version)
 
-        resource = Resource.create(resource_attrs)
-
-        # Configure OTLP exporter
-        headers = config.get_otlp_headers_dict()
-        if oo_config.org:
-            # Add organization header for OpenObserve
-            headers["organization"] = oo_config.org
-        if oo_config.stream:
-            headers["stream-name"] = oo_config.stream
-
-        # Determine endpoint for logs
-        if config.otlp_traces_endpoint:
-            # Replace /traces with /logs
-            logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", "/v1/logs")
-        else:
-            logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
-
-        exporter = OTLPLogExporter(
-            endpoint=logs_endpoint,
-            headers=headers,
-        )
+        # Configure exporter
+        logs_endpoint, headers = _configure_otlp_exporter(config, oo_config)
+        exporter = OTLPLogExporter(endpoint=logs_endpoint, headers=headers)
 
         # Create logger provider
         logger_provider = LoggerProvider(resource=resource)
         logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
 
-        # Get logger and emit log
+        # Get logger and prepare attributes
         otel_logger = logger_provider.get_logger(__name__)
+        log_attrs = attributes.copy() if attributes else {}
+        _add_trace_attributes(log_attrs)
 
-        # Add trace context if available
-        log_attrs = attributes or {}
-        current_span = trace.get_current_span()
-        if current_span and current_span.is_recording():
-            span_context = current_span.get_span_context()
-            log_attrs["trace_id"] = f"{span_context.trace_id:032x}"
-            log_attrs["span_id"] = f"{span_context.span_id:016x}"
-
-        # Map level to severity number
-        severity_map = {
-            "TRACE": 1,
-            "DEBUG": 5,
-            "INFO": 9,
-            "WARN": 13,
-            "WARNING": 13,
-            "ERROR": 17,
-            "FATAL": 21,
-            "CRITICAL": 21,
-        }
-        severity = severity_map.get(level.upper(), 9)
+        # Map level to severity
+        severity = _map_level_to_severity(level)
 
         # Emit log record
         otel_logger.emit(
