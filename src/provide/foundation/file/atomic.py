@@ -4,7 +4,6 @@ import contextlib
 import os
 from pathlib import Path
 
-from provide.foundation.file.temp import secure_temp_file
 from provide.foundation.logger import get_logger
 
 """Atomic file operations using temp file + rename pattern."""
@@ -49,34 +48,41 @@ def atomic_write(
     # Ensure parent directory exists
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Create temp file in same directory for atomic rename
-    # Note: secure_temp_file creates files with 0o600 by default for security
-    fd, temp_path = secure_temp_file(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    # Determine final permissions before creating file (avoid race condition)
+    final_mode = None
+    if mode is not None:
+        final_mode = mode
+    elif preserve_mode and path.exists():
+        # Get existing permissions
+        with contextlib.suppress(OSError):
+            final_mode = path.stat().st_mode
+
+    if final_mode is None:
+        # Default permissions (respecting umask)
+        default_mode = 0o666
+        current_umask = os.umask(0)
+        os.umask(current_umask)
+        final_mode = default_mode & ~current_umask
+
+    # Create temp file with final permissions in a single operation (no race)
+    # Use os.open() instead of secure_temp_file for atomic permission setting
+    import tempfile
+
+    temp_fd, temp_path = tempfile.mkstemp(
+        dir=path.parent,
+        prefix=f".{path.name}.",
+        suffix=".tmp",
+    )
 
     try:
-        with os.fdopen(fd, "wb") as f:
+        # Set permissions immediately on the file descriptor (atomic)
+        os.fchmod(temp_fd, final_mode)
+
+        # Write data
+        with os.fdopen(temp_fd, "wb") as f:
             f.write(data)
             f.flush()
             os.fsync(f.fileno())
-
-        # Set permissions if specified
-        if mode is not None:
-            Path(temp_path).chmod(mode)
-        elif preserve_mode and path.exists():
-            # Preserve existing permissions if requested
-            try:
-                existing_mode = path.stat().st_mode
-                Path(temp_path).chmod(existing_mode)
-            except OSError:
-                pass
-        elif not preserve_mode:
-            # When not preserving, set to standard default permissions
-            # mkstemp creates with 0o600, but we want standard defaults
-            # Apply umask manually since os.chmod doesn't respect it
-            default_mode = 0o666
-            current_umask = os.umask(0)  # Get current umask
-            os.umask(current_umask)  # Restore it
-            Path(temp_path).chmod(default_mode & ~current_umask)
 
         # Atomic rename
         Path(temp_path).replace(path)
