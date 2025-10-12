@@ -81,8 +81,13 @@ class TestSendLogOTLP(FoundationTestCase):
         mock_current_span.is_recording.return_value = True
         mock_current_span.get_span_context.return_value = mock_span_context
 
+        # Mock Hub to return None, forcing fallback to from_env()
+        mock_hub = Mock()
+        mock_hub.get_foundation_config.return_value = None
+
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.integrations.openobserve.otlp.get_hub", return_value=mock_hub),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_tel_from_env,
             patch(
                 "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
@@ -152,9 +157,22 @@ class TestSendLogOTLP(FoundationTestCase):
         mock_logger_provider = Mock()
         mock_otel_logger = Mock()
 
+        # Mock OpenObserveConfig
+        mock_oo_config = Mock()
+        mock_oo_config.org = None
+        mock_oo_config.stream = None
+
+        # Mock Hub to return None, forcing fallback to from_env()
+        mock_hub = Mock()
+        mock_hub.get_foundation_config.return_value = None
+
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.integrations.openobserve.otlp.get_hub", return_value=mock_hub),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+            patch(
+                "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+            ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.Resource"),
             patch(
                 "provide.foundation.integrations.openobserve.otlp.ResourceAttributes"
@@ -165,6 +183,7 @@ class TestSendLogOTLP(FoundationTestCase):
             patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
         ):
             mock_from_env.return_value = mock_config
+            mock_oo_from_env.return_value = mock_oo_config
             mock_resource_attrs.SERVICE_NAME = "service.name"
             mock_resource_attrs.SERVICE_VERSION = "service.version"
             mock_exporter_class.return_value = mock_exporter
@@ -207,10 +226,23 @@ class TestSendLogOTLP(FoundationTestCase):
             ("UNKNOWN", 9),  # Default fallback
         ]
 
+        # Mock OpenObserveConfig
+        mock_oo_config = Mock()
+        mock_oo_config.org = None
+        mock_oo_config.stream = None
+
+        # Mock Hub to return None, forcing fallback to from_env()
+        mock_hub = Mock()
+        mock_hub.get_foundation_config.return_value = None
+
         for level, expected_severity in test_levels:
             with (
                 patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+                patch("provide.foundation.integrations.openobserve.otlp.get_hub", return_value=mock_hub),
                 patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+                patch(
+                    "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+                ) as mock_oo_from_env,
                 patch("provide.foundation.integrations.openobserve.otlp.Resource"),
                 patch(
                     "provide.foundation.integrations.openobserve.otlp.ResourceAttributes"
@@ -223,6 +255,7 @@ class TestSendLogOTLP(FoundationTestCase):
                 patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
             ):
                 mock_from_env.return_value = mock_config
+                mock_oo_from_env.return_value = mock_oo_config
                 mock_resource_attrs.SERVICE_NAME = "service.name"
                 mock_resource_attrs.SERVICE_VERSION = "service.version"
                 mock_provider_class.return_value = mock_logger_provider
@@ -522,8 +555,13 @@ class TestCreateOTLPLoggerProvider(FoundationTestCase):
         mock_resource = Mock()
         mock_exporter = Mock()
 
+        # Mock Hub to return None, forcing fallback to from_env()
+        mock_hub = Mock()
+        mock_hub.get_foundation_config.return_value = None
+
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.integrations.openobserve.otlp.get_hub", return_value=mock_hub),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_tel_from_env,
             patch(
                 "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
@@ -601,9 +639,22 @@ class TestOTLPIntegration(FoundationTestCase):
         mock_current_span.is_recording.return_value = True
         mock_current_span.get_span_context.return_value = mock_span_context
 
+        # Mock OpenObserveConfig
+        mock_oo_config = Mock()
+        mock_oo_config.org = None
+        mock_oo_config.stream = None
+
+        # Mock Hub to return None, forcing fallback to from_env()
+        mock_hub = Mock()
+        mock_hub.get_foundation_config.return_value = None
+
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.integrations.openobserve.otlp.get_hub", return_value=mock_hub),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+            patch(
+                "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+            ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.Resource"),
             patch(
                 "provide.foundation.integrations.openobserve.otlp.ResourceAttributes"
@@ -614,6 +665,7 @@ class TestOTLPIntegration(FoundationTestCase):
             patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
         ):
             mock_from_env.return_value = mock_config
+            mock_oo_from_env.return_value = mock_oo_config
             mock_resource_attrs.SERVICE_NAME = "service.name"
             mock_resource_attrs.SERVICE_VERSION = "service.version"
             mock_provider_class.return_value = mock_logger_provider
@@ -637,7 +689,11 @@ class TestOTLPIntegration(FoundationTestCase):
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.integrations.openobserve.otlp.get_hub", return_value=mock_hub),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
+            patch(
+                "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
+            ) as mock_oo_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.Resource"),
             patch(
                 "provide.foundation.integrations.openobserve.otlp.ResourceAttributes"
@@ -648,6 +704,7 @@ class TestOTLPIntegration(FoundationTestCase):
             patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
         ):
             mock_from_env.return_value = mock_config
+            mock_oo_from_env.return_value = mock_oo_config
             mock_resource_attrs.SERVICE_NAME = "service.name"
             mock_resource_attrs.SERVICE_VERSION = "service.version"
             mock_provider_class.return_value = mock_logger_provider
@@ -691,7 +748,12 @@ class TestOTLPIntegration(FoundationTestCase):
         mock_oo_config = Mock()
         mock_oo_config.stream = "test-stream"
 
+        # Mock Hub to return None, forcing fallback to from_env()
+        mock_hub = Mock()
+        mock_hub.get_foundation_config.return_value = None
+
         with (
+            patch("provide.foundation.integrations.openobserve.otlp.get_hub", return_value=mock_hub),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_tel_from_env,
             patch(
                 "provide.foundation.integrations.openobserve.config.OpenObserveConfig.from_env"
