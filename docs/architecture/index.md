@@ -61,10 +61,10 @@ Performance specifications and benchmarks:
 - ✅ **Cryptographic Utils**: Hashing, checksums, signatures, certificates
 - ✅ **Distributed Tracing**: Lightweight span-based tracing
 - ✅ **Error Handling**: Rich context, decorators, boundaries
+- ✅ **OpenTelemetry Bridge**: Full OTEL compatibility layer
 
 ### Experimental Features
 - 🧪 **Advanced Metrics**: Prometheus integration (planned)
-- 🧪 **OpenTelemetry Bridge**: OTEL compatibility layer (planned)
 
 ### Deprecated Features
 - None currently
@@ -144,8 +144,6 @@ class EventSet:
 - `provide.foundation.cli`
 - `provide.foundation.config`
 - `provide.foundation.platform`
-
-### Stable APIs  
 - `provide.foundation.tracer` - Distributed tracing functionality
 
 ### Deprecated APIs
