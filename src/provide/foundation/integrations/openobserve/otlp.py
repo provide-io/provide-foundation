@@ -198,7 +198,7 @@ def send_log_otlp(
         severity = _map_level_to_severity(level)
 
         # Emit log record
-        otel_logger.emit(
+        otel_logger.emit(  # type: ignore[call-arg]
             severity_number=severity,
             severity_text=level.upper(),
             body=message,
