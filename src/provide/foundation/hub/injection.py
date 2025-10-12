@@ -302,7 +302,8 @@ def create_instance(
         ... )
     """
     # Resolve dependencies
-    resolved = resolve_dependencies(cls, registry, allow_missing=True)
+    # Only allow missing if overrides will provide them
+    resolved = resolve_dependencies(cls, registry, allow_missing=False)
 
     # Apply overrides
     resolved.update(overrides)

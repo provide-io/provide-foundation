@@ -90,6 +90,8 @@ __all__ = [
     "AsyncInitializable",
     "AsyncResourceManager",
     "ComponentCategory",
+    # Dependency Injection
+    "Container",
     "Disposable",
     "HealthCheckable",
     # Hub
@@ -102,14 +104,12 @@ __all__ = [
     # CLI features (stub function if click not available)
     "build_click_command",
     "clear_hub",
+    "create_container",
     # Components
     "get_component_registry",
     "get_hub",
-    # Commands (core)
-    "register_command",
-    # Dependency Injection
-    "Container",
-    "create_container",
     "injectable",
     "is_injectable",
+    # Commands (core)
+    "register_command",
 ]
