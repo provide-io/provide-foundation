@@ -229,6 +229,44 @@ class InitializationCoordinator:
                     initialization_phase="config_and_logger",
                 ) from e
 
+    def update_config_if_default(self, registry: Any, new_config: Any) -> bool:
+        """Update config in-place if current config is from auto-init (service_name=None).
+
+        This provides a lightweight alternative to force re-initialization when
+        applications want to override default auto-init config with explicit config.
+
+        Args:
+            registry: Component registry
+            new_config: New configuration to use
+
+        Returns:
+            True if config was updated, False if no update needed
+        """
+        state_data = self._state_machine.state_data
+
+        # Only update if initialized and current config has no service_name (auto-init indicator)
+        if (
+            self._state_machine.current_state == InitState.INITIALIZED
+            and state_data.config is not None
+            and getattr(state_data.config, 'service_name', 'not-none') is None
+        ):
+            # Update state machine config
+            with self._state_machine._lock:
+                self._state_machine._state_data = state_data.with_changes(config=new_config)
+
+            # Update registry config
+            registry.register(
+                name="foundation.config",
+                value=new_config,
+                dimension="singleton",
+                metadata={"initialized": True},
+                replace=True,
+            )
+
+            return True
+
+        return False
+
     def _initialize_config(self, config: Any) -> Any:
         """Initialize configuration."""
         if config:

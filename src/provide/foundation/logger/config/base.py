@@ -38,4 +38,4 @@ def get_config_logger() -> Any:
             cache_logger_on_first_use=True,
         )
 
-    return structlog.get_logger("provide.foundation.logger.config")
+    return structlog.get_logger().bind(logger_name="provide.foundation.logger.config")

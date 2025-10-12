@@ -185,6 +185,16 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
     """
     # This function assumes the lock is already held.
     structlog.reset_defaults()
+
+    # Reset OTLP provider to ensure new LoggerProvider with updated config
+    # This is critical when service_name changes, as OpenTelemetry's Resource is immutable
+    try:
+        from provide.foundation.logger.processors.otlp import reset_otlp_provider
+        reset_otlp_provider()
+    except ImportError:
+        # OTLP not available (missing opentelemetry packages), skip reset
+        pass
+
     # Use __dict__ access to avoid triggering proxy initialization
     foundation_logger.__dict__["_is_configured_by_setup"] = False
     foundation_logger.__dict__["_active_config"] = None
