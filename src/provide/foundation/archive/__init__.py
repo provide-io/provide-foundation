@@ -10,7 +10,7 @@ from provide.foundation.archive.limits import (
     get_archive_size,
 )
 from provide.foundation.archive.operations import ArchiveOperations, OperationChain
-from provide.foundation.archive.tar import TarArchive
+from provide.foundation.archive.tar import TarArchive, deterministic_filter
 from provide.foundation.archive.types import (
     INVERSE_OPERATIONS,
     OPERATION_NAMES,
@@ -44,6 +44,7 @@ __all__ = [
     "XzCompressor",
     "ZipArchive",
     "ZstdCompressor",
+    "deterministic_filter",
     "get_archive_size",
     "get_operation_from_string",
 ]
