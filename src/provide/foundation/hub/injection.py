@@ -310,6 +310,9 @@ def create_instance(
     # Create instance
     try:
         return cls(**resolved)
+    except (ValidationError, NotFoundError):
+        # Re-raise DI-related errors without wrapping
+        raise
     except Exception as e:
         raise ValidationError(
             f"Failed to create instance of {cls.__name__}: {e}",

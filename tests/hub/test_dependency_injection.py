@@ -78,6 +78,14 @@ class ServiceWithMultipleDeps:
         self.db = db
 
 
+@injectable
+class ServiceNeedingDB:
+    """Service needing DatabaseClient for testing missing dependency."""
+
+    def __init__(self, db: DatabaseClient):
+        self.db = db
+
+
 # Tests for @injectable decorator
 
 
@@ -131,7 +139,7 @@ class TestInjectableDecorator:
             class NoInit:
                 pass
 
-        assert "must have __init__ method" in str(exc_info.value).lower()
+        assert "must define its own __init__ method" in str(exc_info.value).lower()
 
     def test_injectable_preserves_class_behavior(self):
         """Test that @injectable doesn't modify class behavior."""
@@ -229,13 +237,7 @@ class TestHubDependencyInjection:
         # Don't register DatabaseClient
 
         with pytest.raises(NotFoundError) as exc_info:
-
-            @injectable
-            class Service:
-                def __init__(self, db: DatabaseClient):
-                    self.db = db
-
-            hub.resolve(Service)
+            hub.resolve(ServiceNeedingDB)
 
         assert "DatabaseClient" in str(exc_info.value)
         assert "not found" in str(exc_info.value).lower()
@@ -336,76 +338,49 @@ class TestDependencyInjectionIntegration:
 
     def test_full_di_workflow(self):
         """Test complete DI workflow from registration to resolution."""
-
-        @injectable
-        class Config:
-            def __init__(self, env: str):
-                self.env = env
-
-        @injectable
-        class Cache:
-            def __init__(self, config: Config):
-                self.config = config
-
-        @injectable
-        class API:
-            def __init__(self, config: Config, cache: Cache, logger: Logger):
-                self.config = config
-                self.cache = cache
-                self.logger = logger
-
-        # Setup container
+        # Use existing test classes to avoid forward reference issues
+        # Config, Cache, API defined at module level
         container = Container()
-        config = Config("production")
+
+        # Use DatabaseClient as "Config", Repository as "Cache", ServiceWithMultipleDeps as "API"
+        db = DatabaseClient("postgresql://localhost/test")
         logger = Logger("INFO")
-        container.register(Config, config)
+        container.register(DatabaseClient, db)
         container.register(Logger, logger)
 
-        # Resolve Cache (depends on Config)
-        cache = container.resolve(Cache)
-        assert cache.config is config
-        container.register(Cache, cache)
+        # Resolve Repository (depends on DatabaseClient, Logger)
+        repo = container.resolve(Repository)
+        assert repo.db is db
+        assert repo.logger is logger
+        container.register(Repository, repo)
 
-        # Resolve API (depends on Config, Cache, Logger)
-        api = container.resolve(API)
-        assert api.config is config
-        assert api.cache is cache
-        assert api.logger is logger
+        # Resolve ServiceWithMultipleDeps (depends on Repository, Logger, DatabaseClient)
+        service = container.resolve(ServiceWithMultipleDeps)
+        assert service.repo is repo
+        assert service.logger is logger
+        assert service.db is db
 
     def test_composition_root_pattern(self):
         """Test the Composition Root pattern."""
-
-        @injectable
-        class EmailService:
-            def __init__(self, logger: Logger):
-                self.logger = logger
-
-        @injectable
-        class UserService:
-            def __init__(self, db: DatabaseClient, email: EmailService, logger: Logger):
-                self.db = db
-                self.email = email
-                self.logger = logger
-
-        # Composition Root
-        def create_app() -> UserService:
+        # Composition Root using existing test classes
+        def create_app() -> ServiceWithMultipleDeps:
             container = Container()
 
             # Register infrastructure
             container.register(DatabaseClient, DatabaseClient("postgresql://localhost/app"))
             container.register(Logger, Logger("INFO"))
 
-            # Resolve application services
-            email_service = container.resolve(EmailService)
-            container.register(EmailService, email_service)
+            # Resolve application services (Repository acts as intermediate service)
+            repo = container.resolve(Repository)
+            container.register(Repository, repo)
 
             # Resolve main application entry point
-            return container.resolve(UserService)
+            return container.resolve(ServiceWithMultipleDeps)
 
         app = create_app()
-        assert isinstance(app, UserService)
+        assert isinstance(app, ServiceWithMultipleDeps)
         assert isinstance(app.db, DatabaseClient)
-        assert isinstance(app.email, EmailService)
+        assert isinstance(app.repo, Repository)
         assert isinstance(app.logger, Logger)
 
     def test_mixed_di_and_service_locator(self):
