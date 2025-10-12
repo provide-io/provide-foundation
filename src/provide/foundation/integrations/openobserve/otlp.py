@@ -1,12 +1,19 @@
 from __future__ import annotations
 
-from datetime import datetime
 import logging as stdlib_logging
 from typing import Any
 
 from provide.foundation.hub import get_hub
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.otlp_circuit import get_otlp_circuit_breaker
+from provide.foundation.integrations.openobserve.otlp_helpers import (
+    add_trace_attributes,
+    build_bulk_url,
+    build_log_entry,
+    configure_otlp_exporter,
+    create_otlp_resource,
+    map_level_to_severity,
+)
 from provide.foundation.logger import get_logger
 from provide.foundation.serialization import json_dumps
 
@@ -42,85 +49,6 @@ except ImportError:
     LoggerProvider = None  # type: ignore[misc,assignment]
     BatchLogRecordProcessor = None  # type: ignore[misc,assignment]
     trace = None  # type: ignore[assignment]
-
-
-def _configure_otlp_exporter(config: Any, oo_config: Any) -> tuple[str, dict[str, str]]:
-    """Configure OTLP exporter endpoint and headers.
-
-    Args:
-        config: Telemetry configuration
-        oo_config: OpenObserve configuration
-
-    Returns:
-        Tuple of (logs_endpoint, headers)
-    """
-    headers = config.get_otlp_headers_dict()
-    if oo_config.org:
-        headers["organization"] = oo_config.org
-    if oo_config.stream:
-        headers["stream-name"] = oo_config.stream
-
-    # Determine endpoint for logs
-    if config.otlp_traces_endpoint:
-        logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", "/v1/logs")
-    else:
-        logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
-
-    return logs_endpoint, headers
-
-
-def _create_otlp_resource(service_name: str, service_version: str | None) -> Any:
-    """Create OTLP resource with service information.
-
-    Args:
-        service_name: Service name
-        service_version: Optional service version
-
-    Returns:
-        Resource instance
-    """
-    resource_attrs = {
-        ResourceAttributes.SERVICE_NAME: service_name,
-    }
-    if service_version:
-        resource_attrs[ResourceAttributes.SERVICE_VERSION] = service_version
-
-    return Resource.create(resource_attrs)
-
-
-def _add_trace_attributes(attributes: dict[str, Any]) -> None:
-    """Add trace context to attributes if available.
-
-    Args:
-        attributes: Dictionary to update with trace context
-    """
-    current_span = trace.get_current_span()
-    if current_span and current_span.is_recording():
-        span_context = current_span.get_span_context()
-        attributes["trace_id"] = f"{span_context.trace_id:032x}"
-        attributes["span_id"] = f"{span_context.span_id:016x}"
-
-
-def _map_level_to_severity(level: str) -> int:
-    """Map log level string to OTLP severity number.
-
-    Args:
-        level: Log level string (e.g., "INFO", "ERROR")
-
-    Returns:
-        OTLP severity number (1-21)
-    """
-    severity_map = {
-        "TRACE": 1,
-        "DEBUG": 5,
-        "INFO": 9,
-        "WARN": 13,
-        "WARNING": 13,
-        "ERROR": 17,
-        "FATAL": 21,
-        "CRITICAL": 21,
-    }
-    return severity_map.get(level.upper(), 9)
 
 
 def send_log_otlp(
@@ -173,10 +101,12 @@ def send_log_otlp(
 
         # Determine service name and create resource
         actual_service_name = service or config.service_name or "foundation"
-        resource = _create_otlp_resource(actual_service_name, config.service_version)
+        resource = create_otlp_resource(
+            actual_service_name, config.service_version, Resource, ResourceAttributes
+        )
 
         # Configure exporter
-        logs_endpoint, headers = _configure_otlp_exporter(config, oo_config)
+        logs_endpoint, headers = configure_otlp_exporter(config, oo_config)
         exporter = OTLPLogExporter(endpoint=logs_endpoint, headers=headers)
 
         # Create logger provider
@@ -186,10 +116,10 @@ def send_log_otlp(
         # Get logger and prepare attributes
         otel_logger = logger_provider.get_logger(__name__)
         log_attrs = attributes.copy() if attributes else {}
-        _add_trace_attributes(log_attrs)
+        add_trace_attributes(log_attrs, trace)
 
         # Map level to severity
-        severity = _map_level_to_severity(level)
+        severity = map_level_to_severity(level)
 
         # Emit log record
         otel_logger.emit(  # type: ignore[call-arg]
@@ -213,68 +143,6 @@ def send_log_otlp(
         circuit_breaker.record_failure(e)
         _log_otlp_failure(e, circuit_breaker, "send")
         return False
-
-
-def _add_trace_context_to_log_entry(log_entry: dict[str, Any]) -> None:
-    """Add trace context to log entry if available."""
-    # Try OpenTelemetry trace context first
-    try:
-        from opentelemetry import trace
-
-        current_span = trace.get_current_span()
-        if current_span and current_span.is_recording():
-            span_context = current_span.get_span_context()
-            log_entry["trace_id"] = f"{span_context.trace_id:032x}"
-            log_entry["span_id"] = f"{span_context.span_id:016x}"
-            return
-    except ImportError:
-        pass
-
-    # Try Foundation's tracer context
-    try:
-        from provide.foundation.tracer.context import (
-            get_current_span,
-            get_current_trace_id,
-        )
-
-        span = get_current_span()
-        if span:
-            log_entry["trace_id"] = span.trace_id
-            log_entry["span_id"] = span.span_id
-        elif trace_id := get_current_trace_id():
-            log_entry["trace_id"] = trace_id
-    except ImportError:
-        pass
-
-
-def _build_log_entry(
-    message: str,
-    level: str,
-    service: str | None,
-    attributes: dict[str, Any] | None,
-    config: Any,
-) -> dict[str, Any]:
-    """Build the log entry dictionary."""
-    log_entry = {
-        "_timestamp": int(datetime.now().timestamp() * 1_000_000),
-        "level": level.upper(),
-        "message": message,
-        "service": service or config.service_name or "foundation",
-    }
-
-    if attributes:
-        log_entry.update(attributes)
-
-    _add_trace_context_to_log_entry(log_entry)
-    return log_entry
-
-
-def _build_bulk_url(client: Any) -> str:
-    """Build the bulk API URL for the client."""
-    if f"/api/{client.organization}" in client.url:
-        return f"{client.url}/_bulk"
-    else:
-        return f"{client.url}/api/{client.organization}/_bulk"
 
 
 def send_log_bulk(
@@ -315,14 +183,14 @@ def send_log_bulk(
         oo_config = OpenObserveConfig.from_env()
 
         # Build log entry
-        log_entry = _build_log_entry(message, level, service, attributes, config)
+        log_entry = build_log_entry(message, level, service, attributes, config)
 
         # Format as bulk request
         stream = oo_config.stream or "default"
         bulk_data = json_dumps({"index": {"_index": stream}}) + "\n" + json_dumps(log_entry) + "\n"
 
         # Send via bulk API using Foundation transport
-        url = _build_bulk_url(client)
+        url = build_bulk_url(client)
 
         async def _send_bulk() -> bool:
             """Send bulk request using async client."""
@@ -412,29 +280,16 @@ def create_otlp_logger_provider() -> Any | None:
             return None
 
         # Create resource
-        resource_attrs = {
-            ResourceAttributes.SERVICE_NAME: config.service_name or "foundation",
-        }
-        if config.service_version:
-            resource_attrs[ResourceAttributes.SERVICE_VERSION] = config.service_version
-
-        resource = Resource.create(resource_attrs)
+        resource = create_otlp_resource(
+            config.service_name or "foundation",
+            config.service_version,
+            Resource,
+            ResourceAttributes,
+        )
 
         # Configure exporter
-        headers = config.get_otlp_headers_dict()
-        if oo_config.org:
-            headers["organization"] = oo_config.org
-        if oo_config.stream:
-            headers["stream-name"] = oo_config.stream
-
-        logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
-        if config.otlp_traces_endpoint:
-            logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", "/v1/logs")
-
-        exporter = OTLPLogExporter(
-            endpoint=logs_endpoint,
-            headers=headers,
-        )
+        logs_endpoint, headers = configure_otlp_exporter(config, oo_config)
+        exporter = OTLPLogExporter(endpoint=logs_endpoint, headers=headers)
 
         # Create provider
         logger_provider = LoggerProvider(resource=resource)
