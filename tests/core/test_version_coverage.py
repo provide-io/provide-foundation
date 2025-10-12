@@ -137,6 +137,7 @@ class TestGetVersion(FoundationTestCase):
 
             mock_find_root.return_value = temp_path
 
+            reset_version_cache()
             result = get_version()
             assert result == "2.1.0"
 
@@ -148,6 +149,7 @@ class TestGetVersion(FoundationTestCase):
             with patch("importlib.metadata.version") as mock_version:
                 mock_version.return_value = "1.5.0"
 
+                reset_version_cache()
                 result = get_version()
                 assert result == "1.5.0"
 
@@ -165,6 +167,7 @@ class TestGetVersion(FoundationTestCase):
             with patch("importlib.metadata.version") as mock_version:
                 mock_version.return_value = "1.3.0"
 
+                reset_version_cache()
                 result = get_version()
                 assert result == "1.3.0"
 
@@ -178,6 +181,7 @@ class TestGetVersion(FoundationTestCase):
 
                 mock_version.side_effect = PackageNotFoundError("package not found")
 
+                reset_version_cache()
                 result = get_version()
                 assert result == "0.0.0-dev"
 
@@ -192,6 +196,7 @@ class TestGetVersion(FoundationTestCase):
 
             mock_version.side_effect = PackageNotFoundError()
 
+            reset_version_cache()
             result = get_version()
             assert result == "0.0.0-dev"
 
@@ -201,6 +206,7 @@ class TestGetVersion(FoundationTestCase):
             patch("provide.foundation.utils.versioning._find_project_root", return_value=None),
             patch("importlib.metadata.version", return_value="test-version"),
         ):
+            reset_version_cache()
             result = get_version()
             assert result == "test-version"
 
@@ -220,6 +226,7 @@ class TestGetVersion(FoundationTestCase):
                     return_value="metadata-version",
                 ),
             ):
+                reset_version_cache()
                 result = get_version()
                 assert result == "metadata-version"
 
@@ -292,6 +299,7 @@ class TestVersionEdgeCases(FoundationTestCase):
 
             # Should fall back to package metadata
             with patch("importlib.metadata.version", return_value="fallback-version"):
+                reset_version_cache()
                 result = get_version()
                 assert result == "fallback-version"
 
@@ -307,6 +315,7 @@ class TestVersionEdgeCases(FoundationTestCase):
 
             mock_find_root.return_value = temp_path
 
+            reset_version_cache()
             result = get_version()
             assert result == ""  # Should be empty string after strip()
 
@@ -331,6 +340,7 @@ class TestVersionEdgeCases(FoundationTestCase):
                         "importlib.metadata.version",
                         side_effect=metadata_result,
                     ):
+                        reset_version_cache()
                         result = get_version()
                         assert result == expected
                 else:
@@ -338,5 +348,6 @@ class TestVersionEdgeCases(FoundationTestCase):
                         "importlib.metadata.version",
                         return_value=metadata_result,
                     ):
+                        reset_version_cache()
                         result = get_version()
                         assert result == expected
