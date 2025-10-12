@@ -46,7 +46,7 @@ class AutoFlushHandler:
         self.analyze_func = analyze_func
         self._pending_events: list[FileEvent] = []
         self._last_flush = datetime.now()
-        self._flush_timer: Any = None  # asyncio.TimerHandle
+        self._flush_timer: Any = None  # asyncio.TimerHandle or threading.Timer
         self._lock = threading.RLock()  # Protect shared state from concurrent threads
         self._failed_operations: list[FileOperation] = []  # Queue for retry on callback failure
         self._no_loop_buffer: list[FileOperation] = []  # Buffer when no event loop available
@@ -88,23 +88,38 @@ class AutoFlushHandler:
     def _schedule_auto_flush(self) -> None:
         """Schedule auto-flush timer.
 
+        Uses asyncio timer if event loop is running, otherwise uses threading.Timer.
+        This prevents creating event loops that are never closed.
+
         Note: Must be called with self._lock held.
         """
         # Cancel existing timer
         if self._flush_timer:
-            self._flush_timer.cancel()
+            if isinstance(self._flush_timer, threading.Timer):
+                self._flush_timer.cancel()
+            else:
+                # asyncio.TimerHandle
+                self._flush_timer.cancel()
+            self._flush_timer = None
 
-        # Schedule new timer
+        # Try to schedule with asyncio first (if event loop is running)
         try:
-            loop = asyncio.get_event_loop()
+            loop = asyncio.get_running_loop()
+            # We're in an async context, use asyncio timer
             self._flush_timer = loop.call_later(self.time_window_ms / 1000.0, self._auto_flush)
             log.trace(
-                "Auto-flush scheduled",
+                "Auto-flush scheduled (asyncio)",
                 window_ms=self.time_window_ms,
             )
         except RuntimeError:
-            # No event loop running - can't schedule timer
-            log.warning("Cannot schedule auto-flush: no event loop running")
+            # No event loop running - use threading.Timer instead
+            # This prevents creating unclosed event loops
+            self._flush_timer = threading.Timer(self.time_window_ms / 1000.0, self._auto_flush)
+            self._flush_timer.start()
+            log.trace(
+                "Auto-flush scheduled (threading)",
+                window_ms=self.time_window_ms,
+            )
 
     def _auto_flush(self) -> None:
         """Auto-flush callback - emits pending operations.
@@ -306,7 +321,11 @@ class AutoFlushHandler:
         with self._lock:
             self._pending_events.clear()
             if self._flush_timer:
-                self._flush_timer.cancel()
+                if isinstance(self._flush_timer, threading.Timer):
+                    self._flush_timer.cancel()
+                else:
+                    # asyncio.TimerHandle
+                    self._flush_timer.cancel()
                 self._flush_timer = None
 
     def retry_failed_operations(self) -> int:
