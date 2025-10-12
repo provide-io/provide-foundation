@@ -27,15 +27,14 @@ This guide helps teams evaluate whether provide.foundation is a good fit for the
 provide.foundation **excels** in command-line applications:
 
 ```python
-from provide.foundation import get_hub
-from provide.foundation.cli import ClickAdapter
+from provide.foundation.hub import Hub
 
-hub = get_hub()
+hub = Hub()
 hub.initialize_foundation()
 
 # Framework-agnostic CLI with beautiful logging
-adapter = ClickAdapter()
-adapter.run()
+cli = hub.create_cli()
+cli()
 ```
 
 **Why it's a great fit:**
@@ -135,8 +134,6 @@ async def get_user(user_id: int):
 - ❌ Foundation does NOT provide: HTTP servers, routing, request handling
 - ⚠️ Registry lock: Negligible impact unless runtime registration in hot path (>10k req/sec)
 
-**See:** [Integration Patterns: FastAPI + Foundation](../guide/advanced/integration-patterns.md#fastapi-integration)
-
 ### Task Processors & Background Workers
 
 For Celery, RQ, or custom worker pools:
@@ -206,7 +203,6 @@ def my_library_function(data: dict):
 **Why:**
 - Registry uses `threading.RLock` (not `asyncio.Lock`)
 - Potential for lock contention in extreme async scenarios
-- See: [Limitations: Async Context Considerations](../architecture/limitations.md#async-context-considerations)
 
 **Mitigation:** Use read-heavy patterns, initialize at startup, profile before optimizing.
 
@@ -224,7 +220,6 @@ def my_library_function(data: dict):
 
 **Compatibility:**
 - ✅ Foundation and Pydantic can coexist (but duplicated data validation)
-- ✅ Custom CLI adapters possible (see: [Integration Patterns](../guide/advanced/integration-patterns.md#custom-cli-adapters))
 - ❌ Foundation and loguru should not be mixed (conflicting logging systems)
 
 ### Full-Stack Framework Needs
@@ -302,15 +297,12 @@ def my_view(request):
 ### ✅ If Foundation Fits
 
 1. Read: [Quick Start Guide](../index.md)
-2. Try: [Example Projects](../examples/index.md)
-3. Review: [Integration Patterns](../guide/advanced/integration-patterns.md)
+2. Try: [Example Projects](../../examples/index.md)
 
 ### ⚠️ If You're Unsure
 
-1. Read: [Design Decisions](../architecture/design-decisions.md) - Understand the philosophy
-2. Read: [Limitations](../architecture/limitations.md) - Know the trade-offs
-3. Prototype: Build a small proof-of-concept
-4. Profile: Measure actual overhead in your use case
+1. Prototype: Build a small proof-of-concept
+2. Profile: Measure actual overhead in your use case
 
 ### ❌ If Foundation Doesn't Fit
 
