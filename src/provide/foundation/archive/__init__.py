@@ -17,7 +17,9 @@ from provide.foundation.archive.types import (
     ArchiveOperation,
     get_operation_from_string,
 )
+from provide.foundation.archive.xz import XzCompressor
 from provide.foundation.archive.zip import ZipArchive
+from provide.foundation.archive.zstd import ZstdCompressor
 
 """Archive operations for provide-foundation.
 
@@ -39,7 +41,9 @@ __all__ = [
     "GzipCompressor",
     "OperationChain",
     "TarArchive",
+    "XzCompressor",
     "ZipArchive",
+    "ZstdCompressor",
     "get_archive_size",
     "get_operation_from_string",
 ]

@@ -52,6 +52,9 @@ Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
 cli = [
     "click>=8.1.7",
 ]
+compression = [
+    "zstandard>=0.22.0",
+]
 crypto = [
     "cryptography>=45.0.7",
 ]
@@ -65,7 +68,7 @@ opentelemetry = [
     "opentelemetry-exporter-otlp-proto-http>=1.22.0",
 ]
 all = [
-    "provide-foundation[cli,crypto,transport,opentelemetry]",
+    "provide-foundation[cli,compression,crypto,transport,opentelemetry]",
 ]
 
 [project.scripts]
