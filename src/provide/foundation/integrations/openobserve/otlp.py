@@ -14,9 +14,6 @@ from provide.foundation.serialization import json_dumps
 
 log = get_logger(__name__)
 
-# Suppress OpenTelemetry internal error logging after circuit opens
-_otlp_logging_suppressed = False
-
 # OpenTelemetry feature detection
 try:
     from opentelemetry import trace
@@ -27,6 +24,15 @@ try:
     from opentelemetry.semconv.resource import ResourceAttributes
 
     _HAS_OTEL_LOGS = True
+
+    # Suppress OpenTelemetry's internal error logging immediately
+    # This prevents spam from BatchLogRecordProcessor's background thread
+    # when OTLP endpoint is unreachable
+    stdlib_logging.getLogger("opentelemetry.sdk._logs").setLevel(stdlib_logging.CRITICAL)
+    stdlib_logging.getLogger("opentelemetry.sdk._shared_internal").setLevel(stdlib_logging.CRITICAL)
+    stdlib_logging.getLogger("opentelemetry.exporter.otlp").setLevel(stdlib_logging.CRITICAL)
+    stdlib_logging.getLogger("urllib3.connectionpool").setLevel(stdlib_logging.CRITICAL)
+
 except ImportError:
     _HAS_OTEL_LOGS = False
     # Create mock classes for testing compatibility
@@ -36,18 +42,6 @@ except ImportError:
     LoggerProvider = None  # type: ignore[misc,assignment]
     BatchLogRecordProcessor = None  # type: ignore[misc,assignment]
     trace = None  # type: ignore[assignment]
-
-
-def _suppress_otlp_internal_logging() -> None:
-    """Suppress OpenTelemetry internal error logging to prevent spam."""
-    global _otlp_logging_suppressed
-
-    if not _otlp_logging_suppressed:
-        # Suppress OpenTelemetry SDK internal errors
-        stdlib_logging.getLogger("opentelemetry.sdk._logs").setLevel(stdlib_logging.CRITICAL)
-        stdlib_logging.getLogger("opentelemetry.sdk._shared_internal").setLevel(stdlib_logging.CRITICAL)
-        stdlib_logging.getLogger("opentelemetry.exporter.otlp").setLevel(stdlib_logging.CRITICAL)
-        _otlp_logging_suppressed = True
 
 
 def _configure_otlp_exporter(config: Any, oo_config: Any) -> tuple[str, dict[str, str]]:
@@ -217,28 +211,7 @@ def send_log_otlp(
     except Exception as e:
         # Record failure with circuit breaker
         circuit_breaker.record_failure(e)
-
-        # Get circuit state for logging
-        breaker_stats = circuit_breaker.get_stats()
-
-        if breaker_stats["state"] == "open":
-            # Circuit just opened, log a warning once
-            log.warning(
-                "OTLP circuit breaker opened due to repeated failures",
-                failure_count=breaker_stats["failure_count"],
-                timeout=breaker_stats["current_timeout"],
-                error=str(e),
-            )
-            # Suppress internal OpenTelemetry error logging
-            _suppress_otlp_internal_logging()
-        else:
-            # Circuit still closed or half-open, log at debug level
-            log.debug(
-                f"Failed to send via OTLP: {e}",
-                circuit_state=breaker_stats["state"],
-                failure_count=breaker_stats["failure_count"],
-            )
-
+        _log_otlp_failure(e, circuit_breaker, "send")
         return False
 
 
@@ -406,11 +379,20 @@ def send_log(
 def create_otlp_logger_provider() -> Any | None:
     """Create an OTLP logger provider for continuous logging.
 
+    Uses circuit breaker to prevent spam when endpoint is unreachable.
+    Returns None if circuit is open (too many failures).
+
     Returns:
         LoggerProvider if OTLP is available and configured, None otherwise
 
     """
     if not _HAS_OTEL_LOGS:
+        return None
+
+    # Check circuit breaker - don't create provider if circuit is open
+    circuit_breaker = get_otlp_circuit_breaker()
+    if not circuit_breaker.can_attempt():
+        log.debug("OTLP circuit breaker is open, skipping logger provider creation")
         return None
 
     try:
@@ -458,8 +440,37 @@ def create_otlp_logger_provider() -> Any | None:
         logger_provider = LoggerProvider(resource=resource)
         logger_provider.add_log_record_processor(BatchLogRecordProcessor(exporter))
 
+        # Record success with circuit breaker
+        circuit_breaker.record_success()
+
         return logger_provider
 
     except Exception as e:
-        log.debug(f"Failed to create OTLP logger provider: {e}")
+        # Record failure with circuit breaker
+        circuit_breaker.record_failure(e)
+        _log_otlp_failure(e, circuit_breaker, "provider creation")
         return None
+
+
+def _log_otlp_failure(error: Exception, breaker: Any, context: str) -> None:
+    """Log OTLP failure with circuit breaker context.
+
+    Args:
+        error: The exception that occurred
+        breaker: Circuit breaker instance
+        context: Context string (e.g., "send", "provider creation")
+    """
+    breaker_stats = breaker.get_stats()
+    if breaker_stats["state"] == "open":
+        log.warning(
+            f"OTLP circuit breaker opened during {context}",
+            failure_count=breaker_stats["failure_count"],
+            timeout=breaker_stats["current_timeout"],
+            error=str(error),
+        )
+    else:
+        log.debug(
+            f"OTLP {context} failed: {error}",
+            circuit_state=breaker_stats["state"],
+            failure_count=breaker_stats["failure_count"],
+        )
