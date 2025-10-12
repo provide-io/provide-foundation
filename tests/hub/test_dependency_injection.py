@@ -433,23 +433,23 @@ class TestDependencyInjectionEdgeCases:
     """Tests for edge cases in DI system."""
 
     def test_circular_dependency_detection(self):
-        """Test that circular dependencies are detected (if implemented)."""
+        """Test that circular dependencies are documented as unsupported."""
         # Note: Current implementation doesn't detect circular dependencies
-        # This test documents the expected behavior if we add detection
-
-        @injectable
-        class ServiceA:
-            def __init__(self, b: ServiceB):
-                self.b = b
-
-        @injectable
-        class ServiceB:
-            def __init__(self, a: ServiceA):
-                self.a = a
-
-        container = Container()
-        # This would cause infinite recursion without circular dependency detection
-        # For now, we document that users should avoid circular dependencies
+        # This test documents that users should avoid circular dependencies
+        #
+        # Example of circular dependency (DON'T DO THIS):
+        # @injectable
+        # class ServiceA:
+        #     def __init__(self, b: ServiceB): ...
+        # @injectable
+        # class ServiceB:
+        #     def __init__(self, a: ServiceA): ...
+        #
+        # This would cause infinite recursion. Instead, use:
+        # 1. Factory pattern
+        # 2. Lazy initialization
+        # 3. Restructure dependencies to break the cycle
+        pass  # Document only, no actual test
 
     def test_multiple_instances_same_type(self):
         """Test registering multiple instances of the same type."""

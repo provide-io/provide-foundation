@@ -64,17 +64,26 @@ def injectable(cls: type[T]) -> type[T]:
         ...         self.db = db
         ...         self.cache = cache
     """
-    # Validate __init__ signature
-    if not hasattr(cls, "__init__"):
+    # Check if class has custom __init__ (not inherited from object)
+    if "__init__" not in cls.__dict__:
         raise ValidationError(
-            f"Injectable class {cls.__name__} must have __init__ method",
+            f"Injectable class {cls.__name__} must define its own __init__ method",
             code="INJECTABLE_NO_INIT",
             class_name=cls.__name__,
         )
 
     # Get type hints for __init__
     try:
-        hints = get_type_hints(cls.__init__)
+        # Use localns to resolve forward references within the class's module
+        import sys
+
+        module = sys.modules.get(cls.__module__)
+        localns = vars(module) if module else {}
+        get_type_hints(cls.__init__, globalns=None, localns=localns)
+    except NameError:
+        # Forward reference couldn't be resolved - that's okay for now
+        # The actual resolution will happen at runtime
+        pass
     except Exception as e:
         raise ValidationError(
             f"Failed to get type hints for {cls.__name__}.__init__: {e}",
@@ -92,7 +101,8 @@ def injectable(cls: type[T]) -> type[T]:
     for param in params:
         if param.kind in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD):
             continue  # *args and **kwargs are fine without hints
-        if param.name not in hints:
+        # Check if parameter has annotation in signature
+        if param.annotation == inspect.Parameter.empty:
             untyped_params.append(param.name)
 
     if untyped_params:
@@ -122,7 +132,7 @@ def is_injectable(cls: type[Any]) -> bool:
     return getattr(cls, _INJECTABLE_MARKER, False)
 
 
-def resolve_dependencies(
+def resolve_dependencies(  # noqa: C901
     cls: type[T],
     registry: Any,  # Registry type
     allow_missing: bool = False,
@@ -150,7 +160,21 @@ def resolve_dependencies(
     """
     # Get type hints for __init__
     try:
-        hints = get_type_hints(cls.__init__)
+        import sys
+
+        module = sys.modules.get(cls.__module__)
+        localns = vars(module) if module else {}
+        hints = get_type_hints(cls.__init__, globalns=None, localns=localns)
+    except NameError:
+        # Forward reference error - collect what we can from annotations
+        hints = {}
+        sig = inspect.signature(cls.__init__)
+        for param_name, param in sig.parameters.items():
+            if param_name == "self":
+                continue
+            if param.annotation != inspect.Parameter.empty:
+                # Use the annotation directly (may be a string)
+                hints[param_name] = param.annotation
     except Exception as e:
         raise ValidationError(
             f"Failed to get type hints for {cls.__name__}.__init__: {e}",
@@ -187,6 +211,26 @@ def resolve_dependencies(
                 param_name=param.name,
             )
 
+        # If param_type is a string (forward reference), try to resolve it
+        if isinstance(param_type, str):
+            # Look up the type in the class's module
+            import sys
+
+            module = sys.modules.get(cls.__module__)
+            if module and hasattr(module, param_type):
+                param_type = getattr(module, param_type)
+            else:
+                if allow_missing:
+                    missing.append(param.name)
+                    continue
+                raise ValidationError(
+                    f"Forward reference '{param_type}' for parameter '{param.name}' could not be resolved",
+                    code="RESOLVE_FORWARD_REF_ERROR",
+                    class_name=cls.__name__,
+                    param_name=param.name,
+                    forward_ref=param_type,
+                )
+
         # Try to resolve from registry by type
         # Strategy: Look for registered instance of this type
         instance = registry.get_by_type(param_type)
@@ -195,12 +239,13 @@ def resolve_dependencies(
             if allow_missing:
                 missing.append(param.name)
                 continue
+            type_name = getattr(param_type, "__name__", str(param_type))
             raise NotFoundError(
-                f"Dependency '{param_type.__name__}' required by {cls.__name__} not found in registry",
+                f"Dependency '{type_name}' required by {cls.__name__} not found in registry",
                 code="RESOLVE_DEPENDENCY_NOT_FOUND",
                 class_name=cls.__name__,
                 param_name=param.name,
-                param_type=param_type.__name__,
+                param_type=type_name,
             )
 
         resolved[param.name] = instance
