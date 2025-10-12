@@ -124,6 +124,7 @@ def get_version(package_name: str, caller_file: str | Path | None = None) -> str
 
 
 __all__ = [
+    "_find_project_root",
     "get_version",
     "reset_version_cache",
 ]

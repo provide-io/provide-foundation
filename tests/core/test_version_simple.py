@@ -90,9 +90,10 @@ class TestVersionSimpleCoverage(FoundationTestCase):
 
             # Mock _find_project_root to return our temp directory
             with patch(
-                "provide.foundation._version._find_project_root",
+                "provide.foundation.utils.versioning._find_project_root",
                 return_value=temp_path,
             ):
+                reset_version_cache()
                 version = get_version()
                 assert version == "9.9.9-test"
 
@@ -116,12 +117,13 @@ class TestVersionSimpleCoverage(FoundationTestCase):
         """Test importlib.metadata fallback path."""
         # Mock _find_project_root to return None (no VERSION file)
         with (
-            patch("provide.foundation._version._find_project_root", return_value=None),
+            patch("provide.foundation.utils.versioning._find_project_root", return_value=None),
             patch(
                 "importlib.metadata.version",
                 return_value="metadata-version",
             ) as mock_version,
         ):
+            reset_version_cache()
             version = get_version()
             assert version == "metadata-version"
             mock_version.assert_called_once_with("provide-foundation")
@@ -132,12 +134,13 @@ class TestVersionSimpleCoverage(FoundationTestCase):
 
         # Mock _find_project_root to return None
         with (
-            patch("provide.foundation._version._find_project_root", return_value=None),
+            patch("provide.foundation.utils.versioning._find_project_root", return_value=None),
             patch(
                 "importlib.metadata.version",
                 side_effect=PackageNotFoundError(),
             ) as mock_version,
         ):
+            reset_version_cache()
             version = get_version()
             assert version == "0.0.0-dev"
             mock_version.assert_called_once_with("provide-foundation")
@@ -151,9 +154,10 @@ class TestVersionSimpleCoverage(FoundationTestCase):
             version_file.write_text("  1.2.3-whitespace  \n\t")
 
             with patch(
-                "provide.foundation._version._find_project_root",
+                "provide.foundation.utils.versioning._find_project_root",
                 return_value=temp_path,
             ):
+                reset_version_cache()
                 version = get_version()
                 assert version == "1.2.3-whitespace"  # Should be stripped
 
@@ -183,10 +187,11 @@ class TestVersionSimpleCoverage(FoundationTestCase):
 
             # Mock _find_project_root to return the temp path
             with patch(
-                "provide.foundation._version._find_project_root",
+                "provide.foundation.utils.versioning._find_project_root",
                 return_value=temp_path,
             ):
                 # First test: no VERSION file exists
+                reset_version_cache()
                 version1 = get_version()
                 # Should fall back to other methods
                 assert isinstance(version1, str)
