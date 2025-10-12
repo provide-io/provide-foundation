@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypeVar
 
 if TYPE_CHECKING:
     import click
@@ -14,6 +14,8 @@ from provide.foundation.hub.categories import ComponentCategory
 from provide.foundation.hub.commands import CommandInfo
 from provide.foundation.hub.components import ComponentInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
+
+T = TypeVar("T")
 
 """Core Hub class for component and command management.
 
@@ -398,6 +400,86 @@ class CoreHub:
 
         if dimension != ComponentCategory.COMMAND.value or dimension is None:
             self._component_registry.clear(dimension=dimension)
+
+    # Dependency Injection
+
+    def register(
+        self,
+        type_hint: type[T],
+        instance: T,
+        name: str | None = None,
+    ) -> None:
+        """Register a dependency by type for dependency injection.
+
+        This enables type-based registration which is the foundation
+        of the dependency injection pattern. Use this in your application's
+        composition root (e.g., main.py) to wire up dependencies.
+
+        Args:
+            type_hint: Type to register under
+            instance: Instance to register
+            name: Optional name for named registration
+
+        Example:
+            >>> hub = Hub()
+            >>> hub.register(DatabaseClient, db_instance)
+            >>> hub.register(HTTPClient, http_instance)
+            >>> service = hub.resolve(MyService)  # Auto-injects
+
+        See Also:
+            - resolve(): Create instances with auto-injected dependencies
+            - @injectable: Decorator to mark DI-ready classes
+        """
+        self._component_registry.register_type(type_hint, instance, name)
+
+    def resolve(
+        self,
+        cls: type[T],
+        **overrides: Any,
+    ) -> T:
+        """Create an instance with dependency injection.
+
+        Inspects the class constructor, resolves dependencies from the
+        registry, and instantiates the class. This is the core of the
+        dependency injection pattern.
+
+        Args:
+            cls: Class to instantiate
+            **overrides: Explicitly provided dependencies (override registry)
+
+        Returns:
+            New instance with dependencies injected
+
+        Raises:
+            NotFoundError: If required dependency not registered
+            ValidationError: If instantiation fails
+
+        Example:
+            >>> @injectable
+            >>> class UserService:
+            ...     def __init__(self, db: Database, logger: Logger):
+            ...         self.db = db
+            ...         self.logger = logger
+            >>>
+            >>> hub = Hub()
+            >>> hub.register(Database, db_instance)
+            >>> hub.register(Logger, logger_instance)
+            >>> service = hub.resolve(UserService)  # Auto-injects db & logger
+
+        Pattern:
+            This implements the Dependency Injection pattern with an explicit
+            Composition Root. The Hub acts as a DI Container that:
+            1. Stores registered dependencies by type
+            2. Inspects constructor signatures
+            3. Automatically wires dependencies together
+
+        See Also:
+            - register(): Register dependencies by type
+            - @injectable: Decorator to mark DI-ready classes
+        """
+        from provide.foundation.hub.injection import create_instance
+
+        return create_instance(cls, self._component_registry, **overrides)
 
     def __enter__(self) -> CoreHub:
         """Context manager entry."""

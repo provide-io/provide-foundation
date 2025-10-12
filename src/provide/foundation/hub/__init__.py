@@ -37,7 +37,15 @@ from provide.foundation.hub.components import (
     ComponentCategory,
     get_component_registry,
 )
+from provide.foundation.hub.container import (
+    Container,
+    create_container,
+)
 from provide.foundation.hub.decorators import register_command
+from provide.foundation.hub.injection import (
+    injectable,
+    is_injectable,
+)
 from provide.foundation.hub.manager import (
     Hub,
     clear_hub,
@@ -99,4 +107,9 @@ __all__ = [
     "get_hub",
     # Commands (core)
     "register_command",
+    # Dependency Injection
+    "Container",
+    "create_container",
+    "injectable",
+    "is_injectable",
 ]
