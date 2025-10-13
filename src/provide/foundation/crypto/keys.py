@@ -81,8 +81,10 @@ def generate_ec_keypair(
             f"Unsupported EC curve: {curve_name}. Must be one of {SUPPORTED_EC_CURVES}",
             context={"curve_name": curve_name, "supported_curves": SUPPORTED_EC_CURVES},
         )
-    curve = SUPPORTED_EC_CURVES[curve_name]
-    private_key = ec.generate_private_key(curve, backend=default_backend())
+
+    # Map curve name to cryptography curve object
+    curve_obj = getattr(ec, curve_name.upper())()
+    private_key = ec.generate_private_key(curve_obj, backend=default_backend())
     return private_key, private_key.public_key()
 
 

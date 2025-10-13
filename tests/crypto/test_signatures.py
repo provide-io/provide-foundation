@@ -9,10 +9,10 @@ from provide.foundation.crypto import (
     ED25519_PRIVATE_KEY_SIZE,
     ED25519_PUBLIC_KEY_SIZE,
     ED25519_SIGNATURE_SIZE,
+    Ed25519Signer,
+    Ed25519Verifier,
     generate_ed25519_keypair,
     generate_signing_keypair,
-    sign_data,
-    verify_signature,
 )
 from provide.foundation.errors.crypto import CryptoKeyError
 
@@ -47,57 +47,53 @@ class TestEd25519KeyGeneration(FoundationTestCase):
 
 
 class TestEd25519Signatures(FoundationTestCase):
-    """Test Ed25519 signature algorithm (moved from flavorpack security tests)."""
+    """Test Ed25519 signature algorithm using OOP API."""
 
     def test_signature_algorithm(self) -> None:
         """Ensure proper signature algorithm is used."""
-        # Generate keys
-        private_key, public_key = generate_ed25519_keypair()
+        # Generate signer
+        signer = Ed25519Signer.generate()
+        verifier = Ed25519Verifier(signer.public_key)
 
         # Create test data
         test_data = b"test data for signature"
 
         # Create signature
-        signature = sign_data(test_data, private_key)
+        signature = signer.sign(test_data)
 
         # Verify signature size
         assert len(signature) == ED25519_SIGNATURE_SIZE
 
         # Verify signature
-        is_valid = verify_signature(test_data, signature, public_key)
+        is_valid = verifier.verify(test_data, signature)
         assert is_valid, "Signature should be valid"
 
         # Test with wrong data
         wrong_data = b"different data"
-        is_valid_wrong = verify_signature(wrong_data, signature, public_key)
+        is_valid_wrong = verifier.verify(wrong_data, signature)
         assert not is_valid_wrong, "Signature should be invalid for different data"
 
     def test_sign_invalid_private_key_size(self) -> None:
         """Test signing with invalid private key size."""
         invalid_key = b"too_short"
-        data = b"test data"
 
-        with pytest.raises(CryptoKeyError, match="Private key must be 32 bytes"):
-            sign_data(data, invalid_key)
+        with pytest.raises(CryptoKeyError, match="private key must be 32 bytes"):
+            Ed25519Signer(private_key=invalid_key)
 
     def test_verify_invalid_signature_size(self) -> None:
         """Test verification with invalid signature size."""
-        _private_key, public_key = generate_ed25519_keypair()
+        signer = Ed25519Signer.generate()
+        verifier = Ed25519Verifier(signer.public_key)
         data = b"test message"
         invalid_signature = b"too_short"
 
-        result = verify_signature(data, invalid_signature, public_key)
+        result = verifier.verify(data, invalid_signature)
 
         assert result is False
 
     def test_verify_invalid_public_key_size(self) -> None:
         """Test verification with invalid public key size."""
-        private_key, _public_key = generate_ed25519_keypair()
-        data = b"test message"
-
-        signature = sign_data(data, private_key)
         invalid_public_key = b"invalid"
 
-        result = verify_signature(data, signature, invalid_public_key)
-
-        assert result is False
+        with pytest.raises(CryptoKeyError, match="public key must be 32 bytes"):
+            Ed25519Verifier(invalid_public_key)
