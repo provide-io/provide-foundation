@@ -268,6 +268,7 @@ def circuit_breaker(
     recovery_timeout: float = DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT,
     expected_exception: type[Exception] | tuple[type[Exception], ...] = Exception,
     time_source: Callable[[], float] | None = None,
+    registry: Registry | None = None,
 ) -> Callable[[F], F]:
     """Create a circuit breaker decorator.
 
@@ -280,6 +281,7 @@ def circuit_breaker(
         expected_exception: Exception type(s) that trigger the breaker.
             Can be a single exception type or a tuple of exception types.
         time_source: Optional callable that returns current time (for testing).
+        registry: Optional registry to register the breaker with (for DI).
 
     Returns:
         Circuit breaker decorator.
@@ -307,6 +309,9 @@ def circuit_breaker(
     def decorator(func: F) -> F:
         global _circuit_breaker_counter
 
+        # Use provided registry or fall back to global
+        reg = registry or _get_circuit_breaker_registry()
+
         # Create appropriate breaker type based on function type
         if asyncio.iscoroutinefunction(func):
             breaker = AsyncCircuitBreaker(
@@ -325,11 +330,10 @@ def circuit_breaker(
                 _circuit_breaker_counter += 1
                 breaker_name = f"cb_{_circuit_breaker_counter}"
 
-            registry = _get_circuit_breaker_registry()
             if _should_register_for_global_reset():
-                registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
+                reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
             else:
-                registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
+                reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
 
             return async_wrapper  # type: ignore
         else:
@@ -349,11 +353,10 @@ def circuit_breaker(
                 _circuit_breaker_counter += 1
                 breaker_name = f"cb_{_circuit_breaker_counter}"
 
-            registry = _get_circuit_breaker_registry()
             if _should_register_for_global_reset():
-                registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
+                reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
             else:
-                registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
+                reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
 
             return sync_wrapper  # type: ignore
 

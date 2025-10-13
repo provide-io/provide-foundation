@@ -78,7 +78,7 @@ class Hub(CoreHub):
         super().__init__(context, comp_registry, cmd_registry)
 
         # Initialize Foundation management, injecting self
-        self._foundation = FoundationManager(hub=self)
+        self._foundation = FoundationManager(hub=self, registry=self._component_registry)
 
     # Foundation Integration Methods
 
@@ -146,9 +146,13 @@ _global_hub: Hub | None = None
 def get_hub() -> Hub:
     """Get the global shared hub instance (singleton pattern).
 
-    This function acts as the Composition Root for the global singleton. It is
-    preserved for backward compatibility but should be avoided in new application
-    code in favor of explicit Dependency Injection via a `Container`.
+    This function acts as the Composition Root for the global singleton instance.
+    It is maintained for backward compatibility and convenience.
+
+    **Note:** For building testable and maintainable applications, the recommended
+    approach is to use a `Container` or `Hub` instance created at your application's
+    entry point for explicit dependency management. This global accessor should be
+    avoided in application code.
 
     Thread-safe: Uses double-checked locking pattern for efficient lazy initialization.
 
@@ -162,10 +166,14 @@ def get_hub() -> Hub:
     Returns:
         Global Hub instance (created and initialized if needed)
 
+    Example:
+        >>> hub = get_hub()
+        >>> hub.register_command("my_command", my_function)
+
     Note:
-        For building testable and maintainable applications, the recommended
-        approach is to use a `Container` instance created at your application's
-        entry point. See the Dependency Injection guide for more information.
+        For isolated Hub instances (testing, advanced use cases), use:
+        >>> hub = Hub(use_shared_registries=False)
+
     """
     global _global_hub
 
