@@ -25,12 +25,13 @@ def test_isolated_container_fixture(isolated_container):
 
 
 def test_isolated_hub_fixture(isolated_hub):
-    """Test that isolated_hub fixture provides Hub with isolated Container."""
+    """Test that isolated_hub fixture provides Hub with isolated registries."""
     from provide.foundation.hub import Hub
 
     assert isolated_hub is not None
     assert isinstance(isolated_hub, Hub)
-    assert isolated_hub._container is not None
+    assert isolated_hub._component_registry is not None
+    assert isolated_hub._command_registry is not None
 
 
 def test_isolated_containers_are_independent(isolated_container):
