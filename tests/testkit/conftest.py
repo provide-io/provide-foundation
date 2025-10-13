@@ -10,6 +10,9 @@ from tests.file.file_operations_fixtures import (
     temp_workspace,
 )
 
+# Load testkit Hub fixtures plugin
+pytest_plugins = ["provide.testkit.hub.fixtures"]
+
 # Make fixtures available to tests in this directory
 __all__ = [
     "file_operation_simulator",
