@@ -137,6 +137,7 @@ filterwarnings = [
     "ignore:.* KqueueSelector constructor:pytest.PytestCollectionWarning",
     "ignore:.* KqueueSelector constructor:pytest.PytestCollectionWarning",
     "ignore:coroutine .* was never awaited:RuntimeWarning",
+    "ignore:Module already imported so cannot be rewritten:pytest.PytestAssertRewriteWarning",
 ]
 norecursedirs = [
     ".git", ".hg", ".svn", "*_build", "build", "dist", "*.egg-info",

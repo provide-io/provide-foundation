@@ -30,7 +30,7 @@ os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
-import contextlib
+import contextlib  # noqa: E402
 
 from provide.testkit import set_log_stream_for_testing  # noqa: E402 # type: ignore
 
