@@ -134,6 +134,7 @@ async def get_user(user_id: int):
 - ❌ Foundation does NOT provide: HTTP servers, routing, request handling
 - ⚠️ Registry lock: Negligible impact unless runtime registration in hot path (>10k req/sec)
 
+
 ### Task Processors & Background Workers
 
 For Celery, RQ, or custom worker pools:
@@ -301,8 +302,10 @@ def my_view(request):
 
 ### ⚠️ If You're Unsure
 
-1. Prototype: Build a small proof-of-concept
-2. Profile: Measure actual overhead in your use case
+1. Read: [Design Decisions](../../architecture/design-decisions.md) - Understand the philosophy
+2. Read: [Limitations](../../architecture/limitations.md) - Know the trade-offs
+3. Prototype: Build a small proof-of-concept
+4. Profile: Measure actual overhead in your use case
 
 ### ❌ If Foundation Doesn't Fit
 

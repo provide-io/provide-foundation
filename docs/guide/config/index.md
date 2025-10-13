@@ -64,8 +64,13 @@ Load it with the configuration system:
 ```python
 from provide.foundation.config import ConfigManager, FileConfigLoader
 
-manager = ConfigManager()
-loader = FileConfigLoader("config.yaml")
+async def load_config():
+    manager = ConfigManager()
+    loader = FileConfigLoader("config.yaml")
+
+    await manager.register("app", loader=loader)
+    config = await manager.get("app")
+    return config
 
 manager.register("app", loader=loader)
 config = manager.get("app")
@@ -212,6 +217,26 @@ except ValidationError as e:
     # Provides helpful error messages
 ```
 
+## Dynamic Reconfiguration
+
+Some settings can be changed at runtime:
+
+```python
+from provide.foundation import logger
+from provide.foundation.config import watch_config
+
+# Watch for config file changes
+@watch_config("config.yaml")
+def on_config_change(new_config):
+    logger.info("config_reloaded",
+                level=new_config.logging.level)
+    logger.set_level(new_config.logging.level)
+
+# Or manually reload
+def reload_config():
+    config = Config.from_file("config.yaml")
+    apply_config(config)
+```
 
 ## Internal/Debug Variables
 
