@@ -31,15 +31,13 @@ from provide.foundation.crypto.certificates.operations import create_x509_certif
 from provide.foundation.crypto.certificates.trust import (
     verify_trust as verify_trust_impl,
 )
-from provide.foundation.crypto.constants import (
-    DEFAULT_CERTIFICATE_CURVE,
-    DEFAULT_CERTIFICATE_KEY_TYPE,
-    DEFAULT_CERTIFICATE_VALIDITY_DAYS,
-    DEFAULT_RSA_KEY_SIZE,
-)
 from provide.foundation.crypto.defaults import (
     DEFAULT_CERTIFICATE_COMMON_NAME,
+    DEFAULT_CERTIFICATE_CURVE,
+    DEFAULT_CERTIFICATE_KEY_TYPE,
     DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
+    DEFAULT_CERTIFICATE_VALIDITY_DAYS,
+    DEFAULT_RSA_KEY_SIZE,
     default_certificate_alt_names,
 )
 
