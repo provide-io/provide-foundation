@@ -3,8 +3,8 @@ from __future__ import annotations
 import os
 from typing import Any
 
-import pytest
 from provide.testkit import reset_foundation_setup_for_testing
+import pytest
 
 
 @pytest.fixture(autouse=True)
