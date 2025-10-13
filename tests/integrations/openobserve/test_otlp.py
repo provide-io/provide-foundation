@@ -40,14 +40,11 @@ class TestSendLogOTLP(FoundationTestCase):
         """Test that function returns False when no OTLP endpoint is configured."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
-        mock_config = Mock()
-        mock_config.otlp_endpoint = None
-
-        with (
-            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
-        ):
-            mock_from_env.return_value = mock_config
+        with patch(
+            "provide.foundation.integrations.openobserve.otlp.OpenObserveOTLPClient.from_env"
+        ) as mock_from_env:
+            # Return None when client can't be created
+            mock_from_env.return_value = None
 
             result = send_log_otlp("Test message")
             assert result is False
