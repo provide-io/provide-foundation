@@ -5,14 +5,20 @@ Provides convenience functions for sending logs to OpenObserve via OTLP or bulk 
 
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 
+from provide.foundation.hub import get_hub
 from provide.foundation.integrations.openobserve.bulk_api import send_log_bulk
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.otlp_adapter import OpenObserveOTLPClient
 from provide.foundation.logger import get_logger
+from provide.foundation.utils.deps import has_dependency
 
 log = get_logger(__name__)
+
+# Check if OpenTelemetry SDK is available
+_HAS_OTEL_LOGS = has_dependency("opentelemetry")
 
 
 def send_log_otlp(

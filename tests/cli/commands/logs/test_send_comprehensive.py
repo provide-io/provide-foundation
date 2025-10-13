@@ -216,13 +216,12 @@ class TestSendLogEntry:
             )
 
             assert result_code == 0
+            # The implementation adds trace_id and span_id to attributes
             mock_send.assert_called_once_with(
                 message="Test message",
                 level="INFO",
-                service_name="test-service",
-                attributes={"key": "value"},
-                trace_id="trace123",
-                span_id="span456",
+                service="test-service",
+                attributes={"key": "value", "trace_id": "trace123", "span_id": "span456"},
             )
             mock_echo.assert_called_once_with("✓ Log sent via OTLP")
 
