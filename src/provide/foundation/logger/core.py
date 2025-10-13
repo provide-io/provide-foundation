@@ -307,12 +307,12 @@ class FoundationLogger:
 def get_global_logger() -> FoundationLogger:
     """Get the global FoundationLogger instance through Hub.
 
-    This replaces the old global logger instance with Hub-based access.
-    Auto-initializes Foundation if not already done.
+    This function acts as the Composition Root for the global logger. It is
+    preserved for backward compatibility but should be avoided in new application
+    code in favor of explicit Dependency Injection.
 
     Returns:
         FoundationLogger instance from Hub
-
     """
     from provide.foundation.hub.manager import get_hub
 

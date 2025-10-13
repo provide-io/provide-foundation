@@ -14,7 +14,6 @@ from provide.foundation.tools.registry import (
     register_tool_manager,
 )
 from provide.foundation.tools.resolver import VersionResolver
-from provide.foundation.tools.verifier import ToolVerifier
 
 """Provide Foundation Tools Module
 ================================
@@ -51,7 +50,6 @@ __all__ = [
     "ToolError",
     "ToolInstaller",
     "ToolMetadata",
-    "ToolVerifier",
     "VersionResolver",
     # Registry functions
     "get_tool_manager",

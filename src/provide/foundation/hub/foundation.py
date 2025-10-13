@@ -13,6 +13,7 @@ including telemetry configuration and logger initialization.
 """
 
 if TYPE_CHECKING:
+    from provide.foundation.hub.manager import Hub
     from provide.foundation.logger.base import FoundationLogger
     from provide.foundation.logger.config import TelemetryConfig
 
@@ -20,13 +21,13 @@ if TYPE_CHECKING:
 class FoundationManager:
     """Manages Foundation system initialization and lifecycle."""
 
-    def __init__(self, registry: Registry) -> None:
+    def __init__(self, hub: Hub) -> None:
         """Initialize Foundation manager.
 
         Args:
-            registry: Component registry for storing Foundation state
+            hub: The Hub instance that owns this manager.
         """
-        self._registry = registry
+        self._hub = hub
         self._initialized = False
         self._config: TelemetryConfig | None = None
         self._logger_instance: FoundationLogger | None = None
@@ -81,7 +82,7 @@ class FoundationManager:
 
                 coordinator = get_initialization_coordinator()
 
-                if coordinator.update_config_if_default(self._registry, config):
+                if coordinator.update_config_if_default(self._hub._component_registry, config):
                     # Config updated successfully - no need to re-initialize
                     self._config = config
                     setup_log.info(
@@ -96,7 +97,7 @@ class FoundationManager:
         coordinator = get_initialization_coordinator()
 
         actual_config, logger_instance = coordinator.initialize_foundation(
-            registry=self._registry, config=config, force=force
+            registry=self._hub._component_registry, config=config, force=force
         )
 
         # Update our local state
@@ -133,7 +134,7 @@ class FoundationManager:
             self.initialize_foundation()
 
         # Get logger instance from registry
-        logger_instance = self._registry.get("foundation.logger.instance", "singleton")
+        logger_instance = self._hub._component_registry.get("foundation.logger.instance", "singleton")
 
         if logger_instance:
             return logger_instance.get_logger(name)
@@ -157,7 +158,7 @@ class FoundationManager:
             return self._config
 
         # Otherwise get from registry
-        return self._registry.get("foundation.config", "singleton")
+        return self._hub._component_registry.get("foundation.config", "singleton")
 
     def clear_foundation_state(self) -> None:
         """Clear Foundation initialization state."""
@@ -166,12 +167,12 @@ class FoundationManager:
         self._logger_instance = None
 
         # Clear Foundation config from registry to prevent stale state
-        if hasattr(self, "_registry") and self._registry:
+        if hasattr(self, "_hub") and self._hub._component_registry:
             # Remove foundation config entries that might have stale state (entry might not exist)
             with contextlib.suppress(Exception):
-                self._registry.remove("foundation.config", "singleton")
+                self._hub._component_registry.remove("foundation.config", "singleton")
             with contextlib.suppress(Exception):
-                self._registry.remove("foundation.logger.instance", "singleton")
+                self._hub._component_registry.remove("foundation.logger.instance", "singleton")
 
         # Reset global coordinator state only in test mode
         from provide.foundation.testmode.detection import is_in_test_mode
