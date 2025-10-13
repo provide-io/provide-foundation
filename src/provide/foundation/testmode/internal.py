@@ -345,20 +345,21 @@ def reset_circuit_breaker_state() -> None:
 
         # Reset both production and test circuit breakers
         # These are now async functions, so we need to run them in an event loop
+
+        # Check if we're in an async context (running event loop)
         try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                # We're in an async context, create a task
-                # This shouldn't happen in practice since reset is called from sync fixtures
-                pass
-            else:
-                # Run in the existing event loop
-                loop.run_until_complete(reset_circuit_breakers_for_testing())
-                loop.run_until_complete(reset_test_circuit_breakers())
+            asyncio.get_running_loop()
+            # We're in an async context - skip reset to avoid blocking
+            # This shouldn't happen in practice since reset is called from sync fixtures
+            return
         except RuntimeError:
-            # No event loop, create a new one
-            asyncio.run(reset_circuit_breakers_for_testing())
-            asyncio.run(reset_test_circuit_breakers())
+            # No running loop - we're in sync context, safe to proceed
+            pass
+
+        # Use asyncio.run() to create fresh event loop for each call
+        # This is more reliable than trying to reuse get_event_loop()
+        asyncio.run(reset_circuit_breakers_for_testing())
+        asyncio.run(reset_test_circuit_breakers())
     except ImportError:
         # Resilience decorators module not available, skip
         pass
