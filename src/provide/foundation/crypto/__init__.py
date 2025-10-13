@@ -50,8 +50,6 @@ from provide.foundation.crypto.deps import (
     generate_tls_keypair,
     get_default_hash_algorithm,
     get_default_signature_algorithm,
-    sign_data,
-    verify_signature,
 )
 from provide.foundation.crypto.hashing import (
     hash_data,
@@ -144,11 +142,8 @@ __all__ = [
     "is_secure_algorithm",
     "parse_checksum_file",
     "quick_hash",
-    # Digital signatures (5% of usage)
-    "sign_data",
     "validate_algorithm",
     "verify_data",
     "verify_file",
-    "verify_signature",
     "write_checksum_file",
 ]

@@ -228,7 +228,7 @@ def _register_command_func(
         "category": category,
         "parent": parent,
         "is_group": group,
-        "click_command": click_cmd,
+        "_prebuilt_click_command": click_cmd, # Use new, clearer name
     }
     reg_metadata.update(extra_metadata)
 
@@ -250,6 +250,3 @@ def _register_command_func(
     get_foundation_logger().trace(f"Registered command: {full_name}")
 
     return func
-
-
-__all__ = ["register_command"]

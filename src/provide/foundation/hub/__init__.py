@@ -30,8 +30,6 @@ Example Usage:
 
 from __future__ import annotations
 
-from typing import Any
-
 # Core hub components (always available)
 from provide.foundation.hub.components import (
     ComponentCategory,
@@ -67,22 +65,6 @@ from provide.foundation.hub.registry import (
 )
 
 
-# CLI features - Delayed import to avoid circular dependency
-def build_click_command(name: str, registry: Any = None) -> Any:
-    """Build click command (delayed import to avoid circular dependency)."""
-    try:
-        from provide.foundation.cli.click.commands import build_click_command as real_func
-
-        return real_func(name, registry)
-    except ImportError as e:
-        if "click" in str(e).lower():
-            raise ImportError(
-                "CLI command building requires optional dependencies. Install with: "
-                "pip install 'provide-foundation[cli]'"
-            ) from e
-        raise
-
-
 __all__ = [
     # Resource Management Protocols
     "AsyncContextResource",
@@ -101,8 +83,6 @@ __all__ = [
     "Registry",
     "RegistryEntry",
     "ResourceManager",
-    # CLI features (stub function if click not available)
-    "build_click_command",
     "clear_hub",
     "create_container",
     # Components
