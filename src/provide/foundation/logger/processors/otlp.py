@@ -1,29 +1,18 @@
+"""OTLP processor for sending logs to OpenTelemetry endpoints.
+
+This processor uses the generic OTLPLogClient to send logs to any OTLP-compatible backend.
+"""
+
 from __future__ import annotations
 
 import contextlib
 from typing import Any
 
-"""OTLP processor for sending logs to OpenTelemetry endpoints (like OpenObserve)."""
-
-# Check if OpenTelemetry is available
-try:
-    from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
-    from opentelemetry.sdk._logs import LoggerProvider
-    from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
-    from opentelemetry.sdk.resources import Resource
-    from opentelemetry.semconv.resource import ResourceAttributes
-
-    _HAS_OTEL = True
-except ImportError:
-    _HAS_OTEL = False
-    LoggerProvider = None
-    BatchLogRecordProcessor = None
-    OTLPLogExporter = None
-    Resource = None
-    ResourceAttributes = None
+from provide.foundation.logger.otlp.client import OTLPLogClient
+from provide.foundation.logger.otlp.severity import map_level_to_severity
 
 # Global logger provider instance
-_OTLP_LOGGER_PROVIDER: Any = None
+_OTLP_LOGGER_PROVIDER: Any | None = None
 
 
 def _convert_timestamp_to_nanos(timestamp: Any) -> int | None:
@@ -34,7 +23,6 @@ def _convert_timestamp_to_nanos(timestamp: Any) -> int | None:
 
     Returns:
         Timestamp in nanoseconds or None
-
     """
     if not timestamp:
         return None
@@ -53,38 +41,6 @@ def _convert_timestamp_to_nanos(timestamp: Any) -> int | None:
     return None
 
 
-def _build_otlp_headers(config: Any) -> dict[str, str]:
-    """Build OTLP headers including authentication if available.
-
-    Args:
-        config: TelemetryConfig with OTLP settings
-
-    Returns:
-        Dictionary of headers for OTLP requests
-
-    """
-    headers = dict(config.get_otlp_headers_dict())
-
-    # Check if OpenObserve credentials are available
-    try:
-        from provide.foundation.integrations.openobserve.config import OpenObserveConfig
-
-        oo_config = OpenObserveConfig.from_env()
-        if oo_config.user and oo_config.password:
-            # Add Basic auth header for OpenObserve
-            import base64
-
-            auth_str = f"{oo_config.user}:{oo_config.password}"
-            auth_bytes = auth_str.encode("ascii")
-            auth_b64 = base64.b64encode(auth_bytes).decode("ascii")
-            headers["Authorization"] = f"Basic {auth_b64}"
-    except ImportError:
-        # OpenObserve integration not available
-        pass
-
-    return headers
-
-
 def create_otlp_processor(config: Any) -> Any | None:
     """Create an OTLP processor for structlog that sends logs to OpenTelemetry.
 
@@ -94,10 +50,14 @@ def create_otlp_processor(config: Any) -> Any | None:
     Returns:
         Structlog processor function or None if OTLP not available/configured
 
+    Examples:
+        >>> from provide.foundation.logger.config.telemetry import TelemetryConfig
+        >>> config = TelemetryConfig.from_env()
+        >>> processor = create_otlp_processor(config)
+        >>> if processor:
+        ...     # Add to structlog processors
+        ...     pass
     """
-    if not _HAS_OTEL:
-        return None
-
     if not config.otlp_endpoint:
         return None
 
@@ -106,46 +66,18 @@ def create_otlp_processor(config: Any) -> Any | None:
 
         # Create logger provider if not already created
         if _OTLP_LOGGER_PROVIDER is None:
-            # Create resource
-            resource_attrs = {
-                ResourceAttributes.SERVICE_NAME: config.service_name or "foundation",
-            }
-            if config.service_version:
-                resource_attrs[ResourceAttributes.SERVICE_VERSION] = config.service_version
+            # Create OTLP client
+            client = OTLPLogClient.from_config(config)
+            if not client.is_available():
+                return None
 
-            resource = Resource.create(resource_attrs)
-
-            # Configure exporter
-            logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
-            if config.otlp_traces_endpoint:
-                logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", "/v1/logs")
-
-            # Build headers with authentication if OpenObserve is configured
-            headers = _build_otlp_headers(config)
-
-            exporter = OTLPLogExporter(
-                endpoint=logs_endpoint,
-                headers=headers,
-            )
-
-            # Create provider
-            _OTLP_LOGGER_PROVIDER = LoggerProvider(resource=resource)
-            _OTLP_LOGGER_PROVIDER.add_log_record_processor(BatchLogRecordProcessor(exporter))
+            # Create logger provider
+            _OTLP_LOGGER_PROVIDER = client.create_logger_provider()
+            if not _OTLP_LOGGER_PROVIDER:
+                return None
 
         # Get the OTLP logger
         otlp_logger = _OTLP_LOGGER_PROVIDER.get_logger(__name__)
-
-        # Map structlog levels to OTLP severity numbers
-        SEVERITY_MAP = {
-            "trace": 1,
-            "debug": 5,
-            "info": 9,
-            "warning": 13,
-            "warn": 13,
-            "error": 17,
-            "critical": 21,
-            "fatal": 21,
-        }
 
         def otlp_processor(logger: Any, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
             """Structlog processor that sends logs to OTLP.
@@ -160,7 +92,6 @@ def create_otlp_processor(config: Any) -> Any | None:
 
             Returns:
                 Unchanged event_dict (so other processors can continue)
-
             """
             # Skip OTLP if explicitly flagged (e.g., for logs retrieved from OpenObserve)
             if event_dict.pop("_skip_otlp", False):
@@ -170,17 +101,19 @@ def create_otlp_processor(config: Any) -> Any | None:
                 # Extract message and attributes
                 message = event_dict.get("event", "")
                 level = event_dict.get("level", "info").lower()
-                SEVERITY_MAP.get(level, 9)
 
                 # Build attributes (everything except 'event' and 'timestamp')
                 attributes = {k: str(v) for k, v in event_dict.items() if k not in ("event", "timestamp")}
 
-                # Add message and level attributes for OpenObserve
-                attributes["message"] = message  # Emoji-enriched message
-                attributes["level"] = level.upper()  # Log level
+                # Add message and level attributes
+                attributes["message"] = message
+                attributes["level"] = level.upper()
 
                 # Convert timestamp to nanoseconds
                 timestamp = _convert_timestamp_to_nanos(event_dict.get("timestamp"))
+
+                # Map level to severity
+                severity_number = map_level_to_severity(level)
 
                 # Emit to OTLP using LogRecord
                 from opentelemetry.sdk._logs import LogRecord
@@ -191,9 +124,9 @@ def create_otlp_processor(config: Any) -> Any | None:
                     trace_id=0,
                     span_id=0,
                     trace_flags=0,
-                    severity_text=None,  # Not used - level is in attributes
-                    severity_number=0,  # Not used - level is in attributes
-                    body=None,  # No body - message is in attributes
+                    severity_text=level.upper(),
+                    severity_number=severity_number,
+                    body=message,
                     resource=_OTLP_LOGGER_PROVIDER.resource,
                     attributes=attributes,
                 )
@@ -214,7 +147,12 @@ def create_otlp_processor(config: Any) -> Any | None:
 
 
 def flush_otlp_logs() -> None:
-    """Flush any pending OTLP logs."""
+    """Flush any pending OTLP logs.
+
+    Examples:
+        >>> flush_otlp_logs()
+        >>> # Ensures all pending logs are sent
+    """
     global _OTLP_LOGGER_PROVIDER
     if _OTLP_LOGGER_PROVIDER is not None:
         with contextlib.suppress(Exception):
@@ -231,9 +169,20 @@ def reset_otlp_provider() -> None:
     This is particularly important when service_name changes, as the
     OpenTelemetry Resource with service_name is immutable and baked into
     the LoggerProvider at creation time.
+
+    Examples:
+        >>> reset_otlp_provider()
+        >>> # Forces recreation on next use
     """
     global _OTLP_LOGGER_PROVIDER
     if _OTLP_LOGGER_PROVIDER is not None:
         # Flush any pending logs before resetting
         flush_otlp_logs()
         _OTLP_LOGGER_PROVIDER = None
+
+
+__all__ = [
+    "create_otlp_processor",
+    "flush_otlp_logs",
+    "reset_otlp_provider",
+]
