@@ -263,14 +263,6 @@ class QueuedRateLimiter:
                 "overflow_policy": self.overflow_policy,
             }
 
-    def shutdown(self) -> None:
-        """Shutdown the worker thread.
-
-        Deprecated:
-            Use stop() instead. This method is kept for backward compatibility.
-        """
-        self.stop(timeout=1.0)
-
 
 class BufferedRateLimiter:
     """Simple synchronous rate limiter with overflow buffer.
