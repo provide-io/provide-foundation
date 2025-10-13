@@ -16,8 +16,7 @@ from provide.foundation.cli.helpers import requires_click
 from provide.foundation.console.output import perr, pout
 from provide.foundation.crypto import (
     Ed25519Verifier,
-    parse_checksum,
-    verify_checksum as crypto_verify_checksum,
+    verify_checksum,
 )
 from provide.foundation.crypto.hashing import hash_file
 from provide.foundation.errors import FoundationError
@@ -108,10 +107,17 @@ def verify_checksum_with_hash(
 ) -> bool:
     """Verify data against a given hash string."""
     try:
-        # Normalize and parse the checksum string
-        parsed_algo, parsed_hash = parse_checksum(expected_hash)
-        final_algo = algorithm or parsed_algo
-        return verify_checksum(data, final_algo, parsed_hash)
+        # If algorithm is explicitly provided, format the checksum string
+        if algorithm:
+            checksum_str = f"{algorithm}:{expected_hash}"
+        elif ":" not in expected_hash:
+            # Default to sha256 if no algorithm prefix provided
+            checksum_str = f"sha256:{expected_hash}"
+        else:
+            # Already has algorithm prefix
+            checksum_str = expected_hash
+
+        return verify_checksum(data, checksum_str)
     except Exception as e:
         raise VerificationError(f"Checksum verification failed: {e}", cause=e) from e
 
@@ -151,8 +157,8 @@ def verify_checksum_command(
 ) -> None:
     """Verify a file or stdin against a checksum."""
     data, error = _get_data_from_file_or_stdin(file)
-    if error:
-        perr(f"Error reading input: {error}", color="red")
+    if error or data is None:
+        perr(f"Error reading input: {error or 'No data'}", color="red")
         return
 
     try:
@@ -182,8 +188,8 @@ def verify_signature_command(
 ) -> None:
     """Verify a digital signature for a file or stdin."""
     data, error = _get_data_from_file_or_stdin(file)
-    if error:
-        perr(f"Error reading input: {error}", color="red")
+    if error or data is None:
+        perr(f"Error reading input: {error or 'No data'}", color="red")
         return
 
     try:
