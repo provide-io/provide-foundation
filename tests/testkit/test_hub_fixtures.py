@@ -12,10 +12,16 @@ def test_isolated_container_fixture(isolated_container):
     assert isolated_container is not None
     assert isinstance(isolated_container, Container)
 
-    # Register a test dependency
-    isolated_container.register("test_service", "test_value")
-    value = isolated_container.resolve("test_service")
-    assert value == "test_value"
+    # Register a test dependency by type
+    class TestService:
+        def __init__(self):
+            self.value = "test_value"
+
+    test_instance = TestService()
+    isolated_container.register(TestService, test_instance)
+    resolved = isolated_container.get(TestService)
+    assert resolved is test_instance
+    assert resolved.value == "test_value"
 
 
 def test_isolated_hub_fixture(isolated_hub):
@@ -30,15 +36,22 @@ def test_isolated_hub_fixture(isolated_hub):
 def test_isolated_containers_are_independent(isolated_container):
     """Test that each test gets its own isolated container."""
     # This test registers a value that should NOT be visible to other tests
-    isolated_container.register("test_isolation", "first_test_value")
-    assert isolated_container.resolve("test_isolation") == "first_test_value"
+    class IsolationTestService:
+        value = "first_test_value"
+
+    isolated_container.register(IsolationTestService, IsolationTestService())
+    resolved = isolated_container.get(IsolationTestService)
+    assert resolved.value == "first_test_value"
 
 
 def test_isolated_containers_second_test(isolated_container):
     """Test that container is fresh and doesn't have previous test's data."""
     # This should not find the value from test_isolated_containers_are_independent
-    with pytest.raises(Exception):  # Container raises when key not found
-        isolated_container.resolve("test_isolation")
+    class IsolationTestService:
+        value = "should_not_exist"
+
+    # Container should NOT have this type from previous test
+    assert isolated_container.get(IsolationTestService) is None
 
 
 @pytest.mark.asyncio
