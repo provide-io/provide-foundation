@@ -13,6 +13,7 @@ from typing import Any
 from urllib.parse import urljoin
 
 from provide.foundation.errors.decorators import resilient
+from provide.foundation.hub import get_hub
 from provide.foundation.integrations.openobserve.auth import (
     get_auth_headers,
     validate_credentials,
@@ -28,7 +29,6 @@ from provide.foundation.integrations.openobserve.models import (
     StreamInfo,
     parse_relative_time,
 )
-from provide.foundation.hub import get_hub
 from provide.foundation.logger import get_logger
 from provide.foundation.transport import UniversalClient
 from provide.foundation.transport.errors import (
@@ -294,19 +294,36 @@ class OpenObserveClient:
         self,
         stream_name: str | None = None,
         size: int = 100,
+        start_time: str | int | None = None,
+        end_time: str | int | None = None,
     ) -> SearchResponse:
         """Get search history.
 
         Args:
             stream_name: Filter by stream name
             size: Number of history entries to return
+            start_time: Start time (relative like "-1h" or microseconds)
+            end_time: End time (relative like "now" or microseconds)
 
         Returns:
             SearchResponse with history entries
 
         """
+        # Parse time parameters (default to last hour if not specified)
+        now = datetime.now()
+
+        if start_time is None:
+            start_time = "-1h"
+        if end_time is None:
+            end_time = "now"
+
+        start_ts = parse_relative_time(str(start_time), now) if isinstance(start_time, str) else start_time
+        end_ts = parse_relative_time(str(end_time), now) if isinstance(end_time, str) else end_time
+
         request_data: dict[str, Any] = {
             "size": size,
+            "start_time": start_ts,
+            "end_time": end_ts,
         }
 
         if stream_name:
