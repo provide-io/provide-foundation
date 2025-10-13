@@ -10,8 +10,8 @@ from tests.file.file_operations_fixtures import (
     temp_workspace,
 )
 
-# Load testkit Hub fixtures plugin
-pytest_plugins = ["provide.testkit.hub.fixtures"]
+# Note: pytest_plugins registration moved to root conftest.py to avoid
+# PytestAssertRewriteWarning about module already being imported
 
 # Make fixtures available to tests in this directory
 __all__ = [
