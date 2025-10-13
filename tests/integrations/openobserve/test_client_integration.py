@@ -74,7 +74,7 @@ class TestClientInitialization(FoundationTestCase):
 class TestClientConnection(FoundationTestCase):
     """Tests for OpenObserve client connection."""
 
-    def test_connection_test(
+    async def test_connection_test(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -82,11 +82,11 @@ class TestClientConnection(FoundationTestCase):
         """Test connection testing method."""
         assert openobserve_client is not None
 
-        result = openobserve_client.test_connection()
+        result = await openobserve_client.test_connection()
 
         assert result is True
 
-    def test_connection_with_invalid_credentials(
+    async def test_connection_with_invalid_credentials(
         self,
         openobserve_config: OpenObserveConfig,
     ) -> None:
@@ -101,7 +101,7 @@ class TestClientConnection(FoundationTestCase):
             organization=openobserve_config.org or "default",
         )
 
-        result = client.test_connection()
+        result = await client.test_connection()
 
         # Should fail with invalid credentials
         assert result is False
@@ -111,7 +111,7 @@ class TestClientConnection(FoundationTestCase):
 class TestListStreams(FoundationTestCase):
     """Tests for listing streams."""
 
-    def test_list_streams(
+    async def test_list_streams(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -119,7 +119,7 @@ class TestListStreams(FoundationTestCase):
         """Test listing available streams."""
         assert openobserve_client is not None
 
-        streams = openobserve_client.list_streams()
+        streams = await openobserve_client.list_streams()
 
         # Should return a list (may be empty for new instance)
         assert isinstance(streams, list)
@@ -128,7 +128,7 @@ class TestListStreams(FoundationTestCase):
             assert isinstance(stream, StreamInfo)
             assert stream.name  # Should have a name
 
-    def test_list_streams_returns_stream_info(
+    async def test_list_streams_returns_stream_info(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -136,7 +136,7 @@ class TestListStreams(FoundationTestCase):
         """Test that list_streams returns properly formed StreamInfo objects."""
         assert openobserve_client is not None
 
-        streams = openobserve_client.list_streams()
+        streams = await openobserve_client.list_streams()
 
         if streams:  # If there are any streams
             stream = streams[0]
@@ -154,7 +154,7 @@ class TestListStreams(FoundationTestCase):
 class TestSearchHistory(FoundationTestCase):
     """Tests for search history functionality."""
 
-    def test_get_search_history(
+    async def test_get_search_history(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -162,7 +162,7 @@ class TestSearchHistory(FoundationTestCase):
         """Test getting search history."""
         assert openobserve_client is not None
 
-        response = openobserve_client.get_search_history(size=10)
+        response = await openobserve_client.get_search_history(size=10)
 
         # Should return SearchResponse
         assert hasattr(response, "hits")
@@ -170,7 +170,7 @@ class TestSearchHistory(FoundationTestCase):
         assert hasattr(response, "took")
         assert isinstance(response.hits, list)
 
-    def test_get_search_history_with_stream_filter(
+    async def test_get_search_history_with_stream_filter(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -179,7 +179,7 @@ class TestSearchHistory(FoundationTestCase):
         """Test getting search history filtered by stream."""
         assert openobserve_client is not None
 
-        response = openobserve_client.get_search_history(
+        response = await openobserve_client.get_search_history(
             stream_name=test_stream_name,
             size=5,
         )
@@ -189,7 +189,7 @@ class TestSearchHistory(FoundationTestCase):
         # Size parameter should be respected
         assert len(response.hits) <= 5
 
-    def test_get_search_history_different_sizes(
+    async def test_get_search_history_different_sizes(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -199,7 +199,7 @@ class TestSearchHistory(FoundationTestCase):
 
         # Test with different sizes
         for size in [1, 5, 50]:
-            response = openobserve_client.get_search_history(size=size)
+            response = await openobserve_client.get_search_history(size=size)
             # Returned hits should not exceed requested size
             assert len(response.hits) <= size
 
@@ -208,7 +208,7 @@ class TestSearchHistory(FoundationTestCase):
 class TestClientErrorHandling(FoundationTestCase):
     """Tests for client error handling."""
 
-    def test_invalid_endpoint_raises_error(
+    async def test_invalid_endpoint_raises_error(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -218,7 +218,7 @@ class TestClientErrorHandling(FoundationTestCase):
 
         with pytest.raises(OpenObserveQueryError):
             # Try to make request to non-existent endpoint
-            openobserve_client._make_request(
+            await openobserve_client._make_request(
                 method="GET",
                 endpoint="nonexistent_endpoint_xyz",
             )
