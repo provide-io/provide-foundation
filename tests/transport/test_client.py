@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 from pytest_httpx import HTTPXMock
 
+from provide.foundation.hub import get_hub
 from provide.foundation.transport import (
     UniversalClient,
     get,
@@ -24,7 +25,7 @@ async def test_universal_client_get(httpx_mock: HTTPXMock) -> None:
         status_code=200,
     )
 
-    async with UniversalClient() as client:
+    async with UniversalClient(hub=get_hub()) as client:
         response = await client.get("https://api.example.com/users")
 
     assert response.status == 200
@@ -41,7 +42,7 @@ async def test_universal_client_post(httpx_mock: HTTPXMock) -> None:
         status_code=201,
     )
 
-    client = UniversalClient()
+    client = UniversalClient(hub=get_hub())
 
     async with client:
         response = await client.post(
@@ -65,7 +66,7 @@ async def test_universal_client_all_methods(httpx_mock: HTTPXMock) -> None:
             status_code=200,
         )
 
-    async with UniversalClient() as client:
+    async with UniversalClient(hub=get_hub()) as client:
         response = await client.get("https://api.example.com/resource")
         assert response.json()["method"] == "GET"
 
@@ -99,6 +100,7 @@ async def test_universal_client_with_headers(httpx_mock: HTTPXMock) -> None:
     )
 
     client = UniversalClient(
+        hub=get_hub(),
         default_headers={"Authorization": "Bearer default-token"},
     )
 
@@ -115,7 +117,7 @@ async def test_universal_client_with_headers(httpx_mock: HTTPXMock) -> None:
 @pytest.mark.asyncio
 async def test_universal_client_middleware() -> None:
     """Test client with custom middleware."""
-    client = UniversalClient()
+    client = UniversalClient(hub=get_hub())
 
     # Add custom middleware
     metrics_mw = MetricsMiddleware()
@@ -194,7 +196,7 @@ async def test_universal_client_streaming(httpx_mock: HTTPXMock) -> None:
         content=content,
     )
 
-    client = UniversalClient()
+    client = UniversalClient(hub=get_hub())
     chunks = []
 
     async with client:
@@ -222,7 +224,7 @@ async def test_universal_client_timeout(httpx_mock: HTTPXMock) -> None:
         status_code=200,
     )
 
-    client = UniversalClient(default_timeout=5.0)
+    client = UniversalClient(hub=get_hub(), default_timeout=5.0)
 
     async with client:
         response = await client.get("https://api.example.com/slow")
@@ -233,7 +235,7 @@ async def test_universal_client_timeout(httpx_mock: HTTPXMock) -> None:
 @pytest.mark.asyncio
 async def test_universal_client_connection_pooling(httpx_mock: HTTPXMock) -> None:
     """Test that client reuses connections for same scheme."""
-    client = UniversalClient()
+    client = UniversalClient(hub=get_hub())
 
     # This tests the internal transport caching mechanism
     # Multiple requests to same scheme should reuse transport
@@ -268,7 +270,7 @@ async def test_universal_client_error_handling(httpx_mock: HTTPXMock) -> None:
     """Test client error handling through middleware."""
     from provide.foundation.transport.errors import TransportTimeoutError
 
-    client = UniversalClient()
+    client = UniversalClient(hub=get_hub())
 
     # Test with timeout error (httpx_mock without response causes timeout)
     with pytest.raises(TransportTimeoutError) as exc_info:
