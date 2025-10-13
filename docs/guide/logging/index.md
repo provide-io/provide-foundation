@@ -76,9 +76,9 @@ Optimizing logging performance:
 ### Essential Imports
 
 ```python
-from provide.foundation import logger
-from provide.foundation.logger import LoggingConfig, TelemetryConfig
-from provide.foundation.logger import get_logger
+from provide.foundation import logger, setup_telemetry
+from provide.foundation import LoggingConfig, TelemetryConfig
+from provide.foundation import get_logger
 ```
 
 ### Basic Logging
@@ -108,7 +108,6 @@ os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
 os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "json"
 
 # Programmatic setup
-from provide.foundation.hub import get_hub
 config = TelemetryConfig(
     service_name="my-service",
     logging=LoggingConfig(
@@ -117,7 +116,7 @@ config = TelemetryConfig(
         das_emoji_prefix_enabled=True
     )
 )
-get_hub().initialize_foundation(config)
+setup_telemetry(config)
 ```
 
 ### Named Loggers
@@ -307,9 +306,9 @@ def register_user(email, password):
 
 - 📖 **[Configuration Guide](../config/index.md)** - Configuring logging behavior
 - 🔍 **[Tracing Guide](../tracing/index.md)** - Distributed tracing integration  
-- 📊 **[API Reference](../../api/reference/provide/foundation/logger/index.md)** - Complete logging API
+- 📊 **[API Reference](../../api/logger/api-index.md)** - Complete logging API
 - 🏗️ **[Architecture](../../architecture/index.md)** - Technical specifications
-- 💡 **[Examples](../../examples/index.md)** - Working code examples
+- 💡 **[Examples](../../getting-started/examples.md)** - Working code examples
 
 ## Need Help?
 

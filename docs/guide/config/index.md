@@ -63,18 +63,23 @@ app:
 Load it with the configuration system:
 ```python
 from provide.foundation.config import ConfigManager, FileConfigLoader
+import asyncio
 
-manager = ConfigManager()
-loader = FileConfigLoader("config.yaml")
+async def load_config():
+    manager = ConfigManager()
+    loader = FileConfigLoader("config.yaml")
 
-manager.register("app", loader=loader)
-config = manager.get("app")
+    await manager.register("app", loader=loader)
+    config = await manager.get("app")
+    return config
+
+config = asyncio.run(load_config())
 ```
 
 ### Runtime Configuration
 
 ```python
-from provide.foundation.logger import FoundationLogger, LoggingConfig
+from provide.foundation import setup_logging, LoggingConfig
 
 # Override at runtime
 config = LoggingConfig(
@@ -82,7 +87,7 @@ config = LoggingConfig(
     console_formatter="key_value",
     omit_timestamp=False
 )
-FoundationLogger().setup(config)
+setup_logging(config)
 ```
 
 ## Configuration Hierarchy
@@ -212,6 +217,26 @@ except ValidationError as e:
     # Provides helpful error messages
 ```
 
+## Dynamic Reconfiguration
+
+Some settings can be changed at runtime:
+
+```python
+from provide.foundation import logger
+from provide.foundation.config import watch_config
+
+# Watch for config file changes
+@watch_config("config.yaml")
+def on_config_change(new_config):
+    logger.info("config_reloaded",
+                level=new_config.logging.level)
+    logger.set_level(new_config.logging.level)
+
+# Or manually reload
+def reload_config():
+    config = Config.from_file("config.yaml")
+    apply_config(config)
+```
 
 ## Internal/Debug Variables
 
@@ -237,10 +262,8 @@ For debugging, some `PROVIDE_` prefixed variables are available:
 ### Basic Application
 
 ```python
-from provide.foundation import logger
+from provide.foundation import logger, setup_telemetry
 from provide.foundation.config import BaseConfig, field
-from provide.foundation.logger import TelemetryConfig
-from provide.foundation.hub import get_hub
 from attrs import define
 
 @define
@@ -253,8 +276,7 @@ class AppConfig(BaseConfig):
 config = AppConfig.from_env()
 
 # Setup telemetry with service name
-telemetry_config = TelemetryConfig(service_name=config.service_name, globally_disabled=not config.debug)
-get_hub().initialize_foundation(telemetry_config)
+setup_telemetry(service_name=config.service_name, debug=config.debug)
 
 # Use in application
 logger.info("app_started", 
@@ -267,14 +289,12 @@ logger.info("app_started",
 
 ```python
 from provide.foundation.hub import Hub, register_command
-from provide.foundation.logger import TelemetryConfig
-from provide.foundation.hub import get_hub
+from provide.foundation import setup_telemetry
 
 @register_command("serve")
 def serve_command(port: int = 8080, debug: bool = False):
     """Start the application server."""
-    telemetry_config = TelemetryConfig(globally_disabled=not debug)
-    get_hub().initialize_foundation(telemetry_config)
+    setup_telemetry(debug=debug)
     logger.info("Starting server", port=port, debug=debug)
     
 if __name__ == "__main__":

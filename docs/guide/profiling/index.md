@@ -204,6 +204,19 @@ Profiling overhead varies by sampling rate:
 3. **Load testing**: Disable profiling or use minimal sampling
 4. **CI/CD**: Reset metrics between test runs for accurate benchmarks
 
+## Enterprise Features
+
+Foundation's profiling system will include enterprise-grade capabilities:
+
+!!! warning "Planned Features"
+    The following enterprise features are documented but planned for implementation in v1.1+:
+
+- **[Decorator-Based Tracking](enterprise/decorator-tracking.md)** - Automatic function profiling
+- **[Adaptive Sampling](enterprise/adaptive-sampling.md)** - Dynamic sampling based on load
+- **[Exporter Abstraction](enterprise/exporters.md)** - Integration with monitoring systems
+
+For current implementation capabilities, see the [API Reference](../../api/profiling/api-index.md).
+
 ## Implementation Guides
 
 Detailed guides for specific scenarios:
@@ -217,10 +230,10 @@ Detailed guides for specific scenarios:
 
 Complete API documentation:
 
-- **[Profiling API Overview](../../api/reference/provide/foundation/profiling/index.md)** - Complete API reference
-- **[ProfileMetrics](../../api/reference/provide/foundation/profiling/metrics.md)** - Metrics data structure
-- **[ProfilingProcessor](../../api/reference/provide/foundation/profiling/processor.md)** - Structlog processor
-- **[ProfilingComponent](../../api/reference/provide/foundation/profiling/component.md)** - Hub component
+- **[Profiling API Overview](../../api/profiling/api-index.md)** - Complete API reference
+- **[ProfileMetrics](../../api/profiling/api-metrics.md)** - Metrics data structure
+- **[ProfilingProcessor](../../api/profiling/api-processor.md)** - Structlog processor
+- **[ProfilingComponent](../../api/profiling/api-component.md)** - Hub component
 
 ## Troubleshooting
 
@@ -247,8 +260,8 @@ profiler.enable()
 **Missing CLI commands**
 ```python
 # Ensure CLI integration is registered
-from provide.foundation.profiling.cli import register_profiling
-register_profiling(hub)
+from provide.foundation.profiling.cli import register_profile_command
+register_profile_command(hub)
 ```
 
 ### Debug Mode
