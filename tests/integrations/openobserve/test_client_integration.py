@@ -38,8 +38,8 @@ class TestClientInitialization(FoundationTestCase):
         assert client.url == openobserve_config.url
         assert client.username == openobserve_config.user
         assert client.organization == (openobserve_config.org or "default")
-        assert client.timeout == 30  # default
-        assert client.session is not None
+        assert client._client.default_timeout == 30.0  # default
+        assert client._client is not None
 
     def test_client_direct_initialization(
         self,
@@ -52,12 +52,11 @@ class TestClientInitialization(FoundationTestCase):
             password=openobserve_config.password or "password",
             organization=openobserve_config.org or "default",
             timeout=60,
-            max_retries=5,
         )
 
         assert client.url.endswith("/api/default") or "/api/" in client.url
-        assert client.timeout == 60
-        assert client.session is not None
+        assert client.organization == openobserve_config.org or "default"
+        assert client._client.default_timeout == 60.0
 
     def test_client_url_normalization(self) -> None:
         """Test that client normalizes URLs correctly."""
@@ -239,13 +238,13 @@ class TestClientErrorHandling(FoundationTestCase):
             timeout=5,  # Short timeout
         )
 
-        assert client.timeout == 5
+        assert client._client.default_timeout == 5.0
 
     def test_retry_configuration(
         self,
         openobserve_config: OpenObserveConfig,
     ) -> None:
-        """Test that retry logic is properly configured."""
+        """Test that client is properly configured with UniversalClient."""
         if not openobserve_config.url:
             pytest.skip("OpenObserve URL not configured")
 
@@ -253,14 +252,13 @@ class TestClientErrorHandling(FoundationTestCase):
             url=openobserve_config.url,
             username=openobserve_config.user or "user@example.com",
             password=openobserve_config.password or "password",
-            max_retries=10,
         )
 
-        # Verify session has retry adapter
-        assert client.session is not None
-        # Check that adapters are mounted
-        assert "http://" in client.session.adapters
-        assert "https://" in client.session.adapters
+        # Verify UniversalClient is configured
+        assert client._client is not None
+        # Check that auth headers are set
+        assert client._client.default_headers is not None
+        assert "Authorization" in client._client.default_headers
 
 
 __all__ = [
