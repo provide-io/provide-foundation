@@ -24,7 +24,7 @@ log = get_logger(__name__)
 def build_log_entry(
     message: str,
     level: str,
-    service: str | None,
+    service_name: str | None,
     attributes: dict[str, Any] | None,
     config: TelemetryConfig,
 ) -> dict[str, Any]:
@@ -33,7 +33,7 @@ def build_log_entry(
     Args:
         message: Log message
         level: Log level
-        service: Service name (optional)
+        service_name: Service name (optional, follows OTLP standard)
         attributes: Additional attributes (optional)
         config: Telemetry configuration
 
@@ -50,7 +50,7 @@ def build_log_entry(
         "_timestamp": int(time.time() * 1_000_000),
         "level": level.upper(),
         "message": message,
-        "service": service or config.service_name or "foundation",
+        "service": service_name or config.service_name or "foundation",
     }
 
     if attributes:
@@ -87,7 +87,7 @@ def build_bulk_url(client: OpenObserveClient) -> str:
 def build_bulk_request(
     message: str,
     level: str,
-    service: str | None,
+    service_name: str | None,
     attributes: dict[str, Any] | None,
     config: TelemetryConfig,
     stream: str,
@@ -97,7 +97,7 @@ def build_bulk_request(
     Args:
         message: Log message
         level: Log level
-        service: Service name
+        service_name: Service name (follows OTLP standard)
         attributes: Log attributes
         config: Telemetry configuration
         stream: OpenObserve stream name
@@ -111,7 +111,7 @@ def build_bulk_request(
         >>> "\\n" in bulk
         True
     """
-    log_entry = build_log_entry(message, level, service, attributes, config)
+    log_entry = build_log_entry(message, level, service_name, attributes, config)
     index_line = json_dumps({"index": {"_index": stream}})
     data_line = json_dumps(log_entry)
     return f"{index_line}\n{data_line}\n"
@@ -120,7 +120,7 @@ def build_bulk_request(
 def send_log_bulk(
     message: str,
     level: str = "INFO",
-    service: str | None = None,
+    service_name: str | None = None,
     attributes: dict[str, Any] | None = None,
     client: OpenObserveClient | None = None,
 ) -> bool:
@@ -132,7 +132,7 @@ def send_log_bulk(
     Args:
         message: Log message
         level: Log level
-        service: Service name
+        service_name: Service name (follows OTLP standard)
         attributes: Additional attributes
         client: OpenObserve client (creates new if not provided)
 
@@ -157,7 +157,7 @@ def send_log_bulk(
 
         # Build bulk request
         stream = oo_config.stream or "default"
-        bulk_data = build_bulk_request(message, level, service, attributes, config, stream)
+        bulk_data = build_bulk_request(message, level, service_name, attributes, config, stream)
 
         # Send via bulk API
         url = build_bulk_url(client)

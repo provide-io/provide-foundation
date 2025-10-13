@@ -1,113 +1,72 @@
-"""OpenObserve OTLP integration.
+"""OpenObserve log sending with automatic OTLP/Bulk API fallback.
 
-Provides convenience functions for sending logs to OpenObserve via OTLP or bulk API.
+Provides a unified send_log() function that automatically tries OTLP first
+and falls back to the bulk API if OTLP is unavailable or fails.
+
+For direct OTLP control, use OpenObserveOTLPClient from otlp_adapter module.
 """
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Any
 
-from provide.foundation.hub import get_hub
 from provide.foundation.integrations.openobserve.bulk_api import send_log_bulk
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.otlp_adapter import OpenObserveOTLPClient
 from provide.foundation.logger import get_logger
-from provide.foundation.utils.deps import has_dependency
 
 log = get_logger(__name__)
-
-# Check if OpenTelemetry SDK is available
-_HAS_OTEL_LOGS = has_dependency("opentelemetry")
-
-
-def send_log_otlp(
-    message: str,
-    level: str = "INFO",
-    service: str | None = None,
-    attributes: dict[str, Any] | None = None,
-) -> bool:
-    """Send log via OTLP (OpenObserve-configured).
-
-    Args:
-        message: Log message
-        level: Log level
-        service: Service name (unused, kept for API compatibility)
-        attributes: Additional attributes
-
-    Returns:
-        True if sent successfully via OTLP, False otherwise
-
-    Examples:
-        >>> send_log_otlp("Hello OpenObserve!", level="INFO")
-        True
-    """
-    client = OpenObserveOTLPClient.from_env()
-    if not client or not client.is_available():
-        return False
-
-    return client.send_log(message, level, attributes)
 
 
 def send_log(
     message: str,
     level: str = "INFO",
-    service: str | None = None,
+    service_name: str | None = None,
     attributes: dict[str, Any] | None = None,
     prefer_otlp: bool = True,
     client: OpenObserveClient | None = None,
 ) -> bool:
-    """Send log via OTLP or bulk API.
+    """Send log via OTLP or bulk API with automatic fallback.
 
-    Tries OTLP first if preferred and available, falls back to bulk API.
+    Tries OTLP first if preferred and available, falls back to OpenObserve bulk API.
 
     Args:
         message: Log message
-        level: Log level
-        service: Service name
-        attributes: Additional attributes
-        prefer_otlp: Try OTLP first if True
-        client: OpenObserve client for bulk API
+        level: Log level (INFO, WARN, ERROR, etc.)
+        service_name: Service name (follows OTLP standard)
+        attributes: Additional log attributes
+        prefer_otlp: Try OTLP first if True (default: True)
+        client: OpenObserve client for bulk API (creates new if not provided)
 
     Returns:
-        True if sent successfully
+        True if sent successfully via OTLP or bulk API
 
     Examples:
-        >>> send_log("Hello!", level="INFO")
+        >>> # Simple usage (tries OTLP, falls back to bulk)
+        >>> send_log("User logged in", level="INFO")
         True
 
-        >>> send_log("Bulk only", prefer_otlp=False)
+        >>> # With attributes
+        >>> send_log("Payment processed", attributes={"amount": 99.99, "user_id": 123})
         True
+
+        >>> # Force bulk API only
+        >>> send_log("Direct to bulk", prefer_otlp=False)
+        True
+
+    Notes:
+        For direct OTLP control (e.g., creating LoggerProvider for structlog),
+        import OpenObserveOTLPClient from the otlp_adapter module instead.
     """
     # Try OTLP first if preferred
-    if prefer_otlp and send_log_otlp(message, level, service, attributes):
-        return True
+    if prefer_otlp:
+        otlp_client = OpenObserveOTLPClient.from_env()
+        if otlp_client and otlp_client.is_available():
+            if otlp_client.send_log(message, level, attributes):
+                return True
 
     # Fall back to bulk API
-    return send_log_bulk(message, level, service, attributes, client)
+    return send_log_bulk(message, level, service_name, attributes, client)
 
 
-def create_otlp_logger_provider() -> Any | None:
-    """Create OTLP logger provider (OpenObserve-configured).
-
-    Returns:
-        LoggerProvider if OpenObserve/OTLP is available and configured, None otherwise
-
-    Examples:
-        >>> provider = create_otlp_logger_provider()
-        >>> if provider:
-        ...     # Configure structlog with provider
-        ...     pass
-    """
-    client = OpenObserveOTLPClient.from_env()
-    if not client or not client.is_available():
-        return None
-
-    return client.create_logger_provider()
-
-
-__all__ = [
-    "create_otlp_logger_provider",
-    "send_log",
-    "send_log_otlp",
-]
+__all__ = ["send_log"]
