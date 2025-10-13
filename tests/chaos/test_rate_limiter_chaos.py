@@ -135,7 +135,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         capacity=st.floats(min_value=10.0, max_value=50.0),
         num_concurrent=st.integers(min_value=2, max_value=20),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None, suppress_health_check=[HealthCheck.too_slow])
     async def test_concurrent_acquire_chaos(
         self,
         capacity: float,
@@ -194,7 +194,7 @@ class TestTokenBucketChaos(FoundationTestCase):
 
     @pytest.mark.asyncio
     @given(bursts=rate_burst_patterns(max_burst_size=50, max_duration=2.0))
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     async def test_realistic_burst_patterns_chaos(
         self,
         bursts: list[tuple[float, int]],

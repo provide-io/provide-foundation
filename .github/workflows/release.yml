@@ -63,7 +63,7 @@ jobs:
       - name: 🧪 Run Critical Tests
         run: |
           source .venv/bin/activate
-          pytest tests/ --cov=provide.foundation --cov-fail-under=95 -x
+          pytest tests/ -n auto --cov=provide.foundation --cov-fail-under=95 -x
         continue-on-error: true
 
       - name: 🚀 Run Performance Validation
