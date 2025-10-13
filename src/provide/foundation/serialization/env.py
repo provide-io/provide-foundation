@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from provide.foundation.errors import ValidationError
+    pass
 
 from provide.foundation.serialization.cache import get_cache_enabled, get_cache_key, get_serialization_cache
 

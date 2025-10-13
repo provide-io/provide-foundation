@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from attrs import define
 
-from provide.foundation.transport import defaults
 from provide.foundation.config.base import field
 from provide.foundation.config.converters import (
     parse_bool_extended,
@@ -14,6 +13,7 @@ from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.loader import RuntimeConfigLoader
 from provide.foundation.config.manager import register_config
 from provide.foundation.logger import get_logger
+from provide.foundation.transport import defaults
 
 """Transport configuration with Foundation config integration."""
 

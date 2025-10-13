@@ -118,9 +118,7 @@ def is_aligned(offset: int, alignment: int = DEFAULT_ALIGNMENT) -> bool:
     return (offset & (alignment - 1)) == 0
 
 
-def calculate_padding(
-    current_offset: int, alignment: int = DEFAULT_ALIGNMENT
-) -> int:
+def calculate_padding(current_offset: int, alignment: int = DEFAULT_ALIGNMENT) -> int:
     """Calculate padding bytes needed to align to boundary.
 
     Args:
@@ -207,8 +205,8 @@ def is_power_of_two(value: int) -> bool:
 __all__ = [
     "CACHE_LINE_SIZE",
     "DEFAULT_ALIGNMENT",
-    "PAGE_SIZE_16K",
     "PAGE_SIZE_4K",
+    "PAGE_SIZE_16K",
     "align_offset",
     "align_to_page",
     "calculate_padding",
