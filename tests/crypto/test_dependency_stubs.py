@@ -286,9 +286,9 @@ class TestCryptoDependencyStubs(FoundationTestCase):
             assert ED25519_PRIVATE_KEY_SIZE == 32
             assert ED25519_PUBLIC_KEY_SIZE == 32
             assert ED25519_SIGNATURE_SIZE == 64
-            assert SUPPORTED_EC_CURVES == {"secp256r1", "secp384r1", "secp521r1"}
-            assert SUPPORTED_KEY_TYPES == {"rsa", "ecdsa", "ed25519"}
-            assert SUPPORTED_RSA_SIZES == {2048, 3072, 4096}
+            assert {"secp256r1", "secp384r1", "secp521r1"} == SUPPORTED_EC_CURVES
+            assert {"rsa", "ecdsa", "ed25519"} == SUPPORTED_KEY_TYPES
+            assert {2048, 3072, 4096} == SUPPORTED_RSA_SIZES
 
     def test_has_crypto_flag_is_false_without_cryptography(self) -> None:
         """Test that _HAS_CRYPTO flag is False when cryptography not available."""
