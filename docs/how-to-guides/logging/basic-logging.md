@@ -1,6 +1,6 @@
 # How to Perform Basic Logging
 
-This guide covers the fundamental patterns for logging in a `provide.foundation` application.
+This guide covers the fundamental patterns for logging in a `provide.foundation` application. You'll learn how to log messages at different severity levels, add structured data for context, and use named loggers for better organization.
 
 ## Logging at Different Severity Levels
 
@@ -34,7 +34,7 @@ logger.info(
 
 ## Using Named Loggers
 
-For better organization, create named loggers for different components. This helps identify the source of a log and allows for module-specific log level filtering.
+For better organization, create named loggers for different components.
 
 ```python
 # From: examples/telemetry/03_named_loggers.py

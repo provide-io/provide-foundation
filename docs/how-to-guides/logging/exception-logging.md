@@ -21,8 +21,6 @@ except Exception:
     )
 ```
 
-The output will be a structured log message containing an `exception` field with the full traceback.
-
 ## Using `logger.error()` with `exc_info`
 
 For more control, you can use `logger.error()` and pass `exc_info=True` to include the traceback.
@@ -32,18 +30,4 @@ try:
     risky_operation()
 except Exception as e:
     logger.error("Operation failed", exc_info=True, error_details=str(e))
-```
-
-To log an error *without* the traceback, simply omit `exc_info=True`. This is useful for expected errors where a stack trace is unnecessary.
-
-```python
-# From: examples/production/02_error_handling.py
-from provide.foundation.errors import ValidationError
-
-def fetch_user_profile(user_id: str):
-    if user_id == "invalid":
-        # This is an expected validation error, no traceback needed.
-        logger.warning("Invalid user ID provided", user_id=user_id)
-        raise ValidationError(f"Invalid user ID: {user_id}")
-    # ...
 ```

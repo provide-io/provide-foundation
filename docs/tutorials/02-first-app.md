@@ -16,7 +16,8 @@ Create a new project directory and install the framework.
 ```bash
 mkdir task-manager
 cd task-manager
-pip install "provide-foundation[all]"```
+pip install "provide-foundation[all]"
+```
 
 ## 2. Create the Application
 
@@ -63,7 +64,7 @@ def complete_task(task_id: int):
     if task_id not in TASKS:
         logger.warning("task_not_found", task_id=task_id, emoji="❓")
         perr(f"Error: Task with ID {task_id} not found.", color="red")
-        sys.exit(1)
+        sys.exit(1) # Exit with a non-zero code to indicate failure
 
     TASKS[task_id].completed = True
     logger.info("task_completed", task_id=task.id, emoji="🎉")
@@ -89,9 +90,16 @@ def list_tasks(all: bool = False):
 
 # --- Main Entry Point ---
 if __name__ == "__main__":
+    # 1. Configure logging and other foundation systems
     setup_telemetry()
+
+    # 2. Create a Hub to manage our application
     hub = Hub()
+
+    # 3. The Hub discovers our @register_command functions and builds a CLI
     cli = hub.create_cli(name="task-manager", description="A simple task manager.")
+
+    # 4. Run the CLI
     logger.info("cli_starting", emoji="🚀")
     cli()
     logger.info("cli_finished", emoji="🏁")

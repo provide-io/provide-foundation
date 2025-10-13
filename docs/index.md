@@ -43,10 +43,13 @@ This documentation is structured to help you learn effectively, whether you're a
 ## Quick Example
 
 ```python
-from provide.foundation import logger, pout
+from provide.foundation import logger, pout, setup_telemetry
 from provide.foundation.hub import register_command
 from provide.foundation.resilience import retry
 from provide.foundation.errors import NetworkError
+
+# Initialize the framework
+setup_telemetry()
 
 # Structured logging with event enrichment
 logger.info("application_startup", version="1.0.0", emoji="🚀")
@@ -58,9 +61,9 @@ pout("✅ Configuration loaded successfully.", color="green")
 @retry(max_attempts=3, exceptions=(NetworkError,))
 def fetch_data_from_api():
     logger.info("api_call_start", endpoint="/data", emoji="📡")
-    # ... API call logic ...
-    if failed:
-        raise NetworkError("API is unavailable")
+    # ... API call logic that might fail ...
+    # if failed:
+    #     raise NetworkError("API is unavailable")
     logger.info("api_call_complete", status=200, emoji="✅")
 
 # Declarative CLI commands

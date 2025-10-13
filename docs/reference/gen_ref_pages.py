@@ -4,6 +4,7 @@ from pathlib import Path
 import mkdocs_gen_files
 
 nav = mkdocs_gen_files.Nav()
+# Assuming your source code is in a 'src' directory at the project root
 src_root = Path("src")
 
 for path in sorted(src_root.rglob("*.py")):

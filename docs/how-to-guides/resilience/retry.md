@@ -1,6 +1,6 @@
 # How to Automatically Retry Operations
 
-Use the `@retry` decorator to make functions resilient to transient failures, such as temporary network issues.
+Use the `@retry` decorator to make functions resilient to transient failures.
 
 ## Basic Retry
 
@@ -34,9 +34,3 @@ try:
 except NetworkError as e:
     logger.error("API call failed after all retries", error=str(e))
 ```
-
-### Configuration:
--   `max_attempts`: The total number of times the function will be called.
--   `base_delay`: The initial wait time in seconds before the first retry.
--   `backoff`: The strategy for increasing the delay. `EXPONENTIAL` is a good default.
--   `exceptions`: A tuple of exception classes that should trigger a retry.
