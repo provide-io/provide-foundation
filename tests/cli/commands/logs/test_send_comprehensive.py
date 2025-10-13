@@ -204,7 +204,7 @@ class TestSendLogEntry:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp.send_log") as mock_send,
-            patch("provide.foundation.console.output.pout") as mock_pout,
+            patch("provide.foundation.cli.commands.logs.send.pout") as mock_pout,
         ):
             result_code = _send_log_entry(
                 message="Test message",
@@ -234,7 +234,7 @@ class TestSendLogEntry:
                 "provide.foundation.integrations.openobserve.otlp.send_log",
                 side_effect=Exception("OTLP connection failed"),
             ),
-            patch("provide.foundation.console.output.perr") as mock_perr,
+            patch("provide.foundation.cli.commands.logs.send.perr") as mock_perr,
         ):
             result_code = _send_log_entry(
                 message="Test message",
