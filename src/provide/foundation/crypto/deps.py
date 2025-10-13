@@ -61,7 +61,7 @@ _HAS_CRYPTO = _crypto_dep.is_available()
     get_default_hash_algorithm,
     get_default_signature_algorithm,
 ) = _crypto_dep.import_symbols(
-    "provide.foundation.crypto.constants",
+    "provide.foundation.crypto.defaults",
     [
         "DEFAULT_CERTIFICATE_KEY_TYPE",
         "DEFAULT_CERTIFICATE_VALIDITY_DAYS",
