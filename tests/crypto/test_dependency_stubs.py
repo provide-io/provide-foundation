@@ -44,7 +44,7 @@ class TestCryptoDependencyStubs(FoundationTestCase):
         modules_to_remove = [
             "provide.foundation.crypto",
             "provide.foundation.crypto.certificates",
-            "provide.foundation.crypto.constants",
+            "provide.foundation.crypto.defaults",
             "provide.foundation.crypto.keys",
             "provide.foundation.crypto.ed25519",
         ]
@@ -278,17 +278,17 @@ class TestCryptoDependencyStubs(FoundationTestCase):
             )
 
             # Test that constants have expected default values
-            assert DEFAULT_CERTIFICATE_KEY_TYPE is None
+            assert DEFAULT_CERTIFICATE_KEY_TYPE == "ecdsa"
             assert DEFAULT_CERTIFICATE_VALIDITY_DAYS == 365
-            assert DEFAULT_ECDSA_CURVE is None
+            assert DEFAULT_ECDSA_CURVE == "secp384r1"
             assert DEFAULT_RSA_KEY_SIZE == 2048
-            assert DEFAULT_SIGNATURE_ALGORITHM is None
+            assert DEFAULT_SIGNATURE_ALGORITHM == "ed25519"
             assert ED25519_PRIVATE_KEY_SIZE == 32
             assert ED25519_PUBLIC_KEY_SIZE == 32
             assert ED25519_SIGNATURE_SIZE == 64
-            assert SUPPORTED_EC_CURVES == []
-            assert SUPPORTED_KEY_TYPES == []
-            assert SUPPORTED_RSA_SIZES == []
+            assert SUPPORTED_EC_CURVES == {"secp256r1", "secp384r1", "secp521r1"}
+            assert SUPPORTED_KEY_TYPES == {"rsa", "ecdsa", "ed25519"}
+            assert SUPPORTED_RSA_SIZES == {2048, 3072, 4096}
 
     def test_has_crypto_flag_is_false_without_cryptography(self) -> None:
         """Test that _HAS_CRYPTO flag is False when cryptography not available."""
