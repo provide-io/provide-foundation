@@ -528,6 +528,288 @@ def main():
     service.process()
 ```
 
+## Common Criticisms and Responses
+
+### "Why not pure Dependency Injection everywhere?"
+
+**The Pure DI Argument:**
+"Global state is harmful. Everything should be explicitly injected for testability and clarity."
+
+**Our Response:**
+Pure DI is architecturally clean but pragmatically impractical for framework infrastructure. Consider what happens if we inject logger everywhere:
+
+```python
+# Pure DI - Theoretically clean, practically painful
+class UserRepository:
+    def __init__(self, db: Database, logger: Logger):
+        self.db = db
+        self.logger = logger
+
+class EmailService:
+    def __init__(self, smtp: SMTPClient, logger: Logger):
+        self.smtp = smtp
+        self.logger = logger
+
+class NotificationService:
+    def __init__(self, email: EmailService, logger: Logger):
+        self.email = email
+        self.logger = logger  # Passed down from above
+
+class UserService:
+    def __init__(self, repo: UserRepository, notif: NotificationService, logger: Logger):
+        self.repo = repo
+        self.notif = notif
+        self.logger = logger  # Passed down from above
+
+# In Composition Root - Every class needs logger!
+def main():
+    logger = Logger("INFO")
+    db = Database(...)
+    repo = UserRepository(db, logger)
+    smtp = SMTPClient(...)
+    email = EmailService(smtp, logger)
+    notif = NotificationService(email, logger)
+    service = UserService(repo, notif, logger)
+```
+
+**Problems with this approach:**
+- Logger pollutes every constructor signature
+- Logger is passed down through layers that don't use it
+- No testability benefit (logging isn't what you're testing)
+- Massive boilerplate for a cross-cutting concern
+
+**Our pragmatic solution:**
+```python
+from provide.foundation import logger  # Global logger for cross-cutting concern
+
+@injectable
+class UserService:
+    def __init__(self, repo: UserRepository, notif: NotificationService):
+        # Only inject what matters to business logic
+        self.repo = repo
+        self.notif = notif
+
+    def process_user(self, user_id: int):
+        # Use global logger for cross-cutting concern
+        logger.info("Processing user", user_id=user_id)
+        user = self.repo.find(user_id)
+        self.notif.send(user)
+```
+
+### "Global state makes testing impossible"
+
+**The Criticism:**
+"Global singletons can't be isolated in tests."
+
+**Our Response:**
+Foundation provides comprehensive testing infrastructure that properly isolates global state:
+
+```python
+from provide.foundation.testmode import reset_foundation_for_testing, test_scope
+
+@pytest.fixture(autouse=True)
+def reset_foundation():
+    """Automatic reset before each test."""
+    reset_foundation_for_testing()
+
+def test_with_isolated_hub():
+    """Tests can use isolated Hub instances."""
+    with test_scope() as hub:
+        # This hub is isolated from global state
+        hub.register(Database, mock_db)
+        service = hub.resolve(MyService)
+        # Test with mock dependencies
+```
+
+The global state is **managed**, not **unmanaged**. This is a critical distinction.
+
+### "This violates the Dependency Inversion Principle"
+
+**The Criticism:**
+"High-level modules should not depend on low-level modules (like a global logger)."
+
+**Our Response:**
+The Dependency Inversion Principle applies to **business logic dependencies**, not to **infrastructure**. Logging is infrastructure, not a business dependency.
+
+Consider:
+- **Business dependency**: "This UserService depends on a UserRepository" - Should use DI
+- **Infrastructure concern**: "This code needs to log events" - Can use global logger
+
+The distinction is important. Your business logic doesn't *depend on logging* - it would work fine without it. Logging is an optional, cross-cutting concern that observes your code but doesn't affect its behavior.
+
+### "The Bootstrapping Problem is solvable with pure DI"
+
+**The Criticism:**
+"Just instantiate everything manually in main() without any global access."
+
+**Our Response:**
+This works for toy examples but fails in real systems where:
+
+1. **The framework itself needs initialization** before your code runs
+   ```python
+   # How do you initialize Foundation without get_hub()?
+   # The logger, config, and error handling must exist FIRST
+   from provide.foundation.hub import get_hub
+
+   def main():
+       hub = get_hub()  # This initializes the Foundation system
+       hub.initialize_foundation()  # Sets up logging, config, events
+
+       # NOW your application can use DI
+       container = Container()
+       # ...
+   ```
+
+2. **Plugin systems need a well-known registration point**
+   ```python
+   # Plugins can't know about your Container instance
+   # They need a global registry
+   from provide.foundation.hub import get_hub
+
+   class MyPlugin:
+       def register(self):
+           hub = get_hub()
+           hub.add_command(my_command, "my-cmd")
+   ```
+
+3. **Third-party libraries dictate callback signatures**
+   ```python
+   import third_party_lib
+
+   def my_callback(event_data: dict):
+       # Signature is controlled by third_party_lib
+       # Can't add DI parameters
+       # Service Locator provides access to your app's services
+       from provide.foundation.hub import get_hub
+       db = get_hub().get_component("database")
+       db.save(event_data)
+
+   third_party_lib.register_callback(my_callback)
+   ```
+
+## Pattern Decision Tree
+
+Use this decision tree to choose the right pattern:
+
+```
+Need to use a component?
+│
+├─ Is it framework infrastructure (logging, config, Hub)?
+│  └─ ✅ Use Service Locator: get_hub(), logger
+│
+├─ Is it a cross-cutting concern (logging, metrics)?
+│  └─ ✅ Use Service Locator: logger
+│
+├─ Is it a callback/middleware where you don't control the signature?
+│  └─ ✅ Use Service Locator: get_hub()
+│
+├─ Is it business logic (services, repositories, use cases)?
+│  └─ ✅ Use Dependency Injection: @injectable, Container
+│
+└─ Do you need to test it in isolation with mocks?
+   └─ ✅ Use Dependency Injection: @injectable, Container
+```
+
+## Mixed Pattern Example (Best Practice)
+
+Here's a realistic example showing appropriate use of both patterns:
+
+```python
+from provide.foundation import logger  # Global logger - OK for cross-cutting concern
+from provide.foundation.hub import Container, injectable
+
+# Infrastructure
+@injectable
+class DatabaseClient:
+    def __init__(self, connection_string: str):
+        self.connection_string = connection_string
+        logger.debug("Database initialized", connection=connection_string)
+
+    def query(self, sql: str) -> list[dict]:
+        logger.debug("Executing query", sql=sql)
+        # ... query implementation
+
+# Business Logic - Uses DI for business dependencies, SL for logging
+@injectable
+class UserRepository:
+    def __init__(self, db: DatabaseClient):
+        # Inject business dependency
+        self.db = db
+
+    def find_user(self, user_id: int) -> User:
+        # Use global logger for cross-cutting concern
+        logger.info("Finding user", user_id=user_id)
+        rows = self.db.query(f"SELECT * FROM users WHERE id = {user_id}")
+        if not rows:
+            logger.warning("User not found", user_id=user_id)
+            return None
+        return User.from_dict(rows[0])
+
+@injectable
+class NotificationService:
+    def __init__(self, email_client: EmailClient):
+        self.email_client = email_client
+
+    def notify_user(self, user: User, message: str):
+        logger.info("Sending notification", user_id=user.id, message_preview=message[:50])
+        self.email_client.send(user.email, message)
+        logger.debug("Notification sent", user_id=user.id)
+
+@injectable
+class UserService:
+    def __init__(self, repository: UserRepository, notifications: NotificationService):
+        # Only inject business dependencies
+        self.repository = repository
+        self.notifications = notifications
+
+    def activate_user(self, user_id: int):
+        logger.info("Activating user", user_id=user_id)
+
+        user = self.repository.find_user(user_id)
+        if not user:
+            logger.error("Cannot activate non-existent user", user_id=user_id)
+            raise ValueError(f"User {user_id} not found")
+
+        user.active = True
+        self.repository.save(user)
+        self.notifications.notify_user(user, "Your account has been activated!")
+
+        logger.info("User activated successfully", user_id=user_id)
+
+# Composition Root
+def main():
+    # Use Service Locator for framework initialization
+    from provide.foundation.hub import get_hub
+    hub = get_hub()
+    hub.initialize_foundation()
+
+    # Use DI for application wiring
+    container = Container()
+    container.register(DatabaseClient, DatabaseClient("postgresql://localhost/app"))
+    container.register(EmailClient, EmailClient("smtp.example.com"))
+
+    repository = container.resolve(UserRepository)
+    container.register(UserRepository, repository)
+
+    notifications = container.resolve(NotificationService)
+    container.register(NotificationService, notifications)
+
+    service = container.resolve(UserService)
+
+    # Run application
+    service.activate_user(42)
+
+if __name__ == "__main__":
+    main()
+```
+
+**What makes this a good pattern:**
+- ✅ Business dependencies (`DatabaseClient`, `UserRepository`) use DI - explicit and testable
+- ✅ Cross-cutting concerns (`logger`) use Service Locator - convenient and non-intrusive
+- ✅ Framework initialization (`get_hub()`) uses Service Locator - solves bootstrapping
+- ✅ Clear separation between business logic and infrastructure
+- ✅ Easy to test: inject mocks for business dependencies, global logger doesn't interfere
+
 ## Summary
 
 Provide Foundation's hybrid approach gives you **flexibility**:
@@ -538,6 +820,11 @@ Provide Foundation's hybrid approach gives you **flexibility**:
 - Adopt the polyglot mental model for consistency across languages
 
 This approach balances **convenience** (Service Locator) with **explicitness** (Dependency Injection), giving you the best tool for each job.
+
+**The hybrid pattern is not a compromise** - it's a deliberate architectural decision that recognizes:
+1. Framework infrastructure has different needs than application logic
+2. Not all dependencies are equal (business vs infrastructure)
+3. Pragmatism beats dogma when both approaches are well-implemented
 
 For complete examples, see:
 - `examples/di/01_polyglot_di_pattern.py` (Python)
