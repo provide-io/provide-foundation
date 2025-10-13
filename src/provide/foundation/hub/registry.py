@@ -57,6 +57,8 @@ class Registry:
         self._lock = get_lock_manager().get_lock("foundation.registry")
         self._registry: dict[str, dict[str, RegistryEntry]] = defaultdict(dict)
         self._aliases: dict[str, tuple[str, str]] = {}
+        # Type-based registry for dependency injection
+        self._type_registry: dict[type[Any], Any] = {}
 
     def register(
         self,
@@ -260,6 +262,65 @@ class Registry:
                 self._dispose_all_resources()
                 self._registry.clear()
                 self._aliases.clear()
+                self._type_registry.clear()
+
+    # Type-based registration for dependency injection
+
+    def register_type(
+        self,
+        type_hint: type[Any],
+        instance: Any,
+        name: str | None = None,
+    ) -> None:
+        """Register an instance by its type for dependency injection.
+
+        This enables type-based lookup which is essential for DI patterns.
+
+        Args:
+            type_hint: Type to register under
+            instance: Instance to register
+            name: Optional name for standard registry (defaults to type name)
+
+        Example:
+            >>> registry.register_type(DatabaseClient, db_instance)
+            >>> db = registry.get_by_type(DatabaseClient)
+        """
+        with self._lock:
+            self._type_registry[type_hint] = instance
+
+            # Also register in standard registry for backward compatibility
+            if name is not None:
+                self.register(
+                    name=name,
+                    value=instance,
+                    dimension="types",
+                    metadata={"type": type_hint},
+                    replace=True,
+                )
+
+    def get_by_type(self, type_hint: type[Any]) -> Any | None:
+        """Get a registered instance by its type.
+
+        Args:
+            type_hint: Type to look up
+
+        Returns:
+            Registered instance or None if not found
+
+        Example:
+            >>> db = registry.get_by_type(DatabaseClient)
+        """
+        with self._lock:
+            return self._type_registry.get(type_hint)
+
+    def list_types(self) -> list[type[Any]]:
+        """List all registered types.
+
+        Returns:
+            List of registered types
+        """
+        with self._lock:
+            return list(self._type_registry.keys())
 
     def dispose_all(self) -> None:
         """Dispose of all registered resources properly."""
