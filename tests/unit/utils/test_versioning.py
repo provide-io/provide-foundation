@@ -131,8 +131,22 @@ def test_reset_version_cache_specific_package() -> None:
     assert version1 == version2
 
 
-def test_reset_version_cache_all_packages() -> None:
+def test_reset_version_cache_all_packages(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test that reset_version_cache with None resets all packages."""
+    # Mock _find_project_root to return None (no VERSION file)
+    monkeypatch.setattr(
+        "provide.foundation.utils.versioning._find_project_root",
+        lambda start_path: None,
+    )
+
+    # Mock metadata to raise PackageNotFoundError
+    from importlib import metadata as importlib_metadata
+
+    def raise_package_not_found(_: str) -> str:
+        raise importlib_metadata.PackageNotFoundError("missing")
+
+    monkeypatch.setattr("importlib.metadata.version", raise_package_not_found, raising=False)
+
     # Get versions to cache them
     get_version("package1", caller_file=__file__)
     get_version("package2", caller_file=__file__)
