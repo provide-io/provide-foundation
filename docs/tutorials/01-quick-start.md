@@ -57,6 +57,7 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+*This code is based on `examples/telemetry/01_basic_logging.py` and `02_structured_logging.py`.*
 
 ## 3. Running the Example
 
@@ -93,4 +94,4 @@ Let's break down what you're seeing:
 Congratulations! You've successfully used `provide.foundation` to produce structured, human-readable logs.
 
 **Next Steps:**
-- Build a more complete application in the **[First Application Tutorial](./02-first-application/)**.
+- Build a more complete application in the **[First Application Tutorial](./02-first-app/)**.

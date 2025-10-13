@@ -1,4 +1,4 @@
-# Tutorial: Your First Application
+# Tutorial: Your First CLI Application
 
 In this tutorial, we'll build a simple but complete task manager CLI. This will demonstrate how `provide.foundation`'s logging, CLI framework, and console output utilities work together.
 
@@ -16,8 +16,7 @@ Create a new project directory and install the framework.
 ```bash
 mkdir task-manager
 cd task-manager
-pip install "provide-foundation[all]"
-```
+pip install "provide-foundation[all]"```
 
 ## 2. Create the Application
 
@@ -44,7 +43,6 @@ class Task:
     created_at: datetime = field(default_factory=datetime.now)
 
 # --- In-Memory "Database" ---
-# In a real app, this would be a database class.
 TASKS: Dict[int, Task] = {}
 NEXT_ID = 1
 
@@ -65,17 +63,17 @@ def complete_task(task_id: int):
     if task_id not in TASKS:
         logger.warning("task_not_found", task_id=task_id, emoji="❓")
         perr(f"Error: Task with ID {task_id} not found.", color="red")
-        sys.exit(1) # Exit with a non-zero code to indicate failure
+        sys.exit(1)
 
     TASKS[task_id].completed = True
-    logger.info("task_completed", task_id=task_id, emoji="🎉")
+    logger.info("task_completed", task_id=task.id, emoji="🎉")
     pout(f"Task {task_id} marked as complete.", color="cyan")
 
 @register_command("list")
 def list_tasks(all: bool = False):
     """List tasks. Use --all to include completed tasks."""
     logger.debug("listing_tasks", show_all=all)
-    tasks_to_show = TASKS.values()
+    tasks_to_show = list(TASKS.values())
     if not all:
         tasks_to_show = [t for t in tasks_to_show if not t.completed]
 
@@ -91,20 +89,14 @@ def list_tasks(all: bool = False):
 
 # --- Main Entry Point ---
 if __name__ == "__main__":
-    # 1. Configure logging and other foundation systems
     setup_telemetry()
-
-    # 2. Create a Hub to manage our application
     hub = Hub()
-
-    # 3. The Hub discovers our @register_command functions and builds a CLI
     cli = hub.create_cli(name="task-manager", description="A simple task manager.")
-
-    # 4. Run the CLI
     logger.info("cli_starting", emoji="🚀")
     cli()
     logger.info("cli_finished", emoji="🏁")
 ```
+*This code is a simplified version of `examples/cli/01_cli_application.py`.*
 
 ## 3. Run Your Application
 
@@ -123,45 +115,29 @@ Options:
 Commands:
   add       Add a new task.
   complete  Mark a task as completed.
-  list      List tasks. Use --all to include completed tasks.
+  list      List tasks.
 
 # Add some tasks
 $ python task_manager.py add "Write documentation"
 ✅ Successfully added task 1: 'Write documentation'
 
-$ python task_manager.py add "Review pull request #42"
-✅ Successfully added task 2: 'Review pull request #42'
-
-# List pending tasks (the default)
+# List pending tasks
 $ python task_manager.py list
 📋 Your Tasks:
   ⏳ Write documentation
-  ⏳ Review pull request #42
 
 # Complete a task
 $ python task_manager.py complete 1
 Task 1 marked as complete.
-
-# List all tasks, including completed ones
-$ python task_manager.py list --all
-📋 Your Tasks:
-  ✅ Write documentation
-  ⏳ Review pull request #42
 ```
 
 ## 4. What You've Learned
 
-This simple application demonstrates several core `provide.foundation` concepts:
-
--   **Declarative CLI:** You defined your CLI by simply writing Python functions and decorating them with `@register_command`. The framework handled argument parsing, help text generation, and command dispatch.
--   **Structured Logging:** Every significant action (`task_created`, `task_completed`) is logged with structured data (`task_id`, `title`). This is invaluable for debugging and monitoring in a real application.
--   **Separation of Concerns:**
-    -   `logger` is for structured, event-based logs (for developers/systems).
-    -   `pout` and `perr` are for user-facing output to `stdout` and `stderr` (for the person running the CLI).
-
-This separation is critical. Your logs can be verbose and machine-readable (e.g., JSON) while your user output remains clean and human-friendly.
+-   **Declarative CLI:** You defined your CLI by simply writing Python functions and decorating them with `@register_command`.
+-   **Structured Logging:** Every action (`task_created`, `task_completed`) is logged with structured data.
+-   **Separation of Concerns:** `logger` is for system logs, while `pout` and `perr` are for user-facing output.
 
 ---
 
 **Next Steps:**
-- Dive into the **[How-To Guides](../how-to-guides/logging/basic-logging/)** to learn more about specific features.
+- Dive into the **[How-To Guides](../how-to-guides/cli/commands/)** to learn more about building CLIs.
