@@ -3,24 +3,68 @@
 This module provides intelligent detection and grouping of file system events
 into logical operations (e.g., atomic saves, batch updates, rename sequences).
 
-All components are re-exported from the operations package for convenience.
+## Simple API (Recommended)
+
+For most use cases, use the simple functional API:
+
+    >>> from provide.foundation.file.operations import detect, Event, Operation
+    >>>
+    >>> events = [Event(...), Event(...)]
+    >>> operation = detect(events)
+    >>> if operation:
+    ...     print(f"{operation.type}: {operation.path}")
+
+## Advanced API
+
+For streaming detection or custom configuration:
+
+    >>> from provide.foundation.file.operations import create_detector, DetectorConfig
+    >>>
+    >>> config = DetectorConfig(time_window_ms=1000)
+    >>> detector = create_detector(config)
+    >>>
+    >>> for event in event_stream:
+    ...     if operation := detector.detect_streaming(event):
+    ...         handle_operation(operation)
 """
 
 from __future__ import annotations
 
-# Main detector
+# ============================================================================
+# SIMPLE API (Recommended for most users)
+# ============================================================================
+
+# Simple detection functions
+from provide.foundation.file.operations.detect import (
+    create_detector,
+    detect,
+    detect_all,
+    detect_streaming,
+)
+
+# Simplified type aliases
+from provide.foundation.file.operations.types import (
+    FileEvent as Event,
+    FileOperation as Operation,
+    OperationType,
+)
+
+# ============================================================================
+# FULL API (For backward compatibility and advanced usage)
+# ============================================================================
+
+# Original detector class
 from provide.foundation.file.operations.detectors import OperationDetector
 
-# Types
+# Complete type system
 from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
     FileEventMetadata,
     FileOperation,
-    OperationType,
 )
 
-# Utilities
+# Utility functions
 from provide.foundation.file.operations.utils import (
     detect_atomic_save,
     extract_original_path,
@@ -29,14 +73,28 @@ from provide.foundation.file.operations.utils import (
 )
 
 __all__ = [
+    # ========================================================================
+    # SIMPLE API (Primary exports)
+    # ========================================================================
+    # Detection functions
+    "detect",
+    "detect_all",
+    "detect_streaming",
+    "create_detector",
+    # Simple types
+    "Event",  # Alias for FileEvent
+    "Operation",  # Alias for FileOperation
+    "OperationType",
+    # ========================================================================
+    # FULL API (Backward compatibility)
+    # ========================================================================
     # Types
     "DetectorConfig",
     "FileEvent",
     "FileEventMetadata",
     "FileOperation",
-    # Main detector
+    # Detector class
     "OperationDetector",
-    "OperationType",
     # Utilities
     "detect_atomic_save",
     "extract_original_path",
