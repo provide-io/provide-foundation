@@ -1,200 +1,82 @@
 # Welcome to the Provide Foundation
 
-**The Provide Foundation** is a comprehensive Python library that provides structured logging, CLI framework, configuration management, and system utilities for building robust applications.
+**The Provide Foundation** is a comprehensive Python 3.11+ library for building robust, operationally excellent applications. It provides a cohesive, "batteries-included" toolkit that addresses common challenges in modern application development.
 
-Built on industry-standard libraries like `structlog`, `click`, and `attrs`, provide.foundation offers a batteries-included development experience with beautiful console output, powerful error handling, and cross-platform system utilities.
+Built on industry-standard libraries like `structlog`, `click`, and `attrs`, `provide.foundation` offers a superior developer experience with beautiful console output, powerful error handling, and cross-platform system utilities.
 
-## Key Features
+## Why provide.foundation?
 
-### Structured Logging
-- Beautiful, event-enriched structured logging
-- High-performance logging (>14,000 msg/sec under optimal conditions)
-- Event sets for log enrichment
-- Thread-safe and async-compatible
+| For Developers | For Teams |
+| :--- | :--- |
+| ✅ **Zero Configuration**: Works beautifully out of the box. | 🤝 **Consistent**: Standardized patterns across all services. |
+| ✅ **Type Safe**: Full type hints and runtime validation. | 🔭 **Observable**: Structured logs ready for analysis. |
+| ✅ **Fast**: Optimized for production (>14,000 msg/sec). | 🛠️ **Maintainable**: Clean, well-documented APIs. |
+| ✅ **Testable**: Built-in testing utilities and patterns. | 🧩 **Extensible**: Plugin system for customization. |
 
-### CLI Framework
-- Decorator-based command registration
-- Nested commands with dot notation
-- Automatic help generation
-- JSON output mode support
+## Learning Path
 
-### Configuration Management
-- Environment variable support
-- Multi-source configuration loading
-- Type-safe with attrs classes
-- YAML, JSON, and TOML support
+This documentation is structured to help you learn effectively, whether you're a beginner or an expert.
 
-### Metrics
-- Lightweight and extensible metrics collection
-- Optional OpenTelemetry integration for counters, gauges, and histograms
+<div class="feature-grid">
+  <div class="feature-card">
+    <h3>🎓 Tutorials</h3>
+    <p>Step-by-step lessons to get you started. Perfect for new users.</p>
+    <a href="./tutorials/01-quick-start/">Start Learning →</a>
+  </div>
+  <div class="feature-card">
+    <h3>📖 How-To Guides</h3>
+    <p>Practical, goal-oriented recipes to solve specific problems.</p>
+    <a href="./how-to-guides/logging/basic-logging/">Solve a Problem →</a>
+  </div>
+  <div class="feature-card">
+    <h3>🧠 Explanation</h3>
+    <p>Deep dives into the concepts and architecture behind the framework.</p>
+    <a href="./explanation/architecture/">Understand the "Why" →</a>
+  </div>
+  <div class="feature-card">
+    <h3>📚 API Reference</h3>
+    <p>Detailed technical descriptions of every class, method, and function.</p>
+    <a href="./reference/">Look It Up →</a>
+  </div>
+</div>
 
-### System Utilities
-- **Platform Detection**: OS and architecture detection
-- **Process Execution**: Safe subprocess handling with async support
-- **File Operations**: Atomic operations with format support
-- **Archive Operations**: Create and extract archives
-- **Serialization**: Safe and consistent JSON serialization
-- **Formatting**: Rich utilities for text, numbers, and data structures
-- **Console I/O**: Standardized input/output with color support
-
-### Hub and Registry
-- Central system for managing application components and commands
-- Extensible plugin system via entry points
-- Thread-safe by default
-
-### Cryptographic Operations
-- **Hash Functions**: SHA-256, SHA-512, Blake2b with file/stream support
-- **Digital Signatures**: Ed25519, ECDSA, RSA with verification
-- **Certificates**: X.509 certificate creation and management
-- **Key Generation**: Secure key generation for multiple algorithms
-
-### Error Handling
-- Rich error context with metadata
-- Retry decorators
-- Error boundaries for graceful degradation
-- Structured error logging
-
-### Resilience Patterns
-- **Retry**: Automated retries with configurable backoff
-- **Circuit Breaker**: Fail-fast mechanism for unreliable services
-- **Bulkhead**: Isolate resources to prevent cascading failures
-- **Fallback**: Graceful degradation with fallback functions
-
-### Concurrency Utilities
-- **Async Helpers**: High-level utilities for running and gathering async tasks
-- **Lock Management**: Thread-safe sync and async lock management
-
-## Quick Start
+## Quick Example
 
 ```python
-from provide.foundation import logger, pout, perr
+from provide.foundation import logger, pout
 from provide.foundation.hub import register_command
-from provide.foundation import platform, process
-from provide.foundation.crypto import hash_file
+from provide.foundation.resilience import retry
+from provide.foundation.errors import NetworkError
 
 # Structured logging with event enrichment
-logger.info("Starting application", version="1.0.0")
+logger.info("application_startup", version="1.0.0", emoji="🚀")
 
-# Console output
-pout("✅ Configuration loaded")
-perr("⚠️ Low memory warning")
+# User-facing console output
+pout("✅ Configuration loaded successfully.", color="green")
 
-# CLI commands
-@register_command("deploy")
-def deploy(environment: str = "staging"):
-    """Deploy the application."""
-    pout(f"Deploying to {environment}...")
+# Resilient functions
+@retry(max_attempts=3, exceptions=(NetworkError,))
+def fetch_data_from_api():
+    logger.info("api_call_start", endpoint="/data", emoji="📡")
+    # ... API call logic ...
+    if failed:
+        raise NetworkError("API is unavailable")
+    logger.info("api_call_complete", status=200, emoji="✅")
 
-# Platform detection
-info = platform.get_system_info()
-logger.info("System info", **info.to_dict())
-
-# Process execution
-result = process.run_command(["git", "status"])
-if result.returncode == 0:
-    pout("Repository is clean")
-
-# Cryptographic operations
-file_hash = hash_file("document.pdf")
-logger.info("File verified", hash=file_hash.hex_digest)
+# Declarative CLI commands
+@register_command("process")
+def process_data(file: str, force: bool = False):
+    """Process the given data file."""
+    pout(f"Processing {file} with force={force}...")
+    fetch_data_from_api()
 ```
 
-## 📚 Documentation Structure
+## System Requirements
 
-### [Getting Started](getting-started/installation.md)
-- Installation guide
-- Quick start tutorial
-- Basic configuration
-
-### [Core Concepts](guide/concepts/index.md)
-- Structured logging principles
-- Event enrichment system
-- Configuration architecture
-
-### [API Reference](api/api-index.md)
-Complete API documentation for all modules:
-- Logger and Telemetry
-- Metrics
-- CLI Framework
-- Configuration System
-- Hub and Registry
-- Error Handling
-- Resilience
-- Concurrency
-- Cryptographic Utilities
-- File Operations
-- Archive
-- Serialization
-- Formatting
-- Platform Utilities
-- Process Execution
-- Console I/O
-- Context Management
-
-### [User Guide](guide/index.md)
-Practical guides for common tasks:
-- Configuration management
-- Logging patterns
-- CLI development
-- System utilities
-
-### [Examples](getting-started/examples.md)
-Practical examples and code snippets
-
-## 🎯 Why provide.foundation?
-
-### For Application Developers
-- **Zero Configuration**: Works beautifully out of the box
-- **Type Safe**: Full type hints and runtime validation
-- **Fast**: Optimized for production workloads
-- **Testable**: Built-in testing utilities
-
-### For Library Authors
-- **Extensible**: Plugin system via Registry
-- **Composable**: Mix and match components
-- **Well-Documented**: Comprehensive API docs
-- **Stable API**: Contextual versioning
-
-### For DevOps Teams
-- **Observable**: Structured logs for analysis
-- **Configurable**: Environment-based configuration
-- **Cross-Platform**: Works on Linux, macOS, Windows
-- **Production Ready**: Thread-safe, battle-tested
-
-
-## 🚦 System Requirements
-
-- Python 3.11 or higher
-- No compiled dependencies
-- Works on Linux, macOS, and Windows
-- Optional: psutil for enhanced system info
-
-## 📦 Installation
-
-```bash
-pip install provide-foundation
-
-# With all optional dependencies
-pip install provide-foundation[all]
-
-# For development
-pip install provide-foundation[dev]
-```
-
-## 🤝 Contributing
-
-We welcome contributions! See our [Contributing Guide](development/contributing.md) for details.
-
-## 📄 License
-
-Apache 2.0 - See LICENSE file for details.
-
-## 🔗 Links
-
-- [GitHub Repository](https://github.com/provide-io/provide-foundation)
-- [PyPI Package](https://pypi.org/project/provide-foundation/)
-- [Issue Tracker](https://github.com/provide-io/provide-foundation/issues)
+-   Python 3.11 or higher
+-   Works on Linux, macOS, and Windows
+-   Minimal core dependencies (`structlog`, `attrs`, `click`)
 
 ---
 
-Ready to get started? Head to the [Installation Guide](getting-started/installation.md) →
+Ready to get started? Head to the **[Quick Start Tutorial](./tutorials/01-quick-start/)**.
