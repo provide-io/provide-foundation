@@ -239,10 +239,8 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
                     pass
 
                 # Clear the event loop so pytest-asyncio creates a fresh one for the next test
-                try:
+                with contextlib.suppress(Exception):
                     asyncio.set_event_loop(None)
-                except Exception:
-                    pass
 
             except Exception:
                 pass
@@ -298,8 +296,6 @@ from provide.testkit import (  # noqa: E402
     invalid_cert_pem,
     invalid_key_pem,
     # New DI fixtures
-    isolated_container,
-    isolated_hub,
     malformed_cert_pem,
     mock_async_process,
     mock_cache,
@@ -352,8 +348,6 @@ __all__ = [
     "invalid_cert_pem",
     "invalid_key_pem",
     # New DI fixtures
-    "isolated_container",
-    "isolated_hub",
     "malformed_cert_pem",
     "mock_async_process",
     "mock_cache",
