@@ -226,7 +226,11 @@ class TestAsyncRetryChaos(FoundationTestCase):
         num_concurrent=st.integers(min_value=2, max_value=10),
         timeout=timeout_patterns(min_timeout=0.5, max_timeout=3.0),
     )
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.filter_too_much, HealthCheck.too_slow])
+    @settings(
+        max_examples=20,
+        deadline=None,
+        suppress_health_check=[HealthCheck.filter_too_much, HealthCheck.too_slow],
+    )
     async def test_concurrent_retry_chaos(
         self,
         num_concurrent: int,

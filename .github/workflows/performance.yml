@@ -53,7 +53,7 @@ jobs:
       - name: 🧪 Run pytest-benchmark Performance Tests
         run: |
           source .venv/bin/activate
-          pytest tests/performance/test_benchmarks.py --benchmark-only --benchmark-json=pytest-benchmark-results.json
+          pytest tests/performance/test_benchmarks.py -n auto --benchmark-only --benchmark-json=pytest-benchmark-results.json
         continue-on-error: true
 
       # - name: 🔥 Run Extreme Performance Tests

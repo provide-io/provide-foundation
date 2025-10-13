@@ -100,7 +100,7 @@ jobs:
         shell: bash
         run: |
           source .venv/bin/activate
-          pytest tests/ \
+          pytest tests/ -n auto \
             --cov=provide.foundation \
             --cov-report=xml \
             --cov-branch \
@@ -240,9 +240,9 @@ jobs:
         run: |
           source .venv/bin/activate
           # Run all integration tests from various modules
-          pytest tests/errors/test_integration.py -v --tb=short || true
-          pytest tests/test_component_registry_*.py -v --tb=short || true
-          pytest tests/test_init_coverage.py -v --tb=short || true
+          pytest tests/errors/test_integration.py -n auto -v --tb=short || true
+          pytest tests/test_component_registry_*.py -n auto -v --tb=short || true
+          pytest tests/test_init_coverage.py -n auto -v --tb=short || true
 
   # ==================================================================================
   # 📋 Summary Job
