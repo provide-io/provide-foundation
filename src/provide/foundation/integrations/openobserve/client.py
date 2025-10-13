@@ -28,6 +28,7 @@ from provide.foundation.integrations.openobserve.models import (
     StreamInfo,
     parse_relative_time,
 )
+from provide.foundation.hub import get_hub
 from provide.foundation.logger import get_logger
 from provide.foundation.transport import UniversalClient
 from provide.foundation.transport.errors import (
@@ -72,6 +73,7 @@ class OpenObserveClient:
 
         # Create UniversalClient with auth headers and timeout
         self._client = UniversalClient(
+            hub=get_hub(),
             default_headers=get_auth_headers(self.username, self.password),
             default_timeout=float(timeout),
         )
