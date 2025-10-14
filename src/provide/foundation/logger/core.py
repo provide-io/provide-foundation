@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 import structlog
 
 from provide.foundation.concurrency.locks import get_lock_manager
-from provide.foundation.logger.types import TRACE_LEVEL_NAME
+from provide.foundation.logger.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM
 
 """Core FoundationLogger implementation.
 Contains the main logging class with all logging methods.
@@ -78,6 +78,7 @@ class FoundationLogger:
             return False
 
         try:
+            # Use the injected hub instance to get config
             config = self._hub.get_foundation_config()
             if config and not self._is_configured_by_setup:
                 self.setup(config)
@@ -307,8 +308,12 @@ class FoundationLogger:
 def get_global_logger() -> FoundationLogger:
     """Get the global FoundationLogger instance through Hub.
 
-    This replaces the old global logger instance with Hub-based access.
-    Auto-initializes Foundation if not already done.
+    This function acts as the Composition Root for the global logger instance,
+    maintained for backward compatibility.
+
+    **Note:** For building testable and maintainable applications, the recommended
+    approach is to inject a logger instance via a `Container`. This global
+    accessor should be avoided in new application code.
 
     Returns:
         FoundationLogger instance from Hub

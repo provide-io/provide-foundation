@@ -198,14 +198,17 @@ class TestBuildAttributes:
 class TestSendLogEntry:
     """Test _send_log_entry function."""
 
-    def test_send_via_otlp_success(self) -> None:
-        """Test successful OTLP log sending."""
+    def test_send_success(self) -> None:
+        """Test successful log sending via logger."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
         with (
-            patch("provide.foundation.integrations.openobserve.otlp.send_log") as mock_send,
+            patch("provide.foundation.cli.commands.logs.send.get_logger") as mock_get_logger,
             patch("provide.foundation.cli.commands.logs.send.pout") as mock_pout,
         ):
+            mock_logger = mock_get_logger.return_value
+            mock_info = mock_logger.info
+
             result_code = _send_log_entry(
                 message="Test message",
                 level="INFO",
@@ -216,23 +219,24 @@ class TestSendLogEntry:
             )
 
             assert result_code == 0
+            mock_get_logger.assert_called_once_with("test-service")
             # The implementation adds trace_id and span_id to attributes
-            mock_send.assert_called_once_with(
-                message="Test message",
-                level="INFO",
-                service_name="test-service",
-                attributes={"key": "value", "trace_id": "trace123", "span_id": "span456"},
+            mock_info.assert_called_once_with(
+                "Test message",
+                key="value",
+                trace_id="trace123",
+                span_id="span456",
             )
             mock_pout.assert_called_once_with("✓ Log sent successfully", color="green")
 
-    def test_send_otlp_exception_handling(self) -> None:
-        """Test exception handling for OTLP sending."""
+    def test_send_exception_handling(self) -> None:
+        """Test exception handling for log sending."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
         with (
             patch(
-                "provide.foundation.integrations.openobserve.otlp.send_log",
-                side_effect=Exception("OTLP connection failed"),
+                "provide.foundation.cli.commands.logs.send.get_logger",
+                side_effect=Exception("Logger connection failed"),
             ),
             patch("provide.foundation.cli.commands.logs.send.perr") as mock_perr,
         ):
@@ -246,7 +250,7 @@ class TestSendLogEntry:
             )
 
             assert result_code == 1
-            mock_perr.assert_called_once_with("✗ Failed to send log: OTLP connection failed", color="red")
+            mock_perr.assert_called_once_with("✗ Failed to send log: Logger connection failed", color="red")
 
 
 class TestModuleStructure:
@@ -265,14 +269,14 @@ class TestModuleStructure:
 
         assert hasattr(cli.helpers, "build_attributes_from_args")
 
-    def test_module_logger_instance(self) -> None:
-        """Test that module has logger instance."""
-        from provide.foundation.cli.commands.logs.send import log
+    def test_module_uses_get_logger(self) -> None:
+        """Test that module uses get_logger function."""
+        from provide.foundation.cli.commands.logs import send
 
-        assert log is not None
-        assert hasattr(log, "info")
-        assert hasattr(log, "debug")
-        assert hasattr(log, "error")
+        # Module should have access to get_logger via import
+        assert hasattr(send, "get_logger")
+        # The actual logging is done through dynamically created loggers
+        # via get_logger() rather than a module-level log variable
 
 
 class TestEdgeCases:

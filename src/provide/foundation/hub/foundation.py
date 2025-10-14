@@ -13,6 +13,7 @@ including telemetry configuration and logger initialization.
 """
 
 if TYPE_CHECKING:
+    from provide.foundation.hub.manager import Hub
     from provide.foundation.logger.base import FoundationLogger
     from provide.foundation.logger.config import TelemetryConfig
 
@@ -20,12 +21,14 @@ if TYPE_CHECKING:
 class FoundationManager:
     """Manages Foundation system initialization and lifecycle."""
 
-    def __init__(self, registry: Registry) -> None:
+    def __init__(self, hub: Hub, registry: Registry) -> None:
         """Initialize Foundation manager.
 
         Args:
+            hub: The parent Hub instance for context
             registry: Component registry for storing Foundation state
         """
+        self._hub = hub
         self._registry = registry
         self._initialized = False
         self._config: TelemetryConfig | None = None

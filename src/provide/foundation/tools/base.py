@@ -124,10 +124,11 @@ class BaseToolManager(ABC):
     def downloader(self) -> object:
         """Get or create downloader instance."""
         if self._downloader is None:
+            from provide.foundation.hub import get_hub
             from provide.foundation.tools.downloader import ToolDownloader
             from provide.foundation.transport import UniversalClient
 
-            self._downloader = ToolDownloader(UniversalClient())
+            self._downloader = ToolDownloader(UniversalClient(hub=get_hub()))
         return self._downloader
 
     @property

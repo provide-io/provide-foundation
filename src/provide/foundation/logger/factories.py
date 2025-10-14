@@ -33,17 +33,13 @@ _MAX_RECURSION_DEPTH = 3
 def get_logger(name: str | None = None) -> Any:
     """Get a logger instance through Hub with circular import protection.
 
-    This function uses Hub-based logger access with initialization detection
-    to prevent circular imports during Foundation setup.
+    This function provides access to the global logger instance. It is preserved
+    for backward compatibility but should be avoided in new application code in
+    favor of explicit Dependency Injection.
 
     Circular Import Protection:
         Uses thread-local state to detect recursive initialization and falls
         back to basic structlog when circular dependencies are detected.
-
-    Performance:
-        - First call per thread: ~1-2ms (hub initialization)
-        - Subsequent calls: <0.1ms (cached hub instance)
-        - Fallback path: <0.05ms (direct structlog)
 
     Args:
         name: Logger name (e.g., __name__ from a module)
@@ -51,6 +47,10 @@ def get_logger(name: str | None = None) -> Any:
     Returns:
         Configured structlog logger instance
 
+    Note:
+        For building testable and maintainable applications, the recommended
+        approach is to inject a logger instance via a `Container`. See the
+        Dependency Injection guide for more information.
     """
     # Track recursion depth to prevent infinite loops
     depth = getattr(_is_initializing, "depth", 0)
