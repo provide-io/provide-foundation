@@ -32,7 +32,9 @@ _FOUNDATION_LOG_LEVEL: int | None = None
 _CACHED_SETUP_LOGGER: Any | None = None
 
 
-def format_foundation_log_message(timestamp: float, level_name: str, message: str) -> str:
+def format_foundation_log_message(
+    timestamp: float, level_name: str, message: str, use_colors: bool = False
+) -> str:
     """Shared formatter for both structlog and stdlib logging.
 
     This ensures consistent formatting across all Foundation internal logs.
@@ -41,6 +43,7 @@ def format_foundation_log_message(timestamp: float, level_name: str, message: st
         timestamp: Unix timestamp (seconds since epoch)
         level_name: Log level name (will be lowercased)
         message: Log message
+        use_colors: Whether to colorize output (for TTY)
 
     Returns:
         Formatted log string
@@ -51,9 +54,26 @@ def format_foundation_log_message(timestamp: float, level_name: str, message: st
     ct = datetime.datetime.fromtimestamp(timestamp)
     timestamp_str = ct.strftime("%Y-%m-%d %H:%M:%S.%f")
 
-    # Lowercase level name with padding to match structlog
+    # Lowercase level name with padding
     level = level_name.lower()
-    level_padded = f"[{level:<9}]"  # 9 chars for consistent padding
+
+    # Add colors if enabled (using structlog's color scheme)
+    if use_colors:
+        # ANSI color codes matching structlog's defaults
+        color_codes = {
+            "critical": "\033[31;1m",  # bright red
+            "error": "\033[31m",  # red
+            "warning": "\033[33m",  # yellow
+            "info": "\033[32m",  # green
+            "debug": "\033[34m",  # blue
+            "trace": "\033[36m",  # cyan
+        }
+        reset = "\033[0m"
+        color = color_codes.get(level, "")
+        level_padded = f"[{color}{level:<9}{reset}]"
+        timestamp_str = f"\033[2m{timestamp_str}\033[0m"  # dim timestamp
+    else:
+        level_padded = f"[{level:<9}]"
 
     # Format: timestamp [level    ] message
     return f"{timestamp_str} {level_padded} {message}"
@@ -161,6 +181,9 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:  
 
         return event_dict
 
+    # Check if output stream is a TTY for color support
+    is_tty = hasattr(foundation_stream, "isatty") and foundation_stream.isatty()
+
     # Create custom structlog processor that uses the shared formatter
     def shared_formatter_processor(logger: Any, method_name: str, event_dict: Any) -> str:
         """Structlog processor that uses the shared formatting function."""
@@ -188,8 +211,10 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:  
         if kvs:
             message = f"{message} {' '.join(kvs)}".strip()
 
-        # Use shared formatter
-        return format_foundation_log_message(timestamp=timestamp, level_name=level_name, message=message)
+        # Use shared formatter with color support
+        return format_foundation_log_message(
+            timestamp=timestamp, level_name=level_name, message=message, use_colors=is_tty
+        )
 
     # Configure structlog for core setup logger with shared formatting
     structlog.configure(
@@ -281,13 +306,19 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
 
         stream = sys.stderr if output != "stdout" else sys.stdout
 
+        # Check if output stream is a TTY for color support
+        is_tty = hasattr(stream, "isatty") and stream.isatty()
+
         # Use shared formatter to ensure consistency with structlog
         class SharedFormatter(logging.Formatter):
             """Formatter that uses the shared formatting function."""
 
             def format(self, record: logging.LogRecord) -> str:
                 return format_foundation_log_message(
-                    timestamp=record.created, level_name=record.levelname, message=record.getMessage()
+                    timestamp=record.created,
+                    level_name=record.levelname,
+                    message=record.getMessage(),
+                    use_colors=is_tty,
                 )
 
         handler = logging.StreamHandler(stream)
