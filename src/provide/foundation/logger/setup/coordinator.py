@@ -109,9 +109,13 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
         # Fallback to stderr if stream access fails
         foundation_stream = get_safe_stderr()
 
-    # Configure structlog for core setup logger
+    # Get the log level threshold
+    log_level_threshold = get_foundation_log_level()
+
+    # Configure structlog for core setup logger with log level filtering
     structlog.configure(
         processors=[
+            structlog.stdlib.filter_by_level,
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="iso"),
             structlog.dev.ConsoleRenderer(),
@@ -122,6 +126,8 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
     )
 
     _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
+    # Set the minimum log level on the underlying stdlib logger
+    _CACHED_SETUP_LOGGER._logger.setLevel(log_level_threshold)
     return _CACHED_SETUP_LOGGER
 
 
