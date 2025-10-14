@@ -362,6 +362,7 @@ class TestDependencyInjectionIntegration:
 
     def test_composition_root_pattern(self):
         """Test the Composition Root pattern."""
+
         # Composition Root using existing test classes
         def create_app() -> ServiceWithMultipleDeps:
             container = Container()

@@ -9,8 +9,8 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 # Test the new simple API
 from provide.foundation.file.operations import (
