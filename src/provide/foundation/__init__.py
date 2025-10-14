@@ -50,10 +50,8 @@ from provide.foundation.utils import (
     timed_block,
 )
 
-"""A foundational framework for building operationally excellent Python applications.
-
-This is the primary public interface for the framework, re-exporting common
-components for application development.
+"""Foundation Telemetry Library (structlog-based).
+Primary public interface for the library, re-exporting common components.
 """
 
 

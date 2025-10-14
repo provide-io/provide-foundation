@@ -4,36 +4,37 @@ import hashlib
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from provide.foundation.serialization.config import SerializationCacheConfig
     from provide.foundation.utils.caching import LRUCache
 
 """Caching utilities for serialization operations."""
 
 # Cache configuration - lazy evaluation to avoid circular imports
-_cached_config: SerializationCacheConfig | None = None
+_CACHE_ENABLED: bool | None = None
+_CACHE_SIZE: int | None = None
 _serialization_cache: LRUCache | None = None
 
 
-def _get_cache_config() -> SerializationCacheConfig:
+def _get_cache_config() -> tuple[bool, int]:
     """Get cache configuration with lazy initialization."""
-    global _cached_config
-    if _cached_config is None:
-        from provide.foundation.serialization.config import SerializationCacheConfig
+    global _CACHE_ENABLED, _CACHE_SIZE
+    if _CACHE_ENABLED is None or _CACHE_SIZE is None:
+        from provide.foundation.utils.environment import get_bool, get_int
 
-        _cached_config = SerializationCacheConfig.from_env()
-    return _cached_config
+        _CACHE_ENABLED = get_bool("FOUNDATION_SERIALIZATION_CACHE_ENABLED", default=True)
+        _CACHE_SIZE = get_int("FOUNDATION_SERIALIZATION_CACHE_SIZE", default=128)
+    return _CACHE_ENABLED, _CACHE_SIZE
 
 
 def get_cache_enabled() -> bool:
     """Whether caching is enabled."""
-    config = _get_cache_config()
-    return config.cache_enabled
+    enabled, _ = _get_cache_config()
+    return enabled
 
 
 def get_cache_size() -> int:
     """Cache size limit."""
-    config = _get_cache_config()
-    return config.cache_size
+    _, size = _get_cache_config()
+    return size
 
 
 def get_serialization_cache() -> LRUCache:
@@ -42,17 +43,10 @@ def get_serialization_cache() -> LRUCache:
     if _serialization_cache is None:
         from provide.foundation.utils.caching import LRUCache, register_cache
 
-        config = _get_cache_config()
-        _serialization_cache = LRUCache(maxsize=config.cache_size)
+        _, size = _get_cache_config()
+        _serialization_cache = LRUCache(maxsize=size)
         register_cache("serialization", _serialization_cache)
     return _serialization_cache
-
-
-def reset_serialization_cache_config() -> None:
-    """Reset cached config for testing purposes."""
-    global _cached_config, _serialization_cache
-    _cached_config = None
-    _serialization_cache = None
 
 
 # Convenience constants - use functions for actual access

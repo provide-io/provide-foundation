@@ -33,11 +33,10 @@ from provide.foundation.cli.utils import (
     setup_cli_logging,
 )
 
-"""Foundation CLI Subsystem.
+"""Foundation CLI utilities and adapter system.
 
-Provides a framework for building command-line interfaces through a
-framework-agnostic adapter pattern. It defines the structure and lifecycle
-for CLI applications, into which user-defined commands are plugged.
+Provides standard decorators, utilities, and framework-agnostic CLI building
+through the adapter pattern. Supports multiple CLI frameworks with a unified interface.
 """
 
 __all__ = [

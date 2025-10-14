@@ -68,7 +68,7 @@ import asyncio
 async def load_config():
     manager = ConfigManager()
     loader = FileConfigLoader("config.yaml")
-    
+
     await manager.register("app", loader=loader)
     config = await manager.get("app")
     return config
@@ -228,7 +228,7 @@ from provide.foundation.config import watch_config
 # Watch for config file changes
 @watch_config("config.yaml")
 def on_config_change(new_config):
-    logger.info("config_reloaded", 
+    logger.info("config_reloaded",
                 level=new_config.logging.level)
     logger.set_level(new_config.logging.level)
 

@@ -116,7 +116,7 @@ async def run_async():
     # Single async command
     result = await async_run_command(["echo", "async"])
     print(result.stdout)
-    
+
     # Multiple commands concurrently
     tasks = [
         async_run_command(["task1"]),
@@ -124,7 +124,7 @@ async def run_async():
         async_run_command(["task3"])
     ]
     results = await asyncio.gather(*tasks)
-    
+
     for result in results:
         print(f"Completed: {result.args[0]}")
 
@@ -255,33 +255,33 @@ from provide.foundation.process import run_command
 
 class CommandPipeline:
     """Execute commands in sequence."""
-    
+
     def __init__(self):
         self.commands = []
         self.results = []
-    
+
     def add(self, cmd, **kwargs):
         """Add command to pipeline."""
         self.commands.append((cmd, kwargs))
         return self
-    
+
     def run(self):
         """Execute pipeline."""
         for cmd, kwargs in self.commands:
             try:
                 result = run_command(cmd, **kwargs)
                 self.results.append(result)
-                
+
                 # Use output as input for next command
                 if self.results and 'input' not in kwargs:
                     kwargs['input'] = result.stdout
-                    
+
             except ProcessError as e:
                 logger.error(f"Pipeline failed at: {cmd}")
                 raise
-        
+
         return self.results
-    
+
 # Use pipeline
 pipeline = CommandPipeline()
 results = (
@@ -304,13 +304,13 @@ import asyncio
 
 class ProcessManager:
     """Manage multiple concurrent processes."""
-    
+
     def __init__(self, max_concurrent=5):
         self.max_concurrent = max_concurrent
         self.semaphore = asyncio.Semaphore(max_concurrent)
         self.running = []
         self.completed = []
-    
+
     async def run_task(self, cmd, **kwargs):
         """Run task with concurrency limit."""
         async with self.semaphore:
@@ -323,7 +323,7 @@ class ProcessManager:
             except Exception as e:
                 logger.error(f"Failed: {cmd} - {e}")
                 raise
-    
+
     async def run_all(self, tasks):
         """Run all tasks concurrently."""
         coroutines = [
@@ -339,15 +339,15 @@ class ProcessManager:
 # Use manager
 async def process_batch():
     manager = ProcessManager(max_concurrent=3)
-    
+
     tasks = [
         (["task1", "--option"], {"timeout": 30}),
         (["task2"], {"cwd": "/tmp"}),
         (["task3"], {"env": {"VAR": "value"}}),
     ]
-    
+
     results = await manager.run_all(tasks)
-    
+
     # Check results
     for result in results:
         if isinstance(result, Exception):
@@ -368,7 +368,7 @@ import os
 
 def run_script_safely(script_content: str, interpreter="bash"):
     """Run script content safely."""
-    
+
     # Create temporary script file
     with tempfile.NamedTemporaryFile(
         mode='w',
@@ -377,12 +377,12 @@ def run_script_safely(script_content: str, interpreter="bash"):
     ) as f:
         f.write(script_content)
         script_path = f.name
-    
+
     try:
         # Make executable if needed
         if interpreter == "bash":
             os.chmod(script_path, 0o755)
-        
+
         # Run script
         result = run_command(
             [interpreter, script_path],
@@ -390,16 +390,16 @@ def run_script_safely(script_content: str, interpreter="bash"):
             timeout=60.0,
             check=False  # Handle errors ourselves
         )
-        
+
         if result.returncode != 0:
             logger.error(
                 "Script failed",
                 exit_code=result.returncode,
                 stderr=result.stderr
             )
-        
+
         return result
-        
+
     finally:
         # Clean up
         try:

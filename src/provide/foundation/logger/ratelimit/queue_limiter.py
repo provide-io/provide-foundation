@@ -15,31 +15,6 @@ from typing import Any, Literal
 class QueuedRateLimiter:
     """Rate limiter with a queue for buffering logs.
     Drops oldest messages when queue is full (FIFO overflow).
-
-    Lifecycle Management:
-        The QueuedRateLimiter requires explicit lifecycle management:
-        1. Create instance: `limiter = QueuedRateLimiter(...)`
-        2. Start processing: `limiter.start()`
-        3. Use normally: `limiter.enqueue(item)`
-        4. Shutdown cleanly: `limiter.stop()`
-
-    Examples:
-        >>> limiter = QueuedRateLimiter(capacity=100.0, refill_rate=10.0)
-        >>> limiter.start()  # Start background processing
-        >>> try:
-        ...     limiter.enqueue(log_item)
-        ... finally:
-        ...     limiter.stop()  # Clean shutdown
-
-        >>> # Or use as a context manager
-        >>> with QueuedRateLimiter(100.0, 10.0) as limiter:
-        ...     limiter.enqueue(log_item)  # Automatically starts and stops
-
-    Note on Threading:
-        This implementation uses threading.Thread for background processing.
-        Foundation's preferred concurrency model is asyncio (see utils/rate_limiting.py
-        for the async TokenBucketRateLimiter). This threading approach is maintained
-        for backward compatibility with synchronous logging contexts.
     """
 
     def __init__(
@@ -51,11 +26,6 @@ class QueuedRateLimiter:
         overflow_policy: Literal["drop_oldest", "drop_newest", "block"] = "drop_oldest",
     ) -> None:
         """Initialize the queued rate limiter.
-
-        Note:
-            This does NOT start the worker thread automatically. Call start()
-            to begin processing the queue. This allows applications to control
-            the lifecycle and thread management.
 
         Args:
             capacity: Maximum tokens (burst capacity)
@@ -94,70 +64,10 @@ class QueuedRateLimiter:
         self.total_processed = 0
         self.estimated_memory = 0
 
-        # Worker thread for processing queue (not started automatically)
-        self.running = False
-        self.worker_thread: threading.Thread | None = None
-
-    def start(self) -> None:
-        """Start the worker thread for processing queued items.
-
-        This should be called after initialization and before enqueuing items.
-        Can be called multiple times (subsequent calls are no-ops if already running).
-
-        Raises:
-            RuntimeError: If start() is called after stop() on the same instance
-        """
-        if self.running:
-            # Already running, no-op
-            return
-
-        if self.worker_thread is not None and self.worker_thread.is_alive():
-            # Thread exists and is alive, no-op
-            return
-
-        # Start new worker thread
+        # Worker thread for processing queue
         self.running = True
         self.worker_thread = threading.Thread(target=self._process_queue, daemon=True)
         self.worker_thread.start()
-
-    def stop(self, timeout: float = 1.0) -> None:
-        """Stop the worker thread and wait for it to finish.
-
-        This provides a clean shutdown, allowing the worker to finish processing
-        the current item before terminating.
-
-        Args:
-            timeout: Maximum seconds to wait for thread to finish (default: 1.0)
-
-        Example:
-            >>> limiter.stop(timeout=2.0)  # Wait up to 2 seconds for clean shutdown
-        """
-        self.running = False
-        if self.worker_thread and self.worker_thread.is_alive():
-            self.worker_thread.join(timeout=timeout)
-
-    def __enter__(self) -> QueuedRateLimiter:
-        """Enter context manager, automatically starting the worker thread.
-
-        Returns:
-            Self for use in with statement
-
-        Example:
-            >>> with QueuedRateLimiter(100.0, 10.0) as limiter:
-            ...     limiter.enqueue(item)
-        """
-        self.start()
-        return self
-
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
-        """Exit context manager, automatically stopping the worker thread.
-
-        Args:
-            exc_type: Exception type (if any)
-            exc_val: Exception value (if any)
-            exc_tb: Exception traceback (if any)
-        """
-        self.stop()
 
     def _estimate_size(self, item: Any) -> int:
         """Estimate memory size of an item."""
@@ -262,6 +172,12 @@ class QueuedRateLimiter:
                 "max_memory_mb": self.max_memory_bytes / 1024 / 1024 if self.max_memory_bytes else None,
                 "overflow_policy": self.overflow_policy,
             }
+
+    def shutdown(self) -> None:
+        """Shutdown the worker thread."""
+        self.running = False
+        if self.worker_thread.is_alive():
+            self.worker_thread.join(timeout=1.0)
 
 
 class BufferedRateLimiter:

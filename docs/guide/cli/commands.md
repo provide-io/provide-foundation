@@ -207,7 +207,7 @@ def create_cli():
         name="myapp",
         description="My Application CLI"
     )
-    
+
     # Auto-discover and register all commands
     cli = manager.create_cli()
     return cli
@@ -231,10 +231,10 @@ def create_cli():
         add_help_option=True,
         add_version_option="1.0.0"
     )
-    
+
     # Add global options to all commands
     manager.add_global_decorator(logging_options)
-    
+
     return manager.create_cli()
 ```
 
@@ -268,7 +268,7 @@ from provide.foundation.hub import get_command_registry
 def create_dynamic_command(name: str):
     def command():
         print(f"Dynamic command: {name}")
-    
+
     # Register dynamically
     registry = get_command_registry()
     registry.register(
@@ -369,11 +369,11 @@ def main():
         name="myapp",
         description="My Application CLI"
     )
-    
+
     # Add global options
     manager.add_global_decorator(logging_options)
     manager.add_global_decorator(output_options)
-    
+
     # Create and run CLI
     cli = manager.create_cli()
     cli()
@@ -385,5 +385,5 @@ if __name__ == "__main__":
 ## Related Topics
 
 - [Arguments & Options](arguments.md) - Handling command arguments
-- [Nested Commands](nested.md) - Building command hierarchies  
+- [Nested Commands](nested.md) - Building command hierarchies
 - [Output Formatting](output.md) - Formatting command output

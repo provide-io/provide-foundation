@@ -49,18 +49,14 @@ def _send_log_entry(
         from provide.foundation.integrations.openobserve import send_log
 
     try:
-        # Add trace context to attributes if provided
-        if trace_id:
-            attributes["trace_id"] = trace_id
-        if span_id:
-            attributes["span_id"] = span_id
-
-        # Send via OTLP (with bulk API fallback)
+        # Send via OTLP (only supported method)
         send_log(
             message=message,
             level=level,
-            service=service,
+            service_name=service,
             attributes=attributes,
+            trace_id=trace_id,
+            span_id=span_id,
         )
         click.echo("✓ Log sent via OTLP")
         return 0
