@@ -68,7 +68,7 @@ def telemetry_config() -> TelemetryConfig:
     return TelemetryConfig.from_env()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObserveClient | None:
     """Create OpenObserve client if configuration is available.
 
@@ -80,6 +80,10 @@ def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObserveClie
 
     Returns:
         OpenObserveClient instance if configured, None otherwise
+
+    Note:
+        Changed from session to function scope to avoid event loop closure issues
+        during cleanup. Each test gets its own client instance.
 
     """
     # Check if OpenObserve is configured
@@ -101,38 +105,44 @@ def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObserveClie
 
 
 @pytest.fixture(scope="session")
-def openobserve_available(openobserve_client: OpenObserveClient | None) -> bool:
+def openobserve_available(openobserve_config: OpenObserveConfig) -> bool:
     """Check if OpenObserve instance is reachable.
 
     Args:
-        openobserve_client: OpenObserve client from fixture
+        openobserve_config: OpenObserve configuration from fixture
 
     Returns:
         True if OpenObserve is reachable, False otherwise
 
+    Note:
+        Uses direct HTTP check instead of client to avoid async/event loop issues
+        with session-scoped fixtures.
+
     """
-    if not openobserve_client:
+    if not openobserve_config.url:
+        return False
+
+    if not openobserve_config.user or not openobserve_config.password:
         return False
 
     try:
         # Try to connect to OpenObserve by checking the streams endpoint
         # Use basic HTTP check with requests library since we're in a session-scoped fixture
-        # The client URL already includes /api/{org}, so we just append the endpoint
-        auth = (openobserve_client.username, openobserve_client.password)
+        # The URL already includes /api/{org}, so we just append the endpoint
+        auth = (openobserve_config.user, openobserve_config.password)
 
         # Try the streams endpoint as a connectivity test
-        url = f"{openobserve_client.url.rstrip('/')}/streams"
+        url = f"{openobserve_config.url.rstrip('/')}/streams"
         response = requests.get(
             url,
             timeout=5,
             auth=auth,
         )
-        # Accept 200 (success) or 401 (means server is reachable, just auth issue)
-        return response.status_code in (200, 401)
+        # Accept 200 (success) - 401 would mean bad credentials
+        return response.status_code == 200
     except Exception as e:
         # If connection fails completely, assume unavailable
-        # We cannot call async methods from session-scoped fixtures
-        pytest.skip(f"OpenObserve instance at {openobserve_client.url} is not reachable: {e}")
+        pytest.skip(f"OpenObserve instance at {openobserve_config.url} is not reachable: {e}")
         return False
 
 
