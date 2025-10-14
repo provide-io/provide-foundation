@@ -14,86 +14,44 @@ from typing import TypeVar
 T = TypeVar("T")
 
 
-def run_async(coro: Coroutine[None, None, T] | Awaitable[T], *, warn: bool = False) -> T:
+def run_async(coro: Coroutine[None, None, T] | Awaitable[T]) -> T:
     """Run an async coroutine from sync context.
 
-    **IMPORTANT CONSTRAINTS:**
-
-    This is a bridge utility for running async code from sync contexts (e.g., CLI commands).
-    It should NOT be used in async contexts - use `await` directly instead.
-
-    **When to use:**
-    - CLI commands that need to call async client methods
-    - Sync utility functions that need to call async APIs
-    - Test fixtures that need to run async code synchronously
-
-    **When NOT to use:**
-    - Inside async functions (use `await` instead)
-    - In performance-critical loops (creates event loop overhead)
-    - With long-running coroutines (blocks the thread)
-
-    **Limitations:**
-    - Creates a new event loop if one doesn't exist (has overhead)
-    - Blocks the calling thread until coroutine completes
-    - Cannot run multiple coroutines concurrently
-    - Should not be nested (will raise RuntimeError)
+    This is useful for CLI commands that need to call async client methods.
+    It handles event loop management properly, creating a new loop if needed.
 
     Args:
         coro: Async coroutine or awaitable to run
-        warn: If True, logs a warning when used (for debugging)
 
     Returns:
         Result from the coroutine
-
-    Raises:
-        RuntimeError: If called from within an already-running event loop
 
     Example:
         ```python
         from provide.foundation.utils.async_helpers import run_async
 
-        # ✅ GOOD: In a sync CLI command
+        # In a sync CLI command
         async def fetch_data():
             client = UniversalClient()
             return await client.get("https://api.example.com/data")
 
         result = run_async(fetch_data())
-
-        # ❌ BAD: Inside an async function
-        async def my_async_function():
-            result = run_async(some_coro())  # Wrong! Use await instead
         ```
 
     Note:
-        Consider refactoring to use native async entry points instead of
-        bridging sync/async boundaries. This function is a convenience for
-        specific use cases, not a general-purpose async executor.
+        This creates or reuses an event loop appropriately. It's safe to call
+        from contexts where an event loop may or may not exist.
 
     """
-    # Emit warning if requested (for debugging/auditing)
-    if warn:
-        import warnings
-
-        warnings.warn(
-            "run_async() called - consider using native async entry points instead",
-            stacklevel=2,
-        )
-
     # Try to get the current running loop (will raise if not in async context)
     try:
         loop = asyncio.get_running_loop()
         # If we get here, we're in an async context - should use await instead
         raise RuntimeError(
-            "Cannot use run_async() from within an already-running event loop. "
-            "Use 'await' directly instead. "
-            "This typically happens when run_async() is called from async code."
+            "Cannot use run_async() from within an already-running event loop. Use 'await' directly instead."
         )
-    except RuntimeError as e:
-        # Re-raise if it's our custom error message
-        if "Cannot use run_async()" in str(e):
-            raise
-        # Otherwise, no running loop which is what we expect
-        pass
+    except RuntimeError:
+        pass  # No running loop, which is what we expect
 
     # Try to get or create an event loop
     try:

@@ -37,7 +37,7 @@ results = {"status": "success", "count": 42}
 pout(results)  # Automatically formatted
 ```
 
-### perr() - Error Output  
+### perr() - Error Output
 
 Write to stderr with same formatting options:
 
@@ -126,11 +126,11 @@ from provide.foundation import apin, apin_stream, apin_lines
 async def get_user_input():
     # Async prompt
     name = await apin("Name: ")
-    
+
     # Async stream processing
     async for line in apin_stream():
         await process_async(line)
-    
+
     # Async batch reading
     lines = await apin_lines(10)
 ```
@@ -180,7 +180,7 @@ Colors are automatically disabled when not supported:
 ```python
 # These colors work when stdout is a TTY
 pout("Red text", color="red")
-pout("Green text", color="green")  
+pout("Green text", color="green")
 pout("Yellow text", color="yellow")
 pout("Blue text", color="blue")
 pout("Magenta text", color="magenta")
@@ -224,10 +224,10 @@ from provide.foundation import pout, Context
 def command(ctx):
     # Get foundation context
     foundation_ctx = Context.get_current()
-    
+
     # Output respects context settings
     pout("Output", ctx=foundation_ctx)
-    
+
     # Override context
     custom_ctx = Context(json_output=True)
     pout(data, ctx=custom_ctx)  # Forces JSON
@@ -241,7 +241,7 @@ Control output globally via environment:
 # Enable JSON output globally
 export PROVIDE_JSON_OUTPUT=true
 
-# Disable colors globally  
+# Disable colors globally
 export PROVIDE_NO_COLOR=true
 
 # Disable emoji globally
@@ -325,7 +325,7 @@ from provide.foundation.cli import output_options, logging_options
 @click.option('--interactive', is_flag=True)
 def process_data(json_output, no_color, no_emoji, interactive, **kwargs):
     """Process data with formatted output."""
-    
+
     # Interactive input
     if interactive:
         name = pin("Enter dataset name: ", color="cyan")
@@ -333,10 +333,10 @@ def process_data(json_output, no_color, no_emoji, interactive, **kwargs):
         if confirm.lower() != 'y':
             perr("⚠️ Cancelled by user", color="yellow")
             return
-    
+
     # Status output
     pout("🚀 Starting processing...", color="blue", bold=True)
-    
+
     try:
         # Simulate processing
         results = {
@@ -345,13 +345,13 @@ def process_data(json_output, no_color, no_emoji, interactive, **kwargs):
             "errors": 0,
             "duration": 2.5
         }
-        
+
         # Success output
         pout("✅ Processing complete!", color="green", bold=True)
         pout(results, json_key="results")
-        
+
     except Exception as e:
-        # Error output  
+        # Error output
         perr(f"❌ Processing failed: {e}", color="red", bold=True)
         perr({"error": str(e), "type": type(e).__name__}, json_key="error")
         raise click.ClickException(str(e))

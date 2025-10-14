@@ -200,14 +200,14 @@ def process_file(path: str):
             f"Failed to process file: {path}",
             cause=e
         )
-        
+
         # Add context progressively
         error.add_context("file.path", path)
         error.add_context("file.size", os.path.getsize(path))
         error.add_context("file.modified", os.path.getmtime(path))
-        
+
         # Log with full context
-        logger.error("File processing failed", 
+        logger.error("File processing failed",
                     **error.to_dict())
         raise error
 ```
@@ -228,7 +228,7 @@ except FoundationError as e:
     #     "error.code": "...",
     #     "error.context": {...}
     # }
-    
+
     # API response
     return JSONResponse(
         status_code=500,
@@ -275,10 +275,10 @@ Centralized service error handling:
 ```python
 class ServiceClient:
     """Client with comprehensive error handling."""
-    
+
     def __init__(self, base_url: str):
         self.base_url = base_url
-    
+
     @with_retry(
         max_attempts=3,
         exceptions=(NetworkError,)
@@ -290,18 +290,18 @@ class ServiceClient:
     async def call(self, endpoint: str, **kwargs):
         """Make API call with error handling."""
         url = f"{self.base_url}/{endpoint}"
-        
+
         try:
             response = await self._make_request(url, **kwargs)
             return self._handle_response(response)
-            
+
         except aiohttp.ClientError as e:
             raise NetworkError(
                 f"Request failed: {e}",
                 endpoint=endpoint,
                 url=url
             ) from e
-    
+
     def _map_errors(self, exc: Exception) -> Exception:
         """Map client errors to domain errors."""
         if isinstance(exc, aiohttp.ClientResponseError):
@@ -321,12 +321,12 @@ def process_batch(items: list, continue_on_error=True):
     """Process batch with error tracking."""
     results = []
     errors = []
-    
+
     for i, item in enumerate(items):
         try:
             result = process_item(item)
             results.append(result)
-            
+
         except Exception as e:
             error = FoundationError(
                 f"Item {i} failed",
@@ -335,19 +335,19 @@ def process_batch(items: list, continue_on_error=True):
                 cause=e
             )
             errors.append(error)
-            
+
             if not continue_on_error:
                 logger.error("Batch processing aborted",
                            completed=len(results),
                            failed=len(errors))
                 raise error
-    
+
     # Log summary
     logger.info("Batch completed",
                total=len(items),
                successful=len(results),
                failed=len(errors))
-    
+
     return results, errors
 ```
 
@@ -362,10 +362,10 @@ async def parallel_operations(tasks: list):
         *tasks,
         return_exceptions=True
     )
-    
+
     successes = []
     failures = []
-    
+
     for i, result in enumerate(results):
         if isinstance(result, Exception):
             failures.append({
@@ -375,7 +375,7 @@ async def parallel_operations(tasks: list):
             })
         else:
             successes.append(result)
-    
+
     if failures:
         error = FoundationError(
             f"{len(failures)} of {len(tasks)} tasks failed",
@@ -384,10 +384,10 @@ async def parallel_operations(tasks: list):
         )
         logger.error("Parallel execution partial failure",
                     **error.to_dict())
-        
+
         if len(failures) == len(tasks):
             raise error
-    
+
     return successes, failures
 ```
 

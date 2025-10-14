@@ -113,12 +113,12 @@ from abc import ABC, abstractmethod
 
 class Plugin(ABC):
     """Base plugin interface."""
-    
+
     @abstractmethod
     def initialize(self):
         """Initialize the plugin."""
         pass
-    
+
     @abstractmethod
     def execute(self, *args, **kwargs):
         """Execute plugin functionality."""
@@ -126,13 +126,13 @@ class Plugin(ABC):
 
 class DataPlugin(Plugin):
     """Data processing plugin."""
-    
+
     def __init__(self, name: str):
         self.name = name
-    
+
     def initialize(self):
         logger.info(f"Initializing {self.name}")
-    
+
     def execute(self, data):
         # Process data
         return transformed_data
@@ -159,13 +159,13 @@ from pathlib import Path
 def discover_plugins(package_path: Path):
     """Discover and register plugins from a package."""
     registry = Registry.get_default()
-    
+
     # Find plugin modules
     for finder, name, ispkg in pkgutil.iter_modules([str(package_path)]):
         if name.startswith("plugin_"):
             # Import module
             module = importlib.import_module(f"plugins.{name}")
-            
+
             # Register if it has register function
             if hasattr(module, "register"):
                 plugin = module.register()
@@ -194,31 +194,31 @@ Handle component dependencies:
 ```python
 class DependencyRegistry(Registry):
     """Registry with dependency resolution."""
-    
+
     def register_with_deps(self, name, value, dependencies=None, **kwargs):
         """Register with dependency tracking."""
         deps = dependencies or []
-        
+
         # Check dependencies exist
         for dep in deps:
             if not self.has(dep, dimension=kwargs.get("dimension")):
                 raise ValueError(f"Missing dependency: {dep}")
-        
+
         # Register with dependency metadata
         kwargs["metadata"] = kwargs.get("metadata", {})
         kwargs["metadata"]["dependencies"] = deps
-        
+
         self.register(name, value, **kwargs)
-    
+
     def get_with_deps(self, name, dimension=None):
         """Get component with all dependencies."""
         component = self.get(name, dimension=dimension)
         metadata = self.get_metadata(name, dimension=dimension)
-        
+
         deps = {}
         for dep_name in metadata.get("dependencies", []):
             deps[dep_name] = self.get(dep_name, dimension=dimension)
-        
+
         return component, deps
 
 # Use dependency registry
@@ -250,10 +250,10 @@ from provide.foundation.hub import HubManager
 
 class CommandRegistry:
     """Registry for CLI commands."""
-    
+
     def __init__(self):
         self.registry = Registry(name="commands")
-    
+
     def command(self, name, **metadata):
         """Decorator to register commands."""
         def decorator(func):
@@ -265,7 +265,7 @@ class CommandRegistry:
             )
             return func
         return decorator
-    
+
     def get_all_commands(self):
         """Get all registered commands."""
         return self.registry.list_dimension("command")
@@ -287,7 +287,7 @@ def test_command():
 # Build CLI from registry
 def build_cli():
     manager = HubManager(name="myapp")
-    
+
     for name, func in cmd_registry.get_all_commands():
         metadata = cmd_registry.registry.get_metadata(name, "command")
         manager.register_command(
@@ -295,7 +295,7 @@ def build_cli():
             func=func,
             aliases=metadata.get("aliases", [])
         )
-    
+
     return manager.create_cli()
 ```
 
@@ -308,15 +308,15 @@ from provide.foundation.registry import Registry
 
 class ServiceLocator:
     """Central service registry."""
-    
+
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls._instance.registry = Registry(name="services")
         return cls._instance
-    
+
     def register_service(self, interface, implementation, **config):
         """Register service implementation."""
         self.registry.register(
@@ -325,23 +325,23 @@ class ServiceLocator:
             dimension="service",
             metadata={"config": config, "interface": interface}
         )
-    
+
     def get_service(self, interface):
         """Get service by interface."""
         name = interface.__name__
         service = self.registry.get(name, dimension="service")
-        
+
         if service is None:
             raise ValueError(f"No service registered for {name}")
-        
+
         return service
-    
+
     def configure_services(self):
         """Configure all registered services."""
         for name, service in self.registry.list_dimension("service"):
             metadata = self.registry.get_metadata(name, "service")
             config = metadata.get("config", {})
-            
+
             if hasattr(service, "configure"):
                 service.configure(**config)
 
@@ -377,30 +377,30 @@ from provide.foundation.registry import Registry
 
 class ExtensionPoint:
     """Defines an extension point."""
-    
+
     def __init__(self, name: str, interface: type):
         self.name = name
         self.interface = interface
         self.registry = Registry(name=f"ext_{name}")
-    
+
     def register(self, extension):
         """Register an extension."""
         if not isinstance(extension, self.interface):
             raise TypeError(f"Extension must implement {self.interface}")
-        
+
         self.registry.register(
             name=extension.__class__.__name__,
             value=extension,
             dimension="extension"
         )
-    
+
     def get_extensions(self):
         """Get all registered extensions."""
         return [
-            ext for _, ext in 
+            ext for _, ext in
             self.registry.list_dimension("extension")
         ]
-    
+
     def execute_all(self, *args, **kwargs):
         """Execute all extensions."""
         results = []
@@ -429,7 +429,7 @@ validation_point.register(EmailValidator())
 def process_data(data):
     # Run all validators
     results = validation_point.execute_all(data)
-    
+
     if all(results):
         print("Validation passed")
     else:
@@ -491,7 +491,7 @@ component = registry.get("optional_component")  # May be None
 def register_handler(name, handler):
     if not callable(handler):
         raise TypeError("Handler must be callable")
-    
+
     registry.register(
         name,
         handler,

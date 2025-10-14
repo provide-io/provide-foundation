@@ -31,7 +31,7 @@ This adds:
 
 All options respect environment variables:
 - `PROVIDE_LOG_LEVEL`
-- `PROVIDE_LOG_FILE`  
+- `PROVIDE_LOG_FILE`
 - `PROVIDE_LOG_FORMAT`
 
 ### Configuration Options
@@ -137,16 +137,16 @@ def process_file(
     input_file, output
 ):
     """Process a file with full CLI support."""
-    
+
     # Logging is automatically configured
     logger.info("Processing file", file=input_file)
-    
+
     if config:
         logger.info("Loading config", config=config, profile=profile)
-    
+
     # Your processing logic here
     result = {"status": "success", "file": input_file}
-    
+
     if json_output:
         import json
         print(json.dumps(result))
@@ -205,10 +205,10 @@ def command(ctx):
     """Command with context access."""
     # Click context
     click_ctx = ctx
-    
+
     # Foundation context (if initialized)
     foundation_ctx = Context.get_current()
-    
+
     # Access parent command's parameters
     if ctx.parent:
         parent_params = ctx.parent.params

@@ -58,7 +58,7 @@ def deploy_prod():
 
 # Creates structure:
 # myapp project env dev setup
-# myapp project env dev teardown  
+# myapp project env dev teardown
 # myapp project env prod deploy
 ```
 

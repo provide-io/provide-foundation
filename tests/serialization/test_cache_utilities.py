@@ -16,14 +16,16 @@ class TestCacheConfiguration:
     def test_default_cache_enabled(self, clean_env):
         """Cache should be enabled by default."""
         # Reset module-level variables
-        cache.reset_serialization_cache_config()
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
 
         enabled = cache.get_cache_enabled()
         assert enabled is True
 
     def test_default_cache_size(self, clean_env):
         """Default cache size should be 128."""
-        cache.reset_serialization_cache_config()
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
 
         size = cache.get_cache_size()
         assert size == 128
@@ -31,7 +33,8 @@ class TestCacheConfiguration:
     def test_cache_enabled_via_env(self, clean_env, monkeypatch):
         """Cache can be disabled via environment variable."""
         monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_ENABLED", "false")
-        cache.reset_serialization_cache_config()
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
 
         enabled = cache.get_cache_enabled()
         assert enabled is False
@@ -39,27 +42,31 @@ class TestCacheConfiguration:
     def test_cache_size_via_env(self, clean_env, monkeypatch):
         """Cache size can be configured via environment variable."""
         monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_SIZE", "256")
-        cache.reset_serialization_cache_config()
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
 
         size = cache.get_cache_size()
         assert size == 256
 
     def test_lazy_initialization_single_call(self, clean_env):
         """Cache config should only be initialized once."""
-        cache.reset_serialization_cache_config()
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
 
         # First call initializes
-        config1 = cache._get_cache_config()
+        enabled1, size1 = cache._get_cache_config()
 
         # Second call returns cached values
-        config2 = cache._get_cache_config()
+        enabled2, size2 = cache._get_cache_config()
 
-        assert config1 is config2
+        assert enabled1 == enabled2
+        assert size1 == size2
 
     def test_config_persistence_across_calls(self, clean_env, monkeypatch):
         """Config should persist even if environment changes."""
         monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_SIZE", "512")
-        cache.reset_serialization_cache_config()
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
 
         size1 = cache.get_cache_size()
 
@@ -76,7 +83,7 @@ class TestSerializationCache:
 
     def test_cache_lazy_initialization(self, clean_env):
         """Cache instance should be created on first access."""
-        cache.reset_serialization_cache_config()
+        cache._serialization_cache = None
 
         cache_instance = cache.get_serialization_cache()
 
@@ -84,7 +91,7 @@ class TestSerializationCache:
 
     def test_cache_singleton(self, clean_env):
         """Should return same cache instance on multiple calls."""
-        cache.reset_serialization_cache_config()
+        cache._serialization_cache = None
 
         cache1 = cache.get_serialization_cache()
         cache2 = cache.get_serialization_cache()
@@ -94,7 +101,9 @@ class TestSerializationCache:
     def test_cache_respects_size_config(self, clean_env, monkeypatch):
         """Cache should respect configured size limit."""
         monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_SIZE", "64")
-        cache.reset_serialization_cache_config()
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
+        cache._serialization_cache = None
 
         cache_instance = cache.get_serialization_cache()
 
@@ -102,7 +111,7 @@ class TestSerializationCache:
 
     def test_cache_initialization_creates_lru_cache(self, clean_env):
         """Cache initialization should create an LRU cache instance."""
-        cache.reset_serialization_cache_config()
+        cache._serialization_cache = None
 
         cache_instance = cache.get_serialization_cache()
 
@@ -175,7 +184,7 @@ class TestCacheOperations:
 
     def test_cache_set_and_get(self, clean_env):
         """Should be able to set and get values."""
-        cache.reset_serialization_cache_config()
+        cache._serialization_cache = None
         cache_instance = cache.get_serialization_cache()
 
         key = cache.get_cache_key('{"test": 1}', "json")
@@ -186,7 +195,7 @@ class TestCacheOperations:
 
     def test_cache_miss_returns_none(self, clean_env):
         """Cache miss should return None."""
-        cache.reset_serialization_cache_config()
+        cache._serialization_cache = None
         cache_instance = cache.get_serialization_cache()
 
         result = cache_instance.get("nonexistent:key")
@@ -194,7 +203,7 @@ class TestCacheOperations:
 
     def test_cache_clear(self, clean_env):
         """Should be able to clear cache."""
-        cache.reset_serialization_cache_config()
+        cache._serialization_cache = None
         cache_instance = cache.get_serialization_cache()
 
         key = cache.get_cache_key('{"test": 1}', "json")
@@ -207,7 +216,9 @@ class TestCacheOperations:
     def test_cache_lru_eviction(self, clean_env, monkeypatch):
         """Should evict oldest items when cache is full."""
         monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_SIZE", "2")
-        cache.reset_serialization_cache_config()
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
+        cache._serialization_cache = None
 
         cache_instance = cache.get_serialization_cache()
 
@@ -228,7 +239,7 @@ class TestThreadSafety:
 
     def test_concurrent_cache_initialization(self, clean_env):
         """Multiple threads initializing cache should be safe."""
-        cache.reset_serialization_cache_config()
+        cache._serialization_cache = None
         caches = []
 
         def init_cache():
@@ -245,7 +256,7 @@ class TestThreadSafety:
 
     def test_concurrent_cache_operations(self, clean_env):
         """Concurrent cache operations should be safe."""
-        cache.reset_serialization_cache_config()
+        cache._serialization_cache = None
         cache_instance = cache.get_serialization_cache()
         results = []
 
@@ -270,23 +281,23 @@ class TestConvenienceConstants:
 
     def test_cache_enabled_constant(self, clean_env):
         """CACHE_ENABLED should be callable."""
-        cache.reset_serialization_cache_config()
-        
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
 
         assert callable(cache.CACHE_ENABLED)
         assert cache.CACHE_ENABLED() is True
 
     def test_cache_size_constant(self, clean_env):
         """CACHE_SIZE should be callable."""
-        cache.reset_serialization_cache_config()
-        
+        cache._CACHE_ENABLED = None
+        cache._CACHE_SIZE = None
 
         assert callable(cache.CACHE_SIZE)
         assert cache.CACHE_SIZE() == 128
 
     def test_serialization_cache_constant(self, clean_env):
         """serialization_cache should be callable."""
-        cache.reset_serialization_cache_config()
+        cache._serialization_cache = None
 
         assert callable(cache.serialization_cache)
         assert isinstance(cache.serialization_cache(), LRUCache)

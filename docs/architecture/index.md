@@ -37,7 +37,7 @@ Detailed specification of the structured logging format, including:
 - Timestamp formats
 - Context propagation
 
-### Event Enrichment System
+### [Event Enrichment System](event-enrichment.md)
 The visual parsing and metadata enhancement system:
 - Domain-to-emoji mappings
 - Event metadata enrichment
@@ -64,7 +64,7 @@ Performance specifications and benchmarks:
 - ✅ **OpenTelemetry Bridge**: Full OTEL compatibility layer
 
 ### Experimental Features
-- 🧪 **Advanced Metrics**: Prometheus integration (planned)
+- None currently
 
 ### Deprecated Features
 - None currently
@@ -95,27 +95,41 @@ All log messages follow this structure:
 ### Event Set Interface
 
 ```python
-from abc import ABC, abstractmethod
+from __future__ import annotations
+
+from collections.abc import Callable
 from typing import Any
 
-class EventMapping:
-    """Mapping for event enrichment."""
-    
-    def __init__(self, name: str, visual_markers: dict[str, str]):
-        self.name = name
-        self.visual_markers = visual_markers
-    
-    def get_marker(self, value: str) -> str | None:
-        """Get visual marker for value."""
-        return self.visual_markers.get(value)
+from attrs import define, field
 
+from provide.foundation.config.defaults import DEFAULT_EVENT_KEY
+
+@define(frozen=True, slots=True)
+class EventMapping:
+    name: str
+    visual_markers: dict[str, str] = field(factory=dict)
+    metadata_fields: dict[str, dict[str, Any]] = field(factory=dict)
+    transformations: dict[str, Callable[[Any], Any]] = field(factory=dict)
+    default_key: str = field(default=DEFAULT_EVENT_KEY)
+
+
+@define(frozen=True, slots=True)
+class FieldMapping:
+    log_key: str
+    description: str | None = field(default=None)
+    value_type: str | None = field(default=None)
+    event_set_name: str | None = field(default=None)
+    default_override_key: str | None = field(default=None)
+    default_value: Any | None = field(default=None)
+
+
+@define(frozen=True, slots=True)
 class EventSet:
-    """Collection of event enrichment mappings."""
-    
-    def __init__(self, name: str, description: str, mappings: list[EventMapping]):
-        self.name = name
-        self.description = description
-        self.mappings = mappings
+    name: str
+    description: str | None = field(default=None)
+    mappings: list[EventMapping] = field(factory=list)
+    field_mappings: list[FieldMapping] = field(factory=list)
+    priority: int = field(default=0, converter=int)
 ```
 
 ### Performance Requirements

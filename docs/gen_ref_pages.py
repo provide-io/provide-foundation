@@ -86,6 +86,15 @@ The core modules provide the fundamental functionality of provide.foundation.
 ### Error Handling
 - [`provide.foundation.errors`](reference/provide/foundation/errors/index.md) - Error handling utilities
 
+### Security
+- [`provide.foundation.security`](reference/provide/foundation/security/index.md) - Security utilities
+
+### State Management
+- [`provide.foundation.state`](reference/provide/foundation/state/index.md) - State management
+
+### Time
+- [`provide.foundation.time`](reference/provide/foundation/time/index.md) - Time utilities
+
 ## Event Sets
 
 Event sets provide domain-specific log enrichment:

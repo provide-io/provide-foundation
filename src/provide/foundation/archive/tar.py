@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import tarfile
+from typing import TYPE_CHECKING
 
 from attrs import define
 
@@ -11,16 +12,13 @@ from provide.foundation.archive.defaults import (
     DEFAULT_ARCHIVE_PRESERVE_METADATA,
     DEFAULT_ARCHIVE_PRESERVE_PERMISSIONS,
 )
-from provide.foundation.archive.limits import (
-    DEFAULT_LIMITS,
-    ArchiveLimits,
-    ExtractionTracker,
-    get_archive_size,
-)
 from provide.foundation.archive.security import is_safe_path
 from provide.foundation.config.base import field
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
+
+if TYPE_CHECKING:
+    from provide.foundation.archive.limits import ArchiveLimits
 
 """TAR archive implementation."""
 
@@ -127,6 +125,8 @@ class TarArchive(BaseArchive):
             ArchiveError: If extraction fails, archive contains unsafe paths, or exceeds limits
 
         """
+        from provide.foundation.archive.limits import DEFAULT_LIMITS, ExtractionTracker, get_archive_size
+
         if limits is None:
             limits = DEFAULT_LIMITS
 
@@ -197,9 +197,6 @@ class TarArchive(BaseArchive):
         Returns:
             True if archive is valid, False otherwise
 
-        Note: This method intentionally catches all exceptions and returns False.
-        This is NOT an error suppression case - returning False on any exception
-        is the expected validation behavior. Do NOT replace this with @resilient decorator.
         """
         try:
             with tarfile.open(archive, "r") as tar:

@@ -105,7 +105,7 @@ import urllib.request
 
 def detect_cloud_provider():
     """Detect cloud provider from metadata services."""
-    
+
     # AWS EC2
     try:
         response = urllib.request.urlopen(
@@ -116,7 +116,7 @@ def detect_cloud_provider():
             return "aws"
     except:
         pass
-    
+
     # Google Cloud
     try:
         req = urllib.request.Request(
@@ -128,7 +128,7 @@ def detect_cloud_provider():
             return "gcp"
     except:
         pass
-    
+
     # Azure
     try:
         req = urllib.request.Request(
@@ -140,7 +140,7 @@ def detect_cloud_provider():
             return "azure"
     except:
         pass
-    
+
     return None
 
 cloud = detect_cloud_provider()
@@ -160,7 +160,7 @@ info = get_system_info()
 # CPU count is available if psutil is installed
 if info.cpu_count:
     print(f"CPU cores: {info.cpu_count}")
-    
+
     # Use for configuration
     worker_count = min(info.cpu_count, 8)
     print(f"Recommended workers: {worker_count}")
@@ -179,11 +179,11 @@ info = get_system_info()
 # Memory information requires psutil
 if info.memory_total_gb:
     print(f"Total memory: {info.memory_total_gb:.1f} GB")
-    
+
     # Calculate memory limits
     app_memory_limit_gb = info.memory_total_gb * 0.5  # Use 50% for app
     print(f"App memory limit: {app_memory_limit_gb:.1f} GB")
-    
+
     # Check if enough memory
     if info.memory_total_gb < 1.0:
         print("Warning: Low memory system detected")
@@ -244,7 +244,7 @@ from provide.foundation.platform import Platform
 def get_config_path():
     """Get platform-specific config path."""
     platform = Platform.current()
-    
+
     if platform.is_windows:
         return Path.home() / "AppData" / "Local" / "myapp"
     elif platform.is_macos:
@@ -255,7 +255,7 @@ def get_config_path():
 # Platform-specific command execution
 def open_file(path: str):
     platform = Platform.current()
-    
+
     if platform.is_windows:
         subprocess.run(["start", path], shell=True)
     elif platform.is_macos:
@@ -300,31 +300,31 @@ def generate_system_report():
         "memory": get_memory_info(),
         "python": get_python_info()
     }
-    
+
     print("System Report")
     print("=" * 50)
-    
+
     # Platform
     p = report["platform"]
     print(f"OS: {p['os']} {p['os_version']} ({p['arch']})")
     print(f"Hostname: {p['hostname']}")
-    
+
     # CPU
     c = report["cpu"]
     print(f"CPU: {c['model']}")
     print(f"Cores: {c['count']} ({c['physical_cores']} physical)")
-    
+
     # Memory
     m = report["memory"]
     print(f"Memory: {m['available_human']} / {m['total_human']}")
     print(f"Usage: {m['percent']:.1f}%")
-    
+
     # Python
     py = report["python"]
     print(f"Python: {py['version']} ({py['implementation']})")
     if py.get('venv'):
         print(f"Venv: {py['venv']}")
-    
+
     return report
 ```
 
@@ -336,28 +336,28 @@ from provide.foundation import logger
 
 class EnvironmentAdapter:
     """Adapt behavior to environment."""
-    
+
     def __init__(self):
         self.platform = Platform.current()
         self._configure_for_environment()
-    
+
     def _configure_for_environment(self):
         """Configure based on environment."""
         # Docker optimizations
         if self.platform.in_docker:
             logger.info("Docker detected, optimizing...")
             self.enable_container_mode()
-        
+
         # Cloud-specific setup
         if self.platform.cloud_provider:
             logger.info(f"Running on {self.platform.cloud_provider}")
             self.configure_cloud_features()
-        
+
         # Architecture-specific
         if self.platform.is_arm:
             logger.info("ARM architecture, using optimized libs")
             self.use_arm_optimizations()
-    
+
     def get_storage_path(self):
         """Get appropriate storage path."""
         if self.platform.in_docker:
@@ -413,7 +413,7 @@ def detect_environment():
     # Allow manual override
     if env := os.getenv("APP_ENVIRONMENT"):
         return env
-    
+
     # Auto-detect
     if is_docker():
         return "docker"
