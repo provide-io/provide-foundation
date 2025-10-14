@@ -2,24 +2,6 @@
 
 **A Comprehensive Python Foundation Library for Modern Applications**
 
-<p align="center">
-    <a href="https://pypi.org/project/provide-foundation/">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/provide-foundation.svg">
-    </a>
-    <a href="https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml">
-        <img alt="CI Status" src="https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml/badge.svg">
-    </a>
-    <a href="https://codecov.io/gh/provide-io/provide-foundation">
-        <img src="https://codecov.io/gh/provide-io/provide-foundation/branch/main/graph/badge.svg"/>
-    </a>
-    <img alt="Test Coverage" src="https://img.shields.io/badge/coverage-83.65%25-brightgreen.svg">
-    <img alt="Test Count" src="https://img.shields.io/badge/tests-1000+-blue.svg">
-    <img alt="Type Checking" src="https://img.shields.io/badge/typing-mypy-informational.svg">
-    <a href="https://github.com/provide-io/provide-foundation/blob/main/LICENSE">
-        <img alt="License" src="https://img.shields.io/github/license/provide-io/provide-foundation.svg">
-    </a>
-</p>
-
 ---
 
 **provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
