@@ -1,3 +1,9 @@
+# provide/foundation/config/manager.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TypeVar
@@ -371,3 +377,6 @@ def load_config(name: str, config_class: type[T], loader: ConfigLoader | None = 
 
     """
     return _manager.load(name, config_class, loader)
+
+
+# <3 🧱🤝⚙️🪄

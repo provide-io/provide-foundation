@@ -1,3 +1,9 @@
+# provide/foundation/hub/config.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import inspect
@@ -152,3 +158,6 @@ __all__ = [
     "load_config_from_registry",
     "resolve_config_value",
 ]
+
+
+# <3 🧱🤝🌐🪄

@@ -1,3 +1,9 @@
+# provide/foundation/cli/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.cli.base import CLIAdapter
@@ -105,3 +111,6 @@ def get_cli_adapter(framework: str = "click") -> CLIAdapter:
             raise
 
     raise ValueError(f"Unknown CLI framework: {framework}. Supported frameworks: click")
+
+
+# <3 🧱🤝💻🪄

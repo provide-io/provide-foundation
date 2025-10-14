@@ -1,3 +1,9 @@
+# provide/foundation/transport/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """Transport defaults for Foundation configuration."""
@@ -46,3 +52,6 @@ __all__ = [
     "DEFAULT_TRANSPORT_TIMEOUT",
     "DEFAULT_TRANSPORT_VERIFY_SSL",
 ]
+
+
+# <3 🧱🤝🚚🪄

@@ -1,3 +1,9 @@
+# provide/foundation/file/permissions.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """File permission utilities for Unix-like systems.
 
 Provides safe, cross-platform utilities for working with file permissions including
@@ -215,3 +221,6 @@ __all__ = [
     "parse_permissions",
     "set_file_permissions",
 ]
+
+
+# <3 🧱🤝📄🪄

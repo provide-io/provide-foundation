@@ -1,3 +1,9 @@
+# provide/foundation/tools/downloader.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
@@ -233,3 +239,6 @@ class ToolDownloader:
 
         # All mirrors failed
         raise DownloadError(f"All mirrors failed: {last_error}") from last_error
+
+
+# <3 🧱🤝🔧🪄

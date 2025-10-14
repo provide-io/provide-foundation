@@ -1,3 +1,9 @@
+# provide/foundation/cli/commands/logs/send.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import sys
@@ -158,3 +164,6 @@ def send_command(
         exit_error("Failed to send log", code=result)
 
     return None
+
+
+# <3 🧱🤝💻🪄

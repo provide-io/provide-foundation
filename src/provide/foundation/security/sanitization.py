@@ -1,3 +1,9 @@
+# provide/foundation/security/sanitization.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -171,3 +177,6 @@ __all__ = [
     "sanitize_uri",
     "should_sanitize_body",
 ]
+
+
+# <3 🧱🤝🛡️🪄

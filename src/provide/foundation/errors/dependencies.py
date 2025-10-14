@@ -1,3 +1,9 @@
+# provide/foundation/errors/dependencies.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Dependency-related exceptions."""
 
 from typing import Any
@@ -91,3 +97,6 @@ class DependencyMismatchError(FoundationError):
 
     def _default_code(self) -> str:
         return "DEPENDENCY_VERSION_MISMATCH"
+
+
+# <3 🧱🤝🐛🪄

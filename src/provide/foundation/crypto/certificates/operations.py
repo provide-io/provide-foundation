@@ -1,3 +1,9 @@
+# provide/foundation/crypto/certificates/operations.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import traceback
@@ -185,3 +191,6 @@ def validate_signature(
     except Exception as e:
         logger.debug(f"📜🔍❌ Signature validation failed: {type(e).__name__}: {e}")
         return False
+
+
+# <3 🧱🤝🔒🪄

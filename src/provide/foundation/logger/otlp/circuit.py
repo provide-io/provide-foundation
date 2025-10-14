@@ -1,3 +1,9 @@
+# provide/foundation/logger/otlp/circuit.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Circuit breaker pattern for OTLP connection failures.
 
 This prevents log spam when OTLP endpoint is unreachable by:
@@ -200,3 +206,6 @@ __all__ = [
     "get_otlp_circuit_breaker",
     "reset_otlp_circuit_breaker",
 ]
+
+
+# <3 🧱🤝📝🪄

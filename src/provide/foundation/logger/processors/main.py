@@ -1,3 +1,9 @@
+# provide/foundation/logger/processors/main.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -248,3 +254,6 @@ def _build_formatter_processors_list(
                 f"Valid formatters: ['json', 'key_value']",
             )
             return _config_create_keyvalue_formatter_processors(output_stream)
+
+
+# <3 🧱🤝📝🪄

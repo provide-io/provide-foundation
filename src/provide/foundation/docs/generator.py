@@ -1,3 +1,9 @@
+# provide/foundation/docs/generator.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """API documentation generator for MkDocs with mkdocstrings."""
 
 from __future__ import annotations
@@ -273,3 +279,6 @@ def generate_api_docs(
         **kwargs,
     )
     return generator.generate()
+
+
+# <3 🧱🤝📚🪄

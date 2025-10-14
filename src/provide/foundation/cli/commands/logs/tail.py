@@ -1,3 +1,9 @@
+# provide/foundation/cli/commands/logs/tail.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.cli.deps import click
@@ -138,3 +144,6 @@ def tail_command(
         exit_error("Tail command failed", code=1)
 
     return None
+
+
+# <3 🧱🤝💻🪄

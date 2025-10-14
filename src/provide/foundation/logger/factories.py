@@ -1,3 +1,9 @@
+# provide/foundation/logger/factories.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -84,3 +90,6 @@ def get_logger(name: str | None = None) -> Any:
     finally:
         # Always decrement depth counter to allow future attempts
         _is_initializing.depth = max(0, depth)
+
+
+# <3 🧱🤝📝🪄

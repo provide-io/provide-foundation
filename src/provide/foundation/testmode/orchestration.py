@@ -1,3 +1,9 @@
+# provide/foundation/testmode/orchestration.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -322,3 +328,6 @@ def reset_foundation_for_testing() -> None:
     finally:
         # Always clear the in-progress flag
         _reset_for_testing_in_progress = False
+
+
+# <3 🧱🤝🧪🪄

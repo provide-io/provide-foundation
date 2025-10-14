@@ -1,3 +1,9 @@
+# provide/foundation/tracer/context.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -109,3 +115,6 @@ def get_trace_context() -> dict[str, Any]:
         "span_id": current_span.span_id if current_span else None,
         "span_name": current_span.name if current_span else None,
     }
+
+
+# <3 🧱🤝👣🪄

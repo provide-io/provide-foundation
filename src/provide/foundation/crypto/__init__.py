@@ -1,3 +1,9 @@
+# provide/foundation/crypto/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 # Standard crypto imports (always available - use hashlib)
@@ -147,3 +153,6 @@ __all__ = [
     "verify_file",
     "write_checksum_file",
 ]
+
+
+# <3 🧱🤝🔒🪄

@@ -1,3 +1,9 @@
+# provide/foundation/process/sync/streaming.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Iterator, Mapping
@@ -210,3 +216,6 @@ def stream(
             code="PROCESS_STREAM_ERROR",
             command=cmd_str,
         ) from e
+
+
+# <3 🧱🤝🏃🪄

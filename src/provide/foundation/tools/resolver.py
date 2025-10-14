@@ -1,3 +1,9 @@
+# provide/foundation/tools/resolver.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import re
@@ -321,3 +327,6 @@ class VersionResolver:
                 v,  # Secondary sort by string for pre-releases
             ),
         )
+
+
+# <3 🧱🤝🔧🪄

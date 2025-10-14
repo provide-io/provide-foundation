@@ -1,3 +1,9 @@
+# provide/foundation/cli/click/commands.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Click command building and integration.
 
 Builds individual Click commands from CommandInfo objects and integrates
@@ -131,3 +137,6 @@ def add_command_to_group(
     else:
         # Parent not found or no parent, add to root
         root_group.add_command(click_cmd)
+
+
+# <3 🧱🤝💻🪄

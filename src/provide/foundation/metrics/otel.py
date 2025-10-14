@@ -1,3 +1,9 @@
+# provide/foundation/metrics/otel.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -154,3 +160,6 @@ def shutdown_opentelemetry_metrics() -> None:
             slog.debug("📊🛑 OpenTelemetry meter provider shutdown")
     except Exception as e:
         slog.warning(f"⚠️ Error shutting down OpenTelemetry metrics: {e}")
+
+
+# <3 🧱🤝📈🪄

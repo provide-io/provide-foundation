@@ -1,3 +1,9 @@
+# provide/foundation/crypto/certificates/trust.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -88,3 +94,6 @@ def validate_signature_wrapper(signed_cert: Certificate, signing_cert: Certifica
         return False
 
     return validate_signature(signed_cert._cert, signing_cert._cert, signing_cert.public_key)
+
+
+# <3 🧱🤝🔒🪄

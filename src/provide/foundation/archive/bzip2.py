@@ -1,3 +1,9 @@
+# provide/foundation/archive/bzip2.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import bz2
@@ -48,3 +54,6 @@ class Bzip2Compressor(BaseCompressor):
     def _decompress_bytes_impl(self, data: bytes) -> bytes:
         """Library-specific bytes decompression implementation."""
         return bz2.decompress(data)
+
+
+# <3 🧱🤝📦🪄

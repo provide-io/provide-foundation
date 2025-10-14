@@ -1,3 +1,9 @@
+# provide/foundation/tools/verifier.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """
 Verifier Tool for Foundation.
 
@@ -200,3 +206,6 @@ def verify_signature_command(
             perr("✗ Signature INVALID", color="red")
     except VerificationError as e:
         perr(f"✗ Signature INVALID: {e}", color="red")
+
+
+# <3 🧱🤝🔧🪄

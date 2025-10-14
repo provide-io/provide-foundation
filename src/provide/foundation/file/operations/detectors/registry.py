@@ -1,3 +1,9 @@
+# provide/foundation/file/operations/detectors/registry.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Registry for file operation detectors."""
 
 from __future__ import annotations
@@ -100,3 +106,6 @@ __all__ = [
     "get_detector_registry",
     "register_detector",
 ]
+
+
+# <3 🧱🤝📄🪄

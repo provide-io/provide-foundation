@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/client.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """OpenObserve API client using Foundation's transport system."""
 
 from __future__ import annotations
@@ -330,3 +336,6 @@ class OpenObserveClient:
         # Try to list streams as a simple test
         await self.list_streams()
         return True
+
+
+# <3 🧱🤝🔌🪄

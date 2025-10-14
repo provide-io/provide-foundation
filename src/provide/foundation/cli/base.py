@@ -1,3 +1,9 @@
+# provide/foundation/cli/base.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Abstract CLI adapter protocol.
 
 Defines the interface for CLI framework adapters, enabling support
@@ -88,3 +94,6 @@ class CLIAdapter(Protocol):
 
         """
         ...
+
+
+# <3 🧱🤝💻🪄

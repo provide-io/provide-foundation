@@ -1,3 +1,9 @@
+# provide/foundation/process/exit.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import sys
@@ -45,3 +51,6 @@ def exit_interrupted(message: str = "Process interrupted") -> None:
     logger = get_foundation_logger()
     logger.warning(f"Exiting due to interrupt: {message}")
     sys.exit(EXIT_SIGINT)
+
+
+# <3 🧱🤝🏃🪄

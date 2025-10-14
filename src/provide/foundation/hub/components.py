@@ -1,3 +1,9 @@
+# provide/foundation/hub/components.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any, Protocol
@@ -178,3 +184,6 @@ __all__ = [
     # Re-exported from specialized modules
     "resolve_config_value",
 ]
+
+
+# <3 🧱🤝🌐🪄

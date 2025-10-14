@@ -1,3 +1,9 @@
+# provide/foundation/logger/config/base.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -39,3 +45,6 @@ def get_config_logger() -> Any:
         )
 
     return structlog.get_logger().bind(logger_name="provide.foundation.logger.config")
+
+
+# <3 🧱🤝📝🪄

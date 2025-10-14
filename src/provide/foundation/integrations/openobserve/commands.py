@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/commands.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """CLI commands for OpenObserve integration.
 
 These commands are auto-registered by Foundation's command discovery system.
@@ -443,3 +449,6 @@ else:
         )
 
     __all__ = []
+
+
+# <3 🧱🤝🔌🪄

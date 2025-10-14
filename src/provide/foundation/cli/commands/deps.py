@@ -1,3 +1,9 @@
+# provide/foundation/cli/commands/deps.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.cli.deps import click
@@ -58,3 +64,6 @@ def deps_command(quiet: bool, check: str | None) -> None:
 
 # Export the command
 __all__ = ["deps_command"]
+
+
+# <3 🧱🤝💻🪄

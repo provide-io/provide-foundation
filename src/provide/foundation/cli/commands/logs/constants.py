@@ -1,3 +1,9 @@
+# provide/foundation/cli/commands/logs/constants.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """Constants for log generation."""
@@ -109,3 +115,6 @@ STATUSES = ["success", "pending", None]
 # Duration range (milliseconds)
 MIN_DURATION_MS = 10
 MAX_DURATION_MS = 5000
+
+
+# <3 🧱🤝💻🪄

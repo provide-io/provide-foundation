@@ -1,3 +1,9 @@
+# provide/foundation/file/operations/types.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """File operation data types and structures."""
 
 from __future__ import annotations
@@ -161,3 +167,6 @@ class DetectorConfig:
             r".*\.tmp$",  # file.tmp (generic temp)
         ]
     )
+
+
+# <3 🧱🤝📄🪄

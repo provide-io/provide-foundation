@@ -1,3 +1,9 @@
+# provide/foundation/crypto/rsa.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """RSA digital signature implementation.
 
 RSA-PSS signatures with SHA-256 for compatibility with existing systems.
@@ -247,3 +253,6 @@ __all__ = [
     "RSASigner",
     "RSAVerifier",
 ]
+
+
+# <3 🧱🤝🔒🪄

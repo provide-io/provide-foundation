@@ -1,3 +1,9 @@
+# provide/foundation/archive/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import zipfile
@@ -48,3 +54,6 @@ __all__ = [
     "DEFAULT_ZIP_PASSWORD",
     "DEFAULT_ZSTD_COMPRESSION_LEVEL",
 ]
+
+
+# <3 🧱🤝📦🪄

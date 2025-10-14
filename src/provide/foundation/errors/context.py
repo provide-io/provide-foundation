@@ -1,3 +1,9 @@
+# provide/foundation/errors/context.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -320,3 +326,6 @@ def capture_error_context(
             ctx.update_namespace(namespace, data)
 
     return ctx
+
+
+# <3 🧱🤝🐛🪄

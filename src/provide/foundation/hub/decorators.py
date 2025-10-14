@@ -1,3 +1,9 @@
+# provide/foundation/hub/decorators.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -250,3 +256,6 @@ def _register_command_func(
     get_foundation_logger().trace(f"Registered command: {full_name}")
 
     return func
+
+
+# <3 🧱🤝🌐🪄

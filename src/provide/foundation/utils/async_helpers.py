@@ -1,3 +1,9 @@
+# provide/foundation/utils/async_helpers.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Async-sync bridge utilities for Foundation.
 
 Provides utilities for bridging async and sync code, particularly useful
@@ -122,3 +128,6 @@ def run_async(coro: Coroutine[None, None, T] | Awaitable[T], *, warn: bool = Fal
 
 
 __all__ = ["run_async"]
+
+
+# <3 🧱🤝🧰🪄

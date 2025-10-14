@@ -1,3 +1,9 @@
+# provide/foundation/utils/formatting.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """Size, duration, and number formatting utilities.
@@ -190,3 +196,6 @@ __all__ = [
     "format_percentage",
     "format_size",
 ]
+
+
+# <3 🧱🤝🧰🪄

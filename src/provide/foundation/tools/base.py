@@ -1,3 +1,9 @@
+# provide/foundation/tools/base.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Base classes for tool management.
 
 This module provides the foundation for tool managers, including
@@ -338,3 +344,6 @@ class BaseToolManager(ABC):
             arch = machine
 
         return {"platform": system, "arch": arch}
+
+
+# <3 🧱🤝🔧🪄

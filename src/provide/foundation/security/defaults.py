@@ -1,3 +1,9 @@
+# provide/foundation/security/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """Security defaults for Foundation configuration."""
@@ -78,3 +84,6 @@ __all__ = [
     "MASKED_VALUE",
     "REDACTED_VALUE",
 ]
+
+
+# <3 🧱🤝🛡️🪄

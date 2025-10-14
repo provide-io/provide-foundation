@@ -1,3 +1,9 @@
+# provide/foundation/cli/commands/logs/stats.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.cli.deps import click
@@ -123,3 +129,6 @@ def print_progress(current: int, total: int) -> None:
     if (current + 1) % max(1, total // 10) == 0:
         progress = (current + 1) / total * 100
         click.echo(f"Progress: {progress:.0f}% ({current + 1}/{total})")
+
+
+# <3 🧱🤝💻🪄

@@ -1,3 +1,9 @@
+# provide/foundation/config/env.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -200,3 +206,6 @@ class RuntimeConfig(BaseConfig):
             env_dict[env_var] = str_value
 
         return env_dict
+
+
+# <3 🧱🤝⚙️🪄

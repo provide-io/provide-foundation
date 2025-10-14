@@ -1,3 +1,9 @@
+# provide/foundation/resilience/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.resilience.bulkhead import (
@@ -6,7 +12,13 @@ from provide.foundation.resilience.bulkhead import (
     get_bulkhead_manager,
 )
 from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
-from provide.foundation.resilience.circuit_sync import CircuitState, SyncCircuitBreaker
+from provide.foundation.resilience.circuit_sync import (
+    CircuitState,
+    SyncCircuitBreaker,
+)
+
+# Backward compatibility alias
+CircuitBreaker = SyncCircuitBreaker
 from provide.foundation.resilience.decorators import circuit_breaker, fallback, retry
 from provide.foundation.resilience.fallback import FallbackChain
 from provide.foundation.resilience.retry import (
@@ -34,6 +46,8 @@ __all__ = [
     # Bulkhead pattern
     "Bulkhead",
     "BulkheadManager",
+    # Circuit breaker - backward compatible alias
+    "CircuitBreaker",
     # Circuit breaker - state enum
     "CircuitState",
     # Fallback
@@ -49,3 +63,6 @@ __all__ = [
     # Decorators
     "retry",
 ]
+
+
+# <3 🧱🤝💪🪄
