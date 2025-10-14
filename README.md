@@ -24,8 +24,6 @@
 
 **provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
 
-> **Performance**: Benchmarked at >14,000 msg/sec under optimal conditions with minimal allocations. Actual performance varies based on configuration, system resources, and usage patterns.
-
 ## Quality Standards
 
 **provide.foundation** maintains high standards for code quality, testing, and reliability:
@@ -39,29 +37,9 @@
 
 ---
 
-## Prerequisites
+## Getting Started
 
 > **Important:** This project uses `uv` for Python environment and package management.
-
-### Install UV
-
-Visit [UV Documentation](https://github.com/astral-sh/uv) for more information.
-
-```bash
-# On macOS and Linux.
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# On Windows.
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-# Using pipx (if you prefer)
-pipx install uv
-
-# Update UV to latest version
-uv self update
-```
-
-## Getting Started
 
 ### Development Setup
 
