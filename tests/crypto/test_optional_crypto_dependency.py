@@ -98,33 +98,24 @@ class TestOptionalCryptoDependency(FoundationTestCase):
                 create_ca("Test CA")
 
     def test_signature_functions_without_crypto(self) -> None:
-        """Test signature functions fail gracefully without cryptography."""
-        with patch("provide.foundation.crypto.signatures._HAS_CRYPTO", False):
-            from provide.foundation.crypto.signatures import (
-                generate_ed25519_keypair,
-                sign_data,
-                verify_signature,
+        """Test signature OOP API fails gracefully without cryptography."""
+        with patch("provide.foundation.crypto.ed25519._HAS_CRYPTO", False):
+            from provide.foundation.crypto.ed25519 import (
+                Ed25519Signer,
+                Ed25519Verifier,
             )
 
-            test_data = b"test data"
+            with pytest.raises(
+                ImportError,
+                match="pip install 'provide-foundation\\[crypto\\]'",
+            ):
+                Ed25519Signer.generate()
 
             with pytest.raises(
                 ImportError,
                 match="pip install 'provide-foundation\\[crypto\\]'",
             ):
-                sign_data(test_data, b"fake_key")
-
-            with pytest.raises(
-                ImportError,
-                match="pip install 'provide-foundation\\[crypto\\]'",
-            ):
-                verify_signature(test_data, b"signature", b"fake_key")
-
-            with pytest.raises(
-                ImportError,
-                match="pip install 'provide-foundation\\[crypto\\]'",
-            ):
-                generate_ed25519_keypair()
+                Ed25519Verifier(b"fake_key")
 
     def test_crypto_init_without_dependency(self) -> None:
         """Test crypto __init__.py behavior without cryptography."""
@@ -193,8 +184,8 @@ class TestCryptoModuleImport(FoundationTestCase):
 
     def test_signatures_error_message_format(self) -> None:
         """Test that signature error messages are properly formatted."""
-        with patch("provide.foundation.crypto.signatures._HAS_CRYPTO", False):
-            from provide.foundation.crypto.signatures import _require_crypto
+        with patch("provide.foundation.crypto.ed25519._HAS_CRYPTO", False):
+            from provide.foundation.crypto.ed25519 import _require_crypto
 
             try:
                 _require_crypto()
@@ -261,9 +252,9 @@ class TestCryptoInstallationMessage(FoundationTestCase):
                 for part in expected_message_parts:
                     assert part in str(e)
 
-        # Test signatures module message
-        with patch("provide.foundation.crypto.signatures._HAS_CRYPTO", False):
-            from provide.foundation.crypto.signatures import _require_crypto
+        # Test ed25519 module message
+        with patch("provide.foundation.crypto.ed25519._HAS_CRYPTO", False):
+            from provide.foundation.crypto.ed25519 import _require_crypto
 
             try:
                 _require_crypto()

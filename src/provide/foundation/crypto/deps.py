@@ -88,15 +88,19 @@ Ed25519Signer, Ed25519Verifier = _crypto_dep.import_symbols(
 # Import key generation functions
 (
     generate_ec_keypair,
+    generate_ed25519_keypair,
     generate_keypair,
     generate_rsa_keypair,
+    generate_signing_keypair,
     generate_tls_keypair,
 ) = _crypto_dep.import_symbols(
     "provide.foundation.crypto.keys",
     [
         "generate_ec_keypair",
+        "generate_ed25519_keypair",
         "generate_keypair",
         "generate_rsa_keypair",
+        "generate_signing_keypair",
         "generate_tls_keypair",
     ],
 )
@@ -140,8 +144,10 @@ __all__ = [
     "create_ca",
     "create_self_signed",
     "generate_ec_keypair",
+    "generate_ed25519_keypair",
     "generate_keypair",
     "generate_rsa_keypair",
+    "generate_signing_keypair",
     "generate_tls_keypair",
     "get_default_hash_algorithm",
     "get_default_signature_algorithm",

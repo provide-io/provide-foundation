@@ -46,7 +46,7 @@ class TestCryptoDependencyStubs(FoundationTestCase):
             "provide.foundation.crypto.certificates",
             "provide.foundation.crypto.constants",
             "provide.foundation.crypto.keys",
-            "provide.foundation.crypto.signatures",
+            "provide.foundation.crypto.ed25519",
         ]
         for module in modules_to_remove:
             if module in sys.modules:
@@ -231,28 +231,6 @@ class TestCryptoDependencyStubs(FoundationTestCase):
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
                 assert "cryptography" in str(error)
-
-    def test_signature_functions_raise_dependency_error(self) -> None:
-        """Test that signature functions raise DependencyError when cryptography not available."""
-        with (
-            patch.dict(sys.modules, {"cryptography": None}),
-            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
-        ):
-            from provide.foundation.crypto import sign_data, verify_signature
-
-            # Test sign_data
-            with pytest.raises(DependencyError) as exc_info:
-                sign_data()
-
-            error = exc_info.value
-            assert error.code == "DEPENDENCY_MISSING"
-
-            # Test verify_signature
-            with pytest.raises(DependencyError) as exc_info:
-                verify_signature()
-
-            error = exc_info.value
-            assert error.code == "DEPENDENCY_MISSING"
 
     def test_hash_algorithm_functions_raise_dependency_error(self) -> None:
         """Test that hash algorithm functions raise DependencyError when cryptography not available."""
