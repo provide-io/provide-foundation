@@ -318,10 +318,12 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
             """Formatter that uses the shared formatting function."""
 
             def format(self, record: logging.LogRecord) -> str:
+                # Add log emoji prefix to stdlib logger messages
+                message = f"🪵 {record.getMessage()}"
                 return format_foundation_log_message(
                     timestamp=record.created,
                     level_name=record.levelname,
-                    message=record.getMessage(),
+                    message=message,
                     use_colors=is_tty,
                 )
 
