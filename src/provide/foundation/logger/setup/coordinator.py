@@ -228,11 +228,27 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
 
         stream = sys.stderr if output != "stdout" else sys.stdout
 
+        # Create custom formatter that matches structlog's format exactly
+        class StructlogStyleFormatter(logging.Formatter):
+            """Formatter that matches structlog's output format."""
+
+            def format(self, record: logging.LogRecord) -> str:
+                # Get timestamp with microseconds
+                import datetime
+
+                ct = datetime.datetime.fromtimestamp(record.created)
+                timestamp = ct.strftime("%Y-%m-%d %H:%M:%S.%f")
+
+                # Lowercase level name with padding to match structlog
+                level = record.levelname.lower()
+                level_padded = f"[{level:<9}]"  # 9 chars to match structlog's padding
+
+                # Format: timestamp [level    ] message
+                return f"{timestamp} {level_padded} {record.getMessage()}"
+
         handler = logging.StreamHandler(stream)
         handler.setLevel(log_level)
-        # Use same timestamp format as application logger for consistency
-        formatter = logging.Formatter("%(asctime)s [%(levelname)-8s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-        handler.setFormatter(formatter)
+        handler.setFormatter(StructlogStyleFormatter())
         slog.addHandler(handler)
 
         # Don't propagate to avoid duplicate messages
