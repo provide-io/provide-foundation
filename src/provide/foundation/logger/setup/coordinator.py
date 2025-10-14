@@ -112,10 +112,30 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
     # Get the log level threshold
     log_level_threshold = get_foundation_log_level()
 
+    # Create a filtering processor that respects FOUNDATION_LOG_LEVEL
+    def filter_by_foundation_level(logger: Any, method_name: str, event_dict: Any) -> Any:
+        """Filter log entries by Foundation log level threshold."""
+        # Get numeric level for the current log method
+        level_map = {
+            "debug": stdlib_logging.DEBUG,
+            "info": stdlib_logging.INFO,
+            "warning": stdlib_logging.WARNING,
+            "error": stdlib_logging.ERROR,
+            "critical": stdlib_logging.CRITICAL,
+            "trace": 5,  # TRACE level
+        }
+        current_level = level_map.get(method_name, stdlib_logging.INFO)
+
+        # Drop the event if it's below the threshold
+        if current_level < log_level_threshold:
+            raise structlog.DropEvent
+
+        return event_dict
+
     # Configure structlog for core setup logger with log level filtering
     structlog.configure(
         processors=[
-            structlog.stdlib.filter_by_level,
+            filter_by_foundation_level,
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="iso"),
             structlog.dev.ConsoleRenderer(),
@@ -126,8 +146,6 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
     )
 
     _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
-    # Set the minimum log level on the underlying stdlib logger
-    _CACHED_SETUP_LOGGER._logger.setLevel(log_level_threshold)
     return _CACHED_SETUP_LOGGER
 
 
