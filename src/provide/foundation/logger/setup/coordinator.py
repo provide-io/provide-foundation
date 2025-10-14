@@ -202,11 +202,15 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:  
         # Get the message (event key in structlog)
         message = event_dict.get("event", "")
 
-        # Add any additional key-value pairs to the message
+        # Add any additional key-value pairs to the message with optional colors
         kvs = []
         for key, value in event_dict.items():
             if key not in ("event", "level", "timestamp", "logger"):
-                kvs.append(f"{key}={value}")
+                if is_tty:
+                    # Color keys in cyan, values stay default
+                    kvs.append(f"\033[36m{key}\033[0m=\033[35m{value}\033[0m")
+                else:
+                    kvs.append(f"{key}={value}")
 
         if kvs:
             message = f"{message} {' '.join(kvs)}".strip()
