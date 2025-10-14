@@ -69,7 +69,7 @@ def telemetry_config() -> TelemetryConfig:
 
 
 @pytest.fixture
-def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObserveClient | None:
+async def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObserveClient | None:
     """Create OpenObserve client if configuration is available.
 
     Uses Foundation's OpenObserveClient.from_config() which reads from
@@ -78,30 +78,32 @@ def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObserveClie
     Args:
         openobserve_config: OpenObserve configuration from fixture
 
-    Returns:
-        OpenObserveClient instance if configured, None otherwise
+    Yields:
+        OpenObserveClient instance if configured
 
     Note:
         Changed from session to function scope to avoid event loop closure issues
-        during cleanup. Each test gets its own client instance.
+        during cleanup. Each test gets its own client instance with proper cleanup.
 
     """
     # Check if OpenObserve is configured
     if not openobserve_config.url:
         pytest.skip("OpenObserve not configured. Set OPENOBSERVE_URL to run integration tests.")
-        return None
 
     if not openobserve_config.user or not openobserve_config.password:
         pytest.skip("OpenObserve credentials not configured. Set OPENOBSERVE_USER and OPENOBSERVE_PASSWORD.")
-        return None
 
     try:
         # Create client using Foundation's from_config() method
         client = OpenObserveClient.from_config()
-        return client
     except OpenObserveConfigError as e:
         pytest.skip(f"OpenObserve configuration error: {e}")
-        return None
+
+    yield client
+
+    # Cleanup: ensure transports are properly closed
+    if hasattr(client, "_client") and client._client:
+        await client._client.__aexit__(None, None, None)
 
 
 @pytest.fixture(scope="session")
