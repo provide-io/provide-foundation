@@ -54,18 +54,19 @@ class FoundationManager:
             and self._initialized  # Already initialized (likely auto-init)
             and not force  # User didn't explicitly set force
             and self._config is not None  # Have existing config to check
-            and getattr(self._config, 'service_name', 'not-none') is None  # Auto-init indicator
+            and getattr(self._config, "service_name", "not-none") is None  # Auto-init indicator
         ):
             # Check if OTLP is configured - if so, we MUST do full re-init to recreate LoggerProvider
             # The LoggerProvider bakes service_name into its Resource during creation, so we can't
             # just update the config - we need to recreate it
             otlp_configured = (
-                getattr(self._config, 'otlp_endpoint', None) is not None
-                or getattr(config, 'otlp_endpoint', None) is not None
+                getattr(self._config, "otlp_endpoint", None) is not None
+                or getattr(config, "otlp_endpoint", None) is not None
             )
 
             # Use system logger for init-time logging (safe during Foundation setup)
             from provide.foundation.logger.setup.coordinator import get_system_logger
+
             setup_log = get_system_logger("provide.foundation.hub.init")
 
             if otlp_configured:
@@ -77,6 +78,7 @@ class FoundationManager:
             else:
                 # Try lightweight config update (avoids expensive re-initialization)
                 from provide.foundation.hub.initialization import get_initialization_coordinator
+
                 coordinator = get_initialization_coordinator()
 
                 if coordinator.update_config_if_default(self._registry, config):

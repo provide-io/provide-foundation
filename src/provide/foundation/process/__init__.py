@@ -14,15 +14,13 @@ from provide.foundation.process.lifecycle import (
 from provide.foundation.process.shared import CompletedProcess
 from provide.foundation.process.sync import run, run_simple, shell, stream
 
-"""Process execution utilities.
+"""Process Execution Subsystem.
 
-Provides sync and async subprocess execution with consistent error handling,
-and advanced process lifecycle management.
+Provides an opinionated system for sync and async subprocess execution,
+integrated with the framework's security model (command validation,
+environment scrubbing) and logging. It also includes components for
+advanced process lifecycle management.
 """
-
-# Backward compatibility aliases (used by wrknv and flavorpack)
-run_command = run
-stream_command = stream
 
 __all__ = [
     # Core types
@@ -38,13 +36,10 @@ __all__ = [
     "exit_error",
     "exit_interrupted",
     "exit_success",
-    # Sync execution (modern API)
+    # Sync execution
     "run",
-    # Backward compatibility (used by other projects)
-    "run_command",
     "run_simple",
     "shell",
     "stream",
-    "stream_command",
     "wait_for_process_output",
 ]

@@ -10,6 +10,7 @@ from provide.foundation.cli.helpers import (
     requires_click,
 )
 from provide.foundation.cli.shutdown import with_cleanup
+from provide.foundation.console.output import perr, pout
 from provide.foundation.logger import get_logger
 from provide.foundation.process import exit_error, exit_success
 
@@ -36,7 +37,7 @@ def _get_message_from_input(message: str | None) -> tuple[str | None, int]:
 def _send_log_entry(
     message: str,
     level: str,
-    service: str | None,
+    service_name: str | None,
     attributes: dict[str, Any],
     trace_id: str | None,
     span_id: str | None,
@@ -49,19 +50,23 @@ def _send_log_entry(
         from provide.foundation.integrations.openobserve import send_log
 
     try:
-        # Send via OTLP (only supported method)
+        # Add trace context to attributes if provided
+        if trace_id:
+            attributes["trace_id"] = trace_id
+        if span_id:
+            attributes["span_id"] = span_id
+
+        # Send via OTLP (with bulk API fallback)
         send_log(
             message=message,
             level=level,
-            service_name=service,
+            service_name=service_name,
             attributes=attributes,
-            trace_id=trace_id,
-            span_id=span_id,
         )
-        click.echo("✓ Log sent via OTLP")
+        pout("✓ Log sent successfully", color="green")
         return 0
     except Exception as e:
-        click.echo(f"✗ Failed to send log: {e}", err=True)
+        perr(f"✗ Failed to send log: {e}", color="red")
         return 1
 
 
@@ -81,6 +86,7 @@ def _send_log_entry(
 @click.option(
     "--service",
     "-s",
+    "service_name",
     help="Service name (uses config default if not provided)",
 )
 @click.option(
@@ -110,7 +116,7 @@ def send_command(
     ctx: click.Context,
     message: str | None,
     level: str,
-    service: str | None,
+    service_name: str | None,
     json_attrs: str | None,
     attr: tuple[str, ...],
     trace_id: str | None,
@@ -146,7 +152,7 @@ def send_command(
     result = _send_log_entry(
         final_message,  # type: ignore[arg-type]
         level,
-        service,
+        service_name,
         attributes,
         trace_id,
         span_id,

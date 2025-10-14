@@ -248,7 +248,7 @@ class InitializationCoordinator:
         if (
             self._state_machine.current_state == InitState.INITIALIZED
             and state_data.config is not None
-            and getattr(state_data.config, 'service_name', 'not-none') is None
+            and getattr(state_data.config, "service_name", "not-none") is None
         ):
             # Update state machine config
             with self._state_machine._lock:

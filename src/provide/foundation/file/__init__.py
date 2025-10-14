@@ -3,8 +3,8 @@ from __future__ import annotations
 from provide.foundation.file.alignment import (
     CACHE_LINE_SIZE,
     DEFAULT_ALIGNMENT,
-    PAGE_SIZE_16K,
     PAGE_SIZE_4K,
+    PAGE_SIZE_16K,
     align_offset,
     align_to_page,
     calculate_padding,
@@ -75,18 +75,13 @@ from provide.foundation.file.utils import (
     touch,
 )
 
-"""File operations with safety, atomicity, and format support.
+"""File Operations Subsystem.
 
-This module provides comprehensive file operations including:
-- Atomic writes to prevent corruption
-- Safe operations with error handling
-- Directory management utilities
-- Format-specific helpers for JSON, YAML, TOML
-- File locking for concurrent access
-- File permissions utilities
-- Memory/file alignment utilities for binary I/O and mmap
-- Disk space checking and management
-- Various utility functions
+This module has a dual nature. It provides:
+1. A rich set of standalone file utilities for safe and atomic operations,
+   directory management, and format-specific helpers.
+2. A framework component, OperationDetector, for analyzing file system
+   events to identify logical operations like atomic saves.
 """
 
 __all__ = [

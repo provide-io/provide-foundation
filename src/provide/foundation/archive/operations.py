@@ -276,7 +276,13 @@ class ArchiveOperations:
 
     @staticmethod
     def _detect_format_by_magic(file: Path) -> list[ArchiveOperation] | None:
-        """Detect archive format by magic numbers."""
+        """Detect archive format by magic numbers.
+
+        Note: This method intentionally catches all exceptions and returns None.
+        This is NOT an error suppression case - returning None is the expected
+        behavior when detection fails, allowing the caller to try fallback methods
+        like extension-based detection. Do NOT replace this with @resilient decorator.
+        """
         try:
             with file.open("rb") as f:
                 # Read first 4 bytes for common formats

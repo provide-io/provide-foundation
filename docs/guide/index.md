@@ -104,16 +104,18 @@ def risky_operation():
 # From examples/cli/01_cli_application.py
 from provide.foundation.hub import register_command
 
-@register_command("db.migrate")
-def migrate():
-    """Run database migrations."""
+@register_command("status", aliases=["st", "info"])
+def status_command(verbose: bool = False):
+    """Show system status."""
     pass
 
-@register_command("db.seed")
-def seed():
-    """Seed the database."""
+@register_command("list", category="info")
+def list_command(dimension: str | None = None):
+    """List registered components by dimension."""
     pass
 ```
+
+**Note:** Nested commands can be created by using a dot (`.`) in the command name, e.g., `@register_command("db.migrate")`.
 
 See [examples/cli/01_cli_application.py](https://github.com/provide-io/provide-foundation/blob/main/examples/cli/01_cli_application.py) for complete example.
 
@@ -145,12 +147,8 @@ See [examples/telemetry/04_das_pattern.py](https://github.com/provide-io/provide
 ### 3. Request Tracing
 ```python
 # From examples/telemetry/06_trace_logging.py
-async def handle_request(request):
-    # Add request_id to all logs for this request
-    logger.info("request_received", request_id=request.id)
-    result = await process(request)
-    logger.info("request_completed", request_id=request.id, result=result)
-    return result
+logger.trace("Entering function 'process_data'", argument1="value1")
+logger.trace("Processing item", item_id=123, item_data={"key": "val"})
 ```
 
 ### 4. Performance Optimization

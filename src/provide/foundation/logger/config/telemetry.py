@@ -12,6 +12,8 @@ from provide.foundation.config.converters import (
     parse_sample_rate,
     validate_sample_rate,
 )
+from provide.foundation.config.env import RuntimeConfig
+from provide.foundation.logger.config.logging import LoggingConfig
 from provide.foundation.logger.defaults import default_logging_config
 from provide.foundation.telemetry.defaults import (
     DEFAULT_METRICS_ENABLED,
@@ -21,8 +23,6 @@ from provide.foundation.telemetry.defaults import (
     DEFAULT_TRACING_ENABLED,
     default_otlp_headers,
 )
-from provide.foundation.config.env import RuntimeConfig
-from provide.foundation.logger.config.logging import LoggingConfig
 
 """TelemetryConfig class for Foundation telemetry configuration."""
 
@@ -147,12 +147,20 @@ class TelemetryConfig(RuntimeConfig):
             if not otlp_endpoint:
                 return config
 
-            # Build OTLP headers with OpenObserve metadata
+            # Build OTLP headers with OpenObserve metadata and auth
             otlp_headers = dict(config.otlp_headers)  # Copy existing headers
             if oo_config.org:
                 otlp_headers["organization"] = oo_config.org
             if oo_config.stream:
                 otlp_headers["stream-name"] = oo_config.stream
+
+            # Add Basic auth if credentials are available
+            if oo_config.user and oo_config.password:
+                import base64
+
+                credentials = f"{oo_config.user}:{oo_config.password}"
+                encoded = base64.b64encode(credentials.encode()).decode("ascii")
+                otlp_headers["authorization"] = f"Basic {encoded}"
 
             # Create updated config with OTLP settings
             # Use attrs.evolve to create a new instance with updated fields

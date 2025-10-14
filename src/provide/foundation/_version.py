@@ -1,99 +1,52 @@
 from __future__ import annotations
 
 from pathlib import Path
-import threading
 
-#
-# version.py
-#
+from provide.foundation.utils.versioning import (
+    _find_project_root as _find_project_root_impl,
+    get_version as get_version_impl,
+    reset_version_cache as reset_version_cache_impl,
+)
+
 """Version handling for provide-foundation.
-Integrates VERSION logic from flavorpack with robust fallback mechanisms.
 
-This module uses lazy initialization to avoid blocking I/O at import time,
-making it safe to import in async contexts.
+This module uses the shared versioning utility with lazy initialization
+to avoid blocking I/O at import time, making it safe to import in async contexts.
 """
 
-# Thread-safe lazy initialization state
-_version_lock = threading.Lock()
-_cached_version: str | None = None
+__all__ = ["_find_project_root", "get_version", "reset_version_cache"]
 
 
-def reset_version_cache() -> None:
-    """Reset the cached version (for testing).
+# Compatibility wrappers for provide-foundation's legacy API
+def get_version() -> str:
+    """Get the version for provide-foundation.
 
-    This function clears the cached version so that get_version() will
-    re-evaluate the version on the next call.
+    This is a compatibility wrapper that calls the shared versioning utility
+    with provide-foundation's package name.
 
-    Warning:
-        This should only be called from test code or test fixtures.
+    Returns:
+        The current version string
     """
-    global _cached_version
-    with _version_lock:
-        _cached_version = None
+    return get_version_impl("provide-foundation", caller_file=__file__)
 
 
 def _find_project_root() -> Path | None:
-    """Find the project root directory by looking for VERSION file."""
-    current = Path(__file__).parent
+    """Find the project root directory by looking for VERSION file.
 
-    # Walk up the directory tree looking for VERSION file
-    while current != current.parent:  # Stop at filesystem root
-        version_file = current / "VERSION"
-        if version_file.exists():
-            return current
-        current = current.parent
-
-    return None
-
-
-def get_version() -> str:
-    """Get the current provide-foundation version.
-
-    Reads from VERSION file if it exists, otherwise falls back to package metadata,
-    then to default development version.
-
-    This function is thread-safe and caches the result after first call.
+    This is a compatibility wrapper that starts from this module's location.
 
     Returns:
-        str: The current version string
-
+        Path to project root if found, None otherwise
     """
-    global _cached_version
+    return _find_project_root_impl(Path(__file__).parent)
 
-    # Fast path: return cached version if available
-    if _cached_version is not None:
-        return _cached_version
 
-    # Slow path: load version with thread-safe locking
-    with _version_lock:
-        # Double-check after acquiring lock
-        if _cached_version is not None:
-            return _cached_version
+def reset_version_cache() -> None:
+    """Reset the cached version for testing.
 
-        # Try VERSION file first (single source of truth)
-        project_root = _find_project_root()
-        if project_root:
-            version_file = project_root / "VERSION"
-            if version_file.exists():
-                try:
-                    _cached_version = version_file.read_text().strip()
-                    return _cached_version
-                except OSError:
-                    # Fall back to metadata if VERSION file can't be read
-                    pass
-
-        # Fallback to package metadata
-        try:
-            from importlib.metadata import PackageNotFoundError, version
-
-            _cached_version = version("provide-foundation")
-            return _cached_version
-        except PackageNotFoundError:
-            pass
-
-        # Final fallback
-        _cached_version = "0.0.0-dev"
-        return _cached_version
+    This is a compatibility wrapper for provide-foundation's version cache.
+    """
+    reset_version_cache_impl("provide-foundation")
 
 
 def __getattr__(name: str) -> str:

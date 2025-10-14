@@ -37,7 +37,15 @@ from provide.foundation.hub.components import (
     ComponentCategory,
     get_component_registry,
 )
+from provide.foundation.hub.container import (
+    Container,
+    create_container,
+)
 from provide.foundation.hub.decorators import register_command
+from provide.foundation.hub.injection import (
+    injectable,
+    is_injectable,
+)
 from provide.foundation.hub.manager import (
     Hub,
     clear_hub,
@@ -82,6 +90,8 @@ __all__ = [
     "AsyncInitializable",
     "AsyncResourceManager",
     "ComponentCategory",
+    # Dependency Injection
+    "Container",
     "Disposable",
     "HealthCheckable",
     # Hub
@@ -94,9 +104,12 @@ __all__ = [
     # CLI features (stub function if click not available)
     "build_click_command",
     "clear_hub",
+    "create_container",
     # Components
     "get_component_registry",
     "get_hub",
+    "injectable",
+    "is_injectable",
     # Commands (core)
     "register_command",
 ]

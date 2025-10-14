@@ -4,7 +4,7 @@ import tomllib
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from provide.foundation.errors import ValidationError
+    pass
 from provide.foundation.serialization.cache import get_cache_enabled, get_cache_key, get_serialization_cache
 
 """TOML serialization with caching support."""
