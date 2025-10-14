@@ -107,22 +107,6 @@ RSASigner, RSAVerifier = _crypto_dep.import_symbols(
     ["RSASigner", "RSAVerifier"],
 )
 
-# Import signature functions
-(
-    generate_ed25519_keypair,
-    generate_signing_keypair,
-    sign_data,
-    verify_signature,
-) = _crypto_dep.import_symbols(
-    "provide.foundation.crypto.signatures",
-    [
-        "generate_ed25519_keypair",
-        "generate_signing_keypair",
-        "sign_data",
-        "verify_signature",
-    ],
-)
-
 
 __all__ = [
     # Constants
@@ -156,13 +140,9 @@ __all__ = [
     "create_ca",
     "create_self_signed",
     "generate_ec_keypair",
-    "generate_ed25519_keypair",
     "generate_keypair",
     "generate_rsa_keypair",
-    "generate_signing_keypair",
     "generate_tls_keypair",
     "get_default_hash_algorithm",
     "get_default_signature_algorithm",
-    "sign_data",
-    "verify_signature",
 ]

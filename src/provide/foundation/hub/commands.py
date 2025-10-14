@@ -34,15 +34,6 @@ def _check_click() -> bool:
 
 
 # Pattern 2: Stub functions that import on first call (avoids circular import)
-def build_click_command(name: str, registry: Any = None) -> Any:
-    """Build click command (imports on first call to avoid circular import)."""
-    if not _check_click():
-        raise ImportError("CLI feature 'build_click_command' requires: pip install 'provide-foundation[cli]'")
-    from provide.foundation.cli.click.commands import build_click_command as real_func
-
-    return real_func(name, registry)
-
-
 def create_command_group(
     name: str = "cli",
     commands: list[str] | None = None,
@@ -59,7 +50,6 @@ def create_command_group(
 
 __all__ = [
     "CommandInfo",
-    "build_click_command",
     "create_command_group",
     "get_command_registry",
     "register_command",

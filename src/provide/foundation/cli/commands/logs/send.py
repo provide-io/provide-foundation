@@ -16,8 +16,6 @@ from provide.foundation.process import exit_error, exit_success
 
 """Send logs command for Foundation CLI."""
 
-log = get_logger(__name__)
-
 
 def _get_message_from_input(message: str | None) -> tuple[str | None, int]:
     """Get message from argument or stdin. Returns (message, error_code)."""
@@ -42,27 +40,23 @@ def _send_log_entry(
     trace_id: str | None,
     span_id: str | None,
 ) -> int:
-    """Send the log entry using appropriate method."""
+    """Send the log entry using the main FoundationLogger."""
     try:
-        from provide.foundation.integrations.openobserve.otlp import send_log
-    except ImportError:
-        # Fall back to package-level import for testing compatibility
-        from provide.foundation.integrations.openobserve import send_log
+        # Get a logger instance, optionally scoped to the service name
+        logger = get_logger(service_name or "cli.send")
 
-    try:
         # Add trace context to attributes if provided
         if trace_id:
             attributes["trace_id"] = trace_id
         if span_id:
             attributes["span_id"] = span_id
 
-        # Send via OTLP (with bulk API fallback)
-        send_log(
-            message=message,
-            level=level,
-            service_name=service_name,
-            attributes=attributes,
-        )
+        # Get the appropriate log method (info, error, etc.)
+        log_method = getattr(logger, level.lower(), logger.info)
+
+        # Emit the log
+        log_method(message, **attributes)
+
         pout("✓ Log sent successfully", color="green")
         return 0
     except Exception as e:

@@ -76,9 +76,9 @@ def __getattr__(name: str) -> object:
     """
     # Handle __version__ specially to avoid import-time I/O
     if name == "__version__":
-        from provide.foundation._version import __version__
+        from provide.foundation.utils.versioning import get_version
 
-        return __version__
+        return get_version("provide-foundation", caller_file=__file__)
 
     # For all other attributes, try to import as a submodule
     try:

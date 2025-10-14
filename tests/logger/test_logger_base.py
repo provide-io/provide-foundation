@@ -126,7 +126,7 @@ class FoundationLogger:
         event: str,
         **kwargs: Any,
     ) -> None:
-        # FIX: The _ensure_configured call is removed from here to prevent redundant checks.
+        # The _ensure_configured call is removed from here to prevent redundant checks.
         # get_logger() is now the single point of entry for configuration checks.
         log = self.get_logger("pyvider.dynamic_call")
         getattr(log, level_method_name)(event, **kwargs)

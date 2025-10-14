@@ -90,8 +90,10 @@ def create_command_group(
             entry = reg.get_entry(cmd_name, dimension=ComponentCategory.COMMAND.value)
             if should_skip_entry(entry) or should_skip_command(entry):
                 continue
-
-            add_command_to_group(cmd_name, entry, groups, group, reg)
+            
+            info = entry.metadata.get("info")
+            if info:
+                add_command_to_group(info, groups, group, reg)
 
         return group
 
