@@ -208,7 +208,7 @@ All configuration can be controlled through environment variables:
 | `PROVIDE_LOG_DAS_EMOJI_ENABLED` | Enable Domain-Action-Status emoji prefixes | `true` |
 | `PROVIDE_TELEMETRY_DISABLED` | Globally disable telemetry | `false` |
 | `PROVIDE_SERVICE_VERSION` | Service version for telemetry | `None` |
-| `FOUNDATION_LOG_LEVEL` | Log level for Foundation internal setup messages | `INFO` |
+| `FOUNDATION_LOG_LEVEL` | Log level for Foundation internal setup messages | `WARNING` |
 | `OTEL_SERVICE_NAME` | OpenTelemetry service name (takes precedence over PROVIDE_SERVICE_NAME) | `None` |
 | `OTEL_TRACING_ENABLED` | Enable OpenTelemetry tracing | `true` |
 | `OTEL_METRICS_ENABLED` | Enable OpenTelemetry metrics | `true` |
