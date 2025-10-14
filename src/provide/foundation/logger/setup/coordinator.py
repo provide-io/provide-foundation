@@ -32,6 +32,33 @@ _FOUNDATION_LOG_LEVEL: int | None = None
 _CACHED_SETUP_LOGGER: Any | None = None
 
 
+def format_foundation_log_message(timestamp: float, level_name: str, message: str) -> str:
+    """Shared formatter for both structlog and stdlib logging.
+
+    This ensures consistent formatting across all Foundation internal logs.
+
+    Args:
+        timestamp: Unix timestamp (seconds since epoch)
+        level_name: Log level name (will be lowercased)
+        message: Log message
+
+    Returns:
+        Formatted log string
+    """
+    import datetime
+
+    # Format timestamp with microseconds
+    ct = datetime.datetime.fromtimestamp(timestamp)
+    timestamp_str = ct.strftime("%Y-%m-%d %H:%M:%S.%f")
+
+    # Lowercase level name with padding to match structlog
+    level = level_name.lower()
+    level_padded = f"[{level:<9}]"  # 9 chars for consistent padding
+
+    # Format: timestamp [level    ] message
+    return f"{timestamp_str} {level_padded} {message}"
+
+
 def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
     """Get Foundation log level for setup phase, safely.
 
@@ -80,7 +107,7 @@ def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
     return _FOUNDATION_LOG_LEVEL
 
 
-def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
+def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:  # noqa: C901
     """Create Foundation's internal setup logger (structlog).
 
     This is used internally by Foundation during its own initialization.
@@ -134,16 +161,42 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
 
         return event_dict
 
-    # Check if output stream is a TTY for color support
-    is_tty = hasattr(foundation_stream, "isatty") and foundation_stream.isatty()
+    # Create custom structlog processor that uses the shared formatter
+    def shared_formatter_processor(logger: Any, method_name: str, event_dict: Any) -> str:
+        """Structlog processor that uses the shared formatting function."""
+        import time
 
-    # Configure structlog for core setup logger with same formatting as application logger
+        # Get timestamp from event_dict or use current time
+        timestamp = event_dict.get("timestamp", time.time())
+        if isinstance(timestamp, str):
+            # If timestamp is already formatted (from TimeStamper), parse it back
+            # For simplicity, use current time
+            timestamp = time.time()
+
+        # Get level from event_dict
+        level_name = event_dict.get("level", method_name).upper()
+
+        # Get the message (event key in structlog)
+        message = event_dict.get("event", "")
+
+        # Add any additional key-value pairs to the message
+        kvs = []
+        for key, value in event_dict.items():
+            if key not in ("event", "level", "timestamp", "logger"):
+                kvs.append(f"{key}={value}")
+
+        if kvs:
+            message = f"{message} {' '.join(kvs)}".strip()
+
+        # Use shared formatter
+        return format_foundation_log_message(timestamp=timestamp, level_name=level_name, message=message)
+
+    # Configure structlog for core setup logger with shared formatting
     structlog.configure(
         processors=[
             filter_by_foundation_level,
             structlog.processors.add_log_level,
-            structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S.%f", utc=False),
-            structlog.dev.ConsoleRenderer(colors=is_tty, exception_formatter=structlog.dev.plain_traceback),
+            shared_formatter_processor,
         ],
         logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
         wrapper_class=structlog.BoundLogger,
@@ -228,27 +281,18 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
 
         stream = sys.stderr if output != "stdout" else sys.stdout
 
-        # Create custom formatter that matches structlog's format exactly
-        class StructlogStyleFormatter(logging.Formatter):
-            """Formatter that matches structlog's output format."""
+        # Use shared formatter to ensure consistency with structlog
+        class SharedFormatter(logging.Formatter):
+            """Formatter that uses the shared formatting function."""
 
             def format(self, record: logging.LogRecord) -> str:
-                # Get timestamp with microseconds
-                import datetime
-
-                ct = datetime.datetime.fromtimestamp(record.created)
-                timestamp = ct.strftime("%Y-%m-%d %H:%M:%S.%f")
-
-                # Lowercase level name with padding to match structlog
-                level = record.levelname.lower()
-                level_padded = f"[{level:<9}]"  # 9 chars to match structlog's padding
-
-                # Format: timestamp [level    ] message
-                return f"{timestamp} {level_padded} {record.getMessage()}"
+                return format_foundation_log_message(
+                    timestamp=record.created, level_name=record.levelname, message=record.getMessage()
+                )
 
         handler = logging.StreamHandler(stream)
         handler.setLevel(log_level)
-        handler.setFormatter(StructlogStyleFormatter())
+        handler.setFormatter(SharedFormatter())
         slog.addHandler(handler)
 
         # Don't propagate to avoid duplicate messages
