@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any
 import structlog
 
 from provide.foundation.concurrency.locks import get_lock_manager
-from provide.foundation.logger.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM
+from provide.foundation.logger.types import TRACE_LEVEL_NAME
 
 """Core FoundationLogger implementation.
 Contains the main logging class with all logging methods.

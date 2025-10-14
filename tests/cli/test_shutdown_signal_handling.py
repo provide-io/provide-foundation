@@ -5,8 +5,6 @@ from __future__ import annotations
 import signal
 from typing import Any
 
-import pytest
-
 from provide.foundation.cli.shutdown import (
     register_cleanup_handlers,
     unregister_cleanup_handlers,

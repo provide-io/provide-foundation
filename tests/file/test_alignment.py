@@ -7,8 +7,8 @@ import pytest
 from provide.foundation.file.alignment import (
     CACHE_LINE_SIZE,
     DEFAULT_ALIGNMENT,
-    PAGE_SIZE_16K,
     PAGE_SIZE_4K,
+    PAGE_SIZE_16K,
     align_offset,
     align_to_page,
     calculate_padding,

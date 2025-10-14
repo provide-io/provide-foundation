@@ -92,7 +92,7 @@ class TestRetryPolicyChaos(FoundationTestCase):
         assert delay <= policy.max_delay * 1.25
 
     @given(patterns=failure_patterns(max_failures=10))
-    @settings(max_examples=30)
+    @settings(max_examples=30, suppress_health_check=[HealthCheck.too_slow])
     def test_retry_with_failure_patterns(
         self,
         patterns: list[tuple[int, type[Exception]]],

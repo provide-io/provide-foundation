@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Self
 from attrs import define, field
 
 from provide.foundation import logger
-from provide.foundation.crypto.constants import DEFAULT_RSA_KEY_SIZE
+from provide.foundation.crypto.defaults import DEFAULT_RSA_KEY_SIZE
 from provide.foundation.errors.crypto import CryptoKeyError, CryptoSignatureError
 
 if TYPE_CHECKING:

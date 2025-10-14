@@ -19,6 +19,10 @@ import sys
 
 import pytest
 
+# Register plugins for assertion rewriting at the root level
+# This must be done before the plugin is imported anywhere else
+pytest_plugins = ["provide.testkit.hub.fixtures"]
+
 # Set DEBUG log level for all tests
 os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 
@@ -26,7 +30,7 @@ os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
-import contextlib
+import contextlib  # noqa: E402
 
 from provide.testkit import set_log_stream_for_testing  # noqa: E402 # type: ignore
 
@@ -239,10 +243,8 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
                     pass
 
                 # Clear the event loop so pytest-asyncio creates a fresh one for the next test
-                try:
+                with contextlib.suppress(Exception):
                     asyncio.set_event_loop(None)
-                except Exception:
-                    pass
 
             except Exception:
                 pass
@@ -298,8 +300,6 @@ from provide.testkit import (  # noqa: E402
     invalid_cert_pem,
     invalid_key_pem,
     # New DI fixtures
-    isolated_container,
-    isolated_hub,
     malformed_cert_pem,
     mock_async_process,
     mock_cache,
@@ -352,8 +352,6 @@ __all__ = [
     "invalid_cert_pem",
     "invalid_key_pem",
     # New DI fixtures
-    "isolated_container",
-    "isolated_hub",
     "malformed_cert_pem",
     "mock_async_process",
     "mock_cache",

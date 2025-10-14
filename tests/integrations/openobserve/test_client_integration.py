@@ -18,7 +18,6 @@ import pytest
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.config import OpenObserveConfig
 from provide.foundation.integrations.openobserve.exceptions import (
-    OpenObserveConfigError,
     OpenObserveQueryError,
 )
 from provide.foundation.integrations.openobserve.models import StreamInfo
