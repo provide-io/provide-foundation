@@ -1,174 +1,177 @@
+"""Key generation utilities for Foundation.
+
+Provides functions for generating cryptographic key pairs for various
+algorithms and use cases, including TLS and digital signatures.
+"""
+
 from __future__ import annotations
 
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Literal
 
-from cryptography.hazmat.primitives.asymmetric import ec, rsa
-
-from provide.foundation import logger
-from provide.foundation.crypto.constants import (
+from provide.foundation.crypto.deps import (
     DEFAULT_ECDSA_CURVE,
     DEFAULT_RSA_KEY_SIZE,
     SUPPORTED_EC_CURVES,
     SUPPORTED_KEY_TYPES,
     SUPPORTED_RSA_SIZES,
+    Ed25519Signer,
+    KeyType,
 )
-from provide.foundation.crypto.signatures import generate_ed25519_keypair
+from provide.foundation.errors import FoundationError
 
-"""Unified key generation for all cryptographic algorithms."""
+if TYPE_CHECKING:
+    from cryptography.hazmat.primitives.asymmetric import ec, rsa
 
-
-class KeyPair(Protocol):
-    """Protocol for key pairs."""
-
-    def public_key(self) -> Any:
-        """Get public key."""
-        ...
+    KeypairTuple = tuple[bytes, bytes]
 
 
-# Type aliases for different key types
-RSAKeyPair = tuple[rsa.RSAPublicKey, rsa.RSAPrivateKey]
-ECKeyPair = tuple[ec.EllipticCurvePublicKey, ec.EllipticCurvePrivateKey]
-Ed25519KeyPair = tuple[bytes, bytes]
-
-KeyPairType = RSAKeyPair | ECKeyPair | Ed25519KeyPair
+class KeyGenerationError(FoundationError):
+    """Raised when key generation fails."""
 
 
-def generate_rsa_keypair(key_size: int = DEFAULT_RSA_KEY_SIZE) -> RSAKeyPair:
-    """Generate RSA key pair.
+def generate_rsa_keypair(
+    key_size: int = DEFAULT_RSA_KEY_SIZE,
+) -> tuple[rsa.RSAPrivateKey, rsa.RSAPublicKey]:
+    """Generate an RSA key pair.
 
     Args:
-        key_size: RSA key size in bits (2048, 3072, or 4096)
+        key_size: Key size in bits (2048, 3072, or 4096)
 
     Returns:
-        tuple: (public_key, private_key)
+        Tuple of (private_key, public_key)
 
     Raises:
-        ValueError: If key size is not supported
-
+        KeyGenerationError: If key size is unsupported
     """
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives.asymmetric import rsa
+
     if key_size not in SUPPORTED_RSA_SIZES:
-        raise ValueError(
-            f"Unsupported RSA key size: {key_size}. Supported sizes: {sorted(SUPPORTED_RSA_SIZES)}",
+        raise KeyGenerationError(
+            f"Unsupported RSA key size: {key_size}. Must be one of {SUPPORTED_RSA_SIZES}",
+            context={"key_size": key_size, "supported_sizes": SUPPORTED_RSA_SIZES},
         )
-
-    logger.debug(f"🔑 Generating RSA key pair (size: {key_size})")
-
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=key_size,
+        backend=default_backend(),
     )
-    public_key = private_key.public_key()
-
-    logger.debug(f"✅ Generated RSA key pair ({key_size} bits)")
-    return public_key, private_key
+    return private_key, private_key.public_key()
 
 
-def generate_ec_keypair(curve: str = DEFAULT_ECDSA_CURVE) -> ECKeyPair:
-    """Generate ECDSA key pair.
+def generate_ec_keypair(
+    curve_name: str = DEFAULT_ECDSA_CURVE,
+) -> tuple[ec.EllipticCurvePrivateKey, ec.EllipticCurvePublicKey]:
+    """Generate an Elliptic Curve (EC) key pair.
 
     Args:
-        curve: Elliptic curve name (secp256r1, secp384r1, or secp521r1)
+        curve_name: Name of the curve (e.g., 'secp256r1')
 
     Returns:
-        tuple: (public_key, private_key)
+        Tuple of (private_key, public_key)
 
     Raises:
-        ValueError: If curve is not supported
-        AttributeError: If curve name is invalid
-
+        KeyGenerationError: If curve is unsupported
     """
-    if curve not in SUPPORTED_EC_CURVES:
-        raise ValueError(f"Unsupported EC curve: {curve}. Supported curves: {sorted(SUPPORTED_EC_CURVES)}")
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives.asymmetric import ec
 
-    logger.debug(f"🔑 Generating ECDSA key pair (curve: {curve})")
+    if curve_name not in SUPPORTED_EC_CURVES:
+        raise KeyGenerationError(
+            f"Unsupported EC curve: {curve_name}. Must be one of {SUPPORTED_EC_CURVES}",
+            context={"curve_name": curve_name, "supported_curves": SUPPORTED_EC_CURVES},
+        )
+    curve = SUPPORTED_EC_CURVES[curve_name]
+    private_key = ec.generate_private_key(curve, backend=default_backend())
+    return private_key, private_key.public_key()
 
-    # Map curve name to cryptography curve object
-    curve_obj = getattr(ec, curve.upper())()
 
-    private_key = ec.generate_private_key(curve_obj)
-    public_key = private_key.public_key()
+def generate_ed25519_keypair() -> KeypairTuple:
+    """Generate an Ed25519 key pair.
 
-    logger.debug(f"✅ Generated ECDSA key pair ({curve})")
-    return public_key, private_key
+    This is a wrapper around the modern Ed25519Signer class to provide
+    raw key bytes for compatibility with legacy systems or specific protocols.
+
+    Returns:
+        A tuple containing (private_key_bytes, public_key_bytes).
+    """
+    signer = Ed25519Signer.generate()
+    return signer.export_private_key(), signer.public_key
 
 
 def generate_keypair(
-    key_type: str,
+    key_type: KeyType,
     key_size: int | None = None,
-    curve: str | None = None,
-) -> KeyPairType:
-    """Generate a key pair of the specified type.
+    curve_name: str | None = None,
+) -> tuple[bytes, bytes]:
+    """Generate a key pair and return serialized keys.
 
     Args:
-        key_type: Type of key to generate ("rsa", "ecdsa", or "ed25519")
-        key_size: Key size in bits (required for RSA)
-        curve: Curve name (required for ECDSA)
+        key_type: Type of key ('rsa' or 'ec')
+        key_size: RSA key size (for 'rsa' type)
+        curve_name: EC curve name (for 'ec' type)
 
     Returns:
-        KeyPair: Generated key pair
+        Tuple of (private_key_pem, public_key_pem)
 
     Raises:
-        ValueError: If key_type is not supported or required params missing
-
+        KeyGenerationError: If key type is unsupported
     """
-    key_type_lower = key_type.lower()
+    from cryptography.hazmat.primitives import serialization
 
-    if key_type_lower not in SUPPORTED_KEY_TYPES:
-        raise ValueError(f"Unsupported key type: {key_type}. Supported types: {sorted(SUPPORTED_KEY_TYPES)}")
+    if key_type == "rsa":
+        priv, pub = generate_rsa_keypair(key_size or DEFAULT_RSA_KEY_SIZE)
+    elif key_type == "ec":
+        priv, pub = generate_ec_keypair(curve_name or DEFAULT_ECDSA_CURVE)
+    else:
+        raise KeyGenerationError(
+            f"Unsupported key type: {key_type}. Must be one of {SUPPORTED_KEY_TYPES}",
+            context={"key_type": key_type, "supported_types": SUPPORTED_KEY_TYPES},
+        )
 
-    match key_type_lower:
-        case "rsa":
-            if key_size is None:
-                key_size = DEFAULT_RSA_KEY_SIZE
-                logger.debug(f"🔑 Using default RSA key size: {key_size}")
-            return generate_rsa_keypair(key_size)
-
-        case "ecdsa":
-            if curve is None:
-                curve = DEFAULT_ECDSA_CURVE
-                logger.debug(f"🔑 Using default ECDSA curve: {curve}")
-            return generate_ec_keypair(curve)
-
-        case "ed25519":
-            # Ed25519 has fixed parameters
-            if key_size is not None or curve is not None:
-                logger.warning("🔑 Ed25519 has fixed parameters - ignoring key_size/curve")
-            return generate_ed25519_keypair()
-
-        case _:
-            # This shouldn't happen due to the check above
-            raise ValueError(f"Internal error: unhandled key type {key_type}")
+    private_pem = priv.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    )
+    public_pem = pub.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo,
+    )
+    return private_pem, public_pem
 
 
-# Convenience functions for specific use cases
-def generate_signing_keypair() -> Ed25519KeyPair:
-    """Generate Ed25519 keypair for digital signatures.
+def generate_signing_keypair() -> KeypairTuple:
+    """Generate a key pair suitable for digital signatures (Ed25519).
 
-    This is the recommended choice for new digital signature use cases.
+    This is an alias for `generate_ed25519_keypair`.
 
     Returns:
-        tuple: (private_key_bytes, public_key_bytes)
-
+        A tuple containing (private_key_bytes, public_key_bytes).
     """
     return generate_ed25519_keypair()
 
 
 def generate_tls_keypair(
-    key_type: str = "ecdsa",
-    curve: str = DEFAULT_ECDSA_CURVE,
-) -> ECKeyPair | RSAKeyPair:
-    """Generate keypair suitable for TLS/certificates.
+    key_type: Literal["rsa", "ec"] = "ec",
+) -> tuple[bytes, bytes]:
+    """Generate a key pair suitable for TLS.
 
     Args:
-        key_type: Either "ecdsa" (recommended) or "rsa"
-        curve: ECDSA curve (only used if key_type is "ecdsa")
+        key_type: Type of key ('rsa' or 'ec')
 
     Returns:
-        KeyPair: Generated key pair
-
+        Tuple of (private_key_pem, public_key_pem)
     """
-    if key_type == "ecdsa":
-        return generate_ec_keypair(curve)
-    if key_type == "rsa":
-        return generate_rsa_keypair(DEFAULT_RSA_KEY_SIZE)
-    raise ValueError(f"TLS key type must be 'ecdsa' or 'rsa', got {key_type}")
+    return generate_keypair(key_type)
+
+
+__all__ = [
+    "KeyGenerationError",
+    "generate_ec_keypair",
+    "generate_ed25519_keypair",
+    "generate_keypair",
+    "generate_rsa_keypair",
+    "generate_signing_keypair",
+    "generate_tls_keypair",
+]
