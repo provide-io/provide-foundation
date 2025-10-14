@@ -88,59 +88,6 @@ provide.foundation has optional feature sets that require additional dependencie
 
 ---
 
-## Testing with provide-foundation
-
-### Required Testing Dependencies
-
-When testing applications that use provide-foundation, **`provide-testkit` is mandatory**:
-
-```bash
-# Install testkit for development/testing
-uv add provide-testkit --group dev
-
-# Or with pip
-pip install provide-testkit
-```
-
-### Essential Testing Pattern
-
-```python
-import pytest
-from provide.testkit import (
-    reset_foundation_setup_for_testing,
-    set_log_stream_for_testing,
-)
-from provide.foundation import logger
-
-@pytest.fixture(autouse=True)
-def reset_foundation():
-    """Reset Foundation state before each test."""
-    reset_foundation_setup_for_testing()
-
-def test_foundation_logging():
-    """Test Foundation logger functionality."""
-    import sys
-
-    # Capture Foundation logs for testing
-    set_log_stream_for_testing(sys.stderr)
-
-    # Use Foundation logger
-    logger.info("Test message", component="test")
-    # Your test assertions here...
-```
-
-### Key Testing Features
-
-- **Automatic Context Detection**: TestKit detects testing environments automatically
-- **Foundation Reset**: Clean state between tests via `reset_foundation_setup_for_testing()`
-- **Log Capture**: Direct Foundation logs to streams for assertions
-- **CLI Testing**: Comprehensive Click application testing utilities
-- **Mock Integration**: Foundation-aware mocks and fixtures
-
-> **Note**: If provide-testkit is not available, pause development and install it. Foundation-based applications require testkit fixtures for reliable testing.
-
----
-
 ## What's Included
 
 **provide.foundation** offers a comprehensive toolkit for building robust applications:
