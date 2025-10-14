@@ -324,7 +324,7 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
 
             def format(self, record: logging.LogRecord) -> str:
                 # Add log emoji prefix to stdlib logger messages
-                message = f"🪵 {record.getMessage()}"
+                message = f"🧱 {record.getMessage()}"
                 return format_foundation_log_message(
                     timestamp=record.created,
                     level_name=record.levelname,
