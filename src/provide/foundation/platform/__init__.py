@@ -1,3 +1,9 @@
+# provide/foundation/platform/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.platform.detection import (
@@ -44,3 +50,6 @@ __all__ = [
     # Utilities
     "normalize_platform_components",
 ]
+
+
+# <3 🧱🤝🏗️🪄

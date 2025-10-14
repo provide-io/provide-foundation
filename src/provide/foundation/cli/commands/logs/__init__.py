@@ -1,3 +1,9 @@
+# provide/foundation/cli/commands/logs/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.cli.deps import _HAS_CLICK, click
@@ -58,3 +64,6 @@ else:
         )
 
     __all__ = []
+
+
+# <3 🧱🤝💻🪄

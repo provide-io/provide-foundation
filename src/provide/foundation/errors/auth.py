@@ -1,3 +1,9 @@
+# provide/foundation/errors/auth.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -75,3 +81,6 @@ class AuthorizationError(FoundationError):
 
     def _default_code(self) -> str:
         return "AUTHZ_ERROR"
+
+
+# <3 🧱🤝🐛🪄

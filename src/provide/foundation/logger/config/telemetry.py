@@ -1,3 +1,9 @@
+# provide/foundation/logger/config/telemetry.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 # ruff: noqa: RUF009
@@ -187,3 +193,6 @@ class TelemetryConfig(RuntimeConfig):
 
         """
         return self.otlp_headers
+
+
+# <3 🧱🤝📝🪄

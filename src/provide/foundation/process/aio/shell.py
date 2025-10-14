@@ -1,3 +1,9 @@
+# provide/foundation/process/aio/shell.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -76,3 +82,6 @@ async def async_shell(
         shell=True,  # nosec B604 - Intentional shell usage with validation
         **kwargs,
     )
+
+
+# <3 🧱🤝🏃🪄

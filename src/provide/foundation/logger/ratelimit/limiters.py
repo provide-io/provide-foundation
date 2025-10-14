@@ -1,3 +1,9 @@
+# provide/foundation/logger/ratelimit/limiters.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -282,3 +288,6 @@ class GlobalRateLimiter:
                 stats["per_logger"][logger_name] = limiter.get_stats()
 
             return stats
+
+
+# <3 🧱🤝📝🪄

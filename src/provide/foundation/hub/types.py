@@ -1,3 +1,9 @@
+# provide/foundation/hub/types.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any, Protocol
@@ -11,3 +17,6 @@ class Registrable(Protocol):
     __registry_name__: str
     __registry_dimension__: str
     __registry_metadata__: dict[str, Any]
+
+
+# <3 🧱🤝🌐🪄

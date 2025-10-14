@@ -1,3 +1,9 @@
+# provide/foundation/transport/middleware.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -439,3 +445,6 @@ __all__ = [
     "get_middleware_by_category",
     "register_middleware",
 ]
+
+
+# <3 🧱🤝🚚🪄

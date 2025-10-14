@@ -1,3 +1,9 @@
+# provide/foundation/file/operations/detectors/helpers.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Shared helper functions for file operation detectors."""
 
 from __future__ import annotations
@@ -166,3 +172,6 @@ def find_real_file_from_events(events: list) -> Path | None:
                 return real_path
 
     return None
+
+
+# <3 🧱🤝📄🪄

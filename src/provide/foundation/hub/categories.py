@@ -1,3 +1,9 @@
+# provide/foundation/hub/categories.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Component category definitions for Foundation Hub.
 
 This module contains only the ComponentCategory enum to avoid circular imports.
@@ -40,3 +46,6 @@ class ComponentCategory(Enum):
 
 
 __all__ = ["ComponentCategory"]
+
+
+# <3 🧱🤝🌐🪄

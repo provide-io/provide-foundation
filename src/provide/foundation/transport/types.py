@@ -1,3 +1,9 @@
+# provide/foundation/transport/types.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from enum import Enum
@@ -42,3 +48,6 @@ __all__ = [
     "Params",
     "TransportType",
 ]
+
+
+# <3 🧱🤝🚚🪄

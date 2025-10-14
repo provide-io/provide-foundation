@@ -1,3 +1,9 @@
+# provide/foundation/file/atomic.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import contextlib
@@ -170,3 +176,6 @@ __all__ = [
     "atomic_write",
     "atomic_write_text",
 ]
+
+
+# <3 🧱🤝📄🪄

@@ -1,3 +1,9 @@
+# provide/foundation/profiling/metrics.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import threading
@@ -128,3 +134,6 @@ class ProfileMetrics:
                 "avg_fields_per_message": round(avg_fields_per_message, 1),
                 "uptime_seconds": round(elapsed, 1),
             }
+
+
+# <3 🧱🤝⏱️🪄

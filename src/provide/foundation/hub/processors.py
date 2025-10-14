@@ -1,3 +1,9 @@
+# provide/foundation/hub/processors.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -44,3 +50,6 @@ __all__ = [
     "get_processor_pipeline",
     "get_processors_for_stage",
 ]
+
+
+# <3 🧱🤝🌐🪄

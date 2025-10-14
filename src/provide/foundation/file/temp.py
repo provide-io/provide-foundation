@@ -1,3 +1,9 @@
+# provide/foundation/file/temp.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Generator
@@ -161,3 +167,6 @@ def temp_dir(
                 # Safe logging - catch ValueError/OSError for closed file streams during test teardown
                 with contextlib.suppress(ValueError, OSError):
                     log.debug("Cleaned up temp directory", path=str(temp_path))
+
+
+# <3 🧱🤝📄🪄

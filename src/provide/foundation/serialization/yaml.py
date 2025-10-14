@@ -1,3 +1,9 @@
+# provide/foundation/serialization/yaml.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
@@ -109,3 +115,6 @@ __all__ = [
     "yaml_dumps",
     "yaml_loads",
 ]
+
+
+# <3 🧱🤝📜🪄

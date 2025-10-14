@@ -1,3 +1,9 @@
+# provide/foundation/hub/injection.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import inspect
@@ -330,3 +336,6 @@ __all__ = [
     "register",
     "resolve_dependencies",
 ]
+
+
+# <3 🧱🤝🌐🪄

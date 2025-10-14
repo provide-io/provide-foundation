@@ -1,3 +1,9 @@
+# provide/foundation/testmode/detection.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -117,3 +123,6 @@ def should_use_shared_registries(
     """
     # Return explicit preference - no auto-detection magic
     return use_shared_registries
+
+
+# <3 🧱🤝🧪🪄

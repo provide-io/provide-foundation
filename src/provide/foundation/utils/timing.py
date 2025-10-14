@@ -1,3 +1,9 @@
+# provide/foundation/utils/timing.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Generator
@@ -90,3 +96,6 @@ def timed_block(
 
         logger_instance.error(f"{event_name} failed", exc_info=True, **all_kvs)
         raise
+
+
+# <3 🧱🤝🧰🪄

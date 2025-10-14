@@ -1,3 +1,9 @@
+# provide/foundation/eventsets/display.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -103,3 +109,6 @@ def show_event_matrix() -> None:
 
     # Log the complete display
     log.info("\n".join(lines))
+
+
+# <3 🧱🤝📊🪄

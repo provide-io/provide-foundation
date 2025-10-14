@@ -1,3 +1,9 @@
+# provide/foundation/errors/safe_decorators.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -129,3 +135,6 @@ def log_only_error_context(
         return wrapper  # type: ignore
 
     return decorator
+
+
+# <3 🧱🤝🐛🪄

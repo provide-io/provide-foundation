@@ -1,3 +1,9 @@
+# provide/foundation/console/output.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import sys
@@ -216,3 +222,6 @@ def perr(message: Any, **kwargs: Any) -> None:
             print(output, file=sys.stderr)
         else:
             print(output, file=sys.stderr, end="")
+
+
+# <3 🧱🤝🖥️🪄

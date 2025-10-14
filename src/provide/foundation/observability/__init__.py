@@ -1,3 +1,9 @@
+# provide/foundation/observability/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from contextlib import suppress
@@ -74,3 +80,6 @@ def is_openobserve_available() -> bool:
 
     """
     return _HAS_OTEL and "OpenObserveClient" in globals()
+
+
+# <3 🧱🤝🔭🪄

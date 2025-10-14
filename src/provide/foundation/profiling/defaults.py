@@ -1,3 +1,9 @@
+# provide/foundation/profiling/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """Profiling defaults for Foundation configuration."""
@@ -36,3 +42,6 @@ __all__ = [
     "DEFAULT_PROFILING_SAMPLE_RATE",
     "DEFAULT_PROFILING_TRACK_MEMORY",
 ]
+
+
+# <3 🧱🤝⏱️🪄

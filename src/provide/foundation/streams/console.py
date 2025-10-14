@@ -1,3 +1,9 @@
+# provide/foundation/streams/console.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -81,3 +87,6 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
         # Fallback to stderr - if this fails, let it propagate
         sys.stderr.write(message)
         sys.stderr.flush()
+
+
+# <3 🧱🤝🌊🪄

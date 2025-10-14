@@ -1,3 +1,9 @@
+# provide/foundation/config/types.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Type definitions for the configuration system."""
 
 from __future__ import annotations
@@ -79,3 +85,6 @@ class ConfigFormat(Enum):
             if filename.lower().endswith(ext):
                 return format_type
         return None
+
+
+# <3 🧱🤝⚙️🪄

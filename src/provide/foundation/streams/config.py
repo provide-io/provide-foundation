@@ -1,3 +1,9 @@
+# provide/foundation/streams/config.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from attrs import define
@@ -84,3 +90,6 @@ def reset_stream_config() -> None:
     """Reset the global stream configuration (mainly for testing)."""
     global _stream_config
     _stream_config = None
+
+
+# <3 🧱🤝🌊🪄

@@ -1,3 +1,9 @@
+# provide/foundation/errors/runtime.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -148,3 +154,6 @@ class RateLimitExceededError(FoundationError):
 
     def _default_code(self) -> str:
         return "INTEGRATION_RATE_LIMIT"
+
+
+# <3 🧱🤝🐛🪄

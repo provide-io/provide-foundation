@@ -1,3 +1,9 @@
+# provide/foundation/logger/otlp/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Generic OTLP (OpenTelemetry Protocol) support for Foundation logger.
 
 This package provides generic OpenTelemetry Protocol support that can be used
@@ -62,3 +68,6 @@ __all__ = [
     "map_severity_to_level",
     "normalize_attributes",
 ]
+
+
+# <3 🧱🤝📝🪄

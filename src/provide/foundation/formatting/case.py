@@ -1,3 +1,9 @@
+# provide/foundation/formatting/case.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """Case conversion utilities.
@@ -104,3 +110,6 @@ __all__ = [
     "to_kebab_case",
     "to_snake_case",
 ]
+
+
+# <3 🧱🤝🎨🪄

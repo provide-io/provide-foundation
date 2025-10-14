@@ -1,3 +1,9 @@
+# provide/foundation/eventsets/types.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -70,3 +76,6 @@ class EventSet:
     mappings: list[EventMapping] = field(factory=list)
     field_mappings: list[FieldMapping] = field(factory=list)
     priority: int = field(default=0, converter=int)
+
+
+# <3 🧱🤝📊🪄

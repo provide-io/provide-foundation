@@ -1,3 +1,9 @@
+# provide/foundation/errors/crypto.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.errors.base import FoundationError
@@ -68,3 +74,6 @@ class CryptoSignatureError(CryptoError):
     def _default_code(self) -> str:
         """Return default error code for crypto signature errors."""
         return "CRYPTO_SIGNATURE_ERROR"
+
+
+# <3 🧱🤝🐛🪄

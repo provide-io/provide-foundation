@@ -1,3 +1,9 @@
+# provide/foundation/utils/scoped_cache.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Generator
@@ -173,3 +179,6 @@ class ContextScopedCache(Generic[K, V]):
 
 
 __all__ = ["ContextScopedCache"]
+
+
+# <3 🧱🤝🧰🪄

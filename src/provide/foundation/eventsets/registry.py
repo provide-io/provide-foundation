@@ -1,3 +1,9 @@
+# provide/foundation/eventsets/registry.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import importlib
@@ -186,3 +192,6 @@ def clear_registry() -> None:
     _registry = EventSetRegistry()
     _discovery_completed = False
     logger.trace("Event set registry cleared")
+
+
+# <3 🧱🤝📊🪄

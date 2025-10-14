@@ -1,3 +1,9 @@
+# provide/foundation/errors/base.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -84,3 +90,6 @@ class FoundationError(Exception):
             result["error.cause_type"] = type(self.cause).__name__
 
         return result
+
+
+# <3 🧱🤝🐛🪄

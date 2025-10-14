@@ -1,3 +1,9 @@
+# provide/foundation/tools/installer.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -280,3 +286,6 @@ class ToolInstaller:
 
             latest_link.symlink_to(install_dir)
             log.debug(f"Created symlink {latest_link} -> {install_dir}")
+
+
+# <3 🧱🤝🔧🪄

@@ -1,3 +1,9 @@
+# provide/foundation/transport/http.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import AsyncIterator
@@ -248,3 +254,6 @@ _register_http_transport()
 __all__ = [
     "HTTPTransport",
 ]
+
+
+# <3 🧱🤝🚚🪄

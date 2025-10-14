@@ -1,3 +1,9 @@
+# provide/foundation/tracer/otel.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
@@ -170,3 +176,6 @@ def shutdown_opentelemetry() -> None:
             slog.debug("🔍🛑 OpenTelemetry tracer provider shutdown")
     except Exception as e:
         slog.warning(f"⚠️ Error shutting down OpenTelemetry: {e}")
+
+
+# <3 🧱🤝👣🪄

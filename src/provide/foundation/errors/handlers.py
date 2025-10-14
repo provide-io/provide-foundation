@@ -1,3 +1,9 @@
+# provide/foundation/errors/handlers.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable, Generator
@@ -366,3 +372,6 @@ def create_error_handler(**policies: Callable[[Exception], Any]) -> ErrorHandler
             get_foundation_logger().warning(f"Unknown error type: {error_name}")
 
     return ErrorHandler(policies=error_policies, default_action=default)
+
+
+# <3 🧱🤝🐛🪄

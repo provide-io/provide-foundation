@@ -1,3 +1,9 @@
+# provide/foundation/setup/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -38,3 +44,6 @@ __all__ = [
     "internal_setup",
     "shutdown_foundation",
 ]
+
+
+# <3 🧱🤝🛠️🪄

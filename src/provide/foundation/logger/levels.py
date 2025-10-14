@@ -1,3 +1,9 @@
+# provide/foundation/logger/levels.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import cast
@@ -109,3 +115,6 @@ __all__ = [
     "is_valid_level",
     "normalize_level",
 ]
+
+
+# <3 🧱🤝📝🪄

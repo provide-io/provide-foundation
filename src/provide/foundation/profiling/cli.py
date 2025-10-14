@@ -1,3 +1,9 @@
+# provide/foundation/profiling/cli.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -110,3 +116,6 @@ def register_profile_command(hub: Hub) -> None:
     # The @register_command decorator handles registration automatically
     # This function exists for explicit registration if needed
     pass
+
+
+# <3 🧱🤝⏱️🪄

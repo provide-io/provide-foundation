@@ -1,3 +1,9 @@
+# provide/foundation/file/operations/detectors/protocol.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Protocol definitions for file operation detectors."""
 
 from __future__ import annotations
@@ -30,3 +36,6 @@ class DetectorFunc(Protocol):
 
 
 __all__ = ["DetectorFunc"]
+
+
+# <3 🧱🤝📄🪄

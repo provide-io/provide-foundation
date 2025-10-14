@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """OpenObserve integration defaults for Foundation configuration."""
@@ -12,3 +18,6 @@ __all__ = [
     "DEFAULT_OPENOBSERVE_MAX_RETRIES",
     "DEFAULT_OPENOBSERVE_TIMEOUT",
 ]
+
+
+# <3 🧱🤝🔌🪄

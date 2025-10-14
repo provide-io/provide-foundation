@@ -1,3 +1,9 @@
+# provide/foundation/logger/constants.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import logging as stdlib_logging
@@ -59,3 +65,6 @@ __all__ = [
     "VALID_LEVEL_NAMES",
     "WARNING_LEVEL",
 ]
+
+
+# <3 🧱🤝📝🪄

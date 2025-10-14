@@ -1,3 +1,9 @@
+# provide/foundation/logger/processors/trace.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
@@ -151,3 +157,6 @@ def should_inject_trace_context() -> bool:
         pass
 
     return False
+
+
+# <3 🧱🤝📝🪄

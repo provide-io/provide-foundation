@@ -1,3 +1,9 @@
+# provide/foundation/streams/core.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -174,3 +180,6 @@ def ensure_stderr_default() -> None:
             _PROVIDE_LOG_STREAM = sys.stderr
     finally:
         _get_stream_lock().release()
+
+
+# <3 🧱🤝🌊🪄

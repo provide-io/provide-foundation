@@ -1,3 +1,9 @@
+# provide/foundation/logger/setup/processors.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -82,3 +88,6 @@ def handle_globally_disabled_setup() -> None:
         logger_factory=structlog.ReturnLoggerFactory(),
         cache_logger_on_first_use=True,
     )
+
+
+# <3 🧱🤝📝🪄
