@@ -15,13 +15,6 @@ from provide.foundation.crypto.checksums import (
     verify_file,
     write_checksum_file,
 )
-from provide.foundation.crypto.prefixed import (
-    format_checksum,
-    is_strong_checksum,
-    normalize_checksum,
-    parse_checksum,
-    verify_checksum,
-)
 
 # Optional crypto imports (cryptography package required) - all logic in deps.py
 from provide.foundation.crypto.deps import (
@@ -65,6 +58,13 @@ from provide.foundation.crypto.hashing import (
     hash_file,
     hash_stream,
     hash_string,
+)
+from provide.foundation.crypto.prefixed import (
+    format_checksum,
+    is_strong_checksum,
+    normalize_checksum,
+    parse_checksum,
+    verify_checksum,
 )
 from provide.foundation.crypto.utils import (
     compare_hash,

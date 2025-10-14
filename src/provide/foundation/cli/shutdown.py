@@ -118,8 +118,9 @@ def register_cleanup_handlers(*, manage_signals: bool = True) -> None:
 
     Args:
         manage_signals: If True, register signal handlers. If False, only
-            register atexit cleanup. Set to False if you're using Foundation
-            as a library and want to manage signals yourself.
+            register atexit cleanup. Set to False if an application built
+            with this framework is being used as a library by another process
+            that manages its own signals.
 
     Note:
         Signal handlers are automatically restored during cleanup.

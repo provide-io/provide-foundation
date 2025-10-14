@@ -128,7 +128,7 @@ class TestGetVersion(FoundationTestCase):
     def test_get_version_from_version_file(self) -> None:
         """Test getting version from VERSION file."""
         with (
-            patch("provide.foundation._version._find_project_root") as mock_find_root,
+            patch("provide.foundation.utils.versioning._find_project_root") as mock_find_root,
             tempfile.TemporaryDirectory() as temp_dir,
         ):
             temp_path = Path(temp_dir)
@@ -137,24 +137,26 @@ class TestGetVersion(FoundationTestCase):
 
             mock_find_root.return_value = temp_path
 
+            reset_version_cache()
             result = get_version()
             assert result == "2.1.0"
 
     def test_get_version_no_project_root(self) -> None:
         """Test getting version when no project root found."""
-        with patch("provide.foundation._version._find_project_root") as mock_find_root:
+        with patch("provide.foundation.utils.versioning._find_project_root") as mock_find_root:
             mock_find_root.return_value = None
 
             with patch("importlib.metadata.version") as mock_version:
                 mock_version.return_value = "1.5.0"
 
+                reset_version_cache()
                 result = get_version()
                 assert result == "1.5.0"
 
     def test_get_version_version_file_not_exists(self) -> None:
         """Test getting version when VERSION file doesn't exist in project root."""
         with (
-            patch("provide.foundation._version._find_project_root") as mock_find_root,
+            patch("provide.foundation.utils.versioning._find_project_root") as mock_find_root,
             tempfile.TemporaryDirectory() as temp_dir,
         ):
             temp_path = Path(temp_dir)
@@ -165,12 +167,13 @@ class TestGetVersion(FoundationTestCase):
             with patch("importlib.metadata.version") as mock_version:
                 mock_version.return_value = "1.3.0"
 
+                reset_version_cache()
                 result = get_version()
                 assert result == "1.3.0"
 
     def test_get_version_package_not_found(self) -> None:
         """Test getting version when package metadata not found."""
-        with patch("provide.foundation._version._find_project_root") as mock_find_root:
+        with patch("provide.foundation.utils.versioning._find_project_root") as mock_find_root:
             mock_find_root.return_value = None
 
             with patch("importlib.metadata.version") as mock_version:
@@ -178,6 +181,7 @@ class TestGetVersion(FoundationTestCase):
 
                 mock_version.side_effect = PackageNotFoundError("package not found")
 
+                reset_version_cache()
                 result = get_version()
                 assert result == "0.0.0-dev"
 
@@ -185,22 +189,24 @@ class TestGetVersion(FoundationTestCase):
         """Test complete fallback chain to development version."""
         # Mock _find_project_root to return None
         with (
-            patch("provide.foundation._version._find_project_root", return_value=None),
+            patch("provide.foundation.utils.versioning._find_project_root", return_value=None),
             patch("importlib.metadata.version") as mock_version,
         ):
             from importlib.metadata import PackageNotFoundError
 
             mock_version.side_effect = PackageNotFoundError()
 
+            reset_version_cache()
             result = get_version()
             assert result == "0.0.0-dev"
 
     def test_get_version_importlib_metadata_import_coverage(self) -> None:
         """Test that importlib.metadata import is covered."""
         with (
-            patch("provide.foundation._version._find_project_root", return_value=None),
+            patch("provide.foundation.utils.versioning._find_project_root", return_value=None),
             patch("importlib.metadata.version", return_value="test-version"),
         ):
+            reset_version_cache()
             result = get_version()
             assert result == "test-version"
 
@@ -212,7 +218,7 @@ class TestGetVersion(FoundationTestCase):
 
             with (
                 patch(
-                    "provide.foundation._version._find_project_root",
+                    "provide.foundation.utils.versioning._find_project_root",
                     return_value=temp_path,
                 ),
                 patch(
@@ -220,6 +226,7 @@ class TestGetVersion(FoundationTestCase):
                     return_value="metadata-version",
                 ),
             ):
+                reset_version_cache()
                 result = get_version()
                 assert result == "metadata-version"
 
@@ -279,7 +286,7 @@ class TestVersionEdgeCases(FoundationTestCase):
 
     def test_version_file_read_error(self) -> None:
         """Test handling of VERSION file read errors."""
-        with patch("provide.foundation._version._find_project_root") as mock_find_root:
+        with patch("provide.foundation.utils.versioning._find_project_root") as mock_find_root:
             mock_path = MagicMock()
             mock_version_file = MagicMock()
 
@@ -292,13 +299,14 @@ class TestVersionEdgeCases(FoundationTestCase):
 
             # Should fall back to package metadata
             with patch("importlib.metadata.version", return_value="fallback-version"):
+                reset_version_cache()
                 result = get_version()
                 assert result == "fallback-version"
 
     def test_version_file_empty(self) -> None:
         """Test handling of empty VERSION file."""
         with (
-            patch("provide.foundation._version._find_project_root") as mock_find_root,
+            patch("provide.foundation.utils.versioning._find_project_root") as mock_find_root,
             tempfile.TemporaryDirectory() as temp_dir,
         ):
             temp_path = Path(temp_dir)
@@ -307,6 +315,7 @@ class TestVersionEdgeCases(FoundationTestCase):
 
             mock_find_root.return_value = temp_path
 
+            reset_version_cache()
             result = get_version()
             assert result == ""  # Should be empty string after strip()
 
@@ -323,7 +332,7 @@ class TestVersionEdgeCases(FoundationTestCase):
             reset_version_cache()
 
             with patch(
-                "provide.foundation._version._find_project_root",
+                "provide.foundation.utils.versioning._find_project_root",
                 return_value=root_return,
             ):
                 if isinstance(metadata_result, Exception):
@@ -331,6 +340,7 @@ class TestVersionEdgeCases(FoundationTestCase):
                         "importlib.metadata.version",
                         side_effect=metadata_result,
                     ):
+                        reset_version_cache()
                         result = get_version()
                         assert result == expected
                 else:
@@ -338,5 +348,6 @@ class TestVersionEdgeCases(FoundationTestCase):
                         "importlib.metadata.version",
                         return_value=metadata_result,
                     ):
+                        reset_version_cache()
                         result = get_version()
                         assert result == expected

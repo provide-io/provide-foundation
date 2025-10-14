@@ -82,7 +82,7 @@ logger.info("user_login", user_id="usr_123", status="success")
 ### Display Configuration
 
 ```python
-from provide.foundation.eventsets import show_event_matrix
+from provide.foundation.eventsets.display import show_event_matrix
 
 # Show current enrichment configuration
 show_event_matrix()
@@ -92,7 +92,7 @@ show_event_matrix()
 
 ```python
 from provide.foundation.eventsets.types import EventSet, EventMapping
-from provide.foundation.eventsets.registry import get_registry
+from provide.foundation.eventsets.registry import get_event_set_registry
 
 # Create custom event set
 custom_event_set = EventSet(
@@ -111,7 +111,7 @@ custom_event_set = EventSet(
 )
 
 # Register for use
-registry = get_registry()
+registry = get_event_set_registry()
 registry.register_event_set(custom_event_set)
 ```
 
@@ -124,6 +124,6 @@ registry.register_event_set(custom_event_set)
 
 ## Related Documentation
 
-- [Event Sets API](../../api/eventsets/api-index.md) - Complete API reference
+- [Event Sets API](../../api/reference/provide/foundation/eventsets/index.md) - Complete API reference
 - [Structured Logging](structured-logging.md) - Core logging concepts
 - [Performance](performance.md) - Performance considerations

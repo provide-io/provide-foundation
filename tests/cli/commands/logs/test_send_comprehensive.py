@@ -204,19 +204,9 @@ class TestSendLogEntry:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp.send_log") as mock_send,
-            patch("click.echo") as mock_echo,
+            patch("provide.foundation.cli.commands.logs.send.pout") as mock_pout,
         ):
             result_code = _send_log_entry(
-                message="Test message",
-                level="INFO",
-                service="test-service",
-                attributes={"key": "value"},
-                trace_id="trace123",
-                span_id="span456",
-            )
-
-            assert result_code == 0
-            mock_send.assert_called_once_with(
                 message="Test message",
                 level="INFO",
                 service_name="test-service",
@@ -224,7 +214,16 @@ class TestSendLogEntry:
                 trace_id="trace123",
                 span_id="span456",
             )
-            mock_echo.assert_called_once_with("✓ Log sent via OTLP")
+
+            assert result_code == 0
+            # The implementation adds trace_id and span_id to attributes
+            mock_send.assert_called_once_with(
+                message="Test message",
+                level="INFO",
+                service_name="test-service",
+                attributes={"key": "value", "trace_id": "trace123", "span_id": "span456"},
+            )
+            mock_pout.assert_called_once_with("✓ Log sent successfully", color="green")
 
     def test_send_otlp_exception_handling(self) -> None:
         """Test exception handling for OTLP sending."""
@@ -235,19 +234,19 @@ class TestSendLogEntry:
                 "provide.foundation.integrations.openobserve.otlp.send_log",
                 side_effect=Exception("OTLP connection failed"),
             ),
-            patch("click.echo") as mock_echo,
+            patch("provide.foundation.cli.commands.logs.send.perr") as mock_perr,
         ):
             result_code = _send_log_entry(
                 message="Test message",
                 level="INFO",
-                service=None,
+                service_name=None,
                 attributes={},
                 trace_id=None,
                 span_id=None,
             )
 
             assert result_code == 1
-            mock_echo.assert_called_once_with("✗ Failed to send log: OTLP connection failed", err=True)
+            mock_perr.assert_called_once_with("✗ Failed to send log: OTLP connection failed", color="red")
 
 
 class TestModuleStructure:

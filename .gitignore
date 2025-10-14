@@ -396,3 +396,4 @@ bin/
 site
 *.local.json
 .claude
+ai_studio_code.sh
