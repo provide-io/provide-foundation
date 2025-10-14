@@ -1,11 +1,11 @@
-"""Additional tests for crypto constants to improve code coverage."""
+"""Additional tests for crypto defaults to improve code coverage."""
 
 from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
 
-from provide.foundation.crypto import constants
+from provide.foundation.crypto import defaults as constants
 
 
 class TestCryptoConstantsCoverage(FoundationTestCase):
@@ -78,7 +78,7 @@ class TestCryptoConstantsCoverage(FoundationTestCase):
     def test_get_default_signature_algorithm_with_fallback(self) -> None:
         """Test get_default_signature_algorithm with fallback to constant."""
         with patch(
-            "provide.foundation.crypto.constants._get_config_value",
+            "provide.foundation.crypto.defaults._get_config_value",
         ) as mock_get_config:
             mock_get_config.return_value = constants.DEFAULT_SIGNATURE_ALGORITHM
 

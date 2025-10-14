@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, NotRequired, Self, TypeAlias, TypedDict
 from attrs import define
 
 from provide.foundation import logger
-from provide.foundation.crypto.constants import (
+from provide.foundation.crypto.defaults import (
     DEFAULT_RSA_KEY_SIZE,
 )
 from provide.foundation.errors.config import ValidationError

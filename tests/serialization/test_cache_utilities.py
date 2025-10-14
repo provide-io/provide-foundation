@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-import os
 from threading import Thread
-from typing import Any
-
-import pytest
 
 from provide.foundation.serialization import cache
 from provide.foundation.utils.caching import LRUCache
@@ -271,7 +267,7 @@ class TestConvenienceConstants:
     def test_cache_enabled_constant(self, clean_env):
         """CACHE_ENABLED should be callable."""
         cache.reset_serialization_cache_config()
-        
+
 
         assert callable(cache.CACHE_ENABLED)
         assert cache.CACHE_ENABLED() is True
@@ -279,7 +275,7 @@ class TestConvenienceConstants:
     def test_cache_size_constant(self, clean_env):
         """CACHE_SIZE should be callable."""
         cache.reset_serialization_cache_config()
-        
+
 
         assert callable(cache.CACHE_SIZE)
         assert cache.CACHE_SIZE() == 128

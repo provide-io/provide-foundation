@@ -39,6 +39,7 @@ from provide.foundation.utils.stubs import (
     create_module_stub,
 )
 from provide.foundation.utils.timing import timed_block
+from provide.foundation.utils.versioning import get_version, reset_version_cache
 
 """Utility modules for provide.foundation.
 
@@ -72,6 +73,8 @@ __all__ = [
     "get_optional_dependencies",
     "get_path",
     "get_str",
+    # Versioning utilities
+    "get_version",
     "has_dependency",
     # Lazy import utilities
     "lazy_import",
@@ -84,6 +87,7 @@ __all__ = [
     "require",
     "require_dependency",
     # Timing utilities
+    "reset_version_cache",
     "timed_block",
 ]
 

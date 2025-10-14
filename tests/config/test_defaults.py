@@ -504,8 +504,8 @@ class TestCryptoFactoryFunctions(FoundationTestCase):
         """Test default_supported_ec_curves factory."""
         result = default_supported_ec_curves()
         assert isinstance(result, set)
-        assert len(result) == 0
-        assert result == set()
+        assert len(result) == 3
+        assert result == {"secp256r1", "secp384r1", "secp521r1"}
 
         # Each call should return a new instance
         result1 = default_supported_ec_curves()
@@ -516,8 +516,8 @@ class TestCryptoFactoryFunctions(FoundationTestCase):
         """Test default_supported_key_types factory."""
         result = default_supported_key_types()
         assert isinstance(result, set)
-        assert len(result) == 0
-        assert result == set()
+        assert len(result) == 3
+        assert result == {"rsa", "ecdsa", "ed25519"}
 
         # Each call should return a new instance
         result1 = default_supported_key_types()
@@ -528,8 +528,8 @@ class TestCryptoFactoryFunctions(FoundationTestCase):
         """Test default_supported_rsa_sizes factory."""
         result = default_supported_rsa_sizes()
         assert isinstance(result, set)
-        assert len(result) == 0
-        assert result == set()
+        assert len(result) == 3
+        assert result == {2048, 3072, 4096}
 
         # Each call should return a new instance
         result1 = default_supported_rsa_sizes()

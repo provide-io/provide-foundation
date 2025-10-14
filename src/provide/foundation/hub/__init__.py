@@ -64,7 +64,6 @@ from provide.foundation.hub.registry import (
     RegistryEntry,
 )
 
-
 __all__ = [
     # Resource Management Protocols
     "AsyncContextResource",

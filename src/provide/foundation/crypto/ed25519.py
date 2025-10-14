@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Self
 from attrs import define, field
 
 from provide.foundation import logger
-from provide.foundation.crypto.constants import (
+from provide.foundation.crypto.defaults import (
     ED25519_PRIVATE_KEY_SIZE,
     ED25519_PUBLIC_KEY_SIZE,
     ED25519_SIGNATURE_SIZE,

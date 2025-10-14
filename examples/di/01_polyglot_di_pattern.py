@@ -20,7 +20,6 @@ from __future__ import annotations
 
 from provide.foundation.hub import Container, injectable
 
-
 # ==============================================================================
 # Domain Models (Pure Business Logic - No Framework Dependencies)
 # ==============================================================================

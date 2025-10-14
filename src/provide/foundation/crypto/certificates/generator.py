@@ -14,7 +14,7 @@ from provide.foundation.crypto.certificates.base import (
     KeyType,
 )
 from provide.foundation.crypto.certificates.operations import create_x509_certificate
-from provide.foundation.crypto.constants import (
+from provide.foundation.crypto.defaults import (
     DEFAULT_CERTIFICATE_CURVE,
     DEFAULT_CERTIFICATE_KEY_TYPE,
     DEFAULT_RSA_KEY_SIZE,
