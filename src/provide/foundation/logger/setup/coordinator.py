@@ -132,13 +132,16 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
 
         return event_dict
 
-    # Configure structlog for core setup logger with log level filtering
+    # Check if output stream is a TTY for color support
+    is_tty = hasattr(foundation_stream, "isatty") and foundation_stream.isatty()
+
+    # Configure structlog for core setup logger with same formatting as application logger
     structlog.configure(
         processors=[
             filter_by_foundation_level,
             structlog.processors.add_log_level,
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.dev.ConsoleRenderer(),
+            structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S.%f", utc=False),
+            structlog.dev.ConsoleRenderer(colors=is_tty, exception_formatter=structlog.dev.plain_traceback),
         ],
         logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
         wrapper_class=structlog.BoundLogger,
