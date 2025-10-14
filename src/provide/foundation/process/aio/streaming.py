@@ -1,3 +1,9 @@
+# provide/foundation/process/aio/streaming.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import asyncio
@@ -211,3 +217,6 @@ async def async_stream(
             code="PROCESS_ASYNC_STREAM_ERROR",
             command=cmd_str,
         ) from e
+
+
+# <3 🧱🤝🏃🪄

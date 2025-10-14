@@ -1,3 +1,9 @@
+# provide/foundation/cli/click/hierarchy.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Click group hierarchy management and validation.
 
 Handles creation of Click command groups, parent group hierarchies,
@@ -163,3 +169,6 @@ def should_skip_command(entry: Any) -> bool:
     """
     info = entry.metadata.get("info")
     return not info or info.hidden or entry.metadata.get("is_group")
+
+
+# <3 🧱🤝💻🪄

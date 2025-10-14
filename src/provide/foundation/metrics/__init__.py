@@ -1,3 +1,9 @@
+# provide/foundation/metrics/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -119,3 +125,6 @@ def _set_meter(meter: object) -> None:
     """Set the global meter instance (internal use only)."""
     global _meter
     _meter = meter
+
+
+# <3 🧱🤝📈🪄

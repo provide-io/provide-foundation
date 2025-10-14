@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/otlp_adapter.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """OpenObserve-specific OTLP adapter extending generic client.
 
 Provides OpenObserveOTLPClient that extends OTLPLogClient with OpenObserve-specific
@@ -205,3 +211,6 @@ __all__ = [
     "build_openobserve_headers",
     "get_openobserve_otlp_endpoint",
 ]
+
+
+# <3 🧱🤝🔌🪄

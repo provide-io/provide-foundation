@@ -1,3 +1,9 @@
+# provide/foundation/archive/types.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from enum import IntEnum
@@ -147,3 +153,6 @@ __all__ = [
     "ArchiveOperation",
     "get_operation_from_string",
 ]
+
+
+# <3 🧱🤝📦🪄

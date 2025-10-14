@@ -1,3 +1,9 @@
+# provide/foundation/cli/click/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Click CLI framework adapter.
 
 Provides Click-specific implementation of the CLIAdapter protocol.
@@ -14,3 +20,6 @@ __all__ = [
     "create_command_group",
     "ensure_parent_groups",
 ]
+
+
+# <3 🧱🤝💻🪄

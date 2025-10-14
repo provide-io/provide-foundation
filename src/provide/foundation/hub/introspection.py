@@ -1,3 +1,9 @@
+# provide/foundation/hub/introspection.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Framework-agnostic parameter introspection.
 
 This module provides utilities to extract parameter information from
@@ -186,3 +192,6 @@ def introspect_parameters(func: Callable[..., Any]) -> list[ParameterInfo]:
         result.append(param_info)
 
     return result
+
+
+# <3 🧱🤝🌐🪄

@@ -1,3 +1,9 @@
+# provide/foundation/utils/environment/getters.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import os
@@ -358,3 +364,6 @@ def require(name: str, type_hint: type[T] | None = None) -> Any:
         return _parse_simple_type(name, type_hint)
     else:
         return _parse_complex_type(name, origin)
+
+
+# <3 🧱🤝🧰🪄

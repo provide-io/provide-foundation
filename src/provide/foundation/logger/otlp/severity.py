@@ -1,3 +1,9 @@
+# provide/foundation/logger/otlp/severity.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """OTLP severity level mapping.
 
 Maps between string log levels and OTLP severity numbers according to
@@ -118,3 +124,6 @@ __all__ = [
     "map_level_to_severity",
     "map_severity_to_level",
 ]
+
+
+# <3 🧱🤝📝🪄

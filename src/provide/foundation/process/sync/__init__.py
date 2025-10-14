@@ -1,3 +1,9 @@
+# provide/foundation/process/sync/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.process.sync.execution import run, run_simple
@@ -12,3 +18,6 @@ __all__ = [
     "shell",
     "stream",
 ]
+
+
+# <3 🧱🤝🏃🪄

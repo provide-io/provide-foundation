@@ -1,3 +1,9 @@
+# provide/foundation/config/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -100,3 +106,6 @@ def default_empty_dict() -> dict[str, str]:
 def path_converter(x: str | None) -> Path | None:
     """Convert string to Path or None."""
     return Path(x) if x else None
+
+
+# <3 🧱🤝⚙️🪄

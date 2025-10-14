@@ -1,3 +1,9 @@
+# provide/foundation/hub/events.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -258,3 +264,6 @@ def emit_registry_event(operation: str, item_name: str, dimension: str, **kwargs
 
 
 __all__ = ["Event", "EventBus", "RegistryEvent", "emit_registry_event", "get_event_bus"]
+
+
+# <3 🧱🤝🌐🪄

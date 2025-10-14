@@ -1,3 +1,9 @@
+# provide/foundation/logger/ratelimit/queue_limiter.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -373,3 +379,6 @@ class BufferedRateLimiter:
                 )
 
             return stats
+
+
+# <3 🧱🤝📝🪄

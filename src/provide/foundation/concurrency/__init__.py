@@ -1,3 +1,9 @@
+# provide/foundation/concurrency/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.concurrency.async_locks import (
@@ -42,3 +48,6 @@ __all__ = [
     "get_async_lock_manager",
     "register_foundation_async_locks",
 ]
+
+
+# <3 🧱🤝🧵🪄

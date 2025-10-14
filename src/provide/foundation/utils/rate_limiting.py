@@ -1,3 +1,9 @@
+# provide/foundation/utils/rate_limiting.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import asyncio
@@ -115,3 +121,6 @@ class TokenBucketRateLimiter:
             # up-to-date count
             # await self._refill_tokens()
             return self._tokens
+
+
+# <3 🧱🤝🧰🪄

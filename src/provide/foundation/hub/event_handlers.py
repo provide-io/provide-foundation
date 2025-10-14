@@ -1,3 +1,9 @@
+# provide/foundation/hub/event_handlers.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -119,3 +125,6 @@ def setup_event_logging() -> None:
 
 
 __all__ = ["handle_circuit_breaker_event", "handle_registry_event", "setup_event_logging"]
+
+
+# <3 🧱🤝🌐🪄

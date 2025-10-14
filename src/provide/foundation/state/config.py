@@ -1,3 +1,9 @@
+# provide/foundation/state/config.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -320,3 +326,6 @@ class ConfigManager:
         for listener in listeners:
             with contextlib.suppress(Exception):
                 listener(old_state, new_state)
+
+
+# <3 🧱🤝💾🪄

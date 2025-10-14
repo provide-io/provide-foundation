@@ -1,3 +1,9 @@
+# provide/foundation/streams/file.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 #
@@ -119,3 +125,6 @@ def reset_streams() -> None:
     # Don't reset streams if we're in Click testing context
     if not is_in_click_testing():
         close_log_streams()
+
+
+# <3 🧱🤝🌊🪄

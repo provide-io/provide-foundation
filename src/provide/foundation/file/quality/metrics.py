@@ -1,3 +1,9 @@
+# provide/foundation/file/quality/metrics.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Metrics and result types for quality analysis."""
 
 from __future__ import annotations
@@ -30,3 +36,6 @@ class QualityResult:
     value: float
     details: dict[str, Any] = field(factory=dict)
     timestamp: datetime = field(factory=datetime.now)
+
+
+# <3 🧱🤝📄🪄

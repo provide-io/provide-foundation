@@ -1,3 +1,9 @@
+# provide/foundation/archive/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
@@ -48,3 +54,6 @@ __all__ = [
     "get_archive_size",
     "get_operation_from_string",
 ]
+
+
+# <3 🧱🤝📦🪄

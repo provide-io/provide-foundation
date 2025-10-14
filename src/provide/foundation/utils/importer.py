@@ -1,3 +1,9 @@
+# provide/foundation/utils/importer.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import sys
@@ -126,3 +132,6 @@ def lazy_import(parent_module: str, name: str) -> object:
         _thread_local.import_depth -= 1
         if _thread_local.import_chain and _thread_local.import_chain[-1] == name:
             _thread_local.import_chain.pop()
+
+
+# <3 🧱🤝🧰🪄

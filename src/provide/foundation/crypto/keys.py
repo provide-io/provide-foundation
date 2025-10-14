@@ -1,3 +1,9 @@
+# provide/foundation/crypto/keys.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Key generation utilities for Foundation.
 
 Provides functions for generating cryptographic key pairs for various
@@ -177,3 +183,6 @@ __all__ = [
     "generate_signing_keypair",
     "generate_tls_keypair",
 ]
+
+
+# <3 🧱🤝🔒🪄

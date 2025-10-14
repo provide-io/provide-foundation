@@ -1,3 +1,9 @@
+# provide/foundation/file/disk.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Disk space and filesystem utilities.
 
 Provides functions for checking available disk space before performing
@@ -249,3 +255,6 @@ __all__ = [
     "get_available_space",
     "get_disk_usage",
 ]
+
+
+# <3 🧱🤝📄🪄

@@ -1,3 +1,9 @@
+# provide/foundation/state/base.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -215,3 +221,6 @@ class StateManager:
         """
         with self._lock, contextlib.suppress(ValueError):
             self._observers.remove(observer)
+
+
+# <3 🧱🤝💾🪄

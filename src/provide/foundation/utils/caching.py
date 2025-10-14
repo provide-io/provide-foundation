@@ -1,3 +1,9 @@
+# provide/foundation/utils/caching.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Caching utilities for Foundation.
 
 Provides efficient caching mechanisms for frequently accessed data
@@ -204,3 +210,6 @@ __all__ = [
     "get_cache_stats",
     "register_cache",
 ]
+
+
+# <3 🧱🤝🧰🪄

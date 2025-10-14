@@ -1,3 +1,9 @@
+# provide/foundation/cli/click/parameters.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Click parameter processing and decorator application.
 
 Handles separation of arguments/options and application of Click decorators
@@ -145,3 +151,6 @@ def apply_click_argument(func: Any, param: ParameterInfo) -> Any:
             param.name,
             type=param.concrete_type,
         )(func)
+
+
+# <3 🧱🤝💻🪄

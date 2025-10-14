@@ -1,3 +1,9 @@
+# provide/foundation/cli/decorators.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -265,3 +271,6 @@ def version_option(version: str | None = None, prog_name: str | None = None) -> 
         )(f)
 
     return decorator
+
+
+# <3 🧱🤝💻🪄

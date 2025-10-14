@@ -1,3 +1,9 @@
+# provide/foundation/transport/config.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from attrs import define
@@ -141,3 +147,6 @@ __all__ = [
     "TransportConfig",
     "register_transport_configs",
 ]
+
+
+# <3 🧱🤝🚚🪄

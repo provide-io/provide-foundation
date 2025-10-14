@@ -1,3 +1,9 @@
+# provide/foundation/cli/commands/logs/query.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -221,3 +227,6 @@ def query_command(
         exit_error("Query execution failed", code=result)
 
     return None
+
+
+# <3 🧱🤝💻🪄

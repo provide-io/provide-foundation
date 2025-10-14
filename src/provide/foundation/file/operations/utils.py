@@ -1,3 +1,9 @@
+# provide/foundation/file/operations/utils.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Utility functions for file operation detection."""
 
 from __future__ import annotations
@@ -42,3 +48,6 @@ def group_related_events(events: list[FileEvent], time_window_ms: int = 500) -> 
     config = DetectorConfig(time_window_ms=time_window_ms)
     detector = OperationDetector(config)
     return detector._group_events_by_time(sorted(events, key=lambda e: e.timestamp))
+
+
+# <3 🧱🤝📄🪄

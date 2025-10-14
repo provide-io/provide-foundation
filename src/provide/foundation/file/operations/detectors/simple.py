@@ -1,3 +1,9 @@
+# provide/foundation/file/operations/detectors/simple.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Simple operation detectors."""
 
 from __future__ import annotations
@@ -164,3 +170,6 @@ class SimpleOperationDetector:
                 "pattern": "direct_modification" if is_all_modifies else "create_modify",
             },
         )
+
+
+# <3 🧱🤝📄🪄

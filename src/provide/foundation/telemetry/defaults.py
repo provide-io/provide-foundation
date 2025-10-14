@@ -1,3 +1,9 @@
+# provide/foundation/telemetry/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """Telemetry defaults for Foundation configuration."""
@@ -29,3 +35,6 @@ __all__ = [
     "DEFAULT_TRACING_ENABLED",
     "default_otlp_headers",
 ]
+
+
+# <3 🧱🤝📡🪄

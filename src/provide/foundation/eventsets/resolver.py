@@ -1,3 +1,9 @@
+# provide/foundation/eventsets/resolver.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -214,3 +220,6 @@ def enrich_event(event_dict: dict[str, Any]) -> dict[str, Any]:
 
     """
     return _resolver.enrich_event(event_dict)
+
+
+# <3 🧱🤝📊🪄

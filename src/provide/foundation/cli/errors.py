@@ -1,3 +1,9 @@
+# provide/foundation/cli/errors.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """CLI adapter error classes.
 
 Foundation-based errors for CLI adapter system.
@@ -101,3 +107,6 @@ __all__ = [
     "CLIError",
     "InvalidCLIHintError",
 ]
+
+
+# <3 🧱🤝💻🪄

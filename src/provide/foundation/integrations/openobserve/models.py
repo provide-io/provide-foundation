@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/models.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -134,3 +140,6 @@ def parse_relative_time(time_str: str, now: datetime | None = None) -> int:
         # Try to parse as ISO datetime
         dt = datetime.fromisoformat(time_str)
         return int(dt.timestamp() * 1_000_000)
+
+
+# <3 🧱🤝🔌🪄

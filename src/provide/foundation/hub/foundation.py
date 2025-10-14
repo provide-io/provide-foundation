@@ -1,3 +1,9 @@
+# provide/foundation/hub/foundation.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import contextlib
@@ -219,3 +225,6 @@ def get_foundation_logger(name: str | None = None) -> Any:
     if name:
         return logger.get_logger(name)
     return logger
+
+
+# <3 🧱🤝🌐🪄

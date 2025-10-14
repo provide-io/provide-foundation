@@ -1,3 +1,9 @@
+# provide/foundation/cli/main.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Main CLI entry point for Foundation."""
 
 from __future__ import annotations
@@ -62,3 +68,6 @@ else:
 
 if __name__ == "__main__":
     cli()
+
+
+# <3 🧱🤝💻🪄

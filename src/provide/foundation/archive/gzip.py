@@ -1,3 +1,9 @@
+# provide/foundation/archive/gzip.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import gzip
@@ -48,3 +54,6 @@ class GzipCompressor(BaseCompressor):
     def _decompress_bytes_impl(self, data: bytes) -> bytes:
         """Library-specific bytes decompression implementation."""
         return gzip.decompress(data)
+
+
+# <3 🧱🤝📦🪄

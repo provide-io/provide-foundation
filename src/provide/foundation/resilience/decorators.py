@@ -1,3 +1,9 @@
+# provide/foundation/resilience/decorators.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import asyncio
@@ -441,3 +447,6 @@ def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
         return sync_wrapper  # type: ignore
 
     return decorator
+
+
+# <3 🧱🤝💪🪄

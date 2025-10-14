@@ -1,3 +1,9 @@
+# provide/foundation/serialization/json.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import json
@@ -97,3 +103,6 @@ __all__ = [
     "json_dumps",
     "json_loads",
 ]
+
+
+# <3 🧱🤝📜🪄

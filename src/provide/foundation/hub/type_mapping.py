@@ -1,3 +1,9 @@
+# provide/foundation/hub/type_mapping.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Type system and Click type mapping utilities."""
 
 from __future__ import annotations
@@ -30,3 +36,6 @@ def extract_click_type(annotation: Any) -> type:
 
 
 __all__ = ["extract_click_type"]
+
+
+# <3 🧱🤝🌐🪄

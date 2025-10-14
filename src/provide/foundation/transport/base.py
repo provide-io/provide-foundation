@@ -1,3 +1,9 @@
+# provide/foundation/transport/base.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -179,3 +185,6 @@ __all__ = [
     "Transport",
     "TransportBase",
 ]
+
+
+# <3 🧱🤝🚚🪄

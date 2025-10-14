@@ -1,3 +1,9 @@
+# provide/foundation/file/operations/detectors/batch.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Batch operation detectors."""
 
 from __future__ import annotations
@@ -211,3 +217,6 @@ class BatchOperationDetector:
         }
 
         return type_mapping.get(most_common_type, OperationType.BATCH_UPDATE)
+
+
+# <3 🧱🤝📄🪄

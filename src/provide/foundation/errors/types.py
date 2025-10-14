@@ -1,3 +1,9 @@
+# provide/foundation/errors/types.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -183,3 +189,6 @@ class ErrorResponse:
 
 
 # Import datetime at module level for the factory
+
+
+# <3 🧱🤝🐛🪄

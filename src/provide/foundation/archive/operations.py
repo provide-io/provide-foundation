@@ -1,3 +1,9 @@
+# provide/foundation/archive/operations.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -335,3 +341,6 @@ class ArchiveOperations:
             return operations
 
         raise ArchiveError(f"Cannot detect format of {file}")
+
+
+# <3 🧱🤝📦🪄

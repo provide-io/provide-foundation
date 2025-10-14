@@ -1,3 +1,9 @@
+# provide/foundation/cli/shutdown.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import atexit
@@ -230,3 +236,6 @@ __all__ = [
     "unregister_cleanup_handlers",
     "with_cleanup",
 ]
+
+
+# <3 🧱🤝💻🪄

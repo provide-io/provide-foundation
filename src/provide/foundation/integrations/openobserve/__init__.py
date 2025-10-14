@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
@@ -81,3 +87,6 @@ __all__ = [
     "stream_search_http2",
     "tail_logs",
 ]
+
+
+# <3 🧱🤝🔌🪄

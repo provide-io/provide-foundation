@@ -1,3 +1,9 @@
+# provide/foundation/resilience/circuit_async.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import asyncio
@@ -123,3 +129,6 @@ class AsyncCircuitBreaker:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = None
+
+
+# <3 🧱🤝💪🪄

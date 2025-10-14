@@ -1,3 +1,9 @@
+# provide/foundation/cli/helpers.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -235,3 +241,6 @@ __all__ = [
     "parse_filter_string",
     "requires_click",
 ]
+
+
+# <3 🧱🤝💻🪄

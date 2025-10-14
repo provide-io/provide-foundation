@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/config.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from attrs import define
@@ -90,3 +96,6 @@ class OpenObserveConfig(RuntimeConfig):
             return client.test_connection()
         except Exception:
             return False
+
+
+# <3 🧱🤝🔌🪄
