@@ -3,6 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from collections.abc import Awaitable, Callable
 import time
+from typing import Any
 
 from attrs import define, field
 
@@ -207,22 +208,31 @@ class RetryMiddleware(Middleware):
 class MetricsMiddleware(Middleware):
     """Middleware for collecting transport metrics using foundation.metrics."""
 
+    _counter_func: Callable = field(default=counter)
+    _histogram_func: Callable = field(default=histogram)
+
     # Create metrics instances
-    _request_counter = counter(
-        "transport_requests_total",
-        description="Total number of transport requests",
-        unit="requests",
-    )
-    _request_duration = histogram(
-        "transport_request_duration_seconds",
-        description="Duration of transport requests",
-        unit="seconds",
-    )
-    _error_counter = counter(
-        "transport_errors_total",
-        description="Total number of transport errors",
-        unit="errors",
-    )
+    _request_counter: Any = field(init=False)
+    _request_duration: Any = field(init=False)
+    _error_counter: Any = field(init=False)
+
+    def __attrs_post_init__(self) -> None:
+        """Initialize metrics after creation."""
+        self._request_counter = self._counter_func(
+            "transport_requests_total",
+            description="Total number of transport requests",
+            unit="requests",
+        )
+        self._request_duration = self._histogram_func(
+            "transport_request_duration_seconds",
+            description="Duration of transport requests",
+            unit="seconds",
+        )
+        self._error_counter = self._counter_func(
+            "transport_errors_total",
+            description="Total number of transport errors",
+            unit="errors",
+        )
 
     async def process_request(self, request: Request) -> Request:
         """Record request start time."""

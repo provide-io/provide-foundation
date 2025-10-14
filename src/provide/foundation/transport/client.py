@@ -5,6 +5,7 @@ from typing import Any
 
 from attrs import define, field
 
+from provide.foundation.hub import Hub, get_hub
 from provide.foundation.logger import get_logger
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.cache import TransportCache
@@ -29,6 +30,7 @@ class UniversalClient:
     that exceed the failure threshold (default: 3 consecutive failures).
     """
 
+    hub: Hub = field()
     middleware: MiddlewarePipeline = field(factory=create_default_pipeline)
     default_headers: Headers = field(factory=dict)
     default_timeout: float | None = field(default=None)
@@ -209,10 +211,14 @@ _default_client: UniversalClient | None = None
 
 
 def get_default_client() -> UniversalClient:
-    """Get or create the default client instance."""
+    """Get or create the default client instance.
+
+    This function acts as the composition root for the default client,
+    preserving backward compatibility for public convenience functions.
+    """
     global _default_client
     if _default_client is None:
-        _default_client = UniversalClient()
+        _default_client = UniversalClient(hub=get_hub())
     return _default_client
 
 

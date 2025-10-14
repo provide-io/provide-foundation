@@ -14,12 +14,13 @@ from provide.foundation.file.operations.detectors.helpers import (
     extract_base_name,
     is_temp_file,
 )
-from provide.foundation.file.operations.detectors.registry import get_all_detectors
+from provide.foundation.file.operations.detectors.registry import get_detector_registry
 from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
     FileOperation,
 )
+from provide.foundation.hub.registry import Registry
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -28,16 +29,23 @@ log = get_logger(__name__)
 class OperationDetector:
     """Detects and classifies file operations from events."""
 
-    def __init__(self, config: DetectorConfig | None = None, on_operation_complete: Any = None) -> None:
+    def __init__(
+        self,
+        config: DetectorConfig | None = None,
+        on_operation_complete: Any = None,
+        registry: Registry | None = None,
+    ) -> None:
         """Initialize with optional configuration and callback.
 
         Args:
             config: Detector configuration
             on_operation_complete: Callback function(operation: FileOperation) called
                                  when an operation is detected. Used for streaming mode.
+            registry: Optional registry for detectors (defaults to global)
         """
         self.config = config or DetectorConfig()
         self.on_operation_complete = on_operation_complete
+        self.registry = registry or get_detector_registry()
         self._pending_events: list[FileEvent] = []
         self._last_flush = datetime.now()
 
@@ -172,8 +180,10 @@ class OperationDetector:
         if not events:
             return None
 
-        # Get all registered detectors sorted by priority (highest first)
-        detectors = get_all_detectors()
+        # Get all registered detectors from the instance's registry, sorted by priority
+        all_entries = [entry for entry in self.registry if entry.dimension == "file_operation_detector"]
+        sorted_entries = sorted(all_entries, key=lambda e: e.metadata.get("priority", 0), reverse=True)
+        detectors = [(e.name, e.value, e.metadata.get("priority", 0)) for e in sorted_entries]
 
         best_operation = None
         best_confidence = 0.0

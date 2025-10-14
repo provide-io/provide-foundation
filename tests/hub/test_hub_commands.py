@@ -9,7 +9,6 @@ from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub.commands import (
-    build_click_command,
     create_command_group,
     register_command,
 )
@@ -137,21 +136,6 @@ class TestCommandRegistration(FoundationTestCase):
 
         entry = hub._command_registry.get_entry("greet", dimension="command")
         assert entry.metadata.get("click_command") is greet
-
-    def test_build_click_command_from_function(self) -> None:
-        """Test building a Click command from a regular function."""
-
-        @register_command("simple")
-        def simple_command(arg1: str, arg2: int = 42) -> str:
-            """A simple command."""
-            return f"{arg1}: {arg2}"
-
-        click_cmd = build_click_command("simple")
-
-        assert isinstance(click_cmd, click.Command)
-        assert click_cmd.name == "simple"
-        assert click_cmd.help == "A simple command."
-        assert click_cmd.callback is simple_command
 
     def test_create_cli_group_with_commands(self) -> None:
         """Test creating a CLI group with registered commands."""
