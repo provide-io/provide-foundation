@@ -54,6 +54,7 @@ def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
             "WARNING": stdlib_logging.WARNING,
             "INFO": stdlib_logging.INFO,
             "DEBUG": stdlib_logging.DEBUG,
+            "TRACE": 5,  # Custom TRACE level
             "NOTSET": stdlib_logging.NOTSET,
         }
         return valid_levels.get(level_str, stdlib_logging.INFO)
@@ -71,6 +72,7 @@ def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
             "WARNING": stdlib_logging.WARNING,
             "INFO": stdlib_logging.INFO,
             "DEBUG": stdlib_logging.DEBUG,
+            "TRACE": 5,  # Custom TRACE level
             "NOTSET": stdlib_logging.NOTSET,
         }
 
@@ -228,7 +230,8 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
 
         handler = logging.StreamHandler(stream)
         handler.setLevel(log_level)
-        formatter = logging.Formatter("%(asctime)s [%(levelname)-5s] %(message)s", datefmt="%Y-%m-%dT%H:%M:%S")
+        # Use same timestamp format as application logger for consistency
+        formatter = logging.Formatter("%(asctime)s [%(levelname)-8s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
         handler.setFormatter(formatter)
         slog.addHandler(handler)
 
