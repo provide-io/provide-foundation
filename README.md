@@ -26,7 +26,7 @@
 
 > **Performance**: Benchmarked at >14,000 msg/sec under optimal conditions with minimal allocations. Actual performance varies based on configuration, system resources, and usage patterns.
 
-## 🏆 Quality & Testing Achievements
+## Quality Standards
 
 **provide.foundation** maintains high standards for code quality, testing, and reliability:
 
@@ -36,17 +36,6 @@
 - **Performance Benchmarked** logging, transport, and archive operations
 - **Type-Safe Codebase** with comprehensive type annotations
 - **Automated Quality Checks** with ruff, mypy, and bandit
-
-### Recent Testing Improvements
-
-| Component | Before | After | Tests Added |
-|-----------|---------|--------|-------------|
-| CLI Commands | 14-15% | 78-95% | 49 comprehensive tests |
-| OTLP Integration | 0% | 86.75% | 21 integration tests |
-| Archive Security | Basic | 100% | 15 security edge cases |
-| Transport Layer | 74% | 91% | 22 edge case tests |
-
-📊 **See [IMPROVEMENTS.md](IMPROVEMENTS.md) for detailed roadmap and quality metrics**
 
 ---
 
