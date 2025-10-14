@@ -115,19 +115,24 @@ def openobserve_available(openobserve_client: OpenObserveClient | None) -> bool:
         return False
 
     try:
-        # Try to connect to OpenObserve health endpoint
+        # Try to connect to OpenObserve by checking the streams endpoint
         # Use basic HTTP check with requests library since we're in a session-scoped fixture
+        # The client URL already includes /api/{org}, so we just append the endpoint
         auth = (openobserve_client.username, openobserve_client.password)
+
+        # Try the streams endpoint as a connectivity test
+        url = f"{openobserve_client.url.rstrip('/')}/streams"
         response = requests.get(
-            f"{openobserve_client.url}/healthz",
+            url,
             timeout=5,
             auth=auth,
         )
-        return response.status_code == 200
-    except Exception:
-        # If health check fails, assume unavailable
+        # Accept 200 (success) or 401 (means server is reachable, just auth issue)
+        return response.status_code in (200, 401)
+    except Exception as e:
+        # If connection fails completely, assume unavailable
         # We cannot call async methods from session-scoped fixtures
-        pytest.skip(f"OpenObserve instance at {openobserve_client.url} is not reachable")
+        pytest.skip(f"OpenObserve instance at {openobserve_client.url} is not reachable: {e}")
         return False
 
 
