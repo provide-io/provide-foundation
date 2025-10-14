@@ -297,6 +297,9 @@ from provide.testkit import (  # noqa: E402
     httpx_mock_responses,
     invalid_cert_pem,
     invalid_key_pem,
+    # New DI fixtures
+    isolated_container,
+    isolated_hub,
     malformed_cert_pem,
     mock_async_process,
     mock_cache,
@@ -348,6 +351,9 @@ __all__ = [
     "httpx_mock_responses",
     "invalid_cert_pem",
     "invalid_key_pem",
+    # New DI fixtures
+    "isolated_container",
+    "isolated_hub",
     "malformed_cert_pem",
     "mock_async_process",
     "mock_cache",
