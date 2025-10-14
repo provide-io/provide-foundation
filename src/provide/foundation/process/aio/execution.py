@@ -1,3 +1,9 @@
+# provide/foundation/process/aio/execution.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import asyncio
@@ -370,3 +376,6 @@ async def async_run(
             code="PROCESS_ASYNC_EXECUTION_FAILED",
             command=cmd_str,
         ) from e
+
+
+# <3 🧱🤝🏃🪄

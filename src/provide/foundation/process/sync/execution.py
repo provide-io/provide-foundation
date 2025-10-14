@@ -1,3 +1,9 @@
+# provide/foundation/process/sync/execution.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -171,3 +177,6 @@ def run_simple(
     """
     result = run(cmd, cwd=cwd, capture_output=True, check=True, **kwargs)
     return result.stdout.strip()
+
+
+# <3 🧱🤝🏃🪄

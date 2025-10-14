@@ -1,3 +1,9 @@
+# provide/foundation/process/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """Process defaults for Foundation configuration."""
@@ -28,3 +34,6 @@ __all__ = [
     "DEFAULT_PROCESS_WAIT_TIMEOUT",
     "DEFAULT_SHELL_ALLOW_FEATURES",
 ]
+
+
+# <3 🧱🤝🏃🪄

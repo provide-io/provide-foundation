@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/streaming.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Streaming search operations for OpenObserve using Foundation transport."""
 
 from __future__ import annotations
@@ -282,3 +288,6 @@ def tail_logs(
             start_time=last_timestamp + 1,
             client=client,
         )
+
+
+# <3 🧱🤝🔌🪄

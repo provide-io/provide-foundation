@@ -1,3 +1,9 @@
+# provide/foundation/crypto/ed25519.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Ed25519 digital signature implementation.
 
 Ed25519 is the recommended algorithm for new applications: fast, small keys,
@@ -233,3 +239,6 @@ __all__ = [
     "Ed25519Signer",
     "Ed25519Verifier",
 ]
+
+
+# <3 🧱🤝🔒🪄

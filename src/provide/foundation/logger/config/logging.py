@@ -1,3 +1,9 @@
+# provide/foundation/logger/config/logging.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 # ruff: noqa: RUF009
@@ -183,3 +189,6 @@ class LoggingConfig(RuntimeConfig):
         converter=parse_bool_extended,
         description="Enable sanitization of dictionary values (headers, config, etc.)",
     )
+
+
+# <3 🧱🤝📝🪄

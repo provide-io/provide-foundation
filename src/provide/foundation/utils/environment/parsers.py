@@ -1,3 +1,9 @@
+# provide/foundation/utils/environment/parsers.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import re
@@ -117,3 +123,6 @@ def parse_size(value: str) -> int:
         raise ValidationError(f"Unknown size unit: {unit}", value=value, rule="size_unit")
 
     return int(amount * units[unit])
+
+
+# <3 🧱🤝🧰🪄

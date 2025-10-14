@@ -1,3 +1,9 @@
+# provide/foundation/file/operations/detectors/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """File operation detection system with extensible registry.
 
 This module provides a registry-based system for detecting file operation patterns
@@ -177,3 +183,6 @@ __all__ = [
     "get_detector_registry",
     "register_detector",
 ]
+
+
+# <3 🧱🤝📄🪄

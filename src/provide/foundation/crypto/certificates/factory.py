@@ -1,3 +1,9 @@
+# provide/foundation/crypto/certificates/factory.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -229,3 +235,6 @@ def create_ca(
         validity_days=validity_days,
         key_type=key_type,
     )
+
+
+# <3 🧱🤝🔒🪄

@@ -1,3 +1,9 @@
+# provide/foundation/file/operations/detectors/atomic.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Atomic operation detectors."""
 
 from __future__ import annotations
@@ -134,3 +140,6 @@ class AtomicOperationDetector:
                 )
 
         return None
+
+
+# <3 🧱🤝📄🪄

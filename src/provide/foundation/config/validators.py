@@ -1,3 +1,9 @@
+# provide/foundation/config/validators.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -167,3 +173,6 @@ __all__ = [
     "validate_range",
     "validate_sample_rate",
 ]
+
+
+# <3 🧱🤝⚙️🪄

@@ -1,3 +1,9 @@
+# provide/foundation/console/input.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import asyncio
@@ -400,3 +406,6 @@ async def apin_lines(count: int | None = None) -> list[str]:
         if count is not None and i >= count:
             break
     return lines
+
+
+# <3 🧱🤝🖥️🪄

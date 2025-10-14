@@ -1,3 +1,9 @@
+# provide/foundation/logger/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -86,3 +92,6 @@ __all__ = [
     "default_module_levels",
     "default_rate_limits",
 ]
+
+
+# <3 🧱🤝📝🪄

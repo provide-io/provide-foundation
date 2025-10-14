@@ -1,3 +1,9 @@
+# provide/foundation/platform/detection.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import platform
@@ -216,3 +222,6 @@ def normalize_platform_components(os_name: str, arch_name: str) -> tuple[str, st
     normalized_arch = arch_map.get(arch_name.lower(), arch_name.lower())
 
     return normalized_os, normalized_arch
+
+
+# <3 🧱🤝🏗️🪄

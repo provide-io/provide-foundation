@@ -1,3 +1,9 @@
+# provide/foundation/tools/registry.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import importlib.metadata
@@ -202,3 +208,6 @@ def get_tool_manager(name: str, config: BaseConfig) -> BaseToolManager | None:
     """
     registry = get_tool_registry()
     return registry.create_tool_manager(name, config)
+
+
+# <3 🧱🤝🔧🪄

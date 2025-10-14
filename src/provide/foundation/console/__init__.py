@@ -1,3 +1,9 @@
+# provide/foundation/console/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 # Check for Click availability
@@ -38,3 +44,6 @@ __all__ = [
     "pin_stream",
     "pout",
 ]
+
+
+# <3 🧱🤝🖥️🪄

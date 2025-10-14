@@ -1,3 +1,9 @@
+# provide/foundation/hub/info.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Command information and metadata structures."""
 
 from __future__ import annotations
@@ -43,3 +49,6 @@ class CommandInfo:
     metadata: dict[str, Any] = field(factory=dict)
     parent: str | None = None  # Parent path extracted from dot notation
     parameters: list[ParameterInfo] | None = None
+
+
+# <3 🧱🤝🌐🪄

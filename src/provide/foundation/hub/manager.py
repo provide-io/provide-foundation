@@ -1,3 +1,9 @@
+# provide/foundation/hub/manager.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Any
@@ -217,3 +223,6 @@ def clear_hub() -> None:
     if _global_hub:
         _global_hub.clear()
     _global_hub = None
+
+
+# <3 🧱🤝🌐🪄

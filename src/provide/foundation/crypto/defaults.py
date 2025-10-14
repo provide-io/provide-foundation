@@ -1,3 +1,9 @@
+# provide/foundation/crypto/defaults.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import Final
@@ -142,3 +148,6 @@ __all__ = [
     "get_default_hash_algorithm",
     "get_default_signature_algorithm",
 ]
+
+
+# <3 🧱🤝🔒🪄

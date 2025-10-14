@@ -1,3 +1,9 @@
+# provide/foundation/cli/click/builder.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Click command group builder and orchestration.
 
 Main orchestrator for building Click CLI groups from registered commands.
@@ -105,3 +111,6 @@ def create_command_group(
             group_name=name,
             cause=e,
         ) from e
+
+
+# <3 🧱🤝💻🪄

@@ -1,3 +1,9 @@
+# provide/foundation/file/safe.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -200,3 +206,6 @@ __all__ = [
     "safe_read",
     "safe_read_text",
 ]
+
+
+# <3 🧱🤝📄🪄

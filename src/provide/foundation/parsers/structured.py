@@ -1,3 +1,9 @@
+# provide/foundation/parsers/structured.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -224,3 +230,6 @@ __all__ = [
     "parse_module_levels",
     "parse_rate_limits",
 ]
+
+
+# <3 🧱🤝🧩🪄

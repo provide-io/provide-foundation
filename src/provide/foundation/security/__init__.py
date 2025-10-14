@@ -1,3 +1,9 @@
+# provide/foundation/security/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.security.masking import (
@@ -33,3 +39,6 @@ __all__ = [
     "should_mask",
     "should_sanitize_body",
 ]
+
+
+# <3 🧱🤝🛡️🪄

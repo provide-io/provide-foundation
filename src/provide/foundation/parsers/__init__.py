@@ -1,3 +1,9 @@
+# provide/foundation/parsers/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.parsers.attrs_integration import (
@@ -106,3 +112,6 @@ __all__ = [
     "parse_tuple",
     "parse_typed_value",
 ]
+
+
+# <3 🧱🤝🧩🪄

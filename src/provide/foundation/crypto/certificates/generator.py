@@ -1,3 +1,9 @@
+# provide/foundation/crypto/certificates/generator.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
@@ -203,3 +209,6 @@ def generate_certificate(
             extra={"error": str(e), "trace": traceback.format_exc()},
         )
         raise CertificateError(f"Failed to initialize certificate. Original error: {type(e).__name__}") from e
+
+
+# <3 🧱🤝🔒🪄

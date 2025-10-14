@@ -1,3 +1,9 @@
+# provide/foundation/crypto/algorithms.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import hashlib
@@ -113,3 +119,6 @@ def get_digest_size(algorithm: str) -> int:
     """
     hasher = get_hasher(algorithm)
     return hasher.digest_size
+
+
+# <3 🧱🤝🔒🪄

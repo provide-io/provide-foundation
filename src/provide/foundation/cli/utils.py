@@ -1,3 +1,9 @@
+# provide/foundation/cli/utils.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Common CLI utilities for output, logging, and testing."""
 
 from __future__ import annotations
@@ -200,3 +206,6 @@ def assert_cli_error(
 
     if expected_error and expected_error not in result.output:
         raise AssertionError(f"Expected error not found.\nExpected: {expected_error}\nActual: {result.output}")
+
+
+# <3 🧱🤝💻🪄

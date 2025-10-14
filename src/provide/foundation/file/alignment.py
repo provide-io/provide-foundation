@@ -1,3 +1,9 @@
+# provide/foundation/file/alignment.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Memory and file alignment utilities for binary I/O and mmap operations.
 
 Provides functions for aligning offsets to power-of-2 boundaries, which is critical for:
@@ -214,3 +220,6 @@ __all__ = [
     "is_aligned",
     "is_power_of_two",
 ]
+
+
+# <3 🧱🤝📄🪄

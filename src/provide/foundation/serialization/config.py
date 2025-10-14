@@ -1,3 +1,9 @@
+# provide/foundation/serialization/config.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from attrs import define
@@ -29,3 +35,6 @@ class SerializationCacheConfig(RuntimeConfig):
         converter=int,
         description="Maximum number of cached serialization results",
     )
+
+
+# <3 🧱🤝📜🪄

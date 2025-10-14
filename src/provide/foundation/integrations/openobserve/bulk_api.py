@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/bulk_api.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """OpenObserve bulk API (non-OTLP fallback).
 
 Provides functions for sending logs via OpenObserve's proprietary bulk ingestion API.
@@ -190,3 +196,6 @@ __all__ = [
     "build_log_entry",
     "send_log_bulk",
 ]
+
+
+# <3 🧱🤝🔌🪄

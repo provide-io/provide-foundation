@@ -1,3 +1,9 @@
+# provide/foundation/profiling/component.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -175,3 +181,6 @@ def register_profiling(hub: Hub, sample_rate: float = DEFAULT_PROFILING_SAMPLE_R
     except ImportError:
         # CLI components may not be available in all environments
         pass
+
+
+# <3 🧱🤝⏱️🪄

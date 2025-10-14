@@ -1,3 +1,9 @@
+# provide/foundation/crypto/certificates/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.crypto.certificates.base import (
@@ -37,3 +43,6 @@ __all__ = [
     "create_x509_certificate",
     "validate_signature",
 ]
+
+
+# <3 🧱🤝🔒🪄

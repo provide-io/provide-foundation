@@ -1,3 +1,9 @@
+# provide/foundation/metrics/simple.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections import defaultdict
@@ -168,3 +174,6 @@ class SimpleHistogram:
         if not self._observations:
             return 0.0
         return self.sum / self.count
+
+
+# <3 🧱🤝📈🪄

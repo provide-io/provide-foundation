@@ -1,3 +1,9 @@
+# provide/foundation/process/shared.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Mapping
@@ -221,3 +227,6 @@ def validate_command_type(cmd: list[str] | str, shell: bool) -> None:
             expected="list[str] or (str with shell=True)",
             actual="str without shell=True",
         )
+
+
+# <3 🧱🤝🏃🪄

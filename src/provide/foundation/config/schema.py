@@ -1,3 +1,9 @@
+# provide/foundation/config/schema.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Configuration schema and validation."""
 
 from __future__ import annotations
@@ -287,3 +293,6 @@ def validate_url_accessible(value: str) -> bool:
     # This is just an example - in real use you'd use aiohttp or similar
     # For now, just do basic URL validation
     return validate_url(value)
+
+
+# <3 🧱🤝⚙️🪄

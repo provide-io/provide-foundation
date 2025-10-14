@@ -1,3 +1,9 @@
+# provide/foundation/parsers/collections.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 """Collection parsing functions for lists, dicts, tuples, and sets.
@@ -158,3 +164,6 @@ __all__ = [
     "parse_set",
     "parse_tuple",
 ]
+
+
+# <3 🧱🤝🧩🪄

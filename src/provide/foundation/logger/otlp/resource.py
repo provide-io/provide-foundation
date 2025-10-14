@@ -1,3 +1,9 @@
+# provide/foundation/logger/otlp/resource.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """OpenTelemetry Resource creation and service attribute management.
 
 Provides functions for building OTLP Resource instances with standard service
@@ -110,3 +116,6 @@ __all__ = [
     "build_resource_attributes",
     "create_otlp_resource",
 ]
+
+
+# <3 🧱🤝📝🪄

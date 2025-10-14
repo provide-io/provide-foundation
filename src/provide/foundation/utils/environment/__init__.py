@@ -1,3 +1,9 @@
+# provide/foundation/utils/environment/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.utils.environment.getters import (
@@ -32,3 +38,6 @@ __all__ = [
     "parse_size",
     "require",
 ]
+
+
+# <3 🧱🤝🧰🪄

@@ -1,3 +1,9 @@
+# provide/foundation/config/base.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Base configuration classes and utilities."""
 
 from __future__ import annotations
@@ -302,3 +308,6 @@ class BaseConfig:
             parts.append(f"{attr.name}={value!r}")
 
         return f"{self.__class__.__name__}({', '.join(parts)})"
+
+
+# <3 🧱🤝⚙️🪄

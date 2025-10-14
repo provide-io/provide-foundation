@@ -1,3 +1,9 @@
+# provide/foundation/tools/__init__.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.tools.base import (
@@ -56,3 +62,6 @@ __all__ = [
     "get_tool_registry",
     "register_tool_manager",
 ]
+
+
+# <3 🧱🤝🔧🪄

@@ -1,3 +1,9 @@
+# provide/foundation/time/core.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from datetime import datetime
@@ -65,3 +71,6 @@ def provide_now(tz: str | ZoneInfo | None = None) -> datetime:
     zone = ZoneInfo(tz) if isinstance(tz, str) else tz
 
     return datetime.now(zone)
+
+
+# <3 🧱🤝🕰️🪄

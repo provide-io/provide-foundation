@@ -1,3 +1,9 @@
+# provide/foundation/eventsets/sets/das.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
@@ -122,3 +128,6 @@ EVENT_SET = EventSet(
     ],
     priority=0,
 )
+
+
+# <3 🧱🤝📊🪄

@@ -1,3 +1,9 @@
+# provide/foundation/process/lifecycle/managed.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import asyncio
@@ -291,3 +297,6 @@ class ManagedProcess:
         """Context manager exit with cleanup."""
         self.terminate_gracefully()
         self.cleanup()
+
+
+# <3 🧱🤝🏃🪄

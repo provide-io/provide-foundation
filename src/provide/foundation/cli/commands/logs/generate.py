@@ -1,3 +1,9 @@
+# provide/foundation/cli/commands/logs/generate.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import time
@@ -98,3 +104,6 @@ def generate_logs_command(
         # (OTLP flush handled by @with_cleanup decorator)
         total_time = time.time() - start_time
         print_final_stats(logs_sent, logs_failed, logs_rate_limited, total_time, rate, enable_rate_limit)
+
+
+# <3 🧱🤝💻🪄

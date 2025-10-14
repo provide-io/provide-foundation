@@ -1,3 +1,9 @@
+# provide/foundation/concurrency/locks.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Generator
@@ -292,3 +298,6 @@ def register_foundation_locks() -> None:
 
 
 __all__ = ["LockInfo", "LockManager", "get_lock_manager", "register_foundation_locks"]
+
+
+# <3 🧱🤝🧵🪄

@@ -1,3 +1,9 @@
+# provide/foundation/cli/click/adapter.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """Click CLI adapter implementation."""
 
 from __future__ import annotations
@@ -89,3 +95,6 @@ class ClickAdapter:
 
         """
         ensure_parent_groups(parent_path, registry)
+
+
+# <3 🧱🤝💻🪄

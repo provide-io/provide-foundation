@@ -1,3 +1,9 @@
+# provide/foundation/crypto/certificates/certificate.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -440,3 +446,6 @@ class Certificate:
 
 # Type alias for keypair types
 KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None if _HAS_CRYPTO else None
+
+
+# <3 🧱🤝🔒🪄

@@ -1,3 +1,9 @@
+# provide/foundation/crypto/hashing.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 from collections.abc import Iterator
@@ -271,3 +277,6 @@ def hash_chunks(
         hash=hash_value[:16] + "...",
     )
     return hash_value
+
+
+# <3 🧱🤝🔒🪄

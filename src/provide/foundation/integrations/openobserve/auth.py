@@ -1,3 +1,9 @@
+# provide/foundation/integrations/openobserve/auth.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import base64
@@ -73,3 +79,6 @@ def validate_credentials(username: str | None, password: str | None) -> tuple[st
         raise OpenObserveAuthenticationError("OpenObserve password is required")
 
     return username, password
+
+
+# <3 🧱🤝🔌🪄

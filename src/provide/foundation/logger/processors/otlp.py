@@ -1,3 +1,9 @@
+# provide/foundation/logger/processors/otlp.py
+#
+# This is the provide.io LLC 2025 Copyright. All rights reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 """OTLP processor for sending logs to OpenTelemetry endpoints.
 
 This processor uses the generic OTLPLogClient to send logs to any OTLP-compatible backend.
@@ -186,3 +192,6 @@ __all__ = [
     "flush_otlp_logs",
     "reset_otlp_provider",
 ]
+
+
+# <3 🧱🤝📝🪄
