@@ -68,8 +68,8 @@ def telemetry_config() -> TelemetryConfig:
     return TelemetryConfig.from_env()
 
 
-@pytest.fixture(scope="session")
-def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObserveClient | None:
+@pytest.fixture
+async def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObserveClient | None:
     """Create OpenObserve client if configuration is available.
 
     Uses Foundation's OpenObserveClient.from_config() which reads from
@@ -78,58 +78,74 @@ def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObserveClie
     Args:
         openobserve_config: OpenObserve configuration from fixture
 
-    Returns:
-        OpenObserveClient instance if configured, None otherwise
+    Yields:
+        OpenObserveClient instance if configured
+
+    Note:
+        Changed from session to function scope to avoid event loop closure issues
+        during cleanup. Each test gets its own client instance with proper cleanup.
 
     """
     # Check if OpenObserve is configured
     if not openobserve_config.url:
         pytest.skip("OpenObserve not configured. Set OPENOBSERVE_URL to run integration tests.")
-        return None
 
     if not openobserve_config.user or not openobserve_config.password:
         pytest.skip("OpenObserve credentials not configured. Set OPENOBSERVE_USER and OPENOBSERVE_PASSWORD.")
-        return None
 
     try:
         # Create client using Foundation's from_config() method
         client = OpenObserveClient.from_config()
-        return client
     except OpenObserveConfigError as e:
         pytest.skip(f"OpenObserve configuration error: {e}")
-        return None
+
+    yield client
+
+    # Cleanup: ensure transports are properly closed
+    if hasattr(client, "_client") and client._client:
+        await client._client.__aexit__(None, None, None)
 
 
 @pytest.fixture(scope="session")
-def openobserve_available(openobserve_client: OpenObserveClient | None) -> bool:
+def openobserve_available(openobserve_config: OpenObserveConfig) -> bool:
     """Check if OpenObserve instance is reachable.
 
     Args:
-        openobserve_client: OpenObserve client from fixture
+        openobserve_config: OpenObserve configuration from fixture
 
     Returns:
         True if OpenObserve is reachable, False otherwise
 
+    Note:
+        Uses direct HTTP check instead of client to avoid async/event loop issues
+        with session-scoped fixtures.
+
     """
-    if not openobserve_client:
+    if not openobserve_config.url:
+        return False
+
+    if not openobserve_config.user or not openobserve_config.password:
         return False
 
     try:
-        # Try to connect to OpenObserve health endpoint or list streams
+        # Try to connect to OpenObserve by checking the streams endpoint
+        # Use basic HTTP check with requests library since we're in a session-scoped fixture
+        # The URL already includes /api/{org}, so we just append the endpoint
+        auth = (openobserve_config.user, openobserve_config.password)
+
+        # Try the streams endpoint as a connectivity test
+        url = f"{openobserve_config.url.rstrip('/')}/streams"
         response = requests.get(
-            f"{openobserve_client.url}/healthz",
+            url,
             timeout=5,
-            headers=openobserve_client.session.headers,
+            auth=auth,
         )
+        # Accept 200 (success) - 401 would mean bad credentials
         return response.status_code == 200
-    except Exception:
-        # If health check fails, try listing streams as fallback
-        try:
-            openobserve_client.list_streams()
-            return True
-        except Exception:
-            pytest.skip(f"OpenObserve instance at {openobserve_client.url} is not reachable")
-            return False
+    except Exception as e:
+        # If connection fails completely, assume unavailable
+        pytest.skip(f"OpenObserve instance at {openobserve_config.url} is not reachable: {e}")
+        return False
 
 
 @pytest.fixture
