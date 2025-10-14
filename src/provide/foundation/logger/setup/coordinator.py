@@ -317,6 +317,11 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
         class SharedFormatter(logging.Formatter):
             """Formatter that uses the shared formatting function."""
 
+            def __init__(self, use_colors: bool = False) -> None:
+                """Initialize formatter with color support setting."""
+                super().__init__()
+                self.use_colors = use_colors
+
             def format(self, record: logging.LogRecord) -> str:
                 # Add log emoji prefix to stdlib logger messages
                 message = f"🪵 {record.getMessage()}"
@@ -324,12 +329,12 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
                     timestamp=record.created,
                     level_name=record.levelname,
                     message=message,
-                    use_colors=is_tty,
+                    use_colors=self.use_colors,
                 )
 
         handler = logging.StreamHandler(stream)
         handler.setLevel(log_level)
-        handler.setFormatter(SharedFormatter())
+        handler.setFormatter(SharedFormatter(use_colors=is_tty))
         slog.addHandler(handler)
 
         # Don't propagate to avoid duplicate messages
