@@ -1,7 +1,6 @@
 # provide/foundation/file/operations/detectors/auto_flush.py
 #
-# This is the provide.io LLC 2025 Copyright. All rights reserved.
-#
+# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 """Auto-flush handler for streaming file operation detection.

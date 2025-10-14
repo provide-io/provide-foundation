@@ -1,7 +1,6 @@
 # provide/foundation/integrations/openobserve/streaming.py
 #
-# This is the provide.io LLC 2025 Copyright. All rights reserved.
-#
+# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 """Streaming search operations for OpenObserve using Foundation transport."""
