@@ -129,6 +129,18 @@ provide.foundation is intentionally designed as a **foundation layer**, not a fu
 
 **Intentional Scope**: Provides logging, configuration, CLI patterns. Does NOT provide web frameworks, databases, auth, or templates. Integrate with FastAPI/Flask/Django for web applications.
 
+## Documentation
+
+For comprehensive documentation, tutorials, and API reference:
+
+- **[Documentation](https://provide-io.github.io/provide-foundation/)** - Full documentation site
+- **[Examples](examples/)** - Working code examples for all features
+- **[Tutorials](https://provide-io.github.io/provide-foundation/tutorials/01-quick-start/)** - Step-by-step guides
+- **[How-To Guides](https://provide-io.github.io/provide-foundation/how-to-guides/logging/basic-logging/)** - Task-focused recipes
+- **[API Reference](https://provide-io.github.io/provide-foundation/reference/)** - Complete API documentation
+
+---
+
 <p align="center">
   Built by <a href="https://provide.io">provide.io</a>
 </p>
