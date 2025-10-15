@@ -16,32 +16,21 @@ if src_path.exists() and str(src_path) not in sys.path:
 
 from provide.foundation import (  # noqa: E402
     logger,
-    setup_telemetry,
-    shutdown_foundation_telemetry,
+    shutdown_foundation,
 )
 from provide.foundation.console.output import pout  # noqa: E402
-from provide.foundation.logger.config import (  # noqa: E402
-    LoggingConfig,
-    TelemetryConfig,
-)
 
 
 async def example_9_async_usage() -> None:
     """Example 9: Demonstrates usage in asynchronous (`asyncio`) contexts.
 
-    Covers logging from async functions and using the `shutdown_foundation_telemetry`
+    Covers logging from async functions and using the `shutdown_foundation`
     async function.
     """
     pout("\n" + "=" * 60)
     pout("⚡ Example 9: Async Usage")
     pout(" Demonstrates: Logging from asyncio tasks and async shutdown.")
     pout("=" * 60)
-
-    setup_telemetry(
-        TelemetryConfig(
-            logging=LoggingConfig(default_level="INFO"),
-        ),
-    )
 
     async def async_task(task_id: int, task_type: str) -> dict[str, int]:
         """Simulate an async task with realistic operations."""
@@ -84,7 +73,7 @@ async def example_9_async_usage() -> None:
 
     # Demonstrate async shutdown (currently logs a message)
     logger.info("Initiating telemetry shutdown...")
-    await shutdown_foundation_telemetry(timeout_millis=100)
+    await shutdown_foundation(timeout_millis=100)
     logger.info(
         "Message after shutdown call (may use fallback if shutdown was destructive)",
     )

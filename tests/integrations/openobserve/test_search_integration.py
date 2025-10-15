@@ -94,7 +94,7 @@ class TestSanitizationFunctions(FoundationTestCase):
 class TestSearchLogs(FoundationTestCase):
     """Integration tests for basic search functionality."""
 
-    def test_search_logs_basic(
+    async def test_search_logs_basic(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -104,13 +104,13 @@ class TestSearchLogs(FoundationTestCase):
         assert openobserve_client is not None
 
         sql = f"SELECT * FROM {test_stream_name} LIMIT 10"
-        response = search_logs(sql=sql, client=openobserve_client)
+        response = await search_logs(sql=sql, client=openobserve_client)
 
         assert hasattr(response, "hits")
         assert hasattr(response, "total")
         assert isinstance(response.hits, list)
 
-    def test_search_logs_with_time_range(
+    async def test_search_logs_with_time_range(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -120,7 +120,7 @@ class TestSearchLogs(FoundationTestCase):
         assert openobserve_client is not None
 
         sql = f"SELECT * FROM {test_stream_name}"
-        response = search_logs(
+        response = await search_logs(
             sql=sql,
             start_time="-1h",
             end_time="now",
@@ -131,7 +131,7 @@ class TestSearchLogs(FoundationTestCase):
         assert isinstance(response.hits, list)
         assert len(response.hits) <= 5  # Respects size parameter
 
-    def test_search_logs_creates_client_if_none(
+    async def test_search_logs_creates_client_if_none(
         self,
         skip_if_no_openobserve: None,
     ) -> None:
@@ -139,7 +139,7 @@ class TestSearchLogs(FoundationTestCase):
         sql = "SELECT * FROM default LIMIT 1"
 
         # Should create client from config
-        response = search_logs(sql=sql)
+        response = await search_logs(sql=sql)
 
         assert isinstance(response.hits, list)
 
@@ -148,7 +148,7 @@ class TestSearchLogs(FoundationTestCase):
 class TestSearchByTraceId(FoundationTestCase):
     """Integration tests for trace ID search."""
 
-    def test_search_by_trace_id(
+    async def test_search_by_trace_id(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -160,7 +160,7 @@ class TestSearchByTraceId(FoundationTestCase):
         # Use a sample trace ID (may not exist in empty instance)
         trace_id = "abc123def456789"
 
-        response = search_by_trace_id(
+        response = await search_by_trace_id(
             trace_id=trace_id,
             stream=test_stream_name,
             client=openobserve_client,
@@ -169,7 +169,7 @@ class TestSearchByTraceId(FoundationTestCase):
         assert isinstance(response.hits, list)
         # Results may be empty if trace_id doesn't exist
 
-    def test_search_by_trace_id_with_uuid(
+    async def test_search_by_trace_id_with_uuid(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -181,7 +181,7 @@ class TestSearchByTraceId(FoundationTestCase):
         # UUID format trace ID
         trace_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
 
-        response = search_by_trace_id(
+        response = await search_by_trace_id(
             trace_id=trace_id,
             stream=test_stream_name,
             client=openobserve_client,
@@ -194,7 +194,7 @@ class TestSearchByTraceId(FoundationTestCase):
 class TestSearchByLevel(FoundationTestCase):
     """Integration tests for log level search."""
 
-    def test_search_by_level_error(
+    async def test_search_by_level_error(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -203,7 +203,7 @@ class TestSearchByLevel(FoundationTestCase):
         """Test searching by ERROR level."""
         assert openobserve_client is not None
 
-        response = search_by_level(
+        response = await search_by_level(
             level="ERROR",
             stream=test_stream_name,
             client=openobserve_client,
@@ -215,7 +215,7 @@ class TestSearchByLevel(FoundationTestCase):
             if "level" in hit:
                 assert hit["level"] == "ERROR"
 
-    def test_search_by_level_with_time_range(
+    async def test_search_by_level_with_time_range(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -224,7 +224,7 @@ class TestSearchByLevel(FoundationTestCase):
         """Test searching by level with time range."""
         assert openobserve_client is not None
 
-        response = search_by_level(
+        response = await search_by_level(
             level="INFO",
             stream=test_stream_name,
             start_time="-30m",
@@ -241,7 +241,7 @@ class TestSearchByLevel(FoundationTestCase):
 class TestSearchErrors(FoundationTestCase):
     """Integration tests for error search."""
 
-    def test_search_errors(
+    async def test_search_errors(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -250,7 +250,7 @@ class TestSearchErrors(FoundationTestCase):
         """Test searching for error logs."""
         assert openobserve_client is not None
 
-        response = search_errors(
+        response = await search_errors(
             stream=test_stream_name,
             client=openobserve_client,
         )
@@ -261,7 +261,7 @@ class TestSearchErrors(FoundationTestCase):
             if "level" in hit:
                 assert hit["level"] == "ERROR"
 
-    def test_search_errors_with_params(
+    async def test_search_errors_with_params(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -270,7 +270,7 @@ class TestSearchErrors(FoundationTestCase):
         """Test searching for errors with additional parameters."""
         assert openobserve_client is not None
 
-        response = search_errors(
+        response = await search_errors(
             stream=test_stream_name,
             start_time="-1h",
             size=5,
@@ -285,7 +285,7 @@ class TestSearchErrors(FoundationTestCase):
 class TestSearchByService(FoundationTestCase):
     """Integration tests for service name search."""
 
-    def test_search_by_service(
+    async def test_search_by_service(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -296,7 +296,7 @@ class TestSearchByService(FoundationTestCase):
 
         service_name = "test-service"
 
-        response = search_by_service(
+        response = await search_by_service(
             service=service_name,
             stream=test_stream_name,
             client=openobserve_client,
@@ -313,7 +313,7 @@ class TestSearchByService(FoundationTestCase):
 class TestAggregatByLevel(FoundationTestCase):
     """Integration tests for level aggregation."""
 
-    def test_aggregate_by_level(
+    async def test_aggregate_by_level(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -322,7 +322,7 @@ class TestAggregatByLevel(FoundationTestCase):
         """Test aggregating log counts by level."""
         assert openobserve_client is not None
 
-        result = aggregate_by_level(
+        result = await aggregate_by_level(
             stream=test_stream_name,
             client=openobserve_client,
         )
@@ -334,7 +334,7 @@ class TestAggregatByLevel(FoundationTestCase):
             assert isinstance(count, int)
             assert count >= 0
 
-    def test_aggregate_by_level_with_time_range(
+    async def test_aggregate_by_level_with_time_range(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -343,7 +343,7 @@ class TestAggregatByLevel(FoundationTestCase):
         """Test aggregating by level with time range."""
         assert openobserve_client is not None
 
-        result = aggregate_by_level(
+        result = await aggregate_by_level(
             stream=test_stream_name,
             start_time="-1h",
             end_time="now",
@@ -357,7 +357,7 @@ class TestAggregatByLevel(FoundationTestCase):
 class TestGetCurrentTraceLogs(FoundationTestCase):
     """Integration tests for current trace log retrieval."""
 
-    def test_get_current_trace_logs_no_active_trace(
+    async def test_get_current_trace_logs_no_active_trace(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -366,7 +366,7 @@ class TestGetCurrentTraceLogs(FoundationTestCase):
         """Test getting current trace logs when no trace is active."""
         assert openobserve_client is not None
 
-        result = get_current_trace_logs(
+        result = await get_current_trace_logs(
             stream=test_stream_name,
             client=openobserve_client,
         )

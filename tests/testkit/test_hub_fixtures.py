@@ -36,6 +36,7 @@ def test_isolated_hub_fixture(isolated_hub):
 
 def test_isolated_containers_are_independent(isolated_container):
     """Test that each test gets its own isolated container."""
+
     # This test registers a value that should NOT be visible to other tests
     class IsolationTestService:
         value = "first_test_value"
@@ -47,6 +48,7 @@ def test_isolated_containers_are_independent(isolated_container):
 
 def test_isolated_containers_second_test(isolated_container):
     """Test that container is fresh and doesn't have previous test's data."""
+
     # This should not find the value from test_isolated_containers_are_independent
     class IsolationTestService:
         value = "should_not_exist"
