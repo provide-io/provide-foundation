@@ -72,14 +72,14 @@ def handle_registry_event(event: Event | RegistryEvent) -> None:
         if event.operation == "register":
             logger.debug(
                 "Registered item",
-                name=event.item_name,
+                item_name=event.item_name,
                 dimension=event.dimension,
                 data=event.data,
             )
         elif event.operation == "remove":
             logger.debug(
                 "Removed item",
-                name=event.item_name,
+                item_name=event.item_name,
                 dimension=event.dimension,
                 data=event.data,
             )
