@@ -38,8 +38,8 @@ class TestClientInitialization(FoundationTestCase):
         assert client.url == openobserve_config.url
         assert client.username == openobserve_config.user
         assert client.organization == (openobserve_config.org or "default")
-        assert client._client.default_timeout == 30.0  # default
-        assert client._client is not None
+        assert client.timeout == 30  # default
+        assert client.session is not None
 
     def test_client_direct_initialization(
         self,
@@ -52,11 +52,12 @@ class TestClientInitialization(FoundationTestCase):
             password=openobserve_config.password or "password",
             organization=openobserve_config.org or "default",
             timeout=60,
+            max_retries=5,
         )
 
         assert client.url.endswith("/api/default") or "/api/" in client.url
-        assert client.organization == openobserve_config.org or "default"
-        assert client._client.default_timeout == 60.0
+        assert client.timeout == 60
+        assert client.session is not None
 
     def test_client_url_normalization(self) -> None:
         """Test that client normalizes URLs correctly."""
@@ -74,7 +75,7 @@ class TestClientInitialization(FoundationTestCase):
 class TestClientConnection(FoundationTestCase):
     """Tests for OpenObserve client connection."""
 
-    async def test_connection_test(
+    def test_connection_test(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -82,11 +83,11 @@ class TestClientConnection(FoundationTestCase):
         """Test connection testing method."""
         assert openobserve_client is not None
 
-        result = await openobserve_client.test_connection()
+        result = openobserve_client.test_connection()
 
         assert result is True
 
-    async def test_connection_with_invalid_credentials(
+    def test_connection_with_invalid_credentials(
         self,
         openobserve_config: OpenObserveConfig,
     ) -> None:
@@ -101,7 +102,7 @@ class TestClientConnection(FoundationTestCase):
             organization=openobserve_config.org or "default",
         )
 
-        result = await client.test_connection()
+        result = client.test_connection()
 
         # Should fail with invalid credentials
         assert result is False
@@ -111,7 +112,7 @@ class TestClientConnection(FoundationTestCase):
 class TestListStreams(FoundationTestCase):
     """Tests for listing streams."""
 
-    async def test_list_streams(
+    def test_list_streams(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -119,7 +120,7 @@ class TestListStreams(FoundationTestCase):
         """Test listing available streams."""
         assert openobserve_client is not None
 
-        streams = await openobserve_client.list_streams()
+        streams = openobserve_client.list_streams()
 
         # Should return a list (may be empty for new instance)
         assert isinstance(streams, list)
@@ -128,7 +129,7 @@ class TestListStreams(FoundationTestCase):
             assert isinstance(stream, StreamInfo)
             assert stream.name  # Should have a name
 
-    async def test_list_streams_returns_stream_info(
+    def test_list_streams_returns_stream_info(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -136,7 +137,7 @@ class TestListStreams(FoundationTestCase):
         """Test that list_streams returns properly formed StreamInfo objects."""
         assert openobserve_client is not None
 
-        streams = await openobserve_client.list_streams()
+        streams = openobserve_client.list_streams()
 
         if streams:  # If there are any streams
             stream = streams[0]
@@ -154,7 +155,7 @@ class TestListStreams(FoundationTestCase):
 class TestSearchHistory(FoundationTestCase):
     """Tests for search history functionality."""
 
-    async def test_get_search_history(
+    def test_get_search_history(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -162,7 +163,7 @@ class TestSearchHistory(FoundationTestCase):
         """Test getting search history."""
         assert openobserve_client is not None
 
-        response = await openobserve_client.get_search_history(size=10)
+        response = openobserve_client.get_search_history(size=10)
 
         # Should return SearchResponse
         assert hasattr(response, "hits")
@@ -170,7 +171,7 @@ class TestSearchHistory(FoundationTestCase):
         assert hasattr(response, "took")
         assert isinstance(response.hits, list)
 
-    async def test_get_search_history_with_stream_filter(
+    def test_get_search_history_with_stream_filter(
         self,
         openobserve_client: OpenObserveClient | None,
         test_stream_name: str,
@@ -179,7 +180,7 @@ class TestSearchHistory(FoundationTestCase):
         """Test getting search history filtered by stream."""
         assert openobserve_client is not None
 
-        response = await openobserve_client.get_search_history(
+        response = openobserve_client.get_search_history(
             stream_name=test_stream_name,
             size=5,
         )
@@ -189,7 +190,7 @@ class TestSearchHistory(FoundationTestCase):
         # Size parameter should be respected
         assert len(response.hits) <= 5
 
-    async def test_get_search_history_different_sizes(
+    def test_get_search_history_different_sizes(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -199,7 +200,7 @@ class TestSearchHistory(FoundationTestCase):
 
         # Test with different sizes
         for size in [1, 5, 50]:
-            response = await openobserve_client.get_search_history(size=size)
+            response = openobserve_client.get_search_history(size=size)
             # Returned hits should not exceed requested size
             assert len(response.hits) <= size
 
@@ -208,7 +209,7 @@ class TestSearchHistory(FoundationTestCase):
 class TestClientErrorHandling(FoundationTestCase):
     """Tests for client error handling."""
 
-    async def test_invalid_endpoint_raises_error(
+    def test_invalid_endpoint_raises_error(
         self,
         openobserve_client: OpenObserveClient | None,
         skip_if_no_openobserve: None,
@@ -218,7 +219,7 @@ class TestClientErrorHandling(FoundationTestCase):
 
         with pytest.raises(OpenObserveQueryError):
             # Try to make request to non-existent endpoint
-            await openobserve_client._make_request(
+            openobserve_client._make_request(
                 method="GET",
                 endpoint="nonexistent_endpoint_xyz",
             )
@@ -238,13 +239,13 @@ class TestClientErrorHandling(FoundationTestCase):
             timeout=5,  # Short timeout
         )
 
-        assert client._client.default_timeout == 5.0
+        assert client.timeout == 5
 
     def test_retry_configuration(
         self,
         openobserve_config: OpenObserveConfig,
     ) -> None:
-        """Test that client is properly configured with UniversalClient."""
+        """Test that retry logic is properly configured."""
         if not openobserve_config.url:
             pytest.skip("OpenObserve URL not configured")
 
@@ -252,13 +253,14 @@ class TestClientErrorHandling(FoundationTestCase):
             url=openobserve_config.url,
             username=openobserve_config.user or "user@example.com",
             password=openobserve_config.password or "password",
+            max_retries=10,
         )
 
-        # Verify UniversalClient is configured
-        assert client._client is not None
-        # Check that auth headers are set
-        assert client._client.default_headers is not None
-        assert "Authorization" in client._client.default_headers
+        # Verify session has retry adapter
+        assert client.session is not None
+        # Check that adapters are mounted
+        assert "http://" in client.session.adapters
+        assert "https://" in client.session.adapters
 
 
 __all__ = [

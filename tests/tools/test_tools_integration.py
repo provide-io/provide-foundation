@@ -12,7 +12,6 @@ from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.config import BaseConfig
-from provide.foundation.hub import get_hub
 from provide.foundation.tools.base import (
     BaseToolManager,
     ToolMetadata,
@@ -72,7 +71,7 @@ class TestDownloaderIntegration(FoundationTestCase):
     @pytest.fixture
     def downloader(self):
         """Create downloader with real HTTP client."""
-        client = UniversalClient(hub=get_hub())
+        client = UniversalClient()
         return ToolDownloader(client)
 
     @pytest.fixture
@@ -182,7 +181,7 @@ class TestDownloaderIntegration(FoundationTestCase):
         # Create a new client with very short timeout
         from provide.foundation.transport import UniversalClient
 
-        timeout_client = UniversalClient(hub=get_hub(), default_timeout=0.001)  # 1ms timeout
+        timeout_client = UniversalClient(default_timeout=0.001)  # 1ms timeout
 
         # Replace the downloader's client
         original_client = downloader.client
@@ -304,7 +303,7 @@ class TestBackoffRetryIntegration(FoundationTestCase):
     @pytest.fixture
     def downloader(self):
         """Create downloader with real HTTP client."""
-        client = UniversalClient(hub=get_hub())
+        client = UniversalClient()
         return ToolDownloader(client)
 
     @pytest.fixture
@@ -359,7 +358,7 @@ class TestBackoffRetryIntegration(FoundationTestCase):
             mock_retry.side_effect = mock_retry_decorator
 
             # Create new downloader to use mocked retry
-            client = UniversalClient(hub=get_hub())
+            client = UniversalClient()
             test_downloader = ToolDownloader(client)
 
             with pytest.raises(Exception):
@@ -370,13 +369,14 @@ class TestBackoffRetryIntegration(FoundationTestCase):
         from provide.foundation.tools.downloader import ToolDownloader
         from provide.foundation.transport import UniversalClient
 
-        client = UniversalClient(hub=get_hub())
-        ToolDownloader(client)
+        client = UniversalClient()
+        downloader = ToolDownloader(client)
 
         dest = temp_dir / "eventual_success.bin"
 
         # Mock the client to fail a few times then succeed
         call_count = 0
+        original_stream = client.stream
 
         async def mock_stream(*args, **kwargs):
             nonlocal call_count
@@ -542,7 +542,7 @@ class TestNetworkErrorHandling(FoundationTestCase):
     @pytest.fixture
     def downloader(self):
         """Create downloader with real HTTP client."""
-        client = UniversalClient(hub=get_hub())
+        client = UniversalClient()
         return ToolDownloader(client)
 
     @pytest.fixture
