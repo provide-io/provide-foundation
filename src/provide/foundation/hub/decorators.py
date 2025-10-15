@@ -234,7 +234,7 @@ def _register_command_func(
         "category": category,
         "parent": parent,
         "is_group": group,
-        "_prebuilt_click_command": click_cmd, # Use new, clearer name
+        "_prebuilt_click_command": click_cmd,  # Use new, clearer name
     }
     reg_metadata.update(extra_metadata)
 

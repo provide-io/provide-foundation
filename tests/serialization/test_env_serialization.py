@@ -12,7 +12,7 @@ class TestEnvDumps:
     def test_basic_dict(self):
         """Should serialize basic dictionary."""
         result = env.env_dumps({"KEY": "value"})
-        assert result == 'KEY=value\n'
+        assert result == "KEY=value\n"
 
     def test_multiple_keys(self):
         """Should serialize multiple key-value pairs."""

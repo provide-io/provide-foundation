@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+
 from provide.foundation.utils.versioning import (
     _find_project_root,
     get_version,

@@ -39,7 +39,6 @@ from __future__ import annotations
 # ============================================================================
 # SIMPLE API (Recommended for most users)
 # ============================================================================
-
 # Simple detection functions
 from provide.foundation.file.operations.detect import (
     create_detector,
@@ -48,26 +47,22 @@ from provide.foundation.file.operations.detect import (
     detect_streaming,
 )
 
-# Simplified type aliases
-from provide.foundation.file.operations.types import (
-    FileEvent as Event,
-    FileOperation as Operation,
-    OperationType,
-)
-
 # ============================================================================
 # FULL API (For backward compatibility and advanced usage)
 # ============================================================================
-
 # Original detector class
 from provide.foundation.file.operations.detectors import OperationDetector
 
+# Simplified type aliases
 # Complete type system
 from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
+    FileEvent as Event,
     FileEventMetadata,
     FileOperation,
+    FileOperation as Operation,
+    OperationType,
 )
 
 # Utility functions

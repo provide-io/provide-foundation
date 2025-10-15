@@ -54,9 +54,7 @@ class TestGetAvailableSpace:
         assert space is None
 
     @patch("os.statvfs")
-    def test_get_available_space_handles_attribute_error(
-        self, mock_statvfs, tmp_path: Path
-    ):
+    def test_get_available_space_handles_attribute_error(self, mock_statvfs, tmp_path: Path):
         """Should return None when statvfs is not available (Windows)."""
         mock_statvfs.side_effect = AttributeError("statvfs not available")
 
@@ -80,9 +78,7 @@ class TestCheckDiskSpace:
         # Request an impossibly large amount
         huge_requirement = 10**18  # 1 exabyte
 
-        result = check_disk_space(
-            tmp_path, huge_requirement, raise_on_insufficient=False
-        )
+        result = check_disk_space(tmp_path, huge_requirement, raise_on_insufficient=False)
 
         assert result is False
 
@@ -111,9 +107,7 @@ class TestCheckDiskSpace:
         assert result is True
 
     @patch("provide.foundation.file.disk.get_available_space")
-    def test_check_disk_space_when_space_unknown(
-        self, mock_get_space, tmp_path: Path
-    ):
+    def test_check_disk_space_when_space_unknown(self, mock_get_space, tmp_path: Path):
         """Should return True (allow operation) when space cannot be determined."""
         mock_get_space.return_value = None
 
@@ -141,9 +135,7 @@ class TestCheckDiskSpace:
         assert available is not None
 
         # Request one byte more
-        result = check_disk_space(
-            tmp_path, available + 1, raise_on_insufficient=False
-        )
+        result = check_disk_space(tmp_path, available + 1, raise_on_insufficient=False)
 
         # Should fail
         assert result is False
@@ -196,9 +188,7 @@ class TestGetDiskUsage:
         assert usage is None
 
     @patch("os.statvfs")
-    def test_get_disk_usage_handles_attribute_error(
-        self, mock_statvfs, tmp_path: Path
-    ):
+    def test_get_disk_usage_handles_attribute_error(self, mock_statvfs, tmp_path: Path):
         """Should return None when statvfs not available."""
         mock_statvfs.side_effect = AttributeError("statvfs not available")
 
@@ -266,9 +256,7 @@ class TestDiskUtilitiesIntegration:
 
         # Check for unreasonable requirement (200% of available)
         huge_requirement = available * 2
-        result = check_disk_space(
-            tmp_path, huge_requirement, raise_on_insufficient=False
-        )
+        result = check_disk_space(tmp_path, huge_requirement, raise_on_insufficient=False)
         assert result is False
 
     def test_usage_and_available_consistent(self, tmp_path: Path):
