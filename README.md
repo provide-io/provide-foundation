@@ -19,40 +19,6 @@
 
 ---
 
-## Getting Started
-
-> **Important:** This project uses `uv` for Python environment and package management.
-
-### Development Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/provide-io/provide-foundation.git
-cd provide-foundation
-
-# Create virtual environment
-uv venv
-
-# Activate virtual environment
-source .venv/bin/activate
-
-# Install dependencies
-uv sync
-```
-
-### Installing as a Package
-
-```bash
-# Install from PyPI
-uv add provide-foundation
-
-# Or install from source
-uv add git+https://github.com/provide-io/provide-foundation.git
-
-# Or using pip (if you prefer)
-pip install provide-foundation
-```
-
 ### Optional Dependencies
 
 provide.foundation has optional feature sets that require additional dependencies:
@@ -93,8 +59,6 @@ provide.foundation has optional feature sets that require additional dependencie
 - **Process Execution** - Safe subprocess execution with streaming and async support
 - **Hub and Registry** - Central system for managing application components, commands, and resources
 
-> **See the [examples/](examples/) directory and [documentation](https://provide-io.github.io/provide-foundation/) for comprehensive usage examples and tutorials.**
-
 ---
 
 ## Architecture & Design Philosophy
@@ -128,18 +92,6 @@ provide.foundation is intentionally designed as a **foundation layer**, not a fu
 **Global State Pattern**: Singletons (`get_hub()`, `logger`) for ergonomic APIs. Mitigation: `provide-testkit` provides `reset_foundation_setup_for_testing()` for clean test state.
 
 **Intentional Scope**: Provides logging, configuration, CLI patterns. Does NOT provide web frameworks, databases, auth, or templates. Integrate with FastAPI/Flask/Django for web applications.
-
-## Documentation
-
-For comprehensive documentation, tutorials, and API reference:
-
-- **[Documentation](https://provide-io.github.io/provide-foundation/)** - Full documentation site
-- **[Examples](examples/)** - Working code examples for all features
-- **[Tutorials](https://provide-io.github.io/provide-foundation/tutorials/01-quick-start/)** - Step-by-step guides
-- **[How-To Guides](https://provide-io.github.io/provide-foundation/how-to-guides/logging/basic-logging/)** - Task-focused recipes
-- **[API Reference](https://provide-io.github.io/provide-foundation/reference/)** - Complete API documentation
-
----
 
 <p align="center">
   Built by <a href="https://provide.io">provide.io</a>
