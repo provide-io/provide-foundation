@@ -2,29 +2,9 @@
 
 **A Comprehensive Python Foundation Library for Modern Applications**
 
-<p align="center">
-    <a href="https://pypi.org/project/provide-foundation/">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/provide-foundation.svg">
-    </a>
-    <a href="https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml">
-        <img alt="CI Status" src="https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml/badge.svg">
-    </a>
-    <a href="https://codecov.io/gh/provide-io/provide-foundation">
-        <img src="https://codecov.io/gh/provide-io/provide-foundation/branch/main/graph/badge.svg"/>
-    </a>
-    <img alt="Test Coverage" src="https://img.shields.io/badge/coverage-83.65%25-brightgreen.svg">
-    <img alt="Test Count" src="https://img.shields.io/badge/tests-1000+-blue.svg">
-    <img alt="Type Checking" src="https://img.shields.io/badge/typing-mypy-informational.svg">
-    <a href="https://github.com/provide-io/provide-foundation/blob/main/LICENSE">
-        <img alt="License" src="https://img.shields.io/github/license/provide-io/provide-foundation.svg">
-    </a>
-</p>
-
 ---
 
 **provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
-
-> **Performance**: Benchmarked at >14,000 msg/sec under optimal conditions with minimal allocations. Actual performance varies based on configuration, system resources, and usage patterns.
 
 ## Quality Standards
 
@@ -39,29 +19,9 @@
 
 ---
 
-## Prerequisites
+## Getting Started
 
 > **Important:** This project uses `uv` for Python environment and package management.
-
-### Install UV
-
-Visit [UV Documentation](https://github.com/astral-sh/uv) for more information.
-
-```bash
-# On macOS and Linux.
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# On Windows.
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-# Using pipx (if you prefer)
-pipx install uv
-
-# Update UV to latest version
-uv self update
-```
-
-## Getting Started
 
 ### Development Setup
 
@@ -110,59 +70,6 @@ provide.foundation has optional feature sets that require additional dependencie
 
 ---
 
-## Testing with provide-foundation
-
-### Required Testing Dependencies
-
-When testing applications that use provide-foundation, **`provide-testkit` is mandatory**:
-
-```bash
-# Install testkit for development/testing
-uv add provide-testkit --group dev
-
-# Or with pip
-pip install provide-testkit
-```
-
-### Essential Testing Pattern
-
-```python
-import pytest
-from provide.testkit import (
-    reset_foundation_setup_for_testing,
-    set_log_stream_for_testing,
-)
-from provide.foundation import logger
-
-@pytest.fixture(autouse=True)
-def reset_foundation():
-    """Reset Foundation state before each test."""
-    reset_foundation_setup_for_testing()
-
-def test_foundation_logging():
-    """Test Foundation logger functionality."""
-    import sys
-
-    # Capture Foundation logs for testing
-    set_log_stream_for_testing(sys.stderr)
-
-    # Use Foundation logger
-    logger.info("Test message", component="test")
-    # Your test assertions here...
-```
-
-### Key Testing Features
-
-- **Automatic Context Detection**: TestKit detects testing environments automatically
-- **Foundation Reset**: Clean state between tests via `reset_foundation_setup_for_testing()`
-- **Log Capture**: Direct Foundation logs to streams for assertions
-- **CLI Testing**: Comprehensive Click application testing utilities
-- **Mock Integration**: Foundation-aware mocks and fixtures
-
-> **Note**: If provide-testkit is not available, pause development and install it. Foundation-based applications require testkit fixtures for reliable testing.
-
----
-
 ## What's Included
 
 **provide.foundation** offers a comprehensive toolkit for building robust applications:
@@ -187,77 +94,6 @@ def test_foundation_logging():
 - **Hub and Registry** - Central system for managing application components, commands, and resources
 
 > **See the [examples/](examples/) directory and [documentation](https://provide-io.github.io/provide-foundation/) for comprehensive usage examples and tutorials.**
-
----
-
-## Configuration
-
-### Environment Variables
-
-All configuration can be controlled through environment variables:
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PROVIDE_SERVICE_NAME` | Service identifier in logs | `None` |
-| `PROVIDE_LOG_LEVEL` | Minimum log level | `WARNING` |
-| `PROVIDE_LOG_CONSOLE_FORMATTER` | Output format (`key_value` or `json`) | `key_value` |
-| `PROVIDE_LOG_OMIT_TIMESTAMP` | Remove timestamps from console | `false` |
-| `PROVIDE_LOG_FILE` | Log to file path | `None` |
-| `PROVIDE_LOG_MODULE_LEVELS` | Per-module log levels (format: module1:LEVEL,module2:LEVEL) | `""` |
-| `PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED` | Enable emoji prefixes based on logger names | `true` |
-| `PROVIDE_LOG_DAS_EMOJI_ENABLED` | Enable Domain-Action-Status emoji prefixes | `true` |
-| `PROVIDE_TELEMETRY_DISABLED` | Globally disable telemetry | `false` |
-| `PROVIDE_SERVICE_VERSION` | Service version for telemetry | `None` |
-| `FOUNDATION_LOG_LEVEL` | Log level for Foundation internal setup messages | `WARNING` |
-| `OTEL_SERVICE_NAME` | OpenTelemetry service name (takes precedence over PROVIDE_SERVICE_NAME) | `None` |
-| `OTEL_TRACING_ENABLED` | Enable OpenTelemetry tracing | `true` |
-| `OTEL_METRICS_ENABLED` | Enable OpenTelemetry metrics | `true` |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP endpoint for traces and metrics | `None` |
-| `OTEL_EXPORTER_OTLP_HEADERS` | Headers for OTLP requests (key1=value1,key2=value2) | `""` |
-| `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP protocol (grpc, http/protobuf) | `http/protobuf` |
-| `OTEL_TRACE_SAMPLE_RATE` | Sampling rate for traces (0.0 to 1.0) | `1.0` |
-
-**Rate Limiting Configuration:**
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PROVIDE_LOG_RATE_LIMIT_ENABLED` | Enable rate limiting for log output | `false` |
-| `PROVIDE_LOG_RATE_LIMIT_GLOBAL` | Global rate limit (logs per second) | `None` |
-| `PROVIDE_LOG_RATE_LIMIT_GLOBAL_CAPACITY` | Global rate limit burst capacity | `None` |
-| `PROVIDE_LOG_RATE_LIMIT_PER_LOGGER` | Per-logger rate limits (format: logger1:rate:capacity,logger2:rate:capacity) | `""` |
-| `PROVIDE_LOG_RATE_LIMIT_EMIT_WARNINGS` | Emit warnings when logs are rate limited | `true` |
-| `PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL` | Seconds between rate limit summary reports | `5.0` |
-| `PROVIDE_LOG_RATE_LIMIT_MAX_QUEUE_SIZE` | Maximum number of logs to queue when rate limited | `1000` |
-| `PROVIDE_LOG_RATE_LIMIT_MAX_MEMORY_MB` | Maximum memory (MB) for queued logs | `None` |
-| `PROVIDE_LOG_RATE_LIMIT_OVERFLOW_POLICY` | Policy when queue is full: drop_oldest, drop_newest, or block | `drop_oldest` |
-
-### Configuration Files
-
-Support for YAML, JSON, TOML, and .env files:
-
-```yaml
-# config.yaml
-service_name: my-app
-environment: production
-
-logging:
-  level: INFO
-  formatter: json
-  file: /var/log/myapp.log
-
-database:
-  host: db.example.com
-  port: 5432
-  pool_size: 20
-```
-
----
-
-## OpenTelemetry Integration
-
-provide.foundation includes built-in OpenTelemetry support for distributed tracing and metrics collection. The library supports standard OTLP-compatible backends including Jaeger, Honeycomb, Lightstep, and New Relic.
-
-Configure via environment variables or programmatically. See the [documentation](https://provide-io.github.io/provide-foundation/) and [examples/tracing/](examples/tracing/) for detailed setup and usage patterns.
 
 ---
 

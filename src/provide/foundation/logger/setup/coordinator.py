@@ -19,6 +19,7 @@ from provide.foundation.logger.setup.processors import (
     configure_structlog_output,
     handle_globally_disabled_setup,
 )
+from provide.foundation.logger.setup.stdlib_wrapper import StructuredStdlibLogger
 from provide.foundation.streams import get_log_stream
 from provide.foundation.utils.streams import get_safe_stderr
 
@@ -283,7 +284,7 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
         config: Optional TelemetryConfig to use for log level and output
 
     Returns:
-        A standard Python logging.Logger instance
+        A StructuredStdlibLogger instance that accepts structlog-style kwargs
 
     Note:
         "Vanilla" means plain/unmodified Python logging, without
@@ -317,23 +318,71 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
         class SharedFormatter(logging.Formatter):
             """Formatter that uses the shared formatting function."""
 
+            def __init__(self, use_colors: bool = False) -> None:
+                """Initialize formatter with color support setting."""
+                super().__init__()
+                self.use_colors = use_colors
+
             def format(self, record: logging.LogRecord) -> str:
+                # Add log emoji prefix to stdlib logger messages
+                message = f"🧱 {record.getMessage()}"
+
+                # Extract structured logging key-value pairs from record.__dict__
+                # These are added via the extra={} parameter
+                kvs = []
+                # Known record attributes to skip
+                skip_attrs = {
+                    "name",
+                    "msg",
+                    "args",
+                    "created",
+                    "filename",
+                    "funcName",
+                    "levelname",
+                    "levelno",
+                    "lineno",
+                    "module",
+                    "msecs",
+                    "message",
+                    "pathname",
+                    "process",
+                    "processName",
+                    "relativeCreated",
+                    "thread",
+                    "threadName",
+                    "exc_info",
+                    "exc_text",
+                    "stack_info",
+                    "taskName",
+                }
+
+                for key, value in record.__dict__.items():
+                    if key not in skip_attrs:
+                        if self.use_colors:
+                            # Color keys in cyan, values in magenta
+                            kvs.append(f"\033[36m{key}\033[0m=\033[35m{value}\033[0m")
+                        else:
+                            kvs.append(f"{key}={value}")
+
+                if kvs:
+                    message = f"{message} {' '.join(kvs)}"
+
                 return format_foundation_log_message(
                     timestamp=record.created,
                     level_name=record.levelname,
-                    message=record.getMessage(),
-                    use_colors=is_tty,
+                    message=message,
+                    use_colors=self.use_colors,
                 )
 
         handler = logging.StreamHandler(stream)
         handler.setLevel(log_level)
-        handler.setFormatter(SharedFormatter())
+        handler.setFormatter(SharedFormatter(use_colors=is_tty))
         slog.addHandler(handler)
 
         # Don't propagate to avoid duplicate messages
         slog.propagate = False
 
-    return slog
+    return StructuredStdlibLogger(slog)
 
 
 def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool = False) -> None:
