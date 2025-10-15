@@ -95,7 +95,7 @@ class TestLoggingDefaults(FoundationTestCase):
 
     def test_foundation_logging_defaults(self) -> None:
         """Test Foundation internal logging defaults."""
-        assert DEFAULT_FOUNDATION_SETUP_LOG_LEVEL == "INFO"
+        assert DEFAULT_FOUNDATION_SETUP_LOG_LEVEL == "WARNING"
         assert DEFAULT_FOUNDATION_LOG_OUTPUT == "stderr"
         assert isinstance(DEFAULT_FOUNDATION_SETUP_LOG_LEVEL, str)
         assert isinstance(DEFAULT_FOUNDATION_LOG_OUTPUT, str)

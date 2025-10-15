@@ -1,7 +1,6 @@
 # provide/foundation/logger/setup/coordinator.py
 #
-# This is the provide.io LLC 2025 Copyright. All rights reserved.
-#
+# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 from __future__ import annotations
@@ -33,6 +32,53 @@ _FOUNDATION_LOG_LEVEL: int | None = None
 _CACHED_SETUP_LOGGER: Any | None = None
 
 
+def format_foundation_log_message(
+    timestamp: float, level_name: str, message: str, use_colors: bool = False
+) -> str:
+    """Shared formatter for both structlog and stdlib logging.
+
+    This ensures consistent formatting across all Foundation internal logs.
+
+    Args:
+        timestamp: Unix timestamp (seconds since epoch)
+        level_name: Log level name (will be lowercased)
+        message: Log message
+        use_colors: Whether to colorize output (for TTY)
+
+    Returns:
+        Formatted log string
+    """
+    import datetime
+
+    # Format timestamp with microseconds
+    ct = datetime.datetime.fromtimestamp(timestamp)
+    timestamp_str = ct.strftime("%Y-%m-%d %H:%M:%S.%f")
+
+    # Lowercase level name with padding
+    level = level_name.lower()
+
+    # Add colors if enabled (using structlog's color scheme)
+    if use_colors:
+        # ANSI color codes matching structlog's defaults
+        color_codes = {
+            "critical": "\033[31;1m",  # bright red
+            "error": "\033[31m",  # red
+            "warning": "\033[33m",  # yellow
+            "info": "\033[32m",  # green
+            "debug": "\033[34m",  # blue
+            "trace": "\033[36m",  # cyan
+        }
+        reset = "\033[0m"
+        color = color_codes.get(level, "")
+        level_padded = f"[{color}{level:<9}{reset}]"
+        timestamp_str = f"\033[2m{timestamp_str}\033[0m"  # dim timestamp
+    else:
+        level_padded = f"[{level:<9}]"
+
+    # Format: timestamp [level    ] message
+    return f"{timestamp_str} {level_padded} {message}"
+
+
 def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
     """Get Foundation log level for setup phase, safely.
 
@@ -55,6 +101,7 @@ def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
             "WARNING": stdlib_logging.WARNING,
             "INFO": stdlib_logging.INFO,
             "DEBUG": stdlib_logging.DEBUG,
+            "TRACE": 5,  # Custom TRACE level
             "NOTSET": stdlib_logging.NOTSET,
         }
         return valid_levels.get(level_str, stdlib_logging.INFO)
@@ -72,6 +119,7 @@ def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
             "WARNING": stdlib_logging.WARNING,
             "INFO": stdlib_logging.INFO,
             "DEBUG": stdlib_logging.DEBUG,
+            "TRACE": 5,  # Custom TRACE level
             "NOTSET": stdlib_logging.NOTSET,
         }
 
@@ -79,7 +127,7 @@ def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
     return _FOUNDATION_LOG_LEVEL
 
 
-def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
+def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:  # noqa: C901
     """Create Foundation's internal setup logger (structlog).
 
     This is used internally by Foundation during its own initialization.
@@ -110,12 +158,74 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
         # Fallback to stderr if stream access fails
         foundation_stream = get_safe_stderr()
 
-    # Configure structlog for core setup logger
+    # Get the log level threshold
+    log_level_threshold = get_foundation_log_level()
+
+    # Create a filtering processor that respects FOUNDATION_LOG_LEVEL
+    def filter_by_foundation_level(logger: Any, method_name: str, event_dict: Any) -> Any:
+        """Filter log entries by Foundation log level threshold."""
+        # Get numeric level for the current log method
+        level_map = {
+            "debug": stdlib_logging.DEBUG,
+            "info": stdlib_logging.INFO,
+            "warning": stdlib_logging.WARNING,
+            "error": stdlib_logging.ERROR,
+            "critical": stdlib_logging.CRITICAL,
+            "trace": 5,  # TRACE level
+        }
+        current_level = level_map.get(method_name, stdlib_logging.INFO)
+
+        # Drop the event if it's below the threshold
+        if current_level < log_level_threshold:
+            raise structlog.DropEvent
+
+        return event_dict
+
+    # Check if output stream is a TTY for color support
+    is_tty = hasattr(foundation_stream, "isatty") and foundation_stream.isatty()
+
+    # Create custom structlog processor that uses the shared formatter
+    def shared_formatter_processor(logger: Any, method_name: str, event_dict: Any) -> str:
+        """Structlog processor that uses the shared formatting function."""
+        import time
+
+        # Get timestamp from event_dict or use current time
+        timestamp = event_dict.get("timestamp", time.time())
+        if isinstance(timestamp, str):
+            # If timestamp is already formatted (from TimeStamper), parse it back
+            # For simplicity, use current time
+            timestamp = time.time()
+
+        # Get level from event_dict
+        level_name = event_dict.get("level", method_name).upper()
+
+        # Get the message (event key in structlog)
+        message = event_dict.get("event", "")
+
+        # Add any additional key-value pairs to the message with optional colors
+        kvs = []
+        for key, value in event_dict.items():
+            if key not in ("event", "level", "timestamp", "logger"):
+                if is_tty:
+                    # Color keys in cyan, values stay default
+                    kvs.append(f"\033[36m{key}\033[0m=\033[35m{value}\033[0m")
+                else:
+                    kvs.append(f"{key}={value}")
+
+        if kvs:
+            message = f"{message} {' '.join(kvs)}".strip()
+
+        # Use shared formatter with color support
+        return format_foundation_log_message(
+            timestamp=timestamp, level_name=level_name, message=message, use_colors=is_tty
+        )
+
+    # Configure structlog for core setup logger with shared formatting
     structlog.configure(
         processors=[
+            filter_by_foundation_level,
             structlog.processors.add_log_level,
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.dev.ConsoleRenderer(),
+            shared_formatter_processor,
         ],
         logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
         wrapper_class=structlog.BoundLogger,
@@ -200,10 +310,24 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
 
         stream = sys.stderr if output != "stdout" else sys.stdout
 
+        # Check if output stream is a TTY for color support
+        is_tty = hasattr(stream, "isatty") and stream.isatty()
+
+        # Use shared formatter to ensure consistency with structlog
+        class SharedFormatter(logging.Formatter):
+            """Formatter that uses the shared formatting function."""
+
+            def format(self, record: logging.LogRecord) -> str:
+                return format_foundation_log_message(
+                    timestamp=record.created,
+                    level_name=record.levelname,
+                    message=record.getMessage(),
+                    use_colors=is_tty,
+                )
+
         handler = logging.StreamHandler(stream)
         handler.setLevel(log_level)
-        formatter = logging.Formatter("%(asctime)s [%(levelname)-5s] %(message)s", datefmt="%Y-%m-%dT%H:%M:%S")
-        handler.setFormatter(formatter)
+        handler.setFormatter(SharedFormatter())
         slog.addHandler(handler)
 
         # Don't propagate to avoid duplicate messages

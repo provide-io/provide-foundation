@@ -1,7 +1,6 @@
 # provide/foundation/logger/defaults.py
 #
-# This is the provide.io LLC 2025 Copyright. All rights reserved.
-#
+# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 from __future__ import annotations
@@ -21,7 +20,7 @@ DEFAULT_CONSOLE_FORMATTER = "key_value"
 DEFAULT_LOGGER_NAME_EMOJI_ENABLED = True
 DEFAULT_DAS_EMOJI_ENABLED = True
 DEFAULT_OMIT_TIMESTAMP = False
-DEFAULT_FOUNDATION_SETUP_LOG_LEVEL = "INFO"
+DEFAULT_FOUNDATION_SETUP_LOG_LEVEL = "WARNING"
 DEFAULT_FOUNDATION_LOG_OUTPUT = "stderr"
 
 # =================================
