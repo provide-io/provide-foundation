@@ -71,14 +71,20 @@ def handle_registry_event(event: Event | RegistryEvent) -> None:
     if isinstance(event, RegistryEvent):
         if event.operation == "register":
             logger.debug(
-                f"Registered item: name={event.item_name}, dimension={event.dimension}, data={event.data}"
+                "Registered item",
+                name=event.item_name,
+                dimension=event.dimension,
+                data=event.data,
             )
         elif event.operation == "remove":
             logger.debug(
-                f"Removed item: name={event.item_name}, dimension={event.dimension}, data={event.data}"
+                "Removed item",
+                name=event.item_name,
+                dimension=event.dimension,
+                data=event.data,
             )
     elif event.name.startswith("registry."):
-        logger.debug(f"Registry event: {event.name}, data={event.data}")
+        logger.debug("Registry event", event_name=event.name, data=event.data)
 
 
 def handle_circuit_breaker_event(event: Event) -> None:
@@ -92,15 +98,15 @@ def handle_circuit_breaker_event(event: Event) -> None:
         return
 
     if event.name == "circuit_breaker.recovered":
-        logger.info(f"Circuit breaker recovered - closing circuit: {event.data}")
+        logger.info("Circuit breaker recovered - closing circuit", data=event.data)
     elif event.name == "circuit_breaker.opened":
-        logger.error(f"Circuit breaker opened due to failures: {event.data}")
+        logger.error("Circuit breaker opened due to failures", data=event.data)
     elif event.name == "circuit_breaker.recovery_failed":
-        logger.warning(f"Circuit breaker recovery failed - opening circuit: {event.data}")
+        logger.warning("Circuit breaker recovery failed - opening circuit", data=event.data)
     elif event.name == "circuit_breaker.attempting_recovery":
-        logger.info(f"Circuit breaker attempting recovery: {event.data}")
+        logger.info("Circuit breaker attempting recovery", data=event.data)
     elif event.name == "circuit_breaker.manual_reset":
-        logger.info(f"Circuit breaker manually reset: {event.data}")
+        logger.info("Circuit breaker manually reset", data=event.data)
 
 
 def setup_event_logging() -> None:
