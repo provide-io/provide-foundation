@@ -124,7 +124,8 @@ def create_otlp_processor(config: Any) -> Any | None:
                 severity_text: str = level.upper()
 
                 # Emit to OTLP using LogRecord
-                from opentelemetry.sdk._logs import LogRecord, SeverityNumber
+                from opentelemetry.sdk._logs import LogRecord
+                from opentelemetry.sdk._logs._internal import SeverityNumber
 
                 log_record = LogRecord(
                     timestamp=timestamp,
