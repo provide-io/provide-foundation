@@ -122,14 +122,11 @@ def create_otlp_processor(config: Any) -> Any | None:
 
                 # Emit to OTLP using LogRecord
                 from opentelemetry.sdk._logs import LogRecord
-                from opentelemetry.trace import TraceFlags
 
                 log_record = LogRecord(
                     timestamp=timestamp,
                     observed_timestamp=timestamp,
-                    trace_id=None,
-                    span_id=None,
-                    trace_flags=TraceFlags(0),
+                    context=None,
                     severity_text=level.upper(),
                     severity_number=severity_number,
                     body=message,
