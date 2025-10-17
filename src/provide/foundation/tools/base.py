@@ -115,11 +115,11 @@ class BaseToolManager(ABC):
         self.config = config
 
         # Lazy-load components to avoid circular imports
-        self._cache = None
-        self._downloader = None
-        self._verifier = None
-        self._installer = None
-        self._resolver = None
+        self._cache: ToolCache | None = None
+        self._downloader: ToolDownloader | None = None
+        self._verifier: ToolVerifier | None = None
+        self._installer: ToolInstaller | None = None
+        self._resolver: VersionResolver | None = None
 
         log.debug(f"Initialized {self.tool_name} manager")
 
