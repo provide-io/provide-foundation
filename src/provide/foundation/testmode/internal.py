@@ -292,7 +292,7 @@ def _reset_direct_circuit_breaker_instances() -> None:
         from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
         from provide.foundation.resilience.circuit_sync import SyncCircuitBreaker
 
-        registry = get_hub()._component_registry  # type: ignore[attr-defined]
+        registry = get_hub()._component_registry
 
         # Get all decorator-tracked instances from registry
         decorator_tracked_ids = set()

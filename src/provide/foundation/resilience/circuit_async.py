@@ -48,7 +48,7 @@ class AsyncCircuitBreaker:
         # Initialize state
         self._state = CircuitState.CLOSED
         self._failure_count = 0
-        self._last_failure_time = None
+        self._last_failure_time: float | None = None
 
     async def state(self) -> CircuitState:
         """Get the current state of the circuit breaker.

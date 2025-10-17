@@ -21,7 +21,7 @@ class SimpleCounter:
     def __init__(self, name: str, otel_counter: Any | None = None) -> None:
         self.name = name
         self._otel_counter = otel_counter
-        self._value = 0
+        self._value: float = 0
         self._labels_values: dict[str, float] = defaultdict(float)
 
     def inc(self, value: float = 1, **labels: Any) -> None:
@@ -58,7 +58,7 @@ class SimpleGauge:
     def __init__(self, name: str, otel_gauge: Any | None = None) -> None:
         self.name = name
         self._otel_gauge = otel_gauge
-        self._value = 0
+        self._value: float = 0
         self._labels_values: dict[str, float] = defaultdict(float)
 
     def set(self, value: float, **labels: Any) -> None:

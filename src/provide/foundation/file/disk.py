@@ -241,11 +241,12 @@ def format_bytes(num_bytes: int) -> str:
         >>> format_bytes(500)
         '500 B'
     """
+    num_bytes_float: float = float(num_bytes)
     for unit in ["B", "KB", "MB", "GB", "TB", "PB"]:
-        if num_bytes < 1024.0 or unit == "PB":
-            return f"{num_bytes:.2f} {unit}"
-        num_bytes /= 1024.0
-    return f"{num_bytes:.2f} PB"
+        if num_bytes_float < 1024.0 or unit == "PB":
+            return f"{num_bytes_float:.2f} {unit}"
+        num_bytes_float /= 1024.0
+    return f"{num_bytes_float:.2f} PB"
 
 
 __all__ = [
