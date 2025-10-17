@@ -15,9 +15,6 @@ from provide.foundation.resilience.circuit_sync import (
     CircuitState,
     SyncCircuitBreaker,
 )
-
-# Backward compatibility alias
-CircuitBreaker = SyncCircuitBreaker
 from provide.foundation.resilience.decorators import circuit_breaker, fallback, retry
 from provide.foundation.resilience.fallback import FallbackChain
 from provide.foundation.resilience.retry import (
@@ -25,6 +22,9 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
+
+# Backward compatibility alias
+CircuitBreaker = SyncCircuitBreaker
 
 """Resilience patterns for handling failures and improving reliability.
 
