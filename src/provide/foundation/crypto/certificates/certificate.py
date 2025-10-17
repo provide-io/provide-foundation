@@ -48,6 +48,12 @@ from provide.foundation.crypto.defaults import (
 
 """Main Certificate class."""
 
+# Type alias for keypair types
+if _HAS_CRYPTO:  # noqa: SIM108
+    KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None
+else:
+    KeyPair = None  # type: ignore[misc,assignment]
+
 
 @define(slots=True, eq=False, hash=False, repr=False)
 class Certificate:
@@ -441,10 +447,6 @@ class Certificate:
             f"common_name='{self.common_name}', valid={valid_str}, ca={ca_str}, "
             f"key_type='{self.key_type}')"
         )
-
-
-# Type alias for keypair types
-KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None if _HAS_CRYPTO else None
 
 
 # <3 🧱🤝🔒🪄
