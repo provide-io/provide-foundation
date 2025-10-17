@@ -157,7 +157,7 @@ class HTTPTransport(TransportBase):
             log.error(f"❌ Unexpected error: {e}", exc_info=True)
             raise TransportConnectionError(f"Unexpected error: {e}", request=request) from e
 
-    async def stream(self, request: Request) -> AsyncIterator[bytes]:
+    async def stream(self, request: Request) -> AsyncIterator[bytes]:  # type: ignore[override]
         """Stream HTTP response."""
         await self.connect()
 
@@ -233,7 +233,7 @@ def _register_http_transport() -> None:
         # Register once for both HTTP and HTTPS schemes
         register_transport(
             TransportType.HTTP,
-            HTTPTransport,
+            HTTPTransport,  # type: ignore[arg-type]
             schemes=HTTPTransport.SCHEMES,
             description="HTTP/HTTPS transport using httpx",
             version="1.0.0",
