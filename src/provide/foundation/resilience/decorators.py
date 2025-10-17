@@ -86,13 +86,13 @@ def _handle_no_parentheses_retry(func: F) -> F:
         async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             return await executor.execute_async(func, *args, **kwargs)
 
-        return async_wrapper
+        return async_wrapper  # type: ignore[return-value]
 
     @functools.wraps(func)
     def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
         return executor.execute_sync(func, *args, **kwargs)
 
-    return sync_wrapper
+    return sync_wrapper  # type: ignore[return-value]
 
 
 def _validate_retry_parameters(
@@ -175,13 +175,13 @@ def _create_retry_wrapper(
         async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             return await executor.execute_async(func, *args, **kwargs)
 
-        return async_wrapper
+        return async_wrapper  # type: ignore[return-value]
 
     @functools.wraps(func)
     def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
         return executor.execute_sync(func, *args, **kwargs)
 
-    return sync_wrapper
+    return sync_wrapper  # type: ignore[return-value]
 
 
 def retry(
@@ -306,6 +306,7 @@ def circuit_breaker(
 
     """
     # Normalize expected_exception to tuple
+    expected_exception_tuple: tuple[type[Exception], ...]
     if not isinstance(expected_exception, tuple):
         expected_exception_tuple = (expected_exception,)
     else:
@@ -318,6 +319,7 @@ def circuit_breaker(
         reg = registry or _get_circuit_breaker_registry()
 
         # Create appropriate breaker type based on function type
+        breaker: SyncCircuitBreaker | AsyncCircuitBreaker
         if asyncio.iscoroutinefunction(func):
             breaker = AsyncCircuitBreaker(
                 failure_threshold=failure_threshold,
@@ -340,7 +342,7 @@ def circuit_breaker(
             else:
                 reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
 
-            return async_wrapper  # type: ignore
+            return async_wrapper  # type: ignore[return-value]
         else:
             breaker = SyncCircuitBreaker(
                 failure_threshold=failure_threshold,
@@ -363,7 +365,7 @@ def circuit_breaker(
             else:
                 reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
 
-            return sync_wrapper  # type: ignore
+            return sync_wrapper  # type: ignore[return-value]
 
     return decorator
 
