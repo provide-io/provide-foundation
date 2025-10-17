@@ -25,11 +25,11 @@ log = structlog.get_logger().bind(logger_name=__name__)
 # OpenTelemetry feature detection
 _otel_trace_module: Any = None
 try:
-    from opentelemetry import trace as _otel_trace_module  # type: ignore[no-redef]
+    from opentelemetry import trace as _otel_trace_module
 
     _HAS_OTEL = True
 except ImportError:
-    _otel_trace_module = None  # type: ignore[no-redef]
+    _otel_trace_module = None
     _HAS_OTEL = False
 
 # Use consistent name throughout
