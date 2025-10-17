@@ -371,7 +371,7 @@ class GlobalLoggerProxy:
             super().__setattr__(name, value)
 
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
-        return get_global_logger().get_logger(*args, **kwargs)  # type: ignore[operator]
+        return get_global_logger().get_logger(*args, **kwargs)
 
 
 # Global logger instance (now a proxy)

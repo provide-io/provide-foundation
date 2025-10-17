@@ -24,7 +24,7 @@ log = structlog.get_logger().bind(logger_name=__name__)
 
 # OpenTelemetry feature detection
 try:
-    from opentelemetry import trace as _otel_trace_module  # type: ignore[no-redef]
+    from opentelemetry import trace as _otel_trace_module
 
     _HAS_OTEL = True
 except ImportError:

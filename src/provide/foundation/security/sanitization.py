@@ -128,10 +128,10 @@ def sanitize_dict(
         if key.lower() in sensitive_lower:
             sanitized[key] = redacted
         elif recursive and isinstance(value, dict):
-            sanitized[key] = sanitize_dict(value, sensitive_keys, redacted, recursive)  # type: ignore[assignment]
+            sanitized[key] = sanitize_dict(value, sensitive_keys, redacted, recursive)
         elif recursive and isinstance(value, list):
             # Sanitize list elements if they're dicts
-            sanitized[key] = [  # type: ignore[assignment]
+            sanitized[key] = [
                 sanitize_dict(item, sensitive_keys, redacted, recursive) if isinstance(item, dict) else item
                 for item in value
             ]

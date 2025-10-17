@@ -75,7 +75,7 @@ class FoundationManager:
             # Use system logger for init-time logging (safe during Foundation setup)
             from provide.foundation.logger.setup.coordinator import get_system_logger
 
-            setup_log = get_system_logger("provide.foundation.hub.init")  # type: ignore[misc]
+            setup_log = get_system_logger("provide.foundation.hub.init")
 
             if otlp_configured:
                 # Force full re-initialization to recreate LoggerProvider with new service_name

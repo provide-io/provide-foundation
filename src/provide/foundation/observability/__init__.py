@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 # OpenTelemetry feature detection - Pattern 1: _HAS_* flag
 try:
-    from opentelemetry import trace as _otel_trace_module  # type: ignore[no-redef]
+    from opentelemetry import trace as _otel_trace_module
 
     _HAS_OTEL = True
 except ImportError:
