@@ -15,10 +15,10 @@ Only available when OpenTelemetry dependencies are installed.
 """
 
 # OpenTelemetry feature detection - Pattern 1: _HAS_* flag
-_HAS_OTEL: bool
-
 if TYPE_CHECKING:
     from opentelemetry import trace as otel_trace
+
+    _HAS_OTEL: bool = True  # Assume available during type checking
 else:
     try:
         from opentelemetry import trace as _otel_trace_module
