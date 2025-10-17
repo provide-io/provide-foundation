@@ -12,9 +12,10 @@ from typing import TYPE_CHECKING, Any
 from provide.foundation.cli.click.builder import create_command_group
 from provide.foundation.cli.click.commands import build_click_command_from_info
 from provide.foundation.cli.click.hierarchy import ensure_parent_groups
-from provide.foundation.cli.deps import click
 
 if TYPE_CHECKING:
+    import click as click_types
+
     from provide.foundation.hub.info import CommandInfo
     from provide.foundation.hub.registry import Registry
 
@@ -36,7 +37,7 @@ class ClickAdapter:
 
     """
 
-    def build_command(self, info: CommandInfo) -> click.Command:
+    def build_command(self, info: CommandInfo) -> click_types.Command:
         """Build Click command from CommandInfo.
 
         Args:
@@ -57,7 +58,7 @@ class ClickAdapter:
         commands: list[CommandInfo] | None = None,
         registry: Registry | None = None,
         **kwargs: Any,
-    ) -> click.Group:
+    ) -> click_types.Group:
         """Build Click group with commands.
 
         Args:
