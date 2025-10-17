@@ -22,12 +22,10 @@ try:
     from opentelemetry import trace as _otel_trace_module
 
     _HAS_OTEL = True
+    otel_trace = _otel_trace_module
 except ImportError:
-    _otel_trace_module = None
     _HAS_OTEL = False
-
-# Use consistent name throughout
-otel_trace = _otel_trace_module
+    otel_trace = None  # type: ignore[assignment]
 
 # Pattern 2: Import real implementation or create stubs
 if _HAS_OTEL:

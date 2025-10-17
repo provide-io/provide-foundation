@@ -102,7 +102,7 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
 
         # Choose exporter based on protocol
         if config.otlp_protocol == "grpc":
-            exporter = OTLPGrpcSpanExporter(
+            exporter: OTLPGrpcSpanExporter | OTLPHttpSpanExporter = OTLPGrpcSpanExporter(
                 endpoint=endpoint,
                 headers=headers,
             )

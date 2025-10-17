@@ -49,8 +49,12 @@ from provide.foundation.crypto.defaults import (
 """Main Certificate class."""
 
 # Type alias for keypair types
-if _HAS_CRYPTO:  # noqa: SIM108
-    KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None
+if TYPE_CHECKING:
+    from typing import TypeAlias
+
+    KeyPair: TypeAlias = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None
+elif _HAS_CRYPTO:
+    KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None  # type: ignore[misc]
 else:
     KeyPair = None  # type: ignore[misc,assignment]
 

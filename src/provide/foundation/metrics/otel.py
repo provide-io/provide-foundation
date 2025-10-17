@@ -90,7 +90,7 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
 
         # Choose exporter based on protocol
         if config.otlp_protocol == "grpc":
-            exporter = OTLPGrpcMetricExporter(
+            exporter: OTLPGrpcMetricExporter | OTLPHttpMetricExporter = OTLPGrpcMetricExporter(
                 endpoint=endpoint,
                 headers=headers,
             )

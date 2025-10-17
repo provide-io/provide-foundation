@@ -142,10 +142,13 @@ def register_command(  # type: ignore[misc]
         )
 
     # Handle @register_command(...) (with arguments)
+    # At this point, name_or_func must be str | None (not F)
+    name_str: str | None = name_or_func if isinstance(name_or_func, str) or name_or_func is None else None
+
     def decorator(func: F) -> F:
         return _register_command_func(
             func,
-            name=name_or_func,
+            name=name_str,
             description=description,
             aliases=aliases,
             hidden=hidden,
