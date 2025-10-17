@@ -110,8 +110,8 @@ def setup_cli_logging(
     console_formatter = "json" if ctx.json_output else ctx.log_format
 
     logging_config = LoggingConfig(
-        default_level=ctx.log_level,
-        console_formatter=console_formatter,
+        default_level=ctx.log_level,  # type: ignore[arg-type]
+        console_formatter=console_formatter,  # type: ignore[arg-type]
         omit_timestamp=False,
         logger_name_emoji_prefix_enabled=not ctx.no_emoji,
         das_emoji_prefix_enabled=not ctx.no_emoji,

@@ -157,7 +157,7 @@ class HTTPTransport(TransportBase):
             log.error(f"❌ Unexpected error: {e}", exc_info=True)
             raise TransportConnectionError(f"Unexpected error: {e}", request=request) from e
 
-    async def stream(self, request: Request) -> AsyncIterator[bytes]:  # type: ignore[override]
+    async def stream(self, request: Request) -> AsyncIterator[bytes]:  # type: ignore[override,misc]
         """Stream HTTP response."""
         await self.connect()
 

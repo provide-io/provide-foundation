@@ -161,7 +161,7 @@ class OperationChain:
 
     def _execute_zip(self, config: dict[str, bool], source: Path, output: Path) -> Path:
         """Execute ZIP operation."""
-        zip_archive = ZipArchive(**config)
+        zip_archive = ZipArchive(**config)  # type: ignore[arg-type]
         if source.is_dir():
             return zip_archive.create(source, output)
         return zip_archive.extract(source, output)

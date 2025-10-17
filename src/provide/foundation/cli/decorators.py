@@ -174,7 +174,7 @@ def error_handler(f: F) -> F:
 
             exit_error(f"Command failed: {e!s}")
 
-    return wrapper
+    return wrapper  # type: ignore[return-value]
 
 
 def _ensure_cli_context(ctx: click.Context) -> None:
@@ -250,7 +250,7 @@ def pass_context(f: F) -> F:
 
         return f(ctx.obj, *args, **kwargs)
 
-    return wrapper
+    return wrapper  # type: ignore[return-value]
 
 
 def version_option(version: str | None = None, prog_name: str | None = None) -> Callable[[F], F]:

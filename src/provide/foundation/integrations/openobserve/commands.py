@@ -456,7 +456,7 @@ if _HAS_CLICK:
 
 else:
     # Stub when click is not available
-    def openobserve_group(*args: object, **kwargs: object) -> None:
+    def openobserve_group(*args: object, **kwargs: object) -> None:  # type: ignore[misc]
         """OpenObserve command stub when click is not available."""
         raise ImportError(
             "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'",

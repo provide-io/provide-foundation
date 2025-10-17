@@ -23,9 +23,8 @@ log = structlog.get_logger().bind(logger_name=__name__)
 # and level registration issues during logger setup
 
 # OpenTelemetry feature detection
-_otel_trace_module: Any = None
 try:
-    from opentelemetry import trace as _otel_trace_module
+    from opentelemetry import trace as _otel_trace_module  # type: ignore[no-redef]
 
     _HAS_OTEL = True
 except ImportError:
