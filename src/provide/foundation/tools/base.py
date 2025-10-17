@@ -13,13 +13,20 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from attrs import define, field
 
 from provide.foundation.config import BaseConfig
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger
+
+if TYPE_CHECKING:
+    from provide.foundation.tools.cache import ToolCache
+    from provide.foundation.tools.downloader import ToolDownloader
+    from provide.foundation.tools.installer import ToolInstaller
+    from provide.foundation.tools.resolver import VersionResolver
+    from provide.foundation.tools.verifier import ToolVerifier
 
 log = get_logger(__name__)
 
@@ -117,7 +124,7 @@ class BaseToolManager(ABC):
         log.debug(f"Initialized {self.tool_name} manager")
 
     @property
-    def cache(self) -> object:
+    def cache(self) -> ToolCache:
         """Get or create cache instance."""
         if self._cache is None:
             from provide.foundation.tools.cache import ToolCache
@@ -126,7 +133,7 @@ class BaseToolManager(ABC):
         return self._cache
 
     @property
-    def downloader(self) -> object:
+    def downloader(self) -> ToolDownloader:
         """Get or create downloader instance."""
         if self._downloader is None:
             from provide.foundation.hub import get_hub
@@ -137,7 +144,7 @@ class BaseToolManager(ABC):
         return self._downloader
 
     @property
-    def verifier(self) -> object:
+    def verifier(self) -> ToolVerifier:
         """Get or create verifier instance."""
         if self._verifier is None:
             from provide.foundation.tools.verifier import ToolVerifier
@@ -146,7 +153,7 @@ class BaseToolManager(ABC):
         return self._verifier
 
     @property
-    def installer(self) -> object:
+    def installer(self) -> ToolInstaller:
         """Get or create installer instance."""
         if self._installer is None:
             from provide.foundation.tools.installer import ToolInstaller
@@ -155,7 +162,7 @@ class BaseToolManager(ABC):
         return self._installer
 
     @property
-    def resolver(self) -> object:
+    def resolver(self) -> VersionResolver:
         """Get or create version resolver instance."""
         if self._resolver is None:
             from provide.foundation.tools.resolver import VersionResolver

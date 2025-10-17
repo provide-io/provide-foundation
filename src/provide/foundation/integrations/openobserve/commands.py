@@ -21,7 +21,7 @@ try:
 
     _HAS_CLICK = True
 except ImportError:
-    click: Any = None
+    click: Any = None  # type: ignore[no-redef]
     _HAS_CLICK = False
 
 log = get_logger(__name__)
@@ -75,7 +75,7 @@ if _HAS_CLICK:
 
     @click.group("openobserve", help="Query and manage OpenObserve logs")
     @click.pass_context
-    def openobserve_group(ctx: click.Context) -> None:
+    def openobserve_group(ctx: click.Context) -> int | None:
         """OpenObserve log querying and streaming commands."""
         # Initialize client and store in context
         try:
@@ -84,6 +84,8 @@ if _HAS_CLICK:
         except Exception as e:
             perr(f"Failed to initialize OpenObserve client: {e}")
             ctx.obj = None
+
+        return 0
 
     @openobserve_group.command("query")
     @click.option(
@@ -153,6 +155,7 @@ if _HAS_CLICK:
 
             output = format_output(response, format_type=format, pretty=pretty)
             click.echo(output)
+            return 0
 
         except Exception as e:
             click.echo(f"Query failed: {e}", err=True)
@@ -235,8 +238,11 @@ if _HAS_CLICK:
                 # Emit through structlog
                 log.info(message, **context)
 
+            return 0
+
         except KeyboardInterrupt:
             pout("\nStopped tailing logs.")
+            return 0
         except Exception as e:
             perr(f"Tail failed: {e}")
             return 1
@@ -298,6 +304,8 @@ if _HAS_CLICK:
                 output = format_output(response, format_type=format)
                 click.echo(output)
 
+            return 0
+
         except Exception as e:
             click.echo(f"Search failed: {e}", err=True)
             return 1
@@ -346,6 +354,8 @@ if _HAS_CLICK:
                 output = format_output(response, format_type=format)
                 click.echo(output)
 
+            return 0
+
         except Exception as e:
             click.echo(f"Search failed: {e}", err=True)
             return 1
@@ -370,6 +380,8 @@ if _HAS_CLICK:
                     if stream.doc_count > 0:
                         click.echo(f"    Documents: {stream.doc_count:,}")
                         click.echo(f"    Size: {stream.original_size:,} bytes")
+
+            return 0
 
         except Exception as e:
             click.echo(f"Failed to list streams: {e}", err=True)
@@ -414,6 +426,8 @@ if _HAS_CLICK:
                     click.echo(f"\n  Query: {sql}")
                     click.echo(f"  Time: {took:.2f}ms, Records: {records:,}")
 
+            return 0
+
         except Exception as e:
             click.echo(f"Failed to get history: {e}", err=True)
             return 1
@@ -432,6 +446,7 @@ if _HAS_CLICK:
             click.echo("✅ Connection successful!")
             click.echo(f"Organization: {client.organization}")
             click.echo(f"User: {client.username}")
+            return 0
         else:
             click.echo("❌ Connection failed!")
             return 1

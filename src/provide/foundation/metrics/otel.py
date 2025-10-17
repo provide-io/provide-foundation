@@ -5,14 +5,17 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from provide.foundation.logger.config.telemetry import TelemetryConfig
 from provide.foundation.logger.setup import get_system_logger
 
+if TYPE_CHECKING:
+    from provide.foundation.logger.base import FoundationLogger
+
 """OpenTelemetry metrics integration."""
 
-slog = get_system_logger(__name__)
+slog: FoundationLogger | Any = get_system_logger(__name__)
 
 # Feature detection
 try:
@@ -31,12 +34,12 @@ try:
 except ImportError:
     _HAS_OTEL_METRICS = False
     # Stub everything
-    otel_metrics: Any = None
-    MeterProvider: Any = None
-    PeriodicExportingMetricReader: Any = None
-    Resource: Any = None
-    OTLPGrpcMetricExporter: Any = None
-    OTLPHttpMetricExporter: Any = None
+    otel_metrics: Any = None  # type: ignore[no-redef]
+    MeterProvider: Any = None  # type: ignore[no-redef]
+    PeriodicExportingMetricReader: Any = None  # type: ignore[no-redef]
+    Resource: Any = None  # type: ignore[no-redef]
+    OTLPGrpcMetricExporter: Any = None  # type: ignore[no-redef]
+    OTLPHttpMetricExporter: Any = None  # type: ignore[no-redef]
 
 
 def _require_otel_metrics() -> None:
