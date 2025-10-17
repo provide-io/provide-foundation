@@ -17,7 +17,10 @@ import threading
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from provide.foundation.file.operations.detectors.types import FileEvent, FileOperation  # type: ignore[import-untyped]
+    from provide.foundation.file.operations.detectors.types import (  # type: ignore[import-untyped]
+        FileEvent,
+        FileOperation,
+    )
 
 from provide.foundation.file.operations.detectors.helpers import is_temp_file
 from provide.foundation.file.operations.types import OperationType

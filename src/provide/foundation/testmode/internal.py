@@ -428,7 +428,9 @@ def reset_version_cache() -> None:
     version resolution scenarios.
     """
     try:
-        from provide.foundation._version import reset_version_cache as _reset_cache  # type: ignore[import-untyped]
+        from provide.foundation._version import (
+            reset_version_cache as _reset_cache,  # type: ignore[import-untyped]
+        )
 
         _reset_cache()
     except ImportError:
