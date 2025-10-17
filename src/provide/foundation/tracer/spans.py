@@ -36,9 +36,9 @@ try:
 
     _HAS_OTEL = True
 except ImportError:
-    otel_trace = None  # type: ignore[assignment]
-    Status = None  # type: ignore[assignment,misc]
-    StatusCode = None  # type: ignore[assignment,misc]
+    otel_trace = None
+    Status = None
+    StatusCode = None
     _HAS_OTEL = False
 
 log = get_logger(__name__)
