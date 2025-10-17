@@ -123,15 +123,15 @@ def sanitize_dict(
     # Convert sensitive keys to lowercase for case-insensitive matching
     sensitive_lower = {k.lower() for k in sensitive_keys}
 
-    sanitized = {}
+    sanitized: dict[str, Any] = {}
     for key, value in data.items():
         if key.lower() in sensitive_lower:
             sanitized[key] = redacted
         elif recursive and isinstance(value, dict):
-            sanitized[key] = sanitize_dict(value, sensitive_keys, redacted, recursive)
+            sanitized[key] = sanitize_dict(value, sensitive_keys, redacted, recursive)  # type: ignore[assignment]
         elif recursive and isinstance(value, list):
             # Sanitize list elements if they're dicts
-            sanitized[key] = [
+            sanitized[key] = [  # type: ignore[assignment]
                 sanitize_dict(item, sensitive_keys, redacted, recursive) if isinstance(item, dict) else item
                 for item in value
             ]
