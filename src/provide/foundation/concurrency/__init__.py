@@ -31,21 +31,18 @@ and concurrency utilities for Foundation applications.
 """
 
 __all__ = [
-    # Async utilities
+    "AsyncLockInfo",
+    "AsyncLockManager",
+    "LockInfo",
+    "LockManager",
     "async_gather",
     "async_run",
     "async_sleep",
     "async_wait_for",
-    # Sync lock management
-    "LockInfo",
-    "LockManager",
-    "get_lock_manager",
-    "register_foundation_locks",
-    # Async lock management
-    "AsyncLockInfo",
-    "AsyncLockManager",
     "get_async_lock_manager",
+    "get_lock_manager",
     "register_foundation_async_locks",
+    "register_foundation_locks",
 ]
 
 

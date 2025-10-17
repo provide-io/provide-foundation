@@ -23,9 +23,6 @@ from provide.foundation.resilience.retry import (
     RetryPolicy,
 )
 
-# Backward compatibility alias
-CircuitBreaker = SyncCircuitBreaker
-
 """Resilience patterns for handling failures and improving reliability.
 
 This module provides unified implementations of common resilience patterns:
@@ -39,27 +36,18 @@ and provide consistent failure handling.
 """
 
 __all__ = [
-    # Circuit breaker - async
     "AsyncCircuitBreaker",
     "BackoffStrategy",
-    # Bulkhead pattern
     "Bulkhead",
     "BulkheadManager",
-    # Circuit breaker - backward compatible alias
-    "CircuitBreaker",
-    # Circuit breaker - state enum
     "CircuitState",
-    # Fallback
     "FallbackChain",
     "RetryExecutor",
-    # Core retry functionality
     "RetryPolicy",
-    # Circuit breaker - sync
     "SyncCircuitBreaker",
     "circuit_breaker",
     "fallback",
     "get_bulkhead_manager",
-    # Decorators
     "retry",
 ]
 
