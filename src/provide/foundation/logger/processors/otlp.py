@@ -104,11 +104,13 @@ def create_otlp_processor(config: Any) -> Any | None:
 
             try:
                 # Extract message and attributes
-                message = event_dict.get("event", "")
-                level = event_dict.get("level", "info").lower()
+                message: str = str(event_dict.get("event", ""))
+                level: str = str(event_dict.get("level", "info")).lower()
 
                 # Build attributes (everything except 'event' and 'timestamp')
-                attributes = {k: str(v) for k, v in event_dict.items() if k not in ("event", "timestamp")}
+                attributes: dict[str, str] = {
+                    k: str(v) for k, v in event_dict.items() if k not in ("event", "timestamp")
+                }
 
                 # Add message and level attributes
                 attributes["message"] = message
@@ -118,20 +120,22 @@ def create_otlp_processor(config: Any) -> Any | None:
                 timestamp = _convert_timestamp_to_nanos(event_dict.get("timestamp"))
 
                 # Map level to severity
-                severity_number = map_level_to_severity(level)
+                severity_number_int = map_level_to_severity(level)
+                severity_text: str = level.upper()
 
                 # Emit to OTLP using LogRecord
-                from opentelemetry.sdk._logs import LogRecord
+                from opentelemetry.sdk._logs import LogRecord, SeverityNumber
 
                 log_record = LogRecord(
                     timestamp=timestamp,
                     observed_timestamp=timestamp,
                     context=None,
-                    severity_text=level.upper(),
-                    severity_number=severity_number,
+                    severity_text=severity_text,
+                    severity_number=SeverityNumber(severity_number_int),
                     body=message,
                     resource=_OTLP_LOGGER_PROVIDER.resource,
                     attributes=attributes,
+                    limits=None,
                 )
                 otlp_logger.emit(log_record)
 
