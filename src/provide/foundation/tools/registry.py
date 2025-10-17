@@ -80,7 +80,7 @@ class ToolRegistry:
         }
 
         # Register with hub
-        self.hub.registry.register(
+        self.hub._component_registry.register(
             name=name,
             value=manager_class,
             dimension=self.DIMENSION,
@@ -101,7 +101,7 @@ class ToolRegistry:
             Tool manager class, or None if not found.
 
         """
-        return self.hub.registry.get(name, dimension=self.DIMENSION)
+        return self.hub._component_registry.get(name, dimension=self.DIMENSION)
 
     def create_tool_manager(self, name: str, config: BaseConfig) -> BaseToolManager | None:
         """Create a tool manager instance.
@@ -127,9 +127,11 @@ class ToolRegistry:
 
         """
         tools = []
-        for name, entry in self.hub.registry.list_dimension(self.DIMENSION):
-            metadata = entry.metadata if hasattr(entry, "metadata") else {}
-            tools.append((name, metadata))
+        dimension_list = self.hub._component_registry.list_dimension(self.DIMENSION)
+        for item in dimension_list:
+            name, entry = item  # type: ignore[misc]
+            metadata = entry.metadata if hasattr(entry, "metadata") else {}  # type: ignore[has-type]
+            tools.append((name, metadata))  # type: ignore[has-type]
         return tools
 
     def get_tool_info(self, name: str) -> dict[str, Any] | None:
@@ -142,7 +144,7 @@ class ToolRegistry:
             Tool metadata dictionary, or None if not found.
 
         """
-        entry = self.hub.registry.get_entry(name, dimension=self.DIMENSION)
+        entry = self.hub._component_registry.get_entry(name, dimension=self.DIMENSION)
         if entry and hasattr(entry, "metadata"):
             return entry.metadata
         return None
