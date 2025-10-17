@@ -31,7 +31,7 @@ __all__ = [
 ]
 
 
-def create_command_group(
+def create_command_group(  # noqa: C901
     name: str = "cli",
     commands: list[str] | None = None,
     registry: Registry | None = None,
@@ -96,9 +96,10 @@ def create_command_group(
             if should_skip_entry(entry) or should_skip_command(entry):
                 continue
 
-            info = entry.metadata.get("info")
-            if info:
-                add_command_to_group(info, groups, group, reg)
+            if entry is not None:
+                info = entry.metadata.get("info")
+                if info:
+                    add_command_to_group(info, groups, group, reg)
 
         return group
 

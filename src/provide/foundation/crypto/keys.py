@@ -129,14 +129,14 @@ def generate_keypair(
     if key_type == "rsa":
         priv, pub = generate_rsa_keypair(key_size or DEFAULT_RSA_KEY_SIZE)
     elif key_type == "ec":
-        priv, pub = generate_ec_keypair(curve_name or DEFAULT_ECDSA_CURVE)
+        priv, pub = generate_ec_keypair(curve_name or DEFAULT_ECDSA_CURVE)  # type: ignore[assignment]
     else:
         raise KeyGenerationError(
             f"Unsupported key type: {key_type}. Must be one of {SUPPORTED_KEY_TYPES}",
             context={"key_type": key_type, "supported_types": SUPPORTED_KEY_TYPES},
         )
 
-    private_pem = priv.private_bytes(
+    private_pem = priv.private_bytes(  # type: ignore[attr-defined]
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption(),

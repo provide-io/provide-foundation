@@ -58,8 +58,8 @@ def register_command(
     category: str | None = None,
     group: bool = False,
     replace: bool = False,
-    force_options: bool = False,
     registry: Registry | None = None,
+    **metadata: Any,
 ) -> Callable[[F], F]: ...
 
 
@@ -70,7 +70,7 @@ def register_command(
 ) -> F: ...
 
 
-def register_command(
+def register_command(  # type: ignore[misc]
     name_or_func: str | F | None = None,
     *,
     description: str | None = None,
@@ -248,9 +248,9 @@ def _register_command_func(
     )
 
     # Add metadata to the function
-    func.__registry_name__ = command_name
-    func.__registry_dimension__ = ComponentCategory.COMMAND.value
-    func.__registry_info__ = info
+    func.__registry_name__ = command_name  # type: ignore[attr-defined]
+    func.__registry_dimension__ = ComponentCategory.COMMAND.value  # type: ignore[attr-defined]
+    func.__registry_info__ = info  # type: ignore[attr-defined]
 
     get_foundation_logger().trace(f"Registered command: {full_name}")
 
