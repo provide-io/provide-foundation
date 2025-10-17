@@ -134,7 +134,7 @@ def create_otlp_processor(config: Any) -> Any | None:
                     severity_number=severity_number,
                     body=message,
                     resource=_OTLP_LOGGER_PROVIDER.resource,
-                    attributes=attributes,  # type: ignore[arg-type]
+                    attributes=attributes,
                 )
                 otlp_logger.emit(log_record)
 

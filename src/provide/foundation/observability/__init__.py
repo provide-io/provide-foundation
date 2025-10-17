@@ -25,7 +25,7 @@ try:
     otel_trace = _otel_trace_module
 except ImportError:
     _HAS_OTEL = False
-    otel_trace = None  # type: ignore[assignment]
+    otel_trace = None
 
 # Pattern 2: Import real implementation or create stubs
 if _HAS_OTEL:

@@ -30,7 +30,7 @@ try:
     otel_trace_runtime: Any = _otel_trace_module
 except ImportError:
     _HAS_OTEL = False
-    otel_trace_runtime: Any = None
+    otel_trace_runtime = None
 
 
 def _inject_otel_trace_context(event_dict: dict[str, Any]) -> bool:
