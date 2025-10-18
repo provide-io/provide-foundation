@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections.abc import Callable
 import functools
 from pathlib import Path
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from provide.foundation.cli.deps import click
 from provide.foundation.context import CLIContext
@@ -16,6 +16,9 @@ from provide.foundation.process import exit_error, exit_interrupted
 from provide.foundation.serialization import json_dumps
 
 """Standard CLI decorators for consistent option handling."""
+
+if TYPE_CHECKING:
+    import click as click_types
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -174,10 +177,10 @@ def error_handler(f: F) -> F:
 
             exit_error(f"Command failed: {e!s}")
 
-    return wrapper
+    return wrapper  # type: ignore[return-value]
 
 
-def _ensure_cli_context(ctx: click.Context) -> None:
+def _ensure_cli_context(ctx: click_types.Context) -> None:
     """Ensure the Click context has a CLIContext object."""
     if not hasattr(ctx, "obj") or ctx.obj is None:
         ctx.obj = CLIContext()
@@ -238,7 +241,7 @@ def pass_context(f: F) -> F:
 
     @functools.wraps(f)
     @click.pass_context
-    def wrapper(ctx: click.Context, *args: Any, **kwargs: Any) -> Any:
+    def wrapper(ctx: click_types.Context, *args: Any, **kwargs: Any) -> Any:
         # Get or create foundation context
         _ensure_cli_context(ctx)
 
@@ -250,7 +253,7 @@ def pass_context(f: F) -> F:
 
         return f(ctx.obj, *args, **kwargs)
 
-    return wrapper
+    return wrapper  # type: ignore[return-value]
 
 
 def version_option(version: str | None = None, prog_name: str | None = None) -> Callable[[F], F]:

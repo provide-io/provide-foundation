@@ -24,6 +24,8 @@ from provide.foundation.cli.errors import CLIBuildError
 from provide.foundation.hub.categories import ComponentCategory
 
 if TYPE_CHECKING:
+    from click import Group
+
     from provide.foundation.hub.registry import Registry
 
 __all__ = [
@@ -31,12 +33,12 @@ __all__ = [
 ]
 
 
-def create_command_group(
+def create_command_group(  # noqa: C901
     name: str = "cli",
     commands: list[str] | None = None,
     registry: Registry | None = None,
     **kwargs: Any,
-) -> click.Group:
+) -> Group:
     """Create a Click group with registered commands.
 
     Args:
@@ -71,7 +73,7 @@ def create_command_group(
 
     try:
         group = click.Group(name=name, **kwargs)
-        groups: dict[str, click.Group] = {}
+        groups: dict[str, Group] = {}
 
         # Get commands to include
         if commands is None:
@@ -96,9 +98,10 @@ def create_command_group(
             if should_skip_entry(entry) or should_skip_command(entry):
                 continue
 
-            info = entry.metadata.get("info")
-            if info:
-                add_command_to_group(info, groups, group, reg)
+            if entry is not None:
+                info = entry.metadata.get("info")
+                if info:
+                    add_command_to_group(info, groups, group, reg)
 
         return group
 

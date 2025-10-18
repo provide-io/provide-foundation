@@ -125,7 +125,7 @@ class CLIContext(RuntimeConfig):
                 if env_value != default_value:
                     setattr(self, attr.name, env_value)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self, include_sensitive: bool = True) -> dict[str, Any]:
         """Convert context to dictionary."""
         return {
             "log_level": self.log_level,
@@ -271,12 +271,11 @@ class CLIContext(RuntimeConfig):
 
     def _get_field_defaults(self) -> dict[str, Any]:
         """Get default values for all fields."""
-        from attrs import Factory
-
         defaults = {}
         for f in fields(CLIContext):
             if not f.name.startswith("_"):  # Skip private fields
-                if isinstance(f.default, Factory) and f.default is not None:
+                # Check if default is a Factory using hasattr
+                if hasattr(f.default, "factory") and f.default is not None:
                     defaults[f.name] = f.default.factory()
                 elif f.default is not None:
                     defaults[f.name] = f.default

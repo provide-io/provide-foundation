@@ -32,11 +32,11 @@ try:
 
     _HAS_OTEL_METRICS = True
 except ImportError:
-    otel_metrics: Any = None
-    MeterProvider: Any = None
-    PeriodicExportingMetricReader: Any = None
-    OTLPGrpcMetricExporter: Any = None
-    OTLPHttpMetricExporter: Any = None
+    otel_metrics: Any = None  # type: ignore[no-redef]
+    MeterProvider: Any = None  # type: ignore[no-redef]
+    PeriodicExportingMetricReader: Any = None  # type: ignore[no-redef]
+    OTLPGrpcMetricExporter: Any = None  # type: ignore[no-redef]
+    OTLPHttpMetricExporter: Any = None  # type: ignore[no-redef]
     _HAS_OTEL_METRICS = False
 
 # Export the main API

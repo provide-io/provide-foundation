@@ -23,6 +23,8 @@ from provide.foundation.cli.errors import CLIBuildError
 from provide.foundation.hub.introspection import introspect_parameters
 
 if TYPE_CHECKING:
+    from click import Command, Group
+
     from provide.foundation.hub.info import CommandInfo
     from provide.foundation.hub.registry import Registry
 
@@ -32,7 +34,7 @@ __all__ = [
 ]
 
 
-def build_click_command_from_info(info: CommandInfo) -> click.Command:
+def build_click_command_from_info(info: CommandInfo) -> Command:
     """Build a Click command directly from CommandInfo.
 
     This is a pure builder function that creates a Click command from
@@ -113,8 +115,8 @@ def build_click_command_from_info(info: CommandInfo) -> click.Command:
 
 def add_command_to_group(
     info: CommandInfo,
-    groups: dict[str, click.Group],
-    root_group: click.Group,
+    groups: dict[str, Group],
+    root_group: Group,
     registry: Registry,
 ) -> None:
     """Build and add a Click command to the appropriate group.

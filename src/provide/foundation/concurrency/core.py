@@ -128,7 +128,7 @@ def async_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> Any
     if not callable(main):
         raise ValidationError("Main must be callable")
 
-    return asyncio.run(main(), debug=debug)
+    return asyncio.run(main(), debug=debug)  # type: ignore[arg-type]
 
 
 # <3 🧱🤝🧵🪄

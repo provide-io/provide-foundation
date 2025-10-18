@@ -12,7 +12,7 @@ from provide.foundation.eventsets.resolver import get_resolver
 from provide.foundation.logger import get_logger
 
 if TYPE_CHECKING:
-    from provide.foundation.eventsets.resolver import EventResolver
+    from provide.foundation.eventsets.resolver import EventSetResolver
     from provide.foundation.eventsets.types import EventSet
 
 """Event set display utilities for Foundation."""
@@ -37,12 +37,12 @@ def _format_event_set_config(config: EventSet, lines: list[str]) -> None:
     # Show mappings
     if config.mappings:
         lines.append(f"    Mappings ({len(config.mappings)}):")
-        for mapping in config.mappings:
-            marker_count = len(mapping.visual_markers)
-            metadata_count = len(mapping.metadata_fields)
-            transform_count = len(mapping.transformations)
+        for event_mapping in config.mappings:
+            marker_count = len(event_mapping.visual_markers)
+            metadata_count = len(event_mapping.metadata_fields)
+            transform_count = len(event_mapping.transformations)
             lines.append(
-                f"      - {mapping.name}: "
+                f"      - {event_mapping.name}: "
                 f"{marker_count} markers, "
                 f"{metadata_count} metadata, "
                 f"{transform_count} transforms",
@@ -59,7 +59,7 @@ def _format_registered_event_sets(event_sets: list[EventSet], lines: list[str]) 
         lines.append("\n  (No event sets registered)")
 
 
-def _format_resolver_state(resolver: EventResolver, lines: list[str]) -> None:
+def _format_resolver_state(resolver: EventSetResolver, lines: list[str]) -> None:
     """Format the resolver state section."""
     if resolver._resolved:
         lines.append("\nResolver State:")

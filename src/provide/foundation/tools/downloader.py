@@ -203,7 +203,7 @@ class ToolDownloader:
         if errors:
             raise DownloadError(f"Some downloads failed: {errors}")
 
-        return results
+        return results  # type: ignore[return-value]
 
     async def download_with_mirrors(self, mirrors: list[str], dest: Path) -> Path:
         """Try multiple mirrors until one succeeds using fallback pattern.
