@@ -110,39 +110,61 @@ class OperationChain:
 
         match operation:
             case ArchiveOperation.TAR:
-                tar = TarArchive(**config)
-                # Detect if we're creating or extracting based on source type
-                if source.is_dir():
-                    return tar.create(source, output)
-                return tar.extract(source, output)
+                return self._execute_tar(config, source, output)
             case ArchiveOperation.GZIP:
-                gzip = GzipCompressor()
-                # Detect if we're compressing or decompressing based on source
-                if source.suffix == ".gz":
-                    return gzip.decompress_file(source, output)
-                return gzip.compress_file(source, output)
+                return self._execute_gzip(source, output)
             case ArchiveOperation.BZIP2:
-                bz2 = Bzip2Compressor()
-                if source.suffix in (".bz2", ".bzip2"):
-                    return bz2.decompress_file(source, output)
-                return bz2.compress_file(source, output)
+                return self._execute_bzip2(source, output)
             case ArchiveOperation.XZ:
-                xz = XzCompressor()
-                if source.suffix == ".xz":
-                    return xz.decompress_file(source, output)
-                return xz.compress_file(source, output)
+                return self._execute_xz(source, output)
             case ArchiveOperation.ZSTD:
-                zstd = ZstdCompressor()
-                if source.suffix in (".zst", ".zstd"):
-                    return zstd.decompress_file(source, output)
-                return zstd.compress_file(source, output)
+                return self._execute_zstd(source, output)
             case ArchiveOperation.ZIP:
-                zip_archive = ZipArchive(**config)
-                if source.is_dir():
-                    return zip_archive.create(source, output)
-                return zip_archive.extract(source, output)
+                return self._execute_zip(config, source, output)
             case _:
                 raise ArchiveError(f"Unknown operation: {operation}")
+
+    def _execute_tar(self, config: dict[str, bool], source: Path, output: Path) -> Path:
+        """Execute TAR operation."""
+        tar = TarArchive(**config)
+        if source.is_dir():
+            return tar.create(source, output)
+        return tar.extract(source, output)
+
+    def _execute_gzip(self, source: Path, output: Path) -> Path:
+        """Execute GZIP operation."""
+        gzip = GzipCompressor()
+        if source.suffix == ".gz":
+            return gzip.decompress_file(source, output)
+        return gzip.compress_file(source, output)
+
+    def _execute_bzip2(self, source: Path, output: Path) -> Path:
+        """Execute BZIP2 operation."""
+        bz2 = Bzip2Compressor()
+        if source.suffix in (".bz2", ".bzip2"):
+            return bz2.decompress_file(source, output)
+        return bz2.compress_file(source, output)
+
+    def _execute_xz(self, source: Path, output: Path) -> Path:
+        """Execute XZ operation."""
+        xz = XzCompressor()
+        if source.suffix == ".xz":
+            return xz.decompress_file(source, output)
+        return xz.compress_file(source, output)
+
+    def _execute_zstd(self, source: Path, output: Path) -> Path:
+        """Execute ZSTD operation."""
+        zstd = ZstdCompressor()
+        if source.suffix in (".zst", ".zstd"):
+            return zstd.decompress_file(source, output)
+        return zstd.compress_file(source, output)
+
+    def _execute_zip(self, config: dict[str, bool], source: Path, output: Path) -> Path:
+        """Execute ZIP operation."""
+        zip_archive = ZipArchive(**config)
+        if source.is_dir():
+            return zip_archive.create(source, output)
+        return zip_archive.extract(source, output)
 
     def _get_suffix_for_operation(self, operation: ArchiveOperation) -> str:
         """Get file suffix for operation."""
@@ -256,26 +278,34 @@ class ArchiveOperations:
         """Detect archive format by file extension."""
         name = filename.lower()
 
-        if name.endswith(".tar.gz") or name.endswith(".tgz"):
-            return [ArchiveOperation.GZIP, ArchiveOperation.TAR]
-        if name.endswith(".tar.bz2") or name.endswith(".tbz2"):
-            return [ArchiveOperation.BZIP2, ArchiveOperation.TAR]
-        if name.endswith(".tar.xz") or name.endswith(".txz"):
-            return [ArchiveOperation.XZ, ArchiveOperation.TAR]
-        if name.endswith(".tar.zst") or name.endswith(".tzst"):
-            return [ArchiveOperation.ZSTD, ArchiveOperation.TAR]
-        if name.endswith(".tar"):
-            return [ArchiveOperation.TAR]
-        if name.endswith(".gz"):
-            return [ArchiveOperation.GZIP]
-        if name.endswith(".bz2"):
-            return [ArchiveOperation.BZIP2]
-        if name.endswith(".xz"):
-            return [ArchiveOperation.XZ]
-        if name.endswith(".zst") or name.endswith(".zstd"):
+        # Check compound extensions first
+        compound_exts = {
+            (".tar.gz", ".tgz"): [ArchiveOperation.GZIP, ArchiveOperation.TAR],
+            (".tar.bz2", ".tbz2"): [ArchiveOperation.BZIP2, ArchiveOperation.TAR],
+            (".tar.xz", ".txz"): [ArchiveOperation.XZ, ArchiveOperation.TAR],
+            (".tar.zst", ".tzst"): [ArchiveOperation.ZSTD, ArchiveOperation.TAR],
+        }
+
+        for suffixes, ops in compound_exts.items():
+            if any(name.endswith(suffix) for suffix in suffixes):
+                return ops
+
+        # Check single extensions
+        simple_exts = {
+            ".tar": [ArchiveOperation.TAR],
+            ".gz": [ArchiveOperation.GZIP],
+            ".bz2": [ArchiveOperation.BZIP2],
+            ".xz": [ArchiveOperation.XZ],
+            ".zip": [ArchiveOperation.ZIP],
+        }
+
+        for ext, ops in simple_exts.items():
+            if name.endswith(ext):
+                return ops
+
+        # Check .zst and .zstd
+        if name.endswith((".zst", ".zstd")):
             return [ArchiveOperation.ZSTD]
-        if name.endswith(".zip"):
-            return [ArchiveOperation.ZIP]
 
         return None
 

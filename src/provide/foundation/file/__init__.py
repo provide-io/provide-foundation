@@ -90,20 +90,16 @@ This module has a dual nature. It provides:
 """
 
 __all__ = [
-    # From alignment
     "CACHE_LINE_SIZE",
     "DEFAULT_ALIGNMENT",
-    # From permissions
     "DEFAULT_DIR_PERMS",
     "DEFAULT_EXECUTABLE_PERMS",
     "DEFAULT_FILE_PERMS",
-    "PAGE_SIZE_16K",
     "PAGE_SIZE_4K",
-    # From operations
+    "PAGE_SIZE_16K",
     "DetectorConfig",
     "FileEvent",
     "FileEventMetadata",
-    # From lock
     "FileLock",
     "FileOperation",
     "LockError",
@@ -112,14 +108,12 @@ __all__ = [
     "align_offset",
     "align_to_page",
     "atomic_replace",
-    # From atomic
     "atomic_write",
     "atomic_write_text",
     "backup_file",
     "calculate_padding",
     "check_disk_space",
     "detect_atomic_save",
-    # From directory
     "ensure_dir",
     "ensure_parent_dir",
     "ensure_secure_permissions",
@@ -131,28 +125,24 @@ __all__ = [
     "get_disk_usage",
     "get_mtime",
     "get_permissions",
-    "get_system_page_size",
-    # From utils
     "get_size",
+    "get_system_page_size",
     "group_related_events",
     "is_aligned",
     "is_power_of_two",
     "is_temp_file",
     "parse_permissions",
-    # From formats
     "read_json",
     "read_toml",
     "read_yaml",
     "safe_copy",
     "safe_delete",
     "safe_move",
-    # From safe
     "safe_read",
     "safe_read_text",
     "safe_rmtree",
-    "set_file_permissions",
-    # From temp
     "secure_temp_file",
+    "set_file_permissions",
     "system_temp_dir",
     "temp_dir",
     "temp_file",
