@@ -50,22 +50,19 @@ from provide.foundation.logger.otlp.severity import (
 )
 
 __all__ = [
-    # Main client
-    "OTLPLogClient",
-    # Circuit breaker
     "OTLPCircuitBreaker",
-    "get_otlp_circuit_breaker",
-    "reset_otlp_circuit_breaker",
-    # Helper functions
+    "OTLPLogClient",
     "add_trace_context_to_attributes",
     "build_otlp_endpoint",
     "build_otlp_headers",
     "build_resource_attributes",
     "create_otlp_resource",
     "extract_trace_context",
+    "get_otlp_circuit_breaker",
     "map_level_to_severity",
     "map_severity_to_level",
     "normalize_attributes",
+    "reset_otlp_circuit_breaker",
 ]
 
 

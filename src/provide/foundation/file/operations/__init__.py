@@ -73,30 +73,19 @@ from provide.foundation.file.operations.utils import (
 )
 
 __all__ = [
-    # ========================================================================
-    # SIMPLE API (Primary exports)
-    # ========================================================================
-    # Detection functions
-    "detect",
-    "detect_all",
-    "detect_streaming",
-    "create_detector",
-    # Simple types
-    "Event",  # Alias for FileEvent
-    "Operation",  # Alias for FileOperation
-    "OperationType",
-    # ========================================================================
-    # FULL API (Backward compatibility)
-    # ========================================================================
-    # Types
     "DetectorConfig",
+    "Event",
     "FileEvent",
     "FileEventMetadata",
     "FileOperation",
-    # Detector class
+    "Operation",
     "OperationDetector",
-    # Utilities
+    "OperationType",
+    "create_detector",
+    "detect",
+    "detect_all",
     "detect_atomic_save",
+    "detect_streaming",
     "extract_original_path",
     "group_related_events",
     "is_temp_file",
