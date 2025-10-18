@@ -117,7 +117,7 @@ class TempPatternDetector:
             return None
 
         # Group events by temp files
-        temp_groups = {}
+        temp_groups: dict[str, list[FileEvent]] = {}
         for event in events:
             if is_temp_file(event.path):
                 path_str = str(event.path)
@@ -178,8 +178,8 @@ class TempPatternDetector:
             return None
 
         # Look for temp file creation followed by deletion, then real file creation
-        temp_files = {}
-        real_files = {}
+        temp_files: dict[str, list[FileEvent]] = {}
+        real_files: dict[str, list[FileEvent]] = {}
 
         for event in events:
             if is_temp_file(event.path):

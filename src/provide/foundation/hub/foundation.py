@@ -80,7 +80,7 @@ class FoundationManager:
             if otlp_configured:
                 # Force full re-initialization to recreate LoggerProvider with new service_name
                 force = True
-                setup_log.info(
+                setup_log.info(  # type: ignore[attr-defined]
                     "Foundation: Re-initializing with OTLP (explicit service_name overriding auto-init)"
                 )
             else:
@@ -92,7 +92,7 @@ class FoundationManager:
                 if coordinator.update_config_if_default(self._registry, config):
                     # Config updated successfully - no need to re-initialize
                     self._config = config
-                    setup_log.info(
+                    setup_log.info(  # type: ignore[attr-defined]
                         "Foundation: Updated config (explicit service_name overriding auto-init default)"
                     )
                     return

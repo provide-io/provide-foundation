@@ -31,7 +31,7 @@ class FallbackChain:
 
     def add_fallback(self, fallback_func: Callable[..., T]) -> None:
         """Add a fallback function to the chain."""
-        self.fallbacks.append(fallback_func)
+        self.fallbacks.append(fallback_func)  # type: ignore[arg-type]
         logger.debug(
             "Added fallback to chain",
             fallback_count=len(self.fallbacks),
@@ -197,7 +197,7 @@ def fallback(*fallback_funcs: Callable[..., T]) -> Callable:
             async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
                 return await chain.execute_async(primary_func, *args, **kwargs)
 
-            return async_wrapper
+            return async_wrapper  # type: ignore[return-value]
 
         @functools.wraps(primary_func)
         def sync_wrapper(*args: Any, **kwargs: Any) -> Any:

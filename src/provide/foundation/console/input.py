@@ -90,7 +90,7 @@ def _handle_json_input(prompt: str, kwargs: dict[str, Any]) -> str | dict[str, A
 
         if json_key := kwargs.get("json_key"):
             return {json_key: data}
-        return data  # type: ignore[no-any-return]
+        return data
 
     except Exception as e:
         log.error("Failed to read JSON input", error=str(e))

@@ -123,7 +123,7 @@ def sanitize_dict(
     # Convert sensitive keys to lowercase for case-insensitive matching
     sensitive_lower = {k.lower() for k in sensitive_keys}
 
-    sanitized = {}
+    sanitized: dict[str, Any] = {}
     for key, value in data.items():
         if key.lower() in sensitive_lower:
             sanitized[key] = redacted

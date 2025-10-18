@@ -292,7 +292,7 @@ def _reset_direct_circuit_breaker_instances() -> None:
         from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
         from provide.foundation.resilience.circuit_sync import SyncCircuitBreaker
 
-        registry = get_hub()._component_registry  # type: ignore[attr-defined]
+        registry = get_hub()._component_registry
 
         # Get all decorator-tracked instances from registry
         decorator_tracked_ids = set()
@@ -428,7 +428,9 @@ def reset_version_cache() -> None:
     version resolution scenarios.
     """
     try:
-        from provide.foundation._version import reset_version_cache as _reset_cache
+        from provide.foundation._version import (  # type: ignore[import-untyped]
+            reset_version_cache as _reset_cache,
+        )
 
         _reset_cache()
     except ImportError:

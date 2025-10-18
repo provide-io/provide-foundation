@@ -7,12 +7,11 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from click.testing import CliRunner, Result
 
 from provide.foundation import get_hub
-from provide.foundation.cli.deps import click
 from provide.foundation.console.output import perr, pout
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import (
@@ -20,6 +19,9 @@ from provide.foundation.logger import (
     TelemetryConfig,
     get_logger,
 )
+
+if TYPE_CHECKING:
+    import click as click_types
 
 log = get_logger(__name__)
 
@@ -110,8 +112,8 @@ def setup_cli_logging(
     console_formatter = "json" if ctx.json_output else ctx.log_format
 
     logging_config = LoggingConfig(
-        default_level=ctx.log_level,
-        console_formatter=console_formatter,
+        default_level=ctx.log_level,  # type: ignore[arg-type]
+        console_formatter=console_formatter,  # type: ignore[arg-type]
         omit_timestamp=False,
         logger_name_emoji_prefix_enabled=not ctx.no_emoji,
         das_emoji_prefix_enabled=not ctx.no_emoji,
@@ -154,7 +156,7 @@ class CliTestRunner:
 
     def invoke(
         self,
-        cli: click.Command | click.Group,
+        cli: click_types.Command | click_types.Group,
         args: list[str] | None = None,
         input: str | None = None,
         env: dict[str, str] | None = None,

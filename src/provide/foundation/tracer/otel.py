@@ -10,8 +10,6 @@ from typing import TYPE_CHECKING, Any
 from provide.foundation.logger.config.telemetry import TelemetryConfig
 from provide.foundation.logger.setup import get_system_logger
 
-"""OpenTelemetry integration for Foundation tracer."""
-
 if TYPE_CHECKING:
     from opentelemetry import trace as otel_trace
     from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
@@ -25,7 +23,11 @@ if TYPE_CHECKING:
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
     from opentelemetry.sdk.trace.sampling import TraceIdRatioBased
 
-slog = get_system_logger(__name__)
+    from provide.foundation.logger.base import FoundationLogger
+
+"""OpenTelemetry integration for Foundation tracer."""
+
+slog: FoundationLogger | Any = get_system_logger(__name__)
 
 # Feature detection
 try:
@@ -45,13 +47,13 @@ try:
 except ImportError:
     _HAS_OTEL = False
     # Stub everything for type hints
-    otel_trace: Any = None
-    TracerProvider: Any = None
-    BatchSpanProcessor: Any = None
-    Resource: Any = None
-    OTLPGrpcSpanExporter: Any = None
-    OTLPHttpSpanExporter: Any = None
-    TraceIdRatioBased: Any = None
+    otel_trace: Any = None  # type: ignore[no-redef]
+    TracerProvider: Any = None  # type: ignore[no-redef]
+    BatchSpanProcessor: Any = None  # type: ignore[no-redef]
+    Resource: Any = None  # type: ignore[no-redef]
+    OTLPGrpcSpanExporter: Any = None  # type: ignore[no-redef]
+    OTLPHttpSpanExporter: Any = None  # type: ignore[no-redef]
+    TraceIdRatioBased: Any = None  # type: ignore[no-redef]
 
 
 def _require_otel() -> None:
@@ -100,7 +102,7 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
 
         # Choose exporter based on protocol
         if config.otlp_protocol == "grpc":
-            exporter = OTLPGrpcSpanExporter(
+            exporter: OTLPGrpcSpanExporter | OTLPHttpSpanExporter = OTLPGrpcSpanExporter(
                 endpoint=endpoint,
                 headers=headers,
             )

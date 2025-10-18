@@ -227,7 +227,7 @@ def with_cleanup(func: Callable[P, R]) -> Callable[P, R]:
             # Cleanup will be handled by atexit
             raise
 
-    return wrapper  # type: ignore[return-value]
+    return wrapper
 
 
 __all__ = [

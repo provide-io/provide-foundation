@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 from contextlib import suppress
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 """Observability module for Foundation.
 
@@ -18,17 +18,14 @@ if TYPE_CHECKING:
     pass  # OpenTelemetry imports are handled at runtime
 
 # OpenTelemetry feature detection - Pattern 1: _HAS_* flag
-_otel_trace_module: Any = None
 try:
     from opentelemetry import trace as _otel_trace_module
 
     _HAS_OTEL = True
+    otel_trace = _otel_trace_module
 except ImportError:
-    _otel_trace_module = None
     _HAS_OTEL = False
-
-# Use consistent name throughout
-otel_trace = _otel_trace_module
+    otel_trace = None
 
 # Pattern 2: Import real implementation or create stubs
 if _HAS_OTEL:

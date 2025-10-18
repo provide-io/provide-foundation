@@ -266,7 +266,7 @@ async def get_current_trace_logs(
     try:
         from provide.foundation.tracer.context import get_current_trace_id
 
-        trace_id = get_current_trace_id()
+        trace_id = get_current_trace_id()  # type: ignore[assignment]
         if trace_id:
             return await search_by_trace_id(trace_id, stream=stream, client=client)
     except ImportError:

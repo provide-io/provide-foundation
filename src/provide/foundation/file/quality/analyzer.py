@@ -101,7 +101,7 @@ class QualityAnalyzer:
         timing_results: list[float],
     ) -> dict[AnalysisMetric, QualityResult]:
         """Calculate all requested metrics."""
-        results = {}
+        results: dict[AnalysisMetric, QualityResult] = {}
 
         for metric in metrics:
             if metric == AnalysisMetric.ACCURACY:

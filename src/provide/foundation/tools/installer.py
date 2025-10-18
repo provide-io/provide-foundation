@@ -148,7 +148,7 @@ class ToolInstaller:
         elif archive.suffix == ".xz":
             mode = "r:xz"
 
-        with tarfile.open(archive, mode) as tf:
+        with tarfile.open(archive, mode) as tf:  # type: ignore[call-overload]
             # Check for unsafe paths and validate members
             safe_members = []
             for member in tf.getmembers():

@@ -114,7 +114,7 @@ class HTTPTransport(TransportBase):
             if request.params:
                 request_kwargs["params"] = request.params
 
-            httpx_response = await self._client.request(**request_kwargs)
+            httpx_response = await self._client.request(**request_kwargs)  # type: ignore[arg-type]
 
             elapsed_ms = (time.perf_counter() - start_time) * 1000
 
@@ -157,7 +157,7 @@ class HTTPTransport(TransportBase):
             log.error(f"❌ Unexpected error: {e}", exc_info=True)
             raise TransportConnectionError(f"Unexpected error: {e}", request=request) from e
 
-    async def stream(self, request: Request) -> AsyncIterator[bytes]:
+    async def stream(self, request: Request) -> AsyncIterator[bytes]:  # type: ignore[override,misc]
         """Stream HTTP response."""
         await self.connect()
 
@@ -179,7 +179,7 @@ class HTTPTransport(TransportBase):
             if request.params:
                 stream_kwargs["params"] = request.params
 
-            async with self._client.stream(**stream_kwargs) as response:
+            async with self._client.stream(**stream_kwargs) as response:  # type: ignore[arg-type]
                 # Log response start
                 status_emoji = self._get_status_emoji(response.status_code)
                 log.info(f"{status_emoji} {response.status_code} (streaming)")
@@ -233,7 +233,7 @@ def _register_http_transport() -> None:
         # Register once for both HTTP and HTTPS schemes
         register_transport(
             TransportType.HTTP,
-            HTTPTransport,
+            HTTPTransport,  # type: ignore[arg-type]
             schemes=HTTPTransport.SCHEMES,
             description="HTTP/HTTPS transport using httpx",
             version="1.0.0",

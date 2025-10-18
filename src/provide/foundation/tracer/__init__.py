@@ -50,11 +50,11 @@ try:
 
     _HAS_OTEL = True
 except ImportError:
-    otel_trace: Any = None
-    TracerProvider: Any = None
-    BatchSpanProcessor: Any = None
-    OTLPGrpcSpanExporter: Any = None
-    OTLPHttpSpanExporter: Any = None
+    otel_trace: Any = None  # type: ignore[no-redef]
+    TracerProvider: Any = None  # type: ignore[no-redef]
+    BatchSpanProcessor: Any = None  # type: ignore[no-redef]
+    OTLPGrpcSpanExporter: Any = None  # type: ignore[no-redef]
+    OTLPHttpSpanExporter: Any = None  # type: ignore[no-redef]
     _HAS_OTEL = False
 
 __all__ = [

@@ -23,17 +23,14 @@ log = structlog.get_logger().bind(logger_name=__name__)
 # and level registration issues during logger setup
 
 # OpenTelemetry feature detection
-_otel_trace_module: Any = None
 try:
     from opentelemetry import trace as _otel_trace_module
 
     _HAS_OTEL = True
+    otel_trace_runtime: Any = _otel_trace_module
 except ImportError:
-    _otel_trace_module = None
     _HAS_OTEL = False
-
-# Use consistent name throughout
-otel_trace_runtime: Any = _otel_trace_module
+    otel_trace_runtime = None
 
 
 def _inject_otel_trace_context(event_dict: dict[str, Any]) -> bool:

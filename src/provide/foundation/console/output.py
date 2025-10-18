@@ -25,7 +25,7 @@ try:
 
     _HAS_CLICK = True
 except ImportError:
-    click: Any = None
+    click = None  # type: ignore[assignment]
     _HAS_CLICK = False
 
 # Note: This module doesn't need logging - it's a pure output utility
@@ -49,7 +49,7 @@ def _should_use_json(ctx: CLIContext | None = None) -> bool:
 
 
 @cached()
-def _get_color_env_settings() -> tuple[bool | None, bool]:
+def _get_color_env_settings() -> tuple[bool | None, bool | None]:
     """Get cached color environment variable settings.
 
     Returns:
@@ -57,10 +57,10 @@ def _get_color_env_settings() -> tuple[bool | None, bool]:
         - force_color is True if FORCE_COLOR is set, None otherwise
         - no_color is True if NO_COLOR is set, False otherwise
     """
-    force_color = get_str("FORCE_COLOR", "").lower()
-    force = True if force_color in ("1", "true", "yes") else None
+    force_color = (get_str("FORCE_COLOR", "") or "").lower()
+    force: bool | None = True if force_color in ("1", "true", "yes") else None
 
-    no_color = get_bool("NO_COLOR", False)
+    no_color: bool | None = get_bool("NO_COLOR", False)
 
     return (force, no_color)
 

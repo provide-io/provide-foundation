@@ -242,7 +242,10 @@ class CoreHub:
         else:
             # func should be a callable with __name__
             if hasattr(func, "__name__"):
-                command_name = name or func.__name__.replace("_", "-")
+                func_name = getattr(func, "__name__", "")
+                command_name = name or (
+                    func_name.replace("_", "-") if isinstance(func_name, str) else "unknown_command"
+                )
             else:
                 command_name = name if name is not None else "unknown_command"
             command_func = func

@@ -257,7 +257,7 @@ class InitializationCoordinator:
         ):
             # Update state machine config
             with self._state_machine._lock:
-                self._state_machine._state_data = state_data.with_changes(config=new_config)
+                self._state_machine._state_data = state_data.with_changes(config=new_config)  # type: ignore[assignment]
 
             # Update registry config
             registry.register(

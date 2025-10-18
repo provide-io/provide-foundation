@@ -224,6 +224,7 @@ class BulkheadManager:
         """
         with self._lock:
             if name not in self._bulkheads:
+                pool: SyncResourcePool | AsyncResourcePool
                 if use_async_pool:
                     pool = AsyncResourcePool(
                         max_concurrent=max_concurrent,

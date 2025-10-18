@@ -18,6 +18,8 @@ from provide.foundation.cli.deps import click
 from provide.foundation.hub.categories import ComponentCategory
 
 if TYPE_CHECKING:
+    from click import Group
+
     from provide.foundation.hub.info import CommandInfo
     from provide.foundation.hub.registry import Registry
 
@@ -80,12 +82,10 @@ def ensure_parent_groups(parent_path: str, registry: Registry) -> None:
                 },
             )
 
-            logger.debug(f"Auto-created group: {group_path}")
+            logger.debug(f"Auto-created group: {group_path}")  # type: ignore[attr-defined]
 
 
-def create_subgroup(
-    cmd_name: str, entry: Any, groups: dict[str, click.Group], root_group: click.Group
-) -> None:
+def create_subgroup(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:

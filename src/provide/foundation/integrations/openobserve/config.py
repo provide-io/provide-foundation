@@ -84,6 +84,8 @@ class OpenObserveConfig(RuntimeConfig):
 
         try:
             # Import here to avoid circular dependency
+            import asyncio
+
             from provide.foundation.integrations.openobserve.client import OpenObserveClient
 
             client = OpenObserveClient(
@@ -92,7 +94,7 @@ class OpenObserveConfig(RuntimeConfig):
                 password=self.password,  # type: ignore[arg-type]
                 organization=self.org or "default",
             )
-            return client.test_connection()
+            return asyncio.run(client.test_connection())
         except Exception:
             return False
 

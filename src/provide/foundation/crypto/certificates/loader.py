@@ -106,8 +106,8 @@ def load_certificate_from_pem(
             logger.debug("📜🔑✅ Private key object loaded and type validated")
 
         # Extract certificate details for CertificateBase
-        loaded_not_valid_before = x509_cert.not_valid_before_utc
-        loaded_not_valid_after = x509_cert.not_valid_after_utc
+        loaded_not_valid_before = x509_cert.not_valid_before_utc  # type: ignore[attr-defined]
+        loaded_not_valid_after = x509_cert.not_valid_after_utc  # type: ignore[attr-defined]
         if loaded_not_valid_before.tzinfo is None:
             loaded_not_valid_before = loaded_not_valid_before.replace(tzinfo=UTC)
         if loaded_not_valid_after.tzinfo is None:

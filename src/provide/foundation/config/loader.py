@@ -144,7 +144,7 @@ class FileConfigLoader(ConfigLoader):
         if self.format == ConfigFormat.TOML:
             return toml_loads(content)
         if self.format == ConfigFormat.INI:
-            return ini_loads(content)
+            return ini_loads(content)  # type: ignore[return-value]
         if self.format == ConfigFormat.ENV:
             env_data = env_loads(content)
             # Lowercase keys for consistency with Python conventions

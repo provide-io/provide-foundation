@@ -31,7 +31,7 @@ class SimpleOperationDetector:
             return None
 
         # Group events by path
-        path_groups = {}
+        path_groups: dict[str, list[FileEvent]] = {}
         for event in events:
             path_str = str(event.path)
             if path_str not in path_groups:

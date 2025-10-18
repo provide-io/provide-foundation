@@ -95,7 +95,11 @@ def _get_config_value(key: str, default: str | int) -> str | int:
 
         config = get_config(f"crypto.{key}")
         if config is not None and hasattr(config, "value"):
-            return config.value
+            value = config.value
+            # Cast to str | int based on default type
+            if isinstance(default, int):
+                return int(value) if isinstance(value, (int, str)) else default
+            return str(value) if value is not None else default
         return default
     except ImportError:
         # Config system not available, use defaults
