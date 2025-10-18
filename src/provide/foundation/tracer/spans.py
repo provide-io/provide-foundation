@@ -24,22 +24,23 @@ from provide.foundation.logger import get_logger
 Provides OpenTelemetry integration when available, falls back to simple tracing.
 """
 
+# OpenTelemetry feature detection
+_HAS_OTEL: bool
+
 if TYPE_CHECKING:
     from opentelemetry import trace as otel_trace
     from opentelemetry.trace import Status, StatusCode
+else:
+    try:
+        from opentelemetry import trace as otel_trace
+        from opentelemetry.trace import Status, StatusCode
 
-# OpenTelemetry feature detection
-_HAS_OTEL: bool
-try:
-    from opentelemetry import trace as otel_trace
-    from opentelemetry.trace import Status, StatusCode
-
-    _HAS_OTEL = True
-except ImportError:
-    otel_trace = None
-    Status = None
-    StatusCode = None
-    _HAS_OTEL = False
+        _HAS_OTEL = True
+    except ImportError:
+        otel_trace: Any = None
+        Status: Any = None
+        StatusCode: Any = None
+        _HAS_OTEL = False
 
 log = get_logger(__name__)
 
