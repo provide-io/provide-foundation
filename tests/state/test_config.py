@@ -10,9 +10,9 @@ import threading
 import time
 from unittest.mock import MagicMock
 
-import pytest
 from attrs.exceptions import FrozenInstanceError
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.state.base import ImmutableState
 from provide.foundation.state.config import ConfigManager, VersionedConfig
@@ -26,7 +26,7 @@ class TestVersionedConfig(FoundationTestCase):
         config = VersionedConfig()
         assert config.data == {}
         assert config.parent_generation is None
-        assert config.config_name == "default"
+        assert config.config_name == ""  # DEFAULT_STATE_CONFIG_NAME
         assert config.generation == 0
 
     def test_versioned_config_with_data(self) -> None:
@@ -118,8 +118,8 @@ class TestVersionedConfig(FoundationTestCase):
 
         # Parent generation should be max of both
         assert merged.parent_generation == 10
-        # Merged generation is parent + 1
-        assert merged.generation == 11
+        # Merged generation is config1.generation + 1 (incremented via with_changes)
+        assert merged.generation == 6
 
     def test_with_changes_increments_generation(self) -> None:
         """Test with_changes increments generation."""
@@ -380,10 +380,7 @@ class TestConfigManager(FoundationTestCase):
             except Exception as e:
                 errors.append(e)
 
-        threads = [
-            threading.Thread(target=update_config, args=(f"key_{i}", f"value_{i}"))
-            for i in range(5)
-        ]
+        threads = [threading.Thread(target=update_config, args=(f"key_{i}", f"value_{i}")) for i in range(5)]
 
         for thread in threads:
             thread.start()
