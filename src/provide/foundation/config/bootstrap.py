@@ -80,8 +80,8 @@ def discover_and_register_configs() -> None:
     hub = get_hub()
 
     # Check if already registered (idempotent)
-    existing_entries = hub._component_registry.get_all_in_dimension(ComponentCategory.CONFIG_SCHEMA.value)
-    if existing_entries:
+    existing_names = hub._component_registry.list_dimension(ComponentCategory.CONFIG_SCHEMA.value)
+    if existing_names:
         # Already registered, skip
         return
 

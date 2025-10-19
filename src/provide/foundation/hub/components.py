@@ -146,6 +146,11 @@ def bootstrap_foundation() -> None:
         replace=True,  # Allow replacement for test scenarios
     )
 
+    # Register configuration schemas
+    from provide.foundation.config.bootstrap import discover_and_register_configs
+
+    discover_and_register_configs()
+
     from provide.foundation.hub.foundation import get_foundation_logger
 
     get_foundation_logger().debug("Foundation bootstrap completed with registry components")
