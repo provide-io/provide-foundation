@@ -212,4 +212,4 @@ class TestCliLogging(FoundationTestCase):
         mock_hub = mock_get_hub.return_value
         mock_hub.initialize_foundation.assert_called_once()
         # Verify force=True by default
-        assert mock_get_hub.initialize_foundation.call_args.kwargs["force"] is True
+        assert mock_hub.initialize_foundation.call_args.kwargs["force"] is True
