@@ -27,7 +27,14 @@ class TestSignalHandlerManagement:
         # Acquire lock to serialize these tests
         _signal_test_lock.acquire()
         try:
-            # Save truly original handlers before any test modifications
+            # Ensure clean slate - unregister any Foundation handlers first
+            unregister_cleanup_handlers()
+
+            # Set to a known baseline (default handler)
+            signal.signal(signal.SIGINT, signal.SIG_DFL)
+            signal.signal(signal.SIGTERM, signal.SIG_DFL)
+
+            # Save baseline handlers
             self.original_sigint = signal.getsignal(signal.SIGINT)
             self.original_sigterm = signal.getsignal(signal.SIGTERM)
 
@@ -35,9 +42,9 @@ class TestSignalHandlerManagement:
 
             # Always clean up after tests
             unregister_cleanup_handlers()
-            # Restore to pre-test state
-            signal.signal(signal.SIGINT, self.original_sigint)
-            signal.signal(signal.SIGTERM, self.original_sigterm)
+            # Restore to baseline state
+            signal.signal(signal.SIGINT, signal.SIG_DFL)
+            signal.signal(signal.SIGTERM, signal.SIG_DFL)
         finally:
             # Release lock
             _signal_test_lock.release()
