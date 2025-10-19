@@ -415,7 +415,7 @@ class TestSendLogBulk:
         """Test handling of failed response from bulk API."""
         # Setup failure response
         mock_response = AsyncMock()
-        mock_response.is_success.return_value = False
+        mock_response.is_success = Mock(return_value=False)  # Mock as callable
         mock_response.status = 500
         mock_client._client.request = AsyncMock(return_value=mock_response)
 
