@@ -259,6 +259,45 @@ class TestFoundationManager(FoundationTestCase):
             if original_env and "PYTEST_CURRENT_TEST" not in os.environ:
                 os.environ["PYTEST_CURRENT_TEST"] = original_env
 
+    def test_smart_initialization_lightweight_update_fails(self) -> None:
+        """Test smart initialization when lightweight update fails."""
+        # Initialize with default config
+        auto_config = TelemetryConfig(service_name=None)  # Auto-init marker
+        self.manager.initialize_foundation(config=auto_config)
+
+        # Provide explicit config without OTLP
+        explicit_config = TelemetryConfig(service_name="explicit-service")
+
+        with patch(
+            "provide.foundation.hub.initialization.get_initialization_coordinator"
+        ) as mock_coordinator_factory:
+            mock_coordinator = MagicMock()
+            # Make lightweight update fail
+            mock_coordinator.update_config_if_default.return_value = False
+            # But still handle full initialization
+            mock_coordinator.initialize_foundation.return_value = (explicit_config, MagicMock())
+            mock_coordinator_factory.return_value = mock_coordinator
+
+            self.manager.initialize_foundation(config=explicit_config)
+
+            # Should have fallen through to full initialization
+            mock_coordinator.initialize_foundation.assert_called()
+
+    def test_clear_foundation_state_registry_error_suppressed(self) -> None:
+        """Test that registry errors during clear are suppressed."""
+        self.manager._initialized = True
+
+        # Create a mock registry that raises on remove
+        mock_registry = MagicMock()
+        mock_registry.remove.side_effect = Exception("Registry error")
+        self.manager._registry = mock_registry
+
+        # Should not raise despite registry errors
+        self.manager.clear_foundation_state()
+
+        # State should still be cleared
+        assert not self.manager._initialized
+
 
 class TestGetFoundationLogger(FoundationTestCase):
     """Test the get_foundation_logger function."""
@@ -292,6 +331,17 @@ class TestGetFoundationLogger(FoundationTestCase):
             hub._foundation._logger_instance = None
 
         logger = get_foundation_logger("bootstrap.logger")
+
+        assert logger is not None
+
+    def test_get_foundation_logger_returns_logger_directly(self) -> None:
+        """Test get_foundation_logger returns logger directly when no name provided."""
+        # Clear hub foundation to test fallback path
+        hub = get_hub()
+        if hasattr(hub, "_foundation"):
+            hub._foundation._logger_instance = None
+
+        logger = get_foundation_logger()  # No name
 
         assert logger is not None
 
