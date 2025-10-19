@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 import os
-from typing import Any, ClassVar, Self, TypeVar
+from typing import Any, Self, TypeVar
 
 from attrs import fields
 
@@ -95,76 +95,6 @@ def env_field(
 
 class RuntimeConfig(BaseConfig):
     """Configuration that can be loaded from environment variables."""
-
-    _pending_registration: ClassVar[list[type[RuntimeConfig]]] = []
-    _registration_complete: ClassVar[bool] = False
-
-    def __init_subclass__(cls, **kwargs: Any) -> None:
-        """Queue config class for Hub registration.
-
-        This method is called automatically when a subclass is defined.
-        It queues the class for later registration with the Hub to avoid
-        import order issues.
-
-        Args:
-            **kwargs: Keyword arguments passed to super().__init_subclass__
-
-        """
-        super().__init_subclass__(**kwargs)
-        # Queue for registration instead of immediate registration
-        # to avoid circular import issues with Hub
-        if not cls._registration_complete:
-            RuntimeConfig._pending_registration.append(cls)
-
-    @classmethod
-    def register_all_configs(cls) -> None:
-        """Register all pending config schemas with the Hub.
-
-        This should be called after the Hub is initialized to register
-        all discovered RuntimeConfig subclasses with the CONFIG_SCHEMA dimension.
-
-        """
-        if cls._registration_complete:
-            return
-
-        from provide.foundation.hub import get_hub
-        from provide.foundation.hub.categories import ComponentCategory
-
-        hub = get_hub()
-
-        for config_cls in cls._pending_registration:
-            # Extract category from module path
-            # e.g., "provide.foundation.logger.config.logging" -> "logger"
-            module_parts = config_cls.__module__.split(".")
-            category = "core"
-            if len(module_parts) >= 3 and module_parts[0] == "provide" and module_parts[1] == "foundation":
-                category = module_parts[2]
-
-            # Check if class has any env_var fields
-            has_env_vars = False
-            try:
-                for attr in fields(config_cls):
-                    if "env_var" in attr.metadata or "env_prefix" in attr.metadata:
-                        has_env_vars = True
-                        break
-            except Exception:
-                # If we can't inspect fields, assume it might have env vars
-                has_env_vars = True
-
-            hub._component_registry.register(
-                name=config_cls.__name__,
-                value=config_cls,
-                dimension=ComponentCategory.CONFIG_SCHEMA.value,
-                metadata={
-                    "module": config_cls.__module__,
-                    "category": category,
-                    "has_env_vars": has_env_vars,
-                    "doc": config_cls.__doc__ or "",
-                },
-            )
-
-        cls._pending_registration.clear()
-        cls._registration_complete = True
 
     @classmethod
     def from_env(
