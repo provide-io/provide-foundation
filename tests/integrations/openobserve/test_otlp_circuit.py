@@ -81,7 +81,7 @@ class TestCanAttempt:
         # Manually set to open state with a known failure time
         breaker._state = "open"
         breaker._last_failure_time = time.time() - 10.5  # Failed 10.5 seconds ago (>= timeout)
-        breaker._open_count = 1
+        breaker._open_count = 0  # First time opening, timeout = 10 * 2^0 = 10
 
         # Should transition to half-open since timeout (10s) has passed
         assert breaker.can_attempt() is True
@@ -330,16 +330,16 @@ class TestExponentialBackoff:
         """Test that timeout doubles with each circuit open."""
         breaker = OTLPCircuitBreaker(failure_threshold=1, timeout=10.0)
 
-        # Manually set state after first failure  (open_count = 1)
+        # Manually set state after first failure  (open_count = 0)
         breaker._state = "open"
-        breaker._open_count = 1
+        breaker._open_count = 0  # First time, timeout = 10 * 2^0 = 10
         breaker._last_failure_time = time.time() - 10.5  # Failed 10.5 seconds ago
 
-        # After 10 seconds (10 * 2^0), circuit should go half-open
+        # After 10 seconds, circuit should go half-open
         assert breaker.can_attempt() is True
         assert breaker.state == "half_open"
 
-        # Record another failure (will increment open_count to 2)
+        # Record another failure (will increment open_count to 1)
         breaker.record_failure()
 
         # Now timeout should be 20 seconds (10 * 2^1)
