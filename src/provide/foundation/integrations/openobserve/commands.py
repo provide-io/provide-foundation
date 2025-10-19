@@ -75,7 +75,7 @@ if _HAS_CLICK:
 
     @click.group("openobserve", help="Query and manage OpenObserve logs")
     @click.pass_context
-    def openobserve_group(ctx: click.Context) -> int | None:
+    def openobserve_group(ctx: click.Context) -> None:
         """OpenObserve log querying and streaming commands."""
         # Initialize client and store in context
         try:
@@ -84,8 +84,6 @@ if _HAS_CLICK:
         except Exception as e:
             perr(f"Failed to initialize OpenObserve client: {e}")
             ctx.obj = None
-
-        return 0
 
     @openobserve_group.command("query")
     @click.option(
@@ -124,23 +122,25 @@ if _HAS_CLICK:
         is_flag=True,
         help="Pretty print JSON output",
     )
+    @click.pass_context
     @click.pass_obj
     def query_command(
         client: OpenObserveClient | None,
+        ctx: click.Context,
         sql: str,
         start: str,
         end: str,
         size: int,
         format: str,
         pretty: bool,
-    ) -> int | None:
+    ) -> None:
         """Execute SQL query against OpenObserve logs."""
         if client is None:
             click.echo(
                 "OpenObserve not configured. Set OPENOBSERVE_URL, OPENOBSERVE_USER, and OPENOBSERVE_PASSWORD.",
                 err=True,
             )
-            return 1
+            ctx.exit(1)
 
         try:
             response = run_async(
@@ -155,11 +155,10 @@ if _HAS_CLICK:
 
             output = format_output(response, format_type=format, pretty=pretty)
             click.echo(output)
-            return 0
 
         except Exception as e:
             click.echo(f"Query failed: {e}", err=True)
-            return 1
+            ctx.exit(1)
 
     @openobserve_group.command("tail")
     @click.option(
@@ -184,7 +183,7 @@ if _HAS_CLICK:
     @click.option(
         "--follow",
         "-F",
-        is_flag=True,
+        type=bool,
         default=True,
         help="Follow mode (like tail -f)",
     )
@@ -194,22 +193,24 @@ if _HAS_CLICK:
         default="log",
         help="Output format",
     )
+    @click.pass_context
     @click.pass_obj
     def tail_command(
         client: OpenObserveClient | None,
+        ctx: click.Context,
         stream: str,
         filter_sql: str | None,
         lines: int,
         follow: bool,
         format: str,
-    ) -> int | None:
+    ) -> None:
         """Tail logs from OpenObserve (like 'tail -f')."""
         if client is None:
             click.echo(
                 "OpenObserve not configured. Set OPENOBSERVE_URL, OPENOBSERVE_USER, and OPENOBSERVE_PASSWORD.",
                 err=True,
             )
-            return 1
+            ctx.exit(1)
 
         try:
             pout(f"Tailing logs from stream '{stream}'...")
@@ -238,14 +239,11 @@ if _HAS_CLICK:
                 # Emit through structlog
                 log.info(message, **context)
 
-            return 0
-
         except KeyboardInterrupt:
             pout("\nStopped tailing logs.")
-            return 0
         except Exception as e:
             perr(f"Tail failed: {e}")
-            return 1
+            ctx.exit(1)
 
     @openobserve_group.command("errors")
     @click.option(
@@ -433,12 +431,13 @@ if _HAS_CLICK:
             return 1
 
     @openobserve_group.command("test")
+    @click.pass_context
     @click.pass_obj
-    def test_command(client: OpenObserveClient | None) -> int | None:
+    def test_command(client: OpenObserveClient | None, ctx: click.Context) -> None:
         """Test connection to OpenObserve."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
-            return 1
+            ctx.exit(1)
 
         click.echo(f"Testing connection to {client.url}...")
 
@@ -446,10 +445,9 @@ if _HAS_CLICK:
             click.echo("✅ Connection successful!")
             click.echo(f"Organization: {client.organization}")
             click.echo(f"User: {client.username}")
-            return 0
         else:
             click.echo("❌ Connection failed!")
-            return 1
+            ctx.exit(1)
 
     # Export the command group for auto-discovery
     __all__ = ["openobserve_group"]
