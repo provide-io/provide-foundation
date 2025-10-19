@@ -10,7 +10,13 @@ import tarfile
 
 from attrs import define
 
-from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.foundation.archive.base import (
+    ArchiveError,
+    ArchiveFormatError,
+    ArchiveIOError,
+    ArchiveValidationError,
+    BaseArchive,
+)
 from provide.foundation.archive.defaults import (
     DEFAULT_ARCHIVE_DETERMINISTIC,
     DEFAULT_ARCHIVE_PRESERVE_METADATA,
@@ -102,10 +108,10 @@ class TarArchive(BaseArchive):
 
             with tarfile.open(output, "w") as tar:
                 if source.is_dir():
-                    # Add all files in directory
+                    # Add all files in directory (consistent with ZIP behavior)
                     for item in sorted(source.rglob("*")):
                         if item.is_file():
-                            arcname = item.relative_to(source.parent)
+                            arcname = item.relative_to(source)
                             self._add_file(tar, item, arcname)
                 else:
                     # Add single file
@@ -114,6 +120,8 @@ class TarArchive(BaseArchive):
             log.debug(f"Created TAR archive: {output}")
             return output
 
+        except OSError as e:
+            raise ArchiveIOError(f"Failed to create TAR archive (I/O error): {e}") from e
         except Exception as e:
             raise ArchiveError(f"Failed to create TAR archive: {e}") from e
 
@@ -157,7 +165,7 @@ class TarArchive(BaseArchive):
 
                     # Use unified path validation
                     if not is_safe_path(output, member.name):
-                        raise ArchiveError(
+                        raise ArchiveValidationError(
                             f"Unsafe path in archive: {member.name}. "
                             "Archive may contain path traversal, symlinks, or absolute paths."
                         )
@@ -166,14 +174,14 @@ class TarArchive(BaseArchive):
                     if member.islnk() or member.issym():
                         # Check that link targets are also safe
                         if not is_safe_path(output, member.linkname):
-                            raise ArchiveError(
+                            raise ArchiveValidationError(
                                 f"Unsafe link target in archive: {member.name} -> {member.linkname}. "
                                 "Link target may escape extraction directory."
                             )
 
                         # Prevent absolute path in link target
                         if Path(member.linkname).is_absolute():
-                            raise ArchiveError(
+                            raise ArchiveValidationError(
                                 f"Absolute path in link target: {member.name} -> {member.linkname}"
                             )
 
@@ -188,8 +196,12 @@ class TarArchive(BaseArchive):
             log.debug(f"Extracted TAR archive to: {output}")
             return output
 
-        except ArchiveError:
+        except (ArchiveError, ArchiveValidationError):
             raise
+        except tarfile.ReadError as e:
+            raise ArchiveFormatError(f"Invalid or corrupted TAR archive: {e}") from e
+        except OSError as e:
+            raise ArchiveIOError(f"Failed to extract TAR archive (I/O error): {e}") from e
         except Exception as e:
             raise ArchiveError(f"Failed to extract TAR archive: {e}") from e
 
@@ -238,6 +250,10 @@ class TarArchive(BaseArchive):
                     if member.isfile():
                         contents.append(member.name)
             return sorted(contents)
+        except tarfile.ReadError as e:
+            raise ArchiveFormatError(f"Invalid or corrupted TAR archive: {e}") from e
+        except OSError as e:
+            raise ArchiveIOError(f"Failed to list TAR contents (I/O error): {e}") from e
         except Exception as e:
             raise ArchiveError(f"Failed to list TAR contents: {e}") from e
 
@@ -252,16 +268,12 @@ class TarArchive(BaseArchive):
         """
         tarinfo = tar.gettarinfo(str(file_path), str(arcname))
 
+        # Apply deterministic filter if enabled
         if self.deterministic:
-            # Set consistent metadata for reproducible archives
-            tarinfo.uid = 0
-            tarinfo.gid = 0
-            tarinfo.uname = ""
-            tarinfo.gname = ""
-            tarinfo.mtime = 0
+            tarinfo = deterministic_filter(tarinfo)
 
+        # Normalize permissions if requested
         if not self.preserve_permissions:
-            # Normalize permissions
             if tarinfo.isfile():
                 tarinfo.mode = 0o644
             elif tarinfo.isdir():

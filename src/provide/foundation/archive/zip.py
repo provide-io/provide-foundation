@@ -10,7 +10,13 @@ import zipfile
 
 from attrs import Attribute, define, validators
 
-from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.foundation.archive.base import (
+    ArchiveError,
+    ArchiveFormatError,
+    ArchiveIOError,
+    ArchiveValidationError,
+    BaseArchive,
+)
 from provide.foundation.archive.defaults import (
     DEFAULT_ZIP_COMPRESSION_LEVEL,
     DEFAULT_ZIP_COMPRESSION_TYPE,
@@ -33,23 +39,39 @@ log = get_logger(__name__)
 
 
 def _validate_compression_level(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
-    """Validate compression level is between 0 and 9."""
+    """Validate ZIP compression level is between 0 and 9.
+
+    Note: ZIP supports level 0 (store, no compression) unlike other compressors
+    which enforce 1-9. This is intentional and required for ZIP_STORED mode.
+    """
     if not 0 <= value <= 9:
-        raise ValueError(f"Compression level must be 0-9, got {value}")
+        raise ValueError(f"ZIP compression level must be 0-9, got {value}")
 
 
 @define(slots=True)
 class ZipArchive(BaseArchive):
     """ZIP archive implementation.
 
-    Creates and extracts ZIP archives with optional compression and encryption.
+    Creates and extracts ZIP archives with optional compression.
     Supports adding files to existing archives.
+
+    Security Note - Password Handling:
+        The `password` parameter only decrypts existing encrypted ZIP files during
+        extraction/reading. It does NOT encrypt new files during creation with
+        stdlib zipfile. To create encrypted ZIP archives, use a third-party library
+        like `pyzipper` that supports AES encryption. The stdlib zipfile.setpassword()
+        method only enables reading password-protected archives.
+
+    Attributes:
+        compression_level: ZIP compression level 0-9 (0=store/no compression, 9=best)
+        compression_type: Compression type (zipfile.ZIP_DEFLATED, etc)
+        password: Password for decrypting existing encrypted archives (read-only)
     """
 
     compression_level: int = field(
         default=DEFAULT_ZIP_COMPRESSION_LEVEL,
         validator=validators.and_(validators.instance_of(int), _validate_compression_level),
-    )  # Compression level 0-9 (0=store, 9=best)
+    )
     compression_type: int = field(default=DEFAULT_ZIP_COMPRESSION_TYPE)
     password: bytes | None = field(default=DEFAULT_ZIP_PASSWORD)
 
@@ -65,6 +87,11 @@ class ZipArchive(BaseArchive):
 
         Raises:
             ArchiveError: If archive creation fails
+
+        Note:
+            Files are NOT encrypted during creation even if password is set.
+            The stdlib zipfile module does not support creating encrypted archives.
+            Use pyzipper or similar for AES-encrypted ZIP creation.
 
         """
         try:
@@ -92,6 +119,8 @@ class ZipArchive(BaseArchive):
             log.debug(f"Created ZIP archive: {output}")
             return output
 
+        except OSError as e:
+            raise ArchiveIOError(f"Failed to create ZIP archive (I/O error): {e}") from e
         except Exception as e:
             raise ArchiveError(f"Failed to create ZIP archive: {e}") from e
 
@@ -136,8 +165,12 @@ class ZipArchive(BaseArchive):
             log.debug(f"Extracted ZIP archive to: {output}")
             return output
 
-        except ArchiveError:
+        except (ArchiveError, ArchiveValidationError):
             raise
+        except zipfile.BadZipFile as e:
+            raise ArchiveFormatError(f"Invalid or corrupted ZIP archive: {e}") from e
+        except OSError as e:
+            raise ArchiveIOError(f"Failed to extract ZIP archive (I/O error): {e}") from e
         except Exception as e:
             raise ArchiveError(f"Failed to extract ZIP archive: {e}") from e
 
@@ -182,7 +215,7 @@ class ZipArchive(BaseArchive):
 
         """
         if not is_safe_path(output, filename):
-            raise ArchiveError(
+            raise ArchiveValidationError(
                 f"Unsafe path in archive: {filename}. "
                 "Archive may contain path traversal, symlinks, or absolute paths."
             )
@@ -211,14 +244,14 @@ class ZipArchive(BaseArchive):
 
             # Validate the link target is safe
             if not is_safe_path(output, link_target):
-                raise ArchiveError(
+                raise ArchiveValidationError(
                     f"Unsafe symlink target in archive: {info.filename} -> {link_target}. "
                     "Link target may escape extraction directory."
                 )
 
             # Prevent absolute paths in link target
             if Path(link_target).is_absolute():
-                raise ArchiveError(f"Absolute path in symlink target: {info.filename} -> {link_target}")
+                raise ArchiveValidationError(f"Absolute path in symlink target: {info.filename} -> {link_target}")
 
     def validate(self, archive: Path) -> bool:
         """Validate ZIP archive integrity.
@@ -259,6 +292,10 @@ class ZipArchive(BaseArchive):
         try:
             with zipfile.ZipFile(archive, "r") as zf:
                 return sorted(zf.namelist())
+        except zipfile.BadZipFile as e:
+            raise ArchiveFormatError(f"Invalid or corrupted ZIP archive: {e}") from e
+        except OSError as e:
+            raise ArchiveIOError(f"Failed to list ZIP contents (I/O error): {e}") from e
         except Exception as e:
             raise ArchiveError(f"Failed to list ZIP contents: {e}") from e
 
@@ -283,6 +320,8 @@ class ZipArchive(BaseArchive):
 
             log.debug(f"Added {file} to ZIP archive {archive}")
 
+        except OSError as e:
+            raise ArchiveIOError(f"Failed to add file to ZIP (I/O error): {e}") from e
         except Exception as e:
             raise ArchiveError(f"Failed to add file to ZIP: {e}") from e
 
@@ -323,8 +362,12 @@ class ZipArchive(BaseArchive):
                     target.write(source.read())
                 return output
 
-        except ArchiveError:
+        except (ArchiveError, ArchiveValidationError):
             raise
+        except zipfile.BadZipFile as e:
+            raise ArchiveFormatError(f"Invalid or corrupted ZIP archive: {e}") from e
+        except OSError as e:
+            raise ArchiveIOError(f"Failed to extract file from ZIP (I/O error): {e}") from e
         except Exception as e:
             raise ArchiveError(f"Failed to extract file from ZIP: {e}") from e
 

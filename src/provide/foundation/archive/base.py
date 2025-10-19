@@ -25,6 +25,18 @@ class ArchiveError(FoundationError):
     """Base exception for archive-related errors."""
 
 
+class ArchiveValidationError(ArchiveError):
+    """Archive validation failed (security checks, malformed paths, etc)."""
+
+
+class ArchiveFormatError(ArchiveError):
+    """Archive format is invalid or corrupted."""
+
+
+class ArchiveIOError(ArchiveError):
+    """I/O operation failed during archive processing."""
+
+
 def _validate_compression_level(instance: Any, attribute: Attribute[int], value: int) -> None:
     """Validate compression level is between 1 and 9."""
     if not 1 <= value <= 9:

@@ -5,7 +5,13 @@
 
 from __future__ import annotations
 
-from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.foundation.archive.base import (
+    ArchiveError,
+    ArchiveFormatError,
+    ArchiveIOError,
+    ArchiveValidationError,
+    BaseArchive,
+)
 from provide.foundation.archive.bzip2 import Bzip2Compressor
 from provide.foundation.archive.gzip import GzipCompressor
 from provide.foundation.archive.limits import (
@@ -37,6 +43,9 @@ __all__ = [
     "INVERSE_OPERATIONS",
     "OPERATION_NAMES",
     "ArchiveError",
+    "ArchiveFormatError",
+    "ArchiveIOError",
+    "ArchiveValidationError",
     "ArchiveLimits",
     "ArchiveOperation",
     "ArchiveOperations",
