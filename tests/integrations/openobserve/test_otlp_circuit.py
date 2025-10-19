@@ -74,23 +74,23 @@ class TestCanAttempt:
         assert breaker.state == "open"
         assert breaker.can_attempt() is False
 
-    @patch("provide.foundation.integrations.openobserve.otlp_circuit.time")
+    @patch("provide.foundation.integrations.openobserve.otlp_circuit.time.time")
     def test_can_attempt_when_open_after_timeout(self, mock_time: Mock) -> None:
         """Test that circuit transitions to half-open after timeout."""
         breaker = OTLPCircuitBreaker(failure_threshold=1, timeout=10.0)
 
         # Record failure at time 0
-        mock_time.time.return_value = 0.0
+        mock_time.return_value = 0.0
         breaker.record_failure()
 
         assert breaker.state == "open"
 
         # Try before timeout expires
-        mock_time.time.return_value = 5.0
+        mock_time.return_value = 5.0
         assert breaker.can_attempt() is False
 
         # Try after timeout expires
-        mock_time.time.return_value = 10.0
+        mock_time.return_value = 10.0
         assert breaker.can_attempt() is True
         assert breaker.state == "half_open"
 
@@ -102,32 +102,32 @@ class TestCanAttempt:
 
         assert breaker.can_attempt() is True
 
-    @patch("provide.foundation.integrations.openobserve.otlp_circuit.time")
+    @patch("provide.foundation.integrations.openobserve.otlp_circuit.time.time")
     def test_can_attempt_when_half_open_within_timeout(self, mock_time: Mock) -> None:
         """Test that rapid attempts are blocked in half-open state."""
         breaker = OTLPCircuitBreaker(half_open_timeout=5.0)
         breaker._state = "half_open"
 
         # First attempt at time 0
-        mock_time.time.return_value = 0.0
+        mock_time.return_value = 0.0
         assert breaker.can_attempt() is True
 
         # Second attempt at time 2 (within timeout)
-        mock_time.time.return_value = 2.0
+        mock_time.return_value = 2.0
         assert breaker.can_attempt() is False
 
-    @patch("provide.foundation.integrations.openobserve.otlp_circuit.time")
+    @patch("provide.foundation.integrations.openobserve.otlp_circuit.time.time")
     def test_can_attempt_when_half_open_after_timeout(self, mock_time: Mock) -> None:
         """Test that attempts are allowed in half-open after timeout."""
         breaker = OTLPCircuitBreaker(half_open_timeout=5.0)
         breaker._state = "half_open"
 
         # First attempt at time 0
-        mock_time.time.return_value = 0.0
+        mock_time.return_value = 0.0
         assert breaker.can_attempt() is True
 
         # Second attempt at time 6 (after timeout)
-        mock_time.time.return_value = 6.0
+        mock_time.return_value = 6.0
         assert breaker.can_attempt() is True
 
 
@@ -343,29 +343,29 @@ class TestGetStats:
 class TestExponentialBackoff:
     """Tests for exponential backoff behavior."""
 
-    @patch("provide.foundation.integrations.openobserve.otlp_circuit.time")
+    @patch("provide.foundation.integrations.openobserve.otlp_circuit.time.time")
     def test_exponential_backoff_timeout_increases(self, mock_time: Mock) -> None:
         """Test that timeout doubles with each circuit open."""
         breaker = OTLPCircuitBreaker(failure_threshold=1, timeout=10.0)
 
         # First failure at time 0
-        mock_time.time.return_value = 0.0
+        mock_time.return_value = 0.0
         breaker.record_failure()
 
         # After 10 seconds, circuit should go half-open
-        mock_time.time.return_value = 10.0
+        mock_time.return_value = 10.0
         assert breaker.can_attempt() is True
         assert breaker.state == "half_open"
 
         # Fail again to re-open (open_count = 2)
-        mock_time.time.return_value = 11.0
+        mock_time.return_value = 11.0
         breaker.record_failure()
 
         # Now timeout should be 20 seconds (10 * 2^1)
-        mock_time.time.return_value = 30.0  # 11 + 20 = 31, so 30 is not enough
+        mock_time.return_value = 30.0  # 11 + 20 = 31, so 30 is not enough
         assert breaker.can_attempt() is False
 
-        mock_time.time.return_value = 31.0
+        mock_time.return_value = 31.0
         assert breaker.can_attempt() is True
 
     def test_exponential_backoff_caps_at_10(self) -> None:
