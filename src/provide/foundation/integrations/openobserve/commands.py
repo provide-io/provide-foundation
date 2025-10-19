@@ -271,18 +271,20 @@ if _HAS_CLICK:
         default="log",
         help="Output format",
     )
+    @click.pass_context
     @click.pass_obj
     def errors_command(
         client: OpenObserveClient | None,
+        ctx: click.Context,
         stream: str,
         start: str,
         size: int,
         format: str,
-    ) -> int | None:
+    ) -> None:
         """Search for error logs."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
-            return 1
+            ctx.exit(1)
 
         try:
             from provide.foundation.integrations.openobserve import search_errors
@@ -302,11 +304,9 @@ if _HAS_CLICK:
                 output = format_output(response, format_type=format)
                 click.echo(output)
 
-            return 0
-
         except Exception as e:
             click.echo(f"Search failed: {e}", err=True)
-            return 1
+            ctx.exit(1)
 
     @openobserve_group.command("trace")
     @click.argument("trace_id")
@@ -323,17 +323,19 @@ if _HAS_CLICK:
         default="log",
         help="Output format",
     )
+    @click.pass_context
     @click.pass_obj
     def trace_command(
         client: OpenObserveClient | None,
+        ctx: click.Context,
         trace_id: str,
         stream: str,
         format: str,
-    ) -> int | None:
+    ) -> None:
         """Search for logs by trace ID."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
-            return 1
+            ctx.exit(1)
 
         try:
             from provide.foundation.integrations.openobserve import search_by_trace_id
@@ -352,19 +354,18 @@ if _HAS_CLICK:
                 output = format_output(response, format_type=format)
                 click.echo(output)
 
-            return 0
-
         except Exception as e:
             click.echo(f"Search failed: {e}", err=True)
-            return 1
+            ctx.exit(1)
 
     @openobserve_group.command("streams")
+    @click.pass_context
     @click.pass_obj
-    def streams_command(client: OpenObserveClient | None) -> int | None:
+    def streams_command(client: OpenObserveClient | None, ctx: click.Context) -> None:
         """List available streams."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
-            return 1
+            ctx.exit(1)
 
         try:
             streams = run_async(client.list_streams())
@@ -379,11 +380,9 @@ if _HAS_CLICK:
                         click.echo(f"    Documents: {stream.doc_count:,}")
                         click.echo(f"    Size: {stream.original_size:,} bytes")
 
-            return 0
-
         except Exception as e:
             click.echo(f"Failed to list streams: {e}", err=True)
-            return 1
+            ctx.exit(1)
 
     @openobserve_group.command("history")
     @click.option(
@@ -398,12 +397,15 @@ if _HAS_CLICK:
         "-s",
         help="Filter by stream name",
     )
+    @click.pass_context
     @click.pass_obj
-    def history_command(client: OpenObserveClient | None, size: int, stream: str | None) -> int | None:
+    def history_command(
+        client: OpenObserveClient | None, ctx: click.Context, size: int, stream: str | None
+    ) -> None:
         """View search history."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
-            return 1
+            ctx.exit(1)
 
         try:
             response = run_async(
@@ -424,11 +426,9 @@ if _HAS_CLICK:
                     click.echo(f"\n  Query: {sql}")
                     click.echo(f"  Time: {took:.2f}ms, Records: {records:,}")
 
-            return 0
-
         except Exception as e:
             click.echo(f"Failed to get history: {e}", err=True)
-            return 1
+            ctx.exit(1)
 
     @openobserve_group.command("test")
     @click.pass_context
