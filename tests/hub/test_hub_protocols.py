@@ -36,6 +36,13 @@ class TestDisposableProtocol(FoundationTestCase):
         obj = TestDisposable()
         assert isinstance(obj, Disposable)
 
+    def test_disposable_protocol_method_stub(self) -> None:
+        """Test calling protocol stub method directly."""
+        # Protocol stubs have ... (Ellipsis) as implementation
+        # This tests the stub itself for coverage
+        result = Disposable.dispose(None)  # type: ignore[misc]
+        assert result is None
+
     def test_non_disposable_not_instance(self) -> None:
         """Test that objects without dispose are not Disposable."""
 
@@ -70,6 +77,11 @@ class TestAsyncDisposableProtocol(FoundationTestCase):
         obj = TestAsyncDisposable()
         assert isinstance(obj, AsyncDisposable)
 
+    async def test_async_disposable_protocol_method_stub(self) -> None:
+        """Test calling async protocol stub method directly."""
+        result = await AsyncDisposable.dispose_async(None)  # type: ignore[misc]
+        assert result is None
+
     def test_non_async_disposable_not_instance(self) -> None:
         """Test that objects without dispose_async are not AsyncDisposable."""
 
@@ -94,6 +106,11 @@ class TestInitializableProtocol(FoundationTestCase):
         obj = TestInitializable()
         assert isinstance(obj, Initializable)
 
+    def test_initializable_protocol_method_stub(self) -> None:
+        """Test calling protocol stub method directly."""
+        result = Initializable.initialize(None)  # type: ignore[misc]
+        assert result is None
+
     def test_non_initializable_not_instance(self) -> None:
         """Test that objects without initialize are not Initializable."""
 
@@ -116,6 +133,11 @@ class TestAsyncInitializableProtocol(FoundationTestCase):
 
         obj = TestAsyncInitializable()
         assert isinstance(obj, AsyncInitializable)
+
+    async def test_async_initializable_protocol_method_stub(self) -> None:
+        """Test calling async protocol stub method directly."""
+        result = await AsyncInitializable.initialize_async(None)  # type: ignore[misc]
+        assert result is None
 
     def test_non_async_initializable_not_instance(self) -> None:
         """Test that objects without initialize_async are not AsyncInitializable."""
@@ -140,6 +162,11 @@ class TestHealthCheckableProtocol(FoundationTestCase):
 
         obj = TestHealthCheckable()
         assert isinstance(obj, HealthCheckable)
+
+    def test_health_checkable_protocol_method_stub(self) -> None:
+        """Test calling protocol stub method directly."""
+        result = HealthCheckable.health_check(None)  # type: ignore[misc]
+        assert result is None
 
     def test_non_health_checkable_not_instance(self) -> None:
         """Test that objects without health_check are not HealthCheckable."""
