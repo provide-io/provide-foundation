@@ -14,7 +14,7 @@ from provide.foundation.testmode import reset_foundation_for_testing
 
 
 @pytest.fixture(autouse=True)
-def reset_foundation():
+def reset_foundation() -> None:
     """Reset Foundation state before each test."""
     reset_foundation_for_testing()
 
@@ -25,7 +25,7 @@ def reset_foundation():
 class SimpleService:
     """Service without @injectable decorator."""
 
-    def __init__(self, value: str):
+    def __init__(self, value: str) -> None:
         self.value = value
 
 
@@ -33,7 +33,7 @@ class SimpleService:
 class InjectableService:
     """Service with @injectable decorator."""
 
-    def __init__(self, value: str):
+    def __init__(self, value: str) -> None:
         self.value = value
 
 
@@ -41,7 +41,7 @@ class InjectableService:
 class DatabaseClient:
     """Mock database client."""
 
-    def __init__(self, connection_string: str):
+    def __init__(self, connection_string: str) -> None:
         self.connection_string = connection_string
 
     def query(self, sql: str) -> list[dict[str, object]]:
@@ -52,7 +52,7 @@ class DatabaseClient:
 class Logger:
     """Mock logger."""
 
-    def __init__(self, level: str = "INFO"):
+    def __init__(self, level: str = "INFO") -> None:
         self.level = level
 
     def info(self, msg: str) -> None:
@@ -63,7 +63,7 @@ class Logger:
 class Repository:
     """Repository with dependencies."""
 
-    def __init__(self, db: DatabaseClient, logger: Logger):
+    def __init__(self, db: DatabaseClient, logger: Logger) -> None:
         self.db = db
         self.logger = logger
 
@@ -72,7 +72,7 @@ class Repository:
 class ServiceWithMultipleDeps:
     """Service with multiple dependencies."""
 
-    def __init__(self, repo: Repository, logger: Logger, db: DatabaseClient):
+    def __init__(self, repo: Repository, logger: Logger, db: DatabaseClient) -> None:
         self.repo = repo
         self.logger = logger
         self.db = db
@@ -82,7 +82,7 @@ class ServiceWithMultipleDeps:
 class ServiceNeedingDB:
     """Service needing DatabaseClient for testing missing dependency."""
 
-    def __init__(self, db: DatabaseClient):
+    def __init__(self, db: DatabaseClient) -> None:
         self.db = db
 
 
@@ -92,46 +92,46 @@ class ServiceNeedingDB:
 class TestInjectableDecorator:
     """Tests for the @injectable decorator."""
 
-    def test_injectable_marks_class(self):
+    def test_injectable_marks_class(self) -> None:
         """Test that @injectable marks class correctly."""
         assert is_injectable(InjectableService)
         assert not is_injectable(SimpleService)
 
-    def test_injectable_requires_type_hints(self):
+    def test_injectable_requires_type_hints(self) -> None:
         """Test that @injectable requires type hints on all parameters."""
         with pytest.raises(ValidationError) as exc_info:
 
             @injectable
             class NoTypeHints:
-                def __init__(self, value):  # Missing type hint
+                def __init__(self, value) -> None:  # noqa: ANN001
                     self.value = value
 
         assert "untyped parameters" in str(exc_info.value).lower()
         assert "value" in str(exc_info.value)
 
-    def test_injectable_allows_optional_params(self):
+    def test_injectable_allows_optional_params(self) -> None:
         """Test that @injectable allows parameters with defaults."""
 
         @injectable
         class WithDefaults:
-            def __init__(self, value: str = "default"):
+            def __init__(self, value: str = "default") -> None:
                 self.value = value
 
         assert is_injectable(WithDefaults)
 
-    def test_injectable_allows_args_kwargs(self):
+    def test_injectable_allows_args_kwargs(self) -> None:
         """Test that @injectable allows *args and **kwargs."""
 
         @injectable
         class WithVarArgs:
-            def __init__(self, required: str, *args: int, **kwargs: str):
+            def __init__(self, required: str, *args: int, **kwargs: str) -> None:
                 self.required = required
                 self.args = args
                 self.kwargs = kwargs
 
         assert is_injectable(WithVarArgs)
 
-    def test_injectable_requires_init_method(self):
+    def test_injectable_requires_init_method(self) -> None:
         """Test that @injectable requires __init__ method."""
         with pytest.raises(ValidationError) as exc_info:
 
@@ -141,12 +141,12 @@ class TestInjectableDecorator:
 
         assert "must define its own __init__ method" in str(exc_info.value).lower()
 
-    def test_injectable_preserves_class_behavior(self):
+    def test_injectable_preserves_class_behavior(self) -> None:
         """Test that @injectable doesn't modify class behavior."""
 
         @injectable
         class MyClass:
-            def __init__(self, value: str):
+            def __init__(self, value: str) -> None:
                 self.value = value
 
             def get_value(self) -> str:
@@ -163,7 +163,7 @@ class TestInjectableDecorator:
 class TestHubDependencyInjection:
     """Tests for Hub dependency injection methods."""
 
-    def test_register_and_resolve_simple(self):
+    def test_register_and_resolve_simple(self) -> None:
         """Test registering and resolving a simple dependency."""
         hub = Hub()
         db = DatabaseClient("postgresql://localhost/test")
@@ -173,7 +173,7 @@ class TestHubDependencyInjection:
         resolved = hub._component_registry.get_by_type(DatabaseClient)
         assert resolved is db
 
-    def test_resolve_with_single_dependency(self):
+    def test_resolve_with_single_dependency(self) -> None:
         """Test resolving a class with a single dependency."""
         hub = Hub()
         logger = Logger("DEBUG")
@@ -181,13 +181,13 @@ class TestHubDependencyInjection:
 
         @injectable
         class Service:
-            def __init__(self, logger: Logger):
+            def __init__(self, logger: Logger) -> None:
                 self.logger = logger
 
         service = hub.resolve(Service)
         assert service.logger is logger
 
-    def test_resolve_with_multiple_dependencies(self):
+    def test_resolve_with_multiple_dependencies(self) -> None:
         """Test resolving a class with multiple dependencies."""
         hub = Hub()
         db = DatabaseClient("postgresql://localhost/test")
@@ -199,7 +199,7 @@ class TestHubDependencyInjection:
         assert repo.db is db
         assert repo.logger is logger
 
-    def test_resolve_with_nested_dependencies(self):
+    def test_resolve_with_nested_dependencies(self) -> None:
         """Test resolving a class with nested dependencies."""
         hub = Hub()
         db = DatabaseClient("postgresql://localhost/test")
@@ -217,7 +217,7 @@ class TestHubDependencyInjection:
         assert service.logger is logger
         assert service.db is db
 
-    def test_resolve_with_overrides(self):
+    def test_resolve_with_overrides(self) -> None:
         """Test resolving with explicit overrides."""
         hub = Hub()
         db1 = DatabaseClient("postgresql://localhost/db1")
@@ -231,7 +231,7 @@ class TestHubDependencyInjection:
         assert repo.db is db2  # Overridden
         assert repo.logger is logger  # From registry
 
-    def test_resolve_missing_dependency(self):
+    def test_resolve_missing_dependency(self) -> None:
         """Test that resolve raises NotFoundError for missing dependencies."""
         hub = Hub()
         # Don't register DatabaseClient
@@ -242,7 +242,7 @@ class TestHubDependencyInjection:
         assert "DatabaseClient" in str(exc_info.value)
         assert "not found" in str(exc_info.value).lower()
 
-    def test_resolve_without_injectable_decorator(self):
+    def test_resolve_without_injectable_decorator(self) -> None:
         """Test that resolve works even without @injectable decorator."""
         hub = Hub()
         logger = Logger("INFO")
@@ -250,7 +250,7 @@ class TestHubDependencyInjection:
 
         # ServiceWithoutDecorator doesn't have @injectable
         class ServiceWithoutDecorator:
-            def __init__(self, logger: Logger):
+            def __init__(self, logger: Logger) -> None:
                 self.logger = logger
 
         service = hub.resolve(ServiceWithoutDecorator)
@@ -263,7 +263,7 @@ class TestHubDependencyInjection:
 class TestContainer:
     """Tests for the Container class."""
 
-    def test_container_register_and_get(self):
+    def test_container_register_and_get(self) -> None:
         """Test Container.register() and Container.get()."""
         container = Container()
         db = DatabaseClient("postgresql://localhost/test")
@@ -272,7 +272,7 @@ class TestContainer:
         retrieved = container.get(DatabaseClient)
         assert retrieved is db
 
-    def test_container_resolve(self):
+    def test_container_resolve(self) -> None:
         """Test Container.resolve() with dependencies."""
         container = Container()
         db = DatabaseClient("postgresql://localhost/test")
@@ -284,7 +284,7 @@ class TestContainer:
         assert repo.db is db
         assert repo.logger is logger
 
-    def test_container_has(self):
+    def test_container_has(self) -> None:
         """Test Container.has() method."""
         container = Container()
         assert not container.has(DatabaseClient)
@@ -293,7 +293,7 @@ class TestContainer:
         container.register(DatabaseClient, db)
         assert container.has(DatabaseClient)
 
-    def test_container_method_chaining(self):
+    def test_container_method_chaining(self) -> None:
         """Test that Container.register() supports method chaining."""
         container = Container()
         db = DatabaseClient("postgresql://localhost/test")
@@ -306,14 +306,14 @@ class TestContainer:
         assert container.has(DatabaseClient)
         assert container.has(Logger)
 
-    def test_container_context_manager(self):
+    def test_container_context_manager(self) -> None:
         """Test Container as context manager."""
         with Container() as container:
             db = DatabaseClient("postgresql://localhost/test")
             container.register(DatabaseClient, db)
             assert container.has(DatabaseClient)
 
-    def test_container_clear(self):
+    def test_container_clear(self) -> None:
         """Test Container.clear() removes all registrations."""
         container = Container()
         db = DatabaseClient("postgresql://localhost/test")
@@ -336,7 +336,7 @@ class TestContainer:
 class TestDependencyInjectionIntegration:
     """Integration tests for DI system."""
 
-    def test_full_di_workflow(self):
+    def test_full_di_workflow(self) -> None:
         """Test complete DI workflow from registration to resolution."""
         # Use existing test classes to avoid forward reference issues
         # Config, Cache, API defined at module level
@@ -360,7 +360,7 @@ class TestDependencyInjectionIntegration:
         assert service.logger is logger
         assert service.db is db
 
-    def test_composition_root_pattern(self):
+    def test_composition_root_pattern(self) -> None:
         """Test the Composition Root pattern."""
 
         # Composition Root using existing test classes
@@ -384,7 +384,7 @@ class TestDependencyInjectionIntegration:
         assert isinstance(app.repo, Repository)
         assert isinstance(app.logger, Logger)
 
-    def test_mixed_di_and_service_locator(self):
+    def test_mixed_di_and_service_locator(self) -> None:
         """Test that DI and Service Locator patterns can coexist."""
         from provide.foundation.hub import get_hub
 
@@ -408,7 +408,7 @@ class TestDependencyInjectionIntegration:
 class TestDependencyInjectionEdgeCases:
     """Tests for edge cases in DI system."""
 
-    def test_circular_dependency_detection(self):
+    def test_circular_dependency_detection(self) -> None:
         """Test that circular dependencies are documented as unsupported."""
         # Note: Current implementation doesn't detect circular dependencies
         # This test documents that users should avoid circular dependencies
@@ -427,7 +427,7 @@ class TestDependencyInjectionEdgeCases:
         # 3. Restructure dependencies to break the cycle
         pass  # Document only, no actual test
 
-    def test_multiple_instances_same_type(self):
+    def test_multiple_instances_same_type(self) -> None:
         """Test registering multiple instances of the same type."""
         container = Container()
         db1 = DatabaseClient("postgresql://localhost/db1")
@@ -440,12 +440,12 @@ class TestDependencyInjectionEdgeCases:
         retrieved = container.get(DatabaseClient)
         assert retrieved is db2  # Most recent registration
 
-    def test_resolve_with_default_parameters(self):
+    def test_resolve_with_default_parameters(self) -> None:
         """Test resolving classes with default parameters."""
 
         @injectable
         class ServiceWithDefaults:
-            def __init__(self, logger: Logger, debug: bool = False):
+            def __init__(self, logger: Logger, debug: bool = False) -> None:
                 self.logger = logger
                 self.debug = debug
 
@@ -457,12 +457,12 @@ class TestDependencyInjectionEdgeCases:
         assert service.logger is logger
         assert service.debug is False  # Default value used
 
-    def test_resolve_with_none_type_hint(self):
+    def test_resolve_with_none_type_hint(self) -> None:
         """Test that resolve handles None type hints gracefully."""
 
         @injectable
         class ServiceWithOptional:
-            def __init__(self, logger: Logger, optional: str | None = None):
+            def __init__(self, logger: Logger, optional: str | None = None) -> None:
                 self.logger = logger
                 self.optional = optional
 
@@ -473,3 +473,232 @@ class TestDependencyInjectionEdgeCases:
         service = container.resolve(ServiceWithOptional)
         assert service.logger is logger
         assert service.optional is None
+
+    def test_injectable_with_forward_reference_error(self) -> None:
+        """Test injectable with unresolvable forward reference."""
+
+        # Create a class with a forward reference that can't be resolved
+        # This should not raise during decoration (line 88-91 coverage)
+        @injectable
+        class ServiceWithForwardRef:
+            def __init__(self, dep: "SomeUnknownType") -> None:  # noqa: F821
+                self.dep = dep
+
+        # The decorator should succeed - error happens at resolution time
+        assert is_injectable(ServiceWithForwardRef)
+
+    def test_injectable_type_hint_general_exception(self) -> None:
+        """Test injectable handles general exceptions from get_type_hints."""
+        # Create a class that will cause get_type_hints to fail
+        # We'll mock get_type_hints to raise a non-NameError exception
+        from unittest.mock import patch
+
+        import pytest
+
+        from provide.foundation.errors.config import ValidationError
+        from provide.foundation.hub.injection import injectable
+
+        class TestClass:
+            def __init__(self, param: str) -> None:
+                pass
+
+        with patch("provide.foundation.hub.injection.get_type_hints") as mock_get_hints:
+            mock_get_hints.side_effect = TypeError("Mock error")
+
+            with pytest.raises(ValidationError) as exc_info:
+                injectable(TestClass)
+
+            assert "INJECTABLE_TYPE_HINT_ERROR" in str(exc_info.value)
+
+    def test_resolve_dependencies_with_forward_reference_string(self) -> None:
+        """Test resolve_dependencies with string forward references."""
+        from provide.foundation.hub.injection import injectable, resolve_dependencies
+        from provide.foundation.hub.registry import Registry
+
+        # Create a class in the current module with a forward reference
+        @injectable
+        class ServiceWithStringRef:
+            def __init__(self, dep: Logger) -> None:  # String annotation
+                self.dep = dep
+
+        registry = Registry()
+        logger = Logger("INFO")
+        registry.register_type(Logger, logger)
+
+        # Should resolve the string reference by looking it up in the module
+        deps = resolve_dependencies(ServiceWithStringRef, registry, allow_missing=False)
+
+        assert "dep" in deps
+        assert deps["dep"] is logger
+
+    def test_resolve_dependencies_unresolvable_forward_ref(self) -> None:
+        """Test resolve_dependencies with unresolvable forward reference."""
+        import pytest
+
+        from provide.foundation.errors.config import ValidationError
+        from provide.foundation.hub.injection import injectable, resolve_dependencies
+        from provide.foundation.hub.registry import Registry
+
+        @injectable
+        class ServiceWithBadRef:
+            def __init__(self, dep: "CompletelyUnknownType") -> None:  # noqa: F821
+                self.dep = dep
+
+        registry = Registry()
+
+        with pytest.raises(ValidationError) as exc_info:
+            resolve_dependencies(ServiceWithBadRef, registry, allow_missing=False)
+
+        assert "RESOLVE_FORWARD_REF_ERROR" in str(exc_info.value)
+
+    def test_resolve_dependencies_allow_missing_forward_ref(self) -> None:
+        """Test resolve_dependencies with allow_missing for forward refs."""
+        from provide.foundation.hub.injection import injectable, resolve_dependencies
+        from provide.foundation.hub.registry import Registry
+
+        @injectable
+        class ServiceWithBadRef:
+            def __init__(self, dep: "UnknownType") -> None:  # noqa: F821
+                self.dep = dep
+
+        registry = Registry()
+
+        # Should not raise when allow_missing=True
+        deps = resolve_dependencies(ServiceWithBadRef, registry, allow_missing=True)
+
+        assert "dep" not in deps  # Missing dependency skipped
+
+    def test_resolve_dependencies_missing_type_hint_error(self) -> None:
+        """Test resolve_dependencies raises error for missing type hint."""
+        import pytest
+
+        from provide.foundation.errors.config import ValidationError
+        from provide.foundation.hub.injection import resolve_dependencies
+        from provide.foundation.hub.registry import Registry
+
+        # Create a class without @injectable to bypass decorator validation
+        class UntypedService:
+            def __init__(self, untyped_param) -> None:  # noqa: ANN001
+                self.untyped_param = untyped_param
+
+        registry = Registry()
+
+        with pytest.raises(ValidationError) as exc_info:
+            resolve_dependencies(UntypedService, registry, allow_missing=False)
+
+        assert "RESOLVE_NO_TYPE_HINT" in str(exc_info.value)
+        assert "untyped_param" in str(exc_info.value)
+
+    def test_resolve_dependencies_allow_missing_type_hint(self) -> None:
+        """Test resolve_dependencies with allow_missing for untyped params."""
+        from provide.foundation.hub.injection import resolve_dependencies
+        from provide.foundation.hub.registry import Registry
+
+        class UntypedService:
+            def __init__(self, untyped_param) -> None:  # noqa: ANN001
+                self.untyped_param = untyped_param
+
+        registry = Registry()
+
+        # Should not raise when allow_missing=True
+        deps = resolve_dependencies(UntypedService, registry, allow_missing=True)
+
+        assert "untyped_param" not in deps
+
+    def test_register_function(self) -> None:
+        """Test the register() convenience function."""
+        from provide.foundation.hub.injection import register
+        from provide.foundation.hub.registry import Registry
+
+        registry = Registry()
+        logger = Logger("INFO")
+
+        # Register using convenience function
+        register(registry, Logger, logger)
+
+        # Should be retrievable by type
+        retrieved = registry.get_by_type(Logger)
+        assert retrieved is logger
+
+    def test_register_function_with_custom_name(self) -> None:
+        """Test register() with custom name."""
+        from provide.foundation.hub.injection import register
+        from provide.foundation.hub.registry import Registry
+
+        registry = Registry()
+        logger = Logger("INFO")
+
+        # Register with custom name
+        register(registry, Logger, logger, name="custom_logger")
+
+        # Should be retrievable
+        retrieved = registry.get_by_type(Logger)
+        assert retrieved is logger
+
+    def test_create_instance_with_exception(self) -> None:
+        """Test create_instance handles instantiation errors."""
+        import pytest
+
+        from provide.foundation.errors.config import ValidationError
+        from provide.foundation.hub.injection import create_instance, injectable
+        from provide.foundation.hub.registry import Registry
+
+        @injectable
+        class FailingService:
+            def __init__(self, logger: Logger) -> None:
+                raise RuntimeError("Constructor failed!")
+
+        registry = Registry()
+        logger = Logger("INFO")
+        registry.register_type(Logger, logger)
+
+        with pytest.raises(ValidationError) as exc_info:
+            create_instance(FailingService, registry)
+
+        assert "CREATE_INSTANCE_ERROR" in str(exc_info.value)
+        assert "Constructor failed!" in str(exc_info.value)
+
+    def test_create_instance_reraises_validation_error(self) -> None:
+        """Test create_instance re-raises ValidationError without wrapping."""
+        import pytest
+
+        from provide.foundation.errors.config import ValidationError
+        from provide.foundation.hub.injection import create_instance, injectable
+        from provide.foundation.hub.registry import Registry
+
+        @injectable
+        class ServiceWithMissingDep:
+            def __init__(self, missing: "MissingType") -> None:  # noqa: F821
+                self.missing = missing
+
+        registry = Registry()
+
+        # Should re-raise ValidationError from resolve_dependencies
+        with pytest.raises(ValidationError) as exc_info:
+            create_instance(ServiceWithMissingDep, registry)
+
+        # Should be the original ValidationError, not wrapped
+        assert "RESOLVE_FORWARD_REF_ERROR" in str(exc_info.value)
+
+    def test_resolve_dependencies_with_name_error(self) -> None:
+        """Test resolve_dependencies handles NameError during type hint resolution."""
+        from provide.foundation.hub.injection import injectable, resolve_dependencies
+        from provide.foundation.hub.registry import Registry
+
+        # Create a class that will cause a NameError when getting type hints
+        # This happens when there's a forward reference to an undefined type
+        @injectable
+        class ServiceWithNameError:
+            def __init__(self, dep: "UndefinedForwardRef") -> None:  # noqa: F821
+                self.dep = dep
+
+        registry = Registry()
+
+        # The NameError should be caught and handled (lines 173-182)
+        # We expect a ValidationError about unresolvable forward reference
+        import pytest
+
+        from provide.foundation.errors.config import ValidationError
+
+        with pytest.raises(ValidationError):
+            resolve_dependencies(ServiceWithNameError, registry, allow_missing=False)
