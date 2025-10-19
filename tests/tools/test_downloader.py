@@ -6,8 +6,9 @@ progress reporting, parallel downloads, and mirror fallback.
 
 from __future__ import annotations
 
+from collections.abc import AsyncGenerator
 from pathlib import Path
-from unittest.mock import AsyncMock, Mock, call, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
@@ -178,7 +179,7 @@ class TestDownloadWithProgress:
         mock_client.stream = AsyncMock()
 
         # Mock streaming chunks
-        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> bytes:
+        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             for chunk in [b"test", b" ", b"content"]:
                 yield chunk
 
@@ -204,7 +205,7 @@ class TestDownloadWithProgress:
 
         mock_client.request = AsyncMock(return_value=mock_response)
 
-        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> bytes:
+        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             yield b"test"
             yield b" content"
 
@@ -247,7 +248,7 @@ class TestDownloadWithProgress:
 
         mock_client.request = AsyncMock(return_value=mock_response)
 
-        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> bytes:
+        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             yield b"content"
 
         mock_client.stream = AsyncMock(return_value=mock_stream_generator())
@@ -271,7 +272,7 @@ class TestDownloadWithProgress:
 
         mock_client.request = AsyncMock(return_value=mock_response)
 
-        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> bytes:
+        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             yield b"test content"
 
         mock_client.stream = AsyncMock(return_value=mock_stream_generator())
@@ -299,7 +300,7 @@ class TestDownloadWithProgress:
 
         mock_client.request = AsyncMock(return_value=mock_response)
 
-        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> bytes:
+        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             yield b"test content"
 
         mock_client.stream = AsyncMock(return_value=mock_stream_generator())
@@ -310,9 +311,7 @@ class TestDownloadWithProgress:
         wrong_hash = "0000000000000000000000000000000000000000000000000000000000000000"
 
         with pytest.raises(DownloadError, match="Checksum mismatch"):
-            await downloader.download_with_progress(
-                "https://example.com/file", dest, checksum=wrong_hash
-            )
+            await downloader.download_with_progress("https://example.com/file", dest, checksum=wrong_hash)
 
         # File should be deleted after checksum failure
         assert not dest.exists()
@@ -329,7 +328,7 @@ class TestDownloadWithProgress:
         mock_client.request = AsyncMock(return_value=mock_response)
 
         # Mock stream that raises exception
-        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> bytes:
+        async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             yield b"test"
             raise Exception("Connection lost")
 

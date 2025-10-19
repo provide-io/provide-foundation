@@ -7,11 +7,11 @@ binary installation, and security validations.
 from __future__ import annotations
 
 import io
+from pathlib import Path
 import platform
 import tarfile
-import zipfile
-from pathlib import Path
 from unittest.mock import Mock, patch
+import zipfile
 
 import pytest
 
@@ -49,6 +49,8 @@ class TestGetInstallDir:
         metadata = ToolMetadata(
             name="test-tool",
             version="1.0.0",
+            platform="linux",
+            arch="amd64",
             install_path=install_path,
         )
 
@@ -62,6 +64,8 @@ class TestGetInstallDir:
         metadata = ToolMetadata(
             name="test-tool",
             version="1.0.0",
+            platform="linux",
+            arch="amd64",
         )
 
         result = installer.get_install_dir(metadata)
@@ -321,7 +325,7 @@ class TestInstallBinary:
         binary.write_bytes(b"\x7fELF" + b"\x00" * 100)
 
         dest = tmp_path / "install"
-        metadata = ToolMetadata(name="test-tool", version="1.0.0")
+        metadata = ToolMetadata(name="test-tool", version="1.0.0", platform="linux", arch="amd64")
 
         installer.install_binary(binary, dest, metadata)
 
@@ -341,6 +345,8 @@ class TestInstallBinary:
         metadata = ToolMetadata(
             name="test-tool",
             version="1.0.0",
+            platform="linux",
+            arch="amd64",
             executable_name="custom-name",
         )
 
@@ -357,7 +363,7 @@ class TestInstallBinary:
         binary.write_bytes(b"content")
 
         dest = tmp_path / "new-path" / "install"
-        metadata = ToolMetadata(name="test-tool", version="1.0.0")
+        metadata = ToolMetadata(name="test-tool", version="1.0.0", platform="linux", arch="amd64")
 
         installer.install_binary(binary, dest, metadata)
 
@@ -381,7 +387,7 @@ class TestSetPermissions:
         exe.write_text("#!/bin/sh\necho hello")
         exe.chmod(0o644)  # Not executable
 
-        metadata = ToolMetadata(name="test-tool", version="1.0.0")
+        metadata = ToolMetadata(name="test-tool", version="1.0.0", platform="linux", arch="amd64")
 
         installer.set_permissions(install_dir, metadata)
 
@@ -403,6 +409,8 @@ class TestSetPermissions:
         metadata = ToolMetadata(
             name="test-tool",
             version="1.0.0",
+            platform="linux",
+            arch="amd64",
             executable_name="mytool",
         )
 
@@ -418,7 +426,7 @@ class TestSetPermissions:
         install_dir = tmp_path / "install"
         install_dir.mkdir()
 
-        metadata = ToolMetadata(name="test-tool", version="1.0.0")
+        metadata = ToolMetadata(name="test-tool", version="1.0.0", platform="linux", arch="amd64")
 
         # Should not raise
         installer.set_permissions(install_dir, metadata)
@@ -435,7 +443,7 @@ class TestCreateSymlinks:
         install_dir = tmp_path / "tools" / "mytool" / "1.0.0"
         install_dir.mkdir(parents=True)
 
-        metadata = ToolMetadata(name="mytool", version="1.0.0")
+        metadata = ToolMetadata(name="mytool", version="1.0.0", platform="linux", arch="amd64")
 
         installer.create_symlinks(install_dir, metadata)
 
@@ -460,7 +468,7 @@ class TestCreateSymlinks:
         new_dir = parent / "1.0.0"
         new_dir.mkdir()
 
-        metadata = ToolMetadata(name="mytool", version="1.0.0")
+        metadata = ToolMetadata(name="mytool", version="1.0.0", platform="linux", arch="amd64")
 
         installer.create_symlinks(new_dir, metadata)
 
@@ -475,7 +483,7 @@ class TestCreateSymlinks:
         install_dir = tmp_path / "install"
         install_dir.mkdir()
 
-        metadata = ToolMetadata(name="mytool", version="1.0.0")
+        metadata = ToolMetadata(name="mytool", version="1.0.0", platform="linux", arch="amd64")
 
         # Should not raise
         installer.create_symlinks(install_dir, metadata)
@@ -489,7 +497,7 @@ class TestInstall:
         installer = ToolInstaller()
 
         artifact = tmp_path / "nonexistent.zip"
-        metadata = ToolMetadata(name="test-tool", version="1.0.0")
+        metadata = ToolMetadata(name="test-tool", version="1.0.0", platform="linux", arch="amd64")
 
         with pytest.raises(InstallError, match="Artifact not found"):
             installer.install(artifact, metadata)
@@ -506,6 +514,8 @@ class TestInstall:
         metadata = ToolMetadata(
             name="test-tool",
             version="1.0.0",
+            platform="linux",
+            arch="amd64",
             install_path=tmp_path / "install",
         )
 
@@ -528,6 +538,8 @@ class TestInstall:
         metadata = ToolMetadata(
             name="test-tool",
             version="1.0.0",
+            platform="linux",
+            arch="amd64",
             install_path=tmp_path / "install",
         )
 
@@ -546,6 +558,8 @@ class TestInstall:
         metadata = ToolMetadata(
             name="test-tool",
             version="1.0.0",
+            platform="linux",
+            arch="amd64",
             install_path=tmp_path / "install",
         )
 
@@ -561,7 +575,7 @@ class TestInstall:
         artifact = tmp_path / "test.unknown"
         artifact.write_text("content")
 
-        metadata = ToolMetadata(name="test-tool", version="1.0.0")
+        metadata = ToolMetadata(name="test-tool", version="1.0.0", platform="linux", arch="amd64")
 
         with pytest.raises(InstallError, match="Unknown artifact type"):
             installer.install(artifact, metadata)
@@ -584,6 +598,8 @@ class TestInstall:
         metadata = ToolMetadata(
             name="test-tool",
             version="1.0.0",
+            platform="linux",
+            arch="amd64",
             install_path=tmp_path / "install",
         )
 
