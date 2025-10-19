@@ -179,7 +179,7 @@ class TestBuildResourceAttributes:
 class TestCreateOtlpResource:
     """Tests for create_otlp_resource function."""
 
-    @patch("provide.foundation.logger.otlp.resource.Resource")
+    @patch("opentelemetry.sdk.resources.Resource")
     def test_create_resource_with_sdk_available(self, mock_resource_class: Mock) -> None:
         """Test creating resource when OpenTelemetry SDK is available."""
         mock_resource = Mock()
@@ -194,7 +194,7 @@ class TestCreateOtlpResource:
         call_args = mock_resource_class.create.call_args[0][0]
         assert call_args["service.name"] == "test-service"
 
-    @patch("provide.foundation.logger.otlp.resource.Resource")
+    @patch("opentelemetry.sdk.resources.Resource")
     def test_create_resource_with_version(self, mock_resource_class: Mock) -> None:
         """Test creating resource with service version."""
         mock_resource = Mock()
@@ -210,7 +210,7 @@ class TestCreateOtlpResource:
         assert call_args["service.name"] == "test-service"
         assert call_args["service.version"] == "1.0.0"
 
-    @patch("provide.foundation.logger.otlp.resource.Resource")
+    @patch("opentelemetry.sdk.resources.Resource")
     def test_create_resource_with_environment(self, mock_resource_class: Mock) -> None:
         """Test creating resource with environment."""
         mock_resource = Mock()
@@ -226,7 +226,7 @@ class TestCreateOtlpResource:
         assert call_args["service.name"] == "test-service"
         assert call_args["deployment.environment"] == "production"
 
-    @patch("provide.foundation.logger.otlp.resource.Resource")
+    @patch("opentelemetry.sdk.resources.Resource")
     def test_create_resource_with_all_parameters(self, mock_resource_class: Mock) -> None:
         """Test creating resource with all parameters."""
         mock_resource = Mock()
@@ -275,7 +275,7 @@ class TestCreateOtlpResource:
             elif "opentelemetry.sdk.resources" in sys.modules:
                 del sys.modules["opentelemetry.sdk.resources"]
 
-    @patch("provide.foundation.logger.otlp.resource.Resource")
+    @patch("opentelemetry.sdk.resources.Resource")
     def test_create_resource_calls_build_attributes(self, mock_resource_class: Mock) -> None:
         """Test that create_otlp_resource uses build_resource_attributes."""
         mock_resource = Mock()
@@ -295,7 +295,7 @@ class TestCreateOtlpResource:
         assert call_args["service.version"] == "1.0.0"
         assert call_args["deployment.environment"] == "dev"
 
-    @patch("provide.foundation.logger.otlp.resource.Resource")
+    @patch("opentelemetry.sdk.resources.Resource")
     def test_create_resource_with_complex_additional_attrs(self, mock_resource_class: Mock) -> None:
         """Test creating resource with complex additional attributes."""
         mock_resource = Mock()
@@ -324,7 +324,7 @@ class TestCreateOtlpResource:
 class TestIntegration:
     """Integration tests for resource creation workflow."""
 
-    @patch("provide.foundation.logger.otlp.resource.Resource")
+    @patch("opentelemetry.sdk.resources.Resource")
     def test_full_resource_creation_workflow(self, mock_resource_class: Mock) -> None:
         """Test complete workflow from attributes to resource creation."""
         mock_resource = Mock()
