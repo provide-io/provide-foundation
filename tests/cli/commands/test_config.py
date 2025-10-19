@@ -5,14 +5,20 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.config.bootstrap import discover_and_register_configs
 
 
 class TestConfigCommandImport(FoundationTestCase):
     """Test config command can be imported."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        # Register configs after Foundation reset
+        discover_and_register_configs()
 
     def test_config_command_imports(self) -> None:
         """Test that config command module can be imported."""
@@ -29,6 +35,12 @@ class TestConfigCommandImport(FoundationTestCase):
 
 class TestConfigSchemaCommand(FoundationTestCase):
     """Test config schema command."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        # Register configs after Foundation reset
+        discover_and_register_configs()
 
     def test_schema_command_help(self) -> None:
         """Test that schema command help works."""
@@ -51,10 +63,6 @@ class TestConfigSchemaCommand(FoundationTestCase):
             from click.testing import CliRunner
 
             from provide.foundation.cli.commands.config import config_group
-            from provide.foundation.config.bootstrap import discover_and_register_configs
-
-            # Ensure configs are registered
-            discover_and_register_configs()
 
             runner = CliRunner()
             result = runner.invoke(config_group, ["schema"])
@@ -72,9 +80,6 @@ class TestConfigSchemaCommand(FoundationTestCase):
             from click.testing import CliRunner
 
             from provide.foundation.cli.commands.config import config_group
-            from provide.foundation.config.bootstrap import discover_and_register_configs
-
-            discover_and_register_configs()
 
             runner = CliRunner()
             result = runner.invoke(config_group, ["schema", "--format", "json"])
@@ -94,7 +99,6 @@ class TestConfigSchemaCommand(FoundationTestCase):
 
             from provide.foundation.cli.commands.config import config_group
 
-            discover_and_register_configs()
             runner = CliRunner()
             result = runner.invoke(config_group, ["schema", "--format", "yaml"])
 
@@ -112,7 +116,6 @@ class TestConfigSchemaCommand(FoundationTestCase):
 
             from provide.foundation.cli.commands.config import config_group
 
-            discover_and_register_configs()
             runner = CliRunner()
             result = runner.invoke(config_group, ["schema", "--format", "markdown"])
 
@@ -130,7 +133,6 @@ class TestConfigSchemaCommand(FoundationTestCase):
 
             from provide.foundation.cli.commands.config import config_group
 
-            discover_and_register_configs()
             runner = CliRunner()
             result = runner.invoke(config_group, ["schema", "--env-only", "--format", "json"])
 
@@ -150,7 +152,6 @@ class TestConfigSchemaCommand(FoundationTestCase):
 
             from provide.foundation.cli.commands.config import config_group
 
-            discover_and_register_configs()
             runner = CliRunner()
             result = runner.invoke(config_group, ["schema", "--category", "logger"])
 
@@ -167,7 +168,6 @@ class TestConfigSchemaCommand(FoundationTestCase):
 
             from provide.foundation.cli.commands.config import config_group
 
-            discover_and_register_configs()
             output_file = tmp_path / "schema.txt"
             runner = CliRunner()
             result = runner.invoke(config_group, ["schema", "--output", str(output_file)])
@@ -192,7 +192,6 @@ class TestConfigSchemaCommand(FoundationTestCase):
 
             from provide.foundation.cli.commands.config import config_group
 
-            discover_and_register_configs()
             output_file = tmp_path / "schema.json"
             runner = CliRunner()
             result = runner.invoke(config_group, ["schema", "--format", "json", "--output", str(output_file)])
@@ -214,7 +213,6 @@ class TestConfigSchemaCommand(FoundationTestCase):
 
             from provide.foundation.cli.commands.config import config_group
 
-            discover_and_register_configs()
             runner = CliRunner()
             result = runner.invoke(
                 config_group,
@@ -238,6 +236,12 @@ class TestConfigSchemaCommand(FoundationTestCase):
 
 class TestConfigCommandRegistration(FoundationTestCase):
     """Test config command is registered with main CLI."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        # Register configs after Foundation reset
+        discover_and_register_configs()
 
     def test_config_command_registered_in_main_cli(self) -> None:
         """Test that config command is registered in main CLI."""
@@ -276,7 +280,6 @@ class TestConfigCommandRegistration(FoundationTestCase):
 
             from provide.foundation.cli.main import cli
 
-            discover_and_register_configs()
             runner = CliRunner()
             result = runner.invoke(cli, ["config", "schema", "--format", "json"])
 
