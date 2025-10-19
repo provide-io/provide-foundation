@@ -8,9 +8,9 @@ The global `logger` instance provides methods for each standard log level.
 
 ```python
 # From: examples/telemetry/01_basic_logging.py
-from provide.foundation import logger, setup_telemetry
+from provide.foundation import logger
 
-setup_telemetry()
+# Logger auto-initializes on first use - no setup required!
 
 logger.debug("Diagnostic information for developers.")
 logger.info("A general informational message about application state.")
