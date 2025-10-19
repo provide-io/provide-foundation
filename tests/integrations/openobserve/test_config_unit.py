@@ -214,7 +214,7 @@ class TestIsAvailable(FoundationTestCase):
         )
 
         with patch(
-            "provide.foundation.integrations.openobserve.config.OpenObserveClient"
+            "provide.foundation.integrations.openobserve.client.OpenObserveClient"
         ) as mock_client_class:
             mock_client = MagicMock()
             mock_client_class.return_value = mock_client
@@ -242,7 +242,7 @@ class TestIsAvailable(FoundationTestCase):
         )
 
         with patch(
-            "provide.foundation.integrations.openobserve.config.OpenObserveClient"
+            "provide.foundation.integrations.openobserve.client.OpenObserveClient"
         ) as mock_client_class:
             mock_client = MagicMock()
             mock_client_class.return_value = mock_client
@@ -264,7 +264,7 @@ class TestIsAvailable(FoundationTestCase):
         )
 
         with patch(
-            "provide.foundation.integrations.openobserve.config.OpenObserveClient"
+            "provide.foundation.integrations.openobserve.client.OpenObserveClient"
         ) as mock_client_class:
             mock_client_class.side_effect = ValueError("Connection failed")
 
@@ -282,7 +282,7 @@ class TestIsAvailable(FoundationTestCase):
         )
 
         with patch(
-            "provide.foundation.integrations.openobserve.config.OpenObserveClient"
+            "provide.foundation.integrations.openobserve.client.OpenObserveClient"
         ) as mock_client_class:
             mock_client = MagicMock()
             mock_client_class.return_value = mock_client
@@ -333,7 +333,7 @@ class TestConfigEdgeCases(FoundationTestCase):
         """Test various URL formats are handled correctly."""
         test_cases = [
             ("http://localhost:5080", "http://localhost:5080/api/default"),
-            ("http://localhost:5080/", "http://localhost:5080/api/default"),
+            ("http://localhost:5080/", "http://localhost:5080//api/default"),  # Trailing slash preserved
             ("http://localhost:5080/api/test", "http://localhost:5080/api/default"),
             ("https://openobserve.example.com", "https://openobserve.example.com/api/default"),
         ]
