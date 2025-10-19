@@ -15,9 +15,9 @@ if src_path.exists() and str(src_path) not in sys.path:
 from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
+    get_hub,
     logger,
     pout,  # Foundation console output
-    setup_telemetry,
 )
 
 
@@ -42,7 +42,7 @@ def example_2_configuration() -> None:
             das_emoji_prefix_enabled=True,
         ),
     )
-    setup_telemetry(config)
+    get_hub().initialize_foundation(config)
 
     logger.info("Service configured with custom settings", config_source="programmatic")
     logger.error(
