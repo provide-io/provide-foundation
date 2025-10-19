@@ -321,7 +321,7 @@ class TestFormatResolverState:
 class TestShowEventMatrix:
     """Tests for show_event_matrix function."""
 
-    @patch("provide.foundation.eventsets.display.get_logger")
+    @patch("provide.foundation.eventsets.display.log")
     @patch("provide.foundation.eventsets.display.get_resolver")
     @patch("provide.foundation.eventsets.display.get_registry")
     @patch("provide.foundation.eventsets.display.discover_event_sets")
@@ -330,7 +330,7 @@ class TestShowEventMatrix:
         mock_discover: Mock,
         mock_get_registry: Mock,
         mock_get_resolver: Mock,
-        mock_get_logger: Mock,
+        mock_log: Mock,
     ) -> None:
         """Test basic show_event_matrix functionality."""
         # Setup mocks
@@ -342,9 +342,6 @@ class TestShowEventMatrix:
         mock_resolver._resolved = False
         mock_get_resolver.return_value = mock_resolver
 
-        mock_logger = Mock()
-        mock_get_logger.return_value = mock_logger
-
         # Call function
         show_event_matrix()
 
@@ -355,14 +352,14 @@ class TestShowEventMatrix:
         mock_resolver.resolve.assert_called_once()
 
         # Verify logger.info was called
-        mock_logger.info.assert_called_once()
+        mock_log.info.assert_called_once()
 
         # Check that the logged message contains expected sections
-        logged_message = mock_logger.info.call_args[0][0]
+        logged_message = mock_log.info.call_args[0][0]
         assert "Foundation Event Sets: Active Configuration" in logged_message
         assert "=" in logged_message
 
-    @patch("provide.foundation.eventsets.display.get_logger")
+    @patch("provide.foundation.eventsets.display.log")
     @patch("provide.foundation.eventsets.display.get_resolver")
     @patch("provide.foundation.eventsets.display.get_registry")
     @patch("provide.foundation.eventsets.display.discover_event_sets")
@@ -371,7 +368,7 @@ class TestShowEventMatrix:
         mock_discover: Mock,
         mock_get_registry: Mock,
         mock_get_resolver: Mock,
-        mock_get_logger: Mock,
+        mock_log: Mock,
     ) -> None:
         """Test show_event_matrix with registered event sets."""
         # Setup event sets
@@ -390,19 +387,16 @@ class TestShowEventMatrix:
         mock_resolver._event_mappings_by_set = {}
         mock_get_resolver.return_value = mock_resolver
 
-        mock_logger = Mock()
-        mock_get_logger.return_value = mock_logger
-
         # Call function
         show_event_matrix()
 
         # Verify logger was called with event set information
-        logged_message = mock_logger.info.call_args[0][0]
+        logged_message = mock_log.info.call_args[0][0]
         assert "Registered Event Sets (2)" in logged_message
         assert "http-events" in logged_message
         assert "llm-events" in logged_message
 
-    @patch("provide.foundation.eventsets.display.get_logger")
+    @patch("provide.foundation.eventsets.display.log")
     @patch("provide.foundation.eventsets.display.get_resolver")
     @patch("provide.foundation.eventsets.display.get_registry")
     @patch("provide.foundation.eventsets.display.discover_event_sets")
@@ -411,7 +405,7 @@ class TestShowEventMatrix:
         mock_discover: Mock,
         mock_get_registry: Mock,
         mock_get_resolver: Mock,
-        mock_get_logger: Mock,
+        mock_log: Mock,
     ) -> None:
         """Test show_event_matrix with resolved resolver state."""
         mock_registry = Mock()
@@ -427,14 +421,11 @@ class TestShowEventMatrix:
         mock_resolver._event_mappings_by_set = {"http": [mapping]}
         mock_get_resolver.return_value = mock_resolver
 
-        mock_logger = Mock()
-        mock_get_logger.return_value = mock_logger
-
         # Call function
         show_event_matrix()
 
         # Verify resolver state is shown
-        logged_message = mock_logger.info.call_args[0][0]
+        logged_message = mock_log.info.call_args[0][0]
         assert "Resolver State:" in logged_message
         assert "Total Field Mappings: 3" in logged_message
         assert "Total Event Sets: 1" in logged_message
