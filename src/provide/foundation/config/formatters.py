@@ -208,7 +208,12 @@ class JSONFormatter(SchemaFormatter):
                     if field.sensitive:
                         field_data["default"] = "***SENSITIVE***"
                     else:
-                        field_data["default"] = field.default
+                        # Handle non-serializable defaults (like Factory objects)
+                        try:
+                            json.dumps(field.default)
+                            field_data["default"] = field.default
+                        except (TypeError, ValueError):
+                            field_data["default"] = str(field.default)
                 if field.description:
                     field_data["description"] = field.description
                 if field.sensitive:
