@@ -17,7 +17,7 @@ class TestProfilingCLI(FoundationTestCase):
     """Test profiling CLI functionality."""
 
     @patch("provide.foundation.profiling.cli.get_hub")
-    @patch("provide.foundation.console.output.perr")
+    @patch("provide.foundation.profiling.cli.perr")
     def test_show_profile_metrics_no_profiler_text_mode(self, mock_perr: Mock, mock_get_hub: Mock) -> None:
         """Test profiling output when profiler not enabled in text mode."""
         # Setup: No profiler available
@@ -41,7 +41,7 @@ class TestProfilingCLI(FoundationTestCase):
         assert mock_perr.call_args_list[1].kwargs.get("color") == "yellow"
 
     @patch("provide.foundation.profiling.cli.get_hub")
-    @patch("provide.foundation.console.output.perr")
+    @patch("provide.foundation.profiling.cli.perr")
     def test_show_profile_metrics_no_profiler_json_mode(self, mock_perr: Mock, mock_get_hub: Mock) -> None:
         """Test profiling output when profiler not enabled in JSON mode."""
         # Setup: No profiler available
@@ -62,11 +62,18 @@ class TestProfilingCLI(FoundationTestCase):
         assert mock_perr.call_args_list[1].kwargs.get("ctx") == ctx
 
     @patch("provide.foundation.profiling.cli.get_hub")
-    @patch("provide.foundation.console.output.pout")
-    def test_show_profile_metrics_with_profiler_text_mode(self, mock_pout: Mock, mock_get_hub: Mock) -> None:
+    @patch("provide.foundation.profiling.cli.pout")
+    @patch("provide.foundation.profiling.cli.perr")
+    def test_show_profile_metrics_with_profiler_text_mode(
+        self, mock_perr: Mock, mock_pout: Mock, mock_get_hub: Mock
+    ) -> None:
         """Test profiling output with profiler enabled in text mode."""
         # Setup: Profiler available with mock metrics
         mock_profiler = Mock()
+        mock_profiler.enabled = True
+        mock_profiler.processor = Mock()
+        mock_profiler.processor.sample_rate = 1.0
+
         mock_metrics = Mock()
         mock_metrics.messages_per_second = 14523.0
         mock_metrics.avg_latency_ms = 0.07
@@ -74,6 +81,7 @@ class TestProfilingCLI(FoundationTestCase):
         mock_metrics.message_count = 10000
         mock_metrics.emoji_message_count = 5000
         mock_metrics.avg_fields_per_message = 3.5
+        mock_metrics.dropped_count = 0
         mock_metrics.to_dict.return_value = {"uptime_seconds": 45.0}
 
         mock_profiler.get_metrics.return_value = mock_metrics
@@ -90,7 +98,7 @@ class TestProfilingCLI(FoundationTestCase):
         assert mock_pout.call_count > 0
 
     @patch("provide.foundation.profiling.cli.get_hub")
-    @patch("provide.foundation.console.output.pout")
+    @patch("provide.foundation.profiling.cli.pout")
     def test_show_profile_metrics_with_profiler_json_mode(self, mock_pout: Mock, mock_get_hub: Mock) -> None:
         """Test profiling output with profiler enabled in JSON mode."""
         # Setup: Profiler available with mock metrics
