@@ -6,12 +6,11 @@ Run with: pytest tests/integrations/openobserve/test_client_unit.py -v
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.exceptions import (
@@ -750,14 +749,12 @@ class TestGetSearchHistory(FoundationTestCase):
             password="password",
         )
 
-        mock_response = MockResponse(
+        MockResponse(
             status=200,
             json_data={"took": 5, "hits": [], "total": 0},
         )
 
         with patch.object(client._client, "request", new_callable=AsyncMock) as mock_request:
-            mock_response_value = mock_response
-
             await client.get_search_history(
                 start_time="-24h",
                 end_time="now",
