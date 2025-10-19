@@ -481,7 +481,7 @@ class TestDependencyInjectionEdgeCases:
         # This should not raise during decoration (line 88-91 coverage)
         @injectable
         class ServiceWithForwardRef:
-            def __init__(self, dep: "SomeUnknownType") -> None:  # noqa: F821
+            def __init__(self, dep: SomeUnknownType) -> None:
                 self.dep = dep
 
         # The decorator should succeed - error happens at resolution time
@@ -508,7 +508,8 @@ class TestDependencyInjectionEdgeCases:
             with pytest.raises(ValidationError) as exc_info:
                 injectable(TestClass)
 
-            assert "INJECTABLE_TYPE_HINT_ERROR" in str(exc_info.value)
+            assert "Failed to get type hints" in str(exc_info.value)
+            assert "Mock error" in str(exc_info.value)
 
     def test_resolve_dependencies_with_forward_reference_string(self) -> None:
         """Test resolve_dependencies with string forward references."""
@@ -541,7 +542,7 @@ class TestDependencyInjectionEdgeCases:
 
         @injectable
         class ServiceWithBadRef:
-            def __init__(self, dep: "CompletelyUnknownType") -> None:  # noqa: F821
+            def __init__(self, dep: CompletelyUnknownType) -> None:
                 self.dep = dep
 
         registry = Registry()
@@ -549,7 +550,8 @@ class TestDependencyInjectionEdgeCases:
         with pytest.raises(ValidationError) as exc_info:
             resolve_dependencies(ServiceWithBadRef, registry, allow_missing=False)
 
-        assert "RESOLVE_FORWARD_REF_ERROR" in str(exc_info.value)
+        assert "Forward reference" in str(exc_info.value)
+        assert "could not be resolved" in str(exc_info.value)
 
     def test_resolve_dependencies_allow_missing_forward_ref(self) -> None:
         """Test resolve_dependencies with allow_missing for forward refs."""
@@ -558,7 +560,7 @@ class TestDependencyInjectionEdgeCases:
 
         @injectable
         class ServiceWithBadRef:
-            def __init__(self, dep: "UnknownType") -> None:  # noqa: F821
+            def __init__(self, dep: UnknownType) -> None:
                 self.dep = dep
 
         registry = Registry()
@@ -586,7 +588,7 @@ class TestDependencyInjectionEdgeCases:
         with pytest.raises(ValidationError) as exc_info:
             resolve_dependencies(UntypedService, registry, allow_missing=False)
 
-        assert "RESOLVE_NO_TYPE_HINT" in str(exc_info.value)
+        assert "has no type hint" in str(exc_info.value)
         assert "untyped_param" in str(exc_info.value)
 
     def test_resolve_dependencies_allow_missing_type_hint(self) -> None:
@@ -655,7 +657,7 @@ class TestDependencyInjectionEdgeCases:
         with pytest.raises(ValidationError) as exc_info:
             create_instance(FailingService, registry)
 
-        assert "CREATE_INSTANCE_ERROR" in str(exc_info.value)
+        assert "Failed to create instance" in str(exc_info.value)
         assert "Constructor failed!" in str(exc_info.value)
 
     def test_create_instance_reraises_validation_error(self) -> None:
@@ -668,7 +670,7 @@ class TestDependencyInjectionEdgeCases:
 
         @injectable
         class ServiceWithMissingDep:
-            def __init__(self, missing: "MissingType") -> None:  # noqa: F821
+            def __init__(self, missing: MissingType) -> None:
                 self.missing = missing
 
         registry = Registry()
@@ -678,7 +680,8 @@ class TestDependencyInjectionEdgeCases:
             create_instance(ServiceWithMissingDep, registry)
 
         # Should be the original ValidationError, not wrapped
-        assert "RESOLVE_FORWARD_REF_ERROR" in str(exc_info.value)
+        assert "Forward reference" in str(exc_info.value)
+        assert "could not be resolved" in str(exc_info.value)
 
     def test_resolve_dependencies_with_name_error(self) -> None:
         """Test resolve_dependencies handles NameError during type hint resolution."""
@@ -689,7 +692,7 @@ class TestDependencyInjectionEdgeCases:
         # This happens when there's a forward reference to an undefined type
         @injectable
         class ServiceWithNameError:
-            def __init__(self, dep: "UndefinedForwardRef") -> None:  # noqa: F821
+            def __init__(self, dep: UndefinedForwardRef) -> None:
                 self.dep = dep
 
         registry = Registry()
