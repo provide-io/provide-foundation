@@ -195,20 +195,20 @@ class TestDeterministicArchives(FoundationTestCase):
 
         assert hash1 != hash2, "Archives with different content should have different hashes"
 
-    def test_deterministic_mode_extracts_correctly(self) -> None:
+    def test_deterministic_mode_extracts_correctly(self, temp_directory: Path) -> None:
         """Test that archives created with deterministic mode extract correctly."""
         # Create source directory
-        source = self.test_dir / "source"
+        source = temp_directory / "source"
         source.mkdir()
         self._create_test_files(source)
 
         # Create archive with deterministic mode
-        archive = self.test_dir / "archive.tar"
+        archive = temp_directory / "archive.tar"
         tar = TarArchive(deterministic=True)
         tar.create(source, archive)
 
         # Extract archive
-        extract_dir = self.test_dir / "extracted"
+        extract_dir = temp_directory / "extracted"
         tar.extract(archive, extract_dir)
 
         # Verify extracted files match original content
@@ -225,20 +225,23 @@ class TestDeterministicArchives(FoundationTestCase):
             ".tar.xz",
         ],
     )
-    def test_deterministic_with_compression_formats(self, compression_format: str) -> None:
+    def test_deterministic_with_compression_formats(
+        self, temp_directory: Path, compression_format: str
+    ) -> None:
         """Test deterministic archives with different compression formats.
 
         Args:
+            temp_directory: Temporary directory for testing
             compression_format: Archive format extension to test
         """
         # Create source directory
-        source = self.test_dir / "source"
+        source = temp_directory / "source"
         source.mkdir()
         self._create_test_files(source)
 
         # Create two archives with the same content
-        archive1 = self.test_dir / f"archive1{compression_format}"
-        archive2 = self.test_dir / f"archive2{compression_format}"
+        archive1 = temp_directory / f"archive1{compression_format}"
+        archive2 = temp_directory / f"archive2{compression_format}"
 
         tar = TarArchive(deterministic=True)
         tar.create(source, archive1)
@@ -252,8 +255,8 @@ class TestDeterministicArchives(FoundationTestCase):
         # For compressed formats, we can't compare hashes directly
         # because compression may vary slightly, but we can verify
         # they extract to identical content
-        extract1 = self.test_dir / "extract1"
-        extract2 = self.test_dir / "extract2"
+        extract1 = temp_directory / "extract1"
+        extract2 = temp_directory / "extract2"
 
         tar.extract(archive1, extract1)
         tar.extract(archive2, extract2)
