@@ -8,8 +8,6 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import Mock, patch
 
-import pytest
-
 from provide.foundation.integrations.openobserve.otlp_helpers import (
     add_trace_attributes,
     add_trace_context_to_log_entry,
@@ -53,7 +51,7 @@ class TestConfigureOtlpExporter:
         oo_config.org = "my-org"
         oo_config.stream = "logs"
 
-        endpoint, headers = configure_otlp_exporter(config, oo_config)
+        endpoint, _headers = configure_otlp_exporter(config, oo_config)
 
         # Should derive logs endpoint from traces endpoint
         assert endpoint == "https://api.openobserve.ai/api/my-org/v1/logs"
@@ -69,7 +67,7 @@ class TestConfigureOtlpExporter:
         oo_config.org = None
         oo_config.stream = "logs"
 
-        endpoint, headers = configure_otlp_exporter(config, oo_config)
+        _endpoint, headers = configure_otlp_exporter(config, oo_config)
 
         assert "organization" not in headers
         assert headers["stream-name"] == "logs"
@@ -85,7 +83,7 @@ class TestConfigureOtlpExporter:
         oo_config.org = "my-org"
         oo_config.stream = None
 
-        endpoint, headers = configure_otlp_exporter(config, oo_config)
+        _endpoint, headers = configure_otlp_exporter(config, oo_config)
 
         assert headers["organization"] == "my-org"
         assert "stream-name" not in headers
