@@ -26,12 +26,6 @@ from provide.foundation.archive import TarArchive, deterministic_filter
 class TestDeterministicArchives(FoundationTestCase):
     """Test deterministic/reproducible archive creation."""
 
-    def setup_method(self) -> None:
-        """Set up test environment."""
-        super().setup_method()
-        self.test_dir = Path(self.tmp_dir) / "deterministic_test"
-        self.test_dir.mkdir()
-
     def _create_test_files(self, base_dir: Path) -> None:
         """Create test files with varying metadata.
 
@@ -60,10 +54,10 @@ class TestDeterministicArchives(FoundationTestCase):
                 sha256.update(chunk)
         return sha256.hexdigest()
 
-    def test_deterministic_tar_identical_hashes(self) -> None:
+    def test_deterministic_tar_identical_hashes(self, temp_directory: Path) -> None:
         """Test that deterministic TAR archives have identical hashes."""
         # Create first test directory
-        source1 = self.test_dir / "source1"
+        source1 = temp_directory / "source1"
         source1.mkdir()
         self._create_test_files(source1)
 
@@ -71,13 +65,13 @@ class TestDeterministicArchives(FoundationTestCase):
         time.sleep(0.1)
 
         # Create second test directory with same content
-        source2 = self.test_dir / "source2"
+        source2 = temp_directory / "source2"
         source2.mkdir()
         self._create_test_files(source2)
 
         # Create archives with deterministic mode
-        archive1 = self.test_dir / "archive1.tar"
-        archive2 = self.test_dir / "archive2.tar"
+        archive1 = temp_directory / "archive1.tar"
+        archive2 = temp_directory / "archive2.tar"
 
         tar = TarArchive(deterministic=True)
         tar.create(source1, archive1)
@@ -89,10 +83,10 @@ class TestDeterministicArchives(FoundationTestCase):
 
         assert hash1 == hash2, "Deterministic TAR archives should have identical hashes"
 
-    def test_non_deterministic_tar_different_hashes(self) -> None:
+    def test_non_deterministic_tar_different_hashes(self, temp_directory: Path) -> None:
         """Test that non-deterministic TAR archives have different hashes."""
         # Create first test directory
-        source1 = self.test_dir / "source1"
+        source1 = temp_directory / "source1"
         source1.mkdir()
         self._create_test_files(source1)
 
@@ -100,13 +94,13 @@ class TestDeterministicArchives(FoundationTestCase):
         time.sleep(0.1)
 
         # Create second test directory with same content
-        source2 = self.test_dir / "source2"
+        source2 = temp_directory / "source2"
         source2.mkdir()
         self._create_test_files(source2)
 
         # Create archives without deterministic mode
-        archive1 = self.test_dir / "archive1.tar"
-        archive2 = self.test_dir / "archive2.tar"
+        archive1 = temp_directory / "archive1.tar"
+        archive2 = temp_directory / "archive2.tar"
 
         tar = TarArchive(deterministic=False)
         tar.create(source1, archive1)
@@ -155,10 +149,10 @@ class TestDeterministicArchives(FoundationTestCase):
         assert filtered.mode == 0o644, "Mode should be preserved"
         assert filtered.type == tarfile.REGTYPE, "Type should be preserved"
 
-    def test_multiple_identical_creations(self) -> None:
+    def test_multiple_identical_creations(self, temp_directory: Path) -> None:
         """Test that multiple creations of the same archive are identical."""
         # Create source directory
-        source = self.test_dir / "source"
+        source = temp_directory / "source"
         source.mkdir()
         self._create_test_files(source)
 
@@ -168,7 +162,7 @@ class TestDeterministicArchives(FoundationTestCase):
         tar = TarArchive(deterministic=True)
 
         for i in range(3):
-            archive = self.test_dir / f"archive{i}.tar"
+            archive = temp_directory / f"archive{i}.tar"
             tar.create(source, archive)
             archives.append(archive)
             hashes.append(self._compute_file_hash(archive))
@@ -176,20 +170,20 @@ class TestDeterministicArchives(FoundationTestCase):
         # Verify all hashes are identical
         assert len(set(hashes)) == 1, "All archives should have identical hashes"
 
-    def test_deterministic_with_different_content_different_hashes(self) -> None:
+    def test_deterministic_with_different_content_different_hashes(self, temp_directory: Path) -> None:
         """Test that deterministic mode doesn't affect content differences."""
         # Create two sources with different content
-        source1 = self.test_dir / "source1"
+        source1 = temp_directory / "source1"
         source1.mkdir()
         (source1 / "file.txt").write_text("content 1")
 
-        source2 = self.test_dir / "source2"
+        source2 = temp_directory / "source2"
         source2.mkdir()
         (source2 / "file.txt").write_text("content 2")
 
         # Create archives with deterministic mode
-        archive1 = self.test_dir / "archive1.tar"
-        archive2 = self.test_dir / "archive2.tar"
+        archive1 = temp_directory / "archive1.tar"
+        archive2 = temp_directory / "archive2.tar"
 
         tar = TarArchive(deterministic=True)
         tar.create(source1, archive1)
