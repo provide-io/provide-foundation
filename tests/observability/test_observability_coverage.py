@@ -207,14 +207,13 @@ class TestObservabilityWithOtelUnavailable:
 class TestObservabilityConstants:
     """Test observability module constants and variables."""
 
-    def test_otel_trace_module_variable(self) -> None:
-        """Test _otel_trace_module variable handling."""
+    def test_otel_trace_exported(self) -> None:
+        """Test otel_trace is exported from module."""
         import provide.foundation.observability
 
-        # The variable should exist and be either None or a module
-        assert hasattr(provide.foundation.observability, "_otel_trace_module")
-        otel_module = provide.foundation.observability._otel_trace_module
-        assert otel_module is None or hasattr(otel_module, "__name__")
+        # otel_trace should be exported and in __all__
+        assert hasattr(provide.foundation.observability, "otel_trace")
+        assert "otel_trace" in provide.foundation.observability.__all__
 
     def test_has_otel_flag(self) -> None:
         """Test _HAS_OTEL flag."""
@@ -223,14 +222,16 @@ class TestObservabilityConstants:
         # Should be a boolean
         assert isinstance(provide.foundation.observability._HAS_OTEL, bool)
 
-    def test_otel_trace_alias(self) -> None:
-        """Test otel_trace alias."""
+    def test_otel_trace_type(self) -> None:
+        """Test otel_trace type based on availability."""
         import provide.foundation.observability
 
-        # otel_trace should be an alias for _otel_trace_module
-        assert (
-            provide.foundation.observability.otel_trace is provide.foundation.observability._otel_trace_module
-        )
+        # If OTEL is available, otel_trace should be a module or have trace methods
+        # If not available, otel_trace should be None
+        if provide.foundation.observability._HAS_OTEL:
+            assert provide.foundation.observability.otel_trace is not None
+        else:
+            assert provide.foundation.observability.otel_trace is None
 
 
 class TestObservabilityEdgeCases:
