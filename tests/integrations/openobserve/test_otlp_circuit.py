@@ -7,7 +7,6 @@ state transitions, exponential backoff, and threading safety.
 from __future__ import annotations
 
 import time
-from unittest.mock import Mock, patch
 
 from provide.foundation.integrations.openobserve.otlp_circuit import (
     OTLPCircuitBreaker,
