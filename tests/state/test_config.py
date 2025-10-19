@@ -441,6 +441,19 @@ class TestConfigManager(FoundationTestCase):
         result = self.manager.get_config("test")
         assert result is None
 
+    def test_reset_config_without_config_name_attribute(self) -> None:
+        """Test reset_config when current state doesn't have config_name."""
+        config = VersionedConfig(config_name="test")
+        self.manager.register_config(config)
+
+        # Replace state manager's state with something without config_name
+        mock_state = MagicMock(spec=ImmutableState)
+        del mock_state.config_name  # Remove config_name attribute
+        self.manager._configs["test"]._state = mock_state
+
+        # Should not raise, just do nothing
+        self.manager.reset_config("test")
+
 
 __all__ = [
     "TestConfigManager",

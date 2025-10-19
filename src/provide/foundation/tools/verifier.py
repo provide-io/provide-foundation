@@ -137,10 +137,15 @@ def verify_signature_with_key(
         signature = base64.b64decode(signature_b64)
         public_key = base64.b64decode(public_key_b64)
         verifier = Ed25519Verifier(public_key)
-        verifier.verify(data, signature)
+        is_valid = verifier.verify(data, signature)
+        if not is_valid:
+            raise VerificationError("Signature verification failed: Invalid signature")
         return True
+    except VerificationError:
+        # Re-raise VerificationError as-is
+        raise
     except Exception as e:
-        # This will catch both decoding errors and signature validation errors
+        # This will catch decoding errors and other exceptions
         raise VerificationError(f"Signature verification failed: {e}", cause=e) from e
 
 
