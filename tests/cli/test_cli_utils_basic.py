@@ -183,3 +183,33 @@ class TestCliLogging(FoundationTestCase):
         mock_hub.initialize_foundation.assert_called_once()
         config_arg = mock_hub.initialize_foundation.call_args.kwargs["config"]
         assert config_arg.logging.console_formatter == "json"
+
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_reinit_true(self, mock_get_hub: MagicMock) -> None:
+        """Test that reinit_logging=True forces reinitialization."""
+        ctx = create_cli_context()
+        setup_cli_logging(ctx, reinit_logging=True)
+        mock_hub = mock_get_hub.return_value
+        mock_hub.initialize_foundation.assert_called_once()
+        # Verify force=True was passed
+        assert mock_hub.initialize_foundation.call_args.kwargs["force"] is True
+
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_reinit_false(self, mock_get_hub: MagicMock) -> None:
+        """Test that reinit_logging=False skips reinitialization."""
+        ctx = create_cli_context()
+        setup_cli_logging(ctx, reinit_logging=False)
+        mock_hub = mock_get_hub.return_value
+        mock_hub.initialize_foundation.assert_called_once()
+        # Verify force=False was passed
+        assert mock_hub.initialize_foundation.call_args.kwargs["force"] is False
+
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_reinit_default(self, mock_get_hub: MagicMock) -> None:
+        """Test that reinit_logging defaults to True for backward compatibility."""
+        ctx = create_cli_context()
+        setup_cli_logging(ctx)  # No reinit_logging parameter
+        mock_hub = mock_get_hub.return_value
+        mock_hub.initialize_foundation.assert_called_once()
+        # Verify force=True by default
+        assert mock_get_hub.initialize_foundation.call_args.kwargs["force"] is True

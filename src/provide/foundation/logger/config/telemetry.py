@@ -50,7 +50,7 @@ def _get_service_version() -> str | None:
         from provide.foundation.utils.versioning import get_version
 
         return get_version("provide-foundation")
-    except Exception:  # noqa: S110
+    except Exception:
         # Suppress all errors and return None if version can't be determined
         return None
 
