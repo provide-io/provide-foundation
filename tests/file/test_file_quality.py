@@ -220,6 +220,175 @@ class TestQualityAnalyzer(FoundationTestCase):
         report = analyzer.generate_report()
         assert "No analysis results available" in report
 
+    def test_run_analysis_all_metrics(self) -> None:
+        """Test running analysis with all metrics."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Create a scenario
+        events = [
+            FileEvent(
+                path=Path("test.txt.tmp"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1, size_after=1024),
+            ),
+            FileEvent(
+                path=Path("test.txt.tmp"),
+                event_type="moved",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=50), sequence_number=2
+                ),
+                dest_path=Path("test.txt"),
+            ),
+        ]
+
+        scenario = OperationScenario(
+            name="atomic_save",
+            events=events,
+            expected_operations=[{"type": "atomic_save"}],
+        )
+
+        analyzer.add_scenario(scenario)
+
+        # Run analysis without specifying metrics (should run all)
+        results = analyzer.run_analysis()
+
+        # Should have all metrics
+        assert len(results) == len(AnalysisMetric)
+        assert AnalysisMetric.PRECISION in results
+        assert AnalysisMetric.RECALL in results
+        assert AnalysisMetric.F1_SCORE in results
+        assert AnalysisMetric.FALSE_POSITIVE_RATE in results
+        assert AnalysisMetric.FALSE_NEGATIVE_RATE in results
+
+    def test_precision_recall_f1_metrics(self) -> None:
+        """Test precision, recall, and F1 score metrics."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Create a scenario with expected atomic save
+        events = [
+            FileEvent(
+                path=Path("doc.txt.tmp"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+            FileEvent(
+                path=Path("doc.txt.tmp"),
+                event_type="moved",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=50), sequence_number=2
+                ),
+                dest_path=Path("doc.txt"),
+            ),
+        ]
+
+        scenario = OperationScenario(
+            name="test",
+            events=events,
+            expected_operations=[{"type": "atomic_save"}],
+        )
+
+        analyzer.add_scenario(scenario)
+        results = analyzer.run_analysis(
+            [AnalysisMetric.PRECISION, AnalysisMetric.RECALL, AnalysisMetric.F1_SCORE]
+        )
+
+        precision = results[AnalysisMetric.PRECISION]
+        assert 0.0 <= precision.value <= 1.0
+        assert "true_positives" in precision.details
+        assert "false_positives" in precision.details
+
+        recall = results[AnalysisMetric.RECALL]
+        assert 0.0 <= recall.value <= 1.0
+        assert "true_positives" in recall.details
+        assert "false_negatives" in recall.details
+
+        f1 = results[AnalysisMetric.F1_SCORE]
+        assert 0.0 <= f1.value <= 1.0
+        assert "precision" in f1.details
+        assert "recall" in f1.details
+
+    def test_false_positive_false_negative_metrics(self) -> None:
+        """Test false positive and false negative rate metrics."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Scenario with no expected operations (to test false positive rate)
+        events = [
+            FileEvent(
+                path=Path("test.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+        ]
+
+        scenario = OperationScenario(
+            name="no_operations",
+            events=events,
+            expected_operations=[],
+        )
+
+        analyzer.add_scenario(scenario)
+        results = analyzer.run_analysis(
+            [AnalysisMetric.FALSE_POSITIVE_RATE, AnalysisMetric.FALSE_NEGATIVE_RATE]
+        )
+
+        fpr = results[AnalysisMetric.FALSE_POSITIVE_RATE]
+        assert 0.0 <= fpr.value <= 1.0
+        assert "false_positives" in fpr.details
+        assert "total_negative_cases" in fpr.details
+
+        fnr = results[AnalysisMetric.FALSE_NEGATIVE_RATE]
+        assert 0.0 <= fnr.value <= 1.0
+        assert "false_negatives" in fnr.details
+        assert "total_positive_cases" in fnr.details
+
+    def test_report_with_confidence_distribution_details(self) -> None:
+        """Test report generation includes confidence distribution details."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Create multiple scenarios
+        for i in range(2):
+            events = [
+                FileEvent(
+                    path=Path(f"test{i}.txt.tmp"),
+                    event_type="created",
+                    metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+                ),
+                FileEvent(
+                    path=Path(f"test{i}.txt.tmp"),
+                    event_type="moved",
+                    metadata=FileEventMetadata(
+                        timestamp=base_time + timedelta(milliseconds=50), sequence_number=2
+                    ),
+                    dest_path=Path(f"test{i}.txt"),
+                ),
+            ]
+
+            scenario = OperationScenario(
+                name=f"test{i}", events=events, expected_operations=[{"type": "atomic_save"}]
+            )
+            analyzer.add_scenario(scenario)
+
+        results = analyzer.run_analysis(
+            [AnalysisMetric.CONFIDENCE_DISTRIBUTION, AnalysisMetric.DETECTION_TIME, AnalysisMetric.ACCURACY]
+        )
+        report = analyzer.generate_report(results)
+
+        # Check for confidence distribution details
+        assert "Confidence Distribution" in report
+        assert "By operation type:" in report
+
+        # Check for detection time details
+        assert "Detection Time" in report
+        assert "avg:" in report
+        assert "p95:" in report
+
+        # Check for accuracy details
+        assert "Accuracy" in report
+
 
 class TestQualityResult(FoundationTestCase):
     """Test the quality result functionality."""

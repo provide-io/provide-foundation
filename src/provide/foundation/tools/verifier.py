@@ -115,9 +115,10 @@ def verify_checksum_with_hash(
     Raises:
         VerificationError: If algorithm is invalid or verification fails due to error conditions
     """
+    supported_algorithms = ["sha256", "sha512", "blake2b", "blake2s", "md5", "adler32"]
+
     # Validate algorithm first if explicitly provided
     if algorithm:
-        supported_algorithms = ["sha256", "sha512", "blake2b", "blake2s", "md5", "adler32"]
         if algorithm not in supported_algorithms:
             raise VerificationError(
                 f"Checksum verification failed: Unknown checksum algorithm: {algorithm}. "
@@ -131,7 +132,6 @@ def verify_checksum_with_hash(
         # Already has algorithm prefix - validate it
         if ":" in expected_hash:
             alg = expected_hash.split(":", 1)[0]
-            supported_algorithms = ["sha256", "sha512", "blake2b", "blake2s", "md5", "adler32"]
             if alg not in supported_algorithms:
                 raise VerificationError(
                     f"Checksum verification failed: Unknown checksum algorithm: {alg}. "
