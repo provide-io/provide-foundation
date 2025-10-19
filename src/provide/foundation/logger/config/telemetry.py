@@ -37,6 +37,24 @@ def _get_service_name() -> str | None:
     return os.getenv("OTEL_SERVICE_NAME") or os.getenv("PROVIDE_SERVICE_NAME")
 
 
+def _get_service_version() -> str | None:
+    """Get service version from package metadata.
+
+    Attempts to retrieve the version for the provide-foundation package.
+    Returns None if version cannot be determined.
+
+    Returns:
+        Package version string or None
+    """
+    try:
+        from provide.foundation.utils.versioning import get_version
+
+        return get_version("provide-foundation")
+    except Exception:  # noqa: S110
+        # Suppress all errors and return None if version can't be determined
+        return None
+
+
 @define(slots=True, repr=False)
 class TelemetryConfig(RuntimeConfig):
     """Main configuration object for the Foundation Telemetry system."""
@@ -46,9 +64,9 @@ class TelemetryConfig(RuntimeConfig):
         description="Service name for telemetry (from OTEL_SERVICE_NAME or PROVIDE_SERVICE_NAME)",
     )
     service_version: str | None = field(
-        default=None,
+        factory=_get_service_version,
         env_var="PROVIDE_SERVICE_VERSION",
-        description="Service version for telemetry",
+        description="Service version for telemetry (auto-populated from package version)",
     )
     logging: LoggingConfig = field(
         factory=default_logging_config,

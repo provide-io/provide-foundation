@@ -46,8 +46,8 @@ def show_profile_metrics(ctx: CLIContext) -> None:
     profiler = hub.get_component("profiler")
 
     if not profiler:
-        perr("❌ Profiling not enabled", color="red")
-        perr("   Enable with: profiler.enable()", color="yellow")
+        perr("❌ Profiling not enabled", color="red", ctx=ctx)
+        perr("   Enable with: profiler.enable()", color="yellow", ctx=ctx)
         return
 
     metrics = profiler.get_metrics()

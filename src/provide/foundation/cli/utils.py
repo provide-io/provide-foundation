@@ -98,6 +98,7 @@ def echo_info(message: str, json_output: bool = False) -> None:
 
 def setup_cli_logging(
     ctx: CLIContext,
+    reinit_logging: bool = True,
 ) -> None:
     """Setup logging for CLI applications using a CLIContext object.
 
@@ -107,6 +108,9 @@ def setup_cli_logging(
 
     Args:
         ctx: The foundation CLIContext, populated by CLI decorators.
+        reinit_logging: Whether to force re-initialization of logging (default: True).
+            Set to False when embedding Foundation in a host application to avoid
+            clobbering the host's logging configuration.
 
     """
     console_formatter = "json" if ctx.json_output else ctx.log_format
@@ -126,7 +130,7 @@ def setup_cli_logging(
     )
 
     hub = get_hub()
-    hub.initialize_foundation(config=telemetry_config, force=True)
+    hub.initialize_foundation(config=telemetry_config, force=reinit_logging)
 
 
 def create_cli_context(**kwargs: Any) -> CLIContext:
