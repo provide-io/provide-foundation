@@ -6,13 +6,31 @@ processor creation, log flushing, and provider reset.
 
 from __future__ import annotations
 
+import sys
+from collections.abc import Generator
 from unittest.mock import Mock, patch
+
+import pytest
 
 from provide.foundation.logger.processors.otlp import (
     create_otlp_processor,
     flush_otlp_logs,
     reset_otlp_provider,
 )
+
+
+@pytest.fixture(autouse=True)
+def reset_otlp_provider_fixture() -> Generator[None]:
+    """Reset OTLP provider before each test."""
+    # Get module reference from sys.modules
+    otlp_mod = sys.modules.get("provide.foundation.logger.processors.otlp")
+    if otlp_mod:
+        # Reset the global provider before each test
+        otlp_mod._OTLP_LOGGER_PROVIDER = None
+    yield
+    # Clean up after test
+    if otlp_mod:
+        otlp_mod._OTLP_LOGGER_PROVIDER = None
 
 
 class TestConvertTimestampToNanos:
@@ -153,11 +171,6 @@ class TestCreateOtlpProcessor:
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
     def test_create_reuses_existing_provider(self, mock_client_class: Mock) -> None:
         """Test that existing logger provider is reused."""
-        import provide.foundation.logger.processors.otlp as otlp_module
-
-        # Reset global state
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
         config = Mock()
         config.otlp_endpoint = "https://api.example.com"
 
@@ -180,9 +193,6 @@ class TestCreateOtlpProcessor:
 
         # Should only create client once
         assert mock_client_class.from_config.call_count == 1
-
-        # Cleanup
-        otlp_module._OTLP_LOGGER_PROVIDER = None
 
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
     def test_create_handles_exception(self, mock_client_class: Mock) -> None:
@@ -212,11 +222,6 @@ class TestOtlpProcessor:
         mock_map_level: Mock,
     ) -> None:
         """Test that processor sends log to OTLP."""
-        import provide.foundation.logger.processors.otlp as otlp_module
-
-        # Reset global state
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
         config = Mock()
         config.otlp_endpoint = "https://api.example.com"
 
@@ -250,17 +255,9 @@ class TestOtlpProcessor:
         # Should emit log record
         mock_logger.emit.assert_called_once()
 
-        # Cleanup
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
     def test_processor_skips_if_flagged(self, mock_client_class: Mock) -> None:
         """Test that processor skips OTLP if _skip_otlp flag is set."""
-        import provide.foundation.logger.processors.otlp as otlp_module
-
-        # Reset global state
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
         config = Mock()
         config.otlp_endpoint = "https://api.example.com"
 
@@ -291,9 +288,6 @@ class TestOtlpProcessor:
         # Should NOT emit log
         mock_logger.emit.assert_not_called()
 
-        # Cleanup
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
     @patch("provide.foundation.logger.processors.otlp.map_level_to_severity")
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
     @patch("opentelemetry.sdk._logs.LogRecord")
@@ -306,11 +300,6 @@ class TestOtlpProcessor:
         mock_map_level: Mock,
     ) -> None:
         """Test that processor handles exceptions without breaking logging."""
-        import provide.foundation.logger.processors.otlp as otlp_module
-
-        # Reset global state
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
         config = Mock()
         config.otlp_endpoint = "https://api.example.com"
 
@@ -342,9 +331,6 @@ class TestOtlpProcessor:
         # Should return event_dict unchanged despite error
         assert result == event_dict
 
-        # Cleanup
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
     @patch("provide.foundation.logger.processors.otlp.map_level_to_severity")
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
     @patch("opentelemetry.sdk._logs.LogRecord")
@@ -357,11 +343,6 @@ class TestOtlpProcessor:
         mock_map_level: Mock,
     ) -> None:
         """Test that processor correctly builds log attributes."""
-        import provide.foundation.logger.processors.otlp as otlp_module
-
-        # Reset global state
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
         config = Mock()
         config.otlp_endpoint = "https://api.example.com"
 
@@ -402,50 +383,38 @@ class TestOtlpProcessor:
         assert "timestamp" not in attributes  # Should be excluded
         assert "event" not in attributes  # Should be excluded
 
-        # Cleanup
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
 
 class TestFlushOtlpLogs:
     """Tests for flush_otlp_logs function."""
 
     def test_flush_without_provider(self) -> None:
         """Test that flush works when no provider exists."""
-        import provide.foundation.logger.processors.otlp as otlp_module
-
-        # Reset global state
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
         # Should not raise
         flush_otlp_logs()
 
     def test_flush_with_provider(self) -> None:
         """Test that flush calls force_flush on provider."""
-        import provide.foundation.logger.processors.otlp as otlp_module
+        import sys
 
+        otlp_mod = sys.modules["provide.foundation.logger.processors.otlp"]
         mock_provider = Mock()
-        otlp_module._OTLP_LOGGER_PROVIDER = mock_provider
+        otlp_mod._OTLP_LOGGER_PROVIDER = mock_provider
 
         flush_otlp_logs()
 
         mock_provider.force_flush.assert_called_once_with(timeout_millis=5000)
 
-        # Cleanup
-        otlp_module._OTLP_LOGGER_PROVIDER = None
-
     def test_flush_handles_exception(self) -> None:
         """Test that flush handles exceptions silently."""
-        import provide.foundation.logger.processors.otlp as otlp_module
+        import sys
 
+        otlp_mod = sys.modules["provide.foundation.logger.processors.otlp"]
         mock_provider = Mock()
         mock_provider.force_flush.side_effect = Exception("Flush failed")
-        otlp_module._OTLP_LOGGER_PROVIDER = mock_provider
+        otlp_mod._OTLP_LOGGER_PROVIDER = mock_provider
 
         # Should not raise
         flush_otlp_logs()
-
-        # Cleanup
-        otlp_module._OTLP_LOGGER_PROVIDER = None
 
 
 class TestResetOtlpProvider:
@@ -453,43 +422,43 @@ class TestResetOtlpProvider:
 
     def test_reset_without_provider(self) -> None:
         """Test that reset works when no provider exists."""
-        import provide.foundation.logger.processors.otlp as otlp_module
-
-        # Reset global state
-        otlp_module._OTLP_LOGGER_PROVIDER = None
+        import sys
 
         # Should not raise
         reset_otlp_provider()
 
-        assert otlp_module._OTLP_LOGGER_PROVIDER is None
+        otlp_mod = sys.modules["provide.foundation.logger.processors.otlp"]
+        assert otlp_mod._OTLP_LOGGER_PROVIDER is None
 
     def test_reset_with_provider(self) -> None:
         """Test that reset flushes and clears provider."""
-        import provide.foundation.logger.processors.otlp as otlp_module
+        import sys
 
+        otlp_mod = sys.modules["provide.foundation.logger.processors.otlp"]
         mock_provider = Mock()
-        otlp_module._OTLP_LOGGER_PROVIDER = mock_provider
+        otlp_mod._OTLP_LOGGER_PROVIDER = mock_provider
 
         reset_otlp_provider()
 
         # Should flush before resetting
         mock_provider.force_flush.assert_called_once()
         # Should clear provider
-        assert otlp_module._OTLP_LOGGER_PROVIDER is None
+        assert otlp_mod._OTLP_LOGGER_PROVIDER is None
 
     def test_reset_handles_flush_exception(self) -> None:
         """Test that reset handles flush exceptions."""
-        import provide.foundation.logger.processors.otlp as otlp_module
+        import sys
 
+        otlp_mod = sys.modules["provide.foundation.logger.processors.otlp"]
         mock_provider = Mock()
         mock_provider.force_flush.side_effect = Exception("Flush failed")
-        otlp_module._OTLP_LOGGER_PROVIDER = mock_provider
+        otlp_mod._OTLP_LOGGER_PROVIDER = mock_provider
 
         # Should not raise
         reset_otlp_provider()
 
         # Should still clear provider despite flush error
-        assert otlp_module._OTLP_LOGGER_PROVIDER is None
+        assert otlp_mod._OTLP_LOGGER_PROVIDER is None
 
 
 # <3 🧱🤝🔌🪄
