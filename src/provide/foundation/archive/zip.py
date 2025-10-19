@@ -251,7 +251,9 @@ class ZipArchive(BaseArchive):
 
             # Prevent absolute paths in link target
             if Path(link_target).is_absolute():
-                raise ArchiveValidationError(f"Absolute path in symlink target: {info.filename} -> {link_target}")
+                raise ArchiveValidationError(
+                    f"Absolute path in symlink target: {info.filename} -> {link_target}"
+                )
 
     def validate(self, archive: Path) -> bool:
         """Validate ZIP archive integrity.
