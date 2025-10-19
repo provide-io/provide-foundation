@@ -32,6 +32,9 @@ class SchemaField:
     max_value: Any = None
     pattern: str | None = None
     sensitive: bool = False
+    env_var: str | None = None
+    env_prefix: str | None = None
+    env_parser: Callable[[str], Any] | None = None
 
     def _validate_required(self, value: Any) -> None:
         """Check required field validation."""
@@ -208,6 +211,9 @@ class ConfigSchema:
         # Extract metadata
         description = attr.metadata.get("description")
         sensitive = attr.metadata.get("sensitive", False)
+        env_var = attr.metadata.get("env_var")
+        env_prefix = attr.metadata.get("env_prefix")
+        env_parser = attr.metadata.get("env_parser")
 
         # Create schema field
         return SchemaField(
@@ -217,6 +223,9 @@ class ConfigSchema:
             default=attr.default if attr.default is not None else None,
             description=description,
             sensitive=sensitive,
+            env_var=env_var,
+            env_prefix=env_prefix,
+            env_parser=env_parser,
         )
 
 
