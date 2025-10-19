@@ -220,8 +220,8 @@ class TestMapLevelToSeverity:
 class TestAddTraceContextToLogEntry:
     """Tests for add_trace_context_to_log_entry function."""
 
-    @patch("provide.foundation.integrations.openobserve.otlp_helpers.trace")
-    def test_add_context_from_opentelemetry(self, mock_trace_module: Mock) -> None:
+    @patch("opentelemetry.trace.get_current_span")
+    def test_add_context_from_opentelemetry(self, mock_get_span: Mock) -> None:
         """Test adding trace context from OpenTelemetry."""
         span = Mock()
         span.is_recording.return_value = True
@@ -229,7 +229,7 @@ class TestAddTraceContextToLogEntry:
         span_context.trace_id = 0xABCDEF1234567890ABCDEF1234567890
         span_context.span_id = 0xFEDCBA9876543210
         span.get_span_context.return_value = span_context
-        mock_trace_module.get_current_span.return_value = span
+        mock_get_span.return_value = span
 
         log_entry: dict[str, Any] = {}
         add_trace_context_to_log_entry(log_entry)
@@ -237,10 +237,10 @@ class TestAddTraceContextToLogEntry:
         assert log_entry["trace_id"] == "abcdef1234567890abcdef1234567890"
         assert log_entry["span_id"] == "fedcba9876543210"
 
-    @patch("provide.foundation.integrations.openobserve.otlp_helpers.trace")
-    def test_add_context_without_span(self, mock_trace_module: Mock) -> None:
+    @patch("opentelemetry.trace.get_current_span")
+    def test_add_context_without_span(self, mock_get_span: Mock) -> None:
         """Test that no context is added when no span is available."""
-        mock_trace_module.get_current_span.return_value = None
+        mock_get_span.return_value = None
 
         log_entry: dict[str, Any] = {}
         add_trace_context_to_log_entry(log_entry)
@@ -248,6 +248,49 @@ class TestAddTraceContextToLogEntry:
         # Should not crash, may have tried Foundation tracer
         # At minimum, should not have OpenTelemetry context
         assert True
+
+    @patch("opentelemetry.trace.get_current_span", side_effect=ImportError)
+    @patch("provide.foundation.tracer.context.get_current_span")
+    @patch("provide.foundation.tracer.context.get_current_trace_id")
+    def test_add_context_with_foundation_tracer(
+        self,
+        mock_get_trace_id: Mock,
+        mock_get_span: Mock,
+        mock_otel_get_span: Mock,
+    ) -> None:
+        """Test fallback to Foundation tracer when OpenTelemetry is not available."""
+        # OpenTelemetry not available, Foundation tracer has span
+        span = Mock()
+        span.trace_id = "foundation-trace-123"
+        span.span_id = "foundation-span-456"
+        mock_get_span.return_value = span
+        mock_get_trace_id.return_value = None
+
+        log_entry: dict[str, Any] = {}
+        add_trace_context_to_log_entry(log_entry)
+
+        assert log_entry["trace_id"] == "foundation-trace-123"
+        assert log_entry["span_id"] == "foundation-span-456"
+
+    @patch("opentelemetry.trace.get_current_span", side_effect=ImportError)
+    @patch("provide.foundation.tracer.context.get_current_span")
+    @patch("provide.foundation.tracer.context.get_current_trace_id")
+    def test_add_context_with_foundation_trace_id_only(
+        self,
+        mock_get_trace_id: Mock,
+        mock_get_span: Mock,
+        mock_otel_get_span: Mock,
+    ) -> None:
+        """Test fallback to Foundation trace ID when no span is available."""
+        # OpenTelemetry not available, Foundation tracer has only trace_id
+        mock_get_span.return_value = None
+        mock_get_trace_id.return_value = "foundation-trace-only-789"
+
+        log_entry: dict[str, Any] = {}
+        add_trace_context_to_log_entry(log_entry)
+
+        assert log_entry["trace_id"] == "foundation-trace-only-789"
+        assert "span_id" not in log_entry
 
     def test_add_context_without_opentelemetry(self) -> None:
         """Test fallback when OpenTelemetry is not available."""
