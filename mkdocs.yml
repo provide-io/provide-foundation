@@ -100,6 +100,19 @@ extra_javascript:
 nav:
   - Home: index.md
 
+  - Information:
+    - Features: information/features.md
+    - Use Cases: information/use-cases.md
+    - Architecture: information/architecture.md
+    - Changelog: information/changelog.md
+
+  - Getting Started:
+    - getting-started/index.md
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quick-start.md
+    - First Application: getting-started/first-app.md
+    - Examples: getting-started/examples.md
+
   - Tutorials:
     - Quick Start: tutorials/01-quick-start.md
     - First Application: tutorials/02-first-app.md
