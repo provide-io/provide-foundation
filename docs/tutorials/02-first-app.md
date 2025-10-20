@@ -31,8 +31,8 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Dict
 
-from provide.foundation import logger, pout, perr, setup_telemetry
-from provide.foundation.hub import Hub, register_command
+from provide.foundation import logger, pout, perr, get_hub
+from provide.foundation.hub import register_command
 
 # --- Data Model ---
 @dataclass
@@ -90,16 +90,13 @@ def list_tasks(all: bool = False):
 
 # --- Main Entry Point ---
 if __name__ == "__main__":
-    # 1. Configure logging and other foundation systems
-    setup_telemetry()
+    # 1. Get the global Hub instance (auto-initializes on first access)
+    hub = get_hub()
 
-    # 2. Create a Hub to manage our application
-    hub = Hub()
-
-    # 3. The Hub discovers our @register_command functions and builds a CLI
+    # 2. The Hub discovers our @register_command functions and builds a CLI
     cli = hub.create_cli(name="task-manager", description="A simple task manager.")
 
-    # 4. Run the CLI
+    # 3. Run the CLI
     logger.info("cli_starting", emoji="🚀")
     cli()
     logger.info("cli_finished", emoji="🏁")
