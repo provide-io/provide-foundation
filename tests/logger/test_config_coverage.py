@@ -227,3 +227,29 @@ class TestTelemetryConfigCoverage:
             with pytest.raises(ValueError) as exc_info:
                 TelemetryConfig.from_env()
             assert "Invalid log_level 'INVALID'" in str(exc_info.value)
+
+    def test_telemetry_config_service_version_auto_populated(self) -> None:
+        """Test that service_version is auto-populated from package version."""
+        from provide.foundation.logger.config.telemetry import TelemetryConfig
+
+        config = TelemetryConfig()
+        # Should be auto-populated with provide-foundation version
+        assert config.service_version is not None
+        assert isinstance(config.service_version, str)
+        # Should match the VERSION file content
+        assert len(config.service_version) > 0
+
+    def test_telemetry_config_service_version_env_override(self) -> None:
+        """Test that service_version can be overridden via env var."""
+        from provide.foundation.logger.config.telemetry import TelemetryConfig
+
+        with patch.dict(os.environ, {"PROVIDE_SERVICE_VERSION": "my-app-1.2.3"}):
+            config = TelemetryConfig.from_env()
+            assert config.service_version == "my-app-1.2.3"
+
+    def test_telemetry_config_service_version_explicit_override(self) -> None:
+        """Test that service_version can be set explicitly."""
+        from provide.foundation.logger.config.telemetry import TelemetryConfig
+
+        config = TelemetryConfig(service_version="explicit-2.0.0")
+        assert config.service_version == "explicit-2.0.0"
