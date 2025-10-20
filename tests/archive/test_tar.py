@@ -48,9 +48,10 @@ class TestTarArchive(FoundationTestCase):
 
         assert result == output
         assert output.exists()
-        assert (output / "source" / "file1.txt").exists()
-        assert (output / "source" / "file1.txt").read_text() == "Content 1"
-        assert (output / "source" / "subdir" / "file3.txt").exists()
+        # New consistent behavior: no parent directory in archive
+        assert (output / "file1.txt").exists()
+        assert (output / "file1.txt").read_text() == "Content 1"
+        assert (output / "subdir" / "file3.txt").exists()
 
     def test_validate_tar_archive(
         self, tar_archive: TarArchive, test_files_structure: tuple[Path, Path]
@@ -109,7 +110,8 @@ class TestTarArchive(FoundationTestCase):
         output = temp_path / "extracted"
         tar.extract(archive, output)
 
-        extracted_file = output / "source" / "executable.sh"
+        # New consistent behavior: no parent directory in archive
+        extracted_file = output / "executable.sh"
         assert extracted_file.exists()
         # Check if executable bit is preserved (at least for owner)
         assert extracted_file.stat().st_mode & 0o100

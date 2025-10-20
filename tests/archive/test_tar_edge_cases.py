@@ -9,7 +9,7 @@ import tempfile
 from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.foundation.archive.base import ArchiveError
+from provide.foundation.archive.base import ArchiveError, ArchiveFormatError
 from provide.foundation.archive.tar import TarArchive
 
 
@@ -37,8 +37,9 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         # Should return sorted file paths
         assert isinstance(contents, list)
         assert len(contents) >= 2  # At least file1.txt and file3.txt
-        assert "source/file1.txt" in contents
-        assert "source/subdir/file3.txt" in contents
+        # New consistent behavior: no parent directory in archive
+        assert "file1.txt" in contents
+        assert "subdir/file3.txt" in contents
         # Should be sorted
         assert contents == sorted(contents)
 
@@ -65,7 +66,8 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         corrupt_archive = temp_path / "corrupt.tar"
         corrupt_archive.write_text("not a valid tar file")
 
-        with pytest.raises(ArchiveError, match="Failed to list TAR contents"):
+        # Should raise ArchiveFormatError for corrupted archive
+        with pytest.raises(ArchiveFormatError, match="Invalid or corrupted TAR archive"):
             tar_archive.list_contents(corrupt_archive)
 
     def test_extract_unsafe_absolute_path(self, tar_archive: TarArchive, temp_directory: Path) -> None:
@@ -163,8 +165,9 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         tar_archive.extract(archive, output)
 
         # Verify symlink was extracted correctly
-        extracted_link = output / "source" / "safe_link.txt"
-        extracted_target = output / "source" / "target.txt"
+        # New consistent behavior: no parent directory in archive
+        extracted_link = output / "safe_link.txt"
+        extracted_target = output / "target.txt"
 
         assert extracted_target.exists()
         assert extracted_link.exists()

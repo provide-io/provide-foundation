@@ -61,7 +61,7 @@ class TestOperationChainConfiguration(FoundationTestCase):
         result = chain.reverse(archive, extracted)
 
         assert result == extracted
-        assert (extracted / "source").exists()
+        assert (extracted).exists()
 
     def test_chain_with_zip_config(self, test_files_structure: tuple[Path, Path]) -> None:
         """Test chain with zip configuration."""
@@ -192,7 +192,7 @@ class TestOperationChainEdgeCases(FoundationTestCase):
         result = chain.reverse(archive, extracted)
 
         assert result == extracted
-        assert (extracted / "source").exists()
+        assert (extracted).exists()
 
 
 class TestArchiveOperationsNonDeterministic(FoundationTestCase):
@@ -253,10 +253,10 @@ class TestOperationChainWithSubdirectories(FoundationTestCase):
         chain.reverse(archive, extracted)
 
         # Verify subdirectory structure preserved
-        assert (extracted / "source").exists()
-        assert (extracted / "source" / "file1.txt").read_text() == "content1"
-        assert (extracted / "source" / "subdir" / "file2.txt").read_text() == "content2"
-        assert (extracted / "source" / "subdir" / "nested" / "file3.txt").read_text() == "content3"
+        assert (extracted).exists()
+        assert (extracted / "file1.txt").read_text() == "content1"
+        assert (extracted / "subdir" / "file2.txt").read_text() == "content2"
+        assert (extracted / "subdir" / "nested" / "file3.txt").read_text() == "content3"
 
 
 class TestOperationChainTemporaryFileManagement(FoundationTestCase):
