@@ -18,7 +18,7 @@ theme:
   language: en
   logo: assets/images/logo.svg
   favicon: assets/images/logo.svg
-  
+
   palette:
     # Light mode
     - media: "(prefers-color-scheme: light)"
@@ -28,7 +28,7 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    
+
     # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
@@ -37,11 +37,11 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-  
+
   font:
     text: Poppins
     code: Fira Code
-  
+
   features:
     - navigation.instant
     - navigation.tabs
@@ -98,203 +98,26 @@ extra_javascript:
   - javascripts/mermaid-init.js
 
 nav:
-  - Information:
-    - Overview: index.md
-    - Features: information/features.md
-    - Use Cases: information/use-cases.md
-    - Architecture: information/architecture.md
-    - Changelog: information/changelog.md
-  
-  - Getting Started:
-    - getting-started/index.md
-    - Installation: getting-started/installation.md
-    - Quick Start: getting-started/quick-start.md
-    - First Application: getting-started/first-app.md
-    - Examples: getting-started/examples.md
+  - Home: index.md
 
-  - Examples:
-    - examples/index.md
-    - Basic Application: examples/basic-app.md
-    - CLI Tool: examples/cli-tool.md
-    - Web Service: examples/web-service.md
-    - Data Pipeline: examples/data-pipeline.md
+  - Tutorials:
+    - Quick Start: tutorials/01-quick-start.md
+    - First Application: tutorials/02-first-app.md
 
-  - Guide:
-    - guide/index.md
-    - Core Concepts:
-      - guide/concepts/index.md
-      - Structured Logging: guide/concepts/structured-logging.md
-      - Event Enrichment: guide/concepts/event-enrichment.md
-      - Domain-Action-Status Pattern: guide/concepts/das-pattern.md
-      - Performance: guide/concepts/performance.md
-    - Configuration:
-      - guide/config/index.md
-      - Environment Variables: guide/config/environment.md
-      - Config Files: 
-        - guide/config/files.md
-        - File Formats: guide/config/files-formats.md
-        - Loading: guide/config/files-loading.md
-        - Advanced Features: guide/config/files-advanced.md
-      - Runtime Config: guide/config/runtime.md
-      - Reference: guide/config/reference.md
-      - Best Practices:
-        - guide/config/best-practices.md
-        - Environment Management: guide/config/best-practices-environments.md
-        - Security: guide/config/best-practices-security.md
-        - Validation: guide/config/best-practices-validation.md
-        - Testing & Patterns: guide/config/best-practices-patterns.md
+  - How-To Guides:
     - Logging:
-      - guide/logging/index.md
-      - Basic Usage: guide/logging/basic.md
-      - Advanced Patterns: 
-        - guide/logging/advanced.md
-        - Overview: guide/logging/advanced/index.md
-        - Filtering: 
-          - guide/logging/advanced/filtering.md
-          - Level-Based: guide/logging/advanced/filtering-levels.md
-          - Content-Based: guide/logging/advanced/filtering-content.md
-          - Contextual: guide/logging/advanced/filtering-context.md
-        - Integration Patterns:
-          - guide/logging/advanced/patterns.md
-          - Web Frameworks: guide/logging/advanced/patterns-web.md
-          - Database: guide/logging/advanced/patterns-database.md
-          - Messaging: guide/logging/advanced/patterns-messaging.md
-          - Async: guide/logging/advanced/patterns-async.md
-        - Processors: guide/logging/advanced/processors.md
-      - Async Logging: guide/logging/async.md
-      - Exception Handling: guide/logging/exceptions.md
-      - Context Management:
-        - guide/logging/context.md
-        - Basic Binding: guide/logging/context-basics.md
-        - Threading: guide/logging/context-threading.md
-        - Advanced: guide/logging/context-advanced.md
-        - Patterns: guide/logging/context-patterns.md
-      - Performance Tuning: 
-        - guide/logging/performance.md
-        - Overview: guide/logging/performance/index.md
-        - Benchmarks: guide/logging/performance/benchmarks.md
-        - Optimization: guide/logging/performance/optimization.md
-        - Sampling: guide/logging/performance/sampling.md
-    - CLI Framework:
-      - guide/cli/index.md
-      - Commands: guide/cli/commands.md
-      - Nested Commands: guide/cli/nested.md
-      - Arguments: guide/cli/arguments.md
-      - Output: guide/cli/output.md
-    - Profiling:
-      - guide/profiling/index.md
-      - Enterprise Features:
-        - Decorator-Based Tracking: guide/profiling/enterprise/decorator-tracking.md
-        - Adaptive Sampling: guide/profiling/enterprise/adaptive-sampling.md
-        - Exporter Abstraction: guide/profiling/enterprise/exporters.md
-      - Implementation:
-        - Getting Started: guide/profiling/implementation/getting-started.md
-        - Configuration: guide/profiling/implementation/configuration.md
-        - Best Practices: guide/profiling/implementation/best-practices.md
-        - Performance: guide/profiling/implementation/performance.md
-    - Distributed Tracing:
-      - guide/tracing/index.md
-    - Utilities:
-      - guide/utilities/index.md
-      - Console: guide/utilities/console.md
-      - Errors: guide/utilities/errors.md
-      - Files: guide/utilities/files.md
-      - Platform: guide/utilities/platform.md
-      - Process: guide/utilities/process.md
-      - Registry: guide/utilities/registry.md
-    - Security:
-      - guide/security/index.md
-    - Advanced:
-      - guide/advanced/index.md
-      - Advanced Usage: guide/advanced-usage.md
-      - Custom Processors: guide/advanced/custom-processors.md
-      - Integration Patterns: guide/advanced/integration-patterns.md
-      - Performance Optimization: guide/advanced/performance-optimization.md
-    - Testing:
-      - guide/testing.md
-      - Basic Testing: guide/testing-basics.md
-      - Advanced Testing: guide/testing-advanced.md
-      - Performance Testing: guide/testing-performance.md
+      - Basic Logging: how-to-guides/logging/basic-logging.md
+      - Exception Logging: how-to-guides/logging/exception-logging.md
+    - CLI:
+      - Commands: how-to-guides/cli/commands.md
+    - Resilience:
+      - Retry Patterns: how-to-guides/resilience/retry.md
+
+  - Explanation:
+    - Architecture: explanation/architecture.md
+    - Dependency Injection: explanation/dependency-injection.md
 
   - Reference:
-    - api/api-index.md
-    - Logger API: 
-      - api/logger/api-index.md
-      - Base: api/logger/api-base.md
-      - Config: api/logger/api-config.md
-      - Core: api/logger/api-core.md
-      - Factories: api/logger/api-factories.md
-      - Processors: api/logger/api-processors.md
-    - Configuration API:
-      - api/config/api-index.md
-      - Base: api/config/api-base.md
-      - Environment: api/config/api-env.md
-      - Loader: api/config/api-loader.md
-      - Manager: api/config/api-manager.md
-      - Schema: api/config/api-schema.md
-    - CLI API:
-      - api/cli/api-index.md
-      - Decorators: api/cli/api-decorators.md
-      - Testing: api/cli/api-testing.md
-      - Utils: api/cli/api-utils.md
-    - Hub API:
-      - api/hub/api-index.md
-      - Commands: api/hub/api-commands.md
-      - Components: api/hub/api-components.md
-      - Manager: api/hub/api-manager.md
-      - Registry: api/hub/api-registry.md
-    - Error API:
-      - api/errors/api-index.md
-      - Decorators: api/errors/api-decorators.md
-      - Types: api/errors/api-types.md
-      - Handlers: api/errors/api-handlers.md
-    - Event Sets API:
-      - api/eventsets/api-index.md
-      - Types: api/eventsets/api-types.md
-      - Registry: api/eventsets/api-registry.md
-      - Display: api/eventsets/api-display.md
-    - Profiling API:
-      - api/profiling/api-index.md
-      - Metrics: api/profiling/api-metrics.md
-      - Processor: api/profiling/api-processor.md
-      - Component: api/profiling/api-component.md
-    - Resilience API: api/resilience/api-index.md
-    - Transport API:
-      - api/transport/api-index.md
-      - Registry: api/transport/registry.md
-      - Client: api/transport/client.md
-      - Middleware: api/transport/middleware.md
-    - Metrics API: api/metrics/api-index.md
-    - Archive API: api/archive/api-index.md
-    - Concurrency API: api/concurrency/api-index.md
-    - Context API: api/context/api-index.md
-    - Environment API: api/env/api-index.md
-    - File API: api/file/api-index.md
-    - Crypto API: api/crypto/api-index.md
-    - Integrations API: api/integrations/api-index.md
-    - Observability API: api/observability/api-index.md
-    - Platform API: api/platform/api-index.md
-    - Process API: api/process/api-index.md
-    - Serialization API: api/serialization/api-index.md
-    - Streams API: api/streams/api-index.md
-    - Tools API: api/tools/api-index.md
-    - Tracer API: api/tracer/api-index.md
-    - Setup API: 
-      - api/setup/api-index.md
-      - Setup Functions: api/api-setup.md
-    - Console API: api/console/api-index.md
-    - Utils API:
-      - api/utils/api-index.md
-      - Environment: api/utils/api-environment.md
-      - Formatting: api/utils/api-formatting.md
-      - Timing: api/utils/api-timing.md
+    - API Reference: reference/index.md
 
-  - Architecture:
-    - architecture/index.md
-    - Performance: architecture/performance.md
-    - Telemetry Format: architecture/telemetry-format.md
-
-  - Contributing:
-    - development/index.md
-    - Contributing: development/contributing.md
-    - CI/CD: development/ci-cd.md
+  - Specs: specs/index.md
