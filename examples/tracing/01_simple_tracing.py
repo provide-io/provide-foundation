@@ -8,11 +8,10 @@ Demonstrates how to add operation timing and context tracking
 to your applications without external dependencies.
 """
 
-from provide.foundation import logger, setup_telemetry
+from provide.foundation import logger
 from provide.foundation.tracer import get_trace_context, with_span
 
-# Configure logging
-setup_telemetry()
+# Logger auto-initializes on first use - no setup required!
 
 
 def fetch_user_data(user_id: int) -> dict:

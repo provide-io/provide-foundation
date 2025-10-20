@@ -11,15 +11,14 @@ and building trace hierarchies without external dependencies.
 import asyncio
 from typing import Any
 
-from provide.foundation import logger, setup_telemetry
+from provide.foundation import logger
 from provide.foundation.tracer import (
     Span,
     get_trace_context,
     with_span,
 )
 
-# Configure logging to show trace context
-setup_telemetry()
+# Logger auto-initializes on first use - no setup required!
 
 
 def simulate_database_query(query: str, params: dict[str, Any] | None = None) -> dict[str, Any]:

@@ -23,12 +23,12 @@ The easiest way to start is to import the global `logger` instance. Create a Pyt
 
 ```python
 # app.py
-from provide.foundation import logger, setup_telemetry
+from provide.foundation import logger
 
 def main():
     """A simple function to demonstrate basic logging."""
-    # This single line configures the entire logging system with sensible defaults.
-    setup_telemetry()
+    # The logger auto-initializes on first use with sensible defaults.
+    # No setup required!
 
     logger.info("Application starting up")
 
