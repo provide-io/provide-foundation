@@ -90,7 +90,8 @@ class TestBuildLogEntry:
 
     def test_build_log_entry_defaults_to_foundation_service(self) -> None:
         """Test that service defaults to 'foundation' when not in config."""
-        config = TelemetryConfig()  # No service_name
+        # Explicitly set service_name to None to avoid environment pollution
+        config = TelemetryConfig(service_name=None)
 
         entry = build_log_entry("Test", "INFO", None, None, config)
 

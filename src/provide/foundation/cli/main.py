@@ -38,6 +38,15 @@ if _HAS_CLICK:
     except ImportError:
         pass
 
+    # Register config commands
+    try:
+        from provide.foundation.cli.commands.config import config_group
+
+        if hasattr(config_group, "callback"):
+            cli.add_command(config_group)
+    except ImportError:
+        pass
+
     # Register logs commands
     try:
         from provide.foundation.cli.commands.logs import logs_group

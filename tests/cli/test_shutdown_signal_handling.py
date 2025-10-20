@@ -3,30 +3,51 @@
 from __future__ import annotations
 
 import signal
+import threading
 from typing import Any
+
+import pytest
 
 from provide.foundation.cli.shutdown import (
     register_cleanup_handlers,
     unregister_cleanup_handlers,
 )
 
+# Global lock to prevent parallel execution of signal handler tests
+_signal_test_lock = threading.Lock()
 
+
+@pytest.mark.usefixtures("_signal_handler_isolation")
 class TestSignalHandlerManagement:
     """Test signal handler registration and restoration."""
 
-    def setup_method(self) -> None:
-        """Set up each test with clean signal handlers."""
-        # Save truly original handlers before any test modifications
-        self.original_sigint = signal.getsignal(signal.SIGINT)
-        self.original_sigterm = signal.getsignal(signal.SIGTERM)
+    @pytest.fixture(autouse=True)
+    def _signal_handler_isolation(self) -> None:
+        """Ensure signal handler tests don't run in parallel."""
+        # Acquire lock to serialize these tests
+        _signal_test_lock.acquire()
+        try:
+            # Ensure clean slate - unregister any Foundation handlers first
+            unregister_cleanup_handlers()
 
-    def teardown_method(self) -> None:
-        """Restore original handlers after each test."""
-        # Always clean up after tests
-        unregister_cleanup_handlers()
-        # Restore to pre-test state
-        signal.signal(signal.SIGINT, self.original_sigint)
-        signal.signal(signal.SIGTERM, self.original_sigterm)
+            # Set to a known baseline (default handler)
+            signal.signal(signal.SIGINT, signal.SIG_DFL)
+            signal.signal(signal.SIGTERM, signal.SIG_DFL)
+
+            # Save baseline handlers
+            self.original_sigint = signal.getsignal(signal.SIGINT)
+            self.original_sigterm = signal.getsignal(signal.SIGTERM)
+
+            yield
+
+            # Always clean up after tests
+            unregister_cleanup_handlers()
+            # Restore to baseline state
+            signal.signal(signal.SIGINT, signal.SIG_DFL)
+            signal.signal(signal.SIGTERM, signal.SIG_DFL)
+        finally:
+            # Release lock
+            _signal_test_lock.release()
 
     def test_register_handlers_changes_signal_handlers(self) -> None:
         """Test that registering handlers changes signal handlers."""

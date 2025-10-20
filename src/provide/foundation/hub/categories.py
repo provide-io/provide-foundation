@@ -27,6 +27,7 @@ class ComponentCategory(Enum):
 
     # Configuration and data sources
     CONFIG_SOURCE = "config_source"
+    CONFIG_SCHEMA = "config_schema"
 
     # Processing pipeline
     PROCESSOR = "processor"
