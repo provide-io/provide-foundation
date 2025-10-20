@@ -220,6 +220,342 @@ class TestQualityAnalyzer(FoundationTestCase):
         report = analyzer.generate_report()
         assert "No analysis results available" in report
 
+    def test_run_analysis_all_metrics(self) -> None:
+        """Test running analysis with all metrics."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Create a scenario
+        events = [
+            FileEvent(
+                path=Path("test.txt.tmp"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1, size_after=1024),
+            ),
+            FileEvent(
+                path=Path("test.txt.tmp"),
+                event_type="moved",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=50), sequence_number=2
+                ),
+                dest_path=Path("test.txt"),
+            ),
+        ]
+
+        scenario = OperationScenario(
+            name="atomic_save",
+            events=events,
+            expected_operations=[{"type": "atomic_save"}],
+        )
+
+        analyzer.add_scenario(scenario)
+
+        # Run analysis without specifying metrics (should run all)
+        results = analyzer.run_analysis()
+
+        # Should have all metrics
+        assert len(results) == len(AnalysisMetric)
+        assert AnalysisMetric.PRECISION in results
+        assert AnalysisMetric.RECALL in results
+        assert AnalysisMetric.F1_SCORE in results
+        assert AnalysisMetric.FALSE_POSITIVE_RATE in results
+        assert AnalysisMetric.FALSE_NEGATIVE_RATE in results
+
+    def test_precision_recall_f1_metrics(self) -> None:
+        """Test precision, recall, and F1 score metrics."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Create a scenario with expected atomic save
+        events = [
+            FileEvent(
+                path=Path("doc.txt.tmp"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+            FileEvent(
+                path=Path("doc.txt.tmp"),
+                event_type="moved",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=50), sequence_number=2
+                ),
+                dest_path=Path("doc.txt"),
+            ),
+        ]
+
+        scenario = OperationScenario(
+            name="test",
+            events=events,
+            expected_operations=[{"type": "atomic_save"}],
+        )
+
+        analyzer.add_scenario(scenario)
+        results = analyzer.run_analysis(
+            [AnalysisMetric.PRECISION, AnalysisMetric.RECALL, AnalysisMetric.F1_SCORE]
+        )
+
+        precision = results[AnalysisMetric.PRECISION]
+        assert 0.0 <= precision.value <= 1.0
+        assert "true_positives" in precision.details
+        assert "false_positives" in precision.details
+
+        recall = results[AnalysisMetric.RECALL]
+        assert 0.0 <= recall.value <= 1.0
+        assert "true_positives" in recall.details
+        assert "false_negatives" in recall.details
+
+        f1 = results[AnalysisMetric.F1_SCORE]
+        assert 0.0 <= f1.value <= 1.0
+        assert "precision" in f1.details
+        assert "recall" in f1.details
+
+    def test_false_positive_false_negative_metrics(self) -> None:
+        """Test false positive and false negative rate metrics."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Scenario with no expected operations (to test false positive rate)
+        events = [
+            FileEvent(
+                path=Path("test.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+        ]
+
+        scenario = OperationScenario(
+            name="no_operations",
+            events=events,
+            expected_operations=[],
+        )
+
+        analyzer.add_scenario(scenario)
+        results = analyzer.run_analysis(
+            [AnalysisMetric.FALSE_POSITIVE_RATE, AnalysisMetric.FALSE_NEGATIVE_RATE]
+        )
+
+        fpr = results[AnalysisMetric.FALSE_POSITIVE_RATE]
+        assert 0.0 <= fpr.value <= 1.0
+        assert "false_positives" in fpr.details
+        assert "total_negative_cases" in fpr.details
+
+        fnr = results[AnalysisMetric.FALSE_NEGATIVE_RATE]
+        assert 0.0 <= fnr.value <= 1.0
+        assert "false_negatives" in fnr.details
+        assert "total_positive_cases" in fnr.details
+
+    def test_report_with_confidence_distribution_details(self) -> None:
+        """Test report generation includes confidence distribution details."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Create multiple scenarios
+        for i in range(2):
+            events = [
+                FileEvent(
+                    path=Path(f"test{i}.txt.tmp"),
+                    event_type="created",
+                    metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+                ),
+                FileEvent(
+                    path=Path(f"test{i}.txt.tmp"),
+                    event_type="moved",
+                    metadata=FileEventMetadata(
+                        timestamp=base_time + timedelta(milliseconds=50), sequence_number=2
+                    ),
+                    dest_path=Path(f"test{i}.txt"),
+                ),
+            ]
+
+            scenario = OperationScenario(
+                name=f"test{i}", events=events, expected_operations=[{"type": "atomic_save"}]
+            )
+            analyzer.add_scenario(scenario)
+
+        results = analyzer.run_analysis(
+            [AnalysisMetric.CONFIDENCE_DISTRIBUTION, AnalysisMetric.DETECTION_TIME, AnalysisMetric.ACCURACY]
+        )
+        report = analyzer.generate_report(results)
+
+        # Check for confidence distribution details
+        assert "Confidence Distribution" in report
+        assert "By operation type:" in report
+
+        # Check for detection time details
+        assert "Detection Time" in report
+        assert "avg:" in report
+        assert "p95:" in report
+
+        # Check for accuracy details
+        assert "Accuracy" in report
+
+    def test_precision_with_false_positives(self) -> None:
+        """Test precision calculation when detector reports false positives."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Scenario: Expect one operation but detector finds different operation
+        events = [
+            FileEvent(
+                path=Path("test.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+            FileEvent(
+                path=Path("test.txt"),
+                event_type="modified",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=100), sequence_number=2
+                ),
+            ),
+        ]
+
+        # Expect no operations, but detector will likely find some
+        scenario = OperationScenario(name="false_positive_test", events=events, expected_operations=[])
+
+        analyzer.add_scenario(scenario)
+        results = analyzer.run_analysis([AnalysisMetric.PRECISION])
+
+        precision = results[AnalysisMetric.PRECISION]
+        assert "false_positives" in precision.details
+
+    def test_recall_with_false_negatives(self) -> None:
+        """Test recall calculation when detector misses expected operations."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Create a scenario where we expect an operation but detector might miss it
+        events = [
+            FileEvent(
+                path=Path("test.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+        ]
+
+        # Expect an operation that won't be detected from a simple create event
+        scenario = OperationScenario(
+            name="false_negative_test",
+            events=events,
+            expected_operations=[{"type": "batch_format"}],  # Won't be detected
+        )
+
+        analyzer.add_scenario(scenario)
+        results = analyzer.run_analysis([AnalysisMetric.RECALL])
+
+        recall = results[AnalysisMetric.RECALL]
+        assert "false_negatives" in recall.details
+        assert recall.details["false_negatives"] > 0
+
+    def test_confidence_distribution_with_no_detections(self) -> None:
+        """Test confidence distribution when no operations are detected."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Create a scenario with minimal events that won't trigger detection
+        events = [
+            FileEvent(
+                path=Path("test.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+        ]
+
+        scenario = OperationScenario(name="no_detection", events=events, expected_operations=[])
+
+        analyzer.add_scenario(scenario)
+        results = analyzer.run_analysis([AnalysisMetric.CONFIDENCE_DISTRIBUTION])
+
+        confidence = results[AnalysisMetric.CONFIDENCE_DISTRIBUTION]
+        # Should handle empty results gracefully
+        assert confidence.value >= 0.0
+
+    def test_false_positive_rate_with_no_expected_no_detected(self) -> None:
+        """Test FPR when there are no expected and no detected operations."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Single event that won't trigger detection
+        events = [
+            FileEvent(
+                path=Path("test.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+        ]
+
+        scenario = OperationScenario(name="no_ops", events=events, expected_operations=[])
+
+        analyzer.add_scenario(scenario)
+        results = analyzer.run_analysis([AnalysisMetric.FALSE_POSITIVE_RATE])
+
+        fpr = results[AnalysisMetric.FALSE_POSITIVE_RATE]
+        assert "total_negative_cases" in fpr.details
+        assert fpr.details["total_negative_cases"] > 0
+
+    def test_false_negative_rate_calculation(self) -> None:
+        """Test false negative rate with expected operations not detected."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Simple event that won't match complex expected operation
+        events = [
+            FileEvent(
+                path=Path("test.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+        ]
+
+        # Expect an operation that won't be detected
+        scenario = OperationScenario(
+            name="fnr_test",
+            events=events,
+            expected_operations=[{"type": "batch_format"}],
+        )
+
+        analyzer.add_scenario(scenario)
+        results = analyzer.run_analysis([AnalysisMetric.FALSE_NEGATIVE_RATE])
+
+        fnr = results[AnalysisMetric.FALSE_NEGATIVE_RATE]
+        assert "false_negatives" in fnr.details
+        assert "total_positive_cases" in fnr.details
+
+    def test_generate_report_without_results_parameter(self) -> None:
+        """Test report generation uses latest results when no results provided."""
+        analyzer = QualityAnalyzer()
+        base_time = datetime.now()
+
+        # Create a simple scenario
+        events = [
+            FileEvent(
+                path=Path("test.txt.tmp"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
+            ),
+            FileEvent(
+                path=Path("test.txt.tmp"),
+                event_type="moved",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=50), sequence_number=2
+                ),
+                dest_path=Path("test.txt"),
+            ),
+        ]
+
+        scenario = OperationScenario(name="test", events=events, expected_operations=[{"type": "atomic_save"}])
+
+        analyzer.add_scenario(scenario)
+
+        # Run analysis (stores results internally)
+        analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.PRECISION])
+
+        # Generate report without providing results - should use latest
+        report = analyzer.generate_report()
+
+        assert "File Operation Detection Quality Report" in report
+        assert "Scenarios: 1" in report
+
 
 class TestQualityResult(FoundationTestCase):
     """Test the quality result functionality."""

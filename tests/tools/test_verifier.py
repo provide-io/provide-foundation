@@ -110,8 +110,8 @@ class TestToolVerifierChecksum:
 
         # SHA512 of "test content"
         sha512_hash = (
-            "sha512:6dfa8d5b49e7a5385f48be02e06e5be07c5b3a33b84f1cfc3cce34a0f8ab70ddb1b3f836bf84a4"
-            "cfd32f5c3d82c5b8b54cb60e8c8eea1e6e6e8d7f1d0b8c"
+            "sha512:0cbf4caef38047bba9a24e621a961484e5d2a92176a859e7eb27df343dd34eb98d538a6c5f4da1ce"
+            "302ec250b821cc001e46cc97a704988297185a4df7e99602"
         )
         assert verifier.verify_checksum(file_path, sha512_hash) is True
 

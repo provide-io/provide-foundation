@@ -176,14 +176,13 @@ class TestDownloadWithProgress:
         mock_response.headers = {"content-length": "12"}
 
         mock_client.request = AsyncMock(return_value=mock_response)
-        mock_client.stream = AsyncMock()
 
-        # Mock streaming chunks
+        # Mock streaming chunks - assign the async generator function directly
         async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             for chunk in [b"test", b" ", b"content"]:
                 yield chunk
 
-        mock_client.stream.return_value = mock_stream_generator()
+        mock_client.stream = mock_stream_generator
 
         downloader = ToolDownloader(mock_client)
         dest = tmp_path / "downloaded.txt"
@@ -209,7 +208,7 @@ class TestDownloadWithProgress:
             yield b"test"
             yield b" content"
 
-        mock_client.stream = AsyncMock(return_value=mock_stream_generator())
+        mock_client.stream = mock_stream_generator
 
         downloader = ToolDownloader(mock_client)
         callback = Mock()
@@ -225,9 +224,10 @@ class TestDownloadWithProgress:
     async def test_download_with_progress_http_error(self, tmp_path: Path) -> None:
         """Test download failure on HTTP error."""
         mock_client = Mock()
-        mock_response = AsyncMock()
-        mock_response.is_success.return_value = False
+        mock_response = Mock()  # Use regular Mock, not AsyncMock
+        mock_response.is_success = Mock(return_value=False)  # Make is_success a regular mock
         mock_response.status = 404
+        mock_response.headers = {}
 
         mock_client.request = AsyncMock(return_value=mock_response)
 
@@ -251,7 +251,7 @@ class TestDownloadWithProgress:
         async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             yield b"content"
 
-        mock_client.stream = AsyncMock(return_value=mock_stream_generator())
+        mock_client.stream = mock_stream_generator
 
         downloader = ToolDownloader(mock_client)
         dest = tmp_path / "nested" / "dir" / "file.txt"
@@ -275,7 +275,7 @@ class TestDownloadWithProgress:
         async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             yield b"test content"
 
-        mock_client.stream = AsyncMock(return_value=mock_stream_generator())
+        mock_client.stream = mock_stream_generator
 
         downloader = ToolDownloader(mock_client)
         dest = tmp_path / "file.txt"
@@ -303,7 +303,7 @@ class TestDownloadWithProgress:
         async def mock_stream_generator(*args: tuple, **kwargs: dict) -> AsyncGenerator[bytes, None]:
             yield b"test content"
 
-        mock_client.stream = AsyncMock(return_value=mock_stream_generator())
+        mock_client.stream = mock_stream_generator
 
         downloader = ToolDownloader(mock_client)
         dest = tmp_path / "file.txt"
@@ -332,7 +332,7 @@ class TestDownloadWithProgress:
             yield b"test"
             raise Exception("Connection lost")
 
-        mock_client.stream = AsyncMock(return_value=mock_stream_generator())
+        mock_client.stream = mock_stream_generator
 
         downloader = ToolDownloader(mock_client)
         dest = tmp_path / "file.txt"
