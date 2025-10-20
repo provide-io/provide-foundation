@@ -10,7 +10,6 @@ Provides path validation to prevent common archive extraction vulnerabilities.
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
 
 __all__ = ["is_safe_path"]
@@ -23,6 +22,9 @@ def is_safe_path(base_dir: Path, target_path: str) -> bool:
     - Path traversal attacks (..)
     - Absolute paths
     - Symlinks that point outside base directory
+
+    Uses modern Path.is_relative_to() for robust path containment checks,
+    avoiding string manipulation vulnerabilities.
 
     Args:
         base_dir: Base extraction directory
@@ -53,9 +55,9 @@ def is_safe_path(base_dir: Path, target_path: str) -> bool:
         full_path = (base_dir / target_path).resolve()
         base_resolved = base_dir.resolve()
 
-        # Ensure the resolved path is within base directory
-        # This catches symlinks and other tricks
-        return str(full_path).startswith(str(base_resolved) + os.sep) or full_path == base_resolved
+        # Use modern is_relative_to() for robust containment check
+        # This catches symlinks and other tricks without string manipulation
+        return full_path.is_relative_to(base_resolved)
     except (ValueError, OSError):
         return False
 

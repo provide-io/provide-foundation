@@ -126,9 +126,10 @@ class TestArchiveOperations(FoundationTestCase):
         result = ArchiveOperations.extract_tar_gz(archive, extracted)
 
         assert result == extracted
-        assert (extracted / "source" / "file1.txt").exists()
-        assert "Content 1" in (extracted / "source" / "file1.txt").read_text()
-        assert (extracted / "source" / "subdir" / "file3.txt").exists()
+        # New consistent behavior: no parent directory in archive
+        assert (extracted / "file1.txt").exists()
+        assert "Content 1" in (extracted / "file1.txt").read_text()
+        assert (extracted / "subdir" / "file3.txt").exists()
 
     def test_create_tar_bz2(self, test_dir: tuple[Path, Path]) -> None:
         """Test creating tar.bz2 archive."""
@@ -155,8 +156,9 @@ class TestArchiveOperations(FoundationTestCase):
         result = ArchiveOperations.extract_tar_bz2(archive, extracted)
 
         assert result == extracted
-        assert (extracted / "source" / "file1.txt").exists()
-        assert "Content 1" in (extracted / "source" / "file1.txt").read_text()
+        # New consistent behavior: no parent directory in archive
+        assert (extracted / "file1.txt").exists()
+        assert "Content 1" in (extracted / "file1.txt").read_text()
 
     def test_detect_format_by_extension(self) -> None:
         """Test format detection by file extension."""
