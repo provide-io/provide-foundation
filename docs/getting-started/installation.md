@@ -1,0 +1,241 @@
+# Installation
+
+This guide covers installing provide.foundation and setting up your development environment.
+
+## Requirements
+
+- **Python 3.11 or higher** - Foundation uses modern Python features
+- **pip or uv** - Package manager for installation
+- **Virtual environment** (recommended) - For isolated dependencies
+
+## Basic Installation
+
+### Using pip
+
+The simplest installation provides core logging functionality:
+
+```bash
+pip install provide-foundation
+```
+
+This installs the base package with essential dependencies:
+- `structlog` - Structured logging foundation
+- `attrs` - Data class utilities
+- `python-dotenv` - Environment variable support
+
+### Using uv (Recommended for Development)
+
+For faster dependency resolution:
+
+```bash
+# Install uv if you haven't already
+pip install uv
+
+# Install Foundation
+uv pip install provide-foundation
+```
+
+## Installation Options
+
+Foundation offers modular installation through "extras" that add optional features:
+
+### All Features
+
+For the complete experience:
+
+```bash
+pip install "provide-foundation[all]"
+```
+
+### Specific Features
+
+Install only what you need:
+
+#### CLI Framework
+```bash
+pip install "provide-foundation[cli]"
+```
+**Adds:** `click` for command-line interface building
+
+**Use when:** Building command-line tools, developer utilities
+
+#### Cryptography
+```bash
+pip install "provide-foundation[crypto]"
+```
+**Adds:** `cryptography` library for secure operations
+
+**Use when:** Need hashing, signatures, or certificate management
+
+#### HTTP Transport
+```bash
+pip install "provide-foundation[transport]"
+```
+**Adds:** `httpx` for HTTP client operations
+
+**Use when:** Making HTTP requests with middleware and error handling
+
+#### OpenTelemetry
+```bash
+pip install "provide-foundation[opentelemetry]"
+```
+**Adds:** OpenTelemetry SDK for distributed tracing
+
+**Use when:** Building microservices with distributed tracing needs
+
+### Combining Extras
+
+Install multiple features:
+
+```bash
+pip install "provide-foundation[cli,crypto]"
+```
+
+## Virtual Environment Setup
+
+### Using venv (Standard Library)
+
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate on macOS/Linux
+source .venv/bin/activate
+
+# Activate on Windows
+.venv\Scripts\activate
+
+# Install Foundation
+pip install "provide-foundation[all]"
+```
+
+### Using uv venv (Faster)
+
+```bash
+# Create and activate environment
+uv venv
+source .venv/bin/activate  # macOS/Linux
+# or: .venv\Scripts\activate  # Windows
+
+# Install Foundation
+uv pip install "provide-foundation[all]"
+```
+
+## Verify Installation
+
+Check that Foundation is installed correctly:
+
+```bash
+python -c "from provide.foundation import logger; logger.info('Installation successful!')"
+```
+
+You should see a formatted log message confirming the installation.
+
+## Development Installation
+
+For contributing to Foundation or running examples from source:
+
+```bash
+# Clone the repository
+git clone https://github.com/provide-io/provide-foundation.git
+cd provide-foundation
+
+# Create virtual environment
+uv venv
+source .venv/bin/activate  # macOS/Linux
+
+# Install with development dependencies
+uv sync
+
+# Run tests to verify
+pytest
+```
+
+## Dependency Overview
+
+### Core Dependencies (Always Installed)
+
+- **structlog** (^24.4.0) - Structured logging engine
+- **attrs** (^24.2.0) - Data class utilities
+- **python-dotenv** (^1.0.1) - Environment variable loading
+
+### Optional Dependencies
+
+| Extra | Key Dependencies | Purpose |
+|-------|-----------------|---------|
+| `cli` | click ^8.1.7 | CLI framework |
+| `crypto` | cryptography ^44.0.0 | Cryptographic operations |
+| `transport` | httpx ^0.28.1, respx ^0.22.0 | HTTP client |
+| `opentelemetry` | opentelemetry-sdk ^1.29.0 | Distributed tracing |
+
+## Platform-Specific Notes
+
+### macOS
+- Requires macOS 10.13 or higher
+- Xcode Command Line Tools recommended for cryptography
+- Apple Silicon (M1/M2) fully supported
+
+### Linux
+- Works on most distributions (Ubuntu, Debian, RHEL, Alpine)
+- Requires `gcc` and `libffi-dev` for cryptography on some systems
+- Container images: Use Python 3.11+ base images
+
+### Windows
+- Windows 10 or higher recommended
+- Microsoft C++ Build Tools required for cryptography
+- PowerShell or Command Prompt supported
+
+## Troubleshooting
+
+### Import Errors
+
+**Problem:** `ModuleNotFoundError: No module named 'provide'`
+
+**Solution:** Ensure virtual environment is activated and Foundation is installed:
+```bash
+source .venv/bin/activate
+pip list | grep provide-foundation
+```
+
+### Cryptography Installation Fails
+
+**Problem:** Build errors when installing `[crypto]` extra
+
+**Solution:** Install platform-specific build tools:
+
+**macOS:**
+```bash
+xcode-select --install
+```
+
+**Ubuntu/Debian:**
+```bash
+sudo apt-get install build-essential libffi-dev python3-dev
+```
+
+**RHEL/CentOS:**
+```bash
+sudo yum install gcc libffi-devel python3-devel
+```
+
+### Version Conflicts
+
+**Problem:** Dependency version conflicts with existing packages
+
+**Solution:** Use a fresh virtual environment or update conflicting packages:
+```bash
+pip install --upgrade pip
+pip install "provide-foundation[all]" --upgrade
+```
+
+## Next Steps
+
+After installation:
+
+1. **[Quick Start](quick-start/)** - Write your first Foundation code
+2. **[First Application](first-app/)** - Build a complete CLI tool
+3. **[Examples](examples/)** - Explore feature-specific examples
+
+---
+
+**Need help?** Check the [GitHub Issues](https://github.com/provide-io/provide-foundation/issues) or ask a question.
