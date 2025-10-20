@@ -10,7 +10,6 @@ import sys
 from unittest.mock import MagicMock, Mock, patch
 
 from provide.testkit import FoundationTestCase
-import pytest
 
 from provide.foundation.testmode.orchestration import (
     _reset_foundation_environment_variables,
@@ -303,7 +302,9 @@ class TestResetFoundationState(FoundationTestCase):
             if "PYTEST_XDIST_WORKER" in os.environ:
                 del os.environ["PYTEST_XDIST_WORKER"]
 
-            with patch("provide.foundation.testmode.orchestration._reset_opentelemetry_providers") as mock_otel:
+            with patch(
+                "provide.foundation.testmode.orchestration._reset_opentelemetry_providers"
+            ) as mock_otel:
                 reset_foundation_state()
 
                 # Should be called when not in xdist

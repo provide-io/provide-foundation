@@ -8,13 +8,13 @@ import pytest
 
 
 @pytest.fixture(autouse=True)
-def reset_foundation():
+def reset_foundation() -> None:
     """Reset Foundation state before each test."""
     reset_foundation_setup_for_testing()
 
 
 @pytest.fixture(autouse=True)
-def clear_serialization_cache():
+def clear_serialization_cache() -> None:
     """Clear serialization cache before each test."""
     # Clear the module-level cache state
     from provide.foundation.serialization import cache as cache_module
@@ -25,7 +25,7 @@ def clear_serialization_cache():
 
 
 @pytest.fixture
-def clean_env(monkeypatch):
+def clean_env(monkeypatch) -> None:
     """Clean environment for cache configuration tests."""
     # Remove all FOUNDATION_SERIALIZATION_* env vars
     for key in list(os.environ.keys()):
@@ -34,14 +34,14 @@ def clean_env(monkeypatch):
 
 
 @pytest.fixture
-def mock_env_no_cache(monkeypatch):
+def mock_env_no_cache(monkeypatch) -> None:
     """Mock environment to disable caching."""
     monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_ENABLED", "false")
     monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_SIZE", "128")
 
 
 @pytest.fixture
-def mock_env_small_cache(monkeypatch):
+def mock_env_small_cache(monkeypatch) -> None:
     """Mock environment for small cache size."""
     monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_ENABLED", "true")
     monkeypatch.setenv("FOUNDATION_SERIALIZATION_CACHE_SIZE", "2")

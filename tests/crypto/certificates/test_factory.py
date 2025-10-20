@@ -5,11 +5,10 @@ Run with: pytest tests/crypto/certificates/test_factory.py -v
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import patch
 
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.crypto.certificates.base import CertificateError
 from provide.foundation.crypto.certificates.factory import (
@@ -480,11 +479,11 @@ class TestFactoryEdgeCases(FoundationTestCase):
 
 
 __all__ = [
-    "TestCreateCACertificate",
-    "TestCreateSignedCertificate",
-    "TestCreateSelfSignedServerCert",
-    "TestCreateSelfSignedClientCert",
     "TestConvenienceFunctions",
-    "TestFactoryLogging",
+    "TestCreateCACertificate",
+    "TestCreateSelfSignedClientCert",
+    "TestCreateSelfSignedServerCert",
+    "TestCreateSignedCertificate",
     "TestFactoryEdgeCases",
+    "TestFactoryLogging",
 ]

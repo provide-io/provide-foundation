@@ -7,9 +7,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.utils.optional_deps import (
     OptionalDependency,
@@ -377,12 +376,12 @@ class TestOptionalDependencyDocumentation(FoundationTestCase):
 
 
 __all__ = [
-    "TestOptionalDependencyInit",
-    "TestOptionalDependencyIsAvailable",
+    "TestLoadOptionalDependency",
+    "TestOptionalDependencyDocumentation",
+    "TestOptionalDependencyEdgeCases",
     "TestOptionalDependencyImportPackage",
     "TestOptionalDependencyImportSymbols",
-    "TestLoadOptionalDependency",
-    "TestOptionalDependencyEdgeCases",
+    "TestOptionalDependencyInit",
     "TestOptionalDependencyIntegration",
-    "TestOptionalDependencyDocumentation",
+    "TestOptionalDependencyIsAvailable",
 ]
