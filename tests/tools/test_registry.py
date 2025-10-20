@@ -105,7 +105,7 @@ def mock_hub():
     registry.get_entry = Mock()
     registry.list_dimension = Mock()
 
-    hub.registry = registry
+    hub._component_registry = registry
     return hub
 
 
@@ -135,7 +135,7 @@ class TestToolRegistry(FoundationTestCase):
         registry.register_tool_manager("mocktool", MockToolManager)
 
         # Verify registration call
-        registry.hub.registry.register.assert_called_once_with(
+        registry.hub._component_registry.register.assert_called_once_with(
             name="mocktool",
             value=MockToolManager,
             dimension=ToolRegistry.DIMENSION,
@@ -154,7 +154,7 @@ class TestToolRegistry(FoundationTestCase):
         registry.register_tool_manager("mocktool", MockToolManager, aliases=aliases)
 
         # Verify registration with aliases
-        registry.hub.registry.register.assert_called_once_with(
+        registry.hub._component_registry.register.assert_called_once_with(
             name="mocktool",
             value=MockToolManager,
             dimension=ToolRegistry.DIMENSION,
@@ -169,31 +169,31 @@ class TestToolRegistry(FoundationTestCase):
 
     def test_get_tool_manager_class(self, registry) -> None:
         """Test retrieving a tool manager class."""
-        registry.hub.registry.get.return_value = MockToolManager
+        registry.hub._component_registry.get.return_value = MockToolManager
 
         result = registry.get_tool_manager_class("mocktool")
 
         assert result == MockToolManager
-        registry.hub.registry.get.assert_called_once_with(
+        registry.hub._component_registry.get.assert_called_once_with(
             "mocktool",
             dimension=ToolRegistry.DIMENSION,
         )
 
     def test_get_tool_manager_class_not_found(self, registry) -> None:
         """Test retrieving a non-existent tool manager."""
-        registry.hub.registry.get.return_value = None
+        registry.hub._component_registry.get.return_value = None
 
         result = registry.get_tool_manager_class("nonexistent")
 
         assert result is None
-        registry.hub.registry.get.assert_called_once_with(
+        registry.hub._component_registry.get.assert_called_once_with(
             "nonexistent",
             dimension=ToolRegistry.DIMENSION,
         )
 
     def test_create_tool_manager(self, registry, config) -> None:
         """Test creating a tool manager instance."""
-        registry.hub.registry.get.return_value = MockToolManager
+        registry.hub._component_registry.get.return_value = MockToolManager
 
         result = registry.create_tool_manager("mocktool", config)
 
@@ -202,7 +202,7 @@ class TestToolRegistry(FoundationTestCase):
 
     def test_create_tool_manager_not_found(self, registry, config) -> None:
         """Test creating a non-existent tool manager."""
-        registry.hub.registry.get.return_value = None
+        registry.hub._component_registry.get.return_value = None
 
         result = registry.create_tool_manager("nonexistent", config)
 
@@ -217,7 +217,7 @@ class TestToolRegistry(FoundationTestCase):
         mock_entry2 = Mock()
         mock_entry2.metadata = {"tool_name": "tool2", "executable": "tool2"}
 
-        registry.hub.registry.list_dimension.return_value = [
+        registry.hub._component_registry.list_dimension.return_value = [
             ("tool1", mock_entry1),
             ("tool2", mock_entry2),
         ]
@@ -232,7 +232,7 @@ class TestToolRegistry(FoundationTestCase):
         """Test listing tools when entry has no metadata."""
         mock_entry = Mock(spec=[])  # No metadata attribute
 
-        registry.hub.registry.list_dimension.return_value = [("tool1", mock_entry)]
+        registry.hub._component_registry.list_dimension.return_value = [("tool1", mock_entry)]
 
         result = registry.list_tools()
 
@@ -248,7 +248,7 @@ class TestToolRegistry(FoundationTestCase):
             "platforms": ["darwin", "linux"],
         }
 
-        registry.hub.registry.get_entry.return_value = mock_entry
+        registry.hub._component_registry.get_entry.return_value = mock_entry
 
         result = registry.get_tool_info("mocktool")
 
@@ -257,14 +257,14 @@ class TestToolRegistry(FoundationTestCase):
             "executable": "mocktool",
             "platforms": ["darwin", "linux"],
         }
-        registry.hub.registry.get_entry.assert_called_once_with(
+        registry.hub._component_registry.get_entry.assert_called_once_with(
             "mocktool",
             dimension=ToolRegistry.DIMENSION,
         )
 
     def test_get_tool_info_not_found(self, registry) -> None:
         """Test getting info for non-existent tool."""
-        registry.hub.registry.get_entry.return_value = None
+        registry.hub._component_registry.get_entry.return_value = None
 
         result = registry.get_tool_info("nonexistent")
 
@@ -273,7 +273,7 @@ class TestToolRegistry(FoundationTestCase):
     def test_get_tool_info_no_metadata(self, registry) -> None:
         """Test getting info when entry has no metadata."""
         mock_entry = Mock(spec=[])  # No metadata attribute
-        registry.hub.registry.get_entry.return_value = mock_entry
+        registry.hub._component_registry.get_entry.return_value = mock_entry
 
         result = registry.get_tool_info("tool")
 
@@ -281,11 +281,11 @@ class TestToolRegistry(FoundationTestCase):
 
     def test_is_tool_registered(self, registry) -> None:
         """Test checking if a tool is registered."""
-        registry.hub.registry.get.return_value = MockToolManager
+        registry.hub._component_registry.get.return_value = MockToolManager
 
         assert registry.is_tool_registered("mocktool") is True
 
-        registry.hub.registry.get.return_value = None
+        registry.hub._component_registry.get.return_value = None
         assert registry.is_tool_registered("nonexistent") is False
 
 
@@ -312,7 +312,7 @@ class TestDiscoverTools(FoundationTestCase):
                 mock_ep.load.assert_called_once()
 
                 # Verify registration
-                mock_hub.registry.register.assert_called_with(
+                mock_hub._component_registry.register.assert_called_with(
                     name="discovered_tool",
                     value=MockToolManager,
                     dimension=ToolRegistry.DIMENSION,
@@ -407,10 +407,10 @@ class TestMultipleToolManagers(FoundationTestCase):
         registry.register_tool_manager("tool1", MockToolManager)
         registry.register_tool_manager("tool2", AnotherMockToolManager)
 
-        assert registry.hub.registry.register.call_count == 2
+        assert registry.hub._component_registry.register.call_count == 2
 
         # Verify both registrations
-        calls = registry.hub.registry.register.call_args_list
+        calls = registry.hub._component_registry.register.call_args_list
 
         assert calls[0][1]["name"] == "tool1"
         assert calls[0][1]["value"] == MockToolManager
@@ -426,7 +426,7 @@ class TestMultipleToolManagers(FoundationTestCase):
         registry.register_tool_manager("tool", AnotherMockToolManager)
 
         # Both calls should have replace=True
-        calls = registry.hub.registry.register.call_args_list
+        calls = registry.hub._component_registry.register.call_args_list
         assert all(call[1]["replace"] is True for call in calls)
 
 
@@ -450,9 +450,9 @@ class TestRegistryDimension(FoundationTestCase):
 
         # Verify all calls used the correct dimension
         dimension_calls = (
-            [call for call in registry.hub.registry.register.call_args_list]
-            + [call for call in registry.hub.registry.get.call_args_list]
-            + [call for call in registry.hub.registry.get_entry.call_args_list]
+            [call for call in registry.hub._component_registry.register.call_args_list]
+            + [call for call in registry.hub._component_registry.get.call_args_list]
+            + [call for call in registry.hub._component_registry.get_entry.call_args_list]
         )
 
         for call in dimension_calls:

@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 from provide.foundation.console.output import perr, pout
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.hub.decorators import register_command
+from provide.foundation.hub.manager import get_hub
 
 if TYPE_CHECKING:
     from provide.foundation.context import CLIContext
@@ -40,14 +41,12 @@ def show_profile_metrics(ctx: CLIContext) -> None:
           🎨 Emoji overhead: 3.2%
 
     """
-    from provide.foundation.hub.manager import get_hub
-
     hub = get_hub()
     profiler = hub.get_component("profiler")
 
     if not profiler:
-        perr("❌ Profiling not enabled", color="red")
-        perr("   Enable with: profiler.enable()", color="yellow")
+        perr("❌ Profiling not enabled", color="red", ctx=ctx)
+        perr("   Enable with: profiler.enable()", color="yellow", ctx=ctx)
         return
 
     metrics = profiler.get_metrics()
