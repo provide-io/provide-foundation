@@ -136,6 +136,31 @@ nav:
     - Dependency Injection: explanation/dependency-injection.md
 
   - Reference:
-    - API Reference: reference/index.md
+    - Overview: reference/index.md
+    - Core:
+      - Logger: reference/provide/foundation/logger/index.md
+      - Hub: reference/provide/foundation/hub/index.md
+      - Config: reference/provide/foundation/config/index.md
+      - Errors: reference/provide/foundation/errors/index.md
+    - CLI & Console:
+      - CLI: reference/provide/foundation/cli/index.md
+      - Console: reference/provide/foundation/console/index.md
+    - Resilience:
+      - Resilience: reference/provide/foundation/resilience/index.md
+      - Metrics: reference/provide/foundation/metrics/index.md
+      - Tracer: reference/provide/foundation/tracer/index.md
+    - Data & Files:
+      - File: reference/provide/foundation/file/index.md
+      - Archive: reference/provide/foundation/archive/index.md
+      - Serialization: reference/provide/foundation/serialization/index.md
+    - Security:
+      - Crypto: reference/provide/foundation/crypto/index.md
+      - Security: reference/provide/foundation/security/index.md
+    - Utilities:
+      - Utils: reference/provide/foundation/utils/index.md
+      - Process: reference/provide/foundation/process/index.md
+      - Platform: reference/provide/foundation/platform/index.md
+      - Transport: reference/provide/foundation/transport/index.md
+      - Parsers: reference/provide/foundation/parsers/index.md
 
   - Specs: specs/index.md
