@@ -154,17 +154,17 @@ logger.info("app_started", version="1.0.0")
 ## Next Steps
 
 ### Build a Complete Application
-Continue to [First Application](first-app/) to build a full CLI task manager (15 minutes).
+Continue to [First Application](first-app.md) to build a full CLI task manager (15 minutes).
 
 ### Explore Specific Features
 
-- **[Basic Logging Guide](../how-to-guides/logging/basic-logging/)** - Learn more logging patterns
-- **[Exception Logging](../how-to-guides/logging/exception-logging/)** - Handle errors effectively
-- **[CLI Commands](../how-to-guides/cli/commands/)** - Build command-line tools
+- **[Basic Logging Guide](../how-to-guides/logging/basic-logging.md)** - Learn more logging patterns
+- **[Exception Logging](../how-to-guides/logging/exception-logging.md)** - Handle errors effectively
+- **[CLI Commands](../how-to-guides/cli/commands.md)** - Build command-line tools
 
 ### See More Examples
 
-Browse the [Examples](examples/) section for:
+Browse the [Examples](examples.md) section for:
 - Configuration management
 - Async logging
 - HTTP client usage
@@ -173,4 +173,4 @@ Browse the [Examples](examples/) section for:
 
 ---
 
-**Questions?** Check the [How-To Guides](../how-to-guides/logging/basic-logging/) or [API Reference](../reference/).
+**Questions?** Check the [How-To Guides](../how-to-guides/logging/basic-logging.md) or [API Reference](../reference/index.md).

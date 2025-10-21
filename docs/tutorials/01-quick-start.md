@@ -94,4 +94,4 @@ Let's break down what you're seeing:
 Congratulations! You've successfully used `provide.foundation` to produce structured, human-readable logs.
 
 **Next Steps:**
-- Build a more complete application in the **[First Application Tutorial](./02-first-app/)**.
+- Build a more complete application in the **[First Application Tutorial](02-first-app.md)**.

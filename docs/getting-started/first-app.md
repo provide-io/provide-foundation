@@ -278,13 +278,13 @@ def load_tasks():
 
 ### Explore More Features
 
-- **[CLI Commands Guide](../how-to-guides/cli/commands/)** - Advanced CLI patterns
-- **[Basic Logging](../how-to-guides/logging/basic-logging/)** - More logging techniques
-- **[Retry Patterns](../how-to-guides/resilience/retry/)** - Add resilience to your app
+- **[CLI Commands Guide](../how-to-guides/cli/commands.md)** - Advanced CLI patterns
+- **[Basic Logging](../how-to-guides/logging/basic-logging.md)** - More logging techniques
+- **[Retry Patterns](../how-to-guides/resilience/retry.md)** - Add resilience to your app
 
 ### See More Examples
 
-Browse the [Examples](examples/) section for:
+Browse the [Examples](examples.md) section for:
 - Configuration management
 - HTTP client usage
 - Async programming
@@ -301,4 +301,4 @@ Browse the [Examples](examples/) section for:
 
 **Congratulations!** You've built a complete CLI application with Foundation.
 
-**Next:** Explore [How-To Guides](../how-to-guides/logging/basic-logging/) for specific use cases.
+**Next:** Explore [How-To Guides](../how-to-guides/logging/basic-logging.md) for specific use cases.

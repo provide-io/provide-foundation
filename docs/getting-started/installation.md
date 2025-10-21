@@ -232,9 +232,9 @@ pip install "provide-foundation[all]" --upgrade
 
 After installation:
 
-1. **[Quick Start](quick-start/)** - Write your first Foundation code
-2. **[First Application](first-app/)** - Build a complete CLI tool
-3. **[Examples](examples/)** - Explore feature-specific examples
+1. **[Quick Start](quick-start.md)** - Write your first Foundation code
+2. **[First Application](first-app.md)** - Build a complete CLI tool
+3. **[Examples](examples.md)** - Explore feature-specific examples
 
 ---
 

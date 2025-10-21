@@ -197,9 +197,9 @@ See [CONTRIBUTING.md](https://github.com/provide-io/provide-foundation/blob/main
 
 After exploring examples:
 
-- **[How-To Guides](../how-to-guides/logging/basic-logging/)** - Solve specific problems
-- **[API Reference](../reference/)** - Detailed API documentation
-- **[Explanation](../explanation/architecture/)** - Understand architecture
+- **[How-To Guides](../how-to-guides/logging/basic-logging.md)** - Solve specific problems
+- **[API Reference](../reference/index.md)** - Detailed API documentation
+- **[Explanation](../explanation/architecture.md)** - Understand architecture
 
 ---
 

@@ -1,7 +1,33 @@
 /* Extra styles for provide.foundation documentation */
+/* Fonts and styling to match provide.io branding */
 
-/* TODO: Update these styles to match provide.io branding */
-/* Current placeholder styles provide basic layout improvements */
+/* Import Google Fonts matching provide.io */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+/* Override Material theme fonts with provide.io fonts */
+:root {
+  --md-text-font: "IBM Plex Serif", serif;
+  --md-code-font: "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace;
+}
+
+/* Apply provide.io fonts */
+body, .md-typeset {
+  font-family: "IBM Plex Serif", serif;
+}
+
+/* Headings use Chakra Petch like provide.io */
+h1, h2, h3, h4, h5, h6,
+.md-typeset h1, .md-typeset h2, .md-typeset h3,
+.md-typeset h4, .md-typeset h5, .md-typeset h6 {
+  font-family: "Chakra Petch", sans-serif;
+  font-weight: 700;
+}
+
+/* Code blocks use monospace stack */
+code, pre, kbd, samp,
+.md-typeset code, .md-typeset pre {
+  font-family: "SFMono-Regular", "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", monospace;
+}
 
 /* Feature grids for landing pages */
 .feature-grid {

@@ -16,8 +16,8 @@ docs_dir: docs
 theme:
   name: material
   language: en
-  logo: assets/images/logo.svg
-  favicon: assets/images/logo.svg
+  logo: assets/images/officium-light.svg
+  favicon: assets/images/officium-light.svg
 
   palette:
     # Light mode
@@ -39,8 +39,8 @@ theme:
         name: Switch to light mode
 
   font:
-    text: Poppins
-    code: Fira Code
+    text: IBM Plex Serif
+    code: SFMono-Regular
 
   features:
     - navigation.instant
