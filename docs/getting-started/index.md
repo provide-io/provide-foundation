@@ -18,22 +18,22 @@ provide.foundation is a comprehensive Python library for building robust, produc
   <div class="getting-started-card">
     <h3>📦 Installation</h3>
     <p>Install Foundation and configure your environment</p>
-    <a href="installation/">Start Here →</a>
+    <a href="installation.md">Start Here →</a>
   </div>
   <div class="getting-started-card">
     <h3>⚡ Quick Start</h3>
     <p>Write your first Foundation application in 5 minutes</p>
-    <a href="quick-start/">Get Coding →</a>
+    <a href="quick-start.md">Get Coding →</a>
   </div>
   <div class="getting-started-card">
     <h3>🏗️ First Application</h3>
     <p>Build a complete CLI task manager</p>
-    <a href="first-app/">Build Something →</a>
+    <a href="first-app.md">Build Something →</a>
   </div>
   <div class="getting-started-card">
     <h3>💡 Examples</h3>
     <p>Explore code examples for all features</p>
-    <a href="examples/">See Examples →</a>
+    <a href="examples.md">See Examples →</a>
   </div>
 </div>
 
@@ -41,12 +41,12 @@ provide.foundation is a comprehensive Python library for building robust, produc
 
 We recommend following this path:
 
-1. **[Installation](installation/)** - Set up your environment (2 minutes)
-2. **[Quick Start](quick-start/)** - Write your first logs (5 minutes)
-3. **[First Application](first-app/)** - Build a CLI tool (15 minutes)
-4. **[Examples](examples/)** - Explore specific features (ongoing)
+1. **[Installation](installation.md)** - Set up your environment (2 minutes)
+2. **[Quick Start](quick-start.md)** - Write your first logs (5 minutes)
+3. **[First Application](first-app.md)** - Build a CLI tool (15 minutes)
+4. **[Examples](examples.md)** - Explore specific features (ongoing)
 
-After completing these, dive into the [How-To Guides](../how-to-guides/logging/basic-logging/) for specific use cases.
+After completing these, dive into the [How-To Guides](../how-to-guides/logging/basic-logging.md) for specific use cases.
 
 ## System Requirements
 
@@ -69,10 +69,10 @@ Foundation has modular installation options:
 
 ## Need Help?
 
-- **Documentation:** Browse the [How-To Guides](../how-to-guides/logging/basic-logging/) and [Explanation](../explanation/architecture/) sections
-- **Examples:** Check the [Examples](examples/) for working code
+- **Documentation:** Browse the [How-To Guides](../how-to-guides/logging/basic-logging.md) and [Explanation](../explanation/architecture.md) sections
+- **Examples:** Check the [Examples](examples.md) for working code
 - **Issues:** Report bugs on [GitHub Issues](https://github.com/provide-io/provide-foundation/issues)
 
 ---
 
-Ready to begin? Start with [Installation](installation/) →
+Ready to begin? Start with [Installation](installation.md) →
