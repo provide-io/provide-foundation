@@ -34,9 +34,9 @@ This documentation is structured to help you learn effectively, whether you're a
     <p><a href="explanation/architecture/">Understand the "Why" →</a></p>
   </div>
   <div class="feature-card">
-    <h3>📚 API Reference</h3>
-    <p>Detailed technical descriptions of every class, method, and function.</p>
-    <p><a href="reference/">Look It Up →</a></p>
+    <h3>📖 Reference</h3>
+    <p>Complete API documentation for all modules, classes, and functions.</p>
+    <p><a href="reference/">Browse API Docs →</a></p>
   </div>
 </div>
 
