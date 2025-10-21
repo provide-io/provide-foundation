@@ -1,0 +1,12 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.cli.commands.logs.generate.x__configure_rate_limiter__mutmut_1": null,
+        "provide.foundation.cli.commands.logs.generate.x__configure_rate_limiter__mutmut_2": null,
+        "provide.foundation.cli.commands.logs.generate.x__configure_rate_limiter__mutmut_3": null,
+        "provide.foundation.cli.commands.logs.generate.x__configure_rate_limiter__mutmut_4": null,
+        "provide.foundation.cli.commands.logs.generate.x__configure_rate_limiter__mutmut_5": null,
+        "provide.foundation.cli.commands.logs.generate.x__configure_rate_limiter__mutmut_6": null,
+        "provide.foundation.cli.commands.logs.generate.x__configure_rate_limiter__mutmut_7": null
+    },
+    "hash_by_function_name": {}
+}

@@ -1,0 +1,20 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.process.exit.x_exit_success__mutmut_1": null,
+        "provide.foundation.process.exit.x_exit_success__mutmut_2": null,
+        "provide.foundation.process.exit.x_exit_success__mutmut_3": null,
+        "provide.foundation.process.exit.x_exit_error__mutmut_1": null,
+        "provide.foundation.process.exit.x_exit_error__mutmut_2": null,
+        "provide.foundation.process.exit.x_exit_error__mutmut_3": null,
+        "provide.foundation.process.exit.x_exit_error__mutmut_4": null,
+        "provide.foundation.process.exit.x_exit_error__mutmut_5": null,
+        "provide.foundation.process.exit.x_exit_error__mutmut_6": null,
+        "provide.foundation.process.exit.x_exit_interrupted__mutmut_1": null,
+        "provide.foundation.process.exit.x_exit_interrupted__mutmut_2": null,
+        "provide.foundation.process.exit.x_exit_interrupted__mutmut_3": null,
+        "provide.foundation.process.exit.x_exit_interrupted__mutmut_4": null,
+        "provide.foundation.process.exit.x_exit_interrupted__mutmut_5": null,
+        "provide.foundation.process.exit.x_exit_interrupted__mutmut_6": null
+    },
+    "hash_by_function_name": {}
+}

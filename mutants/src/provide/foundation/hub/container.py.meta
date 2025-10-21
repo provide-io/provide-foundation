@@ -1,0 +1,27 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_1": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_2": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_3": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_4": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_5": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_6": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_7": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_8": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_9": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1__init____mutmut_10": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1register__mutmut_1": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1register__mutmut_2": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1register__mutmut_3": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1register__mutmut_4": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1register__mutmut_5": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1register__mutmut_6": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1resolve__mutmut_1": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1resolve__mutmut_2": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1resolve__mutmut_3": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1get__mutmut_1": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1has__mutmut_1": null,
+        "provide.foundation.hub.container.x\u01c1Container\u01c1has__mutmut_2": null
+    },
+    "hash_by_function_name": {}
+}

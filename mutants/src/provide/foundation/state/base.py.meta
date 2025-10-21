@@ -1,0 +1,25 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1__init____mutmut_1": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1__init____mutmut_2": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1__init____mutmut_3": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1__init____mutmut_4": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1__init____mutmut_5": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1add_transition__mutmut_1": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1add_transition__mutmut_2": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_1": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_2": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_3": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_4": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_5": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_6": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_7": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_8": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_9": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_10": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_11": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_12": null,
+        "provide.foundation.state.base.x\u01c1StateMachine\u01c1transition__mutmut_13": null
+    },
+    "hash_by_function_name": {}
+}

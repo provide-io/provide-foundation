@@ -1,0 +1,22 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.file.operations.detect.x__get_default_detector__mutmut_1": null,
+        "provide.foundation.file.operations.detect.x__get_default_detector__mutmut_2": null,
+        "provide.foundation.file.operations.detect.x_detect__mutmut_1": null,
+        "provide.foundation.file.operations.detect.x_detect__mutmut_2": null,
+        "provide.foundation.file.operations.detect.x_detect__mutmut_3": null,
+        "provide.foundation.file.operations.detect.x_detect__mutmut_4": null,
+        "provide.foundation.file.operations.detect.x_detect__mutmut_5": null,
+        "provide.foundation.file.operations.detect.x_detect__mutmut_6": null,
+        "provide.foundation.file.operations.detect.x_detect__mutmut_7": null,
+        "provide.foundation.file.operations.detect.x_detect_all__mutmut_1": null,
+        "provide.foundation.file.operations.detect.x_detect_all__mutmut_2": null,
+        "provide.foundation.file.operations.detect.x_detect_all__mutmut_3": null,
+        "provide.foundation.file.operations.detect.x_detect_all__mutmut_4": null,
+        "provide.foundation.file.operations.detect.x_detect_streaming__mutmut_1": null,
+        "provide.foundation.file.operations.detect.x_detect_streaming__mutmut_2": null,
+        "provide.foundation.file.operations.detect.x_detect_streaming__mutmut_3": null,
+        "provide.foundation.file.operations.detect.x_create_detector__mutmut_1": null
+    },
+    "hash_by_function_name": {}
+}

@@ -1,0 +1,24 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.hub.commands.x__check_click__mutmut_1": null,
+        "provide.foundation.hub.commands.x__check_click__mutmut_2": null,
+        "provide.foundation.hub.commands.x__check_click__mutmut_3": null,
+        "provide.foundation.hub.commands.x__check_click__mutmut_4": null,
+        "provide.foundation.hub.commands.x__check_click__mutmut_5": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_1": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_2": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_3": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_4": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_5": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_6": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_7": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_8": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_9": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_10": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_11": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_12": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_13": null,
+        "provide.foundation.hub.commands.x_create_command_group__mutmut_14": null
+    },
+    "hash_by_function_name": {}
+}

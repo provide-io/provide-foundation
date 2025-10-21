@@ -1,0 +1,10 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.archive.types.x\u01c1ArchiveOperation\u01c1to_string__mutmut_1": null,
+        "provide.foundation.archive.types.x_get_operation_from_string__mutmut_1": null,
+        "provide.foundation.archive.types.x_get_operation_from_string__mutmut_2": null,
+        "provide.foundation.archive.types.x_get_operation_from_string__mutmut_3": null,
+        "provide.foundation.archive.types.x_get_operation_from_string__mutmut_4": null
+    },
+    "hash_by_function_name": {}
+}

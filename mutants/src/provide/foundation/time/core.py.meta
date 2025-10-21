@@ -1,0 +1,16 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.time.core.x_provide_sleep__mutmut_1": null,
+        "provide.foundation.time.core.x_provide_sleep__mutmut_2": null,
+        "provide.foundation.time.core.x_provide_sleep__mutmut_3": null,
+        "provide.foundation.time.core.x_provide_sleep__mutmut_4": null,
+        "provide.foundation.time.core.x_provide_sleep__mutmut_5": null,
+        "provide.foundation.time.core.x_provide_sleep__mutmut_6": null,
+        "provide.foundation.time.core.x_provide_sleep__mutmut_7": null,
+        "provide.foundation.time.core.x_provide_now__mutmut_1": null,
+        "provide.foundation.time.core.x_provide_now__mutmut_2": null,
+        "provide.foundation.time.core.x_provide_now__mutmut_3": null,
+        "provide.foundation.time.core.x_provide_now__mutmut_4": null
+    },
+    "hash_by_function_name": {}
+}

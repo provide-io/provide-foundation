@@ -1,0 +1,21 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.logger.levels.x_normalize_level__mutmut_1": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_1": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_2": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_3": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_4": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_5": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_6": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_7": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_8": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_9": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_10": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_11": null,
+        "provide.foundation.logger.levels.x_get_numeric_level__mutmut_12": null,
+        "provide.foundation.logger.levels.x_is_valid_level__mutmut_1": null,
+        "provide.foundation.logger.levels.x_is_valid_level__mutmut_2": null,
+        "provide.foundation.logger.levels.x_is_valid_level__mutmut_3": null
+    },
+    "hash_by_function_name": {}
+}

@@ -1,0 +1,13 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.crypto.rsa.x__require_crypto__mutmut_1": null,
+        "provide.foundation.crypto.rsa.x__require_crypto__mutmut_2": null,
+        "provide.foundation.crypto.rsa.x__require_crypto__mutmut_3": null,
+        "provide.foundation.crypto.rsa.x__require_crypto__mutmut_4": null,
+        "provide.foundation.crypto.rsa.x__require_crypto__mutmut_5": null,
+        "provide.foundation.crypto.rsa.x__require_crypto__mutmut_6": null,
+        "provide.foundation.crypto.rsa.x__require_crypto__mutmut_7": null,
+        "provide.foundation.crypto.rsa.x__require_crypto__mutmut_8": null
+    },
+    "hash_by_function_name": {}
+}

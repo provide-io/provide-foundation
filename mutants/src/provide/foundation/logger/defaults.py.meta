@@ -1,0 +1,9 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.logger.defaults.x_default_module_levels__mutmut_1": null,
+        "provide.foundation.logger.defaults.x_default_module_levels__mutmut_2": null,
+        "provide.foundation.logger.defaults.x_default_module_levels__mutmut_3": null,
+        "provide.foundation.logger.defaults.x_default_module_levels__mutmut_4": null
+    },
+    "hash_by_function_name": {}
+}

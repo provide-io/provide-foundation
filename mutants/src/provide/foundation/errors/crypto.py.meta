@@ -1,0 +1,13 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.errors.crypto.x\u01c1CryptoError\u01c1_default_code__mutmut_1": null,
+        "provide.foundation.errors.crypto.x\u01c1CryptoError\u01c1_default_code__mutmut_2": null,
+        "provide.foundation.errors.crypto.x\u01c1CryptoValidationError\u01c1_default_code__mutmut_1": null,
+        "provide.foundation.errors.crypto.x\u01c1CryptoValidationError\u01c1_default_code__mutmut_2": null,
+        "provide.foundation.errors.crypto.x\u01c1CryptoKeyError\u01c1_default_code__mutmut_1": null,
+        "provide.foundation.errors.crypto.x\u01c1CryptoKeyError\u01c1_default_code__mutmut_2": null,
+        "provide.foundation.errors.crypto.x\u01c1CryptoSignatureError\u01c1_default_code__mutmut_1": null,
+        "provide.foundation.errors.crypto.x\u01c1CryptoSignatureError\u01c1_default_code__mutmut_2": null
+    },
+    "hash_by_function_name": {}
+}

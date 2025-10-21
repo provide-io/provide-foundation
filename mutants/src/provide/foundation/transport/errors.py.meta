@@ -1,0 +1,23 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.transport.errors.x\u01c1TransportError\u01c1__init____mutmut_1": null,
+        "provide.foundation.transport.errors.x\u01c1TransportError\u01c1__init____mutmut_2": null,
+        "provide.foundation.transport.errors.x\u01c1TransportError\u01c1__init____mutmut_3": null,
+        "provide.foundation.transport.errors.x\u01c1TransportError\u01c1__init____mutmut_4": null,
+        "provide.foundation.transport.errors.x\u01c1HTTPResponseError\u01c1__init____mutmut_1": null,
+        "provide.foundation.transport.errors.x\u01c1HTTPResponseError\u01c1__init____mutmut_2": null,
+        "provide.foundation.transport.errors.x\u01c1HTTPResponseError\u01c1__init____mutmut_3": null,
+        "provide.foundation.transport.errors.x\u01c1HTTPResponseError\u01c1__init____mutmut_4": null,
+        "provide.foundation.transport.errors.x\u01c1HTTPResponseError\u01c1__init____mutmut_5": null,
+        "provide.foundation.transport.errors.x\u01c1TransportNotFoundError\u01c1__init____mutmut_1": null,
+        "provide.foundation.transport.errors.x\u01c1TransportNotFoundError\u01c1__init____mutmut_2": null,
+        "provide.foundation.transport.errors.x\u01c1TransportNotFoundError\u01c1__init____mutmut_3": null,
+        "provide.foundation.transport.errors.x\u01c1TransportNotFoundError\u01c1__init____mutmut_4": null,
+        "provide.foundation.transport.errors.x\u01c1TransportCacheEvictedError\u01c1__init____mutmut_1": null,
+        "provide.foundation.transport.errors.x\u01c1TransportCacheEvictedError\u01c1__init____mutmut_2": null,
+        "provide.foundation.transport.errors.x\u01c1TransportCacheEvictedError\u01c1__init____mutmut_3": null,
+        "provide.foundation.transport.errors.x\u01c1TransportCacheEvictedError\u01c1__init____mutmut_4": null,
+        "provide.foundation.transport.errors.x\u01c1TransportCacheEvictedError\u01c1__init____mutmut_5": null
+    },
+    "hash_by_function_name": {}
+}

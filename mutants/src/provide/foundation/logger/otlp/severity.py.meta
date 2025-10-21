@@ -1,0 +1,17 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.logger.otlp.severity.x_map_level_to_severity__mutmut_1": null,
+        "provide.foundation.logger.otlp.severity.x_map_level_to_severity__mutmut_2": null,
+        "provide.foundation.logger.otlp.severity.x_map_level_to_severity__mutmut_3": null,
+        "provide.foundation.logger.otlp.severity.x_map_level_to_severity__mutmut_4": null,
+        "provide.foundation.logger.otlp.severity.x_map_level_to_severity__mutmut_5": null,
+        "provide.foundation.logger.otlp.severity.x_map_level_to_severity__mutmut_6": null,
+        "provide.foundation.logger.otlp.severity.x_map_severity_to_level__mutmut_1": null,
+        "provide.foundation.logger.otlp.severity.x_map_severity_to_level__mutmut_2": null,
+        "provide.foundation.logger.otlp.severity.x_map_severity_to_level__mutmut_3": null,
+        "provide.foundation.logger.otlp.severity.x_map_severity_to_level__mutmut_4": null,
+        "provide.foundation.logger.otlp.severity.x_map_severity_to_level__mutmut_5": null,
+        "provide.foundation.logger.otlp.severity.x_map_severity_to_level__mutmut_6": null
+    },
+    "hash_by_function_name": {}
+}

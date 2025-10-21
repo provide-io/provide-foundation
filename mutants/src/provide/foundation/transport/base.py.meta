@@ -1,0 +1,16 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1__init____mutmut_1": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1__init____mutmut_2": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1connect__mutmut_1": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1connect__mutmut_2": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1connect__mutmut_3": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1connect__mutmut_4": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1disconnect__mutmut_1": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1disconnect__mutmut_2": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1disconnect__mutmut_3": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1disconnect__mutmut_4": null,
+        "provide.foundation.transport.base.x\u01c1TransportBase\u01c1stream__mutmut_1": null
+    },
+    "hash_by_function_name": {}
+}

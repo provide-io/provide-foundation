@@ -1,0 +1,24 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.serialization.cache.x__get_cache_config__mutmut_1": null,
+        "provide.foundation.serialization.cache.x__get_cache_config__mutmut_2": null,
+        "provide.foundation.serialization.cache.x_get_cache_enabled__mutmut_1": null,
+        "provide.foundation.serialization.cache.x_get_cache_size__mutmut_1": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_1": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_2": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_3": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_4": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_5": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_6": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_7": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_8": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_9": null,
+        "provide.foundation.serialization.cache.x_get_serialization_cache__mutmut_10": null,
+        "provide.foundation.serialization.cache.x_reset_serialization_cache_config__mutmut_1": null,
+        "provide.foundation.serialization.cache.x_reset_serialization_cache_config__mutmut_2": null,
+        "provide.foundation.serialization.cache.x_get_cache_key__mutmut_1": null,
+        "provide.foundation.serialization.cache.x_get_cache_key__mutmut_2": null,
+        "provide.foundation.serialization.cache.x_get_cache_key__mutmut_3": null
+    },
+    "hash_by_function_name": {}
+}

@@ -1,0 +1,16 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_1": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_2": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_3": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_4": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_5": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_6": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_7": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_8": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_9": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_10": null,
+        "provide.foundation.logger.processors.sanitization.x_create_sanitization_processor__mutmut_11": null
+    },
+    "hash_by_function_name": {}
+}

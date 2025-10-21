@@ -1,0 +1,8 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.streams.config.x_get_stream_config__mutmut_1": null,
+        "provide.foundation.streams.config.x_get_stream_config__mutmut_2": null,
+        "provide.foundation.streams.config.x_reset_stream_config__mutmut_1": null
+    },
+    "hash_by_function_name": {}
+}

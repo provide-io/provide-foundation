@@ -1,0 +1,19 @@
+{
+    "exit_code_by_key": {
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_command__mutmut_1": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_group__mutmut_1": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_group__mutmut_2": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_group__mutmut_3": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_group__mutmut_4": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_group__mutmut_5": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_group__mutmut_6": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_group__mutmut_7": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_group__mutmut_8": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1build_group__mutmut_9": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1ensure_parent_groups__mutmut_1": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1ensure_parent_groups__mutmut_2": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1ensure_parent_groups__mutmut_3": null,
+        "provide.foundation.cli.click.adapter.x\u01c1ClickAdapter\u01c1ensure_parent_groups__mutmut_4": null
+    },
+    "hash_by_function_name": {}
+}
