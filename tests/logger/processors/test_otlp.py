@@ -6,8 +6,8 @@ processor creation, log flushing, and provider reset.
 
 from __future__ import annotations
 
-import sys
 from collections.abc import Generator
+import sys
 from unittest.mock import Mock, patch
 
 import pytest

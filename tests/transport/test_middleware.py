@@ -205,7 +205,7 @@ async def test_retry_middleware_execute() -> None:
     from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 
     # Create controlled time for testing retry delays
-    get_time, advance_time, fake_sleep, fake_async_sleep = make_controlled_time()
+    get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
 
     policy = RetryPolicy(
         max_attempts=3,

@@ -5,12 +5,10 @@ These tests target uncovered lines and edge cases in test environment detection.
 
 from __future__ import annotations
 
-import inspect
 import sys
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 from provide.testkit import FoundationTestCase
-import pytest
 
 from provide.foundation.testmode.detection import (
     is_in_click_testing,

@@ -6,9 +6,7 @@
 from __future__ import annotations
 
 import logging
-from unittest.mock import MagicMock, patch
-
-import pytest
+from unittest.mock import MagicMock
 
 from provide.foundation.logger.setup.stdlib_wrapper import StructuredStdlibLogger
 
@@ -40,7 +38,7 @@ class TestStructuredStdlibLogger:
         exc = Exception("test error")
         wrapper.error("Error occurred", exc_info=exc, stack_info=True, custom_key="value")
 
-        args, kwargs = mock_logger.log.call_args
+        _args, kwargs = mock_logger.log.call_args
         assert "exc_info" in kwargs
         assert kwargs["exc_info"] == exc
         assert "stack_info" in kwargs
@@ -56,7 +54,7 @@ class TestStructuredStdlibLogger:
         existing_extra = {"existing": "value"}
         wrapper.info("Test", extra=existing_extra, new_key="new_value")
 
-        args, kwargs = mock_logger.log.call_args
+        _args, kwargs = mock_logger.log.call_args
         assert "extra" in kwargs
         assert kwargs["extra"]["existing"] == "value"
         assert kwargs["extra"]["new_key"] == "new_value"
