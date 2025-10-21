@@ -124,4 +124,35 @@ def should_use_shared_registries(
     return use_shared_registries
 
 
+def configure_structlog_for_test_safety() -> None:
+    """Configure structlog to use stdout for multiprocessing safety.
+
+    When running tests with parallel execution (pytest-xdist, mutmut with
+    --max-children, etc.), file handles don't survive process forking.
+    This causes "I/O operation on closed file" errors when structlog's
+    PrintLogger tries to write to file handles from forked processes.
+
+    This function configures structlog to use sys.stdout which is safe
+    for multiprocessing and properly handled by pytest.
+
+    Should be called automatically when is_in_test_mode() returns True.
+    """
+    import logging as stdlib_logging
+    import sys
+
+    import structlog
+
+    # Configure structlog to use stdout (safe for multiprocessing)
+    structlog.configure(
+        processors=[
+            structlog.processors.TimeStamper(fmt="iso"),
+            structlog.dev.ConsoleRenderer(),
+        ],
+        wrapper_class=structlog.make_filtering_bound_logger(stdlib_logging.INFO),
+        context_class=dict,
+        logger_factory=structlog.PrintLoggerFactory(file=sys.stdout),
+        cache_logger_on_first_use=False,  # Disable caching for test isolation
+    )
+
+
 # <3 🧱🤝🧪🪄
