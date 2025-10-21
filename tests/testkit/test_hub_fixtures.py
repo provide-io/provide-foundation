@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 
 
-def test_isolated_container_fixture(isolated_container):
+def test_isolated_container_fixture(isolated_container) -> None:
     """Test that isolated_container fixture provides fresh Container."""
     from provide.foundation.hub import Container
 
@@ -14,7 +14,7 @@ def test_isolated_container_fixture(isolated_container):
 
     # Register a test dependency by type
     class TestService:
-        def __init__(self):
+        def __init__(self) -> None:
             self.value = "test_value"
 
     test_instance = TestService()
@@ -24,7 +24,7 @@ def test_isolated_container_fixture(isolated_container):
     assert resolved.value == "test_value"
 
 
-def test_isolated_hub_fixture(isolated_hub):
+def test_isolated_hub_fixture(isolated_hub) -> None:
     """Test that isolated_hub fixture provides Hub with isolated registries."""
     from provide.foundation.hub import Hub
 
@@ -34,7 +34,7 @@ def test_isolated_hub_fixture(isolated_hub):
     assert isolated_hub._command_registry is not None
 
 
-def test_isolated_containers_are_independent(isolated_container):
+def test_isolated_containers_are_independent(isolated_container) -> None:
     """Test that each test gets its own isolated container."""
 
     # This test registers a value that should NOT be visible to other tests
@@ -46,7 +46,7 @@ def test_isolated_containers_are_independent(isolated_container):
     assert resolved.value == "first_test_value"
 
 
-def test_isolated_containers_second_test(isolated_container):
+def test_isolated_containers_second_test(isolated_container) -> None:
     """Test that container is fresh and doesn't have previous test's data."""
 
     # This should not find the value from test_isolated_containers_are_independent
@@ -58,7 +58,7 @@ def test_isolated_containers_second_test(isolated_container):
 
 
 @pytest.mark.asyncio
-async def test_isolated_hub_with_universal_client(isolated_hub):
+async def test_isolated_hub_with_universal_client(isolated_hub) -> None:
     """Test using isolated Hub with UniversalClient for DI testing."""
     from provide.foundation.transport import UniversalClient
 
@@ -69,7 +69,7 @@ async def test_isolated_hub_with_universal_client(isolated_hub):
     assert client.hub is not None
 
 
-def test_isolated_fixtures_documentation():
+def test_isolated_fixtures_documentation() -> None:
     """Verify that fixtures have proper documentation for users."""
     from provide.testkit.hub.fixtures import isolated_container, isolated_hub
 

@@ -55,8 +55,9 @@ class TestClientNotConnected:
 
         request = Request(uri="https://api.example.com/stream", method="GET")
 
-        with patch.object(transport, "connect", new_callable=AsyncMock), pytest.raises(
-            TransportConnectionError, match="HTTP client not connected"
+        with (
+            patch.object(transport, "connect", new_callable=AsyncMock),
+            pytest.raises(TransportConnectionError, match="HTTP client not connected"),
         ):
             async for _ in transport.stream(request):
                 pass

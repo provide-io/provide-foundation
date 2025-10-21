@@ -134,7 +134,7 @@ class TestStreamingDetection(FoundationTestCase):
             metadata=FileEventMetadata(timestamp=now + timedelta(milliseconds=600), sequence_number=2),
             dest_path=Path("test.txt"),
         )
-        result2 = detect_streaming(event2, detector)
+        detect_streaming(event2, detector)
         # May or may not return operation depending on timing
 
     def test_detector_flush(self) -> None:

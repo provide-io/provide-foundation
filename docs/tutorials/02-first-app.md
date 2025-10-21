@@ -145,4 +145,4 @@ Task 1 marked as complete.
 ---
 
 **Next Steps:**
-- Dive into the **[How-To Guides](../how-to-guides/cli/commands/)** to learn more about building CLIs.
+- Dive into the **[How-To Guides](../how-to-guides/cli/commands.md)** to learn more about building CLIs.

@@ -28,7 +28,7 @@ from provide.foundation.file.operations.detectors.helpers import (
 class TestVSCodeTempFileDetection:
     """Test detection of VSCode temporary file patterns."""
 
-    def test_is_temp_file_detects_vscode_pattern(self):
+    def test_is_temp_file_detects_vscode_pattern(self) -> None:
         """Test that is_temp_file() recognizes VSCode temp pattern."""
         # VSCode pattern: .filename.ext.tmp.XXXX
         test_cases = [
@@ -48,7 +48,7 @@ class TestVSCodeTempFileDetection:
             result = is_temp_file(path)
             assert result == expected, f"is_temp_file({path}) should be {expected}, got {result}"
 
-    def test_extract_base_name_from_vscode_pattern(self):
+    def test_extract_base_name_from_vscode_pattern(self) -> None:
         """Test that extract_base_name() correctly extracts the real filename from VSCode pattern."""
         test_cases = [
             # (temp_file, expected_base_name)
@@ -66,7 +66,7 @@ class TestVSCodeTempFileDetection:
             result = extract_base_name(temp_path)
             assert result == expected, f"extract_base_name({temp_path}) should be '{expected}', got '{result}'"
 
-    def test_extract_base_name_preserves_nested_dots(self):
+    def test_extract_base_name_preserves_nested_dots(self) -> None:
         """Test that extract_base_name() preserves dots in the middle of filenames."""
         test_cases = [
             (Path(".test.config.py.tmp.84"), "test.config.py"),
@@ -80,7 +80,7 @@ class TestVSCodeTempFileDetection:
                 f"extract_base_name({temp_path}) should preserve dots: '{expected}', got '{result}'"
             )
 
-    def test_extract_base_name_handles_vim_pattern(self):
+    def test_extract_base_name_handles_vim_pattern(self) -> None:
         """Test that extract_base_name() also handles vim swap files correctly."""
         test_cases = [
             # Vim swap files also have leading dots
@@ -97,7 +97,7 @@ class TestVSCodeTempFileDetection:
 class TestVSCodeAtomicSaveDetection:
     """Test full atomic save operation detection with VSCode pattern."""
 
-    def test_vscode_atomic_save_operation_detection(self):
+    def test_vscode_atomic_save_operation_detection(self) -> None:
         """Test that VSCode atomic save pattern is detected as ATOMIC_SAVE operation."""
         base_time = datetime.now()
         temp_file = Path(".orchestrator.py.tmp.84")
@@ -144,7 +144,7 @@ class TestVSCodeAtomicSaveDetection:
         assert operation.confidence >= 0.9, f"Confidence should be >= 0.9, got {operation.confidence}"
         assert operation.is_atomic is True, "Operation should be marked as atomic"
 
-    def test_vscode_pattern_with_multiple_dots_in_filename(self):
+    def test_vscode_pattern_with_multiple_dots_in_filename(self) -> None:
         """Test VSCode pattern detection with filenames containing multiple dots."""
         base_time = datetime.now()
         temp_file = Path(".test.config.py.tmp.42")
@@ -179,7 +179,7 @@ class TestVSCodeAtomicSaveDetection:
             f"Primary path should preserve all dots: '{final_file}', got '{operation.primary_path}'"
         )
 
-    def test_vscode_pattern_returns_correct_file_in_operation(self):
+    def test_vscode_pattern_returns_correct_file_in_operation(self) -> None:
         """Test that the detected operation contains the correct final file, not the temp file."""
         base_time = datetime.now()
         temp_file = Path(".my_module.py.tmp.999")
@@ -228,7 +228,7 @@ class TestVSCodeAtomicSaveDetection:
 class TestVSCodeStreamingDetection:
     """Test streaming detection with VSCode patterns."""
 
-    async def test_streaming_detection_with_vscode_pattern(self):
+    async def test_streaming_detection_with_vscode_pattern(self) -> None:
         """Test that streaming detection correctly handles VSCode temp files."""
         import asyncio
         from unittest.mock import Mock
@@ -277,20 +277,20 @@ class TestVSCodeStreamingDetection:
 class TestVSCodePatternEdgeCases:
     """Test edge cases and boundary conditions for VSCode patterns."""
 
-    def test_single_character_filename(self):
+    def test_single_character_filename(self) -> None:
         """Test VSCode pattern with single-character filename."""
         temp_path = Path(".a.tmp.1")
         assert is_temp_file(temp_path) is True
         assert extract_base_name(temp_path) == "a"
 
-    def test_very_long_filename(self):
+    def test_very_long_filename(self) -> None:
         """Test VSCode pattern with very long filename."""
         long_name = "a" * 200 + ".py"
         temp_path = Path(f".{long_name}.tmp.123")
         assert is_temp_file(temp_path) is True
         assert extract_base_name(temp_path) == long_name
 
-    def test_filename_with_special_characters(self):
+    def test_filename_with_special_characters(self) -> None:
         """Test VSCode pattern with special characters in filename."""
         test_cases = [
             Path(".my-file.py.tmp.1"),
@@ -304,7 +304,7 @@ class TestVSCodePatternEdgeCases:
             assert base is not None
             assert not base.startswith("."), f"Base name should not start with dot: {base}"
 
-    def test_non_numeric_temp_suffix(self):
+    def test_non_numeric_temp_suffix(self) -> None:
         """Test VSCode pattern with non-numeric temp suffix (alphanumeric)."""
         temp_path = Path(".file.txt.tmp.abc123")
         assert is_temp_file(temp_path) is True

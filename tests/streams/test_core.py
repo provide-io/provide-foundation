@@ -9,8 +9,6 @@ import io
 import sys
 from unittest.mock import MagicMock, Mock, patch
 
-import pytest
-
 from provide.testkit import FoundationTestCase
 
 from provide.foundation.streams.core import (
@@ -185,7 +183,7 @@ class TestReconfigureStructlogStream(FoundationTestCase):
         with (
             patch("structlog.get_config", return_value=mock_config),
             patch("structlog.configure") as mock_configure,
-            patch("structlog.PrintLoggerFactory") as mock_factory,
+            patch("structlog.PrintLoggerFactory"),
         ):
             _reconfigure_structlog_stream()
 
@@ -354,12 +352,12 @@ class TestStreamEdgeCases(FoundationTestCase):
 
 
 __all__ = [
-    "TestGetLogStream",
-    "TestSetLogStreamForTesting",
     "TestEnsureStderrDefault",
-    "TestReconfigureStructlogStream",
+    "TestGetLogStream",
     "TestGetStreamLock",
-    "TestStreamErrorHandling",
+    "TestReconfigureStructlogStream",
+    "TestSetLogStreamForTesting",
     "TestStreamConcurrency",
     "TestStreamEdgeCases",
+    "TestStreamErrorHandling",
 ]

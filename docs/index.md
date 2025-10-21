@@ -21,22 +21,22 @@ This documentation is structured to help you learn effectively, whether you're a
   <div class="feature-card">
     <h3>🎓 Tutorials</h3>
     <p>Step-by-step lessons to get you started. Perfect for new users.</p>
-    <a href="./tutorials/01-quick-start/">Start Learning →</a>
+    <a href="tutorials/01-quick-start.md">Start Learning →</a>
   </div>
   <div class="feature-card">
     <h3>📖 How-To Guides</h3>
     <p>Practical, goal-oriented recipes to solve specific problems.</p>
-    <a href="./how-to-guides/logging/basic-logging/">Solve a Problem →</a>
+    <a href="how-to-guides/logging/basic-logging.md">Solve a Problem →</a>
   </div>
   <div class="feature-card">
     <h3>🧠 Explanation</h3>
     <p>Deep dives into the concepts and architecture behind the framework.</p>
-    <a href="./explanation/architecture/">Understand the "Why" →</a>
+    <a href="explanation/architecture.md">Understand the "Why" →</a>
   </div>
   <div class="feature-card">
     <h3>📚 API Reference</h3>
     <p>Detailed technical descriptions of every class, method, and function.</p>
-    <a href="./reference/">Look It Up →</a>
+    <a href="reference/index.md">Look It Up →</a>
   </div>
 </div>
 
@@ -83,4 +83,4 @@ def process_data(file: str, force: bool = False):
 
 ---
 
-Ready to get started? Head to the **[Quick Start Tutorial](./tutorials/01-quick-start/)**.
+Ready to get started? Head to the **[Quick Start Tutorial](tutorials/01-quick-start.md)**.
