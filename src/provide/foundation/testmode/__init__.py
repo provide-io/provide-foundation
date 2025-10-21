@@ -9,6 +9,7 @@ from __future__ import annotations
 # __init__.py
 #
 from provide.foundation.testmode.detection import (
+    configure_structlog_for_test_safety,
     is_in_click_testing,
     is_in_test_mode,
     should_use_shared_registries,
@@ -36,6 +37,7 @@ functionality that Foundation needs for proper test isolation.
 
 __all__ = [
     # Test detection
+    "configure_structlog_for_test_safety",
     "is_in_click_testing",
     "is_in_test_mode",
     # Internal reset APIs (for testkit use)
