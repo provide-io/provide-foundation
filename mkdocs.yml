@@ -39,8 +39,8 @@ theme:
         name: Switch to light mode
 
   font:
-    text: IBM Plex Serif
-    code: SFMono-Regular
+    text: Roboto
+    code: Roboto Mono
 
   features:
     - navigation.instant
