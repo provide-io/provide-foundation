@@ -63,6 +63,10 @@ plugins:
         - docs/reference/gen_ref_pages.py
   - literate-nav:
       nav_file: SUMMARY.md
+  - linkcheck:
+      skip_file: .linkcheck_skip
+      recurse: true
+      report: true
   - mkdocstrings:
       default_handler: python
       handlers:
