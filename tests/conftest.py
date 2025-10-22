@@ -12,17 +12,6 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
-# CRITICAL: setproctitle blocker - handled by src/sitecustomize.py
-#
-# How it works:
-# - src/sitecustomize.py auto-loads blocker when Python starts
-# - Python loads sitecustomize.py from directories in PYTHONPATH
-# - pytest adds src/ to PYTHONPATH automatically
-# - Works for ALL processes: main process + xdist workers
-#
-# This import is kept as redundant safety, but sitecustomize.py is primary mechanism
-from provide.testkit import pytest_plugin  # noqa: F401, I001
-
 from collections.abc import Generator
 import logging as stdlib_logging
 import os
@@ -31,7 +20,7 @@ import sys
 import pytest
 
 # Register plugins for assertion rewriting at the root level
-# Note: setproctitle blocker is handled by src/sitecustomize.py (auto-loaded by Python)
+# NOTE: setproctitle blocker is in src/sitecustomize.py (auto-loaded by Python)
 pytest_plugins = [
     "provide.testkit.hub.fixtures",
 ]
