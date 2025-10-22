@@ -11,8 +11,29 @@ from provide.foundation.errors.integration import (
 )
 
 
-        error = ResourceError("Not found", resource_path="/data/config.json")
-        assert error.context["resource.path"] == "/data/config.json"
+class TestIntegrationError(FoundationTestCase):
+    """Test IntegrationError class."""
+
+    def test_basic_creation(self) -> None:
+        """Test basic IntegrationError."""
+        error = IntegrationError("API failed")
+        assert error.message == "API failed"
+        assert error.code == "INTEGRATION_ERROR"
+
+    def test_with_service(self) -> None:
+        """Test with service parameter."""
+        error = IntegrationError("Connection failed", service="payment-api")
+        assert error.context["integration.service"] == "payment-api"
+
+    def test_with_endpoint(self) -> None:
+        """Test with endpoint parameter."""
+        error = IntegrationError("Request failed", endpoint="/api/v1/users")
+        assert error.context["integration.endpoint"] == "/api/v1/users"
+
+    def test_with_status_code(self) -> None:
+        """Test with status_code parameter."""
+        error = IntegrationError("HTTP error", status_code=503)
+        assert error.context["integration.status_code"] == 503
 
 
 class TestNetworkError(FoundationTestCase):
@@ -67,3 +88,5 @@ class TestTimeoutError(FoundationTestCase):
         error = TimeoutError("Too slow", elapsed_seconds=45.5)
         assert error.context["timeout.elapsed"] == 45.5
 
+
+# <3 🧱🤝🔌🪄
