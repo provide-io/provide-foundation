@@ -12,10 +12,28 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
+# CRITICAL: Disable setproctitle BEFORE any other imports
+# This must happen at module import time, before pytest-xdist loads
+# setproctitle causes system freezing on macOS with parallel test execution
+import sys
+
+try:
+    import setproctitle
+
+    # Completely disable setproctitle by replacing it with no-op functions
+    setproctitle.setproctitle = lambda x: None
+    setproctitle.getproctitle = lambda: ""
+
+    # Also prevent future imports from getting the real module
+    sys.modules["setproctitle"].setproctitle = lambda x: None
+    sys.modules["setproctitle"].getproctitle = lambda: ""
+except ImportError:
+    # setproctitle not installed, nothing to disable
+    pass
+
 from collections.abc import Generator
 import logging as stdlib_logging
 import os
-import sys
 
 import pytest
 
@@ -65,19 +83,6 @@ def _get_conftest_diag_logger() -> stdlib_logging.Logger:
 conftest_diag_logger = _get_conftest_diag_logger()
 if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
     conftest_diag_logger.debug("⚙️➡️🔍 Conftest loaded.")
-
-
-# Disable setproctitle for parallel test runs to prevent system UX freezing
-# setproctitle can cause performance issues and system freezing with pytest-xdist
-if os.getenv("PYTEST_XDIST_WORKER") or os.getenv("PYTEST_WORKER_ID"):
-    try:
-        import setproctitle
-
-        # Monkey-patch setproctitle to do nothing during parallel test execution
-        setproctitle.setproctitle = lambda x: None
-        setproctitle.getproctitle = lambda: ""
-    except ImportError:
-        pass  # setproctitle not installed, nothing to disable
 
 
 # Removed no_cover hook - not needed, issue is time_machine + asyncio, not coverage
