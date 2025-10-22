@@ -91,6 +91,9 @@ extended-linux = [
     "provide-foundation[platform-linux,process-linux]",
 ]
 all = [
+    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]",
+]
+all-linux = [
     "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended-linux]",
 ]
 
