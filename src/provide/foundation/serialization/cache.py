@@ -74,10 +74,14 @@ def get_serialization_cache() -> LRUCache:
 
 
 def reset_serialization_cache_config() -> None:
-    """Reset cached config for testing purposes."""
+    """Reset cached config for testing purposes.
+
+    Thread-safe reset that acquires the lock.
+    """
     global _cached_config, _serialization_cache
-    _cached_config = None
-    _serialization_cache = None
+    with _cache_lock:
+        _cached_config = None
+        _serialization_cache = None
 
 
 # Convenience constants - use functions for actual access
