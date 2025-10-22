@@ -12,21 +12,20 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
-# CRITICAL: Import pytest plugin FIRST to block setproctitle before any other imports
-# This must be the FIRST import to install the import hook early enough
-from provide.testkit import pytest_plugin  # noqa: F401
-
 from collections.abc import Generator
 import logging as stdlib_logging
 import os
 import sys
 
+# CRITICAL: Import pytest plugin FIRST to block setproctitle before any other imports
+# This must be the FIRST import to install the import hook early enough
+from provide.testkit import pytest_plugin  # noqa: F401
 import pytest
 
 # Register plugins for assertion rewriting at the root level
-# This must be done before the plugin is imported anywhere else
+# Note: provide.testkit.pytest_plugin is imported above (not listed here) to ensure
+# the setproctitle import blocker is installed before ANY other imports
 pytest_plugins = [
-    "provide.testkit.pytest_plugin",  # Blocks setproctitle imports to prevent xdist issues
     "provide.testkit.hub.fixtures",
 ]
 
