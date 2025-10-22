@@ -1,3 +1,10 @@
+"""Tests for Foundation tool version resolver helper methods."""
+
+from __future__ import annotations
+
+from provide.foundation.tools.resolver import VersionResolver
+
+
 class TestVersionResolverHelpers:
     """Test VersionResolver helper methods."""
 

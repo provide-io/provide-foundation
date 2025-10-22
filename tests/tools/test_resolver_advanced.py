@@ -1,3 +1,10 @@
+"""Tests for Foundation tool version resolver edge cases and integration."""
+
+from __future__ import annotations
+
+from provide.foundation.tools.resolver import VersionResolver
+
+
 class TestVersionResolverEdgeCases:
     """Test edge cases and error conditions."""
 
