@@ -7,6 +7,10 @@ from unittest.mock import Mock, patch
 
 from provide.testkit import FoundationTestCase
 
+from provide.foundation.cli.commands.logs.constants import (
+    ERROR_MESSAGES,
+    SERVICE_NAMES,
+)
 from provide.foundation.cli.commands.logs.generator import LogGenerator
 
 
@@ -179,7 +183,6 @@ class TestHelperFunctions(FoundationTestCase):
     @patch("provide.foundation.cli.commands.logs.generator.get_logger")
     def test_send_log_entry_success(self, mock_get_logger: Mock) -> None:
         """Test send_log_entry success case."""
-        from provide.foundation.cli.commands.logs.generator import LogGenerator
 
         # Mock logger
         mock_logger = Mock()
@@ -210,7 +213,6 @@ class TestHelperFunctions(FoundationTestCase):
     @patch("provide.foundation.cli.commands.logs.generator.get_logger")
     def test_send_log_entry_failure(self, mock_get_logger: Mock) -> None:
         """Test send_log_entry failure case."""
-        from provide.foundation.cli.commands.logs.generator import LogGenerator
 
         # Mock logger to raise exception
         mock_logger = Mock()
@@ -238,7 +240,6 @@ class TestHelperFunctions(FoundationTestCase):
     @patch("provide.foundation.cli.commands.logs.generator.get_logger")
     def test_send_log_entry_rate_limited(self, mock_get_logger: Mock) -> None:
         """Test send_log_entry rate limit case."""
-        from provide.foundation.cli.commands.logs.generator import LogGenerator
         from provide.foundation.errors import RateLimitExceededError
 
         # Mock logger to raise rate limit exception
