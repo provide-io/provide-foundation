@@ -11,6 +11,7 @@ import pytest
 from provide.foundation.config import BaseConfig
 from provide.foundation.hub import get_hub
 from provide.foundation.tools.downloader import ToolDownloader
+from provide.foundation.transport.client import UniversalClient
 
 
 class TestFullWorkflowIntegration(FoundationTestCase):

@@ -12,6 +12,7 @@ import pytest
 
 from provide.foundation.hub import get_hub
 from provide.foundation.tools.downloader import ToolDownloader
+from provide.foundation.transport.client import UniversalClient
 
 
 class TestDownloaderIntegration(FoundationTestCase):

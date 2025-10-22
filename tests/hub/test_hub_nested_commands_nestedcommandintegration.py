@@ -6,9 +6,9 @@ import click
 from click.testing import CliRunner
 from provide.testkit import FoundationTestCase
 
-from provide.foundation.hub.commands import (
-    register_command,
-)
+from provide.foundation.hub import get_hub
+from provide.foundation.hub.commands import create_command_group, register_command
+from provide.foundation.hub.manager import clear_hub
 
 
 class TestNestedCommandIntegration(FoundationTestCase):
