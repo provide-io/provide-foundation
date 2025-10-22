@@ -12,6 +12,7 @@ from provide.foundation.file.operations import (
     FileEventMetadata,
 )
 from provide.foundation.file.quality import (
+    AnalysisMetric,
     OperationScenario,
     QualityAnalyzer,
 )

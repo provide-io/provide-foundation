@@ -14,6 +14,7 @@ from provide.foundation.file.operations import (
     OperationDetector,
 )
 from provide.foundation.file.quality import (
+    AnalysisMetric,
     OperationScenario,
     QualityAnalyzer,
 )

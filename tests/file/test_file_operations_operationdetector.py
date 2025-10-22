@@ -12,6 +12,7 @@ from provide.foundation.file.operations import (
     FileEvent,
     FileEventMetadata,
     OperationDetector,
+    OperationType,
 )
 
 
