@@ -17,6 +17,7 @@ from provide.foundation.errors.config import ValidationError
 from provide.foundation.parsers.collections import parse_comma_list
 from provide.foundation.parsers.primitives import (
     parse_json_dict,
+    parse_json_list,
     parse_sample_rate,
 )
 from provide.foundation.parsers.structured import parse_headers
@@ -33,10 +34,10 @@ class TestSampleRateParsing(FoundationTestCase):
 
     def test_parse_sample_rate_invalid_range(self) -> None:
         """Test parsing sample rates outside 0-1 range."""
-        with pytest.raises(ValueError, match="must be >= 0.0"):
+        with pytest.raises(ValueError, match=r"must be >= 0.0"):
             parse_sample_rate("-0.1")
 
-        with pytest.raises(ValueError, match="must be <= 1.0"):
+        with pytest.raises(ValueError, match=r"must be <= 1.0"):
             parse_sample_rate("1.1")
 
 

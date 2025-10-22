@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
-from unittest.mock import Mock, MagicMock, patch
-
-from click.testing import CliRunner
 from provide.testkit import FoundationTestCase
+import pytest
 
+from provide.foundation.cli.commands.logs.constants import (
+    BURROUGHS_PHRASES,
+    OPERATIONS,
+    SERVICE_NAMES,
+)
 from provide.foundation.cli.commands.logs.generator import LogGenerator
-from provide.foundation.cli.commands.logs.constants import SERVICE_NAMES
-
 
 
 class TestClickIntegration(FoundationTestCase):

@@ -6,7 +6,6 @@ import sys
 from unittest.mock import Mock, patch
 
 from provide.testkit import FoundationTestCase
-import pytest
 
 # Import _HAS_OTEL and other needed components
 try:
@@ -103,7 +102,7 @@ class TestIntegration:
         with (
             patch("provide.foundation.tracer.otel._HAS_OTEL", True),
             patch("provide.foundation.tracer.otel.TracerProvider") as mock_tp,
-            patch("provide.foundation.tracer.otel.Resource") as mock_resource,
+            patch("provide.foundation.tracer.otel.Resource"),
             patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
         ):
             mock_provider = Mock()

@@ -7,7 +7,11 @@ from unittest.mock import Mock, patch
 
 from provide.testkit import FoundationTestCase
 
-from provide.foundation.cli.commands.logs.constants import SERVICE_NAMES
+from provide.foundation.cli.commands.logs.constants import (
+    BURROUGHS_PHRASES,
+    OPERATIONS,
+    SERVICE_NAMES,
+)
 from provide.foundation.cli.commands.logs.generator import LogGenerator
 
 
