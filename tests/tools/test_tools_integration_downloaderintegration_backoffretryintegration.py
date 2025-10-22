@@ -11,7 +11,7 @@ from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.hub import get_hub
-from provide.foundation.tools.downloader import ToolDownloader
+from provide.foundation.tools.downloader import DownloadError, ToolDownloader
 from provide.foundation.transport.client import UniversalClient
 
 

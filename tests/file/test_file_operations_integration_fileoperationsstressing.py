@@ -13,6 +13,7 @@ import pytest
 
 from provide.foundation.file.operations import (
     FileEvent,
+    FileEventMetadata,
     OperationDetector,
 )
 

@@ -9,6 +9,7 @@ from provide.testkit import FoundationTestCase
 
 from provide.foundation.file.operations import (
     FileEvent,
+    FileEventMetadata,
 )
 from provide.foundation.file.quality import (
     OperationScenario,

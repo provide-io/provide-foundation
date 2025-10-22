@@ -10,7 +10,9 @@ import pytest
 
 from provide.foundation.config import BaseConfig
 from provide.foundation.hub import get_hub
+from provide.foundation.tools.cache import ToolCache
 from provide.foundation.tools.downloader import ToolDownloader
+from provide.foundation.tools.resolver import VersionResolver
 from provide.foundation.transport.client import UniversalClient
 
 
