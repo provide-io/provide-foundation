@@ -28,7 +28,11 @@ for path in sorted(src_root.rglob("*.py")):
     if not parts:
         continue
 
-    nav[parts] = doc_path.as_posix()
+    # Strip "reference/" prefix from nav paths since SUMMARY.md is already in reference/
+    nav_path = str(doc_path)
+    if nav_path.startswith("reference/"):
+        nav_path = nav_path[10:]  # Remove "reference/" prefix
+    nav[parts] = nav_path
 
     with mkdocs_gen_files.open(full_doc_path, "w") as fd:
         identifier = ".".join(parts)
