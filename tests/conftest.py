@@ -17,14 +17,11 @@ import logging as stdlib_logging
 import os
 import sys
 
-# CRITICAL: Import pytest plugin FIRST to block setproctitle before any other imports
-# This must be the FIRST import to install the import hook early enough
-from provide.testkit import pytest_plugin  # noqa: F401
 import pytest
 
 # Register plugins for assertion rewriting at the root level
-# Note: provide.testkit.pytest_plugin is imported above (not listed here) to ensure
-# the setproctitle import blocker is installed before ANY other imports
+# Note: provide.testkit.pytest_plugin is automatically loaded via pytest11 entry point
+# in testkit's pyproject.toml, so it doesn't need to be listed here
 pytest_plugins = [
     "provide.testkit.hub.fixtures",
 ]
