@@ -4,52 +4,31 @@ from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 
-from provide.foundation.errors.resources import AlreadyExistsError, NotFoundError
+from provide.foundation.errors.resources import (
+    AlreadyExistsError,
+    NotFoundError,
+    ResourceError,
+)
 
 
-class TestAuthenticationError(FoundationTestCase):
-    """Test AuthenticationError class."""
-
-    def test_basic_creation(self) -> None:
-        """Test basic AuthenticationError."""
-        error = AuthenticationError("Invalid credentials")
-        assert error.message == "Invalid credentials"
-        assert error.code == "AUTH_ERROR"
-
-    def test_with_auth_method(self) -> None:
-        """Test with auth_method parameter."""
-        error = AuthenticationError("Token invalid", auth_method="jwt")
-        assert error.context["auth.method"] == "jwt"
-
-    def test_with_realm(self) -> None:
-        """Test with realm parameter."""
-        error = AuthenticationError("Access denied", realm="admin")
-        assert error.context["auth.realm"] == "admin"
-
-
-class TestAuthorizationError(FoundationTestCase):
-    """Test AuthorizationError class."""
+class TestResourceError(FoundationTestCase):
+    """Test ResourceError class."""
 
     def test_basic_creation(self) -> None:
-        """Test basic AuthorizationError."""
-        error = AuthorizationError("Permission denied")
-        assert error.message == "Permission denied"
-        assert error.code == "AUTHZ_ERROR"
+        """Test basic ResourceError."""
+        error = ResourceError("File not found")
+        assert error.message == "File not found"
+        assert error.code == "RESOURCE_ERROR"
 
-    def test_with_required_permission(self) -> None:
-        """Test with required_permission parameter."""
-        error = AuthorizationError("Forbidden", required_permission="admin:write")
-        assert error.context["authz.permission"] == "admin:write"
+    def test_with_resource_type(self) -> None:
+        """Test with resource_type parameter."""
+        error = ResourceError("Access denied", resource_type="file")
+        assert error.context["resource.type"] == "file"
 
-    def test_with_resource(self) -> None:
-        """Test with resource parameter."""
-        error = AuthorizationError("Cannot access", resource="/admin/users")
-        assert error.context["authz.resource"] == "/admin/users"
-
-    def test_with_actor(self) -> None:
-        """Test with actor parameter."""
-        error = AuthorizationError("Denied", actor="user:123")
-        assert error.context["authz.actor"] == "user:123"
+    def test_with_resource_path(self) -> None:
+        """Test with resource_path parameter."""
+        error = ResourceError("Not found", resource_path="/data/config.json")
+        assert error.context["resource.path"] == "/data/config.json"
 
 
 class TestNotFoundError(FoundationTestCase):
@@ -90,3 +69,6 @@ class TestAlreadyExistsError(FoundationTestCase):
         """Test with resource_id parameter."""
         error = AlreadyExistsError("Conflict", resource_id="user@example.com")
         assert error.context["exists.id"] == "user@example.com"
+
+
+# <3 🧱🤝🔌🪄

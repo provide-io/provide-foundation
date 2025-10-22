@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 
-from provide.foundation.errors.runtime import RuntimeError
+from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
 
 
 class TestRuntimeError(FoundationTestCase):
@@ -28,44 +28,64 @@ class TestRuntimeError(FoundationTestCase):
         assert error.context["runtime.retry_possible"] is True
 
 
-class TestIntegrationError(FoundationTestCase):
-    """Test IntegrationError class."""
+class TestStateError(FoundationTestCase):
+    """Test StateError class."""
 
     def test_basic_creation(self) -> None:
-        """Test basic IntegrationError."""
-        error = IntegrationError("API failed")
-        assert error.message == "API failed"
-        assert error.code == "INTEGRATION_ERROR"
+        """Test basic StateError."""
+        error = StateError("Invalid state")
+        assert error.message == "Invalid state"
+        assert error.code == "STATE_ERROR"
 
-    def test_with_service(self) -> None:
-        """Test with service parameter."""
-        error = IntegrationError("Connection failed", service="payment-api")
-        assert error.context["integration.service"] == "payment-api"
+    def test_with_current_state(self) -> None:
+        """Test with current_state parameter."""
+        error = StateError("Cannot transition", current_state="pending")
+        assert error.context["state.current"] == "pending"
 
-    def test_with_endpoint(self) -> None:
-        """Test with endpoint parameter."""
-        error = IntegrationError("Request failed", endpoint="/api/v1/users")
-        assert error.context["integration.endpoint"] == "/api/v1/users"
+    def test_with_expected_state(self) -> None:
+        """Test with expected_state parameter."""
+        error = StateError("Wrong state", expected_state="ready")
+        assert error.context["state.expected"] == "ready"
 
-    def test_with_status_code(self) -> None:
-        """Test with status_code parameter."""
-        error = IntegrationError("HTTP error", status_code=503)
-        assert error.context["integration.status_code"] == 503
+    def test_with_transition(self) -> None:
+        """Test with transition parameter."""
+        error = StateError("Invalid", transition="start->running")
+        assert error.context["state.transition"] == "start->running"
 
 
-class TestResourceError(FoundationTestCase):
-    """Test ResourceError class."""
+class TestConcurrencyError(FoundationTestCase):
+    """Test ConcurrencyError class."""
 
     def test_basic_creation(self) -> None:
-        """Test basic ResourceError."""
-        error = ResourceError("File not found")
-        assert error.message == "File not found"
-        assert error.code == "RESOURCE_ERROR"
+        """Test basic ConcurrencyError."""
+        error = ConcurrencyError("Lock conflict")
+        assert error.message == "Lock conflict"
+        assert error.code == "CONCURRENCY_ERROR"
 
-    def test_with_resource_type(self) -> None:
-        """Test with resource_type parameter."""
-        error = ResourceError("Access denied", resource_type="file")
-        assert error.context["resource.type"] == "file"
+    def test_with_conflict_type(self) -> None:
+        """Test with conflict_type parameter."""
+        error = ConcurrencyError("Conflict", conflict_type="optimistic_lock")
+        assert error.context["concurrency.type"] == "optimistic_lock"
 
-    def test_with_resource_path(self) -> None:
-        """Test with resource_path parameter."""
+    def test_with_version_expected(self) -> None:
+        """Test with version_expected parameter."""
+        error = ConcurrencyError("Version mismatch", version_expected=1)
+        assert error.context["concurrency.version_expected"] == "1"
+
+    def test_with_version_actual(self) -> None:
+        """Test with version_actual parameter."""
+        error = ConcurrencyError("Stale", version_actual=3)
+        assert error.context["concurrency.version_actual"] == "3"
+
+    def test_version_conversion(self) -> None:
+        """Test that versions are converted to strings."""
+        error = ConcurrencyError(
+            "Version conflict",
+            version_expected={"v": 1, "ts": 12345},
+            version_actual={"v": 2, "ts": 12346},
+        )
+        assert "v" in error.context["concurrency.version_expected"]
+        assert "v" in error.context["concurrency.version_actual"]
+
+
+# <3 🧱🤝🔌🪄
