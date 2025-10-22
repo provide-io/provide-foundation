@@ -37,9 +37,10 @@ class TestShutdownOpentelemetry(FoundationTestCase):
         """Test successful shutdown."""
         with (
             patch("provide.foundation.tracer.otel._HAS_OTEL", True),
-            patch("provide.foundation.tracer.otel._TRACER_PROVIDER") as mock_provider,
+            patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
         ):
-            mock_provider.shutdown = Mock()
+            mock_provider = Mock()
+            mock_trace.get_tracer_provider.return_value = mock_provider
             shutdown_opentelemetry()
             mock_provider.shutdown.assert_called_once()
 
@@ -47,8 +48,10 @@ class TestShutdownOpentelemetry(FoundationTestCase):
         """Test shutdown when provider has no shutdown method."""
         with (
             patch("provide.foundation.tracer.otel._HAS_OTEL", True),
-            patch("provide.foundation.tracer.otel._TRACER_PROVIDER", Mock(spec=[])),
+            patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
         ):
+            mock_provider = Mock(spec=[])  # No shutdown method
+            mock_trace.get_tracer_provider.return_value = mock_provider
             # Should not raise
             result = shutdown_opentelemetry()
             assert result is None
@@ -57,9 +60,11 @@ class TestShutdownOpentelemetry(FoundationTestCase):
         """Test shutdown handles exceptions gracefully."""
         with (
             patch("provide.foundation.tracer.otel._HAS_OTEL", True),
-            patch("provide.foundation.tracer.otel._TRACER_PROVIDER") as mock_provider,
+            patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
         ):
+            mock_provider = Mock()
             mock_provider.shutdown.side_effect = Exception("Shutdown error")
+            mock_trace.get_tracer_provider.return_value = mock_provider
             # Should not raise
             result = shutdown_opentelemetry()
             assert result is None
@@ -99,12 +104,14 @@ class TestIntegration:
             patch("provide.foundation.tracer.otel._HAS_OTEL", True),
             patch("provide.foundation.tracer.otel.TracerProvider") as mock_tp,
             patch("provide.foundation.tracer.otel.Resource") as mock_resource,
+            patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
         ):
             mock_provider = Mock()
             mock_tp.return_value = mock_provider
+            mock_trace.get_tracer_provider.return_value = mock_provider
 
             # Setup
-            from provide.foundation.config.telemetry import TelemetryConfig
+            from provide.foundation.logger.config.telemetry import TelemetryConfig
 
             config = TelemetryConfig(service_name="test-service")
             setup_opentelemetry_tracing(config)
@@ -121,7 +128,7 @@ class TestIntegration:
         """Test graceful handling when OpenTelemetry is not available."""
         with patch("provide.foundation.tracer.otel._HAS_OTEL", False):
             # Setup should not raise
-            from provide.foundation.config.telemetry import TelemetryConfig
+            from provide.foundation.logger.config.telemetry import TelemetryConfig
 
             config = TelemetryConfig(service_name="test-service")
             result = setup_opentelemetry_tracing(config)
