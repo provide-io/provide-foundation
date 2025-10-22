@@ -21,7 +21,7 @@ from provide.foundation.errors import (
     ValidationError,
     transactional,
 )
-from provide.foundation.resilience import retry
+from provide.foundation.resilience import circuit_breaker, retry
 
 
 class TestRealWorldScenarios(FoundationTestCase):
