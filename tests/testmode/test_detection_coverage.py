@@ -461,6 +461,27 @@ class TestDetectionEdgeCases(FoundationTestCase):
             # Stack inspection should not be called (early return)
             mock_stack.assert_not_called()
 
+    def test_is_in_test_mode_caches_result(self) -> None:
+        """Test that is_in_test_mode caches its result for performance."""
+        # Clear cache before test
+        _clear_test_mode_cache()
+
+        with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "test"}):
+            # First call - should detect test mode and cache it
+            result1 = is_in_test_mode()
+            assert result1 is True
+
+            # Second call - should return cached result (no env var check needed)
+            result2 = is_in_test_mode()
+            assert result2 is True
+
+            # Third call - should still return cached result
+            result3 = is_in_test_mode()
+            assert result3 is True
+
+            # All three should be True from cache
+            assert result1 == result2 == result3 is True
+
 
 __all__ = [
     "TestDetectionEdgeCases",
