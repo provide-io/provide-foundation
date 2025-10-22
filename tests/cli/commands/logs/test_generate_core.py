@@ -7,8 +7,8 @@ from unittest.mock import Mock, patch
 
 from provide.testkit import FoundationTestCase
 
-
 from provide.foundation.cli.commands.logs.generator import LogGenerator
+
 
 class TestGenerateLogEntry(FoundationTestCase):
     """Test log entry generation."""

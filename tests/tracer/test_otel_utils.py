@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
-from unittest.mock import patch
+import sys
+from unittest.mock import Mock, patch
 
 from provide.testkit import FoundationTestCase
 import pytest
+
+# Import _HAS_OTEL and other needed components
+try:
+    from provide.foundation.tracer.otel import _HAS_OTEL
+except ImportError:
+    _HAS_OTEL = False
 
 
 class TestShutdownOpentelemetry(FoundationTestCase):
