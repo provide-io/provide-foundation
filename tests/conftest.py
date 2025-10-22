@@ -12,6 +12,11 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
+# CRITICAL: This MUST be the FIRST non-__future__ import to block setproctitle before xdist
+# xdist imports setproctitle in xdist/remote.py:32 when pytest loads xdist as a plugin
+# The pytest11 entry point loads too late - we need this import to happen immediately
+from provide.testkit import pytest_plugin  # noqa: F401, I001
+
 from collections.abc import Generator
 import logging as stdlib_logging
 import os
@@ -20,8 +25,11 @@ import sys
 import pytest
 
 # Register plugins for assertion rewriting at the root level
-# Note: provide.testkit.pytest_plugin is automatically loaded via pytest11 entry point
-# in testkit's pyproject.toml, so it doesn't need to be listed here
+# Note: provide.testkit.pytest_plugin is imported above (not here) because:
+# 1. pytest-xdist imports setproctitle in xdist/remote.py during plugin loading
+# 2. pytest11 entry points are loaded AFTER pytest starts loading plugins
+# 3. We need the import blocker installed BEFORE xdist tries to import setproctitle
+# 4. Direct import at top of conftest ensures blocker is installed first
 pytest_plugins = [
     "provide.testkit.hub.fixtures",
 ]
