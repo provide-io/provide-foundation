@@ -1,4 +1,7 @@
-"""Integration tests for tools module with real network requests."""
+"""Integration tests for tools module with real network requests.
+
+These tests depend on external services and may be skipped if unavailable.
+"""
 
 from __future__ import annotations
 
@@ -15,9 +18,15 @@ from provide.foundation.tools.downloader import ToolDownloader
 from provide.foundation.tools.resolver import VersionResolver
 from provide.foundation.transport.client import UniversalClient
 
+# Mark all tests in this module as requiring external services
+pytestmark = pytest.mark.external_service
+
 
 class TestFullWorkflowIntegration(FoundationTestCase):
-    """Test complete tool installation workflow."""
+    """Test complete tool installation workflow.
+
+    Note: These tests may require external services and can be skipped.
+    """
 
     @pytest.fixture
     def temp_dir(self):
