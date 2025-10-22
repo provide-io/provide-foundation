@@ -12,30 +12,20 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
-# CRITICAL: Disable setproctitle BEFORE any other imports
-# This must happen at module import time, before pytest-xdist loads
-# setproctitle causes system freezing on macOS with parallel test execution
-import sys
-
-try:
-    import setproctitle
-
-    # Completely disable setproctitle by replacing it with no-op functions
-    setproctitle.setproctitle = lambda x: None
-    setproctitle.getproctitle = lambda: ""
-
-    # Also prevent future imports from getting the real module
-    sys.modules["setproctitle"].setproctitle = lambda x: None
-    sys.modules["setproctitle"].getproctitle = lambda: ""
-except ImportError:
-    # setproctitle not installed, nothing to disable
-    pass
-
-from collections.abc import Generator
-import logging as stdlib_logging
 import os
 
-import pytest
+# CRITICAL: Manually import provide-testkit plugin to ensure setproctitle mock loads
+# Worker subprocesses (pytest-xdist) don't inherit sys.modules from the parent process.
+# The plugin is already registered via entry points, but we need to ensure it loads
+# BEFORE pytest-xdist loads, so we import it explicitly here at module level.
+# This must happen BEFORE pytest import to prevent xdist from importing real setproctitle.
+import provide.testkit.pytest_plugin  # noqa: F401
+
+from collections.abc import Generator  # noqa: E402
+import logging as stdlib_logging  # noqa: E402
+import sys  # noqa: E402
+
+import pytest  # noqa: E402
 
 # Register plugins for assertion rewriting at the root level
 # This must be done before the plugin is imported anywhere else
