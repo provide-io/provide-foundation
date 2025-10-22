@@ -56,8 +56,8 @@ class TestProcessTitle(FoundationTestCase):
 
     def test_set_process_title_without_setproctitle(self) -> None:
         """Test set_process_title returns False when setproctitle unavailable."""
-        # Mock both test mode (to bypass test mode skip) and setproctitle availability
-        with patch("provide.foundation.process.title.is_in_test_mode", return_value=False):
+        # Mock test mode at decorator level (bypass skip) and setproctitle availability
+        with patch("provide.foundation.testmode.decorators.is_in_test_mode", return_value=False):
             with patch("provide.foundation.process.title._HAS_SETPROCTITLE", False):
                 from provide.foundation.process.title import set_process_title
 
@@ -66,8 +66,8 @@ class TestProcessTitle(FoundationTestCase):
 
     def test_get_process_title_without_setproctitle(self) -> None:
         """Test get_process_title returns None when setproctitle unavailable."""
-        # Mock both test mode (to bypass test mode skip) and setproctitle availability
-        with patch("provide.foundation.process.title.is_in_test_mode", return_value=False):
+        # Mock test mode at decorator level (bypass skip) and setproctitle availability
+        with patch("provide.foundation.testmode.decorators.is_in_test_mode", return_value=False):
             with patch("provide.foundation.process.title._HAS_SETPROCTITLE", False):
                 from provide.foundation.process.title import get_process_title
 
