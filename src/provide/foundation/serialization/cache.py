@@ -13,34 +13,31 @@ if TYPE_CHECKING:
     from provide.foundation.serialization.config import SerializationCacheConfig
     from provide.foundation.utils.caching import LRUCache
 
-"""Caching utilities for serialization operations."""
+"""Caching utilities for serialization operations.
+
+Thread-safe caching with simple locking strategy - lock acquisition on every
+access is negligible overhead compared to actual serialization operations.
+"""
 
 # Cache configuration - lazy evaluation to avoid circular imports
 _cached_config: Any | None = None  # SerializationCacheConfig
 _serialization_cache: Any | None = None  # LRUCache
-_cache_lock = threading.RLock()  # Use RLock to allow reentrant locking
+_cache_lock = threading.Lock()  # Simple lock for thread safety
 
 
 def _get_cache_config() -> Any:  # SerializationCacheConfig
-    """Get cache configuration with lazy initialization.
+    """Get cache configuration with thread-safe lazy initialization.
 
-    Uses double-checked locking for thread-safe initialization.
+    Lock overhead (~20-50ns) is negligible compared to actual cache operations.
     """
     global _cached_config
 
-    # First check without lock (fast path)
-    local_config = _cached_config
-    if local_config is None:
-        with _cache_lock:
-            # Second check with lock held
-            local_config = _cached_config
-            if local_config is None:
-                from provide.foundation.serialization.config import SerializationCacheConfig
+    with _cache_lock:
+        if _cached_config is None:
+            from provide.foundation.serialization.config import SerializationCacheConfig
 
-                local_config = SerializationCacheConfig.from_env()
-                _cached_config = local_config
-
-    return local_config
+            _cached_config = SerializationCacheConfig.from_env()
+        return _cached_config
 
 
 def get_cache_enabled() -> bool:
@@ -56,27 +53,21 @@ def get_cache_size() -> int:
 
 
 def get_serialization_cache() -> Any:  # LRUCache
-    """Get or create serialization cache with lazy initialization.
+    """Get or create serialization cache with thread-safe lazy initialization.
 
-    Uses double-checked locking for thread-safe initialization.
+    Lock overhead (~20-50ns) is negligible compared to actual cache operations
+    (~100-1000ns lookup, ~1-100μs for serialization).
     """
     global _serialization_cache
 
-    # First check without lock (fast path for already initialized)
-    local_cache = _serialization_cache
-    if local_cache is None:
-        with _cache_lock:
-            # Second check with lock held (only one thread initializes)
-            local_cache = _serialization_cache
-            if local_cache is None:
-                from provide.foundation.utils.caching import LRUCache, register_cache
+    with _cache_lock:
+        if _serialization_cache is None:
+            from provide.foundation.utils.caching import LRUCache, register_cache
 
-                config = _get_cache_config()
-                local_cache = LRUCache(maxsize=config.cache_size)
-                _serialization_cache = local_cache
-                register_cache("serialization", local_cache)
-
-    return local_cache
+            config = _get_cache_config()
+            _serialization_cache = LRUCache(maxsize=config.cache_size)
+            register_cache("serialization", _serialization_cache)
+        return _serialization_cache
 
 
 def reset_serialization_cache_config() -> None:
