@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import hashlib
+import threading
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -17,15 +18,25 @@ if TYPE_CHECKING:
 # Cache configuration - lazy evaluation to avoid circular imports
 _cached_config: SerializationCacheConfig | None = None
 _serialization_cache: LRUCache | None = None
+_cache_lock = threading.Lock()  # Thread safety for cache initialization
 
 
 def _get_cache_config() -> SerializationCacheConfig:
-    """Get cache configuration with lazy initialization."""
-    global _cached_config
-    if _cached_config is None:
-        from provide.foundation.serialization.config import SerializationCacheConfig
+    """Get cache configuration with lazy initialization.
 
-        _cached_config = SerializationCacheConfig.from_env()
+    Uses double-checked locking for thread-safe initialization.
+    """
+    global _cached_config
+
+    # First check without lock (fast path)
+    if _cached_config is None:
+        with _cache_lock:
+            # Second check with lock held
+            if _cached_config is None:
+                from provide.foundation.serialization.config import SerializationCacheConfig
+
+                _cached_config = SerializationCacheConfig.from_env()
+
     return _cached_config
 
 
@@ -42,14 +53,23 @@ def get_cache_size() -> int:
 
 
 def get_serialization_cache() -> LRUCache:
-    """Get or create serialization cache with lazy initialization."""
-    global _serialization_cache
-    if _serialization_cache is None:
-        from provide.foundation.utils.caching import LRUCache, register_cache
+    """Get or create serialization cache with lazy initialization.
 
-        config = _get_cache_config()
-        _serialization_cache = LRUCache(maxsize=config.cache_size)
-        register_cache("serialization", _serialization_cache)
+    Uses double-checked locking for thread-safe initialization.
+    """
+    global _serialization_cache
+
+    # First check without lock (fast path for already initialized)
+    if _serialization_cache is None:
+        with _cache_lock:
+            # Second check with lock held (only one thread initializes)
+            if _serialization_cache is None:
+                from provide.foundation.utils.caching import LRUCache, register_cache
+
+                config = _get_cache_config()
+                _serialization_cache = LRUCache(maxsize=config.cache_size)
+                register_cache("serialization", _serialization_cache)
+
     return _serialization_cache
 
 
