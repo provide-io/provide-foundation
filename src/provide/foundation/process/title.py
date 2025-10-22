@@ -6,15 +6,16 @@
 from __future__ import annotations
 
 from provide.foundation.logger import get_logger
-from provide.foundation.testmode import is_in_test_mode
+from provide.foundation.testmode.decorators import skip_in_test_mode
 
 """Process title management.
 
 Provides utilities for setting and getting process titles, making processes
 identifiable in system monitoring tools like ps, top, and htop.
 
-Automatically disabled in test mode to prevent test interference and ensure
-proper test isolation, especially with parallel test execution (pytest-xdist).
+Automatically disabled in test mode (via @skip_in_test_mode decorator) to
+prevent test interference and ensure proper test isolation, especially with
+parallel test execution (pytest-xdist).
 
 Requires the optional 'setproctitle' package for full functionality.
 Install with: pip install provide-foundation[process]
@@ -35,6 +36,7 @@ except ImportError:
     )
 
 
+@skip_in_test_mode(return_value=True, reason="Process title changes interfere with test isolation")
 def set_process_title(title: str) -> bool:
     """Set the process title visible in system monitoring tools.
 
@@ -42,8 +44,8 @@ def set_process_title(title: str) -> bool:
     monitoring tools. This is useful for identifying processes, especially
     in multi-process applications or long-running services.
 
-    Automatically disabled in test mode to prevent interference with test
-    isolation and parallel test execution.
+    Automatically disabled in test mode (via @skip_in_test_mode decorator) to
+    prevent interference with test isolation and parallel test execution.
 
     Args:
         title: The title to set for the current process
@@ -59,15 +61,6 @@ def set_process_title(title: str) -> bool:
         >>> # Process will now show as "my-worker-process" in ps/top
 
     """
-    # Skip in test mode to prevent test interference
-    if is_in_test_mode():
-        log.debug(
-            "Skipping process title change in test mode",
-            title=title,
-            reason="Test mode detected - preventing test interference",
-        )
-        return True  # Return True since we successfully "handled" the request
-
     if not _HAS_SETPROCTITLE:
         log.debug(
             "Cannot set process title - setproctitle not available",
@@ -85,10 +78,12 @@ def set_process_title(title: str) -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=None, reason="Process title queries interfere with test isolation")
 def get_process_title() -> str | None:
     """Get the current process title.
 
-    Automatically returns None in test mode to prevent test interference.
+    Automatically returns None in test mode (via @skip_in_test_mode decorator)
+    to prevent test interference.
 
     Returns:
         The current process title, or None if setproctitle is not available
@@ -102,14 +97,6 @@ def get_process_title() -> str | None:
         'my-process'
 
     """
-    # Skip in test mode to prevent test interference
-    if is_in_test_mode():
-        log.debug(
-            "Skipping process title retrieval in test mode",
-            reason="Test mode detected - preventing test interference",
-        )
-        return None
-
     if not _HAS_SETPROCTITLE:
         return None
 

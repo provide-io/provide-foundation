@@ -8,11 +8,16 @@ from __future__ import annotations
 import sys
 
 from provide.foundation.logger import get_logger
+from provide.foundation.testmode.decorators import skip_in_test_mode
 
 """systemd integration utilities.
 
 Provides utilities for notifying systemd about service status, implementing
 watchdog functionality, and integrating with systemd's service management.
+
+Automatically disabled in test mode (via @skip_in_test_mode decorator) to
+prevent systemd notifications during testing, which would interfere with
+test isolation and aren't meaningful in test contexts.
 
 This module is Linux-specific and requires the optional 'sdnotify' package.
 Install with: pip install provide-foundation[platform-linux]
@@ -42,6 +47,7 @@ else:
     log.debug("systemd features only available on Linux", platform=sys.platform)
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_ready() -> bool:
     """Notify systemd that the service is ready.
 
@@ -49,8 +55,11 @@ def notify_ready() -> bool:
     ready to handle requests. For Type=notify services, systemd waits for this
     notification before considering the service started.
 
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
+
     Returns:
         True if notification sent successfully, False if sdnotify not available
+        or running in test mode
 
     Example:
         >>> from provide.foundation.platform import notify_ready
