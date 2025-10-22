@@ -8,6 +8,11 @@ from __future__ import annotations
 #
 # __init__.py
 #
+from provide.foundation.testmode.decorators import (
+    get_test_unsafe_features,
+    is_test_unsafe,
+    skip_in_test_mode,
+)
 from provide.foundation.testmode.detection import (
     configure_structlog_for_test_safety,
     is_in_click_testing,
@@ -31,16 +36,20 @@ from provide.foundation.testmode.orchestration import (
 
 """Foundation Test Mode Support.
 
-This module provides utilities for test mode detection and internal
-reset APIs used by testing frameworks. It centralizes all test-related
-functionality that Foundation needs for proper test isolation.
+This module provides utilities for test mode detection, decorators for marking
+test-unsafe features, and internal reset APIs used by testing frameworks. It
+centralizes all test-related functionality that Foundation needs for proper
+test isolation.
 """
 
 __all__ = [
     # Test detection
     "configure_structlog_for_test_safety",
+    # Test-unsafe feature decorators
+    "get_test_unsafe_features",
     "is_in_click_testing",
     "is_in_test_mode",
+    "is_test_unsafe",
     # Internal reset APIs (for testkit use)
     "reset_circuit_breaker_state",
     # Orchestrated reset functions
@@ -54,6 +63,7 @@ __all__ = [
     "reset_test_mode_cache",
     "reset_version_cache",
     "should_use_shared_registries",
+    "skip_in_test_mode",
 ]
 
 

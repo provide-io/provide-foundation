@@ -5,8 +5,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 import functools
-from typing import Any, Callable, TypeVar
+from typing import Any, TypeVar
 
 from provide.foundation.logger import get_logger
 from provide.foundation.testmode.detection import is_in_test_mode

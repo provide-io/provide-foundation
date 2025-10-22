@@ -84,10 +84,13 @@ def notify_ready() -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_status(status: str) -> bool:
     """Send status text to systemd.
 
     The status will be visible in systemctl status output.
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Args:
         status: Status message to send to systemd
@@ -117,12 +120,15 @@ def notify_status(status: str) -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_watchdog() -> bool:
     """Send watchdog keepalive to systemd.
 
     If WatchdogSec is configured in the systemd service unit, the service must
     call this periodically to prevent systemd from considering it hung and
     restarting it.
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Returns:
         True if notification sent successfully, False if sdnotify not available
@@ -149,11 +155,14 @@ def notify_watchdog() -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_reloading() -> bool:
     """Notify systemd that the service is reloading configuration.
 
     Call this at the beginning of configuration reload, and call notify_ready()
     when reload is complete.
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Returns:
         True if notification sent successfully, False if sdnotify not available
@@ -180,10 +189,13 @@ def notify_reloading() -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_stopping() -> bool:
     """Notify systemd that the service is stopping.
 
     Call this at the beginning of graceful shutdown.
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Returns:
         True if notification sent successfully, False if sdnotify not available
@@ -210,12 +222,15 @@ def notify_stopping() -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_error(errno: int, message: str | None = None) -> bool:
     """Notify systemd of an error condition.
 
     Args:
         errno: Error number (errno value)
         message: Optional error message
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Returns:
         True if notification sent successfully, False if sdnotify not available
