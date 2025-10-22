@@ -1,21 +1,19 @@
-"""Unit tests for OpenObserve client with mocked transport.
+"""Unit tests for OpenObserve client operations with mocked transport.
 
-This module contains unit tests that mock the transport layer to test all code paths.
-Run with: pytest tests/integrations/openobserve/test_client_unit.py -v
+This module tests search, list streams, and connection testing operations.
+Run with: pytest tests/integrations/openobserve/test_client_operations.py -v
 """
 
 from __future__ import annotations
 
 from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock
 
 from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.exceptions import (
-    OpenObserveAuthenticationError,
-    OpenObserveConfigError,
     OpenObserveConnectionError,
     OpenObserveQueryError,
 )
@@ -47,266 +45,6 @@ class MockResponse:
     def json(self) -> dict[str, Any]:
         """Return JSON data."""
         return self._json_data
-
-
-class TestClientInitialization(FoundationTestCase):
-    """Tests for OpenObserveClient initialization."""
-
-    def test_init_basic(self) -> None:
-        """Test basic client initialization."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-        )
-
-        assert client.url == "http://localhost:5080"
-        assert client.username == "test@example.com"
-        assert client.password == "password"
-        assert client.organization == "default"
-        assert client._client is not None
-
-    def test_init_with_custom_org(self) -> None:
-        """Test client initialization with custom organization."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-            organization="custom_org",
-        )
-
-        assert client.organization == "custom_org"
-
-    def test_init_strips_trailing_slash(self) -> None:
-        """Test that URL trailing slash is removed."""
-        client = OpenObserveClient(
-            url="http://localhost:5080/",
-            username="test@example.com",
-            password="password",
-        )
-
-        assert client.url == "http://localhost:5080"
-        assert not client.url.endswith("/")
-
-    def test_init_with_timeout(self) -> None:
-        """Test client initialization with custom timeout."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-            timeout=60,
-        )
-
-        assert client._client.default_timeout == 60.0
-
-    def test_init_validates_credentials(self) -> None:
-        """Test that credentials are validated during initialization."""
-        # Empty username should raise error
-        with pytest.raises(OpenObserveAuthenticationError):
-            OpenObserveClient(
-                url="http://localhost:5080",
-                username="",
-                password="password",
-            )
-
-        # Empty password should raise error
-        with pytest.raises(OpenObserveAuthenticationError):
-            OpenObserveClient(
-                url="http://localhost:5080",
-                username="test@example.com",
-                password="",
-            )
-
-
-class TestClientFromConfig(FoundationTestCase):
-    """Tests for creating client from config."""
-
-    def test_from_config_success(self) -> None:
-        """Test creating client from config with valid settings."""
-        with patch(
-            "provide.foundation.integrations.openobserve.config.OpenObserveConfig"
-        ) as mock_config_class:
-            # Mock config
-            mock_config = MagicMock()
-            mock_config.url = "http://localhost:5080"
-            mock_config.user = "test@example.com"
-            mock_config.password = "password"
-            mock_config.org = "test_org"
-            mock_config_class.from_env.return_value = mock_config
-
-            client = OpenObserveClient.from_config()
-
-            assert client.url == "http://localhost:5080"
-            assert client.username == "test@example.com"
-            assert client.organization == "test_org"
-
-    def test_from_config_default_org(self) -> None:
-        """Test creating client from config with default organization."""
-        with patch(
-            "provide.foundation.integrations.openobserve.config.OpenObserveConfig"
-        ) as mock_config_class:
-            mock_config = MagicMock()
-            mock_config.url = "http://localhost:5080"
-            mock_config.user = "test@example.com"
-            mock_config.password = "password"
-            mock_config.org = None
-            mock_config_class.from_env.return_value = mock_config
-
-            client = OpenObserveClient.from_config()
-
-            assert client.organization == "default"
-
-    def test_from_config_missing_url(self) -> None:
-        """Test creating client from config without URL."""
-        with patch(
-            "provide.foundation.integrations.openobserve.config.OpenObserveConfig"
-        ) as mock_config_class:
-            mock_config = MagicMock()
-            mock_config.url = None
-            mock_config.user = "test@example.com"
-            mock_config.password = "password"
-            mock_config_class.from_env.return_value = mock_config
-
-            with pytest.raises(OpenObserveConfigError, match="URL not configured"):
-                OpenObserveClient.from_config()
-
-    def test_from_config_missing_credentials(self) -> None:
-        """Test creating client from config without credentials."""
-        with patch(
-            "provide.foundation.integrations.openobserve.config.OpenObserveConfig"
-        ) as mock_config_class:
-            mock_config = MagicMock()
-            mock_config.url = "http://localhost:5080"
-            mock_config.user = None
-            mock_config.password = None
-            mock_config_class.from_env.return_value = mock_config
-
-            with pytest.raises(OpenObserveConfigError, match="credentials not configured"):
-                OpenObserveClient.from_config()
-
-    def test_from_config_missing_password(self) -> None:
-        """Test creating client from config with user but no password."""
-        with patch(
-            "provide.foundation.integrations.openobserve.config.OpenObserveConfig"
-        ) as mock_config_class:
-            mock_config = MagicMock()
-            mock_config.url = "http://localhost:5080"
-            mock_config.user = "test@example.com"
-            mock_config.password = None
-            mock_config_class.from_env.return_value = mock_config
-
-            with pytest.raises(OpenObserveConfigError, match="credentials not configured"):
-                OpenObserveClient.from_config()
-
-
-class TestExtractErrorMessage(FoundationTestCase):
-    """Tests for _extract_error_message method."""
-
-    def test_extract_error_message_from_json(self) -> None:
-        """Test extracting error message from JSON response."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-        )
-
-        response = MockResponse(
-            status=400,
-            json_data={"message": "Invalid query syntax"},
-        )
-
-        error_msg = client._extract_error_message(response, "Default error")
-
-        assert error_msg == "Invalid query syntax"
-
-    def test_extract_error_message_default(self) -> None:
-        """Test using default message when extraction fails."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-        )
-
-        response = MockResponse(status=500, json_data={})
-
-        error_msg = client._extract_error_message(response, "Default error")
-
-        assert error_msg == "Default error"
-
-    def test_extract_error_message_invalid_json(self) -> None:
-        """Test handling invalid JSON in response."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-        )
-
-        # Mock response with invalid JSON
-        response = MagicMock()
-        response.json.side_effect = ValueError("Invalid JSON")
-
-        error_msg = client._extract_error_message(response, "Default error")
-
-        assert error_msg == "Default error"
-
-
-class TestCheckResponseErrors(FoundationTestCase):
-    """Tests for _check_response_errors method."""
-
-    def test_check_response_401_raises_connection_error(self) -> None:
-        """Test that 401 raises OpenObserveConnectionError."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-        )
-
-        response = MockResponse(status=401)
-
-        with pytest.raises(OpenObserveConnectionError, match="Authentication failed"):
-            client._check_response_errors(response)
-
-    def test_check_response_400_raises_query_error(self) -> None:
-        """Test that 400 raises OpenObserveQueryError."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-        )
-
-        response = MockResponse(
-            status=400,
-            json_data={"message": "Bad request"},
-        )
-
-        with pytest.raises(OpenObserveQueryError, match="Bad request"):
-            client._check_response_errors(response)
-
-    def test_check_response_500_raises_query_error(self) -> None:
-        """Test that 500 raises OpenObserveQueryError."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-        )
-
-        response = MockResponse(status=500)
-
-        with pytest.raises(OpenObserveQueryError, match="HTTP 500 error"):
-            client._check_response_errors(response)
-
-    def test_check_response_success_no_error(self) -> None:
-        """Test that successful responses don't raise errors."""
-        client = OpenObserveClient(
-            url="http://localhost:5080",
-            username="test@example.com",
-            password="password",
-        )
-
-        response = MockResponse(status=200)
-
-        # Should not raise
-        client._check_response_errors(response)
 
 
 class TestMakeRequest(FoundationTestCase):
@@ -651,11 +389,7 @@ class TestConnectionTest(FoundationTestCase):
 
 
 __all__ = [
-    "TestCheckResponseErrors",
-    "TestClientFromConfig",
-    "TestClientInitialization",
     "TestConnectionTest",
-    "TestExtractErrorMessage",
     "TestGetSearchHistory",
     "TestListStreams",
     "TestMakeRequest",
