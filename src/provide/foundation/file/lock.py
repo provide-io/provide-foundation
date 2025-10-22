@@ -11,8 +11,6 @@ import socket
 import threading
 import time
 
-import psutil
-
 from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
 from provide.foundation.errors.resources import LockError
 from provide.foundation.logger import get_logger
@@ -20,11 +18,24 @@ from provide.foundation.serialization import json_dumps, json_loads
 
 """File-based locking for concurrent access control.
 
-Uses psutil for robust process validation to prevent PID recycling attacks.
+Uses psutil (optional) for robust process validation to prevent PID recycling attacks.
+When psutil is not available, falls back to basic PID existence checking.
 Thread-safe for concurrent access within a single process.
 """
 
 log = get_logger(__name__)
+
+# Try to import psutil for PID recycling protection
+try:
+    import psutil
+
+    _HAS_PSUTIL = True
+except ImportError:
+    _HAS_PSUTIL = False
+    log.debug(
+        "psutil not available, using basic PID validation",
+        hint="For PID recycling protection, install with: pip install provide-foundation[process]",
+    )
 
 
 class FileLock:
@@ -115,12 +126,13 @@ class FileLock:
                             "hostname": socket.gethostname(),
                             "created": current_time,
                         }
-                        # Add process start time for PID recycling protection
-                        try:
-                            proc = psutil.Process(self.pid)
-                            lock_info["start_time"] = proc.create_time()
-                        except (psutil.NoSuchProcess, psutil.AccessDenied):
-                            pass
+                        # Add process start time for PID recycling protection (if psutil available)
+                        if _HAS_PSUTIL:
+                            try:
+                                proc = psutil.Process(self.pid)
+                                lock_info["start_time"] = proc.create_time()
+                            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                                pass
                         os.write(fd, json_dumps(lock_info).encode())
                     finally:
                         os.close(fd)
@@ -265,24 +277,41 @@ class FileLock:
                 log.debug("No PID in lock file", path=str(self.path))
                 return False
 
-            # Validate process with psutil for robust PID recycling protection
-            try:
-                proc = psutil.Process(lock_pid)
+            # Validate process - use psutil if available for PID recycling protection
+            if _HAS_PSUTIL:
+                # Full validation with PID recycling protection
+                try:
+                    proc = psutil.Process(lock_pid)
 
-                # Call a method to trigger NoSuchProcess if PID doesn't exist
-                # This is needed because Process.__init__ is lazy
-                proc_start_time = proc.create_time()
+                    # Call a method to trigger NoSuchProcess if PID doesn't exist
+                    # This is needed because Process.__init__ is lazy
+                    proc_start_time = proc.create_time()
 
-                # If we have start_time, validate it matches to prevent PID recycling
-                # Allow 1 second tolerance for timestamp precision differences
-                if lock_start_time is not None and abs(proc_start_time - lock_start_time) > 1.0:
-                    log.warning(
-                        "PID recycling detected - removing stale lock",
-                        path=str(self.path),
-                        lock_pid=lock_pid,
-                        lock_start=lock_start_time,
-                        proc_start=proc_start_time,
-                    )
+                    # If we have start_time, validate it matches to prevent PID recycling
+                    # Allow 1 second tolerance for timestamp precision differences
+                    if lock_start_time is not None and abs(proc_start_time - lock_start_time) > 1.0:
+                        log.warning(
+                            "PID recycling detected - removing stale lock",
+                            path=str(self.path),
+                            lock_pid=lock_pid,
+                            lock_start=lock_start_time,
+                            proc_start=proc_start_time,
+                        )
+                        try:
+                            self.path.unlink()
+                            return True
+                        except FileNotFoundError:
+                            return True
+                        except (OSError, PermissionError):
+                            # Failed to remove stale lock (permission denied, etc.)
+                            return False
+
+                    # Process exists and start time matches (or no start time available)
+                    return False
+
+                except psutil.NoSuchProcess:
+                    # Process doesn't exist - lock is stale
+                    log.warning("Removing stale lock - process not found", path=str(self.path), stale_pid=lock_pid)
                     try:
                         self.path.unlink()
                         return True
@@ -292,24 +321,32 @@ class FileLock:
                         # Failed to remove stale lock (permission denied, etc.)
                         return False
 
-                # Process exists and start time matches (or no start time available)
-                return False
-
-            except psutil.NoSuchProcess:
-                # Process doesn't exist - lock is stale
-                log.warning("Removing stale lock - process not found", path=str(self.path), stale_pid=lock_pid)
-                try:
-                    self.path.unlink()
-                    return True
-                except FileNotFoundError:
-                    return True
-                except (OSError, PermissionError):
-                    # Failed to remove stale lock (permission denied, etc.)
+                except psutil.AccessDenied:
+                    # Can't check process - assume it's valid to be safe
                     return False
-
-            except psutil.AccessDenied:
-                # Can't check process - assume it's valid to be safe
-                return False
+            else:
+                # Fallback: Basic PID existence check using os.kill(pid, 0)
+                # WARNING: This does NOT protect against PID recycling
+                try:
+                    os.kill(lock_pid, 0)  # Signal 0 just checks if process exists
+                    # Process exists - lock is valid
+                    return False
+                except OSError:
+                    # Process doesn't exist - lock is stale
+                    log.warning(
+                        "Removing stale lock - process not found (basic check)",
+                        path=str(self.path),
+                        stale_pid=lock_pid,
+                        hint="For PID recycling protection, install psutil: pip install provide-foundation[process]",
+                    )
+                    try:
+                        self.path.unlink()
+                        return True
+                    except FileNotFoundError:
+                        return True
+                    except (OSError, PermissionError):
+                        # Failed to remove stale lock (permission denied, etc.)
+                        return False
 
         except Exception as e:
             # Generic catch intentional: Safety net for security-critical lock validation.
