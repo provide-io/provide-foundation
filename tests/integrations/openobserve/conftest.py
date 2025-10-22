@@ -34,7 +34,7 @@ from provide.foundation.integrations.openobserve.exceptions import OpenObserveCo
 from provide.foundation.logger.config.telemetry import TelemetryConfig
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def openobserve_config() -> OpenObserveConfig:
     """Load OpenObserve configuration from environment variables.
 
@@ -48,11 +48,16 @@ def openobserve_config() -> OpenObserveConfig:
     Returns:
         OpenObserveConfig instance loaded from environment
 
+    Note:
+        Changed from session to function scope to avoid inter-worker contention
+        issues with pytest-xdist. Config loading is fast, so per-function overhead
+        is negligible compared to preventing worker deadlocks.
+
     """
     return OpenObserveConfig.from_env()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def telemetry_config() -> TelemetryConfig:
     """Load Telemetry configuration from environment variables.
 
@@ -63,6 +68,11 @@ def telemetry_config() -> TelemetryConfig:
 
     Returns:
         TelemetryConfig instance loaded from environment
+
+    Note:
+        Changed from session to function scope to avoid inter-worker contention
+        issues with pytest-xdist. Config loading is fast, so per-function overhead
+        is negligible compared to preventing worker deadlocks.
 
     """
     return TelemetryConfig.from_env()
@@ -106,7 +116,7 @@ async def openobserve_client(openobserve_config: OpenObserveConfig) -> OpenObser
         await client._client.__aexit__(None, None, None)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def openobserve_available(openobserve_config: OpenObserveConfig) -> bool:
     """Check if OpenObserve instance is reachable.
 
@@ -117,8 +127,9 @@ def openobserve_available(openobserve_config: OpenObserveConfig) -> bool:
         True if OpenObserve is reachable, False otherwise
 
     Note:
-        Uses direct HTTP check instead of client to avoid async/event loop issues
-        with session-scoped fixtures.
+        Changed from session to function scope to prevent inter-worker contention
+        with pytest-xdist. Session-scoped fixtures making HTTP requests can cause
+        workers to deadlock waiting for shared resources.
 
     """
     if not openobserve_config.url:
