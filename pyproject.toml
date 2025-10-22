@@ -69,32 +69,20 @@ opentelemetry = [
 platform = [
     "psutil>=3.3.11",
     "py-cpuinfo>=9.0.0",
-]
-platform-linux = [
-    "provide-foundation[platform]",
     "sdnotify>=0.3.2; sys_platform == 'linux'",
 ]
 # Process utilities (process control and lifecycle)
 process = [
     "psutil>=3.3.11",
     "setproctitle>=1.3.3",
-]
-process-linux = [
-    "provide-foundation[process]",
     "python-prctl>=1.8.1; sys_platform == 'linux'",
 ]
 # Convenience groups
 extended = [
     "provide-foundation[platform,process]",
 ]
-extended-linux = [
-    "provide-foundation[platform-linux,process-linux]",
-]
 all = [
     "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]",
-]
-all-linux = [
-    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended-linux]",
 ]
 
 [project.scripts]
