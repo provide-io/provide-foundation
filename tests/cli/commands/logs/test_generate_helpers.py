@@ -11,10 +11,6 @@ from provide.foundation.cli.commands.logs.generator import LogGenerator
 from provide.foundation.cli.commands.logs.constants import SERVICE_NAMES
 
 
-from __future__ import annotations
-
-from provide.testkit import FoundationTestCase
-
 
 class TestClickIntegration(FoundationTestCase):
     """Test Click command integration when Click is available."""
