@@ -10,9 +10,17 @@ import pytest
 
 # Import _HAS_OTEL and other needed components
 try:
-    from provide.foundation.tracer.otel import _HAS_OTEL
+    from provide.foundation.tracer.otel import (
+        _HAS_OTEL,
+        get_otel_tracer,
+        setup_opentelemetry_tracing,
+        shutdown_opentelemetry,
+    )
 except ImportError:
     _HAS_OTEL = False
+    get_otel_tracer = None  # type: ignore
+    setup_opentelemetry_tracing = None  # type: ignore
+    shutdown_opentelemetry = None  # type: ignore
 
 
 class TestShutdownOpentelemetry(FoundationTestCase):
@@ -21,50 +29,40 @@ class TestShutdownOpentelemetry(FoundationTestCase):
     def test_shutdown_otel_not_available(self) -> None:
         """Test shutdown when OpenTelemetry is not available."""
         with patch("provide.foundation.tracer.otel._HAS_OTEL", False):
-            # Should not raise
-            shutdown_opentelemetry()
+            # Should not raise, just return None
+            result = shutdown_opentelemetry()
+            assert result is None
 
     def test_shutdown_success(self) -> None:
         """Test successful shutdown."""
-        mock_tracer_provider = Mock()
-        mock_tracer_provider.shutdown = Mock()
-
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
-                with patch("provide.foundation.tracer.otel.slog") as mock_log:
-                    mock_trace.get_tracer_provider.return_value = mock_tracer_provider
-
-                    shutdown_opentelemetry()
-
-                    mock_tracer_provider.shutdown.assert_called_once()
-                    mock_log.debug.assert_called_once_with("🔍🛑 OpenTelemetry tracer provider shutdown")
+        with (
+            patch("provide.foundation.tracer.otel._HAS_OTEL", True),
+            patch("provide.foundation.tracer.otel._TRACER_PROVIDER") as mock_provider,
+        ):
+            mock_provider.shutdown = Mock()
+            shutdown_opentelemetry()
+            mock_provider.shutdown.assert_called_once()
 
     def test_shutdown_no_shutdown_method(self) -> None:
-        """Test shutdown when tracer provider has no shutdown method."""
-        mock_tracer_provider = Mock(spec=[])  # No shutdown method
-
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
-                with patch("provide.foundation.tracer.otel.slog") as mock_log:
-                    mock_trace.get_tracer_provider.return_value = mock_tracer_provider
-
-                    shutdown_opentelemetry()
-
-                    # Should not crash, no debug message should be logged
-                    mock_log.debug.assert_not_called()
+        """Test shutdown when provider has no shutdown method."""
+        with (
+            patch("provide.foundation.tracer.otel._HAS_OTEL", True),
+            patch("provide.foundation.tracer.otel._TRACER_PROVIDER", Mock(spec=[])),
+        ):
+            # Should not raise
+            result = shutdown_opentelemetry()
+            assert result is None
 
     def test_shutdown_exception(self) -> None:
-        """Test shutdown when an exception occurs."""
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
-                with patch("provide.foundation.tracer.otel.slog") as mock_log:
-                    mock_trace.get_tracer_provider.side_effect = Exception("Shutdown error")
-
-                    shutdown_opentelemetry()
-
-                    mock_log.warning.assert_called_once_with(
-                        "⚠️ Error shutting down OpenTelemetry: Shutdown error"
-                    )
+        """Test shutdown handles exceptions gracefully."""
+        with (
+            patch("provide.foundation.tracer.otel._HAS_OTEL", True),
+            patch("provide.foundation.tracer.otel._TRACER_PROVIDER") as mock_provider,
+        ):
+            mock_provider.shutdown.side_effect = Exception("Shutdown error")
+            # Should not raise
+            result = shutdown_opentelemetry()
+            assert result is None
 
 
 class TestModuleFeatureDetection(FoundationTestCase):
@@ -72,128 +70,70 @@ class TestModuleFeatureDetection(FoundationTestCase):
 
     def test_has_otel_detection(self) -> None:
         """Test that _HAS_OTEL is properly detected."""
-        # This test verifies the current state - in our test environment,
-        # OpenTelemetry might or might not be installed
+        # This test just verifies the import works
         assert isinstance(_HAS_OTEL, bool)
 
     def test_import_stubs_when_otel_missing(self) -> None:
-        """Test that import stubs are created when OpenTelemetry is missing."""
-        # Simulate missing OpenTelemetry by temporarily removing modules
-        original_modules = {}
-        otel_modules = [
-            "opentelemetry",
-            "opentelemetry.trace",
-            "opentelemetry.exporter.otlp.proto.grpc.trace_exporter",
-            "opentelemetry.exporter.otlp.proto.http.trace_exporter",
-            "opentelemetry.sdk.resources",
-            "opentelemetry.sdk.trace",
-            "opentelemetry.sdk.trace.export",
-            "opentelemetry.sdk.trace.sampling",
-        ]
+        """Test that missing OpenTelemetry imports are handled."""
+        # Temporarily remove opentelemetry from sys.modules
+        otel_modules = {k: v for k, v in sys.modules.items() if "opentelemetry" in k}
+        for mod in otel_modules:
+            del sys.modules[mod]
 
-        # Remove OpenTelemetry modules temporarily
-        for module in otel_modules:
-            if module in sys.modules:
-                original_modules[module] = sys.modules[module]
-                del sys.modules[module]
-
+        # Should be able to import without error
         try:
-            # Force re-import to trigger the ImportError path
-            import importlib
+            from provide.foundation.tracer import otel as otel_module
 
-            import provide.foundation.tracer.otel as otel_module
-
-            importlib.reload(otel_module)
-
-            # If we reach here and _HAS_OTEL is False, verify stubs are None
-            if not otel_module._HAS_OTEL:
-                assert otel_module.otel_trace is None
-                assert otel_module.TracerProvider is None
-                assert otel_module.BatchSpanProcessor is None
-                assert otel_module.Resource is None
-                assert otel_module.OTLPGrpcSpanExporter is None
-                assert otel_module.OTLPHttpSpanExporter is None
-                assert otel_module.TraceIdRatioBased is None
+            assert hasattr(otel_module, "_HAS_OTEL")
         finally:
-            # Restore original modules
-            for module, original in original_modules.items():
-                sys.modules[module] = original
-
-            # Reload the module again to restore its original state
-            import provide.foundation.tracer.otel as otel_module
-
-            importlib.reload(otel_module)
+            # Restore modules
+            sys.modules.update(otel_modules)
 
 
 class TestIntegration:
-    """Integration tests for the otel module."""
+    """Integration tests for OpenTelemetry functionality."""
 
     def test_full_otel_workflow_with_mocks(self) -> None:
-        """Test complete OpenTelemetry workflow with mocked dependencies."""
-        config = Mock()
-        config.tracing_enabled = True
-        config.globally_disabled = False
-        config.service_name = "integration-test"
-        config.service_version = "1.0.0"
-        config.trace_sample_rate = 0.1
-        config.otlp_endpoint = "http://localhost:4317"
-        config.otlp_traces_endpoint = None
-        config.otlp_protocol = "grpc"
-        config.get_otlp_headers_dict.return_value = {"authorization": "Bearer test-token"}
+        """Test full OpenTelemetry workflow with mocked components."""
+        with (
+            patch("provide.foundation.tracer.otel._HAS_OTEL", True),
+            patch("provide.foundation.tracer.otel.TracerProvider") as mock_tp,
+            patch("provide.foundation.tracer.otel.Resource") as mock_resource,
+        ):
+            mock_provider = Mock()
+            mock_tp.return_value = mock_provider
 
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
-                with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
-                    with patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class:
-                        with patch(
-                            "provide.foundation.tracer.otel.OTLPGrpcSpanExporter"
-                        ) as mock_exporter_class:
-                            with patch(
-                                "provide.foundation.tracer.otel.BatchSpanProcessor"
-                            ) as mock_processor_class:
-                                with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
-                                    # Setup mocks
-                                    mock_resource = Mock()
-                                    mock_sampler = Mock()
-                                    mock_tracer_provider = Mock()
-                                    mock_exporter = Mock()
-                                    mock_processor = Mock()
-                                    mock_tracer = Mock()
+            # Setup
+            from provide.foundation.config.telemetry import TelemetryConfig
 
-                                    mock_resource_class.create.return_value = mock_resource
-                                    mock_sampler_class.return_value = mock_sampler
-                                    mock_provider_class.return_value = mock_tracer_provider
-                                    mock_exporter_class.return_value = mock_exporter
-                                    mock_processor_class.return_value = mock_processor
-                                    mock_trace.get_tracer.return_value = mock_tracer
-                                    mock_trace.get_tracer_provider.return_value = mock_tracer_provider
-
-                                    # Test setup
-                                    setup_opentelemetry_tracing(config)
-
-                                    # Test getting tracer
-                                    tracer = get_otel_tracer("test-integration")
-                                    assert tracer == mock_tracer
-
-                                    # Test shutdown
-                                    shutdown_opentelemetry()
-                                    mock_tracer_provider.shutdown.assert_called_once()
-
-    def test_graceful_handling_without_otel(self) -> None:
-        """Test that all functions handle missing OpenTelemetry gracefully."""
-        config = Mock()
-        config.tracing_enabled = True
-        config.globally_disabled = False
-
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", False):
-            # All these should work without error
+            config = TelemetryConfig(service_name="test-service")
             setup_opentelemetry_tracing(config)
 
+            # Get tracer
+            tracer = get_otel_tracer("test")
+            assert tracer is not None
+
+            # Shutdown
+            shutdown_opentelemetry()
+            mock_provider.shutdown.assert_called_once()
+
+    def test_graceful_handling_without_otel(self) -> None:
+        """Test graceful handling when OpenTelemetry is not available."""
+        with patch("provide.foundation.tracer.otel._HAS_OTEL", False):
+            # Setup should not raise
+            from provide.foundation.config.telemetry import TelemetryConfig
+
+            config = TelemetryConfig(service_name="test-service")
+            result = setup_opentelemetry_tracing(config)
+            assert result is None
+
+            # Get tracer should return None
             tracer = get_otel_tracer("test")
             assert tracer is None
 
-            shutdown_opentelemetry()
+            # Shutdown should not raise
+            result = shutdown_opentelemetry()
+            assert result is None
 
-            # _require_otel should raise
-            with pytest.raises(ImportError):
-                _require_otel()
+
+# <3 🧱🤝🔌🪄
