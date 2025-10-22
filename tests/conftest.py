@@ -67,6 +67,19 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
     conftest_diag_logger.debug("⚙️➡️🔍 Conftest loaded.")
 
 
+# Disable setproctitle for parallel test runs to prevent system UX freezing
+# setproctitle can cause performance issues and system freezing with pytest-xdist
+if os.getenv("PYTEST_XDIST_WORKER") or os.getenv("PYTEST_WORKER_ID"):
+    try:
+        import setproctitle
+
+        # Monkey-patch setproctitle to do nothing during parallel test execution
+        setproctitle.setproctitle = lambda x: None
+        setproctitle.getproctitle = lambda: ""
+    except ImportError:
+        pass  # setproctitle not installed, nothing to disable
+
+
 # Removed no_cover hook - not needed, issue is time_machine + asyncio, not coverage
 
 
