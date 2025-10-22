@@ -14,16 +14,24 @@ from __future__ import annotations
 
 import os
 
-# CRITICAL: Manually import provide-testkit plugin to ensure setproctitle mock loads
-# Worker subprocesses (pytest-xdist) don't inherit sys.modules from the parent process.
-# The plugin is already registered via entry points, but we need to ensure it loads
-# BEFORE pytest-xdist loads, so we import it explicitly here at module level.
-# This must happen BEFORE pytest import to prevent xdist from importing real setproctitle.
-import provide.testkit.pytest_plugin  # noqa: F401
+# CRITICAL: Install setproctitle mock BEFORE any other imports
+# xdist/remote.py imports setproctitle at module level (line 32), which happens
+# BEFORE conftest.py is processed. We must inject the mock into sys.modules
+# at the very beginning of conftest.py import to intercept xdist's import.
+import sys  # noqa: E402
+from types import ModuleType  # noqa: E402
+
+if "setproctitle" not in sys.modules:
+    # Create mock setproctitle module with no-op functions
+    _mock_setproctitle = ModuleType("setproctitle")
+    _mock_setproctitle.setproctitle = lambda title: None  # type: ignore[attr-defined]
+    _mock_setproctitle.getproctitle = lambda: "python"  # type: ignore[attr-defined]
+    _mock_setproctitle.setthreadtitle = lambda title: None  # type: ignore[attr-defined]
+    _mock_setproctitle.getthreadtitle = lambda: ""  # type: ignore[attr-defined]
+    sys.modules["setproctitle"] = _mock_setproctitle
 
 from collections.abc import Generator  # noqa: E402
 import logging as stdlib_logging  # noqa: E402
-import sys  # noqa: E402
 
 import pytest  # noqa: E402
 
