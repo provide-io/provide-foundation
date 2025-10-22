@@ -15,6 +15,7 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
+from provide.foundation.resilience.types import BackoffStrategy
 
 
 class TestRetryExecutorSync(FoundationTestCase):

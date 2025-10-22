@@ -14,6 +14,7 @@ from provide.foundation.errors.handlers import (
     ErrorHandler,
     create_error_handler,
 )
+from provide.foundation.errors.integration import NetworkError
 
 
 class TestErrorHandler(FoundationTestCase):
