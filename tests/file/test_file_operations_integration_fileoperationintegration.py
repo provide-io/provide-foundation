@@ -31,8 +31,14 @@ class FileEventCapture:
         self.events.clear()
 
 
+@pytest.mark.serial
 class TestFileOperationIntegration(FoundationTestCase):
-    """Integration tests using real filesystem operations."""
+    """Integration tests using real filesystem operations.
+
+    Note: Marked as serial because these tests use watchdog.Observer which creates
+    filesystem watchers. Running multiple instances in parallel can exceed system
+    limits (especially kqueue on macOS) and freeze the entire system.
+    """
 
     @pytest.fixture
     def temp_dir(self) -> Generator[Path, None, None]:
