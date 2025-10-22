@@ -12,6 +12,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 
+# Skip all tests in this module if opentelemetry is not installed
+pytest.importorskip("opentelemetry")
+
 from provide.foundation.logger.processors.otlp import (
     create_otlp_processor,
     flush_otlp_logs,

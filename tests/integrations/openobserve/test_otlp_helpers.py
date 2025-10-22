@@ -8,6 +8,11 @@ from __future__ import annotations
 from typing import Any
 from unittest.mock import Mock, patch
 
+import pytest
+
+# Skip all tests in this module if opentelemetry is not installed
+pytest.importorskip("opentelemetry")
+
 from provide.foundation.integrations.openobserve.otlp_helpers import (
     add_trace_attributes,
     add_trace_context_to_log_entry,

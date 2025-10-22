@@ -8,6 +8,11 @@ from __future__ import annotations
 
 from unittest.mock import Mock, patch
 
+import pytest
+
+# Skip all tests in this module if opentelemetry is not installed
+pytest.importorskip("opentelemetry")
+
 from provide.foundation.logger.otlp.resource import (
     build_resource_attributes,
     create_otlp_resource,

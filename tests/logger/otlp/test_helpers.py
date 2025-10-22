@@ -10,6 +10,11 @@ import json
 from typing import Any
 from unittest.mock import Mock, patch
 
+import pytest
+
+# Skip all tests in this module if opentelemetry is not installed
+pytest.importorskip("opentelemetry")
+
 from provide.foundation.logger.otlp.helpers import (
     add_trace_context_to_attributes,
     build_otlp_endpoint,
