@@ -46,10 +46,19 @@ class FileEventCapture:
         event_type = event.event_type  # created, modified, moved, deleted
         src_path = Path(event.src_path)
 
-        # Create metadata
+        # Try to get file size information
+        size_after = None
+        try:
+            if src_path.exists():
+                size_after = src_path.stat().st_size
+        except Exception:
+            pass  # File might not exist for delete events
+
+        # Create metadata with size information
         metadata = FileEventMetadata(
             timestamp=datetime.now(),
             sequence_number=self._sequence,
+            size_after=size_after,
         )
         self._sequence += 1
 
