@@ -7,9 +7,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from provide.testkit import FoundationTestCase
+import pytest
 
 
 class TestCPUInfo(FoundationTestCase):
