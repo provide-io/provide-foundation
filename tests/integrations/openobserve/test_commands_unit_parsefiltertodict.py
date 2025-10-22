@@ -12,15 +12,6 @@ from provide.testkit import FoundationTestCase
 
 from provide.foundation.integrations.openobserve.commands import _parse_filter_to_dict
 
-# Import click conditionally to handle missing dependency
-try:
-    import click  # noqa: F401
-    from click.testing import CliRunner
-
-    _HAS_CLICK = True
-except ImportError:
-    _HAS_CLICK = False
-
 
 class TestParseFilterToDict(FoundationTestCase):
     """Tests for _parse_filter_to_dict helper function."""

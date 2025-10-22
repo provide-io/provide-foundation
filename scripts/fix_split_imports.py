@@ -47,6 +47,37 @@ IMPORT_FIXES = {
         "RetryExecutor",
         "RetryPolicy",
     ],
+    "from provide.foundation.hub.commands import (": [
+        "Command",
+        "CommandGroup",
+        "get_command",
+        "register_command",
+    ],
+    "from provide.foundation.config.manager import (": [
+        "ConfigManager",
+        "get_config",
+        "load_config",
+        "reload_config",
+    ],
+    "from provide.foundation.console.output import (": [
+        "pout",
+        "perr",
+        "get_context",
+        "should_use_json",
+    ],
+    "from provide.foundation.errors.handlers import (": [
+        "ErrorBoundary",
+        "ErrorHandler",
+        "TransactionalErrorBoundary",
+        "create_error_handler",
+        "handle_error",
+    ],
+    "from provide.foundation.concurrency import (": [
+        "async_gather",
+        "async_run_in_executor",
+        "async_sleep",
+        "create_task_group",
+    ],
 }
 
 
@@ -87,25 +118,17 @@ def main() -> None:
     repo_root = Path("/Users/tim/code/gh/provide-io/provide-foundation")
 
     broken_files = [
-        "tests/logger/ratelimit/test_processor_ratelimiterprocessor.py",
-        "tests/logger/ratelimit/test_processor_createratelimiterprocessor_ratelimiterprocessorintegration.py",
-        "tests/logger/ratelimit/test_queue_limiter_queuedratelimiter.py",
-        "tests/logger/ratelimit/test_queue_limiter_bufferedratelimiter_queuelimiterintegration.py",
-        "tests/file/test_file_quality_qualityanalyzer.py",
-        "tests/file/test_file_quality_qualityresult_operationscenario_etc.py",
-        "tests/file/test_file_operations_fileevent.py",
-        "tests/file/test_file_operations_operationdetector.py",
-        "tests/file/test_file_operations_conveniencefunctions_fileoperation.py",
-        "tests/file/test_file_operations_integration_fileoperationintegration.py",
-        "tests/file/test_file_operations_integration_fileoperationsstressing.py",
-        "tests/tools/test_tools_integration_downloaderintegration_backoffretryintegration.py",
-        "tests/tools/test_tools_integration_fullworkflowintegration_networkerrorhandling.py",
-        "tests/transport/test_transport_registry_registertransport_gettransportforscheme_etc.py",
-        "tests/transport/test_transport_registry_gettransportinfo_integration.py",
-        "tests/errors/test_integration_errorsystemintegration.py",
-        "tests/errors/test_integration_realworldscenarios.py",
-        "tests/resilience/test_retry_executor_retryexecutorsync.py",
-        "tests/resilience/test_retry_executor_retryexecutorasync_retryexecutorlogging_etc.py",
+        "tests/hub/test_hub_nested_commands_nestedcommandregistration.py",
+        "tests/hub/test_hub_nested_commands_nestedcommandintegration.py",
+        "tests/config/test_config_manager_coverage_configmanagercomprehensive.py",
+        "tests/config/test_config_manager_coverage_globalfunctions.py",
+        "tests/console/test_console_output_coverage_getcontext_shouldusejson_etc.py",
+        "tests/console/test_console_output_coverage_perrfunction_edgecases.py",
+        "tests/errors/test_handlers_errorboundary_transactional_etc.py",
+        "tests/errors/test_handlers_errorhandler_createerrorhandler.py",
+        "tests/concurrency/test_async_core_asyncsleep_asyncgather_etc.py",
+        "tests/concurrency/test_async_core_asyncutilitiesintegration.py",
+        "tests/file/test_file_quality_qualityanalyzer_qualityanalyzer.py",
     ]
 
     for file_path_str in broken_files:

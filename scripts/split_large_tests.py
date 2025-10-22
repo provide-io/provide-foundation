@@ -133,21 +133,14 @@ def format_file(file_path: Path) -> None:
 def main() -> None:
     """Main entry point."""
     test_files = [
-        "tests/tools/test_tool_cache.py",
-        "tests/logger/ratelimit/test_processor.py",
-        "tests/logger/ratelimit/test_queue_limiter.py",
-        "tests/file/test_file_quality.py",
-        "tests/file/test_file_operations.py",
-        "tests/logger/processors/test_sanitization.py",
-        "tests/file/test_file_operations_integration.py",
-        "tests/process/test_lifecycle_comprehensive_coverage.py",
-        "tests/tools/test_installer.py",
         "tests/transport/test_client.py",
-        "tests/tools/test_tools_integration.py",
-        "tests/tracer/test_spans.py",
-        "tests/transport/test_transport_registry.py",
-        "tests/errors/test_integration.py",
-        "tests/resilience/test_retry_executor.py",
+        "tests/hub/test_hub_nested_commands.py",
+        "tests/config/test_config_manager_coverage.py",
+        "tests/console/test_console_output_coverage.py",
+        "tests/errors/test_handlers.py",
+        "tests/integrations/openobserve/test_commands_unit.py",
+        "tests/concurrency/test_async_core.py",
+        "tests/file/test_file_quality_qualityanalyzer.py",
     ]
 
     repo_root = Path("/Users/tim/code/gh/provide-io/provide-foundation")
