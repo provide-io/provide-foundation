@@ -18,6 +18,20 @@ This module provides utilities for detecting various test environments
 and adjusting Foundation behavior accordingly.
 """
 
+# Cache for test mode detection to avoid expensive inspect.stack() calls
+# Test mode doesn't change during runtime, so we can cache aggressively
+_test_mode_cache: bool | None = None
+
+
+def _clear_test_mode_cache() -> None:
+    """Clear the test mode detection cache.
+
+    This is primarily for test isolation - allows tests to reset the cache
+    when they need to test different detection scenarios.
+    """
+    global _test_mode_cache
+    _test_mode_cache = None
+
 
 def is_in_test_mode() -> bool:
     """Detect if we're running in a test environment.
@@ -25,27 +39,47 @@ def is_in_test_mode() -> bool:
     This method checks for common test environment indicators to determine
     if Foundation components should adjust their behavior for test compatibility.
 
+    Performance: Results are cached after first detection since test mode
+    doesn't change during process lifetime. Use _clear_test_mode_cache()
+    in tests for proper isolation.
+
     Returns:
         True if running in test mode, False otherwise
     """
-    # Primary indicator: pytest current test environment variable
+    global _test_mode_cache
+
+    # Return cached result if available
+    if _test_mode_cache is not None:
+        return _test_mode_cache
+
+    # Primary indicator: pytest current test environment variable (FAST)
     if "PYTEST_CURRENT_TEST" in os.environ:
+        _test_mode_cache = True
         return True
 
     # Check if pytest is currently imported and active
     if "pytest" in sys.modules:
-        # Additional check: make sure we're actually running in a test context
+        # Additional check: make sure we're actually running in a test context (FAST)
         if any("pytest" in arg for arg in sys.argv):
+            _test_mode_cache = True
             return True
 
-        # Check if pytest is actively running by looking for test-related stack frames
+        # Last resort: Check if pytest is actively running by looking for test-related
+        # stack frames. This is EXPENSIVE so we only do it after fast checks fail.
         for frame_info in inspect.stack():
             filename = frame_info.filename or ""
             if "pytest" in filename or "/test_" in filename or "conftest.py" in filename:
+                _test_mode_cache = True
                 return True
 
-    # Check for unittest runner in active execution
-    return bool("unittest" in sys.modules and any("unittest" in arg for arg in sys.argv))
+    # Check for unittest runner in active execution (FAST)
+    if "unittest" in sys.modules and any("unittest" in arg for arg in sys.argv):
+        _test_mode_cache = True
+        return True
+
+    # Not in test mode - cache the negative result too
+    _test_mode_cache = False
+    return False
 
 
 def is_in_click_testing() -> bool:

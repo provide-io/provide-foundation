@@ -11,6 +11,7 @@ from unittest.mock import Mock, patch
 from provide.testkit import FoundationTestCase
 
 from provide.foundation.testmode.detection import (
+    _clear_test_mode_cache,
     is_in_click_testing,
     is_in_test_mode,
     should_allow_stream_redirect,
@@ -24,6 +25,8 @@ class TestIsInTestMode(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
+        # Clear the test mode cache to ensure fresh detection in each test
+        _clear_test_mode_cache()
 
     def test_detects_pytest_current_test_env_var(self) -> None:
         """Test detection via PYTEST_CURRENT_TEST environment variable."""
