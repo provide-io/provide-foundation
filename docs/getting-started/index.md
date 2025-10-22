@@ -18,22 +18,22 @@ provide.foundation is a comprehensive Python library for building robust, produc
   <div class="getting-started-card">
     <h3>📦 Installation</h3>
     <p>Install Foundation and configure your environment</p>
-    <a href="installation.md">Start Here →</a>
+    <p><a href="installation/">Start Here →</a></p>
   </div>
   <div class="getting-started-card">
     <h3>⚡ Quick Start</h3>
     <p>Write your first Foundation application in 5 minutes</p>
-    <a href="quick-start.md">Get Coding →</a>
+    <p><a href="quick-start/">Get Coding →</a></p>
   </div>
   <div class="getting-started-card">
     <h3>🏗️ First Application</h3>
     <p>Build a complete CLI task manager</p>
-    <a href="first-app.md">Build Something →</a>
+    <p><a href="first-app/">Build Something →</a></p>
   </div>
   <div class="getting-started-card">
     <h3>💡 Examples</h3>
     <p>Explore code examples for all features</p>
-    <a href="examples.md">See Examples →</a>
+    <p><a href="examples/">See Examples →</a></p>
   </div>
 </div>
 
