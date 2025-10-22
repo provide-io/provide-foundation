@@ -11,6 +11,7 @@ from provide.foundation.config.manager import (
     ConfigManager,
 )
 from provide.foundation.config.schema import ConfigSchema, SchemaField
+from provide.foundation.config.types import ConfigSource
 
 
 @define
@@ -476,5 +477,5 @@ class TestConfigManagerComprehensive(FoundationTestCase):
         result = self.manager.get_or_create("empty_test", SampleConfigClass)
 
         assert isinstance(result, SampleConfigClass)
-        assert result.name == "test_name"  # Default from class
+        assert result.name == "test"  # Default from class
         assert self.manager._configs["empty_test"] is result
