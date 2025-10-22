@@ -63,6 +63,8 @@ class TestDownloaderIntegration(FoundationTestCase):
                     "ConnectError",
                     "DNS",
                     "timeout",
+                    "HTTP 5",
+                    "503",
                 ]
             ):
                 pytest.skip(f"Network/transport issue - this is an integration test limitation: {e}")
@@ -94,6 +96,8 @@ class TestDownloaderIntegration(FoundationTestCase):
                     "DNS",
                     "timeout",
                     "event loop",
+                    "HTTP 5",
+                    "503",
                 ]
             ):
                 pytest.skip(f"Network/transport issue - this is an integration test limitation: {e}")
@@ -241,7 +245,7 @@ class TestDownloaderIntegration(FoundationTestCase):
                 elif system == "darwin":
                     assert header in [b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf", b"\xcf\xfa\xed\xfe"]
         except Exception as e:
-            if any(keyword in str(e) for keyword in ["404", "not found", "DNS", "timeout", "ConnectError"]):
+            if any(keyword in str(e) for keyword in ["404", "not found", "DNS", "timeout", "ConnectError", "HTTP 5", "503"]):
                 pytest.skip(f"GitHub/network issue - this is an integration test limitation: {e}")
             else:
                 raise
