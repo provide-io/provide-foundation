@@ -60,10 +60,6 @@ class TestOTLPMetricsExport:
                 "OpenObserve not configured (set OPENOBSERVE_URL, OPENOBSERVE_USER, OPENOBSERVE_PASSWORD)"
             )
 
-        # Initialize Hub
-        hub = get_hub()
-        hub.reset()
-
         # Configure telemetry with OpenObserve OTLP endpoint
         from provide.foundation.integrations.openobserve.otlp_adapter import (
             get_openobserve_otlp_metrics_endpoint,
@@ -142,10 +138,6 @@ class TestOTLPMetricsExport:
         oo_config = OpenObserveConfig.from_env()
         if not oo_config.is_configured():
             pytest.skip("OpenObserve not configured")
-
-        # Initialize Hub
-        hub = get_hub()
-        hub.reset()
 
         # Configure and setup metrics
         from provide.foundation.integrations.openobserve.otlp_adapter import (
