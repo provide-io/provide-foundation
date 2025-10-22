@@ -12,6 +12,10 @@ import structlog
 
 from provide.foundation.logger.ratelimit.limiters import GlobalRateLimiter
 from provide.foundation.logger.ratelimit.processor import (
+    RateLimiterProcessor,
+    create_rate_limiter_processor,
+)
+
 
 class TestCreateRateLimiterProcessor(FoundationTestCase):
     """Test create_rate_limiter_processor factory function."""
@@ -115,7 +119,6 @@ class TestCreateRateLimiterProcessor(FoundationTestCase):
 
         # Should not enable buffering with invalid policy
         assert processor.rate_limiter.use_buffered is False
-
 
 
 class TestRateLimiterProcessorIntegration(FoundationTestCase):
@@ -271,4 +274,3 @@ class TestRateLimiterProcessorIntegration(FoundationTestCase):
 
         assert per_logger_stats["total_allowed"] == 2
         assert per_logger_stats["total_denied"] == 1
-

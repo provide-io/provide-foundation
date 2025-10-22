@@ -14,6 +14,10 @@ import pytest
 from provide.foundation.config import BaseConfig
 from provide.foundation.hub import get_hub
 from provide.foundation.tools.base import (
+    BaseToolManager,
+    ToolDownloader,
+)
+
 
 class TestFullWorkflowIntegration(FoundationTestCase):
     """Test complete tool installation workflow."""
@@ -138,7 +142,6 @@ class TestFullWorkflowIntegration(FoundationTestCase):
         assert len(cache.list_cached()) == 0
 
 
-
 class TestNetworkErrorHandling(FoundationTestCase):
     """Test various network error scenarios."""
 
@@ -204,4 +207,3 @@ class TestNetworkErrorHandling(FoundationTestCase):
                 pytest.skip(f"httpbin issue - this is an integration test limitation: {e}")
             else:
                 raise
-

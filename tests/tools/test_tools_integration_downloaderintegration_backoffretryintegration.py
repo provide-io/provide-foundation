@@ -14,6 +14,10 @@ import pytest
 from provide.foundation.config import BaseConfig
 from provide.foundation.hub import get_hub
 from provide.foundation.tools.base import (
+    BaseToolManager,
+    ToolDownloader,
+)
+
 
 class TestDownloaderIntegration(FoundationTestCase):
     """Integration tests for ToolDownloader with real network requests."""
@@ -247,7 +251,6 @@ class TestDownloaderIntegration(FoundationTestCase):
                 raise
 
 
-
 class TestBackoffRetryIntegration(FoundationTestCase):
     """Test backoff and retry logic with real failing URLs."""
 
@@ -361,5 +364,3 @@ class TestBackoffRetryIntegration(FoundationTestCase):
         # Should eventually succeed
         result = await test_downloader.download_with_progress("https://test.com/file", dest)
         assert result == dest
-
-

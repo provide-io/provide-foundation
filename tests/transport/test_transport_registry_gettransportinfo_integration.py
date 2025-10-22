@@ -10,6 +10,12 @@ from provide.foundation.hub.components import ComponentCategory
 from provide.foundation.transport.base import Transport
 from provide.foundation.transport.errors import TransportNotFoundError
 from provide.foundation.transport.registry import (
+    TransportRegistry,
+    get_transport_for_scheme,
+    get_transport_info,
+    register_transport,
+)
+
 
 class TestGetTransportInfo(FoundationTestCase):
     """Test get_transport_info function."""
@@ -153,7 +159,6 @@ class TestGetTransportInfo(FoundationTestCase):
             assert result["schemes"] == ["https"]
 
 
-
 class TestIntegration(FoundationTestCase):
     """Integration tests for registry functions working together."""
 
@@ -261,4 +266,3 @@ class TestIntegration(FoundationTestCase):
             # Verify unregistered scheme fails
             with pytest.raises(TransportNotFoundError):
                 get_transport_for_scheme("ftp")
-

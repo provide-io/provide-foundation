@@ -12,6 +12,10 @@ from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.retry import (
+    RetryExecutor,
+    RetryPolicy,
+)
+
 
 class TestRetryExecutorSync(FoundationTestCase):
     """Test synchronous retry execution."""
@@ -261,5 +265,3 @@ class TestRetryExecutorSync(FoundationTestCase):
 
         # Function should have been called 3 times (all attempts)
         assert mock_func.call_count == 3
-
-

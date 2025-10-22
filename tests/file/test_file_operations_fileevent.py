@@ -9,6 +9,18 @@ from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
+    FileEvent,
+    FileOperation,
+    OperationDetector,
+    OperationScenario,
+    QualityAnalyzer,
+    QualityResult,
+    atomic_save,
+    await_file_created,
+    await_file_deleted,
+    await_file_modified,
+)
+
 
 class TestFileEvent(FoundationTestCase):
     """Test FileEvent and metadata functionality."""
@@ -86,5 +98,3 @@ class TestFileEvent(FoundationTestCase):
         metadata3 = FileEventMetadata(timestamp=datetime.now(), sequence_number=1, size_before=100)
         event3 = FileEvent(path=Path("test.txt"), event_type="modified", metadata=metadata3)
         assert event3.size_delta is None
-
-

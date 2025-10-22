@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
-from contextlib import suppress
 import sys
-import threading
 import time
 
 from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.logger.ratelimit.queue_limiter import (
+    QueuedRateLimiter,
+)
+
 
 class TestQueuedRateLimiter(FoundationTestCase):
     """Test QueuedRateLimiter class."""
@@ -305,5 +306,3 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         assert limiter.running is False
         assert not limiter.worker_thread.is_alive()
-
-

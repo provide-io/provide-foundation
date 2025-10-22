@@ -12,6 +12,10 @@ from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation import (
+    Hub,
+    get_hub,
+)
+
 
 class TestRealWorldScenarios(FoundationTestCase):
     """Test real-world error handling scenarios."""
@@ -109,4 +113,3 @@ class TestRealWorldScenarios(FoundationTestCase):
         result = call_user_service(123)
         assert result["id"] == 123
         assert len(service_calls) == 2  # One failure, one success
-

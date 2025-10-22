@@ -12,6 +12,10 @@ from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.retry import (
+    RetryExecutor,
+    RetryPolicy,
+)
+
 
 class TestRetryExecutorAsync(FoundationTestCase):
     """Test asynchronous retry execution."""
@@ -171,7 +175,6 @@ class TestRetryExecutorAsync(FoundationTestCase):
         assert results == ["success 1", "success 2", "success 3"]
 
 
-
 class TestRetryExecutorLogging:
     """Test logging behavior of RetryExecutor."""
 
@@ -236,7 +239,6 @@ class TestRetryExecutorLogging:
         # Should not log retry attempts for non-retryable errors
         mock_logger.info.assert_not_called()
         mock_logger.warning.assert_not_called()
-
 
 
 class TestRetryExecutorEdgeCases:
@@ -304,4 +306,3 @@ class TestRetryExecutorEdgeCases:
         # Should return a generator that can be consumed
         values = list(result)
         assert values == [1, 2, 3]
-

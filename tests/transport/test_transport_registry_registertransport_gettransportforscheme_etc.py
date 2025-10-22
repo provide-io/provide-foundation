@@ -10,6 +10,12 @@ from provide.foundation.hub.components import ComponentCategory
 from provide.foundation.transport.base import Transport
 from provide.foundation.transport.errors import TransportNotFoundError
 from provide.foundation.transport.registry import (
+    TransportRegistry,
+    get_transport_for_scheme,
+    get_transport_info,
+    register_transport,
+)
+
 
 class TestRegisterTransport(FoundationTestCase):
     """Test register_transport function."""
@@ -90,7 +96,6 @@ class TestRegisterTransport(FoundationTestCase):
                 mock_log.info.assert_not_called()
 
 
-
 class TestGetTransportForScheme(FoundationTestCase):
     """Test get_transport_for_scheme function."""
 
@@ -163,7 +168,6 @@ class TestGetTransportForScheme(FoundationTestCase):
                 get_transport_for_scheme("http")
 
 
-
 class TestGetTransport(FoundationTestCase):
     """Test get_transport function."""
 
@@ -216,7 +220,6 @@ class TestGetTransport(FoundationTestCase):
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             with pytest.raises(TransportNotFoundError):
                 get_transport("unknown://example.com")
-
 
 
 class TestListRegisteredTransports(FoundationTestCase):
@@ -315,5 +318,3 @@ class TestListRegisteredTransports(FoundationTestCase):
                 },
             }
             assert result == expected
-
-

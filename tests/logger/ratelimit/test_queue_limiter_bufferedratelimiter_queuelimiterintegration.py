@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from contextlib import suppress
 import sys
 import threading
 import time
@@ -11,6 +10,10 @@ from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.logger.ratelimit.queue_limiter import (
+    BufferedRateLimiter,
+    QueuedRateLimiter,
+)
+
 
 class TestBufferedRateLimiter(FoundationTestCase):
     """Test BufferedRateLimiter class."""
@@ -238,7 +241,6 @@ class TestBufferedRateLimiter(FoundationTestCase):
         assert stats["total_denied"] == denied_count
 
 
-
 class TestQueueLimiterIntegration(FoundationTestCase):
     """Integration tests for queue-based rate limiters."""
 
@@ -322,4 +324,3 @@ class TestQueueLimiterIntegration(FoundationTestCase):
         for _ in range(100):
             allowed, _ = limiter.is_allowed()
             assert allowed is True  # High refill rate should keep allowing
-

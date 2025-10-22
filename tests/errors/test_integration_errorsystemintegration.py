@@ -12,6 +12,10 @@ from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation import (
+    Hub,
+    get_hub,
+)
+
 
 class TestErrorSystemIntegration(FoundationTestCase):
     """Integration tests for the complete error system."""
@@ -431,5 +435,3 @@ class TestErrorSystemIntegration(FoundationTestCase):
         assert all(r.startswith("handled_") for r in results)
         # Should be fast (less than 500ms for 100 errors)
         assert duration < 0.5
-
-

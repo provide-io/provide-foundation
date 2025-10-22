@@ -12,6 +12,9 @@ import structlog
 
 from provide.foundation.logger.ratelimit.limiters import GlobalRateLimiter
 from provide.foundation.logger.ratelimit.processor import (
+    RateLimiterProcessor,
+)
+
 
 class TestRateLimiterProcessor(FoundationTestCase):
     """Test RateLimiterProcessor class."""
@@ -379,5 +382,3 @@ class TestRateLimiterProcessor(FoundationTestCase):
 
         result = processor(mock_logger, "info", event_dict)
         assert result == event_dict
-
-
