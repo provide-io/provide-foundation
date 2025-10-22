@@ -311,7 +311,9 @@ class FileLock:
 
                 except psutil.NoSuchProcess:
                     # Process doesn't exist - lock is stale
-                    log.warning("Removing stale lock - process not found", path=str(self.path), stale_pid=lock_pid)
+                    log.warning(
+                        "Removing stale lock - process not found", path=str(self.path), stale_pid=lock_pid
+                    )
                     try:
                         self.path.unlink()
                         return True

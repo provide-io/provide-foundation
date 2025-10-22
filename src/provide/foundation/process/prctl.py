@@ -28,7 +28,7 @@ _IS_LINUX = sys.platform.startswith("linux")
 _HAS_PRCTL = False
 if _IS_LINUX:
     try:
-        import prctl
+        import prctl  # type: ignore[import-not-found]
 
         _HAS_PRCTL = True
     except ImportError:

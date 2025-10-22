@@ -24,7 +24,7 @@ log = get_logger(__name__)
 
 # Try to import py-cpuinfo
 try:
-    import cpuinfo
+    import cpuinfo  # type: ignore[import-untyped]
 
     _HAS_CPUINFO = True
 except ImportError:
@@ -82,7 +82,7 @@ def get_cpu_info() -> dict[str, str | int | list[str] | None]:
             log.warning("Failed to get detailed CPU info, falling back to basic info", error=str(e))
 
     # Fallback: Basic CPU info from platform module
-    basic_info = {
+    basic_info: dict[str, str | int | list[str] | None] = {
         "brand": platform.processor() or "Unknown",
         "vendor_id": None,
         "arch": platform.machine(),
@@ -180,7 +180,10 @@ def get_cpu_count() -> int | None:
 
     """
     info = get_cpu_info()
-    return info.get("count")  # type: ignore[return-value]
+    count = info.get("count")
+    if count is None:
+        return None
+    return int(count)
 
 
 def has_cpuinfo() -> bool:
