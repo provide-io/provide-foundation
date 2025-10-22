@@ -12,10 +12,6 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
-# NOTE: setproctitle is disabled via .pth file in site-packages
-# See: .venv/lib/python3.11/site-packages/00_disable_setproctitle.pth
-# This prevents pytest-xdist from causing macOS system freezing.
-
 from collections.abc import Generator
 import logging as stdlib_logging
 import os
