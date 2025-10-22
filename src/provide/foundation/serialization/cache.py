@@ -22,7 +22,7 @@ access is negligible overhead compared to actual serialization operations.
 # Cache configuration - lazy evaluation to avoid circular imports
 _cached_config: Any | None = None  # SerializationCacheConfig
 _serialization_cache: Any | None = None  # LRUCache
-_cache_lock = threading.Lock()  # Simple lock for thread safety
+_cache_lock = threading.RLock()  # Reentrant lock (allows same thread to reacquire)
 
 
 def _get_cache_config() -> Any:  # SerializationCacheConfig
