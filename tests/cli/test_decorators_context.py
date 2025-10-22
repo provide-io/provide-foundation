@@ -1,4 +1,3 @@
-
 class TestPassContext(FoundationTestCase):
     """Test pass_context decorator."""
 
@@ -104,4 +103,3 @@ class TestErrorHandler(FoundationTestCase):
         result = runner.invoke(cmd)
         assert result.exit_code == 130  # Standard exit code for SIGINT
         assert "Interrupted by user" in result.output
-

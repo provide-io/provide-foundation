@@ -1,3 +1,18 @@
+"""Tests for CLI decorator option inheritance and environment variables."""
+
+from __future__ import annotations
+
+import click
+from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
+
+from provide.foundation.cli.decorators import (
+    flexible_options,
+    logging_options,
+    output_options,
+    version_option,
+)
+
 
 class TestVersionOption(FoundationTestCase):
     """Test version_option decorator."""

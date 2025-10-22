@@ -1,4 +1,3 @@
-
 class TestAutoParse(FoundationTestCase):
     """Test auto_parse function."""
 

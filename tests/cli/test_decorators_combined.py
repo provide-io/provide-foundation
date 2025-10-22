@@ -1,4 +1,3 @@
-
 class TestFlexibleOptions(FoundationTestCase):
     """Test flexible_options decorator."""
 
@@ -81,4 +80,3 @@ class TestStandardOptions(FoundationTestCase):
         assert "--json" in result.output
         assert "--no-color" in result.output
         assert "--no-emoji" in result.output
-

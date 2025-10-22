@@ -1,5 +1,3 @@
-
-
 class TestIntegrationScenarios(FoundationTestCase):
     """Test integration scenarios."""
 

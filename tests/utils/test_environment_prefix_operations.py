@@ -1,4 +1,3 @@
-
 class TestRequire(FoundationTestCase):
     """Test require method."""
 

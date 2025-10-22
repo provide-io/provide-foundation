@@ -1,4 +1,3 @@
-
 class TestStateError(FoundationTestCase):
     """Test StateError class."""
 

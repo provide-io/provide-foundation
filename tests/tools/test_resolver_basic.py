@@ -124,5 +124,3 @@ class TestVersionResolver(FoundationTestCase):
 
         result = resolver.resolve("  latest  ", available)
         assert result == "2.0.0"
-
-

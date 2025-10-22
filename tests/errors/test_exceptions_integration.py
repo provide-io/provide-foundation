@@ -1,3 +1,16 @@
+"""Tests for integration error classes."""
+
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
+from provide.foundation.errors.integration import (
+    IntegrationError,
+    NetworkError,
+    TimeoutError,
+)
+
+
         error = ResourceError("Not found", resource_path="/data/config.json")
         assert error.context["resource.path"] == "/data/config.json"
 

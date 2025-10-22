@@ -1,4 +1,3 @@
-
 class TestGetList(FoundationTestCase):
     """Test get_list method."""
 
@@ -52,4 +51,3 @@ class TestGetDict(FoundationTestCase):
         env = EnvPrefix("app")
         result = env.get_dict("tags", item_separator=";", key_value_separator=":")
         assert result == {"env": "prod", "version": "1.0"}
-

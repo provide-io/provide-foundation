@@ -4,20 +4,7 @@ from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 
-from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
 from provide.foundation.errors.base import FoundationError
-from provide.foundation.errors.config import ConfigurationError, ValidationError
-from provide.foundation.errors.integration import (
-    IntegrationError,
-    NetworkError,
-    TimeoutError,
-)
-from provide.foundation.errors.resources import (
-    AlreadyExistsError,
-    NotFoundError,
-    ResourceError,
-)
-from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
 
 
 class TestFoundationError(FoundationTestCase):
@@ -141,5 +128,3 @@ class TestFoundationError(FoundationTestCase):
         # Can still override with explicit code
         error2 = CustomError("Test", code="OVERRIDE")
         assert error2.code == "OVERRIDE"
-
-

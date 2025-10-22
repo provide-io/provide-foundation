@@ -4,24 +4,16 @@ from __future__ import annotations
 
 from pathlib import Path
 import tempfile
-from typing import Never
 
 import click
 from click.testing import CliRunner
 from provide.testkit import FoundationTestCase
-import pytest
 
 from provide.foundation.cli.decorators import (
     config_options,
-    error_handler,
-    flexible_options,
     logging_options,
     output_options,
-    pass_context,
-    standard_options,
-    version_option,
 )
-from provide.foundation.context import CLIContext
 
 
 class TestLoggingOptions(FoundationTestCase):
@@ -203,4 +195,3 @@ class TestConfigOptions(FoundationTestCase):
         result = runner.invoke(cmd, ["--profile", "production"])
         assert result.exit_code == 0
         assert "profile=production" in result.output
-

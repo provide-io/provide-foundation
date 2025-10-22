@@ -2,17 +2,13 @@
 
 from __future__ import annotations
 
-from attrs import define, field, fields
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock
 import pytest
 
 from provide.foundation.parsers import (
-    auto_parse,
     parse_bool,
     parse_dict,
     parse_list,
-    parse_typed_value,
 )
 
 
@@ -165,4 +161,3 @@ class TestParseDict(FoundationTestCase):
     def test_parse_dict_empty_items(self) -> None:
         """Test parsing dict with empty items."""
         assert parse_dict("a=1,,b=2") == {"a": "1", "b": "2"}  # Empty items are skipped
-

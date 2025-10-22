@@ -173,5 +173,3 @@ class TestVersionResolverHelpers:
 
         result = resolver.sort_versions(versions)
         assert result == ["1.0", "1.0.0", "1.0.1", "2.0"]
-
-

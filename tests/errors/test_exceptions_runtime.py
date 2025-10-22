@@ -1,4 +1,3 @@
-
 class TestRuntimeError(FoundationTestCase):
     """Test RuntimeError class."""
 

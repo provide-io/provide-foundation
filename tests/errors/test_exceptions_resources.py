@@ -1,4 +1,3 @@
-
 class TestAuthenticationError(FoundationTestCase):
     """Test AuthenticationError class."""
 
@@ -82,4 +81,3 @@ class TestAlreadyExistsError(FoundationTestCase):
         """Test with resource_id parameter."""
         error = AlreadyExistsError("Conflict", resource_id="user@example.com")
         assert error.context["exists.id"] == "user@example.com"
-

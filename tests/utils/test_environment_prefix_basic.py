@@ -4,13 +4,11 @@ from __future__ import annotations
 
 from collections.abc import Generator
 import os
-from pathlib import Path
 from typing import Any
 
 from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.foundation.errors.config import ValidationError
 from provide.foundation.utils.environment.prefix import EnvPrefix
 
 
@@ -152,4 +150,3 @@ class TestGetFloat(FoundationTestCase):
         """Test getting missing variable without default."""
         env = EnvPrefix("app")
         assert env.get_float("timeout") is None
-

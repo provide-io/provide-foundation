@@ -72,4 +72,3 @@ class TestValidationError(FoundationTestCase):
         """Test that value is converted to string."""
         error = ValidationError("Invalid", value={"complex": "object"})
         assert error.context["validation.value"] == "{'complex': 'object'}"
-

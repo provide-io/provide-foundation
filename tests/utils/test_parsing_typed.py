@@ -1,4 +1,3 @@
-
 class TestParseTypedValue(FoundationTestCase):
     """Test parse_typed_value function."""
 
@@ -173,4 +172,3 @@ class TestInternalHelpers:
         # Field missing type attribute
         field_missing_type = Mock(spec=[])
         assert _extract_field_type(field_missing_type) is None
-

@@ -1,4 +1,3 @@
-
 class TestGetStr(FoundationTestCase):
     """Test get_str method."""
 
@@ -46,4 +45,3 @@ class TestGetPath(FoundationTestCase):
         env = EnvPrefix("app")
         result = env.get_path("config_path", default="/default/path")
         assert result == Path("/default/path")
-
