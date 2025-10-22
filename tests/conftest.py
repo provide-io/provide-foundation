@@ -12,16 +12,15 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
-# CRITICAL: Import pytest_plugin to block setproctitle before xdist
+# CRITICAL: setproctitle blocker - handled by src/sitecustomize.py
 #
 # How it works:
-# - When testkit is installed normally: .pth file auto-loads blocker in all processes
-# - When testkit is editable (-e): This manual import provides fallback for main process
-# - xdist workers: .pth file handles them (manual import in conftest runs too late)
+# - src/sitecustomize.py auto-loads blocker when Python starts
+# - Python loads sitecustomize.py from directories in PYTHONPATH
+# - pytest adds src/ to PYTHONPATH automatically
+# - Works for ALL processes: main process + xdist workers
 #
-# For xdist to work properly, testkit MUST be installed normally (not editable):
-#   pip install --force-reinstall --no-deps /path/to/provide-testkit
-#
+# This import is kept as redundant safety, but sitecustomize.py is primary mechanism
 from provide.testkit import pytest_plugin  # noqa: F401, I001
 
 from collections.abc import Generator
@@ -32,9 +31,7 @@ import sys
 import pytest
 
 # Register plugins for assertion rewriting at the root level
-# Note: The setproctitle blocker is handled by:
-#   1. testkit's .pth file (when installed normally) - works for all processes
-#   2. Manual import above (fallback for editable mode) - works for main process only
+# Note: setproctitle blocker is handled by src/sitecustomize.py (auto-loaded by Python)
 pytest_plugins = [
     "provide.testkit.hub.fixtures",
 ]
