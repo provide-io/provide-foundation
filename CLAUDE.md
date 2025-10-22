@@ -15,26 +15,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Common Development Commands
 
 ```bash
-# Environment setup
-uv venv
-source .venv/bin/activate
+# Install dependencies
 uv sync
 
 # Run tests
-pytest                           # Run all tests
-pytest -n auto                   # Run tests in parallel
-pytest -n auto -vvv             # Verbose parallel test run
-pytest tests/test_specific.py   # Run specific test file
-pytest -k "test_name"           # Run tests matching pattern
+uv run pytest                      # Run all tests
+uv run pytest -n auto              # Run tests in parallel
+uv run pytest -n auto -vvv         # Verbose parallel test run
+uv run pytest tests/test_specific.py   # Run specific test file
+uv run pytest -k "test_name"       # Run tests matching pattern
 
 # Code quality checks
-ruff check .                    # Run linter
-ruff format .                   # Format code
-mypy src/                       # Type checking
+uv run ruff check .                # Run linter
+uv run ruff format .               # Format code
+uv run mypy src/                   # Type checking
 
 # Build and distribution
-uv build                        # Build package
-uv publish                      # Publish to PyPI
+uv build                           # Build package
+uv publish                         # Publish to PyPI
 ```
 
 ## Environment Variables
