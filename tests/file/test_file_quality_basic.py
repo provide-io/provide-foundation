@@ -11,6 +11,8 @@ import pytest
 from provide.foundation.file.operations import (
     FileEvent,
     OperationDetector,
+)
+from provide.foundation.file.quality import (
     OperationScenario,
     QualityAnalyzer,
 )
