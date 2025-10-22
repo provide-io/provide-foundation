@@ -5,7 +5,7 @@ Tests build_log_entry, build_bulk_url, and build_bulk_request functions.
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.integrations.openobserve.bulk_api import (
     build_bulk_request,

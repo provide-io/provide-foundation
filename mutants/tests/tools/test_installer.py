@@ -10,7 +10,7 @@ import io
 from pathlib import Path
 import platform
 import tarfile
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 import zipfile
 
 import pytest

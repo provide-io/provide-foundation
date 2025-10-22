@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, MagicMock
+from provide.testkit.mocking import AsyncMock, MagicMock
 
 import pytest
 

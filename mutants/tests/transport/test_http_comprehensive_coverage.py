@@ -5,7 +5,7 @@ This module adds tests for edge cases and missing coverage areas.
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, patch
+from provide.testkit.mocking import AsyncMock, patch
 
 import httpx
 import pytest

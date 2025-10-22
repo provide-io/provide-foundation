@@ -6,7 +6,7 @@ and endpoint building.
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 import pytest
 

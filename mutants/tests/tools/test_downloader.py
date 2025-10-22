@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncGenerator
 from pathlib import Path
-from unittest.mock import AsyncMock, Mock, patch
+from provide.testkit.mocking import AsyncMock, Mock, patch
 
 import pytest
 

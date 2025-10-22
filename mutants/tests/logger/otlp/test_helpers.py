@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from typing import Any
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.logger.otlp.helpers import (
     add_trace_context_to_attributes,

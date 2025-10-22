@@ -6,7 +6,7 @@ Tests all helper functions in integrations/openobserve/otlp_helpers.py.
 from __future__ import annotations
 
 from typing import Any
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.integrations.openobserve.otlp_helpers import (
     add_trace_attributes,

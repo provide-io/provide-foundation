@@ -5,7 +5,7 @@ Tests all functions in integrations/openobserve/bulk_api.py with unit and integr
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, Mock, patch
+from provide.testkit.mocking import AsyncMock, Mock, patch
 
 import pytest
 

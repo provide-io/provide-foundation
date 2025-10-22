@@ -6,7 +6,7 @@ requiring a running OpenObserve instance.
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, Mock, patch
+from provide.testkit.mocking import AsyncMock, Mock, patch
 
 from provide.testkit import FoundationTestCase
 import pytest

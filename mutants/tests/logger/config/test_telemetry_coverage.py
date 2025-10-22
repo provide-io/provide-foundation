@@ -6,7 +6,7 @@ These tests target uncovered lines and edge cases in telemetry configuration.
 from __future__ import annotations
 
 import base64
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 from provide.testkit import FoundationTestCase
 

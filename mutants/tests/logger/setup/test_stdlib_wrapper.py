@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import logging
-from unittest.mock import MagicMock
+from provide.testkit.mocking import MagicMock
 
 from provide.foundation.logger.setup.stdlib_wrapper import StructuredStdlibLogger
 

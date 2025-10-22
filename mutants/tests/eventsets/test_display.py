@@ -6,7 +6,7 @@ and display.
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.eventsets.display import (
     _format_event_set_config,

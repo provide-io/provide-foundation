@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import socket
 import time
-from unittest.mock import MagicMock, patch
+from provide.testkit.mocking import MagicMock, patch
 
 from provide.testkit import MinimalTestCase
 import psutil

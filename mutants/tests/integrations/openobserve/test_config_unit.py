@@ -7,7 +7,7 @@ Run with: pytest tests/integrations/openobserve/test_config_unit.py -v
 from __future__ import annotations
 
 import os
-from unittest.mock import MagicMock, patch
+from provide.testkit.mocking import MagicMock, patch
 
 from provide.testkit import FoundationTestCase
 

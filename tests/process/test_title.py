@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock, patch
+from provide.testkit.mocking import MagicMock, patch
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -56,20 +56,40 @@ class TestProcessTitle(FoundationTestCase):
 
     def test_set_process_title_without_setproctitle(self) -> None:
         """Test set_process_title returns False when setproctitle unavailable."""
-        # Mock the module to simulate setproctitle not being available
-        with patch("provide.foundation.process.title._HAS_SETPROCTITLE", False):
-            from provide.foundation.process.title import set_process_title
+        # Mock both test mode (to bypass test mode skip) and setproctitle availability
+        with patch("provide.foundation.process.title.is_in_test_mode", return_value=False):
+            with patch("provide.foundation.process.title._HAS_SETPROCTITLE", False):
+                from provide.foundation.process.title import set_process_title
 
-            result = set_process_title("test-title")
-            assert result is False
+                result = set_process_title("test-title")
+                assert result is False
 
     def test_get_process_title_without_setproctitle(self) -> None:
         """Test get_process_title returns None when setproctitle unavailable."""
-        with patch("provide.foundation.process.title._HAS_SETPROCTITLE", False):
-            from provide.foundation.process.title import get_process_title
+        # Mock both test mode (to bypass test mode skip) and setproctitle availability
+        with patch("provide.foundation.process.title.is_in_test_mode", return_value=False):
+            with patch("provide.foundation.process.title._HAS_SETPROCTITLE", False):
+                from provide.foundation.process.title import get_process_title
 
-            result = get_process_title()
-            assert result is None
+                result = get_process_title()
+                assert result is None
+
+    def test_set_process_title_skips_in_test_mode(self) -> None:
+        """Test that set_process_title is automatically skipped in test mode."""
+        from provide.foundation.process import set_process_title
+
+        # In test mode (which we're always in during tests), this should return True
+        # but not actually set the process title
+        result = set_process_title("test-title-in-test-mode")
+        assert result is True  # Should succeed (skip gracefully)
+
+    def test_get_process_title_returns_none_in_test_mode(self) -> None:
+        """Test that get_process_title returns None in test mode."""
+        from provide.foundation.process import get_process_title
+
+        # In test mode, should return None regardless of setproctitle availability
+        result = get_process_title()
+        assert result is None
 
     # Skipping exception tests for optional modules - hard to mock when they don't exist
 

@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Generator
 import sys
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 import pytest
 
