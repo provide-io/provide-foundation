@@ -1,3 +1,11 @@
+"""Tests for special config converters."""
+
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+import pytest
+
+
 class TestFoundationLogOutputParsing(FoundationTestCase):
     """Test foundation log output destination parsing."""
 

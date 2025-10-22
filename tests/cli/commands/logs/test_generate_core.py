@@ -1,3 +1,13 @@
+"""Tests for log generation core functionality."""
+
+from __future__ import annotations
+
+import random
+from unittest.mock import Mock, patch
+
+from provide.testkit import FoundationTestCase
+
+
 class TestGenerateLogEntry(FoundationTestCase):
     """Test log entry generation."""
 
@@ -287,5 +297,3 @@ class TestHelperFunctions(FoundationTestCase):
 
         # Should call click.echo multiple times for the final report
         assert mock_click.echo.call_count >= 5
-
-

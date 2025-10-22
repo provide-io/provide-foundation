@@ -1,3 +1,11 @@
+"""Tests for advanced config converters."""
+
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+import pytest
+
+
 class TestSampleRateParsing(FoundationTestCase):
     """Test sample rate parsing."""
 
@@ -189,5 +197,3 @@ class TestValidators(FoundationTestCase):
 
         with pytest.raises(ValidationError, match="Invalid test"):
             validate_overflow_policy(None, type("attr", (), {"name": "test"})(), "")
-
-

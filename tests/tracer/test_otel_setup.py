@@ -1,17 +1,14 @@
 """Comprehensive tests for tracer/otel.py module."""
 
-import sys
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.tracer.otel import (
-    _HAS_OTEL,
     _require_otel,
     get_otel_tracer,
     setup_opentelemetry_tracing,
-    shutdown_opentelemetry,
 )
 
 
@@ -319,5 +316,3 @@ class TestGetOtelTracer(FoundationTestCase):
                 result = get_otel_tracer("test-tracer")
 
                 assert result is None
-
-

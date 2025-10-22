@@ -1,3 +1,10 @@
+"""Tests for log generation helpers and integration."""
+
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
+
 class TestClickIntegration(FoundationTestCase):
     """Test Click command integration when Click is available."""
 

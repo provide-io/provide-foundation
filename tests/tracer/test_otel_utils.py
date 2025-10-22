@@ -1,3 +1,13 @@
+"""Tests for OpenTelemetry utilities."""
+
+from __future__ import annotations
+
+from unittest.mock import patch
+
+from provide.testkit import FoundationTestCase
+import pytest
+
+
 class TestShutdownOpentelemetry(FoundationTestCase):
     """Test shutdown_opentelemetry function."""
 

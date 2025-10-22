@@ -2,12 +2,9 @@
 
 from __future__ import annotations
 
-import random
 import threading
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
-import pytest
 
 from provide.foundation.cli.commands.logs.constants import (
     BURROUGHS_PHRASES,
@@ -107,5 +104,3 @@ class TestTraceSpanGeneration(FoundationTestCase):
         # Should have 50 unique span IDs
         assert len(span_ids) == 50
         assert len(set(span_ids)) == 50
-
-
