@@ -12,28 +12,16 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
+# NOTE: setproctitle is disabled via .pth file in site-packages
+# See: .venv/lib/python3.11/site-packages/00_disable_setproctitle.pth
+# This prevents pytest-xdist from causing macOS system freezing.
+
+from collections.abc import Generator
+import logging as stdlib_logging
 import os
+import sys
 
-# CRITICAL: Install setproctitle mock BEFORE any other imports
-# xdist/remote.py imports setproctitle at module level (line 32), which happens
-# BEFORE conftest.py is processed. We must inject the mock into sys.modules
-# at the very beginning of conftest.py import to intercept xdist's import.
-import sys  # noqa: E402
-from types import ModuleType  # noqa: E402
-
-if "setproctitle" not in sys.modules:
-    # Create mock setproctitle module with no-op functions
-    _mock_setproctitle = ModuleType("setproctitle")
-    _mock_setproctitle.setproctitle = lambda title: None  # type: ignore[attr-defined]
-    _mock_setproctitle.getproctitle = lambda: "python"  # type: ignore[attr-defined]
-    _mock_setproctitle.setthreadtitle = lambda title: None  # type: ignore[attr-defined]
-    _mock_setproctitle.getthreadtitle = lambda: ""  # type: ignore[attr-defined]
-    sys.modules["setproctitle"] = _mock_setproctitle
-
-from collections.abc import Generator  # noqa: E402
-import logging as stdlib_logging  # noqa: E402
-
-import pytest  # noqa: E402
+import pytest
 
 # Register plugins for assertion rewriting at the root level
 # This must be done before the plugin is imported anywhere else
