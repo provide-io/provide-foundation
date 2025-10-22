@@ -252,11 +252,6 @@ async def main() -> None:
     print(f"   User: {oo_config.user}")
     print(f"   Organization: {oo_config.org or 'default'}")
 
-    # Initialize Foundation Hub
-    print("\n📡 Initializing Foundation Hub...")
-    hub = get_hub()
-    hub.reset()
-
     # Setup OTLP metrics export
     print("\n🔧 Configuring OTLP metrics export...")
     otlp_endpoint = get_openobserve_otlp_metrics_endpoint(oo_config.url, oo_config.org)  # type: ignore[arg-type]
