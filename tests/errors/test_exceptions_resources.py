@@ -1,3 +1,12 @@
+"""Tests for resource error classes."""
+
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
+from provide.foundation.errors.resources import AlreadyExistsError, NotFoundError
+
+
 class TestAuthenticationError(FoundationTestCase):
     """Test AuthenticationError class."""
 

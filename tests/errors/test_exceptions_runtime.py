@@ -1,3 +1,12 @@
+"""Tests for runtime error classes."""
+
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
+from provide.foundation.errors.runtime import RuntimeError
+
+
 class TestRuntimeError(FoundationTestCase):
     """Test RuntimeError class."""
 

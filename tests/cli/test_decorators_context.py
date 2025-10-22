@@ -1,3 +1,23 @@
+"""Tests for CLI decorator context handling."""
+
+from __future__ import annotations
+
+from typing import Never
+
+import click
+from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
+import pytest
+
+from provide.foundation.cli.decorators import (
+    error_handler,
+    logging_options,
+    output_options,
+    pass_context,
+)
+from provide.foundation.context import CLIContext
+
+
 class TestPassContext(FoundationTestCase):
     """Test pass_context decorator."""
 

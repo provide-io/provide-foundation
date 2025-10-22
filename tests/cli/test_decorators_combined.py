@@ -1,3 +1,14 @@
+"""Tests for combined CLI decorators."""
+
+from __future__ import annotations
+
+import click
+from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
+
+from provide.foundation.cli.decorators import flexible_options, standard_options
+
+
 class TestFlexibleOptions(FoundationTestCase):
     """Test flexible_options decorator."""
 

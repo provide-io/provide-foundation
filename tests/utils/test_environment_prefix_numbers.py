@@ -1,3 +1,27 @@
+"""Tests for EnvPrefix numeric getter methods."""
+
+from __future__ import annotations
+
+from collections.abc import Generator
+import os
+from typing import Any
+
+from provide.testkit import FoundationTestCase
+import pytest
+
+from provide.foundation.utils.environment.prefix import EnvPrefix
+
+
+@pytest.fixture
+def clean_env() -> Generator[None, None, None]:
+    """Fixture to clean up environment variables after each test."""
+    original_env = os.environ.copy()
+    yield
+    # Restore original environment
+    os.environ.clear()
+    os.environ.update(original_env)
+
+
 class TestGetStr(FoundationTestCase):
     """Test get_str method."""
 

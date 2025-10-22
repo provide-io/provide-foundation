@@ -1,3 +1,12 @@
+"""Tests for authentication and authorization error classes."""
+
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
+from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
+
+
 class TestStateError(FoundationTestCase):
     """Test StateError class."""
 

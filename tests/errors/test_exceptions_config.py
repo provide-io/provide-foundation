@@ -1,3 +1,12 @@
+"""Tests for configuration error classes."""
+
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
+from provide.foundation.errors.config import ConfigurationError, ValidationError
+
+
 class TestConfigurationError(FoundationTestCase):
     """Test ConfigurationError class."""
 
