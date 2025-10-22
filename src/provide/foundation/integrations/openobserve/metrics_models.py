@@ -177,11 +177,14 @@ class MetricQueryResult:
                 warnings=warnings,
             )
 
-        # Fallback for other formats
+        # Fallback for other formats (e.g., error responses without data section)
         return cls(
             result_type=data.get("resultType", ""),
             result=[],
             status=data.get("status", "success"),
+            error_type=data.get("errorType", ""),
+            error=data.get("error", ""),
+            warnings=data.get("warnings", []),
         )
 
     def to_dict(self) -> dict[str, Any]:
