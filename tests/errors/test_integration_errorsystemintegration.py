@@ -15,6 +15,19 @@ from provide.foundation import (
     Hub,
     get_hub,
 )
+from provide.foundation.errors import (
+    ErrorCategory,
+    ErrorSeverity,
+    FoundationError,
+    NetworkError,
+    ValidationError,
+    capture_error_context,
+    error_boundary,
+    handle_error,
+    resilient,
+    transactional,
+)
+from provide.foundation.resilience import circuit_breaker
 
 
 class TestErrorSystemIntegration(FoundationTestCase):
