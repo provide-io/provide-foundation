@@ -29,7 +29,7 @@ This documentation is structured to help you learn effectively, whether you're a
     <p><a href="how-to-guides/logging/basic-logging/">Solve a Problem →</a></p>
   </div>
   <div class="feature-card">
-    <h3>🧠 Explanation</h3>
+    <h3>🧠 Concepts</h3>
     <p>Deep dives into the concepts and architecture behind the framework.</p>
     <p><a href="explanation/architecture/">Understand the "Why" →</a></p>
   </div>
