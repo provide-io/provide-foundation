@@ -449,6 +449,17 @@ if _HAS_CLICK:
             click.echo("❌ Connection failed!")
             ctx.exit(1)
 
+    # Add metrics subcommand group
+    try:
+        from provide.foundation.integrations.openobserve.metrics_commands import (
+            metrics_group,
+        )
+
+        openobserve_group.add_command(metrics_group)
+    except ImportError:
+        # Metrics commands not available
+        pass
+
     # Export the command group for auto-discovery
     __all__ = ["openobserve_group"]
 

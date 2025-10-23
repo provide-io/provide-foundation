@@ -18,20 +18,22 @@ from provide.foundation.logger.config.telemetry import TelemetryConfig
 from provide.foundation.logger.otlp.client import OTLPLogClient
 
 
-def get_openobserve_otlp_endpoint(base_url: str, org: str | None = None) -> str:
+def get_openobserve_otlp_endpoint(base_url: str, org: str | None = None, endpoint_type: str = "logs") -> str:
     """Derive OTLP endpoint from OpenObserve base URL.
 
     Handles:
     - URLs with /api/{org}/ path
     - URLs without /api/ path
     - Trailing slashes
+    - Both logs and metrics endpoints
 
     Args:
         base_url: OpenObserve base URL
         org: Organization name (defaults to "default")
+        endpoint_type: Type of endpoint ("logs" or "metrics", defaults to "logs")
 
     Returns:
-        OTLP logs endpoint
+        OTLP endpoint URL
 
     Examples:
         >>> get_openobserve_otlp_endpoint("https://api.openobserve.ai", "my-org")
@@ -39,6 +41,9 @@ def get_openobserve_otlp_endpoint(base_url: str, org: str | None = None) -> str:
 
         >>> get_openobserve_otlp_endpoint("https://api.openobserve.ai/api/my-org/")
         'https://api.openobserve.ai/api/my-org/v1/logs'
+
+        >>> get_openobserve_otlp_endpoint("https://api.openobserve.ai", "my-org", "metrics")
+        'https://api.openobserve.ai/api/my-org/v1/metrics'
     """
     # Remove trailing slash
     url = base_url.rstrip("/")
@@ -49,7 +54,26 @@ def get_openobserve_otlp_endpoint(base_url: str, org: str | None = None) -> str:
 
     # Build OTLP endpoint
     org_name = org or "default"
-    return f"{url}/api/{org_name}/v1/logs"
+    return f"{url}/api/{org_name}/v1/{endpoint_type}"
+
+
+def get_openobserve_otlp_metrics_endpoint(base_url: str, org: str | None = None) -> str:
+    """Derive OTLP metrics endpoint from OpenObserve base URL.
+
+    Convenience function that calls get_openobserve_otlp_endpoint with endpoint_type="metrics".
+
+    Args:
+        base_url: OpenObserve base URL
+        org: Organization name (defaults to "default")
+
+    Returns:
+        OTLP metrics endpoint
+
+    Examples:
+        >>> get_openobserve_otlp_metrics_endpoint("https://api.openobserve.ai", "my-org")
+        'https://api.openobserve.ai/api/my-org/v1/metrics'
+    """
+    return get_openobserve_otlp_endpoint(base_url, org, endpoint_type="metrics")
 
 
 def build_openobserve_headers(
@@ -209,6 +233,7 @@ __all__ = [
     "OpenObserveOTLPClient",
     "build_openobserve_headers",
     "get_openobserve_otlp_endpoint",
+    "get_openobserve_otlp_metrics_endpoint",
 ]
 
 
