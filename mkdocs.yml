@@ -105,34 +105,59 @@ extra_javascript:
 nav:
   - Home: index.md
 
-  - Information:
+  - Overview:
     - Features: information/features.md
     - Use Cases: information/use-cases.md
-    - Architecture: information/architecture.md
-    - Changelog: information/changelog.md
+    - System Architecture: information/architecture.md
+    - What's New: information/changelog.md
 
   - Getting Started:
     - getting-started/index.md
     - Installation: getting-started/installation.md
-    - Quick Start: getting-started/quick-start.md
-    - First Application: getting-started/first-app.md
-    - Examples: getting-started/examples.md
+    - 5-Minute Quick Start: getting-started/quick-start.md
+    - Build a CLI App Tutorial: getting-started/first-app.md
+    - More Examples: getting-started/examples.md
 
   - Tutorials:
-    - Quick Start: tutorials/01-quick-start.md
-    - First Application: tutorials/02-first-app.md
+    - Introduction to Logging: tutorials/01-quick-start.md
+    - Building CLI Applications: tutorials/02-first-app.md
 
   - How-To Guides:
     - Logging:
       - Basic Logging: how-to-guides/logging/basic-logging.md
       - Exception Logging: how-to-guides/logging/exception-logging.md
+      - Structured Events: how-to-guides/logging/structured-events.md
+      - Custom Processors: how-to-guides/logging/custom-processors.md
+    - Configuration:
+      - Environment Variables: how-to-guides/configuration/env-variables.md
+      - File-Based Config: how-to-guides/configuration/file-config.md
+      - Secret Management: how-to-guides/configuration/secrets.md
     - CLI:
-      - Commands: how-to-guides/cli/commands.md
+      - Building Commands: how-to-guides/cli/commands.md
+      - Argument Parsing: how-to-guides/cli/arguments.md
+      - Interactive Prompts: how-to-guides/cli/prompts.md
+    - File Operations:
+      - Atomic Writes: how-to-guides/file/atomic-writes.md
+      - File Watching: how-to-guides/file/watching.md
+    - Cryptography:
+      - Key Generation: how-to-guides/crypto/keys.md
+      - Signing & Verification: how-to-guides/crypto/signing.md
+      - Certificates: how-to-guides/crypto/certificates.md
+    - HTTP & APIs:
+      - Making Requests: how-to-guides/http/requests.md
+      - Custom Middleware: how-to-guides/http/middleware.md
+    - Testing:
+      - Unit Testing: how-to-guides/testing/unit-tests.md
+      - Testing CLI Commands: how-to-guides/testing/cli-tests.md
     - Resilience:
       - Retry Patterns: how-to-guides/resilience/retry.md
+      - Circuit Breakers: how-to-guides/resilience/circuit-breaker.md
+    - Production:
+      - Deployment Patterns: how-to-guides/production/deployment.md
+      - Monitoring & Observability: how-to-guides/production/monitoring.md
 
-  - Explanation:
-    - Architecture: explanation/architecture.md
+  - Concepts:
+    - How Foundation Works: explanation/architecture.md
     - Dependency Injection: explanation/dependency-injection.md
 
   - Reference:

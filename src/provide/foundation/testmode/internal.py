@@ -66,6 +66,18 @@ def reset_time_machine_state() -> None:
     pass
 
 
+def reset_test_mode_cache() -> None:
+    """Reset test mode detection cache.
+
+    This clears the cached test mode detection result, allowing fresh
+    detection on the next call. This is important for test isolation
+    when tests manipulate environment variables or sys.modules.
+    """
+    from provide.foundation.testmode.detection import _clear_test_mode_cache
+
+    _clear_test_mode_cache()
+
+
 def reset_structlog_state() -> None:
     """Reset structlog configuration to defaults.
 

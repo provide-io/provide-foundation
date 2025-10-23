@@ -2,6 +2,56 @@
 
 Complete API documentation for `provide.foundation` — auto-generated from source code docstrings and type hints.
 
+## 🚀 Quick Access
+
+Most commonly used functions and classes:
+
+### Essential Functions
+
+```python
+from provide.foundation import logger, pout, perr, get_hub
+from provide.foundation.hub import register_command
+from provide.foundation.resilience import retry
+```
+
+| Import | Purpose | Documentation |
+|--------|---------|---------------|
+| `logger` | Global logger instance for structured logging | [logger docs](provide/foundation/logger/index.md) |
+| `pout()` | User-facing output to stdout (with colors) | [console docs](provide/foundation/console/index.md) |
+| `perr()` | User-facing errors to stderr (with colors) | [console docs](provide/foundation/console/index.md) |
+| `get_hub()` | Access the central component registry | [hub docs](provide/foundation/hub/index.md) |
+| `@register_command` | Register CLI commands | [CLI docs](provide/foundation/cli/index.md) |
+| `@retry` | Retry decorator with exponential backoff | [resilience docs](provide/foundation/resilience/index.md) |
+
+### Configuration Classes
+
+```python
+from provide.foundation.config import BaseConfig, env_field
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+```
+
+| Class | Purpose | Documentation |
+|-------|---------|---------------|
+| `BaseConfig` | Base class for configuration objects | [config docs](provide/foundation/config/index.md) |
+| `TelemetryConfig` | Configure logging and telemetry | [logger config docs](provide/foundation/logger/config/index.md) |
+| `LoggingConfig` | Detailed logging configuration | [logger config docs](provide/foundation/logger/config/index.md) |
+
+### Utilities
+
+```python
+from provide.foundation.utils.environment import get_bool, get_int, get_str
+from provide.foundation.file import atomic_write
+from provide.foundation.serialization import provide_dumps, provide_loads
+```
+
+| Function | Purpose | Documentation |
+|----------|---------|---------------|
+| `get_bool()`, `get_int()`, `get_str()` | Environment variable helpers | [environment docs](provide/foundation/utils/environment/index.md) |
+| `atomic_write()` | Safe atomic file writes | [file docs](provide/foundation/file/index.md) |
+| `provide_dumps()`, `provide_loads()` | JSON serialization | [serialization docs](provide/foundation/serialization/index.md) |
+
+---
+
 ## Quick Navigation
 
 ### Core Components

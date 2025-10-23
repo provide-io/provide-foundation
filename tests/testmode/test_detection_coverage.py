@@ -11,6 +11,7 @@ from unittest.mock import Mock, patch
 from provide.testkit import FoundationTestCase
 
 from provide.foundation.testmode.detection import (
+    _clear_test_mode_cache,
     is_in_click_testing,
     is_in_test_mode,
     should_allow_stream_redirect,
@@ -24,6 +25,8 @@ class TestIsInTestMode(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
+        # Clear the test mode cache to ensure fresh detection in each test
+        _clear_test_mode_cache()
 
     def test_detects_pytest_current_test_env_var(self) -> None:
         """Test detection via PYTEST_CURRENT_TEST environment variable."""
@@ -457,6 +460,27 @@ class TestDetectionEdgeCases(FoundationTestCase):
             assert is_in_click_testing() is True
             # Stack inspection should not be called (early return)
             mock_stack.assert_not_called()
+
+    def test_is_in_test_mode_caches_result(self) -> None:
+        """Test that is_in_test_mode caches its result for performance."""
+        # Clear cache before test
+        _clear_test_mode_cache()
+
+        with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "test"}):
+            # First call - should detect test mode and cache it
+            result1 = is_in_test_mode()
+            assert result1 is True
+
+            # Second call - should return cached result (no env var check needed)
+            result2 = is_in_test_mode()
+            assert result2 is True
+
+            # Third call - should still return cached result
+            result3 = is_in_test_mode()
+            assert result3 is True
+
+            # All three should be True from cache
+            assert result1 == result2 == result3 is True
 
 
 __all__ = [

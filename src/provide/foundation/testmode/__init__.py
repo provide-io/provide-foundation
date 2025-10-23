@@ -21,6 +21,7 @@ from provide.foundation.testmode.internal import (
     reset_logger_state,
     reset_streams_state,
     reset_structlog_state,
+    reset_test_mode_cache,
     reset_version_cache,
 )
 from provide.foundation.testmode.orchestration import (
@@ -50,6 +51,7 @@ __all__ = [
     "reset_logger_state",
     "reset_streams_state",
     "reset_structlog_state",
+    "reset_test_mode_cache",
     "reset_version_cache",
     "should_use_shared_registries",
 ]

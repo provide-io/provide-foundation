@@ -155,6 +155,7 @@ def reset_foundation_state() -> None:
             reset_state_managers,
             reset_streams_state,
             reset_structlog_state,
+            reset_test_mode_cache,
             reset_time_machine_state,
             reset_version_cache,
         )
@@ -180,6 +181,9 @@ def reset_foundation_state() -> None:
 
         # Reset Foundation environment variables first to avoid affecting other resets
         _reset_foundation_environment_variables()
+
+        # Reset test mode cache early so subsequent detection is fresh
+        reset_test_mode_cache()
 
         # Reset in the proper order to avoid triggering reinitialization
         reset_structlog_state()
