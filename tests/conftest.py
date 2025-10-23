@@ -12,10 +12,28 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
+# CRITICAL: Disable setproctitle BEFORE any other imports
+# This must happen at module import time, before pytest-xdist loads
+# setproctitle causes system freezing on macOS with parallel test execution
+import sys
+
+try:
+    import setproctitle
+
+    # Completely disable setproctitle by replacing it with no-op functions
+    setproctitle.setproctitle = lambda x: None
+    setproctitle.getproctitle = lambda: ""
+
+    # Also prevent future imports from getting the real module
+    sys.modules["setproctitle"].setproctitle = lambda x: None
+    sys.modules["setproctitle"].getproctitle = lambda: ""
+except ImportError:
+    # setproctitle not installed, nothing to disable
+    pass
+
 from collections.abc import Generator
 import logging as stdlib_logging
 import os
-import sys
 
 import pytest
 
