@@ -5,9 +5,8 @@
 
 from __future__ import annotations
 
-from provide.testkit.mocking import MagicMock, patch
-
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 
@@ -32,27 +31,35 @@ class TestProcessTitle(FoundationTestCase):
 
     def test_set_process_title_with_setproctitle_available(self) -> None:
         """Test setting process title when setproctitle is available."""
-        from provide.foundation.process import has_setproctitle, set_process_title
+        from provide.foundation.process import has_setproctitle
 
         if not has_setproctitle():
             pytest.skip("setproctitle not available")
 
-        # Set a test title
-        result = set_process_title("test-process")
-        assert result is True
+        # Mock test mode to allow actual process title operations
+        with patch("provide.foundation.testmode.decorators.is_in_test_mode", return_value=False):
+            from provide.foundation.process import set_process_title
+
+            # Set a test title
+            result = set_process_title("test-process")
+            assert result is True
 
     def test_get_process_title_with_setproctitle_available(self) -> None:
         """Test getting process title when setproctitle is available."""
-        from provide.foundation.process import get_process_title, has_setproctitle, set_process_title
+        from provide.foundation.process import has_setproctitle
 
         if not has_setproctitle():
             pytest.skip("setproctitle not available")
 
-        # Set and get title
-        set_process_title("test-process-get")
-        title = get_process_title()
-        assert title is not None
-        assert isinstance(title, str)
+        # Mock test mode to allow actual process title operations
+        with patch("provide.foundation.testmode.decorators.is_in_test_mode", return_value=False):
+            from provide.foundation.process import get_process_title, set_process_title
+
+            # Set and get title
+            set_process_title("test-process-get")
+            title = get_process_title()
+            assert title is not None
+            assert isinstance(title, str)
 
     def test_set_process_title_without_setproctitle(self) -> None:
         """Test set_process_title returns False when setproctitle unavailable."""
@@ -95,34 +102,46 @@ class TestProcessTitle(FoundationTestCase):
 
     def test_set_process_title_with_empty_string(self) -> None:
         """Test setting process title with empty string."""
-        from provide.foundation.process import has_setproctitle, set_process_title
+        from provide.foundation.process import has_setproctitle
 
         if not has_setproctitle():
             pytest.skip("setproctitle not available")
 
-        result = set_process_title("")
-        assert result is True
+        # Mock test mode to allow actual process title operations
+        with patch("provide.foundation.testmode.decorators.is_in_test_mode", return_value=False):
+            from provide.foundation.process import set_process_title
+
+            result = set_process_title("")
+            assert result is True
 
     def test_set_process_title_with_unicode(self) -> None:
         """Test setting process title with unicode characters."""
-        from provide.foundation.process import has_setproctitle, set_process_title
+        from provide.foundation.process import has_setproctitle
 
         if not has_setproctitle():
             pytest.skip("setproctitle not available")
 
-        result = set_process_title("test-process-🚀")
-        assert result is True
+        # Mock test mode to allow actual process title operations
+        with patch("provide.foundation.testmode.decorators.is_in_test_mode", return_value=False):
+            from provide.foundation.process import set_process_title
+
+            result = set_process_title("test-process-🚀")
+            assert result is True
 
     def test_set_process_title_with_long_string(self) -> None:
         """Test setting process title with very long string."""
-        from provide.foundation.process import has_setproctitle, set_process_title
+        from provide.foundation.process import has_setproctitle
 
         if not has_setproctitle():
             pytest.skip("setproctitle not available")
 
-        long_title = "a" * 1000
-        result = set_process_title(long_title)
-        assert result is True
+        # Mock test mode to allow actual process title operations
+        with patch("provide.foundation.testmode.decorators.is_in_test_mode", return_value=False):
+            from provide.foundation.process import set_process_title
+
+            long_title = "a" * 1000
+            result = set_process_title(long_title)
+            assert result is True
 
 
 # <3 🧱🤝🧪🪄

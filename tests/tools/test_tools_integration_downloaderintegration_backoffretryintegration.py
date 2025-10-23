@@ -120,11 +120,18 @@ class TestDownloaderIntegration(FoundationTestCase):
         dest = temp_dir / "wrong_checksum.bin"
         wrong_checksum = "0" * 64  # Wrong SHA256
 
-        with pytest.raises(DownloadError, match="Checksum mismatch"):
-            await downloader.download_with_progress(url, dest, wrong_checksum)
+        try:
+            with pytest.raises(DownloadError, match="Checksum mismatch"):
+                await downloader.download_with_progress(url, dest, wrong_checksum)
 
-        # File should be cleaned up on checksum failure
-        assert not dest.exists()
+            # File should be cleaned up on checksum failure
+            assert not dest.exists()
+        except Exception as e:
+            # Skip if httpbin is having issues
+            if any(keyword in str(e) for keyword in ["HTTP 5", "503", "ConnectError", "DNS", "timeout"]):
+                pytest.skip(f"Network/transport issue - this is an integration test limitation: {e}")
+            else:
+                raise
 
     async def test_download_retry_on_server_error(self, downloader, temp_dir) -> None:
         """Test retry behavior on server errors."""
@@ -166,12 +173,19 @@ class TestDownloaderIntegration(FoundationTestCase):
             ("https://httpbin.org/bytes/700", temp_dir / "file3.bin"),
         ]
 
-        results = await downloader.download_parallel(urls_and_dests)
+        try:
+            results = await downloader.download_parallel(urls_and_dests)
 
-        assert len(results) == 3
-        for i, (_url, expected_dest) in enumerate(urls_and_dests):
-            assert results[i] == expected_dest
-            assert expected_dest.exists()
+            assert len(results) == 3
+            for i, (_url, expected_dest) in enumerate(urls_and_dests):
+                assert results[i] == expected_dest
+                assert expected_dest.exists()
+        except Exception as e:
+            # Skip if httpbin is having issues
+            if any(keyword in str(e) for keyword in ["HTTP 5", "503", "ConnectError", "DNS", "timeout"]):
+                pytest.skip(f"Network/transport issue - this is an integration test limitation: {e}")
+            else:
+                raise
 
     async def test_parallel_downloads_with_failure(self, downloader, temp_dir) -> None:
         """Test parallel downloads when some fail."""
@@ -193,11 +207,21 @@ class TestDownloaderIntegration(FoundationTestCase):
         ]
         dest = temp_dir / "mirror_test.bin"
 
-        result = await downloader.download_with_mirrors(mirrors, dest)
+        try:
+            result = await downloader.download_with_mirrors(mirrors, dest)
 
-        assert result == dest
-        assert dest.exists()
-        assert dest.stat().st_size == 512
+            assert result == dest
+            assert dest.exists()
+            assert dest.stat().st_size == 512
+        except Exception as e:
+            # Skip if httpbin is having issues (both mirrors failing)
+            if any(
+                keyword in str(e)
+                for keyword in ["HTTP 5", "503", "ConnectError", "DNS", "timeout", "All mirrors failed"]
+            ):
+                pytest.skip(f"Network/transport issue - this is an integration test limitation: {e}")
+            else:
+                raise
 
     async def test_mirror_fallback_all_fail(self, downloader, temp_dir) -> None:
         """Test mirror fallback when all mirrors fail."""
@@ -255,7 +279,10 @@ class TestDownloaderIntegration(FoundationTestCase):
                 elif system == "darwin":
                     assert header in [b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf", b"\xcf\xfa\xed\xfe"]
         except Exception as e:
-            if any(keyword in str(e) for keyword in ["404", "not found", "DNS", "timeout", "ConnectError", "HTTP 5", "503"]):
+            if any(
+                keyword in str(e)
+                for keyword in ["404", "not found", "DNS", "timeout", "ConnectError", "HTTP 5", "503"]
+            ):
                 pytest.skip(f"GitHub/network issue - this is an integration test limitation: {e}")
             else:
                 raise
@@ -294,7 +321,9 @@ class TestBackoffRetryIntegration(FoundationTestCase):
         # Being lenient since network timing can vary
         assert total_time >= 3.0  # At least some delay happened
 
-    @pytest.mark.skip(reason="ToolDownloader doesn't expose retry decorator directly - uses RetryExecutor internally")
+    @pytest.mark.skip(
+        reason="ToolDownloader doesn't expose retry decorator directly - uses RetryExecutor internally"
+    )
     async def test_retry_count_respected(self, downloader, temp_dir) -> None:
         """Test that max retry attempts are respected."""
         url = "https://httpbin.org/status/500"
