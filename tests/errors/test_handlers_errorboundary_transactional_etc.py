@@ -10,7 +10,9 @@ import pytest
 
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.handlers import (
+    error_boundary,
     handle_error,
+    transactional,
 )
 
 
