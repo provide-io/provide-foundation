@@ -13,8 +13,22 @@ from watchdog.observers import Observer
 
 from provide.foundation.file.operations import (
     DetectorConfig,
+    FileEvent,
     OperationDetector,
+    OperationType,
 )
+
+
+class FileEventCapture:
+    """Simple watchdog event handler for capturing file system events."""
+
+    def __init__(self) -> None:
+        """Initialize the event capture handler."""
+        self.events: list[FileEvent] = []
+
+    def clear_events(self) -> None:
+        """Clear all captured events."""
+        self.events.clear()
 
 
 class TestFileOperationIntegration(FoundationTestCase):
