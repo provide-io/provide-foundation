@@ -336,12 +336,12 @@ class TestOtlpProcessor:
 
     @patch("provide.foundation.logger.processors.otlp.map_level_to_severity")
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
-    @patch("opentelemetry.sdk._logs._internal.LogRecord")
+    @patch("opentelemetry.sdk._logs._internal.APILogRecord")
     @patch("opentelemetry.sdk._logs._internal.SeverityNumber")
     def test_processor_builds_attributes_correctly(
         self,
         mock_severity_class: Mock,
-        mock_log_record_class: Mock,
+        mock_api_log_record_class: Mock,
         mock_client_class: Mock,
         mock_map_level: Mock,
     ) -> None:
@@ -375,8 +375,8 @@ class TestOtlpProcessor:
 
         processor(Mock(), "info", event_dict)
 
-        # Verify LogRecord was created with correct attributes
-        call_kwargs = mock_log_record_class.call_args[1]
+        # Verify APILogRecord was created with correct attributes
+        call_kwargs = mock_api_log_record_class.call_args[1]
         attributes = call_kwargs["attributes"]
 
         assert attributes["message"] == "Test message"
