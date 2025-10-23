@@ -10,10 +10,13 @@ import pytest
 
 from provide.foundation.file.operations import (
     FileEvent,
+    FileEventMetadata,
 )
 from provide.foundation.file.quality import (
+    AnalysisMetric,
     OperationScenario,
     QualityResult,
+    create_scenarios_from_patterns,
 )
 
 

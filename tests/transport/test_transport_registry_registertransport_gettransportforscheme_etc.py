@@ -9,9 +9,14 @@ import pytest
 from provide.foundation.hub.components import ComponentCategory
 from provide.foundation.transport.errors import TransportNotFoundError
 from provide.foundation.transport.registry import (
+    get_transport,
     get_transport_for_scheme,
+    get_transport_info,
+    list_registered_transports,
     register_transport,
 )
+from provide.foundation.transport.types import TransportType
+from tests.transport.test_transport_basic import MockTransport
 
 
 class TestRegisterTransport(FoundationTestCase):

@@ -10,7 +10,12 @@ import pytest
 
 from provide.foundation.file.operations import (
     FileEvent,
+    FileEventMetadata,
     FileOperation,
+    detect_atomic_save,
+    extract_original_path,
+    group_related_events,
+    is_temp_file,
 )
 
 
