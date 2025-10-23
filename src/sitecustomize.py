@@ -8,10 +8,10 @@
 Importing pytest_plugin installs the blocker at module-level.
 """
 
-try:
+import contextlib
+
+with contextlib.suppress(ImportError):
     import provide.testkit.pytest_plugin  # noqa: F401
-except ImportError:
-    pass
 
 
 # <3 🧱🤝🧪🪄
