@@ -4,19 +4,13 @@ from __future__ import annotations
 
 from pathlib import Path
 import tempfile
-import time
-from typing import ClassVar
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.config import BaseConfig
 from provide.foundation.hub import get_hub
-from provide.foundation.tools.base import (
-    BaseToolManager,
-    ToolDownloader,
-)
+from provide.foundation.tools.downloader import ToolDownloader
 
 
 class TestFullWorkflowIntegration(FoundationTestCase):
