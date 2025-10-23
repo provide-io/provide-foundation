@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import itertools
 from typing import Any
-from unittest.mock import MagicMock, patch
+from provide.testkit.mocking import MagicMock, patch
 
 from click.testing import CliRunner
 import pytest

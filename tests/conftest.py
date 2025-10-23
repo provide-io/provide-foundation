@@ -20,8 +20,10 @@ import sys
 import pytest
 
 # Register plugins for assertion rewriting at the root level
-# This must be done before the plugin is imported anywhere else
-pytest_plugins = ["provide.testkit.hub.fixtures"]
+# NOTE: setproctitle blocker is in src/sitecustomize.py (auto-loaded by Python)
+pytest_plugins = [
+    "provide.testkit.hub.fixtures",
+]
 
 # Set DEBUG log level for all tests
 os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")

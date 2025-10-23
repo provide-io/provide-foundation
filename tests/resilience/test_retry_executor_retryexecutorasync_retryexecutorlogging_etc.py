@@ -12,6 +12,7 @@ from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.retry import (
+    BackoffStrategy,
     RetryExecutor,
     RetryPolicy,
 )

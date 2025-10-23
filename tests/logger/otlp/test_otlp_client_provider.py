@@ -5,7 +5,7 @@ Tests logger provider creation, availability checking, and stats retrieval.
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.logger.otlp.client import OTLPLogClient
 

@@ -6,7 +6,7 @@ Tests initialization, callbacks, progress reporting, and checksum verification.
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import Mock
+from provide.testkit.mocking import Mock
 
 from provide.foundation.tools.downloader import DownloadError, ToolDownloader
 

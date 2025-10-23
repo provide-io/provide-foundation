@@ -7,7 +7,7 @@ Run with: pytest tests/integrations/openobserve/test_client_operations.py -v
 from __future__ import annotations
 
 from typing import Any
-from unittest.mock import AsyncMock
+from provide.testkit.mocking import AsyncMock
 
 from provide.testkit import FoundationTestCase
 import pytest

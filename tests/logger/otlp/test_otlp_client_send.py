@@ -6,7 +6,7 @@ circuit breaker integration, and attribute handling.
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.logger.otlp.client import OTLPLogClient
 

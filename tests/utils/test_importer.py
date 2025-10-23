@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 import threading
-from unittest.mock import patch
+from provide.testkit.mocking import patch
 
 import pytest
 

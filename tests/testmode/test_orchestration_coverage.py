@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import os
 import sys
-from unittest.mock import MagicMock, Mock, patch
+from provide.testkit.mocking import MagicMock, Mock, patch
 
 from provide.testkit import FoundationTestCase
 

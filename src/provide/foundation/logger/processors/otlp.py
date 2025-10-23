@@ -123,11 +123,10 @@ def create_otlp_processor(config: Any) -> Any | None:
                 severity_number_int = map_level_to_severity(level)
                 severity_text: str = level.upper()
 
-                # Emit to OTLP using ReadWriteLogRecord (new API)
-                from opentelemetry.sdk._logs._internal import SeverityNumber
-                from opentelemetry.sdk._logs._internal.log_record import ReadWriteLogRecord
+                # Emit to OTLP using LogRecord
+                from opentelemetry.sdk._logs._internal import LogRecord, SeverityNumber
 
-                log_record = ReadWriteLogRecord(
+                log_record = LogRecord(
                     timestamp=timestamp,
                     observed_timestamp=timestamp,
                     context=None,

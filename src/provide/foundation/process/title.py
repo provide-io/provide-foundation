@@ -6,11 +6,16 @@
 from __future__ import annotations
 
 from provide.foundation.logger import get_logger
+from provide.foundation.testmode.decorators import skip_in_test_mode
 
 """Process title management.
 
 Provides utilities for setting and getting process titles, making processes
 identifiable in system monitoring tools like ps, top, and htop.
+
+Automatically disabled in test mode (via @skip_in_test_mode decorator) to
+prevent test interference and ensure proper test isolation, especially with
+parallel test execution (pytest-xdist).
 
 Requires the optional 'setproctitle' package for full functionality.
 Install with: pip install provide-foundation[process]
@@ -31,6 +36,7 @@ except ImportError:
     )
 
 
+@skip_in_test_mode(return_value=True, reason="Process title changes interfere with test isolation")
 def set_process_title(title: str) -> bool:
     """Set the process title visible in system monitoring tools.
 
@@ -38,11 +44,15 @@ def set_process_title(title: str) -> bool:
     monitoring tools. This is useful for identifying processes, especially
     in multi-process applications or long-running services.
 
+    Automatically disabled in test mode (via @skip_in_test_mode decorator) to
+    prevent interference with test isolation and parallel test execution.
+
     Args:
         title: The title to set for the current process
 
     Returns:
-        True if the title was set successfully, False if setproctitle is not available
+        True if the title was set successfully (or skipped in test mode),
+        False if setproctitle is not available
 
     Example:
         >>> from provide.foundation.process import set_process_title
@@ -68,11 +78,16 @@ def set_process_title(title: str) -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=None, reason="Process title queries interfere with test isolation")
 def get_process_title() -> str | None:
     """Get the current process title.
 
+    Automatically returns None in test mode (via @skip_in_test_mode decorator)
+    to prevent test interference.
+
     Returns:
         The current process title, or None if setproctitle is not available
+        or running in test mode
 
     Example:
         >>> from provide.foundation.process import get_process_title, set_process_title
