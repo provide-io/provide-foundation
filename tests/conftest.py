@@ -12,20 +12,12 @@ Foundation reset automatically.
 
 from __future__ import annotations
 
+from collections.abc import Generator
+import logging as stdlib_logging
 import os
+import sys
 
-# CRITICAL: Manually import provide-testkit plugin to ensure setproctitle mock loads
-# Worker subprocesses (pytest-xdist) don't inherit sys.modules from the parent process.
-# The plugin is already registered via entry points, but we need to ensure it loads
-# BEFORE pytest-xdist loads, so we import it explicitly here at module level.
-# This must happen BEFORE pytest import to prevent xdist from importing real setproctitle.
-import provide.testkit.pytest_plugin  # noqa: F401
-
-from collections.abc import Generator  # noqa: E402
-import logging as stdlib_logging  # noqa: E402
-import sys  # noqa: E402
-
-import pytest  # noqa: E402
+import pytest
 
 # Register plugins for assertion rewriting at the root level
 # This must be done before the plugin is imported anywhere else

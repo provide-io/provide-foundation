@@ -95,7 +95,10 @@ def get_system_info() -> SystemInfo:
         total_memory = mem.total
         available_memory = mem.available
     except ImportError:
-        log.debug("psutil not available, memory info limited")
+        log.debug(
+            "psutil not available, memory info unavailable",
+            hint="Install with: pip install provide-foundation[platform]",
+        )
     except Exception as e:
         log.debug("Failed to get memory info", error=str(e))
 
