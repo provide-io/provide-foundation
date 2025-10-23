@@ -44,12 +44,37 @@ from provide.foundation.integrations.openobserve.streaming import (
     tail_logs,
 )
 
+# Metrics support
+try:
+    from provide.foundation.integrations.openobserve.metrics_formatters import (
+        format_metric_output,
+        format_metrics_list,
+    )
+    from provide.foundation.integrations.openobserve.metrics_models import (
+        MetricMetadata,
+        MetricQueryResult,
+        MetricSample,
+    )
+
+    _HAS_METRICS = True
+except ImportError:
+    _HAS_METRICS = False
+    MetricMetadata = None  # type: ignore[assignment, misc]
+    MetricQueryResult = None  # type: ignore[assignment, misc]
+    MetricSample = None  # type: ignore[assignment, misc]
+    format_metric_output = None  # type: ignore[assignment]
+    format_metrics_list = None  # type: ignore[assignment]
+
 """OpenObserve integration for Foundation.
 
-Provides log querying and streaming capabilities as an optional integration.
+Provides log querying, streaming, and metrics capabilities as an optional integration.
 """
 
 __all__ = [
+    # Metrics (if available)
+    "MetricMetadata",
+    "MetricQueryResult",
+    "MetricSample",
     "OpenObserveAuthenticationError",
     # Client
     "OpenObserveClient",
@@ -70,6 +95,8 @@ __all__ = [
     # Formatters
     "format_json",
     "format_log_line",
+    "format_metric_output",
+    "format_metrics_list",
     "format_output",
     "format_summary",
     "format_table",
