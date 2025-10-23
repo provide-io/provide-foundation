@@ -1,13 +1,26 @@
 """Comprehensive coverage tests for config manager module."""
 
+from attrs import define
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock
 
+from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.loader import ConfigLoader
 from provide.foundation.config.manager import (
+    _manager,
     get_config,
     load_config,
+    register_config,
+    set_config,
 )
+from provide.foundation.config.schema import ConfigSchema
+
+
+@define
+class SampleConfigClass(BaseConfig):
+    """Sample configuration class for testing."""
+
+    name: str = field(default="test")
 
 
 class TestGlobalFunctions(FoundationTestCase):
