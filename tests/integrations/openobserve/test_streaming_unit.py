@@ -7,7 +7,7 @@ Run with: pytest tests/integrations/openobserve/test_streaming_unit.py -v
 from __future__ import annotations
 
 from typing import Any
-from unittest.mock import MagicMock, patch
+from provide.testkit.mocking import MagicMock, patch
 
 from provide.testkit import FoundationTestCase
 import pytest

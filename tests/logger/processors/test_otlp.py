@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Generator
 import sys
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 import pytest
 
@@ -215,7 +215,7 @@ class TestOtlpProcessor:
 
     @patch("provide.foundation.logger.processors.otlp.map_level_to_severity")
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
-    @patch("opentelemetry.sdk._logs.LogRecord")
+    @patch("opentelemetry.sdk._logs._internal.LogRecord")
     @patch("opentelemetry.sdk._logs._internal.SeverityNumber")
     def test_processor_sends_log(
         self,
@@ -293,7 +293,7 @@ class TestOtlpProcessor:
 
     @patch("provide.foundation.logger.processors.otlp.map_level_to_severity")
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
-    @patch("opentelemetry.sdk._logs.LogRecord")
+    @patch("opentelemetry.sdk._logs._internal.LogRecord")
     @patch("opentelemetry.sdk._logs._internal.SeverityNumber")
     def test_processor_handles_exception_silently(
         self,
@@ -336,7 +336,7 @@ class TestOtlpProcessor:
 
     @patch("provide.foundation.logger.processors.otlp.map_level_to_severity")
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
-    @patch("opentelemetry.sdk._logs.LogRecord")
+    @patch("opentelemetry.sdk._logs._internal.LogRecord")
     @patch("opentelemetry.sdk._logs._internal.SeverityNumber")
     def test_processor_builds_attributes_correctly(
         self,

@@ -6,7 +6,7 @@ Run with: pytest tests/metrics/test_simple_unit.py -v
 
 from __future__ import annotations
 
-from unittest.mock import MagicMock
+from provide.testkit.mocking import MagicMock
 
 from provide.testkit import FoundationTestCase
 

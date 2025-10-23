@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from typing import Any
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 import pytest
 

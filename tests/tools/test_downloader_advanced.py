@@ -6,7 +6,7 @@ Tests parallel downloads and mirror fallback functionality.
 from __future__ import annotations
 
 from pathlib import Path
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 import pytest
 

@@ -8,8 +8,13 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.console.output import (
+    _get_context,
+    _output_json,
+    _should_use_color,
+    _should_use_json,
     pout,
 )
+from provide.foundation.context import CLIContext
 
 
 class TestGetContext(FoundationTestCase):

@@ -12,6 +12,7 @@ from provide.foundation.file.operations import (
     FileEvent,
     FileEventMetadata,
     FileOperation,
+    OperationType,
     detect_atomic_save,
     extract_original_path,
     group_related_events,

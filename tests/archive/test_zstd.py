@@ -7,7 +7,7 @@ Run with: pytest tests/archive/test_zstd.py -v
 from __future__ import annotations
 
 import io
-from unittest.mock import patch
+from provide.testkit.mocking import patch
 
 from provide.testkit import FoundationTestCase
 import pytest

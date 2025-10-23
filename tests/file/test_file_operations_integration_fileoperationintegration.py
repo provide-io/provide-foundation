@@ -6,6 +6,7 @@ from collections.abc import Generator
 from pathlib import Path
 import tempfile
 import time
+from typing import Any
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -25,10 +26,55 @@ class FileEventCapture:
     def __init__(self) -> None:
         """Initialize the event capture handler."""
         self.events: list[FileEvent] = []
+        self._sequence = 0
 
     def clear_events(self) -> None:
         """Clear all captured events."""
         self.events.clear()
+        self._sequence = 0
+
+    def dispatch(self, event: Any) -> None:
+        """Handle watchdog file system events."""
+        from datetime import datetime
+        from provide.foundation.file.operations import FileEventMetadata
+
+        # Skip directory events for simplicity
+        if event.is_directory:
+            return
+
+        # Convert watchdog event to FileEvent
+        event_type = event.event_type  # created, modified, moved, deleted
+        src_path = Path(event.src_path)
+
+        # Try to get file size information
+        size_after = None
+        try:
+            if src_path.exists():
+                size_after = src_path.stat().st_size
+        except Exception:
+            pass  # File might not exist for delete events
+
+        # Create metadata with size information
+        metadata = FileEventMetadata(
+            timestamp=datetime.now(),
+            sequence_number=self._sequence,
+            size_after=size_after,
+        )
+        self._sequence += 1
+
+        # Handle move events specially
+        dest_path = None
+        if event_type == "moved":
+            dest_path = Path(event.dest_path)
+
+        # Create and store FileEvent
+        file_event = FileEvent(
+            path=src_path,
+            event_type=event_type,
+            metadata=metadata,
+            dest_path=dest_path,
+        )
+        self.events.append(file_event)
 
 
 @pytest.mark.serial

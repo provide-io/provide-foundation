@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import random
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 from provide.testkit import FoundationTestCase
 

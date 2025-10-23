@@ -8,11 +8,16 @@ from __future__ import annotations
 import sys
 
 from provide.foundation.logger import get_logger
+from provide.foundation.testmode.decorators import skip_in_test_mode
 
 """systemd integration utilities.
 
 Provides utilities for notifying systemd about service status, implementing
 watchdog functionality, and integrating with systemd's service management.
+
+Automatically disabled in test mode (via @skip_in_test_mode decorator) to
+prevent systemd notifications during testing, which would interfere with
+test isolation and aren't meaningful in test contexts.
 
 This module is Linux-specific and requires the optional 'sdnotify' package.
 Install with: pip install provide-foundation[platform-linux]
@@ -42,6 +47,7 @@ else:
     log.debug("systemd features only available on Linux", platform=sys.platform)
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_ready() -> bool:
     """Notify systemd that the service is ready.
 
@@ -49,8 +55,11 @@ def notify_ready() -> bool:
     ready to handle requests. For Type=notify services, systemd waits for this
     notification before considering the service started.
 
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
+
     Returns:
         True if notification sent successfully, False if sdnotify not available
+        or running in test mode
 
     Example:
         >>> from provide.foundation.platform import notify_ready
@@ -75,10 +84,13 @@ def notify_ready() -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_status(status: str) -> bool:
     """Send status text to systemd.
 
     The status will be visible in systemctl status output.
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Args:
         status: Status message to send to systemd
@@ -108,12 +120,15 @@ def notify_status(status: str) -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_watchdog() -> bool:
     """Send watchdog keepalive to systemd.
 
     If WatchdogSec is configured in the systemd service unit, the service must
     call this periodically to prevent systemd from considering it hung and
     restarting it.
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Returns:
         True if notification sent successfully, False if sdnotify not available
@@ -140,11 +155,14 @@ def notify_watchdog() -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_reloading() -> bool:
     """Notify systemd that the service is reloading configuration.
 
     Call this at the beginning of configuration reload, and call notify_ready()
     when reload is complete.
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Returns:
         True if notification sent successfully, False if sdnotify not available
@@ -171,10 +189,13 @@ def notify_reloading() -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_stopping() -> bool:
     """Notify systemd that the service is stopping.
 
     Call this at the beginning of graceful shutdown.
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Returns:
         True if notification sent successfully, False if sdnotify not available
@@ -201,12 +222,15 @@ def notify_stopping() -> bool:
         return False
 
 
+@skip_in_test_mode(return_value=False, reason="systemd notifications not meaningful in tests")
 def notify_error(errno: int, message: str | None = None) -> bool:
     """Notify systemd of an error condition.
 
     Args:
         errno: Error number (errno value)
         message: Optional error message
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator).
 
     Returns:
         True if notification sent successfully, False if sdnotify not available

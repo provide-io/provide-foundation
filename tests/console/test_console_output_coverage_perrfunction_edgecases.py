@@ -9,6 +9,8 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.console.output import (
+    _get_context,
+    _output_json,
     perr,
     pout,
 )
