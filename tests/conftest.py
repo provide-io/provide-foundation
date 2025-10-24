@@ -17,10 +17,10 @@ import logging as stdlib_logging
 import os
 import sys
 
+import provide.testkit  # noqa: F401 - Installs setproctitle blocker early
 import pytest
 
 # Register plugins for assertion rewriting at the root level
-# NOTE: setproctitle blocker is in src/sitecustomize.py (auto-loaded by Python)
 pytest_plugins = [
     "provide.testkit.hub.fixtures",
 ]
