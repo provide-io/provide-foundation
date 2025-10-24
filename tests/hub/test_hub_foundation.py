@@ -105,29 +105,26 @@ class TestFoundationManager(FoundationTestCase):
 
             # Verify the stored config has service_name=None (auto-init marker)
             assert self.manager._config is not None
-            print(f"DEBUG: After first init, service_name = {self.manager._config.service_name}")
-            print(f"DEBUG: _initialized = {self.manager._initialized}")
             assert self.manager._config.service_name is None
 
             # Provide explicit config without OTLP - should try lightweight update
             explicit_config = TelemetryConfig(service_name="explicit-service")
-            print(f"DEBUG: Explicit config service_name = {explicit_config.service_name}")
-            print(f"DEBUG: Explicit config otlp_endpoint = {getattr(explicit_config, 'otlp_endpoint', 'NONE')}")
 
-            with patch(
-                "provide.foundation.hub.initialization.get_initialization_coordinator"
-            ) as mock_coordinator_factory:
-                mock_coordinator = MagicMock()
-                # Mock update_config_if_default to return True (indicating successful lightweight update)
-                mock_coordinator.update_config_if_default.return_value = True
-                # Also mock initialize_foundation in case it's called
-                mock_coordinator.initialize_foundation.return_value = (explicit_config, MagicMock())
-                mock_coordinator_factory.return_value = mock_coordinator
+            # Mock the coordinator's update method
+            from provide.foundation.hub.initialization import get_initialization_coordinator
 
+            coordinator = get_initialization_coordinator()
+
+            with (
+                patch.object(coordinator, "update_config_if_default", return_value=True) as mock_update,
+                patch.object(
+                    coordinator, "initialize_foundation", return_value=(explicit_config, MagicMock())
+                ),
+            ):
                 self.manager.initialize_foundation(config=explicit_config)
 
                 # Should have attempted lightweight update
-                mock_coordinator.update_config_if_default.assert_called()
+                mock_update.assert_called_once()
         finally:
             # Restore environment variables
             if original_otel is not None:
