@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from provide.testkit.mocking import MagicMock, patch
-
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.hub.foundation import FoundationManager, get_foundation_logger
@@ -93,27 +92,48 @@ class TestFoundationManager(FoundationTestCase):
 
     def test_smart_initialization_lightweight_update(self) -> None:
         """Test smart initialization with lightweight config update."""
-        # Initialize with default config
-        auto_config = TelemetryConfig(service_name=None)  # Auto-init marker
-        self.manager.initialize_foundation(config=auto_config)
+        import os
 
-        # Provide explicit config without OTLP - should try lightweight update
-        explicit_config = TelemetryConfig(service_name="explicit-service")
+        # Clear service name env vars to ensure service_name stays None
+        original_otel = os.environ.pop("OTEL_SERVICE_NAME", None)
+        original_provide = os.environ.pop("PROVIDE_SERVICE_NAME", None)
 
-        with patch(
-            "provide.foundation.hub.initialization.get_initialization_coordinator"
-        ) as mock_coordinator_factory:
-            mock_coordinator = MagicMock()
-            # Mock update_config_if_default to return True (indicating successful lightweight update)
-            mock_coordinator.update_config_if_default.return_value = True
-            # Also mock initialize_foundation in case it's called
-            mock_coordinator.initialize_foundation.return_value = (explicit_config, MagicMock())
-            mock_coordinator_factory.return_value = mock_coordinator
+        try:
+            # Initialize with default config (service_name should be None)
+            auto_config = TelemetryConfig(service_name=None)  # Auto-init marker
+            self.manager.initialize_foundation(config=auto_config)
 
-            self.manager.initialize_foundation(config=explicit_config)
+            # Verify the stored config has service_name=None (auto-init marker)
+            assert self.manager._config is not None
+            print(f"DEBUG: After first init, service_name = {self.manager._config.service_name}")
+            print(f"DEBUG: _initialized = {self.manager._initialized}")
+            assert self.manager._config.service_name is None
 
-            # Should have attempted lightweight update
-            mock_coordinator.update_config_if_default.assert_called()
+            # Provide explicit config without OTLP - should try lightweight update
+            explicit_config = TelemetryConfig(service_name="explicit-service")
+            print(f"DEBUG: Explicit config service_name = {explicit_config.service_name}")
+            print(f"DEBUG: Explicit config otlp_endpoint = {getattr(explicit_config, 'otlp_endpoint', 'NONE')}")
+
+            with patch(
+                "provide.foundation.hub.initialization.get_initialization_coordinator"
+            ) as mock_coordinator_factory:
+                mock_coordinator = MagicMock()
+                # Mock update_config_if_default to return True (indicating successful lightweight update)
+                mock_coordinator.update_config_if_default.return_value = True
+                # Also mock initialize_foundation in case it's called
+                mock_coordinator.initialize_foundation.return_value = (explicit_config, MagicMock())
+                mock_coordinator_factory.return_value = mock_coordinator
+
+                self.manager.initialize_foundation(config=explicit_config)
+
+                # Should have attempted lightweight update
+                mock_coordinator.update_config_if_default.assert_called()
+        finally:
+            # Restore environment variables
+            if original_otel is not None:
+                os.environ["OTEL_SERVICE_NAME"] = original_otel
+            if original_provide is not None:
+                os.environ["PROVIDE_SERVICE_NAME"] = original_provide
 
     def test_get_foundation_logger(self) -> None:
         """Test getting Foundation logger."""
