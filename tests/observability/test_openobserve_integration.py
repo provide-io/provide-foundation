@@ -145,7 +145,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
         return "\n".join(logs) + "\n"
 
     @pytest.mark.slow
-    def test_bulk_ingestion_and_query(self) -> None:
+    async def test_bulk_ingestion_and_query(self) -> None:
         """Test ingesting 1000 logs and querying them."""
         # Generate logs
         print("\n📝 Generating 1000 log entries...")
@@ -193,7 +193,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
         client = OpenObserveClient.from_config()
 
         # Test 1: Count all logs
-        response = search_logs(
+        response = await search_logs(
             sql=f"SELECT COUNT(*) as count FROM {self.test_stream}",
             start_time="-10m",
             client=client,
@@ -205,7 +205,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
             assert count >= 900, f"Expected at least 900 logs, got {count}"
 
         # Test 2: Get error logs
-        response = search_logs(
+        response = await search_logs(
             sql=f"SELECT * FROM {self.test_stream} WHERE level = 'ERROR' LIMIT 10",
             start_time="-10m",
             client=client,
@@ -213,7 +213,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
         print(f"✅ Found {len(response.hits)} error logs")
 
         # Test 3: Aggregate by level
-        response = search_logs(
+        response = await search_logs(
             sql=f"SELECT level, COUNT(*) as count FROM {self.test_stream} GROUP BY level",
             start_time="-10m",
             client=client,
@@ -226,7 +226,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
             print(f"   - {level}: {count}")
 
         # Test 4: Query by trace ID
-        response = search_logs(
+        response = await search_logs(
             sql=f"SELECT trace_id, COUNT(*) as count FROM {self.test_stream} GROUP BY trace_id LIMIT 5",
             start_time="-10m",
             client=client,
@@ -235,7 +235,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
         if response.hits:
             sample_trace = response.hits[0].get("trace_id")
             if sample_trace:
-                trace_response = search_logs(
+                trace_response = await search_logs(
                     sql=f"SELECT * FROM {self.test_stream} WHERE trace_id = '{sample_trace}'",
                     start_time="-10m",
                     client=client,
@@ -245,7 +245,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
                 )
 
         # Test 5: Performance metrics
-        response = search_logs(
+        response = await search_logs(
             sql=f"SELECT AVG(duration_ms) as avg_duration, MAX(duration_ms) as max_duration, MIN(duration_ms) as min_duration FROM {self.test_stream}",
             start_time="-10m",
             client=client,
