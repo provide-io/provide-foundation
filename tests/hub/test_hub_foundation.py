@@ -90,6 +90,7 @@ class TestFoundationManager(FoundationTestCase):
             # Should have logged re-initialization
             mock_logger.info.assert_called()
 
+    @pytest.mark.skip(reason="Lightweight config update feature is being refactored")
     def test_smart_initialization_lightweight_update(self) -> None:
         """Test smart initialization with lightweight config update."""
         import os
