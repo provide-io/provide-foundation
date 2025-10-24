@@ -104,7 +104,10 @@ class TestFoundationManager(FoundationTestCase):
             "provide.foundation.hub.initialization.get_initialization_coordinator"
         ) as mock_coordinator_factory:
             mock_coordinator = MagicMock()
+            # Mock update_config_if_default to return True (indicating successful lightweight update)
             mock_coordinator.update_config_if_default.return_value = True
+            # Also mock initialize_foundation in case it's called
+            mock_coordinator.initialize_foundation.return_value = (explicit_config, MagicMock())
             mock_coordinator_factory.return_value = mock_coordinator
 
             self.manager.initialize_foundation(config=explicit_config)
