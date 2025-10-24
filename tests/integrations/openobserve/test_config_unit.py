@@ -7,9 +7,9 @@ Run with: pytest tests/integrations/openobserve/test_config_unit.py -v
 from __future__ import annotations
 
 import os
-from provide.testkit.mocking import MagicMock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 from provide.foundation.integrations.openobserve.config import OpenObserveConfig
 
@@ -67,9 +67,18 @@ class TestOpenObserveConfigInitialization(FoundationTestCase):
         env_vars = {
             "OPENOBSERVE_URL": "http://localhost:5080",
             "OPENOBSERVE_USER": "user@example.com",
+            # Explicitly unset the other env vars
+            "OPENOBSERVE_ORG": "",
+            "OPENOBSERVE_PASSWORD": "",
+            "OPENOBSERVE_STREAM": "",
         }
 
+        # Remove empty string values after patching so they're truly absent
         with patch.dict(os.environ, env_vars, clear=False):
+            # Remove the empty entries to simulate missing vars
+            for key in ["OPENOBSERVE_ORG", "OPENOBSERVE_PASSWORD", "OPENOBSERVE_STREAM"]:
+                os.environ.pop(key, None)
+
             config = OpenObserveConfig.from_env()
 
             assert config.url == "http://localhost:5080"
