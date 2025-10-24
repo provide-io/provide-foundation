@@ -323,7 +323,7 @@ def main() -> None:
 
     # Example 3: Manual span management
     logger.info("\n=== Example 3: Manual Span Management ===")
-    manual_span = Span("manual_operation")
+    manual_span = Span(name="manual_operation")
     manual_span.set_tag("method", "manual")
 
     # Do some work

@@ -16,7 +16,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 
 from provide.foundation import (  # noqa: E402
     logger,
-    setup_telemetry,
+    get_hub,
 )
 from provide.foundation.console.output import pout  # noqa: E402
 
@@ -48,8 +48,8 @@ def example_8_environment_configuration() -> None:
 
     try:
         # Load configuration from environment
-        # `setup_telemetry()` called without args will use `TelemetryConfig.from_env()`
-        setup_telemetry()
+        # `get_hub().initialize_foundation()` called without args will use `TelemetryConfig.from_env()`
+        get_hub().initialize_foundation()
 
         logger.info(
             "Configuration loaded from environment variables",

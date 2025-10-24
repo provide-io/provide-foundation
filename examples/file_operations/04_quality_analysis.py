@@ -36,7 +36,7 @@ def main():
         analyzer.add_scenario(test_case)
         print(f"  ✓ Added: {test_case.name} ({len(test_case.events)} events)")
 
-    print(f"\nTotal test cases: {len(analyzer.test_cases)}")
+    print(f"\nTotal test cases: {len(analyzer.scenarios)}")
 
     # Run comprehensive analysis
     print("\n🧪 Running quality analysis...")
@@ -100,7 +100,7 @@ def main():
     from datetime import datetime, timedelta
 
     from provide.foundation.file.operations import FileEvent, FileEventMetadata
-    from provide.foundation.file.quality import OperationTestCase
+    from provide.foundation.file.quality import OperationScenario
 
     # Create a custom test case for a specific scenario
     base_time = datetime.now()
@@ -118,7 +118,7 @@ def main():
         ),
     ]
 
-    custom_test_case = OperationTestCase(
+    custom_test_case = OperationScenario(
         name="custom_atomic_save",
         events=custom_events,
         expected_operations=[{"type": "atomic_save", "confidence_min": 0.85}],

@@ -15,7 +15,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 
 from typing import Never  # noqa: E402
 
-from provide.foundation import logger, setup_telemetry  # noqa: E402
+from provide.foundation import logger, get_hub  # noqa: E402
 from provide.foundation.console.output import pout  # noqa: E402
 from provide.foundation.logger.config import (  # noqa: E402
     LoggingConfig,
@@ -34,7 +34,7 @@ def example_5_exception_handling() -> None:
     pout(" Demonstrates: Using logger.exception() to log errors with tracebacks.")
     pout("=" * 60)
 
-    setup_telemetry(
+    get_hub().initialize_foundation(
         TelemetryConfig(
             logging=LoggingConfig(default_level="INFO"),
         ),
