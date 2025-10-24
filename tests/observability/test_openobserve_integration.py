@@ -28,12 +28,25 @@ class TestOpenObserveIntegration(FoundationTestCase):
     @classmethod
     def setup_class(cls) -> None:
         """Set up test environment."""
-        cls.base_url = os.getenv("OPENOBSERVE_URL", "http://localhost:5080")
+        # Get URL and strip /api/{org} suffix if present (for compatibility)
+        base_url = os.getenv("OPENOBSERVE_URL", "http://localhost:5080")
+        # Remove /api/{org} suffix if present
+        if "/api/" in base_url:
+            base_url = base_url.split("/api/")[0]
+        cls.base_url = base_url
         cls.org = os.getenv("OPENOBSERVE_ORG", "default")
-        cls.auth_header = os.getenv(
-            "OPENOBSERVE_AUTH_HEADER",
-            "Basic dGltQHByb3ZpZGUuaW86alBKWjA5cnE0YXVXRTNYNg==",
-        )
+
+        # Use credentials from environment variables
+        cls.user = os.getenv("OPENOBSERVE_USER", "someuserexample@provide.test")
+        cls.password = os.getenv("OPENOBSERVE_PASSWORD", "password")
+
+        # Create Basic Auth header from credentials
+        import base64
+
+        credentials = f"{cls.user}:{cls.password}"
+        encoded_credentials = base64.b64encode(credentials.encode()).decode()
+        cls.auth_header = f"Basic {encoded_credentials}"
+
         cls.test_stream = f"test_stream_{int(time.time())}"
 
     def generate_bulk_logs(self, count: int = 1000) -> str:
