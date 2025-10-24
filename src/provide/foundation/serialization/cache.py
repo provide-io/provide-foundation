@@ -10,8 +10,7 @@ import threading
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from provide.foundation.serialization.config import SerializationCacheConfig
-    from provide.foundation.utils.caching import LRUCache
+    pass
 
 """Caching utilities for serialization operations.
 
