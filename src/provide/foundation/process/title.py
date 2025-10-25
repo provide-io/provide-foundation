@@ -123,10 +123,56 @@ def has_setproctitle() -> bool:
     return _HAS_SETPROCTITLE
 
 
+@skip_in_test_mode(return_value=True, reason="Process title changes interfere with test isolation")
+def set_process_title_from_argv() -> bool:
+    """Set process title from argv, preserving the invoked command name.
+
+    Extracts the command name from sys.argv[0] (including symlinks) and
+    formats it with the remaining arguments to create a clean process title.
+
+    This handles symlinks correctly - if you have a symlink 'whatever' pointing
+    to 'pyvider', and run 'whatever run --config foo.yml', the process title
+    will be 'whatever run --config foo.yml'.
+
+    Automatically disabled in test mode (via @skip_in_test_mode decorator) to
+    prevent interference with test isolation and parallel test execution.
+
+    Returns:
+        True if the title was set successfully (or skipped in test mode),
+        False if setproctitle is not available
+
+    Example:
+        >>> # If invoked as: pyvider run --config foo.yml
+        >>> from provide.foundation.process import set_process_title_from_argv
+        >>> set_process_title_from_argv()
+        True
+        >>> # Process will show as "pyvider run --config foo.yml" in ps/top
+
+        >>> # If invoked via symlink: whatever run
+        >>> # (where whatever -> pyvider)
+        >>> set_process_title_from_argv()
+        True
+        >>> # Process will show as "whatever run" in ps/top
+
+    """
+    import sys
+    from pathlib import Path
+
+    # Extract command name from argv[0] - preserves symlink names
+    cmd_name = Path(sys.argv[0]).name
+    args = sys.argv[1:]
+
+    # Format title as "cmd arg1 arg2..."
+    title = f"{cmd_name} {' '.join(args)}" if args else cmd_name
+
+    return set_process_title(title)
+
+
 __all__ = [
     "get_process_title",
     "has_setproctitle",
     "set_process_title",
+    "set_process_title_from_argv",
 ]
 
 
