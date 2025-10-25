@@ -303,10 +303,10 @@ class TestSearchByService(FoundationTestCase):
         )
 
         assert isinstance(response.hits, list)
-        # All results should have matching service (if any results exist)
+        # All results should have matching service_name (if any results exist)
         for hit in response.hits:
-            if "service" in hit:
-                assert hit["service"] == service_name
+            if "service_name" in hit:
+                assert hit["service_name"] == service_name
 
 
 @pytest.mark.integration
