@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
+
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub.foundation import FoundationManager, get_foundation_logger
@@ -90,48 +91,26 @@ class TestFoundationManager(FoundationTestCase):
             # Should have logged re-initialization
             mock_logger.info.assert_called()
 
-    @pytest.mark.skip(reason="Lightweight config update feature is being refactored")
     def test_smart_initialization_lightweight_update(self) -> None:
         """Test smart initialization with lightweight config update."""
-        import os
+        # Initialize with default config
+        auto_config = TelemetryConfig(service_name=None)  # Auto-init marker
+        self.manager.initialize_foundation(config=auto_config)
 
-        # Clear service name env vars to ensure service_name stays None
-        original_otel = os.environ.pop("OTEL_SERVICE_NAME", None)
-        original_provide = os.environ.pop("PROVIDE_SERVICE_NAME", None)
+        # Provide explicit config without OTLP - should try lightweight update
+        explicit_config = TelemetryConfig(service_name="explicit-service")
 
-        try:
-            # Initialize with default config (service_name should be None)
-            auto_config = TelemetryConfig(service_name=None)  # Auto-init marker
-            self.manager.initialize_foundation(config=auto_config)
+        with patch(
+            "provide.foundation.hub.initialization.get_initialization_coordinator"
+        ) as mock_coordinator_factory:
+            mock_coordinator = MagicMock()
+            mock_coordinator.update_config_if_default.return_value = True
+            mock_coordinator_factory.return_value = mock_coordinator
 
-            # Verify the stored config has service_name=None (auto-init marker)
-            assert self.manager._config is not None
-            assert self.manager._config.service_name is None
+            self.manager.initialize_foundation(config=explicit_config)
 
-            # Provide explicit config without OTLP - should try lightweight update
-            explicit_config = TelemetryConfig(service_name="explicit-service")
-
-            # Mock the coordinator's update method
-            from provide.foundation.hub.initialization import get_initialization_coordinator
-
-            coordinator = get_initialization_coordinator()
-
-            with (
-                patch.object(coordinator, "update_config_if_default", return_value=True) as mock_update,
-                patch.object(
-                    coordinator, "initialize_foundation", return_value=(explicit_config, MagicMock())
-                ),
-            ):
-                self.manager.initialize_foundation(config=explicit_config)
-
-                # Should have attempted lightweight update
-                mock_update.assert_called_once()
-        finally:
-            # Restore environment variables
-            if original_otel is not None:
-                os.environ["OTEL_SERVICE_NAME"] = original_otel
-            if original_provide is not None:
-                os.environ["PROVIDE_SERVICE_NAME"] = original_provide
+            # Should have attempted lightweight update
+            mock_coordinator.update_config_if_default.assert_called()
 
     def test_get_foundation_logger(self) -> None:
         """Test getting Foundation logger."""

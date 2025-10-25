@@ -14,7 +14,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 
 # Already have path setup above
 
-from provide.foundation import logger, pout, setup_telemetry  # noqa: E402
+from provide.foundation import logger, pout, get_hub  # noqa: E402
 from provide.foundation.logger.config import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
@@ -33,7 +33,7 @@ def example_3_named_loggers() -> None:
     pout("=" * 60)
 
     # Re-initialize with INFO level for better visibility
-    setup_telemetry(
+    get_hub().initialize_foundation(
         TelemetryConfig(
             logging=LoggingConfig(default_level="INFO"),
         ),

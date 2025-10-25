@@ -19,7 +19,7 @@ from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
     logger,
-    setup_telemetry,
+    get_hub,
 )
 from provide.foundation.console.output import pout  # noqa: E402
 
@@ -51,7 +51,7 @@ def example_10_production_patterns() -> None:
             das_emoji_prefix_enabled=False,  # DAS might be preferred as raw keys in JSON
         ),
     )
-    setup_telemetry(prod_config)
+    get_hub().initialize_foundation(prod_config)
 
     # Structured logging for monitoring and alerting
     logger.info(

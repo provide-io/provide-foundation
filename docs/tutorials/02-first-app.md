@@ -94,7 +94,7 @@ if __name__ == "__main__":
     hub = get_hub()
 
     # 2. The Hub discovers our @register_command functions and builds a CLI
-    cli = hub.create_cli(name="task-manager", description="A simple task manager.")
+    cli = hub.create_cli(name="task-manager", help="A simple task manager.")
 
     # 3. Run the CLI
     logger.info("cli_starting", emoji="🚀")

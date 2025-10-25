@@ -29,7 +29,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from provide.foundation import logger, pout, setup_telemetry  # noqa: E402
+from provide.foundation import logger, pout, get_hub  # noqa: E402
 from provide.foundation.errors import error_boundary  # noqa: E402
 from provide.foundation.logger.config import (  # noqa: E402
     LoggingConfig,
@@ -268,7 +268,7 @@ async def basic_task_queue_example() -> None:
     pout("=" * 60)
 
     # Setup telemetry with JSON formatting for structured task logs
-    setup_telemetry(
+    get_hub().initialize_foundation(
         TelemetryConfig(
             service_name="task-queue-demo",
             logging=LoggingConfig(
