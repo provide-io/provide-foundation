@@ -160,6 +160,7 @@ nav:
     - Production:
       - Deployment Patterns: how-to-guides/production/deployment.md
       - Monitoring & Observability: how-to-guides/production/monitoring.md
+    - Troubleshooting: how-to-guides/troubleshooting.md
 
   - Concepts:
     - How Foundation Works: explanation/architecture.md
