@@ -42,6 +42,8 @@ from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 from provide.foundation.utils.environment import get_bool, get_int, get_str
 from provide.foundation.file import atomic_write
 from provide.foundation.serialization import provide_dumps, provide_loads
+from provide.foundation.eventsets.display import show_event_matrix
+from provide.foundation import shutdown_foundation
 ```
 
 | Function | Purpose | Documentation |
@@ -49,6 +51,23 @@ from provide.foundation.serialization import provide_dumps, provide_loads
 | `get_bool()`, `get_int()`, `get_str()` | Environment variable helpers | [environment docs](provide/foundation/utils/environment/index.md) |
 | `atomic_write()` | Safe atomic file writes | [file docs](provide/foundation/file/index.md) |
 | `provide_dumps()`, `provide_loads()` | JSON serialization | [serialization docs](provide/foundation/serialization/index.md) |
+| `show_event_matrix()` | Display event set emoji matrix | [eventsets docs](provide/foundation/eventsets/index.md) |
+| `shutdown_foundation()` | Graceful shutdown and cleanup | [setup docs](provide/foundation/setup/index.md) |
+
+### Advanced Features
+
+```python
+from provide.foundation.hub import injectable
+from provide.foundation.hub.container import Container, create_container
+from provide.foundation.eventsets.types import EventSet, EventMapping
+```
+
+| Feature | Purpose | Documentation |
+|---------|---------|---------------|
+| `@injectable` | Mark classes for dependency injection | [hub docs](provide/foundation/hub/index.md) |
+| `Container` | Dependency injection container | [container docs](provide/foundation/hub/container/index.md) |
+| `EventSet` | Define custom event sets with emojis | [eventsets docs](provide/foundation/eventsets/index.md) |
+| `EventMapping` | Map events to emoji representations | [eventsets docs](provide/foundation/eventsets/index.md) |
 
 ---
 
