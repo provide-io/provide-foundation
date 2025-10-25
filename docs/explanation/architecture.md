@@ -425,6 +425,83 @@ This function:
 - In web framework shutdown hooks (FastAPI `@app.on_event("shutdown")`)
 - Between test runs (handled automatically by `provide-testkit`)
 
+### Shutdown Examples for Web Frameworks
+
+#### FastAPI
+```python
+from fastapi import FastAPI
+from provide.foundation import shutdown_foundation
+
+app = FastAPI()
+
+@app.on_event("shutdown")
+async def shutdown():
+    """Gracefully shutdown Foundation on app termination."""
+    shutdown_foundation()
+```
+
+#### Flask
+```python
+from flask import Flask
+from provide.foundation import shutdown_foundation
+import atexit
+
+app = Flask(__name__)
+
+# Register shutdown hook
+atexit.register(shutdown_foundation)
+
+# Or use Flask's teardown handler
+@app.teardown_appcontext
+def teardown(exception=None):
+    """Shutdown Foundation on app context teardown."""
+    if app.debug:
+        # Only shutdown in debug mode for hot reload
+        shutdown_foundation()
+```
+
+#### Django
+```python
+# In your Django app's apps.py
+
+from django.apps import AppConfig
+from provide.foundation import shutdown_foundation
+
+class MyAppConfig(AppConfig):
+    name = "myapp"
+
+    def ready(self):
+        """Initialize Foundation when Django starts."""
+        from provide.foundation import get_hub
+        hub = get_hub()
+        hub.initialize_foundation()
+
+    def __del__(self):
+        """Shutdown Foundation when Django stops."""
+        shutdown_foundation()
+```
+
+#### Signal Handlers (for CLI tools)
+```python
+import signal
+import sys
+from provide.foundation import shutdown_foundation
+
+def signal_handler(sig, frame):
+    """Handle SIGINT and SIGTERM gracefully."""
+    print("\nShutting down gracefully...")
+    shutdown_foundation()
+    sys.exit(0)
+
+# Register signal handlers
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+
+# Your application code
+if __name__ == "__main__":
+    main()
+```
+
 ## Extension Points
 
 ### Custom Processors
@@ -478,6 +555,141 @@ from provide.foundation.hub import register_command
 def plugin_action():
     """Action from plugin."""
     pass
+```
+
+### Event Sets and Emoji Mapping
+
+Foundation provides an **Event Set** system for domain-specific emoji mapping and log enrichment. Event sets automatically add visual markers and metadata to logs based on event fields.
+
+#### Built-in Event Sets
+
+Foundation includes pre-configured event sets for common domains:
+
+- **`http`** - HTTP request/response operations
+  - Maps HTTP methods (GET→📥, POST→📤, DELETE→🗑️)
+  - Maps status codes (2xx→✅, 4xx→⚠️, 5xx→🔥)
+  - Adds metadata for success/error classification
+
+- **`database`** - Database operations
+  - Maps operations (SELECT→📖, INSERT→➕, UPDATE→✏️, DELETE→🗑️)
+  - Tracks query performance
+  - Connection pool events
+
+- **`llm`** - Large Language Model operations
+  - Maps LLM providers (OpenAI→🤖, Anthropic→🧠)
+  - Token usage tracking
+  - Model performance metrics
+
+- **`task_queue`** - Background job processing
+  - Task lifecycle events (queued→📥, running→⚙️, completed→✅)
+  - Worker status tracking
+  - Retry and failure handling
+
+- **`das`** - Domain-Action-Status pattern
+  - Generic domain/action/status enrichment
+  - Fallback for custom event patterns
+
+#### Using Event Sets
+
+Event sets are automatically discovered and registered:
+
+```python
+from provide.foundation import logger
+
+# HTTP event set automatically enriches HTTP-related logs
+logger.info(
+    "api_request",
+    http_method="post",           # Adds 📤 emoji
+    http_status_class="2xx",      # Adds ✅ emoji
+    endpoint="/api/users"
+)
+# Output: 📤 ✅ api_request | http_method=post | http_status_class=2xx | endpoint=/api/users
+
+# Database event set
+logger.info(
+    "query_executed",
+    db_operation="select",        # Adds 📖 emoji
+    table="users",
+    duration_ms=45
+)
+# Output: 📖 query_executed | db_operation=select | table=users | duration_ms=45
+```
+
+#### Creating Custom Event Sets
+
+Define custom event sets for your domain:
+
+```python
+from provide.foundation.eventsets.types import EventMapping, EventSet
+
+# Define your custom event set
+PAYMENT_EVENT_SET = EventSet(
+    name="payment",
+    description="Payment processing events",
+    mappings=[
+        EventMapping(
+            name="payment_method",
+            visual_markers={
+                "credit_card": "💳",
+                "paypal": "💰",
+                "bank_transfer": "🏦",
+                "cryptocurrency": "₿",
+                "default": "💵"
+            },
+            default_key="default"
+        ),
+        EventMapping(
+            name="payment_status",
+            visual_markers={
+                "pending": "⏳",
+                "processing": "⚙️",
+                "completed": "✅",
+                "failed": "❌",
+                "refunded": "↩️"
+            },
+            metadata_fields={
+                "completed": {"payment.success": True},
+                "failed": {"payment.error": True}
+            }
+        )
+    ]
+)
+
+# Register event set
+from provide.foundation.eventsets import get_event_set_registry
+
+registry = get_event_set_registry()
+registry.register("payment", PAYMENT_EVENT_SET)
+
+# Use in logging
+logger.info(
+    "payment_processed",
+    payment_method="credit_card",   # Adds 💳
+    payment_status="completed",     # Adds ✅ and metadata
+    amount=99.99,
+    currency="USD"
+)
+```
+
+#### When to Use Event Sets vs. Manual Emojis
+
+**Use Event Sets when:**
+- You have a domain with consistent event patterns
+- You want automatic enrichment across many log statements
+- You need metadata injection based on field values
+- You're building reusable logging patterns
+
+**Use Manual Emojis when:**
+- You have one-off log statements
+- The emoji doesn't fit a pattern
+- You want explicit control
+
+```python
+# Manual emoji (simple, one-off)
+logger.info("startup_complete", emoji="🚀")
+
+# Event set (automatic, pattern-based)
+logger.info("http_request", http_method="get")  # Auto-adds 📥
 ```
 
 ## Threading Model & Concurrency
