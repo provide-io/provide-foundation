@@ -94,8 +94,14 @@ class Hub(CoreHub):
         Thread-safe and idempotent, unless force=True.
 
         Args:
-            config: Optional TelemetryConfig (defaults to from_env)
+            config: Optional FoundationConfig or TelemetryConfig (defaults to FoundationConfig.from_env())
             force: If True, force re-initialization even if already initialized
+
+        Example:
+            >>> from provide.foundation.config import FoundationConfig
+            >>> hub = get_hub()
+            >>> config = FoundationConfig.from_env()
+            >>> hub.initialize_foundation(config=config)
 
         """
         self._foundation.initialize_foundation(config, force)
