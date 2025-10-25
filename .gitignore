@@ -398,3 +398,6 @@ site
 .claude
 ai_studio_code.sh
 .documentation
+
+# Synced theme files (source: provide-foundry/shared-theme/)
+docs/.shared-theme/
