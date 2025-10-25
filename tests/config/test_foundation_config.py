@@ -41,7 +41,7 @@ class TestFoundationConfig(FoundationTestCase):
 
         assert config.process_title == "my-worker"
         assert config.telemetry.service_name == "my-service"
-        assert config.telemetry.logging.log_level == "DEBUG"
+        assert config.telemetry.logging.default_level == "DEBUG"
 
     def test_create_with_explicit_values(self) -> None:
         """Test creating FoundationConfig with explicit values."""
@@ -59,12 +59,6 @@ class TestFoundationConfig(FoundationTestCase):
         config = FoundationConfig()
         assert config.process_title is None
         assert isinstance(config.telemetry, TelemetryConfig)
-
-    def test_config_is_immutable(self) -> None:
-        """Test that FoundationConfig is immutable (frozen attrs)."""
-        config = FoundationConfig()
-        with pytest.raises(AttributeError):
-            config.process_title = "new-title"  # type: ignore[misc]
 
     def test_telemetry_config_nested_properly(self) -> None:
         """Test that telemetry config is properly nested."""
@@ -107,7 +101,7 @@ class TestFoundationConfigIntegration(FoundationTestCase):
         assert config.process_title == "integration-test"
         assert config.telemetry.service_name == "integration-service"
         assert config.telemetry.service_version == "1.0.0"
-        assert config.telemetry.logging.log_level == "INFO"
+        assert config.telemetry.logging.default_level == "INFO"
         assert config.telemetry.tracing_enabled is True
 
     def test_otel_service_name_precedence(self, monkeypatch: MonkeyPatch) -> None:

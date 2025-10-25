@@ -26,7 +26,7 @@ class TestProcessTitleInitialization(FoundationTestCase):
             process_title="test-app",
         )
 
-        with patch("provide.foundation.hub.initialization.set_process_title") as mock_set_title:
+        with patch("provide.foundation.process.title.set_process_title") as mock_set_title:
             coordinator.initialize_foundation(registry, config)
 
             # Verify process title was set
@@ -42,7 +42,7 @@ class TestProcessTitleInitialization(FoundationTestCase):
             process_title=None,
         )
 
-        with patch("provide.foundation.hub.initialization.set_process_title") as mock_set_title:
+        with patch("provide.foundation.process.title.set_process_title") as mock_set_title:
             coordinator.initialize_foundation(registry, config)
 
             # Verify process title was NOT set (None value)
@@ -56,7 +56,7 @@ class TestProcessTitleInitialization(FoundationTestCase):
         # Pass TelemetryConfig directly (backward compatibility)
         telemetry_config = TelemetryConfig(service_name="test-service")
 
-        with patch("provide.foundation.hub.initialization.set_process_title") as mock_set_title:
+        with patch("provide.foundation.process.title.set_process_title") as mock_set_title:
             actual_config, _ = coordinator.initialize_foundation(registry, telemetry_config)
 
             # Verify it was wrapped in FoundationConfig
@@ -75,7 +75,7 @@ class TestProcessTitleInitialization(FoundationTestCase):
         monkeypatch.setenv("PROVIDE_PROCESS_TITLE", "env-app")
         monkeypatch.setenv("PROVIDE_SERVICE_NAME", "env-service")
 
-        with patch("provide.foundation.hub.initialization.set_process_title") as mock_set_title:
+        with patch("provide.foundation.process.title.set_process_title") as mock_set_title:
             config, _ = coordinator.initialize_foundation(registry, None)
 
             # Verify config loaded from environment
@@ -98,7 +98,7 @@ class TestProcessTitleInitialization(FoundationTestCase):
 
         # Mock set_process_title to raise an exception
         with patch(
-            "provide.foundation.hub.initialization.set_process_title",
+            "provide.foundation.process.title.set_process_title",
             side_effect=RuntimeError("Failed to set title"),
         ):
             # Should not raise - exception should be suppressed
@@ -126,7 +126,7 @@ class TestProcessTitleInitialization(FoundationTestCase):
 
         telemetry_config = TelemetryConfig(service_name="test")
 
-        with patch("provide.foundation.hub.initialization.set_process_title") as mock_set_title:
+        with patch("provide.foundation.process.title.set_process_title") as mock_set_title:
             # Passing TelemetryConfig directly should not set process title
             coordinator._setup_process_title(telemetry_config)
 
@@ -216,7 +216,7 @@ class TestProcessTitleIntegration(FoundationTestCase):
         monkeypatch.setenv("PROVIDE_SERVICE_NAME", "integration-service")
         monkeypatch.setenv("PROVIDE_LOG_LEVEL", "DEBUG")
 
-        with patch("provide.foundation.hub.initialization.set_process_title") as mock_set_title:
+        with patch("provide.foundation.process.title.set_process_title") as mock_set_title:
             config, logger = coordinator.initialize_foundation(registry)
 
             # Verify config
@@ -243,7 +243,7 @@ class TestProcessTitleIntegration(FoundationTestCase):
             process_title="app1",
         )
 
-        with patch("provide.foundation.hub.initialization.set_process_title") as mock_set_title:
+        with patch("provide.foundation.process.title.set_process_title") as mock_set_title:
             coordinator.initialize_foundation(registry, config1)
             assert mock_set_title.call_count == 1
             mock_set_title.assert_called_with("app1")
