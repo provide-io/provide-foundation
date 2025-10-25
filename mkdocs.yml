@@ -118,7 +118,6 @@ nav:
   - Overview:
     - Features: information/features.md
     - Use Cases: information/use-cases.md
-    - System Overview: information/overview.md
     - What's New: information/changelog.md
 
   - Getting Started:

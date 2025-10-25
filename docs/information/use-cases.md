@@ -240,5 +240,5 @@ Foundation provides logging, CLI, configuration. It does NOT provide:
 
 **Next Steps:**
 - Review [Features](features.md) for complete capabilities
-- Check [System Overview](overview.md) for design decisions
+- Check [Architecture](../explanation/architecture.md) for design decisions
 - Start building with [Quick Start](../getting-started/quick-start.md)
