@@ -21,7 +21,8 @@ pip install provide-foundation
 This installs the base package with essential dependencies:
 - `structlog` - Structured logging foundation
 - `attrs` - Data class utilities
-- `python-dotenv` - Environment variable support
+- `aiofiles` - Async file I/O operations
+- `tomli_w` - TOML file writing
 
 ### Using uv (Recommended for Development)
 
@@ -82,6 +83,38 @@ pip install "provide-foundation[opentelemetry]"
 **Adds:** OpenTelemetry SDK for distributed tracing
 
 **Use when:** Building microservices with distributed tracing needs
+
+#### Compression
+```bash
+pip install "provide-foundation[compression]"
+```
+**Adds:** `zstandard` for high-performance compression
+
+**Use when:** Need fast compression for archives and data transfer
+
+#### Platform Utilities
+```bash
+pip install "provide-foundation[platform]"
+```
+**Adds:** `psutil`, `py-cpuinfo` for system information
+
+**Use when:** Need OS/hardware detection and system monitoring
+
+#### Process Utilities
+```bash
+pip install "provide-foundation[process]"
+```
+**Adds:** `psutil`, `setproctitle` for process control
+
+**Use when:** Need process management and lifecycle control
+
+#### Extended Utilities
+```bash
+pip install "provide-foundation[extended]"
+```
+**Adds:** Combination of platform and process utilities
+
+**Use when:** Need comprehensive system-level utilities
 
 ### Combining Extras
 
@@ -155,18 +188,24 @@ pytest
 
 ### Core Dependencies (Always Installed)
 
-- **structlog** (^24.4.0) - Structured logging engine
-- **attrs** (^24.2.0) - Data class utilities
-- **python-dotenv** (^1.0.1) - Environment variable loading
+- **aiofiles** (>=23.2.1) - Async file I/O operations
+- **attrs** (>=23.1.0) - Data class utilities
+- **structlog** (>=25.3.0) - Structured logging engine
+- **tomli_w** (>=1.0.0) - TOML file writing
 
 ### Optional Dependencies
 
 | Extra | Key Dependencies | Purpose |
 |-------|-----------------|---------|
-| `cli` | click ^8.1.7 | CLI framework |
-| `crypto` | cryptography ^44.0.0 | Cryptographic operations |
-| `transport` | httpx ^0.28.1, respx ^0.22.0 | HTTP client |
-| `opentelemetry` | opentelemetry-sdk ^1.29.0 | Distributed tracing |
+| `cli` | click >=8.1.7 | CLI framework |
+| `compression` | zstandard >=0.22.0 | High-performance compression |
+| `crypto` | cryptography >=45.0.7 | Cryptographic operations |
+| `transport` | httpx >=0.27.0 | HTTP client |
+| `opentelemetry` | opentelemetry-sdk >=1.22.0 | Distributed tracing |
+| `platform` | psutil, py-cpuinfo | System/OS info utilities |
+| `process` | psutil, setproctitle | Process control and lifecycle |
+| `extended` | (combines platform + process) | Extended system utilities |
+| `all` | (all extras above) | Complete feature set |
 
 ## Platform-Specific Notes
 

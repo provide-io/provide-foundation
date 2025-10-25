@@ -121,7 +121,24 @@ def process_file(filename: str):
 
 ## 6. Configuration (Optional)
 
-Foundation works with zero configuration, but you can customize it:
+Foundation works with zero configuration, but you can customize it when needed.
+
+### When to Initialize Explicitly
+
+**Auto-initialization (default) - Use for:**
+- ✅ Simple scripts and utilities
+- ✅ Development and experimentation
+- ✅ When default configuration is sufficient
+- ✅ Quick prototypes
+
+**Explicit initialization - Use for:**
+- ✅ Production applications
+- ✅ Custom configuration requirements
+- ✅ Integration with web frameworks (FastAPI, Flask, Django)
+- ✅ Multiple services with different configurations
+- ✅ When you need control over service name, log format, or telemetry
+
+### Explicit Configuration Example
 
 ```python
 from provide.foundation import get_hub

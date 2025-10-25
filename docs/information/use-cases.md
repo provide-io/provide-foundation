@@ -23,7 +23,7 @@ Perfect for command-line tools that need structured logging, configuration manag
 - Data processing command-line tools
 - Build and automation tools
 
-**See:** [CLI Application Tutorial](../tutorials/02-first-app.md)
+**See:** [CLI Application Tutorial](../getting-started/first-app.md)
 
 #### Microservices with Structured Logging
 Services that need production-ready logging and observability.
@@ -240,5 +240,5 @@ Foundation provides logging, CLI, configuration. It does NOT provide:
 
 **Next Steps:**
 - Review [Features](features.md) for complete capabilities
-- Check [Architecture](architecture.md) for design decisions
-- Start building with [Quick Start](../tutorials/01-quick-start.md)
+- Check [System Overview](overview.md) for design decisions
+- Start building with [Quick Start](../getting-started/quick-start.md)

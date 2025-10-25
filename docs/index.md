@@ -21,7 +21,7 @@ This documentation is structured to help you learn effectively, whether you're a
   <div class="feature-card">
     <h3>🎓 Tutorials</h3>
     <p>Step-by-step lessons to get you started. Perfect for new users.</p>
-    <p><a href="tutorials/01-quick-start/">Start Learning →</a></p>
+    <p><a href="getting-started/quick-start/">Start Learning →</a></p>
   </div>
   <div class="feature-card">
     <h3>📖 How-To Guides</h3>
@@ -83,4 +83,4 @@ def process_data(file: str, force: bool = False):
 
 ---
 
-Ready to get started? Head to the **[Quick Start Tutorial](tutorials/01-quick-start.md)**.
+Ready to get started? Head to the **[Quick Start Tutorial](getting-started/quick-start.md)**.

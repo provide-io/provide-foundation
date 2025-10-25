@@ -118,7 +118,7 @@ nav:
   - Overview:
     - Features: information/features.md
     - Use Cases: information/use-cases.md
-    - System Architecture: information/architecture.md
+    - System Overview: information/overview.md
     - What's New: information/changelog.md
 
   - Getting Started:
@@ -127,10 +127,6 @@ nav:
     - 5-Minute Quick Start: getting-started/quick-start.md
     - Build a CLI App Tutorial: getting-started/first-app.md
     - More Examples: getting-started/examples.md
-
-  - Tutorials:
-    - Introduction to Logging: tutorials/01-quick-start.md
-    - Building CLI Applications: tutorials/02-first-app.md
 
   - How-To Guides:
     - Logging:
@@ -177,25 +173,37 @@ nav:
       - Hub: reference/provide/foundation/hub/index.md
       - Config: reference/provide/foundation/config/index.md
       - Errors: reference/provide/foundation/errors/index.md
+      - State: reference/provide/foundation/state/index.md
     - CLI & Console:
       - CLI: reference/provide/foundation/cli/index.md
       - Console: reference/provide/foundation/console/index.md
-    - Resilience:
+      - Context: reference/provide/foundation/context/index.md
+    - Resilience & Observability:
       - Resilience: reference/provide/foundation/resilience/index.md
       - Metrics: reference/provide/foundation/metrics/index.md
       - Tracer: reference/provide/foundation/tracer/index.md
+      - Observability: reference/provide/foundation/observability/index.md
     - Data & Files:
       - File: reference/provide/foundation/file/index.md
       - Archive: reference/provide/foundation/archive/index.md
       - Serialization: reference/provide/foundation/serialization/index.md
+      - Streams: reference/provide/foundation/streams/index.md
     - Security:
       - Crypto: reference/provide/foundation/crypto/index.md
       - Security: reference/provide/foundation/security/index.md
     - Utilities:
       - Utils: reference/provide/foundation/utils/index.md
+      - Concurrency: reference/provide/foundation/concurrency/index.md
+      - Formatting: reference/provide/foundation/formatting/index.md
+      - Time: reference/provide/foundation/time/index.md
       - Process: reference/provide/foundation/process/index.md
       - Platform: reference/provide/foundation/platform/index.md
       - Transport: reference/provide/foundation/transport/index.md
       - Parsers: reference/provide/foundation/parsers/index.md
+    - Advanced:
+      - Tools: reference/provide/foundation/tools/index.md
+      - Profiling: reference/provide/foundation/profiling/index.md
+      - Testmode: reference/provide/foundation/testmode/index.md
+      - Integrations: reference/provide/foundation/integrations/index.md
 
   - Specs: specs/index.md

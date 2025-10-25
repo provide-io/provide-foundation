@@ -162,5 +162,5 @@ Safe subprocess execution with streaming and async support.
 
 **Next Steps:**
 - See [Use Cases](use-cases.md) for practical applications
-- Check [Architecture](architecture.md) for design philosophy
-- Start with the [Quick Start Tutorial](../tutorials/01-quick-start.md)
+- Check [System Overview](overview.md) for design philosophy
+- Start with the [Quick Start Tutorial](../getting-started/quick-start.md)
