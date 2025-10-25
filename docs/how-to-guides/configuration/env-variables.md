@@ -178,9 +178,33 @@ Use this for building type-safe, validated configuration objects with file-based
 
 ### Understanding field() vs env_field()
 
-Foundation provides two ways to declare fields in configuration classes:
+Foundation provides two ways to declare fields in configuration classes. Both work identically - choose based on your preference and use case.
 
-**1. `field()` from `config.base` - Direct approach (recommended for most use cases):**
+#### Quick Decision Guide
+
+```
+Are you building user-facing configuration classes?
+├─ Yes → Use env_field() (clearer intent, less verbose)
+│   └─ Example: AppConfig, DatabaseConfig, ServiceConfig
+│
+└─ No → Are you building internal Foundation-style configs?
+    ├─ Yes → Use field() (matches Foundation's patterns)
+    │   └─ Example: Custom LoggingConfig, TelemetryConfig extensions
+    │
+    └─ Either works → Choose based on code style preference
+```
+
+#### The Two Approaches
+
+**1. `env_field()` - Convenience wrapper (recommended for user code):**
+```python
+from provide.foundation.config import env_field
+
+api_key: str = env_field(env_var="API_KEY")
+port: int = env_field(env_var="PORT", default=8080)
+```
+
+**2. `field()` - Direct approach (used in Foundation internals):**
 ```python
 from provide.foundation.config.base import field
 
@@ -191,16 +215,12 @@ default_level: str = field(
 )
 ```
 
-**2. `env_field()` from `config.env` - Convenience wrapper:**
-```python
-from provide.foundation.config import env_field
-
-api_key: str = env_field(env_var="API_KEY")
-```
-
-Both work identically - `env_field()` is just a convenience wrapper that internally calls `field()` and adds environment variable metadata. Use whichever feels more readable for your code.
-
-**Foundation's own config classes use `field()` directly**, as seen in `LoggingConfig` and `TelemetryConfig`.
+**Key Points:**
+- Both work identically - `env_field()` internally calls `field()`
+- `env_field()` is more concise for simple use cases
+- `field()` supports additional metadata like descriptions
+- Foundation's own config classes use `field()` directly
+- Use whichever feels more readable for your code
 
 ### Basic Example
 
