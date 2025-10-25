@@ -5,12 +5,17 @@
 
 from __future__ import annotations
 
+# ruff: noqa: RUF009
+from typing import TYPE_CHECKING
+
 from attrs import define
 
 from provide.foundation.config.base import field
 from provide.foundation.config.env import RuntimeConfig
-from provide.foundation.logger.config.telemetry import TelemetryConfig
 from provide.foundation.process.defaults import DEFAULT_PROCESS_TITLE
+
+if TYPE_CHECKING:
+    from provide.foundation.logger.config.telemetry import TelemetryConfig
 
 """FoundationConfig - Top-level configuration for Foundation applications.
 
@@ -41,6 +46,16 @@ Environment Variables:
 """
 
 
+def _get_telemetry_config() -> TelemetryConfig:
+    """Lazy import and create default TelemetryConfig.
+
+    This function delays the import of TelemetryConfig to avoid circular imports.
+    """
+    from provide.foundation.logger.config.telemetry import TelemetryConfig
+
+    return TelemetryConfig.from_env()
+
+
 @define(slots=True, repr=False)
 class FoundationConfig(RuntimeConfig):
     """Top-level Foundation application configuration.
@@ -60,8 +75,8 @@ class FoundationConfig(RuntimeConfig):
         'my-service'
     """
 
-    telemetry: TelemetryConfig = field(
-        factory=lambda: TelemetryConfig.from_env(),
+    telemetry: TelemetryConfig = field(  # type: ignore[type-arg]
+        factory=lambda: _get_telemetry_config(),
         description="Telemetry configuration (logging, tracing, metrics)",
     )
 
@@ -101,6 +116,9 @@ class FoundationConfig(RuntimeConfig):
             >>> config.telemetry.service_name
             'my-service'
         """
+        # Lazy import to avoid circular dependencies
+        from provide.foundation.logger.config.telemetry import TelemetryConfig
+
         # Load telemetry config first
         telemetry_config = TelemetryConfig.from_env(
             prefix=prefix,

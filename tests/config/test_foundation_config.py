@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
+from pytest import MonkeyPatch
 
 from provide.foundation.config.foundation import FoundationConfig
 from provide.foundation.logger.config.telemetry import TelemetryConfig
@@ -12,7 +13,7 @@ from provide.foundation.logger.config.telemetry import TelemetryConfig
 class TestFoundationConfig(FoundationTestCase):
     """Test FoundationConfig functionality."""
 
-    def test_from_env_loads_process_title(self, monkeypatch) -> None:
+    def test_from_env_loads_process_title(self, monkeypatch: MonkeyPatch) -> None:
         """Test loading process_title from environment."""
         monkeypatch.setenv("PROVIDE_PROCESS_TITLE", "test-app")
         config = FoundationConfig.from_env()
@@ -23,14 +24,14 @@ class TestFoundationConfig(FoundationTestCase):
         config = FoundationConfig.from_env()
         assert config.process_title is None
 
-    def test_from_env_loads_telemetry_config(self, monkeypatch) -> None:
+    def test_from_env_loads_telemetry_config(self, monkeypatch: MonkeyPatch) -> None:
         """Test that telemetry config is loaded from environment."""
         monkeypatch.setenv("PROVIDE_SERVICE_NAME", "test-service")
         config = FoundationConfig.from_env()
         assert isinstance(config.telemetry, TelemetryConfig)
         assert config.telemetry.service_name == "test-service"
 
-    def test_from_env_loads_both_process_and_telemetry(self, monkeypatch) -> None:
+    def test_from_env_loads_both_process_and_telemetry(self, monkeypatch: MonkeyPatch) -> None:
         """Test loading both process_title and telemetry settings."""
         monkeypatch.setenv("PROVIDE_PROCESS_TITLE", "my-worker")
         monkeypatch.setenv("PROVIDE_SERVICE_NAME", "my-service")
@@ -80,7 +81,7 @@ class TestFoundationConfig(FoundationTestCase):
         )
         assert config.process_title is None
 
-    def test_process_title_empty_string(self, monkeypatch) -> None:
+    def test_process_title_empty_string(self, monkeypatch: MonkeyPatch) -> None:
         """Test that empty string for process_title is treated as empty."""
         monkeypatch.setenv("PROVIDE_PROCESS_TITLE", "")
         config = FoundationConfig.from_env()
@@ -91,7 +92,7 @@ class TestFoundationConfig(FoundationTestCase):
 class TestFoundationConfigIntegration(FoundationTestCase):
     """Integration tests for FoundationConfig with full environment."""
 
-    def test_full_env_configuration(self, monkeypatch) -> None:
+    def test_full_env_configuration(self, monkeypatch: MonkeyPatch) -> None:
         """Test complete configuration from environment variables."""
         # Set all relevant environment variables
         monkeypatch.setenv("PROVIDE_PROCESS_TITLE", "integration-test")
@@ -109,7 +110,7 @@ class TestFoundationConfigIntegration(FoundationTestCase):
         assert config.telemetry.logging.log_level == "INFO"
         assert config.telemetry.tracing_enabled is True
 
-    def test_otel_service_name_precedence(self, monkeypatch) -> None:
+    def test_otel_service_name_precedence(self, monkeypatch: MonkeyPatch) -> None:
         """Test that OTEL_SERVICE_NAME takes precedence over PROVIDE_SERVICE_NAME."""
         monkeypatch.setenv("OTEL_SERVICE_NAME", "otel-service")
         monkeypatch.setenv("PROVIDE_SERVICE_NAME", "provide-service")
@@ -139,7 +140,7 @@ class TestFoundationConfigIntegration(FoundationTestCase):
 class TestFoundationConfigEdgeCases(FoundationTestCase):
     """Test edge cases and error conditions."""
 
-    def test_process_title_with_special_characters(self, monkeypatch) -> None:
+    def test_process_title_with_special_characters(self, monkeypatch: MonkeyPatch) -> None:
         """Test process_title with special characters."""
         special_title = "my-app_worker:123"
         monkeypatch.setenv("PROVIDE_PROCESS_TITLE", special_title)
@@ -147,7 +148,7 @@ class TestFoundationConfigEdgeCases(FoundationTestCase):
         config = FoundationConfig.from_env()
         assert config.process_title == special_title
 
-    def test_process_title_with_unicode(self, monkeypatch) -> None:
+    def test_process_title_with_unicode(self, monkeypatch: MonkeyPatch) -> None:
         """Test process_title with unicode characters."""
         unicode_title = "my-app-✨"
         monkeypatch.setenv("PROVIDE_PROCESS_TITLE", unicode_title)

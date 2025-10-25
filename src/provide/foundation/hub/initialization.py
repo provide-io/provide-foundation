@@ -303,6 +303,7 @@ class InitializationCoordinator:
                 raise
             # Fallback to minimal config for environment parsing issues
             from provide.foundation.logger.config import TelemetryConfig
+
             return FoundationConfig(telemetry=TelemetryConfig(), process_title=None)
 
     def _initialize_logger(self, config: Any, registry: Any) -> Any:

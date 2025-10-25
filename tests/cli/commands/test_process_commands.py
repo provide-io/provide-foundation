@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
-import pytest
 
 
 class TestProcessCommandsWithSetproctitle(FoundationTestCase):
@@ -19,9 +18,7 @@ class TestProcessCommandsWithSetproctitle(FoundationTestCase):
                 "provide.foundation.cli.commands.process.has_setproctitle",
                 return_value=True,
             ),
-            patch(
-                "provide.foundation.cli.commands.process.set_process_title"
-            ) as mock_set,
+            patch("provide.foundation.cli.commands.process.set_process_title") as mock_set,
             patch("provide.foundation.cli.commands.process.pout") as mock_pout,
         ):
             _set_title_impl("test-app")
@@ -44,9 +41,7 @@ class TestProcessCommandsWithSetproctitle(FoundationTestCase):
 
             assert mock_perr.call_count == 2
             mock_perr.assert_any_call("⚠️  Process title support not available")
-            mock_perr.assert_any_call(
-                "Install with: pip install 'provide-foundation[process]'"
-            )
+            mock_perr.assert_any_call("Install with: pip install 'provide-foundation[process]'")
 
     def test_get_title_implementation(self) -> None:
         """Test get-title command implementation."""
@@ -120,9 +115,7 @@ class TestProcessCommandsWithSetproctitle(FoundationTestCase):
 
             assert mock_pout.call_count == 2
             mock_pout.assert_any_call("⚠️  Process title support: Not available")
-            mock_pout.assert_any_call(
-                "Install with: pip install 'provide-foundation[process]'"
-            )
+            mock_pout.assert_any_call("Install with: pip install 'provide-foundation[process]'")
 
     def test_process_group_exists(self) -> None:
         """Test that process_group command group exists."""
@@ -167,9 +160,7 @@ class TestProcessCommandsEdgeCases(FoundationTestCase):
                 "provide.foundation.cli.commands.process.has_setproctitle",
                 return_value=True,
             ),
-            patch(
-                "provide.foundation.cli.commands.process.set_process_title"
-            ) as mock_set,
+            patch("provide.foundation.cli.commands.process.set_process_title") as mock_set,
             patch("provide.foundation.cli.commands.process.pout"),
         ):
             _set_title_impl(special_title)
@@ -187,9 +178,7 @@ class TestProcessCommandsEdgeCases(FoundationTestCase):
                 "provide.foundation.cli.commands.process.has_setproctitle",
                 return_value=True,
             ),
-            patch(
-                "provide.foundation.cli.commands.process.set_process_title"
-            ) as mock_set,
+            patch("provide.foundation.cli.commands.process.set_process_title") as mock_set,
             patch("provide.foundation.cli.commands.process.pout"),
         ):
             _set_title_impl(unicode_title)
@@ -205,9 +194,7 @@ class TestProcessCommandsEdgeCases(FoundationTestCase):
                 "provide.foundation.cli.commands.process.has_setproctitle",
                 return_value=True,
             ),
-            patch(
-                "provide.foundation.cli.commands.process.set_process_title"
-            ) as mock_set,
+            patch("provide.foundation.cli.commands.process.set_process_title") as mock_set,
             patch("provide.foundation.cli.commands.process.pout"),
         ):
             _set_title_impl("")
@@ -249,9 +236,7 @@ class TestProcessCommandsIntegration(FoundationTestCase):
                 "provide.foundation.cli.commands.process.has_setproctitle",
                 return_value=True,
             ),
-            patch(
-                "provide.foundation.cli.commands.process.set_process_title"
-            ) as mock_set,
+            patch("provide.foundation.cli.commands.process.set_process_title") as mock_set,
             patch(
                 "provide.foundation.cli.commands.process.get_process_title",
                 return_value="integration-test",

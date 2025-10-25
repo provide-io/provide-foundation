@@ -98,7 +98,7 @@ class Hub(CoreHub):
             force: If True, force re-initialization even if already initialized
 
         Example:
-            >>> from provide.foundation.config import FoundationConfig
+            >>> from provide.foundation.config.foundation import FoundationConfig
             >>> hub = get_hub()
             >>> config = FoundationConfig.from_env()
             >>> hub.initialize_foundation(config=config)

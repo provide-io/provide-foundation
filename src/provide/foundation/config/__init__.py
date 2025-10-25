@@ -28,9 +28,6 @@ from provide.foundation.config.converters import (
     validate_positive,
     validate_sample_rate,
 )
-from provide.foundation.config.foundation import (
-    FoundationConfig,
-)
 from provide.foundation.config.env import (
     RuntimeConfig,
     env_field,
@@ -96,8 +93,6 @@ __all__ = [
     "ConfigValue",
     "DictConfigLoader",
     "FileConfigLoader",
-    # Top-level configs
-    "FoundationConfig",
     "MultiSourceLoader",
     # Environment
     "RuntimeConfig",
