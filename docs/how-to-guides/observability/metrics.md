@@ -277,9 +277,9 @@ export OTEL_SERVICE_NAME=my-service
 
 ## Next Steps
 
-- **[OpenObserve Integration](../integrations/openobserve.md)**: Send metrics to OpenObserve (when available)
 - **[Monitoring Guide](../production/monitoring.md)**: Production monitoring patterns
 - **[Architecture](../../explanation/architecture.md)**: Understanding Foundation's design
+- **[Logging](../logging/basic-logging.md)**: Combine metrics with structured logging
 
 ---
 

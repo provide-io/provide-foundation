@@ -333,8 +333,8 @@ def log_application_config(config: dict):
 ## Next Steps
 
 - **[Logging](../logging/basic-logging.md)**: Structured logging with security
-- **[HTTP Transport](../transport/http-client.md)**: Secure HTTP client
 - **[Configuration](../configuration/env-variables.md)**: Secure configuration management
+- **[Process Execution](../process/subprocess.md)**: Secure command execution
 
 ---
 
