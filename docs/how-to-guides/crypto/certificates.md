@@ -616,7 +616,6 @@ def verify_cert_chain(server_cert, intermediate_cert, root_cert):
 ### Related Guides
 - **[Key Generation](keys.md)**: Generate cryptographic keys
 - **[Signing & Verification](signing.md)**: Sign and verify data
-- **[Security Best Practices](../../explanation/security.md)**: Security guidelines
 
 ### Examples
 - See `examples/crypto/` for certificate examples

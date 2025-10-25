@@ -702,7 +702,6 @@ class Service:
 ## Next Steps
 
 ### Related Guides
-- **[Hub System](../../reference/provide/foundation/hub/index.md)**: Foundation's Hub for component management
 - **[Testing](../how-to-guides/testing/unit-tests.md)**: Testing with dependency injection
 - **[Architecture](architecture.md)**: Overall Foundation architecture
 
