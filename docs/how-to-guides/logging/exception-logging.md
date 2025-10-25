@@ -31,3 +31,17 @@ try:
 except Exception as e:
     logger.error("Operation failed", exc_info=True, error_details=str(e))
 ```
+
+## Next Steps
+
+### Related Guides
+- **[Basic Logging](basic-logging.md)**: Core logging patterns
+- **[Structured Events](structured-events.md)**: Event-driven logging
+
+### Error Handling & Resilience
+- **[Retry Patterns](../resilience/retry.md)**: Automatically retry failed operations
+- **[Production Error Handling](../production/monitoring.md)**: Production-ready error handling
+
+### Examples
+- See `examples/telemetry/05_exception_handling.py` for comprehensive exception logging examples
+- See `examples/production/02_error_handling.py` for production error patterns

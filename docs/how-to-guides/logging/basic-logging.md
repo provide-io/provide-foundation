@@ -497,9 +497,17 @@ def execute_query(sql, params):
 
 ## Next Steps
 
+### Related Logging Guides
 - **[Exception Logging](exception-logging.md)**: Learn how to log exceptions with full context
 - **[Structured Events](structured-events.md)**: Advanced patterns for event-driven logging
 - **[Custom Processors](custom-processors.md)**: Extend logging with custom processors
+
+### Integration & Production
+- **[CLI Commands](../cli/commands.md)**: Use Foundation logging in CLI applications
+- **[Production Patterns](../production/monitoring.md)**: Production logging best practices
+- **[Configuration](../configuration/env-variables.md)**: Configure logging via environment variables
+
+### Understanding Foundation
 - **[Architecture](../../explanation/architecture.md)**: Understand how the logging system works
 
 ---

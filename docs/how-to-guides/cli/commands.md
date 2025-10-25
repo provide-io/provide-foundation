@@ -505,10 +505,19 @@ def cleanup_command(path: str, dry_run: bool = False):
 
 ## Next Steps
 
+### Building CLI Features
 - **[Argument Parsing](arguments.md)**: Advanced argument handling patterns
 - **[Interactive Prompts](prompts.md)**: Building interactive CLIs
-- **[Testing](../testing/cli-tests.md)**: Testing CLI applications
 - **[First Application](../../getting-started/first-app.md)**: Complete CLI tutorial
+
+### Testing & Production
+- **[Testing CLI Commands](../testing/cli-tests.md)**: Write tests for your CLI applications
+- **[Production Deployment](../production/deployment.md)**: Deploy CLI tools to production
+
+### Related Guides
+- **[Basic Logging](../logging/basic-logging.md)**: Add structured logging to commands
+- **[Configuration](../configuration/env-variables.md)**: Configure CLI tools via environment
+- **[Error Handling](../resilience/retry.md)**: Add resilience to CLI operations
 
 ---
 
