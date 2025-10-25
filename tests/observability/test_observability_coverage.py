@@ -277,7 +277,6 @@ class TestModuleIntegration:
 
         # Check essential attributes
         assert hasattr(provide.foundation.observability, "_HAS_OTEL")
-        assert hasattr(provide.foundation.observability, "_otel_trace_module")
         assert hasattr(provide.foundation.observability, "otel_trace")
         assert hasattr(provide.foundation.observability, "is_openobserve_available")
         assert hasattr(provide.foundation.observability, "__all__")

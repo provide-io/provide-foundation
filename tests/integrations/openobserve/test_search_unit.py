@@ -237,7 +237,7 @@ class TestSearchByServiceUnit(FoundationTestCase):
         # Verify SQL construction
         call_args = mock_client.search.call_args
         assert "SELECT * FROM logs" in call_args.kwargs["sql"]
-        assert "service = 'auth-service'" in call_args.kwargs["sql"]
+        assert "service_name = 'auth-service'" in call_args.kwargs["sql"]
         assert call_args.kwargs["start_time"] == "-30m"
         assert call_args.kwargs["end_time"] == "now"
         assert call_args.kwargs["size"] == 75
@@ -257,7 +257,7 @@ class TestSearchByServiceUnit(FoundationTestCase):
         )
 
         call_args = mock_client.search.call_args
-        assert "service = 'api.gateway.v2'" in call_args.kwargs["sql"]
+        assert "service_name = 'api.gateway.v2'" in call_args.kwargs["sql"]
         assert result == mock_response
 
 

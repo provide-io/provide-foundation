@@ -188,7 +188,7 @@ async def search_by_service(
     # Sanitize inputs to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
     safe_service = _sanitize_service_name(service)
-    sql = f"SELECT * FROM {safe_stream} WHERE service = '{safe_service}' ORDER BY _timestamp DESC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
+    sql = f"SELECT * FROM {safe_stream} WHERE service_name = '{safe_service}' ORDER BY _timestamp DESC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
     return await search_logs(
         sql=sql,
         start_time=start_time,

@@ -104,10 +104,13 @@ class TestIntegration:
             patch("provide.foundation.tracer.otel.TracerProvider") as mock_tp,
             patch("provide.foundation.tracer.otel.Resource"),
             patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
+            patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler,
+            patch("provide.foundation.tracer.otel.BatchSpanProcessor"),
         ):
             mock_provider = Mock()
             mock_tp.return_value = mock_provider
             mock_trace.get_tracer_provider.return_value = mock_provider
+            mock_sampler.return_value = Mock()
 
             # Setup
             from provide.foundation.logger.config.telemetry import TelemetryConfig

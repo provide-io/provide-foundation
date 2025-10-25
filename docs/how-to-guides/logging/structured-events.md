@@ -42,8 +42,10 @@ logger.debug("api_request_started", endpoint="/users", method="GET")
 Add contextual data to all events in a scope:
 
 ```python
+from provide.foundation.logger import bind_logger
+
 # Bind context that applies to all subsequent log calls
-logger = logger.bind(
+logger = bind_logger(
     request_id="req_789",
     user_id="user_123",
     session_id="sess_456"

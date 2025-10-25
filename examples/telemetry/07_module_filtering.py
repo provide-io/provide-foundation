@@ -18,7 +18,7 @@ from provide.foundation import (  # noqa: E402
     TelemetryConfig,
     logger,
     pout,
-    get_hub,
+    setup_telemetry,
 )
 
 
@@ -43,7 +43,7 @@ def example_7_module_level_filtering() -> None:
             },
         ),
     )
-    get_hub().initialize_foundation(config)
+    setup_telemetry(config)
 
     # Loggers for different modules
     auth_logger = logger.get_logger("auth.service")  # Will use DEBUG

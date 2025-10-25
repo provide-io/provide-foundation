@@ -36,7 +36,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 from provide.foundation import (  # noqa: E402
     logger,
     pout,
-    get_hub,
+    setup_telemetry,
 )
 from provide.foundation.errors import (  # noqa: E402
     FoundationError,
@@ -70,7 +70,7 @@ def example_error_handling() -> None:
     pout("=" * 60)
 
     # Initialize Foundation logging
-    get_hub().initialize_foundation()
+    setup_telemetry()
 
     # Example 1: Error Boundary Context Manager
     pout("\n🔒 Example 1: Error Boundary Context Manager")
