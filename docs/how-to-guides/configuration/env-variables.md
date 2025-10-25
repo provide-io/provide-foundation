@@ -176,6 +176,32 @@ except EnvironmentError as e:
 
 Use this for building type-safe, validated configuration objects with file-based secret support.
 
+### Understanding field() vs env_field()
+
+Foundation provides two ways to declare fields in configuration classes:
+
+**1. `field()` from `config.base` - Direct approach (recommended for most use cases):**
+```python
+from provide.foundation.config.base import field
+
+default_level: str = field(
+    default="INFO",
+    env_var="PROVIDE_LOG_LEVEL",
+    description="Logging level"
+)
+```
+
+**2. `env_field()` from `config.env` - Convenience wrapper:**
+```python
+from provide.foundation.config import env_field
+
+api_key: str = env_field(env_var="API_KEY")
+```
+
+Both work identically - `env_field()` is just a convenience wrapper that internally calls `field()` and adds environment variable metadata. Use whichever feels more readable for your code.
+
+**Foundation's own config classes use `field()` directly**, as seen in `LoggingConfig` and `TelemetryConfig`.
+
 ### Basic Example
 
 ```python
