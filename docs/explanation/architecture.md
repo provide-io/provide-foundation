@@ -14,18 +14,22 @@ graph TD
         D[Configuration]
         E[CLI Framework]
         F[Resilience & Utilities]
+        G[Event Sets & Observability]
+        H[Testing Support]
     end
 
     subgraph "Core Dependencies"
-        G[structlog]
-        H[attrs]
-        I[click]
+        I[structlog]
+        J[attrs]
+        K[click]
     end
 
-    A --> B & C & D & E & F
-    C --> G
-    D --> H
-    E --> I
+    A --> B & C & D & E & F & G & H
+    C --> I
+    D --> J
+    E --> K
+    G --> C
+    H --> B
 ```
 
 ## Architectural Overview
@@ -109,26 +113,32 @@ Processors include:
 #### Configuration
 ```python
 from provide.foundation import get_hub
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
 # Simple configuration
-hub = get_hub()
-hub.initialize_foundation(
-    log_level="INFO",
-    use_emoji=True,
-    json_logs=False
+config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="INFO",
+        logger_name_emoji_prefix_enabled=True,
+        das_emoji_prefix_enabled=True,
+        console_formatter="key_value"
+    )
 )
+
+hub = get_hub()
+hub.initialize_foundation(config)
 
 # Advanced configuration
-from provide.foundation.logger.config import LoggingConfig
-
-config = LoggingConfig(
-    level="DEBUG",
-    use_emoji=True,
-    use_color=True,
-    json_logs=False,
-    module_levels={"urllib3": "WARNING"}
+advanced_config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="DEBUG",
+        logger_name_emoji_prefix_enabled=True,
+        das_emoji_prefix_enabled=True,
+        console_formatter="key_value",
+        module_levels={"urllib3": "WARNING"}
+    )
 )
-hub.initialize_foundation(logging_config=config)
+hub.initialize_foundation(advanced_config)
 ```
 
 ### Configuration System
@@ -340,32 +350,44 @@ logger.info("app_started")
 #### 2. Explicit Initialization (Recommended for Production)
 ```python
 from provide.foundation import get_hub
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+
+config = TelemetryConfig(
+    service_name="my-service",
+    logging=LoggingConfig(
+        default_level="INFO",
+        logger_name_emoji_prefix_enabled=True,
+        das_emoji_prefix_enabled=True
+    )
+)
 
 hub = get_hub()
-hub.initialize_foundation(
-    log_level="INFO",
-    use_emoji=True
-)
+hub.initialize_foundation(config)
 ```
 
 #### 3. Advanced Configuration
 ```python
 from provide.foundation import get_hub
-from provide.foundation.logger.config import LoggingConfig
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
 logging_config = LoggingConfig(
-    level="DEBUG",
-    use_emoji=True,
-    use_color=True,
-    json_logs=False,
+    default_level="DEBUG",
+    logger_name_emoji_prefix_enabled=True,
+    das_emoji_prefix_enabled=True,
+    console_formatter="key_value",
     module_levels={
         "urllib3": "WARNING",
         "asyncio": "INFO"
     }
 )
 
+telemetry_config = TelemetryConfig(
+    service_name="my-service",
+    logging=logging_config
+)
+
 hub = get_hub()
-hub.initialize_foundation(logging_config=logging_config)
+hub.initialize_foundation(telemetry_config)
 ```
 
 ### Lifecycle Management
@@ -383,6 +405,28 @@ graph LR
 3. **Component Registration**: Register custom components, commands
 4. **Runtime**: Normal application execution
 5. **Shutdown**: Graceful cleanup of resources
+
+### Graceful Shutdown
+
+Foundation provides `shutdown_foundation()` for clean resource cleanup:
+
+```python
+from provide.foundation import shutdown_foundation
+
+# At application shutdown
+shutdown_foundation()
+```
+
+This function:
+- Flushes any pending log messages
+- Closes file handlers
+- Releases resources
+- Resets internal state (useful for testing)
+
+**When to use:**
+- Before process termination in CLI applications
+- In web framework shutdown hooks (FastAPI `@app.on_event("shutdown")`)
+- Between test runs (handled automatically by `provide-testkit`)
 
 ## Extension Points
 
@@ -481,9 +525,14 @@ async def root():
 ```python
 # settings.py
 from provide.foundation import get_hub
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
 # Initialize Foundation
-get_hub().initialize_foundation(log_level="INFO")
+config = TelemetryConfig(
+    service_name="django-app",
+    logging=LoggingConfig(default_level="INFO")
+)
+get_hub().initialize_foundation(config)
 
 # Use Foundation logger instead of Django's
 from provide.foundation import logger

@@ -196,6 +196,23 @@ Foundation automatically:
 - Generates help text from docstrings
 - Handles type conversion (str, int, bool, etc.)
 
+### The create_cli() Method
+
+The `hub.create_cli()` method builds a Click CLI from registered commands:
+
+```python
+cli = hub.create_cli(
+    name="task-manager",        # CLI program name
+    description="...",           # Description for help text (optional)
+    version="1.0.0"             # Version string (optional)
+)
+```
+
+**Parameters:**
+- `name` (str): CLI name shown in help text
+- `version` (str | None): Optional version for `--version` flag
+- `**kwargs`: Additional Click Group options passed through
+
 ### Structured Logging
 
 Every action is logged with structured data:

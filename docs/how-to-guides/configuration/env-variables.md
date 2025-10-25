@@ -4,12 +4,33 @@ Foundation provides two complementary APIs for working with environment variable
 
 ## Quick Comparison
 
-| Use Case | API to Use | Example |
-|----------|-----------|---------|
-| Simple scripts, one-off reads | **Direct Access** | `get_bool("DEBUG")` |
-| Application configuration classes | **Structured Config** | `BaseConfig.from_env()` |
-| Secret management | **Structured Config** | Supports `file://` prefix |
-| Type-safe config objects | **Structured Config** | Full attrs validation |
+Foundation provides two complementary APIs for working with environment variables:
+
+### When to Use Each API
+
+| Use Case | API to Use | Why | Example |
+|----------|-----------|-----|---------|
+| **Simple scripts** | Direct Access (`utils.environment`) | Quick one-off reads, no class overhead | `get_bool("DEBUG")` |
+| **Utility scripts** | Direct Access | Minimal boilerplate for throwaway code | `get_int("PORT")` |
+| **Application config** | Structured Config (`config.env`) | Type safety, validation, IDE autocomplete | `BaseConfig.from_env()` |
+| **Secret management** | Structured Config | Built-in `file://` prefix support | `password: str = env_field(...)` |
+| **Complex validation** | Structured Config | Use attrs validators for constraints | Custom validators on fields |
+| **Shared configuration** | Structured Config | Pass config objects between modules | Single source of truth |
+
+### Decision Flow
+
+```
+Do you need configuration for the entire app?
+├─ Yes → Use Structured Config (BaseConfig + env_field)
+│   └─ Benefits: Type safety, validation, IDE support
+│
+└─ No → Is this a quick script or one-off read?
+    ├─ Yes → Use Direct Access (get_bool, get_int, etc.)
+    │   └─ Benefits: Less boilerplate, faster to write
+    │
+    └─ No → Use Structured Config anyway for consistency
+        └─ Benefits: Easier to refactor later
+```
 
 ## Direct Environment Variable Access
 
@@ -346,11 +367,18 @@ config = AppConfig.from_env()
 
 # Configure Foundation
 from provide.foundation import get_hub
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
-get_hub().initialize_foundation(
-    log_level=config.log_level,
-    use_emoji=not config.environment == "production"
+telemetry_config = TelemetryConfig(
+    service_name="my-app",
+    logging=LoggingConfig(
+        default_level=config.log_level,
+        logger_name_emoji_prefix_enabled=not config.environment == "production",
+        das_emoji_prefix_enabled=not config.environment == "production"
+    )
 )
+
+get_hub().initialize_foundation(telemetry_config)
 ```
 
 ### Production Secrets
@@ -398,10 +426,17 @@ class EnvironmentAwareConfig(BaseConfig):
 config = EnvironmentAwareConfig.from_env()
 
 # Configure based on environment
-get_hub().initialize_foundation(
-    log_level=config.log_level,
-    use_emoji=config.use_emoji
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+
+telemetry_config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level=config.log_level,
+        logger_name_emoji_prefix_enabled=config.use_emoji,
+        das_emoji_prefix_enabled=config.use_emoji
+    )
 )
+
+get_hub().initialize_foundation(telemetry_config)
 ```
 
 ## Testing with Environment Variables
