@@ -25,11 +25,17 @@ DEFAULT_SHELL_ALLOW_FEATURES = False
 # =================================
 DEFAULT_ENV_SCRUBBING_ENABLED = True
 
+# =================================
+# Process Title Defaults
+# =================================
+DEFAULT_PROCESS_TITLE = None
+
 __all__ = [
     "DEFAULT_ENV_SCRUBBING_ENABLED",
     "DEFAULT_PROCESS_READCHAR_TIMEOUT",
     "DEFAULT_PROCESS_READLINE_TIMEOUT",
     "DEFAULT_PROCESS_TERMINATE_TIMEOUT",
+    "DEFAULT_PROCESS_TITLE",
     "DEFAULT_PROCESS_WAIT_TIMEOUT",
     "DEFAULT_SHELL_ALLOW_FEATURES",
 ]
