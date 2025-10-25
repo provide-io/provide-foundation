@@ -223,7 +223,7 @@ class TestProcessTitleIntegration(FoundationTestCase):
             assert isinstance(config, FoundationConfig)
             assert config.process_title == "integration-app"
             assert config.telemetry.service_name == "integration-service"
-            assert config.telemetry.logging.log_level == "DEBUG"
+            assert config.telemetry.logging.default_level == "DEBUG"
 
             # Verify process title was set
             mock_set_title.assert_called_once_with("integration-app")
