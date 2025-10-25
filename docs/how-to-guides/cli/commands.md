@@ -183,7 +183,6 @@ Handle lists, paths, and custom types:
 
 ```python
 from pathlib import Path
-from typing import List
 
 @register_command("batch-process")
 def batch_process_command(

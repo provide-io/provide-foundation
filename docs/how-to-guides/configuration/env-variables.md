@@ -233,7 +233,6 @@ This is especially useful for:
 ### Complex Configuration
 
 ```python
-from typing import Optional
 from attrs import define, field
 from provide.foundation.config import BaseConfig, env_field
 
@@ -246,8 +245,8 @@ class ServerConfig(BaseConfig):
 
     # TLS settings
     tls_enabled: bool = env_field(env_var="TLS_ENABLED", default=False)
-    tls_cert_file: Optional[str] = env_field(env_var="TLS_CERT_FILE", default=None)
-    tls_key_file: Optional[str] = env_field(env_var="TLS_KEY_FILE", default=None)
+    tls_cert_file: str | None = env_field(env_var="TLS_CERT_FILE", default=None)
+    tls_key_file: str | None = env_field(env_var="TLS_KEY_FILE", default=None)
 
     # Timeouts
     read_timeout: float = env_field(env_var="READ_TIMEOUT", default=30.0)

@@ -43,7 +43,6 @@ Create a file named `task_manager.py`:
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Dict
 
 from provide.foundation import logger, pout, perr, get_hub
 from provide.foundation.hub import register_command
@@ -58,7 +57,7 @@ class Task:
     created_at: datetime = field(default_factory=datetime.now)
 
 # --- In-Memory "Database" ---
-TASKS: Dict[int, Task] = {}
+TASKS: dict[int, Task] = {}
 NEXT_ID = 1
 
 # --- CLI Commands ---
