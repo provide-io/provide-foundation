@@ -112,8 +112,7 @@ Processors include:
 
 #### Configuration
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 # Simple configuration
 config = TelemetryConfig(
@@ -349,8 +348,7 @@ logger.info("app_started")
 
 #### 2. Explicit Initialization (Recommended for Production)
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 config = TelemetryConfig(
     service_name="my-service",
@@ -367,8 +365,7 @@ hub.initialize_foundation(config)
 
 #### 3. Advanced Configuration
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 logging_config = LoggingConfig(
     default_level="DEBUG",
@@ -435,12 +432,12 @@ This function:
 Add custom log processors:
 
 ```python
+from provide.foundation import LoggingConfig
+
 def custom_processor(logger, method_name, event_dict):
     """Add custom field to all log events."""
     event_dict["environment"] = "production"
     return event_dict
-
-from provide.foundation.logger.config import LoggingConfig
 
 config = LoggingConfig(
     custom_processors=[custom_processor]
@@ -453,14 +450,21 @@ Register custom components:
 
 ```python
 from provide.foundation import get_hub
+from provide.foundation.hub import injectable
 
+@injectable
 class CustomService:
     def __init__(self):
         self.state = "initialized"
 
 hub = get_hub()
-hub.register_component("my_service", CustomService())
-service = hub.get_component("my_service")
+
+# Register instance by type
+service_instance = CustomService()
+hub.register(CustomService, service_instance)
+
+# Resolve from hub
+service = hub.resolve(CustomService)
 ```
 
 ### Custom Commands
@@ -524,8 +528,7 @@ async def root():
 ### With Django
 ```python
 # settings.py
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 # Initialize Foundation
 config = TelemetryConfig(

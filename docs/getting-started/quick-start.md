@@ -141,8 +141,7 @@ Foundation works with zero configuration, but you can customize it when needed.
 ### Explicit Configuration Example
 
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 # Initialize with custom configuration
 config = TelemetryConfig(

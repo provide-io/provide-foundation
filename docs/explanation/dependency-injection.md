@@ -86,13 +86,14 @@ By adhering to this pattern, developers can immediately understand the architect
 
 ### Python Example with Foundation Hub
 
-Foundation provides the Hub for managing component lifecycles:
+Foundation provides the Hub for dependency injection and component management:
 
 ```python
 from provide.foundation import get_hub, logger
-from provide.foundation.hub import register_component
+from provide.foundation.hub import injectable
 
-@register_component
+# Mark classes as injectable for automatic dependency resolution
+@injectable
 class Database:
     """Database connection."""
 
@@ -105,7 +106,7 @@ class Database:
         self._conn = create_connection(self.connection_string)
         logger.info("database_connected")
 
-@register_component
+@injectable
 class UserRepository:
     """User data repository."""
 
@@ -116,7 +117,7 @@ class UserRepository:
         """Get user by ID."""
         return self.db.query("SELECT * FROM users WHERE id = ?", user_id)
 
-@register_component
+@injectable
 class UserService:
     """User business logic."""
 
@@ -133,11 +134,11 @@ def main():
     hub = get_hub()
     hub.initialize_foundation()
 
-    # Register infrastructure
+    # Register infrastructure dependencies
     db = Database("postgresql://localhost/mydb")
-    hub.register("database", db)
+    hub.register(Database, db)
 
-    # Services auto-resolve dependencies
+    # Resolve service with automatic dependency injection
     user_service = hub.resolve(UserService)
 
     # Use service
@@ -396,24 +397,24 @@ def main():
 
 ### Hub-Based Composition
 
-Using Foundation's Hub for automatic resolution:
+Using Foundation's Hub for automatic dependency resolution:
 
 ```python
 from provide.foundation import get_hub
-from provide.foundation.hub import register_component
+from provide.foundation.hub import injectable
 
-# Components auto-register with Hub
-@register_component
+# Mark components as injectable
+@injectable
 class Database:
     def __init__(self, url: str):
         self.url = url
 
-@register_component
+@injectable
 class UserRepository:
     def __init__(self, db: Database):  # Auto-resolved
         self.db = db
 
-@register_component
+@injectable
 class UserService:
     def __init__(self, repo: UserRepository):  # Auto-resolved
         self.repo = repo
@@ -423,12 +424,11 @@ def main():
     hub = get_hub()
     hub.initialize_foundation()
 
-    # Register singletons
-    hub.register("database_url", "postgresql://localhost/db")
-    db = Database(hub.resolve("database_url"))
-    hub.register("database", db)
+    # Register infrastructure dependencies by type
+    db = Database("postgresql://localhost/db")
+    hub.register(Database, db)
 
-    # Resolve service (dependencies auto-injected)
+    # Resolve service (dependencies auto-injected via type hints)
     user_service = hub.resolve(UserService)
 ```
 

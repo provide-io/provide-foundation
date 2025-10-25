@@ -121,8 +121,7 @@ Output:
 ### Disable Emojis
 
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 get_hub().initialize_foundation(
     TelemetryConfig(
@@ -202,8 +201,7 @@ This is extremely useful for:
 
 **Console** (default for development):
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 config = TelemetryConfig(
     logging=LoggingConfig(
@@ -220,8 +218,7 @@ Output:
 
 **JSON** (recommended for production):
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 config = TelemetryConfig(
     logging=LoggingConfig(
@@ -240,8 +237,7 @@ Output:
 
 ```python
 # Via initialization
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 config = TelemetryConfig(
     logging=LoggingConfig(
@@ -266,8 +262,7 @@ Log levels (in order of severity):
 Control log levels for specific modules:
 
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 config = TelemetryConfig(
     logging=LoggingConfig(

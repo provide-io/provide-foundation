@@ -366,8 +366,7 @@ class AppConfig(BaseConfig):
 config = AppConfig.from_env()
 
 # Configure Foundation
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 telemetry_config = TelemetryConfig(
     service_name="my-app",
@@ -423,11 +422,11 @@ class EnvironmentAwareConfig(BaseConfig):
     def use_emoji(self) -> bool:
         return self.environment == "development"
 
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
+
 config = EnvironmentAwareConfig.from_env()
 
 # Configure based on environment
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
-
 telemetry_config = TelemetryConfig(
     logging=LoggingConfig(
         default_level=config.log_level,

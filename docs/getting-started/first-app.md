@@ -107,7 +107,7 @@ if __name__ == "__main__":
     hub = get_hub()
 
     # 2. The Hub discovers @register_command functions and builds a CLI
-    cli = hub.create_cli(name="task-manager", description="A simple task manager.")
+    cli = hub.create_cli(name="task-manager")
 
     # 3. Run the CLI
     logger.info("cli_starting", emoji="🚀")
@@ -203,15 +203,14 @@ The `hub.create_cli()` method builds a Click CLI from registered commands:
 ```python
 cli = hub.create_cli(
     name="task-manager",        # CLI program name
-    description="...",           # Description for help text (optional)
     version="1.0.0"             # Version string (optional)
 )
 ```
 
 **Parameters:**
-- `name` (str): CLI name shown in help text
+- `name` (str): CLI name shown in help text (default: "cli")
 - `version` (str | None): Optional version for `--version` flag
-- `**kwargs`: Additional Click Group options passed through
+- `**kwargs`: Additional Click Group options (e.g., `help`, `context_settings`)
 
 ### Structured Logging
 
