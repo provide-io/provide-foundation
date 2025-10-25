@@ -25,7 +25,7 @@ sys.path.insert(0, str(project_root / "src"))
 
 from provide.testkit import AsyncMock, Mock, patch
 
-from provide.foundation import logger, setup_telemetry
+from provide.foundation import logger, get_hub
 from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 from provide.foundation.transport import (
     UniversalClient,
@@ -118,6 +118,7 @@ async def demonstrate_client_session() -> None:
 
     # Create client with custom configuration
     client = UniversalClient(
+        hub=get_hub(),
         default_headers={
             "User-Agent": "Foundation-Demo/1.0",
             "Accept": "application/json",
@@ -229,7 +230,7 @@ async def demonstrate_middleware() -> None:
         ]
     )
 
-    client = UniversalClient(middleware=pipeline)
+    client = UniversalClient(hub=get_hub(), middleware=pipeline)
 
     # Mock successful httpx response
     mock_success_httpx_response = Mock()
@@ -496,7 +497,7 @@ async def main() -> None:
 
 if __name__ == "__main__":
     # Initialize Foundation telemetry
-    setup_telemetry()
+    get_hub().initialize_foundation()
 
     # Run the async example
     asyncio.run(main())

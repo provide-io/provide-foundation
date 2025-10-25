@@ -135,19 +135,12 @@ class TestStreamLogs(FoundationTestCase):
 
         assert isinstance(items, list)
 
-    @pytest.mark.skip(reason="Streaming generator cannot be called from async context - needs refactoring")
     def test_stream_logs_creates_client_if_none(
         self,
         test_stream_name: str,
         skip_if_no_openobserve: None,
     ) -> None:
-        """Test that stream_logs creates client if not provided.
-
-        Note: This test is skipped because stream_logs() uses run_async() internally,
-        which cannot be called from within an already-running event loop. The fixture
-        setup creates an async context, causing this conflict. The function works fine
-        when called from sync code (which is its intended use case).
-        """
+        """Test that stream_logs creates client if not provided."""
         sql = f"SELECT * FROM {test_stream_name} LIMIT 1"
 
         stream = stream_logs(sql=sql, poll_interval=1)
