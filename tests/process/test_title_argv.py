@@ -18,6 +18,7 @@ class TestSetProcessTitleFromArgv(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -33,6 +34,7 @@ class TestSetProcessTitleFromArgv(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -50,6 +52,7 @@ class TestSetProcessTitleFromArgv(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -66,6 +69,7 @@ class TestSetProcessTitleFromArgv(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -82,6 +86,7 @@ class TestSetProcessTitleFromArgv(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -98,6 +103,7 @@ class TestSetProcessTitleFromArgv(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -113,6 +119,7 @@ class TestSetProcessTitleFromArgv(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -166,6 +173,7 @@ class TestSetProcessTitleFromArgvEdgeCases(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -182,6 +190,7 @@ class TestSetProcessTitleFromArgvEdgeCases(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -197,6 +206,7 @@ class TestSetProcessTitleFromArgvEdgeCases(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -212,6 +222,7 @@ class TestSetProcessTitleFromArgvEdgeCases(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -228,6 +239,7 @@ class TestSetProcessTitleFromArgvEdgeCases(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -254,6 +266,7 @@ class TestSetProcessTitleFromArgvIntegration(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
@@ -269,6 +282,7 @@ class TestSetProcessTitleFromArgvIntegration(FoundationTestCase):
         with (
             patch("sys.argv", test_argv),
             patch("provide.foundation.process.title.set_process_title") as mock_set_title,
+            patch("provide.foundation.testmode.detection.is_in_test_mode", return_value=False),
         ):
             result = set_process_title_from_argv()
 
