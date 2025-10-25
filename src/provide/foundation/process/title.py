@@ -155,8 +155,8 @@ def set_process_title_from_argv() -> bool:
         >>> # Process will show as "whatever run" in ps/top
 
     """
-    import sys
     from pathlib import Path
+    import sys
 
     # Extract command name from argv[0] - preserves symlink names
     cmd_name = Path(sys.argv[0]).name
