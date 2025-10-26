@@ -95,11 +95,11 @@ from provide.foundation.serialization import provide_dumps, provide_loads
 
 For a complete hierarchical view of all modules, classes, and functions:
 
-**[📑 Full Module Index](SUMMARY.md)** - Complete navigation tree
+**[📑 Full Module Index](SUMMARY/)** - Complete navigation tree
 
 ## Module Count
 
-This reference documents **35 foundation modules** with **343 API pages**.
+This reference documents **36 foundation modules** with **352 API pages**.
 
 ---
 

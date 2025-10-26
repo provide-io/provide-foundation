@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-`provide.foundation` is a Python telemetry library built on `structlog` that provides beautiful, performant structured logging with emoji-enhanced visual parsing and semantic Domain-Action-Status patterns.
+`provide.foundation` is a comprehensive Python foundation library for building robust applications. It provides structured logging, CLI framework, configuration management, cryptography, file operations, resilience patterns, and essential application building blocks. Built on proven libraries like `structlog`, `click`, and `attrs`, it offers beautiful, performant structured logging with emoji-enhanced visual parsing and semantic Domain-Action-Status patterns.
 
 ## Development Environment Setup
 

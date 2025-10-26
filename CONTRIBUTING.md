@@ -168,7 +168,8 @@ provide-foundation/
 ├── tests/                      # Test suite
 ├── examples/                   # Usage examples
 ├── docs/                       # Documentation
-└── .venv/                      # Virtual environment (created with uv venv)
+└── workenv/                    # Platform-specific virtual environments
+    └── provide-foundation_<platform>/  # e.g., provide-foundation_darwin_arm64
 ```
 
 ## Getting Help
