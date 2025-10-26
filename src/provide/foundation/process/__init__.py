@@ -31,6 +31,7 @@ from provide.foundation.process.title import (
     get_process_title,
     has_setproctitle,
     set_process_title,
+    set_process_title_from_argv,
 )
 
 """Process Execution Subsystem.
@@ -71,6 +72,7 @@ __all__ = [
     "set_name",
     "set_no_new_privs",
     "set_process_title",
+    "set_process_title_from_argv",
     "shell",
     "stream",
     "wait_for_process_output",

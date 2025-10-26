@@ -169,7 +169,7 @@ class InitializationCoordinator:
 
         Args:
             registry: Component registry
-            config: Optional configuration (FoundationConfig or TelemetryConfig for backward compatibility)
+            config: Optional configuration (TelemetryConfig)
             force: Force re-initialization
 
         Returns:
@@ -219,10 +219,6 @@ class InitializationCoordinator:
                 with timed_block(setup_logger, "Foundation event handler setup"):
                     # Set up event handlers
                     self._setup_event_handlers()
-
-                with timed_block(setup_logger, "Foundation process title setup"):
-                    # Set process title if configured
-                    self._setup_process_title(actual_config)
 
                 # Mark complete (transitions to INITIALIZED)
                 self._state_machine.mark_complete(actual_config, logger_instance)
@@ -277,51 +273,31 @@ class InitializationCoordinator:
         return False
 
     def _initialize_config(self, config: Any) -> Any:
-        """Initialize configuration.
-
-        Accepts FoundationConfig or TelemetryConfig. If TelemetryConfig is provided,
-        it's automatically wrapped in a FoundationConfig for consistency.
-        """
+        """Initialize configuration."""
         if config:
-            # Auto-wrap TelemetryConfig in FoundationConfig for backward compatibility
-            from provide.foundation.config.foundation import FoundationConfig
-            from provide.foundation.logger.config import TelemetryConfig
-
-            if isinstance(config, TelemetryConfig) and not isinstance(config, FoundationConfig):
-                # Wrap TelemetryConfig in FoundationConfig
-                return FoundationConfig(telemetry=config, process_title=None)
             return config
 
-        # Load from environment - prefer FoundationConfig
-        from provide.foundation.config.foundation import FoundationConfig
+        # Load from environment
+        from provide.foundation.logger.config import TelemetryConfig
 
         try:
-            return FoundationConfig.from_env()
+            return TelemetryConfig.from_env()
         except Exception as e:
             # Only fallback for config parsing errors, not import errors
             if "import" in str(e).lower():
                 raise
             # Fallback to minimal config for environment parsing issues
-            from provide.foundation.logger.config import TelemetryConfig
-
-            return FoundationConfig(telemetry=TelemetryConfig(), process_title=None)
+            return TelemetryConfig()
 
     def _initialize_logger(self, config: Any, registry: Any) -> Any:
-        """Initialize logger instance.
-
-        Extracts telemetry config from FoundationConfig if needed.
-        """
-        from provide.foundation.config.foundation import FoundationConfig
+        """Initialize logger instance."""
         from provide.foundation.logger.core import FoundationLogger
 
-        # Extract telemetry config if we have a FoundationConfig
-        telemetry_config = config.telemetry if isinstance(config, FoundationConfig) else config
-
-        # Create hub wrapper for logger (with full config)
+        # Create hub wrapper for logger
         hub_wrapper = type("HubWrapper", (), {"_component_registry": registry, "_foundation_config": config})()
 
         logger_instance = FoundationLogger(hub=hub_wrapper)
-        logger_instance.setup(telemetry_config)
+        logger_instance.setup(config)
 
         return logger_instance
 
@@ -353,23 +329,6 @@ class InitializationCoordinator:
             setup_event_logging()
         except Exception:
             # If event handler setup fails, continue without it
-            pass
-
-    def _setup_process_title(self, config: Any) -> None:
-        """Set up process title if configured.
-
-        Args:
-            config: FoundationConfig or TelemetryConfig instance
-        """
-        try:
-            from provide.foundation.config.foundation import FoundationConfig
-            from provide.foundation.process.title import set_process_title
-
-            # Only set process title if we have a FoundationConfig with a title
-            if isinstance(config, FoundationConfig) and config.process_title:
-                set_process_title(config.process_title)
-        except Exception:
-            # If process title setup fails, continue without it
             pass
 
     def get_state(self) -> InitializationState:
