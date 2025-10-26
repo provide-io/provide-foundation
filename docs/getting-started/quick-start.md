@@ -141,22 +141,22 @@ Foundation works with zero configuration, but you can customize it when needed.
 ### Explicit Configuration Example
 
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 # Initialize with custom configuration
-hub = get_hub()
-hub.initialize_foundation(
-    TelemetryConfig(
-        service_name="my-app",
-        logging=LoggingConfig(
-            default_level="INFO",
-            console_formatter="json",  # Use JSON for production
-        ),
-    )
+config = TelemetryConfig(
+    service_name="my-app",
+    logging=LoggingConfig(
+        default_level="INFO",
+        console_formatter="json",  # Use JSON for production
+    ),
 )
 
+hub = get_hub()
+hub.initialize_foundation(config)
+
 # Now use the logger normally
+from provide.foundation import logger
 logger.info("app_started", version="1.0.0")
 ```
 

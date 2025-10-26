@@ -132,10 +132,10 @@ config = AppConfig.from_env()
 
 1. **Logger System** (`src/provide/foundation/logger/`)
    - `base.py`: FoundationLogger class and global logger instance
-   - `config.py`: TelemetryConfig and LoggingConfig data classes
-   - `processors.py`: Log processing pipeline
-   - `emoji_matrix.py`: Emoji mapping system for visual log parsing
-   - `env.py`: Environment variable configuration parsing
+   - `config/`: TelemetryConfig and LoggingConfig data classes
+   - `processors/`: Log processing pipeline
+   - `setup/`: Logger initialization and coordination
+   - Event sets in `src/provide/foundation/eventsets/`: Emoji mapping system for visual log parsing
 
 2. **Configuration System** (`src/provide/foundation/config/`)
    - Async-first configuration loading system

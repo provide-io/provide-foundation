@@ -82,9 +82,16 @@ Use for logging, configuration, and resilience - NOT as a web framework.
 # Use FastAPI/Flask for HTTP, Foundation for logging
 from fastapi import FastAPI
 from provide.foundation import logger, get_hub
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
 app = FastAPI()
-get_hub().initialize_foundation()
+
+# Initialize Foundation
+config = TelemetryConfig(
+    service_name="my-api",
+    logging=LoggingConfig(default_level="INFO")
+)
+get_hub().initialize_foundation(config)
 
 @app.get("/users")
 async def get_users():

@@ -4,12 +4,33 @@ Foundation provides two complementary APIs for working with environment variable
 
 ## Quick Comparison
 
-| Use Case | API to Use | Example |
-|----------|-----------|---------|
-| Simple scripts, one-off reads | **Direct Access** | `get_bool("DEBUG")` |
-| Application configuration classes | **Structured Config** | `BaseConfig.from_env()` |
-| Secret management | **Structured Config** | Supports `file://` prefix |
-| Type-safe config objects | **Structured Config** | Full attrs validation |
+Foundation provides two complementary APIs for working with environment variables:
+
+### When to Use Each API
+
+| Use Case | API to Use | Why | Example |
+|----------|-----------|-----|---------|
+| **Simple scripts** | Direct Access (`utils.environment`) | Quick one-off reads, no class overhead | `get_bool("DEBUG")` |
+| **Utility scripts** | Direct Access | Minimal boilerplate for throwaway code | `get_int("PORT")` |
+| **Application config** | Structured Config (`config.env`) | Type safety, validation, IDE autocomplete | `BaseConfig.from_env()` |
+| **Secret management** | Structured Config | Built-in `file://` prefix support | `password: str = env_field(...)` |
+| **Complex validation** | Structured Config | Use attrs validators for constraints | Custom validators on fields |
+| **Shared configuration** | Structured Config | Pass config objects between modules | Single source of truth |
+
+### Decision Flow
+
+```
+Do you need configuration for the entire app?
+├─ Yes → Use Structured Config (BaseConfig + env_field)
+│   └─ Benefits: Type safety, validation, IDE support
+│
+└─ No → Is this a quick script or one-off read?
+    ├─ Yes → Use Direct Access (get_bool, get_int, etc.)
+    │   └─ Benefits: Less boilerplate, faster to write
+    │
+    └─ No → Use Structured Config anyway for consistency
+        └─ Benefits: Easier to refactor later
+```
 
 ## Direct Environment Variable Access
 
@@ -154,6 +175,52 @@ except EnvironmentError as e:
 ## Structured Configuration Classes
 
 Use this for building type-safe, validated configuration objects with file-based secret support.
+
+### Understanding field() vs env_field()
+
+Foundation provides two ways to declare fields in configuration classes. Both work identically - choose based on your preference and use case.
+
+#### Quick Decision Guide
+
+```
+Are you building user-facing configuration classes?
+├─ Yes → Use env_field() (clearer intent, less verbose)
+│   └─ Example: AppConfig, DatabaseConfig, ServiceConfig
+│
+└─ No → Are you building internal Foundation-style configs?
+    ├─ Yes → Use field() (matches Foundation's patterns)
+    │   └─ Example: Custom LoggingConfig, TelemetryConfig extensions
+    │
+    └─ Either works → Choose based on code style preference
+```
+
+#### The Two Approaches
+
+**1. `env_field()` - Convenience wrapper (recommended for user code):**
+```python
+from provide.foundation.config import env_field
+
+api_key: str = env_field(env_var="API_KEY")
+port: int = env_field(env_var="PORT", default=8080)
+```
+
+**2. `field()` - Direct approach (used in Foundation internals):**
+```python
+from provide.foundation.config.base import field
+
+default_level: str = field(
+    default="INFO",
+    env_var="PROVIDE_LOG_LEVEL",
+    description="Logging level"
+)
+```
+
+**Key Points:**
+- Both work identically - `env_field()` internally calls `field()`
+- `env_field()` is more concise for simple use cases
+- `field()` supports additional metadata like descriptions
+- Foundation's own config classes use `field()` directly
+- Use whichever feels more readable for your code
 
 ### Basic Example
 
@@ -345,12 +412,18 @@ class AppConfig(BaseConfig):
 config = AppConfig.from_env()
 
 # Configure Foundation
-from provide.foundation import get_hub
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
-get_hub().initialize_foundation(
-    log_level=config.log_level,
-    use_emoji=not config.environment == "production"
+telemetry_config = TelemetryConfig(
+    service_name="my-app",
+    logging=LoggingConfig(
+        default_level=config.log_level,
+        logger_name_emoji_prefix_enabled=not config.environment == "production",
+        das_emoji_prefix_enabled=not config.environment == "production"
+    )
 )
+
+get_hub().initialize_foundation(telemetry_config)
 ```
 
 ### Production Secrets
@@ -395,13 +468,20 @@ class EnvironmentAwareConfig(BaseConfig):
     def use_emoji(self) -> bool:
         return self.environment == "development"
 
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
+
 config = EnvironmentAwareConfig.from_env()
 
 # Configure based on environment
-get_hub().initialize_foundation(
-    log_level=config.log_level,
-    use_emoji=config.use_emoji
+telemetry_config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level=config.log_level,
+        logger_name_emoji_prefix_enabled=config.use_emoji,
+        das_emoji_prefix_enabled=config.use_emoji
+    )
 )
+
+get_hub().initialize_foundation(telemetry_config)
 ```
 
 ## Testing with Environment Variables
