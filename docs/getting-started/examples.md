@@ -93,6 +93,14 @@ Safe file handling and monitoring:
 
 **[View file examples](https://github.com/provide-io/provide-foundation/tree/main/examples/file_operations)**
 
+### Dependency Injection
+
+Polyglot dependency injection patterns:
+
+- **01_polyglot_di_pattern.py** - Dependency injection using the Hub system
+
+**[View DI examples](https://github.com/provide-io/provide-foundation/tree/main/examples/di)**
+
 ### Production Patterns
 
 Production-ready application patterns:
@@ -106,10 +114,24 @@ Production-ready application patterns:
 
 Third-party integrations:
 
-- **Celery Integration** - Task queue integration with Celery
-- **OpenObserve** - Log aggregation with OpenObserve
+#### Celery Integration
+- **01_setup_and_config.py** - Celery setup and configuration
+- **02_metrics_and_signals.py** - Metrics collection and signal handling
+- **03_tasks.py** - Task definitions
+- **04_runner.py** - Running Celery workers
 
-**[View integration examples](https://github.com/provide-io/provide-foundation/tree/main/examples/integration)**
+**[View Celery examples](https://github.com/provide-io/provide-foundation/tree/main/examples/integration/celery)**
+
+#### OpenObserve Integration
+- **01_openobserve_integration.py** - Log aggregation with OpenObserve
+- **02_metrics_integration.py** - Metrics integration with OpenObserve
+
+**[View OpenObserve examples](https://github.com/provide-io/provide-foundation/tree/main/examples/openobserve)**
+
+#### Task Queue Patterns
+- **01a_basic_task_queue.py** - Task queue patterns with async workers (no external dependencies)
+
+**[View all integration examples](https://github.com/provide-io/provide-foundation/tree/main/examples/integration)**
 
 ## Example Structure
 
