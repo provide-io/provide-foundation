@@ -108,5 +108,5 @@ All examples demonstrate these Foundation patterns:
 
 For complete API documentation, see:
 - [Foundation Documentation](../docs/)
-- [API Reference](../docs/api/)
-- [User Guide](../docs/guide/)
+- [API Reference](../docs/reference/)
+- [How-To Guides](../docs/how-to-guides/)

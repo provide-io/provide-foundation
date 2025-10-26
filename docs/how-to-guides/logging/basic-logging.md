@@ -121,8 +121,7 @@ Output:
 ### Disable Emojis
 
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
 get_hub().initialize_foundation(
     TelemetryConfig(
@@ -202,7 +201,14 @@ This is extremely useful for:
 
 **Console** (default for development):
 ```python
-get_hub().initialize_foundation(json_logs=False)
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
+
+config = TelemetryConfig(
+    logging=LoggingConfig(
+        console_formatter="key_value"
+    )
+)
+get_hub().initialize_foundation(config)
 ```
 
 Output:
@@ -212,7 +218,14 @@ Output:
 
 **JSON** (recommended for production):
 ```python
-get_hub().initialize_foundation(json_logs=True)
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
+
+config = TelemetryConfig(
+    logging=LoggingConfig(
+        console_formatter="json"
+    )
+)
+get_hub().initialize_foundation(config)
 ```
 
 Output:
@@ -224,7 +237,14 @@ Output:
 
 ```python
 # Via initialization
-get_hub().initialize_foundation(log_level="DEBUG")
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
+
+config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="DEBUG"
+    )
+)
+get_hub().initialize_foundation(config)
 
 # Via environment variable
 # export PROVIDE_LOG_LEVEL=DEBUG
@@ -242,19 +262,20 @@ Log levels (in order of severity):
 Control log levels for specific modules:
 
 ```python
-from provide.foundation import get_hub
-from provide.foundation.logger.config import LoggingConfig
+from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
-config = LoggingConfig(
-    level="INFO",  # Default level
-    module_levels={
-        "urllib3": "WARNING",      # Suppress urllib3 debug/info
-        "asyncio": "INFO",          # Show asyncio info+
-        "myapp.database": "DEBUG",  # Verbose logging for database module
-    }
+config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="INFO",  # Default level
+        module_levels={
+            "urllib3": "WARNING",      # Suppress urllib3 debug/info
+            "asyncio": "INFO",          # Show asyncio info+
+            "myapp.database": "DEBUG",  # Verbose logging for database module
+        }
+    )
 )
 
-get_hub().initialize_foundation(logging_config=config)
+get_hub().initialize_foundation(config)
 ```
 
 Or via environment variable:
