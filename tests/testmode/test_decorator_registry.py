@@ -120,11 +120,11 @@ class TestDecoratorRegistry(FoundationTestCase):
         registry = get_test_unsafe_features()
 
         # Current expected test-unsafe features:
-        # - process.title: set_process_title, get_process_title (2)
+        # - process.title: set_process_title, get_process_title, set_process_title_from_argv (3)
         # - platform.systemd: notify_ready, notify_status, notify_watchdog,
         #                     notify_reloading, notify_stopping, notify_error (6)
-        # Total: 8 functions
-        expected_count = 8
+        # Total: 9 functions
+        expected_count = 9
         actual_count = len(registry)
 
         assert actual_count == expected_count, (
