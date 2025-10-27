@@ -63,8 +63,6 @@ plugins:
         - docs/reference/gen_ref_pages.py
   - literate-nav:
       nav_file: SUMMARY.md
-  - macros:
-      include_dir: docs/.shared-theme/data
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -77,13 +75,9 @@ plugins:
             show_symbol_type_heading: true
             show_symbol_type_toc: true
             show_signature_annotations: true
-            signature_crossrefs: true
             show_bases: true
-            show_inheritance_diagram: false
             merge_init_into_class: true
             separate_signature: true
-            members_order: source
-            inherited_members: true
 
 markdown_extensions:
   - admonition
@@ -102,15 +96,11 @@ markdown_extensions:
       alternate_style: true
 
 extra_css:
-  - .shared-theme/stylesheets/provide-theme.css
-  - .shared-theme/stylesheets/termynal.css
-  - stylesheets/extra.css  # Project-specific overrides
+  - stylesheets/extra.css
 
 extra_javascript:
   - https://unpkg.com/mermaid@10/dist/mermaid.min.js
-  - .shared-theme/javascripts/mermaid-init.js
-  - .shared-theme/javascripts/termynal.js
-  - .shared-theme/javascripts/custom.js
+  - javascripts/mermaid-init.js
 
 nav:
   - Home: index.md
@@ -118,6 +108,7 @@ nav:
   - Overview:
     - Features: information/features.md
     - Use Cases: information/use-cases.md
+    - System Architecture: information/architecture.md
     - What's New: information/changelog.md
 
   - Getting Started:
@@ -126,6 +117,10 @@ nav:
     - 5-Minute Quick Start: getting-started/quick-start.md
     - Build a CLI App Tutorial: getting-started/first-app.md
     - More Examples: getting-started/examples.md
+
+  - Tutorials:
+    - Introduction to Logging: tutorials/01-quick-start.md
+    - Building CLI Applications: tutorials/02-first-app.md
 
   - How-To Guides:
     - Logging:
@@ -160,7 +155,6 @@ nav:
     - Production:
       - Deployment Patterns: how-to-guides/production/deployment.md
       - Monitoring & Observability: how-to-guides/production/monitoring.md
-    - Troubleshooting: how-to-guides/troubleshooting.md
 
   - Concepts:
     - How Foundation Works: explanation/architecture.md
@@ -173,37 +167,25 @@ nav:
       - Hub: reference/provide/foundation/hub/index.md
       - Config: reference/provide/foundation/config/index.md
       - Errors: reference/provide/foundation/errors/index.md
-      - State: reference/provide/foundation/state/index.md
     - CLI & Console:
       - CLI: reference/provide/foundation/cli/index.md
       - Console: reference/provide/foundation/console/index.md
-      - Context: reference/provide/foundation/context/index.md
-    - Resilience & Observability:
+    - Resilience:
       - Resilience: reference/provide/foundation/resilience/index.md
       - Metrics: reference/provide/foundation/metrics/index.md
       - Tracer: reference/provide/foundation/tracer/index.md
-      - Observability: reference/provide/foundation/observability/index.md
     - Data & Files:
       - File: reference/provide/foundation/file/index.md
       - Archive: reference/provide/foundation/archive/index.md
       - Serialization: reference/provide/foundation/serialization/index.md
-      - Streams: reference/provide/foundation/streams/index.md
     - Security:
       - Crypto: reference/provide/foundation/crypto/index.md
       - Security: reference/provide/foundation/security/index.md
     - Utilities:
       - Utils: reference/provide/foundation/utils/index.md
-      - Concurrency: reference/provide/foundation/concurrency/index.md
-      - Formatting: reference/provide/foundation/formatting/index.md
-      - Time: reference/provide/foundation/time/index.md
       - Process: reference/provide/foundation/process/index.md
       - Platform: reference/provide/foundation/platform/index.md
       - Transport: reference/provide/foundation/transport/index.md
       - Parsers: reference/provide/foundation/parsers/index.md
-    - Advanced:
-      - Tools: reference/provide/foundation/tools/index.md
-      - Profiling: reference/provide/foundation/profiling/index.md
-      - Testmode: reference/provide/foundation/testmode/index.md
-      - Integrations: reference/provide/foundation/integrations/index.md
 
   - Specs: specs/index.md

@@ -121,42 +121,25 @@ def process_file(filename: str):
 
 ## 6. Configuration (Optional)
 
-Foundation works with zero configuration, but you can customize it when needed.
-
-### When to Initialize Explicitly
-
-**Auto-initialization (default) - Use for:**
-- ✅ Simple scripts and utilities
-- ✅ Development and experimentation
-- ✅ When default configuration is sufficient
-- ✅ Quick prototypes
-
-**Explicit initialization - Use for:**
-- ✅ Production applications
-- ✅ Custom configuration requirements
-- ✅ Integration with web frameworks (FastAPI, Flask, Django)
-- ✅ Multiple services with different configurations
-- ✅ When you need control over service name, log format, or telemetry
-
-### Explicit Configuration Example
+Foundation works with zero configuration, but you can customize it:
 
 ```python
-from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
+from provide.foundation import get_hub
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
 # Initialize with custom configuration
-config = TelemetryConfig(
-    service_name="my-app",
-    logging=LoggingConfig(
-        default_level="INFO",
-        console_formatter="json",  # Use JSON for production
-    ),
+hub = get_hub()
+hub.initialize_foundation(
+    TelemetryConfig(
+        service_name="my-app",
+        logging=LoggingConfig(
+            default_level="INFO",
+            console_formatter="json",  # Use JSON for production
+        ),
+    )
 )
 
-hub = get_hub()
-hub.initialize_foundation(config)
-
 # Now use the logger normally
-from provide.foundation import logger
 logger.info("app_started", version="1.0.0")
 ```
 

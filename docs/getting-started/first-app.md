@@ -43,6 +43,7 @@ Create a file named `task_manager.py`:
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Dict
 
 from provide.foundation import logger, pout, perr, get_hub
 from provide.foundation.hub import register_command
@@ -57,7 +58,7 @@ class Task:
     created_at: datetime = field(default_factory=datetime.now)
 
 # --- In-Memory "Database" ---
-TASKS: dict[int, Task] = {}
+TASKS: Dict[int, Task] = {}
 NEXT_ID = 1
 
 # --- CLI Commands ---
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     hub = get_hub()
 
     # 2. The Hub discovers @register_command functions and builds a CLI
-    cli = hub.create_cli(name="task-manager")
+    cli = hub.create_cli(name="task-manager", description="A simple task manager.")
 
     # 3. Run the CLI
     logger.info("cli_starting", emoji="🚀")
@@ -195,22 +196,6 @@ Foundation automatically:
 - Converts function parameters to CLI arguments
 - Generates help text from docstrings
 - Handles type conversion (str, int, bool, etc.)
-
-### The create_cli() Method
-
-The `hub.create_cli()` method builds a Click CLI from registered commands:
-
-```python
-cli = hub.create_cli(
-    name="task-manager",        # CLI program name
-    version="1.0.0"             # Version string (optional)
-)
-```
-
-**Parameters:**
-- `name` (str): CLI name shown in help text (default: "cli")
-- `version` (str | None): Optional version for `--version` flag
-- `**kwargs`: Additional Click Group options (e.g., `help`, `context_settings`)
 
 ### Structured Logging
 

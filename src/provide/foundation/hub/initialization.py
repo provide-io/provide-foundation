@@ -169,7 +169,7 @@ class InitializationCoordinator:
 
         Args:
             registry: Component registry
-            config: Optional configuration (TelemetryConfig)
+            config: Optional configuration
             force: Force re-initialization
 
         Returns:
