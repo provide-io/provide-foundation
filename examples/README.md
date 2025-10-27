@@ -33,20 +33,7 @@ This directory contains practical examples demonstrating various features and us
 
 ### [integration/](integration/) - Third-Party Integrations
 - `01a_basic_task_queue.py` - Task queue patterns with async workers (no external deps)
-- [celery/](integration/celery/) - Celery task queue integration
-  - `01_setup_and_config.py` - Celery setup and configuration
-  - `02_metrics_and_signals.py` - Metrics collection and signal handling
-  - `03_tasks.py` - Task definitions and execution
-  - `04_runner.py` - Running Celery workers
-  - `05_cut_up_chuck_tasks.py` - Advanced task patterns
-  - `06_cut_up_chuck_runner.py` - Advanced runner patterns
-
-### [openobserve/](openobserve/) - OpenObserve Integration
-- `01_openobserve_integration.py` - Log aggregation with OpenObserve
-- `02_metrics_integration.py` - Metrics integration with OpenObserve
-
-### [di/](di/) - Dependency Injection
-- `01_polyglot_di_pattern.py` - Polyglot dependency injection patterns
+- `01_celery_integration.py` - Integration with Celery task queue
 
 ### [production/](production/) - Production Patterns
 - `01_production_patterns.py` - Production-ready logging and monitoring
@@ -108,5 +95,5 @@ All examples demonstrate these Foundation patterns:
 
 For complete API documentation, see:
 - [Foundation Documentation](../docs/)
-- [API Reference](../docs/reference/)
-- [How-To Guides](../docs/how-to-guides/)
+- [API Reference](../docs/api/)
+- [User Guide](../docs/guide/)

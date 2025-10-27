@@ -6,8 +6,8 @@
 
 provide.foundation maintains high standards for code quality, testing, and reliability:
 
-- **High Test Coverage (>80%)** with 1000+ comprehensive tests
-- **Extensive 100% coverage** of core components and critical modules
+- **83.65% Test Coverage** with 1000+ comprehensive tests
+- **46 modules with 100% coverage** including core components
 - **Comprehensive Security Testing** with path traversal, symlink validation, and input sanitization
 - **Performance Benchmarked** logging, transport, and archive operations
 - **Type-Safe Codebase** with comprehensive type annotations
@@ -162,5 +162,5 @@ Safe subprocess execution with streaming and async support.
 
 **Next Steps:**
 - See [Use Cases](use-cases.md) for practical applications
-- Check [Architecture](../explanation/architecture.md) for design philosophy
-- Start with the [Quick Start Tutorial](../getting-started/quick-start.md)
+- Check [Architecture](architecture.md) for design philosophy
+- Start with the [Quick Start Tutorial](../tutorials/01-quick-start.md)

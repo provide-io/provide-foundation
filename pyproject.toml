@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "provide-foundation"
-description = "A comprehensive Python foundation library for building robust applications with structured logging, CLI framework, configuration management, and essential building blocks."
+description = "Foundation Telemetry: An opinionated, developer-friendly telemetry wrapper for Python."
 dynamic = ["version"]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -40,7 +40,7 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/provide-io/provide-foundation"
-Documentation = "https://foundry.provide.io/foundation/"
+Documentation = "https://provide-io.github.io/provide-foundation/"
 Repository = "https://github.com/provide-io/provide-foundation"
 Issues = "https://github.com/provide-io/provide-foundation/issues"
 Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
@@ -233,7 +233,7 @@ ignore_missing_imports = true
 ################################################################################
 
 [tool.coverage.run]
-source = ["src/provide/foundation"]
+source = ["provide.foundation"]
 branch = true
 parallel = true
 omit = [
