@@ -23,7 +23,7 @@ Perfect for command-line tools that need structured logging, configuration manag
 - Data processing command-line tools
 - Build and automation tools
 
-**See:** [CLI Application Tutorial](../tutorials/02-first-app.md)
+**See:** [CLI Application Tutorial](../getting-started/first-app.md)
 
 #### Microservices with Structured Logging
 Services that need production-ready logging and observability.
@@ -82,9 +82,16 @@ Use for logging, configuration, and resilience - NOT as a web framework.
 # Use FastAPI/Flask for HTTP, Foundation for logging
 from fastapi import FastAPI
 from provide.foundation import logger, get_hub
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
 app = FastAPI()
-get_hub().initialize_foundation()
+
+# Initialize Foundation
+config = TelemetryConfig(
+    service_name="my-api",
+    logging=LoggingConfig(default_level="INFO")
+)
+get_hub().initialize_foundation(config)
 
 @app.get("/users")
 async def get_users():
@@ -240,5 +247,5 @@ Foundation provides logging, CLI, configuration. It does NOT provide:
 
 **Next Steps:**
 - Review [Features](features.md) for complete capabilities
-- Check [Architecture](architecture.md) for design decisions
-- Start building with [Quick Start](../tutorials/01-quick-start.md)
+- Check [Architecture](../explanation/architecture.md) for design decisions
+- Start building with [Quick Start](../getting-started/quick-start.md)
