@@ -1,8 +1,7 @@
-# provide/foundation/crypto/rsa.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
-
+#
 """RSA digital signature implementation.
 
 RSA-PSS signatures with SHA-256 for compatibility with existing systems.
@@ -12,8 +11,8 @@ Examples:
     >>> signer = RSASigner.generate(key_size=2048)
     >>> signature = signer.sign(b"message")
     >>> verifier = RSAVerifier(signer.public_key_pem)
-    >>> assert verifier.verify(b"message", signature)
-"""
+    >>> assert verifier.verify(b"message", signature)"""
+
 
 from __future__ import annotations
 
@@ -255,3 +254,5 @@ __all__ = [
 
 
 # <3 🧱🤝🔒🪄
+
+# 🧱🏗️🔚

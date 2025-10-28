@@ -1,0 +1,12 @@
+./tests/integration/test_integration_config_edge_cases.py
+./tests/integration/test_integration_error_handling.py
+./tests/integration/test_integration_verification.py
+./tests/integration/test_integration_coverage_100.py
+./scripts/fix_split_imports.py
+./scripts/split_large_tests.py
+./scripts/apply_header.py
+./scripts/extreme_performance_test.py
+./scripts/benchmark_performance.py
+./scripts/version_checker.py
+./scripts/cut_up_chuck.py
+./scripts/setup_github_auth.py
