@@ -1,7 +1,7 @@
-# provide/foundation/crypto/ed25519.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Ed25519 digital signature implementation.
 
@@ -12,8 +12,7 @@ Examples:
     >>> signer = Ed25519Signer.generate()
     >>> signature = signer.sign(b"message")
     >>> verifier = Ed25519Verifier(signer.public_key)
-    >>> assert verifier.verify(b"message", signature)
-"""
+    >>> assert verifier.verify(b"message", signature)"""
 
 from __future__ import annotations
 
@@ -241,3 +240,5 @@ __all__ = [
 
 
 # <3 🧱🤝🔒🪄
+
+# 🧱🏗️🔚
