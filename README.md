@@ -10,8 +10,8 @@
 
 **provide.foundation** maintains high standards for code quality, testing, and reliability:
 
-- **83.65% Test Coverage** with 1000+ comprehensive tests
-- **46 modules with 100% coverage** including core components
+- **High Test Coverage (>80%)** with 1000+ comprehensive tests
+- **Extensive 100% coverage** of core components and critical modules
 - **Comprehensive Security Testing** with path traversal, symlink validation, and input sanitization
 - **Performance Benchmarked** logging, transport, and archive operations
 - **Type-Safe Codebase** with comprehensive type annotations
@@ -79,9 +79,9 @@ provide.foundation is intentionally designed as a **foundation layer**, not a fu
 - Libraries needing structured logging
 
 **Consider alternatives:**
-- Ultra-low latency systems (<100μs requirements)
-- Full-stack framework needs (use Django, Rails)
-- Tool stack incompatibility (Pydantic-only, loguru-only projects)
+- Ultra-low latency systems (<100μs requirements) - e.g., HFT systems, real-time gaming servers where Foundation's lock-based registry adds unwanted overhead
+- Full-stack framework needs (use Django, Rails) - Foundation provides logging/config but not ORM, templating, or routing
+- Tool stack incompatibility - e.g., if your team standardized on Pydantic models (Foundation uses attrs) or loguru (Foundation uses structlog)
 
 ### Key Design Decisions
 

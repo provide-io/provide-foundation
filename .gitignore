@@ -398,5 +398,6 @@ site
 .claude
 ai_studio_code.sh
 .documentation
-analyzer_output/
-analyzer_cache/
+
+# Synced theme files (source: provide-foundry/shared-theme/)
+docs/.shared-theme/

@@ -56,6 +56,15 @@ if _HAS_CLICK:
     except ImportError:
         pass
 
+    # Register process commands
+    try:
+        from provide.foundation.cli.commands.process import process_group
+
+        if hasattr(process_group, "callback"):
+            cli.add_command(process_group)
+    except ImportError:
+        pass
+
     # Register OpenObserve commands if available
     try:
         from provide.foundation.integrations.openobserve.commands import (
