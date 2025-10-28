@@ -1,13 +1,12 @@
-# provide/foundation/integrations/openobserve/bulk_api.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """OpenObserve bulk API (non-OTLP fallback).
 
 Provides functions for sending logs via OpenObserve's proprietary bulk ingestion API.
-This is used as a fallback when OTLP is unavailable or when the circuit breaker is open.
-"""
+This is used as a fallback when OTLP is unavailable or when the circuit breaker is open."""
 
 from __future__ import annotations
 
@@ -198,3 +197,5 @@ __all__ = [
 
 
 # <3 🧱🤝🔌🪄
+
+# 🧱🏗️🔚

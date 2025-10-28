@@ -1,13 +1,12 @@
-# provide/foundation/integrations/openobserve/metrics_formatters.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Formatters for OpenObserve metrics output.
 
 Provides various output formats for metrics data including tables, JSON, CSV,
-ASCII charts, and statistical summaries.
-"""
+ASCII charts, and statistical summaries."""
 
 from __future__ import annotations
 
@@ -397,3 +396,5 @@ def format_metric_output(
 
 
 # <3 🧱🤝📊🪄
+
+# 🧱🏗️🔚

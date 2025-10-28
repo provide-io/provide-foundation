@@ -1,13 +1,12 @@
-# provide/foundation/config/formatters.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Output formatters for configuration schema display.
 
 This module provides various formatters for displaying configuration schemas
-in different output formats: human-readable tables, JSON, YAML, and Markdown.
-"""
+in different output formats: human-readable tables, JSON, YAML, and Markdown."""
 
 from __future__ import annotations
 
@@ -422,3 +421,5 @@ def get_formatter(format_name: str) -> SchemaFormatter:
 
 
 # <3 🧱🤝⚙️🪄
+
+# 🧱🏗️🔚
