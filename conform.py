@@ -1,81 +1,109 @@
+#!/usr/bin/env python3
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 
-import os
-import sys
+"""This script conforms Python files to a strict header/footer protocol."""
+
+from __future__ import annotations
+
 import ast
+import sys
 
-def get_module_docstring(source_code):
+HEADER_SPDX = """# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#"""
+
+FOOTER = "\n\n# 🧱🏗️🔚\n"
+PLACEHOLDER_DOCSTRING = '"""TODO: Add module docstring."""'
+OLD_FOOTERS = {"# 🧱🏗️🔚", "# 🐍🏗️🔚"}
+
+
+def conform_file(filepath: str) -> None:
     """
-    Parses Python source code and returns the module-level docstring.
+    Reads a Python file, analyzes its structure, and rewrites it to conform
+    to the specified header and footer protocol.
     """
     try:
-        tree = ast.parse(source_code)
-        return ast.get_docstring(tree)
-    except SyntaxError:
-        return None
-
-def conform_file(filepath):
-    """
-    Applies the header and footer protocol to a single Python file.
-    """
-    with open(filepath, 'r') as f:
-        lines = f.readlines()
-
-    if not lines:
+        with open(filepath, encoding="utf-8") as f:
+            content = f.read()
+            lines = content.splitlines()
+    except (OSError, UnicodeDecodeError) as e:
+        print(f"Error reading file {filepath}: {e}", file=sys.stderr)
         return
 
-    is_executable = lines[0].startswith('#!')
+    if not content.strip():
+        return
 
-    # Preserve original docstring
-    source_code = ''.join(lines)
-    docstring = get_module_docstring(source_code)
+    # 1. Analyze existing state
+    is_executable = lines[0].startswith("#!") if lines else False
 
-    # Build the new header
-    header = []
-    if is_executable:
-        header.append('#!/usr/bin/env python3\n')
+    docstring = None
+    tree = None
+    try:
+        tree = ast.parse(content)
+        docstring = ast.get_docstring(tree)
+    except SyntaxError:
+        print(f"Warning: Skipping file due to syntax error: {filepath}", file=sys.stderr)
+        return
+
+    # 2. Extract the code body
+    body_content = ""
+    if tree.body:
+        first_node = tree.body[0]
+        is_docstring_node = isinstance(first_node, ast.Expr) and isinstance(
+            first_node.value, ast.Constant
+        )
+
+        start_node = None
+        if is_docstring_node:
+            if len(tree.body) > 1:
+                start_node = tree.body[1]
+        else:
+            start_node = tree.body[0]
+
+        if start_node:
+            start_index = start_node.lineno - 1
+            body_lines_list = lines[start_index:]
+            body_content = "\n".join(body_lines_list)
+
+    # 3. Clean the extracted body
+    body_content = body_content.rstrip()
+    if body_content:
+        body_lines = body_content.splitlines()
+        if body_lines and body_lines[-1].strip() in OLD_FOOTERS:
+            body_lines = body_lines[:-1]
+        final_body = "\n".join(body_lines).rstrip()
     else:
-        header.append('# \n')
+        final_body = ""
 
-    header.extend([
-        '# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.\n',
-        '# SPDX-License-Identifier: Apache-2.0\n',
-        '#\n'
-    ])
+    # 4. Assemble new file content
+    header_first_line = "#!/usr/bin/env python3" if is_executable else "#"
+    final_header = f"{header_first_line}\n{HEADER_SPDX}\n"
 
-    if docstring:
-        header.append(f'"""{docstring}"""\n')
-    else:
-        header.append('"""TODO: Add module docstring."""\n')
+    final_docstring = f'"""{docstring}"""' if docstring else PLACEHOLDER_DOCSTRING
 
-    # Find the start of the code (skip shebang, comments, and docstrings)
-    code_start_index = 0
-    in_docstring = False
-    for i, line in enumerate(lines):
-        if line.strip().startswith('#'):
-            continue
-        if '"""' in line or "'''" in line:
-            in_docstring = not in_docstring
-            if not in_docstring:
-                code_start_index = i + 1
-                break
-            continue
-        if not in_docstring and line.strip():
-            code_start_index = i
-            break
+    separator = "\n\n" if final_body else ""
+    new_content = (
+        f"{final_header}\n{final_docstring}{separator}{final_body}{FOOTER}"
+    )
 
-    # Combine header with the rest of the code
-    new_content = "".join(header) + "\n" + "".join(lines[code_start_index:])
+    # 5. Write back to file
+    try:
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(new_content)
+    except OSError as e:
+        print(f"Error writing to file {filepath}: {e}", file=sys.stderr)
 
-    # Remove old footers and trailing whitespace
-    new_content = '\n'.join(line for line in new_content.split('\n') if '# 🧱🏗️' not in line and '# 🐍🏗️' not in line)
-    new_content = new_content.rstrip()
-
-    # Add new footer
-    new_content += '\n\n# 🧱🏗️🔚\n'
-
-    with open(filepath, 'w') as f:
-        f.write(new_content)
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print(
+            "Usage: python conform.py <file1.py> <file2.py> ...", file=sys.stderr
+        )
+        sys.exit(1)
+
     for filepath in sys.argv[1:]:
         conform_file(filepath)
+
+# 🧱🏗️🔚
