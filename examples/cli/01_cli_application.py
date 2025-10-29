@@ -1,4 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/cli/01_cli_application.py
 
 from __future__ import annotations
@@ -255,3 +259,7 @@ if __name__ == "__main__":
     # hub = Hub()
     # test_resources_command()
     # status_command(verbose=True)
+
+# 🧱🏗️🔚
+
+

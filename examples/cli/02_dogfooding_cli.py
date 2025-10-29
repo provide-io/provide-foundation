@@ -1,4 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/cli/02_dogfooding_cli.py
 
 from __future__ import annotations
@@ -398,3 +402,7 @@ if __name__ == "__main__":
     # Create and run the CLI
     cli = create_dogfooding_cli()
     cli()
+
+# 🧱🏗️🔚
+
+

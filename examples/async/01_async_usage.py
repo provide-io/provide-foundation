@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/09_async_usage.py
 """Demonstrates using Foundation Telemetry in asynchronous applications."""
 
@@ -82,3 +86,7 @@ async def example_9_async_usage() -> None:
 if __name__ == "__main__":
     asyncio.run(example_9_async_usage())
     pout("\n✅ Example 9 completed.")
+
+# 🧱🏗️🔚
+
+

@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Examples demonstrating the new architectural improvements in provide-foundation.
 
 This file showcases the new features added in the comprehensive refactoring:
@@ -288,3 +293,7 @@ async def example_async_examples() -> None:
 
 if __name__ == "__main__":
     main()
+
+# 🧱🏗️🔚
+
+
