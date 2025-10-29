@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 """Polyglot Dependency Injection Pattern - Python Example.
 
 This example demonstrates the dependency injection pattern that is
@@ -224,3 +229,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# 🧱🏗️🔚
+
+

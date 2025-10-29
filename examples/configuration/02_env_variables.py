@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/08_env_variables_config.py
 """Demonstrates configuring Foundation Telemetry using environment variables."""
 
@@ -90,3 +94,7 @@ def example_8_environment_configuration() -> None:
 if __name__ == "__main__":
     example_8_environment_configuration()
     pout("\n✅ Example 8 completed.")
+
+# 🧱🏗️🔚
+
+

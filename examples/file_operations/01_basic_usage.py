@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/file_operations/01_basic_usage.py
 """Basic usage of file operation detection for monitoring file changes."""
 
@@ -155,3 +159,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# 🧱🏗️🔚
+
+
