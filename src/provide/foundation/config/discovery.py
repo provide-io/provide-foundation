@@ -1,14 +1,13 @@
-# provide/foundation/config/discovery.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Configuration schema discovery system.
 
 This module provides functionality to discover and introspect all configuration
 classes registered with the Foundation Hub. It enables programmatic access to
-configuration schemas, environment variable mappings, and metadata.
-"""
+configuration schemas, environment variable mappings, and metadata."""
 
 from __future__ import annotations
 
@@ -212,3 +211,5 @@ def get_consolidated_schema() -> ConsolidatedSchema:
 
 
 # <3 🧱🤝⚙️🪄
+
+# 🧱🏗️🔚

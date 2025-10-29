@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """RSA digital signature implementation.
 
 RSA-PSS signatures with SHA-256 for compatibility with existing systems.
@@ -12,7 +13,6 @@ Examples:
     >>> signature = signer.sign(b"message")
     >>> verifier = RSAVerifier(signer.public_key_pem)
     >>> assert verifier.verify(b"message", signature)"""
-
 
 from __future__ import annotations
 

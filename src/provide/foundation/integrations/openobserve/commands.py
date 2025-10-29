@@ -1,12 +1,11 @@
-# provide/foundation/integrations/openobserve/commands.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """CLI commands for OpenObserve integration.
 
-These commands are auto-registered by Foundation's command discovery system.
-"""
+These commands are auto-registered by Foundation's command discovery system."""
 
 from __future__ import annotations
 
@@ -475,3 +474,5 @@ else:
 
 
 # <3 🧱🤝🔌🪄
+
+# 🧱🏗️🔚

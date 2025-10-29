@@ -1,7 +1,9 @@
-# provide/foundation/concurrency/core.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -132,3 +134,5 @@ def async_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> Any
 
 
 # <3 🧱🤝🧵🪄
+
+# 🧱🏗️🔚

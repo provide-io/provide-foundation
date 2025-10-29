@@ -1,13 +1,12 @@
-# provide/foundation/config/bootstrap.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Configuration schema discovery and registration for bootstrap.
 
 This module provides functionality to discover all RuntimeConfig subclasses
-and register them with the Hub's CONFIG_SCHEMA dimension during bootstrap.
-"""
+and register them with the Hub's CONFIG_SCHEMA dimension during bootstrap."""
 
 from __future__ import annotations
 
@@ -127,3 +126,5 @@ def discover_and_register_configs() -> None:
 
 
 # <3 🧱🤝⚙️🪄
+
+# 🧱🏗️🔚

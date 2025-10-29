@@ -1,7 +1,7 @@
-# provide/foundation/config/schema.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Configuration schema and validation."""
 
@@ -304,3 +304,5 @@ def validate_url_accessible(value: str) -> bool:
 
 
 # <3 🧱🤝⚙️🪄
+
+# 🧱🏗️🔚

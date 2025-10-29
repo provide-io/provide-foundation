@@ -2,6 +2,7 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Ed25519 digital signature implementation.
 
 Ed25519 is the recommended algorithm for new applications: fast, small keys,
@@ -12,7 +13,6 @@ Examples:
     >>> signature = signer.sign(b"message")
     >>> verifier = Ed25519Verifier(signer.public_key)
     >>> assert verifier.verify(b"message", signature)"""
-
 
 from __future__ import annotations
 
