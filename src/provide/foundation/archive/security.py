@@ -1,12 +1,11 @@
-# provide/foundation/archive/security.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
-
+#
 """Archive extraction security utilities.
 
-Provides path validation to prevent common archive extraction vulnerabilities.
-"""
+Provides path validation to prevent common archive extraction vulnerabilities."""
+
 
 from __future__ import annotations
 
@@ -63,3 +62,5 @@ def is_safe_path(base_dir: Path, target_path: str) -> bool:
 
 
 # <3 🧱🤝📦🪄
+
+# 🧱🏗️🔚
