@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/05_exception_handling.py
 """Demonstrates exception logging with automatic traceback inclusion."""
 
@@ -76,3 +80,7 @@ def example_5_exception_handling() -> None:
 if __name__ == "__main__":
     example_5_exception_handling()
     pout("\n✅ Example 5 completed.")
+
+# 🧱🏗️🔚
+
+

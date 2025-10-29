@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 """Celery Integration - Distributed Cut-Up Chuck Runner
 
 This module orchestrates the distributed cut-up chuck log generation system,
@@ -408,3 +412,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# 🧱🏗️🔚
+
+

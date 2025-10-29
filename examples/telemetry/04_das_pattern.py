@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/04_das_logging.py
 """Demonstrates Domain-Action-Status (DAS) structured logging."""
 
@@ -100,3 +104,7 @@ def example_4_das_logging() -> None:
 if __name__ == "__main__":
     example_4_das_logging()
     pout("\n✅ Example 4 completed.")
+
+# 🧱🏗️🔚
+
+

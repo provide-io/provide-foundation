@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/10_production_patterns.py
 """Demonstrates production-ready logging patterns with Foundation Telemetry."""
 
@@ -111,3 +115,7 @@ if __name__ == "__main__":
     reset_foundation_setup_for_testing()
     example_10_production_patterns()
     pout("\n✅ Example 10 completed.")
+
+# 🧱🏗️🔚
+
+

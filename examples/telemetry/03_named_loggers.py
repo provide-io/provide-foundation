@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/03_named_loggers.py
 """Demonstrates usage of named loggers for different components."""
 
@@ -85,3 +89,7 @@ def example_3_named_loggers() -> None:
 if __name__ == "__main__":
     example_3_named_loggers()
     pout("\n✅ Example 3 completed.")
+
+# 🧱🏗️🔚
+
+

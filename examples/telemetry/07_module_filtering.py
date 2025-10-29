@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/07_module_filtering.py
 """Demonstrates module-specific log level configuration."""
 
@@ -75,3 +79,7 @@ def example_7_module_level_filtering() -> None:
 if __name__ == "__main__":
     example_7_module_level_filtering()
     pout("\n✅ Example 7 completed.")
+
+# 🧱🏗️🔚
+
+

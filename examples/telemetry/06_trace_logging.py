@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/06_trace_logging.py
 """Demonstrates TRACE level logging for ultra-verbose output."""
 
@@ -66,3 +70,7 @@ def example_6_trace_logging() -> None:
 if __name__ == "__main__":
     example_6_trace_logging()
     pout("\n✅ Example 6 completed.")
+
+# 🧱🏗️🔚
+
+
