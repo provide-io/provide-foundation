@@ -1,13 +1,12 @@
-# provide/foundation/utils/async_helpers.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Async-sync bridge utilities for Foundation.
 
 Provides utilities for bridging async and sync code, particularly useful
-for CLI commands that need to call async clients or functions.
-"""
+for CLI commands that need to call async clients or functions."""
 
 from __future__ import annotations
 
@@ -130,3 +129,5 @@ __all__ = ["run_async"]
 
 
 # <3 🧱🤝🧰🪄
+
+# 🧱🏗️🔚

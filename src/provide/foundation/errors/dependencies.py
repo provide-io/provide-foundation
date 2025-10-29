@@ -1,7 +1,7 @@
-# provide/foundation/errors/dependencies.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Dependency-related exceptions."""
 
@@ -99,3 +99,5 @@ class DependencyMismatchError(FoundationError):
 
 
 # <3 🧱🤝🐛🪄
+
+# 🧱🏗️🔚
