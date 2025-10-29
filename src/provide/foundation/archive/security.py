@@ -2,10 +2,10 @@
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Archive extraction security utilities.
 
 Provides path validation to prevent common archive extraction vulnerabilities."""
-
 
 from __future__ import annotations
 

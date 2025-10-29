@@ -1,7 +1,9 @@
-# provide/foundation/integrations/openobserve/models.py
 #
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -142,3 +144,5 @@ def parse_relative_time(time_str: str, now: datetime | None = None) -> int:
 
 
 # <3 🧱🤝🔌🪄
+
+# 🧱🏗️🔚

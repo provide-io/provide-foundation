@@ -1,3 +1,4 @@
+./conform.py
 ./src/provide/foundation/state/config.py
 ./src/provide/foundation/state/base.py
 ./src/provide/foundation/state/__init__.py
