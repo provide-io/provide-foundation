@@ -1,5 +1,6 @@
 #
-# test_context.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
 """Tests for Foundation tracer context management."""
 
@@ -155,8 +156,6 @@ class TestSpanContext(FoundationTestCase):
 
     def test_span_context_no_previous_span(self) -> None:
         """Test SpanContext when no previous span exists."""
-        span = Span(name="test_op")
-
         with SpanContext(span):
             assert get_current_span() == span
 
@@ -336,3 +335,6 @@ class TestTraceContextIntegration(FoundationTestCase):
         # Inner span should also be marked as error
         assert inner_span.status == "error"
         assert "ValueError" in inner_span.error
+
+# 🧱🏗️🔚
+
