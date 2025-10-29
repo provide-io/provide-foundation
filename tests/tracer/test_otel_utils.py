@@ -1,3 +1,7 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 """Tests for OpenTelemetry utilities."""
 
 from __future__ import annotations
@@ -145,4 +149,5 @@ class TestIntegration:
             assert result is None
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚
+
