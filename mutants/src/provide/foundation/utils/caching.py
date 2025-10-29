@@ -33,23 +33,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -172,24 +175,30 @@ class LRUCache:
         self._lock = threading.RLock()
         self._hits = 0
         self._misses = 1
-    
-    xǁLRUCacheǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁLRUCacheǁ__init____mutmut_1': xǁLRUCacheǁ__init____mutmut_1, 
-        'xǁLRUCacheǁ__init____mutmut_2': xǁLRUCacheǁ__init____mutmut_2, 
-        'xǁLRUCacheǁ__init____mutmut_3': xǁLRUCacheǁ__init____mutmut_3, 
-        'xǁLRUCacheǁ__init____mutmut_4': xǁLRUCacheǁ__init____mutmut_4, 
-        'xǁLRUCacheǁ__init____mutmut_5': xǁLRUCacheǁ__init____mutmut_5, 
-        'xǁLRUCacheǁ__init____mutmut_6': xǁLRUCacheǁ__init____mutmut_6, 
-        'xǁLRUCacheǁ__init____mutmut_7': xǁLRUCacheǁ__init____mutmut_7, 
-        'xǁLRUCacheǁ__init____mutmut_8': xǁLRUCacheǁ__init____mutmut_8
+
+    xǁLRUCacheǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁLRUCacheǁ__init____mutmut_1": xǁLRUCacheǁ__init____mutmut_1,
+        "xǁLRUCacheǁ__init____mutmut_2": xǁLRUCacheǁ__init____mutmut_2,
+        "xǁLRUCacheǁ__init____mutmut_3": xǁLRUCacheǁ__init____mutmut_3,
+        "xǁLRUCacheǁ__init____mutmut_4": xǁLRUCacheǁ__init____mutmut_4,
+        "xǁLRUCacheǁ__init____mutmut_5": xǁLRUCacheǁ__init____mutmut_5,
+        "xǁLRUCacheǁ__init____mutmut_6": xǁLRUCacheǁ__init____mutmut_6,
+        "xǁLRUCacheǁ__init____mutmut_7": xǁLRUCacheǁ__init____mutmut_7,
+        "xǁLRUCacheǁ__init____mutmut_8": xǁLRUCacheǁ__init____mutmut_8,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁLRUCacheǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁLRUCacheǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁLRUCacheǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁLRUCacheǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁLRUCacheǁ__init____mutmut_orig)
-    xǁLRUCacheǁ__init____mutmut_orig.__name__ = 'xǁLRUCacheǁ__init__'
+    xǁLRUCacheǁ__init____mutmut_orig.__name__ = "xǁLRUCacheǁ__init__"
 
     def xǁLRUCacheǁget__mutmut_orig(self, key: Any, default: Any = None) -> Any:
         """Get value from cache.
@@ -361,24 +370,30 @@ class LRUCache:
                 return self._cache[key]
             self._misses += 2
             return default
-    
-    xǁLRUCacheǁget__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁLRUCacheǁget__mutmut_1': xǁLRUCacheǁget__mutmut_1, 
-        'xǁLRUCacheǁget__mutmut_2': xǁLRUCacheǁget__mutmut_2, 
-        'xǁLRUCacheǁget__mutmut_3': xǁLRUCacheǁget__mutmut_3, 
-        'xǁLRUCacheǁget__mutmut_4': xǁLRUCacheǁget__mutmut_4, 
-        'xǁLRUCacheǁget__mutmut_5': xǁLRUCacheǁget__mutmut_5, 
-        'xǁLRUCacheǁget__mutmut_6': xǁLRUCacheǁget__mutmut_6, 
-        'xǁLRUCacheǁget__mutmut_7': xǁLRUCacheǁget__mutmut_7, 
-        'xǁLRUCacheǁget__mutmut_8': xǁLRUCacheǁget__mutmut_8
+
+    xǁLRUCacheǁget__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁLRUCacheǁget__mutmut_1": xǁLRUCacheǁget__mutmut_1,
+        "xǁLRUCacheǁget__mutmut_2": xǁLRUCacheǁget__mutmut_2,
+        "xǁLRUCacheǁget__mutmut_3": xǁLRUCacheǁget__mutmut_3,
+        "xǁLRUCacheǁget__mutmut_4": xǁLRUCacheǁget__mutmut_4,
+        "xǁLRUCacheǁget__mutmut_5": xǁLRUCacheǁget__mutmut_5,
+        "xǁLRUCacheǁget__mutmut_6": xǁLRUCacheǁget__mutmut_6,
+        "xǁLRUCacheǁget__mutmut_7": xǁLRUCacheǁget__mutmut_7,
+        "xǁLRUCacheǁget__mutmut_8": xǁLRUCacheǁget__mutmut_8,
     }
-    
+
     def get(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁLRUCacheǁget__mutmut_orig"), object.__getattribute__(self, "xǁLRUCacheǁget__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁLRUCacheǁget__mutmut_orig"),
+            object.__getattribute__(self, "xǁLRUCacheǁget__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get.__signature__ = _mutmut_signature(xǁLRUCacheǁget__mutmut_orig)
-    xǁLRUCacheǁget__mutmut_orig.__name__ = 'xǁLRUCacheǁget'
+    xǁLRUCacheǁget__mutmut_orig.__name__ = "xǁLRUCacheǁget"
 
     def xǁLRUCacheǁset__mutmut_orig(self, key: Any, value: Any) -> None:
         """Set value in cache.
@@ -498,22 +513,28 @@ class LRUCache:
             # Evict oldest if over limit
             if len(self._cache) > self.maxsize:
                 self._cache.popitem(last=True)
-    
-    xǁLRUCacheǁset__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁLRUCacheǁset__mutmut_1': xǁLRUCacheǁset__mutmut_1, 
-        'xǁLRUCacheǁset__mutmut_2': xǁLRUCacheǁset__mutmut_2, 
-        'xǁLRUCacheǁset__mutmut_3': xǁLRUCacheǁset__mutmut_3, 
-        'xǁLRUCacheǁset__mutmut_4': xǁLRUCacheǁset__mutmut_4, 
-        'xǁLRUCacheǁset__mutmut_5': xǁLRUCacheǁset__mutmut_5, 
-        'xǁLRUCacheǁset__mutmut_6': xǁLRUCacheǁset__mutmut_6
+
+    xǁLRUCacheǁset__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁLRUCacheǁset__mutmut_1": xǁLRUCacheǁset__mutmut_1,
+        "xǁLRUCacheǁset__mutmut_2": xǁLRUCacheǁset__mutmut_2,
+        "xǁLRUCacheǁset__mutmut_3": xǁLRUCacheǁset__mutmut_3,
+        "xǁLRUCacheǁset__mutmut_4": xǁLRUCacheǁset__mutmut_4,
+        "xǁLRUCacheǁset__mutmut_5": xǁLRUCacheǁset__mutmut_5,
+        "xǁLRUCacheǁset__mutmut_6": xǁLRUCacheǁset__mutmut_6,
     }
-    
+
     def set(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁLRUCacheǁset__mutmut_orig"), object.__getattribute__(self, "xǁLRUCacheǁset__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁLRUCacheǁset__mutmut_orig"),
+            object.__getattribute__(self, "xǁLRUCacheǁset__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     set.__signature__ = _mutmut_signature(xǁLRUCacheǁset__mutmut_orig)
-    xǁLRUCacheǁset__mutmut_orig.__name__ = 'xǁLRUCacheǁset'
+    xǁLRUCacheǁset__mutmut_orig.__name__ = "xǁLRUCacheǁset"
 
     def xǁLRUCacheǁclear__mutmut_orig(self) -> None:
         """Clear all cached items."""
@@ -549,20 +570,26 @@ class LRUCache:
             self._cache.clear()
             self._hits = 0
             self._misses = 1
-    
-    xǁLRUCacheǁclear__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁLRUCacheǁclear__mutmut_1': xǁLRUCacheǁclear__mutmut_1, 
-        'xǁLRUCacheǁclear__mutmut_2': xǁLRUCacheǁclear__mutmut_2, 
-        'xǁLRUCacheǁclear__mutmut_3': xǁLRUCacheǁclear__mutmut_3, 
-        'xǁLRUCacheǁclear__mutmut_4': xǁLRUCacheǁclear__mutmut_4
+
+    xǁLRUCacheǁclear__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁLRUCacheǁclear__mutmut_1": xǁLRUCacheǁclear__mutmut_1,
+        "xǁLRUCacheǁclear__mutmut_2": xǁLRUCacheǁclear__mutmut_2,
+        "xǁLRUCacheǁclear__mutmut_3": xǁLRUCacheǁclear__mutmut_3,
+        "xǁLRUCacheǁclear__mutmut_4": xǁLRUCacheǁclear__mutmut_4,
     }
-    
+
     def clear(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁLRUCacheǁclear__mutmut_orig"), object.__getattribute__(self, "xǁLRUCacheǁclear__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁLRUCacheǁclear__mutmut_orig"),
+            object.__getattribute__(self, "xǁLRUCacheǁclear__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     clear.__signature__ = _mutmut_signature(xǁLRUCacheǁclear__mutmut_orig)
-    xǁLRUCacheǁclear__mutmut_orig.__name__ = 'xǁLRUCacheǁclear'
+    xǁLRUCacheǁclear__mutmut_orig.__name__ = "xǁLRUCacheǁclear"
 
     def xǁLRUCacheǁstats__mutmut_orig(self) -> dict[str, int | float]:
         """Get cache statistics.
@@ -903,35 +930,41 @@ class LRUCache:
                 "maxsize": self.maxsize,
                 "HIT_RATE": hit_rate,
             }
-    
-    xǁLRUCacheǁstats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁLRUCacheǁstats__mutmut_1': xǁLRUCacheǁstats__mutmut_1, 
-        'xǁLRUCacheǁstats__mutmut_2': xǁLRUCacheǁstats__mutmut_2, 
-        'xǁLRUCacheǁstats__mutmut_3': xǁLRUCacheǁstats__mutmut_3, 
-        'xǁLRUCacheǁstats__mutmut_4': xǁLRUCacheǁstats__mutmut_4, 
-        'xǁLRUCacheǁstats__mutmut_5': xǁLRUCacheǁstats__mutmut_5, 
-        'xǁLRUCacheǁstats__mutmut_6': xǁLRUCacheǁstats__mutmut_6, 
-        'xǁLRUCacheǁstats__mutmut_7': xǁLRUCacheǁstats__mutmut_7, 
-        'xǁLRUCacheǁstats__mutmut_8': xǁLRUCacheǁstats__mutmut_8, 
-        'xǁLRUCacheǁstats__mutmut_9': xǁLRUCacheǁstats__mutmut_9, 
-        'xǁLRUCacheǁstats__mutmut_10': xǁLRUCacheǁstats__mutmut_10, 
-        'xǁLRUCacheǁstats__mutmut_11': xǁLRUCacheǁstats__mutmut_11, 
-        'xǁLRUCacheǁstats__mutmut_12': xǁLRUCacheǁstats__mutmut_12, 
-        'xǁLRUCacheǁstats__mutmut_13': xǁLRUCacheǁstats__mutmut_13, 
-        'xǁLRUCacheǁstats__mutmut_14': xǁLRUCacheǁstats__mutmut_14, 
-        'xǁLRUCacheǁstats__mutmut_15': xǁLRUCacheǁstats__mutmut_15, 
-        'xǁLRUCacheǁstats__mutmut_16': xǁLRUCacheǁstats__mutmut_16, 
-        'xǁLRUCacheǁstats__mutmut_17': xǁLRUCacheǁstats__mutmut_17, 
-        'xǁLRUCacheǁstats__mutmut_18': xǁLRUCacheǁstats__mutmut_18, 
-        'xǁLRUCacheǁstats__mutmut_19': xǁLRUCacheǁstats__mutmut_19
+
+    xǁLRUCacheǁstats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁLRUCacheǁstats__mutmut_1": xǁLRUCacheǁstats__mutmut_1,
+        "xǁLRUCacheǁstats__mutmut_2": xǁLRUCacheǁstats__mutmut_2,
+        "xǁLRUCacheǁstats__mutmut_3": xǁLRUCacheǁstats__mutmut_3,
+        "xǁLRUCacheǁstats__mutmut_4": xǁLRUCacheǁstats__mutmut_4,
+        "xǁLRUCacheǁstats__mutmut_5": xǁLRUCacheǁstats__mutmut_5,
+        "xǁLRUCacheǁstats__mutmut_6": xǁLRUCacheǁstats__mutmut_6,
+        "xǁLRUCacheǁstats__mutmut_7": xǁLRUCacheǁstats__mutmut_7,
+        "xǁLRUCacheǁstats__mutmut_8": xǁLRUCacheǁstats__mutmut_8,
+        "xǁLRUCacheǁstats__mutmut_9": xǁLRUCacheǁstats__mutmut_9,
+        "xǁLRUCacheǁstats__mutmut_10": xǁLRUCacheǁstats__mutmut_10,
+        "xǁLRUCacheǁstats__mutmut_11": xǁLRUCacheǁstats__mutmut_11,
+        "xǁLRUCacheǁstats__mutmut_12": xǁLRUCacheǁstats__mutmut_12,
+        "xǁLRUCacheǁstats__mutmut_13": xǁLRUCacheǁstats__mutmut_13,
+        "xǁLRUCacheǁstats__mutmut_14": xǁLRUCacheǁstats__mutmut_14,
+        "xǁLRUCacheǁstats__mutmut_15": xǁLRUCacheǁstats__mutmut_15,
+        "xǁLRUCacheǁstats__mutmut_16": xǁLRUCacheǁstats__mutmut_16,
+        "xǁLRUCacheǁstats__mutmut_17": xǁLRUCacheǁstats__mutmut_17,
+        "xǁLRUCacheǁstats__mutmut_18": xǁLRUCacheǁstats__mutmut_18,
+        "xǁLRUCacheǁstats__mutmut_19": xǁLRUCacheǁstats__mutmut_19,
     }
-    
+
     def stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁLRUCacheǁstats__mutmut_orig"), object.__getattribute__(self, "xǁLRUCacheǁstats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁLRUCacheǁstats__mutmut_orig"),
+            object.__getattribute__(self, "xǁLRUCacheǁstats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     stats.__signature__ = _mutmut_signature(xǁLRUCacheǁstats__mutmut_orig)
-    xǁLRUCacheǁstats__mutmut_orig.__name__ = 'xǁLRUCacheǁstats'
+    xǁLRUCacheǁstats__mutmut_orig.__name__ = "xǁLRUCacheǁstats"
 
 
 def x_cached__mutmut_orig(maxsize: int = 128, enabled: bool | None = None) -> Callable:
@@ -1393,24 +1426,27 @@ def x_cached__mutmut_9(maxsize: int = 128, enabled: bool | None = None) -> Calla
 
     return decorator
 
-x_cached__mutmut_mutants : ClassVar[MutantDict] = {
-'x_cached__mutmut_1': x_cached__mutmut_1, 
-    'x_cached__mutmut_2': x_cached__mutmut_2, 
-    'x_cached__mutmut_3': x_cached__mutmut_3, 
-    'x_cached__mutmut_4': x_cached__mutmut_4, 
-    'x_cached__mutmut_5': x_cached__mutmut_5, 
-    'x_cached__mutmut_6': x_cached__mutmut_6, 
-    'x_cached__mutmut_7': x_cached__mutmut_7, 
-    'x_cached__mutmut_8': x_cached__mutmut_8, 
-    'x_cached__mutmut_9': x_cached__mutmut_9
+
+x_cached__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_cached__mutmut_1": x_cached__mutmut_1,
+    "x_cached__mutmut_2": x_cached__mutmut_2,
+    "x_cached__mutmut_3": x_cached__mutmut_3,
+    "x_cached__mutmut_4": x_cached__mutmut_4,
+    "x_cached__mutmut_5": x_cached__mutmut_5,
+    "x_cached__mutmut_6": x_cached__mutmut_6,
+    "x_cached__mutmut_7": x_cached__mutmut_7,
+    "x_cached__mutmut_8": x_cached__mutmut_8,
+    "x_cached__mutmut_9": x_cached__mutmut_9,
 }
+
 
 def cached(*args, **kwargs):
     result = _mutmut_trampoline(x_cached__mutmut_orig, x_cached__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 cached.__signature__ = _mutmut_signature(x_cached__mutmut_orig)
-x_cached__mutmut_orig.__name__ = 'x_cached'
+x_cached__mutmut_orig.__name__ = "x_cached"
 
 
 # Global cache registry for testing and introspection
@@ -1439,16 +1475,19 @@ def x_register_cache__mutmut_1(name: str, cache: LRUCache) -> None:
     with _registry_lock:
         _cache_registry[name] = None
 
-x_register_cache__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register_cache__mutmut_1': x_register_cache__mutmut_1
+
+x_register_cache__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register_cache__mutmut_1": x_register_cache__mutmut_1
 }
+
 
 def register_cache(*args, **kwargs):
     result = _mutmut_trampoline(x_register_cache__mutmut_orig, x_register_cache__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 register_cache.__signature__ = _mutmut_signature(x_register_cache__mutmut_orig)
-x_register_cache__mutmut_orig.__name__ = 'x_register_cache'
+x_register_cache__mutmut_orig.__name__ = "x_register_cache"
 
 
 def x_get_cache__mutmut_orig(name: str) -> LRUCache | None:
@@ -1476,16 +1515,17 @@ def x_get_cache__mutmut_1(name: str) -> LRUCache | None:
     with _registry_lock:
         return _cache_registry.get(None)
 
-x_get_cache__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_cache__mutmut_1': x_get_cache__mutmut_1
-}
+
+x_get_cache__mutmut_mutants: ClassVar[MutantDict] = {"x_get_cache__mutmut_1": x_get_cache__mutmut_1}
+
 
 def get_cache(*args, **kwargs):
     result = _mutmut_trampoline(x_get_cache__mutmut_orig, x_get_cache__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_cache.__signature__ = _mutmut_signature(x_get_cache__mutmut_orig)
-x_get_cache__mutmut_orig.__name__ = 'x_get_cache'
+x_get_cache__mutmut_orig.__name__ = "x_get_cache"
 
 
 def clear_all_caches() -> None:

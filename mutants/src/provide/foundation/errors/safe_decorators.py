@@ -24,23 +24,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -81,7 +84,10 @@ def x__get_func_name__mutmut_5(func: Callable) -> str:
 
 def x__get_func_name__mutmut_6(func: Callable) -> str:
     """Get function name with fallback."""
-    return getattr(func, "__name__", )
+    return getattr(
+        func,
+        "__name__",
+    )
 
 
 def x__get_func_name__mutmut_7(func: Callable) -> str:
@@ -103,28 +109,33 @@ def x__get_func_name__mutmut_10(func: Callable) -> str:
     """Get function name with fallback."""
     return getattr(func, "__name__", "<ANONYMOUS>")
 
-x__get_func_name__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_func_name__mutmut_1': x__get_func_name__mutmut_1, 
-    'x__get_func_name__mutmut_2': x__get_func_name__mutmut_2, 
-    'x__get_func_name__mutmut_3': x__get_func_name__mutmut_3, 
-    'x__get_func_name__mutmut_4': x__get_func_name__mutmut_4, 
-    'x__get_func_name__mutmut_5': x__get_func_name__mutmut_5, 
-    'x__get_func_name__mutmut_6': x__get_func_name__mutmut_6, 
-    'x__get_func_name__mutmut_7': x__get_func_name__mutmut_7, 
-    'x__get_func_name__mutmut_8': x__get_func_name__mutmut_8, 
-    'x__get_func_name__mutmut_9': x__get_func_name__mutmut_9, 
-    'x__get_func_name__mutmut_10': x__get_func_name__mutmut_10
+
+x__get_func_name__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_func_name__mutmut_1": x__get_func_name__mutmut_1,
+    "x__get_func_name__mutmut_2": x__get_func_name__mutmut_2,
+    "x__get_func_name__mutmut_3": x__get_func_name__mutmut_3,
+    "x__get_func_name__mutmut_4": x__get_func_name__mutmut_4,
+    "x__get_func_name__mutmut_5": x__get_func_name__mutmut_5,
+    "x__get_func_name__mutmut_6": x__get_func_name__mutmut_6,
+    "x__get_func_name__mutmut_7": x__get_func_name__mutmut_7,
+    "x__get_func_name__mutmut_8": x__get_func_name__mutmut_8,
+    "x__get_func_name__mutmut_9": x__get_func_name__mutmut_9,
+    "x__get_func_name__mutmut_10": x__get_func_name__mutmut_10,
 }
+
 
 def _get_func_name(*args, **kwargs):
     result = _mutmut_trampoline(x__get_func_name__mutmut_orig, x__get_func_name__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _get_func_name.__signature__ = _mutmut_signature(x__get_func_name__mutmut_orig)
-x__get_func_name__mutmut_orig.__name__ = 'x__get_func_name'
+x__get_func_name__mutmut_orig.__name__ = "x__get_func_name"
 
 
-def x__log_function_entry__mutmut_orig(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_orig(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(logger, log_level)
@@ -136,7 +147,9 @@ def x__log_function_entry__mutmut_orig(logger: Any, func: Callable, log_level: s
         )
 
 
-def x__log_function_entry__mutmut_1(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_1(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level not in ("debug", "trace"):
         log_method = getattr(logger, log_level)
@@ -148,7 +161,9 @@ def x__log_function_entry__mutmut_1(logger: Any, func: Callable, log_level: str,
         )
 
 
-def x__log_function_entry__mutmut_2(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_2(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("XXdebugXX", "trace"):
         log_method = getattr(logger, log_level)
@@ -160,7 +175,9 @@ def x__log_function_entry__mutmut_2(logger: Any, func: Callable, log_level: str,
         )
 
 
-def x__log_function_entry__mutmut_3(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_3(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("DEBUG", "trace"):
         log_method = getattr(logger, log_level)
@@ -172,7 +189,9 @@ def x__log_function_entry__mutmut_3(logger: Any, func: Callable, log_level: str,
         )
 
 
-def x__log_function_entry__mutmut_4(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_4(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "XXtraceXX"):
         log_method = getattr(logger, log_level)
@@ -184,7 +203,9 @@ def x__log_function_entry__mutmut_4(logger: Any, func: Callable, log_level: str,
         )
 
 
-def x__log_function_entry__mutmut_5(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_5(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "TRACE"):
         log_method = getattr(logger, log_level)
@@ -196,7 +217,9 @@ def x__log_function_entry__mutmut_5(logger: Any, func: Callable, log_level: str,
         )
 
 
-def x__log_function_entry__mutmut_6(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_6(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = None
@@ -208,7 +231,9 @@ def x__log_function_entry__mutmut_6(logger: Any, func: Callable, log_level: str,
         )
 
 
-def x__log_function_entry__mutmut_7(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_7(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(None, log_level)
@@ -220,7 +245,9 @@ def x__log_function_entry__mutmut_7(logger: Any, func: Callable, log_level: str,
         )
 
 
-def x__log_function_entry__mutmut_8(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_8(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(logger, None)
@@ -232,7 +259,9 @@ def x__log_function_entry__mutmut_8(logger: Any, func: Callable, log_level: str,
         )
 
 
-def x__log_function_entry__mutmut_9(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_9(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(log_level)
@@ -244,10 +273,14 @@ def x__log_function_entry__mutmut_9(logger: Any, func: Callable, log_level: str,
         )
 
 
-def x__log_function_entry__mutmut_10(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_10(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
-        log_method = getattr(logger, )
+        log_method = getattr(
+            logger,
+        )
         func_name = _get_func_name(func)
         log_method(
             f"Entering {func_name}",
@@ -256,7 +289,9 @@ def x__log_function_entry__mutmut_10(logger: Any, func: Callable, log_level: str
         )
 
 
-def x__log_function_entry__mutmut_11(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_11(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(logger, log_level)
@@ -268,7 +303,9 @@ def x__log_function_entry__mutmut_11(logger: Any, func: Callable, log_level: str
         )
 
 
-def x__log_function_entry__mutmut_12(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_12(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(logger, log_level)
@@ -280,7 +317,9 @@ def x__log_function_entry__mutmut_12(logger: Any, func: Callable, log_level: str
         )
 
 
-def x__log_function_entry__mutmut_13(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_13(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(logger, log_level)
@@ -292,7 +331,9 @@ def x__log_function_entry__mutmut_13(logger: Any, func: Callable, log_level: str
         )
 
 
-def x__log_function_entry__mutmut_14(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_14(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(logger, log_level)
@@ -304,7 +345,9 @@ def x__log_function_entry__mutmut_14(logger: Any, func: Callable, log_level: str
         )
 
 
-def x__log_function_entry__mutmut_15(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_15(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(logger, log_level)
@@ -315,7 +358,9 @@ def x__log_function_entry__mutmut_15(logger: Any, func: Callable, log_level: str
         )
 
 
-def x__log_function_entry__mutmut_16(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_16(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(logger, log_level)
@@ -326,7 +371,9 @@ def x__log_function_entry__mutmut_16(logger: Any, func: Callable, log_level: str
         )
 
 
-def x__log_function_entry__mutmut_17(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_entry__mutmut_17(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log function entry if appropriate level."""
     if log_level in ("debug", "trace"):
         log_method = getattr(logger, log_level)
@@ -334,37 +381,44 @@ def x__log_function_entry__mutmut_17(logger: Any, func: Callable, log_level: str
         log_method(
             f"Entering {func_name}",
             function=func_name,
-            )
+        )
 
-x__log_function_entry__mutmut_mutants : ClassVar[MutantDict] = {
-'x__log_function_entry__mutmut_1': x__log_function_entry__mutmut_1, 
-    'x__log_function_entry__mutmut_2': x__log_function_entry__mutmut_2, 
-    'x__log_function_entry__mutmut_3': x__log_function_entry__mutmut_3, 
-    'x__log_function_entry__mutmut_4': x__log_function_entry__mutmut_4, 
-    'x__log_function_entry__mutmut_5': x__log_function_entry__mutmut_5, 
-    'x__log_function_entry__mutmut_6': x__log_function_entry__mutmut_6, 
-    'x__log_function_entry__mutmut_7': x__log_function_entry__mutmut_7, 
-    'x__log_function_entry__mutmut_8': x__log_function_entry__mutmut_8, 
-    'x__log_function_entry__mutmut_9': x__log_function_entry__mutmut_9, 
-    'x__log_function_entry__mutmut_10': x__log_function_entry__mutmut_10, 
-    'x__log_function_entry__mutmut_11': x__log_function_entry__mutmut_11, 
-    'x__log_function_entry__mutmut_12': x__log_function_entry__mutmut_12, 
-    'x__log_function_entry__mutmut_13': x__log_function_entry__mutmut_13, 
-    'x__log_function_entry__mutmut_14': x__log_function_entry__mutmut_14, 
-    'x__log_function_entry__mutmut_15': x__log_function_entry__mutmut_15, 
-    'x__log_function_entry__mutmut_16': x__log_function_entry__mutmut_16, 
-    'x__log_function_entry__mutmut_17': x__log_function_entry__mutmut_17
+
+x__log_function_entry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__log_function_entry__mutmut_1": x__log_function_entry__mutmut_1,
+    "x__log_function_entry__mutmut_2": x__log_function_entry__mutmut_2,
+    "x__log_function_entry__mutmut_3": x__log_function_entry__mutmut_3,
+    "x__log_function_entry__mutmut_4": x__log_function_entry__mutmut_4,
+    "x__log_function_entry__mutmut_5": x__log_function_entry__mutmut_5,
+    "x__log_function_entry__mutmut_6": x__log_function_entry__mutmut_6,
+    "x__log_function_entry__mutmut_7": x__log_function_entry__mutmut_7,
+    "x__log_function_entry__mutmut_8": x__log_function_entry__mutmut_8,
+    "x__log_function_entry__mutmut_9": x__log_function_entry__mutmut_9,
+    "x__log_function_entry__mutmut_10": x__log_function_entry__mutmut_10,
+    "x__log_function_entry__mutmut_11": x__log_function_entry__mutmut_11,
+    "x__log_function_entry__mutmut_12": x__log_function_entry__mutmut_12,
+    "x__log_function_entry__mutmut_13": x__log_function_entry__mutmut_13,
+    "x__log_function_entry__mutmut_14": x__log_function_entry__mutmut_14,
+    "x__log_function_entry__mutmut_15": x__log_function_entry__mutmut_15,
+    "x__log_function_entry__mutmut_16": x__log_function_entry__mutmut_16,
+    "x__log_function_entry__mutmut_17": x__log_function_entry__mutmut_17,
 }
 
+
 def _log_function_entry(*args, **kwargs):
-    result = _mutmut_trampoline(x__log_function_entry__mutmut_orig, x__log_function_entry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__log_function_entry__mutmut_orig, x__log_function_entry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _log_function_entry.__signature__ = _mutmut_signature(x__log_function_entry__mutmut_orig)
-x__log_function_entry__mutmut_orig.__name__ = 'x__log_function_entry'
+x__log_function_entry__mutmut_orig.__name__ = "x__log_function_entry"
 
 
-def x__log_function_success__mutmut_orig(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_orig(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, log_level, logger.debug)
     func_name = _get_func_name(func)
@@ -375,7 +429,9 @@ def x__log_function_success__mutmut_orig(logger: Any, func: Callable, log_level:
     )
 
 
-def x__log_function_success__mutmut_1(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_1(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = None
     func_name = _get_func_name(func)
@@ -386,7 +442,9 @@ def x__log_function_success__mutmut_1(logger: Any, func: Callable, log_level: st
     )
 
 
-def x__log_function_success__mutmut_2(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_2(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(None, log_level, logger.debug)
     func_name = _get_func_name(func)
@@ -397,7 +455,9 @@ def x__log_function_success__mutmut_2(logger: Any, func: Callable, log_level: st
     )
 
 
-def x__log_function_success__mutmut_3(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_3(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, None, logger.debug)
     func_name = _get_func_name(func)
@@ -408,7 +468,9 @@ def x__log_function_success__mutmut_3(logger: Any, func: Callable, log_level: st
     )
 
 
-def x__log_function_success__mutmut_4(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_4(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, log_level, None)
     func_name = _get_func_name(func)
@@ -419,7 +481,9 @@ def x__log_function_success__mutmut_4(logger: Any, func: Callable, log_level: st
     )
 
 
-def x__log_function_success__mutmut_5(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_5(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(log_level, logger.debug)
     func_name = _get_func_name(func)
@@ -430,7 +494,9 @@ def x__log_function_success__mutmut_5(logger: Any, func: Callable, log_level: st
     )
 
 
-def x__log_function_success__mutmut_6(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_6(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, logger.debug)
     func_name = _get_func_name(func)
@@ -441,9 +507,14 @@ def x__log_function_success__mutmut_6(logger: Any, func: Callable, log_level: st
     )
 
 
-def x__log_function_success__mutmut_7(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_7(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
-    log_method = getattr(logger, log_level, )
+    log_method = getattr(
+        logger,
+        log_level,
+    )
     func_name = _get_func_name(func)
     log_method(
         f"Successfully completed {func_name}",
@@ -452,7 +523,9 @@ def x__log_function_success__mutmut_7(logger: Any, func: Callable, log_level: st
     )
 
 
-def x__log_function_success__mutmut_8(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_8(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, log_level, logger.debug)
     func_name = None
@@ -463,7 +536,9 @@ def x__log_function_success__mutmut_8(logger: Any, func: Callable, log_level: st
     )
 
 
-def x__log_function_success__mutmut_9(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_9(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, log_level, logger.debug)
     func_name = _get_func_name(None)
@@ -474,7 +549,9 @@ def x__log_function_success__mutmut_9(logger: Any, func: Callable, log_level: st
     )
 
 
-def x__log_function_success__mutmut_10(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_10(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, log_level, logger.debug)
     func_name = _get_func_name(func)
@@ -485,7 +562,9 @@ def x__log_function_success__mutmut_10(logger: Any, func: Callable, log_level: s
     )
 
 
-def x__log_function_success__mutmut_11(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_11(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, log_level, logger.debug)
     func_name = _get_func_name(func)
@@ -496,7 +575,9 @@ def x__log_function_success__mutmut_11(logger: Any, func: Callable, log_level: s
     )
 
 
-def x__log_function_success__mutmut_12(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_12(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, log_level, logger.debug)
     func_name = _get_func_name(func)
@@ -506,7 +587,9 @@ def x__log_function_success__mutmut_12(logger: Any, func: Callable, log_level: s
     )
 
 
-def x__log_function_success__mutmut_13(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_13(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, log_level, logger.debug)
     func_name = _get_func_name(func)
@@ -516,41 +599,50 @@ def x__log_function_success__mutmut_13(logger: Any, func: Callable, log_level: s
     )
 
 
-def x__log_function_success__mutmut_14(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+def x__log_function_success__mutmut_14(
+    logger: Any, func: Callable, log_level: str, context: dict[str, Any]
+) -> None:
     """Log successful function completion."""
     log_method = getattr(logger, log_level, logger.debug)
     func_name = _get_func_name(func)
     log_method(
         f"Successfully completed {func_name}",
         function=func_name,
-        )
+    )
 
-x__log_function_success__mutmut_mutants : ClassVar[MutantDict] = {
-'x__log_function_success__mutmut_1': x__log_function_success__mutmut_1, 
-    'x__log_function_success__mutmut_2': x__log_function_success__mutmut_2, 
-    'x__log_function_success__mutmut_3': x__log_function_success__mutmut_3, 
-    'x__log_function_success__mutmut_4': x__log_function_success__mutmut_4, 
-    'x__log_function_success__mutmut_5': x__log_function_success__mutmut_5, 
-    'x__log_function_success__mutmut_6': x__log_function_success__mutmut_6, 
-    'x__log_function_success__mutmut_7': x__log_function_success__mutmut_7, 
-    'x__log_function_success__mutmut_8': x__log_function_success__mutmut_8, 
-    'x__log_function_success__mutmut_9': x__log_function_success__mutmut_9, 
-    'x__log_function_success__mutmut_10': x__log_function_success__mutmut_10, 
-    'x__log_function_success__mutmut_11': x__log_function_success__mutmut_11, 
-    'x__log_function_success__mutmut_12': x__log_function_success__mutmut_12, 
-    'x__log_function_success__mutmut_13': x__log_function_success__mutmut_13, 
-    'x__log_function_success__mutmut_14': x__log_function_success__mutmut_14
+
+x__log_function_success__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__log_function_success__mutmut_1": x__log_function_success__mutmut_1,
+    "x__log_function_success__mutmut_2": x__log_function_success__mutmut_2,
+    "x__log_function_success__mutmut_3": x__log_function_success__mutmut_3,
+    "x__log_function_success__mutmut_4": x__log_function_success__mutmut_4,
+    "x__log_function_success__mutmut_5": x__log_function_success__mutmut_5,
+    "x__log_function_success__mutmut_6": x__log_function_success__mutmut_6,
+    "x__log_function_success__mutmut_7": x__log_function_success__mutmut_7,
+    "x__log_function_success__mutmut_8": x__log_function_success__mutmut_8,
+    "x__log_function_success__mutmut_9": x__log_function_success__mutmut_9,
+    "x__log_function_success__mutmut_10": x__log_function_success__mutmut_10,
+    "x__log_function_success__mutmut_11": x__log_function_success__mutmut_11,
+    "x__log_function_success__mutmut_12": x__log_function_success__mutmut_12,
+    "x__log_function_success__mutmut_13": x__log_function_success__mutmut_13,
+    "x__log_function_success__mutmut_14": x__log_function_success__mutmut_14,
 }
 
+
 def _log_function_success(*args, **kwargs):
-    result = _mutmut_trampoline(x__log_function_success__mutmut_orig, x__log_function_success__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__log_function_success__mutmut_orig, x__log_function_success__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _log_function_success.__signature__ = _mutmut_signature(x__log_function_success__mutmut_orig)
-x__log_function_success__mutmut_orig.__name__ = 'x__log_function_success'
+x__log_function_success__mutmut_orig.__name__ = "x__log_function_success"
 
 
-def x__log_function_error__mutmut_orig(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_orig(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -563,7 +655,9 @@ def x__log_function_error__mutmut_orig(logger: Any, func: Callable, error: Excep
     )
 
 
-def x__log_function_error__mutmut_1(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_1(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = None
     logger.error(
@@ -576,7 +670,9 @@ def x__log_function_error__mutmut_1(logger: Any, func: Callable, error: Exceptio
     )
 
 
-def x__log_function_error__mutmut_2(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_2(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(None)
     logger.error(
@@ -589,7 +685,9 @@ def x__log_function_error__mutmut_2(logger: Any, func: Callable, error: Exceptio
     )
 
 
-def x__log_function_error__mutmut_3(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_3(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -602,7 +700,9 @@ def x__log_function_error__mutmut_3(logger: Any, func: Callable, error: Exceptio
     )
 
 
-def x__log_function_error__mutmut_4(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_4(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -615,7 +715,9 @@ def x__log_function_error__mutmut_4(logger: Any, func: Callable, error: Exceptio
     )
 
 
-def x__log_function_error__mutmut_5(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_5(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -628,7 +730,9 @@ def x__log_function_error__mutmut_5(logger: Any, func: Callable, error: Exceptio
     )
 
 
-def x__log_function_error__mutmut_6(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_6(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -641,7 +745,9 @@ def x__log_function_error__mutmut_6(logger: Any, func: Callable, error: Exceptio
     )
 
 
-def x__log_function_error__mutmut_7(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_7(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -654,7 +760,9 @@ def x__log_function_error__mutmut_7(logger: Any, func: Callable, error: Exceptio
     )
 
 
-def x__log_function_error__mutmut_8(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_8(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -666,7 +774,9 @@ def x__log_function_error__mutmut_8(logger: Any, func: Callable, error: Exceptio
     )
 
 
-def x__log_function_error__mutmut_9(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_9(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -678,7 +788,9 @@ def x__log_function_error__mutmut_9(logger: Any, func: Callable, error: Exceptio
     )
 
 
-def x__log_function_error__mutmut_10(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_10(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -690,7 +802,9 @@ def x__log_function_error__mutmut_10(logger: Any, func: Callable, error: Excepti
     )
 
 
-def x__log_function_error__mutmut_11(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_11(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -702,7 +816,9 @@ def x__log_function_error__mutmut_11(logger: Any, func: Callable, error: Excepti
     )
 
 
-def x__log_function_error__mutmut_12(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_12(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -714,7 +830,9 @@ def x__log_function_error__mutmut_12(logger: Any, func: Callable, error: Excepti
     )
 
 
-def x__log_function_error__mutmut_13(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_13(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -723,10 +841,12 @@ def x__log_function_error__mutmut_13(logger: Any, func: Callable, error: Excepti
         function=func_name,
         error_type=type(error).__name__,
         error_message=str(error),
-        )
+    )
 
 
-def x__log_function_error__mutmut_14(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_14(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -739,7 +859,9 @@ def x__log_function_error__mutmut_14(logger: Any, func: Callable, error: Excepti
     )
 
 
-def x__log_function_error__mutmut_15(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_15(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -752,7 +874,9 @@ def x__log_function_error__mutmut_15(logger: Any, func: Callable, error: Excepti
     )
 
 
-def x__log_function_error__mutmut_16(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+def x__log_function_error__mutmut_16(
+    logger: Any, func: Callable, error: Exception, context: dict[str, Any]
+) -> None:
     """Log function error with context."""
     func_name = _get_func_name(func)
     logger.error(
@@ -764,31 +888,36 @@ def x__log_function_error__mutmut_16(logger: Any, func: Callable, error: Excepti
         **context,
     )
 
-x__log_function_error__mutmut_mutants : ClassVar[MutantDict] = {
-'x__log_function_error__mutmut_1': x__log_function_error__mutmut_1, 
-    'x__log_function_error__mutmut_2': x__log_function_error__mutmut_2, 
-    'x__log_function_error__mutmut_3': x__log_function_error__mutmut_3, 
-    'x__log_function_error__mutmut_4': x__log_function_error__mutmut_4, 
-    'x__log_function_error__mutmut_5': x__log_function_error__mutmut_5, 
-    'x__log_function_error__mutmut_6': x__log_function_error__mutmut_6, 
-    'x__log_function_error__mutmut_7': x__log_function_error__mutmut_7, 
-    'x__log_function_error__mutmut_8': x__log_function_error__mutmut_8, 
-    'x__log_function_error__mutmut_9': x__log_function_error__mutmut_9, 
-    'x__log_function_error__mutmut_10': x__log_function_error__mutmut_10, 
-    'x__log_function_error__mutmut_11': x__log_function_error__mutmut_11, 
-    'x__log_function_error__mutmut_12': x__log_function_error__mutmut_12, 
-    'x__log_function_error__mutmut_13': x__log_function_error__mutmut_13, 
-    'x__log_function_error__mutmut_14': x__log_function_error__mutmut_14, 
-    'x__log_function_error__mutmut_15': x__log_function_error__mutmut_15, 
-    'x__log_function_error__mutmut_16': x__log_function_error__mutmut_16
+
+x__log_function_error__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__log_function_error__mutmut_1": x__log_function_error__mutmut_1,
+    "x__log_function_error__mutmut_2": x__log_function_error__mutmut_2,
+    "x__log_function_error__mutmut_3": x__log_function_error__mutmut_3,
+    "x__log_function_error__mutmut_4": x__log_function_error__mutmut_4,
+    "x__log_function_error__mutmut_5": x__log_function_error__mutmut_5,
+    "x__log_function_error__mutmut_6": x__log_function_error__mutmut_6,
+    "x__log_function_error__mutmut_7": x__log_function_error__mutmut_7,
+    "x__log_function_error__mutmut_8": x__log_function_error__mutmut_8,
+    "x__log_function_error__mutmut_9": x__log_function_error__mutmut_9,
+    "x__log_function_error__mutmut_10": x__log_function_error__mutmut_10,
+    "x__log_function_error__mutmut_11": x__log_function_error__mutmut_11,
+    "x__log_function_error__mutmut_12": x__log_function_error__mutmut_12,
+    "x__log_function_error__mutmut_13": x__log_function_error__mutmut_13,
+    "x__log_function_error__mutmut_14": x__log_function_error__mutmut_14,
+    "x__log_function_error__mutmut_15": x__log_function_error__mutmut_15,
+    "x__log_function_error__mutmut_16": x__log_function_error__mutmut_16,
 }
 
+
 def _log_function_error(*args, **kwargs):
-    result = _mutmut_trampoline(x__log_function_error__mutmut_orig, x__log_function_error__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__log_function_error__mutmut_orig, x__log_function_error__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _log_function_error.__signature__ = _mutmut_signature(x__log_function_error__mutmut_orig)
-x__log_function_error__mutmut_orig.__name__ = 'x__log_function_error'
+x__log_function_error__mutmut_orig.__name__ = "x__log_function_error"
 
 
 def x_log_only_error_context__mutmut_orig(
@@ -1180,19 +1309,24 @@ def x_log_only_error_context__mutmut_4(
 
     return decorator
 
-x_log_only_error_context__mutmut_mutants : ClassVar[MutantDict] = {
-'x_log_only_error_context__mutmut_1': x_log_only_error_context__mutmut_1, 
-    'x_log_only_error_context__mutmut_2': x_log_only_error_context__mutmut_2, 
-    'x_log_only_error_context__mutmut_3': x_log_only_error_context__mutmut_3, 
-    'x_log_only_error_context__mutmut_4': x_log_only_error_context__mutmut_4
+
+x_log_only_error_context__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_log_only_error_context__mutmut_1": x_log_only_error_context__mutmut_1,
+    "x_log_only_error_context__mutmut_2": x_log_only_error_context__mutmut_2,
+    "x_log_only_error_context__mutmut_3": x_log_only_error_context__mutmut_3,
+    "x_log_only_error_context__mutmut_4": x_log_only_error_context__mutmut_4,
 }
 
+
 def log_only_error_context(*args, **kwargs):
-    result = _mutmut_trampoline(x_log_only_error_context__mutmut_orig, x_log_only_error_context__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_log_only_error_context__mutmut_orig, x_log_only_error_context__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 log_only_error_context.__signature__ = _mutmut_signature(x_log_only_error_context__mutmut_orig)
-x_log_only_error_context__mutmut_orig.__name__ = 'x_log_only_error_context'
+x_log_only_error_context__mutmut_orig.__name__ = "x_log_only_error_context"
 
 
 # <3 🧱🤝🐛🪄

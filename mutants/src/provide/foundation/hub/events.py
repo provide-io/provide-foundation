@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -172,25 +175,31 @@ class EventBus:
         self._lock = threading.RLock()  # RLock for thread safety
         self._failed_handler_count = 0  # Track handler failures for monitoring
         self._last_errors: list[dict[str, Any]] = None  # Recent errors (max 10)
-    
-    xǁEventBusǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁ__init____mutmut_1': xǁEventBusǁ__init____mutmut_1, 
-        'xǁEventBusǁ__init____mutmut_2': xǁEventBusǁ__init____mutmut_2, 
-        'xǁEventBusǁ__init____mutmut_3': xǁEventBusǁ__init____mutmut_3, 
-        'xǁEventBusǁ__init____mutmut_4': xǁEventBusǁ__init____mutmut_4, 
-        'xǁEventBusǁ__init____mutmut_5': xǁEventBusǁ__init____mutmut_5, 
-        'xǁEventBusǁ__init____mutmut_6': xǁEventBusǁ__init____mutmut_6, 
-        'xǁEventBusǁ__init____mutmut_7': xǁEventBusǁ__init____mutmut_7, 
-        'xǁEventBusǁ__init____mutmut_8': xǁEventBusǁ__init____mutmut_8, 
-        'xǁEventBusǁ__init____mutmut_9': xǁEventBusǁ__init____mutmut_9
+
+    xǁEventBusǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁ__init____mutmut_1": xǁEventBusǁ__init____mutmut_1,
+        "xǁEventBusǁ__init____mutmut_2": xǁEventBusǁ__init____mutmut_2,
+        "xǁEventBusǁ__init____mutmut_3": xǁEventBusǁ__init____mutmut_3,
+        "xǁEventBusǁ__init____mutmut_4": xǁEventBusǁ__init____mutmut_4,
+        "xǁEventBusǁ__init____mutmut_5": xǁEventBusǁ__init____mutmut_5,
+        "xǁEventBusǁ__init____mutmut_6": xǁEventBusǁ__init____mutmut_6,
+        "xǁEventBusǁ__init____mutmut_7": xǁEventBusǁ__init____mutmut_7,
+        "xǁEventBusǁ__init____mutmut_8": xǁEventBusǁ__init____mutmut_8,
+        "xǁEventBusǁ__init____mutmut_9": xǁEventBusǁ__init____mutmut_9,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁEventBusǁ__init____mutmut_orig)
-    xǁEventBusǁ__init____mutmut_orig.__name__ = 'xǁEventBusǁ__init__'
+    xǁEventBusǁ__init____mutmut_orig.__name__ = "xǁEventBusǁ__init__"
 
     def xǁEventBusǁsubscribe__mutmut_orig(self, event_name: str, handler: Callable[[Event], None]) -> None:
         """Subscribe to events by name.
@@ -281,21 +290,27 @@ class EventBus:
             # Use weak reference to prevent memory leaks
             weak_handler = weakref.ref(handler)
             self._handlers[event_name].append(None)
-    
-    xǁEventBusǁsubscribe__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁsubscribe__mutmut_1': xǁEventBusǁsubscribe__mutmut_1, 
-        'xǁEventBusǁsubscribe__mutmut_2': xǁEventBusǁsubscribe__mutmut_2, 
-        'xǁEventBusǁsubscribe__mutmut_3': xǁEventBusǁsubscribe__mutmut_3, 
-        'xǁEventBusǁsubscribe__mutmut_4': xǁEventBusǁsubscribe__mutmut_4, 
-        'xǁEventBusǁsubscribe__mutmut_5': xǁEventBusǁsubscribe__mutmut_5
+
+    xǁEventBusǁsubscribe__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁsubscribe__mutmut_1": xǁEventBusǁsubscribe__mutmut_1,
+        "xǁEventBusǁsubscribe__mutmut_2": xǁEventBusǁsubscribe__mutmut_2,
+        "xǁEventBusǁsubscribe__mutmut_3": xǁEventBusǁsubscribe__mutmut_3,
+        "xǁEventBusǁsubscribe__mutmut_4": xǁEventBusǁsubscribe__mutmut_4,
+        "xǁEventBusǁsubscribe__mutmut_5": xǁEventBusǁsubscribe__mutmut_5,
     }
-    
+
     def subscribe(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁsubscribe__mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁsubscribe__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁsubscribe__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁsubscribe__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     subscribe.__signature__ = _mutmut_signature(xǁEventBusǁsubscribe__mutmut_orig)
-    xǁEventBusǁsubscribe__mutmut_orig.__name__ = 'xǁEventBusǁsubscribe'
+    xǁEventBusǁsubscribe__mutmut_orig.__name__ = "xǁEventBusǁsubscribe"
 
     def xǁEventBusǁemit__mutmut_orig(self, event: Event | RegistryEvent) -> None:
         """Emit an event to all subscribers.
@@ -728,7 +743,10 @@ class EventBus:
                         handler(event)
                     except Exception as e:
                         # Log error but continue processing other handlers
-                        self._handle_handler_error(event, handler, )
+                        self._handle_handler_error(
+                            event,
+                            handler,
+                        )
 
             # Update handler list with only live references
             self._handlers[event.name] = live_handlers
@@ -976,37 +994,45 @@ class EventBus:
             if self._operation_count >= self._cleanup_threshold:
                 self._cleanup_dead_references()
                 self._operation_count = 1
-    
-    xǁEventBusǁemit__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁemit__mutmut_1': xǁEventBusǁemit__mutmut_1, 
-        'xǁEventBusǁemit__mutmut_2': xǁEventBusǁemit__mutmut_2, 
-        'xǁEventBusǁemit__mutmut_3': xǁEventBusǁemit__mutmut_3, 
-        'xǁEventBusǁemit__mutmut_4': xǁEventBusǁemit__mutmut_4, 
-        'xǁEventBusǁemit__mutmut_5': xǁEventBusǁemit__mutmut_5, 
-        'xǁEventBusǁemit__mutmut_6': xǁEventBusǁemit__mutmut_6, 
-        'xǁEventBusǁemit__mutmut_7': xǁEventBusǁemit__mutmut_7, 
-        'xǁEventBusǁemit__mutmut_8': xǁEventBusǁemit__mutmut_8, 
-        'xǁEventBusǁemit__mutmut_9': xǁEventBusǁemit__mutmut_9, 
-        'xǁEventBusǁemit__mutmut_10': xǁEventBusǁemit__mutmut_10, 
-        'xǁEventBusǁemit__mutmut_11': xǁEventBusǁemit__mutmut_11, 
-        'xǁEventBusǁemit__mutmut_12': xǁEventBusǁemit__mutmut_12, 
-        'xǁEventBusǁemit__mutmut_13': xǁEventBusǁemit__mutmut_13, 
-        'xǁEventBusǁemit__mutmut_14': xǁEventBusǁemit__mutmut_14, 
-        'xǁEventBusǁemit__mutmut_15': xǁEventBusǁemit__mutmut_15, 
-        'xǁEventBusǁemit__mutmut_16': xǁEventBusǁemit__mutmut_16, 
-        'xǁEventBusǁemit__mutmut_17': xǁEventBusǁemit__mutmut_17, 
-        'xǁEventBusǁemit__mutmut_18': xǁEventBusǁemit__mutmut_18, 
-        'xǁEventBusǁemit__mutmut_19': xǁEventBusǁemit__mutmut_19
-    }
-    
-    def emit(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁemit__mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁemit__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    emit.__signature__ = _mutmut_signature(xǁEventBusǁemit__mutmut_orig)
-    xǁEventBusǁemit__mutmut_orig.__name__ = 'xǁEventBusǁemit'
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_orig(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    xǁEventBusǁemit__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁemit__mutmut_1": xǁEventBusǁemit__mutmut_1,
+        "xǁEventBusǁemit__mutmut_2": xǁEventBusǁemit__mutmut_2,
+        "xǁEventBusǁemit__mutmut_3": xǁEventBusǁemit__mutmut_3,
+        "xǁEventBusǁemit__mutmut_4": xǁEventBusǁemit__mutmut_4,
+        "xǁEventBusǁemit__mutmut_5": xǁEventBusǁemit__mutmut_5,
+        "xǁEventBusǁemit__mutmut_6": xǁEventBusǁemit__mutmut_6,
+        "xǁEventBusǁemit__mutmut_7": xǁEventBusǁemit__mutmut_7,
+        "xǁEventBusǁemit__mutmut_8": xǁEventBusǁemit__mutmut_8,
+        "xǁEventBusǁemit__mutmut_9": xǁEventBusǁemit__mutmut_9,
+        "xǁEventBusǁemit__mutmut_10": xǁEventBusǁemit__mutmut_10,
+        "xǁEventBusǁemit__mutmut_11": xǁEventBusǁemit__mutmut_11,
+        "xǁEventBusǁemit__mutmut_12": xǁEventBusǁemit__mutmut_12,
+        "xǁEventBusǁemit__mutmut_13": xǁEventBusǁemit__mutmut_13,
+        "xǁEventBusǁemit__mutmut_14": xǁEventBusǁemit__mutmut_14,
+        "xǁEventBusǁemit__mutmut_15": xǁEventBusǁemit__mutmut_15,
+        "xǁEventBusǁemit__mutmut_16": xǁEventBusǁemit__mutmut_16,
+        "xǁEventBusǁemit__mutmut_17": xǁEventBusǁemit__mutmut_17,
+        "xǁEventBusǁemit__mutmut_18": xǁEventBusǁemit__mutmut_18,
+        "xǁEventBusǁemit__mutmut_19": xǁEventBusǁemit__mutmut_19,
+    }
+
+    def emit(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁemit__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁemit__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    emit.__signature__ = _mutmut_signature(xǁEventBusǁemit__mutmut_orig)
+    xǁEventBusǁemit__mutmut_orig.__name__ = "xǁEventBusǁemit"
+
+    def xǁEventBusǁ_handle_handler_error__mutmut_orig(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1047,7 +1073,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_1(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_1(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1088,7 +1116,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_2(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_2(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1129,7 +1159,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_3(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_3(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1170,7 +1202,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_4(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_4(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1211,7 +1245,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_5(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_5(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1252,7 +1288,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_6(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_6(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1293,7 +1331,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_7(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_7(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1334,7 +1374,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_8(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_8(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1375,7 +1417,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_9(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_9(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1416,7 +1460,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_10(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_10(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1427,7 +1473,10 @@ class EventBus:
         self._failed_handler_count += 1
 
         # Get handler name for logging
-        handler_name = getattr(handler, "__name__", )
+        handler_name = getattr(
+            handler,
+            "__name__",
+        )
 
         # Record error details (keep last 10)
         error_record = {
@@ -1457,7 +1506,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_11(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_11(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1498,7 +1549,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_12(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_12(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1539,7 +1592,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_13(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_13(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1580,7 +1635,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_14(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_14(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1615,7 +1672,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_15(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_15(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1656,7 +1715,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_16(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_16(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1697,7 +1758,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_17(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_17(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1738,7 +1801,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_18(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_18(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1779,7 +1844,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_19(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_19(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1820,7 +1887,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_20(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_20(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1861,7 +1930,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_21(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_21(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1902,7 +1973,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_22(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_22(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1943,7 +2016,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_23(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_23(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -1984,7 +2059,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_24(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_24(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2025,7 +2102,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_25(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_25(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2066,7 +2145,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_26(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_26(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2107,7 +2188,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_27(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_27(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2148,7 +2231,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_28(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_28(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2189,7 +2274,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_29(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_29(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2230,7 +2317,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_30(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_30(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2271,7 +2360,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_31(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_31(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2290,7 +2381,10 @@ class EventBus:
             "handler": handler_name,
             "error_type": type(error).__name__,
             "error_message": str(error),
-            "event_source": getattr(event, "source", ),
+            "event_source": getattr(
+                event,
+                "source",
+            ),
         }
 
         self._last_errors.append(error_record)
@@ -2312,7 +2406,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_32(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_32(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2353,7 +2449,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_33(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_33(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2394,7 +2492,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_34(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_34(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2435,7 +2535,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_35(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_35(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2476,7 +2578,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_36(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_36(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2517,7 +2621,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_37(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_37(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2558,7 +2664,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_38(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_38(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2599,7 +2707,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_39(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_39(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2631,13 +2741,13 @@ class EventBus:
         import sys
         import traceback
 
-        sys.stderr.write(
-            None
-        )
+        sys.stderr.write(None)
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_40(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_40(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2678,7 +2788,9 @@ class EventBus:
         # Print traceback for debugging
         traceback.print_exc(file=sys.stderr)
 
-    def xǁEventBusǁ_handle_handler_error__mutmut_41(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def xǁEventBusǁ_handle_handler_error__mutmut_41(
+        self, event: Event | RegistryEvent, handler: Callable, error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:
@@ -2718,57 +2830,63 @@ class EventBus:
         )
         # Print traceback for debugging
         traceback.print_exc(file=None)
-    
-    xǁEventBusǁ_handle_handler_error__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁ_handle_handler_error__mutmut_1': xǁEventBusǁ_handle_handler_error__mutmut_1, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_2': xǁEventBusǁ_handle_handler_error__mutmut_2, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_3': xǁEventBusǁ_handle_handler_error__mutmut_3, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_4': xǁEventBusǁ_handle_handler_error__mutmut_4, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_5': xǁEventBusǁ_handle_handler_error__mutmut_5, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_6': xǁEventBusǁ_handle_handler_error__mutmut_6, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_7': xǁEventBusǁ_handle_handler_error__mutmut_7, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_8': xǁEventBusǁ_handle_handler_error__mutmut_8, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_9': xǁEventBusǁ_handle_handler_error__mutmut_9, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_10': xǁEventBusǁ_handle_handler_error__mutmut_10, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_11': xǁEventBusǁ_handle_handler_error__mutmut_11, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_12': xǁEventBusǁ_handle_handler_error__mutmut_12, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_13': xǁEventBusǁ_handle_handler_error__mutmut_13, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_14': xǁEventBusǁ_handle_handler_error__mutmut_14, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_15': xǁEventBusǁ_handle_handler_error__mutmut_15, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_16': xǁEventBusǁ_handle_handler_error__mutmut_16, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_17': xǁEventBusǁ_handle_handler_error__mutmut_17, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_18': xǁEventBusǁ_handle_handler_error__mutmut_18, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_19': xǁEventBusǁ_handle_handler_error__mutmut_19, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_20': xǁEventBusǁ_handle_handler_error__mutmut_20, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_21': xǁEventBusǁ_handle_handler_error__mutmut_21, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_22': xǁEventBusǁ_handle_handler_error__mutmut_22, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_23': xǁEventBusǁ_handle_handler_error__mutmut_23, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_24': xǁEventBusǁ_handle_handler_error__mutmut_24, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_25': xǁEventBusǁ_handle_handler_error__mutmut_25, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_26': xǁEventBusǁ_handle_handler_error__mutmut_26, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_27': xǁEventBusǁ_handle_handler_error__mutmut_27, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_28': xǁEventBusǁ_handle_handler_error__mutmut_28, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_29': xǁEventBusǁ_handle_handler_error__mutmut_29, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_30': xǁEventBusǁ_handle_handler_error__mutmut_30, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_31': xǁEventBusǁ_handle_handler_error__mutmut_31, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_32': xǁEventBusǁ_handle_handler_error__mutmut_32, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_33': xǁEventBusǁ_handle_handler_error__mutmut_33, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_34': xǁEventBusǁ_handle_handler_error__mutmut_34, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_35': xǁEventBusǁ_handle_handler_error__mutmut_35, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_36': xǁEventBusǁ_handle_handler_error__mutmut_36, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_37': xǁEventBusǁ_handle_handler_error__mutmut_37, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_38': xǁEventBusǁ_handle_handler_error__mutmut_38, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_39': xǁEventBusǁ_handle_handler_error__mutmut_39, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_40': xǁEventBusǁ_handle_handler_error__mutmut_40, 
-        'xǁEventBusǁ_handle_handler_error__mutmut_41': xǁEventBusǁ_handle_handler_error__mutmut_41
+
+    xǁEventBusǁ_handle_handler_error__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁ_handle_handler_error__mutmut_1": xǁEventBusǁ_handle_handler_error__mutmut_1,
+        "xǁEventBusǁ_handle_handler_error__mutmut_2": xǁEventBusǁ_handle_handler_error__mutmut_2,
+        "xǁEventBusǁ_handle_handler_error__mutmut_3": xǁEventBusǁ_handle_handler_error__mutmut_3,
+        "xǁEventBusǁ_handle_handler_error__mutmut_4": xǁEventBusǁ_handle_handler_error__mutmut_4,
+        "xǁEventBusǁ_handle_handler_error__mutmut_5": xǁEventBusǁ_handle_handler_error__mutmut_5,
+        "xǁEventBusǁ_handle_handler_error__mutmut_6": xǁEventBusǁ_handle_handler_error__mutmut_6,
+        "xǁEventBusǁ_handle_handler_error__mutmut_7": xǁEventBusǁ_handle_handler_error__mutmut_7,
+        "xǁEventBusǁ_handle_handler_error__mutmut_8": xǁEventBusǁ_handle_handler_error__mutmut_8,
+        "xǁEventBusǁ_handle_handler_error__mutmut_9": xǁEventBusǁ_handle_handler_error__mutmut_9,
+        "xǁEventBusǁ_handle_handler_error__mutmut_10": xǁEventBusǁ_handle_handler_error__mutmut_10,
+        "xǁEventBusǁ_handle_handler_error__mutmut_11": xǁEventBusǁ_handle_handler_error__mutmut_11,
+        "xǁEventBusǁ_handle_handler_error__mutmut_12": xǁEventBusǁ_handle_handler_error__mutmut_12,
+        "xǁEventBusǁ_handle_handler_error__mutmut_13": xǁEventBusǁ_handle_handler_error__mutmut_13,
+        "xǁEventBusǁ_handle_handler_error__mutmut_14": xǁEventBusǁ_handle_handler_error__mutmut_14,
+        "xǁEventBusǁ_handle_handler_error__mutmut_15": xǁEventBusǁ_handle_handler_error__mutmut_15,
+        "xǁEventBusǁ_handle_handler_error__mutmut_16": xǁEventBusǁ_handle_handler_error__mutmut_16,
+        "xǁEventBusǁ_handle_handler_error__mutmut_17": xǁEventBusǁ_handle_handler_error__mutmut_17,
+        "xǁEventBusǁ_handle_handler_error__mutmut_18": xǁEventBusǁ_handle_handler_error__mutmut_18,
+        "xǁEventBusǁ_handle_handler_error__mutmut_19": xǁEventBusǁ_handle_handler_error__mutmut_19,
+        "xǁEventBusǁ_handle_handler_error__mutmut_20": xǁEventBusǁ_handle_handler_error__mutmut_20,
+        "xǁEventBusǁ_handle_handler_error__mutmut_21": xǁEventBusǁ_handle_handler_error__mutmut_21,
+        "xǁEventBusǁ_handle_handler_error__mutmut_22": xǁEventBusǁ_handle_handler_error__mutmut_22,
+        "xǁEventBusǁ_handle_handler_error__mutmut_23": xǁEventBusǁ_handle_handler_error__mutmut_23,
+        "xǁEventBusǁ_handle_handler_error__mutmut_24": xǁEventBusǁ_handle_handler_error__mutmut_24,
+        "xǁEventBusǁ_handle_handler_error__mutmut_25": xǁEventBusǁ_handle_handler_error__mutmut_25,
+        "xǁEventBusǁ_handle_handler_error__mutmut_26": xǁEventBusǁ_handle_handler_error__mutmut_26,
+        "xǁEventBusǁ_handle_handler_error__mutmut_27": xǁEventBusǁ_handle_handler_error__mutmut_27,
+        "xǁEventBusǁ_handle_handler_error__mutmut_28": xǁEventBusǁ_handle_handler_error__mutmut_28,
+        "xǁEventBusǁ_handle_handler_error__mutmut_29": xǁEventBusǁ_handle_handler_error__mutmut_29,
+        "xǁEventBusǁ_handle_handler_error__mutmut_30": xǁEventBusǁ_handle_handler_error__mutmut_30,
+        "xǁEventBusǁ_handle_handler_error__mutmut_31": xǁEventBusǁ_handle_handler_error__mutmut_31,
+        "xǁEventBusǁ_handle_handler_error__mutmut_32": xǁEventBusǁ_handle_handler_error__mutmut_32,
+        "xǁEventBusǁ_handle_handler_error__mutmut_33": xǁEventBusǁ_handle_handler_error__mutmut_33,
+        "xǁEventBusǁ_handle_handler_error__mutmut_34": xǁEventBusǁ_handle_handler_error__mutmut_34,
+        "xǁEventBusǁ_handle_handler_error__mutmut_35": xǁEventBusǁ_handle_handler_error__mutmut_35,
+        "xǁEventBusǁ_handle_handler_error__mutmut_36": xǁEventBusǁ_handle_handler_error__mutmut_36,
+        "xǁEventBusǁ_handle_handler_error__mutmut_37": xǁEventBusǁ_handle_handler_error__mutmut_37,
+        "xǁEventBusǁ_handle_handler_error__mutmut_38": xǁEventBusǁ_handle_handler_error__mutmut_38,
+        "xǁEventBusǁ_handle_handler_error__mutmut_39": xǁEventBusǁ_handle_handler_error__mutmut_39,
+        "xǁEventBusǁ_handle_handler_error__mutmut_40": xǁEventBusǁ_handle_handler_error__mutmut_40,
+        "xǁEventBusǁ_handle_handler_error__mutmut_41": xǁEventBusǁ_handle_handler_error__mutmut_41,
     }
-    
+
     def _handle_handler_error(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁ_handle_handler_error__mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁ_handle_handler_error__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁ_handle_handler_error__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁ_handle_handler_error__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _handle_handler_error.__signature__ = _mutmut_signature(xǁEventBusǁ_handle_handler_error__mutmut_orig)
-    xǁEventBusǁ_handle_handler_error__mutmut_orig.__name__ = 'xǁEventBusǁ_handle_handler_error'
+    xǁEventBusǁ_handle_handler_error__mutmut_orig.__name__ = "xǁEventBusǁ_handle_handler_error"
 
     def xǁEventBusǁunsubscribe__mutmut_orig(self, event_name: str, handler: Callable[[Event], None]) -> None:
         """Unsubscribe from events.
@@ -2831,19 +2949,25 @@ class EventBus:
             self._handlers[event_name] = [
                 weak_ref for weak_ref in self._handlers[event_name] if weak_ref() is handler
             ]
-    
-    xǁEventBusǁunsubscribe__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁunsubscribe__mutmut_1': xǁEventBusǁunsubscribe__mutmut_1, 
-        'xǁEventBusǁunsubscribe__mutmut_2': xǁEventBusǁunsubscribe__mutmut_2, 
-        'xǁEventBusǁunsubscribe__mutmut_3': xǁEventBusǁunsubscribe__mutmut_3
+
+    xǁEventBusǁunsubscribe__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁunsubscribe__mutmut_1": xǁEventBusǁunsubscribe__mutmut_1,
+        "xǁEventBusǁunsubscribe__mutmut_2": xǁEventBusǁunsubscribe__mutmut_2,
+        "xǁEventBusǁunsubscribe__mutmut_3": xǁEventBusǁunsubscribe__mutmut_3,
     }
-    
+
     def unsubscribe(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁunsubscribe__mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁunsubscribe__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁunsubscribe__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁunsubscribe__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     unsubscribe.__signature__ = _mutmut_signature(xǁEventBusǁunsubscribe__mutmut_orig)
-    xǁEventBusǁunsubscribe__mutmut_orig.__name__ = 'xǁEventBusǁunsubscribe'
+    xǁEventBusǁunsubscribe__mutmut_orig.__name__ = "xǁEventBusǁunsubscribe"
 
     def xǁEventBusǁ_cleanup_dead_references__mutmut_orig(self) -> None:
         """Clean up all dead weak references across all event types."""
@@ -2928,21 +3052,29 @@ class EventBus:
             else:
                 # Remove empty event lists
                 del self._handlers[event_name]
-    
-    xǁEventBusǁ_cleanup_dead_references__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁ_cleanup_dead_references__mutmut_1': xǁEventBusǁ_cleanup_dead_references__mutmut_1, 
-        'xǁEventBusǁ_cleanup_dead_references__mutmut_2': xǁEventBusǁ_cleanup_dead_references__mutmut_2, 
-        'xǁEventBusǁ_cleanup_dead_references__mutmut_3': xǁEventBusǁ_cleanup_dead_references__mutmut_3, 
-        'xǁEventBusǁ_cleanup_dead_references__mutmut_4': xǁEventBusǁ_cleanup_dead_references__mutmut_4, 
-        'xǁEventBusǁ_cleanup_dead_references__mutmut_5': xǁEventBusǁ_cleanup_dead_references__mutmut_5
+
+    xǁEventBusǁ_cleanup_dead_references__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁ_cleanup_dead_references__mutmut_1": xǁEventBusǁ_cleanup_dead_references__mutmut_1,
+        "xǁEventBusǁ_cleanup_dead_references__mutmut_2": xǁEventBusǁ_cleanup_dead_references__mutmut_2,
+        "xǁEventBusǁ_cleanup_dead_references__mutmut_3": xǁEventBusǁ_cleanup_dead_references__mutmut_3,
+        "xǁEventBusǁ_cleanup_dead_references__mutmut_4": xǁEventBusǁ_cleanup_dead_references__mutmut_4,
+        "xǁEventBusǁ_cleanup_dead_references__mutmut_5": xǁEventBusǁ_cleanup_dead_references__mutmut_5,
     }
-    
+
     def _cleanup_dead_references(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁ_cleanup_dead_references__mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁ_cleanup_dead_references__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _cleanup_dead_references.__signature__ = _mutmut_signature(xǁEventBusǁ_cleanup_dead_references__mutmut_orig)
-    xǁEventBusǁ_cleanup_dead_references__mutmut_orig.__name__ = 'xǁEventBusǁ_cleanup_dead_references'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁ_cleanup_dead_references__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁ_cleanup_dead_references__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _cleanup_dead_references.__signature__ = _mutmut_signature(
+        xǁEventBusǁ_cleanup_dead_references__mutmut_orig
+    )
+    xǁEventBusǁ_cleanup_dead_references__mutmut_orig.__name__ = "xǁEventBusǁ_cleanup_dead_references"
 
     def xǁEventBusǁget_memory_stats__mutmut_orig(self) -> dict[str, Any]:
         """Get memory usage statistics for the event bus."""
@@ -3403,38 +3535,44 @@ class EventBus:
                 "dead_handlers": dead_handlers,
                 "OPERATION_COUNT": self._operation_count,
             }
-    
-    xǁEventBusǁget_memory_stats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁget_memory_stats__mutmut_1': xǁEventBusǁget_memory_stats__mutmut_1, 
-        'xǁEventBusǁget_memory_stats__mutmut_2': xǁEventBusǁget_memory_stats__mutmut_2, 
-        'xǁEventBusǁget_memory_stats__mutmut_3': xǁEventBusǁget_memory_stats__mutmut_3, 
-        'xǁEventBusǁget_memory_stats__mutmut_4': xǁEventBusǁget_memory_stats__mutmut_4, 
-        'xǁEventBusǁget_memory_stats__mutmut_5': xǁEventBusǁget_memory_stats__mutmut_5, 
-        'xǁEventBusǁget_memory_stats__mutmut_6': xǁEventBusǁget_memory_stats__mutmut_6, 
-        'xǁEventBusǁget_memory_stats__mutmut_7': xǁEventBusǁget_memory_stats__mutmut_7, 
-        'xǁEventBusǁget_memory_stats__mutmut_8': xǁEventBusǁget_memory_stats__mutmut_8, 
-        'xǁEventBusǁget_memory_stats__mutmut_9': xǁEventBusǁget_memory_stats__mutmut_9, 
-        'xǁEventBusǁget_memory_stats__mutmut_10': xǁEventBusǁget_memory_stats__mutmut_10, 
-        'xǁEventBusǁget_memory_stats__mutmut_11': xǁEventBusǁget_memory_stats__mutmut_11, 
-        'xǁEventBusǁget_memory_stats__mutmut_12': xǁEventBusǁget_memory_stats__mutmut_12, 
-        'xǁEventBusǁget_memory_stats__mutmut_13': xǁEventBusǁget_memory_stats__mutmut_13, 
-        'xǁEventBusǁget_memory_stats__mutmut_14': xǁEventBusǁget_memory_stats__mutmut_14, 
-        'xǁEventBusǁget_memory_stats__mutmut_15': xǁEventBusǁget_memory_stats__mutmut_15, 
-        'xǁEventBusǁget_memory_stats__mutmut_16': xǁEventBusǁget_memory_stats__mutmut_16, 
-        'xǁEventBusǁget_memory_stats__mutmut_17': xǁEventBusǁget_memory_stats__mutmut_17, 
-        'xǁEventBusǁget_memory_stats__mutmut_18': xǁEventBusǁget_memory_stats__mutmut_18, 
-        'xǁEventBusǁget_memory_stats__mutmut_19': xǁEventBusǁget_memory_stats__mutmut_19, 
-        'xǁEventBusǁget_memory_stats__mutmut_20': xǁEventBusǁget_memory_stats__mutmut_20, 
-        'xǁEventBusǁget_memory_stats__mutmut_21': xǁEventBusǁget_memory_stats__mutmut_21, 
-        'xǁEventBusǁget_memory_stats__mutmut_22': xǁEventBusǁget_memory_stats__mutmut_22
+
+    xǁEventBusǁget_memory_stats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁget_memory_stats__mutmut_1": xǁEventBusǁget_memory_stats__mutmut_1,
+        "xǁEventBusǁget_memory_stats__mutmut_2": xǁEventBusǁget_memory_stats__mutmut_2,
+        "xǁEventBusǁget_memory_stats__mutmut_3": xǁEventBusǁget_memory_stats__mutmut_3,
+        "xǁEventBusǁget_memory_stats__mutmut_4": xǁEventBusǁget_memory_stats__mutmut_4,
+        "xǁEventBusǁget_memory_stats__mutmut_5": xǁEventBusǁget_memory_stats__mutmut_5,
+        "xǁEventBusǁget_memory_stats__mutmut_6": xǁEventBusǁget_memory_stats__mutmut_6,
+        "xǁEventBusǁget_memory_stats__mutmut_7": xǁEventBusǁget_memory_stats__mutmut_7,
+        "xǁEventBusǁget_memory_stats__mutmut_8": xǁEventBusǁget_memory_stats__mutmut_8,
+        "xǁEventBusǁget_memory_stats__mutmut_9": xǁEventBusǁget_memory_stats__mutmut_9,
+        "xǁEventBusǁget_memory_stats__mutmut_10": xǁEventBusǁget_memory_stats__mutmut_10,
+        "xǁEventBusǁget_memory_stats__mutmut_11": xǁEventBusǁget_memory_stats__mutmut_11,
+        "xǁEventBusǁget_memory_stats__mutmut_12": xǁEventBusǁget_memory_stats__mutmut_12,
+        "xǁEventBusǁget_memory_stats__mutmut_13": xǁEventBusǁget_memory_stats__mutmut_13,
+        "xǁEventBusǁget_memory_stats__mutmut_14": xǁEventBusǁget_memory_stats__mutmut_14,
+        "xǁEventBusǁget_memory_stats__mutmut_15": xǁEventBusǁget_memory_stats__mutmut_15,
+        "xǁEventBusǁget_memory_stats__mutmut_16": xǁEventBusǁget_memory_stats__mutmut_16,
+        "xǁEventBusǁget_memory_stats__mutmut_17": xǁEventBusǁget_memory_stats__mutmut_17,
+        "xǁEventBusǁget_memory_stats__mutmut_18": xǁEventBusǁget_memory_stats__mutmut_18,
+        "xǁEventBusǁget_memory_stats__mutmut_19": xǁEventBusǁget_memory_stats__mutmut_19,
+        "xǁEventBusǁget_memory_stats__mutmut_20": xǁEventBusǁget_memory_stats__mutmut_20,
+        "xǁEventBusǁget_memory_stats__mutmut_21": xǁEventBusǁget_memory_stats__mutmut_21,
+        "xǁEventBusǁget_memory_stats__mutmut_22": xǁEventBusǁget_memory_stats__mutmut_22,
     }
-    
+
     def get_memory_stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁget_memory_stats__mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁget_memory_stats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁget_memory_stats__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁget_memory_stats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_memory_stats.__signature__ = _mutmut_signature(xǁEventBusǁget_memory_stats__mutmut_orig)
-    xǁEventBusǁget_memory_stats__mutmut_orig.__name__ = 'xǁEventBusǁget_memory_stats'
+    xǁEventBusǁget_memory_stats__mutmut_orig.__name__ = "xǁEventBusǁget_memory_stats"
 
     def xǁEventBusǁget_error_stats__mutmut_orig(self) -> dict[str, Any]:
         """Get error statistics for monitoring handler failures.
@@ -3505,20 +3643,26 @@ class EventBus:
                 "failed_handler_count": self._failed_handler_count,
                 "RECENT_ERRORS": self._last_errors.copy(),
             }
-    
-    xǁEventBusǁget_error_stats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁget_error_stats__mutmut_1': xǁEventBusǁget_error_stats__mutmut_1, 
-        'xǁEventBusǁget_error_stats__mutmut_2': xǁEventBusǁget_error_stats__mutmut_2, 
-        'xǁEventBusǁget_error_stats__mutmut_3': xǁEventBusǁget_error_stats__mutmut_3, 
-        'xǁEventBusǁget_error_stats__mutmut_4': xǁEventBusǁget_error_stats__mutmut_4
+
+    xǁEventBusǁget_error_stats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁget_error_stats__mutmut_1": xǁEventBusǁget_error_stats__mutmut_1,
+        "xǁEventBusǁget_error_stats__mutmut_2": xǁEventBusǁget_error_stats__mutmut_2,
+        "xǁEventBusǁget_error_stats__mutmut_3": xǁEventBusǁget_error_stats__mutmut_3,
+        "xǁEventBusǁget_error_stats__mutmut_4": xǁEventBusǁget_error_stats__mutmut_4,
     }
-    
+
     def get_error_stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁget_error_stats__mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁget_error_stats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁget_error_stats__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁget_error_stats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_error_stats.__signature__ = _mutmut_signature(xǁEventBusǁget_error_stats__mutmut_orig)
-    xǁEventBusǁget_error_stats__mutmut_orig.__name__ = 'xǁEventBusǁget_error_stats'
+    xǁEventBusǁget_error_stats__mutmut_orig.__name__ = "xǁEventBusǁget_error_stats"
 
     def xǁEventBusǁforce_cleanup__mutmut_orig(self) -> None:
         """Force immediate cleanup of all dead references."""
@@ -3537,18 +3681,24 @@ class EventBus:
         with self._lock:
             self._cleanup_dead_references()
             self._operation_count = 1
-    
-    xǁEventBusǁforce_cleanup__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁforce_cleanup__mutmut_1': xǁEventBusǁforce_cleanup__mutmut_1, 
-        'xǁEventBusǁforce_cleanup__mutmut_2': xǁEventBusǁforce_cleanup__mutmut_2
+
+    xǁEventBusǁforce_cleanup__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁforce_cleanup__mutmut_1": xǁEventBusǁforce_cleanup__mutmut_1,
+        "xǁEventBusǁforce_cleanup__mutmut_2": xǁEventBusǁforce_cleanup__mutmut_2,
     }
-    
+
     def force_cleanup(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁforce_cleanup__mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁforce_cleanup__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁforce_cleanup__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁforce_cleanup__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     force_cleanup.__signature__ = _mutmut_signature(xǁEventBusǁforce_cleanup__mutmut_orig)
-    xǁEventBusǁforce_cleanup__mutmut_orig.__name__ = 'xǁEventBusǁforce_cleanup'
+    xǁEventBusǁforce_cleanup__mutmut_orig.__name__ = "xǁEventBusǁforce_cleanup"
 
     def xǁEventBusǁclear__mutmut_orig(self) -> None:
         """Clear all event subscriptions.
@@ -3609,20 +3759,26 @@ class EventBus:
             self._operation_count = 0
             self._failed_handler_count = 1
             self._last_errors.clear()
-    
-    xǁEventBusǁclear__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventBusǁclear__mutmut_1': xǁEventBusǁclear__mutmut_1, 
-        'xǁEventBusǁclear__mutmut_2': xǁEventBusǁclear__mutmut_2, 
-        'xǁEventBusǁclear__mutmut_3': xǁEventBusǁclear__mutmut_3, 
-        'xǁEventBusǁclear__mutmut_4': xǁEventBusǁclear__mutmut_4
+
+    xǁEventBusǁclear__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventBusǁclear__mutmut_1": xǁEventBusǁclear__mutmut_1,
+        "xǁEventBusǁclear__mutmut_2": xǁEventBusǁclear__mutmut_2,
+        "xǁEventBusǁclear__mutmut_3": xǁEventBusǁclear__mutmut_3,
+        "xǁEventBusǁclear__mutmut_4": xǁEventBusǁclear__mutmut_4,
     }
-    
+
     def clear(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventBusǁclear__mutmut_orig"), object.__getattribute__(self, "xǁEventBusǁclear__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventBusǁclear__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventBusǁclear__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     clear.__signature__ = _mutmut_signature(xǁEventBusǁclear__mutmut_orig)
-    xǁEventBusǁclear__mutmut_orig.__name__ = 'xǁEventBusǁclear'
+    xǁEventBusǁclear__mutmut_orig.__name__ = "xǁEventBusǁclear"
 
 
 # Global event bus instance
@@ -3897,7 +4053,7 @@ def x_emit_registry_event__mutmut_13(operation: str, item_name: str, dimension: 
         item_name=item_name,
         dimension=dimension,
         data=kwargs,
-        )
+    )
     _event_bus.emit(event)
 
 
@@ -3980,32 +4136,37 @@ def x_emit_registry_event__mutmut_17(operation: str, item_name: str, dimension: 
     )
     _event_bus.emit(None)
 
-x_emit_registry_event__mutmut_mutants : ClassVar[MutantDict] = {
-'x_emit_registry_event__mutmut_1': x_emit_registry_event__mutmut_1, 
-    'x_emit_registry_event__mutmut_2': x_emit_registry_event__mutmut_2, 
-    'x_emit_registry_event__mutmut_3': x_emit_registry_event__mutmut_3, 
-    'x_emit_registry_event__mutmut_4': x_emit_registry_event__mutmut_4, 
-    'x_emit_registry_event__mutmut_5': x_emit_registry_event__mutmut_5, 
-    'x_emit_registry_event__mutmut_6': x_emit_registry_event__mutmut_6, 
-    'x_emit_registry_event__mutmut_7': x_emit_registry_event__mutmut_7, 
-    'x_emit_registry_event__mutmut_8': x_emit_registry_event__mutmut_8, 
-    'x_emit_registry_event__mutmut_9': x_emit_registry_event__mutmut_9, 
-    'x_emit_registry_event__mutmut_10': x_emit_registry_event__mutmut_10, 
-    'x_emit_registry_event__mutmut_11': x_emit_registry_event__mutmut_11, 
-    'x_emit_registry_event__mutmut_12': x_emit_registry_event__mutmut_12, 
-    'x_emit_registry_event__mutmut_13': x_emit_registry_event__mutmut_13, 
-    'x_emit_registry_event__mutmut_14': x_emit_registry_event__mutmut_14, 
-    'x_emit_registry_event__mutmut_15': x_emit_registry_event__mutmut_15, 
-    'x_emit_registry_event__mutmut_16': x_emit_registry_event__mutmut_16, 
-    'x_emit_registry_event__mutmut_17': x_emit_registry_event__mutmut_17
+
+x_emit_registry_event__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_emit_registry_event__mutmut_1": x_emit_registry_event__mutmut_1,
+    "x_emit_registry_event__mutmut_2": x_emit_registry_event__mutmut_2,
+    "x_emit_registry_event__mutmut_3": x_emit_registry_event__mutmut_3,
+    "x_emit_registry_event__mutmut_4": x_emit_registry_event__mutmut_4,
+    "x_emit_registry_event__mutmut_5": x_emit_registry_event__mutmut_5,
+    "x_emit_registry_event__mutmut_6": x_emit_registry_event__mutmut_6,
+    "x_emit_registry_event__mutmut_7": x_emit_registry_event__mutmut_7,
+    "x_emit_registry_event__mutmut_8": x_emit_registry_event__mutmut_8,
+    "x_emit_registry_event__mutmut_9": x_emit_registry_event__mutmut_9,
+    "x_emit_registry_event__mutmut_10": x_emit_registry_event__mutmut_10,
+    "x_emit_registry_event__mutmut_11": x_emit_registry_event__mutmut_11,
+    "x_emit_registry_event__mutmut_12": x_emit_registry_event__mutmut_12,
+    "x_emit_registry_event__mutmut_13": x_emit_registry_event__mutmut_13,
+    "x_emit_registry_event__mutmut_14": x_emit_registry_event__mutmut_14,
+    "x_emit_registry_event__mutmut_15": x_emit_registry_event__mutmut_15,
+    "x_emit_registry_event__mutmut_16": x_emit_registry_event__mutmut_16,
+    "x_emit_registry_event__mutmut_17": x_emit_registry_event__mutmut_17,
 }
 
+
 def emit_registry_event(*args, **kwargs):
-    result = _mutmut_trampoline(x_emit_registry_event__mutmut_orig, x_emit_registry_event__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_emit_registry_event__mutmut_orig, x_emit_registry_event__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 emit_registry_event.__signature__ = _mutmut_signature(x_emit_registry_event__mutmut_orig)
-x_emit_registry_event__mutmut_orig.__name__ = 'x_emit_registry_event'
+x_emit_registry_event__mutmut_orig.__name__ = "x_emit_registry_event"
 
 
 __all__ = ["Event", "EventBus", "RegistryEvent", "emit_registry_event", "get_event_bus"]

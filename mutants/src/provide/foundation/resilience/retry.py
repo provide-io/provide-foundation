@@ -40,23 +40,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -451,26 +454,34 @@ class RetryExecutor:
         self._time_source = time_source or time.time
         self._sleep = sleep_func or time.sleep
         self._async_sleep = async_sleep_func and asyncio.sleep
-    
-    xǁRetryExecutorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRetryExecutorǁ__init____mutmut_1': xǁRetryExecutorǁ__init____mutmut_1, 
-        'xǁRetryExecutorǁ__init____mutmut_2': xǁRetryExecutorǁ__init____mutmut_2, 
-        'xǁRetryExecutorǁ__init____mutmut_3': xǁRetryExecutorǁ__init____mutmut_3, 
-        'xǁRetryExecutorǁ__init____mutmut_4': xǁRetryExecutorǁ__init____mutmut_4, 
-        'xǁRetryExecutorǁ__init____mutmut_5': xǁRetryExecutorǁ__init____mutmut_5, 
-        'xǁRetryExecutorǁ__init____mutmut_6': xǁRetryExecutorǁ__init____mutmut_6, 
-        'xǁRetryExecutorǁ__init____mutmut_7': xǁRetryExecutorǁ__init____mutmut_7, 
-        'xǁRetryExecutorǁ__init____mutmut_8': xǁRetryExecutorǁ__init____mutmut_8
-    }
-    
-    def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRetryExecutorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁRetryExecutorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    __init__.__signature__ = _mutmut_signature(xǁRetryExecutorǁ__init____mutmut_orig)
-    xǁRetryExecutorǁ__init____mutmut_orig.__name__ = 'xǁRetryExecutorǁ__init__'
 
-    def xǁRetryExecutorǁexecute_sync__mutmut_orig(self, func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
+    xǁRetryExecutorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRetryExecutorǁ__init____mutmut_1": xǁRetryExecutorǁ__init____mutmut_1,
+        "xǁRetryExecutorǁ__init____mutmut_2": xǁRetryExecutorǁ__init____mutmut_2,
+        "xǁRetryExecutorǁ__init____mutmut_3": xǁRetryExecutorǁ__init____mutmut_3,
+        "xǁRetryExecutorǁ__init____mutmut_4": xǁRetryExecutorǁ__init____mutmut_4,
+        "xǁRetryExecutorǁ__init____mutmut_5": xǁRetryExecutorǁ__init____mutmut_5,
+        "xǁRetryExecutorǁ__init____mutmut_6": xǁRetryExecutorǁ__init____mutmut_6,
+        "xǁRetryExecutorǁ__init____mutmut_7": xǁRetryExecutorǁ__init____mutmut_7,
+        "xǁRetryExecutorǁ__init____mutmut_8": xǁRetryExecutorǁ__init____mutmut_8,
+    }
+
+    def __init__(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRetryExecutorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁRetryExecutorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    __init__.__signature__ = _mutmut_signature(xǁRetryExecutorǁ__init____mutmut_orig)
+    xǁRetryExecutorǁ__init____mutmut_orig.__name__ = "xǁRetryExecutorǁ__init__"
+
+    def xǁRetryExecutorǁexecute_sync__mutmut_orig(
+        self, func: Callable[..., T], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute synchronous function with retry logic.
 
         Args:
@@ -847,7 +858,9 @@ class RetryExecutor:
         """
         last_exception = None
 
-        for attempt in range(1, ):
+        for attempt in range(
+            1,
+        ):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
@@ -1209,7 +1222,9 @@ class RetryExecutor:
 
         for attempt in range(1, self.policy.max_attempts + 1):
             try:
-                return func(*args, )
+                return func(
+                    *args,
+                )
             except Exception as e:
                 last_exception = e
 
@@ -1938,7 +1953,7 @@ class RetryExecutor:
                         f"All {self.policy.max_attempts} retry attempts failed",
                         attempts=self.policy.max_attempts,
                         error=str(e),
-                        )
+                    )
                     raise
 
                 # Check if we should retry this error
@@ -2446,7 +2461,9 @@ class RetryExecutor:
                     raise
 
                 # Check if we should retry this error
-                if not self.policy.should_retry(e, ):
+                if not self.policy.should_retry(
+                    e,
+                ):
                     raise
 
                 # Calculate delay
@@ -3464,7 +3481,7 @@ class RetryExecutor:
                     max_attempts=self.policy.max_attempts,
                     delay=delay,
                     error=str(e),
-                    )
+                )
 
                 # Call retry callback if provided
                 if self.on_retry:
@@ -3901,7 +3918,9 @@ class RetryExecutor:
                 # Call retry callback if provided
                 if self.on_retry:
                     try:
-                        self.on_retry(attempt, )
+                        self.on_retry(
+                            attempt,
+                        )
                     except Exception as callback_error:
                         from provide.foundation.hub.foundation import get_foundation_logger
 
@@ -4193,7 +4212,9 @@ class RetryExecutor:
                     except Exception as callback_error:
                         from provide.foundation.hub.foundation import get_foundation_logger
 
-                        get_foundation_logger().warning("Retry callback failed", )
+                        get_foundation_logger().warning(
+                            "Retry callback failed",
+                        )
 
                 # Wait before retry
                 self._sleep(delay)
@@ -4923,79 +4944,87 @@ class RetryExecutor:
             raise last_exception
         else:
             raise RuntimeError("NO EXCEPTION CAPTURED DURING RETRY ATTEMPTS")
-    
-    xǁRetryExecutorǁexecute_sync__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRetryExecutorǁexecute_sync__mutmut_1': xǁRetryExecutorǁexecute_sync__mutmut_1, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_2': xǁRetryExecutorǁexecute_sync__mutmut_2, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_3': xǁRetryExecutorǁexecute_sync__mutmut_3, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_4': xǁRetryExecutorǁexecute_sync__mutmut_4, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_5': xǁRetryExecutorǁexecute_sync__mutmut_5, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_6': xǁRetryExecutorǁexecute_sync__mutmut_6, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_7': xǁRetryExecutorǁexecute_sync__mutmut_7, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_8': xǁRetryExecutorǁexecute_sync__mutmut_8, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_9': xǁRetryExecutorǁexecute_sync__mutmut_9, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_10': xǁRetryExecutorǁexecute_sync__mutmut_10, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_11': xǁRetryExecutorǁexecute_sync__mutmut_11, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_12': xǁRetryExecutorǁexecute_sync__mutmut_12, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_13': xǁRetryExecutorǁexecute_sync__mutmut_13, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_14': xǁRetryExecutorǁexecute_sync__mutmut_14, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_15': xǁRetryExecutorǁexecute_sync__mutmut_15, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_16': xǁRetryExecutorǁexecute_sync__mutmut_16, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_17': xǁRetryExecutorǁexecute_sync__mutmut_17, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_18': xǁRetryExecutorǁexecute_sync__mutmut_18, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_19': xǁRetryExecutorǁexecute_sync__mutmut_19, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_20': xǁRetryExecutorǁexecute_sync__mutmut_20, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_21': xǁRetryExecutorǁexecute_sync__mutmut_21, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_22': xǁRetryExecutorǁexecute_sync__mutmut_22, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_23': xǁRetryExecutorǁexecute_sync__mutmut_23, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_24': xǁRetryExecutorǁexecute_sync__mutmut_24, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_25': xǁRetryExecutorǁexecute_sync__mutmut_25, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_26': xǁRetryExecutorǁexecute_sync__mutmut_26, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_27': xǁRetryExecutorǁexecute_sync__mutmut_27, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_28': xǁRetryExecutorǁexecute_sync__mutmut_28, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_29': xǁRetryExecutorǁexecute_sync__mutmut_29, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_30': xǁRetryExecutorǁexecute_sync__mutmut_30, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_31': xǁRetryExecutorǁexecute_sync__mutmut_31, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_32': xǁRetryExecutorǁexecute_sync__mutmut_32, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_33': xǁRetryExecutorǁexecute_sync__mutmut_33, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_34': xǁRetryExecutorǁexecute_sync__mutmut_34, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_35': xǁRetryExecutorǁexecute_sync__mutmut_35, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_36': xǁRetryExecutorǁexecute_sync__mutmut_36, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_37': xǁRetryExecutorǁexecute_sync__mutmut_37, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_38': xǁRetryExecutorǁexecute_sync__mutmut_38, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_39': xǁRetryExecutorǁexecute_sync__mutmut_39, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_40': xǁRetryExecutorǁexecute_sync__mutmut_40, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_41': xǁRetryExecutorǁexecute_sync__mutmut_41, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_42': xǁRetryExecutorǁexecute_sync__mutmut_42, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_43': xǁRetryExecutorǁexecute_sync__mutmut_43, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_44': xǁRetryExecutorǁexecute_sync__mutmut_44, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_45': xǁRetryExecutorǁexecute_sync__mutmut_45, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_46': xǁRetryExecutorǁexecute_sync__mutmut_46, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_47': xǁRetryExecutorǁexecute_sync__mutmut_47, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_48': xǁRetryExecutorǁexecute_sync__mutmut_48, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_49': xǁRetryExecutorǁexecute_sync__mutmut_49, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_50': xǁRetryExecutorǁexecute_sync__mutmut_50, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_51': xǁRetryExecutorǁexecute_sync__mutmut_51, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_52': xǁRetryExecutorǁexecute_sync__mutmut_52, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_53': xǁRetryExecutorǁexecute_sync__mutmut_53, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_54': xǁRetryExecutorǁexecute_sync__mutmut_54, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_55': xǁRetryExecutorǁexecute_sync__mutmut_55, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_56': xǁRetryExecutorǁexecute_sync__mutmut_56, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_57': xǁRetryExecutorǁexecute_sync__mutmut_57, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_58': xǁRetryExecutorǁexecute_sync__mutmut_58, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_59': xǁRetryExecutorǁexecute_sync__mutmut_59, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_60': xǁRetryExecutorǁexecute_sync__mutmut_60, 
-        'xǁRetryExecutorǁexecute_sync__mutmut_61': xǁRetryExecutorǁexecute_sync__mutmut_61
-    }
-    
-    def execute_sync(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRetryExecutorǁexecute_sync__mutmut_orig"), object.__getattribute__(self, "xǁRetryExecutorǁexecute_sync__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    execute_sync.__signature__ = _mutmut_signature(xǁRetryExecutorǁexecute_sync__mutmut_orig)
-    xǁRetryExecutorǁexecute_sync__mutmut_orig.__name__ = 'xǁRetryExecutorǁexecute_sync'
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_orig(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    xǁRetryExecutorǁexecute_sync__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRetryExecutorǁexecute_sync__mutmut_1": xǁRetryExecutorǁexecute_sync__mutmut_1,
+        "xǁRetryExecutorǁexecute_sync__mutmut_2": xǁRetryExecutorǁexecute_sync__mutmut_2,
+        "xǁRetryExecutorǁexecute_sync__mutmut_3": xǁRetryExecutorǁexecute_sync__mutmut_3,
+        "xǁRetryExecutorǁexecute_sync__mutmut_4": xǁRetryExecutorǁexecute_sync__mutmut_4,
+        "xǁRetryExecutorǁexecute_sync__mutmut_5": xǁRetryExecutorǁexecute_sync__mutmut_5,
+        "xǁRetryExecutorǁexecute_sync__mutmut_6": xǁRetryExecutorǁexecute_sync__mutmut_6,
+        "xǁRetryExecutorǁexecute_sync__mutmut_7": xǁRetryExecutorǁexecute_sync__mutmut_7,
+        "xǁRetryExecutorǁexecute_sync__mutmut_8": xǁRetryExecutorǁexecute_sync__mutmut_8,
+        "xǁRetryExecutorǁexecute_sync__mutmut_9": xǁRetryExecutorǁexecute_sync__mutmut_9,
+        "xǁRetryExecutorǁexecute_sync__mutmut_10": xǁRetryExecutorǁexecute_sync__mutmut_10,
+        "xǁRetryExecutorǁexecute_sync__mutmut_11": xǁRetryExecutorǁexecute_sync__mutmut_11,
+        "xǁRetryExecutorǁexecute_sync__mutmut_12": xǁRetryExecutorǁexecute_sync__mutmut_12,
+        "xǁRetryExecutorǁexecute_sync__mutmut_13": xǁRetryExecutorǁexecute_sync__mutmut_13,
+        "xǁRetryExecutorǁexecute_sync__mutmut_14": xǁRetryExecutorǁexecute_sync__mutmut_14,
+        "xǁRetryExecutorǁexecute_sync__mutmut_15": xǁRetryExecutorǁexecute_sync__mutmut_15,
+        "xǁRetryExecutorǁexecute_sync__mutmut_16": xǁRetryExecutorǁexecute_sync__mutmut_16,
+        "xǁRetryExecutorǁexecute_sync__mutmut_17": xǁRetryExecutorǁexecute_sync__mutmut_17,
+        "xǁRetryExecutorǁexecute_sync__mutmut_18": xǁRetryExecutorǁexecute_sync__mutmut_18,
+        "xǁRetryExecutorǁexecute_sync__mutmut_19": xǁRetryExecutorǁexecute_sync__mutmut_19,
+        "xǁRetryExecutorǁexecute_sync__mutmut_20": xǁRetryExecutorǁexecute_sync__mutmut_20,
+        "xǁRetryExecutorǁexecute_sync__mutmut_21": xǁRetryExecutorǁexecute_sync__mutmut_21,
+        "xǁRetryExecutorǁexecute_sync__mutmut_22": xǁRetryExecutorǁexecute_sync__mutmut_22,
+        "xǁRetryExecutorǁexecute_sync__mutmut_23": xǁRetryExecutorǁexecute_sync__mutmut_23,
+        "xǁRetryExecutorǁexecute_sync__mutmut_24": xǁRetryExecutorǁexecute_sync__mutmut_24,
+        "xǁRetryExecutorǁexecute_sync__mutmut_25": xǁRetryExecutorǁexecute_sync__mutmut_25,
+        "xǁRetryExecutorǁexecute_sync__mutmut_26": xǁRetryExecutorǁexecute_sync__mutmut_26,
+        "xǁRetryExecutorǁexecute_sync__mutmut_27": xǁRetryExecutorǁexecute_sync__mutmut_27,
+        "xǁRetryExecutorǁexecute_sync__mutmut_28": xǁRetryExecutorǁexecute_sync__mutmut_28,
+        "xǁRetryExecutorǁexecute_sync__mutmut_29": xǁRetryExecutorǁexecute_sync__mutmut_29,
+        "xǁRetryExecutorǁexecute_sync__mutmut_30": xǁRetryExecutorǁexecute_sync__mutmut_30,
+        "xǁRetryExecutorǁexecute_sync__mutmut_31": xǁRetryExecutorǁexecute_sync__mutmut_31,
+        "xǁRetryExecutorǁexecute_sync__mutmut_32": xǁRetryExecutorǁexecute_sync__mutmut_32,
+        "xǁRetryExecutorǁexecute_sync__mutmut_33": xǁRetryExecutorǁexecute_sync__mutmut_33,
+        "xǁRetryExecutorǁexecute_sync__mutmut_34": xǁRetryExecutorǁexecute_sync__mutmut_34,
+        "xǁRetryExecutorǁexecute_sync__mutmut_35": xǁRetryExecutorǁexecute_sync__mutmut_35,
+        "xǁRetryExecutorǁexecute_sync__mutmut_36": xǁRetryExecutorǁexecute_sync__mutmut_36,
+        "xǁRetryExecutorǁexecute_sync__mutmut_37": xǁRetryExecutorǁexecute_sync__mutmut_37,
+        "xǁRetryExecutorǁexecute_sync__mutmut_38": xǁRetryExecutorǁexecute_sync__mutmut_38,
+        "xǁRetryExecutorǁexecute_sync__mutmut_39": xǁRetryExecutorǁexecute_sync__mutmut_39,
+        "xǁRetryExecutorǁexecute_sync__mutmut_40": xǁRetryExecutorǁexecute_sync__mutmut_40,
+        "xǁRetryExecutorǁexecute_sync__mutmut_41": xǁRetryExecutorǁexecute_sync__mutmut_41,
+        "xǁRetryExecutorǁexecute_sync__mutmut_42": xǁRetryExecutorǁexecute_sync__mutmut_42,
+        "xǁRetryExecutorǁexecute_sync__mutmut_43": xǁRetryExecutorǁexecute_sync__mutmut_43,
+        "xǁRetryExecutorǁexecute_sync__mutmut_44": xǁRetryExecutorǁexecute_sync__mutmut_44,
+        "xǁRetryExecutorǁexecute_sync__mutmut_45": xǁRetryExecutorǁexecute_sync__mutmut_45,
+        "xǁRetryExecutorǁexecute_sync__mutmut_46": xǁRetryExecutorǁexecute_sync__mutmut_46,
+        "xǁRetryExecutorǁexecute_sync__mutmut_47": xǁRetryExecutorǁexecute_sync__mutmut_47,
+        "xǁRetryExecutorǁexecute_sync__mutmut_48": xǁRetryExecutorǁexecute_sync__mutmut_48,
+        "xǁRetryExecutorǁexecute_sync__mutmut_49": xǁRetryExecutorǁexecute_sync__mutmut_49,
+        "xǁRetryExecutorǁexecute_sync__mutmut_50": xǁRetryExecutorǁexecute_sync__mutmut_50,
+        "xǁRetryExecutorǁexecute_sync__mutmut_51": xǁRetryExecutorǁexecute_sync__mutmut_51,
+        "xǁRetryExecutorǁexecute_sync__mutmut_52": xǁRetryExecutorǁexecute_sync__mutmut_52,
+        "xǁRetryExecutorǁexecute_sync__mutmut_53": xǁRetryExecutorǁexecute_sync__mutmut_53,
+        "xǁRetryExecutorǁexecute_sync__mutmut_54": xǁRetryExecutorǁexecute_sync__mutmut_54,
+        "xǁRetryExecutorǁexecute_sync__mutmut_55": xǁRetryExecutorǁexecute_sync__mutmut_55,
+        "xǁRetryExecutorǁexecute_sync__mutmut_56": xǁRetryExecutorǁexecute_sync__mutmut_56,
+        "xǁRetryExecutorǁexecute_sync__mutmut_57": xǁRetryExecutorǁexecute_sync__mutmut_57,
+        "xǁRetryExecutorǁexecute_sync__mutmut_58": xǁRetryExecutorǁexecute_sync__mutmut_58,
+        "xǁRetryExecutorǁexecute_sync__mutmut_59": xǁRetryExecutorǁexecute_sync__mutmut_59,
+        "xǁRetryExecutorǁexecute_sync__mutmut_60": xǁRetryExecutorǁexecute_sync__mutmut_60,
+        "xǁRetryExecutorǁexecute_sync__mutmut_61": xǁRetryExecutorǁexecute_sync__mutmut_61,
+    }
+
+    def execute_sync(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRetryExecutorǁexecute_sync__mutmut_orig"),
+            object.__getattribute__(self, "xǁRetryExecutorǁexecute_sync__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    execute_sync.__signature__ = _mutmut_signature(xǁRetryExecutorǁexecute_sync__mutmut_orig)
+    xǁRetryExecutorǁexecute_sync__mutmut_orig.__name__ = "xǁRetryExecutorǁexecute_sync"
+
+    async def xǁRetryExecutorǁexecute_async__mutmut_orig(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5070,7 +5099,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_1(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_1(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5145,7 +5176,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_2(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_2(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5220,7 +5253,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_3(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_3(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5295,7 +5330,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_4(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_4(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5370,7 +5407,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_5(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_5(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5387,7 +5426,9 @@ class RetryExecutor:
         """
         last_exception = None
 
-        for attempt in range(1, ):
+        for attempt in range(
+            1,
+        ):
             try:
                 return await func(*args, **kwargs)
             except Exception as e:
@@ -5445,7 +5486,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_6(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_6(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5520,7 +5563,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_7(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_7(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5595,7 +5640,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_8(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_8(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5670,7 +5717,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_9(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_9(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5745,7 +5794,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_10(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_10(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5764,7 +5815,9 @@ class RetryExecutor:
 
         for attempt in range(1, self.policy.max_attempts + 1):
             try:
-                return await func(*args, )
+                return await func(
+                    *args,
+                )
             except Exception as e:
                 last_exception = e
 
@@ -5820,7 +5873,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_11(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_11(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5895,7 +5950,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_12(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_12(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -5970,7 +6027,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_13(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_13(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6045,7 +6104,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_14(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_14(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6120,7 +6181,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_15(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_15(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6195,7 +6258,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_16(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_16(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6270,7 +6335,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_17(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_17(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6344,7 +6411,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_18(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_18(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6418,7 +6487,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_19(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_19(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6492,7 +6563,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_20(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_20(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6523,7 +6596,7 @@ class RetryExecutor:
                         f"All {self.policy.max_attempts} retry attempts failed",
                         attempts=self.policy.max_attempts,
                         error=str(e),
-                        )
+                    )
                     raise
 
                 # Check if we should retry this error
@@ -6566,7 +6639,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_21(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_21(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6641,7 +6716,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_22(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_22(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6716,7 +6793,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_23(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_23(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6791,7 +6870,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_24(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_24(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6866,7 +6947,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_25(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_25(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -6941,7 +7024,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_26(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_26(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7016,7 +7101,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_27(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_27(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7052,7 +7139,9 @@ class RetryExecutor:
                     raise
 
                 # Check if we should retry this error
-                if not self.policy.should_retry(e, ):
+                if not self.policy.should_retry(
+                    e,
+                ):
                     raise
 
                 # Calculate delay
@@ -7091,7 +7180,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_28(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_28(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7166,7 +7257,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_29(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_29(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7241,7 +7334,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_30(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_30(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7316,7 +7411,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_31(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_31(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7391,7 +7488,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_32(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_32(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7466,7 +7565,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_33(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_33(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7541,7 +7642,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_34(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_34(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7616,7 +7719,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_35(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_35(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7691,7 +7796,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_36(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_36(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7765,7 +7872,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_37(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_37(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7839,7 +7948,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_38(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_38(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7913,7 +8024,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_39(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_39(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -7987,7 +8100,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_40(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_40(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8061,7 +8176,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_41(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_41(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8112,7 +8229,7 @@ class RetryExecutor:
                     max_attempts=self.policy.max_attempts,
                     delay=delay,
                     error=str(e),
-                    )
+                )
 
                 # Call retry callback if provided
                 if self.on_retry:
@@ -8135,7 +8252,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_42(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_42(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8210,7 +8329,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_43(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_43(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8285,7 +8406,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_44(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_44(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8360,7 +8483,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_45(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_45(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8435,7 +8560,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_46(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_46(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8510,7 +8637,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_47(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_47(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8585,7 +8714,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_48(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_48(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8643,7 +8774,9 @@ class RetryExecutor:
                 if self.on_retry:
                     try:
                         if asyncio.iscoroutinefunction(self.on_retry):
-                            await self.on_retry(attempt, )
+                            await self.on_retry(
+                                attempt,
+                            )
                         else:
                             self.on_retry(attempt, e)
                     except Exception as callback_error:
@@ -8660,7 +8793,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_49(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_49(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8735,7 +8870,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_50(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_50(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8810,7 +8947,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_51(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_51(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8885,7 +9024,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_52(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_52(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -8945,7 +9086,9 @@ class RetryExecutor:
                         if asyncio.iscoroutinefunction(self.on_retry):
                             await self.on_retry(attempt, e)
                         else:
-                            self.on_retry(attempt, )
+                            self.on_retry(
+                                attempt,
+                            )
                     except Exception as callback_error:
                         from provide.foundation.hub.foundation import get_foundation_logger
 
@@ -8960,7 +9103,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_53(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_53(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9035,7 +9180,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_54(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_54(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9110,7 +9257,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_55(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_55(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9185,7 +9334,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_56(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_56(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9249,7 +9400,9 @@ class RetryExecutor:
                     except Exception as callback_error:
                         from provide.foundation.hub.foundation import get_foundation_logger
 
-                        get_foundation_logger().warning("Retry callback failed", )
+                        get_foundation_logger().warning(
+                            "Retry callback failed",
+                        )
 
                 # Wait before retry
                 await self._async_sleep(delay)
@@ -9260,7 +9413,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_57(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_57(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9335,7 +9490,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_58(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_58(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9410,7 +9567,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_59(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_59(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9485,7 +9644,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_60(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_60(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9560,7 +9721,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_61(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_61(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9635,7 +9798,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_62(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_62(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9710,7 +9875,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_63(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_63(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9785,7 +9952,9 @@ class RetryExecutor:
         else:
             raise RuntimeError(None)
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_64(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_64(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9860,7 +10029,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("XXNo exception captured during async retry attemptsXX")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_65(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_65(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -9935,7 +10106,9 @@ class RetryExecutor:
         else:
             raise RuntimeError("no exception captured during async retry attempts")
 
-    async def xǁRetryExecutorǁexecute_async__mutmut_66(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
+    async def xǁRetryExecutorǁexecute_async__mutmut_66(
+        self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any
+    ) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -10009,82 +10182,88 @@ class RetryExecutor:
             raise last_exception
         else:
             raise RuntimeError("NO EXCEPTION CAPTURED DURING ASYNC RETRY ATTEMPTS")
-    
-    xǁRetryExecutorǁexecute_async__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRetryExecutorǁexecute_async__mutmut_1': xǁRetryExecutorǁexecute_async__mutmut_1, 
-        'xǁRetryExecutorǁexecute_async__mutmut_2': xǁRetryExecutorǁexecute_async__mutmut_2, 
-        'xǁRetryExecutorǁexecute_async__mutmut_3': xǁRetryExecutorǁexecute_async__mutmut_3, 
-        'xǁRetryExecutorǁexecute_async__mutmut_4': xǁRetryExecutorǁexecute_async__mutmut_4, 
-        'xǁRetryExecutorǁexecute_async__mutmut_5': xǁRetryExecutorǁexecute_async__mutmut_5, 
-        'xǁRetryExecutorǁexecute_async__mutmut_6': xǁRetryExecutorǁexecute_async__mutmut_6, 
-        'xǁRetryExecutorǁexecute_async__mutmut_7': xǁRetryExecutorǁexecute_async__mutmut_7, 
-        'xǁRetryExecutorǁexecute_async__mutmut_8': xǁRetryExecutorǁexecute_async__mutmut_8, 
-        'xǁRetryExecutorǁexecute_async__mutmut_9': xǁRetryExecutorǁexecute_async__mutmut_9, 
-        'xǁRetryExecutorǁexecute_async__mutmut_10': xǁRetryExecutorǁexecute_async__mutmut_10, 
-        'xǁRetryExecutorǁexecute_async__mutmut_11': xǁRetryExecutorǁexecute_async__mutmut_11, 
-        'xǁRetryExecutorǁexecute_async__mutmut_12': xǁRetryExecutorǁexecute_async__mutmut_12, 
-        'xǁRetryExecutorǁexecute_async__mutmut_13': xǁRetryExecutorǁexecute_async__mutmut_13, 
-        'xǁRetryExecutorǁexecute_async__mutmut_14': xǁRetryExecutorǁexecute_async__mutmut_14, 
-        'xǁRetryExecutorǁexecute_async__mutmut_15': xǁRetryExecutorǁexecute_async__mutmut_15, 
-        'xǁRetryExecutorǁexecute_async__mutmut_16': xǁRetryExecutorǁexecute_async__mutmut_16, 
-        'xǁRetryExecutorǁexecute_async__mutmut_17': xǁRetryExecutorǁexecute_async__mutmut_17, 
-        'xǁRetryExecutorǁexecute_async__mutmut_18': xǁRetryExecutorǁexecute_async__mutmut_18, 
-        'xǁRetryExecutorǁexecute_async__mutmut_19': xǁRetryExecutorǁexecute_async__mutmut_19, 
-        'xǁRetryExecutorǁexecute_async__mutmut_20': xǁRetryExecutorǁexecute_async__mutmut_20, 
-        'xǁRetryExecutorǁexecute_async__mutmut_21': xǁRetryExecutorǁexecute_async__mutmut_21, 
-        'xǁRetryExecutorǁexecute_async__mutmut_22': xǁRetryExecutorǁexecute_async__mutmut_22, 
-        'xǁRetryExecutorǁexecute_async__mutmut_23': xǁRetryExecutorǁexecute_async__mutmut_23, 
-        'xǁRetryExecutorǁexecute_async__mutmut_24': xǁRetryExecutorǁexecute_async__mutmut_24, 
-        'xǁRetryExecutorǁexecute_async__mutmut_25': xǁRetryExecutorǁexecute_async__mutmut_25, 
-        'xǁRetryExecutorǁexecute_async__mutmut_26': xǁRetryExecutorǁexecute_async__mutmut_26, 
-        'xǁRetryExecutorǁexecute_async__mutmut_27': xǁRetryExecutorǁexecute_async__mutmut_27, 
-        'xǁRetryExecutorǁexecute_async__mutmut_28': xǁRetryExecutorǁexecute_async__mutmut_28, 
-        'xǁRetryExecutorǁexecute_async__mutmut_29': xǁRetryExecutorǁexecute_async__mutmut_29, 
-        'xǁRetryExecutorǁexecute_async__mutmut_30': xǁRetryExecutorǁexecute_async__mutmut_30, 
-        'xǁRetryExecutorǁexecute_async__mutmut_31': xǁRetryExecutorǁexecute_async__mutmut_31, 
-        'xǁRetryExecutorǁexecute_async__mutmut_32': xǁRetryExecutorǁexecute_async__mutmut_32, 
-        'xǁRetryExecutorǁexecute_async__mutmut_33': xǁRetryExecutorǁexecute_async__mutmut_33, 
-        'xǁRetryExecutorǁexecute_async__mutmut_34': xǁRetryExecutorǁexecute_async__mutmut_34, 
-        'xǁRetryExecutorǁexecute_async__mutmut_35': xǁRetryExecutorǁexecute_async__mutmut_35, 
-        'xǁRetryExecutorǁexecute_async__mutmut_36': xǁRetryExecutorǁexecute_async__mutmut_36, 
-        'xǁRetryExecutorǁexecute_async__mutmut_37': xǁRetryExecutorǁexecute_async__mutmut_37, 
-        'xǁRetryExecutorǁexecute_async__mutmut_38': xǁRetryExecutorǁexecute_async__mutmut_38, 
-        'xǁRetryExecutorǁexecute_async__mutmut_39': xǁRetryExecutorǁexecute_async__mutmut_39, 
-        'xǁRetryExecutorǁexecute_async__mutmut_40': xǁRetryExecutorǁexecute_async__mutmut_40, 
-        'xǁRetryExecutorǁexecute_async__mutmut_41': xǁRetryExecutorǁexecute_async__mutmut_41, 
-        'xǁRetryExecutorǁexecute_async__mutmut_42': xǁRetryExecutorǁexecute_async__mutmut_42, 
-        'xǁRetryExecutorǁexecute_async__mutmut_43': xǁRetryExecutorǁexecute_async__mutmut_43, 
-        'xǁRetryExecutorǁexecute_async__mutmut_44': xǁRetryExecutorǁexecute_async__mutmut_44, 
-        'xǁRetryExecutorǁexecute_async__mutmut_45': xǁRetryExecutorǁexecute_async__mutmut_45, 
-        'xǁRetryExecutorǁexecute_async__mutmut_46': xǁRetryExecutorǁexecute_async__mutmut_46, 
-        'xǁRetryExecutorǁexecute_async__mutmut_47': xǁRetryExecutorǁexecute_async__mutmut_47, 
-        'xǁRetryExecutorǁexecute_async__mutmut_48': xǁRetryExecutorǁexecute_async__mutmut_48, 
-        'xǁRetryExecutorǁexecute_async__mutmut_49': xǁRetryExecutorǁexecute_async__mutmut_49, 
-        'xǁRetryExecutorǁexecute_async__mutmut_50': xǁRetryExecutorǁexecute_async__mutmut_50, 
-        'xǁRetryExecutorǁexecute_async__mutmut_51': xǁRetryExecutorǁexecute_async__mutmut_51, 
-        'xǁRetryExecutorǁexecute_async__mutmut_52': xǁRetryExecutorǁexecute_async__mutmut_52, 
-        'xǁRetryExecutorǁexecute_async__mutmut_53': xǁRetryExecutorǁexecute_async__mutmut_53, 
-        'xǁRetryExecutorǁexecute_async__mutmut_54': xǁRetryExecutorǁexecute_async__mutmut_54, 
-        'xǁRetryExecutorǁexecute_async__mutmut_55': xǁRetryExecutorǁexecute_async__mutmut_55, 
-        'xǁRetryExecutorǁexecute_async__mutmut_56': xǁRetryExecutorǁexecute_async__mutmut_56, 
-        'xǁRetryExecutorǁexecute_async__mutmut_57': xǁRetryExecutorǁexecute_async__mutmut_57, 
-        'xǁRetryExecutorǁexecute_async__mutmut_58': xǁRetryExecutorǁexecute_async__mutmut_58, 
-        'xǁRetryExecutorǁexecute_async__mutmut_59': xǁRetryExecutorǁexecute_async__mutmut_59, 
-        'xǁRetryExecutorǁexecute_async__mutmut_60': xǁRetryExecutorǁexecute_async__mutmut_60, 
-        'xǁRetryExecutorǁexecute_async__mutmut_61': xǁRetryExecutorǁexecute_async__mutmut_61, 
-        'xǁRetryExecutorǁexecute_async__mutmut_62': xǁRetryExecutorǁexecute_async__mutmut_62, 
-        'xǁRetryExecutorǁexecute_async__mutmut_63': xǁRetryExecutorǁexecute_async__mutmut_63, 
-        'xǁRetryExecutorǁexecute_async__mutmut_64': xǁRetryExecutorǁexecute_async__mutmut_64, 
-        'xǁRetryExecutorǁexecute_async__mutmut_65': xǁRetryExecutorǁexecute_async__mutmut_65, 
-        'xǁRetryExecutorǁexecute_async__mutmut_66': xǁRetryExecutorǁexecute_async__mutmut_66
+
+    xǁRetryExecutorǁexecute_async__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRetryExecutorǁexecute_async__mutmut_1": xǁRetryExecutorǁexecute_async__mutmut_1,
+        "xǁRetryExecutorǁexecute_async__mutmut_2": xǁRetryExecutorǁexecute_async__mutmut_2,
+        "xǁRetryExecutorǁexecute_async__mutmut_3": xǁRetryExecutorǁexecute_async__mutmut_3,
+        "xǁRetryExecutorǁexecute_async__mutmut_4": xǁRetryExecutorǁexecute_async__mutmut_4,
+        "xǁRetryExecutorǁexecute_async__mutmut_5": xǁRetryExecutorǁexecute_async__mutmut_5,
+        "xǁRetryExecutorǁexecute_async__mutmut_6": xǁRetryExecutorǁexecute_async__mutmut_6,
+        "xǁRetryExecutorǁexecute_async__mutmut_7": xǁRetryExecutorǁexecute_async__mutmut_7,
+        "xǁRetryExecutorǁexecute_async__mutmut_8": xǁRetryExecutorǁexecute_async__mutmut_8,
+        "xǁRetryExecutorǁexecute_async__mutmut_9": xǁRetryExecutorǁexecute_async__mutmut_9,
+        "xǁRetryExecutorǁexecute_async__mutmut_10": xǁRetryExecutorǁexecute_async__mutmut_10,
+        "xǁRetryExecutorǁexecute_async__mutmut_11": xǁRetryExecutorǁexecute_async__mutmut_11,
+        "xǁRetryExecutorǁexecute_async__mutmut_12": xǁRetryExecutorǁexecute_async__mutmut_12,
+        "xǁRetryExecutorǁexecute_async__mutmut_13": xǁRetryExecutorǁexecute_async__mutmut_13,
+        "xǁRetryExecutorǁexecute_async__mutmut_14": xǁRetryExecutorǁexecute_async__mutmut_14,
+        "xǁRetryExecutorǁexecute_async__mutmut_15": xǁRetryExecutorǁexecute_async__mutmut_15,
+        "xǁRetryExecutorǁexecute_async__mutmut_16": xǁRetryExecutorǁexecute_async__mutmut_16,
+        "xǁRetryExecutorǁexecute_async__mutmut_17": xǁRetryExecutorǁexecute_async__mutmut_17,
+        "xǁRetryExecutorǁexecute_async__mutmut_18": xǁRetryExecutorǁexecute_async__mutmut_18,
+        "xǁRetryExecutorǁexecute_async__mutmut_19": xǁRetryExecutorǁexecute_async__mutmut_19,
+        "xǁRetryExecutorǁexecute_async__mutmut_20": xǁRetryExecutorǁexecute_async__mutmut_20,
+        "xǁRetryExecutorǁexecute_async__mutmut_21": xǁRetryExecutorǁexecute_async__mutmut_21,
+        "xǁRetryExecutorǁexecute_async__mutmut_22": xǁRetryExecutorǁexecute_async__mutmut_22,
+        "xǁRetryExecutorǁexecute_async__mutmut_23": xǁRetryExecutorǁexecute_async__mutmut_23,
+        "xǁRetryExecutorǁexecute_async__mutmut_24": xǁRetryExecutorǁexecute_async__mutmut_24,
+        "xǁRetryExecutorǁexecute_async__mutmut_25": xǁRetryExecutorǁexecute_async__mutmut_25,
+        "xǁRetryExecutorǁexecute_async__mutmut_26": xǁRetryExecutorǁexecute_async__mutmut_26,
+        "xǁRetryExecutorǁexecute_async__mutmut_27": xǁRetryExecutorǁexecute_async__mutmut_27,
+        "xǁRetryExecutorǁexecute_async__mutmut_28": xǁRetryExecutorǁexecute_async__mutmut_28,
+        "xǁRetryExecutorǁexecute_async__mutmut_29": xǁRetryExecutorǁexecute_async__mutmut_29,
+        "xǁRetryExecutorǁexecute_async__mutmut_30": xǁRetryExecutorǁexecute_async__mutmut_30,
+        "xǁRetryExecutorǁexecute_async__mutmut_31": xǁRetryExecutorǁexecute_async__mutmut_31,
+        "xǁRetryExecutorǁexecute_async__mutmut_32": xǁRetryExecutorǁexecute_async__mutmut_32,
+        "xǁRetryExecutorǁexecute_async__mutmut_33": xǁRetryExecutorǁexecute_async__mutmut_33,
+        "xǁRetryExecutorǁexecute_async__mutmut_34": xǁRetryExecutorǁexecute_async__mutmut_34,
+        "xǁRetryExecutorǁexecute_async__mutmut_35": xǁRetryExecutorǁexecute_async__mutmut_35,
+        "xǁRetryExecutorǁexecute_async__mutmut_36": xǁRetryExecutorǁexecute_async__mutmut_36,
+        "xǁRetryExecutorǁexecute_async__mutmut_37": xǁRetryExecutorǁexecute_async__mutmut_37,
+        "xǁRetryExecutorǁexecute_async__mutmut_38": xǁRetryExecutorǁexecute_async__mutmut_38,
+        "xǁRetryExecutorǁexecute_async__mutmut_39": xǁRetryExecutorǁexecute_async__mutmut_39,
+        "xǁRetryExecutorǁexecute_async__mutmut_40": xǁRetryExecutorǁexecute_async__mutmut_40,
+        "xǁRetryExecutorǁexecute_async__mutmut_41": xǁRetryExecutorǁexecute_async__mutmut_41,
+        "xǁRetryExecutorǁexecute_async__mutmut_42": xǁRetryExecutorǁexecute_async__mutmut_42,
+        "xǁRetryExecutorǁexecute_async__mutmut_43": xǁRetryExecutorǁexecute_async__mutmut_43,
+        "xǁRetryExecutorǁexecute_async__mutmut_44": xǁRetryExecutorǁexecute_async__mutmut_44,
+        "xǁRetryExecutorǁexecute_async__mutmut_45": xǁRetryExecutorǁexecute_async__mutmut_45,
+        "xǁRetryExecutorǁexecute_async__mutmut_46": xǁRetryExecutorǁexecute_async__mutmut_46,
+        "xǁRetryExecutorǁexecute_async__mutmut_47": xǁRetryExecutorǁexecute_async__mutmut_47,
+        "xǁRetryExecutorǁexecute_async__mutmut_48": xǁRetryExecutorǁexecute_async__mutmut_48,
+        "xǁRetryExecutorǁexecute_async__mutmut_49": xǁRetryExecutorǁexecute_async__mutmut_49,
+        "xǁRetryExecutorǁexecute_async__mutmut_50": xǁRetryExecutorǁexecute_async__mutmut_50,
+        "xǁRetryExecutorǁexecute_async__mutmut_51": xǁRetryExecutorǁexecute_async__mutmut_51,
+        "xǁRetryExecutorǁexecute_async__mutmut_52": xǁRetryExecutorǁexecute_async__mutmut_52,
+        "xǁRetryExecutorǁexecute_async__mutmut_53": xǁRetryExecutorǁexecute_async__mutmut_53,
+        "xǁRetryExecutorǁexecute_async__mutmut_54": xǁRetryExecutorǁexecute_async__mutmut_54,
+        "xǁRetryExecutorǁexecute_async__mutmut_55": xǁRetryExecutorǁexecute_async__mutmut_55,
+        "xǁRetryExecutorǁexecute_async__mutmut_56": xǁRetryExecutorǁexecute_async__mutmut_56,
+        "xǁRetryExecutorǁexecute_async__mutmut_57": xǁRetryExecutorǁexecute_async__mutmut_57,
+        "xǁRetryExecutorǁexecute_async__mutmut_58": xǁRetryExecutorǁexecute_async__mutmut_58,
+        "xǁRetryExecutorǁexecute_async__mutmut_59": xǁRetryExecutorǁexecute_async__mutmut_59,
+        "xǁRetryExecutorǁexecute_async__mutmut_60": xǁRetryExecutorǁexecute_async__mutmut_60,
+        "xǁRetryExecutorǁexecute_async__mutmut_61": xǁRetryExecutorǁexecute_async__mutmut_61,
+        "xǁRetryExecutorǁexecute_async__mutmut_62": xǁRetryExecutorǁexecute_async__mutmut_62,
+        "xǁRetryExecutorǁexecute_async__mutmut_63": xǁRetryExecutorǁexecute_async__mutmut_63,
+        "xǁRetryExecutorǁexecute_async__mutmut_64": xǁRetryExecutorǁexecute_async__mutmut_64,
+        "xǁRetryExecutorǁexecute_async__mutmut_65": xǁRetryExecutorǁexecute_async__mutmut_65,
+        "xǁRetryExecutorǁexecute_async__mutmut_66": xǁRetryExecutorǁexecute_async__mutmut_66,
     }
-    
+
     def execute_async(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRetryExecutorǁexecute_async__mutmut_orig"), object.__getattribute__(self, "xǁRetryExecutorǁexecute_async__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRetryExecutorǁexecute_async__mutmut_orig"),
+            object.__getattribute__(self, "xǁRetryExecutorǁexecute_async__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     execute_async.__signature__ = _mutmut_signature(xǁRetryExecutorǁexecute_async__mutmut_orig)
-    xǁRetryExecutorǁexecute_async__mutmut_orig.__name__ = 'xǁRetryExecutorǁexecute_async'
+    xǁRetryExecutorǁexecute_async__mutmut_orig.__name__ = "xǁRetryExecutorǁexecute_async"
 
 
 # <3 🧱🤝💪🪄

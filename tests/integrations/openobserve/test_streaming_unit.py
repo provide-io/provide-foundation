@@ -7,9 +7,9 @@ Run with: pytest tests/integrations/openobserve/test_streaming_unit.py -v
 from __future__ import annotations
 
 from typing import Any
-from provide.testkit.mocking import MagicMock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.errors import ValidationError

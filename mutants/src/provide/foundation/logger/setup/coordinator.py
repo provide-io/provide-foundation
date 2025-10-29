@@ -40,23 +40,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -2116,7 +2119,9 @@ def x_format_foundation_log_message__mutmut_43(
             "trace": "\033[36m",  # cyan
         }
         reset = "\033[0m"
-        color = color_codes.get(level, )
+        color = color_codes.get(
+            level,
+        )
         level_padded = f"[{color}{level:<9}{reset}]"
         timestamp_str = f"\033[2m{timestamp_str}\033[0m"  # dim timestamp
     else:
@@ -2313,62 +2318,70 @@ def x_format_foundation_log_message__mutmut_47(
     # Format: timestamp [level    ] message
     return f"{timestamp_str} {level_padded} {message}"
 
-x_format_foundation_log_message__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_foundation_log_message__mutmut_1': x_format_foundation_log_message__mutmut_1, 
-    'x_format_foundation_log_message__mutmut_2': x_format_foundation_log_message__mutmut_2, 
-    'x_format_foundation_log_message__mutmut_3': x_format_foundation_log_message__mutmut_3, 
-    'x_format_foundation_log_message__mutmut_4': x_format_foundation_log_message__mutmut_4, 
-    'x_format_foundation_log_message__mutmut_5': x_format_foundation_log_message__mutmut_5, 
-    'x_format_foundation_log_message__mutmut_6': x_format_foundation_log_message__mutmut_6, 
-    'x_format_foundation_log_message__mutmut_7': x_format_foundation_log_message__mutmut_7, 
-    'x_format_foundation_log_message__mutmut_8': x_format_foundation_log_message__mutmut_8, 
-    'x_format_foundation_log_message__mutmut_9': x_format_foundation_log_message__mutmut_9, 
-    'x_format_foundation_log_message__mutmut_10': x_format_foundation_log_message__mutmut_10, 
-    'x_format_foundation_log_message__mutmut_11': x_format_foundation_log_message__mutmut_11, 
-    'x_format_foundation_log_message__mutmut_12': x_format_foundation_log_message__mutmut_12, 
-    'x_format_foundation_log_message__mutmut_13': x_format_foundation_log_message__mutmut_13, 
-    'x_format_foundation_log_message__mutmut_14': x_format_foundation_log_message__mutmut_14, 
-    'x_format_foundation_log_message__mutmut_15': x_format_foundation_log_message__mutmut_15, 
-    'x_format_foundation_log_message__mutmut_16': x_format_foundation_log_message__mutmut_16, 
-    'x_format_foundation_log_message__mutmut_17': x_format_foundation_log_message__mutmut_17, 
-    'x_format_foundation_log_message__mutmut_18': x_format_foundation_log_message__mutmut_18, 
-    'x_format_foundation_log_message__mutmut_19': x_format_foundation_log_message__mutmut_19, 
-    'x_format_foundation_log_message__mutmut_20': x_format_foundation_log_message__mutmut_20, 
-    'x_format_foundation_log_message__mutmut_21': x_format_foundation_log_message__mutmut_21, 
-    'x_format_foundation_log_message__mutmut_22': x_format_foundation_log_message__mutmut_22, 
-    'x_format_foundation_log_message__mutmut_23': x_format_foundation_log_message__mutmut_23, 
-    'x_format_foundation_log_message__mutmut_24': x_format_foundation_log_message__mutmut_24, 
-    'x_format_foundation_log_message__mutmut_25': x_format_foundation_log_message__mutmut_25, 
-    'x_format_foundation_log_message__mutmut_26': x_format_foundation_log_message__mutmut_26, 
-    'x_format_foundation_log_message__mutmut_27': x_format_foundation_log_message__mutmut_27, 
-    'x_format_foundation_log_message__mutmut_28': x_format_foundation_log_message__mutmut_28, 
-    'x_format_foundation_log_message__mutmut_29': x_format_foundation_log_message__mutmut_29, 
-    'x_format_foundation_log_message__mutmut_30': x_format_foundation_log_message__mutmut_30, 
-    'x_format_foundation_log_message__mutmut_31': x_format_foundation_log_message__mutmut_31, 
-    'x_format_foundation_log_message__mutmut_32': x_format_foundation_log_message__mutmut_32, 
-    'x_format_foundation_log_message__mutmut_33': x_format_foundation_log_message__mutmut_33, 
-    'x_format_foundation_log_message__mutmut_34': x_format_foundation_log_message__mutmut_34, 
-    'x_format_foundation_log_message__mutmut_35': x_format_foundation_log_message__mutmut_35, 
-    'x_format_foundation_log_message__mutmut_36': x_format_foundation_log_message__mutmut_36, 
-    'x_format_foundation_log_message__mutmut_37': x_format_foundation_log_message__mutmut_37, 
-    'x_format_foundation_log_message__mutmut_38': x_format_foundation_log_message__mutmut_38, 
-    'x_format_foundation_log_message__mutmut_39': x_format_foundation_log_message__mutmut_39, 
-    'x_format_foundation_log_message__mutmut_40': x_format_foundation_log_message__mutmut_40, 
-    'x_format_foundation_log_message__mutmut_41': x_format_foundation_log_message__mutmut_41, 
-    'x_format_foundation_log_message__mutmut_42': x_format_foundation_log_message__mutmut_42, 
-    'x_format_foundation_log_message__mutmut_43': x_format_foundation_log_message__mutmut_43, 
-    'x_format_foundation_log_message__mutmut_44': x_format_foundation_log_message__mutmut_44, 
-    'x_format_foundation_log_message__mutmut_45': x_format_foundation_log_message__mutmut_45, 
-    'x_format_foundation_log_message__mutmut_46': x_format_foundation_log_message__mutmut_46, 
-    'x_format_foundation_log_message__mutmut_47': x_format_foundation_log_message__mutmut_47
+
+x_format_foundation_log_message__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_foundation_log_message__mutmut_1": x_format_foundation_log_message__mutmut_1,
+    "x_format_foundation_log_message__mutmut_2": x_format_foundation_log_message__mutmut_2,
+    "x_format_foundation_log_message__mutmut_3": x_format_foundation_log_message__mutmut_3,
+    "x_format_foundation_log_message__mutmut_4": x_format_foundation_log_message__mutmut_4,
+    "x_format_foundation_log_message__mutmut_5": x_format_foundation_log_message__mutmut_5,
+    "x_format_foundation_log_message__mutmut_6": x_format_foundation_log_message__mutmut_6,
+    "x_format_foundation_log_message__mutmut_7": x_format_foundation_log_message__mutmut_7,
+    "x_format_foundation_log_message__mutmut_8": x_format_foundation_log_message__mutmut_8,
+    "x_format_foundation_log_message__mutmut_9": x_format_foundation_log_message__mutmut_9,
+    "x_format_foundation_log_message__mutmut_10": x_format_foundation_log_message__mutmut_10,
+    "x_format_foundation_log_message__mutmut_11": x_format_foundation_log_message__mutmut_11,
+    "x_format_foundation_log_message__mutmut_12": x_format_foundation_log_message__mutmut_12,
+    "x_format_foundation_log_message__mutmut_13": x_format_foundation_log_message__mutmut_13,
+    "x_format_foundation_log_message__mutmut_14": x_format_foundation_log_message__mutmut_14,
+    "x_format_foundation_log_message__mutmut_15": x_format_foundation_log_message__mutmut_15,
+    "x_format_foundation_log_message__mutmut_16": x_format_foundation_log_message__mutmut_16,
+    "x_format_foundation_log_message__mutmut_17": x_format_foundation_log_message__mutmut_17,
+    "x_format_foundation_log_message__mutmut_18": x_format_foundation_log_message__mutmut_18,
+    "x_format_foundation_log_message__mutmut_19": x_format_foundation_log_message__mutmut_19,
+    "x_format_foundation_log_message__mutmut_20": x_format_foundation_log_message__mutmut_20,
+    "x_format_foundation_log_message__mutmut_21": x_format_foundation_log_message__mutmut_21,
+    "x_format_foundation_log_message__mutmut_22": x_format_foundation_log_message__mutmut_22,
+    "x_format_foundation_log_message__mutmut_23": x_format_foundation_log_message__mutmut_23,
+    "x_format_foundation_log_message__mutmut_24": x_format_foundation_log_message__mutmut_24,
+    "x_format_foundation_log_message__mutmut_25": x_format_foundation_log_message__mutmut_25,
+    "x_format_foundation_log_message__mutmut_26": x_format_foundation_log_message__mutmut_26,
+    "x_format_foundation_log_message__mutmut_27": x_format_foundation_log_message__mutmut_27,
+    "x_format_foundation_log_message__mutmut_28": x_format_foundation_log_message__mutmut_28,
+    "x_format_foundation_log_message__mutmut_29": x_format_foundation_log_message__mutmut_29,
+    "x_format_foundation_log_message__mutmut_30": x_format_foundation_log_message__mutmut_30,
+    "x_format_foundation_log_message__mutmut_31": x_format_foundation_log_message__mutmut_31,
+    "x_format_foundation_log_message__mutmut_32": x_format_foundation_log_message__mutmut_32,
+    "x_format_foundation_log_message__mutmut_33": x_format_foundation_log_message__mutmut_33,
+    "x_format_foundation_log_message__mutmut_34": x_format_foundation_log_message__mutmut_34,
+    "x_format_foundation_log_message__mutmut_35": x_format_foundation_log_message__mutmut_35,
+    "x_format_foundation_log_message__mutmut_36": x_format_foundation_log_message__mutmut_36,
+    "x_format_foundation_log_message__mutmut_37": x_format_foundation_log_message__mutmut_37,
+    "x_format_foundation_log_message__mutmut_38": x_format_foundation_log_message__mutmut_38,
+    "x_format_foundation_log_message__mutmut_39": x_format_foundation_log_message__mutmut_39,
+    "x_format_foundation_log_message__mutmut_40": x_format_foundation_log_message__mutmut_40,
+    "x_format_foundation_log_message__mutmut_41": x_format_foundation_log_message__mutmut_41,
+    "x_format_foundation_log_message__mutmut_42": x_format_foundation_log_message__mutmut_42,
+    "x_format_foundation_log_message__mutmut_43": x_format_foundation_log_message__mutmut_43,
+    "x_format_foundation_log_message__mutmut_44": x_format_foundation_log_message__mutmut_44,
+    "x_format_foundation_log_message__mutmut_45": x_format_foundation_log_message__mutmut_45,
+    "x_format_foundation_log_message__mutmut_46": x_format_foundation_log_message__mutmut_46,
+    "x_format_foundation_log_message__mutmut_47": x_format_foundation_log_message__mutmut_47,
 }
 
+
 def format_foundation_log_message(*args, **kwargs):
-    result = _mutmut_trampoline(x_format_foundation_log_message__mutmut_orig, x_format_foundation_log_message__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_format_foundation_log_message__mutmut_orig,
+        x_format_foundation_log_message__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 format_foundation_log_message.__signature__ = _mutmut_signature(x_format_foundation_log_message__mutmut_orig)
-x_format_foundation_log_message__mutmut_orig.__name__ = 'x_format_foundation_log_message'
+x_format_foundation_log_message__mutmut_orig.__name__ = "x_format_foundation_log_message"
 
 
 def x_get_foundation_log_level__mutmut_orig(config: TelemetryConfig | None = None) -> int:
@@ -3492,7 +3505,9 @@ def x_get_foundation_log_level__mutmut_23(config: TelemetryConfig | None = None)
             "TRACE": 5,  # Custom TRACE level
             "NOTSET": stdlib_logging.NOTSET,
         }
-        return valid_levels.get(level_str, )
+        return valid_levels.get(
+            level_str,
+        )
 
     # Otherwise use cached value or load from config
     if _FOUNDATION_LOG_LEVEL is None:
@@ -4703,66 +4718,73 @@ def x_get_foundation_log_level__mutmut_48(config: TelemetryConfig | None = None)
             "NOTSET": stdlib_logging.NOTSET,
         }
 
-        _FOUNDATION_LOG_LEVEL = valid_levels.get(level_str, )
+        _FOUNDATION_LOG_LEVEL = valid_levels.get(
+            level_str,
+        )
     return _FOUNDATION_LOG_LEVEL
 
-x_get_foundation_log_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_foundation_log_level__mutmut_1': x_get_foundation_log_level__mutmut_1, 
-    'x_get_foundation_log_level__mutmut_2': x_get_foundation_log_level__mutmut_2, 
-    'x_get_foundation_log_level__mutmut_3': x_get_foundation_log_level__mutmut_3, 
-    'x_get_foundation_log_level__mutmut_4': x_get_foundation_log_level__mutmut_4, 
-    'x_get_foundation_log_level__mutmut_5': x_get_foundation_log_level__mutmut_5, 
-    'x_get_foundation_log_level__mutmut_6': x_get_foundation_log_level__mutmut_6, 
-    'x_get_foundation_log_level__mutmut_7': x_get_foundation_log_level__mutmut_7, 
-    'x_get_foundation_log_level__mutmut_8': x_get_foundation_log_level__mutmut_8, 
-    'x_get_foundation_log_level__mutmut_9': x_get_foundation_log_level__mutmut_9, 
-    'x_get_foundation_log_level__mutmut_10': x_get_foundation_log_level__mutmut_10, 
-    'x_get_foundation_log_level__mutmut_11': x_get_foundation_log_level__mutmut_11, 
-    'x_get_foundation_log_level__mutmut_12': x_get_foundation_log_level__mutmut_12, 
-    'x_get_foundation_log_level__mutmut_13': x_get_foundation_log_level__mutmut_13, 
-    'x_get_foundation_log_level__mutmut_14': x_get_foundation_log_level__mutmut_14, 
-    'x_get_foundation_log_level__mutmut_15': x_get_foundation_log_level__mutmut_15, 
-    'x_get_foundation_log_level__mutmut_16': x_get_foundation_log_level__mutmut_16, 
-    'x_get_foundation_log_level__mutmut_17': x_get_foundation_log_level__mutmut_17, 
-    'x_get_foundation_log_level__mutmut_18': x_get_foundation_log_level__mutmut_18, 
-    'x_get_foundation_log_level__mutmut_19': x_get_foundation_log_level__mutmut_19, 
-    'x_get_foundation_log_level__mutmut_20': x_get_foundation_log_level__mutmut_20, 
-    'x_get_foundation_log_level__mutmut_21': x_get_foundation_log_level__mutmut_21, 
-    'x_get_foundation_log_level__mutmut_22': x_get_foundation_log_level__mutmut_22, 
-    'x_get_foundation_log_level__mutmut_23': x_get_foundation_log_level__mutmut_23, 
-    'x_get_foundation_log_level__mutmut_24': x_get_foundation_log_level__mutmut_24, 
-    'x_get_foundation_log_level__mutmut_25': x_get_foundation_log_level__mutmut_25, 
-    'x_get_foundation_log_level__mutmut_26': x_get_foundation_log_level__mutmut_26, 
-    'x_get_foundation_log_level__mutmut_27': x_get_foundation_log_level__mutmut_27, 
-    'x_get_foundation_log_level__mutmut_28': x_get_foundation_log_level__mutmut_28, 
-    'x_get_foundation_log_level__mutmut_29': x_get_foundation_log_level__mutmut_29, 
-    'x_get_foundation_log_level__mutmut_30': x_get_foundation_log_level__mutmut_30, 
-    'x_get_foundation_log_level__mutmut_31': x_get_foundation_log_level__mutmut_31, 
-    'x_get_foundation_log_level__mutmut_32': x_get_foundation_log_level__mutmut_32, 
-    'x_get_foundation_log_level__mutmut_33': x_get_foundation_log_level__mutmut_33, 
-    'x_get_foundation_log_level__mutmut_34': x_get_foundation_log_level__mutmut_34, 
-    'x_get_foundation_log_level__mutmut_35': x_get_foundation_log_level__mutmut_35, 
-    'x_get_foundation_log_level__mutmut_36': x_get_foundation_log_level__mutmut_36, 
-    'x_get_foundation_log_level__mutmut_37': x_get_foundation_log_level__mutmut_37, 
-    'x_get_foundation_log_level__mutmut_38': x_get_foundation_log_level__mutmut_38, 
-    'x_get_foundation_log_level__mutmut_39': x_get_foundation_log_level__mutmut_39, 
-    'x_get_foundation_log_level__mutmut_40': x_get_foundation_log_level__mutmut_40, 
-    'x_get_foundation_log_level__mutmut_41': x_get_foundation_log_level__mutmut_41, 
-    'x_get_foundation_log_level__mutmut_42': x_get_foundation_log_level__mutmut_42, 
-    'x_get_foundation_log_level__mutmut_43': x_get_foundation_log_level__mutmut_43, 
-    'x_get_foundation_log_level__mutmut_44': x_get_foundation_log_level__mutmut_44, 
-    'x_get_foundation_log_level__mutmut_45': x_get_foundation_log_level__mutmut_45, 
-    'x_get_foundation_log_level__mutmut_46': x_get_foundation_log_level__mutmut_46, 
-    'x_get_foundation_log_level__mutmut_47': x_get_foundation_log_level__mutmut_47, 
-    'x_get_foundation_log_level__mutmut_48': x_get_foundation_log_level__mutmut_48
+
+x_get_foundation_log_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_foundation_log_level__mutmut_1": x_get_foundation_log_level__mutmut_1,
+    "x_get_foundation_log_level__mutmut_2": x_get_foundation_log_level__mutmut_2,
+    "x_get_foundation_log_level__mutmut_3": x_get_foundation_log_level__mutmut_3,
+    "x_get_foundation_log_level__mutmut_4": x_get_foundation_log_level__mutmut_4,
+    "x_get_foundation_log_level__mutmut_5": x_get_foundation_log_level__mutmut_5,
+    "x_get_foundation_log_level__mutmut_6": x_get_foundation_log_level__mutmut_6,
+    "x_get_foundation_log_level__mutmut_7": x_get_foundation_log_level__mutmut_7,
+    "x_get_foundation_log_level__mutmut_8": x_get_foundation_log_level__mutmut_8,
+    "x_get_foundation_log_level__mutmut_9": x_get_foundation_log_level__mutmut_9,
+    "x_get_foundation_log_level__mutmut_10": x_get_foundation_log_level__mutmut_10,
+    "x_get_foundation_log_level__mutmut_11": x_get_foundation_log_level__mutmut_11,
+    "x_get_foundation_log_level__mutmut_12": x_get_foundation_log_level__mutmut_12,
+    "x_get_foundation_log_level__mutmut_13": x_get_foundation_log_level__mutmut_13,
+    "x_get_foundation_log_level__mutmut_14": x_get_foundation_log_level__mutmut_14,
+    "x_get_foundation_log_level__mutmut_15": x_get_foundation_log_level__mutmut_15,
+    "x_get_foundation_log_level__mutmut_16": x_get_foundation_log_level__mutmut_16,
+    "x_get_foundation_log_level__mutmut_17": x_get_foundation_log_level__mutmut_17,
+    "x_get_foundation_log_level__mutmut_18": x_get_foundation_log_level__mutmut_18,
+    "x_get_foundation_log_level__mutmut_19": x_get_foundation_log_level__mutmut_19,
+    "x_get_foundation_log_level__mutmut_20": x_get_foundation_log_level__mutmut_20,
+    "x_get_foundation_log_level__mutmut_21": x_get_foundation_log_level__mutmut_21,
+    "x_get_foundation_log_level__mutmut_22": x_get_foundation_log_level__mutmut_22,
+    "x_get_foundation_log_level__mutmut_23": x_get_foundation_log_level__mutmut_23,
+    "x_get_foundation_log_level__mutmut_24": x_get_foundation_log_level__mutmut_24,
+    "x_get_foundation_log_level__mutmut_25": x_get_foundation_log_level__mutmut_25,
+    "x_get_foundation_log_level__mutmut_26": x_get_foundation_log_level__mutmut_26,
+    "x_get_foundation_log_level__mutmut_27": x_get_foundation_log_level__mutmut_27,
+    "x_get_foundation_log_level__mutmut_28": x_get_foundation_log_level__mutmut_28,
+    "x_get_foundation_log_level__mutmut_29": x_get_foundation_log_level__mutmut_29,
+    "x_get_foundation_log_level__mutmut_30": x_get_foundation_log_level__mutmut_30,
+    "x_get_foundation_log_level__mutmut_31": x_get_foundation_log_level__mutmut_31,
+    "x_get_foundation_log_level__mutmut_32": x_get_foundation_log_level__mutmut_32,
+    "x_get_foundation_log_level__mutmut_33": x_get_foundation_log_level__mutmut_33,
+    "x_get_foundation_log_level__mutmut_34": x_get_foundation_log_level__mutmut_34,
+    "x_get_foundation_log_level__mutmut_35": x_get_foundation_log_level__mutmut_35,
+    "x_get_foundation_log_level__mutmut_36": x_get_foundation_log_level__mutmut_36,
+    "x_get_foundation_log_level__mutmut_37": x_get_foundation_log_level__mutmut_37,
+    "x_get_foundation_log_level__mutmut_38": x_get_foundation_log_level__mutmut_38,
+    "x_get_foundation_log_level__mutmut_39": x_get_foundation_log_level__mutmut_39,
+    "x_get_foundation_log_level__mutmut_40": x_get_foundation_log_level__mutmut_40,
+    "x_get_foundation_log_level__mutmut_41": x_get_foundation_log_level__mutmut_41,
+    "x_get_foundation_log_level__mutmut_42": x_get_foundation_log_level__mutmut_42,
+    "x_get_foundation_log_level__mutmut_43": x_get_foundation_log_level__mutmut_43,
+    "x_get_foundation_log_level__mutmut_44": x_get_foundation_log_level__mutmut_44,
+    "x_get_foundation_log_level__mutmut_45": x_get_foundation_log_level__mutmut_45,
+    "x_get_foundation_log_level__mutmut_46": x_get_foundation_log_level__mutmut_46,
+    "x_get_foundation_log_level__mutmut_47": x_get_foundation_log_level__mutmut_47,
+    "x_get_foundation_log_level__mutmut_48": x_get_foundation_log_level__mutmut_48,
 }
 
+
 def get_foundation_log_level(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_foundation_log_level__mutmut_orig, x_get_foundation_log_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_foundation_log_level__mutmut_orig, x_get_foundation_log_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_foundation_log_level.__signature__ = _mutmut_signature(x_get_foundation_log_level__mutmut_orig)
-x_get_foundation_log_level__mutmut_orig.__name__ = 'x_get_foundation_log_level'
+x_get_foundation_log_level__mutmut_orig.__name__ = "x_get_foundation_log_level"
 
 
 def x_create_foundation_internal_logger__mutmut_orig(globally_disabled: bool = False) -> Any:  # noqa: C901
@@ -5871,7 +5893,7 @@ def x_create_foundation_internal_logger__mutmut_10(globally_disabled: bool = Fal
             processors=[],
             logger_factory=structlog.ReturnLoggerFactory(),
             wrapper_class=structlog.BoundLogger,
-            )
+        )
         _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
         return _CACHED_SETUP_LOGGER
     # Get the foundation log output stream, respecting test stream redirection
@@ -8615,7 +8637,9 @@ def x_create_foundation_internal_logger__mutmut_35(globally_disabled: bool = Fal
             "critical": stdlib_logging.CRITICAL,
             "trace": 5,  # TRACE level
         }
-        current_level = level_map.get(method_name, )
+        current_level = level_map.get(
+            method_name,
+        )
 
         # Drop the event if it's below the threshold
         if current_level < log_level_threshold:
@@ -9387,7 +9411,12 @@ def x_create_foundation_internal_logger__mutmut_42(globally_disabled: bool = Fal
         return event_dict
 
     # Check if output stream is a TTY for color support
-    is_tty = hasattr(foundation_stream, ) and foundation_stream.isatty()
+    is_tty = (
+        hasattr(
+            foundation_stream,
+        )
+        and foundation_stream.isatty()
+    )
 
     # Create custom structlog processor that uses the shared formatter
     def shared_formatter_processor(logger: Any, method_name: str, event_dict: Any) -> str:
@@ -10158,7 +10187,9 @@ def x_create_foundation_internal_logger__mutmut_49(globally_disabled: bool = Fal
         import time
 
         # Get timestamp from event_dict or use current time
-        timestamp = event_dict.get("timestamp", )
+        timestamp = event_dict.get(
+            "timestamp",
+        )
         if isinstance(timestamp, str):
             # If timestamp is already formatted (from TimeStamper), parse it back
             # For simplicity, use current time
@@ -11146,7 +11177,9 @@ def x_create_foundation_internal_logger__mutmut_58(globally_disabled: bool = Fal
             timestamp = time.time()
 
         # Get level from event_dict
-        level_name = event_dict.get("level", ).upper()
+        level_name = event_dict.get(
+            "level",
+        ).upper()
 
         # Get the message (event key in structlog)
         message = event_dict.get("event", "")
@@ -11912,7 +11945,9 @@ def x_create_foundation_internal_logger__mutmut_65(globally_disabled: bool = Fal
         level_name = event_dict.get("level", method_name).upper()
 
         # Get the message (event key in structlog)
-        message = event_dict.get("event", )
+        message = event_dict.get(
+            "event",
+        )
 
         # Add any additional key-value pairs to the message with optional colors
         kvs = []
@@ -14435,9 +14470,7 @@ def x_create_foundation_internal_logger__mutmut_88(globally_disabled: bool = Fal
             message = f"{message} {' '.join(kvs)}".strip()
 
         # Use shared formatter with color support
-        return format_foundation_log_message(
-            level_name=level_name, message=message, use_colors=is_tty
-        )
+        return format_foundation_log_message(level_name=level_name, message=message, use_colors=is_tty)
 
     # Configure structlog for core setup logger with shared formatting
     structlog.configure(
@@ -14544,9 +14577,7 @@ def x_create_foundation_internal_logger__mutmut_89(globally_disabled: bool = Fal
             message = f"{message} {' '.join(kvs)}".strip()
 
         # Use shared formatter with color support
-        return format_foundation_log_message(
-            timestamp=timestamp, message=message, use_colors=is_tty
-        )
+        return format_foundation_log_message(timestamp=timestamp, message=message, use_colors=is_tty)
 
     # Configure structlog for core setup logger with shared formatting
     structlog.configure(
@@ -14653,9 +14684,7 @@ def x_create_foundation_internal_logger__mutmut_90(globally_disabled: bool = Fal
             message = f"{message} {' '.join(kvs)}".strip()
 
         # Use shared formatter with color support
-        return format_foundation_log_message(
-            timestamp=timestamp, level_name=level_name, use_colors=is_tty
-        )
+        return format_foundation_log_message(timestamp=timestamp, level_name=level_name, use_colors=is_tty)
 
     # Configure structlog for core setup logger with shared formatting
     structlog.configure(
@@ -14763,7 +14792,10 @@ def x_create_foundation_internal_logger__mutmut_91(globally_disabled: bool = Fal
 
         # Use shared formatter with color support
         return format_foundation_log_message(
-            timestamp=timestamp, level_name=level_name, message=message, )
+            timestamp=timestamp,
+            level_name=level_name,
+            message=message,
+        )
 
     # Configure structlog for core setup logger with shared formatting
     structlog.configure(
@@ -15635,7 +15667,7 @@ def x_create_foundation_internal_logger__mutmut_99(globally_disabled: bool = Fal
         ],
         logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
         wrapper_class=structlog.BoundLogger,
-        )
+    )
 
     _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
     return _CACHED_SETUP_LOGGER
@@ -16076,118 +16108,128 @@ def x_create_foundation_internal_logger__mutmut_103(globally_disabled: bool = Fa
     _CACHED_SETUP_LOGGER = structlog.get_logger(None)
     return _CACHED_SETUP_LOGGER
 
-x_create_foundation_internal_logger__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_foundation_internal_logger__mutmut_1': x_create_foundation_internal_logger__mutmut_1, 
-    'x_create_foundation_internal_logger__mutmut_2': x_create_foundation_internal_logger__mutmut_2, 
-    'x_create_foundation_internal_logger__mutmut_3': x_create_foundation_internal_logger__mutmut_3, 
-    'x_create_foundation_internal_logger__mutmut_4': x_create_foundation_internal_logger__mutmut_4, 
-    'x_create_foundation_internal_logger__mutmut_5': x_create_foundation_internal_logger__mutmut_5, 
-    'x_create_foundation_internal_logger__mutmut_6': x_create_foundation_internal_logger__mutmut_6, 
-    'x_create_foundation_internal_logger__mutmut_7': x_create_foundation_internal_logger__mutmut_7, 
-    'x_create_foundation_internal_logger__mutmut_8': x_create_foundation_internal_logger__mutmut_8, 
-    'x_create_foundation_internal_logger__mutmut_9': x_create_foundation_internal_logger__mutmut_9, 
-    'x_create_foundation_internal_logger__mutmut_10': x_create_foundation_internal_logger__mutmut_10, 
-    'x_create_foundation_internal_logger__mutmut_11': x_create_foundation_internal_logger__mutmut_11, 
-    'x_create_foundation_internal_logger__mutmut_12': x_create_foundation_internal_logger__mutmut_12, 
-    'x_create_foundation_internal_logger__mutmut_13': x_create_foundation_internal_logger__mutmut_13, 
-    'x_create_foundation_internal_logger__mutmut_14': x_create_foundation_internal_logger__mutmut_14, 
-    'x_create_foundation_internal_logger__mutmut_15': x_create_foundation_internal_logger__mutmut_15, 
-    'x_create_foundation_internal_logger__mutmut_16': x_create_foundation_internal_logger__mutmut_16, 
-    'x_create_foundation_internal_logger__mutmut_17': x_create_foundation_internal_logger__mutmut_17, 
-    'x_create_foundation_internal_logger__mutmut_18': x_create_foundation_internal_logger__mutmut_18, 
-    'x_create_foundation_internal_logger__mutmut_19': x_create_foundation_internal_logger__mutmut_19, 
-    'x_create_foundation_internal_logger__mutmut_20': x_create_foundation_internal_logger__mutmut_20, 
-    'x_create_foundation_internal_logger__mutmut_21': x_create_foundation_internal_logger__mutmut_21, 
-    'x_create_foundation_internal_logger__mutmut_22': x_create_foundation_internal_logger__mutmut_22, 
-    'x_create_foundation_internal_logger__mutmut_23': x_create_foundation_internal_logger__mutmut_23, 
-    'x_create_foundation_internal_logger__mutmut_24': x_create_foundation_internal_logger__mutmut_24, 
-    'x_create_foundation_internal_logger__mutmut_25': x_create_foundation_internal_logger__mutmut_25, 
-    'x_create_foundation_internal_logger__mutmut_26': x_create_foundation_internal_logger__mutmut_26, 
-    'x_create_foundation_internal_logger__mutmut_27': x_create_foundation_internal_logger__mutmut_27, 
-    'x_create_foundation_internal_logger__mutmut_28': x_create_foundation_internal_logger__mutmut_28, 
-    'x_create_foundation_internal_logger__mutmut_29': x_create_foundation_internal_logger__mutmut_29, 
-    'x_create_foundation_internal_logger__mutmut_30': x_create_foundation_internal_logger__mutmut_30, 
-    'x_create_foundation_internal_logger__mutmut_31': x_create_foundation_internal_logger__mutmut_31, 
-    'x_create_foundation_internal_logger__mutmut_32': x_create_foundation_internal_logger__mutmut_32, 
-    'x_create_foundation_internal_logger__mutmut_33': x_create_foundation_internal_logger__mutmut_33, 
-    'x_create_foundation_internal_logger__mutmut_34': x_create_foundation_internal_logger__mutmut_34, 
-    'x_create_foundation_internal_logger__mutmut_35': x_create_foundation_internal_logger__mutmut_35, 
-    'x_create_foundation_internal_logger__mutmut_36': x_create_foundation_internal_logger__mutmut_36, 
-    'x_create_foundation_internal_logger__mutmut_37': x_create_foundation_internal_logger__mutmut_37, 
-    'x_create_foundation_internal_logger__mutmut_38': x_create_foundation_internal_logger__mutmut_38, 
-    'x_create_foundation_internal_logger__mutmut_39': x_create_foundation_internal_logger__mutmut_39, 
-    'x_create_foundation_internal_logger__mutmut_40': x_create_foundation_internal_logger__mutmut_40, 
-    'x_create_foundation_internal_logger__mutmut_41': x_create_foundation_internal_logger__mutmut_41, 
-    'x_create_foundation_internal_logger__mutmut_42': x_create_foundation_internal_logger__mutmut_42, 
-    'x_create_foundation_internal_logger__mutmut_43': x_create_foundation_internal_logger__mutmut_43, 
-    'x_create_foundation_internal_logger__mutmut_44': x_create_foundation_internal_logger__mutmut_44, 
-    'x_create_foundation_internal_logger__mutmut_45': x_create_foundation_internal_logger__mutmut_45, 
-    'x_create_foundation_internal_logger__mutmut_46': x_create_foundation_internal_logger__mutmut_46, 
-    'x_create_foundation_internal_logger__mutmut_47': x_create_foundation_internal_logger__mutmut_47, 
-    'x_create_foundation_internal_logger__mutmut_48': x_create_foundation_internal_logger__mutmut_48, 
-    'x_create_foundation_internal_logger__mutmut_49': x_create_foundation_internal_logger__mutmut_49, 
-    'x_create_foundation_internal_logger__mutmut_50': x_create_foundation_internal_logger__mutmut_50, 
-    'x_create_foundation_internal_logger__mutmut_51': x_create_foundation_internal_logger__mutmut_51, 
-    'x_create_foundation_internal_logger__mutmut_52': x_create_foundation_internal_logger__mutmut_52, 
-    'x_create_foundation_internal_logger__mutmut_53': x_create_foundation_internal_logger__mutmut_53, 
-    'x_create_foundation_internal_logger__mutmut_54': x_create_foundation_internal_logger__mutmut_54, 
-    'x_create_foundation_internal_logger__mutmut_55': x_create_foundation_internal_logger__mutmut_55, 
-    'x_create_foundation_internal_logger__mutmut_56': x_create_foundation_internal_logger__mutmut_56, 
-    'x_create_foundation_internal_logger__mutmut_57': x_create_foundation_internal_logger__mutmut_57, 
-    'x_create_foundation_internal_logger__mutmut_58': x_create_foundation_internal_logger__mutmut_58, 
-    'x_create_foundation_internal_logger__mutmut_59': x_create_foundation_internal_logger__mutmut_59, 
-    'x_create_foundation_internal_logger__mutmut_60': x_create_foundation_internal_logger__mutmut_60, 
-    'x_create_foundation_internal_logger__mutmut_61': x_create_foundation_internal_logger__mutmut_61, 
-    'x_create_foundation_internal_logger__mutmut_62': x_create_foundation_internal_logger__mutmut_62, 
-    'x_create_foundation_internal_logger__mutmut_63': x_create_foundation_internal_logger__mutmut_63, 
-    'x_create_foundation_internal_logger__mutmut_64': x_create_foundation_internal_logger__mutmut_64, 
-    'x_create_foundation_internal_logger__mutmut_65': x_create_foundation_internal_logger__mutmut_65, 
-    'x_create_foundation_internal_logger__mutmut_66': x_create_foundation_internal_logger__mutmut_66, 
-    'x_create_foundation_internal_logger__mutmut_67': x_create_foundation_internal_logger__mutmut_67, 
-    'x_create_foundation_internal_logger__mutmut_68': x_create_foundation_internal_logger__mutmut_68, 
-    'x_create_foundation_internal_logger__mutmut_69': x_create_foundation_internal_logger__mutmut_69, 
-    'x_create_foundation_internal_logger__mutmut_70': x_create_foundation_internal_logger__mutmut_70, 
-    'x_create_foundation_internal_logger__mutmut_71': x_create_foundation_internal_logger__mutmut_71, 
-    'x_create_foundation_internal_logger__mutmut_72': x_create_foundation_internal_logger__mutmut_72, 
-    'x_create_foundation_internal_logger__mutmut_73': x_create_foundation_internal_logger__mutmut_73, 
-    'x_create_foundation_internal_logger__mutmut_74': x_create_foundation_internal_logger__mutmut_74, 
-    'x_create_foundation_internal_logger__mutmut_75': x_create_foundation_internal_logger__mutmut_75, 
-    'x_create_foundation_internal_logger__mutmut_76': x_create_foundation_internal_logger__mutmut_76, 
-    'x_create_foundation_internal_logger__mutmut_77': x_create_foundation_internal_logger__mutmut_77, 
-    'x_create_foundation_internal_logger__mutmut_78': x_create_foundation_internal_logger__mutmut_78, 
-    'x_create_foundation_internal_logger__mutmut_79': x_create_foundation_internal_logger__mutmut_79, 
-    'x_create_foundation_internal_logger__mutmut_80': x_create_foundation_internal_logger__mutmut_80, 
-    'x_create_foundation_internal_logger__mutmut_81': x_create_foundation_internal_logger__mutmut_81, 
-    'x_create_foundation_internal_logger__mutmut_82': x_create_foundation_internal_logger__mutmut_82, 
-    'x_create_foundation_internal_logger__mutmut_83': x_create_foundation_internal_logger__mutmut_83, 
-    'x_create_foundation_internal_logger__mutmut_84': x_create_foundation_internal_logger__mutmut_84, 
-    'x_create_foundation_internal_logger__mutmut_85': x_create_foundation_internal_logger__mutmut_85, 
-    'x_create_foundation_internal_logger__mutmut_86': x_create_foundation_internal_logger__mutmut_86, 
-    'x_create_foundation_internal_logger__mutmut_87': x_create_foundation_internal_logger__mutmut_87, 
-    'x_create_foundation_internal_logger__mutmut_88': x_create_foundation_internal_logger__mutmut_88, 
-    'x_create_foundation_internal_logger__mutmut_89': x_create_foundation_internal_logger__mutmut_89, 
-    'x_create_foundation_internal_logger__mutmut_90': x_create_foundation_internal_logger__mutmut_90, 
-    'x_create_foundation_internal_logger__mutmut_91': x_create_foundation_internal_logger__mutmut_91, 
-    'x_create_foundation_internal_logger__mutmut_92': x_create_foundation_internal_logger__mutmut_92, 
-    'x_create_foundation_internal_logger__mutmut_93': x_create_foundation_internal_logger__mutmut_93, 
-    'x_create_foundation_internal_logger__mutmut_94': x_create_foundation_internal_logger__mutmut_94, 
-    'x_create_foundation_internal_logger__mutmut_95': x_create_foundation_internal_logger__mutmut_95, 
-    'x_create_foundation_internal_logger__mutmut_96': x_create_foundation_internal_logger__mutmut_96, 
-    'x_create_foundation_internal_logger__mutmut_97': x_create_foundation_internal_logger__mutmut_97, 
-    'x_create_foundation_internal_logger__mutmut_98': x_create_foundation_internal_logger__mutmut_98, 
-    'x_create_foundation_internal_logger__mutmut_99': x_create_foundation_internal_logger__mutmut_99, 
-    'x_create_foundation_internal_logger__mutmut_100': x_create_foundation_internal_logger__mutmut_100, 
-    'x_create_foundation_internal_logger__mutmut_101': x_create_foundation_internal_logger__mutmut_101, 
-    'x_create_foundation_internal_logger__mutmut_102': x_create_foundation_internal_logger__mutmut_102, 
-    'x_create_foundation_internal_logger__mutmut_103': x_create_foundation_internal_logger__mutmut_103
+
+x_create_foundation_internal_logger__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_foundation_internal_logger__mutmut_1": x_create_foundation_internal_logger__mutmut_1,
+    "x_create_foundation_internal_logger__mutmut_2": x_create_foundation_internal_logger__mutmut_2,
+    "x_create_foundation_internal_logger__mutmut_3": x_create_foundation_internal_logger__mutmut_3,
+    "x_create_foundation_internal_logger__mutmut_4": x_create_foundation_internal_logger__mutmut_4,
+    "x_create_foundation_internal_logger__mutmut_5": x_create_foundation_internal_logger__mutmut_5,
+    "x_create_foundation_internal_logger__mutmut_6": x_create_foundation_internal_logger__mutmut_6,
+    "x_create_foundation_internal_logger__mutmut_7": x_create_foundation_internal_logger__mutmut_7,
+    "x_create_foundation_internal_logger__mutmut_8": x_create_foundation_internal_logger__mutmut_8,
+    "x_create_foundation_internal_logger__mutmut_9": x_create_foundation_internal_logger__mutmut_9,
+    "x_create_foundation_internal_logger__mutmut_10": x_create_foundation_internal_logger__mutmut_10,
+    "x_create_foundation_internal_logger__mutmut_11": x_create_foundation_internal_logger__mutmut_11,
+    "x_create_foundation_internal_logger__mutmut_12": x_create_foundation_internal_logger__mutmut_12,
+    "x_create_foundation_internal_logger__mutmut_13": x_create_foundation_internal_logger__mutmut_13,
+    "x_create_foundation_internal_logger__mutmut_14": x_create_foundation_internal_logger__mutmut_14,
+    "x_create_foundation_internal_logger__mutmut_15": x_create_foundation_internal_logger__mutmut_15,
+    "x_create_foundation_internal_logger__mutmut_16": x_create_foundation_internal_logger__mutmut_16,
+    "x_create_foundation_internal_logger__mutmut_17": x_create_foundation_internal_logger__mutmut_17,
+    "x_create_foundation_internal_logger__mutmut_18": x_create_foundation_internal_logger__mutmut_18,
+    "x_create_foundation_internal_logger__mutmut_19": x_create_foundation_internal_logger__mutmut_19,
+    "x_create_foundation_internal_logger__mutmut_20": x_create_foundation_internal_logger__mutmut_20,
+    "x_create_foundation_internal_logger__mutmut_21": x_create_foundation_internal_logger__mutmut_21,
+    "x_create_foundation_internal_logger__mutmut_22": x_create_foundation_internal_logger__mutmut_22,
+    "x_create_foundation_internal_logger__mutmut_23": x_create_foundation_internal_logger__mutmut_23,
+    "x_create_foundation_internal_logger__mutmut_24": x_create_foundation_internal_logger__mutmut_24,
+    "x_create_foundation_internal_logger__mutmut_25": x_create_foundation_internal_logger__mutmut_25,
+    "x_create_foundation_internal_logger__mutmut_26": x_create_foundation_internal_logger__mutmut_26,
+    "x_create_foundation_internal_logger__mutmut_27": x_create_foundation_internal_logger__mutmut_27,
+    "x_create_foundation_internal_logger__mutmut_28": x_create_foundation_internal_logger__mutmut_28,
+    "x_create_foundation_internal_logger__mutmut_29": x_create_foundation_internal_logger__mutmut_29,
+    "x_create_foundation_internal_logger__mutmut_30": x_create_foundation_internal_logger__mutmut_30,
+    "x_create_foundation_internal_logger__mutmut_31": x_create_foundation_internal_logger__mutmut_31,
+    "x_create_foundation_internal_logger__mutmut_32": x_create_foundation_internal_logger__mutmut_32,
+    "x_create_foundation_internal_logger__mutmut_33": x_create_foundation_internal_logger__mutmut_33,
+    "x_create_foundation_internal_logger__mutmut_34": x_create_foundation_internal_logger__mutmut_34,
+    "x_create_foundation_internal_logger__mutmut_35": x_create_foundation_internal_logger__mutmut_35,
+    "x_create_foundation_internal_logger__mutmut_36": x_create_foundation_internal_logger__mutmut_36,
+    "x_create_foundation_internal_logger__mutmut_37": x_create_foundation_internal_logger__mutmut_37,
+    "x_create_foundation_internal_logger__mutmut_38": x_create_foundation_internal_logger__mutmut_38,
+    "x_create_foundation_internal_logger__mutmut_39": x_create_foundation_internal_logger__mutmut_39,
+    "x_create_foundation_internal_logger__mutmut_40": x_create_foundation_internal_logger__mutmut_40,
+    "x_create_foundation_internal_logger__mutmut_41": x_create_foundation_internal_logger__mutmut_41,
+    "x_create_foundation_internal_logger__mutmut_42": x_create_foundation_internal_logger__mutmut_42,
+    "x_create_foundation_internal_logger__mutmut_43": x_create_foundation_internal_logger__mutmut_43,
+    "x_create_foundation_internal_logger__mutmut_44": x_create_foundation_internal_logger__mutmut_44,
+    "x_create_foundation_internal_logger__mutmut_45": x_create_foundation_internal_logger__mutmut_45,
+    "x_create_foundation_internal_logger__mutmut_46": x_create_foundation_internal_logger__mutmut_46,
+    "x_create_foundation_internal_logger__mutmut_47": x_create_foundation_internal_logger__mutmut_47,
+    "x_create_foundation_internal_logger__mutmut_48": x_create_foundation_internal_logger__mutmut_48,
+    "x_create_foundation_internal_logger__mutmut_49": x_create_foundation_internal_logger__mutmut_49,
+    "x_create_foundation_internal_logger__mutmut_50": x_create_foundation_internal_logger__mutmut_50,
+    "x_create_foundation_internal_logger__mutmut_51": x_create_foundation_internal_logger__mutmut_51,
+    "x_create_foundation_internal_logger__mutmut_52": x_create_foundation_internal_logger__mutmut_52,
+    "x_create_foundation_internal_logger__mutmut_53": x_create_foundation_internal_logger__mutmut_53,
+    "x_create_foundation_internal_logger__mutmut_54": x_create_foundation_internal_logger__mutmut_54,
+    "x_create_foundation_internal_logger__mutmut_55": x_create_foundation_internal_logger__mutmut_55,
+    "x_create_foundation_internal_logger__mutmut_56": x_create_foundation_internal_logger__mutmut_56,
+    "x_create_foundation_internal_logger__mutmut_57": x_create_foundation_internal_logger__mutmut_57,
+    "x_create_foundation_internal_logger__mutmut_58": x_create_foundation_internal_logger__mutmut_58,
+    "x_create_foundation_internal_logger__mutmut_59": x_create_foundation_internal_logger__mutmut_59,
+    "x_create_foundation_internal_logger__mutmut_60": x_create_foundation_internal_logger__mutmut_60,
+    "x_create_foundation_internal_logger__mutmut_61": x_create_foundation_internal_logger__mutmut_61,
+    "x_create_foundation_internal_logger__mutmut_62": x_create_foundation_internal_logger__mutmut_62,
+    "x_create_foundation_internal_logger__mutmut_63": x_create_foundation_internal_logger__mutmut_63,
+    "x_create_foundation_internal_logger__mutmut_64": x_create_foundation_internal_logger__mutmut_64,
+    "x_create_foundation_internal_logger__mutmut_65": x_create_foundation_internal_logger__mutmut_65,
+    "x_create_foundation_internal_logger__mutmut_66": x_create_foundation_internal_logger__mutmut_66,
+    "x_create_foundation_internal_logger__mutmut_67": x_create_foundation_internal_logger__mutmut_67,
+    "x_create_foundation_internal_logger__mutmut_68": x_create_foundation_internal_logger__mutmut_68,
+    "x_create_foundation_internal_logger__mutmut_69": x_create_foundation_internal_logger__mutmut_69,
+    "x_create_foundation_internal_logger__mutmut_70": x_create_foundation_internal_logger__mutmut_70,
+    "x_create_foundation_internal_logger__mutmut_71": x_create_foundation_internal_logger__mutmut_71,
+    "x_create_foundation_internal_logger__mutmut_72": x_create_foundation_internal_logger__mutmut_72,
+    "x_create_foundation_internal_logger__mutmut_73": x_create_foundation_internal_logger__mutmut_73,
+    "x_create_foundation_internal_logger__mutmut_74": x_create_foundation_internal_logger__mutmut_74,
+    "x_create_foundation_internal_logger__mutmut_75": x_create_foundation_internal_logger__mutmut_75,
+    "x_create_foundation_internal_logger__mutmut_76": x_create_foundation_internal_logger__mutmut_76,
+    "x_create_foundation_internal_logger__mutmut_77": x_create_foundation_internal_logger__mutmut_77,
+    "x_create_foundation_internal_logger__mutmut_78": x_create_foundation_internal_logger__mutmut_78,
+    "x_create_foundation_internal_logger__mutmut_79": x_create_foundation_internal_logger__mutmut_79,
+    "x_create_foundation_internal_logger__mutmut_80": x_create_foundation_internal_logger__mutmut_80,
+    "x_create_foundation_internal_logger__mutmut_81": x_create_foundation_internal_logger__mutmut_81,
+    "x_create_foundation_internal_logger__mutmut_82": x_create_foundation_internal_logger__mutmut_82,
+    "x_create_foundation_internal_logger__mutmut_83": x_create_foundation_internal_logger__mutmut_83,
+    "x_create_foundation_internal_logger__mutmut_84": x_create_foundation_internal_logger__mutmut_84,
+    "x_create_foundation_internal_logger__mutmut_85": x_create_foundation_internal_logger__mutmut_85,
+    "x_create_foundation_internal_logger__mutmut_86": x_create_foundation_internal_logger__mutmut_86,
+    "x_create_foundation_internal_logger__mutmut_87": x_create_foundation_internal_logger__mutmut_87,
+    "x_create_foundation_internal_logger__mutmut_88": x_create_foundation_internal_logger__mutmut_88,
+    "x_create_foundation_internal_logger__mutmut_89": x_create_foundation_internal_logger__mutmut_89,
+    "x_create_foundation_internal_logger__mutmut_90": x_create_foundation_internal_logger__mutmut_90,
+    "x_create_foundation_internal_logger__mutmut_91": x_create_foundation_internal_logger__mutmut_91,
+    "x_create_foundation_internal_logger__mutmut_92": x_create_foundation_internal_logger__mutmut_92,
+    "x_create_foundation_internal_logger__mutmut_93": x_create_foundation_internal_logger__mutmut_93,
+    "x_create_foundation_internal_logger__mutmut_94": x_create_foundation_internal_logger__mutmut_94,
+    "x_create_foundation_internal_logger__mutmut_95": x_create_foundation_internal_logger__mutmut_95,
+    "x_create_foundation_internal_logger__mutmut_96": x_create_foundation_internal_logger__mutmut_96,
+    "x_create_foundation_internal_logger__mutmut_97": x_create_foundation_internal_logger__mutmut_97,
+    "x_create_foundation_internal_logger__mutmut_98": x_create_foundation_internal_logger__mutmut_98,
+    "x_create_foundation_internal_logger__mutmut_99": x_create_foundation_internal_logger__mutmut_99,
+    "x_create_foundation_internal_logger__mutmut_100": x_create_foundation_internal_logger__mutmut_100,
+    "x_create_foundation_internal_logger__mutmut_101": x_create_foundation_internal_logger__mutmut_101,
+    "x_create_foundation_internal_logger__mutmut_102": x_create_foundation_internal_logger__mutmut_102,
+    "x_create_foundation_internal_logger__mutmut_103": x_create_foundation_internal_logger__mutmut_103,
 }
 
-def create_foundation_internal_logger(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_foundation_internal_logger__mutmut_orig, x_create_foundation_internal_logger__mutmut_mutants, args, kwargs)
-    return result 
 
-create_foundation_internal_logger.__signature__ = _mutmut_signature(x_create_foundation_internal_logger__mutmut_orig)
-x_create_foundation_internal_logger__mutmut_orig.__name__ = 'x_create_foundation_internal_logger'
+def create_foundation_internal_logger(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_create_foundation_internal_logger__mutmut_orig,
+        x_create_foundation_internal_logger__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+create_foundation_internal_logger.__signature__ = _mutmut_signature(
+    x_create_foundation_internal_logger__mutmut_orig
+)
+x_create_foundation_internal_logger__mutmut_orig.__name__ = "x_create_foundation_internal_logger"
 
 
 def x_reset_setup_logger_cache__mutmut_orig() -> None:
@@ -16201,16 +16243,21 @@ def x_reset_setup_logger_cache__mutmut_1() -> None:
     global _CACHED_SETUP_LOGGER
     _CACHED_SETUP_LOGGER = ""
 
-x_reset_setup_logger_cache__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_setup_logger_cache__mutmut_1': x_reset_setup_logger_cache__mutmut_1
+
+x_reset_setup_logger_cache__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_setup_logger_cache__mutmut_1": x_reset_setup_logger_cache__mutmut_1
 }
 
+
 def reset_setup_logger_cache(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_setup_logger_cache__mutmut_orig, x_reset_setup_logger_cache__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_setup_logger_cache__mutmut_orig, x_reset_setup_logger_cache__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_setup_logger_cache.__signature__ = _mutmut_signature(x_reset_setup_logger_cache__mutmut_orig)
-x_reset_setup_logger_cache__mutmut_orig.__name__ = 'x_reset_setup_logger_cache'
+x_reset_setup_logger_cache__mutmut_orig.__name__ = "x_reset_setup_logger_cache"
 
 
 def x_reset_foundation_log_level_cache__mutmut_orig() -> None:
@@ -16224,16 +16271,26 @@ def x_reset_foundation_log_level_cache__mutmut_1() -> None:
     global _FOUNDATION_LOG_LEVEL
     _FOUNDATION_LOG_LEVEL = ""
 
-x_reset_foundation_log_level_cache__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_foundation_log_level_cache__mutmut_1': x_reset_foundation_log_level_cache__mutmut_1
+
+x_reset_foundation_log_level_cache__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_foundation_log_level_cache__mutmut_1": x_reset_foundation_log_level_cache__mutmut_1
 }
 
-def reset_foundation_log_level_cache(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_foundation_log_level_cache__mutmut_orig, x_reset_foundation_log_level_cache__mutmut_mutants, args, kwargs)
-    return result 
 
-reset_foundation_log_level_cache.__signature__ = _mutmut_signature(x_reset_foundation_log_level_cache__mutmut_orig)
-x_reset_foundation_log_level_cache__mutmut_orig.__name__ = 'x_reset_foundation_log_level_cache'
+def reset_foundation_log_level_cache(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_reset_foundation_log_level_cache__mutmut_orig,
+        x_reset_foundation_log_level_cache__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+reset_foundation_log_level_cache.__signature__ = _mutmut_signature(
+    x_reset_foundation_log_level_cache__mutmut_orig
+)
+x_reset_foundation_log_level_cache__mutmut_orig.__name__ = "x_reset_foundation_log_level_cache"
 
 
 def reset_coordinator_state() -> None:
@@ -16369,22 +16426,32 @@ def x__configure_stdlib_module_logging__mutmut_7(module_levels: dict[str, str] |
         if isinstance(numeric_level, int):
             module_logger.setLevel(None)
 
-x__configure_stdlib_module_logging__mutmut_mutants : ClassVar[MutantDict] = {
-'x__configure_stdlib_module_logging__mutmut_1': x__configure_stdlib_module_logging__mutmut_1, 
-    'x__configure_stdlib_module_logging__mutmut_2': x__configure_stdlib_module_logging__mutmut_2, 
-    'x__configure_stdlib_module_logging__mutmut_3': x__configure_stdlib_module_logging__mutmut_3, 
-    'x__configure_stdlib_module_logging__mutmut_4': x__configure_stdlib_module_logging__mutmut_4, 
-    'x__configure_stdlib_module_logging__mutmut_5': x__configure_stdlib_module_logging__mutmut_5, 
-    'x__configure_stdlib_module_logging__mutmut_6': x__configure_stdlib_module_logging__mutmut_6, 
-    'x__configure_stdlib_module_logging__mutmut_7': x__configure_stdlib_module_logging__mutmut_7
+
+x__configure_stdlib_module_logging__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__configure_stdlib_module_logging__mutmut_1": x__configure_stdlib_module_logging__mutmut_1,
+    "x__configure_stdlib_module_logging__mutmut_2": x__configure_stdlib_module_logging__mutmut_2,
+    "x__configure_stdlib_module_logging__mutmut_3": x__configure_stdlib_module_logging__mutmut_3,
+    "x__configure_stdlib_module_logging__mutmut_4": x__configure_stdlib_module_logging__mutmut_4,
+    "x__configure_stdlib_module_logging__mutmut_5": x__configure_stdlib_module_logging__mutmut_5,
+    "x__configure_stdlib_module_logging__mutmut_6": x__configure_stdlib_module_logging__mutmut_6,
+    "x__configure_stdlib_module_logging__mutmut_7": x__configure_stdlib_module_logging__mutmut_7,
 }
 
-def _configure_stdlib_module_logging(*args, **kwargs):
-    result = _mutmut_trampoline(x__configure_stdlib_module_logging__mutmut_orig, x__configure_stdlib_module_logging__mutmut_mutants, args, kwargs)
-    return result 
 
-_configure_stdlib_module_logging.__signature__ = _mutmut_signature(x__configure_stdlib_module_logging__mutmut_orig)
-x__configure_stdlib_module_logging__mutmut_orig.__name__ = 'x__configure_stdlib_module_logging'
+def _configure_stdlib_module_logging(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__configure_stdlib_module_logging__mutmut_orig,
+        x__configure_stdlib_module_logging__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_configure_stdlib_module_logging.__signature__ = _mutmut_signature(
+    x__configure_stdlib_module_logging__mutmut_orig
+)
+x__configure_stdlib_module_logging__mutmut_orig.__name__ = "x__configure_stdlib_module_logging"
 
 
 def x_get_system_logger__mutmut_orig(name: str, config: TelemetryConfig | None = None) -> object:
@@ -18936,7 +19003,12 @@ def x_get_system_logger__mutmut_22(name: str, config: TelemetryConfig | None = N
         stream = sys.stderr if output != "stdout" else sys.stdout
 
         # Check if output stream is a TTY for color support
-        is_tty = hasattr(stream, ) and stream.isatty()
+        is_tty = (
+            hasattr(
+                stream,
+            )
+            and stream.isatty()
+        )
 
         # Use shared formatter to ensure consistency with structlog
         class SharedFormatter(logging.Formatter):
@@ -26949,7 +27021,7 @@ def x_get_system_logger__mutmut_92(name: str, config: TelemetryConfig | None = N
                     timestamp=record.created,
                     level_name=record.levelname,
                     message=message,
-                    )
+                )
 
         handler = logging.StreamHandler(stream)
         handler.setLevel(log_level)
@@ -27987,119 +28059,126 @@ def x_get_system_logger__mutmut_101(name: str, config: TelemetryConfig | None = 
 
     return StructuredStdlibLogger(None)
 
-x_get_system_logger__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_system_logger__mutmut_1': x_get_system_logger__mutmut_1, 
-    'x_get_system_logger__mutmut_2': x_get_system_logger__mutmut_2, 
-    'x_get_system_logger__mutmut_3': x_get_system_logger__mutmut_3, 
-    'x_get_system_logger__mutmut_4': x_get_system_logger__mutmut_4, 
-    'x_get_system_logger__mutmut_5': x_get_system_logger__mutmut_5, 
-    'x_get_system_logger__mutmut_6': x_get_system_logger__mutmut_6, 
-    'x_get_system_logger__mutmut_7': x_get_system_logger__mutmut_7, 
-    'x_get_system_logger__mutmut_8': x_get_system_logger__mutmut_8, 
-    'x_get_system_logger__mutmut_9': x_get_system_logger__mutmut_9, 
-    'x_get_system_logger__mutmut_10': x_get_system_logger__mutmut_10, 
-    'x_get_system_logger__mutmut_11': x_get_system_logger__mutmut_11, 
-    'x_get_system_logger__mutmut_12': x_get_system_logger__mutmut_12, 
-    'x_get_system_logger__mutmut_13': x_get_system_logger__mutmut_13, 
-    'x_get_system_logger__mutmut_14': x_get_system_logger__mutmut_14, 
-    'x_get_system_logger__mutmut_15': x_get_system_logger__mutmut_15, 
-    'x_get_system_logger__mutmut_16': x_get_system_logger__mutmut_16, 
-    'x_get_system_logger__mutmut_17': x_get_system_logger__mutmut_17, 
-    'x_get_system_logger__mutmut_18': x_get_system_logger__mutmut_18, 
-    'x_get_system_logger__mutmut_19': x_get_system_logger__mutmut_19, 
-    'x_get_system_logger__mutmut_20': x_get_system_logger__mutmut_20, 
-    'x_get_system_logger__mutmut_21': x_get_system_logger__mutmut_21, 
-    'x_get_system_logger__mutmut_22': x_get_system_logger__mutmut_22, 
-    'x_get_system_logger__mutmut_23': x_get_system_logger__mutmut_23, 
-    'x_get_system_logger__mutmut_24': x_get_system_logger__mutmut_24, 
-    'x_get_system_logger__mutmut_25': x_get_system_logger__mutmut_25, 
-    'x_get_system_logger__mutmut_26': x_get_system_logger__mutmut_26, 
-    'x_get_system_logger__mutmut_27': x_get_system_logger__mutmut_27, 
-    'x_get_system_logger__mutmut_28': x_get_system_logger__mutmut_28, 
-    'x_get_system_logger__mutmut_29': x_get_system_logger__mutmut_29, 
-    'x_get_system_logger__mutmut_30': x_get_system_logger__mutmut_30, 
-    'x_get_system_logger__mutmut_31': x_get_system_logger__mutmut_31, 
-    'x_get_system_logger__mutmut_32': x_get_system_logger__mutmut_32, 
-    'x_get_system_logger__mutmut_33': x_get_system_logger__mutmut_33, 
-    'x_get_system_logger__mutmut_34': x_get_system_logger__mutmut_34, 
-    'x_get_system_logger__mutmut_35': x_get_system_logger__mutmut_35, 
-    'x_get_system_logger__mutmut_36': x_get_system_logger__mutmut_36, 
-    'x_get_system_logger__mutmut_37': x_get_system_logger__mutmut_37, 
-    'x_get_system_logger__mutmut_38': x_get_system_logger__mutmut_38, 
-    'x_get_system_logger__mutmut_39': x_get_system_logger__mutmut_39, 
-    'x_get_system_logger__mutmut_40': x_get_system_logger__mutmut_40, 
-    'x_get_system_logger__mutmut_41': x_get_system_logger__mutmut_41, 
-    'x_get_system_logger__mutmut_42': x_get_system_logger__mutmut_42, 
-    'x_get_system_logger__mutmut_43': x_get_system_logger__mutmut_43, 
-    'x_get_system_logger__mutmut_44': x_get_system_logger__mutmut_44, 
-    'x_get_system_logger__mutmut_45': x_get_system_logger__mutmut_45, 
-    'x_get_system_logger__mutmut_46': x_get_system_logger__mutmut_46, 
-    'x_get_system_logger__mutmut_47': x_get_system_logger__mutmut_47, 
-    'x_get_system_logger__mutmut_48': x_get_system_logger__mutmut_48, 
-    'x_get_system_logger__mutmut_49': x_get_system_logger__mutmut_49, 
-    'x_get_system_logger__mutmut_50': x_get_system_logger__mutmut_50, 
-    'x_get_system_logger__mutmut_51': x_get_system_logger__mutmut_51, 
-    'x_get_system_logger__mutmut_52': x_get_system_logger__mutmut_52, 
-    'x_get_system_logger__mutmut_53': x_get_system_logger__mutmut_53, 
-    'x_get_system_logger__mutmut_54': x_get_system_logger__mutmut_54, 
-    'x_get_system_logger__mutmut_55': x_get_system_logger__mutmut_55, 
-    'x_get_system_logger__mutmut_56': x_get_system_logger__mutmut_56, 
-    'x_get_system_logger__mutmut_57': x_get_system_logger__mutmut_57, 
-    'x_get_system_logger__mutmut_58': x_get_system_logger__mutmut_58, 
-    'x_get_system_logger__mutmut_59': x_get_system_logger__mutmut_59, 
-    'x_get_system_logger__mutmut_60': x_get_system_logger__mutmut_60, 
-    'x_get_system_logger__mutmut_61': x_get_system_logger__mutmut_61, 
-    'x_get_system_logger__mutmut_62': x_get_system_logger__mutmut_62, 
-    'x_get_system_logger__mutmut_63': x_get_system_logger__mutmut_63, 
-    'x_get_system_logger__mutmut_64': x_get_system_logger__mutmut_64, 
-    'x_get_system_logger__mutmut_65': x_get_system_logger__mutmut_65, 
-    'x_get_system_logger__mutmut_66': x_get_system_logger__mutmut_66, 
-    'x_get_system_logger__mutmut_67': x_get_system_logger__mutmut_67, 
-    'x_get_system_logger__mutmut_68': x_get_system_logger__mutmut_68, 
-    'x_get_system_logger__mutmut_69': x_get_system_logger__mutmut_69, 
-    'x_get_system_logger__mutmut_70': x_get_system_logger__mutmut_70, 
-    'x_get_system_logger__mutmut_71': x_get_system_logger__mutmut_71, 
-    'x_get_system_logger__mutmut_72': x_get_system_logger__mutmut_72, 
-    'x_get_system_logger__mutmut_73': x_get_system_logger__mutmut_73, 
-    'x_get_system_logger__mutmut_74': x_get_system_logger__mutmut_74, 
-    'x_get_system_logger__mutmut_75': x_get_system_logger__mutmut_75, 
-    'x_get_system_logger__mutmut_76': x_get_system_logger__mutmut_76, 
-    'x_get_system_logger__mutmut_77': x_get_system_logger__mutmut_77, 
-    'x_get_system_logger__mutmut_78': x_get_system_logger__mutmut_78, 
-    'x_get_system_logger__mutmut_79': x_get_system_logger__mutmut_79, 
-    'x_get_system_logger__mutmut_80': x_get_system_logger__mutmut_80, 
-    'x_get_system_logger__mutmut_81': x_get_system_logger__mutmut_81, 
-    'x_get_system_logger__mutmut_82': x_get_system_logger__mutmut_82, 
-    'x_get_system_logger__mutmut_83': x_get_system_logger__mutmut_83, 
-    'x_get_system_logger__mutmut_84': x_get_system_logger__mutmut_84, 
-    'x_get_system_logger__mutmut_85': x_get_system_logger__mutmut_85, 
-    'x_get_system_logger__mutmut_86': x_get_system_logger__mutmut_86, 
-    'x_get_system_logger__mutmut_87': x_get_system_logger__mutmut_87, 
-    'x_get_system_logger__mutmut_88': x_get_system_logger__mutmut_88, 
-    'x_get_system_logger__mutmut_89': x_get_system_logger__mutmut_89, 
-    'x_get_system_logger__mutmut_90': x_get_system_logger__mutmut_90, 
-    'x_get_system_logger__mutmut_91': x_get_system_logger__mutmut_91, 
-    'x_get_system_logger__mutmut_92': x_get_system_logger__mutmut_92, 
-    'x_get_system_logger__mutmut_93': x_get_system_logger__mutmut_93, 
-    'x_get_system_logger__mutmut_94': x_get_system_logger__mutmut_94, 
-    'x_get_system_logger__mutmut_95': x_get_system_logger__mutmut_95, 
-    'x_get_system_logger__mutmut_96': x_get_system_logger__mutmut_96, 
-    'x_get_system_logger__mutmut_97': x_get_system_logger__mutmut_97, 
-    'x_get_system_logger__mutmut_98': x_get_system_logger__mutmut_98, 
-    'x_get_system_logger__mutmut_99': x_get_system_logger__mutmut_99, 
-    'x_get_system_logger__mutmut_100': x_get_system_logger__mutmut_100, 
-    'x_get_system_logger__mutmut_101': x_get_system_logger__mutmut_101
+
+x_get_system_logger__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_system_logger__mutmut_1": x_get_system_logger__mutmut_1,
+    "x_get_system_logger__mutmut_2": x_get_system_logger__mutmut_2,
+    "x_get_system_logger__mutmut_3": x_get_system_logger__mutmut_3,
+    "x_get_system_logger__mutmut_4": x_get_system_logger__mutmut_4,
+    "x_get_system_logger__mutmut_5": x_get_system_logger__mutmut_5,
+    "x_get_system_logger__mutmut_6": x_get_system_logger__mutmut_6,
+    "x_get_system_logger__mutmut_7": x_get_system_logger__mutmut_7,
+    "x_get_system_logger__mutmut_8": x_get_system_logger__mutmut_8,
+    "x_get_system_logger__mutmut_9": x_get_system_logger__mutmut_9,
+    "x_get_system_logger__mutmut_10": x_get_system_logger__mutmut_10,
+    "x_get_system_logger__mutmut_11": x_get_system_logger__mutmut_11,
+    "x_get_system_logger__mutmut_12": x_get_system_logger__mutmut_12,
+    "x_get_system_logger__mutmut_13": x_get_system_logger__mutmut_13,
+    "x_get_system_logger__mutmut_14": x_get_system_logger__mutmut_14,
+    "x_get_system_logger__mutmut_15": x_get_system_logger__mutmut_15,
+    "x_get_system_logger__mutmut_16": x_get_system_logger__mutmut_16,
+    "x_get_system_logger__mutmut_17": x_get_system_logger__mutmut_17,
+    "x_get_system_logger__mutmut_18": x_get_system_logger__mutmut_18,
+    "x_get_system_logger__mutmut_19": x_get_system_logger__mutmut_19,
+    "x_get_system_logger__mutmut_20": x_get_system_logger__mutmut_20,
+    "x_get_system_logger__mutmut_21": x_get_system_logger__mutmut_21,
+    "x_get_system_logger__mutmut_22": x_get_system_logger__mutmut_22,
+    "x_get_system_logger__mutmut_23": x_get_system_logger__mutmut_23,
+    "x_get_system_logger__mutmut_24": x_get_system_logger__mutmut_24,
+    "x_get_system_logger__mutmut_25": x_get_system_logger__mutmut_25,
+    "x_get_system_logger__mutmut_26": x_get_system_logger__mutmut_26,
+    "x_get_system_logger__mutmut_27": x_get_system_logger__mutmut_27,
+    "x_get_system_logger__mutmut_28": x_get_system_logger__mutmut_28,
+    "x_get_system_logger__mutmut_29": x_get_system_logger__mutmut_29,
+    "x_get_system_logger__mutmut_30": x_get_system_logger__mutmut_30,
+    "x_get_system_logger__mutmut_31": x_get_system_logger__mutmut_31,
+    "x_get_system_logger__mutmut_32": x_get_system_logger__mutmut_32,
+    "x_get_system_logger__mutmut_33": x_get_system_logger__mutmut_33,
+    "x_get_system_logger__mutmut_34": x_get_system_logger__mutmut_34,
+    "x_get_system_logger__mutmut_35": x_get_system_logger__mutmut_35,
+    "x_get_system_logger__mutmut_36": x_get_system_logger__mutmut_36,
+    "x_get_system_logger__mutmut_37": x_get_system_logger__mutmut_37,
+    "x_get_system_logger__mutmut_38": x_get_system_logger__mutmut_38,
+    "x_get_system_logger__mutmut_39": x_get_system_logger__mutmut_39,
+    "x_get_system_logger__mutmut_40": x_get_system_logger__mutmut_40,
+    "x_get_system_logger__mutmut_41": x_get_system_logger__mutmut_41,
+    "x_get_system_logger__mutmut_42": x_get_system_logger__mutmut_42,
+    "x_get_system_logger__mutmut_43": x_get_system_logger__mutmut_43,
+    "x_get_system_logger__mutmut_44": x_get_system_logger__mutmut_44,
+    "x_get_system_logger__mutmut_45": x_get_system_logger__mutmut_45,
+    "x_get_system_logger__mutmut_46": x_get_system_logger__mutmut_46,
+    "x_get_system_logger__mutmut_47": x_get_system_logger__mutmut_47,
+    "x_get_system_logger__mutmut_48": x_get_system_logger__mutmut_48,
+    "x_get_system_logger__mutmut_49": x_get_system_logger__mutmut_49,
+    "x_get_system_logger__mutmut_50": x_get_system_logger__mutmut_50,
+    "x_get_system_logger__mutmut_51": x_get_system_logger__mutmut_51,
+    "x_get_system_logger__mutmut_52": x_get_system_logger__mutmut_52,
+    "x_get_system_logger__mutmut_53": x_get_system_logger__mutmut_53,
+    "x_get_system_logger__mutmut_54": x_get_system_logger__mutmut_54,
+    "x_get_system_logger__mutmut_55": x_get_system_logger__mutmut_55,
+    "x_get_system_logger__mutmut_56": x_get_system_logger__mutmut_56,
+    "x_get_system_logger__mutmut_57": x_get_system_logger__mutmut_57,
+    "x_get_system_logger__mutmut_58": x_get_system_logger__mutmut_58,
+    "x_get_system_logger__mutmut_59": x_get_system_logger__mutmut_59,
+    "x_get_system_logger__mutmut_60": x_get_system_logger__mutmut_60,
+    "x_get_system_logger__mutmut_61": x_get_system_logger__mutmut_61,
+    "x_get_system_logger__mutmut_62": x_get_system_logger__mutmut_62,
+    "x_get_system_logger__mutmut_63": x_get_system_logger__mutmut_63,
+    "x_get_system_logger__mutmut_64": x_get_system_logger__mutmut_64,
+    "x_get_system_logger__mutmut_65": x_get_system_logger__mutmut_65,
+    "x_get_system_logger__mutmut_66": x_get_system_logger__mutmut_66,
+    "x_get_system_logger__mutmut_67": x_get_system_logger__mutmut_67,
+    "x_get_system_logger__mutmut_68": x_get_system_logger__mutmut_68,
+    "x_get_system_logger__mutmut_69": x_get_system_logger__mutmut_69,
+    "x_get_system_logger__mutmut_70": x_get_system_logger__mutmut_70,
+    "x_get_system_logger__mutmut_71": x_get_system_logger__mutmut_71,
+    "x_get_system_logger__mutmut_72": x_get_system_logger__mutmut_72,
+    "x_get_system_logger__mutmut_73": x_get_system_logger__mutmut_73,
+    "x_get_system_logger__mutmut_74": x_get_system_logger__mutmut_74,
+    "x_get_system_logger__mutmut_75": x_get_system_logger__mutmut_75,
+    "x_get_system_logger__mutmut_76": x_get_system_logger__mutmut_76,
+    "x_get_system_logger__mutmut_77": x_get_system_logger__mutmut_77,
+    "x_get_system_logger__mutmut_78": x_get_system_logger__mutmut_78,
+    "x_get_system_logger__mutmut_79": x_get_system_logger__mutmut_79,
+    "x_get_system_logger__mutmut_80": x_get_system_logger__mutmut_80,
+    "x_get_system_logger__mutmut_81": x_get_system_logger__mutmut_81,
+    "x_get_system_logger__mutmut_82": x_get_system_logger__mutmut_82,
+    "x_get_system_logger__mutmut_83": x_get_system_logger__mutmut_83,
+    "x_get_system_logger__mutmut_84": x_get_system_logger__mutmut_84,
+    "x_get_system_logger__mutmut_85": x_get_system_logger__mutmut_85,
+    "x_get_system_logger__mutmut_86": x_get_system_logger__mutmut_86,
+    "x_get_system_logger__mutmut_87": x_get_system_logger__mutmut_87,
+    "x_get_system_logger__mutmut_88": x_get_system_logger__mutmut_88,
+    "x_get_system_logger__mutmut_89": x_get_system_logger__mutmut_89,
+    "x_get_system_logger__mutmut_90": x_get_system_logger__mutmut_90,
+    "x_get_system_logger__mutmut_91": x_get_system_logger__mutmut_91,
+    "x_get_system_logger__mutmut_92": x_get_system_logger__mutmut_92,
+    "x_get_system_logger__mutmut_93": x_get_system_logger__mutmut_93,
+    "x_get_system_logger__mutmut_94": x_get_system_logger__mutmut_94,
+    "x_get_system_logger__mutmut_95": x_get_system_logger__mutmut_95,
+    "x_get_system_logger__mutmut_96": x_get_system_logger__mutmut_96,
+    "x_get_system_logger__mutmut_97": x_get_system_logger__mutmut_97,
+    "x_get_system_logger__mutmut_98": x_get_system_logger__mutmut_98,
+    "x_get_system_logger__mutmut_99": x_get_system_logger__mutmut_99,
+    "x_get_system_logger__mutmut_100": x_get_system_logger__mutmut_100,
+    "x_get_system_logger__mutmut_101": x_get_system_logger__mutmut_101,
 }
 
+
 def get_system_logger(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_system_logger__mutmut_orig, x_get_system_logger__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_system_logger__mutmut_orig, x_get_system_logger__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_system_logger.__signature__ = _mutmut_signature(x_get_system_logger__mutmut_orig)
-x_get_system_logger__mutmut_orig.__name__ = 'x_get_system_logger'
+x_get_system_logger__mutmut_orig.__name__ = "x_get_system_logger"
 
 
-def x_internal_setup__mutmut_orig(config: TelemetryConfig | None = None, is_explicit_call: bool = False) -> None:
+def x_internal_setup__mutmut_orig(
+    config: TelemetryConfig | None = None, is_explicit_call: bool = False
+) -> None:
     """The single, internal setup function that both explicit and lazy setup call.
     It is protected by the _PROVIDE_SETUP_LOCK in its callers.
     """
@@ -30886,7 +30965,7 @@ def x_internal_setup__mutmut_30(config: TelemetryConfig | None = None, is_explic
             "⚙️➡️🚀 Starting Foundation (structlog) setup",
             service_name=current_config.service_name,
             log_level=current_config.logging.default_level,
-            )
+        )
 
         # Log OpenTelemetry/OTLP configuration
         if current_config.otlp_endpoint:
@@ -32001,7 +32080,7 @@ def x_internal_setup__mutmut_42(config: TelemetryConfig | None = None, is_explic
                         "📡 OpenObserve integration enabled - OTLP log export active",
                         otlp_endpoint=current_config.otlp_endpoint,
                         openobserve_org=oo_config.org,
-                        )
+                    )
                 else:
                     # Manually configured OTLP
                     core_setup_logger.debug(
@@ -32833,7 +32912,7 @@ def x_internal_setup__mutmut_51(config: TelemetryConfig | None = None, is_explic
                     core_setup_logger.debug(
                         "📡 OpenTelemetry OTLP log export active",
                         otlp_endpoint=current_config.otlp_endpoint,
-                        )
+                    )
             except ImportError:
                 # OpenObserve not available, just log basic OTLP config
                 core_setup_logger.debug(
@@ -33665,7 +33744,7 @@ def x_internal_setup__mutmut_60(config: TelemetryConfig | None = None, is_explic
                 core_setup_logger.debug(
                     "📡 OpenTelemetry OTLP log export active",
                     otlp_endpoint=current_config.otlp_endpoint,
-                    )
+                )
 
     if current_config.globally_disabled:
         core_setup_logger.trace("Setting up globally disabled telemetry")
@@ -35334,7 +35413,9 @@ def x_internal_setup__mutmut_78(config: TelemetryConfig | None = None, is_explic
             configure_file_logging(log_file_path=str(current_config.logging.log_file))
 
         core_setup_logger.trace("Configuring structlog output processors")
-        configure_structlog_output(current_config, )
+        configure_structlog_output(
+            current_config,
+        )
 
     # Use __dict__ access to avoid triggering proxy initialization
     foundation_logger.__dict__["_is_configured_by_setup"] = is_explicit_call
@@ -37187,7 +37268,7 @@ def x_internal_setup__mutmut_98(config: TelemetryConfig | None = None, is_explic
         core_setup_logger.debug(
             "⚙️➡️✅ Foundation (structlog) setup completed",
             processors_configured=True,
-            )
+        )
 
 
 def x_internal_setup__mutmut_99(config: TelemetryConfig | None = None, is_explicit_call: bool = False) -> None:
@@ -37282,7 +37363,9 @@ def x_internal_setup__mutmut_99(config: TelemetryConfig | None = None, is_explic
         )
 
 
-def x_internal_setup__mutmut_100(config: TelemetryConfig | None = None, is_explicit_call: bool = False) -> None:
+def x_internal_setup__mutmut_100(
+    config: TelemetryConfig | None = None, is_explicit_call: bool = False
+) -> None:
     """The single, internal setup function that both explicit and lazy setup call.
     It is protected by the _PROVIDE_SETUP_LOCK in its callers.
     """
@@ -37374,7 +37457,9 @@ def x_internal_setup__mutmut_100(config: TelemetryConfig | None = None, is_expli
         )
 
 
-def x_internal_setup__mutmut_101(config: TelemetryConfig | None = None, is_explicit_call: bool = False) -> None:
+def x_internal_setup__mutmut_101(
+    config: TelemetryConfig | None = None, is_explicit_call: bool = False
+) -> None:
     """The single, internal setup function that both explicit and lazy setup call.
     It is protected by the _PROVIDE_SETUP_LOCK in its callers.
     """
@@ -37466,7 +37551,9 @@ def x_internal_setup__mutmut_101(config: TelemetryConfig | None = None, is_expli
         )
 
 
-def x_internal_setup__mutmut_102(config: TelemetryConfig | None = None, is_explicit_call: bool = False) -> None:
+def x_internal_setup__mutmut_102(
+    config: TelemetryConfig | None = None, is_explicit_call: bool = False
+) -> None:
     """The single, internal setup function that both explicit and lazy setup call.
     It is protected by the _PROVIDE_SETUP_LOCK in its callers.
     """
@@ -37558,7 +37645,9 @@ def x_internal_setup__mutmut_102(config: TelemetryConfig | None = None, is_expli
         )
 
 
-def x_internal_setup__mutmut_103(config: TelemetryConfig | None = None, is_explicit_call: bool = False) -> None:
+def x_internal_setup__mutmut_103(
+    config: TelemetryConfig | None = None, is_explicit_call: bool = False
+) -> None:
     """The single, internal setup function that both explicit and lazy setup call.
     It is protected by the _PROVIDE_SETUP_LOCK in its callers.
     """
@@ -37649,118 +37738,121 @@ def x_internal_setup__mutmut_103(config: TelemetryConfig | None = None, is_expli
             log_file_enabled=current_config.logging.log_file is None,
         )
 
-x_internal_setup__mutmut_mutants : ClassVar[MutantDict] = {
-'x_internal_setup__mutmut_1': x_internal_setup__mutmut_1, 
-    'x_internal_setup__mutmut_2': x_internal_setup__mutmut_2, 
-    'x_internal_setup__mutmut_3': x_internal_setup__mutmut_3, 
-    'x_internal_setup__mutmut_4': x_internal_setup__mutmut_4, 
-    'x_internal_setup__mutmut_5': x_internal_setup__mutmut_5, 
-    'x_internal_setup__mutmut_6': x_internal_setup__mutmut_6, 
-    'x_internal_setup__mutmut_7': x_internal_setup__mutmut_7, 
-    'x_internal_setup__mutmut_8': x_internal_setup__mutmut_8, 
-    'x_internal_setup__mutmut_9': x_internal_setup__mutmut_9, 
-    'x_internal_setup__mutmut_10': x_internal_setup__mutmut_10, 
-    'x_internal_setup__mutmut_11': x_internal_setup__mutmut_11, 
-    'x_internal_setup__mutmut_12': x_internal_setup__mutmut_12, 
-    'x_internal_setup__mutmut_13': x_internal_setup__mutmut_13, 
-    'x_internal_setup__mutmut_14': x_internal_setup__mutmut_14, 
-    'x_internal_setup__mutmut_15': x_internal_setup__mutmut_15, 
-    'x_internal_setup__mutmut_16': x_internal_setup__mutmut_16, 
-    'x_internal_setup__mutmut_17': x_internal_setup__mutmut_17, 
-    'x_internal_setup__mutmut_18': x_internal_setup__mutmut_18, 
-    'x_internal_setup__mutmut_19': x_internal_setup__mutmut_19, 
-    'x_internal_setup__mutmut_20': x_internal_setup__mutmut_20, 
-    'x_internal_setup__mutmut_21': x_internal_setup__mutmut_21, 
-    'x_internal_setup__mutmut_22': x_internal_setup__mutmut_22, 
-    'x_internal_setup__mutmut_23': x_internal_setup__mutmut_23, 
-    'x_internal_setup__mutmut_24': x_internal_setup__mutmut_24, 
-    'x_internal_setup__mutmut_25': x_internal_setup__mutmut_25, 
-    'x_internal_setup__mutmut_26': x_internal_setup__mutmut_26, 
-    'x_internal_setup__mutmut_27': x_internal_setup__mutmut_27, 
-    'x_internal_setup__mutmut_28': x_internal_setup__mutmut_28, 
-    'x_internal_setup__mutmut_29': x_internal_setup__mutmut_29, 
-    'x_internal_setup__mutmut_30': x_internal_setup__mutmut_30, 
-    'x_internal_setup__mutmut_31': x_internal_setup__mutmut_31, 
-    'x_internal_setup__mutmut_32': x_internal_setup__mutmut_32, 
-    'x_internal_setup__mutmut_33': x_internal_setup__mutmut_33, 
-    'x_internal_setup__mutmut_34': x_internal_setup__mutmut_34, 
-    'x_internal_setup__mutmut_35': x_internal_setup__mutmut_35, 
-    'x_internal_setup__mutmut_36': x_internal_setup__mutmut_36, 
-    'x_internal_setup__mutmut_37': x_internal_setup__mutmut_37, 
-    'x_internal_setup__mutmut_38': x_internal_setup__mutmut_38, 
-    'x_internal_setup__mutmut_39': x_internal_setup__mutmut_39, 
-    'x_internal_setup__mutmut_40': x_internal_setup__mutmut_40, 
-    'x_internal_setup__mutmut_41': x_internal_setup__mutmut_41, 
-    'x_internal_setup__mutmut_42': x_internal_setup__mutmut_42, 
-    'x_internal_setup__mutmut_43': x_internal_setup__mutmut_43, 
-    'x_internal_setup__mutmut_44': x_internal_setup__mutmut_44, 
-    'x_internal_setup__mutmut_45': x_internal_setup__mutmut_45, 
-    'x_internal_setup__mutmut_46': x_internal_setup__mutmut_46, 
-    'x_internal_setup__mutmut_47': x_internal_setup__mutmut_47, 
-    'x_internal_setup__mutmut_48': x_internal_setup__mutmut_48, 
-    'x_internal_setup__mutmut_49': x_internal_setup__mutmut_49, 
-    'x_internal_setup__mutmut_50': x_internal_setup__mutmut_50, 
-    'x_internal_setup__mutmut_51': x_internal_setup__mutmut_51, 
-    'x_internal_setup__mutmut_52': x_internal_setup__mutmut_52, 
-    'x_internal_setup__mutmut_53': x_internal_setup__mutmut_53, 
-    'x_internal_setup__mutmut_54': x_internal_setup__mutmut_54, 
-    'x_internal_setup__mutmut_55': x_internal_setup__mutmut_55, 
-    'x_internal_setup__mutmut_56': x_internal_setup__mutmut_56, 
-    'x_internal_setup__mutmut_57': x_internal_setup__mutmut_57, 
-    'x_internal_setup__mutmut_58': x_internal_setup__mutmut_58, 
-    'x_internal_setup__mutmut_59': x_internal_setup__mutmut_59, 
-    'x_internal_setup__mutmut_60': x_internal_setup__mutmut_60, 
-    'x_internal_setup__mutmut_61': x_internal_setup__mutmut_61, 
-    'x_internal_setup__mutmut_62': x_internal_setup__mutmut_62, 
-    'x_internal_setup__mutmut_63': x_internal_setup__mutmut_63, 
-    'x_internal_setup__mutmut_64': x_internal_setup__mutmut_64, 
-    'x_internal_setup__mutmut_65': x_internal_setup__mutmut_65, 
-    'x_internal_setup__mutmut_66': x_internal_setup__mutmut_66, 
-    'x_internal_setup__mutmut_67': x_internal_setup__mutmut_67, 
-    'x_internal_setup__mutmut_68': x_internal_setup__mutmut_68, 
-    'x_internal_setup__mutmut_69': x_internal_setup__mutmut_69, 
-    'x_internal_setup__mutmut_70': x_internal_setup__mutmut_70, 
-    'x_internal_setup__mutmut_71': x_internal_setup__mutmut_71, 
-    'x_internal_setup__mutmut_72': x_internal_setup__mutmut_72, 
-    'x_internal_setup__mutmut_73': x_internal_setup__mutmut_73, 
-    'x_internal_setup__mutmut_74': x_internal_setup__mutmut_74, 
-    'x_internal_setup__mutmut_75': x_internal_setup__mutmut_75, 
-    'x_internal_setup__mutmut_76': x_internal_setup__mutmut_76, 
-    'x_internal_setup__mutmut_77': x_internal_setup__mutmut_77, 
-    'x_internal_setup__mutmut_78': x_internal_setup__mutmut_78, 
-    'x_internal_setup__mutmut_79': x_internal_setup__mutmut_79, 
-    'x_internal_setup__mutmut_80': x_internal_setup__mutmut_80, 
-    'x_internal_setup__mutmut_81': x_internal_setup__mutmut_81, 
-    'x_internal_setup__mutmut_82': x_internal_setup__mutmut_82, 
-    'x_internal_setup__mutmut_83': x_internal_setup__mutmut_83, 
-    'x_internal_setup__mutmut_84': x_internal_setup__mutmut_84, 
-    'x_internal_setup__mutmut_85': x_internal_setup__mutmut_85, 
-    'x_internal_setup__mutmut_86': x_internal_setup__mutmut_86, 
-    'x_internal_setup__mutmut_87': x_internal_setup__mutmut_87, 
-    'x_internal_setup__mutmut_88': x_internal_setup__mutmut_88, 
-    'x_internal_setup__mutmut_89': x_internal_setup__mutmut_89, 
-    'x_internal_setup__mutmut_90': x_internal_setup__mutmut_90, 
-    'x_internal_setup__mutmut_91': x_internal_setup__mutmut_91, 
-    'x_internal_setup__mutmut_92': x_internal_setup__mutmut_92, 
-    'x_internal_setup__mutmut_93': x_internal_setup__mutmut_93, 
-    'x_internal_setup__mutmut_94': x_internal_setup__mutmut_94, 
-    'x_internal_setup__mutmut_95': x_internal_setup__mutmut_95, 
-    'x_internal_setup__mutmut_96': x_internal_setup__mutmut_96, 
-    'x_internal_setup__mutmut_97': x_internal_setup__mutmut_97, 
-    'x_internal_setup__mutmut_98': x_internal_setup__mutmut_98, 
-    'x_internal_setup__mutmut_99': x_internal_setup__mutmut_99, 
-    'x_internal_setup__mutmut_100': x_internal_setup__mutmut_100, 
-    'x_internal_setup__mutmut_101': x_internal_setup__mutmut_101, 
-    'x_internal_setup__mutmut_102': x_internal_setup__mutmut_102, 
-    'x_internal_setup__mutmut_103': x_internal_setup__mutmut_103
+
+x_internal_setup__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_internal_setup__mutmut_1": x_internal_setup__mutmut_1,
+    "x_internal_setup__mutmut_2": x_internal_setup__mutmut_2,
+    "x_internal_setup__mutmut_3": x_internal_setup__mutmut_3,
+    "x_internal_setup__mutmut_4": x_internal_setup__mutmut_4,
+    "x_internal_setup__mutmut_5": x_internal_setup__mutmut_5,
+    "x_internal_setup__mutmut_6": x_internal_setup__mutmut_6,
+    "x_internal_setup__mutmut_7": x_internal_setup__mutmut_7,
+    "x_internal_setup__mutmut_8": x_internal_setup__mutmut_8,
+    "x_internal_setup__mutmut_9": x_internal_setup__mutmut_9,
+    "x_internal_setup__mutmut_10": x_internal_setup__mutmut_10,
+    "x_internal_setup__mutmut_11": x_internal_setup__mutmut_11,
+    "x_internal_setup__mutmut_12": x_internal_setup__mutmut_12,
+    "x_internal_setup__mutmut_13": x_internal_setup__mutmut_13,
+    "x_internal_setup__mutmut_14": x_internal_setup__mutmut_14,
+    "x_internal_setup__mutmut_15": x_internal_setup__mutmut_15,
+    "x_internal_setup__mutmut_16": x_internal_setup__mutmut_16,
+    "x_internal_setup__mutmut_17": x_internal_setup__mutmut_17,
+    "x_internal_setup__mutmut_18": x_internal_setup__mutmut_18,
+    "x_internal_setup__mutmut_19": x_internal_setup__mutmut_19,
+    "x_internal_setup__mutmut_20": x_internal_setup__mutmut_20,
+    "x_internal_setup__mutmut_21": x_internal_setup__mutmut_21,
+    "x_internal_setup__mutmut_22": x_internal_setup__mutmut_22,
+    "x_internal_setup__mutmut_23": x_internal_setup__mutmut_23,
+    "x_internal_setup__mutmut_24": x_internal_setup__mutmut_24,
+    "x_internal_setup__mutmut_25": x_internal_setup__mutmut_25,
+    "x_internal_setup__mutmut_26": x_internal_setup__mutmut_26,
+    "x_internal_setup__mutmut_27": x_internal_setup__mutmut_27,
+    "x_internal_setup__mutmut_28": x_internal_setup__mutmut_28,
+    "x_internal_setup__mutmut_29": x_internal_setup__mutmut_29,
+    "x_internal_setup__mutmut_30": x_internal_setup__mutmut_30,
+    "x_internal_setup__mutmut_31": x_internal_setup__mutmut_31,
+    "x_internal_setup__mutmut_32": x_internal_setup__mutmut_32,
+    "x_internal_setup__mutmut_33": x_internal_setup__mutmut_33,
+    "x_internal_setup__mutmut_34": x_internal_setup__mutmut_34,
+    "x_internal_setup__mutmut_35": x_internal_setup__mutmut_35,
+    "x_internal_setup__mutmut_36": x_internal_setup__mutmut_36,
+    "x_internal_setup__mutmut_37": x_internal_setup__mutmut_37,
+    "x_internal_setup__mutmut_38": x_internal_setup__mutmut_38,
+    "x_internal_setup__mutmut_39": x_internal_setup__mutmut_39,
+    "x_internal_setup__mutmut_40": x_internal_setup__mutmut_40,
+    "x_internal_setup__mutmut_41": x_internal_setup__mutmut_41,
+    "x_internal_setup__mutmut_42": x_internal_setup__mutmut_42,
+    "x_internal_setup__mutmut_43": x_internal_setup__mutmut_43,
+    "x_internal_setup__mutmut_44": x_internal_setup__mutmut_44,
+    "x_internal_setup__mutmut_45": x_internal_setup__mutmut_45,
+    "x_internal_setup__mutmut_46": x_internal_setup__mutmut_46,
+    "x_internal_setup__mutmut_47": x_internal_setup__mutmut_47,
+    "x_internal_setup__mutmut_48": x_internal_setup__mutmut_48,
+    "x_internal_setup__mutmut_49": x_internal_setup__mutmut_49,
+    "x_internal_setup__mutmut_50": x_internal_setup__mutmut_50,
+    "x_internal_setup__mutmut_51": x_internal_setup__mutmut_51,
+    "x_internal_setup__mutmut_52": x_internal_setup__mutmut_52,
+    "x_internal_setup__mutmut_53": x_internal_setup__mutmut_53,
+    "x_internal_setup__mutmut_54": x_internal_setup__mutmut_54,
+    "x_internal_setup__mutmut_55": x_internal_setup__mutmut_55,
+    "x_internal_setup__mutmut_56": x_internal_setup__mutmut_56,
+    "x_internal_setup__mutmut_57": x_internal_setup__mutmut_57,
+    "x_internal_setup__mutmut_58": x_internal_setup__mutmut_58,
+    "x_internal_setup__mutmut_59": x_internal_setup__mutmut_59,
+    "x_internal_setup__mutmut_60": x_internal_setup__mutmut_60,
+    "x_internal_setup__mutmut_61": x_internal_setup__mutmut_61,
+    "x_internal_setup__mutmut_62": x_internal_setup__mutmut_62,
+    "x_internal_setup__mutmut_63": x_internal_setup__mutmut_63,
+    "x_internal_setup__mutmut_64": x_internal_setup__mutmut_64,
+    "x_internal_setup__mutmut_65": x_internal_setup__mutmut_65,
+    "x_internal_setup__mutmut_66": x_internal_setup__mutmut_66,
+    "x_internal_setup__mutmut_67": x_internal_setup__mutmut_67,
+    "x_internal_setup__mutmut_68": x_internal_setup__mutmut_68,
+    "x_internal_setup__mutmut_69": x_internal_setup__mutmut_69,
+    "x_internal_setup__mutmut_70": x_internal_setup__mutmut_70,
+    "x_internal_setup__mutmut_71": x_internal_setup__mutmut_71,
+    "x_internal_setup__mutmut_72": x_internal_setup__mutmut_72,
+    "x_internal_setup__mutmut_73": x_internal_setup__mutmut_73,
+    "x_internal_setup__mutmut_74": x_internal_setup__mutmut_74,
+    "x_internal_setup__mutmut_75": x_internal_setup__mutmut_75,
+    "x_internal_setup__mutmut_76": x_internal_setup__mutmut_76,
+    "x_internal_setup__mutmut_77": x_internal_setup__mutmut_77,
+    "x_internal_setup__mutmut_78": x_internal_setup__mutmut_78,
+    "x_internal_setup__mutmut_79": x_internal_setup__mutmut_79,
+    "x_internal_setup__mutmut_80": x_internal_setup__mutmut_80,
+    "x_internal_setup__mutmut_81": x_internal_setup__mutmut_81,
+    "x_internal_setup__mutmut_82": x_internal_setup__mutmut_82,
+    "x_internal_setup__mutmut_83": x_internal_setup__mutmut_83,
+    "x_internal_setup__mutmut_84": x_internal_setup__mutmut_84,
+    "x_internal_setup__mutmut_85": x_internal_setup__mutmut_85,
+    "x_internal_setup__mutmut_86": x_internal_setup__mutmut_86,
+    "x_internal_setup__mutmut_87": x_internal_setup__mutmut_87,
+    "x_internal_setup__mutmut_88": x_internal_setup__mutmut_88,
+    "x_internal_setup__mutmut_89": x_internal_setup__mutmut_89,
+    "x_internal_setup__mutmut_90": x_internal_setup__mutmut_90,
+    "x_internal_setup__mutmut_91": x_internal_setup__mutmut_91,
+    "x_internal_setup__mutmut_92": x_internal_setup__mutmut_92,
+    "x_internal_setup__mutmut_93": x_internal_setup__mutmut_93,
+    "x_internal_setup__mutmut_94": x_internal_setup__mutmut_94,
+    "x_internal_setup__mutmut_95": x_internal_setup__mutmut_95,
+    "x_internal_setup__mutmut_96": x_internal_setup__mutmut_96,
+    "x_internal_setup__mutmut_97": x_internal_setup__mutmut_97,
+    "x_internal_setup__mutmut_98": x_internal_setup__mutmut_98,
+    "x_internal_setup__mutmut_99": x_internal_setup__mutmut_99,
+    "x_internal_setup__mutmut_100": x_internal_setup__mutmut_100,
+    "x_internal_setup__mutmut_101": x_internal_setup__mutmut_101,
+    "x_internal_setup__mutmut_102": x_internal_setup__mutmut_102,
+    "x_internal_setup__mutmut_103": x_internal_setup__mutmut_103,
 }
+
 
 def internal_setup(*args, **kwargs):
     result = _mutmut_trampoline(x_internal_setup__mutmut_orig, x_internal_setup__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 internal_setup.__signature__ = _mutmut_signature(x_internal_setup__mutmut_orig)
-x_internal_setup__mutmut_orig.__name__ = 'x_internal_setup'
+x_internal_setup__mutmut_orig.__name__ = "x_internal_setup"
 
 
 # <3 🧱🤝📝🪄

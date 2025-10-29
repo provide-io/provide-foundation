@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1123,51 +1126,56 @@ def x_is_in_test_mode__mutmut_36() -> bool:
     # Check for unittest runner in active execution
     return bool("unittest" in sys.modules and any("unittest" not in arg for arg in sys.argv))
 
-x_is_in_test_mode__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_in_test_mode__mutmut_1': x_is_in_test_mode__mutmut_1, 
-    'x_is_in_test_mode__mutmut_2': x_is_in_test_mode__mutmut_2, 
-    'x_is_in_test_mode__mutmut_3': x_is_in_test_mode__mutmut_3, 
-    'x_is_in_test_mode__mutmut_4': x_is_in_test_mode__mutmut_4, 
-    'x_is_in_test_mode__mutmut_5': x_is_in_test_mode__mutmut_5, 
-    'x_is_in_test_mode__mutmut_6': x_is_in_test_mode__mutmut_6, 
-    'x_is_in_test_mode__mutmut_7': x_is_in_test_mode__mutmut_7, 
-    'x_is_in_test_mode__mutmut_8': x_is_in_test_mode__mutmut_8, 
-    'x_is_in_test_mode__mutmut_9': x_is_in_test_mode__mutmut_9, 
-    'x_is_in_test_mode__mutmut_10': x_is_in_test_mode__mutmut_10, 
-    'x_is_in_test_mode__mutmut_11': x_is_in_test_mode__mutmut_11, 
-    'x_is_in_test_mode__mutmut_12': x_is_in_test_mode__mutmut_12, 
-    'x_is_in_test_mode__mutmut_13': x_is_in_test_mode__mutmut_13, 
-    'x_is_in_test_mode__mutmut_14': x_is_in_test_mode__mutmut_14, 
-    'x_is_in_test_mode__mutmut_15': x_is_in_test_mode__mutmut_15, 
-    'x_is_in_test_mode__mutmut_16': x_is_in_test_mode__mutmut_16, 
-    'x_is_in_test_mode__mutmut_17': x_is_in_test_mode__mutmut_17, 
-    'x_is_in_test_mode__mutmut_18': x_is_in_test_mode__mutmut_18, 
-    'x_is_in_test_mode__mutmut_19': x_is_in_test_mode__mutmut_19, 
-    'x_is_in_test_mode__mutmut_20': x_is_in_test_mode__mutmut_20, 
-    'x_is_in_test_mode__mutmut_21': x_is_in_test_mode__mutmut_21, 
-    'x_is_in_test_mode__mutmut_22': x_is_in_test_mode__mutmut_22, 
-    'x_is_in_test_mode__mutmut_23': x_is_in_test_mode__mutmut_23, 
-    'x_is_in_test_mode__mutmut_24': x_is_in_test_mode__mutmut_24, 
-    'x_is_in_test_mode__mutmut_25': x_is_in_test_mode__mutmut_25, 
-    'x_is_in_test_mode__mutmut_26': x_is_in_test_mode__mutmut_26, 
-    'x_is_in_test_mode__mutmut_27': x_is_in_test_mode__mutmut_27, 
-    'x_is_in_test_mode__mutmut_28': x_is_in_test_mode__mutmut_28, 
-    'x_is_in_test_mode__mutmut_29': x_is_in_test_mode__mutmut_29, 
-    'x_is_in_test_mode__mutmut_30': x_is_in_test_mode__mutmut_30, 
-    'x_is_in_test_mode__mutmut_31': x_is_in_test_mode__mutmut_31, 
-    'x_is_in_test_mode__mutmut_32': x_is_in_test_mode__mutmut_32, 
-    'x_is_in_test_mode__mutmut_33': x_is_in_test_mode__mutmut_33, 
-    'x_is_in_test_mode__mutmut_34': x_is_in_test_mode__mutmut_34, 
-    'x_is_in_test_mode__mutmut_35': x_is_in_test_mode__mutmut_35, 
-    'x_is_in_test_mode__mutmut_36': x_is_in_test_mode__mutmut_36
+
+x_is_in_test_mode__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_in_test_mode__mutmut_1": x_is_in_test_mode__mutmut_1,
+    "x_is_in_test_mode__mutmut_2": x_is_in_test_mode__mutmut_2,
+    "x_is_in_test_mode__mutmut_3": x_is_in_test_mode__mutmut_3,
+    "x_is_in_test_mode__mutmut_4": x_is_in_test_mode__mutmut_4,
+    "x_is_in_test_mode__mutmut_5": x_is_in_test_mode__mutmut_5,
+    "x_is_in_test_mode__mutmut_6": x_is_in_test_mode__mutmut_6,
+    "x_is_in_test_mode__mutmut_7": x_is_in_test_mode__mutmut_7,
+    "x_is_in_test_mode__mutmut_8": x_is_in_test_mode__mutmut_8,
+    "x_is_in_test_mode__mutmut_9": x_is_in_test_mode__mutmut_9,
+    "x_is_in_test_mode__mutmut_10": x_is_in_test_mode__mutmut_10,
+    "x_is_in_test_mode__mutmut_11": x_is_in_test_mode__mutmut_11,
+    "x_is_in_test_mode__mutmut_12": x_is_in_test_mode__mutmut_12,
+    "x_is_in_test_mode__mutmut_13": x_is_in_test_mode__mutmut_13,
+    "x_is_in_test_mode__mutmut_14": x_is_in_test_mode__mutmut_14,
+    "x_is_in_test_mode__mutmut_15": x_is_in_test_mode__mutmut_15,
+    "x_is_in_test_mode__mutmut_16": x_is_in_test_mode__mutmut_16,
+    "x_is_in_test_mode__mutmut_17": x_is_in_test_mode__mutmut_17,
+    "x_is_in_test_mode__mutmut_18": x_is_in_test_mode__mutmut_18,
+    "x_is_in_test_mode__mutmut_19": x_is_in_test_mode__mutmut_19,
+    "x_is_in_test_mode__mutmut_20": x_is_in_test_mode__mutmut_20,
+    "x_is_in_test_mode__mutmut_21": x_is_in_test_mode__mutmut_21,
+    "x_is_in_test_mode__mutmut_22": x_is_in_test_mode__mutmut_22,
+    "x_is_in_test_mode__mutmut_23": x_is_in_test_mode__mutmut_23,
+    "x_is_in_test_mode__mutmut_24": x_is_in_test_mode__mutmut_24,
+    "x_is_in_test_mode__mutmut_25": x_is_in_test_mode__mutmut_25,
+    "x_is_in_test_mode__mutmut_26": x_is_in_test_mode__mutmut_26,
+    "x_is_in_test_mode__mutmut_27": x_is_in_test_mode__mutmut_27,
+    "x_is_in_test_mode__mutmut_28": x_is_in_test_mode__mutmut_28,
+    "x_is_in_test_mode__mutmut_29": x_is_in_test_mode__mutmut_29,
+    "x_is_in_test_mode__mutmut_30": x_is_in_test_mode__mutmut_30,
+    "x_is_in_test_mode__mutmut_31": x_is_in_test_mode__mutmut_31,
+    "x_is_in_test_mode__mutmut_32": x_is_in_test_mode__mutmut_32,
+    "x_is_in_test_mode__mutmut_33": x_is_in_test_mode__mutmut_33,
+    "x_is_in_test_mode__mutmut_34": x_is_in_test_mode__mutmut_34,
+    "x_is_in_test_mode__mutmut_35": x_is_in_test_mode__mutmut_35,
+    "x_is_in_test_mode__mutmut_36": x_is_in_test_mode__mutmut_36,
 }
 
+
 def is_in_test_mode(*args, **kwargs):
-    result = _mutmut_trampoline(x_is_in_test_mode__mutmut_orig, x_is_in_test_mode__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_is_in_test_mode__mutmut_orig, x_is_in_test_mode__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 is_in_test_mode.__signature__ = _mutmut_signature(x_is_in_test_mode__mutmut_orig)
-x_is_in_test_mode__mutmut_orig.__name__ = 'x_is_in_test_mode'
+x_is_in_test_mode__mutmut_orig.__name__ = "x_is_in_test_mode"
 
 
 def x_is_in_click_testing__mutmut_orig() -> bool:
@@ -1434,7 +1442,9 @@ def x_is_in_click_testing__mutmut_7() -> bool:
 
     # Check the call stack for Click's testing module or CLI integration tests
     for frame_info in inspect.stack():
-        module = frame_info.frame.f_globals.get("__name__", )
+        module = frame_info.frame.f_globals.get(
+            "__name__",
+        )
         filename = frame_info.filename or ""
 
         if "click.testing" in module or "test_cli_integration" in filename:
@@ -2282,7 +2292,9 @@ def x_is_in_click_testing__mutmut_31() -> bool:
 
         # Also check for common Click testing patterns
         locals_self = frame_info.frame.f_locals.get("self")
-        if locals_self is not None and hasattr(locals_self, ):
+        if locals_self is not None and hasattr(
+            locals_self,
+        ):
             runner = locals_self.runner
             if hasattr(runner, "invoke") and "CliRunner" in str(type(runner)):
                 return True
@@ -2564,7 +2576,9 @@ def x_is_in_click_testing__mutmut_39() -> bool:
         locals_self = frame_info.frame.f_locals.get("self")
         if locals_self is not None and hasattr(locals_self, "runner"):
             runner = locals_self.runner
-            if hasattr(runner, ) and "CliRunner" in str(type(runner)):
+            if hasattr(
+                runner,
+            ) and "CliRunner" in str(type(runner)):
                 return True
 
     return False
@@ -2919,64 +2933,69 @@ def x_is_in_click_testing__mutmut_49() -> bool:
 
     return True
 
-x_is_in_click_testing__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_in_click_testing__mutmut_1': x_is_in_click_testing__mutmut_1, 
-    'x_is_in_click_testing__mutmut_2': x_is_in_click_testing__mutmut_2, 
-    'x_is_in_click_testing__mutmut_3': x_is_in_click_testing__mutmut_3, 
-    'x_is_in_click_testing__mutmut_4': x_is_in_click_testing__mutmut_4, 
-    'x_is_in_click_testing__mutmut_5': x_is_in_click_testing__mutmut_5, 
-    'x_is_in_click_testing__mutmut_6': x_is_in_click_testing__mutmut_6, 
-    'x_is_in_click_testing__mutmut_7': x_is_in_click_testing__mutmut_7, 
-    'x_is_in_click_testing__mutmut_8': x_is_in_click_testing__mutmut_8, 
-    'x_is_in_click_testing__mutmut_9': x_is_in_click_testing__mutmut_9, 
-    'x_is_in_click_testing__mutmut_10': x_is_in_click_testing__mutmut_10, 
-    'x_is_in_click_testing__mutmut_11': x_is_in_click_testing__mutmut_11, 
-    'x_is_in_click_testing__mutmut_12': x_is_in_click_testing__mutmut_12, 
-    'x_is_in_click_testing__mutmut_13': x_is_in_click_testing__mutmut_13, 
-    'x_is_in_click_testing__mutmut_14': x_is_in_click_testing__mutmut_14, 
-    'x_is_in_click_testing__mutmut_15': x_is_in_click_testing__mutmut_15, 
-    'x_is_in_click_testing__mutmut_16': x_is_in_click_testing__mutmut_16, 
-    'x_is_in_click_testing__mutmut_17': x_is_in_click_testing__mutmut_17, 
-    'x_is_in_click_testing__mutmut_18': x_is_in_click_testing__mutmut_18, 
-    'x_is_in_click_testing__mutmut_19': x_is_in_click_testing__mutmut_19, 
-    'x_is_in_click_testing__mutmut_20': x_is_in_click_testing__mutmut_20, 
-    'x_is_in_click_testing__mutmut_21': x_is_in_click_testing__mutmut_21, 
-    'x_is_in_click_testing__mutmut_22': x_is_in_click_testing__mutmut_22, 
-    'x_is_in_click_testing__mutmut_23': x_is_in_click_testing__mutmut_23, 
-    'x_is_in_click_testing__mutmut_24': x_is_in_click_testing__mutmut_24, 
-    'x_is_in_click_testing__mutmut_25': x_is_in_click_testing__mutmut_25, 
-    'x_is_in_click_testing__mutmut_26': x_is_in_click_testing__mutmut_26, 
-    'x_is_in_click_testing__mutmut_27': x_is_in_click_testing__mutmut_27, 
-    'x_is_in_click_testing__mutmut_28': x_is_in_click_testing__mutmut_28, 
-    'x_is_in_click_testing__mutmut_29': x_is_in_click_testing__mutmut_29, 
-    'x_is_in_click_testing__mutmut_30': x_is_in_click_testing__mutmut_30, 
-    'x_is_in_click_testing__mutmut_31': x_is_in_click_testing__mutmut_31, 
-    'x_is_in_click_testing__mutmut_32': x_is_in_click_testing__mutmut_32, 
-    'x_is_in_click_testing__mutmut_33': x_is_in_click_testing__mutmut_33, 
-    'x_is_in_click_testing__mutmut_34': x_is_in_click_testing__mutmut_34, 
-    'x_is_in_click_testing__mutmut_35': x_is_in_click_testing__mutmut_35, 
-    'x_is_in_click_testing__mutmut_36': x_is_in_click_testing__mutmut_36, 
-    'x_is_in_click_testing__mutmut_37': x_is_in_click_testing__mutmut_37, 
-    'x_is_in_click_testing__mutmut_38': x_is_in_click_testing__mutmut_38, 
-    'x_is_in_click_testing__mutmut_39': x_is_in_click_testing__mutmut_39, 
-    'x_is_in_click_testing__mutmut_40': x_is_in_click_testing__mutmut_40, 
-    'x_is_in_click_testing__mutmut_41': x_is_in_click_testing__mutmut_41, 
-    'x_is_in_click_testing__mutmut_42': x_is_in_click_testing__mutmut_42, 
-    'x_is_in_click_testing__mutmut_43': x_is_in_click_testing__mutmut_43, 
-    'x_is_in_click_testing__mutmut_44': x_is_in_click_testing__mutmut_44, 
-    'x_is_in_click_testing__mutmut_45': x_is_in_click_testing__mutmut_45, 
-    'x_is_in_click_testing__mutmut_46': x_is_in_click_testing__mutmut_46, 
-    'x_is_in_click_testing__mutmut_47': x_is_in_click_testing__mutmut_47, 
-    'x_is_in_click_testing__mutmut_48': x_is_in_click_testing__mutmut_48, 
-    'x_is_in_click_testing__mutmut_49': x_is_in_click_testing__mutmut_49
+
+x_is_in_click_testing__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_in_click_testing__mutmut_1": x_is_in_click_testing__mutmut_1,
+    "x_is_in_click_testing__mutmut_2": x_is_in_click_testing__mutmut_2,
+    "x_is_in_click_testing__mutmut_3": x_is_in_click_testing__mutmut_3,
+    "x_is_in_click_testing__mutmut_4": x_is_in_click_testing__mutmut_4,
+    "x_is_in_click_testing__mutmut_5": x_is_in_click_testing__mutmut_5,
+    "x_is_in_click_testing__mutmut_6": x_is_in_click_testing__mutmut_6,
+    "x_is_in_click_testing__mutmut_7": x_is_in_click_testing__mutmut_7,
+    "x_is_in_click_testing__mutmut_8": x_is_in_click_testing__mutmut_8,
+    "x_is_in_click_testing__mutmut_9": x_is_in_click_testing__mutmut_9,
+    "x_is_in_click_testing__mutmut_10": x_is_in_click_testing__mutmut_10,
+    "x_is_in_click_testing__mutmut_11": x_is_in_click_testing__mutmut_11,
+    "x_is_in_click_testing__mutmut_12": x_is_in_click_testing__mutmut_12,
+    "x_is_in_click_testing__mutmut_13": x_is_in_click_testing__mutmut_13,
+    "x_is_in_click_testing__mutmut_14": x_is_in_click_testing__mutmut_14,
+    "x_is_in_click_testing__mutmut_15": x_is_in_click_testing__mutmut_15,
+    "x_is_in_click_testing__mutmut_16": x_is_in_click_testing__mutmut_16,
+    "x_is_in_click_testing__mutmut_17": x_is_in_click_testing__mutmut_17,
+    "x_is_in_click_testing__mutmut_18": x_is_in_click_testing__mutmut_18,
+    "x_is_in_click_testing__mutmut_19": x_is_in_click_testing__mutmut_19,
+    "x_is_in_click_testing__mutmut_20": x_is_in_click_testing__mutmut_20,
+    "x_is_in_click_testing__mutmut_21": x_is_in_click_testing__mutmut_21,
+    "x_is_in_click_testing__mutmut_22": x_is_in_click_testing__mutmut_22,
+    "x_is_in_click_testing__mutmut_23": x_is_in_click_testing__mutmut_23,
+    "x_is_in_click_testing__mutmut_24": x_is_in_click_testing__mutmut_24,
+    "x_is_in_click_testing__mutmut_25": x_is_in_click_testing__mutmut_25,
+    "x_is_in_click_testing__mutmut_26": x_is_in_click_testing__mutmut_26,
+    "x_is_in_click_testing__mutmut_27": x_is_in_click_testing__mutmut_27,
+    "x_is_in_click_testing__mutmut_28": x_is_in_click_testing__mutmut_28,
+    "x_is_in_click_testing__mutmut_29": x_is_in_click_testing__mutmut_29,
+    "x_is_in_click_testing__mutmut_30": x_is_in_click_testing__mutmut_30,
+    "x_is_in_click_testing__mutmut_31": x_is_in_click_testing__mutmut_31,
+    "x_is_in_click_testing__mutmut_32": x_is_in_click_testing__mutmut_32,
+    "x_is_in_click_testing__mutmut_33": x_is_in_click_testing__mutmut_33,
+    "x_is_in_click_testing__mutmut_34": x_is_in_click_testing__mutmut_34,
+    "x_is_in_click_testing__mutmut_35": x_is_in_click_testing__mutmut_35,
+    "x_is_in_click_testing__mutmut_36": x_is_in_click_testing__mutmut_36,
+    "x_is_in_click_testing__mutmut_37": x_is_in_click_testing__mutmut_37,
+    "x_is_in_click_testing__mutmut_38": x_is_in_click_testing__mutmut_38,
+    "x_is_in_click_testing__mutmut_39": x_is_in_click_testing__mutmut_39,
+    "x_is_in_click_testing__mutmut_40": x_is_in_click_testing__mutmut_40,
+    "x_is_in_click_testing__mutmut_41": x_is_in_click_testing__mutmut_41,
+    "x_is_in_click_testing__mutmut_42": x_is_in_click_testing__mutmut_42,
+    "x_is_in_click_testing__mutmut_43": x_is_in_click_testing__mutmut_43,
+    "x_is_in_click_testing__mutmut_44": x_is_in_click_testing__mutmut_44,
+    "x_is_in_click_testing__mutmut_45": x_is_in_click_testing__mutmut_45,
+    "x_is_in_click_testing__mutmut_46": x_is_in_click_testing__mutmut_46,
+    "x_is_in_click_testing__mutmut_47": x_is_in_click_testing__mutmut_47,
+    "x_is_in_click_testing__mutmut_48": x_is_in_click_testing__mutmut_48,
+    "x_is_in_click_testing__mutmut_49": x_is_in_click_testing__mutmut_49,
 }
 
+
 def is_in_click_testing(*args, **kwargs):
-    result = _mutmut_trampoline(x_is_in_click_testing__mutmut_orig, x_is_in_click_testing__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_is_in_click_testing__mutmut_orig, x_is_in_click_testing__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 is_in_click_testing.__signature__ = _mutmut_signature(x_is_in_click_testing__mutmut_orig)
-x_is_in_click_testing__mutmut_orig.__name__ = 'x_is_in_click_testing'
+x_is_in_click_testing__mutmut_orig.__name__ = "x_is_in_click_testing"
 
 
 def x_should_allow_stream_redirect__mutmut_orig() -> bool:
@@ -3066,18 +3085,26 @@ def x_should_allow_stream_redirect__mutmut_3() -> bool:
     # Otherwise, block if in Click testing
     return is_in_click_testing()
 
-x_should_allow_stream_redirect__mutmut_mutants : ClassVar[MutantDict] = {
-'x_should_allow_stream_redirect__mutmut_1': x_should_allow_stream_redirect__mutmut_1, 
-    'x_should_allow_stream_redirect__mutmut_2': x_should_allow_stream_redirect__mutmut_2, 
-    'x_should_allow_stream_redirect__mutmut_3': x_should_allow_stream_redirect__mutmut_3
+
+x_should_allow_stream_redirect__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_should_allow_stream_redirect__mutmut_1": x_should_allow_stream_redirect__mutmut_1,
+    "x_should_allow_stream_redirect__mutmut_2": x_should_allow_stream_redirect__mutmut_2,
+    "x_should_allow_stream_redirect__mutmut_3": x_should_allow_stream_redirect__mutmut_3,
 }
 
+
 def should_allow_stream_redirect(*args, **kwargs):
-    result = _mutmut_trampoline(x_should_allow_stream_redirect__mutmut_orig, x_should_allow_stream_redirect__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_should_allow_stream_redirect__mutmut_orig,
+        x_should_allow_stream_redirect__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 should_allow_stream_redirect.__signature__ = _mutmut_signature(x_should_allow_stream_redirect__mutmut_orig)
-x_should_allow_stream_redirect__mutmut_orig.__name__ = 'x_should_allow_stream_redirect'
+x_should_allow_stream_redirect__mutmut_orig.__name__ = "x_should_allow_stream_redirect"
 
 
 def should_use_shared_registries(
@@ -3426,7 +3453,7 @@ def x_configure_structlog_for_test_safety__mutmut_10() -> None:
         wrapper_class=structlog.make_filtering_bound_logger(stdlib_logging.INFO),
         context_class=dict,
         logger_factory=structlog.PrintLoggerFactory(file=sys.stdout),
-        )
+    )
 
 
 def x_configure_structlog_for_test_safety__mutmut_11() -> None:
@@ -3614,31 +3641,41 @@ def x_configure_structlog_for_test_safety__mutmut_16() -> None:
         cache_logger_on_first_use=True,  # Disable caching for test isolation
     )
 
-x_configure_structlog_for_test_safety__mutmut_mutants : ClassVar[MutantDict] = {
-'x_configure_structlog_for_test_safety__mutmut_1': x_configure_structlog_for_test_safety__mutmut_1, 
-    'x_configure_structlog_for_test_safety__mutmut_2': x_configure_structlog_for_test_safety__mutmut_2, 
-    'x_configure_structlog_for_test_safety__mutmut_3': x_configure_structlog_for_test_safety__mutmut_3, 
-    'x_configure_structlog_for_test_safety__mutmut_4': x_configure_structlog_for_test_safety__mutmut_4, 
-    'x_configure_structlog_for_test_safety__mutmut_5': x_configure_structlog_for_test_safety__mutmut_5, 
-    'x_configure_structlog_for_test_safety__mutmut_6': x_configure_structlog_for_test_safety__mutmut_6, 
-    'x_configure_structlog_for_test_safety__mutmut_7': x_configure_structlog_for_test_safety__mutmut_7, 
-    'x_configure_structlog_for_test_safety__mutmut_8': x_configure_structlog_for_test_safety__mutmut_8, 
-    'x_configure_structlog_for_test_safety__mutmut_9': x_configure_structlog_for_test_safety__mutmut_9, 
-    'x_configure_structlog_for_test_safety__mutmut_10': x_configure_structlog_for_test_safety__mutmut_10, 
-    'x_configure_structlog_for_test_safety__mutmut_11': x_configure_structlog_for_test_safety__mutmut_11, 
-    'x_configure_structlog_for_test_safety__mutmut_12': x_configure_structlog_for_test_safety__mutmut_12, 
-    'x_configure_structlog_for_test_safety__mutmut_13': x_configure_structlog_for_test_safety__mutmut_13, 
-    'x_configure_structlog_for_test_safety__mutmut_14': x_configure_structlog_for_test_safety__mutmut_14, 
-    'x_configure_structlog_for_test_safety__mutmut_15': x_configure_structlog_for_test_safety__mutmut_15, 
-    'x_configure_structlog_for_test_safety__mutmut_16': x_configure_structlog_for_test_safety__mutmut_16
+
+x_configure_structlog_for_test_safety__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_configure_structlog_for_test_safety__mutmut_1": x_configure_structlog_for_test_safety__mutmut_1,
+    "x_configure_structlog_for_test_safety__mutmut_2": x_configure_structlog_for_test_safety__mutmut_2,
+    "x_configure_structlog_for_test_safety__mutmut_3": x_configure_structlog_for_test_safety__mutmut_3,
+    "x_configure_structlog_for_test_safety__mutmut_4": x_configure_structlog_for_test_safety__mutmut_4,
+    "x_configure_structlog_for_test_safety__mutmut_5": x_configure_structlog_for_test_safety__mutmut_5,
+    "x_configure_structlog_for_test_safety__mutmut_6": x_configure_structlog_for_test_safety__mutmut_6,
+    "x_configure_structlog_for_test_safety__mutmut_7": x_configure_structlog_for_test_safety__mutmut_7,
+    "x_configure_structlog_for_test_safety__mutmut_8": x_configure_structlog_for_test_safety__mutmut_8,
+    "x_configure_structlog_for_test_safety__mutmut_9": x_configure_structlog_for_test_safety__mutmut_9,
+    "x_configure_structlog_for_test_safety__mutmut_10": x_configure_structlog_for_test_safety__mutmut_10,
+    "x_configure_structlog_for_test_safety__mutmut_11": x_configure_structlog_for_test_safety__mutmut_11,
+    "x_configure_structlog_for_test_safety__mutmut_12": x_configure_structlog_for_test_safety__mutmut_12,
+    "x_configure_structlog_for_test_safety__mutmut_13": x_configure_structlog_for_test_safety__mutmut_13,
+    "x_configure_structlog_for_test_safety__mutmut_14": x_configure_structlog_for_test_safety__mutmut_14,
+    "x_configure_structlog_for_test_safety__mutmut_15": x_configure_structlog_for_test_safety__mutmut_15,
+    "x_configure_structlog_for_test_safety__mutmut_16": x_configure_structlog_for_test_safety__mutmut_16,
 }
 
-def configure_structlog_for_test_safety(*args, **kwargs):
-    result = _mutmut_trampoline(x_configure_structlog_for_test_safety__mutmut_orig, x_configure_structlog_for_test_safety__mutmut_mutants, args, kwargs)
-    return result 
 
-configure_structlog_for_test_safety.__signature__ = _mutmut_signature(x_configure_structlog_for_test_safety__mutmut_orig)
-x_configure_structlog_for_test_safety__mutmut_orig.__name__ = 'x_configure_structlog_for_test_safety'
+def configure_structlog_for_test_safety(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_configure_structlog_for_test_safety__mutmut_orig,
+        x_configure_structlog_for_test_safety__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+configure_structlog_for_test_safety.__signature__ = _mutmut_signature(
+    x_configure_structlog_for_test_safety__mutmut_orig
+)
+x_configure_structlog_for_test_safety__mutmut_orig.__name__ = "x_configure_structlog_for_test_safety"
 
 
 # <3 🧱🤝🧪🪄

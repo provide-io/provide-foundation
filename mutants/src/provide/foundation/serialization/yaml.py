@@ -21,23 +21,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -757,7 +760,7 @@ def x_yaml_dumps__mutmut_15(
             obj,
             default_flow_style=default_flow_style,
             allow_unicode=allow_unicode,
-            )
+        )
     except Exception as e:
         raise ValidationError(f"Cannot serialize object to YAML: {e}") from e
 
@@ -806,31 +809,34 @@ def x_yaml_dumps__mutmut_16(
     except Exception as e:
         raise ValidationError(None) from e
 
-x_yaml_dumps__mutmut_mutants : ClassVar[MutantDict] = {
-'x_yaml_dumps__mutmut_1': x_yaml_dumps__mutmut_1, 
-    'x_yaml_dumps__mutmut_2': x_yaml_dumps__mutmut_2, 
-    'x_yaml_dumps__mutmut_3': x_yaml_dumps__mutmut_3, 
-    'x_yaml_dumps__mutmut_4': x_yaml_dumps__mutmut_4, 
-    'x_yaml_dumps__mutmut_5': x_yaml_dumps__mutmut_5, 
-    'x_yaml_dumps__mutmut_6': x_yaml_dumps__mutmut_6, 
-    'x_yaml_dumps__mutmut_7': x_yaml_dumps__mutmut_7, 
-    'x_yaml_dumps__mutmut_8': x_yaml_dumps__mutmut_8, 
-    'x_yaml_dumps__mutmut_9': x_yaml_dumps__mutmut_9, 
-    'x_yaml_dumps__mutmut_10': x_yaml_dumps__mutmut_10, 
-    'x_yaml_dumps__mutmut_11': x_yaml_dumps__mutmut_11, 
-    'x_yaml_dumps__mutmut_12': x_yaml_dumps__mutmut_12, 
-    'x_yaml_dumps__mutmut_13': x_yaml_dumps__mutmut_13, 
-    'x_yaml_dumps__mutmut_14': x_yaml_dumps__mutmut_14, 
-    'x_yaml_dumps__mutmut_15': x_yaml_dumps__mutmut_15, 
-    'x_yaml_dumps__mutmut_16': x_yaml_dumps__mutmut_16
+
+x_yaml_dumps__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_yaml_dumps__mutmut_1": x_yaml_dumps__mutmut_1,
+    "x_yaml_dumps__mutmut_2": x_yaml_dumps__mutmut_2,
+    "x_yaml_dumps__mutmut_3": x_yaml_dumps__mutmut_3,
+    "x_yaml_dumps__mutmut_4": x_yaml_dumps__mutmut_4,
+    "x_yaml_dumps__mutmut_5": x_yaml_dumps__mutmut_5,
+    "x_yaml_dumps__mutmut_6": x_yaml_dumps__mutmut_6,
+    "x_yaml_dumps__mutmut_7": x_yaml_dumps__mutmut_7,
+    "x_yaml_dumps__mutmut_8": x_yaml_dumps__mutmut_8,
+    "x_yaml_dumps__mutmut_9": x_yaml_dumps__mutmut_9,
+    "x_yaml_dumps__mutmut_10": x_yaml_dumps__mutmut_10,
+    "x_yaml_dumps__mutmut_11": x_yaml_dumps__mutmut_11,
+    "x_yaml_dumps__mutmut_12": x_yaml_dumps__mutmut_12,
+    "x_yaml_dumps__mutmut_13": x_yaml_dumps__mutmut_13,
+    "x_yaml_dumps__mutmut_14": x_yaml_dumps__mutmut_14,
+    "x_yaml_dumps__mutmut_15": x_yaml_dumps__mutmut_15,
+    "x_yaml_dumps__mutmut_16": x_yaml_dumps__mutmut_16,
 }
+
 
 def yaml_dumps(*args, **kwargs):
     result = _mutmut_trampoline(x_yaml_dumps__mutmut_orig, x_yaml_dumps__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 yaml_dumps.__signature__ = _mutmut_signature(x_yaml_dumps__mutmut_orig)
-x_yaml_dumps__mutmut_orig.__name__ = 'x_yaml_dumps'
+x_yaml_dumps__mutmut_orig.__name__ = "x_yaml_dumps"
 
 
 def x_yaml_loads__mutmut_orig(s: str, *, use_cache: bool = True) -> Any:
@@ -1682,7 +1688,9 @@ def x_yaml_loads__mutmut_16(s: str, *, use_cache: bool = True) -> Any:
 
     # Check cache first if enabled
     if use_cache and get_cache_enabled():
-        cache_key = get_cache_key(s, )
+        cache_key = get_cache_key(
+            s,
+        )
         cached = get_serialization_cache().get(cache_key)
         if cached is not None:
             return cached
@@ -2408,7 +2416,9 @@ def x_yaml_loads__mutmut_30(s: str, *, use_cache: bool = True) -> Any:
 
     # Cache result
     if use_cache and get_cache_enabled():
-        cache_key = get_cache_key(s, )
+        cache_key = get_cache_key(
+            s,
+        )
         get_serialization_cache().set(cache_key, result)
 
     return result
@@ -2715,55 +2725,60 @@ def x_yaml_loads__mutmut_36(s: str, *, use_cache: bool = True) -> Any:
     # Cache result
     if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "yaml")
-        get_serialization_cache().set(cache_key, )
+        get_serialization_cache().set(
+            cache_key,
+        )
 
     return result
 
-x_yaml_loads__mutmut_mutants : ClassVar[MutantDict] = {
-'x_yaml_loads__mutmut_1': x_yaml_loads__mutmut_1, 
-    'x_yaml_loads__mutmut_2': x_yaml_loads__mutmut_2, 
-    'x_yaml_loads__mutmut_3': x_yaml_loads__mutmut_3, 
-    'x_yaml_loads__mutmut_4': x_yaml_loads__mutmut_4, 
-    'x_yaml_loads__mutmut_5': x_yaml_loads__mutmut_5, 
-    'x_yaml_loads__mutmut_6': x_yaml_loads__mutmut_6, 
-    'x_yaml_loads__mutmut_7': x_yaml_loads__mutmut_7, 
-    'x_yaml_loads__mutmut_8': x_yaml_loads__mutmut_8, 
-    'x_yaml_loads__mutmut_9': x_yaml_loads__mutmut_9, 
-    'x_yaml_loads__mutmut_10': x_yaml_loads__mutmut_10, 
-    'x_yaml_loads__mutmut_11': x_yaml_loads__mutmut_11, 
-    'x_yaml_loads__mutmut_12': x_yaml_loads__mutmut_12, 
-    'x_yaml_loads__mutmut_13': x_yaml_loads__mutmut_13, 
-    'x_yaml_loads__mutmut_14': x_yaml_loads__mutmut_14, 
-    'x_yaml_loads__mutmut_15': x_yaml_loads__mutmut_15, 
-    'x_yaml_loads__mutmut_16': x_yaml_loads__mutmut_16, 
-    'x_yaml_loads__mutmut_17': x_yaml_loads__mutmut_17, 
-    'x_yaml_loads__mutmut_18': x_yaml_loads__mutmut_18, 
-    'x_yaml_loads__mutmut_19': x_yaml_loads__mutmut_19, 
-    'x_yaml_loads__mutmut_20': x_yaml_loads__mutmut_20, 
-    'x_yaml_loads__mutmut_21': x_yaml_loads__mutmut_21, 
-    'x_yaml_loads__mutmut_22': x_yaml_loads__mutmut_22, 
-    'x_yaml_loads__mutmut_23': x_yaml_loads__mutmut_23, 
-    'x_yaml_loads__mutmut_24': x_yaml_loads__mutmut_24, 
-    'x_yaml_loads__mutmut_25': x_yaml_loads__mutmut_25, 
-    'x_yaml_loads__mutmut_26': x_yaml_loads__mutmut_26, 
-    'x_yaml_loads__mutmut_27': x_yaml_loads__mutmut_27, 
-    'x_yaml_loads__mutmut_28': x_yaml_loads__mutmut_28, 
-    'x_yaml_loads__mutmut_29': x_yaml_loads__mutmut_29, 
-    'x_yaml_loads__mutmut_30': x_yaml_loads__mutmut_30, 
-    'x_yaml_loads__mutmut_31': x_yaml_loads__mutmut_31, 
-    'x_yaml_loads__mutmut_32': x_yaml_loads__mutmut_32, 
-    'x_yaml_loads__mutmut_33': x_yaml_loads__mutmut_33, 
-    'x_yaml_loads__mutmut_34': x_yaml_loads__mutmut_34, 
-    'x_yaml_loads__mutmut_35': x_yaml_loads__mutmut_35, 
-    'x_yaml_loads__mutmut_36': x_yaml_loads__mutmut_36
+
+x_yaml_loads__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_yaml_loads__mutmut_1": x_yaml_loads__mutmut_1,
+    "x_yaml_loads__mutmut_2": x_yaml_loads__mutmut_2,
+    "x_yaml_loads__mutmut_3": x_yaml_loads__mutmut_3,
+    "x_yaml_loads__mutmut_4": x_yaml_loads__mutmut_4,
+    "x_yaml_loads__mutmut_5": x_yaml_loads__mutmut_5,
+    "x_yaml_loads__mutmut_6": x_yaml_loads__mutmut_6,
+    "x_yaml_loads__mutmut_7": x_yaml_loads__mutmut_7,
+    "x_yaml_loads__mutmut_8": x_yaml_loads__mutmut_8,
+    "x_yaml_loads__mutmut_9": x_yaml_loads__mutmut_9,
+    "x_yaml_loads__mutmut_10": x_yaml_loads__mutmut_10,
+    "x_yaml_loads__mutmut_11": x_yaml_loads__mutmut_11,
+    "x_yaml_loads__mutmut_12": x_yaml_loads__mutmut_12,
+    "x_yaml_loads__mutmut_13": x_yaml_loads__mutmut_13,
+    "x_yaml_loads__mutmut_14": x_yaml_loads__mutmut_14,
+    "x_yaml_loads__mutmut_15": x_yaml_loads__mutmut_15,
+    "x_yaml_loads__mutmut_16": x_yaml_loads__mutmut_16,
+    "x_yaml_loads__mutmut_17": x_yaml_loads__mutmut_17,
+    "x_yaml_loads__mutmut_18": x_yaml_loads__mutmut_18,
+    "x_yaml_loads__mutmut_19": x_yaml_loads__mutmut_19,
+    "x_yaml_loads__mutmut_20": x_yaml_loads__mutmut_20,
+    "x_yaml_loads__mutmut_21": x_yaml_loads__mutmut_21,
+    "x_yaml_loads__mutmut_22": x_yaml_loads__mutmut_22,
+    "x_yaml_loads__mutmut_23": x_yaml_loads__mutmut_23,
+    "x_yaml_loads__mutmut_24": x_yaml_loads__mutmut_24,
+    "x_yaml_loads__mutmut_25": x_yaml_loads__mutmut_25,
+    "x_yaml_loads__mutmut_26": x_yaml_loads__mutmut_26,
+    "x_yaml_loads__mutmut_27": x_yaml_loads__mutmut_27,
+    "x_yaml_loads__mutmut_28": x_yaml_loads__mutmut_28,
+    "x_yaml_loads__mutmut_29": x_yaml_loads__mutmut_29,
+    "x_yaml_loads__mutmut_30": x_yaml_loads__mutmut_30,
+    "x_yaml_loads__mutmut_31": x_yaml_loads__mutmut_31,
+    "x_yaml_loads__mutmut_32": x_yaml_loads__mutmut_32,
+    "x_yaml_loads__mutmut_33": x_yaml_loads__mutmut_33,
+    "x_yaml_loads__mutmut_34": x_yaml_loads__mutmut_34,
+    "x_yaml_loads__mutmut_35": x_yaml_loads__mutmut_35,
+    "x_yaml_loads__mutmut_36": x_yaml_loads__mutmut_36,
 }
+
 
 def yaml_loads(*args, **kwargs):
     result = _mutmut_trampoline(x_yaml_loads__mutmut_orig, x_yaml_loads__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 yaml_loads.__signature__ = _mutmut_signature(x_yaml_loads__mutmut_orig)
-x_yaml_loads__mutmut_orig.__name__ = 'x_yaml_loads'
+x_yaml_loads__mutmut_orig.__name__ = "x_yaml_loads"
 
 
 __all__ = [

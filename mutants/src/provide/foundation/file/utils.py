@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -254,7 +257,10 @@ def x_get_size__mutmut_9(path: Path | str) -> int:
     except FileNotFoundError:
         return 0
     except Exception as e:
-        log.warning("Failed to get file size", path=str(path), )
+        log.warning(
+            "Failed to get file size",
+            path=str(path),
+        )
         return 0
 
 
@@ -383,30 +389,33 @@ def x_get_size__mutmut_15(path: Path | str) -> int:
         log.warning("Failed to get file size", path=str(path), error=str(e))
         return 1
 
-x_get_size__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_size__mutmut_1': x_get_size__mutmut_1, 
-    'x_get_size__mutmut_2': x_get_size__mutmut_2, 
-    'x_get_size__mutmut_3': x_get_size__mutmut_3, 
-    'x_get_size__mutmut_4': x_get_size__mutmut_4, 
-    'x_get_size__mutmut_5': x_get_size__mutmut_5, 
-    'x_get_size__mutmut_6': x_get_size__mutmut_6, 
-    'x_get_size__mutmut_7': x_get_size__mutmut_7, 
-    'x_get_size__mutmut_8': x_get_size__mutmut_8, 
-    'x_get_size__mutmut_9': x_get_size__mutmut_9, 
-    'x_get_size__mutmut_10': x_get_size__mutmut_10, 
-    'x_get_size__mutmut_11': x_get_size__mutmut_11, 
-    'x_get_size__mutmut_12': x_get_size__mutmut_12, 
-    'x_get_size__mutmut_13': x_get_size__mutmut_13, 
-    'x_get_size__mutmut_14': x_get_size__mutmut_14, 
-    'x_get_size__mutmut_15': x_get_size__mutmut_15
+
+x_get_size__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_size__mutmut_1": x_get_size__mutmut_1,
+    "x_get_size__mutmut_2": x_get_size__mutmut_2,
+    "x_get_size__mutmut_3": x_get_size__mutmut_3,
+    "x_get_size__mutmut_4": x_get_size__mutmut_4,
+    "x_get_size__mutmut_5": x_get_size__mutmut_5,
+    "x_get_size__mutmut_6": x_get_size__mutmut_6,
+    "x_get_size__mutmut_7": x_get_size__mutmut_7,
+    "x_get_size__mutmut_8": x_get_size__mutmut_8,
+    "x_get_size__mutmut_9": x_get_size__mutmut_9,
+    "x_get_size__mutmut_10": x_get_size__mutmut_10,
+    "x_get_size__mutmut_11": x_get_size__mutmut_11,
+    "x_get_size__mutmut_12": x_get_size__mutmut_12,
+    "x_get_size__mutmut_13": x_get_size__mutmut_13,
+    "x_get_size__mutmut_14": x_get_size__mutmut_14,
+    "x_get_size__mutmut_15": x_get_size__mutmut_15,
 }
+
 
 def get_size(*args, **kwargs):
     result = _mutmut_trampoline(x_get_size__mutmut_orig, x_get_size__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_size.__signature__ = _mutmut_signature(x_get_size__mutmut_orig)
-x_get_size__mutmut_orig.__name__ = 'x_get_size'
+x_get_size__mutmut_orig.__name__ = "x_get_size"
 
 
 def x_get_mtime__mutmut_orig(path: Path | str) -> float | None:
@@ -594,7 +603,10 @@ def x_get_mtime__mutmut_8(path: Path | str) -> float | None:
     except FileNotFoundError:
         return None
     except Exception as e:
-        log.warning("Failed to get modification time", path=str(path), )
+        log.warning(
+            "Failed to get modification time",
+            path=str(path),
+        )
         return None
 
 
@@ -702,28 +714,31 @@ def x_get_mtime__mutmut_13(path: Path | str) -> float | None:
         log.warning("Failed to get modification time", path=str(path), error=str(None))
         return None
 
-x_get_mtime__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_mtime__mutmut_1': x_get_mtime__mutmut_1, 
-    'x_get_mtime__mutmut_2': x_get_mtime__mutmut_2, 
-    'x_get_mtime__mutmut_3': x_get_mtime__mutmut_3, 
-    'x_get_mtime__mutmut_4': x_get_mtime__mutmut_4, 
-    'x_get_mtime__mutmut_5': x_get_mtime__mutmut_5, 
-    'x_get_mtime__mutmut_6': x_get_mtime__mutmut_6, 
-    'x_get_mtime__mutmut_7': x_get_mtime__mutmut_7, 
-    'x_get_mtime__mutmut_8': x_get_mtime__mutmut_8, 
-    'x_get_mtime__mutmut_9': x_get_mtime__mutmut_9, 
-    'x_get_mtime__mutmut_10': x_get_mtime__mutmut_10, 
-    'x_get_mtime__mutmut_11': x_get_mtime__mutmut_11, 
-    'x_get_mtime__mutmut_12': x_get_mtime__mutmut_12, 
-    'x_get_mtime__mutmut_13': x_get_mtime__mutmut_13
+
+x_get_mtime__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_mtime__mutmut_1": x_get_mtime__mutmut_1,
+    "x_get_mtime__mutmut_2": x_get_mtime__mutmut_2,
+    "x_get_mtime__mutmut_3": x_get_mtime__mutmut_3,
+    "x_get_mtime__mutmut_4": x_get_mtime__mutmut_4,
+    "x_get_mtime__mutmut_5": x_get_mtime__mutmut_5,
+    "x_get_mtime__mutmut_6": x_get_mtime__mutmut_6,
+    "x_get_mtime__mutmut_7": x_get_mtime__mutmut_7,
+    "x_get_mtime__mutmut_8": x_get_mtime__mutmut_8,
+    "x_get_mtime__mutmut_9": x_get_mtime__mutmut_9,
+    "x_get_mtime__mutmut_10": x_get_mtime__mutmut_10,
+    "x_get_mtime__mutmut_11": x_get_mtime__mutmut_11,
+    "x_get_mtime__mutmut_12": x_get_mtime__mutmut_12,
+    "x_get_mtime__mutmut_13": x_get_mtime__mutmut_13,
 }
+
 
 def get_mtime(*args, **kwargs):
     result = _mutmut_trampoline(x_get_mtime__mutmut_orig, x_get_mtime__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_mtime.__signature__ = _mutmut_signature(x_get_mtime__mutmut_orig)
-x_get_mtime__mutmut_orig.__name__ = 'x_get_mtime'
+x_get_mtime__mutmut_orig.__name__ = "x_get_mtime"
 
 
 def x_touch__mutmut_orig(
@@ -1067,7 +1082,9 @@ def x_touch__mutmut_11(
         raise FileExistsError(f"File already exists: {path}")
 
     # Ensure parent directory exists
-    path.parent.mkdir(parents=True, )
+    path.parent.mkdir(
+        parents=True,
+    )
 
     # Touch the file
     path.touch(mode=mode, exist_ok=exist_ok)
@@ -1244,7 +1261,9 @@ def x_touch__mutmut_17(
     path.parent.mkdir(parents=True, exist_ok=True)
 
     # Touch the file
-    path.touch(mode=mode, )
+    path.touch(
+        mode=mode,
+    )
     log.debug("Touched file", path=str(path))
 
 
@@ -1361,7 +1380,9 @@ def x_touch__mutmut_21(
 
     # Touch the file
     path.touch(mode=mode, exist_ok=exist_ok)
-    log.debug("Touched file", )
+    log.debug(
+        "Touched file",
+    )
 
 
 def x_touch__mutmut_22(
@@ -1479,40 +1500,43 @@ def x_touch__mutmut_25(
     path.touch(mode=mode, exist_ok=exist_ok)
     log.debug("Touched file", path=str(None))
 
-x_touch__mutmut_mutants : ClassVar[MutantDict] = {
-'x_touch__mutmut_1': x_touch__mutmut_1, 
-    'x_touch__mutmut_2': x_touch__mutmut_2, 
-    'x_touch__mutmut_3': x_touch__mutmut_3, 
-    'x_touch__mutmut_4': x_touch__mutmut_4, 
-    'x_touch__mutmut_5': x_touch__mutmut_5, 
-    'x_touch__mutmut_6': x_touch__mutmut_6, 
-    'x_touch__mutmut_7': x_touch__mutmut_7, 
-    'x_touch__mutmut_8': x_touch__mutmut_8, 
-    'x_touch__mutmut_9': x_touch__mutmut_9, 
-    'x_touch__mutmut_10': x_touch__mutmut_10, 
-    'x_touch__mutmut_11': x_touch__mutmut_11, 
-    'x_touch__mutmut_12': x_touch__mutmut_12, 
-    'x_touch__mutmut_13': x_touch__mutmut_13, 
-    'x_touch__mutmut_14': x_touch__mutmut_14, 
-    'x_touch__mutmut_15': x_touch__mutmut_15, 
-    'x_touch__mutmut_16': x_touch__mutmut_16, 
-    'x_touch__mutmut_17': x_touch__mutmut_17, 
-    'x_touch__mutmut_18': x_touch__mutmut_18, 
-    'x_touch__mutmut_19': x_touch__mutmut_19, 
-    'x_touch__mutmut_20': x_touch__mutmut_20, 
-    'x_touch__mutmut_21': x_touch__mutmut_21, 
-    'x_touch__mutmut_22': x_touch__mutmut_22, 
-    'x_touch__mutmut_23': x_touch__mutmut_23, 
-    'x_touch__mutmut_24': x_touch__mutmut_24, 
-    'x_touch__mutmut_25': x_touch__mutmut_25
+
+x_touch__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_touch__mutmut_1": x_touch__mutmut_1,
+    "x_touch__mutmut_2": x_touch__mutmut_2,
+    "x_touch__mutmut_3": x_touch__mutmut_3,
+    "x_touch__mutmut_4": x_touch__mutmut_4,
+    "x_touch__mutmut_5": x_touch__mutmut_5,
+    "x_touch__mutmut_6": x_touch__mutmut_6,
+    "x_touch__mutmut_7": x_touch__mutmut_7,
+    "x_touch__mutmut_8": x_touch__mutmut_8,
+    "x_touch__mutmut_9": x_touch__mutmut_9,
+    "x_touch__mutmut_10": x_touch__mutmut_10,
+    "x_touch__mutmut_11": x_touch__mutmut_11,
+    "x_touch__mutmut_12": x_touch__mutmut_12,
+    "x_touch__mutmut_13": x_touch__mutmut_13,
+    "x_touch__mutmut_14": x_touch__mutmut_14,
+    "x_touch__mutmut_15": x_touch__mutmut_15,
+    "x_touch__mutmut_16": x_touch__mutmut_16,
+    "x_touch__mutmut_17": x_touch__mutmut_17,
+    "x_touch__mutmut_18": x_touch__mutmut_18,
+    "x_touch__mutmut_19": x_touch__mutmut_19,
+    "x_touch__mutmut_20": x_touch__mutmut_20,
+    "x_touch__mutmut_21": x_touch__mutmut_21,
+    "x_touch__mutmut_22": x_touch__mutmut_22,
+    "x_touch__mutmut_23": x_touch__mutmut_23,
+    "x_touch__mutmut_24": x_touch__mutmut_24,
+    "x_touch__mutmut_25": x_touch__mutmut_25,
 }
+
 
 def touch(*args, **kwargs):
     result = _mutmut_trampoline(x_touch__mutmut_orig, x_touch__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 touch.__signature__ = _mutmut_signature(x_touch__mutmut_orig)
-x_touch__mutmut_orig.__name__ = 'x_touch'
+x_touch__mutmut_orig.__name__ = "x_touch"
 
 
 def x_find_files__mutmut_orig(
@@ -1885,7 +1909,9 @@ def x_find_files__mutmut_9(
     root = Path(root)
 
     if not root.exists():
-        log.warning("Search root doesn't exist", )
+        log.warning(
+            "Search root doesn't exist",
+        )
         return []
 
     # Use glob or rglob based on recursive flag
@@ -2873,7 +2899,11 @@ def x_find_files__mutmut_34(
         # Filter to files only
         files = [p for p in matches if p.is_file()]
 
-        log.debug("Found files", pattern=pattern, root=str(root), )
+        log.debug(
+            "Found files",
+            pattern=pattern,
+            root=str(root),
+        )
         return files
     except Exception as e:
         log.error("Failed to find files", pattern=pattern, root=str(root), error=str(e))
@@ -3344,7 +3374,11 @@ def x_find_files__mutmut_46(
         log.debug("Found files", pattern=pattern, root=str(root), count=len(files))
         return files
     except Exception as e:
-        log.error("Failed to find files", pattern=pattern, root=str(root), )
+        log.error(
+            "Failed to find files",
+            pattern=pattern,
+            root=str(root),
+        )
         return []
 
 
@@ -3542,66 +3576,69 @@ def x_find_files__mutmut_51(
         log.error("Failed to find files", pattern=pattern, root=str(root), error=str(None))
         return []
 
-x_find_files__mutmut_mutants : ClassVar[MutantDict] = {
-'x_find_files__mutmut_1': x_find_files__mutmut_1, 
-    'x_find_files__mutmut_2': x_find_files__mutmut_2, 
-    'x_find_files__mutmut_3': x_find_files__mutmut_3, 
-    'x_find_files__mutmut_4': x_find_files__mutmut_4, 
-    'x_find_files__mutmut_5': x_find_files__mutmut_5, 
-    'x_find_files__mutmut_6': x_find_files__mutmut_6, 
-    'x_find_files__mutmut_7': x_find_files__mutmut_7, 
-    'x_find_files__mutmut_8': x_find_files__mutmut_8, 
-    'x_find_files__mutmut_9': x_find_files__mutmut_9, 
-    'x_find_files__mutmut_10': x_find_files__mutmut_10, 
-    'x_find_files__mutmut_11': x_find_files__mutmut_11, 
-    'x_find_files__mutmut_12': x_find_files__mutmut_12, 
-    'x_find_files__mutmut_13': x_find_files__mutmut_13, 
-    'x_find_files__mutmut_14': x_find_files__mutmut_14, 
-    'x_find_files__mutmut_15': x_find_files__mutmut_15, 
-    'x_find_files__mutmut_16': x_find_files__mutmut_16, 
-    'x_find_files__mutmut_17': x_find_files__mutmut_17, 
-    'x_find_files__mutmut_18': x_find_files__mutmut_18, 
-    'x_find_files__mutmut_19': x_find_files__mutmut_19, 
-    'x_find_files__mutmut_20': x_find_files__mutmut_20, 
-    'x_find_files__mutmut_21': x_find_files__mutmut_21, 
-    'x_find_files__mutmut_22': x_find_files__mutmut_22, 
-    'x_find_files__mutmut_23': x_find_files__mutmut_23, 
-    'x_find_files__mutmut_24': x_find_files__mutmut_24, 
-    'x_find_files__mutmut_25': x_find_files__mutmut_25, 
-    'x_find_files__mutmut_26': x_find_files__mutmut_26, 
-    'x_find_files__mutmut_27': x_find_files__mutmut_27, 
-    'x_find_files__mutmut_28': x_find_files__mutmut_28, 
-    'x_find_files__mutmut_29': x_find_files__mutmut_29, 
-    'x_find_files__mutmut_30': x_find_files__mutmut_30, 
-    'x_find_files__mutmut_31': x_find_files__mutmut_31, 
-    'x_find_files__mutmut_32': x_find_files__mutmut_32, 
-    'x_find_files__mutmut_33': x_find_files__mutmut_33, 
-    'x_find_files__mutmut_34': x_find_files__mutmut_34, 
-    'x_find_files__mutmut_35': x_find_files__mutmut_35, 
-    'x_find_files__mutmut_36': x_find_files__mutmut_36, 
-    'x_find_files__mutmut_37': x_find_files__mutmut_37, 
-    'x_find_files__mutmut_38': x_find_files__mutmut_38, 
-    'x_find_files__mutmut_39': x_find_files__mutmut_39, 
-    'x_find_files__mutmut_40': x_find_files__mutmut_40, 
-    'x_find_files__mutmut_41': x_find_files__mutmut_41, 
-    'x_find_files__mutmut_42': x_find_files__mutmut_42, 
-    'x_find_files__mutmut_43': x_find_files__mutmut_43, 
-    'x_find_files__mutmut_44': x_find_files__mutmut_44, 
-    'x_find_files__mutmut_45': x_find_files__mutmut_45, 
-    'x_find_files__mutmut_46': x_find_files__mutmut_46, 
-    'x_find_files__mutmut_47': x_find_files__mutmut_47, 
-    'x_find_files__mutmut_48': x_find_files__mutmut_48, 
-    'x_find_files__mutmut_49': x_find_files__mutmut_49, 
-    'x_find_files__mutmut_50': x_find_files__mutmut_50, 
-    'x_find_files__mutmut_51': x_find_files__mutmut_51
+
+x_find_files__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_find_files__mutmut_1": x_find_files__mutmut_1,
+    "x_find_files__mutmut_2": x_find_files__mutmut_2,
+    "x_find_files__mutmut_3": x_find_files__mutmut_3,
+    "x_find_files__mutmut_4": x_find_files__mutmut_4,
+    "x_find_files__mutmut_5": x_find_files__mutmut_5,
+    "x_find_files__mutmut_6": x_find_files__mutmut_6,
+    "x_find_files__mutmut_7": x_find_files__mutmut_7,
+    "x_find_files__mutmut_8": x_find_files__mutmut_8,
+    "x_find_files__mutmut_9": x_find_files__mutmut_9,
+    "x_find_files__mutmut_10": x_find_files__mutmut_10,
+    "x_find_files__mutmut_11": x_find_files__mutmut_11,
+    "x_find_files__mutmut_12": x_find_files__mutmut_12,
+    "x_find_files__mutmut_13": x_find_files__mutmut_13,
+    "x_find_files__mutmut_14": x_find_files__mutmut_14,
+    "x_find_files__mutmut_15": x_find_files__mutmut_15,
+    "x_find_files__mutmut_16": x_find_files__mutmut_16,
+    "x_find_files__mutmut_17": x_find_files__mutmut_17,
+    "x_find_files__mutmut_18": x_find_files__mutmut_18,
+    "x_find_files__mutmut_19": x_find_files__mutmut_19,
+    "x_find_files__mutmut_20": x_find_files__mutmut_20,
+    "x_find_files__mutmut_21": x_find_files__mutmut_21,
+    "x_find_files__mutmut_22": x_find_files__mutmut_22,
+    "x_find_files__mutmut_23": x_find_files__mutmut_23,
+    "x_find_files__mutmut_24": x_find_files__mutmut_24,
+    "x_find_files__mutmut_25": x_find_files__mutmut_25,
+    "x_find_files__mutmut_26": x_find_files__mutmut_26,
+    "x_find_files__mutmut_27": x_find_files__mutmut_27,
+    "x_find_files__mutmut_28": x_find_files__mutmut_28,
+    "x_find_files__mutmut_29": x_find_files__mutmut_29,
+    "x_find_files__mutmut_30": x_find_files__mutmut_30,
+    "x_find_files__mutmut_31": x_find_files__mutmut_31,
+    "x_find_files__mutmut_32": x_find_files__mutmut_32,
+    "x_find_files__mutmut_33": x_find_files__mutmut_33,
+    "x_find_files__mutmut_34": x_find_files__mutmut_34,
+    "x_find_files__mutmut_35": x_find_files__mutmut_35,
+    "x_find_files__mutmut_36": x_find_files__mutmut_36,
+    "x_find_files__mutmut_37": x_find_files__mutmut_37,
+    "x_find_files__mutmut_38": x_find_files__mutmut_38,
+    "x_find_files__mutmut_39": x_find_files__mutmut_39,
+    "x_find_files__mutmut_40": x_find_files__mutmut_40,
+    "x_find_files__mutmut_41": x_find_files__mutmut_41,
+    "x_find_files__mutmut_42": x_find_files__mutmut_42,
+    "x_find_files__mutmut_43": x_find_files__mutmut_43,
+    "x_find_files__mutmut_44": x_find_files__mutmut_44,
+    "x_find_files__mutmut_45": x_find_files__mutmut_45,
+    "x_find_files__mutmut_46": x_find_files__mutmut_46,
+    "x_find_files__mutmut_47": x_find_files__mutmut_47,
+    "x_find_files__mutmut_48": x_find_files__mutmut_48,
+    "x_find_files__mutmut_49": x_find_files__mutmut_49,
+    "x_find_files__mutmut_50": x_find_files__mutmut_50,
+    "x_find_files__mutmut_51": x_find_files__mutmut_51,
 }
+
 
 def find_files(*args, **kwargs):
     result = _mutmut_trampoline(x_find_files__mutmut_orig, x_find_files__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 find_files.__signature__ = _mutmut_signature(x_find_files__mutmut_orig)
-x_find_files__mutmut_orig.__name__ = 'x_find_files'
+x_find_files__mutmut_orig.__name__ = "x_find_files"
 
 
 def x_backup_file__mutmut_orig(
@@ -4063,7 +4100,9 @@ def x_backup_file__mutmut_10(
     path = Path(path)
 
     if not path.exists():
-        log.debug("Source file doesn't exist, no backup created", )
+        log.debug(
+            "Source file doesn't exist, no backup created",
+        )
         return None
 
     # Build backup filename
@@ -5180,7 +5219,9 @@ def x_backup_file__mutmut_35(
             counter += 1
 
     try:
-        shutil.copy2(str(path), )
+        shutil.copy2(
+            str(path),
+        )
         log.debug("Created backup", source=str(path), backup=str(backup_path))
         return backup_path
     except Exception as e:
@@ -5533,7 +5574,10 @@ def x_backup_file__mutmut_43(
 
     try:
         shutil.copy2(str(path), str(backup_path))
-        log.debug("Created backup", source=str(path), )
+        log.debug(
+            "Created backup",
+            source=str(path),
+        )
         return backup_path
     except Exception as e:
         log.error("Failed to create backup", path=str(path), error=str(e))
@@ -6020,7 +6064,10 @@ def x_backup_file__mutmut_54(
         log.debug("Created backup", source=str(path), backup=str(backup_path))
         return backup_path
     except Exception as e:
-        log.error("Failed to create backup", path=str(path), )
+        log.error(
+            "Failed to create backup",
+            path=str(path),
+        )
         return None
 
 
@@ -6243,74 +6290,77 @@ def x_backup_file__mutmut_59(
         log.error("Failed to create backup", path=str(path), error=str(None))
         return None
 
-x_backup_file__mutmut_mutants : ClassVar[MutantDict] = {
-'x_backup_file__mutmut_1': x_backup_file__mutmut_1, 
-    'x_backup_file__mutmut_2': x_backup_file__mutmut_2, 
-    'x_backup_file__mutmut_3': x_backup_file__mutmut_3, 
-    'x_backup_file__mutmut_4': x_backup_file__mutmut_4, 
-    'x_backup_file__mutmut_5': x_backup_file__mutmut_5, 
-    'x_backup_file__mutmut_6': x_backup_file__mutmut_6, 
-    'x_backup_file__mutmut_7': x_backup_file__mutmut_7, 
-    'x_backup_file__mutmut_8': x_backup_file__mutmut_8, 
-    'x_backup_file__mutmut_9': x_backup_file__mutmut_9, 
-    'x_backup_file__mutmut_10': x_backup_file__mutmut_10, 
-    'x_backup_file__mutmut_11': x_backup_file__mutmut_11, 
-    'x_backup_file__mutmut_12': x_backup_file__mutmut_12, 
-    'x_backup_file__mutmut_13': x_backup_file__mutmut_13, 
-    'x_backup_file__mutmut_14': x_backup_file__mutmut_14, 
-    'x_backup_file__mutmut_15': x_backup_file__mutmut_15, 
-    'x_backup_file__mutmut_16': x_backup_file__mutmut_16, 
-    'x_backup_file__mutmut_17': x_backup_file__mutmut_17, 
-    'x_backup_file__mutmut_18': x_backup_file__mutmut_18, 
-    'x_backup_file__mutmut_19': x_backup_file__mutmut_19, 
-    'x_backup_file__mutmut_20': x_backup_file__mutmut_20, 
-    'x_backup_file__mutmut_21': x_backup_file__mutmut_21, 
-    'x_backup_file__mutmut_22': x_backup_file__mutmut_22, 
-    'x_backup_file__mutmut_23': x_backup_file__mutmut_23, 
-    'x_backup_file__mutmut_24': x_backup_file__mutmut_24, 
-    'x_backup_file__mutmut_25': x_backup_file__mutmut_25, 
-    'x_backup_file__mutmut_26': x_backup_file__mutmut_26, 
-    'x_backup_file__mutmut_27': x_backup_file__mutmut_27, 
-    'x_backup_file__mutmut_28': x_backup_file__mutmut_28, 
-    'x_backup_file__mutmut_29': x_backup_file__mutmut_29, 
-    'x_backup_file__mutmut_30': x_backup_file__mutmut_30, 
-    'x_backup_file__mutmut_31': x_backup_file__mutmut_31, 
-    'x_backup_file__mutmut_32': x_backup_file__mutmut_32, 
-    'x_backup_file__mutmut_33': x_backup_file__mutmut_33, 
-    'x_backup_file__mutmut_34': x_backup_file__mutmut_34, 
-    'x_backup_file__mutmut_35': x_backup_file__mutmut_35, 
-    'x_backup_file__mutmut_36': x_backup_file__mutmut_36, 
-    'x_backup_file__mutmut_37': x_backup_file__mutmut_37, 
-    'x_backup_file__mutmut_38': x_backup_file__mutmut_38, 
-    'x_backup_file__mutmut_39': x_backup_file__mutmut_39, 
-    'x_backup_file__mutmut_40': x_backup_file__mutmut_40, 
-    'x_backup_file__mutmut_41': x_backup_file__mutmut_41, 
-    'x_backup_file__mutmut_42': x_backup_file__mutmut_42, 
-    'x_backup_file__mutmut_43': x_backup_file__mutmut_43, 
-    'x_backup_file__mutmut_44': x_backup_file__mutmut_44, 
-    'x_backup_file__mutmut_45': x_backup_file__mutmut_45, 
-    'x_backup_file__mutmut_46': x_backup_file__mutmut_46, 
-    'x_backup_file__mutmut_47': x_backup_file__mutmut_47, 
-    'x_backup_file__mutmut_48': x_backup_file__mutmut_48, 
-    'x_backup_file__mutmut_49': x_backup_file__mutmut_49, 
-    'x_backup_file__mutmut_50': x_backup_file__mutmut_50, 
-    'x_backup_file__mutmut_51': x_backup_file__mutmut_51, 
-    'x_backup_file__mutmut_52': x_backup_file__mutmut_52, 
-    'x_backup_file__mutmut_53': x_backup_file__mutmut_53, 
-    'x_backup_file__mutmut_54': x_backup_file__mutmut_54, 
-    'x_backup_file__mutmut_55': x_backup_file__mutmut_55, 
-    'x_backup_file__mutmut_56': x_backup_file__mutmut_56, 
-    'x_backup_file__mutmut_57': x_backup_file__mutmut_57, 
-    'x_backup_file__mutmut_58': x_backup_file__mutmut_58, 
-    'x_backup_file__mutmut_59': x_backup_file__mutmut_59
+
+x_backup_file__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_backup_file__mutmut_1": x_backup_file__mutmut_1,
+    "x_backup_file__mutmut_2": x_backup_file__mutmut_2,
+    "x_backup_file__mutmut_3": x_backup_file__mutmut_3,
+    "x_backup_file__mutmut_4": x_backup_file__mutmut_4,
+    "x_backup_file__mutmut_5": x_backup_file__mutmut_5,
+    "x_backup_file__mutmut_6": x_backup_file__mutmut_6,
+    "x_backup_file__mutmut_7": x_backup_file__mutmut_7,
+    "x_backup_file__mutmut_8": x_backup_file__mutmut_8,
+    "x_backup_file__mutmut_9": x_backup_file__mutmut_9,
+    "x_backup_file__mutmut_10": x_backup_file__mutmut_10,
+    "x_backup_file__mutmut_11": x_backup_file__mutmut_11,
+    "x_backup_file__mutmut_12": x_backup_file__mutmut_12,
+    "x_backup_file__mutmut_13": x_backup_file__mutmut_13,
+    "x_backup_file__mutmut_14": x_backup_file__mutmut_14,
+    "x_backup_file__mutmut_15": x_backup_file__mutmut_15,
+    "x_backup_file__mutmut_16": x_backup_file__mutmut_16,
+    "x_backup_file__mutmut_17": x_backup_file__mutmut_17,
+    "x_backup_file__mutmut_18": x_backup_file__mutmut_18,
+    "x_backup_file__mutmut_19": x_backup_file__mutmut_19,
+    "x_backup_file__mutmut_20": x_backup_file__mutmut_20,
+    "x_backup_file__mutmut_21": x_backup_file__mutmut_21,
+    "x_backup_file__mutmut_22": x_backup_file__mutmut_22,
+    "x_backup_file__mutmut_23": x_backup_file__mutmut_23,
+    "x_backup_file__mutmut_24": x_backup_file__mutmut_24,
+    "x_backup_file__mutmut_25": x_backup_file__mutmut_25,
+    "x_backup_file__mutmut_26": x_backup_file__mutmut_26,
+    "x_backup_file__mutmut_27": x_backup_file__mutmut_27,
+    "x_backup_file__mutmut_28": x_backup_file__mutmut_28,
+    "x_backup_file__mutmut_29": x_backup_file__mutmut_29,
+    "x_backup_file__mutmut_30": x_backup_file__mutmut_30,
+    "x_backup_file__mutmut_31": x_backup_file__mutmut_31,
+    "x_backup_file__mutmut_32": x_backup_file__mutmut_32,
+    "x_backup_file__mutmut_33": x_backup_file__mutmut_33,
+    "x_backup_file__mutmut_34": x_backup_file__mutmut_34,
+    "x_backup_file__mutmut_35": x_backup_file__mutmut_35,
+    "x_backup_file__mutmut_36": x_backup_file__mutmut_36,
+    "x_backup_file__mutmut_37": x_backup_file__mutmut_37,
+    "x_backup_file__mutmut_38": x_backup_file__mutmut_38,
+    "x_backup_file__mutmut_39": x_backup_file__mutmut_39,
+    "x_backup_file__mutmut_40": x_backup_file__mutmut_40,
+    "x_backup_file__mutmut_41": x_backup_file__mutmut_41,
+    "x_backup_file__mutmut_42": x_backup_file__mutmut_42,
+    "x_backup_file__mutmut_43": x_backup_file__mutmut_43,
+    "x_backup_file__mutmut_44": x_backup_file__mutmut_44,
+    "x_backup_file__mutmut_45": x_backup_file__mutmut_45,
+    "x_backup_file__mutmut_46": x_backup_file__mutmut_46,
+    "x_backup_file__mutmut_47": x_backup_file__mutmut_47,
+    "x_backup_file__mutmut_48": x_backup_file__mutmut_48,
+    "x_backup_file__mutmut_49": x_backup_file__mutmut_49,
+    "x_backup_file__mutmut_50": x_backup_file__mutmut_50,
+    "x_backup_file__mutmut_51": x_backup_file__mutmut_51,
+    "x_backup_file__mutmut_52": x_backup_file__mutmut_52,
+    "x_backup_file__mutmut_53": x_backup_file__mutmut_53,
+    "x_backup_file__mutmut_54": x_backup_file__mutmut_54,
+    "x_backup_file__mutmut_55": x_backup_file__mutmut_55,
+    "x_backup_file__mutmut_56": x_backup_file__mutmut_56,
+    "x_backup_file__mutmut_57": x_backup_file__mutmut_57,
+    "x_backup_file__mutmut_58": x_backup_file__mutmut_58,
+    "x_backup_file__mutmut_59": x_backup_file__mutmut_59,
 }
+
 
 def backup_file(*args, **kwargs):
     result = _mutmut_trampoline(x_backup_file__mutmut_orig, x_backup_file__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 backup_file.__signature__ = _mutmut_signature(x_backup_file__mutmut_orig)
-x_backup_file__mutmut_orig.__name__ = 'x_backup_file'
+x_backup_file__mutmut_orig.__name__ = "x_backup_file"
 
 
 __all__ = [

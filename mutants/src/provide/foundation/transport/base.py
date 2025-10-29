@@ -27,23 +27,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -174,18 +177,24 @@ class TransportBase(ABC):
 
     def xǁTransportBaseǁ__init____mutmut_2(self) -> None:
         self._logger = get_logger(None)
-    
-    xǁTransportBaseǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTransportBaseǁ__init____mutmut_1': xǁTransportBaseǁ__init____mutmut_1, 
-        'xǁTransportBaseǁ__init____mutmut_2': xǁTransportBaseǁ__init____mutmut_2
+
+    xǁTransportBaseǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTransportBaseǁ__init____mutmut_1": xǁTransportBaseǁ__init____mutmut_1,
+        "xǁTransportBaseǁ__init____mutmut_2": xǁTransportBaseǁ__init____mutmut_2,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTransportBaseǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁTransportBaseǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTransportBaseǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁTransportBaseǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁTransportBaseǁ__init____mutmut_orig)
-    xǁTransportBaseǁ__init____mutmut_orig.__name__ = 'xǁTransportBaseǁ__init__'
+    xǁTransportBaseǁ__init____mutmut_orig.__name__ = "xǁTransportBaseǁ__init__"
 
     @abstractmethod
     async def execute(self, request: Request) -> Response:
@@ -214,20 +223,26 @@ class TransportBase(ABC):
     async def xǁTransportBaseǁconnect__mutmut_4(self) -> None:
         """Default connect implementation."""
         self._logger.trace("TRANSPORT CONNECTING")
-    
-    xǁTransportBaseǁconnect__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTransportBaseǁconnect__mutmut_1': xǁTransportBaseǁconnect__mutmut_1, 
-        'xǁTransportBaseǁconnect__mutmut_2': xǁTransportBaseǁconnect__mutmut_2, 
-        'xǁTransportBaseǁconnect__mutmut_3': xǁTransportBaseǁconnect__mutmut_3, 
-        'xǁTransportBaseǁconnect__mutmut_4': xǁTransportBaseǁconnect__mutmut_4
+
+    xǁTransportBaseǁconnect__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTransportBaseǁconnect__mutmut_1": xǁTransportBaseǁconnect__mutmut_1,
+        "xǁTransportBaseǁconnect__mutmut_2": xǁTransportBaseǁconnect__mutmut_2,
+        "xǁTransportBaseǁconnect__mutmut_3": xǁTransportBaseǁconnect__mutmut_3,
+        "xǁTransportBaseǁconnect__mutmut_4": xǁTransportBaseǁconnect__mutmut_4,
     }
-    
+
     def connect(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTransportBaseǁconnect__mutmut_orig"), object.__getattribute__(self, "xǁTransportBaseǁconnect__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTransportBaseǁconnect__mutmut_orig"),
+            object.__getattribute__(self, "xǁTransportBaseǁconnect__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     connect.__signature__ = _mutmut_signature(xǁTransportBaseǁconnect__mutmut_orig)
-    xǁTransportBaseǁconnect__mutmut_orig.__name__ = 'xǁTransportBaseǁconnect'
+    xǁTransportBaseǁconnect__mutmut_orig.__name__ = "xǁTransportBaseǁconnect"
 
     async def xǁTransportBaseǁdisconnect__mutmut_orig(self) -> None:
         """Default disconnect implementation."""
@@ -248,20 +263,26 @@ class TransportBase(ABC):
     async def xǁTransportBaseǁdisconnect__mutmut_4(self) -> None:
         """Default disconnect implementation."""
         self._logger.trace("TRANSPORT DISCONNECTING")
-    
-    xǁTransportBaseǁdisconnect__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTransportBaseǁdisconnect__mutmut_1': xǁTransportBaseǁdisconnect__mutmut_1, 
-        'xǁTransportBaseǁdisconnect__mutmut_2': xǁTransportBaseǁdisconnect__mutmut_2, 
-        'xǁTransportBaseǁdisconnect__mutmut_3': xǁTransportBaseǁdisconnect__mutmut_3, 
-        'xǁTransportBaseǁdisconnect__mutmut_4': xǁTransportBaseǁdisconnect__mutmut_4
+
+    xǁTransportBaseǁdisconnect__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTransportBaseǁdisconnect__mutmut_1": xǁTransportBaseǁdisconnect__mutmut_1,
+        "xǁTransportBaseǁdisconnect__mutmut_2": xǁTransportBaseǁdisconnect__mutmut_2,
+        "xǁTransportBaseǁdisconnect__mutmut_3": xǁTransportBaseǁdisconnect__mutmut_3,
+        "xǁTransportBaseǁdisconnect__mutmut_4": xǁTransportBaseǁdisconnect__mutmut_4,
     }
-    
+
     def disconnect(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTransportBaseǁdisconnect__mutmut_orig"), object.__getattribute__(self, "xǁTransportBaseǁdisconnect__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTransportBaseǁdisconnect__mutmut_orig"),
+            object.__getattribute__(self, "xǁTransportBaseǁdisconnect__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     disconnect.__signature__ = _mutmut_signature(xǁTransportBaseǁdisconnect__mutmut_orig)
-    xǁTransportBaseǁdisconnect__mutmut_orig.__name__ = 'xǁTransportBaseǁdisconnect'
+    xǁTransportBaseǁdisconnect__mutmut_orig.__name__ = "xǁTransportBaseǁdisconnect"
 
     async def xǁTransportBaseǁstream__mutmut_orig(self, request: Request) -> AsyncIterator[bytes]:
         """Stream response data incrementally.
@@ -288,20 +309,24 @@ class TransportBase(ABC):
         Raises:
             NotImplementedError: Streaming is not supported by this transport implementation
         """
-        raise NotImplementedError(
-            None
-        )
-    
-    xǁTransportBaseǁstream__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTransportBaseǁstream__mutmut_1': xǁTransportBaseǁstream__mutmut_1
+        raise NotImplementedError(None)
+
+    xǁTransportBaseǁstream__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTransportBaseǁstream__mutmut_1": xǁTransportBaseǁstream__mutmut_1
     }
-    
+
     def stream(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTransportBaseǁstream__mutmut_orig"), object.__getattribute__(self, "xǁTransportBaseǁstream__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTransportBaseǁstream__mutmut_orig"),
+            object.__getattribute__(self, "xǁTransportBaseǁstream__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     stream.__signature__ = _mutmut_signature(xǁTransportBaseǁstream__mutmut_orig)
-    xǁTransportBaseǁstream__mutmut_orig.__name__ = 'xǁTransportBaseǁstream'
+    xǁTransportBaseǁstream__mutmut_orig.__name__ = "xǁTransportBaseǁstream"
 
     async def __aenter__(self) -> TransportBase:
         await self.connect()

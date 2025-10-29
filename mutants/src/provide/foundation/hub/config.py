@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -244,7 +247,9 @@ def x_get_config_chain__mutmut_9() -> list[RegistryEntry]:
     ]
 
     # Sort by priority (highest first)
-    config_sources.sort(key=lambda e: e.metadata.get("priority", 0), )
+    config_sources.sort(
+        key=lambda e: e.metadata.get("priority", 0),
+    )
     return config_sources
 
 
@@ -319,7 +324,12 @@ def x_get_config_chain__mutmut_14() -> list[RegistryEntry]:
     ]
 
     # Sort by priority (highest first)
-    config_sources.sort(key=lambda e: e.metadata.get("priority", ), reverse=True)
+    config_sources.sort(
+        key=lambda e: e.metadata.get(
+            "priority",
+        ),
+        reverse=True,
+    )
     return config_sources
 
 
@@ -382,33 +392,38 @@ def x_get_config_chain__mutmut_18() -> list[RegistryEntry]:
     config_sources.sort(key=lambda e: e.metadata.get("priority", 0), reverse=False)
     return config_sources
 
-x_get_config_chain__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_config_chain__mutmut_1': x_get_config_chain__mutmut_1, 
-    'x_get_config_chain__mutmut_2': x_get_config_chain__mutmut_2, 
-    'x_get_config_chain__mutmut_3': x_get_config_chain__mutmut_3, 
-    'x_get_config_chain__mutmut_4': x_get_config_chain__mutmut_4, 
-    'x_get_config_chain__mutmut_5': x_get_config_chain__mutmut_5, 
-    'x_get_config_chain__mutmut_6': x_get_config_chain__mutmut_6, 
-    'x_get_config_chain__mutmut_7': x_get_config_chain__mutmut_7, 
-    'x_get_config_chain__mutmut_8': x_get_config_chain__mutmut_8, 
-    'x_get_config_chain__mutmut_9': x_get_config_chain__mutmut_9, 
-    'x_get_config_chain__mutmut_10': x_get_config_chain__mutmut_10, 
-    'x_get_config_chain__mutmut_11': x_get_config_chain__mutmut_11, 
-    'x_get_config_chain__mutmut_12': x_get_config_chain__mutmut_12, 
-    'x_get_config_chain__mutmut_13': x_get_config_chain__mutmut_13, 
-    'x_get_config_chain__mutmut_14': x_get_config_chain__mutmut_14, 
-    'x_get_config_chain__mutmut_15': x_get_config_chain__mutmut_15, 
-    'x_get_config_chain__mutmut_16': x_get_config_chain__mutmut_16, 
-    'x_get_config_chain__mutmut_17': x_get_config_chain__mutmut_17, 
-    'x_get_config_chain__mutmut_18': x_get_config_chain__mutmut_18
+
+x_get_config_chain__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_config_chain__mutmut_1": x_get_config_chain__mutmut_1,
+    "x_get_config_chain__mutmut_2": x_get_config_chain__mutmut_2,
+    "x_get_config_chain__mutmut_3": x_get_config_chain__mutmut_3,
+    "x_get_config_chain__mutmut_4": x_get_config_chain__mutmut_4,
+    "x_get_config_chain__mutmut_5": x_get_config_chain__mutmut_5,
+    "x_get_config_chain__mutmut_6": x_get_config_chain__mutmut_6,
+    "x_get_config_chain__mutmut_7": x_get_config_chain__mutmut_7,
+    "x_get_config_chain__mutmut_8": x_get_config_chain__mutmut_8,
+    "x_get_config_chain__mutmut_9": x_get_config_chain__mutmut_9,
+    "x_get_config_chain__mutmut_10": x_get_config_chain__mutmut_10,
+    "x_get_config_chain__mutmut_11": x_get_config_chain__mutmut_11,
+    "x_get_config_chain__mutmut_12": x_get_config_chain__mutmut_12,
+    "x_get_config_chain__mutmut_13": x_get_config_chain__mutmut_13,
+    "x_get_config_chain__mutmut_14": x_get_config_chain__mutmut_14,
+    "x_get_config_chain__mutmut_15": x_get_config_chain__mutmut_15,
+    "x_get_config_chain__mutmut_16": x_get_config_chain__mutmut_16,
+    "x_get_config_chain__mutmut_17": x_get_config_chain__mutmut_17,
+    "x_get_config_chain__mutmut_18": x_get_config_chain__mutmut_18,
 }
 
+
 def get_config_chain(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_config_chain__mutmut_orig, x_get_config_chain__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_config_chain__mutmut_orig, x_get_config_chain__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_config_chain.__signature__ = _mutmut_signature(x_get_config_chain__mutmut_orig)
-x_get_config_chain__mutmut_orig.__name__ = 'x_get_config_chain'
+x_get_config_chain__mutmut_orig.__name__ = "x_get_config_chain"
 
 
 @resilient(fallback={}, context_provider=lambda: {"function": "load_all_configs"})
@@ -799,7 +814,9 @@ def x_load_config_from_registry__mutmut_8(config_class: type[T]) -> T:
     chain = get_config_chain()
     for entry in chain:
         source = entry.value
-        if hasattr(source, ):
+        if hasattr(
+            source,
+        ):
             try:
                 # Skip async sources in sync context
                 if inspect.iscoroutinefunction(source.load_config):
@@ -1105,7 +1122,7 @@ def x_load_config_from_registry__mutmut_15(config_class: type[T]) -> T:
                 if inspect.iscoroutinefunction(source.load_config):
                     get_foundation_logger().debug(
                         "Skipping async config source in sync context",
-                        )
+                    )
                     continue
 
                 source_data = source.load_config()
@@ -1629,7 +1646,7 @@ def x_load_config_from_registry__mutmut_27(config_class: type[T]) -> T:
                 get_foundation_logger().warning(
                     "Failed to load config from source",
                     source=entry.name,
-                    )
+                )
 
     # Create config instance
     return config_class.from_dict(config_data)
@@ -1849,47 +1866,52 @@ def x_load_config_from_registry__mutmut_32(config_class: type[T]) -> T:
     # Create config instance
     return config_class.from_dict(None)
 
-x_load_config_from_registry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_load_config_from_registry__mutmut_1': x_load_config_from_registry__mutmut_1, 
-    'x_load_config_from_registry__mutmut_2': x_load_config_from_registry__mutmut_2, 
-    'x_load_config_from_registry__mutmut_3': x_load_config_from_registry__mutmut_3, 
-    'x_load_config_from_registry__mutmut_4': x_load_config_from_registry__mutmut_4, 
-    'x_load_config_from_registry__mutmut_5': x_load_config_from_registry__mutmut_5, 
-    'x_load_config_from_registry__mutmut_6': x_load_config_from_registry__mutmut_6, 
-    'x_load_config_from_registry__mutmut_7': x_load_config_from_registry__mutmut_7, 
-    'x_load_config_from_registry__mutmut_8': x_load_config_from_registry__mutmut_8, 
-    'x_load_config_from_registry__mutmut_9': x_load_config_from_registry__mutmut_9, 
-    'x_load_config_from_registry__mutmut_10': x_load_config_from_registry__mutmut_10, 
-    'x_load_config_from_registry__mutmut_11': x_load_config_from_registry__mutmut_11, 
-    'x_load_config_from_registry__mutmut_12': x_load_config_from_registry__mutmut_12, 
-    'x_load_config_from_registry__mutmut_13': x_load_config_from_registry__mutmut_13, 
-    'x_load_config_from_registry__mutmut_14': x_load_config_from_registry__mutmut_14, 
-    'x_load_config_from_registry__mutmut_15': x_load_config_from_registry__mutmut_15, 
-    'x_load_config_from_registry__mutmut_16': x_load_config_from_registry__mutmut_16, 
-    'x_load_config_from_registry__mutmut_17': x_load_config_from_registry__mutmut_17, 
-    'x_load_config_from_registry__mutmut_18': x_load_config_from_registry__mutmut_18, 
-    'x_load_config_from_registry__mutmut_19': x_load_config_from_registry__mutmut_19, 
-    'x_load_config_from_registry__mutmut_20': x_load_config_from_registry__mutmut_20, 
-    'x_load_config_from_registry__mutmut_21': x_load_config_from_registry__mutmut_21, 
-    'x_load_config_from_registry__mutmut_22': x_load_config_from_registry__mutmut_22, 
-    'x_load_config_from_registry__mutmut_23': x_load_config_from_registry__mutmut_23, 
-    'x_load_config_from_registry__mutmut_24': x_load_config_from_registry__mutmut_24, 
-    'x_load_config_from_registry__mutmut_25': x_load_config_from_registry__mutmut_25, 
-    'x_load_config_from_registry__mutmut_26': x_load_config_from_registry__mutmut_26, 
-    'x_load_config_from_registry__mutmut_27': x_load_config_from_registry__mutmut_27, 
-    'x_load_config_from_registry__mutmut_28': x_load_config_from_registry__mutmut_28, 
-    'x_load_config_from_registry__mutmut_29': x_load_config_from_registry__mutmut_29, 
-    'x_load_config_from_registry__mutmut_30': x_load_config_from_registry__mutmut_30, 
-    'x_load_config_from_registry__mutmut_31': x_load_config_from_registry__mutmut_31, 
-    'x_load_config_from_registry__mutmut_32': x_load_config_from_registry__mutmut_32
+
+x_load_config_from_registry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_load_config_from_registry__mutmut_1": x_load_config_from_registry__mutmut_1,
+    "x_load_config_from_registry__mutmut_2": x_load_config_from_registry__mutmut_2,
+    "x_load_config_from_registry__mutmut_3": x_load_config_from_registry__mutmut_3,
+    "x_load_config_from_registry__mutmut_4": x_load_config_from_registry__mutmut_4,
+    "x_load_config_from_registry__mutmut_5": x_load_config_from_registry__mutmut_5,
+    "x_load_config_from_registry__mutmut_6": x_load_config_from_registry__mutmut_6,
+    "x_load_config_from_registry__mutmut_7": x_load_config_from_registry__mutmut_7,
+    "x_load_config_from_registry__mutmut_8": x_load_config_from_registry__mutmut_8,
+    "x_load_config_from_registry__mutmut_9": x_load_config_from_registry__mutmut_9,
+    "x_load_config_from_registry__mutmut_10": x_load_config_from_registry__mutmut_10,
+    "x_load_config_from_registry__mutmut_11": x_load_config_from_registry__mutmut_11,
+    "x_load_config_from_registry__mutmut_12": x_load_config_from_registry__mutmut_12,
+    "x_load_config_from_registry__mutmut_13": x_load_config_from_registry__mutmut_13,
+    "x_load_config_from_registry__mutmut_14": x_load_config_from_registry__mutmut_14,
+    "x_load_config_from_registry__mutmut_15": x_load_config_from_registry__mutmut_15,
+    "x_load_config_from_registry__mutmut_16": x_load_config_from_registry__mutmut_16,
+    "x_load_config_from_registry__mutmut_17": x_load_config_from_registry__mutmut_17,
+    "x_load_config_from_registry__mutmut_18": x_load_config_from_registry__mutmut_18,
+    "x_load_config_from_registry__mutmut_19": x_load_config_from_registry__mutmut_19,
+    "x_load_config_from_registry__mutmut_20": x_load_config_from_registry__mutmut_20,
+    "x_load_config_from_registry__mutmut_21": x_load_config_from_registry__mutmut_21,
+    "x_load_config_from_registry__mutmut_22": x_load_config_from_registry__mutmut_22,
+    "x_load_config_from_registry__mutmut_23": x_load_config_from_registry__mutmut_23,
+    "x_load_config_from_registry__mutmut_24": x_load_config_from_registry__mutmut_24,
+    "x_load_config_from_registry__mutmut_25": x_load_config_from_registry__mutmut_25,
+    "x_load_config_from_registry__mutmut_26": x_load_config_from_registry__mutmut_26,
+    "x_load_config_from_registry__mutmut_27": x_load_config_from_registry__mutmut_27,
+    "x_load_config_from_registry__mutmut_28": x_load_config_from_registry__mutmut_28,
+    "x_load_config_from_registry__mutmut_29": x_load_config_from_registry__mutmut_29,
+    "x_load_config_from_registry__mutmut_30": x_load_config_from_registry__mutmut_30,
+    "x_load_config_from_registry__mutmut_31": x_load_config_from_registry__mutmut_31,
+    "x_load_config_from_registry__mutmut_32": x_load_config_from_registry__mutmut_32,
 }
 
+
 def load_config_from_registry(*args, **kwargs):
-    result = _mutmut_trampoline(x_load_config_from_registry__mutmut_orig, x_load_config_from_registry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_load_config_from_registry__mutmut_orig, x_load_config_from_registry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 load_config_from_registry.__signature__ = _mutmut_signature(x_load_config_from_registry__mutmut_orig)
-x_load_config_from_registry__mutmut_orig.__name__ = 'x_load_config_from_registry'
+x_load_config_from_registry__mutmut_orig.__name__ = "x_load_config_from_registry"
 
 
 __all__ = [

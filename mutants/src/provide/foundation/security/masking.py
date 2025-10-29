@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -459,7 +462,7 @@ def x_mask_secrets__mutmut_12(
             pattern,
             lambda m: f"{m.group(1)}{masked}",
             result,
-            )
+        )
 
     return result
 
@@ -562,30 +565,33 @@ def x_mask_secrets__mutmut_15(
 
     return result
 
-x_mask_secrets__mutmut_mutants : ClassVar[MutantDict] = {
-'x_mask_secrets__mutmut_1': x_mask_secrets__mutmut_1, 
-    'x_mask_secrets__mutmut_2': x_mask_secrets__mutmut_2, 
-    'x_mask_secrets__mutmut_3': x_mask_secrets__mutmut_3, 
-    'x_mask_secrets__mutmut_4': x_mask_secrets__mutmut_4, 
-    'x_mask_secrets__mutmut_5': x_mask_secrets__mutmut_5, 
-    'x_mask_secrets__mutmut_6': x_mask_secrets__mutmut_6, 
-    'x_mask_secrets__mutmut_7': x_mask_secrets__mutmut_7, 
-    'x_mask_secrets__mutmut_8': x_mask_secrets__mutmut_8, 
-    'x_mask_secrets__mutmut_9': x_mask_secrets__mutmut_9, 
-    'x_mask_secrets__mutmut_10': x_mask_secrets__mutmut_10, 
-    'x_mask_secrets__mutmut_11': x_mask_secrets__mutmut_11, 
-    'x_mask_secrets__mutmut_12': x_mask_secrets__mutmut_12, 
-    'x_mask_secrets__mutmut_13': x_mask_secrets__mutmut_13, 
-    'x_mask_secrets__mutmut_14': x_mask_secrets__mutmut_14, 
-    'x_mask_secrets__mutmut_15': x_mask_secrets__mutmut_15
+
+x_mask_secrets__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_mask_secrets__mutmut_1": x_mask_secrets__mutmut_1,
+    "x_mask_secrets__mutmut_2": x_mask_secrets__mutmut_2,
+    "x_mask_secrets__mutmut_3": x_mask_secrets__mutmut_3,
+    "x_mask_secrets__mutmut_4": x_mask_secrets__mutmut_4,
+    "x_mask_secrets__mutmut_5": x_mask_secrets__mutmut_5,
+    "x_mask_secrets__mutmut_6": x_mask_secrets__mutmut_6,
+    "x_mask_secrets__mutmut_7": x_mask_secrets__mutmut_7,
+    "x_mask_secrets__mutmut_8": x_mask_secrets__mutmut_8,
+    "x_mask_secrets__mutmut_9": x_mask_secrets__mutmut_9,
+    "x_mask_secrets__mutmut_10": x_mask_secrets__mutmut_10,
+    "x_mask_secrets__mutmut_11": x_mask_secrets__mutmut_11,
+    "x_mask_secrets__mutmut_12": x_mask_secrets__mutmut_12,
+    "x_mask_secrets__mutmut_13": x_mask_secrets__mutmut_13,
+    "x_mask_secrets__mutmut_14": x_mask_secrets__mutmut_14,
+    "x_mask_secrets__mutmut_15": x_mask_secrets__mutmut_15,
 }
+
 
 def mask_secrets(*args, **kwargs):
     result = _mutmut_trampoline(x_mask_secrets__mutmut_orig, x_mask_secrets__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 mask_secrets.__signature__ = _mutmut_signature(x_mask_secrets__mutmut_orig)
-x_mask_secrets__mutmut_orig.__name__ = 'x_mask_secrets'
+x_mask_secrets__mutmut_orig.__name__ = "x_mask_secrets"
 
 
 def x_mask_command__mutmut_orig(
@@ -805,26 +811,32 @@ def x_mask_command__mutmut_9(
     # Convert to string if list
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else cmd
 
-    return mask_secrets(cmd_str, secret_patterns, )
+    return mask_secrets(
+        cmd_str,
+        secret_patterns,
+    )
 
-x_mask_command__mutmut_mutants : ClassVar[MutantDict] = {
-'x_mask_command__mutmut_1': x_mask_command__mutmut_1, 
-    'x_mask_command__mutmut_2': x_mask_command__mutmut_2, 
-    'x_mask_command__mutmut_3': x_mask_command__mutmut_3, 
-    'x_mask_command__mutmut_4': x_mask_command__mutmut_4, 
-    'x_mask_command__mutmut_5': x_mask_command__mutmut_5, 
-    'x_mask_command__mutmut_6': x_mask_command__mutmut_6, 
-    'x_mask_command__mutmut_7': x_mask_command__mutmut_7, 
-    'x_mask_command__mutmut_8': x_mask_command__mutmut_8, 
-    'x_mask_command__mutmut_9': x_mask_command__mutmut_9
+
+x_mask_command__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_mask_command__mutmut_1": x_mask_command__mutmut_1,
+    "x_mask_command__mutmut_2": x_mask_command__mutmut_2,
+    "x_mask_command__mutmut_3": x_mask_command__mutmut_3,
+    "x_mask_command__mutmut_4": x_mask_command__mutmut_4,
+    "x_mask_command__mutmut_5": x_mask_command__mutmut_5,
+    "x_mask_command__mutmut_6": x_mask_command__mutmut_6,
+    "x_mask_command__mutmut_7": x_mask_command__mutmut_7,
+    "x_mask_command__mutmut_8": x_mask_command__mutmut_8,
+    "x_mask_command__mutmut_9": x_mask_command__mutmut_9,
 }
+
 
 def mask_command(*args, **kwargs):
     result = _mutmut_trampoline(x_mask_command__mutmut_orig, x_mask_command__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 mask_command.__signature__ = _mutmut_signature(x_mask_command__mutmut_orig)
-x_mask_command__mutmut_orig.__name__ = 'x_mask_command'
+x_mask_command__mutmut_orig.__name__ = "x_mask_command"
 
 
 def x_should_mask__mutmut_orig(text: str, secret_patterns: list[str] | None = None) -> bool:
@@ -994,26 +1006,35 @@ def x_should_mask__mutmut_9(text: str, secret_patterns: list[str] | None = None)
     if secret_patterns is None:
         secret_patterns = DEFAULT_SECRET_PATTERNS
 
-    return any(re.search(pattern, text, ) for pattern in secret_patterns)
+    return any(
+        re.search(
+            pattern,
+            text,
+        )
+        for pattern in secret_patterns
+    )
 
-x_should_mask__mutmut_mutants : ClassVar[MutantDict] = {
-'x_should_mask__mutmut_1': x_should_mask__mutmut_1, 
-    'x_should_mask__mutmut_2': x_should_mask__mutmut_2, 
-    'x_should_mask__mutmut_3': x_should_mask__mutmut_3, 
-    'x_should_mask__mutmut_4': x_should_mask__mutmut_4, 
-    'x_should_mask__mutmut_5': x_should_mask__mutmut_5, 
-    'x_should_mask__mutmut_6': x_should_mask__mutmut_6, 
-    'x_should_mask__mutmut_7': x_should_mask__mutmut_7, 
-    'x_should_mask__mutmut_8': x_should_mask__mutmut_8, 
-    'x_should_mask__mutmut_9': x_should_mask__mutmut_9
+
+x_should_mask__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_should_mask__mutmut_1": x_should_mask__mutmut_1,
+    "x_should_mask__mutmut_2": x_should_mask__mutmut_2,
+    "x_should_mask__mutmut_3": x_should_mask__mutmut_3,
+    "x_should_mask__mutmut_4": x_should_mask__mutmut_4,
+    "x_should_mask__mutmut_5": x_should_mask__mutmut_5,
+    "x_should_mask__mutmut_6": x_should_mask__mutmut_6,
+    "x_should_mask__mutmut_7": x_should_mask__mutmut_7,
+    "x_should_mask__mutmut_8": x_should_mask__mutmut_8,
+    "x_should_mask__mutmut_9": x_should_mask__mutmut_9,
 }
+
 
 def should_mask(*args, **kwargs):
     result = _mutmut_trampoline(x_should_mask__mutmut_orig, x_should_mask__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 should_mask.__signature__ = _mutmut_signature(x_should_mask__mutmut_orig)
-x_should_mask__mutmut_orig.__name__ = 'x_should_mask'
+x_should_mask__mutmut_orig.__name__ = "x_should_mask"
 
 
 __all__ = [

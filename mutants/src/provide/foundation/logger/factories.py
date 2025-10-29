@@ -42,23 +42,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -482,7 +485,10 @@ def x_get_logger__mutmut_7(name: str | None = None) -> Any:
         Dependency Injection guide for more information.
     """
     # Track recursion depth to prevent infinite loops
-    depth = getattr(_is_initializing, "depth", )
+    depth = getattr(
+        _is_initializing,
+        "depth",
+    )
 
     # Check if we're already in the middle of initialization to prevent circular import
     if depth > 0:
@@ -1576,7 +1582,9 @@ def x_get_logger__mutmut_26(name: str | None = None) -> Any:
         return structlog.get_logger(name)
     finally:
         # Always decrement depth counter to allow future attempts
-        _is_initializing.depth = max(0, )
+        _is_initializing.depth = max(
+            0,
+        )
 
 
 def x_get_logger__mutmut_27(name: str | None = None) -> Any:
@@ -1634,42 +1642,45 @@ def x_get_logger__mutmut_27(name: str | None = None) -> Any:
         # Always decrement depth counter to allow future attempts
         _is_initializing.depth = max(1, depth)
 
-x_get_logger__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_logger__mutmut_1': x_get_logger__mutmut_1, 
-    'x_get_logger__mutmut_2': x_get_logger__mutmut_2, 
-    'x_get_logger__mutmut_3': x_get_logger__mutmut_3, 
-    'x_get_logger__mutmut_4': x_get_logger__mutmut_4, 
-    'x_get_logger__mutmut_5': x_get_logger__mutmut_5, 
-    'x_get_logger__mutmut_6': x_get_logger__mutmut_6, 
-    'x_get_logger__mutmut_7': x_get_logger__mutmut_7, 
-    'x_get_logger__mutmut_8': x_get_logger__mutmut_8, 
-    'x_get_logger__mutmut_9': x_get_logger__mutmut_9, 
-    'x_get_logger__mutmut_10': x_get_logger__mutmut_10, 
-    'x_get_logger__mutmut_11': x_get_logger__mutmut_11, 
-    'x_get_logger__mutmut_12': x_get_logger__mutmut_12, 
-    'x_get_logger__mutmut_13': x_get_logger__mutmut_13, 
-    'x_get_logger__mutmut_14': x_get_logger__mutmut_14, 
-    'x_get_logger__mutmut_15': x_get_logger__mutmut_15, 
-    'x_get_logger__mutmut_16': x_get_logger__mutmut_16, 
-    'x_get_logger__mutmut_17': x_get_logger__mutmut_17, 
-    'x_get_logger__mutmut_18': x_get_logger__mutmut_18, 
-    'x_get_logger__mutmut_19': x_get_logger__mutmut_19, 
-    'x_get_logger__mutmut_20': x_get_logger__mutmut_20, 
-    'x_get_logger__mutmut_21': x_get_logger__mutmut_21, 
-    'x_get_logger__mutmut_22': x_get_logger__mutmut_22, 
-    'x_get_logger__mutmut_23': x_get_logger__mutmut_23, 
-    'x_get_logger__mutmut_24': x_get_logger__mutmut_24, 
-    'x_get_logger__mutmut_25': x_get_logger__mutmut_25, 
-    'x_get_logger__mutmut_26': x_get_logger__mutmut_26, 
-    'x_get_logger__mutmut_27': x_get_logger__mutmut_27
+
+x_get_logger__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_logger__mutmut_1": x_get_logger__mutmut_1,
+    "x_get_logger__mutmut_2": x_get_logger__mutmut_2,
+    "x_get_logger__mutmut_3": x_get_logger__mutmut_3,
+    "x_get_logger__mutmut_4": x_get_logger__mutmut_4,
+    "x_get_logger__mutmut_5": x_get_logger__mutmut_5,
+    "x_get_logger__mutmut_6": x_get_logger__mutmut_6,
+    "x_get_logger__mutmut_7": x_get_logger__mutmut_7,
+    "x_get_logger__mutmut_8": x_get_logger__mutmut_8,
+    "x_get_logger__mutmut_9": x_get_logger__mutmut_9,
+    "x_get_logger__mutmut_10": x_get_logger__mutmut_10,
+    "x_get_logger__mutmut_11": x_get_logger__mutmut_11,
+    "x_get_logger__mutmut_12": x_get_logger__mutmut_12,
+    "x_get_logger__mutmut_13": x_get_logger__mutmut_13,
+    "x_get_logger__mutmut_14": x_get_logger__mutmut_14,
+    "x_get_logger__mutmut_15": x_get_logger__mutmut_15,
+    "x_get_logger__mutmut_16": x_get_logger__mutmut_16,
+    "x_get_logger__mutmut_17": x_get_logger__mutmut_17,
+    "x_get_logger__mutmut_18": x_get_logger__mutmut_18,
+    "x_get_logger__mutmut_19": x_get_logger__mutmut_19,
+    "x_get_logger__mutmut_20": x_get_logger__mutmut_20,
+    "x_get_logger__mutmut_21": x_get_logger__mutmut_21,
+    "x_get_logger__mutmut_22": x_get_logger__mutmut_22,
+    "x_get_logger__mutmut_23": x_get_logger__mutmut_23,
+    "x_get_logger__mutmut_24": x_get_logger__mutmut_24,
+    "x_get_logger__mutmut_25": x_get_logger__mutmut_25,
+    "x_get_logger__mutmut_26": x_get_logger__mutmut_26,
+    "x_get_logger__mutmut_27": x_get_logger__mutmut_27,
 }
+
 
 def get_logger(*args, **kwargs):
     result = _mutmut_trampoline(x_get_logger__mutmut_orig, x_get_logger__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_logger.__signature__ = _mutmut_signature(x_get_logger__mutmut_orig)
-x_get_logger__mutmut_orig.__name__ = 'x_get_logger'
+x_get_logger__mutmut_orig.__name__ = "x_get_logger"
 
 
 # <3 🧱🤝📝🪄

@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -93,16 +96,21 @@ def x_normalize_level__mutmut_1(level: str) -> str:
     """
     return level.lower().strip()
 
-x_normalize_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x_normalize_level__mutmut_1': x_normalize_level__mutmut_1
+
+x_normalize_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_normalize_level__mutmut_1": x_normalize_level__mutmut_1
 }
 
+
 def normalize_level(*args, **kwargs):
-    result = _mutmut_trampoline(x_normalize_level__mutmut_orig, x_normalize_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_normalize_level__mutmut_orig, x_normalize_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 normalize_level.__signature__ = _mutmut_signature(x_normalize_level__mutmut_orig)
-x_normalize_level__mutmut_orig.__name__ = 'x_normalize_level'
+x_normalize_level__mutmut_orig.__name__ = "x_normalize_level"
 
 
 def x_get_numeric_level__mutmut_orig(level: str, fallback: int | None = None) -> int:
@@ -336,7 +344,9 @@ def x_get_numeric_level__mutmut_8(level: str, fallback: int | None = None) -> in
 
     normalized = normalize_level(level)
     # Cast to LogLevelStr for type safety - normalize_level validates valid levels
-    return LEVEL_TO_NUMERIC.get(cast(LogLevelStr, normalized), )
+    return LEVEL_TO_NUMERIC.get(
+        cast(LogLevelStr, normalized),
+    )
 
 
 def x_get_numeric_level__mutmut_9(level: str, fallback: int | None = None) -> int:
@@ -440,29 +450,39 @@ def x_get_numeric_level__mutmut_12(level: str, fallback: int | None = None) -> i
 
     normalized = normalize_level(level)
     # Cast to LogLevelStr for type safety - normalize_level validates valid levels
-    return LEVEL_TO_NUMERIC.get(cast(LogLevelStr, ), fallback)
+    return LEVEL_TO_NUMERIC.get(
+        cast(
+            LogLevelStr,
+        ),
+        fallback,
+    )
 
-x_get_numeric_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_numeric_level__mutmut_1': x_get_numeric_level__mutmut_1, 
-    'x_get_numeric_level__mutmut_2': x_get_numeric_level__mutmut_2, 
-    'x_get_numeric_level__mutmut_3': x_get_numeric_level__mutmut_3, 
-    'x_get_numeric_level__mutmut_4': x_get_numeric_level__mutmut_4, 
-    'x_get_numeric_level__mutmut_5': x_get_numeric_level__mutmut_5, 
-    'x_get_numeric_level__mutmut_6': x_get_numeric_level__mutmut_6, 
-    'x_get_numeric_level__mutmut_7': x_get_numeric_level__mutmut_7, 
-    'x_get_numeric_level__mutmut_8': x_get_numeric_level__mutmut_8, 
-    'x_get_numeric_level__mutmut_9': x_get_numeric_level__mutmut_9, 
-    'x_get_numeric_level__mutmut_10': x_get_numeric_level__mutmut_10, 
-    'x_get_numeric_level__mutmut_11': x_get_numeric_level__mutmut_11, 
-    'x_get_numeric_level__mutmut_12': x_get_numeric_level__mutmut_12
+
+x_get_numeric_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_numeric_level__mutmut_1": x_get_numeric_level__mutmut_1,
+    "x_get_numeric_level__mutmut_2": x_get_numeric_level__mutmut_2,
+    "x_get_numeric_level__mutmut_3": x_get_numeric_level__mutmut_3,
+    "x_get_numeric_level__mutmut_4": x_get_numeric_level__mutmut_4,
+    "x_get_numeric_level__mutmut_5": x_get_numeric_level__mutmut_5,
+    "x_get_numeric_level__mutmut_6": x_get_numeric_level__mutmut_6,
+    "x_get_numeric_level__mutmut_7": x_get_numeric_level__mutmut_7,
+    "x_get_numeric_level__mutmut_8": x_get_numeric_level__mutmut_8,
+    "x_get_numeric_level__mutmut_9": x_get_numeric_level__mutmut_9,
+    "x_get_numeric_level__mutmut_10": x_get_numeric_level__mutmut_10,
+    "x_get_numeric_level__mutmut_11": x_get_numeric_level__mutmut_11,
+    "x_get_numeric_level__mutmut_12": x_get_numeric_level__mutmut_12,
 }
 
+
 def get_numeric_level(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_numeric_level__mutmut_orig, x_get_numeric_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_numeric_level__mutmut_orig, x_get_numeric_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_numeric_level.__signature__ = _mutmut_signature(x_get_numeric_level__mutmut_orig)
-x_get_numeric_level__mutmut_orig.__name__ = 'x_get_numeric_level'
+x_get_numeric_level__mutmut_orig.__name__ = "x_get_numeric_level"
 
 
 def x_is_valid_level__mutmut_orig(level: str) -> bool:
@@ -548,18 +568,21 @@ def x_is_valid_level__mutmut_3(level: str) -> bool:
     normalized = normalize_level(level)
     return normalized not in VALID_LEVEL_NAMES
 
-x_is_valid_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_valid_level__mutmut_1': x_is_valid_level__mutmut_1, 
-    'x_is_valid_level__mutmut_2': x_is_valid_level__mutmut_2, 
-    'x_is_valid_level__mutmut_3': x_is_valid_level__mutmut_3
+
+x_is_valid_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_valid_level__mutmut_1": x_is_valid_level__mutmut_1,
+    "x_is_valid_level__mutmut_2": x_is_valid_level__mutmut_2,
+    "x_is_valid_level__mutmut_3": x_is_valid_level__mutmut_3,
 }
+
 
 def is_valid_level(*args, **kwargs):
     result = _mutmut_trampoline(x_is_valid_level__mutmut_orig, x_is_valid_level__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 is_valid_level.__signature__ = _mutmut_signature(x_is_valid_level__mutmut_orig)
-x_is_valid_level__mutmut_orig.__name__ = 'x_is_valid_level'
+x_is_valid_level__mutmut_orig.__name__ = "x_is_valid_level"
 
 
 def get_fallback_level() -> str:

@@ -27,23 +27,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -439,7 +442,9 @@ def x_discover_all_config_schemas__mutmut_9() -> dict[str, type[BaseConfig]]:
     # Retrieve each config class
     result = {}
     for name in config_names:
-        entry = hub._component_registry.get_entry(name, )
+        entry = hub._component_registry.get_entry(
+            name,
+        )
         if entry:
             result[name] = entry.value
 
@@ -473,25 +478,30 @@ def x_discover_all_config_schemas__mutmut_10() -> dict[str, type[BaseConfig]]:
 
     return result
 
-x_discover_all_config_schemas__mutmut_mutants : ClassVar[MutantDict] = {
-'x_discover_all_config_schemas__mutmut_1': x_discover_all_config_schemas__mutmut_1, 
-    'x_discover_all_config_schemas__mutmut_2': x_discover_all_config_schemas__mutmut_2, 
-    'x_discover_all_config_schemas__mutmut_3': x_discover_all_config_schemas__mutmut_3, 
-    'x_discover_all_config_schemas__mutmut_4': x_discover_all_config_schemas__mutmut_4, 
-    'x_discover_all_config_schemas__mutmut_5': x_discover_all_config_schemas__mutmut_5, 
-    'x_discover_all_config_schemas__mutmut_6': x_discover_all_config_schemas__mutmut_6, 
-    'x_discover_all_config_schemas__mutmut_7': x_discover_all_config_schemas__mutmut_7, 
-    'x_discover_all_config_schemas__mutmut_8': x_discover_all_config_schemas__mutmut_8, 
-    'x_discover_all_config_schemas__mutmut_9': x_discover_all_config_schemas__mutmut_9, 
-    'x_discover_all_config_schemas__mutmut_10': x_discover_all_config_schemas__mutmut_10
+
+x_discover_all_config_schemas__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_discover_all_config_schemas__mutmut_1": x_discover_all_config_schemas__mutmut_1,
+    "x_discover_all_config_schemas__mutmut_2": x_discover_all_config_schemas__mutmut_2,
+    "x_discover_all_config_schemas__mutmut_3": x_discover_all_config_schemas__mutmut_3,
+    "x_discover_all_config_schemas__mutmut_4": x_discover_all_config_schemas__mutmut_4,
+    "x_discover_all_config_schemas__mutmut_5": x_discover_all_config_schemas__mutmut_5,
+    "x_discover_all_config_schemas__mutmut_6": x_discover_all_config_schemas__mutmut_6,
+    "x_discover_all_config_schemas__mutmut_7": x_discover_all_config_schemas__mutmut_7,
+    "x_discover_all_config_schemas__mutmut_8": x_discover_all_config_schemas__mutmut_8,
+    "x_discover_all_config_schemas__mutmut_9": x_discover_all_config_schemas__mutmut_9,
+    "x_discover_all_config_schemas__mutmut_10": x_discover_all_config_schemas__mutmut_10,
 }
 
+
 def discover_all_config_schemas(*args, **kwargs):
-    result = _mutmut_trampoline(x_discover_all_config_schemas__mutmut_orig, x_discover_all_config_schemas__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_discover_all_config_schemas__mutmut_orig, x_discover_all_config_schemas__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 discover_all_config_schemas.__signature__ = _mutmut_signature(x_discover_all_config_schemas__mutmut_orig)
-x_discover_all_config_schemas__mutmut_orig.__name__ = 'x_discover_all_config_schemas'
+x_discover_all_config_schemas__mutmut_orig.__name__ = "x_discover_all_config_schemas"
 
 
 def x_get_config_metadata__mutmut_orig() -> dict[str, dict[str, Any]]:
@@ -717,7 +727,9 @@ def x_get_config_metadata__mutmut_9() -> dict[str, dict[str, Any]]:
 
     result = {}
     for name in config_names:
-        entry = hub._component_registry.get_entry(name, )
+        entry = hub._component_registry.get_entry(
+            name,
+        )
         if entry:
             result[name] = entry.metadata
 
@@ -746,25 +758,30 @@ def x_get_config_metadata__mutmut_10() -> dict[str, dict[str, Any]]:
 
     return result
 
-x_get_config_metadata__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_config_metadata__mutmut_1': x_get_config_metadata__mutmut_1, 
-    'x_get_config_metadata__mutmut_2': x_get_config_metadata__mutmut_2, 
-    'x_get_config_metadata__mutmut_3': x_get_config_metadata__mutmut_3, 
-    'x_get_config_metadata__mutmut_4': x_get_config_metadata__mutmut_4, 
-    'x_get_config_metadata__mutmut_5': x_get_config_metadata__mutmut_5, 
-    'x_get_config_metadata__mutmut_6': x_get_config_metadata__mutmut_6, 
-    'x_get_config_metadata__mutmut_7': x_get_config_metadata__mutmut_7, 
-    'x_get_config_metadata__mutmut_8': x_get_config_metadata__mutmut_8, 
-    'x_get_config_metadata__mutmut_9': x_get_config_metadata__mutmut_9, 
-    'x_get_config_metadata__mutmut_10': x_get_config_metadata__mutmut_10
+
+x_get_config_metadata__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_config_metadata__mutmut_1": x_get_config_metadata__mutmut_1,
+    "x_get_config_metadata__mutmut_2": x_get_config_metadata__mutmut_2,
+    "x_get_config_metadata__mutmut_3": x_get_config_metadata__mutmut_3,
+    "x_get_config_metadata__mutmut_4": x_get_config_metadata__mutmut_4,
+    "x_get_config_metadata__mutmut_5": x_get_config_metadata__mutmut_5,
+    "x_get_config_metadata__mutmut_6": x_get_config_metadata__mutmut_6,
+    "x_get_config_metadata__mutmut_7": x_get_config_metadata__mutmut_7,
+    "x_get_config_metadata__mutmut_8": x_get_config_metadata__mutmut_8,
+    "x_get_config_metadata__mutmut_9": x_get_config_metadata__mutmut_9,
+    "x_get_config_metadata__mutmut_10": x_get_config_metadata__mutmut_10,
 }
 
+
 def get_config_metadata(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_config_metadata__mutmut_orig, x_get_config_metadata__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_config_metadata__mutmut_orig, x_get_config_metadata__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_config_metadata.__signature__ = _mutmut_signature(x_get_config_metadata__mutmut_orig)
-x_get_config_metadata__mutmut_orig.__name__ = 'x_get_config_metadata'
+x_get_config_metadata__mutmut_orig.__name__ = "x_get_config_metadata"
 
 
 def x_get_consolidated_schema__mutmut_orig() -> ConsolidatedSchema:
@@ -1050,27 +1067,34 @@ def x_get_consolidated_schema__mutmut_10() -> ConsolidatedSchema:
             # but continue processing others
             continue
 
-    return ConsolidatedSchema(schemas=schemas, )
+    return ConsolidatedSchema(
+        schemas=schemas,
+    )
 
-x_get_consolidated_schema__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_consolidated_schema__mutmut_1': x_get_consolidated_schema__mutmut_1, 
-    'x_get_consolidated_schema__mutmut_2': x_get_consolidated_schema__mutmut_2, 
-    'x_get_consolidated_schema__mutmut_3': x_get_consolidated_schema__mutmut_3, 
-    'x_get_consolidated_schema__mutmut_4': x_get_consolidated_schema__mutmut_4, 
-    'x_get_consolidated_schema__mutmut_5': x_get_consolidated_schema__mutmut_5, 
-    'x_get_consolidated_schema__mutmut_6': x_get_consolidated_schema__mutmut_6, 
-    'x_get_consolidated_schema__mutmut_7': x_get_consolidated_schema__mutmut_7, 
-    'x_get_consolidated_schema__mutmut_8': x_get_consolidated_schema__mutmut_8, 
-    'x_get_consolidated_schema__mutmut_9': x_get_consolidated_schema__mutmut_9, 
-    'x_get_consolidated_schema__mutmut_10': x_get_consolidated_schema__mutmut_10
+
+x_get_consolidated_schema__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_consolidated_schema__mutmut_1": x_get_consolidated_schema__mutmut_1,
+    "x_get_consolidated_schema__mutmut_2": x_get_consolidated_schema__mutmut_2,
+    "x_get_consolidated_schema__mutmut_3": x_get_consolidated_schema__mutmut_3,
+    "x_get_consolidated_schema__mutmut_4": x_get_consolidated_schema__mutmut_4,
+    "x_get_consolidated_schema__mutmut_5": x_get_consolidated_schema__mutmut_5,
+    "x_get_consolidated_schema__mutmut_6": x_get_consolidated_schema__mutmut_6,
+    "x_get_consolidated_schema__mutmut_7": x_get_consolidated_schema__mutmut_7,
+    "x_get_consolidated_schema__mutmut_8": x_get_consolidated_schema__mutmut_8,
+    "x_get_consolidated_schema__mutmut_9": x_get_consolidated_schema__mutmut_9,
+    "x_get_consolidated_schema__mutmut_10": x_get_consolidated_schema__mutmut_10,
 }
 
+
 def get_consolidated_schema(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_consolidated_schema__mutmut_orig, x_get_consolidated_schema__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_consolidated_schema__mutmut_orig, x_get_consolidated_schema__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_consolidated_schema.__signature__ = _mutmut_signature(x_get_consolidated_schema__mutmut_orig)
-x_get_consolidated_schema__mutmut_orig.__name__ = 'x_get_consolidated_schema'
+x_get_consolidated_schema__mutmut_orig.__name__ = "x_get_consolidated_schema"
 
 
 # <3 🧱🤝⚙️🪄

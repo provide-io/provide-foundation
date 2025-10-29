@@ -36,29 +36,33 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
     else:
         result = mutants[mutant_name](*call_args, **call_kwargs)
     return result
+
 
 # Note: This module doesn't need logging - it's a pure output utility
 
@@ -72,6 +76,7 @@ def x__get_context__mutmut_orig() -> CLIContext | None:
         return ctx.obj
     return None
 
+
 # Note: This module doesn't need logging - it's a pure output utility
 
 
@@ -83,6 +88,7 @@ def x__get_context__mutmut_1() -> CLIContext | None:
     if ctx and hasattr(ctx, "obj") and isinstance(ctx.obj, CLIContext):
         return ctx.obj
     return None
+
 
 # Note: This module doesn't need logging - it's a pure output utility
 
@@ -96,6 +102,7 @@ def x__get_context__mutmut_2() -> CLIContext | None:
         return ctx.obj
     return None
 
+
 # Note: This module doesn't need logging - it's a pure output utility
 
 
@@ -107,6 +114,7 @@ def x__get_context__mutmut_3() -> CLIContext | None:
     if ctx and hasattr(ctx, "obj") and isinstance(ctx.obj, CLIContext):
         return ctx.obj
     return None
+
 
 # Note: This module doesn't need logging - it's a pure output utility
 
@@ -120,6 +128,7 @@ def x__get_context__mutmut_4() -> CLIContext | None:
         return ctx.obj
     return None
 
+
 # Note: This module doesn't need logging - it's a pure output utility
 
 
@@ -131,6 +140,7 @@ def x__get_context__mutmut_5() -> CLIContext | None:
     if ctx and hasattr(ctx, "obj") or isinstance(ctx.obj, CLIContext):
         return ctx.obj
     return None
+
 
 # Note: This module doesn't need logging - it's a pure output utility
 
@@ -144,6 +154,7 @@ def x__get_context__mutmut_6() -> CLIContext | None:
         return ctx.obj
     return None
 
+
 # Note: This module doesn't need logging - it's a pure output utility
 
 
@@ -155,6 +166,7 @@ def x__get_context__mutmut_7() -> CLIContext | None:
     if ctx and hasattr(None, "obj") and isinstance(ctx.obj, CLIContext):
         return ctx.obj
     return None
+
 
 # Note: This module doesn't need logging - it's a pure output utility
 
@@ -168,6 +180,7 @@ def x__get_context__mutmut_8() -> CLIContext | None:
         return ctx.obj
     return None
 
+
 # Note: This module doesn't need logging - it's a pure output utility
 
 
@@ -180,6 +193,7 @@ def x__get_context__mutmut_9() -> CLIContext | None:
         return ctx.obj
     return None
 
+
 # Note: This module doesn't need logging - it's a pure output utility
 
 
@@ -188,9 +202,16 @@ def x__get_context__mutmut_10() -> CLIContext | None:
     if not _HAS_CLICK:
         return None
     ctx = click.get_current_context(silent=True)
-    if ctx and hasattr(ctx, ) and isinstance(ctx.obj, CLIContext):
+    if (
+        ctx
+        and hasattr(
+            ctx,
+        )
+        and isinstance(ctx.obj, CLIContext)
+    ):
         return ctx.obj
     return None
+
 
 # Note: This module doesn't need logging - it's a pure output utility
 
@@ -204,6 +225,7 @@ def x__get_context__mutmut_11() -> CLIContext | None:
         return ctx.obj
     return None
 
+
 # Note: This module doesn't need logging - it's a pure output utility
 
 
@@ -216,27 +238,30 @@ def x__get_context__mutmut_12() -> CLIContext | None:
         return ctx.obj
     return None
 
-x__get_context__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_context__mutmut_1': x__get_context__mutmut_1, 
-    'x__get_context__mutmut_2': x__get_context__mutmut_2, 
-    'x__get_context__mutmut_3': x__get_context__mutmut_3, 
-    'x__get_context__mutmut_4': x__get_context__mutmut_4, 
-    'x__get_context__mutmut_5': x__get_context__mutmut_5, 
-    'x__get_context__mutmut_6': x__get_context__mutmut_6, 
-    'x__get_context__mutmut_7': x__get_context__mutmut_7, 
-    'x__get_context__mutmut_8': x__get_context__mutmut_8, 
-    'x__get_context__mutmut_9': x__get_context__mutmut_9, 
-    'x__get_context__mutmut_10': x__get_context__mutmut_10, 
-    'x__get_context__mutmut_11': x__get_context__mutmut_11, 
-    'x__get_context__mutmut_12': x__get_context__mutmut_12
+
+x__get_context__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_context__mutmut_1": x__get_context__mutmut_1,
+    "x__get_context__mutmut_2": x__get_context__mutmut_2,
+    "x__get_context__mutmut_3": x__get_context__mutmut_3,
+    "x__get_context__mutmut_4": x__get_context__mutmut_4,
+    "x__get_context__mutmut_5": x__get_context__mutmut_5,
+    "x__get_context__mutmut_6": x__get_context__mutmut_6,
+    "x__get_context__mutmut_7": x__get_context__mutmut_7,
+    "x__get_context__mutmut_8": x__get_context__mutmut_8,
+    "x__get_context__mutmut_9": x__get_context__mutmut_9,
+    "x__get_context__mutmut_10": x__get_context__mutmut_10,
+    "x__get_context__mutmut_11": x__get_context__mutmut_11,
+    "x__get_context__mutmut_12": x__get_context__mutmut_12,
 }
+
 
 def _get_context(*args, **kwargs):
     result = _mutmut_trampoline(x__get_context__mutmut_orig, x__get_context__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _get_context.__signature__ = _mutmut_signature(x__get_context__mutmut_orig)
-x__get_context__mutmut_orig.__name__ = 'x__get_context'
+x__get_context__mutmut_orig.__name__ = "x__get_context"
 
 
 def x__should_use_json__mutmut_orig(ctx: CLIContext | None = None) -> bool:
@@ -266,18 +291,23 @@ def x__should_use_json__mutmut_3(ctx: CLIContext | None = None) -> bool:
         ctx = _get_context()
     return ctx.json_output if ctx else True
 
-x__should_use_json__mutmut_mutants : ClassVar[MutantDict] = {
-'x__should_use_json__mutmut_1': x__should_use_json__mutmut_1, 
-    'x__should_use_json__mutmut_2': x__should_use_json__mutmut_2, 
-    'x__should_use_json__mutmut_3': x__should_use_json__mutmut_3
+
+x__should_use_json__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__should_use_json__mutmut_1": x__should_use_json__mutmut_1,
+    "x__should_use_json__mutmut_2": x__should_use_json__mutmut_2,
+    "x__should_use_json__mutmut_3": x__should_use_json__mutmut_3,
 }
 
+
 def _should_use_json(*args, **kwargs):
-    result = _mutmut_trampoline(x__should_use_json__mutmut_orig, x__should_use_json__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__should_use_json__mutmut_orig, x__should_use_json__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _should_use_json.__signature__ = _mutmut_signature(x__should_use_json__mutmut_orig)
-x__should_use_json__mutmut_orig.__name__ = 'x__should_use_json'
+x__should_use_json__mutmut_orig.__name__ = "x__should_use_json"
 
 
 @cached()
@@ -670,7 +700,10 @@ def x__should_use_color__mutmut_13(ctx: CLIContext | None = None, stream: Any = 
 
     # Check if stream is a TTY
     if stream:
-        return getattr(stream, "isatty", )()
+        return getattr(
+            stream,
+            "isatty",
+        )()
 
     return sys.stdout.isatty() or sys.stderr.isatty()
 
@@ -809,33 +842,38 @@ def x__should_use_color__mutmut_18(ctx: CLIContext | None = None, stream: Any = 
 
     return sys.stdout.isatty() and sys.stderr.isatty()
 
-x__should_use_color__mutmut_mutants : ClassVar[MutantDict] = {
-'x__should_use_color__mutmut_1': x__should_use_color__mutmut_1, 
-    'x__should_use_color__mutmut_2': x__should_use_color__mutmut_2, 
-    'x__should_use_color__mutmut_3': x__should_use_color__mutmut_3, 
-    'x__should_use_color__mutmut_4': x__should_use_color__mutmut_4, 
-    'x__should_use_color__mutmut_5': x__should_use_color__mutmut_5, 
-    'x__should_use_color__mutmut_6': x__should_use_color__mutmut_6, 
-    'x__should_use_color__mutmut_7': x__should_use_color__mutmut_7, 
-    'x__should_use_color__mutmut_8': x__should_use_color__mutmut_8, 
-    'x__should_use_color__mutmut_9': x__should_use_color__mutmut_9, 
-    'x__should_use_color__mutmut_10': x__should_use_color__mutmut_10, 
-    'x__should_use_color__mutmut_11': x__should_use_color__mutmut_11, 
-    'x__should_use_color__mutmut_12': x__should_use_color__mutmut_12, 
-    'x__should_use_color__mutmut_13': x__should_use_color__mutmut_13, 
-    'x__should_use_color__mutmut_14': x__should_use_color__mutmut_14, 
-    'x__should_use_color__mutmut_15': x__should_use_color__mutmut_15, 
-    'x__should_use_color__mutmut_16': x__should_use_color__mutmut_16, 
-    'x__should_use_color__mutmut_17': x__should_use_color__mutmut_17, 
-    'x__should_use_color__mutmut_18': x__should_use_color__mutmut_18
+
+x__should_use_color__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__should_use_color__mutmut_1": x__should_use_color__mutmut_1,
+    "x__should_use_color__mutmut_2": x__should_use_color__mutmut_2,
+    "x__should_use_color__mutmut_3": x__should_use_color__mutmut_3,
+    "x__should_use_color__mutmut_4": x__should_use_color__mutmut_4,
+    "x__should_use_color__mutmut_5": x__should_use_color__mutmut_5,
+    "x__should_use_color__mutmut_6": x__should_use_color__mutmut_6,
+    "x__should_use_color__mutmut_7": x__should_use_color__mutmut_7,
+    "x__should_use_color__mutmut_8": x__should_use_color__mutmut_8,
+    "x__should_use_color__mutmut_9": x__should_use_color__mutmut_9,
+    "x__should_use_color__mutmut_10": x__should_use_color__mutmut_10,
+    "x__should_use_color__mutmut_11": x__should_use_color__mutmut_11,
+    "x__should_use_color__mutmut_12": x__should_use_color__mutmut_12,
+    "x__should_use_color__mutmut_13": x__should_use_color__mutmut_13,
+    "x__should_use_color__mutmut_14": x__should_use_color__mutmut_14,
+    "x__should_use_color__mutmut_15": x__should_use_color__mutmut_15,
+    "x__should_use_color__mutmut_16": x__should_use_color__mutmut_16,
+    "x__should_use_color__mutmut_17": x__should_use_color__mutmut_17,
+    "x__should_use_color__mutmut_18": x__should_use_color__mutmut_18,
 }
 
+
 def _should_use_color(*args, **kwargs):
-    result = _mutmut_trampoline(x__should_use_color__mutmut_orig, x__should_use_color__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__should_use_color__mutmut_orig, x__should_use_color__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _should_use_color.__signature__ = _mutmut_signature(x__should_use_color__mutmut_orig)
-x__should_use_color__mutmut_orig.__name__ = 'x__should_use_color'
+x__should_use_color__mutmut_orig.__name__ = "x__should_use_color"
 
 
 @resilient(fallback=None, suppress=(TypeError, ValueError, AttributeError))

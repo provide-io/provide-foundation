@@ -42,23 +42,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -97,7 +100,9 @@ class Container:
     easier to adopt for developers from those ecosystems.
     """
 
-    def xǁContainerǁ__init____mutmut_orig(self, hub: Hub | None = None, registry: Registry | None = None) -> None:
+    def xǁContainerǁ__init____mutmut_orig(
+        self, hub: Hub | None = None, registry: Registry | None = None
+    ) -> None:
         """Initialize the DI container.
 
         Args:
@@ -270,7 +275,9 @@ class Container:
             # Create a Hub with the provided registry
             from provide.foundation.context import CLIContext
 
-            self._hub = Hub(context=CLIContext(), )
+            self._hub = Hub(
+                context=CLIContext(),
+            )
         else:
             # Create a new isolated Hub
             from provide.foundation.context import CLIContext
@@ -297,7 +304,9 @@ class Container:
 
             self._hub = None
 
-    def xǁContainerǁ__init____mutmut_10(self, hub: Hub | None = None, registry: Registry | None = None) -> None:
+    def xǁContainerǁ__init____mutmut_10(
+        self, hub: Hub | None = None, registry: Registry | None = None
+    ) -> None:
         """Initialize the DI container.
 
         Args:
@@ -316,26 +325,32 @@ class Container:
             from provide.foundation.context import CLIContext
 
             self._hub = Hub(context=None)
-    
-    xǁContainerǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁContainerǁ__init____mutmut_1': xǁContainerǁ__init____mutmut_1, 
-        'xǁContainerǁ__init____mutmut_2': xǁContainerǁ__init____mutmut_2, 
-        'xǁContainerǁ__init____mutmut_3': xǁContainerǁ__init____mutmut_3, 
-        'xǁContainerǁ__init____mutmut_4': xǁContainerǁ__init____mutmut_4, 
-        'xǁContainerǁ__init____mutmut_5': xǁContainerǁ__init____mutmut_5, 
-        'xǁContainerǁ__init____mutmut_6': xǁContainerǁ__init____mutmut_6, 
-        'xǁContainerǁ__init____mutmut_7': xǁContainerǁ__init____mutmut_7, 
-        'xǁContainerǁ__init____mutmut_8': xǁContainerǁ__init____mutmut_8, 
-        'xǁContainerǁ__init____mutmut_9': xǁContainerǁ__init____mutmut_9, 
-        'xǁContainerǁ__init____mutmut_10': xǁContainerǁ__init____mutmut_10
+
+    xǁContainerǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁContainerǁ__init____mutmut_1": xǁContainerǁ__init____mutmut_1,
+        "xǁContainerǁ__init____mutmut_2": xǁContainerǁ__init____mutmut_2,
+        "xǁContainerǁ__init____mutmut_3": xǁContainerǁ__init____mutmut_3,
+        "xǁContainerǁ__init____mutmut_4": xǁContainerǁ__init____mutmut_4,
+        "xǁContainerǁ__init____mutmut_5": xǁContainerǁ__init____mutmut_5,
+        "xǁContainerǁ__init____mutmut_6": xǁContainerǁ__init____mutmut_6,
+        "xǁContainerǁ__init____mutmut_7": xǁContainerǁ__init____mutmut_7,
+        "xǁContainerǁ__init____mutmut_8": xǁContainerǁ__init____mutmut_8,
+        "xǁContainerǁ__init____mutmut_9": xǁContainerǁ__init____mutmut_9,
+        "xǁContainerǁ__init____mutmut_10": xǁContainerǁ__init____mutmut_10,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁContainerǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁContainerǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁContainerǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁContainerǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁContainerǁ__init____mutmut_orig)
-    xǁContainerǁ__init____mutmut_orig.__name__ = 'xǁContainerǁ__init__'
+    xǁContainerǁ__init____mutmut_orig.__name__ = "xǁContainerǁ__init__"
 
     def xǁContainerǁregister__mutmut_orig(
         self,
@@ -488,24 +503,33 @@ class Container:
         Example:
             >>> container.register(Database, db).register(Cache, cache)
         """
-        self._hub.register(type_hint, instance, )
+        self._hub.register(
+            type_hint,
+            instance,
+        )
         return self
-    
-    xǁContainerǁregister__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁContainerǁregister__mutmut_1': xǁContainerǁregister__mutmut_1, 
-        'xǁContainerǁregister__mutmut_2': xǁContainerǁregister__mutmut_2, 
-        'xǁContainerǁregister__mutmut_3': xǁContainerǁregister__mutmut_3, 
-        'xǁContainerǁregister__mutmut_4': xǁContainerǁregister__mutmut_4, 
-        'xǁContainerǁregister__mutmut_5': xǁContainerǁregister__mutmut_5, 
-        'xǁContainerǁregister__mutmut_6': xǁContainerǁregister__mutmut_6
+
+    xǁContainerǁregister__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁContainerǁregister__mutmut_1": xǁContainerǁregister__mutmut_1,
+        "xǁContainerǁregister__mutmut_2": xǁContainerǁregister__mutmut_2,
+        "xǁContainerǁregister__mutmut_3": xǁContainerǁregister__mutmut_3,
+        "xǁContainerǁregister__mutmut_4": xǁContainerǁregister__mutmut_4,
+        "xǁContainerǁregister__mutmut_5": xǁContainerǁregister__mutmut_5,
+        "xǁContainerǁregister__mutmut_6": xǁContainerǁregister__mutmut_6,
     }
-    
+
     def register(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁContainerǁregister__mutmut_orig"), object.__getattribute__(self, "xǁContainerǁregister__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁContainerǁregister__mutmut_orig"),
+            object.__getattribute__(self, "xǁContainerǁregister__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     register.__signature__ = _mutmut_signature(xǁContainerǁregister__mutmut_orig)
-    xǁContainerǁregister__mutmut_orig.__name__ = 'xǁContainerǁregister'
+    xǁContainerǁregister__mutmut_orig.__name__ = "xǁContainerǁregister"
 
     def xǁContainerǁresolve__mutmut_orig(
         self,
@@ -589,20 +613,28 @@ class Container:
             >>> # Or with overrides:
             >>> service = container.resolve(MyService, logger=custom_logger)
         """
-        return self._hub.resolve(cls, )
-    
-    xǁContainerǁresolve__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁContainerǁresolve__mutmut_1': xǁContainerǁresolve__mutmut_1, 
-        'xǁContainerǁresolve__mutmut_2': xǁContainerǁresolve__mutmut_2, 
-        'xǁContainerǁresolve__mutmut_3': xǁContainerǁresolve__mutmut_3
+        return self._hub.resolve(
+            cls,
+        )
+
+    xǁContainerǁresolve__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁContainerǁresolve__mutmut_1": xǁContainerǁresolve__mutmut_1,
+        "xǁContainerǁresolve__mutmut_2": xǁContainerǁresolve__mutmut_2,
+        "xǁContainerǁresolve__mutmut_3": xǁContainerǁresolve__mutmut_3,
     }
-    
+
     def resolve(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁContainerǁresolve__mutmut_orig"), object.__getattribute__(self, "xǁContainerǁresolve__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁContainerǁresolve__mutmut_orig"),
+            object.__getattribute__(self, "xǁContainerǁresolve__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     resolve.__signature__ = _mutmut_signature(xǁContainerǁresolve__mutmut_orig)
-    xǁContainerǁresolve__mutmut_orig.__name__ = 'xǁContainerǁresolve'
+    xǁContainerǁresolve__mutmut_orig.__name__ = "xǁContainerǁresolve"
 
     def xǁContainerǁget__mutmut_orig(self, type_hint: type[T]) -> T | None:
         """Get a registered instance by type.
@@ -633,17 +665,23 @@ class Container:
         """
         # Access the component registry directly
         return self._hub._component_registry.get_by_type(None)
-    
-    xǁContainerǁget__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁContainerǁget__mutmut_1': xǁContainerǁget__mutmut_1
+
+    xǁContainerǁget__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁContainerǁget__mutmut_1": xǁContainerǁget__mutmut_1
     }
-    
+
     def get(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁContainerǁget__mutmut_orig"), object.__getattribute__(self, "xǁContainerǁget__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁContainerǁget__mutmut_orig"),
+            object.__getattribute__(self, "xǁContainerǁget__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get.__signature__ = _mutmut_signature(xǁContainerǁget__mutmut_orig)
-    xǁContainerǁget__mutmut_orig.__name__ = 'xǁContainerǁget'
+    xǁContainerǁget__mutmut_orig.__name__ = "xǁContainerǁget"
 
     def xǁContainerǁhas__mutmut_orig(self, type_hint: type[Any]) -> bool:
         """Check if a type is registered.
@@ -689,18 +727,24 @@ class Container:
             ...     db = container.get(Database)
         """
         return self.get(type_hint) is None
-    
-    xǁContainerǁhas__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁContainerǁhas__mutmut_1': xǁContainerǁhas__mutmut_1, 
-        'xǁContainerǁhas__mutmut_2': xǁContainerǁhas__mutmut_2
+
+    xǁContainerǁhas__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁContainerǁhas__mutmut_1": xǁContainerǁhas__mutmut_1,
+        "xǁContainerǁhas__mutmut_2": xǁContainerǁhas__mutmut_2,
     }
-    
+
     def has(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁContainerǁhas__mutmut_orig"), object.__getattribute__(self, "xǁContainerǁhas__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁContainerǁhas__mutmut_orig"),
+            object.__getattribute__(self, "xǁContainerǁhas__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     has.__signature__ = _mutmut_signature(xǁContainerǁhas__mutmut_orig)
-    xǁContainerǁhas__mutmut_orig.__name__ = 'xǁContainerǁhas'
+    xǁContainerǁhas__mutmut_orig.__name__ = "xǁContainerǁhas"
 
     def clear(self) -> None:
         """Clear all registered dependencies.

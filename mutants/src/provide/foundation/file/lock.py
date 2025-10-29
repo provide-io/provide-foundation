@@ -34,23 +34,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -285,25 +288,31 @@ class FileLock:
         self.locked = False
         self.pid = os.getpid()
         self._thread_lock = None  # Protect instance state from concurrent threads
-    
-    xǁFileLockǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFileLockǁ__init____mutmut_1': xǁFileLockǁ__init____mutmut_1, 
-        'xǁFileLockǁ__init____mutmut_2': xǁFileLockǁ__init____mutmut_2, 
-        'xǁFileLockǁ__init____mutmut_3': xǁFileLockǁ__init____mutmut_3, 
-        'xǁFileLockǁ__init____mutmut_4': xǁFileLockǁ__init____mutmut_4, 
-        'xǁFileLockǁ__init____mutmut_5': xǁFileLockǁ__init____mutmut_5, 
-        'xǁFileLockǁ__init____mutmut_6': xǁFileLockǁ__init____mutmut_6, 
-        'xǁFileLockǁ__init____mutmut_7': xǁFileLockǁ__init____mutmut_7, 
-        'xǁFileLockǁ__init____mutmut_8': xǁFileLockǁ__init____mutmut_8, 
-        'xǁFileLockǁ__init____mutmut_9': xǁFileLockǁ__init____mutmut_9
+
+    xǁFileLockǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFileLockǁ__init____mutmut_1": xǁFileLockǁ__init____mutmut_1,
+        "xǁFileLockǁ__init____mutmut_2": xǁFileLockǁ__init____mutmut_2,
+        "xǁFileLockǁ__init____mutmut_3": xǁFileLockǁ__init____mutmut_3,
+        "xǁFileLockǁ__init____mutmut_4": xǁFileLockǁ__init____mutmut_4,
+        "xǁFileLockǁ__init____mutmut_5": xǁFileLockǁ__init____mutmut_5,
+        "xǁFileLockǁ__init____mutmut_6": xǁFileLockǁ__init____mutmut_6,
+        "xǁFileLockǁ__init____mutmut_7": xǁFileLockǁ__init____mutmut_7,
+        "xǁFileLockǁ__init____mutmut_8": xǁFileLockǁ__init____mutmut_8,
+        "xǁFileLockǁ__init____mutmut_9": xǁFileLockǁ__init____mutmut_9,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFileLockǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁFileLockǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFileLockǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁFileLockǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁFileLockǁ__init____mutmut_orig)
-    xǁFileLockǁ__init____mutmut_orig.__name__ = 'xǁFileLockǁ__init__'
+    xǁFileLockǁ__init____mutmut_orig.__name__ = "xǁFileLockǁ__init__"
 
     def xǁFileLockǁacquire__mutmut_orig(self, blocking: bool = True) -> bool:  # noqa: C901
         """Acquire the lock.
@@ -1211,7 +1220,10 @@ class FileLock:
         """
         with self._thread_lock:
             if self.timeout <= 0:
-                raise LockError("Timeout must be positive", code="INVALID_TIMEOUT", )
+                raise LockError(
+                    "Timeout must be positive",
+                    code="INVALID_TIMEOUT",
+                )
 
             # If already locked by this instance, treat as re-entrant
             if self.locked:
@@ -4003,7 +4015,7 @@ class FileLock:
                     raise LockError(
                         f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, iterations: {iteration})",
                         code="LOCK_TIMEOUT",
-                        ) from None
+                    ) from None
 
                 try:
                     # Try to create lock file exclusively
@@ -4997,7 +5009,10 @@ class FileLock:
 
                 try:
                     # Try to create lock file exclusively
-                    fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, )
+                    fd = os.open(
+                        str(self.path),
+                        os.O_CREAT | os.O_EXCL | os.O_WRONLY,
+                    )
                     try:
                         # Write lock metadata as JSON for robust validation
                         lock_info = {
@@ -6987,7 +7002,9 @@ class FileLock:
                             lock_info["start_time"] = proc.create_time()
                         except (psutil.NoSuchProcess, psutil.AccessDenied):
                             pass
-                        os.write(fd, )
+                        os.write(
+                            fd,
+                        )
                     finally:
                         os.close(fd)
 
@@ -8578,7 +8595,7 @@ class FileLock:
                         path=str(self.path),
                         pid=self.pid,
                         iterations=iteration,
-                        )
+                    )
                     return True
 
                 except FileExistsError:
@@ -9676,7 +9693,9 @@ class FileLock:
                         continue  # Retry after removing stale lock
 
                     if not blocking:
-                        log.debug("Lock unavailable (non-blocking)", )
+                        log.debug(
+                            "Lock unavailable (non-blocking)",
+                        )
                         return False
 
                     # Calculate remaining time
@@ -11171,7 +11190,9 @@ class FileLock:
                         break
 
                     # Sleep for a small fixed interval or remaining time, whichever is smaller
-                    sleep_time = min(0.01, )  # Never sleep more than 10ms
+                    sleep_time = min(
+                        0.01,
+                    )  # Never sleep more than 10ms
                     if sleep_time > 0:
                         time.sleep(sleep_time)
 
@@ -12564,7 +12585,7 @@ class FileLock:
             raise LockError(
                 f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, iterations: {iteration})",
                 code="LOCK_TIMEOUT",
-                ) from None
+            ) from None
 
     def xǁFileLockǁacquire__mutmut_124(self, blocking: bool = True) -> bool:  # noqa: C901
         """Acquire the lock.
@@ -12862,142 +12883,148 @@ class FileLock:
                 code="LOCK_TIMEOUT",
                 path=str(None),
             ) from None
-    
-    xǁFileLockǁacquire__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFileLockǁacquire__mutmut_1': xǁFileLockǁacquire__mutmut_1, 
-        'xǁFileLockǁacquire__mutmut_2': xǁFileLockǁacquire__mutmut_2, 
-        'xǁFileLockǁacquire__mutmut_3': xǁFileLockǁacquire__mutmut_3, 
-        'xǁFileLockǁacquire__mutmut_4': xǁFileLockǁacquire__mutmut_4, 
-        'xǁFileLockǁacquire__mutmut_5': xǁFileLockǁacquire__mutmut_5, 
-        'xǁFileLockǁacquire__mutmut_6': xǁFileLockǁacquire__mutmut_6, 
-        'xǁFileLockǁacquire__mutmut_7': xǁFileLockǁacquire__mutmut_7, 
-        'xǁFileLockǁacquire__mutmut_8': xǁFileLockǁacquire__mutmut_8, 
-        'xǁFileLockǁacquire__mutmut_9': xǁFileLockǁacquire__mutmut_9, 
-        'xǁFileLockǁacquire__mutmut_10': xǁFileLockǁacquire__mutmut_10, 
-        'xǁFileLockǁacquire__mutmut_11': xǁFileLockǁacquire__mutmut_11, 
-        'xǁFileLockǁacquire__mutmut_12': xǁFileLockǁacquire__mutmut_12, 
-        'xǁFileLockǁacquire__mutmut_13': xǁFileLockǁacquire__mutmut_13, 
-        'xǁFileLockǁacquire__mutmut_14': xǁFileLockǁacquire__mutmut_14, 
-        'xǁFileLockǁacquire__mutmut_15': xǁFileLockǁacquire__mutmut_15, 
-        'xǁFileLockǁacquire__mutmut_16': xǁFileLockǁacquire__mutmut_16, 
-        'xǁFileLockǁacquire__mutmut_17': xǁFileLockǁacquire__mutmut_17, 
-        'xǁFileLockǁacquire__mutmut_18': xǁFileLockǁacquire__mutmut_18, 
-        'xǁFileLockǁacquire__mutmut_19': xǁFileLockǁacquire__mutmut_19, 
-        'xǁFileLockǁacquire__mutmut_20': xǁFileLockǁacquire__mutmut_20, 
-        'xǁFileLockǁacquire__mutmut_21': xǁFileLockǁacquire__mutmut_21, 
-        'xǁFileLockǁacquire__mutmut_22': xǁFileLockǁacquire__mutmut_22, 
-        'xǁFileLockǁacquire__mutmut_23': xǁFileLockǁacquire__mutmut_23, 
-        'xǁFileLockǁacquire__mutmut_24': xǁFileLockǁacquire__mutmut_24, 
-        'xǁFileLockǁacquire__mutmut_25': xǁFileLockǁacquire__mutmut_25, 
-        'xǁFileLockǁacquire__mutmut_26': xǁFileLockǁacquire__mutmut_26, 
-        'xǁFileLockǁacquire__mutmut_27': xǁFileLockǁacquire__mutmut_27, 
-        'xǁFileLockǁacquire__mutmut_28': xǁFileLockǁacquire__mutmut_28, 
-        'xǁFileLockǁacquire__mutmut_29': xǁFileLockǁacquire__mutmut_29, 
-        'xǁFileLockǁacquire__mutmut_30': xǁFileLockǁacquire__mutmut_30, 
-        'xǁFileLockǁacquire__mutmut_31': xǁFileLockǁacquire__mutmut_31, 
-        'xǁFileLockǁacquire__mutmut_32': xǁFileLockǁacquire__mutmut_32, 
-        'xǁFileLockǁacquire__mutmut_33': xǁFileLockǁacquire__mutmut_33, 
-        'xǁFileLockǁacquire__mutmut_34': xǁFileLockǁacquire__mutmut_34, 
-        'xǁFileLockǁacquire__mutmut_35': xǁFileLockǁacquire__mutmut_35, 
-        'xǁFileLockǁacquire__mutmut_36': xǁFileLockǁacquire__mutmut_36, 
-        'xǁFileLockǁacquire__mutmut_37': xǁFileLockǁacquire__mutmut_37, 
-        'xǁFileLockǁacquire__mutmut_38': xǁFileLockǁacquire__mutmut_38, 
-        'xǁFileLockǁacquire__mutmut_39': xǁFileLockǁacquire__mutmut_39, 
-        'xǁFileLockǁacquire__mutmut_40': xǁFileLockǁacquire__mutmut_40, 
-        'xǁFileLockǁacquire__mutmut_41': xǁFileLockǁacquire__mutmut_41, 
-        'xǁFileLockǁacquire__mutmut_42': xǁFileLockǁacquire__mutmut_42, 
-        'xǁFileLockǁacquire__mutmut_43': xǁFileLockǁacquire__mutmut_43, 
-        'xǁFileLockǁacquire__mutmut_44': xǁFileLockǁacquire__mutmut_44, 
-        'xǁFileLockǁacquire__mutmut_45': xǁFileLockǁacquire__mutmut_45, 
-        'xǁFileLockǁacquire__mutmut_46': xǁFileLockǁacquire__mutmut_46, 
-        'xǁFileLockǁacquire__mutmut_47': xǁFileLockǁacquire__mutmut_47, 
-        'xǁFileLockǁacquire__mutmut_48': xǁFileLockǁacquire__mutmut_48, 
-        'xǁFileLockǁacquire__mutmut_49': xǁFileLockǁacquire__mutmut_49, 
-        'xǁFileLockǁacquire__mutmut_50': xǁFileLockǁacquire__mutmut_50, 
-        'xǁFileLockǁacquire__mutmut_51': xǁFileLockǁacquire__mutmut_51, 
-        'xǁFileLockǁacquire__mutmut_52': xǁFileLockǁacquire__mutmut_52, 
-        'xǁFileLockǁacquire__mutmut_53': xǁFileLockǁacquire__mutmut_53, 
-        'xǁFileLockǁacquire__mutmut_54': xǁFileLockǁacquire__mutmut_54, 
-        'xǁFileLockǁacquire__mutmut_55': xǁFileLockǁacquire__mutmut_55, 
-        'xǁFileLockǁacquire__mutmut_56': xǁFileLockǁacquire__mutmut_56, 
-        'xǁFileLockǁacquire__mutmut_57': xǁFileLockǁacquire__mutmut_57, 
-        'xǁFileLockǁacquire__mutmut_58': xǁFileLockǁacquire__mutmut_58, 
-        'xǁFileLockǁacquire__mutmut_59': xǁFileLockǁacquire__mutmut_59, 
-        'xǁFileLockǁacquire__mutmut_60': xǁFileLockǁacquire__mutmut_60, 
-        'xǁFileLockǁacquire__mutmut_61': xǁFileLockǁacquire__mutmut_61, 
-        'xǁFileLockǁacquire__mutmut_62': xǁFileLockǁacquire__mutmut_62, 
-        'xǁFileLockǁacquire__mutmut_63': xǁFileLockǁacquire__mutmut_63, 
-        'xǁFileLockǁacquire__mutmut_64': xǁFileLockǁacquire__mutmut_64, 
-        'xǁFileLockǁacquire__mutmut_65': xǁFileLockǁacquire__mutmut_65, 
-        'xǁFileLockǁacquire__mutmut_66': xǁFileLockǁacquire__mutmut_66, 
-        'xǁFileLockǁacquire__mutmut_67': xǁFileLockǁacquire__mutmut_67, 
-        'xǁFileLockǁacquire__mutmut_68': xǁFileLockǁacquire__mutmut_68, 
-        'xǁFileLockǁacquire__mutmut_69': xǁFileLockǁacquire__mutmut_69, 
-        'xǁFileLockǁacquire__mutmut_70': xǁFileLockǁacquire__mutmut_70, 
-        'xǁFileLockǁacquire__mutmut_71': xǁFileLockǁacquire__mutmut_71, 
-        'xǁFileLockǁacquire__mutmut_72': xǁFileLockǁacquire__mutmut_72, 
-        'xǁFileLockǁacquire__mutmut_73': xǁFileLockǁacquire__mutmut_73, 
-        'xǁFileLockǁacquire__mutmut_74': xǁFileLockǁacquire__mutmut_74, 
-        'xǁFileLockǁacquire__mutmut_75': xǁFileLockǁacquire__mutmut_75, 
-        'xǁFileLockǁacquire__mutmut_76': xǁFileLockǁacquire__mutmut_76, 
-        'xǁFileLockǁacquire__mutmut_77': xǁFileLockǁacquire__mutmut_77, 
-        'xǁFileLockǁacquire__mutmut_78': xǁFileLockǁacquire__mutmut_78, 
-        'xǁFileLockǁacquire__mutmut_79': xǁFileLockǁacquire__mutmut_79, 
-        'xǁFileLockǁacquire__mutmut_80': xǁFileLockǁacquire__mutmut_80, 
-        'xǁFileLockǁacquire__mutmut_81': xǁFileLockǁacquire__mutmut_81, 
-        'xǁFileLockǁacquire__mutmut_82': xǁFileLockǁacquire__mutmut_82, 
-        'xǁFileLockǁacquire__mutmut_83': xǁFileLockǁacquire__mutmut_83, 
-        'xǁFileLockǁacquire__mutmut_84': xǁFileLockǁacquire__mutmut_84, 
-        'xǁFileLockǁacquire__mutmut_85': xǁFileLockǁacquire__mutmut_85, 
-        'xǁFileLockǁacquire__mutmut_86': xǁFileLockǁacquire__mutmut_86, 
-        'xǁFileLockǁacquire__mutmut_87': xǁFileLockǁacquire__mutmut_87, 
-        'xǁFileLockǁacquire__mutmut_88': xǁFileLockǁacquire__mutmut_88, 
-        'xǁFileLockǁacquire__mutmut_89': xǁFileLockǁacquire__mutmut_89, 
-        'xǁFileLockǁacquire__mutmut_90': xǁFileLockǁacquire__mutmut_90, 
-        'xǁFileLockǁacquire__mutmut_91': xǁFileLockǁacquire__mutmut_91, 
-        'xǁFileLockǁacquire__mutmut_92': xǁFileLockǁacquire__mutmut_92, 
-        'xǁFileLockǁacquire__mutmut_93': xǁFileLockǁacquire__mutmut_93, 
-        'xǁFileLockǁacquire__mutmut_94': xǁFileLockǁacquire__mutmut_94, 
-        'xǁFileLockǁacquire__mutmut_95': xǁFileLockǁacquire__mutmut_95, 
-        'xǁFileLockǁacquire__mutmut_96': xǁFileLockǁacquire__mutmut_96, 
-        'xǁFileLockǁacquire__mutmut_97': xǁFileLockǁacquire__mutmut_97, 
-        'xǁFileLockǁacquire__mutmut_98': xǁFileLockǁacquire__mutmut_98, 
-        'xǁFileLockǁacquire__mutmut_99': xǁFileLockǁacquire__mutmut_99, 
-        'xǁFileLockǁacquire__mutmut_100': xǁFileLockǁacquire__mutmut_100, 
-        'xǁFileLockǁacquire__mutmut_101': xǁFileLockǁacquire__mutmut_101, 
-        'xǁFileLockǁacquire__mutmut_102': xǁFileLockǁacquire__mutmut_102, 
-        'xǁFileLockǁacquire__mutmut_103': xǁFileLockǁacquire__mutmut_103, 
-        'xǁFileLockǁacquire__mutmut_104': xǁFileLockǁacquire__mutmut_104, 
-        'xǁFileLockǁacquire__mutmut_105': xǁFileLockǁacquire__mutmut_105, 
-        'xǁFileLockǁacquire__mutmut_106': xǁFileLockǁacquire__mutmut_106, 
-        'xǁFileLockǁacquire__mutmut_107': xǁFileLockǁacquire__mutmut_107, 
-        'xǁFileLockǁacquire__mutmut_108': xǁFileLockǁacquire__mutmut_108, 
-        'xǁFileLockǁacquire__mutmut_109': xǁFileLockǁacquire__mutmut_109, 
-        'xǁFileLockǁacquire__mutmut_110': xǁFileLockǁacquire__mutmut_110, 
-        'xǁFileLockǁacquire__mutmut_111': xǁFileLockǁacquire__mutmut_111, 
-        'xǁFileLockǁacquire__mutmut_112': xǁFileLockǁacquire__mutmut_112, 
-        'xǁFileLockǁacquire__mutmut_113': xǁFileLockǁacquire__mutmut_113, 
-        'xǁFileLockǁacquire__mutmut_114': xǁFileLockǁacquire__mutmut_114, 
-        'xǁFileLockǁacquire__mutmut_115': xǁFileLockǁacquire__mutmut_115, 
-        'xǁFileLockǁacquire__mutmut_116': xǁFileLockǁacquire__mutmut_116, 
-        'xǁFileLockǁacquire__mutmut_117': xǁFileLockǁacquire__mutmut_117, 
-        'xǁFileLockǁacquire__mutmut_118': xǁFileLockǁacquire__mutmut_118, 
-        'xǁFileLockǁacquire__mutmut_119': xǁFileLockǁacquire__mutmut_119, 
-        'xǁFileLockǁacquire__mutmut_120': xǁFileLockǁacquire__mutmut_120, 
-        'xǁFileLockǁacquire__mutmut_121': xǁFileLockǁacquire__mutmut_121, 
-        'xǁFileLockǁacquire__mutmut_122': xǁFileLockǁacquire__mutmut_122, 
-        'xǁFileLockǁacquire__mutmut_123': xǁFileLockǁacquire__mutmut_123, 
-        'xǁFileLockǁacquire__mutmut_124': xǁFileLockǁacquire__mutmut_124, 
-        'xǁFileLockǁacquire__mutmut_125': xǁFileLockǁacquire__mutmut_125, 
-        'xǁFileLockǁacquire__mutmut_126': xǁFileLockǁacquire__mutmut_126
+
+    xǁFileLockǁacquire__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFileLockǁacquire__mutmut_1": xǁFileLockǁacquire__mutmut_1,
+        "xǁFileLockǁacquire__mutmut_2": xǁFileLockǁacquire__mutmut_2,
+        "xǁFileLockǁacquire__mutmut_3": xǁFileLockǁacquire__mutmut_3,
+        "xǁFileLockǁacquire__mutmut_4": xǁFileLockǁacquire__mutmut_4,
+        "xǁFileLockǁacquire__mutmut_5": xǁFileLockǁacquire__mutmut_5,
+        "xǁFileLockǁacquire__mutmut_6": xǁFileLockǁacquire__mutmut_6,
+        "xǁFileLockǁacquire__mutmut_7": xǁFileLockǁacquire__mutmut_7,
+        "xǁFileLockǁacquire__mutmut_8": xǁFileLockǁacquire__mutmut_8,
+        "xǁFileLockǁacquire__mutmut_9": xǁFileLockǁacquire__mutmut_9,
+        "xǁFileLockǁacquire__mutmut_10": xǁFileLockǁacquire__mutmut_10,
+        "xǁFileLockǁacquire__mutmut_11": xǁFileLockǁacquire__mutmut_11,
+        "xǁFileLockǁacquire__mutmut_12": xǁFileLockǁacquire__mutmut_12,
+        "xǁFileLockǁacquire__mutmut_13": xǁFileLockǁacquire__mutmut_13,
+        "xǁFileLockǁacquire__mutmut_14": xǁFileLockǁacquire__mutmut_14,
+        "xǁFileLockǁacquire__mutmut_15": xǁFileLockǁacquire__mutmut_15,
+        "xǁFileLockǁacquire__mutmut_16": xǁFileLockǁacquire__mutmut_16,
+        "xǁFileLockǁacquire__mutmut_17": xǁFileLockǁacquire__mutmut_17,
+        "xǁFileLockǁacquire__mutmut_18": xǁFileLockǁacquire__mutmut_18,
+        "xǁFileLockǁacquire__mutmut_19": xǁFileLockǁacquire__mutmut_19,
+        "xǁFileLockǁacquire__mutmut_20": xǁFileLockǁacquire__mutmut_20,
+        "xǁFileLockǁacquire__mutmut_21": xǁFileLockǁacquire__mutmut_21,
+        "xǁFileLockǁacquire__mutmut_22": xǁFileLockǁacquire__mutmut_22,
+        "xǁFileLockǁacquire__mutmut_23": xǁFileLockǁacquire__mutmut_23,
+        "xǁFileLockǁacquire__mutmut_24": xǁFileLockǁacquire__mutmut_24,
+        "xǁFileLockǁacquire__mutmut_25": xǁFileLockǁacquire__mutmut_25,
+        "xǁFileLockǁacquire__mutmut_26": xǁFileLockǁacquire__mutmut_26,
+        "xǁFileLockǁacquire__mutmut_27": xǁFileLockǁacquire__mutmut_27,
+        "xǁFileLockǁacquire__mutmut_28": xǁFileLockǁacquire__mutmut_28,
+        "xǁFileLockǁacquire__mutmut_29": xǁFileLockǁacquire__mutmut_29,
+        "xǁFileLockǁacquire__mutmut_30": xǁFileLockǁacquire__mutmut_30,
+        "xǁFileLockǁacquire__mutmut_31": xǁFileLockǁacquire__mutmut_31,
+        "xǁFileLockǁacquire__mutmut_32": xǁFileLockǁacquire__mutmut_32,
+        "xǁFileLockǁacquire__mutmut_33": xǁFileLockǁacquire__mutmut_33,
+        "xǁFileLockǁacquire__mutmut_34": xǁFileLockǁacquire__mutmut_34,
+        "xǁFileLockǁacquire__mutmut_35": xǁFileLockǁacquire__mutmut_35,
+        "xǁFileLockǁacquire__mutmut_36": xǁFileLockǁacquire__mutmut_36,
+        "xǁFileLockǁacquire__mutmut_37": xǁFileLockǁacquire__mutmut_37,
+        "xǁFileLockǁacquire__mutmut_38": xǁFileLockǁacquire__mutmut_38,
+        "xǁFileLockǁacquire__mutmut_39": xǁFileLockǁacquire__mutmut_39,
+        "xǁFileLockǁacquire__mutmut_40": xǁFileLockǁacquire__mutmut_40,
+        "xǁFileLockǁacquire__mutmut_41": xǁFileLockǁacquire__mutmut_41,
+        "xǁFileLockǁacquire__mutmut_42": xǁFileLockǁacquire__mutmut_42,
+        "xǁFileLockǁacquire__mutmut_43": xǁFileLockǁacquire__mutmut_43,
+        "xǁFileLockǁacquire__mutmut_44": xǁFileLockǁacquire__mutmut_44,
+        "xǁFileLockǁacquire__mutmut_45": xǁFileLockǁacquire__mutmut_45,
+        "xǁFileLockǁacquire__mutmut_46": xǁFileLockǁacquire__mutmut_46,
+        "xǁFileLockǁacquire__mutmut_47": xǁFileLockǁacquire__mutmut_47,
+        "xǁFileLockǁacquire__mutmut_48": xǁFileLockǁacquire__mutmut_48,
+        "xǁFileLockǁacquire__mutmut_49": xǁFileLockǁacquire__mutmut_49,
+        "xǁFileLockǁacquire__mutmut_50": xǁFileLockǁacquire__mutmut_50,
+        "xǁFileLockǁacquire__mutmut_51": xǁFileLockǁacquire__mutmut_51,
+        "xǁFileLockǁacquire__mutmut_52": xǁFileLockǁacquire__mutmut_52,
+        "xǁFileLockǁacquire__mutmut_53": xǁFileLockǁacquire__mutmut_53,
+        "xǁFileLockǁacquire__mutmut_54": xǁFileLockǁacquire__mutmut_54,
+        "xǁFileLockǁacquire__mutmut_55": xǁFileLockǁacquire__mutmut_55,
+        "xǁFileLockǁacquire__mutmut_56": xǁFileLockǁacquire__mutmut_56,
+        "xǁFileLockǁacquire__mutmut_57": xǁFileLockǁacquire__mutmut_57,
+        "xǁFileLockǁacquire__mutmut_58": xǁFileLockǁacquire__mutmut_58,
+        "xǁFileLockǁacquire__mutmut_59": xǁFileLockǁacquire__mutmut_59,
+        "xǁFileLockǁacquire__mutmut_60": xǁFileLockǁacquire__mutmut_60,
+        "xǁFileLockǁacquire__mutmut_61": xǁFileLockǁacquire__mutmut_61,
+        "xǁFileLockǁacquire__mutmut_62": xǁFileLockǁacquire__mutmut_62,
+        "xǁFileLockǁacquire__mutmut_63": xǁFileLockǁacquire__mutmut_63,
+        "xǁFileLockǁacquire__mutmut_64": xǁFileLockǁacquire__mutmut_64,
+        "xǁFileLockǁacquire__mutmut_65": xǁFileLockǁacquire__mutmut_65,
+        "xǁFileLockǁacquire__mutmut_66": xǁFileLockǁacquire__mutmut_66,
+        "xǁFileLockǁacquire__mutmut_67": xǁFileLockǁacquire__mutmut_67,
+        "xǁFileLockǁacquire__mutmut_68": xǁFileLockǁacquire__mutmut_68,
+        "xǁFileLockǁacquire__mutmut_69": xǁFileLockǁacquire__mutmut_69,
+        "xǁFileLockǁacquire__mutmut_70": xǁFileLockǁacquire__mutmut_70,
+        "xǁFileLockǁacquire__mutmut_71": xǁFileLockǁacquire__mutmut_71,
+        "xǁFileLockǁacquire__mutmut_72": xǁFileLockǁacquire__mutmut_72,
+        "xǁFileLockǁacquire__mutmut_73": xǁFileLockǁacquire__mutmut_73,
+        "xǁFileLockǁacquire__mutmut_74": xǁFileLockǁacquire__mutmut_74,
+        "xǁFileLockǁacquire__mutmut_75": xǁFileLockǁacquire__mutmut_75,
+        "xǁFileLockǁacquire__mutmut_76": xǁFileLockǁacquire__mutmut_76,
+        "xǁFileLockǁacquire__mutmut_77": xǁFileLockǁacquire__mutmut_77,
+        "xǁFileLockǁacquire__mutmut_78": xǁFileLockǁacquire__mutmut_78,
+        "xǁFileLockǁacquire__mutmut_79": xǁFileLockǁacquire__mutmut_79,
+        "xǁFileLockǁacquire__mutmut_80": xǁFileLockǁacquire__mutmut_80,
+        "xǁFileLockǁacquire__mutmut_81": xǁFileLockǁacquire__mutmut_81,
+        "xǁFileLockǁacquire__mutmut_82": xǁFileLockǁacquire__mutmut_82,
+        "xǁFileLockǁacquire__mutmut_83": xǁFileLockǁacquire__mutmut_83,
+        "xǁFileLockǁacquire__mutmut_84": xǁFileLockǁacquire__mutmut_84,
+        "xǁFileLockǁacquire__mutmut_85": xǁFileLockǁacquire__mutmut_85,
+        "xǁFileLockǁacquire__mutmut_86": xǁFileLockǁacquire__mutmut_86,
+        "xǁFileLockǁacquire__mutmut_87": xǁFileLockǁacquire__mutmut_87,
+        "xǁFileLockǁacquire__mutmut_88": xǁFileLockǁacquire__mutmut_88,
+        "xǁFileLockǁacquire__mutmut_89": xǁFileLockǁacquire__mutmut_89,
+        "xǁFileLockǁacquire__mutmut_90": xǁFileLockǁacquire__mutmut_90,
+        "xǁFileLockǁacquire__mutmut_91": xǁFileLockǁacquire__mutmut_91,
+        "xǁFileLockǁacquire__mutmut_92": xǁFileLockǁacquire__mutmut_92,
+        "xǁFileLockǁacquire__mutmut_93": xǁFileLockǁacquire__mutmut_93,
+        "xǁFileLockǁacquire__mutmut_94": xǁFileLockǁacquire__mutmut_94,
+        "xǁFileLockǁacquire__mutmut_95": xǁFileLockǁacquire__mutmut_95,
+        "xǁFileLockǁacquire__mutmut_96": xǁFileLockǁacquire__mutmut_96,
+        "xǁFileLockǁacquire__mutmut_97": xǁFileLockǁacquire__mutmut_97,
+        "xǁFileLockǁacquire__mutmut_98": xǁFileLockǁacquire__mutmut_98,
+        "xǁFileLockǁacquire__mutmut_99": xǁFileLockǁacquire__mutmut_99,
+        "xǁFileLockǁacquire__mutmut_100": xǁFileLockǁacquire__mutmut_100,
+        "xǁFileLockǁacquire__mutmut_101": xǁFileLockǁacquire__mutmut_101,
+        "xǁFileLockǁacquire__mutmut_102": xǁFileLockǁacquire__mutmut_102,
+        "xǁFileLockǁacquire__mutmut_103": xǁFileLockǁacquire__mutmut_103,
+        "xǁFileLockǁacquire__mutmut_104": xǁFileLockǁacquire__mutmut_104,
+        "xǁFileLockǁacquire__mutmut_105": xǁFileLockǁacquire__mutmut_105,
+        "xǁFileLockǁacquire__mutmut_106": xǁFileLockǁacquire__mutmut_106,
+        "xǁFileLockǁacquire__mutmut_107": xǁFileLockǁacquire__mutmut_107,
+        "xǁFileLockǁacquire__mutmut_108": xǁFileLockǁacquire__mutmut_108,
+        "xǁFileLockǁacquire__mutmut_109": xǁFileLockǁacquire__mutmut_109,
+        "xǁFileLockǁacquire__mutmut_110": xǁFileLockǁacquire__mutmut_110,
+        "xǁFileLockǁacquire__mutmut_111": xǁFileLockǁacquire__mutmut_111,
+        "xǁFileLockǁacquire__mutmut_112": xǁFileLockǁacquire__mutmut_112,
+        "xǁFileLockǁacquire__mutmut_113": xǁFileLockǁacquire__mutmut_113,
+        "xǁFileLockǁacquire__mutmut_114": xǁFileLockǁacquire__mutmut_114,
+        "xǁFileLockǁacquire__mutmut_115": xǁFileLockǁacquire__mutmut_115,
+        "xǁFileLockǁacquire__mutmut_116": xǁFileLockǁacquire__mutmut_116,
+        "xǁFileLockǁacquire__mutmut_117": xǁFileLockǁacquire__mutmut_117,
+        "xǁFileLockǁacquire__mutmut_118": xǁFileLockǁacquire__mutmut_118,
+        "xǁFileLockǁacquire__mutmut_119": xǁFileLockǁacquire__mutmut_119,
+        "xǁFileLockǁacquire__mutmut_120": xǁFileLockǁacquire__mutmut_120,
+        "xǁFileLockǁacquire__mutmut_121": xǁFileLockǁacquire__mutmut_121,
+        "xǁFileLockǁacquire__mutmut_122": xǁFileLockǁacquire__mutmut_122,
+        "xǁFileLockǁacquire__mutmut_123": xǁFileLockǁacquire__mutmut_123,
+        "xǁFileLockǁacquire__mutmut_124": xǁFileLockǁacquire__mutmut_124,
+        "xǁFileLockǁacquire__mutmut_125": xǁFileLockǁacquire__mutmut_125,
+        "xǁFileLockǁacquire__mutmut_126": xǁFileLockǁacquire__mutmut_126,
     }
-    
+
     def acquire(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFileLockǁacquire__mutmut_orig"), object.__getattribute__(self, "xǁFileLockǁacquire__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFileLockǁacquire__mutmut_orig"),
+            object.__getattribute__(self, "xǁFileLockǁacquire__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     acquire.__signature__ = _mutmut_signature(xǁFileLockǁacquire__mutmut_orig)
-    xǁFileLockǁacquire__mutmut_orig.__name__ = 'xǁFileLockǁacquire'
+    xǁFileLockǁacquire__mutmut_orig.__name__ = "xǁFileLockǁacquire"
 
     def xǁFileLockǁrelease__mutmut_orig(self) -> None:
         """Release the lock.
@@ -13924,7 +13951,10 @@ class FileLock:
 
                         if owner_pid == self.pid:
                             self.path.unlink()
-                            log.debug("Released lock", path=str(self.path), )
+                            log.debug(
+                                "Released lock",
+                                path=str(self.path),
+                            )
                         else:
                             log.warning(
                                 "Lock owned by different process",
@@ -14527,7 +14557,7 @@ class FileLock:
                                 "Lock owned by different process",
                                 path=str(self.path),
                                 owner_pid=owner_pid,
-                                )
+                            )
                     except Exception as e:
                         log.warning(
                             "Error checking lock ownership",
@@ -15030,7 +15060,7 @@ class FileLock:
                         log.warning(
                             "Error checking lock ownership",
                             path=str(self.path),
-                            )
+                        )
                         # Still try to remove if we think we own it
                         if self.locked:
                             self.path.unlink()
@@ -15588,7 +15618,10 @@ class FileLock:
                 pass  # Lock already released
             except (OSError, PermissionError) as e:
                 # Failed to unlink lock file due to permission or filesystem error
-                log.error("Failed to release lock", path=str(self.path), )
+                log.error(
+                    "Failed to release lock",
+                    path=str(self.path),
+                )
             finally:
                 self.locked = False
 
@@ -15941,74 +15974,80 @@ class FileLock:
                 log.error("Failed to release lock", path=str(self.path), error=str(e))
             finally:
                 self.locked = True
-    
-    xǁFileLockǁrelease__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFileLockǁrelease__mutmut_1': xǁFileLockǁrelease__mutmut_1, 
-        'xǁFileLockǁrelease__mutmut_2': xǁFileLockǁrelease__mutmut_2, 
-        'xǁFileLockǁrelease__mutmut_3': xǁFileLockǁrelease__mutmut_3, 
-        'xǁFileLockǁrelease__mutmut_4': xǁFileLockǁrelease__mutmut_4, 
-        'xǁFileLockǁrelease__mutmut_5': xǁFileLockǁrelease__mutmut_5, 
-        'xǁFileLockǁrelease__mutmut_6': xǁFileLockǁrelease__mutmut_6, 
-        'xǁFileLockǁrelease__mutmut_7': xǁFileLockǁrelease__mutmut_7, 
-        'xǁFileLockǁrelease__mutmut_8': xǁFileLockǁrelease__mutmut_8, 
-        'xǁFileLockǁrelease__mutmut_9': xǁFileLockǁrelease__mutmut_9, 
-        'xǁFileLockǁrelease__mutmut_10': xǁFileLockǁrelease__mutmut_10, 
-        'xǁFileLockǁrelease__mutmut_11': xǁFileLockǁrelease__mutmut_11, 
-        'xǁFileLockǁrelease__mutmut_12': xǁFileLockǁrelease__mutmut_12, 
-        'xǁFileLockǁrelease__mutmut_13': xǁFileLockǁrelease__mutmut_13, 
-        'xǁFileLockǁrelease__mutmut_14': xǁFileLockǁrelease__mutmut_14, 
-        'xǁFileLockǁrelease__mutmut_15': xǁFileLockǁrelease__mutmut_15, 
-        'xǁFileLockǁrelease__mutmut_16': xǁFileLockǁrelease__mutmut_16, 
-        'xǁFileLockǁrelease__mutmut_17': xǁFileLockǁrelease__mutmut_17, 
-        'xǁFileLockǁrelease__mutmut_18': xǁFileLockǁrelease__mutmut_18, 
-        'xǁFileLockǁrelease__mutmut_19': xǁFileLockǁrelease__mutmut_19, 
-        'xǁFileLockǁrelease__mutmut_20': xǁFileLockǁrelease__mutmut_20, 
-        'xǁFileLockǁrelease__mutmut_21': xǁFileLockǁrelease__mutmut_21, 
-        'xǁFileLockǁrelease__mutmut_22': xǁFileLockǁrelease__mutmut_22, 
-        'xǁFileLockǁrelease__mutmut_23': xǁFileLockǁrelease__mutmut_23, 
-        'xǁFileLockǁrelease__mutmut_24': xǁFileLockǁrelease__mutmut_24, 
-        'xǁFileLockǁrelease__mutmut_25': xǁFileLockǁrelease__mutmut_25, 
-        'xǁFileLockǁrelease__mutmut_26': xǁFileLockǁrelease__mutmut_26, 
-        'xǁFileLockǁrelease__mutmut_27': xǁFileLockǁrelease__mutmut_27, 
-        'xǁFileLockǁrelease__mutmut_28': xǁFileLockǁrelease__mutmut_28, 
-        'xǁFileLockǁrelease__mutmut_29': xǁFileLockǁrelease__mutmut_29, 
-        'xǁFileLockǁrelease__mutmut_30': xǁFileLockǁrelease__mutmut_30, 
-        'xǁFileLockǁrelease__mutmut_31': xǁFileLockǁrelease__mutmut_31, 
-        'xǁFileLockǁrelease__mutmut_32': xǁFileLockǁrelease__mutmut_32, 
-        'xǁFileLockǁrelease__mutmut_33': xǁFileLockǁrelease__mutmut_33, 
-        'xǁFileLockǁrelease__mutmut_34': xǁFileLockǁrelease__mutmut_34, 
-        'xǁFileLockǁrelease__mutmut_35': xǁFileLockǁrelease__mutmut_35, 
-        'xǁFileLockǁrelease__mutmut_36': xǁFileLockǁrelease__mutmut_36, 
-        'xǁFileLockǁrelease__mutmut_37': xǁFileLockǁrelease__mutmut_37, 
-        'xǁFileLockǁrelease__mutmut_38': xǁFileLockǁrelease__mutmut_38, 
-        'xǁFileLockǁrelease__mutmut_39': xǁFileLockǁrelease__mutmut_39, 
-        'xǁFileLockǁrelease__mutmut_40': xǁFileLockǁrelease__mutmut_40, 
-        'xǁFileLockǁrelease__mutmut_41': xǁFileLockǁrelease__mutmut_41, 
-        'xǁFileLockǁrelease__mutmut_42': xǁFileLockǁrelease__mutmut_42, 
-        'xǁFileLockǁrelease__mutmut_43': xǁFileLockǁrelease__mutmut_43, 
-        'xǁFileLockǁrelease__mutmut_44': xǁFileLockǁrelease__mutmut_44, 
-        'xǁFileLockǁrelease__mutmut_45': xǁFileLockǁrelease__mutmut_45, 
-        'xǁFileLockǁrelease__mutmut_46': xǁFileLockǁrelease__mutmut_46, 
-        'xǁFileLockǁrelease__mutmut_47': xǁFileLockǁrelease__mutmut_47, 
-        'xǁFileLockǁrelease__mutmut_48': xǁFileLockǁrelease__mutmut_48, 
-        'xǁFileLockǁrelease__mutmut_49': xǁFileLockǁrelease__mutmut_49, 
-        'xǁFileLockǁrelease__mutmut_50': xǁFileLockǁrelease__mutmut_50, 
-        'xǁFileLockǁrelease__mutmut_51': xǁFileLockǁrelease__mutmut_51, 
-        'xǁFileLockǁrelease__mutmut_52': xǁFileLockǁrelease__mutmut_52, 
-        'xǁFileLockǁrelease__mutmut_53': xǁFileLockǁrelease__mutmut_53, 
-        'xǁFileLockǁrelease__mutmut_54': xǁFileLockǁrelease__mutmut_54, 
-        'xǁFileLockǁrelease__mutmut_55': xǁFileLockǁrelease__mutmut_55, 
-        'xǁFileLockǁrelease__mutmut_56': xǁFileLockǁrelease__mutmut_56, 
-        'xǁFileLockǁrelease__mutmut_57': xǁFileLockǁrelease__mutmut_57, 
-        'xǁFileLockǁrelease__mutmut_58': xǁFileLockǁrelease__mutmut_58
+
+    xǁFileLockǁrelease__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFileLockǁrelease__mutmut_1": xǁFileLockǁrelease__mutmut_1,
+        "xǁFileLockǁrelease__mutmut_2": xǁFileLockǁrelease__mutmut_2,
+        "xǁFileLockǁrelease__mutmut_3": xǁFileLockǁrelease__mutmut_3,
+        "xǁFileLockǁrelease__mutmut_4": xǁFileLockǁrelease__mutmut_4,
+        "xǁFileLockǁrelease__mutmut_5": xǁFileLockǁrelease__mutmut_5,
+        "xǁFileLockǁrelease__mutmut_6": xǁFileLockǁrelease__mutmut_6,
+        "xǁFileLockǁrelease__mutmut_7": xǁFileLockǁrelease__mutmut_7,
+        "xǁFileLockǁrelease__mutmut_8": xǁFileLockǁrelease__mutmut_8,
+        "xǁFileLockǁrelease__mutmut_9": xǁFileLockǁrelease__mutmut_9,
+        "xǁFileLockǁrelease__mutmut_10": xǁFileLockǁrelease__mutmut_10,
+        "xǁFileLockǁrelease__mutmut_11": xǁFileLockǁrelease__mutmut_11,
+        "xǁFileLockǁrelease__mutmut_12": xǁFileLockǁrelease__mutmut_12,
+        "xǁFileLockǁrelease__mutmut_13": xǁFileLockǁrelease__mutmut_13,
+        "xǁFileLockǁrelease__mutmut_14": xǁFileLockǁrelease__mutmut_14,
+        "xǁFileLockǁrelease__mutmut_15": xǁFileLockǁrelease__mutmut_15,
+        "xǁFileLockǁrelease__mutmut_16": xǁFileLockǁrelease__mutmut_16,
+        "xǁFileLockǁrelease__mutmut_17": xǁFileLockǁrelease__mutmut_17,
+        "xǁFileLockǁrelease__mutmut_18": xǁFileLockǁrelease__mutmut_18,
+        "xǁFileLockǁrelease__mutmut_19": xǁFileLockǁrelease__mutmut_19,
+        "xǁFileLockǁrelease__mutmut_20": xǁFileLockǁrelease__mutmut_20,
+        "xǁFileLockǁrelease__mutmut_21": xǁFileLockǁrelease__mutmut_21,
+        "xǁFileLockǁrelease__mutmut_22": xǁFileLockǁrelease__mutmut_22,
+        "xǁFileLockǁrelease__mutmut_23": xǁFileLockǁrelease__mutmut_23,
+        "xǁFileLockǁrelease__mutmut_24": xǁFileLockǁrelease__mutmut_24,
+        "xǁFileLockǁrelease__mutmut_25": xǁFileLockǁrelease__mutmut_25,
+        "xǁFileLockǁrelease__mutmut_26": xǁFileLockǁrelease__mutmut_26,
+        "xǁFileLockǁrelease__mutmut_27": xǁFileLockǁrelease__mutmut_27,
+        "xǁFileLockǁrelease__mutmut_28": xǁFileLockǁrelease__mutmut_28,
+        "xǁFileLockǁrelease__mutmut_29": xǁFileLockǁrelease__mutmut_29,
+        "xǁFileLockǁrelease__mutmut_30": xǁFileLockǁrelease__mutmut_30,
+        "xǁFileLockǁrelease__mutmut_31": xǁFileLockǁrelease__mutmut_31,
+        "xǁFileLockǁrelease__mutmut_32": xǁFileLockǁrelease__mutmut_32,
+        "xǁFileLockǁrelease__mutmut_33": xǁFileLockǁrelease__mutmut_33,
+        "xǁFileLockǁrelease__mutmut_34": xǁFileLockǁrelease__mutmut_34,
+        "xǁFileLockǁrelease__mutmut_35": xǁFileLockǁrelease__mutmut_35,
+        "xǁFileLockǁrelease__mutmut_36": xǁFileLockǁrelease__mutmut_36,
+        "xǁFileLockǁrelease__mutmut_37": xǁFileLockǁrelease__mutmut_37,
+        "xǁFileLockǁrelease__mutmut_38": xǁFileLockǁrelease__mutmut_38,
+        "xǁFileLockǁrelease__mutmut_39": xǁFileLockǁrelease__mutmut_39,
+        "xǁFileLockǁrelease__mutmut_40": xǁFileLockǁrelease__mutmut_40,
+        "xǁFileLockǁrelease__mutmut_41": xǁFileLockǁrelease__mutmut_41,
+        "xǁFileLockǁrelease__mutmut_42": xǁFileLockǁrelease__mutmut_42,
+        "xǁFileLockǁrelease__mutmut_43": xǁFileLockǁrelease__mutmut_43,
+        "xǁFileLockǁrelease__mutmut_44": xǁFileLockǁrelease__mutmut_44,
+        "xǁFileLockǁrelease__mutmut_45": xǁFileLockǁrelease__mutmut_45,
+        "xǁFileLockǁrelease__mutmut_46": xǁFileLockǁrelease__mutmut_46,
+        "xǁFileLockǁrelease__mutmut_47": xǁFileLockǁrelease__mutmut_47,
+        "xǁFileLockǁrelease__mutmut_48": xǁFileLockǁrelease__mutmut_48,
+        "xǁFileLockǁrelease__mutmut_49": xǁFileLockǁrelease__mutmut_49,
+        "xǁFileLockǁrelease__mutmut_50": xǁFileLockǁrelease__mutmut_50,
+        "xǁFileLockǁrelease__mutmut_51": xǁFileLockǁrelease__mutmut_51,
+        "xǁFileLockǁrelease__mutmut_52": xǁFileLockǁrelease__mutmut_52,
+        "xǁFileLockǁrelease__mutmut_53": xǁFileLockǁrelease__mutmut_53,
+        "xǁFileLockǁrelease__mutmut_54": xǁFileLockǁrelease__mutmut_54,
+        "xǁFileLockǁrelease__mutmut_55": xǁFileLockǁrelease__mutmut_55,
+        "xǁFileLockǁrelease__mutmut_56": xǁFileLockǁrelease__mutmut_56,
+        "xǁFileLockǁrelease__mutmut_57": xǁFileLockǁrelease__mutmut_57,
+        "xǁFileLockǁrelease__mutmut_58": xǁFileLockǁrelease__mutmut_58,
     }
-    
+
     def release(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFileLockǁrelease__mutmut_orig"), object.__getattribute__(self, "xǁFileLockǁrelease__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFileLockǁrelease__mutmut_orig"),
+            object.__getattribute__(self, "xǁFileLockǁrelease__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     release.__signature__ = _mutmut_signature(xǁFileLockǁrelease__mutmut_orig)
-    xǁFileLockǁrelease__mutmut_orig.__name__ = 'xǁFileLockǁrelease'
+    xǁFileLockǁrelease__mutmut_orig.__name__ = "xǁFileLockǁrelease"
 
     def xǁFileLockǁ_check_stale_lock__mutmut_orig(self) -> bool:  # noqa: C901
         """Check if lock file is stale and remove if so.
@@ -18486,7 +18525,10 @@ class FileLock:
                 elif isinstance(lock_info, int):
                     lock_pid = lock_info
                 else:
-                    log.debug("Invalid lock file content", path=str(self.path), )
+                    log.debug(
+                        "Invalid lock file content",
+                        path=str(self.path),
+                    )
                     return False
             except (ValueError, Exception):
                 if content.isdigit():
@@ -19976,7 +20018,10 @@ class FileLock:
                 if content.isdigit():
                     lock_pid = int(content)
                 else:
-                    log.debug("Invalid lock file content", path=str(self.path), )
+                    log.debug(
+                        "Invalid lock file content",
+                        path=str(self.path),
+                    )
                     return False
 
             if lock_pid is None:
@@ -21146,7 +21191,9 @@ class FileLock:
                     return False
 
             if lock_pid is None:
-                log.debug("No PID in lock file", )
+                log.debug(
+                    "No PID in lock file",
+                )
                 return False
 
             # Validate process with psutil for robust PID recycling protection
@@ -23705,7 +23752,7 @@ class FileLock:
                         path=str(self.path),
                         lock_pid=lock_pid,
                         lock_start=lock_start_time,
-                        )
+                    )
                     try:
                         self.path.unlink()
                         return True
@@ -25204,7 +25251,10 @@ class FileLock:
 
             except psutil.NoSuchProcess:
                 # Process doesn't exist - lock is stale
-                log.warning("Removing stale lock - process not found", path=str(self.path), )
+                log.warning(
+                    "Removing stale lock - process not found",
+                    path=str(self.path),
+                )
                 try:
                     self.path.unlink()
                     return True
@@ -25310,7 +25360,9 @@ class FileLock:
 
             except psutil.NoSuchProcess:
                 # Process doesn't exist - lock is stale
-                log.warning("XXRemoving stale lock - process not foundXX", path=str(self.path), stale_pid=lock_pid)
+                log.warning(
+                    "XXRemoving stale lock - process not foundXX", path=str(self.path), stale_pid=lock_pid
+                )
                 try:
                     self.path.unlink()
                     return True
@@ -26706,7 +26758,10 @@ class FileLock:
             # Generic catch intentional: Safety net for security-critical lock validation.
             # Catches any unexpected errors (psutil errors, filesystem issues, etc.)
             # Fail-safe: return False to assume lock is valid rather than risk corruption.
-            log.debug("Error checking stale lock", path=str(self.path), )
+            log.debug(
+                "Error checking stale lock",
+                path=str(self.path),
+            )
             return False
 
         return False
@@ -27452,123 +27507,129 @@ class FileLock:
             return False
 
         return True
-    
-    xǁFileLockǁ_check_stale_lock__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFileLockǁ_check_stale_lock__mutmut_1': xǁFileLockǁ_check_stale_lock__mutmut_1, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_2': xǁFileLockǁ_check_stale_lock__mutmut_2, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_3': xǁFileLockǁ_check_stale_lock__mutmut_3, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_4': xǁFileLockǁ_check_stale_lock__mutmut_4, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_5': xǁFileLockǁ_check_stale_lock__mutmut_5, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_6': xǁFileLockǁ_check_stale_lock__mutmut_6, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_7': xǁFileLockǁ_check_stale_lock__mutmut_7, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_8': xǁFileLockǁ_check_stale_lock__mutmut_8, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_9': xǁFileLockǁ_check_stale_lock__mutmut_9, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_10': xǁFileLockǁ_check_stale_lock__mutmut_10, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_11': xǁFileLockǁ_check_stale_lock__mutmut_11, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_12': xǁFileLockǁ_check_stale_lock__mutmut_12, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_13': xǁFileLockǁ_check_stale_lock__mutmut_13, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_14': xǁFileLockǁ_check_stale_lock__mutmut_14, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_15': xǁFileLockǁ_check_stale_lock__mutmut_15, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_16': xǁFileLockǁ_check_stale_lock__mutmut_16, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_17': xǁFileLockǁ_check_stale_lock__mutmut_17, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_18': xǁFileLockǁ_check_stale_lock__mutmut_18, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_19': xǁFileLockǁ_check_stale_lock__mutmut_19, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_20': xǁFileLockǁ_check_stale_lock__mutmut_20, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_21': xǁFileLockǁ_check_stale_lock__mutmut_21, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_22': xǁFileLockǁ_check_stale_lock__mutmut_22, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_23': xǁFileLockǁ_check_stale_lock__mutmut_23, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_24': xǁFileLockǁ_check_stale_lock__mutmut_24, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_25': xǁFileLockǁ_check_stale_lock__mutmut_25, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_26': xǁFileLockǁ_check_stale_lock__mutmut_26, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_27': xǁFileLockǁ_check_stale_lock__mutmut_27, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_28': xǁFileLockǁ_check_stale_lock__mutmut_28, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_29': xǁFileLockǁ_check_stale_lock__mutmut_29, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_30': xǁFileLockǁ_check_stale_lock__mutmut_30, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_31': xǁFileLockǁ_check_stale_lock__mutmut_31, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_32': xǁFileLockǁ_check_stale_lock__mutmut_32, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_33': xǁFileLockǁ_check_stale_lock__mutmut_33, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_34': xǁFileLockǁ_check_stale_lock__mutmut_34, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_35': xǁFileLockǁ_check_stale_lock__mutmut_35, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_36': xǁFileLockǁ_check_stale_lock__mutmut_36, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_37': xǁFileLockǁ_check_stale_lock__mutmut_37, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_38': xǁFileLockǁ_check_stale_lock__mutmut_38, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_39': xǁFileLockǁ_check_stale_lock__mutmut_39, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_40': xǁFileLockǁ_check_stale_lock__mutmut_40, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_41': xǁFileLockǁ_check_stale_lock__mutmut_41, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_42': xǁFileLockǁ_check_stale_lock__mutmut_42, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_43': xǁFileLockǁ_check_stale_lock__mutmut_43, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_44': xǁFileLockǁ_check_stale_lock__mutmut_44, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_45': xǁFileLockǁ_check_stale_lock__mutmut_45, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_46': xǁFileLockǁ_check_stale_lock__mutmut_46, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_47': xǁFileLockǁ_check_stale_lock__mutmut_47, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_48': xǁFileLockǁ_check_stale_lock__mutmut_48, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_49': xǁFileLockǁ_check_stale_lock__mutmut_49, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_50': xǁFileLockǁ_check_stale_lock__mutmut_50, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_51': xǁFileLockǁ_check_stale_lock__mutmut_51, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_52': xǁFileLockǁ_check_stale_lock__mutmut_52, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_53': xǁFileLockǁ_check_stale_lock__mutmut_53, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_54': xǁFileLockǁ_check_stale_lock__mutmut_54, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_55': xǁFileLockǁ_check_stale_lock__mutmut_55, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_56': xǁFileLockǁ_check_stale_lock__mutmut_56, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_57': xǁFileLockǁ_check_stale_lock__mutmut_57, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_58': xǁFileLockǁ_check_stale_lock__mutmut_58, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_59': xǁFileLockǁ_check_stale_lock__mutmut_59, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_60': xǁFileLockǁ_check_stale_lock__mutmut_60, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_61': xǁFileLockǁ_check_stale_lock__mutmut_61, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_62': xǁFileLockǁ_check_stale_lock__mutmut_62, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_63': xǁFileLockǁ_check_stale_lock__mutmut_63, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_64': xǁFileLockǁ_check_stale_lock__mutmut_64, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_65': xǁFileLockǁ_check_stale_lock__mutmut_65, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_66': xǁFileLockǁ_check_stale_lock__mutmut_66, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_67': xǁFileLockǁ_check_stale_lock__mutmut_67, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_68': xǁFileLockǁ_check_stale_lock__mutmut_68, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_69': xǁFileLockǁ_check_stale_lock__mutmut_69, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_70': xǁFileLockǁ_check_stale_lock__mutmut_70, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_71': xǁFileLockǁ_check_stale_lock__mutmut_71, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_72': xǁFileLockǁ_check_stale_lock__mutmut_72, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_73': xǁFileLockǁ_check_stale_lock__mutmut_73, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_74': xǁFileLockǁ_check_stale_lock__mutmut_74, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_75': xǁFileLockǁ_check_stale_lock__mutmut_75, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_76': xǁFileLockǁ_check_stale_lock__mutmut_76, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_77': xǁFileLockǁ_check_stale_lock__mutmut_77, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_78': xǁFileLockǁ_check_stale_lock__mutmut_78, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_79': xǁFileLockǁ_check_stale_lock__mutmut_79, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_80': xǁFileLockǁ_check_stale_lock__mutmut_80, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_81': xǁFileLockǁ_check_stale_lock__mutmut_81, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_82': xǁFileLockǁ_check_stale_lock__mutmut_82, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_83': xǁFileLockǁ_check_stale_lock__mutmut_83, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_84': xǁFileLockǁ_check_stale_lock__mutmut_84, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_85': xǁFileLockǁ_check_stale_lock__mutmut_85, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_86': xǁFileLockǁ_check_stale_lock__mutmut_86, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_87': xǁFileLockǁ_check_stale_lock__mutmut_87, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_88': xǁFileLockǁ_check_stale_lock__mutmut_88, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_89': xǁFileLockǁ_check_stale_lock__mutmut_89, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_90': xǁFileLockǁ_check_stale_lock__mutmut_90, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_91': xǁFileLockǁ_check_stale_lock__mutmut_91, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_92': xǁFileLockǁ_check_stale_lock__mutmut_92, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_93': xǁFileLockǁ_check_stale_lock__mutmut_93, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_94': xǁFileLockǁ_check_stale_lock__mutmut_94, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_95': xǁFileLockǁ_check_stale_lock__mutmut_95, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_96': xǁFileLockǁ_check_stale_lock__mutmut_96, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_97': xǁFileLockǁ_check_stale_lock__mutmut_97, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_98': xǁFileLockǁ_check_stale_lock__mutmut_98, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_99': xǁFileLockǁ_check_stale_lock__mutmut_99, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_100': xǁFileLockǁ_check_stale_lock__mutmut_100, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_101': xǁFileLockǁ_check_stale_lock__mutmut_101, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_102': xǁFileLockǁ_check_stale_lock__mutmut_102, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_103': xǁFileLockǁ_check_stale_lock__mutmut_103, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_104': xǁFileLockǁ_check_stale_lock__mutmut_104, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_105': xǁFileLockǁ_check_stale_lock__mutmut_105, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_106': xǁFileLockǁ_check_stale_lock__mutmut_106, 
-        'xǁFileLockǁ_check_stale_lock__mutmut_107': xǁFileLockǁ_check_stale_lock__mutmut_107
+
+    xǁFileLockǁ_check_stale_lock__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFileLockǁ_check_stale_lock__mutmut_1": xǁFileLockǁ_check_stale_lock__mutmut_1,
+        "xǁFileLockǁ_check_stale_lock__mutmut_2": xǁFileLockǁ_check_stale_lock__mutmut_2,
+        "xǁFileLockǁ_check_stale_lock__mutmut_3": xǁFileLockǁ_check_stale_lock__mutmut_3,
+        "xǁFileLockǁ_check_stale_lock__mutmut_4": xǁFileLockǁ_check_stale_lock__mutmut_4,
+        "xǁFileLockǁ_check_stale_lock__mutmut_5": xǁFileLockǁ_check_stale_lock__mutmut_5,
+        "xǁFileLockǁ_check_stale_lock__mutmut_6": xǁFileLockǁ_check_stale_lock__mutmut_6,
+        "xǁFileLockǁ_check_stale_lock__mutmut_7": xǁFileLockǁ_check_stale_lock__mutmut_7,
+        "xǁFileLockǁ_check_stale_lock__mutmut_8": xǁFileLockǁ_check_stale_lock__mutmut_8,
+        "xǁFileLockǁ_check_stale_lock__mutmut_9": xǁFileLockǁ_check_stale_lock__mutmut_9,
+        "xǁFileLockǁ_check_stale_lock__mutmut_10": xǁFileLockǁ_check_stale_lock__mutmut_10,
+        "xǁFileLockǁ_check_stale_lock__mutmut_11": xǁFileLockǁ_check_stale_lock__mutmut_11,
+        "xǁFileLockǁ_check_stale_lock__mutmut_12": xǁFileLockǁ_check_stale_lock__mutmut_12,
+        "xǁFileLockǁ_check_stale_lock__mutmut_13": xǁFileLockǁ_check_stale_lock__mutmut_13,
+        "xǁFileLockǁ_check_stale_lock__mutmut_14": xǁFileLockǁ_check_stale_lock__mutmut_14,
+        "xǁFileLockǁ_check_stale_lock__mutmut_15": xǁFileLockǁ_check_stale_lock__mutmut_15,
+        "xǁFileLockǁ_check_stale_lock__mutmut_16": xǁFileLockǁ_check_stale_lock__mutmut_16,
+        "xǁFileLockǁ_check_stale_lock__mutmut_17": xǁFileLockǁ_check_stale_lock__mutmut_17,
+        "xǁFileLockǁ_check_stale_lock__mutmut_18": xǁFileLockǁ_check_stale_lock__mutmut_18,
+        "xǁFileLockǁ_check_stale_lock__mutmut_19": xǁFileLockǁ_check_stale_lock__mutmut_19,
+        "xǁFileLockǁ_check_stale_lock__mutmut_20": xǁFileLockǁ_check_stale_lock__mutmut_20,
+        "xǁFileLockǁ_check_stale_lock__mutmut_21": xǁFileLockǁ_check_stale_lock__mutmut_21,
+        "xǁFileLockǁ_check_stale_lock__mutmut_22": xǁFileLockǁ_check_stale_lock__mutmut_22,
+        "xǁFileLockǁ_check_stale_lock__mutmut_23": xǁFileLockǁ_check_stale_lock__mutmut_23,
+        "xǁFileLockǁ_check_stale_lock__mutmut_24": xǁFileLockǁ_check_stale_lock__mutmut_24,
+        "xǁFileLockǁ_check_stale_lock__mutmut_25": xǁFileLockǁ_check_stale_lock__mutmut_25,
+        "xǁFileLockǁ_check_stale_lock__mutmut_26": xǁFileLockǁ_check_stale_lock__mutmut_26,
+        "xǁFileLockǁ_check_stale_lock__mutmut_27": xǁFileLockǁ_check_stale_lock__mutmut_27,
+        "xǁFileLockǁ_check_stale_lock__mutmut_28": xǁFileLockǁ_check_stale_lock__mutmut_28,
+        "xǁFileLockǁ_check_stale_lock__mutmut_29": xǁFileLockǁ_check_stale_lock__mutmut_29,
+        "xǁFileLockǁ_check_stale_lock__mutmut_30": xǁFileLockǁ_check_stale_lock__mutmut_30,
+        "xǁFileLockǁ_check_stale_lock__mutmut_31": xǁFileLockǁ_check_stale_lock__mutmut_31,
+        "xǁFileLockǁ_check_stale_lock__mutmut_32": xǁFileLockǁ_check_stale_lock__mutmut_32,
+        "xǁFileLockǁ_check_stale_lock__mutmut_33": xǁFileLockǁ_check_stale_lock__mutmut_33,
+        "xǁFileLockǁ_check_stale_lock__mutmut_34": xǁFileLockǁ_check_stale_lock__mutmut_34,
+        "xǁFileLockǁ_check_stale_lock__mutmut_35": xǁFileLockǁ_check_stale_lock__mutmut_35,
+        "xǁFileLockǁ_check_stale_lock__mutmut_36": xǁFileLockǁ_check_stale_lock__mutmut_36,
+        "xǁFileLockǁ_check_stale_lock__mutmut_37": xǁFileLockǁ_check_stale_lock__mutmut_37,
+        "xǁFileLockǁ_check_stale_lock__mutmut_38": xǁFileLockǁ_check_stale_lock__mutmut_38,
+        "xǁFileLockǁ_check_stale_lock__mutmut_39": xǁFileLockǁ_check_stale_lock__mutmut_39,
+        "xǁFileLockǁ_check_stale_lock__mutmut_40": xǁFileLockǁ_check_stale_lock__mutmut_40,
+        "xǁFileLockǁ_check_stale_lock__mutmut_41": xǁFileLockǁ_check_stale_lock__mutmut_41,
+        "xǁFileLockǁ_check_stale_lock__mutmut_42": xǁFileLockǁ_check_stale_lock__mutmut_42,
+        "xǁFileLockǁ_check_stale_lock__mutmut_43": xǁFileLockǁ_check_stale_lock__mutmut_43,
+        "xǁFileLockǁ_check_stale_lock__mutmut_44": xǁFileLockǁ_check_stale_lock__mutmut_44,
+        "xǁFileLockǁ_check_stale_lock__mutmut_45": xǁFileLockǁ_check_stale_lock__mutmut_45,
+        "xǁFileLockǁ_check_stale_lock__mutmut_46": xǁFileLockǁ_check_stale_lock__mutmut_46,
+        "xǁFileLockǁ_check_stale_lock__mutmut_47": xǁFileLockǁ_check_stale_lock__mutmut_47,
+        "xǁFileLockǁ_check_stale_lock__mutmut_48": xǁFileLockǁ_check_stale_lock__mutmut_48,
+        "xǁFileLockǁ_check_stale_lock__mutmut_49": xǁFileLockǁ_check_stale_lock__mutmut_49,
+        "xǁFileLockǁ_check_stale_lock__mutmut_50": xǁFileLockǁ_check_stale_lock__mutmut_50,
+        "xǁFileLockǁ_check_stale_lock__mutmut_51": xǁFileLockǁ_check_stale_lock__mutmut_51,
+        "xǁFileLockǁ_check_stale_lock__mutmut_52": xǁFileLockǁ_check_stale_lock__mutmut_52,
+        "xǁFileLockǁ_check_stale_lock__mutmut_53": xǁFileLockǁ_check_stale_lock__mutmut_53,
+        "xǁFileLockǁ_check_stale_lock__mutmut_54": xǁFileLockǁ_check_stale_lock__mutmut_54,
+        "xǁFileLockǁ_check_stale_lock__mutmut_55": xǁFileLockǁ_check_stale_lock__mutmut_55,
+        "xǁFileLockǁ_check_stale_lock__mutmut_56": xǁFileLockǁ_check_stale_lock__mutmut_56,
+        "xǁFileLockǁ_check_stale_lock__mutmut_57": xǁFileLockǁ_check_stale_lock__mutmut_57,
+        "xǁFileLockǁ_check_stale_lock__mutmut_58": xǁFileLockǁ_check_stale_lock__mutmut_58,
+        "xǁFileLockǁ_check_stale_lock__mutmut_59": xǁFileLockǁ_check_stale_lock__mutmut_59,
+        "xǁFileLockǁ_check_stale_lock__mutmut_60": xǁFileLockǁ_check_stale_lock__mutmut_60,
+        "xǁFileLockǁ_check_stale_lock__mutmut_61": xǁFileLockǁ_check_stale_lock__mutmut_61,
+        "xǁFileLockǁ_check_stale_lock__mutmut_62": xǁFileLockǁ_check_stale_lock__mutmut_62,
+        "xǁFileLockǁ_check_stale_lock__mutmut_63": xǁFileLockǁ_check_stale_lock__mutmut_63,
+        "xǁFileLockǁ_check_stale_lock__mutmut_64": xǁFileLockǁ_check_stale_lock__mutmut_64,
+        "xǁFileLockǁ_check_stale_lock__mutmut_65": xǁFileLockǁ_check_stale_lock__mutmut_65,
+        "xǁFileLockǁ_check_stale_lock__mutmut_66": xǁFileLockǁ_check_stale_lock__mutmut_66,
+        "xǁFileLockǁ_check_stale_lock__mutmut_67": xǁFileLockǁ_check_stale_lock__mutmut_67,
+        "xǁFileLockǁ_check_stale_lock__mutmut_68": xǁFileLockǁ_check_stale_lock__mutmut_68,
+        "xǁFileLockǁ_check_stale_lock__mutmut_69": xǁFileLockǁ_check_stale_lock__mutmut_69,
+        "xǁFileLockǁ_check_stale_lock__mutmut_70": xǁFileLockǁ_check_stale_lock__mutmut_70,
+        "xǁFileLockǁ_check_stale_lock__mutmut_71": xǁFileLockǁ_check_stale_lock__mutmut_71,
+        "xǁFileLockǁ_check_stale_lock__mutmut_72": xǁFileLockǁ_check_stale_lock__mutmut_72,
+        "xǁFileLockǁ_check_stale_lock__mutmut_73": xǁFileLockǁ_check_stale_lock__mutmut_73,
+        "xǁFileLockǁ_check_stale_lock__mutmut_74": xǁFileLockǁ_check_stale_lock__mutmut_74,
+        "xǁFileLockǁ_check_stale_lock__mutmut_75": xǁFileLockǁ_check_stale_lock__mutmut_75,
+        "xǁFileLockǁ_check_stale_lock__mutmut_76": xǁFileLockǁ_check_stale_lock__mutmut_76,
+        "xǁFileLockǁ_check_stale_lock__mutmut_77": xǁFileLockǁ_check_stale_lock__mutmut_77,
+        "xǁFileLockǁ_check_stale_lock__mutmut_78": xǁFileLockǁ_check_stale_lock__mutmut_78,
+        "xǁFileLockǁ_check_stale_lock__mutmut_79": xǁFileLockǁ_check_stale_lock__mutmut_79,
+        "xǁFileLockǁ_check_stale_lock__mutmut_80": xǁFileLockǁ_check_stale_lock__mutmut_80,
+        "xǁFileLockǁ_check_stale_lock__mutmut_81": xǁFileLockǁ_check_stale_lock__mutmut_81,
+        "xǁFileLockǁ_check_stale_lock__mutmut_82": xǁFileLockǁ_check_stale_lock__mutmut_82,
+        "xǁFileLockǁ_check_stale_lock__mutmut_83": xǁFileLockǁ_check_stale_lock__mutmut_83,
+        "xǁFileLockǁ_check_stale_lock__mutmut_84": xǁFileLockǁ_check_stale_lock__mutmut_84,
+        "xǁFileLockǁ_check_stale_lock__mutmut_85": xǁFileLockǁ_check_stale_lock__mutmut_85,
+        "xǁFileLockǁ_check_stale_lock__mutmut_86": xǁFileLockǁ_check_stale_lock__mutmut_86,
+        "xǁFileLockǁ_check_stale_lock__mutmut_87": xǁFileLockǁ_check_stale_lock__mutmut_87,
+        "xǁFileLockǁ_check_stale_lock__mutmut_88": xǁFileLockǁ_check_stale_lock__mutmut_88,
+        "xǁFileLockǁ_check_stale_lock__mutmut_89": xǁFileLockǁ_check_stale_lock__mutmut_89,
+        "xǁFileLockǁ_check_stale_lock__mutmut_90": xǁFileLockǁ_check_stale_lock__mutmut_90,
+        "xǁFileLockǁ_check_stale_lock__mutmut_91": xǁFileLockǁ_check_stale_lock__mutmut_91,
+        "xǁFileLockǁ_check_stale_lock__mutmut_92": xǁFileLockǁ_check_stale_lock__mutmut_92,
+        "xǁFileLockǁ_check_stale_lock__mutmut_93": xǁFileLockǁ_check_stale_lock__mutmut_93,
+        "xǁFileLockǁ_check_stale_lock__mutmut_94": xǁFileLockǁ_check_stale_lock__mutmut_94,
+        "xǁFileLockǁ_check_stale_lock__mutmut_95": xǁFileLockǁ_check_stale_lock__mutmut_95,
+        "xǁFileLockǁ_check_stale_lock__mutmut_96": xǁFileLockǁ_check_stale_lock__mutmut_96,
+        "xǁFileLockǁ_check_stale_lock__mutmut_97": xǁFileLockǁ_check_stale_lock__mutmut_97,
+        "xǁFileLockǁ_check_stale_lock__mutmut_98": xǁFileLockǁ_check_stale_lock__mutmut_98,
+        "xǁFileLockǁ_check_stale_lock__mutmut_99": xǁFileLockǁ_check_stale_lock__mutmut_99,
+        "xǁFileLockǁ_check_stale_lock__mutmut_100": xǁFileLockǁ_check_stale_lock__mutmut_100,
+        "xǁFileLockǁ_check_stale_lock__mutmut_101": xǁFileLockǁ_check_stale_lock__mutmut_101,
+        "xǁFileLockǁ_check_stale_lock__mutmut_102": xǁFileLockǁ_check_stale_lock__mutmut_102,
+        "xǁFileLockǁ_check_stale_lock__mutmut_103": xǁFileLockǁ_check_stale_lock__mutmut_103,
+        "xǁFileLockǁ_check_stale_lock__mutmut_104": xǁFileLockǁ_check_stale_lock__mutmut_104,
+        "xǁFileLockǁ_check_stale_lock__mutmut_105": xǁFileLockǁ_check_stale_lock__mutmut_105,
+        "xǁFileLockǁ_check_stale_lock__mutmut_106": xǁFileLockǁ_check_stale_lock__mutmut_106,
+        "xǁFileLockǁ_check_stale_lock__mutmut_107": xǁFileLockǁ_check_stale_lock__mutmut_107,
     }
-    
+
     def _check_stale_lock(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFileLockǁ_check_stale_lock__mutmut_orig"), object.__getattribute__(self, "xǁFileLockǁ_check_stale_lock__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFileLockǁ_check_stale_lock__mutmut_orig"),
+            object.__getattribute__(self, "xǁFileLockǁ_check_stale_lock__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _check_stale_lock.__signature__ = _mutmut_signature(xǁFileLockǁ_check_stale_lock__mutmut_orig)
-    xǁFileLockǁ_check_stale_lock__mutmut_orig.__name__ = 'xǁFileLockǁ_check_stale_lock'
+    xǁFileLockǁ_check_stale_lock__mutmut_orig.__name__ = "xǁFileLockǁ_check_stale_lock"
 
     def __enter__(self) -> FileLock:
         """Context manager entry."""

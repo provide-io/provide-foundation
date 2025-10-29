@@ -35,23 +35,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -393,7 +396,9 @@ class OTLPLogClient:
             timeout: Request timeout in seconds
             use_circuit_breaker: Enable circuit breaker pattern
         """
-        self.endpoint = build_otlp_endpoint(endpoint, )
+        self.endpoint = build_otlp_endpoint(
+            endpoint,
+        )
         self.headers = headers or {}
         self.service_name = service_name
         self.service_version = service_version
@@ -723,35 +728,41 @@ class OTLPLogClient:
 
         # Check if OpenTelemetry SDK is available
         self._otlp_available = None
-    
-    xǁOTLPLogClientǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPLogClientǁ__init____mutmut_1': xǁOTLPLogClientǁ__init____mutmut_1, 
-        'xǁOTLPLogClientǁ__init____mutmut_2': xǁOTLPLogClientǁ__init____mutmut_2, 
-        'xǁOTLPLogClientǁ__init____mutmut_3': xǁOTLPLogClientǁ__init____mutmut_3, 
-        'xǁOTLPLogClientǁ__init____mutmut_4': xǁOTLPLogClientǁ__init____mutmut_4, 
-        'xǁOTLPLogClientǁ__init____mutmut_5': xǁOTLPLogClientǁ__init____mutmut_5, 
-        'xǁOTLPLogClientǁ__init____mutmut_6': xǁOTLPLogClientǁ__init____mutmut_6, 
-        'xǁOTLPLogClientǁ__init____mutmut_7': xǁOTLPLogClientǁ__init____mutmut_7, 
-        'xǁOTLPLogClientǁ__init____mutmut_8': xǁOTLPLogClientǁ__init____mutmut_8, 
-        'xǁOTLPLogClientǁ__init____mutmut_9': xǁOTLPLogClientǁ__init____mutmut_9, 
-        'xǁOTLPLogClientǁ__init____mutmut_10': xǁOTLPLogClientǁ__init____mutmut_10, 
-        'xǁOTLPLogClientǁ__init____mutmut_11': xǁOTLPLogClientǁ__init____mutmut_11, 
-        'xǁOTLPLogClientǁ__init____mutmut_12': xǁOTLPLogClientǁ__init____mutmut_12, 
-        'xǁOTLPLogClientǁ__init____mutmut_13': xǁOTLPLogClientǁ__init____mutmut_13, 
-        'xǁOTLPLogClientǁ__init____mutmut_14': xǁOTLPLogClientǁ__init____mutmut_14, 
-        'xǁOTLPLogClientǁ__init____mutmut_15': xǁOTLPLogClientǁ__init____mutmut_15, 
-        'xǁOTLPLogClientǁ__init____mutmut_16': xǁOTLPLogClientǁ__init____mutmut_16, 
-        'xǁOTLPLogClientǁ__init____mutmut_17': xǁOTLPLogClientǁ__init____mutmut_17, 
-        'xǁOTLPLogClientǁ__init____mutmut_18': xǁOTLPLogClientǁ__init____mutmut_18, 
-        'xǁOTLPLogClientǁ__init____mutmut_19': xǁOTLPLogClientǁ__init____mutmut_19
+
+    xǁOTLPLogClientǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPLogClientǁ__init____mutmut_1": xǁOTLPLogClientǁ__init____mutmut_1,
+        "xǁOTLPLogClientǁ__init____mutmut_2": xǁOTLPLogClientǁ__init____mutmut_2,
+        "xǁOTLPLogClientǁ__init____mutmut_3": xǁOTLPLogClientǁ__init____mutmut_3,
+        "xǁOTLPLogClientǁ__init____mutmut_4": xǁOTLPLogClientǁ__init____mutmut_4,
+        "xǁOTLPLogClientǁ__init____mutmut_5": xǁOTLPLogClientǁ__init____mutmut_5,
+        "xǁOTLPLogClientǁ__init____mutmut_6": xǁOTLPLogClientǁ__init____mutmut_6,
+        "xǁOTLPLogClientǁ__init____mutmut_7": xǁOTLPLogClientǁ__init____mutmut_7,
+        "xǁOTLPLogClientǁ__init____mutmut_8": xǁOTLPLogClientǁ__init____mutmut_8,
+        "xǁOTLPLogClientǁ__init____mutmut_9": xǁOTLPLogClientǁ__init____mutmut_9,
+        "xǁOTLPLogClientǁ__init____mutmut_10": xǁOTLPLogClientǁ__init____mutmut_10,
+        "xǁOTLPLogClientǁ__init____mutmut_11": xǁOTLPLogClientǁ__init____mutmut_11,
+        "xǁOTLPLogClientǁ__init____mutmut_12": xǁOTLPLogClientǁ__init____mutmut_12,
+        "xǁOTLPLogClientǁ__init____mutmut_13": xǁOTLPLogClientǁ__init____mutmut_13,
+        "xǁOTLPLogClientǁ__init____mutmut_14": xǁOTLPLogClientǁ__init____mutmut_14,
+        "xǁOTLPLogClientǁ__init____mutmut_15": xǁOTLPLogClientǁ__init____mutmut_15,
+        "xǁOTLPLogClientǁ__init____mutmut_16": xǁOTLPLogClientǁ__init____mutmut_16,
+        "xǁOTLPLogClientǁ__init____mutmut_17": xǁOTLPLogClientǁ__init____mutmut_17,
+        "xǁOTLPLogClientǁ__init____mutmut_18": xǁOTLPLogClientǁ__init____mutmut_18,
+        "xǁOTLPLogClientǁ__init____mutmut_19": xǁOTLPLogClientǁ__init____mutmut_19,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPLogClientǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁOTLPLogClientǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPLogClientǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPLogClientǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁOTLPLogClientǁ__init____mutmut_orig)
-    xǁOTLPLogClientǁ__init____mutmut_orig.__name__ = 'xǁOTLPLogClientǁ__init__'
+    xǁOTLPLogClientǁ__init____mutmut_orig.__name__ = "xǁOTLPLogClientǁ__init__"
 
     def xǁOTLPLogClientǁ_check_otlp_availability__mutmut_orig(self) -> bool:
         """Check if OpenTelemetry SDK is available."""
@@ -779,18 +790,26 @@ class OTLPLogClient:
             return True
         except ImportError:
             return True
-    
-    xǁOTLPLogClientǁ_check_otlp_availability__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPLogClientǁ_check_otlp_availability__mutmut_1': xǁOTLPLogClientǁ_check_otlp_availability__mutmut_1, 
-        'xǁOTLPLogClientǁ_check_otlp_availability__mutmut_2': xǁOTLPLogClientǁ_check_otlp_availability__mutmut_2
+
+    xǁOTLPLogClientǁ_check_otlp_availability__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPLogClientǁ_check_otlp_availability__mutmut_1": xǁOTLPLogClientǁ_check_otlp_availability__mutmut_1,
+        "xǁOTLPLogClientǁ_check_otlp_availability__mutmut_2": xǁOTLPLogClientǁ_check_otlp_availability__mutmut_2,
     }
-    
+
     def _check_otlp_availability(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPLogClientǁ_check_otlp_availability__mutmut_orig"), object.__getattribute__(self, "xǁOTLPLogClientǁ_check_otlp_availability__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _check_otlp_availability.__signature__ = _mutmut_signature(xǁOTLPLogClientǁ_check_otlp_availability__mutmut_orig)
-    xǁOTLPLogClientǁ_check_otlp_availability__mutmut_orig.__name__ = 'xǁOTLPLogClientǁ_check_otlp_availability'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPLogClientǁ_check_otlp_availability__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPLogClientǁ_check_otlp_availability__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _check_otlp_availability.__signature__ = _mutmut_signature(
+        xǁOTLPLogClientǁ_check_otlp_availability__mutmut_orig
+    )
+    xǁOTLPLogClientǁ_check_otlp_availability__mutmut_orig.__name__ = "xǁOTLPLogClientǁ_check_otlp_availability"
 
     @classmethod
     def from_config(
@@ -2485,9 +2504,7 @@ class OTLPLogClient:
             severity_number = map_level_to_severity(level)
 
             # Emit log record
-            logger.emit(
-                None
-            )
+            logger.emit(None)
 
             # Force flush to ensure delivery
             provider.force_flush()
@@ -3680,49 +3697,55 @@ class OTLPLogClient:
             if self.use_circuit_breaker:
                 breaker.record_failure()
             return True
-    
-    xǁOTLPLogClientǁsend_log__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPLogClientǁsend_log__mutmut_1': xǁOTLPLogClientǁsend_log__mutmut_1, 
-        'xǁOTLPLogClientǁsend_log__mutmut_2': xǁOTLPLogClientǁsend_log__mutmut_2, 
-        'xǁOTLPLogClientǁsend_log__mutmut_3': xǁOTLPLogClientǁsend_log__mutmut_3, 
-        'xǁOTLPLogClientǁsend_log__mutmut_4': xǁOTLPLogClientǁsend_log__mutmut_4, 
-        'xǁOTLPLogClientǁsend_log__mutmut_5': xǁOTLPLogClientǁsend_log__mutmut_5, 
-        'xǁOTLPLogClientǁsend_log__mutmut_6': xǁOTLPLogClientǁsend_log__mutmut_6, 
-        'xǁOTLPLogClientǁsend_log__mutmut_7': xǁOTLPLogClientǁsend_log__mutmut_7, 
-        'xǁOTLPLogClientǁsend_log__mutmut_8': xǁOTLPLogClientǁsend_log__mutmut_8, 
-        'xǁOTLPLogClientǁsend_log__mutmut_9': xǁOTLPLogClientǁsend_log__mutmut_9, 
-        'xǁOTLPLogClientǁsend_log__mutmut_10': xǁOTLPLogClientǁsend_log__mutmut_10, 
-        'xǁOTLPLogClientǁsend_log__mutmut_11': xǁOTLPLogClientǁsend_log__mutmut_11, 
-        'xǁOTLPLogClientǁsend_log__mutmut_12': xǁOTLPLogClientǁsend_log__mutmut_12, 
-        'xǁOTLPLogClientǁsend_log__mutmut_13': xǁOTLPLogClientǁsend_log__mutmut_13, 
-        'xǁOTLPLogClientǁsend_log__mutmut_14': xǁOTLPLogClientǁsend_log__mutmut_14, 
-        'xǁOTLPLogClientǁsend_log__mutmut_15': xǁOTLPLogClientǁsend_log__mutmut_15, 
-        'xǁOTLPLogClientǁsend_log__mutmut_16': xǁOTLPLogClientǁsend_log__mutmut_16, 
-        'xǁOTLPLogClientǁsend_log__mutmut_17': xǁOTLPLogClientǁsend_log__mutmut_17, 
-        'xǁOTLPLogClientǁsend_log__mutmut_18': xǁOTLPLogClientǁsend_log__mutmut_18, 
-        'xǁOTLPLogClientǁsend_log__mutmut_19': xǁOTLPLogClientǁsend_log__mutmut_19, 
-        'xǁOTLPLogClientǁsend_log__mutmut_20': xǁOTLPLogClientǁsend_log__mutmut_20, 
-        'xǁOTLPLogClientǁsend_log__mutmut_21': xǁOTLPLogClientǁsend_log__mutmut_21, 
-        'xǁOTLPLogClientǁsend_log__mutmut_22': xǁOTLPLogClientǁsend_log__mutmut_22, 
-        'xǁOTLPLogClientǁsend_log__mutmut_23': xǁOTLPLogClientǁsend_log__mutmut_23, 
-        'xǁOTLPLogClientǁsend_log__mutmut_24': xǁOTLPLogClientǁsend_log__mutmut_24, 
-        'xǁOTLPLogClientǁsend_log__mutmut_25': xǁOTLPLogClientǁsend_log__mutmut_25, 
-        'xǁOTLPLogClientǁsend_log__mutmut_26': xǁOTLPLogClientǁsend_log__mutmut_26, 
-        'xǁOTLPLogClientǁsend_log__mutmut_27': xǁOTLPLogClientǁsend_log__mutmut_27, 
-        'xǁOTLPLogClientǁsend_log__mutmut_28': xǁOTLPLogClientǁsend_log__mutmut_28, 
-        'xǁOTLPLogClientǁsend_log__mutmut_29': xǁOTLPLogClientǁsend_log__mutmut_29, 
-        'xǁOTLPLogClientǁsend_log__mutmut_30': xǁOTLPLogClientǁsend_log__mutmut_30, 
-        'xǁOTLPLogClientǁsend_log__mutmut_31': xǁOTLPLogClientǁsend_log__mutmut_31, 
-        'xǁOTLPLogClientǁsend_log__mutmut_32': xǁOTLPLogClientǁsend_log__mutmut_32, 
-        'xǁOTLPLogClientǁsend_log__mutmut_33': xǁOTLPLogClientǁsend_log__mutmut_33
+
+    xǁOTLPLogClientǁsend_log__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPLogClientǁsend_log__mutmut_1": xǁOTLPLogClientǁsend_log__mutmut_1,
+        "xǁOTLPLogClientǁsend_log__mutmut_2": xǁOTLPLogClientǁsend_log__mutmut_2,
+        "xǁOTLPLogClientǁsend_log__mutmut_3": xǁOTLPLogClientǁsend_log__mutmut_3,
+        "xǁOTLPLogClientǁsend_log__mutmut_4": xǁOTLPLogClientǁsend_log__mutmut_4,
+        "xǁOTLPLogClientǁsend_log__mutmut_5": xǁOTLPLogClientǁsend_log__mutmut_5,
+        "xǁOTLPLogClientǁsend_log__mutmut_6": xǁOTLPLogClientǁsend_log__mutmut_6,
+        "xǁOTLPLogClientǁsend_log__mutmut_7": xǁOTLPLogClientǁsend_log__mutmut_7,
+        "xǁOTLPLogClientǁsend_log__mutmut_8": xǁOTLPLogClientǁsend_log__mutmut_8,
+        "xǁOTLPLogClientǁsend_log__mutmut_9": xǁOTLPLogClientǁsend_log__mutmut_9,
+        "xǁOTLPLogClientǁsend_log__mutmut_10": xǁOTLPLogClientǁsend_log__mutmut_10,
+        "xǁOTLPLogClientǁsend_log__mutmut_11": xǁOTLPLogClientǁsend_log__mutmut_11,
+        "xǁOTLPLogClientǁsend_log__mutmut_12": xǁOTLPLogClientǁsend_log__mutmut_12,
+        "xǁOTLPLogClientǁsend_log__mutmut_13": xǁOTLPLogClientǁsend_log__mutmut_13,
+        "xǁOTLPLogClientǁsend_log__mutmut_14": xǁOTLPLogClientǁsend_log__mutmut_14,
+        "xǁOTLPLogClientǁsend_log__mutmut_15": xǁOTLPLogClientǁsend_log__mutmut_15,
+        "xǁOTLPLogClientǁsend_log__mutmut_16": xǁOTLPLogClientǁsend_log__mutmut_16,
+        "xǁOTLPLogClientǁsend_log__mutmut_17": xǁOTLPLogClientǁsend_log__mutmut_17,
+        "xǁOTLPLogClientǁsend_log__mutmut_18": xǁOTLPLogClientǁsend_log__mutmut_18,
+        "xǁOTLPLogClientǁsend_log__mutmut_19": xǁOTLPLogClientǁsend_log__mutmut_19,
+        "xǁOTLPLogClientǁsend_log__mutmut_20": xǁOTLPLogClientǁsend_log__mutmut_20,
+        "xǁOTLPLogClientǁsend_log__mutmut_21": xǁOTLPLogClientǁsend_log__mutmut_21,
+        "xǁOTLPLogClientǁsend_log__mutmut_22": xǁOTLPLogClientǁsend_log__mutmut_22,
+        "xǁOTLPLogClientǁsend_log__mutmut_23": xǁOTLPLogClientǁsend_log__mutmut_23,
+        "xǁOTLPLogClientǁsend_log__mutmut_24": xǁOTLPLogClientǁsend_log__mutmut_24,
+        "xǁOTLPLogClientǁsend_log__mutmut_25": xǁOTLPLogClientǁsend_log__mutmut_25,
+        "xǁOTLPLogClientǁsend_log__mutmut_26": xǁOTLPLogClientǁsend_log__mutmut_26,
+        "xǁOTLPLogClientǁsend_log__mutmut_27": xǁOTLPLogClientǁsend_log__mutmut_27,
+        "xǁOTLPLogClientǁsend_log__mutmut_28": xǁOTLPLogClientǁsend_log__mutmut_28,
+        "xǁOTLPLogClientǁsend_log__mutmut_29": xǁOTLPLogClientǁsend_log__mutmut_29,
+        "xǁOTLPLogClientǁsend_log__mutmut_30": xǁOTLPLogClientǁsend_log__mutmut_30,
+        "xǁOTLPLogClientǁsend_log__mutmut_31": xǁOTLPLogClientǁsend_log__mutmut_31,
+        "xǁOTLPLogClientǁsend_log__mutmut_32": xǁOTLPLogClientǁsend_log__mutmut_32,
+        "xǁOTLPLogClientǁsend_log__mutmut_33": xǁOTLPLogClientǁsend_log__mutmut_33,
     }
-    
+
     def send_log(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPLogClientǁsend_log__mutmut_orig"), object.__getattribute__(self, "xǁOTLPLogClientǁsend_log__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPLogClientǁsend_log__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPLogClientǁsend_log__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     send_log.__signature__ = _mutmut_signature(xǁOTLPLogClientǁsend_log__mutmut_orig)
-    xǁOTLPLogClientǁsend_log__mutmut_orig.__name__ = 'xǁOTLPLogClientǁsend_log'
+    xǁOTLPLogClientǁsend_log__mutmut_orig.__name__ = "xǁOTLPLogClientǁsend_log"
 
     def xǁOTLPLogClientǁcreate_logger_provider__mutmut_orig(self) -> Any | None:
         """Create persistent LoggerProvider for continuous logging.
@@ -3957,21 +3980,29 @@ class OTLPLogClient:
             if self.use_circuit_breaker:
                 breaker.record_failure()
             return None
-    
-    xǁOTLPLogClientǁcreate_logger_provider__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPLogClientǁcreate_logger_provider__mutmut_1': xǁOTLPLogClientǁcreate_logger_provider__mutmut_1, 
-        'xǁOTLPLogClientǁcreate_logger_provider__mutmut_2': xǁOTLPLogClientǁcreate_logger_provider__mutmut_2, 
-        'xǁOTLPLogClientǁcreate_logger_provider__mutmut_3': xǁOTLPLogClientǁcreate_logger_provider__mutmut_3, 
-        'xǁOTLPLogClientǁcreate_logger_provider__mutmut_4': xǁOTLPLogClientǁcreate_logger_provider__mutmut_4, 
-        'xǁOTLPLogClientǁcreate_logger_provider__mutmut_5': xǁOTLPLogClientǁcreate_logger_provider__mutmut_5
+
+    xǁOTLPLogClientǁcreate_logger_provider__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPLogClientǁcreate_logger_provider__mutmut_1": xǁOTLPLogClientǁcreate_logger_provider__mutmut_1,
+        "xǁOTLPLogClientǁcreate_logger_provider__mutmut_2": xǁOTLPLogClientǁcreate_logger_provider__mutmut_2,
+        "xǁOTLPLogClientǁcreate_logger_provider__mutmut_3": xǁOTLPLogClientǁcreate_logger_provider__mutmut_3,
+        "xǁOTLPLogClientǁcreate_logger_provider__mutmut_4": xǁOTLPLogClientǁcreate_logger_provider__mutmut_4,
+        "xǁOTLPLogClientǁcreate_logger_provider__mutmut_5": xǁOTLPLogClientǁcreate_logger_provider__mutmut_5,
     }
-    
+
     def create_logger_provider(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPLogClientǁcreate_logger_provider__mutmut_orig"), object.__getattribute__(self, "xǁOTLPLogClientǁcreate_logger_provider__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    create_logger_provider.__signature__ = _mutmut_signature(xǁOTLPLogClientǁcreate_logger_provider__mutmut_orig)
-    xǁOTLPLogClientǁcreate_logger_provider__mutmut_orig.__name__ = 'xǁOTLPLogClientǁcreate_logger_provider'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPLogClientǁcreate_logger_provider__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPLogClientǁcreate_logger_provider__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    create_logger_provider.__signature__ = _mutmut_signature(
+        xǁOTLPLogClientǁcreate_logger_provider__mutmut_orig
+    )
+    xǁOTLPLogClientǁcreate_logger_provider__mutmut_orig.__name__ = "xǁOTLPLogClientǁcreate_logger_provider"
 
     def xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_orig(self) -> Any | None:
         """Internal method to create logger provider."""
@@ -4223,7 +4254,7 @@ class OTLPLogClient:
             resource = create_otlp_resource(
                 service_name=self.service_name,
                 service_version=self.service_version,
-                )
+            )
 
             # Create exporter with headers
             exporter = OTLPLogExporter(
@@ -4468,7 +4499,7 @@ class OTLPLogClient:
             exporter = OTLPLogExporter(
                 endpoint=self.endpoint,
                 headers=self.headers,
-                )
+            )
 
             # Create provider with resource
             provider = LoggerProvider(resource=resource)
@@ -4693,36 +4724,46 @@ class OTLPLogClient:
             return None
         except Exception:
             return None
-    
-    xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_1': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_1, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_2': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_2, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_3': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_3, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_4': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_4, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_5': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_5, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_6': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_6, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_7': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_7, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_8': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_8, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_9': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_9, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_10': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_10, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_11': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_11, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_12': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_12, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_13': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_13, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_14': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_14, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_15': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_15, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_16': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_16, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_17': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_17, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_18': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_18, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_19': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_19, 
-        'xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_20': xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_20
+
+    xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_1": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_1,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_2": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_2,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_3": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_3,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_4": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_4,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_5": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_5,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_6": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_6,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_7": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_7,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_8": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_8,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_9": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_9,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_10": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_10,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_11": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_11,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_12": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_12,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_13": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_13,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_14": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_14,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_15": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_15,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_16": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_16,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_17": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_17,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_18": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_18,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_19": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_19,
+        "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_20": xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_20,
     }
-    
+
     def _create_logger_provider_internal(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_orig"), object.__getattribute__(self, "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _create_logger_provider_internal.__signature__ = _mutmut_signature(xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_orig)
-    xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_orig.__name__ = 'xǁOTLPLogClientǁ_create_logger_provider_internal'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _create_logger_provider_internal.__signature__ = _mutmut_signature(
+        xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_orig
+    )
+    xǁOTLPLogClientǁ_create_logger_provider_internal__mutmut_orig.__name__ = (
+        "xǁOTLPLogClientǁ_create_logger_provider_internal"
+    )
 
     def xǁOTLPLogClientǁis_available__mutmut_orig(self) -> bool:
         """Check if OTLP is available (SDK installed and circuit not open).
@@ -4818,20 +4859,26 @@ class OTLPLogClient:
             return breaker.can_attempt()
 
         return False
-    
-    xǁOTLPLogClientǁis_available__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPLogClientǁis_available__mutmut_1': xǁOTLPLogClientǁis_available__mutmut_1, 
-        'xǁOTLPLogClientǁis_available__mutmut_2': xǁOTLPLogClientǁis_available__mutmut_2, 
-        'xǁOTLPLogClientǁis_available__mutmut_3': xǁOTLPLogClientǁis_available__mutmut_3, 
-        'xǁOTLPLogClientǁis_available__mutmut_4': xǁOTLPLogClientǁis_available__mutmut_4
+
+    xǁOTLPLogClientǁis_available__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPLogClientǁis_available__mutmut_1": xǁOTLPLogClientǁis_available__mutmut_1,
+        "xǁOTLPLogClientǁis_available__mutmut_2": xǁOTLPLogClientǁis_available__mutmut_2,
+        "xǁOTLPLogClientǁis_available__mutmut_3": xǁOTLPLogClientǁis_available__mutmut_3,
+        "xǁOTLPLogClientǁis_available__mutmut_4": xǁOTLPLogClientǁis_available__mutmut_4,
     }
-    
+
     def is_available(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPLogClientǁis_available__mutmut_orig"), object.__getattribute__(self, "xǁOTLPLogClientǁis_available__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPLogClientǁis_available__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPLogClientǁis_available__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_available.__signature__ = _mutmut_signature(xǁOTLPLogClientǁis_available__mutmut_orig)
-    xǁOTLPLogClientǁis_available__mutmut_orig.__name__ = 'xǁOTLPLogClientǁis_available'
+    xǁOTLPLogClientǁis_available__mutmut_orig.__name__ = "xǁOTLPLogClientǁis_available"
 
     def xǁOTLPLogClientǁget_stats__mutmut_orig(self) -> dict[str, Any]:
         """Get client statistics including circuit breaker state.
@@ -5104,27 +5151,33 @@ class OTLPLogClient:
             stats["CIRCUIT_BREAKER"] = breaker.get_stats()
 
         return stats
-    
-    xǁOTLPLogClientǁget_stats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPLogClientǁget_stats__mutmut_1': xǁOTLPLogClientǁget_stats__mutmut_1, 
-        'xǁOTLPLogClientǁget_stats__mutmut_2': xǁOTLPLogClientǁget_stats__mutmut_2, 
-        'xǁOTLPLogClientǁget_stats__mutmut_3': xǁOTLPLogClientǁget_stats__mutmut_3, 
-        'xǁOTLPLogClientǁget_stats__mutmut_4': xǁOTLPLogClientǁget_stats__mutmut_4, 
-        'xǁOTLPLogClientǁget_stats__mutmut_5': xǁOTLPLogClientǁget_stats__mutmut_5, 
-        'xǁOTLPLogClientǁget_stats__mutmut_6': xǁOTLPLogClientǁget_stats__mutmut_6, 
-        'xǁOTLPLogClientǁget_stats__mutmut_7': xǁOTLPLogClientǁget_stats__mutmut_7, 
-        'xǁOTLPLogClientǁget_stats__mutmut_8': xǁOTLPLogClientǁget_stats__mutmut_8, 
-        'xǁOTLPLogClientǁget_stats__mutmut_9': xǁOTLPLogClientǁget_stats__mutmut_9, 
-        'xǁOTLPLogClientǁget_stats__mutmut_10': xǁOTLPLogClientǁget_stats__mutmut_10, 
-        'xǁOTLPLogClientǁget_stats__mutmut_11': xǁOTLPLogClientǁget_stats__mutmut_11
+
+    xǁOTLPLogClientǁget_stats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPLogClientǁget_stats__mutmut_1": xǁOTLPLogClientǁget_stats__mutmut_1,
+        "xǁOTLPLogClientǁget_stats__mutmut_2": xǁOTLPLogClientǁget_stats__mutmut_2,
+        "xǁOTLPLogClientǁget_stats__mutmut_3": xǁOTLPLogClientǁget_stats__mutmut_3,
+        "xǁOTLPLogClientǁget_stats__mutmut_4": xǁOTLPLogClientǁget_stats__mutmut_4,
+        "xǁOTLPLogClientǁget_stats__mutmut_5": xǁOTLPLogClientǁget_stats__mutmut_5,
+        "xǁOTLPLogClientǁget_stats__mutmut_6": xǁOTLPLogClientǁget_stats__mutmut_6,
+        "xǁOTLPLogClientǁget_stats__mutmut_7": xǁOTLPLogClientǁget_stats__mutmut_7,
+        "xǁOTLPLogClientǁget_stats__mutmut_8": xǁOTLPLogClientǁget_stats__mutmut_8,
+        "xǁOTLPLogClientǁget_stats__mutmut_9": xǁOTLPLogClientǁget_stats__mutmut_9,
+        "xǁOTLPLogClientǁget_stats__mutmut_10": xǁOTLPLogClientǁget_stats__mutmut_10,
+        "xǁOTLPLogClientǁget_stats__mutmut_11": xǁOTLPLogClientǁget_stats__mutmut_11,
     }
-    
+
     def get_stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPLogClientǁget_stats__mutmut_orig"), object.__getattribute__(self, "xǁOTLPLogClientǁget_stats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPLogClientǁget_stats__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPLogClientǁget_stats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_stats.__signature__ = _mutmut_signature(xǁOTLPLogClientǁget_stats__mutmut_orig)
-    xǁOTLPLogClientǁget_stats__mutmut_orig.__name__ = 'xǁOTLPLogClientǁget_stats'
+    xǁOTLPLogClientǁget_stats__mutmut_orig.__name__ = "xǁOTLPLogClientǁget_stats"
 
 
 __all__ = [

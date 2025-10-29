@@ -6,9 +6,8 @@ Run with: pytest tests/metrics/test_otel_unit.py -v
 
 from __future__ import annotations
 
-from provide.testkit.mocking import MagicMock, patch
-
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 from provide.foundation.logger.config.telemetry import TelemetryConfig
 

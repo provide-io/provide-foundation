@@ -5,8 +5,8 @@ from __future__ import annotations
 import asyncio
 from datetime import datetime, timedelta
 from pathlib import Path
-from provide.testkit.mocking import Mock
 
+from provide.testkit.mocking import Mock
 import pytest
 
 from provide.foundation.file.operations import (

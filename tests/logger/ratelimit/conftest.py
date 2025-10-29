@@ -7,12 +7,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 import pytest
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+
     from provide.foundation.logger.ratelimit.queue_limiter import QueuedRateLimiter
 
 

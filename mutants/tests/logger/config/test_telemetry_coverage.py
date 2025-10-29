@@ -190,11 +190,14 @@ class TestTelemetryConfigFromEnv(FoundationTestCase):
 
     def test_from_env_calls_auto_configure_when_no_endpoint(self) -> None:
         """Test auto-configure is called when no OTLP endpoint set."""
-        with patch.dict("os.environ", {}, clear=True), patch.object(
-            TelemetryConfig,
-            "_auto_configure_openobserve_otlp",
-            return_value=TelemetryConfig(),
-        ) as mock_auto:
+        with (
+            patch.dict("os.environ", {}, clear=True),
+            patch.object(
+                TelemetryConfig,
+                "_auto_configure_openobserve_otlp",
+                return_value=TelemetryConfig(),
+            ) as mock_auto,
+        ):
             TelemetryConfig.from_env()
 
             # Should call auto-configure

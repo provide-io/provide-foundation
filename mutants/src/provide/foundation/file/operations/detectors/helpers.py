@@ -18,23 +18,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -3446,84 +3449,87 @@ def x_is_temp_file__mutmut_69(path: Path) -> bool:
 
     return any(None)
 
-x_is_temp_file__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_temp_file__mutmut_1': x_is_temp_file__mutmut_1, 
-    'x_is_temp_file__mutmut_2': x_is_temp_file__mutmut_2, 
-    'x_is_temp_file__mutmut_3': x_is_temp_file__mutmut_3, 
-    'x_is_temp_file__mutmut_4': x_is_temp_file__mutmut_4, 
-    'x_is_temp_file__mutmut_5': x_is_temp_file__mutmut_5, 
-    'x_is_temp_file__mutmut_6': x_is_temp_file__mutmut_6, 
-    'x_is_temp_file__mutmut_7': x_is_temp_file__mutmut_7, 
-    'x_is_temp_file__mutmut_8': x_is_temp_file__mutmut_8, 
-    'x_is_temp_file__mutmut_9': x_is_temp_file__mutmut_9, 
-    'x_is_temp_file__mutmut_10': x_is_temp_file__mutmut_10, 
-    'x_is_temp_file__mutmut_11': x_is_temp_file__mutmut_11, 
-    'x_is_temp_file__mutmut_12': x_is_temp_file__mutmut_12, 
-    'x_is_temp_file__mutmut_13': x_is_temp_file__mutmut_13, 
-    'x_is_temp_file__mutmut_14': x_is_temp_file__mutmut_14, 
-    'x_is_temp_file__mutmut_15': x_is_temp_file__mutmut_15, 
-    'x_is_temp_file__mutmut_16': x_is_temp_file__mutmut_16, 
-    'x_is_temp_file__mutmut_17': x_is_temp_file__mutmut_17, 
-    'x_is_temp_file__mutmut_18': x_is_temp_file__mutmut_18, 
-    'x_is_temp_file__mutmut_19': x_is_temp_file__mutmut_19, 
-    'x_is_temp_file__mutmut_20': x_is_temp_file__mutmut_20, 
-    'x_is_temp_file__mutmut_21': x_is_temp_file__mutmut_21, 
-    'x_is_temp_file__mutmut_22': x_is_temp_file__mutmut_22, 
-    'x_is_temp_file__mutmut_23': x_is_temp_file__mutmut_23, 
-    'x_is_temp_file__mutmut_24': x_is_temp_file__mutmut_24, 
-    'x_is_temp_file__mutmut_25': x_is_temp_file__mutmut_25, 
-    'x_is_temp_file__mutmut_26': x_is_temp_file__mutmut_26, 
-    'x_is_temp_file__mutmut_27': x_is_temp_file__mutmut_27, 
-    'x_is_temp_file__mutmut_28': x_is_temp_file__mutmut_28, 
-    'x_is_temp_file__mutmut_29': x_is_temp_file__mutmut_29, 
-    'x_is_temp_file__mutmut_30': x_is_temp_file__mutmut_30, 
-    'x_is_temp_file__mutmut_31': x_is_temp_file__mutmut_31, 
-    'x_is_temp_file__mutmut_32': x_is_temp_file__mutmut_32, 
-    'x_is_temp_file__mutmut_33': x_is_temp_file__mutmut_33, 
-    'x_is_temp_file__mutmut_34': x_is_temp_file__mutmut_34, 
-    'x_is_temp_file__mutmut_35': x_is_temp_file__mutmut_35, 
-    'x_is_temp_file__mutmut_36': x_is_temp_file__mutmut_36, 
-    'x_is_temp_file__mutmut_37': x_is_temp_file__mutmut_37, 
-    'x_is_temp_file__mutmut_38': x_is_temp_file__mutmut_38, 
-    'x_is_temp_file__mutmut_39': x_is_temp_file__mutmut_39, 
-    'x_is_temp_file__mutmut_40': x_is_temp_file__mutmut_40, 
-    'x_is_temp_file__mutmut_41': x_is_temp_file__mutmut_41, 
-    'x_is_temp_file__mutmut_42': x_is_temp_file__mutmut_42, 
-    'x_is_temp_file__mutmut_43': x_is_temp_file__mutmut_43, 
-    'x_is_temp_file__mutmut_44': x_is_temp_file__mutmut_44, 
-    'x_is_temp_file__mutmut_45': x_is_temp_file__mutmut_45, 
-    'x_is_temp_file__mutmut_46': x_is_temp_file__mutmut_46, 
-    'x_is_temp_file__mutmut_47': x_is_temp_file__mutmut_47, 
-    'x_is_temp_file__mutmut_48': x_is_temp_file__mutmut_48, 
-    'x_is_temp_file__mutmut_49': x_is_temp_file__mutmut_49, 
-    'x_is_temp_file__mutmut_50': x_is_temp_file__mutmut_50, 
-    'x_is_temp_file__mutmut_51': x_is_temp_file__mutmut_51, 
-    'x_is_temp_file__mutmut_52': x_is_temp_file__mutmut_52, 
-    'x_is_temp_file__mutmut_53': x_is_temp_file__mutmut_53, 
-    'x_is_temp_file__mutmut_54': x_is_temp_file__mutmut_54, 
-    'x_is_temp_file__mutmut_55': x_is_temp_file__mutmut_55, 
-    'x_is_temp_file__mutmut_56': x_is_temp_file__mutmut_56, 
-    'x_is_temp_file__mutmut_57': x_is_temp_file__mutmut_57, 
-    'x_is_temp_file__mutmut_58': x_is_temp_file__mutmut_58, 
-    'x_is_temp_file__mutmut_59': x_is_temp_file__mutmut_59, 
-    'x_is_temp_file__mutmut_60': x_is_temp_file__mutmut_60, 
-    'x_is_temp_file__mutmut_61': x_is_temp_file__mutmut_61, 
-    'x_is_temp_file__mutmut_62': x_is_temp_file__mutmut_62, 
-    'x_is_temp_file__mutmut_63': x_is_temp_file__mutmut_63, 
-    'x_is_temp_file__mutmut_64': x_is_temp_file__mutmut_64, 
-    'x_is_temp_file__mutmut_65': x_is_temp_file__mutmut_65, 
-    'x_is_temp_file__mutmut_66': x_is_temp_file__mutmut_66, 
-    'x_is_temp_file__mutmut_67': x_is_temp_file__mutmut_67, 
-    'x_is_temp_file__mutmut_68': x_is_temp_file__mutmut_68, 
-    'x_is_temp_file__mutmut_69': x_is_temp_file__mutmut_69
+
+x_is_temp_file__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_temp_file__mutmut_1": x_is_temp_file__mutmut_1,
+    "x_is_temp_file__mutmut_2": x_is_temp_file__mutmut_2,
+    "x_is_temp_file__mutmut_3": x_is_temp_file__mutmut_3,
+    "x_is_temp_file__mutmut_4": x_is_temp_file__mutmut_4,
+    "x_is_temp_file__mutmut_5": x_is_temp_file__mutmut_5,
+    "x_is_temp_file__mutmut_6": x_is_temp_file__mutmut_6,
+    "x_is_temp_file__mutmut_7": x_is_temp_file__mutmut_7,
+    "x_is_temp_file__mutmut_8": x_is_temp_file__mutmut_8,
+    "x_is_temp_file__mutmut_9": x_is_temp_file__mutmut_9,
+    "x_is_temp_file__mutmut_10": x_is_temp_file__mutmut_10,
+    "x_is_temp_file__mutmut_11": x_is_temp_file__mutmut_11,
+    "x_is_temp_file__mutmut_12": x_is_temp_file__mutmut_12,
+    "x_is_temp_file__mutmut_13": x_is_temp_file__mutmut_13,
+    "x_is_temp_file__mutmut_14": x_is_temp_file__mutmut_14,
+    "x_is_temp_file__mutmut_15": x_is_temp_file__mutmut_15,
+    "x_is_temp_file__mutmut_16": x_is_temp_file__mutmut_16,
+    "x_is_temp_file__mutmut_17": x_is_temp_file__mutmut_17,
+    "x_is_temp_file__mutmut_18": x_is_temp_file__mutmut_18,
+    "x_is_temp_file__mutmut_19": x_is_temp_file__mutmut_19,
+    "x_is_temp_file__mutmut_20": x_is_temp_file__mutmut_20,
+    "x_is_temp_file__mutmut_21": x_is_temp_file__mutmut_21,
+    "x_is_temp_file__mutmut_22": x_is_temp_file__mutmut_22,
+    "x_is_temp_file__mutmut_23": x_is_temp_file__mutmut_23,
+    "x_is_temp_file__mutmut_24": x_is_temp_file__mutmut_24,
+    "x_is_temp_file__mutmut_25": x_is_temp_file__mutmut_25,
+    "x_is_temp_file__mutmut_26": x_is_temp_file__mutmut_26,
+    "x_is_temp_file__mutmut_27": x_is_temp_file__mutmut_27,
+    "x_is_temp_file__mutmut_28": x_is_temp_file__mutmut_28,
+    "x_is_temp_file__mutmut_29": x_is_temp_file__mutmut_29,
+    "x_is_temp_file__mutmut_30": x_is_temp_file__mutmut_30,
+    "x_is_temp_file__mutmut_31": x_is_temp_file__mutmut_31,
+    "x_is_temp_file__mutmut_32": x_is_temp_file__mutmut_32,
+    "x_is_temp_file__mutmut_33": x_is_temp_file__mutmut_33,
+    "x_is_temp_file__mutmut_34": x_is_temp_file__mutmut_34,
+    "x_is_temp_file__mutmut_35": x_is_temp_file__mutmut_35,
+    "x_is_temp_file__mutmut_36": x_is_temp_file__mutmut_36,
+    "x_is_temp_file__mutmut_37": x_is_temp_file__mutmut_37,
+    "x_is_temp_file__mutmut_38": x_is_temp_file__mutmut_38,
+    "x_is_temp_file__mutmut_39": x_is_temp_file__mutmut_39,
+    "x_is_temp_file__mutmut_40": x_is_temp_file__mutmut_40,
+    "x_is_temp_file__mutmut_41": x_is_temp_file__mutmut_41,
+    "x_is_temp_file__mutmut_42": x_is_temp_file__mutmut_42,
+    "x_is_temp_file__mutmut_43": x_is_temp_file__mutmut_43,
+    "x_is_temp_file__mutmut_44": x_is_temp_file__mutmut_44,
+    "x_is_temp_file__mutmut_45": x_is_temp_file__mutmut_45,
+    "x_is_temp_file__mutmut_46": x_is_temp_file__mutmut_46,
+    "x_is_temp_file__mutmut_47": x_is_temp_file__mutmut_47,
+    "x_is_temp_file__mutmut_48": x_is_temp_file__mutmut_48,
+    "x_is_temp_file__mutmut_49": x_is_temp_file__mutmut_49,
+    "x_is_temp_file__mutmut_50": x_is_temp_file__mutmut_50,
+    "x_is_temp_file__mutmut_51": x_is_temp_file__mutmut_51,
+    "x_is_temp_file__mutmut_52": x_is_temp_file__mutmut_52,
+    "x_is_temp_file__mutmut_53": x_is_temp_file__mutmut_53,
+    "x_is_temp_file__mutmut_54": x_is_temp_file__mutmut_54,
+    "x_is_temp_file__mutmut_55": x_is_temp_file__mutmut_55,
+    "x_is_temp_file__mutmut_56": x_is_temp_file__mutmut_56,
+    "x_is_temp_file__mutmut_57": x_is_temp_file__mutmut_57,
+    "x_is_temp_file__mutmut_58": x_is_temp_file__mutmut_58,
+    "x_is_temp_file__mutmut_59": x_is_temp_file__mutmut_59,
+    "x_is_temp_file__mutmut_60": x_is_temp_file__mutmut_60,
+    "x_is_temp_file__mutmut_61": x_is_temp_file__mutmut_61,
+    "x_is_temp_file__mutmut_62": x_is_temp_file__mutmut_62,
+    "x_is_temp_file__mutmut_63": x_is_temp_file__mutmut_63,
+    "x_is_temp_file__mutmut_64": x_is_temp_file__mutmut_64,
+    "x_is_temp_file__mutmut_65": x_is_temp_file__mutmut_65,
+    "x_is_temp_file__mutmut_66": x_is_temp_file__mutmut_66,
+    "x_is_temp_file__mutmut_67": x_is_temp_file__mutmut_67,
+    "x_is_temp_file__mutmut_68": x_is_temp_file__mutmut_68,
+    "x_is_temp_file__mutmut_69": x_is_temp_file__mutmut_69,
 }
+
 
 def is_temp_file(*args, **kwargs):
     result = _mutmut_trampoline(x_is_temp_file__mutmut_orig, x_is_temp_file__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 is_temp_file.__signature__ = _mutmut_signature(x_is_temp_file__mutmut_orig)
-x_is_temp_file__mutmut_orig.__name__ = 'x_is_temp_file'
+x_is_temp_file__mutmut_orig.__name__ = "x_is_temp_file"
 
 
 def x_is_backup_file__mutmut_orig(path: Path) -> bool:
@@ -3804,33 +3810,36 @@ def x_is_backup_file__mutmut_18(path: Path) -> bool:
 
     return any(None)
 
-x_is_backup_file__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_backup_file__mutmut_1': x_is_backup_file__mutmut_1, 
-    'x_is_backup_file__mutmut_2': x_is_backup_file__mutmut_2, 
-    'x_is_backup_file__mutmut_3': x_is_backup_file__mutmut_3, 
-    'x_is_backup_file__mutmut_4': x_is_backup_file__mutmut_4, 
-    'x_is_backup_file__mutmut_5': x_is_backup_file__mutmut_5, 
-    'x_is_backup_file__mutmut_6': x_is_backup_file__mutmut_6, 
-    'x_is_backup_file__mutmut_7': x_is_backup_file__mutmut_7, 
-    'x_is_backup_file__mutmut_8': x_is_backup_file__mutmut_8, 
-    'x_is_backup_file__mutmut_9': x_is_backup_file__mutmut_9, 
-    'x_is_backup_file__mutmut_10': x_is_backup_file__mutmut_10, 
-    'x_is_backup_file__mutmut_11': x_is_backup_file__mutmut_11, 
-    'x_is_backup_file__mutmut_12': x_is_backup_file__mutmut_12, 
-    'x_is_backup_file__mutmut_13': x_is_backup_file__mutmut_13, 
-    'x_is_backup_file__mutmut_14': x_is_backup_file__mutmut_14, 
-    'x_is_backup_file__mutmut_15': x_is_backup_file__mutmut_15, 
-    'x_is_backup_file__mutmut_16': x_is_backup_file__mutmut_16, 
-    'x_is_backup_file__mutmut_17': x_is_backup_file__mutmut_17, 
-    'x_is_backup_file__mutmut_18': x_is_backup_file__mutmut_18
+
+x_is_backup_file__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_backup_file__mutmut_1": x_is_backup_file__mutmut_1,
+    "x_is_backup_file__mutmut_2": x_is_backup_file__mutmut_2,
+    "x_is_backup_file__mutmut_3": x_is_backup_file__mutmut_3,
+    "x_is_backup_file__mutmut_4": x_is_backup_file__mutmut_4,
+    "x_is_backup_file__mutmut_5": x_is_backup_file__mutmut_5,
+    "x_is_backup_file__mutmut_6": x_is_backup_file__mutmut_6,
+    "x_is_backup_file__mutmut_7": x_is_backup_file__mutmut_7,
+    "x_is_backup_file__mutmut_8": x_is_backup_file__mutmut_8,
+    "x_is_backup_file__mutmut_9": x_is_backup_file__mutmut_9,
+    "x_is_backup_file__mutmut_10": x_is_backup_file__mutmut_10,
+    "x_is_backup_file__mutmut_11": x_is_backup_file__mutmut_11,
+    "x_is_backup_file__mutmut_12": x_is_backup_file__mutmut_12,
+    "x_is_backup_file__mutmut_13": x_is_backup_file__mutmut_13,
+    "x_is_backup_file__mutmut_14": x_is_backup_file__mutmut_14,
+    "x_is_backup_file__mutmut_15": x_is_backup_file__mutmut_15,
+    "x_is_backup_file__mutmut_16": x_is_backup_file__mutmut_16,
+    "x_is_backup_file__mutmut_17": x_is_backup_file__mutmut_17,
+    "x_is_backup_file__mutmut_18": x_is_backup_file__mutmut_18,
 }
+
 
 def is_backup_file(*args, **kwargs):
     result = _mutmut_trampoline(x_is_backup_file__mutmut_orig, x_is_backup_file__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 is_backup_file.__signature__ = _mutmut_signature(x_is_backup_file__mutmut_orig)
-x_is_backup_file__mutmut_orig.__name__ = 'x_is_backup_file'
+x_is_backup_file__mutmut_orig.__name__ = "x_is_backup_file"
 
 
 def x_extract_base_name__mutmut_orig(path: Path) -> str | None:
@@ -4456,7 +4465,9 @@ def x_extract_base_name__mutmut_10(path: Path) -> str | None:
     # Handle VSCode temp pattern FIRST: .filename.ext.tmp.XXXX -> filename.ext
     # This must come before other patterns since the leading dot is part of the temp name
     vscode_pattern = r"^\.(.+)\.tmp\.\w+$"
-    if re.match(vscode_pattern, ):
+    if re.match(
+        vscode_pattern,
+    ):
         base_name = re.sub(vscode_pattern, r"\1", base_name)
         return base_name if base_name else None
 
@@ -4884,7 +4895,10 @@ def x_extract_base_name__mutmut_17(path: Path) -> str | None:
     # This must come before other patterns since the leading dot is part of the temp name
     vscode_pattern = r"^\.(.+)\.tmp\.\w+$"
     if re.match(vscode_pattern, base_name):
-        base_name = re.sub(vscode_pattern, r"\1", )
+        base_name = re.sub(
+            vscode_pattern,
+            r"\1",
+        )
         return base_name if base_name else None
 
     # Handle emacs autosave files: #document.txt# -> document.txt
@@ -6179,7 +6193,9 @@ def x_extract_base_name__mutmut_38(path: Path) -> str | None:
 
     # First check for dotfile pattern (double dot)
     vim_dotfile_pattern = r"^\.\.(.+)\.(swp|swo|swx)$"
-    match = re.match(vim_dotfile_pattern, )
+    match = re.match(
+        vim_dotfile_pattern,
+    )
     if match:
         filename = "." + match.group(1)
         return filename if filename and filename != base_name else None
@@ -7162,7 +7178,9 @@ def x_extract_base_name__mutmut_54(path: Path) -> str | None:
 
     # Then check for regular file pattern (single dot)
     vim_swap_pattern = r"^\.(.+)\.(swp|swo|swx)$"
-    match = re.match(vim_swap_pattern, )
+    match = re.match(
+        vim_swap_pattern,
+    )
     if match:
         filename = match.group(1)
         return filename if filename and filename != base_name else None
@@ -9440,7 +9458,10 @@ def x_extract_base_name__mutmut_91(path: Path) -> str | None:
             break
 
     # Remove temp file ID patterns like .tmp.84 (for any remaining patterns)
-    base_name = re.sub(r"\.tmp\.\w+$", "", )
+    base_name = re.sub(
+        r"\.tmp\.\w+$",
+        "",
+    )
 
     return base_name if base_name and base_name != name else None
 
@@ -9810,112 +9831,117 @@ def x_extract_base_name__mutmut_97(path: Path) -> str | None:
 
     return base_name if base_name and base_name == name else None
 
-x_extract_base_name__mutmut_mutants : ClassVar[MutantDict] = {
-'x_extract_base_name__mutmut_1': x_extract_base_name__mutmut_1, 
-    'x_extract_base_name__mutmut_2': x_extract_base_name__mutmut_2, 
-    'x_extract_base_name__mutmut_3': x_extract_base_name__mutmut_3, 
-    'x_extract_base_name__mutmut_4': x_extract_base_name__mutmut_4, 
-    'x_extract_base_name__mutmut_5': x_extract_base_name__mutmut_5, 
-    'x_extract_base_name__mutmut_6': x_extract_base_name__mutmut_6, 
-    'x_extract_base_name__mutmut_7': x_extract_base_name__mutmut_7, 
-    'x_extract_base_name__mutmut_8': x_extract_base_name__mutmut_8, 
-    'x_extract_base_name__mutmut_9': x_extract_base_name__mutmut_9, 
-    'x_extract_base_name__mutmut_10': x_extract_base_name__mutmut_10, 
-    'x_extract_base_name__mutmut_11': x_extract_base_name__mutmut_11, 
-    'x_extract_base_name__mutmut_12': x_extract_base_name__mutmut_12, 
-    'x_extract_base_name__mutmut_13': x_extract_base_name__mutmut_13, 
-    'x_extract_base_name__mutmut_14': x_extract_base_name__mutmut_14, 
-    'x_extract_base_name__mutmut_15': x_extract_base_name__mutmut_15, 
-    'x_extract_base_name__mutmut_16': x_extract_base_name__mutmut_16, 
-    'x_extract_base_name__mutmut_17': x_extract_base_name__mutmut_17, 
-    'x_extract_base_name__mutmut_18': x_extract_base_name__mutmut_18, 
-    'x_extract_base_name__mutmut_19': x_extract_base_name__mutmut_19, 
-    'x_extract_base_name__mutmut_20': x_extract_base_name__mutmut_20, 
-    'x_extract_base_name__mutmut_21': x_extract_base_name__mutmut_21, 
-    'x_extract_base_name__mutmut_22': x_extract_base_name__mutmut_22, 
-    'x_extract_base_name__mutmut_23': x_extract_base_name__mutmut_23, 
-    'x_extract_base_name__mutmut_24': x_extract_base_name__mutmut_24, 
-    'x_extract_base_name__mutmut_25': x_extract_base_name__mutmut_25, 
-    'x_extract_base_name__mutmut_26': x_extract_base_name__mutmut_26, 
-    'x_extract_base_name__mutmut_27': x_extract_base_name__mutmut_27, 
-    'x_extract_base_name__mutmut_28': x_extract_base_name__mutmut_28, 
-    'x_extract_base_name__mutmut_29': x_extract_base_name__mutmut_29, 
-    'x_extract_base_name__mutmut_30': x_extract_base_name__mutmut_30, 
-    'x_extract_base_name__mutmut_31': x_extract_base_name__mutmut_31, 
-    'x_extract_base_name__mutmut_32': x_extract_base_name__mutmut_32, 
-    'x_extract_base_name__mutmut_33': x_extract_base_name__mutmut_33, 
-    'x_extract_base_name__mutmut_34': x_extract_base_name__mutmut_34, 
-    'x_extract_base_name__mutmut_35': x_extract_base_name__mutmut_35, 
-    'x_extract_base_name__mutmut_36': x_extract_base_name__mutmut_36, 
-    'x_extract_base_name__mutmut_37': x_extract_base_name__mutmut_37, 
-    'x_extract_base_name__mutmut_38': x_extract_base_name__mutmut_38, 
-    'x_extract_base_name__mutmut_39': x_extract_base_name__mutmut_39, 
-    'x_extract_base_name__mutmut_40': x_extract_base_name__mutmut_40, 
-    'x_extract_base_name__mutmut_41': x_extract_base_name__mutmut_41, 
-    'x_extract_base_name__mutmut_42': x_extract_base_name__mutmut_42, 
-    'x_extract_base_name__mutmut_43': x_extract_base_name__mutmut_43, 
-    'x_extract_base_name__mutmut_44': x_extract_base_name__mutmut_44, 
-    'x_extract_base_name__mutmut_45': x_extract_base_name__mutmut_45, 
-    'x_extract_base_name__mutmut_46': x_extract_base_name__mutmut_46, 
-    'x_extract_base_name__mutmut_47': x_extract_base_name__mutmut_47, 
-    'x_extract_base_name__mutmut_48': x_extract_base_name__mutmut_48, 
-    'x_extract_base_name__mutmut_49': x_extract_base_name__mutmut_49, 
-    'x_extract_base_name__mutmut_50': x_extract_base_name__mutmut_50, 
-    'x_extract_base_name__mutmut_51': x_extract_base_name__mutmut_51, 
-    'x_extract_base_name__mutmut_52': x_extract_base_name__mutmut_52, 
-    'x_extract_base_name__mutmut_53': x_extract_base_name__mutmut_53, 
-    'x_extract_base_name__mutmut_54': x_extract_base_name__mutmut_54, 
-    'x_extract_base_name__mutmut_55': x_extract_base_name__mutmut_55, 
-    'x_extract_base_name__mutmut_56': x_extract_base_name__mutmut_56, 
-    'x_extract_base_name__mutmut_57': x_extract_base_name__mutmut_57, 
-    'x_extract_base_name__mutmut_58': x_extract_base_name__mutmut_58, 
-    'x_extract_base_name__mutmut_59': x_extract_base_name__mutmut_59, 
-    'x_extract_base_name__mutmut_60': x_extract_base_name__mutmut_60, 
-    'x_extract_base_name__mutmut_61': x_extract_base_name__mutmut_61, 
-    'x_extract_base_name__mutmut_62': x_extract_base_name__mutmut_62, 
-    'x_extract_base_name__mutmut_63': x_extract_base_name__mutmut_63, 
-    'x_extract_base_name__mutmut_64': x_extract_base_name__mutmut_64, 
-    'x_extract_base_name__mutmut_65': x_extract_base_name__mutmut_65, 
-    'x_extract_base_name__mutmut_66': x_extract_base_name__mutmut_66, 
-    'x_extract_base_name__mutmut_67': x_extract_base_name__mutmut_67, 
-    'x_extract_base_name__mutmut_68': x_extract_base_name__mutmut_68, 
-    'x_extract_base_name__mutmut_69': x_extract_base_name__mutmut_69, 
-    'x_extract_base_name__mutmut_70': x_extract_base_name__mutmut_70, 
-    'x_extract_base_name__mutmut_71': x_extract_base_name__mutmut_71, 
-    'x_extract_base_name__mutmut_72': x_extract_base_name__mutmut_72, 
-    'x_extract_base_name__mutmut_73': x_extract_base_name__mutmut_73, 
-    'x_extract_base_name__mutmut_74': x_extract_base_name__mutmut_74, 
-    'x_extract_base_name__mutmut_75': x_extract_base_name__mutmut_75, 
-    'x_extract_base_name__mutmut_76': x_extract_base_name__mutmut_76, 
-    'x_extract_base_name__mutmut_77': x_extract_base_name__mutmut_77, 
-    'x_extract_base_name__mutmut_78': x_extract_base_name__mutmut_78, 
-    'x_extract_base_name__mutmut_79': x_extract_base_name__mutmut_79, 
-    'x_extract_base_name__mutmut_80': x_extract_base_name__mutmut_80, 
-    'x_extract_base_name__mutmut_81': x_extract_base_name__mutmut_81, 
-    'x_extract_base_name__mutmut_82': x_extract_base_name__mutmut_82, 
-    'x_extract_base_name__mutmut_83': x_extract_base_name__mutmut_83, 
-    'x_extract_base_name__mutmut_84': x_extract_base_name__mutmut_84, 
-    'x_extract_base_name__mutmut_85': x_extract_base_name__mutmut_85, 
-    'x_extract_base_name__mutmut_86': x_extract_base_name__mutmut_86, 
-    'x_extract_base_name__mutmut_87': x_extract_base_name__mutmut_87, 
-    'x_extract_base_name__mutmut_88': x_extract_base_name__mutmut_88, 
-    'x_extract_base_name__mutmut_89': x_extract_base_name__mutmut_89, 
-    'x_extract_base_name__mutmut_90': x_extract_base_name__mutmut_90, 
-    'x_extract_base_name__mutmut_91': x_extract_base_name__mutmut_91, 
-    'x_extract_base_name__mutmut_92': x_extract_base_name__mutmut_92, 
-    'x_extract_base_name__mutmut_93': x_extract_base_name__mutmut_93, 
-    'x_extract_base_name__mutmut_94': x_extract_base_name__mutmut_94, 
-    'x_extract_base_name__mutmut_95': x_extract_base_name__mutmut_95, 
-    'x_extract_base_name__mutmut_96': x_extract_base_name__mutmut_96, 
-    'x_extract_base_name__mutmut_97': x_extract_base_name__mutmut_97
+
+x_extract_base_name__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_extract_base_name__mutmut_1": x_extract_base_name__mutmut_1,
+    "x_extract_base_name__mutmut_2": x_extract_base_name__mutmut_2,
+    "x_extract_base_name__mutmut_3": x_extract_base_name__mutmut_3,
+    "x_extract_base_name__mutmut_4": x_extract_base_name__mutmut_4,
+    "x_extract_base_name__mutmut_5": x_extract_base_name__mutmut_5,
+    "x_extract_base_name__mutmut_6": x_extract_base_name__mutmut_6,
+    "x_extract_base_name__mutmut_7": x_extract_base_name__mutmut_7,
+    "x_extract_base_name__mutmut_8": x_extract_base_name__mutmut_8,
+    "x_extract_base_name__mutmut_9": x_extract_base_name__mutmut_9,
+    "x_extract_base_name__mutmut_10": x_extract_base_name__mutmut_10,
+    "x_extract_base_name__mutmut_11": x_extract_base_name__mutmut_11,
+    "x_extract_base_name__mutmut_12": x_extract_base_name__mutmut_12,
+    "x_extract_base_name__mutmut_13": x_extract_base_name__mutmut_13,
+    "x_extract_base_name__mutmut_14": x_extract_base_name__mutmut_14,
+    "x_extract_base_name__mutmut_15": x_extract_base_name__mutmut_15,
+    "x_extract_base_name__mutmut_16": x_extract_base_name__mutmut_16,
+    "x_extract_base_name__mutmut_17": x_extract_base_name__mutmut_17,
+    "x_extract_base_name__mutmut_18": x_extract_base_name__mutmut_18,
+    "x_extract_base_name__mutmut_19": x_extract_base_name__mutmut_19,
+    "x_extract_base_name__mutmut_20": x_extract_base_name__mutmut_20,
+    "x_extract_base_name__mutmut_21": x_extract_base_name__mutmut_21,
+    "x_extract_base_name__mutmut_22": x_extract_base_name__mutmut_22,
+    "x_extract_base_name__mutmut_23": x_extract_base_name__mutmut_23,
+    "x_extract_base_name__mutmut_24": x_extract_base_name__mutmut_24,
+    "x_extract_base_name__mutmut_25": x_extract_base_name__mutmut_25,
+    "x_extract_base_name__mutmut_26": x_extract_base_name__mutmut_26,
+    "x_extract_base_name__mutmut_27": x_extract_base_name__mutmut_27,
+    "x_extract_base_name__mutmut_28": x_extract_base_name__mutmut_28,
+    "x_extract_base_name__mutmut_29": x_extract_base_name__mutmut_29,
+    "x_extract_base_name__mutmut_30": x_extract_base_name__mutmut_30,
+    "x_extract_base_name__mutmut_31": x_extract_base_name__mutmut_31,
+    "x_extract_base_name__mutmut_32": x_extract_base_name__mutmut_32,
+    "x_extract_base_name__mutmut_33": x_extract_base_name__mutmut_33,
+    "x_extract_base_name__mutmut_34": x_extract_base_name__mutmut_34,
+    "x_extract_base_name__mutmut_35": x_extract_base_name__mutmut_35,
+    "x_extract_base_name__mutmut_36": x_extract_base_name__mutmut_36,
+    "x_extract_base_name__mutmut_37": x_extract_base_name__mutmut_37,
+    "x_extract_base_name__mutmut_38": x_extract_base_name__mutmut_38,
+    "x_extract_base_name__mutmut_39": x_extract_base_name__mutmut_39,
+    "x_extract_base_name__mutmut_40": x_extract_base_name__mutmut_40,
+    "x_extract_base_name__mutmut_41": x_extract_base_name__mutmut_41,
+    "x_extract_base_name__mutmut_42": x_extract_base_name__mutmut_42,
+    "x_extract_base_name__mutmut_43": x_extract_base_name__mutmut_43,
+    "x_extract_base_name__mutmut_44": x_extract_base_name__mutmut_44,
+    "x_extract_base_name__mutmut_45": x_extract_base_name__mutmut_45,
+    "x_extract_base_name__mutmut_46": x_extract_base_name__mutmut_46,
+    "x_extract_base_name__mutmut_47": x_extract_base_name__mutmut_47,
+    "x_extract_base_name__mutmut_48": x_extract_base_name__mutmut_48,
+    "x_extract_base_name__mutmut_49": x_extract_base_name__mutmut_49,
+    "x_extract_base_name__mutmut_50": x_extract_base_name__mutmut_50,
+    "x_extract_base_name__mutmut_51": x_extract_base_name__mutmut_51,
+    "x_extract_base_name__mutmut_52": x_extract_base_name__mutmut_52,
+    "x_extract_base_name__mutmut_53": x_extract_base_name__mutmut_53,
+    "x_extract_base_name__mutmut_54": x_extract_base_name__mutmut_54,
+    "x_extract_base_name__mutmut_55": x_extract_base_name__mutmut_55,
+    "x_extract_base_name__mutmut_56": x_extract_base_name__mutmut_56,
+    "x_extract_base_name__mutmut_57": x_extract_base_name__mutmut_57,
+    "x_extract_base_name__mutmut_58": x_extract_base_name__mutmut_58,
+    "x_extract_base_name__mutmut_59": x_extract_base_name__mutmut_59,
+    "x_extract_base_name__mutmut_60": x_extract_base_name__mutmut_60,
+    "x_extract_base_name__mutmut_61": x_extract_base_name__mutmut_61,
+    "x_extract_base_name__mutmut_62": x_extract_base_name__mutmut_62,
+    "x_extract_base_name__mutmut_63": x_extract_base_name__mutmut_63,
+    "x_extract_base_name__mutmut_64": x_extract_base_name__mutmut_64,
+    "x_extract_base_name__mutmut_65": x_extract_base_name__mutmut_65,
+    "x_extract_base_name__mutmut_66": x_extract_base_name__mutmut_66,
+    "x_extract_base_name__mutmut_67": x_extract_base_name__mutmut_67,
+    "x_extract_base_name__mutmut_68": x_extract_base_name__mutmut_68,
+    "x_extract_base_name__mutmut_69": x_extract_base_name__mutmut_69,
+    "x_extract_base_name__mutmut_70": x_extract_base_name__mutmut_70,
+    "x_extract_base_name__mutmut_71": x_extract_base_name__mutmut_71,
+    "x_extract_base_name__mutmut_72": x_extract_base_name__mutmut_72,
+    "x_extract_base_name__mutmut_73": x_extract_base_name__mutmut_73,
+    "x_extract_base_name__mutmut_74": x_extract_base_name__mutmut_74,
+    "x_extract_base_name__mutmut_75": x_extract_base_name__mutmut_75,
+    "x_extract_base_name__mutmut_76": x_extract_base_name__mutmut_76,
+    "x_extract_base_name__mutmut_77": x_extract_base_name__mutmut_77,
+    "x_extract_base_name__mutmut_78": x_extract_base_name__mutmut_78,
+    "x_extract_base_name__mutmut_79": x_extract_base_name__mutmut_79,
+    "x_extract_base_name__mutmut_80": x_extract_base_name__mutmut_80,
+    "x_extract_base_name__mutmut_81": x_extract_base_name__mutmut_81,
+    "x_extract_base_name__mutmut_82": x_extract_base_name__mutmut_82,
+    "x_extract_base_name__mutmut_83": x_extract_base_name__mutmut_83,
+    "x_extract_base_name__mutmut_84": x_extract_base_name__mutmut_84,
+    "x_extract_base_name__mutmut_85": x_extract_base_name__mutmut_85,
+    "x_extract_base_name__mutmut_86": x_extract_base_name__mutmut_86,
+    "x_extract_base_name__mutmut_87": x_extract_base_name__mutmut_87,
+    "x_extract_base_name__mutmut_88": x_extract_base_name__mutmut_88,
+    "x_extract_base_name__mutmut_89": x_extract_base_name__mutmut_89,
+    "x_extract_base_name__mutmut_90": x_extract_base_name__mutmut_90,
+    "x_extract_base_name__mutmut_91": x_extract_base_name__mutmut_91,
+    "x_extract_base_name__mutmut_92": x_extract_base_name__mutmut_92,
+    "x_extract_base_name__mutmut_93": x_extract_base_name__mutmut_93,
+    "x_extract_base_name__mutmut_94": x_extract_base_name__mutmut_94,
+    "x_extract_base_name__mutmut_95": x_extract_base_name__mutmut_95,
+    "x_extract_base_name__mutmut_96": x_extract_base_name__mutmut_96,
+    "x_extract_base_name__mutmut_97": x_extract_base_name__mutmut_97,
 }
 
+
 def extract_base_name(*args, **kwargs):
-    result = _mutmut_trampoline(x_extract_base_name__mutmut_orig, x_extract_base_name__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_extract_base_name__mutmut_orig, x_extract_base_name__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 extract_base_name.__signature__ = _mutmut_signature(x_extract_base_name__mutmut_orig)
-x_extract_base_name__mutmut_orig.__name__ = 'x_extract_base_name'
+x_extract_base_name__mutmut_orig.__name__ = "x_extract_base_name"
 
 
 def x_find_real_file_from_events__mutmut_orig(events: list) -> Path | None:
@@ -10189,7 +10215,13 @@ def x_find_real_file_from_events__mutmut_7(events: list) -> Path | None:
     # Look for non-temp files in the events
     for event in reversed(events):  # Start from most recent
         # Check dest_path first (for move/rename operations)
-        if hasattr(event, ) and event.dest_path and not is_temp_file(event.dest_path):
+        if (
+            hasattr(
+                event,
+            )
+            and event.dest_path
+            and not is_temp_file(event.dest_path)
+        ):
             return event.dest_path
         # Then check regular path
         if not is_temp_file(event.path):
@@ -10604,7 +10636,12 @@ def x_find_real_file_from_events__mutmut_18(events: list) -> Path | None:
 
     # If all files are temp files, try to extract the base name
     for event in events:
-        if hasattr(event, ) and event.dest_path:
+        if (
+            hasattr(
+                event,
+            )
+            and event.dest_path
+        ):
             base_name = extract_base_name(event.dest_path)
             if base_name:
                 # Try to construct real path from base name
@@ -11064,45 +11101,50 @@ def x_find_real_file_from_events__mutmut_30(events: list) -> Path | None:
 
     return None
 
-x_find_real_file_from_events__mutmut_mutants : ClassVar[MutantDict] = {
-'x_find_real_file_from_events__mutmut_1': x_find_real_file_from_events__mutmut_1, 
-    'x_find_real_file_from_events__mutmut_2': x_find_real_file_from_events__mutmut_2, 
-    'x_find_real_file_from_events__mutmut_3': x_find_real_file_from_events__mutmut_3, 
-    'x_find_real_file_from_events__mutmut_4': x_find_real_file_from_events__mutmut_4, 
-    'x_find_real_file_from_events__mutmut_5': x_find_real_file_from_events__mutmut_5, 
-    'x_find_real_file_from_events__mutmut_6': x_find_real_file_from_events__mutmut_6, 
-    'x_find_real_file_from_events__mutmut_7': x_find_real_file_from_events__mutmut_7, 
-    'x_find_real_file_from_events__mutmut_8': x_find_real_file_from_events__mutmut_8, 
-    'x_find_real_file_from_events__mutmut_9': x_find_real_file_from_events__mutmut_9, 
-    'x_find_real_file_from_events__mutmut_10': x_find_real_file_from_events__mutmut_10, 
-    'x_find_real_file_from_events__mutmut_11': x_find_real_file_from_events__mutmut_11, 
-    'x_find_real_file_from_events__mutmut_12': x_find_real_file_from_events__mutmut_12, 
-    'x_find_real_file_from_events__mutmut_13': x_find_real_file_from_events__mutmut_13, 
-    'x_find_real_file_from_events__mutmut_14': x_find_real_file_from_events__mutmut_14, 
-    'x_find_real_file_from_events__mutmut_15': x_find_real_file_from_events__mutmut_15, 
-    'x_find_real_file_from_events__mutmut_16': x_find_real_file_from_events__mutmut_16, 
-    'x_find_real_file_from_events__mutmut_17': x_find_real_file_from_events__mutmut_17, 
-    'x_find_real_file_from_events__mutmut_18': x_find_real_file_from_events__mutmut_18, 
-    'x_find_real_file_from_events__mutmut_19': x_find_real_file_from_events__mutmut_19, 
-    'x_find_real_file_from_events__mutmut_20': x_find_real_file_from_events__mutmut_20, 
-    'x_find_real_file_from_events__mutmut_21': x_find_real_file_from_events__mutmut_21, 
-    'x_find_real_file_from_events__mutmut_22': x_find_real_file_from_events__mutmut_22, 
-    'x_find_real_file_from_events__mutmut_23': x_find_real_file_from_events__mutmut_23, 
-    'x_find_real_file_from_events__mutmut_24': x_find_real_file_from_events__mutmut_24, 
-    'x_find_real_file_from_events__mutmut_25': x_find_real_file_from_events__mutmut_25, 
-    'x_find_real_file_from_events__mutmut_26': x_find_real_file_from_events__mutmut_26, 
-    'x_find_real_file_from_events__mutmut_27': x_find_real_file_from_events__mutmut_27, 
-    'x_find_real_file_from_events__mutmut_28': x_find_real_file_from_events__mutmut_28, 
-    'x_find_real_file_from_events__mutmut_29': x_find_real_file_from_events__mutmut_29, 
-    'x_find_real_file_from_events__mutmut_30': x_find_real_file_from_events__mutmut_30
+
+x_find_real_file_from_events__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_find_real_file_from_events__mutmut_1": x_find_real_file_from_events__mutmut_1,
+    "x_find_real_file_from_events__mutmut_2": x_find_real_file_from_events__mutmut_2,
+    "x_find_real_file_from_events__mutmut_3": x_find_real_file_from_events__mutmut_3,
+    "x_find_real_file_from_events__mutmut_4": x_find_real_file_from_events__mutmut_4,
+    "x_find_real_file_from_events__mutmut_5": x_find_real_file_from_events__mutmut_5,
+    "x_find_real_file_from_events__mutmut_6": x_find_real_file_from_events__mutmut_6,
+    "x_find_real_file_from_events__mutmut_7": x_find_real_file_from_events__mutmut_7,
+    "x_find_real_file_from_events__mutmut_8": x_find_real_file_from_events__mutmut_8,
+    "x_find_real_file_from_events__mutmut_9": x_find_real_file_from_events__mutmut_9,
+    "x_find_real_file_from_events__mutmut_10": x_find_real_file_from_events__mutmut_10,
+    "x_find_real_file_from_events__mutmut_11": x_find_real_file_from_events__mutmut_11,
+    "x_find_real_file_from_events__mutmut_12": x_find_real_file_from_events__mutmut_12,
+    "x_find_real_file_from_events__mutmut_13": x_find_real_file_from_events__mutmut_13,
+    "x_find_real_file_from_events__mutmut_14": x_find_real_file_from_events__mutmut_14,
+    "x_find_real_file_from_events__mutmut_15": x_find_real_file_from_events__mutmut_15,
+    "x_find_real_file_from_events__mutmut_16": x_find_real_file_from_events__mutmut_16,
+    "x_find_real_file_from_events__mutmut_17": x_find_real_file_from_events__mutmut_17,
+    "x_find_real_file_from_events__mutmut_18": x_find_real_file_from_events__mutmut_18,
+    "x_find_real_file_from_events__mutmut_19": x_find_real_file_from_events__mutmut_19,
+    "x_find_real_file_from_events__mutmut_20": x_find_real_file_from_events__mutmut_20,
+    "x_find_real_file_from_events__mutmut_21": x_find_real_file_from_events__mutmut_21,
+    "x_find_real_file_from_events__mutmut_22": x_find_real_file_from_events__mutmut_22,
+    "x_find_real_file_from_events__mutmut_23": x_find_real_file_from_events__mutmut_23,
+    "x_find_real_file_from_events__mutmut_24": x_find_real_file_from_events__mutmut_24,
+    "x_find_real_file_from_events__mutmut_25": x_find_real_file_from_events__mutmut_25,
+    "x_find_real_file_from_events__mutmut_26": x_find_real_file_from_events__mutmut_26,
+    "x_find_real_file_from_events__mutmut_27": x_find_real_file_from_events__mutmut_27,
+    "x_find_real_file_from_events__mutmut_28": x_find_real_file_from_events__mutmut_28,
+    "x_find_real_file_from_events__mutmut_29": x_find_real_file_from_events__mutmut_29,
+    "x_find_real_file_from_events__mutmut_30": x_find_real_file_from_events__mutmut_30,
 }
 
+
 def find_real_file_from_events(*args, **kwargs):
-    result = _mutmut_trampoline(x_find_real_file_from_events__mutmut_orig, x_find_real_file_from_events__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_find_real_file_from_events__mutmut_orig, x_find_real_file_from_events__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 find_real_file_from_events.__signature__ = _mutmut_signature(x_find_real_file_from_events__mutmut_orig)
-x_find_real_file_from_events__mutmut_orig.__name__ = 'x_find_real_file_from_events'
+x_find_real_file_from_events__mutmut_orig.__name__ = "x_find_real_file_from_events"
 
 
 # <3 🧱🤝📄🪄

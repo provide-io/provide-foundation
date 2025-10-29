@@ -33,23 +33,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -686,7 +689,9 @@ async def x_create_subprocess__mutmut_15(
     }
 
     if shell:
-        return await asyncio.create_subprocess_shell(cmd_str, )
+        return await asyncio.create_subprocess_shell(
+            cmd_str,
+        )
     else:
         return await asyncio.create_subprocess_exec(*(cmd if isinstance(cmd, list) else [cmd]), **common_args)
 
@@ -768,34 +773,41 @@ async def x_create_subprocess__mutmut_17(
     if shell:
         return await asyncio.create_subprocess_shell(cmd_str, **common_args)
     else:
-        return await asyncio.create_subprocess_exec(*(cmd if isinstance(cmd, list) else [cmd]), )
+        return await asyncio.create_subprocess_exec(
+            *(cmd if isinstance(cmd, list) else [cmd]),
+        )
 
-x_create_subprocess__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_subprocess__mutmut_1': x_create_subprocess__mutmut_1, 
-    'x_create_subprocess__mutmut_2': x_create_subprocess__mutmut_2, 
-    'x_create_subprocess__mutmut_3': x_create_subprocess__mutmut_3, 
-    'x_create_subprocess__mutmut_4': x_create_subprocess__mutmut_4, 
-    'x_create_subprocess__mutmut_5': x_create_subprocess__mutmut_5, 
-    'x_create_subprocess__mutmut_6': x_create_subprocess__mutmut_6, 
-    'x_create_subprocess__mutmut_7': x_create_subprocess__mutmut_7, 
-    'x_create_subprocess__mutmut_8': x_create_subprocess__mutmut_8, 
-    'x_create_subprocess__mutmut_9': x_create_subprocess__mutmut_9, 
-    'x_create_subprocess__mutmut_10': x_create_subprocess__mutmut_10, 
-    'x_create_subprocess__mutmut_11': x_create_subprocess__mutmut_11, 
-    'x_create_subprocess__mutmut_12': x_create_subprocess__mutmut_12, 
-    'x_create_subprocess__mutmut_13': x_create_subprocess__mutmut_13, 
-    'x_create_subprocess__mutmut_14': x_create_subprocess__mutmut_14, 
-    'x_create_subprocess__mutmut_15': x_create_subprocess__mutmut_15, 
-    'x_create_subprocess__mutmut_16': x_create_subprocess__mutmut_16, 
-    'x_create_subprocess__mutmut_17': x_create_subprocess__mutmut_17
+
+x_create_subprocess__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_subprocess__mutmut_1": x_create_subprocess__mutmut_1,
+    "x_create_subprocess__mutmut_2": x_create_subprocess__mutmut_2,
+    "x_create_subprocess__mutmut_3": x_create_subprocess__mutmut_3,
+    "x_create_subprocess__mutmut_4": x_create_subprocess__mutmut_4,
+    "x_create_subprocess__mutmut_5": x_create_subprocess__mutmut_5,
+    "x_create_subprocess__mutmut_6": x_create_subprocess__mutmut_6,
+    "x_create_subprocess__mutmut_7": x_create_subprocess__mutmut_7,
+    "x_create_subprocess__mutmut_8": x_create_subprocess__mutmut_8,
+    "x_create_subprocess__mutmut_9": x_create_subprocess__mutmut_9,
+    "x_create_subprocess__mutmut_10": x_create_subprocess__mutmut_10,
+    "x_create_subprocess__mutmut_11": x_create_subprocess__mutmut_11,
+    "x_create_subprocess__mutmut_12": x_create_subprocess__mutmut_12,
+    "x_create_subprocess__mutmut_13": x_create_subprocess__mutmut_13,
+    "x_create_subprocess__mutmut_14": x_create_subprocess__mutmut_14,
+    "x_create_subprocess__mutmut_15": x_create_subprocess__mutmut_15,
+    "x_create_subprocess__mutmut_16": x_create_subprocess__mutmut_16,
+    "x_create_subprocess__mutmut_17": x_create_subprocess__mutmut_17,
 }
 
+
 def create_subprocess(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_subprocess__mutmut_orig, x_create_subprocess__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_subprocess__mutmut_orig, x_create_subprocess__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_subprocess.__signature__ = _mutmut_signature(x_create_subprocess__mutmut_orig)
-x_create_subprocess__mutmut_orig.__name__ = 'x_create_subprocess'
+x_create_subprocess__mutmut_orig.__name__ = "x_create_subprocess"
 
 
 async def x_read_stream_continuously__mutmut_orig(
@@ -1324,31 +1336,36 @@ async def x_read_stream_continuously__mutmut_16(
         pass
     return b"".join(chunks)
 
-x_read_stream_continuously__mutmut_mutants : ClassVar[MutantDict] = {
-'x_read_stream_continuously__mutmut_1': x_read_stream_continuously__mutmut_1, 
-    'x_read_stream_continuously__mutmut_2': x_read_stream_continuously__mutmut_2, 
-    'x_read_stream_continuously__mutmut_3': x_read_stream_continuously__mutmut_3, 
-    'x_read_stream_continuously__mutmut_4': x_read_stream_continuously__mutmut_4, 
-    'x_read_stream_continuously__mutmut_5': x_read_stream_continuously__mutmut_5, 
-    'x_read_stream_continuously__mutmut_6': x_read_stream_continuously__mutmut_6, 
-    'x_read_stream_continuously__mutmut_7': x_read_stream_continuously__mutmut_7, 
-    'x_read_stream_continuously__mutmut_8': x_read_stream_continuously__mutmut_8, 
-    'x_read_stream_continuously__mutmut_9': x_read_stream_continuously__mutmut_9, 
-    'x_read_stream_continuously__mutmut_10': x_read_stream_continuously__mutmut_10, 
-    'x_read_stream_continuously__mutmut_11': x_read_stream_continuously__mutmut_11, 
-    'x_read_stream_continuously__mutmut_12': x_read_stream_continuously__mutmut_12, 
-    'x_read_stream_continuously__mutmut_13': x_read_stream_continuously__mutmut_13, 
-    'x_read_stream_continuously__mutmut_14': x_read_stream_continuously__mutmut_14, 
-    'x_read_stream_continuously__mutmut_15': x_read_stream_continuously__mutmut_15, 
-    'x_read_stream_continuously__mutmut_16': x_read_stream_continuously__mutmut_16
+
+x_read_stream_continuously__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_read_stream_continuously__mutmut_1": x_read_stream_continuously__mutmut_1,
+    "x_read_stream_continuously__mutmut_2": x_read_stream_continuously__mutmut_2,
+    "x_read_stream_continuously__mutmut_3": x_read_stream_continuously__mutmut_3,
+    "x_read_stream_continuously__mutmut_4": x_read_stream_continuously__mutmut_4,
+    "x_read_stream_continuously__mutmut_5": x_read_stream_continuously__mutmut_5,
+    "x_read_stream_continuously__mutmut_6": x_read_stream_continuously__mutmut_6,
+    "x_read_stream_continuously__mutmut_7": x_read_stream_continuously__mutmut_7,
+    "x_read_stream_continuously__mutmut_8": x_read_stream_continuously__mutmut_8,
+    "x_read_stream_continuously__mutmut_9": x_read_stream_continuously__mutmut_9,
+    "x_read_stream_continuously__mutmut_10": x_read_stream_continuously__mutmut_10,
+    "x_read_stream_continuously__mutmut_11": x_read_stream_continuously__mutmut_11,
+    "x_read_stream_continuously__mutmut_12": x_read_stream_continuously__mutmut_12,
+    "x_read_stream_continuously__mutmut_13": x_read_stream_continuously__mutmut_13,
+    "x_read_stream_continuously__mutmut_14": x_read_stream_continuously__mutmut_14,
+    "x_read_stream_continuously__mutmut_15": x_read_stream_continuously__mutmut_15,
+    "x_read_stream_continuously__mutmut_16": x_read_stream_continuously__mutmut_16,
 }
 
+
 def read_stream_continuously(*args, **kwargs):
-    result = _mutmut_trampoline(x_read_stream_continuously__mutmut_orig, x_read_stream_continuously__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_read_stream_continuously__mutmut_orig, x_read_stream_continuously__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 read_stream_continuously.__signature__ = _mutmut_signature(x_read_stream_continuously__mutmut_orig)
-x_read_stream_continuously__mutmut_orig.__name__ = 'x_read_stream_continuously'
+x_read_stream_continuously__mutmut_orig.__name__ = "x_read_stream_continuously"
 
 
 async def x_communicate_with_timeout__mutmut_orig(
@@ -2408,7 +2425,9 @@ async def x_communicate_with_timeout__mutmut_12(
 
         # Wait for process to complete with timeout
         try:
-            await asyncio.wait_for(process.wait(), )
+            await asyncio.wait_for(
+                process.wait(),
+            )
             # Process completed successfully, get output from background tasks
             stdout = await stdout_task
             stderr = await stderr_task
@@ -2930,7 +2949,7 @@ async def x_communicate_with_timeout__mutmut_18(
             try:
                 await asyncio.wait_for(
                     asyncio.gather(stdout_task, stderr_task, return_exceptions=True),
-                    )
+                )
             except builtins.TimeoutError:
                 # Even the cleanup timed out, cancel the tasks
                 stdout_task.cancel()
@@ -3438,7 +3457,10 @@ async def x_communicate_with_timeout__mutmut_24(
             # Wait a bit for background tasks to finish reading any remaining data
             try:
                 await asyncio.wait_for(
-                    asyncio.gather(stdout_task, stderr_task, ),
+                    asyncio.gather(
+                        stdout_task,
+                        stderr_task,
+                    ),
                     timeout=0.5,
                 )
             except builtins.TimeoutError:
@@ -4044,7 +4066,9 @@ async def x_communicate_with_timeout__mutmut_31(
             # Ensure process is cleaned up
             with contextlib.suppress(builtins.TimeoutError):
                 # Process still won't die after 1s, not much more we can do
-                await asyncio.wait_for(process.wait(), )
+                await asyncio.wait_for(
+                    process.wait(),
+                )
 
             # Get whatever output was captured
             partial_stdout = stdout_task.result() if stdout_task.done() else b""
@@ -5666,7 +5690,7 @@ async def x_communicate_with_timeout__mutmut_50(
                 command=cmd_str,
                 timeout=timeout,
                 captured_stdout_size=len(partial_stdout),
-                )
+            )
             raise ProcessTimeoutError(
                 f"Command timed out after {timeout}s: {cmd_str}",
                 code="PROCESS_ASYNC_TIMEOUT",
@@ -6943,7 +6967,7 @@ async def x_communicate_with_timeout__mutmut_65(
                 command=cmd_str,
                 timeout_seconds=timeout,
                 stdout=partial_stdout if partial_stdout else None,
-                ) from e
+            ) from e
     else:
         return await process.communicate(input=input)
 
@@ -7202,83 +7226,88 @@ async def x_communicate_with_timeout__mutmut_68(
     else:
         return await process.communicate(input=None)
 
-x_communicate_with_timeout__mutmut_mutants : ClassVar[MutantDict] = {
-'x_communicate_with_timeout__mutmut_1': x_communicate_with_timeout__mutmut_1, 
-    'x_communicate_with_timeout__mutmut_2': x_communicate_with_timeout__mutmut_2, 
-    'x_communicate_with_timeout__mutmut_3': x_communicate_with_timeout__mutmut_3, 
-    'x_communicate_with_timeout__mutmut_4': x_communicate_with_timeout__mutmut_4, 
-    'x_communicate_with_timeout__mutmut_5': x_communicate_with_timeout__mutmut_5, 
-    'x_communicate_with_timeout__mutmut_6': x_communicate_with_timeout__mutmut_6, 
-    'x_communicate_with_timeout__mutmut_7': x_communicate_with_timeout__mutmut_7, 
-    'x_communicate_with_timeout__mutmut_8': x_communicate_with_timeout__mutmut_8, 
-    'x_communicate_with_timeout__mutmut_9': x_communicate_with_timeout__mutmut_9, 
-    'x_communicate_with_timeout__mutmut_10': x_communicate_with_timeout__mutmut_10, 
-    'x_communicate_with_timeout__mutmut_11': x_communicate_with_timeout__mutmut_11, 
-    'x_communicate_with_timeout__mutmut_12': x_communicate_with_timeout__mutmut_12, 
-    'x_communicate_with_timeout__mutmut_13': x_communicate_with_timeout__mutmut_13, 
-    'x_communicate_with_timeout__mutmut_14': x_communicate_with_timeout__mutmut_14, 
-    'x_communicate_with_timeout__mutmut_15': x_communicate_with_timeout__mutmut_15, 
-    'x_communicate_with_timeout__mutmut_16': x_communicate_with_timeout__mutmut_16, 
-    'x_communicate_with_timeout__mutmut_17': x_communicate_with_timeout__mutmut_17, 
-    'x_communicate_with_timeout__mutmut_18': x_communicate_with_timeout__mutmut_18, 
-    'x_communicate_with_timeout__mutmut_19': x_communicate_with_timeout__mutmut_19, 
-    'x_communicate_with_timeout__mutmut_20': x_communicate_with_timeout__mutmut_20, 
-    'x_communicate_with_timeout__mutmut_21': x_communicate_with_timeout__mutmut_21, 
-    'x_communicate_with_timeout__mutmut_22': x_communicate_with_timeout__mutmut_22, 
-    'x_communicate_with_timeout__mutmut_23': x_communicate_with_timeout__mutmut_23, 
-    'x_communicate_with_timeout__mutmut_24': x_communicate_with_timeout__mutmut_24, 
-    'x_communicate_with_timeout__mutmut_25': x_communicate_with_timeout__mutmut_25, 
-    'x_communicate_with_timeout__mutmut_26': x_communicate_with_timeout__mutmut_26, 
-    'x_communicate_with_timeout__mutmut_27': x_communicate_with_timeout__mutmut_27, 
-    'x_communicate_with_timeout__mutmut_28': x_communicate_with_timeout__mutmut_28, 
-    'x_communicate_with_timeout__mutmut_29': x_communicate_with_timeout__mutmut_29, 
-    'x_communicate_with_timeout__mutmut_30': x_communicate_with_timeout__mutmut_30, 
-    'x_communicate_with_timeout__mutmut_31': x_communicate_with_timeout__mutmut_31, 
-    'x_communicate_with_timeout__mutmut_32': x_communicate_with_timeout__mutmut_32, 
-    'x_communicate_with_timeout__mutmut_33': x_communicate_with_timeout__mutmut_33, 
-    'x_communicate_with_timeout__mutmut_34': x_communicate_with_timeout__mutmut_34, 
-    'x_communicate_with_timeout__mutmut_35': x_communicate_with_timeout__mutmut_35, 
-    'x_communicate_with_timeout__mutmut_36': x_communicate_with_timeout__mutmut_36, 
-    'x_communicate_with_timeout__mutmut_37': x_communicate_with_timeout__mutmut_37, 
-    'x_communicate_with_timeout__mutmut_38': x_communicate_with_timeout__mutmut_38, 
-    'x_communicate_with_timeout__mutmut_39': x_communicate_with_timeout__mutmut_39, 
-    'x_communicate_with_timeout__mutmut_40': x_communicate_with_timeout__mutmut_40, 
-    'x_communicate_with_timeout__mutmut_41': x_communicate_with_timeout__mutmut_41, 
-    'x_communicate_with_timeout__mutmut_42': x_communicate_with_timeout__mutmut_42, 
-    'x_communicate_with_timeout__mutmut_43': x_communicate_with_timeout__mutmut_43, 
-    'x_communicate_with_timeout__mutmut_44': x_communicate_with_timeout__mutmut_44, 
-    'x_communicate_with_timeout__mutmut_45': x_communicate_with_timeout__mutmut_45, 
-    'x_communicate_with_timeout__mutmut_46': x_communicate_with_timeout__mutmut_46, 
-    'x_communicate_with_timeout__mutmut_47': x_communicate_with_timeout__mutmut_47, 
-    'x_communicate_with_timeout__mutmut_48': x_communicate_with_timeout__mutmut_48, 
-    'x_communicate_with_timeout__mutmut_49': x_communicate_with_timeout__mutmut_49, 
-    'x_communicate_with_timeout__mutmut_50': x_communicate_with_timeout__mutmut_50, 
-    'x_communicate_with_timeout__mutmut_51': x_communicate_with_timeout__mutmut_51, 
-    'x_communicate_with_timeout__mutmut_52': x_communicate_with_timeout__mutmut_52, 
-    'x_communicate_with_timeout__mutmut_53': x_communicate_with_timeout__mutmut_53, 
-    'x_communicate_with_timeout__mutmut_54': x_communicate_with_timeout__mutmut_54, 
-    'x_communicate_with_timeout__mutmut_55': x_communicate_with_timeout__mutmut_55, 
-    'x_communicate_with_timeout__mutmut_56': x_communicate_with_timeout__mutmut_56, 
-    'x_communicate_with_timeout__mutmut_57': x_communicate_with_timeout__mutmut_57, 
-    'x_communicate_with_timeout__mutmut_58': x_communicate_with_timeout__mutmut_58, 
-    'x_communicate_with_timeout__mutmut_59': x_communicate_with_timeout__mutmut_59, 
-    'x_communicate_with_timeout__mutmut_60': x_communicate_with_timeout__mutmut_60, 
-    'x_communicate_with_timeout__mutmut_61': x_communicate_with_timeout__mutmut_61, 
-    'x_communicate_with_timeout__mutmut_62': x_communicate_with_timeout__mutmut_62, 
-    'x_communicate_with_timeout__mutmut_63': x_communicate_with_timeout__mutmut_63, 
-    'x_communicate_with_timeout__mutmut_64': x_communicate_with_timeout__mutmut_64, 
-    'x_communicate_with_timeout__mutmut_65': x_communicate_with_timeout__mutmut_65, 
-    'x_communicate_with_timeout__mutmut_66': x_communicate_with_timeout__mutmut_66, 
-    'x_communicate_with_timeout__mutmut_67': x_communicate_with_timeout__mutmut_67, 
-    'x_communicate_with_timeout__mutmut_68': x_communicate_with_timeout__mutmut_68
+
+x_communicate_with_timeout__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_communicate_with_timeout__mutmut_1": x_communicate_with_timeout__mutmut_1,
+    "x_communicate_with_timeout__mutmut_2": x_communicate_with_timeout__mutmut_2,
+    "x_communicate_with_timeout__mutmut_3": x_communicate_with_timeout__mutmut_3,
+    "x_communicate_with_timeout__mutmut_4": x_communicate_with_timeout__mutmut_4,
+    "x_communicate_with_timeout__mutmut_5": x_communicate_with_timeout__mutmut_5,
+    "x_communicate_with_timeout__mutmut_6": x_communicate_with_timeout__mutmut_6,
+    "x_communicate_with_timeout__mutmut_7": x_communicate_with_timeout__mutmut_7,
+    "x_communicate_with_timeout__mutmut_8": x_communicate_with_timeout__mutmut_8,
+    "x_communicate_with_timeout__mutmut_9": x_communicate_with_timeout__mutmut_9,
+    "x_communicate_with_timeout__mutmut_10": x_communicate_with_timeout__mutmut_10,
+    "x_communicate_with_timeout__mutmut_11": x_communicate_with_timeout__mutmut_11,
+    "x_communicate_with_timeout__mutmut_12": x_communicate_with_timeout__mutmut_12,
+    "x_communicate_with_timeout__mutmut_13": x_communicate_with_timeout__mutmut_13,
+    "x_communicate_with_timeout__mutmut_14": x_communicate_with_timeout__mutmut_14,
+    "x_communicate_with_timeout__mutmut_15": x_communicate_with_timeout__mutmut_15,
+    "x_communicate_with_timeout__mutmut_16": x_communicate_with_timeout__mutmut_16,
+    "x_communicate_with_timeout__mutmut_17": x_communicate_with_timeout__mutmut_17,
+    "x_communicate_with_timeout__mutmut_18": x_communicate_with_timeout__mutmut_18,
+    "x_communicate_with_timeout__mutmut_19": x_communicate_with_timeout__mutmut_19,
+    "x_communicate_with_timeout__mutmut_20": x_communicate_with_timeout__mutmut_20,
+    "x_communicate_with_timeout__mutmut_21": x_communicate_with_timeout__mutmut_21,
+    "x_communicate_with_timeout__mutmut_22": x_communicate_with_timeout__mutmut_22,
+    "x_communicate_with_timeout__mutmut_23": x_communicate_with_timeout__mutmut_23,
+    "x_communicate_with_timeout__mutmut_24": x_communicate_with_timeout__mutmut_24,
+    "x_communicate_with_timeout__mutmut_25": x_communicate_with_timeout__mutmut_25,
+    "x_communicate_with_timeout__mutmut_26": x_communicate_with_timeout__mutmut_26,
+    "x_communicate_with_timeout__mutmut_27": x_communicate_with_timeout__mutmut_27,
+    "x_communicate_with_timeout__mutmut_28": x_communicate_with_timeout__mutmut_28,
+    "x_communicate_with_timeout__mutmut_29": x_communicate_with_timeout__mutmut_29,
+    "x_communicate_with_timeout__mutmut_30": x_communicate_with_timeout__mutmut_30,
+    "x_communicate_with_timeout__mutmut_31": x_communicate_with_timeout__mutmut_31,
+    "x_communicate_with_timeout__mutmut_32": x_communicate_with_timeout__mutmut_32,
+    "x_communicate_with_timeout__mutmut_33": x_communicate_with_timeout__mutmut_33,
+    "x_communicate_with_timeout__mutmut_34": x_communicate_with_timeout__mutmut_34,
+    "x_communicate_with_timeout__mutmut_35": x_communicate_with_timeout__mutmut_35,
+    "x_communicate_with_timeout__mutmut_36": x_communicate_with_timeout__mutmut_36,
+    "x_communicate_with_timeout__mutmut_37": x_communicate_with_timeout__mutmut_37,
+    "x_communicate_with_timeout__mutmut_38": x_communicate_with_timeout__mutmut_38,
+    "x_communicate_with_timeout__mutmut_39": x_communicate_with_timeout__mutmut_39,
+    "x_communicate_with_timeout__mutmut_40": x_communicate_with_timeout__mutmut_40,
+    "x_communicate_with_timeout__mutmut_41": x_communicate_with_timeout__mutmut_41,
+    "x_communicate_with_timeout__mutmut_42": x_communicate_with_timeout__mutmut_42,
+    "x_communicate_with_timeout__mutmut_43": x_communicate_with_timeout__mutmut_43,
+    "x_communicate_with_timeout__mutmut_44": x_communicate_with_timeout__mutmut_44,
+    "x_communicate_with_timeout__mutmut_45": x_communicate_with_timeout__mutmut_45,
+    "x_communicate_with_timeout__mutmut_46": x_communicate_with_timeout__mutmut_46,
+    "x_communicate_with_timeout__mutmut_47": x_communicate_with_timeout__mutmut_47,
+    "x_communicate_with_timeout__mutmut_48": x_communicate_with_timeout__mutmut_48,
+    "x_communicate_with_timeout__mutmut_49": x_communicate_with_timeout__mutmut_49,
+    "x_communicate_with_timeout__mutmut_50": x_communicate_with_timeout__mutmut_50,
+    "x_communicate_with_timeout__mutmut_51": x_communicate_with_timeout__mutmut_51,
+    "x_communicate_with_timeout__mutmut_52": x_communicate_with_timeout__mutmut_52,
+    "x_communicate_with_timeout__mutmut_53": x_communicate_with_timeout__mutmut_53,
+    "x_communicate_with_timeout__mutmut_54": x_communicate_with_timeout__mutmut_54,
+    "x_communicate_with_timeout__mutmut_55": x_communicate_with_timeout__mutmut_55,
+    "x_communicate_with_timeout__mutmut_56": x_communicate_with_timeout__mutmut_56,
+    "x_communicate_with_timeout__mutmut_57": x_communicate_with_timeout__mutmut_57,
+    "x_communicate_with_timeout__mutmut_58": x_communicate_with_timeout__mutmut_58,
+    "x_communicate_with_timeout__mutmut_59": x_communicate_with_timeout__mutmut_59,
+    "x_communicate_with_timeout__mutmut_60": x_communicate_with_timeout__mutmut_60,
+    "x_communicate_with_timeout__mutmut_61": x_communicate_with_timeout__mutmut_61,
+    "x_communicate_with_timeout__mutmut_62": x_communicate_with_timeout__mutmut_62,
+    "x_communicate_with_timeout__mutmut_63": x_communicate_with_timeout__mutmut_63,
+    "x_communicate_with_timeout__mutmut_64": x_communicate_with_timeout__mutmut_64,
+    "x_communicate_with_timeout__mutmut_65": x_communicate_with_timeout__mutmut_65,
+    "x_communicate_with_timeout__mutmut_66": x_communicate_with_timeout__mutmut_66,
+    "x_communicate_with_timeout__mutmut_67": x_communicate_with_timeout__mutmut_67,
+    "x_communicate_with_timeout__mutmut_68": x_communicate_with_timeout__mutmut_68,
 }
 
+
 def communicate_with_timeout(*args, **kwargs):
-    result = _mutmut_trampoline(x_communicate_with_timeout__mutmut_orig, x_communicate_with_timeout__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_communicate_with_timeout__mutmut_orig, x_communicate_with_timeout__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 communicate_with_timeout.__signature__ = _mutmut_signature(x_communicate_with_timeout__mutmut_orig)
-x_communicate_with_timeout__mutmut_orig.__name__ = 'x_communicate_with_timeout'
+x_communicate_with_timeout__mutmut_orig.__name__ = "x_communicate_with_timeout"
 
 
 def x_create_completed_process_result__mutmut_orig(
@@ -8100,7 +8129,7 @@ def x_create_completed_process_result__mutmut_22(
         stdout=stdout_str,
         stderr=stderr_str,
         cwd=cwd,
-        )
+    )
 
 
 def x_create_completed_process_result__mutmut_23(
@@ -8210,40 +8239,50 @@ def x_create_completed_process_result__mutmut_25(
         env=dict(None) if env else None,  # Only store caller overrides, not full run_env
     )
 
-x_create_completed_process_result__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_completed_process_result__mutmut_1': x_create_completed_process_result__mutmut_1, 
-    'x_create_completed_process_result__mutmut_2': x_create_completed_process_result__mutmut_2, 
-    'x_create_completed_process_result__mutmut_3': x_create_completed_process_result__mutmut_3, 
-    'x_create_completed_process_result__mutmut_4': x_create_completed_process_result__mutmut_4, 
-    'x_create_completed_process_result__mutmut_5': x_create_completed_process_result__mutmut_5, 
-    'x_create_completed_process_result__mutmut_6': x_create_completed_process_result__mutmut_6, 
-    'x_create_completed_process_result__mutmut_7': x_create_completed_process_result__mutmut_7, 
-    'x_create_completed_process_result__mutmut_8': x_create_completed_process_result__mutmut_8, 
-    'x_create_completed_process_result__mutmut_9': x_create_completed_process_result__mutmut_9, 
-    'x_create_completed_process_result__mutmut_10': x_create_completed_process_result__mutmut_10, 
-    'x_create_completed_process_result__mutmut_11': x_create_completed_process_result__mutmut_11, 
-    'x_create_completed_process_result__mutmut_12': x_create_completed_process_result__mutmut_12, 
-    'x_create_completed_process_result__mutmut_13': x_create_completed_process_result__mutmut_13, 
-    'x_create_completed_process_result__mutmut_14': x_create_completed_process_result__mutmut_14, 
-    'x_create_completed_process_result__mutmut_15': x_create_completed_process_result__mutmut_15, 
-    'x_create_completed_process_result__mutmut_16': x_create_completed_process_result__mutmut_16, 
-    'x_create_completed_process_result__mutmut_17': x_create_completed_process_result__mutmut_17, 
-    'x_create_completed_process_result__mutmut_18': x_create_completed_process_result__mutmut_18, 
-    'x_create_completed_process_result__mutmut_19': x_create_completed_process_result__mutmut_19, 
-    'x_create_completed_process_result__mutmut_20': x_create_completed_process_result__mutmut_20, 
-    'x_create_completed_process_result__mutmut_21': x_create_completed_process_result__mutmut_21, 
-    'x_create_completed_process_result__mutmut_22': x_create_completed_process_result__mutmut_22, 
-    'x_create_completed_process_result__mutmut_23': x_create_completed_process_result__mutmut_23, 
-    'x_create_completed_process_result__mutmut_24': x_create_completed_process_result__mutmut_24, 
-    'x_create_completed_process_result__mutmut_25': x_create_completed_process_result__mutmut_25
+
+x_create_completed_process_result__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_completed_process_result__mutmut_1": x_create_completed_process_result__mutmut_1,
+    "x_create_completed_process_result__mutmut_2": x_create_completed_process_result__mutmut_2,
+    "x_create_completed_process_result__mutmut_3": x_create_completed_process_result__mutmut_3,
+    "x_create_completed_process_result__mutmut_4": x_create_completed_process_result__mutmut_4,
+    "x_create_completed_process_result__mutmut_5": x_create_completed_process_result__mutmut_5,
+    "x_create_completed_process_result__mutmut_6": x_create_completed_process_result__mutmut_6,
+    "x_create_completed_process_result__mutmut_7": x_create_completed_process_result__mutmut_7,
+    "x_create_completed_process_result__mutmut_8": x_create_completed_process_result__mutmut_8,
+    "x_create_completed_process_result__mutmut_9": x_create_completed_process_result__mutmut_9,
+    "x_create_completed_process_result__mutmut_10": x_create_completed_process_result__mutmut_10,
+    "x_create_completed_process_result__mutmut_11": x_create_completed_process_result__mutmut_11,
+    "x_create_completed_process_result__mutmut_12": x_create_completed_process_result__mutmut_12,
+    "x_create_completed_process_result__mutmut_13": x_create_completed_process_result__mutmut_13,
+    "x_create_completed_process_result__mutmut_14": x_create_completed_process_result__mutmut_14,
+    "x_create_completed_process_result__mutmut_15": x_create_completed_process_result__mutmut_15,
+    "x_create_completed_process_result__mutmut_16": x_create_completed_process_result__mutmut_16,
+    "x_create_completed_process_result__mutmut_17": x_create_completed_process_result__mutmut_17,
+    "x_create_completed_process_result__mutmut_18": x_create_completed_process_result__mutmut_18,
+    "x_create_completed_process_result__mutmut_19": x_create_completed_process_result__mutmut_19,
+    "x_create_completed_process_result__mutmut_20": x_create_completed_process_result__mutmut_20,
+    "x_create_completed_process_result__mutmut_21": x_create_completed_process_result__mutmut_21,
+    "x_create_completed_process_result__mutmut_22": x_create_completed_process_result__mutmut_22,
+    "x_create_completed_process_result__mutmut_23": x_create_completed_process_result__mutmut_23,
+    "x_create_completed_process_result__mutmut_24": x_create_completed_process_result__mutmut_24,
+    "x_create_completed_process_result__mutmut_25": x_create_completed_process_result__mutmut_25,
 }
 
-def create_completed_process_result(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_completed_process_result__mutmut_orig, x_create_completed_process_result__mutmut_mutants, args, kwargs)
-    return result 
 
-create_completed_process_result.__signature__ = _mutmut_signature(x_create_completed_process_result__mutmut_orig)
-x_create_completed_process_result__mutmut_orig.__name__ = 'x_create_completed_process_result'
+def create_completed_process_result(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_create_completed_process_result__mutmut_orig,
+        x_create_completed_process_result__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+create_completed_process_result.__signature__ = _mutmut_signature(
+    x_create_completed_process_result__mutmut_orig
+)
+x_create_completed_process_result__mutmut_orig.__name__ = "x_create_completed_process_result"
 
 
 def x_check_process_success__mutmut_orig(
@@ -8687,7 +8726,7 @@ def x_check_process_success__mutmut_11(
             "❌ Async command failed",
             command=cmd_str,
             returncode=process.returncode,
-            )
+        )
         raise ProcessError(
             f"Command failed with exit code {process.returncode}: {cmd_str}",
             code="PROCESS_ASYNC_FAILED",
@@ -9259,7 +9298,7 @@ def x_check_process_success__mutmut_26(
             command=cmd_str,
             return_code=process.returncode,
             stdout=stdout_str if capture_output else None,
-            )
+        )
 
 
 def x_check_process_success__mutmut_27(
@@ -9337,43 +9376,48 @@ def x_check_process_success__mutmut_28(
             stderr=stderr_str if capture_output else None,
         )
 
-x_check_process_success__mutmut_mutants : ClassVar[MutantDict] = {
-'x_check_process_success__mutmut_1': x_check_process_success__mutmut_1, 
-    'x_check_process_success__mutmut_2': x_check_process_success__mutmut_2, 
-    'x_check_process_success__mutmut_3': x_check_process_success__mutmut_3, 
-    'x_check_process_success__mutmut_4': x_check_process_success__mutmut_4, 
-    'x_check_process_success__mutmut_5': x_check_process_success__mutmut_5, 
-    'x_check_process_success__mutmut_6': x_check_process_success__mutmut_6, 
-    'x_check_process_success__mutmut_7': x_check_process_success__mutmut_7, 
-    'x_check_process_success__mutmut_8': x_check_process_success__mutmut_8, 
-    'x_check_process_success__mutmut_9': x_check_process_success__mutmut_9, 
-    'x_check_process_success__mutmut_10': x_check_process_success__mutmut_10, 
-    'x_check_process_success__mutmut_11': x_check_process_success__mutmut_11, 
-    'x_check_process_success__mutmut_12': x_check_process_success__mutmut_12, 
-    'x_check_process_success__mutmut_13': x_check_process_success__mutmut_13, 
-    'x_check_process_success__mutmut_14': x_check_process_success__mutmut_14, 
-    'x_check_process_success__mutmut_15': x_check_process_success__mutmut_15, 
-    'x_check_process_success__mutmut_16': x_check_process_success__mutmut_16, 
-    'x_check_process_success__mutmut_17': x_check_process_success__mutmut_17, 
-    'x_check_process_success__mutmut_18': x_check_process_success__mutmut_18, 
-    'x_check_process_success__mutmut_19': x_check_process_success__mutmut_19, 
-    'x_check_process_success__mutmut_20': x_check_process_success__mutmut_20, 
-    'x_check_process_success__mutmut_21': x_check_process_success__mutmut_21, 
-    'x_check_process_success__mutmut_22': x_check_process_success__mutmut_22, 
-    'x_check_process_success__mutmut_23': x_check_process_success__mutmut_23, 
-    'x_check_process_success__mutmut_24': x_check_process_success__mutmut_24, 
-    'x_check_process_success__mutmut_25': x_check_process_success__mutmut_25, 
-    'x_check_process_success__mutmut_26': x_check_process_success__mutmut_26, 
-    'x_check_process_success__mutmut_27': x_check_process_success__mutmut_27, 
-    'x_check_process_success__mutmut_28': x_check_process_success__mutmut_28
+
+x_check_process_success__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_check_process_success__mutmut_1": x_check_process_success__mutmut_1,
+    "x_check_process_success__mutmut_2": x_check_process_success__mutmut_2,
+    "x_check_process_success__mutmut_3": x_check_process_success__mutmut_3,
+    "x_check_process_success__mutmut_4": x_check_process_success__mutmut_4,
+    "x_check_process_success__mutmut_5": x_check_process_success__mutmut_5,
+    "x_check_process_success__mutmut_6": x_check_process_success__mutmut_6,
+    "x_check_process_success__mutmut_7": x_check_process_success__mutmut_7,
+    "x_check_process_success__mutmut_8": x_check_process_success__mutmut_8,
+    "x_check_process_success__mutmut_9": x_check_process_success__mutmut_9,
+    "x_check_process_success__mutmut_10": x_check_process_success__mutmut_10,
+    "x_check_process_success__mutmut_11": x_check_process_success__mutmut_11,
+    "x_check_process_success__mutmut_12": x_check_process_success__mutmut_12,
+    "x_check_process_success__mutmut_13": x_check_process_success__mutmut_13,
+    "x_check_process_success__mutmut_14": x_check_process_success__mutmut_14,
+    "x_check_process_success__mutmut_15": x_check_process_success__mutmut_15,
+    "x_check_process_success__mutmut_16": x_check_process_success__mutmut_16,
+    "x_check_process_success__mutmut_17": x_check_process_success__mutmut_17,
+    "x_check_process_success__mutmut_18": x_check_process_success__mutmut_18,
+    "x_check_process_success__mutmut_19": x_check_process_success__mutmut_19,
+    "x_check_process_success__mutmut_20": x_check_process_success__mutmut_20,
+    "x_check_process_success__mutmut_21": x_check_process_success__mutmut_21,
+    "x_check_process_success__mutmut_22": x_check_process_success__mutmut_22,
+    "x_check_process_success__mutmut_23": x_check_process_success__mutmut_23,
+    "x_check_process_success__mutmut_24": x_check_process_success__mutmut_24,
+    "x_check_process_success__mutmut_25": x_check_process_success__mutmut_25,
+    "x_check_process_success__mutmut_26": x_check_process_success__mutmut_26,
+    "x_check_process_success__mutmut_27": x_check_process_success__mutmut_27,
+    "x_check_process_success__mutmut_28": x_check_process_success__mutmut_28,
 }
 
+
 def check_process_success(*args, **kwargs):
-    result = _mutmut_trampoline(x_check_process_success__mutmut_orig, x_check_process_success__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_check_process_success__mutmut_orig, x_check_process_success__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 check_process_success.__signature__ = _mutmut_signature(x_check_process_success__mutmut_orig)
-x_check_process_success__mutmut_orig.__name__ = 'x_check_process_success'
+x_check_process_success__mutmut_orig.__name__ = "x_check_process_success"
 
 
 async def x_cleanup_process__mutmut_orig(process: asyncio.subprocess.Process | None) -> None:
@@ -9775,7 +9819,9 @@ async def x_cleanup_process__mutmut_14(process: asyncio.subprocess.Process | Non
     if process.returncode is None:
         process.terminate()
         try:
-            await asyncio.wait_for(process.wait(), )
+            await asyncio.wait_for(
+                process.wait(),
+            )
         except builtins.TimeoutError:
             process.kill()
             await process.wait()
@@ -9807,30 +9853,35 @@ async def x_cleanup_process__mutmut_15(process: asyncio.subprocess.Process | Non
             process.kill()
             await process.wait()
 
-x_cleanup_process__mutmut_mutants : ClassVar[MutantDict] = {
-'x_cleanup_process__mutmut_1': x_cleanup_process__mutmut_1, 
-    'x_cleanup_process__mutmut_2': x_cleanup_process__mutmut_2, 
-    'x_cleanup_process__mutmut_3': x_cleanup_process__mutmut_3, 
-    'x_cleanup_process__mutmut_4': x_cleanup_process__mutmut_4, 
-    'x_cleanup_process__mutmut_5': x_cleanup_process__mutmut_5, 
-    'x_cleanup_process__mutmut_6': x_cleanup_process__mutmut_6, 
-    'x_cleanup_process__mutmut_7': x_cleanup_process__mutmut_7, 
-    'x_cleanup_process__mutmut_8': x_cleanup_process__mutmut_8, 
-    'x_cleanup_process__mutmut_9': x_cleanup_process__mutmut_9, 
-    'x_cleanup_process__mutmut_10': x_cleanup_process__mutmut_10, 
-    'x_cleanup_process__mutmut_11': x_cleanup_process__mutmut_11, 
-    'x_cleanup_process__mutmut_12': x_cleanup_process__mutmut_12, 
-    'x_cleanup_process__mutmut_13': x_cleanup_process__mutmut_13, 
-    'x_cleanup_process__mutmut_14': x_cleanup_process__mutmut_14, 
-    'x_cleanup_process__mutmut_15': x_cleanup_process__mutmut_15
+
+x_cleanup_process__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_cleanup_process__mutmut_1": x_cleanup_process__mutmut_1,
+    "x_cleanup_process__mutmut_2": x_cleanup_process__mutmut_2,
+    "x_cleanup_process__mutmut_3": x_cleanup_process__mutmut_3,
+    "x_cleanup_process__mutmut_4": x_cleanup_process__mutmut_4,
+    "x_cleanup_process__mutmut_5": x_cleanup_process__mutmut_5,
+    "x_cleanup_process__mutmut_6": x_cleanup_process__mutmut_6,
+    "x_cleanup_process__mutmut_7": x_cleanup_process__mutmut_7,
+    "x_cleanup_process__mutmut_8": x_cleanup_process__mutmut_8,
+    "x_cleanup_process__mutmut_9": x_cleanup_process__mutmut_9,
+    "x_cleanup_process__mutmut_10": x_cleanup_process__mutmut_10,
+    "x_cleanup_process__mutmut_11": x_cleanup_process__mutmut_11,
+    "x_cleanup_process__mutmut_12": x_cleanup_process__mutmut_12,
+    "x_cleanup_process__mutmut_13": x_cleanup_process__mutmut_13,
+    "x_cleanup_process__mutmut_14": x_cleanup_process__mutmut_14,
+    "x_cleanup_process__mutmut_15": x_cleanup_process__mutmut_15,
 }
 
+
 def cleanup_process(*args, **kwargs):
-    result = _mutmut_trampoline(x_cleanup_process__mutmut_orig, x_cleanup_process__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_cleanup_process__mutmut_orig, x_cleanup_process__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 cleanup_process.__signature__ = _mutmut_signature(x_cleanup_process__mutmut_orig)
-x_cleanup_process__mutmut_orig.__name__ = 'x_cleanup_process'
+x_cleanup_process__mutmut_orig.__name__ = "x_cleanup_process"
 
 
 async def x_async_run__mutmut_orig(
@@ -11280,7 +11331,10 @@ async def x_async_run__mutmut_15(
 
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     masked_cmd = mask_command(cmd_str)
-    log.trace("🚀 Running async command", command=masked_cmd, )
+    log.trace(
+        "🚀 Running async command",
+        command=masked_cmd,
+    )
 
     # Validate command type and shell parameter
     if isinstance(cmd, str) and not shell:
@@ -12600,7 +12654,7 @@ async def x_async_run__mutmut_29(
             "Use async_shell() for shell commands or pass a list for direct execution.",
             code="INVALID_COMMAND_TYPE",
             expected="list[str] or (str with shell=True)",
-            )
+        )
 
     # Prepare environment and convert Path to string
     run_env = prepare_environment(env)
@@ -14583,7 +14637,9 @@ async def x_async_run__mutmut_50(
     process = None
     try:
         # Create subprocess
-        process = await create_subprocess(None, cmd_str, shell, cwd_str, run_env, capture_output, input, kwargs)
+        process = await create_subprocess(
+            None, cmd_str, shell, cwd_str, run_env, capture_output, input, kwargs
+        )
 
         try:
             # Communicate with process
@@ -15993,7 +16049,15 @@ async def x_async_run__mutmut_65(
     process = None
     try:
         # Create subprocess
-        process = await create_subprocess(cmd, cmd_str, shell, cwd_str, run_env, capture_output, input, )
+        process = await create_subprocess(
+            cmd,
+            cmd_str,
+            shell,
+            cwd_str,
+            run_env,
+            capture_output,
+            input,
+        )
 
         try:
             # Communicate with process
@@ -16843,7 +16907,11 @@ async def x_async_run__mutmut_74(
 
         try:
             # Communicate with process
-            stdout, stderr = await communicate_with_timeout(process, input, timeout, )
+            stdout, stderr = await communicate_with_timeout(
+                process,
+                input,
+                timeout,
+            )
 
             # Create completed process
             completed = create_completed_process_result(cmd, process, stdout, stderr, cwd_str, env, run_env)
@@ -18256,7 +18324,14 @@ async def x_async_run__mutmut_89(
             stdout, stderr = await communicate_with_timeout(process, input, timeout, cmd_str)
 
             # Create completed process
-            completed = create_completed_process_result(cmd, process, stdout, stderr, cwd_str, env, )
+            completed = create_completed_process_result(
+                cmd,
+                process,
+                stdout,
+                stderr,
+                cwd_str,
+                env,
+            )
 
             # Check for success
             check_process_success(process, cmd_str, capture_output, completed.stdout, completed.stderr, check)
@@ -19387,7 +19462,13 @@ async def x_async_run__mutmut_101(
             completed = create_completed_process_result(cmd, process, stdout, stderr, cwd_str, env, run_env)
 
             # Check for success
-            check_process_success(process, cmd_str, capture_output, completed.stdout, completed.stderr, )
+            check_process_success(
+                process,
+                cmd_str,
+                capture_output,
+                completed.stdout,
+                completed.stderr,
+            )
 
             log.debug(
                 "✅ Async command completed",
@@ -19954,7 +20035,7 @@ async def x_async_run__mutmut_107(
             log.debug(
                 "✅ Async command completed",
                 command=cmd_str,
-                )
+            )
 
             return completed
         finally:
@@ -20905,7 +20986,7 @@ async def x_async_run__mutmut_117(
         log.error(
             "💥 Async command execution failed",
             command=cmd_str,
-            )
+        )
         raise ProcessError(
             f"Failed to execute async command: {cmd_str}",
             code="PROCESS_ASYNC_EXECUTION_FAILED",
@@ -21847,7 +21928,7 @@ async def x_async_run__mutmut_127(
         raise ProcessError(
             f"Failed to execute async command: {cmd_str}",
             code="PROCESS_ASYNC_EXECUTION_FAILED",
-            ) from e
+        ) from e
 
 
 async def x_async_run__mutmut_128(
@@ -22037,144 +22118,147 @@ async def x_async_run__mutmut_129(
             command=cmd_str,
         ) from e
 
-x_async_run__mutmut_mutants : ClassVar[MutantDict] = {
-'x_async_run__mutmut_1': x_async_run__mutmut_1, 
-    'x_async_run__mutmut_2': x_async_run__mutmut_2, 
-    'x_async_run__mutmut_3': x_async_run__mutmut_3, 
-    'x_async_run__mutmut_4': x_async_run__mutmut_4, 
-    'x_async_run__mutmut_5': x_async_run__mutmut_5, 
-    'x_async_run__mutmut_6': x_async_run__mutmut_6, 
-    'x_async_run__mutmut_7': x_async_run__mutmut_7, 
-    'x_async_run__mutmut_8': x_async_run__mutmut_8, 
-    'x_async_run__mutmut_9': x_async_run__mutmut_9, 
-    'x_async_run__mutmut_10': x_async_run__mutmut_10, 
-    'x_async_run__mutmut_11': x_async_run__mutmut_11, 
-    'x_async_run__mutmut_12': x_async_run__mutmut_12, 
-    'x_async_run__mutmut_13': x_async_run__mutmut_13, 
-    'x_async_run__mutmut_14': x_async_run__mutmut_14, 
-    'x_async_run__mutmut_15': x_async_run__mutmut_15, 
-    'x_async_run__mutmut_16': x_async_run__mutmut_16, 
-    'x_async_run__mutmut_17': x_async_run__mutmut_17, 
-    'x_async_run__mutmut_18': x_async_run__mutmut_18, 
-    'x_async_run__mutmut_19': x_async_run__mutmut_19, 
-    'x_async_run__mutmut_20': x_async_run__mutmut_20, 
-    'x_async_run__mutmut_21': x_async_run__mutmut_21, 
-    'x_async_run__mutmut_22': x_async_run__mutmut_22, 
-    'x_async_run__mutmut_23': x_async_run__mutmut_23, 
-    'x_async_run__mutmut_24': x_async_run__mutmut_24, 
-    'x_async_run__mutmut_25': x_async_run__mutmut_25, 
-    'x_async_run__mutmut_26': x_async_run__mutmut_26, 
-    'x_async_run__mutmut_27': x_async_run__mutmut_27, 
-    'x_async_run__mutmut_28': x_async_run__mutmut_28, 
-    'x_async_run__mutmut_29': x_async_run__mutmut_29, 
-    'x_async_run__mutmut_30': x_async_run__mutmut_30, 
-    'x_async_run__mutmut_31': x_async_run__mutmut_31, 
-    'x_async_run__mutmut_32': x_async_run__mutmut_32, 
-    'x_async_run__mutmut_33': x_async_run__mutmut_33, 
-    'x_async_run__mutmut_34': x_async_run__mutmut_34, 
-    'x_async_run__mutmut_35': x_async_run__mutmut_35, 
-    'x_async_run__mutmut_36': x_async_run__mutmut_36, 
-    'x_async_run__mutmut_37': x_async_run__mutmut_37, 
-    'x_async_run__mutmut_38': x_async_run__mutmut_38, 
-    'x_async_run__mutmut_39': x_async_run__mutmut_39, 
-    'x_async_run__mutmut_40': x_async_run__mutmut_40, 
-    'x_async_run__mutmut_41': x_async_run__mutmut_41, 
-    'x_async_run__mutmut_42': x_async_run__mutmut_42, 
-    'x_async_run__mutmut_43': x_async_run__mutmut_43, 
-    'x_async_run__mutmut_44': x_async_run__mutmut_44, 
-    'x_async_run__mutmut_45': x_async_run__mutmut_45, 
-    'x_async_run__mutmut_46': x_async_run__mutmut_46, 
-    'x_async_run__mutmut_47': x_async_run__mutmut_47, 
-    'x_async_run__mutmut_48': x_async_run__mutmut_48, 
-    'x_async_run__mutmut_49': x_async_run__mutmut_49, 
-    'x_async_run__mutmut_50': x_async_run__mutmut_50, 
-    'x_async_run__mutmut_51': x_async_run__mutmut_51, 
-    'x_async_run__mutmut_52': x_async_run__mutmut_52, 
-    'x_async_run__mutmut_53': x_async_run__mutmut_53, 
-    'x_async_run__mutmut_54': x_async_run__mutmut_54, 
-    'x_async_run__mutmut_55': x_async_run__mutmut_55, 
-    'x_async_run__mutmut_56': x_async_run__mutmut_56, 
-    'x_async_run__mutmut_57': x_async_run__mutmut_57, 
-    'x_async_run__mutmut_58': x_async_run__mutmut_58, 
-    'x_async_run__mutmut_59': x_async_run__mutmut_59, 
-    'x_async_run__mutmut_60': x_async_run__mutmut_60, 
-    'x_async_run__mutmut_61': x_async_run__mutmut_61, 
-    'x_async_run__mutmut_62': x_async_run__mutmut_62, 
-    'x_async_run__mutmut_63': x_async_run__mutmut_63, 
-    'x_async_run__mutmut_64': x_async_run__mutmut_64, 
-    'x_async_run__mutmut_65': x_async_run__mutmut_65, 
-    'x_async_run__mutmut_66': x_async_run__mutmut_66, 
-    'x_async_run__mutmut_67': x_async_run__mutmut_67, 
-    'x_async_run__mutmut_68': x_async_run__mutmut_68, 
-    'x_async_run__mutmut_69': x_async_run__mutmut_69, 
-    'x_async_run__mutmut_70': x_async_run__mutmut_70, 
-    'x_async_run__mutmut_71': x_async_run__mutmut_71, 
-    'x_async_run__mutmut_72': x_async_run__mutmut_72, 
-    'x_async_run__mutmut_73': x_async_run__mutmut_73, 
-    'x_async_run__mutmut_74': x_async_run__mutmut_74, 
-    'x_async_run__mutmut_75': x_async_run__mutmut_75, 
-    'x_async_run__mutmut_76': x_async_run__mutmut_76, 
-    'x_async_run__mutmut_77': x_async_run__mutmut_77, 
-    'x_async_run__mutmut_78': x_async_run__mutmut_78, 
-    'x_async_run__mutmut_79': x_async_run__mutmut_79, 
-    'x_async_run__mutmut_80': x_async_run__mutmut_80, 
-    'x_async_run__mutmut_81': x_async_run__mutmut_81, 
-    'x_async_run__mutmut_82': x_async_run__mutmut_82, 
-    'x_async_run__mutmut_83': x_async_run__mutmut_83, 
-    'x_async_run__mutmut_84': x_async_run__mutmut_84, 
-    'x_async_run__mutmut_85': x_async_run__mutmut_85, 
-    'x_async_run__mutmut_86': x_async_run__mutmut_86, 
-    'x_async_run__mutmut_87': x_async_run__mutmut_87, 
-    'x_async_run__mutmut_88': x_async_run__mutmut_88, 
-    'x_async_run__mutmut_89': x_async_run__mutmut_89, 
-    'x_async_run__mutmut_90': x_async_run__mutmut_90, 
-    'x_async_run__mutmut_91': x_async_run__mutmut_91, 
-    'x_async_run__mutmut_92': x_async_run__mutmut_92, 
-    'x_async_run__mutmut_93': x_async_run__mutmut_93, 
-    'x_async_run__mutmut_94': x_async_run__mutmut_94, 
-    'x_async_run__mutmut_95': x_async_run__mutmut_95, 
-    'x_async_run__mutmut_96': x_async_run__mutmut_96, 
-    'x_async_run__mutmut_97': x_async_run__mutmut_97, 
-    'x_async_run__mutmut_98': x_async_run__mutmut_98, 
-    'x_async_run__mutmut_99': x_async_run__mutmut_99, 
-    'x_async_run__mutmut_100': x_async_run__mutmut_100, 
-    'x_async_run__mutmut_101': x_async_run__mutmut_101, 
-    'x_async_run__mutmut_102': x_async_run__mutmut_102, 
-    'x_async_run__mutmut_103': x_async_run__mutmut_103, 
-    'x_async_run__mutmut_104': x_async_run__mutmut_104, 
-    'x_async_run__mutmut_105': x_async_run__mutmut_105, 
-    'x_async_run__mutmut_106': x_async_run__mutmut_106, 
-    'x_async_run__mutmut_107': x_async_run__mutmut_107, 
-    'x_async_run__mutmut_108': x_async_run__mutmut_108, 
-    'x_async_run__mutmut_109': x_async_run__mutmut_109, 
-    'x_async_run__mutmut_110': x_async_run__mutmut_110, 
-    'x_async_run__mutmut_111': x_async_run__mutmut_111, 
-    'x_async_run__mutmut_112': x_async_run__mutmut_112, 
-    'x_async_run__mutmut_113': x_async_run__mutmut_113, 
-    'x_async_run__mutmut_114': x_async_run__mutmut_114, 
-    'x_async_run__mutmut_115': x_async_run__mutmut_115, 
-    'x_async_run__mutmut_116': x_async_run__mutmut_116, 
-    'x_async_run__mutmut_117': x_async_run__mutmut_117, 
-    'x_async_run__mutmut_118': x_async_run__mutmut_118, 
-    'x_async_run__mutmut_119': x_async_run__mutmut_119, 
-    'x_async_run__mutmut_120': x_async_run__mutmut_120, 
-    'x_async_run__mutmut_121': x_async_run__mutmut_121, 
-    'x_async_run__mutmut_122': x_async_run__mutmut_122, 
-    'x_async_run__mutmut_123': x_async_run__mutmut_123, 
-    'x_async_run__mutmut_124': x_async_run__mutmut_124, 
-    'x_async_run__mutmut_125': x_async_run__mutmut_125, 
-    'x_async_run__mutmut_126': x_async_run__mutmut_126, 
-    'x_async_run__mutmut_127': x_async_run__mutmut_127, 
-    'x_async_run__mutmut_128': x_async_run__mutmut_128, 
-    'x_async_run__mutmut_129': x_async_run__mutmut_129
+
+x_async_run__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_async_run__mutmut_1": x_async_run__mutmut_1,
+    "x_async_run__mutmut_2": x_async_run__mutmut_2,
+    "x_async_run__mutmut_3": x_async_run__mutmut_3,
+    "x_async_run__mutmut_4": x_async_run__mutmut_4,
+    "x_async_run__mutmut_5": x_async_run__mutmut_5,
+    "x_async_run__mutmut_6": x_async_run__mutmut_6,
+    "x_async_run__mutmut_7": x_async_run__mutmut_7,
+    "x_async_run__mutmut_8": x_async_run__mutmut_8,
+    "x_async_run__mutmut_9": x_async_run__mutmut_9,
+    "x_async_run__mutmut_10": x_async_run__mutmut_10,
+    "x_async_run__mutmut_11": x_async_run__mutmut_11,
+    "x_async_run__mutmut_12": x_async_run__mutmut_12,
+    "x_async_run__mutmut_13": x_async_run__mutmut_13,
+    "x_async_run__mutmut_14": x_async_run__mutmut_14,
+    "x_async_run__mutmut_15": x_async_run__mutmut_15,
+    "x_async_run__mutmut_16": x_async_run__mutmut_16,
+    "x_async_run__mutmut_17": x_async_run__mutmut_17,
+    "x_async_run__mutmut_18": x_async_run__mutmut_18,
+    "x_async_run__mutmut_19": x_async_run__mutmut_19,
+    "x_async_run__mutmut_20": x_async_run__mutmut_20,
+    "x_async_run__mutmut_21": x_async_run__mutmut_21,
+    "x_async_run__mutmut_22": x_async_run__mutmut_22,
+    "x_async_run__mutmut_23": x_async_run__mutmut_23,
+    "x_async_run__mutmut_24": x_async_run__mutmut_24,
+    "x_async_run__mutmut_25": x_async_run__mutmut_25,
+    "x_async_run__mutmut_26": x_async_run__mutmut_26,
+    "x_async_run__mutmut_27": x_async_run__mutmut_27,
+    "x_async_run__mutmut_28": x_async_run__mutmut_28,
+    "x_async_run__mutmut_29": x_async_run__mutmut_29,
+    "x_async_run__mutmut_30": x_async_run__mutmut_30,
+    "x_async_run__mutmut_31": x_async_run__mutmut_31,
+    "x_async_run__mutmut_32": x_async_run__mutmut_32,
+    "x_async_run__mutmut_33": x_async_run__mutmut_33,
+    "x_async_run__mutmut_34": x_async_run__mutmut_34,
+    "x_async_run__mutmut_35": x_async_run__mutmut_35,
+    "x_async_run__mutmut_36": x_async_run__mutmut_36,
+    "x_async_run__mutmut_37": x_async_run__mutmut_37,
+    "x_async_run__mutmut_38": x_async_run__mutmut_38,
+    "x_async_run__mutmut_39": x_async_run__mutmut_39,
+    "x_async_run__mutmut_40": x_async_run__mutmut_40,
+    "x_async_run__mutmut_41": x_async_run__mutmut_41,
+    "x_async_run__mutmut_42": x_async_run__mutmut_42,
+    "x_async_run__mutmut_43": x_async_run__mutmut_43,
+    "x_async_run__mutmut_44": x_async_run__mutmut_44,
+    "x_async_run__mutmut_45": x_async_run__mutmut_45,
+    "x_async_run__mutmut_46": x_async_run__mutmut_46,
+    "x_async_run__mutmut_47": x_async_run__mutmut_47,
+    "x_async_run__mutmut_48": x_async_run__mutmut_48,
+    "x_async_run__mutmut_49": x_async_run__mutmut_49,
+    "x_async_run__mutmut_50": x_async_run__mutmut_50,
+    "x_async_run__mutmut_51": x_async_run__mutmut_51,
+    "x_async_run__mutmut_52": x_async_run__mutmut_52,
+    "x_async_run__mutmut_53": x_async_run__mutmut_53,
+    "x_async_run__mutmut_54": x_async_run__mutmut_54,
+    "x_async_run__mutmut_55": x_async_run__mutmut_55,
+    "x_async_run__mutmut_56": x_async_run__mutmut_56,
+    "x_async_run__mutmut_57": x_async_run__mutmut_57,
+    "x_async_run__mutmut_58": x_async_run__mutmut_58,
+    "x_async_run__mutmut_59": x_async_run__mutmut_59,
+    "x_async_run__mutmut_60": x_async_run__mutmut_60,
+    "x_async_run__mutmut_61": x_async_run__mutmut_61,
+    "x_async_run__mutmut_62": x_async_run__mutmut_62,
+    "x_async_run__mutmut_63": x_async_run__mutmut_63,
+    "x_async_run__mutmut_64": x_async_run__mutmut_64,
+    "x_async_run__mutmut_65": x_async_run__mutmut_65,
+    "x_async_run__mutmut_66": x_async_run__mutmut_66,
+    "x_async_run__mutmut_67": x_async_run__mutmut_67,
+    "x_async_run__mutmut_68": x_async_run__mutmut_68,
+    "x_async_run__mutmut_69": x_async_run__mutmut_69,
+    "x_async_run__mutmut_70": x_async_run__mutmut_70,
+    "x_async_run__mutmut_71": x_async_run__mutmut_71,
+    "x_async_run__mutmut_72": x_async_run__mutmut_72,
+    "x_async_run__mutmut_73": x_async_run__mutmut_73,
+    "x_async_run__mutmut_74": x_async_run__mutmut_74,
+    "x_async_run__mutmut_75": x_async_run__mutmut_75,
+    "x_async_run__mutmut_76": x_async_run__mutmut_76,
+    "x_async_run__mutmut_77": x_async_run__mutmut_77,
+    "x_async_run__mutmut_78": x_async_run__mutmut_78,
+    "x_async_run__mutmut_79": x_async_run__mutmut_79,
+    "x_async_run__mutmut_80": x_async_run__mutmut_80,
+    "x_async_run__mutmut_81": x_async_run__mutmut_81,
+    "x_async_run__mutmut_82": x_async_run__mutmut_82,
+    "x_async_run__mutmut_83": x_async_run__mutmut_83,
+    "x_async_run__mutmut_84": x_async_run__mutmut_84,
+    "x_async_run__mutmut_85": x_async_run__mutmut_85,
+    "x_async_run__mutmut_86": x_async_run__mutmut_86,
+    "x_async_run__mutmut_87": x_async_run__mutmut_87,
+    "x_async_run__mutmut_88": x_async_run__mutmut_88,
+    "x_async_run__mutmut_89": x_async_run__mutmut_89,
+    "x_async_run__mutmut_90": x_async_run__mutmut_90,
+    "x_async_run__mutmut_91": x_async_run__mutmut_91,
+    "x_async_run__mutmut_92": x_async_run__mutmut_92,
+    "x_async_run__mutmut_93": x_async_run__mutmut_93,
+    "x_async_run__mutmut_94": x_async_run__mutmut_94,
+    "x_async_run__mutmut_95": x_async_run__mutmut_95,
+    "x_async_run__mutmut_96": x_async_run__mutmut_96,
+    "x_async_run__mutmut_97": x_async_run__mutmut_97,
+    "x_async_run__mutmut_98": x_async_run__mutmut_98,
+    "x_async_run__mutmut_99": x_async_run__mutmut_99,
+    "x_async_run__mutmut_100": x_async_run__mutmut_100,
+    "x_async_run__mutmut_101": x_async_run__mutmut_101,
+    "x_async_run__mutmut_102": x_async_run__mutmut_102,
+    "x_async_run__mutmut_103": x_async_run__mutmut_103,
+    "x_async_run__mutmut_104": x_async_run__mutmut_104,
+    "x_async_run__mutmut_105": x_async_run__mutmut_105,
+    "x_async_run__mutmut_106": x_async_run__mutmut_106,
+    "x_async_run__mutmut_107": x_async_run__mutmut_107,
+    "x_async_run__mutmut_108": x_async_run__mutmut_108,
+    "x_async_run__mutmut_109": x_async_run__mutmut_109,
+    "x_async_run__mutmut_110": x_async_run__mutmut_110,
+    "x_async_run__mutmut_111": x_async_run__mutmut_111,
+    "x_async_run__mutmut_112": x_async_run__mutmut_112,
+    "x_async_run__mutmut_113": x_async_run__mutmut_113,
+    "x_async_run__mutmut_114": x_async_run__mutmut_114,
+    "x_async_run__mutmut_115": x_async_run__mutmut_115,
+    "x_async_run__mutmut_116": x_async_run__mutmut_116,
+    "x_async_run__mutmut_117": x_async_run__mutmut_117,
+    "x_async_run__mutmut_118": x_async_run__mutmut_118,
+    "x_async_run__mutmut_119": x_async_run__mutmut_119,
+    "x_async_run__mutmut_120": x_async_run__mutmut_120,
+    "x_async_run__mutmut_121": x_async_run__mutmut_121,
+    "x_async_run__mutmut_122": x_async_run__mutmut_122,
+    "x_async_run__mutmut_123": x_async_run__mutmut_123,
+    "x_async_run__mutmut_124": x_async_run__mutmut_124,
+    "x_async_run__mutmut_125": x_async_run__mutmut_125,
+    "x_async_run__mutmut_126": x_async_run__mutmut_126,
+    "x_async_run__mutmut_127": x_async_run__mutmut_127,
+    "x_async_run__mutmut_128": x_async_run__mutmut_128,
+    "x_async_run__mutmut_129": x_async_run__mutmut_129,
 }
+
 
 def async_run(*args, **kwargs):
     result = _mutmut_trampoline(x_async_run__mutmut_orig, x_async_run__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 async_run.__signature__ = _mutmut_signature(x_async_run__mutmut_orig)
-x_async_run__mutmut_orig.__name__ = 'x_async_run'
+x_async_run__mutmut_orig.__name__ = "x_async_run"
 
 
 # <3 🧱🤝🏃🪄

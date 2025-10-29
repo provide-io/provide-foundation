@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -117,7 +120,9 @@ def x__make_stdout_nonblocking__mutmut_6(stdout: Any) -> None:
     import os
 
     fd = stdout.fileno()
-    fl = fcntl.fcntl(fd, )
+    fl = fcntl.fcntl(
+        fd,
+    )
     fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
 
 
@@ -178,7 +183,10 @@ def x__make_stdout_nonblocking__mutmut_12(stdout: Any) -> None:
 
     fd = stdout.fileno()
     fl = fcntl.fcntl(fd, fcntl.F_GETFL)
-    fcntl.fcntl(fd, fcntl.F_SETFL, )
+    fcntl.fcntl(
+        fd,
+        fcntl.F_SETFL,
+    )
 
 
 def x__make_stdout_nonblocking__mutmut_13(stdout: Any) -> None:
@@ -190,31 +198,38 @@ def x__make_stdout_nonblocking__mutmut_13(stdout: Any) -> None:
     fl = fcntl.fcntl(fd, fcntl.F_GETFL)
     fcntl.fcntl(fd, fcntl.F_SETFL, fl & os.O_NONBLOCK)
 
-x__make_stdout_nonblocking__mutmut_mutants : ClassVar[MutantDict] = {
-'x__make_stdout_nonblocking__mutmut_1': x__make_stdout_nonblocking__mutmut_1, 
-    'x__make_stdout_nonblocking__mutmut_2': x__make_stdout_nonblocking__mutmut_2, 
-    'x__make_stdout_nonblocking__mutmut_3': x__make_stdout_nonblocking__mutmut_3, 
-    'x__make_stdout_nonblocking__mutmut_4': x__make_stdout_nonblocking__mutmut_4, 
-    'x__make_stdout_nonblocking__mutmut_5': x__make_stdout_nonblocking__mutmut_5, 
-    'x__make_stdout_nonblocking__mutmut_6': x__make_stdout_nonblocking__mutmut_6, 
-    'x__make_stdout_nonblocking__mutmut_7': x__make_stdout_nonblocking__mutmut_7, 
-    'x__make_stdout_nonblocking__mutmut_8': x__make_stdout_nonblocking__mutmut_8, 
-    'x__make_stdout_nonblocking__mutmut_9': x__make_stdout_nonblocking__mutmut_9, 
-    'x__make_stdout_nonblocking__mutmut_10': x__make_stdout_nonblocking__mutmut_10, 
-    'x__make_stdout_nonblocking__mutmut_11': x__make_stdout_nonblocking__mutmut_11, 
-    'x__make_stdout_nonblocking__mutmut_12': x__make_stdout_nonblocking__mutmut_12, 
-    'x__make_stdout_nonblocking__mutmut_13': x__make_stdout_nonblocking__mutmut_13
+
+x__make_stdout_nonblocking__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__make_stdout_nonblocking__mutmut_1": x__make_stdout_nonblocking__mutmut_1,
+    "x__make_stdout_nonblocking__mutmut_2": x__make_stdout_nonblocking__mutmut_2,
+    "x__make_stdout_nonblocking__mutmut_3": x__make_stdout_nonblocking__mutmut_3,
+    "x__make_stdout_nonblocking__mutmut_4": x__make_stdout_nonblocking__mutmut_4,
+    "x__make_stdout_nonblocking__mutmut_5": x__make_stdout_nonblocking__mutmut_5,
+    "x__make_stdout_nonblocking__mutmut_6": x__make_stdout_nonblocking__mutmut_6,
+    "x__make_stdout_nonblocking__mutmut_7": x__make_stdout_nonblocking__mutmut_7,
+    "x__make_stdout_nonblocking__mutmut_8": x__make_stdout_nonblocking__mutmut_8,
+    "x__make_stdout_nonblocking__mutmut_9": x__make_stdout_nonblocking__mutmut_9,
+    "x__make_stdout_nonblocking__mutmut_10": x__make_stdout_nonblocking__mutmut_10,
+    "x__make_stdout_nonblocking__mutmut_11": x__make_stdout_nonblocking__mutmut_11,
+    "x__make_stdout_nonblocking__mutmut_12": x__make_stdout_nonblocking__mutmut_12,
+    "x__make_stdout_nonblocking__mutmut_13": x__make_stdout_nonblocking__mutmut_13,
 }
 
+
 def _make_stdout_nonblocking(*args, **kwargs):
-    result = _mutmut_trampoline(x__make_stdout_nonblocking__mutmut_orig, x__make_stdout_nonblocking__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__make_stdout_nonblocking__mutmut_orig, x__make_stdout_nonblocking__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _make_stdout_nonblocking.__signature__ = _mutmut_signature(x__make_stdout_nonblocking__mutmut_orig)
-x__make_stdout_nonblocking__mutmut_orig.__name__ = 'x__make_stdout_nonblocking'
+x__make_stdout_nonblocking__mutmut_orig.__name__ = "x__make_stdout_nonblocking"
 
 
-def x__check_timeout_expired__mutmut_orig(start_time: float, timeout: float, cmd_str: str, process: Any) -> None:
+def x__check_timeout_expired__mutmut_orig(
+    start_time: float, timeout: float, cmd_str: str, process: Any
+) -> None:
     """Check if timeout has expired and handle it."""
     import time
 
@@ -375,7 +390,10 @@ def x__check_timeout_expired__mutmut_9(start_time: float, timeout: float, cmd_st
     if elapsed >= timeout:
         process.kill()
         process.wait()
-        log.error("⏱️ Stream timed out", command=cmd_str, )
+        log.error(
+            "⏱️ Stream timed out",
+            command=cmd_str,
+        )
         raise ProcessTimeoutError(
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_STREAM_TIMEOUT",
@@ -564,7 +582,7 @@ def x__check_timeout_expired__mutmut_20(start_time: float, timeout: float, cmd_s
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_STREAM_TIMEOUT",
             command=cmd_str,
-            )
+        )
 
 
 def x__check_timeout_expired__mutmut_21(start_time: float, timeout: float, cmd_str: str, process: Any) -> None:
@@ -600,37 +618,42 @@ def x__check_timeout_expired__mutmut_22(start_time: float, timeout: float, cmd_s
             timeout_seconds=timeout,
         )
 
-x__check_timeout_expired__mutmut_mutants : ClassVar[MutantDict] = {
-'x__check_timeout_expired__mutmut_1': x__check_timeout_expired__mutmut_1, 
-    'x__check_timeout_expired__mutmut_2': x__check_timeout_expired__mutmut_2, 
-    'x__check_timeout_expired__mutmut_3': x__check_timeout_expired__mutmut_3, 
-    'x__check_timeout_expired__mutmut_4': x__check_timeout_expired__mutmut_4, 
-    'x__check_timeout_expired__mutmut_5': x__check_timeout_expired__mutmut_5, 
-    'x__check_timeout_expired__mutmut_6': x__check_timeout_expired__mutmut_6, 
-    'x__check_timeout_expired__mutmut_7': x__check_timeout_expired__mutmut_7, 
-    'x__check_timeout_expired__mutmut_8': x__check_timeout_expired__mutmut_8, 
-    'x__check_timeout_expired__mutmut_9': x__check_timeout_expired__mutmut_9, 
-    'x__check_timeout_expired__mutmut_10': x__check_timeout_expired__mutmut_10, 
-    'x__check_timeout_expired__mutmut_11': x__check_timeout_expired__mutmut_11, 
-    'x__check_timeout_expired__mutmut_12': x__check_timeout_expired__mutmut_12, 
-    'x__check_timeout_expired__mutmut_13': x__check_timeout_expired__mutmut_13, 
-    'x__check_timeout_expired__mutmut_14': x__check_timeout_expired__mutmut_14, 
-    'x__check_timeout_expired__mutmut_15': x__check_timeout_expired__mutmut_15, 
-    'x__check_timeout_expired__mutmut_16': x__check_timeout_expired__mutmut_16, 
-    'x__check_timeout_expired__mutmut_17': x__check_timeout_expired__mutmut_17, 
-    'x__check_timeout_expired__mutmut_18': x__check_timeout_expired__mutmut_18, 
-    'x__check_timeout_expired__mutmut_19': x__check_timeout_expired__mutmut_19, 
-    'x__check_timeout_expired__mutmut_20': x__check_timeout_expired__mutmut_20, 
-    'x__check_timeout_expired__mutmut_21': x__check_timeout_expired__mutmut_21, 
-    'x__check_timeout_expired__mutmut_22': x__check_timeout_expired__mutmut_22
+
+x__check_timeout_expired__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__check_timeout_expired__mutmut_1": x__check_timeout_expired__mutmut_1,
+    "x__check_timeout_expired__mutmut_2": x__check_timeout_expired__mutmut_2,
+    "x__check_timeout_expired__mutmut_3": x__check_timeout_expired__mutmut_3,
+    "x__check_timeout_expired__mutmut_4": x__check_timeout_expired__mutmut_4,
+    "x__check_timeout_expired__mutmut_5": x__check_timeout_expired__mutmut_5,
+    "x__check_timeout_expired__mutmut_6": x__check_timeout_expired__mutmut_6,
+    "x__check_timeout_expired__mutmut_7": x__check_timeout_expired__mutmut_7,
+    "x__check_timeout_expired__mutmut_8": x__check_timeout_expired__mutmut_8,
+    "x__check_timeout_expired__mutmut_9": x__check_timeout_expired__mutmut_9,
+    "x__check_timeout_expired__mutmut_10": x__check_timeout_expired__mutmut_10,
+    "x__check_timeout_expired__mutmut_11": x__check_timeout_expired__mutmut_11,
+    "x__check_timeout_expired__mutmut_12": x__check_timeout_expired__mutmut_12,
+    "x__check_timeout_expired__mutmut_13": x__check_timeout_expired__mutmut_13,
+    "x__check_timeout_expired__mutmut_14": x__check_timeout_expired__mutmut_14,
+    "x__check_timeout_expired__mutmut_15": x__check_timeout_expired__mutmut_15,
+    "x__check_timeout_expired__mutmut_16": x__check_timeout_expired__mutmut_16,
+    "x__check_timeout_expired__mutmut_17": x__check_timeout_expired__mutmut_17,
+    "x__check_timeout_expired__mutmut_18": x__check_timeout_expired__mutmut_18,
+    "x__check_timeout_expired__mutmut_19": x__check_timeout_expired__mutmut_19,
+    "x__check_timeout_expired__mutmut_20": x__check_timeout_expired__mutmut_20,
+    "x__check_timeout_expired__mutmut_21": x__check_timeout_expired__mutmut_21,
+    "x__check_timeout_expired__mutmut_22": x__check_timeout_expired__mutmut_22,
 }
 
+
 def _check_timeout_expired(*args, **kwargs):
-    result = _mutmut_trampoline(x__check_timeout_expired__mutmut_orig, x__check_timeout_expired__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__check_timeout_expired__mutmut_orig, x__check_timeout_expired__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _check_timeout_expired.__signature__ = _mutmut_signature(x__check_timeout_expired__mutmut_orig)
-x__check_timeout_expired__mutmut_orig.__name__ = 'x__check_timeout_expired'
+x__check_timeout_expired__mutmut_orig.__name__ = "x__check_timeout_expired"
 
 
 def x__read_chunk_from_stdout__mutmut_orig(stdout: Any, buffer: str) -> tuple[str, bool]:
@@ -740,23 +763,28 @@ def x__read_chunk_from_stdout__mutmut_8(stdout: Any, buffer: str) -> tuple[str, 
         # No data available yet
         return buffer, True
 
-x__read_chunk_from_stdout__mutmut_mutants : ClassVar[MutantDict] = {
-'x__read_chunk_from_stdout__mutmut_1': x__read_chunk_from_stdout__mutmut_1, 
-    'x__read_chunk_from_stdout__mutmut_2': x__read_chunk_from_stdout__mutmut_2, 
-    'x__read_chunk_from_stdout__mutmut_3': x__read_chunk_from_stdout__mutmut_3, 
-    'x__read_chunk_from_stdout__mutmut_4': x__read_chunk_from_stdout__mutmut_4, 
-    'x__read_chunk_from_stdout__mutmut_5': x__read_chunk_from_stdout__mutmut_5, 
-    'x__read_chunk_from_stdout__mutmut_6': x__read_chunk_from_stdout__mutmut_6, 
-    'x__read_chunk_from_stdout__mutmut_7': x__read_chunk_from_stdout__mutmut_7, 
-    'x__read_chunk_from_stdout__mutmut_8': x__read_chunk_from_stdout__mutmut_8
+
+x__read_chunk_from_stdout__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__read_chunk_from_stdout__mutmut_1": x__read_chunk_from_stdout__mutmut_1,
+    "x__read_chunk_from_stdout__mutmut_2": x__read_chunk_from_stdout__mutmut_2,
+    "x__read_chunk_from_stdout__mutmut_3": x__read_chunk_from_stdout__mutmut_3,
+    "x__read_chunk_from_stdout__mutmut_4": x__read_chunk_from_stdout__mutmut_4,
+    "x__read_chunk_from_stdout__mutmut_5": x__read_chunk_from_stdout__mutmut_5,
+    "x__read_chunk_from_stdout__mutmut_6": x__read_chunk_from_stdout__mutmut_6,
+    "x__read_chunk_from_stdout__mutmut_7": x__read_chunk_from_stdout__mutmut_7,
+    "x__read_chunk_from_stdout__mutmut_8": x__read_chunk_from_stdout__mutmut_8,
 }
 
+
 def _read_chunk_from_stdout(*args, **kwargs):
-    result = _mutmut_trampoline(x__read_chunk_from_stdout__mutmut_orig, x__read_chunk_from_stdout__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__read_chunk_from_stdout__mutmut_orig, x__read_chunk_from_stdout__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _read_chunk_from_stdout.__signature__ = _mutmut_signature(x__read_chunk_from_stdout__mutmut_orig)
-x__read_chunk_from_stdout__mutmut_orig.__name__ = 'x__read_chunk_from_stdout'
+x__read_chunk_from_stdout__mutmut_orig.__name__ = "x__read_chunk_from_stdout"
 
 
 def x__yield_complete_lines__mutmut_orig(buffer: str) -> Iterator[tuple[str, str]]:
@@ -811,7 +839,9 @@ def x__yield_complete_lines__mutmut_6(buffer: str) -> Iterator[tuple[str, str]]:
 def x__yield_complete_lines__mutmut_7(buffer: str) -> Iterator[tuple[str, str]]:
     """Yield complete lines from buffer. Returns (line, remaining_buffer) tuples."""
     while "\n" in buffer:
-        line, buffer = buffer.split("\n", )
+        line, buffer = buffer.split(
+            "\n",
+        )
         yield line.rstrip(), buffer
 
 
@@ -842,26 +872,31 @@ def x__yield_complete_lines__mutmut_11(buffer: str) -> Iterator[tuple[str, str]]
         line, buffer = buffer.split("\n", 1)
         yield line.lstrip(), buffer
 
-x__yield_complete_lines__mutmut_mutants : ClassVar[MutantDict] = {
-'x__yield_complete_lines__mutmut_1': x__yield_complete_lines__mutmut_1, 
-    'x__yield_complete_lines__mutmut_2': x__yield_complete_lines__mutmut_2, 
-    'x__yield_complete_lines__mutmut_3': x__yield_complete_lines__mutmut_3, 
-    'x__yield_complete_lines__mutmut_4': x__yield_complete_lines__mutmut_4, 
-    'x__yield_complete_lines__mutmut_5': x__yield_complete_lines__mutmut_5, 
-    'x__yield_complete_lines__mutmut_6': x__yield_complete_lines__mutmut_6, 
-    'x__yield_complete_lines__mutmut_7': x__yield_complete_lines__mutmut_7, 
-    'x__yield_complete_lines__mutmut_8': x__yield_complete_lines__mutmut_8, 
-    'x__yield_complete_lines__mutmut_9': x__yield_complete_lines__mutmut_9, 
-    'x__yield_complete_lines__mutmut_10': x__yield_complete_lines__mutmut_10, 
-    'x__yield_complete_lines__mutmut_11': x__yield_complete_lines__mutmut_11
+
+x__yield_complete_lines__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__yield_complete_lines__mutmut_1": x__yield_complete_lines__mutmut_1,
+    "x__yield_complete_lines__mutmut_2": x__yield_complete_lines__mutmut_2,
+    "x__yield_complete_lines__mutmut_3": x__yield_complete_lines__mutmut_3,
+    "x__yield_complete_lines__mutmut_4": x__yield_complete_lines__mutmut_4,
+    "x__yield_complete_lines__mutmut_5": x__yield_complete_lines__mutmut_5,
+    "x__yield_complete_lines__mutmut_6": x__yield_complete_lines__mutmut_6,
+    "x__yield_complete_lines__mutmut_7": x__yield_complete_lines__mutmut_7,
+    "x__yield_complete_lines__mutmut_8": x__yield_complete_lines__mutmut_8,
+    "x__yield_complete_lines__mutmut_9": x__yield_complete_lines__mutmut_9,
+    "x__yield_complete_lines__mutmut_10": x__yield_complete_lines__mutmut_10,
+    "x__yield_complete_lines__mutmut_11": x__yield_complete_lines__mutmut_11,
 }
 
+
 def _yield_complete_lines(*args, **kwargs):
-    result = _mutmut_trampoline(x__yield_complete_lines__mutmut_orig, x__yield_complete_lines__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__yield_complete_lines__mutmut_orig, x__yield_complete_lines__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _yield_complete_lines.__signature__ = _mutmut_signature(x__yield_complete_lines__mutmut_orig)
-x__yield_complete_lines__mutmut_orig.__name__ = 'x__yield_complete_lines'
+x__yield_complete_lines__mutmut_orig.__name__ = "x__yield_complete_lines"
 
 
 def x__yield_remaining_lines__mutmut_orig(buffer: str) -> Iterator[str]:
@@ -891,18 +926,23 @@ def x__yield_remaining_lines__mutmut_3(buffer: str) -> Iterator[str]:
         if line:
             yield line.lstrip()
 
-x__yield_remaining_lines__mutmut_mutants : ClassVar[MutantDict] = {
-'x__yield_remaining_lines__mutmut_1': x__yield_remaining_lines__mutmut_1, 
-    'x__yield_remaining_lines__mutmut_2': x__yield_remaining_lines__mutmut_2, 
-    'x__yield_remaining_lines__mutmut_3': x__yield_remaining_lines__mutmut_3
+
+x__yield_remaining_lines__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__yield_remaining_lines__mutmut_1": x__yield_remaining_lines__mutmut_1,
+    "x__yield_remaining_lines__mutmut_2": x__yield_remaining_lines__mutmut_2,
+    "x__yield_remaining_lines__mutmut_3": x__yield_remaining_lines__mutmut_3,
 }
 
+
 def _yield_remaining_lines(*args, **kwargs):
-    result = _mutmut_trampoline(x__yield_remaining_lines__mutmut_orig, x__yield_remaining_lines__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__yield_remaining_lines__mutmut_orig, x__yield_remaining_lines__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _yield_remaining_lines.__signature__ = _mutmut_signature(x__yield_remaining_lines__mutmut_orig)
-x__yield_remaining_lines__mutmut_orig.__name__ = 'x__yield_remaining_lines'
+x__yield_remaining_lines__mutmut_orig.__name__ = "x__yield_remaining_lines"
 
 
 def x__finalize_remaining_data__mutmut_orig(stdout: Any, buffer: str) -> Iterator[str]:
@@ -949,19 +989,24 @@ def x__finalize_remaining_data__mutmut_4(stdout: Any, buffer: str) -> Iterator[s
 
     yield from _yield_remaining_lines(None)
 
-x__finalize_remaining_data__mutmut_mutants : ClassVar[MutantDict] = {
-'x__finalize_remaining_data__mutmut_1': x__finalize_remaining_data__mutmut_1, 
-    'x__finalize_remaining_data__mutmut_2': x__finalize_remaining_data__mutmut_2, 
-    'x__finalize_remaining_data__mutmut_3': x__finalize_remaining_data__mutmut_3, 
-    'x__finalize_remaining_data__mutmut_4': x__finalize_remaining_data__mutmut_4
+
+x__finalize_remaining_data__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__finalize_remaining_data__mutmut_1": x__finalize_remaining_data__mutmut_1,
+    "x__finalize_remaining_data__mutmut_2": x__finalize_remaining_data__mutmut_2,
+    "x__finalize_remaining_data__mutmut_3": x__finalize_remaining_data__mutmut_3,
+    "x__finalize_remaining_data__mutmut_4": x__finalize_remaining_data__mutmut_4,
 }
 
+
 def _finalize_remaining_data(*args, **kwargs):
-    result = _mutmut_trampoline(x__finalize_remaining_data__mutmut_orig, x__finalize_remaining_data__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__finalize_remaining_data__mutmut_orig, x__finalize_remaining_data__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _finalize_remaining_data.__signature__ = _mutmut_signature(x__finalize_remaining_data__mutmut_orig)
-x__finalize_remaining_data__mutmut_orig.__name__ = 'x__finalize_remaining_data'
+x__finalize_remaining_data__mutmut_orig.__name__ = "x__finalize_remaining_data"
 
 
 def x__stream_with_timeout__mutmut_orig(process: Any, timeout: float, cmd_str: str) -> Iterator[str]:
@@ -1481,7 +1526,11 @@ def x__stream_with_timeout__mutmut_14(process: Any, timeout: float, cmd_str: str
 
     buffer = ""
     while True:
-        _check_timeout_expired(start_time, timeout, cmd_str, )
+        _check_timeout_expired(
+            start_time,
+            timeout,
+            cmd_str,
+        )
 
         # Use select with timeout
         elapsed = time.time() - start_time
@@ -1954,7 +2003,11 @@ def x__stream_with_timeout__mutmut_27(process: Any, timeout: float, cmd_str: str
         # Use select with timeout
         elapsed = time.time() - start_time
         remaining = timeout - elapsed
-        ready, _, _ = select.select([process.stdout], [], [], )
+        ready, _, _ = select.select(
+            [process.stdout],
+            [],
+            [],
+        )
 
         if ready:
             buffer, eof = _read_chunk_from_stdout(process.stdout, buffer)
@@ -2098,7 +2151,14 @@ def x__stream_with_timeout__mutmut_31(process: Any, timeout: float, cmd_str: str
         # Use select with timeout
         elapsed = time.time() - start_time
         remaining = timeout - elapsed
-        ready, _, _ = select.select([process.stdout], [], [], min(0.1, ))
+        ready, _, _ = select.select(
+            [process.stdout],
+            [],
+            [],
+            min(
+                0.1,
+            ),
+        )
 
         if ready:
             buffer, eof = _read_chunk_from_stdout(process.stdout, buffer)
@@ -2317,7 +2377,9 @@ def x__stream_with_timeout__mutmut_37(process: Any, timeout: float, cmd_str: str
         ready, _, _ = select.select([process.stdout], [], [], min(0.1, remaining))
 
         if ready:
-            buffer, eof = _read_chunk_from_stdout(process.stdout, )
+            buffer, eof = _read_chunk_from_stdout(
+                process.stdout,
+            )
             if eof:
                 break
 
@@ -2616,7 +2678,9 @@ def x__stream_with_timeout__mutmut_45(process: Any, timeout: float, cmd_str: str
 
         # Check if process ended
         if process.poll() is not None:
-            yield from _finalize_remaining_data(process.stdout, )
+            yield from _finalize_remaining_data(
+                process.stdout,
+            )
             break
 
 
@@ -2655,61 +2719,66 @@ def x__stream_with_timeout__mutmut_46(process: Any, timeout: float, cmd_str: str
             yield from _finalize_remaining_data(process.stdout, buffer)
             return
 
-x__stream_with_timeout__mutmut_mutants : ClassVar[MutantDict] = {
-'x__stream_with_timeout__mutmut_1': x__stream_with_timeout__mutmut_1, 
-    'x__stream_with_timeout__mutmut_2': x__stream_with_timeout__mutmut_2, 
-    'x__stream_with_timeout__mutmut_3': x__stream_with_timeout__mutmut_3, 
-    'x__stream_with_timeout__mutmut_4': x__stream_with_timeout__mutmut_4, 
-    'x__stream_with_timeout__mutmut_5': x__stream_with_timeout__mutmut_5, 
-    'x__stream_with_timeout__mutmut_6': x__stream_with_timeout__mutmut_6, 
-    'x__stream_with_timeout__mutmut_7': x__stream_with_timeout__mutmut_7, 
-    'x__stream_with_timeout__mutmut_8': x__stream_with_timeout__mutmut_8, 
-    'x__stream_with_timeout__mutmut_9': x__stream_with_timeout__mutmut_9, 
-    'x__stream_with_timeout__mutmut_10': x__stream_with_timeout__mutmut_10, 
-    'x__stream_with_timeout__mutmut_11': x__stream_with_timeout__mutmut_11, 
-    'x__stream_with_timeout__mutmut_12': x__stream_with_timeout__mutmut_12, 
-    'x__stream_with_timeout__mutmut_13': x__stream_with_timeout__mutmut_13, 
-    'x__stream_with_timeout__mutmut_14': x__stream_with_timeout__mutmut_14, 
-    'x__stream_with_timeout__mutmut_15': x__stream_with_timeout__mutmut_15, 
-    'x__stream_with_timeout__mutmut_16': x__stream_with_timeout__mutmut_16, 
-    'x__stream_with_timeout__mutmut_17': x__stream_with_timeout__mutmut_17, 
-    'x__stream_with_timeout__mutmut_18': x__stream_with_timeout__mutmut_18, 
-    'x__stream_with_timeout__mutmut_19': x__stream_with_timeout__mutmut_19, 
-    'x__stream_with_timeout__mutmut_20': x__stream_with_timeout__mutmut_20, 
-    'x__stream_with_timeout__mutmut_21': x__stream_with_timeout__mutmut_21, 
-    'x__stream_with_timeout__mutmut_22': x__stream_with_timeout__mutmut_22, 
-    'x__stream_with_timeout__mutmut_23': x__stream_with_timeout__mutmut_23, 
-    'x__stream_with_timeout__mutmut_24': x__stream_with_timeout__mutmut_24, 
-    'x__stream_with_timeout__mutmut_25': x__stream_with_timeout__mutmut_25, 
-    'x__stream_with_timeout__mutmut_26': x__stream_with_timeout__mutmut_26, 
-    'x__stream_with_timeout__mutmut_27': x__stream_with_timeout__mutmut_27, 
-    'x__stream_with_timeout__mutmut_28': x__stream_with_timeout__mutmut_28, 
-    'x__stream_with_timeout__mutmut_29': x__stream_with_timeout__mutmut_29, 
-    'x__stream_with_timeout__mutmut_30': x__stream_with_timeout__mutmut_30, 
-    'x__stream_with_timeout__mutmut_31': x__stream_with_timeout__mutmut_31, 
-    'x__stream_with_timeout__mutmut_32': x__stream_with_timeout__mutmut_32, 
-    'x__stream_with_timeout__mutmut_33': x__stream_with_timeout__mutmut_33, 
-    'x__stream_with_timeout__mutmut_34': x__stream_with_timeout__mutmut_34, 
-    'x__stream_with_timeout__mutmut_35': x__stream_with_timeout__mutmut_35, 
-    'x__stream_with_timeout__mutmut_36': x__stream_with_timeout__mutmut_36, 
-    'x__stream_with_timeout__mutmut_37': x__stream_with_timeout__mutmut_37, 
-    'x__stream_with_timeout__mutmut_38': x__stream_with_timeout__mutmut_38, 
-    'x__stream_with_timeout__mutmut_39': x__stream_with_timeout__mutmut_39, 
-    'x__stream_with_timeout__mutmut_40': x__stream_with_timeout__mutmut_40, 
-    'x__stream_with_timeout__mutmut_41': x__stream_with_timeout__mutmut_41, 
-    'x__stream_with_timeout__mutmut_42': x__stream_with_timeout__mutmut_42, 
-    'x__stream_with_timeout__mutmut_43': x__stream_with_timeout__mutmut_43, 
-    'x__stream_with_timeout__mutmut_44': x__stream_with_timeout__mutmut_44, 
-    'x__stream_with_timeout__mutmut_45': x__stream_with_timeout__mutmut_45, 
-    'x__stream_with_timeout__mutmut_46': x__stream_with_timeout__mutmut_46
+
+x__stream_with_timeout__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__stream_with_timeout__mutmut_1": x__stream_with_timeout__mutmut_1,
+    "x__stream_with_timeout__mutmut_2": x__stream_with_timeout__mutmut_2,
+    "x__stream_with_timeout__mutmut_3": x__stream_with_timeout__mutmut_3,
+    "x__stream_with_timeout__mutmut_4": x__stream_with_timeout__mutmut_4,
+    "x__stream_with_timeout__mutmut_5": x__stream_with_timeout__mutmut_5,
+    "x__stream_with_timeout__mutmut_6": x__stream_with_timeout__mutmut_6,
+    "x__stream_with_timeout__mutmut_7": x__stream_with_timeout__mutmut_7,
+    "x__stream_with_timeout__mutmut_8": x__stream_with_timeout__mutmut_8,
+    "x__stream_with_timeout__mutmut_9": x__stream_with_timeout__mutmut_9,
+    "x__stream_with_timeout__mutmut_10": x__stream_with_timeout__mutmut_10,
+    "x__stream_with_timeout__mutmut_11": x__stream_with_timeout__mutmut_11,
+    "x__stream_with_timeout__mutmut_12": x__stream_with_timeout__mutmut_12,
+    "x__stream_with_timeout__mutmut_13": x__stream_with_timeout__mutmut_13,
+    "x__stream_with_timeout__mutmut_14": x__stream_with_timeout__mutmut_14,
+    "x__stream_with_timeout__mutmut_15": x__stream_with_timeout__mutmut_15,
+    "x__stream_with_timeout__mutmut_16": x__stream_with_timeout__mutmut_16,
+    "x__stream_with_timeout__mutmut_17": x__stream_with_timeout__mutmut_17,
+    "x__stream_with_timeout__mutmut_18": x__stream_with_timeout__mutmut_18,
+    "x__stream_with_timeout__mutmut_19": x__stream_with_timeout__mutmut_19,
+    "x__stream_with_timeout__mutmut_20": x__stream_with_timeout__mutmut_20,
+    "x__stream_with_timeout__mutmut_21": x__stream_with_timeout__mutmut_21,
+    "x__stream_with_timeout__mutmut_22": x__stream_with_timeout__mutmut_22,
+    "x__stream_with_timeout__mutmut_23": x__stream_with_timeout__mutmut_23,
+    "x__stream_with_timeout__mutmut_24": x__stream_with_timeout__mutmut_24,
+    "x__stream_with_timeout__mutmut_25": x__stream_with_timeout__mutmut_25,
+    "x__stream_with_timeout__mutmut_26": x__stream_with_timeout__mutmut_26,
+    "x__stream_with_timeout__mutmut_27": x__stream_with_timeout__mutmut_27,
+    "x__stream_with_timeout__mutmut_28": x__stream_with_timeout__mutmut_28,
+    "x__stream_with_timeout__mutmut_29": x__stream_with_timeout__mutmut_29,
+    "x__stream_with_timeout__mutmut_30": x__stream_with_timeout__mutmut_30,
+    "x__stream_with_timeout__mutmut_31": x__stream_with_timeout__mutmut_31,
+    "x__stream_with_timeout__mutmut_32": x__stream_with_timeout__mutmut_32,
+    "x__stream_with_timeout__mutmut_33": x__stream_with_timeout__mutmut_33,
+    "x__stream_with_timeout__mutmut_34": x__stream_with_timeout__mutmut_34,
+    "x__stream_with_timeout__mutmut_35": x__stream_with_timeout__mutmut_35,
+    "x__stream_with_timeout__mutmut_36": x__stream_with_timeout__mutmut_36,
+    "x__stream_with_timeout__mutmut_37": x__stream_with_timeout__mutmut_37,
+    "x__stream_with_timeout__mutmut_38": x__stream_with_timeout__mutmut_38,
+    "x__stream_with_timeout__mutmut_39": x__stream_with_timeout__mutmut_39,
+    "x__stream_with_timeout__mutmut_40": x__stream_with_timeout__mutmut_40,
+    "x__stream_with_timeout__mutmut_41": x__stream_with_timeout__mutmut_41,
+    "x__stream_with_timeout__mutmut_42": x__stream_with_timeout__mutmut_42,
+    "x__stream_with_timeout__mutmut_43": x__stream_with_timeout__mutmut_43,
+    "x__stream_with_timeout__mutmut_44": x__stream_with_timeout__mutmut_44,
+    "x__stream_with_timeout__mutmut_45": x__stream_with_timeout__mutmut_45,
+    "x__stream_with_timeout__mutmut_46": x__stream_with_timeout__mutmut_46,
 }
 
+
 def _stream_with_timeout(*args, **kwargs):
-    result = _mutmut_trampoline(x__stream_with_timeout__mutmut_orig, x__stream_with_timeout__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__stream_with_timeout__mutmut_orig, x__stream_with_timeout__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _stream_with_timeout.__signature__ = _mutmut_signature(x__stream_with_timeout__mutmut_orig)
-x__stream_with_timeout__mutmut_orig.__name__ = 'x__stream_with_timeout'
+x__stream_with_timeout__mutmut_orig.__name__ = "x__stream_with_timeout"
 
 
 def x__stream_without_timeout__mutmut_orig(process: Any) -> Iterator[str]:
@@ -2725,16 +2794,21 @@ def x__stream_without_timeout__mutmut_1(process: Any) -> Iterator[str]:
         for line in process.stdout:
             yield line.lstrip()
 
-x__stream_without_timeout__mutmut_mutants : ClassVar[MutantDict] = {
-'x__stream_without_timeout__mutmut_1': x__stream_without_timeout__mutmut_1
+
+x__stream_without_timeout__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__stream_without_timeout__mutmut_1": x__stream_without_timeout__mutmut_1
 }
 
+
 def _stream_without_timeout(*args, **kwargs):
-    result = _mutmut_trampoline(x__stream_without_timeout__mutmut_orig, x__stream_without_timeout__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__stream_without_timeout__mutmut_orig, x__stream_without_timeout__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _stream_without_timeout.__signature__ = _mutmut_signature(x__stream_without_timeout__mutmut_orig)
-x__stream_without_timeout__mutmut_orig.__name__ = 'x__stream_without_timeout'
+x__stream_without_timeout__mutmut_orig.__name__ = "x__stream_without_timeout"
 
 
 def x__cleanup_process__mutmut_orig(process: Any) -> None:
@@ -2804,18 +2878,23 @@ def x__cleanup_process__mutmut_3(process: Any) -> None:
             process.kill()
             process.wait()
 
-x__cleanup_process__mutmut_mutants : ClassVar[MutantDict] = {
-'x__cleanup_process__mutmut_1': x__cleanup_process__mutmut_1, 
-    'x__cleanup_process__mutmut_2': x__cleanup_process__mutmut_2, 
-    'x__cleanup_process__mutmut_3': x__cleanup_process__mutmut_3
+
+x__cleanup_process__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__cleanup_process__mutmut_1": x__cleanup_process__mutmut_1,
+    "x__cleanup_process__mutmut_2": x__cleanup_process__mutmut_2,
+    "x__cleanup_process__mutmut_3": x__cleanup_process__mutmut_3,
 }
 
+
 def _cleanup_process(*args, **kwargs):
-    result = _mutmut_trampoline(x__cleanup_process__mutmut_orig, x__cleanup_process__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__cleanup_process__mutmut_orig, x__cleanup_process__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _cleanup_process.__signature__ = _mutmut_signature(x__cleanup_process__mutmut_orig)
-x__cleanup_process__mutmut_orig.__name__ = 'x__cleanup_process'
+x__cleanup_process__mutmut_orig.__name__ = "x__cleanup_process"
 
 
 def x_stream__mutmut_orig(
@@ -3681,7 +3760,10 @@ def x_stream__mutmut_11(
 
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    log.info("🌊 Streaming command", command=cmd_str, )
+    log.info(
+        "🌊 Streaming command",
+        command=cmd_str,
+    )
 
     run_env = prepare_environment(env)
     cwd = normalize_cwd(cwd)
@@ -5654,7 +5736,7 @@ def x_stream__mutmut_37(
             text=True,
             bufsize=1,
             universal_newlines=True,
-            )
+        )
 
         try:
             if timeout is not None:
@@ -6418,7 +6500,10 @@ def x_stream__mutmut_47(
 
         try:
             if timeout is not None:
-                yield from _stream_with_timeout(process, timeout, )
+                yield from _stream_with_timeout(
+                    process,
+                    timeout,
+                )
                 returncode = process.poll() or process.wait()
             else:
                 yield from _stream_without_timeout(process)
@@ -7490,7 +7575,7 @@ def x_stream__mutmut_61(
                     f"Command failed with exit code {returncode}: {cmd_str}",
                     code="PROCESS_STREAM_FAILED",
                     command=cmd_str,
-                    )
+                )
 
             log.debug("✅ Stream completed", command=cmd_str)
         finally:
@@ -7948,7 +8033,9 @@ def x_stream__mutmut_67(
                     return_code=returncode,
                 )
 
-            log.debug("✅ Stream completed", )
+            log.debug(
+                "✅ Stream completed",
+            )
         finally:
             _cleanup_process(process)
 
@@ -8715,7 +8802,10 @@ def x_stream__mutmut_77(
     except Exception as e:
         if isinstance(e, ProcessError | ProcessTimeoutError):
             raise
-        log.error("💥 Stream failed", command=cmd_str, )
+        log.error(
+            "💥 Stream failed",
+            command=cmd_str,
+        )
         raise ProcessError(
             f"Failed to stream command: {cmd_str}",
             code="PROCESS_STREAM_ERROR",
@@ -9477,7 +9567,7 @@ def x_stream__mutmut_87(
         raise ProcessError(
             f"Failed to stream command: {cmd_str}",
             code="PROCESS_STREAM_ERROR",
-            ) from e
+        ) from e
 
 
 def x_stream__mutmut_88(
@@ -9631,104 +9721,107 @@ def x_stream__mutmut_89(
             command=cmd_str,
         ) from e
 
-x_stream__mutmut_mutants : ClassVar[MutantDict] = {
-'x_stream__mutmut_1': x_stream__mutmut_1, 
-    'x_stream__mutmut_2': x_stream__mutmut_2, 
-    'x_stream__mutmut_3': x_stream__mutmut_3, 
-    'x_stream__mutmut_4': x_stream__mutmut_4, 
-    'x_stream__mutmut_5': x_stream__mutmut_5, 
-    'x_stream__mutmut_6': x_stream__mutmut_6, 
-    'x_stream__mutmut_7': x_stream__mutmut_7, 
-    'x_stream__mutmut_8': x_stream__mutmut_8, 
-    'x_stream__mutmut_9': x_stream__mutmut_9, 
-    'x_stream__mutmut_10': x_stream__mutmut_10, 
-    'x_stream__mutmut_11': x_stream__mutmut_11, 
-    'x_stream__mutmut_12': x_stream__mutmut_12, 
-    'x_stream__mutmut_13': x_stream__mutmut_13, 
-    'x_stream__mutmut_14': x_stream__mutmut_14, 
-    'x_stream__mutmut_15': x_stream__mutmut_15, 
-    'x_stream__mutmut_16': x_stream__mutmut_16, 
-    'x_stream__mutmut_17': x_stream__mutmut_17, 
-    'x_stream__mutmut_18': x_stream__mutmut_18, 
-    'x_stream__mutmut_19': x_stream__mutmut_19, 
-    'x_stream__mutmut_20': x_stream__mutmut_20, 
-    'x_stream__mutmut_21': x_stream__mutmut_21, 
-    'x_stream__mutmut_22': x_stream__mutmut_22, 
-    'x_stream__mutmut_23': x_stream__mutmut_23, 
-    'x_stream__mutmut_24': x_stream__mutmut_24, 
-    'x_stream__mutmut_25': x_stream__mutmut_25, 
-    'x_stream__mutmut_26': x_stream__mutmut_26, 
-    'x_stream__mutmut_27': x_stream__mutmut_27, 
-    'x_stream__mutmut_28': x_stream__mutmut_28, 
-    'x_stream__mutmut_29': x_stream__mutmut_29, 
-    'x_stream__mutmut_30': x_stream__mutmut_30, 
-    'x_stream__mutmut_31': x_stream__mutmut_31, 
-    'x_stream__mutmut_32': x_stream__mutmut_32, 
-    'x_stream__mutmut_33': x_stream__mutmut_33, 
-    'x_stream__mutmut_34': x_stream__mutmut_34, 
-    'x_stream__mutmut_35': x_stream__mutmut_35, 
-    'x_stream__mutmut_36': x_stream__mutmut_36, 
-    'x_stream__mutmut_37': x_stream__mutmut_37, 
-    'x_stream__mutmut_38': x_stream__mutmut_38, 
-    'x_stream__mutmut_39': x_stream__mutmut_39, 
-    'x_stream__mutmut_40': x_stream__mutmut_40, 
-    'x_stream__mutmut_41': x_stream__mutmut_41, 
-    'x_stream__mutmut_42': x_stream__mutmut_42, 
-    'x_stream__mutmut_43': x_stream__mutmut_43, 
-    'x_stream__mutmut_44': x_stream__mutmut_44, 
-    'x_stream__mutmut_45': x_stream__mutmut_45, 
-    'x_stream__mutmut_46': x_stream__mutmut_46, 
-    'x_stream__mutmut_47': x_stream__mutmut_47, 
-    'x_stream__mutmut_48': x_stream__mutmut_48, 
-    'x_stream__mutmut_49': x_stream__mutmut_49, 
-    'x_stream__mutmut_50': x_stream__mutmut_50, 
-    'x_stream__mutmut_51': x_stream__mutmut_51, 
-    'x_stream__mutmut_52': x_stream__mutmut_52, 
-    'x_stream__mutmut_53': x_stream__mutmut_53, 
-    'x_stream__mutmut_54': x_stream__mutmut_54, 
-    'x_stream__mutmut_55': x_stream__mutmut_55, 
-    'x_stream__mutmut_56': x_stream__mutmut_56, 
-    'x_stream__mutmut_57': x_stream__mutmut_57, 
-    'x_stream__mutmut_58': x_stream__mutmut_58, 
-    'x_stream__mutmut_59': x_stream__mutmut_59, 
-    'x_stream__mutmut_60': x_stream__mutmut_60, 
-    'x_stream__mutmut_61': x_stream__mutmut_61, 
-    'x_stream__mutmut_62': x_stream__mutmut_62, 
-    'x_stream__mutmut_63': x_stream__mutmut_63, 
-    'x_stream__mutmut_64': x_stream__mutmut_64, 
-    'x_stream__mutmut_65': x_stream__mutmut_65, 
-    'x_stream__mutmut_66': x_stream__mutmut_66, 
-    'x_stream__mutmut_67': x_stream__mutmut_67, 
-    'x_stream__mutmut_68': x_stream__mutmut_68, 
-    'x_stream__mutmut_69': x_stream__mutmut_69, 
-    'x_stream__mutmut_70': x_stream__mutmut_70, 
-    'x_stream__mutmut_71': x_stream__mutmut_71, 
-    'x_stream__mutmut_72': x_stream__mutmut_72, 
-    'x_stream__mutmut_73': x_stream__mutmut_73, 
-    'x_stream__mutmut_74': x_stream__mutmut_74, 
-    'x_stream__mutmut_75': x_stream__mutmut_75, 
-    'x_stream__mutmut_76': x_stream__mutmut_76, 
-    'x_stream__mutmut_77': x_stream__mutmut_77, 
-    'x_stream__mutmut_78': x_stream__mutmut_78, 
-    'x_stream__mutmut_79': x_stream__mutmut_79, 
-    'x_stream__mutmut_80': x_stream__mutmut_80, 
-    'x_stream__mutmut_81': x_stream__mutmut_81, 
-    'x_stream__mutmut_82': x_stream__mutmut_82, 
-    'x_stream__mutmut_83': x_stream__mutmut_83, 
-    'x_stream__mutmut_84': x_stream__mutmut_84, 
-    'x_stream__mutmut_85': x_stream__mutmut_85, 
-    'x_stream__mutmut_86': x_stream__mutmut_86, 
-    'x_stream__mutmut_87': x_stream__mutmut_87, 
-    'x_stream__mutmut_88': x_stream__mutmut_88, 
-    'x_stream__mutmut_89': x_stream__mutmut_89
+
+x_stream__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_stream__mutmut_1": x_stream__mutmut_1,
+    "x_stream__mutmut_2": x_stream__mutmut_2,
+    "x_stream__mutmut_3": x_stream__mutmut_3,
+    "x_stream__mutmut_4": x_stream__mutmut_4,
+    "x_stream__mutmut_5": x_stream__mutmut_5,
+    "x_stream__mutmut_6": x_stream__mutmut_6,
+    "x_stream__mutmut_7": x_stream__mutmut_7,
+    "x_stream__mutmut_8": x_stream__mutmut_8,
+    "x_stream__mutmut_9": x_stream__mutmut_9,
+    "x_stream__mutmut_10": x_stream__mutmut_10,
+    "x_stream__mutmut_11": x_stream__mutmut_11,
+    "x_stream__mutmut_12": x_stream__mutmut_12,
+    "x_stream__mutmut_13": x_stream__mutmut_13,
+    "x_stream__mutmut_14": x_stream__mutmut_14,
+    "x_stream__mutmut_15": x_stream__mutmut_15,
+    "x_stream__mutmut_16": x_stream__mutmut_16,
+    "x_stream__mutmut_17": x_stream__mutmut_17,
+    "x_stream__mutmut_18": x_stream__mutmut_18,
+    "x_stream__mutmut_19": x_stream__mutmut_19,
+    "x_stream__mutmut_20": x_stream__mutmut_20,
+    "x_stream__mutmut_21": x_stream__mutmut_21,
+    "x_stream__mutmut_22": x_stream__mutmut_22,
+    "x_stream__mutmut_23": x_stream__mutmut_23,
+    "x_stream__mutmut_24": x_stream__mutmut_24,
+    "x_stream__mutmut_25": x_stream__mutmut_25,
+    "x_stream__mutmut_26": x_stream__mutmut_26,
+    "x_stream__mutmut_27": x_stream__mutmut_27,
+    "x_stream__mutmut_28": x_stream__mutmut_28,
+    "x_stream__mutmut_29": x_stream__mutmut_29,
+    "x_stream__mutmut_30": x_stream__mutmut_30,
+    "x_stream__mutmut_31": x_stream__mutmut_31,
+    "x_stream__mutmut_32": x_stream__mutmut_32,
+    "x_stream__mutmut_33": x_stream__mutmut_33,
+    "x_stream__mutmut_34": x_stream__mutmut_34,
+    "x_stream__mutmut_35": x_stream__mutmut_35,
+    "x_stream__mutmut_36": x_stream__mutmut_36,
+    "x_stream__mutmut_37": x_stream__mutmut_37,
+    "x_stream__mutmut_38": x_stream__mutmut_38,
+    "x_stream__mutmut_39": x_stream__mutmut_39,
+    "x_stream__mutmut_40": x_stream__mutmut_40,
+    "x_stream__mutmut_41": x_stream__mutmut_41,
+    "x_stream__mutmut_42": x_stream__mutmut_42,
+    "x_stream__mutmut_43": x_stream__mutmut_43,
+    "x_stream__mutmut_44": x_stream__mutmut_44,
+    "x_stream__mutmut_45": x_stream__mutmut_45,
+    "x_stream__mutmut_46": x_stream__mutmut_46,
+    "x_stream__mutmut_47": x_stream__mutmut_47,
+    "x_stream__mutmut_48": x_stream__mutmut_48,
+    "x_stream__mutmut_49": x_stream__mutmut_49,
+    "x_stream__mutmut_50": x_stream__mutmut_50,
+    "x_stream__mutmut_51": x_stream__mutmut_51,
+    "x_stream__mutmut_52": x_stream__mutmut_52,
+    "x_stream__mutmut_53": x_stream__mutmut_53,
+    "x_stream__mutmut_54": x_stream__mutmut_54,
+    "x_stream__mutmut_55": x_stream__mutmut_55,
+    "x_stream__mutmut_56": x_stream__mutmut_56,
+    "x_stream__mutmut_57": x_stream__mutmut_57,
+    "x_stream__mutmut_58": x_stream__mutmut_58,
+    "x_stream__mutmut_59": x_stream__mutmut_59,
+    "x_stream__mutmut_60": x_stream__mutmut_60,
+    "x_stream__mutmut_61": x_stream__mutmut_61,
+    "x_stream__mutmut_62": x_stream__mutmut_62,
+    "x_stream__mutmut_63": x_stream__mutmut_63,
+    "x_stream__mutmut_64": x_stream__mutmut_64,
+    "x_stream__mutmut_65": x_stream__mutmut_65,
+    "x_stream__mutmut_66": x_stream__mutmut_66,
+    "x_stream__mutmut_67": x_stream__mutmut_67,
+    "x_stream__mutmut_68": x_stream__mutmut_68,
+    "x_stream__mutmut_69": x_stream__mutmut_69,
+    "x_stream__mutmut_70": x_stream__mutmut_70,
+    "x_stream__mutmut_71": x_stream__mutmut_71,
+    "x_stream__mutmut_72": x_stream__mutmut_72,
+    "x_stream__mutmut_73": x_stream__mutmut_73,
+    "x_stream__mutmut_74": x_stream__mutmut_74,
+    "x_stream__mutmut_75": x_stream__mutmut_75,
+    "x_stream__mutmut_76": x_stream__mutmut_76,
+    "x_stream__mutmut_77": x_stream__mutmut_77,
+    "x_stream__mutmut_78": x_stream__mutmut_78,
+    "x_stream__mutmut_79": x_stream__mutmut_79,
+    "x_stream__mutmut_80": x_stream__mutmut_80,
+    "x_stream__mutmut_81": x_stream__mutmut_81,
+    "x_stream__mutmut_82": x_stream__mutmut_82,
+    "x_stream__mutmut_83": x_stream__mutmut_83,
+    "x_stream__mutmut_84": x_stream__mutmut_84,
+    "x_stream__mutmut_85": x_stream__mutmut_85,
+    "x_stream__mutmut_86": x_stream__mutmut_86,
+    "x_stream__mutmut_87": x_stream__mutmut_87,
+    "x_stream__mutmut_88": x_stream__mutmut_88,
+    "x_stream__mutmut_89": x_stream__mutmut_89,
 }
+
 
 def stream(*args, **kwargs):
     result = _mutmut_trampoline(x_stream__mutmut_orig, x_stream__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 stream.__signature__ = _mutmut_signature(x_stream__mutmut_orig)
-x_stream__mutmut_orig.__name__ = 'x_stream'
+x_stream__mutmut_orig.__name__ = "x_stream"
 
 
 # <3 🧱🤝🏃🪄

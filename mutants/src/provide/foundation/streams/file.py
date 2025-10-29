@@ -31,23 +31,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -98,21 +101,28 @@ def x__safe_error_output__mutmut_4(message: str) -> None:
     This function intentionally uses print() instead of Foundation's perr() to prevent
     circular import issues during stream initialization and teardown phases.
     """
-    print(message, )
+    print(
+        message,
+    )
 
-x__safe_error_output__mutmut_mutants : ClassVar[MutantDict] = {
-'x__safe_error_output__mutmut_1': x__safe_error_output__mutmut_1, 
-    'x__safe_error_output__mutmut_2': x__safe_error_output__mutmut_2, 
-    'x__safe_error_output__mutmut_3': x__safe_error_output__mutmut_3, 
-    'x__safe_error_output__mutmut_4': x__safe_error_output__mutmut_4
+
+x__safe_error_output__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__safe_error_output__mutmut_1": x__safe_error_output__mutmut_1,
+    "x__safe_error_output__mutmut_2": x__safe_error_output__mutmut_2,
+    "x__safe_error_output__mutmut_3": x__safe_error_output__mutmut_3,
+    "x__safe_error_output__mutmut_4": x__safe_error_output__mutmut_4,
 }
 
+
 def _safe_error_output(*args, **kwargs):
-    result = _mutmut_trampoline(x__safe_error_output__mutmut_orig, x__safe_error_output__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__safe_error_output__mutmut_orig, x__safe_error_output__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _safe_error_output.__signature__ = _mutmut_signature(x__safe_error_output__mutmut_orig)
-x__safe_error_output__mutmut_orig.__name__ = 'x__safe_error_output'
+x__safe_error_output__mutmut_orig.__name__ = "x__safe_error_output"
 
 
 def x_configure_file_logging__mutmut_orig(log_file_path: str | None) -> None:
@@ -184,9 +194,7 @@ def x_configure_file_logging__mutmut_1(log_file_path: str | None) -> None:
         if is_in_click_testing():
             return
         # Close existing file handle if it exists
-        if (
-            core_module._LOG_FILE_HANDLE or core_module._LOG_FILE_HANDLE is not core_module._PROVIDE_LOG_STREAM
-        ):
+        if core_module._LOG_FILE_HANDLE or core_module._LOG_FILE_HANDLE is not core_module._PROVIDE_LOG_STREAM:
             with contextlib.suppress(Exception):
                 core_module._LOG_FILE_HANDLE.close()
             core_module._LOG_FILE_HANDLE = None
@@ -234,10 +242,7 @@ def x_configure_file_logging__mutmut_2(log_file_path: str | None) -> None:
         if is_in_click_testing():
             return
         # Close existing file handle if it exists
-        if (
-            core_module._LOG_FILE_HANDLE
-            and core_module._LOG_FILE_HANDLE is core_module._PROVIDE_LOG_STREAM
-        ):
+        if core_module._LOG_FILE_HANDLE and core_module._LOG_FILE_HANDLE is core_module._PROVIDE_LOG_STREAM:
             with contextlib.suppress(Exception):
                 core_module._LOG_FILE_HANDLE.close()
             core_module._LOG_FILE_HANDLE = None
@@ -757,7 +762,9 @@ def x_configure_file_logging__mutmut_12(log_file_path: str | None) -> None:
 
         if log_file_path:
             try:
-                Path(log_file_path).parent.mkdir(parents=True, )
+                Path(log_file_path).parent.mkdir(
+                    parents=True,
+                )
                 core_module._LOG_FILE_HANDLE = Path(log_file_path).open("a", encoding="utf-8", buffering=1)  # noqa: SIM115
                 core_module._PROVIDE_LOG_STREAM = core_module._LOG_FILE_HANDLE
                 # Reconfigure structlog to use the new file stream
@@ -1268,7 +1275,10 @@ def x_configure_file_logging__mutmut_22(log_file_path: str | None) -> None:
         if log_file_path:
             try:
                 Path(log_file_path).parent.mkdir(parents=True, exist_ok=True)
-                core_module._LOG_FILE_HANDLE = Path(log_file_path).open("a", encoding="utf-8", )  # noqa: SIM115
+                core_module._LOG_FILE_HANDLE = Path(log_file_path).open(
+                    "a",
+                    encoding="utf-8",
+                )  # noqa: SIM115
                 core_module._PROVIDE_LOG_STREAM = core_module._LOG_FILE_HANDLE
                 # Reconfigure structlog to use the new file stream
                 _reconfigure_structlog_stream()
@@ -1844,48 +1854,53 @@ def x_configure_file_logging__mutmut_33(log_file_path: str | None) -> None:
             # Reconfigure structlog to use stderr
             _reconfigure_structlog_stream()
 
-x_configure_file_logging__mutmut_mutants : ClassVar[MutantDict] = {
-'x_configure_file_logging__mutmut_1': x_configure_file_logging__mutmut_1, 
-    'x_configure_file_logging__mutmut_2': x_configure_file_logging__mutmut_2, 
-    'x_configure_file_logging__mutmut_3': x_configure_file_logging__mutmut_3, 
-    'x_configure_file_logging__mutmut_4': x_configure_file_logging__mutmut_4, 
-    'x_configure_file_logging__mutmut_5': x_configure_file_logging__mutmut_5, 
-    'x_configure_file_logging__mutmut_6': x_configure_file_logging__mutmut_6, 
-    'x_configure_file_logging__mutmut_7': x_configure_file_logging__mutmut_7, 
-    'x_configure_file_logging__mutmut_8': x_configure_file_logging__mutmut_8, 
-    'x_configure_file_logging__mutmut_9': x_configure_file_logging__mutmut_9, 
-    'x_configure_file_logging__mutmut_10': x_configure_file_logging__mutmut_10, 
-    'x_configure_file_logging__mutmut_11': x_configure_file_logging__mutmut_11, 
-    'x_configure_file_logging__mutmut_12': x_configure_file_logging__mutmut_12, 
-    'x_configure_file_logging__mutmut_13': x_configure_file_logging__mutmut_13, 
-    'x_configure_file_logging__mutmut_14': x_configure_file_logging__mutmut_14, 
-    'x_configure_file_logging__mutmut_15': x_configure_file_logging__mutmut_15, 
-    'x_configure_file_logging__mutmut_16': x_configure_file_logging__mutmut_16, 
-    'x_configure_file_logging__mutmut_17': x_configure_file_logging__mutmut_17, 
-    'x_configure_file_logging__mutmut_18': x_configure_file_logging__mutmut_18, 
-    'x_configure_file_logging__mutmut_19': x_configure_file_logging__mutmut_19, 
-    'x_configure_file_logging__mutmut_20': x_configure_file_logging__mutmut_20, 
-    'x_configure_file_logging__mutmut_21': x_configure_file_logging__mutmut_21, 
-    'x_configure_file_logging__mutmut_22': x_configure_file_logging__mutmut_22, 
-    'x_configure_file_logging__mutmut_23': x_configure_file_logging__mutmut_23, 
-    'x_configure_file_logging__mutmut_24': x_configure_file_logging__mutmut_24, 
-    'x_configure_file_logging__mutmut_25': x_configure_file_logging__mutmut_25, 
-    'x_configure_file_logging__mutmut_26': x_configure_file_logging__mutmut_26, 
-    'x_configure_file_logging__mutmut_27': x_configure_file_logging__mutmut_27, 
-    'x_configure_file_logging__mutmut_28': x_configure_file_logging__mutmut_28, 
-    'x_configure_file_logging__mutmut_29': x_configure_file_logging__mutmut_29, 
-    'x_configure_file_logging__mutmut_30': x_configure_file_logging__mutmut_30, 
-    'x_configure_file_logging__mutmut_31': x_configure_file_logging__mutmut_31, 
-    'x_configure_file_logging__mutmut_32': x_configure_file_logging__mutmut_32, 
-    'x_configure_file_logging__mutmut_33': x_configure_file_logging__mutmut_33
+
+x_configure_file_logging__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_configure_file_logging__mutmut_1": x_configure_file_logging__mutmut_1,
+    "x_configure_file_logging__mutmut_2": x_configure_file_logging__mutmut_2,
+    "x_configure_file_logging__mutmut_3": x_configure_file_logging__mutmut_3,
+    "x_configure_file_logging__mutmut_4": x_configure_file_logging__mutmut_4,
+    "x_configure_file_logging__mutmut_5": x_configure_file_logging__mutmut_5,
+    "x_configure_file_logging__mutmut_6": x_configure_file_logging__mutmut_6,
+    "x_configure_file_logging__mutmut_7": x_configure_file_logging__mutmut_7,
+    "x_configure_file_logging__mutmut_8": x_configure_file_logging__mutmut_8,
+    "x_configure_file_logging__mutmut_9": x_configure_file_logging__mutmut_9,
+    "x_configure_file_logging__mutmut_10": x_configure_file_logging__mutmut_10,
+    "x_configure_file_logging__mutmut_11": x_configure_file_logging__mutmut_11,
+    "x_configure_file_logging__mutmut_12": x_configure_file_logging__mutmut_12,
+    "x_configure_file_logging__mutmut_13": x_configure_file_logging__mutmut_13,
+    "x_configure_file_logging__mutmut_14": x_configure_file_logging__mutmut_14,
+    "x_configure_file_logging__mutmut_15": x_configure_file_logging__mutmut_15,
+    "x_configure_file_logging__mutmut_16": x_configure_file_logging__mutmut_16,
+    "x_configure_file_logging__mutmut_17": x_configure_file_logging__mutmut_17,
+    "x_configure_file_logging__mutmut_18": x_configure_file_logging__mutmut_18,
+    "x_configure_file_logging__mutmut_19": x_configure_file_logging__mutmut_19,
+    "x_configure_file_logging__mutmut_20": x_configure_file_logging__mutmut_20,
+    "x_configure_file_logging__mutmut_21": x_configure_file_logging__mutmut_21,
+    "x_configure_file_logging__mutmut_22": x_configure_file_logging__mutmut_22,
+    "x_configure_file_logging__mutmut_23": x_configure_file_logging__mutmut_23,
+    "x_configure_file_logging__mutmut_24": x_configure_file_logging__mutmut_24,
+    "x_configure_file_logging__mutmut_25": x_configure_file_logging__mutmut_25,
+    "x_configure_file_logging__mutmut_26": x_configure_file_logging__mutmut_26,
+    "x_configure_file_logging__mutmut_27": x_configure_file_logging__mutmut_27,
+    "x_configure_file_logging__mutmut_28": x_configure_file_logging__mutmut_28,
+    "x_configure_file_logging__mutmut_29": x_configure_file_logging__mutmut_29,
+    "x_configure_file_logging__mutmut_30": x_configure_file_logging__mutmut_30,
+    "x_configure_file_logging__mutmut_31": x_configure_file_logging__mutmut_31,
+    "x_configure_file_logging__mutmut_32": x_configure_file_logging__mutmut_32,
+    "x_configure_file_logging__mutmut_33": x_configure_file_logging__mutmut_33,
 }
 
+
 def configure_file_logging(*args, **kwargs):
-    result = _mutmut_trampoline(x_configure_file_logging__mutmut_orig, x_configure_file_logging__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_configure_file_logging__mutmut_orig, x_configure_file_logging__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 configure_file_logging.__signature__ = _mutmut_signature(x_configure_file_logging__mutmut_orig)
-x_configure_file_logging__mutmut_orig.__name__ = 'x_configure_file_logging'
+x_configure_file_logging__mutmut_orig.__name__ = "x_configure_file_logging"
 
 
 def x_flush_log_streams__mutmut_orig() -> None:
@@ -1911,16 +1926,21 @@ def x_flush_log_streams__mutmut_1() -> None:
             except Exception as e:
                 _safe_error_output(None)
 
-x_flush_log_streams__mutmut_mutants : ClassVar[MutantDict] = {
-'x_flush_log_streams__mutmut_1': x_flush_log_streams__mutmut_1
+
+x_flush_log_streams__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_flush_log_streams__mutmut_1": x_flush_log_streams__mutmut_1
 }
 
+
 def flush_log_streams(*args, **kwargs):
-    result = _mutmut_trampoline(x_flush_log_streams__mutmut_orig, x_flush_log_streams__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_flush_log_streams__mutmut_orig, x_flush_log_streams__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 flush_log_streams.__signature__ = _mutmut_signature(x_flush_log_streams__mutmut_orig)
-x_flush_log_streams__mutmut_orig.__name__ = 'x_flush_log_streams'
+x_flush_log_streams__mutmut_orig.__name__ = "x_flush_log_streams"
 
 
 def x_close_log_streams__mutmut_orig() -> None:
@@ -2022,19 +2042,24 @@ def x_close_log_streams__mutmut_4() -> None:
             # Reconfigure structlog to use stderr
             _reconfigure_structlog_stream()
 
-x_close_log_streams__mutmut_mutants : ClassVar[MutantDict] = {
-'x_close_log_streams__mutmut_1': x_close_log_streams__mutmut_1, 
-    'x_close_log_streams__mutmut_2': x_close_log_streams__mutmut_2, 
-    'x_close_log_streams__mutmut_3': x_close_log_streams__mutmut_3, 
-    'x_close_log_streams__mutmut_4': x_close_log_streams__mutmut_4
+
+x_close_log_streams__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_close_log_streams__mutmut_1": x_close_log_streams__mutmut_1,
+    "x_close_log_streams__mutmut_2": x_close_log_streams__mutmut_2,
+    "x_close_log_streams__mutmut_3": x_close_log_streams__mutmut_3,
+    "x_close_log_streams__mutmut_4": x_close_log_streams__mutmut_4,
 }
 
+
 def close_log_streams(*args, **kwargs):
-    result = _mutmut_trampoline(x_close_log_streams__mutmut_orig, x_close_log_streams__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_close_log_streams__mutmut_orig, x_close_log_streams__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 close_log_streams.__signature__ = _mutmut_signature(x_close_log_streams__mutmut_orig)
-x_close_log_streams__mutmut_orig.__name__ = 'x_close_log_streams'
+x_close_log_streams__mutmut_orig.__name__ = "x_close_log_streams"
 
 
 def x_reset_streams__mutmut_orig() -> None:
@@ -2056,16 +2081,19 @@ def x_reset_streams__mutmut_1() -> None:
     if is_in_click_testing():
         close_log_streams()
 
-x_reset_streams__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_streams__mutmut_1': x_reset_streams__mutmut_1
+
+x_reset_streams__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_streams__mutmut_1": x_reset_streams__mutmut_1
 }
+
 
 def reset_streams(*args, **kwargs):
     result = _mutmut_trampoline(x_reset_streams__mutmut_orig, x_reset_streams__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 reset_streams.__signature__ = _mutmut_signature(x_reset_streams__mutmut_orig)
-x_reset_streams__mutmut_orig.__name__ = 'x_reset_streams'
+x_reset_streams__mutmut_orig.__name__ = "x_reset_streams"
 
 
 # <3 🧱🤝🌊🪄

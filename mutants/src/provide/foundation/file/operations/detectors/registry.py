@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -86,17 +89,22 @@ def x_get_detector_registry__mutmut_2() -> Registry:
         _detector_registry = None
     return _detector_registry
 
-x_get_detector_registry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_detector_registry__mutmut_1': x_get_detector_registry__mutmut_1, 
-    'x_get_detector_registry__mutmut_2': x_get_detector_registry__mutmut_2
+
+x_get_detector_registry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_detector_registry__mutmut_1": x_get_detector_registry__mutmut_1,
+    "x_get_detector_registry__mutmut_2": x_get_detector_registry__mutmut_2,
 }
 
+
 def get_detector_registry(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_detector_registry__mutmut_orig, x_get_detector_registry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_detector_registry__mutmut_orig, x_get_detector_registry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_detector_registry.__signature__ = _mutmut_signature(x_get_detector_registry__mutmut_orig)
-x_get_detector_registry__mutmut_orig.__name__ = 'x_get_detector_registry'
+x_get_detector_registry__mutmut_orig.__name__ = "x_get_detector_registry"
 
 
 def x_register_detector__mutmut_orig(
@@ -537,7 +545,7 @@ def x_register_detector__mutmut_10(
         name=name,
         value=func,
         dimension="file_operation_detector",
-        )
+    )
 
 
 def x_register_detector__mutmut_11(
@@ -785,31 +793,36 @@ def x_register_detector__mutmut_16(
         },
     )
 
-x_register_detector__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register_detector__mutmut_1': x_register_detector__mutmut_1, 
-    'x_register_detector__mutmut_2': x_register_detector__mutmut_2, 
-    'x_register_detector__mutmut_3': x_register_detector__mutmut_3, 
-    'x_register_detector__mutmut_4': x_register_detector__mutmut_4, 
-    'x_register_detector__mutmut_5': x_register_detector__mutmut_5, 
-    'x_register_detector__mutmut_6': x_register_detector__mutmut_6, 
-    'x_register_detector__mutmut_7': x_register_detector__mutmut_7, 
-    'x_register_detector__mutmut_8': x_register_detector__mutmut_8, 
-    'x_register_detector__mutmut_9': x_register_detector__mutmut_9, 
-    'x_register_detector__mutmut_10': x_register_detector__mutmut_10, 
-    'x_register_detector__mutmut_11': x_register_detector__mutmut_11, 
-    'x_register_detector__mutmut_12': x_register_detector__mutmut_12, 
-    'x_register_detector__mutmut_13': x_register_detector__mutmut_13, 
-    'x_register_detector__mutmut_14': x_register_detector__mutmut_14, 
-    'x_register_detector__mutmut_15': x_register_detector__mutmut_15, 
-    'x_register_detector__mutmut_16': x_register_detector__mutmut_16
+
+x_register_detector__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register_detector__mutmut_1": x_register_detector__mutmut_1,
+    "x_register_detector__mutmut_2": x_register_detector__mutmut_2,
+    "x_register_detector__mutmut_3": x_register_detector__mutmut_3,
+    "x_register_detector__mutmut_4": x_register_detector__mutmut_4,
+    "x_register_detector__mutmut_5": x_register_detector__mutmut_5,
+    "x_register_detector__mutmut_6": x_register_detector__mutmut_6,
+    "x_register_detector__mutmut_7": x_register_detector__mutmut_7,
+    "x_register_detector__mutmut_8": x_register_detector__mutmut_8,
+    "x_register_detector__mutmut_9": x_register_detector__mutmut_9,
+    "x_register_detector__mutmut_10": x_register_detector__mutmut_10,
+    "x_register_detector__mutmut_11": x_register_detector__mutmut_11,
+    "x_register_detector__mutmut_12": x_register_detector__mutmut_12,
+    "x_register_detector__mutmut_13": x_register_detector__mutmut_13,
+    "x_register_detector__mutmut_14": x_register_detector__mutmut_14,
+    "x_register_detector__mutmut_15": x_register_detector__mutmut_15,
+    "x_register_detector__mutmut_16": x_register_detector__mutmut_16,
 }
 
+
 def register_detector(*args, **kwargs):
-    result = _mutmut_trampoline(x_register_detector__mutmut_orig, x_register_detector__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_register_detector__mutmut_orig, x_register_detector__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 register_detector.__signature__ = _mutmut_signature(x_register_detector__mutmut_orig)
-x_register_detector__mutmut_orig.__name__ = 'x_register_detector'
+x_register_detector__mutmut_orig.__name__ = "x_register_detector"
 
 
 def x_get_all_detectors__mutmut_orig() -> list[tuple[str, DetectorFunc, int]]:
@@ -1073,7 +1086,7 @@ def x_get_all_detectors__mutmut_12() -> list[tuple[str, DetectorFunc, int]]:
     sorted_entries = sorted(
         entries,
         key=lambda e: e.metadata.get("priority", 0),
-        )
+    )
 
     return [(e.name, e.value, e.metadata.get("priority", 0)) for e in sorted_entries]
 
@@ -1176,7 +1189,9 @@ def x_get_all_detectors__mutmut_17() -> list[tuple[str, DetectorFunc, int]]:
     # Sort by priority (highest first)
     sorted_entries = sorted(
         entries,
-        key=lambda e: e.metadata.get("priority", ),
+        key=lambda e: e.metadata.get(
+            "priority",
+        ),
         reverse=True,
     )
 
@@ -1348,7 +1363,16 @@ def x_get_all_detectors__mutmut_25() -> list[tuple[str, DetectorFunc, int]]:
         reverse=True,
     )
 
-    return [(e.name, e.value, e.metadata.get("priority", )) for e in sorted_entries]
+    return [
+        (
+            e.name,
+            e.value,
+            e.metadata.get(
+                "priority",
+            ),
+        )
+        for e in sorted_entries
+    ]
 
 
 def x_get_all_detectors__mutmut_26() -> list[tuple[str, DetectorFunc, int]]:
@@ -1413,43 +1437,48 @@ def x_get_all_detectors__mutmut_28() -> list[tuple[str, DetectorFunc, int]]:
 
     return [(e.name, e.value, e.metadata.get("priority", 1)) for e in sorted_entries]
 
-x_get_all_detectors__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_all_detectors__mutmut_1': x_get_all_detectors__mutmut_1, 
-    'x_get_all_detectors__mutmut_2': x_get_all_detectors__mutmut_2, 
-    'x_get_all_detectors__mutmut_3': x_get_all_detectors__mutmut_3, 
-    'x_get_all_detectors__mutmut_4': x_get_all_detectors__mutmut_4, 
-    'x_get_all_detectors__mutmut_5': x_get_all_detectors__mutmut_5, 
-    'x_get_all_detectors__mutmut_6': x_get_all_detectors__mutmut_6, 
-    'x_get_all_detectors__mutmut_7': x_get_all_detectors__mutmut_7, 
-    'x_get_all_detectors__mutmut_8': x_get_all_detectors__mutmut_8, 
-    'x_get_all_detectors__mutmut_9': x_get_all_detectors__mutmut_9, 
-    'x_get_all_detectors__mutmut_10': x_get_all_detectors__mutmut_10, 
-    'x_get_all_detectors__mutmut_11': x_get_all_detectors__mutmut_11, 
-    'x_get_all_detectors__mutmut_12': x_get_all_detectors__mutmut_12, 
-    'x_get_all_detectors__mutmut_13': x_get_all_detectors__mutmut_13, 
-    'x_get_all_detectors__mutmut_14': x_get_all_detectors__mutmut_14, 
-    'x_get_all_detectors__mutmut_15': x_get_all_detectors__mutmut_15, 
-    'x_get_all_detectors__mutmut_16': x_get_all_detectors__mutmut_16, 
-    'x_get_all_detectors__mutmut_17': x_get_all_detectors__mutmut_17, 
-    'x_get_all_detectors__mutmut_18': x_get_all_detectors__mutmut_18, 
-    'x_get_all_detectors__mutmut_19': x_get_all_detectors__mutmut_19, 
-    'x_get_all_detectors__mutmut_20': x_get_all_detectors__mutmut_20, 
-    'x_get_all_detectors__mutmut_21': x_get_all_detectors__mutmut_21, 
-    'x_get_all_detectors__mutmut_22': x_get_all_detectors__mutmut_22, 
-    'x_get_all_detectors__mutmut_23': x_get_all_detectors__mutmut_23, 
-    'x_get_all_detectors__mutmut_24': x_get_all_detectors__mutmut_24, 
-    'x_get_all_detectors__mutmut_25': x_get_all_detectors__mutmut_25, 
-    'x_get_all_detectors__mutmut_26': x_get_all_detectors__mutmut_26, 
-    'x_get_all_detectors__mutmut_27': x_get_all_detectors__mutmut_27, 
-    'x_get_all_detectors__mutmut_28': x_get_all_detectors__mutmut_28
+
+x_get_all_detectors__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_all_detectors__mutmut_1": x_get_all_detectors__mutmut_1,
+    "x_get_all_detectors__mutmut_2": x_get_all_detectors__mutmut_2,
+    "x_get_all_detectors__mutmut_3": x_get_all_detectors__mutmut_3,
+    "x_get_all_detectors__mutmut_4": x_get_all_detectors__mutmut_4,
+    "x_get_all_detectors__mutmut_5": x_get_all_detectors__mutmut_5,
+    "x_get_all_detectors__mutmut_6": x_get_all_detectors__mutmut_6,
+    "x_get_all_detectors__mutmut_7": x_get_all_detectors__mutmut_7,
+    "x_get_all_detectors__mutmut_8": x_get_all_detectors__mutmut_8,
+    "x_get_all_detectors__mutmut_9": x_get_all_detectors__mutmut_9,
+    "x_get_all_detectors__mutmut_10": x_get_all_detectors__mutmut_10,
+    "x_get_all_detectors__mutmut_11": x_get_all_detectors__mutmut_11,
+    "x_get_all_detectors__mutmut_12": x_get_all_detectors__mutmut_12,
+    "x_get_all_detectors__mutmut_13": x_get_all_detectors__mutmut_13,
+    "x_get_all_detectors__mutmut_14": x_get_all_detectors__mutmut_14,
+    "x_get_all_detectors__mutmut_15": x_get_all_detectors__mutmut_15,
+    "x_get_all_detectors__mutmut_16": x_get_all_detectors__mutmut_16,
+    "x_get_all_detectors__mutmut_17": x_get_all_detectors__mutmut_17,
+    "x_get_all_detectors__mutmut_18": x_get_all_detectors__mutmut_18,
+    "x_get_all_detectors__mutmut_19": x_get_all_detectors__mutmut_19,
+    "x_get_all_detectors__mutmut_20": x_get_all_detectors__mutmut_20,
+    "x_get_all_detectors__mutmut_21": x_get_all_detectors__mutmut_21,
+    "x_get_all_detectors__mutmut_22": x_get_all_detectors__mutmut_22,
+    "x_get_all_detectors__mutmut_23": x_get_all_detectors__mutmut_23,
+    "x_get_all_detectors__mutmut_24": x_get_all_detectors__mutmut_24,
+    "x_get_all_detectors__mutmut_25": x_get_all_detectors__mutmut_25,
+    "x_get_all_detectors__mutmut_26": x_get_all_detectors__mutmut_26,
+    "x_get_all_detectors__mutmut_27": x_get_all_detectors__mutmut_27,
+    "x_get_all_detectors__mutmut_28": x_get_all_detectors__mutmut_28,
 }
 
+
 def get_all_detectors(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_all_detectors__mutmut_orig, x_get_all_detectors__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_all_detectors__mutmut_orig, x_get_all_detectors__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_all_detectors.__signature__ = _mutmut_signature(x_get_all_detectors__mutmut_orig)
-x_get_all_detectors__mutmut_orig.__name__ = 'x_get_all_detectors'
+x_get_all_detectors__mutmut_orig.__name__ = "x_get_all_detectors"
 
 
 def x_clear_detector_registry__mutmut_orig() -> None:
@@ -1481,19 +1510,24 @@ def x_clear_detector_registry__mutmut_4() -> None:
     registry = get_detector_registry()
     registry.clear("FILE_OPERATION_DETECTOR")
 
-x_clear_detector_registry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_clear_detector_registry__mutmut_1': x_clear_detector_registry__mutmut_1, 
-    'x_clear_detector_registry__mutmut_2': x_clear_detector_registry__mutmut_2, 
-    'x_clear_detector_registry__mutmut_3': x_clear_detector_registry__mutmut_3, 
-    'x_clear_detector_registry__mutmut_4': x_clear_detector_registry__mutmut_4
+
+x_clear_detector_registry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_clear_detector_registry__mutmut_1": x_clear_detector_registry__mutmut_1,
+    "x_clear_detector_registry__mutmut_2": x_clear_detector_registry__mutmut_2,
+    "x_clear_detector_registry__mutmut_3": x_clear_detector_registry__mutmut_3,
+    "x_clear_detector_registry__mutmut_4": x_clear_detector_registry__mutmut_4,
 }
 
+
 def clear_detector_registry(*args, **kwargs):
-    result = _mutmut_trampoline(x_clear_detector_registry__mutmut_orig, x_clear_detector_registry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_clear_detector_registry__mutmut_orig, x_clear_detector_registry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 clear_detector_registry.__signature__ = _mutmut_signature(x_clear_detector_registry__mutmut_orig)
-x_clear_detector_registry__mutmut_orig.__name__ = 'x_clear_detector_registry'
+x_clear_detector_registry__mutmut_orig.__name__ = "x_clear_detector_registry"
 
 
 __all__ = [

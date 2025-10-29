@@ -7,9 +7,9 @@ from __future__ import annotations
 
 import io
 import sys
-from provide.testkit.mocking import MagicMock, Mock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, Mock, patch
 
 from provide.foundation.streams.core import (
     ensure_stderr_default,

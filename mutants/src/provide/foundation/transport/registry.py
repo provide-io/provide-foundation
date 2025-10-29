@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -562,7 +565,7 @@ def x_register_transport__mutmut_13(
             "class_name": transport_class.__name__,
             **metadata,
         },
-        )
+    )
 
     # Logging removed - transport registration happens frequently during test setup
     # and doesn't provide actionable information
@@ -833,35 +836,40 @@ def x_register_transport__mutmut_20(
     # Logging removed - transport registration happens frequently during test setup
     # and doesn't provide actionable information
 
-x_register_transport__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register_transport__mutmut_1': x_register_transport__mutmut_1, 
-    'x_register_transport__mutmut_2': x_register_transport__mutmut_2, 
-    'x_register_transport__mutmut_3': x_register_transport__mutmut_3, 
-    'x_register_transport__mutmut_4': x_register_transport__mutmut_4, 
-    'x_register_transport__mutmut_5': x_register_transport__mutmut_5, 
-    'x_register_transport__mutmut_6': x_register_transport__mutmut_6, 
-    'x_register_transport__mutmut_7': x_register_transport__mutmut_7, 
-    'x_register_transport__mutmut_8': x_register_transport__mutmut_8, 
-    'x_register_transport__mutmut_9': x_register_transport__mutmut_9, 
-    'x_register_transport__mutmut_10': x_register_transport__mutmut_10, 
-    'x_register_transport__mutmut_11': x_register_transport__mutmut_11, 
-    'x_register_transport__mutmut_12': x_register_transport__mutmut_12, 
-    'x_register_transport__mutmut_13': x_register_transport__mutmut_13, 
-    'x_register_transport__mutmut_14': x_register_transport__mutmut_14, 
-    'x_register_transport__mutmut_15': x_register_transport__mutmut_15, 
-    'x_register_transport__mutmut_16': x_register_transport__mutmut_16, 
-    'x_register_transport__mutmut_17': x_register_transport__mutmut_17, 
-    'x_register_transport__mutmut_18': x_register_transport__mutmut_18, 
-    'x_register_transport__mutmut_19': x_register_transport__mutmut_19, 
-    'x_register_transport__mutmut_20': x_register_transport__mutmut_20
+
+x_register_transport__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register_transport__mutmut_1": x_register_transport__mutmut_1,
+    "x_register_transport__mutmut_2": x_register_transport__mutmut_2,
+    "x_register_transport__mutmut_3": x_register_transport__mutmut_3,
+    "x_register_transport__mutmut_4": x_register_transport__mutmut_4,
+    "x_register_transport__mutmut_5": x_register_transport__mutmut_5,
+    "x_register_transport__mutmut_6": x_register_transport__mutmut_6,
+    "x_register_transport__mutmut_7": x_register_transport__mutmut_7,
+    "x_register_transport__mutmut_8": x_register_transport__mutmut_8,
+    "x_register_transport__mutmut_9": x_register_transport__mutmut_9,
+    "x_register_transport__mutmut_10": x_register_transport__mutmut_10,
+    "x_register_transport__mutmut_11": x_register_transport__mutmut_11,
+    "x_register_transport__mutmut_12": x_register_transport__mutmut_12,
+    "x_register_transport__mutmut_13": x_register_transport__mutmut_13,
+    "x_register_transport__mutmut_14": x_register_transport__mutmut_14,
+    "x_register_transport__mutmut_15": x_register_transport__mutmut_15,
+    "x_register_transport__mutmut_16": x_register_transport__mutmut_16,
+    "x_register_transport__mutmut_17": x_register_transport__mutmut_17,
+    "x_register_transport__mutmut_18": x_register_transport__mutmut_18,
+    "x_register_transport__mutmut_19": x_register_transport__mutmut_19,
+    "x_register_transport__mutmut_20": x_register_transport__mutmut_20,
 }
 
+
 def register_transport(*args, **kwargs):
-    result = _mutmut_trampoline(x_register_transport__mutmut_orig, x_register_transport__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_register_transport__mutmut_orig, x_register_transport__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 register_transport.__signature__ = _mutmut_signature(x_register_transport__mutmut_orig)
-x_register_transport__mutmut_orig.__name__ = 'x_register_transport'
+x_register_transport__mutmut_orig.__name__ = "x_register_transport"
 
 
 def x_get_transport_for_scheme__mutmut_orig(scheme: str) -> type[Transport]:
@@ -1085,7 +1093,9 @@ def x_get_transport_for_scheme__mutmut_7(scheme: str) -> type[Transport]:
     # Search through registered transports
     for entry in registry:
         if entry.dimension == ComponentCategory.TRANSPORT.value:
-            schemes = entry.metadata.get("schemes", )
+            schemes = entry.metadata.get(
+                "schemes",
+            )
             if scheme.lower() in schemes:
                 log.trace(f"Found transport {entry.value.__name__} for scheme '{scheme}'")
                 return entry.value
@@ -1352,33 +1362,38 @@ def x_get_transport_for_scheme__mutmut_16(scheme: str) -> type[Transport]:
 
     raise TransportNotFoundError(
         f"No transport registered for scheme: {scheme}",
-        )
+    )
 
-x_get_transport_for_scheme__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_transport_for_scheme__mutmut_1': x_get_transport_for_scheme__mutmut_1, 
-    'x_get_transport_for_scheme__mutmut_2': x_get_transport_for_scheme__mutmut_2, 
-    'x_get_transport_for_scheme__mutmut_3': x_get_transport_for_scheme__mutmut_3, 
-    'x_get_transport_for_scheme__mutmut_4': x_get_transport_for_scheme__mutmut_4, 
-    'x_get_transport_for_scheme__mutmut_5': x_get_transport_for_scheme__mutmut_5, 
-    'x_get_transport_for_scheme__mutmut_6': x_get_transport_for_scheme__mutmut_6, 
-    'x_get_transport_for_scheme__mutmut_7': x_get_transport_for_scheme__mutmut_7, 
-    'x_get_transport_for_scheme__mutmut_8': x_get_transport_for_scheme__mutmut_8, 
-    'x_get_transport_for_scheme__mutmut_9': x_get_transport_for_scheme__mutmut_9, 
-    'x_get_transport_for_scheme__mutmut_10': x_get_transport_for_scheme__mutmut_10, 
-    'x_get_transport_for_scheme__mutmut_11': x_get_transport_for_scheme__mutmut_11, 
-    'x_get_transport_for_scheme__mutmut_12': x_get_transport_for_scheme__mutmut_12, 
-    'x_get_transport_for_scheme__mutmut_13': x_get_transport_for_scheme__mutmut_13, 
-    'x_get_transport_for_scheme__mutmut_14': x_get_transport_for_scheme__mutmut_14, 
-    'x_get_transport_for_scheme__mutmut_15': x_get_transport_for_scheme__mutmut_15, 
-    'x_get_transport_for_scheme__mutmut_16': x_get_transport_for_scheme__mutmut_16
+
+x_get_transport_for_scheme__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_transport_for_scheme__mutmut_1": x_get_transport_for_scheme__mutmut_1,
+    "x_get_transport_for_scheme__mutmut_2": x_get_transport_for_scheme__mutmut_2,
+    "x_get_transport_for_scheme__mutmut_3": x_get_transport_for_scheme__mutmut_3,
+    "x_get_transport_for_scheme__mutmut_4": x_get_transport_for_scheme__mutmut_4,
+    "x_get_transport_for_scheme__mutmut_5": x_get_transport_for_scheme__mutmut_5,
+    "x_get_transport_for_scheme__mutmut_6": x_get_transport_for_scheme__mutmut_6,
+    "x_get_transport_for_scheme__mutmut_7": x_get_transport_for_scheme__mutmut_7,
+    "x_get_transport_for_scheme__mutmut_8": x_get_transport_for_scheme__mutmut_8,
+    "x_get_transport_for_scheme__mutmut_9": x_get_transport_for_scheme__mutmut_9,
+    "x_get_transport_for_scheme__mutmut_10": x_get_transport_for_scheme__mutmut_10,
+    "x_get_transport_for_scheme__mutmut_11": x_get_transport_for_scheme__mutmut_11,
+    "x_get_transport_for_scheme__mutmut_12": x_get_transport_for_scheme__mutmut_12,
+    "x_get_transport_for_scheme__mutmut_13": x_get_transport_for_scheme__mutmut_13,
+    "x_get_transport_for_scheme__mutmut_14": x_get_transport_for_scheme__mutmut_14,
+    "x_get_transport_for_scheme__mutmut_15": x_get_transport_for_scheme__mutmut_15,
+    "x_get_transport_for_scheme__mutmut_16": x_get_transport_for_scheme__mutmut_16,
 }
 
+
 def get_transport_for_scheme(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_transport_for_scheme__mutmut_orig, x_get_transport_for_scheme__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_transport_for_scheme__mutmut_orig, x_get_transport_for_scheme__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_transport_for_scheme.__signature__ = _mutmut_signature(x_get_transport_for_scheme__mutmut_orig)
-x_get_transport_for_scheme__mutmut_orig.__name__ = 'x_get_transport_for_scheme'
+x_get_transport_for_scheme__mutmut_orig.__name__ = "x_get_transport_for_scheme"
 
 
 def x_get_transport__mutmut_orig(uri: str) -> Transport:
@@ -1524,22 +1539,25 @@ def x_get_transport__mutmut_7(uri: str) -> Transport:
     transport_class = get_transport_for_scheme(None)
     return transport_class()
 
-x_get_transport__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_transport__mutmut_1': x_get_transport__mutmut_1, 
-    'x_get_transport__mutmut_2': x_get_transport__mutmut_2, 
-    'x_get_transport__mutmut_3': x_get_transport__mutmut_3, 
-    'x_get_transport__mutmut_4': x_get_transport__mutmut_4, 
-    'x_get_transport__mutmut_5': x_get_transport__mutmut_5, 
-    'x_get_transport__mutmut_6': x_get_transport__mutmut_6, 
-    'x_get_transport__mutmut_7': x_get_transport__mutmut_7
+
+x_get_transport__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_transport__mutmut_1": x_get_transport__mutmut_1,
+    "x_get_transport__mutmut_2": x_get_transport__mutmut_2,
+    "x_get_transport__mutmut_3": x_get_transport__mutmut_3,
+    "x_get_transport__mutmut_4": x_get_transport__mutmut_4,
+    "x_get_transport__mutmut_5": x_get_transport__mutmut_5,
+    "x_get_transport__mutmut_6": x_get_transport__mutmut_6,
+    "x_get_transport__mutmut_7": x_get_transport__mutmut_7,
 }
+
 
 def get_transport(*args, **kwargs):
     result = _mutmut_trampoline(x_get_transport__mutmut_orig, x_get_transport__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_transport.__signature__ = _mutmut_signature(x_get_transport__mutmut_orig)
-x_get_transport__mutmut_orig.__name__ = 'x_get_transport'
+x_get_transport__mutmut_orig.__name__ = "x_get_transport"
 
 
 def x_list_registered_transports__mutmut_orig() -> dict[str, dict[str, Any]]:
@@ -1815,7 +1833,9 @@ def x_list_registered_transports__mutmut_12() -> dict[str, dict[str, Any]]:
         if entry.dimension == ComponentCategory.TRANSPORT.value:
             transports[entry.name] = {
                 "class": entry.value,
-                "schemes": entry.metadata.get("schemes", ),
+                "schemes": entry.metadata.get(
+                    "schemes",
+                ),
                 "transport_type": entry.metadata.get("transport_type"),
                 "metadata": entry.metadata,
             }
@@ -2020,36 +2040,41 @@ def x_list_registered_transports__mutmut_21() -> dict[str, dict[str, Any]]:
 
     return transports
 
-x_list_registered_transports__mutmut_mutants : ClassVar[MutantDict] = {
-'x_list_registered_transports__mutmut_1': x_list_registered_transports__mutmut_1, 
-    'x_list_registered_transports__mutmut_2': x_list_registered_transports__mutmut_2, 
-    'x_list_registered_transports__mutmut_3': x_list_registered_transports__mutmut_3, 
-    'x_list_registered_transports__mutmut_4': x_list_registered_transports__mutmut_4, 
-    'x_list_registered_transports__mutmut_5': x_list_registered_transports__mutmut_5, 
-    'x_list_registered_transports__mutmut_6': x_list_registered_transports__mutmut_6, 
-    'x_list_registered_transports__mutmut_7': x_list_registered_transports__mutmut_7, 
-    'x_list_registered_transports__mutmut_8': x_list_registered_transports__mutmut_8, 
-    'x_list_registered_transports__mutmut_9': x_list_registered_transports__mutmut_9, 
-    'x_list_registered_transports__mutmut_10': x_list_registered_transports__mutmut_10, 
-    'x_list_registered_transports__mutmut_11': x_list_registered_transports__mutmut_11, 
-    'x_list_registered_transports__mutmut_12': x_list_registered_transports__mutmut_12, 
-    'x_list_registered_transports__mutmut_13': x_list_registered_transports__mutmut_13, 
-    'x_list_registered_transports__mutmut_14': x_list_registered_transports__mutmut_14, 
-    'x_list_registered_transports__mutmut_15': x_list_registered_transports__mutmut_15, 
-    'x_list_registered_transports__mutmut_16': x_list_registered_transports__mutmut_16, 
-    'x_list_registered_transports__mutmut_17': x_list_registered_transports__mutmut_17, 
-    'x_list_registered_transports__mutmut_18': x_list_registered_transports__mutmut_18, 
-    'x_list_registered_transports__mutmut_19': x_list_registered_transports__mutmut_19, 
-    'x_list_registered_transports__mutmut_20': x_list_registered_transports__mutmut_20, 
-    'x_list_registered_transports__mutmut_21': x_list_registered_transports__mutmut_21
+
+x_list_registered_transports__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_list_registered_transports__mutmut_1": x_list_registered_transports__mutmut_1,
+    "x_list_registered_transports__mutmut_2": x_list_registered_transports__mutmut_2,
+    "x_list_registered_transports__mutmut_3": x_list_registered_transports__mutmut_3,
+    "x_list_registered_transports__mutmut_4": x_list_registered_transports__mutmut_4,
+    "x_list_registered_transports__mutmut_5": x_list_registered_transports__mutmut_5,
+    "x_list_registered_transports__mutmut_6": x_list_registered_transports__mutmut_6,
+    "x_list_registered_transports__mutmut_7": x_list_registered_transports__mutmut_7,
+    "x_list_registered_transports__mutmut_8": x_list_registered_transports__mutmut_8,
+    "x_list_registered_transports__mutmut_9": x_list_registered_transports__mutmut_9,
+    "x_list_registered_transports__mutmut_10": x_list_registered_transports__mutmut_10,
+    "x_list_registered_transports__mutmut_11": x_list_registered_transports__mutmut_11,
+    "x_list_registered_transports__mutmut_12": x_list_registered_transports__mutmut_12,
+    "x_list_registered_transports__mutmut_13": x_list_registered_transports__mutmut_13,
+    "x_list_registered_transports__mutmut_14": x_list_registered_transports__mutmut_14,
+    "x_list_registered_transports__mutmut_15": x_list_registered_transports__mutmut_15,
+    "x_list_registered_transports__mutmut_16": x_list_registered_transports__mutmut_16,
+    "x_list_registered_transports__mutmut_17": x_list_registered_transports__mutmut_17,
+    "x_list_registered_transports__mutmut_18": x_list_registered_transports__mutmut_18,
+    "x_list_registered_transports__mutmut_19": x_list_registered_transports__mutmut_19,
+    "x_list_registered_transports__mutmut_20": x_list_registered_transports__mutmut_20,
+    "x_list_registered_transports__mutmut_21": x_list_registered_transports__mutmut_21,
 }
 
+
 def list_registered_transports(*args, **kwargs):
-    result = _mutmut_trampoline(x_list_registered_transports__mutmut_orig, x_list_registered_transports__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_list_registered_transports__mutmut_orig, x_list_registered_transports__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 list_registered_transports.__signature__ = _mutmut_signature(x_list_registered_transports__mutmut_orig)
-x_list_registered_transports__mutmut_orig.__name__ = 'x_list_registered_transports'
+x_list_registered_transports__mutmut_orig.__name__ = "x_list_registered_transports"
 
 
 def x_get_transport_info__mutmut_orig(scheme_or_name: str) -> dict[str, Any] | None:
@@ -2565,7 +2590,9 @@ def x_get_transport_info__mutmut_13(scheme_or_name: str) -> dict[str, Any] | Non
                 return {
                     "name": entry.name,
                     "class": entry.value,
-                    "schemes": entry.metadata.get("schemes", ),
+                    "schemes": entry.metadata.get(
+                        "schemes",
+                    ),
                     "transport_type": entry.metadata.get("transport_type"),
                     "metadata": entry.metadata,
                 }
@@ -3103,7 +3130,9 @@ def x_get_transport_info__mutmut_27(scheme_or_name: str) -> dict[str, Any] | Non
                 }
 
             # Check if it matches by scheme
-            schemes = entry.metadata.get("schemes", )
+            schemes = entry.metadata.get(
+                "schemes",
+            )
             if scheme_or_name.lower() in schemes:
                 return {
                     "name": entry.name,
@@ -3761,59 +3790,64 @@ def x_get_transport_info__mutmut_44(scheme_or_name: str) -> dict[str, Any] | Non
 
     return None
 
-x_get_transport_info__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_transport_info__mutmut_1': x_get_transport_info__mutmut_1, 
-    'x_get_transport_info__mutmut_2': x_get_transport_info__mutmut_2, 
-    'x_get_transport_info__mutmut_3': x_get_transport_info__mutmut_3, 
-    'x_get_transport_info__mutmut_4': x_get_transport_info__mutmut_4, 
-    'x_get_transport_info__mutmut_5': x_get_transport_info__mutmut_5, 
-    'x_get_transport_info__mutmut_6': x_get_transport_info__mutmut_6, 
-    'x_get_transport_info__mutmut_7': x_get_transport_info__mutmut_7, 
-    'x_get_transport_info__mutmut_8': x_get_transport_info__mutmut_8, 
-    'x_get_transport_info__mutmut_9': x_get_transport_info__mutmut_9, 
-    'x_get_transport_info__mutmut_10': x_get_transport_info__mutmut_10, 
-    'x_get_transport_info__mutmut_11': x_get_transport_info__mutmut_11, 
-    'x_get_transport_info__mutmut_12': x_get_transport_info__mutmut_12, 
-    'x_get_transport_info__mutmut_13': x_get_transport_info__mutmut_13, 
-    'x_get_transport_info__mutmut_14': x_get_transport_info__mutmut_14, 
-    'x_get_transport_info__mutmut_15': x_get_transport_info__mutmut_15, 
-    'x_get_transport_info__mutmut_16': x_get_transport_info__mutmut_16, 
-    'x_get_transport_info__mutmut_17': x_get_transport_info__mutmut_17, 
-    'x_get_transport_info__mutmut_18': x_get_transport_info__mutmut_18, 
-    'x_get_transport_info__mutmut_19': x_get_transport_info__mutmut_19, 
-    'x_get_transport_info__mutmut_20': x_get_transport_info__mutmut_20, 
-    'x_get_transport_info__mutmut_21': x_get_transport_info__mutmut_21, 
-    'x_get_transport_info__mutmut_22': x_get_transport_info__mutmut_22, 
-    'x_get_transport_info__mutmut_23': x_get_transport_info__mutmut_23, 
-    'x_get_transport_info__mutmut_24': x_get_transport_info__mutmut_24, 
-    'x_get_transport_info__mutmut_25': x_get_transport_info__mutmut_25, 
-    'x_get_transport_info__mutmut_26': x_get_transport_info__mutmut_26, 
-    'x_get_transport_info__mutmut_27': x_get_transport_info__mutmut_27, 
-    'x_get_transport_info__mutmut_28': x_get_transport_info__mutmut_28, 
-    'x_get_transport_info__mutmut_29': x_get_transport_info__mutmut_29, 
-    'x_get_transport_info__mutmut_30': x_get_transport_info__mutmut_30, 
-    'x_get_transport_info__mutmut_31': x_get_transport_info__mutmut_31, 
-    'x_get_transport_info__mutmut_32': x_get_transport_info__mutmut_32, 
-    'x_get_transport_info__mutmut_33': x_get_transport_info__mutmut_33, 
-    'x_get_transport_info__mutmut_34': x_get_transport_info__mutmut_34, 
-    'x_get_transport_info__mutmut_35': x_get_transport_info__mutmut_35, 
-    'x_get_transport_info__mutmut_36': x_get_transport_info__mutmut_36, 
-    'x_get_transport_info__mutmut_37': x_get_transport_info__mutmut_37, 
-    'x_get_transport_info__mutmut_38': x_get_transport_info__mutmut_38, 
-    'x_get_transport_info__mutmut_39': x_get_transport_info__mutmut_39, 
-    'x_get_transport_info__mutmut_40': x_get_transport_info__mutmut_40, 
-    'x_get_transport_info__mutmut_41': x_get_transport_info__mutmut_41, 
-    'x_get_transport_info__mutmut_42': x_get_transport_info__mutmut_42, 
-    'x_get_transport_info__mutmut_43': x_get_transport_info__mutmut_43, 
-    'x_get_transport_info__mutmut_44': x_get_transport_info__mutmut_44
+
+x_get_transport_info__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_transport_info__mutmut_1": x_get_transport_info__mutmut_1,
+    "x_get_transport_info__mutmut_2": x_get_transport_info__mutmut_2,
+    "x_get_transport_info__mutmut_3": x_get_transport_info__mutmut_3,
+    "x_get_transport_info__mutmut_4": x_get_transport_info__mutmut_4,
+    "x_get_transport_info__mutmut_5": x_get_transport_info__mutmut_5,
+    "x_get_transport_info__mutmut_6": x_get_transport_info__mutmut_6,
+    "x_get_transport_info__mutmut_7": x_get_transport_info__mutmut_7,
+    "x_get_transport_info__mutmut_8": x_get_transport_info__mutmut_8,
+    "x_get_transport_info__mutmut_9": x_get_transport_info__mutmut_9,
+    "x_get_transport_info__mutmut_10": x_get_transport_info__mutmut_10,
+    "x_get_transport_info__mutmut_11": x_get_transport_info__mutmut_11,
+    "x_get_transport_info__mutmut_12": x_get_transport_info__mutmut_12,
+    "x_get_transport_info__mutmut_13": x_get_transport_info__mutmut_13,
+    "x_get_transport_info__mutmut_14": x_get_transport_info__mutmut_14,
+    "x_get_transport_info__mutmut_15": x_get_transport_info__mutmut_15,
+    "x_get_transport_info__mutmut_16": x_get_transport_info__mutmut_16,
+    "x_get_transport_info__mutmut_17": x_get_transport_info__mutmut_17,
+    "x_get_transport_info__mutmut_18": x_get_transport_info__mutmut_18,
+    "x_get_transport_info__mutmut_19": x_get_transport_info__mutmut_19,
+    "x_get_transport_info__mutmut_20": x_get_transport_info__mutmut_20,
+    "x_get_transport_info__mutmut_21": x_get_transport_info__mutmut_21,
+    "x_get_transport_info__mutmut_22": x_get_transport_info__mutmut_22,
+    "x_get_transport_info__mutmut_23": x_get_transport_info__mutmut_23,
+    "x_get_transport_info__mutmut_24": x_get_transport_info__mutmut_24,
+    "x_get_transport_info__mutmut_25": x_get_transport_info__mutmut_25,
+    "x_get_transport_info__mutmut_26": x_get_transport_info__mutmut_26,
+    "x_get_transport_info__mutmut_27": x_get_transport_info__mutmut_27,
+    "x_get_transport_info__mutmut_28": x_get_transport_info__mutmut_28,
+    "x_get_transport_info__mutmut_29": x_get_transport_info__mutmut_29,
+    "x_get_transport_info__mutmut_30": x_get_transport_info__mutmut_30,
+    "x_get_transport_info__mutmut_31": x_get_transport_info__mutmut_31,
+    "x_get_transport_info__mutmut_32": x_get_transport_info__mutmut_32,
+    "x_get_transport_info__mutmut_33": x_get_transport_info__mutmut_33,
+    "x_get_transport_info__mutmut_34": x_get_transport_info__mutmut_34,
+    "x_get_transport_info__mutmut_35": x_get_transport_info__mutmut_35,
+    "x_get_transport_info__mutmut_36": x_get_transport_info__mutmut_36,
+    "x_get_transport_info__mutmut_37": x_get_transport_info__mutmut_37,
+    "x_get_transport_info__mutmut_38": x_get_transport_info__mutmut_38,
+    "x_get_transport_info__mutmut_39": x_get_transport_info__mutmut_39,
+    "x_get_transport_info__mutmut_40": x_get_transport_info__mutmut_40,
+    "x_get_transport_info__mutmut_41": x_get_transport_info__mutmut_41,
+    "x_get_transport_info__mutmut_42": x_get_transport_info__mutmut_42,
+    "x_get_transport_info__mutmut_43": x_get_transport_info__mutmut_43,
+    "x_get_transport_info__mutmut_44": x_get_transport_info__mutmut_44,
 }
 
+
 def get_transport_info(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_transport_info__mutmut_orig, x_get_transport_info__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_transport_info__mutmut_orig, x_get_transport_info__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_transport_info.__signature__ = _mutmut_signature(x_get_transport_info__mutmut_orig)
-x_get_transport_info__mutmut_orig.__name__ = 'x_get_transport_info'
+x_get_transport_info__mutmut_orig.__name__ = "x_get_transport_info"
 
 
 __all__ = [

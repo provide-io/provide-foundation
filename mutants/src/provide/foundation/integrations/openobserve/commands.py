@@ -34,23 +34,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -464,7 +467,9 @@ def x__parse_filter_to_dict__mutmut_10(filter_str: str) -> dict[str, str]:
     for part in parts:
         part = part.strip()
         # Match key=value or key='value' or key="value"
-        match = re.match(r"^([a-zA-Z0-9_]+)\s*=\s*['\"]?([^'\"]+)['\"]?$", )
+        match = re.match(
+            r"^([a-zA-Z0-9_]+)\s*=\s*['\"]?([^'\"]+)['\"]?$",
+        )
         if match:
             key, value = match.groups()
             filters[key] = value.strip()
@@ -927,7 +932,9 @@ def x__parse_filter_to_dict__mutmut_22(filter_str: str) -> dict[str, str]:
         else:
             # Try simple key=value without quotes
             if "=" in part:
-                key, value = part.split("=", )
+                key, value = part.split(
+                    "=",
+                )
                 filters[key.strip()] = value.strip()
 
     return filters
@@ -1084,41 +1091,46 @@ def x__parse_filter_to_dict__mutmut_26(filter_str: str) -> dict[str, str]:
 
     return filters
 
-x__parse_filter_to_dict__mutmut_mutants : ClassVar[MutantDict] = {
-'x__parse_filter_to_dict__mutmut_1': x__parse_filter_to_dict__mutmut_1, 
-    'x__parse_filter_to_dict__mutmut_2': x__parse_filter_to_dict__mutmut_2, 
-    'x__parse_filter_to_dict__mutmut_3': x__parse_filter_to_dict__mutmut_3, 
-    'x__parse_filter_to_dict__mutmut_4': x__parse_filter_to_dict__mutmut_4, 
-    'x__parse_filter_to_dict__mutmut_5': x__parse_filter_to_dict__mutmut_5, 
-    'x__parse_filter_to_dict__mutmut_6': x__parse_filter_to_dict__mutmut_6, 
-    'x__parse_filter_to_dict__mutmut_7': x__parse_filter_to_dict__mutmut_7, 
-    'x__parse_filter_to_dict__mutmut_8': x__parse_filter_to_dict__mutmut_8, 
-    'x__parse_filter_to_dict__mutmut_9': x__parse_filter_to_dict__mutmut_9, 
-    'x__parse_filter_to_dict__mutmut_10': x__parse_filter_to_dict__mutmut_10, 
-    'x__parse_filter_to_dict__mutmut_11': x__parse_filter_to_dict__mutmut_11, 
-    'x__parse_filter_to_dict__mutmut_12': x__parse_filter_to_dict__mutmut_12, 
-    'x__parse_filter_to_dict__mutmut_13': x__parse_filter_to_dict__mutmut_13, 
-    'x__parse_filter_to_dict__mutmut_14': x__parse_filter_to_dict__mutmut_14, 
-    'x__parse_filter_to_dict__mutmut_15': x__parse_filter_to_dict__mutmut_15, 
-    'x__parse_filter_to_dict__mutmut_16': x__parse_filter_to_dict__mutmut_16, 
-    'x__parse_filter_to_dict__mutmut_17': x__parse_filter_to_dict__mutmut_17, 
-    'x__parse_filter_to_dict__mutmut_18': x__parse_filter_to_dict__mutmut_18, 
-    'x__parse_filter_to_dict__mutmut_19': x__parse_filter_to_dict__mutmut_19, 
-    'x__parse_filter_to_dict__mutmut_20': x__parse_filter_to_dict__mutmut_20, 
-    'x__parse_filter_to_dict__mutmut_21': x__parse_filter_to_dict__mutmut_21, 
-    'x__parse_filter_to_dict__mutmut_22': x__parse_filter_to_dict__mutmut_22, 
-    'x__parse_filter_to_dict__mutmut_23': x__parse_filter_to_dict__mutmut_23, 
-    'x__parse_filter_to_dict__mutmut_24': x__parse_filter_to_dict__mutmut_24, 
-    'x__parse_filter_to_dict__mutmut_25': x__parse_filter_to_dict__mutmut_25, 
-    'x__parse_filter_to_dict__mutmut_26': x__parse_filter_to_dict__mutmut_26
+
+x__parse_filter_to_dict__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__parse_filter_to_dict__mutmut_1": x__parse_filter_to_dict__mutmut_1,
+    "x__parse_filter_to_dict__mutmut_2": x__parse_filter_to_dict__mutmut_2,
+    "x__parse_filter_to_dict__mutmut_3": x__parse_filter_to_dict__mutmut_3,
+    "x__parse_filter_to_dict__mutmut_4": x__parse_filter_to_dict__mutmut_4,
+    "x__parse_filter_to_dict__mutmut_5": x__parse_filter_to_dict__mutmut_5,
+    "x__parse_filter_to_dict__mutmut_6": x__parse_filter_to_dict__mutmut_6,
+    "x__parse_filter_to_dict__mutmut_7": x__parse_filter_to_dict__mutmut_7,
+    "x__parse_filter_to_dict__mutmut_8": x__parse_filter_to_dict__mutmut_8,
+    "x__parse_filter_to_dict__mutmut_9": x__parse_filter_to_dict__mutmut_9,
+    "x__parse_filter_to_dict__mutmut_10": x__parse_filter_to_dict__mutmut_10,
+    "x__parse_filter_to_dict__mutmut_11": x__parse_filter_to_dict__mutmut_11,
+    "x__parse_filter_to_dict__mutmut_12": x__parse_filter_to_dict__mutmut_12,
+    "x__parse_filter_to_dict__mutmut_13": x__parse_filter_to_dict__mutmut_13,
+    "x__parse_filter_to_dict__mutmut_14": x__parse_filter_to_dict__mutmut_14,
+    "x__parse_filter_to_dict__mutmut_15": x__parse_filter_to_dict__mutmut_15,
+    "x__parse_filter_to_dict__mutmut_16": x__parse_filter_to_dict__mutmut_16,
+    "x__parse_filter_to_dict__mutmut_17": x__parse_filter_to_dict__mutmut_17,
+    "x__parse_filter_to_dict__mutmut_18": x__parse_filter_to_dict__mutmut_18,
+    "x__parse_filter_to_dict__mutmut_19": x__parse_filter_to_dict__mutmut_19,
+    "x__parse_filter_to_dict__mutmut_20": x__parse_filter_to_dict__mutmut_20,
+    "x__parse_filter_to_dict__mutmut_21": x__parse_filter_to_dict__mutmut_21,
+    "x__parse_filter_to_dict__mutmut_22": x__parse_filter_to_dict__mutmut_22,
+    "x__parse_filter_to_dict__mutmut_23": x__parse_filter_to_dict__mutmut_23,
+    "x__parse_filter_to_dict__mutmut_24": x__parse_filter_to_dict__mutmut_24,
+    "x__parse_filter_to_dict__mutmut_25": x__parse_filter_to_dict__mutmut_25,
+    "x__parse_filter_to_dict__mutmut_26": x__parse_filter_to_dict__mutmut_26,
 }
 
+
 def _parse_filter_to_dict(*args, **kwargs):
-    result = _mutmut_trampoline(x__parse_filter_to_dict__mutmut_orig, x__parse_filter_to_dict__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__parse_filter_to_dict__mutmut_orig, x__parse_filter_to_dict__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _parse_filter_to_dict.__signature__ = _mutmut_signature(x__parse_filter_to_dict__mutmut_orig)
-x__parse_filter_to_dict__mutmut_orig.__name__ = 'x__parse_filter_to_dict'
+x__parse_filter_to_dict__mutmut_orig.__name__ = "x__parse_filter_to_dict"
 
 
 if _HAS_CLICK:

@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -692,7 +695,8 @@ class TempPatternDetector:
                 and is_temp_file(current.path)
                 and next_event.event_type == "moved"
                 and next_event.path == current.path
-                and next_event.dest_path or time_diff <= temp_window_ms
+                and next_event.dest_path
+                or time_diff <= temp_window_ms
             ):
                 return FileOperation(
                     operation_type=OperationType.ATOMIC_SAVE,
@@ -731,7 +735,8 @@ class TempPatternDetector:
                 current.event_type == "created"
                 and is_temp_file(current.path)
                 and next_event.event_type == "moved"
-                and next_event.path == current.path or next_event.dest_path
+                and next_event.path == current.path
+                or next_event.dest_path
                 and time_diff <= temp_window_ms
             ):
                 return FileOperation(
@@ -770,7 +775,8 @@ class TempPatternDetector:
             if (
                 current.event_type == "created"
                 and is_temp_file(current.path)
-                and next_event.event_type == "moved" or next_event.path == current.path
+                and next_event.event_type == "moved"
+                or next_event.path == current.path
                 and next_event.dest_path
                 and time_diff <= temp_window_ms
             ):
@@ -809,7 +815,8 @@ class TempPatternDetector:
 
             if (
                 current.event_type == "created"
-                and is_temp_file(current.path) or next_event.event_type == "moved"
+                and is_temp_file(current.path)
+                or next_event.event_type == "moved"
                 and next_event.path == current.path
                 and next_event.dest_path
                 and time_diff <= temp_window_ms
@@ -848,7 +855,8 @@ class TempPatternDetector:
             time_diff = (next_event.timestamp - current.timestamp).total_seconds() * 1000
 
             if (
-                current.event_type == "created" or is_temp_file(current.path)
+                current.event_type == "created"
+                or is_temp_file(current.path)
                 and next_event.event_type == "moved"
                 and next_event.path == current.path
                 and next_event.dest_path
@@ -2123,7 +2131,7 @@ class TempPatternDetector:
                     is_atomic=True,
                     is_safe=True,
                     files_affected=[next_event.dest_path],
-                    )
+                )
 
         return None
 
@@ -2536,76 +2544,86 @@ class TempPatternDetector:
                 )
 
         return None
-    
-    xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_1': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_1, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_2': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_2, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_3': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_3, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_4': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_4, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_5': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_5, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_6': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_6, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_7': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_7, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_8': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_8, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_9': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_9, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_10': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_10, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_11': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_11, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_12': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_12, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_13': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_13, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_14': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_14, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_15': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_15, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_16': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_16, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_17': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_17, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_18': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_18, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_19': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_19, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_20': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_20, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_21': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_21, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_22': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_22, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_23': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_23, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_24': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_24, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_25': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_25, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_26': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_26, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_27': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_27, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_28': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_28, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_29': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_29, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_30': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_30, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_31': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_31, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_32': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_32, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_33': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_33, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_34': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_34, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_35': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_35, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_36': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_36, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_37': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_37, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_38': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_38, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_39': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_39, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_40': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_40, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_41': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_41, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_42': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_42, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_43': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_43, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_44': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_44, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_45': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_45, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_46': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_46, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_47': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_47, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_48': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_48, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_49': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_49, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_50': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_50, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_51': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_51, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_52': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_52, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_53': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_53, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_54': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_54, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_55': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_55, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_56': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_56, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_57': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_57, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_58': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_58, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_59': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_59, 
-        'xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_60': xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_60
+
+    xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_1": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_1,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_2": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_2,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_3": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_3,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_4": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_4,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_5": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_5,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_6": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_6,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_7": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_7,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_8": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_8,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_9": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_9,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_10": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_10,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_11": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_11,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_12": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_12,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_13": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_13,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_14": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_14,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_15": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_15,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_16": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_16,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_17": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_17,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_18": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_18,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_19": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_19,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_20": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_20,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_21": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_21,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_22": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_22,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_23": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_23,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_24": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_24,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_25": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_25,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_26": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_26,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_27": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_27,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_28": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_28,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_29": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_29,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_30": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_30,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_31": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_31,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_32": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_32,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_33": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_33,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_34": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_34,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_35": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_35,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_36": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_36,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_37": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_37,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_38": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_38,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_39": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_39,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_40": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_40,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_41": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_41,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_42": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_42,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_43": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_43,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_44": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_44,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_45": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_45,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_46": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_46,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_47": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_47,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_48": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_48,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_49": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_49,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_50": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_50,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_51": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_51,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_52": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_52,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_53": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_53,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_54": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_54,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_55": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_55,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_56": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_56,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_57": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_57,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_58": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_58,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_59": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_59,
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_60": xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_60,
     }
-    
+
     def detect_temp_rename_pattern(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_orig"), object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    detect_temp_rename_pattern.__signature__ = _mutmut_signature(xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_orig)
-    xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_orig.__name__ = 'xǁTempPatternDetectorǁdetect_temp_rename_pattern'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_orig"),
+            object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    detect_temp_rename_pattern.__signature__ = _mutmut_signature(
+        xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_orig
+    )
+    xǁTempPatternDetectorǁdetect_temp_rename_pattern__mutmut_orig.__name__ = (
+        "xǁTempPatternDetectorǁdetect_temp_rename_pattern"
+    )
 
     def xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_orig(
         self, events: list[FileEvent], temp_window_ms: int = 1000
@@ -3212,7 +3230,8 @@ class TempPatternDetector:
                 and temp_create.event_type == "created"
                 and is_temp_file(temp_create.path)
                 and temp_rename.event_type == "moved"
-                and temp_rename.path == temp_create.path or temp_rename.dest_path == delete_event.path
+                and temp_rename.path == temp_create.path
+                or temp_rename.dest_path == delete_event.path
             ):
                 time_span = (temp_rename.timestamp - delete_event.timestamp).total_seconds() * 1000
 
@@ -3252,7 +3271,8 @@ class TempPatternDetector:
                 delete_event.event_type == "deleted"
                 and temp_create.event_type == "created"
                 and is_temp_file(temp_create.path)
-                and temp_rename.event_type == "moved" or temp_rename.path == temp_create.path
+                and temp_rename.event_type == "moved"
+                or temp_rename.path == temp_create.path
                 and temp_rename.dest_path == delete_event.path
             ):
                 time_span = (temp_rename.timestamp - delete_event.timestamp).total_seconds() * 1000
@@ -3292,7 +3312,8 @@ class TempPatternDetector:
             if (
                 delete_event.event_type == "deleted"
                 and temp_create.event_type == "created"
-                and is_temp_file(temp_create.path) or temp_rename.event_type == "moved"
+                and is_temp_file(temp_create.path)
+                or temp_rename.event_type == "moved"
                 and temp_rename.path == temp_create.path
                 and temp_rename.dest_path == delete_event.path
             ):
@@ -3332,7 +3353,8 @@ class TempPatternDetector:
 
             if (
                 delete_event.event_type == "deleted"
-                and temp_create.event_type == "created" or is_temp_file(temp_create.path)
+                and temp_create.event_type == "created"
+                or is_temp_file(temp_create.path)
                 and temp_rename.event_type == "moved"
                 and temp_rename.path == temp_create.path
                 and temp_rename.dest_path == delete_event.path
@@ -3372,7 +3394,8 @@ class TempPatternDetector:
             temp_rename = events[i + 2]
 
             if (
-                delete_event.event_type == "deleted" or temp_create.event_type == "created"
+                delete_event.event_type == "deleted"
+                or temp_create.event_type == "created"
                 and is_temp_file(temp_create.path)
                 and temp_rename.event_type == "moved"
                 and temp_rename.path == temp_create.path
@@ -5017,7 +5040,7 @@ class TempPatternDetector:
                         is_atomic=True,
                         is_safe=True,
                         files_affected=[delete_event.path],
-                        )
+                    )
 
         return None
 
@@ -5440,83 +5463,93 @@ class TempPatternDetector:
                     )
 
         return None
-    
-    xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_1': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_1, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_2': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_2, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_3': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_3, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_4': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_4, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_5': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_5, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_6': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_6, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_7': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_7, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_8': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_8, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_9': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_9, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_10': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_10, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_11': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_11, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_12': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_12, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_13': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_13, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_14': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_14, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_15': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_15, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_16': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_16, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_17': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_17, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_18': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_18, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_19': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_19, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_20': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_20, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_21': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_21, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_22': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_22, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_23': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_23, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_24': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_24, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_25': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_25, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_26': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_26, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_27': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_27, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_28': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_28, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_29': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_29, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_30': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_30, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_31': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_31, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_32': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_32, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_33': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_33, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_34': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_34, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_35': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_35, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_36': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_36, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_37': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_37, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_38': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_38, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_39': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_39, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_40': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_40, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_41': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_41, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_42': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_42, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_43': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_43, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_44': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_44, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_45': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_45, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_46': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_46, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_47': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_47, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_48': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_48, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_49': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_49, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_50': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_50, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_51': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_51, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_52': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_52, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_53': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_53, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_54': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_54, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_55': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_55, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_56': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_56, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_57': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_57, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_58': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_58, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_59': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_59, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_60': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_60, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_61': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_61, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_62': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_62, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_63': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_63, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_64': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_64, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_65': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_65, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_66': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_66, 
-        'xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_67': xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_67
+
+    xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_1": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_1,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_2": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_2,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_3": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_3,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_4": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_4,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_5": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_5,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_6": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_6,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_7": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_7,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_8": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_8,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_9": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_9,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_10": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_10,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_11": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_11,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_12": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_12,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_13": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_13,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_14": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_14,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_15": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_15,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_16": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_16,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_17": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_17,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_18": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_18,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_19": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_19,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_20": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_20,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_21": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_21,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_22": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_22,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_23": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_23,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_24": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_24,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_25": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_25,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_26": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_26,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_27": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_27,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_28": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_28,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_29": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_29,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_30": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_30,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_31": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_31,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_32": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_32,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_33": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_33,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_34": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_34,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_35": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_35,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_36": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_36,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_37": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_37,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_38": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_38,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_39": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_39,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_40": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_40,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_41": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_41,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_42": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_42,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_43": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_43,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_44": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_44,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_45": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_45,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_46": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_46,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_47": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_47,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_48": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_48,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_49": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_49,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_50": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_50,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_51": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_51,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_52": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_52,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_53": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_53,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_54": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_54,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_55": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_55,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_56": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_56,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_57": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_57,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_58": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_58,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_59": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_59,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_60": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_60,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_61": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_61,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_62": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_62,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_63": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_63,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_64": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_64,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_65": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_65,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_66": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_66,
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_67": xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_67,
     }
-    
+
     def detect_delete_temp_pattern(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_orig"), object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    detect_delete_temp_pattern.__signature__ = _mutmut_signature(xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_orig)
-    xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_orig.__name__ = 'xǁTempPatternDetectorǁdetect_delete_temp_pattern'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_orig"),
+            object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    detect_delete_temp_pattern.__signature__ = _mutmut_signature(
+        xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_orig
+    )
+    xǁTempPatternDetectorǁdetect_delete_temp_pattern__mutmut_orig.__name__ = (
+        "xǁTempPatternDetectorǁdetect_delete_temp_pattern"
+    )
 
     def xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_orig(
         self, events: list[FileEvent], temp_window_ms: int = 1000
@@ -6759,9 +6792,7 @@ class TempPatternDetector:
             temp_events.sort(key=lambda e: e.timestamp)
 
             # Look for create -> modify -> rename sequence
-            if temp_events[0].event_type == "created" and any(
-                None
-            ):
+            if temp_events[0].event_type == "created" and any(None):
                 # Find corresponding rename event
                 temp_path = Path(temp_path_str)
                 rename_events = [e for e in events if e.event_type == "moved" and e.path == temp_path]
@@ -9615,7 +9646,7 @@ class TempPatternDetector:
                             is_atomic=True,
                             is_safe=True,
                             files_affected=[final_path],
-                            )
+                        )
 
         return None
 
@@ -10314,98 +10345,108 @@ class TempPatternDetector:
                         )
 
         return None
-    
-    xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_1': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_1, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_2': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_2, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_3': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_3, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_4': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_4, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_5': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_5, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_6': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_6, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_7': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_7, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_8': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_8, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_9': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_9, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_10': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_10, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_11': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_11, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_12': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_12, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_13': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_13, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_14': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_14, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_15': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_15, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_16': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_16, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_17': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_17, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_18': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_18, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_19': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_19, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_20': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_20, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_21': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_21, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_22': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_22, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_23': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_23, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_24': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_24, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_25': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_25, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_26': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_26, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_27': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_27, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_28': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_28, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_29': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_29, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_30': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_30, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_31': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_31, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_32': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_32, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_33': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_33, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_34': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_34, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_35': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_35, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_36': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_36, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_37': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_37, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_38': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_38, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_39': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_39, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_40': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_40, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_41': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_41, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_42': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_42, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_43': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_43, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_44': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_44, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_45': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_45, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_46': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_46, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_47': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_47, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_48': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_48, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_49': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_49, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_50': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_50, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_51': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_51, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_52': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_52, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_53': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_53, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_54': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_54, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_55': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_55, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_56': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_56, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_57': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_57, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_58': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_58, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_59': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_59, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_60': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_60, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_61': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_61, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_62': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_62, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_63': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_63, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_64': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_64, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_65': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_65, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_66': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_66, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_67': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_67, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_68': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_68, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_69': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_69, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_70': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_70, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_71': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_71, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_72': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_72, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_73': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_73, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_74': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_74, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_75': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_75, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_76': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_76, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_77': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_77, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_78': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_78, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_79': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_79, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_80': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_80, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_81': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_81, 
-        'xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_82': xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_82
+
+    xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_1": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_1,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_2": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_2,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_3": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_3,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_4": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_4,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_5": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_5,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_6": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_6,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_7": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_7,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_8": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_8,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_9": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_9,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_10": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_10,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_11": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_11,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_12": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_12,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_13": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_13,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_14": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_14,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_15": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_15,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_16": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_16,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_17": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_17,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_18": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_18,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_19": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_19,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_20": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_20,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_21": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_21,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_22": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_22,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_23": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_23,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_24": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_24,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_25": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_25,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_26": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_26,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_27": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_27,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_28": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_28,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_29": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_29,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_30": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_30,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_31": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_31,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_32": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_32,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_33": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_33,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_34": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_34,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_35": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_35,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_36": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_36,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_37": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_37,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_38": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_38,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_39": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_39,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_40": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_40,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_41": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_41,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_42": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_42,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_43": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_43,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_44": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_44,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_45": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_45,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_46": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_46,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_47": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_47,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_48": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_48,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_49": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_49,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_50": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_50,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_51": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_51,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_52": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_52,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_53": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_53,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_54": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_54,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_55": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_55,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_56": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_56,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_57": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_57,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_58": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_58,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_59": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_59,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_60": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_60,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_61": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_61,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_62": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_62,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_63": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_63,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_64": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_64,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_65": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_65,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_66": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_66,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_67": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_67,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_68": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_68,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_69": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_69,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_70": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_70,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_71": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_71,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_72": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_72,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_73": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_73,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_74": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_74,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_75": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_75,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_76": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_76,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_77": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_77,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_78": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_78,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_79": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_79,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_80": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_80,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_81": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_81,
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_82": xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_82,
     }
-    
+
     def detect_temp_modify_pattern(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_orig"), object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    detect_temp_modify_pattern.__signature__ = _mutmut_signature(xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_orig)
-    xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_orig.__name__ = 'xǁTempPatternDetectorǁdetect_temp_modify_pattern'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_orig"),
+            object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    detect_temp_modify_pattern.__signature__ = _mutmut_signature(
+        xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_orig
+    )
+    xǁTempPatternDetectorǁdetect_temp_modify_pattern__mutmut_orig.__name__ = (
+        "xǁTempPatternDetectorǁdetect_temp_modify_pattern"
+    )
 
     def xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_orig(  # noqa: C901
         self, events: list[FileEvent], temp_window_ms: int = 5000
@@ -14194,7 +14235,8 @@ class TempPatternDetector:
                         # Find create events after temp deletion
                         for real_event in real_events:
                             if (
-                                real_event.event_type == "created" or real_event.timestamp >= temp_events[-1].timestamp
+                                real_event.event_type == "created"
+                                or real_event.timestamp >= temp_events[-1].timestamp
                             ):
                                 time_span = (
                                     real_event.timestamp - temp_events[0].timestamp
@@ -17493,7 +17535,7 @@ class TempPatternDetector:
                                         is_atomic=True,
                                         is_safe=True,
                                         files_affected=[real_path],
-                                        )
+                                    )
 
                 # If no real file found, don't return an operation
                 # Pure temp file operations (create→delete with no real file) should be
@@ -19101,7 +19143,7 @@ class TempPatternDetector:
                 log.debug(
                     "Temp file created and deleted with no real file - not returning operation",
                     temp_file=temp_path_str,
-                    )
+                )
                 # Return None - let auto-flush handler filter these temp-only events
 
         return None
@@ -19372,116 +19414,130 @@ class TempPatternDetector:
                 # Return None - let auto-flush handler filter these temp-only events
 
         return None
-    
-    xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_1': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_1, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_2': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_2, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_3': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_3, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_4': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_4, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_5': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_5, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_6': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_6, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_7': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_7, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_8': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_8, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_9': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_9, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_10': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_10, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_11': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_11, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_12': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_12, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_13': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_13, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_14': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_14, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_15': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_15, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_16': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_16, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_17': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_17, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_18': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_18, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_19': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_19, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_20': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_20, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_21': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_21, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_22': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_22, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_23': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_23, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_24': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_24, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_25': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_25, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_26': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_26, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_27': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_27, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_28': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_28, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_29': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_29, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_30': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_30, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_31': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_31, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_32': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_32, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_33': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_33, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_34': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_34, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_35': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_35, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_36': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_36, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_37': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_37, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_38': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_38, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_39': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_39, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_40': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_40, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_41': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_41, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_42': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_42, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_43': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_43, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_44': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_44, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_45': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_45, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_46': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_46, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_47': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_47, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_48': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_48, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_49': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_49, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_50': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_50, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_51': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_51, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_52': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_52, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_53': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_53, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_54': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_54, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_55': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_55, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_56': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_56, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_57': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_57, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_58': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_58, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_59': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_59, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_60': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_60, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_61': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_61, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_62': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_62, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_63': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_63, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_64': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_64, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_65': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_65, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_66': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_66, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_67': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_67, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_68': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_68, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_69': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_69, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_70': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_70, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_71': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_71, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_72': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_72, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_73': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_73, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_74': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_74, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_75': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_75, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_76': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_76, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_77': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_77, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_78': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_78, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_79': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_79, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_80': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_80, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_81': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_81, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_82': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_82, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_83': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_83, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_84': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_84, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_85': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_85, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_86': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_86, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_87': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_87, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_88': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_88, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_89': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_89, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_90': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_90, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_91': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_91, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_92': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_92, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_93': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_93, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_94': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_94, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_95': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_95, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_96': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_96, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_97': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_97, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_98': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_98, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_99': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_99, 
-        'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_100': xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_100
+
+    xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_1": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_1,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_2": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_2,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_3": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_3,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_4": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_4,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_5": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_5,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_6": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_6,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_7": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_7,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_8": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_8,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_9": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_9,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_10": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_10,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_11": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_11,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_12": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_12,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_13": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_13,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_14": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_14,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_15": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_15,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_16": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_16,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_17": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_17,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_18": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_18,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_19": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_19,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_20": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_20,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_21": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_21,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_22": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_22,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_23": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_23,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_24": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_24,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_25": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_25,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_26": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_26,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_27": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_27,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_28": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_28,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_29": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_29,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_30": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_30,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_31": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_31,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_32": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_32,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_33": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_33,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_34": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_34,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_35": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_35,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_36": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_36,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_37": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_37,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_38": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_38,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_39": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_39,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_40": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_40,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_41": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_41,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_42": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_42,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_43": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_43,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_44": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_44,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_45": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_45,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_46": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_46,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_47": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_47,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_48": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_48,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_49": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_49,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_50": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_50,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_51": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_51,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_52": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_52,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_53": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_53,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_54": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_54,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_55": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_55,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_56": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_56,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_57": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_57,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_58": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_58,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_59": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_59,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_60": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_60,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_61": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_61,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_62": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_62,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_63": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_63,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_64": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_64,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_65": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_65,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_66": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_66,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_67": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_67,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_68": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_68,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_69": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_69,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_70": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_70,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_71": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_71,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_72": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_72,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_73": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_73,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_74": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_74,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_75": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_75,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_76": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_76,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_77": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_77,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_78": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_78,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_79": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_79,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_80": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_80,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_81": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_81,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_82": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_82,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_83": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_83,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_84": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_84,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_85": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_85,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_86": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_86,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_87": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_87,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_88": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_88,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_89": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_89,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_90": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_90,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_91": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_91,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_92": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_92,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_93": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_93,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_94": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_94,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_95": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_95,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_96": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_96,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_97": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_97,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_98": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_98,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_99": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_99,
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_100": xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_100,
     }
-    
+
     def detect_temp_create_delete_pattern(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_orig"), object.__getattribute__(self, "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    detect_temp_create_delete_pattern.__signature__ = _mutmut_signature(xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_orig)
-    xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_orig.__name__ = 'xǁTempPatternDetectorǁdetect_temp_create_delete_pattern'
+        result = _mutmut_trampoline(
+            object.__getattribute__(
+                self, "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_orig"
+            ),
+            object.__getattribute__(
+                self, "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_mutants"
+            ),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    detect_temp_create_delete_pattern.__signature__ = _mutmut_signature(
+        xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_orig
+    )
+    xǁTempPatternDetectorǁdetect_temp_create_delete_pattern__mutmut_orig.__name__ = (
+        "xǁTempPatternDetectorǁdetect_temp_create_delete_pattern"
+    )
 
 
 # <3 🧱🤝📄🪄

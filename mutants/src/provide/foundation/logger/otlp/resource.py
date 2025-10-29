@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -595,25 +598,30 @@ def x_build_resource_attributes__mutmut_10(
 
     return attrs
 
-x_build_resource_attributes__mutmut_mutants : ClassVar[MutantDict] = {
-'x_build_resource_attributes__mutmut_1': x_build_resource_attributes__mutmut_1, 
-    'x_build_resource_attributes__mutmut_2': x_build_resource_attributes__mutmut_2, 
-    'x_build_resource_attributes__mutmut_3': x_build_resource_attributes__mutmut_3, 
-    'x_build_resource_attributes__mutmut_4': x_build_resource_attributes__mutmut_4, 
-    'x_build_resource_attributes__mutmut_5': x_build_resource_attributes__mutmut_5, 
-    'x_build_resource_attributes__mutmut_6': x_build_resource_attributes__mutmut_6, 
-    'x_build_resource_attributes__mutmut_7': x_build_resource_attributes__mutmut_7, 
-    'x_build_resource_attributes__mutmut_8': x_build_resource_attributes__mutmut_8, 
-    'x_build_resource_attributes__mutmut_9': x_build_resource_attributes__mutmut_9, 
-    'x_build_resource_attributes__mutmut_10': x_build_resource_attributes__mutmut_10
+
+x_build_resource_attributes__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_build_resource_attributes__mutmut_1": x_build_resource_attributes__mutmut_1,
+    "x_build_resource_attributes__mutmut_2": x_build_resource_attributes__mutmut_2,
+    "x_build_resource_attributes__mutmut_3": x_build_resource_attributes__mutmut_3,
+    "x_build_resource_attributes__mutmut_4": x_build_resource_attributes__mutmut_4,
+    "x_build_resource_attributes__mutmut_5": x_build_resource_attributes__mutmut_5,
+    "x_build_resource_attributes__mutmut_6": x_build_resource_attributes__mutmut_6,
+    "x_build_resource_attributes__mutmut_7": x_build_resource_attributes__mutmut_7,
+    "x_build_resource_attributes__mutmut_8": x_build_resource_attributes__mutmut_8,
+    "x_build_resource_attributes__mutmut_9": x_build_resource_attributes__mutmut_9,
+    "x_build_resource_attributes__mutmut_10": x_build_resource_attributes__mutmut_10,
 }
 
+
 def build_resource_attributes(*args, **kwargs):
-    result = _mutmut_trampoline(x_build_resource_attributes__mutmut_orig, x_build_resource_attributes__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_build_resource_attributes__mutmut_orig, x_build_resource_attributes__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 build_resource_attributes.__signature__ = _mutmut_signature(x_build_resource_attributes__mutmut_orig)
-x_build_resource_attributes__mutmut_orig.__name__ = 'x_build_resource_attributes'
+x_build_resource_attributes__mutmut_orig.__name__ = "x_build_resource_attributes"
 
 
 def x_create_otlp_resource__mutmut_orig(
@@ -1052,7 +1060,7 @@ def x_create_otlp_resource__mutmut_9(
         service_name=service_name,
         service_version=service_version,
         environment=environment,
-        )
+    )
 
     return Resource.create(attrs)
 
@@ -1101,25 +1109,30 @@ def x_create_otlp_resource__mutmut_10(
 
     return Resource.create(None)
 
-x_create_otlp_resource__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_otlp_resource__mutmut_1': x_create_otlp_resource__mutmut_1, 
-    'x_create_otlp_resource__mutmut_2': x_create_otlp_resource__mutmut_2, 
-    'x_create_otlp_resource__mutmut_3': x_create_otlp_resource__mutmut_3, 
-    'x_create_otlp_resource__mutmut_4': x_create_otlp_resource__mutmut_4, 
-    'x_create_otlp_resource__mutmut_5': x_create_otlp_resource__mutmut_5, 
-    'x_create_otlp_resource__mutmut_6': x_create_otlp_resource__mutmut_6, 
-    'x_create_otlp_resource__mutmut_7': x_create_otlp_resource__mutmut_7, 
-    'x_create_otlp_resource__mutmut_8': x_create_otlp_resource__mutmut_8, 
-    'x_create_otlp_resource__mutmut_9': x_create_otlp_resource__mutmut_9, 
-    'x_create_otlp_resource__mutmut_10': x_create_otlp_resource__mutmut_10
+
+x_create_otlp_resource__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_otlp_resource__mutmut_1": x_create_otlp_resource__mutmut_1,
+    "x_create_otlp_resource__mutmut_2": x_create_otlp_resource__mutmut_2,
+    "x_create_otlp_resource__mutmut_3": x_create_otlp_resource__mutmut_3,
+    "x_create_otlp_resource__mutmut_4": x_create_otlp_resource__mutmut_4,
+    "x_create_otlp_resource__mutmut_5": x_create_otlp_resource__mutmut_5,
+    "x_create_otlp_resource__mutmut_6": x_create_otlp_resource__mutmut_6,
+    "x_create_otlp_resource__mutmut_7": x_create_otlp_resource__mutmut_7,
+    "x_create_otlp_resource__mutmut_8": x_create_otlp_resource__mutmut_8,
+    "x_create_otlp_resource__mutmut_9": x_create_otlp_resource__mutmut_9,
+    "x_create_otlp_resource__mutmut_10": x_create_otlp_resource__mutmut_10,
 }
 
+
 def create_otlp_resource(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_otlp_resource__mutmut_orig, x_create_otlp_resource__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_otlp_resource__mutmut_orig, x_create_otlp_resource__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_otlp_resource.__signature__ = _mutmut_signature(x_create_otlp_resource__mutmut_orig)
-x_create_otlp_resource__mutmut_orig.__name__ = 'x_create_otlp_resource'
+x_create_otlp_resource__mutmut_orig.__name__ = "x_create_otlp_resource"
 
 
 __all__ = [

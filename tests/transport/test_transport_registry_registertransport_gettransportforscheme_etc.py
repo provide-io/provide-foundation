@@ -11,7 +11,6 @@ from provide.foundation.transport.errors import TransportNotFoundError
 from provide.foundation.transport.registry import (
     get_transport,
     get_transport_for_scheme,
-    get_transport_info,
     list_registered_transports,
     register_transport,
 )

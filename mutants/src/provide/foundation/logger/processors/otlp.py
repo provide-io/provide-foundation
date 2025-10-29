@@ -27,23 +27,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -250,7 +253,11 @@ def x__convert_timestamp_to_nanos__mutmut_7(timestamp: Any) -> int | None:
         # Parse ISO format timestamp and convert to nanoseconds
         from datetime import datetime
 
-        dt = datetime.fromisoformat(timestamp.replace("Z", ))
+        dt = datetime.fromisoformat(
+            timestamp.replace(
+                "Z",
+            )
+        )
         return int(dt.timestamp() * 1_000_000_000)
 
     if isinstance(timestamp, (int, float)):
@@ -571,34 +578,39 @@ def x__convert_timestamp_to_nanos__mutmut_19(timestamp: Any) -> int | None:
 
     return None
 
-x__convert_timestamp_to_nanos__mutmut_mutants : ClassVar[MutantDict] = {
-'x__convert_timestamp_to_nanos__mutmut_1': x__convert_timestamp_to_nanos__mutmut_1, 
-    'x__convert_timestamp_to_nanos__mutmut_2': x__convert_timestamp_to_nanos__mutmut_2, 
-    'x__convert_timestamp_to_nanos__mutmut_3': x__convert_timestamp_to_nanos__mutmut_3, 
-    'x__convert_timestamp_to_nanos__mutmut_4': x__convert_timestamp_to_nanos__mutmut_4, 
-    'x__convert_timestamp_to_nanos__mutmut_5': x__convert_timestamp_to_nanos__mutmut_5, 
-    'x__convert_timestamp_to_nanos__mutmut_6': x__convert_timestamp_to_nanos__mutmut_6, 
-    'x__convert_timestamp_to_nanos__mutmut_7': x__convert_timestamp_to_nanos__mutmut_7, 
-    'x__convert_timestamp_to_nanos__mutmut_8': x__convert_timestamp_to_nanos__mutmut_8, 
-    'x__convert_timestamp_to_nanos__mutmut_9': x__convert_timestamp_to_nanos__mutmut_9, 
-    'x__convert_timestamp_to_nanos__mutmut_10': x__convert_timestamp_to_nanos__mutmut_10, 
-    'x__convert_timestamp_to_nanos__mutmut_11': x__convert_timestamp_to_nanos__mutmut_11, 
-    'x__convert_timestamp_to_nanos__mutmut_12': x__convert_timestamp_to_nanos__mutmut_12, 
-    'x__convert_timestamp_to_nanos__mutmut_13': x__convert_timestamp_to_nanos__mutmut_13, 
-    'x__convert_timestamp_to_nanos__mutmut_14': x__convert_timestamp_to_nanos__mutmut_14, 
-    'x__convert_timestamp_to_nanos__mutmut_15': x__convert_timestamp_to_nanos__mutmut_15, 
-    'x__convert_timestamp_to_nanos__mutmut_16': x__convert_timestamp_to_nanos__mutmut_16, 
-    'x__convert_timestamp_to_nanos__mutmut_17': x__convert_timestamp_to_nanos__mutmut_17, 
-    'x__convert_timestamp_to_nanos__mutmut_18': x__convert_timestamp_to_nanos__mutmut_18, 
-    'x__convert_timestamp_to_nanos__mutmut_19': x__convert_timestamp_to_nanos__mutmut_19
+
+x__convert_timestamp_to_nanos__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__convert_timestamp_to_nanos__mutmut_1": x__convert_timestamp_to_nanos__mutmut_1,
+    "x__convert_timestamp_to_nanos__mutmut_2": x__convert_timestamp_to_nanos__mutmut_2,
+    "x__convert_timestamp_to_nanos__mutmut_3": x__convert_timestamp_to_nanos__mutmut_3,
+    "x__convert_timestamp_to_nanos__mutmut_4": x__convert_timestamp_to_nanos__mutmut_4,
+    "x__convert_timestamp_to_nanos__mutmut_5": x__convert_timestamp_to_nanos__mutmut_5,
+    "x__convert_timestamp_to_nanos__mutmut_6": x__convert_timestamp_to_nanos__mutmut_6,
+    "x__convert_timestamp_to_nanos__mutmut_7": x__convert_timestamp_to_nanos__mutmut_7,
+    "x__convert_timestamp_to_nanos__mutmut_8": x__convert_timestamp_to_nanos__mutmut_8,
+    "x__convert_timestamp_to_nanos__mutmut_9": x__convert_timestamp_to_nanos__mutmut_9,
+    "x__convert_timestamp_to_nanos__mutmut_10": x__convert_timestamp_to_nanos__mutmut_10,
+    "x__convert_timestamp_to_nanos__mutmut_11": x__convert_timestamp_to_nanos__mutmut_11,
+    "x__convert_timestamp_to_nanos__mutmut_12": x__convert_timestamp_to_nanos__mutmut_12,
+    "x__convert_timestamp_to_nanos__mutmut_13": x__convert_timestamp_to_nanos__mutmut_13,
+    "x__convert_timestamp_to_nanos__mutmut_14": x__convert_timestamp_to_nanos__mutmut_14,
+    "x__convert_timestamp_to_nanos__mutmut_15": x__convert_timestamp_to_nanos__mutmut_15,
+    "x__convert_timestamp_to_nanos__mutmut_16": x__convert_timestamp_to_nanos__mutmut_16,
+    "x__convert_timestamp_to_nanos__mutmut_17": x__convert_timestamp_to_nanos__mutmut_17,
+    "x__convert_timestamp_to_nanos__mutmut_18": x__convert_timestamp_to_nanos__mutmut_18,
+    "x__convert_timestamp_to_nanos__mutmut_19": x__convert_timestamp_to_nanos__mutmut_19,
 }
 
+
 def _convert_timestamp_to_nanos(*args, **kwargs):
-    result = _mutmut_trampoline(x__convert_timestamp_to_nanos__mutmut_orig, x__convert_timestamp_to_nanos__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__convert_timestamp_to_nanos__mutmut_orig, x__convert_timestamp_to_nanos__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _convert_timestamp_to_nanos.__signature__ = _mutmut_signature(x__convert_timestamp_to_nanos__mutmut_orig)
-x__convert_timestamp_to_nanos__mutmut_orig.__name__ = 'x__convert_timestamp_to_nanos'
+x__convert_timestamp_to_nanos__mutmut_orig.__name__ = "x__convert_timestamp_to_nanos"
 
 
 def x_create_otlp_processor__mutmut_orig(config: Any) -> Any | None:
@@ -2058,7 +2070,9 @@ def x_create_otlp_processor__mutmut_13(config: Any) -> Any | None:
                 Unchanged event_dict (so other processors can continue)
             """
             # Skip OTLP if explicitly flagged (e.g., for logs retrieved from OpenObserve)
-            if event_dict.pop("_skip_otlp", ):
+            if event_dict.pop(
+                "_skip_otlp",
+            ):
                 return event_dict
 
             try:
@@ -3035,7 +3049,11 @@ def x_create_otlp_processor__mutmut_22(config: Any) -> Any | None:
 
             try:
                 # Extract message and attributes
-                message: str = str(event_dict.get("event", ))
+                message: str = str(
+                    event_dict.get(
+                        "event",
+                    )
+                )
                 level: str = str(event_dict.get("level", "info")).lower()
 
                 # Build attributes (everything except 'event' and 'timestamp')
@@ -4116,7 +4134,11 @@ def x_create_otlp_processor__mutmut_32(config: Any) -> Any | None:
             try:
                 # Extract message and attributes
                 message: str = str(event_dict.get("event", ""))
-                level: str = str(event_dict.get("level", )).lower()
+                level: str = str(
+                    event_dict.get(
+                        "level",
+                    )
+                ).lower()
 
                 # Build attributes (everything except 'event' and 'timestamp')
                 attributes: dict[str, str] = {
@@ -8879,7 +8901,7 @@ def x_create_otlp_processor__mutmut_76(config: Any) -> Any | None:
                     body=message,
                     resource=_OTLP_LOGGER_PROVIDER.resource,
                     attributes=attributes,
-                    )
+                )
                 otlp_logger.emit(log_record)
 
             except Exception:
@@ -9111,93 +9133,98 @@ def x_create_otlp_processor__mutmut_78(config: Any) -> Any | None:
         # If OTLP setup fails, return None
         return None
 
-x_create_otlp_processor__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_otlp_processor__mutmut_1': x_create_otlp_processor__mutmut_1, 
-    'x_create_otlp_processor__mutmut_2': x_create_otlp_processor__mutmut_2, 
-    'x_create_otlp_processor__mutmut_3': x_create_otlp_processor__mutmut_3, 
-    'x_create_otlp_processor__mutmut_4': x_create_otlp_processor__mutmut_4, 
-    'x_create_otlp_processor__mutmut_5': x_create_otlp_processor__mutmut_5, 
-    'x_create_otlp_processor__mutmut_6': x_create_otlp_processor__mutmut_6, 
-    'x_create_otlp_processor__mutmut_7': x_create_otlp_processor__mutmut_7, 
-    'x_create_otlp_processor__mutmut_8': x_create_otlp_processor__mutmut_8, 
-    'x_create_otlp_processor__mutmut_9': x_create_otlp_processor__mutmut_9, 
-    'x_create_otlp_processor__mutmut_10': x_create_otlp_processor__mutmut_10, 
-    'x_create_otlp_processor__mutmut_11': x_create_otlp_processor__mutmut_11, 
-    'x_create_otlp_processor__mutmut_12': x_create_otlp_processor__mutmut_12, 
-    'x_create_otlp_processor__mutmut_13': x_create_otlp_processor__mutmut_13, 
-    'x_create_otlp_processor__mutmut_14': x_create_otlp_processor__mutmut_14, 
-    'x_create_otlp_processor__mutmut_15': x_create_otlp_processor__mutmut_15, 
-    'x_create_otlp_processor__mutmut_16': x_create_otlp_processor__mutmut_16, 
-    'x_create_otlp_processor__mutmut_17': x_create_otlp_processor__mutmut_17, 
-    'x_create_otlp_processor__mutmut_18': x_create_otlp_processor__mutmut_18, 
-    'x_create_otlp_processor__mutmut_19': x_create_otlp_processor__mutmut_19, 
-    'x_create_otlp_processor__mutmut_20': x_create_otlp_processor__mutmut_20, 
-    'x_create_otlp_processor__mutmut_21': x_create_otlp_processor__mutmut_21, 
-    'x_create_otlp_processor__mutmut_22': x_create_otlp_processor__mutmut_22, 
-    'x_create_otlp_processor__mutmut_23': x_create_otlp_processor__mutmut_23, 
-    'x_create_otlp_processor__mutmut_24': x_create_otlp_processor__mutmut_24, 
-    'x_create_otlp_processor__mutmut_25': x_create_otlp_processor__mutmut_25, 
-    'x_create_otlp_processor__mutmut_26': x_create_otlp_processor__mutmut_26, 
-    'x_create_otlp_processor__mutmut_27': x_create_otlp_processor__mutmut_27, 
-    'x_create_otlp_processor__mutmut_28': x_create_otlp_processor__mutmut_28, 
-    'x_create_otlp_processor__mutmut_29': x_create_otlp_processor__mutmut_29, 
-    'x_create_otlp_processor__mutmut_30': x_create_otlp_processor__mutmut_30, 
-    'x_create_otlp_processor__mutmut_31': x_create_otlp_processor__mutmut_31, 
-    'x_create_otlp_processor__mutmut_32': x_create_otlp_processor__mutmut_32, 
-    'x_create_otlp_processor__mutmut_33': x_create_otlp_processor__mutmut_33, 
-    'x_create_otlp_processor__mutmut_34': x_create_otlp_processor__mutmut_34, 
-    'x_create_otlp_processor__mutmut_35': x_create_otlp_processor__mutmut_35, 
-    'x_create_otlp_processor__mutmut_36': x_create_otlp_processor__mutmut_36, 
-    'x_create_otlp_processor__mutmut_37': x_create_otlp_processor__mutmut_37, 
-    'x_create_otlp_processor__mutmut_38': x_create_otlp_processor__mutmut_38, 
-    'x_create_otlp_processor__mutmut_39': x_create_otlp_processor__mutmut_39, 
-    'x_create_otlp_processor__mutmut_40': x_create_otlp_processor__mutmut_40, 
-    'x_create_otlp_processor__mutmut_41': x_create_otlp_processor__mutmut_41, 
-    'x_create_otlp_processor__mutmut_42': x_create_otlp_processor__mutmut_42, 
-    'x_create_otlp_processor__mutmut_43': x_create_otlp_processor__mutmut_43, 
-    'x_create_otlp_processor__mutmut_44': x_create_otlp_processor__mutmut_44, 
-    'x_create_otlp_processor__mutmut_45': x_create_otlp_processor__mutmut_45, 
-    'x_create_otlp_processor__mutmut_46': x_create_otlp_processor__mutmut_46, 
-    'x_create_otlp_processor__mutmut_47': x_create_otlp_processor__mutmut_47, 
-    'x_create_otlp_processor__mutmut_48': x_create_otlp_processor__mutmut_48, 
-    'x_create_otlp_processor__mutmut_49': x_create_otlp_processor__mutmut_49, 
-    'x_create_otlp_processor__mutmut_50': x_create_otlp_processor__mutmut_50, 
-    'x_create_otlp_processor__mutmut_51': x_create_otlp_processor__mutmut_51, 
-    'x_create_otlp_processor__mutmut_52': x_create_otlp_processor__mutmut_52, 
-    'x_create_otlp_processor__mutmut_53': x_create_otlp_processor__mutmut_53, 
-    'x_create_otlp_processor__mutmut_54': x_create_otlp_processor__mutmut_54, 
-    'x_create_otlp_processor__mutmut_55': x_create_otlp_processor__mutmut_55, 
-    'x_create_otlp_processor__mutmut_56': x_create_otlp_processor__mutmut_56, 
-    'x_create_otlp_processor__mutmut_57': x_create_otlp_processor__mutmut_57, 
-    'x_create_otlp_processor__mutmut_58': x_create_otlp_processor__mutmut_58, 
-    'x_create_otlp_processor__mutmut_59': x_create_otlp_processor__mutmut_59, 
-    'x_create_otlp_processor__mutmut_60': x_create_otlp_processor__mutmut_60, 
-    'x_create_otlp_processor__mutmut_61': x_create_otlp_processor__mutmut_61, 
-    'x_create_otlp_processor__mutmut_62': x_create_otlp_processor__mutmut_62, 
-    'x_create_otlp_processor__mutmut_63': x_create_otlp_processor__mutmut_63, 
-    'x_create_otlp_processor__mutmut_64': x_create_otlp_processor__mutmut_64, 
-    'x_create_otlp_processor__mutmut_65': x_create_otlp_processor__mutmut_65, 
-    'x_create_otlp_processor__mutmut_66': x_create_otlp_processor__mutmut_66, 
-    'x_create_otlp_processor__mutmut_67': x_create_otlp_processor__mutmut_67, 
-    'x_create_otlp_processor__mutmut_68': x_create_otlp_processor__mutmut_68, 
-    'x_create_otlp_processor__mutmut_69': x_create_otlp_processor__mutmut_69, 
-    'x_create_otlp_processor__mutmut_70': x_create_otlp_processor__mutmut_70, 
-    'x_create_otlp_processor__mutmut_71': x_create_otlp_processor__mutmut_71, 
-    'x_create_otlp_processor__mutmut_72': x_create_otlp_processor__mutmut_72, 
-    'x_create_otlp_processor__mutmut_73': x_create_otlp_processor__mutmut_73, 
-    'x_create_otlp_processor__mutmut_74': x_create_otlp_processor__mutmut_74, 
-    'x_create_otlp_processor__mutmut_75': x_create_otlp_processor__mutmut_75, 
-    'x_create_otlp_processor__mutmut_76': x_create_otlp_processor__mutmut_76, 
-    'x_create_otlp_processor__mutmut_77': x_create_otlp_processor__mutmut_77, 
-    'x_create_otlp_processor__mutmut_78': x_create_otlp_processor__mutmut_78
+
+x_create_otlp_processor__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_otlp_processor__mutmut_1": x_create_otlp_processor__mutmut_1,
+    "x_create_otlp_processor__mutmut_2": x_create_otlp_processor__mutmut_2,
+    "x_create_otlp_processor__mutmut_3": x_create_otlp_processor__mutmut_3,
+    "x_create_otlp_processor__mutmut_4": x_create_otlp_processor__mutmut_4,
+    "x_create_otlp_processor__mutmut_5": x_create_otlp_processor__mutmut_5,
+    "x_create_otlp_processor__mutmut_6": x_create_otlp_processor__mutmut_6,
+    "x_create_otlp_processor__mutmut_7": x_create_otlp_processor__mutmut_7,
+    "x_create_otlp_processor__mutmut_8": x_create_otlp_processor__mutmut_8,
+    "x_create_otlp_processor__mutmut_9": x_create_otlp_processor__mutmut_9,
+    "x_create_otlp_processor__mutmut_10": x_create_otlp_processor__mutmut_10,
+    "x_create_otlp_processor__mutmut_11": x_create_otlp_processor__mutmut_11,
+    "x_create_otlp_processor__mutmut_12": x_create_otlp_processor__mutmut_12,
+    "x_create_otlp_processor__mutmut_13": x_create_otlp_processor__mutmut_13,
+    "x_create_otlp_processor__mutmut_14": x_create_otlp_processor__mutmut_14,
+    "x_create_otlp_processor__mutmut_15": x_create_otlp_processor__mutmut_15,
+    "x_create_otlp_processor__mutmut_16": x_create_otlp_processor__mutmut_16,
+    "x_create_otlp_processor__mutmut_17": x_create_otlp_processor__mutmut_17,
+    "x_create_otlp_processor__mutmut_18": x_create_otlp_processor__mutmut_18,
+    "x_create_otlp_processor__mutmut_19": x_create_otlp_processor__mutmut_19,
+    "x_create_otlp_processor__mutmut_20": x_create_otlp_processor__mutmut_20,
+    "x_create_otlp_processor__mutmut_21": x_create_otlp_processor__mutmut_21,
+    "x_create_otlp_processor__mutmut_22": x_create_otlp_processor__mutmut_22,
+    "x_create_otlp_processor__mutmut_23": x_create_otlp_processor__mutmut_23,
+    "x_create_otlp_processor__mutmut_24": x_create_otlp_processor__mutmut_24,
+    "x_create_otlp_processor__mutmut_25": x_create_otlp_processor__mutmut_25,
+    "x_create_otlp_processor__mutmut_26": x_create_otlp_processor__mutmut_26,
+    "x_create_otlp_processor__mutmut_27": x_create_otlp_processor__mutmut_27,
+    "x_create_otlp_processor__mutmut_28": x_create_otlp_processor__mutmut_28,
+    "x_create_otlp_processor__mutmut_29": x_create_otlp_processor__mutmut_29,
+    "x_create_otlp_processor__mutmut_30": x_create_otlp_processor__mutmut_30,
+    "x_create_otlp_processor__mutmut_31": x_create_otlp_processor__mutmut_31,
+    "x_create_otlp_processor__mutmut_32": x_create_otlp_processor__mutmut_32,
+    "x_create_otlp_processor__mutmut_33": x_create_otlp_processor__mutmut_33,
+    "x_create_otlp_processor__mutmut_34": x_create_otlp_processor__mutmut_34,
+    "x_create_otlp_processor__mutmut_35": x_create_otlp_processor__mutmut_35,
+    "x_create_otlp_processor__mutmut_36": x_create_otlp_processor__mutmut_36,
+    "x_create_otlp_processor__mutmut_37": x_create_otlp_processor__mutmut_37,
+    "x_create_otlp_processor__mutmut_38": x_create_otlp_processor__mutmut_38,
+    "x_create_otlp_processor__mutmut_39": x_create_otlp_processor__mutmut_39,
+    "x_create_otlp_processor__mutmut_40": x_create_otlp_processor__mutmut_40,
+    "x_create_otlp_processor__mutmut_41": x_create_otlp_processor__mutmut_41,
+    "x_create_otlp_processor__mutmut_42": x_create_otlp_processor__mutmut_42,
+    "x_create_otlp_processor__mutmut_43": x_create_otlp_processor__mutmut_43,
+    "x_create_otlp_processor__mutmut_44": x_create_otlp_processor__mutmut_44,
+    "x_create_otlp_processor__mutmut_45": x_create_otlp_processor__mutmut_45,
+    "x_create_otlp_processor__mutmut_46": x_create_otlp_processor__mutmut_46,
+    "x_create_otlp_processor__mutmut_47": x_create_otlp_processor__mutmut_47,
+    "x_create_otlp_processor__mutmut_48": x_create_otlp_processor__mutmut_48,
+    "x_create_otlp_processor__mutmut_49": x_create_otlp_processor__mutmut_49,
+    "x_create_otlp_processor__mutmut_50": x_create_otlp_processor__mutmut_50,
+    "x_create_otlp_processor__mutmut_51": x_create_otlp_processor__mutmut_51,
+    "x_create_otlp_processor__mutmut_52": x_create_otlp_processor__mutmut_52,
+    "x_create_otlp_processor__mutmut_53": x_create_otlp_processor__mutmut_53,
+    "x_create_otlp_processor__mutmut_54": x_create_otlp_processor__mutmut_54,
+    "x_create_otlp_processor__mutmut_55": x_create_otlp_processor__mutmut_55,
+    "x_create_otlp_processor__mutmut_56": x_create_otlp_processor__mutmut_56,
+    "x_create_otlp_processor__mutmut_57": x_create_otlp_processor__mutmut_57,
+    "x_create_otlp_processor__mutmut_58": x_create_otlp_processor__mutmut_58,
+    "x_create_otlp_processor__mutmut_59": x_create_otlp_processor__mutmut_59,
+    "x_create_otlp_processor__mutmut_60": x_create_otlp_processor__mutmut_60,
+    "x_create_otlp_processor__mutmut_61": x_create_otlp_processor__mutmut_61,
+    "x_create_otlp_processor__mutmut_62": x_create_otlp_processor__mutmut_62,
+    "x_create_otlp_processor__mutmut_63": x_create_otlp_processor__mutmut_63,
+    "x_create_otlp_processor__mutmut_64": x_create_otlp_processor__mutmut_64,
+    "x_create_otlp_processor__mutmut_65": x_create_otlp_processor__mutmut_65,
+    "x_create_otlp_processor__mutmut_66": x_create_otlp_processor__mutmut_66,
+    "x_create_otlp_processor__mutmut_67": x_create_otlp_processor__mutmut_67,
+    "x_create_otlp_processor__mutmut_68": x_create_otlp_processor__mutmut_68,
+    "x_create_otlp_processor__mutmut_69": x_create_otlp_processor__mutmut_69,
+    "x_create_otlp_processor__mutmut_70": x_create_otlp_processor__mutmut_70,
+    "x_create_otlp_processor__mutmut_71": x_create_otlp_processor__mutmut_71,
+    "x_create_otlp_processor__mutmut_72": x_create_otlp_processor__mutmut_72,
+    "x_create_otlp_processor__mutmut_73": x_create_otlp_processor__mutmut_73,
+    "x_create_otlp_processor__mutmut_74": x_create_otlp_processor__mutmut_74,
+    "x_create_otlp_processor__mutmut_75": x_create_otlp_processor__mutmut_75,
+    "x_create_otlp_processor__mutmut_76": x_create_otlp_processor__mutmut_76,
+    "x_create_otlp_processor__mutmut_77": x_create_otlp_processor__mutmut_77,
+    "x_create_otlp_processor__mutmut_78": x_create_otlp_processor__mutmut_78,
 }
 
+
 def create_otlp_processor(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_otlp_processor__mutmut_orig, x_create_otlp_processor__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_otlp_processor__mutmut_orig, x_create_otlp_processor__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_otlp_processor.__signature__ = _mutmut_signature(x_create_otlp_processor__mutmut_orig)
-x_create_otlp_processor__mutmut_orig.__name__ = 'x_create_otlp_processor'
+x_create_otlp_processor__mutmut_orig.__name__ = "x_create_otlp_processor"
 
 
 def x_flush_otlp_logs__mutmut_orig() -> None:
@@ -9264,19 +9291,24 @@ def x_flush_otlp_logs__mutmut_4() -> None:
         with contextlib.suppress(Exception):
             _OTLP_LOGGER_PROVIDER.force_flush(timeout_millis=5001)
 
-x_flush_otlp_logs__mutmut_mutants : ClassVar[MutantDict] = {
-'x_flush_otlp_logs__mutmut_1': x_flush_otlp_logs__mutmut_1, 
-    'x_flush_otlp_logs__mutmut_2': x_flush_otlp_logs__mutmut_2, 
-    'x_flush_otlp_logs__mutmut_3': x_flush_otlp_logs__mutmut_3, 
-    'x_flush_otlp_logs__mutmut_4': x_flush_otlp_logs__mutmut_4
+
+x_flush_otlp_logs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_flush_otlp_logs__mutmut_1": x_flush_otlp_logs__mutmut_1,
+    "x_flush_otlp_logs__mutmut_2": x_flush_otlp_logs__mutmut_2,
+    "x_flush_otlp_logs__mutmut_3": x_flush_otlp_logs__mutmut_3,
+    "x_flush_otlp_logs__mutmut_4": x_flush_otlp_logs__mutmut_4,
 }
 
+
 def flush_otlp_logs(*args, **kwargs):
-    result = _mutmut_trampoline(x_flush_otlp_logs__mutmut_orig, x_flush_otlp_logs__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_flush_otlp_logs__mutmut_orig, x_flush_otlp_logs__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 flush_otlp_logs.__signature__ = _mutmut_signature(x_flush_otlp_logs__mutmut_orig)
-x_flush_otlp_logs__mutmut_orig.__name__ = 'x_flush_otlp_logs'
+x_flush_otlp_logs__mutmut_orig.__name__ = "x_flush_otlp_logs"
 
 
 def x_reset_otlp_provider__mutmut_orig() -> None:
@@ -9344,17 +9376,22 @@ def x_reset_otlp_provider__mutmut_2() -> None:
         flush_otlp_logs()
         _OTLP_LOGGER_PROVIDER = ""
 
-x_reset_otlp_provider__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_otlp_provider__mutmut_1': x_reset_otlp_provider__mutmut_1, 
-    'x_reset_otlp_provider__mutmut_2': x_reset_otlp_provider__mutmut_2
+
+x_reset_otlp_provider__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_otlp_provider__mutmut_1": x_reset_otlp_provider__mutmut_1,
+    "x_reset_otlp_provider__mutmut_2": x_reset_otlp_provider__mutmut_2,
 }
 
+
 def reset_otlp_provider(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_otlp_provider__mutmut_orig, x_reset_otlp_provider__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_otlp_provider__mutmut_orig, x_reset_otlp_provider__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_otlp_provider.__signature__ = _mutmut_signature(x_reset_otlp_provider__mutmut_orig)
-x_reset_otlp_provider__mutmut_orig.__name__ = 'x_reset_otlp_provider'
+x_reset_otlp_provider__mutmut_orig.__name__ = "x_reset_otlp_provider"
 
 
 __all__ = [

@@ -61,7 +61,9 @@ def split_test_file(file_path: Path, target_lines: int = 400) -> list[Path]:
         elif '"""' in line and in_docstring:
             in_docstring = False
             header_end = i + 1
-        elif not in_docstring and (line.startswith("import ") or line.startswith("from ") or line.strip() == ""):
+        elif not in_docstring and (
+            line.startswith("import ") or line.startswith("from ") or line.strip() == ""
+        ):
             header_end = i + 1
         elif not in_docstring and line and not line.startswith("#"):
             break
@@ -113,7 +115,7 @@ def split_test_file(file_path: Path, target_lines: int = 400) -> list[Path]:
 
         for start, name, end in group:
             # Extract class content (0-indexed)
-            class_content = "\n".join(lines[start-1:end])
+            class_content = "\n".join(lines[start - 1 : end])
             output_lines.append(class_content)
             output_lines.append("")  # Blank line between classes
 

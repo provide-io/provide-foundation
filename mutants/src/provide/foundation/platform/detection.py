@@ -24,23 +24,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -316,7 +319,9 @@ def x__detect_intel_cpu__mutmut_13(processor: str) -> str | None:
         return None
 
     if "Core" in processor:
-        match = re.search(r"Core\(TM\)\s+(\w+)", )
+        match = re.search(
+            r"Core\(TM\)\s+(\w+)",
+        )
         if match:
             return f"Intel Core {match.group(1)}"
     return "Intel"
@@ -417,36 +422,41 @@ def x__detect_intel_cpu__mutmut_21(processor: str) -> str | None:
             return f"Intel Core {match.group(1)}"
     return "INTEL"
 
-x__detect_intel_cpu__mutmut_mutants : ClassVar[MutantDict] = {
-'x__detect_intel_cpu__mutmut_1': x__detect_intel_cpu__mutmut_1, 
-    'x__detect_intel_cpu__mutmut_2': x__detect_intel_cpu__mutmut_2, 
-    'x__detect_intel_cpu__mutmut_3': x__detect_intel_cpu__mutmut_3, 
-    'x__detect_intel_cpu__mutmut_4': x__detect_intel_cpu__mutmut_4, 
-    'x__detect_intel_cpu__mutmut_5': x__detect_intel_cpu__mutmut_5, 
-    'x__detect_intel_cpu__mutmut_6': x__detect_intel_cpu__mutmut_6, 
-    'x__detect_intel_cpu__mutmut_7': x__detect_intel_cpu__mutmut_7, 
-    'x__detect_intel_cpu__mutmut_8': x__detect_intel_cpu__mutmut_8, 
-    'x__detect_intel_cpu__mutmut_9': x__detect_intel_cpu__mutmut_9, 
-    'x__detect_intel_cpu__mutmut_10': x__detect_intel_cpu__mutmut_10, 
-    'x__detect_intel_cpu__mutmut_11': x__detect_intel_cpu__mutmut_11, 
-    'x__detect_intel_cpu__mutmut_12': x__detect_intel_cpu__mutmut_12, 
-    'x__detect_intel_cpu__mutmut_13': x__detect_intel_cpu__mutmut_13, 
-    'x__detect_intel_cpu__mutmut_14': x__detect_intel_cpu__mutmut_14, 
-    'x__detect_intel_cpu__mutmut_15': x__detect_intel_cpu__mutmut_15, 
-    'x__detect_intel_cpu__mutmut_16': x__detect_intel_cpu__mutmut_16, 
-    'x__detect_intel_cpu__mutmut_17': x__detect_intel_cpu__mutmut_17, 
-    'x__detect_intel_cpu__mutmut_18': x__detect_intel_cpu__mutmut_18, 
-    'x__detect_intel_cpu__mutmut_19': x__detect_intel_cpu__mutmut_19, 
-    'x__detect_intel_cpu__mutmut_20': x__detect_intel_cpu__mutmut_20, 
-    'x__detect_intel_cpu__mutmut_21': x__detect_intel_cpu__mutmut_21
+
+x__detect_intel_cpu__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__detect_intel_cpu__mutmut_1": x__detect_intel_cpu__mutmut_1,
+    "x__detect_intel_cpu__mutmut_2": x__detect_intel_cpu__mutmut_2,
+    "x__detect_intel_cpu__mutmut_3": x__detect_intel_cpu__mutmut_3,
+    "x__detect_intel_cpu__mutmut_4": x__detect_intel_cpu__mutmut_4,
+    "x__detect_intel_cpu__mutmut_5": x__detect_intel_cpu__mutmut_5,
+    "x__detect_intel_cpu__mutmut_6": x__detect_intel_cpu__mutmut_6,
+    "x__detect_intel_cpu__mutmut_7": x__detect_intel_cpu__mutmut_7,
+    "x__detect_intel_cpu__mutmut_8": x__detect_intel_cpu__mutmut_8,
+    "x__detect_intel_cpu__mutmut_9": x__detect_intel_cpu__mutmut_9,
+    "x__detect_intel_cpu__mutmut_10": x__detect_intel_cpu__mutmut_10,
+    "x__detect_intel_cpu__mutmut_11": x__detect_intel_cpu__mutmut_11,
+    "x__detect_intel_cpu__mutmut_12": x__detect_intel_cpu__mutmut_12,
+    "x__detect_intel_cpu__mutmut_13": x__detect_intel_cpu__mutmut_13,
+    "x__detect_intel_cpu__mutmut_14": x__detect_intel_cpu__mutmut_14,
+    "x__detect_intel_cpu__mutmut_15": x__detect_intel_cpu__mutmut_15,
+    "x__detect_intel_cpu__mutmut_16": x__detect_intel_cpu__mutmut_16,
+    "x__detect_intel_cpu__mutmut_17": x__detect_intel_cpu__mutmut_17,
+    "x__detect_intel_cpu__mutmut_18": x__detect_intel_cpu__mutmut_18,
+    "x__detect_intel_cpu__mutmut_19": x__detect_intel_cpu__mutmut_19,
+    "x__detect_intel_cpu__mutmut_20": x__detect_intel_cpu__mutmut_20,
+    "x__detect_intel_cpu__mutmut_21": x__detect_intel_cpu__mutmut_21,
 }
 
+
 def _detect_intel_cpu(*args, **kwargs):
-    result = _mutmut_trampoline(x__detect_intel_cpu__mutmut_orig, x__detect_intel_cpu__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__detect_intel_cpu__mutmut_orig, x__detect_intel_cpu__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _detect_intel_cpu.__signature__ = _mutmut_signature(x__detect_intel_cpu__mutmut_orig)
-x__detect_intel_cpu__mutmut_orig.__name__ = 'x__detect_intel_cpu'
+x__detect_intel_cpu__mutmut_orig.__name__ = "x__detect_intel_cpu"
 
 
 def x__detect_amd_cpu__mutmut_orig(processor: str) -> str | None:
@@ -599,7 +609,9 @@ def x__detect_amd_cpu__mutmut_12(processor: str) -> str | None:
         return None
 
     if "Ryzen" in processor:
-        match = re.search(r"Ryzen\s+(\d+)", )
+        match = re.search(
+            r"Ryzen\s+(\d+)",
+        )
         if match:
             return f"AMD Ryzen {match.group(1)}"
     return "AMD"
@@ -688,34 +700,39 @@ def x__detect_amd_cpu__mutmut_19(processor: str) -> str | None:
             return f"AMD Ryzen {match.group(1)}"
     return "amd"
 
-x__detect_amd_cpu__mutmut_mutants : ClassVar[MutantDict] = {
-'x__detect_amd_cpu__mutmut_1': x__detect_amd_cpu__mutmut_1, 
-    'x__detect_amd_cpu__mutmut_2': x__detect_amd_cpu__mutmut_2, 
-    'x__detect_amd_cpu__mutmut_3': x__detect_amd_cpu__mutmut_3, 
-    'x__detect_amd_cpu__mutmut_4': x__detect_amd_cpu__mutmut_4, 
-    'x__detect_amd_cpu__mutmut_5': x__detect_amd_cpu__mutmut_5, 
-    'x__detect_amd_cpu__mutmut_6': x__detect_amd_cpu__mutmut_6, 
-    'x__detect_amd_cpu__mutmut_7': x__detect_amd_cpu__mutmut_7, 
-    'x__detect_amd_cpu__mutmut_8': x__detect_amd_cpu__mutmut_8, 
-    'x__detect_amd_cpu__mutmut_9': x__detect_amd_cpu__mutmut_9, 
-    'x__detect_amd_cpu__mutmut_10': x__detect_amd_cpu__mutmut_10, 
-    'x__detect_amd_cpu__mutmut_11': x__detect_amd_cpu__mutmut_11, 
-    'x__detect_amd_cpu__mutmut_12': x__detect_amd_cpu__mutmut_12, 
-    'x__detect_amd_cpu__mutmut_13': x__detect_amd_cpu__mutmut_13, 
-    'x__detect_amd_cpu__mutmut_14': x__detect_amd_cpu__mutmut_14, 
-    'x__detect_amd_cpu__mutmut_15': x__detect_amd_cpu__mutmut_15, 
-    'x__detect_amd_cpu__mutmut_16': x__detect_amd_cpu__mutmut_16, 
-    'x__detect_amd_cpu__mutmut_17': x__detect_amd_cpu__mutmut_17, 
-    'x__detect_amd_cpu__mutmut_18': x__detect_amd_cpu__mutmut_18, 
-    'x__detect_amd_cpu__mutmut_19': x__detect_amd_cpu__mutmut_19
+
+x__detect_amd_cpu__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__detect_amd_cpu__mutmut_1": x__detect_amd_cpu__mutmut_1,
+    "x__detect_amd_cpu__mutmut_2": x__detect_amd_cpu__mutmut_2,
+    "x__detect_amd_cpu__mutmut_3": x__detect_amd_cpu__mutmut_3,
+    "x__detect_amd_cpu__mutmut_4": x__detect_amd_cpu__mutmut_4,
+    "x__detect_amd_cpu__mutmut_5": x__detect_amd_cpu__mutmut_5,
+    "x__detect_amd_cpu__mutmut_6": x__detect_amd_cpu__mutmut_6,
+    "x__detect_amd_cpu__mutmut_7": x__detect_amd_cpu__mutmut_7,
+    "x__detect_amd_cpu__mutmut_8": x__detect_amd_cpu__mutmut_8,
+    "x__detect_amd_cpu__mutmut_9": x__detect_amd_cpu__mutmut_9,
+    "x__detect_amd_cpu__mutmut_10": x__detect_amd_cpu__mutmut_10,
+    "x__detect_amd_cpu__mutmut_11": x__detect_amd_cpu__mutmut_11,
+    "x__detect_amd_cpu__mutmut_12": x__detect_amd_cpu__mutmut_12,
+    "x__detect_amd_cpu__mutmut_13": x__detect_amd_cpu__mutmut_13,
+    "x__detect_amd_cpu__mutmut_14": x__detect_amd_cpu__mutmut_14,
+    "x__detect_amd_cpu__mutmut_15": x__detect_amd_cpu__mutmut_15,
+    "x__detect_amd_cpu__mutmut_16": x__detect_amd_cpu__mutmut_16,
+    "x__detect_amd_cpu__mutmut_17": x__detect_amd_cpu__mutmut_17,
+    "x__detect_amd_cpu__mutmut_18": x__detect_amd_cpu__mutmut_18,
+    "x__detect_amd_cpu__mutmut_19": x__detect_amd_cpu__mutmut_19,
 }
 
+
 def _detect_amd_cpu(*args, **kwargs):
-    result = _mutmut_trampoline(x__detect_amd_cpu__mutmut_orig, x__detect_amd_cpu__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__detect_amd_cpu__mutmut_orig, x__detect_amd_cpu__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _detect_amd_cpu.__signature__ = _mutmut_signature(x__detect_amd_cpu__mutmut_orig)
-x__detect_amd_cpu__mutmut_orig.__name__ = 'x__detect_amd_cpu'
+x__detect_amd_cpu__mutmut_orig.__name__ = "x__detect_amd_cpu"
 
 
 def x__detect_apple_cpu__mutmut_orig(processor: str) -> str | None:
@@ -910,7 +927,9 @@ def x__detect_apple_cpu__mutmut_17(processor: str) -> str | None:
     if not any(keyword in processor for keyword in ["Apple", "M1", "M2", "M3"]):
         return None
 
-    match = re.search(r"(M\d+\w*)", )
+    match = re.search(
+        r"(M\d+\w*)",
+    )
     if match:
         return f"Apple {match.group(1)}"
     return "Apple Silicon"
@@ -1003,40 +1022,45 @@ def x__detect_apple_cpu__mutmut_25(processor: str) -> str | None:
         return f"Apple {match.group(1)}"
     return "APPLE SILICON"
 
-x__detect_apple_cpu__mutmut_mutants : ClassVar[MutantDict] = {
-'x__detect_apple_cpu__mutmut_1': x__detect_apple_cpu__mutmut_1, 
-    'x__detect_apple_cpu__mutmut_2': x__detect_apple_cpu__mutmut_2, 
-    'x__detect_apple_cpu__mutmut_3': x__detect_apple_cpu__mutmut_3, 
-    'x__detect_apple_cpu__mutmut_4': x__detect_apple_cpu__mutmut_4, 
-    'x__detect_apple_cpu__mutmut_5': x__detect_apple_cpu__mutmut_5, 
-    'x__detect_apple_cpu__mutmut_6': x__detect_apple_cpu__mutmut_6, 
-    'x__detect_apple_cpu__mutmut_7': x__detect_apple_cpu__mutmut_7, 
-    'x__detect_apple_cpu__mutmut_8': x__detect_apple_cpu__mutmut_8, 
-    'x__detect_apple_cpu__mutmut_9': x__detect_apple_cpu__mutmut_9, 
-    'x__detect_apple_cpu__mutmut_10': x__detect_apple_cpu__mutmut_10, 
-    'x__detect_apple_cpu__mutmut_11': x__detect_apple_cpu__mutmut_11, 
-    'x__detect_apple_cpu__mutmut_12': x__detect_apple_cpu__mutmut_12, 
-    'x__detect_apple_cpu__mutmut_13': x__detect_apple_cpu__mutmut_13, 
-    'x__detect_apple_cpu__mutmut_14': x__detect_apple_cpu__mutmut_14, 
-    'x__detect_apple_cpu__mutmut_15': x__detect_apple_cpu__mutmut_15, 
-    'x__detect_apple_cpu__mutmut_16': x__detect_apple_cpu__mutmut_16, 
-    'x__detect_apple_cpu__mutmut_17': x__detect_apple_cpu__mutmut_17, 
-    'x__detect_apple_cpu__mutmut_18': x__detect_apple_cpu__mutmut_18, 
-    'x__detect_apple_cpu__mutmut_19': x__detect_apple_cpu__mutmut_19, 
-    'x__detect_apple_cpu__mutmut_20': x__detect_apple_cpu__mutmut_20, 
-    'x__detect_apple_cpu__mutmut_21': x__detect_apple_cpu__mutmut_21, 
-    'x__detect_apple_cpu__mutmut_22': x__detect_apple_cpu__mutmut_22, 
-    'x__detect_apple_cpu__mutmut_23': x__detect_apple_cpu__mutmut_23, 
-    'x__detect_apple_cpu__mutmut_24': x__detect_apple_cpu__mutmut_24, 
-    'x__detect_apple_cpu__mutmut_25': x__detect_apple_cpu__mutmut_25
+
+x__detect_apple_cpu__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__detect_apple_cpu__mutmut_1": x__detect_apple_cpu__mutmut_1,
+    "x__detect_apple_cpu__mutmut_2": x__detect_apple_cpu__mutmut_2,
+    "x__detect_apple_cpu__mutmut_3": x__detect_apple_cpu__mutmut_3,
+    "x__detect_apple_cpu__mutmut_4": x__detect_apple_cpu__mutmut_4,
+    "x__detect_apple_cpu__mutmut_5": x__detect_apple_cpu__mutmut_5,
+    "x__detect_apple_cpu__mutmut_6": x__detect_apple_cpu__mutmut_6,
+    "x__detect_apple_cpu__mutmut_7": x__detect_apple_cpu__mutmut_7,
+    "x__detect_apple_cpu__mutmut_8": x__detect_apple_cpu__mutmut_8,
+    "x__detect_apple_cpu__mutmut_9": x__detect_apple_cpu__mutmut_9,
+    "x__detect_apple_cpu__mutmut_10": x__detect_apple_cpu__mutmut_10,
+    "x__detect_apple_cpu__mutmut_11": x__detect_apple_cpu__mutmut_11,
+    "x__detect_apple_cpu__mutmut_12": x__detect_apple_cpu__mutmut_12,
+    "x__detect_apple_cpu__mutmut_13": x__detect_apple_cpu__mutmut_13,
+    "x__detect_apple_cpu__mutmut_14": x__detect_apple_cpu__mutmut_14,
+    "x__detect_apple_cpu__mutmut_15": x__detect_apple_cpu__mutmut_15,
+    "x__detect_apple_cpu__mutmut_16": x__detect_apple_cpu__mutmut_16,
+    "x__detect_apple_cpu__mutmut_17": x__detect_apple_cpu__mutmut_17,
+    "x__detect_apple_cpu__mutmut_18": x__detect_apple_cpu__mutmut_18,
+    "x__detect_apple_cpu__mutmut_19": x__detect_apple_cpu__mutmut_19,
+    "x__detect_apple_cpu__mutmut_20": x__detect_apple_cpu__mutmut_20,
+    "x__detect_apple_cpu__mutmut_21": x__detect_apple_cpu__mutmut_21,
+    "x__detect_apple_cpu__mutmut_22": x__detect_apple_cpu__mutmut_22,
+    "x__detect_apple_cpu__mutmut_23": x__detect_apple_cpu__mutmut_23,
+    "x__detect_apple_cpu__mutmut_24": x__detect_apple_cpu__mutmut_24,
+    "x__detect_apple_cpu__mutmut_25": x__detect_apple_cpu__mutmut_25,
 }
 
+
 def _detect_apple_cpu(*args, **kwargs):
-    result = _mutmut_trampoline(x__detect_apple_cpu__mutmut_orig, x__detect_apple_cpu__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__detect_apple_cpu__mutmut_orig, x__detect_apple_cpu__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _detect_apple_cpu.__signature__ = _mutmut_signature(x__detect_apple_cpu__mutmut_orig)
-x__detect_apple_cpu__mutmut_orig.__name__ = 'x__detect_apple_cpu'
+x__detect_apple_cpu__mutmut_orig.__name__ = "x__detect_apple_cpu"
 
 
 @cached()
@@ -3326,7 +3350,9 @@ def x_normalize_platform_components__mutmut_59(os_name: str, arch_name: str) -> 
         "i386": "i386",
     }
 
-    normalized_os = os_map.get(os_name.lower(), )
+    normalized_os = os_map.get(
+        os_name.lower(),
+    )
     normalized_arch = arch_map.get(arch_name.lower(), arch_name.lower())
 
     return normalized_os, normalized_arch
@@ -3593,7 +3619,9 @@ def x_normalize_platform_components__mutmut_66(os_name: str, arch_name: str) -> 
     }
 
     normalized_os = os_map.get(os_name.lower(), os_name.lower())
-    normalized_arch = arch_map.get(arch_name.lower(), )
+    normalized_arch = arch_map.get(
+        arch_name.lower(),
+    )
 
     return normalized_os, normalized_arch
 
@@ -3673,83 +3701,91 @@ def x_normalize_platform_components__mutmut_68(os_name: str, arch_name: str) -> 
 
     return normalized_os, normalized_arch
 
-x_normalize_platform_components__mutmut_mutants : ClassVar[MutantDict] = {
-'x_normalize_platform_components__mutmut_1': x_normalize_platform_components__mutmut_1, 
-    'x_normalize_platform_components__mutmut_2': x_normalize_platform_components__mutmut_2, 
-    'x_normalize_platform_components__mutmut_3': x_normalize_platform_components__mutmut_3, 
-    'x_normalize_platform_components__mutmut_4': x_normalize_platform_components__mutmut_4, 
-    'x_normalize_platform_components__mutmut_5': x_normalize_platform_components__mutmut_5, 
-    'x_normalize_platform_components__mutmut_6': x_normalize_platform_components__mutmut_6, 
-    'x_normalize_platform_components__mutmut_7': x_normalize_platform_components__mutmut_7, 
-    'x_normalize_platform_components__mutmut_8': x_normalize_platform_components__mutmut_8, 
-    'x_normalize_platform_components__mutmut_9': x_normalize_platform_components__mutmut_9, 
-    'x_normalize_platform_components__mutmut_10': x_normalize_platform_components__mutmut_10, 
-    'x_normalize_platform_components__mutmut_11': x_normalize_platform_components__mutmut_11, 
-    'x_normalize_platform_components__mutmut_12': x_normalize_platform_components__mutmut_12, 
-    'x_normalize_platform_components__mutmut_13': x_normalize_platform_components__mutmut_13, 
-    'x_normalize_platform_components__mutmut_14': x_normalize_platform_components__mutmut_14, 
-    'x_normalize_platform_components__mutmut_15': x_normalize_platform_components__mutmut_15, 
-    'x_normalize_platform_components__mutmut_16': x_normalize_platform_components__mutmut_16, 
-    'x_normalize_platform_components__mutmut_17': x_normalize_platform_components__mutmut_17, 
-    'x_normalize_platform_components__mutmut_18': x_normalize_platform_components__mutmut_18, 
-    'x_normalize_platform_components__mutmut_19': x_normalize_platform_components__mutmut_19, 
-    'x_normalize_platform_components__mutmut_20': x_normalize_platform_components__mutmut_20, 
-    'x_normalize_platform_components__mutmut_21': x_normalize_platform_components__mutmut_21, 
-    'x_normalize_platform_components__mutmut_22': x_normalize_platform_components__mutmut_22, 
-    'x_normalize_platform_components__mutmut_23': x_normalize_platform_components__mutmut_23, 
-    'x_normalize_platform_components__mutmut_24': x_normalize_platform_components__mutmut_24, 
-    'x_normalize_platform_components__mutmut_25': x_normalize_platform_components__mutmut_25, 
-    'x_normalize_platform_components__mutmut_26': x_normalize_platform_components__mutmut_26, 
-    'x_normalize_platform_components__mutmut_27': x_normalize_platform_components__mutmut_27, 
-    'x_normalize_platform_components__mutmut_28': x_normalize_platform_components__mutmut_28, 
-    'x_normalize_platform_components__mutmut_29': x_normalize_platform_components__mutmut_29, 
-    'x_normalize_platform_components__mutmut_30': x_normalize_platform_components__mutmut_30, 
-    'x_normalize_platform_components__mutmut_31': x_normalize_platform_components__mutmut_31, 
-    'x_normalize_platform_components__mutmut_32': x_normalize_platform_components__mutmut_32, 
-    'x_normalize_platform_components__mutmut_33': x_normalize_platform_components__mutmut_33, 
-    'x_normalize_platform_components__mutmut_34': x_normalize_platform_components__mutmut_34, 
-    'x_normalize_platform_components__mutmut_35': x_normalize_platform_components__mutmut_35, 
-    'x_normalize_platform_components__mutmut_36': x_normalize_platform_components__mutmut_36, 
-    'x_normalize_platform_components__mutmut_37': x_normalize_platform_components__mutmut_37, 
-    'x_normalize_platform_components__mutmut_38': x_normalize_platform_components__mutmut_38, 
-    'x_normalize_platform_components__mutmut_39': x_normalize_platform_components__mutmut_39, 
-    'x_normalize_platform_components__mutmut_40': x_normalize_platform_components__mutmut_40, 
-    'x_normalize_platform_components__mutmut_41': x_normalize_platform_components__mutmut_41, 
-    'x_normalize_platform_components__mutmut_42': x_normalize_platform_components__mutmut_42, 
-    'x_normalize_platform_components__mutmut_43': x_normalize_platform_components__mutmut_43, 
-    'x_normalize_platform_components__mutmut_44': x_normalize_platform_components__mutmut_44, 
-    'x_normalize_platform_components__mutmut_45': x_normalize_platform_components__mutmut_45, 
-    'x_normalize_platform_components__mutmut_46': x_normalize_platform_components__mutmut_46, 
-    'x_normalize_platform_components__mutmut_47': x_normalize_platform_components__mutmut_47, 
-    'x_normalize_platform_components__mutmut_48': x_normalize_platform_components__mutmut_48, 
-    'x_normalize_platform_components__mutmut_49': x_normalize_platform_components__mutmut_49, 
-    'x_normalize_platform_components__mutmut_50': x_normalize_platform_components__mutmut_50, 
-    'x_normalize_platform_components__mutmut_51': x_normalize_platform_components__mutmut_51, 
-    'x_normalize_platform_components__mutmut_52': x_normalize_platform_components__mutmut_52, 
-    'x_normalize_platform_components__mutmut_53': x_normalize_platform_components__mutmut_53, 
-    'x_normalize_platform_components__mutmut_54': x_normalize_platform_components__mutmut_54, 
-    'x_normalize_platform_components__mutmut_55': x_normalize_platform_components__mutmut_55, 
-    'x_normalize_platform_components__mutmut_56': x_normalize_platform_components__mutmut_56, 
-    'x_normalize_platform_components__mutmut_57': x_normalize_platform_components__mutmut_57, 
-    'x_normalize_platform_components__mutmut_58': x_normalize_platform_components__mutmut_58, 
-    'x_normalize_platform_components__mutmut_59': x_normalize_platform_components__mutmut_59, 
-    'x_normalize_platform_components__mutmut_60': x_normalize_platform_components__mutmut_60, 
-    'x_normalize_platform_components__mutmut_61': x_normalize_platform_components__mutmut_61, 
-    'x_normalize_platform_components__mutmut_62': x_normalize_platform_components__mutmut_62, 
-    'x_normalize_platform_components__mutmut_63': x_normalize_platform_components__mutmut_63, 
-    'x_normalize_platform_components__mutmut_64': x_normalize_platform_components__mutmut_64, 
-    'x_normalize_platform_components__mutmut_65': x_normalize_platform_components__mutmut_65, 
-    'x_normalize_platform_components__mutmut_66': x_normalize_platform_components__mutmut_66, 
-    'x_normalize_platform_components__mutmut_67': x_normalize_platform_components__mutmut_67, 
-    'x_normalize_platform_components__mutmut_68': x_normalize_platform_components__mutmut_68
+
+x_normalize_platform_components__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_normalize_platform_components__mutmut_1": x_normalize_platform_components__mutmut_1,
+    "x_normalize_platform_components__mutmut_2": x_normalize_platform_components__mutmut_2,
+    "x_normalize_platform_components__mutmut_3": x_normalize_platform_components__mutmut_3,
+    "x_normalize_platform_components__mutmut_4": x_normalize_platform_components__mutmut_4,
+    "x_normalize_platform_components__mutmut_5": x_normalize_platform_components__mutmut_5,
+    "x_normalize_platform_components__mutmut_6": x_normalize_platform_components__mutmut_6,
+    "x_normalize_platform_components__mutmut_7": x_normalize_platform_components__mutmut_7,
+    "x_normalize_platform_components__mutmut_8": x_normalize_platform_components__mutmut_8,
+    "x_normalize_platform_components__mutmut_9": x_normalize_platform_components__mutmut_9,
+    "x_normalize_platform_components__mutmut_10": x_normalize_platform_components__mutmut_10,
+    "x_normalize_platform_components__mutmut_11": x_normalize_platform_components__mutmut_11,
+    "x_normalize_platform_components__mutmut_12": x_normalize_platform_components__mutmut_12,
+    "x_normalize_platform_components__mutmut_13": x_normalize_platform_components__mutmut_13,
+    "x_normalize_platform_components__mutmut_14": x_normalize_platform_components__mutmut_14,
+    "x_normalize_platform_components__mutmut_15": x_normalize_platform_components__mutmut_15,
+    "x_normalize_platform_components__mutmut_16": x_normalize_platform_components__mutmut_16,
+    "x_normalize_platform_components__mutmut_17": x_normalize_platform_components__mutmut_17,
+    "x_normalize_platform_components__mutmut_18": x_normalize_platform_components__mutmut_18,
+    "x_normalize_platform_components__mutmut_19": x_normalize_platform_components__mutmut_19,
+    "x_normalize_platform_components__mutmut_20": x_normalize_platform_components__mutmut_20,
+    "x_normalize_platform_components__mutmut_21": x_normalize_platform_components__mutmut_21,
+    "x_normalize_platform_components__mutmut_22": x_normalize_platform_components__mutmut_22,
+    "x_normalize_platform_components__mutmut_23": x_normalize_platform_components__mutmut_23,
+    "x_normalize_platform_components__mutmut_24": x_normalize_platform_components__mutmut_24,
+    "x_normalize_platform_components__mutmut_25": x_normalize_platform_components__mutmut_25,
+    "x_normalize_platform_components__mutmut_26": x_normalize_platform_components__mutmut_26,
+    "x_normalize_platform_components__mutmut_27": x_normalize_platform_components__mutmut_27,
+    "x_normalize_platform_components__mutmut_28": x_normalize_platform_components__mutmut_28,
+    "x_normalize_platform_components__mutmut_29": x_normalize_platform_components__mutmut_29,
+    "x_normalize_platform_components__mutmut_30": x_normalize_platform_components__mutmut_30,
+    "x_normalize_platform_components__mutmut_31": x_normalize_platform_components__mutmut_31,
+    "x_normalize_platform_components__mutmut_32": x_normalize_platform_components__mutmut_32,
+    "x_normalize_platform_components__mutmut_33": x_normalize_platform_components__mutmut_33,
+    "x_normalize_platform_components__mutmut_34": x_normalize_platform_components__mutmut_34,
+    "x_normalize_platform_components__mutmut_35": x_normalize_platform_components__mutmut_35,
+    "x_normalize_platform_components__mutmut_36": x_normalize_platform_components__mutmut_36,
+    "x_normalize_platform_components__mutmut_37": x_normalize_platform_components__mutmut_37,
+    "x_normalize_platform_components__mutmut_38": x_normalize_platform_components__mutmut_38,
+    "x_normalize_platform_components__mutmut_39": x_normalize_platform_components__mutmut_39,
+    "x_normalize_platform_components__mutmut_40": x_normalize_platform_components__mutmut_40,
+    "x_normalize_platform_components__mutmut_41": x_normalize_platform_components__mutmut_41,
+    "x_normalize_platform_components__mutmut_42": x_normalize_platform_components__mutmut_42,
+    "x_normalize_platform_components__mutmut_43": x_normalize_platform_components__mutmut_43,
+    "x_normalize_platform_components__mutmut_44": x_normalize_platform_components__mutmut_44,
+    "x_normalize_platform_components__mutmut_45": x_normalize_platform_components__mutmut_45,
+    "x_normalize_platform_components__mutmut_46": x_normalize_platform_components__mutmut_46,
+    "x_normalize_platform_components__mutmut_47": x_normalize_platform_components__mutmut_47,
+    "x_normalize_platform_components__mutmut_48": x_normalize_platform_components__mutmut_48,
+    "x_normalize_platform_components__mutmut_49": x_normalize_platform_components__mutmut_49,
+    "x_normalize_platform_components__mutmut_50": x_normalize_platform_components__mutmut_50,
+    "x_normalize_platform_components__mutmut_51": x_normalize_platform_components__mutmut_51,
+    "x_normalize_platform_components__mutmut_52": x_normalize_platform_components__mutmut_52,
+    "x_normalize_platform_components__mutmut_53": x_normalize_platform_components__mutmut_53,
+    "x_normalize_platform_components__mutmut_54": x_normalize_platform_components__mutmut_54,
+    "x_normalize_platform_components__mutmut_55": x_normalize_platform_components__mutmut_55,
+    "x_normalize_platform_components__mutmut_56": x_normalize_platform_components__mutmut_56,
+    "x_normalize_platform_components__mutmut_57": x_normalize_platform_components__mutmut_57,
+    "x_normalize_platform_components__mutmut_58": x_normalize_platform_components__mutmut_58,
+    "x_normalize_platform_components__mutmut_59": x_normalize_platform_components__mutmut_59,
+    "x_normalize_platform_components__mutmut_60": x_normalize_platform_components__mutmut_60,
+    "x_normalize_platform_components__mutmut_61": x_normalize_platform_components__mutmut_61,
+    "x_normalize_platform_components__mutmut_62": x_normalize_platform_components__mutmut_62,
+    "x_normalize_platform_components__mutmut_63": x_normalize_platform_components__mutmut_63,
+    "x_normalize_platform_components__mutmut_64": x_normalize_platform_components__mutmut_64,
+    "x_normalize_platform_components__mutmut_65": x_normalize_platform_components__mutmut_65,
+    "x_normalize_platform_components__mutmut_66": x_normalize_platform_components__mutmut_66,
+    "x_normalize_platform_components__mutmut_67": x_normalize_platform_components__mutmut_67,
+    "x_normalize_platform_components__mutmut_68": x_normalize_platform_components__mutmut_68,
 }
 
+
 def normalize_platform_components(*args, **kwargs):
-    result = _mutmut_trampoline(x_normalize_platform_components__mutmut_orig, x_normalize_platform_components__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_normalize_platform_components__mutmut_orig,
+        x_normalize_platform_components__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 normalize_platform_components.__signature__ = _mutmut_signature(x_normalize_platform_components__mutmut_orig)
-x_normalize_platform_components__mutmut_orig.__name__ = 'x_normalize_platform_components'
+x_normalize_platform_components__mutmut_orig.__name__ = "x_normalize_platform_components"
 
 
 # <3 🧱🤝🏗️🪄

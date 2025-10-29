@@ -32,23 +32,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -413,7 +416,7 @@ def x_register_transport_configs__mutmut_7() -> None:
             name="transport",
             config=None,  # Will be loaded on demand
             loader=RuntimeConfigLoader(prefix="PROVIDE_TRANSPORT"),
-            )
+        )
 
         # Register HTTPConfig
         register_config(
@@ -1367,7 +1370,7 @@ def x_register_transport_configs__mutmut_31() -> None:
             name="transport.http",
             config=None,  # Will be loaded on demand
             loader=RuntimeConfigLoader(prefix="PROVIDE_HTTP"),
-            )
+        )
 
         log.trace("Successfully registered transport configurations with ConfigManager")
 
@@ -2972,7 +2975,9 @@ def x_register_transport_configs__mutmut_71() -> None:
         log.trace("Successfully registered transport configurations with ConfigManager")
 
     except Exception as e:
-        log.warning("Failed to register transport configurations", )
+        log.warning(
+            "Failed to register transport configurations",
+        )
 
 
 def x_register_transport_configs__mutmut_72() -> None:
@@ -3134,90 +3139,95 @@ def x_register_transport_configs__mutmut_75() -> None:
     except Exception as e:
         log.warning("Failed to register transport configurations", error=str(None))
 
-x_register_transport_configs__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register_transport_configs__mutmut_1': x_register_transport_configs__mutmut_1, 
-    'x_register_transport_configs__mutmut_2': x_register_transport_configs__mutmut_2, 
-    'x_register_transport_configs__mutmut_3': x_register_transport_configs__mutmut_3, 
-    'x_register_transport_configs__mutmut_4': x_register_transport_configs__mutmut_4, 
-    'x_register_transport_configs__mutmut_5': x_register_transport_configs__mutmut_5, 
-    'x_register_transport_configs__mutmut_6': x_register_transport_configs__mutmut_6, 
-    'x_register_transport_configs__mutmut_7': x_register_transport_configs__mutmut_7, 
-    'x_register_transport_configs__mutmut_8': x_register_transport_configs__mutmut_8, 
-    'x_register_transport_configs__mutmut_9': x_register_transport_configs__mutmut_9, 
-    'x_register_transport_configs__mutmut_10': x_register_transport_configs__mutmut_10, 
-    'x_register_transport_configs__mutmut_11': x_register_transport_configs__mutmut_11, 
-    'x_register_transport_configs__mutmut_12': x_register_transport_configs__mutmut_12, 
-    'x_register_transport_configs__mutmut_13': x_register_transport_configs__mutmut_13, 
-    'x_register_transport_configs__mutmut_14': x_register_transport_configs__mutmut_14, 
-    'x_register_transport_configs__mutmut_15': x_register_transport_configs__mutmut_15, 
-    'x_register_transport_configs__mutmut_16': x_register_transport_configs__mutmut_16, 
-    'x_register_transport_configs__mutmut_17': x_register_transport_configs__mutmut_17, 
-    'x_register_transport_configs__mutmut_18': x_register_transport_configs__mutmut_18, 
-    'x_register_transport_configs__mutmut_19': x_register_transport_configs__mutmut_19, 
-    'x_register_transport_configs__mutmut_20': x_register_transport_configs__mutmut_20, 
-    'x_register_transport_configs__mutmut_21': x_register_transport_configs__mutmut_21, 
-    'x_register_transport_configs__mutmut_22': x_register_transport_configs__mutmut_22, 
-    'x_register_transport_configs__mutmut_23': x_register_transport_configs__mutmut_23, 
-    'x_register_transport_configs__mutmut_24': x_register_transport_configs__mutmut_24, 
-    'x_register_transport_configs__mutmut_25': x_register_transport_configs__mutmut_25, 
-    'x_register_transport_configs__mutmut_26': x_register_transport_configs__mutmut_26, 
-    'x_register_transport_configs__mutmut_27': x_register_transport_configs__mutmut_27, 
-    'x_register_transport_configs__mutmut_28': x_register_transport_configs__mutmut_28, 
-    'x_register_transport_configs__mutmut_29': x_register_transport_configs__mutmut_29, 
-    'x_register_transport_configs__mutmut_30': x_register_transport_configs__mutmut_30, 
-    'x_register_transport_configs__mutmut_31': x_register_transport_configs__mutmut_31, 
-    'x_register_transport_configs__mutmut_32': x_register_transport_configs__mutmut_32, 
-    'x_register_transport_configs__mutmut_33': x_register_transport_configs__mutmut_33, 
-    'x_register_transport_configs__mutmut_34': x_register_transport_configs__mutmut_34, 
-    'x_register_transport_configs__mutmut_35': x_register_transport_configs__mutmut_35, 
-    'x_register_transport_configs__mutmut_36': x_register_transport_configs__mutmut_36, 
-    'x_register_transport_configs__mutmut_37': x_register_transport_configs__mutmut_37, 
-    'x_register_transport_configs__mutmut_38': x_register_transport_configs__mutmut_38, 
-    'x_register_transport_configs__mutmut_39': x_register_transport_configs__mutmut_39, 
-    'x_register_transport_configs__mutmut_40': x_register_transport_configs__mutmut_40, 
-    'x_register_transport_configs__mutmut_41': x_register_transport_configs__mutmut_41, 
-    'x_register_transport_configs__mutmut_42': x_register_transport_configs__mutmut_42, 
-    'x_register_transport_configs__mutmut_43': x_register_transport_configs__mutmut_43, 
-    'x_register_transport_configs__mutmut_44': x_register_transport_configs__mutmut_44, 
-    'x_register_transport_configs__mutmut_45': x_register_transport_configs__mutmut_45, 
-    'x_register_transport_configs__mutmut_46': x_register_transport_configs__mutmut_46, 
-    'x_register_transport_configs__mutmut_47': x_register_transport_configs__mutmut_47, 
-    'x_register_transport_configs__mutmut_48': x_register_transport_configs__mutmut_48, 
-    'x_register_transport_configs__mutmut_49': x_register_transport_configs__mutmut_49, 
-    'x_register_transport_configs__mutmut_50': x_register_transport_configs__mutmut_50, 
-    'x_register_transport_configs__mutmut_51': x_register_transport_configs__mutmut_51, 
-    'x_register_transport_configs__mutmut_52': x_register_transport_configs__mutmut_52, 
-    'x_register_transport_configs__mutmut_53': x_register_transport_configs__mutmut_53, 
-    'x_register_transport_configs__mutmut_54': x_register_transport_configs__mutmut_54, 
-    'x_register_transport_configs__mutmut_55': x_register_transport_configs__mutmut_55, 
-    'x_register_transport_configs__mutmut_56': x_register_transport_configs__mutmut_56, 
-    'x_register_transport_configs__mutmut_57': x_register_transport_configs__mutmut_57, 
-    'x_register_transport_configs__mutmut_58': x_register_transport_configs__mutmut_58, 
-    'x_register_transport_configs__mutmut_59': x_register_transport_configs__mutmut_59, 
-    'x_register_transport_configs__mutmut_60': x_register_transport_configs__mutmut_60, 
-    'x_register_transport_configs__mutmut_61': x_register_transport_configs__mutmut_61, 
-    'x_register_transport_configs__mutmut_62': x_register_transport_configs__mutmut_62, 
-    'x_register_transport_configs__mutmut_63': x_register_transport_configs__mutmut_63, 
-    'x_register_transport_configs__mutmut_64': x_register_transport_configs__mutmut_64, 
-    'x_register_transport_configs__mutmut_65': x_register_transport_configs__mutmut_65, 
-    'x_register_transport_configs__mutmut_66': x_register_transport_configs__mutmut_66, 
-    'x_register_transport_configs__mutmut_67': x_register_transport_configs__mutmut_67, 
-    'x_register_transport_configs__mutmut_68': x_register_transport_configs__mutmut_68, 
-    'x_register_transport_configs__mutmut_69': x_register_transport_configs__mutmut_69, 
-    'x_register_transport_configs__mutmut_70': x_register_transport_configs__mutmut_70, 
-    'x_register_transport_configs__mutmut_71': x_register_transport_configs__mutmut_71, 
-    'x_register_transport_configs__mutmut_72': x_register_transport_configs__mutmut_72, 
-    'x_register_transport_configs__mutmut_73': x_register_transport_configs__mutmut_73, 
-    'x_register_transport_configs__mutmut_74': x_register_transport_configs__mutmut_74, 
-    'x_register_transport_configs__mutmut_75': x_register_transport_configs__mutmut_75
+
+x_register_transport_configs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register_transport_configs__mutmut_1": x_register_transport_configs__mutmut_1,
+    "x_register_transport_configs__mutmut_2": x_register_transport_configs__mutmut_2,
+    "x_register_transport_configs__mutmut_3": x_register_transport_configs__mutmut_3,
+    "x_register_transport_configs__mutmut_4": x_register_transport_configs__mutmut_4,
+    "x_register_transport_configs__mutmut_5": x_register_transport_configs__mutmut_5,
+    "x_register_transport_configs__mutmut_6": x_register_transport_configs__mutmut_6,
+    "x_register_transport_configs__mutmut_7": x_register_transport_configs__mutmut_7,
+    "x_register_transport_configs__mutmut_8": x_register_transport_configs__mutmut_8,
+    "x_register_transport_configs__mutmut_9": x_register_transport_configs__mutmut_9,
+    "x_register_transport_configs__mutmut_10": x_register_transport_configs__mutmut_10,
+    "x_register_transport_configs__mutmut_11": x_register_transport_configs__mutmut_11,
+    "x_register_transport_configs__mutmut_12": x_register_transport_configs__mutmut_12,
+    "x_register_transport_configs__mutmut_13": x_register_transport_configs__mutmut_13,
+    "x_register_transport_configs__mutmut_14": x_register_transport_configs__mutmut_14,
+    "x_register_transport_configs__mutmut_15": x_register_transport_configs__mutmut_15,
+    "x_register_transport_configs__mutmut_16": x_register_transport_configs__mutmut_16,
+    "x_register_transport_configs__mutmut_17": x_register_transport_configs__mutmut_17,
+    "x_register_transport_configs__mutmut_18": x_register_transport_configs__mutmut_18,
+    "x_register_transport_configs__mutmut_19": x_register_transport_configs__mutmut_19,
+    "x_register_transport_configs__mutmut_20": x_register_transport_configs__mutmut_20,
+    "x_register_transport_configs__mutmut_21": x_register_transport_configs__mutmut_21,
+    "x_register_transport_configs__mutmut_22": x_register_transport_configs__mutmut_22,
+    "x_register_transport_configs__mutmut_23": x_register_transport_configs__mutmut_23,
+    "x_register_transport_configs__mutmut_24": x_register_transport_configs__mutmut_24,
+    "x_register_transport_configs__mutmut_25": x_register_transport_configs__mutmut_25,
+    "x_register_transport_configs__mutmut_26": x_register_transport_configs__mutmut_26,
+    "x_register_transport_configs__mutmut_27": x_register_transport_configs__mutmut_27,
+    "x_register_transport_configs__mutmut_28": x_register_transport_configs__mutmut_28,
+    "x_register_transport_configs__mutmut_29": x_register_transport_configs__mutmut_29,
+    "x_register_transport_configs__mutmut_30": x_register_transport_configs__mutmut_30,
+    "x_register_transport_configs__mutmut_31": x_register_transport_configs__mutmut_31,
+    "x_register_transport_configs__mutmut_32": x_register_transport_configs__mutmut_32,
+    "x_register_transport_configs__mutmut_33": x_register_transport_configs__mutmut_33,
+    "x_register_transport_configs__mutmut_34": x_register_transport_configs__mutmut_34,
+    "x_register_transport_configs__mutmut_35": x_register_transport_configs__mutmut_35,
+    "x_register_transport_configs__mutmut_36": x_register_transport_configs__mutmut_36,
+    "x_register_transport_configs__mutmut_37": x_register_transport_configs__mutmut_37,
+    "x_register_transport_configs__mutmut_38": x_register_transport_configs__mutmut_38,
+    "x_register_transport_configs__mutmut_39": x_register_transport_configs__mutmut_39,
+    "x_register_transport_configs__mutmut_40": x_register_transport_configs__mutmut_40,
+    "x_register_transport_configs__mutmut_41": x_register_transport_configs__mutmut_41,
+    "x_register_transport_configs__mutmut_42": x_register_transport_configs__mutmut_42,
+    "x_register_transport_configs__mutmut_43": x_register_transport_configs__mutmut_43,
+    "x_register_transport_configs__mutmut_44": x_register_transport_configs__mutmut_44,
+    "x_register_transport_configs__mutmut_45": x_register_transport_configs__mutmut_45,
+    "x_register_transport_configs__mutmut_46": x_register_transport_configs__mutmut_46,
+    "x_register_transport_configs__mutmut_47": x_register_transport_configs__mutmut_47,
+    "x_register_transport_configs__mutmut_48": x_register_transport_configs__mutmut_48,
+    "x_register_transport_configs__mutmut_49": x_register_transport_configs__mutmut_49,
+    "x_register_transport_configs__mutmut_50": x_register_transport_configs__mutmut_50,
+    "x_register_transport_configs__mutmut_51": x_register_transport_configs__mutmut_51,
+    "x_register_transport_configs__mutmut_52": x_register_transport_configs__mutmut_52,
+    "x_register_transport_configs__mutmut_53": x_register_transport_configs__mutmut_53,
+    "x_register_transport_configs__mutmut_54": x_register_transport_configs__mutmut_54,
+    "x_register_transport_configs__mutmut_55": x_register_transport_configs__mutmut_55,
+    "x_register_transport_configs__mutmut_56": x_register_transport_configs__mutmut_56,
+    "x_register_transport_configs__mutmut_57": x_register_transport_configs__mutmut_57,
+    "x_register_transport_configs__mutmut_58": x_register_transport_configs__mutmut_58,
+    "x_register_transport_configs__mutmut_59": x_register_transport_configs__mutmut_59,
+    "x_register_transport_configs__mutmut_60": x_register_transport_configs__mutmut_60,
+    "x_register_transport_configs__mutmut_61": x_register_transport_configs__mutmut_61,
+    "x_register_transport_configs__mutmut_62": x_register_transport_configs__mutmut_62,
+    "x_register_transport_configs__mutmut_63": x_register_transport_configs__mutmut_63,
+    "x_register_transport_configs__mutmut_64": x_register_transport_configs__mutmut_64,
+    "x_register_transport_configs__mutmut_65": x_register_transport_configs__mutmut_65,
+    "x_register_transport_configs__mutmut_66": x_register_transport_configs__mutmut_66,
+    "x_register_transport_configs__mutmut_67": x_register_transport_configs__mutmut_67,
+    "x_register_transport_configs__mutmut_68": x_register_transport_configs__mutmut_68,
+    "x_register_transport_configs__mutmut_69": x_register_transport_configs__mutmut_69,
+    "x_register_transport_configs__mutmut_70": x_register_transport_configs__mutmut_70,
+    "x_register_transport_configs__mutmut_71": x_register_transport_configs__mutmut_71,
+    "x_register_transport_configs__mutmut_72": x_register_transport_configs__mutmut_72,
+    "x_register_transport_configs__mutmut_73": x_register_transport_configs__mutmut_73,
+    "x_register_transport_configs__mutmut_74": x_register_transport_configs__mutmut_74,
+    "x_register_transport_configs__mutmut_75": x_register_transport_configs__mutmut_75,
 }
 
+
 def register_transport_configs(*args, **kwargs):
-    result = _mutmut_trampoline(x_register_transport_configs__mutmut_orig, x_register_transport_configs__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_register_transport_configs__mutmut_orig, x_register_transport_configs__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 register_transport_configs.__signature__ = _mutmut_signature(x_register_transport_configs__mutmut_orig)
-x_register_transport_configs__mutmut_orig.__name__ = 'x_register_transport_configs'
+x_register_transport_configs__mutmut_orig.__name__ = "x_register_transport_configs"
 
 
 __all__ = [

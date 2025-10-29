@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -98,17 +101,23 @@ class ClickAdapter:
 
         """
         return build_click_command_from_info(None)
-    
-    xǁClickAdapterǁbuild_command__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁClickAdapterǁbuild_command__mutmut_1': xǁClickAdapterǁbuild_command__mutmut_1
+
+    xǁClickAdapterǁbuild_command__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁClickAdapterǁbuild_command__mutmut_1": xǁClickAdapterǁbuild_command__mutmut_1
     }
-    
+
     def build_command(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁClickAdapterǁbuild_command__mutmut_orig"), object.__getattribute__(self, "xǁClickAdapterǁbuild_command__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁClickAdapterǁbuild_command__mutmut_orig"),
+            object.__getattribute__(self, "xǁClickAdapterǁbuild_command__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     build_command.__signature__ = _mutmut_signature(xǁClickAdapterǁbuild_command__mutmut_orig)
-    xǁClickAdapterǁbuild_command__mutmut_orig.__name__ = 'xǁClickAdapterǁbuild_command'
+    xǁClickAdapterǁbuild_command__mutmut_orig.__name__ = "xǁClickAdapterǁbuild_command"
 
     def xǁClickAdapterǁbuild_group__mutmut_orig(
         self,
@@ -444,26 +453,32 @@ class ClickAdapter:
             name=name,
             commands=command_names,
             registry=registry,
-            )
-    
-    xǁClickAdapterǁbuild_group__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁClickAdapterǁbuild_group__mutmut_1': xǁClickAdapterǁbuild_group__mutmut_1, 
-        'xǁClickAdapterǁbuild_group__mutmut_2': xǁClickAdapterǁbuild_group__mutmut_2, 
-        'xǁClickAdapterǁbuild_group__mutmut_3': xǁClickAdapterǁbuild_group__mutmut_3, 
-        'xǁClickAdapterǁbuild_group__mutmut_4': xǁClickAdapterǁbuild_group__mutmut_4, 
-        'xǁClickAdapterǁbuild_group__mutmut_5': xǁClickAdapterǁbuild_group__mutmut_5, 
-        'xǁClickAdapterǁbuild_group__mutmut_6': xǁClickAdapterǁbuild_group__mutmut_6, 
-        'xǁClickAdapterǁbuild_group__mutmut_7': xǁClickAdapterǁbuild_group__mutmut_7, 
-        'xǁClickAdapterǁbuild_group__mutmut_8': xǁClickAdapterǁbuild_group__mutmut_8, 
-        'xǁClickAdapterǁbuild_group__mutmut_9': xǁClickAdapterǁbuild_group__mutmut_9
+        )
+
+    xǁClickAdapterǁbuild_group__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁClickAdapterǁbuild_group__mutmut_1": xǁClickAdapterǁbuild_group__mutmut_1,
+        "xǁClickAdapterǁbuild_group__mutmut_2": xǁClickAdapterǁbuild_group__mutmut_2,
+        "xǁClickAdapterǁbuild_group__mutmut_3": xǁClickAdapterǁbuild_group__mutmut_3,
+        "xǁClickAdapterǁbuild_group__mutmut_4": xǁClickAdapterǁbuild_group__mutmut_4,
+        "xǁClickAdapterǁbuild_group__mutmut_5": xǁClickAdapterǁbuild_group__mutmut_5,
+        "xǁClickAdapterǁbuild_group__mutmut_6": xǁClickAdapterǁbuild_group__mutmut_6,
+        "xǁClickAdapterǁbuild_group__mutmut_7": xǁClickAdapterǁbuild_group__mutmut_7,
+        "xǁClickAdapterǁbuild_group__mutmut_8": xǁClickAdapterǁbuild_group__mutmut_8,
+        "xǁClickAdapterǁbuild_group__mutmut_9": xǁClickAdapterǁbuild_group__mutmut_9,
     }
-    
+
     def build_group(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁClickAdapterǁbuild_group__mutmut_orig"), object.__getattribute__(self, "xǁClickAdapterǁbuild_group__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁClickAdapterǁbuild_group__mutmut_orig"),
+            object.__getattribute__(self, "xǁClickAdapterǁbuild_group__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     build_group.__signature__ = _mutmut_signature(xǁClickAdapterǁbuild_group__mutmut_orig)
-    xǁClickAdapterǁbuild_group__mutmut_orig.__name__ = 'xǁClickAdapterǁbuild_group'
+    xǁClickAdapterǁbuild_group__mutmut_orig.__name__ = "xǁClickAdapterǁbuild_group"
 
     def xǁClickAdapterǁensure_parent_groups__mutmut_orig(self, parent_path: str, registry: Registry) -> None:
         """Ensure all parent groups in path exist.
@@ -513,21 +528,29 @@ class ClickAdapter:
             registry: Command registry to update
 
         """
-        ensure_parent_groups(parent_path, )
-    
-    xǁClickAdapterǁensure_parent_groups__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁClickAdapterǁensure_parent_groups__mutmut_1': xǁClickAdapterǁensure_parent_groups__mutmut_1, 
-        'xǁClickAdapterǁensure_parent_groups__mutmut_2': xǁClickAdapterǁensure_parent_groups__mutmut_2, 
-        'xǁClickAdapterǁensure_parent_groups__mutmut_3': xǁClickAdapterǁensure_parent_groups__mutmut_3, 
-        'xǁClickAdapterǁensure_parent_groups__mutmut_4': xǁClickAdapterǁensure_parent_groups__mutmut_4
+        ensure_parent_groups(
+            parent_path,
+        )
+
+    xǁClickAdapterǁensure_parent_groups__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁClickAdapterǁensure_parent_groups__mutmut_1": xǁClickAdapterǁensure_parent_groups__mutmut_1,
+        "xǁClickAdapterǁensure_parent_groups__mutmut_2": xǁClickAdapterǁensure_parent_groups__mutmut_2,
+        "xǁClickAdapterǁensure_parent_groups__mutmut_3": xǁClickAdapterǁensure_parent_groups__mutmut_3,
+        "xǁClickAdapterǁensure_parent_groups__mutmut_4": xǁClickAdapterǁensure_parent_groups__mutmut_4,
     }
-    
+
     def ensure_parent_groups(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁClickAdapterǁensure_parent_groups__mutmut_orig"), object.__getattribute__(self, "xǁClickAdapterǁensure_parent_groups__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁClickAdapterǁensure_parent_groups__mutmut_orig"),
+            object.__getattribute__(self, "xǁClickAdapterǁensure_parent_groups__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     ensure_parent_groups.__signature__ = _mutmut_signature(xǁClickAdapterǁensure_parent_groups__mutmut_orig)
-    xǁClickAdapterǁensure_parent_groups__mutmut_orig.__name__ = 'xǁClickAdapterǁensure_parent_groups'
+    xǁClickAdapterǁensure_parent_groups__mutmut_orig.__name__ = "xǁClickAdapterǁensure_parent_groups"
 
 
 # <3 🧱🤝💻🪄

@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -647,7 +650,7 @@ def x_run_async__mutmut_5(coro: Coroutine[None, None, T] | Awaitable[T], *, warn
 
         warnings.warn(
             "run_async() called - consider using native async entry points instead",
-            )
+        )
 
     # Try to get the current running loop (will raise if not in async context)
     try:
@@ -1188,9 +1191,7 @@ def x_run_async__mutmut_10(coro: Coroutine[None, None, T] | Awaitable[T], *, war
     try:
         loop = asyncio.get_running_loop()
         # If we get here, we're in an async context - should use await instead
-        raise RuntimeError(
-            None
-        )
+        raise RuntimeError(None)
     except RuntimeError as e:
         # Re-raise if it's our custom error message
         if "Cannot use run_async()" in str(e):
@@ -4112,52 +4113,55 @@ def x_run_async__mutmut_37(coro: Coroutine[None, None, T] | Awaitable[T], *, war
             with contextlib.suppress(None):
                 loop.close()
 
-x_run_async__mutmut_mutants : ClassVar[MutantDict] = {
-'x_run_async__mutmut_1': x_run_async__mutmut_1, 
-    'x_run_async__mutmut_2': x_run_async__mutmut_2, 
-    'x_run_async__mutmut_3': x_run_async__mutmut_3, 
-    'x_run_async__mutmut_4': x_run_async__mutmut_4, 
-    'x_run_async__mutmut_5': x_run_async__mutmut_5, 
-    'x_run_async__mutmut_6': x_run_async__mutmut_6, 
-    'x_run_async__mutmut_7': x_run_async__mutmut_7, 
-    'x_run_async__mutmut_8': x_run_async__mutmut_8, 
-    'x_run_async__mutmut_9': x_run_async__mutmut_9, 
-    'x_run_async__mutmut_10': x_run_async__mutmut_10, 
-    'x_run_async__mutmut_11': x_run_async__mutmut_11, 
-    'x_run_async__mutmut_12': x_run_async__mutmut_12, 
-    'x_run_async__mutmut_13': x_run_async__mutmut_13, 
-    'x_run_async__mutmut_14': x_run_async__mutmut_14, 
-    'x_run_async__mutmut_15': x_run_async__mutmut_15, 
-    'x_run_async__mutmut_16': x_run_async__mutmut_16, 
-    'x_run_async__mutmut_17': x_run_async__mutmut_17, 
-    'x_run_async__mutmut_18': x_run_async__mutmut_18, 
-    'x_run_async__mutmut_19': x_run_async__mutmut_19, 
-    'x_run_async__mutmut_20': x_run_async__mutmut_20, 
-    'x_run_async__mutmut_21': x_run_async__mutmut_21, 
-    'x_run_async__mutmut_22': x_run_async__mutmut_22, 
-    'x_run_async__mutmut_23': x_run_async__mutmut_23, 
-    'x_run_async__mutmut_24': x_run_async__mutmut_24, 
-    'x_run_async__mutmut_25': x_run_async__mutmut_25, 
-    'x_run_async__mutmut_26': x_run_async__mutmut_26, 
-    'x_run_async__mutmut_27': x_run_async__mutmut_27, 
-    'x_run_async__mutmut_28': x_run_async__mutmut_28, 
-    'x_run_async__mutmut_29': x_run_async__mutmut_29, 
-    'x_run_async__mutmut_30': x_run_async__mutmut_30, 
-    'x_run_async__mutmut_31': x_run_async__mutmut_31, 
-    'x_run_async__mutmut_32': x_run_async__mutmut_32, 
-    'x_run_async__mutmut_33': x_run_async__mutmut_33, 
-    'x_run_async__mutmut_34': x_run_async__mutmut_34, 
-    'x_run_async__mutmut_35': x_run_async__mutmut_35, 
-    'x_run_async__mutmut_36': x_run_async__mutmut_36, 
-    'x_run_async__mutmut_37': x_run_async__mutmut_37
+
+x_run_async__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_run_async__mutmut_1": x_run_async__mutmut_1,
+    "x_run_async__mutmut_2": x_run_async__mutmut_2,
+    "x_run_async__mutmut_3": x_run_async__mutmut_3,
+    "x_run_async__mutmut_4": x_run_async__mutmut_4,
+    "x_run_async__mutmut_5": x_run_async__mutmut_5,
+    "x_run_async__mutmut_6": x_run_async__mutmut_6,
+    "x_run_async__mutmut_7": x_run_async__mutmut_7,
+    "x_run_async__mutmut_8": x_run_async__mutmut_8,
+    "x_run_async__mutmut_9": x_run_async__mutmut_9,
+    "x_run_async__mutmut_10": x_run_async__mutmut_10,
+    "x_run_async__mutmut_11": x_run_async__mutmut_11,
+    "x_run_async__mutmut_12": x_run_async__mutmut_12,
+    "x_run_async__mutmut_13": x_run_async__mutmut_13,
+    "x_run_async__mutmut_14": x_run_async__mutmut_14,
+    "x_run_async__mutmut_15": x_run_async__mutmut_15,
+    "x_run_async__mutmut_16": x_run_async__mutmut_16,
+    "x_run_async__mutmut_17": x_run_async__mutmut_17,
+    "x_run_async__mutmut_18": x_run_async__mutmut_18,
+    "x_run_async__mutmut_19": x_run_async__mutmut_19,
+    "x_run_async__mutmut_20": x_run_async__mutmut_20,
+    "x_run_async__mutmut_21": x_run_async__mutmut_21,
+    "x_run_async__mutmut_22": x_run_async__mutmut_22,
+    "x_run_async__mutmut_23": x_run_async__mutmut_23,
+    "x_run_async__mutmut_24": x_run_async__mutmut_24,
+    "x_run_async__mutmut_25": x_run_async__mutmut_25,
+    "x_run_async__mutmut_26": x_run_async__mutmut_26,
+    "x_run_async__mutmut_27": x_run_async__mutmut_27,
+    "x_run_async__mutmut_28": x_run_async__mutmut_28,
+    "x_run_async__mutmut_29": x_run_async__mutmut_29,
+    "x_run_async__mutmut_30": x_run_async__mutmut_30,
+    "x_run_async__mutmut_31": x_run_async__mutmut_31,
+    "x_run_async__mutmut_32": x_run_async__mutmut_32,
+    "x_run_async__mutmut_33": x_run_async__mutmut_33,
+    "x_run_async__mutmut_34": x_run_async__mutmut_34,
+    "x_run_async__mutmut_35": x_run_async__mutmut_35,
+    "x_run_async__mutmut_36": x_run_async__mutmut_36,
+    "x_run_async__mutmut_37": x_run_async__mutmut_37,
 }
+
 
 def run_async(*args, **kwargs):
     result = _mutmut_trampoline(x_run_async__mutmut_orig, x_run_async__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 run_async.__signature__ = _mutmut_signature(x_run_async__mutmut_orig)
-x_run_async__mutmut_orig.__name__ = 'x_run_async'
+x_run_async__mutmut_orig.__name__ = "x_run_async"
 
 
 __all__ = ["run_async"]

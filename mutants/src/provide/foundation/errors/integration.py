@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -155,7 +158,9 @@ class IntegrationError(FoundationError):
         **kwargs: Any,
     ) -> None:
         if service:
-            kwargs.setdefault("context", )["integration.service"] = service
+            kwargs.setdefault(
+                "context",
+            )["integration.service"] = service
         if endpoint:
             kwargs.setdefault("context", {})["integration.endpoint"] = endpoint
         if status_code:
@@ -310,7 +315,9 @@ class IntegrationError(FoundationError):
         if service:
             kwargs.setdefault("context", {})["integration.service"] = service
         if endpoint:
-            kwargs.setdefault("context", )["integration.endpoint"] = endpoint
+            kwargs.setdefault(
+                "context",
+            )["integration.endpoint"] = endpoint
         if status_code:
             kwargs.setdefault("context", {})["integration.status_code"] = status_code
         super().__init__(message, **kwargs)
@@ -465,7 +472,9 @@ class IntegrationError(FoundationError):
         if endpoint:
             kwargs.setdefault("context", {})["integration.endpoint"] = endpoint
         if status_code:
-            kwargs.setdefault("context", )["integration.status_code"] = status_code
+            kwargs.setdefault(
+                "context",
+            )["integration.status_code"] = status_code
         super().__init__(message, **kwargs)
 
     def xǁIntegrationErrorǁ__init____mutmut_24(
@@ -585,47 +594,55 @@ class IntegrationError(FoundationError):
             kwargs.setdefault("context", {})["integration.endpoint"] = endpoint
         if status_code:
             kwargs.setdefault("context", {})["integration.status_code"] = status_code
-        super().__init__(message, )
-    
-    xǁIntegrationErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁIntegrationErrorǁ__init____mutmut_1': xǁIntegrationErrorǁ__init____mutmut_1, 
-        'xǁIntegrationErrorǁ__init____mutmut_2': xǁIntegrationErrorǁ__init____mutmut_2, 
-        'xǁIntegrationErrorǁ__init____mutmut_3': xǁIntegrationErrorǁ__init____mutmut_3, 
-        'xǁIntegrationErrorǁ__init____mutmut_4': xǁIntegrationErrorǁ__init____mutmut_4, 
-        'xǁIntegrationErrorǁ__init____mutmut_5': xǁIntegrationErrorǁ__init____mutmut_5, 
-        'xǁIntegrationErrorǁ__init____mutmut_6': xǁIntegrationErrorǁ__init____mutmut_6, 
-        'xǁIntegrationErrorǁ__init____mutmut_7': xǁIntegrationErrorǁ__init____mutmut_7, 
-        'xǁIntegrationErrorǁ__init____mutmut_8': xǁIntegrationErrorǁ__init____mutmut_8, 
-        'xǁIntegrationErrorǁ__init____mutmut_9': xǁIntegrationErrorǁ__init____mutmut_9, 
-        'xǁIntegrationErrorǁ__init____mutmut_10': xǁIntegrationErrorǁ__init____mutmut_10, 
-        'xǁIntegrationErrorǁ__init____mutmut_11': xǁIntegrationErrorǁ__init____mutmut_11, 
-        'xǁIntegrationErrorǁ__init____mutmut_12': xǁIntegrationErrorǁ__init____mutmut_12, 
-        'xǁIntegrationErrorǁ__init____mutmut_13': xǁIntegrationErrorǁ__init____mutmut_13, 
-        'xǁIntegrationErrorǁ__init____mutmut_14': xǁIntegrationErrorǁ__init____mutmut_14, 
-        'xǁIntegrationErrorǁ__init____mutmut_15': xǁIntegrationErrorǁ__init____mutmut_15, 
-        'xǁIntegrationErrorǁ__init____mutmut_16': xǁIntegrationErrorǁ__init____mutmut_16, 
-        'xǁIntegrationErrorǁ__init____mutmut_17': xǁIntegrationErrorǁ__init____mutmut_17, 
-        'xǁIntegrationErrorǁ__init____mutmut_18': xǁIntegrationErrorǁ__init____mutmut_18, 
-        'xǁIntegrationErrorǁ__init____mutmut_19': xǁIntegrationErrorǁ__init____mutmut_19, 
-        'xǁIntegrationErrorǁ__init____mutmut_20': xǁIntegrationErrorǁ__init____mutmut_20, 
-        'xǁIntegrationErrorǁ__init____mutmut_21': xǁIntegrationErrorǁ__init____mutmut_21, 
-        'xǁIntegrationErrorǁ__init____mutmut_22': xǁIntegrationErrorǁ__init____mutmut_22, 
-        'xǁIntegrationErrorǁ__init____mutmut_23': xǁIntegrationErrorǁ__init____mutmut_23, 
-        'xǁIntegrationErrorǁ__init____mutmut_24': xǁIntegrationErrorǁ__init____mutmut_24, 
-        'xǁIntegrationErrorǁ__init____mutmut_25': xǁIntegrationErrorǁ__init____mutmut_25, 
-        'xǁIntegrationErrorǁ__init____mutmut_26': xǁIntegrationErrorǁ__init____mutmut_26, 
-        'xǁIntegrationErrorǁ__init____mutmut_27': xǁIntegrationErrorǁ__init____mutmut_27, 
-        'xǁIntegrationErrorǁ__init____mutmut_28': xǁIntegrationErrorǁ__init____mutmut_28, 
-        'xǁIntegrationErrorǁ__init____mutmut_29': xǁIntegrationErrorǁ__init____mutmut_29, 
-        'xǁIntegrationErrorǁ__init____mutmut_30': xǁIntegrationErrorǁ__init____mutmut_30
+        super().__init__(
+            message,
+        )
+
+    xǁIntegrationErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁIntegrationErrorǁ__init____mutmut_1": xǁIntegrationErrorǁ__init____mutmut_1,
+        "xǁIntegrationErrorǁ__init____mutmut_2": xǁIntegrationErrorǁ__init____mutmut_2,
+        "xǁIntegrationErrorǁ__init____mutmut_3": xǁIntegrationErrorǁ__init____mutmut_3,
+        "xǁIntegrationErrorǁ__init____mutmut_4": xǁIntegrationErrorǁ__init____mutmut_4,
+        "xǁIntegrationErrorǁ__init____mutmut_5": xǁIntegrationErrorǁ__init____mutmut_5,
+        "xǁIntegrationErrorǁ__init____mutmut_6": xǁIntegrationErrorǁ__init____mutmut_6,
+        "xǁIntegrationErrorǁ__init____mutmut_7": xǁIntegrationErrorǁ__init____mutmut_7,
+        "xǁIntegrationErrorǁ__init____mutmut_8": xǁIntegrationErrorǁ__init____mutmut_8,
+        "xǁIntegrationErrorǁ__init____mutmut_9": xǁIntegrationErrorǁ__init____mutmut_9,
+        "xǁIntegrationErrorǁ__init____mutmut_10": xǁIntegrationErrorǁ__init____mutmut_10,
+        "xǁIntegrationErrorǁ__init____mutmut_11": xǁIntegrationErrorǁ__init____mutmut_11,
+        "xǁIntegrationErrorǁ__init____mutmut_12": xǁIntegrationErrorǁ__init____mutmut_12,
+        "xǁIntegrationErrorǁ__init____mutmut_13": xǁIntegrationErrorǁ__init____mutmut_13,
+        "xǁIntegrationErrorǁ__init____mutmut_14": xǁIntegrationErrorǁ__init____mutmut_14,
+        "xǁIntegrationErrorǁ__init____mutmut_15": xǁIntegrationErrorǁ__init____mutmut_15,
+        "xǁIntegrationErrorǁ__init____mutmut_16": xǁIntegrationErrorǁ__init____mutmut_16,
+        "xǁIntegrationErrorǁ__init____mutmut_17": xǁIntegrationErrorǁ__init____mutmut_17,
+        "xǁIntegrationErrorǁ__init____mutmut_18": xǁIntegrationErrorǁ__init____mutmut_18,
+        "xǁIntegrationErrorǁ__init____mutmut_19": xǁIntegrationErrorǁ__init____mutmut_19,
+        "xǁIntegrationErrorǁ__init____mutmut_20": xǁIntegrationErrorǁ__init____mutmut_20,
+        "xǁIntegrationErrorǁ__init____mutmut_21": xǁIntegrationErrorǁ__init____mutmut_21,
+        "xǁIntegrationErrorǁ__init____mutmut_22": xǁIntegrationErrorǁ__init____mutmut_22,
+        "xǁIntegrationErrorǁ__init____mutmut_23": xǁIntegrationErrorǁ__init____mutmut_23,
+        "xǁIntegrationErrorǁ__init____mutmut_24": xǁIntegrationErrorǁ__init____mutmut_24,
+        "xǁIntegrationErrorǁ__init____mutmut_25": xǁIntegrationErrorǁ__init____mutmut_25,
+        "xǁIntegrationErrorǁ__init____mutmut_26": xǁIntegrationErrorǁ__init____mutmut_26,
+        "xǁIntegrationErrorǁ__init____mutmut_27": xǁIntegrationErrorǁ__init____mutmut_27,
+        "xǁIntegrationErrorǁ__init____mutmut_28": xǁIntegrationErrorǁ__init____mutmut_28,
+        "xǁIntegrationErrorǁ__init____mutmut_29": xǁIntegrationErrorǁ__init____mutmut_29,
+        "xǁIntegrationErrorǁ__init____mutmut_30": xǁIntegrationErrorǁ__init____mutmut_30,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁIntegrationErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁIntegrationErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁIntegrationErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁIntegrationErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁIntegrationErrorǁ__init____mutmut_orig)
-    xǁIntegrationErrorǁ__init____mutmut_orig.__name__ = 'xǁIntegrationErrorǁ__init__'
+    xǁIntegrationErrorǁ__init____mutmut_orig.__name__ = "xǁIntegrationErrorǁ__init__"
 
     def xǁIntegrationErrorǁ_default_code__mutmut_orig(self) -> str:
         return "INTEGRATION_ERROR"
@@ -635,18 +652,24 @@ class IntegrationError(FoundationError):
 
     def xǁIntegrationErrorǁ_default_code__mutmut_2(self) -> str:
         return "integration_error"
-    
-    xǁIntegrationErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁIntegrationErrorǁ_default_code__mutmut_1': xǁIntegrationErrorǁ_default_code__mutmut_1, 
-        'xǁIntegrationErrorǁ_default_code__mutmut_2': xǁIntegrationErrorǁ_default_code__mutmut_2
+
+    xǁIntegrationErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁIntegrationErrorǁ_default_code__mutmut_1": xǁIntegrationErrorǁ_default_code__mutmut_1,
+        "xǁIntegrationErrorǁ_default_code__mutmut_2": xǁIntegrationErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁIntegrationErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁIntegrationErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁIntegrationErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁIntegrationErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁIntegrationErrorǁ_default_code__mutmut_orig)
-    xǁIntegrationErrorǁ_default_code__mutmut_orig.__name__ = 'xǁIntegrationErrorǁ_default_code'
+    xǁIntegrationErrorǁ_default_code__mutmut_orig.__name__ = "xǁIntegrationErrorǁ_default_code"
 
 
 class NetworkError(IntegrationError):
@@ -743,7 +766,9 @@ class NetworkError(IntegrationError):
         **kwargs: Any,
     ) -> None:
         if host:
-            kwargs.setdefault("context", )["network.host"] = host
+            kwargs.setdefault(
+                "context",
+            )["network.host"] = host
         if port:
             kwargs.setdefault("context", {})["network.port"] = port
         super().__init__(message, **kwargs)
@@ -871,7 +896,9 @@ class NetworkError(IntegrationError):
         if host:
             kwargs.setdefault("context", {})["network.host"] = host
         if port:
-            kwargs.setdefault("context", )["network.port"] = port
+            kwargs.setdefault(
+                "context",
+            )["network.port"] = port
         super().__init__(message, **kwargs)
 
     def xǁNetworkErrorǁ__init____mutmut_15(
@@ -970,38 +997,46 @@ class NetworkError(IntegrationError):
             kwargs.setdefault("context", {})["network.host"] = host
         if port:
             kwargs.setdefault("context", {})["network.port"] = port
-        super().__init__(message, )
-    
-    xǁNetworkErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁNetworkErrorǁ__init____mutmut_1': xǁNetworkErrorǁ__init____mutmut_1, 
-        'xǁNetworkErrorǁ__init____mutmut_2': xǁNetworkErrorǁ__init____mutmut_2, 
-        'xǁNetworkErrorǁ__init____mutmut_3': xǁNetworkErrorǁ__init____mutmut_3, 
-        'xǁNetworkErrorǁ__init____mutmut_4': xǁNetworkErrorǁ__init____mutmut_4, 
-        'xǁNetworkErrorǁ__init____mutmut_5': xǁNetworkErrorǁ__init____mutmut_5, 
-        'xǁNetworkErrorǁ__init____mutmut_6': xǁNetworkErrorǁ__init____mutmut_6, 
-        'xǁNetworkErrorǁ__init____mutmut_7': xǁNetworkErrorǁ__init____mutmut_7, 
-        'xǁNetworkErrorǁ__init____mutmut_8': xǁNetworkErrorǁ__init____mutmut_8, 
-        'xǁNetworkErrorǁ__init____mutmut_9': xǁNetworkErrorǁ__init____mutmut_9, 
-        'xǁNetworkErrorǁ__init____mutmut_10': xǁNetworkErrorǁ__init____mutmut_10, 
-        'xǁNetworkErrorǁ__init____mutmut_11': xǁNetworkErrorǁ__init____mutmut_11, 
-        'xǁNetworkErrorǁ__init____mutmut_12': xǁNetworkErrorǁ__init____mutmut_12, 
-        'xǁNetworkErrorǁ__init____mutmut_13': xǁNetworkErrorǁ__init____mutmut_13, 
-        'xǁNetworkErrorǁ__init____mutmut_14': xǁNetworkErrorǁ__init____mutmut_14, 
-        'xǁNetworkErrorǁ__init____mutmut_15': xǁNetworkErrorǁ__init____mutmut_15, 
-        'xǁNetworkErrorǁ__init____mutmut_16': xǁNetworkErrorǁ__init____mutmut_16, 
-        'xǁNetworkErrorǁ__init____mutmut_17': xǁNetworkErrorǁ__init____mutmut_17, 
-        'xǁNetworkErrorǁ__init____mutmut_18': xǁNetworkErrorǁ__init____mutmut_18, 
-        'xǁNetworkErrorǁ__init____mutmut_19': xǁNetworkErrorǁ__init____mutmut_19, 
-        'xǁNetworkErrorǁ__init____mutmut_20': xǁNetworkErrorǁ__init____mutmut_20, 
-        'xǁNetworkErrorǁ__init____mutmut_21': xǁNetworkErrorǁ__init____mutmut_21
+        super().__init__(
+            message,
+        )
+
+    xǁNetworkErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁNetworkErrorǁ__init____mutmut_1": xǁNetworkErrorǁ__init____mutmut_1,
+        "xǁNetworkErrorǁ__init____mutmut_2": xǁNetworkErrorǁ__init____mutmut_2,
+        "xǁNetworkErrorǁ__init____mutmut_3": xǁNetworkErrorǁ__init____mutmut_3,
+        "xǁNetworkErrorǁ__init____mutmut_4": xǁNetworkErrorǁ__init____mutmut_4,
+        "xǁNetworkErrorǁ__init____mutmut_5": xǁNetworkErrorǁ__init____mutmut_5,
+        "xǁNetworkErrorǁ__init____mutmut_6": xǁNetworkErrorǁ__init____mutmut_6,
+        "xǁNetworkErrorǁ__init____mutmut_7": xǁNetworkErrorǁ__init____mutmut_7,
+        "xǁNetworkErrorǁ__init____mutmut_8": xǁNetworkErrorǁ__init____mutmut_8,
+        "xǁNetworkErrorǁ__init____mutmut_9": xǁNetworkErrorǁ__init____mutmut_9,
+        "xǁNetworkErrorǁ__init____mutmut_10": xǁNetworkErrorǁ__init____mutmut_10,
+        "xǁNetworkErrorǁ__init____mutmut_11": xǁNetworkErrorǁ__init____mutmut_11,
+        "xǁNetworkErrorǁ__init____mutmut_12": xǁNetworkErrorǁ__init____mutmut_12,
+        "xǁNetworkErrorǁ__init____mutmut_13": xǁNetworkErrorǁ__init____mutmut_13,
+        "xǁNetworkErrorǁ__init____mutmut_14": xǁNetworkErrorǁ__init____mutmut_14,
+        "xǁNetworkErrorǁ__init____mutmut_15": xǁNetworkErrorǁ__init____mutmut_15,
+        "xǁNetworkErrorǁ__init____mutmut_16": xǁNetworkErrorǁ__init____mutmut_16,
+        "xǁNetworkErrorǁ__init____mutmut_17": xǁNetworkErrorǁ__init____mutmut_17,
+        "xǁNetworkErrorǁ__init____mutmut_18": xǁNetworkErrorǁ__init____mutmut_18,
+        "xǁNetworkErrorǁ__init____mutmut_19": xǁNetworkErrorǁ__init____mutmut_19,
+        "xǁNetworkErrorǁ__init____mutmut_20": xǁNetworkErrorǁ__init____mutmut_20,
+        "xǁNetworkErrorǁ__init____mutmut_21": xǁNetworkErrorǁ__init____mutmut_21,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁNetworkErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁNetworkErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁNetworkErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁNetworkErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁNetworkErrorǁ__init____mutmut_orig)
-    xǁNetworkErrorǁ__init____mutmut_orig.__name__ = 'xǁNetworkErrorǁ__init__'
+    xǁNetworkErrorǁ__init____mutmut_orig.__name__ = "xǁNetworkErrorǁ__init__"
 
     def xǁNetworkErrorǁ_default_code__mutmut_orig(self) -> str:
         return "NETWORK_ERROR"
@@ -1011,18 +1046,24 @@ class NetworkError(IntegrationError):
 
     def xǁNetworkErrorǁ_default_code__mutmut_2(self) -> str:
         return "network_error"
-    
-    xǁNetworkErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁNetworkErrorǁ_default_code__mutmut_1': xǁNetworkErrorǁ_default_code__mutmut_1, 
-        'xǁNetworkErrorǁ_default_code__mutmut_2': xǁNetworkErrorǁ_default_code__mutmut_2
+
+    xǁNetworkErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁNetworkErrorǁ_default_code__mutmut_1": xǁNetworkErrorǁ_default_code__mutmut_1,
+        "xǁNetworkErrorǁ_default_code__mutmut_2": xǁNetworkErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁNetworkErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁNetworkErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁNetworkErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁNetworkErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁNetworkErrorǁ_default_code__mutmut_orig)
-    xǁNetworkErrorǁ_default_code__mutmut_orig.__name__ = 'xǁNetworkErrorǁ_default_code'
+    xǁNetworkErrorǁ_default_code__mutmut_orig.__name__ = "xǁNetworkErrorǁ_default_code"
 
 
 class TimeoutError(IntegrationError):
@@ -1133,7 +1174,9 @@ class TimeoutError(IntegrationError):
         **kwargs: Any,
     ) -> None:
         if timeout_seconds is not None:
-            kwargs.setdefault("context", )["timeout.limit"] = timeout_seconds
+            kwargs.setdefault(
+                "context",
+            )["timeout.limit"] = timeout_seconds
         if elapsed_seconds is not None:
             kwargs.setdefault("context", {})["timeout.elapsed"] = elapsed_seconds
         super().__init__(message, **kwargs)
@@ -1275,7 +1318,9 @@ class TimeoutError(IntegrationError):
         if timeout_seconds is not None:
             kwargs.setdefault("context", {})["timeout.limit"] = timeout_seconds
         if elapsed_seconds is not None:
-            kwargs.setdefault("context", )["timeout.elapsed"] = elapsed_seconds
+            kwargs.setdefault(
+                "context",
+            )["timeout.elapsed"] = elapsed_seconds
         super().__init__(message, **kwargs)
 
     def xǁTimeoutErrorǁ__init____mutmut_17(
@@ -1374,40 +1419,48 @@ class TimeoutError(IntegrationError):
             kwargs.setdefault("context", {})["timeout.limit"] = timeout_seconds
         if elapsed_seconds is not None:
             kwargs.setdefault("context", {})["timeout.elapsed"] = elapsed_seconds
-        super().__init__(message, )
-    
-    xǁTimeoutErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTimeoutErrorǁ__init____mutmut_1': xǁTimeoutErrorǁ__init____mutmut_1, 
-        'xǁTimeoutErrorǁ__init____mutmut_2': xǁTimeoutErrorǁ__init____mutmut_2, 
-        'xǁTimeoutErrorǁ__init____mutmut_3': xǁTimeoutErrorǁ__init____mutmut_3, 
-        'xǁTimeoutErrorǁ__init____mutmut_4': xǁTimeoutErrorǁ__init____mutmut_4, 
-        'xǁTimeoutErrorǁ__init____mutmut_5': xǁTimeoutErrorǁ__init____mutmut_5, 
-        'xǁTimeoutErrorǁ__init____mutmut_6': xǁTimeoutErrorǁ__init____mutmut_6, 
-        'xǁTimeoutErrorǁ__init____mutmut_7': xǁTimeoutErrorǁ__init____mutmut_7, 
-        'xǁTimeoutErrorǁ__init____mutmut_8': xǁTimeoutErrorǁ__init____mutmut_8, 
-        'xǁTimeoutErrorǁ__init____mutmut_9': xǁTimeoutErrorǁ__init____mutmut_9, 
-        'xǁTimeoutErrorǁ__init____mutmut_10': xǁTimeoutErrorǁ__init____mutmut_10, 
-        'xǁTimeoutErrorǁ__init____mutmut_11': xǁTimeoutErrorǁ__init____mutmut_11, 
-        'xǁTimeoutErrorǁ__init____mutmut_12': xǁTimeoutErrorǁ__init____mutmut_12, 
-        'xǁTimeoutErrorǁ__init____mutmut_13': xǁTimeoutErrorǁ__init____mutmut_13, 
-        'xǁTimeoutErrorǁ__init____mutmut_14': xǁTimeoutErrorǁ__init____mutmut_14, 
-        'xǁTimeoutErrorǁ__init____mutmut_15': xǁTimeoutErrorǁ__init____mutmut_15, 
-        'xǁTimeoutErrorǁ__init____mutmut_16': xǁTimeoutErrorǁ__init____mutmut_16, 
-        'xǁTimeoutErrorǁ__init____mutmut_17': xǁTimeoutErrorǁ__init____mutmut_17, 
-        'xǁTimeoutErrorǁ__init____mutmut_18': xǁTimeoutErrorǁ__init____mutmut_18, 
-        'xǁTimeoutErrorǁ__init____mutmut_19': xǁTimeoutErrorǁ__init____mutmut_19, 
-        'xǁTimeoutErrorǁ__init____mutmut_20': xǁTimeoutErrorǁ__init____mutmut_20, 
-        'xǁTimeoutErrorǁ__init____mutmut_21': xǁTimeoutErrorǁ__init____mutmut_21, 
-        'xǁTimeoutErrorǁ__init____mutmut_22': xǁTimeoutErrorǁ__init____mutmut_22, 
-        'xǁTimeoutErrorǁ__init____mutmut_23': xǁTimeoutErrorǁ__init____mutmut_23
+        super().__init__(
+            message,
+        )
+
+    xǁTimeoutErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTimeoutErrorǁ__init____mutmut_1": xǁTimeoutErrorǁ__init____mutmut_1,
+        "xǁTimeoutErrorǁ__init____mutmut_2": xǁTimeoutErrorǁ__init____mutmut_2,
+        "xǁTimeoutErrorǁ__init____mutmut_3": xǁTimeoutErrorǁ__init____mutmut_3,
+        "xǁTimeoutErrorǁ__init____mutmut_4": xǁTimeoutErrorǁ__init____mutmut_4,
+        "xǁTimeoutErrorǁ__init____mutmut_5": xǁTimeoutErrorǁ__init____mutmut_5,
+        "xǁTimeoutErrorǁ__init____mutmut_6": xǁTimeoutErrorǁ__init____mutmut_6,
+        "xǁTimeoutErrorǁ__init____mutmut_7": xǁTimeoutErrorǁ__init____mutmut_7,
+        "xǁTimeoutErrorǁ__init____mutmut_8": xǁTimeoutErrorǁ__init____mutmut_8,
+        "xǁTimeoutErrorǁ__init____mutmut_9": xǁTimeoutErrorǁ__init____mutmut_9,
+        "xǁTimeoutErrorǁ__init____mutmut_10": xǁTimeoutErrorǁ__init____mutmut_10,
+        "xǁTimeoutErrorǁ__init____mutmut_11": xǁTimeoutErrorǁ__init____mutmut_11,
+        "xǁTimeoutErrorǁ__init____mutmut_12": xǁTimeoutErrorǁ__init____mutmut_12,
+        "xǁTimeoutErrorǁ__init____mutmut_13": xǁTimeoutErrorǁ__init____mutmut_13,
+        "xǁTimeoutErrorǁ__init____mutmut_14": xǁTimeoutErrorǁ__init____mutmut_14,
+        "xǁTimeoutErrorǁ__init____mutmut_15": xǁTimeoutErrorǁ__init____mutmut_15,
+        "xǁTimeoutErrorǁ__init____mutmut_16": xǁTimeoutErrorǁ__init____mutmut_16,
+        "xǁTimeoutErrorǁ__init____mutmut_17": xǁTimeoutErrorǁ__init____mutmut_17,
+        "xǁTimeoutErrorǁ__init____mutmut_18": xǁTimeoutErrorǁ__init____mutmut_18,
+        "xǁTimeoutErrorǁ__init____mutmut_19": xǁTimeoutErrorǁ__init____mutmut_19,
+        "xǁTimeoutErrorǁ__init____mutmut_20": xǁTimeoutErrorǁ__init____mutmut_20,
+        "xǁTimeoutErrorǁ__init____mutmut_21": xǁTimeoutErrorǁ__init____mutmut_21,
+        "xǁTimeoutErrorǁ__init____mutmut_22": xǁTimeoutErrorǁ__init____mutmut_22,
+        "xǁTimeoutErrorǁ__init____mutmut_23": xǁTimeoutErrorǁ__init____mutmut_23,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTimeoutErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁTimeoutErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTimeoutErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁTimeoutErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁTimeoutErrorǁ__init____mutmut_orig)
-    xǁTimeoutErrorǁ__init____mutmut_orig.__name__ = 'xǁTimeoutErrorǁ__init__'
+    xǁTimeoutErrorǁ__init____mutmut_orig.__name__ = "xǁTimeoutErrorǁ__init__"
 
     def xǁTimeoutErrorǁ_default_code__mutmut_orig(self) -> str:
         return "TIMEOUT_ERROR"
@@ -1417,18 +1470,24 @@ class TimeoutError(IntegrationError):
 
     def xǁTimeoutErrorǁ_default_code__mutmut_2(self) -> str:
         return "timeout_error"
-    
-    xǁTimeoutErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTimeoutErrorǁ_default_code__mutmut_1': xǁTimeoutErrorǁ_default_code__mutmut_1, 
-        'xǁTimeoutErrorǁ_default_code__mutmut_2': xǁTimeoutErrorǁ_default_code__mutmut_2
+
+    xǁTimeoutErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTimeoutErrorǁ_default_code__mutmut_1": xǁTimeoutErrorǁ_default_code__mutmut_1,
+        "xǁTimeoutErrorǁ_default_code__mutmut_2": xǁTimeoutErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTimeoutErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁTimeoutErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTimeoutErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁTimeoutErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁTimeoutErrorǁ_default_code__mutmut_orig)
-    xǁTimeoutErrorǁ_default_code__mutmut_orig.__name__ = 'xǁTimeoutErrorǁ_default_code'
+    xǁTimeoutErrorǁ_default_code__mutmut_orig.__name__ = "xǁTimeoutErrorǁ_default_code"
 
 
 # <3 🧱🤝🐛🪄

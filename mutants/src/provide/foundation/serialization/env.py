@@ -22,23 +22,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1288,41 +1291,44 @@ def x_env_dumps__mutmut_26(obj: dict[str, str], *, quote_values: bool = True) ->
     except Exception as e:
         raise ValidationError(None) from e
 
-x_env_dumps__mutmut_mutants : ClassVar[MutantDict] = {
-'x_env_dumps__mutmut_1': x_env_dumps__mutmut_1, 
-    'x_env_dumps__mutmut_2': x_env_dumps__mutmut_2, 
-    'x_env_dumps__mutmut_3': x_env_dumps__mutmut_3, 
-    'x_env_dumps__mutmut_4': x_env_dumps__mutmut_4, 
-    'x_env_dumps__mutmut_5': x_env_dumps__mutmut_5, 
-    'x_env_dumps__mutmut_6': x_env_dumps__mutmut_6, 
-    'x_env_dumps__mutmut_7': x_env_dumps__mutmut_7, 
-    'x_env_dumps__mutmut_8': x_env_dumps__mutmut_8, 
-    'x_env_dumps__mutmut_9': x_env_dumps__mutmut_9, 
-    'x_env_dumps__mutmut_10': x_env_dumps__mutmut_10, 
-    'x_env_dumps__mutmut_11': x_env_dumps__mutmut_11, 
-    'x_env_dumps__mutmut_12': x_env_dumps__mutmut_12, 
-    'x_env_dumps__mutmut_13': x_env_dumps__mutmut_13, 
-    'x_env_dumps__mutmut_14': x_env_dumps__mutmut_14, 
-    'x_env_dumps__mutmut_15': x_env_dumps__mutmut_15, 
-    'x_env_dumps__mutmut_16': x_env_dumps__mutmut_16, 
-    'x_env_dumps__mutmut_17': x_env_dumps__mutmut_17, 
-    'x_env_dumps__mutmut_18': x_env_dumps__mutmut_18, 
-    'x_env_dumps__mutmut_19': x_env_dumps__mutmut_19, 
-    'x_env_dumps__mutmut_20': x_env_dumps__mutmut_20, 
-    'x_env_dumps__mutmut_21': x_env_dumps__mutmut_21, 
-    'x_env_dumps__mutmut_22': x_env_dumps__mutmut_22, 
-    'x_env_dumps__mutmut_23': x_env_dumps__mutmut_23, 
-    'x_env_dumps__mutmut_24': x_env_dumps__mutmut_24, 
-    'x_env_dumps__mutmut_25': x_env_dumps__mutmut_25, 
-    'x_env_dumps__mutmut_26': x_env_dumps__mutmut_26
+
+x_env_dumps__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_env_dumps__mutmut_1": x_env_dumps__mutmut_1,
+    "x_env_dumps__mutmut_2": x_env_dumps__mutmut_2,
+    "x_env_dumps__mutmut_3": x_env_dumps__mutmut_3,
+    "x_env_dumps__mutmut_4": x_env_dumps__mutmut_4,
+    "x_env_dumps__mutmut_5": x_env_dumps__mutmut_5,
+    "x_env_dumps__mutmut_6": x_env_dumps__mutmut_6,
+    "x_env_dumps__mutmut_7": x_env_dumps__mutmut_7,
+    "x_env_dumps__mutmut_8": x_env_dumps__mutmut_8,
+    "x_env_dumps__mutmut_9": x_env_dumps__mutmut_9,
+    "x_env_dumps__mutmut_10": x_env_dumps__mutmut_10,
+    "x_env_dumps__mutmut_11": x_env_dumps__mutmut_11,
+    "x_env_dumps__mutmut_12": x_env_dumps__mutmut_12,
+    "x_env_dumps__mutmut_13": x_env_dumps__mutmut_13,
+    "x_env_dumps__mutmut_14": x_env_dumps__mutmut_14,
+    "x_env_dumps__mutmut_15": x_env_dumps__mutmut_15,
+    "x_env_dumps__mutmut_16": x_env_dumps__mutmut_16,
+    "x_env_dumps__mutmut_17": x_env_dumps__mutmut_17,
+    "x_env_dumps__mutmut_18": x_env_dumps__mutmut_18,
+    "x_env_dumps__mutmut_19": x_env_dumps__mutmut_19,
+    "x_env_dumps__mutmut_20": x_env_dumps__mutmut_20,
+    "x_env_dumps__mutmut_21": x_env_dumps__mutmut_21,
+    "x_env_dumps__mutmut_22": x_env_dumps__mutmut_22,
+    "x_env_dumps__mutmut_23": x_env_dumps__mutmut_23,
+    "x_env_dumps__mutmut_24": x_env_dumps__mutmut_24,
+    "x_env_dumps__mutmut_25": x_env_dumps__mutmut_25,
+    "x_env_dumps__mutmut_26": x_env_dumps__mutmut_26,
 }
+
 
 def env_dumps(*args, **kwargs):
     result = _mutmut_trampoline(x_env_dumps__mutmut_orig, x_env_dumps__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 env_dumps.__signature__ = _mutmut_signature(x_env_dumps__mutmut_orig)
-x_env_dumps__mutmut_orig.__name__ = 'x_env_dumps'
+x_env_dumps__mutmut_orig.__name__ = "x_env_dumps"
 
 
 def x__parse_env_line__mutmut_orig(line: str, line_num: int) -> tuple[str, str] | None:
@@ -1884,7 +1890,9 @@ def x__parse_env_line__mutmut_13(line: str, line_num: int) -> tuple[str, str] | 
     if "=" not in line:
         raise ValidationError(f"Invalid .env format at line {line_num}: missing '='")
 
-    key, value = line.split("=", )
+    key, value = line.split(
+        "=",
+    )
     key = key.strip()
     value = value.strip()
 
@@ -2800,50 +2808,55 @@ def x__parse_env_line__mutmut_35(line: str, line_num: int) -> tuple[str, str] | 
 
     return (key, value)
 
-x__parse_env_line__mutmut_mutants : ClassVar[MutantDict] = {
-'x__parse_env_line__mutmut_1': x__parse_env_line__mutmut_1, 
-    'x__parse_env_line__mutmut_2': x__parse_env_line__mutmut_2, 
-    'x__parse_env_line__mutmut_3': x__parse_env_line__mutmut_3, 
-    'x__parse_env_line__mutmut_4': x__parse_env_line__mutmut_4, 
-    'x__parse_env_line__mutmut_5': x__parse_env_line__mutmut_5, 
-    'x__parse_env_line__mutmut_6': x__parse_env_line__mutmut_6, 
-    'x__parse_env_line__mutmut_7': x__parse_env_line__mutmut_7, 
-    'x__parse_env_line__mutmut_8': x__parse_env_line__mutmut_8, 
-    'x__parse_env_line__mutmut_9': x__parse_env_line__mutmut_9, 
-    'x__parse_env_line__mutmut_10': x__parse_env_line__mutmut_10, 
-    'x__parse_env_line__mutmut_11': x__parse_env_line__mutmut_11, 
-    'x__parse_env_line__mutmut_12': x__parse_env_line__mutmut_12, 
-    'x__parse_env_line__mutmut_13': x__parse_env_line__mutmut_13, 
-    'x__parse_env_line__mutmut_14': x__parse_env_line__mutmut_14, 
-    'x__parse_env_line__mutmut_15': x__parse_env_line__mutmut_15, 
-    'x__parse_env_line__mutmut_16': x__parse_env_line__mutmut_16, 
-    'x__parse_env_line__mutmut_17': x__parse_env_line__mutmut_17, 
-    'x__parse_env_line__mutmut_18': x__parse_env_line__mutmut_18, 
-    'x__parse_env_line__mutmut_19': x__parse_env_line__mutmut_19, 
-    'x__parse_env_line__mutmut_20': x__parse_env_line__mutmut_20, 
-    'x__parse_env_line__mutmut_21': x__parse_env_line__mutmut_21, 
-    'x__parse_env_line__mutmut_22': x__parse_env_line__mutmut_22, 
-    'x__parse_env_line__mutmut_23': x__parse_env_line__mutmut_23, 
-    'x__parse_env_line__mutmut_24': x__parse_env_line__mutmut_24, 
-    'x__parse_env_line__mutmut_25': x__parse_env_line__mutmut_25, 
-    'x__parse_env_line__mutmut_26': x__parse_env_line__mutmut_26, 
-    'x__parse_env_line__mutmut_27': x__parse_env_line__mutmut_27, 
-    'x__parse_env_line__mutmut_28': x__parse_env_line__mutmut_28, 
-    'x__parse_env_line__mutmut_29': x__parse_env_line__mutmut_29, 
-    'x__parse_env_line__mutmut_30': x__parse_env_line__mutmut_30, 
-    'x__parse_env_line__mutmut_31': x__parse_env_line__mutmut_31, 
-    'x__parse_env_line__mutmut_32': x__parse_env_line__mutmut_32, 
-    'x__parse_env_line__mutmut_33': x__parse_env_line__mutmut_33, 
-    'x__parse_env_line__mutmut_34': x__parse_env_line__mutmut_34, 
-    'x__parse_env_line__mutmut_35': x__parse_env_line__mutmut_35
+
+x__parse_env_line__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__parse_env_line__mutmut_1": x__parse_env_line__mutmut_1,
+    "x__parse_env_line__mutmut_2": x__parse_env_line__mutmut_2,
+    "x__parse_env_line__mutmut_3": x__parse_env_line__mutmut_3,
+    "x__parse_env_line__mutmut_4": x__parse_env_line__mutmut_4,
+    "x__parse_env_line__mutmut_5": x__parse_env_line__mutmut_5,
+    "x__parse_env_line__mutmut_6": x__parse_env_line__mutmut_6,
+    "x__parse_env_line__mutmut_7": x__parse_env_line__mutmut_7,
+    "x__parse_env_line__mutmut_8": x__parse_env_line__mutmut_8,
+    "x__parse_env_line__mutmut_9": x__parse_env_line__mutmut_9,
+    "x__parse_env_line__mutmut_10": x__parse_env_line__mutmut_10,
+    "x__parse_env_line__mutmut_11": x__parse_env_line__mutmut_11,
+    "x__parse_env_line__mutmut_12": x__parse_env_line__mutmut_12,
+    "x__parse_env_line__mutmut_13": x__parse_env_line__mutmut_13,
+    "x__parse_env_line__mutmut_14": x__parse_env_line__mutmut_14,
+    "x__parse_env_line__mutmut_15": x__parse_env_line__mutmut_15,
+    "x__parse_env_line__mutmut_16": x__parse_env_line__mutmut_16,
+    "x__parse_env_line__mutmut_17": x__parse_env_line__mutmut_17,
+    "x__parse_env_line__mutmut_18": x__parse_env_line__mutmut_18,
+    "x__parse_env_line__mutmut_19": x__parse_env_line__mutmut_19,
+    "x__parse_env_line__mutmut_20": x__parse_env_line__mutmut_20,
+    "x__parse_env_line__mutmut_21": x__parse_env_line__mutmut_21,
+    "x__parse_env_line__mutmut_22": x__parse_env_line__mutmut_22,
+    "x__parse_env_line__mutmut_23": x__parse_env_line__mutmut_23,
+    "x__parse_env_line__mutmut_24": x__parse_env_line__mutmut_24,
+    "x__parse_env_line__mutmut_25": x__parse_env_line__mutmut_25,
+    "x__parse_env_line__mutmut_26": x__parse_env_line__mutmut_26,
+    "x__parse_env_line__mutmut_27": x__parse_env_line__mutmut_27,
+    "x__parse_env_line__mutmut_28": x__parse_env_line__mutmut_28,
+    "x__parse_env_line__mutmut_29": x__parse_env_line__mutmut_29,
+    "x__parse_env_line__mutmut_30": x__parse_env_line__mutmut_30,
+    "x__parse_env_line__mutmut_31": x__parse_env_line__mutmut_31,
+    "x__parse_env_line__mutmut_32": x__parse_env_line__mutmut_32,
+    "x__parse_env_line__mutmut_33": x__parse_env_line__mutmut_33,
+    "x__parse_env_line__mutmut_34": x__parse_env_line__mutmut_34,
+    "x__parse_env_line__mutmut_35": x__parse_env_line__mutmut_35,
 }
 
+
 def _parse_env_line(*args, **kwargs):
-    result = _mutmut_trampoline(x__parse_env_line__mutmut_orig, x__parse_env_line__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__parse_env_line__mutmut_orig, x__parse_env_line__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _parse_env_line.__signature__ = _mutmut_signature(x__parse_env_line__mutmut_orig)
-x__parse_env_line__mutmut_orig.__name__ = 'x__parse_env_line'
+x__parse_env_line__mutmut_orig.__name__ = "x__parse_env_line"
 
 
 def x_env_loads__mutmut_orig(s: str, *, use_cache: bool = True) -> dict[str, str]:
@@ -3509,7 +3522,9 @@ def x_env_loads__mutmut_12(s: str, *, use_cache: bool = True) -> dict[str, str]:
 
     # Check cache first if enabled
     if use_cache and get_cache_enabled():
-        cache_key = get_cache_key(s, )
+        cache_key = get_cache_key(
+            s,
+        )
         cached = get_serialization_cache().get(cache_key)
         if cached is not None:
             return cached
@@ -4047,7 +4062,9 @@ def x_env_loads__mutmut_22(s: str, *, use_cache: bool = True) -> dict[str, str]:
     result: dict[str, str] = {}
 
     try:
-        for line_num, line in enumerate(s.splitlines(), ):
+        for line_num, line in enumerate(
+            s.splitlines(),
+        ):
             parsed = _parse_env_line(line, line_num)
             if parsed is not None:
                 key, value = parsed
@@ -4366,7 +4383,9 @@ def x_env_loads__mutmut_28(s: str, *, use_cache: bool = True) -> dict[str, str]:
 
     try:
         for line_num, line in enumerate(s.splitlines(), 1):
-            parsed = _parse_env_line(line, )
+            parsed = _parse_env_line(
+                line,
+            )
             if parsed is not None:
                 key, value = parsed
                 result[key] = value
@@ -4907,7 +4926,9 @@ def x_env_loads__mutmut_38(s: str, *, use_cache: bool = True) -> dict[str, str]:
 
     # Cache result
     if use_cache and get_cache_enabled():
-        cache_key = get_cache_key(s, )
+        cache_key = get_cache_key(
+            s,
+        )
         get_serialization_cache().set(cache_key, result)
 
     return result
@@ -5226,63 +5247,68 @@ def x_env_loads__mutmut_44(s: str, *, use_cache: bool = True) -> dict[str, str]:
     # Cache result
     if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "env")
-        get_serialization_cache().set(cache_key, )
+        get_serialization_cache().set(
+            cache_key,
+        )
 
     return result
 
-x_env_loads__mutmut_mutants : ClassVar[MutantDict] = {
-'x_env_loads__mutmut_1': x_env_loads__mutmut_1, 
-    'x_env_loads__mutmut_2': x_env_loads__mutmut_2, 
-    'x_env_loads__mutmut_3': x_env_loads__mutmut_3, 
-    'x_env_loads__mutmut_4': x_env_loads__mutmut_4, 
-    'x_env_loads__mutmut_5': x_env_loads__mutmut_5, 
-    'x_env_loads__mutmut_6': x_env_loads__mutmut_6, 
-    'x_env_loads__mutmut_7': x_env_loads__mutmut_7, 
-    'x_env_loads__mutmut_8': x_env_loads__mutmut_8, 
-    'x_env_loads__mutmut_9': x_env_loads__mutmut_9, 
-    'x_env_loads__mutmut_10': x_env_loads__mutmut_10, 
-    'x_env_loads__mutmut_11': x_env_loads__mutmut_11, 
-    'x_env_loads__mutmut_12': x_env_loads__mutmut_12, 
-    'x_env_loads__mutmut_13': x_env_loads__mutmut_13, 
-    'x_env_loads__mutmut_14': x_env_loads__mutmut_14, 
-    'x_env_loads__mutmut_15': x_env_loads__mutmut_15, 
-    'x_env_loads__mutmut_16': x_env_loads__mutmut_16, 
-    'x_env_loads__mutmut_17': x_env_loads__mutmut_17, 
-    'x_env_loads__mutmut_18': x_env_loads__mutmut_18, 
-    'x_env_loads__mutmut_19': x_env_loads__mutmut_19, 
-    'x_env_loads__mutmut_20': x_env_loads__mutmut_20, 
-    'x_env_loads__mutmut_21': x_env_loads__mutmut_21, 
-    'x_env_loads__mutmut_22': x_env_loads__mutmut_22, 
-    'x_env_loads__mutmut_23': x_env_loads__mutmut_23, 
-    'x_env_loads__mutmut_24': x_env_loads__mutmut_24, 
-    'x_env_loads__mutmut_25': x_env_loads__mutmut_25, 
-    'x_env_loads__mutmut_26': x_env_loads__mutmut_26, 
-    'x_env_loads__mutmut_27': x_env_loads__mutmut_27, 
-    'x_env_loads__mutmut_28': x_env_loads__mutmut_28, 
-    'x_env_loads__mutmut_29': x_env_loads__mutmut_29, 
-    'x_env_loads__mutmut_30': x_env_loads__mutmut_30, 
-    'x_env_loads__mutmut_31': x_env_loads__mutmut_31, 
-    'x_env_loads__mutmut_32': x_env_loads__mutmut_32, 
-    'x_env_loads__mutmut_33': x_env_loads__mutmut_33, 
-    'x_env_loads__mutmut_34': x_env_loads__mutmut_34, 
-    'x_env_loads__mutmut_35': x_env_loads__mutmut_35, 
-    'x_env_loads__mutmut_36': x_env_loads__mutmut_36, 
-    'x_env_loads__mutmut_37': x_env_loads__mutmut_37, 
-    'x_env_loads__mutmut_38': x_env_loads__mutmut_38, 
-    'x_env_loads__mutmut_39': x_env_loads__mutmut_39, 
-    'x_env_loads__mutmut_40': x_env_loads__mutmut_40, 
-    'x_env_loads__mutmut_41': x_env_loads__mutmut_41, 
-    'x_env_loads__mutmut_42': x_env_loads__mutmut_42, 
-    'x_env_loads__mutmut_43': x_env_loads__mutmut_43, 
-    'x_env_loads__mutmut_44': x_env_loads__mutmut_44
+
+x_env_loads__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_env_loads__mutmut_1": x_env_loads__mutmut_1,
+    "x_env_loads__mutmut_2": x_env_loads__mutmut_2,
+    "x_env_loads__mutmut_3": x_env_loads__mutmut_3,
+    "x_env_loads__mutmut_4": x_env_loads__mutmut_4,
+    "x_env_loads__mutmut_5": x_env_loads__mutmut_5,
+    "x_env_loads__mutmut_6": x_env_loads__mutmut_6,
+    "x_env_loads__mutmut_7": x_env_loads__mutmut_7,
+    "x_env_loads__mutmut_8": x_env_loads__mutmut_8,
+    "x_env_loads__mutmut_9": x_env_loads__mutmut_9,
+    "x_env_loads__mutmut_10": x_env_loads__mutmut_10,
+    "x_env_loads__mutmut_11": x_env_loads__mutmut_11,
+    "x_env_loads__mutmut_12": x_env_loads__mutmut_12,
+    "x_env_loads__mutmut_13": x_env_loads__mutmut_13,
+    "x_env_loads__mutmut_14": x_env_loads__mutmut_14,
+    "x_env_loads__mutmut_15": x_env_loads__mutmut_15,
+    "x_env_loads__mutmut_16": x_env_loads__mutmut_16,
+    "x_env_loads__mutmut_17": x_env_loads__mutmut_17,
+    "x_env_loads__mutmut_18": x_env_loads__mutmut_18,
+    "x_env_loads__mutmut_19": x_env_loads__mutmut_19,
+    "x_env_loads__mutmut_20": x_env_loads__mutmut_20,
+    "x_env_loads__mutmut_21": x_env_loads__mutmut_21,
+    "x_env_loads__mutmut_22": x_env_loads__mutmut_22,
+    "x_env_loads__mutmut_23": x_env_loads__mutmut_23,
+    "x_env_loads__mutmut_24": x_env_loads__mutmut_24,
+    "x_env_loads__mutmut_25": x_env_loads__mutmut_25,
+    "x_env_loads__mutmut_26": x_env_loads__mutmut_26,
+    "x_env_loads__mutmut_27": x_env_loads__mutmut_27,
+    "x_env_loads__mutmut_28": x_env_loads__mutmut_28,
+    "x_env_loads__mutmut_29": x_env_loads__mutmut_29,
+    "x_env_loads__mutmut_30": x_env_loads__mutmut_30,
+    "x_env_loads__mutmut_31": x_env_loads__mutmut_31,
+    "x_env_loads__mutmut_32": x_env_loads__mutmut_32,
+    "x_env_loads__mutmut_33": x_env_loads__mutmut_33,
+    "x_env_loads__mutmut_34": x_env_loads__mutmut_34,
+    "x_env_loads__mutmut_35": x_env_loads__mutmut_35,
+    "x_env_loads__mutmut_36": x_env_loads__mutmut_36,
+    "x_env_loads__mutmut_37": x_env_loads__mutmut_37,
+    "x_env_loads__mutmut_38": x_env_loads__mutmut_38,
+    "x_env_loads__mutmut_39": x_env_loads__mutmut_39,
+    "x_env_loads__mutmut_40": x_env_loads__mutmut_40,
+    "x_env_loads__mutmut_41": x_env_loads__mutmut_41,
+    "x_env_loads__mutmut_42": x_env_loads__mutmut_42,
+    "x_env_loads__mutmut_43": x_env_loads__mutmut_43,
+    "x_env_loads__mutmut_44": x_env_loads__mutmut_44,
 }
+
 
 def env_loads(*args, **kwargs):
     result = _mutmut_trampoline(x_env_loads__mutmut_orig, x_env_loads__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 env_loads.__signature__ = _mutmut_signature(x_env_loads__mutmut_orig)
-x_env_loads__mutmut_orig.__name__ = 'x_env_loads'
+x_env_loads__mutmut_orig.__name__ = "x_env_loads"
 
 
 __all__ = [

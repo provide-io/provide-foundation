@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -274,7 +277,12 @@ def x__try_converter__mutmut_12(converter: Any, value: str) -> tuple[bool, Any]:
         # Special case: if the converter returns something that looks like a test mock,
         # fall back to type-based parsing. This handles test scenarios where converters
         # are mocked but we still want to test the type-based parsing logic.
-        if hasattr(result, ) or "mock" in str(type(result)).lower():
+        if (
+            hasattr(
+                result,
+            )
+            or "mock" in str(type(result)).lower()
+        ):
             return False, None
         return True, result
     except Exception:
@@ -479,38 +487,41 @@ def x__try_converter__mutmut_23(converter: Any, value: str) -> tuple[bool, Any]:
         # If converter fails, fall back to type-based parsing
         return True, None
 
-x__try_converter__mutmut_mutants : ClassVar[MutantDict] = {
-'x__try_converter__mutmut_1': x__try_converter__mutmut_1, 
-    'x__try_converter__mutmut_2': x__try_converter__mutmut_2, 
-    'x__try_converter__mutmut_3': x__try_converter__mutmut_3, 
-    'x__try_converter__mutmut_4': x__try_converter__mutmut_4, 
-    'x__try_converter__mutmut_5': x__try_converter__mutmut_5, 
-    'x__try_converter__mutmut_6': x__try_converter__mutmut_6, 
-    'x__try_converter__mutmut_7': x__try_converter__mutmut_7, 
-    'x__try_converter__mutmut_8': x__try_converter__mutmut_8, 
-    'x__try_converter__mutmut_9': x__try_converter__mutmut_9, 
-    'x__try_converter__mutmut_10': x__try_converter__mutmut_10, 
-    'x__try_converter__mutmut_11': x__try_converter__mutmut_11, 
-    'x__try_converter__mutmut_12': x__try_converter__mutmut_12, 
-    'x__try_converter__mutmut_13': x__try_converter__mutmut_13, 
-    'x__try_converter__mutmut_14': x__try_converter__mutmut_14, 
-    'x__try_converter__mutmut_15': x__try_converter__mutmut_15, 
-    'x__try_converter__mutmut_16': x__try_converter__mutmut_16, 
-    'x__try_converter__mutmut_17': x__try_converter__mutmut_17, 
-    'x__try_converter__mutmut_18': x__try_converter__mutmut_18, 
-    'x__try_converter__mutmut_19': x__try_converter__mutmut_19, 
-    'x__try_converter__mutmut_20': x__try_converter__mutmut_20, 
-    'x__try_converter__mutmut_21': x__try_converter__mutmut_21, 
-    'x__try_converter__mutmut_22': x__try_converter__mutmut_22, 
-    'x__try_converter__mutmut_23': x__try_converter__mutmut_23
+
+x__try_converter__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__try_converter__mutmut_1": x__try_converter__mutmut_1,
+    "x__try_converter__mutmut_2": x__try_converter__mutmut_2,
+    "x__try_converter__mutmut_3": x__try_converter__mutmut_3,
+    "x__try_converter__mutmut_4": x__try_converter__mutmut_4,
+    "x__try_converter__mutmut_5": x__try_converter__mutmut_5,
+    "x__try_converter__mutmut_6": x__try_converter__mutmut_6,
+    "x__try_converter__mutmut_7": x__try_converter__mutmut_7,
+    "x__try_converter__mutmut_8": x__try_converter__mutmut_8,
+    "x__try_converter__mutmut_9": x__try_converter__mutmut_9,
+    "x__try_converter__mutmut_10": x__try_converter__mutmut_10,
+    "x__try_converter__mutmut_11": x__try_converter__mutmut_11,
+    "x__try_converter__mutmut_12": x__try_converter__mutmut_12,
+    "x__try_converter__mutmut_13": x__try_converter__mutmut_13,
+    "x__try_converter__mutmut_14": x__try_converter__mutmut_14,
+    "x__try_converter__mutmut_15": x__try_converter__mutmut_15,
+    "x__try_converter__mutmut_16": x__try_converter__mutmut_16,
+    "x__try_converter__mutmut_17": x__try_converter__mutmut_17,
+    "x__try_converter__mutmut_18": x__try_converter__mutmut_18,
+    "x__try_converter__mutmut_19": x__try_converter__mutmut_19,
+    "x__try_converter__mutmut_20": x__try_converter__mutmut_20,
+    "x__try_converter__mutmut_21": x__try_converter__mutmut_21,
+    "x__try_converter__mutmut_22": x__try_converter__mutmut_22,
+    "x__try_converter__mutmut_23": x__try_converter__mutmut_23,
 }
+
 
 def _try_converter(*args, **kwargs):
     result = _mutmut_trampoline(x__try_converter__mutmut_orig, x__try_converter__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _try_converter.__signature__ = _mutmut_signature(x__try_converter__mutmut_orig)
-x__try_converter__mutmut_orig.__name__ = 'x__try_converter'
+x__try_converter__mutmut_orig.__name__ = "x__try_converter"
 
 
 def x__resolve_string_type__mutmut_orig(field_type: str) -> type | str:
@@ -737,34 +748,41 @@ def x__resolve_string_type__mutmut_17(field_type: str) -> type | str:
         "list": list,
         "dict": dict,
     }
-    return type_map.get(field_type, )
+    return type_map.get(
+        field_type,
+    )
 
-x__resolve_string_type__mutmut_mutants : ClassVar[MutantDict] = {
-'x__resolve_string_type__mutmut_1': x__resolve_string_type__mutmut_1, 
-    'x__resolve_string_type__mutmut_2': x__resolve_string_type__mutmut_2, 
-    'x__resolve_string_type__mutmut_3': x__resolve_string_type__mutmut_3, 
-    'x__resolve_string_type__mutmut_4': x__resolve_string_type__mutmut_4, 
-    'x__resolve_string_type__mutmut_5': x__resolve_string_type__mutmut_5, 
-    'x__resolve_string_type__mutmut_6': x__resolve_string_type__mutmut_6, 
-    'x__resolve_string_type__mutmut_7': x__resolve_string_type__mutmut_7, 
-    'x__resolve_string_type__mutmut_8': x__resolve_string_type__mutmut_8, 
-    'x__resolve_string_type__mutmut_9': x__resolve_string_type__mutmut_9, 
-    'x__resolve_string_type__mutmut_10': x__resolve_string_type__mutmut_10, 
-    'x__resolve_string_type__mutmut_11': x__resolve_string_type__mutmut_11, 
-    'x__resolve_string_type__mutmut_12': x__resolve_string_type__mutmut_12, 
-    'x__resolve_string_type__mutmut_13': x__resolve_string_type__mutmut_13, 
-    'x__resolve_string_type__mutmut_14': x__resolve_string_type__mutmut_14, 
-    'x__resolve_string_type__mutmut_15': x__resolve_string_type__mutmut_15, 
-    'x__resolve_string_type__mutmut_16': x__resolve_string_type__mutmut_16, 
-    'x__resolve_string_type__mutmut_17': x__resolve_string_type__mutmut_17
+
+x__resolve_string_type__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__resolve_string_type__mutmut_1": x__resolve_string_type__mutmut_1,
+    "x__resolve_string_type__mutmut_2": x__resolve_string_type__mutmut_2,
+    "x__resolve_string_type__mutmut_3": x__resolve_string_type__mutmut_3,
+    "x__resolve_string_type__mutmut_4": x__resolve_string_type__mutmut_4,
+    "x__resolve_string_type__mutmut_5": x__resolve_string_type__mutmut_5,
+    "x__resolve_string_type__mutmut_6": x__resolve_string_type__mutmut_6,
+    "x__resolve_string_type__mutmut_7": x__resolve_string_type__mutmut_7,
+    "x__resolve_string_type__mutmut_8": x__resolve_string_type__mutmut_8,
+    "x__resolve_string_type__mutmut_9": x__resolve_string_type__mutmut_9,
+    "x__resolve_string_type__mutmut_10": x__resolve_string_type__mutmut_10,
+    "x__resolve_string_type__mutmut_11": x__resolve_string_type__mutmut_11,
+    "x__resolve_string_type__mutmut_12": x__resolve_string_type__mutmut_12,
+    "x__resolve_string_type__mutmut_13": x__resolve_string_type__mutmut_13,
+    "x__resolve_string_type__mutmut_14": x__resolve_string_type__mutmut_14,
+    "x__resolve_string_type__mutmut_15": x__resolve_string_type__mutmut_15,
+    "x__resolve_string_type__mutmut_16": x__resolve_string_type__mutmut_16,
+    "x__resolve_string_type__mutmut_17": x__resolve_string_type__mutmut_17,
 }
 
+
 def _resolve_string_type(*args, **kwargs):
-    result = _mutmut_trampoline(x__resolve_string_type__mutmut_orig, x__resolve_string_type__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__resolve_string_type__mutmut_orig, x__resolve_string_type__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _resolve_string_type.__signature__ = _mutmut_signature(x__resolve_string_type__mutmut_orig)
-x__resolve_string_type__mutmut_orig.__name__ = 'x__resolve_string_type'
+x__resolve_string_type__mutmut_orig.__name__ = "x__resolve_string_type"
 
 
 def x__extract_field_type__mutmut_orig(attr: Any) -> type | None:
@@ -786,7 +804,7 @@ def x__extract_field_type__mutmut_orig(attr: Any) -> type | None:
 
 def x__extract_field_type__mutmut_1(attr: Any) -> type | None:
     """Extract the type from an attrs field."""
-    if (hasattr(attr, "type") and attr.type is not None):
+    if hasattr(attr, "type") and attr.type is not None:
         return None
 
     field_type = attr.type
@@ -871,7 +889,12 @@ def x__extract_field_type__mutmut_5(attr: Any) -> type | None:
 
 def x__extract_field_type__mutmut_6(attr: Any) -> type | None:
     """Extract the type from an attrs field."""
-    if not (hasattr(attr, ) and attr.type is not None):
+    if not (
+        hasattr(
+            attr,
+        )
+        and attr.type is not None
+    ):
         return None
 
     field_type = attr.type
@@ -987,27 +1010,32 @@ def x__extract_field_type__mutmut_12(attr: Any) -> type | None:
 
     return field_type
 
-x__extract_field_type__mutmut_mutants : ClassVar[MutantDict] = {
-'x__extract_field_type__mutmut_1': x__extract_field_type__mutmut_1, 
-    'x__extract_field_type__mutmut_2': x__extract_field_type__mutmut_2, 
-    'x__extract_field_type__mutmut_3': x__extract_field_type__mutmut_3, 
-    'x__extract_field_type__mutmut_4': x__extract_field_type__mutmut_4, 
-    'x__extract_field_type__mutmut_5': x__extract_field_type__mutmut_5, 
-    'x__extract_field_type__mutmut_6': x__extract_field_type__mutmut_6, 
-    'x__extract_field_type__mutmut_7': x__extract_field_type__mutmut_7, 
-    'x__extract_field_type__mutmut_8': x__extract_field_type__mutmut_8, 
-    'x__extract_field_type__mutmut_9': x__extract_field_type__mutmut_9, 
-    'x__extract_field_type__mutmut_10': x__extract_field_type__mutmut_10, 
-    'x__extract_field_type__mutmut_11': x__extract_field_type__mutmut_11, 
-    'x__extract_field_type__mutmut_12': x__extract_field_type__mutmut_12
+
+x__extract_field_type__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__extract_field_type__mutmut_1": x__extract_field_type__mutmut_1,
+    "x__extract_field_type__mutmut_2": x__extract_field_type__mutmut_2,
+    "x__extract_field_type__mutmut_3": x__extract_field_type__mutmut_3,
+    "x__extract_field_type__mutmut_4": x__extract_field_type__mutmut_4,
+    "x__extract_field_type__mutmut_5": x__extract_field_type__mutmut_5,
+    "x__extract_field_type__mutmut_6": x__extract_field_type__mutmut_6,
+    "x__extract_field_type__mutmut_7": x__extract_field_type__mutmut_7,
+    "x__extract_field_type__mutmut_8": x__extract_field_type__mutmut_8,
+    "x__extract_field_type__mutmut_9": x__extract_field_type__mutmut_9,
+    "x__extract_field_type__mutmut_10": x__extract_field_type__mutmut_10,
+    "x__extract_field_type__mutmut_11": x__extract_field_type__mutmut_11,
+    "x__extract_field_type__mutmut_12": x__extract_field_type__mutmut_12,
 }
 
+
 def _extract_field_type(*args, **kwargs):
-    result = _mutmut_trampoline(x__extract_field_type__mutmut_orig, x__extract_field_type__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__extract_field_type__mutmut_orig, x__extract_field_type__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _extract_field_type.__signature__ = _mutmut_signature(x__extract_field_type__mutmut_orig)
-x__extract_field_type__mutmut_orig.__name__ = 'x__extract_field_type'
+x__extract_field_type__mutmut_orig.__name__ = "x__extract_field_type"
 
 
 def x_auto_parse__mutmut_orig(attr: Any, value: str) -> Any:
@@ -1244,7 +1272,9 @@ def x_auto_parse__mutmut_4(attr: Any, value: str) -> Any:
 
     """
     # Check for attrs field converter first
-    if hasattr(attr, ):
+    if hasattr(
+        attr,
+    ):
         success, result = _try_converter(attr.converter, value)
         if success:
             return result
@@ -1602,7 +1632,9 @@ def x_auto_parse__mutmut_11(attr: Any, value: str) -> Any:
     """
     # Check for attrs field converter first
     if hasattr(attr, "converter"):
-        success, result = _try_converter(attr.converter, )
+        success, result = _try_converter(
+            attr.converter,
+        )
         if success:
             return result
 
@@ -1862,7 +1894,12 @@ def x_auto_parse__mutmut_16(attr: Any, value: str) -> Any:
             return result
 
     # Check for converter in metadata as fallback
-    if hasattr(attr, ) and attr.metadata:
+    if (
+        hasattr(
+            attr,
+        )
+        and attr.metadata
+    ):
         converter = attr.metadata.get("converter")
         success, result = _try_converter(converter, value)
         if success:
@@ -2425,7 +2462,9 @@ def x_auto_parse__mutmut_27(attr: Any, value: str) -> Any:
     # Check for converter in metadata as fallback
     if hasattr(attr, "metadata") and attr.metadata:
         converter = attr.metadata.get("converter")
-        success, result = _try_converter(converter, )
+        success, result = _try_converter(
+            converter,
+        )
         if success:
             return result
 
@@ -2789,54 +2828,59 @@ def x_auto_parse__mutmut_34(attr: Any, value: str) -> Any:
     # Get type hint from attrs field and try type-based parsing
     field_type = _extract_field_type(attr)
     if field_type is not None:
-        return parse_typed_value(value, )
+        return parse_typed_value(
+            value,
+        )
 
     # No type info, return as string
     return value
 
-x_auto_parse__mutmut_mutants : ClassVar[MutantDict] = {
-'x_auto_parse__mutmut_1': x_auto_parse__mutmut_1, 
-    'x_auto_parse__mutmut_2': x_auto_parse__mutmut_2, 
-    'x_auto_parse__mutmut_3': x_auto_parse__mutmut_3, 
-    'x_auto_parse__mutmut_4': x_auto_parse__mutmut_4, 
-    'x_auto_parse__mutmut_5': x_auto_parse__mutmut_5, 
-    'x_auto_parse__mutmut_6': x_auto_parse__mutmut_6, 
-    'x_auto_parse__mutmut_7': x_auto_parse__mutmut_7, 
-    'x_auto_parse__mutmut_8': x_auto_parse__mutmut_8, 
-    'x_auto_parse__mutmut_9': x_auto_parse__mutmut_9, 
-    'x_auto_parse__mutmut_10': x_auto_parse__mutmut_10, 
-    'x_auto_parse__mutmut_11': x_auto_parse__mutmut_11, 
-    'x_auto_parse__mutmut_12': x_auto_parse__mutmut_12, 
-    'x_auto_parse__mutmut_13': x_auto_parse__mutmut_13, 
-    'x_auto_parse__mutmut_14': x_auto_parse__mutmut_14, 
-    'x_auto_parse__mutmut_15': x_auto_parse__mutmut_15, 
-    'x_auto_parse__mutmut_16': x_auto_parse__mutmut_16, 
-    'x_auto_parse__mutmut_17': x_auto_parse__mutmut_17, 
-    'x_auto_parse__mutmut_18': x_auto_parse__mutmut_18, 
-    'x_auto_parse__mutmut_19': x_auto_parse__mutmut_19, 
-    'x_auto_parse__mutmut_20': x_auto_parse__mutmut_20, 
-    'x_auto_parse__mutmut_21': x_auto_parse__mutmut_21, 
-    'x_auto_parse__mutmut_22': x_auto_parse__mutmut_22, 
-    'x_auto_parse__mutmut_23': x_auto_parse__mutmut_23, 
-    'x_auto_parse__mutmut_24': x_auto_parse__mutmut_24, 
-    'x_auto_parse__mutmut_25': x_auto_parse__mutmut_25, 
-    'x_auto_parse__mutmut_26': x_auto_parse__mutmut_26, 
-    'x_auto_parse__mutmut_27': x_auto_parse__mutmut_27, 
-    'x_auto_parse__mutmut_28': x_auto_parse__mutmut_28, 
-    'x_auto_parse__mutmut_29': x_auto_parse__mutmut_29, 
-    'x_auto_parse__mutmut_30': x_auto_parse__mutmut_30, 
-    'x_auto_parse__mutmut_31': x_auto_parse__mutmut_31, 
-    'x_auto_parse__mutmut_32': x_auto_parse__mutmut_32, 
-    'x_auto_parse__mutmut_33': x_auto_parse__mutmut_33, 
-    'x_auto_parse__mutmut_34': x_auto_parse__mutmut_34
+
+x_auto_parse__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_auto_parse__mutmut_1": x_auto_parse__mutmut_1,
+    "x_auto_parse__mutmut_2": x_auto_parse__mutmut_2,
+    "x_auto_parse__mutmut_3": x_auto_parse__mutmut_3,
+    "x_auto_parse__mutmut_4": x_auto_parse__mutmut_4,
+    "x_auto_parse__mutmut_5": x_auto_parse__mutmut_5,
+    "x_auto_parse__mutmut_6": x_auto_parse__mutmut_6,
+    "x_auto_parse__mutmut_7": x_auto_parse__mutmut_7,
+    "x_auto_parse__mutmut_8": x_auto_parse__mutmut_8,
+    "x_auto_parse__mutmut_9": x_auto_parse__mutmut_9,
+    "x_auto_parse__mutmut_10": x_auto_parse__mutmut_10,
+    "x_auto_parse__mutmut_11": x_auto_parse__mutmut_11,
+    "x_auto_parse__mutmut_12": x_auto_parse__mutmut_12,
+    "x_auto_parse__mutmut_13": x_auto_parse__mutmut_13,
+    "x_auto_parse__mutmut_14": x_auto_parse__mutmut_14,
+    "x_auto_parse__mutmut_15": x_auto_parse__mutmut_15,
+    "x_auto_parse__mutmut_16": x_auto_parse__mutmut_16,
+    "x_auto_parse__mutmut_17": x_auto_parse__mutmut_17,
+    "x_auto_parse__mutmut_18": x_auto_parse__mutmut_18,
+    "x_auto_parse__mutmut_19": x_auto_parse__mutmut_19,
+    "x_auto_parse__mutmut_20": x_auto_parse__mutmut_20,
+    "x_auto_parse__mutmut_21": x_auto_parse__mutmut_21,
+    "x_auto_parse__mutmut_22": x_auto_parse__mutmut_22,
+    "x_auto_parse__mutmut_23": x_auto_parse__mutmut_23,
+    "x_auto_parse__mutmut_24": x_auto_parse__mutmut_24,
+    "x_auto_parse__mutmut_25": x_auto_parse__mutmut_25,
+    "x_auto_parse__mutmut_26": x_auto_parse__mutmut_26,
+    "x_auto_parse__mutmut_27": x_auto_parse__mutmut_27,
+    "x_auto_parse__mutmut_28": x_auto_parse__mutmut_28,
+    "x_auto_parse__mutmut_29": x_auto_parse__mutmut_29,
+    "x_auto_parse__mutmut_30": x_auto_parse__mutmut_30,
+    "x_auto_parse__mutmut_31": x_auto_parse__mutmut_31,
+    "x_auto_parse__mutmut_32": x_auto_parse__mutmut_32,
+    "x_auto_parse__mutmut_33": x_auto_parse__mutmut_33,
+    "x_auto_parse__mutmut_34": x_auto_parse__mutmut_34,
 }
+
 
 def auto_parse(*args, **kwargs):
     result = _mutmut_trampoline(x_auto_parse__mutmut_orig, x_auto_parse__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 auto_parse.__signature__ = _mutmut_signature(x_auto_parse__mutmut_orig)
-x_auto_parse__mutmut_orig.__name__ = 'x_auto_parse'
+x_auto_parse__mutmut_orig.__name__ = "x_auto_parse"
 
 
 __all__ = [

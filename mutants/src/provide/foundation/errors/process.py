@@ -22,23 +22,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1709,7 +1712,13 @@ class ProcessError(FoundationError):
             full_message += "\nProcess timed out"
 
         if stdout:
-            stdout_str = stdout.decode("utf-8", ) if isinstance(stdout, bytes) else stdout
+            stdout_str = (
+                stdout.decode(
+                    "utf-8",
+                )
+                if isinstance(stdout, bytes)
+                else stdout
+            )
             if stdout_str.strip():
                 full_message += f"\n--- STDOUT ---\n{stdout_str.strip()}"
 
@@ -2605,7 +2614,13 @@ class ProcessError(FoundationError):
                 full_message += f"\n--- STDOUT ---\n{stdout_str.strip()}"
 
         if stderr:
-            stderr_str = stderr.decode("utf-8", ) if isinstance(stderr, bytes) else stderr
+            stderr_str = (
+                stderr.decode(
+                    "utf-8",
+                )
+                if isinstance(stderr, bytes)
+                else stderr
+            )
             if stderr_str.strip():
                 full_message += f"\n--- STDERR ---\n{stderr_str.strip()}"
 
@@ -4150,7 +4165,9 @@ class ProcessError(FoundationError):
 
         # Store clean stdout/stderr for programmatic access
         self.stdout = (
-            stdout.decode("utf-8", ).strip()
+            stdout.decode(
+                "utf-8",
+            ).strip()
             if isinstance(stdout, bytes)
             else stdout.strip()
             if stdout
@@ -4881,7 +4898,9 @@ class ProcessError(FoundationError):
         )
 
         self.stderr = (
-            stderr.decode("utf-8", ).strip()
+            stderr.decode(
+                "utf-8",
+            ).strip()
             if isinstance(stderr, bytes)
             else stderr.strip()
             if stderr
@@ -5945,89 +5964,98 @@ class ProcessError(FoundationError):
         self.return_code = return_code
         self.timeout = timeout
 
-        super().__init__(full_message, code=code, )
-    
-    xǁProcessErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProcessErrorǁ__init____mutmut_1': xǁProcessErrorǁ__init____mutmut_1, 
-        'xǁProcessErrorǁ__init____mutmut_2': xǁProcessErrorǁ__init____mutmut_2, 
-        'xǁProcessErrorǁ__init____mutmut_3': xǁProcessErrorǁ__init____mutmut_3, 
-        'xǁProcessErrorǁ__init____mutmut_4': xǁProcessErrorǁ__init____mutmut_4, 
-        'xǁProcessErrorǁ__init____mutmut_5': xǁProcessErrorǁ__init____mutmut_5, 
-        'xǁProcessErrorǁ__init____mutmut_6': xǁProcessErrorǁ__init____mutmut_6, 
-        'xǁProcessErrorǁ__init____mutmut_7': xǁProcessErrorǁ__init____mutmut_7, 
-        'xǁProcessErrorǁ__init____mutmut_8': xǁProcessErrorǁ__init____mutmut_8, 
-        'xǁProcessErrorǁ__init____mutmut_9': xǁProcessErrorǁ__init____mutmut_9, 
-        'xǁProcessErrorǁ__init____mutmut_10': xǁProcessErrorǁ__init____mutmut_10, 
-        'xǁProcessErrorǁ__init____mutmut_11': xǁProcessErrorǁ__init____mutmut_11, 
-        'xǁProcessErrorǁ__init____mutmut_12': xǁProcessErrorǁ__init____mutmut_12, 
-        'xǁProcessErrorǁ__init____mutmut_13': xǁProcessErrorǁ__init____mutmut_13, 
-        'xǁProcessErrorǁ__init____mutmut_14': xǁProcessErrorǁ__init____mutmut_14, 
-        'xǁProcessErrorǁ__init____mutmut_15': xǁProcessErrorǁ__init____mutmut_15, 
-        'xǁProcessErrorǁ__init____mutmut_16': xǁProcessErrorǁ__init____mutmut_16, 
-        'xǁProcessErrorǁ__init____mutmut_17': xǁProcessErrorǁ__init____mutmut_17, 
-        'xǁProcessErrorǁ__init____mutmut_18': xǁProcessErrorǁ__init____mutmut_18, 
-        'xǁProcessErrorǁ__init____mutmut_19': xǁProcessErrorǁ__init____mutmut_19, 
-        'xǁProcessErrorǁ__init____mutmut_20': xǁProcessErrorǁ__init____mutmut_20, 
-        'xǁProcessErrorǁ__init____mutmut_21': xǁProcessErrorǁ__init____mutmut_21, 
-        'xǁProcessErrorǁ__init____mutmut_22': xǁProcessErrorǁ__init____mutmut_22, 
-        'xǁProcessErrorǁ__init____mutmut_23': xǁProcessErrorǁ__init____mutmut_23, 
-        'xǁProcessErrorǁ__init____mutmut_24': xǁProcessErrorǁ__init____mutmut_24, 
-        'xǁProcessErrorǁ__init____mutmut_25': xǁProcessErrorǁ__init____mutmut_25, 
-        'xǁProcessErrorǁ__init____mutmut_26': xǁProcessErrorǁ__init____mutmut_26, 
-        'xǁProcessErrorǁ__init____mutmut_27': xǁProcessErrorǁ__init____mutmut_27, 
-        'xǁProcessErrorǁ__init____mutmut_28': xǁProcessErrorǁ__init____mutmut_28, 
-        'xǁProcessErrorǁ__init____mutmut_29': xǁProcessErrorǁ__init____mutmut_29, 
-        'xǁProcessErrorǁ__init____mutmut_30': xǁProcessErrorǁ__init____mutmut_30, 
-        'xǁProcessErrorǁ__init____mutmut_31': xǁProcessErrorǁ__init____mutmut_31, 
-        'xǁProcessErrorǁ__init____mutmut_32': xǁProcessErrorǁ__init____mutmut_32, 
-        'xǁProcessErrorǁ__init____mutmut_33': xǁProcessErrorǁ__init____mutmut_33, 
-        'xǁProcessErrorǁ__init____mutmut_34': xǁProcessErrorǁ__init____mutmut_34, 
-        'xǁProcessErrorǁ__init____mutmut_35': xǁProcessErrorǁ__init____mutmut_35, 
-        'xǁProcessErrorǁ__init____mutmut_36': xǁProcessErrorǁ__init____mutmut_36, 
-        'xǁProcessErrorǁ__init____mutmut_37': xǁProcessErrorǁ__init____mutmut_37, 
-        'xǁProcessErrorǁ__init____mutmut_38': xǁProcessErrorǁ__init____mutmut_38, 
-        'xǁProcessErrorǁ__init____mutmut_39': xǁProcessErrorǁ__init____mutmut_39, 
-        'xǁProcessErrorǁ__init____mutmut_40': xǁProcessErrorǁ__init____mutmut_40, 
-        'xǁProcessErrorǁ__init____mutmut_41': xǁProcessErrorǁ__init____mutmut_41, 
-        'xǁProcessErrorǁ__init____mutmut_42': xǁProcessErrorǁ__init____mutmut_42, 
-        'xǁProcessErrorǁ__init____mutmut_43': xǁProcessErrorǁ__init____mutmut_43, 
-        'xǁProcessErrorǁ__init____mutmut_44': xǁProcessErrorǁ__init____mutmut_44, 
-        'xǁProcessErrorǁ__init____mutmut_45': xǁProcessErrorǁ__init____mutmut_45, 
-        'xǁProcessErrorǁ__init____mutmut_46': xǁProcessErrorǁ__init____mutmut_46, 
-        'xǁProcessErrorǁ__init____mutmut_47': xǁProcessErrorǁ__init____mutmut_47, 
-        'xǁProcessErrorǁ__init____mutmut_48': xǁProcessErrorǁ__init____mutmut_48, 
-        'xǁProcessErrorǁ__init____mutmut_49': xǁProcessErrorǁ__init____mutmut_49, 
-        'xǁProcessErrorǁ__init____mutmut_50': xǁProcessErrorǁ__init____mutmut_50, 
-        'xǁProcessErrorǁ__init____mutmut_51': xǁProcessErrorǁ__init____mutmut_51, 
-        'xǁProcessErrorǁ__init____mutmut_52': xǁProcessErrorǁ__init____mutmut_52, 
-        'xǁProcessErrorǁ__init____mutmut_53': xǁProcessErrorǁ__init____mutmut_53, 
-        'xǁProcessErrorǁ__init____mutmut_54': xǁProcessErrorǁ__init____mutmut_54, 
-        'xǁProcessErrorǁ__init____mutmut_55': xǁProcessErrorǁ__init____mutmut_55, 
-        'xǁProcessErrorǁ__init____mutmut_56': xǁProcessErrorǁ__init____mutmut_56, 
-        'xǁProcessErrorǁ__init____mutmut_57': xǁProcessErrorǁ__init____mutmut_57, 
-        'xǁProcessErrorǁ__init____mutmut_58': xǁProcessErrorǁ__init____mutmut_58, 
-        'xǁProcessErrorǁ__init____mutmut_59': xǁProcessErrorǁ__init____mutmut_59, 
-        'xǁProcessErrorǁ__init____mutmut_60': xǁProcessErrorǁ__init____mutmut_60, 
-        'xǁProcessErrorǁ__init____mutmut_61': xǁProcessErrorǁ__init____mutmut_61, 
-        'xǁProcessErrorǁ__init____mutmut_62': xǁProcessErrorǁ__init____mutmut_62, 
-        'xǁProcessErrorǁ__init____mutmut_63': xǁProcessErrorǁ__init____mutmut_63, 
-        'xǁProcessErrorǁ__init____mutmut_64': xǁProcessErrorǁ__init____mutmut_64, 
-        'xǁProcessErrorǁ__init____mutmut_65': xǁProcessErrorǁ__init____mutmut_65, 
-        'xǁProcessErrorǁ__init____mutmut_66': xǁProcessErrorǁ__init____mutmut_66, 
-        'xǁProcessErrorǁ__init____mutmut_67': xǁProcessErrorǁ__init____mutmut_67, 
-        'xǁProcessErrorǁ__init____mutmut_68': xǁProcessErrorǁ__init____mutmut_68, 
-        'xǁProcessErrorǁ__init____mutmut_69': xǁProcessErrorǁ__init____mutmut_69, 
-        'xǁProcessErrorǁ__init____mutmut_70': xǁProcessErrorǁ__init____mutmut_70, 
-        'xǁProcessErrorǁ__init____mutmut_71': xǁProcessErrorǁ__init____mutmut_71, 
-        'xǁProcessErrorǁ__init____mutmut_72': xǁProcessErrorǁ__init____mutmut_72
+        super().__init__(
+            full_message,
+            code=code,
+        )
+
+    xǁProcessErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProcessErrorǁ__init____mutmut_1": xǁProcessErrorǁ__init____mutmut_1,
+        "xǁProcessErrorǁ__init____mutmut_2": xǁProcessErrorǁ__init____mutmut_2,
+        "xǁProcessErrorǁ__init____mutmut_3": xǁProcessErrorǁ__init____mutmut_3,
+        "xǁProcessErrorǁ__init____mutmut_4": xǁProcessErrorǁ__init____mutmut_4,
+        "xǁProcessErrorǁ__init____mutmut_5": xǁProcessErrorǁ__init____mutmut_5,
+        "xǁProcessErrorǁ__init____mutmut_6": xǁProcessErrorǁ__init____mutmut_6,
+        "xǁProcessErrorǁ__init____mutmut_7": xǁProcessErrorǁ__init____mutmut_7,
+        "xǁProcessErrorǁ__init____mutmut_8": xǁProcessErrorǁ__init____mutmut_8,
+        "xǁProcessErrorǁ__init____mutmut_9": xǁProcessErrorǁ__init____mutmut_9,
+        "xǁProcessErrorǁ__init____mutmut_10": xǁProcessErrorǁ__init____mutmut_10,
+        "xǁProcessErrorǁ__init____mutmut_11": xǁProcessErrorǁ__init____mutmut_11,
+        "xǁProcessErrorǁ__init____mutmut_12": xǁProcessErrorǁ__init____mutmut_12,
+        "xǁProcessErrorǁ__init____mutmut_13": xǁProcessErrorǁ__init____mutmut_13,
+        "xǁProcessErrorǁ__init____mutmut_14": xǁProcessErrorǁ__init____mutmut_14,
+        "xǁProcessErrorǁ__init____mutmut_15": xǁProcessErrorǁ__init____mutmut_15,
+        "xǁProcessErrorǁ__init____mutmut_16": xǁProcessErrorǁ__init____mutmut_16,
+        "xǁProcessErrorǁ__init____mutmut_17": xǁProcessErrorǁ__init____mutmut_17,
+        "xǁProcessErrorǁ__init____mutmut_18": xǁProcessErrorǁ__init____mutmut_18,
+        "xǁProcessErrorǁ__init____mutmut_19": xǁProcessErrorǁ__init____mutmut_19,
+        "xǁProcessErrorǁ__init____mutmut_20": xǁProcessErrorǁ__init____mutmut_20,
+        "xǁProcessErrorǁ__init____mutmut_21": xǁProcessErrorǁ__init____mutmut_21,
+        "xǁProcessErrorǁ__init____mutmut_22": xǁProcessErrorǁ__init____mutmut_22,
+        "xǁProcessErrorǁ__init____mutmut_23": xǁProcessErrorǁ__init____mutmut_23,
+        "xǁProcessErrorǁ__init____mutmut_24": xǁProcessErrorǁ__init____mutmut_24,
+        "xǁProcessErrorǁ__init____mutmut_25": xǁProcessErrorǁ__init____mutmut_25,
+        "xǁProcessErrorǁ__init____mutmut_26": xǁProcessErrorǁ__init____mutmut_26,
+        "xǁProcessErrorǁ__init____mutmut_27": xǁProcessErrorǁ__init____mutmut_27,
+        "xǁProcessErrorǁ__init____mutmut_28": xǁProcessErrorǁ__init____mutmut_28,
+        "xǁProcessErrorǁ__init____mutmut_29": xǁProcessErrorǁ__init____mutmut_29,
+        "xǁProcessErrorǁ__init____mutmut_30": xǁProcessErrorǁ__init____mutmut_30,
+        "xǁProcessErrorǁ__init____mutmut_31": xǁProcessErrorǁ__init____mutmut_31,
+        "xǁProcessErrorǁ__init____mutmut_32": xǁProcessErrorǁ__init____mutmut_32,
+        "xǁProcessErrorǁ__init____mutmut_33": xǁProcessErrorǁ__init____mutmut_33,
+        "xǁProcessErrorǁ__init____mutmut_34": xǁProcessErrorǁ__init____mutmut_34,
+        "xǁProcessErrorǁ__init____mutmut_35": xǁProcessErrorǁ__init____mutmut_35,
+        "xǁProcessErrorǁ__init____mutmut_36": xǁProcessErrorǁ__init____mutmut_36,
+        "xǁProcessErrorǁ__init____mutmut_37": xǁProcessErrorǁ__init____mutmut_37,
+        "xǁProcessErrorǁ__init____mutmut_38": xǁProcessErrorǁ__init____mutmut_38,
+        "xǁProcessErrorǁ__init____mutmut_39": xǁProcessErrorǁ__init____mutmut_39,
+        "xǁProcessErrorǁ__init____mutmut_40": xǁProcessErrorǁ__init____mutmut_40,
+        "xǁProcessErrorǁ__init____mutmut_41": xǁProcessErrorǁ__init____mutmut_41,
+        "xǁProcessErrorǁ__init____mutmut_42": xǁProcessErrorǁ__init____mutmut_42,
+        "xǁProcessErrorǁ__init____mutmut_43": xǁProcessErrorǁ__init____mutmut_43,
+        "xǁProcessErrorǁ__init____mutmut_44": xǁProcessErrorǁ__init____mutmut_44,
+        "xǁProcessErrorǁ__init____mutmut_45": xǁProcessErrorǁ__init____mutmut_45,
+        "xǁProcessErrorǁ__init____mutmut_46": xǁProcessErrorǁ__init____mutmut_46,
+        "xǁProcessErrorǁ__init____mutmut_47": xǁProcessErrorǁ__init____mutmut_47,
+        "xǁProcessErrorǁ__init____mutmut_48": xǁProcessErrorǁ__init____mutmut_48,
+        "xǁProcessErrorǁ__init____mutmut_49": xǁProcessErrorǁ__init____mutmut_49,
+        "xǁProcessErrorǁ__init____mutmut_50": xǁProcessErrorǁ__init____mutmut_50,
+        "xǁProcessErrorǁ__init____mutmut_51": xǁProcessErrorǁ__init____mutmut_51,
+        "xǁProcessErrorǁ__init____mutmut_52": xǁProcessErrorǁ__init____mutmut_52,
+        "xǁProcessErrorǁ__init____mutmut_53": xǁProcessErrorǁ__init____mutmut_53,
+        "xǁProcessErrorǁ__init____mutmut_54": xǁProcessErrorǁ__init____mutmut_54,
+        "xǁProcessErrorǁ__init____mutmut_55": xǁProcessErrorǁ__init____mutmut_55,
+        "xǁProcessErrorǁ__init____mutmut_56": xǁProcessErrorǁ__init____mutmut_56,
+        "xǁProcessErrorǁ__init____mutmut_57": xǁProcessErrorǁ__init____mutmut_57,
+        "xǁProcessErrorǁ__init____mutmut_58": xǁProcessErrorǁ__init____mutmut_58,
+        "xǁProcessErrorǁ__init____mutmut_59": xǁProcessErrorǁ__init____mutmut_59,
+        "xǁProcessErrorǁ__init____mutmut_60": xǁProcessErrorǁ__init____mutmut_60,
+        "xǁProcessErrorǁ__init____mutmut_61": xǁProcessErrorǁ__init____mutmut_61,
+        "xǁProcessErrorǁ__init____mutmut_62": xǁProcessErrorǁ__init____mutmut_62,
+        "xǁProcessErrorǁ__init____mutmut_63": xǁProcessErrorǁ__init____mutmut_63,
+        "xǁProcessErrorǁ__init____mutmut_64": xǁProcessErrorǁ__init____mutmut_64,
+        "xǁProcessErrorǁ__init____mutmut_65": xǁProcessErrorǁ__init____mutmut_65,
+        "xǁProcessErrorǁ__init____mutmut_66": xǁProcessErrorǁ__init____mutmut_66,
+        "xǁProcessErrorǁ__init____mutmut_67": xǁProcessErrorǁ__init____mutmut_67,
+        "xǁProcessErrorǁ__init____mutmut_68": xǁProcessErrorǁ__init____mutmut_68,
+        "xǁProcessErrorǁ__init____mutmut_69": xǁProcessErrorǁ__init____mutmut_69,
+        "xǁProcessErrorǁ__init____mutmut_70": xǁProcessErrorǁ__init____mutmut_70,
+        "xǁProcessErrorǁ__init____mutmut_71": xǁProcessErrorǁ__init____mutmut_71,
+        "xǁProcessErrorǁ__init____mutmut_72": xǁProcessErrorǁ__init____mutmut_72,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProcessErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁProcessErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProcessErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁProcessErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁProcessErrorǁ__init____mutmut_orig)
-    xǁProcessErrorǁ__init____mutmut_orig.__name__ = 'xǁProcessErrorǁ__init__'
+    xǁProcessErrorǁ__init____mutmut_orig.__name__ = "xǁProcessErrorǁ__init__"
 
     def xǁProcessErrorǁ_default_code__mutmut_orig(self) -> str:
         """Return default error code for process errors."""
@@ -6040,18 +6068,24 @@ class ProcessError(FoundationError):
     def xǁProcessErrorǁ_default_code__mutmut_2(self) -> str:
         """Return default error code for process errors."""
         return "process_error"
-    
-    xǁProcessErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProcessErrorǁ_default_code__mutmut_1': xǁProcessErrorǁ_default_code__mutmut_1, 
-        'xǁProcessErrorǁ_default_code__mutmut_2': xǁProcessErrorǁ_default_code__mutmut_2
+
+    xǁProcessErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProcessErrorǁ_default_code__mutmut_1": xǁProcessErrorǁ_default_code__mutmut_1,
+        "xǁProcessErrorǁ_default_code__mutmut_2": xǁProcessErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProcessErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁProcessErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProcessErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁProcessErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁProcessErrorǁ_default_code__mutmut_orig)
-    xǁProcessErrorǁ_default_code__mutmut_orig.__name__ = 'xǁProcessErrorǁ_default_code'
+    xǁProcessErrorǁ_default_code__mutmut_orig.__name__ = "xǁProcessErrorǁ_default_code"
 
 
 class CommandNotFoundError(ProcessError):
@@ -6065,18 +6099,24 @@ class CommandNotFoundError(ProcessError):
 
     def xǁCommandNotFoundErrorǁ_default_code__mutmut_2(self) -> str:
         return "command_not_found"
-    
-    xǁCommandNotFoundErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁCommandNotFoundErrorǁ_default_code__mutmut_1': xǁCommandNotFoundErrorǁ_default_code__mutmut_1, 
-        'xǁCommandNotFoundErrorǁ_default_code__mutmut_2': xǁCommandNotFoundErrorǁ_default_code__mutmut_2
+
+    xǁCommandNotFoundErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁCommandNotFoundErrorǁ_default_code__mutmut_1": xǁCommandNotFoundErrorǁ_default_code__mutmut_1,
+        "xǁCommandNotFoundErrorǁ_default_code__mutmut_2": xǁCommandNotFoundErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁCommandNotFoundErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁCommandNotFoundErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁCommandNotFoundErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁCommandNotFoundErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁCommandNotFoundErrorǁ_default_code__mutmut_orig)
-    xǁCommandNotFoundErrorǁ_default_code__mutmut_orig.__name__ = 'xǁCommandNotFoundErrorǁ_default_code'
+    xǁCommandNotFoundErrorǁ_default_code__mutmut_orig.__name__ = "xǁCommandNotFoundErrorǁ_default_code"
 
 
 class ProcessTimeoutError(ProcessError):
@@ -6548,7 +6588,7 @@ class ProcessTimeoutError(ProcessError):
             stderr=stderr,
             timeout=True,
             code=code,
-            )
+        )
 
     def xǁProcessTimeoutErrorǁ__init____mutmut_19(
         self,
@@ -6574,35 +6614,41 @@ class ProcessTimeoutError(ProcessError):
             code=code,
             **context,
         )
-    
-    xǁProcessTimeoutErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProcessTimeoutErrorǁ__init____mutmut_1': xǁProcessTimeoutErrorǁ__init____mutmut_1, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_2': xǁProcessTimeoutErrorǁ__init____mutmut_2, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_3': xǁProcessTimeoutErrorǁ__init____mutmut_3, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_4': xǁProcessTimeoutErrorǁ__init____mutmut_4, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_5': xǁProcessTimeoutErrorǁ__init____mutmut_5, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_6': xǁProcessTimeoutErrorǁ__init____mutmut_6, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_7': xǁProcessTimeoutErrorǁ__init____mutmut_7, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_8': xǁProcessTimeoutErrorǁ__init____mutmut_8, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_9': xǁProcessTimeoutErrorǁ__init____mutmut_9, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_10': xǁProcessTimeoutErrorǁ__init____mutmut_10, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_11': xǁProcessTimeoutErrorǁ__init____mutmut_11, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_12': xǁProcessTimeoutErrorǁ__init____mutmut_12, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_13': xǁProcessTimeoutErrorǁ__init____mutmut_13, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_14': xǁProcessTimeoutErrorǁ__init____mutmut_14, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_15': xǁProcessTimeoutErrorǁ__init____mutmut_15, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_16': xǁProcessTimeoutErrorǁ__init____mutmut_16, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_17': xǁProcessTimeoutErrorǁ__init____mutmut_17, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_18': xǁProcessTimeoutErrorǁ__init____mutmut_18, 
-        'xǁProcessTimeoutErrorǁ__init____mutmut_19': xǁProcessTimeoutErrorǁ__init____mutmut_19
+
+    xǁProcessTimeoutErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProcessTimeoutErrorǁ__init____mutmut_1": xǁProcessTimeoutErrorǁ__init____mutmut_1,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_2": xǁProcessTimeoutErrorǁ__init____mutmut_2,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_3": xǁProcessTimeoutErrorǁ__init____mutmut_3,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_4": xǁProcessTimeoutErrorǁ__init____mutmut_4,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_5": xǁProcessTimeoutErrorǁ__init____mutmut_5,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_6": xǁProcessTimeoutErrorǁ__init____mutmut_6,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_7": xǁProcessTimeoutErrorǁ__init____mutmut_7,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_8": xǁProcessTimeoutErrorǁ__init____mutmut_8,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_9": xǁProcessTimeoutErrorǁ__init____mutmut_9,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_10": xǁProcessTimeoutErrorǁ__init____mutmut_10,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_11": xǁProcessTimeoutErrorǁ__init____mutmut_11,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_12": xǁProcessTimeoutErrorǁ__init____mutmut_12,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_13": xǁProcessTimeoutErrorǁ__init____mutmut_13,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_14": xǁProcessTimeoutErrorǁ__init____mutmut_14,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_15": xǁProcessTimeoutErrorǁ__init____mutmut_15,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_16": xǁProcessTimeoutErrorǁ__init____mutmut_16,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_17": xǁProcessTimeoutErrorǁ__init____mutmut_17,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_18": xǁProcessTimeoutErrorǁ__init____mutmut_18,
+        "xǁProcessTimeoutErrorǁ__init____mutmut_19": xǁProcessTimeoutErrorǁ__init____mutmut_19,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProcessTimeoutErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁProcessTimeoutErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProcessTimeoutErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁProcessTimeoutErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁProcessTimeoutErrorǁ__init____mutmut_orig)
-    xǁProcessTimeoutErrorǁ__init____mutmut_orig.__name__ = 'xǁProcessTimeoutErrorǁ__init__'
+    xǁProcessTimeoutErrorǁ__init____mutmut_orig.__name__ = "xǁProcessTimeoutErrorǁ__init__"
 
     def xǁProcessTimeoutErrorǁ_default_code__mutmut_orig(self) -> str:
         return "PROCESS_TIMEOUT"
@@ -6612,18 +6658,24 @@ class ProcessTimeoutError(ProcessError):
 
     def xǁProcessTimeoutErrorǁ_default_code__mutmut_2(self) -> str:
         return "process_timeout"
-    
-    xǁProcessTimeoutErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProcessTimeoutErrorǁ_default_code__mutmut_1': xǁProcessTimeoutErrorǁ_default_code__mutmut_1, 
-        'xǁProcessTimeoutErrorǁ_default_code__mutmut_2': xǁProcessTimeoutErrorǁ_default_code__mutmut_2
+
+    xǁProcessTimeoutErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProcessTimeoutErrorǁ_default_code__mutmut_1": xǁProcessTimeoutErrorǁ_default_code__mutmut_1,
+        "xǁProcessTimeoutErrorǁ_default_code__mutmut_2": xǁProcessTimeoutErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProcessTimeoutErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁProcessTimeoutErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProcessTimeoutErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁProcessTimeoutErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁProcessTimeoutErrorǁ_default_code__mutmut_orig)
-    xǁProcessTimeoutErrorǁ_default_code__mutmut_orig.__name__ = 'xǁProcessTimeoutErrorǁ_default_code'
+    xǁProcessTimeoutErrorǁ_default_code__mutmut_orig.__name__ = "xǁProcessTimeoutErrorǁ_default_code"
 
 
 # 🏗️⚡️⚙️🪄

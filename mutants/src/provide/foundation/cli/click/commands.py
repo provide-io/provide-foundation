@@ -41,23 +41,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -727,7 +730,9 @@ def x_build_click_command_from_info__mutmut_8(info: CommandInfo) -> Command:
         params = introspect_parameters(info.func) if info.parameters is None else info.parameters
 
         # Check if command wants to force all defaults to be options
-        force_options = info.metadata.get("force_options", )
+        force_options = info.metadata.get(
+            "force_options",
+        )
 
         # Separate into arguments and options
         arguments, options = separate_arguments_and_options(params, force_options=force_options)
@@ -1362,7 +1367,9 @@ def x_build_click_command_from_info__mutmut_16(info: CommandInfo) -> Command:
         force_options = info.metadata.get("force_options", False)
 
         # Separate into arguments and options
-        arguments, options = separate_arguments_and_options(params, )
+        arguments, options = separate_arguments_and_options(
+            params,
+        )
 
         # Create a wrapper to avoid modifying the original function
         # Click decorators modify functions in-place, so we need to protect info.func
@@ -1930,7 +1937,9 @@ def x_build_click_command_from_info__mutmut_23(info: CommandInfo) -> Command:
 
         # Process options in reverse order (for decorator stacking)
         for param in reversed(options):
-            decorated_func = apply_click_option(decorated_func, )
+            decorated_func = apply_click_option(
+                decorated_func,
+            )
 
         # Process arguments in reverse order
         for param in reversed(arguments):
@@ -2408,7 +2417,9 @@ def x_build_click_command_from_info__mutmut_29(info: CommandInfo) -> Command:
 
         # Process arguments in reverse order
         for param in reversed(arguments):
-            decorated_func = apply_click_argument(decorated_func, )
+            decorated_func = apply_click_argument(
+                decorated_func,
+            )
 
         # Create the Click command with the decorated function
         cmd = click.Command(
@@ -3118,7 +3129,7 @@ def x_build_click_command_from_info__mutmut_38(info: CommandInfo) -> Command:
             name=info.name,
             callback=decorated_func,
             help=info.description,
-            )
+        )
 
         # Copy over the params from the decorated function
         if hasattr(decorated_func, "__click_params__"):
@@ -3437,7 +3448,9 @@ def x_build_click_command_from_info__mutmut_42(info: CommandInfo) -> Command:
         )
 
         # Copy over the params from the decorated function
-        if hasattr(decorated_func, ):
+        if hasattr(
+            decorated_func,
+        ):
             cmd.params = list(reversed(decorated_func.__click_params__))
 
         # Restore the original function as the callback
@@ -4396,71 +4409,79 @@ def x_build_click_command_from_info__mutmut_54(info: CommandInfo) -> Command:
         raise CLIBuildError(
             f"Failed to build Click command '{info.name}': {e}",
             command_name=info.name,
-            ) from e
+        ) from e
 
-x_build_click_command_from_info__mutmut_mutants : ClassVar[MutantDict] = {
-'x_build_click_command_from_info__mutmut_1': x_build_click_command_from_info__mutmut_1, 
-    'x_build_click_command_from_info__mutmut_2': x_build_click_command_from_info__mutmut_2, 
-    'x_build_click_command_from_info__mutmut_3': x_build_click_command_from_info__mutmut_3, 
-    'x_build_click_command_from_info__mutmut_4': x_build_click_command_from_info__mutmut_4, 
-    'x_build_click_command_from_info__mutmut_5': x_build_click_command_from_info__mutmut_5, 
-    'x_build_click_command_from_info__mutmut_6': x_build_click_command_from_info__mutmut_6, 
-    'x_build_click_command_from_info__mutmut_7': x_build_click_command_from_info__mutmut_7, 
-    'x_build_click_command_from_info__mutmut_8': x_build_click_command_from_info__mutmut_8, 
-    'x_build_click_command_from_info__mutmut_9': x_build_click_command_from_info__mutmut_9, 
-    'x_build_click_command_from_info__mutmut_10': x_build_click_command_from_info__mutmut_10, 
-    'x_build_click_command_from_info__mutmut_11': x_build_click_command_from_info__mutmut_11, 
-    'x_build_click_command_from_info__mutmut_12': x_build_click_command_from_info__mutmut_12, 
-    'x_build_click_command_from_info__mutmut_13': x_build_click_command_from_info__mutmut_13, 
-    'x_build_click_command_from_info__mutmut_14': x_build_click_command_from_info__mutmut_14, 
-    'x_build_click_command_from_info__mutmut_15': x_build_click_command_from_info__mutmut_15, 
-    'x_build_click_command_from_info__mutmut_16': x_build_click_command_from_info__mutmut_16, 
-    'x_build_click_command_from_info__mutmut_17': x_build_click_command_from_info__mutmut_17, 
-    'x_build_click_command_from_info__mutmut_18': x_build_click_command_from_info__mutmut_18, 
-    'x_build_click_command_from_info__mutmut_19': x_build_click_command_from_info__mutmut_19, 
-    'x_build_click_command_from_info__mutmut_20': x_build_click_command_from_info__mutmut_20, 
-    'x_build_click_command_from_info__mutmut_21': x_build_click_command_from_info__mutmut_21, 
-    'x_build_click_command_from_info__mutmut_22': x_build_click_command_from_info__mutmut_22, 
-    'x_build_click_command_from_info__mutmut_23': x_build_click_command_from_info__mutmut_23, 
-    'x_build_click_command_from_info__mutmut_24': x_build_click_command_from_info__mutmut_24, 
-    'x_build_click_command_from_info__mutmut_25': x_build_click_command_from_info__mutmut_25, 
-    'x_build_click_command_from_info__mutmut_26': x_build_click_command_from_info__mutmut_26, 
-    'x_build_click_command_from_info__mutmut_27': x_build_click_command_from_info__mutmut_27, 
-    'x_build_click_command_from_info__mutmut_28': x_build_click_command_from_info__mutmut_28, 
-    'x_build_click_command_from_info__mutmut_29': x_build_click_command_from_info__mutmut_29, 
-    'x_build_click_command_from_info__mutmut_30': x_build_click_command_from_info__mutmut_30, 
-    'x_build_click_command_from_info__mutmut_31': x_build_click_command_from_info__mutmut_31, 
-    'x_build_click_command_from_info__mutmut_32': x_build_click_command_from_info__mutmut_32, 
-    'x_build_click_command_from_info__mutmut_33': x_build_click_command_from_info__mutmut_33, 
-    'x_build_click_command_from_info__mutmut_34': x_build_click_command_from_info__mutmut_34, 
-    'x_build_click_command_from_info__mutmut_35': x_build_click_command_from_info__mutmut_35, 
-    'x_build_click_command_from_info__mutmut_36': x_build_click_command_from_info__mutmut_36, 
-    'x_build_click_command_from_info__mutmut_37': x_build_click_command_from_info__mutmut_37, 
-    'x_build_click_command_from_info__mutmut_38': x_build_click_command_from_info__mutmut_38, 
-    'x_build_click_command_from_info__mutmut_39': x_build_click_command_from_info__mutmut_39, 
-    'x_build_click_command_from_info__mutmut_40': x_build_click_command_from_info__mutmut_40, 
-    'x_build_click_command_from_info__mutmut_41': x_build_click_command_from_info__mutmut_41, 
-    'x_build_click_command_from_info__mutmut_42': x_build_click_command_from_info__mutmut_42, 
-    'x_build_click_command_from_info__mutmut_43': x_build_click_command_from_info__mutmut_43, 
-    'x_build_click_command_from_info__mutmut_44': x_build_click_command_from_info__mutmut_44, 
-    'x_build_click_command_from_info__mutmut_45': x_build_click_command_from_info__mutmut_45, 
-    'x_build_click_command_from_info__mutmut_46': x_build_click_command_from_info__mutmut_46, 
-    'x_build_click_command_from_info__mutmut_47': x_build_click_command_from_info__mutmut_47, 
-    'x_build_click_command_from_info__mutmut_48': x_build_click_command_from_info__mutmut_48, 
-    'x_build_click_command_from_info__mutmut_49': x_build_click_command_from_info__mutmut_49, 
-    'x_build_click_command_from_info__mutmut_50': x_build_click_command_from_info__mutmut_50, 
-    'x_build_click_command_from_info__mutmut_51': x_build_click_command_from_info__mutmut_51, 
-    'x_build_click_command_from_info__mutmut_52': x_build_click_command_from_info__mutmut_52, 
-    'x_build_click_command_from_info__mutmut_53': x_build_click_command_from_info__mutmut_53, 
-    'x_build_click_command_from_info__mutmut_54': x_build_click_command_from_info__mutmut_54
+
+x_build_click_command_from_info__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_build_click_command_from_info__mutmut_1": x_build_click_command_from_info__mutmut_1,
+    "x_build_click_command_from_info__mutmut_2": x_build_click_command_from_info__mutmut_2,
+    "x_build_click_command_from_info__mutmut_3": x_build_click_command_from_info__mutmut_3,
+    "x_build_click_command_from_info__mutmut_4": x_build_click_command_from_info__mutmut_4,
+    "x_build_click_command_from_info__mutmut_5": x_build_click_command_from_info__mutmut_5,
+    "x_build_click_command_from_info__mutmut_6": x_build_click_command_from_info__mutmut_6,
+    "x_build_click_command_from_info__mutmut_7": x_build_click_command_from_info__mutmut_7,
+    "x_build_click_command_from_info__mutmut_8": x_build_click_command_from_info__mutmut_8,
+    "x_build_click_command_from_info__mutmut_9": x_build_click_command_from_info__mutmut_9,
+    "x_build_click_command_from_info__mutmut_10": x_build_click_command_from_info__mutmut_10,
+    "x_build_click_command_from_info__mutmut_11": x_build_click_command_from_info__mutmut_11,
+    "x_build_click_command_from_info__mutmut_12": x_build_click_command_from_info__mutmut_12,
+    "x_build_click_command_from_info__mutmut_13": x_build_click_command_from_info__mutmut_13,
+    "x_build_click_command_from_info__mutmut_14": x_build_click_command_from_info__mutmut_14,
+    "x_build_click_command_from_info__mutmut_15": x_build_click_command_from_info__mutmut_15,
+    "x_build_click_command_from_info__mutmut_16": x_build_click_command_from_info__mutmut_16,
+    "x_build_click_command_from_info__mutmut_17": x_build_click_command_from_info__mutmut_17,
+    "x_build_click_command_from_info__mutmut_18": x_build_click_command_from_info__mutmut_18,
+    "x_build_click_command_from_info__mutmut_19": x_build_click_command_from_info__mutmut_19,
+    "x_build_click_command_from_info__mutmut_20": x_build_click_command_from_info__mutmut_20,
+    "x_build_click_command_from_info__mutmut_21": x_build_click_command_from_info__mutmut_21,
+    "x_build_click_command_from_info__mutmut_22": x_build_click_command_from_info__mutmut_22,
+    "x_build_click_command_from_info__mutmut_23": x_build_click_command_from_info__mutmut_23,
+    "x_build_click_command_from_info__mutmut_24": x_build_click_command_from_info__mutmut_24,
+    "x_build_click_command_from_info__mutmut_25": x_build_click_command_from_info__mutmut_25,
+    "x_build_click_command_from_info__mutmut_26": x_build_click_command_from_info__mutmut_26,
+    "x_build_click_command_from_info__mutmut_27": x_build_click_command_from_info__mutmut_27,
+    "x_build_click_command_from_info__mutmut_28": x_build_click_command_from_info__mutmut_28,
+    "x_build_click_command_from_info__mutmut_29": x_build_click_command_from_info__mutmut_29,
+    "x_build_click_command_from_info__mutmut_30": x_build_click_command_from_info__mutmut_30,
+    "x_build_click_command_from_info__mutmut_31": x_build_click_command_from_info__mutmut_31,
+    "x_build_click_command_from_info__mutmut_32": x_build_click_command_from_info__mutmut_32,
+    "x_build_click_command_from_info__mutmut_33": x_build_click_command_from_info__mutmut_33,
+    "x_build_click_command_from_info__mutmut_34": x_build_click_command_from_info__mutmut_34,
+    "x_build_click_command_from_info__mutmut_35": x_build_click_command_from_info__mutmut_35,
+    "x_build_click_command_from_info__mutmut_36": x_build_click_command_from_info__mutmut_36,
+    "x_build_click_command_from_info__mutmut_37": x_build_click_command_from_info__mutmut_37,
+    "x_build_click_command_from_info__mutmut_38": x_build_click_command_from_info__mutmut_38,
+    "x_build_click_command_from_info__mutmut_39": x_build_click_command_from_info__mutmut_39,
+    "x_build_click_command_from_info__mutmut_40": x_build_click_command_from_info__mutmut_40,
+    "x_build_click_command_from_info__mutmut_41": x_build_click_command_from_info__mutmut_41,
+    "x_build_click_command_from_info__mutmut_42": x_build_click_command_from_info__mutmut_42,
+    "x_build_click_command_from_info__mutmut_43": x_build_click_command_from_info__mutmut_43,
+    "x_build_click_command_from_info__mutmut_44": x_build_click_command_from_info__mutmut_44,
+    "x_build_click_command_from_info__mutmut_45": x_build_click_command_from_info__mutmut_45,
+    "x_build_click_command_from_info__mutmut_46": x_build_click_command_from_info__mutmut_46,
+    "x_build_click_command_from_info__mutmut_47": x_build_click_command_from_info__mutmut_47,
+    "x_build_click_command_from_info__mutmut_48": x_build_click_command_from_info__mutmut_48,
+    "x_build_click_command_from_info__mutmut_49": x_build_click_command_from_info__mutmut_49,
+    "x_build_click_command_from_info__mutmut_50": x_build_click_command_from_info__mutmut_50,
+    "x_build_click_command_from_info__mutmut_51": x_build_click_command_from_info__mutmut_51,
+    "x_build_click_command_from_info__mutmut_52": x_build_click_command_from_info__mutmut_52,
+    "x_build_click_command_from_info__mutmut_53": x_build_click_command_from_info__mutmut_53,
+    "x_build_click_command_from_info__mutmut_54": x_build_click_command_from_info__mutmut_54,
 }
 
+
 def build_click_command_from_info(*args, **kwargs):
-    result = _mutmut_trampoline(x_build_click_command_from_info__mutmut_orig, x_build_click_command_from_info__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_build_click_command_from_info__mutmut_orig,
+        x_build_click_command_from_info__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 build_click_command_from_info.__signature__ = _mutmut_signature(x_build_click_command_from_info__mutmut_orig)
-x_build_click_command_from_info__mutmut_orig.__name__ = 'x_build_click_command_from_info'
+x_build_click_command_from_info__mutmut_orig.__name__ = "x_build_click_command_from_info"
 
 
 def x_add_command_to_group__mutmut_orig(
@@ -4678,22 +4699,27 @@ def x_add_command_to_group__mutmut_7(
         # Parent not found or no parent, add to root
         root_group.add_command(None)
 
-x_add_command_to_group__mutmut_mutants : ClassVar[MutantDict] = {
-'x_add_command_to_group__mutmut_1': x_add_command_to_group__mutmut_1, 
-    'x_add_command_to_group__mutmut_2': x_add_command_to_group__mutmut_2, 
-    'x_add_command_to_group__mutmut_3': x_add_command_to_group__mutmut_3, 
-    'x_add_command_to_group__mutmut_4': x_add_command_to_group__mutmut_4, 
-    'x_add_command_to_group__mutmut_5': x_add_command_to_group__mutmut_5, 
-    'x_add_command_to_group__mutmut_6': x_add_command_to_group__mutmut_6, 
-    'x_add_command_to_group__mutmut_7': x_add_command_to_group__mutmut_7
+
+x_add_command_to_group__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_add_command_to_group__mutmut_1": x_add_command_to_group__mutmut_1,
+    "x_add_command_to_group__mutmut_2": x_add_command_to_group__mutmut_2,
+    "x_add_command_to_group__mutmut_3": x_add_command_to_group__mutmut_3,
+    "x_add_command_to_group__mutmut_4": x_add_command_to_group__mutmut_4,
+    "x_add_command_to_group__mutmut_5": x_add_command_to_group__mutmut_5,
+    "x_add_command_to_group__mutmut_6": x_add_command_to_group__mutmut_6,
+    "x_add_command_to_group__mutmut_7": x_add_command_to_group__mutmut_7,
 }
 
+
 def add_command_to_group(*args, **kwargs):
-    result = _mutmut_trampoline(x_add_command_to_group__mutmut_orig, x_add_command_to_group__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_add_command_to_group__mutmut_orig, x_add_command_to_group__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 add_command_to_group.__signature__ = _mutmut_signature(x_add_command_to_group__mutmut_orig)
-x_add_command_to_group__mutmut_orig.__name__ = 'x_add_command_to_group'
+x_add_command_to_group__mutmut_orig.__name__ = "x_add_command_to_group"
 
 
 # <3 🧱🤝💻🪄

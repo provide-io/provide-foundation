@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -217,7 +220,9 @@ def x_resolve_component_dependencies__mutmut_6(name: str, dimension: str) -> dic
     """Resolve component dependencies recursively."""
     registry = _get_registry_and_lock()
 
-    entry = registry.get_entry(name, )
+    entry = registry.get_entry(
+        name,
+    )
 
     if not entry:
         return {}
@@ -405,7 +410,9 @@ def x_resolve_component_dependencies__mutmut_13(name: str, dimension: str) -> di
         return {}
 
     dependencies = {}
-    dep_names = entry.metadata.get("dependencies", )
+    dep_names = entry.metadata.get(
+        "dependencies",
+    )
 
     for dep_name in dep_names:
         # Try same dimension first
@@ -591,7 +598,9 @@ def x_resolve_component_dependencies__mutmut_20(name: str, dimension: str) -> di
 
     for dep_name in dep_names:
         # Try same dimension first
-        dep_component = registry.get(dep_name, )
+        dep_component = registry.get(
+            dep_name,
+        )
         if dep_component is not None:
             dependencies[dep_name] = dep_component
         else:
@@ -758,41 +767,49 @@ def x_resolve_component_dependencies__mutmut_26(name: str, dimension: str) -> di
 
     return dependencies
 
-x_resolve_component_dependencies__mutmut_mutants : ClassVar[MutantDict] = {
-'x_resolve_component_dependencies__mutmut_1': x_resolve_component_dependencies__mutmut_1, 
-    'x_resolve_component_dependencies__mutmut_2': x_resolve_component_dependencies__mutmut_2, 
-    'x_resolve_component_dependencies__mutmut_3': x_resolve_component_dependencies__mutmut_3, 
-    'x_resolve_component_dependencies__mutmut_4': x_resolve_component_dependencies__mutmut_4, 
-    'x_resolve_component_dependencies__mutmut_5': x_resolve_component_dependencies__mutmut_5, 
-    'x_resolve_component_dependencies__mutmut_6': x_resolve_component_dependencies__mutmut_6, 
-    'x_resolve_component_dependencies__mutmut_7': x_resolve_component_dependencies__mutmut_7, 
-    'x_resolve_component_dependencies__mutmut_8': x_resolve_component_dependencies__mutmut_8, 
-    'x_resolve_component_dependencies__mutmut_9': x_resolve_component_dependencies__mutmut_9, 
-    'x_resolve_component_dependencies__mutmut_10': x_resolve_component_dependencies__mutmut_10, 
-    'x_resolve_component_dependencies__mutmut_11': x_resolve_component_dependencies__mutmut_11, 
-    'x_resolve_component_dependencies__mutmut_12': x_resolve_component_dependencies__mutmut_12, 
-    'x_resolve_component_dependencies__mutmut_13': x_resolve_component_dependencies__mutmut_13, 
-    'x_resolve_component_dependencies__mutmut_14': x_resolve_component_dependencies__mutmut_14, 
-    'x_resolve_component_dependencies__mutmut_15': x_resolve_component_dependencies__mutmut_15, 
-    'x_resolve_component_dependencies__mutmut_16': x_resolve_component_dependencies__mutmut_16, 
-    'x_resolve_component_dependencies__mutmut_17': x_resolve_component_dependencies__mutmut_17, 
-    'x_resolve_component_dependencies__mutmut_18': x_resolve_component_dependencies__mutmut_18, 
-    'x_resolve_component_dependencies__mutmut_19': x_resolve_component_dependencies__mutmut_19, 
-    'x_resolve_component_dependencies__mutmut_20': x_resolve_component_dependencies__mutmut_20, 
-    'x_resolve_component_dependencies__mutmut_21': x_resolve_component_dependencies__mutmut_21, 
-    'x_resolve_component_dependencies__mutmut_22': x_resolve_component_dependencies__mutmut_22, 
-    'x_resolve_component_dependencies__mutmut_23': x_resolve_component_dependencies__mutmut_23, 
-    'x_resolve_component_dependencies__mutmut_24': x_resolve_component_dependencies__mutmut_24, 
-    'x_resolve_component_dependencies__mutmut_25': x_resolve_component_dependencies__mutmut_25, 
-    'x_resolve_component_dependencies__mutmut_26': x_resolve_component_dependencies__mutmut_26
+
+x_resolve_component_dependencies__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_resolve_component_dependencies__mutmut_1": x_resolve_component_dependencies__mutmut_1,
+    "x_resolve_component_dependencies__mutmut_2": x_resolve_component_dependencies__mutmut_2,
+    "x_resolve_component_dependencies__mutmut_3": x_resolve_component_dependencies__mutmut_3,
+    "x_resolve_component_dependencies__mutmut_4": x_resolve_component_dependencies__mutmut_4,
+    "x_resolve_component_dependencies__mutmut_5": x_resolve_component_dependencies__mutmut_5,
+    "x_resolve_component_dependencies__mutmut_6": x_resolve_component_dependencies__mutmut_6,
+    "x_resolve_component_dependencies__mutmut_7": x_resolve_component_dependencies__mutmut_7,
+    "x_resolve_component_dependencies__mutmut_8": x_resolve_component_dependencies__mutmut_8,
+    "x_resolve_component_dependencies__mutmut_9": x_resolve_component_dependencies__mutmut_9,
+    "x_resolve_component_dependencies__mutmut_10": x_resolve_component_dependencies__mutmut_10,
+    "x_resolve_component_dependencies__mutmut_11": x_resolve_component_dependencies__mutmut_11,
+    "x_resolve_component_dependencies__mutmut_12": x_resolve_component_dependencies__mutmut_12,
+    "x_resolve_component_dependencies__mutmut_13": x_resolve_component_dependencies__mutmut_13,
+    "x_resolve_component_dependencies__mutmut_14": x_resolve_component_dependencies__mutmut_14,
+    "x_resolve_component_dependencies__mutmut_15": x_resolve_component_dependencies__mutmut_15,
+    "x_resolve_component_dependencies__mutmut_16": x_resolve_component_dependencies__mutmut_16,
+    "x_resolve_component_dependencies__mutmut_17": x_resolve_component_dependencies__mutmut_17,
+    "x_resolve_component_dependencies__mutmut_18": x_resolve_component_dependencies__mutmut_18,
+    "x_resolve_component_dependencies__mutmut_19": x_resolve_component_dependencies__mutmut_19,
+    "x_resolve_component_dependencies__mutmut_20": x_resolve_component_dependencies__mutmut_20,
+    "x_resolve_component_dependencies__mutmut_21": x_resolve_component_dependencies__mutmut_21,
+    "x_resolve_component_dependencies__mutmut_22": x_resolve_component_dependencies__mutmut_22,
+    "x_resolve_component_dependencies__mutmut_23": x_resolve_component_dependencies__mutmut_23,
+    "x_resolve_component_dependencies__mutmut_24": x_resolve_component_dependencies__mutmut_24,
+    "x_resolve_component_dependencies__mutmut_25": x_resolve_component_dependencies__mutmut_25,
+    "x_resolve_component_dependencies__mutmut_26": x_resolve_component_dependencies__mutmut_26,
 }
 
+
 def resolve_component_dependencies(*args, **kwargs):
-    result = _mutmut_trampoline(x_resolve_component_dependencies__mutmut_orig, x_resolve_component_dependencies__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_resolve_component_dependencies__mutmut_orig,
+        x_resolve_component_dependencies__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 resolve_component_dependencies.__signature__ = _mutmut_signature(x_resolve_component_dependencies__mutmut_orig)
-x_resolve_component_dependencies__mutmut_orig.__name__ = 'x_resolve_component_dependencies'
+x_resolve_component_dependencies__mutmut_orig.__name__ = "x_resolve_component_dependencies"
 
 
 @resilient(
@@ -1483,7 +1500,10 @@ def x_discover_components__mutmut_14(
 
     # Load each entry point (with resilient error handling per entry point)
     for entry_point in group_entries:
-        result = _load_entry_point(entry_point, registry, )
+        result = _load_entry_point(
+            entry_point,
+            registry,
+        )
         if result is not None:
             name, component_class = result
             discovered[name] = component_class
@@ -1613,32 +1633,37 @@ def x_discover_components__mutmut_17(
 
     return discovered
 
-x_discover_components__mutmut_mutants : ClassVar[MutantDict] = {
-'x_discover_components__mutmut_1': x_discover_components__mutmut_1, 
-    'x_discover_components__mutmut_2': x_discover_components__mutmut_2, 
-    'x_discover_components__mutmut_3': x_discover_components__mutmut_3, 
-    'x_discover_components__mutmut_4': x_discover_components__mutmut_4, 
-    'x_discover_components__mutmut_5': x_discover_components__mutmut_5, 
-    'x_discover_components__mutmut_6': x_discover_components__mutmut_6, 
-    'x_discover_components__mutmut_7': x_discover_components__mutmut_7, 
-    'x_discover_components__mutmut_8': x_discover_components__mutmut_8, 
-    'x_discover_components__mutmut_9': x_discover_components__mutmut_9, 
-    'x_discover_components__mutmut_10': x_discover_components__mutmut_10, 
-    'x_discover_components__mutmut_11': x_discover_components__mutmut_11, 
-    'x_discover_components__mutmut_12': x_discover_components__mutmut_12, 
-    'x_discover_components__mutmut_13': x_discover_components__mutmut_13, 
-    'x_discover_components__mutmut_14': x_discover_components__mutmut_14, 
-    'x_discover_components__mutmut_15': x_discover_components__mutmut_15, 
-    'x_discover_components__mutmut_16': x_discover_components__mutmut_16, 
-    'x_discover_components__mutmut_17': x_discover_components__mutmut_17
+
+x_discover_components__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_discover_components__mutmut_1": x_discover_components__mutmut_1,
+    "x_discover_components__mutmut_2": x_discover_components__mutmut_2,
+    "x_discover_components__mutmut_3": x_discover_components__mutmut_3,
+    "x_discover_components__mutmut_4": x_discover_components__mutmut_4,
+    "x_discover_components__mutmut_5": x_discover_components__mutmut_5,
+    "x_discover_components__mutmut_6": x_discover_components__mutmut_6,
+    "x_discover_components__mutmut_7": x_discover_components__mutmut_7,
+    "x_discover_components__mutmut_8": x_discover_components__mutmut_8,
+    "x_discover_components__mutmut_9": x_discover_components__mutmut_9,
+    "x_discover_components__mutmut_10": x_discover_components__mutmut_10,
+    "x_discover_components__mutmut_11": x_discover_components__mutmut_11,
+    "x_discover_components__mutmut_12": x_discover_components__mutmut_12,
+    "x_discover_components__mutmut_13": x_discover_components__mutmut_13,
+    "x_discover_components__mutmut_14": x_discover_components__mutmut_14,
+    "x_discover_components__mutmut_15": x_discover_components__mutmut_15,
+    "x_discover_components__mutmut_16": x_discover_components__mutmut_16,
+    "x_discover_components__mutmut_17": x_discover_components__mutmut_17,
 }
 
+
 def discover_components(*args, **kwargs):
-    result = _mutmut_trampoline(x_discover_components__mutmut_orig, x_discover_components__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_discover_components__mutmut_orig, x_discover_components__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 discover_components.__signature__ = _mutmut_signature(x_discover_components__mutmut_orig)
-x_discover_components__mutmut_orig.__name__ = 'x_discover_components'
+x_discover_components__mutmut_orig.__name__ = "x_discover_components"
 
 
 __all__ = [

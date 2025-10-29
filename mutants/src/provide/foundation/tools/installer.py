@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -682,7 +685,9 @@ class ToolInstaller:
         # Extract based on file type
         suffix = artifact.suffix.lower()
         if suffix == ".zip":
-            self.extract_zip(artifact, )
+            self.extract_zip(
+                artifact,
+            )
         elif suffix in [".tar", ".gz", ".tgz", ".bz2", ".xz"]:
             self.extract_tar(artifact, install_dir)
         elif self.is_binary(artifact):
@@ -1314,7 +1319,9 @@ class ToolInstaller:
         if suffix == ".zip":
             self.extract_zip(artifact, install_dir)
         elif suffix in [".tar", ".gz", ".tgz", ".bz2", ".xz"]:
-            self.extract_tar(artifact, )
+            self.extract_tar(
+                artifact,
+            )
         elif self.is_binary(artifact):
             self.install_binary(artifact, install_dir, metadata)
         else:
@@ -1610,7 +1617,10 @@ class ToolInstaller:
         elif suffix in [".tar", ".gz", ".tgz", ".bz2", ".xz"]:
             self.extract_tar(artifact, install_dir)
         elif self.is_binary(artifact):
-            self.install_binary(artifact, install_dir, )
+            self.install_binary(
+                artifact,
+                install_dir,
+            )
         else:
             raise InstallError(f"Unknown artifact type: {suffix}")
 
@@ -1825,7 +1835,9 @@ class ToolInstaller:
             raise InstallError(f"Unknown artifact type: {suffix}")
 
         # Set permissions
-        self.set_permissions(install_dir, )
+        self.set_permissions(
+            install_dir,
+        )
 
         # Create symlinks if needed
         self.create_symlinks(install_dir, metadata)
@@ -1996,7 +2008,9 @@ class ToolInstaller:
         self.set_permissions(install_dir, metadata)
 
         # Create symlinks if needed
-        self.create_symlinks(install_dir, )
+        self.create_symlinks(
+            install_dir,
+        )
 
         log.info(f"Successfully installed {metadata.name} to {install_dir}")
         return install_dir
@@ -2042,62 +2056,68 @@ class ToolInstaller:
 
         log.info(None)
         return install_dir
-    
-    xǁToolInstallerǁinstall__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolInstallerǁinstall__mutmut_1': xǁToolInstallerǁinstall__mutmut_1, 
-        'xǁToolInstallerǁinstall__mutmut_2': xǁToolInstallerǁinstall__mutmut_2, 
-        'xǁToolInstallerǁinstall__mutmut_3': xǁToolInstallerǁinstall__mutmut_3, 
-        'xǁToolInstallerǁinstall__mutmut_4': xǁToolInstallerǁinstall__mutmut_4, 
-        'xǁToolInstallerǁinstall__mutmut_5': xǁToolInstallerǁinstall__mutmut_5, 
-        'xǁToolInstallerǁinstall__mutmut_6': xǁToolInstallerǁinstall__mutmut_6, 
-        'xǁToolInstallerǁinstall__mutmut_7': xǁToolInstallerǁinstall__mutmut_7, 
-        'xǁToolInstallerǁinstall__mutmut_8': xǁToolInstallerǁinstall__mutmut_8, 
-        'xǁToolInstallerǁinstall__mutmut_9': xǁToolInstallerǁinstall__mutmut_9, 
-        'xǁToolInstallerǁinstall__mutmut_10': xǁToolInstallerǁinstall__mutmut_10, 
-        'xǁToolInstallerǁinstall__mutmut_11': xǁToolInstallerǁinstall__mutmut_11, 
-        'xǁToolInstallerǁinstall__mutmut_12': xǁToolInstallerǁinstall__mutmut_12, 
-        'xǁToolInstallerǁinstall__mutmut_13': xǁToolInstallerǁinstall__mutmut_13, 
-        'xǁToolInstallerǁinstall__mutmut_14': xǁToolInstallerǁinstall__mutmut_14, 
-        'xǁToolInstallerǁinstall__mutmut_15': xǁToolInstallerǁinstall__mutmut_15, 
-        'xǁToolInstallerǁinstall__mutmut_16': xǁToolInstallerǁinstall__mutmut_16, 
-        'xǁToolInstallerǁinstall__mutmut_17': xǁToolInstallerǁinstall__mutmut_17, 
-        'xǁToolInstallerǁinstall__mutmut_18': xǁToolInstallerǁinstall__mutmut_18, 
-        'xǁToolInstallerǁinstall__mutmut_19': xǁToolInstallerǁinstall__mutmut_19, 
-        'xǁToolInstallerǁinstall__mutmut_20': xǁToolInstallerǁinstall__mutmut_20, 
-        'xǁToolInstallerǁinstall__mutmut_21': xǁToolInstallerǁinstall__mutmut_21, 
-        'xǁToolInstallerǁinstall__mutmut_22': xǁToolInstallerǁinstall__mutmut_22, 
-        'xǁToolInstallerǁinstall__mutmut_23': xǁToolInstallerǁinstall__mutmut_23, 
-        'xǁToolInstallerǁinstall__mutmut_24': xǁToolInstallerǁinstall__mutmut_24, 
-        'xǁToolInstallerǁinstall__mutmut_25': xǁToolInstallerǁinstall__mutmut_25, 
-        'xǁToolInstallerǁinstall__mutmut_26': xǁToolInstallerǁinstall__mutmut_26, 
-        'xǁToolInstallerǁinstall__mutmut_27': xǁToolInstallerǁinstall__mutmut_27, 
-        'xǁToolInstallerǁinstall__mutmut_28': xǁToolInstallerǁinstall__mutmut_28, 
-        'xǁToolInstallerǁinstall__mutmut_29': xǁToolInstallerǁinstall__mutmut_29, 
-        'xǁToolInstallerǁinstall__mutmut_30': xǁToolInstallerǁinstall__mutmut_30, 
-        'xǁToolInstallerǁinstall__mutmut_31': xǁToolInstallerǁinstall__mutmut_31, 
-        'xǁToolInstallerǁinstall__mutmut_32': xǁToolInstallerǁinstall__mutmut_32, 
-        'xǁToolInstallerǁinstall__mutmut_33': xǁToolInstallerǁinstall__mutmut_33, 
-        'xǁToolInstallerǁinstall__mutmut_34': xǁToolInstallerǁinstall__mutmut_34, 
-        'xǁToolInstallerǁinstall__mutmut_35': xǁToolInstallerǁinstall__mutmut_35, 
-        'xǁToolInstallerǁinstall__mutmut_36': xǁToolInstallerǁinstall__mutmut_36, 
-        'xǁToolInstallerǁinstall__mutmut_37': xǁToolInstallerǁinstall__mutmut_37, 
-        'xǁToolInstallerǁinstall__mutmut_38': xǁToolInstallerǁinstall__mutmut_38, 
-        'xǁToolInstallerǁinstall__mutmut_39': xǁToolInstallerǁinstall__mutmut_39, 
-        'xǁToolInstallerǁinstall__mutmut_40': xǁToolInstallerǁinstall__mutmut_40, 
-        'xǁToolInstallerǁinstall__mutmut_41': xǁToolInstallerǁinstall__mutmut_41, 
-        'xǁToolInstallerǁinstall__mutmut_42': xǁToolInstallerǁinstall__mutmut_42, 
-        'xǁToolInstallerǁinstall__mutmut_43': xǁToolInstallerǁinstall__mutmut_43, 
-        'xǁToolInstallerǁinstall__mutmut_44': xǁToolInstallerǁinstall__mutmut_44, 
-        'xǁToolInstallerǁinstall__mutmut_45': xǁToolInstallerǁinstall__mutmut_45, 
-        'xǁToolInstallerǁinstall__mutmut_46': xǁToolInstallerǁinstall__mutmut_46
+
+    xǁToolInstallerǁinstall__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolInstallerǁinstall__mutmut_1": xǁToolInstallerǁinstall__mutmut_1,
+        "xǁToolInstallerǁinstall__mutmut_2": xǁToolInstallerǁinstall__mutmut_2,
+        "xǁToolInstallerǁinstall__mutmut_3": xǁToolInstallerǁinstall__mutmut_3,
+        "xǁToolInstallerǁinstall__mutmut_4": xǁToolInstallerǁinstall__mutmut_4,
+        "xǁToolInstallerǁinstall__mutmut_5": xǁToolInstallerǁinstall__mutmut_5,
+        "xǁToolInstallerǁinstall__mutmut_6": xǁToolInstallerǁinstall__mutmut_6,
+        "xǁToolInstallerǁinstall__mutmut_7": xǁToolInstallerǁinstall__mutmut_7,
+        "xǁToolInstallerǁinstall__mutmut_8": xǁToolInstallerǁinstall__mutmut_8,
+        "xǁToolInstallerǁinstall__mutmut_9": xǁToolInstallerǁinstall__mutmut_9,
+        "xǁToolInstallerǁinstall__mutmut_10": xǁToolInstallerǁinstall__mutmut_10,
+        "xǁToolInstallerǁinstall__mutmut_11": xǁToolInstallerǁinstall__mutmut_11,
+        "xǁToolInstallerǁinstall__mutmut_12": xǁToolInstallerǁinstall__mutmut_12,
+        "xǁToolInstallerǁinstall__mutmut_13": xǁToolInstallerǁinstall__mutmut_13,
+        "xǁToolInstallerǁinstall__mutmut_14": xǁToolInstallerǁinstall__mutmut_14,
+        "xǁToolInstallerǁinstall__mutmut_15": xǁToolInstallerǁinstall__mutmut_15,
+        "xǁToolInstallerǁinstall__mutmut_16": xǁToolInstallerǁinstall__mutmut_16,
+        "xǁToolInstallerǁinstall__mutmut_17": xǁToolInstallerǁinstall__mutmut_17,
+        "xǁToolInstallerǁinstall__mutmut_18": xǁToolInstallerǁinstall__mutmut_18,
+        "xǁToolInstallerǁinstall__mutmut_19": xǁToolInstallerǁinstall__mutmut_19,
+        "xǁToolInstallerǁinstall__mutmut_20": xǁToolInstallerǁinstall__mutmut_20,
+        "xǁToolInstallerǁinstall__mutmut_21": xǁToolInstallerǁinstall__mutmut_21,
+        "xǁToolInstallerǁinstall__mutmut_22": xǁToolInstallerǁinstall__mutmut_22,
+        "xǁToolInstallerǁinstall__mutmut_23": xǁToolInstallerǁinstall__mutmut_23,
+        "xǁToolInstallerǁinstall__mutmut_24": xǁToolInstallerǁinstall__mutmut_24,
+        "xǁToolInstallerǁinstall__mutmut_25": xǁToolInstallerǁinstall__mutmut_25,
+        "xǁToolInstallerǁinstall__mutmut_26": xǁToolInstallerǁinstall__mutmut_26,
+        "xǁToolInstallerǁinstall__mutmut_27": xǁToolInstallerǁinstall__mutmut_27,
+        "xǁToolInstallerǁinstall__mutmut_28": xǁToolInstallerǁinstall__mutmut_28,
+        "xǁToolInstallerǁinstall__mutmut_29": xǁToolInstallerǁinstall__mutmut_29,
+        "xǁToolInstallerǁinstall__mutmut_30": xǁToolInstallerǁinstall__mutmut_30,
+        "xǁToolInstallerǁinstall__mutmut_31": xǁToolInstallerǁinstall__mutmut_31,
+        "xǁToolInstallerǁinstall__mutmut_32": xǁToolInstallerǁinstall__mutmut_32,
+        "xǁToolInstallerǁinstall__mutmut_33": xǁToolInstallerǁinstall__mutmut_33,
+        "xǁToolInstallerǁinstall__mutmut_34": xǁToolInstallerǁinstall__mutmut_34,
+        "xǁToolInstallerǁinstall__mutmut_35": xǁToolInstallerǁinstall__mutmut_35,
+        "xǁToolInstallerǁinstall__mutmut_36": xǁToolInstallerǁinstall__mutmut_36,
+        "xǁToolInstallerǁinstall__mutmut_37": xǁToolInstallerǁinstall__mutmut_37,
+        "xǁToolInstallerǁinstall__mutmut_38": xǁToolInstallerǁinstall__mutmut_38,
+        "xǁToolInstallerǁinstall__mutmut_39": xǁToolInstallerǁinstall__mutmut_39,
+        "xǁToolInstallerǁinstall__mutmut_40": xǁToolInstallerǁinstall__mutmut_40,
+        "xǁToolInstallerǁinstall__mutmut_41": xǁToolInstallerǁinstall__mutmut_41,
+        "xǁToolInstallerǁinstall__mutmut_42": xǁToolInstallerǁinstall__mutmut_42,
+        "xǁToolInstallerǁinstall__mutmut_43": xǁToolInstallerǁinstall__mutmut_43,
+        "xǁToolInstallerǁinstall__mutmut_44": xǁToolInstallerǁinstall__mutmut_44,
+        "xǁToolInstallerǁinstall__mutmut_45": xǁToolInstallerǁinstall__mutmut_45,
+        "xǁToolInstallerǁinstall__mutmut_46": xǁToolInstallerǁinstall__mutmut_46,
     }
-    
+
     def install(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolInstallerǁinstall__mutmut_orig"), object.__getattribute__(self, "xǁToolInstallerǁinstall__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolInstallerǁinstall__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolInstallerǁinstall__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     install.__signature__ = _mutmut_signature(xǁToolInstallerǁinstall__mutmut_orig)
-    xǁToolInstallerǁinstall__mutmut_orig.__name__ = 'xǁToolInstallerǁinstall'
+    xǁToolInstallerǁinstall__mutmut_orig.__name__ = "xǁToolInstallerǁinstall"
 
     def xǁToolInstallerǁget_install_dir__mutmut_orig(self, metadata: ToolMetadata) -> Path:
         """Get installation directory for tool.
@@ -2268,25 +2288,31 @@ class ToolInstaller:
         # Default to ~/.provide-foundation/tools/<name>/<version>
         base = Path.home() / ".provide-foundation" / "tools"
         return base * metadata.name / metadata.version
-    
-    xǁToolInstallerǁget_install_dir__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolInstallerǁget_install_dir__mutmut_1': xǁToolInstallerǁget_install_dir__mutmut_1, 
-        'xǁToolInstallerǁget_install_dir__mutmut_2': xǁToolInstallerǁget_install_dir__mutmut_2, 
-        'xǁToolInstallerǁget_install_dir__mutmut_3': xǁToolInstallerǁget_install_dir__mutmut_3, 
-        'xǁToolInstallerǁget_install_dir__mutmut_4': xǁToolInstallerǁget_install_dir__mutmut_4, 
-        'xǁToolInstallerǁget_install_dir__mutmut_5': xǁToolInstallerǁget_install_dir__mutmut_5, 
-        'xǁToolInstallerǁget_install_dir__mutmut_6': xǁToolInstallerǁget_install_dir__mutmut_6, 
-        'xǁToolInstallerǁget_install_dir__mutmut_7': xǁToolInstallerǁget_install_dir__mutmut_7, 
-        'xǁToolInstallerǁget_install_dir__mutmut_8': xǁToolInstallerǁget_install_dir__mutmut_8, 
-        'xǁToolInstallerǁget_install_dir__mutmut_9': xǁToolInstallerǁget_install_dir__mutmut_9
+
+    xǁToolInstallerǁget_install_dir__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolInstallerǁget_install_dir__mutmut_1": xǁToolInstallerǁget_install_dir__mutmut_1,
+        "xǁToolInstallerǁget_install_dir__mutmut_2": xǁToolInstallerǁget_install_dir__mutmut_2,
+        "xǁToolInstallerǁget_install_dir__mutmut_3": xǁToolInstallerǁget_install_dir__mutmut_3,
+        "xǁToolInstallerǁget_install_dir__mutmut_4": xǁToolInstallerǁget_install_dir__mutmut_4,
+        "xǁToolInstallerǁget_install_dir__mutmut_5": xǁToolInstallerǁget_install_dir__mutmut_5,
+        "xǁToolInstallerǁget_install_dir__mutmut_6": xǁToolInstallerǁget_install_dir__mutmut_6,
+        "xǁToolInstallerǁget_install_dir__mutmut_7": xǁToolInstallerǁget_install_dir__mutmut_7,
+        "xǁToolInstallerǁget_install_dir__mutmut_8": xǁToolInstallerǁget_install_dir__mutmut_8,
+        "xǁToolInstallerǁget_install_dir__mutmut_9": xǁToolInstallerǁget_install_dir__mutmut_9,
     }
-    
+
     def get_install_dir(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolInstallerǁget_install_dir__mutmut_orig"), object.__getattribute__(self, "xǁToolInstallerǁget_install_dir__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolInstallerǁget_install_dir__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolInstallerǁget_install_dir__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_install_dir.__signature__ = _mutmut_signature(xǁToolInstallerǁget_install_dir__mutmut_orig)
-    xǁToolInstallerǁget_install_dir__mutmut_orig.__name__ = 'xǁToolInstallerǁget_install_dir'
+    xǁToolInstallerǁget_install_dir__mutmut_orig.__name__ = "xǁToolInstallerǁget_install_dir"
 
     def xǁToolInstallerǁextract_zip__mutmut_orig(self, archive: Path, dest: Path) -> None:
         """Extract ZIP archive.
@@ -2453,7 +2479,9 @@ class ToolInstaller:
         """
         log.debug(f"Extracting ZIP {archive} to {dest}")
 
-        dest.mkdir(parents=True, )
+        dest.mkdir(
+            parents=True,
+        )
 
         with zipfile.ZipFile(archive, "r") as zf:
             # Check for unsafe paths and validate members
@@ -2641,7 +2669,9 @@ class ToolInstaller:
 
         dest.mkdir(parents=True, exist_ok=True)
 
-        with zipfile.ZipFile(archive, ) as zf:
+        with zipfile.ZipFile(
+            archive,
+        ) as zf:
             # Check for unsafe paths and validate members
             safe_members = []
             for member_name in zf.namelist():
@@ -3247,47 +3277,55 @@ class ToolInstaller:
                 safe_members.append(member_name)
 
             # Extract only validated members (all members have been security-checked above)
-            zf.extractall(dest, )  # nosec B202
-    
-    xǁToolInstallerǁextract_zip__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolInstallerǁextract_zip__mutmut_1': xǁToolInstallerǁextract_zip__mutmut_1, 
-        'xǁToolInstallerǁextract_zip__mutmut_2': xǁToolInstallerǁextract_zip__mutmut_2, 
-        'xǁToolInstallerǁextract_zip__mutmut_3': xǁToolInstallerǁextract_zip__mutmut_3, 
-        'xǁToolInstallerǁextract_zip__mutmut_4': xǁToolInstallerǁextract_zip__mutmut_4, 
-        'xǁToolInstallerǁextract_zip__mutmut_5': xǁToolInstallerǁextract_zip__mutmut_5, 
-        'xǁToolInstallerǁextract_zip__mutmut_6': xǁToolInstallerǁextract_zip__mutmut_6, 
-        'xǁToolInstallerǁextract_zip__mutmut_7': xǁToolInstallerǁextract_zip__mutmut_7, 
-        'xǁToolInstallerǁextract_zip__mutmut_8': xǁToolInstallerǁextract_zip__mutmut_8, 
-        'xǁToolInstallerǁextract_zip__mutmut_9': xǁToolInstallerǁextract_zip__mutmut_9, 
-        'xǁToolInstallerǁextract_zip__mutmut_10': xǁToolInstallerǁextract_zip__mutmut_10, 
-        'xǁToolInstallerǁextract_zip__mutmut_11': xǁToolInstallerǁextract_zip__mutmut_11, 
-        'xǁToolInstallerǁextract_zip__mutmut_12': xǁToolInstallerǁextract_zip__mutmut_12, 
-        'xǁToolInstallerǁextract_zip__mutmut_13': xǁToolInstallerǁextract_zip__mutmut_13, 
-        'xǁToolInstallerǁextract_zip__mutmut_14': xǁToolInstallerǁextract_zip__mutmut_14, 
-        'xǁToolInstallerǁextract_zip__mutmut_15': xǁToolInstallerǁextract_zip__mutmut_15, 
-        'xǁToolInstallerǁextract_zip__mutmut_16': xǁToolInstallerǁextract_zip__mutmut_16, 
-        'xǁToolInstallerǁextract_zip__mutmut_17': xǁToolInstallerǁextract_zip__mutmut_17, 
-        'xǁToolInstallerǁextract_zip__mutmut_18': xǁToolInstallerǁextract_zip__mutmut_18, 
-        'xǁToolInstallerǁextract_zip__mutmut_19': xǁToolInstallerǁextract_zip__mutmut_19, 
-        'xǁToolInstallerǁextract_zip__mutmut_20': xǁToolInstallerǁextract_zip__mutmut_20, 
-        'xǁToolInstallerǁextract_zip__mutmut_21': xǁToolInstallerǁextract_zip__mutmut_21, 
-        'xǁToolInstallerǁextract_zip__mutmut_22': xǁToolInstallerǁextract_zip__mutmut_22, 
-        'xǁToolInstallerǁextract_zip__mutmut_23': xǁToolInstallerǁextract_zip__mutmut_23, 
-        'xǁToolInstallerǁextract_zip__mutmut_24': xǁToolInstallerǁextract_zip__mutmut_24, 
-        'xǁToolInstallerǁextract_zip__mutmut_25': xǁToolInstallerǁextract_zip__mutmut_25, 
-        'xǁToolInstallerǁextract_zip__mutmut_26': xǁToolInstallerǁextract_zip__mutmut_26, 
-        'xǁToolInstallerǁextract_zip__mutmut_27': xǁToolInstallerǁextract_zip__mutmut_27, 
-        'xǁToolInstallerǁextract_zip__mutmut_28': xǁToolInstallerǁextract_zip__mutmut_28, 
-        'xǁToolInstallerǁextract_zip__mutmut_29': xǁToolInstallerǁextract_zip__mutmut_29, 
-        'xǁToolInstallerǁextract_zip__mutmut_30': xǁToolInstallerǁextract_zip__mutmut_30
+            zf.extractall(
+                dest,
+            )  # nosec B202
+
+    xǁToolInstallerǁextract_zip__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolInstallerǁextract_zip__mutmut_1": xǁToolInstallerǁextract_zip__mutmut_1,
+        "xǁToolInstallerǁextract_zip__mutmut_2": xǁToolInstallerǁextract_zip__mutmut_2,
+        "xǁToolInstallerǁextract_zip__mutmut_3": xǁToolInstallerǁextract_zip__mutmut_3,
+        "xǁToolInstallerǁextract_zip__mutmut_4": xǁToolInstallerǁextract_zip__mutmut_4,
+        "xǁToolInstallerǁextract_zip__mutmut_5": xǁToolInstallerǁextract_zip__mutmut_5,
+        "xǁToolInstallerǁextract_zip__mutmut_6": xǁToolInstallerǁextract_zip__mutmut_6,
+        "xǁToolInstallerǁextract_zip__mutmut_7": xǁToolInstallerǁextract_zip__mutmut_7,
+        "xǁToolInstallerǁextract_zip__mutmut_8": xǁToolInstallerǁextract_zip__mutmut_8,
+        "xǁToolInstallerǁextract_zip__mutmut_9": xǁToolInstallerǁextract_zip__mutmut_9,
+        "xǁToolInstallerǁextract_zip__mutmut_10": xǁToolInstallerǁextract_zip__mutmut_10,
+        "xǁToolInstallerǁextract_zip__mutmut_11": xǁToolInstallerǁextract_zip__mutmut_11,
+        "xǁToolInstallerǁextract_zip__mutmut_12": xǁToolInstallerǁextract_zip__mutmut_12,
+        "xǁToolInstallerǁextract_zip__mutmut_13": xǁToolInstallerǁextract_zip__mutmut_13,
+        "xǁToolInstallerǁextract_zip__mutmut_14": xǁToolInstallerǁextract_zip__mutmut_14,
+        "xǁToolInstallerǁextract_zip__mutmut_15": xǁToolInstallerǁextract_zip__mutmut_15,
+        "xǁToolInstallerǁextract_zip__mutmut_16": xǁToolInstallerǁextract_zip__mutmut_16,
+        "xǁToolInstallerǁextract_zip__mutmut_17": xǁToolInstallerǁextract_zip__mutmut_17,
+        "xǁToolInstallerǁextract_zip__mutmut_18": xǁToolInstallerǁextract_zip__mutmut_18,
+        "xǁToolInstallerǁextract_zip__mutmut_19": xǁToolInstallerǁextract_zip__mutmut_19,
+        "xǁToolInstallerǁextract_zip__mutmut_20": xǁToolInstallerǁextract_zip__mutmut_20,
+        "xǁToolInstallerǁextract_zip__mutmut_21": xǁToolInstallerǁextract_zip__mutmut_21,
+        "xǁToolInstallerǁextract_zip__mutmut_22": xǁToolInstallerǁextract_zip__mutmut_22,
+        "xǁToolInstallerǁextract_zip__mutmut_23": xǁToolInstallerǁextract_zip__mutmut_23,
+        "xǁToolInstallerǁextract_zip__mutmut_24": xǁToolInstallerǁextract_zip__mutmut_24,
+        "xǁToolInstallerǁextract_zip__mutmut_25": xǁToolInstallerǁextract_zip__mutmut_25,
+        "xǁToolInstallerǁextract_zip__mutmut_26": xǁToolInstallerǁextract_zip__mutmut_26,
+        "xǁToolInstallerǁextract_zip__mutmut_27": xǁToolInstallerǁextract_zip__mutmut_27,
+        "xǁToolInstallerǁextract_zip__mutmut_28": xǁToolInstallerǁextract_zip__mutmut_28,
+        "xǁToolInstallerǁextract_zip__mutmut_29": xǁToolInstallerǁextract_zip__mutmut_29,
+        "xǁToolInstallerǁextract_zip__mutmut_30": xǁToolInstallerǁextract_zip__mutmut_30,
     }
-    
+
     def extract_zip(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolInstallerǁextract_zip__mutmut_orig"), object.__getattribute__(self, "xǁToolInstallerǁextract_zip__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolInstallerǁextract_zip__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolInstallerǁextract_zip__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     extract_zip.__signature__ = _mutmut_signature(xǁToolInstallerǁextract_zip__mutmut_orig)
-    xǁToolInstallerǁextract_zip__mutmut_orig.__name__ = 'xǁToolInstallerǁextract_zip'
+    xǁToolInstallerǁextract_zip__mutmut_orig.__name__ = "xǁToolInstallerǁextract_zip"
 
     def xǁToolInstallerǁextract_tar__mutmut_orig(self, archive: Path, dest: Path) -> None:
         """Extract tar archive (with optional compression).
@@ -3569,7 +3607,9 @@ class ToolInstaller:
         """
         log.debug(f"Extracting tar {archive} to {dest}")
 
-        dest.mkdir(parents=True, )
+        dest.mkdir(
+            parents=True,
+        )
 
         # Determine mode based on extension
         mode = "r"
@@ -5146,7 +5186,9 @@ class ToolInstaller:
         elif archive.suffix == ".xz":
             mode = "r:xz"
 
-        with tarfile.open(archive, ) as tf:  # type: ignore[call-overload]
+        with tarfile.open(
+            archive,
+        ) as tf:  # type: ignore[call-overload]
             # Check for unsafe paths and validate members
             safe_members = []
             for member in tf.getmembers():
@@ -6189,9 +6231,7 @@ class ToolInstaller:
                     try:
                         target.resolve().relative_to(Path(dest).resolve())
                     except ValueError:
-                        raise InstallError(
-                            None
-                        ) from None
+                        raise InstallError(None) from None
 
                 # Path traversal check
                 member_path = Path(dest) / member.name
@@ -6743,80 +6783,88 @@ class ToolInstaller:
                 safe_members.append(member)
 
             # Extract only validated members (all members have been security-checked above)
-            tf.extractall(dest, )  # nosec B202
-    
-    xǁToolInstallerǁextract_tar__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolInstallerǁextract_tar__mutmut_1': xǁToolInstallerǁextract_tar__mutmut_1, 
-        'xǁToolInstallerǁextract_tar__mutmut_2': xǁToolInstallerǁextract_tar__mutmut_2, 
-        'xǁToolInstallerǁextract_tar__mutmut_3': xǁToolInstallerǁextract_tar__mutmut_3, 
-        'xǁToolInstallerǁextract_tar__mutmut_4': xǁToolInstallerǁextract_tar__mutmut_4, 
-        'xǁToolInstallerǁextract_tar__mutmut_5': xǁToolInstallerǁextract_tar__mutmut_5, 
-        'xǁToolInstallerǁextract_tar__mutmut_6': xǁToolInstallerǁextract_tar__mutmut_6, 
-        'xǁToolInstallerǁextract_tar__mutmut_7': xǁToolInstallerǁextract_tar__mutmut_7, 
-        'xǁToolInstallerǁextract_tar__mutmut_8': xǁToolInstallerǁextract_tar__mutmut_8, 
-        'xǁToolInstallerǁextract_tar__mutmut_9': xǁToolInstallerǁextract_tar__mutmut_9, 
-        'xǁToolInstallerǁextract_tar__mutmut_10': xǁToolInstallerǁextract_tar__mutmut_10, 
-        'xǁToolInstallerǁextract_tar__mutmut_11': xǁToolInstallerǁextract_tar__mutmut_11, 
-        'xǁToolInstallerǁextract_tar__mutmut_12': xǁToolInstallerǁextract_tar__mutmut_12, 
-        'xǁToolInstallerǁextract_tar__mutmut_13': xǁToolInstallerǁextract_tar__mutmut_13, 
-        'xǁToolInstallerǁextract_tar__mutmut_14': xǁToolInstallerǁextract_tar__mutmut_14, 
-        'xǁToolInstallerǁextract_tar__mutmut_15': xǁToolInstallerǁextract_tar__mutmut_15, 
-        'xǁToolInstallerǁextract_tar__mutmut_16': xǁToolInstallerǁextract_tar__mutmut_16, 
-        'xǁToolInstallerǁextract_tar__mutmut_17': xǁToolInstallerǁextract_tar__mutmut_17, 
-        'xǁToolInstallerǁextract_tar__mutmut_18': xǁToolInstallerǁextract_tar__mutmut_18, 
-        'xǁToolInstallerǁextract_tar__mutmut_19': xǁToolInstallerǁextract_tar__mutmut_19, 
-        'xǁToolInstallerǁextract_tar__mutmut_20': xǁToolInstallerǁextract_tar__mutmut_20, 
-        'xǁToolInstallerǁextract_tar__mutmut_21': xǁToolInstallerǁextract_tar__mutmut_21, 
-        'xǁToolInstallerǁextract_tar__mutmut_22': xǁToolInstallerǁextract_tar__mutmut_22, 
-        'xǁToolInstallerǁextract_tar__mutmut_23': xǁToolInstallerǁextract_tar__mutmut_23, 
-        'xǁToolInstallerǁextract_tar__mutmut_24': xǁToolInstallerǁextract_tar__mutmut_24, 
-        'xǁToolInstallerǁextract_tar__mutmut_25': xǁToolInstallerǁextract_tar__mutmut_25, 
-        'xǁToolInstallerǁextract_tar__mutmut_26': xǁToolInstallerǁextract_tar__mutmut_26, 
-        'xǁToolInstallerǁextract_tar__mutmut_27': xǁToolInstallerǁextract_tar__mutmut_27, 
-        'xǁToolInstallerǁextract_tar__mutmut_28': xǁToolInstallerǁextract_tar__mutmut_28, 
-        'xǁToolInstallerǁextract_tar__mutmut_29': xǁToolInstallerǁextract_tar__mutmut_29, 
-        'xǁToolInstallerǁextract_tar__mutmut_30': xǁToolInstallerǁextract_tar__mutmut_30, 
-        'xǁToolInstallerǁextract_tar__mutmut_31': xǁToolInstallerǁextract_tar__mutmut_31, 
-        'xǁToolInstallerǁextract_tar__mutmut_32': xǁToolInstallerǁextract_tar__mutmut_32, 
-        'xǁToolInstallerǁextract_tar__mutmut_33': xǁToolInstallerǁextract_tar__mutmut_33, 
-        'xǁToolInstallerǁextract_tar__mutmut_34': xǁToolInstallerǁextract_tar__mutmut_34, 
-        'xǁToolInstallerǁextract_tar__mutmut_35': xǁToolInstallerǁextract_tar__mutmut_35, 
-        'xǁToolInstallerǁextract_tar__mutmut_36': xǁToolInstallerǁextract_tar__mutmut_36, 
-        'xǁToolInstallerǁextract_tar__mutmut_37': xǁToolInstallerǁextract_tar__mutmut_37, 
-        'xǁToolInstallerǁextract_tar__mutmut_38': xǁToolInstallerǁextract_tar__mutmut_38, 
-        'xǁToolInstallerǁextract_tar__mutmut_39': xǁToolInstallerǁextract_tar__mutmut_39, 
-        'xǁToolInstallerǁextract_tar__mutmut_40': xǁToolInstallerǁextract_tar__mutmut_40, 
-        'xǁToolInstallerǁextract_tar__mutmut_41': xǁToolInstallerǁextract_tar__mutmut_41, 
-        'xǁToolInstallerǁextract_tar__mutmut_42': xǁToolInstallerǁextract_tar__mutmut_42, 
-        'xǁToolInstallerǁextract_tar__mutmut_43': xǁToolInstallerǁextract_tar__mutmut_43, 
-        'xǁToolInstallerǁextract_tar__mutmut_44': xǁToolInstallerǁextract_tar__mutmut_44, 
-        'xǁToolInstallerǁextract_tar__mutmut_45': xǁToolInstallerǁextract_tar__mutmut_45, 
-        'xǁToolInstallerǁextract_tar__mutmut_46': xǁToolInstallerǁextract_tar__mutmut_46, 
-        'xǁToolInstallerǁextract_tar__mutmut_47': xǁToolInstallerǁextract_tar__mutmut_47, 
-        'xǁToolInstallerǁextract_tar__mutmut_48': xǁToolInstallerǁextract_tar__mutmut_48, 
-        'xǁToolInstallerǁextract_tar__mutmut_49': xǁToolInstallerǁextract_tar__mutmut_49, 
-        'xǁToolInstallerǁextract_tar__mutmut_50': xǁToolInstallerǁextract_tar__mutmut_50, 
-        'xǁToolInstallerǁextract_tar__mutmut_51': xǁToolInstallerǁextract_tar__mutmut_51, 
-        'xǁToolInstallerǁextract_tar__mutmut_52': xǁToolInstallerǁextract_tar__mutmut_52, 
-        'xǁToolInstallerǁextract_tar__mutmut_53': xǁToolInstallerǁextract_tar__mutmut_53, 
-        'xǁToolInstallerǁextract_tar__mutmut_54': xǁToolInstallerǁextract_tar__mutmut_54, 
-        'xǁToolInstallerǁextract_tar__mutmut_55': xǁToolInstallerǁextract_tar__mutmut_55, 
-        'xǁToolInstallerǁextract_tar__mutmut_56': xǁToolInstallerǁextract_tar__mutmut_56, 
-        'xǁToolInstallerǁextract_tar__mutmut_57': xǁToolInstallerǁextract_tar__mutmut_57, 
-        'xǁToolInstallerǁextract_tar__mutmut_58': xǁToolInstallerǁextract_tar__mutmut_58, 
-        'xǁToolInstallerǁextract_tar__mutmut_59': xǁToolInstallerǁextract_tar__mutmut_59, 
-        'xǁToolInstallerǁextract_tar__mutmut_60': xǁToolInstallerǁextract_tar__mutmut_60, 
-        'xǁToolInstallerǁextract_tar__mutmut_61': xǁToolInstallerǁextract_tar__mutmut_61, 
-        'xǁToolInstallerǁextract_tar__mutmut_62': xǁToolInstallerǁextract_tar__mutmut_62, 
-        'xǁToolInstallerǁextract_tar__mutmut_63': xǁToolInstallerǁextract_tar__mutmut_63
+            tf.extractall(
+                dest,
+            )  # nosec B202
+
+    xǁToolInstallerǁextract_tar__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolInstallerǁextract_tar__mutmut_1": xǁToolInstallerǁextract_tar__mutmut_1,
+        "xǁToolInstallerǁextract_tar__mutmut_2": xǁToolInstallerǁextract_tar__mutmut_2,
+        "xǁToolInstallerǁextract_tar__mutmut_3": xǁToolInstallerǁextract_tar__mutmut_3,
+        "xǁToolInstallerǁextract_tar__mutmut_4": xǁToolInstallerǁextract_tar__mutmut_4,
+        "xǁToolInstallerǁextract_tar__mutmut_5": xǁToolInstallerǁextract_tar__mutmut_5,
+        "xǁToolInstallerǁextract_tar__mutmut_6": xǁToolInstallerǁextract_tar__mutmut_6,
+        "xǁToolInstallerǁextract_tar__mutmut_7": xǁToolInstallerǁextract_tar__mutmut_7,
+        "xǁToolInstallerǁextract_tar__mutmut_8": xǁToolInstallerǁextract_tar__mutmut_8,
+        "xǁToolInstallerǁextract_tar__mutmut_9": xǁToolInstallerǁextract_tar__mutmut_9,
+        "xǁToolInstallerǁextract_tar__mutmut_10": xǁToolInstallerǁextract_tar__mutmut_10,
+        "xǁToolInstallerǁextract_tar__mutmut_11": xǁToolInstallerǁextract_tar__mutmut_11,
+        "xǁToolInstallerǁextract_tar__mutmut_12": xǁToolInstallerǁextract_tar__mutmut_12,
+        "xǁToolInstallerǁextract_tar__mutmut_13": xǁToolInstallerǁextract_tar__mutmut_13,
+        "xǁToolInstallerǁextract_tar__mutmut_14": xǁToolInstallerǁextract_tar__mutmut_14,
+        "xǁToolInstallerǁextract_tar__mutmut_15": xǁToolInstallerǁextract_tar__mutmut_15,
+        "xǁToolInstallerǁextract_tar__mutmut_16": xǁToolInstallerǁextract_tar__mutmut_16,
+        "xǁToolInstallerǁextract_tar__mutmut_17": xǁToolInstallerǁextract_tar__mutmut_17,
+        "xǁToolInstallerǁextract_tar__mutmut_18": xǁToolInstallerǁextract_tar__mutmut_18,
+        "xǁToolInstallerǁextract_tar__mutmut_19": xǁToolInstallerǁextract_tar__mutmut_19,
+        "xǁToolInstallerǁextract_tar__mutmut_20": xǁToolInstallerǁextract_tar__mutmut_20,
+        "xǁToolInstallerǁextract_tar__mutmut_21": xǁToolInstallerǁextract_tar__mutmut_21,
+        "xǁToolInstallerǁextract_tar__mutmut_22": xǁToolInstallerǁextract_tar__mutmut_22,
+        "xǁToolInstallerǁextract_tar__mutmut_23": xǁToolInstallerǁextract_tar__mutmut_23,
+        "xǁToolInstallerǁextract_tar__mutmut_24": xǁToolInstallerǁextract_tar__mutmut_24,
+        "xǁToolInstallerǁextract_tar__mutmut_25": xǁToolInstallerǁextract_tar__mutmut_25,
+        "xǁToolInstallerǁextract_tar__mutmut_26": xǁToolInstallerǁextract_tar__mutmut_26,
+        "xǁToolInstallerǁextract_tar__mutmut_27": xǁToolInstallerǁextract_tar__mutmut_27,
+        "xǁToolInstallerǁextract_tar__mutmut_28": xǁToolInstallerǁextract_tar__mutmut_28,
+        "xǁToolInstallerǁextract_tar__mutmut_29": xǁToolInstallerǁextract_tar__mutmut_29,
+        "xǁToolInstallerǁextract_tar__mutmut_30": xǁToolInstallerǁextract_tar__mutmut_30,
+        "xǁToolInstallerǁextract_tar__mutmut_31": xǁToolInstallerǁextract_tar__mutmut_31,
+        "xǁToolInstallerǁextract_tar__mutmut_32": xǁToolInstallerǁextract_tar__mutmut_32,
+        "xǁToolInstallerǁextract_tar__mutmut_33": xǁToolInstallerǁextract_tar__mutmut_33,
+        "xǁToolInstallerǁextract_tar__mutmut_34": xǁToolInstallerǁextract_tar__mutmut_34,
+        "xǁToolInstallerǁextract_tar__mutmut_35": xǁToolInstallerǁextract_tar__mutmut_35,
+        "xǁToolInstallerǁextract_tar__mutmut_36": xǁToolInstallerǁextract_tar__mutmut_36,
+        "xǁToolInstallerǁextract_tar__mutmut_37": xǁToolInstallerǁextract_tar__mutmut_37,
+        "xǁToolInstallerǁextract_tar__mutmut_38": xǁToolInstallerǁextract_tar__mutmut_38,
+        "xǁToolInstallerǁextract_tar__mutmut_39": xǁToolInstallerǁextract_tar__mutmut_39,
+        "xǁToolInstallerǁextract_tar__mutmut_40": xǁToolInstallerǁextract_tar__mutmut_40,
+        "xǁToolInstallerǁextract_tar__mutmut_41": xǁToolInstallerǁextract_tar__mutmut_41,
+        "xǁToolInstallerǁextract_tar__mutmut_42": xǁToolInstallerǁextract_tar__mutmut_42,
+        "xǁToolInstallerǁextract_tar__mutmut_43": xǁToolInstallerǁextract_tar__mutmut_43,
+        "xǁToolInstallerǁextract_tar__mutmut_44": xǁToolInstallerǁextract_tar__mutmut_44,
+        "xǁToolInstallerǁextract_tar__mutmut_45": xǁToolInstallerǁextract_tar__mutmut_45,
+        "xǁToolInstallerǁextract_tar__mutmut_46": xǁToolInstallerǁextract_tar__mutmut_46,
+        "xǁToolInstallerǁextract_tar__mutmut_47": xǁToolInstallerǁextract_tar__mutmut_47,
+        "xǁToolInstallerǁextract_tar__mutmut_48": xǁToolInstallerǁextract_tar__mutmut_48,
+        "xǁToolInstallerǁextract_tar__mutmut_49": xǁToolInstallerǁextract_tar__mutmut_49,
+        "xǁToolInstallerǁextract_tar__mutmut_50": xǁToolInstallerǁextract_tar__mutmut_50,
+        "xǁToolInstallerǁextract_tar__mutmut_51": xǁToolInstallerǁextract_tar__mutmut_51,
+        "xǁToolInstallerǁextract_tar__mutmut_52": xǁToolInstallerǁextract_tar__mutmut_52,
+        "xǁToolInstallerǁextract_tar__mutmut_53": xǁToolInstallerǁextract_tar__mutmut_53,
+        "xǁToolInstallerǁextract_tar__mutmut_54": xǁToolInstallerǁextract_tar__mutmut_54,
+        "xǁToolInstallerǁextract_tar__mutmut_55": xǁToolInstallerǁextract_tar__mutmut_55,
+        "xǁToolInstallerǁextract_tar__mutmut_56": xǁToolInstallerǁextract_tar__mutmut_56,
+        "xǁToolInstallerǁextract_tar__mutmut_57": xǁToolInstallerǁextract_tar__mutmut_57,
+        "xǁToolInstallerǁextract_tar__mutmut_58": xǁToolInstallerǁextract_tar__mutmut_58,
+        "xǁToolInstallerǁextract_tar__mutmut_59": xǁToolInstallerǁextract_tar__mutmut_59,
+        "xǁToolInstallerǁextract_tar__mutmut_60": xǁToolInstallerǁextract_tar__mutmut_60,
+        "xǁToolInstallerǁextract_tar__mutmut_61": xǁToolInstallerǁextract_tar__mutmut_61,
+        "xǁToolInstallerǁextract_tar__mutmut_62": xǁToolInstallerǁextract_tar__mutmut_62,
+        "xǁToolInstallerǁextract_tar__mutmut_63": xǁToolInstallerǁextract_tar__mutmut_63,
     }
-    
+
     def extract_tar(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolInstallerǁextract_tar__mutmut_orig"), object.__getattribute__(self, "xǁToolInstallerǁextract_tar__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolInstallerǁextract_tar__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolInstallerǁextract_tar__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     extract_tar.__signature__ = _mutmut_signature(xǁToolInstallerǁextract_tar__mutmut_orig)
-    xǁToolInstallerǁextract_tar__mutmut_orig.__name__ = 'xǁToolInstallerǁextract_tar'
+    xǁToolInstallerǁextract_tar__mutmut_orig.__name__ = "xǁToolInstallerǁextract_tar"
 
     def xǁToolInstallerǁis_binary__mutmut_orig(self, file_path: Path) -> bool:
         """Check if file is a binary executable.
@@ -7345,7 +7393,7 @@ class ToolInstaller:
                 with file_path.open("rb") as f:
                     header = f.read(4)
                     # Check for common binary signatures
-                    if header.startswith(b"\x7FELF"):  # Linux ELF
+                    if header.startswith(b"\x7fELF"):  # Linux ELF
                         return True
                     if header.startswith(b"MZ"):  # Windows PE
                         return True
@@ -7649,7 +7697,7 @@ class ToolInstaller:
                         return True
                     if header.startswith(b"MZ"):  # Windows PE
                         return True
-                    if header.startswith(b"\xFE\xED\xFA"):  # macOS Mach-O
+                    if header.startswith(b"\xfe\xed\xfa"):  # macOS Mach-O
                         return True
                     if header.startswith(b"\xca\xfe\xba\xbe"):  # macOS universal
                         return True
@@ -7801,7 +7849,7 @@ class ToolInstaller:
                         return True
                     if header.startswith(b"\xfe\xed\xfa"):  # macOS Mach-O
                         return True
-                    if header.startswith(b"\xCA\xFE\xBA\xBE"):  # macOS universal
+                    if header.startswith(b"\xca\xfe\xba\xbe"):  # macOS universal
                         return True
             except Exception:
                 pass
@@ -7867,52 +7915,60 @@ class ToolInstaller:
                 pass
 
         return True
-    
-    xǁToolInstallerǁis_binary__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolInstallerǁis_binary__mutmut_1': xǁToolInstallerǁis_binary__mutmut_1, 
-        'xǁToolInstallerǁis_binary__mutmut_2': xǁToolInstallerǁis_binary__mutmut_2, 
-        'xǁToolInstallerǁis_binary__mutmut_3': xǁToolInstallerǁis_binary__mutmut_3, 
-        'xǁToolInstallerǁis_binary__mutmut_4': xǁToolInstallerǁis_binary__mutmut_4, 
-        'xǁToolInstallerǁis_binary__mutmut_5': xǁToolInstallerǁis_binary__mutmut_5, 
-        'xǁToolInstallerǁis_binary__mutmut_6': xǁToolInstallerǁis_binary__mutmut_6, 
-        'xǁToolInstallerǁis_binary__mutmut_7': xǁToolInstallerǁis_binary__mutmut_7, 
-        'xǁToolInstallerǁis_binary__mutmut_8': xǁToolInstallerǁis_binary__mutmut_8, 
-        'xǁToolInstallerǁis_binary__mutmut_9': xǁToolInstallerǁis_binary__mutmut_9, 
-        'xǁToolInstallerǁis_binary__mutmut_10': xǁToolInstallerǁis_binary__mutmut_10, 
-        'xǁToolInstallerǁis_binary__mutmut_11': xǁToolInstallerǁis_binary__mutmut_11, 
-        'xǁToolInstallerǁis_binary__mutmut_12': xǁToolInstallerǁis_binary__mutmut_12, 
-        'xǁToolInstallerǁis_binary__mutmut_13': xǁToolInstallerǁis_binary__mutmut_13, 
-        'xǁToolInstallerǁis_binary__mutmut_14': xǁToolInstallerǁis_binary__mutmut_14, 
-        'xǁToolInstallerǁis_binary__mutmut_15': xǁToolInstallerǁis_binary__mutmut_15, 
-        'xǁToolInstallerǁis_binary__mutmut_16': xǁToolInstallerǁis_binary__mutmut_16, 
-        'xǁToolInstallerǁis_binary__mutmut_17': xǁToolInstallerǁis_binary__mutmut_17, 
-        'xǁToolInstallerǁis_binary__mutmut_18': xǁToolInstallerǁis_binary__mutmut_18, 
-        'xǁToolInstallerǁis_binary__mutmut_19': xǁToolInstallerǁis_binary__mutmut_19, 
-        'xǁToolInstallerǁis_binary__mutmut_20': xǁToolInstallerǁis_binary__mutmut_20, 
-        'xǁToolInstallerǁis_binary__mutmut_21': xǁToolInstallerǁis_binary__mutmut_21, 
-        'xǁToolInstallerǁis_binary__mutmut_22': xǁToolInstallerǁis_binary__mutmut_22, 
-        'xǁToolInstallerǁis_binary__mutmut_23': xǁToolInstallerǁis_binary__mutmut_23, 
-        'xǁToolInstallerǁis_binary__mutmut_24': xǁToolInstallerǁis_binary__mutmut_24, 
-        'xǁToolInstallerǁis_binary__mutmut_25': xǁToolInstallerǁis_binary__mutmut_25, 
-        'xǁToolInstallerǁis_binary__mutmut_26': xǁToolInstallerǁis_binary__mutmut_26, 
-        'xǁToolInstallerǁis_binary__mutmut_27': xǁToolInstallerǁis_binary__mutmut_27, 
-        'xǁToolInstallerǁis_binary__mutmut_28': xǁToolInstallerǁis_binary__mutmut_28, 
-        'xǁToolInstallerǁis_binary__mutmut_29': xǁToolInstallerǁis_binary__mutmut_29, 
-        'xǁToolInstallerǁis_binary__mutmut_30': xǁToolInstallerǁis_binary__mutmut_30, 
-        'xǁToolInstallerǁis_binary__mutmut_31': xǁToolInstallerǁis_binary__mutmut_31, 
-        'xǁToolInstallerǁis_binary__mutmut_32': xǁToolInstallerǁis_binary__mutmut_32, 
-        'xǁToolInstallerǁis_binary__mutmut_33': xǁToolInstallerǁis_binary__mutmut_33, 
-        'xǁToolInstallerǁis_binary__mutmut_34': xǁToolInstallerǁis_binary__mutmut_34
-    }
-    
-    def is_binary(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolInstallerǁis_binary__mutmut_orig"), object.__getattribute__(self, "xǁToolInstallerǁis_binary__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    is_binary.__signature__ = _mutmut_signature(xǁToolInstallerǁis_binary__mutmut_orig)
-    xǁToolInstallerǁis_binary__mutmut_orig.__name__ = 'xǁToolInstallerǁis_binary'
 
-    def xǁToolInstallerǁinstall_binary__mutmut_orig(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    xǁToolInstallerǁis_binary__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolInstallerǁis_binary__mutmut_1": xǁToolInstallerǁis_binary__mutmut_1,
+        "xǁToolInstallerǁis_binary__mutmut_2": xǁToolInstallerǁis_binary__mutmut_2,
+        "xǁToolInstallerǁis_binary__mutmut_3": xǁToolInstallerǁis_binary__mutmut_3,
+        "xǁToolInstallerǁis_binary__mutmut_4": xǁToolInstallerǁis_binary__mutmut_4,
+        "xǁToolInstallerǁis_binary__mutmut_5": xǁToolInstallerǁis_binary__mutmut_5,
+        "xǁToolInstallerǁis_binary__mutmut_6": xǁToolInstallerǁis_binary__mutmut_6,
+        "xǁToolInstallerǁis_binary__mutmut_7": xǁToolInstallerǁis_binary__mutmut_7,
+        "xǁToolInstallerǁis_binary__mutmut_8": xǁToolInstallerǁis_binary__mutmut_8,
+        "xǁToolInstallerǁis_binary__mutmut_9": xǁToolInstallerǁis_binary__mutmut_9,
+        "xǁToolInstallerǁis_binary__mutmut_10": xǁToolInstallerǁis_binary__mutmut_10,
+        "xǁToolInstallerǁis_binary__mutmut_11": xǁToolInstallerǁis_binary__mutmut_11,
+        "xǁToolInstallerǁis_binary__mutmut_12": xǁToolInstallerǁis_binary__mutmut_12,
+        "xǁToolInstallerǁis_binary__mutmut_13": xǁToolInstallerǁis_binary__mutmut_13,
+        "xǁToolInstallerǁis_binary__mutmut_14": xǁToolInstallerǁis_binary__mutmut_14,
+        "xǁToolInstallerǁis_binary__mutmut_15": xǁToolInstallerǁis_binary__mutmut_15,
+        "xǁToolInstallerǁis_binary__mutmut_16": xǁToolInstallerǁis_binary__mutmut_16,
+        "xǁToolInstallerǁis_binary__mutmut_17": xǁToolInstallerǁis_binary__mutmut_17,
+        "xǁToolInstallerǁis_binary__mutmut_18": xǁToolInstallerǁis_binary__mutmut_18,
+        "xǁToolInstallerǁis_binary__mutmut_19": xǁToolInstallerǁis_binary__mutmut_19,
+        "xǁToolInstallerǁis_binary__mutmut_20": xǁToolInstallerǁis_binary__mutmut_20,
+        "xǁToolInstallerǁis_binary__mutmut_21": xǁToolInstallerǁis_binary__mutmut_21,
+        "xǁToolInstallerǁis_binary__mutmut_22": xǁToolInstallerǁis_binary__mutmut_22,
+        "xǁToolInstallerǁis_binary__mutmut_23": xǁToolInstallerǁis_binary__mutmut_23,
+        "xǁToolInstallerǁis_binary__mutmut_24": xǁToolInstallerǁis_binary__mutmut_24,
+        "xǁToolInstallerǁis_binary__mutmut_25": xǁToolInstallerǁis_binary__mutmut_25,
+        "xǁToolInstallerǁis_binary__mutmut_26": xǁToolInstallerǁis_binary__mutmut_26,
+        "xǁToolInstallerǁis_binary__mutmut_27": xǁToolInstallerǁis_binary__mutmut_27,
+        "xǁToolInstallerǁis_binary__mutmut_28": xǁToolInstallerǁis_binary__mutmut_28,
+        "xǁToolInstallerǁis_binary__mutmut_29": xǁToolInstallerǁis_binary__mutmut_29,
+        "xǁToolInstallerǁis_binary__mutmut_30": xǁToolInstallerǁis_binary__mutmut_30,
+        "xǁToolInstallerǁis_binary__mutmut_31": xǁToolInstallerǁis_binary__mutmut_31,
+        "xǁToolInstallerǁis_binary__mutmut_32": xǁToolInstallerǁis_binary__mutmut_32,
+        "xǁToolInstallerǁis_binary__mutmut_33": xǁToolInstallerǁis_binary__mutmut_33,
+        "xǁToolInstallerǁis_binary__mutmut_34": xǁToolInstallerǁis_binary__mutmut_34,
+    }
+
+    def is_binary(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolInstallerǁis_binary__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolInstallerǁis_binary__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    is_binary.__signature__ = _mutmut_signature(xǁToolInstallerǁis_binary__mutmut_orig)
+    xǁToolInstallerǁis_binary__mutmut_orig.__name__ = "xǁToolInstallerǁis_binary"
+
+    def xǁToolInstallerǁinstall_binary__mutmut_orig(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -7937,7 +7993,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_1(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_1(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -7962,7 +8020,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_2(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_2(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -7987,7 +8047,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_3(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_3(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8012,7 +8074,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_4(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_4(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8037,7 +8101,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_5(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_5(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8048,7 +8114,9 @@ class ToolInstaller:
         """
         log.debug(f"Installing binary {binary} to {dest}")
 
-        dest.mkdir(parents=True, )
+        dest.mkdir(
+            parents=True,
+        )
         bin_dir = dest / "bin"
         bin_dir.mkdir(exist_ok=True)
 
@@ -8062,7 +8130,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_6(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_6(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8087,7 +8157,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_7(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_7(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8112,7 +8184,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_8(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_8(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8137,7 +8211,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_9(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_9(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8162,7 +8238,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_10(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_10(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8187,7 +8265,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_11(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_11(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8212,7 +8292,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_12(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_12(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8237,7 +8319,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_13(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_13(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8262,7 +8346,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_14(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_14(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8287,7 +8373,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_15(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_15(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8312,7 +8400,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_16(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_16(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8337,7 +8427,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_17(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_17(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8362,7 +8454,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_18(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_18(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8387,7 +8481,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_19(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_19(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8412,7 +8508,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_20(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_20(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8437,7 +8535,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_21(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_21(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8457,12 +8557,16 @@ class ToolInstaller:
         target = bin_dir / target_name
 
         # Copy binary
-        shutil.copy2(binary, )
+        shutil.copy2(
+            binary,
+        )
 
         # Make executable
         target.chmod(0o755)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_22(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_22(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8487,7 +8591,9 @@ class ToolInstaller:
         # Make executable
         target.chmod(None)
 
-    def xǁToolInstallerǁinstall_binary__mutmut_23(self, binary: Path, dest: Path, metadata: ToolMetadata) -> None:
+    def xǁToolInstallerǁinstall_binary__mutmut_23(
+        self, binary: Path, dest: Path, metadata: ToolMetadata
+    ) -> None:
         """Install single binary file.
 
         Args:
@@ -8511,39 +8617,45 @@ class ToolInstaller:
 
         # Make executable
         target.chmod(494)
-    
-    xǁToolInstallerǁinstall_binary__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolInstallerǁinstall_binary__mutmut_1': xǁToolInstallerǁinstall_binary__mutmut_1, 
-        'xǁToolInstallerǁinstall_binary__mutmut_2': xǁToolInstallerǁinstall_binary__mutmut_2, 
-        'xǁToolInstallerǁinstall_binary__mutmut_3': xǁToolInstallerǁinstall_binary__mutmut_3, 
-        'xǁToolInstallerǁinstall_binary__mutmut_4': xǁToolInstallerǁinstall_binary__mutmut_4, 
-        'xǁToolInstallerǁinstall_binary__mutmut_5': xǁToolInstallerǁinstall_binary__mutmut_5, 
-        'xǁToolInstallerǁinstall_binary__mutmut_6': xǁToolInstallerǁinstall_binary__mutmut_6, 
-        'xǁToolInstallerǁinstall_binary__mutmut_7': xǁToolInstallerǁinstall_binary__mutmut_7, 
-        'xǁToolInstallerǁinstall_binary__mutmut_8': xǁToolInstallerǁinstall_binary__mutmut_8, 
-        'xǁToolInstallerǁinstall_binary__mutmut_9': xǁToolInstallerǁinstall_binary__mutmut_9, 
-        'xǁToolInstallerǁinstall_binary__mutmut_10': xǁToolInstallerǁinstall_binary__mutmut_10, 
-        'xǁToolInstallerǁinstall_binary__mutmut_11': xǁToolInstallerǁinstall_binary__mutmut_11, 
-        'xǁToolInstallerǁinstall_binary__mutmut_12': xǁToolInstallerǁinstall_binary__mutmut_12, 
-        'xǁToolInstallerǁinstall_binary__mutmut_13': xǁToolInstallerǁinstall_binary__mutmut_13, 
-        'xǁToolInstallerǁinstall_binary__mutmut_14': xǁToolInstallerǁinstall_binary__mutmut_14, 
-        'xǁToolInstallerǁinstall_binary__mutmut_15': xǁToolInstallerǁinstall_binary__mutmut_15, 
-        'xǁToolInstallerǁinstall_binary__mutmut_16': xǁToolInstallerǁinstall_binary__mutmut_16, 
-        'xǁToolInstallerǁinstall_binary__mutmut_17': xǁToolInstallerǁinstall_binary__mutmut_17, 
-        'xǁToolInstallerǁinstall_binary__mutmut_18': xǁToolInstallerǁinstall_binary__mutmut_18, 
-        'xǁToolInstallerǁinstall_binary__mutmut_19': xǁToolInstallerǁinstall_binary__mutmut_19, 
-        'xǁToolInstallerǁinstall_binary__mutmut_20': xǁToolInstallerǁinstall_binary__mutmut_20, 
-        'xǁToolInstallerǁinstall_binary__mutmut_21': xǁToolInstallerǁinstall_binary__mutmut_21, 
-        'xǁToolInstallerǁinstall_binary__mutmut_22': xǁToolInstallerǁinstall_binary__mutmut_22, 
-        'xǁToolInstallerǁinstall_binary__mutmut_23': xǁToolInstallerǁinstall_binary__mutmut_23
+
+    xǁToolInstallerǁinstall_binary__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolInstallerǁinstall_binary__mutmut_1": xǁToolInstallerǁinstall_binary__mutmut_1,
+        "xǁToolInstallerǁinstall_binary__mutmut_2": xǁToolInstallerǁinstall_binary__mutmut_2,
+        "xǁToolInstallerǁinstall_binary__mutmut_3": xǁToolInstallerǁinstall_binary__mutmut_3,
+        "xǁToolInstallerǁinstall_binary__mutmut_4": xǁToolInstallerǁinstall_binary__mutmut_4,
+        "xǁToolInstallerǁinstall_binary__mutmut_5": xǁToolInstallerǁinstall_binary__mutmut_5,
+        "xǁToolInstallerǁinstall_binary__mutmut_6": xǁToolInstallerǁinstall_binary__mutmut_6,
+        "xǁToolInstallerǁinstall_binary__mutmut_7": xǁToolInstallerǁinstall_binary__mutmut_7,
+        "xǁToolInstallerǁinstall_binary__mutmut_8": xǁToolInstallerǁinstall_binary__mutmut_8,
+        "xǁToolInstallerǁinstall_binary__mutmut_9": xǁToolInstallerǁinstall_binary__mutmut_9,
+        "xǁToolInstallerǁinstall_binary__mutmut_10": xǁToolInstallerǁinstall_binary__mutmut_10,
+        "xǁToolInstallerǁinstall_binary__mutmut_11": xǁToolInstallerǁinstall_binary__mutmut_11,
+        "xǁToolInstallerǁinstall_binary__mutmut_12": xǁToolInstallerǁinstall_binary__mutmut_12,
+        "xǁToolInstallerǁinstall_binary__mutmut_13": xǁToolInstallerǁinstall_binary__mutmut_13,
+        "xǁToolInstallerǁinstall_binary__mutmut_14": xǁToolInstallerǁinstall_binary__mutmut_14,
+        "xǁToolInstallerǁinstall_binary__mutmut_15": xǁToolInstallerǁinstall_binary__mutmut_15,
+        "xǁToolInstallerǁinstall_binary__mutmut_16": xǁToolInstallerǁinstall_binary__mutmut_16,
+        "xǁToolInstallerǁinstall_binary__mutmut_17": xǁToolInstallerǁinstall_binary__mutmut_17,
+        "xǁToolInstallerǁinstall_binary__mutmut_18": xǁToolInstallerǁinstall_binary__mutmut_18,
+        "xǁToolInstallerǁinstall_binary__mutmut_19": xǁToolInstallerǁinstall_binary__mutmut_19,
+        "xǁToolInstallerǁinstall_binary__mutmut_20": xǁToolInstallerǁinstall_binary__mutmut_20,
+        "xǁToolInstallerǁinstall_binary__mutmut_21": xǁToolInstallerǁinstall_binary__mutmut_21,
+        "xǁToolInstallerǁinstall_binary__mutmut_22": xǁToolInstallerǁinstall_binary__mutmut_22,
+        "xǁToolInstallerǁinstall_binary__mutmut_23": xǁToolInstallerǁinstall_binary__mutmut_23,
     }
-    
+
     def install_binary(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolInstallerǁinstall_binary__mutmut_orig"), object.__getattribute__(self, "xǁToolInstallerǁinstall_binary__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolInstallerǁinstall_binary__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolInstallerǁinstall_binary__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     install_binary.__signature__ = _mutmut_signature(xǁToolInstallerǁinstall_binary__mutmut_orig)
-    xǁToolInstallerǁinstall_binary__mutmut_orig.__name__ = 'xǁToolInstallerǁinstall_binary'
+    xǁToolInstallerǁinstall_binary__mutmut_orig.__name__ = "xǁToolInstallerǁinstall_binary"
 
     def xǁToolInstallerǁset_permissions__mutmut_orig(self, install_dir: Path, metadata: ToolMetadata) -> None:
         """Set appropriate permissions on installed files.
@@ -8934,30 +9046,36 @@ class ToolInstaller:
             exe_path = install_dir / metadata.executable_name
             if exe_path.exists():
                 exe_path.chmod(494)
-    
-    xǁToolInstallerǁset_permissions__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolInstallerǁset_permissions__mutmut_1': xǁToolInstallerǁset_permissions__mutmut_1, 
-        'xǁToolInstallerǁset_permissions__mutmut_2': xǁToolInstallerǁset_permissions__mutmut_2, 
-        'xǁToolInstallerǁset_permissions__mutmut_3': xǁToolInstallerǁset_permissions__mutmut_3, 
-        'xǁToolInstallerǁset_permissions__mutmut_4': xǁToolInstallerǁset_permissions__mutmut_4, 
-        'xǁToolInstallerǁset_permissions__mutmut_5': xǁToolInstallerǁset_permissions__mutmut_5, 
-        'xǁToolInstallerǁset_permissions__mutmut_6': xǁToolInstallerǁset_permissions__mutmut_6, 
-        'xǁToolInstallerǁset_permissions__mutmut_7': xǁToolInstallerǁset_permissions__mutmut_7, 
-        'xǁToolInstallerǁset_permissions__mutmut_8': xǁToolInstallerǁset_permissions__mutmut_8, 
-        'xǁToolInstallerǁset_permissions__mutmut_9': xǁToolInstallerǁset_permissions__mutmut_9, 
-        'xǁToolInstallerǁset_permissions__mutmut_10': xǁToolInstallerǁset_permissions__mutmut_10, 
-        'xǁToolInstallerǁset_permissions__mutmut_11': xǁToolInstallerǁset_permissions__mutmut_11, 
-        'xǁToolInstallerǁset_permissions__mutmut_12': xǁToolInstallerǁset_permissions__mutmut_12, 
-        'xǁToolInstallerǁset_permissions__mutmut_13': xǁToolInstallerǁset_permissions__mutmut_13, 
-        'xǁToolInstallerǁset_permissions__mutmut_14': xǁToolInstallerǁset_permissions__mutmut_14
+
+    xǁToolInstallerǁset_permissions__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolInstallerǁset_permissions__mutmut_1": xǁToolInstallerǁset_permissions__mutmut_1,
+        "xǁToolInstallerǁset_permissions__mutmut_2": xǁToolInstallerǁset_permissions__mutmut_2,
+        "xǁToolInstallerǁset_permissions__mutmut_3": xǁToolInstallerǁset_permissions__mutmut_3,
+        "xǁToolInstallerǁset_permissions__mutmut_4": xǁToolInstallerǁset_permissions__mutmut_4,
+        "xǁToolInstallerǁset_permissions__mutmut_5": xǁToolInstallerǁset_permissions__mutmut_5,
+        "xǁToolInstallerǁset_permissions__mutmut_6": xǁToolInstallerǁset_permissions__mutmut_6,
+        "xǁToolInstallerǁset_permissions__mutmut_7": xǁToolInstallerǁset_permissions__mutmut_7,
+        "xǁToolInstallerǁset_permissions__mutmut_8": xǁToolInstallerǁset_permissions__mutmut_8,
+        "xǁToolInstallerǁset_permissions__mutmut_9": xǁToolInstallerǁset_permissions__mutmut_9,
+        "xǁToolInstallerǁset_permissions__mutmut_10": xǁToolInstallerǁset_permissions__mutmut_10,
+        "xǁToolInstallerǁset_permissions__mutmut_11": xǁToolInstallerǁset_permissions__mutmut_11,
+        "xǁToolInstallerǁset_permissions__mutmut_12": xǁToolInstallerǁset_permissions__mutmut_12,
+        "xǁToolInstallerǁset_permissions__mutmut_13": xǁToolInstallerǁset_permissions__mutmut_13,
+        "xǁToolInstallerǁset_permissions__mutmut_14": xǁToolInstallerǁset_permissions__mutmut_14,
     }
-    
+
     def set_permissions(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolInstallerǁset_permissions__mutmut_orig"), object.__getattribute__(self, "xǁToolInstallerǁset_permissions__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolInstallerǁset_permissions__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolInstallerǁset_permissions__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     set_permissions.__signature__ = _mutmut_signature(xǁToolInstallerǁset_permissions__mutmut_orig)
-    xǁToolInstallerǁset_permissions__mutmut_orig.__name__ = 'xǁToolInstallerǁset_permissions'
+    xǁToolInstallerǁset_permissions__mutmut_orig.__name__ = "xǁToolInstallerǁset_permissions"
 
     def xǁToolInstallerǁcreate_symlinks__mutmut_orig(self, install_dir: Path, metadata: ToolMetadata) -> None:
         """Create symlinks for easier access.
@@ -9294,29 +9412,35 @@ class ToolInstaller:
 
             latest_link.symlink_to(install_dir)
             log.debug(None)
-    
-    xǁToolInstallerǁcreate_symlinks__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolInstallerǁcreate_symlinks__mutmut_1': xǁToolInstallerǁcreate_symlinks__mutmut_1, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_2': xǁToolInstallerǁcreate_symlinks__mutmut_2, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_3': xǁToolInstallerǁcreate_symlinks__mutmut_3, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_4': xǁToolInstallerǁcreate_symlinks__mutmut_4, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_5': xǁToolInstallerǁcreate_symlinks__mutmut_5, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_6': xǁToolInstallerǁcreate_symlinks__mutmut_6, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_7': xǁToolInstallerǁcreate_symlinks__mutmut_7, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_8': xǁToolInstallerǁcreate_symlinks__mutmut_8, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_9': xǁToolInstallerǁcreate_symlinks__mutmut_9, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_10': xǁToolInstallerǁcreate_symlinks__mutmut_10, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_11': xǁToolInstallerǁcreate_symlinks__mutmut_11, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_12': xǁToolInstallerǁcreate_symlinks__mutmut_12, 
-        'xǁToolInstallerǁcreate_symlinks__mutmut_13': xǁToolInstallerǁcreate_symlinks__mutmut_13
+
+    xǁToolInstallerǁcreate_symlinks__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolInstallerǁcreate_symlinks__mutmut_1": xǁToolInstallerǁcreate_symlinks__mutmut_1,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_2": xǁToolInstallerǁcreate_symlinks__mutmut_2,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_3": xǁToolInstallerǁcreate_symlinks__mutmut_3,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_4": xǁToolInstallerǁcreate_symlinks__mutmut_4,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_5": xǁToolInstallerǁcreate_symlinks__mutmut_5,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_6": xǁToolInstallerǁcreate_symlinks__mutmut_6,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_7": xǁToolInstallerǁcreate_symlinks__mutmut_7,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_8": xǁToolInstallerǁcreate_symlinks__mutmut_8,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_9": xǁToolInstallerǁcreate_symlinks__mutmut_9,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_10": xǁToolInstallerǁcreate_symlinks__mutmut_10,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_11": xǁToolInstallerǁcreate_symlinks__mutmut_11,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_12": xǁToolInstallerǁcreate_symlinks__mutmut_12,
+        "xǁToolInstallerǁcreate_symlinks__mutmut_13": xǁToolInstallerǁcreate_symlinks__mutmut_13,
     }
-    
+
     def create_symlinks(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolInstallerǁcreate_symlinks__mutmut_orig"), object.__getattribute__(self, "xǁToolInstallerǁcreate_symlinks__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolInstallerǁcreate_symlinks__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolInstallerǁcreate_symlinks__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     create_symlinks.__signature__ = _mutmut_signature(xǁToolInstallerǁcreate_symlinks__mutmut_orig)
-    xǁToolInstallerǁcreate_symlinks__mutmut_orig.__name__ = 'xǁToolInstallerǁcreate_symlinks'
+    xǁToolInstallerǁcreate_symlinks__mutmut_orig.__name__ = "xǁToolInstallerǁcreate_symlinks"
 
 
 # <3 🧱🤝🔧🪄

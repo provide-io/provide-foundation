@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -223,7 +226,9 @@ def x_create_dependency_stub__mutmut_4(package: str, feature: str) -> type:
         """Stub class for missing optional dependency."""
 
         def __init__(self, *args: Any, **kwargs: Any) -> None:
-            raise DependencyError(package, )
+            raise DependencyError(
+                package,
+            )
 
         def __new__(cls, *args: Any, **kwargs: Any) -> Never:
             raise DependencyError(package, feature=feature)
@@ -389,7 +394,9 @@ def x_create_dependency_stub__mutmut_8(package: str, feature: str) -> type:
             raise DependencyError(package, feature=feature)
 
         def __call__(self, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError(package, )
+            raise DependencyError(
+                package,
+            )
 
         def __getattr__(self, name: str) -> Never:
             raise DependencyError(package, feature=feature)
@@ -552,7 +559,9 @@ def x_create_dependency_stub__mutmut_12(package: str, feature: str) -> type:
             raise DependencyError(package, feature=feature)
 
         def __getattr__(self, name: str) -> Never:
-            raise DependencyError(package, )
+            raise DependencyError(
+                package,
+            )
 
         @classmethod
         def __class_getitem__(cls, item: Any) -> Never:
@@ -643,29 +652,34 @@ def x_create_dependency_stub__mutmut_14(package: str, feature: str) -> type:
 
     return DependencyStub
 
-x_create_dependency_stub__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_dependency_stub__mutmut_1': x_create_dependency_stub__mutmut_1, 
-    'x_create_dependency_stub__mutmut_2': x_create_dependency_stub__mutmut_2, 
-    'x_create_dependency_stub__mutmut_3': x_create_dependency_stub__mutmut_3, 
-    'x_create_dependency_stub__mutmut_4': x_create_dependency_stub__mutmut_4, 
-    'x_create_dependency_stub__mutmut_5': x_create_dependency_stub__mutmut_5, 
-    'x_create_dependency_stub__mutmut_6': x_create_dependency_stub__mutmut_6, 
-    'x_create_dependency_stub__mutmut_7': x_create_dependency_stub__mutmut_7, 
-    'x_create_dependency_stub__mutmut_8': x_create_dependency_stub__mutmut_8, 
-    'x_create_dependency_stub__mutmut_9': x_create_dependency_stub__mutmut_9, 
-    'x_create_dependency_stub__mutmut_10': x_create_dependency_stub__mutmut_10, 
-    'x_create_dependency_stub__mutmut_11': x_create_dependency_stub__mutmut_11, 
-    'x_create_dependency_stub__mutmut_12': x_create_dependency_stub__mutmut_12, 
-    'x_create_dependency_stub__mutmut_13': x_create_dependency_stub__mutmut_13, 
-    'x_create_dependency_stub__mutmut_14': x_create_dependency_stub__mutmut_14
+
+x_create_dependency_stub__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_dependency_stub__mutmut_1": x_create_dependency_stub__mutmut_1,
+    "x_create_dependency_stub__mutmut_2": x_create_dependency_stub__mutmut_2,
+    "x_create_dependency_stub__mutmut_3": x_create_dependency_stub__mutmut_3,
+    "x_create_dependency_stub__mutmut_4": x_create_dependency_stub__mutmut_4,
+    "x_create_dependency_stub__mutmut_5": x_create_dependency_stub__mutmut_5,
+    "x_create_dependency_stub__mutmut_6": x_create_dependency_stub__mutmut_6,
+    "x_create_dependency_stub__mutmut_7": x_create_dependency_stub__mutmut_7,
+    "x_create_dependency_stub__mutmut_8": x_create_dependency_stub__mutmut_8,
+    "x_create_dependency_stub__mutmut_9": x_create_dependency_stub__mutmut_9,
+    "x_create_dependency_stub__mutmut_10": x_create_dependency_stub__mutmut_10,
+    "x_create_dependency_stub__mutmut_11": x_create_dependency_stub__mutmut_11,
+    "x_create_dependency_stub__mutmut_12": x_create_dependency_stub__mutmut_12,
+    "x_create_dependency_stub__mutmut_13": x_create_dependency_stub__mutmut_13,
+    "x_create_dependency_stub__mutmut_14": x_create_dependency_stub__mutmut_14,
 }
 
+
 def create_dependency_stub(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_dependency_stub__mutmut_orig, x_create_dependency_stub__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_dependency_stub__mutmut_orig, x_create_dependency_stub__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_dependency_stub.__signature__ = _mutmut_signature(x_create_dependency_stub__mutmut_orig)
-x_create_dependency_stub__mutmut_orig.__name__ = 'x_create_dependency_stub'
+x_create_dependency_stub__mutmut_orig.__name__ = "x_create_dependency_stub"
 
 
 def x_create_function_stub__mutmut_orig(package: str, feature: str) -> Any:
@@ -780,7 +794,9 @@ def x_create_function_stub__mutmut_4(package: str, feature: str) -> Any:
     """
 
     def stub_function(*args: Any, **kwargs: Any) -> Never:
-        raise DependencyError(package, )
+        raise DependencyError(
+            package,
+        )
 
     stub_function.__name__ = f"{feature}_stub"
     stub_function.__qualname__ = f"{feature}_stub"
@@ -835,21 +851,26 @@ def x_create_function_stub__mutmut_6(package: str, feature: str) -> Any:
 
     return stub_function
 
-x_create_function_stub__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_function_stub__mutmut_1': x_create_function_stub__mutmut_1, 
-    'x_create_function_stub__mutmut_2': x_create_function_stub__mutmut_2, 
-    'x_create_function_stub__mutmut_3': x_create_function_stub__mutmut_3, 
-    'x_create_function_stub__mutmut_4': x_create_function_stub__mutmut_4, 
-    'x_create_function_stub__mutmut_5': x_create_function_stub__mutmut_5, 
-    'x_create_function_stub__mutmut_6': x_create_function_stub__mutmut_6
+
+x_create_function_stub__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_function_stub__mutmut_1": x_create_function_stub__mutmut_1,
+    "x_create_function_stub__mutmut_2": x_create_function_stub__mutmut_2,
+    "x_create_function_stub__mutmut_3": x_create_function_stub__mutmut_3,
+    "x_create_function_stub__mutmut_4": x_create_function_stub__mutmut_4,
+    "x_create_function_stub__mutmut_5": x_create_function_stub__mutmut_5,
+    "x_create_function_stub__mutmut_6": x_create_function_stub__mutmut_6,
 }
 
+
 def create_function_stub(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_function_stub__mutmut_orig, x_create_function_stub__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_function_stub__mutmut_orig, x_create_function_stub__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_function_stub.__signature__ = _mutmut_signature(x_create_function_stub__mutmut_orig)
-x_create_function_stub__mutmut_orig.__name__ = 'x_create_function_stub'
+x_create_function_stub__mutmut_orig.__name__ = "x_create_function_stub"
 
 
 def x_create_module_stub__mutmut_orig(package: str, feature: str) -> Any:
@@ -991,7 +1012,9 @@ def x_create_module_stub__mutmut_4(package: str, feature: str) -> Any:
         """Stub module for missing optional dependency."""
 
         def __getattr__(self, name: str) -> Never:
-            raise DependencyError(package, )
+            raise DependencyError(
+                package,
+            )
 
         def __call__(self, *args: Any, **kwargs: Any) -> Never:
             raise DependencyError(package, feature=feature)
@@ -1114,7 +1137,9 @@ def x_create_module_stub__mutmut_8(package: str, feature: str) -> Any:
             raise DependencyError(package, feature=feature)
 
         def __call__(self, *args: Any, **kwargs: Any) -> Never:
-            raise DependencyError(package, )
+            raise DependencyError(
+                package,
+            )
 
     ModuleStub.__name__ = f"{package}_stub"
     ModuleStub.__qualname__ = f"{package}_stub"
@@ -1181,25 +1206,30 @@ def x_create_module_stub__mutmut_10(package: str, feature: str) -> Any:
 
     return ModuleStub()
 
-x_create_module_stub__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_module_stub__mutmut_1': x_create_module_stub__mutmut_1, 
-    'x_create_module_stub__mutmut_2': x_create_module_stub__mutmut_2, 
-    'x_create_module_stub__mutmut_3': x_create_module_stub__mutmut_3, 
-    'x_create_module_stub__mutmut_4': x_create_module_stub__mutmut_4, 
-    'x_create_module_stub__mutmut_5': x_create_module_stub__mutmut_5, 
-    'x_create_module_stub__mutmut_6': x_create_module_stub__mutmut_6, 
-    'x_create_module_stub__mutmut_7': x_create_module_stub__mutmut_7, 
-    'x_create_module_stub__mutmut_8': x_create_module_stub__mutmut_8, 
-    'x_create_module_stub__mutmut_9': x_create_module_stub__mutmut_9, 
-    'x_create_module_stub__mutmut_10': x_create_module_stub__mutmut_10
+
+x_create_module_stub__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_module_stub__mutmut_1": x_create_module_stub__mutmut_1,
+    "x_create_module_stub__mutmut_2": x_create_module_stub__mutmut_2,
+    "x_create_module_stub__mutmut_3": x_create_module_stub__mutmut_3,
+    "x_create_module_stub__mutmut_4": x_create_module_stub__mutmut_4,
+    "x_create_module_stub__mutmut_5": x_create_module_stub__mutmut_5,
+    "x_create_module_stub__mutmut_6": x_create_module_stub__mutmut_6,
+    "x_create_module_stub__mutmut_7": x_create_module_stub__mutmut_7,
+    "x_create_module_stub__mutmut_8": x_create_module_stub__mutmut_8,
+    "x_create_module_stub__mutmut_9": x_create_module_stub__mutmut_9,
+    "x_create_module_stub__mutmut_10": x_create_module_stub__mutmut_10,
 }
 
+
 def create_module_stub(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_module_stub__mutmut_orig, x_create_module_stub__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_module_stub__mutmut_orig, x_create_module_stub__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_module_stub.__signature__ = _mutmut_signature(x_create_module_stub__mutmut_orig)
-x_create_module_stub__mutmut_orig.__name__ = 'x_create_module_stub'
+x_create_module_stub__mutmut_orig.__name__ = "x_create_module_stub"
 
 
 __all__ = [

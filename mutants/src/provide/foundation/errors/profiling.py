@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -138,7 +141,9 @@ class ProfilingError(FoundationError):
         **kwargs: Any,
     ) -> None:
         if component:
-            kwargs.setdefault("context", )["profiling.component"] = component
+            kwargs.setdefault(
+                "context",
+            )["profiling.component"] = component
         if sample_rate is not None:
             kwargs.setdefault("context", {})["profiling.sample_rate"] = sample_rate
         super().__init__(message, **kwargs)
@@ -280,7 +285,9 @@ class ProfilingError(FoundationError):
         if component:
             kwargs.setdefault("context", {})["profiling.component"] = component
         if sample_rate is not None:
-            kwargs.setdefault("context", )["profiling.sample_rate"] = sample_rate
+            kwargs.setdefault(
+                "context",
+            )["profiling.sample_rate"] = sample_rate
         super().__init__(message, **kwargs)
 
     def xǁProfilingErrorǁ__init____mutmut_16(
@@ -379,39 +386,47 @@ class ProfilingError(FoundationError):
             kwargs.setdefault("context", {})["profiling.component"] = component
         if sample_rate is not None:
             kwargs.setdefault("context", {})["profiling.sample_rate"] = sample_rate
-        super().__init__(message, )
-    
-    xǁProfilingErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfilingErrorǁ__init____mutmut_1': xǁProfilingErrorǁ__init____mutmut_1, 
-        'xǁProfilingErrorǁ__init____mutmut_2': xǁProfilingErrorǁ__init____mutmut_2, 
-        'xǁProfilingErrorǁ__init____mutmut_3': xǁProfilingErrorǁ__init____mutmut_3, 
-        'xǁProfilingErrorǁ__init____mutmut_4': xǁProfilingErrorǁ__init____mutmut_4, 
-        'xǁProfilingErrorǁ__init____mutmut_5': xǁProfilingErrorǁ__init____mutmut_5, 
-        'xǁProfilingErrorǁ__init____mutmut_6': xǁProfilingErrorǁ__init____mutmut_6, 
-        'xǁProfilingErrorǁ__init____mutmut_7': xǁProfilingErrorǁ__init____mutmut_7, 
-        'xǁProfilingErrorǁ__init____mutmut_8': xǁProfilingErrorǁ__init____mutmut_8, 
-        'xǁProfilingErrorǁ__init____mutmut_9': xǁProfilingErrorǁ__init____mutmut_9, 
-        'xǁProfilingErrorǁ__init____mutmut_10': xǁProfilingErrorǁ__init____mutmut_10, 
-        'xǁProfilingErrorǁ__init____mutmut_11': xǁProfilingErrorǁ__init____mutmut_11, 
-        'xǁProfilingErrorǁ__init____mutmut_12': xǁProfilingErrorǁ__init____mutmut_12, 
-        'xǁProfilingErrorǁ__init____mutmut_13': xǁProfilingErrorǁ__init____mutmut_13, 
-        'xǁProfilingErrorǁ__init____mutmut_14': xǁProfilingErrorǁ__init____mutmut_14, 
-        'xǁProfilingErrorǁ__init____mutmut_15': xǁProfilingErrorǁ__init____mutmut_15, 
-        'xǁProfilingErrorǁ__init____mutmut_16': xǁProfilingErrorǁ__init____mutmut_16, 
-        'xǁProfilingErrorǁ__init____mutmut_17': xǁProfilingErrorǁ__init____mutmut_17, 
-        'xǁProfilingErrorǁ__init____mutmut_18': xǁProfilingErrorǁ__init____mutmut_18, 
-        'xǁProfilingErrorǁ__init____mutmut_19': xǁProfilingErrorǁ__init____mutmut_19, 
-        'xǁProfilingErrorǁ__init____mutmut_20': xǁProfilingErrorǁ__init____mutmut_20, 
-        'xǁProfilingErrorǁ__init____mutmut_21': xǁProfilingErrorǁ__init____mutmut_21, 
-        'xǁProfilingErrorǁ__init____mutmut_22': xǁProfilingErrorǁ__init____mutmut_22
+        super().__init__(
+            message,
+        )
+
+    xǁProfilingErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfilingErrorǁ__init____mutmut_1": xǁProfilingErrorǁ__init____mutmut_1,
+        "xǁProfilingErrorǁ__init____mutmut_2": xǁProfilingErrorǁ__init____mutmut_2,
+        "xǁProfilingErrorǁ__init____mutmut_3": xǁProfilingErrorǁ__init____mutmut_3,
+        "xǁProfilingErrorǁ__init____mutmut_4": xǁProfilingErrorǁ__init____mutmut_4,
+        "xǁProfilingErrorǁ__init____mutmut_5": xǁProfilingErrorǁ__init____mutmut_5,
+        "xǁProfilingErrorǁ__init____mutmut_6": xǁProfilingErrorǁ__init____mutmut_6,
+        "xǁProfilingErrorǁ__init____mutmut_7": xǁProfilingErrorǁ__init____mutmut_7,
+        "xǁProfilingErrorǁ__init____mutmut_8": xǁProfilingErrorǁ__init____mutmut_8,
+        "xǁProfilingErrorǁ__init____mutmut_9": xǁProfilingErrorǁ__init____mutmut_9,
+        "xǁProfilingErrorǁ__init____mutmut_10": xǁProfilingErrorǁ__init____mutmut_10,
+        "xǁProfilingErrorǁ__init____mutmut_11": xǁProfilingErrorǁ__init____mutmut_11,
+        "xǁProfilingErrorǁ__init____mutmut_12": xǁProfilingErrorǁ__init____mutmut_12,
+        "xǁProfilingErrorǁ__init____mutmut_13": xǁProfilingErrorǁ__init____mutmut_13,
+        "xǁProfilingErrorǁ__init____mutmut_14": xǁProfilingErrorǁ__init____mutmut_14,
+        "xǁProfilingErrorǁ__init____mutmut_15": xǁProfilingErrorǁ__init____mutmut_15,
+        "xǁProfilingErrorǁ__init____mutmut_16": xǁProfilingErrorǁ__init____mutmut_16,
+        "xǁProfilingErrorǁ__init____mutmut_17": xǁProfilingErrorǁ__init____mutmut_17,
+        "xǁProfilingErrorǁ__init____mutmut_18": xǁProfilingErrorǁ__init____mutmut_18,
+        "xǁProfilingErrorǁ__init____mutmut_19": xǁProfilingErrorǁ__init____mutmut_19,
+        "xǁProfilingErrorǁ__init____mutmut_20": xǁProfilingErrorǁ__init____mutmut_20,
+        "xǁProfilingErrorǁ__init____mutmut_21": xǁProfilingErrorǁ__init____mutmut_21,
+        "xǁProfilingErrorǁ__init____mutmut_22": xǁProfilingErrorǁ__init____mutmut_22,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfilingErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁProfilingErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfilingErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁProfilingErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁProfilingErrorǁ__init____mutmut_orig)
-    xǁProfilingErrorǁ__init____mutmut_orig.__name__ = 'xǁProfilingErrorǁ__init__'
+    xǁProfilingErrorǁ__init____mutmut_orig.__name__ = "xǁProfilingErrorǁ__init__"
 
     def xǁProfilingErrorǁ_default_code__mutmut_orig(self) -> str:
         return "PROFILING_ERROR"
@@ -421,18 +436,24 @@ class ProfilingError(FoundationError):
 
     def xǁProfilingErrorǁ_default_code__mutmut_2(self) -> str:
         return "profiling_error"
-    
-    xǁProfilingErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfilingErrorǁ_default_code__mutmut_1': xǁProfilingErrorǁ_default_code__mutmut_1, 
-        'xǁProfilingErrorǁ_default_code__mutmut_2': xǁProfilingErrorǁ_default_code__mutmut_2
+
+    xǁProfilingErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfilingErrorǁ_default_code__mutmut_1": xǁProfilingErrorǁ_default_code__mutmut_1,
+        "xǁProfilingErrorǁ_default_code__mutmut_2": xǁProfilingErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfilingErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁProfilingErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfilingErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁProfilingErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁProfilingErrorǁ_default_code__mutmut_orig)
-    xǁProfilingErrorǁ_default_code__mutmut_orig.__name__ = 'xǁProfilingErrorǁ_default_code'
+    xǁProfilingErrorǁ_default_code__mutmut_orig.__name__ = "xǁProfilingErrorǁ_default_code"
 
 
 class SamplingError(ProfilingError):
@@ -543,7 +564,9 @@ class SamplingError(ProfilingError):
         **kwargs: Any,
     ) -> None:
         if sample_rate is not None:
-            kwargs.setdefault("context", )["sampling.rate"] = sample_rate
+            kwargs.setdefault(
+                "context",
+            )["sampling.rate"] = sample_rate
         if samples_processed is not None:
             kwargs.setdefault("context", {})["sampling.processed"] = samples_processed
         super().__init__(message, **kwargs)
@@ -685,7 +708,9 @@ class SamplingError(ProfilingError):
         if sample_rate is not None:
             kwargs.setdefault("context", {})["sampling.rate"] = sample_rate
         if samples_processed is not None:
-            kwargs.setdefault("context", )["sampling.processed"] = samples_processed
+            kwargs.setdefault(
+                "context",
+            )["sampling.processed"] = samples_processed
         super().__init__(message, **kwargs)
 
     def xǁSamplingErrorǁ__init____mutmut_17(
@@ -784,40 +809,48 @@ class SamplingError(ProfilingError):
             kwargs.setdefault("context", {})["sampling.rate"] = sample_rate
         if samples_processed is not None:
             kwargs.setdefault("context", {})["sampling.processed"] = samples_processed
-        super().__init__(message, )
-    
-    xǁSamplingErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSamplingErrorǁ__init____mutmut_1': xǁSamplingErrorǁ__init____mutmut_1, 
-        'xǁSamplingErrorǁ__init____mutmut_2': xǁSamplingErrorǁ__init____mutmut_2, 
-        'xǁSamplingErrorǁ__init____mutmut_3': xǁSamplingErrorǁ__init____mutmut_3, 
-        'xǁSamplingErrorǁ__init____mutmut_4': xǁSamplingErrorǁ__init____mutmut_4, 
-        'xǁSamplingErrorǁ__init____mutmut_5': xǁSamplingErrorǁ__init____mutmut_5, 
-        'xǁSamplingErrorǁ__init____mutmut_6': xǁSamplingErrorǁ__init____mutmut_6, 
-        'xǁSamplingErrorǁ__init____mutmut_7': xǁSamplingErrorǁ__init____mutmut_7, 
-        'xǁSamplingErrorǁ__init____mutmut_8': xǁSamplingErrorǁ__init____mutmut_8, 
-        'xǁSamplingErrorǁ__init____mutmut_9': xǁSamplingErrorǁ__init____mutmut_9, 
-        'xǁSamplingErrorǁ__init____mutmut_10': xǁSamplingErrorǁ__init____mutmut_10, 
-        'xǁSamplingErrorǁ__init____mutmut_11': xǁSamplingErrorǁ__init____mutmut_11, 
-        'xǁSamplingErrorǁ__init____mutmut_12': xǁSamplingErrorǁ__init____mutmut_12, 
-        'xǁSamplingErrorǁ__init____mutmut_13': xǁSamplingErrorǁ__init____mutmut_13, 
-        'xǁSamplingErrorǁ__init____mutmut_14': xǁSamplingErrorǁ__init____mutmut_14, 
-        'xǁSamplingErrorǁ__init____mutmut_15': xǁSamplingErrorǁ__init____mutmut_15, 
-        'xǁSamplingErrorǁ__init____mutmut_16': xǁSamplingErrorǁ__init____mutmut_16, 
-        'xǁSamplingErrorǁ__init____mutmut_17': xǁSamplingErrorǁ__init____mutmut_17, 
-        'xǁSamplingErrorǁ__init____mutmut_18': xǁSamplingErrorǁ__init____mutmut_18, 
-        'xǁSamplingErrorǁ__init____mutmut_19': xǁSamplingErrorǁ__init____mutmut_19, 
-        'xǁSamplingErrorǁ__init____mutmut_20': xǁSamplingErrorǁ__init____mutmut_20, 
-        'xǁSamplingErrorǁ__init____mutmut_21': xǁSamplingErrorǁ__init____mutmut_21, 
-        'xǁSamplingErrorǁ__init____mutmut_22': xǁSamplingErrorǁ__init____mutmut_22, 
-        'xǁSamplingErrorǁ__init____mutmut_23': xǁSamplingErrorǁ__init____mutmut_23
+        super().__init__(
+            message,
+        )
+
+    xǁSamplingErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSamplingErrorǁ__init____mutmut_1": xǁSamplingErrorǁ__init____mutmut_1,
+        "xǁSamplingErrorǁ__init____mutmut_2": xǁSamplingErrorǁ__init____mutmut_2,
+        "xǁSamplingErrorǁ__init____mutmut_3": xǁSamplingErrorǁ__init____mutmut_3,
+        "xǁSamplingErrorǁ__init____mutmut_4": xǁSamplingErrorǁ__init____mutmut_4,
+        "xǁSamplingErrorǁ__init____mutmut_5": xǁSamplingErrorǁ__init____mutmut_5,
+        "xǁSamplingErrorǁ__init____mutmut_6": xǁSamplingErrorǁ__init____mutmut_6,
+        "xǁSamplingErrorǁ__init____mutmut_7": xǁSamplingErrorǁ__init____mutmut_7,
+        "xǁSamplingErrorǁ__init____mutmut_8": xǁSamplingErrorǁ__init____mutmut_8,
+        "xǁSamplingErrorǁ__init____mutmut_9": xǁSamplingErrorǁ__init____mutmut_9,
+        "xǁSamplingErrorǁ__init____mutmut_10": xǁSamplingErrorǁ__init____mutmut_10,
+        "xǁSamplingErrorǁ__init____mutmut_11": xǁSamplingErrorǁ__init____mutmut_11,
+        "xǁSamplingErrorǁ__init____mutmut_12": xǁSamplingErrorǁ__init____mutmut_12,
+        "xǁSamplingErrorǁ__init____mutmut_13": xǁSamplingErrorǁ__init____mutmut_13,
+        "xǁSamplingErrorǁ__init____mutmut_14": xǁSamplingErrorǁ__init____mutmut_14,
+        "xǁSamplingErrorǁ__init____mutmut_15": xǁSamplingErrorǁ__init____mutmut_15,
+        "xǁSamplingErrorǁ__init____mutmut_16": xǁSamplingErrorǁ__init____mutmut_16,
+        "xǁSamplingErrorǁ__init____mutmut_17": xǁSamplingErrorǁ__init____mutmut_17,
+        "xǁSamplingErrorǁ__init____mutmut_18": xǁSamplingErrorǁ__init____mutmut_18,
+        "xǁSamplingErrorǁ__init____mutmut_19": xǁSamplingErrorǁ__init____mutmut_19,
+        "xǁSamplingErrorǁ__init____mutmut_20": xǁSamplingErrorǁ__init____mutmut_20,
+        "xǁSamplingErrorǁ__init____mutmut_21": xǁSamplingErrorǁ__init____mutmut_21,
+        "xǁSamplingErrorǁ__init____mutmut_22": xǁSamplingErrorǁ__init____mutmut_22,
+        "xǁSamplingErrorǁ__init____mutmut_23": xǁSamplingErrorǁ__init____mutmut_23,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSamplingErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁSamplingErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSamplingErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁSamplingErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁSamplingErrorǁ__init____mutmut_orig)
-    xǁSamplingErrorǁ__init____mutmut_orig.__name__ = 'xǁSamplingErrorǁ__init__'
+    xǁSamplingErrorǁ__init____mutmut_orig.__name__ = "xǁSamplingErrorǁ__init__"
 
     def xǁSamplingErrorǁ_default_code__mutmut_orig(self) -> str:
         return "SAMPLING_ERROR"
@@ -827,18 +860,24 @@ class SamplingError(ProfilingError):
 
     def xǁSamplingErrorǁ_default_code__mutmut_2(self) -> str:
         return "sampling_error"
-    
-    xǁSamplingErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSamplingErrorǁ_default_code__mutmut_1': xǁSamplingErrorǁ_default_code__mutmut_1, 
-        'xǁSamplingErrorǁ_default_code__mutmut_2': xǁSamplingErrorǁ_default_code__mutmut_2
+
+    xǁSamplingErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSamplingErrorǁ_default_code__mutmut_1": xǁSamplingErrorǁ_default_code__mutmut_1,
+        "xǁSamplingErrorǁ_default_code__mutmut_2": xǁSamplingErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSamplingErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁSamplingErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSamplingErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁSamplingErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁSamplingErrorǁ_default_code__mutmut_orig)
-    xǁSamplingErrorǁ_default_code__mutmut_orig.__name__ = 'xǁSamplingErrorǁ_default_code'
+    xǁSamplingErrorǁ_default_code__mutmut_orig.__name__ = "xǁSamplingErrorǁ_default_code"
 
 
 class ExporterError(ProfilingError):
@@ -952,7 +991,9 @@ class ExporterError(ProfilingError):
         **kwargs: Any,
     ) -> None:
         if exporter_name:
-            kwargs.setdefault("context", )["exporter.name"] = exporter_name
+            kwargs.setdefault(
+                "context",
+            )["exporter.name"] = exporter_name
         if endpoint:
             kwargs.setdefault("context", {})["exporter.endpoint"] = endpoint
         if retry_count is not None:
@@ -1107,7 +1148,9 @@ class ExporterError(ProfilingError):
         if exporter_name:
             kwargs.setdefault("context", {})["exporter.name"] = exporter_name
         if endpoint:
-            kwargs.setdefault("context", )["exporter.endpoint"] = endpoint
+            kwargs.setdefault(
+                "context",
+            )["exporter.endpoint"] = endpoint
         if retry_count is not None:
             kwargs.setdefault("context", {})["exporter.retry_count"] = retry_count
         super().__init__(message, **kwargs)
@@ -1279,7 +1322,9 @@ class ExporterError(ProfilingError):
         if endpoint:
             kwargs.setdefault("context", {})["exporter.endpoint"] = endpoint
         if retry_count is not None:
-            kwargs.setdefault("context", )["exporter.retry_count"] = retry_count
+            kwargs.setdefault(
+                "context",
+            )["exporter.retry_count"] = retry_count
         super().__init__(message, **kwargs)
 
     def xǁExporterErrorǁ__init____mutmut_25(
@@ -1399,48 +1444,56 @@ class ExporterError(ProfilingError):
             kwargs.setdefault("context", {})["exporter.endpoint"] = endpoint
         if retry_count is not None:
             kwargs.setdefault("context", {})["exporter.retry_count"] = retry_count
-        super().__init__(message, )
-    
-    xǁExporterErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁExporterErrorǁ__init____mutmut_1': xǁExporterErrorǁ__init____mutmut_1, 
-        'xǁExporterErrorǁ__init____mutmut_2': xǁExporterErrorǁ__init____mutmut_2, 
-        'xǁExporterErrorǁ__init____mutmut_3': xǁExporterErrorǁ__init____mutmut_3, 
-        'xǁExporterErrorǁ__init____mutmut_4': xǁExporterErrorǁ__init____mutmut_4, 
-        'xǁExporterErrorǁ__init____mutmut_5': xǁExporterErrorǁ__init____mutmut_5, 
-        'xǁExporterErrorǁ__init____mutmut_6': xǁExporterErrorǁ__init____mutmut_6, 
-        'xǁExporterErrorǁ__init____mutmut_7': xǁExporterErrorǁ__init____mutmut_7, 
-        'xǁExporterErrorǁ__init____mutmut_8': xǁExporterErrorǁ__init____mutmut_8, 
-        'xǁExporterErrorǁ__init____mutmut_9': xǁExporterErrorǁ__init____mutmut_9, 
-        'xǁExporterErrorǁ__init____mutmut_10': xǁExporterErrorǁ__init____mutmut_10, 
-        'xǁExporterErrorǁ__init____mutmut_11': xǁExporterErrorǁ__init____mutmut_11, 
-        'xǁExporterErrorǁ__init____mutmut_12': xǁExporterErrorǁ__init____mutmut_12, 
-        'xǁExporterErrorǁ__init____mutmut_13': xǁExporterErrorǁ__init____mutmut_13, 
-        'xǁExporterErrorǁ__init____mutmut_14': xǁExporterErrorǁ__init____mutmut_14, 
-        'xǁExporterErrorǁ__init____mutmut_15': xǁExporterErrorǁ__init____mutmut_15, 
-        'xǁExporterErrorǁ__init____mutmut_16': xǁExporterErrorǁ__init____mutmut_16, 
-        'xǁExporterErrorǁ__init____mutmut_17': xǁExporterErrorǁ__init____mutmut_17, 
-        'xǁExporterErrorǁ__init____mutmut_18': xǁExporterErrorǁ__init____mutmut_18, 
-        'xǁExporterErrorǁ__init____mutmut_19': xǁExporterErrorǁ__init____mutmut_19, 
-        'xǁExporterErrorǁ__init____mutmut_20': xǁExporterErrorǁ__init____mutmut_20, 
-        'xǁExporterErrorǁ__init____mutmut_21': xǁExporterErrorǁ__init____mutmut_21, 
-        'xǁExporterErrorǁ__init____mutmut_22': xǁExporterErrorǁ__init____mutmut_22, 
-        'xǁExporterErrorǁ__init____mutmut_23': xǁExporterErrorǁ__init____mutmut_23, 
-        'xǁExporterErrorǁ__init____mutmut_24': xǁExporterErrorǁ__init____mutmut_24, 
-        'xǁExporterErrorǁ__init____mutmut_25': xǁExporterErrorǁ__init____mutmut_25, 
-        'xǁExporterErrorǁ__init____mutmut_26': xǁExporterErrorǁ__init____mutmut_26, 
-        'xǁExporterErrorǁ__init____mutmut_27': xǁExporterErrorǁ__init____mutmut_27, 
-        'xǁExporterErrorǁ__init____mutmut_28': xǁExporterErrorǁ__init____mutmut_28, 
-        'xǁExporterErrorǁ__init____mutmut_29': xǁExporterErrorǁ__init____mutmut_29, 
-        'xǁExporterErrorǁ__init____mutmut_30': xǁExporterErrorǁ__init____mutmut_30, 
-        'xǁExporterErrorǁ__init____mutmut_31': xǁExporterErrorǁ__init____mutmut_31
+        super().__init__(
+            message,
+        )
+
+    xǁExporterErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁExporterErrorǁ__init____mutmut_1": xǁExporterErrorǁ__init____mutmut_1,
+        "xǁExporterErrorǁ__init____mutmut_2": xǁExporterErrorǁ__init____mutmut_2,
+        "xǁExporterErrorǁ__init____mutmut_3": xǁExporterErrorǁ__init____mutmut_3,
+        "xǁExporterErrorǁ__init____mutmut_4": xǁExporterErrorǁ__init____mutmut_4,
+        "xǁExporterErrorǁ__init____mutmut_5": xǁExporterErrorǁ__init____mutmut_5,
+        "xǁExporterErrorǁ__init____mutmut_6": xǁExporterErrorǁ__init____mutmut_6,
+        "xǁExporterErrorǁ__init____mutmut_7": xǁExporterErrorǁ__init____mutmut_7,
+        "xǁExporterErrorǁ__init____mutmut_8": xǁExporterErrorǁ__init____mutmut_8,
+        "xǁExporterErrorǁ__init____mutmut_9": xǁExporterErrorǁ__init____mutmut_9,
+        "xǁExporterErrorǁ__init____mutmut_10": xǁExporterErrorǁ__init____mutmut_10,
+        "xǁExporterErrorǁ__init____mutmut_11": xǁExporterErrorǁ__init____mutmut_11,
+        "xǁExporterErrorǁ__init____mutmut_12": xǁExporterErrorǁ__init____mutmut_12,
+        "xǁExporterErrorǁ__init____mutmut_13": xǁExporterErrorǁ__init____mutmut_13,
+        "xǁExporterErrorǁ__init____mutmut_14": xǁExporterErrorǁ__init____mutmut_14,
+        "xǁExporterErrorǁ__init____mutmut_15": xǁExporterErrorǁ__init____mutmut_15,
+        "xǁExporterErrorǁ__init____mutmut_16": xǁExporterErrorǁ__init____mutmut_16,
+        "xǁExporterErrorǁ__init____mutmut_17": xǁExporterErrorǁ__init____mutmut_17,
+        "xǁExporterErrorǁ__init____mutmut_18": xǁExporterErrorǁ__init____mutmut_18,
+        "xǁExporterErrorǁ__init____mutmut_19": xǁExporterErrorǁ__init____mutmut_19,
+        "xǁExporterErrorǁ__init____mutmut_20": xǁExporterErrorǁ__init____mutmut_20,
+        "xǁExporterErrorǁ__init____mutmut_21": xǁExporterErrorǁ__init____mutmut_21,
+        "xǁExporterErrorǁ__init____mutmut_22": xǁExporterErrorǁ__init____mutmut_22,
+        "xǁExporterErrorǁ__init____mutmut_23": xǁExporterErrorǁ__init____mutmut_23,
+        "xǁExporterErrorǁ__init____mutmut_24": xǁExporterErrorǁ__init____mutmut_24,
+        "xǁExporterErrorǁ__init____mutmut_25": xǁExporterErrorǁ__init____mutmut_25,
+        "xǁExporterErrorǁ__init____mutmut_26": xǁExporterErrorǁ__init____mutmut_26,
+        "xǁExporterErrorǁ__init____mutmut_27": xǁExporterErrorǁ__init____mutmut_27,
+        "xǁExporterErrorǁ__init____mutmut_28": xǁExporterErrorǁ__init____mutmut_28,
+        "xǁExporterErrorǁ__init____mutmut_29": xǁExporterErrorǁ__init____mutmut_29,
+        "xǁExporterErrorǁ__init____mutmut_30": xǁExporterErrorǁ__init____mutmut_30,
+        "xǁExporterErrorǁ__init____mutmut_31": xǁExporterErrorǁ__init____mutmut_31,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁExporterErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁExporterErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁExporterErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁExporterErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁExporterErrorǁ__init____mutmut_orig)
-    xǁExporterErrorǁ__init____mutmut_orig.__name__ = 'xǁExporterErrorǁ__init__'
+    xǁExporterErrorǁ__init____mutmut_orig.__name__ = "xǁExporterErrorǁ__init__"
 
     def xǁExporterErrorǁ_default_code__mutmut_orig(self) -> str:
         return "EXPORTER_ERROR"
@@ -1450,18 +1503,24 @@ class ExporterError(ProfilingError):
 
     def xǁExporterErrorǁ_default_code__mutmut_2(self) -> str:
         return "exporter_error"
-    
-    xǁExporterErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁExporterErrorǁ_default_code__mutmut_1': xǁExporterErrorǁ_default_code__mutmut_1, 
-        'xǁExporterErrorǁ_default_code__mutmut_2': xǁExporterErrorǁ_default_code__mutmut_2
+
+    xǁExporterErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁExporterErrorǁ_default_code__mutmut_1": xǁExporterErrorǁ_default_code__mutmut_1,
+        "xǁExporterErrorǁ_default_code__mutmut_2": xǁExporterErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁExporterErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁExporterErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁExporterErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁExporterErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁExporterErrorǁ_default_code__mutmut_orig)
-    xǁExporterErrorǁ_default_code__mutmut_orig.__name__ = 'xǁExporterErrorǁ_default_code'
+    xǁExporterErrorǁ_default_code__mutmut_orig.__name__ = "xǁExporterErrorǁ_default_code"
 
 
 class MetricsError(ProfilingError):
@@ -1558,7 +1617,9 @@ class MetricsError(ProfilingError):
         **kwargs: Any,
     ) -> None:
         if metric_name:
-            kwargs.setdefault("context", )["metrics.name"] = metric_name
+            kwargs.setdefault(
+                "context",
+            )["metrics.name"] = metric_name
         if metric_value is not None:
             kwargs.setdefault("context", {})["metrics.value"] = metric_value
         super().__init__(message, **kwargs)
@@ -1700,7 +1761,9 @@ class MetricsError(ProfilingError):
         if metric_name:
             kwargs.setdefault("context", {})["metrics.name"] = metric_name
         if metric_value is not None:
-            kwargs.setdefault("context", )["metrics.value"] = metric_value
+            kwargs.setdefault(
+                "context",
+            )["metrics.value"] = metric_value
         super().__init__(message, **kwargs)
 
     def xǁMetricsErrorǁ__init____mutmut_16(
@@ -1799,39 +1862,47 @@ class MetricsError(ProfilingError):
             kwargs.setdefault("context", {})["metrics.name"] = metric_name
         if metric_value is not None:
             kwargs.setdefault("context", {})["metrics.value"] = metric_value
-        super().__init__(message, )
-    
-    xǁMetricsErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁMetricsErrorǁ__init____mutmut_1': xǁMetricsErrorǁ__init____mutmut_1, 
-        'xǁMetricsErrorǁ__init____mutmut_2': xǁMetricsErrorǁ__init____mutmut_2, 
-        'xǁMetricsErrorǁ__init____mutmut_3': xǁMetricsErrorǁ__init____mutmut_3, 
-        'xǁMetricsErrorǁ__init____mutmut_4': xǁMetricsErrorǁ__init____mutmut_4, 
-        'xǁMetricsErrorǁ__init____mutmut_5': xǁMetricsErrorǁ__init____mutmut_5, 
-        'xǁMetricsErrorǁ__init____mutmut_6': xǁMetricsErrorǁ__init____mutmut_6, 
-        'xǁMetricsErrorǁ__init____mutmut_7': xǁMetricsErrorǁ__init____mutmut_7, 
-        'xǁMetricsErrorǁ__init____mutmut_8': xǁMetricsErrorǁ__init____mutmut_8, 
-        'xǁMetricsErrorǁ__init____mutmut_9': xǁMetricsErrorǁ__init____mutmut_9, 
-        'xǁMetricsErrorǁ__init____mutmut_10': xǁMetricsErrorǁ__init____mutmut_10, 
-        'xǁMetricsErrorǁ__init____mutmut_11': xǁMetricsErrorǁ__init____mutmut_11, 
-        'xǁMetricsErrorǁ__init____mutmut_12': xǁMetricsErrorǁ__init____mutmut_12, 
-        'xǁMetricsErrorǁ__init____mutmut_13': xǁMetricsErrorǁ__init____mutmut_13, 
-        'xǁMetricsErrorǁ__init____mutmut_14': xǁMetricsErrorǁ__init____mutmut_14, 
-        'xǁMetricsErrorǁ__init____mutmut_15': xǁMetricsErrorǁ__init____mutmut_15, 
-        'xǁMetricsErrorǁ__init____mutmut_16': xǁMetricsErrorǁ__init____mutmut_16, 
-        'xǁMetricsErrorǁ__init____mutmut_17': xǁMetricsErrorǁ__init____mutmut_17, 
-        'xǁMetricsErrorǁ__init____mutmut_18': xǁMetricsErrorǁ__init____mutmut_18, 
-        'xǁMetricsErrorǁ__init____mutmut_19': xǁMetricsErrorǁ__init____mutmut_19, 
-        'xǁMetricsErrorǁ__init____mutmut_20': xǁMetricsErrorǁ__init____mutmut_20, 
-        'xǁMetricsErrorǁ__init____mutmut_21': xǁMetricsErrorǁ__init____mutmut_21, 
-        'xǁMetricsErrorǁ__init____mutmut_22': xǁMetricsErrorǁ__init____mutmut_22
+        super().__init__(
+            message,
+        )
+
+    xǁMetricsErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁMetricsErrorǁ__init____mutmut_1": xǁMetricsErrorǁ__init____mutmut_1,
+        "xǁMetricsErrorǁ__init____mutmut_2": xǁMetricsErrorǁ__init____mutmut_2,
+        "xǁMetricsErrorǁ__init____mutmut_3": xǁMetricsErrorǁ__init____mutmut_3,
+        "xǁMetricsErrorǁ__init____mutmut_4": xǁMetricsErrorǁ__init____mutmut_4,
+        "xǁMetricsErrorǁ__init____mutmut_5": xǁMetricsErrorǁ__init____mutmut_5,
+        "xǁMetricsErrorǁ__init____mutmut_6": xǁMetricsErrorǁ__init____mutmut_6,
+        "xǁMetricsErrorǁ__init____mutmut_7": xǁMetricsErrorǁ__init____mutmut_7,
+        "xǁMetricsErrorǁ__init____mutmut_8": xǁMetricsErrorǁ__init____mutmut_8,
+        "xǁMetricsErrorǁ__init____mutmut_9": xǁMetricsErrorǁ__init____mutmut_9,
+        "xǁMetricsErrorǁ__init____mutmut_10": xǁMetricsErrorǁ__init____mutmut_10,
+        "xǁMetricsErrorǁ__init____mutmut_11": xǁMetricsErrorǁ__init____mutmut_11,
+        "xǁMetricsErrorǁ__init____mutmut_12": xǁMetricsErrorǁ__init____mutmut_12,
+        "xǁMetricsErrorǁ__init____mutmut_13": xǁMetricsErrorǁ__init____mutmut_13,
+        "xǁMetricsErrorǁ__init____mutmut_14": xǁMetricsErrorǁ__init____mutmut_14,
+        "xǁMetricsErrorǁ__init____mutmut_15": xǁMetricsErrorǁ__init____mutmut_15,
+        "xǁMetricsErrorǁ__init____mutmut_16": xǁMetricsErrorǁ__init____mutmut_16,
+        "xǁMetricsErrorǁ__init____mutmut_17": xǁMetricsErrorǁ__init____mutmut_17,
+        "xǁMetricsErrorǁ__init____mutmut_18": xǁMetricsErrorǁ__init____mutmut_18,
+        "xǁMetricsErrorǁ__init____mutmut_19": xǁMetricsErrorǁ__init____mutmut_19,
+        "xǁMetricsErrorǁ__init____mutmut_20": xǁMetricsErrorǁ__init____mutmut_20,
+        "xǁMetricsErrorǁ__init____mutmut_21": xǁMetricsErrorǁ__init____mutmut_21,
+        "xǁMetricsErrorǁ__init____mutmut_22": xǁMetricsErrorǁ__init____mutmut_22,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁMetricsErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁMetricsErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁMetricsErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁMetricsErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁMetricsErrorǁ__init____mutmut_orig)
-    xǁMetricsErrorǁ__init____mutmut_orig.__name__ = 'xǁMetricsErrorǁ__init__'
+    xǁMetricsErrorǁ__init____mutmut_orig.__name__ = "xǁMetricsErrorǁ__init__"
 
     def xǁMetricsErrorǁ_default_code__mutmut_orig(self) -> str:
         return "METRICS_ERROR"
@@ -1841,18 +1912,24 @@ class MetricsError(ProfilingError):
 
     def xǁMetricsErrorǁ_default_code__mutmut_2(self) -> str:
         return "metrics_error"
-    
-    xǁMetricsErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁMetricsErrorǁ_default_code__mutmut_1': xǁMetricsErrorǁ_default_code__mutmut_1, 
-        'xǁMetricsErrorǁ_default_code__mutmut_2': xǁMetricsErrorǁ_default_code__mutmut_2
+
+    xǁMetricsErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁMetricsErrorǁ_default_code__mutmut_1": xǁMetricsErrorǁ_default_code__mutmut_1,
+        "xǁMetricsErrorǁ_default_code__mutmut_2": xǁMetricsErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁMetricsErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁMetricsErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁMetricsErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁMetricsErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁMetricsErrorǁ_default_code__mutmut_orig)
-    xǁMetricsErrorǁ_default_code__mutmut_orig.__name__ = 'xǁMetricsErrorǁ_default_code'
+    xǁMetricsErrorǁ_default_code__mutmut_orig.__name__ = "xǁMetricsErrorǁ_default_code"
 
 
 # <3 🧱🤝🐛🪄

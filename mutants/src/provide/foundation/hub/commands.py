@@ -32,23 +32,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -134,20 +137,23 @@ def x__check_click__mutmut_5() -> bool:
             _HAS_CLICK = True
     return _HAS_CLICK
 
-x__check_click__mutmut_mutants : ClassVar[MutantDict] = {
-'x__check_click__mutmut_1': x__check_click__mutmut_1, 
-    'x__check_click__mutmut_2': x__check_click__mutmut_2, 
-    'x__check_click__mutmut_3': x__check_click__mutmut_3, 
-    'x__check_click__mutmut_4': x__check_click__mutmut_4, 
-    'x__check_click__mutmut_5': x__check_click__mutmut_5
+
+x__check_click__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__check_click__mutmut_1": x__check_click__mutmut_1,
+    "x__check_click__mutmut_2": x__check_click__mutmut_2,
+    "x__check_click__mutmut_3": x__check_click__mutmut_3,
+    "x__check_click__mutmut_4": x__check_click__mutmut_4,
+    "x__check_click__mutmut_5": x__check_click__mutmut_5,
 }
+
 
 def _check_click(*args, **kwargs):
     result = _mutmut_trampoline(x__check_click__mutmut_orig, x__check_click__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _check_click.__signature__ = _mutmut_signature(x__check_click__mutmut_orig)
-x__check_click__mutmut_orig.__name__ = 'x__check_click'
+x__check_click__mutmut_orig.__name__ = "x__check_click"
 
 
 # Pattern 2: Stub functions that import on first call (avoids circular import)
@@ -234,7 +240,9 @@ def x_create_command_group__mutmut_5(
 ) -> Any:
     """Create command group (imports on first call to avoid circular import)."""
     if not _check_click():
-        raise ImportError("XXCLI feature 'create_command_group' requires: pip install 'provide-foundation[cli]'XX")
+        raise ImportError(
+            "XXCLI feature 'create_command_group' requires: pip install 'provide-foundation[cli]'XX"
+        )
     from provide.foundation.cli.click.builder import create_command_group as real_func
 
     return real_func(name, commands, registry, **kwargs)
@@ -372,31 +380,40 @@ def x_create_command_group__mutmut_14(
         raise ImportError("CLI feature 'create_command_group' requires: pip install 'provide-foundation[cli]'")
     from provide.foundation.cli.click.builder import create_command_group as real_func
 
-    return real_func(name, commands, registry, )
+    return real_func(
+        name,
+        commands,
+        registry,
+    )
 
-x_create_command_group__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_command_group__mutmut_1': x_create_command_group__mutmut_1, 
-    'x_create_command_group__mutmut_2': x_create_command_group__mutmut_2, 
-    'x_create_command_group__mutmut_3': x_create_command_group__mutmut_3, 
-    'x_create_command_group__mutmut_4': x_create_command_group__mutmut_4, 
-    'x_create_command_group__mutmut_5': x_create_command_group__mutmut_5, 
-    'x_create_command_group__mutmut_6': x_create_command_group__mutmut_6, 
-    'x_create_command_group__mutmut_7': x_create_command_group__mutmut_7, 
-    'x_create_command_group__mutmut_8': x_create_command_group__mutmut_8, 
-    'x_create_command_group__mutmut_9': x_create_command_group__mutmut_9, 
-    'x_create_command_group__mutmut_10': x_create_command_group__mutmut_10, 
-    'x_create_command_group__mutmut_11': x_create_command_group__mutmut_11, 
-    'x_create_command_group__mutmut_12': x_create_command_group__mutmut_12, 
-    'x_create_command_group__mutmut_13': x_create_command_group__mutmut_13, 
-    'x_create_command_group__mutmut_14': x_create_command_group__mutmut_14
+
+x_create_command_group__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_command_group__mutmut_1": x_create_command_group__mutmut_1,
+    "x_create_command_group__mutmut_2": x_create_command_group__mutmut_2,
+    "x_create_command_group__mutmut_3": x_create_command_group__mutmut_3,
+    "x_create_command_group__mutmut_4": x_create_command_group__mutmut_4,
+    "x_create_command_group__mutmut_5": x_create_command_group__mutmut_5,
+    "x_create_command_group__mutmut_6": x_create_command_group__mutmut_6,
+    "x_create_command_group__mutmut_7": x_create_command_group__mutmut_7,
+    "x_create_command_group__mutmut_8": x_create_command_group__mutmut_8,
+    "x_create_command_group__mutmut_9": x_create_command_group__mutmut_9,
+    "x_create_command_group__mutmut_10": x_create_command_group__mutmut_10,
+    "x_create_command_group__mutmut_11": x_create_command_group__mutmut_11,
+    "x_create_command_group__mutmut_12": x_create_command_group__mutmut_12,
+    "x_create_command_group__mutmut_13": x_create_command_group__mutmut_13,
+    "x_create_command_group__mutmut_14": x_create_command_group__mutmut_14,
 }
 
+
 def create_command_group(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_command_group__mutmut_orig, x_create_command_group__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_command_group__mutmut_orig, x_create_command_group__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_command_group.__signature__ = _mutmut_signature(x_create_command_group__mutmut_orig)
-x_create_command_group__mutmut_orig.__name__ = 'x_create_command_group'
+x_create_command_group__mutmut_orig.__name__ = "x_create_command_group"
 
 
 __all__ = [

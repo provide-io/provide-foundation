@@ -43,23 +43,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -734,36 +737,46 @@ def x__should_register_for_global_reset__mutmut_21() -> bool:
         # If inspection fails, assume we should register (safer default)
         return False
 
-x__should_register_for_global_reset__mutmut_mutants : ClassVar[MutantDict] = {
-'x__should_register_for_global_reset__mutmut_1': x__should_register_for_global_reset__mutmut_1, 
-    'x__should_register_for_global_reset__mutmut_2': x__should_register_for_global_reset__mutmut_2, 
-    'x__should_register_for_global_reset__mutmut_3': x__should_register_for_global_reset__mutmut_3, 
-    'x__should_register_for_global_reset__mutmut_4': x__should_register_for_global_reset__mutmut_4, 
-    'x__should_register_for_global_reset__mutmut_5': x__should_register_for_global_reset__mutmut_5, 
-    'x__should_register_for_global_reset__mutmut_6': x__should_register_for_global_reset__mutmut_6, 
-    'x__should_register_for_global_reset__mutmut_7': x__should_register_for_global_reset__mutmut_7, 
-    'x__should_register_for_global_reset__mutmut_8': x__should_register_for_global_reset__mutmut_8, 
-    'x__should_register_for_global_reset__mutmut_9': x__should_register_for_global_reset__mutmut_9, 
-    'x__should_register_for_global_reset__mutmut_10': x__should_register_for_global_reset__mutmut_10, 
-    'x__should_register_for_global_reset__mutmut_11': x__should_register_for_global_reset__mutmut_11, 
-    'x__should_register_for_global_reset__mutmut_12': x__should_register_for_global_reset__mutmut_12, 
-    'x__should_register_for_global_reset__mutmut_13': x__should_register_for_global_reset__mutmut_13, 
-    'x__should_register_for_global_reset__mutmut_14': x__should_register_for_global_reset__mutmut_14, 
-    'x__should_register_for_global_reset__mutmut_15': x__should_register_for_global_reset__mutmut_15, 
-    'x__should_register_for_global_reset__mutmut_16': x__should_register_for_global_reset__mutmut_16, 
-    'x__should_register_for_global_reset__mutmut_17': x__should_register_for_global_reset__mutmut_17, 
-    'x__should_register_for_global_reset__mutmut_18': x__should_register_for_global_reset__mutmut_18, 
-    'x__should_register_for_global_reset__mutmut_19': x__should_register_for_global_reset__mutmut_19, 
-    'x__should_register_for_global_reset__mutmut_20': x__should_register_for_global_reset__mutmut_20, 
-    'x__should_register_for_global_reset__mutmut_21': x__should_register_for_global_reset__mutmut_21
+
+x__should_register_for_global_reset__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__should_register_for_global_reset__mutmut_1": x__should_register_for_global_reset__mutmut_1,
+    "x__should_register_for_global_reset__mutmut_2": x__should_register_for_global_reset__mutmut_2,
+    "x__should_register_for_global_reset__mutmut_3": x__should_register_for_global_reset__mutmut_3,
+    "x__should_register_for_global_reset__mutmut_4": x__should_register_for_global_reset__mutmut_4,
+    "x__should_register_for_global_reset__mutmut_5": x__should_register_for_global_reset__mutmut_5,
+    "x__should_register_for_global_reset__mutmut_6": x__should_register_for_global_reset__mutmut_6,
+    "x__should_register_for_global_reset__mutmut_7": x__should_register_for_global_reset__mutmut_7,
+    "x__should_register_for_global_reset__mutmut_8": x__should_register_for_global_reset__mutmut_8,
+    "x__should_register_for_global_reset__mutmut_9": x__should_register_for_global_reset__mutmut_9,
+    "x__should_register_for_global_reset__mutmut_10": x__should_register_for_global_reset__mutmut_10,
+    "x__should_register_for_global_reset__mutmut_11": x__should_register_for_global_reset__mutmut_11,
+    "x__should_register_for_global_reset__mutmut_12": x__should_register_for_global_reset__mutmut_12,
+    "x__should_register_for_global_reset__mutmut_13": x__should_register_for_global_reset__mutmut_13,
+    "x__should_register_for_global_reset__mutmut_14": x__should_register_for_global_reset__mutmut_14,
+    "x__should_register_for_global_reset__mutmut_15": x__should_register_for_global_reset__mutmut_15,
+    "x__should_register_for_global_reset__mutmut_16": x__should_register_for_global_reset__mutmut_16,
+    "x__should_register_for_global_reset__mutmut_17": x__should_register_for_global_reset__mutmut_17,
+    "x__should_register_for_global_reset__mutmut_18": x__should_register_for_global_reset__mutmut_18,
+    "x__should_register_for_global_reset__mutmut_19": x__should_register_for_global_reset__mutmut_19,
+    "x__should_register_for_global_reset__mutmut_20": x__should_register_for_global_reset__mutmut_20,
+    "x__should_register_for_global_reset__mutmut_21": x__should_register_for_global_reset__mutmut_21,
 }
 
-def _should_register_for_global_reset(*args, **kwargs):
-    result = _mutmut_trampoline(x__should_register_for_global_reset__mutmut_orig, x__should_register_for_global_reset__mutmut_mutants, args, kwargs)
-    return result 
 
-_should_register_for_global_reset.__signature__ = _mutmut_signature(x__should_register_for_global_reset__mutmut_orig)
-x__should_register_for_global_reset__mutmut_orig.__name__ = 'x__should_register_for_global_reset'
+def _should_register_for_global_reset(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__should_register_for_global_reset__mutmut_orig,
+        x__should_register_for_global_reset__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_should_register_for_global_reset.__signature__ = _mutmut_signature(
+    x__should_register_for_global_reset__mutmut_orig
+)
+x__should_register_for_global_reset__mutmut_orig.__name__ = "x__should_register_for_global_reset"
 
 
 F = TypeVar("F", bound=Callable[..., Any])
@@ -844,18 +857,26 @@ def x__handle_no_parentheses_retry__mutmut_3(func: F) -> F:
 
     return sync_wrapper  # type: ignore[return-value]
 
-x__handle_no_parentheses_retry__mutmut_mutants : ClassVar[MutantDict] = {
-'x__handle_no_parentheses_retry__mutmut_1': x__handle_no_parentheses_retry__mutmut_1, 
-    'x__handle_no_parentheses_retry__mutmut_2': x__handle_no_parentheses_retry__mutmut_2, 
-    'x__handle_no_parentheses_retry__mutmut_3': x__handle_no_parentheses_retry__mutmut_3
+
+x__handle_no_parentheses_retry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__handle_no_parentheses_retry__mutmut_1": x__handle_no_parentheses_retry__mutmut_1,
+    "x__handle_no_parentheses_retry__mutmut_2": x__handle_no_parentheses_retry__mutmut_2,
+    "x__handle_no_parentheses_retry__mutmut_3": x__handle_no_parentheses_retry__mutmut_3,
 }
 
+
 def _handle_no_parentheses_retry(*args, **kwargs):
-    result = _mutmut_trampoline(x__handle_no_parentheses_retry__mutmut_orig, x__handle_no_parentheses_retry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__handle_no_parentheses_retry__mutmut_orig,
+        x__handle_no_parentheses_retry__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 _handle_no_parentheses_retry.__signature__ = _mutmut_signature(x__handle_no_parentheses_retry__mutmut_orig)
-x__handle_no_parentheses_retry__mutmut_orig.__name__ = 'x__handle_no_parentheses_retry'
+x__handle_no_parentheses_retry__mutmut_orig.__name__ = "x__handle_no_parentheses_retry"
 
 
 def x__validate_retry_parameters__mutmut_orig(
@@ -927,9 +948,7 @@ def x__validate_retry_parameters__mutmut_2(
     jitter: bool | None,
 ) -> None:
     """Validate that policy and individual parameters are not both specified."""
-    if policy is None and any(
-        p is not None for p in [max_attempts, base_delay, backoff, max_delay, jitter]
-    ):
+    if policy is None and any(p is not None for p in [max_attempts, base_delay, backoff, max_delay, jitter]):
         raise ConfigurationError(
             "Cannot specify both policy and individual retry parameters",
             code="CONFLICTING_RETRY_CONFIG",
@@ -957,9 +976,7 @@ def x__validate_retry_parameters__mutmut_3(
     jitter: bool | None,
 ) -> None:
     """Validate that policy and individual parameters are not both specified."""
-    if policy is not None and any(
-        None
-    ):
+    if policy is not None and any(None):
         raise ConfigurationError(
             "Cannot specify both policy and individual retry parameters",
             code="CONFLICTING_RETRY_CONFIG",
@@ -987,9 +1004,7 @@ def x__validate_retry_parameters__mutmut_4(
     jitter: bool | None,
 ) -> None:
     """Validate that policy and individual parameters are not both specified."""
-    if policy is not None and any(
-        p is None for p in [max_attempts, base_delay, backoff, max_delay, jitter]
-    ):
+    if policy is not None and any(p is None for p in [max_attempts, base_delay, backoff, max_delay, jitter]):
         raise ConfigurationError(
             "Cannot specify both policy and individual retry parameters",
             code="CONFLICTING_RETRY_CONFIG",
@@ -1221,7 +1236,7 @@ def x__validate_retry_parameters__mutmut_12(
             "Cannot specify both policy and individual retry parameters",
             code="CONFLICTING_RETRY_CONFIG",
             has_policy=policy is not None,
-            )
+        )
 
 
 def x__validate_retry_parameters__mutmut_13(
@@ -1733,44 +1748,49 @@ def x__validate_retry_parameters__mutmut_29(
             ],
         )
 
-x__validate_retry_parameters__mutmut_mutants : ClassVar[MutantDict] = {
-'x__validate_retry_parameters__mutmut_1': x__validate_retry_parameters__mutmut_1, 
-    'x__validate_retry_parameters__mutmut_2': x__validate_retry_parameters__mutmut_2, 
-    'x__validate_retry_parameters__mutmut_3': x__validate_retry_parameters__mutmut_3, 
-    'x__validate_retry_parameters__mutmut_4': x__validate_retry_parameters__mutmut_4, 
-    'x__validate_retry_parameters__mutmut_5': x__validate_retry_parameters__mutmut_5, 
-    'x__validate_retry_parameters__mutmut_6': x__validate_retry_parameters__mutmut_6, 
-    'x__validate_retry_parameters__mutmut_7': x__validate_retry_parameters__mutmut_7, 
-    'x__validate_retry_parameters__mutmut_8': x__validate_retry_parameters__mutmut_8, 
-    'x__validate_retry_parameters__mutmut_9': x__validate_retry_parameters__mutmut_9, 
-    'x__validate_retry_parameters__mutmut_10': x__validate_retry_parameters__mutmut_10, 
-    'x__validate_retry_parameters__mutmut_11': x__validate_retry_parameters__mutmut_11, 
-    'x__validate_retry_parameters__mutmut_12': x__validate_retry_parameters__mutmut_12, 
-    'x__validate_retry_parameters__mutmut_13': x__validate_retry_parameters__mutmut_13, 
-    'x__validate_retry_parameters__mutmut_14': x__validate_retry_parameters__mutmut_14, 
-    'x__validate_retry_parameters__mutmut_15': x__validate_retry_parameters__mutmut_15, 
-    'x__validate_retry_parameters__mutmut_16': x__validate_retry_parameters__mutmut_16, 
-    'x__validate_retry_parameters__mutmut_17': x__validate_retry_parameters__mutmut_17, 
-    'x__validate_retry_parameters__mutmut_18': x__validate_retry_parameters__mutmut_18, 
-    'x__validate_retry_parameters__mutmut_19': x__validate_retry_parameters__mutmut_19, 
-    'x__validate_retry_parameters__mutmut_20': x__validate_retry_parameters__mutmut_20, 
-    'x__validate_retry_parameters__mutmut_21': x__validate_retry_parameters__mutmut_21, 
-    'x__validate_retry_parameters__mutmut_22': x__validate_retry_parameters__mutmut_22, 
-    'x__validate_retry_parameters__mutmut_23': x__validate_retry_parameters__mutmut_23, 
-    'x__validate_retry_parameters__mutmut_24': x__validate_retry_parameters__mutmut_24, 
-    'x__validate_retry_parameters__mutmut_25': x__validate_retry_parameters__mutmut_25, 
-    'x__validate_retry_parameters__mutmut_26': x__validate_retry_parameters__mutmut_26, 
-    'x__validate_retry_parameters__mutmut_27': x__validate_retry_parameters__mutmut_27, 
-    'x__validate_retry_parameters__mutmut_28': x__validate_retry_parameters__mutmut_28, 
-    'x__validate_retry_parameters__mutmut_29': x__validate_retry_parameters__mutmut_29
+
+x__validate_retry_parameters__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__validate_retry_parameters__mutmut_1": x__validate_retry_parameters__mutmut_1,
+    "x__validate_retry_parameters__mutmut_2": x__validate_retry_parameters__mutmut_2,
+    "x__validate_retry_parameters__mutmut_3": x__validate_retry_parameters__mutmut_3,
+    "x__validate_retry_parameters__mutmut_4": x__validate_retry_parameters__mutmut_4,
+    "x__validate_retry_parameters__mutmut_5": x__validate_retry_parameters__mutmut_5,
+    "x__validate_retry_parameters__mutmut_6": x__validate_retry_parameters__mutmut_6,
+    "x__validate_retry_parameters__mutmut_7": x__validate_retry_parameters__mutmut_7,
+    "x__validate_retry_parameters__mutmut_8": x__validate_retry_parameters__mutmut_8,
+    "x__validate_retry_parameters__mutmut_9": x__validate_retry_parameters__mutmut_9,
+    "x__validate_retry_parameters__mutmut_10": x__validate_retry_parameters__mutmut_10,
+    "x__validate_retry_parameters__mutmut_11": x__validate_retry_parameters__mutmut_11,
+    "x__validate_retry_parameters__mutmut_12": x__validate_retry_parameters__mutmut_12,
+    "x__validate_retry_parameters__mutmut_13": x__validate_retry_parameters__mutmut_13,
+    "x__validate_retry_parameters__mutmut_14": x__validate_retry_parameters__mutmut_14,
+    "x__validate_retry_parameters__mutmut_15": x__validate_retry_parameters__mutmut_15,
+    "x__validate_retry_parameters__mutmut_16": x__validate_retry_parameters__mutmut_16,
+    "x__validate_retry_parameters__mutmut_17": x__validate_retry_parameters__mutmut_17,
+    "x__validate_retry_parameters__mutmut_18": x__validate_retry_parameters__mutmut_18,
+    "x__validate_retry_parameters__mutmut_19": x__validate_retry_parameters__mutmut_19,
+    "x__validate_retry_parameters__mutmut_20": x__validate_retry_parameters__mutmut_20,
+    "x__validate_retry_parameters__mutmut_21": x__validate_retry_parameters__mutmut_21,
+    "x__validate_retry_parameters__mutmut_22": x__validate_retry_parameters__mutmut_22,
+    "x__validate_retry_parameters__mutmut_23": x__validate_retry_parameters__mutmut_23,
+    "x__validate_retry_parameters__mutmut_24": x__validate_retry_parameters__mutmut_24,
+    "x__validate_retry_parameters__mutmut_25": x__validate_retry_parameters__mutmut_25,
+    "x__validate_retry_parameters__mutmut_26": x__validate_retry_parameters__mutmut_26,
+    "x__validate_retry_parameters__mutmut_27": x__validate_retry_parameters__mutmut_27,
+    "x__validate_retry_parameters__mutmut_28": x__validate_retry_parameters__mutmut_28,
+    "x__validate_retry_parameters__mutmut_29": x__validate_retry_parameters__mutmut_29,
 }
 
+
 def _validate_retry_parameters(*args, **kwargs):
-    result = _mutmut_trampoline(x__validate_retry_parameters__mutmut_orig, x__validate_retry_parameters__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__validate_retry_parameters__mutmut_orig, x__validate_retry_parameters__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _validate_retry_parameters.__signature__ = _mutmut_signature(x__validate_retry_parameters__mutmut_orig)
-x__validate_retry_parameters__mutmut_orig.__name__ = 'x__validate_retry_parameters'
+x__validate_retry_parameters__mutmut_orig.__name__ = "x__validate_retry_parameters"
 
 
 def x__build_retry_policy__mutmut_orig(
@@ -2447,39 +2467,44 @@ def x__build_retry_policy__mutmut_24(
 
     return RetryPolicy(**policy_kwargs)
 
-x__build_retry_policy__mutmut_mutants : ClassVar[MutantDict] = {
-'x__build_retry_policy__mutmut_1': x__build_retry_policy__mutmut_1, 
-    'x__build_retry_policy__mutmut_2': x__build_retry_policy__mutmut_2, 
-    'x__build_retry_policy__mutmut_3': x__build_retry_policy__mutmut_3, 
-    'x__build_retry_policy__mutmut_4': x__build_retry_policy__mutmut_4, 
-    'x__build_retry_policy__mutmut_5': x__build_retry_policy__mutmut_5, 
-    'x__build_retry_policy__mutmut_6': x__build_retry_policy__mutmut_6, 
-    'x__build_retry_policy__mutmut_7': x__build_retry_policy__mutmut_7, 
-    'x__build_retry_policy__mutmut_8': x__build_retry_policy__mutmut_8, 
-    'x__build_retry_policy__mutmut_9': x__build_retry_policy__mutmut_9, 
-    'x__build_retry_policy__mutmut_10': x__build_retry_policy__mutmut_10, 
-    'x__build_retry_policy__mutmut_11': x__build_retry_policy__mutmut_11, 
-    'x__build_retry_policy__mutmut_12': x__build_retry_policy__mutmut_12, 
-    'x__build_retry_policy__mutmut_13': x__build_retry_policy__mutmut_13, 
-    'x__build_retry_policy__mutmut_14': x__build_retry_policy__mutmut_14, 
-    'x__build_retry_policy__mutmut_15': x__build_retry_policy__mutmut_15, 
-    'x__build_retry_policy__mutmut_16': x__build_retry_policy__mutmut_16, 
-    'x__build_retry_policy__mutmut_17': x__build_retry_policy__mutmut_17, 
-    'x__build_retry_policy__mutmut_18': x__build_retry_policy__mutmut_18, 
-    'x__build_retry_policy__mutmut_19': x__build_retry_policy__mutmut_19, 
-    'x__build_retry_policy__mutmut_20': x__build_retry_policy__mutmut_20, 
-    'x__build_retry_policy__mutmut_21': x__build_retry_policy__mutmut_21, 
-    'x__build_retry_policy__mutmut_22': x__build_retry_policy__mutmut_22, 
-    'x__build_retry_policy__mutmut_23': x__build_retry_policy__mutmut_23, 
-    'x__build_retry_policy__mutmut_24': x__build_retry_policy__mutmut_24
+
+x__build_retry_policy__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__build_retry_policy__mutmut_1": x__build_retry_policy__mutmut_1,
+    "x__build_retry_policy__mutmut_2": x__build_retry_policy__mutmut_2,
+    "x__build_retry_policy__mutmut_3": x__build_retry_policy__mutmut_3,
+    "x__build_retry_policy__mutmut_4": x__build_retry_policy__mutmut_4,
+    "x__build_retry_policy__mutmut_5": x__build_retry_policy__mutmut_5,
+    "x__build_retry_policy__mutmut_6": x__build_retry_policy__mutmut_6,
+    "x__build_retry_policy__mutmut_7": x__build_retry_policy__mutmut_7,
+    "x__build_retry_policy__mutmut_8": x__build_retry_policy__mutmut_8,
+    "x__build_retry_policy__mutmut_9": x__build_retry_policy__mutmut_9,
+    "x__build_retry_policy__mutmut_10": x__build_retry_policy__mutmut_10,
+    "x__build_retry_policy__mutmut_11": x__build_retry_policy__mutmut_11,
+    "x__build_retry_policy__mutmut_12": x__build_retry_policy__mutmut_12,
+    "x__build_retry_policy__mutmut_13": x__build_retry_policy__mutmut_13,
+    "x__build_retry_policy__mutmut_14": x__build_retry_policy__mutmut_14,
+    "x__build_retry_policy__mutmut_15": x__build_retry_policy__mutmut_15,
+    "x__build_retry_policy__mutmut_16": x__build_retry_policy__mutmut_16,
+    "x__build_retry_policy__mutmut_17": x__build_retry_policy__mutmut_17,
+    "x__build_retry_policy__mutmut_18": x__build_retry_policy__mutmut_18,
+    "x__build_retry_policy__mutmut_19": x__build_retry_policy__mutmut_19,
+    "x__build_retry_policy__mutmut_20": x__build_retry_policy__mutmut_20,
+    "x__build_retry_policy__mutmut_21": x__build_retry_policy__mutmut_21,
+    "x__build_retry_policy__mutmut_22": x__build_retry_policy__mutmut_22,
+    "x__build_retry_policy__mutmut_23": x__build_retry_policy__mutmut_23,
+    "x__build_retry_policy__mutmut_24": x__build_retry_policy__mutmut_24,
 }
 
+
 def _build_retry_policy(*args, **kwargs):
-    result = _mutmut_trampoline(x__build_retry_policy__mutmut_orig, x__build_retry_policy__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__build_retry_policy__mutmut_orig, x__build_retry_policy__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _build_retry_policy.__signature__ = _mutmut_signature(x__build_retry_policy__mutmut_orig)
-x__build_retry_policy__mutmut_orig.__name__ = 'x__build_retry_policy'
+x__build_retry_policy__mutmut_orig.__name__ = "x__build_retry_policy"
 
 
 def x__create_retry_wrapper__mutmut_orig(
@@ -2838,7 +2863,7 @@ def x__create_retry_wrapper__mutmut_11(
         on_retry=on_retry,
         time_source=time_source,
         sleep_func=sleep_func,
-        )
+    )
 
     if asyncio.iscoroutinefunction(func):
 
@@ -2886,27 +2911,32 @@ def x__create_retry_wrapper__mutmut_12(
 
     return sync_wrapper  # type: ignore[return-value]
 
-x__create_retry_wrapper__mutmut_mutants : ClassVar[MutantDict] = {
-'x__create_retry_wrapper__mutmut_1': x__create_retry_wrapper__mutmut_1, 
-    'x__create_retry_wrapper__mutmut_2': x__create_retry_wrapper__mutmut_2, 
-    'x__create_retry_wrapper__mutmut_3': x__create_retry_wrapper__mutmut_3, 
-    'x__create_retry_wrapper__mutmut_4': x__create_retry_wrapper__mutmut_4, 
-    'x__create_retry_wrapper__mutmut_5': x__create_retry_wrapper__mutmut_5, 
-    'x__create_retry_wrapper__mutmut_6': x__create_retry_wrapper__mutmut_6, 
-    'x__create_retry_wrapper__mutmut_7': x__create_retry_wrapper__mutmut_7, 
-    'x__create_retry_wrapper__mutmut_8': x__create_retry_wrapper__mutmut_8, 
-    'x__create_retry_wrapper__mutmut_9': x__create_retry_wrapper__mutmut_9, 
-    'x__create_retry_wrapper__mutmut_10': x__create_retry_wrapper__mutmut_10, 
-    'x__create_retry_wrapper__mutmut_11': x__create_retry_wrapper__mutmut_11, 
-    'x__create_retry_wrapper__mutmut_12': x__create_retry_wrapper__mutmut_12
+
+x__create_retry_wrapper__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__create_retry_wrapper__mutmut_1": x__create_retry_wrapper__mutmut_1,
+    "x__create_retry_wrapper__mutmut_2": x__create_retry_wrapper__mutmut_2,
+    "x__create_retry_wrapper__mutmut_3": x__create_retry_wrapper__mutmut_3,
+    "x__create_retry_wrapper__mutmut_4": x__create_retry_wrapper__mutmut_4,
+    "x__create_retry_wrapper__mutmut_5": x__create_retry_wrapper__mutmut_5,
+    "x__create_retry_wrapper__mutmut_6": x__create_retry_wrapper__mutmut_6,
+    "x__create_retry_wrapper__mutmut_7": x__create_retry_wrapper__mutmut_7,
+    "x__create_retry_wrapper__mutmut_8": x__create_retry_wrapper__mutmut_8,
+    "x__create_retry_wrapper__mutmut_9": x__create_retry_wrapper__mutmut_9,
+    "x__create_retry_wrapper__mutmut_10": x__create_retry_wrapper__mutmut_10,
+    "x__create_retry_wrapper__mutmut_11": x__create_retry_wrapper__mutmut_11,
+    "x__create_retry_wrapper__mutmut_12": x__create_retry_wrapper__mutmut_12,
 }
 
+
 def _create_retry_wrapper(*args, **kwargs):
-    result = _mutmut_trampoline(x__create_retry_wrapper__mutmut_orig, x__create_retry_wrapper__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__create_retry_wrapper__mutmut_orig, x__create_retry_wrapper__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _create_retry_wrapper.__signature__ = _mutmut_signature(x__create_retry_wrapper__mutmut_orig)
-x__create_retry_wrapper__mutmut_orig.__name__ = 'x__create_retry_wrapper'
+x__create_retry_wrapper__mutmut_orig.__name__ = "x__create_retry_wrapper"
 
 
 def x_retry__mutmut_orig(
@@ -4822,7 +4852,13 @@ def x_retry__mutmut_22(
         return _handle_no_parentheses_retry(func)
 
     # Validate parameters
-    _validate_retry_parameters(policy, max_attempts, base_delay, backoff, max_delay, )
+    _validate_retry_parameters(
+        policy,
+        max_attempts,
+        base_delay,
+        backoff,
+        max_delay,
+    )
 
     # Build policy if not provided
     if policy is None:
@@ -6002,7 +6038,13 @@ def x_retry__mutmut_36(
 
     # Build policy if not provided
     if policy is None:
-        policy = _build_retry_policy(exceptions, max_attempts, base_delay, backoff, max_delay, )
+        policy = _build_retry_policy(
+            exceptions,
+            max_attempts,
+            base_delay,
+            backoff,
+            max_delay,
+        )
 
     def decorator(func: F) -> F:
         return _create_retry_wrapper(
@@ -7014,67 +7056,70 @@ def x_retry__mutmut_48(
             on_retry,
             time_source=time_source,
             sleep_func=sleep_func,
-            )
+        )
 
     return decorator
 
-x_retry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_retry__mutmut_1': x_retry__mutmut_1, 
-    'x_retry__mutmut_2': x_retry__mutmut_2, 
-    'x_retry__mutmut_3': x_retry__mutmut_3, 
-    'x_retry__mutmut_4': x_retry__mutmut_4, 
-    'x_retry__mutmut_5': x_retry__mutmut_5, 
-    'x_retry__mutmut_6': x_retry__mutmut_6, 
-    'x_retry__mutmut_7': x_retry__mutmut_7, 
-    'x_retry__mutmut_8': x_retry__mutmut_8, 
-    'x_retry__mutmut_9': x_retry__mutmut_9, 
-    'x_retry__mutmut_10': x_retry__mutmut_10, 
-    'x_retry__mutmut_11': x_retry__mutmut_11, 
-    'x_retry__mutmut_12': x_retry__mutmut_12, 
-    'x_retry__mutmut_13': x_retry__mutmut_13, 
-    'x_retry__mutmut_14': x_retry__mutmut_14, 
-    'x_retry__mutmut_15': x_retry__mutmut_15, 
-    'x_retry__mutmut_16': x_retry__mutmut_16, 
-    'x_retry__mutmut_17': x_retry__mutmut_17, 
-    'x_retry__mutmut_18': x_retry__mutmut_18, 
-    'x_retry__mutmut_19': x_retry__mutmut_19, 
-    'x_retry__mutmut_20': x_retry__mutmut_20, 
-    'x_retry__mutmut_21': x_retry__mutmut_21, 
-    'x_retry__mutmut_22': x_retry__mutmut_22, 
-    'x_retry__mutmut_23': x_retry__mutmut_23, 
-    'x_retry__mutmut_24': x_retry__mutmut_24, 
-    'x_retry__mutmut_25': x_retry__mutmut_25, 
-    'x_retry__mutmut_26': x_retry__mutmut_26, 
-    'x_retry__mutmut_27': x_retry__mutmut_27, 
-    'x_retry__mutmut_28': x_retry__mutmut_28, 
-    'x_retry__mutmut_29': x_retry__mutmut_29, 
-    'x_retry__mutmut_30': x_retry__mutmut_30, 
-    'x_retry__mutmut_31': x_retry__mutmut_31, 
-    'x_retry__mutmut_32': x_retry__mutmut_32, 
-    'x_retry__mutmut_33': x_retry__mutmut_33, 
-    'x_retry__mutmut_34': x_retry__mutmut_34, 
-    'x_retry__mutmut_35': x_retry__mutmut_35, 
-    'x_retry__mutmut_36': x_retry__mutmut_36, 
-    'x_retry__mutmut_37': x_retry__mutmut_37, 
-    'x_retry__mutmut_38': x_retry__mutmut_38, 
-    'x_retry__mutmut_39': x_retry__mutmut_39, 
-    'x_retry__mutmut_40': x_retry__mutmut_40, 
-    'x_retry__mutmut_41': x_retry__mutmut_41, 
-    'x_retry__mutmut_42': x_retry__mutmut_42, 
-    'x_retry__mutmut_43': x_retry__mutmut_43, 
-    'x_retry__mutmut_44': x_retry__mutmut_44, 
-    'x_retry__mutmut_45': x_retry__mutmut_45, 
-    'x_retry__mutmut_46': x_retry__mutmut_46, 
-    'x_retry__mutmut_47': x_retry__mutmut_47, 
-    'x_retry__mutmut_48': x_retry__mutmut_48
+
+x_retry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_retry__mutmut_1": x_retry__mutmut_1,
+    "x_retry__mutmut_2": x_retry__mutmut_2,
+    "x_retry__mutmut_3": x_retry__mutmut_3,
+    "x_retry__mutmut_4": x_retry__mutmut_4,
+    "x_retry__mutmut_5": x_retry__mutmut_5,
+    "x_retry__mutmut_6": x_retry__mutmut_6,
+    "x_retry__mutmut_7": x_retry__mutmut_7,
+    "x_retry__mutmut_8": x_retry__mutmut_8,
+    "x_retry__mutmut_9": x_retry__mutmut_9,
+    "x_retry__mutmut_10": x_retry__mutmut_10,
+    "x_retry__mutmut_11": x_retry__mutmut_11,
+    "x_retry__mutmut_12": x_retry__mutmut_12,
+    "x_retry__mutmut_13": x_retry__mutmut_13,
+    "x_retry__mutmut_14": x_retry__mutmut_14,
+    "x_retry__mutmut_15": x_retry__mutmut_15,
+    "x_retry__mutmut_16": x_retry__mutmut_16,
+    "x_retry__mutmut_17": x_retry__mutmut_17,
+    "x_retry__mutmut_18": x_retry__mutmut_18,
+    "x_retry__mutmut_19": x_retry__mutmut_19,
+    "x_retry__mutmut_20": x_retry__mutmut_20,
+    "x_retry__mutmut_21": x_retry__mutmut_21,
+    "x_retry__mutmut_22": x_retry__mutmut_22,
+    "x_retry__mutmut_23": x_retry__mutmut_23,
+    "x_retry__mutmut_24": x_retry__mutmut_24,
+    "x_retry__mutmut_25": x_retry__mutmut_25,
+    "x_retry__mutmut_26": x_retry__mutmut_26,
+    "x_retry__mutmut_27": x_retry__mutmut_27,
+    "x_retry__mutmut_28": x_retry__mutmut_28,
+    "x_retry__mutmut_29": x_retry__mutmut_29,
+    "x_retry__mutmut_30": x_retry__mutmut_30,
+    "x_retry__mutmut_31": x_retry__mutmut_31,
+    "x_retry__mutmut_32": x_retry__mutmut_32,
+    "x_retry__mutmut_33": x_retry__mutmut_33,
+    "x_retry__mutmut_34": x_retry__mutmut_34,
+    "x_retry__mutmut_35": x_retry__mutmut_35,
+    "x_retry__mutmut_36": x_retry__mutmut_36,
+    "x_retry__mutmut_37": x_retry__mutmut_37,
+    "x_retry__mutmut_38": x_retry__mutmut_38,
+    "x_retry__mutmut_39": x_retry__mutmut_39,
+    "x_retry__mutmut_40": x_retry__mutmut_40,
+    "x_retry__mutmut_41": x_retry__mutmut_41,
+    "x_retry__mutmut_42": x_retry__mutmut_42,
+    "x_retry__mutmut_43": x_retry__mutmut_43,
+    "x_retry__mutmut_44": x_retry__mutmut_44,
+    "x_retry__mutmut_45": x_retry__mutmut_45,
+    "x_retry__mutmut_46": x_retry__mutmut_46,
+    "x_retry__mutmut_47": x_retry__mutmut_47,
+    "x_retry__mutmut_48": x_retry__mutmut_48,
 }
+
 
 def retry(*args, **kwargs):
     result = _mutmut_trampoline(x_retry__mutmut_orig, x_retry__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 retry.__signature__ = _mutmut_signature(x_retry__mutmut_orig)
-x_retry__mutmut_orig.__name__ = 'x_retry'
+x_retry__mutmut_orig.__name__ = "x_retry"
 
 
 def x_circuit_breaker__mutmut_orig(
@@ -8758,7 +8803,7 @@ def x_circuit_breaker__mutmut_16(
                 failure_threshold=failure_threshold,
                 recovery_timeout=recovery_timeout,
                 expected_exception=expected_exception_tuple,
-                )
+            )
 
             @functools.wraps(func)
             async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -9790,7 +9835,10 @@ def x_circuit_breaker__mutmut_26(
                 breaker_name = f"cb_{_circuit_breaker_counter}"
 
             if _should_register_for_global_reset():
-                reg.register(breaker_name, breaker, )
+                reg.register(
+                    breaker_name,
+                    breaker,
+                )
             else:
                 reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
 
@@ -10404,7 +10452,10 @@ def x_circuit_breaker__mutmut_32(
             if _should_register_for_global_reset():
                 reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
             else:
-                reg.register(breaker_name, breaker, )
+                reg.register(
+                    breaker_name,
+                    breaker,
+                )
 
             return async_wrapper  # type: ignore[return-value]
         else:
@@ -11322,7 +11373,7 @@ def x_circuit_breaker__mutmut_41(
                 failure_threshold=failure_threshold,
                 recovery_timeout=recovery_timeout,
                 expected_exception=expected_exception_tuple,
-                )
+            )
 
             @functools.wraps(func)
             def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -12354,7 +12405,10 @@ def x_circuit_breaker__mutmut_51(
                 breaker_name = f"cb_{_circuit_breaker_counter}"
 
             if _should_register_for_global_reset():
-                reg.register(breaker_name, breaker, )
+                reg.register(
+                    breaker_name,
+                    breaker,
+                )
             else:
                 reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
 
@@ -12968,78 +13022,86 @@ def x_circuit_breaker__mutmut_57(
             if _should_register_for_global_reset():
                 reg.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
             else:
-                reg.register(breaker_name, breaker, )
+                reg.register(
+                    breaker_name,
+                    breaker,
+                )
 
             return sync_wrapper  # type: ignore[return-value]
 
     return decorator
 
-x_circuit_breaker__mutmut_mutants : ClassVar[MutantDict] = {
-'x_circuit_breaker__mutmut_1': x_circuit_breaker__mutmut_1, 
-    'x_circuit_breaker__mutmut_2': x_circuit_breaker__mutmut_2, 
-    'x_circuit_breaker__mutmut_3': x_circuit_breaker__mutmut_3, 
-    'x_circuit_breaker__mutmut_4': x_circuit_breaker__mutmut_4, 
-    'x_circuit_breaker__mutmut_5': x_circuit_breaker__mutmut_5, 
-    'x_circuit_breaker__mutmut_6': x_circuit_breaker__mutmut_6, 
-    'x_circuit_breaker__mutmut_7': x_circuit_breaker__mutmut_7, 
-    'x_circuit_breaker__mutmut_8': x_circuit_breaker__mutmut_8, 
-    'x_circuit_breaker__mutmut_9': x_circuit_breaker__mutmut_9, 
-    'x_circuit_breaker__mutmut_10': x_circuit_breaker__mutmut_10, 
-    'x_circuit_breaker__mutmut_11': x_circuit_breaker__mutmut_11, 
-    'x_circuit_breaker__mutmut_12': x_circuit_breaker__mutmut_12, 
-    'x_circuit_breaker__mutmut_13': x_circuit_breaker__mutmut_13, 
-    'x_circuit_breaker__mutmut_14': x_circuit_breaker__mutmut_14, 
-    'x_circuit_breaker__mutmut_15': x_circuit_breaker__mutmut_15, 
-    'x_circuit_breaker__mutmut_16': x_circuit_breaker__mutmut_16, 
-    'x_circuit_breaker__mutmut_17': x_circuit_breaker__mutmut_17, 
-    'x_circuit_breaker__mutmut_18': x_circuit_breaker__mutmut_18, 
-    'x_circuit_breaker__mutmut_19': x_circuit_breaker__mutmut_19, 
-    'x_circuit_breaker__mutmut_20': x_circuit_breaker__mutmut_20, 
-    'x_circuit_breaker__mutmut_21': x_circuit_breaker__mutmut_21, 
-    'x_circuit_breaker__mutmut_22': x_circuit_breaker__mutmut_22, 
-    'x_circuit_breaker__mutmut_23': x_circuit_breaker__mutmut_23, 
-    'x_circuit_breaker__mutmut_24': x_circuit_breaker__mutmut_24, 
-    'x_circuit_breaker__mutmut_25': x_circuit_breaker__mutmut_25, 
-    'x_circuit_breaker__mutmut_26': x_circuit_breaker__mutmut_26, 
-    'x_circuit_breaker__mutmut_27': x_circuit_breaker__mutmut_27, 
-    'x_circuit_breaker__mutmut_28': x_circuit_breaker__mutmut_28, 
-    'x_circuit_breaker__mutmut_29': x_circuit_breaker__mutmut_29, 
-    'x_circuit_breaker__mutmut_30': x_circuit_breaker__mutmut_30, 
-    'x_circuit_breaker__mutmut_31': x_circuit_breaker__mutmut_31, 
-    'x_circuit_breaker__mutmut_32': x_circuit_breaker__mutmut_32, 
-    'x_circuit_breaker__mutmut_33': x_circuit_breaker__mutmut_33, 
-    'x_circuit_breaker__mutmut_34': x_circuit_breaker__mutmut_34, 
-    'x_circuit_breaker__mutmut_35': x_circuit_breaker__mutmut_35, 
-    'x_circuit_breaker__mutmut_36': x_circuit_breaker__mutmut_36, 
-    'x_circuit_breaker__mutmut_37': x_circuit_breaker__mutmut_37, 
-    'x_circuit_breaker__mutmut_38': x_circuit_breaker__mutmut_38, 
-    'x_circuit_breaker__mutmut_39': x_circuit_breaker__mutmut_39, 
-    'x_circuit_breaker__mutmut_40': x_circuit_breaker__mutmut_40, 
-    'x_circuit_breaker__mutmut_41': x_circuit_breaker__mutmut_41, 
-    'x_circuit_breaker__mutmut_42': x_circuit_breaker__mutmut_42, 
-    'x_circuit_breaker__mutmut_43': x_circuit_breaker__mutmut_43, 
-    'x_circuit_breaker__mutmut_44': x_circuit_breaker__mutmut_44, 
-    'x_circuit_breaker__mutmut_45': x_circuit_breaker__mutmut_45, 
-    'x_circuit_breaker__mutmut_46': x_circuit_breaker__mutmut_46, 
-    'x_circuit_breaker__mutmut_47': x_circuit_breaker__mutmut_47, 
-    'x_circuit_breaker__mutmut_48': x_circuit_breaker__mutmut_48, 
-    'x_circuit_breaker__mutmut_49': x_circuit_breaker__mutmut_49, 
-    'x_circuit_breaker__mutmut_50': x_circuit_breaker__mutmut_50, 
-    'x_circuit_breaker__mutmut_51': x_circuit_breaker__mutmut_51, 
-    'x_circuit_breaker__mutmut_52': x_circuit_breaker__mutmut_52, 
-    'x_circuit_breaker__mutmut_53': x_circuit_breaker__mutmut_53, 
-    'x_circuit_breaker__mutmut_54': x_circuit_breaker__mutmut_54, 
-    'x_circuit_breaker__mutmut_55': x_circuit_breaker__mutmut_55, 
-    'x_circuit_breaker__mutmut_56': x_circuit_breaker__mutmut_56, 
-    'x_circuit_breaker__mutmut_57': x_circuit_breaker__mutmut_57
+
+x_circuit_breaker__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_circuit_breaker__mutmut_1": x_circuit_breaker__mutmut_1,
+    "x_circuit_breaker__mutmut_2": x_circuit_breaker__mutmut_2,
+    "x_circuit_breaker__mutmut_3": x_circuit_breaker__mutmut_3,
+    "x_circuit_breaker__mutmut_4": x_circuit_breaker__mutmut_4,
+    "x_circuit_breaker__mutmut_5": x_circuit_breaker__mutmut_5,
+    "x_circuit_breaker__mutmut_6": x_circuit_breaker__mutmut_6,
+    "x_circuit_breaker__mutmut_7": x_circuit_breaker__mutmut_7,
+    "x_circuit_breaker__mutmut_8": x_circuit_breaker__mutmut_8,
+    "x_circuit_breaker__mutmut_9": x_circuit_breaker__mutmut_9,
+    "x_circuit_breaker__mutmut_10": x_circuit_breaker__mutmut_10,
+    "x_circuit_breaker__mutmut_11": x_circuit_breaker__mutmut_11,
+    "x_circuit_breaker__mutmut_12": x_circuit_breaker__mutmut_12,
+    "x_circuit_breaker__mutmut_13": x_circuit_breaker__mutmut_13,
+    "x_circuit_breaker__mutmut_14": x_circuit_breaker__mutmut_14,
+    "x_circuit_breaker__mutmut_15": x_circuit_breaker__mutmut_15,
+    "x_circuit_breaker__mutmut_16": x_circuit_breaker__mutmut_16,
+    "x_circuit_breaker__mutmut_17": x_circuit_breaker__mutmut_17,
+    "x_circuit_breaker__mutmut_18": x_circuit_breaker__mutmut_18,
+    "x_circuit_breaker__mutmut_19": x_circuit_breaker__mutmut_19,
+    "x_circuit_breaker__mutmut_20": x_circuit_breaker__mutmut_20,
+    "x_circuit_breaker__mutmut_21": x_circuit_breaker__mutmut_21,
+    "x_circuit_breaker__mutmut_22": x_circuit_breaker__mutmut_22,
+    "x_circuit_breaker__mutmut_23": x_circuit_breaker__mutmut_23,
+    "x_circuit_breaker__mutmut_24": x_circuit_breaker__mutmut_24,
+    "x_circuit_breaker__mutmut_25": x_circuit_breaker__mutmut_25,
+    "x_circuit_breaker__mutmut_26": x_circuit_breaker__mutmut_26,
+    "x_circuit_breaker__mutmut_27": x_circuit_breaker__mutmut_27,
+    "x_circuit_breaker__mutmut_28": x_circuit_breaker__mutmut_28,
+    "x_circuit_breaker__mutmut_29": x_circuit_breaker__mutmut_29,
+    "x_circuit_breaker__mutmut_30": x_circuit_breaker__mutmut_30,
+    "x_circuit_breaker__mutmut_31": x_circuit_breaker__mutmut_31,
+    "x_circuit_breaker__mutmut_32": x_circuit_breaker__mutmut_32,
+    "x_circuit_breaker__mutmut_33": x_circuit_breaker__mutmut_33,
+    "x_circuit_breaker__mutmut_34": x_circuit_breaker__mutmut_34,
+    "x_circuit_breaker__mutmut_35": x_circuit_breaker__mutmut_35,
+    "x_circuit_breaker__mutmut_36": x_circuit_breaker__mutmut_36,
+    "x_circuit_breaker__mutmut_37": x_circuit_breaker__mutmut_37,
+    "x_circuit_breaker__mutmut_38": x_circuit_breaker__mutmut_38,
+    "x_circuit_breaker__mutmut_39": x_circuit_breaker__mutmut_39,
+    "x_circuit_breaker__mutmut_40": x_circuit_breaker__mutmut_40,
+    "x_circuit_breaker__mutmut_41": x_circuit_breaker__mutmut_41,
+    "x_circuit_breaker__mutmut_42": x_circuit_breaker__mutmut_42,
+    "x_circuit_breaker__mutmut_43": x_circuit_breaker__mutmut_43,
+    "x_circuit_breaker__mutmut_44": x_circuit_breaker__mutmut_44,
+    "x_circuit_breaker__mutmut_45": x_circuit_breaker__mutmut_45,
+    "x_circuit_breaker__mutmut_46": x_circuit_breaker__mutmut_46,
+    "x_circuit_breaker__mutmut_47": x_circuit_breaker__mutmut_47,
+    "x_circuit_breaker__mutmut_48": x_circuit_breaker__mutmut_48,
+    "x_circuit_breaker__mutmut_49": x_circuit_breaker__mutmut_49,
+    "x_circuit_breaker__mutmut_50": x_circuit_breaker__mutmut_50,
+    "x_circuit_breaker__mutmut_51": x_circuit_breaker__mutmut_51,
+    "x_circuit_breaker__mutmut_52": x_circuit_breaker__mutmut_52,
+    "x_circuit_breaker__mutmut_53": x_circuit_breaker__mutmut_53,
+    "x_circuit_breaker__mutmut_54": x_circuit_breaker__mutmut_54,
+    "x_circuit_breaker__mutmut_55": x_circuit_breaker__mutmut_55,
+    "x_circuit_breaker__mutmut_56": x_circuit_breaker__mutmut_56,
+    "x_circuit_breaker__mutmut_57": x_circuit_breaker__mutmut_57,
 }
 
+
 def circuit_breaker(*args, **kwargs):
-    result = _mutmut_trampoline(x_circuit_breaker__mutmut_orig, x_circuit_breaker__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_circuit_breaker__mutmut_orig, x_circuit_breaker__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 circuit_breaker.__signature__ = _mutmut_signature(x_circuit_breaker__mutmut_orig)
-x_circuit_breaker__mutmut_orig.__name__ = 'x_circuit_breaker'
+x_circuit_breaker__mutmut_orig.__name__ = "x_circuit_breaker"
 
 
 async def x_reset_circuit_breakers_for_testing__mutmut_orig() -> None:
@@ -13186,29 +13248,41 @@ async def x_reset_circuit_breakers_for_testing__mutmut_7() -> None:
     """
     registry = _get_circuit_breaker_registry()
     for name in registry.list_dimension(CIRCUIT_BREAKER_DIMENSION):
-        breaker = registry.get(name, )
+        breaker = registry.get(
+            name,
+        )
         if breaker:
             if isinstance(breaker, AsyncCircuitBreaker):
                 await breaker.reset()
             else:
                 breaker.reset()
 
-x_reset_circuit_breakers_for_testing__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_circuit_breakers_for_testing__mutmut_1': x_reset_circuit_breakers_for_testing__mutmut_1, 
-    'x_reset_circuit_breakers_for_testing__mutmut_2': x_reset_circuit_breakers_for_testing__mutmut_2, 
-    'x_reset_circuit_breakers_for_testing__mutmut_3': x_reset_circuit_breakers_for_testing__mutmut_3, 
-    'x_reset_circuit_breakers_for_testing__mutmut_4': x_reset_circuit_breakers_for_testing__mutmut_4, 
-    'x_reset_circuit_breakers_for_testing__mutmut_5': x_reset_circuit_breakers_for_testing__mutmut_5, 
-    'x_reset_circuit_breakers_for_testing__mutmut_6': x_reset_circuit_breakers_for_testing__mutmut_6, 
-    'x_reset_circuit_breakers_for_testing__mutmut_7': x_reset_circuit_breakers_for_testing__mutmut_7
+
+x_reset_circuit_breakers_for_testing__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_circuit_breakers_for_testing__mutmut_1": x_reset_circuit_breakers_for_testing__mutmut_1,
+    "x_reset_circuit_breakers_for_testing__mutmut_2": x_reset_circuit_breakers_for_testing__mutmut_2,
+    "x_reset_circuit_breakers_for_testing__mutmut_3": x_reset_circuit_breakers_for_testing__mutmut_3,
+    "x_reset_circuit_breakers_for_testing__mutmut_4": x_reset_circuit_breakers_for_testing__mutmut_4,
+    "x_reset_circuit_breakers_for_testing__mutmut_5": x_reset_circuit_breakers_for_testing__mutmut_5,
+    "x_reset_circuit_breakers_for_testing__mutmut_6": x_reset_circuit_breakers_for_testing__mutmut_6,
+    "x_reset_circuit_breakers_for_testing__mutmut_7": x_reset_circuit_breakers_for_testing__mutmut_7,
 }
 
-def reset_circuit_breakers_for_testing(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_circuit_breakers_for_testing__mutmut_orig, x_reset_circuit_breakers_for_testing__mutmut_mutants, args, kwargs)
-    return result 
 
-reset_circuit_breakers_for_testing.__signature__ = _mutmut_signature(x_reset_circuit_breakers_for_testing__mutmut_orig)
-x_reset_circuit_breakers_for_testing__mutmut_orig.__name__ = 'x_reset_circuit_breakers_for_testing'
+def reset_circuit_breakers_for_testing(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_reset_circuit_breakers_for_testing__mutmut_orig,
+        x_reset_circuit_breakers_for_testing__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+reset_circuit_breakers_for_testing.__signature__ = _mutmut_signature(
+    x_reset_circuit_breakers_for_testing__mutmut_orig
+)
+x_reset_circuit_breakers_for_testing__mutmut_orig.__name__ = "x_reset_circuit_breakers_for_testing"
 
 
 async def x_reset_test_circuit_breakers__mutmut_orig() -> None:
@@ -13355,29 +13429,36 @@ async def x_reset_test_circuit_breakers__mutmut_7() -> None:
     """
     registry = _get_circuit_breaker_registry()
     for name in registry.list_dimension(CIRCUIT_BREAKER_TEST_DIMENSION):
-        breaker = registry.get(name, )
+        breaker = registry.get(
+            name,
+        )
         if breaker:
             if isinstance(breaker, AsyncCircuitBreaker):
                 await breaker.reset()
             else:
                 breaker.reset()
 
-x_reset_test_circuit_breakers__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_test_circuit_breakers__mutmut_1': x_reset_test_circuit_breakers__mutmut_1, 
-    'x_reset_test_circuit_breakers__mutmut_2': x_reset_test_circuit_breakers__mutmut_2, 
-    'x_reset_test_circuit_breakers__mutmut_3': x_reset_test_circuit_breakers__mutmut_3, 
-    'x_reset_test_circuit_breakers__mutmut_4': x_reset_test_circuit_breakers__mutmut_4, 
-    'x_reset_test_circuit_breakers__mutmut_5': x_reset_test_circuit_breakers__mutmut_5, 
-    'x_reset_test_circuit_breakers__mutmut_6': x_reset_test_circuit_breakers__mutmut_6, 
-    'x_reset_test_circuit_breakers__mutmut_7': x_reset_test_circuit_breakers__mutmut_7
+
+x_reset_test_circuit_breakers__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_test_circuit_breakers__mutmut_1": x_reset_test_circuit_breakers__mutmut_1,
+    "x_reset_test_circuit_breakers__mutmut_2": x_reset_test_circuit_breakers__mutmut_2,
+    "x_reset_test_circuit_breakers__mutmut_3": x_reset_test_circuit_breakers__mutmut_3,
+    "x_reset_test_circuit_breakers__mutmut_4": x_reset_test_circuit_breakers__mutmut_4,
+    "x_reset_test_circuit_breakers__mutmut_5": x_reset_test_circuit_breakers__mutmut_5,
+    "x_reset_test_circuit_breakers__mutmut_6": x_reset_test_circuit_breakers__mutmut_6,
+    "x_reset_test_circuit_breakers__mutmut_7": x_reset_test_circuit_breakers__mutmut_7,
 }
 
+
 def reset_test_circuit_breakers(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_test_circuit_breakers__mutmut_orig, x_reset_test_circuit_breakers__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_test_circuit_breakers__mutmut_orig, x_reset_test_circuit_breakers__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_test_circuit_breakers.__signature__ = _mutmut_signature(x_reset_test_circuit_breakers__mutmut_orig)
-x_reset_test_circuit_breakers__mutmut_orig.__name__ = 'x_reset_test_circuit_breakers'
+x_reset_test_circuit_breakers__mutmut_orig.__name__ = "x_reset_test_circuit_breakers"
 
 
 def x_fallback__mutmut_orig(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
@@ -13547,18 +13628,21 @@ def x_fallback__mutmut_3(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F
 
     return decorator
 
-x_fallback__mutmut_mutants : ClassVar[MutantDict] = {
-'x_fallback__mutmut_1': x_fallback__mutmut_1, 
-    'x_fallback__mutmut_2': x_fallback__mutmut_2, 
-    'x_fallback__mutmut_3': x_fallback__mutmut_3
+
+x_fallback__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_fallback__mutmut_1": x_fallback__mutmut_1,
+    "x_fallback__mutmut_2": x_fallback__mutmut_2,
+    "x_fallback__mutmut_3": x_fallback__mutmut_3,
 }
+
 
 def fallback(*args, **kwargs):
     result = _mutmut_trampoline(x_fallback__mutmut_orig, x_fallback__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 fallback.__signature__ = _mutmut_signature(x_fallback__mutmut_orig)
-x_fallback__mutmut_orig.__name__ = 'x_fallback'
+x_fallback__mutmut_orig.__name__ = "x_fallback"
 
 
 # <3 🧱🤝💪🪄

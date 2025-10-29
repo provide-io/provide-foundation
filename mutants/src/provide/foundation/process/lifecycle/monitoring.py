@@ -28,23 +28,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -180,9 +183,7 @@ def x__drain_remaining_output__mutmut_6(process: ManagedProcess, buffer: str) ->
             remaining = process._process.stdout.read()
             if remaining:
                 buffer += (
-                    remaining.decode("utf-8", errors=None)
-                    if isinstance(remaining, bytes)
-                    else str(remaining)
+                    remaining.decode("utf-8", errors=None) if isinstance(remaining, bytes) else str(remaining)
                 )
                 log.debug("Read remaining output from exited process", size=len(remaining))
         except (OSError, ValueError, AttributeError):
@@ -200,9 +201,7 @@ def x__drain_remaining_output__mutmut_7(process: ManagedProcess, buffer: str) ->
             remaining = process._process.stdout.read()
             if remaining:
                 buffer += (
-                    remaining.decode(errors="replace")
-                    if isinstance(remaining, bytes)
-                    else str(remaining)
+                    remaining.decode(errors="replace") if isinstance(remaining, bytes) else str(remaining)
                 )
                 log.debug("Read remaining output from exited process", size=len(remaining))
         except (OSError, ValueError, AttributeError):
@@ -220,7 +219,9 @@ def x__drain_remaining_output__mutmut_8(process: ManagedProcess, buffer: str) ->
             remaining = process._process.stdout.read()
             if remaining:
                 buffer += (
-                    remaining.decode("utf-8", )
+                    remaining.decode(
+                        "utf-8",
+                    )
                     if isinstance(remaining, bytes)
                     else str(remaining)
                 )
@@ -320,9 +321,7 @@ def x__drain_remaining_output__mutmut_13(process: ManagedProcess, buffer: str) -
             remaining = process._process.stdout.read()
             if remaining:
                 buffer += (
-                    remaining.decode("utf-8", errors="replace")
-                    if isinstance(remaining, bytes)
-                    else str(None)
+                    remaining.decode("utf-8", errors="replace") if isinstance(remaining, bytes) else str(None)
                 )
                 log.debug("Read remaining output from exited process", size=len(remaining))
         except (OSError, ValueError, AttributeError):
@@ -404,7 +403,9 @@ def x__drain_remaining_output__mutmut_17(process: ManagedProcess, buffer: str) -
                     if isinstance(remaining, bytes)
                     else str(remaining)
                 )
-                log.debug("Read remaining output from exited process", )
+                log.debug(
+                    "Read remaining output from exited process",
+                )
         except (OSError, ValueError, AttributeError):
             # OSError: stream/file read errors
             # ValueError: invalid stream state or decoding errors
@@ -472,35 +473,40 @@ def x__drain_remaining_output__mutmut_20(process: ManagedProcess, buffer: str) -
             pass
     return buffer
 
-x__drain_remaining_output__mutmut_mutants : ClassVar[MutantDict] = {
-'x__drain_remaining_output__mutmut_1': x__drain_remaining_output__mutmut_1, 
-    'x__drain_remaining_output__mutmut_2': x__drain_remaining_output__mutmut_2, 
-    'x__drain_remaining_output__mutmut_3': x__drain_remaining_output__mutmut_3, 
-    'x__drain_remaining_output__mutmut_4': x__drain_remaining_output__mutmut_4, 
-    'x__drain_remaining_output__mutmut_5': x__drain_remaining_output__mutmut_5, 
-    'x__drain_remaining_output__mutmut_6': x__drain_remaining_output__mutmut_6, 
-    'x__drain_remaining_output__mutmut_7': x__drain_remaining_output__mutmut_7, 
-    'x__drain_remaining_output__mutmut_8': x__drain_remaining_output__mutmut_8, 
-    'x__drain_remaining_output__mutmut_9': x__drain_remaining_output__mutmut_9, 
-    'x__drain_remaining_output__mutmut_10': x__drain_remaining_output__mutmut_10, 
-    'x__drain_remaining_output__mutmut_11': x__drain_remaining_output__mutmut_11, 
-    'x__drain_remaining_output__mutmut_12': x__drain_remaining_output__mutmut_12, 
-    'x__drain_remaining_output__mutmut_13': x__drain_remaining_output__mutmut_13, 
-    'x__drain_remaining_output__mutmut_14': x__drain_remaining_output__mutmut_14, 
-    'x__drain_remaining_output__mutmut_15': x__drain_remaining_output__mutmut_15, 
-    'x__drain_remaining_output__mutmut_16': x__drain_remaining_output__mutmut_16, 
-    'x__drain_remaining_output__mutmut_17': x__drain_remaining_output__mutmut_17, 
-    'x__drain_remaining_output__mutmut_18': x__drain_remaining_output__mutmut_18, 
-    'x__drain_remaining_output__mutmut_19': x__drain_remaining_output__mutmut_19, 
-    'x__drain_remaining_output__mutmut_20': x__drain_remaining_output__mutmut_20
+
+x__drain_remaining_output__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__drain_remaining_output__mutmut_1": x__drain_remaining_output__mutmut_1,
+    "x__drain_remaining_output__mutmut_2": x__drain_remaining_output__mutmut_2,
+    "x__drain_remaining_output__mutmut_3": x__drain_remaining_output__mutmut_3,
+    "x__drain_remaining_output__mutmut_4": x__drain_remaining_output__mutmut_4,
+    "x__drain_remaining_output__mutmut_5": x__drain_remaining_output__mutmut_5,
+    "x__drain_remaining_output__mutmut_6": x__drain_remaining_output__mutmut_6,
+    "x__drain_remaining_output__mutmut_7": x__drain_remaining_output__mutmut_7,
+    "x__drain_remaining_output__mutmut_8": x__drain_remaining_output__mutmut_8,
+    "x__drain_remaining_output__mutmut_9": x__drain_remaining_output__mutmut_9,
+    "x__drain_remaining_output__mutmut_10": x__drain_remaining_output__mutmut_10,
+    "x__drain_remaining_output__mutmut_11": x__drain_remaining_output__mutmut_11,
+    "x__drain_remaining_output__mutmut_12": x__drain_remaining_output__mutmut_12,
+    "x__drain_remaining_output__mutmut_13": x__drain_remaining_output__mutmut_13,
+    "x__drain_remaining_output__mutmut_14": x__drain_remaining_output__mutmut_14,
+    "x__drain_remaining_output__mutmut_15": x__drain_remaining_output__mutmut_15,
+    "x__drain_remaining_output__mutmut_16": x__drain_remaining_output__mutmut_16,
+    "x__drain_remaining_output__mutmut_17": x__drain_remaining_output__mutmut_17,
+    "x__drain_remaining_output__mutmut_18": x__drain_remaining_output__mutmut_18,
+    "x__drain_remaining_output__mutmut_19": x__drain_remaining_output__mutmut_19,
+    "x__drain_remaining_output__mutmut_20": x__drain_remaining_output__mutmut_20,
 }
 
+
 def _drain_remaining_output(*args, **kwargs):
-    result = _mutmut_trampoline(x__drain_remaining_output__mutmut_orig, x__drain_remaining_output__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__drain_remaining_output__mutmut_orig, x__drain_remaining_output__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _drain_remaining_output.__signature__ = _mutmut_signature(x__drain_remaining_output__mutmut_orig)
-x__drain_remaining_output__mutmut_orig.__name__ = 'x__drain_remaining_output'
+x__drain_remaining_output__mutmut_orig.__name__ = "x__drain_remaining_output"
 
 
 def x__check_pattern_found__mutmut_orig(buffer: str, expected_parts: list[str]) -> bool:
@@ -517,17 +523,22 @@ def x__check_pattern_found__mutmut_2(buffer: str, expected_parts: list[str]) -> 
     """Check if all expected parts are found in buffer."""
     return all(part not in buffer for part in expected_parts)
 
-x__check_pattern_found__mutmut_mutants : ClassVar[MutantDict] = {
-'x__check_pattern_found__mutmut_1': x__check_pattern_found__mutmut_1, 
-    'x__check_pattern_found__mutmut_2': x__check_pattern_found__mutmut_2
+
+x__check_pattern_found__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__check_pattern_found__mutmut_1": x__check_pattern_found__mutmut_1,
+    "x__check_pattern_found__mutmut_2": x__check_pattern_found__mutmut_2,
 }
 
+
 def _check_pattern_found(*args, **kwargs):
-    result = _mutmut_trampoline(x__check_pattern_found__mutmut_orig, x__check_pattern_found__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__check_pattern_found__mutmut_orig, x__check_pattern_found__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _check_pattern_found.__signature__ = _mutmut_signature(x__check_pattern_found__mutmut_orig)
-x__check_pattern_found__mutmut_orig.__name__ = 'x__check_pattern_found'
+x__check_pattern_found__mutmut_orig.__name__ = "x__check_pattern_found"
 
 
 def x__handle_process_error_exit__mutmut_orig(exit_code: int, buffer: str) -> None:
@@ -568,7 +579,10 @@ def x__handle_process_error_exit__mutmut_5(exit_code: int, buffer: str) -> None:
 
 def x__handle_process_error_exit__mutmut_6(exit_code: int, buffer: str) -> None:
     """Handle process exit with error code."""
-    log.error("Process exited with error", returncode=exit_code, )
+    log.error(
+        "Process exited with error",
+        returncode=exit_code,
+    )
     raise ProcessError(f"Process exited with code {exit_code}")
 
 
@@ -601,26 +615,31 @@ def x__handle_process_error_exit__mutmut_11(exit_code: int, buffer: str) -> None
     log.error("Process exited with error", returncode=exit_code, buffer=buffer[:200])
     raise ProcessError(None)
 
-x__handle_process_error_exit__mutmut_mutants : ClassVar[MutantDict] = {
-'x__handle_process_error_exit__mutmut_1': x__handle_process_error_exit__mutmut_1, 
-    'x__handle_process_error_exit__mutmut_2': x__handle_process_error_exit__mutmut_2, 
-    'x__handle_process_error_exit__mutmut_3': x__handle_process_error_exit__mutmut_3, 
-    'x__handle_process_error_exit__mutmut_4': x__handle_process_error_exit__mutmut_4, 
-    'x__handle_process_error_exit__mutmut_5': x__handle_process_error_exit__mutmut_5, 
-    'x__handle_process_error_exit__mutmut_6': x__handle_process_error_exit__mutmut_6, 
-    'x__handle_process_error_exit__mutmut_7': x__handle_process_error_exit__mutmut_7, 
-    'x__handle_process_error_exit__mutmut_8': x__handle_process_error_exit__mutmut_8, 
-    'x__handle_process_error_exit__mutmut_9': x__handle_process_error_exit__mutmut_9, 
-    'x__handle_process_error_exit__mutmut_10': x__handle_process_error_exit__mutmut_10, 
-    'x__handle_process_error_exit__mutmut_11': x__handle_process_error_exit__mutmut_11
+
+x__handle_process_error_exit__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__handle_process_error_exit__mutmut_1": x__handle_process_error_exit__mutmut_1,
+    "x__handle_process_error_exit__mutmut_2": x__handle_process_error_exit__mutmut_2,
+    "x__handle_process_error_exit__mutmut_3": x__handle_process_error_exit__mutmut_3,
+    "x__handle_process_error_exit__mutmut_4": x__handle_process_error_exit__mutmut_4,
+    "x__handle_process_error_exit__mutmut_5": x__handle_process_error_exit__mutmut_5,
+    "x__handle_process_error_exit__mutmut_6": x__handle_process_error_exit__mutmut_6,
+    "x__handle_process_error_exit__mutmut_7": x__handle_process_error_exit__mutmut_7,
+    "x__handle_process_error_exit__mutmut_8": x__handle_process_error_exit__mutmut_8,
+    "x__handle_process_error_exit__mutmut_9": x__handle_process_error_exit__mutmut_9,
+    "x__handle_process_error_exit__mutmut_10": x__handle_process_error_exit__mutmut_10,
+    "x__handle_process_error_exit__mutmut_11": x__handle_process_error_exit__mutmut_11,
 }
 
+
 def _handle_process_error_exit(*args, **kwargs):
-    result = _mutmut_trampoline(x__handle_process_error_exit__mutmut_orig, x__handle_process_error_exit__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__handle_process_error_exit__mutmut_orig, x__handle_process_error_exit__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _handle_process_error_exit.__signature__ = _mutmut_signature(x__handle_process_error_exit__mutmut_orig)
-x__handle_process_error_exit__mutmut_orig.__name__ = 'x__handle_process_error_exit'
+x__handle_process_error_exit__mutmut_orig.__name__ = "x__handle_process_error_exit"
 
 
 def x__handle_process_clean_exit_without_pattern__mutmut_orig(exit_code: int | None, buffer: str) -> None:
@@ -661,7 +680,10 @@ def x__handle_process_clean_exit_without_pattern__mutmut_5(exit_code: int | None
 
 def x__handle_process_clean_exit_without_pattern__mutmut_6(exit_code: int | None, buffer: str) -> None:
     """Handle process clean exit but expected pattern not found."""
-    log.error("Process exited without expected output", returncode=0, )
+    log.error(
+        "Process exited without expected output",
+        returncode=0,
+    )
     raise ProcessError(f"Process exited with code {exit_code} before expected output found")
 
 
@@ -700,27 +722,39 @@ def x__handle_process_clean_exit_without_pattern__mutmut_12(exit_code: int | Non
     log.error("Process exited without expected output", returncode=0, buffer=buffer[:200])
     raise ProcessError(None)
 
-x__handle_process_clean_exit_without_pattern__mutmut_mutants : ClassVar[MutantDict] = {
-'x__handle_process_clean_exit_without_pattern__mutmut_1': x__handle_process_clean_exit_without_pattern__mutmut_1, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_2': x__handle_process_clean_exit_without_pattern__mutmut_2, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_3': x__handle_process_clean_exit_without_pattern__mutmut_3, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_4': x__handle_process_clean_exit_without_pattern__mutmut_4, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_5': x__handle_process_clean_exit_without_pattern__mutmut_5, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_6': x__handle_process_clean_exit_without_pattern__mutmut_6, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_7': x__handle_process_clean_exit_without_pattern__mutmut_7, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_8': x__handle_process_clean_exit_without_pattern__mutmut_8, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_9': x__handle_process_clean_exit_without_pattern__mutmut_9, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_10': x__handle_process_clean_exit_without_pattern__mutmut_10, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_11': x__handle_process_clean_exit_without_pattern__mutmut_11, 
-    'x__handle_process_clean_exit_without_pattern__mutmut_12': x__handle_process_clean_exit_without_pattern__mutmut_12
+
+x__handle_process_clean_exit_without_pattern__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__handle_process_clean_exit_without_pattern__mutmut_1": x__handle_process_clean_exit_without_pattern__mutmut_1,
+    "x__handle_process_clean_exit_without_pattern__mutmut_2": x__handle_process_clean_exit_without_pattern__mutmut_2,
+    "x__handle_process_clean_exit_without_pattern__mutmut_3": x__handle_process_clean_exit_without_pattern__mutmut_3,
+    "x__handle_process_clean_exit_without_pattern__mutmut_4": x__handle_process_clean_exit_without_pattern__mutmut_4,
+    "x__handle_process_clean_exit_without_pattern__mutmut_5": x__handle_process_clean_exit_without_pattern__mutmut_5,
+    "x__handle_process_clean_exit_without_pattern__mutmut_6": x__handle_process_clean_exit_without_pattern__mutmut_6,
+    "x__handle_process_clean_exit_without_pattern__mutmut_7": x__handle_process_clean_exit_without_pattern__mutmut_7,
+    "x__handle_process_clean_exit_without_pattern__mutmut_8": x__handle_process_clean_exit_without_pattern__mutmut_8,
+    "x__handle_process_clean_exit_without_pattern__mutmut_9": x__handle_process_clean_exit_without_pattern__mutmut_9,
+    "x__handle_process_clean_exit_without_pattern__mutmut_10": x__handle_process_clean_exit_without_pattern__mutmut_10,
+    "x__handle_process_clean_exit_without_pattern__mutmut_11": x__handle_process_clean_exit_without_pattern__mutmut_11,
+    "x__handle_process_clean_exit_without_pattern__mutmut_12": x__handle_process_clean_exit_without_pattern__mutmut_12,
 }
 
-def _handle_process_clean_exit_without_pattern(*args, **kwargs):
-    result = _mutmut_trampoline(x__handle_process_clean_exit_without_pattern__mutmut_orig, x__handle_process_clean_exit_without_pattern__mutmut_mutants, args, kwargs)
-    return result 
 
-_handle_process_clean_exit_without_pattern.__signature__ = _mutmut_signature(x__handle_process_clean_exit_without_pattern__mutmut_orig)
-x__handle_process_clean_exit_without_pattern__mutmut_orig.__name__ = 'x__handle_process_clean_exit_without_pattern'
+def _handle_process_clean_exit_without_pattern(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__handle_process_clean_exit_without_pattern__mutmut_orig,
+        x__handle_process_clean_exit_without_pattern__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_handle_process_clean_exit_without_pattern.__signature__ = _mutmut_signature(
+    x__handle_process_clean_exit_without_pattern__mutmut_orig
+)
+x__handle_process_clean_exit_without_pattern__mutmut_orig.__name__ = (
+    "x__handle_process_clean_exit_without_pattern"
+)
 
 
 async def x__handle_exited_process__mutmut_orig(
@@ -911,7 +945,9 @@ async def x__handle_exited_process__mutmut_5(
 ) -> str:
     """Handle a process that has exited - drain output and check for pattern."""
     # Try to drain any remaining output from the pipes
-    buffer = _drain_remaining_output(process, )
+    buffer = _drain_remaining_output(
+        process,
+    )
 
     # Check buffer after draining
     if _check_pattern_found(buffer, expected_parts):
@@ -1058,7 +1094,9 @@ async def x__handle_exited_process__mutmut_9(
     buffer = _drain_remaining_output(process, buffer)
 
     # Check buffer after draining
-    if _check_pattern_found(buffer, ):
+    if _check_pattern_found(
+        buffer,
+    ):
         log.debug("Found expected pattern after process exit")
         return buffer
 
@@ -1461,7 +1499,9 @@ async def x__handle_exited_process__mutmut_20(
     # If process exited and we don't have the pattern, handle error cases
     if last_exit_code is not None:
         if last_exit_code != 0:
-            _handle_process_error_exit(last_exit_code, )
+            _handle_process_error_exit(
+                last_exit_code,
+            )
 
         # For exit code 0, give it a small window to collect buffered output
         await asyncio.sleep(0.1)
@@ -1718,7 +1758,9 @@ async def x__handle_exited_process__mutmut_27(
         # For exit code 0, give it a small window to collect buffered output
         await asyncio.sleep(0.1)
         # Try one more time to drain output
-        buffer = _drain_remaining_output(process, )
+        buffer = _drain_remaining_output(
+            process,
+        )
 
         # Final check
         if _check_pattern_found(buffer, expected_parts):
@@ -1865,7 +1907,9 @@ async def x__handle_exited_process__mutmut_31(
         buffer = _drain_remaining_output(process, buffer)
 
         # Final check
-        if _check_pattern_found(buffer, ):
+        if _check_pattern_found(
+            buffer,
+        ):
             log.debug("Found expected pattern after final drain")
             return buffer
 
@@ -2158,58 +2202,65 @@ async def x__handle_exited_process__mutmut_39(
             return buffer
 
         # Process exited cleanly but pattern not found
-        _handle_process_clean_exit_without_pattern(last_exit_code, )
+        _handle_process_clean_exit_without_pattern(
+            last_exit_code,
+        )
 
     return buffer  # Should never reach here due to exceptions above
 
-x__handle_exited_process__mutmut_mutants : ClassVar[MutantDict] = {
-'x__handle_exited_process__mutmut_1': x__handle_exited_process__mutmut_1, 
-    'x__handle_exited_process__mutmut_2': x__handle_exited_process__mutmut_2, 
-    'x__handle_exited_process__mutmut_3': x__handle_exited_process__mutmut_3, 
-    'x__handle_exited_process__mutmut_4': x__handle_exited_process__mutmut_4, 
-    'x__handle_exited_process__mutmut_5': x__handle_exited_process__mutmut_5, 
-    'x__handle_exited_process__mutmut_6': x__handle_exited_process__mutmut_6, 
-    'x__handle_exited_process__mutmut_7': x__handle_exited_process__mutmut_7, 
-    'x__handle_exited_process__mutmut_8': x__handle_exited_process__mutmut_8, 
-    'x__handle_exited_process__mutmut_9': x__handle_exited_process__mutmut_9, 
-    'x__handle_exited_process__mutmut_10': x__handle_exited_process__mutmut_10, 
-    'x__handle_exited_process__mutmut_11': x__handle_exited_process__mutmut_11, 
-    'x__handle_exited_process__mutmut_12': x__handle_exited_process__mutmut_12, 
-    'x__handle_exited_process__mutmut_13': x__handle_exited_process__mutmut_13, 
-    'x__handle_exited_process__mutmut_14': x__handle_exited_process__mutmut_14, 
-    'x__handle_exited_process__mutmut_15': x__handle_exited_process__mutmut_15, 
-    'x__handle_exited_process__mutmut_16': x__handle_exited_process__mutmut_16, 
-    'x__handle_exited_process__mutmut_17': x__handle_exited_process__mutmut_17, 
-    'x__handle_exited_process__mutmut_18': x__handle_exited_process__mutmut_18, 
-    'x__handle_exited_process__mutmut_19': x__handle_exited_process__mutmut_19, 
-    'x__handle_exited_process__mutmut_20': x__handle_exited_process__mutmut_20, 
-    'x__handle_exited_process__mutmut_21': x__handle_exited_process__mutmut_21, 
-    'x__handle_exited_process__mutmut_22': x__handle_exited_process__mutmut_22, 
-    'x__handle_exited_process__mutmut_23': x__handle_exited_process__mutmut_23, 
-    'x__handle_exited_process__mutmut_24': x__handle_exited_process__mutmut_24, 
-    'x__handle_exited_process__mutmut_25': x__handle_exited_process__mutmut_25, 
-    'x__handle_exited_process__mutmut_26': x__handle_exited_process__mutmut_26, 
-    'x__handle_exited_process__mutmut_27': x__handle_exited_process__mutmut_27, 
-    'x__handle_exited_process__mutmut_28': x__handle_exited_process__mutmut_28, 
-    'x__handle_exited_process__mutmut_29': x__handle_exited_process__mutmut_29, 
-    'x__handle_exited_process__mutmut_30': x__handle_exited_process__mutmut_30, 
-    'x__handle_exited_process__mutmut_31': x__handle_exited_process__mutmut_31, 
-    'x__handle_exited_process__mutmut_32': x__handle_exited_process__mutmut_32, 
-    'x__handle_exited_process__mutmut_33': x__handle_exited_process__mutmut_33, 
-    'x__handle_exited_process__mutmut_34': x__handle_exited_process__mutmut_34, 
-    'x__handle_exited_process__mutmut_35': x__handle_exited_process__mutmut_35, 
-    'x__handle_exited_process__mutmut_36': x__handle_exited_process__mutmut_36, 
-    'x__handle_exited_process__mutmut_37': x__handle_exited_process__mutmut_37, 
-    'x__handle_exited_process__mutmut_38': x__handle_exited_process__mutmut_38, 
-    'x__handle_exited_process__mutmut_39': x__handle_exited_process__mutmut_39
+
+x__handle_exited_process__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__handle_exited_process__mutmut_1": x__handle_exited_process__mutmut_1,
+    "x__handle_exited_process__mutmut_2": x__handle_exited_process__mutmut_2,
+    "x__handle_exited_process__mutmut_3": x__handle_exited_process__mutmut_3,
+    "x__handle_exited_process__mutmut_4": x__handle_exited_process__mutmut_4,
+    "x__handle_exited_process__mutmut_5": x__handle_exited_process__mutmut_5,
+    "x__handle_exited_process__mutmut_6": x__handle_exited_process__mutmut_6,
+    "x__handle_exited_process__mutmut_7": x__handle_exited_process__mutmut_7,
+    "x__handle_exited_process__mutmut_8": x__handle_exited_process__mutmut_8,
+    "x__handle_exited_process__mutmut_9": x__handle_exited_process__mutmut_9,
+    "x__handle_exited_process__mutmut_10": x__handle_exited_process__mutmut_10,
+    "x__handle_exited_process__mutmut_11": x__handle_exited_process__mutmut_11,
+    "x__handle_exited_process__mutmut_12": x__handle_exited_process__mutmut_12,
+    "x__handle_exited_process__mutmut_13": x__handle_exited_process__mutmut_13,
+    "x__handle_exited_process__mutmut_14": x__handle_exited_process__mutmut_14,
+    "x__handle_exited_process__mutmut_15": x__handle_exited_process__mutmut_15,
+    "x__handle_exited_process__mutmut_16": x__handle_exited_process__mutmut_16,
+    "x__handle_exited_process__mutmut_17": x__handle_exited_process__mutmut_17,
+    "x__handle_exited_process__mutmut_18": x__handle_exited_process__mutmut_18,
+    "x__handle_exited_process__mutmut_19": x__handle_exited_process__mutmut_19,
+    "x__handle_exited_process__mutmut_20": x__handle_exited_process__mutmut_20,
+    "x__handle_exited_process__mutmut_21": x__handle_exited_process__mutmut_21,
+    "x__handle_exited_process__mutmut_22": x__handle_exited_process__mutmut_22,
+    "x__handle_exited_process__mutmut_23": x__handle_exited_process__mutmut_23,
+    "x__handle_exited_process__mutmut_24": x__handle_exited_process__mutmut_24,
+    "x__handle_exited_process__mutmut_25": x__handle_exited_process__mutmut_25,
+    "x__handle_exited_process__mutmut_26": x__handle_exited_process__mutmut_26,
+    "x__handle_exited_process__mutmut_27": x__handle_exited_process__mutmut_27,
+    "x__handle_exited_process__mutmut_28": x__handle_exited_process__mutmut_28,
+    "x__handle_exited_process__mutmut_29": x__handle_exited_process__mutmut_29,
+    "x__handle_exited_process__mutmut_30": x__handle_exited_process__mutmut_30,
+    "x__handle_exited_process__mutmut_31": x__handle_exited_process__mutmut_31,
+    "x__handle_exited_process__mutmut_32": x__handle_exited_process__mutmut_32,
+    "x__handle_exited_process__mutmut_33": x__handle_exited_process__mutmut_33,
+    "x__handle_exited_process__mutmut_34": x__handle_exited_process__mutmut_34,
+    "x__handle_exited_process__mutmut_35": x__handle_exited_process__mutmut_35,
+    "x__handle_exited_process__mutmut_36": x__handle_exited_process__mutmut_36,
+    "x__handle_exited_process__mutmut_37": x__handle_exited_process__mutmut_37,
+    "x__handle_exited_process__mutmut_38": x__handle_exited_process__mutmut_38,
+    "x__handle_exited_process__mutmut_39": x__handle_exited_process__mutmut_39,
 }
 
+
 def _handle_exited_process(*args, **kwargs):
-    result = _mutmut_trampoline(x__handle_exited_process__mutmut_orig, x__handle_exited_process__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__handle_exited_process__mutmut_orig, x__handle_exited_process__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _handle_exited_process.__signature__ = _mutmut_signature(x__handle_exited_process__mutmut_orig)
-x__handle_exited_process__mutmut_orig.__name__ = 'x__handle_exited_process'
+x__handle_exited_process__mutmut_orig.__name__ = "x__handle_exited_process"
 
 
 async def x__try_read_process_line__mutmut_orig(
@@ -2518,7 +2569,9 @@ async def x__try_read_process_line__mutmut_11(
         line = await process.read_line_async(timeout=0.1)
         if line:
             buffer += line + "\n"  # Add newline back since readline strips it
-            log.debug("Read line from process", )
+            log.debug(
+                "Read line from process",
+            )
 
             # Check if we have all expected parts
             if _check_pattern_found(buffer, expected_parts):
@@ -2737,7 +2790,9 @@ async def x__try_read_process_line__mutmut_19(
             log.debug("Read line from process", line=line[:100])
 
             # Check if we have all expected parts
-            if _check_pattern_found(buffer, ):
+            if _check_pattern_found(
+                buffer,
+            ):
                 log.debug("Found expected pattern in buffer")
                 return buffer, True
 
@@ -2913,40 +2968,45 @@ async def x__try_read_process_line__mutmut_25(
 
     return buffer, True
 
-x__try_read_process_line__mutmut_mutants : ClassVar[MutantDict] = {
-'x__try_read_process_line__mutmut_1': x__try_read_process_line__mutmut_1, 
-    'x__try_read_process_line__mutmut_2': x__try_read_process_line__mutmut_2, 
-    'x__try_read_process_line__mutmut_3': x__try_read_process_line__mutmut_3, 
-    'x__try_read_process_line__mutmut_4': x__try_read_process_line__mutmut_4, 
-    'x__try_read_process_line__mutmut_5': x__try_read_process_line__mutmut_5, 
-    'x__try_read_process_line__mutmut_6': x__try_read_process_line__mutmut_6, 
-    'x__try_read_process_line__mutmut_7': x__try_read_process_line__mutmut_7, 
-    'x__try_read_process_line__mutmut_8': x__try_read_process_line__mutmut_8, 
-    'x__try_read_process_line__mutmut_9': x__try_read_process_line__mutmut_9, 
-    'x__try_read_process_line__mutmut_10': x__try_read_process_line__mutmut_10, 
-    'x__try_read_process_line__mutmut_11': x__try_read_process_line__mutmut_11, 
-    'x__try_read_process_line__mutmut_12': x__try_read_process_line__mutmut_12, 
-    'x__try_read_process_line__mutmut_13': x__try_read_process_line__mutmut_13, 
-    'x__try_read_process_line__mutmut_14': x__try_read_process_line__mutmut_14, 
-    'x__try_read_process_line__mutmut_15': x__try_read_process_line__mutmut_15, 
-    'x__try_read_process_line__mutmut_16': x__try_read_process_line__mutmut_16, 
-    'x__try_read_process_line__mutmut_17': x__try_read_process_line__mutmut_17, 
-    'x__try_read_process_line__mutmut_18': x__try_read_process_line__mutmut_18, 
-    'x__try_read_process_line__mutmut_19': x__try_read_process_line__mutmut_19, 
-    'x__try_read_process_line__mutmut_20': x__try_read_process_line__mutmut_20, 
-    'x__try_read_process_line__mutmut_21': x__try_read_process_line__mutmut_21, 
-    'x__try_read_process_line__mutmut_22': x__try_read_process_line__mutmut_22, 
-    'x__try_read_process_line__mutmut_23': x__try_read_process_line__mutmut_23, 
-    'x__try_read_process_line__mutmut_24': x__try_read_process_line__mutmut_24, 
-    'x__try_read_process_line__mutmut_25': x__try_read_process_line__mutmut_25
+
+x__try_read_process_line__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__try_read_process_line__mutmut_1": x__try_read_process_line__mutmut_1,
+    "x__try_read_process_line__mutmut_2": x__try_read_process_line__mutmut_2,
+    "x__try_read_process_line__mutmut_3": x__try_read_process_line__mutmut_3,
+    "x__try_read_process_line__mutmut_4": x__try_read_process_line__mutmut_4,
+    "x__try_read_process_line__mutmut_5": x__try_read_process_line__mutmut_5,
+    "x__try_read_process_line__mutmut_6": x__try_read_process_line__mutmut_6,
+    "x__try_read_process_line__mutmut_7": x__try_read_process_line__mutmut_7,
+    "x__try_read_process_line__mutmut_8": x__try_read_process_line__mutmut_8,
+    "x__try_read_process_line__mutmut_9": x__try_read_process_line__mutmut_9,
+    "x__try_read_process_line__mutmut_10": x__try_read_process_line__mutmut_10,
+    "x__try_read_process_line__mutmut_11": x__try_read_process_line__mutmut_11,
+    "x__try_read_process_line__mutmut_12": x__try_read_process_line__mutmut_12,
+    "x__try_read_process_line__mutmut_13": x__try_read_process_line__mutmut_13,
+    "x__try_read_process_line__mutmut_14": x__try_read_process_line__mutmut_14,
+    "x__try_read_process_line__mutmut_15": x__try_read_process_line__mutmut_15,
+    "x__try_read_process_line__mutmut_16": x__try_read_process_line__mutmut_16,
+    "x__try_read_process_line__mutmut_17": x__try_read_process_line__mutmut_17,
+    "x__try_read_process_line__mutmut_18": x__try_read_process_line__mutmut_18,
+    "x__try_read_process_line__mutmut_19": x__try_read_process_line__mutmut_19,
+    "x__try_read_process_line__mutmut_20": x__try_read_process_line__mutmut_20,
+    "x__try_read_process_line__mutmut_21": x__try_read_process_line__mutmut_21,
+    "x__try_read_process_line__mutmut_22": x__try_read_process_line__mutmut_22,
+    "x__try_read_process_line__mutmut_23": x__try_read_process_line__mutmut_23,
+    "x__try_read_process_line__mutmut_24": x__try_read_process_line__mutmut_24,
+    "x__try_read_process_line__mutmut_25": x__try_read_process_line__mutmut_25,
 }
 
+
 def _try_read_process_line(*args, **kwargs):
-    result = _mutmut_trampoline(x__try_read_process_line__mutmut_orig, x__try_read_process_line__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__try_read_process_line__mutmut_orig, x__try_read_process_line__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _try_read_process_line.__signature__ = _mutmut_signature(x__try_read_process_line__mutmut_orig)
-x__try_read_process_line__mutmut_orig.__name__ = 'x__try_read_process_line'
+x__try_read_process_line__mutmut_orig.__name__ = "x__try_read_process_line"
 
 
 async def x_wait_for_process_output__mutmut_orig(
@@ -3760,7 +3820,7 @@ async def x_wait_for_process_output__mutmut_12(
     log.debug(
         "⏳ Waiting for process output pattern",
         expected_parts=expected_parts,
-        )
+    )
 
     while (loop.time() - start_time) < timeout:
         # Check if process has exited
@@ -4481,7 +4541,9 @@ async def x_wait_for_process_output__mutmut_23(
         # Check if process has exited
         if not process.is_running():
             last_exit_code = process.returncode
-            log.debug("Process exited", )
+            log.debug(
+                "Process exited",
+            )
             return await _handle_exited_process(process, buffer, expected_parts, last_exit_code)
 
         # Try to read line from running process
@@ -5197,7 +5259,11 @@ async def x_wait_for_process_output__mutmut_34(
         if not process.is_running():
             last_exit_code = process.returncode
             log.debug("Process exited", returncode=last_exit_code)
-            return await _handle_exited_process(process, buffer, expected_parts, )
+            return await _handle_exited_process(
+                process,
+                buffer,
+                expected_parts,
+            )
 
         # Try to read line from running process
         buffer, pattern_found = await _try_read_process_line(process, buffer, expected_parts)
@@ -5655,7 +5721,10 @@ async def x_wait_for_process_output__mutmut_41(
             return await _handle_exited_process(process, buffer, expected_parts, last_exit_code)
 
         # Try to read line from running process
-        buffer, pattern_found = await _try_read_process_line(process, buffer, )
+        buffer, pattern_found = await _try_read_process_line(
+            process,
+            buffer,
+        )
         if pattern_found:
             return buffer
 
@@ -6053,7 +6122,9 @@ async def x_wait_for_process_output__mutmut_47(
         await asyncio.sleep(0.01)
 
     # Final check of buffer before timeout error
-    if _check_pattern_found(buffer, ):
+    if _check_pattern_found(
+        buffer,
+    ):
         return buffer
 
     # If process exited with 0 but we didn't get output, that's still a timeout
@@ -6578,7 +6649,7 @@ async def x_wait_for_process_output__mutmut_55(
         "Timeout waiting for pattern",
         expected_parts=expected_parts,
         buffer=buffer[:200],
-        )
+    )
     raise TimeoutError(f"Expected pattern {expected_parts} not found within {timeout}s timeout")
 
 
@@ -6906,75 +6977,80 @@ async def x_wait_for_process_output__mutmut_60(
     )
     raise TimeoutError(None)
 
-x_wait_for_process_output__mutmut_mutants : ClassVar[MutantDict] = {
-'x_wait_for_process_output__mutmut_1': x_wait_for_process_output__mutmut_1, 
-    'x_wait_for_process_output__mutmut_2': x_wait_for_process_output__mutmut_2, 
-    'x_wait_for_process_output__mutmut_3': x_wait_for_process_output__mutmut_3, 
-    'x_wait_for_process_output__mutmut_4': x_wait_for_process_output__mutmut_4, 
-    'x_wait_for_process_output__mutmut_5': x_wait_for_process_output__mutmut_5, 
-    'x_wait_for_process_output__mutmut_6': x_wait_for_process_output__mutmut_6, 
-    'x_wait_for_process_output__mutmut_7': x_wait_for_process_output__mutmut_7, 
-    'x_wait_for_process_output__mutmut_8': x_wait_for_process_output__mutmut_8, 
-    'x_wait_for_process_output__mutmut_9': x_wait_for_process_output__mutmut_9, 
-    'x_wait_for_process_output__mutmut_10': x_wait_for_process_output__mutmut_10, 
-    'x_wait_for_process_output__mutmut_11': x_wait_for_process_output__mutmut_11, 
-    'x_wait_for_process_output__mutmut_12': x_wait_for_process_output__mutmut_12, 
-    'x_wait_for_process_output__mutmut_13': x_wait_for_process_output__mutmut_13, 
-    'x_wait_for_process_output__mutmut_14': x_wait_for_process_output__mutmut_14, 
-    'x_wait_for_process_output__mutmut_15': x_wait_for_process_output__mutmut_15, 
-    'x_wait_for_process_output__mutmut_16': x_wait_for_process_output__mutmut_16, 
-    'x_wait_for_process_output__mutmut_17': x_wait_for_process_output__mutmut_17, 
-    'x_wait_for_process_output__mutmut_18': x_wait_for_process_output__mutmut_18, 
-    'x_wait_for_process_output__mutmut_19': x_wait_for_process_output__mutmut_19, 
-    'x_wait_for_process_output__mutmut_20': x_wait_for_process_output__mutmut_20, 
-    'x_wait_for_process_output__mutmut_21': x_wait_for_process_output__mutmut_21, 
-    'x_wait_for_process_output__mutmut_22': x_wait_for_process_output__mutmut_22, 
-    'x_wait_for_process_output__mutmut_23': x_wait_for_process_output__mutmut_23, 
-    'x_wait_for_process_output__mutmut_24': x_wait_for_process_output__mutmut_24, 
-    'x_wait_for_process_output__mutmut_25': x_wait_for_process_output__mutmut_25, 
-    'x_wait_for_process_output__mutmut_26': x_wait_for_process_output__mutmut_26, 
-    'x_wait_for_process_output__mutmut_27': x_wait_for_process_output__mutmut_27, 
-    'x_wait_for_process_output__mutmut_28': x_wait_for_process_output__mutmut_28, 
-    'x_wait_for_process_output__mutmut_29': x_wait_for_process_output__mutmut_29, 
-    'x_wait_for_process_output__mutmut_30': x_wait_for_process_output__mutmut_30, 
-    'x_wait_for_process_output__mutmut_31': x_wait_for_process_output__mutmut_31, 
-    'x_wait_for_process_output__mutmut_32': x_wait_for_process_output__mutmut_32, 
-    'x_wait_for_process_output__mutmut_33': x_wait_for_process_output__mutmut_33, 
-    'x_wait_for_process_output__mutmut_34': x_wait_for_process_output__mutmut_34, 
-    'x_wait_for_process_output__mutmut_35': x_wait_for_process_output__mutmut_35, 
-    'x_wait_for_process_output__mutmut_36': x_wait_for_process_output__mutmut_36, 
-    'x_wait_for_process_output__mutmut_37': x_wait_for_process_output__mutmut_37, 
-    'x_wait_for_process_output__mutmut_38': x_wait_for_process_output__mutmut_38, 
-    'x_wait_for_process_output__mutmut_39': x_wait_for_process_output__mutmut_39, 
-    'x_wait_for_process_output__mutmut_40': x_wait_for_process_output__mutmut_40, 
-    'x_wait_for_process_output__mutmut_41': x_wait_for_process_output__mutmut_41, 
-    'x_wait_for_process_output__mutmut_42': x_wait_for_process_output__mutmut_42, 
-    'x_wait_for_process_output__mutmut_43': x_wait_for_process_output__mutmut_43, 
-    'x_wait_for_process_output__mutmut_44': x_wait_for_process_output__mutmut_44, 
-    'x_wait_for_process_output__mutmut_45': x_wait_for_process_output__mutmut_45, 
-    'x_wait_for_process_output__mutmut_46': x_wait_for_process_output__mutmut_46, 
-    'x_wait_for_process_output__mutmut_47': x_wait_for_process_output__mutmut_47, 
-    'x_wait_for_process_output__mutmut_48': x_wait_for_process_output__mutmut_48, 
-    'x_wait_for_process_output__mutmut_49': x_wait_for_process_output__mutmut_49, 
-    'x_wait_for_process_output__mutmut_50': x_wait_for_process_output__mutmut_50, 
-    'x_wait_for_process_output__mutmut_51': x_wait_for_process_output__mutmut_51, 
-    'x_wait_for_process_output__mutmut_52': x_wait_for_process_output__mutmut_52, 
-    'x_wait_for_process_output__mutmut_53': x_wait_for_process_output__mutmut_53, 
-    'x_wait_for_process_output__mutmut_54': x_wait_for_process_output__mutmut_54, 
-    'x_wait_for_process_output__mutmut_55': x_wait_for_process_output__mutmut_55, 
-    'x_wait_for_process_output__mutmut_56': x_wait_for_process_output__mutmut_56, 
-    'x_wait_for_process_output__mutmut_57': x_wait_for_process_output__mutmut_57, 
-    'x_wait_for_process_output__mutmut_58': x_wait_for_process_output__mutmut_58, 
-    'x_wait_for_process_output__mutmut_59': x_wait_for_process_output__mutmut_59, 
-    'x_wait_for_process_output__mutmut_60': x_wait_for_process_output__mutmut_60
+
+x_wait_for_process_output__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_wait_for_process_output__mutmut_1": x_wait_for_process_output__mutmut_1,
+    "x_wait_for_process_output__mutmut_2": x_wait_for_process_output__mutmut_2,
+    "x_wait_for_process_output__mutmut_3": x_wait_for_process_output__mutmut_3,
+    "x_wait_for_process_output__mutmut_4": x_wait_for_process_output__mutmut_4,
+    "x_wait_for_process_output__mutmut_5": x_wait_for_process_output__mutmut_5,
+    "x_wait_for_process_output__mutmut_6": x_wait_for_process_output__mutmut_6,
+    "x_wait_for_process_output__mutmut_7": x_wait_for_process_output__mutmut_7,
+    "x_wait_for_process_output__mutmut_8": x_wait_for_process_output__mutmut_8,
+    "x_wait_for_process_output__mutmut_9": x_wait_for_process_output__mutmut_9,
+    "x_wait_for_process_output__mutmut_10": x_wait_for_process_output__mutmut_10,
+    "x_wait_for_process_output__mutmut_11": x_wait_for_process_output__mutmut_11,
+    "x_wait_for_process_output__mutmut_12": x_wait_for_process_output__mutmut_12,
+    "x_wait_for_process_output__mutmut_13": x_wait_for_process_output__mutmut_13,
+    "x_wait_for_process_output__mutmut_14": x_wait_for_process_output__mutmut_14,
+    "x_wait_for_process_output__mutmut_15": x_wait_for_process_output__mutmut_15,
+    "x_wait_for_process_output__mutmut_16": x_wait_for_process_output__mutmut_16,
+    "x_wait_for_process_output__mutmut_17": x_wait_for_process_output__mutmut_17,
+    "x_wait_for_process_output__mutmut_18": x_wait_for_process_output__mutmut_18,
+    "x_wait_for_process_output__mutmut_19": x_wait_for_process_output__mutmut_19,
+    "x_wait_for_process_output__mutmut_20": x_wait_for_process_output__mutmut_20,
+    "x_wait_for_process_output__mutmut_21": x_wait_for_process_output__mutmut_21,
+    "x_wait_for_process_output__mutmut_22": x_wait_for_process_output__mutmut_22,
+    "x_wait_for_process_output__mutmut_23": x_wait_for_process_output__mutmut_23,
+    "x_wait_for_process_output__mutmut_24": x_wait_for_process_output__mutmut_24,
+    "x_wait_for_process_output__mutmut_25": x_wait_for_process_output__mutmut_25,
+    "x_wait_for_process_output__mutmut_26": x_wait_for_process_output__mutmut_26,
+    "x_wait_for_process_output__mutmut_27": x_wait_for_process_output__mutmut_27,
+    "x_wait_for_process_output__mutmut_28": x_wait_for_process_output__mutmut_28,
+    "x_wait_for_process_output__mutmut_29": x_wait_for_process_output__mutmut_29,
+    "x_wait_for_process_output__mutmut_30": x_wait_for_process_output__mutmut_30,
+    "x_wait_for_process_output__mutmut_31": x_wait_for_process_output__mutmut_31,
+    "x_wait_for_process_output__mutmut_32": x_wait_for_process_output__mutmut_32,
+    "x_wait_for_process_output__mutmut_33": x_wait_for_process_output__mutmut_33,
+    "x_wait_for_process_output__mutmut_34": x_wait_for_process_output__mutmut_34,
+    "x_wait_for_process_output__mutmut_35": x_wait_for_process_output__mutmut_35,
+    "x_wait_for_process_output__mutmut_36": x_wait_for_process_output__mutmut_36,
+    "x_wait_for_process_output__mutmut_37": x_wait_for_process_output__mutmut_37,
+    "x_wait_for_process_output__mutmut_38": x_wait_for_process_output__mutmut_38,
+    "x_wait_for_process_output__mutmut_39": x_wait_for_process_output__mutmut_39,
+    "x_wait_for_process_output__mutmut_40": x_wait_for_process_output__mutmut_40,
+    "x_wait_for_process_output__mutmut_41": x_wait_for_process_output__mutmut_41,
+    "x_wait_for_process_output__mutmut_42": x_wait_for_process_output__mutmut_42,
+    "x_wait_for_process_output__mutmut_43": x_wait_for_process_output__mutmut_43,
+    "x_wait_for_process_output__mutmut_44": x_wait_for_process_output__mutmut_44,
+    "x_wait_for_process_output__mutmut_45": x_wait_for_process_output__mutmut_45,
+    "x_wait_for_process_output__mutmut_46": x_wait_for_process_output__mutmut_46,
+    "x_wait_for_process_output__mutmut_47": x_wait_for_process_output__mutmut_47,
+    "x_wait_for_process_output__mutmut_48": x_wait_for_process_output__mutmut_48,
+    "x_wait_for_process_output__mutmut_49": x_wait_for_process_output__mutmut_49,
+    "x_wait_for_process_output__mutmut_50": x_wait_for_process_output__mutmut_50,
+    "x_wait_for_process_output__mutmut_51": x_wait_for_process_output__mutmut_51,
+    "x_wait_for_process_output__mutmut_52": x_wait_for_process_output__mutmut_52,
+    "x_wait_for_process_output__mutmut_53": x_wait_for_process_output__mutmut_53,
+    "x_wait_for_process_output__mutmut_54": x_wait_for_process_output__mutmut_54,
+    "x_wait_for_process_output__mutmut_55": x_wait_for_process_output__mutmut_55,
+    "x_wait_for_process_output__mutmut_56": x_wait_for_process_output__mutmut_56,
+    "x_wait_for_process_output__mutmut_57": x_wait_for_process_output__mutmut_57,
+    "x_wait_for_process_output__mutmut_58": x_wait_for_process_output__mutmut_58,
+    "x_wait_for_process_output__mutmut_59": x_wait_for_process_output__mutmut_59,
+    "x_wait_for_process_output__mutmut_60": x_wait_for_process_output__mutmut_60,
 }
 
+
 def wait_for_process_output(*args, **kwargs):
-    result = _mutmut_trampoline(x_wait_for_process_output__mutmut_orig, x_wait_for_process_output__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_wait_for_process_output__mutmut_orig, x_wait_for_process_output__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 wait_for_process_output.__signature__ = _mutmut_signature(x_wait_for_process_output__mutmut_orig)
-x_wait_for_process_output__mutmut_orig.__name__ = 'x_wait_for_process_output'
+x_wait_for_process_output__mutmut_orig.__name__ = "x_wait_for_process_output"
 
 
 # <3 🧱🤝🏃🪄

@@ -32,23 +32,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -334,7 +337,10 @@ def x_read_json__mutmut_9(
         Parsed JSON data or default value
 
     """
-    content = safe_read_text(path, default="", )
+    content = safe_read_text(
+        path,
+        default="",
+    )
 
     if not content:
         log.debug("Empty or missing JSON file, returning default", path=str(path))
@@ -511,7 +517,9 @@ def x_read_json__mutmut_15(
     content = safe_read_text(path, default="", encoding=encoding)
 
     if not content:
-        log.debug("Empty or missing JSON file, returning default", )
+        log.debug(
+            "Empty or missing JSON file, returning default",
+        )
         return default
 
     try:
@@ -836,7 +844,10 @@ def x_read_json__mutmut_26(
     try:
         return json_loads(content)
     except Exception as e:
-        log.warning("Invalid JSON file", path=str(path), )
+        log.warning(
+            "Invalid JSON file",
+            path=str(path),
+        )
         return default
 
 
@@ -984,46 +995,49 @@ def x_read_json__mutmut_31(
         log.warning("Invalid JSON file", path=str(path), error=str(None))
         return default
 
-x_read_json__mutmut_mutants : ClassVar[MutantDict] = {
-'x_read_json__mutmut_1': x_read_json__mutmut_1, 
-    'x_read_json__mutmut_2': x_read_json__mutmut_2, 
-    'x_read_json__mutmut_3': x_read_json__mutmut_3, 
-    'x_read_json__mutmut_4': x_read_json__mutmut_4, 
-    'x_read_json__mutmut_5': x_read_json__mutmut_5, 
-    'x_read_json__mutmut_6': x_read_json__mutmut_6, 
-    'x_read_json__mutmut_7': x_read_json__mutmut_7, 
-    'x_read_json__mutmut_8': x_read_json__mutmut_8, 
-    'x_read_json__mutmut_9': x_read_json__mutmut_9, 
-    'x_read_json__mutmut_10': x_read_json__mutmut_10, 
-    'x_read_json__mutmut_11': x_read_json__mutmut_11, 
-    'x_read_json__mutmut_12': x_read_json__mutmut_12, 
-    'x_read_json__mutmut_13': x_read_json__mutmut_13, 
-    'x_read_json__mutmut_14': x_read_json__mutmut_14, 
-    'x_read_json__mutmut_15': x_read_json__mutmut_15, 
-    'x_read_json__mutmut_16': x_read_json__mutmut_16, 
-    'x_read_json__mutmut_17': x_read_json__mutmut_17, 
-    'x_read_json__mutmut_18': x_read_json__mutmut_18, 
-    'x_read_json__mutmut_19': x_read_json__mutmut_19, 
-    'x_read_json__mutmut_20': x_read_json__mutmut_20, 
-    'x_read_json__mutmut_21': x_read_json__mutmut_21, 
-    'x_read_json__mutmut_22': x_read_json__mutmut_22, 
-    'x_read_json__mutmut_23': x_read_json__mutmut_23, 
-    'x_read_json__mutmut_24': x_read_json__mutmut_24, 
-    'x_read_json__mutmut_25': x_read_json__mutmut_25, 
-    'x_read_json__mutmut_26': x_read_json__mutmut_26, 
-    'x_read_json__mutmut_27': x_read_json__mutmut_27, 
-    'x_read_json__mutmut_28': x_read_json__mutmut_28, 
-    'x_read_json__mutmut_29': x_read_json__mutmut_29, 
-    'x_read_json__mutmut_30': x_read_json__mutmut_30, 
-    'x_read_json__mutmut_31': x_read_json__mutmut_31
+
+x_read_json__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_read_json__mutmut_1": x_read_json__mutmut_1,
+    "x_read_json__mutmut_2": x_read_json__mutmut_2,
+    "x_read_json__mutmut_3": x_read_json__mutmut_3,
+    "x_read_json__mutmut_4": x_read_json__mutmut_4,
+    "x_read_json__mutmut_5": x_read_json__mutmut_5,
+    "x_read_json__mutmut_6": x_read_json__mutmut_6,
+    "x_read_json__mutmut_7": x_read_json__mutmut_7,
+    "x_read_json__mutmut_8": x_read_json__mutmut_8,
+    "x_read_json__mutmut_9": x_read_json__mutmut_9,
+    "x_read_json__mutmut_10": x_read_json__mutmut_10,
+    "x_read_json__mutmut_11": x_read_json__mutmut_11,
+    "x_read_json__mutmut_12": x_read_json__mutmut_12,
+    "x_read_json__mutmut_13": x_read_json__mutmut_13,
+    "x_read_json__mutmut_14": x_read_json__mutmut_14,
+    "x_read_json__mutmut_15": x_read_json__mutmut_15,
+    "x_read_json__mutmut_16": x_read_json__mutmut_16,
+    "x_read_json__mutmut_17": x_read_json__mutmut_17,
+    "x_read_json__mutmut_18": x_read_json__mutmut_18,
+    "x_read_json__mutmut_19": x_read_json__mutmut_19,
+    "x_read_json__mutmut_20": x_read_json__mutmut_20,
+    "x_read_json__mutmut_21": x_read_json__mutmut_21,
+    "x_read_json__mutmut_22": x_read_json__mutmut_22,
+    "x_read_json__mutmut_23": x_read_json__mutmut_23,
+    "x_read_json__mutmut_24": x_read_json__mutmut_24,
+    "x_read_json__mutmut_25": x_read_json__mutmut_25,
+    "x_read_json__mutmut_26": x_read_json__mutmut_26,
+    "x_read_json__mutmut_27": x_read_json__mutmut_27,
+    "x_read_json__mutmut_28": x_read_json__mutmut_28,
+    "x_read_json__mutmut_29": x_read_json__mutmut_29,
+    "x_read_json__mutmut_30": x_read_json__mutmut_30,
+    "x_read_json__mutmut_31": x_read_json__mutmut_31,
 }
+
 
 def read_json(*args, **kwargs):
     result = _mutmut_trampoline(x_read_json__mutmut_orig, x_read_json__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 read_json.__signature__ = _mutmut_signature(x_read_json__mutmut_orig)
-x_read_json__mutmut_orig.__name__ = 'x_read_json'
+x_read_json__mutmut_orig.__name__ = "x_read_json"
 
 
 def x_write_json__mutmut_orig(
@@ -1624,7 +1638,11 @@ def x_write_json__mutmut_16(
     path = Path(path)
 
     try:
-        content = json_dumps(data, indent=indent, sort_keys=sort_keys, )
+        content = json_dumps(
+            data,
+            indent=indent,
+            sort_keys=sort_keys,
+        )
 
         if atomic:
             atomic_write_text(path, content, encoding=encoding)
@@ -1879,7 +1897,10 @@ def x_write_json__mutmut_23(
         content = json_dumps(data, indent=indent, sort_keys=sort_keys, ensure_ascii=False)
 
         if atomic:
-            atomic_write_text(path, content, )
+            atomic_write_text(
+                path,
+                content,
+            )
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding=encoding)
@@ -2025,7 +2046,9 @@ def x_write_json__mutmut_27(
         if atomic:
             atomic_write_text(path, content, encoding=encoding)
         else:
-            path.parent.mkdir(parents=True, )
+            path.parent.mkdir(
+                parents=True,
+            )
             path.write_text(content, encoding=encoding)
 
         log.debug("Wrote JSON file", path=str(path), atomic=atomic)
@@ -2242,7 +2265,9 @@ def x_write_json__mutmut_33(
             atomic_write_text(path, content, encoding=encoding)
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content, )
+            path.write_text(
+                content,
+            )
 
         log.debug("Wrote JSON file", path=str(path), atomic=atomic)
     except Exception as e:
@@ -2460,7 +2485,10 @@ def x_write_json__mutmut_39(
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding=encoding)
 
-        log.debug("Wrote JSON file", path=str(path), )
+        log.debug(
+            "Wrote JSON file",
+            path=str(path),
+        )
     except Exception as e:
         log.error("Failed to write JSON file", path=str(path), error=str(e))
         raise
@@ -2822,7 +2850,10 @@ def x_write_json__mutmut_49(
 
         log.debug("Wrote JSON file", path=str(path), atomic=atomic)
     except Exception as e:
-        log.error("Failed to write JSON file", path=str(path), )
+        log.error(
+            "Failed to write JSON file",
+            path=str(path),
+        )
         raise
 
 
@@ -3005,69 +3036,72 @@ def x_write_json__mutmut_54(
         log.error("Failed to write JSON file", path=str(path), error=str(None))
         raise
 
-x_write_json__mutmut_mutants : ClassVar[MutantDict] = {
-'x_write_json__mutmut_1': x_write_json__mutmut_1, 
-    'x_write_json__mutmut_2': x_write_json__mutmut_2, 
-    'x_write_json__mutmut_3': x_write_json__mutmut_3, 
-    'x_write_json__mutmut_4': x_write_json__mutmut_4, 
-    'x_write_json__mutmut_5': x_write_json__mutmut_5, 
-    'x_write_json__mutmut_6': x_write_json__mutmut_6, 
-    'x_write_json__mutmut_7': x_write_json__mutmut_7, 
-    'x_write_json__mutmut_8': x_write_json__mutmut_8, 
-    'x_write_json__mutmut_9': x_write_json__mutmut_9, 
-    'x_write_json__mutmut_10': x_write_json__mutmut_10, 
-    'x_write_json__mutmut_11': x_write_json__mutmut_11, 
-    'x_write_json__mutmut_12': x_write_json__mutmut_12, 
-    'x_write_json__mutmut_13': x_write_json__mutmut_13, 
-    'x_write_json__mutmut_14': x_write_json__mutmut_14, 
-    'x_write_json__mutmut_15': x_write_json__mutmut_15, 
-    'x_write_json__mutmut_16': x_write_json__mutmut_16, 
-    'x_write_json__mutmut_17': x_write_json__mutmut_17, 
-    'x_write_json__mutmut_18': x_write_json__mutmut_18, 
-    'x_write_json__mutmut_19': x_write_json__mutmut_19, 
-    'x_write_json__mutmut_20': x_write_json__mutmut_20, 
-    'x_write_json__mutmut_21': x_write_json__mutmut_21, 
-    'x_write_json__mutmut_22': x_write_json__mutmut_22, 
-    'x_write_json__mutmut_23': x_write_json__mutmut_23, 
-    'x_write_json__mutmut_24': x_write_json__mutmut_24, 
-    'x_write_json__mutmut_25': x_write_json__mutmut_25, 
-    'x_write_json__mutmut_26': x_write_json__mutmut_26, 
-    'x_write_json__mutmut_27': x_write_json__mutmut_27, 
-    'x_write_json__mutmut_28': x_write_json__mutmut_28, 
-    'x_write_json__mutmut_29': x_write_json__mutmut_29, 
-    'x_write_json__mutmut_30': x_write_json__mutmut_30, 
-    'x_write_json__mutmut_31': x_write_json__mutmut_31, 
-    'x_write_json__mutmut_32': x_write_json__mutmut_32, 
-    'x_write_json__mutmut_33': x_write_json__mutmut_33, 
-    'x_write_json__mutmut_34': x_write_json__mutmut_34, 
-    'x_write_json__mutmut_35': x_write_json__mutmut_35, 
-    'x_write_json__mutmut_36': x_write_json__mutmut_36, 
-    'x_write_json__mutmut_37': x_write_json__mutmut_37, 
-    'x_write_json__mutmut_38': x_write_json__mutmut_38, 
-    'x_write_json__mutmut_39': x_write_json__mutmut_39, 
-    'x_write_json__mutmut_40': x_write_json__mutmut_40, 
-    'x_write_json__mutmut_41': x_write_json__mutmut_41, 
-    'x_write_json__mutmut_42': x_write_json__mutmut_42, 
-    'x_write_json__mutmut_43': x_write_json__mutmut_43, 
-    'x_write_json__mutmut_44': x_write_json__mutmut_44, 
-    'x_write_json__mutmut_45': x_write_json__mutmut_45, 
-    'x_write_json__mutmut_46': x_write_json__mutmut_46, 
-    'x_write_json__mutmut_47': x_write_json__mutmut_47, 
-    'x_write_json__mutmut_48': x_write_json__mutmut_48, 
-    'x_write_json__mutmut_49': x_write_json__mutmut_49, 
-    'x_write_json__mutmut_50': x_write_json__mutmut_50, 
-    'x_write_json__mutmut_51': x_write_json__mutmut_51, 
-    'x_write_json__mutmut_52': x_write_json__mutmut_52, 
-    'x_write_json__mutmut_53': x_write_json__mutmut_53, 
-    'x_write_json__mutmut_54': x_write_json__mutmut_54
+
+x_write_json__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_write_json__mutmut_1": x_write_json__mutmut_1,
+    "x_write_json__mutmut_2": x_write_json__mutmut_2,
+    "x_write_json__mutmut_3": x_write_json__mutmut_3,
+    "x_write_json__mutmut_4": x_write_json__mutmut_4,
+    "x_write_json__mutmut_5": x_write_json__mutmut_5,
+    "x_write_json__mutmut_6": x_write_json__mutmut_6,
+    "x_write_json__mutmut_7": x_write_json__mutmut_7,
+    "x_write_json__mutmut_8": x_write_json__mutmut_8,
+    "x_write_json__mutmut_9": x_write_json__mutmut_9,
+    "x_write_json__mutmut_10": x_write_json__mutmut_10,
+    "x_write_json__mutmut_11": x_write_json__mutmut_11,
+    "x_write_json__mutmut_12": x_write_json__mutmut_12,
+    "x_write_json__mutmut_13": x_write_json__mutmut_13,
+    "x_write_json__mutmut_14": x_write_json__mutmut_14,
+    "x_write_json__mutmut_15": x_write_json__mutmut_15,
+    "x_write_json__mutmut_16": x_write_json__mutmut_16,
+    "x_write_json__mutmut_17": x_write_json__mutmut_17,
+    "x_write_json__mutmut_18": x_write_json__mutmut_18,
+    "x_write_json__mutmut_19": x_write_json__mutmut_19,
+    "x_write_json__mutmut_20": x_write_json__mutmut_20,
+    "x_write_json__mutmut_21": x_write_json__mutmut_21,
+    "x_write_json__mutmut_22": x_write_json__mutmut_22,
+    "x_write_json__mutmut_23": x_write_json__mutmut_23,
+    "x_write_json__mutmut_24": x_write_json__mutmut_24,
+    "x_write_json__mutmut_25": x_write_json__mutmut_25,
+    "x_write_json__mutmut_26": x_write_json__mutmut_26,
+    "x_write_json__mutmut_27": x_write_json__mutmut_27,
+    "x_write_json__mutmut_28": x_write_json__mutmut_28,
+    "x_write_json__mutmut_29": x_write_json__mutmut_29,
+    "x_write_json__mutmut_30": x_write_json__mutmut_30,
+    "x_write_json__mutmut_31": x_write_json__mutmut_31,
+    "x_write_json__mutmut_32": x_write_json__mutmut_32,
+    "x_write_json__mutmut_33": x_write_json__mutmut_33,
+    "x_write_json__mutmut_34": x_write_json__mutmut_34,
+    "x_write_json__mutmut_35": x_write_json__mutmut_35,
+    "x_write_json__mutmut_36": x_write_json__mutmut_36,
+    "x_write_json__mutmut_37": x_write_json__mutmut_37,
+    "x_write_json__mutmut_38": x_write_json__mutmut_38,
+    "x_write_json__mutmut_39": x_write_json__mutmut_39,
+    "x_write_json__mutmut_40": x_write_json__mutmut_40,
+    "x_write_json__mutmut_41": x_write_json__mutmut_41,
+    "x_write_json__mutmut_42": x_write_json__mutmut_42,
+    "x_write_json__mutmut_43": x_write_json__mutmut_43,
+    "x_write_json__mutmut_44": x_write_json__mutmut_44,
+    "x_write_json__mutmut_45": x_write_json__mutmut_45,
+    "x_write_json__mutmut_46": x_write_json__mutmut_46,
+    "x_write_json__mutmut_47": x_write_json__mutmut_47,
+    "x_write_json__mutmut_48": x_write_json__mutmut_48,
+    "x_write_json__mutmut_49": x_write_json__mutmut_49,
+    "x_write_json__mutmut_50": x_write_json__mutmut_50,
+    "x_write_json__mutmut_51": x_write_json__mutmut_51,
+    "x_write_json__mutmut_52": x_write_json__mutmut_52,
+    "x_write_json__mutmut_53": x_write_json__mutmut_53,
+    "x_write_json__mutmut_54": x_write_json__mutmut_54,
 }
+
 
 def write_json(*args, **kwargs):
     result = _mutmut_trampoline(x_write_json__mutmut_orig, x_write_json__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 write_json.__signature__ = _mutmut_signature(x_write_json__mutmut_orig)
-x_write_json__mutmut_orig.__name__ = 'x_write_json'
+x_write_json__mutmut_orig.__name__ = "x_write_json"
 
 
 def x_read_yaml__mutmut_orig(
@@ -3547,7 +3581,10 @@ def x_read_yaml__mutmut_13(
         log.warning("PyYAML not installed, returning default")
         return default
 
-    content = safe_read_text(path, default="", )
+    content = safe_read_text(
+        path,
+        default="",
+    )
 
     if not content:
         log.debug("Empty or missing YAML file, returning default", path=str(path))
@@ -3760,7 +3797,9 @@ def x_read_yaml__mutmut_19(
     content = safe_read_text(path, default="", encoding=encoding)
 
     if not content:
-        log.debug("Empty or missing YAML file, returning default", )
+        log.debug(
+            "Empty or missing YAML file, returning default",
+        )
         return default
 
     try:
@@ -4151,7 +4190,10 @@ def x_read_yaml__mutmut_30(
     try:
         return yaml_loads(content)
     except Exception as e:
-        log.warning("Invalid YAML file", path=str(path), )
+        log.warning(
+            "Invalid YAML file",
+            path=str(path),
+        )
         return default
 
 
@@ -4329,50 +4371,53 @@ def x_read_yaml__mutmut_35(
         log.warning("Invalid YAML file", path=str(path), error=str(None))
         return default
 
-x_read_yaml__mutmut_mutants : ClassVar[MutantDict] = {
-'x_read_yaml__mutmut_1': x_read_yaml__mutmut_1, 
-    'x_read_yaml__mutmut_2': x_read_yaml__mutmut_2, 
-    'x_read_yaml__mutmut_3': x_read_yaml__mutmut_3, 
-    'x_read_yaml__mutmut_4': x_read_yaml__mutmut_4, 
-    'x_read_yaml__mutmut_5': x_read_yaml__mutmut_5, 
-    'x_read_yaml__mutmut_6': x_read_yaml__mutmut_6, 
-    'x_read_yaml__mutmut_7': x_read_yaml__mutmut_7, 
-    'x_read_yaml__mutmut_8': x_read_yaml__mutmut_8, 
-    'x_read_yaml__mutmut_9': x_read_yaml__mutmut_9, 
-    'x_read_yaml__mutmut_10': x_read_yaml__mutmut_10, 
-    'x_read_yaml__mutmut_11': x_read_yaml__mutmut_11, 
-    'x_read_yaml__mutmut_12': x_read_yaml__mutmut_12, 
-    'x_read_yaml__mutmut_13': x_read_yaml__mutmut_13, 
-    'x_read_yaml__mutmut_14': x_read_yaml__mutmut_14, 
-    'x_read_yaml__mutmut_15': x_read_yaml__mutmut_15, 
-    'x_read_yaml__mutmut_16': x_read_yaml__mutmut_16, 
-    'x_read_yaml__mutmut_17': x_read_yaml__mutmut_17, 
-    'x_read_yaml__mutmut_18': x_read_yaml__mutmut_18, 
-    'x_read_yaml__mutmut_19': x_read_yaml__mutmut_19, 
-    'x_read_yaml__mutmut_20': x_read_yaml__mutmut_20, 
-    'x_read_yaml__mutmut_21': x_read_yaml__mutmut_21, 
-    'x_read_yaml__mutmut_22': x_read_yaml__mutmut_22, 
-    'x_read_yaml__mutmut_23': x_read_yaml__mutmut_23, 
-    'x_read_yaml__mutmut_24': x_read_yaml__mutmut_24, 
-    'x_read_yaml__mutmut_25': x_read_yaml__mutmut_25, 
-    'x_read_yaml__mutmut_26': x_read_yaml__mutmut_26, 
-    'x_read_yaml__mutmut_27': x_read_yaml__mutmut_27, 
-    'x_read_yaml__mutmut_28': x_read_yaml__mutmut_28, 
-    'x_read_yaml__mutmut_29': x_read_yaml__mutmut_29, 
-    'x_read_yaml__mutmut_30': x_read_yaml__mutmut_30, 
-    'x_read_yaml__mutmut_31': x_read_yaml__mutmut_31, 
-    'x_read_yaml__mutmut_32': x_read_yaml__mutmut_32, 
-    'x_read_yaml__mutmut_33': x_read_yaml__mutmut_33, 
-    'x_read_yaml__mutmut_34': x_read_yaml__mutmut_34, 
-    'x_read_yaml__mutmut_35': x_read_yaml__mutmut_35
+
+x_read_yaml__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_read_yaml__mutmut_1": x_read_yaml__mutmut_1,
+    "x_read_yaml__mutmut_2": x_read_yaml__mutmut_2,
+    "x_read_yaml__mutmut_3": x_read_yaml__mutmut_3,
+    "x_read_yaml__mutmut_4": x_read_yaml__mutmut_4,
+    "x_read_yaml__mutmut_5": x_read_yaml__mutmut_5,
+    "x_read_yaml__mutmut_6": x_read_yaml__mutmut_6,
+    "x_read_yaml__mutmut_7": x_read_yaml__mutmut_7,
+    "x_read_yaml__mutmut_8": x_read_yaml__mutmut_8,
+    "x_read_yaml__mutmut_9": x_read_yaml__mutmut_9,
+    "x_read_yaml__mutmut_10": x_read_yaml__mutmut_10,
+    "x_read_yaml__mutmut_11": x_read_yaml__mutmut_11,
+    "x_read_yaml__mutmut_12": x_read_yaml__mutmut_12,
+    "x_read_yaml__mutmut_13": x_read_yaml__mutmut_13,
+    "x_read_yaml__mutmut_14": x_read_yaml__mutmut_14,
+    "x_read_yaml__mutmut_15": x_read_yaml__mutmut_15,
+    "x_read_yaml__mutmut_16": x_read_yaml__mutmut_16,
+    "x_read_yaml__mutmut_17": x_read_yaml__mutmut_17,
+    "x_read_yaml__mutmut_18": x_read_yaml__mutmut_18,
+    "x_read_yaml__mutmut_19": x_read_yaml__mutmut_19,
+    "x_read_yaml__mutmut_20": x_read_yaml__mutmut_20,
+    "x_read_yaml__mutmut_21": x_read_yaml__mutmut_21,
+    "x_read_yaml__mutmut_22": x_read_yaml__mutmut_22,
+    "x_read_yaml__mutmut_23": x_read_yaml__mutmut_23,
+    "x_read_yaml__mutmut_24": x_read_yaml__mutmut_24,
+    "x_read_yaml__mutmut_25": x_read_yaml__mutmut_25,
+    "x_read_yaml__mutmut_26": x_read_yaml__mutmut_26,
+    "x_read_yaml__mutmut_27": x_read_yaml__mutmut_27,
+    "x_read_yaml__mutmut_28": x_read_yaml__mutmut_28,
+    "x_read_yaml__mutmut_29": x_read_yaml__mutmut_29,
+    "x_read_yaml__mutmut_30": x_read_yaml__mutmut_30,
+    "x_read_yaml__mutmut_31": x_read_yaml__mutmut_31,
+    "x_read_yaml__mutmut_32": x_read_yaml__mutmut_32,
+    "x_read_yaml__mutmut_33": x_read_yaml__mutmut_33,
+    "x_read_yaml__mutmut_34": x_read_yaml__mutmut_34,
+    "x_read_yaml__mutmut_35": x_read_yaml__mutmut_35,
 }
+
 
 def read_yaml(*args, **kwargs):
     result = _mutmut_trampoline(x_read_yaml__mutmut_orig, x_read_yaml__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 read_yaml.__signature__ = _mutmut_signature(x_read_yaml__mutmut_orig)
-x_read_yaml__mutmut_orig.__name__ = 'x_read_yaml'
+x_read_yaml__mutmut_orig.__name__ = "x_read_yaml"
 
 
 def x_write_yaml__mutmut_orig(
@@ -5232,7 +5277,7 @@ def x_write_yaml__mutmut_19(
             data,
             default_flow_style=default_flow_style,
             allow_unicode=True,
-            )
+        )
 
         if atomic:
             atomic_write_text(path, content, encoding=encoding)
@@ -5587,7 +5632,10 @@ def x_write_yaml__mutmut_27(
         )
 
         if atomic:
-            atomic_write_text(path, content, )
+            atomic_write_text(
+                path,
+                content,
+            )
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding=encoding)
@@ -5765,7 +5813,9 @@ def x_write_yaml__mutmut_31(
         if atomic:
             atomic_write_text(path, content, encoding=encoding)
         else:
-            path.parent.mkdir(parents=True, )
+            path.parent.mkdir(
+                parents=True,
+            )
             path.write_text(content, encoding=encoding)
 
         log.debug("Wrote YAML file", path=str(path), atomic=atomic)
@@ -6030,7 +6080,9 @@ def x_write_yaml__mutmut_37(
             atomic_write_text(path, content, encoding=encoding)
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content, )
+            path.write_text(
+                content,
+            )
 
         log.debug("Wrote YAML file", path=str(path), atomic=atomic)
     except Exception as e:
@@ -6296,7 +6348,10 @@ def x_write_yaml__mutmut_43(
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding=encoding)
 
-        log.debug("Wrote YAML file", path=str(path), )
+        log.debug(
+            "Wrote YAML file",
+            path=str(path),
+        )
     except Exception as e:
         log.error("Failed to write YAML file", path=str(path), error=str(e))
         raise
@@ -6738,7 +6793,10 @@ def x_write_yaml__mutmut_53(
 
         log.debug("Wrote YAML file", path=str(path), atomic=atomic)
     except Exception as e:
-        log.error("Failed to write YAML file", path=str(path), )
+        log.error(
+            "Failed to write YAML file",
+            path=str(path),
+        )
         raise
 
 
@@ -6961,73 +7019,76 @@ def x_write_yaml__mutmut_58(
         log.error("Failed to write YAML file", path=str(path), error=str(None))
         raise
 
-x_write_yaml__mutmut_mutants : ClassVar[MutantDict] = {
-'x_write_yaml__mutmut_1': x_write_yaml__mutmut_1, 
-    'x_write_yaml__mutmut_2': x_write_yaml__mutmut_2, 
-    'x_write_yaml__mutmut_3': x_write_yaml__mutmut_3, 
-    'x_write_yaml__mutmut_4': x_write_yaml__mutmut_4, 
-    'x_write_yaml__mutmut_5': x_write_yaml__mutmut_5, 
-    'x_write_yaml__mutmut_6': x_write_yaml__mutmut_6, 
-    'x_write_yaml__mutmut_7': x_write_yaml__mutmut_7, 
-    'x_write_yaml__mutmut_8': x_write_yaml__mutmut_8, 
-    'x_write_yaml__mutmut_9': x_write_yaml__mutmut_9, 
-    'x_write_yaml__mutmut_10': x_write_yaml__mutmut_10, 
-    'x_write_yaml__mutmut_11': x_write_yaml__mutmut_11, 
-    'x_write_yaml__mutmut_12': x_write_yaml__mutmut_12, 
-    'x_write_yaml__mutmut_13': x_write_yaml__mutmut_13, 
-    'x_write_yaml__mutmut_14': x_write_yaml__mutmut_14, 
-    'x_write_yaml__mutmut_15': x_write_yaml__mutmut_15, 
-    'x_write_yaml__mutmut_16': x_write_yaml__mutmut_16, 
-    'x_write_yaml__mutmut_17': x_write_yaml__mutmut_17, 
-    'x_write_yaml__mutmut_18': x_write_yaml__mutmut_18, 
-    'x_write_yaml__mutmut_19': x_write_yaml__mutmut_19, 
-    'x_write_yaml__mutmut_20': x_write_yaml__mutmut_20, 
-    'x_write_yaml__mutmut_21': x_write_yaml__mutmut_21, 
-    'x_write_yaml__mutmut_22': x_write_yaml__mutmut_22, 
-    'x_write_yaml__mutmut_23': x_write_yaml__mutmut_23, 
-    'x_write_yaml__mutmut_24': x_write_yaml__mutmut_24, 
-    'x_write_yaml__mutmut_25': x_write_yaml__mutmut_25, 
-    'x_write_yaml__mutmut_26': x_write_yaml__mutmut_26, 
-    'x_write_yaml__mutmut_27': x_write_yaml__mutmut_27, 
-    'x_write_yaml__mutmut_28': x_write_yaml__mutmut_28, 
-    'x_write_yaml__mutmut_29': x_write_yaml__mutmut_29, 
-    'x_write_yaml__mutmut_30': x_write_yaml__mutmut_30, 
-    'x_write_yaml__mutmut_31': x_write_yaml__mutmut_31, 
-    'x_write_yaml__mutmut_32': x_write_yaml__mutmut_32, 
-    'x_write_yaml__mutmut_33': x_write_yaml__mutmut_33, 
-    'x_write_yaml__mutmut_34': x_write_yaml__mutmut_34, 
-    'x_write_yaml__mutmut_35': x_write_yaml__mutmut_35, 
-    'x_write_yaml__mutmut_36': x_write_yaml__mutmut_36, 
-    'x_write_yaml__mutmut_37': x_write_yaml__mutmut_37, 
-    'x_write_yaml__mutmut_38': x_write_yaml__mutmut_38, 
-    'x_write_yaml__mutmut_39': x_write_yaml__mutmut_39, 
-    'x_write_yaml__mutmut_40': x_write_yaml__mutmut_40, 
-    'x_write_yaml__mutmut_41': x_write_yaml__mutmut_41, 
-    'x_write_yaml__mutmut_42': x_write_yaml__mutmut_42, 
-    'x_write_yaml__mutmut_43': x_write_yaml__mutmut_43, 
-    'x_write_yaml__mutmut_44': x_write_yaml__mutmut_44, 
-    'x_write_yaml__mutmut_45': x_write_yaml__mutmut_45, 
-    'x_write_yaml__mutmut_46': x_write_yaml__mutmut_46, 
-    'x_write_yaml__mutmut_47': x_write_yaml__mutmut_47, 
-    'x_write_yaml__mutmut_48': x_write_yaml__mutmut_48, 
-    'x_write_yaml__mutmut_49': x_write_yaml__mutmut_49, 
-    'x_write_yaml__mutmut_50': x_write_yaml__mutmut_50, 
-    'x_write_yaml__mutmut_51': x_write_yaml__mutmut_51, 
-    'x_write_yaml__mutmut_52': x_write_yaml__mutmut_52, 
-    'x_write_yaml__mutmut_53': x_write_yaml__mutmut_53, 
-    'x_write_yaml__mutmut_54': x_write_yaml__mutmut_54, 
-    'x_write_yaml__mutmut_55': x_write_yaml__mutmut_55, 
-    'x_write_yaml__mutmut_56': x_write_yaml__mutmut_56, 
-    'x_write_yaml__mutmut_57': x_write_yaml__mutmut_57, 
-    'x_write_yaml__mutmut_58': x_write_yaml__mutmut_58
+
+x_write_yaml__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_write_yaml__mutmut_1": x_write_yaml__mutmut_1,
+    "x_write_yaml__mutmut_2": x_write_yaml__mutmut_2,
+    "x_write_yaml__mutmut_3": x_write_yaml__mutmut_3,
+    "x_write_yaml__mutmut_4": x_write_yaml__mutmut_4,
+    "x_write_yaml__mutmut_5": x_write_yaml__mutmut_5,
+    "x_write_yaml__mutmut_6": x_write_yaml__mutmut_6,
+    "x_write_yaml__mutmut_7": x_write_yaml__mutmut_7,
+    "x_write_yaml__mutmut_8": x_write_yaml__mutmut_8,
+    "x_write_yaml__mutmut_9": x_write_yaml__mutmut_9,
+    "x_write_yaml__mutmut_10": x_write_yaml__mutmut_10,
+    "x_write_yaml__mutmut_11": x_write_yaml__mutmut_11,
+    "x_write_yaml__mutmut_12": x_write_yaml__mutmut_12,
+    "x_write_yaml__mutmut_13": x_write_yaml__mutmut_13,
+    "x_write_yaml__mutmut_14": x_write_yaml__mutmut_14,
+    "x_write_yaml__mutmut_15": x_write_yaml__mutmut_15,
+    "x_write_yaml__mutmut_16": x_write_yaml__mutmut_16,
+    "x_write_yaml__mutmut_17": x_write_yaml__mutmut_17,
+    "x_write_yaml__mutmut_18": x_write_yaml__mutmut_18,
+    "x_write_yaml__mutmut_19": x_write_yaml__mutmut_19,
+    "x_write_yaml__mutmut_20": x_write_yaml__mutmut_20,
+    "x_write_yaml__mutmut_21": x_write_yaml__mutmut_21,
+    "x_write_yaml__mutmut_22": x_write_yaml__mutmut_22,
+    "x_write_yaml__mutmut_23": x_write_yaml__mutmut_23,
+    "x_write_yaml__mutmut_24": x_write_yaml__mutmut_24,
+    "x_write_yaml__mutmut_25": x_write_yaml__mutmut_25,
+    "x_write_yaml__mutmut_26": x_write_yaml__mutmut_26,
+    "x_write_yaml__mutmut_27": x_write_yaml__mutmut_27,
+    "x_write_yaml__mutmut_28": x_write_yaml__mutmut_28,
+    "x_write_yaml__mutmut_29": x_write_yaml__mutmut_29,
+    "x_write_yaml__mutmut_30": x_write_yaml__mutmut_30,
+    "x_write_yaml__mutmut_31": x_write_yaml__mutmut_31,
+    "x_write_yaml__mutmut_32": x_write_yaml__mutmut_32,
+    "x_write_yaml__mutmut_33": x_write_yaml__mutmut_33,
+    "x_write_yaml__mutmut_34": x_write_yaml__mutmut_34,
+    "x_write_yaml__mutmut_35": x_write_yaml__mutmut_35,
+    "x_write_yaml__mutmut_36": x_write_yaml__mutmut_36,
+    "x_write_yaml__mutmut_37": x_write_yaml__mutmut_37,
+    "x_write_yaml__mutmut_38": x_write_yaml__mutmut_38,
+    "x_write_yaml__mutmut_39": x_write_yaml__mutmut_39,
+    "x_write_yaml__mutmut_40": x_write_yaml__mutmut_40,
+    "x_write_yaml__mutmut_41": x_write_yaml__mutmut_41,
+    "x_write_yaml__mutmut_42": x_write_yaml__mutmut_42,
+    "x_write_yaml__mutmut_43": x_write_yaml__mutmut_43,
+    "x_write_yaml__mutmut_44": x_write_yaml__mutmut_44,
+    "x_write_yaml__mutmut_45": x_write_yaml__mutmut_45,
+    "x_write_yaml__mutmut_46": x_write_yaml__mutmut_46,
+    "x_write_yaml__mutmut_47": x_write_yaml__mutmut_47,
+    "x_write_yaml__mutmut_48": x_write_yaml__mutmut_48,
+    "x_write_yaml__mutmut_49": x_write_yaml__mutmut_49,
+    "x_write_yaml__mutmut_50": x_write_yaml__mutmut_50,
+    "x_write_yaml__mutmut_51": x_write_yaml__mutmut_51,
+    "x_write_yaml__mutmut_52": x_write_yaml__mutmut_52,
+    "x_write_yaml__mutmut_53": x_write_yaml__mutmut_53,
+    "x_write_yaml__mutmut_54": x_write_yaml__mutmut_54,
+    "x_write_yaml__mutmut_55": x_write_yaml__mutmut_55,
+    "x_write_yaml__mutmut_56": x_write_yaml__mutmut_56,
+    "x_write_yaml__mutmut_57": x_write_yaml__mutmut_57,
+    "x_write_yaml__mutmut_58": x_write_yaml__mutmut_58,
 }
+
 
 def write_yaml(*args, **kwargs):
     result = _mutmut_trampoline(x_write_yaml__mutmut_orig, x_write_yaml__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 write_yaml.__signature__ = _mutmut_signature(x_write_yaml__mutmut_orig)
-x_write_yaml__mutmut_orig.__name__ = 'x_write_yaml'
+x_write_yaml__mutmut_orig.__name__ = "x_write_yaml"
 
 
 def x_read_toml__mutmut_orig(
@@ -7307,7 +7368,10 @@ def x_read_toml__mutmut_9(
         Parsed TOML data or default value
 
     """
-    content = safe_read_text(path, default="", )
+    content = safe_read_text(
+        path,
+        default="",
+    )
 
     if not content:
         log.debug("Empty or missing TOML file, returning default", path=str(path))
@@ -7484,7 +7548,9 @@ def x_read_toml__mutmut_15(
     content = safe_read_text(path, default="", encoding=encoding)
 
     if not content:
-        log.debug("Empty or missing TOML file, returning default", )
+        log.debug(
+            "Empty or missing TOML file, returning default",
+        )
         return default if default is not None else {}
 
     try:
@@ -7838,7 +7904,10 @@ def x_read_toml__mutmut_27(
     try:
         return toml_loads(content)
     except Exception as e:
-        log.warning("Invalid TOML file", path=str(path), )
+        log.warning(
+            "Invalid TOML file",
+            path=str(path),
+        )
         return default if default is not None else {}
 
 
@@ -8015,48 +8084,51 @@ def x_read_toml__mutmut_33(
         log.warning("Invalid TOML file", path=str(path), error=str(e))
         return default if default is None else {}
 
-x_read_toml__mutmut_mutants : ClassVar[MutantDict] = {
-'x_read_toml__mutmut_1': x_read_toml__mutmut_1, 
-    'x_read_toml__mutmut_2': x_read_toml__mutmut_2, 
-    'x_read_toml__mutmut_3': x_read_toml__mutmut_3, 
-    'x_read_toml__mutmut_4': x_read_toml__mutmut_4, 
-    'x_read_toml__mutmut_5': x_read_toml__mutmut_5, 
-    'x_read_toml__mutmut_6': x_read_toml__mutmut_6, 
-    'x_read_toml__mutmut_7': x_read_toml__mutmut_7, 
-    'x_read_toml__mutmut_8': x_read_toml__mutmut_8, 
-    'x_read_toml__mutmut_9': x_read_toml__mutmut_9, 
-    'x_read_toml__mutmut_10': x_read_toml__mutmut_10, 
-    'x_read_toml__mutmut_11': x_read_toml__mutmut_11, 
-    'x_read_toml__mutmut_12': x_read_toml__mutmut_12, 
-    'x_read_toml__mutmut_13': x_read_toml__mutmut_13, 
-    'x_read_toml__mutmut_14': x_read_toml__mutmut_14, 
-    'x_read_toml__mutmut_15': x_read_toml__mutmut_15, 
-    'x_read_toml__mutmut_16': x_read_toml__mutmut_16, 
-    'x_read_toml__mutmut_17': x_read_toml__mutmut_17, 
-    'x_read_toml__mutmut_18': x_read_toml__mutmut_18, 
-    'x_read_toml__mutmut_19': x_read_toml__mutmut_19, 
-    'x_read_toml__mutmut_20': x_read_toml__mutmut_20, 
-    'x_read_toml__mutmut_21': x_read_toml__mutmut_21, 
-    'x_read_toml__mutmut_22': x_read_toml__mutmut_22, 
-    'x_read_toml__mutmut_23': x_read_toml__mutmut_23, 
-    'x_read_toml__mutmut_24': x_read_toml__mutmut_24, 
-    'x_read_toml__mutmut_25': x_read_toml__mutmut_25, 
-    'x_read_toml__mutmut_26': x_read_toml__mutmut_26, 
-    'x_read_toml__mutmut_27': x_read_toml__mutmut_27, 
-    'x_read_toml__mutmut_28': x_read_toml__mutmut_28, 
-    'x_read_toml__mutmut_29': x_read_toml__mutmut_29, 
-    'x_read_toml__mutmut_30': x_read_toml__mutmut_30, 
-    'x_read_toml__mutmut_31': x_read_toml__mutmut_31, 
-    'x_read_toml__mutmut_32': x_read_toml__mutmut_32, 
-    'x_read_toml__mutmut_33': x_read_toml__mutmut_33
+
+x_read_toml__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_read_toml__mutmut_1": x_read_toml__mutmut_1,
+    "x_read_toml__mutmut_2": x_read_toml__mutmut_2,
+    "x_read_toml__mutmut_3": x_read_toml__mutmut_3,
+    "x_read_toml__mutmut_4": x_read_toml__mutmut_4,
+    "x_read_toml__mutmut_5": x_read_toml__mutmut_5,
+    "x_read_toml__mutmut_6": x_read_toml__mutmut_6,
+    "x_read_toml__mutmut_7": x_read_toml__mutmut_7,
+    "x_read_toml__mutmut_8": x_read_toml__mutmut_8,
+    "x_read_toml__mutmut_9": x_read_toml__mutmut_9,
+    "x_read_toml__mutmut_10": x_read_toml__mutmut_10,
+    "x_read_toml__mutmut_11": x_read_toml__mutmut_11,
+    "x_read_toml__mutmut_12": x_read_toml__mutmut_12,
+    "x_read_toml__mutmut_13": x_read_toml__mutmut_13,
+    "x_read_toml__mutmut_14": x_read_toml__mutmut_14,
+    "x_read_toml__mutmut_15": x_read_toml__mutmut_15,
+    "x_read_toml__mutmut_16": x_read_toml__mutmut_16,
+    "x_read_toml__mutmut_17": x_read_toml__mutmut_17,
+    "x_read_toml__mutmut_18": x_read_toml__mutmut_18,
+    "x_read_toml__mutmut_19": x_read_toml__mutmut_19,
+    "x_read_toml__mutmut_20": x_read_toml__mutmut_20,
+    "x_read_toml__mutmut_21": x_read_toml__mutmut_21,
+    "x_read_toml__mutmut_22": x_read_toml__mutmut_22,
+    "x_read_toml__mutmut_23": x_read_toml__mutmut_23,
+    "x_read_toml__mutmut_24": x_read_toml__mutmut_24,
+    "x_read_toml__mutmut_25": x_read_toml__mutmut_25,
+    "x_read_toml__mutmut_26": x_read_toml__mutmut_26,
+    "x_read_toml__mutmut_27": x_read_toml__mutmut_27,
+    "x_read_toml__mutmut_28": x_read_toml__mutmut_28,
+    "x_read_toml__mutmut_29": x_read_toml__mutmut_29,
+    "x_read_toml__mutmut_30": x_read_toml__mutmut_30,
+    "x_read_toml__mutmut_31": x_read_toml__mutmut_31,
+    "x_read_toml__mutmut_32": x_read_toml__mutmut_32,
+    "x_read_toml__mutmut_33": x_read_toml__mutmut_33,
 }
+
 
 def read_toml(*args, **kwargs):
     result = _mutmut_trampoline(x_read_toml__mutmut_orig, x_read_toml__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 read_toml.__signature__ = _mutmut_signature(x_read_toml__mutmut_orig)
-x_read_toml__mutmut_orig.__name__ = 'x_read_toml'
+x_read_toml__mutmut_orig.__name__ = "x_read_toml"
 
 
 def x_write_toml__mutmut_orig(
@@ -8714,7 +8786,10 @@ def x_write_toml__mutmut_17(
         content = toml_dumps(data)
 
         if atomic:
-            atomic_write_text(path, content, )
+            atomic_write_text(
+                path,
+                content,
+            )
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding=encoding)
@@ -8864,7 +8939,9 @@ def x_write_toml__mutmut_21(
         if atomic:
             atomic_write_text(path, content, encoding=encoding)
         else:
-            path.parent.mkdir(parents=True, )
+            path.parent.mkdir(
+                parents=True,
+            )
             path.write_text(content, encoding=encoding)
 
         log.debug("Wrote TOML file", path=str(path), atomic=atomic)
@@ -9087,7 +9164,9 @@ def x_write_toml__mutmut_27(
             atomic_write_text(path, content, encoding=encoding)
         else:
             path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content, )
+            path.write_text(
+                content,
+            )
 
         log.debug("Wrote TOML file", path=str(path), atomic=atomic)
     except Exception as e:
@@ -9311,7 +9390,10 @@ def x_write_toml__mutmut_33(
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding=encoding)
 
-        log.debug("Wrote TOML file", path=str(path), )
+        log.debug(
+            "Wrote TOML file",
+            path=str(path),
+        )
     except Exception as e:
         log.error("Failed to write TOML file", path=str(path), error=str(e))
         raise
@@ -9683,7 +9765,10 @@ def x_write_toml__mutmut_43(
 
         log.debug("Wrote TOML file", path=str(path), atomic=atomic)
     except Exception as e:
-        log.error("Failed to write TOML file", path=str(path), )
+        log.error(
+            "Failed to write TOML file",
+            path=str(path),
+        )
         raise
 
 
@@ -9871,63 +9956,66 @@ def x_write_toml__mutmut_48(
         log.error("Failed to write TOML file", path=str(path), error=str(None))
         raise
 
-x_write_toml__mutmut_mutants : ClassVar[MutantDict] = {
-'x_write_toml__mutmut_1': x_write_toml__mutmut_1, 
-    'x_write_toml__mutmut_2': x_write_toml__mutmut_2, 
-    'x_write_toml__mutmut_3': x_write_toml__mutmut_3, 
-    'x_write_toml__mutmut_4': x_write_toml__mutmut_4, 
-    'x_write_toml__mutmut_5': x_write_toml__mutmut_5, 
-    'x_write_toml__mutmut_6': x_write_toml__mutmut_6, 
-    'x_write_toml__mutmut_7': x_write_toml__mutmut_7, 
-    'x_write_toml__mutmut_8': x_write_toml__mutmut_8, 
-    'x_write_toml__mutmut_9': x_write_toml__mutmut_9, 
-    'x_write_toml__mutmut_10': x_write_toml__mutmut_10, 
-    'x_write_toml__mutmut_11': x_write_toml__mutmut_11, 
-    'x_write_toml__mutmut_12': x_write_toml__mutmut_12, 
-    'x_write_toml__mutmut_13': x_write_toml__mutmut_13, 
-    'x_write_toml__mutmut_14': x_write_toml__mutmut_14, 
-    'x_write_toml__mutmut_15': x_write_toml__mutmut_15, 
-    'x_write_toml__mutmut_16': x_write_toml__mutmut_16, 
-    'x_write_toml__mutmut_17': x_write_toml__mutmut_17, 
-    'x_write_toml__mutmut_18': x_write_toml__mutmut_18, 
-    'x_write_toml__mutmut_19': x_write_toml__mutmut_19, 
-    'x_write_toml__mutmut_20': x_write_toml__mutmut_20, 
-    'x_write_toml__mutmut_21': x_write_toml__mutmut_21, 
-    'x_write_toml__mutmut_22': x_write_toml__mutmut_22, 
-    'x_write_toml__mutmut_23': x_write_toml__mutmut_23, 
-    'x_write_toml__mutmut_24': x_write_toml__mutmut_24, 
-    'x_write_toml__mutmut_25': x_write_toml__mutmut_25, 
-    'x_write_toml__mutmut_26': x_write_toml__mutmut_26, 
-    'x_write_toml__mutmut_27': x_write_toml__mutmut_27, 
-    'x_write_toml__mutmut_28': x_write_toml__mutmut_28, 
-    'x_write_toml__mutmut_29': x_write_toml__mutmut_29, 
-    'x_write_toml__mutmut_30': x_write_toml__mutmut_30, 
-    'x_write_toml__mutmut_31': x_write_toml__mutmut_31, 
-    'x_write_toml__mutmut_32': x_write_toml__mutmut_32, 
-    'x_write_toml__mutmut_33': x_write_toml__mutmut_33, 
-    'x_write_toml__mutmut_34': x_write_toml__mutmut_34, 
-    'x_write_toml__mutmut_35': x_write_toml__mutmut_35, 
-    'x_write_toml__mutmut_36': x_write_toml__mutmut_36, 
-    'x_write_toml__mutmut_37': x_write_toml__mutmut_37, 
-    'x_write_toml__mutmut_38': x_write_toml__mutmut_38, 
-    'x_write_toml__mutmut_39': x_write_toml__mutmut_39, 
-    'x_write_toml__mutmut_40': x_write_toml__mutmut_40, 
-    'x_write_toml__mutmut_41': x_write_toml__mutmut_41, 
-    'x_write_toml__mutmut_42': x_write_toml__mutmut_42, 
-    'x_write_toml__mutmut_43': x_write_toml__mutmut_43, 
-    'x_write_toml__mutmut_44': x_write_toml__mutmut_44, 
-    'x_write_toml__mutmut_45': x_write_toml__mutmut_45, 
-    'x_write_toml__mutmut_46': x_write_toml__mutmut_46, 
-    'x_write_toml__mutmut_47': x_write_toml__mutmut_47, 
-    'x_write_toml__mutmut_48': x_write_toml__mutmut_48
+
+x_write_toml__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_write_toml__mutmut_1": x_write_toml__mutmut_1,
+    "x_write_toml__mutmut_2": x_write_toml__mutmut_2,
+    "x_write_toml__mutmut_3": x_write_toml__mutmut_3,
+    "x_write_toml__mutmut_4": x_write_toml__mutmut_4,
+    "x_write_toml__mutmut_5": x_write_toml__mutmut_5,
+    "x_write_toml__mutmut_6": x_write_toml__mutmut_6,
+    "x_write_toml__mutmut_7": x_write_toml__mutmut_7,
+    "x_write_toml__mutmut_8": x_write_toml__mutmut_8,
+    "x_write_toml__mutmut_9": x_write_toml__mutmut_9,
+    "x_write_toml__mutmut_10": x_write_toml__mutmut_10,
+    "x_write_toml__mutmut_11": x_write_toml__mutmut_11,
+    "x_write_toml__mutmut_12": x_write_toml__mutmut_12,
+    "x_write_toml__mutmut_13": x_write_toml__mutmut_13,
+    "x_write_toml__mutmut_14": x_write_toml__mutmut_14,
+    "x_write_toml__mutmut_15": x_write_toml__mutmut_15,
+    "x_write_toml__mutmut_16": x_write_toml__mutmut_16,
+    "x_write_toml__mutmut_17": x_write_toml__mutmut_17,
+    "x_write_toml__mutmut_18": x_write_toml__mutmut_18,
+    "x_write_toml__mutmut_19": x_write_toml__mutmut_19,
+    "x_write_toml__mutmut_20": x_write_toml__mutmut_20,
+    "x_write_toml__mutmut_21": x_write_toml__mutmut_21,
+    "x_write_toml__mutmut_22": x_write_toml__mutmut_22,
+    "x_write_toml__mutmut_23": x_write_toml__mutmut_23,
+    "x_write_toml__mutmut_24": x_write_toml__mutmut_24,
+    "x_write_toml__mutmut_25": x_write_toml__mutmut_25,
+    "x_write_toml__mutmut_26": x_write_toml__mutmut_26,
+    "x_write_toml__mutmut_27": x_write_toml__mutmut_27,
+    "x_write_toml__mutmut_28": x_write_toml__mutmut_28,
+    "x_write_toml__mutmut_29": x_write_toml__mutmut_29,
+    "x_write_toml__mutmut_30": x_write_toml__mutmut_30,
+    "x_write_toml__mutmut_31": x_write_toml__mutmut_31,
+    "x_write_toml__mutmut_32": x_write_toml__mutmut_32,
+    "x_write_toml__mutmut_33": x_write_toml__mutmut_33,
+    "x_write_toml__mutmut_34": x_write_toml__mutmut_34,
+    "x_write_toml__mutmut_35": x_write_toml__mutmut_35,
+    "x_write_toml__mutmut_36": x_write_toml__mutmut_36,
+    "x_write_toml__mutmut_37": x_write_toml__mutmut_37,
+    "x_write_toml__mutmut_38": x_write_toml__mutmut_38,
+    "x_write_toml__mutmut_39": x_write_toml__mutmut_39,
+    "x_write_toml__mutmut_40": x_write_toml__mutmut_40,
+    "x_write_toml__mutmut_41": x_write_toml__mutmut_41,
+    "x_write_toml__mutmut_42": x_write_toml__mutmut_42,
+    "x_write_toml__mutmut_43": x_write_toml__mutmut_43,
+    "x_write_toml__mutmut_44": x_write_toml__mutmut_44,
+    "x_write_toml__mutmut_45": x_write_toml__mutmut_45,
+    "x_write_toml__mutmut_46": x_write_toml__mutmut_46,
+    "x_write_toml__mutmut_47": x_write_toml__mutmut_47,
+    "x_write_toml__mutmut_48": x_write_toml__mutmut_48,
 }
+
 
 def write_toml(*args, **kwargs):
     result = _mutmut_trampoline(x_write_toml__mutmut_orig, x_write_toml__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 write_toml.__signature__ = _mutmut_signature(x_write_toml__mutmut_orig)
-x_write_toml__mutmut_orig.__name__ = 'x_write_toml'
+x_write_toml__mutmut_orig.__name__ = "x_write_toml"
 
 
 __all__ = [

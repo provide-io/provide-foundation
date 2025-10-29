@@ -20,23 +20,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -367,7 +370,9 @@ def x_safe_read__mutmut_8(
     except FileNotFoundError:
         from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().debug("File not found, returning default", )
+        get_foundation_logger().debug(
+            "File not found, returning default",
+        )
         if default is not None and encoding:
             return default.decode(encoding) if isinstance(default, bytes) else default
         return default
@@ -855,7 +860,10 @@ def x_safe_read__mutmut_21(
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().warning("Failed to read file", path=str(path), )
+        get_foundation_logger().warning(
+            "Failed to read file",
+            path=str(path),
+        )
         return default
 
 
@@ -1043,41 +1051,44 @@ def x_safe_read__mutmut_26(
         get_foundation_logger().warning("Failed to read file", path=str(path), error=str(None))
         return default
 
-x_safe_read__mutmut_mutants : ClassVar[MutantDict] = {
-'x_safe_read__mutmut_1': x_safe_read__mutmut_1, 
-    'x_safe_read__mutmut_2': x_safe_read__mutmut_2, 
-    'x_safe_read__mutmut_3': x_safe_read__mutmut_3, 
-    'x_safe_read__mutmut_4': x_safe_read__mutmut_4, 
-    'x_safe_read__mutmut_5': x_safe_read__mutmut_5, 
-    'x_safe_read__mutmut_6': x_safe_read__mutmut_6, 
-    'x_safe_read__mutmut_7': x_safe_read__mutmut_7, 
-    'x_safe_read__mutmut_8': x_safe_read__mutmut_8, 
-    'x_safe_read__mutmut_9': x_safe_read__mutmut_9, 
-    'x_safe_read__mutmut_10': x_safe_read__mutmut_10, 
-    'x_safe_read__mutmut_11': x_safe_read__mutmut_11, 
-    'x_safe_read__mutmut_12': x_safe_read__mutmut_12, 
-    'x_safe_read__mutmut_13': x_safe_read__mutmut_13, 
-    'x_safe_read__mutmut_14': x_safe_read__mutmut_14, 
-    'x_safe_read__mutmut_15': x_safe_read__mutmut_15, 
-    'x_safe_read__mutmut_16': x_safe_read__mutmut_16, 
-    'x_safe_read__mutmut_17': x_safe_read__mutmut_17, 
-    'x_safe_read__mutmut_18': x_safe_read__mutmut_18, 
-    'x_safe_read__mutmut_19': x_safe_read__mutmut_19, 
-    'x_safe_read__mutmut_20': x_safe_read__mutmut_20, 
-    'x_safe_read__mutmut_21': x_safe_read__mutmut_21, 
-    'x_safe_read__mutmut_22': x_safe_read__mutmut_22, 
-    'x_safe_read__mutmut_23': x_safe_read__mutmut_23, 
-    'x_safe_read__mutmut_24': x_safe_read__mutmut_24, 
-    'x_safe_read__mutmut_25': x_safe_read__mutmut_25, 
-    'x_safe_read__mutmut_26': x_safe_read__mutmut_26
+
+x_safe_read__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_safe_read__mutmut_1": x_safe_read__mutmut_1,
+    "x_safe_read__mutmut_2": x_safe_read__mutmut_2,
+    "x_safe_read__mutmut_3": x_safe_read__mutmut_3,
+    "x_safe_read__mutmut_4": x_safe_read__mutmut_4,
+    "x_safe_read__mutmut_5": x_safe_read__mutmut_5,
+    "x_safe_read__mutmut_6": x_safe_read__mutmut_6,
+    "x_safe_read__mutmut_7": x_safe_read__mutmut_7,
+    "x_safe_read__mutmut_8": x_safe_read__mutmut_8,
+    "x_safe_read__mutmut_9": x_safe_read__mutmut_9,
+    "x_safe_read__mutmut_10": x_safe_read__mutmut_10,
+    "x_safe_read__mutmut_11": x_safe_read__mutmut_11,
+    "x_safe_read__mutmut_12": x_safe_read__mutmut_12,
+    "x_safe_read__mutmut_13": x_safe_read__mutmut_13,
+    "x_safe_read__mutmut_14": x_safe_read__mutmut_14,
+    "x_safe_read__mutmut_15": x_safe_read__mutmut_15,
+    "x_safe_read__mutmut_16": x_safe_read__mutmut_16,
+    "x_safe_read__mutmut_17": x_safe_read__mutmut_17,
+    "x_safe_read__mutmut_18": x_safe_read__mutmut_18,
+    "x_safe_read__mutmut_19": x_safe_read__mutmut_19,
+    "x_safe_read__mutmut_20": x_safe_read__mutmut_20,
+    "x_safe_read__mutmut_21": x_safe_read__mutmut_21,
+    "x_safe_read__mutmut_22": x_safe_read__mutmut_22,
+    "x_safe_read__mutmut_23": x_safe_read__mutmut_23,
+    "x_safe_read__mutmut_24": x_safe_read__mutmut_24,
+    "x_safe_read__mutmut_25": x_safe_read__mutmut_25,
+    "x_safe_read__mutmut_26": x_safe_read__mutmut_26,
 }
+
 
 def safe_read(*args, **kwargs):
     result = _mutmut_trampoline(x_safe_read__mutmut_orig, x_safe_read__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 safe_read.__signature__ = _mutmut_signature(x_safe_read__mutmut_orig)
-x_safe_read__mutmut_orig.__name__ = 'x_safe_read'
+x_safe_read__mutmut_orig.__name__ = "x_safe_read"
 
 
 def x_safe_read_text__mutmut_orig(
@@ -1296,7 +1307,10 @@ def x_safe_read_text__mutmut_10(
         File contents or default text
 
     """
-    result = safe_read(path, default=default.encode(encoding), )
+    result = safe_read(
+        path,
+        default=default.encode(encoding),
+    )
     return result if isinstance(result, str) else default
 
 
@@ -1319,26 +1333,29 @@ def x_safe_read_text__mutmut_11(
     result = safe_read(path, default=default.encode(None), encoding=encoding)
     return result if isinstance(result, str) else default
 
-x_safe_read_text__mutmut_mutants : ClassVar[MutantDict] = {
-'x_safe_read_text__mutmut_1': x_safe_read_text__mutmut_1, 
-    'x_safe_read_text__mutmut_2': x_safe_read_text__mutmut_2, 
-    'x_safe_read_text__mutmut_3': x_safe_read_text__mutmut_3, 
-    'x_safe_read_text__mutmut_4': x_safe_read_text__mutmut_4, 
-    'x_safe_read_text__mutmut_5': x_safe_read_text__mutmut_5, 
-    'x_safe_read_text__mutmut_6': x_safe_read_text__mutmut_6, 
-    'x_safe_read_text__mutmut_7': x_safe_read_text__mutmut_7, 
-    'x_safe_read_text__mutmut_8': x_safe_read_text__mutmut_8, 
-    'x_safe_read_text__mutmut_9': x_safe_read_text__mutmut_9, 
-    'x_safe_read_text__mutmut_10': x_safe_read_text__mutmut_10, 
-    'x_safe_read_text__mutmut_11': x_safe_read_text__mutmut_11
+
+x_safe_read_text__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_safe_read_text__mutmut_1": x_safe_read_text__mutmut_1,
+    "x_safe_read_text__mutmut_2": x_safe_read_text__mutmut_2,
+    "x_safe_read_text__mutmut_3": x_safe_read_text__mutmut_3,
+    "x_safe_read_text__mutmut_4": x_safe_read_text__mutmut_4,
+    "x_safe_read_text__mutmut_5": x_safe_read_text__mutmut_5,
+    "x_safe_read_text__mutmut_6": x_safe_read_text__mutmut_6,
+    "x_safe_read_text__mutmut_7": x_safe_read_text__mutmut_7,
+    "x_safe_read_text__mutmut_8": x_safe_read_text__mutmut_8,
+    "x_safe_read_text__mutmut_9": x_safe_read_text__mutmut_9,
+    "x_safe_read_text__mutmut_10": x_safe_read_text__mutmut_10,
+    "x_safe_read_text__mutmut_11": x_safe_read_text__mutmut_11,
 }
+
 
 def safe_read_text(*args, **kwargs):
     result = _mutmut_trampoline(x_safe_read_text__mutmut_orig, x_safe_read_text__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 safe_read_text.__signature__ = _mutmut_signature(x_safe_read_text__mutmut_orig)
-x_safe_read_text__mutmut_orig.__name__ = 'x_safe_read_text'
+x_safe_read_text__mutmut_orig.__name__ = "x_safe_read_text"
 
 
 def x_safe_delete__mutmut_orig(
@@ -1637,7 +1654,9 @@ def x_safe_delete__mutmut_7(
         path.unlink()
         from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().debug("Deleted file", )
+        get_foundation_logger().debug(
+            "Deleted file",
+        )
         return True
     except FileNotFoundError:
         if missing_ok:
@@ -1994,7 +2013,9 @@ def x_safe_delete__mutmut_16(
         if missing_ok:
             from provide.foundation.hub.foundation import get_foundation_logger
 
-            get_foundation_logger().debug("File already absent", )
+            get_foundation_logger().debug(
+                "File already absent",
+            )
             return False
         raise
     except Exception as e:
@@ -2429,7 +2450,10 @@ def x_safe_delete__mutmut_27(
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().error("Failed to delete file", path=str(path), )
+        get_foundation_logger().error(
+            "Failed to delete file",
+            path=str(path),
+        )
         raise
 
 
@@ -2627,47 +2651,50 @@ def x_safe_delete__mutmut_32(
         get_foundation_logger().error("Failed to delete file", path=str(path), error=str(None))
         raise
 
-x_safe_delete__mutmut_mutants : ClassVar[MutantDict] = {
-'x_safe_delete__mutmut_1': x_safe_delete__mutmut_1, 
-    'x_safe_delete__mutmut_2': x_safe_delete__mutmut_2, 
-    'x_safe_delete__mutmut_3': x_safe_delete__mutmut_3, 
-    'x_safe_delete__mutmut_4': x_safe_delete__mutmut_4, 
-    'x_safe_delete__mutmut_5': x_safe_delete__mutmut_5, 
-    'x_safe_delete__mutmut_6': x_safe_delete__mutmut_6, 
-    'x_safe_delete__mutmut_7': x_safe_delete__mutmut_7, 
-    'x_safe_delete__mutmut_8': x_safe_delete__mutmut_8, 
-    'x_safe_delete__mutmut_9': x_safe_delete__mutmut_9, 
-    'x_safe_delete__mutmut_10': x_safe_delete__mutmut_10, 
-    'x_safe_delete__mutmut_11': x_safe_delete__mutmut_11, 
-    'x_safe_delete__mutmut_12': x_safe_delete__mutmut_12, 
-    'x_safe_delete__mutmut_13': x_safe_delete__mutmut_13, 
-    'x_safe_delete__mutmut_14': x_safe_delete__mutmut_14, 
-    'x_safe_delete__mutmut_15': x_safe_delete__mutmut_15, 
-    'x_safe_delete__mutmut_16': x_safe_delete__mutmut_16, 
-    'x_safe_delete__mutmut_17': x_safe_delete__mutmut_17, 
-    'x_safe_delete__mutmut_18': x_safe_delete__mutmut_18, 
-    'x_safe_delete__mutmut_19': x_safe_delete__mutmut_19, 
-    'x_safe_delete__mutmut_20': x_safe_delete__mutmut_20, 
-    'x_safe_delete__mutmut_21': x_safe_delete__mutmut_21, 
-    'x_safe_delete__mutmut_22': x_safe_delete__mutmut_22, 
-    'x_safe_delete__mutmut_23': x_safe_delete__mutmut_23, 
-    'x_safe_delete__mutmut_24': x_safe_delete__mutmut_24, 
-    'x_safe_delete__mutmut_25': x_safe_delete__mutmut_25, 
-    'x_safe_delete__mutmut_26': x_safe_delete__mutmut_26, 
-    'x_safe_delete__mutmut_27': x_safe_delete__mutmut_27, 
-    'x_safe_delete__mutmut_28': x_safe_delete__mutmut_28, 
-    'x_safe_delete__mutmut_29': x_safe_delete__mutmut_29, 
-    'x_safe_delete__mutmut_30': x_safe_delete__mutmut_30, 
-    'x_safe_delete__mutmut_31': x_safe_delete__mutmut_31, 
-    'x_safe_delete__mutmut_32': x_safe_delete__mutmut_32
+
+x_safe_delete__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_safe_delete__mutmut_1": x_safe_delete__mutmut_1,
+    "x_safe_delete__mutmut_2": x_safe_delete__mutmut_2,
+    "x_safe_delete__mutmut_3": x_safe_delete__mutmut_3,
+    "x_safe_delete__mutmut_4": x_safe_delete__mutmut_4,
+    "x_safe_delete__mutmut_5": x_safe_delete__mutmut_5,
+    "x_safe_delete__mutmut_6": x_safe_delete__mutmut_6,
+    "x_safe_delete__mutmut_7": x_safe_delete__mutmut_7,
+    "x_safe_delete__mutmut_8": x_safe_delete__mutmut_8,
+    "x_safe_delete__mutmut_9": x_safe_delete__mutmut_9,
+    "x_safe_delete__mutmut_10": x_safe_delete__mutmut_10,
+    "x_safe_delete__mutmut_11": x_safe_delete__mutmut_11,
+    "x_safe_delete__mutmut_12": x_safe_delete__mutmut_12,
+    "x_safe_delete__mutmut_13": x_safe_delete__mutmut_13,
+    "x_safe_delete__mutmut_14": x_safe_delete__mutmut_14,
+    "x_safe_delete__mutmut_15": x_safe_delete__mutmut_15,
+    "x_safe_delete__mutmut_16": x_safe_delete__mutmut_16,
+    "x_safe_delete__mutmut_17": x_safe_delete__mutmut_17,
+    "x_safe_delete__mutmut_18": x_safe_delete__mutmut_18,
+    "x_safe_delete__mutmut_19": x_safe_delete__mutmut_19,
+    "x_safe_delete__mutmut_20": x_safe_delete__mutmut_20,
+    "x_safe_delete__mutmut_21": x_safe_delete__mutmut_21,
+    "x_safe_delete__mutmut_22": x_safe_delete__mutmut_22,
+    "x_safe_delete__mutmut_23": x_safe_delete__mutmut_23,
+    "x_safe_delete__mutmut_24": x_safe_delete__mutmut_24,
+    "x_safe_delete__mutmut_25": x_safe_delete__mutmut_25,
+    "x_safe_delete__mutmut_26": x_safe_delete__mutmut_26,
+    "x_safe_delete__mutmut_27": x_safe_delete__mutmut_27,
+    "x_safe_delete__mutmut_28": x_safe_delete__mutmut_28,
+    "x_safe_delete__mutmut_29": x_safe_delete__mutmut_29,
+    "x_safe_delete__mutmut_30": x_safe_delete__mutmut_30,
+    "x_safe_delete__mutmut_31": x_safe_delete__mutmut_31,
+    "x_safe_delete__mutmut_32": x_safe_delete__mutmut_32,
 }
+
 
 def safe_delete(*args, **kwargs):
     result = _mutmut_trampoline(x_safe_delete__mutmut_orig, x_safe_delete__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 safe_delete.__signature__ = _mutmut_signature(x_safe_delete__mutmut_orig)
-x_safe_delete__mutmut_orig.__name__ = 'x_safe_delete'
+x_safe_delete__mutmut_orig.__name__ = "x_safe_delete"
 
 
 def x_safe_move__mutmut_orig(
@@ -3286,7 +3313,9 @@ def x_safe_move__mutmut_14(
         raise FileExistsError(f"Destination already exists: {dst}")
 
     # Ensure destination directory exists
-    dst.parent.mkdir(parents=True, )
+    dst.parent.mkdir(
+        parents=True,
+    )
 
     try:
         shutil.move(str(src), str(dst))
@@ -3541,7 +3570,9 @@ def x_safe_move__mutmut_20(
     dst.parent.mkdir(parents=True, exist_ok=True)
 
     try:
-        shutil.move(str(src), )
+        shutil.move(
+            str(src),
+        )
         from provide.foundation.hub.foundation import get_foundation_logger
 
         get_foundation_logger().debug("Moved file", src=str(src), dst=str(dst))
@@ -3880,7 +3911,10 @@ def x_safe_move__mutmut_28(
         shutil.move(str(src), str(dst))
         from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().debug("Moved file", src=str(src), )
+        get_foundation_logger().debug(
+            "Moved file",
+            src=str(src),
+        )
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
 
@@ -4430,7 +4464,11 @@ def x_safe_move__mutmut_41(
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().error("Failed to move file", src=str(src), dst=str(dst), )
+        get_foundation_logger().error(
+            "Failed to move file",
+            src=str(src),
+            dst=str(dst),
+        )
         raise
 
 
@@ -4685,62 +4723,65 @@ def x_safe_move__mutmut_47(
         get_foundation_logger().error("Failed to move file", src=str(src), dst=str(dst), error=str(None))
         raise
 
-x_safe_move__mutmut_mutants : ClassVar[MutantDict] = {
-'x_safe_move__mutmut_1': x_safe_move__mutmut_1, 
-    'x_safe_move__mutmut_2': x_safe_move__mutmut_2, 
-    'x_safe_move__mutmut_3': x_safe_move__mutmut_3, 
-    'x_safe_move__mutmut_4': x_safe_move__mutmut_4, 
-    'x_safe_move__mutmut_5': x_safe_move__mutmut_5, 
-    'x_safe_move__mutmut_6': x_safe_move__mutmut_6, 
-    'x_safe_move__mutmut_7': x_safe_move__mutmut_7, 
-    'x_safe_move__mutmut_8': x_safe_move__mutmut_8, 
-    'x_safe_move__mutmut_9': x_safe_move__mutmut_9, 
-    'x_safe_move__mutmut_10': x_safe_move__mutmut_10, 
-    'x_safe_move__mutmut_11': x_safe_move__mutmut_11, 
-    'x_safe_move__mutmut_12': x_safe_move__mutmut_12, 
-    'x_safe_move__mutmut_13': x_safe_move__mutmut_13, 
-    'x_safe_move__mutmut_14': x_safe_move__mutmut_14, 
-    'x_safe_move__mutmut_15': x_safe_move__mutmut_15, 
-    'x_safe_move__mutmut_16': x_safe_move__mutmut_16, 
-    'x_safe_move__mutmut_17': x_safe_move__mutmut_17, 
-    'x_safe_move__mutmut_18': x_safe_move__mutmut_18, 
-    'x_safe_move__mutmut_19': x_safe_move__mutmut_19, 
-    'x_safe_move__mutmut_20': x_safe_move__mutmut_20, 
-    'x_safe_move__mutmut_21': x_safe_move__mutmut_21, 
-    'x_safe_move__mutmut_22': x_safe_move__mutmut_22, 
-    'x_safe_move__mutmut_23': x_safe_move__mutmut_23, 
-    'x_safe_move__mutmut_24': x_safe_move__mutmut_24, 
-    'x_safe_move__mutmut_25': x_safe_move__mutmut_25, 
-    'x_safe_move__mutmut_26': x_safe_move__mutmut_26, 
-    'x_safe_move__mutmut_27': x_safe_move__mutmut_27, 
-    'x_safe_move__mutmut_28': x_safe_move__mutmut_28, 
-    'x_safe_move__mutmut_29': x_safe_move__mutmut_29, 
-    'x_safe_move__mutmut_30': x_safe_move__mutmut_30, 
-    'x_safe_move__mutmut_31': x_safe_move__mutmut_31, 
-    'x_safe_move__mutmut_32': x_safe_move__mutmut_32, 
-    'x_safe_move__mutmut_33': x_safe_move__mutmut_33, 
-    'x_safe_move__mutmut_34': x_safe_move__mutmut_34, 
-    'x_safe_move__mutmut_35': x_safe_move__mutmut_35, 
-    'x_safe_move__mutmut_36': x_safe_move__mutmut_36, 
-    'x_safe_move__mutmut_37': x_safe_move__mutmut_37, 
-    'x_safe_move__mutmut_38': x_safe_move__mutmut_38, 
-    'x_safe_move__mutmut_39': x_safe_move__mutmut_39, 
-    'x_safe_move__mutmut_40': x_safe_move__mutmut_40, 
-    'x_safe_move__mutmut_41': x_safe_move__mutmut_41, 
-    'x_safe_move__mutmut_42': x_safe_move__mutmut_42, 
-    'x_safe_move__mutmut_43': x_safe_move__mutmut_43, 
-    'x_safe_move__mutmut_44': x_safe_move__mutmut_44, 
-    'x_safe_move__mutmut_45': x_safe_move__mutmut_45, 
-    'x_safe_move__mutmut_46': x_safe_move__mutmut_46, 
-    'x_safe_move__mutmut_47': x_safe_move__mutmut_47
+
+x_safe_move__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_safe_move__mutmut_1": x_safe_move__mutmut_1,
+    "x_safe_move__mutmut_2": x_safe_move__mutmut_2,
+    "x_safe_move__mutmut_3": x_safe_move__mutmut_3,
+    "x_safe_move__mutmut_4": x_safe_move__mutmut_4,
+    "x_safe_move__mutmut_5": x_safe_move__mutmut_5,
+    "x_safe_move__mutmut_6": x_safe_move__mutmut_6,
+    "x_safe_move__mutmut_7": x_safe_move__mutmut_7,
+    "x_safe_move__mutmut_8": x_safe_move__mutmut_8,
+    "x_safe_move__mutmut_9": x_safe_move__mutmut_9,
+    "x_safe_move__mutmut_10": x_safe_move__mutmut_10,
+    "x_safe_move__mutmut_11": x_safe_move__mutmut_11,
+    "x_safe_move__mutmut_12": x_safe_move__mutmut_12,
+    "x_safe_move__mutmut_13": x_safe_move__mutmut_13,
+    "x_safe_move__mutmut_14": x_safe_move__mutmut_14,
+    "x_safe_move__mutmut_15": x_safe_move__mutmut_15,
+    "x_safe_move__mutmut_16": x_safe_move__mutmut_16,
+    "x_safe_move__mutmut_17": x_safe_move__mutmut_17,
+    "x_safe_move__mutmut_18": x_safe_move__mutmut_18,
+    "x_safe_move__mutmut_19": x_safe_move__mutmut_19,
+    "x_safe_move__mutmut_20": x_safe_move__mutmut_20,
+    "x_safe_move__mutmut_21": x_safe_move__mutmut_21,
+    "x_safe_move__mutmut_22": x_safe_move__mutmut_22,
+    "x_safe_move__mutmut_23": x_safe_move__mutmut_23,
+    "x_safe_move__mutmut_24": x_safe_move__mutmut_24,
+    "x_safe_move__mutmut_25": x_safe_move__mutmut_25,
+    "x_safe_move__mutmut_26": x_safe_move__mutmut_26,
+    "x_safe_move__mutmut_27": x_safe_move__mutmut_27,
+    "x_safe_move__mutmut_28": x_safe_move__mutmut_28,
+    "x_safe_move__mutmut_29": x_safe_move__mutmut_29,
+    "x_safe_move__mutmut_30": x_safe_move__mutmut_30,
+    "x_safe_move__mutmut_31": x_safe_move__mutmut_31,
+    "x_safe_move__mutmut_32": x_safe_move__mutmut_32,
+    "x_safe_move__mutmut_33": x_safe_move__mutmut_33,
+    "x_safe_move__mutmut_34": x_safe_move__mutmut_34,
+    "x_safe_move__mutmut_35": x_safe_move__mutmut_35,
+    "x_safe_move__mutmut_36": x_safe_move__mutmut_36,
+    "x_safe_move__mutmut_37": x_safe_move__mutmut_37,
+    "x_safe_move__mutmut_38": x_safe_move__mutmut_38,
+    "x_safe_move__mutmut_39": x_safe_move__mutmut_39,
+    "x_safe_move__mutmut_40": x_safe_move__mutmut_40,
+    "x_safe_move__mutmut_41": x_safe_move__mutmut_41,
+    "x_safe_move__mutmut_42": x_safe_move__mutmut_42,
+    "x_safe_move__mutmut_43": x_safe_move__mutmut_43,
+    "x_safe_move__mutmut_44": x_safe_move__mutmut_44,
+    "x_safe_move__mutmut_45": x_safe_move__mutmut_45,
+    "x_safe_move__mutmut_46": x_safe_move__mutmut_46,
+    "x_safe_move__mutmut_47": x_safe_move__mutmut_47,
 }
+
 
 def safe_move(*args, **kwargs):
     result = _mutmut_trampoline(x_safe_move__mutmut_orig, x_safe_move__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 safe_move.__signature__ = _mutmut_signature(x_safe_move__mutmut_orig)
-x_safe_move__mutmut_orig.__name__ = 'x_safe_move'
+x_safe_move__mutmut_orig.__name__ = "x_safe_move"
 
 
 def x_safe_copy__mutmut_orig(
@@ -5478,7 +5519,9 @@ def x_safe_copy__mutmut_15(
         raise FileExistsError(f"Destination already exists: {dst}")
 
     # Ensure destination directory exists
-    dst.parent.mkdir(parents=True, )
+    dst.parent.mkdir(
+        parents=True,
+    )
 
     try:
         if preserve_mode:
@@ -5764,7 +5807,9 @@ def x_safe_copy__mutmut_21(
 
     try:
         if preserve_mode:
-            shutil.copy2(str(src), )
+            shutil.copy2(
+                str(src),
+            )
         else:
             shutil.copy(str(src), str(dst))
         from provide.foundation.hub.foundation import get_foundation_logger
@@ -6048,7 +6093,9 @@ def x_safe_copy__mutmut_27(
         if preserve_mode:
             shutil.copy2(str(src), str(dst))
         else:
-            shutil.copy(str(src), )
+            shutil.copy(
+                str(src),
+            )
         from provide.foundation.hub.foundation import get_foundation_logger
 
         get_foundation_logger().debug("Copied file", src=str(src), dst=str(dst))
@@ -6427,7 +6474,10 @@ def x_safe_copy__mutmut_35(
             shutil.copy(str(src), str(dst))
         from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().debug("Copied file", src=str(src), )
+        get_foundation_logger().debug(
+            "Copied file",
+            src=str(src),
+        )
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
 
@@ -7042,7 +7092,11 @@ def x_safe_copy__mutmut_48(
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().error("Failed to copy file", src=str(src), dst=str(dst), )
+        get_foundation_logger().error(
+            "Failed to copy file",
+            src=str(src),
+            dst=str(dst),
+        )
         raise
 
 
@@ -7327,69 +7381,72 @@ def x_safe_copy__mutmut_54(
         get_foundation_logger().error("Failed to copy file", src=str(src), dst=str(dst), error=str(None))
         raise
 
-x_safe_copy__mutmut_mutants : ClassVar[MutantDict] = {
-'x_safe_copy__mutmut_1': x_safe_copy__mutmut_1, 
-    'x_safe_copy__mutmut_2': x_safe_copy__mutmut_2, 
-    'x_safe_copy__mutmut_3': x_safe_copy__mutmut_3, 
-    'x_safe_copy__mutmut_4': x_safe_copy__mutmut_4, 
-    'x_safe_copy__mutmut_5': x_safe_copy__mutmut_5, 
-    'x_safe_copy__mutmut_6': x_safe_copy__mutmut_6, 
-    'x_safe_copy__mutmut_7': x_safe_copy__mutmut_7, 
-    'x_safe_copy__mutmut_8': x_safe_copy__mutmut_8, 
-    'x_safe_copy__mutmut_9': x_safe_copy__mutmut_9, 
-    'x_safe_copy__mutmut_10': x_safe_copy__mutmut_10, 
-    'x_safe_copy__mutmut_11': x_safe_copy__mutmut_11, 
-    'x_safe_copy__mutmut_12': x_safe_copy__mutmut_12, 
-    'x_safe_copy__mutmut_13': x_safe_copy__mutmut_13, 
-    'x_safe_copy__mutmut_14': x_safe_copy__mutmut_14, 
-    'x_safe_copy__mutmut_15': x_safe_copy__mutmut_15, 
-    'x_safe_copy__mutmut_16': x_safe_copy__mutmut_16, 
-    'x_safe_copy__mutmut_17': x_safe_copy__mutmut_17, 
-    'x_safe_copy__mutmut_18': x_safe_copy__mutmut_18, 
-    'x_safe_copy__mutmut_19': x_safe_copy__mutmut_19, 
-    'x_safe_copy__mutmut_20': x_safe_copy__mutmut_20, 
-    'x_safe_copy__mutmut_21': x_safe_copy__mutmut_21, 
-    'x_safe_copy__mutmut_22': x_safe_copy__mutmut_22, 
-    'x_safe_copy__mutmut_23': x_safe_copy__mutmut_23, 
-    'x_safe_copy__mutmut_24': x_safe_copy__mutmut_24, 
-    'x_safe_copy__mutmut_25': x_safe_copy__mutmut_25, 
-    'x_safe_copy__mutmut_26': x_safe_copy__mutmut_26, 
-    'x_safe_copy__mutmut_27': x_safe_copy__mutmut_27, 
-    'x_safe_copy__mutmut_28': x_safe_copy__mutmut_28, 
-    'x_safe_copy__mutmut_29': x_safe_copy__mutmut_29, 
-    'x_safe_copy__mutmut_30': x_safe_copy__mutmut_30, 
-    'x_safe_copy__mutmut_31': x_safe_copy__mutmut_31, 
-    'x_safe_copy__mutmut_32': x_safe_copy__mutmut_32, 
-    'x_safe_copy__mutmut_33': x_safe_copy__mutmut_33, 
-    'x_safe_copy__mutmut_34': x_safe_copy__mutmut_34, 
-    'x_safe_copy__mutmut_35': x_safe_copy__mutmut_35, 
-    'x_safe_copy__mutmut_36': x_safe_copy__mutmut_36, 
-    'x_safe_copy__mutmut_37': x_safe_copy__mutmut_37, 
-    'x_safe_copy__mutmut_38': x_safe_copy__mutmut_38, 
-    'x_safe_copy__mutmut_39': x_safe_copy__mutmut_39, 
-    'x_safe_copy__mutmut_40': x_safe_copy__mutmut_40, 
-    'x_safe_copy__mutmut_41': x_safe_copy__mutmut_41, 
-    'x_safe_copy__mutmut_42': x_safe_copy__mutmut_42, 
-    'x_safe_copy__mutmut_43': x_safe_copy__mutmut_43, 
-    'x_safe_copy__mutmut_44': x_safe_copy__mutmut_44, 
-    'x_safe_copy__mutmut_45': x_safe_copy__mutmut_45, 
-    'x_safe_copy__mutmut_46': x_safe_copy__mutmut_46, 
-    'x_safe_copy__mutmut_47': x_safe_copy__mutmut_47, 
-    'x_safe_copy__mutmut_48': x_safe_copy__mutmut_48, 
-    'x_safe_copy__mutmut_49': x_safe_copy__mutmut_49, 
-    'x_safe_copy__mutmut_50': x_safe_copy__mutmut_50, 
-    'x_safe_copy__mutmut_51': x_safe_copy__mutmut_51, 
-    'x_safe_copy__mutmut_52': x_safe_copy__mutmut_52, 
-    'x_safe_copy__mutmut_53': x_safe_copy__mutmut_53, 
-    'x_safe_copy__mutmut_54': x_safe_copy__mutmut_54
+
+x_safe_copy__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_safe_copy__mutmut_1": x_safe_copy__mutmut_1,
+    "x_safe_copy__mutmut_2": x_safe_copy__mutmut_2,
+    "x_safe_copy__mutmut_3": x_safe_copy__mutmut_3,
+    "x_safe_copy__mutmut_4": x_safe_copy__mutmut_4,
+    "x_safe_copy__mutmut_5": x_safe_copy__mutmut_5,
+    "x_safe_copy__mutmut_6": x_safe_copy__mutmut_6,
+    "x_safe_copy__mutmut_7": x_safe_copy__mutmut_7,
+    "x_safe_copy__mutmut_8": x_safe_copy__mutmut_8,
+    "x_safe_copy__mutmut_9": x_safe_copy__mutmut_9,
+    "x_safe_copy__mutmut_10": x_safe_copy__mutmut_10,
+    "x_safe_copy__mutmut_11": x_safe_copy__mutmut_11,
+    "x_safe_copy__mutmut_12": x_safe_copy__mutmut_12,
+    "x_safe_copy__mutmut_13": x_safe_copy__mutmut_13,
+    "x_safe_copy__mutmut_14": x_safe_copy__mutmut_14,
+    "x_safe_copy__mutmut_15": x_safe_copy__mutmut_15,
+    "x_safe_copy__mutmut_16": x_safe_copy__mutmut_16,
+    "x_safe_copy__mutmut_17": x_safe_copy__mutmut_17,
+    "x_safe_copy__mutmut_18": x_safe_copy__mutmut_18,
+    "x_safe_copy__mutmut_19": x_safe_copy__mutmut_19,
+    "x_safe_copy__mutmut_20": x_safe_copy__mutmut_20,
+    "x_safe_copy__mutmut_21": x_safe_copy__mutmut_21,
+    "x_safe_copy__mutmut_22": x_safe_copy__mutmut_22,
+    "x_safe_copy__mutmut_23": x_safe_copy__mutmut_23,
+    "x_safe_copy__mutmut_24": x_safe_copy__mutmut_24,
+    "x_safe_copy__mutmut_25": x_safe_copy__mutmut_25,
+    "x_safe_copy__mutmut_26": x_safe_copy__mutmut_26,
+    "x_safe_copy__mutmut_27": x_safe_copy__mutmut_27,
+    "x_safe_copy__mutmut_28": x_safe_copy__mutmut_28,
+    "x_safe_copy__mutmut_29": x_safe_copy__mutmut_29,
+    "x_safe_copy__mutmut_30": x_safe_copy__mutmut_30,
+    "x_safe_copy__mutmut_31": x_safe_copy__mutmut_31,
+    "x_safe_copy__mutmut_32": x_safe_copy__mutmut_32,
+    "x_safe_copy__mutmut_33": x_safe_copy__mutmut_33,
+    "x_safe_copy__mutmut_34": x_safe_copy__mutmut_34,
+    "x_safe_copy__mutmut_35": x_safe_copy__mutmut_35,
+    "x_safe_copy__mutmut_36": x_safe_copy__mutmut_36,
+    "x_safe_copy__mutmut_37": x_safe_copy__mutmut_37,
+    "x_safe_copy__mutmut_38": x_safe_copy__mutmut_38,
+    "x_safe_copy__mutmut_39": x_safe_copy__mutmut_39,
+    "x_safe_copy__mutmut_40": x_safe_copy__mutmut_40,
+    "x_safe_copy__mutmut_41": x_safe_copy__mutmut_41,
+    "x_safe_copy__mutmut_42": x_safe_copy__mutmut_42,
+    "x_safe_copy__mutmut_43": x_safe_copy__mutmut_43,
+    "x_safe_copy__mutmut_44": x_safe_copy__mutmut_44,
+    "x_safe_copy__mutmut_45": x_safe_copy__mutmut_45,
+    "x_safe_copy__mutmut_46": x_safe_copy__mutmut_46,
+    "x_safe_copy__mutmut_47": x_safe_copy__mutmut_47,
+    "x_safe_copy__mutmut_48": x_safe_copy__mutmut_48,
+    "x_safe_copy__mutmut_49": x_safe_copy__mutmut_49,
+    "x_safe_copy__mutmut_50": x_safe_copy__mutmut_50,
+    "x_safe_copy__mutmut_51": x_safe_copy__mutmut_51,
+    "x_safe_copy__mutmut_52": x_safe_copy__mutmut_52,
+    "x_safe_copy__mutmut_53": x_safe_copy__mutmut_53,
+    "x_safe_copy__mutmut_54": x_safe_copy__mutmut_54,
 }
+
 
 def safe_copy(*args, **kwargs):
     result = _mutmut_trampoline(x_safe_copy__mutmut_orig, x_safe_copy__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 safe_copy.__signature__ = _mutmut_signature(x_safe_copy__mutmut_orig)
-x_safe_copy__mutmut_orig.__name__ = 'x_safe_copy'
+x_safe_copy__mutmut_orig.__name__ = "x_safe_copy"
 
 
 __all__ = [

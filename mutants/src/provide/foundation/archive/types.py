@@ -22,23 +22,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -137,17 +140,23 @@ class ArchiveOperation(IntEnum):
 
         """
         return self.name.upper()
-    
-    xǁArchiveOperationǁto_string__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁArchiveOperationǁto_string__mutmut_1': xǁArchiveOperationǁto_string__mutmut_1
+
+    xǁArchiveOperationǁto_string__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁArchiveOperationǁto_string__mutmut_1": xǁArchiveOperationǁto_string__mutmut_1
     }
-    
+
     def to_string(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁArchiveOperationǁto_string__mutmut_orig"), object.__getattribute__(self, "xǁArchiveOperationǁto_string__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁArchiveOperationǁto_string__mutmut_orig"),
+            object.__getattribute__(self, "xǁArchiveOperationǁto_string__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     to_string.__signature__ = _mutmut_signature(xǁArchiveOperationǁto_string__mutmut_orig)
-    xǁArchiveOperationǁto_string__mutmut_orig.__name__ = 'xǁArchiveOperationǁto_string'
+    xǁArchiveOperationǁto_string__mutmut_orig.__name__ = "xǁArchiveOperationǁto_string"
 
 
 # Inverse operations for extraction/decompression
@@ -301,19 +310,24 @@ def x_get_operation_from_string__mutmut_4(op_string: str) -> ArchiveOperation:
         raise ValueError(None)
     return OPERATION_NAMES[op_lower]
 
-x_get_operation_from_string__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_operation_from_string__mutmut_1': x_get_operation_from_string__mutmut_1, 
-    'x_get_operation_from_string__mutmut_2': x_get_operation_from_string__mutmut_2, 
-    'x_get_operation_from_string__mutmut_3': x_get_operation_from_string__mutmut_3, 
-    'x_get_operation_from_string__mutmut_4': x_get_operation_from_string__mutmut_4
+
+x_get_operation_from_string__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_operation_from_string__mutmut_1": x_get_operation_from_string__mutmut_1,
+    "x_get_operation_from_string__mutmut_2": x_get_operation_from_string__mutmut_2,
+    "x_get_operation_from_string__mutmut_3": x_get_operation_from_string__mutmut_3,
+    "x_get_operation_from_string__mutmut_4": x_get_operation_from_string__mutmut_4,
 }
 
+
 def get_operation_from_string(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_operation_from_string__mutmut_orig, x_get_operation_from_string__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_operation_from_string__mutmut_orig, x_get_operation_from_string__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_operation_from_string.__signature__ = _mutmut_signature(x_get_operation_from_string__mutmut_orig)
-x_get_operation_from_string__mutmut_orig.__name__ = 'x_get_operation_from_string'
+x_get_operation_from_string__mutmut_orig.__name__ = "x_get_operation_from_string"
 
 
 __all__ = [

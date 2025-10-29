@@ -42,23 +42,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -137,22 +140,27 @@ def x__require_crypto__mutmut_7() -> None:
             "PIP INSTALL 'PROVIDE-FOUNDATION[CRYPTO]'",
         )
 
-x__require_crypto__mutmut_mutants : ClassVar[MutantDict] = {
-'x__require_crypto__mutmut_1': x__require_crypto__mutmut_1, 
-    'x__require_crypto__mutmut_2': x__require_crypto__mutmut_2, 
-    'x__require_crypto__mutmut_3': x__require_crypto__mutmut_3, 
-    'x__require_crypto__mutmut_4': x__require_crypto__mutmut_4, 
-    'x__require_crypto__mutmut_5': x__require_crypto__mutmut_5, 
-    'x__require_crypto__mutmut_6': x__require_crypto__mutmut_6, 
-    'x__require_crypto__mutmut_7': x__require_crypto__mutmut_7
+
+x__require_crypto__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__require_crypto__mutmut_1": x__require_crypto__mutmut_1,
+    "x__require_crypto__mutmut_2": x__require_crypto__mutmut_2,
+    "x__require_crypto__mutmut_3": x__require_crypto__mutmut_3,
+    "x__require_crypto__mutmut_4": x__require_crypto__mutmut_4,
+    "x__require_crypto__mutmut_5": x__require_crypto__mutmut_5,
+    "x__require_crypto__mutmut_6": x__require_crypto__mutmut_6,
+    "x__require_crypto__mutmut_7": x__require_crypto__mutmut_7,
 }
 
+
 def _require_crypto(*args, **kwargs):
-    result = _mutmut_trampoline(x__require_crypto__mutmut_orig, x__require_crypto__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__require_crypto__mutmut_orig, x__require_crypto__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _require_crypto.__signature__ = _mutmut_signature(x__require_crypto__mutmut_orig)
-x__require_crypto__mutmut_orig.__name__ = 'x__require_crypto'
+x__require_crypto__mutmut_orig.__name__ = "x__require_crypto"
 
 
 class CertificateError(ValidationError):
@@ -216,7 +224,7 @@ class CertificateError(ValidationError):
             message=message,
             field="certificate",
             value=None,
-            )
+        )
 
     def xǁCertificateErrorǁ__init____mutmut_8(self, message: str, hint: str | None = None) -> None:
         super().__init__(
@@ -265,29 +273,35 @@ class CertificateError(ValidationError):
             value=None,
             rule=hint or "CERTIFICATE OPERATION FAILED",
         )
-    
-    xǁCertificateErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁCertificateErrorǁ__init____mutmut_1': xǁCertificateErrorǁ__init____mutmut_1, 
-        'xǁCertificateErrorǁ__init____mutmut_2': xǁCertificateErrorǁ__init____mutmut_2, 
-        'xǁCertificateErrorǁ__init____mutmut_3': xǁCertificateErrorǁ__init____mutmut_3, 
-        'xǁCertificateErrorǁ__init____mutmut_4': xǁCertificateErrorǁ__init____mutmut_4, 
-        'xǁCertificateErrorǁ__init____mutmut_5': xǁCertificateErrorǁ__init____mutmut_5, 
-        'xǁCertificateErrorǁ__init____mutmut_6': xǁCertificateErrorǁ__init____mutmut_6, 
-        'xǁCertificateErrorǁ__init____mutmut_7': xǁCertificateErrorǁ__init____mutmut_7, 
-        'xǁCertificateErrorǁ__init____mutmut_8': xǁCertificateErrorǁ__init____mutmut_8, 
-        'xǁCertificateErrorǁ__init____mutmut_9': xǁCertificateErrorǁ__init____mutmut_9, 
-        'xǁCertificateErrorǁ__init____mutmut_10': xǁCertificateErrorǁ__init____mutmut_10, 
-        'xǁCertificateErrorǁ__init____mutmut_11': xǁCertificateErrorǁ__init____mutmut_11, 
-        'xǁCertificateErrorǁ__init____mutmut_12': xǁCertificateErrorǁ__init____mutmut_12, 
-        'xǁCertificateErrorǁ__init____mutmut_13': xǁCertificateErrorǁ__init____mutmut_13
+
+    xǁCertificateErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁCertificateErrorǁ__init____mutmut_1": xǁCertificateErrorǁ__init____mutmut_1,
+        "xǁCertificateErrorǁ__init____mutmut_2": xǁCertificateErrorǁ__init____mutmut_2,
+        "xǁCertificateErrorǁ__init____mutmut_3": xǁCertificateErrorǁ__init____mutmut_3,
+        "xǁCertificateErrorǁ__init____mutmut_4": xǁCertificateErrorǁ__init____mutmut_4,
+        "xǁCertificateErrorǁ__init____mutmut_5": xǁCertificateErrorǁ__init____mutmut_5,
+        "xǁCertificateErrorǁ__init____mutmut_6": xǁCertificateErrorǁ__init____mutmut_6,
+        "xǁCertificateErrorǁ__init____mutmut_7": xǁCertificateErrorǁ__init____mutmut_7,
+        "xǁCertificateErrorǁ__init____mutmut_8": xǁCertificateErrorǁ__init____mutmut_8,
+        "xǁCertificateErrorǁ__init____mutmut_9": xǁCertificateErrorǁ__init____mutmut_9,
+        "xǁCertificateErrorǁ__init____mutmut_10": xǁCertificateErrorǁ__init____mutmut_10,
+        "xǁCertificateErrorǁ__init____mutmut_11": xǁCertificateErrorǁ__init____mutmut_11,
+        "xǁCertificateErrorǁ__init____mutmut_12": xǁCertificateErrorǁ__init____mutmut_12,
+        "xǁCertificateErrorǁ__init____mutmut_13": xǁCertificateErrorǁ__init____mutmut_13,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁCertificateErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁCertificateErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁCertificateErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁCertificateErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁCertificateErrorǁ__init____mutmut_orig)
-    xǁCertificateErrorǁ__init____mutmut_orig.__name__ = 'xǁCertificateErrorǁ__init__'
+    xǁCertificateErrorǁ__init____mutmut_orig.__name__ = "xǁCertificateErrorǁ__init__"
 
 
 class KeyType(StrEnum):

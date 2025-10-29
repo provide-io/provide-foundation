@@ -32,23 +32,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1157,7 +1160,9 @@ class APIDocGenerator:
         self.custom_index_content = custom_index_content
 
         if mkdocs_gen_files is None:
-            raise DependencyError("mkdocs-gen-files", )
+            raise DependencyError(
+                "mkdocs-gen-files",
+            )
 
         self.nav = mkdocs_gen_files.Nav()
         self._processed_files: set[Path] = set()
@@ -1389,50 +1394,56 @@ class APIDocGenerator:
 
         self.nav = mkdocs_gen_files.Nav()
         self._processed_files: set[Path] = None
-    
-    xǁAPIDocGeneratorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAPIDocGeneratorǁ__init____mutmut_1': xǁAPIDocGeneratorǁ__init____mutmut_1, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_2': xǁAPIDocGeneratorǁ__init____mutmut_2, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_3': xǁAPIDocGeneratorǁ__init____mutmut_3, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_4': xǁAPIDocGeneratorǁ__init____mutmut_4, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_5': xǁAPIDocGeneratorǁ__init____mutmut_5, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_6': xǁAPIDocGeneratorǁ__init____mutmut_6, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_7': xǁAPIDocGeneratorǁ__init____mutmut_7, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_8': xǁAPIDocGeneratorǁ__init____mutmut_8, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_9': xǁAPIDocGeneratorǁ__init____mutmut_9, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_10': xǁAPIDocGeneratorǁ__init____mutmut_10, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_11': xǁAPIDocGeneratorǁ__init____mutmut_11, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_12': xǁAPIDocGeneratorǁ__init____mutmut_12, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_13': xǁAPIDocGeneratorǁ__init____mutmut_13, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_14': xǁAPIDocGeneratorǁ__init____mutmut_14, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_15': xǁAPIDocGeneratorǁ__init____mutmut_15, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_16': xǁAPIDocGeneratorǁ__init____mutmut_16, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_17': xǁAPIDocGeneratorǁ__init____mutmut_17, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_18': xǁAPIDocGeneratorǁ__init____mutmut_18, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_19': xǁAPIDocGeneratorǁ__init____mutmut_19, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_20': xǁAPIDocGeneratorǁ__init____mutmut_20, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_21': xǁAPIDocGeneratorǁ__init____mutmut_21, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_22': xǁAPIDocGeneratorǁ__init____mutmut_22, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_23': xǁAPIDocGeneratorǁ__init____mutmut_23, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_24': xǁAPIDocGeneratorǁ__init____mutmut_24, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_25': xǁAPIDocGeneratorǁ__init____mutmut_25, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_26': xǁAPIDocGeneratorǁ__init____mutmut_26, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_27': xǁAPIDocGeneratorǁ__init____mutmut_27, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_28': xǁAPIDocGeneratorǁ__init____mutmut_28, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_29': xǁAPIDocGeneratorǁ__init____mutmut_29, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_30': xǁAPIDocGeneratorǁ__init____mutmut_30, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_31': xǁAPIDocGeneratorǁ__init____mutmut_31, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_32': xǁAPIDocGeneratorǁ__init____mutmut_32, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_33': xǁAPIDocGeneratorǁ__init____mutmut_33, 
-        'xǁAPIDocGeneratorǁ__init____mutmut_34': xǁAPIDocGeneratorǁ__init____mutmut_34
+
+    xǁAPIDocGeneratorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAPIDocGeneratorǁ__init____mutmut_1": xǁAPIDocGeneratorǁ__init____mutmut_1,
+        "xǁAPIDocGeneratorǁ__init____mutmut_2": xǁAPIDocGeneratorǁ__init____mutmut_2,
+        "xǁAPIDocGeneratorǁ__init____mutmut_3": xǁAPIDocGeneratorǁ__init____mutmut_3,
+        "xǁAPIDocGeneratorǁ__init____mutmut_4": xǁAPIDocGeneratorǁ__init____mutmut_4,
+        "xǁAPIDocGeneratorǁ__init____mutmut_5": xǁAPIDocGeneratorǁ__init____mutmut_5,
+        "xǁAPIDocGeneratorǁ__init____mutmut_6": xǁAPIDocGeneratorǁ__init____mutmut_6,
+        "xǁAPIDocGeneratorǁ__init____mutmut_7": xǁAPIDocGeneratorǁ__init____mutmut_7,
+        "xǁAPIDocGeneratorǁ__init____mutmut_8": xǁAPIDocGeneratorǁ__init____mutmut_8,
+        "xǁAPIDocGeneratorǁ__init____mutmut_9": xǁAPIDocGeneratorǁ__init____mutmut_9,
+        "xǁAPIDocGeneratorǁ__init____mutmut_10": xǁAPIDocGeneratorǁ__init____mutmut_10,
+        "xǁAPIDocGeneratorǁ__init____mutmut_11": xǁAPIDocGeneratorǁ__init____mutmut_11,
+        "xǁAPIDocGeneratorǁ__init____mutmut_12": xǁAPIDocGeneratorǁ__init____mutmut_12,
+        "xǁAPIDocGeneratorǁ__init____mutmut_13": xǁAPIDocGeneratorǁ__init____mutmut_13,
+        "xǁAPIDocGeneratorǁ__init____mutmut_14": xǁAPIDocGeneratorǁ__init____mutmut_14,
+        "xǁAPIDocGeneratorǁ__init____mutmut_15": xǁAPIDocGeneratorǁ__init____mutmut_15,
+        "xǁAPIDocGeneratorǁ__init____mutmut_16": xǁAPIDocGeneratorǁ__init____mutmut_16,
+        "xǁAPIDocGeneratorǁ__init____mutmut_17": xǁAPIDocGeneratorǁ__init____mutmut_17,
+        "xǁAPIDocGeneratorǁ__init____mutmut_18": xǁAPIDocGeneratorǁ__init____mutmut_18,
+        "xǁAPIDocGeneratorǁ__init____mutmut_19": xǁAPIDocGeneratorǁ__init____mutmut_19,
+        "xǁAPIDocGeneratorǁ__init____mutmut_20": xǁAPIDocGeneratorǁ__init____mutmut_20,
+        "xǁAPIDocGeneratorǁ__init____mutmut_21": xǁAPIDocGeneratorǁ__init____mutmut_21,
+        "xǁAPIDocGeneratorǁ__init____mutmut_22": xǁAPIDocGeneratorǁ__init____mutmut_22,
+        "xǁAPIDocGeneratorǁ__init____mutmut_23": xǁAPIDocGeneratorǁ__init____mutmut_23,
+        "xǁAPIDocGeneratorǁ__init____mutmut_24": xǁAPIDocGeneratorǁ__init____mutmut_24,
+        "xǁAPIDocGeneratorǁ__init____mutmut_25": xǁAPIDocGeneratorǁ__init____mutmut_25,
+        "xǁAPIDocGeneratorǁ__init____mutmut_26": xǁAPIDocGeneratorǁ__init____mutmut_26,
+        "xǁAPIDocGeneratorǁ__init____mutmut_27": xǁAPIDocGeneratorǁ__init____mutmut_27,
+        "xǁAPIDocGeneratorǁ__init____mutmut_28": xǁAPIDocGeneratorǁ__init____mutmut_28,
+        "xǁAPIDocGeneratorǁ__init____mutmut_29": xǁAPIDocGeneratorǁ__init____mutmut_29,
+        "xǁAPIDocGeneratorǁ__init____mutmut_30": xǁAPIDocGeneratorǁ__init____mutmut_30,
+        "xǁAPIDocGeneratorǁ__init____mutmut_31": xǁAPIDocGeneratorǁ__init____mutmut_31,
+        "xǁAPIDocGeneratorǁ__init____mutmut_32": xǁAPIDocGeneratorǁ__init____mutmut_32,
+        "xǁAPIDocGeneratorǁ__init____mutmut_33": xǁAPIDocGeneratorǁ__init____mutmut_33,
+        "xǁAPIDocGeneratorǁ__init____mutmut_34": xǁAPIDocGeneratorǁ__init____mutmut_34,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAPIDocGeneratorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁAPIDocGeneratorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁAPIDocGeneratorǁ__init____mutmut_orig)
-    xǁAPIDocGeneratorǁ__init____mutmut_orig.__name__ = 'xǁAPIDocGeneratorǁ__init__'
+    xǁAPIDocGeneratorǁ__init____mutmut_orig.__name__ = "xǁAPIDocGeneratorǁ__init__"
 
     def xǁAPIDocGeneratorǁshould_skip__mutmut_orig(self, path: Path) -> bool:
         """Check if a path should be skipped.
@@ -2308,40 +2319,46 @@ class APIDocGenerator:
                 return True
 
         return True
-    
-    xǁAPIDocGeneratorǁshould_skip__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAPIDocGeneratorǁshould_skip__mutmut_1': xǁAPIDocGeneratorǁshould_skip__mutmut_1, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_2': xǁAPIDocGeneratorǁshould_skip__mutmut_2, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_3': xǁAPIDocGeneratorǁshould_skip__mutmut_3, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_4': xǁAPIDocGeneratorǁshould_skip__mutmut_4, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_5': xǁAPIDocGeneratorǁshould_skip__mutmut_5, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_6': xǁAPIDocGeneratorǁshould_skip__mutmut_6, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_7': xǁAPIDocGeneratorǁshould_skip__mutmut_7, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_8': xǁAPIDocGeneratorǁshould_skip__mutmut_8, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_9': xǁAPIDocGeneratorǁshould_skip__mutmut_9, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_10': xǁAPIDocGeneratorǁshould_skip__mutmut_10, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_11': xǁAPIDocGeneratorǁshould_skip__mutmut_11, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_12': xǁAPIDocGeneratorǁshould_skip__mutmut_12, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_13': xǁAPIDocGeneratorǁshould_skip__mutmut_13, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_14': xǁAPIDocGeneratorǁshould_skip__mutmut_14, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_15': xǁAPIDocGeneratorǁshould_skip__mutmut_15, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_16': xǁAPIDocGeneratorǁshould_skip__mutmut_16, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_17': xǁAPIDocGeneratorǁshould_skip__mutmut_17, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_18': xǁAPIDocGeneratorǁshould_skip__mutmut_18, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_19': xǁAPIDocGeneratorǁshould_skip__mutmut_19, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_20': xǁAPIDocGeneratorǁshould_skip__mutmut_20, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_21': xǁAPIDocGeneratorǁshould_skip__mutmut_21, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_22': xǁAPIDocGeneratorǁshould_skip__mutmut_22, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_23': xǁAPIDocGeneratorǁshould_skip__mutmut_23, 
-        'xǁAPIDocGeneratorǁshould_skip__mutmut_24': xǁAPIDocGeneratorǁshould_skip__mutmut_24
+
+    xǁAPIDocGeneratorǁshould_skip__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_1": xǁAPIDocGeneratorǁshould_skip__mutmut_1,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_2": xǁAPIDocGeneratorǁshould_skip__mutmut_2,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_3": xǁAPIDocGeneratorǁshould_skip__mutmut_3,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_4": xǁAPIDocGeneratorǁshould_skip__mutmut_4,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_5": xǁAPIDocGeneratorǁshould_skip__mutmut_5,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_6": xǁAPIDocGeneratorǁshould_skip__mutmut_6,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_7": xǁAPIDocGeneratorǁshould_skip__mutmut_7,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_8": xǁAPIDocGeneratorǁshould_skip__mutmut_8,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_9": xǁAPIDocGeneratorǁshould_skip__mutmut_9,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_10": xǁAPIDocGeneratorǁshould_skip__mutmut_10,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_11": xǁAPIDocGeneratorǁshould_skip__mutmut_11,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_12": xǁAPIDocGeneratorǁshould_skip__mutmut_12,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_13": xǁAPIDocGeneratorǁshould_skip__mutmut_13,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_14": xǁAPIDocGeneratorǁshould_skip__mutmut_14,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_15": xǁAPIDocGeneratorǁshould_skip__mutmut_15,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_16": xǁAPIDocGeneratorǁshould_skip__mutmut_16,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_17": xǁAPIDocGeneratorǁshould_skip__mutmut_17,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_18": xǁAPIDocGeneratorǁshould_skip__mutmut_18,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_19": xǁAPIDocGeneratorǁshould_skip__mutmut_19,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_20": xǁAPIDocGeneratorǁshould_skip__mutmut_20,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_21": xǁAPIDocGeneratorǁshould_skip__mutmut_21,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_22": xǁAPIDocGeneratorǁshould_skip__mutmut_22,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_23": xǁAPIDocGeneratorǁshould_skip__mutmut_23,
+        "xǁAPIDocGeneratorǁshould_skip__mutmut_24": xǁAPIDocGeneratorǁshould_skip__mutmut_24,
     }
-    
+
     def should_skip(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAPIDocGeneratorǁshould_skip__mutmut_orig"), object.__getattribute__(self, "xǁAPIDocGeneratorǁshould_skip__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁshould_skip__mutmut_orig"),
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁshould_skip__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     should_skip.__signature__ = _mutmut_signature(xǁAPIDocGeneratorǁshould_skip__mutmut_orig)
-    xǁAPIDocGeneratorǁshould_skip__mutmut_orig.__name__ = 'xǁAPIDocGeneratorǁshould_skip'
+    xǁAPIDocGeneratorǁshould_skip__mutmut_orig.__name__ = "xǁAPIDocGeneratorǁshould_skip"
 
     def xǁAPIDocGeneratorǁget_module_identifier__mutmut_orig(self, parts: list[str]) -> str:
         """Get the full module identifier for a set of path parts.
@@ -2412,22 +2429,32 @@ class APIDocGenerator:
             # If package prefix is provided, prepend it
             return f"{self.package_prefix}.{'.'.join(parts)}"
         return "XX.XX".join(parts)
-    
-    xǁAPIDocGeneratorǁget_module_identifier__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAPIDocGeneratorǁget_module_identifier__mutmut_1': xǁAPIDocGeneratorǁget_module_identifier__mutmut_1, 
-        'xǁAPIDocGeneratorǁget_module_identifier__mutmut_2': xǁAPIDocGeneratorǁget_module_identifier__mutmut_2, 
-        'xǁAPIDocGeneratorǁget_module_identifier__mutmut_3': xǁAPIDocGeneratorǁget_module_identifier__mutmut_3, 
-        'xǁAPIDocGeneratorǁget_module_identifier__mutmut_4': xǁAPIDocGeneratorǁget_module_identifier__mutmut_4
-    }
-    
-    def get_module_identifier(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAPIDocGeneratorǁget_module_identifier__mutmut_orig"), object.__getattribute__(self, "xǁAPIDocGeneratorǁget_module_identifier__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    get_module_identifier.__signature__ = _mutmut_signature(xǁAPIDocGeneratorǁget_module_identifier__mutmut_orig)
-    xǁAPIDocGeneratorǁget_module_identifier__mutmut_orig.__name__ = 'xǁAPIDocGeneratorǁget_module_identifier'
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_orig(self, doc_path: Path, identifier: str, title: str) -> None:
+    xǁAPIDocGeneratorǁget_module_identifier__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAPIDocGeneratorǁget_module_identifier__mutmut_1": xǁAPIDocGeneratorǁget_module_identifier__mutmut_1,
+        "xǁAPIDocGeneratorǁget_module_identifier__mutmut_2": xǁAPIDocGeneratorǁget_module_identifier__mutmut_2,
+        "xǁAPIDocGeneratorǁget_module_identifier__mutmut_3": xǁAPIDocGeneratorǁget_module_identifier__mutmut_3,
+        "xǁAPIDocGeneratorǁget_module_identifier__mutmut_4": xǁAPIDocGeneratorǁget_module_identifier__mutmut_4,
+    }
+
+    def get_module_identifier(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁget_module_identifier__mutmut_orig"),
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁget_module_identifier__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    get_module_identifier.__signature__ = _mutmut_signature(
+        xǁAPIDocGeneratorǁget_module_identifier__mutmut_orig
+    )
+    xǁAPIDocGeneratorǁget_module_identifier__mutmut_orig.__name__ = "xǁAPIDocGeneratorǁget_module_identifier"
+
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_orig(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2447,7 +2474,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_1(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_1(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2467,7 +2496,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_2(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_2(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2487,7 +2518,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_3(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_3(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2507,7 +2540,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_4(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_4(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2515,7 +2550,9 @@ class APIDocGenerator:
             identifier: Module identifier for mkdocstrings
             title: Title for the documentation page
         """
-        with mkdocs_gen_files.open(doc_path, ) as fd:
+        with mkdocs_gen_files.open(
+            doc_path,
+        ) as fd:
             fd.write(f"# {title}\n\n")
             fd.write(f"::: {identifier}\n")
 
@@ -2527,7 +2564,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_5(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_5(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2547,7 +2586,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_6(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_6(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2567,7 +2608,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_7(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_7(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2587,7 +2630,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_8(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_8(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2607,7 +2652,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_9(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_9(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2627,7 +2674,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_10(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_10(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2647,7 +2696,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_11(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_11(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2667,7 +2718,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_12(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_12(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2687,7 +2740,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_13(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_13(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2707,7 +2762,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_14(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_14(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2727,7 +2784,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_15(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_15(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2747,7 +2806,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_16(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_16(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2767,7 +2828,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_17(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_17(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2787,7 +2850,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_18(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_18(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2807,7 +2872,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_19(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_19(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2827,7 +2894,9 @@ class APIDocGenerator:
                 if self.show_inheritance:
                     fd.write("      show_bases: false\n")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_20(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_20(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2847,7 +2916,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write(None)
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_21(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_21(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2867,7 +2938,9 @@ class APIDocGenerator:
                 if not self.show_inheritance:
                     fd.write("XX      show_bases: false\nXX")
 
-    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_22(self, doc_path: Path, identifier: str, title: str) -> None:
+    def xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_22(
+        self, doc_path: Path, identifier: str, title: str
+    ) -> None:
         """Generate documentation for a single module.
 
         Args:
@@ -2886,38 +2959,44 @@ class APIDocGenerator:
                     fd.write("      show_source: false\n")
                 if not self.show_inheritance:
                     fd.write("      SHOW_BASES: FALSE\n")
-    
-    xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_1': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_1, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_2': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_2, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_3': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_3, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_4': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_4, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_5': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_5, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_6': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_6, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_7': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_7, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_8': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_8, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_9': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_9, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_10': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_10, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_11': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_11, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_12': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_12, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_13': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_13, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_14': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_14, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_15': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_15, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_16': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_16, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_17': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_17, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_18': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_18, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_19': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_19, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_20': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_20, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_21': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_21, 
-        'xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_22': xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_22
+
+    xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_1": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_1,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_2": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_2,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_3": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_3,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_4": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_4,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_5": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_5,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_6": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_6,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_7": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_7,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_8": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_8,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_9": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_9,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_10": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_10,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_11": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_11,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_12": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_12,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_13": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_13,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_14": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_14,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_15": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_15,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_16": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_16,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_17": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_17,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_18": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_18,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_19": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_19,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_20": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_20,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_21": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_21,
+        "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_22": xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_22,
     }
-    
+
     def generate_module_doc(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_orig"), object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_orig"),
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     generate_module_doc.__signature__ = _mutmut_signature(xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_orig)
-    xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_orig.__name__ = 'xǁAPIDocGeneratorǁgenerate_module_doc'
+    xǁAPIDocGeneratorǁgenerate_module_doc__mutmut_orig.__name__ = "xǁAPIDocGeneratorǁgenerate_module_doc"
 
     def xǁAPIDocGeneratorǁprocess_python_file__mutmut_orig(self, path: Path) -> None:
         """Process a single Python file for documentation.
@@ -4432,7 +4511,10 @@ class APIDocGenerator:
         identifier = self.get_module_identifier(parts)
         title = f"`{identifier}`"
 
-        self.generate_module_doc(doc_path, identifier, )
+        self.generate_module_doc(
+            doc_path,
+            identifier,
+        )
 
         # Set edit path for the generated file
         mkdocs_gen_files.set_edit_path(doc_path, path)
@@ -4591,7 +4673,9 @@ class APIDocGenerator:
         self.generate_module_doc(doc_path, identifier, title)
 
         # Set edit path for the generated file
-        mkdocs_gen_files.set_edit_path(doc_path, )
+        mkdocs_gen_files.set_edit_path(
+            doc_path,
+        )
 
         self._processed_files.add(path)
         log.debug(f"Generated documentation for {identifier} -> {doc_path}")
@@ -4673,60 +4757,66 @@ class APIDocGenerator:
 
         self._processed_files.add(path)
         log.debug(None)
-    
-    xǁAPIDocGeneratorǁprocess_python_file__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAPIDocGeneratorǁprocess_python_file__mutmut_1': xǁAPIDocGeneratorǁprocess_python_file__mutmut_1, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_2': xǁAPIDocGeneratorǁprocess_python_file__mutmut_2, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_3': xǁAPIDocGeneratorǁprocess_python_file__mutmut_3, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_4': xǁAPIDocGeneratorǁprocess_python_file__mutmut_4, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_5': xǁAPIDocGeneratorǁprocess_python_file__mutmut_5, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_6': xǁAPIDocGeneratorǁprocess_python_file__mutmut_6, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_7': xǁAPIDocGeneratorǁprocess_python_file__mutmut_7, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_8': xǁAPIDocGeneratorǁprocess_python_file__mutmut_8, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_9': xǁAPIDocGeneratorǁprocess_python_file__mutmut_9, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_10': xǁAPIDocGeneratorǁprocess_python_file__mutmut_10, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_11': xǁAPIDocGeneratorǁprocess_python_file__mutmut_11, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_12': xǁAPIDocGeneratorǁprocess_python_file__mutmut_12, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_13': xǁAPIDocGeneratorǁprocess_python_file__mutmut_13, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_14': xǁAPIDocGeneratorǁprocess_python_file__mutmut_14, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_15': xǁAPIDocGeneratorǁprocess_python_file__mutmut_15, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_16': xǁAPIDocGeneratorǁprocess_python_file__mutmut_16, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_17': xǁAPIDocGeneratorǁprocess_python_file__mutmut_17, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_18': xǁAPIDocGeneratorǁprocess_python_file__mutmut_18, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_19': xǁAPIDocGeneratorǁprocess_python_file__mutmut_19, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_20': xǁAPIDocGeneratorǁprocess_python_file__mutmut_20, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_21': xǁAPIDocGeneratorǁprocess_python_file__mutmut_21, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_22': xǁAPIDocGeneratorǁprocess_python_file__mutmut_22, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_23': xǁAPIDocGeneratorǁprocess_python_file__mutmut_23, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_24': xǁAPIDocGeneratorǁprocess_python_file__mutmut_24, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_25': xǁAPIDocGeneratorǁprocess_python_file__mutmut_25, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_26': xǁAPIDocGeneratorǁprocess_python_file__mutmut_26, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_27': xǁAPIDocGeneratorǁprocess_python_file__mutmut_27, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_28': xǁAPIDocGeneratorǁprocess_python_file__mutmut_28, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_29': xǁAPIDocGeneratorǁprocess_python_file__mutmut_29, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_30': xǁAPIDocGeneratorǁprocess_python_file__mutmut_30, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_31': xǁAPIDocGeneratorǁprocess_python_file__mutmut_31, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_32': xǁAPIDocGeneratorǁprocess_python_file__mutmut_32, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_33': xǁAPIDocGeneratorǁprocess_python_file__mutmut_33, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_34': xǁAPIDocGeneratorǁprocess_python_file__mutmut_34, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_35': xǁAPIDocGeneratorǁprocess_python_file__mutmut_35, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_36': xǁAPIDocGeneratorǁprocess_python_file__mutmut_36, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_37': xǁAPIDocGeneratorǁprocess_python_file__mutmut_37, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_38': xǁAPIDocGeneratorǁprocess_python_file__mutmut_38, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_39': xǁAPIDocGeneratorǁprocess_python_file__mutmut_39, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_40': xǁAPIDocGeneratorǁprocess_python_file__mutmut_40, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_41': xǁAPIDocGeneratorǁprocess_python_file__mutmut_41, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_42': xǁAPIDocGeneratorǁprocess_python_file__mutmut_42, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_43': xǁAPIDocGeneratorǁprocess_python_file__mutmut_43, 
-        'xǁAPIDocGeneratorǁprocess_python_file__mutmut_44': xǁAPIDocGeneratorǁprocess_python_file__mutmut_44
+
+    xǁAPIDocGeneratorǁprocess_python_file__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_1": xǁAPIDocGeneratorǁprocess_python_file__mutmut_1,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_2": xǁAPIDocGeneratorǁprocess_python_file__mutmut_2,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_3": xǁAPIDocGeneratorǁprocess_python_file__mutmut_3,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_4": xǁAPIDocGeneratorǁprocess_python_file__mutmut_4,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_5": xǁAPIDocGeneratorǁprocess_python_file__mutmut_5,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_6": xǁAPIDocGeneratorǁprocess_python_file__mutmut_6,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_7": xǁAPIDocGeneratorǁprocess_python_file__mutmut_7,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_8": xǁAPIDocGeneratorǁprocess_python_file__mutmut_8,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_9": xǁAPIDocGeneratorǁprocess_python_file__mutmut_9,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_10": xǁAPIDocGeneratorǁprocess_python_file__mutmut_10,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_11": xǁAPIDocGeneratorǁprocess_python_file__mutmut_11,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_12": xǁAPIDocGeneratorǁprocess_python_file__mutmut_12,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_13": xǁAPIDocGeneratorǁprocess_python_file__mutmut_13,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_14": xǁAPIDocGeneratorǁprocess_python_file__mutmut_14,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_15": xǁAPIDocGeneratorǁprocess_python_file__mutmut_15,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_16": xǁAPIDocGeneratorǁprocess_python_file__mutmut_16,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_17": xǁAPIDocGeneratorǁprocess_python_file__mutmut_17,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_18": xǁAPIDocGeneratorǁprocess_python_file__mutmut_18,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_19": xǁAPIDocGeneratorǁprocess_python_file__mutmut_19,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_20": xǁAPIDocGeneratorǁprocess_python_file__mutmut_20,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_21": xǁAPIDocGeneratorǁprocess_python_file__mutmut_21,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_22": xǁAPIDocGeneratorǁprocess_python_file__mutmut_22,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_23": xǁAPIDocGeneratorǁprocess_python_file__mutmut_23,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_24": xǁAPIDocGeneratorǁprocess_python_file__mutmut_24,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_25": xǁAPIDocGeneratorǁprocess_python_file__mutmut_25,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_26": xǁAPIDocGeneratorǁprocess_python_file__mutmut_26,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_27": xǁAPIDocGeneratorǁprocess_python_file__mutmut_27,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_28": xǁAPIDocGeneratorǁprocess_python_file__mutmut_28,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_29": xǁAPIDocGeneratorǁprocess_python_file__mutmut_29,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_30": xǁAPIDocGeneratorǁprocess_python_file__mutmut_30,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_31": xǁAPIDocGeneratorǁprocess_python_file__mutmut_31,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_32": xǁAPIDocGeneratorǁprocess_python_file__mutmut_32,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_33": xǁAPIDocGeneratorǁprocess_python_file__mutmut_33,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_34": xǁAPIDocGeneratorǁprocess_python_file__mutmut_34,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_35": xǁAPIDocGeneratorǁprocess_python_file__mutmut_35,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_36": xǁAPIDocGeneratorǁprocess_python_file__mutmut_36,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_37": xǁAPIDocGeneratorǁprocess_python_file__mutmut_37,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_38": xǁAPIDocGeneratorǁprocess_python_file__mutmut_38,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_39": xǁAPIDocGeneratorǁprocess_python_file__mutmut_39,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_40": xǁAPIDocGeneratorǁprocess_python_file__mutmut_40,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_41": xǁAPIDocGeneratorǁprocess_python_file__mutmut_41,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_42": xǁAPIDocGeneratorǁprocess_python_file__mutmut_42,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_43": xǁAPIDocGeneratorǁprocess_python_file__mutmut_43,
+        "xǁAPIDocGeneratorǁprocess_python_file__mutmut_44": xǁAPIDocGeneratorǁprocess_python_file__mutmut_44,
     }
-    
+
     def process_python_file(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAPIDocGeneratorǁprocess_python_file__mutmut_orig"), object.__getattribute__(self, "xǁAPIDocGeneratorǁprocess_python_file__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁprocess_python_file__mutmut_orig"),
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁprocess_python_file__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     process_python_file.__signature__ = _mutmut_signature(xǁAPIDocGeneratorǁprocess_python_file__mutmut_orig)
-    xǁAPIDocGeneratorǁprocess_python_file__mutmut_orig.__name__ = 'xǁAPIDocGeneratorǁprocess_python_file'
+    xǁAPIDocGeneratorǁprocess_python_file__mutmut_orig.__name__ = "xǁAPIDocGeneratorǁprocess_python_file"
 
     def xǁAPIDocGeneratorǁgenerate_navigation__mutmut_orig(self) -> None:
         """Generate the navigation summary file."""
@@ -4766,7 +4856,9 @@ class APIDocGenerator:
     def xǁAPIDocGeneratorǁgenerate_navigation__mutmut_5(self) -> None:
         """Generate the navigation summary file."""
         nav_path = f"{self.api_dir}/SUMMARY.md"
-        with mkdocs_gen_files.open(nav_path, ) as nav_file:
+        with mkdocs_gen_files.open(
+            nav_path,
+        ) as nav_file:
             nav_file.writelines(self.nav.build_literate_nav())
         log.debug(f"Generated navigation file: {nav_path}")
 
@@ -4797,25 +4889,31 @@ class APIDocGenerator:
         with mkdocs_gen_files.open(nav_path, "w") as nav_file:
             nav_file.writelines(self.nav.build_literate_nav())
         log.debug(None)
-    
-    xǁAPIDocGeneratorǁgenerate_navigation__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAPIDocGeneratorǁgenerate_navigation__mutmut_1': xǁAPIDocGeneratorǁgenerate_navigation__mutmut_1, 
-        'xǁAPIDocGeneratorǁgenerate_navigation__mutmut_2': xǁAPIDocGeneratorǁgenerate_navigation__mutmut_2, 
-        'xǁAPIDocGeneratorǁgenerate_navigation__mutmut_3': xǁAPIDocGeneratorǁgenerate_navigation__mutmut_3, 
-        'xǁAPIDocGeneratorǁgenerate_navigation__mutmut_4': xǁAPIDocGeneratorǁgenerate_navigation__mutmut_4, 
-        'xǁAPIDocGeneratorǁgenerate_navigation__mutmut_5': xǁAPIDocGeneratorǁgenerate_navigation__mutmut_5, 
-        'xǁAPIDocGeneratorǁgenerate_navigation__mutmut_6': xǁAPIDocGeneratorǁgenerate_navigation__mutmut_6, 
-        'xǁAPIDocGeneratorǁgenerate_navigation__mutmut_7': xǁAPIDocGeneratorǁgenerate_navigation__mutmut_7, 
-        'xǁAPIDocGeneratorǁgenerate_navigation__mutmut_8': xǁAPIDocGeneratorǁgenerate_navigation__mutmut_8, 
-        'xǁAPIDocGeneratorǁgenerate_navigation__mutmut_9': xǁAPIDocGeneratorǁgenerate_navigation__mutmut_9
+
+    xǁAPIDocGeneratorǁgenerate_navigation__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_1": xǁAPIDocGeneratorǁgenerate_navigation__mutmut_1,
+        "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_2": xǁAPIDocGeneratorǁgenerate_navigation__mutmut_2,
+        "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_3": xǁAPIDocGeneratorǁgenerate_navigation__mutmut_3,
+        "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_4": xǁAPIDocGeneratorǁgenerate_navigation__mutmut_4,
+        "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_5": xǁAPIDocGeneratorǁgenerate_navigation__mutmut_5,
+        "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_6": xǁAPIDocGeneratorǁgenerate_navigation__mutmut_6,
+        "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_7": xǁAPIDocGeneratorǁgenerate_navigation__mutmut_7,
+        "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_8": xǁAPIDocGeneratorǁgenerate_navigation__mutmut_8,
+        "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_9": xǁAPIDocGeneratorǁgenerate_navigation__mutmut_9,
     }
-    
+
     def generate_navigation(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_orig"), object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_orig"),
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_navigation__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     generate_navigation.__signature__ = _mutmut_signature(xǁAPIDocGeneratorǁgenerate_navigation__mutmut_orig)
-    xǁAPIDocGeneratorǁgenerate_navigation__mutmut_orig.__name__ = 'xǁAPIDocGeneratorǁgenerate_navigation'
+    xǁAPIDocGeneratorǁgenerate_navigation__mutmut_orig.__name__ = "xǁAPIDocGeneratorǁgenerate_navigation"
 
     def xǁAPIDocGeneratorǁgenerate_index__mutmut_orig(self) -> None:
         """Generate the API index page."""
@@ -4893,7 +4991,9 @@ class APIDocGenerator:
 
         content = self.custom_index_content or self._generate_default_index_content()
 
-        with mkdocs_gen_files.open(index_path, ) as f:
+        with mkdocs_gen_files.open(
+            index_path,
+        ) as f:
             f.write(content)
         log.debug(f"Generated API index: {index_path}")
 
@@ -4936,27 +5036,33 @@ class APIDocGenerator:
         with mkdocs_gen_files.open(index_path, "w") as f:
             f.write(content)
         log.debug(None)
-    
-    xǁAPIDocGeneratorǁgenerate_index__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAPIDocGeneratorǁgenerate_index__mutmut_1': xǁAPIDocGeneratorǁgenerate_index__mutmut_1, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_2': xǁAPIDocGeneratorǁgenerate_index__mutmut_2, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_3': xǁAPIDocGeneratorǁgenerate_index__mutmut_3, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_4': xǁAPIDocGeneratorǁgenerate_index__mutmut_4, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_5': xǁAPIDocGeneratorǁgenerate_index__mutmut_5, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_6': xǁAPIDocGeneratorǁgenerate_index__mutmut_6, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_7': xǁAPIDocGeneratorǁgenerate_index__mutmut_7, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_8': xǁAPIDocGeneratorǁgenerate_index__mutmut_8, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_9': xǁAPIDocGeneratorǁgenerate_index__mutmut_9, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_10': xǁAPIDocGeneratorǁgenerate_index__mutmut_10, 
-        'xǁAPIDocGeneratorǁgenerate_index__mutmut_11': xǁAPIDocGeneratorǁgenerate_index__mutmut_11
+
+    xǁAPIDocGeneratorǁgenerate_index__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_1": xǁAPIDocGeneratorǁgenerate_index__mutmut_1,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_2": xǁAPIDocGeneratorǁgenerate_index__mutmut_2,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_3": xǁAPIDocGeneratorǁgenerate_index__mutmut_3,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_4": xǁAPIDocGeneratorǁgenerate_index__mutmut_4,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_5": xǁAPIDocGeneratorǁgenerate_index__mutmut_5,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_6": xǁAPIDocGeneratorǁgenerate_index__mutmut_6,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_7": xǁAPIDocGeneratorǁgenerate_index__mutmut_7,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_8": xǁAPIDocGeneratorǁgenerate_index__mutmut_8,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_9": xǁAPIDocGeneratorǁgenerate_index__mutmut_9,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_10": xǁAPIDocGeneratorǁgenerate_index__mutmut_10,
+        "xǁAPIDocGeneratorǁgenerate_index__mutmut_11": xǁAPIDocGeneratorǁgenerate_index__mutmut_11,
     }
-    
+
     def generate_index(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_index__mutmut_orig"), object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_index__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_index__mutmut_orig"),
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate_index__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     generate_index.__signature__ = _mutmut_signature(xǁAPIDocGeneratorǁgenerate_index__mutmut_orig)
-    xǁAPIDocGeneratorǁgenerate_index__mutmut_orig.__name__ = 'xǁAPIDocGeneratorǁgenerate_index'
+    xǁAPIDocGeneratorǁgenerate_index__mutmut_orig.__name__ = "xǁAPIDocGeneratorǁgenerate_index"
 
     def xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_orig(self) -> str:
         """Generate default index content."""
@@ -5067,20 +5173,30 @@ All modules are documented with their public APIs, including:
 - Docstrings with examples where available
 
 """
-    
-    xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_1': xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_1, 
-        'xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_2': xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_2, 
-        'xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_3': xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_3, 
-        'xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_4': xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_4
+
+    xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_1": xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_1,
+        "xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_2": xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_2,
+        "xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_3": xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_3,
+        "xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_4": xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_4,
     }
-    
+
     def _generate_default_index_content(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_orig"), object.__getattribute__(self, "xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _generate_default_index_content.__signature__ = _mutmut_signature(xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_orig)
-    xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_orig.__name__ = 'xǁAPIDocGeneratorǁ_generate_default_index_content'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_orig"),
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _generate_default_index_content.__signature__ = _mutmut_signature(
+        xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_orig
+    )
+    xǁAPIDocGeneratorǁ_generate_default_index_content__mutmut_orig.__name__ = (
+        "xǁAPIDocGeneratorǁ_generate_default_index_content"
+    )
 
     def xǁAPIDocGeneratorǁgenerate__mutmut_orig(self) -> dict[str, Any]:
         """Generate API documentation files.
@@ -6366,9 +6482,7 @@ All modules are documented with their public APIs, including:
         self.generate_navigation()
         self.generate_index()
 
-        log.info(
-            None
-        )
+        log.info(None)
 
         return stats
 
@@ -6519,54 +6633,60 @@ All modules are documented with their public APIs, including:
         )
 
         return stats
-    
-    xǁAPIDocGeneratorǁgenerate__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAPIDocGeneratorǁgenerate__mutmut_1': xǁAPIDocGeneratorǁgenerate__mutmut_1, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_2': xǁAPIDocGeneratorǁgenerate__mutmut_2, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_3': xǁAPIDocGeneratorǁgenerate__mutmut_3, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_4': xǁAPIDocGeneratorǁgenerate__mutmut_4, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_5': xǁAPIDocGeneratorǁgenerate__mutmut_5, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_6': xǁAPIDocGeneratorǁgenerate__mutmut_6, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_7': xǁAPIDocGeneratorǁgenerate__mutmut_7, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_8': xǁAPIDocGeneratorǁgenerate__mutmut_8, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_9': xǁAPIDocGeneratorǁgenerate__mutmut_9, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_10': xǁAPIDocGeneratorǁgenerate__mutmut_10, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_11': xǁAPIDocGeneratorǁgenerate__mutmut_11, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_12': xǁAPIDocGeneratorǁgenerate__mutmut_12, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_13': xǁAPIDocGeneratorǁgenerate__mutmut_13, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_14': xǁAPIDocGeneratorǁgenerate__mutmut_14, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_15': xǁAPIDocGeneratorǁgenerate__mutmut_15, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_16': xǁAPIDocGeneratorǁgenerate__mutmut_16, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_17': xǁAPIDocGeneratorǁgenerate__mutmut_17, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_18': xǁAPIDocGeneratorǁgenerate__mutmut_18, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_19': xǁAPIDocGeneratorǁgenerate__mutmut_19, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_20': xǁAPIDocGeneratorǁgenerate__mutmut_20, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_21': xǁAPIDocGeneratorǁgenerate__mutmut_21, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_22': xǁAPIDocGeneratorǁgenerate__mutmut_22, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_23': xǁAPIDocGeneratorǁgenerate__mutmut_23, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_24': xǁAPIDocGeneratorǁgenerate__mutmut_24, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_25': xǁAPIDocGeneratorǁgenerate__mutmut_25, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_26': xǁAPIDocGeneratorǁgenerate__mutmut_26, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_27': xǁAPIDocGeneratorǁgenerate__mutmut_27, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_28': xǁAPIDocGeneratorǁgenerate__mutmut_28, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_29': xǁAPIDocGeneratorǁgenerate__mutmut_29, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_30': xǁAPIDocGeneratorǁgenerate__mutmut_30, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_31': xǁAPIDocGeneratorǁgenerate__mutmut_31, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_32': xǁAPIDocGeneratorǁgenerate__mutmut_32, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_33': xǁAPIDocGeneratorǁgenerate__mutmut_33, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_34': xǁAPIDocGeneratorǁgenerate__mutmut_34, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_35': xǁAPIDocGeneratorǁgenerate__mutmut_35, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_36': xǁAPIDocGeneratorǁgenerate__mutmut_36, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_37': xǁAPIDocGeneratorǁgenerate__mutmut_37, 
-        'xǁAPIDocGeneratorǁgenerate__mutmut_38': xǁAPIDocGeneratorǁgenerate__mutmut_38
+
+    xǁAPIDocGeneratorǁgenerate__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAPIDocGeneratorǁgenerate__mutmut_1": xǁAPIDocGeneratorǁgenerate__mutmut_1,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_2": xǁAPIDocGeneratorǁgenerate__mutmut_2,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_3": xǁAPIDocGeneratorǁgenerate__mutmut_3,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_4": xǁAPIDocGeneratorǁgenerate__mutmut_4,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_5": xǁAPIDocGeneratorǁgenerate__mutmut_5,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_6": xǁAPIDocGeneratorǁgenerate__mutmut_6,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_7": xǁAPIDocGeneratorǁgenerate__mutmut_7,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_8": xǁAPIDocGeneratorǁgenerate__mutmut_8,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_9": xǁAPIDocGeneratorǁgenerate__mutmut_9,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_10": xǁAPIDocGeneratorǁgenerate__mutmut_10,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_11": xǁAPIDocGeneratorǁgenerate__mutmut_11,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_12": xǁAPIDocGeneratorǁgenerate__mutmut_12,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_13": xǁAPIDocGeneratorǁgenerate__mutmut_13,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_14": xǁAPIDocGeneratorǁgenerate__mutmut_14,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_15": xǁAPIDocGeneratorǁgenerate__mutmut_15,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_16": xǁAPIDocGeneratorǁgenerate__mutmut_16,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_17": xǁAPIDocGeneratorǁgenerate__mutmut_17,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_18": xǁAPIDocGeneratorǁgenerate__mutmut_18,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_19": xǁAPIDocGeneratorǁgenerate__mutmut_19,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_20": xǁAPIDocGeneratorǁgenerate__mutmut_20,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_21": xǁAPIDocGeneratorǁgenerate__mutmut_21,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_22": xǁAPIDocGeneratorǁgenerate__mutmut_22,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_23": xǁAPIDocGeneratorǁgenerate__mutmut_23,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_24": xǁAPIDocGeneratorǁgenerate__mutmut_24,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_25": xǁAPIDocGeneratorǁgenerate__mutmut_25,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_26": xǁAPIDocGeneratorǁgenerate__mutmut_26,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_27": xǁAPIDocGeneratorǁgenerate__mutmut_27,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_28": xǁAPIDocGeneratorǁgenerate__mutmut_28,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_29": xǁAPIDocGeneratorǁgenerate__mutmut_29,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_30": xǁAPIDocGeneratorǁgenerate__mutmut_30,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_31": xǁAPIDocGeneratorǁgenerate__mutmut_31,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_32": xǁAPIDocGeneratorǁgenerate__mutmut_32,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_33": xǁAPIDocGeneratorǁgenerate__mutmut_33,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_34": xǁAPIDocGeneratorǁgenerate__mutmut_34,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_35": xǁAPIDocGeneratorǁgenerate__mutmut_35,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_36": xǁAPIDocGeneratorǁgenerate__mutmut_36,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_37": xǁAPIDocGeneratorǁgenerate__mutmut_37,
+        "xǁAPIDocGeneratorǁgenerate__mutmut_38": xǁAPIDocGeneratorǁgenerate__mutmut_38,
     }
-    
+
     def generate(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate__mutmut_orig"), object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate__mutmut_orig"),
+            object.__getattribute__(self, "xǁAPIDocGeneratorǁgenerate__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     generate.__signature__ = _mutmut_signature(xǁAPIDocGeneratorǁgenerate__mutmut_orig)
-    xǁAPIDocGeneratorǁgenerate__mutmut_orig.__name__ = 'xǁAPIDocGeneratorǁgenerate'
+    xǁAPIDocGeneratorǁgenerate__mutmut_orig.__name__ = "xǁAPIDocGeneratorǁgenerate"
 
 
 def x_generate_api_docs__mutmut_orig(
@@ -6989,32 +7109,37 @@ def x_generate_api_docs__mutmut_14(
         api_dir=api_dir,
         skip_patterns=skip_patterns,
         package_prefix=package_prefix,
-        )
+    )
     return generator.generate()
 
-x_generate_api_docs__mutmut_mutants : ClassVar[MutantDict] = {
-'x_generate_api_docs__mutmut_1': x_generate_api_docs__mutmut_1, 
-    'x_generate_api_docs__mutmut_2': x_generate_api_docs__mutmut_2, 
-    'x_generate_api_docs__mutmut_3': x_generate_api_docs__mutmut_3, 
-    'x_generate_api_docs__mutmut_4': x_generate_api_docs__mutmut_4, 
-    'x_generate_api_docs__mutmut_5': x_generate_api_docs__mutmut_5, 
-    'x_generate_api_docs__mutmut_6': x_generate_api_docs__mutmut_6, 
-    'x_generate_api_docs__mutmut_7': x_generate_api_docs__mutmut_7, 
-    'x_generate_api_docs__mutmut_8': x_generate_api_docs__mutmut_8, 
-    'x_generate_api_docs__mutmut_9': x_generate_api_docs__mutmut_9, 
-    'x_generate_api_docs__mutmut_10': x_generate_api_docs__mutmut_10, 
-    'x_generate_api_docs__mutmut_11': x_generate_api_docs__mutmut_11, 
-    'x_generate_api_docs__mutmut_12': x_generate_api_docs__mutmut_12, 
-    'x_generate_api_docs__mutmut_13': x_generate_api_docs__mutmut_13, 
-    'x_generate_api_docs__mutmut_14': x_generate_api_docs__mutmut_14
+
+x_generate_api_docs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_generate_api_docs__mutmut_1": x_generate_api_docs__mutmut_1,
+    "x_generate_api_docs__mutmut_2": x_generate_api_docs__mutmut_2,
+    "x_generate_api_docs__mutmut_3": x_generate_api_docs__mutmut_3,
+    "x_generate_api_docs__mutmut_4": x_generate_api_docs__mutmut_4,
+    "x_generate_api_docs__mutmut_5": x_generate_api_docs__mutmut_5,
+    "x_generate_api_docs__mutmut_6": x_generate_api_docs__mutmut_6,
+    "x_generate_api_docs__mutmut_7": x_generate_api_docs__mutmut_7,
+    "x_generate_api_docs__mutmut_8": x_generate_api_docs__mutmut_8,
+    "x_generate_api_docs__mutmut_9": x_generate_api_docs__mutmut_9,
+    "x_generate_api_docs__mutmut_10": x_generate_api_docs__mutmut_10,
+    "x_generate_api_docs__mutmut_11": x_generate_api_docs__mutmut_11,
+    "x_generate_api_docs__mutmut_12": x_generate_api_docs__mutmut_12,
+    "x_generate_api_docs__mutmut_13": x_generate_api_docs__mutmut_13,
+    "x_generate_api_docs__mutmut_14": x_generate_api_docs__mutmut_14,
 }
 
+
 def generate_api_docs(*args, **kwargs):
-    result = _mutmut_trampoline(x_generate_api_docs__mutmut_orig, x_generate_api_docs__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_generate_api_docs__mutmut_orig, x_generate_api_docs__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 generate_api_docs.__signature__ = _mutmut_signature(x_generate_api_docs__mutmut_orig)
-x_generate_api_docs__mutmut_orig.__name__ = 'x_generate_api_docs'
+x_generate_api_docs__mutmut_orig.__name__ = "x_generate_api_docs"
 
 
 # <3 🧱🤝📚🪄

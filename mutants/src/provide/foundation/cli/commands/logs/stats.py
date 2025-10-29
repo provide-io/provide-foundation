@@ -17,23 +17,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -781,34 +784,39 @@ def x_print_generation_config__mutmut_19(
 
     click.echo("   PRESS CTRL+C TO STOP\n")
 
-x_print_generation_config__mutmut_mutants : ClassVar[MutantDict] = {
-'x_print_generation_config__mutmut_1': x_print_generation_config__mutmut_1, 
-    'x_print_generation_config__mutmut_2': x_print_generation_config__mutmut_2, 
-    'x_print_generation_config__mutmut_3': x_print_generation_config__mutmut_3, 
-    'x_print_generation_config__mutmut_4': x_print_generation_config__mutmut_4, 
-    'x_print_generation_config__mutmut_5': x_print_generation_config__mutmut_5, 
-    'x_print_generation_config__mutmut_6': x_print_generation_config__mutmut_6, 
-    'x_print_generation_config__mutmut_7': x_print_generation_config__mutmut_7, 
-    'x_print_generation_config__mutmut_8': x_print_generation_config__mutmut_8, 
-    'x_print_generation_config__mutmut_9': x_print_generation_config__mutmut_9, 
-    'x_print_generation_config__mutmut_10': x_print_generation_config__mutmut_10, 
-    'x_print_generation_config__mutmut_11': x_print_generation_config__mutmut_11, 
-    'x_print_generation_config__mutmut_12': x_print_generation_config__mutmut_12, 
-    'x_print_generation_config__mutmut_13': x_print_generation_config__mutmut_13, 
-    'x_print_generation_config__mutmut_14': x_print_generation_config__mutmut_14, 
-    'x_print_generation_config__mutmut_15': x_print_generation_config__mutmut_15, 
-    'x_print_generation_config__mutmut_16': x_print_generation_config__mutmut_16, 
-    'x_print_generation_config__mutmut_17': x_print_generation_config__mutmut_17, 
-    'x_print_generation_config__mutmut_18': x_print_generation_config__mutmut_18, 
-    'x_print_generation_config__mutmut_19': x_print_generation_config__mutmut_19
+
+x_print_generation_config__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_print_generation_config__mutmut_1": x_print_generation_config__mutmut_1,
+    "x_print_generation_config__mutmut_2": x_print_generation_config__mutmut_2,
+    "x_print_generation_config__mutmut_3": x_print_generation_config__mutmut_3,
+    "x_print_generation_config__mutmut_4": x_print_generation_config__mutmut_4,
+    "x_print_generation_config__mutmut_5": x_print_generation_config__mutmut_5,
+    "x_print_generation_config__mutmut_6": x_print_generation_config__mutmut_6,
+    "x_print_generation_config__mutmut_7": x_print_generation_config__mutmut_7,
+    "x_print_generation_config__mutmut_8": x_print_generation_config__mutmut_8,
+    "x_print_generation_config__mutmut_9": x_print_generation_config__mutmut_9,
+    "x_print_generation_config__mutmut_10": x_print_generation_config__mutmut_10,
+    "x_print_generation_config__mutmut_11": x_print_generation_config__mutmut_11,
+    "x_print_generation_config__mutmut_12": x_print_generation_config__mutmut_12,
+    "x_print_generation_config__mutmut_13": x_print_generation_config__mutmut_13,
+    "x_print_generation_config__mutmut_14": x_print_generation_config__mutmut_14,
+    "x_print_generation_config__mutmut_15": x_print_generation_config__mutmut_15,
+    "x_print_generation_config__mutmut_16": x_print_generation_config__mutmut_16,
+    "x_print_generation_config__mutmut_17": x_print_generation_config__mutmut_17,
+    "x_print_generation_config__mutmut_18": x_print_generation_config__mutmut_18,
+    "x_print_generation_config__mutmut_19": x_print_generation_config__mutmut_19,
 }
 
+
 def print_generation_config(*args, **kwargs):
-    result = _mutmut_trampoline(x_print_generation_config__mutmut_orig, x_print_generation_config__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_print_generation_config__mutmut_orig, x_print_generation_config__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 print_generation_config.__signature__ = _mutmut_signature(x_print_generation_config__mutmut_orig)
-x_print_generation_config__mutmut_orig.__name__ = 'x_print_generation_config'
+x_print_generation_config__mutmut_orig.__name__ = "x_print_generation_config"
 
 
 def x_print_stats__mutmut_orig(
@@ -1532,33 +1540,36 @@ def x_print_stats__mutmut_18(
         return current_time, logs_sent
     return last_stats_time, last_stats_sent
 
-x_print_stats__mutmut_mutants : ClassVar[MutantDict] = {
-'x_print_stats__mutmut_1': x_print_stats__mutmut_1, 
-    'x_print_stats__mutmut_2': x_print_stats__mutmut_2, 
-    'x_print_stats__mutmut_3': x_print_stats__mutmut_3, 
-    'x_print_stats__mutmut_4': x_print_stats__mutmut_4, 
-    'x_print_stats__mutmut_5': x_print_stats__mutmut_5, 
-    'x_print_stats__mutmut_6': x_print_stats__mutmut_6, 
-    'x_print_stats__mutmut_7': x_print_stats__mutmut_7, 
-    'x_print_stats__mutmut_8': x_print_stats__mutmut_8, 
-    'x_print_stats__mutmut_9': x_print_stats__mutmut_9, 
-    'x_print_stats__mutmut_10': x_print_stats__mutmut_10, 
-    'x_print_stats__mutmut_11': x_print_stats__mutmut_11, 
-    'x_print_stats__mutmut_12': x_print_stats__mutmut_12, 
-    'x_print_stats__mutmut_13': x_print_stats__mutmut_13, 
-    'x_print_stats__mutmut_14': x_print_stats__mutmut_14, 
-    'x_print_stats__mutmut_15': x_print_stats__mutmut_15, 
-    'x_print_stats__mutmut_16': x_print_stats__mutmut_16, 
-    'x_print_stats__mutmut_17': x_print_stats__mutmut_17, 
-    'x_print_stats__mutmut_18': x_print_stats__mutmut_18
+
+x_print_stats__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_print_stats__mutmut_1": x_print_stats__mutmut_1,
+    "x_print_stats__mutmut_2": x_print_stats__mutmut_2,
+    "x_print_stats__mutmut_3": x_print_stats__mutmut_3,
+    "x_print_stats__mutmut_4": x_print_stats__mutmut_4,
+    "x_print_stats__mutmut_5": x_print_stats__mutmut_5,
+    "x_print_stats__mutmut_6": x_print_stats__mutmut_6,
+    "x_print_stats__mutmut_7": x_print_stats__mutmut_7,
+    "x_print_stats__mutmut_8": x_print_stats__mutmut_8,
+    "x_print_stats__mutmut_9": x_print_stats__mutmut_9,
+    "x_print_stats__mutmut_10": x_print_stats__mutmut_10,
+    "x_print_stats__mutmut_11": x_print_stats__mutmut_11,
+    "x_print_stats__mutmut_12": x_print_stats__mutmut_12,
+    "x_print_stats__mutmut_13": x_print_stats__mutmut_13,
+    "x_print_stats__mutmut_14": x_print_stats__mutmut_14,
+    "x_print_stats__mutmut_15": x_print_stats__mutmut_15,
+    "x_print_stats__mutmut_16": x_print_stats__mutmut_16,
+    "x_print_stats__mutmut_17": x_print_stats__mutmut_17,
+    "x_print_stats__mutmut_18": x_print_stats__mutmut_18,
 }
+
 
 def print_stats(*args, **kwargs):
     result = _mutmut_trampoline(x_print_stats__mutmut_orig, x_print_stats__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 print_stats.__signature__ = _mutmut_signature(x_print_stats__mutmut_orig)
-x_print_stats__mutmut_orig.__name__ = 'x_print_stats'
+x_print_stats__mutmut_orig.__name__ = "x_print_stats"
 
 
 def x_print_final_stats__mutmut_orig(
@@ -2056,30 +2067,35 @@ def x_print_final_stats__mutmut_15(
     click.echo(f"   Target rate: {rate} logs/second")
     click.echo(None)
 
-x_print_final_stats__mutmut_mutants : ClassVar[MutantDict] = {
-'x_print_final_stats__mutmut_1': x_print_final_stats__mutmut_1, 
-    'x_print_final_stats__mutmut_2': x_print_final_stats__mutmut_2, 
-    'x_print_final_stats__mutmut_3': x_print_final_stats__mutmut_3, 
-    'x_print_final_stats__mutmut_4': x_print_final_stats__mutmut_4, 
-    'x_print_final_stats__mutmut_5': x_print_final_stats__mutmut_5, 
-    'x_print_final_stats__mutmut_6': x_print_final_stats__mutmut_6, 
-    'x_print_final_stats__mutmut_7': x_print_final_stats__mutmut_7, 
-    'x_print_final_stats__mutmut_8': x_print_final_stats__mutmut_8, 
-    'x_print_final_stats__mutmut_9': x_print_final_stats__mutmut_9, 
-    'x_print_final_stats__mutmut_10': x_print_final_stats__mutmut_10, 
-    'x_print_final_stats__mutmut_11': x_print_final_stats__mutmut_11, 
-    'x_print_final_stats__mutmut_12': x_print_final_stats__mutmut_12, 
-    'x_print_final_stats__mutmut_13': x_print_final_stats__mutmut_13, 
-    'x_print_final_stats__mutmut_14': x_print_final_stats__mutmut_14, 
-    'x_print_final_stats__mutmut_15': x_print_final_stats__mutmut_15
+
+x_print_final_stats__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_print_final_stats__mutmut_1": x_print_final_stats__mutmut_1,
+    "x_print_final_stats__mutmut_2": x_print_final_stats__mutmut_2,
+    "x_print_final_stats__mutmut_3": x_print_final_stats__mutmut_3,
+    "x_print_final_stats__mutmut_4": x_print_final_stats__mutmut_4,
+    "x_print_final_stats__mutmut_5": x_print_final_stats__mutmut_5,
+    "x_print_final_stats__mutmut_6": x_print_final_stats__mutmut_6,
+    "x_print_final_stats__mutmut_7": x_print_final_stats__mutmut_7,
+    "x_print_final_stats__mutmut_8": x_print_final_stats__mutmut_8,
+    "x_print_final_stats__mutmut_9": x_print_final_stats__mutmut_9,
+    "x_print_final_stats__mutmut_10": x_print_final_stats__mutmut_10,
+    "x_print_final_stats__mutmut_11": x_print_final_stats__mutmut_11,
+    "x_print_final_stats__mutmut_12": x_print_final_stats__mutmut_12,
+    "x_print_final_stats__mutmut_13": x_print_final_stats__mutmut_13,
+    "x_print_final_stats__mutmut_14": x_print_final_stats__mutmut_14,
+    "x_print_final_stats__mutmut_15": x_print_final_stats__mutmut_15,
 }
 
+
 def print_final_stats(*args, **kwargs):
-    result = _mutmut_trampoline(x_print_final_stats__mutmut_orig, x_print_final_stats__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_print_final_stats__mutmut_orig, x_print_final_stats__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 print_final_stats.__signature__ = _mutmut_signature(x_print_final_stats__mutmut_orig)
-x_print_final_stats__mutmut_orig.__name__ = 'x_print_final_stats'
+x_print_final_stats__mutmut_orig.__name__ = "x_print_final_stats"
 
 
 def x_print_progress__mutmut_orig(current: int, total: int) -> None:
@@ -2189,7 +2205,9 @@ def x_print_progress__mutmut_7(current: int, total: int) -> None:
 
     """
     # Print progress every 10%
-    if (current + 1) % max(1, ) == 0:
+    if (current + 1) % max(
+        1,
+    ) == 0:
         progress = (current + 1) / total * 100
         click.echo(f"Progress: {progress:.0f}% ({current + 1}/{total})")
 
@@ -2389,36 +2407,39 @@ def x_print_progress__mutmut_21(current: int, total: int) -> None:
         progress = (current + 1) / total * 100
         click.echo(f"Progress: {progress:.0f}% ({current + 2}/{total})")
 
-x_print_progress__mutmut_mutants : ClassVar[MutantDict] = {
-'x_print_progress__mutmut_1': x_print_progress__mutmut_1, 
-    'x_print_progress__mutmut_2': x_print_progress__mutmut_2, 
-    'x_print_progress__mutmut_3': x_print_progress__mutmut_3, 
-    'x_print_progress__mutmut_4': x_print_progress__mutmut_4, 
-    'x_print_progress__mutmut_5': x_print_progress__mutmut_5, 
-    'x_print_progress__mutmut_6': x_print_progress__mutmut_6, 
-    'x_print_progress__mutmut_7': x_print_progress__mutmut_7, 
-    'x_print_progress__mutmut_8': x_print_progress__mutmut_8, 
-    'x_print_progress__mutmut_9': x_print_progress__mutmut_9, 
-    'x_print_progress__mutmut_10': x_print_progress__mutmut_10, 
-    'x_print_progress__mutmut_11': x_print_progress__mutmut_11, 
-    'x_print_progress__mutmut_12': x_print_progress__mutmut_12, 
-    'x_print_progress__mutmut_13': x_print_progress__mutmut_13, 
-    'x_print_progress__mutmut_14': x_print_progress__mutmut_14, 
-    'x_print_progress__mutmut_15': x_print_progress__mutmut_15, 
-    'x_print_progress__mutmut_16': x_print_progress__mutmut_16, 
-    'x_print_progress__mutmut_17': x_print_progress__mutmut_17, 
-    'x_print_progress__mutmut_18': x_print_progress__mutmut_18, 
-    'x_print_progress__mutmut_19': x_print_progress__mutmut_19, 
-    'x_print_progress__mutmut_20': x_print_progress__mutmut_20, 
-    'x_print_progress__mutmut_21': x_print_progress__mutmut_21
+
+x_print_progress__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_print_progress__mutmut_1": x_print_progress__mutmut_1,
+    "x_print_progress__mutmut_2": x_print_progress__mutmut_2,
+    "x_print_progress__mutmut_3": x_print_progress__mutmut_3,
+    "x_print_progress__mutmut_4": x_print_progress__mutmut_4,
+    "x_print_progress__mutmut_5": x_print_progress__mutmut_5,
+    "x_print_progress__mutmut_6": x_print_progress__mutmut_6,
+    "x_print_progress__mutmut_7": x_print_progress__mutmut_7,
+    "x_print_progress__mutmut_8": x_print_progress__mutmut_8,
+    "x_print_progress__mutmut_9": x_print_progress__mutmut_9,
+    "x_print_progress__mutmut_10": x_print_progress__mutmut_10,
+    "x_print_progress__mutmut_11": x_print_progress__mutmut_11,
+    "x_print_progress__mutmut_12": x_print_progress__mutmut_12,
+    "x_print_progress__mutmut_13": x_print_progress__mutmut_13,
+    "x_print_progress__mutmut_14": x_print_progress__mutmut_14,
+    "x_print_progress__mutmut_15": x_print_progress__mutmut_15,
+    "x_print_progress__mutmut_16": x_print_progress__mutmut_16,
+    "x_print_progress__mutmut_17": x_print_progress__mutmut_17,
+    "x_print_progress__mutmut_18": x_print_progress__mutmut_18,
+    "x_print_progress__mutmut_19": x_print_progress__mutmut_19,
+    "x_print_progress__mutmut_20": x_print_progress__mutmut_20,
+    "x_print_progress__mutmut_21": x_print_progress__mutmut_21,
 }
+
 
 def print_progress(*args, **kwargs):
     result = _mutmut_trampoline(x_print_progress__mutmut_orig, x_print_progress__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 print_progress.__signature__ = _mutmut_signature(x_print_progress__mutmut_orig)
-x_print_progress__mutmut_orig.__name__ = 'x_print_progress'
+x_print_progress__mutmut_orig.__name__ = "x_print_progress"
 
 
 # <3 🧱🤝💻🪄

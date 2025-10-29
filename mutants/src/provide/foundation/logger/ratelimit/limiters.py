@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -676,41 +679,47 @@ class SyncRateLimiter:
         self.total_allowed = 0
         self.total_denied = 0
         self.last_denied_time: float | None = ""
-    
-    xǁSyncRateLimiterǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSyncRateLimiterǁ__init____mutmut_1': xǁSyncRateLimiterǁ__init____mutmut_1, 
-        'xǁSyncRateLimiterǁ__init____mutmut_2': xǁSyncRateLimiterǁ__init____mutmut_2, 
-        'xǁSyncRateLimiterǁ__init____mutmut_3': xǁSyncRateLimiterǁ__init____mutmut_3, 
-        'xǁSyncRateLimiterǁ__init____mutmut_4': xǁSyncRateLimiterǁ__init____mutmut_4, 
-        'xǁSyncRateLimiterǁ__init____mutmut_5': xǁSyncRateLimiterǁ__init____mutmut_5, 
-        'xǁSyncRateLimiterǁ__init____mutmut_6': xǁSyncRateLimiterǁ__init____mutmut_6, 
-        'xǁSyncRateLimiterǁ__init____mutmut_7': xǁSyncRateLimiterǁ__init____mutmut_7, 
-        'xǁSyncRateLimiterǁ__init____mutmut_8': xǁSyncRateLimiterǁ__init____mutmut_8, 
-        'xǁSyncRateLimiterǁ__init____mutmut_9': xǁSyncRateLimiterǁ__init____mutmut_9, 
-        'xǁSyncRateLimiterǁ__init____mutmut_10': xǁSyncRateLimiterǁ__init____mutmut_10, 
-        'xǁSyncRateLimiterǁ__init____mutmut_11': xǁSyncRateLimiterǁ__init____mutmut_11, 
-        'xǁSyncRateLimiterǁ__init____mutmut_12': xǁSyncRateLimiterǁ__init____mutmut_12, 
-        'xǁSyncRateLimiterǁ__init____mutmut_13': xǁSyncRateLimiterǁ__init____mutmut_13, 
-        'xǁSyncRateLimiterǁ__init____mutmut_14': xǁSyncRateLimiterǁ__init____mutmut_14, 
-        'xǁSyncRateLimiterǁ__init____mutmut_15': xǁSyncRateLimiterǁ__init____mutmut_15, 
-        'xǁSyncRateLimiterǁ__init____mutmut_16': xǁSyncRateLimiterǁ__init____mutmut_16, 
-        'xǁSyncRateLimiterǁ__init____mutmut_17': xǁSyncRateLimiterǁ__init____mutmut_17, 
-        'xǁSyncRateLimiterǁ__init____mutmut_18': xǁSyncRateLimiterǁ__init____mutmut_18, 
-        'xǁSyncRateLimiterǁ__init____mutmut_19': xǁSyncRateLimiterǁ__init____mutmut_19, 
-        'xǁSyncRateLimiterǁ__init____mutmut_20': xǁSyncRateLimiterǁ__init____mutmut_20, 
-        'xǁSyncRateLimiterǁ__init____mutmut_21': xǁSyncRateLimiterǁ__init____mutmut_21, 
-        'xǁSyncRateLimiterǁ__init____mutmut_22': xǁSyncRateLimiterǁ__init____mutmut_22, 
-        'xǁSyncRateLimiterǁ__init____mutmut_23': xǁSyncRateLimiterǁ__init____mutmut_23, 
-        'xǁSyncRateLimiterǁ__init____mutmut_24': xǁSyncRateLimiterǁ__init____mutmut_24, 
-        'xǁSyncRateLimiterǁ__init____mutmut_25': xǁSyncRateLimiterǁ__init____mutmut_25
+
+    xǁSyncRateLimiterǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSyncRateLimiterǁ__init____mutmut_1": xǁSyncRateLimiterǁ__init____mutmut_1,
+        "xǁSyncRateLimiterǁ__init____mutmut_2": xǁSyncRateLimiterǁ__init____mutmut_2,
+        "xǁSyncRateLimiterǁ__init____mutmut_3": xǁSyncRateLimiterǁ__init____mutmut_3,
+        "xǁSyncRateLimiterǁ__init____mutmut_4": xǁSyncRateLimiterǁ__init____mutmut_4,
+        "xǁSyncRateLimiterǁ__init____mutmut_5": xǁSyncRateLimiterǁ__init____mutmut_5,
+        "xǁSyncRateLimiterǁ__init____mutmut_6": xǁSyncRateLimiterǁ__init____mutmut_6,
+        "xǁSyncRateLimiterǁ__init____mutmut_7": xǁSyncRateLimiterǁ__init____mutmut_7,
+        "xǁSyncRateLimiterǁ__init____mutmut_8": xǁSyncRateLimiterǁ__init____mutmut_8,
+        "xǁSyncRateLimiterǁ__init____mutmut_9": xǁSyncRateLimiterǁ__init____mutmut_9,
+        "xǁSyncRateLimiterǁ__init____mutmut_10": xǁSyncRateLimiterǁ__init____mutmut_10,
+        "xǁSyncRateLimiterǁ__init____mutmut_11": xǁSyncRateLimiterǁ__init____mutmut_11,
+        "xǁSyncRateLimiterǁ__init____mutmut_12": xǁSyncRateLimiterǁ__init____mutmut_12,
+        "xǁSyncRateLimiterǁ__init____mutmut_13": xǁSyncRateLimiterǁ__init____mutmut_13,
+        "xǁSyncRateLimiterǁ__init____mutmut_14": xǁSyncRateLimiterǁ__init____mutmut_14,
+        "xǁSyncRateLimiterǁ__init____mutmut_15": xǁSyncRateLimiterǁ__init____mutmut_15,
+        "xǁSyncRateLimiterǁ__init____mutmut_16": xǁSyncRateLimiterǁ__init____mutmut_16,
+        "xǁSyncRateLimiterǁ__init____mutmut_17": xǁSyncRateLimiterǁ__init____mutmut_17,
+        "xǁSyncRateLimiterǁ__init____mutmut_18": xǁSyncRateLimiterǁ__init____mutmut_18,
+        "xǁSyncRateLimiterǁ__init____mutmut_19": xǁSyncRateLimiterǁ__init____mutmut_19,
+        "xǁSyncRateLimiterǁ__init____mutmut_20": xǁSyncRateLimiterǁ__init____mutmut_20,
+        "xǁSyncRateLimiterǁ__init____mutmut_21": xǁSyncRateLimiterǁ__init____mutmut_21,
+        "xǁSyncRateLimiterǁ__init____mutmut_22": xǁSyncRateLimiterǁ__init____mutmut_22,
+        "xǁSyncRateLimiterǁ__init____mutmut_23": xǁSyncRateLimiterǁ__init____mutmut_23,
+        "xǁSyncRateLimiterǁ__init____mutmut_24": xǁSyncRateLimiterǁ__init____mutmut_24,
+        "xǁSyncRateLimiterǁ__init____mutmut_25": xǁSyncRateLimiterǁ__init____mutmut_25,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSyncRateLimiterǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁSyncRateLimiterǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSyncRateLimiterǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁSyncRateLimiterǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁSyncRateLimiterǁ__init____mutmut_orig)
-    xǁSyncRateLimiterǁ__init____mutmut_orig.__name__ = 'xǁSyncRateLimiterǁ__init__'
+    xǁSyncRateLimiterǁ__init____mutmut_orig.__name__ = "xǁSyncRateLimiterǁ__init__"
 
     def xǁSyncRateLimiterǁis_allowed__mutmut_orig(self) -> bool:
         """Check if a log message is allowed based on available tokens.
@@ -1038,7 +1047,9 @@ class SyncRateLimiter:
             # Refill tokens based on elapsed time
             if elapsed > 0:
                 tokens_to_add = elapsed * self.refill_rate
-                self.tokens = min(self.capacity, )
+                self.tokens = min(
+                    self.capacity,
+                )
                 self.last_refill = now
 
             # Try to consume a token
@@ -1465,44 +1476,50 @@ class SyncRateLimiter:
             self.total_denied += 1
             self.last_denied_time = now
             return True
-    
-    xǁSyncRateLimiterǁis_allowed__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSyncRateLimiterǁis_allowed__mutmut_1': xǁSyncRateLimiterǁis_allowed__mutmut_1, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_2': xǁSyncRateLimiterǁis_allowed__mutmut_2, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_3': xǁSyncRateLimiterǁis_allowed__mutmut_3, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_4': xǁSyncRateLimiterǁis_allowed__mutmut_4, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_5': xǁSyncRateLimiterǁis_allowed__mutmut_5, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_6': xǁSyncRateLimiterǁis_allowed__mutmut_6, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_7': xǁSyncRateLimiterǁis_allowed__mutmut_7, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_8': xǁSyncRateLimiterǁis_allowed__mutmut_8, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_9': xǁSyncRateLimiterǁis_allowed__mutmut_9, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_10': xǁSyncRateLimiterǁis_allowed__mutmut_10, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_11': xǁSyncRateLimiterǁis_allowed__mutmut_11, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_12': xǁSyncRateLimiterǁis_allowed__mutmut_12, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_13': xǁSyncRateLimiterǁis_allowed__mutmut_13, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_14': xǁSyncRateLimiterǁis_allowed__mutmut_14, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_15': xǁSyncRateLimiterǁis_allowed__mutmut_15, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_16': xǁSyncRateLimiterǁis_allowed__mutmut_16, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_17': xǁSyncRateLimiterǁis_allowed__mutmut_17, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_18': xǁSyncRateLimiterǁis_allowed__mutmut_18, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_19': xǁSyncRateLimiterǁis_allowed__mutmut_19, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_20': xǁSyncRateLimiterǁis_allowed__mutmut_20, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_21': xǁSyncRateLimiterǁis_allowed__mutmut_21, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_22': xǁSyncRateLimiterǁis_allowed__mutmut_22, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_23': xǁSyncRateLimiterǁis_allowed__mutmut_23, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_24': xǁSyncRateLimiterǁis_allowed__mutmut_24, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_25': xǁSyncRateLimiterǁis_allowed__mutmut_25, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_26': xǁSyncRateLimiterǁis_allowed__mutmut_26, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_27': xǁSyncRateLimiterǁis_allowed__mutmut_27, 
-        'xǁSyncRateLimiterǁis_allowed__mutmut_28': xǁSyncRateLimiterǁis_allowed__mutmut_28
+
+    xǁSyncRateLimiterǁis_allowed__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSyncRateLimiterǁis_allowed__mutmut_1": xǁSyncRateLimiterǁis_allowed__mutmut_1,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_2": xǁSyncRateLimiterǁis_allowed__mutmut_2,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_3": xǁSyncRateLimiterǁis_allowed__mutmut_3,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_4": xǁSyncRateLimiterǁis_allowed__mutmut_4,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_5": xǁSyncRateLimiterǁis_allowed__mutmut_5,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_6": xǁSyncRateLimiterǁis_allowed__mutmut_6,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_7": xǁSyncRateLimiterǁis_allowed__mutmut_7,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_8": xǁSyncRateLimiterǁis_allowed__mutmut_8,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_9": xǁSyncRateLimiterǁis_allowed__mutmut_9,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_10": xǁSyncRateLimiterǁis_allowed__mutmut_10,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_11": xǁSyncRateLimiterǁis_allowed__mutmut_11,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_12": xǁSyncRateLimiterǁis_allowed__mutmut_12,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_13": xǁSyncRateLimiterǁis_allowed__mutmut_13,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_14": xǁSyncRateLimiterǁis_allowed__mutmut_14,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_15": xǁSyncRateLimiterǁis_allowed__mutmut_15,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_16": xǁSyncRateLimiterǁis_allowed__mutmut_16,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_17": xǁSyncRateLimiterǁis_allowed__mutmut_17,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_18": xǁSyncRateLimiterǁis_allowed__mutmut_18,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_19": xǁSyncRateLimiterǁis_allowed__mutmut_19,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_20": xǁSyncRateLimiterǁis_allowed__mutmut_20,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_21": xǁSyncRateLimiterǁis_allowed__mutmut_21,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_22": xǁSyncRateLimiterǁis_allowed__mutmut_22,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_23": xǁSyncRateLimiterǁis_allowed__mutmut_23,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_24": xǁSyncRateLimiterǁis_allowed__mutmut_24,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_25": xǁSyncRateLimiterǁis_allowed__mutmut_25,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_26": xǁSyncRateLimiterǁis_allowed__mutmut_26,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_27": xǁSyncRateLimiterǁis_allowed__mutmut_27,
+        "xǁSyncRateLimiterǁis_allowed__mutmut_28": xǁSyncRateLimiterǁis_allowed__mutmut_28,
     }
-    
+
     def is_allowed(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSyncRateLimiterǁis_allowed__mutmut_orig"), object.__getattribute__(self, "xǁSyncRateLimiterǁis_allowed__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSyncRateLimiterǁis_allowed__mutmut_orig"),
+            object.__getattribute__(self, "xǁSyncRateLimiterǁis_allowed__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_allowed.__signature__ = _mutmut_signature(xǁSyncRateLimiterǁis_allowed__mutmut_orig)
-    xǁSyncRateLimiterǁis_allowed__mutmut_orig.__name__ = 'xǁSyncRateLimiterǁis_allowed'
+    xǁSyncRateLimiterǁis_allowed__mutmut_orig.__name__ = "xǁSyncRateLimiterǁis_allowed"
 
     def xǁSyncRateLimiterǁget_stats__mutmut_orig(self) -> dict[str, Any]:
         """Get rate limiter statistics."""
@@ -1659,28 +1676,34 @@ class SyncRateLimiter:
                 "total_denied": self.total_denied,
                 "LAST_DENIED_TIME": self.last_denied_time,
             }
-    
-    xǁSyncRateLimiterǁget_stats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSyncRateLimiterǁget_stats__mutmut_1': xǁSyncRateLimiterǁget_stats__mutmut_1, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_2': xǁSyncRateLimiterǁget_stats__mutmut_2, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_3': xǁSyncRateLimiterǁget_stats__mutmut_3, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_4': xǁSyncRateLimiterǁget_stats__mutmut_4, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_5': xǁSyncRateLimiterǁget_stats__mutmut_5, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_6': xǁSyncRateLimiterǁget_stats__mutmut_6, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_7': xǁSyncRateLimiterǁget_stats__mutmut_7, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_8': xǁSyncRateLimiterǁget_stats__mutmut_8, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_9': xǁSyncRateLimiterǁget_stats__mutmut_9, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_10': xǁSyncRateLimiterǁget_stats__mutmut_10, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_11': xǁSyncRateLimiterǁget_stats__mutmut_11, 
-        'xǁSyncRateLimiterǁget_stats__mutmut_12': xǁSyncRateLimiterǁget_stats__mutmut_12
+
+    xǁSyncRateLimiterǁget_stats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSyncRateLimiterǁget_stats__mutmut_1": xǁSyncRateLimiterǁget_stats__mutmut_1,
+        "xǁSyncRateLimiterǁget_stats__mutmut_2": xǁSyncRateLimiterǁget_stats__mutmut_2,
+        "xǁSyncRateLimiterǁget_stats__mutmut_3": xǁSyncRateLimiterǁget_stats__mutmut_3,
+        "xǁSyncRateLimiterǁget_stats__mutmut_4": xǁSyncRateLimiterǁget_stats__mutmut_4,
+        "xǁSyncRateLimiterǁget_stats__mutmut_5": xǁSyncRateLimiterǁget_stats__mutmut_5,
+        "xǁSyncRateLimiterǁget_stats__mutmut_6": xǁSyncRateLimiterǁget_stats__mutmut_6,
+        "xǁSyncRateLimiterǁget_stats__mutmut_7": xǁSyncRateLimiterǁget_stats__mutmut_7,
+        "xǁSyncRateLimiterǁget_stats__mutmut_8": xǁSyncRateLimiterǁget_stats__mutmut_8,
+        "xǁSyncRateLimiterǁget_stats__mutmut_9": xǁSyncRateLimiterǁget_stats__mutmut_9,
+        "xǁSyncRateLimiterǁget_stats__mutmut_10": xǁSyncRateLimiterǁget_stats__mutmut_10,
+        "xǁSyncRateLimiterǁget_stats__mutmut_11": xǁSyncRateLimiterǁget_stats__mutmut_11,
+        "xǁSyncRateLimiterǁget_stats__mutmut_12": xǁSyncRateLimiterǁget_stats__mutmut_12,
     }
-    
+
     def get_stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSyncRateLimiterǁget_stats__mutmut_orig"), object.__getattribute__(self, "xǁSyncRateLimiterǁget_stats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSyncRateLimiterǁget_stats__mutmut_orig"),
+            object.__getattribute__(self, "xǁSyncRateLimiterǁget_stats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_stats.__signature__ = _mutmut_signature(xǁSyncRateLimiterǁget_stats__mutmut_orig)
-    xǁSyncRateLimiterǁget_stats__mutmut_orig.__name__ = 'xǁSyncRateLimiterǁget_stats'
+    xǁSyncRateLimiterǁget_stats__mutmut_orig.__name__ = "xǁSyncRateLimiterǁget_stats"
 
 
 class AsyncRateLimiter:
@@ -2311,41 +2334,47 @@ class AsyncRateLimiter:
         self.total_allowed = 0
         self.total_denied = 0
         self.last_denied_time: float | None = ""
-    
-    xǁAsyncRateLimiterǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncRateLimiterǁ__init____mutmut_1': xǁAsyncRateLimiterǁ__init____mutmut_1, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_2': xǁAsyncRateLimiterǁ__init____mutmut_2, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_3': xǁAsyncRateLimiterǁ__init____mutmut_3, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_4': xǁAsyncRateLimiterǁ__init____mutmut_4, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_5': xǁAsyncRateLimiterǁ__init____mutmut_5, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_6': xǁAsyncRateLimiterǁ__init____mutmut_6, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_7': xǁAsyncRateLimiterǁ__init____mutmut_7, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_8': xǁAsyncRateLimiterǁ__init____mutmut_8, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_9': xǁAsyncRateLimiterǁ__init____mutmut_9, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_10': xǁAsyncRateLimiterǁ__init____mutmut_10, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_11': xǁAsyncRateLimiterǁ__init____mutmut_11, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_12': xǁAsyncRateLimiterǁ__init____mutmut_12, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_13': xǁAsyncRateLimiterǁ__init____mutmut_13, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_14': xǁAsyncRateLimiterǁ__init____mutmut_14, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_15': xǁAsyncRateLimiterǁ__init____mutmut_15, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_16': xǁAsyncRateLimiterǁ__init____mutmut_16, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_17': xǁAsyncRateLimiterǁ__init____mutmut_17, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_18': xǁAsyncRateLimiterǁ__init____mutmut_18, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_19': xǁAsyncRateLimiterǁ__init____mutmut_19, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_20': xǁAsyncRateLimiterǁ__init____mutmut_20, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_21': xǁAsyncRateLimiterǁ__init____mutmut_21, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_22': xǁAsyncRateLimiterǁ__init____mutmut_22, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_23': xǁAsyncRateLimiterǁ__init____mutmut_23, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_24': xǁAsyncRateLimiterǁ__init____mutmut_24, 
-        'xǁAsyncRateLimiterǁ__init____mutmut_25': xǁAsyncRateLimiterǁ__init____mutmut_25
+
+    xǁAsyncRateLimiterǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncRateLimiterǁ__init____mutmut_1": xǁAsyncRateLimiterǁ__init____mutmut_1,
+        "xǁAsyncRateLimiterǁ__init____mutmut_2": xǁAsyncRateLimiterǁ__init____mutmut_2,
+        "xǁAsyncRateLimiterǁ__init____mutmut_3": xǁAsyncRateLimiterǁ__init____mutmut_3,
+        "xǁAsyncRateLimiterǁ__init____mutmut_4": xǁAsyncRateLimiterǁ__init____mutmut_4,
+        "xǁAsyncRateLimiterǁ__init____mutmut_5": xǁAsyncRateLimiterǁ__init____mutmut_5,
+        "xǁAsyncRateLimiterǁ__init____mutmut_6": xǁAsyncRateLimiterǁ__init____mutmut_6,
+        "xǁAsyncRateLimiterǁ__init____mutmut_7": xǁAsyncRateLimiterǁ__init____mutmut_7,
+        "xǁAsyncRateLimiterǁ__init____mutmut_8": xǁAsyncRateLimiterǁ__init____mutmut_8,
+        "xǁAsyncRateLimiterǁ__init____mutmut_9": xǁAsyncRateLimiterǁ__init____mutmut_9,
+        "xǁAsyncRateLimiterǁ__init____mutmut_10": xǁAsyncRateLimiterǁ__init____mutmut_10,
+        "xǁAsyncRateLimiterǁ__init____mutmut_11": xǁAsyncRateLimiterǁ__init____mutmut_11,
+        "xǁAsyncRateLimiterǁ__init____mutmut_12": xǁAsyncRateLimiterǁ__init____mutmut_12,
+        "xǁAsyncRateLimiterǁ__init____mutmut_13": xǁAsyncRateLimiterǁ__init____mutmut_13,
+        "xǁAsyncRateLimiterǁ__init____mutmut_14": xǁAsyncRateLimiterǁ__init____mutmut_14,
+        "xǁAsyncRateLimiterǁ__init____mutmut_15": xǁAsyncRateLimiterǁ__init____mutmut_15,
+        "xǁAsyncRateLimiterǁ__init____mutmut_16": xǁAsyncRateLimiterǁ__init____mutmut_16,
+        "xǁAsyncRateLimiterǁ__init____mutmut_17": xǁAsyncRateLimiterǁ__init____mutmut_17,
+        "xǁAsyncRateLimiterǁ__init____mutmut_18": xǁAsyncRateLimiterǁ__init____mutmut_18,
+        "xǁAsyncRateLimiterǁ__init____mutmut_19": xǁAsyncRateLimiterǁ__init____mutmut_19,
+        "xǁAsyncRateLimiterǁ__init____mutmut_20": xǁAsyncRateLimiterǁ__init____mutmut_20,
+        "xǁAsyncRateLimiterǁ__init____mutmut_21": xǁAsyncRateLimiterǁ__init____mutmut_21,
+        "xǁAsyncRateLimiterǁ__init____mutmut_22": xǁAsyncRateLimiterǁ__init____mutmut_22,
+        "xǁAsyncRateLimiterǁ__init____mutmut_23": xǁAsyncRateLimiterǁ__init____mutmut_23,
+        "xǁAsyncRateLimiterǁ__init____mutmut_24": xǁAsyncRateLimiterǁ__init____mutmut_24,
+        "xǁAsyncRateLimiterǁ__init____mutmut_25": xǁAsyncRateLimiterǁ__init____mutmut_25,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncRateLimiterǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁAsyncRateLimiterǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncRateLimiterǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncRateLimiterǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁAsyncRateLimiterǁ__init____mutmut_orig)
-    xǁAsyncRateLimiterǁ__init____mutmut_orig.__name__ = 'xǁAsyncRateLimiterǁ__init__'
+    xǁAsyncRateLimiterǁ__init____mutmut_orig.__name__ = "xǁAsyncRateLimiterǁ__init__"
 
     async def xǁAsyncRateLimiterǁis_allowed__mutmut_orig(self) -> bool:
         """Check if a log message is allowed based on available tokens.
@@ -2673,7 +2702,9 @@ class AsyncRateLimiter:
             # Refill tokens based on elapsed time
             if elapsed > 0:
                 tokens_to_add = elapsed * self.refill_rate
-                self.tokens = min(self.capacity, )
+                self.tokens = min(
+                    self.capacity,
+                )
                 self.last_refill = now
 
             # Try to consume a token
@@ -3100,44 +3131,50 @@ class AsyncRateLimiter:
             self.total_denied += 1
             self.last_denied_time = now
             return True
-    
-    xǁAsyncRateLimiterǁis_allowed__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncRateLimiterǁis_allowed__mutmut_1': xǁAsyncRateLimiterǁis_allowed__mutmut_1, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_2': xǁAsyncRateLimiterǁis_allowed__mutmut_2, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_3': xǁAsyncRateLimiterǁis_allowed__mutmut_3, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_4': xǁAsyncRateLimiterǁis_allowed__mutmut_4, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_5': xǁAsyncRateLimiterǁis_allowed__mutmut_5, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_6': xǁAsyncRateLimiterǁis_allowed__mutmut_6, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_7': xǁAsyncRateLimiterǁis_allowed__mutmut_7, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_8': xǁAsyncRateLimiterǁis_allowed__mutmut_8, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_9': xǁAsyncRateLimiterǁis_allowed__mutmut_9, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_10': xǁAsyncRateLimiterǁis_allowed__mutmut_10, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_11': xǁAsyncRateLimiterǁis_allowed__mutmut_11, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_12': xǁAsyncRateLimiterǁis_allowed__mutmut_12, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_13': xǁAsyncRateLimiterǁis_allowed__mutmut_13, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_14': xǁAsyncRateLimiterǁis_allowed__mutmut_14, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_15': xǁAsyncRateLimiterǁis_allowed__mutmut_15, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_16': xǁAsyncRateLimiterǁis_allowed__mutmut_16, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_17': xǁAsyncRateLimiterǁis_allowed__mutmut_17, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_18': xǁAsyncRateLimiterǁis_allowed__mutmut_18, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_19': xǁAsyncRateLimiterǁis_allowed__mutmut_19, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_20': xǁAsyncRateLimiterǁis_allowed__mutmut_20, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_21': xǁAsyncRateLimiterǁis_allowed__mutmut_21, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_22': xǁAsyncRateLimiterǁis_allowed__mutmut_22, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_23': xǁAsyncRateLimiterǁis_allowed__mutmut_23, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_24': xǁAsyncRateLimiterǁis_allowed__mutmut_24, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_25': xǁAsyncRateLimiterǁis_allowed__mutmut_25, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_26': xǁAsyncRateLimiterǁis_allowed__mutmut_26, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_27': xǁAsyncRateLimiterǁis_allowed__mutmut_27, 
-        'xǁAsyncRateLimiterǁis_allowed__mutmut_28': xǁAsyncRateLimiterǁis_allowed__mutmut_28
+
+    xǁAsyncRateLimiterǁis_allowed__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_1": xǁAsyncRateLimiterǁis_allowed__mutmut_1,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_2": xǁAsyncRateLimiterǁis_allowed__mutmut_2,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_3": xǁAsyncRateLimiterǁis_allowed__mutmut_3,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_4": xǁAsyncRateLimiterǁis_allowed__mutmut_4,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_5": xǁAsyncRateLimiterǁis_allowed__mutmut_5,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_6": xǁAsyncRateLimiterǁis_allowed__mutmut_6,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_7": xǁAsyncRateLimiterǁis_allowed__mutmut_7,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_8": xǁAsyncRateLimiterǁis_allowed__mutmut_8,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_9": xǁAsyncRateLimiterǁis_allowed__mutmut_9,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_10": xǁAsyncRateLimiterǁis_allowed__mutmut_10,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_11": xǁAsyncRateLimiterǁis_allowed__mutmut_11,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_12": xǁAsyncRateLimiterǁis_allowed__mutmut_12,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_13": xǁAsyncRateLimiterǁis_allowed__mutmut_13,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_14": xǁAsyncRateLimiterǁis_allowed__mutmut_14,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_15": xǁAsyncRateLimiterǁis_allowed__mutmut_15,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_16": xǁAsyncRateLimiterǁis_allowed__mutmut_16,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_17": xǁAsyncRateLimiterǁis_allowed__mutmut_17,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_18": xǁAsyncRateLimiterǁis_allowed__mutmut_18,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_19": xǁAsyncRateLimiterǁis_allowed__mutmut_19,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_20": xǁAsyncRateLimiterǁis_allowed__mutmut_20,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_21": xǁAsyncRateLimiterǁis_allowed__mutmut_21,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_22": xǁAsyncRateLimiterǁis_allowed__mutmut_22,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_23": xǁAsyncRateLimiterǁis_allowed__mutmut_23,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_24": xǁAsyncRateLimiterǁis_allowed__mutmut_24,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_25": xǁAsyncRateLimiterǁis_allowed__mutmut_25,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_26": xǁAsyncRateLimiterǁis_allowed__mutmut_26,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_27": xǁAsyncRateLimiterǁis_allowed__mutmut_27,
+        "xǁAsyncRateLimiterǁis_allowed__mutmut_28": xǁAsyncRateLimiterǁis_allowed__mutmut_28,
     }
-    
+
     def is_allowed(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncRateLimiterǁis_allowed__mutmut_orig"), object.__getattribute__(self, "xǁAsyncRateLimiterǁis_allowed__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncRateLimiterǁis_allowed__mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncRateLimiterǁis_allowed__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_allowed.__signature__ = _mutmut_signature(xǁAsyncRateLimiterǁis_allowed__mutmut_orig)
-    xǁAsyncRateLimiterǁis_allowed__mutmut_orig.__name__ = 'xǁAsyncRateLimiterǁis_allowed'
+    xǁAsyncRateLimiterǁis_allowed__mutmut_orig.__name__ = "xǁAsyncRateLimiterǁis_allowed"
 
     async def xǁAsyncRateLimiterǁget_stats__mutmut_orig(self) -> dict[str, Any]:
         """Get rate limiter statistics."""
@@ -3294,28 +3331,34 @@ class AsyncRateLimiter:
                 "total_denied": self.total_denied,
                 "LAST_DENIED_TIME": self.last_denied_time,
             }
-    
-    xǁAsyncRateLimiterǁget_stats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncRateLimiterǁget_stats__mutmut_1': xǁAsyncRateLimiterǁget_stats__mutmut_1, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_2': xǁAsyncRateLimiterǁget_stats__mutmut_2, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_3': xǁAsyncRateLimiterǁget_stats__mutmut_3, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_4': xǁAsyncRateLimiterǁget_stats__mutmut_4, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_5': xǁAsyncRateLimiterǁget_stats__mutmut_5, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_6': xǁAsyncRateLimiterǁget_stats__mutmut_6, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_7': xǁAsyncRateLimiterǁget_stats__mutmut_7, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_8': xǁAsyncRateLimiterǁget_stats__mutmut_8, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_9': xǁAsyncRateLimiterǁget_stats__mutmut_9, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_10': xǁAsyncRateLimiterǁget_stats__mutmut_10, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_11': xǁAsyncRateLimiterǁget_stats__mutmut_11, 
-        'xǁAsyncRateLimiterǁget_stats__mutmut_12': xǁAsyncRateLimiterǁget_stats__mutmut_12
+
+    xǁAsyncRateLimiterǁget_stats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncRateLimiterǁget_stats__mutmut_1": xǁAsyncRateLimiterǁget_stats__mutmut_1,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_2": xǁAsyncRateLimiterǁget_stats__mutmut_2,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_3": xǁAsyncRateLimiterǁget_stats__mutmut_3,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_4": xǁAsyncRateLimiterǁget_stats__mutmut_4,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_5": xǁAsyncRateLimiterǁget_stats__mutmut_5,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_6": xǁAsyncRateLimiterǁget_stats__mutmut_6,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_7": xǁAsyncRateLimiterǁget_stats__mutmut_7,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_8": xǁAsyncRateLimiterǁget_stats__mutmut_8,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_9": xǁAsyncRateLimiterǁget_stats__mutmut_9,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_10": xǁAsyncRateLimiterǁget_stats__mutmut_10,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_11": xǁAsyncRateLimiterǁget_stats__mutmut_11,
+        "xǁAsyncRateLimiterǁget_stats__mutmut_12": xǁAsyncRateLimiterǁget_stats__mutmut_12,
     }
-    
+
     def get_stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncRateLimiterǁget_stats__mutmut_orig"), object.__getattribute__(self, "xǁAsyncRateLimiterǁget_stats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncRateLimiterǁget_stats__mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncRateLimiterǁget_stats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_stats.__signature__ = _mutmut_signature(xǁAsyncRateLimiterǁget_stats__mutmut_orig)
-    xǁAsyncRateLimiterǁget_stats__mutmut_orig.__name__ = 'xǁAsyncRateLimiterǁget_stats'
+    xǁAsyncRateLimiterǁget_stats__mutmut_orig.__name__ = "xǁAsyncRateLimiterǁget_stats"
 
 
 class GlobalRateLimiter:
@@ -3674,32 +3717,38 @@ class GlobalRateLimiter:
         self.max_queue_size = 1000
         self.max_memory_mb: float | None = None
         self.overflow_policy = "DROP_OLDEST"
-    
-    xǁGlobalRateLimiterǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalRateLimiterǁ__init____mutmut_1': xǁGlobalRateLimiterǁ__init____mutmut_1, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_2': xǁGlobalRateLimiterǁ__init____mutmut_2, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_3': xǁGlobalRateLimiterǁ__init____mutmut_3, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_4': xǁGlobalRateLimiterǁ__init____mutmut_4, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_5': xǁGlobalRateLimiterǁ__init____mutmut_5, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_6': xǁGlobalRateLimiterǁ__init____mutmut_6, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_7': xǁGlobalRateLimiterǁ__init____mutmut_7, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_8': xǁGlobalRateLimiterǁ__init____mutmut_8, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_9': xǁGlobalRateLimiterǁ__init____mutmut_9, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_10': xǁGlobalRateLimiterǁ__init____mutmut_10, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_11': xǁGlobalRateLimiterǁ__init____mutmut_11, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_12': xǁGlobalRateLimiterǁ__init____mutmut_12, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_13': xǁGlobalRateLimiterǁ__init____mutmut_13, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_14': xǁGlobalRateLimiterǁ__init____mutmut_14, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_15': xǁGlobalRateLimiterǁ__init____mutmut_15, 
-        'xǁGlobalRateLimiterǁ__init____mutmut_16': xǁGlobalRateLimiterǁ__init____mutmut_16
+
+    xǁGlobalRateLimiterǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalRateLimiterǁ__init____mutmut_1": xǁGlobalRateLimiterǁ__init____mutmut_1,
+        "xǁGlobalRateLimiterǁ__init____mutmut_2": xǁGlobalRateLimiterǁ__init____mutmut_2,
+        "xǁGlobalRateLimiterǁ__init____mutmut_3": xǁGlobalRateLimiterǁ__init____mutmut_3,
+        "xǁGlobalRateLimiterǁ__init____mutmut_4": xǁGlobalRateLimiterǁ__init____mutmut_4,
+        "xǁGlobalRateLimiterǁ__init____mutmut_5": xǁGlobalRateLimiterǁ__init____mutmut_5,
+        "xǁGlobalRateLimiterǁ__init____mutmut_6": xǁGlobalRateLimiterǁ__init____mutmut_6,
+        "xǁGlobalRateLimiterǁ__init____mutmut_7": xǁGlobalRateLimiterǁ__init____mutmut_7,
+        "xǁGlobalRateLimiterǁ__init____mutmut_8": xǁGlobalRateLimiterǁ__init____mutmut_8,
+        "xǁGlobalRateLimiterǁ__init____mutmut_9": xǁGlobalRateLimiterǁ__init____mutmut_9,
+        "xǁGlobalRateLimiterǁ__init____mutmut_10": xǁGlobalRateLimiterǁ__init____mutmut_10,
+        "xǁGlobalRateLimiterǁ__init____mutmut_11": xǁGlobalRateLimiterǁ__init____mutmut_11,
+        "xǁGlobalRateLimiterǁ__init____mutmut_12": xǁGlobalRateLimiterǁ__init____mutmut_12,
+        "xǁGlobalRateLimiterǁ__init____mutmut_13": xǁGlobalRateLimiterǁ__init____mutmut_13,
+        "xǁGlobalRateLimiterǁ__init____mutmut_14": xǁGlobalRateLimiterǁ__init____mutmut_14,
+        "xǁGlobalRateLimiterǁ__init____mutmut_15": xǁGlobalRateLimiterǁ__init____mutmut_15,
+        "xǁGlobalRateLimiterǁ__init____mutmut_16": xǁGlobalRateLimiterǁ__init____mutmut_16,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalRateLimiterǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁGlobalRateLimiterǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalRateLimiterǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalRateLimiterǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁGlobalRateLimiterǁ__init____mutmut_orig)
-    xǁGlobalRateLimiterǁ__init____mutmut_orig.__name__ = 'xǁGlobalRateLimiterǁ__init__'
+    xǁGlobalRateLimiterǁ__init____mutmut_orig.__name__ = "xǁGlobalRateLimiterǁ__init__"
 
     def xǁGlobalRateLimiterǁconfigure__mutmut_orig(
         self,
@@ -4878,7 +4927,7 @@ class GlobalRateLimiter:
                         capacity=global_capacity,
                         refill_rate=global_rate,
                         buffer_size=max_queue_size,
-                        )
+                    )
                 else:
                     self.global_limiter = SyncRateLimiter(global_capacity, global_rate)
 
@@ -5192,7 +5241,9 @@ class GlobalRateLimiter:
                         track_dropped=True,
                     )
                 else:
-                    self.global_limiter = SyncRateLimiter(global_capacity, )
+                    self.global_limiter = SyncRateLimiter(
+                        global_capacity,
+                    )
 
             if per_logger_rates:
                 self.per_logger_rates = per_logger_rates
@@ -5510,53 +5561,63 @@ class GlobalRateLimiter:
                 self.per_logger_rates = per_logger_rates
                 # Create rate limiters for configured loggers
                 for logger_name, (rate, capacity) in per_logger_rates.items():
-                    self.logger_limiters[logger_name] = SyncRateLimiter(capacity, )
-    
-    xǁGlobalRateLimiterǁconfigure__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalRateLimiterǁconfigure__mutmut_1': xǁGlobalRateLimiterǁconfigure__mutmut_1, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_2': xǁGlobalRateLimiterǁconfigure__mutmut_2, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_3': xǁGlobalRateLimiterǁconfigure__mutmut_3, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_4': xǁGlobalRateLimiterǁconfigure__mutmut_4, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_5': xǁGlobalRateLimiterǁconfigure__mutmut_5, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_6': xǁGlobalRateLimiterǁconfigure__mutmut_6, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_7': xǁGlobalRateLimiterǁconfigure__mutmut_7, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_8': xǁGlobalRateLimiterǁconfigure__mutmut_8, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_9': xǁGlobalRateLimiterǁconfigure__mutmut_9, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_10': xǁGlobalRateLimiterǁconfigure__mutmut_10, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_11': xǁGlobalRateLimiterǁconfigure__mutmut_11, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_12': xǁGlobalRateLimiterǁconfigure__mutmut_12, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_13': xǁGlobalRateLimiterǁconfigure__mutmut_13, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_14': xǁGlobalRateLimiterǁconfigure__mutmut_14, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_15': xǁGlobalRateLimiterǁconfigure__mutmut_15, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_16': xǁGlobalRateLimiterǁconfigure__mutmut_16, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_17': xǁGlobalRateLimiterǁconfigure__mutmut_17, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_18': xǁGlobalRateLimiterǁconfigure__mutmut_18, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_19': xǁGlobalRateLimiterǁconfigure__mutmut_19, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_20': xǁGlobalRateLimiterǁconfigure__mutmut_20, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_21': xǁGlobalRateLimiterǁconfigure__mutmut_21, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_22': xǁGlobalRateLimiterǁconfigure__mutmut_22, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_23': xǁGlobalRateLimiterǁconfigure__mutmut_23, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_24': xǁGlobalRateLimiterǁconfigure__mutmut_24, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_25': xǁGlobalRateLimiterǁconfigure__mutmut_25, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_26': xǁGlobalRateLimiterǁconfigure__mutmut_26, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_27': xǁGlobalRateLimiterǁconfigure__mutmut_27, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_28': xǁGlobalRateLimiterǁconfigure__mutmut_28, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_29': xǁGlobalRateLimiterǁconfigure__mutmut_29, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_30': xǁGlobalRateLimiterǁconfigure__mutmut_30, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_31': xǁGlobalRateLimiterǁconfigure__mutmut_31, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_32': xǁGlobalRateLimiterǁconfigure__mutmut_32, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_33': xǁGlobalRateLimiterǁconfigure__mutmut_33, 
-        'xǁGlobalRateLimiterǁconfigure__mutmut_34': xǁGlobalRateLimiterǁconfigure__mutmut_34
-    }
-    
-    def configure(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalRateLimiterǁconfigure__mutmut_orig"), object.__getattribute__(self, "xǁGlobalRateLimiterǁconfigure__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    configure.__signature__ = _mutmut_signature(xǁGlobalRateLimiterǁconfigure__mutmut_orig)
-    xǁGlobalRateLimiterǁconfigure__mutmut_orig.__name__ = 'xǁGlobalRateLimiterǁconfigure'
+                    self.logger_limiters[logger_name] = SyncRateLimiter(
+                        capacity,
+                    )
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_orig(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    xǁGlobalRateLimiterǁconfigure__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalRateLimiterǁconfigure__mutmut_1": xǁGlobalRateLimiterǁconfigure__mutmut_1,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_2": xǁGlobalRateLimiterǁconfigure__mutmut_2,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_3": xǁGlobalRateLimiterǁconfigure__mutmut_3,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_4": xǁGlobalRateLimiterǁconfigure__mutmut_4,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_5": xǁGlobalRateLimiterǁconfigure__mutmut_5,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_6": xǁGlobalRateLimiterǁconfigure__mutmut_6,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_7": xǁGlobalRateLimiterǁconfigure__mutmut_7,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_8": xǁGlobalRateLimiterǁconfigure__mutmut_8,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_9": xǁGlobalRateLimiterǁconfigure__mutmut_9,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_10": xǁGlobalRateLimiterǁconfigure__mutmut_10,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_11": xǁGlobalRateLimiterǁconfigure__mutmut_11,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_12": xǁGlobalRateLimiterǁconfigure__mutmut_12,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_13": xǁGlobalRateLimiterǁconfigure__mutmut_13,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_14": xǁGlobalRateLimiterǁconfigure__mutmut_14,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_15": xǁGlobalRateLimiterǁconfigure__mutmut_15,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_16": xǁGlobalRateLimiterǁconfigure__mutmut_16,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_17": xǁGlobalRateLimiterǁconfigure__mutmut_17,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_18": xǁGlobalRateLimiterǁconfigure__mutmut_18,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_19": xǁGlobalRateLimiterǁconfigure__mutmut_19,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_20": xǁGlobalRateLimiterǁconfigure__mutmut_20,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_21": xǁGlobalRateLimiterǁconfigure__mutmut_21,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_22": xǁGlobalRateLimiterǁconfigure__mutmut_22,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_23": xǁGlobalRateLimiterǁconfigure__mutmut_23,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_24": xǁGlobalRateLimiterǁconfigure__mutmut_24,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_25": xǁGlobalRateLimiterǁconfigure__mutmut_25,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_26": xǁGlobalRateLimiterǁconfigure__mutmut_26,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_27": xǁGlobalRateLimiterǁconfigure__mutmut_27,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_28": xǁGlobalRateLimiterǁconfigure__mutmut_28,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_29": xǁGlobalRateLimiterǁconfigure__mutmut_29,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_30": xǁGlobalRateLimiterǁconfigure__mutmut_30,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_31": xǁGlobalRateLimiterǁconfigure__mutmut_31,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_32": xǁGlobalRateLimiterǁconfigure__mutmut_32,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_33": xǁGlobalRateLimiterǁconfigure__mutmut_33,
+        "xǁGlobalRateLimiterǁconfigure__mutmut_34": xǁGlobalRateLimiterǁconfigure__mutmut_34,
+    }
+
+    def configure(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalRateLimiterǁconfigure__mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalRateLimiterǁconfigure__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    configure.__signature__ = _mutmut_signature(xǁGlobalRateLimiterǁconfigure__mutmut_orig)
+    xǁGlobalRateLimiterǁconfigure__mutmut_orig.__name__ = "xǁGlobalRateLimiterǁconfigure"
+
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_orig(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5590,7 +5651,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_1(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_1(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5624,7 +5687,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_2(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_2(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5658,7 +5723,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_3(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_3(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5692,7 +5759,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_4(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_4(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5726,7 +5795,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_5(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_5(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5760,7 +5831,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_6(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_6(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5794,7 +5867,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_7(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_7(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5828,7 +5903,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_8(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_8(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5862,7 +5939,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_9(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_9(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5896,7 +5975,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_10(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_10(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5930,7 +6011,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_11(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_11(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5964,7 +6047,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_12(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_12(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -5998,7 +6083,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_13(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_13(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -6032,7 +6119,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_14(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_14(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -6066,7 +6155,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_15(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_15(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -6100,7 +6191,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_16(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_16(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -6134,7 +6227,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_17(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_17(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -6168,7 +6263,9 @@ class GlobalRateLimiter:
 
             return True, None
 
-    def xǁGlobalRateLimiterǁis_allowed__mutmut_18(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+    def xǁGlobalRateLimiterǁis_allowed__mutmut_18(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if a log from a specific logger is allowed.
 
         Args:
@@ -6201,34 +6298,40 @@ class GlobalRateLimiter:
                     return False, "Global rate limit exceeded"
 
             return False, None
-    
-    xǁGlobalRateLimiterǁis_allowed__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalRateLimiterǁis_allowed__mutmut_1': xǁGlobalRateLimiterǁis_allowed__mutmut_1, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_2': xǁGlobalRateLimiterǁis_allowed__mutmut_2, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_3': xǁGlobalRateLimiterǁis_allowed__mutmut_3, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_4': xǁGlobalRateLimiterǁis_allowed__mutmut_4, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_5': xǁGlobalRateLimiterǁis_allowed__mutmut_5, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_6': xǁGlobalRateLimiterǁis_allowed__mutmut_6, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_7': xǁGlobalRateLimiterǁis_allowed__mutmut_7, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_8': xǁGlobalRateLimiterǁis_allowed__mutmut_8, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_9': xǁGlobalRateLimiterǁis_allowed__mutmut_9, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_10': xǁGlobalRateLimiterǁis_allowed__mutmut_10, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_11': xǁGlobalRateLimiterǁis_allowed__mutmut_11, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_12': xǁGlobalRateLimiterǁis_allowed__mutmut_12, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_13': xǁGlobalRateLimiterǁis_allowed__mutmut_13, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_14': xǁGlobalRateLimiterǁis_allowed__mutmut_14, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_15': xǁGlobalRateLimiterǁis_allowed__mutmut_15, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_16': xǁGlobalRateLimiterǁis_allowed__mutmut_16, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_17': xǁGlobalRateLimiterǁis_allowed__mutmut_17, 
-        'xǁGlobalRateLimiterǁis_allowed__mutmut_18': xǁGlobalRateLimiterǁis_allowed__mutmut_18
+
+    xǁGlobalRateLimiterǁis_allowed__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_1": xǁGlobalRateLimiterǁis_allowed__mutmut_1,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_2": xǁGlobalRateLimiterǁis_allowed__mutmut_2,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_3": xǁGlobalRateLimiterǁis_allowed__mutmut_3,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_4": xǁGlobalRateLimiterǁis_allowed__mutmut_4,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_5": xǁGlobalRateLimiterǁis_allowed__mutmut_5,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_6": xǁGlobalRateLimiterǁis_allowed__mutmut_6,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_7": xǁGlobalRateLimiterǁis_allowed__mutmut_7,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_8": xǁGlobalRateLimiterǁis_allowed__mutmut_8,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_9": xǁGlobalRateLimiterǁis_allowed__mutmut_9,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_10": xǁGlobalRateLimiterǁis_allowed__mutmut_10,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_11": xǁGlobalRateLimiterǁis_allowed__mutmut_11,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_12": xǁGlobalRateLimiterǁis_allowed__mutmut_12,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_13": xǁGlobalRateLimiterǁis_allowed__mutmut_13,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_14": xǁGlobalRateLimiterǁis_allowed__mutmut_14,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_15": xǁGlobalRateLimiterǁis_allowed__mutmut_15,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_16": xǁGlobalRateLimiterǁis_allowed__mutmut_16,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_17": xǁGlobalRateLimiterǁis_allowed__mutmut_17,
+        "xǁGlobalRateLimiterǁis_allowed__mutmut_18": xǁGlobalRateLimiterǁis_allowed__mutmut_18,
     }
-    
+
     def is_allowed(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalRateLimiterǁis_allowed__mutmut_orig"), object.__getattribute__(self, "xǁGlobalRateLimiterǁis_allowed__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalRateLimiterǁis_allowed__mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalRateLimiterǁis_allowed__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_allowed.__signature__ = _mutmut_signature(xǁGlobalRateLimiterǁis_allowed__mutmut_orig)
-    xǁGlobalRateLimiterǁis_allowed__mutmut_orig.__name__ = 'xǁGlobalRateLimiterǁis_allowed'
+    xǁGlobalRateLimiterǁis_allowed__mutmut_orig.__name__ = "xǁGlobalRateLimiterǁis_allowed"
 
     def xǁGlobalRateLimiterǁget_stats__mutmut_orig(self) -> dict[str, Any]:
         """Get comprehensive rate limiting statistics."""
@@ -6343,24 +6446,30 @@ class GlobalRateLimiter:
                 stats["PER_LOGGER"][logger_name] = limiter.get_stats()
 
             return stats
-    
-    xǁGlobalRateLimiterǁget_stats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalRateLimiterǁget_stats__mutmut_1': xǁGlobalRateLimiterǁget_stats__mutmut_1, 
-        'xǁGlobalRateLimiterǁget_stats__mutmut_2': xǁGlobalRateLimiterǁget_stats__mutmut_2, 
-        'xǁGlobalRateLimiterǁget_stats__mutmut_3': xǁGlobalRateLimiterǁget_stats__mutmut_3, 
-        'xǁGlobalRateLimiterǁget_stats__mutmut_4': xǁGlobalRateLimiterǁget_stats__mutmut_4, 
-        'xǁGlobalRateLimiterǁget_stats__mutmut_5': xǁGlobalRateLimiterǁget_stats__mutmut_5, 
-        'xǁGlobalRateLimiterǁget_stats__mutmut_6': xǁGlobalRateLimiterǁget_stats__mutmut_6, 
-        'xǁGlobalRateLimiterǁget_stats__mutmut_7': xǁGlobalRateLimiterǁget_stats__mutmut_7, 
-        'xǁGlobalRateLimiterǁget_stats__mutmut_8': xǁGlobalRateLimiterǁget_stats__mutmut_8
+
+    xǁGlobalRateLimiterǁget_stats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalRateLimiterǁget_stats__mutmut_1": xǁGlobalRateLimiterǁget_stats__mutmut_1,
+        "xǁGlobalRateLimiterǁget_stats__mutmut_2": xǁGlobalRateLimiterǁget_stats__mutmut_2,
+        "xǁGlobalRateLimiterǁget_stats__mutmut_3": xǁGlobalRateLimiterǁget_stats__mutmut_3,
+        "xǁGlobalRateLimiterǁget_stats__mutmut_4": xǁGlobalRateLimiterǁget_stats__mutmut_4,
+        "xǁGlobalRateLimiterǁget_stats__mutmut_5": xǁGlobalRateLimiterǁget_stats__mutmut_5,
+        "xǁGlobalRateLimiterǁget_stats__mutmut_6": xǁGlobalRateLimiterǁget_stats__mutmut_6,
+        "xǁGlobalRateLimiterǁget_stats__mutmut_7": xǁGlobalRateLimiterǁget_stats__mutmut_7,
+        "xǁGlobalRateLimiterǁget_stats__mutmut_8": xǁGlobalRateLimiterǁget_stats__mutmut_8,
     }
-    
+
     def get_stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalRateLimiterǁget_stats__mutmut_orig"), object.__getattribute__(self, "xǁGlobalRateLimiterǁget_stats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalRateLimiterǁget_stats__mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalRateLimiterǁget_stats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_stats.__signature__ = _mutmut_signature(xǁGlobalRateLimiterǁget_stats__mutmut_orig)
-    xǁGlobalRateLimiterǁget_stats__mutmut_orig.__name__ = 'xǁGlobalRateLimiterǁget_stats'
+    xǁGlobalRateLimiterǁget_stats__mutmut_orig.__name__ = "xǁGlobalRateLimiterǁget_stats"
 
 
 # <3 🧱🤝📝🪄

@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -426,30 +429,35 @@ def x__import_config_modules__mutmut_15() -> None:
             # Module may not exist or have optional dependencies
             break
 
-x__import_config_modules__mutmut_mutants : ClassVar[MutantDict] = {
-'x__import_config_modules__mutmut_1': x__import_config_modules__mutmut_1, 
-    'x__import_config_modules__mutmut_2': x__import_config_modules__mutmut_2, 
-    'x__import_config_modules__mutmut_3': x__import_config_modules__mutmut_3, 
-    'x__import_config_modules__mutmut_4': x__import_config_modules__mutmut_4, 
-    'x__import_config_modules__mutmut_5': x__import_config_modules__mutmut_5, 
-    'x__import_config_modules__mutmut_6': x__import_config_modules__mutmut_6, 
-    'x__import_config_modules__mutmut_7': x__import_config_modules__mutmut_7, 
-    'x__import_config_modules__mutmut_8': x__import_config_modules__mutmut_8, 
-    'x__import_config_modules__mutmut_9': x__import_config_modules__mutmut_9, 
-    'x__import_config_modules__mutmut_10': x__import_config_modules__mutmut_10, 
-    'x__import_config_modules__mutmut_11': x__import_config_modules__mutmut_11, 
-    'x__import_config_modules__mutmut_12': x__import_config_modules__mutmut_12, 
-    'x__import_config_modules__mutmut_13': x__import_config_modules__mutmut_13, 
-    'x__import_config_modules__mutmut_14': x__import_config_modules__mutmut_14, 
-    'x__import_config_modules__mutmut_15': x__import_config_modules__mutmut_15
+
+x__import_config_modules__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__import_config_modules__mutmut_1": x__import_config_modules__mutmut_1,
+    "x__import_config_modules__mutmut_2": x__import_config_modules__mutmut_2,
+    "x__import_config_modules__mutmut_3": x__import_config_modules__mutmut_3,
+    "x__import_config_modules__mutmut_4": x__import_config_modules__mutmut_4,
+    "x__import_config_modules__mutmut_5": x__import_config_modules__mutmut_5,
+    "x__import_config_modules__mutmut_6": x__import_config_modules__mutmut_6,
+    "x__import_config_modules__mutmut_7": x__import_config_modules__mutmut_7,
+    "x__import_config_modules__mutmut_8": x__import_config_modules__mutmut_8,
+    "x__import_config_modules__mutmut_9": x__import_config_modules__mutmut_9,
+    "x__import_config_modules__mutmut_10": x__import_config_modules__mutmut_10,
+    "x__import_config_modules__mutmut_11": x__import_config_modules__mutmut_11,
+    "x__import_config_modules__mutmut_12": x__import_config_modules__mutmut_12,
+    "x__import_config_modules__mutmut_13": x__import_config_modules__mutmut_13,
+    "x__import_config_modules__mutmut_14": x__import_config_modules__mutmut_14,
+    "x__import_config_modules__mutmut_15": x__import_config_modules__mutmut_15,
 }
 
+
 def _import_config_modules(*args, **kwargs):
-    result = _mutmut_trampoline(x__import_config_modules__mutmut_orig, x__import_config_modules__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__import_config_modules__mutmut_orig, x__import_config_modules__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _import_config_modules.__signature__ = _mutmut_signature(x__import_config_modules__mutmut_orig)
-x__import_config_modules__mutmut_orig.__name__ = 'x__import_config_modules'
+x__import_config_modules__mutmut_orig.__name__ = "x__import_config_modules"
 
 
 def x__get_all_subclasses__mutmut_orig(cls: type) -> set[type]:
@@ -547,20 +555,25 @@ def x__get_all_subclasses__mutmut_5(cls: type) -> set[type]:
         subclasses.update(_get_all_subclasses(None))
     return subclasses
 
-x__get_all_subclasses__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_all_subclasses__mutmut_1': x__get_all_subclasses__mutmut_1, 
-    'x__get_all_subclasses__mutmut_2': x__get_all_subclasses__mutmut_2, 
-    'x__get_all_subclasses__mutmut_3': x__get_all_subclasses__mutmut_3, 
-    'x__get_all_subclasses__mutmut_4': x__get_all_subclasses__mutmut_4, 
-    'x__get_all_subclasses__mutmut_5': x__get_all_subclasses__mutmut_5
+
+x__get_all_subclasses__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_all_subclasses__mutmut_1": x__get_all_subclasses__mutmut_1,
+    "x__get_all_subclasses__mutmut_2": x__get_all_subclasses__mutmut_2,
+    "x__get_all_subclasses__mutmut_3": x__get_all_subclasses__mutmut_3,
+    "x__get_all_subclasses__mutmut_4": x__get_all_subclasses__mutmut_4,
+    "x__get_all_subclasses__mutmut_5": x__get_all_subclasses__mutmut_5,
 }
 
+
 def _get_all_subclasses(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_all_subclasses__mutmut_orig, x__get_all_subclasses__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_all_subclasses__mutmut_orig, x__get_all_subclasses__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_all_subclasses.__signature__ = _mutmut_signature(x__get_all_subclasses__mutmut_orig)
-x__get_all_subclasses__mutmut_orig.__name__ = 'x__get_all_subclasses'
+x__get_all_subclasses__mutmut_orig.__name__ = "x__get_all_subclasses"
 
 
 def x_discover_and_register_configs__mutmut_orig() -> None:
@@ -4149,7 +4162,7 @@ def x_discover_and_register_configs__mutmut_52() -> None:
                 "has_env_vars": has_env_vars,
                 "doc": config_cls.__doc__ or "",
             },
-            )
+        )
 
 
 def x_discover_and_register_configs__mutmut_53() -> None:
@@ -4899,78 +4912,86 @@ def x_discover_and_register_configs__mutmut_63() -> None:
             replace=False,  # Allow re-registration
         )
 
-x_discover_and_register_configs__mutmut_mutants : ClassVar[MutantDict] = {
-'x_discover_and_register_configs__mutmut_1': x_discover_and_register_configs__mutmut_1, 
-    'x_discover_and_register_configs__mutmut_2': x_discover_and_register_configs__mutmut_2, 
-    'x_discover_and_register_configs__mutmut_3': x_discover_and_register_configs__mutmut_3, 
-    'x_discover_and_register_configs__mutmut_4': x_discover_and_register_configs__mutmut_4, 
-    'x_discover_and_register_configs__mutmut_5': x_discover_and_register_configs__mutmut_5, 
-    'x_discover_and_register_configs__mutmut_6': x_discover_and_register_configs__mutmut_6, 
-    'x_discover_and_register_configs__mutmut_7': x_discover_and_register_configs__mutmut_7, 
-    'x_discover_and_register_configs__mutmut_8': x_discover_and_register_configs__mutmut_8, 
-    'x_discover_and_register_configs__mutmut_9': x_discover_and_register_configs__mutmut_9, 
-    'x_discover_and_register_configs__mutmut_10': x_discover_and_register_configs__mutmut_10, 
-    'x_discover_and_register_configs__mutmut_11': x_discover_and_register_configs__mutmut_11, 
-    'x_discover_and_register_configs__mutmut_12': x_discover_and_register_configs__mutmut_12, 
-    'x_discover_and_register_configs__mutmut_13': x_discover_and_register_configs__mutmut_13, 
-    'x_discover_and_register_configs__mutmut_14': x_discover_and_register_configs__mutmut_14, 
-    'x_discover_and_register_configs__mutmut_15': x_discover_and_register_configs__mutmut_15, 
-    'x_discover_and_register_configs__mutmut_16': x_discover_and_register_configs__mutmut_16, 
-    'x_discover_and_register_configs__mutmut_17': x_discover_and_register_configs__mutmut_17, 
-    'x_discover_and_register_configs__mutmut_18': x_discover_and_register_configs__mutmut_18, 
-    'x_discover_and_register_configs__mutmut_19': x_discover_and_register_configs__mutmut_19, 
-    'x_discover_and_register_configs__mutmut_20': x_discover_and_register_configs__mutmut_20, 
-    'x_discover_and_register_configs__mutmut_21': x_discover_and_register_configs__mutmut_21, 
-    'x_discover_and_register_configs__mutmut_22': x_discover_and_register_configs__mutmut_22, 
-    'x_discover_and_register_configs__mutmut_23': x_discover_and_register_configs__mutmut_23, 
-    'x_discover_and_register_configs__mutmut_24': x_discover_and_register_configs__mutmut_24, 
-    'x_discover_and_register_configs__mutmut_25': x_discover_and_register_configs__mutmut_25, 
-    'x_discover_and_register_configs__mutmut_26': x_discover_and_register_configs__mutmut_26, 
-    'x_discover_and_register_configs__mutmut_27': x_discover_and_register_configs__mutmut_27, 
-    'x_discover_and_register_configs__mutmut_28': x_discover_and_register_configs__mutmut_28, 
-    'x_discover_and_register_configs__mutmut_29': x_discover_and_register_configs__mutmut_29, 
-    'x_discover_and_register_configs__mutmut_30': x_discover_and_register_configs__mutmut_30, 
-    'x_discover_and_register_configs__mutmut_31': x_discover_and_register_configs__mutmut_31, 
-    'x_discover_and_register_configs__mutmut_32': x_discover_and_register_configs__mutmut_32, 
-    'x_discover_and_register_configs__mutmut_33': x_discover_and_register_configs__mutmut_33, 
-    'x_discover_and_register_configs__mutmut_34': x_discover_and_register_configs__mutmut_34, 
-    'x_discover_and_register_configs__mutmut_35': x_discover_and_register_configs__mutmut_35, 
-    'x_discover_and_register_configs__mutmut_36': x_discover_and_register_configs__mutmut_36, 
-    'x_discover_and_register_configs__mutmut_37': x_discover_and_register_configs__mutmut_37, 
-    'x_discover_and_register_configs__mutmut_38': x_discover_and_register_configs__mutmut_38, 
-    'x_discover_and_register_configs__mutmut_39': x_discover_and_register_configs__mutmut_39, 
-    'x_discover_and_register_configs__mutmut_40': x_discover_and_register_configs__mutmut_40, 
-    'x_discover_and_register_configs__mutmut_41': x_discover_and_register_configs__mutmut_41, 
-    'x_discover_and_register_configs__mutmut_42': x_discover_and_register_configs__mutmut_42, 
-    'x_discover_and_register_configs__mutmut_43': x_discover_and_register_configs__mutmut_43, 
-    'x_discover_and_register_configs__mutmut_44': x_discover_and_register_configs__mutmut_44, 
-    'x_discover_and_register_configs__mutmut_45': x_discover_and_register_configs__mutmut_45, 
-    'x_discover_and_register_configs__mutmut_46': x_discover_and_register_configs__mutmut_46, 
-    'x_discover_and_register_configs__mutmut_47': x_discover_and_register_configs__mutmut_47, 
-    'x_discover_and_register_configs__mutmut_48': x_discover_and_register_configs__mutmut_48, 
-    'x_discover_and_register_configs__mutmut_49': x_discover_and_register_configs__mutmut_49, 
-    'x_discover_and_register_configs__mutmut_50': x_discover_and_register_configs__mutmut_50, 
-    'x_discover_and_register_configs__mutmut_51': x_discover_and_register_configs__mutmut_51, 
-    'x_discover_and_register_configs__mutmut_52': x_discover_and_register_configs__mutmut_52, 
-    'x_discover_and_register_configs__mutmut_53': x_discover_and_register_configs__mutmut_53, 
-    'x_discover_and_register_configs__mutmut_54': x_discover_and_register_configs__mutmut_54, 
-    'x_discover_and_register_configs__mutmut_55': x_discover_and_register_configs__mutmut_55, 
-    'x_discover_and_register_configs__mutmut_56': x_discover_and_register_configs__mutmut_56, 
-    'x_discover_and_register_configs__mutmut_57': x_discover_and_register_configs__mutmut_57, 
-    'x_discover_and_register_configs__mutmut_58': x_discover_and_register_configs__mutmut_58, 
-    'x_discover_and_register_configs__mutmut_59': x_discover_and_register_configs__mutmut_59, 
-    'x_discover_and_register_configs__mutmut_60': x_discover_and_register_configs__mutmut_60, 
-    'x_discover_and_register_configs__mutmut_61': x_discover_and_register_configs__mutmut_61, 
-    'x_discover_and_register_configs__mutmut_62': x_discover_and_register_configs__mutmut_62, 
-    'x_discover_and_register_configs__mutmut_63': x_discover_and_register_configs__mutmut_63
+
+x_discover_and_register_configs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_discover_and_register_configs__mutmut_1": x_discover_and_register_configs__mutmut_1,
+    "x_discover_and_register_configs__mutmut_2": x_discover_and_register_configs__mutmut_2,
+    "x_discover_and_register_configs__mutmut_3": x_discover_and_register_configs__mutmut_3,
+    "x_discover_and_register_configs__mutmut_4": x_discover_and_register_configs__mutmut_4,
+    "x_discover_and_register_configs__mutmut_5": x_discover_and_register_configs__mutmut_5,
+    "x_discover_and_register_configs__mutmut_6": x_discover_and_register_configs__mutmut_6,
+    "x_discover_and_register_configs__mutmut_7": x_discover_and_register_configs__mutmut_7,
+    "x_discover_and_register_configs__mutmut_8": x_discover_and_register_configs__mutmut_8,
+    "x_discover_and_register_configs__mutmut_9": x_discover_and_register_configs__mutmut_9,
+    "x_discover_and_register_configs__mutmut_10": x_discover_and_register_configs__mutmut_10,
+    "x_discover_and_register_configs__mutmut_11": x_discover_and_register_configs__mutmut_11,
+    "x_discover_and_register_configs__mutmut_12": x_discover_and_register_configs__mutmut_12,
+    "x_discover_and_register_configs__mutmut_13": x_discover_and_register_configs__mutmut_13,
+    "x_discover_and_register_configs__mutmut_14": x_discover_and_register_configs__mutmut_14,
+    "x_discover_and_register_configs__mutmut_15": x_discover_and_register_configs__mutmut_15,
+    "x_discover_and_register_configs__mutmut_16": x_discover_and_register_configs__mutmut_16,
+    "x_discover_and_register_configs__mutmut_17": x_discover_and_register_configs__mutmut_17,
+    "x_discover_and_register_configs__mutmut_18": x_discover_and_register_configs__mutmut_18,
+    "x_discover_and_register_configs__mutmut_19": x_discover_and_register_configs__mutmut_19,
+    "x_discover_and_register_configs__mutmut_20": x_discover_and_register_configs__mutmut_20,
+    "x_discover_and_register_configs__mutmut_21": x_discover_and_register_configs__mutmut_21,
+    "x_discover_and_register_configs__mutmut_22": x_discover_and_register_configs__mutmut_22,
+    "x_discover_and_register_configs__mutmut_23": x_discover_and_register_configs__mutmut_23,
+    "x_discover_and_register_configs__mutmut_24": x_discover_and_register_configs__mutmut_24,
+    "x_discover_and_register_configs__mutmut_25": x_discover_and_register_configs__mutmut_25,
+    "x_discover_and_register_configs__mutmut_26": x_discover_and_register_configs__mutmut_26,
+    "x_discover_and_register_configs__mutmut_27": x_discover_and_register_configs__mutmut_27,
+    "x_discover_and_register_configs__mutmut_28": x_discover_and_register_configs__mutmut_28,
+    "x_discover_and_register_configs__mutmut_29": x_discover_and_register_configs__mutmut_29,
+    "x_discover_and_register_configs__mutmut_30": x_discover_and_register_configs__mutmut_30,
+    "x_discover_and_register_configs__mutmut_31": x_discover_and_register_configs__mutmut_31,
+    "x_discover_and_register_configs__mutmut_32": x_discover_and_register_configs__mutmut_32,
+    "x_discover_and_register_configs__mutmut_33": x_discover_and_register_configs__mutmut_33,
+    "x_discover_and_register_configs__mutmut_34": x_discover_and_register_configs__mutmut_34,
+    "x_discover_and_register_configs__mutmut_35": x_discover_and_register_configs__mutmut_35,
+    "x_discover_and_register_configs__mutmut_36": x_discover_and_register_configs__mutmut_36,
+    "x_discover_and_register_configs__mutmut_37": x_discover_and_register_configs__mutmut_37,
+    "x_discover_and_register_configs__mutmut_38": x_discover_and_register_configs__mutmut_38,
+    "x_discover_and_register_configs__mutmut_39": x_discover_and_register_configs__mutmut_39,
+    "x_discover_and_register_configs__mutmut_40": x_discover_and_register_configs__mutmut_40,
+    "x_discover_and_register_configs__mutmut_41": x_discover_and_register_configs__mutmut_41,
+    "x_discover_and_register_configs__mutmut_42": x_discover_and_register_configs__mutmut_42,
+    "x_discover_and_register_configs__mutmut_43": x_discover_and_register_configs__mutmut_43,
+    "x_discover_and_register_configs__mutmut_44": x_discover_and_register_configs__mutmut_44,
+    "x_discover_and_register_configs__mutmut_45": x_discover_and_register_configs__mutmut_45,
+    "x_discover_and_register_configs__mutmut_46": x_discover_and_register_configs__mutmut_46,
+    "x_discover_and_register_configs__mutmut_47": x_discover_and_register_configs__mutmut_47,
+    "x_discover_and_register_configs__mutmut_48": x_discover_and_register_configs__mutmut_48,
+    "x_discover_and_register_configs__mutmut_49": x_discover_and_register_configs__mutmut_49,
+    "x_discover_and_register_configs__mutmut_50": x_discover_and_register_configs__mutmut_50,
+    "x_discover_and_register_configs__mutmut_51": x_discover_and_register_configs__mutmut_51,
+    "x_discover_and_register_configs__mutmut_52": x_discover_and_register_configs__mutmut_52,
+    "x_discover_and_register_configs__mutmut_53": x_discover_and_register_configs__mutmut_53,
+    "x_discover_and_register_configs__mutmut_54": x_discover_and_register_configs__mutmut_54,
+    "x_discover_and_register_configs__mutmut_55": x_discover_and_register_configs__mutmut_55,
+    "x_discover_and_register_configs__mutmut_56": x_discover_and_register_configs__mutmut_56,
+    "x_discover_and_register_configs__mutmut_57": x_discover_and_register_configs__mutmut_57,
+    "x_discover_and_register_configs__mutmut_58": x_discover_and_register_configs__mutmut_58,
+    "x_discover_and_register_configs__mutmut_59": x_discover_and_register_configs__mutmut_59,
+    "x_discover_and_register_configs__mutmut_60": x_discover_and_register_configs__mutmut_60,
+    "x_discover_and_register_configs__mutmut_61": x_discover_and_register_configs__mutmut_61,
+    "x_discover_and_register_configs__mutmut_62": x_discover_and_register_configs__mutmut_62,
+    "x_discover_and_register_configs__mutmut_63": x_discover_and_register_configs__mutmut_63,
 }
 
+
 def discover_and_register_configs(*args, **kwargs):
-    result = _mutmut_trampoline(x_discover_and_register_configs__mutmut_orig, x_discover_and_register_configs__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_discover_and_register_configs__mutmut_orig,
+        x_discover_and_register_configs__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 discover_and_register_configs.__signature__ = _mutmut_signature(x_discover_and_register_configs__mutmut_orig)
-x_discover_and_register_configs__mutmut_orig.__name__ = 'x_discover_and_register_configs'
+x_discover_and_register_configs__mutmut_orig.__name__ = "x_discover_and_register_configs"
 
 
 # <3 🧱🤝⚙️🪄

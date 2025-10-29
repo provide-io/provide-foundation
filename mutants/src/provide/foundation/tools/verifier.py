@@ -38,23 +38,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -526,7 +529,9 @@ class ToolVerifier:
 
         # Parse the checksum format
         if ":" in expected:
-            algorithm, expected_hash = expected.split(":", )
+            algorithm, expected_hash = expected.split(
+                ":",
+            )
         else:
             # Default to sha256 if no algorithm specified
             algorithm = "sha256"
@@ -1049,7 +1054,9 @@ class ToolVerifier:
             expected_hash = expected
 
         # Compute actual hash using Foundation's hash_file
-        actual_hash = hash_file(file_path, )
+        actual_hash = hash_file(
+            file_path,
+        )
 
         matches = actual_hash == expected_hash
 
@@ -1528,52 +1535,58 @@ class ToolVerifier:
                 f"Checksum mismatch for {file_path.name}",
                 expected=expected_hash,
                 actual=actual_hash,
-                )
+            )
 
         return matches
-    
-    xǁToolVerifierǁverify_checksum__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolVerifierǁverify_checksum__mutmut_1': xǁToolVerifierǁverify_checksum__mutmut_1, 
-        'xǁToolVerifierǁverify_checksum__mutmut_2': xǁToolVerifierǁverify_checksum__mutmut_2, 
-        'xǁToolVerifierǁverify_checksum__mutmut_3': xǁToolVerifierǁverify_checksum__mutmut_3, 
-        'xǁToolVerifierǁverify_checksum__mutmut_4': xǁToolVerifierǁverify_checksum__mutmut_4, 
-        'xǁToolVerifierǁverify_checksum__mutmut_5': xǁToolVerifierǁverify_checksum__mutmut_5, 
-        'xǁToolVerifierǁverify_checksum__mutmut_6': xǁToolVerifierǁverify_checksum__mutmut_6, 
-        'xǁToolVerifierǁverify_checksum__mutmut_7': xǁToolVerifierǁverify_checksum__mutmut_7, 
-        'xǁToolVerifierǁverify_checksum__mutmut_8': xǁToolVerifierǁverify_checksum__mutmut_8, 
-        'xǁToolVerifierǁverify_checksum__mutmut_9': xǁToolVerifierǁverify_checksum__mutmut_9, 
-        'xǁToolVerifierǁverify_checksum__mutmut_10': xǁToolVerifierǁverify_checksum__mutmut_10, 
-        'xǁToolVerifierǁverify_checksum__mutmut_11': xǁToolVerifierǁverify_checksum__mutmut_11, 
-        'xǁToolVerifierǁverify_checksum__mutmut_12': xǁToolVerifierǁverify_checksum__mutmut_12, 
-        'xǁToolVerifierǁverify_checksum__mutmut_13': xǁToolVerifierǁverify_checksum__mutmut_13, 
-        'xǁToolVerifierǁverify_checksum__mutmut_14': xǁToolVerifierǁverify_checksum__mutmut_14, 
-        'xǁToolVerifierǁverify_checksum__mutmut_15': xǁToolVerifierǁverify_checksum__mutmut_15, 
-        'xǁToolVerifierǁverify_checksum__mutmut_16': xǁToolVerifierǁverify_checksum__mutmut_16, 
-        'xǁToolVerifierǁverify_checksum__mutmut_17': xǁToolVerifierǁverify_checksum__mutmut_17, 
-        'xǁToolVerifierǁverify_checksum__mutmut_18': xǁToolVerifierǁverify_checksum__mutmut_18, 
-        'xǁToolVerifierǁverify_checksum__mutmut_19': xǁToolVerifierǁverify_checksum__mutmut_19, 
-        'xǁToolVerifierǁverify_checksum__mutmut_20': xǁToolVerifierǁverify_checksum__mutmut_20, 
-        'xǁToolVerifierǁverify_checksum__mutmut_21': xǁToolVerifierǁverify_checksum__mutmut_21, 
-        'xǁToolVerifierǁverify_checksum__mutmut_22': xǁToolVerifierǁverify_checksum__mutmut_22, 
-        'xǁToolVerifierǁverify_checksum__mutmut_23': xǁToolVerifierǁverify_checksum__mutmut_23, 
-        'xǁToolVerifierǁverify_checksum__mutmut_24': xǁToolVerifierǁverify_checksum__mutmut_24, 
-        'xǁToolVerifierǁverify_checksum__mutmut_25': xǁToolVerifierǁverify_checksum__mutmut_25, 
-        'xǁToolVerifierǁverify_checksum__mutmut_26': xǁToolVerifierǁverify_checksum__mutmut_26, 
-        'xǁToolVerifierǁverify_checksum__mutmut_27': xǁToolVerifierǁverify_checksum__mutmut_27, 
-        'xǁToolVerifierǁverify_checksum__mutmut_28': xǁToolVerifierǁverify_checksum__mutmut_28, 
-        'xǁToolVerifierǁverify_checksum__mutmut_29': xǁToolVerifierǁverify_checksum__mutmut_29, 
-        'xǁToolVerifierǁverify_checksum__mutmut_30': xǁToolVerifierǁverify_checksum__mutmut_30, 
-        'xǁToolVerifierǁverify_checksum__mutmut_31': xǁToolVerifierǁverify_checksum__mutmut_31, 
-        'xǁToolVerifierǁverify_checksum__mutmut_32': xǁToolVerifierǁverify_checksum__mutmut_32, 
-        'xǁToolVerifierǁverify_checksum__mutmut_33': xǁToolVerifierǁverify_checksum__mutmut_33
+
+    xǁToolVerifierǁverify_checksum__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolVerifierǁverify_checksum__mutmut_1": xǁToolVerifierǁverify_checksum__mutmut_1,
+        "xǁToolVerifierǁverify_checksum__mutmut_2": xǁToolVerifierǁverify_checksum__mutmut_2,
+        "xǁToolVerifierǁverify_checksum__mutmut_3": xǁToolVerifierǁverify_checksum__mutmut_3,
+        "xǁToolVerifierǁverify_checksum__mutmut_4": xǁToolVerifierǁverify_checksum__mutmut_4,
+        "xǁToolVerifierǁverify_checksum__mutmut_5": xǁToolVerifierǁverify_checksum__mutmut_5,
+        "xǁToolVerifierǁverify_checksum__mutmut_6": xǁToolVerifierǁverify_checksum__mutmut_6,
+        "xǁToolVerifierǁverify_checksum__mutmut_7": xǁToolVerifierǁverify_checksum__mutmut_7,
+        "xǁToolVerifierǁverify_checksum__mutmut_8": xǁToolVerifierǁverify_checksum__mutmut_8,
+        "xǁToolVerifierǁverify_checksum__mutmut_9": xǁToolVerifierǁverify_checksum__mutmut_9,
+        "xǁToolVerifierǁverify_checksum__mutmut_10": xǁToolVerifierǁverify_checksum__mutmut_10,
+        "xǁToolVerifierǁverify_checksum__mutmut_11": xǁToolVerifierǁverify_checksum__mutmut_11,
+        "xǁToolVerifierǁverify_checksum__mutmut_12": xǁToolVerifierǁverify_checksum__mutmut_12,
+        "xǁToolVerifierǁverify_checksum__mutmut_13": xǁToolVerifierǁverify_checksum__mutmut_13,
+        "xǁToolVerifierǁverify_checksum__mutmut_14": xǁToolVerifierǁverify_checksum__mutmut_14,
+        "xǁToolVerifierǁverify_checksum__mutmut_15": xǁToolVerifierǁverify_checksum__mutmut_15,
+        "xǁToolVerifierǁverify_checksum__mutmut_16": xǁToolVerifierǁverify_checksum__mutmut_16,
+        "xǁToolVerifierǁverify_checksum__mutmut_17": xǁToolVerifierǁverify_checksum__mutmut_17,
+        "xǁToolVerifierǁverify_checksum__mutmut_18": xǁToolVerifierǁverify_checksum__mutmut_18,
+        "xǁToolVerifierǁverify_checksum__mutmut_19": xǁToolVerifierǁverify_checksum__mutmut_19,
+        "xǁToolVerifierǁverify_checksum__mutmut_20": xǁToolVerifierǁverify_checksum__mutmut_20,
+        "xǁToolVerifierǁverify_checksum__mutmut_21": xǁToolVerifierǁverify_checksum__mutmut_21,
+        "xǁToolVerifierǁverify_checksum__mutmut_22": xǁToolVerifierǁverify_checksum__mutmut_22,
+        "xǁToolVerifierǁverify_checksum__mutmut_23": xǁToolVerifierǁverify_checksum__mutmut_23,
+        "xǁToolVerifierǁverify_checksum__mutmut_24": xǁToolVerifierǁverify_checksum__mutmut_24,
+        "xǁToolVerifierǁverify_checksum__mutmut_25": xǁToolVerifierǁverify_checksum__mutmut_25,
+        "xǁToolVerifierǁverify_checksum__mutmut_26": xǁToolVerifierǁverify_checksum__mutmut_26,
+        "xǁToolVerifierǁverify_checksum__mutmut_27": xǁToolVerifierǁverify_checksum__mutmut_27,
+        "xǁToolVerifierǁverify_checksum__mutmut_28": xǁToolVerifierǁverify_checksum__mutmut_28,
+        "xǁToolVerifierǁverify_checksum__mutmut_29": xǁToolVerifierǁverify_checksum__mutmut_29,
+        "xǁToolVerifierǁverify_checksum__mutmut_30": xǁToolVerifierǁverify_checksum__mutmut_30,
+        "xǁToolVerifierǁverify_checksum__mutmut_31": xǁToolVerifierǁverify_checksum__mutmut_31,
+        "xǁToolVerifierǁverify_checksum__mutmut_32": xǁToolVerifierǁverify_checksum__mutmut_32,
+        "xǁToolVerifierǁverify_checksum__mutmut_33": xǁToolVerifierǁverify_checksum__mutmut_33,
     }
-    
+
     def verify_checksum(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolVerifierǁverify_checksum__mutmut_orig"), object.__getattribute__(self, "xǁToolVerifierǁverify_checksum__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolVerifierǁverify_checksum__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolVerifierǁverify_checksum__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     verify_checksum.__signature__ = _mutmut_signature(xǁToolVerifierǁverify_checksum__mutmut_orig)
-    xǁToolVerifierǁverify_checksum__mutmut_orig.__name__ = 'xǁToolVerifierǁverify_checksum'
+    xǁToolVerifierǁverify_checksum__mutmut_orig.__name__ = "xǁToolVerifierǁverify_checksum"
 
 
 def x__get_data_from_file_or_stdin__mutmut_orig(file_path: Path | None) -> tuple[bytes | None, str | None]:
@@ -1613,16 +1626,24 @@ def x__get_data_from_file_or_stdin__mutmut_1(file_path: Path | None) -> tuple[by
     except Exception as e:
         return None, str(None)
 
-x__get_data_from_file_or_stdin__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_data_from_file_or_stdin__mutmut_1': x__get_data_from_file_or_stdin__mutmut_1
+
+x__get_data_from_file_or_stdin__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_data_from_file_or_stdin__mutmut_1": x__get_data_from_file_or_stdin__mutmut_1
 }
 
+
 def _get_data_from_file_or_stdin(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_data_from_file_or_stdin__mutmut_orig, x__get_data_from_file_or_stdin__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_data_from_file_or_stdin__mutmut_orig,
+        x__get_data_from_file_or_stdin__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 _get_data_from_file_or_stdin.__signature__ = _mutmut_signature(x__get_data_from_file_or_stdin__mutmut_orig)
-x__get_data_from_file_or_stdin__mutmut_orig.__name__ = 'x__get_data_from_file_or_stdin'
+x__get_data_from_file_or_stdin__mutmut_orig.__name__ = "x__get_data_from_file_or_stdin"
 
 
 def x_verify_checksum_with_hash__mutmut_orig(
@@ -2240,9 +2261,7 @@ def x_verify_checksum_with_hash__mutmut_15(
     # Validate algorithm first if explicitly provided
     if algorithm:
         if algorithm not in supported_algorithms:
-            raise VerificationError(
-                None
-            )
+            raise VerificationError(None)
         checksum_str = f"{algorithm}:{expected_hash}"
     elif ":" not in expected_hash:
         # Default to sha256 if no algorithm prefix provided
@@ -2770,7 +2789,9 @@ def x_verify_checksum_with_hash__mutmut_28(
     else:
         # Already has algorithm prefix - validate it
         if ":" in expected_hash:
-            alg = expected_hash.split(":", )[0]
+            alg = expected_hash.split(
+                ":",
+            )[0]
             if alg not in supported_algorithms:
                 raise VerificationError(
                     f"Checksum verification failed: Unknown checksum algorithm: {alg}. "
@@ -3012,9 +3033,7 @@ def x_verify_checksum_with_hash__mutmut_34(
         if ":" in expected_hash:
             alg = expected_hash.split(":", 1)[0]
             if alg not in supported_algorithms:
-                raise VerificationError(
-                    None
-                )
+                raise VerificationError(None)
         checksum_str = expected_hash
 
     try:
@@ -3298,7 +3317,9 @@ def x_verify_checksum_with_hash__mutmut_41(
         checksum_str = expected_hash
 
     try:
-        return verify_checksum(data, )
+        return verify_checksum(
+            data,
+        )
     except Exception as e:
         raise VerificationError(f"Checksum verification failed: {e}", cause=e) from e
 
@@ -3460,62 +3481,69 @@ def x_verify_checksum_with_hash__mutmut_45(
     try:
         return verify_checksum(data, checksum_str)
     except Exception as e:
-        raise VerificationError(f"Checksum verification failed: {e}", ) from e
+        raise VerificationError(
+            f"Checksum verification failed: {e}",
+        ) from e
 
-x_verify_checksum_with_hash__mutmut_mutants : ClassVar[MutantDict] = {
-'x_verify_checksum_with_hash__mutmut_1': x_verify_checksum_with_hash__mutmut_1, 
-    'x_verify_checksum_with_hash__mutmut_2': x_verify_checksum_with_hash__mutmut_2, 
-    'x_verify_checksum_with_hash__mutmut_3': x_verify_checksum_with_hash__mutmut_3, 
-    'x_verify_checksum_with_hash__mutmut_4': x_verify_checksum_with_hash__mutmut_4, 
-    'x_verify_checksum_with_hash__mutmut_5': x_verify_checksum_with_hash__mutmut_5, 
-    'x_verify_checksum_with_hash__mutmut_6': x_verify_checksum_with_hash__mutmut_6, 
-    'x_verify_checksum_with_hash__mutmut_7': x_verify_checksum_with_hash__mutmut_7, 
-    'x_verify_checksum_with_hash__mutmut_8': x_verify_checksum_with_hash__mutmut_8, 
-    'x_verify_checksum_with_hash__mutmut_9': x_verify_checksum_with_hash__mutmut_9, 
-    'x_verify_checksum_with_hash__mutmut_10': x_verify_checksum_with_hash__mutmut_10, 
-    'x_verify_checksum_with_hash__mutmut_11': x_verify_checksum_with_hash__mutmut_11, 
-    'x_verify_checksum_with_hash__mutmut_12': x_verify_checksum_with_hash__mutmut_12, 
-    'x_verify_checksum_with_hash__mutmut_13': x_verify_checksum_with_hash__mutmut_13, 
-    'x_verify_checksum_with_hash__mutmut_14': x_verify_checksum_with_hash__mutmut_14, 
-    'x_verify_checksum_with_hash__mutmut_15': x_verify_checksum_with_hash__mutmut_15, 
-    'x_verify_checksum_with_hash__mutmut_16': x_verify_checksum_with_hash__mutmut_16, 
-    'x_verify_checksum_with_hash__mutmut_17': x_verify_checksum_with_hash__mutmut_17, 
-    'x_verify_checksum_with_hash__mutmut_18': x_verify_checksum_with_hash__mutmut_18, 
-    'x_verify_checksum_with_hash__mutmut_19': x_verify_checksum_with_hash__mutmut_19, 
-    'x_verify_checksum_with_hash__mutmut_20': x_verify_checksum_with_hash__mutmut_20, 
-    'x_verify_checksum_with_hash__mutmut_21': x_verify_checksum_with_hash__mutmut_21, 
-    'x_verify_checksum_with_hash__mutmut_22': x_verify_checksum_with_hash__mutmut_22, 
-    'x_verify_checksum_with_hash__mutmut_23': x_verify_checksum_with_hash__mutmut_23, 
-    'x_verify_checksum_with_hash__mutmut_24': x_verify_checksum_with_hash__mutmut_24, 
-    'x_verify_checksum_with_hash__mutmut_25': x_verify_checksum_with_hash__mutmut_25, 
-    'x_verify_checksum_with_hash__mutmut_26': x_verify_checksum_with_hash__mutmut_26, 
-    'x_verify_checksum_with_hash__mutmut_27': x_verify_checksum_with_hash__mutmut_27, 
-    'x_verify_checksum_with_hash__mutmut_28': x_verify_checksum_with_hash__mutmut_28, 
-    'x_verify_checksum_with_hash__mutmut_29': x_verify_checksum_with_hash__mutmut_29, 
-    'x_verify_checksum_with_hash__mutmut_30': x_verify_checksum_with_hash__mutmut_30, 
-    'x_verify_checksum_with_hash__mutmut_31': x_verify_checksum_with_hash__mutmut_31, 
-    'x_verify_checksum_with_hash__mutmut_32': x_verify_checksum_with_hash__mutmut_32, 
-    'x_verify_checksum_with_hash__mutmut_33': x_verify_checksum_with_hash__mutmut_33, 
-    'x_verify_checksum_with_hash__mutmut_34': x_verify_checksum_with_hash__mutmut_34, 
-    'x_verify_checksum_with_hash__mutmut_35': x_verify_checksum_with_hash__mutmut_35, 
-    'x_verify_checksum_with_hash__mutmut_36': x_verify_checksum_with_hash__mutmut_36, 
-    'x_verify_checksum_with_hash__mutmut_37': x_verify_checksum_with_hash__mutmut_37, 
-    'x_verify_checksum_with_hash__mutmut_38': x_verify_checksum_with_hash__mutmut_38, 
-    'x_verify_checksum_with_hash__mutmut_39': x_verify_checksum_with_hash__mutmut_39, 
-    'x_verify_checksum_with_hash__mutmut_40': x_verify_checksum_with_hash__mutmut_40, 
-    'x_verify_checksum_with_hash__mutmut_41': x_verify_checksum_with_hash__mutmut_41, 
-    'x_verify_checksum_with_hash__mutmut_42': x_verify_checksum_with_hash__mutmut_42, 
-    'x_verify_checksum_with_hash__mutmut_43': x_verify_checksum_with_hash__mutmut_43, 
-    'x_verify_checksum_with_hash__mutmut_44': x_verify_checksum_with_hash__mutmut_44, 
-    'x_verify_checksum_with_hash__mutmut_45': x_verify_checksum_with_hash__mutmut_45
+
+x_verify_checksum_with_hash__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_verify_checksum_with_hash__mutmut_1": x_verify_checksum_with_hash__mutmut_1,
+    "x_verify_checksum_with_hash__mutmut_2": x_verify_checksum_with_hash__mutmut_2,
+    "x_verify_checksum_with_hash__mutmut_3": x_verify_checksum_with_hash__mutmut_3,
+    "x_verify_checksum_with_hash__mutmut_4": x_verify_checksum_with_hash__mutmut_4,
+    "x_verify_checksum_with_hash__mutmut_5": x_verify_checksum_with_hash__mutmut_5,
+    "x_verify_checksum_with_hash__mutmut_6": x_verify_checksum_with_hash__mutmut_6,
+    "x_verify_checksum_with_hash__mutmut_7": x_verify_checksum_with_hash__mutmut_7,
+    "x_verify_checksum_with_hash__mutmut_8": x_verify_checksum_with_hash__mutmut_8,
+    "x_verify_checksum_with_hash__mutmut_9": x_verify_checksum_with_hash__mutmut_9,
+    "x_verify_checksum_with_hash__mutmut_10": x_verify_checksum_with_hash__mutmut_10,
+    "x_verify_checksum_with_hash__mutmut_11": x_verify_checksum_with_hash__mutmut_11,
+    "x_verify_checksum_with_hash__mutmut_12": x_verify_checksum_with_hash__mutmut_12,
+    "x_verify_checksum_with_hash__mutmut_13": x_verify_checksum_with_hash__mutmut_13,
+    "x_verify_checksum_with_hash__mutmut_14": x_verify_checksum_with_hash__mutmut_14,
+    "x_verify_checksum_with_hash__mutmut_15": x_verify_checksum_with_hash__mutmut_15,
+    "x_verify_checksum_with_hash__mutmut_16": x_verify_checksum_with_hash__mutmut_16,
+    "x_verify_checksum_with_hash__mutmut_17": x_verify_checksum_with_hash__mutmut_17,
+    "x_verify_checksum_with_hash__mutmut_18": x_verify_checksum_with_hash__mutmut_18,
+    "x_verify_checksum_with_hash__mutmut_19": x_verify_checksum_with_hash__mutmut_19,
+    "x_verify_checksum_with_hash__mutmut_20": x_verify_checksum_with_hash__mutmut_20,
+    "x_verify_checksum_with_hash__mutmut_21": x_verify_checksum_with_hash__mutmut_21,
+    "x_verify_checksum_with_hash__mutmut_22": x_verify_checksum_with_hash__mutmut_22,
+    "x_verify_checksum_with_hash__mutmut_23": x_verify_checksum_with_hash__mutmut_23,
+    "x_verify_checksum_with_hash__mutmut_24": x_verify_checksum_with_hash__mutmut_24,
+    "x_verify_checksum_with_hash__mutmut_25": x_verify_checksum_with_hash__mutmut_25,
+    "x_verify_checksum_with_hash__mutmut_26": x_verify_checksum_with_hash__mutmut_26,
+    "x_verify_checksum_with_hash__mutmut_27": x_verify_checksum_with_hash__mutmut_27,
+    "x_verify_checksum_with_hash__mutmut_28": x_verify_checksum_with_hash__mutmut_28,
+    "x_verify_checksum_with_hash__mutmut_29": x_verify_checksum_with_hash__mutmut_29,
+    "x_verify_checksum_with_hash__mutmut_30": x_verify_checksum_with_hash__mutmut_30,
+    "x_verify_checksum_with_hash__mutmut_31": x_verify_checksum_with_hash__mutmut_31,
+    "x_verify_checksum_with_hash__mutmut_32": x_verify_checksum_with_hash__mutmut_32,
+    "x_verify_checksum_with_hash__mutmut_33": x_verify_checksum_with_hash__mutmut_33,
+    "x_verify_checksum_with_hash__mutmut_34": x_verify_checksum_with_hash__mutmut_34,
+    "x_verify_checksum_with_hash__mutmut_35": x_verify_checksum_with_hash__mutmut_35,
+    "x_verify_checksum_with_hash__mutmut_36": x_verify_checksum_with_hash__mutmut_36,
+    "x_verify_checksum_with_hash__mutmut_37": x_verify_checksum_with_hash__mutmut_37,
+    "x_verify_checksum_with_hash__mutmut_38": x_verify_checksum_with_hash__mutmut_38,
+    "x_verify_checksum_with_hash__mutmut_39": x_verify_checksum_with_hash__mutmut_39,
+    "x_verify_checksum_with_hash__mutmut_40": x_verify_checksum_with_hash__mutmut_40,
+    "x_verify_checksum_with_hash__mutmut_41": x_verify_checksum_with_hash__mutmut_41,
+    "x_verify_checksum_with_hash__mutmut_42": x_verify_checksum_with_hash__mutmut_42,
+    "x_verify_checksum_with_hash__mutmut_43": x_verify_checksum_with_hash__mutmut_43,
+    "x_verify_checksum_with_hash__mutmut_44": x_verify_checksum_with_hash__mutmut_44,
+    "x_verify_checksum_with_hash__mutmut_45": x_verify_checksum_with_hash__mutmut_45,
 }
 
+
 def verify_checksum_with_hash(*args, **kwargs):
-    result = _mutmut_trampoline(x_verify_checksum_with_hash__mutmut_orig, x_verify_checksum_with_hash__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_verify_checksum_with_hash__mutmut_orig, x_verify_checksum_with_hash__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 verify_checksum_with_hash.__signature__ = _mutmut_signature(x_verify_checksum_with_hash__mutmut_orig)
-x_verify_checksum_with_hash__mutmut_orig.__name__ = 'x_verify_checksum_with_hash'
+x_verify_checksum_with_hash__mutmut_orig.__name__ = "x_verify_checksum_with_hash"
 
 
 def x_verify_signature_with_key__mutmut_orig(
@@ -3770,7 +3798,9 @@ def x_verify_signature_with_key__mutmut_11(
         signature = base64.b64decode(signature_b64)
         public_key = base64.b64decode(public_key_b64)
         verifier = Ed25519Verifier(public_key)
-        is_valid = verifier.verify(data, )
+        is_valid = verifier.verify(
+            data,
+        )
         if not is_valid:
             raise VerificationError("Signature verification failed: Invalid signature")
         return True
@@ -3999,38 +4029,45 @@ def x_verify_signature_with_key__mutmut_21(
         raise
     except Exception as e:
         # This will catch decoding errors and other exceptions
-        raise VerificationError(f"Signature verification failed: {e}", ) from e
+        raise VerificationError(
+            f"Signature verification failed: {e}",
+        ) from e
 
-x_verify_signature_with_key__mutmut_mutants : ClassVar[MutantDict] = {
-'x_verify_signature_with_key__mutmut_1': x_verify_signature_with_key__mutmut_1, 
-    'x_verify_signature_with_key__mutmut_2': x_verify_signature_with_key__mutmut_2, 
-    'x_verify_signature_with_key__mutmut_3': x_verify_signature_with_key__mutmut_3, 
-    'x_verify_signature_with_key__mutmut_4': x_verify_signature_with_key__mutmut_4, 
-    'x_verify_signature_with_key__mutmut_5': x_verify_signature_with_key__mutmut_5, 
-    'x_verify_signature_with_key__mutmut_6': x_verify_signature_with_key__mutmut_6, 
-    'x_verify_signature_with_key__mutmut_7': x_verify_signature_with_key__mutmut_7, 
-    'x_verify_signature_with_key__mutmut_8': x_verify_signature_with_key__mutmut_8, 
-    'x_verify_signature_with_key__mutmut_9': x_verify_signature_with_key__mutmut_9, 
-    'x_verify_signature_with_key__mutmut_10': x_verify_signature_with_key__mutmut_10, 
-    'x_verify_signature_with_key__mutmut_11': x_verify_signature_with_key__mutmut_11, 
-    'x_verify_signature_with_key__mutmut_12': x_verify_signature_with_key__mutmut_12, 
-    'x_verify_signature_with_key__mutmut_13': x_verify_signature_with_key__mutmut_13, 
-    'x_verify_signature_with_key__mutmut_14': x_verify_signature_with_key__mutmut_14, 
-    'x_verify_signature_with_key__mutmut_15': x_verify_signature_with_key__mutmut_15, 
-    'x_verify_signature_with_key__mutmut_16': x_verify_signature_with_key__mutmut_16, 
-    'x_verify_signature_with_key__mutmut_17': x_verify_signature_with_key__mutmut_17, 
-    'x_verify_signature_with_key__mutmut_18': x_verify_signature_with_key__mutmut_18, 
-    'x_verify_signature_with_key__mutmut_19': x_verify_signature_with_key__mutmut_19, 
-    'x_verify_signature_with_key__mutmut_20': x_verify_signature_with_key__mutmut_20, 
-    'x_verify_signature_with_key__mutmut_21': x_verify_signature_with_key__mutmut_21
+
+x_verify_signature_with_key__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_verify_signature_with_key__mutmut_1": x_verify_signature_with_key__mutmut_1,
+    "x_verify_signature_with_key__mutmut_2": x_verify_signature_with_key__mutmut_2,
+    "x_verify_signature_with_key__mutmut_3": x_verify_signature_with_key__mutmut_3,
+    "x_verify_signature_with_key__mutmut_4": x_verify_signature_with_key__mutmut_4,
+    "x_verify_signature_with_key__mutmut_5": x_verify_signature_with_key__mutmut_5,
+    "x_verify_signature_with_key__mutmut_6": x_verify_signature_with_key__mutmut_6,
+    "x_verify_signature_with_key__mutmut_7": x_verify_signature_with_key__mutmut_7,
+    "x_verify_signature_with_key__mutmut_8": x_verify_signature_with_key__mutmut_8,
+    "x_verify_signature_with_key__mutmut_9": x_verify_signature_with_key__mutmut_9,
+    "x_verify_signature_with_key__mutmut_10": x_verify_signature_with_key__mutmut_10,
+    "x_verify_signature_with_key__mutmut_11": x_verify_signature_with_key__mutmut_11,
+    "x_verify_signature_with_key__mutmut_12": x_verify_signature_with_key__mutmut_12,
+    "x_verify_signature_with_key__mutmut_13": x_verify_signature_with_key__mutmut_13,
+    "x_verify_signature_with_key__mutmut_14": x_verify_signature_with_key__mutmut_14,
+    "x_verify_signature_with_key__mutmut_15": x_verify_signature_with_key__mutmut_15,
+    "x_verify_signature_with_key__mutmut_16": x_verify_signature_with_key__mutmut_16,
+    "x_verify_signature_with_key__mutmut_17": x_verify_signature_with_key__mutmut_17,
+    "x_verify_signature_with_key__mutmut_18": x_verify_signature_with_key__mutmut_18,
+    "x_verify_signature_with_key__mutmut_19": x_verify_signature_with_key__mutmut_19,
+    "x_verify_signature_with_key__mutmut_20": x_verify_signature_with_key__mutmut_20,
+    "x_verify_signature_with_key__mutmut_21": x_verify_signature_with_key__mutmut_21,
 }
 
+
 def verify_signature_with_key(*args, **kwargs):
-    result = _mutmut_trampoline(x_verify_signature_with_key__mutmut_orig, x_verify_signature_with_key__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_verify_signature_with_key__mutmut_orig, x_verify_signature_with_key__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 verify_signature_with_key.__signature__ = _mutmut_signature(x_verify_signature_with_key__mutmut_orig)
-x_verify_signature_with_key__mutmut_orig.__name__ = 'x_verify_signature_with_key'
+x_verify_signature_with_key__mutmut_orig.__name__ = "x_verify_signature_with_key"
 
 
 @register_command("verify.checksum")

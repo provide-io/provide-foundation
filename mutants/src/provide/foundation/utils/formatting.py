@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -2068,59 +2071,62 @@ def x_format_size__mutmut_44(size_bytes: float, precision: int = 1) -> str:
 
     return f"-{formatted}" if negative else formatted
 
-x_format_size__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_size__mutmut_1': x_format_size__mutmut_1, 
-    'x_format_size__mutmut_2': x_format_size__mutmut_2, 
-    'x_format_size__mutmut_3': x_format_size__mutmut_3, 
-    'x_format_size__mutmut_4': x_format_size__mutmut_4, 
-    'x_format_size__mutmut_5': x_format_size__mutmut_5, 
-    'x_format_size__mutmut_6': x_format_size__mutmut_6, 
-    'x_format_size__mutmut_7': x_format_size__mutmut_7, 
-    'x_format_size__mutmut_8': x_format_size__mutmut_8, 
-    'x_format_size__mutmut_9': x_format_size__mutmut_9, 
-    'x_format_size__mutmut_10': x_format_size__mutmut_10, 
-    'x_format_size__mutmut_11': x_format_size__mutmut_11, 
-    'x_format_size__mutmut_12': x_format_size__mutmut_12, 
-    'x_format_size__mutmut_13': x_format_size__mutmut_13, 
-    'x_format_size__mutmut_14': x_format_size__mutmut_14, 
-    'x_format_size__mutmut_15': x_format_size__mutmut_15, 
-    'x_format_size__mutmut_16': x_format_size__mutmut_16, 
-    'x_format_size__mutmut_17': x_format_size__mutmut_17, 
-    'x_format_size__mutmut_18': x_format_size__mutmut_18, 
-    'x_format_size__mutmut_19': x_format_size__mutmut_19, 
-    'x_format_size__mutmut_20': x_format_size__mutmut_20, 
-    'x_format_size__mutmut_21': x_format_size__mutmut_21, 
-    'x_format_size__mutmut_22': x_format_size__mutmut_22, 
-    'x_format_size__mutmut_23': x_format_size__mutmut_23, 
-    'x_format_size__mutmut_24': x_format_size__mutmut_24, 
-    'x_format_size__mutmut_25': x_format_size__mutmut_25, 
-    'x_format_size__mutmut_26': x_format_size__mutmut_26, 
-    'x_format_size__mutmut_27': x_format_size__mutmut_27, 
-    'x_format_size__mutmut_28': x_format_size__mutmut_28, 
-    'x_format_size__mutmut_29': x_format_size__mutmut_29, 
-    'x_format_size__mutmut_30': x_format_size__mutmut_30, 
-    'x_format_size__mutmut_31': x_format_size__mutmut_31, 
-    'x_format_size__mutmut_32': x_format_size__mutmut_32, 
-    'x_format_size__mutmut_33': x_format_size__mutmut_33, 
-    'x_format_size__mutmut_34': x_format_size__mutmut_34, 
-    'x_format_size__mutmut_35': x_format_size__mutmut_35, 
-    'x_format_size__mutmut_36': x_format_size__mutmut_36, 
-    'x_format_size__mutmut_37': x_format_size__mutmut_37, 
-    'x_format_size__mutmut_38': x_format_size__mutmut_38, 
-    'x_format_size__mutmut_39': x_format_size__mutmut_39, 
-    'x_format_size__mutmut_40': x_format_size__mutmut_40, 
-    'x_format_size__mutmut_41': x_format_size__mutmut_41, 
-    'x_format_size__mutmut_42': x_format_size__mutmut_42, 
-    'x_format_size__mutmut_43': x_format_size__mutmut_43, 
-    'x_format_size__mutmut_44': x_format_size__mutmut_44
+
+x_format_size__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_size__mutmut_1": x_format_size__mutmut_1,
+    "x_format_size__mutmut_2": x_format_size__mutmut_2,
+    "x_format_size__mutmut_3": x_format_size__mutmut_3,
+    "x_format_size__mutmut_4": x_format_size__mutmut_4,
+    "x_format_size__mutmut_5": x_format_size__mutmut_5,
+    "x_format_size__mutmut_6": x_format_size__mutmut_6,
+    "x_format_size__mutmut_7": x_format_size__mutmut_7,
+    "x_format_size__mutmut_8": x_format_size__mutmut_8,
+    "x_format_size__mutmut_9": x_format_size__mutmut_9,
+    "x_format_size__mutmut_10": x_format_size__mutmut_10,
+    "x_format_size__mutmut_11": x_format_size__mutmut_11,
+    "x_format_size__mutmut_12": x_format_size__mutmut_12,
+    "x_format_size__mutmut_13": x_format_size__mutmut_13,
+    "x_format_size__mutmut_14": x_format_size__mutmut_14,
+    "x_format_size__mutmut_15": x_format_size__mutmut_15,
+    "x_format_size__mutmut_16": x_format_size__mutmut_16,
+    "x_format_size__mutmut_17": x_format_size__mutmut_17,
+    "x_format_size__mutmut_18": x_format_size__mutmut_18,
+    "x_format_size__mutmut_19": x_format_size__mutmut_19,
+    "x_format_size__mutmut_20": x_format_size__mutmut_20,
+    "x_format_size__mutmut_21": x_format_size__mutmut_21,
+    "x_format_size__mutmut_22": x_format_size__mutmut_22,
+    "x_format_size__mutmut_23": x_format_size__mutmut_23,
+    "x_format_size__mutmut_24": x_format_size__mutmut_24,
+    "x_format_size__mutmut_25": x_format_size__mutmut_25,
+    "x_format_size__mutmut_26": x_format_size__mutmut_26,
+    "x_format_size__mutmut_27": x_format_size__mutmut_27,
+    "x_format_size__mutmut_28": x_format_size__mutmut_28,
+    "x_format_size__mutmut_29": x_format_size__mutmut_29,
+    "x_format_size__mutmut_30": x_format_size__mutmut_30,
+    "x_format_size__mutmut_31": x_format_size__mutmut_31,
+    "x_format_size__mutmut_32": x_format_size__mutmut_32,
+    "x_format_size__mutmut_33": x_format_size__mutmut_33,
+    "x_format_size__mutmut_34": x_format_size__mutmut_34,
+    "x_format_size__mutmut_35": x_format_size__mutmut_35,
+    "x_format_size__mutmut_36": x_format_size__mutmut_36,
+    "x_format_size__mutmut_37": x_format_size__mutmut_37,
+    "x_format_size__mutmut_38": x_format_size__mutmut_38,
+    "x_format_size__mutmut_39": x_format_size__mutmut_39,
+    "x_format_size__mutmut_40": x_format_size__mutmut_40,
+    "x_format_size__mutmut_41": x_format_size__mutmut_41,
+    "x_format_size__mutmut_42": x_format_size__mutmut_42,
+    "x_format_size__mutmut_43": x_format_size__mutmut_43,
+    "x_format_size__mutmut_44": x_format_size__mutmut_44,
 }
+
 
 def format_size(*args, **kwargs):
     result = _mutmut_trampoline(x_format_size__mutmut_orig, x_format_size__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 format_size.__signature__ = _mutmut_signature(x_format_size__mutmut_orig)
-x_format_size__mutmut_orig.__name__ = 'x_format_size'
+x_format_size__mutmut_orig.__name__ = "x_format_size"
 
 
 def _format_duration_components(
@@ -2386,32 +2392,37 @@ def x__format_duration_short__mutmut_17(days: int, hours: int, minutes: int, sec
         parts.append(f"{seconds}s")
     return "XXXX".join(parts)
 
-x__format_duration_short__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_duration_short__mutmut_1': x__format_duration_short__mutmut_1, 
-    'x__format_duration_short__mutmut_2': x__format_duration_short__mutmut_2, 
-    'x__format_duration_short__mutmut_3': x__format_duration_short__mutmut_3, 
-    'x__format_duration_short__mutmut_4': x__format_duration_short__mutmut_4, 
-    'x__format_duration_short__mutmut_5': x__format_duration_short__mutmut_5, 
-    'x__format_duration_short__mutmut_6': x__format_duration_short__mutmut_6, 
-    'x__format_duration_short__mutmut_7': x__format_duration_short__mutmut_7, 
-    'x__format_duration_short__mutmut_8': x__format_duration_short__mutmut_8, 
-    'x__format_duration_short__mutmut_9': x__format_duration_short__mutmut_9, 
-    'x__format_duration_short__mutmut_10': x__format_duration_short__mutmut_10, 
-    'x__format_duration_short__mutmut_11': x__format_duration_short__mutmut_11, 
-    'x__format_duration_short__mutmut_12': x__format_duration_short__mutmut_12, 
-    'x__format_duration_short__mutmut_13': x__format_duration_short__mutmut_13, 
-    'x__format_duration_short__mutmut_14': x__format_duration_short__mutmut_14, 
-    'x__format_duration_short__mutmut_15': x__format_duration_short__mutmut_15, 
-    'x__format_duration_short__mutmut_16': x__format_duration_short__mutmut_16, 
-    'x__format_duration_short__mutmut_17': x__format_duration_short__mutmut_17
+
+x__format_duration_short__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_duration_short__mutmut_1": x__format_duration_short__mutmut_1,
+    "x__format_duration_short__mutmut_2": x__format_duration_short__mutmut_2,
+    "x__format_duration_short__mutmut_3": x__format_duration_short__mutmut_3,
+    "x__format_duration_short__mutmut_4": x__format_duration_short__mutmut_4,
+    "x__format_duration_short__mutmut_5": x__format_duration_short__mutmut_5,
+    "x__format_duration_short__mutmut_6": x__format_duration_short__mutmut_6,
+    "x__format_duration_short__mutmut_7": x__format_duration_short__mutmut_7,
+    "x__format_duration_short__mutmut_8": x__format_duration_short__mutmut_8,
+    "x__format_duration_short__mutmut_9": x__format_duration_short__mutmut_9,
+    "x__format_duration_short__mutmut_10": x__format_duration_short__mutmut_10,
+    "x__format_duration_short__mutmut_11": x__format_duration_short__mutmut_11,
+    "x__format_duration_short__mutmut_12": x__format_duration_short__mutmut_12,
+    "x__format_duration_short__mutmut_13": x__format_duration_short__mutmut_13,
+    "x__format_duration_short__mutmut_14": x__format_duration_short__mutmut_14,
+    "x__format_duration_short__mutmut_15": x__format_duration_short__mutmut_15,
+    "x__format_duration_short__mutmut_16": x__format_duration_short__mutmut_16,
+    "x__format_duration_short__mutmut_17": x__format_duration_short__mutmut_17,
 }
 
+
 def _format_duration_short(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_duration_short__mutmut_orig, x__format_duration_short__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_duration_short__mutmut_orig, x__format_duration_short__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _format_duration_short.__signature__ = _mutmut_signature(x__format_duration_short__mutmut_orig)
-x__format_duration_short__mutmut_orig.__name__ = 'x__format_duration_short'
+x__format_duration_short__mutmut_orig.__name__ = "x__format_duration_short"
 
 
 def x__format_duration_long__mutmut_orig(days: int, hours: int, minutes: int, seconds: int) -> str:
@@ -2945,52 +2956,57 @@ def x__format_duration_long__mutmut_37(days: int, hours: int, minutes: int, seco
         parts.append(f"{seconds} second{'s' if seconds != 1 else ''}")
     return "XX XX".join(parts)
 
-x__format_duration_long__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_duration_long__mutmut_1': x__format_duration_long__mutmut_1, 
-    'x__format_duration_long__mutmut_2': x__format_duration_long__mutmut_2, 
-    'x__format_duration_long__mutmut_3': x__format_duration_long__mutmut_3, 
-    'x__format_duration_long__mutmut_4': x__format_duration_long__mutmut_4, 
-    'x__format_duration_long__mutmut_5': x__format_duration_long__mutmut_5, 
-    'x__format_duration_long__mutmut_6': x__format_duration_long__mutmut_6, 
-    'x__format_duration_long__mutmut_7': x__format_duration_long__mutmut_7, 
-    'x__format_duration_long__mutmut_8': x__format_duration_long__mutmut_8, 
-    'x__format_duration_long__mutmut_9': x__format_duration_long__mutmut_9, 
-    'x__format_duration_long__mutmut_10': x__format_duration_long__mutmut_10, 
-    'x__format_duration_long__mutmut_11': x__format_duration_long__mutmut_11, 
-    'x__format_duration_long__mutmut_12': x__format_duration_long__mutmut_12, 
-    'x__format_duration_long__mutmut_13': x__format_duration_long__mutmut_13, 
-    'x__format_duration_long__mutmut_14': x__format_duration_long__mutmut_14, 
-    'x__format_duration_long__mutmut_15': x__format_duration_long__mutmut_15, 
-    'x__format_duration_long__mutmut_16': x__format_duration_long__mutmut_16, 
-    'x__format_duration_long__mutmut_17': x__format_duration_long__mutmut_17, 
-    'x__format_duration_long__mutmut_18': x__format_duration_long__mutmut_18, 
-    'x__format_duration_long__mutmut_19': x__format_duration_long__mutmut_19, 
-    'x__format_duration_long__mutmut_20': x__format_duration_long__mutmut_20, 
-    'x__format_duration_long__mutmut_21': x__format_duration_long__mutmut_21, 
-    'x__format_duration_long__mutmut_22': x__format_duration_long__mutmut_22, 
-    'x__format_duration_long__mutmut_23': x__format_duration_long__mutmut_23, 
-    'x__format_duration_long__mutmut_24': x__format_duration_long__mutmut_24, 
-    'x__format_duration_long__mutmut_25': x__format_duration_long__mutmut_25, 
-    'x__format_duration_long__mutmut_26': x__format_duration_long__mutmut_26, 
-    'x__format_duration_long__mutmut_27': x__format_duration_long__mutmut_27, 
-    'x__format_duration_long__mutmut_28': x__format_duration_long__mutmut_28, 
-    'x__format_duration_long__mutmut_29': x__format_duration_long__mutmut_29, 
-    'x__format_duration_long__mutmut_30': x__format_duration_long__mutmut_30, 
-    'x__format_duration_long__mutmut_31': x__format_duration_long__mutmut_31, 
-    'x__format_duration_long__mutmut_32': x__format_duration_long__mutmut_32, 
-    'x__format_duration_long__mutmut_33': x__format_duration_long__mutmut_33, 
-    'x__format_duration_long__mutmut_34': x__format_duration_long__mutmut_34, 
-    'x__format_duration_long__mutmut_35': x__format_duration_long__mutmut_35, 
-    'x__format_duration_long__mutmut_36': x__format_duration_long__mutmut_36, 
-    'x__format_duration_long__mutmut_37': x__format_duration_long__mutmut_37
+
+x__format_duration_long__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_duration_long__mutmut_1": x__format_duration_long__mutmut_1,
+    "x__format_duration_long__mutmut_2": x__format_duration_long__mutmut_2,
+    "x__format_duration_long__mutmut_3": x__format_duration_long__mutmut_3,
+    "x__format_duration_long__mutmut_4": x__format_duration_long__mutmut_4,
+    "x__format_duration_long__mutmut_5": x__format_duration_long__mutmut_5,
+    "x__format_duration_long__mutmut_6": x__format_duration_long__mutmut_6,
+    "x__format_duration_long__mutmut_7": x__format_duration_long__mutmut_7,
+    "x__format_duration_long__mutmut_8": x__format_duration_long__mutmut_8,
+    "x__format_duration_long__mutmut_9": x__format_duration_long__mutmut_9,
+    "x__format_duration_long__mutmut_10": x__format_duration_long__mutmut_10,
+    "x__format_duration_long__mutmut_11": x__format_duration_long__mutmut_11,
+    "x__format_duration_long__mutmut_12": x__format_duration_long__mutmut_12,
+    "x__format_duration_long__mutmut_13": x__format_duration_long__mutmut_13,
+    "x__format_duration_long__mutmut_14": x__format_duration_long__mutmut_14,
+    "x__format_duration_long__mutmut_15": x__format_duration_long__mutmut_15,
+    "x__format_duration_long__mutmut_16": x__format_duration_long__mutmut_16,
+    "x__format_duration_long__mutmut_17": x__format_duration_long__mutmut_17,
+    "x__format_duration_long__mutmut_18": x__format_duration_long__mutmut_18,
+    "x__format_duration_long__mutmut_19": x__format_duration_long__mutmut_19,
+    "x__format_duration_long__mutmut_20": x__format_duration_long__mutmut_20,
+    "x__format_duration_long__mutmut_21": x__format_duration_long__mutmut_21,
+    "x__format_duration_long__mutmut_22": x__format_duration_long__mutmut_22,
+    "x__format_duration_long__mutmut_23": x__format_duration_long__mutmut_23,
+    "x__format_duration_long__mutmut_24": x__format_duration_long__mutmut_24,
+    "x__format_duration_long__mutmut_25": x__format_duration_long__mutmut_25,
+    "x__format_duration_long__mutmut_26": x__format_duration_long__mutmut_26,
+    "x__format_duration_long__mutmut_27": x__format_duration_long__mutmut_27,
+    "x__format_duration_long__mutmut_28": x__format_duration_long__mutmut_28,
+    "x__format_duration_long__mutmut_29": x__format_duration_long__mutmut_29,
+    "x__format_duration_long__mutmut_30": x__format_duration_long__mutmut_30,
+    "x__format_duration_long__mutmut_31": x__format_duration_long__mutmut_31,
+    "x__format_duration_long__mutmut_32": x__format_duration_long__mutmut_32,
+    "x__format_duration_long__mutmut_33": x__format_duration_long__mutmut_33,
+    "x__format_duration_long__mutmut_34": x__format_duration_long__mutmut_34,
+    "x__format_duration_long__mutmut_35": x__format_duration_long__mutmut_35,
+    "x__format_duration_long__mutmut_36": x__format_duration_long__mutmut_36,
+    "x__format_duration_long__mutmut_37": x__format_duration_long__mutmut_37,
 }
 
+
 def _format_duration_long(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_duration_long__mutmut_orig, x__format_duration_long__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_duration_long__mutmut_orig, x__format_duration_long__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _format_duration_long.__signature__ = _mutmut_signature(x__format_duration_long__mutmut_orig)
-x__format_duration_long__mutmut_orig.__name__ = 'x__format_duration_long'
+x__format_duration_long__mutmut_orig.__name__ = "x__format_duration_long"
 
 
 def x_format_duration__mutmut_orig(seconds: float, short: bool = False) -> str:
@@ -3281,7 +3297,7 @@ def x_format_duration__mutmut_7(seconds: float, short: bool = False) -> str:
 
     """
     if seconds < 0:
-        return f"-{format_duration(abs(seconds), )}"
+        return f"-{format_duration(abs(seconds))}"
 
     if seconds == 0:
         return "0s" if short else "0 seconds"
@@ -4623,7 +4639,11 @@ def x_format_duration__mutmut_42(seconds: float, short: bool = False) -> str:
     secs = int(seconds % 60)
 
     if short:
-        return _format_duration_short(days, hours, minutes, )
+        return _format_duration_short(
+            days,
+            hours,
+            minutes,
+        )
     return _format_duration_long(days, hours, minutes, secs)
 
 
@@ -4928,67 +4948,76 @@ def x_format_duration__mutmut_50(seconds: float, short: bool = False) -> str:
 
     if short:
         return _format_duration_short(days, hours, minutes, secs)
-    return _format_duration_long(days, hours, minutes, )
+    return _format_duration_long(
+        days,
+        hours,
+        minutes,
+    )
 
-x_format_duration__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_duration__mutmut_1': x_format_duration__mutmut_1, 
-    'x_format_duration__mutmut_2': x_format_duration__mutmut_2, 
-    'x_format_duration__mutmut_3': x_format_duration__mutmut_3, 
-    'x_format_duration__mutmut_4': x_format_duration__mutmut_4, 
-    'x_format_duration__mutmut_5': x_format_duration__mutmut_5, 
-    'x_format_duration__mutmut_6': x_format_duration__mutmut_6, 
-    'x_format_duration__mutmut_7': x_format_duration__mutmut_7, 
-    'x_format_duration__mutmut_8': x_format_duration__mutmut_8, 
-    'x_format_duration__mutmut_9': x_format_duration__mutmut_9, 
-    'x_format_duration__mutmut_10': x_format_duration__mutmut_10, 
-    'x_format_duration__mutmut_11': x_format_duration__mutmut_11, 
-    'x_format_duration__mutmut_12': x_format_duration__mutmut_12, 
-    'x_format_duration__mutmut_13': x_format_duration__mutmut_13, 
-    'x_format_duration__mutmut_14': x_format_duration__mutmut_14, 
-    'x_format_duration__mutmut_15': x_format_duration__mutmut_15, 
-    'x_format_duration__mutmut_16': x_format_duration__mutmut_16, 
-    'x_format_duration__mutmut_17': x_format_duration__mutmut_17, 
-    'x_format_duration__mutmut_18': x_format_duration__mutmut_18, 
-    'x_format_duration__mutmut_19': x_format_duration__mutmut_19, 
-    'x_format_duration__mutmut_20': x_format_duration__mutmut_20, 
-    'x_format_duration__mutmut_21': x_format_duration__mutmut_21, 
-    'x_format_duration__mutmut_22': x_format_duration__mutmut_22, 
-    'x_format_duration__mutmut_23': x_format_duration__mutmut_23, 
-    'x_format_duration__mutmut_24': x_format_duration__mutmut_24, 
-    'x_format_duration__mutmut_25': x_format_duration__mutmut_25, 
-    'x_format_duration__mutmut_26': x_format_duration__mutmut_26, 
-    'x_format_duration__mutmut_27': x_format_duration__mutmut_27, 
-    'x_format_duration__mutmut_28': x_format_duration__mutmut_28, 
-    'x_format_duration__mutmut_29': x_format_duration__mutmut_29, 
-    'x_format_duration__mutmut_30': x_format_duration__mutmut_30, 
-    'x_format_duration__mutmut_31': x_format_duration__mutmut_31, 
-    'x_format_duration__mutmut_32': x_format_duration__mutmut_32, 
-    'x_format_duration__mutmut_33': x_format_duration__mutmut_33, 
-    'x_format_duration__mutmut_34': x_format_duration__mutmut_34, 
-    'x_format_duration__mutmut_35': x_format_duration__mutmut_35, 
-    'x_format_duration__mutmut_36': x_format_duration__mutmut_36, 
-    'x_format_duration__mutmut_37': x_format_duration__mutmut_37, 
-    'x_format_duration__mutmut_38': x_format_duration__mutmut_38, 
-    'x_format_duration__mutmut_39': x_format_duration__mutmut_39, 
-    'x_format_duration__mutmut_40': x_format_duration__mutmut_40, 
-    'x_format_duration__mutmut_41': x_format_duration__mutmut_41, 
-    'x_format_duration__mutmut_42': x_format_duration__mutmut_42, 
-    'x_format_duration__mutmut_43': x_format_duration__mutmut_43, 
-    'x_format_duration__mutmut_44': x_format_duration__mutmut_44, 
-    'x_format_duration__mutmut_45': x_format_duration__mutmut_45, 
-    'x_format_duration__mutmut_46': x_format_duration__mutmut_46, 
-    'x_format_duration__mutmut_47': x_format_duration__mutmut_47, 
-    'x_format_duration__mutmut_48': x_format_duration__mutmut_48, 
-    'x_format_duration__mutmut_49': x_format_duration__mutmut_49, 
-    'x_format_duration__mutmut_50': x_format_duration__mutmut_50
+
+x_format_duration__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_duration__mutmut_1": x_format_duration__mutmut_1,
+    "x_format_duration__mutmut_2": x_format_duration__mutmut_2,
+    "x_format_duration__mutmut_3": x_format_duration__mutmut_3,
+    "x_format_duration__mutmut_4": x_format_duration__mutmut_4,
+    "x_format_duration__mutmut_5": x_format_duration__mutmut_5,
+    "x_format_duration__mutmut_6": x_format_duration__mutmut_6,
+    "x_format_duration__mutmut_7": x_format_duration__mutmut_7,
+    "x_format_duration__mutmut_8": x_format_duration__mutmut_8,
+    "x_format_duration__mutmut_9": x_format_duration__mutmut_9,
+    "x_format_duration__mutmut_10": x_format_duration__mutmut_10,
+    "x_format_duration__mutmut_11": x_format_duration__mutmut_11,
+    "x_format_duration__mutmut_12": x_format_duration__mutmut_12,
+    "x_format_duration__mutmut_13": x_format_duration__mutmut_13,
+    "x_format_duration__mutmut_14": x_format_duration__mutmut_14,
+    "x_format_duration__mutmut_15": x_format_duration__mutmut_15,
+    "x_format_duration__mutmut_16": x_format_duration__mutmut_16,
+    "x_format_duration__mutmut_17": x_format_duration__mutmut_17,
+    "x_format_duration__mutmut_18": x_format_duration__mutmut_18,
+    "x_format_duration__mutmut_19": x_format_duration__mutmut_19,
+    "x_format_duration__mutmut_20": x_format_duration__mutmut_20,
+    "x_format_duration__mutmut_21": x_format_duration__mutmut_21,
+    "x_format_duration__mutmut_22": x_format_duration__mutmut_22,
+    "x_format_duration__mutmut_23": x_format_duration__mutmut_23,
+    "x_format_duration__mutmut_24": x_format_duration__mutmut_24,
+    "x_format_duration__mutmut_25": x_format_duration__mutmut_25,
+    "x_format_duration__mutmut_26": x_format_duration__mutmut_26,
+    "x_format_duration__mutmut_27": x_format_duration__mutmut_27,
+    "x_format_duration__mutmut_28": x_format_duration__mutmut_28,
+    "x_format_duration__mutmut_29": x_format_duration__mutmut_29,
+    "x_format_duration__mutmut_30": x_format_duration__mutmut_30,
+    "x_format_duration__mutmut_31": x_format_duration__mutmut_31,
+    "x_format_duration__mutmut_32": x_format_duration__mutmut_32,
+    "x_format_duration__mutmut_33": x_format_duration__mutmut_33,
+    "x_format_duration__mutmut_34": x_format_duration__mutmut_34,
+    "x_format_duration__mutmut_35": x_format_duration__mutmut_35,
+    "x_format_duration__mutmut_36": x_format_duration__mutmut_36,
+    "x_format_duration__mutmut_37": x_format_duration__mutmut_37,
+    "x_format_duration__mutmut_38": x_format_duration__mutmut_38,
+    "x_format_duration__mutmut_39": x_format_duration__mutmut_39,
+    "x_format_duration__mutmut_40": x_format_duration__mutmut_40,
+    "x_format_duration__mutmut_41": x_format_duration__mutmut_41,
+    "x_format_duration__mutmut_42": x_format_duration__mutmut_42,
+    "x_format_duration__mutmut_43": x_format_duration__mutmut_43,
+    "x_format_duration__mutmut_44": x_format_duration__mutmut_44,
+    "x_format_duration__mutmut_45": x_format_duration__mutmut_45,
+    "x_format_duration__mutmut_46": x_format_duration__mutmut_46,
+    "x_format_duration__mutmut_47": x_format_duration__mutmut_47,
+    "x_format_duration__mutmut_48": x_format_duration__mutmut_48,
+    "x_format_duration__mutmut_49": x_format_duration__mutmut_49,
+    "x_format_duration__mutmut_50": x_format_duration__mutmut_50,
 }
 
+
 def format_duration(*args, **kwargs):
-    result = _mutmut_trampoline(x_format_duration__mutmut_orig, x_format_duration__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_format_duration__mutmut_orig, x_format_duration__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 format_duration.__signature__ = _mutmut_signature(x_format_duration__mutmut_orig)
-x_format_duration__mutmut_orig.__name__ = 'x_format_duration'
+x_format_duration__mutmut_orig.__name__ = "x_format_duration"
 
 
 def x_format_number__mutmut_orig(num: float, precision: int | None = None) -> str:
@@ -5190,22 +5219,25 @@ def x_format_number__mutmut_7(num: float, precision: int | None = None) -> str:
         return f"{num:,.6f}".rstrip("0").rstrip("XX.XX")
     return f"{num:,.{precision}f}"
 
-x_format_number__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_number__mutmut_1': x_format_number__mutmut_1, 
-    'x_format_number__mutmut_2': x_format_number__mutmut_2, 
-    'x_format_number__mutmut_3': x_format_number__mutmut_3, 
-    'x_format_number__mutmut_4': x_format_number__mutmut_4, 
-    'x_format_number__mutmut_5': x_format_number__mutmut_5, 
-    'x_format_number__mutmut_6': x_format_number__mutmut_6, 
-    'x_format_number__mutmut_7': x_format_number__mutmut_7
+
+x_format_number__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_number__mutmut_1": x_format_number__mutmut_1,
+    "x_format_number__mutmut_2": x_format_number__mutmut_2,
+    "x_format_number__mutmut_3": x_format_number__mutmut_3,
+    "x_format_number__mutmut_4": x_format_number__mutmut_4,
+    "x_format_number__mutmut_5": x_format_number__mutmut_5,
+    "x_format_number__mutmut_6": x_format_number__mutmut_6,
+    "x_format_number__mutmut_7": x_format_number__mutmut_7,
 }
+
 
 def format_number(*args, **kwargs):
     result = _mutmut_trampoline(x_format_number__mutmut_orig, x_format_number__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 format_number.__signature__ = _mutmut_signature(x_format_number__mutmut_orig)
-x_format_number__mutmut_orig.__name__ = 'x_format_number'
+x_format_number__mutmut_orig.__name__ = "x_format_number"
 
 
 def x_format_percentage__mutmut_orig(value: float, precision: int = 1, include_sign: bool = False) -> str:
@@ -5526,25 +5558,30 @@ def x_format_percentage__mutmut_10(value: float, precision: int = 1, include_sig
 
     return formatted
 
-x_format_percentage__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_percentage__mutmut_1': x_format_percentage__mutmut_1, 
-    'x_format_percentage__mutmut_2': x_format_percentage__mutmut_2, 
-    'x_format_percentage__mutmut_3': x_format_percentage__mutmut_3, 
-    'x_format_percentage__mutmut_4': x_format_percentage__mutmut_4, 
-    'x_format_percentage__mutmut_5': x_format_percentage__mutmut_5, 
-    'x_format_percentage__mutmut_6': x_format_percentage__mutmut_6, 
-    'x_format_percentage__mutmut_7': x_format_percentage__mutmut_7, 
-    'x_format_percentage__mutmut_8': x_format_percentage__mutmut_8, 
-    'x_format_percentage__mutmut_9': x_format_percentage__mutmut_9, 
-    'x_format_percentage__mutmut_10': x_format_percentage__mutmut_10
+
+x_format_percentage__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_percentage__mutmut_1": x_format_percentage__mutmut_1,
+    "x_format_percentage__mutmut_2": x_format_percentage__mutmut_2,
+    "x_format_percentage__mutmut_3": x_format_percentage__mutmut_3,
+    "x_format_percentage__mutmut_4": x_format_percentage__mutmut_4,
+    "x_format_percentage__mutmut_5": x_format_percentage__mutmut_5,
+    "x_format_percentage__mutmut_6": x_format_percentage__mutmut_6,
+    "x_format_percentage__mutmut_7": x_format_percentage__mutmut_7,
+    "x_format_percentage__mutmut_8": x_format_percentage__mutmut_8,
+    "x_format_percentage__mutmut_9": x_format_percentage__mutmut_9,
+    "x_format_percentage__mutmut_10": x_format_percentage__mutmut_10,
 }
 
+
 def format_percentage(*args, **kwargs):
-    result = _mutmut_trampoline(x_format_percentage__mutmut_orig, x_format_percentage__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_format_percentage__mutmut_orig, x_format_percentage__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 format_percentage.__signature__ = _mutmut_signature(x_format_percentage__mutmut_orig)
-x_format_percentage__mutmut_orig.__name__ = 'x_format_percentage'
+x_format_percentage__mutmut_orig.__name__ = "x_format_percentage"
 
 
 __all__ = [

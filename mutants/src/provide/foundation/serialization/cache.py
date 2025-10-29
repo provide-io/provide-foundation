@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -80,17 +83,22 @@ def x__get_cache_config__mutmut_2() -> SerializationCacheConfig:
         _cached_config = None
     return _cached_config
 
-x__get_cache_config__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_cache_config__mutmut_1': x__get_cache_config__mutmut_1, 
-    'x__get_cache_config__mutmut_2': x__get_cache_config__mutmut_2
+
+x__get_cache_config__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_cache_config__mutmut_1": x__get_cache_config__mutmut_1,
+    "x__get_cache_config__mutmut_2": x__get_cache_config__mutmut_2,
 }
 
+
 def _get_cache_config(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_cache_config__mutmut_orig, x__get_cache_config__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_cache_config__mutmut_orig, x__get_cache_config__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_cache_config.__signature__ = _mutmut_signature(x__get_cache_config__mutmut_orig)
-x__get_cache_config__mutmut_orig.__name__ = 'x__get_cache_config'
+x__get_cache_config__mutmut_orig.__name__ = "x__get_cache_config"
 
 
 def x_get_cache_enabled__mutmut_orig() -> bool:
@@ -104,16 +112,21 @@ def x_get_cache_enabled__mutmut_1() -> bool:
     config = None
     return config.cache_enabled
 
-x_get_cache_enabled__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_cache_enabled__mutmut_1': x_get_cache_enabled__mutmut_1
+
+x_get_cache_enabled__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_cache_enabled__mutmut_1": x_get_cache_enabled__mutmut_1
 }
 
+
 def get_cache_enabled(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_cache_enabled__mutmut_orig, x_get_cache_enabled__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_cache_enabled__mutmut_orig, x_get_cache_enabled__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_cache_enabled.__signature__ = _mutmut_signature(x_get_cache_enabled__mutmut_orig)
-x_get_cache_enabled__mutmut_orig.__name__ = 'x_get_cache_enabled'
+x_get_cache_enabled__mutmut_orig.__name__ = "x_get_cache_enabled"
 
 
 def x_get_cache_size__mutmut_orig() -> int:
@@ -127,16 +140,19 @@ def x_get_cache_size__mutmut_1() -> int:
     config = None
     return config.cache_size
 
-x_get_cache_size__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_cache_size__mutmut_1': x_get_cache_size__mutmut_1
+
+x_get_cache_size__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_cache_size__mutmut_1": x_get_cache_size__mutmut_1
 }
+
 
 def get_cache_size(*args, **kwargs):
     result = _mutmut_trampoline(x_get_cache_size__mutmut_orig, x_get_cache_size__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_cache_size.__signature__ = _mutmut_signature(x_get_cache_size__mutmut_orig)
-x_get_cache_size__mutmut_orig.__name__ = 'x_get_cache_size'
+x_get_cache_size__mutmut_orig.__name__ = "x_get_cache_size"
 
 
 def x_get_serialization_cache__mutmut_orig() -> LRUCache:
@@ -243,7 +259,9 @@ def x_get_serialization_cache__mutmut_8() -> LRUCache:
 
         config = _get_cache_config()
         _serialization_cache = LRUCache(maxsize=config.cache_size)
-        register_cache("serialization", )
+        register_cache(
+            "serialization",
+        )
     return _serialization_cache
 
 
@@ -270,25 +288,30 @@ def x_get_serialization_cache__mutmut_10() -> LRUCache:
         register_cache("SERIALIZATION", _serialization_cache)
     return _serialization_cache
 
-x_get_serialization_cache__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_serialization_cache__mutmut_1': x_get_serialization_cache__mutmut_1, 
-    'x_get_serialization_cache__mutmut_2': x_get_serialization_cache__mutmut_2, 
-    'x_get_serialization_cache__mutmut_3': x_get_serialization_cache__mutmut_3, 
-    'x_get_serialization_cache__mutmut_4': x_get_serialization_cache__mutmut_4, 
-    'x_get_serialization_cache__mutmut_5': x_get_serialization_cache__mutmut_5, 
-    'x_get_serialization_cache__mutmut_6': x_get_serialization_cache__mutmut_6, 
-    'x_get_serialization_cache__mutmut_7': x_get_serialization_cache__mutmut_7, 
-    'x_get_serialization_cache__mutmut_8': x_get_serialization_cache__mutmut_8, 
-    'x_get_serialization_cache__mutmut_9': x_get_serialization_cache__mutmut_9, 
-    'x_get_serialization_cache__mutmut_10': x_get_serialization_cache__mutmut_10
+
+x_get_serialization_cache__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_serialization_cache__mutmut_1": x_get_serialization_cache__mutmut_1,
+    "x_get_serialization_cache__mutmut_2": x_get_serialization_cache__mutmut_2,
+    "x_get_serialization_cache__mutmut_3": x_get_serialization_cache__mutmut_3,
+    "x_get_serialization_cache__mutmut_4": x_get_serialization_cache__mutmut_4,
+    "x_get_serialization_cache__mutmut_5": x_get_serialization_cache__mutmut_5,
+    "x_get_serialization_cache__mutmut_6": x_get_serialization_cache__mutmut_6,
+    "x_get_serialization_cache__mutmut_7": x_get_serialization_cache__mutmut_7,
+    "x_get_serialization_cache__mutmut_8": x_get_serialization_cache__mutmut_8,
+    "x_get_serialization_cache__mutmut_9": x_get_serialization_cache__mutmut_9,
+    "x_get_serialization_cache__mutmut_10": x_get_serialization_cache__mutmut_10,
 }
 
+
 def get_serialization_cache(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_serialization_cache__mutmut_orig, x_get_serialization_cache__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_serialization_cache__mutmut_orig, x_get_serialization_cache__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_serialization_cache.__signature__ = _mutmut_signature(x_get_serialization_cache__mutmut_orig)
-x_get_serialization_cache__mutmut_orig.__name__ = 'x_get_serialization_cache'
+x_get_serialization_cache__mutmut_orig.__name__ = "x_get_serialization_cache"
 
 
 def x_reset_serialization_cache_config__mutmut_orig() -> None:
@@ -311,17 +334,27 @@ def x_reset_serialization_cache_config__mutmut_2() -> None:
     _cached_config = None
     _serialization_cache = ""
 
-x_reset_serialization_cache_config__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_serialization_cache_config__mutmut_1': x_reset_serialization_cache_config__mutmut_1, 
-    'x_reset_serialization_cache_config__mutmut_2': x_reset_serialization_cache_config__mutmut_2
+
+x_reset_serialization_cache_config__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_serialization_cache_config__mutmut_1": x_reset_serialization_cache_config__mutmut_1,
+    "x_reset_serialization_cache_config__mutmut_2": x_reset_serialization_cache_config__mutmut_2,
 }
 
-def reset_serialization_cache_config(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_serialization_cache_config__mutmut_orig, x_reset_serialization_cache_config__mutmut_mutants, args, kwargs)
-    return result 
 
-reset_serialization_cache_config.__signature__ = _mutmut_signature(x_reset_serialization_cache_config__mutmut_orig)
-x_reset_serialization_cache_config__mutmut_orig.__name__ = 'x_reset_serialization_cache_config'
+def reset_serialization_cache_config(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_reset_serialization_cache_config__mutmut_orig,
+        x_reset_serialization_cache_config__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+reset_serialization_cache_config.__signature__ = _mutmut_signature(
+    x_reset_serialization_cache_config__mutmut_orig
+)
+x_reset_serialization_cache_config__mutmut_orig.__name__ = "x_reset_serialization_cache_config"
 
 
 # Convenience constants - use functions for actual access
@@ -389,18 +422,21 @@ def x_get_cache_key__mutmut_3(content: str, format: str) -> str:
     content_hash = hashlib.sha256(content.encode()).hexdigest()[:17]
     return f"{format}:{content_hash}"
 
-x_get_cache_key__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_cache_key__mutmut_1': x_get_cache_key__mutmut_1, 
-    'x_get_cache_key__mutmut_2': x_get_cache_key__mutmut_2, 
-    'x_get_cache_key__mutmut_3': x_get_cache_key__mutmut_3
+
+x_get_cache_key__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_cache_key__mutmut_1": x_get_cache_key__mutmut_1,
+    "x_get_cache_key__mutmut_2": x_get_cache_key__mutmut_2,
+    "x_get_cache_key__mutmut_3": x_get_cache_key__mutmut_3,
 }
+
 
 def get_cache_key(*args, **kwargs):
     result = _mutmut_trampoline(x_get_cache_key__mutmut_orig, x_get_cache_key__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_cache_key.__signature__ = _mutmut_signature(x_get_cache_key__mutmut_orig)
-x_get_cache_key__mutmut_orig.__name__ = 'x_get_cache_key'
+x_get_cache_key__mutmut_orig.__name__ = "x_get_cache_key"
 
 
 __all__ = [

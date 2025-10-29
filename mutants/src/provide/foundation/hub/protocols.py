@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -144,18 +147,24 @@ class AsyncContextResource(AbstractAsyncContextManager[Any]):
         """Initialize with a resource factory."""
         self._resource_factory = resource_factory
         self._resource: Any = ""
-    
-    xǁAsyncContextResourceǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncContextResourceǁ__init____mutmut_1': xǁAsyncContextResourceǁ__init____mutmut_1, 
-        'xǁAsyncContextResourceǁ__init____mutmut_2': xǁAsyncContextResourceǁ__init____mutmut_2
+
+    xǁAsyncContextResourceǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncContextResourceǁ__init____mutmut_1": xǁAsyncContextResourceǁ__init____mutmut_1,
+        "xǁAsyncContextResourceǁ__init____mutmut_2": xǁAsyncContextResourceǁ__init____mutmut_2,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncContextResourceǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁAsyncContextResourceǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncContextResourceǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncContextResourceǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁAsyncContextResourceǁ__init____mutmut_orig)
-    xǁAsyncContextResourceǁ__init____mutmut_orig.__name__ = 'xǁAsyncContextResourceǁ__init__'
+    xǁAsyncContextResourceǁ__init____mutmut_orig.__name__ = "xǁAsyncContextResourceǁ__init__"
 
     async def xǁAsyncContextResourceǁ__aenter____mutmut_orig(self) -> Any:
         """Enter async context and acquire resource."""
@@ -166,146 +175,192 @@ class AsyncContextResource(AbstractAsyncContextManager[Any]):
         """Enter async context and acquire resource."""
         self._resource = None
         return self._resource
-    
-    xǁAsyncContextResourceǁ__aenter____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncContextResourceǁ__aenter____mutmut_1': xǁAsyncContextResourceǁ__aenter____mutmut_1
-    }
-    
-    def __aenter__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncContextResourceǁ__aenter____mutmut_orig"), object.__getattribute__(self, "xǁAsyncContextResourceǁ__aenter____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    __aenter__.__signature__ = _mutmut_signature(xǁAsyncContextResourceǁ__aenter____mutmut_orig)
-    xǁAsyncContextResourceǁ__aenter____mutmut_orig.__name__ = 'xǁAsyncContextResourceǁ__aenter__'
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_orig(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    xǁAsyncContextResourceǁ__aenter____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncContextResourceǁ__aenter____mutmut_1": xǁAsyncContextResourceǁ__aenter____mutmut_1
+    }
+
+    def __aenter__(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncContextResourceǁ__aenter____mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncContextResourceǁ__aenter____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    __aenter__.__signature__ = _mutmut_signature(xǁAsyncContextResourceǁ__aenter____mutmut_orig)
+    xǁAsyncContextResourceǁ__aenter____mutmut_orig.__name__ = "xǁAsyncContextResourceǁ__aenter__"
+
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_orig(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "dispose_async"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_1(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_1(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource or hasattr(self._resource, "dispose_async"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_2(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_2(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(None, "dispose_async"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_3(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_3(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, None):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_4(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_4(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr("dispose_async"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_5(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_5(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
-        if self._resource and hasattr(self._resource, ):
+        if self._resource and hasattr(
+            self._resource,
+        ):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_6(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_6(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "XXdispose_asyncXX"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_7(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_7(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "DISPOSE_ASYNC"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_8(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_8(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "dispose_async"):
             await self._resource.dispose_async()
         elif self._resource or hasattr(self._resource, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_9(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_9(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "dispose_async"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(None, "dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_10(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_10(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "dispose_async"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, None):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_11(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_11(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "dispose_async"):
             await self._resource.dispose_async()
         elif self._resource and hasattr("dispose"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_12(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_12(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "dispose_async"):
             await self._resource.dispose_async()
-        elif self._resource and hasattr(self._resource, ):
+        elif self._resource and hasattr(
+            self._resource,
+        ):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_13(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_13(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "dispose_async"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "XXdisposeXX"):
             self._resource.dispose()
 
-    async def xǁAsyncContextResourceǁ__aexit____mutmut_14(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    async def xǁAsyncContextResourceǁ__aexit____mutmut_14(
+        self, exc_type: Any, exc_val: Any, exc_tb: Any
+    ) -> None:
         """Exit async context and cleanup resource."""
         if self._resource and hasattr(self._resource, "dispose_async"):
             await self._resource.dispose_async()
         elif self._resource and hasattr(self._resource, "DISPOSE"):
             self._resource.dispose()
-    
-    xǁAsyncContextResourceǁ__aexit____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncContextResourceǁ__aexit____mutmut_1': xǁAsyncContextResourceǁ__aexit____mutmut_1, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_2': xǁAsyncContextResourceǁ__aexit____mutmut_2, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_3': xǁAsyncContextResourceǁ__aexit____mutmut_3, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_4': xǁAsyncContextResourceǁ__aexit____mutmut_4, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_5': xǁAsyncContextResourceǁ__aexit____mutmut_5, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_6': xǁAsyncContextResourceǁ__aexit____mutmut_6, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_7': xǁAsyncContextResourceǁ__aexit____mutmut_7, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_8': xǁAsyncContextResourceǁ__aexit____mutmut_8, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_9': xǁAsyncContextResourceǁ__aexit____mutmut_9, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_10': xǁAsyncContextResourceǁ__aexit____mutmut_10, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_11': xǁAsyncContextResourceǁ__aexit____mutmut_11, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_12': xǁAsyncContextResourceǁ__aexit____mutmut_12, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_13': xǁAsyncContextResourceǁ__aexit____mutmut_13, 
-        'xǁAsyncContextResourceǁ__aexit____mutmut_14': xǁAsyncContextResourceǁ__aexit____mutmut_14
+
+    xǁAsyncContextResourceǁ__aexit____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncContextResourceǁ__aexit____mutmut_1": xǁAsyncContextResourceǁ__aexit____mutmut_1,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_2": xǁAsyncContextResourceǁ__aexit____mutmut_2,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_3": xǁAsyncContextResourceǁ__aexit____mutmut_3,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_4": xǁAsyncContextResourceǁ__aexit____mutmut_4,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_5": xǁAsyncContextResourceǁ__aexit____mutmut_5,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_6": xǁAsyncContextResourceǁ__aexit____mutmut_6,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_7": xǁAsyncContextResourceǁ__aexit____mutmut_7,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_8": xǁAsyncContextResourceǁ__aexit____mutmut_8,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_9": xǁAsyncContextResourceǁ__aexit____mutmut_9,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_10": xǁAsyncContextResourceǁ__aexit____mutmut_10,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_11": xǁAsyncContextResourceǁ__aexit____mutmut_11,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_12": xǁAsyncContextResourceǁ__aexit____mutmut_12,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_13": xǁAsyncContextResourceǁ__aexit____mutmut_13,
+        "xǁAsyncContextResourceǁ__aexit____mutmut_14": xǁAsyncContextResourceǁ__aexit____mutmut_14,
     }
-    
+
     def __aexit__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncContextResourceǁ__aexit____mutmut_orig"), object.__getattribute__(self, "xǁAsyncContextResourceǁ__aexit____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncContextResourceǁ__aexit____mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncContextResourceǁ__aexit____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __aexit__.__signature__ = _mutmut_signature(xǁAsyncContextResourceǁ__aexit____mutmut_orig)
-    xǁAsyncContextResourceǁ__aexit____mutmut_orig.__name__ = 'xǁAsyncContextResourceǁ__aexit__'
+    xǁAsyncContextResourceǁ__aexit____mutmut_orig.__name__ = "xǁAsyncContextResourceǁ__aexit__"
 
 
 __all__ = [

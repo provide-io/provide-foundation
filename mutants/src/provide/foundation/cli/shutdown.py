@@ -40,23 +40,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -300,7 +303,9 @@ def x__cleanup_foundation_resources__mutmut_6() -> None:
     except Exception as e:
         # Log cleanup errors but don't raise - we're already exiting
         try:
-            log.error("Error during cleanup", )
+            log.error(
+                "Error during cleanup",
+            )
         except Exception:
             # If logging fails, use Foundation's console output as last resort
             perr(f"Error during cleanup: {e}")
@@ -470,26 +475,34 @@ def x__cleanup_foundation_resources__mutmut_11() -> None:
             # If logging fails, use Foundation's console output as last resort
             perr(None)
 
-x__cleanup_foundation_resources__mutmut_mutants : ClassVar[MutantDict] = {
-'x__cleanup_foundation_resources__mutmut_1': x__cleanup_foundation_resources__mutmut_1, 
-    'x__cleanup_foundation_resources__mutmut_2': x__cleanup_foundation_resources__mutmut_2, 
-    'x__cleanup_foundation_resources__mutmut_3': x__cleanup_foundation_resources__mutmut_3, 
-    'x__cleanup_foundation_resources__mutmut_4': x__cleanup_foundation_resources__mutmut_4, 
-    'x__cleanup_foundation_resources__mutmut_5': x__cleanup_foundation_resources__mutmut_5, 
-    'x__cleanup_foundation_resources__mutmut_6': x__cleanup_foundation_resources__mutmut_6, 
-    'x__cleanup_foundation_resources__mutmut_7': x__cleanup_foundation_resources__mutmut_7, 
-    'x__cleanup_foundation_resources__mutmut_8': x__cleanup_foundation_resources__mutmut_8, 
-    'x__cleanup_foundation_resources__mutmut_9': x__cleanup_foundation_resources__mutmut_9, 
-    'x__cleanup_foundation_resources__mutmut_10': x__cleanup_foundation_resources__mutmut_10, 
-    'x__cleanup_foundation_resources__mutmut_11': x__cleanup_foundation_resources__mutmut_11
+
+x__cleanup_foundation_resources__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__cleanup_foundation_resources__mutmut_1": x__cleanup_foundation_resources__mutmut_1,
+    "x__cleanup_foundation_resources__mutmut_2": x__cleanup_foundation_resources__mutmut_2,
+    "x__cleanup_foundation_resources__mutmut_3": x__cleanup_foundation_resources__mutmut_3,
+    "x__cleanup_foundation_resources__mutmut_4": x__cleanup_foundation_resources__mutmut_4,
+    "x__cleanup_foundation_resources__mutmut_5": x__cleanup_foundation_resources__mutmut_5,
+    "x__cleanup_foundation_resources__mutmut_6": x__cleanup_foundation_resources__mutmut_6,
+    "x__cleanup_foundation_resources__mutmut_7": x__cleanup_foundation_resources__mutmut_7,
+    "x__cleanup_foundation_resources__mutmut_8": x__cleanup_foundation_resources__mutmut_8,
+    "x__cleanup_foundation_resources__mutmut_9": x__cleanup_foundation_resources__mutmut_9,
+    "x__cleanup_foundation_resources__mutmut_10": x__cleanup_foundation_resources__mutmut_10,
+    "x__cleanup_foundation_resources__mutmut_11": x__cleanup_foundation_resources__mutmut_11,
 }
 
+
 def _cleanup_foundation_resources(*args, **kwargs):
-    result = _mutmut_trampoline(x__cleanup_foundation_resources__mutmut_orig, x__cleanup_foundation_resources__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__cleanup_foundation_resources__mutmut_orig,
+        x__cleanup_foundation_resources__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 _cleanup_foundation_resources.__signature__ = _mutmut_signature(x__cleanup_foundation_resources__mutmut_orig)
-x__cleanup_foundation_resources__mutmut_orig.__name__ = 'x__cleanup_foundation_resources'
+x__cleanup_foundation_resources__mutmut_orig.__name__ = "x__cleanup_foundation_resources"
 
 
 def x__signal_handler__mutmut_orig(signum: int, frame: Any) -> None:
@@ -617,21 +630,26 @@ def x__signal_handler__mutmut_6(signum: int, frame: Any) -> None:
     # Exit with appropriate code
     sys.exit(EXIT_SIGINT if signum == signal.SIGINT else 2)
 
-x__signal_handler__mutmut_mutants : ClassVar[MutantDict] = {
-'x__signal_handler__mutmut_1': x__signal_handler__mutmut_1, 
-    'x__signal_handler__mutmut_2': x__signal_handler__mutmut_2, 
-    'x__signal_handler__mutmut_3': x__signal_handler__mutmut_3, 
-    'x__signal_handler__mutmut_4': x__signal_handler__mutmut_4, 
-    'x__signal_handler__mutmut_5': x__signal_handler__mutmut_5, 
-    'x__signal_handler__mutmut_6': x__signal_handler__mutmut_6
+
+x__signal_handler__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__signal_handler__mutmut_1": x__signal_handler__mutmut_1,
+    "x__signal_handler__mutmut_2": x__signal_handler__mutmut_2,
+    "x__signal_handler__mutmut_3": x__signal_handler__mutmut_3,
+    "x__signal_handler__mutmut_4": x__signal_handler__mutmut_4,
+    "x__signal_handler__mutmut_5": x__signal_handler__mutmut_5,
+    "x__signal_handler__mutmut_6": x__signal_handler__mutmut_6,
 }
 
+
 def _signal_handler(*args, **kwargs):
-    result = _mutmut_trampoline(x__signal_handler__mutmut_orig, x__signal_handler__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__signal_handler__mutmut_orig, x__signal_handler__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _signal_handler.__signature__ = _mutmut_signature(x__signal_handler__mutmut_orig)
-x__signal_handler__mutmut_orig.__name__ = 'x__signal_handler'
+x__signal_handler__mutmut_orig.__name__ = "x__signal_handler"
 
 
 def x__restore_signal_handlers__mutmut_orig() -> None:
@@ -772,7 +790,9 @@ def x__restore_signal_handlers__mutmut_6() -> None:
         return
 
     if _original_sigint_handler is not None:
-        signal.signal(signal.SIGINT, )
+        signal.signal(
+            signal.SIGINT,
+        )
 
     if _original_sigterm_handler is not None:
         signal.signal(signal.SIGTERM, _original_sigterm_handler)
@@ -880,7 +900,9 @@ def x__restore_signal_handlers__mutmut_11() -> None:
         signal.signal(signal.SIGINT, _original_sigint_handler)
 
     if _original_sigterm_handler is not None:
-        signal.signal(signal.SIGTERM, )
+        signal.signal(
+            signal.SIGTERM,
+        )
 
     _handlers_registered = False
     log.trace("Restored original signal handlers")
@@ -1011,32 +1033,37 @@ def x__restore_signal_handlers__mutmut_17() -> None:
     _handlers_registered = False
     log.trace("RESTORED ORIGINAL SIGNAL HANDLERS")
 
-x__restore_signal_handlers__mutmut_mutants : ClassVar[MutantDict] = {
-'x__restore_signal_handlers__mutmut_1': x__restore_signal_handlers__mutmut_1, 
-    'x__restore_signal_handlers__mutmut_2': x__restore_signal_handlers__mutmut_2, 
-    'x__restore_signal_handlers__mutmut_3': x__restore_signal_handlers__mutmut_3, 
-    'x__restore_signal_handlers__mutmut_4': x__restore_signal_handlers__mutmut_4, 
-    'x__restore_signal_handlers__mutmut_5': x__restore_signal_handlers__mutmut_5, 
-    'x__restore_signal_handlers__mutmut_6': x__restore_signal_handlers__mutmut_6, 
-    'x__restore_signal_handlers__mutmut_7': x__restore_signal_handlers__mutmut_7, 
-    'x__restore_signal_handlers__mutmut_8': x__restore_signal_handlers__mutmut_8, 
-    'x__restore_signal_handlers__mutmut_9': x__restore_signal_handlers__mutmut_9, 
-    'x__restore_signal_handlers__mutmut_10': x__restore_signal_handlers__mutmut_10, 
-    'x__restore_signal_handlers__mutmut_11': x__restore_signal_handlers__mutmut_11, 
-    'x__restore_signal_handlers__mutmut_12': x__restore_signal_handlers__mutmut_12, 
-    'x__restore_signal_handlers__mutmut_13': x__restore_signal_handlers__mutmut_13, 
-    'x__restore_signal_handlers__mutmut_14': x__restore_signal_handlers__mutmut_14, 
-    'x__restore_signal_handlers__mutmut_15': x__restore_signal_handlers__mutmut_15, 
-    'x__restore_signal_handlers__mutmut_16': x__restore_signal_handlers__mutmut_16, 
-    'x__restore_signal_handlers__mutmut_17': x__restore_signal_handlers__mutmut_17
+
+x__restore_signal_handlers__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__restore_signal_handlers__mutmut_1": x__restore_signal_handlers__mutmut_1,
+    "x__restore_signal_handlers__mutmut_2": x__restore_signal_handlers__mutmut_2,
+    "x__restore_signal_handlers__mutmut_3": x__restore_signal_handlers__mutmut_3,
+    "x__restore_signal_handlers__mutmut_4": x__restore_signal_handlers__mutmut_4,
+    "x__restore_signal_handlers__mutmut_5": x__restore_signal_handlers__mutmut_5,
+    "x__restore_signal_handlers__mutmut_6": x__restore_signal_handlers__mutmut_6,
+    "x__restore_signal_handlers__mutmut_7": x__restore_signal_handlers__mutmut_7,
+    "x__restore_signal_handlers__mutmut_8": x__restore_signal_handlers__mutmut_8,
+    "x__restore_signal_handlers__mutmut_9": x__restore_signal_handlers__mutmut_9,
+    "x__restore_signal_handlers__mutmut_10": x__restore_signal_handlers__mutmut_10,
+    "x__restore_signal_handlers__mutmut_11": x__restore_signal_handlers__mutmut_11,
+    "x__restore_signal_handlers__mutmut_12": x__restore_signal_handlers__mutmut_12,
+    "x__restore_signal_handlers__mutmut_13": x__restore_signal_handlers__mutmut_13,
+    "x__restore_signal_handlers__mutmut_14": x__restore_signal_handlers__mutmut_14,
+    "x__restore_signal_handlers__mutmut_15": x__restore_signal_handlers__mutmut_15,
+    "x__restore_signal_handlers__mutmut_16": x__restore_signal_handlers__mutmut_16,
+    "x__restore_signal_handlers__mutmut_17": x__restore_signal_handlers__mutmut_17,
 }
 
+
 def _restore_signal_handlers(*args, **kwargs):
-    result = _mutmut_trampoline(x__restore_signal_handlers__mutmut_orig, x__restore_signal_handlers__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__restore_signal_handlers__mutmut_orig, x__restore_signal_handlers__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _restore_signal_handlers.__signature__ = _mutmut_signature(x__restore_signal_handlers__mutmut_orig)
-x__restore_signal_handlers__mutmut_orig.__name__ = 'x__restore_signal_handlers'
+x__restore_signal_handlers__mutmut_orig.__name__ = "x__restore_signal_handlers"
 
 
 def x_register_cleanup_handlers__mutmut_orig(*, manage_signals: bool = True) -> None:
@@ -1437,7 +1464,9 @@ def x_register_cleanup_handlers__mutmut_10(*, manage_signals: bool = True) -> No
         _original_sigterm_handler = signal.getsignal(signal.SIGTERM)
 
         # Register our handlers
-        signal.signal(signal.SIGINT, )
+        signal.signal(
+            signal.SIGINT,
+        )
         signal.signal(signal.SIGTERM, _signal_handler)
 
         _handlers_registered = True
@@ -1586,7 +1615,9 @@ def x_register_cleanup_handlers__mutmut_14(*, manage_signals: bool = True) -> No
 
         # Register our handlers
         signal.signal(signal.SIGINT, _signal_handler)
-        signal.signal(signal.SIGTERM, )
+        signal.signal(
+            signal.SIGTERM,
+        )
 
         _handlers_registered = True
         log.trace("Registered cleanup handlers with signal management")
@@ -1963,39 +1994,44 @@ def x_register_cleanup_handlers__mutmut_24(*, manage_signals: bool = True) -> No
     else:
         log.trace("REGISTERED CLEANUP HANDLERS (SIGNAL MANAGEMENT DISABLED)")
 
-x_register_cleanup_handlers__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register_cleanup_handlers__mutmut_1': x_register_cleanup_handlers__mutmut_1, 
-    'x_register_cleanup_handlers__mutmut_2': x_register_cleanup_handlers__mutmut_2, 
-    'x_register_cleanup_handlers__mutmut_3': x_register_cleanup_handlers__mutmut_3, 
-    'x_register_cleanup_handlers__mutmut_4': x_register_cleanup_handlers__mutmut_4, 
-    'x_register_cleanup_handlers__mutmut_5': x_register_cleanup_handlers__mutmut_5, 
-    'x_register_cleanup_handlers__mutmut_6': x_register_cleanup_handlers__mutmut_6, 
-    'x_register_cleanup_handlers__mutmut_7': x_register_cleanup_handlers__mutmut_7, 
-    'x_register_cleanup_handlers__mutmut_8': x_register_cleanup_handlers__mutmut_8, 
-    'x_register_cleanup_handlers__mutmut_9': x_register_cleanup_handlers__mutmut_9, 
-    'x_register_cleanup_handlers__mutmut_10': x_register_cleanup_handlers__mutmut_10, 
-    'x_register_cleanup_handlers__mutmut_11': x_register_cleanup_handlers__mutmut_11, 
-    'x_register_cleanup_handlers__mutmut_12': x_register_cleanup_handlers__mutmut_12, 
-    'x_register_cleanup_handlers__mutmut_13': x_register_cleanup_handlers__mutmut_13, 
-    'x_register_cleanup_handlers__mutmut_14': x_register_cleanup_handlers__mutmut_14, 
-    'x_register_cleanup_handlers__mutmut_15': x_register_cleanup_handlers__mutmut_15, 
-    'x_register_cleanup_handlers__mutmut_16': x_register_cleanup_handlers__mutmut_16, 
-    'x_register_cleanup_handlers__mutmut_17': x_register_cleanup_handlers__mutmut_17, 
-    'x_register_cleanup_handlers__mutmut_18': x_register_cleanup_handlers__mutmut_18, 
-    'x_register_cleanup_handlers__mutmut_19': x_register_cleanup_handlers__mutmut_19, 
-    'x_register_cleanup_handlers__mutmut_20': x_register_cleanup_handlers__mutmut_20, 
-    'x_register_cleanup_handlers__mutmut_21': x_register_cleanup_handlers__mutmut_21, 
-    'x_register_cleanup_handlers__mutmut_22': x_register_cleanup_handlers__mutmut_22, 
-    'x_register_cleanup_handlers__mutmut_23': x_register_cleanup_handlers__mutmut_23, 
-    'x_register_cleanup_handlers__mutmut_24': x_register_cleanup_handlers__mutmut_24
+
+x_register_cleanup_handlers__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register_cleanup_handlers__mutmut_1": x_register_cleanup_handlers__mutmut_1,
+    "x_register_cleanup_handlers__mutmut_2": x_register_cleanup_handlers__mutmut_2,
+    "x_register_cleanup_handlers__mutmut_3": x_register_cleanup_handlers__mutmut_3,
+    "x_register_cleanup_handlers__mutmut_4": x_register_cleanup_handlers__mutmut_4,
+    "x_register_cleanup_handlers__mutmut_5": x_register_cleanup_handlers__mutmut_5,
+    "x_register_cleanup_handlers__mutmut_6": x_register_cleanup_handlers__mutmut_6,
+    "x_register_cleanup_handlers__mutmut_7": x_register_cleanup_handlers__mutmut_7,
+    "x_register_cleanup_handlers__mutmut_8": x_register_cleanup_handlers__mutmut_8,
+    "x_register_cleanup_handlers__mutmut_9": x_register_cleanup_handlers__mutmut_9,
+    "x_register_cleanup_handlers__mutmut_10": x_register_cleanup_handlers__mutmut_10,
+    "x_register_cleanup_handlers__mutmut_11": x_register_cleanup_handlers__mutmut_11,
+    "x_register_cleanup_handlers__mutmut_12": x_register_cleanup_handlers__mutmut_12,
+    "x_register_cleanup_handlers__mutmut_13": x_register_cleanup_handlers__mutmut_13,
+    "x_register_cleanup_handlers__mutmut_14": x_register_cleanup_handlers__mutmut_14,
+    "x_register_cleanup_handlers__mutmut_15": x_register_cleanup_handlers__mutmut_15,
+    "x_register_cleanup_handlers__mutmut_16": x_register_cleanup_handlers__mutmut_16,
+    "x_register_cleanup_handlers__mutmut_17": x_register_cleanup_handlers__mutmut_17,
+    "x_register_cleanup_handlers__mutmut_18": x_register_cleanup_handlers__mutmut_18,
+    "x_register_cleanup_handlers__mutmut_19": x_register_cleanup_handlers__mutmut_19,
+    "x_register_cleanup_handlers__mutmut_20": x_register_cleanup_handlers__mutmut_20,
+    "x_register_cleanup_handlers__mutmut_21": x_register_cleanup_handlers__mutmut_21,
+    "x_register_cleanup_handlers__mutmut_22": x_register_cleanup_handlers__mutmut_22,
+    "x_register_cleanup_handlers__mutmut_23": x_register_cleanup_handlers__mutmut_23,
+    "x_register_cleanup_handlers__mutmut_24": x_register_cleanup_handlers__mutmut_24,
 }
 
+
 def register_cleanup_handlers(*args, **kwargs):
-    result = _mutmut_trampoline(x_register_cleanup_handlers__mutmut_orig, x_register_cleanup_handlers__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_register_cleanup_handlers__mutmut_orig, x_register_cleanup_handlers__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 register_cleanup_handlers.__signature__ = _mutmut_signature(x_register_cleanup_handlers__mutmut_orig)
-x_register_cleanup_handlers__mutmut_orig.__name__ = 'x_register_cleanup_handlers'
+x_register_cleanup_handlers__mutmut_orig.__name__ = "x_register_cleanup_handlers"
 
 
 def x_unregister_cleanup_handlers__mutmut_orig() -> None:
@@ -2177,23 +2213,28 @@ def x_unregister_cleanup_handlers__mutmut_8() -> None:
 
     log.trace("UNREGISTER CLEANUP HANDLERS")
 
-x_unregister_cleanup_handlers__mutmut_mutants : ClassVar[MutantDict] = {
-'x_unregister_cleanup_handlers__mutmut_1': x_unregister_cleanup_handlers__mutmut_1, 
-    'x_unregister_cleanup_handlers__mutmut_2': x_unregister_cleanup_handlers__mutmut_2, 
-    'x_unregister_cleanup_handlers__mutmut_3': x_unregister_cleanup_handlers__mutmut_3, 
-    'x_unregister_cleanup_handlers__mutmut_4': x_unregister_cleanup_handlers__mutmut_4, 
-    'x_unregister_cleanup_handlers__mutmut_5': x_unregister_cleanup_handlers__mutmut_5, 
-    'x_unregister_cleanup_handlers__mutmut_6': x_unregister_cleanup_handlers__mutmut_6, 
-    'x_unregister_cleanup_handlers__mutmut_7': x_unregister_cleanup_handlers__mutmut_7, 
-    'x_unregister_cleanup_handlers__mutmut_8': x_unregister_cleanup_handlers__mutmut_8
+
+x_unregister_cleanup_handlers__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_unregister_cleanup_handlers__mutmut_1": x_unregister_cleanup_handlers__mutmut_1,
+    "x_unregister_cleanup_handlers__mutmut_2": x_unregister_cleanup_handlers__mutmut_2,
+    "x_unregister_cleanup_handlers__mutmut_3": x_unregister_cleanup_handlers__mutmut_3,
+    "x_unregister_cleanup_handlers__mutmut_4": x_unregister_cleanup_handlers__mutmut_4,
+    "x_unregister_cleanup_handlers__mutmut_5": x_unregister_cleanup_handlers__mutmut_5,
+    "x_unregister_cleanup_handlers__mutmut_6": x_unregister_cleanup_handlers__mutmut_6,
+    "x_unregister_cleanup_handlers__mutmut_7": x_unregister_cleanup_handlers__mutmut_7,
+    "x_unregister_cleanup_handlers__mutmut_8": x_unregister_cleanup_handlers__mutmut_8,
 }
 
+
 def unregister_cleanup_handlers(*args, **kwargs):
-    result = _mutmut_trampoline(x_unregister_cleanup_handlers__mutmut_orig, x_unregister_cleanup_handlers__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_unregister_cleanup_handlers__mutmut_orig, x_unregister_cleanup_handlers__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 unregister_cleanup_handlers.__signature__ = _mutmut_signature(x_unregister_cleanup_handlers__mutmut_orig)
-x_unregister_cleanup_handlers__mutmut_orig.__name__ = 'x_unregister_cleanup_handlers'
+x_unregister_cleanup_handlers__mutmut_orig.__name__ = "x_unregister_cleanup_handlers"
 
 
 # Type variables for decorator

@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -59,18 +62,24 @@ class ConfigError(FoundationError):
 
     def xǁConfigErrorǁ_default_code__mutmut_2(self) -> str:
         return "config_error"
-    
-    xǁConfigErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigErrorǁ_default_code__mutmut_1': xǁConfigErrorǁ_default_code__mutmut_1, 
-        'xǁConfigErrorǁ_default_code__mutmut_2': xǁConfigErrorǁ_default_code__mutmut_2
+
+    xǁConfigErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigErrorǁ_default_code__mutmut_1": xǁConfigErrorǁ_default_code__mutmut_1,
+        "xǁConfigErrorǁ_default_code__mutmut_2": xǁConfigErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁConfigErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁConfigErrorǁ_default_code__mutmut_orig)
-    xǁConfigErrorǁ_default_code__mutmut_orig.__name__ = 'xǁConfigErrorǁ_default_code'
+    xǁConfigErrorǁ_default_code__mutmut_orig.__name__ = "xǁConfigErrorǁ_default_code"
 
 
 class ParseError(ConfigError):
@@ -296,28 +305,34 @@ class ParseError(ConfigError):
             field_name=field_name,
             expected_type=expected_type,
             valid_options=valid_options,
-            )
-    
-    xǁParseErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁParseErrorǁ__init____mutmut_1': xǁParseErrorǁ__init____mutmut_1, 
-        'xǁParseErrorǁ__init____mutmut_2': xǁParseErrorǁ__init____mutmut_2, 
-        'xǁParseErrorǁ__init____mutmut_3': xǁParseErrorǁ__init____mutmut_3, 
-        'xǁParseErrorǁ__init____mutmut_4': xǁParseErrorǁ__init____mutmut_4, 
-        'xǁParseErrorǁ__init____mutmut_5': xǁParseErrorǁ__init____mutmut_5, 
-        'xǁParseErrorǁ__init____mutmut_6': xǁParseErrorǁ__init____mutmut_6, 
-        'xǁParseErrorǁ__init____mutmut_7': xǁParseErrorǁ__init____mutmut_7, 
-        'xǁParseErrorǁ__init____mutmut_8': xǁParseErrorǁ__init____mutmut_8, 
-        'xǁParseErrorǁ__init____mutmut_9': xǁParseErrorǁ__init____mutmut_9, 
-        'xǁParseErrorǁ__init____mutmut_10': xǁParseErrorǁ__init____mutmut_10, 
-        'xǁParseErrorǁ__init____mutmut_11': xǁParseErrorǁ__init____mutmut_11
+        )
+
+    xǁParseErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁParseErrorǁ__init____mutmut_1": xǁParseErrorǁ__init____mutmut_1,
+        "xǁParseErrorǁ__init____mutmut_2": xǁParseErrorǁ__init____mutmut_2,
+        "xǁParseErrorǁ__init____mutmut_3": xǁParseErrorǁ__init____mutmut_3,
+        "xǁParseErrorǁ__init____mutmut_4": xǁParseErrorǁ__init____mutmut_4,
+        "xǁParseErrorǁ__init____mutmut_5": xǁParseErrorǁ__init____mutmut_5,
+        "xǁParseErrorǁ__init____mutmut_6": xǁParseErrorǁ__init____mutmut_6,
+        "xǁParseErrorǁ__init____mutmut_7": xǁParseErrorǁ__init____mutmut_7,
+        "xǁParseErrorǁ__init____mutmut_8": xǁParseErrorǁ__init____mutmut_8,
+        "xǁParseErrorǁ__init____mutmut_9": xǁParseErrorǁ__init____mutmut_9,
+        "xǁParseErrorǁ__init____mutmut_10": xǁParseErrorǁ__init____mutmut_10,
+        "xǁParseErrorǁ__init____mutmut_11": xǁParseErrorǁ__init____mutmut_11,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁParseErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁParseErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁParseErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁParseErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁParseErrorǁ__init____mutmut_orig)
-    xǁParseErrorǁ__init____mutmut_orig.__name__ = 'xǁParseErrorǁ__init__'
+    xǁParseErrorǁ__init____mutmut_orig.__name__ = "xǁParseErrorǁ__init__"
 
     def xǁParseErrorǁ_default_code__mutmut_orig(self) -> str:
         return "PARSE_ERROR"
@@ -327,18 +342,24 @@ class ParseError(ConfigError):
 
     def xǁParseErrorǁ_default_code__mutmut_2(self) -> str:
         return "parse_error"
-    
-    xǁParseErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁParseErrorǁ_default_code__mutmut_1': xǁParseErrorǁ_default_code__mutmut_1, 
-        'xǁParseErrorǁ_default_code__mutmut_2': xǁParseErrorǁ_default_code__mutmut_2
+
+    xǁParseErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁParseErrorǁ_default_code__mutmut_1": xǁParseErrorǁ_default_code__mutmut_1,
+        "xǁParseErrorǁ_default_code__mutmut_2": xǁParseErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁParseErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁParseErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁParseErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁParseErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁParseErrorǁ_default_code__mutmut_orig)
-    xǁParseErrorǁ_default_code__mutmut_orig.__name__ = 'xǁParseErrorǁ_default_code'
+    xǁParseErrorǁ_default_code__mutmut_orig.__name__ = "xǁParseErrorǁ_default_code"
 
 
 class ValidationError(ConfigError):
@@ -507,26 +528,32 @@ class ValidationError(ConfigError):
             value=value,
             field_name=field_name,
             constraint=constraint,
-            )
-    
-    xǁValidationErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁValidationErrorǁ__init____mutmut_1': xǁValidationErrorǁ__init____mutmut_1, 
-        'xǁValidationErrorǁ__init____mutmut_2': xǁValidationErrorǁ__init____mutmut_2, 
-        'xǁValidationErrorǁ__init____mutmut_3': xǁValidationErrorǁ__init____mutmut_3, 
-        'xǁValidationErrorǁ__init____mutmut_4': xǁValidationErrorǁ__init____mutmut_4, 
-        'xǁValidationErrorǁ__init____mutmut_5': xǁValidationErrorǁ__init____mutmut_5, 
-        'xǁValidationErrorǁ__init____mutmut_6': xǁValidationErrorǁ__init____mutmut_6, 
-        'xǁValidationErrorǁ__init____mutmut_7': xǁValidationErrorǁ__init____mutmut_7, 
-        'xǁValidationErrorǁ__init____mutmut_8': xǁValidationErrorǁ__init____mutmut_8, 
-        'xǁValidationErrorǁ__init____mutmut_9': xǁValidationErrorǁ__init____mutmut_9
+        )
+
+    xǁValidationErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁValidationErrorǁ__init____mutmut_1": xǁValidationErrorǁ__init____mutmut_1,
+        "xǁValidationErrorǁ__init____mutmut_2": xǁValidationErrorǁ__init____mutmut_2,
+        "xǁValidationErrorǁ__init____mutmut_3": xǁValidationErrorǁ__init____mutmut_3,
+        "xǁValidationErrorǁ__init____mutmut_4": xǁValidationErrorǁ__init____mutmut_4,
+        "xǁValidationErrorǁ__init____mutmut_5": xǁValidationErrorǁ__init____mutmut_5,
+        "xǁValidationErrorǁ__init____mutmut_6": xǁValidationErrorǁ__init____mutmut_6,
+        "xǁValidationErrorǁ__init____mutmut_7": xǁValidationErrorǁ__init____mutmut_7,
+        "xǁValidationErrorǁ__init____mutmut_8": xǁValidationErrorǁ__init____mutmut_8,
+        "xǁValidationErrorǁ__init____mutmut_9": xǁValidationErrorǁ__init____mutmut_9,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁValidationErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁValidationErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁValidationErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁValidationErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁValidationErrorǁ__init____mutmut_orig)
-    xǁValidationErrorǁ__init____mutmut_orig.__name__ = 'xǁValidationErrorǁ__init__'
+    xǁValidationErrorǁ__init____mutmut_orig.__name__ = "xǁValidationErrorǁ__init__"
 
     def xǁValidationErrorǁ_default_code__mutmut_orig(self) -> str:
         return "VALIDATION_ERROR"
@@ -536,18 +563,24 @@ class ValidationError(ConfigError):
 
     def xǁValidationErrorǁ_default_code__mutmut_2(self) -> str:
         return "validation_error"
-    
-    xǁValidationErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁValidationErrorǁ_default_code__mutmut_1': xǁValidationErrorǁ_default_code__mutmut_1, 
-        'xǁValidationErrorǁ_default_code__mutmut_2': xǁValidationErrorǁ_default_code__mutmut_2
+
+    xǁValidationErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁValidationErrorǁ_default_code__mutmut_1": xǁValidationErrorǁ_default_code__mutmut_1,
+        "xǁValidationErrorǁ_default_code__mutmut_2": xǁValidationErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁValidationErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁValidationErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁValidationErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁValidationErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁValidationErrorǁ_default_code__mutmut_orig)
-    xǁValidationErrorǁ_default_code__mutmut_orig.__name__ = 'xǁValidationErrorǁ_default_code'
+    xǁValidationErrorǁ_default_code__mutmut_orig.__name__ = "xǁValidationErrorǁ_default_code"
 
 
 # Standardized error message formatters
@@ -936,23 +969,28 @@ def x_format_invalid_value_error__mutmut_8(
 
     return "XX XX".join(parts)
 
-x_format_invalid_value_error__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_invalid_value_error__mutmut_1': x_format_invalid_value_error__mutmut_1, 
-    'x_format_invalid_value_error__mutmut_2': x_format_invalid_value_error__mutmut_2, 
-    'x_format_invalid_value_error__mutmut_3': x_format_invalid_value_error__mutmut_3, 
-    'x_format_invalid_value_error__mutmut_4': x_format_invalid_value_error__mutmut_4, 
-    'x_format_invalid_value_error__mutmut_5': x_format_invalid_value_error__mutmut_5, 
-    'x_format_invalid_value_error__mutmut_6': x_format_invalid_value_error__mutmut_6, 
-    'x_format_invalid_value_error__mutmut_7': x_format_invalid_value_error__mutmut_7, 
-    'x_format_invalid_value_error__mutmut_8': x_format_invalid_value_error__mutmut_8
+
+x_format_invalid_value_error__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_invalid_value_error__mutmut_1": x_format_invalid_value_error__mutmut_1,
+    "x_format_invalid_value_error__mutmut_2": x_format_invalid_value_error__mutmut_2,
+    "x_format_invalid_value_error__mutmut_3": x_format_invalid_value_error__mutmut_3,
+    "x_format_invalid_value_error__mutmut_4": x_format_invalid_value_error__mutmut_4,
+    "x_format_invalid_value_error__mutmut_5": x_format_invalid_value_error__mutmut_5,
+    "x_format_invalid_value_error__mutmut_6": x_format_invalid_value_error__mutmut_6,
+    "x_format_invalid_value_error__mutmut_7": x_format_invalid_value_error__mutmut_7,
+    "x_format_invalid_value_error__mutmut_8": x_format_invalid_value_error__mutmut_8,
 }
 
+
 def format_invalid_value_error(*args, **kwargs):
-    result = _mutmut_trampoline(x_format_invalid_value_error__mutmut_orig, x_format_invalid_value_error__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_format_invalid_value_error__mutmut_orig, x_format_invalid_value_error__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 format_invalid_value_error.__signature__ = _mutmut_signature(x_format_invalid_value_error__mutmut_orig)
-x_format_invalid_value_error__mutmut_orig.__name__ = 'x_format_invalid_value_error'
+x_format_invalid_value_error__mutmut_orig.__name__ = "x_format_invalid_value_error"
 
 
 def x_format_validation_error__mutmut_orig(
@@ -1119,19 +1157,24 @@ def x_format_validation_error__mutmut_4(
 
     return "XXXX".join(parts)
 
-x_format_validation_error__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_validation_error__mutmut_1': x_format_validation_error__mutmut_1, 
-    'x_format_validation_error__mutmut_2': x_format_validation_error__mutmut_2, 
-    'x_format_validation_error__mutmut_3': x_format_validation_error__mutmut_3, 
-    'x_format_validation_error__mutmut_4': x_format_validation_error__mutmut_4
+
+x_format_validation_error__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_validation_error__mutmut_1": x_format_validation_error__mutmut_1,
+    "x_format_validation_error__mutmut_2": x_format_validation_error__mutmut_2,
+    "x_format_validation_error__mutmut_3": x_format_validation_error__mutmut_3,
+    "x_format_validation_error__mutmut_4": x_format_validation_error__mutmut_4,
 }
 
+
 def format_validation_error(*args, **kwargs):
-    result = _mutmut_trampoline(x_format_validation_error__mutmut_orig, x_format_validation_error__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_format_validation_error__mutmut_orig, x_format_validation_error__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 format_validation_error.__signature__ = _mutmut_signature(x_format_validation_error__mutmut_orig)
-x_format_validation_error__mutmut_orig.__name__ = 'x_format_validation_error'
+x_format_validation_error__mutmut_orig.__name__ = "x_format_validation_error"
 
 
 __all__ = [

@@ -21,23 +21,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -109,19 +112,25 @@ class OptionalDependency:
         self.package_name = package_name
         self.feature_name = feature_name
         self._available: bool | None = ""
-    
-    xǁOptionalDependencyǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOptionalDependencyǁ__init____mutmut_1': xǁOptionalDependencyǁ__init____mutmut_1, 
-        'xǁOptionalDependencyǁ__init____mutmut_2': xǁOptionalDependencyǁ__init____mutmut_2, 
-        'xǁOptionalDependencyǁ__init____mutmut_3': xǁOptionalDependencyǁ__init____mutmut_3
+
+    xǁOptionalDependencyǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOptionalDependencyǁ__init____mutmut_1": xǁOptionalDependencyǁ__init____mutmut_1,
+        "xǁOptionalDependencyǁ__init____mutmut_2": xǁOptionalDependencyǁ__init____mutmut_2,
+        "xǁOptionalDependencyǁ__init____mutmut_3": xǁOptionalDependencyǁ__init____mutmut_3,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOptionalDependencyǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁOptionalDependencyǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOptionalDependencyǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁOptionalDependencyǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁOptionalDependencyǁ__init____mutmut_orig)
-    xǁOptionalDependencyǁ__init____mutmut_orig.__name__ = 'xǁOptionalDependencyǁ__init__'
+    xǁOptionalDependencyǁ__init____mutmut_orig.__name__ = "xǁOptionalDependencyǁ__init__"
 
     def xǁOptionalDependencyǁis_available__mutmut_orig(self) -> bool:
         """Check if the optional dependency is available.
@@ -220,22 +229,28 @@ class OptionalDependency:
             except ImportError:
                 self._available = True
         return self._available
-    
-    xǁOptionalDependencyǁis_available__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOptionalDependencyǁis_available__mutmut_1': xǁOptionalDependencyǁis_available__mutmut_1, 
-        'xǁOptionalDependencyǁis_available__mutmut_2': xǁOptionalDependencyǁis_available__mutmut_2, 
-        'xǁOptionalDependencyǁis_available__mutmut_3': xǁOptionalDependencyǁis_available__mutmut_3, 
-        'xǁOptionalDependencyǁis_available__mutmut_4': xǁOptionalDependencyǁis_available__mutmut_4, 
-        'xǁOptionalDependencyǁis_available__mutmut_5': xǁOptionalDependencyǁis_available__mutmut_5, 
-        'xǁOptionalDependencyǁis_available__mutmut_6': xǁOptionalDependencyǁis_available__mutmut_6
+
+    xǁOptionalDependencyǁis_available__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOptionalDependencyǁis_available__mutmut_1": xǁOptionalDependencyǁis_available__mutmut_1,
+        "xǁOptionalDependencyǁis_available__mutmut_2": xǁOptionalDependencyǁis_available__mutmut_2,
+        "xǁOptionalDependencyǁis_available__mutmut_3": xǁOptionalDependencyǁis_available__mutmut_3,
+        "xǁOptionalDependencyǁis_available__mutmut_4": xǁOptionalDependencyǁis_available__mutmut_4,
+        "xǁOptionalDependencyǁis_available__mutmut_5": xǁOptionalDependencyǁis_available__mutmut_5,
+        "xǁOptionalDependencyǁis_available__mutmut_6": xǁOptionalDependencyǁis_available__mutmut_6,
     }
-    
+
     def is_available(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOptionalDependencyǁis_available__mutmut_orig"), object.__getattribute__(self, "xǁOptionalDependencyǁis_available__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOptionalDependencyǁis_available__mutmut_orig"),
+            object.__getattribute__(self, "xǁOptionalDependencyǁis_available__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_available.__signature__ = _mutmut_signature(xǁOptionalDependencyǁis_available__mutmut_orig)
-    xǁOptionalDependencyǁis_available__mutmut_orig.__name__ = 'xǁOptionalDependencyǁis_available'
+    xǁOptionalDependencyǁis_available__mutmut_orig.__name__ = "xǁOptionalDependencyǁis_available"
 
     def xǁOptionalDependencyǁimport_package__mutmut_orig(self) -> Any:
         """Import the package or return a stub module.
@@ -343,22 +358,30 @@ class OptionalDependency:
         # Return stub module
         from provide.foundation.utils.stubs import create_module_stub
 
-        return create_module_stub(self.package_name, )
-    
-    xǁOptionalDependencyǁimport_package__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOptionalDependencyǁimport_package__mutmut_1': xǁOptionalDependencyǁimport_package__mutmut_1, 
-        'xǁOptionalDependencyǁimport_package__mutmut_2': xǁOptionalDependencyǁimport_package__mutmut_2, 
-        'xǁOptionalDependencyǁimport_package__mutmut_3': xǁOptionalDependencyǁimport_package__mutmut_3, 
-        'xǁOptionalDependencyǁimport_package__mutmut_4': xǁOptionalDependencyǁimport_package__mutmut_4, 
-        'xǁOptionalDependencyǁimport_package__mutmut_5': xǁOptionalDependencyǁimport_package__mutmut_5
+        return create_module_stub(
+            self.package_name,
+        )
+
+    xǁOptionalDependencyǁimport_package__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOptionalDependencyǁimport_package__mutmut_1": xǁOptionalDependencyǁimport_package__mutmut_1,
+        "xǁOptionalDependencyǁimport_package__mutmut_2": xǁOptionalDependencyǁimport_package__mutmut_2,
+        "xǁOptionalDependencyǁimport_package__mutmut_3": xǁOptionalDependencyǁimport_package__mutmut_3,
+        "xǁOptionalDependencyǁimport_package__mutmut_4": xǁOptionalDependencyǁimport_package__mutmut_4,
+        "xǁOptionalDependencyǁimport_package__mutmut_5": xǁOptionalDependencyǁimport_package__mutmut_5,
     }
-    
+
     def import_package(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOptionalDependencyǁimport_package__mutmut_orig"), object.__getattribute__(self, "xǁOptionalDependencyǁimport_package__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOptionalDependencyǁimport_package__mutmut_orig"),
+            object.__getattribute__(self, "xǁOptionalDependencyǁimport_package__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     import_package.__signature__ = _mutmut_signature(xǁOptionalDependencyǁimport_package__mutmut_orig)
-    xǁOptionalDependencyǁimport_package__mutmut_orig.__name__ = 'xǁOptionalDependencyǁimport_package'
+    xǁOptionalDependencyǁimport_package__mutmut_orig.__name__ = "xǁOptionalDependencyǁimport_package"
 
     def xǁOptionalDependencyǁimport_symbols__mutmut_orig(
         self,
@@ -667,7 +690,9 @@ class OptionalDependency:
             ... )
         """
         try:
-            module = __import__(module_path, )
+            module = __import__(
+                module_path,
+            )
             return [getattr(module, symbol) for symbol in symbols]
         except ImportError:
             if not create_stubs:
@@ -856,7 +881,12 @@ class OptionalDependency:
         """
         try:
             module = __import__(module_path, fromlist=symbols)
-            return [getattr(module, ) for symbol in symbols]
+            return [
+                getattr(
+                    module,
+                )
+                for symbol in symbols
+            ]
         except ImportError:
             if not create_stubs:
                 raise
@@ -1247,7 +1277,11 @@ class OptionalDependency:
             for symbol in symbols:
                 # Heuristic: if symbol starts with lowercase, it's likely a function
                 if symbol[0].islower():
-                    stubs.append(create_function_stub(self.package_name, ))
+                    stubs.append(
+                        create_function_stub(
+                            self.package_name,
+                        )
+                    )
                 else:
                     stubs.append(create_dependency_stub(self.package_name, self.feature_name))
 
@@ -1484,42 +1518,52 @@ class OptionalDependency:
                 if symbol[0].islower():
                     stubs.append(create_function_stub(self.package_name, self.feature_name))
                 else:
-                    stubs.append(create_dependency_stub(self.package_name, ))
+                    stubs.append(
+                        create_dependency_stub(
+                            self.package_name,
+                        )
+                    )
 
             return stubs
-    
-    xǁOptionalDependencyǁimport_symbols__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOptionalDependencyǁimport_symbols__mutmut_1': xǁOptionalDependencyǁimport_symbols__mutmut_1, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_2': xǁOptionalDependencyǁimport_symbols__mutmut_2, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_3': xǁOptionalDependencyǁimport_symbols__mutmut_3, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_4': xǁOptionalDependencyǁimport_symbols__mutmut_4, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_5': xǁOptionalDependencyǁimport_symbols__mutmut_5, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_6': xǁOptionalDependencyǁimport_symbols__mutmut_6, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_7': xǁOptionalDependencyǁimport_symbols__mutmut_7, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_8': xǁOptionalDependencyǁimport_symbols__mutmut_8, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_9': xǁOptionalDependencyǁimport_symbols__mutmut_9, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_10': xǁOptionalDependencyǁimport_symbols__mutmut_10, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_11': xǁOptionalDependencyǁimport_symbols__mutmut_11, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_12': xǁOptionalDependencyǁimport_symbols__mutmut_12, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_13': xǁOptionalDependencyǁimport_symbols__mutmut_13, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_14': xǁOptionalDependencyǁimport_symbols__mutmut_14, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_15': xǁOptionalDependencyǁimport_symbols__mutmut_15, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_16': xǁOptionalDependencyǁimport_symbols__mutmut_16, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_17': xǁOptionalDependencyǁimport_symbols__mutmut_17, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_18': xǁOptionalDependencyǁimport_symbols__mutmut_18, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_19': xǁOptionalDependencyǁimport_symbols__mutmut_19, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_20': xǁOptionalDependencyǁimport_symbols__mutmut_20, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_21': xǁOptionalDependencyǁimport_symbols__mutmut_21, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_22': xǁOptionalDependencyǁimport_symbols__mutmut_22, 
-        'xǁOptionalDependencyǁimport_symbols__mutmut_23': xǁOptionalDependencyǁimport_symbols__mutmut_23
+
+    xǁOptionalDependencyǁimport_symbols__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOptionalDependencyǁimport_symbols__mutmut_1": xǁOptionalDependencyǁimport_symbols__mutmut_1,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_2": xǁOptionalDependencyǁimport_symbols__mutmut_2,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_3": xǁOptionalDependencyǁimport_symbols__mutmut_3,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_4": xǁOptionalDependencyǁimport_symbols__mutmut_4,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_5": xǁOptionalDependencyǁimport_symbols__mutmut_5,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_6": xǁOptionalDependencyǁimport_symbols__mutmut_6,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_7": xǁOptionalDependencyǁimport_symbols__mutmut_7,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_8": xǁOptionalDependencyǁimport_symbols__mutmut_8,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_9": xǁOptionalDependencyǁimport_symbols__mutmut_9,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_10": xǁOptionalDependencyǁimport_symbols__mutmut_10,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_11": xǁOptionalDependencyǁimport_symbols__mutmut_11,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_12": xǁOptionalDependencyǁimport_symbols__mutmut_12,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_13": xǁOptionalDependencyǁimport_symbols__mutmut_13,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_14": xǁOptionalDependencyǁimport_symbols__mutmut_14,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_15": xǁOptionalDependencyǁimport_symbols__mutmut_15,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_16": xǁOptionalDependencyǁimport_symbols__mutmut_16,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_17": xǁOptionalDependencyǁimport_symbols__mutmut_17,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_18": xǁOptionalDependencyǁimport_symbols__mutmut_18,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_19": xǁOptionalDependencyǁimport_symbols__mutmut_19,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_20": xǁOptionalDependencyǁimport_symbols__mutmut_20,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_21": xǁOptionalDependencyǁimport_symbols__mutmut_21,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_22": xǁOptionalDependencyǁimport_symbols__mutmut_22,
+        "xǁOptionalDependencyǁimport_symbols__mutmut_23": xǁOptionalDependencyǁimport_symbols__mutmut_23,
     }
-    
+
     def import_symbols(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOptionalDependencyǁimport_symbols__mutmut_orig"), object.__getattribute__(self, "xǁOptionalDependencyǁimport_symbols__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOptionalDependencyǁimport_symbols__mutmut_orig"),
+            object.__getattribute__(self, "xǁOptionalDependencyǁimport_symbols__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     import_symbols.__signature__ = _mutmut_signature(xǁOptionalDependencyǁimport_symbols__mutmut_orig)
-    xǁOptionalDependencyǁimport_symbols__mutmut_orig.__name__ = 'xǁOptionalDependencyǁimport_symbols'
+    xǁOptionalDependencyǁimport_symbols__mutmut_orig.__name__ = "xǁOptionalDependencyǁimport_symbols"
 
 
 def x_load_optional_dependency__mutmut_orig(
@@ -1797,7 +1841,9 @@ def x_load_optional_dependency__mutmut_5(
         ...     symbols=["Certificate", "CertificateConfig"]
         ... )
     """
-    dep = OptionalDependency(package_name, )
+    dep = OptionalDependency(
+        package_name,
+    )
     is_available = dep.is_available()
 
     if module_path and symbols:
@@ -2138,7 +2184,9 @@ def x_load_optional_dependency__mutmut_12(
 
     if module_path and symbols:
         # Import specific symbols
-        imported = dep.import_symbols(module_path, )
+        imported = dep.import_symbols(
+            module_path,
+        )
         return is_available, imported
 
     # Import entire package
@@ -2193,28 +2241,33 @@ def x_load_optional_dependency__mutmut_13(
     imported = None
     return is_available, imported
 
-x_load_optional_dependency__mutmut_mutants : ClassVar[MutantDict] = {
-'x_load_optional_dependency__mutmut_1': x_load_optional_dependency__mutmut_1, 
-    'x_load_optional_dependency__mutmut_2': x_load_optional_dependency__mutmut_2, 
-    'x_load_optional_dependency__mutmut_3': x_load_optional_dependency__mutmut_3, 
-    'x_load_optional_dependency__mutmut_4': x_load_optional_dependency__mutmut_4, 
-    'x_load_optional_dependency__mutmut_5': x_load_optional_dependency__mutmut_5, 
-    'x_load_optional_dependency__mutmut_6': x_load_optional_dependency__mutmut_6, 
-    'x_load_optional_dependency__mutmut_7': x_load_optional_dependency__mutmut_7, 
-    'x_load_optional_dependency__mutmut_8': x_load_optional_dependency__mutmut_8, 
-    'x_load_optional_dependency__mutmut_9': x_load_optional_dependency__mutmut_9, 
-    'x_load_optional_dependency__mutmut_10': x_load_optional_dependency__mutmut_10, 
-    'x_load_optional_dependency__mutmut_11': x_load_optional_dependency__mutmut_11, 
-    'x_load_optional_dependency__mutmut_12': x_load_optional_dependency__mutmut_12, 
-    'x_load_optional_dependency__mutmut_13': x_load_optional_dependency__mutmut_13
+
+x_load_optional_dependency__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_load_optional_dependency__mutmut_1": x_load_optional_dependency__mutmut_1,
+    "x_load_optional_dependency__mutmut_2": x_load_optional_dependency__mutmut_2,
+    "x_load_optional_dependency__mutmut_3": x_load_optional_dependency__mutmut_3,
+    "x_load_optional_dependency__mutmut_4": x_load_optional_dependency__mutmut_4,
+    "x_load_optional_dependency__mutmut_5": x_load_optional_dependency__mutmut_5,
+    "x_load_optional_dependency__mutmut_6": x_load_optional_dependency__mutmut_6,
+    "x_load_optional_dependency__mutmut_7": x_load_optional_dependency__mutmut_7,
+    "x_load_optional_dependency__mutmut_8": x_load_optional_dependency__mutmut_8,
+    "x_load_optional_dependency__mutmut_9": x_load_optional_dependency__mutmut_9,
+    "x_load_optional_dependency__mutmut_10": x_load_optional_dependency__mutmut_10,
+    "x_load_optional_dependency__mutmut_11": x_load_optional_dependency__mutmut_11,
+    "x_load_optional_dependency__mutmut_12": x_load_optional_dependency__mutmut_12,
+    "x_load_optional_dependency__mutmut_13": x_load_optional_dependency__mutmut_13,
 }
 
+
 def load_optional_dependency(*args, **kwargs):
-    result = _mutmut_trampoline(x_load_optional_dependency__mutmut_orig, x_load_optional_dependency__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_load_optional_dependency__mutmut_orig, x_load_optional_dependency__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 load_optional_dependency.__signature__ = _mutmut_signature(x_load_optional_dependency__mutmut_orig)
-x_load_optional_dependency__mutmut_orig.__name__ = 'x_load_optional_dependency'
+x_load_optional_dependency__mutmut_orig.__name__ = "x_load_optional_dependency"
 
 
 __all__ = [

@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -133,21 +136,28 @@ def x_reset_version_cache__mutmut_4(package_name: str | None = None) -> None:
         if package_name is None:
             _cached_versions.clear()
         else:
-            _cached_versions.pop(package_name, )
+            _cached_versions.pop(
+                package_name,
+            )
 
-x_reset_version_cache__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_version_cache__mutmut_1': x_reset_version_cache__mutmut_1, 
-    'x_reset_version_cache__mutmut_2': x_reset_version_cache__mutmut_2, 
-    'x_reset_version_cache__mutmut_3': x_reset_version_cache__mutmut_3, 
-    'x_reset_version_cache__mutmut_4': x_reset_version_cache__mutmut_4
+
+x_reset_version_cache__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_version_cache__mutmut_1": x_reset_version_cache__mutmut_1,
+    "x_reset_version_cache__mutmut_2": x_reset_version_cache__mutmut_2,
+    "x_reset_version_cache__mutmut_3": x_reset_version_cache__mutmut_3,
+    "x_reset_version_cache__mutmut_4": x_reset_version_cache__mutmut_4,
 }
 
+
 def reset_version_cache(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_version_cache__mutmut_orig, x_reset_version_cache__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_version_cache__mutmut_orig, x_reset_version_cache__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_version_cache.__signature__ = _mutmut_signature(x_reset_version_cache__mutmut_orig)
-x_reset_version_cache__mutmut_orig.__name__ = 'x_reset_version_cache'
+x_reset_version_cache__mutmut_orig.__name__ = "x_reset_version_cache"
 
 
 def x__find_project_root__mutmut_orig(start_path: Path) -> Path | None:
@@ -317,22 +327,27 @@ def x__find_project_root__mutmut_7(start_path: Path) -> Path | None:
 
     return None
 
-x__find_project_root__mutmut_mutants : ClassVar[MutantDict] = {
-'x__find_project_root__mutmut_1': x__find_project_root__mutmut_1, 
-    'x__find_project_root__mutmut_2': x__find_project_root__mutmut_2, 
-    'x__find_project_root__mutmut_3': x__find_project_root__mutmut_3, 
-    'x__find_project_root__mutmut_4': x__find_project_root__mutmut_4, 
-    'x__find_project_root__mutmut_5': x__find_project_root__mutmut_5, 
-    'x__find_project_root__mutmut_6': x__find_project_root__mutmut_6, 
-    'x__find_project_root__mutmut_7': x__find_project_root__mutmut_7
+
+x__find_project_root__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__find_project_root__mutmut_1": x__find_project_root__mutmut_1,
+    "x__find_project_root__mutmut_2": x__find_project_root__mutmut_2,
+    "x__find_project_root__mutmut_3": x__find_project_root__mutmut_3,
+    "x__find_project_root__mutmut_4": x__find_project_root__mutmut_4,
+    "x__find_project_root__mutmut_5": x__find_project_root__mutmut_5,
+    "x__find_project_root__mutmut_6": x__find_project_root__mutmut_6,
+    "x__find_project_root__mutmut_7": x__find_project_root__mutmut_7,
 }
 
+
 def _find_project_root(*args, **kwargs):
-    result = _mutmut_trampoline(x__find_project_root__mutmut_orig, x__find_project_root__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__find_project_root__mutmut_orig, x__find_project_root__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _find_project_root.__signature__ = _mutmut_signature(x__find_project_root__mutmut_orig)
-x__find_project_root__mutmut_orig.__name__ = 'x__find_project_root'
+x__find_project_root__mutmut_orig.__name__ = "x__find_project_root"
 
 
 def x_get_version__mutmut_orig(package_name: str, caller_file: str | Path | None = None) -> str:
@@ -2251,41 +2266,44 @@ def x_get_version__mutmut_26(package_name: str, caller_file: str | Path | None =
         _cached_versions[package_name] = None
         return version_str
 
-x_get_version__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_version__mutmut_1': x_get_version__mutmut_1, 
-    'x_get_version__mutmut_2': x_get_version__mutmut_2, 
-    'x_get_version__mutmut_3': x_get_version__mutmut_3, 
-    'x_get_version__mutmut_4': x_get_version__mutmut_4, 
-    'x_get_version__mutmut_5': x_get_version__mutmut_5, 
-    'x_get_version__mutmut_6': x_get_version__mutmut_6, 
-    'x_get_version__mutmut_7': x_get_version__mutmut_7, 
-    'x_get_version__mutmut_8': x_get_version__mutmut_8, 
-    'x_get_version__mutmut_9': x_get_version__mutmut_9, 
-    'x_get_version__mutmut_10': x_get_version__mutmut_10, 
-    'x_get_version__mutmut_11': x_get_version__mutmut_11, 
-    'x_get_version__mutmut_12': x_get_version__mutmut_12, 
-    'x_get_version__mutmut_13': x_get_version__mutmut_13, 
-    'x_get_version__mutmut_14': x_get_version__mutmut_14, 
-    'x_get_version__mutmut_15': x_get_version__mutmut_15, 
-    'x_get_version__mutmut_16': x_get_version__mutmut_16, 
-    'x_get_version__mutmut_17': x_get_version__mutmut_17, 
-    'x_get_version__mutmut_18': x_get_version__mutmut_18, 
-    'x_get_version__mutmut_19': x_get_version__mutmut_19, 
-    'x_get_version__mutmut_20': x_get_version__mutmut_20, 
-    'x_get_version__mutmut_21': x_get_version__mutmut_21, 
-    'x_get_version__mutmut_22': x_get_version__mutmut_22, 
-    'x_get_version__mutmut_23': x_get_version__mutmut_23, 
-    'x_get_version__mutmut_24': x_get_version__mutmut_24, 
-    'x_get_version__mutmut_25': x_get_version__mutmut_25, 
-    'x_get_version__mutmut_26': x_get_version__mutmut_26
+
+x_get_version__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_version__mutmut_1": x_get_version__mutmut_1,
+    "x_get_version__mutmut_2": x_get_version__mutmut_2,
+    "x_get_version__mutmut_3": x_get_version__mutmut_3,
+    "x_get_version__mutmut_4": x_get_version__mutmut_4,
+    "x_get_version__mutmut_5": x_get_version__mutmut_5,
+    "x_get_version__mutmut_6": x_get_version__mutmut_6,
+    "x_get_version__mutmut_7": x_get_version__mutmut_7,
+    "x_get_version__mutmut_8": x_get_version__mutmut_8,
+    "x_get_version__mutmut_9": x_get_version__mutmut_9,
+    "x_get_version__mutmut_10": x_get_version__mutmut_10,
+    "x_get_version__mutmut_11": x_get_version__mutmut_11,
+    "x_get_version__mutmut_12": x_get_version__mutmut_12,
+    "x_get_version__mutmut_13": x_get_version__mutmut_13,
+    "x_get_version__mutmut_14": x_get_version__mutmut_14,
+    "x_get_version__mutmut_15": x_get_version__mutmut_15,
+    "x_get_version__mutmut_16": x_get_version__mutmut_16,
+    "x_get_version__mutmut_17": x_get_version__mutmut_17,
+    "x_get_version__mutmut_18": x_get_version__mutmut_18,
+    "x_get_version__mutmut_19": x_get_version__mutmut_19,
+    "x_get_version__mutmut_20": x_get_version__mutmut_20,
+    "x_get_version__mutmut_21": x_get_version__mutmut_21,
+    "x_get_version__mutmut_22": x_get_version__mutmut_22,
+    "x_get_version__mutmut_23": x_get_version__mutmut_23,
+    "x_get_version__mutmut_24": x_get_version__mutmut_24,
+    "x_get_version__mutmut_25": x_get_version__mutmut_25,
+    "x_get_version__mutmut_26": x_get_version__mutmut_26,
 }
+
 
 def get_version(*args, **kwargs):
     result = _mutmut_trampoline(x_get_version__mutmut_orig, x_get_version__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_version.__signature__ = _mutmut_signature(x_get_version__mutmut_orig)
-x_get_version__mutmut_orig.__name__ = 'x_get_version'
+x_get_version__mutmut_orig.__name__ = "x_get_version"
 
 
 __all__ = [

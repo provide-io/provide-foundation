@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -95,7 +98,12 @@ def x_is_tty__mutmut_5() -> bool:
 def x_is_tty__mutmut_6() -> bool:
     """Check if the current stream is a TTY (terminal)."""
     stream = get_log_stream()
-    return hasattr(stream, ) and stream.isatty()
+    return (
+        hasattr(
+            stream,
+        )
+        and stream.isatty()
+    )
 
 
 def x_is_tty__mutmut_7() -> bool:
@@ -109,23 +117,26 @@ def x_is_tty__mutmut_8() -> bool:
     stream = get_log_stream()
     return hasattr(stream, "ISATTY") and stream.isatty()
 
-x_is_tty__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_tty__mutmut_1': x_is_tty__mutmut_1, 
-    'x_is_tty__mutmut_2': x_is_tty__mutmut_2, 
-    'x_is_tty__mutmut_3': x_is_tty__mutmut_3, 
-    'x_is_tty__mutmut_4': x_is_tty__mutmut_4, 
-    'x_is_tty__mutmut_5': x_is_tty__mutmut_5, 
-    'x_is_tty__mutmut_6': x_is_tty__mutmut_6, 
-    'x_is_tty__mutmut_7': x_is_tty__mutmut_7, 
-    'x_is_tty__mutmut_8': x_is_tty__mutmut_8
+
+x_is_tty__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_tty__mutmut_1": x_is_tty__mutmut_1,
+    "x_is_tty__mutmut_2": x_is_tty__mutmut_2,
+    "x_is_tty__mutmut_3": x_is_tty__mutmut_3,
+    "x_is_tty__mutmut_4": x_is_tty__mutmut_4,
+    "x_is_tty__mutmut_5": x_is_tty__mutmut_5,
+    "x_is_tty__mutmut_6": x_is_tty__mutmut_6,
+    "x_is_tty__mutmut_7": x_is_tty__mutmut_7,
+    "x_is_tty__mutmut_8": x_is_tty__mutmut_8,
 }
+
 
 def is_tty(*args, **kwargs):
     result = _mutmut_trampoline(x_is_tty__mutmut_orig, x_is_tty__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 is_tty.__signature__ = _mutmut_signature(x_is_tty__mutmut_orig)
-x_is_tty__mutmut_orig.__name__ = 'x_is_tty'
+x_is_tty__mutmut_orig.__name__ = "x_is_tty"
 
 
 def x_supports_color__mutmut_orig() -> bool:
@@ -183,21 +194,26 @@ def x_supports_color__mutmut_3() -> bool:
     # Check if we're in a TTY
     return is_tty()
 
-x_supports_color__mutmut_mutants : ClassVar[MutantDict] = {
-'x_supports_color__mutmut_1': x_supports_color__mutmut_1, 
-    'x_supports_color__mutmut_2': x_supports_color__mutmut_2, 
-    'x_supports_color__mutmut_3': x_supports_color__mutmut_3
+
+x_supports_color__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_supports_color__mutmut_1": x_supports_color__mutmut_1,
+    "x_supports_color__mutmut_2": x_supports_color__mutmut_2,
+    "x_supports_color__mutmut_3": x_supports_color__mutmut_3,
 }
+
 
 def supports_color(*args, **kwargs):
     result = _mutmut_trampoline(x_supports_color__mutmut_orig, x_supports_color__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 supports_color.__signature__ = _mutmut_signature(x_supports_color__mutmut_orig)
-x_supports_color__mutmut_orig.__name__ = 'x_supports_color'
+x_supports_color__mutmut_orig.__name__ = "x_supports_color"
 
 
-def x_write_to_console__mutmut_orig(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_orig(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -241,7 +257,9 @@ def x_write_to_console__mutmut_orig(message: str, stream: TextIO | None = None, 
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_1(message: str, stream: TextIO | None = None, log_fallback: bool = False) -> None:
+def x_write_to_console__mutmut_1(
+    message: str, stream: TextIO | None = None, log_fallback: bool = False
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -285,7 +303,9 @@ def x_write_to_console__mutmut_1(message: str, stream: TextIO | None = None, log
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_2(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_2(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -329,7 +349,9 @@ def x_write_to_console__mutmut_2(message: str, stream: TextIO | None = None, log
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_3(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_3(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -373,7 +395,9 @@ def x_write_to_console__mutmut_3(message: str, stream: TextIO | None = None, log
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_4(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_4(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -417,7 +441,9 @@ def x_write_to_console__mutmut_4(message: str, stream: TextIO | None = None, log
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_5(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_5(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -461,7 +487,9 @@ def x_write_to_console__mutmut_5(message: str, stream: TextIO | None = None, log
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_6(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_6(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -505,7 +533,9 @@ def x_write_to_console__mutmut_6(message: str, stream: TextIO | None = None, log
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_7(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_7(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -549,7 +579,9 @@ def x_write_to_console__mutmut_7(message: str, stream: TextIO | None = None, log
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_8(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_8(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -593,7 +625,9 @@ def x_write_to_console__mutmut_8(message: str, stream: TextIO | None = None, log
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_9(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_9(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -636,7 +670,9 @@ def x_write_to_console__mutmut_9(message: str, stream: TextIO | None = None, log
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_10(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_10(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -679,7 +715,9 @@ def x_write_to_console__mutmut_10(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_11(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_11(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -722,7 +760,9 @@ def x_write_to_console__mutmut_11(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_12(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_12(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -745,7 +785,7 @@ def x_write_to_console__mutmut_12(message: str, stream: TextIO | None = None, lo
                     "Console write failed, falling back to stderr",
                     error=str(e),
                     error_type=type(e).__name__,
-                    )
+                )
             except Exception as log_error:
                 # Foundation logger failed, fall back to direct stderr logging
                 try:
@@ -765,7 +805,9 @@ def x_write_to_console__mutmut_12(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_13(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_13(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -809,7 +851,9 @@ def x_write_to_console__mutmut_13(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_14(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_14(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -853,7 +897,9 @@ def x_write_to_console__mutmut_14(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_15(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_15(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -897,7 +943,9 @@ def x_write_to_console__mutmut_15(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_16(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_16(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -941,7 +989,9 @@ def x_write_to_console__mutmut_16(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_17(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_17(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -985,7 +1035,9 @@ def x_write_to_console__mutmut_17(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_18(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_18(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -1029,7 +1081,9 @@ def x_write_to_console__mutmut_18(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_19(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_19(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -1057,9 +1111,7 @@ def x_write_to_console__mutmut_19(message: str, stream: TextIO | None = None, lo
             except Exception as log_error:
                 # Foundation logger failed, fall back to direct stderr logging
                 try:
-                    sys.stderr.write(
-                        None
-                    )
+                    sys.stderr.write(None)
                     sys.stderr.flush()
                 except Exception:
                     # Even stderr failed - this is a critical system failure, we cannot continue
@@ -1072,7 +1124,9 @@ def x_write_to_console__mutmut_19(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_20(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_20(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -1107,16 +1161,16 @@ def x_write_to_console__mutmut_20(message: str, stream: TextIO | None = None, lo
                     sys.stderr.flush()
                 except Exception:
                     # Even stderr failed - this is a critical system failure, we cannot continue
-                    raise RuntimeError(
-                        None
-                    ) from e
+                    raise RuntimeError(None) from e
 
         # Fallback to stderr - if this fails, let it propagate
         sys.stderr.write(message)
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_21(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_21(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -1160,7 +1214,9 @@ def x_write_to_console__mutmut_21(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_22(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_22(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -1204,7 +1260,9 @@ def x_write_to_console__mutmut_22(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_23(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_23(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -1248,7 +1306,9 @@ def x_write_to_console__mutmut_23(message: str, stream: TextIO | None = None, lo
         sys.stderr.flush()
 
 
-def x_write_to_console__mutmut_24(message: str, stream: TextIO | None = None, log_fallback: bool = True) -> None:
+def x_write_to_console__mutmut_24(
+    message: str, stream: TextIO | None = None, log_fallback: bool = True
+) -> None:
     """Write a message to the console stream.
 
     Args:
@@ -1291,39 +1351,44 @@ def x_write_to_console__mutmut_24(message: str, stream: TextIO | None = None, lo
         sys.stderr.write(None)
         sys.stderr.flush()
 
-x_write_to_console__mutmut_mutants : ClassVar[MutantDict] = {
-'x_write_to_console__mutmut_1': x_write_to_console__mutmut_1, 
-    'x_write_to_console__mutmut_2': x_write_to_console__mutmut_2, 
-    'x_write_to_console__mutmut_3': x_write_to_console__mutmut_3, 
-    'x_write_to_console__mutmut_4': x_write_to_console__mutmut_4, 
-    'x_write_to_console__mutmut_5': x_write_to_console__mutmut_5, 
-    'x_write_to_console__mutmut_6': x_write_to_console__mutmut_6, 
-    'x_write_to_console__mutmut_7': x_write_to_console__mutmut_7, 
-    'x_write_to_console__mutmut_8': x_write_to_console__mutmut_8, 
-    'x_write_to_console__mutmut_9': x_write_to_console__mutmut_9, 
-    'x_write_to_console__mutmut_10': x_write_to_console__mutmut_10, 
-    'x_write_to_console__mutmut_11': x_write_to_console__mutmut_11, 
-    'x_write_to_console__mutmut_12': x_write_to_console__mutmut_12, 
-    'x_write_to_console__mutmut_13': x_write_to_console__mutmut_13, 
-    'x_write_to_console__mutmut_14': x_write_to_console__mutmut_14, 
-    'x_write_to_console__mutmut_15': x_write_to_console__mutmut_15, 
-    'x_write_to_console__mutmut_16': x_write_to_console__mutmut_16, 
-    'x_write_to_console__mutmut_17': x_write_to_console__mutmut_17, 
-    'x_write_to_console__mutmut_18': x_write_to_console__mutmut_18, 
-    'x_write_to_console__mutmut_19': x_write_to_console__mutmut_19, 
-    'x_write_to_console__mutmut_20': x_write_to_console__mutmut_20, 
-    'x_write_to_console__mutmut_21': x_write_to_console__mutmut_21, 
-    'x_write_to_console__mutmut_22': x_write_to_console__mutmut_22, 
-    'x_write_to_console__mutmut_23': x_write_to_console__mutmut_23, 
-    'x_write_to_console__mutmut_24': x_write_to_console__mutmut_24
+
+x_write_to_console__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_write_to_console__mutmut_1": x_write_to_console__mutmut_1,
+    "x_write_to_console__mutmut_2": x_write_to_console__mutmut_2,
+    "x_write_to_console__mutmut_3": x_write_to_console__mutmut_3,
+    "x_write_to_console__mutmut_4": x_write_to_console__mutmut_4,
+    "x_write_to_console__mutmut_5": x_write_to_console__mutmut_5,
+    "x_write_to_console__mutmut_6": x_write_to_console__mutmut_6,
+    "x_write_to_console__mutmut_7": x_write_to_console__mutmut_7,
+    "x_write_to_console__mutmut_8": x_write_to_console__mutmut_8,
+    "x_write_to_console__mutmut_9": x_write_to_console__mutmut_9,
+    "x_write_to_console__mutmut_10": x_write_to_console__mutmut_10,
+    "x_write_to_console__mutmut_11": x_write_to_console__mutmut_11,
+    "x_write_to_console__mutmut_12": x_write_to_console__mutmut_12,
+    "x_write_to_console__mutmut_13": x_write_to_console__mutmut_13,
+    "x_write_to_console__mutmut_14": x_write_to_console__mutmut_14,
+    "x_write_to_console__mutmut_15": x_write_to_console__mutmut_15,
+    "x_write_to_console__mutmut_16": x_write_to_console__mutmut_16,
+    "x_write_to_console__mutmut_17": x_write_to_console__mutmut_17,
+    "x_write_to_console__mutmut_18": x_write_to_console__mutmut_18,
+    "x_write_to_console__mutmut_19": x_write_to_console__mutmut_19,
+    "x_write_to_console__mutmut_20": x_write_to_console__mutmut_20,
+    "x_write_to_console__mutmut_21": x_write_to_console__mutmut_21,
+    "x_write_to_console__mutmut_22": x_write_to_console__mutmut_22,
+    "x_write_to_console__mutmut_23": x_write_to_console__mutmut_23,
+    "x_write_to_console__mutmut_24": x_write_to_console__mutmut_24,
 }
 
+
 def write_to_console(*args, **kwargs):
-    result = _mutmut_trampoline(x_write_to_console__mutmut_orig, x_write_to_console__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_write_to_console__mutmut_orig, x_write_to_console__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 write_to_console.__signature__ = _mutmut_signature(x_write_to_console__mutmut_orig)
-x_write_to_console__mutmut_orig.__name__ = 'x_write_to_console'
+x_write_to_console__mutmut_orig.__name__ = "x_write_to_console"
 
 
 # <3 🧱🤝🌊🪄

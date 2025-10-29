@@ -39,23 +39,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -290,7 +293,7 @@ class ShellFeatureError(ProcessError):
             message,
             code="SHELL_FEATURE_NOT_ALLOWED",
             pattern=pattern,
-            )
+        )
         self.pattern = pattern
         self.command = truncated_command
 
@@ -377,30 +380,36 @@ class ShellFeatureError(ProcessError):
         )
         self.pattern = pattern
         self.command = None
-    
-    xǁShellFeatureErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁShellFeatureErrorǁ__init____mutmut_1': xǁShellFeatureErrorǁ__init____mutmut_1, 
-        'xǁShellFeatureErrorǁ__init____mutmut_2': xǁShellFeatureErrorǁ__init____mutmut_2, 
-        'xǁShellFeatureErrorǁ__init____mutmut_3': xǁShellFeatureErrorǁ__init____mutmut_3, 
-        'xǁShellFeatureErrorǁ__init____mutmut_4': xǁShellFeatureErrorǁ__init____mutmut_4, 
-        'xǁShellFeatureErrorǁ__init____mutmut_5': xǁShellFeatureErrorǁ__init____mutmut_5, 
-        'xǁShellFeatureErrorǁ__init____mutmut_6': xǁShellFeatureErrorǁ__init____mutmut_6, 
-        'xǁShellFeatureErrorǁ__init____mutmut_7': xǁShellFeatureErrorǁ__init____mutmut_7, 
-        'xǁShellFeatureErrorǁ__init____mutmut_8': xǁShellFeatureErrorǁ__init____mutmut_8, 
-        'xǁShellFeatureErrorǁ__init____mutmut_9': xǁShellFeatureErrorǁ__init____mutmut_9, 
-        'xǁShellFeatureErrorǁ__init____mutmut_10': xǁShellFeatureErrorǁ__init____mutmut_10, 
-        'xǁShellFeatureErrorǁ__init____mutmut_11': xǁShellFeatureErrorǁ__init____mutmut_11, 
-        'xǁShellFeatureErrorǁ__init____mutmut_12': xǁShellFeatureErrorǁ__init____mutmut_12, 
-        'xǁShellFeatureErrorǁ__init____mutmut_13': xǁShellFeatureErrorǁ__init____mutmut_13, 
-        'xǁShellFeatureErrorǁ__init____mutmut_14': xǁShellFeatureErrorǁ__init____mutmut_14
+
+    xǁShellFeatureErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁShellFeatureErrorǁ__init____mutmut_1": xǁShellFeatureErrorǁ__init____mutmut_1,
+        "xǁShellFeatureErrorǁ__init____mutmut_2": xǁShellFeatureErrorǁ__init____mutmut_2,
+        "xǁShellFeatureErrorǁ__init____mutmut_3": xǁShellFeatureErrorǁ__init____mutmut_3,
+        "xǁShellFeatureErrorǁ__init____mutmut_4": xǁShellFeatureErrorǁ__init____mutmut_4,
+        "xǁShellFeatureErrorǁ__init____mutmut_5": xǁShellFeatureErrorǁ__init____mutmut_5,
+        "xǁShellFeatureErrorǁ__init____mutmut_6": xǁShellFeatureErrorǁ__init____mutmut_6,
+        "xǁShellFeatureErrorǁ__init____mutmut_7": xǁShellFeatureErrorǁ__init____mutmut_7,
+        "xǁShellFeatureErrorǁ__init____mutmut_8": xǁShellFeatureErrorǁ__init____mutmut_8,
+        "xǁShellFeatureErrorǁ__init____mutmut_9": xǁShellFeatureErrorǁ__init____mutmut_9,
+        "xǁShellFeatureErrorǁ__init____mutmut_10": xǁShellFeatureErrorǁ__init____mutmut_10,
+        "xǁShellFeatureErrorǁ__init____mutmut_11": xǁShellFeatureErrorǁ__init____mutmut_11,
+        "xǁShellFeatureErrorǁ__init____mutmut_12": xǁShellFeatureErrorǁ__init____mutmut_12,
+        "xǁShellFeatureErrorǁ__init____mutmut_13": xǁShellFeatureErrorǁ__init____mutmut_13,
+        "xǁShellFeatureErrorǁ__init____mutmut_14": xǁShellFeatureErrorǁ__init____mutmut_14,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁShellFeatureErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁShellFeatureErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁShellFeatureErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁShellFeatureErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁShellFeatureErrorǁ__init____mutmut_orig)
-    xǁShellFeatureErrorǁ__init____mutmut_orig.__name__ = 'xǁShellFeatureErrorǁ__init__'
+    xǁShellFeatureErrorǁ__init____mutmut_orig.__name__ = "xǁShellFeatureErrorǁ__init__"
 
 
 def x_validate_shell_safety__mutmut_orig(cmd: str, allow_shell_features: bool = False) -> None:
@@ -789,25 +798,30 @@ def x_validate_shell_safety__mutmut_8(cmd: str, allow_shell_features: bool = Fal
                 f"Use allow_shell_features=True to explicitly enable shell features, "
                 f"or use run() with a list of arguments for safer execution.",
                 pattern=pattern,
-                )
+            )
 
-x_validate_shell_safety__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_shell_safety__mutmut_1': x_validate_shell_safety__mutmut_1, 
-    'x_validate_shell_safety__mutmut_2': x_validate_shell_safety__mutmut_2, 
-    'x_validate_shell_safety__mutmut_3': x_validate_shell_safety__mutmut_3, 
-    'x_validate_shell_safety__mutmut_4': x_validate_shell_safety__mutmut_4, 
-    'x_validate_shell_safety__mutmut_5': x_validate_shell_safety__mutmut_5, 
-    'x_validate_shell_safety__mutmut_6': x_validate_shell_safety__mutmut_6, 
-    'x_validate_shell_safety__mutmut_7': x_validate_shell_safety__mutmut_7, 
-    'x_validate_shell_safety__mutmut_8': x_validate_shell_safety__mutmut_8
+
+x_validate_shell_safety__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_shell_safety__mutmut_1": x_validate_shell_safety__mutmut_1,
+    "x_validate_shell_safety__mutmut_2": x_validate_shell_safety__mutmut_2,
+    "x_validate_shell_safety__mutmut_3": x_validate_shell_safety__mutmut_3,
+    "x_validate_shell_safety__mutmut_4": x_validate_shell_safety__mutmut_4,
+    "x_validate_shell_safety__mutmut_5": x_validate_shell_safety__mutmut_5,
+    "x_validate_shell_safety__mutmut_6": x_validate_shell_safety__mutmut_6,
+    "x_validate_shell_safety__mutmut_7": x_validate_shell_safety__mutmut_7,
+    "x_validate_shell_safety__mutmut_8": x_validate_shell_safety__mutmut_8,
 }
 
+
 def validate_shell_safety(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_shell_safety__mutmut_orig, x_validate_shell_safety__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_shell_safety__mutmut_orig, x_validate_shell_safety__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_shell_safety.__signature__ = _mutmut_signature(x_validate_shell_safety__mutmut_orig)
-x_validate_shell_safety__mutmut_orig.__name__ = 'x_validate_shell_safety'
+x_validate_shell_safety__mutmut_orig.__name__ = "x_validate_shell_safety"
 
 
 __all__ = [

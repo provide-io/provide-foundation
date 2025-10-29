@@ -11,10 +11,6 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
 import pytest
 
-from provide.foundation import (
-    Hub,
-    get_hub,
-)
 from provide.foundation.errors import (
     AuthenticationError,
     ConfigurationError,

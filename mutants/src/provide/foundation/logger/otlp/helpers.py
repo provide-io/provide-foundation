@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -341,7 +344,9 @@ def x_extract_trace_context__mutmut_9() -> dict[str, str] | None:
             span_context = span.get_span_context()
             if span_context.is_valid:
                 return {
-                    "trace_id": format(span_context.trace_id, ),
+                    "trace_id": format(
+                        span_context.trace_id,
+                    ),
                     "span_id": format(span_context.span_id, "016x"),
                 }
     except ImportError:
@@ -582,7 +587,9 @@ def x_extract_trace_context__mutmut_17() -> dict[str, str] | None:
             if span_context.is_valid:
                 return {
                     "trace_id": format(span_context.trace_id, "032x"),
-                    "span_id": format(span_context.span_id, ),
+                    "span_id": format(
+                        span_context.span_id,
+                    ),
                 }
     except ImportError:
         pass
@@ -649,34 +656,39 @@ def x_extract_trace_context__mutmut_19() -> dict[str, str] | None:
 
     return None
 
-x_extract_trace_context__mutmut_mutants : ClassVar[MutantDict] = {
-'x_extract_trace_context__mutmut_1': x_extract_trace_context__mutmut_1, 
-    'x_extract_trace_context__mutmut_2': x_extract_trace_context__mutmut_2, 
-    'x_extract_trace_context__mutmut_3': x_extract_trace_context__mutmut_3, 
-    'x_extract_trace_context__mutmut_4': x_extract_trace_context__mutmut_4, 
-    'x_extract_trace_context__mutmut_5': x_extract_trace_context__mutmut_5, 
-    'x_extract_trace_context__mutmut_6': x_extract_trace_context__mutmut_6, 
-    'x_extract_trace_context__mutmut_7': x_extract_trace_context__mutmut_7, 
-    'x_extract_trace_context__mutmut_8': x_extract_trace_context__mutmut_8, 
-    'x_extract_trace_context__mutmut_9': x_extract_trace_context__mutmut_9, 
-    'x_extract_trace_context__mutmut_10': x_extract_trace_context__mutmut_10, 
-    'x_extract_trace_context__mutmut_11': x_extract_trace_context__mutmut_11, 
-    'x_extract_trace_context__mutmut_12': x_extract_trace_context__mutmut_12, 
-    'x_extract_trace_context__mutmut_13': x_extract_trace_context__mutmut_13, 
-    'x_extract_trace_context__mutmut_14': x_extract_trace_context__mutmut_14, 
-    'x_extract_trace_context__mutmut_15': x_extract_trace_context__mutmut_15, 
-    'x_extract_trace_context__mutmut_16': x_extract_trace_context__mutmut_16, 
-    'x_extract_trace_context__mutmut_17': x_extract_trace_context__mutmut_17, 
-    'x_extract_trace_context__mutmut_18': x_extract_trace_context__mutmut_18, 
-    'x_extract_trace_context__mutmut_19': x_extract_trace_context__mutmut_19
+
+x_extract_trace_context__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_extract_trace_context__mutmut_1": x_extract_trace_context__mutmut_1,
+    "x_extract_trace_context__mutmut_2": x_extract_trace_context__mutmut_2,
+    "x_extract_trace_context__mutmut_3": x_extract_trace_context__mutmut_3,
+    "x_extract_trace_context__mutmut_4": x_extract_trace_context__mutmut_4,
+    "x_extract_trace_context__mutmut_5": x_extract_trace_context__mutmut_5,
+    "x_extract_trace_context__mutmut_6": x_extract_trace_context__mutmut_6,
+    "x_extract_trace_context__mutmut_7": x_extract_trace_context__mutmut_7,
+    "x_extract_trace_context__mutmut_8": x_extract_trace_context__mutmut_8,
+    "x_extract_trace_context__mutmut_9": x_extract_trace_context__mutmut_9,
+    "x_extract_trace_context__mutmut_10": x_extract_trace_context__mutmut_10,
+    "x_extract_trace_context__mutmut_11": x_extract_trace_context__mutmut_11,
+    "x_extract_trace_context__mutmut_12": x_extract_trace_context__mutmut_12,
+    "x_extract_trace_context__mutmut_13": x_extract_trace_context__mutmut_13,
+    "x_extract_trace_context__mutmut_14": x_extract_trace_context__mutmut_14,
+    "x_extract_trace_context__mutmut_15": x_extract_trace_context__mutmut_15,
+    "x_extract_trace_context__mutmut_16": x_extract_trace_context__mutmut_16,
+    "x_extract_trace_context__mutmut_17": x_extract_trace_context__mutmut_17,
+    "x_extract_trace_context__mutmut_18": x_extract_trace_context__mutmut_18,
+    "x_extract_trace_context__mutmut_19": x_extract_trace_context__mutmut_19,
 }
 
+
 def extract_trace_context(*args, **kwargs):
-    result = _mutmut_trampoline(x_extract_trace_context__mutmut_orig, x_extract_trace_context__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_extract_trace_context__mutmut_orig, x_extract_trace_context__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 extract_trace_context.__signature__ = _mutmut_signature(x_extract_trace_context__mutmut_orig)
-x_extract_trace_context__mutmut_orig.__name__ = 'x_extract_trace_context'
+x_extract_trace_context__mutmut_orig.__name__ = "x_extract_trace_context"
 
 
 def x_add_trace_context_to_attributes__mutmut_orig(attributes: dict[str, Any]) -> None:
@@ -735,17 +747,27 @@ def x_add_trace_context_to_attributes__mutmut_2(attributes: dict[str, Any]) -> N
     if trace_context:
         attributes.update(None)
 
-x_add_trace_context_to_attributes__mutmut_mutants : ClassVar[MutantDict] = {
-'x_add_trace_context_to_attributes__mutmut_1': x_add_trace_context_to_attributes__mutmut_1, 
-    'x_add_trace_context_to_attributes__mutmut_2': x_add_trace_context_to_attributes__mutmut_2
+
+x_add_trace_context_to_attributes__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_add_trace_context_to_attributes__mutmut_1": x_add_trace_context_to_attributes__mutmut_1,
+    "x_add_trace_context_to_attributes__mutmut_2": x_add_trace_context_to_attributes__mutmut_2,
 }
 
-def add_trace_context_to_attributes(*args, **kwargs):
-    result = _mutmut_trampoline(x_add_trace_context_to_attributes__mutmut_orig, x_add_trace_context_to_attributes__mutmut_mutants, args, kwargs)
-    return result 
 
-add_trace_context_to_attributes.__signature__ = _mutmut_signature(x_add_trace_context_to_attributes__mutmut_orig)
-x_add_trace_context_to_attributes__mutmut_orig.__name__ = 'x_add_trace_context_to_attributes'
+def add_trace_context_to_attributes(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_add_trace_context_to_attributes__mutmut_orig,
+        x_add_trace_context_to_attributes__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+add_trace_context_to_attributes.__signature__ = _mutmut_signature(
+    x_add_trace_context_to_attributes__mutmut_orig
+)
+x_add_trace_context_to_attributes__mutmut_orig.__name__ = "x_add_trace_context_to_attributes"
 
 
 def x_build_otlp_endpoint__mutmut_orig(
@@ -1089,23 +1111,28 @@ def x_build_otlp_endpoint__mutmut_8(
     # Build full endpoint
     return f"{endpoint}/v1/{signal_type}"
 
-x_build_otlp_endpoint__mutmut_mutants : ClassVar[MutantDict] = {
-'x_build_otlp_endpoint__mutmut_1': x_build_otlp_endpoint__mutmut_1, 
-    'x_build_otlp_endpoint__mutmut_2': x_build_otlp_endpoint__mutmut_2, 
-    'x_build_otlp_endpoint__mutmut_3': x_build_otlp_endpoint__mutmut_3, 
-    'x_build_otlp_endpoint__mutmut_4': x_build_otlp_endpoint__mutmut_4, 
-    'x_build_otlp_endpoint__mutmut_5': x_build_otlp_endpoint__mutmut_5, 
-    'x_build_otlp_endpoint__mutmut_6': x_build_otlp_endpoint__mutmut_6, 
-    'x_build_otlp_endpoint__mutmut_7': x_build_otlp_endpoint__mutmut_7, 
-    'x_build_otlp_endpoint__mutmut_8': x_build_otlp_endpoint__mutmut_8
+
+x_build_otlp_endpoint__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_build_otlp_endpoint__mutmut_1": x_build_otlp_endpoint__mutmut_1,
+    "x_build_otlp_endpoint__mutmut_2": x_build_otlp_endpoint__mutmut_2,
+    "x_build_otlp_endpoint__mutmut_3": x_build_otlp_endpoint__mutmut_3,
+    "x_build_otlp_endpoint__mutmut_4": x_build_otlp_endpoint__mutmut_4,
+    "x_build_otlp_endpoint__mutmut_5": x_build_otlp_endpoint__mutmut_5,
+    "x_build_otlp_endpoint__mutmut_6": x_build_otlp_endpoint__mutmut_6,
+    "x_build_otlp_endpoint__mutmut_7": x_build_otlp_endpoint__mutmut_7,
+    "x_build_otlp_endpoint__mutmut_8": x_build_otlp_endpoint__mutmut_8,
 }
 
+
 def build_otlp_endpoint(*args, **kwargs):
-    result = _mutmut_trampoline(x_build_otlp_endpoint__mutmut_orig, x_build_otlp_endpoint__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_build_otlp_endpoint__mutmut_orig, x_build_otlp_endpoint__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 build_otlp_endpoint.__signature__ = _mutmut_signature(x_build_otlp_endpoint__mutmut_orig)
-x_build_otlp_endpoint__mutmut_orig.__name__ = 'x_build_otlp_endpoint'
+x_build_otlp_endpoint__mutmut_orig.__name__ = "x_build_otlp_endpoint"
 
 
 def x_build_otlp_headers__mutmut_orig(
@@ -1379,7 +1406,9 @@ def x_build_otlp_headers__mutmut_6(
         headers.update(base_headers)
 
     # Add OTLP content type
-    headers.setdefault("Content-Type", )
+    headers.setdefault(
+        "Content-Type",
+    )
 
     # Add auth token if provided
     if auth_token:
@@ -1747,30 +1776,35 @@ def x_build_otlp_headers__mutmut_15(
 
     return headers
 
-x_build_otlp_headers__mutmut_mutants : ClassVar[MutantDict] = {
-'x_build_otlp_headers__mutmut_1': x_build_otlp_headers__mutmut_1, 
-    'x_build_otlp_headers__mutmut_2': x_build_otlp_headers__mutmut_2, 
-    'x_build_otlp_headers__mutmut_3': x_build_otlp_headers__mutmut_3, 
-    'x_build_otlp_headers__mutmut_4': x_build_otlp_headers__mutmut_4, 
-    'x_build_otlp_headers__mutmut_5': x_build_otlp_headers__mutmut_5, 
-    'x_build_otlp_headers__mutmut_6': x_build_otlp_headers__mutmut_6, 
-    'x_build_otlp_headers__mutmut_7': x_build_otlp_headers__mutmut_7, 
-    'x_build_otlp_headers__mutmut_8': x_build_otlp_headers__mutmut_8, 
-    'x_build_otlp_headers__mutmut_9': x_build_otlp_headers__mutmut_9, 
-    'x_build_otlp_headers__mutmut_10': x_build_otlp_headers__mutmut_10, 
-    'x_build_otlp_headers__mutmut_11': x_build_otlp_headers__mutmut_11, 
-    'x_build_otlp_headers__mutmut_12': x_build_otlp_headers__mutmut_12, 
-    'x_build_otlp_headers__mutmut_13': x_build_otlp_headers__mutmut_13, 
-    'x_build_otlp_headers__mutmut_14': x_build_otlp_headers__mutmut_14, 
-    'x_build_otlp_headers__mutmut_15': x_build_otlp_headers__mutmut_15
+
+x_build_otlp_headers__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_build_otlp_headers__mutmut_1": x_build_otlp_headers__mutmut_1,
+    "x_build_otlp_headers__mutmut_2": x_build_otlp_headers__mutmut_2,
+    "x_build_otlp_headers__mutmut_3": x_build_otlp_headers__mutmut_3,
+    "x_build_otlp_headers__mutmut_4": x_build_otlp_headers__mutmut_4,
+    "x_build_otlp_headers__mutmut_5": x_build_otlp_headers__mutmut_5,
+    "x_build_otlp_headers__mutmut_6": x_build_otlp_headers__mutmut_6,
+    "x_build_otlp_headers__mutmut_7": x_build_otlp_headers__mutmut_7,
+    "x_build_otlp_headers__mutmut_8": x_build_otlp_headers__mutmut_8,
+    "x_build_otlp_headers__mutmut_9": x_build_otlp_headers__mutmut_9,
+    "x_build_otlp_headers__mutmut_10": x_build_otlp_headers__mutmut_10,
+    "x_build_otlp_headers__mutmut_11": x_build_otlp_headers__mutmut_11,
+    "x_build_otlp_headers__mutmut_12": x_build_otlp_headers__mutmut_12,
+    "x_build_otlp_headers__mutmut_13": x_build_otlp_headers__mutmut_13,
+    "x_build_otlp_headers__mutmut_14": x_build_otlp_headers__mutmut_14,
+    "x_build_otlp_headers__mutmut_15": x_build_otlp_headers__mutmut_15,
 }
 
+
 def build_otlp_headers(*args, **kwargs):
-    result = _mutmut_trampoline(x_build_otlp_headers__mutmut_orig, x_build_otlp_headers__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_build_otlp_headers__mutmut_orig, x_build_otlp_headers__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 build_otlp_headers.__signature__ = _mutmut_signature(x_build_otlp_headers__mutmut_orig)
-x_build_otlp_headers__mutmut_orig.__name__ = 'x_build_otlp_headers'
+x_build_otlp_headers__mutmut_orig.__name__ = "x_build_otlp_headers"
 
 
 def x_normalize_attributes__mutmut_orig(attributes: dict[str, Any]) -> dict[str, Any]:
@@ -2312,26 +2346,31 @@ def x_normalize_attributes__mutmut_11(attributes: dict[str, Any]) -> dict[str, A
 
     return normalized
 
-x_normalize_attributes__mutmut_mutants : ClassVar[MutantDict] = {
-'x_normalize_attributes__mutmut_1': x_normalize_attributes__mutmut_1, 
-    'x_normalize_attributes__mutmut_2': x_normalize_attributes__mutmut_2, 
-    'x_normalize_attributes__mutmut_3': x_normalize_attributes__mutmut_3, 
-    'x_normalize_attributes__mutmut_4': x_normalize_attributes__mutmut_4, 
-    'x_normalize_attributes__mutmut_5': x_normalize_attributes__mutmut_5, 
-    'x_normalize_attributes__mutmut_6': x_normalize_attributes__mutmut_6, 
-    'x_normalize_attributes__mutmut_7': x_normalize_attributes__mutmut_7, 
-    'x_normalize_attributes__mutmut_8': x_normalize_attributes__mutmut_8, 
-    'x_normalize_attributes__mutmut_9': x_normalize_attributes__mutmut_9, 
-    'x_normalize_attributes__mutmut_10': x_normalize_attributes__mutmut_10, 
-    'x_normalize_attributes__mutmut_11': x_normalize_attributes__mutmut_11
+
+x_normalize_attributes__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_normalize_attributes__mutmut_1": x_normalize_attributes__mutmut_1,
+    "x_normalize_attributes__mutmut_2": x_normalize_attributes__mutmut_2,
+    "x_normalize_attributes__mutmut_3": x_normalize_attributes__mutmut_3,
+    "x_normalize_attributes__mutmut_4": x_normalize_attributes__mutmut_4,
+    "x_normalize_attributes__mutmut_5": x_normalize_attributes__mutmut_5,
+    "x_normalize_attributes__mutmut_6": x_normalize_attributes__mutmut_6,
+    "x_normalize_attributes__mutmut_7": x_normalize_attributes__mutmut_7,
+    "x_normalize_attributes__mutmut_8": x_normalize_attributes__mutmut_8,
+    "x_normalize_attributes__mutmut_9": x_normalize_attributes__mutmut_9,
+    "x_normalize_attributes__mutmut_10": x_normalize_attributes__mutmut_10,
+    "x_normalize_attributes__mutmut_11": x_normalize_attributes__mutmut_11,
 }
 
+
 def normalize_attributes(*args, **kwargs):
-    result = _mutmut_trampoline(x_normalize_attributes__mutmut_orig, x_normalize_attributes__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_normalize_attributes__mutmut_orig, x_normalize_attributes__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 normalize_attributes.__signature__ = _mutmut_signature(x_normalize_attributes__mutmut_orig)
-x_normalize_attributes__mutmut_orig.__name__ = 'x_normalize_attributes'
+x_normalize_attributes__mutmut_orig.__name__ = "x_normalize_attributes"
 
 
 __all__ = [

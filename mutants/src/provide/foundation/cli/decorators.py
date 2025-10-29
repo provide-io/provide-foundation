@@ -33,23 +33,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -489,7 +492,7 @@ def x_logging_options__mutmut_13(f: F) -> F:
         type=click.Choice(LOG_LEVELS, case_sensitive=False),
         default=None,
         envvar="PROVIDE_LOG_LEVEL",
-        )(f)
+    )(f)
     f = click.option(
         "--log-file",
         type=click.Path(dir_okay=False, writable=True, path_type=Path),
@@ -749,7 +752,9 @@ def x_logging_options__mutmut_21(f: F) -> F:
     f = click.option(
         "--log-level",
         "-l",
-        type=click.Choice(LOG_LEVELS, ),
+        type=click.Choice(
+            LOG_LEVELS,
+        ),
         default=None,
         envvar="PROVIDE_LOG_LEVEL",
         help="Set the logging level",
@@ -1310,7 +1315,7 @@ def x_logging_options__mutmut_38(f: F) -> F:
         type=click.Path(dir_okay=False, writable=True, path_type=Path),
         default=None,
         envvar="PROVIDE_LOG_FILE",
-        )(f)
+    )(f)
     f = click.option(
         "--log-format",
         type=click.Choice(["json", "text", "key_value"], case_sensitive=False),
@@ -1570,7 +1575,10 @@ def x_logging_options__mutmut_46(f: F) -> F:
     )(f)
     f = click.option(
         "--log-file",
-        type=click.Path(dir_okay=False, writable=True, ),
+        type=click.Path(
+            dir_okay=False,
+            writable=True,
+        ),
         default=None,
         envvar="PROVIDE_LOG_FILE",
         help="Write logs to file",
@@ -2197,7 +2205,7 @@ def x_logging_options__mutmut_65(f: F) -> F:
         type=click.Choice(["json", "text", "key_value"], case_sensitive=False),
         default="key_value",
         envvar="PROVIDE_LOG_FORMAT",
-        )(f)
+    )(f)
     return f
 
 
@@ -2391,7 +2399,9 @@ def x_logging_options__mutmut_71(f: F) -> F:
     )(f)
     f = click.option(
         "--log-format",
-        type=click.Choice(["json", "text", "key_value"], ),
+        type=click.Choice(
+            ["json", "text", "key_value"],
+        ),
         default="key_value",
         envvar="PROVIDE_LOG_FORMAT",
         help="Log output format",
@@ -2860,100 +2870,105 @@ def x_logging_options__mutmut_85(f: F) -> F:
     )(f)
     return f
 
-x_logging_options__mutmut_mutants : ClassVar[MutantDict] = {
-'x_logging_options__mutmut_1': x_logging_options__mutmut_1, 
-    'x_logging_options__mutmut_2': x_logging_options__mutmut_2, 
-    'x_logging_options__mutmut_3': x_logging_options__mutmut_3, 
-    'x_logging_options__mutmut_4': x_logging_options__mutmut_4, 
-    'x_logging_options__mutmut_5': x_logging_options__mutmut_5, 
-    'x_logging_options__mutmut_6': x_logging_options__mutmut_6, 
-    'x_logging_options__mutmut_7': x_logging_options__mutmut_7, 
-    'x_logging_options__mutmut_8': x_logging_options__mutmut_8, 
-    'x_logging_options__mutmut_9': x_logging_options__mutmut_9, 
-    'x_logging_options__mutmut_10': x_logging_options__mutmut_10, 
-    'x_logging_options__mutmut_11': x_logging_options__mutmut_11, 
-    'x_logging_options__mutmut_12': x_logging_options__mutmut_12, 
-    'x_logging_options__mutmut_13': x_logging_options__mutmut_13, 
-    'x_logging_options__mutmut_14': x_logging_options__mutmut_14, 
-    'x_logging_options__mutmut_15': x_logging_options__mutmut_15, 
-    'x_logging_options__mutmut_16': x_logging_options__mutmut_16, 
-    'x_logging_options__mutmut_17': x_logging_options__mutmut_17, 
-    'x_logging_options__mutmut_18': x_logging_options__mutmut_18, 
-    'x_logging_options__mutmut_19': x_logging_options__mutmut_19, 
-    'x_logging_options__mutmut_20': x_logging_options__mutmut_20, 
-    'x_logging_options__mutmut_21': x_logging_options__mutmut_21, 
-    'x_logging_options__mutmut_22': x_logging_options__mutmut_22, 
-    'x_logging_options__mutmut_23': x_logging_options__mutmut_23, 
-    'x_logging_options__mutmut_24': x_logging_options__mutmut_24, 
-    'x_logging_options__mutmut_25': x_logging_options__mutmut_25, 
-    'x_logging_options__mutmut_26': x_logging_options__mutmut_26, 
-    'x_logging_options__mutmut_27': x_logging_options__mutmut_27, 
-    'x_logging_options__mutmut_28': x_logging_options__mutmut_28, 
-    'x_logging_options__mutmut_29': x_logging_options__mutmut_29, 
-    'x_logging_options__mutmut_30': x_logging_options__mutmut_30, 
-    'x_logging_options__mutmut_31': x_logging_options__mutmut_31, 
-    'x_logging_options__mutmut_32': x_logging_options__mutmut_32, 
-    'x_logging_options__mutmut_33': x_logging_options__mutmut_33, 
-    'x_logging_options__mutmut_34': x_logging_options__mutmut_34, 
-    'x_logging_options__mutmut_35': x_logging_options__mutmut_35, 
-    'x_logging_options__mutmut_36': x_logging_options__mutmut_36, 
-    'x_logging_options__mutmut_37': x_logging_options__mutmut_37, 
-    'x_logging_options__mutmut_38': x_logging_options__mutmut_38, 
-    'x_logging_options__mutmut_39': x_logging_options__mutmut_39, 
-    'x_logging_options__mutmut_40': x_logging_options__mutmut_40, 
-    'x_logging_options__mutmut_41': x_logging_options__mutmut_41, 
-    'x_logging_options__mutmut_42': x_logging_options__mutmut_42, 
-    'x_logging_options__mutmut_43': x_logging_options__mutmut_43, 
-    'x_logging_options__mutmut_44': x_logging_options__mutmut_44, 
-    'x_logging_options__mutmut_45': x_logging_options__mutmut_45, 
-    'x_logging_options__mutmut_46': x_logging_options__mutmut_46, 
-    'x_logging_options__mutmut_47': x_logging_options__mutmut_47, 
-    'x_logging_options__mutmut_48': x_logging_options__mutmut_48, 
-    'x_logging_options__mutmut_49': x_logging_options__mutmut_49, 
-    'x_logging_options__mutmut_50': x_logging_options__mutmut_50, 
-    'x_logging_options__mutmut_51': x_logging_options__mutmut_51, 
-    'x_logging_options__mutmut_52': x_logging_options__mutmut_52, 
-    'x_logging_options__mutmut_53': x_logging_options__mutmut_53, 
-    'x_logging_options__mutmut_54': x_logging_options__mutmut_54, 
-    'x_logging_options__mutmut_55': x_logging_options__mutmut_55, 
-    'x_logging_options__mutmut_56': x_logging_options__mutmut_56, 
-    'x_logging_options__mutmut_57': x_logging_options__mutmut_57, 
-    'x_logging_options__mutmut_58': x_logging_options__mutmut_58, 
-    'x_logging_options__mutmut_59': x_logging_options__mutmut_59, 
-    'x_logging_options__mutmut_60': x_logging_options__mutmut_60, 
-    'x_logging_options__mutmut_61': x_logging_options__mutmut_61, 
-    'x_logging_options__mutmut_62': x_logging_options__mutmut_62, 
-    'x_logging_options__mutmut_63': x_logging_options__mutmut_63, 
-    'x_logging_options__mutmut_64': x_logging_options__mutmut_64, 
-    'x_logging_options__mutmut_65': x_logging_options__mutmut_65, 
-    'x_logging_options__mutmut_66': x_logging_options__mutmut_66, 
-    'x_logging_options__mutmut_67': x_logging_options__mutmut_67, 
-    'x_logging_options__mutmut_68': x_logging_options__mutmut_68, 
-    'x_logging_options__mutmut_69': x_logging_options__mutmut_69, 
-    'x_logging_options__mutmut_70': x_logging_options__mutmut_70, 
-    'x_logging_options__mutmut_71': x_logging_options__mutmut_71, 
-    'x_logging_options__mutmut_72': x_logging_options__mutmut_72, 
-    'x_logging_options__mutmut_73': x_logging_options__mutmut_73, 
-    'x_logging_options__mutmut_74': x_logging_options__mutmut_74, 
-    'x_logging_options__mutmut_75': x_logging_options__mutmut_75, 
-    'x_logging_options__mutmut_76': x_logging_options__mutmut_76, 
-    'x_logging_options__mutmut_77': x_logging_options__mutmut_77, 
-    'x_logging_options__mutmut_78': x_logging_options__mutmut_78, 
-    'x_logging_options__mutmut_79': x_logging_options__mutmut_79, 
-    'x_logging_options__mutmut_80': x_logging_options__mutmut_80, 
-    'x_logging_options__mutmut_81': x_logging_options__mutmut_81, 
-    'x_logging_options__mutmut_82': x_logging_options__mutmut_82, 
-    'x_logging_options__mutmut_83': x_logging_options__mutmut_83, 
-    'x_logging_options__mutmut_84': x_logging_options__mutmut_84, 
-    'x_logging_options__mutmut_85': x_logging_options__mutmut_85
+
+x_logging_options__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_logging_options__mutmut_1": x_logging_options__mutmut_1,
+    "x_logging_options__mutmut_2": x_logging_options__mutmut_2,
+    "x_logging_options__mutmut_3": x_logging_options__mutmut_3,
+    "x_logging_options__mutmut_4": x_logging_options__mutmut_4,
+    "x_logging_options__mutmut_5": x_logging_options__mutmut_5,
+    "x_logging_options__mutmut_6": x_logging_options__mutmut_6,
+    "x_logging_options__mutmut_7": x_logging_options__mutmut_7,
+    "x_logging_options__mutmut_8": x_logging_options__mutmut_8,
+    "x_logging_options__mutmut_9": x_logging_options__mutmut_9,
+    "x_logging_options__mutmut_10": x_logging_options__mutmut_10,
+    "x_logging_options__mutmut_11": x_logging_options__mutmut_11,
+    "x_logging_options__mutmut_12": x_logging_options__mutmut_12,
+    "x_logging_options__mutmut_13": x_logging_options__mutmut_13,
+    "x_logging_options__mutmut_14": x_logging_options__mutmut_14,
+    "x_logging_options__mutmut_15": x_logging_options__mutmut_15,
+    "x_logging_options__mutmut_16": x_logging_options__mutmut_16,
+    "x_logging_options__mutmut_17": x_logging_options__mutmut_17,
+    "x_logging_options__mutmut_18": x_logging_options__mutmut_18,
+    "x_logging_options__mutmut_19": x_logging_options__mutmut_19,
+    "x_logging_options__mutmut_20": x_logging_options__mutmut_20,
+    "x_logging_options__mutmut_21": x_logging_options__mutmut_21,
+    "x_logging_options__mutmut_22": x_logging_options__mutmut_22,
+    "x_logging_options__mutmut_23": x_logging_options__mutmut_23,
+    "x_logging_options__mutmut_24": x_logging_options__mutmut_24,
+    "x_logging_options__mutmut_25": x_logging_options__mutmut_25,
+    "x_logging_options__mutmut_26": x_logging_options__mutmut_26,
+    "x_logging_options__mutmut_27": x_logging_options__mutmut_27,
+    "x_logging_options__mutmut_28": x_logging_options__mutmut_28,
+    "x_logging_options__mutmut_29": x_logging_options__mutmut_29,
+    "x_logging_options__mutmut_30": x_logging_options__mutmut_30,
+    "x_logging_options__mutmut_31": x_logging_options__mutmut_31,
+    "x_logging_options__mutmut_32": x_logging_options__mutmut_32,
+    "x_logging_options__mutmut_33": x_logging_options__mutmut_33,
+    "x_logging_options__mutmut_34": x_logging_options__mutmut_34,
+    "x_logging_options__mutmut_35": x_logging_options__mutmut_35,
+    "x_logging_options__mutmut_36": x_logging_options__mutmut_36,
+    "x_logging_options__mutmut_37": x_logging_options__mutmut_37,
+    "x_logging_options__mutmut_38": x_logging_options__mutmut_38,
+    "x_logging_options__mutmut_39": x_logging_options__mutmut_39,
+    "x_logging_options__mutmut_40": x_logging_options__mutmut_40,
+    "x_logging_options__mutmut_41": x_logging_options__mutmut_41,
+    "x_logging_options__mutmut_42": x_logging_options__mutmut_42,
+    "x_logging_options__mutmut_43": x_logging_options__mutmut_43,
+    "x_logging_options__mutmut_44": x_logging_options__mutmut_44,
+    "x_logging_options__mutmut_45": x_logging_options__mutmut_45,
+    "x_logging_options__mutmut_46": x_logging_options__mutmut_46,
+    "x_logging_options__mutmut_47": x_logging_options__mutmut_47,
+    "x_logging_options__mutmut_48": x_logging_options__mutmut_48,
+    "x_logging_options__mutmut_49": x_logging_options__mutmut_49,
+    "x_logging_options__mutmut_50": x_logging_options__mutmut_50,
+    "x_logging_options__mutmut_51": x_logging_options__mutmut_51,
+    "x_logging_options__mutmut_52": x_logging_options__mutmut_52,
+    "x_logging_options__mutmut_53": x_logging_options__mutmut_53,
+    "x_logging_options__mutmut_54": x_logging_options__mutmut_54,
+    "x_logging_options__mutmut_55": x_logging_options__mutmut_55,
+    "x_logging_options__mutmut_56": x_logging_options__mutmut_56,
+    "x_logging_options__mutmut_57": x_logging_options__mutmut_57,
+    "x_logging_options__mutmut_58": x_logging_options__mutmut_58,
+    "x_logging_options__mutmut_59": x_logging_options__mutmut_59,
+    "x_logging_options__mutmut_60": x_logging_options__mutmut_60,
+    "x_logging_options__mutmut_61": x_logging_options__mutmut_61,
+    "x_logging_options__mutmut_62": x_logging_options__mutmut_62,
+    "x_logging_options__mutmut_63": x_logging_options__mutmut_63,
+    "x_logging_options__mutmut_64": x_logging_options__mutmut_64,
+    "x_logging_options__mutmut_65": x_logging_options__mutmut_65,
+    "x_logging_options__mutmut_66": x_logging_options__mutmut_66,
+    "x_logging_options__mutmut_67": x_logging_options__mutmut_67,
+    "x_logging_options__mutmut_68": x_logging_options__mutmut_68,
+    "x_logging_options__mutmut_69": x_logging_options__mutmut_69,
+    "x_logging_options__mutmut_70": x_logging_options__mutmut_70,
+    "x_logging_options__mutmut_71": x_logging_options__mutmut_71,
+    "x_logging_options__mutmut_72": x_logging_options__mutmut_72,
+    "x_logging_options__mutmut_73": x_logging_options__mutmut_73,
+    "x_logging_options__mutmut_74": x_logging_options__mutmut_74,
+    "x_logging_options__mutmut_75": x_logging_options__mutmut_75,
+    "x_logging_options__mutmut_76": x_logging_options__mutmut_76,
+    "x_logging_options__mutmut_77": x_logging_options__mutmut_77,
+    "x_logging_options__mutmut_78": x_logging_options__mutmut_78,
+    "x_logging_options__mutmut_79": x_logging_options__mutmut_79,
+    "x_logging_options__mutmut_80": x_logging_options__mutmut_80,
+    "x_logging_options__mutmut_81": x_logging_options__mutmut_81,
+    "x_logging_options__mutmut_82": x_logging_options__mutmut_82,
+    "x_logging_options__mutmut_83": x_logging_options__mutmut_83,
+    "x_logging_options__mutmut_84": x_logging_options__mutmut_84,
+    "x_logging_options__mutmut_85": x_logging_options__mutmut_85,
 }
 
+
 def logging_options(*args, **kwargs):
-    result = _mutmut_trampoline(x_logging_options__mutmut_orig, x_logging_options__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_logging_options__mutmut_orig, x_logging_options__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 logging_options.__signature__ = _mutmut_signature(x_logging_options__mutmut_orig)
-x_logging_options__mutmut_orig.__name__ = 'x_logging_options'
+x_logging_options__mutmut_orig.__name__ = "x_logging_options"
 
 
 def x_config_options__mutmut_orig(f: F) -> F:
@@ -3282,7 +3297,7 @@ def x_config_options__mutmut_13(f: F) -> F:
         type=click.Path(exists=True, dir_okay=False, path_type=Path),
         default=None,
         envvar="PROVIDE_CONFIG_FILE",
-        )(f)
+    )(f)
     f = click.option(
         "--profile",
         "-p",
@@ -3528,7 +3543,10 @@ def x_config_options__mutmut_23(f: F) -> F:
     f = click.option(
         "--config",
         "-c",
-        type=click.Path(exists=True, dir_okay=False, ),
+        type=click.Path(
+            exists=True,
+            dir_okay=False,
+        ),
         default=None,
         envvar="PROVIDE_CONFIG_FILE",
         help="Path to configuration file",
@@ -3978,7 +3996,7 @@ def x_config_options__mutmut_41(f: F) -> F:
         "-p",
         default=None,
         envvar="PROVIDE_PROFILE",
-        )(f)
+    )(f)
     return f
 
 
@@ -4206,65 +4224,68 @@ def x_config_options__mutmut_50(f: F) -> F:
     )(f)
     return f
 
-x_config_options__mutmut_mutants : ClassVar[MutantDict] = {
-'x_config_options__mutmut_1': x_config_options__mutmut_1, 
-    'x_config_options__mutmut_2': x_config_options__mutmut_2, 
-    'x_config_options__mutmut_3': x_config_options__mutmut_3, 
-    'x_config_options__mutmut_4': x_config_options__mutmut_4, 
-    'x_config_options__mutmut_5': x_config_options__mutmut_5, 
-    'x_config_options__mutmut_6': x_config_options__mutmut_6, 
-    'x_config_options__mutmut_7': x_config_options__mutmut_7, 
-    'x_config_options__mutmut_8': x_config_options__mutmut_8, 
-    'x_config_options__mutmut_9': x_config_options__mutmut_9, 
-    'x_config_options__mutmut_10': x_config_options__mutmut_10, 
-    'x_config_options__mutmut_11': x_config_options__mutmut_11, 
-    'x_config_options__mutmut_12': x_config_options__mutmut_12, 
-    'x_config_options__mutmut_13': x_config_options__mutmut_13, 
-    'x_config_options__mutmut_14': x_config_options__mutmut_14, 
-    'x_config_options__mutmut_15': x_config_options__mutmut_15, 
-    'x_config_options__mutmut_16': x_config_options__mutmut_16, 
-    'x_config_options__mutmut_17': x_config_options__mutmut_17, 
-    'x_config_options__mutmut_18': x_config_options__mutmut_18, 
-    'x_config_options__mutmut_19': x_config_options__mutmut_19, 
-    'x_config_options__mutmut_20': x_config_options__mutmut_20, 
-    'x_config_options__mutmut_21': x_config_options__mutmut_21, 
-    'x_config_options__mutmut_22': x_config_options__mutmut_22, 
-    'x_config_options__mutmut_23': x_config_options__mutmut_23, 
-    'x_config_options__mutmut_24': x_config_options__mutmut_24, 
-    'x_config_options__mutmut_25': x_config_options__mutmut_25, 
-    'x_config_options__mutmut_26': x_config_options__mutmut_26, 
-    'x_config_options__mutmut_27': x_config_options__mutmut_27, 
-    'x_config_options__mutmut_28': x_config_options__mutmut_28, 
-    'x_config_options__mutmut_29': x_config_options__mutmut_29, 
-    'x_config_options__mutmut_30': x_config_options__mutmut_30, 
-    'x_config_options__mutmut_31': x_config_options__mutmut_31, 
-    'x_config_options__mutmut_32': x_config_options__mutmut_32, 
-    'x_config_options__mutmut_33': x_config_options__mutmut_33, 
-    'x_config_options__mutmut_34': x_config_options__mutmut_34, 
-    'x_config_options__mutmut_35': x_config_options__mutmut_35, 
-    'x_config_options__mutmut_36': x_config_options__mutmut_36, 
-    'x_config_options__mutmut_37': x_config_options__mutmut_37, 
-    'x_config_options__mutmut_38': x_config_options__mutmut_38, 
-    'x_config_options__mutmut_39': x_config_options__mutmut_39, 
-    'x_config_options__mutmut_40': x_config_options__mutmut_40, 
-    'x_config_options__mutmut_41': x_config_options__mutmut_41, 
-    'x_config_options__mutmut_42': x_config_options__mutmut_42, 
-    'x_config_options__mutmut_43': x_config_options__mutmut_43, 
-    'x_config_options__mutmut_44': x_config_options__mutmut_44, 
-    'x_config_options__mutmut_45': x_config_options__mutmut_45, 
-    'x_config_options__mutmut_46': x_config_options__mutmut_46, 
-    'x_config_options__mutmut_47': x_config_options__mutmut_47, 
-    'x_config_options__mutmut_48': x_config_options__mutmut_48, 
-    'x_config_options__mutmut_49': x_config_options__mutmut_49, 
-    'x_config_options__mutmut_50': x_config_options__mutmut_50
+
+x_config_options__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_config_options__mutmut_1": x_config_options__mutmut_1,
+    "x_config_options__mutmut_2": x_config_options__mutmut_2,
+    "x_config_options__mutmut_3": x_config_options__mutmut_3,
+    "x_config_options__mutmut_4": x_config_options__mutmut_4,
+    "x_config_options__mutmut_5": x_config_options__mutmut_5,
+    "x_config_options__mutmut_6": x_config_options__mutmut_6,
+    "x_config_options__mutmut_7": x_config_options__mutmut_7,
+    "x_config_options__mutmut_8": x_config_options__mutmut_8,
+    "x_config_options__mutmut_9": x_config_options__mutmut_9,
+    "x_config_options__mutmut_10": x_config_options__mutmut_10,
+    "x_config_options__mutmut_11": x_config_options__mutmut_11,
+    "x_config_options__mutmut_12": x_config_options__mutmut_12,
+    "x_config_options__mutmut_13": x_config_options__mutmut_13,
+    "x_config_options__mutmut_14": x_config_options__mutmut_14,
+    "x_config_options__mutmut_15": x_config_options__mutmut_15,
+    "x_config_options__mutmut_16": x_config_options__mutmut_16,
+    "x_config_options__mutmut_17": x_config_options__mutmut_17,
+    "x_config_options__mutmut_18": x_config_options__mutmut_18,
+    "x_config_options__mutmut_19": x_config_options__mutmut_19,
+    "x_config_options__mutmut_20": x_config_options__mutmut_20,
+    "x_config_options__mutmut_21": x_config_options__mutmut_21,
+    "x_config_options__mutmut_22": x_config_options__mutmut_22,
+    "x_config_options__mutmut_23": x_config_options__mutmut_23,
+    "x_config_options__mutmut_24": x_config_options__mutmut_24,
+    "x_config_options__mutmut_25": x_config_options__mutmut_25,
+    "x_config_options__mutmut_26": x_config_options__mutmut_26,
+    "x_config_options__mutmut_27": x_config_options__mutmut_27,
+    "x_config_options__mutmut_28": x_config_options__mutmut_28,
+    "x_config_options__mutmut_29": x_config_options__mutmut_29,
+    "x_config_options__mutmut_30": x_config_options__mutmut_30,
+    "x_config_options__mutmut_31": x_config_options__mutmut_31,
+    "x_config_options__mutmut_32": x_config_options__mutmut_32,
+    "x_config_options__mutmut_33": x_config_options__mutmut_33,
+    "x_config_options__mutmut_34": x_config_options__mutmut_34,
+    "x_config_options__mutmut_35": x_config_options__mutmut_35,
+    "x_config_options__mutmut_36": x_config_options__mutmut_36,
+    "x_config_options__mutmut_37": x_config_options__mutmut_37,
+    "x_config_options__mutmut_38": x_config_options__mutmut_38,
+    "x_config_options__mutmut_39": x_config_options__mutmut_39,
+    "x_config_options__mutmut_40": x_config_options__mutmut_40,
+    "x_config_options__mutmut_41": x_config_options__mutmut_41,
+    "x_config_options__mutmut_42": x_config_options__mutmut_42,
+    "x_config_options__mutmut_43": x_config_options__mutmut_43,
+    "x_config_options__mutmut_44": x_config_options__mutmut_44,
+    "x_config_options__mutmut_45": x_config_options__mutmut_45,
+    "x_config_options__mutmut_46": x_config_options__mutmut_46,
+    "x_config_options__mutmut_47": x_config_options__mutmut_47,
+    "x_config_options__mutmut_48": x_config_options__mutmut_48,
+    "x_config_options__mutmut_49": x_config_options__mutmut_49,
+    "x_config_options__mutmut_50": x_config_options__mutmut_50,
 }
+
 
 def config_options(*args, **kwargs):
     result = _mutmut_trampoline(x_config_options__mutmut_orig, x_config_options__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 config_options.__signature__ = _mutmut_signature(x_config_options__mutmut_orig)
-x_config_options__mutmut_orig.__name__ = 'x_config_options'
+x_config_options__mutmut_orig.__name__ = "x_config_options"
 
 
 def x_output_options__mutmut_orig(f: F) -> F:
@@ -4698,7 +4719,7 @@ def x_output_options__mutmut_13(f: F) -> F:
         is_flag=True,
         default=None,
         envvar="PROVIDE_JSON_OUTPUT",
-        )(f)
+    )(f)
     f = click.option(
         "--no-color",
         is_flag=True,
@@ -5420,7 +5441,7 @@ def x_output_options__mutmut_35(f: F) -> F:
         is_flag=True,
         default=False,
         envvar="PROVIDE_NO_COLOR",
-        )(f)
+    )(f)
     f = click.option(
         "--no-emoji",
         is_flag=True,
@@ -6109,7 +6130,7 @@ def x_output_options__mutmut_56(f: F) -> F:
         is_flag=True,
         default=False,
         envvar="PROVIDE_NO_EMOJI",
-        )(f)
+    )(f)
     return f
 
 
@@ -6409,80 +6430,83 @@ def x_output_options__mutmut_65(f: F) -> F:
     )(f)
     return f
 
-x_output_options__mutmut_mutants : ClassVar[MutantDict] = {
-'x_output_options__mutmut_1': x_output_options__mutmut_1, 
-    'x_output_options__mutmut_2': x_output_options__mutmut_2, 
-    'x_output_options__mutmut_3': x_output_options__mutmut_3, 
-    'x_output_options__mutmut_4': x_output_options__mutmut_4, 
-    'x_output_options__mutmut_5': x_output_options__mutmut_5, 
-    'x_output_options__mutmut_6': x_output_options__mutmut_6, 
-    'x_output_options__mutmut_7': x_output_options__mutmut_7, 
-    'x_output_options__mutmut_8': x_output_options__mutmut_8, 
-    'x_output_options__mutmut_9': x_output_options__mutmut_9, 
-    'x_output_options__mutmut_10': x_output_options__mutmut_10, 
-    'x_output_options__mutmut_11': x_output_options__mutmut_11, 
-    'x_output_options__mutmut_12': x_output_options__mutmut_12, 
-    'x_output_options__mutmut_13': x_output_options__mutmut_13, 
-    'x_output_options__mutmut_14': x_output_options__mutmut_14, 
-    'x_output_options__mutmut_15': x_output_options__mutmut_15, 
-    'x_output_options__mutmut_16': x_output_options__mutmut_16, 
-    'x_output_options__mutmut_17': x_output_options__mutmut_17, 
-    'x_output_options__mutmut_18': x_output_options__mutmut_18, 
-    'x_output_options__mutmut_19': x_output_options__mutmut_19, 
-    'x_output_options__mutmut_20': x_output_options__mutmut_20, 
-    'x_output_options__mutmut_21': x_output_options__mutmut_21, 
-    'x_output_options__mutmut_22': x_output_options__mutmut_22, 
-    'x_output_options__mutmut_23': x_output_options__mutmut_23, 
-    'x_output_options__mutmut_24': x_output_options__mutmut_24, 
-    'x_output_options__mutmut_25': x_output_options__mutmut_25, 
-    'x_output_options__mutmut_26': x_output_options__mutmut_26, 
-    'x_output_options__mutmut_27': x_output_options__mutmut_27, 
-    'x_output_options__mutmut_28': x_output_options__mutmut_28, 
-    'x_output_options__mutmut_29': x_output_options__mutmut_29, 
-    'x_output_options__mutmut_30': x_output_options__mutmut_30, 
-    'x_output_options__mutmut_31': x_output_options__mutmut_31, 
-    'x_output_options__mutmut_32': x_output_options__mutmut_32, 
-    'x_output_options__mutmut_33': x_output_options__mutmut_33, 
-    'x_output_options__mutmut_34': x_output_options__mutmut_34, 
-    'x_output_options__mutmut_35': x_output_options__mutmut_35, 
-    'x_output_options__mutmut_36': x_output_options__mutmut_36, 
-    'x_output_options__mutmut_37': x_output_options__mutmut_37, 
-    'x_output_options__mutmut_38': x_output_options__mutmut_38, 
-    'x_output_options__mutmut_39': x_output_options__mutmut_39, 
-    'x_output_options__mutmut_40': x_output_options__mutmut_40, 
-    'x_output_options__mutmut_41': x_output_options__mutmut_41, 
-    'x_output_options__mutmut_42': x_output_options__mutmut_42, 
-    'x_output_options__mutmut_43': x_output_options__mutmut_43, 
-    'x_output_options__mutmut_44': x_output_options__mutmut_44, 
-    'x_output_options__mutmut_45': x_output_options__mutmut_45, 
-    'x_output_options__mutmut_46': x_output_options__mutmut_46, 
-    'x_output_options__mutmut_47': x_output_options__mutmut_47, 
-    'x_output_options__mutmut_48': x_output_options__mutmut_48, 
-    'x_output_options__mutmut_49': x_output_options__mutmut_49, 
-    'x_output_options__mutmut_50': x_output_options__mutmut_50, 
-    'x_output_options__mutmut_51': x_output_options__mutmut_51, 
-    'x_output_options__mutmut_52': x_output_options__mutmut_52, 
-    'x_output_options__mutmut_53': x_output_options__mutmut_53, 
-    'x_output_options__mutmut_54': x_output_options__mutmut_54, 
-    'x_output_options__mutmut_55': x_output_options__mutmut_55, 
-    'x_output_options__mutmut_56': x_output_options__mutmut_56, 
-    'x_output_options__mutmut_57': x_output_options__mutmut_57, 
-    'x_output_options__mutmut_58': x_output_options__mutmut_58, 
-    'x_output_options__mutmut_59': x_output_options__mutmut_59, 
-    'x_output_options__mutmut_60': x_output_options__mutmut_60, 
-    'x_output_options__mutmut_61': x_output_options__mutmut_61, 
-    'x_output_options__mutmut_62': x_output_options__mutmut_62, 
-    'x_output_options__mutmut_63': x_output_options__mutmut_63, 
-    'x_output_options__mutmut_64': x_output_options__mutmut_64, 
-    'x_output_options__mutmut_65': x_output_options__mutmut_65
+
+x_output_options__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_output_options__mutmut_1": x_output_options__mutmut_1,
+    "x_output_options__mutmut_2": x_output_options__mutmut_2,
+    "x_output_options__mutmut_3": x_output_options__mutmut_3,
+    "x_output_options__mutmut_4": x_output_options__mutmut_4,
+    "x_output_options__mutmut_5": x_output_options__mutmut_5,
+    "x_output_options__mutmut_6": x_output_options__mutmut_6,
+    "x_output_options__mutmut_7": x_output_options__mutmut_7,
+    "x_output_options__mutmut_8": x_output_options__mutmut_8,
+    "x_output_options__mutmut_9": x_output_options__mutmut_9,
+    "x_output_options__mutmut_10": x_output_options__mutmut_10,
+    "x_output_options__mutmut_11": x_output_options__mutmut_11,
+    "x_output_options__mutmut_12": x_output_options__mutmut_12,
+    "x_output_options__mutmut_13": x_output_options__mutmut_13,
+    "x_output_options__mutmut_14": x_output_options__mutmut_14,
+    "x_output_options__mutmut_15": x_output_options__mutmut_15,
+    "x_output_options__mutmut_16": x_output_options__mutmut_16,
+    "x_output_options__mutmut_17": x_output_options__mutmut_17,
+    "x_output_options__mutmut_18": x_output_options__mutmut_18,
+    "x_output_options__mutmut_19": x_output_options__mutmut_19,
+    "x_output_options__mutmut_20": x_output_options__mutmut_20,
+    "x_output_options__mutmut_21": x_output_options__mutmut_21,
+    "x_output_options__mutmut_22": x_output_options__mutmut_22,
+    "x_output_options__mutmut_23": x_output_options__mutmut_23,
+    "x_output_options__mutmut_24": x_output_options__mutmut_24,
+    "x_output_options__mutmut_25": x_output_options__mutmut_25,
+    "x_output_options__mutmut_26": x_output_options__mutmut_26,
+    "x_output_options__mutmut_27": x_output_options__mutmut_27,
+    "x_output_options__mutmut_28": x_output_options__mutmut_28,
+    "x_output_options__mutmut_29": x_output_options__mutmut_29,
+    "x_output_options__mutmut_30": x_output_options__mutmut_30,
+    "x_output_options__mutmut_31": x_output_options__mutmut_31,
+    "x_output_options__mutmut_32": x_output_options__mutmut_32,
+    "x_output_options__mutmut_33": x_output_options__mutmut_33,
+    "x_output_options__mutmut_34": x_output_options__mutmut_34,
+    "x_output_options__mutmut_35": x_output_options__mutmut_35,
+    "x_output_options__mutmut_36": x_output_options__mutmut_36,
+    "x_output_options__mutmut_37": x_output_options__mutmut_37,
+    "x_output_options__mutmut_38": x_output_options__mutmut_38,
+    "x_output_options__mutmut_39": x_output_options__mutmut_39,
+    "x_output_options__mutmut_40": x_output_options__mutmut_40,
+    "x_output_options__mutmut_41": x_output_options__mutmut_41,
+    "x_output_options__mutmut_42": x_output_options__mutmut_42,
+    "x_output_options__mutmut_43": x_output_options__mutmut_43,
+    "x_output_options__mutmut_44": x_output_options__mutmut_44,
+    "x_output_options__mutmut_45": x_output_options__mutmut_45,
+    "x_output_options__mutmut_46": x_output_options__mutmut_46,
+    "x_output_options__mutmut_47": x_output_options__mutmut_47,
+    "x_output_options__mutmut_48": x_output_options__mutmut_48,
+    "x_output_options__mutmut_49": x_output_options__mutmut_49,
+    "x_output_options__mutmut_50": x_output_options__mutmut_50,
+    "x_output_options__mutmut_51": x_output_options__mutmut_51,
+    "x_output_options__mutmut_52": x_output_options__mutmut_52,
+    "x_output_options__mutmut_53": x_output_options__mutmut_53,
+    "x_output_options__mutmut_54": x_output_options__mutmut_54,
+    "x_output_options__mutmut_55": x_output_options__mutmut_55,
+    "x_output_options__mutmut_56": x_output_options__mutmut_56,
+    "x_output_options__mutmut_57": x_output_options__mutmut_57,
+    "x_output_options__mutmut_58": x_output_options__mutmut_58,
+    "x_output_options__mutmut_59": x_output_options__mutmut_59,
+    "x_output_options__mutmut_60": x_output_options__mutmut_60,
+    "x_output_options__mutmut_61": x_output_options__mutmut_61,
+    "x_output_options__mutmut_62": x_output_options__mutmut_62,
+    "x_output_options__mutmut_63": x_output_options__mutmut_63,
+    "x_output_options__mutmut_64": x_output_options__mutmut_64,
+    "x_output_options__mutmut_65": x_output_options__mutmut_65,
 }
+
 
 def output_options(*args, **kwargs):
     result = _mutmut_trampoline(x_output_options__mutmut_orig, x_output_options__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 output_options.__signature__ = _mutmut_signature(x_output_options__mutmut_orig)
-x_output_options__mutmut_orig.__name__ = 'x_output_options'
+x_output_options__mutmut_orig.__name__ = "x_output_options"
 
 
 def x_flexible_options__mutmut_orig(f: F) -> F:
@@ -6539,19 +6563,24 @@ def x_flexible_options__mutmut_4(f: F) -> F:
     f = config_options(None)
     return f
 
-x_flexible_options__mutmut_mutants : ClassVar[MutantDict] = {
-'x_flexible_options__mutmut_1': x_flexible_options__mutmut_1, 
-    'x_flexible_options__mutmut_2': x_flexible_options__mutmut_2, 
-    'x_flexible_options__mutmut_3': x_flexible_options__mutmut_3, 
-    'x_flexible_options__mutmut_4': x_flexible_options__mutmut_4
+
+x_flexible_options__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_flexible_options__mutmut_1": x_flexible_options__mutmut_1,
+    "x_flexible_options__mutmut_2": x_flexible_options__mutmut_2,
+    "x_flexible_options__mutmut_3": x_flexible_options__mutmut_3,
+    "x_flexible_options__mutmut_4": x_flexible_options__mutmut_4,
 }
 
+
 def flexible_options(*args, **kwargs):
-    result = _mutmut_trampoline(x_flexible_options__mutmut_orig, x_flexible_options__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_flexible_options__mutmut_orig, x_flexible_options__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 flexible_options.__signature__ = _mutmut_signature(x_flexible_options__mutmut_orig)
-x_flexible_options__mutmut_orig.__name__ = 'x_flexible_options'
+x_flexible_options__mutmut_orig.__name__ = "x_flexible_options"
 
 
 def x_standard_options__mutmut_orig(f: F) -> F:
@@ -6630,21 +6659,26 @@ def x_standard_options__mutmut_6(f: F) -> F:
     f = output_options(None)
     return f
 
-x_standard_options__mutmut_mutants : ClassVar[MutantDict] = {
-'x_standard_options__mutmut_1': x_standard_options__mutmut_1, 
-    'x_standard_options__mutmut_2': x_standard_options__mutmut_2, 
-    'x_standard_options__mutmut_3': x_standard_options__mutmut_3, 
-    'x_standard_options__mutmut_4': x_standard_options__mutmut_4, 
-    'x_standard_options__mutmut_5': x_standard_options__mutmut_5, 
-    'x_standard_options__mutmut_6': x_standard_options__mutmut_6
+
+x_standard_options__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_standard_options__mutmut_1": x_standard_options__mutmut_1,
+    "x_standard_options__mutmut_2": x_standard_options__mutmut_2,
+    "x_standard_options__mutmut_3": x_standard_options__mutmut_3,
+    "x_standard_options__mutmut_4": x_standard_options__mutmut_4,
+    "x_standard_options__mutmut_5": x_standard_options__mutmut_5,
+    "x_standard_options__mutmut_6": x_standard_options__mutmut_6,
 }
 
+
 def standard_options(*args, **kwargs):
-    result = _mutmut_trampoline(x_standard_options__mutmut_orig, x_standard_options__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_standard_options__mutmut_orig, x_standard_options__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 standard_options.__signature__ = _mutmut_signature(x_standard_options__mutmut_orig)
-x_standard_options__mutmut_orig.__name__ = 'x_standard_options'
+x_standard_options__mutmut_orig.__name__ = "x_standard_options"
 
 
 def error_handler(f: F) -> F:
@@ -6780,7 +6814,12 @@ def x__ensure_cli_context__mutmut_5(ctx: click_types.Context) -> None:
 
 def x__ensure_cli_context__mutmut_6(ctx: click_types.Context) -> None:
     """Ensure the Click context has a CLIContext object."""
-    if not hasattr(ctx, ) or ctx.obj is None:
+    if (
+        not hasattr(
+            ctx,
+        )
+        or ctx.obj is None
+    ):
         ctx.obj = CLIContext()
     elif not isinstance(ctx.obj, CLIContext):
         # If obj exists but isn't a Context, wrap it
@@ -6942,31 +6981,36 @@ def x__ensure_cli_context__mutmut_16(ctx: click_types.Context) -> None:
             ctx.obj = CLIContext()
             ctx.obj._cli_data = None
 
-x__ensure_cli_context__mutmut_mutants : ClassVar[MutantDict] = {
-'x__ensure_cli_context__mutmut_1': x__ensure_cli_context__mutmut_1, 
-    'x__ensure_cli_context__mutmut_2': x__ensure_cli_context__mutmut_2, 
-    'x__ensure_cli_context__mutmut_3': x__ensure_cli_context__mutmut_3, 
-    'x__ensure_cli_context__mutmut_4': x__ensure_cli_context__mutmut_4, 
-    'x__ensure_cli_context__mutmut_5': x__ensure_cli_context__mutmut_5, 
-    'x__ensure_cli_context__mutmut_6': x__ensure_cli_context__mutmut_6, 
-    'x__ensure_cli_context__mutmut_7': x__ensure_cli_context__mutmut_7, 
-    'x__ensure_cli_context__mutmut_8': x__ensure_cli_context__mutmut_8, 
-    'x__ensure_cli_context__mutmut_9': x__ensure_cli_context__mutmut_9, 
-    'x__ensure_cli_context__mutmut_10': x__ensure_cli_context__mutmut_10, 
-    'x__ensure_cli_context__mutmut_11': x__ensure_cli_context__mutmut_11, 
-    'x__ensure_cli_context__mutmut_12': x__ensure_cli_context__mutmut_12, 
-    'x__ensure_cli_context__mutmut_13': x__ensure_cli_context__mutmut_13, 
-    'x__ensure_cli_context__mutmut_14': x__ensure_cli_context__mutmut_14, 
-    'x__ensure_cli_context__mutmut_15': x__ensure_cli_context__mutmut_15, 
-    'x__ensure_cli_context__mutmut_16': x__ensure_cli_context__mutmut_16
+
+x__ensure_cli_context__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__ensure_cli_context__mutmut_1": x__ensure_cli_context__mutmut_1,
+    "x__ensure_cli_context__mutmut_2": x__ensure_cli_context__mutmut_2,
+    "x__ensure_cli_context__mutmut_3": x__ensure_cli_context__mutmut_3,
+    "x__ensure_cli_context__mutmut_4": x__ensure_cli_context__mutmut_4,
+    "x__ensure_cli_context__mutmut_5": x__ensure_cli_context__mutmut_5,
+    "x__ensure_cli_context__mutmut_6": x__ensure_cli_context__mutmut_6,
+    "x__ensure_cli_context__mutmut_7": x__ensure_cli_context__mutmut_7,
+    "x__ensure_cli_context__mutmut_8": x__ensure_cli_context__mutmut_8,
+    "x__ensure_cli_context__mutmut_9": x__ensure_cli_context__mutmut_9,
+    "x__ensure_cli_context__mutmut_10": x__ensure_cli_context__mutmut_10,
+    "x__ensure_cli_context__mutmut_11": x__ensure_cli_context__mutmut_11,
+    "x__ensure_cli_context__mutmut_12": x__ensure_cli_context__mutmut_12,
+    "x__ensure_cli_context__mutmut_13": x__ensure_cli_context__mutmut_13,
+    "x__ensure_cli_context__mutmut_14": x__ensure_cli_context__mutmut_14,
+    "x__ensure_cli_context__mutmut_15": x__ensure_cli_context__mutmut_15,
+    "x__ensure_cli_context__mutmut_16": x__ensure_cli_context__mutmut_16,
 }
 
+
 def _ensure_cli_context(*args, **kwargs):
-    result = _mutmut_trampoline(x__ensure_cli_context__mutmut_orig, x__ensure_cli_context__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__ensure_cli_context__mutmut_orig, x__ensure_cli_context__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _ensure_cli_context.__signature__ = _mutmut_signature(x__ensure_cli_context__mutmut_orig)
-x__ensure_cli_context__mutmut_orig.__name__ = 'x__ensure_cli_context'
+x__ensure_cli_context__mutmut_orig.__name__ = "x__ensure_cli_context"
 
 
 def x__update_context_from_kwargs__mutmut_orig(cli_context: CLIContext, kwargs: dict[str, Any]) -> None:
@@ -8354,80 +8398,85 @@ def x__update_context_from_kwargs__mutmut_65(cli_context: CLIContext, kwargs: di
     if kwargs.get("config"):
         cli_context.load_config(kwargs["CONFIG"])
 
-x__update_context_from_kwargs__mutmut_mutants : ClassVar[MutantDict] = {
-'x__update_context_from_kwargs__mutmut_1': x__update_context_from_kwargs__mutmut_1, 
-    'x__update_context_from_kwargs__mutmut_2': x__update_context_from_kwargs__mutmut_2, 
-    'x__update_context_from_kwargs__mutmut_3': x__update_context_from_kwargs__mutmut_3, 
-    'x__update_context_from_kwargs__mutmut_4': x__update_context_from_kwargs__mutmut_4, 
-    'x__update_context_from_kwargs__mutmut_5': x__update_context_from_kwargs__mutmut_5, 
-    'x__update_context_from_kwargs__mutmut_6': x__update_context_from_kwargs__mutmut_6, 
-    'x__update_context_from_kwargs__mutmut_7': x__update_context_from_kwargs__mutmut_7, 
-    'x__update_context_from_kwargs__mutmut_8': x__update_context_from_kwargs__mutmut_8, 
-    'x__update_context_from_kwargs__mutmut_9': x__update_context_from_kwargs__mutmut_9, 
-    'x__update_context_from_kwargs__mutmut_10': x__update_context_from_kwargs__mutmut_10, 
-    'x__update_context_from_kwargs__mutmut_11': x__update_context_from_kwargs__mutmut_11, 
-    'x__update_context_from_kwargs__mutmut_12': x__update_context_from_kwargs__mutmut_12, 
-    'x__update_context_from_kwargs__mutmut_13': x__update_context_from_kwargs__mutmut_13, 
-    'x__update_context_from_kwargs__mutmut_14': x__update_context_from_kwargs__mutmut_14, 
-    'x__update_context_from_kwargs__mutmut_15': x__update_context_from_kwargs__mutmut_15, 
-    'x__update_context_from_kwargs__mutmut_16': x__update_context_from_kwargs__mutmut_16, 
-    'x__update_context_from_kwargs__mutmut_17': x__update_context_from_kwargs__mutmut_17, 
-    'x__update_context_from_kwargs__mutmut_18': x__update_context_from_kwargs__mutmut_18, 
-    'x__update_context_from_kwargs__mutmut_19': x__update_context_from_kwargs__mutmut_19, 
-    'x__update_context_from_kwargs__mutmut_20': x__update_context_from_kwargs__mutmut_20, 
-    'x__update_context_from_kwargs__mutmut_21': x__update_context_from_kwargs__mutmut_21, 
-    'x__update_context_from_kwargs__mutmut_22': x__update_context_from_kwargs__mutmut_22, 
-    'x__update_context_from_kwargs__mutmut_23': x__update_context_from_kwargs__mutmut_23, 
-    'x__update_context_from_kwargs__mutmut_24': x__update_context_from_kwargs__mutmut_24, 
-    'x__update_context_from_kwargs__mutmut_25': x__update_context_from_kwargs__mutmut_25, 
-    'x__update_context_from_kwargs__mutmut_26': x__update_context_from_kwargs__mutmut_26, 
-    'x__update_context_from_kwargs__mutmut_27': x__update_context_from_kwargs__mutmut_27, 
-    'x__update_context_from_kwargs__mutmut_28': x__update_context_from_kwargs__mutmut_28, 
-    'x__update_context_from_kwargs__mutmut_29': x__update_context_from_kwargs__mutmut_29, 
-    'x__update_context_from_kwargs__mutmut_30': x__update_context_from_kwargs__mutmut_30, 
-    'x__update_context_from_kwargs__mutmut_31': x__update_context_from_kwargs__mutmut_31, 
-    'x__update_context_from_kwargs__mutmut_32': x__update_context_from_kwargs__mutmut_32, 
-    'x__update_context_from_kwargs__mutmut_33': x__update_context_from_kwargs__mutmut_33, 
-    'x__update_context_from_kwargs__mutmut_34': x__update_context_from_kwargs__mutmut_34, 
-    'x__update_context_from_kwargs__mutmut_35': x__update_context_from_kwargs__mutmut_35, 
-    'x__update_context_from_kwargs__mutmut_36': x__update_context_from_kwargs__mutmut_36, 
-    'x__update_context_from_kwargs__mutmut_37': x__update_context_from_kwargs__mutmut_37, 
-    'x__update_context_from_kwargs__mutmut_38': x__update_context_from_kwargs__mutmut_38, 
-    'x__update_context_from_kwargs__mutmut_39': x__update_context_from_kwargs__mutmut_39, 
-    'x__update_context_from_kwargs__mutmut_40': x__update_context_from_kwargs__mutmut_40, 
-    'x__update_context_from_kwargs__mutmut_41': x__update_context_from_kwargs__mutmut_41, 
-    'x__update_context_from_kwargs__mutmut_42': x__update_context_from_kwargs__mutmut_42, 
-    'x__update_context_from_kwargs__mutmut_43': x__update_context_from_kwargs__mutmut_43, 
-    'x__update_context_from_kwargs__mutmut_44': x__update_context_from_kwargs__mutmut_44, 
-    'x__update_context_from_kwargs__mutmut_45': x__update_context_from_kwargs__mutmut_45, 
-    'x__update_context_from_kwargs__mutmut_46': x__update_context_from_kwargs__mutmut_46, 
-    'x__update_context_from_kwargs__mutmut_47': x__update_context_from_kwargs__mutmut_47, 
-    'x__update_context_from_kwargs__mutmut_48': x__update_context_from_kwargs__mutmut_48, 
-    'x__update_context_from_kwargs__mutmut_49': x__update_context_from_kwargs__mutmut_49, 
-    'x__update_context_from_kwargs__mutmut_50': x__update_context_from_kwargs__mutmut_50, 
-    'x__update_context_from_kwargs__mutmut_51': x__update_context_from_kwargs__mutmut_51, 
-    'x__update_context_from_kwargs__mutmut_52': x__update_context_from_kwargs__mutmut_52, 
-    'x__update_context_from_kwargs__mutmut_53': x__update_context_from_kwargs__mutmut_53, 
-    'x__update_context_from_kwargs__mutmut_54': x__update_context_from_kwargs__mutmut_54, 
-    'x__update_context_from_kwargs__mutmut_55': x__update_context_from_kwargs__mutmut_55, 
-    'x__update_context_from_kwargs__mutmut_56': x__update_context_from_kwargs__mutmut_56, 
-    'x__update_context_from_kwargs__mutmut_57': x__update_context_from_kwargs__mutmut_57, 
-    'x__update_context_from_kwargs__mutmut_58': x__update_context_from_kwargs__mutmut_58, 
-    'x__update_context_from_kwargs__mutmut_59': x__update_context_from_kwargs__mutmut_59, 
-    'x__update_context_from_kwargs__mutmut_60': x__update_context_from_kwargs__mutmut_60, 
-    'x__update_context_from_kwargs__mutmut_61': x__update_context_from_kwargs__mutmut_61, 
-    'x__update_context_from_kwargs__mutmut_62': x__update_context_from_kwargs__mutmut_62, 
-    'x__update_context_from_kwargs__mutmut_63': x__update_context_from_kwargs__mutmut_63, 
-    'x__update_context_from_kwargs__mutmut_64': x__update_context_from_kwargs__mutmut_64, 
-    'x__update_context_from_kwargs__mutmut_65': x__update_context_from_kwargs__mutmut_65
+
+x__update_context_from_kwargs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__update_context_from_kwargs__mutmut_1": x__update_context_from_kwargs__mutmut_1,
+    "x__update_context_from_kwargs__mutmut_2": x__update_context_from_kwargs__mutmut_2,
+    "x__update_context_from_kwargs__mutmut_3": x__update_context_from_kwargs__mutmut_3,
+    "x__update_context_from_kwargs__mutmut_4": x__update_context_from_kwargs__mutmut_4,
+    "x__update_context_from_kwargs__mutmut_5": x__update_context_from_kwargs__mutmut_5,
+    "x__update_context_from_kwargs__mutmut_6": x__update_context_from_kwargs__mutmut_6,
+    "x__update_context_from_kwargs__mutmut_7": x__update_context_from_kwargs__mutmut_7,
+    "x__update_context_from_kwargs__mutmut_8": x__update_context_from_kwargs__mutmut_8,
+    "x__update_context_from_kwargs__mutmut_9": x__update_context_from_kwargs__mutmut_9,
+    "x__update_context_from_kwargs__mutmut_10": x__update_context_from_kwargs__mutmut_10,
+    "x__update_context_from_kwargs__mutmut_11": x__update_context_from_kwargs__mutmut_11,
+    "x__update_context_from_kwargs__mutmut_12": x__update_context_from_kwargs__mutmut_12,
+    "x__update_context_from_kwargs__mutmut_13": x__update_context_from_kwargs__mutmut_13,
+    "x__update_context_from_kwargs__mutmut_14": x__update_context_from_kwargs__mutmut_14,
+    "x__update_context_from_kwargs__mutmut_15": x__update_context_from_kwargs__mutmut_15,
+    "x__update_context_from_kwargs__mutmut_16": x__update_context_from_kwargs__mutmut_16,
+    "x__update_context_from_kwargs__mutmut_17": x__update_context_from_kwargs__mutmut_17,
+    "x__update_context_from_kwargs__mutmut_18": x__update_context_from_kwargs__mutmut_18,
+    "x__update_context_from_kwargs__mutmut_19": x__update_context_from_kwargs__mutmut_19,
+    "x__update_context_from_kwargs__mutmut_20": x__update_context_from_kwargs__mutmut_20,
+    "x__update_context_from_kwargs__mutmut_21": x__update_context_from_kwargs__mutmut_21,
+    "x__update_context_from_kwargs__mutmut_22": x__update_context_from_kwargs__mutmut_22,
+    "x__update_context_from_kwargs__mutmut_23": x__update_context_from_kwargs__mutmut_23,
+    "x__update_context_from_kwargs__mutmut_24": x__update_context_from_kwargs__mutmut_24,
+    "x__update_context_from_kwargs__mutmut_25": x__update_context_from_kwargs__mutmut_25,
+    "x__update_context_from_kwargs__mutmut_26": x__update_context_from_kwargs__mutmut_26,
+    "x__update_context_from_kwargs__mutmut_27": x__update_context_from_kwargs__mutmut_27,
+    "x__update_context_from_kwargs__mutmut_28": x__update_context_from_kwargs__mutmut_28,
+    "x__update_context_from_kwargs__mutmut_29": x__update_context_from_kwargs__mutmut_29,
+    "x__update_context_from_kwargs__mutmut_30": x__update_context_from_kwargs__mutmut_30,
+    "x__update_context_from_kwargs__mutmut_31": x__update_context_from_kwargs__mutmut_31,
+    "x__update_context_from_kwargs__mutmut_32": x__update_context_from_kwargs__mutmut_32,
+    "x__update_context_from_kwargs__mutmut_33": x__update_context_from_kwargs__mutmut_33,
+    "x__update_context_from_kwargs__mutmut_34": x__update_context_from_kwargs__mutmut_34,
+    "x__update_context_from_kwargs__mutmut_35": x__update_context_from_kwargs__mutmut_35,
+    "x__update_context_from_kwargs__mutmut_36": x__update_context_from_kwargs__mutmut_36,
+    "x__update_context_from_kwargs__mutmut_37": x__update_context_from_kwargs__mutmut_37,
+    "x__update_context_from_kwargs__mutmut_38": x__update_context_from_kwargs__mutmut_38,
+    "x__update_context_from_kwargs__mutmut_39": x__update_context_from_kwargs__mutmut_39,
+    "x__update_context_from_kwargs__mutmut_40": x__update_context_from_kwargs__mutmut_40,
+    "x__update_context_from_kwargs__mutmut_41": x__update_context_from_kwargs__mutmut_41,
+    "x__update_context_from_kwargs__mutmut_42": x__update_context_from_kwargs__mutmut_42,
+    "x__update_context_from_kwargs__mutmut_43": x__update_context_from_kwargs__mutmut_43,
+    "x__update_context_from_kwargs__mutmut_44": x__update_context_from_kwargs__mutmut_44,
+    "x__update_context_from_kwargs__mutmut_45": x__update_context_from_kwargs__mutmut_45,
+    "x__update_context_from_kwargs__mutmut_46": x__update_context_from_kwargs__mutmut_46,
+    "x__update_context_from_kwargs__mutmut_47": x__update_context_from_kwargs__mutmut_47,
+    "x__update_context_from_kwargs__mutmut_48": x__update_context_from_kwargs__mutmut_48,
+    "x__update_context_from_kwargs__mutmut_49": x__update_context_from_kwargs__mutmut_49,
+    "x__update_context_from_kwargs__mutmut_50": x__update_context_from_kwargs__mutmut_50,
+    "x__update_context_from_kwargs__mutmut_51": x__update_context_from_kwargs__mutmut_51,
+    "x__update_context_from_kwargs__mutmut_52": x__update_context_from_kwargs__mutmut_52,
+    "x__update_context_from_kwargs__mutmut_53": x__update_context_from_kwargs__mutmut_53,
+    "x__update_context_from_kwargs__mutmut_54": x__update_context_from_kwargs__mutmut_54,
+    "x__update_context_from_kwargs__mutmut_55": x__update_context_from_kwargs__mutmut_55,
+    "x__update_context_from_kwargs__mutmut_56": x__update_context_from_kwargs__mutmut_56,
+    "x__update_context_from_kwargs__mutmut_57": x__update_context_from_kwargs__mutmut_57,
+    "x__update_context_from_kwargs__mutmut_58": x__update_context_from_kwargs__mutmut_58,
+    "x__update_context_from_kwargs__mutmut_59": x__update_context_from_kwargs__mutmut_59,
+    "x__update_context_from_kwargs__mutmut_60": x__update_context_from_kwargs__mutmut_60,
+    "x__update_context_from_kwargs__mutmut_61": x__update_context_from_kwargs__mutmut_61,
+    "x__update_context_from_kwargs__mutmut_62": x__update_context_from_kwargs__mutmut_62,
+    "x__update_context_from_kwargs__mutmut_63": x__update_context_from_kwargs__mutmut_63,
+    "x__update_context_from_kwargs__mutmut_64": x__update_context_from_kwargs__mutmut_64,
+    "x__update_context_from_kwargs__mutmut_65": x__update_context_from_kwargs__mutmut_65,
 }
 
+
 def _update_context_from_kwargs(*args, **kwargs):
-    result = _mutmut_trampoline(x__update_context_from_kwargs__mutmut_orig, x__update_context_from_kwargs__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__update_context_from_kwargs__mutmut_orig, x__update_context_from_kwargs__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _update_context_from_kwargs.__signature__ = _mutmut_signature(x__update_context_from_kwargs__mutmut_orig)
-x__update_context_from_kwargs__mutmut_orig.__name__ = 'x__update_context_from_kwargs'
+x__update_context_from_kwargs__mutmut_orig.__name__ = "x__update_context_from_kwargs"
 
 
 def x__remove_cli_options_from_kwargs__mutmut_orig(kwargs: dict[str, Any]) -> None:
@@ -8754,37 +8803,49 @@ def x__remove_cli_options_from_kwargs__mutmut_20(kwargs: dict[str, Any]) -> None
         "config",
     ]
     for key in cli_option_keys:
-        kwargs.pop(key, )
+        kwargs.pop(
+            key,
+        )
 
-x__remove_cli_options_from_kwargs__mutmut_mutants : ClassVar[MutantDict] = {
-'x__remove_cli_options_from_kwargs__mutmut_1': x__remove_cli_options_from_kwargs__mutmut_1, 
-    'x__remove_cli_options_from_kwargs__mutmut_2': x__remove_cli_options_from_kwargs__mutmut_2, 
-    'x__remove_cli_options_from_kwargs__mutmut_3': x__remove_cli_options_from_kwargs__mutmut_3, 
-    'x__remove_cli_options_from_kwargs__mutmut_4': x__remove_cli_options_from_kwargs__mutmut_4, 
-    'x__remove_cli_options_from_kwargs__mutmut_5': x__remove_cli_options_from_kwargs__mutmut_5, 
-    'x__remove_cli_options_from_kwargs__mutmut_6': x__remove_cli_options_from_kwargs__mutmut_6, 
-    'x__remove_cli_options_from_kwargs__mutmut_7': x__remove_cli_options_from_kwargs__mutmut_7, 
-    'x__remove_cli_options_from_kwargs__mutmut_8': x__remove_cli_options_from_kwargs__mutmut_8, 
-    'x__remove_cli_options_from_kwargs__mutmut_9': x__remove_cli_options_from_kwargs__mutmut_9, 
-    'x__remove_cli_options_from_kwargs__mutmut_10': x__remove_cli_options_from_kwargs__mutmut_10, 
-    'x__remove_cli_options_from_kwargs__mutmut_11': x__remove_cli_options_from_kwargs__mutmut_11, 
-    'x__remove_cli_options_from_kwargs__mutmut_12': x__remove_cli_options_from_kwargs__mutmut_12, 
-    'x__remove_cli_options_from_kwargs__mutmut_13': x__remove_cli_options_from_kwargs__mutmut_13, 
-    'x__remove_cli_options_from_kwargs__mutmut_14': x__remove_cli_options_from_kwargs__mutmut_14, 
-    'x__remove_cli_options_from_kwargs__mutmut_15': x__remove_cli_options_from_kwargs__mutmut_15, 
-    'x__remove_cli_options_from_kwargs__mutmut_16': x__remove_cli_options_from_kwargs__mutmut_16, 
-    'x__remove_cli_options_from_kwargs__mutmut_17': x__remove_cli_options_from_kwargs__mutmut_17, 
-    'x__remove_cli_options_from_kwargs__mutmut_18': x__remove_cli_options_from_kwargs__mutmut_18, 
-    'x__remove_cli_options_from_kwargs__mutmut_19': x__remove_cli_options_from_kwargs__mutmut_19, 
-    'x__remove_cli_options_from_kwargs__mutmut_20': x__remove_cli_options_from_kwargs__mutmut_20
+
+x__remove_cli_options_from_kwargs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__remove_cli_options_from_kwargs__mutmut_1": x__remove_cli_options_from_kwargs__mutmut_1,
+    "x__remove_cli_options_from_kwargs__mutmut_2": x__remove_cli_options_from_kwargs__mutmut_2,
+    "x__remove_cli_options_from_kwargs__mutmut_3": x__remove_cli_options_from_kwargs__mutmut_3,
+    "x__remove_cli_options_from_kwargs__mutmut_4": x__remove_cli_options_from_kwargs__mutmut_4,
+    "x__remove_cli_options_from_kwargs__mutmut_5": x__remove_cli_options_from_kwargs__mutmut_5,
+    "x__remove_cli_options_from_kwargs__mutmut_6": x__remove_cli_options_from_kwargs__mutmut_6,
+    "x__remove_cli_options_from_kwargs__mutmut_7": x__remove_cli_options_from_kwargs__mutmut_7,
+    "x__remove_cli_options_from_kwargs__mutmut_8": x__remove_cli_options_from_kwargs__mutmut_8,
+    "x__remove_cli_options_from_kwargs__mutmut_9": x__remove_cli_options_from_kwargs__mutmut_9,
+    "x__remove_cli_options_from_kwargs__mutmut_10": x__remove_cli_options_from_kwargs__mutmut_10,
+    "x__remove_cli_options_from_kwargs__mutmut_11": x__remove_cli_options_from_kwargs__mutmut_11,
+    "x__remove_cli_options_from_kwargs__mutmut_12": x__remove_cli_options_from_kwargs__mutmut_12,
+    "x__remove_cli_options_from_kwargs__mutmut_13": x__remove_cli_options_from_kwargs__mutmut_13,
+    "x__remove_cli_options_from_kwargs__mutmut_14": x__remove_cli_options_from_kwargs__mutmut_14,
+    "x__remove_cli_options_from_kwargs__mutmut_15": x__remove_cli_options_from_kwargs__mutmut_15,
+    "x__remove_cli_options_from_kwargs__mutmut_16": x__remove_cli_options_from_kwargs__mutmut_16,
+    "x__remove_cli_options_from_kwargs__mutmut_17": x__remove_cli_options_from_kwargs__mutmut_17,
+    "x__remove_cli_options_from_kwargs__mutmut_18": x__remove_cli_options_from_kwargs__mutmut_18,
+    "x__remove_cli_options_from_kwargs__mutmut_19": x__remove_cli_options_from_kwargs__mutmut_19,
+    "x__remove_cli_options_from_kwargs__mutmut_20": x__remove_cli_options_from_kwargs__mutmut_20,
 }
 
-def _remove_cli_options_from_kwargs(*args, **kwargs):
-    result = _mutmut_trampoline(x__remove_cli_options_from_kwargs__mutmut_orig, x__remove_cli_options_from_kwargs__mutmut_mutants, args, kwargs)
-    return result 
 
-_remove_cli_options_from_kwargs.__signature__ = _mutmut_signature(x__remove_cli_options_from_kwargs__mutmut_orig)
-x__remove_cli_options_from_kwargs__mutmut_orig.__name__ = 'x__remove_cli_options_from_kwargs'
+def _remove_cli_options_from_kwargs(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__remove_cli_options_from_kwargs__mutmut_orig,
+        x__remove_cli_options_from_kwargs__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_remove_cli_options_from_kwargs.__signature__ = _mutmut_signature(
+    x__remove_cli_options_from_kwargs__mutmut_orig
+)
+x__remove_cli_options_from_kwargs__mutmut_orig.__name__ = "x__remove_cli_options_from_kwargs"
 
 
 def pass_context(f: F) -> F:
@@ -8811,7 +8872,9 @@ def pass_context(f: F) -> F:
     return wrapper  # type: ignore[return-value]
 
 
-def x_version_option__mutmut_orig(version: str | None = None, prog_name: str | None = None) -> Callable[[F], F]:
+def x_version_option__mutmut_orig(
+    version: str | None = None, prog_name: str | None = None
+) -> Callable[[F], F]:
     """Add a --version option to display version information.
 
     Args:
@@ -8955,7 +9018,7 @@ def x_version_option__mutmut_7(version: str | None = None, prog_name: str | None
         return click.version_option(
             version=version,
             prog_name=prog_name,
-            )(f)
+        )(f)
 
     return decorator
 
@@ -8997,24 +9060,27 @@ def x_version_option__mutmut_9(version: str | None = None, prog_name: str | None
 
     return decorator
 
-x_version_option__mutmut_mutants : ClassVar[MutantDict] = {
-'x_version_option__mutmut_1': x_version_option__mutmut_1, 
-    'x_version_option__mutmut_2': x_version_option__mutmut_2, 
-    'x_version_option__mutmut_3': x_version_option__mutmut_3, 
-    'x_version_option__mutmut_4': x_version_option__mutmut_4, 
-    'x_version_option__mutmut_5': x_version_option__mutmut_5, 
-    'x_version_option__mutmut_6': x_version_option__mutmut_6, 
-    'x_version_option__mutmut_7': x_version_option__mutmut_7, 
-    'x_version_option__mutmut_8': x_version_option__mutmut_8, 
-    'x_version_option__mutmut_9': x_version_option__mutmut_9
+
+x_version_option__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_version_option__mutmut_1": x_version_option__mutmut_1,
+    "x_version_option__mutmut_2": x_version_option__mutmut_2,
+    "x_version_option__mutmut_3": x_version_option__mutmut_3,
+    "x_version_option__mutmut_4": x_version_option__mutmut_4,
+    "x_version_option__mutmut_5": x_version_option__mutmut_5,
+    "x_version_option__mutmut_6": x_version_option__mutmut_6,
+    "x_version_option__mutmut_7": x_version_option__mutmut_7,
+    "x_version_option__mutmut_8": x_version_option__mutmut_8,
+    "x_version_option__mutmut_9": x_version_option__mutmut_9,
 }
+
 
 def version_option(*args, **kwargs):
     result = _mutmut_trampoline(x_version_option__mutmut_orig, x_version_option__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 version_option.__signature__ = _mutmut_signature(x_version_option__mutmut_orig)
-x_version_option__mutmut_orig.__name__ = 'x_version_option'
+x_version_option__mutmut_orig.__name__ = "x_version_option"
 
 
 # <3 🧱🤝💻🪄

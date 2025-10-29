@@ -38,23 +38,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -545,33 +548,39 @@ class BaseToolManager(ABC):
         self._resolver: VersionResolver | None = None
 
         log.debug(None)
-    
-    xǁBaseToolManagerǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBaseToolManagerǁ__init____mutmut_1': xǁBaseToolManagerǁ__init____mutmut_1, 
-        'xǁBaseToolManagerǁ__init____mutmut_2': xǁBaseToolManagerǁ__init____mutmut_2, 
-        'xǁBaseToolManagerǁ__init____mutmut_3': xǁBaseToolManagerǁ__init____mutmut_3, 
-        'xǁBaseToolManagerǁ__init____mutmut_4': xǁBaseToolManagerǁ__init____mutmut_4, 
-        'xǁBaseToolManagerǁ__init____mutmut_5': xǁBaseToolManagerǁ__init____mutmut_5, 
-        'xǁBaseToolManagerǁ__init____mutmut_6': xǁBaseToolManagerǁ__init____mutmut_6, 
-        'xǁBaseToolManagerǁ__init____mutmut_7': xǁBaseToolManagerǁ__init____mutmut_7, 
-        'xǁBaseToolManagerǁ__init____mutmut_8': xǁBaseToolManagerǁ__init____mutmut_8, 
-        'xǁBaseToolManagerǁ__init____mutmut_9': xǁBaseToolManagerǁ__init____mutmut_9, 
-        'xǁBaseToolManagerǁ__init____mutmut_10': xǁBaseToolManagerǁ__init____mutmut_10, 
-        'xǁBaseToolManagerǁ__init____mutmut_11': xǁBaseToolManagerǁ__init____mutmut_11, 
-        'xǁBaseToolManagerǁ__init____mutmut_12': xǁBaseToolManagerǁ__init____mutmut_12, 
-        'xǁBaseToolManagerǁ__init____mutmut_13': xǁBaseToolManagerǁ__init____mutmut_13, 
-        'xǁBaseToolManagerǁ__init____mutmut_14': xǁBaseToolManagerǁ__init____mutmut_14, 
-        'xǁBaseToolManagerǁ__init____mutmut_15': xǁBaseToolManagerǁ__init____mutmut_15, 
-        'xǁBaseToolManagerǁ__init____mutmut_16': xǁBaseToolManagerǁ__init____mutmut_16, 
-        'xǁBaseToolManagerǁ__init____mutmut_17': xǁBaseToolManagerǁ__init____mutmut_17
+
+    xǁBaseToolManagerǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBaseToolManagerǁ__init____mutmut_1": xǁBaseToolManagerǁ__init____mutmut_1,
+        "xǁBaseToolManagerǁ__init____mutmut_2": xǁBaseToolManagerǁ__init____mutmut_2,
+        "xǁBaseToolManagerǁ__init____mutmut_3": xǁBaseToolManagerǁ__init____mutmut_3,
+        "xǁBaseToolManagerǁ__init____mutmut_4": xǁBaseToolManagerǁ__init____mutmut_4,
+        "xǁBaseToolManagerǁ__init____mutmut_5": xǁBaseToolManagerǁ__init____mutmut_5,
+        "xǁBaseToolManagerǁ__init____mutmut_6": xǁBaseToolManagerǁ__init____mutmut_6,
+        "xǁBaseToolManagerǁ__init____mutmut_7": xǁBaseToolManagerǁ__init____mutmut_7,
+        "xǁBaseToolManagerǁ__init____mutmut_8": xǁBaseToolManagerǁ__init____mutmut_8,
+        "xǁBaseToolManagerǁ__init____mutmut_9": xǁBaseToolManagerǁ__init____mutmut_9,
+        "xǁBaseToolManagerǁ__init____mutmut_10": xǁBaseToolManagerǁ__init____mutmut_10,
+        "xǁBaseToolManagerǁ__init____mutmut_11": xǁBaseToolManagerǁ__init____mutmut_11,
+        "xǁBaseToolManagerǁ__init____mutmut_12": xǁBaseToolManagerǁ__init____mutmut_12,
+        "xǁBaseToolManagerǁ__init____mutmut_13": xǁBaseToolManagerǁ__init____mutmut_13,
+        "xǁBaseToolManagerǁ__init____mutmut_14": xǁBaseToolManagerǁ__init____mutmut_14,
+        "xǁBaseToolManagerǁ__init____mutmut_15": xǁBaseToolManagerǁ__init____mutmut_15,
+        "xǁBaseToolManagerǁ__init____mutmut_16": xǁBaseToolManagerǁ__init____mutmut_16,
+        "xǁBaseToolManagerǁ__init____mutmut_17": xǁBaseToolManagerǁ__init____mutmut_17,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBaseToolManagerǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁBaseToolManagerǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBaseToolManagerǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁBaseToolManagerǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁBaseToolManagerǁ__init____mutmut_orig)
-    xǁBaseToolManagerǁ__init____mutmut_orig.__name__ = 'xǁBaseToolManagerǁ__init__'
+    xǁBaseToolManagerǁ__init____mutmut_orig.__name__ = "xǁBaseToolManagerǁ__init__"
 
     @property
     def cache(self) -> ToolCache:
@@ -850,7 +859,9 @@ class BaseToolManager(ABC):
         if not available:
             raise ToolNotFoundError(f"No versions available for {self.tool_name}")
 
-        resolved = self.resolver.resolve(spec, )
+        resolved = self.resolver.resolve(
+            spec,
+        )
         if not resolved:
             raise ToolNotFoundError(f"Cannot resolve version '{spec}' for {self.tool_name}")
 
@@ -928,29 +939,37 @@ class BaseToolManager(ABC):
 
         log.debug(None)
         return resolved
-    
-    xǁBaseToolManagerǁresolve_version__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBaseToolManagerǁresolve_version__mutmut_1': xǁBaseToolManagerǁresolve_version__mutmut_1, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_2': xǁBaseToolManagerǁresolve_version__mutmut_2, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_3': xǁBaseToolManagerǁresolve_version__mutmut_3, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_4': xǁBaseToolManagerǁresolve_version__mutmut_4, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_5': xǁBaseToolManagerǁresolve_version__mutmut_5, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_6': xǁBaseToolManagerǁresolve_version__mutmut_6, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_7': xǁBaseToolManagerǁresolve_version__mutmut_7, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_8': xǁBaseToolManagerǁresolve_version__mutmut_8, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_9': xǁBaseToolManagerǁresolve_version__mutmut_9, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_10': xǁBaseToolManagerǁresolve_version__mutmut_10, 
-        'xǁBaseToolManagerǁresolve_version__mutmut_11': xǁBaseToolManagerǁresolve_version__mutmut_11
-    }
-    
-    def resolve_version(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBaseToolManagerǁresolve_version__mutmut_orig"), object.__getattribute__(self, "xǁBaseToolManagerǁresolve_version__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    resolve_version.__signature__ = _mutmut_signature(xǁBaseToolManagerǁresolve_version__mutmut_orig)
-    xǁBaseToolManagerǁresolve_version__mutmut_orig.__name__ = 'xǁBaseToolManagerǁresolve_version'
 
-    async def xǁBaseToolManagerǁinstall__mutmut_orig(self, version: str = "latest", force: bool = False) -> Path:
+    xǁBaseToolManagerǁresolve_version__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBaseToolManagerǁresolve_version__mutmut_1": xǁBaseToolManagerǁresolve_version__mutmut_1,
+        "xǁBaseToolManagerǁresolve_version__mutmut_2": xǁBaseToolManagerǁresolve_version__mutmut_2,
+        "xǁBaseToolManagerǁresolve_version__mutmut_3": xǁBaseToolManagerǁresolve_version__mutmut_3,
+        "xǁBaseToolManagerǁresolve_version__mutmut_4": xǁBaseToolManagerǁresolve_version__mutmut_4,
+        "xǁBaseToolManagerǁresolve_version__mutmut_5": xǁBaseToolManagerǁresolve_version__mutmut_5,
+        "xǁBaseToolManagerǁresolve_version__mutmut_6": xǁBaseToolManagerǁresolve_version__mutmut_6,
+        "xǁBaseToolManagerǁresolve_version__mutmut_7": xǁBaseToolManagerǁresolve_version__mutmut_7,
+        "xǁBaseToolManagerǁresolve_version__mutmut_8": xǁBaseToolManagerǁresolve_version__mutmut_8,
+        "xǁBaseToolManagerǁresolve_version__mutmut_9": xǁBaseToolManagerǁresolve_version__mutmut_9,
+        "xǁBaseToolManagerǁresolve_version__mutmut_10": xǁBaseToolManagerǁresolve_version__mutmut_10,
+        "xǁBaseToolManagerǁresolve_version__mutmut_11": xǁBaseToolManagerǁresolve_version__mutmut_11,
+    }
+
+    def resolve_version(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBaseToolManagerǁresolve_version__mutmut_orig"),
+            object.__getattribute__(self, "xǁBaseToolManagerǁresolve_version__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    resolve_version.__signature__ = _mutmut_signature(xǁBaseToolManagerǁresolve_version__mutmut_orig)
+    xǁBaseToolManagerǁresolve_version__mutmut_orig.__name__ = "xǁBaseToolManagerǁresolve_version"
+
+    async def xǁBaseToolManagerǁinstall__mutmut_orig(
+        self, version: str = "latest", force: bool = False
+    ) -> Path:
         """Install a specific version of the tool.
 
         Args:
@@ -1008,7 +1027,9 @@ class BaseToolManager(ABC):
         log.info(f"Successfully installed {self.tool_name} {version} to {install_path}")
         return install_path
 
-    async def xǁBaseToolManagerǁinstall__mutmut_1(self, version: str = "XXlatestXX", force: bool = False) -> Path:
+    async def xǁBaseToolManagerǁinstall__mutmut_1(
+        self, version: str = "XXlatestXX", force: bool = False
+    ) -> Path:
         """Install a specific version of the tool.
 
         Args:
@@ -2245,7 +2266,11 @@ class BaseToolManager(ABC):
             version = self.resolve_version(version)
 
         # Check cache unless forced
-        if not force and (cached_path := self.cache.get(self.tool_name, )):
+        if not force and (
+            cached_path := self.cache.get(
+                self.tool_name,
+            )
+        ):
             log.info(f"Using cached {self.tool_name} {version}")
             return cached_path
 
@@ -3127,7 +3152,7 @@ class BaseToolManager(ABC):
         artifact_path = await self.downloader.download_with_progress(
             metadata.download_url,
             download_path,
-            )
+        )
 
         # Verify if checksum provided
         if metadata.checksum and not self.verifier.verify_checksum(artifact_path, metadata.checksum):
@@ -3478,7 +3503,9 @@ class BaseToolManager(ABC):
         )
 
         # Verify if checksum provided
-        if metadata.checksum and not self.verifier.verify_checksum(artifact_path, ):
+        if metadata.checksum and not self.verifier.verify_checksum(
+            artifact_path,
+        ):
             artifact_path.unlink()
             raise ToolVerificationError(f"Checksum verification failed for {self.tool_name} {version}")
 
@@ -3831,7 +3858,9 @@ class BaseToolManager(ABC):
             raise ToolVerificationError(f"Checksum verification failed for {self.tool_name} {version}")
 
         # Install
-        install_path = self.installer.install(artifact_path, )
+        install_path = self.installer.install(
+            artifact_path,
+        )
 
         # Cache the installation
         self.cache.store(self.tool_name, version, install_path)
@@ -4182,7 +4211,10 @@ class BaseToolManager(ABC):
         install_path = self.installer.install(artifact_path, metadata)
 
         # Cache the installation
-        self.cache.store(self.tool_name, version, )
+        self.cache.store(
+            self.tool_name,
+            version,
+        )
 
         # Clean up download
         if artifact_path.exists():
@@ -4248,72 +4280,78 @@ class BaseToolManager(ABC):
 
         log.info(None)
         return install_path
-    
-    xǁBaseToolManagerǁinstall__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBaseToolManagerǁinstall__mutmut_1': xǁBaseToolManagerǁinstall__mutmut_1, 
-        'xǁBaseToolManagerǁinstall__mutmut_2': xǁBaseToolManagerǁinstall__mutmut_2, 
-        'xǁBaseToolManagerǁinstall__mutmut_3': xǁBaseToolManagerǁinstall__mutmut_3, 
-        'xǁBaseToolManagerǁinstall__mutmut_4': xǁBaseToolManagerǁinstall__mutmut_4, 
-        'xǁBaseToolManagerǁinstall__mutmut_5': xǁBaseToolManagerǁinstall__mutmut_5, 
-        'xǁBaseToolManagerǁinstall__mutmut_6': xǁBaseToolManagerǁinstall__mutmut_6, 
-        'xǁBaseToolManagerǁinstall__mutmut_7': xǁBaseToolManagerǁinstall__mutmut_7, 
-        'xǁBaseToolManagerǁinstall__mutmut_8': xǁBaseToolManagerǁinstall__mutmut_8, 
-        'xǁBaseToolManagerǁinstall__mutmut_9': xǁBaseToolManagerǁinstall__mutmut_9, 
-        'xǁBaseToolManagerǁinstall__mutmut_10': xǁBaseToolManagerǁinstall__mutmut_10, 
-        'xǁBaseToolManagerǁinstall__mutmut_11': xǁBaseToolManagerǁinstall__mutmut_11, 
-        'xǁBaseToolManagerǁinstall__mutmut_12': xǁBaseToolManagerǁinstall__mutmut_12, 
-        'xǁBaseToolManagerǁinstall__mutmut_13': xǁBaseToolManagerǁinstall__mutmut_13, 
-        'xǁBaseToolManagerǁinstall__mutmut_14': xǁBaseToolManagerǁinstall__mutmut_14, 
-        'xǁBaseToolManagerǁinstall__mutmut_15': xǁBaseToolManagerǁinstall__mutmut_15, 
-        'xǁBaseToolManagerǁinstall__mutmut_16': xǁBaseToolManagerǁinstall__mutmut_16, 
-        'xǁBaseToolManagerǁinstall__mutmut_17': xǁBaseToolManagerǁinstall__mutmut_17, 
-        'xǁBaseToolManagerǁinstall__mutmut_18': xǁBaseToolManagerǁinstall__mutmut_18, 
-        'xǁBaseToolManagerǁinstall__mutmut_19': xǁBaseToolManagerǁinstall__mutmut_19, 
-        'xǁBaseToolManagerǁinstall__mutmut_20': xǁBaseToolManagerǁinstall__mutmut_20, 
-        'xǁBaseToolManagerǁinstall__mutmut_21': xǁBaseToolManagerǁinstall__mutmut_21, 
-        'xǁBaseToolManagerǁinstall__mutmut_22': xǁBaseToolManagerǁinstall__mutmut_22, 
-        'xǁBaseToolManagerǁinstall__mutmut_23': xǁBaseToolManagerǁinstall__mutmut_23, 
-        'xǁBaseToolManagerǁinstall__mutmut_24': xǁBaseToolManagerǁinstall__mutmut_24, 
-        'xǁBaseToolManagerǁinstall__mutmut_25': xǁBaseToolManagerǁinstall__mutmut_25, 
-        'xǁBaseToolManagerǁinstall__mutmut_26': xǁBaseToolManagerǁinstall__mutmut_26, 
-        'xǁBaseToolManagerǁinstall__mutmut_27': xǁBaseToolManagerǁinstall__mutmut_27, 
-        'xǁBaseToolManagerǁinstall__mutmut_28': xǁBaseToolManagerǁinstall__mutmut_28, 
-        'xǁBaseToolManagerǁinstall__mutmut_29': xǁBaseToolManagerǁinstall__mutmut_29, 
-        'xǁBaseToolManagerǁinstall__mutmut_30': xǁBaseToolManagerǁinstall__mutmut_30, 
-        'xǁBaseToolManagerǁinstall__mutmut_31': xǁBaseToolManagerǁinstall__mutmut_31, 
-        'xǁBaseToolManagerǁinstall__mutmut_32': xǁBaseToolManagerǁinstall__mutmut_32, 
-        'xǁBaseToolManagerǁinstall__mutmut_33': xǁBaseToolManagerǁinstall__mutmut_33, 
-        'xǁBaseToolManagerǁinstall__mutmut_34': xǁBaseToolManagerǁinstall__mutmut_34, 
-        'xǁBaseToolManagerǁinstall__mutmut_35': xǁBaseToolManagerǁinstall__mutmut_35, 
-        'xǁBaseToolManagerǁinstall__mutmut_36': xǁBaseToolManagerǁinstall__mutmut_36, 
-        'xǁBaseToolManagerǁinstall__mutmut_37': xǁBaseToolManagerǁinstall__mutmut_37, 
-        'xǁBaseToolManagerǁinstall__mutmut_38': xǁBaseToolManagerǁinstall__mutmut_38, 
-        'xǁBaseToolManagerǁinstall__mutmut_39': xǁBaseToolManagerǁinstall__mutmut_39, 
-        'xǁBaseToolManagerǁinstall__mutmut_40': xǁBaseToolManagerǁinstall__mutmut_40, 
-        'xǁBaseToolManagerǁinstall__mutmut_41': xǁBaseToolManagerǁinstall__mutmut_41, 
-        'xǁBaseToolManagerǁinstall__mutmut_42': xǁBaseToolManagerǁinstall__mutmut_42, 
-        'xǁBaseToolManagerǁinstall__mutmut_43': xǁBaseToolManagerǁinstall__mutmut_43, 
-        'xǁBaseToolManagerǁinstall__mutmut_44': xǁBaseToolManagerǁinstall__mutmut_44, 
-        'xǁBaseToolManagerǁinstall__mutmut_45': xǁBaseToolManagerǁinstall__mutmut_45, 
-        'xǁBaseToolManagerǁinstall__mutmut_46': xǁBaseToolManagerǁinstall__mutmut_46, 
-        'xǁBaseToolManagerǁinstall__mutmut_47': xǁBaseToolManagerǁinstall__mutmut_47, 
-        'xǁBaseToolManagerǁinstall__mutmut_48': xǁBaseToolManagerǁinstall__mutmut_48, 
-        'xǁBaseToolManagerǁinstall__mutmut_49': xǁBaseToolManagerǁinstall__mutmut_49, 
-        'xǁBaseToolManagerǁinstall__mutmut_50': xǁBaseToolManagerǁinstall__mutmut_50, 
-        'xǁBaseToolManagerǁinstall__mutmut_51': xǁBaseToolManagerǁinstall__mutmut_51, 
-        'xǁBaseToolManagerǁinstall__mutmut_52': xǁBaseToolManagerǁinstall__mutmut_52, 
-        'xǁBaseToolManagerǁinstall__mutmut_53': xǁBaseToolManagerǁinstall__mutmut_53, 
-        'xǁBaseToolManagerǁinstall__mutmut_54': xǁBaseToolManagerǁinstall__mutmut_54, 
-        'xǁBaseToolManagerǁinstall__mutmut_55': xǁBaseToolManagerǁinstall__mutmut_55, 
-        'xǁBaseToolManagerǁinstall__mutmut_56': xǁBaseToolManagerǁinstall__mutmut_56
+
+    xǁBaseToolManagerǁinstall__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBaseToolManagerǁinstall__mutmut_1": xǁBaseToolManagerǁinstall__mutmut_1,
+        "xǁBaseToolManagerǁinstall__mutmut_2": xǁBaseToolManagerǁinstall__mutmut_2,
+        "xǁBaseToolManagerǁinstall__mutmut_3": xǁBaseToolManagerǁinstall__mutmut_3,
+        "xǁBaseToolManagerǁinstall__mutmut_4": xǁBaseToolManagerǁinstall__mutmut_4,
+        "xǁBaseToolManagerǁinstall__mutmut_5": xǁBaseToolManagerǁinstall__mutmut_5,
+        "xǁBaseToolManagerǁinstall__mutmut_6": xǁBaseToolManagerǁinstall__mutmut_6,
+        "xǁBaseToolManagerǁinstall__mutmut_7": xǁBaseToolManagerǁinstall__mutmut_7,
+        "xǁBaseToolManagerǁinstall__mutmut_8": xǁBaseToolManagerǁinstall__mutmut_8,
+        "xǁBaseToolManagerǁinstall__mutmut_9": xǁBaseToolManagerǁinstall__mutmut_9,
+        "xǁBaseToolManagerǁinstall__mutmut_10": xǁBaseToolManagerǁinstall__mutmut_10,
+        "xǁBaseToolManagerǁinstall__mutmut_11": xǁBaseToolManagerǁinstall__mutmut_11,
+        "xǁBaseToolManagerǁinstall__mutmut_12": xǁBaseToolManagerǁinstall__mutmut_12,
+        "xǁBaseToolManagerǁinstall__mutmut_13": xǁBaseToolManagerǁinstall__mutmut_13,
+        "xǁBaseToolManagerǁinstall__mutmut_14": xǁBaseToolManagerǁinstall__mutmut_14,
+        "xǁBaseToolManagerǁinstall__mutmut_15": xǁBaseToolManagerǁinstall__mutmut_15,
+        "xǁBaseToolManagerǁinstall__mutmut_16": xǁBaseToolManagerǁinstall__mutmut_16,
+        "xǁBaseToolManagerǁinstall__mutmut_17": xǁBaseToolManagerǁinstall__mutmut_17,
+        "xǁBaseToolManagerǁinstall__mutmut_18": xǁBaseToolManagerǁinstall__mutmut_18,
+        "xǁBaseToolManagerǁinstall__mutmut_19": xǁBaseToolManagerǁinstall__mutmut_19,
+        "xǁBaseToolManagerǁinstall__mutmut_20": xǁBaseToolManagerǁinstall__mutmut_20,
+        "xǁBaseToolManagerǁinstall__mutmut_21": xǁBaseToolManagerǁinstall__mutmut_21,
+        "xǁBaseToolManagerǁinstall__mutmut_22": xǁBaseToolManagerǁinstall__mutmut_22,
+        "xǁBaseToolManagerǁinstall__mutmut_23": xǁBaseToolManagerǁinstall__mutmut_23,
+        "xǁBaseToolManagerǁinstall__mutmut_24": xǁBaseToolManagerǁinstall__mutmut_24,
+        "xǁBaseToolManagerǁinstall__mutmut_25": xǁBaseToolManagerǁinstall__mutmut_25,
+        "xǁBaseToolManagerǁinstall__mutmut_26": xǁBaseToolManagerǁinstall__mutmut_26,
+        "xǁBaseToolManagerǁinstall__mutmut_27": xǁBaseToolManagerǁinstall__mutmut_27,
+        "xǁBaseToolManagerǁinstall__mutmut_28": xǁBaseToolManagerǁinstall__mutmut_28,
+        "xǁBaseToolManagerǁinstall__mutmut_29": xǁBaseToolManagerǁinstall__mutmut_29,
+        "xǁBaseToolManagerǁinstall__mutmut_30": xǁBaseToolManagerǁinstall__mutmut_30,
+        "xǁBaseToolManagerǁinstall__mutmut_31": xǁBaseToolManagerǁinstall__mutmut_31,
+        "xǁBaseToolManagerǁinstall__mutmut_32": xǁBaseToolManagerǁinstall__mutmut_32,
+        "xǁBaseToolManagerǁinstall__mutmut_33": xǁBaseToolManagerǁinstall__mutmut_33,
+        "xǁBaseToolManagerǁinstall__mutmut_34": xǁBaseToolManagerǁinstall__mutmut_34,
+        "xǁBaseToolManagerǁinstall__mutmut_35": xǁBaseToolManagerǁinstall__mutmut_35,
+        "xǁBaseToolManagerǁinstall__mutmut_36": xǁBaseToolManagerǁinstall__mutmut_36,
+        "xǁBaseToolManagerǁinstall__mutmut_37": xǁBaseToolManagerǁinstall__mutmut_37,
+        "xǁBaseToolManagerǁinstall__mutmut_38": xǁBaseToolManagerǁinstall__mutmut_38,
+        "xǁBaseToolManagerǁinstall__mutmut_39": xǁBaseToolManagerǁinstall__mutmut_39,
+        "xǁBaseToolManagerǁinstall__mutmut_40": xǁBaseToolManagerǁinstall__mutmut_40,
+        "xǁBaseToolManagerǁinstall__mutmut_41": xǁBaseToolManagerǁinstall__mutmut_41,
+        "xǁBaseToolManagerǁinstall__mutmut_42": xǁBaseToolManagerǁinstall__mutmut_42,
+        "xǁBaseToolManagerǁinstall__mutmut_43": xǁBaseToolManagerǁinstall__mutmut_43,
+        "xǁBaseToolManagerǁinstall__mutmut_44": xǁBaseToolManagerǁinstall__mutmut_44,
+        "xǁBaseToolManagerǁinstall__mutmut_45": xǁBaseToolManagerǁinstall__mutmut_45,
+        "xǁBaseToolManagerǁinstall__mutmut_46": xǁBaseToolManagerǁinstall__mutmut_46,
+        "xǁBaseToolManagerǁinstall__mutmut_47": xǁBaseToolManagerǁinstall__mutmut_47,
+        "xǁBaseToolManagerǁinstall__mutmut_48": xǁBaseToolManagerǁinstall__mutmut_48,
+        "xǁBaseToolManagerǁinstall__mutmut_49": xǁBaseToolManagerǁinstall__mutmut_49,
+        "xǁBaseToolManagerǁinstall__mutmut_50": xǁBaseToolManagerǁinstall__mutmut_50,
+        "xǁBaseToolManagerǁinstall__mutmut_51": xǁBaseToolManagerǁinstall__mutmut_51,
+        "xǁBaseToolManagerǁinstall__mutmut_52": xǁBaseToolManagerǁinstall__mutmut_52,
+        "xǁBaseToolManagerǁinstall__mutmut_53": xǁBaseToolManagerǁinstall__mutmut_53,
+        "xǁBaseToolManagerǁinstall__mutmut_54": xǁBaseToolManagerǁinstall__mutmut_54,
+        "xǁBaseToolManagerǁinstall__mutmut_55": xǁBaseToolManagerǁinstall__mutmut_55,
+        "xǁBaseToolManagerǁinstall__mutmut_56": xǁBaseToolManagerǁinstall__mutmut_56,
     }
-    
+
     def install(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBaseToolManagerǁinstall__mutmut_orig"), object.__getattribute__(self, "xǁBaseToolManagerǁinstall__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBaseToolManagerǁinstall__mutmut_orig"),
+            object.__getattribute__(self, "xǁBaseToolManagerǁinstall__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     install.__signature__ = _mutmut_signature(xǁBaseToolManagerǁinstall__mutmut_orig)
-    xǁBaseToolManagerǁinstall__mutmut_orig.__name__ = 'xǁBaseToolManagerǁinstall'
+    xǁBaseToolManagerǁinstall__mutmut_orig.__name__ = "xǁBaseToolManagerǁinstall"
 
     def xǁBaseToolManagerǁuninstall__mutmut_orig(self, version: str) -> bool:
         """Uninstall a specific version.
@@ -4422,7 +4460,9 @@ class BaseToolManager(ABC):
 
         """
         # Invalidate cache
-        self.cache.invalidate(self.tool_name, )
+        self.cache.invalidate(
+            self.tool_name,
+        )
 
         # Remove from filesystem
         install_path = self.get_install_path(version)
@@ -4578,26 +4618,32 @@ class BaseToolManager(ABC):
             return True
 
         return True
-    
-    xǁBaseToolManagerǁuninstall__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBaseToolManagerǁuninstall__mutmut_1': xǁBaseToolManagerǁuninstall__mutmut_1, 
-        'xǁBaseToolManagerǁuninstall__mutmut_2': xǁBaseToolManagerǁuninstall__mutmut_2, 
-        'xǁBaseToolManagerǁuninstall__mutmut_3': xǁBaseToolManagerǁuninstall__mutmut_3, 
-        'xǁBaseToolManagerǁuninstall__mutmut_4': xǁBaseToolManagerǁuninstall__mutmut_4, 
-        'xǁBaseToolManagerǁuninstall__mutmut_5': xǁBaseToolManagerǁuninstall__mutmut_5, 
-        'xǁBaseToolManagerǁuninstall__mutmut_6': xǁBaseToolManagerǁuninstall__mutmut_6, 
-        'xǁBaseToolManagerǁuninstall__mutmut_7': xǁBaseToolManagerǁuninstall__mutmut_7, 
-        'xǁBaseToolManagerǁuninstall__mutmut_8': xǁBaseToolManagerǁuninstall__mutmut_8, 
-        'xǁBaseToolManagerǁuninstall__mutmut_9': xǁBaseToolManagerǁuninstall__mutmut_9, 
-        'xǁBaseToolManagerǁuninstall__mutmut_10': xǁBaseToolManagerǁuninstall__mutmut_10
+
+    xǁBaseToolManagerǁuninstall__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBaseToolManagerǁuninstall__mutmut_1": xǁBaseToolManagerǁuninstall__mutmut_1,
+        "xǁBaseToolManagerǁuninstall__mutmut_2": xǁBaseToolManagerǁuninstall__mutmut_2,
+        "xǁBaseToolManagerǁuninstall__mutmut_3": xǁBaseToolManagerǁuninstall__mutmut_3,
+        "xǁBaseToolManagerǁuninstall__mutmut_4": xǁBaseToolManagerǁuninstall__mutmut_4,
+        "xǁBaseToolManagerǁuninstall__mutmut_5": xǁBaseToolManagerǁuninstall__mutmut_5,
+        "xǁBaseToolManagerǁuninstall__mutmut_6": xǁBaseToolManagerǁuninstall__mutmut_6,
+        "xǁBaseToolManagerǁuninstall__mutmut_7": xǁBaseToolManagerǁuninstall__mutmut_7,
+        "xǁBaseToolManagerǁuninstall__mutmut_8": xǁBaseToolManagerǁuninstall__mutmut_8,
+        "xǁBaseToolManagerǁuninstall__mutmut_9": xǁBaseToolManagerǁuninstall__mutmut_9,
+        "xǁBaseToolManagerǁuninstall__mutmut_10": xǁBaseToolManagerǁuninstall__mutmut_10,
     }
-    
+
     def uninstall(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBaseToolManagerǁuninstall__mutmut_orig"), object.__getattribute__(self, "xǁBaseToolManagerǁuninstall__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBaseToolManagerǁuninstall__mutmut_orig"),
+            object.__getattribute__(self, "xǁBaseToolManagerǁuninstall__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     uninstall.__signature__ = _mutmut_signature(xǁBaseToolManagerǁuninstall__mutmut_orig)
-    xǁBaseToolManagerǁuninstall__mutmut_orig.__name__ = 'xǁBaseToolManagerǁuninstall'
+    xǁBaseToolManagerǁuninstall__mutmut_orig.__name__ = "xǁBaseToolManagerǁuninstall"
 
     def xǁBaseToolManagerǁget_install_path__mutmut_orig(self, version: str) -> Path:
         """Get the installation path for a version.
@@ -4728,25 +4774,31 @@ class BaseToolManager(ABC):
         """
         base_path = Path.home() / ".provide-foundation" / "TOOLS" / self.tool_name / version
         return base_path
-    
-    xǁBaseToolManagerǁget_install_path__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBaseToolManagerǁget_install_path__mutmut_1': xǁBaseToolManagerǁget_install_path__mutmut_1, 
-        'xǁBaseToolManagerǁget_install_path__mutmut_2': xǁBaseToolManagerǁget_install_path__mutmut_2, 
-        'xǁBaseToolManagerǁget_install_path__mutmut_3': xǁBaseToolManagerǁget_install_path__mutmut_3, 
-        'xǁBaseToolManagerǁget_install_path__mutmut_4': xǁBaseToolManagerǁget_install_path__mutmut_4, 
-        'xǁBaseToolManagerǁget_install_path__mutmut_5': xǁBaseToolManagerǁget_install_path__mutmut_5, 
-        'xǁBaseToolManagerǁget_install_path__mutmut_6': xǁBaseToolManagerǁget_install_path__mutmut_6, 
-        'xǁBaseToolManagerǁget_install_path__mutmut_7': xǁBaseToolManagerǁget_install_path__mutmut_7, 
-        'xǁBaseToolManagerǁget_install_path__mutmut_8': xǁBaseToolManagerǁget_install_path__mutmut_8, 
-        'xǁBaseToolManagerǁget_install_path__mutmut_9': xǁBaseToolManagerǁget_install_path__mutmut_9
+
+    xǁBaseToolManagerǁget_install_path__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBaseToolManagerǁget_install_path__mutmut_1": xǁBaseToolManagerǁget_install_path__mutmut_1,
+        "xǁBaseToolManagerǁget_install_path__mutmut_2": xǁBaseToolManagerǁget_install_path__mutmut_2,
+        "xǁBaseToolManagerǁget_install_path__mutmut_3": xǁBaseToolManagerǁget_install_path__mutmut_3,
+        "xǁBaseToolManagerǁget_install_path__mutmut_4": xǁBaseToolManagerǁget_install_path__mutmut_4,
+        "xǁBaseToolManagerǁget_install_path__mutmut_5": xǁBaseToolManagerǁget_install_path__mutmut_5,
+        "xǁBaseToolManagerǁget_install_path__mutmut_6": xǁBaseToolManagerǁget_install_path__mutmut_6,
+        "xǁBaseToolManagerǁget_install_path__mutmut_7": xǁBaseToolManagerǁget_install_path__mutmut_7,
+        "xǁBaseToolManagerǁget_install_path__mutmut_8": xǁBaseToolManagerǁget_install_path__mutmut_8,
+        "xǁBaseToolManagerǁget_install_path__mutmut_9": xǁBaseToolManagerǁget_install_path__mutmut_9,
     }
-    
+
     def get_install_path(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBaseToolManagerǁget_install_path__mutmut_orig"), object.__getattribute__(self, "xǁBaseToolManagerǁget_install_path__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBaseToolManagerǁget_install_path__mutmut_orig"),
+            object.__getattribute__(self, "xǁBaseToolManagerǁget_install_path__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_install_path.__signature__ = _mutmut_signature(xǁBaseToolManagerǁget_install_path__mutmut_orig)
-    xǁBaseToolManagerǁget_install_path__mutmut_orig.__name__ = 'xǁBaseToolManagerǁget_install_path'
+    xǁBaseToolManagerǁget_install_path__mutmut_orig.__name__ = "xǁBaseToolManagerǁget_install_path"
 
     def xǁBaseToolManagerǁis_installed__mutmut_orig(self, version: str) -> bool:
         """Check if a version is installed.
@@ -4859,23 +4911,29 @@ class BaseToolManager(ABC):
         install_path = self.get_install_path(version)
         executable = install_path / "BIN" / self.executable_name
         return executable.exists()
-    
-    xǁBaseToolManagerǁis_installed__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBaseToolManagerǁis_installed__mutmut_1': xǁBaseToolManagerǁis_installed__mutmut_1, 
-        'xǁBaseToolManagerǁis_installed__mutmut_2': xǁBaseToolManagerǁis_installed__mutmut_2, 
-        'xǁBaseToolManagerǁis_installed__mutmut_3': xǁBaseToolManagerǁis_installed__mutmut_3, 
-        'xǁBaseToolManagerǁis_installed__mutmut_4': xǁBaseToolManagerǁis_installed__mutmut_4, 
-        'xǁBaseToolManagerǁis_installed__mutmut_5': xǁBaseToolManagerǁis_installed__mutmut_5, 
-        'xǁBaseToolManagerǁis_installed__mutmut_6': xǁBaseToolManagerǁis_installed__mutmut_6, 
-        'xǁBaseToolManagerǁis_installed__mutmut_7': xǁBaseToolManagerǁis_installed__mutmut_7
+
+    xǁBaseToolManagerǁis_installed__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBaseToolManagerǁis_installed__mutmut_1": xǁBaseToolManagerǁis_installed__mutmut_1,
+        "xǁBaseToolManagerǁis_installed__mutmut_2": xǁBaseToolManagerǁis_installed__mutmut_2,
+        "xǁBaseToolManagerǁis_installed__mutmut_3": xǁBaseToolManagerǁis_installed__mutmut_3,
+        "xǁBaseToolManagerǁis_installed__mutmut_4": xǁBaseToolManagerǁis_installed__mutmut_4,
+        "xǁBaseToolManagerǁis_installed__mutmut_5": xǁBaseToolManagerǁis_installed__mutmut_5,
+        "xǁBaseToolManagerǁis_installed__mutmut_6": xǁBaseToolManagerǁis_installed__mutmut_6,
+        "xǁBaseToolManagerǁis_installed__mutmut_7": xǁBaseToolManagerǁis_installed__mutmut_7,
     }
-    
+
     def is_installed(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBaseToolManagerǁis_installed__mutmut_orig"), object.__getattribute__(self, "xǁBaseToolManagerǁis_installed__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBaseToolManagerǁis_installed__mutmut_orig"),
+            object.__getattribute__(self, "xǁBaseToolManagerǁis_installed__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_installed.__signature__ = _mutmut_signature(xǁBaseToolManagerǁis_installed__mutmut_orig)
-    xǁBaseToolManagerǁis_installed__mutmut_orig.__name__ = 'xǁBaseToolManagerǁis_installed'
+    xǁBaseToolManagerǁis_installed__mutmut_orig.__name__ = "xǁBaseToolManagerǁis_installed"
 
     def xǁBaseToolManagerǁget_platform_info__mutmut_orig(self) -> dict[str, str]:
         """Get current platform information.
@@ -6064,59 +6122,65 @@ class BaseToolManager(ABC):
             arch = machine
 
         return {"platform": system, "ARCH": arch}
-    
-    xǁBaseToolManagerǁget_platform_info__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBaseToolManagerǁget_platform_info__mutmut_1': xǁBaseToolManagerǁget_platform_info__mutmut_1, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_2': xǁBaseToolManagerǁget_platform_info__mutmut_2, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_3': xǁBaseToolManagerǁget_platform_info__mutmut_3, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_4': xǁBaseToolManagerǁget_platform_info__mutmut_4, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_5': xǁBaseToolManagerǁget_platform_info__mutmut_5, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_6': xǁBaseToolManagerǁget_platform_info__mutmut_6, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_7': xǁBaseToolManagerǁget_platform_info__mutmut_7, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_8': xǁBaseToolManagerǁget_platform_info__mutmut_8, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_9': xǁBaseToolManagerǁget_platform_info__mutmut_9, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_10': xǁBaseToolManagerǁget_platform_info__mutmut_10, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_11': xǁBaseToolManagerǁget_platform_info__mutmut_11, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_12': xǁBaseToolManagerǁget_platform_info__mutmut_12, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_13': xǁBaseToolManagerǁget_platform_info__mutmut_13, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_14': xǁBaseToolManagerǁget_platform_info__mutmut_14, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_15': xǁBaseToolManagerǁget_platform_info__mutmut_15, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_16': xǁBaseToolManagerǁget_platform_info__mutmut_16, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_17': xǁBaseToolManagerǁget_platform_info__mutmut_17, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_18': xǁBaseToolManagerǁget_platform_info__mutmut_18, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_19': xǁBaseToolManagerǁget_platform_info__mutmut_19, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_20': xǁBaseToolManagerǁget_platform_info__mutmut_20, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_21': xǁBaseToolManagerǁget_platform_info__mutmut_21, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_22': xǁBaseToolManagerǁget_platform_info__mutmut_22, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_23': xǁBaseToolManagerǁget_platform_info__mutmut_23, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_24': xǁBaseToolManagerǁget_platform_info__mutmut_24, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_25': xǁBaseToolManagerǁget_platform_info__mutmut_25, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_26': xǁBaseToolManagerǁget_platform_info__mutmut_26, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_27': xǁBaseToolManagerǁget_platform_info__mutmut_27, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_28': xǁBaseToolManagerǁget_platform_info__mutmut_28, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_29': xǁBaseToolManagerǁget_platform_info__mutmut_29, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_30': xǁBaseToolManagerǁget_platform_info__mutmut_30, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_31': xǁBaseToolManagerǁget_platform_info__mutmut_31, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_32': xǁBaseToolManagerǁget_platform_info__mutmut_32, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_33': xǁBaseToolManagerǁget_platform_info__mutmut_33, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_34': xǁBaseToolManagerǁget_platform_info__mutmut_34, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_35': xǁBaseToolManagerǁget_platform_info__mutmut_35, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_36': xǁBaseToolManagerǁget_platform_info__mutmut_36, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_37': xǁBaseToolManagerǁget_platform_info__mutmut_37, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_38': xǁBaseToolManagerǁget_platform_info__mutmut_38, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_39': xǁBaseToolManagerǁget_platform_info__mutmut_39, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_40': xǁBaseToolManagerǁget_platform_info__mutmut_40, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_41': xǁBaseToolManagerǁget_platform_info__mutmut_41, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_42': xǁBaseToolManagerǁget_platform_info__mutmut_42, 
-        'xǁBaseToolManagerǁget_platform_info__mutmut_43': xǁBaseToolManagerǁget_platform_info__mutmut_43
+
+    xǁBaseToolManagerǁget_platform_info__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBaseToolManagerǁget_platform_info__mutmut_1": xǁBaseToolManagerǁget_platform_info__mutmut_1,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_2": xǁBaseToolManagerǁget_platform_info__mutmut_2,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_3": xǁBaseToolManagerǁget_platform_info__mutmut_3,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_4": xǁBaseToolManagerǁget_platform_info__mutmut_4,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_5": xǁBaseToolManagerǁget_platform_info__mutmut_5,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_6": xǁBaseToolManagerǁget_platform_info__mutmut_6,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_7": xǁBaseToolManagerǁget_platform_info__mutmut_7,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_8": xǁBaseToolManagerǁget_platform_info__mutmut_8,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_9": xǁBaseToolManagerǁget_platform_info__mutmut_9,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_10": xǁBaseToolManagerǁget_platform_info__mutmut_10,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_11": xǁBaseToolManagerǁget_platform_info__mutmut_11,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_12": xǁBaseToolManagerǁget_platform_info__mutmut_12,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_13": xǁBaseToolManagerǁget_platform_info__mutmut_13,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_14": xǁBaseToolManagerǁget_platform_info__mutmut_14,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_15": xǁBaseToolManagerǁget_platform_info__mutmut_15,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_16": xǁBaseToolManagerǁget_platform_info__mutmut_16,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_17": xǁBaseToolManagerǁget_platform_info__mutmut_17,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_18": xǁBaseToolManagerǁget_platform_info__mutmut_18,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_19": xǁBaseToolManagerǁget_platform_info__mutmut_19,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_20": xǁBaseToolManagerǁget_platform_info__mutmut_20,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_21": xǁBaseToolManagerǁget_platform_info__mutmut_21,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_22": xǁBaseToolManagerǁget_platform_info__mutmut_22,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_23": xǁBaseToolManagerǁget_platform_info__mutmut_23,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_24": xǁBaseToolManagerǁget_platform_info__mutmut_24,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_25": xǁBaseToolManagerǁget_platform_info__mutmut_25,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_26": xǁBaseToolManagerǁget_platform_info__mutmut_26,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_27": xǁBaseToolManagerǁget_platform_info__mutmut_27,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_28": xǁBaseToolManagerǁget_platform_info__mutmut_28,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_29": xǁBaseToolManagerǁget_platform_info__mutmut_29,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_30": xǁBaseToolManagerǁget_platform_info__mutmut_30,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_31": xǁBaseToolManagerǁget_platform_info__mutmut_31,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_32": xǁBaseToolManagerǁget_platform_info__mutmut_32,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_33": xǁBaseToolManagerǁget_platform_info__mutmut_33,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_34": xǁBaseToolManagerǁget_platform_info__mutmut_34,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_35": xǁBaseToolManagerǁget_platform_info__mutmut_35,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_36": xǁBaseToolManagerǁget_platform_info__mutmut_36,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_37": xǁBaseToolManagerǁget_platform_info__mutmut_37,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_38": xǁBaseToolManagerǁget_platform_info__mutmut_38,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_39": xǁBaseToolManagerǁget_platform_info__mutmut_39,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_40": xǁBaseToolManagerǁget_platform_info__mutmut_40,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_41": xǁBaseToolManagerǁget_platform_info__mutmut_41,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_42": xǁBaseToolManagerǁget_platform_info__mutmut_42,
+        "xǁBaseToolManagerǁget_platform_info__mutmut_43": xǁBaseToolManagerǁget_platform_info__mutmut_43,
     }
-    
+
     def get_platform_info(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBaseToolManagerǁget_platform_info__mutmut_orig"), object.__getattribute__(self, "xǁBaseToolManagerǁget_platform_info__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBaseToolManagerǁget_platform_info__mutmut_orig"),
+            object.__getattribute__(self, "xǁBaseToolManagerǁget_platform_info__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_platform_info.__signature__ = _mutmut_signature(xǁBaseToolManagerǁget_platform_info__mutmut_orig)
-    xǁBaseToolManagerǁget_platform_info__mutmut_orig.__name__ = 'xǁBaseToolManagerǁget_platform_info'
+    xǁBaseToolManagerǁget_platform_info__mutmut_orig.__name__ = "xǁBaseToolManagerǁget_platform_info"
 
 
 # <3 🧱🤝🔧🪄

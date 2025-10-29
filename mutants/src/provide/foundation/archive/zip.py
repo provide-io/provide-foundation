@@ -45,23 +45,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -70,7 +73,9 @@ def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
     return result
 
 
-def x__validate_compression_level__mutmut_orig(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
+def x__validate_compression_level__mutmut_orig(
+    instance: ZipArchive, attribute: Attribute[int], value: int
+) -> None:
     """Validate ZIP compression level is between 0 and 9.
 
     Note: ZIP supports level 0 (store, no compression) unlike other compressors
@@ -80,7 +85,9 @@ def x__validate_compression_level__mutmut_orig(instance: ZipArchive, attribute: 
         raise ValueError(f"ZIP compression level must be 0-9, got {value}")
 
 
-def x__validate_compression_level__mutmut_1(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
+def x__validate_compression_level__mutmut_1(
+    instance: ZipArchive, attribute: Attribute[int], value: int
+) -> None:
     """Validate ZIP compression level is between 0 and 9.
 
     Note: ZIP supports level 0 (store, no compression) unlike other compressors
@@ -90,7 +97,9 @@ def x__validate_compression_level__mutmut_1(instance: ZipArchive, attribute: Att
         raise ValueError(f"ZIP compression level must be 0-9, got {value}")
 
 
-def x__validate_compression_level__mutmut_2(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
+def x__validate_compression_level__mutmut_2(
+    instance: ZipArchive, attribute: Attribute[int], value: int
+) -> None:
     """Validate ZIP compression level is between 0 and 9.
 
     Note: ZIP supports level 0 (store, no compression) unlike other compressors
@@ -100,7 +109,9 @@ def x__validate_compression_level__mutmut_2(instance: ZipArchive, attribute: Att
         raise ValueError(f"ZIP compression level must be 0-9, got {value}")
 
 
-def x__validate_compression_level__mutmut_3(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
+def x__validate_compression_level__mutmut_3(
+    instance: ZipArchive, attribute: Attribute[int], value: int
+) -> None:
     """Validate ZIP compression level is between 0 and 9.
 
     Note: ZIP supports level 0 (store, no compression) unlike other compressors
@@ -110,7 +121,9 @@ def x__validate_compression_level__mutmut_3(instance: ZipArchive, attribute: Att
         raise ValueError(f"ZIP compression level must be 0-9, got {value}")
 
 
-def x__validate_compression_level__mutmut_4(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
+def x__validate_compression_level__mutmut_4(
+    instance: ZipArchive, attribute: Attribute[int], value: int
+) -> None:
     """Validate ZIP compression level is between 0 and 9.
 
     Note: ZIP supports level 0 (store, no compression) unlike other compressors
@@ -120,7 +133,9 @@ def x__validate_compression_level__mutmut_4(instance: ZipArchive, attribute: Att
         raise ValueError(f"ZIP compression level must be 0-9, got {value}")
 
 
-def x__validate_compression_level__mutmut_5(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
+def x__validate_compression_level__mutmut_5(
+    instance: ZipArchive, attribute: Attribute[int], value: int
+) -> None:
     """Validate ZIP compression level is between 0 and 9.
 
     Note: ZIP supports level 0 (store, no compression) unlike other compressors
@@ -130,7 +145,9 @@ def x__validate_compression_level__mutmut_5(instance: ZipArchive, attribute: Att
         raise ValueError(f"ZIP compression level must be 0-9, got {value}")
 
 
-def x__validate_compression_level__mutmut_6(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
+def x__validate_compression_level__mutmut_6(
+    instance: ZipArchive, attribute: Attribute[int], value: int
+) -> None:
     """Validate ZIP compression level is between 0 and 9.
 
     Note: ZIP supports level 0 (store, no compression) unlike other compressors
@@ -139,21 +156,26 @@ def x__validate_compression_level__mutmut_6(instance: ZipArchive, attribute: Att
     if not 0 <= value <= 9:
         raise ValueError(None)
 
-x__validate_compression_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x__validate_compression_level__mutmut_1': x__validate_compression_level__mutmut_1, 
-    'x__validate_compression_level__mutmut_2': x__validate_compression_level__mutmut_2, 
-    'x__validate_compression_level__mutmut_3': x__validate_compression_level__mutmut_3, 
-    'x__validate_compression_level__mutmut_4': x__validate_compression_level__mutmut_4, 
-    'x__validate_compression_level__mutmut_5': x__validate_compression_level__mutmut_5, 
-    'x__validate_compression_level__mutmut_6': x__validate_compression_level__mutmut_6
+
+x__validate_compression_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__validate_compression_level__mutmut_1": x__validate_compression_level__mutmut_1,
+    "x__validate_compression_level__mutmut_2": x__validate_compression_level__mutmut_2,
+    "x__validate_compression_level__mutmut_3": x__validate_compression_level__mutmut_3,
+    "x__validate_compression_level__mutmut_4": x__validate_compression_level__mutmut_4,
+    "x__validate_compression_level__mutmut_5": x__validate_compression_level__mutmut_5,
+    "x__validate_compression_level__mutmut_6": x__validate_compression_level__mutmut_6,
 }
 
+
 def _validate_compression_level(*args, **kwargs):
-    result = _mutmut_trampoline(x__validate_compression_level__mutmut_orig, x__validate_compression_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__validate_compression_level__mutmut_orig, x__validate_compression_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _validate_compression_level.__signature__ = _mutmut_signature(x__validate_compression_level__mutmut_orig)
-x__validate_compression_level__mutmut_orig.__name__ = 'x__validate_compression_level'
+x__validate_compression_level__mutmut_orig.__name__ = "x__validate_compression_level"
 
 
 @define(slots=True)

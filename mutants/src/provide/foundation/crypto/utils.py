@@ -17,23 +17,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -109,18 +112,21 @@ def x_quick_hash__mutmut_3(data: bytes) -> int:
     # Use Python's built-in hash for speed, mask to 32 bits
     return hash(data) & 4294967296
 
-x_quick_hash__mutmut_mutants : ClassVar[MutantDict] = {
-'x_quick_hash__mutmut_1': x_quick_hash__mutmut_1, 
-    'x_quick_hash__mutmut_2': x_quick_hash__mutmut_2, 
-    'x_quick_hash__mutmut_3': x_quick_hash__mutmut_3
+
+x_quick_hash__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_quick_hash__mutmut_1": x_quick_hash__mutmut_1,
+    "x_quick_hash__mutmut_2": x_quick_hash__mutmut_2,
+    "x_quick_hash__mutmut_3": x_quick_hash__mutmut_3,
 }
+
 
 def quick_hash(*args, **kwargs):
     result = _mutmut_trampoline(x_quick_hash__mutmut_orig, x_quick_hash__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 quick_hash.__signature__ = _mutmut_signature(x_quick_hash__mutmut_orig)
-x_quick_hash__mutmut_orig.__name__ = 'x_quick_hash'
+x_quick_hash__mutmut_orig.__name__ = "x_quick_hash"
 
 
 def x_hash_name__mutmut_orig(name: str) -> int:
@@ -307,7 +313,9 @@ def x_hash_name__mutmut_10(name: str) -> int:
     """
     # Use first 8 bytes of SHA256 for good distribution
     hash_bytes = hashlib.sha256(name.encode("utf-8")).digest()[:8]
-    return int.from_bytes(hash_bytes, )
+    return int.from_bytes(
+        hash_bytes,
+    )
 
 
 def x_hash_name__mutmut_11(name: str) -> int:
@@ -343,27 +351,30 @@ def x_hash_name__mutmut_12(name: str) -> int:
     hash_bytes = hashlib.sha256(name.encode("utf-8")).digest()[:8]
     return int.from_bytes(hash_bytes, byteorder="LITTLE")
 
-x_hash_name__mutmut_mutants : ClassVar[MutantDict] = {
-'x_hash_name__mutmut_1': x_hash_name__mutmut_1, 
-    'x_hash_name__mutmut_2': x_hash_name__mutmut_2, 
-    'x_hash_name__mutmut_3': x_hash_name__mutmut_3, 
-    'x_hash_name__mutmut_4': x_hash_name__mutmut_4, 
-    'x_hash_name__mutmut_5': x_hash_name__mutmut_5, 
-    'x_hash_name__mutmut_6': x_hash_name__mutmut_6, 
-    'x_hash_name__mutmut_7': x_hash_name__mutmut_7, 
-    'x_hash_name__mutmut_8': x_hash_name__mutmut_8, 
-    'x_hash_name__mutmut_9': x_hash_name__mutmut_9, 
-    'x_hash_name__mutmut_10': x_hash_name__mutmut_10, 
-    'x_hash_name__mutmut_11': x_hash_name__mutmut_11, 
-    'x_hash_name__mutmut_12': x_hash_name__mutmut_12
+
+x_hash_name__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_hash_name__mutmut_1": x_hash_name__mutmut_1,
+    "x_hash_name__mutmut_2": x_hash_name__mutmut_2,
+    "x_hash_name__mutmut_3": x_hash_name__mutmut_3,
+    "x_hash_name__mutmut_4": x_hash_name__mutmut_4,
+    "x_hash_name__mutmut_5": x_hash_name__mutmut_5,
+    "x_hash_name__mutmut_6": x_hash_name__mutmut_6,
+    "x_hash_name__mutmut_7": x_hash_name__mutmut_7,
+    "x_hash_name__mutmut_8": x_hash_name__mutmut_8,
+    "x_hash_name__mutmut_9": x_hash_name__mutmut_9,
+    "x_hash_name__mutmut_10": x_hash_name__mutmut_10,
+    "x_hash_name__mutmut_11": x_hash_name__mutmut_11,
+    "x_hash_name__mutmut_12": x_hash_name__mutmut_12,
 }
+
 
 def hash_name(*args, **kwargs):
     result = _mutmut_trampoline(x_hash_name__mutmut_orig, x_hash_name__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 hash_name.__signature__ = _mutmut_signature(x_hash_name__mutmut_orig)
-x_hash_name__mutmut_orig.__name__ = 'x_hash_name'
+x_hash_name__mutmut_orig.__name__ = "x_hash_name"
 
 
 def x_compare_hash__mutmut_orig(hash1: str, hash2: str) -> bool:
@@ -421,18 +432,21 @@ def x_compare_hash__mutmut_3(hash1: str, hash2: str) -> bool:
     """
     return hash1.lower() == hash2.upper()
 
-x_compare_hash__mutmut_mutants : ClassVar[MutantDict] = {
-'x_compare_hash__mutmut_1': x_compare_hash__mutmut_1, 
-    'x_compare_hash__mutmut_2': x_compare_hash__mutmut_2, 
-    'x_compare_hash__mutmut_3': x_compare_hash__mutmut_3
+
+x_compare_hash__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_compare_hash__mutmut_1": x_compare_hash__mutmut_1,
+    "x_compare_hash__mutmut_2": x_compare_hash__mutmut_2,
+    "x_compare_hash__mutmut_3": x_compare_hash__mutmut_3,
 }
+
 
 def compare_hash(*args, **kwargs):
     result = _mutmut_trampoline(x_compare_hash__mutmut_orig, x_compare_hash__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 compare_hash.__signature__ = _mutmut_signature(x_compare_hash__mutmut_orig)
-x_compare_hash__mutmut_orig.__name__ = 'x_compare_hash'
+x_compare_hash__mutmut_orig.__name__ = "x_compare_hash"
 
 
 def x_format_hash__mutmut_orig(
@@ -895,7 +909,10 @@ def x_format_hash__mutmut_12(
         return hash_value
 
     formatted_parts = []
-    for i in range(0, len(hash_value), ):
+    for i in range(
+        0,
+        len(hash_value),
+    ):
         formatted_parts.append(hash_value[i : i + group_size])
         if groups > 0 and len(formatted_parts) >= groups:
             break
@@ -1226,36 +1243,39 @@ def x_format_hash__mutmut_21(
 
     return separator.join(None)
 
-x_format_hash__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_hash__mutmut_1': x_format_hash__mutmut_1, 
-    'x_format_hash__mutmut_2': x_format_hash__mutmut_2, 
-    'x_format_hash__mutmut_3': x_format_hash__mutmut_3, 
-    'x_format_hash__mutmut_4': x_format_hash__mutmut_4, 
-    'x_format_hash__mutmut_5': x_format_hash__mutmut_5, 
-    'x_format_hash__mutmut_6': x_format_hash__mutmut_6, 
-    'x_format_hash__mutmut_7': x_format_hash__mutmut_7, 
-    'x_format_hash__mutmut_8': x_format_hash__mutmut_8, 
-    'x_format_hash__mutmut_9': x_format_hash__mutmut_9, 
-    'x_format_hash__mutmut_10': x_format_hash__mutmut_10, 
-    'x_format_hash__mutmut_11': x_format_hash__mutmut_11, 
-    'x_format_hash__mutmut_12': x_format_hash__mutmut_12, 
-    'x_format_hash__mutmut_13': x_format_hash__mutmut_13, 
-    'x_format_hash__mutmut_14': x_format_hash__mutmut_14, 
-    'x_format_hash__mutmut_15': x_format_hash__mutmut_15, 
-    'x_format_hash__mutmut_16': x_format_hash__mutmut_16, 
-    'x_format_hash__mutmut_17': x_format_hash__mutmut_17, 
-    'x_format_hash__mutmut_18': x_format_hash__mutmut_18, 
-    'x_format_hash__mutmut_19': x_format_hash__mutmut_19, 
-    'x_format_hash__mutmut_20': x_format_hash__mutmut_20, 
-    'x_format_hash__mutmut_21': x_format_hash__mutmut_21
+
+x_format_hash__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_hash__mutmut_1": x_format_hash__mutmut_1,
+    "x_format_hash__mutmut_2": x_format_hash__mutmut_2,
+    "x_format_hash__mutmut_3": x_format_hash__mutmut_3,
+    "x_format_hash__mutmut_4": x_format_hash__mutmut_4,
+    "x_format_hash__mutmut_5": x_format_hash__mutmut_5,
+    "x_format_hash__mutmut_6": x_format_hash__mutmut_6,
+    "x_format_hash__mutmut_7": x_format_hash__mutmut_7,
+    "x_format_hash__mutmut_8": x_format_hash__mutmut_8,
+    "x_format_hash__mutmut_9": x_format_hash__mutmut_9,
+    "x_format_hash__mutmut_10": x_format_hash__mutmut_10,
+    "x_format_hash__mutmut_11": x_format_hash__mutmut_11,
+    "x_format_hash__mutmut_12": x_format_hash__mutmut_12,
+    "x_format_hash__mutmut_13": x_format_hash__mutmut_13,
+    "x_format_hash__mutmut_14": x_format_hash__mutmut_14,
+    "x_format_hash__mutmut_15": x_format_hash__mutmut_15,
+    "x_format_hash__mutmut_16": x_format_hash__mutmut_16,
+    "x_format_hash__mutmut_17": x_format_hash__mutmut_17,
+    "x_format_hash__mutmut_18": x_format_hash__mutmut_18,
+    "x_format_hash__mutmut_19": x_format_hash__mutmut_19,
+    "x_format_hash__mutmut_20": x_format_hash__mutmut_20,
+    "x_format_hash__mutmut_21": x_format_hash__mutmut_21,
 }
+
 
 def format_hash(*args, **kwargs):
     result = _mutmut_trampoline(x_format_hash__mutmut_orig, x_format_hash__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 format_hash.__signature__ = _mutmut_signature(x_format_hash__mutmut_orig)
-x_format_hash__mutmut_orig.__name__ = 'x_format_hash'
+x_format_hash__mutmut_orig.__name__ = "x_format_hash"
 
 
 def x_truncate_hash__mutmut_orig(hash_value: str, length: int = 16, suffix: str = "...") -> str:
@@ -1362,19 +1382,22 @@ def x_truncate_hash__mutmut_4(hash_value: str, length: int = 16, suffix: str = "
         return hash_value
     return hash_value[:length] - suffix
 
-x_truncate_hash__mutmut_mutants : ClassVar[MutantDict] = {
-'x_truncate_hash__mutmut_1': x_truncate_hash__mutmut_1, 
-    'x_truncate_hash__mutmut_2': x_truncate_hash__mutmut_2, 
-    'x_truncate_hash__mutmut_3': x_truncate_hash__mutmut_3, 
-    'x_truncate_hash__mutmut_4': x_truncate_hash__mutmut_4
+
+x_truncate_hash__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_truncate_hash__mutmut_1": x_truncate_hash__mutmut_1,
+    "x_truncate_hash__mutmut_2": x_truncate_hash__mutmut_2,
+    "x_truncate_hash__mutmut_3": x_truncate_hash__mutmut_3,
+    "x_truncate_hash__mutmut_4": x_truncate_hash__mutmut_4,
 }
+
 
 def truncate_hash(*args, **kwargs):
     result = _mutmut_trampoline(x_truncate_hash__mutmut_orig, x_truncate_hash__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 truncate_hash.__signature__ = _mutmut_signature(x_truncate_hash__mutmut_orig)
-x_truncate_hash__mutmut_orig.__name__ = 'x_truncate_hash'
+x_truncate_hash__mutmut_orig.__name__ = "x_truncate_hash"
 
 
 def x_hash_to_int__mutmut_orig(hash_value: str) -> int:
@@ -1439,7 +1462,9 @@ def x_hash_to_int__mutmut_4(hash_value: str) -> int:
         Integer representation of the hash
 
     """
-    return int(hash_value, )
+    return int(
+        hash_value,
+    )
 
 
 def x_hash_to_int__mutmut_5(hash_value: str) -> int:
@@ -1454,20 +1479,23 @@ def x_hash_to_int__mutmut_5(hash_value: str) -> int:
     """
     return int(hash_value, 17)
 
-x_hash_to_int__mutmut_mutants : ClassVar[MutantDict] = {
-'x_hash_to_int__mutmut_1': x_hash_to_int__mutmut_1, 
-    'x_hash_to_int__mutmut_2': x_hash_to_int__mutmut_2, 
-    'x_hash_to_int__mutmut_3': x_hash_to_int__mutmut_3, 
-    'x_hash_to_int__mutmut_4': x_hash_to_int__mutmut_4, 
-    'x_hash_to_int__mutmut_5': x_hash_to_int__mutmut_5
+
+x_hash_to_int__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_hash_to_int__mutmut_1": x_hash_to_int__mutmut_1,
+    "x_hash_to_int__mutmut_2": x_hash_to_int__mutmut_2,
+    "x_hash_to_int__mutmut_3": x_hash_to_int__mutmut_3,
+    "x_hash_to_int__mutmut_4": x_hash_to_int__mutmut_4,
+    "x_hash_to_int__mutmut_5": x_hash_to_int__mutmut_5,
 }
+
 
 def hash_to_int(*args, **kwargs):
     result = _mutmut_trampoline(x_hash_to_int__mutmut_orig, x_hash_to_int__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 hash_to_int.__signature__ = _mutmut_signature(x_hash_to_int__mutmut_orig)
-x_hash_to_int__mutmut_orig.__name__ = 'x_hash_to_int'
+x_hash_to_int__mutmut_orig.__name__ = "x_hash_to_int"
 
 
 def x_int_to_hash__mutmut_orig(value: int, length: int | None = None) -> str:
@@ -1566,7 +1594,9 @@ def x_int_to_hash__mutmut_5(value: int, length: int | None = None) -> str:
         Hex string representation
 
     """
-    hex_str = format(value, )
+    hex_str = format(
+        value,
+    )
     if length and len(hex_str) < length:
         hex_str = hex_str.zfill(length)
     return hex_str
@@ -1673,26 +1703,29 @@ def x_int_to_hash__mutmut_11(value: int, length: int | None = None) -> str:
         hex_str = hex_str.zfill(None)
     return hex_str
 
-x_int_to_hash__mutmut_mutants : ClassVar[MutantDict] = {
-'x_int_to_hash__mutmut_1': x_int_to_hash__mutmut_1, 
-    'x_int_to_hash__mutmut_2': x_int_to_hash__mutmut_2, 
-    'x_int_to_hash__mutmut_3': x_int_to_hash__mutmut_3, 
-    'x_int_to_hash__mutmut_4': x_int_to_hash__mutmut_4, 
-    'x_int_to_hash__mutmut_5': x_int_to_hash__mutmut_5, 
-    'x_int_to_hash__mutmut_6': x_int_to_hash__mutmut_6, 
-    'x_int_to_hash__mutmut_7': x_int_to_hash__mutmut_7, 
-    'x_int_to_hash__mutmut_8': x_int_to_hash__mutmut_8, 
-    'x_int_to_hash__mutmut_9': x_int_to_hash__mutmut_9, 
-    'x_int_to_hash__mutmut_10': x_int_to_hash__mutmut_10, 
-    'x_int_to_hash__mutmut_11': x_int_to_hash__mutmut_11
+
+x_int_to_hash__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_int_to_hash__mutmut_1": x_int_to_hash__mutmut_1,
+    "x_int_to_hash__mutmut_2": x_int_to_hash__mutmut_2,
+    "x_int_to_hash__mutmut_3": x_int_to_hash__mutmut_3,
+    "x_int_to_hash__mutmut_4": x_int_to_hash__mutmut_4,
+    "x_int_to_hash__mutmut_5": x_int_to_hash__mutmut_5,
+    "x_int_to_hash__mutmut_6": x_int_to_hash__mutmut_6,
+    "x_int_to_hash__mutmut_7": x_int_to_hash__mutmut_7,
+    "x_int_to_hash__mutmut_8": x_int_to_hash__mutmut_8,
+    "x_int_to_hash__mutmut_9": x_int_to_hash__mutmut_9,
+    "x_int_to_hash__mutmut_10": x_int_to_hash__mutmut_10,
+    "x_int_to_hash__mutmut_11": x_int_to_hash__mutmut_11,
 }
+
 
 def int_to_hash(*args, **kwargs):
     result = _mutmut_trampoline(x_int_to_hash__mutmut_orig, x_int_to_hash__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 int_to_hash.__signature__ = _mutmut_signature(x_int_to_hash__mutmut_orig)
-x_int_to_hash__mutmut_orig.__name__ = 'x_int_to_hash'
+x_int_to_hash__mutmut_orig.__name__ = "x_int_to_hash"
 
 
 def x_is_valid_hash__mutmut_orig(hash_value: str, algorithm: str | None = None) -> bool:
@@ -1844,7 +1877,9 @@ def x_is_valid_hash__mutmut_4(hash_value: str, algorithm: str | None = None) -> 
     """
     # Check if it's a valid hex string
     try:
-        int(hash_value, )
+        int(
+            hash_value,
+        )
     except ValueError:
         return False
 
@@ -2204,29 +2239,32 @@ def x_is_valid_hash__mutmut_14(hash_value: str, algorithm: str | None = None) ->
 
     return False
 
-x_is_valid_hash__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_valid_hash__mutmut_1': x_is_valid_hash__mutmut_1, 
-    'x_is_valid_hash__mutmut_2': x_is_valid_hash__mutmut_2, 
-    'x_is_valid_hash__mutmut_3': x_is_valid_hash__mutmut_3, 
-    'x_is_valid_hash__mutmut_4': x_is_valid_hash__mutmut_4, 
-    'x_is_valid_hash__mutmut_5': x_is_valid_hash__mutmut_5, 
-    'x_is_valid_hash__mutmut_6': x_is_valid_hash__mutmut_6, 
-    'x_is_valid_hash__mutmut_7': x_is_valid_hash__mutmut_7, 
-    'x_is_valid_hash__mutmut_8': x_is_valid_hash__mutmut_8, 
-    'x_is_valid_hash__mutmut_9': x_is_valid_hash__mutmut_9, 
-    'x_is_valid_hash__mutmut_10': x_is_valid_hash__mutmut_10, 
-    'x_is_valid_hash__mutmut_11': x_is_valid_hash__mutmut_11, 
-    'x_is_valid_hash__mutmut_12': x_is_valid_hash__mutmut_12, 
-    'x_is_valid_hash__mutmut_13': x_is_valid_hash__mutmut_13, 
-    'x_is_valid_hash__mutmut_14': x_is_valid_hash__mutmut_14
+
+x_is_valid_hash__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_valid_hash__mutmut_1": x_is_valid_hash__mutmut_1,
+    "x_is_valid_hash__mutmut_2": x_is_valid_hash__mutmut_2,
+    "x_is_valid_hash__mutmut_3": x_is_valid_hash__mutmut_3,
+    "x_is_valid_hash__mutmut_4": x_is_valid_hash__mutmut_4,
+    "x_is_valid_hash__mutmut_5": x_is_valid_hash__mutmut_5,
+    "x_is_valid_hash__mutmut_6": x_is_valid_hash__mutmut_6,
+    "x_is_valid_hash__mutmut_7": x_is_valid_hash__mutmut_7,
+    "x_is_valid_hash__mutmut_8": x_is_valid_hash__mutmut_8,
+    "x_is_valid_hash__mutmut_9": x_is_valid_hash__mutmut_9,
+    "x_is_valid_hash__mutmut_10": x_is_valid_hash__mutmut_10,
+    "x_is_valid_hash__mutmut_11": x_is_valid_hash__mutmut_11,
+    "x_is_valid_hash__mutmut_12": x_is_valid_hash__mutmut_12,
+    "x_is_valid_hash__mutmut_13": x_is_valid_hash__mutmut_13,
+    "x_is_valid_hash__mutmut_14": x_is_valid_hash__mutmut_14,
 }
+
 
 def is_valid_hash(*args, **kwargs):
     result = _mutmut_trampoline(x_is_valid_hash__mutmut_orig, x_is_valid_hash__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 is_valid_hash.__signature__ = _mutmut_signature(x_is_valid_hash__mutmut_orig)
-x_is_valid_hash__mutmut_orig.__name__ = 'x_is_valid_hash'
+x_is_valid_hash__mutmut_orig.__name__ = "x_is_valid_hash"
 
 
 # <3 🧱🤝🔒🪄

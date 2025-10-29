@@ -33,23 +33,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -114,22 +117,28 @@ class FoundationLogger:
         self._is_configured_by_setup: bool = False
         self._active_config: TelemetryConfig | None = None
         self._hub = None  # Hub dependency for DI pattern
-    
-    xǁFoundationLoggerǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ__init____mutmut_1': xǁFoundationLoggerǁ__init____mutmut_1, 
-        'xǁFoundationLoggerǁ__init____mutmut_2': xǁFoundationLoggerǁ__init____mutmut_2, 
-        'xǁFoundationLoggerǁ__init____mutmut_3': xǁFoundationLoggerǁ__init____mutmut_3, 
-        'xǁFoundationLoggerǁ__init____mutmut_4': xǁFoundationLoggerǁ__init____mutmut_4, 
-        'xǁFoundationLoggerǁ__init____mutmut_5': xǁFoundationLoggerǁ__init____mutmut_5, 
-        'xǁFoundationLoggerǁ__init____mutmut_6': xǁFoundationLoggerǁ__init____mutmut_6
+
+    xǁFoundationLoggerǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ__init____mutmut_1": xǁFoundationLoggerǁ__init____mutmut_1,
+        "xǁFoundationLoggerǁ__init____mutmut_2": xǁFoundationLoggerǁ__init____mutmut_2,
+        "xǁFoundationLoggerǁ__init____mutmut_3": xǁFoundationLoggerǁ__init____mutmut_3,
+        "xǁFoundationLoggerǁ__init____mutmut_4": xǁFoundationLoggerǁ__init____mutmut_4,
+        "xǁFoundationLoggerǁ__init____mutmut_5": xǁFoundationLoggerǁ__init____mutmut_5,
+        "xǁFoundationLoggerǁ__init____mutmut_6": xǁFoundationLoggerǁ__init____mutmut_6,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ__init____mutmut_orig)
-    xǁFoundationLoggerǁ__init____mutmut_orig.__name__ = 'xǁFoundationLoggerǁ__init__'
+    xǁFoundationLoggerǁ__init____mutmut_orig.__name__ = "xǁFoundationLoggerǁ__init__"
 
     def xǁFoundationLoggerǁsetup__mutmut_orig(self, config: TelemetryConfig) -> None:
         """Setup the logger with configuration from Hub.
@@ -285,7 +294,9 @@ class FoundationLogger:
         try:
             from provide.foundation.logger.setup.coordinator import internal_setup
 
-            internal_setup(config, )
+            internal_setup(
+                config,
+            )
         except Exception as e:
             # Fallback to emergency setup if regular setup fails
             self._setup_emergency_fallback()
@@ -310,24 +321,30 @@ class FoundationLogger:
             # Fallback to emergency setup if regular setup fails
             self._setup_emergency_fallback()
             raise e
-    
-    xǁFoundationLoggerǁsetup__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁsetup__mutmut_1': xǁFoundationLoggerǁsetup__mutmut_1, 
-        'xǁFoundationLoggerǁsetup__mutmut_2': xǁFoundationLoggerǁsetup__mutmut_2, 
-        'xǁFoundationLoggerǁsetup__mutmut_3': xǁFoundationLoggerǁsetup__mutmut_3, 
-        'xǁFoundationLoggerǁsetup__mutmut_4': xǁFoundationLoggerǁsetup__mutmut_4, 
-        'xǁFoundationLoggerǁsetup__mutmut_5': xǁFoundationLoggerǁsetup__mutmut_5, 
-        'xǁFoundationLoggerǁsetup__mutmut_6': xǁFoundationLoggerǁsetup__mutmut_6, 
-        'xǁFoundationLoggerǁsetup__mutmut_7': xǁFoundationLoggerǁsetup__mutmut_7, 
-        'xǁFoundationLoggerǁsetup__mutmut_8': xǁFoundationLoggerǁsetup__mutmut_8
+
+    xǁFoundationLoggerǁsetup__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁsetup__mutmut_1": xǁFoundationLoggerǁsetup__mutmut_1,
+        "xǁFoundationLoggerǁsetup__mutmut_2": xǁFoundationLoggerǁsetup__mutmut_2,
+        "xǁFoundationLoggerǁsetup__mutmut_3": xǁFoundationLoggerǁsetup__mutmut_3,
+        "xǁFoundationLoggerǁsetup__mutmut_4": xǁFoundationLoggerǁsetup__mutmut_4,
+        "xǁFoundationLoggerǁsetup__mutmut_5": xǁFoundationLoggerǁsetup__mutmut_5,
+        "xǁFoundationLoggerǁsetup__mutmut_6": xǁFoundationLoggerǁsetup__mutmut_6,
+        "xǁFoundationLoggerǁsetup__mutmut_7": xǁFoundationLoggerǁsetup__mutmut_7,
+        "xǁFoundationLoggerǁsetup__mutmut_8": xǁFoundationLoggerǁsetup__mutmut_8,
     }
-    
+
     def setup(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁsetup__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁsetup__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁsetup__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁsetup__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     setup.__signature__ = _mutmut_signature(xǁFoundationLoggerǁsetup__mutmut_orig)
-    xǁFoundationLoggerǁsetup__mutmut_orig.__name__ = 'xǁFoundationLoggerǁsetup'
+    xǁFoundationLoggerǁsetup__mutmut_orig.__name__ = "xǁFoundationLoggerǁsetup"
 
     def xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_orig(self) -> bool:
         try:
@@ -520,27 +537,39 @@ class FoundationLogger:
             # Return False to indicate we should continue with standard setup
             pass
         return True
-    
-    xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_1': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_1, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_2': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_2, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_3': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_3, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_4': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_4, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_5': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_5, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_6': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_6, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_7': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_7, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_8': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_8, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_9': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_9, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_10': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_10, 
-        'xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_11': xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_11
+
+    xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_1": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_1,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_2": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_2,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_3": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_3,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_4": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_4,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_5": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_5,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_6": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_6,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_7": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_7,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_8": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_8,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_9": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_9,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_10": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_10,
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_11": xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_11,
     }
-    
+
     def _check_structlog_already_disabled(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _check_structlog_already_disabled.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_orig)
-    xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_orig.__name__ = 'xǁFoundationLoggerǁ_check_structlog_already_disabled'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_orig"),
+            object.__getattribute__(
+                self, "xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_mutants"
+            ),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _check_structlog_already_disabled.__signature__ = _mutmut_signature(
+        xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_orig
+    )
+    xǁFoundationLoggerǁ_check_structlog_already_disabled__mutmut_orig.__name__ = (
+        "xǁFoundationLoggerǁ_check_structlog_already_disabled"
+    )
 
     def xǁFoundationLoggerǁ_try_hub_configuration__mutmut_orig(self) -> bool:
         """Try to configure using Hub if available.
@@ -712,24 +741,34 @@ class FoundationLogger:
         except Exception:
             # If Hub setup fails, fall through to lazy setup
             return True
-    
-    xǁFoundationLoggerǁ_try_hub_configuration__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ_try_hub_configuration__mutmut_1': xǁFoundationLoggerǁ_try_hub_configuration__mutmut_1, 
-        'xǁFoundationLoggerǁ_try_hub_configuration__mutmut_2': xǁFoundationLoggerǁ_try_hub_configuration__mutmut_2, 
-        'xǁFoundationLoggerǁ_try_hub_configuration__mutmut_3': xǁFoundationLoggerǁ_try_hub_configuration__mutmut_3, 
-        'xǁFoundationLoggerǁ_try_hub_configuration__mutmut_4': xǁFoundationLoggerǁ_try_hub_configuration__mutmut_4, 
-        'xǁFoundationLoggerǁ_try_hub_configuration__mutmut_5': xǁFoundationLoggerǁ_try_hub_configuration__mutmut_5, 
-        'xǁFoundationLoggerǁ_try_hub_configuration__mutmut_6': xǁFoundationLoggerǁ_try_hub_configuration__mutmut_6, 
-        'xǁFoundationLoggerǁ_try_hub_configuration__mutmut_7': xǁFoundationLoggerǁ_try_hub_configuration__mutmut_7, 
-        'xǁFoundationLoggerǁ_try_hub_configuration__mutmut_8': xǁFoundationLoggerǁ_try_hub_configuration__mutmut_8
+
+    xǁFoundationLoggerǁ_try_hub_configuration__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_1": xǁFoundationLoggerǁ_try_hub_configuration__mutmut_1,
+        "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_2": xǁFoundationLoggerǁ_try_hub_configuration__mutmut_2,
+        "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_3": xǁFoundationLoggerǁ_try_hub_configuration__mutmut_3,
+        "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_4": xǁFoundationLoggerǁ_try_hub_configuration__mutmut_4,
+        "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_5": xǁFoundationLoggerǁ_try_hub_configuration__mutmut_5,
+        "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_6": xǁFoundationLoggerǁ_try_hub_configuration__mutmut_6,
+        "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_7": xǁFoundationLoggerǁ_try_hub_configuration__mutmut_7,
+        "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_8": xǁFoundationLoggerǁ_try_hub_configuration__mutmut_8,
     }
-    
+
     def _try_hub_configuration(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _try_hub_configuration.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_try_hub_configuration__mutmut_orig)
-    xǁFoundationLoggerǁ_try_hub_configuration__mutmut_orig.__name__ = 'xǁFoundationLoggerǁ_try_hub_configuration'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_try_hub_configuration__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _try_hub_configuration.__signature__ = _mutmut_signature(
+        xǁFoundationLoggerǁ_try_hub_configuration__mutmut_orig
+    )
+    xǁFoundationLoggerǁ_try_hub_configuration__mutmut_orig.__name__ = (
+        "xǁFoundationLoggerǁ_try_hub_configuration"
+    )
 
     def xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_orig(self) -> bool:
         """Check if emergency fallback should be used.
@@ -778,21 +817,31 @@ class FoundationLogger:
             True if emergency fallback should be used
         """
         return _LAZY_SETUP_STATE["in_progress"] or _LAZY_SETUP_STATE["ERROR"]
-    
-    xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_1': xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_1, 
-        'xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_2': xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_2, 
-        'xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_3': xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_3, 
-        'xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_4': xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_4, 
-        'xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_5': xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_5
+
+    xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_1": xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_1,
+        "xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_2": xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_2,
+        "xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_3": xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_3,
+        "xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_4": xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_4,
+        "xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_5": xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_5,
     }
-    
+
     def _should_use_emergency_fallback(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _should_use_emergency_fallback.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_orig)
-    xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_orig.__name__ = 'xǁFoundationLoggerǁ_should_use_emergency_fallback'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _should_use_emergency_fallback.__signature__ = _mutmut_signature(
+        xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_orig
+    )
+    xǁFoundationLoggerǁ_should_use_emergency_fallback__mutmut_orig.__name__ = (
+        "xǁFoundationLoggerǁ_should_use_emergency_fallback"
+    )
 
     def xǁFoundationLoggerǁ_perform_locked_setup__mutmut_orig(self) -> None:
         """Perform setup within the lock."""
@@ -988,28 +1037,36 @@ class FoundationLogger:
         # If still needs setup, perform lazy setup.
         if not _LAZY_SETUP_STATE["DONE"]:
             self._perform_lazy_setup()
-    
-    xǁFoundationLoggerǁ_perform_locked_setup__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_1': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_1, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_2': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_2, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_3': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_3, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_4': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_4, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_5': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_5, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_6': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_6, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_7': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_7, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_8': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_8, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_9': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_9, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_10': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_10, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_11': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_11, 
-        'xǁFoundationLoggerǁ_perform_locked_setup__mutmut_12': xǁFoundationLoggerǁ_perform_locked_setup__mutmut_12
+
+    xǁFoundationLoggerǁ_perform_locked_setup__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_1": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_1,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_2": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_2,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_3": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_3,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_4": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_4,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_5": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_5,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_6": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_6,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_7": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_7,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_8": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_8,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_9": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_9,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_10": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_10,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_11": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_11,
+        "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_12": xǁFoundationLoggerǁ_perform_locked_setup__mutmut_12,
     }
-    
+
     def _perform_locked_setup(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _perform_locked_setup.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_perform_locked_setup__mutmut_orig)
-    xǁFoundationLoggerǁ_perform_locked_setup__mutmut_orig.__name__ = 'xǁFoundationLoggerǁ_perform_locked_setup'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_perform_locked_setup__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _perform_locked_setup.__signature__ = _mutmut_signature(
+        xǁFoundationLoggerǁ_perform_locked_setup__mutmut_orig
+    )
+    xǁFoundationLoggerǁ_perform_locked_setup__mutmut_orig.__name__ = "xǁFoundationLoggerǁ_perform_locked_setup"
 
     def xǁFoundationLoggerǁ_ensure_configured__mutmut_orig(self) -> None:
         """Ensures the logger is configured, performing lazy setup if necessary.
@@ -1350,25 +1407,31 @@ class FoundationLogger:
         except Exception:
             # If lock acquisition fails (e.g., due to ordering violations), use emergency fallback
             self._setup_emergency_fallback()
-    
-    xǁFoundationLoggerǁ_ensure_configured__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ_ensure_configured__mutmut_1': xǁFoundationLoggerǁ_ensure_configured__mutmut_1, 
-        'xǁFoundationLoggerǁ_ensure_configured__mutmut_2': xǁFoundationLoggerǁ_ensure_configured__mutmut_2, 
-        'xǁFoundationLoggerǁ_ensure_configured__mutmut_3': xǁFoundationLoggerǁ_ensure_configured__mutmut_3, 
-        'xǁFoundationLoggerǁ_ensure_configured__mutmut_4': xǁFoundationLoggerǁ_ensure_configured__mutmut_4, 
-        'xǁFoundationLoggerǁ_ensure_configured__mutmut_5': xǁFoundationLoggerǁ_ensure_configured__mutmut_5, 
-        'xǁFoundationLoggerǁ_ensure_configured__mutmut_6': xǁFoundationLoggerǁ_ensure_configured__mutmut_6, 
-        'xǁFoundationLoggerǁ_ensure_configured__mutmut_7': xǁFoundationLoggerǁ_ensure_configured__mutmut_7, 
-        'xǁFoundationLoggerǁ_ensure_configured__mutmut_8': xǁFoundationLoggerǁ_ensure_configured__mutmut_8, 
-        'xǁFoundationLoggerǁ_ensure_configured__mutmut_9': xǁFoundationLoggerǁ_ensure_configured__mutmut_9
+
+    xǁFoundationLoggerǁ_ensure_configured__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ_ensure_configured__mutmut_1": xǁFoundationLoggerǁ_ensure_configured__mutmut_1,
+        "xǁFoundationLoggerǁ_ensure_configured__mutmut_2": xǁFoundationLoggerǁ_ensure_configured__mutmut_2,
+        "xǁFoundationLoggerǁ_ensure_configured__mutmut_3": xǁFoundationLoggerǁ_ensure_configured__mutmut_3,
+        "xǁFoundationLoggerǁ_ensure_configured__mutmut_4": xǁFoundationLoggerǁ_ensure_configured__mutmut_4,
+        "xǁFoundationLoggerǁ_ensure_configured__mutmut_5": xǁFoundationLoggerǁ_ensure_configured__mutmut_5,
+        "xǁFoundationLoggerǁ_ensure_configured__mutmut_6": xǁFoundationLoggerǁ_ensure_configured__mutmut_6,
+        "xǁFoundationLoggerǁ_ensure_configured__mutmut_7": xǁFoundationLoggerǁ_ensure_configured__mutmut_7,
+        "xǁFoundationLoggerǁ_ensure_configured__mutmut_8": xǁFoundationLoggerǁ_ensure_configured__mutmut_8,
+        "xǁFoundationLoggerǁ_ensure_configured__mutmut_9": xǁFoundationLoggerǁ_ensure_configured__mutmut_9,
     }
-    
+
     def _ensure_configured(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ_ensure_configured__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ_ensure_configured__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_ensure_configured__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_ensure_configured__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _ensure_configured.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_ensure_configured__mutmut_orig)
-    xǁFoundationLoggerǁ_ensure_configured__mutmut_orig.__name__ = 'xǁFoundationLoggerǁ_ensure_configured'
+    xǁFoundationLoggerǁ_ensure_configured__mutmut_orig.__name__ = "xǁFoundationLoggerǁ_ensure_configured"
 
     def xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_orig(self) -> None:
         """Perform the actual lazy setup of the logging system."""
@@ -1551,29 +1614,35 @@ class FoundationLogger:
             self._setup_emergency_fallback()
         finally:
             _LAZY_SETUP_STATE["in_progress"] = True
-    
-    xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_1': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_1, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_2': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_2, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_3': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_3, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_4': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_4, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_5': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_5, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_6': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_6, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_7': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_7, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_8': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_8, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_9': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_9, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_10': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_10, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_11': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_11, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_12': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_12, 
-        'xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_13': xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_13
+
+    xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_1": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_1,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_2": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_2,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_3": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_3,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_4": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_4,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_5": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_5,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_6": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_6,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_7": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_7,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_8": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_8,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_9": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_9,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_10": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_10,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_11": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_11,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_12": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_12,
+        "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_13": xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_13,
     }
-    
+
     def _perform_lazy_setup(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _perform_lazy_setup.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_orig)
-    xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_orig.__name__ = 'xǁFoundationLoggerǁ_perform_lazy_setup'
+    xǁFoundationLoggerǁ_perform_lazy_setup__mutmut_orig.__name__ = "xǁFoundationLoggerǁ_perform_lazy_setup"
 
     def xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_orig(self) -> None:
         """Set up emergency fallback logging when normal setup fails."""
@@ -1689,7 +1758,7 @@ class FoundationLogger:
                 processors=[structlog.dev.ConsoleRenderer()],
                 logger_factory=structlog.PrintLoggerFactory(file=get_safe_stderr()),
                 wrapper_class=structlog.BoundLogger,
-                )
+            )
 
     def xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_10(self) -> None:
         """Set up emergency fallback logging when normal setup fails."""
@@ -1714,27 +1783,37 @@ class FoundationLogger:
                 wrapper_class=structlog.BoundLogger,
                 cache_logger_on_first_use=False,
             )
-    
-    xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_1': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_1, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_2': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_2, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_3': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_3, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_4': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_4, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_5': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_5, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_6': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_6, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_7': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_7, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_8': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_8, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_9': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_9, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_10': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_10, 
-        'xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_11': xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_11
+
+    xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_1": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_1,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_2": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_2,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_3": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_3,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_4": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_4,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_5": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_5,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_6": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_6,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_7": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_7,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_8": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_8,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_9": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_9,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_10": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_10,
+        "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_11": xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_11,
     }
-    
+
     def _setup_emergency_fallback(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _setup_emergency_fallback.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_orig)
-    xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_orig.__name__ = 'xǁFoundationLoggerǁ_setup_emergency_fallback'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _setup_emergency_fallback.__signature__ = _mutmut_signature(
+        xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_orig
+    )
+    xǁFoundationLoggerǁ_setup_emergency_fallback__mutmut_orig.__name__ = (
+        "xǁFoundationLoggerǁ_setup_emergency_fallback"
+    )
 
     def xǁFoundationLoggerǁget_logger__mutmut_orig(self, name: str | None = None) -> Any:
         self._ensure_configured()
@@ -1765,23 +1844,31 @@ class FoundationLogger:
         self._ensure_configured()
         effective_name = name if name is not None else "foundation.default"
         return structlog.get_logger().bind(logger_name=None)
-    
-    xǁFoundationLoggerǁget_logger__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁget_logger__mutmut_1': xǁFoundationLoggerǁget_logger__mutmut_1, 
-        'xǁFoundationLoggerǁget_logger__mutmut_2': xǁFoundationLoggerǁget_logger__mutmut_2, 
-        'xǁFoundationLoggerǁget_logger__mutmut_3': xǁFoundationLoggerǁget_logger__mutmut_3, 
-        'xǁFoundationLoggerǁget_logger__mutmut_4': xǁFoundationLoggerǁget_logger__mutmut_4, 
-        'xǁFoundationLoggerǁget_logger__mutmut_5': xǁFoundationLoggerǁget_logger__mutmut_5
-    }
-    
-    def get_logger(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁget_logger__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁget_logger__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    get_logger.__signature__ = _mutmut_signature(xǁFoundationLoggerǁget_logger__mutmut_orig)
-    xǁFoundationLoggerǁget_logger__mutmut_orig.__name__ = 'xǁFoundationLoggerǁget_logger'
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_orig(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    xǁFoundationLoggerǁget_logger__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁget_logger__mutmut_1": xǁFoundationLoggerǁget_logger__mutmut_1,
+        "xǁFoundationLoggerǁget_logger__mutmut_2": xǁFoundationLoggerǁget_logger__mutmut_2,
+        "xǁFoundationLoggerǁget_logger__mutmut_3": xǁFoundationLoggerǁget_logger__mutmut_3,
+        "xǁFoundationLoggerǁget_logger__mutmut_4": xǁFoundationLoggerǁget_logger__mutmut_4,
+        "xǁFoundationLoggerǁget_logger__mutmut_5": xǁFoundationLoggerǁget_logger__mutmut_5,
+    }
+
+    def get_logger(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁget_logger__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁget_logger__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    get_logger.__signature__ = _mutmut_signature(xǁFoundationLoggerǁget_logger__mutmut_orig)
+    xǁFoundationLoggerǁget_logger__mutmut_orig.__name__ = "xǁFoundationLoggerǁget_logger"
+
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_orig(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1795,7 +1882,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_1(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_1(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1809,7 +1898,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_2(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_2(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1823,7 +1914,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_3(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_3(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1837,7 +1930,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_4(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_4(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1851,11 +1946,15 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_5(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_5(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
-        logger_name = kwargs.pop("_foundation_logger_name", )
+        logger_name = kwargs.pop(
+            "_foundation_logger_name",
+        )
         log = self.get_logger(logger_name)
 
         # Handle trace level specially since PrintLogger doesn't have trace method
@@ -1865,7 +1964,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_6(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_6(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1879,7 +1980,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_7(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_7(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1893,7 +1996,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_8(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_8(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1907,7 +2012,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_9(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_9(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1921,7 +2028,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_10(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_10(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1935,7 +2044,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_11(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_11(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1949,7 +2060,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_12(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_12(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1963,7 +2076,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_13(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_13(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1977,7 +2092,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_14(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_14(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -1991,7 +2108,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_15(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_15(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2005,7 +2124,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_16(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_16(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2019,7 +2140,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_17(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_17(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2033,7 +2156,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_18(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_18(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2047,7 +2172,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_19(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_19(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2061,7 +2188,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_20(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_20(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2075,7 +2204,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_21(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_21(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2085,11 +2216,15 @@ class FoundationLogger:
         # Handle trace level specially since PrintLogger doesn't have trace method
         if level_method_name == "trace":
             kwargs["_foundation_level_hint"] = TRACE_LEVEL_NAME.lower()
-            log.msg(event, )
+            log.msg(
+                event,
+            )
         else:
             getattr(log, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_22(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_22(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2103,7 +2238,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(None, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_23(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_23(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2117,7 +2254,9 @@ class FoundationLogger:
         else:
             getattr(log, level_method_name)(**kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_24(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_24(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2129,9 +2268,13 @@ class FoundationLogger:
             kwargs["_foundation_level_hint"] = TRACE_LEVEL_NAME.lower()
             log.msg(event, **kwargs)
         else:
-            getattr(log, level_method_name)(event, )
+            getattr(log, level_method_name)(
+                event,
+            )
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_25(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_25(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2145,7 +2288,9 @@ class FoundationLogger:
         else:
             getattr(None, level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_26(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_26(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2159,7 +2304,9 @@ class FoundationLogger:
         else:
             getattr(log, None)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_27(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_27(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2173,7 +2320,9 @@ class FoundationLogger:
         else:
             getattr(level_method_name)(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_log_with_level__mutmut_28(self, level_method_name: str, event: str, **kwargs: Any) -> None:
+    def xǁFoundationLoggerǁ_log_with_level__mutmut_28(
+        self, level_method_name: str, event: str, **kwargs: Any
+    ) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
@@ -2185,47 +2334,57 @@ class FoundationLogger:
             kwargs["_foundation_level_hint"] = TRACE_LEVEL_NAME.lower()
             log.msg(event, **kwargs)
         else:
-            getattr(log, )(event, **kwargs)
-    
-    xǁFoundationLoggerǁ_log_with_level__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ_log_with_level__mutmut_1': xǁFoundationLoggerǁ_log_with_level__mutmut_1, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_2': xǁFoundationLoggerǁ_log_with_level__mutmut_2, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_3': xǁFoundationLoggerǁ_log_with_level__mutmut_3, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_4': xǁFoundationLoggerǁ_log_with_level__mutmut_4, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_5': xǁFoundationLoggerǁ_log_with_level__mutmut_5, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_6': xǁFoundationLoggerǁ_log_with_level__mutmut_6, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_7': xǁFoundationLoggerǁ_log_with_level__mutmut_7, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_8': xǁFoundationLoggerǁ_log_with_level__mutmut_8, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_9': xǁFoundationLoggerǁ_log_with_level__mutmut_9, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_10': xǁFoundationLoggerǁ_log_with_level__mutmut_10, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_11': xǁFoundationLoggerǁ_log_with_level__mutmut_11, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_12': xǁFoundationLoggerǁ_log_with_level__mutmut_12, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_13': xǁFoundationLoggerǁ_log_with_level__mutmut_13, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_14': xǁFoundationLoggerǁ_log_with_level__mutmut_14, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_15': xǁFoundationLoggerǁ_log_with_level__mutmut_15, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_16': xǁFoundationLoggerǁ_log_with_level__mutmut_16, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_17': xǁFoundationLoggerǁ_log_with_level__mutmut_17, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_18': xǁFoundationLoggerǁ_log_with_level__mutmut_18, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_19': xǁFoundationLoggerǁ_log_with_level__mutmut_19, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_20': xǁFoundationLoggerǁ_log_with_level__mutmut_20, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_21': xǁFoundationLoggerǁ_log_with_level__mutmut_21, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_22': xǁFoundationLoggerǁ_log_with_level__mutmut_22, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_23': xǁFoundationLoggerǁ_log_with_level__mutmut_23, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_24': xǁFoundationLoggerǁ_log_with_level__mutmut_24, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_25': xǁFoundationLoggerǁ_log_with_level__mutmut_25, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_26': xǁFoundationLoggerǁ_log_with_level__mutmut_26, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_27': xǁFoundationLoggerǁ_log_with_level__mutmut_27, 
-        'xǁFoundationLoggerǁ_log_with_level__mutmut_28': xǁFoundationLoggerǁ_log_with_level__mutmut_28
-    }
-    
-    def _log_with_level(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ_log_with_level__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ_log_with_level__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _log_with_level.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_log_with_level__mutmut_orig)
-    xǁFoundationLoggerǁ_log_with_level__mutmut_orig.__name__ = 'xǁFoundationLoggerǁ_log_with_level'
+            getattr(
+                log,
+            )(event, **kwargs)
 
-    def xǁFoundationLoggerǁ_format_message_with_args__mutmut_orig(self, event: str | Any, args: tuple[Any, ...]) -> str:
+    xǁFoundationLoggerǁ_log_with_level__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_1": xǁFoundationLoggerǁ_log_with_level__mutmut_1,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_2": xǁFoundationLoggerǁ_log_with_level__mutmut_2,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_3": xǁFoundationLoggerǁ_log_with_level__mutmut_3,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_4": xǁFoundationLoggerǁ_log_with_level__mutmut_4,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_5": xǁFoundationLoggerǁ_log_with_level__mutmut_5,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_6": xǁFoundationLoggerǁ_log_with_level__mutmut_6,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_7": xǁFoundationLoggerǁ_log_with_level__mutmut_7,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_8": xǁFoundationLoggerǁ_log_with_level__mutmut_8,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_9": xǁFoundationLoggerǁ_log_with_level__mutmut_9,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_10": xǁFoundationLoggerǁ_log_with_level__mutmut_10,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_11": xǁFoundationLoggerǁ_log_with_level__mutmut_11,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_12": xǁFoundationLoggerǁ_log_with_level__mutmut_12,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_13": xǁFoundationLoggerǁ_log_with_level__mutmut_13,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_14": xǁFoundationLoggerǁ_log_with_level__mutmut_14,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_15": xǁFoundationLoggerǁ_log_with_level__mutmut_15,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_16": xǁFoundationLoggerǁ_log_with_level__mutmut_16,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_17": xǁFoundationLoggerǁ_log_with_level__mutmut_17,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_18": xǁFoundationLoggerǁ_log_with_level__mutmut_18,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_19": xǁFoundationLoggerǁ_log_with_level__mutmut_19,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_20": xǁFoundationLoggerǁ_log_with_level__mutmut_20,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_21": xǁFoundationLoggerǁ_log_with_level__mutmut_21,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_22": xǁFoundationLoggerǁ_log_with_level__mutmut_22,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_23": xǁFoundationLoggerǁ_log_with_level__mutmut_23,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_24": xǁFoundationLoggerǁ_log_with_level__mutmut_24,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_25": xǁFoundationLoggerǁ_log_with_level__mutmut_25,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_26": xǁFoundationLoggerǁ_log_with_level__mutmut_26,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_27": xǁFoundationLoggerǁ_log_with_level__mutmut_27,
+        "xǁFoundationLoggerǁ_log_with_level__mutmut_28": xǁFoundationLoggerǁ_log_with_level__mutmut_28,
+    }
+
+    def _log_with_level(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_log_with_level__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_log_with_level__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _log_with_level.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_log_with_level__mutmut_orig)
+    xǁFoundationLoggerǁ_log_with_level__mutmut_orig.__name__ = "xǁFoundationLoggerǁ_log_with_level"
+
+    def xǁFoundationLoggerǁ_format_message_with_args__mutmut_orig(
+        self, event: str | Any, args: tuple[Any, ...]
+    ) -> str:
         """Format a log message with positional arguments using % formatting."""
         if args:
             try:
@@ -2234,7 +2393,9 @@ class FoundationLogger:
                 return f"{event} {args}"
         return str(event)
 
-    def xǁFoundationLoggerǁ_format_message_with_args__mutmut_1(self, event: str | Any, args: tuple[Any, ...]) -> str:
+    def xǁFoundationLoggerǁ_format_message_with_args__mutmut_1(
+        self, event: str | Any, args: tuple[Any, ...]
+    ) -> str:
         """Format a log message with positional arguments using % formatting."""
         if args:
             try:
@@ -2243,7 +2404,9 @@ class FoundationLogger:
                 return f"{event} {args}"
         return str(event)
 
-    def xǁFoundationLoggerǁ_format_message_with_args__mutmut_2(self, event: str | Any, args: tuple[Any, ...]) -> str:
+    def xǁFoundationLoggerǁ_format_message_with_args__mutmut_2(
+        self, event: str | Any, args: tuple[Any, ...]
+    ) -> str:
         """Format a log message with positional arguments using % formatting."""
         if args:
             try:
@@ -2252,7 +2415,9 @@ class FoundationLogger:
                 return f"{event} {args}"
         return str(event)
 
-    def xǁFoundationLoggerǁ_format_message_with_args__mutmut_3(self, event: str | Any, args: tuple[Any, ...]) -> str:
+    def xǁFoundationLoggerǁ_format_message_with_args__mutmut_3(
+        self, event: str | Any, args: tuple[Any, ...]
+    ) -> str:
         """Format a log message with positional arguments using % formatting."""
         if args:
             try:
@@ -2260,19 +2425,29 @@ class FoundationLogger:
             except (TypeError, ValueError):
                 return f"{event} {args}"
         return str(None)
-    
-    xǁFoundationLoggerǁ_format_message_with_args__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁ_format_message_with_args__mutmut_1': xǁFoundationLoggerǁ_format_message_with_args__mutmut_1, 
-        'xǁFoundationLoggerǁ_format_message_with_args__mutmut_2': xǁFoundationLoggerǁ_format_message_with_args__mutmut_2, 
-        'xǁFoundationLoggerǁ_format_message_with_args__mutmut_3': xǁFoundationLoggerǁ_format_message_with_args__mutmut_3
+
+    xǁFoundationLoggerǁ_format_message_with_args__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁ_format_message_with_args__mutmut_1": xǁFoundationLoggerǁ_format_message_with_args__mutmut_1,
+        "xǁFoundationLoggerǁ_format_message_with_args__mutmut_2": xǁFoundationLoggerǁ_format_message_with_args__mutmut_2,
+        "xǁFoundationLoggerǁ_format_message_with_args__mutmut_3": xǁFoundationLoggerǁ_format_message_with_args__mutmut_3,
     }
-    
+
     def _format_message_with_args(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁ_format_message_with_args__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁ_format_message_with_args__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _format_message_with_args.__signature__ = _mutmut_signature(xǁFoundationLoggerǁ_format_message_with_args__mutmut_orig)
-    xǁFoundationLoggerǁ_format_message_with_args__mutmut_orig.__name__ = 'xǁFoundationLoggerǁ_format_message_with_args'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_format_message_with_args__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁ_format_message_with_args__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _format_message_with_args.__signature__ = _mutmut_signature(
+        xǁFoundationLoggerǁ_format_message_with_args__mutmut_orig
+    )
+    xǁFoundationLoggerǁ_format_message_with_args__mutmut_orig.__name__ = (
+        "xǁFoundationLoggerǁ_format_message_with_args"
+    )
 
     def xǁFoundationLoggerǁtrace__mutmut_orig(
         self,
@@ -2347,7 +2522,9 @@ class FoundationLogger:
         **kwargs: Any,
     ) -> None:
         """Log trace-level event for detailed debugging."""
-        formatted_event = self._format_message_with_args(event, )
+        formatted_event = self._format_message_with_args(
+            event,
+        )
         if _foundation_logger_name is not None:
             kwargs["_foundation_logger_name"] = _foundation_logger_name
         self._log_with_level(TRACE_LEVEL_NAME.lower(), formatted_event, **kwargs)
@@ -2467,7 +2644,10 @@ class FoundationLogger:
         formatted_event = self._format_message_with_args(event, args)
         if _foundation_logger_name is not None:
             kwargs["_foundation_logger_name"] = _foundation_logger_name
-        self._log_with_level(TRACE_LEVEL_NAME.lower(), formatted_event, )
+        self._log_with_level(
+            TRACE_LEVEL_NAME.lower(),
+            formatted_event,
+        )
 
     def xǁFoundationLoggerǁtrace__mutmut_15(
         self,
@@ -2481,31 +2661,37 @@ class FoundationLogger:
         if _foundation_logger_name is not None:
             kwargs["_foundation_logger_name"] = _foundation_logger_name
         self._log_with_level(TRACE_LEVEL_NAME.upper(), formatted_event, **kwargs)
-    
-    xǁFoundationLoggerǁtrace__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁtrace__mutmut_1': xǁFoundationLoggerǁtrace__mutmut_1, 
-        'xǁFoundationLoggerǁtrace__mutmut_2': xǁFoundationLoggerǁtrace__mutmut_2, 
-        'xǁFoundationLoggerǁtrace__mutmut_3': xǁFoundationLoggerǁtrace__mutmut_3, 
-        'xǁFoundationLoggerǁtrace__mutmut_4': xǁFoundationLoggerǁtrace__mutmut_4, 
-        'xǁFoundationLoggerǁtrace__mutmut_5': xǁFoundationLoggerǁtrace__mutmut_5, 
-        'xǁFoundationLoggerǁtrace__mutmut_6': xǁFoundationLoggerǁtrace__mutmut_6, 
-        'xǁFoundationLoggerǁtrace__mutmut_7': xǁFoundationLoggerǁtrace__mutmut_7, 
-        'xǁFoundationLoggerǁtrace__mutmut_8': xǁFoundationLoggerǁtrace__mutmut_8, 
-        'xǁFoundationLoggerǁtrace__mutmut_9': xǁFoundationLoggerǁtrace__mutmut_9, 
-        'xǁFoundationLoggerǁtrace__mutmut_10': xǁFoundationLoggerǁtrace__mutmut_10, 
-        'xǁFoundationLoggerǁtrace__mutmut_11': xǁFoundationLoggerǁtrace__mutmut_11, 
-        'xǁFoundationLoggerǁtrace__mutmut_12': xǁFoundationLoggerǁtrace__mutmut_12, 
-        'xǁFoundationLoggerǁtrace__mutmut_13': xǁFoundationLoggerǁtrace__mutmut_13, 
-        'xǁFoundationLoggerǁtrace__mutmut_14': xǁFoundationLoggerǁtrace__mutmut_14, 
-        'xǁFoundationLoggerǁtrace__mutmut_15': xǁFoundationLoggerǁtrace__mutmut_15
+
+    xǁFoundationLoggerǁtrace__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁtrace__mutmut_1": xǁFoundationLoggerǁtrace__mutmut_1,
+        "xǁFoundationLoggerǁtrace__mutmut_2": xǁFoundationLoggerǁtrace__mutmut_2,
+        "xǁFoundationLoggerǁtrace__mutmut_3": xǁFoundationLoggerǁtrace__mutmut_3,
+        "xǁFoundationLoggerǁtrace__mutmut_4": xǁFoundationLoggerǁtrace__mutmut_4,
+        "xǁFoundationLoggerǁtrace__mutmut_5": xǁFoundationLoggerǁtrace__mutmut_5,
+        "xǁFoundationLoggerǁtrace__mutmut_6": xǁFoundationLoggerǁtrace__mutmut_6,
+        "xǁFoundationLoggerǁtrace__mutmut_7": xǁFoundationLoggerǁtrace__mutmut_7,
+        "xǁFoundationLoggerǁtrace__mutmut_8": xǁFoundationLoggerǁtrace__mutmut_8,
+        "xǁFoundationLoggerǁtrace__mutmut_9": xǁFoundationLoggerǁtrace__mutmut_9,
+        "xǁFoundationLoggerǁtrace__mutmut_10": xǁFoundationLoggerǁtrace__mutmut_10,
+        "xǁFoundationLoggerǁtrace__mutmut_11": xǁFoundationLoggerǁtrace__mutmut_11,
+        "xǁFoundationLoggerǁtrace__mutmut_12": xǁFoundationLoggerǁtrace__mutmut_12,
+        "xǁFoundationLoggerǁtrace__mutmut_13": xǁFoundationLoggerǁtrace__mutmut_13,
+        "xǁFoundationLoggerǁtrace__mutmut_14": xǁFoundationLoggerǁtrace__mutmut_14,
+        "xǁFoundationLoggerǁtrace__mutmut_15": xǁFoundationLoggerǁtrace__mutmut_15,
     }
-    
+
     def trace(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁtrace__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁtrace__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁtrace__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁtrace__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     trace.__signature__ = _mutmut_signature(xǁFoundationLoggerǁtrace__mutmut_orig)
-    xǁFoundationLoggerǁtrace__mutmut_orig.__name__ = 'xǁFoundationLoggerǁtrace'
+    xǁFoundationLoggerǁtrace__mutmut_orig.__name__ = "xǁFoundationLoggerǁtrace"
 
     def xǁFoundationLoggerǁdebug__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log debug-level event."""
@@ -2534,7 +2720,9 @@ class FoundationLogger:
 
     def xǁFoundationLoggerǁdebug__mutmut_5(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log debug-level event."""
-        formatted_event = self._format_message_with_args(event, )
+        formatted_event = self._format_message_with_args(
+            event,
+        )
         self._log_with_level("debug", formatted_event, **kwargs)
 
     def xǁFoundationLoggerǁdebug__mutmut_6(self, event: str, *args: Any, **kwargs: Any) -> None:
@@ -2560,7 +2748,10 @@ class FoundationLogger:
     def xǁFoundationLoggerǁdebug__mutmut_10(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log debug-level event."""
         formatted_event = self._format_message_with_args(event, args)
-        self._log_with_level("debug", formatted_event, )
+        self._log_with_level(
+            "debug",
+            formatted_event,
+        )
 
     def xǁFoundationLoggerǁdebug__mutmut_11(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log debug-level event."""
@@ -2571,28 +2762,34 @@ class FoundationLogger:
         """Log debug-level event."""
         formatted_event = self._format_message_with_args(event, args)
         self._log_with_level("DEBUG", formatted_event, **kwargs)
-    
-    xǁFoundationLoggerǁdebug__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁdebug__mutmut_1': xǁFoundationLoggerǁdebug__mutmut_1, 
-        'xǁFoundationLoggerǁdebug__mutmut_2': xǁFoundationLoggerǁdebug__mutmut_2, 
-        'xǁFoundationLoggerǁdebug__mutmut_3': xǁFoundationLoggerǁdebug__mutmut_3, 
-        'xǁFoundationLoggerǁdebug__mutmut_4': xǁFoundationLoggerǁdebug__mutmut_4, 
-        'xǁFoundationLoggerǁdebug__mutmut_5': xǁFoundationLoggerǁdebug__mutmut_5, 
-        'xǁFoundationLoggerǁdebug__mutmut_6': xǁFoundationLoggerǁdebug__mutmut_6, 
-        'xǁFoundationLoggerǁdebug__mutmut_7': xǁFoundationLoggerǁdebug__mutmut_7, 
-        'xǁFoundationLoggerǁdebug__mutmut_8': xǁFoundationLoggerǁdebug__mutmut_8, 
-        'xǁFoundationLoggerǁdebug__mutmut_9': xǁFoundationLoggerǁdebug__mutmut_9, 
-        'xǁFoundationLoggerǁdebug__mutmut_10': xǁFoundationLoggerǁdebug__mutmut_10, 
-        'xǁFoundationLoggerǁdebug__mutmut_11': xǁFoundationLoggerǁdebug__mutmut_11, 
-        'xǁFoundationLoggerǁdebug__mutmut_12': xǁFoundationLoggerǁdebug__mutmut_12
+
+    xǁFoundationLoggerǁdebug__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁdebug__mutmut_1": xǁFoundationLoggerǁdebug__mutmut_1,
+        "xǁFoundationLoggerǁdebug__mutmut_2": xǁFoundationLoggerǁdebug__mutmut_2,
+        "xǁFoundationLoggerǁdebug__mutmut_3": xǁFoundationLoggerǁdebug__mutmut_3,
+        "xǁFoundationLoggerǁdebug__mutmut_4": xǁFoundationLoggerǁdebug__mutmut_4,
+        "xǁFoundationLoggerǁdebug__mutmut_5": xǁFoundationLoggerǁdebug__mutmut_5,
+        "xǁFoundationLoggerǁdebug__mutmut_6": xǁFoundationLoggerǁdebug__mutmut_6,
+        "xǁFoundationLoggerǁdebug__mutmut_7": xǁFoundationLoggerǁdebug__mutmut_7,
+        "xǁFoundationLoggerǁdebug__mutmut_8": xǁFoundationLoggerǁdebug__mutmut_8,
+        "xǁFoundationLoggerǁdebug__mutmut_9": xǁFoundationLoggerǁdebug__mutmut_9,
+        "xǁFoundationLoggerǁdebug__mutmut_10": xǁFoundationLoggerǁdebug__mutmut_10,
+        "xǁFoundationLoggerǁdebug__mutmut_11": xǁFoundationLoggerǁdebug__mutmut_11,
+        "xǁFoundationLoggerǁdebug__mutmut_12": xǁFoundationLoggerǁdebug__mutmut_12,
     }
-    
+
     def debug(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁdebug__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁdebug__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁdebug__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁdebug__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     debug.__signature__ = _mutmut_signature(xǁFoundationLoggerǁdebug__mutmut_orig)
-    xǁFoundationLoggerǁdebug__mutmut_orig.__name__ = 'xǁFoundationLoggerǁdebug'
+    xǁFoundationLoggerǁdebug__mutmut_orig.__name__ = "xǁFoundationLoggerǁdebug"
 
     def xǁFoundationLoggerǁinfo__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log info-level event."""
@@ -2621,7 +2818,9 @@ class FoundationLogger:
 
     def xǁFoundationLoggerǁinfo__mutmut_5(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log info-level event."""
-        formatted_event = self._format_message_with_args(event, )
+        formatted_event = self._format_message_with_args(
+            event,
+        )
         self._log_with_level("info", formatted_event, **kwargs)
 
     def xǁFoundationLoggerǁinfo__mutmut_6(self, event: str, *args: Any, **kwargs: Any) -> None:
@@ -2647,7 +2846,10 @@ class FoundationLogger:
     def xǁFoundationLoggerǁinfo__mutmut_10(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log info-level event."""
         formatted_event = self._format_message_with_args(event, args)
-        self._log_with_level("info", formatted_event, )
+        self._log_with_level(
+            "info",
+            formatted_event,
+        )
 
     def xǁFoundationLoggerǁinfo__mutmut_11(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log info-level event."""
@@ -2658,28 +2860,34 @@ class FoundationLogger:
         """Log info-level event."""
         formatted_event = self._format_message_with_args(event, args)
         self._log_with_level("INFO", formatted_event, **kwargs)
-    
-    xǁFoundationLoggerǁinfo__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁinfo__mutmut_1': xǁFoundationLoggerǁinfo__mutmut_1, 
-        'xǁFoundationLoggerǁinfo__mutmut_2': xǁFoundationLoggerǁinfo__mutmut_2, 
-        'xǁFoundationLoggerǁinfo__mutmut_3': xǁFoundationLoggerǁinfo__mutmut_3, 
-        'xǁFoundationLoggerǁinfo__mutmut_4': xǁFoundationLoggerǁinfo__mutmut_4, 
-        'xǁFoundationLoggerǁinfo__mutmut_5': xǁFoundationLoggerǁinfo__mutmut_5, 
-        'xǁFoundationLoggerǁinfo__mutmut_6': xǁFoundationLoggerǁinfo__mutmut_6, 
-        'xǁFoundationLoggerǁinfo__mutmut_7': xǁFoundationLoggerǁinfo__mutmut_7, 
-        'xǁFoundationLoggerǁinfo__mutmut_8': xǁFoundationLoggerǁinfo__mutmut_8, 
-        'xǁFoundationLoggerǁinfo__mutmut_9': xǁFoundationLoggerǁinfo__mutmut_9, 
-        'xǁFoundationLoggerǁinfo__mutmut_10': xǁFoundationLoggerǁinfo__mutmut_10, 
-        'xǁFoundationLoggerǁinfo__mutmut_11': xǁFoundationLoggerǁinfo__mutmut_11, 
-        'xǁFoundationLoggerǁinfo__mutmut_12': xǁFoundationLoggerǁinfo__mutmut_12
+
+    xǁFoundationLoggerǁinfo__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁinfo__mutmut_1": xǁFoundationLoggerǁinfo__mutmut_1,
+        "xǁFoundationLoggerǁinfo__mutmut_2": xǁFoundationLoggerǁinfo__mutmut_2,
+        "xǁFoundationLoggerǁinfo__mutmut_3": xǁFoundationLoggerǁinfo__mutmut_3,
+        "xǁFoundationLoggerǁinfo__mutmut_4": xǁFoundationLoggerǁinfo__mutmut_4,
+        "xǁFoundationLoggerǁinfo__mutmut_5": xǁFoundationLoggerǁinfo__mutmut_5,
+        "xǁFoundationLoggerǁinfo__mutmut_6": xǁFoundationLoggerǁinfo__mutmut_6,
+        "xǁFoundationLoggerǁinfo__mutmut_7": xǁFoundationLoggerǁinfo__mutmut_7,
+        "xǁFoundationLoggerǁinfo__mutmut_8": xǁFoundationLoggerǁinfo__mutmut_8,
+        "xǁFoundationLoggerǁinfo__mutmut_9": xǁFoundationLoggerǁinfo__mutmut_9,
+        "xǁFoundationLoggerǁinfo__mutmut_10": xǁFoundationLoggerǁinfo__mutmut_10,
+        "xǁFoundationLoggerǁinfo__mutmut_11": xǁFoundationLoggerǁinfo__mutmut_11,
+        "xǁFoundationLoggerǁinfo__mutmut_12": xǁFoundationLoggerǁinfo__mutmut_12,
     }
-    
+
     def info(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁinfo__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁinfo__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁinfo__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁinfo__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     info.__signature__ = _mutmut_signature(xǁFoundationLoggerǁinfo__mutmut_orig)
-    xǁFoundationLoggerǁinfo__mutmut_orig.__name__ = 'xǁFoundationLoggerǁinfo'
+    xǁFoundationLoggerǁinfo__mutmut_orig.__name__ = "xǁFoundationLoggerǁinfo"
 
     def xǁFoundationLoggerǁwarning__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log warning-level event."""
@@ -2708,7 +2916,9 @@ class FoundationLogger:
 
     def xǁFoundationLoggerǁwarning__mutmut_5(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log warning-level event."""
-        formatted_event = self._format_message_with_args(event, )
+        formatted_event = self._format_message_with_args(
+            event,
+        )
         self._log_with_level("warning", formatted_event, **kwargs)
 
     def xǁFoundationLoggerǁwarning__mutmut_6(self, event: str, *args: Any, **kwargs: Any) -> None:
@@ -2734,7 +2944,10 @@ class FoundationLogger:
     def xǁFoundationLoggerǁwarning__mutmut_10(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log warning-level event."""
         formatted_event = self._format_message_with_args(event, args)
-        self._log_with_level("warning", formatted_event, )
+        self._log_with_level(
+            "warning",
+            formatted_event,
+        )
 
     def xǁFoundationLoggerǁwarning__mutmut_11(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log warning-level event."""
@@ -2745,28 +2958,34 @@ class FoundationLogger:
         """Log warning-level event."""
         formatted_event = self._format_message_with_args(event, args)
         self._log_with_level("WARNING", formatted_event, **kwargs)
-    
-    xǁFoundationLoggerǁwarning__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁwarning__mutmut_1': xǁFoundationLoggerǁwarning__mutmut_1, 
-        'xǁFoundationLoggerǁwarning__mutmut_2': xǁFoundationLoggerǁwarning__mutmut_2, 
-        'xǁFoundationLoggerǁwarning__mutmut_3': xǁFoundationLoggerǁwarning__mutmut_3, 
-        'xǁFoundationLoggerǁwarning__mutmut_4': xǁFoundationLoggerǁwarning__mutmut_4, 
-        'xǁFoundationLoggerǁwarning__mutmut_5': xǁFoundationLoggerǁwarning__mutmut_5, 
-        'xǁFoundationLoggerǁwarning__mutmut_6': xǁFoundationLoggerǁwarning__mutmut_6, 
-        'xǁFoundationLoggerǁwarning__mutmut_7': xǁFoundationLoggerǁwarning__mutmut_7, 
-        'xǁFoundationLoggerǁwarning__mutmut_8': xǁFoundationLoggerǁwarning__mutmut_8, 
-        'xǁFoundationLoggerǁwarning__mutmut_9': xǁFoundationLoggerǁwarning__mutmut_9, 
-        'xǁFoundationLoggerǁwarning__mutmut_10': xǁFoundationLoggerǁwarning__mutmut_10, 
-        'xǁFoundationLoggerǁwarning__mutmut_11': xǁFoundationLoggerǁwarning__mutmut_11, 
-        'xǁFoundationLoggerǁwarning__mutmut_12': xǁFoundationLoggerǁwarning__mutmut_12
+
+    xǁFoundationLoggerǁwarning__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁwarning__mutmut_1": xǁFoundationLoggerǁwarning__mutmut_1,
+        "xǁFoundationLoggerǁwarning__mutmut_2": xǁFoundationLoggerǁwarning__mutmut_2,
+        "xǁFoundationLoggerǁwarning__mutmut_3": xǁFoundationLoggerǁwarning__mutmut_3,
+        "xǁFoundationLoggerǁwarning__mutmut_4": xǁFoundationLoggerǁwarning__mutmut_4,
+        "xǁFoundationLoggerǁwarning__mutmut_5": xǁFoundationLoggerǁwarning__mutmut_5,
+        "xǁFoundationLoggerǁwarning__mutmut_6": xǁFoundationLoggerǁwarning__mutmut_6,
+        "xǁFoundationLoggerǁwarning__mutmut_7": xǁFoundationLoggerǁwarning__mutmut_7,
+        "xǁFoundationLoggerǁwarning__mutmut_8": xǁFoundationLoggerǁwarning__mutmut_8,
+        "xǁFoundationLoggerǁwarning__mutmut_9": xǁFoundationLoggerǁwarning__mutmut_9,
+        "xǁFoundationLoggerǁwarning__mutmut_10": xǁFoundationLoggerǁwarning__mutmut_10,
+        "xǁFoundationLoggerǁwarning__mutmut_11": xǁFoundationLoggerǁwarning__mutmut_11,
+        "xǁFoundationLoggerǁwarning__mutmut_12": xǁFoundationLoggerǁwarning__mutmut_12,
     }
-    
+
     def warning(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁwarning__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁwarning__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁwarning__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁwarning__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     warning.__signature__ = _mutmut_signature(xǁFoundationLoggerǁwarning__mutmut_orig)
-    xǁFoundationLoggerǁwarning__mutmut_orig.__name__ = 'xǁFoundationLoggerǁwarning'
+    xǁFoundationLoggerǁwarning__mutmut_orig.__name__ = "xǁFoundationLoggerǁwarning"
 
     def xǁFoundationLoggerǁerror__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log error-level event."""
@@ -2795,7 +3014,9 @@ class FoundationLogger:
 
     def xǁFoundationLoggerǁerror__mutmut_5(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log error-level event."""
-        formatted_event = self._format_message_with_args(event, )
+        formatted_event = self._format_message_with_args(
+            event,
+        )
         self._log_with_level("error", formatted_event, **kwargs)
 
     def xǁFoundationLoggerǁerror__mutmut_6(self, event: str, *args: Any, **kwargs: Any) -> None:
@@ -2821,7 +3042,10 @@ class FoundationLogger:
     def xǁFoundationLoggerǁerror__mutmut_10(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log error-level event."""
         formatted_event = self._format_message_with_args(event, args)
-        self._log_with_level("error", formatted_event, )
+        self._log_with_level(
+            "error",
+            formatted_event,
+        )
 
     def xǁFoundationLoggerǁerror__mutmut_11(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log error-level event."""
@@ -2832,28 +3056,34 @@ class FoundationLogger:
         """Log error-level event."""
         formatted_event = self._format_message_with_args(event, args)
         self._log_with_level("ERROR", formatted_event, **kwargs)
-    
-    xǁFoundationLoggerǁerror__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁerror__mutmut_1': xǁFoundationLoggerǁerror__mutmut_1, 
-        'xǁFoundationLoggerǁerror__mutmut_2': xǁFoundationLoggerǁerror__mutmut_2, 
-        'xǁFoundationLoggerǁerror__mutmut_3': xǁFoundationLoggerǁerror__mutmut_3, 
-        'xǁFoundationLoggerǁerror__mutmut_4': xǁFoundationLoggerǁerror__mutmut_4, 
-        'xǁFoundationLoggerǁerror__mutmut_5': xǁFoundationLoggerǁerror__mutmut_5, 
-        'xǁFoundationLoggerǁerror__mutmut_6': xǁFoundationLoggerǁerror__mutmut_6, 
-        'xǁFoundationLoggerǁerror__mutmut_7': xǁFoundationLoggerǁerror__mutmut_7, 
-        'xǁFoundationLoggerǁerror__mutmut_8': xǁFoundationLoggerǁerror__mutmut_8, 
-        'xǁFoundationLoggerǁerror__mutmut_9': xǁFoundationLoggerǁerror__mutmut_9, 
-        'xǁFoundationLoggerǁerror__mutmut_10': xǁFoundationLoggerǁerror__mutmut_10, 
-        'xǁFoundationLoggerǁerror__mutmut_11': xǁFoundationLoggerǁerror__mutmut_11, 
-        'xǁFoundationLoggerǁerror__mutmut_12': xǁFoundationLoggerǁerror__mutmut_12
+
+    xǁFoundationLoggerǁerror__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁerror__mutmut_1": xǁFoundationLoggerǁerror__mutmut_1,
+        "xǁFoundationLoggerǁerror__mutmut_2": xǁFoundationLoggerǁerror__mutmut_2,
+        "xǁFoundationLoggerǁerror__mutmut_3": xǁFoundationLoggerǁerror__mutmut_3,
+        "xǁFoundationLoggerǁerror__mutmut_4": xǁFoundationLoggerǁerror__mutmut_4,
+        "xǁFoundationLoggerǁerror__mutmut_5": xǁFoundationLoggerǁerror__mutmut_5,
+        "xǁFoundationLoggerǁerror__mutmut_6": xǁFoundationLoggerǁerror__mutmut_6,
+        "xǁFoundationLoggerǁerror__mutmut_7": xǁFoundationLoggerǁerror__mutmut_7,
+        "xǁFoundationLoggerǁerror__mutmut_8": xǁFoundationLoggerǁerror__mutmut_8,
+        "xǁFoundationLoggerǁerror__mutmut_9": xǁFoundationLoggerǁerror__mutmut_9,
+        "xǁFoundationLoggerǁerror__mutmut_10": xǁFoundationLoggerǁerror__mutmut_10,
+        "xǁFoundationLoggerǁerror__mutmut_11": xǁFoundationLoggerǁerror__mutmut_11,
+        "xǁFoundationLoggerǁerror__mutmut_12": xǁFoundationLoggerǁerror__mutmut_12,
     }
-    
+
     def error(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁerror__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁerror__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁerror__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁerror__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     error.__signature__ = _mutmut_signature(xǁFoundationLoggerǁerror__mutmut_orig)
-    xǁFoundationLoggerǁerror__mutmut_orig.__name__ = 'xǁFoundationLoggerǁerror'
+    xǁFoundationLoggerǁerror__mutmut_orig.__name__ = "xǁFoundationLoggerǁerror"
 
     def xǁFoundationLoggerǁexception__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log error-level event with exception traceback."""
@@ -2887,7 +3117,9 @@ class FoundationLogger:
 
     def xǁFoundationLoggerǁexception__mutmut_5(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log error-level event with exception traceback."""
-        formatted_event = self._format_message_with_args(event, )
+        formatted_event = self._format_message_with_args(
+            event,
+        )
         kwargs["exc_info"] = True
         self._log_with_level("error", formatted_event, **kwargs)
 
@@ -2943,7 +3175,10 @@ class FoundationLogger:
         """Log error-level event with exception traceback."""
         formatted_event = self._format_message_with_args(event, args)
         kwargs["exc_info"] = True
-        self._log_with_level("error", formatted_event, )
+        self._log_with_level(
+            "error",
+            formatted_event,
+        )
 
     def xǁFoundationLoggerǁexception__mutmut_15(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log error-level event with exception traceback."""
@@ -2956,32 +3191,38 @@ class FoundationLogger:
         formatted_event = self._format_message_with_args(event, args)
         kwargs["exc_info"] = True
         self._log_with_level("ERROR", formatted_event, **kwargs)
-    
-    xǁFoundationLoggerǁexception__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁexception__mutmut_1': xǁFoundationLoggerǁexception__mutmut_1, 
-        'xǁFoundationLoggerǁexception__mutmut_2': xǁFoundationLoggerǁexception__mutmut_2, 
-        'xǁFoundationLoggerǁexception__mutmut_3': xǁFoundationLoggerǁexception__mutmut_3, 
-        'xǁFoundationLoggerǁexception__mutmut_4': xǁFoundationLoggerǁexception__mutmut_4, 
-        'xǁFoundationLoggerǁexception__mutmut_5': xǁFoundationLoggerǁexception__mutmut_5, 
-        'xǁFoundationLoggerǁexception__mutmut_6': xǁFoundationLoggerǁexception__mutmut_6, 
-        'xǁFoundationLoggerǁexception__mutmut_7': xǁFoundationLoggerǁexception__mutmut_7, 
-        'xǁFoundationLoggerǁexception__mutmut_8': xǁFoundationLoggerǁexception__mutmut_8, 
-        'xǁFoundationLoggerǁexception__mutmut_9': xǁFoundationLoggerǁexception__mutmut_9, 
-        'xǁFoundationLoggerǁexception__mutmut_10': xǁFoundationLoggerǁexception__mutmut_10, 
-        'xǁFoundationLoggerǁexception__mutmut_11': xǁFoundationLoggerǁexception__mutmut_11, 
-        'xǁFoundationLoggerǁexception__mutmut_12': xǁFoundationLoggerǁexception__mutmut_12, 
-        'xǁFoundationLoggerǁexception__mutmut_13': xǁFoundationLoggerǁexception__mutmut_13, 
-        'xǁFoundationLoggerǁexception__mutmut_14': xǁFoundationLoggerǁexception__mutmut_14, 
-        'xǁFoundationLoggerǁexception__mutmut_15': xǁFoundationLoggerǁexception__mutmut_15, 
-        'xǁFoundationLoggerǁexception__mutmut_16': xǁFoundationLoggerǁexception__mutmut_16
+
+    xǁFoundationLoggerǁexception__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁexception__mutmut_1": xǁFoundationLoggerǁexception__mutmut_1,
+        "xǁFoundationLoggerǁexception__mutmut_2": xǁFoundationLoggerǁexception__mutmut_2,
+        "xǁFoundationLoggerǁexception__mutmut_3": xǁFoundationLoggerǁexception__mutmut_3,
+        "xǁFoundationLoggerǁexception__mutmut_4": xǁFoundationLoggerǁexception__mutmut_4,
+        "xǁFoundationLoggerǁexception__mutmut_5": xǁFoundationLoggerǁexception__mutmut_5,
+        "xǁFoundationLoggerǁexception__mutmut_6": xǁFoundationLoggerǁexception__mutmut_6,
+        "xǁFoundationLoggerǁexception__mutmut_7": xǁFoundationLoggerǁexception__mutmut_7,
+        "xǁFoundationLoggerǁexception__mutmut_8": xǁFoundationLoggerǁexception__mutmut_8,
+        "xǁFoundationLoggerǁexception__mutmut_9": xǁFoundationLoggerǁexception__mutmut_9,
+        "xǁFoundationLoggerǁexception__mutmut_10": xǁFoundationLoggerǁexception__mutmut_10,
+        "xǁFoundationLoggerǁexception__mutmut_11": xǁFoundationLoggerǁexception__mutmut_11,
+        "xǁFoundationLoggerǁexception__mutmut_12": xǁFoundationLoggerǁexception__mutmut_12,
+        "xǁFoundationLoggerǁexception__mutmut_13": xǁFoundationLoggerǁexception__mutmut_13,
+        "xǁFoundationLoggerǁexception__mutmut_14": xǁFoundationLoggerǁexception__mutmut_14,
+        "xǁFoundationLoggerǁexception__mutmut_15": xǁFoundationLoggerǁexception__mutmut_15,
+        "xǁFoundationLoggerǁexception__mutmut_16": xǁFoundationLoggerǁexception__mutmut_16,
     }
-    
+
     def exception(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁexception__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁexception__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁexception__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁexception__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     exception.__signature__ = _mutmut_signature(xǁFoundationLoggerǁexception__mutmut_orig)
-    xǁFoundationLoggerǁexception__mutmut_orig.__name__ = 'xǁFoundationLoggerǁexception'
+    xǁFoundationLoggerǁexception__mutmut_orig.__name__ = "xǁFoundationLoggerǁexception"
 
     def xǁFoundationLoggerǁcritical__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log critical-level event."""
@@ -3010,7 +3251,9 @@ class FoundationLogger:
 
     def xǁFoundationLoggerǁcritical__mutmut_5(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log critical-level event."""
-        formatted_event = self._format_message_with_args(event, )
+        formatted_event = self._format_message_with_args(
+            event,
+        )
         self._log_with_level("critical", formatted_event, **kwargs)
 
     def xǁFoundationLoggerǁcritical__mutmut_6(self, event: str, *args: Any, **kwargs: Any) -> None:
@@ -3036,7 +3279,10 @@ class FoundationLogger:
     def xǁFoundationLoggerǁcritical__mutmut_10(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log critical-level event."""
         formatted_event = self._format_message_with_args(event, args)
-        self._log_with_level("critical", formatted_event, )
+        self._log_with_level(
+            "critical",
+            formatted_event,
+        )
 
     def xǁFoundationLoggerǁcritical__mutmut_11(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log critical-level event."""
@@ -3047,28 +3293,34 @@ class FoundationLogger:
         """Log critical-level event."""
         formatted_event = self._format_message_with_args(event, args)
         self._log_with_level("CRITICAL", formatted_event, **kwargs)
-    
-    xǁFoundationLoggerǁcritical__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁcritical__mutmut_1': xǁFoundationLoggerǁcritical__mutmut_1, 
-        'xǁFoundationLoggerǁcritical__mutmut_2': xǁFoundationLoggerǁcritical__mutmut_2, 
-        'xǁFoundationLoggerǁcritical__mutmut_3': xǁFoundationLoggerǁcritical__mutmut_3, 
-        'xǁFoundationLoggerǁcritical__mutmut_4': xǁFoundationLoggerǁcritical__mutmut_4, 
-        'xǁFoundationLoggerǁcritical__mutmut_5': xǁFoundationLoggerǁcritical__mutmut_5, 
-        'xǁFoundationLoggerǁcritical__mutmut_6': xǁFoundationLoggerǁcritical__mutmut_6, 
-        'xǁFoundationLoggerǁcritical__mutmut_7': xǁFoundationLoggerǁcritical__mutmut_7, 
-        'xǁFoundationLoggerǁcritical__mutmut_8': xǁFoundationLoggerǁcritical__mutmut_8, 
-        'xǁFoundationLoggerǁcritical__mutmut_9': xǁFoundationLoggerǁcritical__mutmut_9, 
-        'xǁFoundationLoggerǁcritical__mutmut_10': xǁFoundationLoggerǁcritical__mutmut_10, 
-        'xǁFoundationLoggerǁcritical__mutmut_11': xǁFoundationLoggerǁcritical__mutmut_11, 
-        'xǁFoundationLoggerǁcritical__mutmut_12': xǁFoundationLoggerǁcritical__mutmut_12
+
+    xǁFoundationLoggerǁcritical__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁcritical__mutmut_1": xǁFoundationLoggerǁcritical__mutmut_1,
+        "xǁFoundationLoggerǁcritical__mutmut_2": xǁFoundationLoggerǁcritical__mutmut_2,
+        "xǁFoundationLoggerǁcritical__mutmut_3": xǁFoundationLoggerǁcritical__mutmut_3,
+        "xǁFoundationLoggerǁcritical__mutmut_4": xǁFoundationLoggerǁcritical__mutmut_4,
+        "xǁFoundationLoggerǁcritical__mutmut_5": xǁFoundationLoggerǁcritical__mutmut_5,
+        "xǁFoundationLoggerǁcritical__mutmut_6": xǁFoundationLoggerǁcritical__mutmut_6,
+        "xǁFoundationLoggerǁcritical__mutmut_7": xǁFoundationLoggerǁcritical__mutmut_7,
+        "xǁFoundationLoggerǁcritical__mutmut_8": xǁFoundationLoggerǁcritical__mutmut_8,
+        "xǁFoundationLoggerǁcritical__mutmut_9": xǁFoundationLoggerǁcritical__mutmut_9,
+        "xǁFoundationLoggerǁcritical__mutmut_10": xǁFoundationLoggerǁcritical__mutmut_10,
+        "xǁFoundationLoggerǁcritical__mutmut_11": xǁFoundationLoggerǁcritical__mutmut_11,
+        "xǁFoundationLoggerǁcritical__mutmut_12": xǁFoundationLoggerǁcritical__mutmut_12,
     }
-    
+
     def critical(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁcritical__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁcritical__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁcritical__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁcritical__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     critical.__signature__ = _mutmut_signature(xǁFoundationLoggerǁcritical__mutmut_orig)
-    xǁFoundationLoggerǁcritical__mutmut_orig.__name__ = 'xǁFoundationLoggerǁcritical'
+    xǁFoundationLoggerǁcritical__mutmut_orig.__name__ = "xǁFoundationLoggerǁcritical"
 
     def xǁFoundationLoggerǁbind__mutmut_orig(self, **kwargs: Any) -> Any:
         """Create a new logger with additional context bound to it.
@@ -3172,7 +3424,12 @@ class FoundationLogger:
         """
         self._ensure_configured()
         # Get the actual structlog logger and bind context to it
-        if hasattr(self, ) and self._logger:
+        if (
+            hasattr(
+                self,
+            )
+            and self._logger
+        ):
             return self._logger.bind(**kwargs)
         # Fallback: get fresh logger and bind
         log = self.get_logger()
@@ -3231,24 +3488,30 @@ class FoundationLogger:
         # Fallback: get fresh logger and bind
         log = None
         return log.bind(**kwargs)
-    
-    xǁFoundationLoggerǁbind__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁbind__mutmut_1': xǁFoundationLoggerǁbind__mutmut_1, 
-        'xǁFoundationLoggerǁbind__mutmut_2': xǁFoundationLoggerǁbind__mutmut_2, 
-        'xǁFoundationLoggerǁbind__mutmut_3': xǁFoundationLoggerǁbind__mutmut_3, 
-        'xǁFoundationLoggerǁbind__mutmut_4': xǁFoundationLoggerǁbind__mutmut_4, 
-        'xǁFoundationLoggerǁbind__mutmut_5': xǁFoundationLoggerǁbind__mutmut_5, 
-        'xǁFoundationLoggerǁbind__mutmut_6': xǁFoundationLoggerǁbind__mutmut_6, 
-        'xǁFoundationLoggerǁbind__mutmut_7': xǁFoundationLoggerǁbind__mutmut_7, 
-        'xǁFoundationLoggerǁbind__mutmut_8': xǁFoundationLoggerǁbind__mutmut_8
+
+    xǁFoundationLoggerǁbind__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁbind__mutmut_1": xǁFoundationLoggerǁbind__mutmut_1,
+        "xǁFoundationLoggerǁbind__mutmut_2": xǁFoundationLoggerǁbind__mutmut_2,
+        "xǁFoundationLoggerǁbind__mutmut_3": xǁFoundationLoggerǁbind__mutmut_3,
+        "xǁFoundationLoggerǁbind__mutmut_4": xǁFoundationLoggerǁbind__mutmut_4,
+        "xǁFoundationLoggerǁbind__mutmut_5": xǁFoundationLoggerǁbind__mutmut_5,
+        "xǁFoundationLoggerǁbind__mutmut_6": xǁFoundationLoggerǁbind__mutmut_6,
+        "xǁFoundationLoggerǁbind__mutmut_7": xǁFoundationLoggerǁbind__mutmut_7,
+        "xǁFoundationLoggerǁbind__mutmut_8": xǁFoundationLoggerǁbind__mutmut_8,
     }
-    
+
     def bind(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁbind__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁbind__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁbind__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁbind__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     bind.__signature__ = _mutmut_signature(xǁFoundationLoggerǁbind__mutmut_orig)
-    xǁFoundationLoggerǁbind__mutmut_orig.__name__ = 'xǁFoundationLoggerǁbind'
+    xǁFoundationLoggerǁbind__mutmut_orig.__name__ = "xǁFoundationLoggerǁbind"
 
     def xǁFoundationLoggerǁunbind__mutmut_orig(self, *keys: str) -> Any:
         """Create a new logger with specified keys removed from context.
@@ -3352,7 +3615,12 @@ class FoundationLogger:
         """
         self._ensure_configured()
         # Get the actual structlog logger and unbind context from it
-        if hasattr(self, ) and self._logger:
+        if (
+            hasattr(
+                self,
+            )
+            and self._logger
+        ):
             return self._logger.unbind(*keys)
         # Fallback: get fresh logger and unbind
         log = self.get_logger()
@@ -3411,24 +3679,30 @@ class FoundationLogger:
         # Fallback: get fresh logger and unbind
         log = None
         return log.unbind(*keys)
-    
-    xǁFoundationLoggerǁunbind__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁunbind__mutmut_1': xǁFoundationLoggerǁunbind__mutmut_1, 
-        'xǁFoundationLoggerǁunbind__mutmut_2': xǁFoundationLoggerǁunbind__mutmut_2, 
-        'xǁFoundationLoggerǁunbind__mutmut_3': xǁFoundationLoggerǁunbind__mutmut_3, 
-        'xǁFoundationLoggerǁunbind__mutmut_4': xǁFoundationLoggerǁunbind__mutmut_4, 
-        'xǁFoundationLoggerǁunbind__mutmut_5': xǁFoundationLoggerǁunbind__mutmut_5, 
-        'xǁFoundationLoggerǁunbind__mutmut_6': xǁFoundationLoggerǁunbind__mutmut_6, 
-        'xǁFoundationLoggerǁunbind__mutmut_7': xǁFoundationLoggerǁunbind__mutmut_7, 
-        'xǁFoundationLoggerǁunbind__mutmut_8': xǁFoundationLoggerǁunbind__mutmut_8
+
+    xǁFoundationLoggerǁunbind__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁunbind__mutmut_1": xǁFoundationLoggerǁunbind__mutmut_1,
+        "xǁFoundationLoggerǁunbind__mutmut_2": xǁFoundationLoggerǁunbind__mutmut_2,
+        "xǁFoundationLoggerǁunbind__mutmut_3": xǁFoundationLoggerǁunbind__mutmut_3,
+        "xǁFoundationLoggerǁunbind__mutmut_4": xǁFoundationLoggerǁunbind__mutmut_4,
+        "xǁFoundationLoggerǁunbind__mutmut_5": xǁFoundationLoggerǁunbind__mutmut_5,
+        "xǁFoundationLoggerǁunbind__mutmut_6": xǁFoundationLoggerǁunbind__mutmut_6,
+        "xǁFoundationLoggerǁunbind__mutmut_7": xǁFoundationLoggerǁunbind__mutmut_7,
+        "xǁFoundationLoggerǁunbind__mutmut_8": xǁFoundationLoggerǁunbind__mutmut_8,
     }
-    
+
     def unbind(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁunbind__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁunbind__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁunbind__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁunbind__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     unbind.__signature__ = _mutmut_signature(xǁFoundationLoggerǁunbind__mutmut_orig)
-    xǁFoundationLoggerǁunbind__mutmut_orig.__name__ = 'xǁFoundationLoggerǁunbind'
+    xǁFoundationLoggerǁunbind__mutmut_orig.__name__ = "xǁFoundationLoggerǁunbind"
 
     def xǁFoundationLoggerǁtry_unbind__mutmut_orig(self, *keys: str) -> Any:
         """Create a new logger with specified keys removed from context.
@@ -3538,7 +3812,12 @@ class FoundationLogger:
         """
         self._ensure_configured()
         # Get the actual structlog logger and try_unbind context from it
-        if hasattr(self, ) and self._logger:
+        if (
+            hasattr(
+                self,
+            )
+            and self._logger
+        ):
             return self._logger.try_unbind(*keys)
         # Fallback: get fresh logger and try_unbind
         log = self.get_logger()
@@ -3600,24 +3879,30 @@ class FoundationLogger:
         # Fallback: get fresh logger and try_unbind
         log = None
         return log.try_unbind(*keys)
-    
-    xǁFoundationLoggerǁtry_unbind__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationLoggerǁtry_unbind__mutmut_1': xǁFoundationLoggerǁtry_unbind__mutmut_1, 
-        'xǁFoundationLoggerǁtry_unbind__mutmut_2': xǁFoundationLoggerǁtry_unbind__mutmut_2, 
-        'xǁFoundationLoggerǁtry_unbind__mutmut_3': xǁFoundationLoggerǁtry_unbind__mutmut_3, 
-        'xǁFoundationLoggerǁtry_unbind__mutmut_4': xǁFoundationLoggerǁtry_unbind__mutmut_4, 
-        'xǁFoundationLoggerǁtry_unbind__mutmut_5': xǁFoundationLoggerǁtry_unbind__mutmut_5, 
-        'xǁFoundationLoggerǁtry_unbind__mutmut_6': xǁFoundationLoggerǁtry_unbind__mutmut_6, 
-        'xǁFoundationLoggerǁtry_unbind__mutmut_7': xǁFoundationLoggerǁtry_unbind__mutmut_7, 
-        'xǁFoundationLoggerǁtry_unbind__mutmut_8': xǁFoundationLoggerǁtry_unbind__mutmut_8
+
+    xǁFoundationLoggerǁtry_unbind__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationLoggerǁtry_unbind__mutmut_1": xǁFoundationLoggerǁtry_unbind__mutmut_1,
+        "xǁFoundationLoggerǁtry_unbind__mutmut_2": xǁFoundationLoggerǁtry_unbind__mutmut_2,
+        "xǁFoundationLoggerǁtry_unbind__mutmut_3": xǁFoundationLoggerǁtry_unbind__mutmut_3,
+        "xǁFoundationLoggerǁtry_unbind__mutmut_4": xǁFoundationLoggerǁtry_unbind__mutmut_4,
+        "xǁFoundationLoggerǁtry_unbind__mutmut_5": xǁFoundationLoggerǁtry_unbind__mutmut_5,
+        "xǁFoundationLoggerǁtry_unbind__mutmut_6": xǁFoundationLoggerǁtry_unbind__mutmut_6,
+        "xǁFoundationLoggerǁtry_unbind__mutmut_7": xǁFoundationLoggerǁtry_unbind__mutmut_7,
+        "xǁFoundationLoggerǁtry_unbind__mutmut_8": xǁFoundationLoggerǁtry_unbind__mutmut_8,
     }
-    
+
     def try_unbind(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationLoggerǁtry_unbind__mutmut_orig"), object.__getattribute__(self, "xǁFoundationLoggerǁtry_unbind__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationLoggerǁtry_unbind__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationLoggerǁtry_unbind__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     try_unbind.__signature__ = _mutmut_signature(xǁFoundationLoggerǁtry_unbind__mutmut_orig)
-    xǁFoundationLoggerǁtry_unbind__mutmut_orig.__name__ = 'xǁFoundationLoggerǁtry_unbind'
+    xǁFoundationLoggerǁtry_unbind__mutmut_orig.__name__ = "xǁFoundationLoggerǁtry_unbind"
 
     def __setattr__(self, name: str, value: Any) -> None:
         """Override setattr to prevent accidental modification of logger state."""
@@ -3807,7 +4092,9 @@ def x_get_global_logger__mutmut_6() -> FoundationLogger:
     from provide.foundation.hub.manager import get_hub
 
     hub = get_hub()
-    logger_instance = hub._component_registry.get("foundation.logger.instance", )
+    logger_instance = hub._component_registry.get(
+        "foundation.logger.instance",
+    )
 
     if logger_instance:
         return logger_instance
@@ -3923,25 +4210,30 @@ def x_get_global_logger__mutmut_10() -> FoundationLogger:
     # Emergency fallback - create standalone logger
     return FoundationLogger()
 
-x_get_global_logger__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_global_logger__mutmut_1': x_get_global_logger__mutmut_1, 
-    'x_get_global_logger__mutmut_2': x_get_global_logger__mutmut_2, 
-    'x_get_global_logger__mutmut_3': x_get_global_logger__mutmut_3, 
-    'x_get_global_logger__mutmut_4': x_get_global_logger__mutmut_4, 
-    'x_get_global_logger__mutmut_5': x_get_global_logger__mutmut_5, 
-    'x_get_global_logger__mutmut_6': x_get_global_logger__mutmut_6, 
-    'x_get_global_logger__mutmut_7': x_get_global_logger__mutmut_7, 
-    'x_get_global_logger__mutmut_8': x_get_global_logger__mutmut_8, 
-    'x_get_global_logger__mutmut_9': x_get_global_logger__mutmut_9, 
-    'x_get_global_logger__mutmut_10': x_get_global_logger__mutmut_10
+
+x_get_global_logger__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_global_logger__mutmut_1": x_get_global_logger__mutmut_1,
+    "x_get_global_logger__mutmut_2": x_get_global_logger__mutmut_2,
+    "x_get_global_logger__mutmut_3": x_get_global_logger__mutmut_3,
+    "x_get_global_logger__mutmut_4": x_get_global_logger__mutmut_4,
+    "x_get_global_logger__mutmut_5": x_get_global_logger__mutmut_5,
+    "x_get_global_logger__mutmut_6": x_get_global_logger__mutmut_6,
+    "x_get_global_logger__mutmut_7": x_get_global_logger__mutmut_7,
+    "x_get_global_logger__mutmut_8": x_get_global_logger__mutmut_8,
+    "x_get_global_logger__mutmut_9": x_get_global_logger__mutmut_9,
+    "x_get_global_logger__mutmut_10": x_get_global_logger__mutmut_10,
 }
 
+
 def get_global_logger(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_global_logger__mutmut_orig, x_get_global_logger__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_global_logger__mutmut_orig, x_get_global_logger__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_global_logger.__signature__ = _mutmut_signature(x_get_global_logger__mutmut_orig)
-x_get_global_logger__mutmut_orig.__name__ = 'x_get_global_logger'
+x_get_global_logger__mutmut_orig.__name__ = "x_get_global_logger"
 
 
 class GlobalLoggerProxy:
@@ -3960,21 +4252,29 @@ class GlobalLoggerProxy:
         return getattr(name)
 
     def xǁGlobalLoggerProxyǁ__getattr____mutmut_4(self, name: str) -> Any:
-        return getattr(get_global_logger(), )
-    
-    xǁGlobalLoggerProxyǁ__getattr____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalLoggerProxyǁ__getattr____mutmut_1': xǁGlobalLoggerProxyǁ__getattr____mutmut_1, 
-        'xǁGlobalLoggerProxyǁ__getattr____mutmut_2': xǁGlobalLoggerProxyǁ__getattr____mutmut_2, 
-        'xǁGlobalLoggerProxyǁ__getattr____mutmut_3': xǁGlobalLoggerProxyǁ__getattr____mutmut_3, 
-        'xǁGlobalLoggerProxyǁ__getattr____mutmut_4': xǁGlobalLoggerProxyǁ__getattr____mutmut_4
+        return getattr(
+            get_global_logger(),
+        )
+
+    xǁGlobalLoggerProxyǁ__getattr____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalLoggerProxyǁ__getattr____mutmut_1": xǁGlobalLoggerProxyǁ__getattr____mutmut_1,
+        "xǁGlobalLoggerProxyǁ__getattr____mutmut_2": xǁGlobalLoggerProxyǁ__getattr____mutmut_2,
+        "xǁGlobalLoggerProxyǁ__getattr____mutmut_3": xǁGlobalLoggerProxyǁ__getattr____mutmut_3,
+        "xǁGlobalLoggerProxyǁ__getattr____mutmut_4": xǁGlobalLoggerProxyǁ__getattr____mutmut_4,
     }
-    
+
     def __getattr__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalLoggerProxyǁ__getattr____mutmut_orig"), object.__getattribute__(self, "xǁGlobalLoggerProxyǁ__getattr____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁ__getattr____mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁ__getattr____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __getattr__.__signature__ = _mutmut_signature(xǁGlobalLoggerProxyǁ__getattr____mutmut_orig)
-    xǁGlobalLoggerProxyǁ__getattr____mutmut_orig.__name__ = 'xǁGlobalLoggerProxyǁ__getattr__'
+    xǁGlobalLoggerProxyǁ__getattr____mutmut_orig.__name__ = "xǁGlobalLoggerProxyǁ__getattr__"
 
     # Forward common logger methods to help mypy
     def xǁGlobalLoggerProxyǁdebug__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
@@ -3994,21 +4294,30 @@ class GlobalLoggerProxy:
 
     # Forward common logger methods to help mypy
     def xǁGlobalLoggerProxyǁdebug__mutmut_4(self, event: str, *args: Any, **kwargs: Any) -> None:
-        return get_global_logger().debug(event, *args, )
-    
-    xǁGlobalLoggerProxyǁdebug__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalLoggerProxyǁdebug__mutmut_1': xǁGlobalLoggerProxyǁdebug__mutmut_1, 
-        'xǁGlobalLoggerProxyǁdebug__mutmut_2': xǁGlobalLoggerProxyǁdebug__mutmut_2, 
-        'xǁGlobalLoggerProxyǁdebug__mutmut_3': xǁGlobalLoggerProxyǁdebug__mutmut_3, 
-        'xǁGlobalLoggerProxyǁdebug__mutmut_4': xǁGlobalLoggerProxyǁdebug__mutmut_4
+        return get_global_logger().debug(
+            event,
+            *args,
+        )
+
+    xǁGlobalLoggerProxyǁdebug__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalLoggerProxyǁdebug__mutmut_1": xǁGlobalLoggerProxyǁdebug__mutmut_1,
+        "xǁGlobalLoggerProxyǁdebug__mutmut_2": xǁGlobalLoggerProxyǁdebug__mutmut_2,
+        "xǁGlobalLoggerProxyǁdebug__mutmut_3": xǁGlobalLoggerProxyǁdebug__mutmut_3,
+        "xǁGlobalLoggerProxyǁdebug__mutmut_4": xǁGlobalLoggerProxyǁdebug__mutmut_4,
     }
-    
+
     def debug(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalLoggerProxyǁdebug__mutmut_orig"), object.__getattribute__(self, "xǁGlobalLoggerProxyǁdebug__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁdebug__mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁdebug__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     debug.__signature__ = _mutmut_signature(xǁGlobalLoggerProxyǁdebug__mutmut_orig)
-    xǁGlobalLoggerProxyǁdebug__mutmut_orig.__name__ = 'xǁGlobalLoggerProxyǁdebug'
+    xǁGlobalLoggerProxyǁdebug__mutmut_orig.__name__ = "xǁGlobalLoggerProxyǁdebug"
 
     def xǁGlobalLoggerProxyǁinfo__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         return get_global_logger().info(event, *args, **kwargs)
@@ -4023,21 +4332,30 @@ class GlobalLoggerProxy:
         return get_global_logger().info(event, **kwargs)
 
     def xǁGlobalLoggerProxyǁinfo__mutmut_4(self, event: str, *args: Any, **kwargs: Any) -> None:
-        return get_global_logger().info(event, *args, )
-    
-    xǁGlobalLoggerProxyǁinfo__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalLoggerProxyǁinfo__mutmut_1': xǁGlobalLoggerProxyǁinfo__mutmut_1, 
-        'xǁGlobalLoggerProxyǁinfo__mutmut_2': xǁGlobalLoggerProxyǁinfo__mutmut_2, 
-        'xǁGlobalLoggerProxyǁinfo__mutmut_3': xǁGlobalLoggerProxyǁinfo__mutmut_3, 
-        'xǁGlobalLoggerProxyǁinfo__mutmut_4': xǁGlobalLoggerProxyǁinfo__mutmut_4
+        return get_global_logger().info(
+            event,
+            *args,
+        )
+
+    xǁGlobalLoggerProxyǁinfo__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalLoggerProxyǁinfo__mutmut_1": xǁGlobalLoggerProxyǁinfo__mutmut_1,
+        "xǁGlobalLoggerProxyǁinfo__mutmut_2": xǁGlobalLoggerProxyǁinfo__mutmut_2,
+        "xǁGlobalLoggerProxyǁinfo__mutmut_3": xǁGlobalLoggerProxyǁinfo__mutmut_3,
+        "xǁGlobalLoggerProxyǁinfo__mutmut_4": xǁGlobalLoggerProxyǁinfo__mutmut_4,
     }
-    
+
     def info(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalLoggerProxyǁinfo__mutmut_orig"), object.__getattribute__(self, "xǁGlobalLoggerProxyǁinfo__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁinfo__mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁinfo__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     info.__signature__ = _mutmut_signature(xǁGlobalLoggerProxyǁinfo__mutmut_orig)
-    xǁGlobalLoggerProxyǁinfo__mutmut_orig.__name__ = 'xǁGlobalLoggerProxyǁinfo'
+    xǁGlobalLoggerProxyǁinfo__mutmut_orig.__name__ = "xǁGlobalLoggerProxyǁinfo"
 
     def xǁGlobalLoggerProxyǁwarning__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         return get_global_logger().warning(event, *args, **kwargs)
@@ -4052,21 +4370,30 @@ class GlobalLoggerProxy:
         return get_global_logger().warning(event, **kwargs)
 
     def xǁGlobalLoggerProxyǁwarning__mutmut_4(self, event: str, *args: Any, **kwargs: Any) -> None:
-        return get_global_logger().warning(event, *args, )
-    
-    xǁGlobalLoggerProxyǁwarning__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalLoggerProxyǁwarning__mutmut_1': xǁGlobalLoggerProxyǁwarning__mutmut_1, 
-        'xǁGlobalLoggerProxyǁwarning__mutmut_2': xǁGlobalLoggerProxyǁwarning__mutmut_2, 
-        'xǁGlobalLoggerProxyǁwarning__mutmut_3': xǁGlobalLoggerProxyǁwarning__mutmut_3, 
-        'xǁGlobalLoggerProxyǁwarning__mutmut_4': xǁGlobalLoggerProxyǁwarning__mutmut_4
+        return get_global_logger().warning(
+            event,
+            *args,
+        )
+
+    xǁGlobalLoggerProxyǁwarning__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalLoggerProxyǁwarning__mutmut_1": xǁGlobalLoggerProxyǁwarning__mutmut_1,
+        "xǁGlobalLoggerProxyǁwarning__mutmut_2": xǁGlobalLoggerProxyǁwarning__mutmut_2,
+        "xǁGlobalLoggerProxyǁwarning__mutmut_3": xǁGlobalLoggerProxyǁwarning__mutmut_3,
+        "xǁGlobalLoggerProxyǁwarning__mutmut_4": xǁGlobalLoggerProxyǁwarning__mutmut_4,
     }
-    
+
     def warning(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalLoggerProxyǁwarning__mutmut_orig"), object.__getattribute__(self, "xǁGlobalLoggerProxyǁwarning__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁwarning__mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁwarning__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     warning.__signature__ = _mutmut_signature(xǁGlobalLoggerProxyǁwarning__mutmut_orig)
-    xǁGlobalLoggerProxyǁwarning__mutmut_orig.__name__ = 'xǁGlobalLoggerProxyǁwarning'
+    xǁGlobalLoggerProxyǁwarning__mutmut_orig.__name__ = "xǁGlobalLoggerProxyǁwarning"
 
     def xǁGlobalLoggerProxyǁerror__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         return get_global_logger().error(event, *args, **kwargs)
@@ -4081,21 +4408,30 @@ class GlobalLoggerProxy:
         return get_global_logger().error(event, **kwargs)
 
     def xǁGlobalLoggerProxyǁerror__mutmut_4(self, event: str, *args: Any, **kwargs: Any) -> None:
-        return get_global_logger().error(event, *args, )
-    
-    xǁGlobalLoggerProxyǁerror__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalLoggerProxyǁerror__mutmut_1': xǁGlobalLoggerProxyǁerror__mutmut_1, 
-        'xǁGlobalLoggerProxyǁerror__mutmut_2': xǁGlobalLoggerProxyǁerror__mutmut_2, 
-        'xǁGlobalLoggerProxyǁerror__mutmut_3': xǁGlobalLoggerProxyǁerror__mutmut_3, 
-        'xǁGlobalLoggerProxyǁerror__mutmut_4': xǁGlobalLoggerProxyǁerror__mutmut_4
+        return get_global_logger().error(
+            event,
+            *args,
+        )
+
+    xǁGlobalLoggerProxyǁerror__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalLoggerProxyǁerror__mutmut_1": xǁGlobalLoggerProxyǁerror__mutmut_1,
+        "xǁGlobalLoggerProxyǁerror__mutmut_2": xǁGlobalLoggerProxyǁerror__mutmut_2,
+        "xǁGlobalLoggerProxyǁerror__mutmut_3": xǁGlobalLoggerProxyǁerror__mutmut_3,
+        "xǁGlobalLoggerProxyǁerror__mutmut_4": xǁGlobalLoggerProxyǁerror__mutmut_4,
     }
-    
+
     def error(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalLoggerProxyǁerror__mutmut_orig"), object.__getattribute__(self, "xǁGlobalLoggerProxyǁerror__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁerror__mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁerror__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     error.__signature__ = _mutmut_signature(xǁGlobalLoggerProxyǁerror__mutmut_orig)
-    xǁGlobalLoggerProxyǁerror__mutmut_orig.__name__ = 'xǁGlobalLoggerProxyǁerror'
+    xǁGlobalLoggerProxyǁerror__mutmut_orig.__name__ = "xǁGlobalLoggerProxyǁerror"
 
     def xǁGlobalLoggerProxyǁcritical__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         return get_global_logger().critical(event, *args, **kwargs)
@@ -4110,21 +4446,30 @@ class GlobalLoggerProxy:
         return get_global_logger().critical(event, **kwargs)
 
     def xǁGlobalLoggerProxyǁcritical__mutmut_4(self, event: str, *args: Any, **kwargs: Any) -> None:
-        return get_global_logger().critical(event, *args, )
-    
-    xǁGlobalLoggerProxyǁcritical__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalLoggerProxyǁcritical__mutmut_1': xǁGlobalLoggerProxyǁcritical__mutmut_1, 
-        'xǁGlobalLoggerProxyǁcritical__mutmut_2': xǁGlobalLoggerProxyǁcritical__mutmut_2, 
-        'xǁGlobalLoggerProxyǁcritical__mutmut_3': xǁGlobalLoggerProxyǁcritical__mutmut_3, 
-        'xǁGlobalLoggerProxyǁcritical__mutmut_4': xǁGlobalLoggerProxyǁcritical__mutmut_4
+        return get_global_logger().critical(
+            event,
+            *args,
+        )
+
+    xǁGlobalLoggerProxyǁcritical__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalLoggerProxyǁcritical__mutmut_1": xǁGlobalLoggerProxyǁcritical__mutmut_1,
+        "xǁGlobalLoggerProxyǁcritical__mutmut_2": xǁGlobalLoggerProxyǁcritical__mutmut_2,
+        "xǁGlobalLoggerProxyǁcritical__mutmut_3": xǁGlobalLoggerProxyǁcritical__mutmut_3,
+        "xǁGlobalLoggerProxyǁcritical__mutmut_4": xǁGlobalLoggerProxyǁcritical__mutmut_4,
     }
-    
+
     def critical(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalLoggerProxyǁcritical__mutmut_orig"), object.__getattribute__(self, "xǁGlobalLoggerProxyǁcritical__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁcritical__mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁcritical__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     critical.__signature__ = _mutmut_signature(xǁGlobalLoggerProxyǁcritical__mutmut_orig)
-    xǁGlobalLoggerProxyǁcritical__mutmut_orig.__name__ = 'xǁGlobalLoggerProxyǁcritical'
+    xǁGlobalLoggerProxyǁcritical__mutmut_orig.__name__ = "xǁGlobalLoggerProxyǁcritical"
 
     def xǁGlobalLoggerProxyǁexception__mutmut_orig(self, event: str, *args: Any, **kwargs: Any) -> None:
         return get_global_logger().exception(event, *args, **kwargs)
@@ -4139,21 +4484,30 @@ class GlobalLoggerProxy:
         return get_global_logger().exception(event, **kwargs)
 
     def xǁGlobalLoggerProxyǁexception__mutmut_4(self, event: str, *args: Any, **kwargs: Any) -> None:
-        return get_global_logger().exception(event, *args, )
-    
-    xǁGlobalLoggerProxyǁexception__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalLoggerProxyǁexception__mutmut_1': xǁGlobalLoggerProxyǁexception__mutmut_1, 
-        'xǁGlobalLoggerProxyǁexception__mutmut_2': xǁGlobalLoggerProxyǁexception__mutmut_2, 
-        'xǁGlobalLoggerProxyǁexception__mutmut_3': xǁGlobalLoggerProxyǁexception__mutmut_3, 
-        'xǁGlobalLoggerProxyǁexception__mutmut_4': xǁGlobalLoggerProxyǁexception__mutmut_4
+        return get_global_logger().exception(
+            event,
+            *args,
+        )
+
+    xǁGlobalLoggerProxyǁexception__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalLoggerProxyǁexception__mutmut_1": xǁGlobalLoggerProxyǁexception__mutmut_1,
+        "xǁGlobalLoggerProxyǁexception__mutmut_2": xǁGlobalLoggerProxyǁexception__mutmut_2,
+        "xǁGlobalLoggerProxyǁexception__mutmut_3": xǁGlobalLoggerProxyǁexception__mutmut_3,
+        "xǁGlobalLoggerProxyǁexception__mutmut_4": xǁGlobalLoggerProxyǁexception__mutmut_4,
     }
-    
+
     def exception(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalLoggerProxyǁexception__mutmut_orig"), object.__getattribute__(self, "xǁGlobalLoggerProxyǁexception__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁexception__mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁexception__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     exception.__signature__ = _mutmut_signature(xǁGlobalLoggerProxyǁexception__mutmut_orig)
-    xǁGlobalLoggerProxyǁexception__mutmut_orig.__name__ = 'xǁGlobalLoggerProxyǁexception'
+    xǁGlobalLoggerProxyǁexception__mutmut_orig.__name__ = "xǁGlobalLoggerProxyǁexception"
 
     def __setattr__(self, name: str, value: Any) -> None:
         """Allow tests to set internal state on the underlying logger."""
@@ -4171,19 +4525,27 @@ class GlobalLoggerProxy:
         return get_global_logger().get_logger(**kwargs)
 
     def xǁGlobalLoggerProxyǁ__call____mutmut_2(self, *args: Any, **kwargs: Any) -> Any:
-        return get_global_logger().get_logger(*args, )
-    
-    xǁGlobalLoggerProxyǁ__call____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁGlobalLoggerProxyǁ__call____mutmut_1': xǁGlobalLoggerProxyǁ__call____mutmut_1, 
-        'xǁGlobalLoggerProxyǁ__call____mutmut_2': xǁGlobalLoggerProxyǁ__call____mutmut_2
+        return get_global_logger().get_logger(
+            *args,
+        )
+
+    xǁGlobalLoggerProxyǁ__call____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁGlobalLoggerProxyǁ__call____mutmut_1": xǁGlobalLoggerProxyǁ__call____mutmut_1,
+        "xǁGlobalLoggerProxyǁ__call____mutmut_2": xǁGlobalLoggerProxyǁ__call____mutmut_2,
     }
-    
+
     def __call__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁGlobalLoggerProxyǁ__call____mutmut_orig"), object.__getattribute__(self, "xǁGlobalLoggerProxyǁ__call____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁ__call____mutmut_orig"),
+            object.__getattribute__(self, "xǁGlobalLoggerProxyǁ__call____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __call__.__signature__ = _mutmut_signature(xǁGlobalLoggerProxyǁ__call____mutmut_orig)
-    xǁGlobalLoggerProxyǁ__call____mutmut_orig.__name__ = 'xǁGlobalLoggerProxyǁ__call__'
+    xǁGlobalLoggerProxyǁ__call____mutmut_orig.__name__ = "xǁGlobalLoggerProxyǁ__call__"
 
 
 # Global logger instance (now a proxy)

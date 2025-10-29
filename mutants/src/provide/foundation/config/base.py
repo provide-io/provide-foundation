@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1543,7 +1546,7 @@ def x_field__mutmut_25(
             validator=validator,
             converter=converter,
             metadata=config_metadata,
-            )
+        )
     return attrs_field(
         default=default,
         validator=validator,
@@ -2067,51 +2070,54 @@ def x_field__mutmut_34(
         validator=validator,
         converter=converter,
         metadata=config_metadata,
-        )
+    )
 
-x_field__mutmut_mutants : ClassVar[MutantDict] = {
-'x_field__mutmut_1': x_field__mutmut_1, 
-    'x_field__mutmut_2': x_field__mutmut_2, 
-    'x_field__mutmut_3': x_field__mutmut_3, 
-    'x_field__mutmut_4': x_field__mutmut_4, 
-    'x_field__mutmut_5': x_field__mutmut_5, 
-    'x_field__mutmut_6': x_field__mutmut_6, 
-    'x_field__mutmut_7': x_field__mutmut_7, 
-    'x_field__mutmut_8': x_field__mutmut_8, 
-    'x_field__mutmut_9': x_field__mutmut_9, 
-    'x_field__mutmut_10': x_field__mutmut_10, 
-    'x_field__mutmut_11': x_field__mutmut_11, 
-    'x_field__mutmut_12': x_field__mutmut_12, 
-    'x_field__mutmut_13': x_field__mutmut_13, 
-    'x_field__mutmut_14': x_field__mutmut_14, 
-    'x_field__mutmut_15': x_field__mutmut_15, 
-    'x_field__mutmut_16': x_field__mutmut_16, 
-    'x_field__mutmut_17': x_field__mutmut_17, 
-    'x_field__mutmut_18': x_field__mutmut_18, 
-    'x_field__mutmut_19': x_field__mutmut_19, 
-    'x_field__mutmut_20': x_field__mutmut_20, 
-    'x_field__mutmut_21': x_field__mutmut_21, 
-    'x_field__mutmut_22': x_field__mutmut_22, 
-    'x_field__mutmut_23': x_field__mutmut_23, 
-    'x_field__mutmut_24': x_field__mutmut_24, 
-    'x_field__mutmut_25': x_field__mutmut_25, 
-    'x_field__mutmut_26': x_field__mutmut_26, 
-    'x_field__mutmut_27': x_field__mutmut_27, 
-    'x_field__mutmut_28': x_field__mutmut_28, 
-    'x_field__mutmut_29': x_field__mutmut_29, 
-    'x_field__mutmut_30': x_field__mutmut_30, 
-    'x_field__mutmut_31': x_field__mutmut_31, 
-    'x_field__mutmut_32': x_field__mutmut_32, 
-    'x_field__mutmut_33': x_field__mutmut_33, 
-    'x_field__mutmut_34': x_field__mutmut_34
+
+x_field__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_field__mutmut_1": x_field__mutmut_1,
+    "x_field__mutmut_2": x_field__mutmut_2,
+    "x_field__mutmut_3": x_field__mutmut_3,
+    "x_field__mutmut_4": x_field__mutmut_4,
+    "x_field__mutmut_5": x_field__mutmut_5,
+    "x_field__mutmut_6": x_field__mutmut_6,
+    "x_field__mutmut_7": x_field__mutmut_7,
+    "x_field__mutmut_8": x_field__mutmut_8,
+    "x_field__mutmut_9": x_field__mutmut_9,
+    "x_field__mutmut_10": x_field__mutmut_10,
+    "x_field__mutmut_11": x_field__mutmut_11,
+    "x_field__mutmut_12": x_field__mutmut_12,
+    "x_field__mutmut_13": x_field__mutmut_13,
+    "x_field__mutmut_14": x_field__mutmut_14,
+    "x_field__mutmut_15": x_field__mutmut_15,
+    "x_field__mutmut_16": x_field__mutmut_16,
+    "x_field__mutmut_17": x_field__mutmut_17,
+    "x_field__mutmut_18": x_field__mutmut_18,
+    "x_field__mutmut_19": x_field__mutmut_19,
+    "x_field__mutmut_20": x_field__mutmut_20,
+    "x_field__mutmut_21": x_field__mutmut_21,
+    "x_field__mutmut_22": x_field__mutmut_22,
+    "x_field__mutmut_23": x_field__mutmut_23,
+    "x_field__mutmut_24": x_field__mutmut_24,
+    "x_field__mutmut_25": x_field__mutmut_25,
+    "x_field__mutmut_26": x_field__mutmut_26,
+    "x_field__mutmut_27": x_field__mutmut_27,
+    "x_field__mutmut_28": x_field__mutmut_28,
+    "x_field__mutmut_29": x_field__mutmut_29,
+    "x_field__mutmut_30": x_field__mutmut_30,
+    "x_field__mutmut_31": x_field__mutmut_31,
+    "x_field__mutmut_32": x_field__mutmut_32,
+    "x_field__mutmut_33": x_field__mutmut_33,
+    "x_field__mutmut_34": x_field__mutmut_34,
 }
+
 
 def field(*args, **kwargs):
     result = _mutmut_trampoline(x_field__mutmut_orig, x_field__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 field.__signature__ = _mutmut_signature(x_field__mutmut_orig)
-x_field__mutmut_orig.__name__ = 'x_field'
+x_field__mutmut_orig.__name__ = "x_field"
 
 
 @define(slots=True, repr=False)

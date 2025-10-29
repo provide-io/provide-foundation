@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -328,7 +331,9 @@ def x__get_trace_id_if_needed__mutmut_10(current_trace: bool, trace_id: str | No
 
         found_trace_id = get_current_trace_id()
         if not found_trace_id:
-            click.echo("No active trace found.", )
+            click.echo(
+                "No active trace found.",
+            )
             return None
         return found_trace_id
     except ImportError:
@@ -540,7 +545,9 @@ def x__get_trace_id_if_needed__mutmut_18(current_trace: bool, trace_id: str | No
             return None
         return found_trace_id
     except ImportError:
-        click.echo("Tracing not available.", )
+        click.echo(
+            "Tracing not available.",
+        )
         return None
 
 
@@ -647,37 +654,42 @@ def x__get_trace_id_if_needed__mutmut_22(current_trace: bool, trace_id: str | No
         click.echo("Tracing not available.", err=False)
         return None
 
-x__get_trace_id_if_needed__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_trace_id_if_needed__mutmut_1': x__get_trace_id_if_needed__mutmut_1, 
-    'x__get_trace_id_if_needed__mutmut_2': x__get_trace_id_if_needed__mutmut_2, 
-    'x__get_trace_id_if_needed__mutmut_3': x__get_trace_id_if_needed__mutmut_3, 
-    'x__get_trace_id_if_needed__mutmut_4': x__get_trace_id_if_needed__mutmut_4, 
-    'x__get_trace_id_if_needed__mutmut_5': x__get_trace_id_if_needed__mutmut_5, 
-    'x__get_trace_id_if_needed__mutmut_6': x__get_trace_id_if_needed__mutmut_6, 
-    'x__get_trace_id_if_needed__mutmut_7': x__get_trace_id_if_needed__mutmut_7, 
-    'x__get_trace_id_if_needed__mutmut_8': x__get_trace_id_if_needed__mutmut_8, 
-    'x__get_trace_id_if_needed__mutmut_9': x__get_trace_id_if_needed__mutmut_9, 
-    'x__get_trace_id_if_needed__mutmut_10': x__get_trace_id_if_needed__mutmut_10, 
-    'x__get_trace_id_if_needed__mutmut_11': x__get_trace_id_if_needed__mutmut_11, 
-    'x__get_trace_id_if_needed__mutmut_12': x__get_trace_id_if_needed__mutmut_12, 
-    'x__get_trace_id_if_needed__mutmut_13': x__get_trace_id_if_needed__mutmut_13, 
-    'x__get_trace_id_if_needed__mutmut_14': x__get_trace_id_if_needed__mutmut_14, 
-    'x__get_trace_id_if_needed__mutmut_15': x__get_trace_id_if_needed__mutmut_15, 
-    'x__get_trace_id_if_needed__mutmut_16': x__get_trace_id_if_needed__mutmut_16, 
-    'x__get_trace_id_if_needed__mutmut_17': x__get_trace_id_if_needed__mutmut_17, 
-    'x__get_trace_id_if_needed__mutmut_18': x__get_trace_id_if_needed__mutmut_18, 
-    'x__get_trace_id_if_needed__mutmut_19': x__get_trace_id_if_needed__mutmut_19, 
-    'x__get_trace_id_if_needed__mutmut_20': x__get_trace_id_if_needed__mutmut_20, 
-    'x__get_trace_id_if_needed__mutmut_21': x__get_trace_id_if_needed__mutmut_21, 
-    'x__get_trace_id_if_needed__mutmut_22': x__get_trace_id_if_needed__mutmut_22
+
+x__get_trace_id_if_needed__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_trace_id_if_needed__mutmut_1": x__get_trace_id_if_needed__mutmut_1,
+    "x__get_trace_id_if_needed__mutmut_2": x__get_trace_id_if_needed__mutmut_2,
+    "x__get_trace_id_if_needed__mutmut_3": x__get_trace_id_if_needed__mutmut_3,
+    "x__get_trace_id_if_needed__mutmut_4": x__get_trace_id_if_needed__mutmut_4,
+    "x__get_trace_id_if_needed__mutmut_5": x__get_trace_id_if_needed__mutmut_5,
+    "x__get_trace_id_if_needed__mutmut_6": x__get_trace_id_if_needed__mutmut_6,
+    "x__get_trace_id_if_needed__mutmut_7": x__get_trace_id_if_needed__mutmut_7,
+    "x__get_trace_id_if_needed__mutmut_8": x__get_trace_id_if_needed__mutmut_8,
+    "x__get_trace_id_if_needed__mutmut_9": x__get_trace_id_if_needed__mutmut_9,
+    "x__get_trace_id_if_needed__mutmut_10": x__get_trace_id_if_needed__mutmut_10,
+    "x__get_trace_id_if_needed__mutmut_11": x__get_trace_id_if_needed__mutmut_11,
+    "x__get_trace_id_if_needed__mutmut_12": x__get_trace_id_if_needed__mutmut_12,
+    "x__get_trace_id_if_needed__mutmut_13": x__get_trace_id_if_needed__mutmut_13,
+    "x__get_trace_id_if_needed__mutmut_14": x__get_trace_id_if_needed__mutmut_14,
+    "x__get_trace_id_if_needed__mutmut_15": x__get_trace_id_if_needed__mutmut_15,
+    "x__get_trace_id_if_needed__mutmut_16": x__get_trace_id_if_needed__mutmut_16,
+    "x__get_trace_id_if_needed__mutmut_17": x__get_trace_id_if_needed__mutmut_17,
+    "x__get_trace_id_if_needed__mutmut_18": x__get_trace_id_if_needed__mutmut_18,
+    "x__get_trace_id_if_needed__mutmut_19": x__get_trace_id_if_needed__mutmut_19,
+    "x__get_trace_id_if_needed__mutmut_20": x__get_trace_id_if_needed__mutmut_20,
+    "x__get_trace_id_if_needed__mutmut_21": x__get_trace_id_if_needed__mutmut_21,
+    "x__get_trace_id_if_needed__mutmut_22": x__get_trace_id_if_needed__mutmut_22,
 }
 
+
 def _get_trace_id_if_needed(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_trace_id_if_needed__mutmut_orig, x__get_trace_id_if_needed__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_trace_id_if_needed__mutmut_orig, x__get_trace_id_if_needed__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_trace_id_if_needed.__signature__ = _mutmut_signature(x__get_trace_id_if_needed__mutmut_orig)
-x__get_trace_id_if_needed__mutmut_orig.__name__ = 'x__get_trace_id_if_needed'
+x__get_trace_id_if_needed__mutmut_orig.__name__ = "x__get_trace_id_if_needed"
 
 
 def x__build_query_sql__mutmut_orig(
@@ -911,7 +923,9 @@ def x__build_query_sql__mutmut_5(
     import re
 
     # Sanitize stream name - only allow alphanumeric and underscores
-    if not re.match(r"^[a-zA-Z0-9_]+$", ):
+    if not re.match(
+        r"^[a-zA-Z0-9_]+$",
+    ):
         raise ValueError(f"Invalid stream name: {stream}")
 
     # Sanitize size parameter
@@ -1713,7 +1727,9 @@ def x__build_query_sql__mutmut_23(
     conditions = []
     if trace_id:
         # Sanitize trace_id - should be hex string or UUID format
-        if not re.match(r"^[a-fA-F0-9\-]+$", ):
+        if not re.match(
+            r"^[a-fA-F0-9\-]+$",
+        ):
             raise ValueError(f"Invalid trace_id format: {trace_id}")
         conditions.append(f"trace_id = '{trace_id}'")
 
@@ -2299,7 +2315,9 @@ def x__build_query_sql__mutmut_36(
 
     if service:
         # Sanitize service name - allow alphanumeric, hyphens, underscores, dots
-        if not re.match(r"^[a-zA-Z0-9_\-\.]+$", ):
+        if not re.match(
+            r"^[a-zA-Z0-9_\-\.]+$",
+        ):
             raise ValueError(f"Invalid service name: {service}")
         conditions.append(f"service = '{service}'")
 
@@ -2747,61 +2765,66 @@ def x__build_query_sql__mutmut_46(
     # All parameters are sanitized above with regex validation
     return f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {size}"  # nosec B608
 
-x__build_query_sql__mutmut_mutants : ClassVar[MutantDict] = {
-'x__build_query_sql__mutmut_1': x__build_query_sql__mutmut_1, 
-    'x__build_query_sql__mutmut_2': x__build_query_sql__mutmut_2, 
-    'x__build_query_sql__mutmut_3': x__build_query_sql__mutmut_3, 
-    'x__build_query_sql__mutmut_4': x__build_query_sql__mutmut_4, 
-    'x__build_query_sql__mutmut_5': x__build_query_sql__mutmut_5, 
-    'x__build_query_sql__mutmut_6': x__build_query_sql__mutmut_6, 
-    'x__build_query_sql__mutmut_7': x__build_query_sql__mutmut_7, 
-    'x__build_query_sql__mutmut_8': x__build_query_sql__mutmut_8, 
-    'x__build_query_sql__mutmut_9': x__build_query_sql__mutmut_9, 
-    'x__build_query_sql__mutmut_10': x__build_query_sql__mutmut_10, 
-    'x__build_query_sql__mutmut_11': x__build_query_sql__mutmut_11, 
-    'x__build_query_sql__mutmut_12': x__build_query_sql__mutmut_12, 
-    'x__build_query_sql__mutmut_13': x__build_query_sql__mutmut_13, 
-    'x__build_query_sql__mutmut_14': x__build_query_sql__mutmut_14, 
-    'x__build_query_sql__mutmut_15': x__build_query_sql__mutmut_15, 
-    'x__build_query_sql__mutmut_16': x__build_query_sql__mutmut_16, 
-    'x__build_query_sql__mutmut_17': x__build_query_sql__mutmut_17, 
-    'x__build_query_sql__mutmut_18': x__build_query_sql__mutmut_18, 
-    'x__build_query_sql__mutmut_19': x__build_query_sql__mutmut_19, 
-    'x__build_query_sql__mutmut_20': x__build_query_sql__mutmut_20, 
-    'x__build_query_sql__mutmut_21': x__build_query_sql__mutmut_21, 
-    'x__build_query_sql__mutmut_22': x__build_query_sql__mutmut_22, 
-    'x__build_query_sql__mutmut_23': x__build_query_sql__mutmut_23, 
-    'x__build_query_sql__mutmut_24': x__build_query_sql__mutmut_24, 
-    'x__build_query_sql__mutmut_25': x__build_query_sql__mutmut_25, 
-    'x__build_query_sql__mutmut_26': x__build_query_sql__mutmut_26, 
-    'x__build_query_sql__mutmut_27': x__build_query_sql__mutmut_27, 
-    'x__build_query_sql__mutmut_28': x__build_query_sql__mutmut_28, 
-    'x__build_query_sql__mutmut_29': x__build_query_sql__mutmut_29, 
-    'x__build_query_sql__mutmut_30': x__build_query_sql__mutmut_30, 
-    'x__build_query_sql__mutmut_31': x__build_query_sql__mutmut_31, 
-    'x__build_query_sql__mutmut_32': x__build_query_sql__mutmut_32, 
-    'x__build_query_sql__mutmut_33': x__build_query_sql__mutmut_33, 
-    'x__build_query_sql__mutmut_34': x__build_query_sql__mutmut_34, 
-    'x__build_query_sql__mutmut_35': x__build_query_sql__mutmut_35, 
-    'x__build_query_sql__mutmut_36': x__build_query_sql__mutmut_36, 
-    'x__build_query_sql__mutmut_37': x__build_query_sql__mutmut_37, 
-    'x__build_query_sql__mutmut_38': x__build_query_sql__mutmut_38, 
-    'x__build_query_sql__mutmut_39': x__build_query_sql__mutmut_39, 
-    'x__build_query_sql__mutmut_40': x__build_query_sql__mutmut_40, 
-    'x__build_query_sql__mutmut_41': x__build_query_sql__mutmut_41, 
-    'x__build_query_sql__mutmut_42': x__build_query_sql__mutmut_42, 
-    'x__build_query_sql__mutmut_43': x__build_query_sql__mutmut_43, 
-    'x__build_query_sql__mutmut_44': x__build_query_sql__mutmut_44, 
-    'x__build_query_sql__mutmut_45': x__build_query_sql__mutmut_45, 
-    'x__build_query_sql__mutmut_46': x__build_query_sql__mutmut_46
+
+x__build_query_sql__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__build_query_sql__mutmut_1": x__build_query_sql__mutmut_1,
+    "x__build_query_sql__mutmut_2": x__build_query_sql__mutmut_2,
+    "x__build_query_sql__mutmut_3": x__build_query_sql__mutmut_3,
+    "x__build_query_sql__mutmut_4": x__build_query_sql__mutmut_4,
+    "x__build_query_sql__mutmut_5": x__build_query_sql__mutmut_5,
+    "x__build_query_sql__mutmut_6": x__build_query_sql__mutmut_6,
+    "x__build_query_sql__mutmut_7": x__build_query_sql__mutmut_7,
+    "x__build_query_sql__mutmut_8": x__build_query_sql__mutmut_8,
+    "x__build_query_sql__mutmut_9": x__build_query_sql__mutmut_9,
+    "x__build_query_sql__mutmut_10": x__build_query_sql__mutmut_10,
+    "x__build_query_sql__mutmut_11": x__build_query_sql__mutmut_11,
+    "x__build_query_sql__mutmut_12": x__build_query_sql__mutmut_12,
+    "x__build_query_sql__mutmut_13": x__build_query_sql__mutmut_13,
+    "x__build_query_sql__mutmut_14": x__build_query_sql__mutmut_14,
+    "x__build_query_sql__mutmut_15": x__build_query_sql__mutmut_15,
+    "x__build_query_sql__mutmut_16": x__build_query_sql__mutmut_16,
+    "x__build_query_sql__mutmut_17": x__build_query_sql__mutmut_17,
+    "x__build_query_sql__mutmut_18": x__build_query_sql__mutmut_18,
+    "x__build_query_sql__mutmut_19": x__build_query_sql__mutmut_19,
+    "x__build_query_sql__mutmut_20": x__build_query_sql__mutmut_20,
+    "x__build_query_sql__mutmut_21": x__build_query_sql__mutmut_21,
+    "x__build_query_sql__mutmut_22": x__build_query_sql__mutmut_22,
+    "x__build_query_sql__mutmut_23": x__build_query_sql__mutmut_23,
+    "x__build_query_sql__mutmut_24": x__build_query_sql__mutmut_24,
+    "x__build_query_sql__mutmut_25": x__build_query_sql__mutmut_25,
+    "x__build_query_sql__mutmut_26": x__build_query_sql__mutmut_26,
+    "x__build_query_sql__mutmut_27": x__build_query_sql__mutmut_27,
+    "x__build_query_sql__mutmut_28": x__build_query_sql__mutmut_28,
+    "x__build_query_sql__mutmut_29": x__build_query_sql__mutmut_29,
+    "x__build_query_sql__mutmut_30": x__build_query_sql__mutmut_30,
+    "x__build_query_sql__mutmut_31": x__build_query_sql__mutmut_31,
+    "x__build_query_sql__mutmut_32": x__build_query_sql__mutmut_32,
+    "x__build_query_sql__mutmut_33": x__build_query_sql__mutmut_33,
+    "x__build_query_sql__mutmut_34": x__build_query_sql__mutmut_34,
+    "x__build_query_sql__mutmut_35": x__build_query_sql__mutmut_35,
+    "x__build_query_sql__mutmut_36": x__build_query_sql__mutmut_36,
+    "x__build_query_sql__mutmut_37": x__build_query_sql__mutmut_37,
+    "x__build_query_sql__mutmut_38": x__build_query_sql__mutmut_38,
+    "x__build_query_sql__mutmut_39": x__build_query_sql__mutmut_39,
+    "x__build_query_sql__mutmut_40": x__build_query_sql__mutmut_40,
+    "x__build_query_sql__mutmut_41": x__build_query_sql__mutmut_41,
+    "x__build_query_sql__mutmut_42": x__build_query_sql__mutmut_42,
+    "x__build_query_sql__mutmut_43": x__build_query_sql__mutmut_43,
+    "x__build_query_sql__mutmut_44": x__build_query_sql__mutmut_44,
+    "x__build_query_sql__mutmut_45": x__build_query_sql__mutmut_45,
+    "x__build_query_sql__mutmut_46": x__build_query_sql__mutmut_46,
 }
 
+
 def _build_query_sql(*args, **kwargs):
-    result = _mutmut_trampoline(x__build_query_sql__mutmut_orig, x__build_query_sql__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__build_query_sql__mutmut_orig, x__build_query_sql__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _build_query_sql.__signature__ = _mutmut_signature(x__build_query_sql__mutmut_orig)
-x__build_query_sql__mutmut_orig.__name__ = 'x__build_query_sql'
+x__build_query_sql__mutmut_orig.__name__ = "x__build_query_sql"
 
 
 def x__execute_and_display_query__mutmut_orig(sql: str, last: str, size: int, format: str, client: Any) -> int:
@@ -2868,9 +2891,7 @@ def x__execute_and_display_query__mutmut_2(sql: str, last: str, size: int, forma
     from provide.foundation.utils.async_helpers import run_async
 
     try:
-        response = run_async(
-            None
-        )
+        response = run_async(None)
 
         # Format and display results
         if response.total == 0:
@@ -3194,7 +3215,7 @@ def x__execute_and_display_query__mutmut_12(sql: str, last: str, size: int, form
                 start_time=f"-{last}" if last else "-1h",
                 end_time="now",
                 size=size,
-                )
+            )
         )
 
         # Format and display results
@@ -3696,7 +3717,9 @@ def x__execute_and_display_query__mutmut_27(sql: str, last: str, size: int, form
         if response.total == 0:
             click.echo("No logs found matching the query.")
         else:
-            output = format_output(response, )
+            output = format_output(
+                response,
+            )
             click.echo(output)
 
             # Show summary for non-summary formats
@@ -4035,7 +4058,9 @@ def x__execute_and_display_query__mutmut_37(sql: str, last: str, size: int, form
 
         return 0
     except Exception as e:
-        click.echo(f"Query failed: {e}", )
+        click.echo(
+            f"Query failed: {e}",
+        )
         return 1
 
 
@@ -4104,54 +4129,59 @@ def x__execute_and_display_query__mutmut_39(sql: str, last: str, size: int, form
         click.echo(f"Query failed: {e}", err=True)
         return 2
 
-x__execute_and_display_query__mutmut_mutants : ClassVar[MutantDict] = {
-'x__execute_and_display_query__mutmut_1': x__execute_and_display_query__mutmut_1, 
-    'x__execute_and_display_query__mutmut_2': x__execute_and_display_query__mutmut_2, 
-    'x__execute_and_display_query__mutmut_3': x__execute_and_display_query__mutmut_3, 
-    'x__execute_and_display_query__mutmut_4': x__execute_and_display_query__mutmut_4, 
-    'x__execute_and_display_query__mutmut_5': x__execute_and_display_query__mutmut_5, 
-    'x__execute_and_display_query__mutmut_6': x__execute_and_display_query__mutmut_6, 
-    'x__execute_and_display_query__mutmut_7': x__execute_and_display_query__mutmut_7, 
-    'x__execute_and_display_query__mutmut_8': x__execute_and_display_query__mutmut_8, 
-    'x__execute_and_display_query__mutmut_9': x__execute_and_display_query__mutmut_9, 
-    'x__execute_and_display_query__mutmut_10': x__execute_and_display_query__mutmut_10, 
-    'x__execute_and_display_query__mutmut_11': x__execute_and_display_query__mutmut_11, 
-    'x__execute_and_display_query__mutmut_12': x__execute_and_display_query__mutmut_12, 
-    'x__execute_and_display_query__mutmut_13': x__execute_and_display_query__mutmut_13, 
-    'x__execute_and_display_query__mutmut_14': x__execute_and_display_query__mutmut_14, 
-    'x__execute_and_display_query__mutmut_15': x__execute_and_display_query__mutmut_15, 
-    'x__execute_and_display_query__mutmut_16': x__execute_and_display_query__mutmut_16, 
-    'x__execute_and_display_query__mutmut_17': x__execute_and_display_query__mutmut_17, 
-    'x__execute_and_display_query__mutmut_18': x__execute_and_display_query__mutmut_18, 
-    'x__execute_and_display_query__mutmut_19': x__execute_and_display_query__mutmut_19, 
-    'x__execute_and_display_query__mutmut_20': x__execute_and_display_query__mutmut_20, 
-    'x__execute_and_display_query__mutmut_21': x__execute_and_display_query__mutmut_21, 
-    'x__execute_and_display_query__mutmut_22': x__execute_and_display_query__mutmut_22, 
-    'x__execute_and_display_query__mutmut_23': x__execute_and_display_query__mutmut_23, 
-    'x__execute_and_display_query__mutmut_24': x__execute_and_display_query__mutmut_24, 
-    'x__execute_and_display_query__mutmut_25': x__execute_and_display_query__mutmut_25, 
-    'x__execute_and_display_query__mutmut_26': x__execute_and_display_query__mutmut_26, 
-    'x__execute_and_display_query__mutmut_27': x__execute_and_display_query__mutmut_27, 
-    'x__execute_and_display_query__mutmut_28': x__execute_and_display_query__mutmut_28, 
-    'x__execute_and_display_query__mutmut_29': x__execute_and_display_query__mutmut_29, 
-    'x__execute_and_display_query__mutmut_30': x__execute_and_display_query__mutmut_30, 
-    'x__execute_and_display_query__mutmut_31': x__execute_and_display_query__mutmut_31, 
-    'x__execute_and_display_query__mutmut_32': x__execute_and_display_query__mutmut_32, 
-    'x__execute_and_display_query__mutmut_33': x__execute_and_display_query__mutmut_33, 
-    'x__execute_and_display_query__mutmut_34': x__execute_and_display_query__mutmut_34, 
-    'x__execute_and_display_query__mutmut_35': x__execute_and_display_query__mutmut_35, 
-    'x__execute_and_display_query__mutmut_36': x__execute_and_display_query__mutmut_36, 
-    'x__execute_and_display_query__mutmut_37': x__execute_and_display_query__mutmut_37, 
-    'x__execute_and_display_query__mutmut_38': x__execute_and_display_query__mutmut_38, 
-    'x__execute_and_display_query__mutmut_39': x__execute_and_display_query__mutmut_39
+
+x__execute_and_display_query__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__execute_and_display_query__mutmut_1": x__execute_and_display_query__mutmut_1,
+    "x__execute_and_display_query__mutmut_2": x__execute_and_display_query__mutmut_2,
+    "x__execute_and_display_query__mutmut_3": x__execute_and_display_query__mutmut_3,
+    "x__execute_and_display_query__mutmut_4": x__execute_and_display_query__mutmut_4,
+    "x__execute_and_display_query__mutmut_5": x__execute_and_display_query__mutmut_5,
+    "x__execute_and_display_query__mutmut_6": x__execute_and_display_query__mutmut_6,
+    "x__execute_and_display_query__mutmut_7": x__execute_and_display_query__mutmut_7,
+    "x__execute_and_display_query__mutmut_8": x__execute_and_display_query__mutmut_8,
+    "x__execute_and_display_query__mutmut_9": x__execute_and_display_query__mutmut_9,
+    "x__execute_and_display_query__mutmut_10": x__execute_and_display_query__mutmut_10,
+    "x__execute_and_display_query__mutmut_11": x__execute_and_display_query__mutmut_11,
+    "x__execute_and_display_query__mutmut_12": x__execute_and_display_query__mutmut_12,
+    "x__execute_and_display_query__mutmut_13": x__execute_and_display_query__mutmut_13,
+    "x__execute_and_display_query__mutmut_14": x__execute_and_display_query__mutmut_14,
+    "x__execute_and_display_query__mutmut_15": x__execute_and_display_query__mutmut_15,
+    "x__execute_and_display_query__mutmut_16": x__execute_and_display_query__mutmut_16,
+    "x__execute_and_display_query__mutmut_17": x__execute_and_display_query__mutmut_17,
+    "x__execute_and_display_query__mutmut_18": x__execute_and_display_query__mutmut_18,
+    "x__execute_and_display_query__mutmut_19": x__execute_and_display_query__mutmut_19,
+    "x__execute_and_display_query__mutmut_20": x__execute_and_display_query__mutmut_20,
+    "x__execute_and_display_query__mutmut_21": x__execute_and_display_query__mutmut_21,
+    "x__execute_and_display_query__mutmut_22": x__execute_and_display_query__mutmut_22,
+    "x__execute_and_display_query__mutmut_23": x__execute_and_display_query__mutmut_23,
+    "x__execute_and_display_query__mutmut_24": x__execute_and_display_query__mutmut_24,
+    "x__execute_and_display_query__mutmut_25": x__execute_and_display_query__mutmut_25,
+    "x__execute_and_display_query__mutmut_26": x__execute_and_display_query__mutmut_26,
+    "x__execute_and_display_query__mutmut_27": x__execute_and_display_query__mutmut_27,
+    "x__execute_and_display_query__mutmut_28": x__execute_and_display_query__mutmut_28,
+    "x__execute_and_display_query__mutmut_29": x__execute_and_display_query__mutmut_29,
+    "x__execute_and_display_query__mutmut_30": x__execute_and_display_query__mutmut_30,
+    "x__execute_and_display_query__mutmut_31": x__execute_and_display_query__mutmut_31,
+    "x__execute_and_display_query__mutmut_32": x__execute_and_display_query__mutmut_32,
+    "x__execute_and_display_query__mutmut_33": x__execute_and_display_query__mutmut_33,
+    "x__execute_and_display_query__mutmut_34": x__execute_and_display_query__mutmut_34,
+    "x__execute_and_display_query__mutmut_35": x__execute_and_display_query__mutmut_35,
+    "x__execute_and_display_query__mutmut_36": x__execute_and_display_query__mutmut_36,
+    "x__execute_and_display_query__mutmut_37": x__execute_and_display_query__mutmut_37,
+    "x__execute_and_display_query__mutmut_38": x__execute_and_display_query__mutmut_38,
+    "x__execute_and_display_query__mutmut_39": x__execute_and_display_query__mutmut_39,
 }
 
+
 def _execute_and_display_query(*args, **kwargs):
-    result = _mutmut_trampoline(x__execute_and_display_query__mutmut_orig, x__execute_and_display_query__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__execute_and_display_query__mutmut_orig, x__execute_and_display_query__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _execute_and_display_query.__signature__ = _mutmut_signature(x__execute_and_display_query__mutmut_orig)
-x__execute_and_display_query__mutmut_orig.__name__ = 'x__execute_and_display_query'
+x__execute_and_display_query__mutmut_orig.__name__ = "x__execute_and_display_query"
 
 
 @click.command("query")

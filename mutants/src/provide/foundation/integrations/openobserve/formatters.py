@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -507,7 +510,10 @@ def x_format_json__mutmut_17(response: SearchResponse | dict[str, Any], pretty: 
         data = response
 
     if pretty:
-        return json_dumps(data, indent=2, )
+        return json_dumps(
+            data,
+            indent=2,
+        )
     return json_dumps(data)
 
 
@@ -588,35 +594,38 @@ def x_format_json__mutmut_20(response: SearchResponse | dict[str, Any], pretty: 
         return json_dumps(data, indent=2, sort_keys=False)
     return json_dumps(None)
 
-x_format_json__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_json__mutmut_1': x_format_json__mutmut_1, 
-    'x_format_json__mutmut_2': x_format_json__mutmut_2, 
-    'x_format_json__mutmut_3': x_format_json__mutmut_3, 
-    'x_format_json__mutmut_4': x_format_json__mutmut_4, 
-    'x_format_json__mutmut_5': x_format_json__mutmut_5, 
-    'x_format_json__mutmut_6': x_format_json__mutmut_6, 
-    'x_format_json__mutmut_7': x_format_json__mutmut_7, 
-    'x_format_json__mutmut_8': x_format_json__mutmut_8, 
-    'x_format_json__mutmut_9': x_format_json__mutmut_9, 
-    'x_format_json__mutmut_10': x_format_json__mutmut_10, 
-    'x_format_json__mutmut_11': x_format_json__mutmut_11, 
-    'x_format_json__mutmut_12': x_format_json__mutmut_12, 
-    'x_format_json__mutmut_13': x_format_json__mutmut_13, 
-    'x_format_json__mutmut_14': x_format_json__mutmut_14, 
-    'x_format_json__mutmut_15': x_format_json__mutmut_15, 
-    'x_format_json__mutmut_16': x_format_json__mutmut_16, 
-    'x_format_json__mutmut_17': x_format_json__mutmut_17, 
-    'x_format_json__mutmut_18': x_format_json__mutmut_18, 
-    'x_format_json__mutmut_19': x_format_json__mutmut_19, 
-    'x_format_json__mutmut_20': x_format_json__mutmut_20
+
+x_format_json__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_json__mutmut_1": x_format_json__mutmut_1,
+    "x_format_json__mutmut_2": x_format_json__mutmut_2,
+    "x_format_json__mutmut_3": x_format_json__mutmut_3,
+    "x_format_json__mutmut_4": x_format_json__mutmut_4,
+    "x_format_json__mutmut_5": x_format_json__mutmut_5,
+    "x_format_json__mutmut_6": x_format_json__mutmut_6,
+    "x_format_json__mutmut_7": x_format_json__mutmut_7,
+    "x_format_json__mutmut_8": x_format_json__mutmut_8,
+    "x_format_json__mutmut_9": x_format_json__mutmut_9,
+    "x_format_json__mutmut_10": x_format_json__mutmut_10,
+    "x_format_json__mutmut_11": x_format_json__mutmut_11,
+    "x_format_json__mutmut_12": x_format_json__mutmut_12,
+    "x_format_json__mutmut_13": x_format_json__mutmut_13,
+    "x_format_json__mutmut_14": x_format_json__mutmut_14,
+    "x_format_json__mutmut_15": x_format_json__mutmut_15,
+    "x_format_json__mutmut_16": x_format_json__mutmut_16,
+    "x_format_json__mutmut_17": x_format_json__mutmut_17,
+    "x_format_json__mutmut_18": x_format_json__mutmut_18,
+    "x_format_json__mutmut_19": x_format_json__mutmut_19,
+    "x_format_json__mutmut_20": x_format_json__mutmut_20,
 }
+
 
 def format_json(*args, **kwargs):
     result = _mutmut_trampoline(x_format_json__mutmut_orig, x_format_json__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 format_json.__signature__ = _mutmut_signature(x_format_json__mutmut_orig)
-x_format_json__mutmut_orig.__name__ = 'x_format_json'
+x_format_json__mutmut_orig.__name__ = "x_format_json"
 
 
 def x_format_log_line__mutmut_orig(entry: dict[str, Any]) -> str:
@@ -855,7 +864,9 @@ def x_format_log_line__mutmut_5(entry: dict[str, Any]) -> str:
 
     """
     # Extract common fields
-    timestamp = entry.get("_timestamp", )
+    timestamp = entry.get(
+        "_timestamp",
+    )
     level = entry.get("level", "INFO")
     message = entry.get("message", "")
     service = entry.get("service", "")
@@ -1216,7 +1227,9 @@ def x_format_log_line__mutmut_13(entry: dict[str, Any]) -> str:
     """
     # Extract common fields
     timestamp = entry.get("_timestamp", 0)
-    level = entry.get("level", )
+    level = entry.get(
+        "level",
+    )
     message = entry.get("message", "")
     service = entry.get("service", "")
 
@@ -1622,7 +1635,9 @@ def x_format_log_line__mutmut_22(entry: dict[str, Any]) -> str:
     # Extract common fields
     timestamp = entry.get("_timestamp", 0)
     level = entry.get("level", "INFO")
-    message = entry.get("message", )
+    message = entry.get(
+        "message",
+    )
     service = entry.get("service", "")
 
     # Convert timestamp to readable format
@@ -1983,7 +1998,9 @@ def x_format_log_line__mutmut_30(entry: dict[str, Any]) -> str:
     timestamp = entry.get("_timestamp", 0)
     level = entry.get("level", "INFO")
     message = entry.get("message", "")
-    service = entry.get("service", )
+    service = entry.get(
+        "service",
+    )
 
     # Convert timestamp to readable format
     if timestamp:
@@ -3768,84 +3785,89 @@ def x_format_log_line__mutmut_69(entry: dict[str, Any]) -> str:
 
     return "XX XX".join(parts)
 
-x_format_log_line__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_log_line__mutmut_1': x_format_log_line__mutmut_1, 
-    'x_format_log_line__mutmut_2': x_format_log_line__mutmut_2, 
-    'x_format_log_line__mutmut_3': x_format_log_line__mutmut_3, 
-    'x_format_log_line__mutmut_4': x_format_log_line__mutmut_4, 
-    'x_format_log_line__mutmut_5': x_format_log_line__mutmut_5, 
-    'x_format_log_line__mutmut_6': x_format_log_line__mutmut_6, 
-    'x_format_log_line__mutmut_7': x_format_log_line__mutmut_7, 
-    'x_format_log_line__mutmut_8': x_format_log_line__mutmut_8, 
-    'x_format_log_line__mutmut_9': x_format_log_line__mutmut_9, 
-    'x_format_log_line__mutmut_10': x_format_log_line__mutmut_10, 
-    'x_format_log_line__mutmut_11': x_format_log_line__mutmut_11, 
-    'x_format_log_line__mutmut_12': x_format_log_line__mutmut_12, 
-    'x_format_log_line__mutmut_13': x_format_log_line__mutmut_13, 
-    'x_format_log_line__mutmut_14': x_format_log_line__mutmut_14, 
-    'x_format_log_line__mutmut_15': x_format_log_line__mutmut_15, 
-    'x_format_log_line__mutmut_16': x_format_log_line__mutmut_16, 
-    'x_format_log_line__mutmut_17': x_format_log_line__mutmut_17, 
-    'x_format_log_line__mutmut_18': x_format_log_line__mutmut_18, 
-    'x_format_log_line__mutmut_19': x_format_log_line__mutmut_19, 
-    'x_format_log_line__mutmut_20': x_format_log_line__mutmut_20, 
-    'x_format_log_line__mutmut_21': x_format_log_line__mutmut_21, 
-    'x_format_log_line__mutmut_22': x_format_log_line__mutmut_22, 
-    'x_format_log_line__mutmut_23': x_format_log_line__mutmut_23, 
-    'x_format_log_line__mutmut_24': x_format_log_line__mutmut_24, 
-    'x_format_log_line__mutmut_25': x_format_log_line__mutmut_25, 
-    'x_format_log_line__mutmut_26': x_format_log_line__mutmut_26, 
-    'x_format_log_line__mutmut_27': x_format_log_line__mutmut_27, 
-    'x_format_log_line__mutmut_28': x_format_log_line__mutmut_28, 
-    'x_format_log_line__mutmut_29': x_format_log_line__mutmut_29, 
-    'x_format_log_line__mutmut_30': x_format_log_line__mutmut_30, 
-    'x_format_log_line__mutmut_31': x_format_log_line__mutmut_31, 
-    'x_format_log_line__mutmut_32': x_format_log_line__mutmut_32, 
-    'x_format_log_line__mutmut_33': x_format_log_line__mutmut_33, 
-    'x_format_log_line__mutmut_34': x_format_log_line__mutmut_34, 
-    'x_format_log_line__mutmut_35': x_format_log_line__mutmut_35, 
-    'x_format_log_line__mutmut_36': x_format_log_line__mutmut_36, 
-    'x_format_log_line__mutmut_37': x_format_log_line__mutmut_37, 
-    'x_format_log_line__mutmut_38': x_format_log_line__mutmut_38, 
-    'x_format_log_line__mutmut_39': x_format_log_line__mutmut_39, 
-    'x_format_log_line__mutmut_40': x_format_log_line__mutmut_40, 
-    'x_format_log_line__mutmut_41': x_format_log_line__mutmut_41, 
-    'x_format_log_line__mutmut_42': x_format_log_line__mutmut_42, 
-    'x_format_log_line__mutmut_43': x_format_log_line__mutmut_43, 
-    'x_format_log_line__mutmut_44': x_format_log_line__mutmut_44, 
-    'x_format_log_line__mutmut_45': x_format_log_line__mutmut_45, 
-    'x_format_log_line__mutmut_46': x_format_log_line__mutmut_46, 
-    'x_format_log_line__mutmut_47': x_format_log_line__mutmut_47, 
-    'x_format_log_line__mutmut_48': x_format_log_line__mutmut_48, 
-    'x_format_log_line__mutmut_49': x_format_log_line__mutmut_49, 
-    'x_format_log_line__mutmut_50': x_format_log_line__mutmut_50, 
-    'x_format_log_line__mutmut_51': x_format_log_line__mutmut_51, 
-    'x_format_log_line__mutmut_52': x_format_log_line__mutmut_52, 
-    'x_format_log_line__mutmut_53': x_format_log_line__mutmut_53, 
-    'x_format_log_line__mutmut_54': x_format_log_line__mutmut_54, 
-    'x_format_log_line__mutmut_55': x_format_log_line__mutmut_55, 
-    'x_format_log_line__mutmut_56': x_format_log_line__mutmut_56, 
-    'x_format_log_line__mutmut_57': x_format_log_line__mutmut_57, 
-    'x_format_log_line__mutmut_58': x_format_log_line__mutmut_58, 
-    'x_format_log_line__mutmut_59': x_format_log_line__mutmut_59, 
-    'x_format_log_line__mutmut_60': x_format_log_line__mutmut_60, 
-    'x_format_log_line__mutmut_61': x_format_log_line__mutmut_61, 
-    'x_format_log_line__mutmut_62': x_format_log_line__mutmut_62, 
-    'x_format_log_line__mutmut_63': x_format_log_line__mutmut_63, 
-    'x_format_log_line__mutmut_64': x_format_log_line__mutmut_64, 
-    'x_format_log_line__mutmut_65': x_format_log_line__mutmut_65, 
-    'x_format_log_line__mutmut_66': x_format_log_line__mutmut_66, 
-    'x_format_log_line__mutmut_67': x_format_log_line__mutmut_67, 
-    'x_format_log_line__mutmut_68': x_format_log_line__mutmut_68, 
-    'x_format_log_line__mutmut_69': x_format_log_line__mutmut_69
+
+x_format_log_line__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_log_line__mutmut_1": x_format_log_line__mutmut_1,
+    "x_format_log_line__mutmut_2": x_format_log_line__mutmut_2,
+    "x_format_log_line__mutmut_3": x_format_log_line__mutmut_3,
+    "x_format_log_line__mutmut_4": x_format_log_line__mutmut_4,
+    "x_format_log_line__mutmut_5": x_format_log_line__mutmut_5,
+    "x_format_log_line__mutmut_6": x_format_log_line__mutmut_6,
+    "x_format_log_line__mutmut_7": x_format_log_line__mutmut_7,
+    "x_format_log_line__mutmut_8": x_format_log_line__mutmut_8,
+    "x_format_log_line__mutmut_9": x_format_log_line__mutmut_9,
+    "x_format_log_line__mutmut_10": x_format_log_line__mutmut_10,
+    "x_format_log_line__mutmut_11": x_format_log_line__mutmut_11,
+    "x_format_log_line__mutmut_12": x_format_log_line__mutmut_12,
+    "x_format_log_line__mutmut_13": x_format_log_line__mutmut_13,
+    "x_format_log_line__mutmut_14": x_format_log_line__mutmut_14,
+    "x_format_log_line__mutmut_15": x_format_log_line__mutmut_15,
+    "x_format_log_line__mutmut_16": x_format_log_line__mutmut_16,
+    "x_format_log_line__mutmut_17": x_format_log_line__mutmut_17,
+    "x_format_log_line__mutmut_18": x_format_log_line__mutmut_18,
+    "x_format_log_line__mutmut_19": x_format_log_line__mutmut_19,
+    "x_format_log_line__mutmut_20": x_format_log_line__mutmut_20,
+    "x_format_log_line__mutmut_21": x_format_log_line__mutmut_21,
+    "x_format_log_line__mutmut_22": x_format_log_line__mutmut_22,
+    "x_format_log_line__mutmut_23": x_format_log_line__mutmut_23,
+    "x_format_log_line__mutmut_24": x_format_log_line__mutmut_24,
+    "x_format_log_line__mutmut_25": x_format_log_line__mutmut_25,
+    "x_format_log_line__mutmut_26": x_format_log_line__mutmut_26,
+    "x_format_log_line__mutmut_27": x_format_log_line__mutmut_27,
+    "x_format_log_line__mutmut_28": x_format_log_line__mutmut_28,
+    "x_format_log_line__mutmut_29": x_format_log_line__mutmut_29,
+    "x_format_log_line__mutmut_30": x_format_log_line__mutmut_30,
+    "x_format_log_line__mutmut_31": x_format_log_line__mutmut_31,
+    "x_format_log_line__mutmut_32": x_format_log_line__mutmut_32,
+    "x_format_log_line__mutmut_33": x_format_log_line__mutmut_33,
+    "x_format_log_line__mutmut_34": x_format_log_line__mutmut_34,
+    "x_format_log_line__mutmut_35": x_format_log_line__mutmut_35,
+    "x_format_log_line__mutmut_36": x_format_log_line__mutmut_36,
+    "x_format_log_line__mutmut_37": x_format_log_line__mutmut_37,
+    "x_format_log_line__mutmut_38": x_format_log_line__mutmut_38,
+    "x_format_log_line__mutmut_39": x_format_log_line__mutmut_39,
+    "x_format_log_line__mutmut_40": x_format_log_line__mutmut_40,
+    "x_format_log_line__mutmut_41": x_format_log_line__mutmut_41,
+    "x_format_log_line__mutmut_42": x_format_log_line__mutmut_42,
+    "x_format_log_line__mutmut_43": x_format_log_line__mutmut_43,
+    "x_format_log_line__mutmut_44": x_format_log_line__mutmut_44,
+    "x_format_log_line__mutmut_45": x_format_log_line__mutmut_45,
+    "x_format_log_line__mutmut_46": x_format_log_line__mutmut_46,
+    "x_format_log_line__mutmut_47": x_format_log_line__mutmut_47,
+    "x_format_log_line__mutmut_48": x_format_log_line__mutmut_48,
+    "x_format_log_line__mutmut_49": x_format_log_line__mutmut_49,
+    "x_format_log_line__mutmut_50": x_format_log_line__mutmut_50,
+    "x_format_log_line__mutmut_51": x_format_log_line__mutmut_51,
+    "x_format_log_line__mutmut_52": x_format_log_line__mutmut_52,
+    "x_format_log_line__mutmut_53": x_format_log_line__mutmut_53,
+    "x_format_log_line__mutmut_54": x_format_log_line__mutmut_54,
+    "x_format_log_line__mutmut_55": x_format_log_line__mutmut_55,
+    "x_format_log_line__mutmut_56": x_format_log_line__mutmut_56,
+    "x_format_log_line__mutmut_57": x_format_log_line__mutmut_57,
+    "x_format_log_line__mutmut_58": x_format_log_line__mutmut_58,
+    "x_format_log_line__mutmut_59": x_format_log_line__mutmut_59,
+    "x_format_log_line__mutmut_60": x_format_log_line__mutmut_60,
+    "x_format_log_line__mutmut_61": x_format_log_line__mutmut_61,
+    "x_format_log_line__mutmut_62": x_format_log_line__mutmut_62,
+    "x_format_log_line__mutmut_63": x_format_log_line__mutmut_63,
+    "x_format_log_line__mutmut_64": x_format_log_line__mutmut_64,
+    "x_format_log_line__mutmut_65": x_format_log_line__mutmut_65,
+    "x_format_log_line__mutmut_66": x_format_log_line__mutmut_66,
+    "x_format_log_line__mutmut_67": x_format_log_line__mutmut_67,
+    "x_format_log_line__mutmut_68": x_format_log_line__mutmut_68,
+    "x_format_log_line__mutmut_69": x_format_log_line__mutmut_69,
 }
 
+
 def format_log_line(*args, **kwargs):
-    result = _mutmut_trampoline(x_format_log_line__mutmut_orig, x_format_log_line__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_format_log_line__mutmut_orig, x_format_log_line__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 format_log_line.__signature__ = _mutmut_signature(x_format_log_line__mutmut_orig)
-x_format_log_line__mutmut_orig.__name__ = 'x_format_log_line'
+x_format_log_line__mutmut_orig.__name__ = "x_format_log_line"
 
 
 def x__determine_columns__mutmut_orig(hits: list[dict[str, Any]]) -> list[str]:
@@ -4171,32 +4193,37 @@ def x__determine_columns__mutmut_17(hits: list[dict[str, Any]]) -> list[str]:
     columns.extend(sorted(None))
     return columns
 
-x__determine_columns__mutmut_mutants : ClassVar[MutantDict] = {
-'x__determine_columns__mutmut_1': x__determine_columns__mutmut_1, 
-    'x__determine_columns__mutmut_2': x__determine_columns__mutmut_2, 
-    'x__determine_columns__mutmut_3': x__determine_columns__mutmut_3, 
-    'x__determine_columns__mutmut_4': x__determine_columns__mutmut_4, 
-    'x__determine_columns__mutmut_5': x__determine_columns__mutmut_5, 
-    'x__determine_columns__mutmut_6': x__determine_columns__mutmut_6, 
-    'x__determine_columns__mutmut_7': x__determine_columns__mutmut_7, 
-    'x__determine_columns__mutmut_8': x__determine_columns__mutmut_8, 
-    'x__determine_columns__mutmut_9': x__determine_columns__mutmut_9, 
-    'x__determine_columns__mutmut_10': x__determine_columns__mutmut_10, 
-    'x__determine_columns__mutmut_11': x__determine_columns__mutmut_11, 
-    'x__determine_columns__mutmut_12': x__determine_columns__mutmut_12, 
-    'x__determine_columns__mutmut_13': x__determine_columns__mutmut_13, 
-    'x__determine_columns__mutmut_14': x__determine_columns__mutmut_14, 
-    'x__determine_columns__mutmut_15': x__determine_columns__mutmut_15, 
-    'x__determine_columns__mutmut_16': x__determine_columns__mutmut_16, 
-    'x__determine_columns__mutmut_17': x__determine_columns__mutmut_17
+
+x__determine_columns__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__determine_columns__mutmut_1": x__determine_columns__mutmut_1,
+    "x__determine_columns__mutmut_2": x__determine_columns__mutmut_2,
+    "x__determine_columns__mutmut_3": x__determine_columns__mutmut_3,
+    "x__determine_columns__mutmut_4": x__determine_columns__mutmut_4,
+    "x__determine_columns__mutmut_5": x__determine_columns__mutmut_5,
+    "x__determine_columns__mutmut_6": x__determine_columns__mutmut_6,
+    "x__determine_columns__mutmut_7": x__determine_columns__mutmut_7,
+    "x__determine_columns__mutmut_8": x__determine_columns__mutmut_8,
+    "x__determine_columns__mutmut_9": x__determine_columns__mutmut_9,
+    "x__determine_columns__mutmut_10": x__determine_columns__mutmut_10,
+    "x__determine_columns__mutmut_11": x__determine_columns__mutmut_11,
+    "x__determine_columns__mutmut_12": x__determine_columns__mutmut_12,
+    "x__determine_columns__mutmut_13": x__determine_columns__mutmut_13,
+    "x__determine_columns__mutmut_14": x__determine_columns__mutmut_14,
+    "x__determine_columns__mutmut_15": x__determine_columns__mutmut_15,
+    "x__determine_columns__mutmut_16": x__determine_columns__mutmut_16,
+    "x__determine_columns__mutmut_17": x__determine_columns__mutmut_17,
 }
 
+
 def _determine_columns(*args, **kwargs):
-    result = _mutmut_trampoline(x__determine_columns__mutmut_orig, x__determine_columns__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__determine_columns__mutmut_orig, x__determine_columns__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _determine_columns.__signature__ = _mutmut_signature(x__determine_columns__mutmut_orig)
-x__determine_columns__mutmut_orig.__name__ = 'x__determine_columns'
+x__determine_columns__mutmut_orig.__name__ = "x__determine_columns"
 
 
 def x__filter_internal_columns__mutmut_orig(columns: list[str]) -> list[str]:
@@ -4275,25 +4302,30 @@ def x__filter_internal_columns__mutmut_10(columns: list[str]) -> list[str]:
         return [c for c in columns if not c.startswith("_") or c == "_TIMESTAMP"]
     return columns
 
-x__filter_internal_columns__mutmut_mutants : ClassVar[MutantDict] = {
-'x__filter_internal_columns__mutmut_1': x__filter_internal_columns__mutmut_1, 
-    'x__filter_internal_columns__mutmut_2': x__filter_internal_columns__mutmut_2, 
-    'x__filter_internal_columns__mutmut_3': x__filter_internal_columns__mutmut_3, 
-    'x__filter_internal_columns__mutmut_4': x__filter_internal_columns__mutmut_4, 
-    'x__filter_internal_columns__mutmut_5': x__filter_internal_columns__mutmut_5, 
-    'x__filter_internal_columns__mutmut_6': x__filter_internal_columns__mutmut_6, 
-    'x__filter_internal_columns__mutmut_7': x__filter_internal_columns__mutmut_7, 
-    'x__filter_internal_columns__mutmut_8': x__filter_internal_columns__mutmut_8, 
-    'x__filter_internal_columns__mutmut_9': x__filter_internal_columns__mutmut_9, 
-    'x__filter_internal_columns__mutmut_10': x__filter_internal_columns__mutmut_10
+
+x__filter_internal_columns__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__filter_internal_columns__mutmut_1": x__filter_internal_columns__mutmut_1,
+    "x__filter_internal_columns__mutmut_2": x__filter_internal_columns__mutmut_2,
+    "x__filter_internal_columns__mutmut_3": x__filter_internal_columns__mutmut_3,
+    "x__filter_internal_columns__mutmut_4": x__filter_internal_columns__mutmut_4,
+    "x__filter_internal_columns__mutmut_5": x__filter_internal_columns__mutmut_5,
+    "x__filter_internal_columns__mutmut_6": x__filter_internal_columns__mutmut_6,
+    "x__filter_internal_columns__mutmut_7": x__filter_internal_columns__mutmut_7,
+    "x__filter_internal_columns__mutmut_8": x__filter_internal_columns__mutmut_8,
+    "x__filter_internal_columns__mutmut_9": x__filter_internal_columns__mutmut_9,
+    "x__filter_internal_columns__mutmut_10": x__filter_internal_columns__mutmut_10,
 }
 
+
 def _filter_internal_columns(*args, **kwargs):
-    result = _mutmut_trampoline(x__filter_internal_columns__mutmut_orig, x__filter_internal_columns__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__filter_internal_columns__mutmut_orig, x__filter_internal_columns__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _filter_internal_columns.__signature__ = _mutmut_signature(x__filter_internal_columns__mutmut_orig)
-x__filter_internal_columns__mutmut_orig.__name__ = 'x__filter_internal_columns'
+x__filter_internal_columns__mutmut_orig.__name__ = "x__filter_internal_columns"
 
 
 def x__format_cell_value__mutmut_orig(col: str, value: Any, max_length: int = 50) -> str:
@@ -4685,40 +4717,45 @@ def x__format_cell_value__mutmut_25(col: str, value: Any, max_length: int = 50) 
         return value_str[: max_length - 3] + "XX...XX"
     return value_str
 
-x__format_cell_value__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_cell_value__mutmut_1': x__format_cell_value__mutmut_1, 
-    'x__format_cell_value__mutmut_2': x__format_cell_value__mutmut_2, 
-    'x__format_cell_value__mutmut_3': x__format_cell_value__mutmut_3, 
-    'x__format_cell_value__mutmut_4': x__format_cell_value__mutmut_4, 
-    'x__format_cell_value__mutmut_5': x__format_cell_value__mutmut_5, 
-    'x__format_cell_value__mutmut_6': x__format_cell_value__mutmut_6, 
-    'x__format_cell_value__mutmut_7': x__format_cell_value__mutmut_7, 
-    'x__format_cell_value__mutmut_8': x__format_cell_value__mutmut_8, 
-    'x__format_cell_value__mutmut_9': x__format_cell_value__mutmut_9, 
-    'x__format_cell_value__mutmut_10': x__format_cell_value__mutmut_10, 
-    'x__format_cell_value__mutmut_11': x__format_cell_value__mutmut_11, 
-    'x__format_cell_value__mutmut_12': x__format_cell_value__mutmut_12, 
-    'x__format_cell_value__mutmut_13': x__format_cell_value__mutmut_13, 
-    'x__format_cell_value__mutmut_14': x__format_cell_value__mutmut_14, 
-    'x__format_cell_value__mutmut_15': x__format_cell_value__mutmut_15, 
-    'x__format_cell_value__mutmut_16': x__format_cell_value__mutmut_16, 
-    'x__format_cell_value__mutmut_17': x__format_cell_value__mutmut_17, 
-    'x__format_cell_value__mutmut_18': x__format_cell_value__mutmut_18, 
-    'x__format_cell_value__mutmut_19': x__format_cell_value__mutmut_19, 
-    'x__format_cell_value__mutmut_20': x__format_cell_value__mutmut_20, 
-    'x__format_cell_value__mutmut_21': x__format_cell_value__mutmut_21, 
-    'x__format_cell_value__mutmut_22': x__format_cell_value__mutmut_22, 
-    'x__format_cell_value__mutmut_23': x__format_cell_value__mutmut_23, 
-    'x__format_cell_value__mutmut_24': x__format_cell_value__mutmut_24, 
-    'x__format_cell_value__mutmut_25': x__format_cell_value__mutmut_25
+
+x__format_cell_value__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_cell_value__mutmut_1": x__format_cell_value__mutmut_1,
+    "x__format_cell_value__mutmut_2": x__format_cell_value__mutmut_2,
+    "x__format_cell_value__mutmut_3": x__format_cell_value__mutmut_3,
+    "x__format_cell_value__mutmut_4": x__format_cell_value__mutmut_4,
+    "x__format_cell_value__mutmut_5": x__format_cell_value__mutmut_5,
+    "x__format_cell_value__mutmut_6": x__format_cell_value__mutmut_6,
+    "x__format_cell_value__mutmut_7": x__format_cell_value__mutmut_7,
+    "x__format_cell_value__mutmut_8": x__format_cell_value__mutmut_8,
+    "x__format_cell_value__mutmut_9": x__format_cell_value__mutmut_9,
+    "x__format_cell_value__mutmut_10": x__format_cell_value__mutmut_10,
+    "x__format_cell_value__mutmut_11": x__format_cell_value__mutmut_11,
+    "x__format_cell_value__mutmut_12": x__format_cell_value__mutmut_12,
+    "x__format_cell_value__mutmut_13": x__format_cell_value__mutmut_13,
+    "x__format_cell_value__mutmut_14": x__format_cell_value__mutmut_14,
+    "x__format_cell_value__mutmut_15": x__format_cell_value__mutmut_15,
+    "x__format_cell_value__mutmut_16": x__format_cell_value__mutmut_16,
+    "x__format_cell_value__mutmut_17": x__format_cell_value__mutmut_17,
+    "x__format_cell_value__mutmut_18": x__format_cell_value__mutmut_18,
+    "x__format_cell_value__mutmut_19": x__format_cell_value__mutmut_19,
+    "x__format_cell_value__mutmut_20": x__format_cell_value__mutmut_20,
+    "x__format_cell_value__mutmut_21": x__format_cell_value__mutmut_21,
+    "x__format_cell_value__mutmut_22": x__format_cell_value__mutmut_22,
+    "x__format_cell_value__mutmut_23": x__format_cell_value__mutmut_23,
+    "x__format_cell_value__mutmut_24": x__format_cell_value__mutmut_24,
+    "x__format_cell_value__mutmut_25": x__format_cell_value__mutmut_25,
 }
 
+
 def _format_cell_value(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_cell_value__mutmut_orig, x__format_cell_value__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_cell_value__mutmut_orig, x__format_cell_value__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _format_cell_value.__signature__ = _mutmut_signature(x__format_cell_value__mutmut_orig)
-x__format_cell_value__mutmut_orig.__name__ = 'x__format_cell_value'
+x__format_cell_value__mutmut_orig.__name__ = "x__format_cell_value"
 
 
 def x__format_with_tabulate__mutmut_orig(hits: list[dict[str, Any]], columns: list[str]) -> str:
@@ -4841,7 +4878,9 @@ def x__format_with_tabulate__mutmut_7(hits: list[dict[str, Any]], columns: list[
     for hit in hits:
         row = []
         for col in columns:
-            value = hit.get(col, )
+            value = hit.get(
+                col,
+            )
             formatted_value = _format_cell_value(col, value, max_length=50)
             row.append(formatted_value)
         rows.append(row)
@@ -4970,7 +5009,10 @@ def x__format_with_tabulate__mutmut_15(hits: list[dict[str, Any]], columns: list
         row = []
         for col in columns:
             value = hit.get(col, "")
-            formatted_value = _format_cell_value(col, value, )
+            formatted_value = _format_cell_value(
+                col,
+                value,
+            )
             row.append(formatted_value)
         rows.append(row)
 
@@ -5118,7 +5160,10 @@ def x__format_with_tabulate__mutmut_24(hits: list[dict[str, Any]], columns: list
             row.append(formatted_value)
         rows.append(row)
 
-    return tabulate(rows, headers=columns, )
+    return tabulate(
+        rows,
+        headers=columns,
+    )
 
 
 def x__format_with_tabulate__mutmut_25(hits: list[dict[str, Any]], columns: list[str]) -> str:
@@ -5152,41 +5197,46 @@ def x__format_with_tabulate__mutmut_26(hits: list[dict[str, Any]], columns: list
 
     return tabulate(rows, headers=columns, tablefmt="GRID")
 
-x__format_with_tabulate__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_with_tabulate__mutmut_1': x__format_with_tabulate__mutmut_1, 
-    'x__format_with_tabulate__mutmut_2': x__format_with_tabulate__mutmut_2, 
-    'x__format_with_tabulate__mutmut_3': x__format_with_tabulate__mutmut_3, 
-    'x__format_with_tabulate__mutmut_4': x__format_with_tabulate__mutmut_4, 
-    'x__format_with_tabulate__mutmut_5': x__format_with_tabulate__mutmut_5, 
-    'x__format_with_tabulate__mutmut_6': x__format_with_tabulate__mutmut_6, 
-    'x__format_with_tabulate__mutmut_7': x__format_with_tabulate__mutmut_7, 
-    'x__format_with_tabulate__mutmut_8': x__format_with_tabulate__mutmut_8, 
-    'x__format_with_tabulate__mutmut_9': x__format_with_tabulate__mutmut_9, 
-    'x__format_with_tabulate__mutmut_10': x__format_with_tabulate__mutmut_10, 
-    'x__format_with_tabulate__mutmut_11': x__format_with_tabulate__mutmut_11, 
-    'x__format_with_tabulate__mutmut_12': x__format_with_tabulate__mutmut_12, 
-    'x__format_with_tabulate__mutmut_13': x__format_with_tabulate__mutmut_13, 
-    'x__format_with_tabulate__mutmut_14': x__format_with_tabulate__mutmut_14, 
-    'x__format_with_tabulate__mutmut_15': x__format_with_tabulate__mutmut_15, 
-    'x__format_with_tabulate__mutmut_16': x__format_with_tabulate__mutmut_16, 
-    'x__format_with_tabulate__mutmut_17': x__format_with_tabulate__mutmut_17, 
-    'x__format_with_tabulate__mutmut_18': x__format_with_tabulate__mutmut_18, 
-    'x__format_with_tabulate__mutmut_19': x__format_with_tabulate__mutmut_19, 
-    'x__format_with_tabulate__mutmut_20': x__format_with_tabulate__mutmut_20, 
-    'x__format_with_tabulate__mutmut_21': x__format_with_tabulate__mutmut_21, 
-    'x__format_with_tabulate__mutmut_22': x__format_with_tabulate__mutmut_22, 
-    'x__format_with_tabulate__mutmut_23': x__format_with_tabulate__mutmut_23, 
-    'x__format_with_tabulate__mutmut_24': x__format_with_tabulate__mutmut_24, 
-    'x__format_with_tabulate__mutmut_25': x__format_with_tabulate__mutmut_25, 
-    'x__format_with_tabulate__mutmut_26': x__format_with_tabulate__mutmut_26
+
+x__format_with_tabulate__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_with_tabulate__mutmut_1": x__format_with_tabulate__mutmut_1,
+    "x__format_with_tabulate__mutmut_2": x__format_with_tabulate__mutmut_2,
+    "x__format_with_tabulate__mutmut_3": x__format_with_tabulate__mutmut_3,
+    "x__format_with_tabulate__mutmut_4": x__format_with_tabulate__mutmut_4,
+    "x__format_with_tabulate__mutmut_5": x__format_with_tabulate__mutmut_5,
+    "x__format_with_tabulate__mutmut_6": x__format_with_tabulate__mutmut_6,
+    "x__format_with_tabulate__mutmut_7": x__format_with_tabulate__mutmut_7,
+    "x__format_with_tabulate__mutmut_8": x__format_with_tabulate__mutmut_8,
+    "x__format_with_tabulate__mutmut_9": x__format_with_tabulate__mutmut_9,
+    "x__format_with_tabulate__mutmut_10": x__format_with_tabulate__mutmut_10,
+    "x__format_with_tabulate__mutmut_11": x__format_with_tabulate__mutmut_11,
+    "x__format_with_tabulate__mutmut_12": x__format_with_tabulate__mutmut_12,
+    "x__format_with_tabulate__mutmut_13": x__format_with_tabulate__mutmut_13,
+    "x__format_with_tabulate__mutmut_14": x__format_with_tabulate__mutmut_14,
+    "x__format_with_tabulate__mutmut_15": x__format_with_tabulate__mutmut_15,
+    "x__format_with_tabulate__mutmut_16": x__format_with_tabulate__mutmut_16,
+    "x__format_with_tabulate__mutmut_17": x__format_with_tabulate__mutmut_17,
+    "x__format_with_tabulate__mutmut_18": x__format_with_tabulate__mutmut_18,
+    "x__format_with_tabulate__mutmut_19": x__format_with_tabulate__mutmut_19,
+    "x__format_with_tabulate__mutmut_20": x__format_with_tabulate__mutmut_20,
+    "x__format_with_tabulate__mutmut_21": x__format_with_tabulate__mutmut_21,
+    "x__format_with_tabulate__mutmut_22": x__format_with_tabulate__mutmut_22,
+    "x__format_with_tabulate__mutmut_23": x__format_with_tabulate__mutmut_23,
+    "x__format_with_tabulate__mutmut_24": x__format_with_tabulate__mutmut_24,
+    "x__format_with_tabulate__mutmut_25": x__format_with_tabulate__mutmut_25,
+    "x__format_with_tabulate__mutmut_26": x__format_with_tabulate__mutmut_26,
 }
 
+
 def _format_with_tabulate(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_with_tabulate__mutmut_orig, x__format_with_tabulate__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_with_tabulate__mutmut_orig, x__format_with_tabulate__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _format_with_tabulate.__signature__ = _mutmut_signature(x__format_with_tabulate__mutmut_orig)
-x__format_with_tabulate__mutmut_orig.__name__ = 'x__format_with_tabulate'
+x__format_with_tabulate__mutmut_orig.__name__ = "x__format_with_tabulate"
 
 
 def x__format_simple_table__mutmut_orig(hits: list[dict[str, Any]], columns: list[str]) -> str:
@@ -5501,7 +5551,9 @@ def x__format_simple_table__mutmut_15(hits: list[dict[str, Any]], columns: list[
     for hit in hits:
         row_values = []
         for col in columns:
-            value = hit.get(col, )
+            value = hit.get(
+                col,
+            )
             formatted_value = _format_cell_value(col, value, max_length=12)
             row_values.append(formatted_value)
         lines.append(" | ".join(row_values))
@@ -5662,7 +5714,10 @@ def x__format_simple_table__mutmut_23(hits: list[dict[str, Any]], columns: list[
         row_values = []
         for col in columns:
             value = hit.get(col, "")
-            formatted_value = _format_cell_value(col, value, )
+            formatted_value = _format_cell_value(
+                col,
+                value,
+            )
             row_values.append(formatted_value)
         lines.append(" | ".join(row_values))
 
@@ -5808,45 +5863,50 @@ def x__format_simple_table__mutmut_30(hits: list[dict[str, Any]], columns: list[
 
     return "XX\nXX".join(lines)
 
-x__format_simple_table__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_simple_table__mutmut_1': x__format_simple_table__mutmut_1, 
-    'x__format_simple_table__mutmut_2': x__format_simple_table__mutmut_2, 
-    'x__format_simple_table__mutmut_3': x__format_simple_table__mutmut_3, 
-    'x__format_simple_table__mutmut_4': x__format_simple_table__mutmut_4, 
-    'x__format_simple_table__mutmut_5': x__format_simple_table__mutmut_5, 
-    'x__format_simple_table__mutmut_6': x__format_simple_table__mutmut_6, 
-    'x__format_simple_table__mutmut_7': x__format_simple_table__mutmut_7, 
-    'x__format_simple_table__mutmut_8': x__format_simple_table__mutmut_8, 
-    'x__format_simple_table__mutmut_9': x__format_simple_table__mutmut_9, 
-    'x__format_simple_table__mutmut_10': x__format_simple_table__mutmut_10, 
-    'x__format_simple_table__mutmut_11': x__format_simple_table__mutmut_11, 
-    'x__format_simple_table__mutmut_12': x__format_simple_table__mutmut_12, 
-    'x__format_simple_table__mutmut_13': x__format_simple_table__mutmut_13, 
-    'x__format_simple_table__mutmut_14': x__format_simple_table__mutmut_14, 
-    'x__format_simple_table__mutmut_15': x__format_simple_table__mutmut_15, 
-    'x__format_simple_table__mutmut_16': x__format_simple_table__mutmut_16, 
-    'x__format_simple_table__mutmut_17': x__format_simple_table__mutmut_17, 
-    'x__format_simple_table__mutmut_18': x__format_simple_table__mutmut_18, 
-    'x__format_simple_table__mutmut_19': x__format_simple_table__mutmut_19, 
-    'x__format_simple_table__mutmut_20': x__format_simple_table__mutmut_20, 
-    'x__format_simple_table__mutmut_21': x__format_simple_table__mutmut_21, 
-    'x__format_simple_table__mutmut_22': x__format_simple_table__mutmut_22, 
-    'x__format_simple_table__mutmut_23': x__format_simple_table__mutmut_23, 
-    'x__format_simple_table__mutmut_24': x__format_simple_table__mutmut_24, 
-    'x__format_simple_table__mutmut_25': x__format_simple_table__mutmut_25, 
-    'x__format_simple_table__mutmut_26': x__format_simple_table__mutmut_26, 
-    'x__format_simple_table__mutmut_27': x__format_simple_table__mutmut_27, 
-    'x__format_simple_table__mutmut_28': x__format_simple_table__mutmut_28, 
-    'x__format_simple_table__mutmut_29': x__format_simple_table__mutmut_29, 
-    'x__format_simple_table__mutmut_30': x__format_simple_table__mutmut_30
+
+x__format_simple_table__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_simple_table__mutmut_1": x__format_simple_table__mutmut_1,
+    "x__format_simple_table__mutmut_2": x__format_simple_table__mutmut_2,
+    "x__format_simple_table__mutmut_3": x__format_simple_table__mutmut_3,
+    "x__format_simple_table__mutmut_4": x__format_simple_table__mutmut_4,
+    "x__format_simple_table__mutmut_5": x__format_simple_table__mutmut_5,
+    "x__format_simple_table__mutmut_6": x__format_simple_table__mutmut_6,
+    "x__format_simple_table__mutmut_7": x__format_simple_table__mutmut_7,
+    "x__format_simple_table__mutmut_8": x__format_simple_table__mutmut_8,
+    "x__format_simple_table__mutmut_9": x__format_simple_table__mutmut_9,
+    "x__format_simple_table__mutmut_10": x__format_simple_table__mutmut_10,
+    "x__format_simple_table__mutmut_11": x__format_simple_table__mutmut_11,
+    "x__format_simple_table__mutmut_12": x__format_simple_table__mutmut_12,
+    "x__format_simple_table__mutmut_13": x__format_simple_table__mutmut_13,
+    "x__format_simple_table__mutmut_14": x__format_simple_table__mutmut_14,
+    "x__format_simple_table__mutmut_15": x__format_simple_table__mutmut_15,
+    "x__format_simple_table__mutmut_16": x__format_simple_table__mutmut_16,
+    "x__format_simple_table__mutmut_17": x__format_simple_table__mutmut_17,
+    "x__format_simple_table__mutmut_18": x__format_simple_table__mutmut_18,
+    "x__format_simple_table__mutmut_19": x__format_simple_table__mutmut_19,
+    "x__format_simple_table__mutmut_20": x__format_simple_table__mutmut_20,
+    "x__format_simple_table__mutmut_21": x__format_simple_table__mutmut_21,
+    "x__format_simple_table__mutmut_22": x__format_simple_table__mutmut_22,
+    "x__format_simple_table__mutmut_23": x__format_simple_table__mutmut_23,
+    "x__format_simple_table__mutmut_24": x__format_simple_table__mutmut_24,
+    "x__format_simple_table__mutmut_25": x__format_simple_table__mutmut_25,
+    "x__format_simple_table__mutmut_26": x__format_simple_table__mutmut_26,
+    "x__format_simple_table__mutmut_27": x__format_simple_table__mutmut_27,
+    "x__format_simple_table__mutmut_28": x__format_simple_table__mutmut_28,
+    "x__format_simple_table__mutmut_29": x__format_simple_table__mutmut_29,
+    "x__format_simple_table__mutmut_30": x__format_simple_table__mutmut_30,
 }
 
+
 def _format_simple_table(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_simple_table__mutmut_orig, x__format_simple_table__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_simple_table__mutmut_orig, x__format_simple_table__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _format_simple_table.__signature__ = _mutmut_signature(x__format_simple_table__mutmut_orig)
-x__format_simple_table__mutmut_orig.__name__ = 'x__format_simple_table'
+x__format_simple_table__mutmut_orig.__name__ = "x__format_simple_table"
 
 
 def x_format_table__mutmut_orig(response: SearchResponse, columns: list[str] | None = None) -> str:
@@ -6208,7 +6268,9 @@ def x_format_table__mutmut_13(response: SearchResponse, columns: list[str] | Non
 
     # Try to use tabulate if available
     try:
-        return _format_with_tabulate(response.hits, )
+        return _format_with_tabulate(
+            response.hits,
+        )
     except ImportError:
         return _format_simple_table(response.hits, columns)
 
@@ -6314,34 +6376,39 @@ def x_format_table__mutmut_17(response: SearchResponse, columns: list[str] | Non
     try:
         return _format_with_tabulate(response.hits, columns)
     except ImportError:
-        return _format_simple_table(response.hits, )
+        return _format_simple_table(
+            response.hits,
+        )
 
-x_format_table__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_table__mutmut_1': x_format_table__mutmut_1, 
-    'x_format_table__mutmut_2': x_format_table__mutmut_2, 
-    'x_format_table__mutmut_3': x_format_table__mutmut_3, 
-    'x_format_table__mutmut_4': x_format_table__mutmut_4, 
-    'x_format_table__mutmut_5': x_format_table__mutmut_5, 
-    'x_format_table__mutmut_6': x_format_table__mutmut_6, 
-    'x_format_table__mutmut_7': x_format_table__mutmut_7, 
-    'x_format_table__mutmut_8': x_format_table__mutmut_8, 
-    'x_format_table__mutmut_9': x_format_table__mutmut_9, 
-    'x_format_table__mutmut_10': x_format_table__mutmut_10, 
-    'x_format_table__mutmut_11': x_format_table__mutmut_11, 
-    'x_format_table__mutmut_12': x_format_table__mutmut_12, 
-    'x_format_table__mutmut_13': x_format_table__mutmut_13, 
-    'x_format_table__mutmut_14': x_format_table__mutmut_14, 
-    'x_format_table__mutmut_15': x_format_table__mutmut_15, 
-    'x_format_table__mutmut_16': x_format_table__mutmut_16, 
-    'x_format_table__mutmut_17': x_format_table__mutmut_17
+
+x_format_table__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_table__mutmut_1": x_format_table__mutmut_1,
+    "x_format_table__mutmut_2": x_format_table__mutmut_2,
+    "x_format_table__mutmut_3": x_format_table__mutmut_3,
+    "x_format_table__mutmut_4": x_format_table__mutmut_4,
+    "x_format_table__mutmut_5": x_format_table__mutmut_5,
+    "x_format_table__mutmut_6": x_format_table__mutmut_6,
+    "x_format_table__mutmut_7": x_format_table__mutmut_7,
+    "x_format_table__mutmut_8": x_format_table__mutmut_8,
+    "x_format_table__mutmut_9": x_format_table__mutmut_9,
+    "x_format_table__mutmut_10": x_format_table__mutmut_10,
+    "x_format_table__mutmut_11": x_format_table__mutmut_11,
+    "x_format_table__mutmut_12": x_format_table__mutmut_12,
+    "x_format_table__mutmut_13": x_format_table__mutmut_13,
+    "x_format_table__mutmut_14": x_format_table__mutmut_14,
+    "x_format_table__mutmut_15": x_format_table__mutmut_15,
+    "x_format_table__mutmut_16": x_format_table__mutmut_16,
+    "x_format_table__mutmut_17": x_format_table__mutmut_17,
 }
+
 
 def format_table(*args, **kwargs):
     result = _mutmut_trampoline(x_format_table__mutmut_orig, x_format_table__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 format_table.__signature__ = _mutmut_signature(x_format_table__mutmut_orig)
-x_format_table__mutmut_orig.__name__ = 'x_format_table'
+x_format_table__mutmut_orig.__name__ = "x_format_table"
 
 
 def x_format_csv__mutmut_orig(response: SearchResponse, columns: list[str] | None = None) -> str:
@@ -6952,7 +7019,10 @@ def x_format_csv__mutmut_15(response: SearchResponse, columns: list[str] | None 
 
     # Create CSV
     output = io.StringIO()
-    writer = csv.DictWriter(output, fieldnames=columns, )
+    writer = csv.DictWriter(
+        output,
+        fieldnames=columns,
+    )
 
     writer.writeheader()
     for hit in response.hits:
@@ -7630,47 +7700,50 @@ def x_format_csv__mutmut_32(response: SearchResponse, columns: list[str] | None 
 
     return output.getvalue()
 
-x_format_csv__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_csv__mutmut_1': x_format_csv__mutmut_1, 
-    'x_format_csv__mutmut_2': x_format_csv__mutmut_2, 
-    'x_format_csv__mutmut_3': x_format_csv__mutmut_3, 
-    'x_format_csv__mutmut_4': x_format_csv__mutmut_4, 
-    'x_format_csv__mutmut_5': x_format_csv__mutmut_5, 
-    'x_format_csv__mutmut_6': x_format_csv__mutmut_6, 
-    'x_format_csv__mutmut_7': x_format_csv__mutmut_7, 
-    'x_format_csv__mutmut_8': x_format_csv__mutmut_8, 
-    'x_format_csv__mutmut_9': x_format_csv__mutmut_9, 
-    'x_format_csv__mutmut_10': x_format_csv__mutmut_10, 
-    'x_format_csv__mutmut_11': x_format_csv__mutmut_11, 
-    'x_format_csv__mutmut_12': x_format_csv__mutmut_12, 
-    'x_format_csv__mutmut_13': x_format_csv__mutmut_13, 
-    'x_format_csv__mutmut_14': x_format_csv__mutmut_14, 
-    'x_format_csv__mutmut_15': x_format_csv__mutmut_15, 
-    'x_format_csv__mutmut_16': x_format_csv__mutmut_16, 
-    'x_format_csv__mutmut_17': x_format_csv__mutmut_17, 
-    'x_format_csv__mutmut_18': x_format_csv__mutmut_18, 
-    'x_format_csv__mutmut_19': x_format_csv__mutmut_19, 
-    'x_format_csv__mutmut_20': x_format_csv__mutmut_20, 
-    'x_format_csv__mutmut_21': x_format_csv__mutmut_21, 
-    'x_format_csv__mutmut_22': x_format_csv__mutmut_22, 
-    'x_format_csv__mutmut_23': x_format_csv__mutmut_23, 
-    'x_format_csv__mutmut_24': x_format_csv__mutmut_24, 
-    'x_format_csv__mutmut_25': x_format_csv__mutmut_25, 
-    'x_format_csv__mutmut_26': x_format_csv__mutmut_26, 
-    'x_format_csv__mutmut_27': x_format_csv__mutmut_27, 
-    'x_format_csv__mutmut_28': x_format_csv__mutmut_28, 
-    'x_format_csv__mutmut_29': x_format_csv__mutmut_29, 
-    'x_format_csv__mutmut_30': x_format_csv__mutmut_30, 
-    'x_format_csv__mutmut_31': x_format_csv__mutmut_31, 
-    'x_format_csv__mutmut_32': x_format_csv__mutmut_32
+
+x_format_csv__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_csv__mutmut_1": x_format_csv__mutmut_1,
+    "x_format_csv__mutmut_2": x_format_csv__mutmut_2,
+    "x_format_csv__mutmut_3": x_format_csv__mutmut_3,
+    "x_format_csv__mutmut_4": x_format_csv__mutmut_4,
+    "x_format_csv__mutmut_5": x_format_csv__mutmut_5,
+    "x_format_csv__mutmut_6": x_format_csv__mutmut_6,
+    "x_format_csv__mutmut_7": x_format_csv__mutmut_7,
+    "x_format_csv__mutmut_8": x_format_csv__mutmut_8,
+    "x_format_csv__mutmut_9": x_format_csv__mutmut_9,
+    "x_format_csv__mutmut_10": x_format_csv__mutmut_10,
+    "x_format_csv__mutmut_11": x_format_csv__mutmut_11,
+    "x_format_csv__mutmut_12": x_format_csv__mutmut_12,
+    "x_format_csv__mutmut_13": x_format_csv__mutmut_13,
+    "x_format_csv__mutmut_14": x_format_csv__mutmut_14,
+    "x_format_csv__mutmut_15": x_format_csv__mutmut_15,
+    "x_format_csv__mutmut_16": x_format_csv__mutmut_16,
+    "x_format_csv__mutmut_17": x_format_csv__mutmut_17,
+    "x_format_csv__mutmut_18": x_format_csv__mutmut_18,
+    "x_format_csv__mutmut_19": x_format_csv__mutmut_19,
+    "x_format_csv__mutmut_20": x_format_csv__mutmut_20,
+    "x_format_csv__mutmut_21": x_format_csv__mutmut_21,
+    "x_format_csv__mutmut_22": x_format_csv__mutmut_22,
+    "x_format_csv__mutmut_23": x_format_csv__mutmut_23,
+    "x_format_csv__mutmut_24": x_format_csv__mutmut_24,
+    "x_format_csv__mutmut_25": x_format_csv__mutmut_25,
+    "x_format_csv__mutmut_26": x_format_csv__mutmut_26,
+    "x_format_csv__mutmut_27": x_format_csv__mutmut_27,
+    "x_format_csv__mutmut_28": x_format_csv__mutmut_28,
+    "x_format_csv__mutmut_29": x_format_csv__mutmut_29,
+    "x_format_csv__mutmut_30": x_format_csv__mutmut_30,
+    "x_format_csv__mutmut_31": x_format_csv__mutmut_31,
+    "x_format_csv__mutmut_32": x_format_csv__mutmut_32,
 }
+
 
 def format_csv(*args, **kwargs):
     result = _mutmut_trampoline(x_format_csv__mutmut_orig, x_format_csv__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 format_csv.__signature__ = _mutmut_signature(x_format_csv__mutmut_orig)
-x_format_csv__mutmut_orig.__name__ = 'x_format_csv'
+x_format_csv__mutmut_orig.__name__ = "x_format_csv"
 
 
 def x_format_summary__mutmut_orig(response: SearchResponse) -> str:
@@ -8413,7 +8486,9 @@ def x_format_summary__mutmut_17(response: SearchResponse) -> str:
     # Add level distribution if available
     level_counts: dict[str, int] = {}
     for hit in response.hits:
-        level = hit.get("level", )
+        level = hit.get(
+            "level",
+        )
         level_counts[level] = level_counts.get(level, 0) + 1
 
     if level_counts:
@@ -8834,7 +8909,12 @@ def x_format_summary__mutmut_27(response: SearchResponse) -> str:
     level_counts: dict[str, int] = {}
     for hit in response.hits:
         level = hit.get("level", "UNKNOWN")
-        level_counts[level] = level_counts.get(level, ) + 1
+        level_counts[level] = (
+            level_counts.get(
+                level,
+            )
+            + 1
+        )
 
     if level_counts:
         lines.append("\nLevel distribution:")
@@ -9263,52 +9343,55 @@ def x_format_summary__mutmut_37(response: SearchResponse) -> str:
 
     return "XX\nXX".join(lines)
 
-x_format_summary__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_summary__mutmut_1': x_format_summary__mutmut_1, 
-    'x_format_summary__mutmut_2': x_format_summary__mutmut_2, 
-    'x_format_summary__mutmut_3': x_format_summary__mutmut_3, 
-    'x_format_summary__mutmut_4': x_format_summary__mutmut_4, 
-    'x_format_summary__mutmut_5': x_format_summary__mutmut_5, 
-    'x_format_summary__mutmut_6': x_format_summary__mutmut_6, 
-    'x_format_summary__mutmut_7': x_format_summary__mutmut_7, 
-    'x_format_summary__mutmut_8': x_format_summary__mutmut_8, 
-    'x_format_summary__mutmut_9': x_format_summary__mutmut_9, 
-    'x_format_summary__mutmut_10': x_format_summary__mutmut_10, 
-    'x_format_summary__mutmut_11': x_format_summary__mutmut_11, 
-    'x_format_summary__mutmut_12': x_format_summary__mutmut_12, 
-    'x_format_summary__mutmut_13': x_format_summary__mutmut_13, 
-    'x_format_summary__mutmut_14': x_format_summary__mutmut_14, 
-    'x_format_summary__mutmut_15': x_format_summary__mutmut_15, 
-    'x_format_summary__mutmut_16': x_format_summary__mutmut_16, 
-    'x_format_summary__mutmut_17': x_format_summary__mutmut_17, 
-    'x_format_summary__mutmut_18': x_format_summary__mutmut_18, 
-    'x_format_summary__mutmut_19': x_format_summary__mutmut_19, 
-    'x_format_summary__mutmut_20': x_format_summary__mutmut_20, 
-    'x_format_summary__mutmut_21': x_format_summary__mutmut_21, 
-    'x_format_summary__mutmut_22': x_format_summary__mutmut_22, 
-    'x_format_summary__mutmut_23': x_format_summary__mutmut_23, 
-    'x_format_summary__mutmut_24': x_format_summary__mutmut_24, 
-    'x_format_summary__mutmut_25': x_format_summary__mutmut_25, 
-    'x_format_summary__mutmut_26': x_format_summary__mutmut_26, 
-    'x_format_summary__mutmut_27': x_format_summary__mutmut_27, 
-    'x_format_summary__mutmut_28': x_format_summary__mutmut_28, 
-    'x_format_summary__mutmut_29': x_format_summary__mutmut_29, 
-    'x_format_summary__mutmut_30': x_format_summary__mutmut_30, 
-    'x_format_summary__mutmut_31': x_format_summary__mutmut_31, 
-    'x_format_summary__mutmut_32': x_format_summary__mutmut_32, 
-    'x_format_summary__mutmut_33': x_format_summary__mutmut_33, 
-    'x_format_summary__mutmut_34': x_format_summary__mutmut_34, 
-    'x_format_summary__mutmut_35': x_format_summary__mutmut_35, 
-    'x_format_summary__mutmut_36': x_format_summary__mutmut_36, 
-    'x_format_summary__mutmut_37': x_format_summary__mutmut_37
+
+x_format_summary__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_summary__mutmut_1": x_format_summary__mutmut_1,
+    "x_format_summary__mutmut_2": x_format_summary__mutmut_2,
+    "x_format_summary__mutmut_3": x_format_summary__mutmut_3,
+    "x_format_summary__mutmut_4": x_format_summary__mutmut_4,
+    "x_format_summary__mutmut_5": x_format_summary__mutmut_5,
+    "x_format_summary__mutmut_6": x_format_summary__mutmut_6,
+    "x_format_summary__mutmut_7": x_format_summary__mutmut_7,
+    "x_format_summary__mutmut_8": x_format_summary__mutmut_8,
+    "x_format_summary__mutmut_9": x_format_summary__mutmut_9,
+    "x_format_summary__mutmut_10": x_format_summary__mutmut_10,
+    "x_format_summary__mutmut_11": x_format_summary__mutmut_11,
+    "x_format_summary__mutmut_12": x_format_summary__mutmut_12,
+    "x_format_summary__mutmut_13": x_format_summary__mutmut_13,
+    "x_format_summary__mutmut_14": x_format_summary__mutmut_14,
+    "x_format_summary__mutmut_15": x_format_summary__mutmut_15,
+    "x_format_summary__mutmut_16": x_format_summary__mutmut_16,
+    "x_format_summary__mutmut_17": x_format_summary__mutmut_17,
+    "x_format_summary__mutmut_18": x_format_summary__mutmut_18,
+    "x_format_summary__mutmut_19": x_format_summary__mutmut_19,
+    "x_format_summary__mutmut_20": x_format_summary__mutmut_20,
+    "x_format_summary__mutmut_21": x_format_summary__mutmut_21,
+    "x_format_summary__mutmut_22": x_format_summary__mutmut_22,
+    "x_format_summary__mutmut_23": x_format_summary__mutmut_23,
+    "x_format_summary__mutmut_24": x_format_summary__mutmut_24,
+    "x_format_summary__mutmut_25": x_format_summary__mutmut_25,
+    "x_format_summary__mutmut_26": x_format_summary__mutmut_26,
+    "x_format_summary__mutmut_27": x_format_summary__mutmut_27,
+    "x_format_summary__mutmut_28": x_format_summary__mutmut_28,
+    "x_format_summary__mutmut_29": x_format_summary__mutmut_29,
+    "x_format_summary__mutmut_30": x_format_summary__mutmut_30,
+    "x_format_summary__mutmut_31": x_format_summary__mutmut_31,
+    "x_format_summary__mutmut_32": x_format_summary__mutmut_32,
+    "x_format_summary__mutmut_33": x_format_summary__mutmut_33,
+    "x_format_summary__mutmut_34": x_format_summary__mutmut_34,
+    "x_format_summary__mutmut_35": x_format_summary__mutmut_35,
+    "x_format_summary__mutmut_36": x_format_summary__mutmut_36,
+    "x_format_summary__mutmut_37": x_format_summary__mutmut_37,
 }
+
 
 def format_summary(*args, **kwargs):
     result = _mutmut_trampoline(x_format_summary__mutmut_orig, x_format_summary__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 format_summary.__signature__ = _mutmut_signature(x_format_summary__mutmut_orig)
-x_format_summary__mutmut_orig.__name__ = 'x_format_summary'
+x_format_summary__mutmut_orig.__name__ = "x_format_summary"
 
 
 def x__format_as_log__mutmut_orig(response: SearchResponse | dict[str, Any]) -> str:
@@ -9345,19 +9428,22 @@ def x__format_as_log__mutmut_4(response: SearchResponse | dict[str, Any]) -> str
         return format_log_line(response)
     return "\n".join(format_log_line(None) for hit in response.hits)
 
-x__format_as_log__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_as_log__mutmut_1': x__format_as_log__mutmut_1, 
-    'x__format_as_log__mutmut_2': x__format_as_log__mutmut_2, 
-    'x__format_as_log__mutmut_3': x__format_as_log__mutmut_3, 
-    'x__format_as_log__mutmut_4': x__format_as_log__mutmut_4
+
+x__format_as_log__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_as_log__mutmut_1": x__format_as_log__mutmut_1,
+    "x__format_as_log__mutmut_2": x__format_as_log__mutmut_2,
+    "x__format_as_log__mutmut_3": x__format_as_log__mutmut_3,
+    "x__format_as_log__mutmut_4": x__format_as_log__mutmut_4,
 }
+
 
 def _format_as_log(*args, **kwargs):
     result = _mutmut_trampoline(x__format_as_log__mutmut_orig, x__format_as_log__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _format_as_log.__signature__ = _mutmut_signature(x__format_as_log__mutmut_orig)
-x__format_as_log__mutmut_orig.__name__ = 'x__format_as_log'
+x__format_as_log__mutmut_orig.__name__ = "x__format_as_log"
 
 
 def x__format_as_table__mutmut_orig(response: SearchResponse | dict[str, Any], **kwargs: Any) -> str:
@@ -9405,7 +9491,9 @@ def x__format_as_table__mutmut_2(response: SearchResponse | dict[str, Any], **kw
 def x__format_as_table__mutmut_3(response: SearchResponse | dict[str, Any], **kwargs: Any) -> str:
     """Format response as table."""
     if isinstance(response, SearchResponse):
-        return format_table(response, )
+        return format_table(
+            response,
+        )
     # Single entry as table
     single_response = SearchResponse(
         hits=[response],
@@ -9529,7 +9617,7 @@ def x__format_as_table__mutmut_12(response: SearchResponse | dict[str, Any], **k
         hits=[response],
         total=1,
         took=0,
-        )
+    )
     return format_table(single_response, **kwargs)
 
 
@@ -9614,35 +9702,42 @@ def x__format_as_table__mutmut_18(response: SearchResponse | dict[str, Any], **k
         took=0,
         scan_size=0,
     )
-    return format_table(single_response, )
+    return format_table(
+        single_response,
+    )
 
-x__format_as_table__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_as_table__mutmut_1': x__format_as_table__mutmut_1, 
-    'x__format_as_table__mutmut_2': x__format_as_table__mutmut_2, 
-    'x__format_as_table__mutmut_3': x__format_as_table__mutmut_3, 
-    'x__format_as_table__mutmut_4': x__format_as_table__mutmut_4, 
-    'x__format_as_table__mutmut_5': x__format_as_table__mutmut_5, 
-    'x__format_as_table__mutmut_6': x__format_as_table__mutmut_6, 
-    'x__format_as_table__mutmut_7': x__format_as_table__mutmut_7, 
-    'x__format_as_table__mutmut_8': x__format_as_table__mutmut_8, 
-    'x__format_as_table__mutmut_9': x__format_as_table__mutmut_9, 
-    'x__format_as_table__mutmut_10': x__format_as_table__mutmut_10, 
-    'x__format_as_table__mutmut_11': x__format_as_table__mutmut_11, 
-    'x__format_as_table__mutmut_12': x__format_as_table__mutmut_12, 
-    'x__format_as_table__mutmut_13': x__format_as_table__mutmut_13, 
-    'x__format_as_table__mutmut_14': x__format_as_table__mutmut_14, 
-    'x__format_as_table__mutmut_15': x__format_as_table__mutmut_15, 
-    'x__format_as_table__mutmut_16': x__format_as_table__mutmut_16, 
-    'x__format_as_table__mutmut_17': x__format_as_table__mutmut_17, 
-    'x__format_as_table__mutmut_18': x__format_as_table__mutmut_18
+
+x__format_as_table__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_as_table__mutmut_1": x__format_as_table__mutmut_1,
+    "x__format_as_table__mutmut_2": x__format_as_table__mutmut_2,
+    "x__format_as_table__mutmut_3": x__format_as_table__mutmut_3,
+    "x__format_as_table__mutmut_4": x__format_as_table__mutmut_4,
+    "x__format_as_table__mutmut_5": x__format_as_table__mutmut_5,
+    "x__format_as_table__mutmut_6": x__format_as_table__mutmut_6,
+    "x__format_as_table__mutmut_7": x__format_as_table__mutmut_7,
+    "x__format_as_table__mutmut_8": x__format_as_table__mutmut_8,
+    "x__format_as_table__mutmut_9": x__format_as_table__mutmut_9,
+    "x__format_as_table__mutmut_10": x__format_as_table__mutmut_10,
+    "x__format_as_table__mutmut_11": x__format_as_table__mutmut_11,
+    "x__format_as_table__mutmut_12": x__format_as_table__mutmut_12,
+    "x__format_as_table__mutmut_13": x__format_as_table__mutmut_13,
+    "x__format_as_table__mutmut_14": x__format_as_table__mutmut_14,
+    "x__format_as_table__mutmut_15": x__format_as_table__mutmut_15,
+    "x__format_as_table__mutmut_16": x__format_as_table__mutmut_16,
+    "x__format_as_table__mutmut_17": x__format_as_table__mutmut_17,
+    "x__format_as_table__mutmut_18": x__format_as_table__mutmut_18,
 }
 
+
 def _format_as_table(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_as_table__mutmut_orig, x__format_as_table__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_as_table__mutmut_orig, x__format_as_table__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _format_as_table.__signature__ = _mutmut_signature(x__format_as_table__mutmut_orig)
-x__format_as_table__mutmut_orig.__name__ = 'x__format_as_table'
+x__format_as_table__mutmut_orig.__name__ = "x__format_as_table"
 
 
 def x__format_as_csv__mutmut_orig(response: SearchResponse | dict[str, Any], **kwargs: Any) -> str:
@@ -9687,7 +9782,9 @@ def x__format_as_csv__mutmut_2(response: SearchResponse | dict[str, Any], **kwar
 def x__format_as_csv__mutmut_3(response: SearchResponse | dict[str, Any], **kwargs: Any) -> str:
     """Format response as CSV."""
     if isinstance(response, SearchResponse):
-        return format_csv(response, )
+        return format_csv(
+            response,
+        )
     single_response = SearchResponse(
         hits=[response],
         total=1,
@@ -9801,7 +9898,7 @@ def x__format_as_csv__mutmut_12(response: SearchResponse | dict[str, Any], **kwa
         hits=[response],
         total=1,
         took=0,
-        )
+    )
     return format_csv(single_response, **kwargs)
 
 
@@ -9880,35 +9977,40 @@ def x__format_as_csv__mutmut_18(response: SearchResponse | dict[str, Any], **kwa
         took=0,
         scan_size=0,
     )
-    return format_csv(single_response, )
+    return format_csv(
+        single_response,
+    )
 
-x__format_as_csv__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_as_csv__mutmut_1': x__format_as_csv__mutmut_1, 
-    'x__format_as_csv__mutmut_2': x__format_as_csv__mutmut_2, 
-    'x__format_as_csv__mutmut_3': x__format_as_csv__mutmut_3, 
-    'x__format_as_csv__mutmut_4': x__format_as_csv__mutmut_4, 
-    'x__format_as_csv__mutmut_5': x__format_as_csv__mutmut_5, 
-    'x__format_as_csv__mutmut_6': x__format_as_csv__mutmut_6, 
-    'x__format_as_csv__mutmut_7': x__format_as_csv__mutmut_7, 
-    'x__format_as_csv__mutmut_8': x__format_as_csv__mutmut_8, 
-    'x__format_as_csv__mutmut_9': x__format_as_csv__mutmut_9, 
-    'x__format_as_csv__mutmut_10': x__format_as_csv__mutmut_10, 
-    'x__format_as_csv__mutmut_11': x__format_as_csv__mutmut_11, 
-    'x__format_as_csv__mutmut_12': x__format_as_csv__mutmut_12, 
-    'x__format_as_csv__mutmut_13': x__format_as_csv__mutmut_13, 
-    'x__format_as_csv__mutmut_14': x__format_as_csv__mutmut_14, 
-    'x__format_as_csv__mutmut_15': x__format_as_csv__mutmut_15, 
-    'x__format_as_csv__mutmut_16': x__format_as_csv__mutmut_16, 
-    'x__format_as_csv__mutmut_17': x__format_as_csv__mutmut_17, 
-    'x__format_as_csv__mutmut_18': x__format_as_csv__mutmut_18
+
+x__format_as_csv__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_as_csv__mutmut_1": x__format_as_csv__mutmut_1,
+    "x__format_as_csv__mutmut_2": x__format_as_csv__mutmut_2,
+    "x__format_as_csv__mutmut_3": x__format_as_csv__mutmut_3,
+    "x__format_as_csv__mutmut_4": x__format_as_csv__mutmut_4,
+    "x__format_as_csv__mutmut_5": x__format_as_csv__mutmut_5,
+    "x__format_as_csv__mutmut_6": x__format_as_csv__mutmut_6,
+    "x__format_as_csv__mutmut_7": x__format_as_csv__mutmut_7,
+    "x__format_as_csv__mutmut_8": x__format_as_csv__mutmut_8,
+    "x__format_as_csv__mutmut_9": x__format_as_csv__mutmut_9,
+    "x__format_as_csv__mutmut_10": x__format_as_csv__mutmut_10,
+    "x__format_as_csv__mutmut_11": x__format_as_csv__mutmut_11,
+    "x__format_as_csv__mutmut_12": x__format_as_csv__mutmut_12,
+    "x__format_as_csv__mutmut_13": x__format_as_csv__mutmut_13,
+    "x__format_as_csv__mutmut_14": x__format_as_csv__mutmut_14,
+    "x__format_as_csv__mutmut_15": x__format_as_csv__mutmut_15,
+    "x__format_as_csv__mutmut_16": x__format_as_csv__mutmut_16,
+    "x__format_as_csv__mutmut_17": x__format_as_csv__mutmut_17,
+    "x__format_as_csv__mutmut_18": x__format_as_csv__mutmut_18,
 }
+
 
 def _format_as_csv(*args, **kwargs):
     result = _mutmut_trampoline(x__format_as_csv__mutmut_orig, x__format_as_csv__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _format_as_csv.__signature__ = _mutmut_signature(x__format_as_csv__mutmut_orig)
-x__format_as_csv__mutmut_orig.__name__ = 'x__format_as_csv'
+x__format_as_csv__mutmut_orig.__name__ = "x__format_as_csv"
 
 
 def x__format_as_summary__mutmut_orig(response: SearchResponse | dict[str, Any]) -> str:
@@ -9945,19 +10047,24 @@ def x__format_as_summary__mutmut_4(response: SearchResponse | dict[str, Any]) ->
         return format_summary(response)
     return "SINGLE LOG ENTRY (USE 'LOG' OR 'JSON' FORMAT FOR DETAILS)"
 
-x__format_as_summary__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_as_summary__mutmut_1': x__format_as_summary__mutmut_1, 
-    'x__format_as_summary__mutmut_2': x__format_as_summary__mutmut_2, 
-    'x__format_as_summary__mutmut_3': x__format_as_summary__mutmut_3, 
-    'x__format_as_summary__mutmut_4': x__format_as_summary__mutmut_4
+
+x__format_as_summary__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_as_summary__mutmut_1": x__format_as_summary__mutmut_1,
+    "x__format_as_summary__mutmut_2": x__format_as_summary__mutmut_2,
+    "x__format_as_summary__mutmut_3": x__format_as_summary__mutmut_3,
+    "x__format_as_summary__mutmut_4": x__format_as_summary__mutmut_4,
 }
 
+
 def _format_as_summary(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_as_summary__mutmut_orig, x__format_as_summary__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_as_summary__mutmut_orig, x__format_as_summary__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _format_as_summary.__signature__ = _mutmut_signature(x__format_as_summary__mutmut_orig)
-x__format_as_summary__mutmut_orig.__name__ = 'x__format_as_summary'
+x__format_as_summary__mutmut_orig.__name__ = "x__format_as_summary"
 
 
 def x_format_output__mutmut_orig(
@@ -10413,7 +10520,9 @@ def x_format_output__mutmut_14(
     """
     match format_type.lower():
         case "json":
-            return format_json(response, )
+            return format_json(
+                response,
+            )
         case "log":
             return _format_as_log(response)
         case "table":
@@ -10673,7 +10782,9 @@ def x_format_output__mutmut_22(
         case "log":
             return _format_as_log(response)
         case "table":
-            return _format_as_table(response, )
+            return _format_as_table(
+                response,
+            )
         case "csv":
             return _format_as_csv(response, **kwargs)
         case "summary":
@@ -10835,7 +10946,9 @@ def x_format_output__mutmut_27(
         case "table":
             return _format_as_table(response, **kwargs)
         case "csv":
-            return _format_as_csv(response, )
+            return _format_as_csv(
+                response,
+            )
         case "summary":
             return _format_as_summary(response)
         case _:
@@ -10970,46 +11083,49 @@ def x_format_output__mutmut_31(
             # Default to log format
             return _format_as_log(None)
 
-x_format_output__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_output__mutmut_1': x_format_output__mutmut_1, 
-    'x_format_output__mutmut_2': x_format_output__mutmut_2, 
-    'x_format_output__mutmut_3': x_format_output__mutmut_3, 
-    'x_format_output__mutmut_4': x_format_output__mutmut_4, 
-    'x_format_output__mutmut_5': x_format_output__mutmut_5, 
-    'x_format_output__mutmut_6': x_format_output__mutmut_6, 
-    'x_format_output__mutmut_7': x_format_output__mutmut_7, 
-    'x_format_output__mutmut_8': x_format_output__mutmut_8, 
-    'x_format_output__mutmut_9': x_format_output__mutmut_9, 
-    'x_format_output__mutmut_10': x_format_output__mutmut_10, 
-    'x_format_output__mutmut_11': x_format_output__mutmut_11, 
-    'x_format_output__mutmut_12': x_format_output__mutmut_12, 
-    'x_format_output__mutmut_13': x_format_output__mutmut_13, 
-    'x_format_output__mutmut_14': x_format_output__mutmut_14, 
-    'x_format_output__mutmut_15': x_format_output__mutmut_15, 
-    'x_format_output__mutmut_16': x_format_output__mutmut_16, 
-    'x_format_output__mutmut_17': x_format_output__mutmut_17, 
-    'x_format_output__mutmut_18': x_format_output__mutmut_18, 
-    'x_format_output__mutmut_19': x_format_output__mutmut_19, 
-    'x_format_output__mutmut_20': x_format_output__mutmut_20, 
-    'x_format_output__mutmut_21': x_format_output__mutmut_21, 
-    'x_format_output__mutmut_22': x_format_output__mutmut_22, 
-    'x_format_output__mutmut_23': x_format_output__mutmut_23, 
-    'x_format_output__mutmut_24': x_format_output__mutmut_24, 
-    'x_format_output__mutmut_25': x_format_output__mutmut_25, 
-    'x_format_output__mutmut_26': x_format_output__mutmut_26, 
-    'x_format_output__mutmut_27': x_format_output__mutmut_27, 
-    'x_format_output__mutmut_28': x_format_output__mutmut_28, 
-    'x_format_output__mutmut_29': x_format_output__mutmut_29, 
-    'x_format_output__mutmut_30': x_format_output__mutmut_30, 
-    'x_format_output__mutmut_31': x_format_output__mutmut_31
+
+x_format_output__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_output__mutmut_1": x_format_output__mutmut_1,
+    "x_format_output__mutmut_2": x_format_output__mutmut_2,
+    "x_format_output__mutmut_3": x_format_output__mutmut_3,
+    "x_format_output__mutmut_4": x_format_output__mutmut_4,
+    "x_format_output__mutmut_5": x_format_output__mutmut_5,
+    "x_format_output__mutmut_6": x_format_output__mutmut_6,
+    "x_format_output__mutmut_7": x_format_output__mutmut_7,
+    "x_format_output__mutmut_8": x_format_output__mutmut_8,
+    "x_format_output__mutmut_9": x_format_output__mutmut_9,
+    "x_format_output__mutmut_10": x_format_output__mutmut_10,
+    "x_format_output__mutmut_11": x_format_output__mutmut_11,
+    "x_format_output__mutmut_12": x_format_output__mutmut_12,
+    "x_format_output__mutmut_13": x_format_output__mutmut_13,
+    "x_format_output__mutmut_14": x_format_output__mutmut_14,
+    "x_format_output__mutmut_15": x_format_output__mutmut_15,
+    "x_format_output__mutmut_16": x_format_output__mutmut_16,
+    "x_format_output__mutmut_17": x_format_output__mutmut_17,
+    "x_format_output__mutmut_18": x_format_output__mutmut_18,
+    "x_format_output__mutmut_19": x_format_output__mutmut_19,
+    "x_format_output__mutmut_20": x_format_output__mutmut_20,
+    "x_format_output__mutmut_21": x_format_output__mutmut_21,
+    "x_format_output__mutmut_22": x_format_output__mutmut_22,
+    "x_format_output__mutmut_23": x_format_output__mutmut_23,
+    "x_format_output__mutmut_24": x_format_output__mutmut_24,
+    "x_format_output__mutmut_25": x_format_output__mutmut_25,
+    "x_format_output__mutmut_26": x_format_output__mutmut_26,
+    "x_format_output__mutmut_27": x_format_output__mutmut_27,
+    "x_format_output__mutmut_28": x_format_output__mutmut_28,
+    "x_format_output__mutmut_29": x_format_output__mutmut_29,
+    "x_format_output__mutmut_30": x_format_output__mutmut_30,
+    "x_format_output__mutmut_31": x_format_output__mutmut_31,
 }
+
 
 def format_output(*args, **kwargs):
     result = _mutmut_trampoline(x_format_output__mutmut_orig, x_format_output__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 format_output.__signature__ = _mutmut_signature(x_format_output__mutmut_orig)
-x_format_output__mutmut_orig.__name__ = 'x_format_output'
+x_format_output__mutmut_orig.__name__ = "x_format_output"
 
 
 # <3 🧱🤝🔌🪄

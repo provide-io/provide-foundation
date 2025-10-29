@@ -24,23 +24,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -516,26 +519,31 @@ def x_parse_bool_extended__mutmut_11(value: str | bool) -> bool:
     # Only return True for explicit true values, everything else is False
     return value_lower in ("true", "yes", "1", "ON")
 
-x_parse_bool_extended__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_bool_extended__mutmut_1': x_parse_bool_extended__mutmut_1, 
-    'x_parse_bool_extended__mutmut_2': x_parse_bool_extended__mutmut_2, 
-    'x_parse_bool_extended__mutmut_3': x_parse_bool_extended__mutmut_3, 
-    'x_parse_bool_extended__mutmut_4': x_parse_bool_extended__mutmut_4, 
-    'x_parse_bool_extended__mutmut_5': x_parse_bool_extended__mutmut_5, 
-    'x_parse_bool_extended__mutmut_6': x_parse_bool_extended__mutmut_6, 
-    'x_parse_bool_extended__mutmut_7': x_parse_bool_extended__mutmut_7, 
-    'x_parse_bool_extended__mutmut_8': x_parse_bool_extended__mutmut_8, 
-    'x_parse_bool_extended__mutmut_9': x_parse_bool_extended__mutmut_9, 
-    'x_parse_bool_extended__mutmut_10': x_parse_bool_extended__mutmut_10, 
-    'x_parse_bool_extended__mutmut_11': x_parse_bool_extended__mutmut_11
+
+x_parse_bool_extended__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_bool_extended__mutmut_1": x_parse_bool_extended__mutmut_1,
+    "x_parse_bool_extended__mutmut_2": x_parse_bool_extended__mutmut_2,
+    "x_parse_bool_extended__mutmut_3": x_parse_bool_extended__mutmut_3,
+    "x_parse_bool_extended__mutmut_4": x_parse_bool_extended__mutmut_4,
+    "x_parse_bool_extended__mutmut_5": x_parse_bool_extended__mutmut_5,
+    "x_parse_bool_extended__mutmut_6": x_parse_bool_extended__mutmut_6,
+    "x_parse_bool_extended__mutmut_7": x_parse_bool_extended__mutmut_7,
+    "x_parse_bool_extended__mutmut_8": x_parse_bool_extended__mutmut_8,
+    "x_parse_bool_extended__mutmut_9": x_parse_bool_extended__mutmut_9,
+    "x_parse_bool_extended__mutmut_10": x_parse_bool_extended__mutmut_10,
+    "x_parse_bool_extended__mutmut_11": x_parse_bool_extended__mutmut_11,
 }
 
+
 def parse_bool_extended(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_bool_extended__mutmut_orig, x_parse_bool_extended__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_bool_extended__mutmut_orig, x_parse_bool_extended__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_bool_extended.__signature__ = _mutmut_signature(x_parse_bool_extended__mutmut_orig)
-x_parse_bool_extended__mutmut_orig.__name__ = 'x_parse_bool_extended'
+x_parse_bool_extended__mutmut_orig.__name__ = "x_parse_bool_extended"
 
 
 def x_parse_bool_strict__mutmut_orig(value: str | bool | int | float) -> bool:
@@ -4223,7 +4231,7 @@ def x_parse_bool_strict__mutmut_49(value: str | bool | int | float) -> bool:
             "boolean",
             value,
             valid_options=["true", "false", "yes", "no", "1", "0", "on", "off", "enabled", "disabled"],
-            ),
+        ),
     )
 
 
@@ -5928,87 +5936,92 @@ def x_parse_bool_strict__mutmut_72(value: str | bool | int | float) -> bool:
         ),
     )
 
-x_parse_bool_strict__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_bool_strict__mutmut_1': x_parse_bool_strict__mutmut_1, 
-    'x_parse_bool_strict__mutmut_2': x_parse_bool_strict__mutmut_2, 
-    'x_parse_bool_strict__mutmut_3': x_parse_bool_strict__mutmut_3, 
-    'x_parse_bool_strict__mutmut_4': x_parse_bool_strict__mutmut_4, 
-    'x_parse_bool_strict__mutmut_5': x_parse_bool_strict__mutmut_5, 
-    'x_parse_bool_strict__mutmut_6': x_parse_bool_strict__mutmut_6, 
-    'x_parse_bool_strict__mutmut_7': x_parse_bool_strict__mutmut_7, 
-    'x_parse_bool_strict__mutmut_8': x_parse_bool_strict__mutmut_8, 
-    'x_parse_bool_strict__mutmut_9': x_parse_bool_strict__mutmut_9, 
-    'x_parse_bool_strict__mutmut_10': x_parse_bool_strict__mutmut_10, 
-    'x_parse_bool_strict__mutmut_11': x_parse_bool_strict__mutmut_11, 
-    'x_parse_bool_strict__mutmut_12': x_parse_bool_strict__mutmut_12, 
-    'x_parse_bool_strict__mutmut_13': x_parse_bool_strict__mutmut_13, 
-    'x_parse_bool_strict__mutmut_14': x_parse_bool_strict__mutmut_14, 
-    'x_parse_bool_strict__mutmut_15': x_parse_bool_strict__mutmut_15, 
-    'x_parse_bool_strict__mutmut_16': x_parse_bool_strict__mutmut_16, 
-    'x_parse_bool_strict__mutmut_17': x_parse_bool_strict__mutmut_17, 
-    'x_parse_bool_strict__mutmut_18': x_parse_bool_strict__mutmut_18, 
-    'x_parse_bool_strict__mutmut_19': x_parse_bool_strict__mutmut_19, 
-    'x_parse_bool_strict__mutmut_20': x_parse_bool_strict__mutmut_20, 
-    'x_parse_bool_strict__mutmut_21': x_parse_bool_strict__mutmut_21, 
-    'x_parse_bool_strict__mutmut_22': x_parse_bool_strict__mutmut_22, 
-    'x_parse_bool_strict__mutmut_23': x_parse_bool_strict__mutmut_23, 
-    'x_parse_bool_strict__mutmut_24': x_parse_bool_strict__mutmut_24, 
-    'x_parse_bool_strict__mutmut_25': x_parse_bool_strict__mutmut_25, 
-    'x_parse_bool_strict__mutmut_26': x_parse_bool_strict__mutmut_26, 
-    'x_parse_bool_strict__mutmut_27': x_parse_bool_strict__mutmut_27, 
-    'x_parse_bool_strict__mutmut_28': x_parse_bool_strict__mutmut_28, 
-    'x_parse_bool_strict__mutmut_29': x_parse_bool_strict__mutmut_29, 
-    'x_parse_bool_strict__mutmut_30': x_parse_bool_strict__mutmut_30, 
-    'x_parse_bool_strict__mutmut_31': x_parse_bool_strict__mutmut_31, 
-    'x_parse_bool_strict__mutmut_32': x_parse_bool_strict__mutmut_32, 
-    'x_parse_bool_strict__mutmut_33': x_parse_bool_strict__mutmut_33, 
-    'x_parse_bool_strict__mutmut_34': x_parse_bool_strict__mutmut_34, 
-    'x_parse_bool_strict__mutmut_35': x_parse_bool_strict__mutmut_35, 
-    'x_parse_bool_strict__mutmut_36': x_parse_bool_strict__mutmut_36, 
-    'x_parse_bool_strict__mutmut_37': x_parse_bool_strict__mutmut_37, 
-    'x_parse_bool_strict__mutmut_38': x_parse_bool_strict__mutmut_38, 
-    'x_parse_bool_strict__mutmut_39': x_parse_bool_strict__mutmut_39, 
-    'x_parse_bool_strict__mutmut_40': x_parse_bool_strict__mutmut_40, 
-    'x_parse_bool_strict__mutmut_41': x_parse_bool_strict__mutmut_41, 
-    'x_parse_bool_strict__mutmut_42': x_parse_bool_strict__mutmut_42, 
-    'x_parse_bool_strict__mutmut_43': x_parse_bool_strict__mutmut_43, 
-    'x_parse_bool_strict__mutmut_44': x_parse_bool_strict__mutmut_44, 
-    'x_parse_bool_strict__mutmut_45': x_parse_bool_strict__mutmut_45, 
-    'x_parse_bool_strict__mutmut_46': x_parse_bool_strict__mutmut_46, 
-    'x_parse_bool_strict__mutmut_47': x_parse_bool_strict__mutmut_47, 
-    'x_parse_bool_strict__mutmut_48': x_parse_bool_strict__mutmut_48, 
-    'x_parse_bool_strict__mutmut_49': x_parse_bool_strict__mutmut_49, 
-    'x_parse_bool_strict__mutmut_50': x_parse_bool_strict__mutmut_50, 
-    'x_parse_bool_strict__mutmut_51': x_parse_bool_strict__mutmut_51, 
-    'x_parse_bool_strict__mutmut_52': x_parse_bool_strict__mutmut_52, 
-    'x_parse_bool_strict__mutmut_53': x_parse_bool_strict__mutmut_53, 
-    'x_parse_bool_strict__mutmut_54': x_parse_bool_strict__mutmut_54, 
-    'x_parse_bool_strict__mutmut_55': x_parse_bool_strict__mutmut_55, 
-    'x_parse_bool_strict__mutmut_56': x_parse_bool_strict__mutmut_56, 
-    'x_parse_bool_strict__mutmut_57': x_parse_bool_strict__mutmut_57, 
-    'x_parse_bool_strict__mutmut_58': x_parse_bool_strict__mutmut_58, 
-    'x_parse_bool_strict__mutmut_59': x_parse_bool_strict__mutmut_59, 
-    'x_parse_bool_strict__mutmut_60': x_parse_bool_strict__mutmut_60, 
-    'x_parse_bool_strict__mutmut_61': x_parse_bool_strict__mutmut_61, 
-    'x_parse_bool_strict__mutmut_62': x_parse_bool_strict__mutmut_62, 
-    'x_parse_bool_strict__mutmut_63': x_parse_bool_strict__mutmut_63, 
-    'x_parse_bool_strict__mutmut_64': x_parse_bool_strict__mutmut_64, 
-    'x_parse_bool_strict__mutmut_65': x_parse_bool_strict__mutmut_65, 
-    'x_parse_bool_strict__mutmut_66': x_parse_bool_strict__mutmut_66, 
-    'x_parse_bool_strict__mutmut_67': x_parse_bool_strict__mutmut_67, 
-    'x_parse_bool_strict__mutmut_68': x_parse_bool_strict__mutmut_68, 
-    'x_parse_bool_strict__mutmut_69': x_parse_bool_strict__mutmut_69, 
-    'x_parse_bool_strict__mutmut_70': x_parse_bool_strict__mutmut_70, 
-    'x_parse_bool_strict__mutmut_71': x_parse_bool_strict__mutmut_71, 
-    'x_parse_bool_strict__mutmut_72': x_parse_bool_strict__mutmut_72
+
+x_parse_bool_strict__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_bool_strict__mutmut_1": x_parse_bool_strict__mutmut_1,
+    "x_parse_bool_strict__mutmut_2": x_parse_bool_strict__mutmut_2,
+    "x_parse_bool_strict__mutmut_3": x_parse_bool_strict__mutmut_3,
+    "x_parse_bool_strict__mutmut_4": x_parse_bool_strict__mutmut_4,
+    "x_parse_bool_strict__mutmut_5": x_parse_bool_strict__mutmut_5,
+    "x_parse_bool_strict__mutmut_6": x_parse_bool_strict__mutmut_6,
+    "x_parse_bool_strict__mutmut_7": x_parse_bool_strict__mutmut_7,
+    "x_parse_bool_strict__mutmut_8": x_parse_bool_strict__mutmut_8,
+    "x_parse_bool_strict__mutmut_9": x_parse_bool_strict__mutmut_9,
+    "x_parse_bool_strict__mutmut_10": x_parse_bool_strict__mutmut_10,
+    "x_parse_bool_strict__mutmut_11": x_parse_bool_strict__mutmut_11,
+    "x_parse_bool_strict__mutmut_12": x_parse_bool_strict__mutmut_12,
+    "x_parse_bool_strict__mutmut_13": x_parse_bool_strict__mutmut_13,
+    "x_parse_bool_strict__mutmut_14": x_parse_bool_strict__mutmut_14,
+    "x_parse_bool_strict__mutmut_15": x_parse_bool_strict__mutmut_15,
+    "x_parse_bool_strict__mutmut_16": x_parse_bool_strict__mutmut_16,
+    "x_parse_bool_strict__mutmut_17": x_parse_bool_strict__mutmut_17,
+    "x_parse_bool_strict__mutmut_18": x_parse_bool_strict__mutmut_18,
+    "x_parse_bool_strict__mutmut_19": x_parse_bool_strict__mutmut_19,
+    "x_parse_bool_strict__mutmut_20": x_parse_bool_strict__mutmut_20,
+    "x_parse_bool_strict__mutmut_21": x_parse_bool_strict__mutmut_21,
+    "x_parse_bool_strict__mutmut_22": x_parse_bool_strict__mutmut_22,
+    "x_parse_bool_strict__mutmut_23": x_parse_bool_strict__mutmut_23,
+    "x_parse_bool_strict__mutmut_24": x_parse_bool_strict__mutmut_24,
+    "x_parse_bool_strict__mutmut_25": x_parse_bool_strict__mutmut_25,
+    "x_parse_bool_strict__mutmut_26": x_parse_bool_strict__mutmut_26,
+    "x_parse_bool_strict__mutmut_27": x_parse_bool_strict__mutmut_27,
+    "x_parse_bool_strict__mutmut_28": x_parse_bool_strict__mutmut_28,
+    "x_parse_bool_strict__mutmut_29": x_parse_bool_strict__mutmut_29,
+    "x_parse_bool_strict__mutmut_30": x_parse_bool_strict__mutmut_30,
+    "x_parse_bool_strict__mutmut_31": x_parse_bool_strict__mutmut_31,
+    "x_parse_bool_strict__mutmut_32": x_parse_bool_strict__mutmut_32,
+    "x_parse_bool_strict__mutmut_33": x_parse_bool_strict__mutmut_33,
+    "x_parse_bool_strict__mutmut_34": x_parse_bool_strict__mutmut_34,
+    "x_parse_bool_strict__mutmut_35": x_parse_bool_strict__mutmut_35,
+    "x_parse_bool_strict__mutmut_36": x_parse_bool_strict__mutmut_36,
+    "x_parse_bool_strict__mutmut_37": x_parse_bool_strict__mutmut_37,
+    "x_parse_bool_strict__mutmut_38": x_parse_bool_strict__mutmut_38,
+    "x_parse_bool_strict__mutmut_39": x_parse_bool_strict__mutmut_39,
+    "x_parse_bool_strict__mutmut_40": x_parse_bool_strict__mutmut_40,
+    "x_parse_bool_strict__mutmut_41": x_parse_bool_strict__mutmut_41,
+    "x_parse_bool_strict__mutmut_42": x_parse_bool_strict__mutmut_42,
+    "x_parse_bool_strict__mutmut_43": x_parse_bool_strict__mutmut_43,
+    "x_parse_bool_strict__mutmut_44": x_parse_bool_strict__mutmut_44,
+    "x_parse_bool_strict__mutmut_45": x_parse_bool_strict__mutmut_45,
+    "x_parse_bool_strict__mutmut_46": x_parse_bool_strict__mutmut_46,
+    "x_parse_bool_strict__mutmut_47": x_parse_bool_strict__mutmut_47,
+    "x_parse_bool_strict__mutmut_48": x_parse_bool_strict__mutmut_48,
+    "x_parse_bool_strict__mutmut_49": x_parse_bool_strict__mutmut_49,
+    "x_parse_bool_strict__mutmut_50": x_parse_bool_strict__mutmut_50,
+    "x_parse_bool_strict__mutmut_51": x_parse_bool_strict__mutmut_51,
+    "x_parse_bool_strict__mutmut_52": x_parse_bool_strict__mutmut_52,
+    "x_parse_bool_strict__mutmut_53": x_parse_bool_strict__mutmut_53,
+    "x_parse_bool_strict__mutmut_54": x_parse_bool_strict__mutmut_54,
+    "x_parse_bool_strict__mutmut_55": x_parse_bool_strict__mutmut_55,
+    "x_parse_bool_strict__mutmut_56": x_parse_bool_strict__mutmut_56,
+    "x_parse_bool_strict__mutmut_57": x_parse_bool_strict__mutmut_57,
+    "x_parse_bool_strict__mutmut_58": x_parse_bool_strict__mutmut_58,
+    "x_parse_bool_strict__mutmut_59": x_parse_bool_strict__mutmut_59,
+    "x_parse_bool_strict__mutmut_60": x_parse_bool_strict__mutmut_60,
+    "x_parse_bool_strict__mutmut_61": x_parse_bool_strict__mutmut_61,
+    "x_parse_bool_strict__mutmut_62": x_parse_bool_strict__mutmut_62,
+    "x_parse_bool_strict__mutmut_63": x_parse_bool_strict__mutmut_63,
+    "x_parse_bool_strict__mutmut_64": x_parse_bool_strict__mutmut_64,
+    "x_parse_bool_strict__mutmut_65": x_parse_bool_strict__mutmut_65,
+    "x_parse_bool_strict__mutmut_66": x_parse_bool_strict__mutmut_66,
+    "x_parse_bool_strict__mutmut_67": x_parse_bool_strict__mutmut_67,
+    "x_parse_bool_strict__mutmut_68": x_parse_bool_strict__mutmut_68,
+    "x_parse_bool_strict__mutmut_69": x_parse_bool_strict__mutmut_69,
+    "x_parse_bool_strict__mutmut_70": x_parse_bool_strict__mutmut_70,
+    "x_parse_bool_strict__mutmut_71": x_parse_bool_strict__mutmut_71,
+    "x_parse_bool_strict__mutmut_72": x_parse_bool_strict__mutmut_72,
 }
 
+
 def parse_bool_strict(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_bool_strict__mutmut_orig, x_parse_bool_strict__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_bool_strict__mutmut_orig, x_parse_bool_strict__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_bool_strict.__signature__ = _mutmut_signature(x_parse_bool_strict__mutmut_orig)
-x_parse_bool_strict__mutmut_orig.__name__ = 'x_parse_bool_strict'
+x_parse_bool_strict__mutmut_orig.__name__ = "x_parse_bool_strict"
 
 
 def x_parse_bool__mutmut_orig(value: Any, strict: bool = False) -> bool:
@@ -6171,21 +6184,24 @@ def x_parse_bool__mutmut_6(value: Any, strict: bool = False) -> bool:
 
     return parse_bool_strict(None)
 
-x_parse_bool__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_bool__mutmut_1': x_parse_bool__mutmut_1, 
-    'x_parse_bool__mutmut_2': x_parse_bool__mutmut_2, 
-    'x_parse_bool__mutmut_3': x_parse_bool__mutmut_3, 
-    'x_parse_bool__mutmut_4': x_parse_bool__mutmut_4, 
-    'x_parse_bool__mutmut_5': x_parse_bool__mutmut_5, 
-    'x_parse_bool__mutmut_6': x_parse_bool__mutmut_6
+
+x_parse_bool__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_bool__mutmut_1": x_parse_bool__mutmut_1,
+    "x_parse_bool__mutmut_2": x_parse_bool__mutmut_2,
+    "x_parse_bool__mutmut_3": x_parse_bool__mutmut_3,
+    "x_parse_bool__mutmut_4": x_parse_bool__mutmut_4,
+    "x_parse_bool__mutmut_5": x_parse_bool__mutmut_5,
+    "x_parse_bool__mutmut_6": x_parse_bool__mutmut_6,
 }
+
 
 def parse_bool(*args, **kwargs):
     result = _mutmut_trampoline(x_parse_bool__mutmut_orig, x_parse_bool__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 parse_bool.__signature__ = _mutmut_signature(x_parse_bool__mutmut_orig)
-x_parse_bool__mutmut_orig.__name__ = 'x_parse_bool'
+x_parse_bool__mutmut_orig.__name__ = "x_parse_bool"
 
 
 def x_parse_float_with_validation__mutmut_orig(
@@ -6562,7 +6578,10 @@ def x_parse_float_with_validation__mutmut_9(
         result = float(value)
     except (ValueError, TypeError) as e:
         raise ValueError(
-            _format_invalid_value_error("float", value, ),
+            _format_invalid_value_error(
+                "float",
+                value,
+            ),
         ) from e
 
     if min_val is not None and result < min_val:
@@ -7113,7 +7132,10 @@ def x_parse_float_with_validation__mutmut_23(
 
     if min_val is not None and result < min_val:
         raise ValueError(
-            _format_validation_error("float", result, ),
+            _format_validation_error(
+                "float",
+                result,
+            ),
         )
 
     if max_val is not None and result > max_val:
@@ -7586,7 +7608,10 @@ def x_parse_float_with_validation__mutmut_35(
 
     if max_val is not None and result > max_val:
         raise ValueError(
-            _format_validation_error("float", result, ),
+            _format_validation_error(
+                "float",
+                result,
+            ),
         )
 
     return result
@@ -7669,52 +7694,57 @@ def x_parse_float_with_validation__mutmut_37(
 
     return result
 
-x_parse_float_with_validation__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_float_with_validation__mutmut_1': x_parse_float_with_validation__mutmut_1, 
-    'x_parse_float_with_validation__mutmut_2': x_parse_float_with_validation__mutmut_2, 
-    'x_parse_float_with_validation__mutmut_3': x_parse_float_with_validation__mutmut_3, 
-    'x_parse_float_with_validation__mutmut_4': x_parse_float_with_validation__mutmut_4, 
-    'x_parse_float_with_validation__mutmut_5': x_parse_float_with_validation__mutmut_5, 
-    'x_parse_float_with_validation__mutmut_6': x_parse_float_with_validation__mutmut_6, 
-    'x_parse_float_with_validation__mutmut_7': x_parse_float_with_validation__mutmut_7, 
-    'x_parse_float_with_validation__mutmut_8': x_parse_float_with_validation__mutmut_8, 
-    'x_parse_float_with_validation__mutmut_9': x_parse_float_with_validation__mutmut_9, 
-    'x_parse_float_with_validation__mutmut_10': x_parse_float_with_validation__mutmut_10, 
-    'x_parse_float_with_validation__mutmut_11': x_parse_float_with_validation__mutmut_11, 
-    'x_parse_float_with_validation__mutmut_12': x_parse_float_with_validation__mutmut_12, 
-    'x_parse_float_with_validation__mutmut_13': x_parse_float_with_validation__mutmut_13, 
-    'x_parse_float_with_validation__mutmut_14': x_parse_float_with_validation__mutmut_14, 
-    'x_parse_float_with_validation__mutmut_15': x_parse_float_with_validation__mutmut_15, 
-    'x_parse_float_with_validation__mutmut_16': x_parse_float_with_validation__mutmut_16, 
-    'x_parse_float_with_validation__mutmut_17': x_parse_float_with_validation__mutmut_17, 
-    'x_parse_float_with_validation__mutmut_18': x_parse_float_with_validation__mutmut_18, 
-    'x_parse_float_with_validation__mutmut_19': x_parse_float_with_validation__mutmut_19, 
-    'x_parse_float_with_validation__mutmut_20': x_parse_float_with_validation__mutmut_20, 
-    'x_parse_float_with_validation__mutmut_21': x_parse_float_with_validation__mutmut_21, 
-    'x_parse_float_with_validation__mutmut_22': x_parse_float_with_validation__mutmut_22, 
-    'x_parse_float_with_validation__mutmut_23': x_parse_float_with_validation__mutmut_23, 
-    'x_parse_float_with_validation__mutmut_24': x_parse_float_with_validation__mutmut_24, 
-    'x_parse_float_with_validation__mutmut_25': x_parse_float_with_validation__mutmut_25, 
-    'x_parse_float_with_validation__mutmut_26': x_parse_float_with_validation__mutmut_26, 
-    'x_parse_float_with_validation__mutmut_27': x_parse_float_with_validation__mutmut_27, 
-    'x_parse_float_with_validation__mutmut_28': x_parse_float_with_validation__mutmut_28, 
-    'x_parse_float_with_validation__mutmut_29': x_parse_float_with_validation__mutmut_29, 
-    'x_parse_float_with_validation__mutmut_30': x_parse_float_with_validation__mutmut_30, 
-    'x_parse_float_with_validation__mutmut_31': x_parse_float_with_validation__mutmut_31, 
-    'x_parse_float_with_validation__mutmut_32': x_parse_float_with_validation__mutmut_32, 
-    'x_parse_float_with_validation__mutmut_33': x_parse_float_with_validation__mutmut_33, 
-    'x_parse_float_with_validation__mutmut_34': x_parse_float_with_validation__mutmut_34, 
-    'x_parse_float_with_validation__mutmut_35': x_parse_float_with_validation__mutmut_35, 
-    'x_parse_float_with_validation__mutmut_36': x_parse_float_with_validation__mutmut_36, 
-    'x_parse_float_with_validation__mutmut_37': x_parse_float_with_validation__mutmut_37
+
+x_parse_float_with_validation__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_float_with_validation__mutmut_1": x_parse_float_with_validation__mutmut_1,
+    "x_parse_float_with_validation__mutmut_2": x_parse_float_with_validation__mutmut_2,
+    "x_parse_float_with_validation__mutmut_3": x_parse_float_with_validation__mutmut_3,
+    "x_parse_float_with_validation__mutmut_4": x_parse_float_with_validation__mutmut_4,
+    "x_parse_float_with_validation__mutmut_5": x_parse_float_with_validation__mutmut_5,
+    "x_parse_float_with_validation__mutmut_6": x_parse_float_with_validation__mutmut_6,
+    "x_parse_float_with_validation__mutmut_7": x_parse_float_with_validation__mutmut_7,
+    "x_parse_float_with_validation__mutmut_8": x_parse_float_with_validation__mutmut_8,
+    "x_parse_float_with_validation__mutmut_9": x_parse_float_with_validation__mutmut_9,
+    "x_parse_float_with_validation__mutmut_10": x_parse_float_with_validation__mutmut_10,
+    "x_parse_float_with_validation__mutmut_11": x_parse_float_with_validation__mutmut_11,
+    "x_parse_float_with_validation__mutmut_12": x_parse_float_with_validation__mutmut_12,
+    "x_parse_float_with_validation__mutmut_13": x_parse_float_with_validation__mutmut_13,
+    "x_parse_float_with_validation__mutmut_14": x_parse_float_with_validation__mutmut_14,
+    "x_parse_float_with_validation__mutmut_15": x_parse_float_with_validation__mutmut_15,
+    "x_parse_float_with_validation__mutmut_16": x_parse_float_with_validation__mutmut_16,
+    "x_parse_float_with_validation__mutmut_17": x_parse_float_with_validation__mutmut_17,
+    "x_parse_float_with_validation__mutmut_18": x_parse_float_with_validation__mutmut_18,
+    "x_parse_float_with_validation__mutmut_19": x_parse_float_with_validation__mutmut_19,
+    "x_parse_float_with_validation__mutmut_20": x_parse_float_with_validation__mutmut_20,
+    "x_parse_float_with_validation__mutmut_21": x_parse_float_with_validation__mutmut_21,
+    "x_parse_float_with_validation__mutmut_22": x_parse_float_with_validation__mutmut_22,
+    "x_parse_float_with_validation__mutmut_23": x_parse_float_with_validation__mutmut_23,
+    "x_parse_float_with_validation__mutmut_24": x_parse_float_with_validation__mutmut_24,
+    "x_parse_float_with_validation__mutmut_25": x_parse_float_with_validation__mutmut_25,
+    "x_parse_float_with_validation__mutmut_26": x_parse_float_with_validation__mutmut_26,
+    "x_parse_float_with_validation__mutmut_27": x_parse_float_with_validation__mutmut_27,
+    "x_parse_float_with_validation__mutmut_28": x_parse_float_with_validation__mutmut_28,
+    "x_parse_float_with_validation__mutmut_29": x_parse_float_with_validation__mutmut_29,
+    "x_parse_float_with_validation__mutmut_30": x_parse_float_with_validation__mutmut_30,
+    "x_parse_float_with_validation__mutmut_31": x_parse_float_with_validation__mutmut_31,
+    "x_parse_float_with_validation__mutmut_32": x_parse_float_with_validation__mutmut_32,
+    "x_parse_float_with_validation__mutmut_33": x_parse_float_with_validation__mutmut_33,
+    "x_parse_float_with_validation__mutmut_34": x_parse_float_with_validation__mutmut_34,
+    "x_parse_float_with_validation__mutmut_35": x_parse_float_with_validation__mutmut_35,
+    "x_parse_float_with_validation__mutmut_36": x_parse_float_with_validation__mutmut_36,
+    "x_parse_float_with_validation__mutmut_37": x_parse_float_with_validation__mutmut_37,
 }
 
+
 def parse_float_with_validation(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_float_with_validation__mutmut_orig, x_parse_float_with_validation__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_float_with_validation__mutmut_orig, x_parse_float_with_validation__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_float_with_validation.__signature__ = _mutmut_signature(x_parse_float_with_validation__mutmut_orig)
-x_parse_float_with_validation__mutmut_orig.__name__ = 'x_parse_float_with_validation'
+x_parse_float_with_validation__mutmut_orig.__name__ = "x_parse_float_with_validation"
 
 
 def x_parse_sample_rate__mutmut_orig(value: str) -> float:
@@ -7826,7 +7856,10 @@ def x_parse_sample_rate__mutmut_6(value: str) -> float:
         ValueError: If value is not valid or out of range
 
     """
-    return parse_float_with_validation(value, min_val=0.0, )
+    return parse_float_with_validation(
+        value,
+        min_val=0.0,
+    )
 
 
 def x_parse_sample_rate__mutmut_7(value: str) -> float:
@@ -7860,23 +7893,28 @@ def x_parse_sample_rate__mutmut_8(value: str) -> float:
     """
     return parse_float_with_validation(value, min_val=0.0, max_val=2.0)
 
-x_parse_sample_rate__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_sample_rate__mutmut_1': x_parse_sample_rate__mutmut_1, 
-    'x_parse_sample_rate__mutmut_2': x_parse_sample_rate__mutmut_2, 
-    'x_parse_sample_rate__mutmut_3': x_parse_sample_rate__mutmut_3, 
-    'x_parse_sample_rate__mutmut_4': x_parse_sample_rate__mutmut_4, 
-    'x_parse_sample_rate__mutmut_5': x_parse_sample_rate__mutmut_5, 
-    'x_parse_sample_rate__mutmut_6': x_parse_sample_rate__mutmut_6, 
-    'x_parse_sample_rate__mutmut_7': x_parse_sample_rate__mutmut_7, 
-    'x_parse_sample_rate__mutmut_8': x_parse_sample_rate__mutmut_8
+
+x_parse_sample_rate__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_sample_rate__mutmut_1": x_parse_sample_rate__mutmut_1,
+    "x_parse_sample_rate__mutmut_2": x_parse_sample_rate__mutmut_2,
+    "x_parse_sample_rate__mutmut_3": x_parse_sample_rate__mutmut_3,
+    "x_parse_sample_rate__mutmut_4": x_parse_sample_rate__mutmut_4,
+    "x_parse_sample_rate__mutmut_5": x_parse_sample_rate__mutmut_5,
+    "x_parse_sample_rate__mutmut_6": x_parse_sample_rate__mutmut_6,
+    "x_parse_sample_rate__mutmut_7": x_parse_sample_rate__mutmut_7,
+    "x_parse_sample_rate__mutmut_8": x_parse_sample_rate__mutmut_8,
 }
 
+
 def parse_sample_rate(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_sample_rate__mutmut_orig, x_parse_sample_rate__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_sample_rate__mutmut_orig, x_parse_sample_rate__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_sample_rate.__signature__ = _mutmut_signature(x_parse_sample_rate__mutmut_orig)
-x_parse_sample_rate__mutmut_orig.__name__ = 'x_parse_sample_rate'
+x_parse_sample_rate__mutmut_orig.__name__ = "x_parse_sample_rate"
 
 
 def x_parse_json_dict__mutmut_orig(value: str) -> dict[str, Any]:
@@ -8325,7 +8363,7 @@ def x_parse_json_dict__mutmut_13(value: str) -> dict[str, Any]:
                 _format_invalid_value_error(
                     "json_dict",
                     type(result).__name__,
-                    ),
+                ),
             )
         return result
     except Exception as e:
@@ -8759,7 +8797,10 @@ def x_parse_json_dict__mutmut_26(value: str) -> dict[str, Any]:
         return result
     except Exception as e:
         raise ValueError(
-            _format_invalid_value_error("json_dict", value, ),
+            _format_invalid_value_error(
+                "json_dict",
+                value,
+            ),
         ) from e
 
 
@@ -8927,46 +8968,51 @@ def x_parse_json_dict__mutmut_31(value: str) -> dict[str, Any]:
             _format_invalid_value_error("json_dict", value, expected_type="VALID JSON"),
         ) from e
 
-x_parse_json_dict__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_json_dict__mutmut_1': x_parse_json_dict__mutmut_1, 
-    'x_parse_json_dict__mutmut_2': x_parse_json_dict__mutmut_2, 
-    'x_parse_json_dict__mutmut_3': x_parse_json_dict__mutmut_3, 
-    'x_parse_json_dict__mutmut_4': x_parse_json_dict__mutmut_4, 
-    'x_parse_json_dict__mutmut_5': x_parse_json_dict__mutmut_5, 
-    'x_parse_json_dict__mutmut_6': x_parse_json_dict__mutmut_6, 
-    'x_parse_json_dict__mutmut_7': x_parse_json_dict__mutmut_7, 
-    'x_parse_json_dict__mutmut_8': x_parse_json_dict__mutmut_8, 
-    'x_parse_json_dict__mutmut_9': x_parse_json_dict__mutmut_9, 
-    'x_parse_json_dict__mutmut_10': x_parse_json_dict__mutmut_10, 
-    'x_parse_json_dict__mutmut_11': x_parse_json_dict__mutmut_11, 
-    'x_parse_json_dict__mutmut_12': x_parse_json_dict__mutmut_12, 
-    'x_parse_json_dict__mutmut_13': x_parse_json_dict__mutmut_13, 
-    'x_parse_json_dict__mutmut_14': x_parse_json_dict__mutmut_14, 
-    'x_parse_json_dict__mutmut_15': x_parse_json_dict__mutmut_15, 
-    'x_parse_json_dict__mutmut_16': x_parse_json_dict__mutmut_16, 
-    'x_parse_json_dict__mutmut_17': x_parse_json_dict__mutmut_17, 
-    'x_parse_json_dict__mutmut_18': x_parse_json_dict__mutmut_18, 
-    'x_parse_json_dict__mutmut_19': x_parse_json_dict__mutmut_19, 
-    'x_parse_json_dict__mutmut_20': x_parse_json_dict__mutmut_20, 
-    'x_parse_json_dict__mutmut_21': x_parse_json_dict__mutmut_21, 
-    'x_parse_json_dict__mutmut_22': x_parse_json_dict__mutmut_22, 
-    'x_parse_json_dict__mutmut_23': x_parse_json_dict__mutmut_23, 
-    'x_parse_json_dict__mutmut_24': x_parse_json_dict__mutmut_24, 
-    'x_parse_json_dict__mutmut_25': x_parse_json_dict__mutmut_25, 
-    'x_parse_json_dict__mutmut_26': x_parse_json_dict__mutmut_26, 
-    'x_parse_json_dict__mutmut_27': x_parse_json_dict__mutmut_27, 
-    'x_parse_json_dict__mutmut_28': x_parse_json_dict__mutmut_28, 
-    'x_parse_json_dict__mutmut_29': x_parse_json_dict__mutmut_29, 
-    'x_parse_json_dict__mutmut_30': x_parse_json_dict__mutmut_30, 
-    'x_parse_json_dict__mutmut_31': x_parse_json_dict__mutmut_31
+
+x_parse_json_dict__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_json_dict__mutmut_1": x_parse_json_dict__mutmut_1,
+    "x_parse_json_dict__mutmut_2": x_parse_json_dict__mutmut_2,
+    "x_parse_json_dict__mutmut_3": x_parse_json_dict__mutmut_3,
+    "x_parse_json_dict__mutmut_4": x_parse_json_dict__mutmut_4,
+    "x_parse_json_dict__mutmut_5": x_parse_json_dict__mutmut_5,
+    "x_parse_json_dict__mutmut_6": x_parse_json_dict__mutmut_6,
+    "x_parse_json_dict__mutmut_7": x_parse_json_dict__mutmut_7,
+    "x_parse_json_dict__mutmut_8": x_parse_json_dict__mutmut_8,
+    "x_parse_json_dict__mutmut_9": x_parse_json_dict__mutmut_9,
+    "x_parse_json_dict__mutmut_10": x_parse_json_dict__mutmut_10,
+    "x_parse_json_dict__mutmut_11": x_parse_json_dict__mutmut_11,
+    "x_parse_json_dict__mutmut_12": x_parse_json_dict__mutmut_12,
+    "x_parse_json_dict__mutmut_13": x_parse_json_dict__mutmut_13,
+    "x_parse_json_dict__mutmut_14": x_parse_json_dict__mutmut_14,
+    "x_parse_json_dict__mutmut_15": x_parse_json_dict__mutmut_15,
+    "x_parse_json_dict__mutmut_16": x_parse_json_dict__mutmut_16,
+    "x_parse_json_dict__mutmut_17": x_parse_json_dict__mutmut_17,
+    "x_parse_json_dict__mutmut_18": x_parse_json_dict__mutmut_18,
+    "x_parse_json_dict__mutmut_19": x_parse_json_dict__mutmut_19,
+    "x_parse_json_dict__mutmut_20": x_parse_json_dict__mutmut_20,
+    "x_parse_json_dict__mutmut_21": x_parse_json_dict__mutmut_21,
+    "x_parse_json_dict__mutmut_22": x_parse_json_dict__mutmut_22,
+    "x_parse_json_dict__mutmut_23": x_parse_json_dict__mutmut_23,
+    "x_parse_json_dict__mutmut_24": x_parse_json_dict__mutmut_24,
+    "x_parse_json_dict__mutmut_25": x_parse_json_dict__mutmut_25,
+    "x_parse_json_dict__mutmut_26": x_parse_json_dict__mutmut_26,
+    "x_parse_json_dict__mutmut_27": x_parse_json_dict__mutmut_27,
+    "x_parse_json_dict__mutmut_28": x_parse_json_dict__mutmut_28,
+    "x_parse_json_dict__mutmut_29": x_parse_json_dict__mutmut_29,
+    "x_parse_json_dict__mutmut_30": x_parse_json_dict__mutmut_30,
+    "x_parse_json_dict__mutmut_31": x_parse_json_dict__mutmut_31,
 }
 
+
 def parse_json_dict(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_json_dict__mutmut_orig, x_parse_json_dict__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_json_dict__mutmut_orig, x_parse_json_dict__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_json_dict.__signature__ = _mutmut_signature(x_parse_json_dict__mutmut_orig)
-x_parse_json_dict__mutmut_orig.__name__ = 'x_parse_json_dict'
+x_parse_json_dict__mutmut_orig.__name__ = "x_parse_json_dict"
 
 
 def x_parse_json_list__mutmut_orig(value: str) -> list[Any]:
@@ -9415,7 +9461,7 @@ def x_parse_json_list__mutmut_13(value: str) -> list[Any]:
                 _format_invalid_value_error(
                     "json_list",
                     type(result).__name__,
-                    ),
+                ),
             )
         return result
     except Exception as e:
@@ -9849,7 +9895,10 @@ def x_parse_json_list__mutmut_26(value: str) -> list[Any]:
         return result
     except Exception as e:
         raise ValueError(
-            _format_invalid_value_error("json_list", value, ),
+            _format_invalid_value_error(
+                "json_list",
+                value,
+            ),
         ) from e
 
 
@@ -10017,46 +10066,51 @@ def x_parse_json_list__mutmut_31(value: str) -> list[Any]:
             _format_invalid_value_error("json_list", value, expected_type="VALID JSON"),
         ) from e
 
-x_parse_json_list__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_json_list__mutmut_1': x_parse_json_list__mutmut_1, 
-    'x_parse_json_list__mutmut_2': x_parse_json_list__mutmut_2, 
-    'x_parse_json_list__mutmut_3': x_parse_json_list__mutmut_3, 
-    'x_parse_json_list__mutmut_4': x_parse_json_list__mutmut_4, 
-    'x_parse_json_list__mutmut_5': x_parse_json_list__mutmut_5, 
-    'x_parse_json_list__mutmut_6': x_parse_json_list__mutmut_6, 
-    'x_parse_json_list__mutmut_7': x_parse_json_list__mutmut_7, 
-    'x_parse_json_list__mutmut_8': x_parse_json_list__mutmut_8, 
-    'x_parse_json_list__mutmut_9': x_parse_json_list__mutmut_9, 
-    'x_parse_json_list__mutmut_10': x_parse_json_list__mutmut_10, 
-    'x_parse_json_list__mutmut_11': x_parse_json_list__mutmut_11, 
-    'x_parse_json_list__mutmut_12': x_parse_json_list__mutmut_12, 
-    'x_parse_json_list__mutmut_13': x_parse_json_list__mutmut_13, 
-    'x_parse_json_list__mutmut_14': x_parse_json_list__mutmut_14, 
-    'x_parse_json_list__mutmut_15': x_parse_json_list__mutmut_15, 
-    'x_parse_json_list__mutmut_16': x_parse_json_list__mutmut_16, 
-    'x_parse_json_list__mutmut_17': x_parse_json_list__mutmut_17, 
-    'x_parse_json_list__mutmut_18': x_parse_json_list__mutmut_18, 
-    'x_parse_json_list__mutmut_19': x_parse_json_list__mutmut_19, 
-    'x_parse_json_list__mutmut_20': x_parse_json_list__mutmut_20, 
-    'x_parse_json_list__mutmut_21': x_parse_json_list__mutmut_21, 
-    'x_parse_json_list__mutmut_22': x_parse_json_list__mutmut_22, 
-    'x_parse_json_list__mutmut_23': x_parse_json_list__mutmut_23, 
-    'x_parse_json_list__mutmut_24': x_parse_json_list__mutmut_24, 
-    'x_parse_json_list__mutmut_25': x_parse_json_list__mutmut_25, 
-    'x_parse_json_list__mutmut_26': x_parse_json_list__mutmut_26, 
-    'x_parse_json_list__mutmut_27': x_parse_json_list__mutmut_27, 
-    'x_parse_json_list__mutmut_28': x_parse_json_list__mutmut_28, 
-    'x_parse_json_list__mutmut_29': x_parse_json_list__mutmut_29, 
-    'x_parse_json_list__mutmut_30': x_parse_json_list__mutmut_30, 
-    'x_parse_json_list__mutmut_31': x_parse_json_list__mutmut_31
+
+x_parse_json_list__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_json_list__mutmut_1": x_parse_json_list__mutmut_1,
+    "x_parse_json_list__mutmut_2": x_parse_json_list__mutmut_2,
+    "x_parse_json_list__mutmut_3": x_parse_json_list__mutmut_3,
+    "x_parse_json_list__mutmut_4": x_parse_json_list__mutmut_4,
+    "x_parse_json_list__mutmut_5": x_parse_json_list__mutmut_5,
+    "x_parse_json_list__mutmut_6": x_parse_json_list__mutmut_6,
+    "x_parse_json_list__mutmut_7": x_parse_json_list__mutmut_7,
+    "x_parse_json_list__mutmut_8": x_parse_json_list__mutmut_8,
+    "x_parse_json_list__mutmut_9": x_parse_json_list__mutmut_9,
+    "x_parse_json_list__mutmut_10": x_parse_json_list__mutmut_10,
+    "x_parse_json_list__mutmut_11": x_parse_json_list__mutmut_11,
+    "x_parse_json_list__mutmut_12": x_parse_json_list__mutmut_12,
+    "x_parse_json_list__mutmut_13": x_parse_json_list__mutmut_13,
+    "x_parse_json_list__mutmut_14": x_parse_json_list__mutmut_14,
+    "x_parse_json_list__mutmut_15": x_parse_json_list__mutmut_15,
+    "x_parse_json_list__mutmut_16": x_parse_json_list__mutmut_16,
+    "x_parse_json_list__mutmut_17": x_parse_json_list__mutmut_17,
+    "x_parse_json_list__mutmut_18": x_parse_json_list__mutmut_18,
+    "x_parse_json_list__mutmut_19": x_parse_json_list__mutmut_19,
+    "x_parse_json_list__mutmut_20": x_parse_json_list__mutmut_20,
+    "x_parse_json_list__mutmut_21": x_parse_json_list__mutmut_21,
+    "x_parse_json_list__mutmut_22": x_parse_json_list__mutmut_22,
+    "x_parse_json_list__mutmut_23": x_parse_json_list__mutmut_23,
+    "x_parse_json_list__mutmut_24": x_parse_json_list__mutmut_24,
+    "x_parse_json_list__mutmut_25": x_parse_json_list__mutmut_25,
+    "x_parse_json_list__mutmut_26": x_parse_json_list__mutmut_26,
+    "x_parse_json_list__mutmut_27": x_parse_json_list__mutmut_27,
+    "x_parse_json_list__mutmut_28": x_parse_json_list__mutmut_28,
+    "x_parse_json_list__mutmut_29": x_parse_json_list__mutmut_29,
+    "x_parse_json_list__mutmut_30": x_parse_json_list__mutmut_30,
+    "x_parse_json_list__mutmut_31": x_parse_json_list__mutmut_31,
 }
 
+
 def parse_json_list(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_json_list__mutmut_orig, x_parse_json_list__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_json_list__mutmut_orig, x_parse_json_list__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_json_list.__signature__ = _mutmut_signature(x_parse_json_list__mutmut_orig)
-x_parse_json_list__mutmut_orig.__name__ = 'x_parse_json_list'
+x_parse_json_list__mutmut_orig.__name__ = "x_parse_json_list"
 
 
 __all__ = [

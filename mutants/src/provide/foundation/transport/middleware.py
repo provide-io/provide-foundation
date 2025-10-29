@@ -41,23 +41,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -715,7 +718,7 @@ def x_register_middleware__mutmut_13(
             "class_name": middleware_class.__name__,
             **metadata,
         },
-        )
+    )
 
     # Defer logging to avoid stderr output during module import
     # which breaks Terraform's go-plugin handshake protocol
@@ -934,7 +937,9 @@ def x_register_middleware__mutmut_21(
         dimension=category,
         metadata={
             "category": category,
-            "priority": metadata.get("priority", ),
+            "priority": metadata.get(
+                "priority",
+            ),
             "class_name": middleware_class.__name__,
             **metadata,
         },
@@ -1114,42 +1119,47 @@ def x_register_middleware__mutmut_27(
     # The registry.register() call above already handles the registration
     # Logging can be enabled later if needed via trace level
 
-x_register_middleware__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register_middleware__mutmut_1': x_register_middleware__mutmut_1, 
-    'x_register_middleware__mutmut_2': x_register_middleware__mutmut_2, 
-    'x_register_middleware__mutmut_3': x_register_middleware__mutmut_3, 
-    'x_register_middleware__mutmut_4': x_register_middleware__mutmut_4, 
-    'x_register_middleware__mutmut_5': x_register_middleware__mutmut_5, 
-    'x_register_middleware__mutmut_6': x_register_middleware__mutmut_6, 
-    'x_register_middleware__mutmut_7': x_register_middleware__mutmut_7, 
-    'x_register_middleware__mutmut_8': x_register_middleware__mutmut_8, 
-    'x_register_middleware__mutmut_9': x_register_middleware__mutmut_9, 
-    'x_register_middleware__mutmut_10': x_register_middleware__mutmut_10, 
-    'x_register_middleware__mutmut_11': x_register_middleware__mutmut_11, 
-    'x_register_middleware__mutmut_12': x_register_middleware__mutmut_12, 
-    'x_register_middleware__mutmut_13': x_register_middleware__mutmut_13, 
-    'x_register_middleware__mutmut_14': x_register_middleware__mutmut_14, 
-    'x_register_middleware__mutmut_15': x_register_middleware__mutmut_15, 
-    'x_register_middleware__mutmut_16': x_register_middleware__mutmut_16, 
-    'x_register_middleware__mutmut_17': x_register_middleware__mutmut_17, 
-    'x_register_middleware__mutmut_18': x_register_middleware__mutmut_18, 
-    'x_register_middleware__mutmut_19': x_register_middleware__mutmut_19, 
-    'x_register_middleware__mutmut_20': x_register_middleware__mutmut_20, 
-    'x_register_middleware__mutmut_21': x_register_middleware__mutmut_21, 
-    'x_register_middleware__mutmut_22': x_register_middleware__mutmut_22, 
-    'x_register_middleware__mutmut_23': x_register_middleware__mutmut_23, 
-    'x_register_middleware__mutmut_24': x_register_middleware__mutmut_24, 
-    'x_register_middleware__mutmut_25': x_register_middleware__mutmut_25, 
-    'x_register_middleware__mutmut_26': x_register_middleware__mutmut_26, 
-    'x_register_middleware__mutmut_27': x_register_middleware__mutmut_27
+
+x_register_middleware__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register_middleware__mutmut_1": x_register_middleware__mutmut_1,
+    "x_register_middleware__mutmut_2": x_register_middleware__mutmut_2,
+    "x_register_middleware__mutmut_3": x_register_middleware__mutmut_3,
+    "x_register_middleware__mutmut_4": x_register_middleware__mutmut_4,
+    "x_register_middleware__mutmut_5": x_register_middleware__mutmut_5,
+    "x_register_middleware__mutmut_6": x_register_middleware__mutmut_6,
+    "x_register_middleware__mutmut_7": x_register_middleware__mutmut_7,
+    "x_register_middleware__mutmut_8": x_register_middleware__mutmut_8,
+    "x_register_middleware__mutmut_9": x_register_middleware__mutmut_9,
+    "x_register_middleware__mutmut_10": x_register_middleware__mutmut_10,
+    "x_register_middleware__mutmut_11": x_register_middleware__mutmut_11,
+    "x_register_middleware__mutmut_12": x_register_middleware__mutmut_12,
+    "x_register_middleware__mutmut_13": x_register_middleware__mutmut_13,
+    "x_register_middleware__mutmut_14": x_register_middleware__mutmut_14,
+    "x_register_middleware__mutmut_15": x_register_middleware__mutmut_15,
+    "x_register_middleware__mutmut_16": x_register_middleware__mutmut_16,
+    "x_register_middleware__mutmut_17": x_register_middleware__mutmut_17,
+    "x_register_middleware__mutmut_18": x_register_middleware__mutmut_18,
+    "x_register_middleware__mutmut_19": x_register_middleware__mutmut_19,
+    "x_register_middleware__mutmut_20": x_register_middleware__mutmut_20,
+    "x_register_middleware__mutmut_21": x_register_middleware__mutmut_21,
+    "x_register_middleware__mutmut_22": x_register_middleware__mutmut_22,
+    "x_register_middleware__mutmut_23": x_register_middleware__mutmut_23,
+    "x_register_middleware__mutmut_24": x_register_middleware__mutmut_24,
+    "x_register_middleware__mutmut_25": x_register_middleware__mutmut_25,
+    "x_register_middleware__mutmut_26": x_register_middleware__mutmut_26,
+    "x_register_middleware__mutmut_27": x_register_middleware__mutmut_27,
 }
 
+
 def register_middleware(*args, **kwargs):
-    result = _mutmut_trampoline(x_register_middleware__mutmut_orig, x_register_middleware__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_register_middleware__mutmut_orig, x_register_middleware__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 register_middleware.__signature__ = _mutmut_signature(x_register_middleware__mutmut_orig)
-x_register_middleware__mutmut_orig.__name__ = 'x_register_middleware'
+x_register_middleware__mutmut_orig.__name__ = "x_register_middleware"
 
 
 def x_get_middleware_by_category__mutmut_orig(
@@ -1331,7 +1341,9 @@ def x_get_middleware_by_category__mutmut_10(
 
     for entry in registry:
         if entry.dimension == category:
-            priority = entry.metadata.get("priority", )
+            priority = entry.metadata.get(
+                "priority",
+            )
             middleware.append((entry.value, priority))
 
     # Sort by priority (lower numbers = higher priority)
@@ -1474,33 +1486,38 @@ def x_get_middleware_by_category__mutmut_18(
     middleware.sort(key=lambda x: x[1])
     return [mw[1] for mw in middleware]
 
-x_get_middleware_by_category__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_middleware_by_category__mutmut_1': x_get_middleware_by_category__mutmut_1, 
-    'x_get_middleware_by_category__mutmut_2': x_get_middleware_by_category__mutmut_2, 
-    'x_get_middleware_by_category__mutmut_3': x_get_middleware_by_category__mutmut_3, 
-    'x_get_middleware_by_category__mutmut_4': x_get_middleware_by_category__mutmut_4, 
-    'x_get_middleware_by_category__mutmut_5': x_get_middleware_by_category__mutmut_5, 
-    'x_get_middleware_by_category__mutmut_6': x_get_middleware_by_category__mutmut_6, 
-    'x_get_middleware_by_category__mutmut_7': x_get_middleware_by_category__mutmut_7, 
-    'x_get_middleware_by_category__mutmut_8': x_get_middleware_by_category__mutmut_8, 
-    'x_get_middleware_by_category__mutmut_9': x_get_middleware_by_category__mutmut_9, 
-    'x_get_middleware_by_category__mutmut_10': x_get_middleware_by_category__mutmut_10, 
-    'x_get_middleware_by_category__mutmut_11': x_get_middleware_by_category__mutmut_11, 
-    'x_get_middleware_by_category__mutmut_12': x_get_middleware_by_category__mutmut_12, 
-    'x_get_middleware_by_category__mutmut_13': x_get_middleware_by_category__mutmut_13, 
-    'x_get_middleware_by_category__mutmut_14': x_get_middleware_by_category__mutmut_14, 
-    'x_get_middleware_by_category__mutmut_15': x_get_middleware_by_category__mutmut_15, 
-    'x_get_middleware_by_category__mutmut_16': x_get_middleware_by_category__mutmut_16, 
-    'x_get_middleware_by_category__mutmut_17': x_get_middleware_by_category__mutmut_17, 
-    'x_get_middleware_by_category__mutmut_18': x_get_middleware_by_category__mutmut_18
+
+x_get_middleware_by_category__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_middleware_by_category__mutmut_1": x_get_middleware_by_category__mutmut_1,
+    "x_get_middleware_by_category__mutmut_2": x_get_middleware_by_category__mutmut_2,
+    "x_get_middleware_by_category__mutmut_3": x_get_middleware_by_category__mutmut_3,
+    "x_get_middleware_by_category__mutmut_4": x_get_middleware_by_category__mutmut_4,
+    "x_get_middleware_by_category__mutmut_5": x_get_middleware_by_category__mutmut_5,
+    "x_get_middleware_by_category__mutmut_6": x_get_middleware_by_category__mutmut_6,
+    "x_get_middleware_by_category__mutmut_7": x_get_middleware_by_category__mutmut_7,
+    "x_get_middleware_by_category__mutmut_8": x_get_middleware_by_category__mutmut_8,
+    "x_get_middleware_by_category__mutmut_9": x_get_middleware_by_category__mutmut_9,
+    "x_get_middleware_by_category__mutmut_10": x_get_middleware_by_category__mutmut_10,
+    "x_get_middleware_by_category__mutmut_11": x_get_middleware_by_category__mutmut_11,
+    "x_get_middleware_by_category__mutmut_12": x_get_middleware_by_category__mutmut_12,
+    "x_get_middleware_by_category__mutmut_13": x_get_middleware_by_category__mutmut_13,
+    "x_get_middleware_by_category__mutmut_14": x_get_middleware_by_category__mutmut_14,
+    "x_get_middleware_by_category__mutmut_15": x_get_middleware_by_category__mutmut_15,
+    "x_get_middleware_by_category__mutmut_16": x_get_middleware_by_category__mutmut_16,
+    "x_get_middleware_by_category__mutmut_17": x_get_middleware_by_category__mutmut_17,
+    "x_get_middleware_by_category__mutmut_18": x_get_middleware_by_category__mutmut_18,
 }
 
+
 def get_middleware_by_category(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_middleware_by_category__mutmut_orig, x_get_middleware_by_category__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_middleware_by_category__mutmut_orig, x_get_middleware_by_category__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_middleware_by_category.__signature__ = _mutmut_signature(x_get_middleware_by_category__mutmut_orig)
-x_get_middleware_by_category__mutmut_orig.__name__ = 'x_get_middleware_by_category'
+x_get_middleware_by_category__mutmut_orig.__name__ = "x_get_middleware_by_category"
 
 
 def x_create_default_pipeline__mutmut_orig(
@@ -2133,7 +2150,7 @@ def x_create_default_pipeline__mutmut_15(
             base_delay=1.0,
             max_delay=10.0,
             # Retry on common transient failures
-            )
+        )
         pipeline.add(RetryMiddleware(policy=retry_policy))
 
     # Add built-in middleware
@@ -2678,43 +2695,48 @@ def x_create_default_pipeline__mutmut_28(
 
     return pipeline
 
-x_create_default_pipeline__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_default_pipeline__mutmut_1': x_create_default_pipeline__mutmut_1, 
-    'x_create_default_pipeline__mutmut_2': x_create_default_pipeline__mutmut_2, 
-    'x_create_default_pipeline__mutmut_3': x_create_default_pipeline__mutmut_3, 
-    'x_create_default_pipeline__mutmut_4': x_create_default_pipeline__mutmut_4, 
-    'x_create_default_pipeline__mutmut_5': x_create_default_pipeline__mutmut_5, 
-    'x_create_default_pipeline__mutmut_6': x_create_default_pipeline__mutmut_6, 
-    'x_create_default_pipeline__mutmut_7': x_create_default_pipeline__mutmut_7, 
-    'x_create_default_pipeline__mutmut_8': x_create_default_pipeline__mutmut_8, 
-    'x_create_default_pipeline__mutmut_9': x_create_default_pipeline__mutmut_9, 
-    'x_create_default_pipeline__mutmut_10': x_create_default_pipeline__mutmut_10, 
-    'x_create_default_pipeline__mutmut_11': x_create_default_pipeline__mutmut_11, 
-    'x_create_default_pipeline__mutmut_12': x_create_default_pipeline__mutmut_12, 
-    'x_create_default_pipeline__mutmut_13': x_create_default_pipeline__mutmut_13, 
-    'x_create_default_pipeline__mutmut_14': x_create_default_pipeline__mutmut_14, 
-    'x_create_default_pipeline__mutmut_15': x_create_default_pipeline__mutmut_15, 
-    'x_create_default_pipeline__mutmut_16': x_create_default_pipeline__mutmut_16, 
-    'x_create_default_pipeline__mutmut_17': x_create_default_pipeline__mutmut_17, 
-    'x_create_default_pipeline__mutmut_18': x_create_default_pipeline__mutmut_18, 
-    'x_create_default_pipeline__mutmut_19': x_create_default_pipeline__mutmut_19, 
-    'x_create_default_pipeline__mutmut_20': x_create_default_pipeline__mutmut_20, 
-    'x_create_default_pipeline__mutmut_21': x_create_default_pipeline__mutmut_21, 
-    'x_create_default_pipeline__mutmut_22': x_create_default_pipeline__mutmut_22, 
-    'x_create_default_pipeline__mutmut_23': x_create_default_pipeline__mutmut_23, 
-    'x_create_default_pipeline__mutmut_24': x_create_default_pipeline__mutmut_24, 
-    'x_create_default_pipeline__mutmut_25': x_create_default_pipeline__mutmut_25, 
-    'x_create_default_pipeline__mutmut_26': x_create_default_pipeline__mutmut_26, 
-    'x_create_default_pipeline__mutmut_27': x_create_default_pipeline__mutmut_27, 
-    'x_create_default_pipeline__mutmut_28': x_create_default_pipeline__mutmut_28
+
+x_create_default_pipeline__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_default_pipeline__mutmut_1": x_create_default_pipeline__mutmut_1,
+    "x_create_default_pipeline__mutmut_2": x_create_default_pipeline__mutmut_2,
+    "x_create_default_pipeline__mutmut_3": x_create_default_pipeline__mutmut_3,
+    "x_create_default_pipeline__mutmut_4": x_create_default_pipeline__mutmut_4,
+    "x_create_default_pipeline__mutmut_5": x_create_default_pipeline__mutmut_5,
+    "x_create_default_pipeline__mutmut_6": x_create_default_pipeline__mutmut_6,
+    "x_create_default_pipeline__mutmut_7": x_create_default_pipeline__mutmut_7,
+    "x_create_default_pipeline__mutmut_8": x_create_default_pipeline__mutmut_8,
+    "x_create_default_pipeline__mutmut_9": x_create_default_pipeline__mutmut_9,
+    "x_create_default_pipeline__mutmut_10": x_create_default_pipeline__mutmut_10,
+    "x_create_default_pipeline__mutmut_11": x_create_default_pipeline__mutmut_11,
+    "x_create_default_pipeline__mutmut_12": x_create_default_pipeline__mutmut_12,
+    "x_create_default_pipeline__mutmut_13": x_create_default_pipeline__mutmut_13,
+    "x_create_default_pipeline__mutmut_14": x_create_default_pipeline__mutmut_14,
+    "x_create_default_pipeline__mutmut_15": x_create_default_pipeline__mutmut_15,
+    "x_create_default_pipeline__mutmut_16": x_create_default_pipeline__mutmut_16,
+    "x_create_default_pipeline__mutmut_17": x_create_default_pipeline__mutmut_17,
+    "x_create_default_pipeline__mutmut_18": x_create_default_pipeline__mutmut_18,
+    "x_create_default_pipeline__mutmut_19": x_create_default_pipeline__mutmut_19,
+    "x_create_default_pipeline__mutmut_20": x_create_default_pipeline__mutmut_20,
+    "x_create_default_pipeline__mutmut_21": x_create_default_pipeline__mutmut_21,
+    "x_create_default_pipeline__mutmut_22": x_create_default_pipeline__mutmut_22,
+    "x_create_default_pipeline__mutmut_23": x_create_default_pipeline__mutmut_23,
+    "x_create_default_pipeline__mutmut_24": x_create_default_pipeline__mutmut_24,
+    "x_create_default_pipeline__mutmut_25": x_create_default_pipeline__mutmut_25,
+    "x_create_default_pipeline__mutmut_26": x_create_default_pipeline__mutmut_26,
+    "x_create_default_pipeline__mutmut_27": x_create_default_pipeline__mutmut_27,
+    "x_create_default_pipeline__mutmut_28": x_create_default_pipeline__mutmut_28,
 }
 
+
 def create_default_pipeline(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_default_pipeline__mutmut_orig, x_create_default_pipeline__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_default_pipeline__mutmut_orig, x_create_default_pipeline__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_default_pipeline.__signature__ = _mutmut_signature(x_create_default_pipeline__mutmut_orig)
-x_create_default_pipeline__mutmut_orig.__name__ = 'x_create_default_pipeline'
+x_create_default_pipeline__mutmut_orig.__name__ = "x_create_default_pipeline"
 
 
 # Auto-register built-in middleware
@@ -2962,7 +2984,7 @@ def x__register_builtin_middleware__mutmut_8() -> None:
             "logging",
             LoggingMiddleware,
             description="Built-in request/response logging",
-            )
+        )
 
         register_middleware(
             "retry",
@@ -3385,7 +3407,7 @@ def x__register_builtin_middleware__mutmut_22() -> None:
             "retry",
             RetryMiddleware,
             description="Automatic retry with exponential backoff",
-            )
+        )
 
         register_middleware(
             "metrics",
@@ -3808,7 +3830,7 @@ def x__register_builtin_middleware__mutmut_36() -> None:
             "metrics",
             MetricsMiddleware,
             description="Request/response metrics collection",
-            )
+        )
 
     except ImportError:
         # Registry not available yet
@@ -3994,57 +4016,65 @@ def x__register_builtin_middleware__mutmut_42() -> None:
         # Registry not available yet
         pass
 
-x__register_builtin_middleware__mutmut_mutants : ClassVar[MutantDict] = {
-'x__register_builtin_middleware__mutmut_1': x__register_builtin_middleware__mutmut_1, 
-    'x__register_builtin_middleware__mutmut_2': x__register_builtin_middleware__mutmut_2, 
-    'x__register_builtin_middleware__mutmut_3': x__register_builtin_middleware__mutmut_3, 
-    'x__register_builtin_middleware__mutmut_4': x__register_builtin_middleware__mutmut_4, 
-    'x__register_builtin_middleware__mutmut_5': x__register_builtin_middleware__mutmut_5, 
-    'x__register_builtin_middleware__mutmut_6': x__register_builtin_middleware__mutmut_6, 
-    'x__register_builtin_middleware__mutmut_7': x__register_builtin_middleware__mutmut_7, 
-    'x__register_builtin_middleware__mutmut_8': x__register_builtin_middleware__mutmut_8, 
-    'x__register_builtin_middleware__mutmut_9': x__register_builtin_middleware__mutmut_9, 
-    'x__register_builtin_middleware__mutmut_10': x__register_builtin_middleware__mutmut_10, 
-    'x__register_builtin_middleware__mutmut_11': x__register_builtin_middleware__mutmut_11, 
-    'x__register_builtin_middleware__mutmut_12': x__register_builtin_middleware__mutmut_12, 
-    'x__register_builtin_middleware__mutmut_13': x__register_builtin_middleware__mutmut_13, 
-    'x__register_builtin_middleware__mutmut_14': x__register_builtin_middleware__mutmut_14, 
-    'x__register_builtin_middleware__mutmut_15': x__register_builtin_middleware__mutmut_15, 
-    'x__register_builtin_middleware__mutmut_16': x__register_builtin_middleware__mutmut_16, 
-    'x__register_builtin_middleware__mutmut_17': x__register_builtin_middleware__mutmut_17, 
-    'x__register_builtin_middleware__mutmut_18': x__register_builtin_middleware__mutmut_18, 
-    'x__register_builtin_middleware__mutmut_19': x__register_builtin_middleware__mutmut_19, 
-    'x__register_builtin_middleware__mutmut_20': x__register_builtin_middleware__mutmut_20, 
-    'x__register_builtin_middleware__mutmut_21': x__register_builtin_middleware__mutmut_21, 
-    'x__register_builtin_middleware__mutmut_22': x__register_builtin_middleware__mutmut_22, 
-    'x__register_builtin_middleware__mutmut_23': x__register_builtin_middleware__mutmut_23, 
-    'x__register_builtin_middleware__mutmut_24': x__register_builtin_middleware__mutmut_24, 
-    'x__register_builtin_middleware__mutmut_25': x__register_builtin_middleware__mutmut_25, 
-    'x__register_builtin_middleware__mutmut_26': x__register_builtin_middleware__mutmut_26, 
-    'x__register_builtin_middleware__mutmut_27': x__register_builtin_middleware__mutmut_27, 
-    'x__register_builtin_middleware__mutmut_28': x__register_builtin_middleware__mutmut_28, 
-    'x__register_builtin_middleware__mutmut_29': x__register_builtin_middleware__mutmut_29, 
-    'x__register_builtin_middleware__mutmut_30': x__register_builtin_middleware__mutmut_30, 
-    'x__register_builtin_middleware__mutmut_31': x__register_builtin_middleware__mutmut_31, 
-    'x__register_builtin_middleware__mutmut_32': x__register_builtin_middleware__mutmut_32, 
-    'x__register_builtin_middleware__mutmut_33': x__register_builtin_middleware__mutmut_33, 
-    'x__register_builtin_middleware__mutmut_34': x__register_builtin_middleware__mutmut_34, 
-    'x__register_builtin_middleware__mutmut_35': x__register_builtin_middleware__mutmut_35, 
-    'x__register_builtin_middleware__mutmut_36': x__register_builtin_middleware__mutmut_36, 
-    'x__register_builtin_middleware__mutmut_37': x__register_builtin_middleware__mutmut_37, 
-    'x__register_builtin_middleware__mutmut_38': x__register_builtin_middleware__mutmut_38, 
-    'x__register_builtin_middleware__mutmut_39': x__register_builtin_middleware__mutmut_39, 
-    'x__register_builtin_middleware__mutmut_40': x__register_builtin_middleware__mutmut_40, 
-    'x__register_builtin_middleware__mutmut_41': x__register_builtin_middleware__mutmut_41, 
-    'x__register_builtin_middleware__mutmut_42': x__register_builtin_middleware__mutmut_42
+
+x__register_builtin_middleware__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__register_builtin_middleware__mutmut_1": x__register_builtin_middleware__mutmut_1,
+    "x__register_builtin_middleware__mutmut_2": x__register_builtin_middleware__mutmut_2,
+    "x__register_builtin_middleware__mutmut_3": x__register_builtin_middleware__mutmut_3,
+    "x__register_builtin_middleware__mutmut_4": x__register_builtin_middleware__mutmut_4,
+    "x__register_builtin_middleware__mutmut_5": x__register_builtin_middleware__mutmut_5,
+    "x__register_builtin_middleware__mutmut_6": x__register_builtin_middleware__mutmut_6,
+    "x__register_builtin_middleware__mutmut_7": x__register_builtin_middleware__mutmut_7,
+    "x__register_builtin_middleware__mutmut_8": x__register_builtin_middleware__mutmut_8,
+    "x__register_builtin_middleware__mutmut_9": x__register_builtin_middleware__mutmut_9,
+    "x__register_builtin_middleware__mutmut_10": x__register_builtin_middleware__mutmut_10,
+    "x__register_builtin_middleware__mutmut_11": x__register_builtin_middleware__mutmut_11,
+    "x__register_builtin_middleware__mutmut_12": x__register_builtin_middleware__mutmut_12,
+    "x__register_builtin_middleware__mutmut_13": x__register_builtin_middleware__mutmut_13,
+    "x__register_builtin_middleware__mutmut_14": x__register_builtin_middleware__mutmut_14,
+    "x__register_builtin_middleware__mutmut_15": x__register_builtin_middleware__mutmut_15,
+    "x__register_builtin_middleware__mutmut_16": x__register_builtin_middleware__mutmut_16,
+    "x__register_builtin_middleware__mutmut_17": x__register_builtin_middleware__mutmut_17,
+    "x__register_builtin_middleware__mutmut_18": x__register_builtin_middleware__mutmut_18,
+    "x__register_builtin_middleware__mutmut_19": x__register_builtin_middleware__mutmut_19,
+    "x__register_builtin_middleware__mutmut_20": x__register_builtin_middleware__mutmut_20,
+    "x__register_builtin_middleware__mutmut_21": x__register_builtin_middleware__mutmut_21,
+    "x__register_builtin_middleware__mutmut_22": x__register_builtin_middleware__mutmut_22,
+    "x__register_builtin_middleware__mutmut_23": x__register_builtin_middleware__mutmut_23,
+    "x__register_builtin_middleware__mutmut_24": x__register_builtin_middleware__mutmut_24,
+    "x__register_builtin_middleware__mutmut_25": x__register_builtin_middleware__mutmut_25,
+    "x__register_builtin_middleware__mutmut_26": x__register_builtin_middleware__mutmut_26,
+    "x__register_builtin_middleware__mutmut_27": x__register_builtin_middleware__mutmut_27,
+    "x__register_builtin_middleware__mutmut_28": x__register_builtin_middleware__mutmut_28,
+    "x__register_builtin_middleware__mutmut_29": x__register_builtin_middleware__mutmut_29,
+    "x__register_builtin_middleware__mutmut_30": x__register_builtin_middleware__mutmut_30,
+    "x__register_builtin_middleware__mutmut_31": x__register_builtin_middleware__mutmut_31,
+    "x__register_builtin_middleware__mutmut_32": x__register_builtin_middleware__mutmut_32,
+    "x__register_builtin_middleware__mutmut_33": x__register_builtin_middleware__mutmut_33,
+    "x__register_builtin_middleware__mutmut_34": x__register_builtin_middleware__mutmut_34,
+    "x__register_builtin_middleware__mutmut_35": x__register_builtin_middleware__mutmut_35,
+    "x__register_builtin_middleware__mutmut_36": x__register_builtin_middleware__mutmut_36,
+    "x__register_builtin_middleware__mutmut_37": x__register_builtin_middleware__mutmut_37,
+    "x__register_builtin_middleware__mutmut_38": x__register_builtin_middleware__mutmut_38,
+    "x__register_builtin_middleware__mutmut_39": x__register_builtin_middleware__mutmut_39,
+    "x__register_builtin_middleware__mutmut_40": x__register_builtin_middleware__mutmut_40,
+    "x__register_builtin_middleware__mutmut_41": x__register_builtin_middleware__mutmut_41,
+    "x__register_builtin_middleware__mutmut_42": x__register_builtin_middleware__mutmut_42,
 }
 
+
 def _register_builtin_middleware(*args, **kwargs):
-    result = _mutmut_trampoline(x__register_builtin_middleware__mutmut_orig, x__register_builtin_middleware__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__register_builtin_middleware__mutmut_orig,
+        x__register_builtin_middleware__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 _register_builtin_middleware.__signature__ = _mutmut_signature(x__register_builtin_middleware__mutmut_orig)
-x__register_builtin_middleware__mutmut_orig.__name__ = 'x__register_builtin_middleware'
+x__register_builtin_middleware__mutmut_orig.__name__ = "x__register_builtin_middleware"
 
 
 # Register when module is imported

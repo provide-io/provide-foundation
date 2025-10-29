@@ -28,23 +28,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -478,32 +481,38 @@ class OTLPCircuitBreaker:
         self._last_attempt_time: float | None = None
         self._open_count = 0  # Track how many times we've opened
         self._lock = None
-    
-    xǁOTLPCircuitBreakerǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPCircuitBreakerǁ__init____mutmut_1': xǁOTLPCircuitBreakerǁ__init____mutmut_1, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_2': xǁOTLPCircuitBreakerǁ__init____mutmut_2, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_3': xǁOTLPCircuitBreakerǁ__init____mutmut_3, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_4': xǁOTLPCircuitBreakerǁ__init____mutmut_4, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_5': xǁOTLPCircuitBreakerǁ__init____mutmut_5, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_6': xǁOTLPCircuitBreakerǁ__init____mutmut_6, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_7': xǁOTLPCircuitBreakerǁ__init____mutmut_7, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_8': xǁOTLPCircuitBreakerǁ__init____mutmut_8, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_9': xǁOTLPCircuitBreakerǁ__init____mutmut_9, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_10': xǁOTLPCircuitBreakerǁ__init____mutmut_10, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_11': xǁOTLPCircuitBreakerǁ__init____mutmut_11, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_12': xǁOTLPCircuitBreakerǁ__init____mutmut_12, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_13': xǁOTLPCircuitBreakerǁ__init____mutmut_13, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_14': xǁOTLPCircuitBreakerǁ__init____mutmut_14, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_15': xǁOTLPCircuitBreakerǁ__init____mutmut_15, 
-        'xǁOTLPCircuitBreakerǁ__init____mutmut_16': xǁOTLPCircuitBreakerǁ__init____mutmut_16
+
+    xǁOTLPCircuitBreakerǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_1": xǁOTLPCircuitBreakerǁ__init____mutmut_1,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_2": xǁOTLPCircuitBreakerǁ__init____mutmut_2,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_3": xǁOTLPCircuitBreakerǁ__init____mutmut_3,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_4": xǁOTLPCircuitBreakerǁ__init____mutmut_4,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_5": xǁOTLPCircuitBreakerǁ__init____mutmut_5,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_6": xǁOTLPCircuitBreakerǁ__init____mutmut_6,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_7": xǁOTLPCircuitBreakerǁ__init____mutmut_7,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_8": xǁOTLPCircuitBreakerǁ__init____mutmut_8,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_9": xǁOTLPCircuitBreakerǁ__init____mutmut_9,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_10": xǁOTLPCircuitBreakerǁ__init____mutmut_10,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_11": xǁOTLPCircuitBreakerǁ__init____mutmut_11,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_12": xǁOTLPCircuitBreakerǁ__init____mutmut_12,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_13": xǁOTLPCircuitBreakerǁ__init____mutmut_13,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_14": xǁOTLPCircuitBreakerǁ__init____mutmut_14,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_15": xǁOTLPCircuitBreakerǁ__init____mutmut_15,
+        "xǁOTLPCircuitBreakerǁ__init____mutmut_16": xǁOTLPCircuitBreakerǁ__init____mutmut_16,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPCircuitBreakerǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁOTLPCircuitBreakerǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁOTLPCircuitBreakerǁ__init____mutmut_orig)
-    xǁOTLPCircuitBreakerǁ__init____mutmut_orig.__name__ = 'xǁOTLPCircuitBreakerǁ__init__'
+    xǁOTLPCircuitBreakerǁ__init____mutmut_orig.__name__ = "xǁOTLPCircuitBreakerǁ__init__"
 
     @property
     def state(self) -> CircuitState:
@@ -1231,7 +1240,12 @@ class OTLPCircuitBreaker:
                     return False
 
                 # Exponential backoff: timeout doubles each time circuit opens
-                current_timeout = self.base_timeout * (2 ** min(self._open_count, ))
+                current_timeout = self.base_timeout * (
+                    2
+                    ** min(
+                        self._open_count,
+                    )
+                )
                 if now - self._last_failure_time >= current_timeout:
                     self._state = "half_open"
                     self._last_attempt_time = now
@@ -2031,54 +2045,60 @@ class OTLPCircuitBreaker:
                 return False
 
             return True
-    
-    xǁOTLPCircuitBreakerǁcan_attempt__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_1': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_1, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_2': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_2, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_3': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_3, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_4': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_4, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_5': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_5, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_6': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_6, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_7': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_7, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_8': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_8, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_9': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_9, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_10': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_10, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_11': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_11, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_12': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_12, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_13': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_13, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_14': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_14, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_15': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_15, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_16': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_16, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_17': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_17, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_18': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_18, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_19': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_19, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_20': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_20, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_21': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_21, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_22': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_22, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_23': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_23, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_24': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_24, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_25': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_25, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_26': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_26, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_27': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_27, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_28': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_28, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_29': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_29, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_30': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_30, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_31': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_31, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_32': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_32, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_33': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_33, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_34': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_34, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_35': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_35, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_36': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_36, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_37': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_37, 
-        'xǁOTLPCircuitBreakerǁcan_attempt__mutmut_38': xǁOTLPCircuitBreakerǁcan_attempt__mutmut_38
+
+    xǁOTLPCircuitBreakerǁcan_attempt__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_1": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_1,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_2": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_2,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_3": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_3,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_4": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_4,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_5": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_5,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_6": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_6,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_7": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_7,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_8": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_8,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_9": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_9,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_10": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_10,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_11": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_11,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_12": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_12,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_13": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_13,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_14": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_14,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_15": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_15,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_16": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_16,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_17": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_17,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_18": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_18,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_19": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_19,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_20": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_20,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_21": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_21,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_22": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_22,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_23": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_23,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_24": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_24,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_25": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_25,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_26": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_26,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_27": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_27,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_28": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_28,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_29": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_29,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_30": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_30,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_31": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_31,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_32": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_32,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_33": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_33,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_34": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_34,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_35": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_35,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_36": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_36,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_37": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_37,
+        "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_38": xǁOTLPCircuitBreakerǁcan_attempt__mutmut_38,
     }
-    
+
     def can_attempt(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_orig"), object.__getattribute__(self, "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁcan_attempt__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     can_attempt.__signature__ = _mutmut_signature(xǁOTLPCircuitBreakerǁcan_attempt__mutmut_orig)
-    xǁOTLPCircuitBreakerǁcan_attempt__mutmut_orig.__name__ = 'xǁOTLPCircuitBreakerǁcan_attempt'
+    xǁOTLPCircuitBreakerǁcan_attempt__mutmut_orig.__name__ = "xǁOTLPCircuitBreakerǁcan_attempt"
 
     def xǁOTLPCircuitBreakerǁrecord_success__mutmut_orig(self) -> None:
         """Record a successful operation."""
@@ -2243,7 +2263,9 @@ class OTLPCircuitBreaker:
             self._last_attempt_time = None
             # Don't reset _open_count completely, but decay it
             if self._open_count > 0:
-                self._open_count = max(0, )
+                self._open_count = max(
+                    0,
+                )
 
     def xǁOTLPCircuitBreakerǁrecord_success__mutmut_15(self) -> None:
         """Record a successful operation."""
@@ -2277,33 +2299,39 @@ class OTLPCircuitBreaker:
             # Don't reset _open_count completely, but decay it
             if self._open_count > 0:
                 self._open_count = max(0, self._open_count - 2)
-    
-    xǁOTLPCircuitBreakerǁrecord_success__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPCircuitBreakerǁrecord_success__mutmut_1': xǁOTLPCircuitBreakerǁrecord_success__mutmut_1, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_2': xǁOTLPCircuitBreakerǁrecord_success__mutmut_2, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_3': xǁOTLPCircuitBreakerǁrecord_success__mutmut_3, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_4': xǁOTLPCircuitBreakerǁrecord_success__mutmut_4, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_5': xǁOTLPCircuitBreakerǁrecord_success__mutmut_5, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_6': xǁOTLPCircuitBreakerǁrecord_success__mutmut_6, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_7': xǁOTLPCircuitBreakerǁrecord_success__mutmut_7, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_8': xǁOTLPCircuitBreakerǁrecord_success__mutmut_8, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_9': xǁOTLPCircuitBreakerǁrecord_success__mutmut_9, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_10': xǁOTLPCircuitBreakerǁrecord_success__mutmut_10, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_11': xǁOTLPCircuitBreakerǁrecord_success__mutmut_11, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_12': xǁOTLPCircuitBreakerǁrecord_success__mutmut_12, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_13': xǁOTLPCircuitBreakerǁrecord_success__mutmut_13, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_14': xǁOTLPCircuitBreakerǁrecord_success__mutmut_14, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_15': xǁOTLPCircuitBreakerǁrecord_success__mutmut_15, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_16': xǁOTLPCircuitBreakerǁrecord_success__mutmut_16, 
-        'xǁOTLPCircuitBreakerǁrecord_success__mutmut_17': xǁOTLPCircuitBreakerǁrecord_success__mutmut_17
+
+    xǁOTLPCircuitBreakerǁrecord_success__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_1": xǁOTLPCircuitBreakerǁrecord_success__mutmut_1,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_2": xǁOTLPCircuitBreakerǁrecord_success__mutmut_2,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_3": xǁOTLPCircuitBreakerǁrecord_success__mutmut_3,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_4": xǁOTLPCircuitBreakerǁrecord_success__mutmut_4,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_5": xǁOTLPCircuitBreakerǁrecord_success__mutmut_5,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_6": xǁOTLPCircuitBreakerǁrecord_success__mutmut_6,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_7": xǁOTLPCircuitBreakerǁrecord_success__mutmut_7,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_8": xǁOTLPCircuitBreakerǁrecord_success__mutmut_8,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_9": xǁOTLPCircuitBreakerǁrecord_success__mutmut_9,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_10": xǁOTLPCircuitBreakerǁrecord_success__mutmut_10,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_11": xǁOTLPCircuitBreakerǁrecord_success__mutmut_11,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_12": xǁOTLPCircuitBreakerǁrecord_success__mutmut_12,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_13": xǁOTLPCircuitBreakerǁrecord_success__mutmut_13,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_14": xǁOTLPCircuitBreakerǁrecord_success__mutmut_14,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_15": xǁOTLPCircuitBreakerǁrecord_success__mutmut_15,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_16": xǁOTLPCircuitBreakerǁrecord_success__mutmut_16,
+        "xǁOTLPCircuitBreakerǁrecord_success__mutmut_17": xǁOTLPCircuitBreakerǁrecord_success__mutmut_17,
     }
-    
+
     def record_success(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPCircuitBreakerǁrecord_success__mutmut_orig"), object.__getattribute__(self, "xǁOTLPCircuitBreakerǁrecord_success__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁrecord_success__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁrecord_success__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     record_success.__signature__ = _mutmut_signature(xǁOTLPCircuitBreakerǁrecord_success__mutmut_orig)
-    xǁOTLPCircuitBreakerǁrecord_success__mutmut_orig.__name__ = 'xǁOTLPCircuitBreakerǁrecord_success'
+    xǁOTLPCircuitBreakerǁrecord_success__mutmut_orig.__name__ = "xǁOTLPCircuitBreakerǁrecord_success"
 
     def xǁOTLPCircuitBreakerǁrecord_failure__mutmut_orig(self, error: Exception | None = None) -> None:
         """Record a failed operation.
@@ -2703,36 +2731,42 @@ class OTLPCircuitBreaker:
                 # Too many failures, open the circuit
                 self._state = "open"
                 self._open_count += 2
-    
-    xǁOTLPCircuitBreakerǁrecord_failure__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_1': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_1, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_2': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_2, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_3': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_3, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_4': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_4, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_5': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_5, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_6': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_6, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_7': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_7, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_8': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_8, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_9': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_9, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_10': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_10, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_11': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_11, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_12': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_12, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_13': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_13, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_14': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_14, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_15': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_15, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_16': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_16, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_17': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_17, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_18': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_18, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_19': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_19, 
-        'xǁOTLPCircuitBreakerǁrecord_failure__mutmut_20': xǁOTLPCircuitBreakerǁrecord_failure__mutmut_20
+
+    xǁOTLPCircuitBreakerǁrecord_failure__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_1": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_1,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_2": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_2,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_3": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_3,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_4": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_4,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_5": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_5,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_6": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_6,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_7": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_7,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_8": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_8,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_9": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_9,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_10": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_10,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_11": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_11,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_12": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_12,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_13": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_13,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_14": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_14,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_15": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_15,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_16": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_16,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_17": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_17,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_18": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_18,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_19": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_19,
+        "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_20": xǁOTLPCircuitBreakerǁrecord_failure__mutmut_20,
     }
-    
+
     def record_failure(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_orig"), object.__getattribute__(self, "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁrecord_failure__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     record_failure.__signature__ = _mutmut_signature(xǁOTLPCircuitBreakerǁrecord_failure__mutmut_orig)
-    xǁOTLPCircuitBreakerǁrecord_failure__mutmut_orig.__name__ = 'xǁOTLPCircuitBreakerǁrecord_failure'
+    xǁOTLPCircuitBreakerǁrecord_failure__mutmut_orig.__name__ = "xǁOTLPCircuitBreakerǁrecord_failure"
 
     def xǁOTLPCircuitBreakerǁreset__mutmut_orig(self) -> None:
         """Manually reset the circuit breaker to closed state."""
@@ -2823,25 +2857,31 @@ class OTLPCircuitBreaker:
             self._last_failure_time = None
             self._last_attempt_time = None
             self._open_count = 1
-    
-    xǁOTLPCircuitBreakerǁreset__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPCircuitBreakerǁreset__mutmut_1': xǁOTLPCircuitBreakerǁreset__mutmut_1, 
-        'xǁOTLPCircuitBreakerǁreset__mutmut_2': xǁOTLPCircuitBreakerǁreset__mutmut_2, 
-        'xǁOTLPCircuitBreakerǁreset__mutmut_3': xǁOTLPCircuitBreakerǁreset__mutmut_3, 
-        'xǁOTLPCircuitBreakerǁreset__mutmut_4': xǁOTLPCircuitBreakerǁreset__mutmut_4, 
-        'xǁOTLPCircuitBreakerǁreset__mutmut_5': xǁOTLPCircuitBreakerǁreset__mutmut_5, 
-        'xǁOTLPCircuitBreakerǁreset__mutmut_6': xǁOTLPCircuitBreakerǁreset__mutmut_6, 
-        'xǁOTLPCircuitBreakerǁreset__mutmut_7': xǁOTLPCircuitBreakerǁreset__mutmut_7, 
-        'xǁOTLPCircuitBreakerǁreset__mutmut_8': xǁOTLPCircuitBreakerǁreset__mutmut_8, 
-        'xǁOTLPCircuitBreakerǁreset__mutmut_9': xǁOTLPCircuitBreakerǁreset__mutmut_9
+
+    xǁOTLPCircuitBreakerǁreset__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPCircuitBreakerǁreset__mutmut_1": xǁOTLPCircuitBreakerǁreset__mutmut_1,
+        "xǁOTLPCircuitBreakerǁreset__mutmut_2": xǁOTLPCircuitBreakerǁreset__mutmut_2,
+        "xǁOTLPCircuitBreakerǁreset__mutmut_3": xǁOTLPCircuitBreakerǁreset__mutmut_3,
+        "xǁOTLPCircuitBreakerǁreset__mutmut_4": xǁOTLPCircuitBreakerǁreset__mutmut_4,
+        "xǁOTLPCircuitBreakerǁreset__mutmut_5": xǁOTLPCircuitBreakerǁreset__mutmut_5,
+        "xǁOTLPCircuitBreakerǁreset__mutmut_6": xǁOTLPCircuitBreakerǁreset__mutmut_6,
+        "xǁOTLPCircuitBreakerǁreset__mutmut_7": xǁOTLPCircuitBreakerǁreset__mutmut_7,
+        "xǁOTLPCircuitBreakerǁreset__mutmut_8": xǁOTLPCircuitBreakerǁreset__mutmut_8,
+        "xǁOTLPCircuitBreakerǁreset__mutmut_9": xǁOTLPCircuitBreakerǁreset__mutmut_9,
     }
-    
+
     def reset(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPCircuitBreakerǁreset__mutmut_orig"), object.__getattribute__(self, "xǁOTLPCircuitBreakerǁreset__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁreset__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁreset__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     reset.__signature__ = _mutmut_signature(xǁOTLPCircuitBreakerǁreset__mutmut_orig)
-    xǁOTLPCircuitBreakerǁreset__mutmut_orig.__name__ = 'xǁOTLPCircuitBreakerǁreset'
+    xǁOTLPCircuitBreakerǁreset__mutmut_orig.__name__ = "xǁOTLPCircuitBreakerǁreset"
 
     def xǁOTLPCircuitBreakerǁget_stats__mutmut_orig(self) -> dict[str, Any]:
         """Get circuit breaker statistics.
@@ -3160,7 +3200,13 @@ class OTLPCircuitBreaker:
                 "open_count": self._open_count,
                 "last_failure_time": self._last_failure_time,
                 "last_attempt_time": self._last_attempt_time,
-                "current_timeout": self.base_timeout * (2 ** min(self._open_count, )),
+                "current_timeout": self.base_timeout
+                * (
+                    2
+                    ** min(
+                        self._open_count,
+                    )
+                ),
             }
 
     def xǁOTLPCircuitBreakerǁget_stats__mutmut_20(self) -> dict[str, Any]:
@@ -3178,36 +3224,42 @@ class OTLPCircuitBreaker:
                 "last_attempt_time": self._last_attempt_time,
                 "current_timeout": self.base_timeout * (2 ** min(self._open_count, 11)),
             }
-    
-    xǁOTLPCircuitBreakerǁget_stats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOTLPCircuitBreakerǁget_stats__mutmut_1': xǁOTLPCircuitBreakerǁget_stats__mutmut_1, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_2': xǁOTLPCircuitBreakerǁget_stats__mutmut_2, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_3': xǁOTLPCircuitBreakerǁget_stats__mutmut_3, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_4': xǁOTLPCircuitBreakerǁget_stats__mutmut_4, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_5': xǁOTLPCircuitBreakerǁget_stats__mutmut_5, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_6': xǁOTLPCircuitBreakerǁget_stats__mutmut_6, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_7': xǁOTLPCircuitBreakerǁget_stats__mutmut_7, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_8': xǁOTLPCircuitBreakerǁget_stats__mutmut_8, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_9': xǁOTLPCircuitBreakerǁget_stats__mutmut_9, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_10': xǁOTLPCircuitBreakerǁget_stats__mutmut_10, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_11': xǁOTLPCircuitBreakerǁget_stats__mutmut_11, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_12': xǁOTLPCircuitBreakerǁget_stats__mutmut_12, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_13': xǁOTLPCircuitBreakerǁget_stats__mutmut_13, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_14': xǁOTLPCircuitBreakerǁget_stats__mutmut_14, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_15': xǁOTLPCircuitBreakerǁget_stats__mutmut_15, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_16': xǁOTLPCircuitBreakerǁget_stats__mutmut_16, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_17': xǁOTLPCircuitBreakerǁget_stats__mutmut_17, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_18': xǁOTLPCircuitBreakerǁget_stats__mutmut_18, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_19': xǁOTLPCircuitBreakerǁget_stats__mutmut_19, 
-        'xǁOTLPCircuitBreakerǁget_stats__mutmut_20': xǁOTLPCircuitBreakerǁget_stats__mutmut_20
+
+    xǁOTLPCircuitBreakerǁget_stats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_1": xǁOTLPCircuitBreakerǁget_stats__mutmut_1,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_2": xǁOTLPCircuitBreakerǁget_stats__mutmut_2,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_3": xǁOTLPCircuitBreakerǁget_stats__mutmut_3,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_4": xǁOTLPCircuitBreakerǁget_stats__mutmut_4,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_5": xǁOTLPCircuitBreakerǁget_stats__mutmut_5,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_6": xǁOTLPCircuitBreakerǁget_stats__mutmut_6,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_7": xǁOTLPCircuitBreakerǁget_stats__mutmut_7,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_8": xǁOTLPCircuitBreakerǁget_stats__mutmut_8,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_9": xǁOTLPCircuitBreakerǁget_stats__mutmut_9,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_10": xǁOTLPCircuitBreakerǁget_stats__mutmut_10,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_11": xǁOTLPCircuitBreakerǁget_stats__mutmut_11,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_12": xǁOTLPCircuitBreakerǁget_stats__mutmut_12,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_13": xǁOTLPCircuitBreakerǁget_stats__mutmut_13,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_14": xǁOTLPCircuitBreakerǁget_stats__mutmut_14,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_15": xǁOTLPCircuitBreakerǁget_stats__mutmut_15,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_16": xǁOTLPCircuitBreakerǁget_stats__mutmut_16,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_17": xǁOTLPCircuitBreakerǁget_stats__mutmut_17,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_18": xǁOTLPCircuitBreakerǁget_stats__mutmut_18,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_19": xǁOTLPCircuitBreakerǁget_stats__mutmut_19,
+        "xǁOTLPCircuitBreakerǁget_stats__mutmut_20": xǁOTLPCircuitBreakerǁget_stats__mutmut_20,
     }
-    
+
     def get_stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOTLPCircuitBreakerǁget_stats__mutmut_orig"), object.__getattribute__(self, "xǁOTLPCircuitBreakerǁget_stats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁget_stats__mutmut_orig"),
+            object.__getattribute__(self, "xǁOTLPCircuitBreakerǁget_stats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_stats.__signature__ = _mutmut_signature(xǁOTLPCircuitBreakerǁget_stats__mutmut_orig)
-    xǁOTLPCircuitBreakerǁget_stats__mutmut_orig.__name__ = 'xǁOTLPCircuitBreakerǁget_stats'
+    xǁOTLPCircuitBreakerǁget_stats__mutmut_orig.__name__ = "xǁOTLPCircuitBreakerǁget_stats"
 
 
 # Global circuit breaker instance
@@ -3403,7 +3455,7 @@ def x_get_otlp_circuit_breaker__mutmut_9() -> OTLPCircuitBreaker:
                 _otlp_circuit_breaker = OTLPCircuitBreaker(
                     failure_threshold=5,  # Open after 5 failures
                     timeout=30.0,  # Start with 30s timeout
-                    )
+                )
 
     return _otlp_circuit_breaker
 
@@ -3467,27 +3519,32 @@ def x_get_otlp_circuit_breaker__mutmut_12() -> OTLPCircuitBreaker:
 
     return _otlp_circuit_breaker
 
-x_get_otlp_circuit_breaker__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_otlp_circuit_breaker__mutmut_1': x_get_otlp_circuit_breaker__mutmut_1, 
-    'x_get_otlp_circuit_breaker__mutmut_2': x_get_otlp_circuit_breaker__mutmut_2, 
-    'x_get_otlp_circuit_breaker__mutmut_3': x_get_otlp_circuit_breaker__mutmut_3, 
-    'x_get_otlp_circuit_breaker__mutmut_4': x_get_otlp_circuit_breaker__mutmut_4, 
-    'x_get_otlp_circuit_breaker__mutmut_5': x_get_otlp_circuit_breaker__mutmut_5, 
-    'x_get_otlp_circuit_breaker__mutmut_6': x_get_otlp_circuit_breaker__mutmut_6, 
-    'x_get_otlp_circuit_breaker__mutmut_7': x_get_otlp_circuit_breaker__mutmut_7, 
-    'x_get_otlp_circuit_breaker__mutmut_8': x_get_otlp_circuit_breaker__mutmut_8, 
-    'x_get_otlp_circuit_breaker__mutmut_9': x_get_otlp_circuit_breaker__mutmut_9, 
-    'x_get_otlp_circuit_breaker__mutmut_10': x_get_otlp_circuit_breaker__mutmut_10, 
-    'x_get_otlp_circuit_breaker__mutmut_11': x_get_otlp_circuit_breaker__mutmut_11, 
-    'x_get_otlp_circuit_breaker__mutmut_12': x_get_otlp_circuit_breaker__mutmut_12
+
+x_get_otlp_circuit_breaker__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_otlp_circuit_breaker__mutmut_1": x_get_otlp_circuit_breaker__mutmut_1,
+    "x_get_otlp_circuit_breaker__mutmut_2": x_get_otlp_circuit_breaker__mutmut_2,
+    "x_get_otlp_circuit_breaker__mutmut_3": x_get_otlp_circuit_breaker__mutmut_3,
+    "x_get_otlp_circuit_breaker__mutmut_4": x_get_otlp_circuit_breaker__mutmut_4,
+    "x_get_otlp_circuit_breaker__mutmut_5": x_get_otlp_circuit_breaker__mutmut_5,
+    "x_get_otlp_circuit_breaker__mutmut_6": x_get_otlp_circuit_breaker__mutmut_6,
+    "x_get_otlp_circuit_breaker__mutmut_7": x_get_otlp_circuit_breaker__mutmut_7,
+    "x_get_otlp_circuit_breaker__mutmut_8": x_get_otlp_circuit_breaker__mutmut_8,
+    "x_get_otlp_circuit_breaker__mutmut_9": x_get_otlp_circuit_breaker__mutmut_9,
+    "x_get_otlp_circuit_breaker__mutmut_10": x_get_otlp_circuit_breaker__mutmut_10,
+    "x_get_otlp_circuit_breaker__mutmut_11": x_get_otlp_circuit_breaker__mutmut_11,
+    "x_get_otlp_circuit_breaker__mutmut_12": x_get_otlp_circuit_breaker__mutmut_12,
 }
 
+
 def get_otlp_circuit_breaker(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_otlp_circuit_breaker__mutmut_orig, x_get_otlp_circuit_breaker__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_otlp_circuit_breaker__mutmut_orig, x_get_otlp_circuit_breaker__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_otlp_circuit_breaker.__signature__ = _mutmut_signature(x_get_otlp_circuit_breaker__mutmut_orig)
-x_get_otlp_circuit_breaker__mutmut_orig.__name__ = 'x_get_otlp_circuit_breaker'
+x_get_otlp_circuit_breaker__mutmut_orig.__name__ = "x_get_otlp_circuit_breaker"
 
 
 def x_reset_otlp_circuit_breaker__mutmut_orig() -> None:
@@ -3507,16 +3564,21 @@ def x_reset_otlp_circuit_breaker__mutmut_1() -> None:
         if _otlp_circuit_breaker is None:
             _otlp_circuit_breaker.reset()
 
-x_reset_otlp_circuit_breaker__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_otlp_circuit_breaker__mutmut_1': x_reset_otlp_circuit_breaker__mutmut_1
+
+x_reset_otlp_circuit_breaker__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_otlp_circuit_breaker__mutmut_1": x_reset_otlp_circuit_breaker__mutmut_1
 }
 
+
 def reset_otlp_circuit_breaker(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_otlp_circuit_breaker__mutmut_orig, x_reset_otlp_circuit_breaker__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_otlp_circuit_breaker__mutmut_orig, x_reset_otlp_circuit_breaker__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_otlp_circuit_breaker.__signature__ = _mutmut_signature(x_reset_otlp_circuit_breaker__mutmut_orig)
-x_reset_otlp_circuit_breaker__mutmut_orig.__name__ = 'x_reset_otlp_circuit_breaker'
+x_reset_otlp_circuit_breaker__mutmut_orig.__name__ = "x_reset_otlp_circuit_breaker"
 
 
 __all__ = [

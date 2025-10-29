@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -860,7 +863,7 @@ def x_create_scenarios_from_patterns__mutmut_9() -> list[OperationScenario]:
         FileEvent(
             path=Path("test.txt.tmp.12345"),
             event_type="created",
-            ),
+        ),
         FileEvent(
             path=Path("test.txt.tmp.12345"),
             event_type="moved",
@@ -1838,7 +1841,10 @@ def x_create_scenarios_from_patterns__mutmut_20() -> list[OperationScenario]:
         FileEvent(
             path=Path("test.txt.tmp.12345"),
             event_type="created",
-            metadata=FileEventMetadata(timestamp=base_time, sequence_number=1, ),
+            metadata=FileEventMetadata(
+                timestamp=base_time,
+                sequence_number=1,
+            ),
         ),
         FileEvent(
             path=Path("test.txt.tmp.12345"),
@@ -2731,7 +2737,7 @@ def x_create_scenarios_from_patterns__mutmut_30() -> list[OperationScenario]:
             path=Path("test.txt.tmp.12345"),
             event_type="moved",
             metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=50), sequence_number=2),
-            ),
+        ),
     ]
     scenarios.append(
         OperationScenario(
@@ -3530,7 +3536,9 @@ def x_create_scenarios_from_patterns__mutmut_39() -> list[OperationScenario]:
         FileEvent(
             path=Path("test.txt.tmp.12345"),
             event_type="moved",
-            metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=50), ),
+            metadata=FileEventMetadata(
+                timestamp=base_time + timedelta(milliseconds=50),
+            ),
             dest_path=Path("test.txt"),
         ),
     ]
@@ -4246,9 +4254,7 @@ def x_create_scenarios_from_patterns__mutmut_47() -> list[OperationScenario]:
             dest_path=Path("test.txt"),
         ),
     ]
-    scenarios.append(
-        None
-    )
+    scenarios.append(None)
 
     # Safe write scenario
     safe_write_events = [
@@ -5132,7 +5138,7 @@ def x_create_scenarios_from_patterns__mutmut_57() -> list[OperationScenario]:
             events=vscode_events,
             expected_operations=[{"type": "atomic_save", "confidence_min": 0.9}],
             description="VSCode atomic save pattern",
-            )
+        )
     )
 
     # Safe write scenario
@@ -7347,7 +7353,7 @@ def x_create_scenarios_from_patterns__mutmut_82() -> list[OperationScenario]:
         FileEvent(
             path=Path("document.bak"),
             event_type="created",
-            ),
+        ),
         FileEvent(
             path=Path("document"),
             event_type="modified",
@@ -8325,7 +8331,10 @@ def x_create_scenarios_from_patterns__mutmut_93() -> list[OperationScenario]:
         FileEvent(
             path=Path("document.bak"),
             event_type="created",
-            metadata=FileEventMetadata(timestamp=base_time, sequence_number=1, ),
+            metadata=FileEventMetadata(
+                timestamp=base_time,
+                sequence_number=1,
+            ),
         ),
         FileEvent(
             path=Path("document"),
@@ -9035,7 +9044,7 @@ def x_create_scenarios_from_patterns__mutmut_101() -> list[OperationScenario]:
         FileEvent(
             path=Path("document"),
             event_type="modified",
-            ),
+        ),
     ]
     scenarios.append(
         OperationScenario(
@@ -10187,7 +10196,7 @@ def x_create_scenarios_from_patterns__mutmut_114() -> list[OperationScenario]:
                 timestamp=base_time + timedelta(milliseconds=100),
                 sequence_number=2,
                 size_before=1000,
-                ),
+            ),
         ),
     ]
     scenarios.append(
@@ -10813,9 +10822,7 @@ def x_create_scenarios_from_patterns__mutmut_121() -> list[OperationScenario]:
             ),
         ),
     ]
-    scenarios.append(
-        None
-    )
+    scenarios.append(None)
 
     # Batch update scenario
     batch_events = []
@@ -11699,7 +11706,7 @@ def x_create_scenarios_from_patterns__mutmut_131() -> list[OperationScenario]:
             events=safe_write_events,
             expected_operations=[{"type": "safe_write", "confidence_min": 0.8}],
             description="Safe write with backup creation",
-            )
+        )
     )
 
     # Batch update scenario
@@ -13485,9 +13492,7 @@ def x_create_scenarios_from_patterns__mutmut_151() -> list[OperationScenario]:
     # Batch update scenario
     batch_events = []
     for i in range(5):
-        batch_events.append(
-            None
-        )
+        batch_events.append(None)
     scenarios.append(
         OperationScenario(
             name="batch_format_operation",
@@ -14007,7 +14012,7 @@ def x_create_scenarios_from_patterns__mutmut_157() -> list[OperationScenario]:
             FileEvent(
                 path=Path(f"src/file{i}.py"),
                 event_type="modified",
-                )
+            )
         )
     scenarios.append(
         OperationScenario(
@@ -14981,7 +14986,7 @@ def x_create_scenarios_from_patterns__mutmut_168() -> list[OperationScenario]:
                     timestamp=base_time + timedelta(milliseconds=i * 10),
                     sequence_number=i + 1,
                     size_before=500,
-                    ),
+                ),
             )
         )
     scenarios.append(
@@ -15785,9 +15790,7 @@ def x_create_scenarios_from_patterns__mutmut_177() -> list[OperationScenario]:
                 ),
             )
         )
-    scenarios.append(
-        None
-    )
+    scenarios.append(None)
 
     return scenarios
 
@@ -16671,7 +16674,7 @@ def x_create_scenarios_from_patterns__mutmut_187() -> list[OperationScenario]:
             events=batch_events,
             expected_operations=[{"type": "batch_update", "confidence_min": 0.7}],
             description="Batch formatting operation",
-            )
+        )
     )
 
     return scenarios
@@ -18100,218 +18103,226 @@ def x_create_scenarios_from_patterns__mutmut_203() -> list[OperationScenario]:
 
     return scenarios
 
-x_create_scenarios_from_patterns__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_scenarios_from_patterns__mutmut_1': x_create_scenarios_from_patterns__mutmut_1, 
-    'x_create_scenarios_from_patterns__mutmut_2': x_create_scenarios_from_patterns__mutmut_2, 
-    'x_create_scenarios_from_patterns__mutmut_3': x_create_scenarios_from_patterns__mutmut_3, 
-    'x_create_scenarios_from_patterns__mutmut_4': x_create_scenarios_from_patterns__mutmut_4, 
-    'x_create_scenarios_from_patterns__mutmut_5': x_create_scenarios_from_patterns__mutmut_5, 
-    'x_create_scenarios_from_patterns__mutmut_6': x_create_scenarios_from_patterns__mutmut_6, 
-    'x_create_scenarios_from_patterns__mutmut_7': x_create_scenarios_from_patterns__mutmut_7, 
-    'x_create_scenarios_from_patterns__mutmut_8': x_create_scenarios_from_patterns__mutmut_8, 
-    'x_create_scenarios_from_patterns__mutmut_9': x_create_scenarios_from_patterns__mutmut_9, 
-    'x_create_scenarios_from_patterns__mutmut_10': x_create_scenarios_from_patterns__mutmut_10, 
-    'x_create_scenarios_from_patterns__mutmut_11': x_create_scenarios_from_patterns__mutmut_11, 
-    'x_create_scenarios_from_patterns__mutmut_12': x_create_scenarios_from_patterns__mutmut_12, 
-    'x_create_scenarios_from_patterns__mutmut_13': x_create_scenarios_from_patterns__mutmut_13, 
-    'x_create_scenarios_from_patterns__mutmut_14': x_create_scenarios_from_patterns__mutmut_14, 
-    'x_create_scenarios_from_patterns__mutmut_15': x_create_scenarios_from_patterns__mutmut_15, 
-    'x_create_scenarios_from_patterns__mutmut_16': x_create_scenarios_from_patterns__mutmut_16, 
-    'x_create_scenarios_from_patterns__mutmut_17': x_create_scenarios_from_patterns__mutmut_17, 
-    'x_create_scenarios_from_patterns__mutmut_18': x_create_scenarios_from_patterns__mutmut_18, 
-    'x_create_scenarios_from_patterns__mutmut_19': x_create_scenarios_from_patterns__mutmut_19, 
-    'x_create_scenarios_from_patterns__mutmut_20': x_create_scenarios_from_patterns__mutmut_20, 
-    'x_create_scenarios_from_patterns__mutmut_21': x_create_scenarios_from_patterns__mutmut_21, 
-    'x_create_scenarios_from_patterns__mutmut_22': x_create_scenarios_from_patterns__mutmut_22, 
-    'x_create_scenarios_from_patterns__mutmut_23': x_create_scenarios_from_patterns__mutmut_23, 
-    'x_create_scenarios_from_patterns__mutmut_24': x_create_scenarios_from_patterns__mutmut_24, 
-    'x_create_scenarios_from_patterns__mutmut_25': x_create_scenarios_from_patterns__mutmut_25, 
-    'x_create_scenarios_from_patterns__mutmut_26': x_create_scenarios_from_patterns__mutmut_26, 
-    'x_create_scenarios_from_patterns__mutmut_27': x_create_scenarios_from_patterns__mutmut_27, 
-    'x_create_scenarios_from_patterns__mutmut_28': x_create_scenarios_from_patterns__mutmut_28, 
-    'x_create_scenarios_from_patterns__mutmut_29': x_create_scenarios_from_patterns__mutmut_29, 
-    'x_create_scenarios_from_patterns__mutmut_30': x_create_scenarios_from_patterns__mutmut_30, 
-    'x_create_scenarios_from_patterns__mutmut_31': x_create_scenarios_from_patterns__mutmut_31, 
-    'x_create_scenarios_from_patterns__mutmut_32': x_create_scenarios_from_patterns__mutmut_32, 
-    'x_create_scenarios_from_patterns__mutmut_33': x_create_scenarios_from_patterns__mutmut_33, 
-    'x_create_scenarios_from_patterns__mutmut_34': x_create_scenarios_from_patterns__mutmut_34, 
-    'x_create_scenarios_from_patterns__mutmut_35': x_create_scenarios_from_patterns__mutmut_35, 
-    'x_create_scenarios_from_patterns__mutmut_36': x_create_scenarios_from_patterns__mutmut_36, 
-    'x_create_scenarios_from_patterns__mutmut_37': x_create_scenarios_from_patterns__mutmut_37, 
-    'x_create_scenarios_from_patterns__mutmut_38': x_create_scenarios_from_patterns__mutmut_38, 
-    'x_create_scenarios_from_patterns__mutmut_39': x_create_scenarios_from_patterns__mutmut_39, 
-    'x_create_scenarios_from_patterns__mutmut_40': x_create_scenarios_from_patterns__mutmut_40, 
-    'x_create_scenarios_from_patterns__mutmut_41': x_create_scenarios_from_patterns__mutmut_41, 
-    'x_create_scenarios_from_patterns__mutmut_42': x_create_scenarios_from_patterns__mutmut_42, 
-    'x_create_scenarios_from_patterns__mutmut_43': x_create_scenarios_from_patterns__mutmut_43, 
-    'x_create_scenarios_from_patterns__mutmut_44': x_create_scenarios_from_patterns__mutmut_44, 
-    'x_create_scenarios_from_patterns__mutmut_45': x_create_scenarios_from_patterns__mutmut_45, 
-    'x_create_scenarios_from_patterns__mutmut_46': x_create_scenarios_from_patterns__mutmut_46, 
-    'x_create_scenarios_from_patterns__mutmut_47': x_create_scenarios_from_patterns__mutmut_47, 
-    'x_create_scenarios_from_patterns__mutmut_48': x_create_scenarios_from_patterns__mutmut_48, 
-    'x_create_scenarios_from_patterns__mutmut_49': x_create_scenarios_from_patterns__mutmut_49, 
-    'x_create_scenarios_from_patterns__mutmut_50': x_create_scenarios_from_patterns__mutmut_50, 
-    'x_create_scenarios_from_patterns__mutmut_51': x_create_scenarios_from_patterns__mutmut_51, 
-    'x_create_scenarios_from_patterns__mutmut_52': x_create_scenarios_from_patterns__mutmut_52, 
-    'x_create_scenarios_from_patterns__mutmut_53': x_create_scenarios_from_patterns__mutmut_53, 
-    'x_create_scenarios_from_patterns__mutmut_54': x_create_scenarios_from_patterns__mutmut_54, 
-    'x_create_scenarios_from_patterns__mutmut_55': x_create_scenarios_from_patterns__mutmut_55, 
-    'x_create_scenarios_from_patterns__mutmut_56': x_create_scenarios_from_patterns__mutmut_56, 
-    'x_create_scenarios_from_patterns__mutmut_57': x_create_scenarios_from_patterns__mutmut_57, 
-    'x_create_scenarios_from_patterns__mutmut_58': x_create_scenarios_from_patterns__mutmut_58, 
-    'x_create_scenarios_from_patterns__mutmut_59': x_create_scenarios_from_patterns__mutmut_59, 
-    'x_create_scenarios_from_patterns__mutmut_60': x_create_scenarios_from_patterns__mutmut_60, 
-    'x_create_scenarios_from_patterns__mutmut_61': x_create_scenarios_from_patterns__mutmut_61, 
-    'x_create_scenarios_from_patterns__mutmut_62': x_create_scenarios_from_patterns__mutmut_62, 
-    'x_create_scenarios_from_patterns__mutmut_63': x_create_scenarios_from_patterns__mutmut_63, 
-    'x_create_scenarios_from_patterns__mutmut_64': x_create_scenarios_from_patterns__mutmut_64, 
-    'x_create_scenarios_from_patterns__mutmut_65': x_create_scenarios_from_patterns__mutmut_65, 
-    'x_create_scenarios_from_patterns__mutmut_66': x_create_scenarios_from_patterns__mutmut_66, 
-    'x_create_scenarios_from_patterns__mutmut_67': x_create_scenarios_from_patterns__mutmut_67, 
-    'x_create_scenarios_from_patterns__mutmut_68': x_create_scenarios_from_patterns__mutmut_68, 
-    'x_create_scenarios_from_patterns__mutmut_69': x_create_scenarios_from_patterns__mutmut_69, 
-    'x_create_scenarios_from_patterns__mutmut_70': x_create_scenarios_from_patterns__mutmut_70, 
-    'x_create_scenarios_from_patterns__mutmut_71': x_create_scenarios_from_patterns__mutmut_71, 
-    'x_create_scenarios_from_patterns__mutmut_72': x_create_scenarios_from_patterns__mutmut_72, 
-    'x_create_scenarios_from_patterns__mutmut_73': x_create_scenarios_from_patterns__mutmut_73, 
-    'x_create_scenarios_from_patterns__mutmut_74': x_create_scenarios_from_patterns__mutmut_74, 
-    'x_create_scenarios_from_patterns__mutmut_75': x_create_scenarios_from_patterns__mutmut_75, 
-    'x_create_scenarios_from_patterns__mutmut_76': x_create_scenarios_from_patterns__mutmut_76, 
-    'x_create_scenarios_from_patterns__mutmut_77': x_create_scenarios_from_patterns__mutmut_77, 
-    'x_create_scenarios_from_patterns__mutmut_78': x_create_scenarios_from_patterns__mutmut_78, 
-    'x_create_scenarios_from_patterns__mutmut_79': x_create_scenarios_from_patterns__mutmut_79, 
-    'x_create_scenarios_from_patterns__mutmut_80': x_create_scenarios_from_patterns__mutmut_80, 
-    'x_create_scenarios_from_patterns__mutmut_81': x_create_scenarios_from_patterns__mutmut_81, 
-    'x_create_scenarios_from_patterns__mutmut_82': x_create_scenarios_from_patterns__mutmut_82, 
-    'x_create_scenarios_from_patterns__mutmut_83': x_create_scenarios_from_patterns__mutmut_83, 
-    'x_create_scenarios_from_patterns__mutmut_84': x_create_scenarios_from_patterns__mutmut_84, 
-    'x_create_scenarios_from_patterns__mutmut_85': x_create_scenarios_from_patterns__mutmut_85, 
-    'x_create_scenarios_from_patterns__mutmut_86': x_create_scenarios_from_patterns__mutmut_86, 
-    'x_create_scenarios_from_patterns__mutmut_87': x_create_scenarios_from_patterns__mutmut_87, 
-    'x_create_scenarios_from_patterns__mutmut_88': x_create_scenarios_from_patterns__mutmut_88, 
-    'x_create_scenarios_from_patterns__mutmut_89': x_create_scenarios_from_patterns__mutmut_89, 
-    'x_create_scenarios_from_patterns__mutmut_90': x_create_scenarios_from_patterns__mutmut_90, 
-    'x_create_scenarios_from_patterns__mutmut_91': x_create_scenarios_from_patterns__mutmut_91, 
-    'x_create_scenarios_from_patterns__mutmut_92': x_create_scenarios_from_patterns__mutmut_92, 
-    'x_create_scenarios_from_patterns__mutmut_93': x_create_scenarios_from_patterns__mutmut_93, 
-    'x_create_scenarios_from_patterns__mutmut_94': x_create_scenarios_from_patterns__mutmut_94, 
-    'x_create_scenarios_from_patterns__mutmut_95': x_create_scenarios_from_patterns__mutmut_95, 
-    'x_create_scenarios_from_patterns__mutmut_96': x_create_scenarios_from_patterns__mutmut_96, 
-    'x_create_scenarios_from_patterns__mutmut_97': x_create_scenarios_from_patterns__mutmut_97, 
-    'x_create_scenarios_from_patterns__mutmut_98': x_create_scenarios_from_patterns__mutmut_98, 
-    'x_create_scenarios_from_patterns__mutmut_99': x_create_scenarios_from_patterns__mutmut_99, 
-    'x_create_scenarios_from_patterns__mutmut_100': x_create_scenarios_from_patterns__mutmut_100, 
-    'x_create_scenarios_from_patterns__mutmut_101': x_create_scenarios_from_patterns__mutmut_101, 
-    'x_create_scenarios_from_patterns__mutmut_102': x_create_scenarios_from_patterns__mutmut_102, 
-    'x_create_scenarios_from_patterns__mutmut_103': x_create_scenarios_from_patterns__mutmut_103, 
-    'x_create_scenarios_from_patterns__mutmut_104': x_create_scenarios_from_patterns__mutmut_104, 
-    'x_create_scenarios_from_patterns__mutmut_105': x_create_scenarios_from_patterns__mutmut_105, 
-    'x_create_scenarios_from_patterns__mutmut_106': x_create_scenarios_from_patterns__mutmut_106, 
-    'x_create_scenarios_from_patterns__mutmut_107': x_create_scenarios_from_patterns__mutmut_107, 
-    'x_create_scenarios_from_patterns__mutmut_108': x_create_scenarios_from_patterns__mutmut_108, 
-    'x_create_scenarios_from_patterns__mutmut_109': x_create_scenarios_from_patterns__mutmut_109, 
-    'x_create_scenarios_from_patterns__mutmut_110': x_create_scenarios_from_patterns__mutmut_110, 
-    'x_create_scenarios_from_patterns__mutmut_111': x_create_scenarios_from_patterns__mutmut_111, 
-    'x_create_scenarios_from_patterns__mutmut_112': x_create_scenarios_from_patterns__mutmut_112, 
-    'x_create_scenarios_from_patterns__mutmut_113': x_create_scenarios_from_patterns__mutmut_113, 
-    'x_create_scenarios_from_patterns__mutmut_114': x_create_scenarios_from_patterns__mutmut_114, 
-    'x_create_scenarios_from_patterns__mutmut_115': x_create_scenarios_from_patterns__mutmut_115, 
-    'x_create_scenarios_from_patterns__mutmut_116': x_create_scenarios_from_patterns__mutmut_116, 
-    'x_create_scenarios_from_patterns__mutmut_117': x_create_scenarios_from_patterns__mutmut_117, 
-    'x_create_scenarios_from_patterns__mutmut_118': x_create_scenarios_from_patterns__mutmut_118, 
-    'x_create_scenarios_from_patterns__mutmut_119': x_create_scenarios_from_patterns__mutmut_119, 
-    'x_create_scenarios_from_patterns__mutmut_120': x_create_scenarios_from_patterns__mutmut_120, 
-    'x_create_scenarios_from_patterns__mutmut_121': x_create_scenarios_from_patterns__mutmut_121, 
-    'x_create_scenarios_from_patterns__mutmut_122': x_create_scenarios_from_patterns__mutmut_122, 
-    'x_create_scenarios_from_patterns__mutmut_123': x_create_scenarios_from_patterns__mutmut_123, 
-    'x_create_scenarios_from_patterns__mutmut_124': x_create_scenarios_from_patterns__mutmut_124, 
-    'x_create_scenarios_from_patterns__mutmut_125': x_create_scenarios_from_patterns__mutmut_125, 
-    'x_create_scenarios_from_patterns__mutmut_126': x_create_scenarios_from_patterns__mutmut_126, 
-    'x_create_scenarios_from_patterns__mutmut_127': x_create_scenarios_from_patterns__mutmut_127, 
-    'x_create_scenarios_from_patterns__mutmut_128': x_create_scenarios_from_patterns__mutmut_128, 
-    'x_create_scenarios_from_patterns__mutmut_129': x_create_scenarios_from_patterns__mutmut_129, 
-    'x_create_scenarios_from_patterns__mutmut_130': x_create_scenarios_from_patterns__mutmut_130, 
-    'x_create_scenarios_from_patterns__mutmut_131': x_create_scenarios_from_patterns__mutmut_131, 
-    'x_create_scenarios_from_patterns__mutmut_132': x_create_scenarios_from_patterns__mutmut_132, 
-    'x_create_scenarios_from_patterns__mutmut_133': x_create_scenarios_from_patterns__mutmut_133, 
-    'x_create_scenarios_from_patterns__mutmut_134': x_create_scenarios_from_patterns__mutmut_134, 
-    'x_create_scenarios_from_patterns__mutmut_135': x_create_scenarios_from_patterns__mutmut_135, 
-    'x_create_scenarios_from_patterns__mutmut_136': x_create_scenarios_from_patterns__mutmut_136, 
-    'x_create_scenarios_from_patterns__mutmut_137': x_create_scenarios_from_patterns__mutmut_137, 
-    'x_create_scenarios_from_patterns__mutmut_138': x_create_scenarios_from_patterns__mutmut_138, 
-    'x_create_scenarios_from_patterns__mutmut_139': x_create_scenarios_from_patterns__mutmut_139, 
-    'x_create_scenarios_from_patterns__mutmut_140': x_create_scenarios_from_patterns__mutmut_140, 
-    'x_create_scenarios_from_patterns__mutmut_141': x_create_scenarios_from_patterns__mutmut_141, 
-    'x_create_scenarios_from_patterns__mutmut_142': x_create_scenarios_from_patterns__mutmut_142, 
-    'x_create_scenarios_from_patterns__mutmut_143': x_create_scenarios_from_patterns__mutmut_143, 
-    'x_create_scenarios_from_patterns__mutmut_144': x_create_scenarios_from_patterns__mutmut_144, 
-    'x_create_scenarios_from_patterns__mutmut_145': x_create_scenarios_from_patterns__mutmut_145, 
-    'x_create_scenarios_from_patterns__mutmut_146': x_create_scenarios_from_patterns__mutmut_146, 
-    'x_create_scenarios_from_patterns__mutmut_147': x_create_scenarios_from_patterns__mutmut_147, 
-    'x_create_scenarios_from_patterns__mutmut_148': x_create_scenarios_from_patterns__mutmut_148, 
-    'x_create_scenarios_from_patterns__mutmut_149': x_create_scenarios_from_patterns__mutmut_149, 
-    'x_create_scenarios_from_patterns__mutmut_150': x_create_scenarios_from_patterns__mutmut_150, 
-    'x_create_scenarios_from_patterns__mutmut_151': x_create_scenarios_from_patterns__mutmut_151, 
-    'x_create_scenarios_from_patterns__mutmut_152': x_create_scenarios_from_patterns__mutmut_152, 
-    'x_create_scenarios_from_patterns__mutmut_153': x_create_scenarios_from_patterns__mutmut_153, 
-    'x_create_scenarios_from_patterns__mutmut_154': x_create_scenarios_from_patterns__mutmut_154, 
-    'x_create_scenarios_from_patterns__mutmut_155': x_create_scenarios_from_patterns__mutmut_155, 
-    'x_create_scenarios_from_patterns__mutmut_156': x_create_scenarios_from_patterns__mutmut_156, 
-    'x_create_scenarios_from_patterns__mutmut_157': x_create_scenarios_from_patterns__mutmut_157, 
-    'x_create_scenarios_from_patterns__mutmut_158': x_create_scenarios_from_patterns__mutmut_158, 
-    'x_create_scenarios_from_patterns__mutmut_159': x_create_scenarios_from_patterns__mutmut_159, 
-    'x_create_scenarios_from_patterns__mutmut_160': x_create_scenarios_from_patterns__mutmut_160, 
-    'x_create_scenarios_from_patterns__mutmut_161': x_create_scenarios_from_patterns__mutmut_161, 
-    'x_create_scenarios_from_patterns__mutmut_162': x_create_scenarios_from_patterns__mutmut_162, 
-    'x_create_scenarios_from_patterns__mutmut_163': x_create_scenarios_from_patterns__mutmut_163, 
-    'x_create_scenarios_from_patterns__mutmut_164': x_create_scenarios_from_patterns__mutmut_164, 
-    'x_create_scenarios_from_patterns__mutmut_165': x_create_scenarios_from_patterns__mutmut_165, 
-    'x_create_scenarios_from_patterns__mutmut_166': x_create_scenarios_from_patterns__mutmut_166, 
-    'x_create_scenarios_from_patterns__mutmut_167': x_create_scenarios_from_patterns__mutmut_167, 
-    'x_create_scenarios_from_patterns__mutmut_168': x_create_scenarios_from_patterns__mutmut_168, 
-    'x_create_scenarios_from_patterns__mutmut_169': x_create_scenarios_from_patterns__mutmut_169, 
-    'x_create_scenarios_from_patterns__mutmut_170': x_create_scenarios_from_patterns__mutmut_170, 
-    'x_create_scenarios_from_patterns__mutmut_171': x_create_scenarios_from_patterns__mutmut_171, 
-    'x_create_scenarios_from_patterns__mutmut_172': x_create_scenarios_from_patterns__mutmut_172, 
-    'x_create_scenarios_from_patterns__mutmut_173': x_create_scenarios_from_patterns__mutmut_173, 
-    'x_create_scenarios_from_patterns__mutmut_174': x_create_scenarios_from_patterns__mutmut_174, 
-    'x_create_scenarios_from_patterns__mutmut_175': x_create_scenarios_from_patterns__mutmut_175, 
-    'x_create_scenarios_from_patterns__mutmut_176': x_create_scenarios_from_patterns__mutmut_176, 
-    'x_create_scenarios_from_patterns__mutmut_177': x_create_scenarios_from_patterns__mutmut_177, 
-    'x_create_scenarios_from_patterns__mutmut_178': x_create_scenarios_from_patterns__mutmut_178, 
-    'x_create_scenarios_from_patterns__mutmut_179': x_create_scenarios_from_patterns__mutmut_179, 
-    'x_create_scenarios_from_patterns__mutmut_180': x_create_scenarios_from_patterns__mutmut_180, 
-    'x_create_scenarios_from_patterns__mutmut_181': x_create_scenarios_from_patterns__mutmut_181, 
-    'x_create_scenarios_from_patterns__mutmut_182': x_create_scenarios_from_patterns__mutmut_182, 
-    'x_create_scenarios_from_patterns__mutmut_183': x_create_scenarios_from_patterns__mutmut_183, 
-    'x_create_scenarios_from_patterns__mutmut_184': x_create_scenarios_from_patterns__mutmut_184, 
-    'x_create_scenarios_from_patterns__mutmut_185': x_create_scenarios_from_patterns__mutmut_185, 
-    'x_create_scenarios_from_patterns__mutmut_186': x_create_scenarios_from_patterns__mutmut_186, 
-    'x_create_scenarios_from_patterns__mutmut_187': x_create_scenarios_from_patterns__mutmut_187, 
-    'x_create_scenarios_from_patterns__mutmut_188': x_create_scenarios_from_patterns__mutmut_188, 
-    'x_create_scenarios_from_patterns__mutmut_189': x_create_scenarios_from_patterns__mutmut_189, 
-    'x_create_scenarios_from_patterns__mutmut_190': x_create_scenarios_from_patterns__mutmut_190, 
-    'x_create_scenarios_from_patterns__mutmut_191': x_create_scenarios_from_patterns__mutmut_191, 
-    'x_create_scenarios_from_patterns__mutmut_192': x_create_scenarios_from_patterns__mutmut_192, 
-    'x_create_scenarios_from_patterns__mutmut_193': x_create_scenarios_from_patterns__mutmut_193, 
-    'x_create_scenarios_from_patterns__mutmut_194': x_create_scenarios_from_patterns__mutmut_194, 
-    'x_create_scenarios_from_patterns__mutmut_195': x_create_scenarios_from_patterns__mutmut_195, 
-    'x_create_scenarios_from_patterns__mutmut_196': x_create_scenarios_from_patterns__mutmut_196, 
-    'x_create_scenarios_from_patterns__mutmut_197': x_create_scenarios_from_patterns__mutmut_197, 
-    'x_create_scenarios_from_patterns__mutmut_198': x_create_scenarios_from_patterns__mutmut_198, 
-    'x_create_scenarios_from_patterns__mutmut_199': x_create_scenarios_from_patterns__mutmut_199, 
-    'x_create_scenarios_from_patterns__mutmut_200': x_create_scenarios_from_patterns__mutmut_200, 
-    'x_create_scenarios_from_patterns__mutmut_201': x_create_scenarios_from_patterns__mutmut_201, 
-    'x_create_scenarios_from_patterns__mutmut_202': x_create_scenarios_from_patterns__mutmut_202, 
-    'x_create_scenarios_from_patterns__mutmut_203': x_create_scenarios_from_patterns__mutmut_203
+
+x_create_scenarios_from_patterns__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_scenarios_from_patterns__mutmut_1": x_create_scenarios_from_patterns__mutmut_1,
+    "x_create_scenarios_from_patterns__mutmut_2": x_create_scenarios_from_patterns__mutmut_2,
+    "x_create_scenarios_from_patterns__mutmut_3": x_create_scenarios_from_patterns__mutmut_3,
+    "x_create_scenarios_from_patterns__mutmut_4": x_create_scenarios_from_patterns__mutmut_4,
+    "x_create_scenarios_from_patterns__mutmut_5": x_create_scenarios_from_patterns__mutmut_5,
+    "x_create_scenarios_from_patterns__mutmut_6": x_create_scenarios_from_patterns__mutmut_6,
+    "x_create_scenarios_from_patterns__mutmut_7": x_create_scenarios_from_patterns__mutmut_7,
+    "x_create_scenarios_from_patterns__mutmut_8": x_create_scenarios_from_patterns__mutmut_8,
+    "x_create_scenarios_from_patterns__mutmut_9": x_create_scenarios_from_patterns__mutmut_9,
+    "x_create_scenarios_from_patterns__mutmut_10": x_create_scenarios_from_patterns__mutmut_10,
+    "x_create_scenarios_from_patterns__mutmut_11": x_create_scenarios_from_patterns__mutmut_11,
+    "x_create_scenarios_from_patterns__mutmut_12": x_create_scenarios_from_patterns__mutmut_12,
+    "x_create_scenarios_from_patterns__mutmut_13": x_create_scenarios_from_patterns__mutmut_13,
+    "x_create_scenarios_from_patterns__mutmut_14": x_create_scenarios_from_patterns__mutmut_14,
+    "x_create_scenarios_from_patterns__mutmut_15": x_create_scenarios_from_patterns__mutmut_15,
+    "x_create_scenarios_from_patterns__mutmut_16": x_create_scenarios_from_patterns__mutmut_16,
+    "x_create_scenarios_from_patterns__mutmut_17": x_create_scenarios_from_patterns__mutmut_17,
+    "x_create_scenarios_from_patterns__mutmut_18": x_create_scenarios_from_patterns__mutmut_18,
+    "x_create_scenarios_from_patterns__mutmut_19": x_create_scenarios_from_patterns__mutmut_19,
+    "x_create_scenarios_from_patterns__mutmut_20": x_create_scenarios_from_patterns__mutmut_20,
+    "x_create_scenarios_from_patterns__mutmut_21": x_create_scenarios_from_patterns__mutmut_21,
+    "x_create_scenarios_from_patterns__mutmut_22": x_create_scenarios_from_patterns__mutmut_22,
+    "x_create_scenarios_from_patterns__mutmut_23": x_create_scenarios_from_patterns__mutmut_23,
+    "x_create_scenarios_from_patterns__mutmut_24": x_create_scenarios_from_patterns__mutmut_24,
+    "x_create_scenarios_from_patterns__mutmut_25": x_create_scenarios_from_patterns__mutmut_25,
+    "x_create_scenarios_from_patterns__mutmut_26": x_create_scenarios_from_patterns__mutmut_26,
+    "x_create_scenarios_from_patterns__mutmut_27": x_create_scenarios_from_patterns__mutmut_27,
+    "x_create_scenarios_from_patterns__mutmut_28": x_create_scenarios_from_patterns__mutmut_28,
+    "x_create_scenarios_from_patterns__mutmut_29": x_create_scenarios_from_patterns__mutmut_29,
+    "x_create_scenarios_from_patterns__mutmut_30": x_create_scenarios_from_patterns__mutmut_30,
+    "x_create_scenarios_from_patterns__mutmut_31": x_create_scenarios_from_patterns__mutmut_31,
+    "x_create_scenarios_from_patterns__mutmut_32": x_create_scenarios_from_patterns__mutmut_32,
+    "x_create_scenarios_from_patterns__mutmut_33": x_create_scenarios_from_patterns__mutmut_33,
+    "x_create_scenarios_from_patterns__mutmut_34": x_create_scenarios_from_patterns__mutmut_34,
+    "x_create_scenarios_from_patterns__mutmut_35": x_create_scenarios_from_patterns__mutmut_35,
+    "x_create_scenarios_from_patterns__mutmut_36": x_create_scenarios_from_patterns__mutmut_36,
+    "x_create_scenarios_from_patterns__mutmut_37": x_create_scenarios_from_patterns__mutmut_37,
+    "x_create_scenarios_from_patterns__mutmut_38": x_create_scenarios_from_patterns__mutmut_38,
+    "x_create_scenarios_from_patterns__mutmut_39": x_create_scenarios_from_patterns__mutmut_39,
+    "x_create_scenarios_from_patterns__mutmut_40": x_create_scenarios_from_patterns__mutmut_40,
+    "x_create_scenarios_from_patterns__mutmut_41": x_create_scenarios_from_patterns__mutmut_41,
+    "x_create_scenarios_from_patterns__mutmut_42": x_create_scenarios_from_patterns__mutmut_42,
+    "x_create_scenarios_from_patterns__mutmut_43": x_create_scenarios_from_patterns__mutmut_43,
+    "x_create_scenarios_from_patterns__mutmut_44": x_create_scenarios_from_patterns__mutmut_44,
+    "x_create_scenarios_from_patterns__mutmut_45": x_create_scenarios_from_patterns__mutmut_45,
+    "x_create_scenarios_from_patterns__mutmut_46": x_create_scenarios_from_patterns__mutmut_46,
+    "x_create_scenarios_from_patterns__mutmut_47": x_create_scenarios_from_patterns__mutmut_47,
+    "x_create_scenarios_from_patterns__mutmut_48": x_create_scenarios_from_patterns__mutmut_48,
+    "x_create_scenarios_from_patterns__mutmut_49": x_create_scenarios_from_patterns__mutmut_49,
+    "x_create_scenarios_from_patterns__mutmut_50": x_create_scenarios_from_patterns__mutmut_50,
+    "x_create_scenarios_from_patterns__mutmut_51": x_create_scenarios_from_patterns__mutmut_51,
+    "x_create_scenarios_from_patterns__mutmut_52": x_create_scenarios_from_patterns__mutmut_52,
+    "x_create_scenarios_from_patterns__mutmut_53": x_create_scenarios_from_patterns__mutmut_53,
+    "x_create_scenarios_from_patterns__mutmut_54": x_create_scenarios_from_patterns__mutmut_54,
+    "x_create_scenarios_from_patterns__mutmut_55": x_create_scenarios_from_patterns__mutmut_55,
+    "x_create_scenarios_from_patterns__mutmut_56": x_create_scenarios_from_patterns__mutmut_56,
+    "x_create_scenarios_from_patterns__mutmut_57": x_create_scenarios_from_patterns__mutmut_57,
+    "x_create_scenarios_from_patterns__mutmut_58": x_create_scenarios_from_patterns__mutmut_58,
+    "x_create_scenarios_from_patterns__mutmut_59": x_create_scenarios_from_patterns__mutmut_59,
+    "x_create_scenarios_from_patterns__mutmut_60": x_create_scenarios_from_patterns__mutmut_60,
+    "x_create_scenarios_from_patterns__mutmut_61": x_create_scenarios_from_patterns__mutmut_61,
+    "x_create_scenarios_from_patterns__mutmut_62": x_create_scenarios_from_patterns__mutmut_62,
+    "x_create_scenarios_from_patterns__mutmut_63": x_create_scenarios_from_patterns__mutmut_63,
+    "x_create_scenarios_from_patterns__mutmut_64": x_create_scenarios_from_patterns__mutmut_64,
+    "x_create_scenarios_from_patterns__mutmut_65": x_create_scenarios_from_patterns__mutmut_65,
+    "x_create_scenarios_from_patterns__mutmut_66": x_create_scenarios_from_patterns__mutmut_66,
+    "x_create_scenarios_from_patterns__mutmut_67": x_create_scenarios_from_patterns__mutmut_67,
+    "x_create_scenarios_from_patterns__mutmut_68": x_create_scenarios_from_patterns__mutmut_68,
+    "x_create_scenarios_from_patterns__mutmut_69": x_create_scenarios_from_patterns__mutmut_69,
+    "x_create_scenarios_from_patterns__mutmut_70": x_create_scenarios_from_patterns__mutmut_70,
+    "x_create_scenarios_from_patterns__mutmut_71": x_create_scenarios_from_patterns__mutmut_71,
+    "x_create_scenarios_from_patterns__mutmut_72": x_create_scenarios_from_patterns__mutmut_72,
+    "x_create_scenarios_from_patterns__mutmut_73": x_create_scenarios_from_patterns__mutmut_73,
+    "x_create_scenarios_from_patterns__mutmut_74": x_create_scenarios_from_patterns__mutmut_74,
+    "x_create_scenarios_from_patterns__mutmut_75": x_create_scenarios_from_patterns__mutmut_75,
+    "x_create_scenarios_from_patterns__mutmut_76": x_create_scenarios_from_patterns__mutmut_76,
+    "x_create_scenarios_from_patterns__mutmut_77": x_create_scenarios_from_patterns__mutmut_77,
+    "x_create_scenarios_from_patterns__mutmut_78": x_create_scenarios_from_patterns__mutmut_78,
+    "x_create_scenarios_from_patterns__mutmut_79": x_create_scenarios_from_patterns__mutmut_79,
+    "x_create_scenarios_from_patterns__mutmut_80": x_create_scenarios_from_patterns__mutmut_80,
+    "x_create_scenarios_from_patterns__mutmut_81": x_create_scenarios_from_patterns__mutmut_81,
+    "x_create_scenarios_from_patterns__mutmut_82": x_create_scenarios_from_patterns__mutmut_82,
+    "x_create_scenarios_from_patterns__mutmut_83": x_create_scenarios_from_patterns__mutmut_83,
+    "x_create_scenarios_from_patterns__mutmut_84": x_create_scenarios_from_patterns__mutmut_84,
+    "x_create_scenarios_from_patterns__mutmut_85": x_create_scenarios_from_patterns__mutmut_85,
+    "x_create_scenarios_from_patterns__mutmut_86": x_create_scenarios_from_patterns__mutmut_86,
+    "x_create_scenarios_from_patterns__mutmut_87": x_create_scenarios_from_patterns__mutmut_87,
+    "x_create_scenarios_from_patterns__mutmut_88": x_create_scenarios_from_patterns__mutmut_88,
+    "x_create_scenarios_from_patterns__mutmut_89": x_create_scenarios_from_patterns__mutmut_89,
+    "x_create_scenarios_from_patterns__mutmut_90": x_create_scenarios_from_patterns__mutmut_90,
+    "x_create_scenarios_from_patterns__mutmut_91": x_create_scenarios_from_patterns__mutmut_91,
+    "x_create_scenarios_from_patterns__mutmut_92": x_create_scenarios_from_patterns__mutmut_92,
+    "x_create_scenarios_from_patterns__mutmut_93": x_create_scenarios_from_patterns__mutmut_93,
+    "x_create_scenarios_from_patterns__mutmut_94": x_create_scenarios_from_patterns__mutmut_94,
+    "x_create_scenarios_from_patterns__mutmut_95": x_create_scenarios_from_patterns__mutmut_95,
+    "x_create_scenarios_from_patterns__mutmut_96": x_create_scenarios_from_patterns__mutmut_96,
+    "x_create_scenarios_from_patterns__mutmut_97": x_create_scenarios_from_patterns__mutmut_97,
+    "x_create_scenarios_from_patterns__mutmut_98": x_create_scenarios_from_patterns__mutmut_98,
+    "x_create_scenarios_from_patterns__mutmut_99": x_create_scenarios_from_patterns__mutmut_99,
+    "x_create_scenarios_from_patterns__mutmut_100": x_create_scenarios_from_patterns__mutmut_100,
+    "x_create_scenarios_from_patterns__mutmut_101": x_create_scenarios_from_patterns__mutmut_101,
+    "x_create_scenarios_from_patterns__mutmut_102": x_create_scenarios_from_patterns__mutmut_102,
+    "x_create_scenarios_from_patterns__mutmut_103": x_create_scenarios_from_patterns__mutmut_103,
+    "x_create_scenarios_from_patterns__mutmut_104": x_create_scenarios_from_patterns__mutmut_104,
+    "x_create_scenarios_from_patterns__mutmut_105": x_create_scenarios_from_patterns__mutmut_105,
+    "x_create_scenarios_from_patterns__mutmut_106": x_create_scenarios_from_patterns__mutmut_106,
+    "x_create_scenarios_from_patterns__mutmut_107": x_create_scenarios_from_patterns__mutmut_107,
+    "x_create_scenarios_from_patterns__mutmut_108": x_create_scenarios_from_patterns__mutmut_108,
+    "x_create_scenarios_from_patterns__mutmut_109": x_create_scenarios_from_patterns__mutmut_109,
+    "x_create_scenarios_from_patterns__mutmut_110": x_create_scenarios_from_patterns__mutmut_110,
+    "x_create_scenarios_from_patterns__mutmut_111": x_create_scenarios_from_patterns__mutmut_111,
+    "x_create_scenarios_from_patterns__mutmut_112": x_create_scenarios_from_patterns__mutmut_112,
+    "x_create_scenarios_from_patterns__mutmut_113": x_create_scenarios_from_patterns__mutmut_113,
+    "x_create_scenarios_from_patterns__mutmut_114": x_create_scenarios_from_patterns__mutmut_114,
+    "x_create_scenarios_from_patterns__mutmut_115": x_create_scenarios_from_patterns__mutmut_115,
+    "x_create_scenarios_from_patterns__mutmut_116": x_create_scenarios_from_patterns__mutmut_116,
+    "x_create_scenarios_from_patterns__mutmut_117": x_create_scenarios_from_patterns__mutmut_117,
+    "x_create_scenarios_from_patterns__mutmut_118": x_create_scenarios_from_patterns__mutmut_118,
+    "x_create_scenarios_from_patterns__mutmut_119": x_create_scenarios_from_patterns__mutmut_119,
+    "x_create_scenarios_from_patterns__mutmut_120": x_create_scenarios_from_patterns__mutmut_120,
+    "x_create_scenarios_from_patterns__mutmut_121": x_create_scenarios_from_patterns__mutmut_121,
+    "x_create_scenarios_from_patterns__mutmut_122": x_create_scenarios_from_patterns__mutmut_122,
+    "x_create_scenarios_from_patterns__mutmut_123": x_create_scenarios_from_patterns__mutmut_123,
+    "x_create_scenarios_from_patterns__mutmut_124": x_create_scenarios_from_patterns__mutmut_124,
+    "x_create_scenarios_from_patterns__mutmut_125": x_create_scenarios_from_patterns__mutmut_125,
+    "x_create_scenarios_from_patterns__mutmut_126": x_create_scenarios_from_patterns__mutmut_126,
+    "x_create_scenarios_from_patterns__mutmut_127": x_create_scenarios_from_patterns__mutmut_127,
+    "x_create_scenarios_from_patterns__mutmut_128": x_create_scenarios_from_patterns__mutmut_128,
+    "x_create_scenarios_from_patterns__mutmut_129": x_create_scenarios_from_patterns__mutmut_129,
+    "x_create_scenarios_from_patterns__mutmut_130": x_create_scenarios_from_patterns__mutmut_130,
+    "x_create_scenarios_from_patterns__mutmut_131": x_create_scenarios_from_patterns__mutmut_131,
+    "x_create_scenarios_from_patterns__mutmut_132": x_create_scenarios_from_patterns__mutmut_132,
+    "x_create_scenarios_from_patterns__mutmut_133": x_create_scenarios_from_patterns__mutmut_133,
+    "x_create_scenarios_from_patterns__mutmut_134": x_create_scenarios_from_patterns__mutmut_134,
+    "x_create_scenarios_from_patterns__mutmut_135": x_create_scenarios_from_patterns__mutmut_135,
+    "x_create_scenarios_from_patterns__mutmut_136": x_create_scenarios_from_patterns__mutmut_136,
+    "x_create_scenarios_from_patterns__mutmut_137": x_create_scenarios_from_patterns__mutmut_137,
+    "x_create_scenarios_from_patterns__mutmut_138": x_create_scenarios_from_patterns__mutmut_138,
+    "x_create_scenarios_from_patterns__mutmut_139": x_create_scenarios_from_patterns__mutmut_139,
+    "x_create_scenarios_from_patterns__mutmut_140": x_create_scenarios_from_patterns__mutmut_140,
+    "x_create_scenarios_from_patterns__mutmut_141": x_create_scenarios_from_patterns__mutmut_141,
+    "x_create_scenarios_from_patterns__mutmut_142": x_create_scenarios_from_patterns__mutmut_142,
+    "x_create_scenarios_from_patterns__mutmut_143": x_create_scenarios_from_patterns__mutmut_143,
+    "x_create_scenarios_from_patterns__mutmut_144": x_create_scenarios_from_patterns__mutmut_144,
+    "x_create_scenarios_from_patterns__mutmut_145": x_create_scenarios_from_patterns__mutmut_145,
+    "x_create_scenarios_from_patterns__mutmut_146": x_create_scenarios_from_patterns__mutmut_146,
+    "x_create_scenarios_from_patterns__mutmut_147": x_create_scenarios_from_patterns__mutmut_147,
+    "x_create_scenarios_from_patterns__mutmut_148": x_create_scenarios_from_patterns__mutmut_148,
+    "x_create_scenarios_from_patterns__mutmut_149": x_create_scenarios_from_patterns__mutmut_149,
+    "x_create_scenarios_from_patterns__mutmut_150": x_create_scenarios_from_patterns__mutmut_150,
+    "x_create_scenarios_from_patterns__mutmut_151": x_create_scenarios_from_patterns__mutmut_151,
+    "x_create_scenarios_from_patterns__mutmut_152": x_create_scenarios_from_patterns__mutmut_152,
+    "x_create_scenarios_from_patterns__mutmut_153": x_create_scenarios_from_patterns__mutmut_153,
+    "x_create_scenarios_from_patterns__mutmut_154": x_create_scenarios_from_patterns__mutmut_154,
+    "x_create_scenarios_from_patterns__mutmut_155": x_create_scenarios_from_patterns__mutmut_155,
+    "x_create_scenarios_from_patterns__mutmut_156": x_create_scenarios_from_patterns__mutmut_156,
+    "x_create_scenarios_from_patterns__mutmut_157": x_create_scenarios_from_patterns__mutmut_157,
+    "x_create_scenarios_from_patterns__mutmut_158": x_create_scenarios_from_patterns__mutmut_158,
+    "x_create_scenarios_from_patterns__mutmut_159": x_create_scenarios_from_patterns__mutmut_159,
+    "x_create_scenarios_from_patterns__mutmut_160": x_create_scenarios_from_patterns__mutmut_160,
+    "x_create_scenarios_from_patterns__mutmut_161": x_create_scenarios_from_patterns__mutmut_161,
+    "x_create_scenarios_from_patterns__mutmut_162": x_create_scenarios_from_patterns__mutmut_162,
+    "x_create_scenarios_from_patterns__mutmut_163": x_create_scenarios_from_patterns__mutmut_163,
+    "x_create_scenarios_from_patterns__mutmut_164": x_create_scenarios_from_patterns__mutmut_164,
+    "x_create_scenarios_from_patterns__mutmut_165": x_create_scenarios_from_patterns__mutmut_165,
+    "x_create_scenarios_from_patterns__mutmut_166": x_create_scenarios_from_patterns__mutmut_166,
+    "x_create_scenarios_from_patterns__mutmut_167": x_create_scenarios_from_patterns__mutmut_167,
+    "x_create_scenarios_from_patterns__mutmut_168": x_create_scenarios_from_patterns__mutmut_168,
+    "x_create_scenarios_from_patterns__mutmut_169": x_create_scenarios_from_patterns__mutmut_169,
+    "x_create_scenarios_from_patterns__mutmut_170": x_create_scenarios_from_patterns__mutmut_170,
+    "x_create_scenarios_from_patterns__mutmut_171": x_create_scenarios_from_patterns__mutmut_171,
+    "x_create_scenarios_from_patterns__mutmut_172": x_create_scenarios_from_patterns__mutmut_172,
+    "x_create_scenarios_from_patterns__mutmut_173": x_create_scenarios_from_patterns__mutmut_173,
+    "x_create_scenarios_from_patterns__mutmut_174": x_create_scenarios_from_patterns__mutmut_174,
+    "x_create_scenarios_from_patterns__mutmut_175": x_create_scenarios_from_patterns__mutmut_175,
+    "x_create_scenarios_from_patterns__mutmut_176": x_create_scenarios_from_patterns__mutmut_176,
+    "x_create_scenarios_from_patterns__mutmut_177": x_create_scenarios_from_patterns__mutmut_177,
+    "x_create_scenarios_from_patterns__mutmut_178": x_create_scenarios_from_patterns__mutmut_178,
+    "x_create_scenarios_from_patterns__mutmut_179": x_create_scenarios_from_patterns__mutmut_179,
+    "x_create_scenarios_from_patterns__mutmut_180": x_create_scenarios_from_patterns__mutmut_180,
+    "x_create_scenarios_from_patterns__mutmut_181": x_create_scenarios_from_patterns__mutmut_181,
+    "x_create_scenarios_from_patterns__mutmut_182": x_create_scenarios_from_patterns__mutmut_182,
+    "x_create_scenarios_from_patterns__mutmut_183": x_create_scenarios_from_patterns__mutmut_183,
+    "x_create_scenarios_from_patterns__mutmut_184": x_create_scenarios_from_patterns__mutmut_184,
+    "x_create_scenarios_from_patterns__mutmut_185": x_create_scenarios_from_patterns__mutmut_185,
+    "x_create_scenarios_from_patterns__mutmut_186": x_create_scenarios_from_patterns__mutmut_186,
+    "x_create_scenarios_from_patterns__mutmut_187": x_create_scenarios_from_patterns__mutmut_187,
+    "x_create_scenarios_from_patterns__mutmut_188": x_create_scenarios_from_patterns__mutmut_188,
+    "x_create_scenarios_from_patterns__mutmut_189": x_create_scenarios_from_patterns__mutmut_189,
+    "x_create_scenarios_from_patterns__mutmut_190": x_create_scenarios_from_patterns__mutmut_190,
+    "x_create_scenarios_from_patterns__mutmut_191": x_create_scenarios_from_patterns__mutmut_191,
+    "x_create_scenarios_from_patterns__mutmut_192": x_create_scenarios_from_patterns__mutmut_192,
+    "x_create_scenarios_from_patterns__mutmut_193": x_create_scenarios_from_patterns__mutmut_193,
+    "x_create_scenarios_from_patterns__mutmut_194": x_create_scenarios_from_patterns__mutmut_194,
+    "x_create_scenarios_from_patterns__mutmut_195": x_create_scenarios_from_patterns__mutmut_195,
+    "x_create_scenarios_from_patterns__mutmut_196": x_create_scenarios_from_patterns__mutmut_196,
+    "x_create_scenarios_from_patterns__mutmut_197": x_create_scenarios_from_patterns__mutmut_197,
+    "x_create_scenarios_from_patterns__mutmut_198": x_create_scenarios_from_patterns__mutmut_198,
+    "x_create_scenarios_from_patterns__mutmut_199": x_create_scenarios_from_patterns__mutmut_199,
+    "x_create_scenarios_from_patterns__mutmut_200": x_create_scenarios_from_patterns__mutmut_200,
+    "x_create_scenarios_from_patterns__mutmut_201": x_create_scenarios_from_patterns__mutmut_201,
+    "x_create_scenarios_from_patterns__mutmut_202": x_create_scenarios_from_patterns__mutmut_202,
+    "x_create_scenarios_from_patterns__mutmut_203": x_create_scenarios_from_patterns__mutmut_203,
 }
 
+
 def create_scenarios_from_patterns(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_scenarios_from_patterns__mutmut_orig, x_create_scenarios_from_patterns__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_scenarios_from_patterns__mutmut_orig,
+        x_create_scenarios_from_patterns__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 create_scenarios_from_patterns.__signature__ = _mutmut_signature(x_create_scenarios_from_patterns__mutmut_orig)
-x_create_scenarios_from_patterns__mutmut_orig.__name__ = 'x_create_scenarios_from_patterns'
+x_create_scenarios_from_patterns__mutmut_orig.__name__ = "x_create_scenarios_from_patterns"
 
 
 # <3 🧱🤝📄🪄

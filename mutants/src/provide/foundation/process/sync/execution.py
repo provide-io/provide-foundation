@@ -32,23 +32,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -2176,7 +2179,10 @@ def x_run__mutmut_16(
 
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     masked_cmd = mask_command(cmd_str)
-    log.trace("🚀 Running command", command=masked_cmd, )
+    log.trace(
+        "🚀 Running command",
+        command=masked_cmd,
+    )
 
     # Validate command type and shell parameter
     validate_command_type(cmd, shell)
@@ -3219,7 +3225,9 @@ def x_run__mutmut_24(
     log.trace("🚀 Running command", command=masked_cmd, cwd=str(cwd) if cwd else None)
 
     # Validate command type and shell parameter
-    validate_command_type(cmd, )
+    validate_command_type(
+        cmd,
+    )
 
     # Prepare environment
     run_env = prepare_environment(env)
@@ -4398,7 +4406,9 @@ def x_run__mutmut_33(
     cwd = normalize_cwd(cwd)
 
     # Prepare input
-    subprocess_input = prepare_input(input, )
+    subprocess_input = prepare_input(
+        input,
+    )
 
     try:
         # Prepare command for subprocess
@@ -7124,7 +7134,7 @@ def x_run__mutmut_54(
             timeout=timeout,
             check=False,  # We'll handle the check ourselves
             shell=shell,  # nosec B602 - Shell usage validated by caller context
-            )
+        )
 
         completed = CompletedProcess(
             args=cmd if isinstance(cmd, list) else [cmd],
@@ -8940,7 +8950,7 @@ def x_run__mutmut_68(
             stdout=result.stdout if capture_output else "",
             stderr=result.stderr if capture_output else "",
             cwd=cwd,
-            )
+        )
 
         if check and result.returncode != 0:
             log.error(
@@ -10764,7 +10774,7 @@ def x_run__mutmut_82(
                 "❌ Command failed",
                 command=cmd_str,
                 returncode=result.returncode,
-                )
+            )
             raise ProcessError(
                 f"Command failed with exit code {result.returncode}: {cmd_str}",
                 code="PROCESS_COMMAND_FAILED",
@@ -12716,7 +12726,7 @@ def x_run__mutmut_97(
                 command=cmd_str,
                 return_code=result.returncode,
                 stdout=result.stdout if capture_output else None,
-                )
+            )
 
         log.debug(
             "✅ Command completed",
@@ -13759,7 +13769,7 @@ def x_run__mutmut_105(
         log.debug(
             "✅ Command completed",
             command=cmd_str,
-            )
+        )
 
         return completed
 
@@ -14935,7 +14945,7 @@ def x_run__mutmut_114(
         log.error(
             "⏱️ Command timed out",
             command=cmd_str,
-            )
+        )
         raise ProcessTimeoutError(
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_TIMEOUT",
@@ -16367,7 +16377,7 @@ def x_run__mutmut_125(
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_TIMEOUT",
             command=cmd_str,
-            ) from e
+        ) from e
     except Exception as e:
         if isinstance(e, ProcessError | ProcessTimeoutError):
             raise
@@ -17412,7 +17422,7 @@ def x_run__mutmut_133(
         log.error(
             "💥 Command execution failed",
             command=cmd_str,
-            )
+        )
         raise ProcessError(
             f"Failed to execute command: {cmd_str}",
             code="PROCESS_EXECUTION_FAILED",
@@ -18714,7 +18724,7 @@ def x_run__mutmut_143(
         raise ProcessError(
             f"Failed to execute command: {cmd_str}",
             code="PROCESS_EXECUTION_FAILED",
-            ) from e
+        ) from e
 
 
 def x_run__mutmut_144(
@@ -18976,160 +18986,163 @@ def x_run__mutmut_145(
             command=cmd_str,
         ) from e
 
-x_run__mutmut_mutants : ClassVar[MutantDict] = {
-'x_run__mutmut_1': x_run__mutmut_1, 
-    'x_run__mutmut_2': x_run__mutmut_2, 
-    'x_run__mutmut_3': x_run__mutmut_3, 
-    'x_run__mutmut_4': x_run__mutmut_4, 
-    'x_run__mutmut_5': x_run__mutmut_5, 
-    'x_run__mutmut_6': x_run__mutmut_6, 
-    'x_run__mutmut_7': x_run__mutmut_7, 
-    'x_run__mutmut_8': x_run__mutmut_8, 
-    'x_run__mutmut_9': x_run__mutmut_9, 
-    'x_run__mutmut_10': x_run__mutmut_10, 
-    'x_run__mutmut_11': x_run__mutmut_11, 
-    'x_run__mutmut_12': x_run__mutmut_12, 
-    'x_run__mutmut_13': x_run__mutmut_13, 
-    'x_run__mutmut_14': x_run__mutmut_14, 
-    'x_run__mutmut_15': x_run__mutmut_15, 
-    'x_run__mutmut_16': x_run__mutmut_16, 
-    'x_run__mutmut_17': x_run__mutmut_17, 
-    'x_run__mutmut_18': x_run__mutmut_18, 
-    'x_run__mutmut_19': x_run__mutmut_19, 
-    'x_run__mutmut_20': x_run__mutmut_20, 
-    'x_run__mutmut_21': x_run__mutmut_21, 
-    'x_run__mutmut_22': x_run__mutmut_22, 
-    'x_run__mutmut_23': x_run__mutmut_23, 
-    'x_run__mutmut_24': x_run__mutmut_24, 
-    'x_run__mutmut_25': x_run__mutmut_25, 
-    'x_run__mutmut_26': x_run__mutmut_26, 
-    'x_run__mutmut_27': x_run__mutmut_27, 
-    'x_run__mutmut_28': x_run__mutmut_28, 
-    'x_run__mutmut_29': x_run__mutmut_29, 
-    'x_run__mutmut_30': x_run__mutmut_30, 
-    'x_run__mutmut_31': x_run__mutmut_31, 
-    'x_run__mutmut_32': x_run__mutmut_32, 
-    'x_run__mutmut_33': x_run__mutmut_33, 
-    'x_run__mutmut_34': x_run__mutmut_34, 
-    'x_run__mutmut_35': x_run__mutmut_35, 
-    'x_run__mutmut_36': x_run__mutmut_36, 
-    'x_run__mutmut_37': x_run__mutmut_37, 
-    'x_run__mutmut_38': x_run__mutmut_38, 
-    'x_run__mutmut_39': x_run__mutmut_39, 
-    'x_run__mutmut_40': x_run__mutmut_40, 
-    'x_run__mutmut_41': x_run__mutmut_41, 
-    'x_run__mutmut_42': x_run__mutmut_42, 
-    'x_run__mutmut_43': x_run__mutmut_43, 
-    'x_run__mutmut_44': x_run__mutmut_44, 
-    'x_run__mutmut_45': x_run__mutmut_45, 
-    'x_run__mutmut_46': x_run__mutmut_46, 
-    'x_run__mutmut_47': x_run__mutmut_47, 
-    'x_run__mutmut_48': x_run__mutmut_48, 
-    'x_run__mutmut_49': x_run__mutmut_49, 
-    'x_run__mutmut_50': x_run__mutmut_50, 
-    'x_run__mutmut_51': x_run__mutmut_51, 
-    'x_run__mutmut_52': x_run__mutmut_52, 
-    'x_run__mutmut_53': x_run__mutmut_53, 
-    'x_run__mutmut_54': x_run__mutmut_54, 
-    'x_run__mutmut_55': x_run__mutmut_55, 
-    'x_run__mutmut_56': x_run__mutmut_56, 
-    'x_run__mutmut_57': x_run__mutmut_57, 
-    'x_run__mutmut_58': x_run__mutmut_58, 
-    'x_run__mutmut_59': x_run__mutmut_59, 
-    'x_run__mutmut_60': x_run__mutmut_60, 
-    'x_run__mutmut_61': x_run__mutmut_61, 
-    'x_run__mutmut_62': x_run__mutmut_62, 
-    'x_run__mutmut_63': x_run__mutmut_63, 
-    'x_run__mutmut_64': x_run__mutmut_64, 
-    'x_run__mutmut_65': x_run__mutmut_65, 
-    'x_run__mutmut_66': x_run__mutmut_66, 
-    'x_run__mutmut_67': x_run__mutmut_67, 
-    'x_run__mutmut_68': x_run__mutmut_68, 
-    'x_run__mutmut_69': x_run__mutmut_69, 
-    'x_run__mutmut_70': x_run__mutmut_70, 
-    'x_run__mutmut_71': x_run__mutmut_71, 
-    'x_run__mutmut_72': x_run__mutmut_72, 
-    'x_run__mutmut_73': x_run__mutmut_73, 
-    'x_run__mutmut_74': x_run__mutmut_74, 
-    'x_run__mutmut_75': x_run__mutmut_75, 
-    'x_run__mutmut_76': x_run__mutmut_76, 
-    'x_run__mutmut_77': x_run__mutmut_77, 
-    'x_run__mutmut_78': x_run__mutmut_78, 
-    'x_run__mutmut_79': x_run__mutmut_79, 
-    'x_run__mutmut_80': x_run__mutmut_80, 
-    'x_run__mutmut_81': x_run__mutmut_81, 
-    'x_run__mutmut_82': x_run__mutmut_82, 
-    'x_run__mutmut_83': x_run__mutmut_83, 
-    'x_run__mutmut_84': x_run__mutmut_84, 
-    'x_run__mutmut_85': x_run__mutmut_85, 
-    'x_run__mutmut_86': x_run__mutmut_86, 
-    'x_run__mutmut_87': x_run__mutmut_87, 
-    'x_run__mutmut_88': x_run__mutmut_88, 
-    'x_run__mutmut_89': x_run__mutmut_89, 
-    'x_run__mutmut_90': x_run__mutmut_90, 
-    'x_run__mutmut_91': x_run__mutmut_91, 
-    'x_run__mutmut_92': x_run__mutmut_92, 
-    'x_run__mutmut_93': x_run__mutmut_93, 
-    'x_run__mutmut_94': x_run__mutmut_94, 
-    'x_run__mutmut_95': x_run__mutmut_95, 
-    'x_run__mutmut_96': x_run__mutmut_96, 
-    'x_run__mutmut_97': x_run__mutmut_97, 
-    'x_run__mutmut_98': x_run__mutmut_98, 
-    'x_run__mutmut_99': x_run__mutmut_99, 
-    'x_run__mutmut_100': x_run__mutmut_100, 
-    'x_run__mutmut_101': x_run__mutmut_101, 
-    'x_run__mutmut_102': x_run__mutmut_102, 
-    'x_run__mutmut_103': x_run__mutmut_103, 
-    'x_run__mutmut_104': x_run__mutmut_104, 
-    'x_run__mutmut_105': x_run__mutmut_105, 
-    'x_run__mutmut_106': x_run__mutmut_106, 
-    'x_run__mutmut_107': x_run__mutmut_107, 
-    'x_run__mutmut_108': x_run__mutmut_108, 
-    'x_run__mutmut_109': x_run__mutmut_109, 
-    'x_run__mutmut_110': x_run__mutmut_110, 
-    'x_run__mutmut_111': x_run__mutmut_111, 
-    'x_run__mutmut_112': x_run__mutmut_112, 
-    'x_run__mutmut_113': x_run__mutmut_113, 
-    'x_run__mutmut_114': x_run__mutmut_114, 
-    'x_run__mutmut_115': x_run__mutmut_115, 
-    'x_run__mutmut_116': x_run__mutmut_116, 
-    'x_run__mutmut_117': x_run__mutmut_117, 
-    'x_run__mutmut_118': x_run__mutmut_118, 
-    'x_run__mutmut_119': x_run__mutmut_119, 
-    'x_run__mutmut_120': x_run__mutmut_120, 
-    'x_run__mutmut_121': x_run__mutmut_121, 
-    'x_run__mutmut_122': x_run__mutmut_122, 
-    'x_run__mutmut_123': x_run__mutmut_123, 
-    'x_run__mutmut_124': x_run__mutmut_124, 
-    'x_run__mutmut_125': x_run__mutmut_125, 
-    'x_run__mutmut_126': x_run__mutmut_126, 
-    'x_run__mutmut_127': x_run__mutmut_127, 
-    'x_run__mutmut_128': x_run__mutmut_128, 
-    'x_run__mutmut_129': x_run__mutmut_129, 
-    'x_run__mutmut_130': x_run__mutmut_130, 
-    'x_run__mutmut_131': x_run__mutmut_131, 
-    'x_run__mutmut_132': x_run__mutmut_132, 
-    'x_run__mutmut_133': x_run__mutmut_133, 
-    'x_run__mutmut_134': x_run__mutmut_134, 
-    'x_run__mutmut_135': x_run__mutmut_135, 
-    'x_run__mutmut_136': x_run__mutmut_136, 
-    'x_run__mutmut_137': x_run__mutmut_137, 
-    'x_run__mutmut_138': x_run__mutmut_138, 
-    'x_run__mutmut_139': x_run__mutmut_139, 
-    'x_run__mutmut_140': x_run__mutmut_140, 
-    'x_run__mutmut_141': x_run__mutmut_141, 
-    'x_run__mutmut_142': x_run__mutmut_142, 
-    'x_run__mutmut_143': x_run__mutmut_143, 
-    'x_run__mutmut_144': x_run__mutmut_144, 
-    'x_run__mutmut_145': x_run__mutmut_145
+
+x_run__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_run__mutmut_1": x_run__mutmut_1,
+    "x_run__mutmut_2": x_run__mutmut_2,
+    "x_run__mutmut_3": x_run__mutmut_3,
+    "x_run__mutmut_4": x_run__mutmut_4,
+    "x_run__mutmut_5": x_run__mutmut_5,
+    "x_run__mutmut_6": x_run__mutmut_6,
+    "x_run__mutmut_7": x_run__mutmut_7,
+    "x_run__mutmut_8": x_run__mutmut_8,
+    "x_run__mutmut_9": x_run__mutmut_9,
+    "x_run__mutmut_10": x_run__mutmut_10,
+    "x_run__mutmut_11": x_run__mutmut_11,
+    "x_run__mutmut_12": x_run__mutmut_12,
+    "x_run__mutmut_13": x_run__mutmut_13,
+    "x_run__mutmut_14": x_run__mutmut_14,
+    "x_run__mutmut_15": x_run__mutmut_15,
+    "x_run__mutmut_16": x_run__mutmut_16,
+    "x_run__mutmut_17": x_run__mutmut_17,
+    "x_run__mutmut_18": x_run__mutmut_18,
+    "x_run__mutmut_19": x_run__mutmut_19,
+    "x_run__mutmut_20": x_run__mutmut_20,
+    "x_run__mutmut_21": x_run__mutmut_21,
+    "x_run__mutmut_22": x_run__mutmut_22,
+    "x_run__mutmut_23": x_run__mutmut_23,
+    "x_run__mutmut_24": x_run__mutmut_24,
+    "x_run__mutmut_25": x_run__mutmut_25,
+    "x_run__mutmut_26": x_run__mutmut_26,
+    "x_run__mutmut_27": x_run__mutmut_27,
+    "x_run__mutmut_28": x_run__mutmut_28,
+    "x_run__mutmut_29": x_run__mutmut_29,
+    "x_run__mutmut_30": x_run__mutmut_30,
+    "x_run__mutmut_31": x_run__mutmut_31,
+    "x_run__mutmut_32": x_run__mutmut_32,
+    "x_run__mutmut_33": x_run__mutmut_33,
+    "x_run__mutmut_34": x_run__mutmut_34,
+    "x_run__mutmut_35": x_run__mutmut_35,
+    "x_run__mutmut_36": x_run__mutmut_36,
+    "x_run__mutmut_37": x_run__mutmut_37,
+    "x_run__mutmut_38": x_run__mutmut_38,
+    "x_run__mutmut_39": x_run__mutmut_39,
+    "x_run__mutmut_40": x_run__mutmut_40,
+    "x_run__mutmut_41": x_run__mutmut_41,
+    "x_run__mutmut_42": x_run__mutmut_42,
+    "x_run__mutmut_43": x_run__mutmut_43,
+    "x_run__mutmut_44": x_run__mutmut_44,
+    "x_run__mutmut_45": x_run__mutmut_45,
+    "x_run__mutmut_46": x_run__mutmut_46,
+    "x_run__mutmut_47": x_run__mutmut_47,
+    "x_run__mutmut_48": x_run__mutmut_48,
+    "x_run__mutmut_49": x_run__mutmut_49,
+    "x_run__mutmut_50": x_run__mutmut_50,
+    "x_run__mutmut_51": x_run__mutmut_51,
+    "x_run__mutmut_52": x_run__mutmut_52,
+    "x_run__mutmut_53": x_run__mutmut_53,
+    "x_run__mutmut_54": x_run__mutmut_54,
+    "x_run__mutmut_55": x_run__mutmut_55,
+    "x_run__mutmut_56": x_run__mutmut_56,
+    "x_run__mutmut_57": x_run__mutmut_57,
+    "x_run__mutmut_58": x_run__mutmut_58,
+    "x_run__mutmut_59": x_run__mutmut_59,
+    "x_run__mutmut_60": x_run__mutmut_60,
+    "x_run__mutmut_61": x_run__mutmut_61,
+    "x_run__mutmut_62": x_run__mutmut_62,
+    "x_run__mutmut_63": x_run__mutmut_63,
+    "x_run__mutmut_64": x_run__mutmut_64,
+    "x_run__mutmut_65": x_run__mutmut_65,
+    "x_run__mutmut_66": x_run__mutmut_66,
+    "x_run__mutmut_67": x_run__mutmut_67,
+    "x_run__mutmut_68": x_run__mutmut_68,
+    "x_run__mutmut_69": x_run__mutmut_69,
+    "x_run__mutmut_70": x_run__mutmut_70,
+    "x_run__mutmut_71": x_run__mutmut_71,
+    "x_run__mutmut_72": x_run__mutmut_72,
+    "x_run__mutmut_73": x_run__mutmut_73,
+    "x_run__mutmut_74": x_run__mutmut_74,
+    "x_run__mutmut_75": x_run__mutmut_75,
+    "x_run__mutmut_76": x_run__mutmut_76,
+    "x_run__mutmut_77": x_run__mutmut_77,
+    "x_run__mutmut_78": x_run__mutmut_78,
+    "x_run__mutmut_79": x_run__mutmut_79,
+    "x_run__mutmut_80": x_run__mutmut_80,
+    "x_run__mutmut_81": x_run__mutmut_81,
+    "x_run__mutmut_82": x_run__mutmut_82,
+    "x_run__mutmut_83": x_run__mutmut_83,
+    "x_run__mutmut_84": x_run__mutmut_84,
+    "x_run__mutmut_85": x_run__mutmut_85,
+    "x_run__mutmut_86": x_run__mutmut_86,
+    "x_run__mutmut_87": x_run__mutmut_87,
+    "x_run__mutmut_88": x_run__mutmut_88,
+    "x_run__mutmut_89": x_run__mutmut_89,
+    "x_run__mutmut_90": x_run__mutmut_90,
+    "x_run__mutmut_91": x_run__mutmut_91,
+    "x_run__mutmut_92": x_run__mutmut_92,
+    "x_run__mutmut_93": x_run__mutmut_93,
+    "x_run__mutmut_94": x_run__mutmut_94,
+    "x_run__mutmut_95": x_run__mutmut_95,
+    "x_run__mutmut_96": x_run__mutmut_96,
+    "x_run__mutmut_97": x_run__mutmut_97,
+    "x_run__mutmut_98": x_run__mutmut_98,
+    "x_run__mutmut_99": x_run__mutmut_99,
+    "x_run__mutmut_100": x_run__mutmut_100,
+    "x_run__mutmut_101": x_run__mutmut_101,
+    "x_run__mutmut_102": x_run__mutmut_102,
+    "x_run__mutmut_103": x_run__mutmut_103,
+    "x_run__mutmut_104": x_run__mutmut_104,
+    "x_run__mutmut_105": x_run__mutmut_105,
+    "x_run__mutmut_106": x_run__mutmut_106,
+    "x_run__mutmut_107": x_run__mutmut_107,
+    "x_run__mutmut_108": x_run__mutmut_108,
+    "x_run__mutmut_109": x_run__mutmut_109,
+    "x_run__mutmut_110": x_run__mutmut_110,
+    "x_run__mutmut_111": x_run__mutmut_111,
+    "x_run__mutmut_112": x_run__mutmut_112,
+    "x_run__mutmut_113": x_run__mutmut_113,
+    "x_run__mutmut_114": x_run__mutmut_114,
+    "x_run__mutmut_115": x_run__mutmut_115,
+    "x_run__mutmut_116": x_run__mutmut_116,
+    "x_run__mutmut_117": x_run__mutmut_117,
+    "x_run__mutmut_118": x_run__mutmut_118,
+    "x_run__mutmut_119": x_run__mutmut_119,
+    "x_run__mutmut_120": x_run__mutmut_120,
+    "x_run__mutmut_121": x_run__mutmut_121,
+    "x_run__mutmut_122": x_run__mutmut_122,
+    "x_run__mutmut_123": x_run__mutmut_123,
+    "x_run__mutmut_124": x_run__mutmut_124,
+    "x_run__mutmut_125": x_run__mutmut_125,
+    "x_run__mutmut_126": x_run__mutmut_126,
+    "x_run__mutmut_127": x_run__mutmut_127,
+    "x_run__mutmut_128": x_run__mutmut_128,
+    "x_run__mutmut_129": x_run__mutmut_129,
+    "x_run__mutmut_130": x_run__mutmut_130,
+    "x_run__mutmut_131": x_run__mutmut_131,
+    "x_run__mutmut_132": x_run__mutmut_132,
+    "x_run__mutmut_133": x_run__mutmut_133,
+    "x_run__mutmut_134": x_run__mutmut_134,
+    "x_run__mutmut_135": x_run__mutmut_135,
+    "x_run__mutmut_136": x_run__mutmut_136,
+    "x_run__mutmut_137": x_run__mutmut_137,
+    "x_run__mutmut_138": x_run__mutmut_138,
+    "x_run__mutmut_139": x_run__mutmut_139,
+    "x_run__mutmut_140": x_run__mutmut_140,
+    "x_run__mutmut_141": x_run__mutmut_141,
+    "x_run__mutmut_142": x_run__mutmut_142,
+    "x_run__mutmut_143": x_run__mutmut_143,
+    "x_run__mutmut_144": x_run__mutmut_144,
+    "x_run__mutmut_145": x_run__mutmut_145,
 }
+
 
 def run(*args, **kwargs):
     result = _mutmut_trampoline(x_run__mutmut_orig, x_run__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 run.__signature__ = _mutmut_signature(x_run__mutmut_orig)
-x_run__mutmut_orig.__name__ = 'x_run'
+x_run__mutmut_orig.__name__ = "x_run"
 
 
 def x_run_simple__mutmut_orig(
@@ -19381,7 +19394,12 @@ def x_run_simple__mutmut_10(
         ProcessError: If command fails
 
     """
-    result = run(cmd, cwd=cwd, capture_output=True, check=True, )
+    result = run(
+        cmd,
+        cwd=cwd,
+        capture_output=True,
+        check=True,
+    )
     return result.stdout.strip()
 
 
@@ -19430,27 +19448,30 @@ def x_run_simple__mutmut_12(
     result = run(cmd, cwd=cwd, capture_output=True, check=False, **kwargs)
     return result.stdout.strip()
 
-x_run_simple__mutmut_mutants : ClassVar[MutantDict] = {
-'x_run_simple__mutmut_1': x_run_simple__mutmut_1, 
-    'x_run_simple__mutmut_2': x_run_simple__mutmut_2, 
-    'x_run_simple__mutmut_3': x_run_simple__mutmut_3, 
-    'x_run_simple__mutmut_4': x_run_simple__mutmut_4, 
-    'x_run_simple__mutmut_5': x_run_simple__mutmut_5, 
-    'x_run_simple__mutmut_6': x_run_simple__mutmut_6, 
-    'x_run_simple__mutmut_7': x_run_simple__mutmut_7, 
-    'x_run_simple__mutmut_8': x_run_simple__mutmut_8, 
-    'x_run_simple__mutmut_9': x_run_simple__mutmut_9, 
-    'x_run_simple__mutmut_10': x_run_simple__mutmut_10, 
-    'x_run_simple__mutmut_11': x_run_simple__mutmut_11, 
-    'x_run_simple__mutmut_12': x_run_simple__mutmut_12
+
+x_run_simple__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_run_simple__mutmut_1": x_run_simple__mutmut_1,
+    "x_run_simple__mutmut_2": x_run_simple__mutmut_2,
+    "x_run_simple__mutmut_3": x_run_simple__mutmut_3,
+    "x_run_simple__mutmut_4": x_run_simple__mutmut_4,
+    "x_run_simple__mutmut_5": x_run_simple__mutmut_5,
+    "x_run_simple__mutmut_6": x_run_simple__mutmut_6,
+    "x_run_simple__mutmut_7": x_run_simple__mutmut_7,
+    "x_run_simple__mutmut_8": x_run_simple__mutmut_8,
+    "x_run_simple__mutmut_9": x_run_simple__mutmut_9,
+    "x_run_simple__mutmut_10": x_run_simple__mutmut_10,
+    "x_run_simple__mutmut_11": x_run_simple__mutmut_11,
+    "x_run_simple__mutmut_12": x_run_simple__mutmut_12,
 }
+
 
 def run_simple(*args, **kwargs):
     result = _mutmut_trampoline(x_run_simple__mutmut_orig, x_run_simple__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 run_simple.__signature__ = _mutmut_signature(x_run_simple__mutmut_orig)
-x_run_simple__mutmut_orig.__name__ = 'x_run_simple'
+x_run_simple__mutmut_orig.__name__ = "x_run_simple"
 
 
 # <3 🧱🤝🏃🪄

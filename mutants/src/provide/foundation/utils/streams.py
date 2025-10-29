@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -78,7 +81,8 @@ def x_get_safe_stderr__mutmut_1() -> TextIO:
     # Check if stderr exists, is not None, and is not closed
     if (
         hasattr(sys, "stderr")
-        and sys.stderr is not None or not (hasattr(sys.stderr, "closed") and sys.stderr.closed)
+        and sys.stderr is not None
+        or not (hasattr(sys.stderr, "closed") and sys.stderr.closed)
     ):
         return sys.stderr
     else:
@@ -97,7 +101,8 @@ def x_get_safe_stderr__mutmut_2() -> TextIO:
     """
     # Check if stderr exists, is not None, and is not closed
     if (
-        hasattr(sys, "stderr") or sys.stderr is not None
+        hasattr(sys, "stderr")
+        or sys.stderr is not None
         and not (hasattr(sys.stderr, "closed") and sys.stderr.closed)
     ):
         return sys.stderr
@@ -180,7 +185,9 @@ def x_get_safe_stderr__mutmut_6() -> TextIO:
     """
     # Check if stderr exists, is not None, and is not closed
     if (
-        hasattr(sys, )
+        hasattr(
+            sys,
+        )
         and sys.stderr is not None
         and not (hasattr(sys.stderr, "closed") and sys.stderr.closed)
     ):
@@ -347,11 +354,7 @@ def x_get_safe_stderr__mutmut_14() -> TextIO:
 
     """
     # Check if stderr exists, is not None, and is not closed
-    if (
-        hasattr(sys, "stderr")
-        and sys.stderr is not None
-        and not (hasattr("closed") and sys.stderr.closed)
-    ):
+    if hasattr(sys, "stderr") and sys.stderr is not None and not (hasattr("closed") and sys.stderr.closed):
         return sys.stderr
     else:
         return io.StringIO()
@@ -371,7 +374,12 @@ def x_get_safe_stderr__mutmut_15() -> TextIO:
     if (
         hasattr(sys, "stderr")
         and sys.stderr is not None
-        and not (hasattr(sys.stderr, ) and sys.stderr.closed)
+        and not (
+            hasattr(
+                sys.stderr,
+            )
+            and sys.stderr.closed
+        )
     ):
         return sys.stderr
     else:
@@ -419,32 +427,37 @@ def x_get_safe_stderr__mutmut_17() -> TextIO:
     else:
         return io.StringIO()
 
-x_get_safe_stderr__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_safe_stderr__mutmut_1': x_get_safe_stderr__mutmut_1, 
-    'x_get_safe_stderr__mutmut_2': x_get_safe_stderr__mutmut_2, 
-    'x_get_safe_stderr__mutmut_3': x_get_safe_stderr__mutmut_3, 
-    'x_get_safe_stderr__mutmut_4': x_get_safe_stderr__mutmut_4, 
-    'x_get_safe_stderr__mutmut_5': x_get_safe_stderr__mutmut_5, 
-    'x_get_safe_stderr__mutmut_6': x_get_safe_stderr__mutmut_6, 
-    'x_get_safe_stderr__mutmut_7': x_get_safe_stderr__mutmut_7, 
-    'x_get_safe_stderr__mutmut_8': x_get_safe_stderr__mutmut_8, 
-    'x_get_safe_stderr__mutmut_9': x_get_safe_stderr__mutmut_9, 
-    'x_get_safe_stderr__mutmut_10': x_get_safe_stderr__mutmut_10, 
-    'x_get_safe_stderr__mutmut_11': x_get_safe_stderr__mutmut_11, 
-    'x_get_safe_stderr__mutmut_12': x_get_safe_stderr__mutmut_12, 
-    'x_get_safe_stderr__mutmut_13': x_get_safe_stderr__mutmut_13, 
-    'x_get_safe_stderr__mutmut_14': x_get_safe_stderr__mutmut_14, 
-    'x_get_safe_stderr__mutmut_15': x_get_safe_stderr__mutmut_15, 
-    'x_get_safe_stderr__mutmut_16': x_get_safe_stderr__mutmut_16, 
-    'x_get_safe_stderr__mutmut_17': x_get_safe_stderr__mutmut_17
+
+x_get_safe_stderr__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_safe_stderr__mutmut_1": x_get_safe_stderr__mutmut_1,
+    "x_get_safe_stderr__mutmut_2": x_get_safe_stderr__mutmut_2,
+    "x_get_safe_stderr__mutmut_3": x_get_safe_stderr__mutmut_3,
+    "x_get_safe_stderr__mutmut_4": x_get_safe_stderr__mutmut_4,
+    "x_get_safe_stderr__mutmut_5": x_get_safe_stderr__mutmut_5,
+    "x_get_safe_stderr__mutmut_6": x_get_safe_stderr__mutmut_6,
+    "x_get_safe_stderr__mutmut_7": x_get_safe_stderr__mutmut_7,
+    "x_get_safe_stderr__mutmut_8": x_get_safe_stderr__mutmut_8,
+    "x_get_safe_stderr__mutmut_9": x_get_safe_stderr__mutmut_9,
+    "x_get_safe_stderr__mutmut_10": x_get_safe_stderr__mutmut_10,
+    "x_get_safe_stderr__mutmut_11": x_get_safe_stderr__mutmut_11,
+    "x_get_safe_stderr__mutmut_12": x_get_safe_stderr__mutmut_12,
+    "x_get_safe_stderr__mutmut_13": x_get_safe_stderr__mutmut_13,
+    "x_get_safe_stderr__mutmut_14": x_get_safe_stderr__mutmut_14,
+    "x_get_safe_stderr__mutmut_15": x_get_safe_stderr__mutmut_15,
+    "x_get_safe_stderr__mutmut_16": x_get_safe_stderr__mutmut_16,
+    "x_get_safe_stderr__mutmut_17": x_get_safe_stderr__mutmut_17,
 }
 
+
 def get_safe_stderr(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_safe_stderr__mutmut_orig, x_get_safe_stderr__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_safe_stderr__mutmut_orig, x_get_safe_stderr__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_safe_stderr.__signature__ = _mutmut_signature(x_get_safe_stderr__mutmut_orig)
-x_get_safe_stderr__mutmut_orig.__name__ = 'x_get_safe_stderr'
+x_get_safe_stderr__mutmut_orig.__name__ = "x_get_safe_stderr"
 
 
 def x_get_foundation_log_stream__mutmut_orig(output_setting: str) -> TextIO:
@@ -1282,7 +1295,7 @@ def x_get_foundation_log_stream__mutmut_17(output_setting: str) -> TextIO:
                 "[Foundation Config Warning] Invalid FOUNDATION_LOG_OUTPUT value, using stderr",
                 invalid_value=output_setting,
                 valid_options=["stderr", "stdout", "main"],
-                )
+            )
         except ImportError:
             # During early initialization, just use stderr silently
             pass
@@ -1805,43 +1818,48 @@ def x_get_foundation_log_stream__mutmut_28(output_setting: str) -> TextIO:
             pass
         return get_safe_stderr()
 
-x_get_foundation_log_stream__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_foundation_log_stream__mutmut_1': x_get_foundation_log_stream__mutmut_1, 
-    'x_get_foundation_log_stream__mutmut_2': x_get_foundation_log_stream__mutmut_2, 
-    'x_get_foundation_log_stream__mutmut_3': x_get_foundation_log_stream__mutmut_3, 
-    'x_get_foundation_log_stream__mutmut_4': x_get_foundation_log_stream__mutmut_4, 
-    'x_get_foundation_log_stream__mutmut_5': x_get_foundation_log_stream__mutmut_5, 
-    'x_get_foundation_log_stream__mutmut_6': x_get_foundation_log_stream__mutmut_6, 
-    'x_get_foundation_log_stream__mutmut_7': x_get_foundation_log_stream__mutmut_7, 
-    'x_get_foundation_log_stream__mutmut_8': x_get_foundation_log_stream__mutmut_8, 
-    'x_get_foundation_log_stream__mutmut_9': x_get_foundation_log_stream__mutmut_9, 
-    'x_get_foundation_log_stream__mutmut_10': x_get_foundation_log_stream__mutmut_10, 
-    'x_get_foundation_log_stream__mutmut_11': x_get_foundation_log_stream__mutmut_11, 
-    'x_get_foundation_log_stream__mutmut_12': x_get_foundation_log_stream__mutmut_12, 
-    'x_get_foundation_log_stream__mutmut_13': x_get_foundation_log_stream__mutmut_13, 
-    'x_get_foundation_log_stream__mutmut_14': x_get_foundation_log_stream__mutmut_14, 
-    'x_get_foundation_log_stream__mutmut_15': x_get_foundation_log_stream__mutmut_15, 
-    'x_get_foundation_log_stream__mutmut_16': x_get_foundation_log_stream__mutmut_16, 
-    'x_get_foundation_log_stream__mutmut_17': x_get_foundation_log_stream__mutmut_17, 
-    'x_get_foundation_log_stream__mutmut_18': x_get_foundation_log_stream__mutmut_18, 
-    'x_get_foundation_log_stream__mutmut_19': x_get_foundation_log_stream__mutmut_19, 
-    'x_get_foundation_log_stream__mutmut_20': x_get_foundation_log_stream__mutmut_20, 
-    'x_get_foundation_log_stream__mutmut_21': x_get_foundation_log_stream__mutmut_21, 
-    'x_get_foundation_log_stream__mutmut_22': x_get_foundation_log_stream__mutmut_22, 
-    'x_get_foundation_log_stream__mutmut_23': x_get_foundation_log_stream__mutmut_23, 
-    'x_get_foundation_log_stream__mutmut_24': x_get_foundation_log_stream__mutmut_24, 
-    'x_get_foundation_log_stream__mutmut_25': x_get_foundation_log_stream__mutmut_25, 
-    'x_get_foundation_log_stream__mutmut_26': x_get_foundation_log_stream__mutmut_26, 
-    'x_get_foundation_log_stream__mutmut_27': x_get_foundation_log_stream__mutmut_27, 
-    'x_get_foundation_log_stream__mutmut_28': x_get_foundation_log_stream__mutmut_28
+
+x_get_foundation_log_stream__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_foundation_log_stream__mutmut_1": x_get_foundation_log_stream__mutmut_1,
+    "x_get_foundation_log_stream__mutmut_2": x_get_foundation_log_stream__mutmut_2,
+    "x_get_foundation_log_stream__mutmut_3": x_get_foundation_log_stream__mutmut_3,
+    "x_get_foundation_log_stream__mutmut_4": x_get_foundation_log_stream__mutmut_4,
+    "x_get_foundation_log_stream__mutmut_5": x_get_foundation_log_stream__mutmut_5,
+    "x_get_foundation_log_stream__mutmut_6": x_get_foundation_log_stream__mutmut_6,
+    "x_get_foundation_log_stream__mutmut_7": x_get_foundation_log_stream__mutmut_7,
+    "x_get_foundation_log_stream__mutmut_8": x_get_foundation_log_stream__mutmut_8,
+    "x_get_foundation_log_stream__mutmut_9": x_get_foundation_log_stream__mutmut_9,
+    "x_get_foundation_log_stream__mutmut_10": x_get_foundation_log_stream__mutmut_10,
+    "x_get_foundation_log_stream__mutmut_11": x_get_foundation_log_stream__mutmut_11,
+    "x_get_foundation_log_stream__mutmut_12": x_get_foundation_log_stream__mutmut_12,
+    "x_get_foundation_log_stream__mutmut_13": x_get_foundation_log_stream__mutmut_13,
+    "x_get_foundation_log_stream__mutmut_14": x_get_foundation_log_stream__mutmut_14,
+    "x_get_foundation_log_stream__mutmut_15": x_get_foundation_log_stream__mutmut_15,
+    "x_get_foundation_log_stream__mutmut_16": x_get_foundation_log_stream__mutmut_16,
+    "x_get_foundation_log_stream__mutmut_17": x_get_foundation_log_stream__mutmut_17,
+    "x_get_foundation_log_stream__mutmut_18": x_get_foundation_log_stream__mutmut_18,
+    "x_get_foundation_log_stream__mutmut_19": x_get_foundation_log_stream__mutmut_19,
+    "x_get_foundation_log_stream__mutmut_20": x_get_foundation_log_stream__mutmut_20,
+    "x_get_foundation_log_stream__mutmut_21": x_get_foundation_log_stream__mutmut_21,
+    "x_get_foundation_log_stream__mutmut_22": x_get_foundation_log_stream__mutmut_22,
+    "x_get_foundation_log_stream__mutmut_23": x_get_foundation_log_stream__mutmut_23,
+    "x_get_foundation_log_stream__mutmut_24": x_get_foundation_log_stream__mutmut_24,
+    "x_get_foundation_log_stream__mutmut_25": x_get_foundation_log_stream__mutmut_25,
+    "x_get_foundation_log_stream__mutmut_26": x_get_foundation_log_stream__mutmut_26,
+    "x_get_foundation_log_stream__mutmut_27": x_get_foundation_log_stream__mutmut_27,
+    "x_get_foundation_log_stream__mutmut_28": x_get_foundation_log_stream__mutmut_28,
 }
 
+
 def get_foundation_log_stream(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_foundation_log_stream__mutmut_orig, x_get_foundation_log_stream__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_foundation_log_stream__mutmut_orig, x_get_foundation_log_stream__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_foundation_log_stream.__signature__ = _mutmut_signature(x_get_foundation_log_stream__mutmut_orig)
-x_get_foundation_log_stream__mutmut_orig.__name__ = 'x_get_foundation_log_stream'
+x_get_foundation_log_stream__mutmut_orig.__name__ = "x_get_foundation_log_stream"
 
 
 # <3 🧱🤝🧰🪄

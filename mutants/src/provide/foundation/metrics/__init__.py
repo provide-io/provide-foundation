@@ -58,23 +58,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -327,7 +330,10 @@ def x_counter__mutmut_10(name: str, description: str = "", unit: str = "") -> Si
     """
     if _HAS_OTEL_METRICS and _meter:
         try:
-            otel_counter = _meter.create_counter(name=name, description=description, )
+            otel_counter = _meter.create_counter(
+                name=name,
+                description=description,
+            )
             return SimpleCounter(name, otel_counter=otel_counter)
         except Exception:
             # Broad catch intentional: OTEL metrics are optional, gracefully fall back to simple counter
@@ -420,7 +426,9 @@ def x_counter__mutmut_14(name: str, description: str = "", unit: str = "") -> Si
     if _HAS_OTEL_METRICS and _meter:
         try:
             otel_counter = _meter.create_counter(name=name, description=description, unit=unit)
-            return SimpleCounter(name, )
+            return SimpleCounter(
+                name,
+            )
         except Exception:
             # Broad catch intentional: OTEL metrics are optional, gracefully fall back to simple counter
             pass
@@ -450,30 +458,33 @@ def x_counter__mutmut_15(name: str, description: str = "", unit: str = "") -> Si
 
     return SimpleCounter(None)
 
-x_counter__mutmut_mutants : ClassVar[MutantDict] = {
-'x_counter__mutmut_1': x_counter__mutmut_1, 
-    'x_counter__mutmut_2': x_counter__mutmut_2, 
-    'x_counter__mutmut_3': x_counter__mutmut_3, 
-    'x_counter__mutmut_4': x_counter__mutmut_4, 
-    'x_counter__mutmut_5': x_counter__mutmut_5, 
-    'x_counter__mutmut_6': x_counter__mutmut_6, 
-    'x_counter__mutmut_7': x_counter__mutmut_7, 
-    'x_counter__mutmut_8': x_counter__mutmut_8, 
-    'x_counter__mutmut_9': x_counter__mutmut_9, 
-    'x_counter__mutmut_10': x_counter__mutmut_10, 
-    'x_counter__mutmut_11': x_counter__mutmut_11, 
-    'x_counter__mutmut_12': x_counter__mutmut_12, 
-    'x_counter__mutmut_13': x_counter__mutmut_13, 
-    'x_counter__mutmut_14': x_counter__mutmut_14, 
-    'x_counter__mutmut_15': x_counter__mutmut_15
+
+x_counter__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_counter__mutmut_1": x_counter__mutmut_1,
+    "x_counter__mutmut_2": x_counter__mutmut_2,
+    "x_counter__mutmut_3": x_counter__mutmut_3,
+    "x_counter__mutmut_4": x_counter__mutmut_4,
+    "x_counter__mutmut_5": x_counter__mutmut_5,
+    "x_counter__mutmut_6": x_counter__mutmut_6,
+    "x_counter__mutmut_7": x_counter__mutmut_7,
+    "x_counter__mutmut_8": x_counter__mutmut_8,
+    "x_counter__mutmut_9": x_counter__mutmut_9,
+    "x_counter__mutmut_10": x_counter__mutmut_10,
+    "x_counter__mutmut_11": x_counter__mutmut_11,
+    "x_counter__mutmut_12": x_counter__mutmut_12,
+    "x_counter__mutmut_13": x_counter__mutmut_13,
+    "x_counter__mutmut_14": x_counter__mutmut_14,
+    "x_counter__mutmut_15": x_counter__mutmut_15,
 }
+
 
 def counter(*args, **kwargs):
     result = _mutmut_trampoline(x_counter__mutmut_orig, x_counter__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 counter.__signature__ = _mutmut_signature(x_counter__mutmut_orig)
-x_counter__mutmut_orig.__name__ = 'x_counter'
+x_counter__mutmut_orig.__name__ = "x_counter"
 
 
 def x_gauge__mutmut_orig(name: str, description: str = "", unit: str = "") -> SimpleGauge:
@@ -720,7 +731,10 @@ def x_gauge__mutmut_10(name: str, description: str = "", unit: str = "") -> Simp
     """
     if _HAS_OTEL_METRICS and _meter:
         try:
-            otel_gauge = _meter.create_up_down_counter(name=name, description=description, )
+            otel_gauge = _meter.create_up_down_counter(
+                name=name,
+                description=description,
+            )
             return SimpleGauge(name, otel_gauge=otel_gauge)
         except Exception:
             # Broad catch intentional: OTEL metrics are optional, gracefully fall back to simple gauge
@@ -813,7 +827,9 @@ def x_gauge__mutmut_14(name: str, description: str = "", unit: str = "") -> Simp
     if _HAS_OTEL_METRICS and _meter:
         try:
             otel_gauge = _meter.create_up_down_counter(name=name, description=description, unit=unit)
-            return SimpleGauge(name, )
+            return SimpleGauge(
+                name,
+            )
         except Exception:
             # Broad catch intentional: OTEL metrics are optional, gracefully fall back to simple gauge
             pass
@@ -843,30 +859,33 @@ def x_gauge__mutmut_15(name: str, description: str = "", unit: str = "") -> Simp
 
     return SimpleGauge(None)
 
-x_gauge__mutmut_mutants : ClassVar[MutantDict] = {
-'x_gauge__mutmut_1': x_gauge__mutmut_1, 
-    'x_gauge__mutmut_2': x_gauge__mutmut_2, 
-    'x_gauge__mutmut_3': x_gauge__mutmut_3, 
-    'x_gauge__mutmut_4': x_gauge__mutmut_4, 
-    'x_gauge__mutmut_5': x_gauge__mutmut_5, 
-    'x_gauge__mutmut_6': x_gauge__mutmut_6, 
-    'x_gauge__mutmut_7': x_gauge__mutmut_7, 
-    'x_gauge__mutmut_8': x_gauge__mutmut_8, 
-    'x_gauge__mutmut_9': x_gauge__mutmut_9, 
-    'x_gauge__mutmut_10': x_gauge__mutmut_10, 
-    'x_gauge__mutmut_11': x_gauge__mutmut_11, 
-    'x_gauge__mutmut_12': x_gauge__mutmut_12, 
-    'x_gauge__mutmut_13': x_gauge__mutmut_13, 
-    'x_gauge__mutmut_14': x_gauge__mutmut_14, 
-    'x_gauge__mutmut_15': x_gauge__mutmut_15
+
+x_gauge__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_gauge__mutmut_1": x_gauge__mutmut_1,
+    "x_gauge__mutmut_2": x_gauge__mutmut_2,
+    "x_gauge__mutmut_3": x_gauge__mutmut_3,
+    "x_gauge__mutmut_4": x_gauge__mutmut_4,
+    "x_gauge__mutmut_5": x_gauge__mutmut_5,
+    "x_gauge__mutmut_6": x_gauge__mutmut_6,
+    "x_gauge__mutmut_7": x_gauge__mutmut_7,
+    "x_gauge__mutmut_8": x_gauge__mutmut_8,
+    "x_gauge__mutmut_9": x_gauge__mutmut_9,
+    "x_gauge__mutmut_10": x_gauge__mutmut_10,
+    "x_gauge__mutmut_11": x_gauge__mutmut_11,
+    "x_gauge__mutmut_12": x_gauge__mutmut_12,
+    "x_gauge__mutmut_13": x_gauge__mutmut_13,
+    "x_gauge__mutmut_14": x_gauge__mutmut_14,
+    "x_gauge__mutmut_15": x_gauge__mutmut_15,
 }
+
 
 def gauge(*args, **kwargs):
     result = _mutmut_trampoline(x_gauge__mutmut_orig, x_gauge__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 gauge.__signature__ = _mutmut_signature(x_gauge__mutmut_orig)
-x_gauge__mutmut_orig.__name__ = 'x_gauge'
+x_gauge__mutmut_orig.__name__ = "x_gauge"
 
 
 def x_histogram__mutmut_orig(name: str, description: str = "", unit: str = "") -> SimpleHistogram:
@@ -1113,7 +1132,10 @@ def x_histogram__mutmut_10(name: str, description: str = "", unit: str = "") -> 
     """
     if _HAS_OTEL_METRICS and _meter:
         try:
-            otel_histogram = _meter.create_histogram(name=name, description=description, )
+            otel_histogram = _meter.create_histogram(
+                name=name,
+                description=description,
+            )
             return SimpleHistogram(name, otel_histogram=otel_histogram)
         except Exception:
             # Broad catch intentional: OTEL metrics are optional, gracefully fall back to simple histogram
@@ -1206,7 +1228,9 @@ def x_histogram__mutmut_14(name: str, description: str = "", unit: str = "") -> 
     if _HAS_OTEL_METRICS and _meter:
         try:
             otel_histogram = _meter.create_histogram(name=name, description=description, unit=unit)
-            return SimpleHistogram(name, )
+            return SimpleHistogram(
+                name,
+            )
         except Exception:
             # Broad catch intentional: OTEL metrics are optional, gracefully fall back to simple histogram
             pass
@@ -1236,30 +1260,33 @@ def x_histogram__mutmut_15(name: str, description: str = "", unit: str = "") -> 
 
     return SimpleHistogram(None)
 
-x_histogram__mutmut_mutants : ClassVar[MutantDict] = {
-'x_histogram__mutmut_1': x_histogram__mutmut_1, 
-    'x_histogram__mutmut_2': x_histogram__mutmut_2, 
-    'x_histogram__mutmut_3': x_histogram__mutmut_3, 
-    'x_histogram__mutmut_4': x_histogram__mutmut_4, 
-    'x_histogram__mutmut_5': x_histogram__mutmut_5, 
-    'x_histogram__mutmut_6': x_histogram__mutmut_6, 
-    'x_histogram__mutmut_7': x_histogram__mutmut_7, 
-    'x_histogram__mutmut_8': x_histogram__mutmut_8, 
-    'x_histogram__mutmut_9': x_histogram__mutmut_9, 
-    'x_histogram__mutmut_10': x_histogram__mutmut_10, 
-    'x_histogram__mutmut_11': x_histogram__mutmut_11, 
-    'x_histogram__mutmut_12': x_histogram__mutmut_12, 
-    'x_histogram__mutmut_13': x_histogram__mutmut_13, 
-    'x_histogram__mutmut_14': x_histogram__mutmut_14, 
-    'x_histogram__mutmut_15': x_histogram__mutmut_15
+
+x_histogram__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_histogram__mutmut_1": x_histogram__mutmut_1,
+    "x_histogram__mutmut_2": x_histogram__mutmut_2,
+    "x_histogram__mutmut_3": x_histogram__mutmut_3,
+    "x_histogram__mutmut_4": x_histogram__mutmut_4,
+    "x_histogram__mutmut_5": x_histogram__mutmut_5,
+    "x_histogram__mutmut_6": x_histogram__mutmut_6,
+    "x_histogram__mutmut_7": x_histogram__mutmut_7,
+    "x_histogram__mutmut_8": x_histogram__mutmut_8,
+    "x_histogram__mutmut_9": x_histogram__mutmut_9,
+    "x_histogram__mutmut_10": x_histogram__mutmut_10,
+    "x_histogram__mutmut_11": x_histogram__mutmut_11,
+    "x_histogram__mutmut_12": x_histogram__mutmut_12,
+    "x_histogram__mutmut_13": x_histogram__mutmut_13,
+    "x_histogram__mutmut_14": x_histogram__mutmut_14,
+    "x_histogram__mutmut_15": x_histogram__mutmut_15,
 }
+
 
 def histogram(*args, **kwargs):
     result = _mutmut_trampoline(x_histogram__mutmut_orig, x_histogram__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 histogram.__signature__ = _mutmut_signature(x_histogram__mutmut_orig)
-x_histogram__mutmut_orig.__name__ = 'x_histogram'
+x_histogram__mutmut_orig.__name__ = "x_histogram"
 
 
 def x__set_meter__mutmut_orig(meter: object) -> None:
@@ -1273,16 +1300,17 @@ def x__set_meter__mutmut_1(meter: object) -> None:
     global _meter
     _meter = None
 
-x__set_meter__mutmut_mutants : ClassVar[MutantDict] = {
-'x__set_meter__mutmut_1': x__set_meter__mutmut_1
-}
+
+x__set_meter__mutmut_mutants: ClassVar[MutantDict] = {"x__set_meter__mutmut_1": x__set_meter__mutmut_1}
+
 
 def _set_meter(*args, **kwargs):
     result = _mutmut_trampoline(x__set_meter__mutmut_orig, x__set_meter__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _set_meter.__signature__ = _mutmut_signature(x__set_meter__mutmut_orig)
-x__set_meter__mutmut_orig.__name__ = 'x__set_meter'
+x__set_meter__mutmut_orig.__name__ = "x__set_meter"
 
 
 # <3 🧱🤝📈🪄

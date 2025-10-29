@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -340,26 +343,32 @@ class RateLimiterProcessor:
         self.suppressed_counts: dict[str, int] = {}
         self.last_summary_time = time.monotonic()
         self.summary_interval = None  # Emit summary periodically
-    
-    xǁRateLimiterProcessorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRateLimiterProcessorǁ__init____mutmut_1': xǁRateLimiterProcessorǁ__init____mutmut_1, 
-        'xǁRateLimiterProcessorǁ__init____mutmut_2': xǁRateLimiterProcessorǁ__init____mutmut_2, 
-        'xǁRateLimiterProcessorǁ__init____mutmut_3': xǁRateLimiterProcessorǁ__init____mutmut_3, 
-        'xǁRateLimiterProcessorǁ__init____mutmut_4': xǁRateLimiterProcessorǁ__init____mutmut_4, 
-        'xǁRateLimiterProcessorǁ__init____mutmut_5': xǁRateLimiterProcessorǁ__init____mutmut_5, 
-        'xǁRateLimiterProcessorǁ__init____mutmut_6': xǁRateLimiterProcessorǁ__init____mutmut_6, 
-        'xǁRateLimiterProcessorǁ__init____mutmut_7': xǁRateLimiterProcessorǁ__init____mutmut_7, 
-        'xǁRateLimiterProcessorǁ__init____mutmut_8': xǁRateLimiterProcessorǁ__init____mutmut_8, 
-        'xǁRateLimiterProcessorǁ__init____mutmut_9': xǁRateLimiterProcessorǁ__init____mutmut_9, 
-        'xǁRateLimiterProcessorǁ__init____mutmut_10': xǁRateLimiterProcessorǁ__init____mutmut_10
+
+    xǁRateLimiterProcessorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRateLimiterProcessorǁ__init____mutmut_1": xǁRateLimiterProcessorǁ__init____mutmut_1,
+        "xǁRateLimiterProcessorǁ__init____mutmut_2": xǁRateLimiterProcessorǁ__init____mutmut_2,
+        "xǁRateLimiterProcessorǁ__init____mutmut_3": xǁRateLimiterProcessorǁ__init____mutmut_3,
+        "xǁRateLimiterProcessorǁ__init____mutmut_4": xǁRateLimiterProcessorǁ__init____mutmut_4,
+        "xǁRateLimiterProcessorǁ__init____mutmut_5": xǁRateLimiterProcessorǁ__init____mutmut_5,
+        "xǁRateLimiterProcessorǁ__init____mutmut_6": xǁRateLimiterProcessorǁ__init____mutmut_6,
+        "xǁRateLimiterProcessorǁ__init____mutmut_7": xǁRateLimiterProcessorǁ__init____mutmut_7,
+        "xǁRateLimiterProcessorǁ__init____mutmut_8": xǁRateLimiterProcessorǁ__init____mutmut_8,
+        "xǁRateLimiterProcessorǁ__init____mutmut_9": xǁRateLimiterProcessorǁ__init____mutmut_9,
+        "xǁRateLimiterProcessorǁ__init____mutmut_10": xǁRateLimiterProcessorǁ__init____mutmut_10,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRateLimiterProcessorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁRateLimiterProcessorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRateLimiterProcessorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁRateLimiterProcessorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁRateLimiterProcessorǁ__init____mutmut_orig)
-    xǁRateLimiterProcessorǁ__init____mutmut_orig.__name__ = 'xǁRateLimiterProcessorǁ__init__'
+    xǁRateLimiterProcessorǁ__init____mutmut_orig.__name__ = "xǁRateLimiterProcessorǁ__init__"
 
     def xǁRateLimiterProcessorǁ__call____mutmut_orig(
         self,
@@ -673,7 +682,9 @@ class RateLimiterProcessor:
             The event dictionary if allowed, or raises DropEvent if rate limited
 
         """
-        logger_name = event_dict.get("logger_name", )
+        logger_name = event_dict.get(
+            "logger_name",
+        )
 
         # Check if this log is allowed (pass event_dict for tracking)
         allowed, reason = self.rate_limiter.is_allowed(logger_name, event_dict)
@@ -1207,7 +1218,9 @@ class RateLimiterProcessor:
         logger_name = event_dict.get("logger_name", "unknown")
 
         # Check if this log is allowed (pass event_dict for tracking)
-        allowed, reason = self.rate_limiter.is_allowed(logger_name, )
+        allowed, reason = self.rate_limiter.is_allowed(
+            logger_name,
+        )
 
         if not allowed:
             # Track suppressed count
@@ -1985,7 +1998,9 @@ class RateLimiterProcessor:
             # Optionally emit a warning about rate limiting
             if self.emit_warning_on_limit:
                 now = time.monotonic()
-                last_warning = self.last_warning_times.get(logger_name, )
+                last_warning = self.last_warning_times.get(
+                    logger_name,
+                )
 
                 if now - last_warning >= self.warning_interval_seconds:
                     # Create a rate limit warning event
@@ -3487,68 +3502,74 @@ class RateLimiterProcessor:
             self.last_summary_time = None
 
         return event_dict
-    
-    xǁRateLimiterProcessorǁ__call____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRateLimiterProcessorǁ__call____mutmut_1': xǁRateLimiterProcessorǁ__call____mutmut_1, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_2': xǁRateLimiterProcessorǁ__call____mutmut_2, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_3': xǁRateLimiterProcessorǁ__call____mutmut_3, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_4': xǁRateLimiterProcessorǁ__call____mutmut_4, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_5': xǁRateLimiterProcessorǁ__call____mutmut_5, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_6': xǁRateLimiterProcessorǁ__call____mutmut_6, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_7': xǁRateLimiterProcessorǁ__call____mutmut_7, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_8': xǁRateLimiterProcessorǁ__call____mutmut_8, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_9': xǁRateLimiterProcessorǁ__call____mutmut_9, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_10': xǁRateLimiterProcessorǁ__call____mutmut_10, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_11': xǁRateLimiterProcessorǁ__call____mutmut_11, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_12': xǁRateLimiterProcessorǁ__call____mutmut_12, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_13': xǁRateLimiterProcessorǁ__call____mutmut_13, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_14': xǁRateLimiterProcessorǁ__call____mutmut_14, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_15': xǁRateLimiterProcessorǁ__call____mutmut_15, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_16': xǁRateLimiterProcessorǁ__call____mutmut_16, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_17': xǁRateLimiterProcessorǁ__call____mutmut_17, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_18': xǁRateLimiterProcessorǁ__call____mutmut_18, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_19': xǁRateLimiterProcessorǁ__call____mutmut_19, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_20': xǁRateLimiterProcessorǁ__call____mutmut_20, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_21': xǁRateLimiterProcessorǁ__call____mutmut_21, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_22': xǁRateLimiterProcessorǁ__call____mutmut_22, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_23': xǁRateLimiterProcessorǁ__call____mutmut_23, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_24': xǁRateLimiterProcessorǁ__call____mutmut_24, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_25': xǁRateLimiterProcessorǁ__call____mutmut_25, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_26': xǁRateLimiterProcessorǁ__call____mutmut_26, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_27': xǁRateLimiterProcessorǁ__call____mutmut_27, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_28': xǁRateLimiterProcessorǁ__call____mutmut_28, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_29': xǁRateLimiterProcessorǁ__call____mutmut_29, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_30': xǁRateLimiterProcessorǁ__call____mutmut_30, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_31': xǁRateLimiterProcessorǁ__call____mutmut_31, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_32': xǁRateLimiterProcessorǁ__call____mutmut_32, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_33': xǁRateLimiterProcessorǁ__call____mutmut_33, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_34': xǁRateLimiterProcessorǁ__call____mutmut_34, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_35': xǁRateLimiterProcessorǁ__call____mutmut_35, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_36': xǁRateLimiterProcessorǁ__call____mutmut_36, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_37': xǁRateLimiterProcessorǁ__call____mutmut_37, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_38': xǁRateLimiterProcessorǁ__call____mutmut_38, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_39': xǁRateLimiterProcessorǁ__call____mutmut_39, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_40': xǁRateLimiterProcessorǁ__call____mutmut_40, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_41': xǁRateLimiterProcessorǁ__call____mutmut_41, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_42': xǁRateLimiterProcessorǁ__call____mutmut_42, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_43': xǁRateLimiterProcessorǁ__call____mutmut_43, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_44': xǁRateLimiterProcessorǁ__call____mutmut_44, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_45': xǁRateLimiterProcessorǁ__call____mutmut_45, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_46': xǁRateLimiterProcessorǁ__call____mutmut_46, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_47': xǁRateLimiterProcessorǁ__call____mutmut_47, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_48': xǁRateLimiterProcessorǁ__call____mutmut_48, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_49': xǁRateLimiterProcessorǁ__call____mutmut_49, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_50': xǁRateLimiterProcessorǁ__call____mutmut_50, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_51': xǁRateLimiterProcessorǁ__call____mutmut_51, 
-        'xǁRateLimiterProcessorǁ__call____mutmut_52': xǁRateLimiterProcessorǁ__call____mutmut_52
+
+    xǁRateLimiterProcessorǁ__call____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRateLimiterProcessorǁ__call____mutmut_1": xǁRateLimiterProcessorǁ__call____mutmut_1,
+        "xǁRateLimiterProcessorǁ__call____mutmut_2": xǁRateLimiterProcessorǁ__call____mutmut_2,
+        "xǁRateLimiterProcessorǁ__call____mutmut_3": xǁRateLimiterProcessorǁ__call____mutmut_3,
+        "xǁRateLimiterProcessorǁ__call____mutmut_4": xǁRateLimiterProcessorǁ__call____mutmut_4,
+        "xǁRateLimiterProcessorǁ__call____mutmut_5": xǁRateLimiterProcessorǁ__call____mutmut_5,
+        "xǁRateLimiterProcessorǁ__call____mutmut_6": xǁRateLimiterProcessorǁ__call____mutmut_6,
+        "xǁRateLimiterProcessorǁ__call____mutmut_7": xǁRateLimiterProcessorǁ__call____mutmut_7,
+        "xǁRateLimiterProcessorǁ__call____mutmut_8": xǁRateLimiterProcessorǁ__call____mutmut_8,
+        "xǁRateLimiterProcessorǁ__call____mutmut_9": xǁRateLimiterProcessorǁ__call____mutmut_9,
+        "xǁRateLimiterProcessorǁ__call____mutmut_10": xǁRateLimiterProcessorǁ__call____mutmut_10,
+        "xǁRateLimiterProcessorǁ__call____mutmut_11": xǁRateLimiterProcessorǁ__call____mutmut_11,
+        "xǁRateLimiterProcessorǁ__call____mutmut_12": xǁRateLimiterProcessorǁ__call____mutmut_12,
+        "xǁRateLimiterProcessorǁ__call____mutmut_13": xǁRateLimiterProcessorǁ__call____mutmut_13,
+        "xǁRateLimiterProcessorǁ__call____mutmut_14": xǁRateLimiterProcessorǁ__call____mutmut_14,
+        "xǁRateLimiterProcessorǁ__call____mutmut_15": xǁRateLimiterProcessorǁ__call____mutmut_15,
+        "xǁRateLimiterProcessorǁ__call____mutmut_16": xǁRateLimiterProcessorǁ__call____mutmut_16,
+        "xǁRateLimiterProcessorǁ__call____mutmut_17": xǁRateLimiterProcessorǁ__call____mutmut_17,
+        "xǁRateLimiterProcessorǁ__call____mutmut_18": xǁRateLimiterProcessorǁ__call____mutmut_18,
+        "xǁRateLimiterProcessorǁ__call____mutmut_19": xǁRateLimiterProcessorǁ__call____mutmut_19,
+        "xǁRateLimiterProcessorǁ__call____mutmut_20": xǁRateLimiterProcessorǁ__call____mutmut_20,
+        "xǁRateLimiterProcessorǁ__call____mutmut_21": xǁRateLimiterProcessorǁ__call____mutmut_21,
+        "xǁRateLimiterProcessorǁ__call____mutmut_22": xǁRateLimiterProcessorǁ__call____mutmut_22,
+        "xǁRateLimiterProcessorǁ__call____mutmut_23": xǁRateLimiterProcessorǁ__call____mutmut_23,
+        "xǁRateLimiterProcessorǁ__call____mutmut_24": xǁRateLimiterProcessorǁ__call____mutmut_24,
+        "xǁRateLimiterProcessorǁ__call____mutmut_25": xǁRateLimiterProcessorǁ__call____mutmut_25,
+        "xǁRateLimiterProcessorǁ__call____mutmut_26": xǁRateLimiterProcessorǁ__call____mutmut_26,
+        "xǁRateLimiterProcessorǁ__call____mutmut_27": xǁRateLimiterProcessorǁ__call____mutmut_27,
+        "xǁRateLimiterProcessorǁ__call____mutmut_28": xǁRateLimiterProcessorǁ__call____mutmut_28,
+        "xǁRateLimiterProcessorǁ__call____mutmut_29": xǁRateLimiterProcessorǁ__call____mutmut_29,
+        "xǁRateLimiterProcessorǁ__call____mutmut_30": xǁRateLimiterProcessorǁ__call____mutmut_30,
+        "xǁRateLimiterProcessorǁ__call____mutmut_31": xǁRateLimiterProcessorǁ__call____mutmut_31,
+        "xǁRateLimiterProcessorǁ__call____mutmut_32": xǁRateLimiterProcessorǁ__call____mutmut_32,
+        "xǁRateLimiterProcessorǁ__call____mutmut_33": xǁRateLimiterProcessorǁ__call____mutmut_33,
+        "xǁRateLimiterProcessorǁ__call____mutmut_34": xǁRateLimiterProcessorǁ__call____mutmut_34,
+        "xǁRateLimiterProcessorǁ__call____mutmut_35": xǁRateLimiterProcessorǁ__call____mutmut_35,
+        "xǁRateLimiterProcessorǁ__call____mutmut_36": xǁRateLimiterProcessorǁ__call____mutmut_36,
+        "xǁRateLimiterProcessorǁ__call____mutmut_37": xǁRateLimiterProcessorǁ__call____mutmut_37,
+        "xǁRateLimiterProcessorǁ__call____mutmut_38": xǁRateLimiterProcessorǁ__call____mutmut_38,
+        "xǁRateLimiterProcessorǁ__call____mutmut_39": xǁRateLimiterProcessorǁ__call____mutmut_39,
+        "xǁRateLimiterProcessorǁ__call____mutmut_40": xǁRateLimiterProcessorǁ__call____mutmut_40,
+        "xǁRateLimiterProcessorǁ__call____mutmut_41": xǁRateLimiterProcessorǁ__call____mutmut_41,
+        "xǁRateLimiterProcessorǁ__call____mutmut_42": xǁRateLimiterProcessorǁ__call____mutmut_42,
+        "xǁRateLimiterProcessorǁ__call____mutmut_43": xǁRateLimiterProcessorǁ__call____mutmut_43,
+        "xǁRateLimiterProcessorǁ__call____mutmut_44": xǁRateLimiterProcessorǁ__call____mutmut_44,
+        "xǁRateLimiterProcessorǁ__call____mutmut_45": xǁRateLimiterProcessorǁ__call____mutmut_45,
+        "xǁRateLimiterProcessorǁ__call____mutmut_46": xǁRateLimiterProcessorǁ__call____mutmut_46,
+        "xǁRateLimiterProcessorǁ__call____mutmut_47": xǁRateLimiterProcessorǁ__call____mutmut_47,
+        "xǁRateLimiterProcessorǁ__call____mutmut_48": xǁRateLimiterProcessorǁ__call____mutmut_48,
+        "xǁRateLimiterProcessorǁ__call____mutmut_49": xǁRateLimiterProcessorǁ__call____mutmut_49,
+        "xǁRateLimiterProcessorǁ__call____mutmut_50": xǁRateLimiterProcessorǁ__call____mutmut_50,
+        "xǁRateLimiterProcessorǁ__call____mutmut_51": xǁRateLimiterProcessorǁ__call____mutmut_51,
+        "xǁRateLimiterProcessorǁ__call____mutmut_52": xǁRateLimiterProcessorǁ__call____mutmut_52,
     }
-    
+
     def __call__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRateLimiterProcessorǁ__call____mutmut_orig"), object.__getattribute__(self, "xǁRateLimiterProcessorǁ__call____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRateLimiterProcessorǁ__call____mutmut_orig"),
+            object.__getattribute__(self, "xǁRateLimiterProcessorǁ__call____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __call__.__signature__ = _mutmut_signature(xǁRateLimiterProcessorǁ__call____mutmut_orig)
-    xǁRateLimiterProcessorǁ__call____mutmut_orig.__name__ = 'xǁRateLimiterProcessorǁ__call__'
+    xǁRateLimiterProcessorǁ__call____mutmut_orig.__name__ = "xǁRateLimiterProcessorǁ__call__"
 
     def xǁRateLimiterProcessorǁ_emit_summary__mutmut_orig(self) -> None:
         """Emit a summary of rate-limited messages."""
@@ -4063,7 +4084,9 @@ class RateLimiterProcessor:
 
         # Check if there's been any rate limiting activity
         global_stats = stats.get("global") or {}
-        total_denied = global_stats.get("total_denied", )
+        total_denied = global_stats.get(
+            "total_denied",
+        )
 
         if not self.suppressed_counts and total_denied == 0:
             return  # No rate limiting activity to report
@@ -4905,7 +4928,9 @@ class RateLimiterProcessor:
             summary_logger = get_logger("provide.foundation.ratelimit.summary")
 
             # Calculate rate limiting percentage
-            total_allowed = global_stats.get("total_allowed", )
+            total_allowed = global_stats.get(
+                "total_allowed",
+            )
             total_attempts = total_allowed + total_denied
             denial_rate = total_denied / total_attempts * 100 if total_attempts > 0 else 0
 
@@ -6289,7 +6314,7 @@ class RateLimiterProcessor:
                 denial_rate_percent=denial_rate,
                 tokens_available=global_stats.get("tokens_available", 0),
                 capacity=global_stats.get("capacity", 0),
-                )
+            )
 
             # Reset counts after summary
             self.suppressed_counts.clear()
@@ -6464,7 +6489,7 @@ class RateLimiterProcessor:
             summary_logger.warning(
                 f"⚠️ Rate limiting active: {total_suppressed:,} logs dropped in last {self.summary_interval}s | "
                 f"Denial rate: {denial_rate:.1f}% | "
-                f"Tokens: {global_stats.get('tokens_available', ):.0f}/{global_stats.get('capacity', 0):.0f}",
+                f"Tokens: {global_stats.get('tokens_available'):.0f}/{global_stats.get('capacity', 0):.0f}",
                 suppressed_by_logger=dict(self.suppressed_counts) if self.suppressed_counts else {},
                 total_suppressed=total_suppressed,
                 total_denied_overall=total_denied,
@@ -6786,7 +6811,7 @@ class RateLimiterProcessor:
             summary_logger.warning(
                 f"⚠️ Rate limiting active: {total_suppressed:,} logs dropped in last {self.summary_interval}s | "
                 f"Denial rate: {denial_rate:.1f}% | "
-                f"Tokens: {global_stats.get('tokens_available', 0):.0f}/{global_stats.get('capacity', ):.0f}",
+                f"Tokens: {global_stats.get('tokens_available', 0):.0f}/{global_stats.get('capacity'):.0f}",
                 suppressed_by_logger=dict(self.suppressed_counts) if self.suppressed_counts else {},
                 total_suppressed=total_suppressed,
                 total_denied_overall=total_denied,
@@ -7160,7 +7185,9 @@ class RateLimiterProcessor:
                 total_denied_overall=total_denied,
                 total_allowed_overall=total_allowed,
                 denial_rate_percent=denial_rate,
-                tokens_available=global_stats.get("tokens_available", ),
+                tokens_available=global_stats.get(
+                    "tokens_available",
+                ),
                 capacity=global_stats.get("capacity", 0),
                 refill_rate=global_stats.get("refill_rate", 0),
             )
@@ -7483,7 +7510,9 @@ class RateLimiterProcessor:
                 total_allowed_overall=total_allowed,
                 denial_rate_percent=denial_rate,
                 tokens_available=global_stats.get("tokens_available", 0),
-                capacity=global_stats.get("capacity", ),
+                capacity=global_stats.get(
+                    "capacity",
+                ),
                 refill_rate=global_stats.get("refill_rate", 0),
             )
 
@@ -7806,7 +7835,9 @@ class RateLimiterProcessor:
                 denial_rate_percent=denial_rate,
                 tokens_available=global_stats.get("tokens_available", 0),
                 capacity=global_stats.get("capacity", 0),
-                refill_rate=global_stats.get("refill_rate", ),
+                refill_rate=global_stats.get(
+                    "refill_rate",
+                ),
             )
 
             # Reset counts after summary
@@ -7952,111 +7983,117 @@ class RateLimiterProcessor:
         except Exception:
             # If we can't log the summary, just clear counts
             self.suppressed_counts.clear()
-    
-    xǁRateLimiterProcessorǁ_emit_summary__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRateLimiterProcessorǁ_emit_summary__mutmut_1': xǁRateLimiterProcessorǁ_emit_summary__mutmut_1, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_2': xǁRateLimiterProcessorǁ_emit_summary__mutmut_2, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_3': xǁRateLimiterProcessorǁ_emit_summary__mutmut_3, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_4': xǁRateLimiterProcessorǁ_emit_summary__mutmut_4, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_5': xǁRateLimiterProcessorǁ_emit_summary__mutmut_5, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_6': xǁRateLimiterProcessorǁ_emit_summary__mutmut_6, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_7': xǁRateLimiterProcessorǁ_emit_summary__mutmut_7, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_8': xǁRateLimiterProcessorǁ_emit_summary__mutmut_8, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_9': xǁRateLimiterProcessorǁ_emit_summary__mutmut_9, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_10': xǁRateLimiterProcessorǁ_emit_summary__mutmut_10, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_11': xǁRateLimiterProcessorǁ_emit_summary__mutmut_11, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_12': xǁRateLimiterProcessorǁ_emit_summary__mutmut_12, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_13': xǁRateLimiterProcessorǁ_emit_summary__mutmut_13, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_14': xǁRateLimiterProcessorǁ_emit_summary__mutmut_14, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_15': xǁRateLimiterProcessorǁ_emit_summary__mutmut_15, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_16': xǁRateLimiterProcessorǁ_emit_summary__mutmut_16, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_17': xǁRateLimiterProcessorǁ_emit_summary__mutmut_17, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_18': xǁRateLimiterProcessorǁ_emit_summary__mutmut_18, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_19': xǁRateLimiterProcessorǁ_emit_summary__mutmut_19, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_20': xǁRateLimiterProcessorǁ_emit_summary__mutmut_20, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_21': xǁRateLimiterProcessorǁ_emit_summary__mutmut_21, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_22': xǁRateLimiterProcessorǁ_emit_summary__mutmut_22, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_23': xǁRateLimiterProcessorǁ_emit_summary__mutmut_23, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_24': xǁRateLimiterProcessorǁ_emit_summary__mutmut_24, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_25': xǁRateLimiterProcessorǁ_emit_summary__mutmut_25, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_26': xǁRateLimiterProcessorǁ_emit_summary__mutmut_26, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_27': xǁRateLimiterProcessorǁ_emit_summary__mutmut_27, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_28': xǁRateLimiterProcessorǁ_emit_summary__mutmut_28, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_29': xǁRateLimiterProcessorǁ_emit_summary__mutmut_29, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_30': xǁRateLimiterProcessorǁ_emit_summary__mutmut_30, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_31': xǁRateLimiterProcessorǁ_emit_summary__mutmut_31, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_32': xǁRateLimiterProcessorǁ_emit_summary__mutmut_32, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_33': xǁRateLimiterProcessorǁ_emit_summary__mutmut_33, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_34': xǁRateLimiterProcessorǁ_emit_summary__mutmut_34, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_35': xǁRateLimiterProcessorǁ_emit_summary__mutmut_35, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_36': xǁRateLimiterProcessorǁ_emit_summary__mutmut_36, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_37': xǁRateLimiterProcessorǁ_emit_summary__mutmut_37, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_38': xǁRateLimiterProcessorǁ_emit_summary__mutmut_38, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_39': xǁRateLimiterProcessorǁ_emit_summary__mutmut_39, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_40': xǁRateLimiterProcessorǁ_emit_summary__mutmut_40, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_41': xǁRateLimiterProcessorǁ_emit_summary__mutmut_41, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_42': xǁRateLimiterProcessorǁ_emit_summary__mutmut_42, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_43': xǁRateLimiterProcessorǁ_emit_summary__mutmut_43, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_44': xǁRateLimiterProcessorǁ_emit_summary__mutmut_44, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_45': xǁRateLimiterProcessorǁ_emit_summary__mutmut_45, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_46': xǁRateLimiterProcessorǁ_emit_summary__mutmut_46, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_47': xǁRateLimiterProcessorǁ_emit_summary__mutmut_47, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_48': xǁRateLimiterProcessorǁ_emit_summary__mutmut_48, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_49': xǁRateLimiterProcessorǁ_emit_summary__mutmut_49, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_50': xǁRateLimiterProcessorǁ_emit_summary__mutmut_50, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_51': xǁRateLimiterProcessorǁ_emit_summary__mutmut_51, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_52': xǁRateLimiterProcessorǁ_emit_summary__mutmut_52, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_53': xǁRateLimiterProcessorǁ_emit_summary__mutmut_53, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_54': xǁRateLimiterProcessorǁ_emit_summary__mutmut_54, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_55': xǁRateLimiterProcessorǁ_emit_summary__mutmut_55, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_56': xǁRateLimiterProcessorǁ_emit_summary__mutmut_56, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_57': xǁRateLimiterProcessorǁ_emit_summary__mutmut_57, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_58': xǁRateLimiterProcessorǁ_emit_summary__mutmut_58, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_59': xǁRateLimiterProcessorǁ_emit_summary__mutmut_59, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_60': xǁRateLimiterProcessorǁ_emit_summary__mutmut_60, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_61': xǁRateLimiterProcessorǁ_emit_summary__mutmut_61, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_62': xǁRateLimiterProcessorǁ_emit_summary__mutmut_62, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_63': xǁRateLimiterProcessorǁ_emit_summary__mutmut_63, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_64': xǁRateLimiterProcessorǁ_emit_summary__mutmut_64, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_65': xǁRateLimiterProcessorǁ_emit_summary__mutmut_65, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_66': xǁRateLimiterProcessorǁ_emit_summary__mutmut_66, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_67': xǁRateLimiterProcessorǁ_emit_summary__mutmut_67, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_68': xǁRateLimiterProcessorǁ_emit_summary__mutmut_68, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_69': xǁRateLimiterProcessorǁ_emit_summary__mutmut_69, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_70': xǁRateLimiterProcessorǁ_emit_summary__mutmut_70, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_71': xǁRateLimiterProcessorǁ_emit_summary__mutmut_71, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_72': xǁRateLimiterProcessorǁ_emit_summary__mutmut_72, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_73': xǁRateLimiterProcessorǁ_emit_summary__mutmut_73, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_74': xǁRateLimiterProcessorǁ_emit_summary__mutmut_74, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_75': xǁRateLimiterProcessorǁ_emit_summary__mutmut_75, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_76': xǁRateLimiterProcessorǁ_emit_summary__mutmut_76, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_77': xǁRateLimiterProcessorǁ_emit_summary__mutmut_77, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_78': xǁRateLimiterProcessorǁ_emit_summary__mutmut_78, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_79': xǁRateLimiterProcessorǁ_emit_summary__mutmut_79, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_80': xǁRateLimiterProcessorǁ_emit_summary__mutmut_80, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_81': xǁRateLimiterProcessorǁ_emit_summary__mutmut_81, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_82': xǁRateLimiterProcessorǁ_emit_summary__mutmut_82, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_83': xǁRateLimiterProcessorǁ_emit_summary__mutmut_83, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_84': xǁRateLimiterProcessorǁ_emit_summary__mutmut_84, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_85': xǁRateLimiterProcessorǁ_emit_summary__mutmut_85, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_86': xǁRateLimiterProcessorǁ_emit_summary__mutmut_86, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_87': xǁRateLimiterProcessorǁ_emit_summary__mutmut_87, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_88': xǁRateLimiterProcessorǁ_emit_summary__mutmut_88, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_89': xǁRateLimiterProcessorǁ_emit_summary__mutmut_89, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_90': xǁRateLimiterProcessorǁ_emit_summary__mutmut_90, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_91': xǁRateLimiterProcessorǁ_emit_summary__mutmut_91, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_92': xǁRateLimiterProcessorǁ_emit_summary__mutmut_92, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_93': xǁRateLimiterProcessorǁ_emit_summary__mutmut_93, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_94': xǁRateLimiterProcessorǁ_emit_summary__mutmut_94, 
-        'xǁRateLimiterProcessorǁ_emit_summary__mutmut_95': xǁRateLimiterProcessorǁ_emit_summary__mutmut_95
+
+    xǁRateLimiterProcessorǁ_emit_summary__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_1": xǁRateLimiterProcessorǁ_emit_summary__mutmut_1,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_2": xǁRateLimiterProcessorǁ_emit_summary__mutmut_2,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_3": xǁRateLimiterProcessorǁ_emit_summary__mutmut_3,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_4": xǁRateLimiterProcessorǁ_emit_summary__mutmut_4,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_5": xǁRateLimiterProcessorǁ_emit_summary__mutmut_5,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_6": xǁRateLimiterProcessorǁ_emit_summary__mutmut_6,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_7": xǁRateLimiterProcessorǁ_emit_summary__mutmut_7,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_8": xǁRateLimiterProcessorǁ_emit_summary__mutmut_8,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_9": xǁRateLimiterProcessorǁ_emit_summary__mutmut_9,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_10": xǁRateLimiterProcessorǁ_emit_summary__mutmut_10,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_11": xǁRateLimiterProcessorǁ_emit_summary__mutmut_11,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_12": xǁRateLimiterProcessorǁ_emit_summary__mutmut_12,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_13": xǁRateLimiterProcessorǁ_emit_summary__mutmut_13,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_14": xǁRateLimiterProcessorǁ_emit_summary__mutmut_14,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_15": xǁRateLimiterProcessorǁ_emit_summary__mutmut_15,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_16": xǁRateLimiterProcessorǁ_emit_summary__mutmut_16,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_17": xǁRateLimiterProcessorǁ_emit_summary__mutmut_17,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_18": xǁRateLimiterProcessorǁ_emit_summary__mutmut_18,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_19": xǁRateLimiterProcessorǁ_emit_summary__mutmut_19,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_20": xǁRateLimiterProcessorǁ_emit_summary__mutmut_20,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_21": xǁRateLimiterProcessorǁ_emit_summary__mutmut_21,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_22": xǁRateLimiterProcessorǁ_emit_summary__mutmut_22,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_23": xǁRateLimiterProcessorǁ_emit_summary__mutmut_23,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_24": xǁRateLimiterProcessorǁ_emit_summary__mutmut_24,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_25": xǁRateLimiterProcessorǁ_emit_summary__mutmut_25,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_26": xǁRateLimiterProcessorǁ_emit_summary__mutmut_26,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_27": xǁRateLimiterProcessorǁ_emit_summary__mutmut_27,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_28": xǁRateLimiterProcessorǁ_emit_summary__mutmut_28,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_29": xǁRateLimiterProcessorǁ_emit_summary__mutmut_29,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_30": xǁRateLimiterProcessorǁ_emit_summary__mutmut_30,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_31": xǁRateLimiterProcessorǁ_emit_summary__mutmut_31,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_32": xǁRateLimiterProcessorǁ_emit_summary__mutmut_32,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_33": xǁRateLimiterProcessorǁ_emit_summary__mutmut_33,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_34": xǁRateLimiterProcessorǁ_emit_summary__mutmut_34,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_35": xǁRateLimiterProcessorǁ_emit_summary__mutmut_35,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_36": xǁRateLimiterProcessorǁ_emit_summary__mutmut_36,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_37": xǁRateLimiterProcessorǁ_emit_summary__mutmut_37,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_38": xǁRateLimiterProcessorǁ_emit_summary__mutmut_38,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_39": xǁRateLimiterProcessorǁ_emit_summary__mutmut_39,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_40": xǁRateLimiterProcessorǁ_emit_summary__mutmut_40,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_41": xǁRateLimiterProcessorǁ_emit_summary__mutmut_41,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_42": xǁRateLimiterProcessorǁ_emit_summary__mutmut_42,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_43": xǁRateLimiterProcessorǁ_emit_summary__mutmut_43,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_44": xǁRateLimiterProcessorǁ_emit_summary__mutmut_44,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_45": xǁRateLimiterProcessorǁ_emit_summary__mutmut_45,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_46": xǁRateLimiterProcessorǁ_emit_summary__mutmut_46,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_47": xǁRateLimiterProcessorǁ_emit_summary__mutmut_47,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_48": xǁRateLimiterProcessorǁ_emit_summary__mutmut_48,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_49": xǁRateLimiterProcessorǁ_emit_summary__mutmut_49,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_50": xǁRateLimiterProcessorǁ_emit_summary__mutmut_50,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_51": xǁRateLimiterProcessorǁ_emit_summary__mutmut_51,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_52": xǁRateLimiterProcessorǁ_emit_summary__mutmut_52,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_53": xǁRateLimiterProcessorǁ_emit_summary__mutmut_53,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_54": xǁRateLimiterProcessorǁ_emit_summary__mutmut_54,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_55": xǁRateLimiterProcessorǁ_emit_summary__mutmut_55,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_56": xǁRateLimiterProcessorǁ_emit_summary__mutmut_56,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_57": xǁRateLimiterProcessorǁ_emit_summary__mutmut_57,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_58": xǁRateLimiterProcessorǁ_emit_summary__mutmut_58,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_59": xǁRateLimiterProcessorǁ_emit_summary__mutmut_59,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_60": xǁRateLimiterProcessorǁ_emit_summary__mutmut_60,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_61": xǁRateLimiterProcessorǁ_emit_summary__mutmut_61,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_62": xǁRateLimiterProcessorǁ_emit_summary__mutmut_62,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_63": xǁRateLimiterProcessorǁ_emit_summary__mutmut_63,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_64": xǁRateLimiterProcessorǁ_emit_summary__mutmut_64,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_65": xǁRateLimiterProcessorǁ_emit_summary__mutmut_65,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_66": xǁRateLimiterProcessorǁ_emit_summary__mutmut_66,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_67": xǁRateLimiterProcessorǁ_emit_summary__mutmut_67,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_68": xǁRateLimiterProcessorǁ_emit_summary__mutmut_68,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_69": xǁRateLimiterProcessorǁ_emit_summary__mutmut_69,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_70": xǁRateLimiterProcessorǁ_emit_summary__mutmut_70,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_71": xǁRateLimiterProcessorǁ_emit_summary__mutmut_71,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_72": xǁRateLimiterProcessorǁ_emit_summary__mutmut_72,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_73": xǁRateLimiterProcessorǁ_emit_summary__mutmut_73,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_74": xǁRateLimiterProcessorǁ_emit_summary__mutmut_74,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_75": xǁRateLimiterProcessorǁ_emit_summary__mutmut_75,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_76": xǁRateLimiterProcessorǁ_emit_summary__mutmut_76,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_77": xǁRateLimiterProcessorǁ_emit_summary__mutmut_77,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_78": xǁRateLimiterProcessorǁ_emit_summary__mutmut_78,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_79": xǁRateLimiterProcessorǁ_emit_summary__mutmut_79,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_80": xǁRateLimiterProcessorǁ_emit_summary__mutmut_80,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_81": xǁRateLimiterProcessorǁ_emit_summary__mutmut_81,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_82": xǁRateLimiterProcessorǁ_emit_summary__mutmut_82,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_83": xǁRateLimiterProcessorǁ_emit_summary__mutmut_83,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_84": xǁRateLimiterProcessorǁ_emit_summary__mutmut_84,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_85": xǁRateLimiterProcessorǁ_emit_summary__mutmut_85,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_86": xǁRateLimiterProcessorǁ_emit_summary__mutmut_86,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_87": xǁRateLimiterProcessorǁ_emit_summary__mutmut_87,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_88": xǁRateLimiterProcessorǁ_emit_summary__mutmut_88,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_89": xǁRateLimiterProcessorǁ_emit_summary__mutmut_89,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_90": xǁRateLimiterProcessorǁ_emit_summary__mutmut_90,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_91": xǁRateLimiterProcessorǁ_emit_summary__mutmut_91,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_92": xǁRateLimiterProcessorǁ_emit_summary__mutmut_92,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_93": xǁRateLimiterProcessorǁ_emit_summary__mutmut_93,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_94": xǁRateLimiterProcessorǁ_emit_summary__mutmut_94,
+        "xǁRateLimiterProcessorǁ_emit_summary__mutmut_95": xǁRateLimiterProcessorǁ_emit_summary__mutmut_95,
     }
-    
+
     def _emit_summary(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRateLimiterProcessorǁ_emit_summary__mutmut_orig"), object.__getattribute__(self, "xǁRateLimiterProcessorǁ_emit_summary__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRateLimiterProcessorǁ_emit_summary__mutmut_orig"),
+            object.__getattribute__(self, "xǁRateLimiterProcessorǁ_emit_summary__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _emit_summary.__signature__ = _mutmut_signature(xǁRateLimiterProcessorǁ_emit_summary__mutmut_orig)
-    xǁRateLimiterProcessorǁ_emit_summary__mutmut_orig.__name__ = 'xǁRateLimiterProcessorǁ_emit_summary'
+    xǁRateLimiterProcessorǁ_emit_summary__mutmut_orig.__name__ = "xǁRateLimiterProcessorǁ_emit_summary"
 
 
 def x_create_rate_limiter_processor__mutmut_orig(
@@ -8593,7 +8630,7 @@ def x_create_rate_limiter_processor__mutmut_10(
     """
     processor = RateLimiterProcessor(
         emit_warning_on_limit=emit_warnings,
-        )
+    )
 
     # Determine if we should use buffered rate limiting
     use_buffered = max_queue_size > 0 and overflow_policy in (
@@ -9773,52 +9810,60 @@ def x_create_rate_limiter_processor__mutmut_33(
         use_buffered=use_buffered,
         max_queue_size=max_queue_size,
         max_memory_mb=max_memory_mb,
-        )
+    )
 
     return processor
 
-x_create_rate_limiter_processor__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_rate_limiter_processor__mutmut_1': x_create_rate_limiter_processor__mutmut_1, 
-    'x_create_rate_limiter_processor__mutmut_2': x_create_rate_limiter_processor__mutmut_2, 
-    'x_create_rate_limiter_processor__mutmut_3': x_create_rate_limiter_processor__mutmut_3, 
-    'x_create_rate_limiter_processor__mutmut_4': x_create_rate_limiter_processor__mutmut_4, 
-    'x_create_rate_limiter_processor__mutmut_5': x_create_rate_limiter_processor__mutmut_5, 
-    'x_create_rate_limiter_processor__mutmut_6': x_create_rate_limiter_processor__mutmut_6, 
-    'x_create_rate_limiter_processor__mutmut_7': x_create_rate_limiter_processor__mutmut_7, 
-    'x_create_rate_limiter_processor__mutmut_8': x_create_rate_limiter_processor__mutmut_8, 
-    'x_create_rate_limiter_processor__mutmut_9': x_create_rate_limiter_processor__mutmut_9, 
-    'x_create_rate_limiter_processor__mutmut_10': x_create_rate_limiter_processor__mutmut_10, 
-    'x_create_rate_limiter_processor__mutmut_11': x_create_rate_limiter_processor__mutmut_11, 
-    'x_create_rate_limiter_processor__mutmut_12': x_create_rate_limiter_processor__mutmut_12, 
-    'x_create_rate_limiter_processor__mutmut_13': x_create_rate_limiter_processor__mutmut_13, 
-    'x_create_rate_limiter_processor__mutmut_14': x_create_rate_limiter_processor__mutmut_14, 
-    'x_create_rate_limiter_processor__mutmut_15': x_create_rate_limiter_processor__mutmut_15, 
-    'x_create_rate_limiter_processor__mutmut_16': x_create_rate_limiter_processor__mutmut_16, 
-    'x_create_rate_limiter_processor__mutmut_17': x_create_rate_limiter_processor__mutmut_17, 
-    'x_create_rate_limiter_processor__mutmut_18': x_create_rate_limiter_processor__mutmut_18, 
-    'x_create_rate_limiter_processor__mutmut_19': x_create_rate_limiter_processor__mutmut_19, 
-    'x_create_rate_limiter_processor__mutmut_20': x_create_rate_limiter_processor__mutmut_20, 
-    'x_create_rate_limiter_processor__mutmut_21': x_create_rate_limiter_processor__mutmut_21, 
-    'x_create_rate_limiter_processor__mutmut_22': x_create_rate_limiter_processor__mutmut_22, 
-    'x_create_rate_limiter_processor__mutmut_23': x_create_rate_limiter_processor__mutmut_23, 
-    'x_create_rate_limiter_processor__mutmut_24': x_create_rate_limiter_processor__mutmut_24, 
-    'x_create_rate_limiter_processor__mutmut_25': x_create_rate_limiter_processor__mutmut_25, 
-    'x_create_rate_limiter_processor__mutmut_26': x_create_rate_limiter_processor__mutmut_26, 
-    'x_create_rate_limiter_processor__mutmut_27': x_create_rate_limiter_processor__mutmut_27, 
-    'x_create_rate_limiter_processor__mutmut_28': x_create_rate_limiter_processor__mutmut_28, 
-    'x_create_rate_limiter_processor__mutmut_29': x_create_rate_limiter_processor__mutmut_29, 
-    'x_create_rate_limiter_processor__mutmut_30': x_create_rate_limiter_processor__mutmut_30, 
-    'x_create_rate_limiter_processor__mutmut_31': x_create_rate_limiter_processor__mutmut_31, 
-    'x_create_rate_limiter_processor__mutmut_32': x_create_rate_limiter_processor__mutmut_32, 
-    'x_create_rate_limiter_processor__mutmut_33': x_create_rate_limiter_processor__mutmut_33
+
+x_create_rate_limiter_processor__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_rate_limiter_processor__mutmut_1": x_create_rate_limiter_processor__mutmut_1,
+    "x_create_rate_limiter_processor__mutmut_2": x_create_rate_limiter_processor__mutmut_2,
+    "x_create_rate_limiter_processor__mutmut_3": x_create_rate_limiter_processor__mutmut_3,
+    "x_create_rate_limiter_processor__mutmut_4": x_create_rate_limiter_processor__mutmut_4,
+    "x_create_rate_limiter_processor__mutmut_5": x_create_rate_limiter_processor__mutmut_5,
+    "x_create_rate_limiter_processor__mutmut_6": x_create_rate_limiter_processor__mutmut_6,
+    "x_create_rate_limiter_processor__mutmut_7": x_create_rate_limiter_processor__mutmut_7,
+    "x_create_rate_limiter_processor__mutmut_8": x_create_rate_limiter_processor__mutmut_8,
+    "x_create_rate_limiter_processor__mutmut_9": x_create_rate_limiter_processor__mutmut_9,
+    "x_create_rate_limiter_processor__mutmut_10": x_create_rate_limiter_processor__mutmut_10,
+    "x_create_rate_limiter_processor__mutmut_11": x_create_rate_limiter_processor__mutmut_11,
+    "x_create_rate_limiter_processor__mutmut_12": x_create_rate_limiter_processor__mutmut_12,
+    "x_create_rate_limiter_processor__mutmut_13": x_create_rate_limiter_processor__mutmut_13,
+    "x_create_rate_limiter_processor__mutmut_14": x_create_rate_limiter_processor__mutmut_14,
+    "x_create_rate_limiter_processor__mutmut_15": x_create_rate_limiter_processor__mutmut_15,
+    "x_create_rate_limiter_processor__mutmut_16": x_create_rate_limiter_processor__mutmut_16,
+    "x_create_rate_limiter_processor__mutmut_17": x_create_rate_limiter_processor__mutmut_17,
+    "x_create_rate_limiter_processor__mutmut_18": x_create_rate_limiter_processor__mutmut_18,
+    "x_create_rate_limiter_processor__mutmut_19": x_create_rate_limiter_processor__mutmut_19,
+    "x_create_rate_limiter_processor__mutmut_20": x_create_rate_limiter_processor__mutmut_20,
+    "x_create_rate_limiter_processor__mutmut_21": x_create_rate_limiter_processor__mutmut_21,
+    "x_create_rate_limiter_processor__mutmut_22": x_create_rate_limiter_processor__mutmut_22,
+    "x_create_rate_limiter_processor__mutmut_23": x_create_rate_limiter_processor__mutmut_23,
+    "x_create_rate_limiter_processor__mutmut_24": x_create_rate_limiter_processor__mutmut_24,
+    "x_create_rate_limiter_processor__mutmut_25": x_create_rate_limiter_processor__mutmut_25,
+    "x_create_rate_limiter_processor__mutmut_26": x_create_rate_limiter_processor__mutmut_26,
+    "x_create_rate_limiter_processor__mutmut_27": x_create_rate_limiter_processor__mutmut_27,
+    "x_create_rate_limiter_processor__mutmut_28": x_create_rate_limiter_processor__mutmut_28,
+    "x_create_rate_limiter_processor__mutmut_29": x_create_rate_limiter_processor__mutmut_29,
+    "x_create_rate_limiter_processor__mutmut_30": x_create_rate_limiter_processor__mutmut_30,
+    "x_create_rate_limiter_processor__mutmut_31": x_create_rate_limiter_processor__mutmut_31,
+    "x_create_rate_limiter_processor__mutmut_32": x_create_rate_limiter_processor__mutmut_32,
+    "x_create_rate_limiter_processor__mutmut_33": x_create_rate_limiter_processor__mutmut_33,
 }
 
+
 def create_rate_limiter_processor(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_rate_limiter_processor__mutmut_orig, x_create_rate_limiter_processor__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_rate_limiter_processor__mutmut_orig,
+        x_create_rate_limiter_processor__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 create_rate_limiter_processor.__signature__ = _mutmut_signature(x_create_rate_limiter_processor__mutmut_orig)
-x_create_rate_limiter_processor__mutmut_orig.__name__ = 'x_create_rate_limiter_processor'
+x_create_rate_limiter_processor__mutmut_orig.__name__ = "x_create_rate_limiter_processor"
 
 
 # <3 🧱🤝📝🪄

@@ -27,23 +27,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -77,18 +80,24 @@ class ConfigSource(Enum):
         if not isinstance(other, ConfigSource):
             return NotImplemented
         return self.value <= other.value
-    
-    xǁConfigSourceǁ__lt____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSourceǁ__lt____mutmut_1': xǁConfigSourceǁ__lt____mutmut_1, 
-        'xǁConfigSourceǁ__lt____mutmut_2': xǁConfigSourceǁ__lt____mutmut_2
+
+    xǁConfigSourceǁ__lt____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSourceǁ__lt____mutmut_1": xǁConfigSourceǁ__lt____mutmut_1,
+        "xǁConfigSourceǁ__lt____mutmut_2": xǁConfigSourceǁ__lt____mutmut_2,
     }
-    
+
     def __lt__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSourceǁ__lt____mutmut_orig"), object.__getattribute__(self, "xǁConfigSourceǁ__lt____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSourceǁ__lt____mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSourceǁ__lt____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __lt__.__signature__ = _mutmut_signature(xǁConfigSourceǁ__lt____mutmut_orig)
-    xǁConfigSourceǁ__lt____mutmut_orig.__name__ = 'xǁConfigSourceǁ__lt__'
+    xǁConfigSourceǁ__lt____mutmut_orig.__name__ = "xǁConfigSourceǁ__lt__"
 
     def xǁConfigSourceǁ__le____mutmut_orig(self, other: object) -> bool:
         """Enable <= comparison for precedence."""
@@ -107,18 +116,24 @@ class ConfigSource(Enum):
         if not isinstance(other, ConfigSource):
             return NotImplemented
         return self.value < other.value
-    
-    xǁConfigSourceǁ__le____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSourceǁ__le____mutmut_1': xǁConfigSourceǁ__le____mutmut_1, 
-        'xǁConfigSourceǁ__le____mutmut_2': xǁConfigSourceǁ__le____mutmut_2
+
+    xǁConfigSourceǁ__le____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSourceǁ__le____mutmut_1": xǁConfigSourceǁ__le____mutmut_1,
+        "xǁConfigSourceǁ__le____mutmut_2": xǁConfigSourceǁ__le____mutmut_2,
     }
-    
+
     def __le__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSourceǁ__le____mutmut_orig"), object.__getattribute__(self, "xǁConfigSourceǁ__le____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSourceǁ__le____mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSourceǁ__le____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __le__.__signature__ = _mutmut_signature(xǁConfigSourceǁ__le____mutmut_orig)
-    xǁConfigSourceǁ__le____mutmut_orig.__name__ = 'xǁConfigSourceǁ__le__'
+    xǁConfigSourceǁ__le____mutmut_orig.__name__ = "xǁConfigSourceǁ__le__"
 
     def xǁConfigSourceǁ__gt____mutmut_orig(self, other: object) -> bool:
         """Enable > comparison for precedence."""
@@ -137,18 +152,24 @@ class ConfigSource(Enum):
         if not isinstance(other, ConfigSource):
             return NotImplemented
         return self.value >= other.value
-    
-    xǁConfigSourceǁ__gt____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSourceǁ__gt____mutmut_1': xǁConfigSourceǁ__gt____mutmut_1, 
-        'xǁConfigSourceǁ__gt____mutmut_2': xǁConfigSourceǁ__gt____mutmut_2
+
+    xǁConfigSourceǁ__gt____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSourceǁ__gt____mutmut_1": xǁConfigSourceǁ__gt____mutmut_1,
+        "xǁConfigSourceǁ__gt____mutmut_2": xǁConfigSourceǁ__gt____mutmut_2,
     }
-    
+
     def __gt__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSourceǁ__gt____mutmut_orig"), object.__getattribute__(self, "xǁConfigSourceǁ__gt____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSourceǁ__gt____mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSourceǁ__gt____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __gt__.__signature__ = _mutmut_signature(xǁConfigSourceǁ__gt____mutmut_orig)
-    xǁConfigSourceǁ__gt____mutmut_orig.__name__ = 'xǁConfigSourceǁ__gt__'
+    xǁConfigSourceǁ__gt____mutmut_orig.__name__ = "xǁConfigSourceǁ__gt__"
 
     def xǁConfigSourceǁ__ge____mutmut_orig(self, other: object) -> bool:
         """Enable >= comparison for precedence."""
@@ -167,18 +188,24 @@ class ConfigSource(Enum):
         if not isinstance(other, ConfigSource):
             return NotImplemented
         return self.value > other.value
-    
-    xǁConfigSourceǁ__ge____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSourceǁ__ge____mutmut_1': xǁConfigSourceǁ__ge____mutmut_1, 
-        'xǁConfigSourceǁ__ge____mutmut_2': xǁConfigSourceǁ__ge____mutmut_2
+
+    xǁConfigSourceǁ__ge____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSourceǁ__ge____mutmut_1": xǁConfigSourceǁ__ge____mutmut_1,
+        "xǁConfigSourceǁ__ge____mutmut_2": xǁConfigSourceǁ__ge____mutmut_2,
     }
-    
+
     def __ge__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSourceǁ__ge____mutmut_orig"), object.__getattribute__(self, "xǁConfigSourceǁ__ge____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSourceǁ__ge____mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSourceǁ__ge____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __ge__.__signature__ = _mutmut_signature(xǁConfigSourceǁ__ge____mutmut_orig)
-    xǁConfigSourceǁ__ge____mutmut_orig.__name__ = 'xǁConfigSourceǁ__ge__'
+    xǁConfigSourceǁ__ge____mutmut_orig.__name__ = "xǁConfigSourceǁ__ge__"
 
     def xǁConfigSourceǁ__eq____mutmut_orig(self, other: object) -> bool:
         """Enable == comparison for precedence."""
@@ -197,18 +224,24 @@ class ConfigSource(Enum):
         if not isinstance(other, ConfigSource):
             return NotImplemented
         return self.value != other.value
-    
-    xǁConfigSourceǁ__eq____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSourceǁ__eq____mutmut_1': xǁConfigSourceǁ__eq____mutmut_1, 
-        'xǁConfigSourceǁ__eq____mutmut_2': xǁConfigSourceǁ__eq____mutmut_2
+
+    xǁConfigSourceǁ__eq____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSourceǁ__eq____mutmut_1": xǁConfigSourceǁ__eq____mutmut_1,
+        "xǁConfigSourceǁ__eq____mutmut_2": xǁConfigSourceǁ__eq____mutmut_2,
     }
-    
+
     def __eq__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSourceǁ__eq____mutmut_orig"), object.__getattribute__(self, "xǁConfigSourceǁ__eq____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSourceǁ__eq____mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSourceǁ__eq____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __eq__.__signature__ = _mutmut_signature(xǁConfigSourceǁ__eq____mutmut_orig)
-    xǁConfigSourceǁ__eq____mutmut_orig.__name__ = 'xǁConfigSourceǁ__eq__'
+    xǁConfigSourceǁ__eq____mutmut_orig.__name__ = "xǁConfigSourceǁ__eq__"
 
 
 class ConfigFormat(Enum):

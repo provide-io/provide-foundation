@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -438,7 +441,9 @@ def x_verify_file__mutmut_7(
         path = Path(path)
 
     try:
-        actual_hash = hash_file(path, )
+        actual_hash = hash_file(
+            path,
+        )
         matches = compare_hash(actual_hash, expected_hash)
 
         if matches:
@@ -699,7 +704,9 @@ def x_verify_file__mutmut_12(
 
     try:
         actual_hash = hash_file(path, algorithm)
-        matches = compare_hash(actual_hash, )
+        matches = compare_hash(
+            actual_hash,
+        )
 
         if matches:
             log.debug(
@@ -1015,7 +1022,7 @@ def x_verify_file__mutmut_18(
             log.debug(
                 "✅ Checksum verified",
                 path=str(path),
-                )
+            )
         else:
             log.warning(
                 "❌ Checksum mismatch",
@@ -1746,7 +1753,7 @@ def x_verify_file__mutmut_32(
                 path=str(path),
                 algorithm=algorithm,
                 expected=expected_hash[:16] + "...",
-                )
+            )
 
         return matches
 
@@ -2480,7 +2487,7 @@ def x_verify_file__mutmut_46(
     except ResourceError:
         log.error(
             "❌ Failed to verify checksum - file not found",
-            )
+        )
         return False
 
 
@@ -2743,66 +2750,69 @@ def x_verify_file__mutmut_51(
         )
         return True
 
-x_verify_file__mutmut_mutants : ClassVar[MutantDict] = {
-'x_verify_file__mutmut_1': x_verify_file__mutmut_1, 
-    'x_verify_file__mutmut_2': x_verify_file__mutmut_2, 
-    'x_verify_file__mutmut_3': x_verify_file__mutmut_3, 
-    'x_verify_file__mutmut_4': x_verify_file__mutmut_4, 
-    'x_verify_file__mutmut_5': x_verify_file__mutmut_5, 
-    'x_verify_file__mutmut_6': x_verify_file__mutmut_6, 
-    'x_verify_file__mutmut_7': x_verify_file__mutmut_7, 
-    'x_verify_file__mutmut_8': x_verify_file__mutmut_8, 
-    'x_verify_file__mutmut_9': x_verify_file__mutmut_9, 
-    'x_verify_file__mutmut_10': x_verify_file__mutmut_10, 
-    'x_verify_file__mutmut_11': x_verify_file__mutmut_11, 
-    'x_verify_file__mutmut_12': x_verify_file__mutmut_12, 
-    'x_verify_file__mutmut_13': x_verify_file__mutmut_13, 
-    'x_verify_file__mutmut_14': x_verify_file__mutmut_14, 
-    'x_verify_file__mutmut_15': x_verify_file__mutmut_15, 
-    'x_verify_file__mutmut_16': x_verify_file__mutmut_16, 
-    'x_verify_file__mutmut_17': x_verify_file__mutmut_17, 
-    'x_verify_file__mutmut_18': x_verify_file__mutmut_18, 
-    'x_verify_file__mutmut_19': x_verify_file__mutmut_19, 
-    'x_verify_file__mutmut_20': x_verify_file__mutmut_20, 
-    'x_verify_file__mutmut_21': x_verify_file__mutmut_21, 
-    'x_verify_file__mutmut_22': x_verify_file__mutmut_22, 
-    'x_verify_file__mutmut_23': x_verify_file__mutmut_23, 
-    'x_verify_file__mutmut_24': x_verify_file__mutmut_24, 
-    'x_verify_file__mutmut_25': x_verify_file__mutmut_25, 
-    'x_verify_file__mutmut_26': x_verify_file__mutmut_26, 
-    'x_verify_file__mutmut_27': x_verify_file__mutmut_27, 
-    'x_verify_file__mutmut_28': x_verify_file__mutmut_28, 
-    'x_verify_file__mutmut_29': x_verify_file__mutmut_29, 
-    'x_verify_file__mutmut_30': x_verify_file__mutmut_30, 
-    'x_verify_file__mutmut_31': x_verify_file__mutmut_31, 
-    'x_verify_file__mutmut_32': x_verify_file__mutmut_32, 
-    'x_verify_file__mutmut_33': x_verify_file__mutmut_33, 
-    'x_verify_file__mutmut_34': x_verify_file__mutmut_34, 
-    'x_verify_file__mutmut_35': x_verify_file__mutmut_35, 
-    'x_verify_file__mutmut_36': x_verify_file__mutmut_36, 
-    'x_verify_file__mutmut_37': x_verify_file__mutmut_37, 
-    'x_verify_file__mutmut_38': x_verify_file__mutmut_38, 
-    'x_verify_file__mutmut_39': x_verify_file__mutmut_39, 
-    'x_verify_file__mutmut_40': x_verify_file__mutmut_40, 
-    'x_verify_file__mutmut_41': x_verify_file__mutmut_41, 
-    'x_verify_file__mutmut_42': x_verify_file__mutmut_42, 
-    'x_verify_file__mutmut_43': x_verify_file__mutmut_43, 
-    'x_verify_file__mutmut_44': x_verify_file__mutmut_44, 
-    'x_verify_file__mutmut_45': x_verify_file__mutmut_45, 
-    'x_verify_file__mutmut_46': x_verify_file__mutmut_46, 
-    'x_verify_file__mutmut_47': x_verify_file__mutmut_47, 
-    'x_verify_file__mutmut_48': x_verify_file__mutmut_48, 
-    'x_verify_file__mutmut_49': x_verify_file__mutmut_49, 
-    'x_verify_file__mutmut_50': x_verify_file__mutmut_50, 
-    'x_verify_file__mutmut_51': x_verify_file__mutmut_51
+
+x_verify_file__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_verify_file__mutmut_1": x_verify_file__mutmut_1,
+    "x_verify_file__mutmut_2": x_verify_file__mutmut_2,
+    "x_verify_file__mutmut_3": x_verify_file__mutmut_3,
+    "x_verify_file__mutmut_4": x_verify_file__mutmut_4,
+    "x_verify_file__mutmut_5": x_verify_file__mutmut_5,
+    "x_verify_file__mutmut_6": x_verify_file__mutmut_6,
+    "x_verify_file__mutmut_7": x_verify_file__mutmut_7,
+    "x_verify_file__mutmut_8": x_verify_file__mutmut_8,
+    "x_verify_file__mutmut_9": x_verify_file__mutmut_9,
+    "x_verify_file__mutmut_10": x_verify_file__mutmut_10,
+    "x_verify_file__mutmut_11": x_verify_file__mutmut_11,
+    "x_verify_file__mutmut_12": x_verify_file__mutmut_12,
+    "x_verify_file__mutmut_13": x_verify_file__mutmut_13,
+    "x_verify_file__mutmut_14": x_verify_file__mutmut_14,
+    "x_verify_file__mutmut_15": x_verify_file__mutmut_15,
+    "x_verify_file__mutmut_16": x_verify_file__mutmut_16,
+    "x_verify_file__mutmut_17": x_verify_file__mutmut_17,
+    "x_verify_file__mutmut_18": x_verify_file__mutmut_18,
+    "x_verify_file__mutmut_19": x_verify_file__mutmut_19,
+    "x_verify_file__mutmut_20": x_verify_file__mutmut_20,
+    "x_verify_file__mutmut_21": x_verify_file__mutmut_21,
+    "x_verify_file__mutmut_22": x_verify_file__mutmut_22,
+    "x_verify_file__mutmut_23": x_verify_file__mutmut_23,
+    "x_verify_file__mutmut_24": x_verify_file__mutmut_24,
+    "x_verify_file__mutmut_25": x_verify_file__mutmut_25,
+    "x_verify_file__mutmut_26": x_verify_file__mutmut_26,
+    "x_verify_file__mutmut_27": x_verify_file__mutmut_27,
+    "x_verify_file__mutmut_28": x_verify_file__mutmut_28,
+    "x_verify_file__mutmut_29": x_verify_file__mutmut_29,
+    "x_verify_file__mutmut_30": x_verify_file__mutmut_30,
+    "x_verify_file__mutmut_31": x_verify_file__mutmut_31,
+    "x_verify_file__mutmut_32": x_verify_file__mutmut_32,
+    "x_verify_file__mutmut_33": x_verify_file__mutmut_33,
+    "x_verify_file__mutmut_34": x_verify_file__mutmut_34,
+    "x_verify_file__mutmut_35": x_verify_file__mutmut_35,
+    "x_verify_file__mutmut_36": x_verify_file__mutmut_36,
+    "x_verify_file__mutmut_37": x_verify_file__mutmut_37,
+    "x_verify_file__mutmut_38": x_verify_file__mutmut_38,
+    "x_verify_file__mutmut_39": x_verify_file__mutmut_39,
+    "x_verify_file__mutmut_40": x_verify_file__mutmut_40,
+    "x_verify_file__mutmut_41": x_verify_file__mutmut_41,
+    "x_verify_file__mutmut_42": x_verify_file__mutmut_42,
+    "x_verify_file__mutmut_43": x_verify_file__mutmut_43,
+    "x_verify_file__mutmut_44": x_verify_file__mutmut_44,
+    "x_verify_file__mutmut_45": x_verify_file__mutmut_45,
+    "x_verify_file__mutmut_46": x_verify_file__mutmut_46,
+    "x_verify_file__mutmut_47": x_verify_file__mutmut_47,
+    "x_verify_file__mutmut_48": x_verify_file__mutmut_48,
+    "x_verify_file__mutmut_49": x_verify_file__mutmut_49,
+    "x_verify_file__mutmut_50": x_verify_file__mutmut_50,
+    "x_verify_file__mutmut_51": x_verify_file__mutmut_51,
 }
+
 
 def verify_file(*args, **kwargs):
     result = _mutmut_trampoline(x_verify_file__mutmut_orig, x_verify_file__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 verify_file.__signature__ = _mutmut_signature(x_verify_file__mutmut_orig)
-x_verify_file__mutmut_orig.__name__ = 'x_verify_file'
+x_verify_file__mutmut_orig.__name__ = "x_verify_file"
 
 
 def x_verify_data__mutmut_orig(
@@ -3019,7 +3029,9 @@ def x_verify_data__mutmut_5(
         ValidationError: If algorithm is not supported
 
     """
-    actual_hash = hash_data(data, )
+    actual_hash = hash_data(
+        data,
+    )
     matches = compare_hash(actual_hash, expected_hash)
 
     if matches:
@@ -3215,7 +3227,9 @@ def x_verify_data__mutmut_10(
 
     """
     actual_hash = hash_data(data, algorithm)
-    matches = compare_hash(actual_hash, )
+    matches = compare_hash(
+        actual_hash,
+    )
 
     if matches:
         log.debug(
@@ -3453,7 +3467,7 @@ def x_verify_data__mutmut_16(
         log.debug(
             "✅ Data checksum verified",
             algorithm=algorithm,
-            )
+        )
     else:
         log.warning(
             "❌ Data checksum mismatch",
@@ -3885,7 +3899,7 @@ def x_verify_data__mutmut_27(
             "❌ Data checksum mismatch",
             algorithm=algorithm,
             expected=expected_hash[:16] + "...",
-            )
+        )
 
     return matches
 
@@ -4240,51 +4254,54 @@ def x_verify_data__mutmut_36(
 
     return matches
 
-x_verify_data__mutmut_mutants : ClassVar[MutantDict] = {
-'x_verify_data__mutmut_1': x_verify_data__mutmut_1, 
-    'x_verify_data__mutmut_2': x_verify_data__mutmut_2, 
-    'x_verify_data__mutmut_3': x_verify_data__mutmut_3, 
-    'x_verify_data__mutmut_4': x_verify_data__mutmut_4, 
-    'x_verify_data__mutmut_5': x_verify_data__mutmut_5, 
-    'x_verify_data__mutmut_6': x_verify_data__mutmut_6, 
-    'x_verify_data__mutmut_7': x_verify_data__mutmut_7, 
-    'x_verify_data__mutmut_8': x_verify_data__mutmut_8, 
-    'x_verify_data__mutmut_9': x_verify_data__mutmut_9, 
-    'x_verify_data__mutmut_10': x_verify_data__mutmut_10, 
-    'x_verify_data__mutmut_11': x_verify_data__mutmut_11, 
-    'x_verify_data__mutmut_12': x_verify_data__mutmut_12, 
-    'x_verify_data__mutmut_13': x_verify_data__mutmut_13, 
-    'x_verify_data__mutmut_14': x_verify_data__mutmut_14, 
-    'x_verify_data__mutmut_15': x_verify_data__mutmut_15, 
-    'x_verify_data__mutmut_16': x_verify_data__mutmut_16, 
-    'x_verify_data__mutmut_17': x_verify_data__mutmut_17, 
-    'x_verify_data__mutmut_18': x_verify_data__mutmut_18, 
-    'x_verify_data__mutmut_19': x_verify_data__mutmut_19, 
-    'x_verify_data__mutmut_20': x_verify_data__mutmut_20, 
-    'x_verify_data__mutmut_21': x_verify_data__mutmut_21, 
-    'x_verify_data__mutmut_22': x_verify_data__mutmut_22, 
-    'x_verify_data__mutmut_23': x_verify_data__mutmut_23, 
-    'x_verify_data__mutmut_24': x_verify_data__mutmut_24, 
-    'x_verify_data__mutmut_25': x_verify_data__mutmut_25, 
-    'x_verify_data__mutmut_26': x_verify_data__mutmut_26, 
-    'x_verify_data__mutmut_27': x_verify_data__mutmut_27, 
-    'x_verify_data__mutmut_28': x_verify_data__mutmut_28, 
-    'x_verify_data__mutmut_29': x_verify_data__mutmut_29, 
-    'x_verify_data__mutmut_30': x_verify_data__mutmut_30, 
-    'x_verify_data__mutmut_31': x_verify_data__mutmut_31, 
-    'x_verify_data__mutmut_32': x_verify_data__mutmut_32, 
-    'x_verify_data__mutmut_33': x_verify_data__mutmut_33, 
-    'x_verify_data__mutmut_34': x_verify_data__mutmut_34, 
-    'x_verify_data__mutmut_35': x_verify_data__mutmut_35, 
-    'x_verify_data__mutmut_36': x_verify_data__mutmut_36
+
+x_verify_data__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_verify_data__mutmut_1": x_verify_data__mutmut_1,
+    "x_verify_data__mutmut_2": x_verify_data__mutmut_2,
+    "x_verify_data__mutmut_3": x_verify_data__mutmut_3,
+    "x_verify_data__mutmut_4": x_verify_data__mutmut_4,
+    "x_verify_data__mutmut_5": x_verify_data__mutmut_5,
+    "x_verify_data__mutmut_6": x_verify_data__mutmut_6,
+    "x_verify_data__mutmut_7": x_verify_data__mutmut_7,
+    "x_verify_data__mutmut_8": x_verify_data__mutmut_8,
+    "x_verify_data__mutmut_9": x_verify_data__mutmut_9,
+    "x_verify_data__mutmut_10": x_verify_data__mutmut_10,
+    "x_verify_data__mutmut_11": x_verify_data__mutmut_11,
+    "x_verify_data__mutmut_12": x_verify_data__mutmut_12,
+    "x_verify_data__mutmut_13": x_verify_data__mutmut_13,
+    "x_verify_data__mutmut_14": x_verify_data__mutmut_14,
+    "x_verify_data__mutmut_15": x_verify_data__mutmut_15,
+    "x_verify_data__mutmut_16": x_verify_data__mutmut_16,
+    "x_verify_data__mutmut_17": x_verify_data__mutmut_17,
+    "x_verify_data__mutmut_18": x_verify_data__mutmut_18,
+    "x_verify_data__mutmut_19": x_verify_data__mutmut_19,
+    "x_verify_data__mutmut_20": x_verify_data__mutmut_20,
+    "x_verify_data__mutmut_21": x_verify_data__mutmut_21,
+    "x_verify_data__mutmut_22": x_verify_data__mutmut_22,
+    "x_verify_data__mutmut_23": x_verify_data__mutmut_23,
+    "x_verify_data__mutmut_24": x_verify_data__mutmut_24,
+    "x_verify_data__mutmut_25": x_verify_data__mutmut_25,
+    "x_verify_data__mutmut_26": x_verify_data__mutmut_26,
+    "x_verify_data__mutmut_27": x_verify_data__mutmut_27,
+    "x_verify_data__mutmut_28": x_verify_data__mutmut_28,
+    "x_verify_data__mutmut_29": x_verify_data__mutmut_29,
+    "x_verify_data__mutmut_30": x_verify_data__mutmut_30,
+    "x_verify_data__mutmut_31": x_verify_data__mutmut_31,
+    "x_verify_data__mutmut_32": x_verify_data__mutmut_32,
+    "x_verify_data__mutmut_33": x_verify_data__mutmut_33,
+    "x_verify_data__mutmut_34": x_verify_data__mutmut_34,
+    "x_verify_data__mutmut_35": x_verify_data__mutmut_35,
+    "x_verify_data__mutmut_36": x_verify_data__mutmut_36,
 }
+
 
 def verify_data(*args, **kwargs):
     result = _mutmut_trampoline(x_verify_data__mutmut_orig, x_verify_data__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 verify_data.__signature__ = _mutmut_signature(x_verify_data__mutmut_orig)
-x_verify_data__mutmut_orig.__name__ = 'x_verify_data'
+x_verify_data__mutmut_orig.__name__ = "x_verify_data"
 
 
 def x_calculate_checksums__mutmut_orig(
@@ -4684,7 +4701,9 @@ def x_calculate_checksums__mutmut_11(
 
     from provide.foundation.crypto.hashing import hash_file_multiple
 
-    checksums = hash_file_multiple(path, )
+    checksums = hash_file_multiple(
+        path,
+    )
 
     log.debug(
         "📝 Calculated checksums",
@@ -4891,7 +4910,7 @@ def x_calculate_checksums__mutmut_17(
     log.debug(
         "📝 Calculated checksums",
         path=str(path),
-        )
+    )
 
     return checksums
 
@@ -5031,36 +5050,41 @@ def x_calculate_checksums__mutmut_21(
 
     return checksums
 
-x_calculate_checksums__mutmut_mutants : ClassVar[MutantDict] = {
-'x_calculate_checksums__mutmut_1': x_calculate_checksums__mutmut_1, 
-    'x_calculate_checksums__mutmut_2': x_calculate_checksums__mutmut_2, 
-    'x_calculate_checksums__mutmut_3': x_calculate_checksums__mutmut_3, 
-    'x_calculate_checksums__mutmut_4': x_calculate_checksums__mutmut_4, 
-    'x_calculate_checksums__mutmut_5': x_calculate_checksums__mutmut_5, 
-    'x_calculate_checksums__mutmut_6': x_calculate_checksums__mutmut_6, 
-    'x_calculate_checksums__mutmut_7': x_calculate_checksums__mutmut_7, 
-    'x_calculate_checksums__mutmut_8': x_calculate_checksums__mutmut_8, 
-    'x_calculate_checksums__mutmut_9': x_calculate_checksums__mutmut_9, 
-    'x_calculate_checksums__mutmut_10': x_calculate_checksums__mutmut_10, 
-    'x_calculate_checksums__mutmut_11': x_calculate_checksums__mutmut_11, 
-    'x_calculate_checksums__mutmut_12': x_calculate_checksums__mutmut_12, 
-    'x_calculate_checksums__mutmut_13': x_calculate_checksums__mutmut_13, 
-    'x_calculate_checksums__mutmut_14': x_calculate_checksums__mutmut_14, 
-    'x_calculate_checksums__mutmut_15': x_calculate_checksums__mutmut_15, 
-    'x_calculate_checksums__mutmut_16': x_calculate_checksums__mutmut_16, 
-    'x_calculate_checksums__mutmut_17': x_calculate_checksums__mutmut_17, 
-    'x_calculate_checksums__mutmut_18': x_calculate_checksums__mutmut_18, 
-    'x_calculate_checksums__mutmut_19': x_calculate_checksums__mutmut_19, 
-    'x_calculate_checksums__mutmut_20': x_calculate_checksums__mutmut_20, 
-    'x_calculate_checksums__mutmut_21': x_calculate_checksums__mutmut_21
+
+x_calculate_checksums__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_calculate_checksums__mutmut_1": x_calculate_checksums__mutmut_1,
+    "x_calculate_checksums__mutmut_2": x_calculate_checksums__mutmut_2,
+    "x_calculate_checksums__mutmut_3": x_calculate_checksums__mutmut_3,
+    "x_calculate_checksums__mutmut_4": x_calculate_checksums__mutmut_4,
+    "x_calculate_checksums__mutmut_5": x_calculate_checksums__mutmut_5,
+    "x_calculate_checksums__mutmut_6": x_calculate_checksums__mutmut_6,
+    "x_calculate_checksums__mutmut_7": x_calculate_checksums__mutmut_7,
+    "x_calculate_checksums__mutmut_8": x_calculate_checksums__mutmut_8,
+    "x_calculate_checksums__mutmut_9": x_calculate_checksums__mutmut_9,
+    "x_calculate_checksums__mutmut_10": x_calculate_checksums__mutmut_10,
+    "x_calculate_checksums__mutmut_11": x_calculate_checksums__mutmut_11,
+    "x_calculate_checksums__mutmut_12": x_calculate_checksums__mutmut_12,
+    "x_calculate_checksums__mutmut_13": x_calculate_checksums__mutmut_13,
+    "x_calculate_checksums__mutmut_14": x_calculate_checksums__mutmut_14,
+    "x_calculate_checksums__mutmut_15": x_calculate_checksums__mutmut_15,
+    "x_calculate_checksums__mutmut_16": x_calculate_checksums__mutmut_16,
+    "x_calculate_checksums__mutmut_17": x_calculate_checksums__mutmut_17,
+    "x_calculate_checksums__mutmut_18": x_calculate_checksums__mutmut_18,
+    "x_calculate_checksums__mutmut_19": x_calculate_checksums__mutmut_19,
+    "x_calculate_checksums__mutmut_20": x_calculate_checksums__mutmut_20,
+    "x_calculate_checksums__mutmut_21": x_calculate_checksums__mutmut_21,
 }
 
+
 def calculate_checksums(*args, **kwargs):
-    result = _mutmut_trampoline(x_calculate_checksums__mutmut_orig, x_calculate_checksums__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_calculate_checksums__mutmut_orig, x_calculate_checksums__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 calculate_checksums.__signature__ = _mutmut_signature(x_calculate_checksums__mutmut_orig)
-x_calculate_checksums__mutmut_orig.__name__ = 'x_calculate_checksums'
+x_calculate_checksums__mutmut_orig.__name__ = "x_calculate_checksums"
 
 
 def x_parse_checksum_file__mutmut_orig(
@@ -5721,7 +5745,7 @@ def x_parse_checksum_file__mutmut_9(
         raise ResourceError(
             f"Checksum file not found: {path}",
             resource_type="file",
-            )
+        )
 
     checksums = {}
 
@@ -6498,7 +6522,10 @@ def x_parse_checksum_file__mutmut_20(
     try:
         from provide.foundation.file.safe import safe_read_text
 
-        content = safe_read_text(path, default="", )
+        content = safe_read_text(
+            path,
+            default="",
+        )
 
         for line in content.splitlines():
             line = line.strip()
@@ -7416,7 +7443,9 @@ def x_parse_checksum_file__mutmut_33(
                 continue
 
             # Split on whitespace (handle both single and double space)
-            parts = line.split(None, )
+            parts = line.split(
+                None,
+            )
             if len(parts) == 2:
                 hash_value, filename = parts
                 # Remove any leading asterisk (binary mode indicator)
@@ -8754,7 +8783,7 @@ def x_parse_checksum_file__mutmut_52(
             "📄 Parsed checksum file",
             path=str(path),
             entries=len(checksums),
-            )
+        )
 
         return checksums
 
@@ -9460,7 +9489,7 @@ def x_parse_checksum_file__mutmut_62(
         raise ResourceError(
             f"Failed to read checksum file: {path}",
             resource_type="file",
-            ) from e
+        ) from e
 
 
 def x_parse_checksum_file__mutmut_63(
@@ -9672,80 +9701,85 @@ def x_parse_checksum_file__mutmut_65(
             resource_path=str(None),
         ) from e
 
-x_parse_checksum_file__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_checksum_file__mutmut_1': x_parse_checksum_file__mutmut_1, 
-    'x_parse_checksum_file__mutmut_2': x_parse_checksum_file__mutmut_2, 
-    'x_parse_checksum_file__mutmut_3': x_parse_checksum_file__mutmut_3, 
-    'x_parse_checksum_file__mutmut_4': x_parse_checksum_file__mutmut_4, 
-    'x_parse_checksum_file__mutmut_5': x_parse_checksum_file__mutmut_5, 
-    'x_parse_checksum_file__mutmut_6': x_parse_checksum_file__mutmut_6, 
-    'x_parse_checksum_file__mutmut_7': x_parse_checksum_file__mutmut_7, 
-    'x_parse_checksum_file__mutmut_8': x_parse_checksum_file__mutmut_8, 
-    'x_parse_checksum_file__mutmut_9': x_parse_checksum_file__mutmut_9, 
-    'x_parse_checksum_file__mutmut_10': x_parse_checksum_file__mutmut_10, 
-    'x_parse_checksum_file__mutmut_11': x_parse_checksum_file__mutmut_11, 
-    'x_parse_checksum_file__mutmut_12': x_parse_checksum_file__mutmut_12, 
-    'x_parse_checksum_file__mutmut_13': x_parse_checksum_file__mutmut_13, 
-    'x_parse_checksum_file__mutmut_14': x_parse_checksum_file__mutmut_14, 
-    'x_parse_checksum_file__mutmut_15': x_parse_checksum_file__mutmut_15, 
-    'x_parse_checksum_file__mutmut_16': x_parse_checksum_file__mutmut_16, 
-    'x_parse_checksum_file__mutmut_17': x_parse_checksum_file__mutmut_17, 
-    'x_parse_checksum_file__mutmut_18': x_parse_checksum_file__mutmut_18, 
-    'x_parse_checksum_file__mutmut_19': x_parse_checksum_file__mutmut_19, 
-    'x_parse_checksum_file__mutmut_20': x_parse_checksum_file__mutmut_20, 
-    'x_parse_checksum_file__mutmut_21': x_parse_checksum_file__mutmut_21, 
-    'x_parse_checksum_file__mutmut_22': x_parse_checksum_file__mutmut_22, 
-    'x_parse_checksum_file__mutmut_23': x_parse_checksum_file__mutmut_23, 
-    'x_parse_checksum_file__mutmut_24': x_parse_checksum_file__mutmut_24, 
-    'x_parse_checksum_file__mutmut_25': x_parse_checksum_file__mutmut_25, 
-    'x_parse_checksum_file__mutmut_26': x_parse_checksum_file__mutmut_26, 
-    'x_parse_checksum_file__mutmut_27': x_parse_checksum_file__mutmut_27, 
-    'x_parse_checksum_file__mutmut_28': x_parse_checksum_file__mutmut_28, 
-    'x_parse_checksum_file__mutmut_29': x_parse_checksum_file__mutmut_29, 
-    'x_parse_checksum_file__mutmut_30': x_parse_checksum_file__mutmut_30, 
-    'x_parse_checksum_file__mutmut_31': x_parse_checksum_file__mutmut_31, 
-    'x_parse_checksum_file__mutmut_32': x_parse_checksum_file__mutmut_32, 
-    'x_parse_checksum_file__mutmut_33': x_parse_checksum_file__mutmut_33, 
-    'x_parse_checksum_file__mutmut_34': x_parse_checksum_file__mutmut_34, 
-    'x_parse_checksum_file__mutmut_35': x_parse_checksum_file__mutmut_35, 
-    'x_parse_checksum_file__mutmut_36': x_parse_checksum_file__mutmut_36, 
-    'x_parse_checksum_file__mutmut_37': x_parse_checksum_file__mutmut_37, 
-    'x_parse_checksum_file__mutmut_38': x_parse_checksum_file__mutmut_38, 
-    'x_parse_checksum_file__mutmut_39': x_parse_checksum_file__mutmut_39, 
-    'x_parse_checksum_file__mutmut_40': x_parse_checksum_file__mutmut_40, 
-    'x_parse_checksum_file__mutmut_41': x_parse_checksum_file__mutmut_41, 
-    'x_parse_checksum_file__mutmut_42': x_parse_checksum_file__mutmut_42, 
-    'x_parse_checksum_file__mutmut_43': x_parse_checksum_file__mutmut_43, 
-    'x_parse_checksum_file__mutmut_44': x_parse_checksum_file__mutmut_44, 
-    'x_parse_checksum_file__mutmut_45': x_parse_checksum_file__mutmut_45, 
-    'x_parse_checksum_file__mutmut_46': x_parse_checksum_file__mutmut_46, 
-    'x_parse_checksum_file__mutmut_47': x_parse_checksum_file__mutmut_47, 
-    'x_parse_checksum_file__mutmut_48': x_parse_checksum_file__mutmut_48, 
-    'x_parse_checksum_file__mutmut_49': x_parse_checksum_file__mutmut_49, 
-    'x_parse_checksum_file__mutmut_50': x_parse_checksum_file__mutmut_50, 
-    'x_parse_checksum_file__mutmut_51': x_parse_checksum_file__mutmut_51, 
-    'x_parse_checksum_file__mutmut_52': x_parse_checksum_file__mutmut_52, 
-    'x_parse_checksum_file__mutmut_53': x_parse_checksum_file__mutmut_53, 
-    'x_parse_checksum_file__mutmut_54': x_parse_checksum_file__mutmut_54, 
-    'x_parse_checksum_file__mutmut_55': x_parse_checksum_file__mutmut_55, 
-    'x_parse_checksum_file__mutmut_56': x_parse_checksum_file__mutmut_56, 
-    'x_parse_checksum_file__mutmut_57': x_parse_checksum_file__mutmut_57, 
-    'x_parse_checksum_file__mutmut_58': x_parse_checksum_file__mutmut_58, 
-    'x_parse_checksum_file__mutmut_59': x_parse_checksum_file__mutmut_59, 
-    'x_parse_checksum_file__mutmut_60': x_parse_checksum_file__mutmut_60, 
-    'x_parse_checksum_file__mutmut_61': x_parse_checksum_file__mutmut_61, 
-    'x_parse_checksum_file__mutmut_62': x_parse_checksum_file__mutmut_62, 
-    'x_parse_checksum_file__mutmut_63': x_parse_checksum_file__mutmut_63, 
-    'x_parse_checksum_file__mutmut_64': x_parse_checksum_file__mutmut_64, 
-    'x_parse_checksum_file__mutmut_65': x_parse_checksum_file__mutmut_65
+
+x_parse_checksum_file__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_checksum_file__mutmut_1": x_parse_checksum_file__mutmut_1,
+    "x_parse_checksum_file__mutmut_2": x_parse_checksum_file__mutmut_2,
+    "x_parse_checksum_file__mutmut_3": x_parse_checksum_file__mutmut_3,
+    "x_parse_checksum_file__mutmut_4": x_parse_checksum_file__mutmut_4,
+    "x_parse_checksum_file__mutmut_5": x_parse_checksum_file__mutmut_5,
+    "x_parse_checksum_file__mutmut_6": x_parse_checksum_file__mutmut_6,
+    "x_parse_checksum_file__mutmut_7": x_parse_checksum_file__mutmut_7,
+    "x_parse_checksum_file__mutmut_8": x_parse_checksum_file__mutmut_8,
+    "x_parse_checksum_file__mutmut_9": x_parse_checksum_file__mutmut_9,
+    "x_parse_checksum_file__mutmut_10": x_parse_checksum_file__mutmut_10,
+    "x_parse_checksum_file__mutmut_11": x_parse_checksum_file__mutmut_11,
+    "x_parse_checksum_file__mutmut_12": x_parse_checksum_file__mutmut_12,
+    "x_parse_checksum_file__mutmut_13": x_parse_checksum_file__mutmut_13,
+    "x_parse_checksum_file__mutmut_14": x_parse_checksum_file__mutmut_14,
+    "x_parse_checksum_file__mutmut_15": x_parse_checksum_file__mutmut_15,
+    "x_parse_checksum_file__mutmut_16": x_parse_checksum_file__mutmut_16,
+    "x_parse_checksum_file__mutmut_17": x_parse_checksum_file__mutmut_17,
+    "x_parse_checksum_file__mutmut_18": x_parse_checksum_file__mutmut_18,
+    "x_parse_checksum_file__mutmut_19": x_parse_checksum_file__mutmut_19,
+    "x_parse_checksum_file__mutmut_20": x_parse_checksum_file__mutmut_20,
+    "x_parse_checksum_file__mutmut_21": x_parse_checksum_file__mutmut_21,
+    "x_parse_checksum_file__mutmut_22": x_parse_checksum_file__mutmut_22,
+    "x_parse_checksum_file__mutmut_23": x_parse_checksum_file__mutmut_23,
+    "x_parse_checksum_file__mutmut_24": x_parse_checksum_file__mutmut_24,
+    "x_parse_checksum_file__mutmut_25": x_parse_checksum_file__mutmut_25,
+    "x_parse_checksum_file__mutmut_26": x_parse_checksum_file__mutmut_26,
+    "x_parse_checksum_file__mutmut_27": x_parse_checksum_file__mutmut_27,
+    "x_parse_checksum_file__mutmut_28": x_parse_checksum_file__mutmut_28,
+    "x_parse_checksum_file__mutmut_29": x_parse_checksum_file__mutmut_29,
+    "x_parse_checksum_file__mutmut_30": x_parse_checksum_file__mutmut_30,
+    "x_parse_checksum_file__mutmut_31": x_parse_checksum_file__mutmut_31,
+    "x_parse_checksum_file__mutmut_32": x_parse_checksum_file__mutmut_32,
+    "x_parse_checksum_file__mutmut_33": x_parse_checksum_file__mutmut_33,
+    "x_parse_checksum_file__mutmut_34": x_parse_checksum_file__mutmut_34,
+    "x_parse_checksum_file__mutmut_35": x_parse_checksum_file__mutmut_35,
+    "x_parse_checksum_file__mutmut_36": x_parse_checksum_file__mutmut_36,
+    "x_parse_checksum_file__mutmut_37": x_parse_checksum_file__mutmut_37,
+    "x_parse_checksum_file__mutmut_38": x_parse_checksum_file__mutmut_38,
+    "x_parse_checksum_file__mutmut_39": x_parse_checksum_file__mutmut_39,
+    "x_parse_checksum_file__mutmut_40": x_parse_checksum_file__mutmut_40,
+    "x_parse_checksum_file__mutmut_41": x_parse_checksum_file__mutmut_41,
+    "x_parse_checksum_file__mutmut_42": x_parse_checksum_file__mutmut_42,
+    "x_parse_checksum_file__mutmut_43": x_parse_checksum_file__mutmut_43,
+    "x_parse_checksum_file__mutmut_44": x_parse_checksum_file__mutmut_44,
+    "x_parse_checksum_file__mutmut_45": x_parse_checksum_file__mutmut_45,
+    "x_parse_checksum_file__mutmut_46": x_parse_checksum_file__mutmut_46,
+    "x_parse_checksum_file__mutmut_47": x_parse_checksum_file__mutmut_47,
+    "x_parse_checksum_file__mutmut_48": x_parse_checksum_file__mutmut_48,
+    "x_parse_checksum_file__mutmut_49": x_parse_checksum_file__mutmut_49,
+    "x_parse_checksum_file__mutmut_50": x_parse_checksum_file__mutmut_50,
+    "x_parse_checksum_file__mutmut_51": x_parse_checksum_file__mutmut_51,
+    "x_parse_checksum_file__mutmut_52": x_parse_checksum_file__mutmut_52,
+    "x_parse_checksum_file__mutmut_53": x_parse_checksum_file__mutmut_53,
+    "x_parse_checksum_file__mutmut_54": x_parse_checksum_file__mutmut_54,
+    "x_parse_checksum_file__mutmut_55": x_parse_checksum_file__mutmut_55,
+    "x_parse_checksum_file__mutmut_56": x_parse_checksum_file__mutmut_56,
+    "x_parse_checksum_file__mutmut_57": x_parse_checksum_file__mutmut_57,
+    "x_parse_checksum_file__mutmut_58": x_parse_checksum_file__mutmut_58,
+    "x_parse_checksum_file__mutmut_59": x_parse_checksum_file__mutmut_59,
+    "x_parse_checksum_file__mutmut_60": x_parse_checksum_file__mutmut_60,
+    "x_parse_checksum_file__mutmut_61": x_parse_checksum_file__mutmut_61,
+    "x_parse_checksum_file__mutmut_62": x_parse_checksum_file__mutmut_62,
+    "x_parse_checksum_file__mutmut_63": x_parse_checksum_file__mutmut_63,
+    "x_parse_checksum_file__mutmut_64": x_parse_checksum_file__mutmut_64,
+    "x_parse_checksum_file__mutmut_65": x_parse_checksum_file__mutmut_65,
 }
 
+
 def parse_checksum_file(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_checksum_file__mutmut_orig, x_parse_checksum_file__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_checksum_file__mutmut_orig, x_parse_checksum_file__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_checksum_file.__signature__ = _mutmut_signature(x_parse_checksum_file__mutmut_orig)
-x_parse_checksum_file__mutmut_orig.__name__ = 'x_parse_checksum_file'
+x_parse_checksum_file__mutmut_orig.__name__ = "x_parse_checksum_file"
 
 
 def x_write_checksum_file__mutmut_orig(
@@ -11071,7 +11105,10 @@ def x_write_checksum_file__mutmut_23(
                 lines.append(f"{hash_value}  {filename}")
 
         content = "\n".join(lines) + "\n"
-        atomic_write_text(path, content, )
+        atomic_write_text(
+            path,
+            content,
+        )
 
         log.debug(
             "📝 Wrote checksum file",
@@ -11634,7 +11671,7 @@ def x_write_checksum_file__mutmut_33(
             "📝 Wrote checksum file",
             path=str(path),
             entries=len(checksums),
-            )
+        )
 
     except OSError as e:
         raise ResourceError(
@@ -12198,7 +12235,7 @@ def x_write_checksum_file__mutmut_43(
         raise ResourceError(
             f"Failed to write checksum file: {path}",
             resource_type="file",
-            ) from e
+        ) from e
 
 
 def x_write_checksum_file__mutmut_44(
@@ -12368,61 +12405,66 @@ def x_write_checksum_file__mutmut_46(
             resource_path=str(None),
         ) from e
 
-x_write_checksum_file__mutmut_mutants : ClassVar[MutantDict] = {
-'x_write_checksum_file__mutmut_1': x_write_checksum_file__mutmut_1, 
-    'x_write_checksum_file__mutmut_2': x_write_checksum_file__mutmut_2, 
-    'x_write_checksum_file__mutmut_3': x_write_checksum_file__mutmut_3, 
-    'x_write_checksum_file__mutmut_4': x_write_checksum_file__mutmut_4, 
-    'x_write_checksum_file__mutmut_5': x_write_checksum_file__mutmut_5, 
-    'x_write_checksum_file__mutmut_6': x_write_checksum_file__mutmut_6, 
-    'x_write_checksum_file__mutmut_7': x_write_checksum_file__mutmut_7, 
-    'x_write_checksum_file__mutmut_8': x_write_checksum_file__mutmut_8, 
-    'x_write_checksum_file__mutmut_9': x_write_checksum_file__mutmut_9, 
-    'x_write_checksum_file__mutmut_10': x_write_checksum_file__mutmut_10, 
-    'x_write_checksum_file__mutmut_11': x_write_checksum_file__mutmut_11, 
-    'x_write_checksum_file__mutmut_12': x_write_checksum_file__mutmut_12, 
-    'x_write_checksum_file__mutmut_13': x_write_checksum_file__mutmut_13, 
-    'x_write_checksum_file__mutmut_14': x_write_checksum_file__mutmut_14, 
-    'x_write_checksum_file__mutmut_15': x_write_checksum_file__mutmut_15, 
-    'x_write_checksum_file__mutmut_16': x_write_checksum_file__mutmut_16, 
-    'x_write_checksum_file__mutmut_17': x_write_checksum_file__mutmut_17, 
-    'x_write_checksum_file__mutmut_18': x_write_checksum_file__mutmut_18, 
-    'x_write_checksum_file__mutmut_19': x_write_checksum_file__mutmut_19, 
-    'x_write_checksum_file__mutmut_20': x_write_checksum_file__mutmut_20, 
-    'x_write_checksum_file__mutmut_21': x_write_checksum_file__mutmut_21, 
-    'x_write_checksum_file__mutmut_22': x_write_checksum_file__mutmut_22, 
-    'x_write_checksum_file__mutmut_23': x_write_checksum_file__mutmut_23, 
-    'x_write_checksum_file__mutmut_24': x_write_checksum_file__mutmut_24, 
-    'x_write_checksum_file__mutmut_25': x_write_checksum_file__mutmut_25, 
-    'x_write_checksum_file__mutmut_26': x_write_checksum_file__mutmut_26, 
-    'x_write_checksum_file__mutmut_27': x_write_checksum_file__mutmut_27, 
-    'x_write_checksum_file__mutmut_28': x_write_checksum_file__mutmut_28, 
-    'x_write_checksum_file__mutmut_29': x_write_checksum_file__mutmut_29, 
-    'x_write_checksum_file__mutmut_30': x_write_checksum_file__mutmut_30, 
-    'x_write_checksum_file__mutmut_31': x_write_checksum_file__mutmut_31, 
-    'x_write_checksum_file__mutmut_32': x_write_checksum_file__mutmut_32, 
-    'x_write_checksum_file__mutmut_33': x_write_checksum_file__mutmut_33, 
-    'x_write_checksum_file__mutmut_34': x_write_checksum_file__mutmut_34, 
-    'x_write_checksum_file__mutmut_35': x_write_checksum_file__mutmut_35, 
-    'x_write_checksum_file__mutmut_36': x_write_checksum_file__mutmut_36, 
-    'x_write_checksum_file__mutmut_37': x_write_checksum_file__mutmut_37, 
-    'x_write_checksum_file__mutmut_38': x_write_checksum_file__mutmut_38, 
-    'x_write_checksum_file__mutmut_39': x_write_checksum_file__mutmut_39, 
-    'x_write_checksum_file__mutmut_40': x_write_checksum_file__mutmut_40, 
-    'x_write_checksum_file__mutmut_41': x_write_checksum_file__mutmut_41, 
-    'x_write_checksum_file__mutmut_42': x_write_checksum_file__mutmut_42, 
-    'x_write_checksum_file__mutmut_43': x_write_checksum_file__mutmut_43, 
-    'x_write_checksum_file__mutmut_44': x_write_checksum_file__mutmut_44, 
-    'x_write_checksum_file__mutmut_45': x_write_checksum_file__mutmut_45, 
-    'x_write_checksum_file__mutmut_46': x_write_checksum_file__mutmut_46
+
+x_write_checksum_file__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_write_checksum_file__mutmut_1": x_write_checksum_file__mutmut_1,
+    "x_write_checksum_file__mutmut_2": x_write_checksum_file__mutmut_2,
+    "x_write_checksum_file__mutmut_3": x_write_checksum_file__mutmut_3,
+    "x_write_checksum_file__mutmut_4": x_write_checksum_file__mutmut_4,
+    "x_write_checksum_file__mutmut_5": x_write_checksum_file__mutmut_5,
+    "x_write_checksum_file__mutmut_6": x_write_checksum_file__mutmut_6,
+    "x_write_checksum_file__mutmut_7": x_write_checksum_file__mutmut_7,
+    "x_write_checksum_file__mutmut_8": x_write_checksum_file__mutmut_8,
+    "x_write_checksum_file__mutmut_9": x_write_checksum_file__mutmut_9,
+    "x_write_checksum_file__mutmut_10": x_write_checksum_file__mutmut_10,
+    "x_write_checksum_file__mutmut_11": x_write_checksum_file__mutmut_11,
+    "x_write_checksum_file__mutmut_12": x_write_checksum_file__mutmut_12,
+    "x_write_checksum_file__mutmut_13": x_write_checksum_file__mutmut_13,
+    "x_write_checksum_file__mutmut_14": x_write_checksum_file__mutmut_14,
+    "x_write_checksum_file__mutmut_15": x_write_checksum_file__mutmut_15,
+    "x_write_checksum_file__mutmut_16": x_write_checksum_file__mutmut_16,
+    "x_write_checksum_file__mutmut_17": x_write_checksum_file__mutmut_17,
+    "x_write_checksum_file__mutmut_18": x_write_checksum_file__mutmut_18,
+    "x_write_checksum_file__mutmut_19": x_write_checksum_file__mutmut_19,
+    "x_write_checksum_file__mutmut_20": x_write_checksum_file__mutmut_20,
+    "x_write_checksum_file__mutmut_21": x_write_checksum_file__mutmut_21,
+    "x_write_checksum_file__mutmut_22": x_write_checksum_file__mutmut_22,
+    "x_write_checksum_file__mutmut_23": x_write_checksum_file__mutmut_23,
+    "x_write_checksum_file__mutmut_24": x_write_checksum_file__mutmut_24,
+    "x_write_checksum_file__mutmut_25": x_write_checksum_file__mutmut_25,
+    "x_write_checksum_file__mutmut_26": x_write_checksum_file__mutmut_26,
+    "x_write_checksum_file__mutmut_27": x_write_checksum_file__mutmut_27,
+    "x_write_checksum_file__mutmut_28": x_write_checksum_file__mutmut_28,
+    "x_write_checksum_file__mutmut_29": x_write_checksum_file__mutmut_29,
+    "x_write_checksum_file__mutmut_30": x_write_checksum_file__mutmut_30,
+    "x_write_checksum_file__mutmut_31": x_write_checksum_file__mutmut_31,
+    "x_write_checksum_file__mutmut_32": x_write_checksum_file__mutmut_32,
+    "x_write_checksum_file__mutmut_33": x_write_checksum_file__mutmut_33,
+    "x_write_checksum_file__mutmut_34": x_write_checksum_file__mutmut_34,
+    "x_write_checksum_file__mutmut_35": x_write_checksum_file__mutmut_35,
+    "x_write_checksum_file__mutmut_36": x_write_checksum_file__mutmut_36,
+    "x_write_checksum_file__mutmut_37": x_write_checksum_file__mutmut_37,
+    "x_write_checksum_file__mutmut_38": x_write_checksum_file__mutmut_38,
+    "x_write_checksum_file__mutmut_39": x_write_checksum_file__mutmut_39,
+    "x_write_checksum_file__mutmut_40": x_write_checksum_file__mutmut_40,
+    "x_write_checksum_file__mutmut_41": x_write_checksum_file__mutmut_41,
+    "x_write_checksum_file__mutmut_42": x_write_checksum_file__mutmut_42,
+    "x_write_checksum_file__mutmut_43": x_write_checksum_file__mutmut_43,
+    "x_write_checksum_file__mutmut_44": x_write_checksum_file__mutmut_44,
+    "x_write_checksum_file__mutmut_45": x_write_checksum_file__mutmut_45,
+    "x_write_checksum_file__mutmut_46": x_write_checksum_file__mutmut_46,
 }
 
+
 def write_checksum_file(*args, **kwargs):
-    result = _mutmut_trampoline(x_write_checksum_file__mutmut_orig, x_write_checksum_file__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_write_checksum_file__mutmut_orig, x_write_checksum_file__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 write_checksum_file.__signature__ = _mutmut_signature(x_write_checksum_file__mutmut_orig)
-x_write_checksum_file__mutmut_orig.__name__ = 'x_write_checksum_file'
+x_write_checksum_file__mutmut_orig.__name__ = "x_write_checksum_file"
 
 
 def x_verify_checksum_file__mutmut_orig(
@@ -13102,7 +13144,9 @@ def x_verify_checksum_file__mutmut_12(
     elif isinstance(base_dir, str):
         base_dir = Path(base_dir)
 
-    checksums = parse_checksum_file(checksum_file, )
+    checksums = parse_checksum_file(
+        checksum_file,
+    )
 
     verified = []
     failed = []
@@ -13650,7 +13694,10 @@ def x_verify_checksum_file__mutmut_22(
     for filename, expected_hash in checksums.items():
         file_path = base_dir / filename
 
-        if verify_file(file_path, expected_hash, ):
+        if verify_file(
+            file_path,
+            expected_hash,
+        ):
             verified.append(filename)
         else:
             failed.append(filename)
@@ -14252,7 +14299,7 @@ def x_verify_checksum_file__mutmut_33(
         "📊 Checksum verification complete",
         verified=len(verified),
         failed=len(failed),
-        )
+    )
 
     return verified, failed
 
@@ -14418,51 +14465,56 @@ def x_verify_checksum_file__mutmut_36(
 
     return verified, failed
 
-x_verify_checksum_file__mutmut_mutants : ClassVar[MutantDict] = {
-'x_verify_checksum_file__mutmut_1': x_verify_checksum_file__mutmut_1, 
-    'x_verify_checksum_file__mutmut_2': x_verify_checksum_file__mutmut_2, 
-    'x_verify_checksum_file__mutmut_3': x_verify_checksum_file__mutmut_3, 
-    'x_verify_checksum_file__mutmut_4': x_verify_checksum_file__mutmut_4, 
-    'x_verify_checksum_file__mutmut_5': x_verify_checksum_file__mutmut_5, 
-    'x_verify_checksum_file__mutmut_6': x_verify_checksum_file__mutmut_6, 
-    'x_verify_checksum_file__mutmut_7': x_verify_checksum_file__mutmut_7, 
-    'x_verify_checksum_file__mutmut_8': x_verify_checksum_file__mutmut_8, 
-    'x_verify_checksum_file__mutmut_9': x_verify_checksum_file__mutmut_9, 
-    'x_verify_checksum_file__mutmut_10': x_verify_checksum_file__mutmut_10, 
-    'x_verify_checksum_file__mutmut_11': x_verify_checksum_file__mutmut_11, 
-    'x_verify_checksum_file__mutmut_12': x_verify_checksum_file__mutmut_12, 
-    'x_verify_checksum_file__mutmut_13': x_verify_checksum_file__mutmut_13, 
-    'x_verify_checksum_file__mutmut_14': x_verify_checksum_file__mutmut_14, 
-    'x_verify_checksum_file__mutmut_15': x_verify_checksum_file__mutmut_15, 
-    'x_verify_checksum_file__mutmut_16': x_verify_checksum_file__mutmut_16, 
-    'x_verify_checksum_file__mutmut_17': x_verify_checksum_file__mutmut_17, 
-    'x_verify_checksum_file__mutmut_18': x_verify_checksum_file__mutmut_18, 
-    'x_verify_checksum_file__mutmut_19': x_verify_checksum_file__mutmut_19, 
-    'x_verify_checksum_file__mutmut_20': x_verify_checksum_file__mutmut_20, 
-    'x_verify_checksum_file__mutmut_21': x_verify_checksum_file__mutmut_21, 
-    'x_verify_checksum_file__mutmut_22': x_verify_checksum_file__mutmut_22, 
-    'x_verify_checksum_file__mutmut_23': x_verify_checksum_file__mutmut_23, 
-    'x_verify_checksum_file__mutmut_24': x_verify_checksum_file__mutmut_24, 
-    'x_verify_checksum_file__mutmut_25': x_verify_checksum_file__mutmut_25, 
-    'x_verify_checksum_file__mutmut_26': x_verify_checksum_file__mutmut_26, 
-    'x_verify_checksum_file__mutmut_27': x_verify_checksum_file__mutmut_27, 
-    'x_verify_checksum_file__mutmut_28': x_verify_checksum_file__mutmut_28, 
-    'x_verify_checksum_file__mutmut_29': x_verify_checksum_file__mutmut_29, 
-    'x_verify_checksum_file__mutmut_30': x_verify_checksum_file__mutmut_30, 
-    'x_verify_checksum_file__mutmut_31': x_verify_checksum_file__mutmut_31, 
-    'x_verify_checksum_file__mutmut_32': x_verify_checksum_file__mutmut_32, 
-    'x_verify_checksum_file__mutmut_33': x_verify_checksum_file__mutmut_33, 
-    'x_verify_checksum_file__mutmut_34': x_verify_checksum_file__mutmut_34, 
-    'x_verify_checksum_file__mutmut_35': x_verify_checksum_file__mutmut_35, 
-    'x_verify_checksum_file__mutmut_36': x_verify_checksum_file__mutmut_36
+
+x_verify_checksum_file__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_verify_checksum_file__mutmut_1": x_verify_checksum_file__mutmut_1,
+    "x_verify_checksum_file__mutmut_2": x_verify_checksum_file__mutmut_2,
+    "x_verify_checksum_file__mutmut_3": x_verify_checksum_file__mutmut_3,
+    "x_verify_checksum_file__mutmut_4": x_verify_checksum_file__mutmut_4,
+    "x_verify_checksum_file__mutmut_5": x_verify_checksum_file__mutmut_5,
+    "x_verify_checksum_file__mutmut_6": x_verify_checksum_file__mutmut_6,
+    "x_verify_checksum_file__mutmut_7": x_verify_checksum_file__mutmut_7,
+    "x_verify_checksum_file__mutmut_8": x_verify_checksum_file__mutmut_8,
+    "x_verify_checksum_file__mutmut_9": x_verify_checksum_file__mutmut_9,
+    "x_verify_checksum_file__mutmut_10": x_verify_checksum_file__mutmut_10,
+    "x_verify_checksum_file__mutmut_11": x_verify_checksum_file__mutmut_11,
+    "x_verify_checksum_file__mutmut_12": x_verify_checksum_file__mutmut_12,
+    "x_verify_checksum_file__mutmut_13": x_verify_checksum_file__mutmut_13,
+    "x_verify_checksum_file__mutmut_14": x_verify_checksum_file__mutmut_14,
+    "x_verify_checksum_file__mutmut_15": x_verify_checksum_file__mutmut_15,
+    "x_verify_checksum_file__mutmut_16": x_verify_checksum_file__mutmut_16,
+    "x_verify_checksum_file__mutmut_17": x_verify_checksum_file__mutmut_17,
+    "x_verify_checksum_file__mutmut_18": x_verify_checksum_file__mutmut_18,
+    "x_verify_checksum_file__mutmut_19": x_verify_checksum_file__mutmut_19,
+    "x_verify_checksum_file__mutmut_20": x_verify_checksum_file__mutmut_20,
+    "x_verify_checksum_file__mutmut_21": x_verify_checksum_file__mutmut_21,
+    "x_verify_checksum_file__mutmut_22": x_verify_checksum_file__mutmut_22,
+    "x_verify_checksum_file__mutmut_23": x_verify_checksum_file__mutmut_23,
+    "x_verify_checksum_file__mutmut_24": x_verify_checksum_file__mutmut_24,
+    "x_verify_checksum_file__mutmut_25": x_verify_checksum_file__mutmut_25,
+    "x_verify_checksum_file__mutmut_26": x_verify_checksum_file__mutmut_26,
+    "x_verify_checksum_file__mutmut_27": x_verify_checksum_file__mutmut_27,
+    "x_verify_checksum_file__mutmut_28": x_verify_checksum_file__mutmut_28,
+    "x_verify_checksum_file__mutmut_29": x_verify_checksum_file__mutmut_29,
+    "x_verify_checksum_file__mutmut_30": x_verify_checksum_file__mutmut_30,
+    "x_verify_checksum_file__mutmut_31": x_verify_checksum_file__mutmut_31,
+    "x_verify_checksum_file__mutmut_32": x_verify_checksum_file__mutmut_32,
+    "x_verify_checksum_file__mutmut_33": x_verify_checksum_file__mutmut_33,
+    "x_verify_checksum_file__mutmut_34": x_verify_checksum_file__mutmut_34,
+    "x_verify_checksum_file__mutmut_35": x_verify_checksum_file__mutmut_35,
+    "x_verify_checksum_file__mutmut_36": x_verify_checksum_file__mutmut_36,
 }
 
+
 def verify_checksum_file(*args, **kwargs):
-    result = _mutmut_trampoline(x_verify_checksum_file__mutmut_orig, x_verify_checksum_file__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_verify_checksum_file__mutmut_orig, x_verify_checksum_file__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 verify_checksum_file.__signature__ = _mutmut_signature(x_verify_checksum_file__mutmut_orig)
-x_verify_checksum_file__mutmut_orig.__name__ = 'x_verify_checksum_file'
+x_verify_checksum_file__mutmut_orig.__name__ = "x_verify_checksum_file"
 
 
 # <3 🧱🤝🔒🪄

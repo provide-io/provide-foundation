@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -199,7 +202,9 @@ def x__get_message_from_input__mutmut_9(message: str | None) -> tuple[str | None
 
     # If stdin is TTY (no piped input), show helpful error
     if error_code != 0 and sys.stdin.isatty():
-        click.echo("Error: No message provided. Use -m or pipe input.", )
+        click.echo(
+            "Error: No message provided. Use -m or pipe input.",
+        )
 
     return stdin_message, error_code
 
@@ -263,28 +268,33 @@ def x__get_message_from_input__mutmut_13(message: str | None) -> tuple[str | Non
 
     return stdin_message, error_code
 
-x__get_message_from_input__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_message_from_input__mutmut_1': x__get_message_from_input__mutmut_1, 
-    'x__get_message_from_input__mutmut_2': x__get_message_from_input__mutmut_2, 
-    'x__get_message_from_input__mutmut_3': x__get_message_from_input__mutmut_3, 
-    'x__get_message_from_input__mutmut_4': x__get_message_from_input__mutmut_4, 
-    'x__get_message_from_input__mutmut_5': x__get_message_from_input__mutmut_5, 
-    'x__get_message_from_input__mutmut_6': x__get_message_from_input__mutmut_6, 
-    'x__get_message_from_input__mutmut_7': x__get_message_from_input__mutmut_7, 
-    'x__get_message_from_input__mutmut_8': x__get_message_from_input__mutmut_8, 
-    'x__get_message_from_input__mutmut_9': x__get_message_from_input__mutmut_9, 
-    'x__get_message_from_input__mutmut_10': x__get_message_from_input__mutmut_10, 
-    'x__get_message_from_input__mutmut_11': x__get_message_from_input__mutmut_11, 
-    'x__get_message_from_input__mutmut_12': x__get_message_from_input__mutmut_12, 
-    'x__get_message_from_input__mutmut_13': x__get_message_from_input__mutmut_13
+
+x__get_message_from_input__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_message_from_input__mutmut_1": x__get_message_from_input__mutmut_1,
+    "x__get_message_from_input__mutmut_2": x__get_message_from_input__mutmut_2,
+    "x__get_message_from_input__mutmut_3": x__get_message_from_input__mutmut_3,
+    "x__get_message_from_input__mutmut_4": x__get_message_from_input__mutmut_4,
+    "x__get_message_from_input__mutmut_5": x__get_message_from_input__mutmut_5,
+    "x__get_message_from_input__mutmut_6": x__get_message_from_input__mutmut_6,
+    "x__get_message_from_input__mutmut_7": x__get_message_from_input__mutmut_7,
+    "x__get_message_from_input__mutmut_8": x__get_message_from_input__mutmut_8,
+    "x__get_message_from_input__mutmut_9": x__get_message_from_input__mutmut_9,
+    "x__get_message_from_input__mutmut_10": x__get_message_from_input__mutmut_10,
+    "x__get_message_from_input__mutmut_11": x__get_message_from_input__mutmut_11,
+    "x__get_message_from_input__mutmut_12": x__get_message_from_input__mutmut_12,
+    "x__get_message_from_input__mutmut_13": x__get_message_from_input__mutmut_13,
 }
 
+
 def _get_message_from_input(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_message_from_input__mutmut_orig, x__get_message_from_input__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_message_from_input__mutmut_orig, x__get_message_from_input__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_message_from_input.__signature__ = _mutmut_signature(x__get_message_from_input__mutmut_orig)
-x__get_message_from_input__mutmut_orig.__name__ = 'x__get_message_from_input'
+x__get_message_from_input__mutmut_orig.__name__ = "x__get_message_from_input"
 
 
 def x__send_log_entry__mutmut_orig(
@@ -883,7 +893,10 @@ def x__send_log_entry__mutmut_18(
             attributes["span_id"] = span_id
 
         # Get the appropriate log method (info, error, etc.)
-        log_method = getattr(logger, level.lower(), )
+        log_method = getattr(
+            logger,
+            level.lower(),
+        )
 
         # Emit the log
         log_method(message, **attributes)
@@ -1014,7 +1027,9 @@ def x__send_log_entry__mutmut_22(
         log_method = getattr(logger, level.lower(), logger.info)
 
         # Emit the log
-        log_method(message, )
+        log_method(
+            message,
+        )
 
         pout("✓ Log sent successfully", color="green")
         return 0
@@ -1144,7 +1159,9 @@ def x__send_log_entry__mutmut_26(
         # Emit the log
         log_method(message, **attributes)
 
-        pout("✓ Log sent successfully", )
+        pout(
+            "✓ Log sent successfully",
+        )
         return 0
     except Exception as e:
         perr(f"✗ Failed to send log: {e}", color="red")
@@ -1467,7 +1484,9 @@ def x__send_log_entry__mutmut_36(
         pout("✓ Log sent successfully", color="green")
         return 0
     except Exception as e:
-        perr(f"✗ Failed to send log: {e}", )
+        perr(
+            f"✗ Failed to send log: {e}",
+        )
         return 1
 
 
@@ -1566,54 +1585,59 @@ def x__send_log_entry__mutmut_39(
         perr(f"✗ Failed to send log: {e}", color="red")
         return 2
 
-x__send_log_entry__mutmut_mutants : ClassVar[MutantDict] = {
-'x__send_log_entry__mutmut_1': x__send_log_entry__mutmut_1, 
-    'x__send_log_entry__mutmut_2': x__send_log_entry__mutmut_2, 
-    'x__send_log_entry__mutmut_3': x__send_log_entry__mutmut_3, 
-    'x__send_log_entry__mutmut_4': x__send_log_entry__mutmut_4, 
-    'x__send_log_entry__mutmut_5': x__send_log_entry__mutmut_5, 
-    'x__send_log_entry__mutmut_6': x__send_log_entry__mutmut_6, 
-    'x__send_log_entry__mutmut_7': x__send_log_entry__mutmut_7, 
-    'x__send_log_entry__mutmut_8': x__send_log_entry__mutmut_8, 
-    'x__send_log_entry__mutmut_9': x__send_log_entry__mutmut_9, 
-    'x__send_log_entry__mutmut_10': x__send_log_entry__mutmut_10, 
-    'x__send_log_entry__mutmut_11': x__send_log_entry__mutmut_11, 
-    'x__send_log_entry__mutmut_12': x__send_log_entry__mutmut_12, 
-    'x__send_log_entry__mutmut_13': x__send_log_entry__mutmut_13, 
-    'x__send_log_entry__mutmut_14': x__send_log_entry__mutmut_14, 
-    'x__send_log_entry__mutmut_15': x__send_log_entry__mutmut_15, 
-    'x__send_log_entry__mutmut_16': x__send_log_entry__mutmut_16, 
-    'x__send_log_entry__mutmut_17': x__send_log_entry__mutmut_17, 
-    'x__send_log_entry__mutmut_18': x__send_log_entry__mutmut_18, 
-    'x__send_log_entry__mutmut_19': x__send_log_entry__mutmut_19, 
-    'x__send_log_entry__mutmut_20': x__send_log_entry__mutmut_20, 
-    'x__send_log_entry__mutmut_21': x__send_log_entry__mutmut_21, 
-    'x__send_log_entry__mutmut_22': x__send_log_entry__mutmut_22, 
-    'x__send_log_entry__mutmut_23': x__send_log_entry__mutmut_23, 
-    'x__send_log_entry__mutmut_24': x__send_log_entry__mutmut_24, 
-    'x__send_log_entry__mutmut_25': x__send_log_entry__mutmut_25, 
-    'x__send_log_entry__mutmut_26': x__send_log_entry__mutmut_26, 
-    'x__send_log_entry__mutmut_27': x__send_log_entry__mutmut_27, 
-    'x__send_log_entry__mutmut_28': x__send_log_entry__mutmut_28, 
-    'x__send_log_entry__mutmut_29': x__send_log_entry__mutmut_29, 
-    'x__send_log_entry__mutmut_30': x__send_log_entry__mutmut_30, 
-    'x__send_log_entry__mutmut_31': x__send_log_entry__mutmut_31, 
-    'x__send_log_entry__mutmut_32': x__send_log_entry__mutmut_32, 
-    'x__send_log_entry__mutmut_33': x__send_log_entry__mutmut_33, 
-    'x__send_log_entry__mutmut_34': x__send_log_entry__mutmut_34, 
-    'x__send_log_entry__mutmut_35': x__send_log_entry__mutmut_35, 
-    'x__send_log_entry__mutmut_36': x__send_log_entry__mutmut_36, 
-    'x__send_log_entry__mutmut_37': x__send_log_entry__mutmut_37, 
-    'x__send_log_entry__mutmut_38': x__send_log_entry__mutmut_38, 
-    'x__send_log_entry__mutmut_39': x__send_log_entry__mutmut_39
+
+x__send_log_entry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__send_log_entry__mutmut_1": x__send_log_entry__mutmut_1,
+    "x__send_log_entry__mutmut_2": x__send_log_entry__mutmut_2,
+    "x__send_log_entry__mutmut_3": x__send_log_entry__mutmut_3,
+    "x__send_log_entry__mutmut_4": x__send_log_entry__mutmut_4,
+    "x__send_log_entry__mutmut_5": x__send_log_entry__mutmut_5,
+    "x__send_log_entry__mutmut_6": x__send_log_entry__mutmut_6,
+    "x__send_log_entry__mutmut_7": x__send_log_entry__mutmut_7,
+    "x__send_log_entry__mutmut_8": x__send_log_entry__mutmut_8,
+    "x__send_log_entry__mutmut_9": x__send_log_entry__mutmut_9,
+    "x__send_log_entry__mutmut_10": x__send_log_entry__mutmut_10,
+    "x__send_log_entry__mutmut_11": x__send_log_entry__mutmut_11,
+    "x__send_log_entry__mutmut_12": x__send_log_entry__mutmut_12,
+    "x__send_log_entry__mutmut_13": x__send_log_entry__mutmut_13,
+    "x__send_log_entry__mutmut_14": x__send_log_entry__mutmut_14,
+    "x__send_log_entry__mutmut_15": x__send_log_entry__mutmut_15,
+    "x__send_log_entry__mutmut_16": x__send_log_entry__mutmut_16,
+    "x__send_log_entry__mutmut_17": x__send_log_entry__mutmut_17,
+    "x__send_log_entry__mutmut_18": x__send_log_entry__mutmut_18,
+    "x__send_log_entry__mutmut_19": x__send_log_entry__mutmut_19,
+    "x__send_log_entry__mutmut_20": x__send_log_entry__mutmut_20,
+    "x__send_log_entry__mutmut_21": x__send_log_entry__mutmut_21,
+    "x__send_log_entry__mutmut_22": x__send_log_entry__mutmut_22,
+    "x__send_log_entry__mutmut_23": x__send_log_entry__mutmut_23,
+    "x__send_log_entry__mutmut_24": x__send_log_entry__mutmut_24,
+    "x__send_log_entry__mutmut_25": x__send_log_entry__mutmut_25,
+    "x__send_log_entry__mutmut_26": x__send_log_entry__mutmut_26,
+    "x__send_log_entry__mutmut_27": x__send_log_entry__mutmut_27,
+    "x__send_log_entry__mutmut_28": x__send_log_entry__mutmut_28,
+    "x__send_log_entry__mutmut_29": x__send_log_entry__mutmut_29,
+    "x__send_log_entry__mutmut_30": x__send_log_entry__mutmut_30,
+    "x__send_log_entry__mutmut_31": x__send_log_entry__mutmut_31,
+    "x__send_log_entry__mutmut_32": x__send_log_entry__mutmut_32,
+    "x__send_log_entry__mutmut_33": x__send_log_entry__mutmut_33,
+    "x__send_log_entry__mutmut_34": x__send_log_entry__mutmut_34,
+    "x__send_log_entry__mutmut_35": x__send_log_entry__mutmut_35,
+    "x__send_log_entry__mutmut_36": x__send_log_entry__mutmut_36,
+    "x__send_log_entry__mutmut_37": x__send_log_entry__mutmut_37,
+    "x__send_log_entry__mutmut_38": x__send_log_entry__mutmut_38,
+    "x__send_log_entry__mutmut_39": x__send_log_entry__mutmut_39,
 }
 
+
 def _send_log_entry(*args, **kwargs):
-    result = _mutmut_trampoline(x__send_log_entry__mutmut_orig, x__send_log_entry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__send_log_entry__mutmut_orig, x__send_log_entry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _send_log_entry.__signature__ = _mutmut_signature(x__send_log_entry__mutmut_orig)
-x__send_log_entry__mutmut_orig.__name__ = 'x__send_log_entry'
+x__send_log_entry__mutmut_orig.__name__ = "x__send_log_entry"
 
 
 @click.command("send")

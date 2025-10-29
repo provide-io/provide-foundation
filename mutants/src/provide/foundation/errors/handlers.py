@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -834,7 +837,10 @@ def x_handle_error__mutmut_12(
         log_context = context.to_dict() if context else {}
         from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().error(f"Handling error: {error}", exc_info=True, )
+        get_foundation_logger().error(
+            f"Handling error: {error}",
+            exc_info=True,
+        )
 
     # Re-raise if requested
     if reraise:
@@ -891,28 +897,31 @@ def x_handle_error__mutmut_13(
 
     return fallback
 
-x_handle_error__mutmut_mutants : ClassVar[MutantDict] = {
-'x_handle_error__mutmut_1': x_handle_error__mutmut_1, 
-    'x_handle_error__mutmut_2': x_handle_error__mutmut_2, 
-    'x_handle_error__mutmut_3': x_handle_error__mutmut_3, 
-    'x_handle_error__mutmut_4': x_handle_error__mutmut_4, 
-    'x_handle_error__mutmut_5': x_handle_error__mutmut_5, 
-    'x_handle_error__mutmut_6': x_handle_error__mutmut_6, 
-    'x_handle_error__mutmut_7': x_handle_error__mutmut_7, 
-    'x_handle_error__mutmut_8': x_handle_error__mutmut_8, 
-    'x_handle_error__mutmut_9': x_handle_error__mutmut_9, 
-    'x_handle_error__mutmut_10': x_handle_error__mutmut_10, 
-    'x_handle_error__mutmut_11': x_handle_error__mutmut_11, 
-    'x_handle_error__mutmut_12': x_handle_error__mutmut_12, 
-    'x_handle_error__mutmut_13': x_handle_error__mutmut_13
+
+x_handle_error__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_handle_error__mutmut_1": x_handle_error__mutmut_1,
+    "x_handle_error__mutmut_2": x_handle_error__mutmut_2,
+    "x_handle_error__mutmut_3": x_handle_error__mutmut_3,
+    "x_handle_error__mutmut_4": x_handle_error__mutmut_4,
+    "x_handle_error__mutmut_5": x_handle_error__mutmut_5,
+    "x_handle_error__mutmut_6": x_handle_error__mutmut_6,
+    "x_handle_error__mutmut_7": x_handle_error__mutmut_7,
+    "x_handle_error__mutmut_8": x_handle_error__mutmut_8,
+    "x_handle_error__mutmut_9": x_handle_error__mutmut_9,
+    "x_handle_error__mutmut_10": x_handle_error__mutmut_10,
+    "x_handle_error__mutmut_11": x_handle_error__mutmut_11,
+    "x_handle_error__mutmut_12": x_handle_error__mutmut_12,
+    "x_handle_error__mutmut_13": x_handle_error__mutmut_13,
 }
+
 
 def handle_error(*args, **kwargs):
     result = _mutmut_trampoline(x_handle_error__mutmut_orig, x_handle_error__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 handle_error.__signature__ = _mutmut_signature(x_handle_error__mutmut_orig)
-x_handle_error__mutmut_orig.__name__ = 'x_handle_error'
+x_handle_error__mutmut_orig.__name__ = "x_handle_error"
 
 
 @define(kw_only=True, slots=True)
@@ -1235,7 +1244,9 @@ def x_create_error_handler__mutmut_5(**policies: Callable[[Exception], Any]) -> 
 
     """
     # Extract default if provided
-    default = policies.pop("default", )
+    default = policies.pop(
+        "default",
+    )
 
     # Import error types
     import provide.foundation.errors as errors_module
@@ -1624,7 +1635,10 @@ def x_create_error_handler__mutmut_15(**policies: Callable[[Exception], Any]) ->
     error_policies = {}
     for error_name, handler_func in policies.items():
         # Try to get the error class from errors module
-        error_class = getattr(errors_module, error_name, )
+        error_class = getattr(
+            errors_module,
+            error_name,
+        )
         if error_class and isinstance(error_class, type) and issubclass(error_class, Exception):
             error_policies[error_class] = handler_func
         else:
@@ -1853,7 +1867,13 @@ def x_create_error_handler__mutmut_21(**policies: Callable[[Exception], Any]) ->
     for error_name, handler_func in policies.items():
         # Try to get the error class from errors module
         error_class = getattr(errors_module, error_name, None)
-        if error_class and isinstance(error_class, type) and issubclass(error_class, ):
+        if (
+            error_class
+            and isinstance(error_class, type)
+            and issubclass(
+                error_class,
+            )
+        ):
             error_policies[error_class] = handler_func
         else:
             from provide.foundation.hub.foundation import get_foundation_logger
@@ -2088,44 +2108,51 @@ def x_create_error_handler__mutmut_27(**policies: Callable[[Exception], Any]) ->
 
             get_foundation_logger().warning(f"Unknown error type: {error_name}")
 
-    return ErrorHandler(policies=error_policies, )
+    return ErrorHandler(
+        policies=error_policies,
+    )
 
-x_create_error_handler__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_error_handler__mutmut_1': x_create_error_handler__mutmut_1, 
-    'x_create_error_handler__mutmut_2': x_create_error_handler__mutmut_2, 
-    'x_create_error_handler__mutmut_3': x_create_error_handler__mutmut_3, 
-    'x_create_error_handler__mutmut_4': x_create_error_handler__mutmut_4, 
-    'x_create_error_handler__mutmut_5': x_create_error_handler__mutmut_5, 
-    'x_create_error_handler__mutmut_6': x_create_error_handler__mutmut_6, 
-    'x_create_error_handler__mutmut_7': x_create_error_handler__mutmut_7, 
-    'x_create_error_handler__mutmut_8': x_create_error_handler__mutmut_8, 
-    'x_create_error_handler__mutmut_9': x_create_error_handler__mutmut_9, 
-    'x_create_error_handler__mutmut_10': x_create_error_handler__mutmut_10, 
-    'x_create_error_handler__mutmut_11': x_create_error_handler__mutmut_11, 
-    'x_create_error_handler__mutmut_12': x_create_error_handler__mutmut_12, 
-    'x_create_error_handler__mutmut_13': x_create_error_handler__mutmut_13, 
-    'x_create_error_handler__mutmut_14': x_create_error_handler__mutmut_14, 
-    'x_create_error_handler__mutmut_15': x_create_error_handler__mutmut_15, 
-    'x_create_error_handler__mutmut_16': x_create_error_handler__mutmut_16, 
-    'x_create_error_handler__mutmut_17': x_create_error_handler__mutmut_17, 
-    'x_create_error_handler__mutmut_18': x_create_error_handler__mutmut_18, 
-    'x_create_error_handler__mutmut_19': x_create_error_handler__mutmut_19, 
-    'x_create_error_handler__mutmut_20': x_create_error_handler__mutmut_20, 
-    'x_create_error_handler__mutmut_21': x_create_error_handler__mutmut_21, 
-    'x_create_error_handler__mutmut_22': x_create_error_handler__mutmut_22, 
-    'x_create_error_handler__mutmut_23': x_create_error_handler__mutmut_23, 
-    'x_create_error_handler__mutmut_24': x_create_error_handler__mutmut_24, 
-    'x_create_error_handler__mutmut_25': x_create_error_handler__mutmut_25, 
-    'x_create_error_handler__mutmut_26': x_create_error_handler__mutmut_26, 
-    'x_create_error_handler__mutmut_27': x_create_error_handler__mutmut_27
+
+x_create_error_handler__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_error_handler__mutmut_1": x_create_error_handler__mutmut_1,
+    "x_create_error_handler__mutmut_2": x_create_error_handler__mutmut_2,
+    "x_create_error_handler__mutmut_3": x_create_error_handler__mutmut_3,
+    "x_create_error_handler__mutmut_4": x_create_error_handler__mutmut_4,
+    "x_create_error_handler__mutmut_5": x_create_error_handler__mutmut_5,
+    "x_create_error_handler__mutmut_6": x_create_error_handler__mutmut_6,
+    "x_create_error_handler__mutmut_7": x_create_error_handler__mutmut_7,
+    "x_create_error_handler__mutmut_8": x_create_error_handler__mutmut_8,
+    "x_create_error_handler__mutmut_9": x_create_error_handler__mutmut_9,
+    "x_create_error_handler__mutmut_10": x_create_error_handler__mutmut_10,
+    "x_create_error_handler__mutmut_11": x_create_error_handler__mutmut_11,
+    "x_create_error_handler__mutmut_12": x_create_error_handler__mutmut_12,
+    "x_create_error_handler__mutmut_13": x_create_error_handler__mutmut_13,
+    "x_create_error_handler__mutmut_14": x_create_error_handler__mutmut_14,
+    "x_create_error_handler__mutmut_15": x_create_error_handler__mutmut_15,
+    "x_create_error_handler__mutmut_16": x_create_error_handler__mutmut_16,
+    "x_create_error_handler__mutmut_17": x_create_error_handler__mutmut_17,
+    "x_create_error_handler__mutmut_18": x_create_error_handler__mutmut_18,
+    "x_create_error_handler__mutmut_19": x_create_error_handler__mutmut_19,
+    "x_create_error_handler__mutmut_20": x_create_error_handler__mutmut_20,
+    "x_create_error_handler__mutmut_21": x_create_error_handler__mutmut_21,
+    "x_create_error_handler__mutmut_22": x_create_error_handler__mutmut_22,
+    "x_create_error_handler__mutmut_23": x_create_error_handler__mutmut_23,
+    "x_create_error_handler__mutmut_24": x_create_error_handler__mutmut_24,
+    "x_create_error_handler__mutmut_25": x_create_error_handler__mutmut_25,
+    "x_create_error_handler__mutmut_26": x_create_error_handler__mutmut_26,
+    "x_create_error_handler__mutmut_27": x_create_error_handler__mutmut_27,
 }
 
+
 def create_error_handler(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_error_handler__mutmut_orig, x_create_error_handler__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_error_handler__mutmut_orig, x_create_error_handler__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_error_handler.__signature__ = _mutmut_signature(x_create_error_handler__mutmut_orig)
-x_create_error_handler__mutmut_orig.__name__ = 'x_create_error_handler'
+x_create_error_handler__mutmut_orig.__name__ = "x_create_error_handler"
 
 
 # <3 🧱🤝🐛🪄

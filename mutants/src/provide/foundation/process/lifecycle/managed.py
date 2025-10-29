@@ -42,23 +42,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1096,7 +1099,9 @@ class ManagedProcess:
         # to prevent interference with output capture during testing
         for key in list(self._env.keys()):
             if key.startswith(("COVERAGE", "COV_CORE")):
-                self._env.pop(key, )
+                self._env.pop(
+                    key,
+                )
 
         # Merge in any provided environment variables
         if env:
@@ -1603,7 +1608,7 @@ class ManagedProcess:
         log.debug(
             "🚀 ManagedProcess initialized",
             command=" ".join(command),
-            )
+        )
 
     def xǁManagedProcessǁ__init____mutmut_34(
         self,
@@ -1829,54 +1834,60 @@ class ManagedProcess:
             command="XX XX".join(command),
             cwd=self.cwd,
         )
-    
-    xǁManagedProcessǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁManagedProcessǁ__init____mutmut_1': xǁManagedProcessǁ__init____mutmut_1, 
-        'xǁManagedProcessǁ__init____mutmut_2': xǁManagedProcessǁ__init____mutmut_2, 
-        'xǁManagedProcessǁ__init____mutmut_3': xǁManagedProcessǁ__init____mutmut_3, 
-        'xǁManagedProcessǁ__init____mutmut_4': xǁManagedProcessǁ__init____mutmut_4, 
-        'xǁManagedProcessǁ__init____mutmut_5': xǁManagedProcessǁ__init____mutmut_5, 
-        'xǁManagedProcessǁ__init____mutmut_6': xǁManagedProcessǁ__init____mutmut_6, 
-        'xǁManagedProcessǁ__init____mutmut_7': xǁManagedProcessǁ__init____mutmut_7, 
-        'xǁManagedProcessǁ__init____mutmut_8': xǁManagedProcessǁ__init____mutmut_8, 
-        'xǁManagedProcessǁ__init____mutmut_9': xǁManagedProcessǁ__init____mutmut_9, 
-        'xǁManagedProcessǁ__init____mutmut_10': xǁManagedProcessǁ__init____mutmut_10, 
-        'xǁManagedProcessǁ__init____mutmut_11': xǁManagedProcessǁ__init____mutmut_11, 
-        'xǁManagedProcessǁ__init____mutmut_12': xǁManagedProcessǁ__init____mutmut_12, 
-        'xǁManagedProcessǁ__init____mutmut_13': xǁManagedProcessǁ__init____mutmut_13, 
-        'xǁManagedProcessǁ__init____mutmut_14': xǁManagedProcessǁ__init____mutmut_14, 
-        'xǁManagedProcessǁ__init____mutmut_15': xǁManagedProcessǁ__init____mutmut_15, 
-        'xǁManagedProcessǁ__init____mutmut_16': xǁManagedProcessǁ__init____mutmut_16, 
-        'xǁManagedProcessǁ__init____mutmut_17': xǁManagedProcessǁ__init____mutmut_17, 
-        'xǁManagedProcessǁ__init____mutmut_18': xǁManagedProcessǁ__init____mutmut_18, 
-        'xǁManagedProcessǁ__init____mutmut_19': xǁManagedProcessǁ__init____mutmut_19, 
-        'xǁManagedProcessǁ__init____mutmut_20': xǁManagedProcessǁ__init____mutmut_20, 
-        'xǁManagedProcessǁ__init____mutmut_21': xǁManagedProcessǁ__init____mutmut_21, 
-        'xǁManagedProcessǁ__init____mutmut_22': xǁManagedProcessǁ__init____mutmut_22, 
-        'xǁManagedProcessǁ__init____mutmut_23': xǁManagedProcessǁ__init____mutmut_23, 
-        'xǁManagedProcessǁ__init____mutmut_24': xǁManagedProcessǁ__init____mutmut_24, 
-        'xǁManagedProcessǁ__init____mutmut_25': xǁManagedProcessǁ__init____mutmut_25, 
-        'xǁManagedProcessǁ__init____mutmut_26': xǁManagedProcessǁ__init____mutmut_26, 
-        'xǁManagedProcessǁ__init____mutmut_27': xǁManagedProcessǁ__init____mutmut_27, 
-        'xǁManagedProcessǁ__init____mutmut_28': xǁManagedProcessǁ__init____mutmut_28, 
-        'xǁManagedProcessǁ__init____mutmut_29': xǁManagedProcessǁ__init____mutmut_29, 
-        'xǁManagedProcessǁ__init____mutmut_30': xǁManagedProcessǁ__init____mutmut_30, 
-        'xǁManagedProcessǁ__init____mutmut_31': xǁManagedProcessǁ__init____mutmut_31, 
-        'xǁManagedProcessǁ__init____mutmut_32': xǁManagedProcessǁ__init____mutmut_32, 
-        'xǁManagedProcessǁ__init____mutmut_33': xǁManagedProcessǁ__init____mutmut_33, 
-        'xǁManagedProcessǁ__init____mutmut_34': xǁManagedProcessǁ__init____mutmut_34, 
-        'xǁManagedProcessǁ__init____mutmut_35': xǁManagedProcessǁ__init____mutmut_35, 
-        'xǁManagedProcessǁ__init____mutmut_36': xǁManagedProcessǁ__init____mutmut_36, 
-        'xǁManagedProcessǁ__init____mutmut_37': xǁManagedProcessǁ__init____mutmut_37, 
-        'xǁManagedProcessǁ__init____mutmut_38': xǁManagedProcessǁ__init____mutmut_38
+
+    xǁManagedProcessǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁManagedProcessǁ__init____mutmut_1": xǁManagedProcessǁ__init____mutmut_1,
+        "xǁManagedProcessǁ__init____mutmut_2": xǁManagedProcessǁ__init____mutmut_2,
+        "xǁManagedProcessǁ__init____mutmut_3": xǁManagedProcessǁ__init____mutmut_3,
+        "xǁManagedProcessǁ__init____mutmut_4": xǁManagedProcessǁ__init____mutmut_4,
+        "xǁManagedProcessǁ__init____mutmut_5": xǁManagedProcessǁ__init____mutmut_5,
+        "xǁManagedProcessǁ__init____mutmut_6": xǁManagedProcessǁ__init____mutmut_6,
+        "xǁManagedProcessǁ__init____mutmut_7": xǁManagedProcessǁ__init____mutmut_7,
+        "xǁManagedProcessǁ__init____mutmut_8": xǁManagedProcessǁ__init____mutmut_8,
+        "xǁManagedProcessǁ__init____mutmut_9": xǁManagedProcessǁ__init____mutmut_9,
+        "xǁManagedProcessǁ__init____mutmut_10": xǁManagedProcessǁ__init____mutmut_10,
+        "xǁManagedProcessǁ__init____mutmut_11": xǁManagedProcessǁ__init____mutmut_11,
+        "xǁManagedProcessǁ__init____mutmut_12": xǁManagedProcessǁ__init____mutmut_12,
+        "xǁManagedProcessǁ__init____mutmut_13": xǁManagedProcessǁ__init____mutmut_13,
+        "xǁManagedProcessǁ__init____mutmut_14": xǁManagedProcessǁ__init____mutmut_14,
+        "xǁManagedProcessǁ__init____mutmut_15": xǁManagedProcessǁ__init____mutmut_15,
+        "xǁManagedProcessǁ__init____mutmut_16": xǁManagedProcessǁ__init____mutmut_16,
+        "xǁManagedProcessǁ__init____mutmut_17": xǁManagedProcessǁ__init____mutmut_17,
+        "xǁManagedProcessǁ__init____mutmut_18": xǁManagedProcessǁ__init____mutmut_18,
+        "xǁManagedProcessǁ__init____mutmut_19": xǁManagedProcessǁ__init____mutmut_19,
+        "xǁManagedProcessǁ__init____mutmut_20": xǁManagedProcessǁ__init____mutmut_20,
+        "xǁManagedProcessǁ__init____mutmut_21": xǁManagedProcessǁ__init____mutmut_21,
+        "xǁManagedProcessǁ__init____mutmut_22": xǁManagedProcessǁ__init____mutmut_22,
+        "xǁManagedProcessǁ__init____mutmut_23": xǁManagedProcessǁ__init____mutmut_23,
+        "xǁManagedProcessǁ__init____mutmut_24": xǁManagedProcessǁ__init____mutmut_24,
+        "xǁManagedProcessǁ__init____mutmut_25": xǁManagedProcessǁ__init____mutmut_25,
+        "xǁManagedProcessǁ__init____mutmut_26": xǁManagedProcessǁ__init____mutmut_26,
+        "xǁManagedProcessǁ__init____mutmut_27": xǁManagedProcessǁ__init____mutmut_27,
+        "xǁManagedProcessǁ__init____mutmut_28": xǁManagedProcessǁ__init____mutmut_28,
+        "xǁManagedProcessǁ__init____mutmut_29": xǁManagedProcessǁ__init____mutmut_29,
+        "xǁManagedProcessǁ__init____mutmut_30": xǁManagedProcessǁ__init____mutmut_30,
+        "xǁManagedProcessǁ__init____mutmut_31": xǁManagedProcessǁ__init____mutmut_31,
+        "xǁManagedProcessǁ__init____mutmut_32": xǁManagedProcessǁ__init____mutmut_32,
+        "xǁManagedProcessǁ__init____mutmut_33": xǁManagedProcessǁ__init____mutmut_33,
+        "xǁManagedProcessǁ__init____mutmut_34": xǁManagedProcessǁ__init____mutmut_34,
+        "xǁManagedProcessǁ__init____mutmut_35": xǁManagedProcessǁ__init____mutmut_35,
+        "xǁManagedProcessǁ__init____mutmut_36": xǁManagedProcessǁ__init____mutmut_36,
+        "xǁManagedProcessǁ__init____mutmut_37": xǁManagedProcessǁ__init____mutmut_37,
+        "xǁManagedProcessǁ__init____mutmut_38": xǁManagedProcessǁ__init____mutmut_38,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁManagedProcessǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁManagedProcessǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁManagedProcessǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁManagedProcessǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁManagedProcessǁ__init____mutmut_orig)
-    xǁManagedProcessǁ__init____mutmut_orig.__name__ = 'xǁManagedProcessǁ__init__'
+    xǁManagedProcessǁ__init____mutmut_orig.__name__ = "xǁManagedProcessǁ__init__"
 
     @property
     def process(self) -> subprocess.Popen[bytes] | None:
@@ -1916,19 +1927,25 @@ class ManagedProcess:
         if not self._process:
             return False
         return self._process.poll() is not None
-    
-    xǁManagedProcessǁis_running__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁManagedProcessǁis_running__mutmut_1': xǁManagedProcessǁis_running__mutmut_1, 
-        'xǁManagedProcessǁis_running__mutmut_2': xǁManagedProcessǁis_running__mutmut_2, 
-        'xǁManagedProcessǁis_running__mutmut_3': xǁManagedProcessǁis_running__mutmut_3
+
+    xǁManagedProcessǁis_running__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁManagedProcessǁis_running__mutmut_1": xǁManagedProcessǁis_running__mutmut_1,
+        "xǁManagedProcessǁis_running__mutmut_2": xǁManagedProcessǁis_running__mutmut_2,
+        "xǁManagedProcessǁis_running__mutmut_3": xǁManagedProcessǁis_running__mutmut_3,
     }
-    
+
     def is_running(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁManagedProcessǁis_running__mutmut_orig"), object.__getattribute__(self, "xǁManagedProcessǁis_running__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁManagedProcessǁis_running__mutmut_orig"),
+            object.__getattribute__(self, "xǁManagedProcessǁis_running__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_running.__signature__ = _mutmut_signature(xǁManagedProcessǁis_running__mutmut_orig)
-    xǁManagedProcessǁis_running__mutmut_orig.__name__ = 'xǁManagedProcessǁis_running'
+    xǁManagedProcessǁis_running__mutmut_orig.__name__ = "xǁManagedProcessǁis_running"
 
     @resilient(
         error_mapper=lambda e: ProcessError(f"Failed to launch process: {e}")
@@ -2312,9 +2329,7 @@ class ManagedProcess:
                     line = process.stderr.readline()
                     if not line:
                         break
-                    sys.stderr.write(
-                        None
-                    )
+                    sys.stderr.write(None)
                     sys.stderr.flush()
             except Exception as e:
                 log.debug("Error in stderr relay", error=str(e))
@@ -2393,9 +2408,7 @@ class ManagedProcess:
                     line = process.stderr.readline()
                     if not line:
                         break
-                    sys.stderr.write(
-                        line.decode(errors="replace") if isinstance(line, bytes) else str(line)
-                    )
+                    sys.stderr.write(line.decode(errors="replace") if isinstance(line, bytes) else str(line))
                     sys.stderr.flush()
             except Exception as e:
                 log.debug("Error in stderr relay", error=str(e))
@@ -2421,7 +2434,11 @@ class ManagedProcess:
                     if not line:
                         break
                     sys.stderr.write(
-                        line.decode("utf-8", ) if isinstance(line, bytes) else str(line)
+                        line.decode(
+                            "utf-8",
+                        )
+                        if isinstance(line, bytes)
+                        else str(line)
                     )
                     sys.stderr.flush()
             except Exception as e:
@@ -2668,7 +2685,9 @@ class ManagedProcess:
                     )
                     sys.stderr.flush()
             except Exception as e:
-                log.debug("Error in stderr relay", )
+                log.debug(
+                    "Error in stderr relay",
+                )
 
         self._stderr_thread = threading.Thread(target=relay_stderr, daemon=True)
         self._stderr_thread.start()
@@ -2913,7 +2932,9 @@ class ManagedProcess:
             except Exception as e:
                 log.debug("Error in stderr relay", error=str(e))
 
-        self._stderr_thread = threading.Thread(target=relay_stderr, )
+        self._stderr_thread = threading.Thread(
+            target=relay_stderr,
+        )
         self._stderr_thread.start()
         log.debug("🚀 Started stderr relay thread")
 
@@ -3051,57 +3072,65 @@ class ManagedProcess:
         self._stderr_thread = threading.Thread(target=relay_stderr, daemon=True)
         self._stderr_thread.start()
         log.debug("🚀 STARTED STDERR RELAY THREAD")
-    
-    xǁManagedProcessǁ_start_stderr_relay__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁManagedProcessǁ_start_stderr_relay__mutmut_1': xǁManagedProcessǁ_start_stderr_relay__mutmut_1, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_2': xǁManagedProcessǁ_start_stderr_relay__mutmut_2, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_3': xǁManagedProcessǁ_start_stderr_relay__mutmut_3, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_4': xǁManagedProcessǁ_start_stderr_relay__mutmut_4, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_5': xǁManagedProcessǁ_start_stderr_relay__mutmut_5, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_6': xǁManagedProcessǁ_start_stderr_relay__mutmut_6, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_7': xǁManagedProcessǁ_start_stderr_relay__mutmut_7, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_8': xǁManagedProcessǁ_start_stderr_relay__mutmut_8, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_9': xǁManagedProcessǁ_start_stderr_relay__mutmut_9, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_10': xǁManagedProcessǁ_start_stderr_relay__mutmut_10, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_11': xǁManagedProcessǁ_start_stderr_relay__mutmut_11, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_12': xǁManagedProcessǁ_start_stderr_relay__mutmut_12, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_13': xǁManagedProcessǁ_start_stderr_relay__mutmut_13, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_14': xǁManagedProcessǁ_start_stderr_relay__mutmut_14, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_15': xǁManagedProcessǁ_start_stderr_relay__mutmut_15, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_16': xǁManagedProcessǁ_start_stderr_relay__mutmut_16, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_17': xǁManagedProcessǁ_start_stderr_relay__mutmut_17, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_18': xǁManagedProcessǁ_start_stderr_relay__mutmut_18, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_19': xǁManagedProcessǁ_start_stderr_relay__mutmut_19, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_20': xǁManagedProcessǁ_start_stderr_relay__mutmut_20, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_21': xǁManagedProcessǁ_start_stderr_relay__mutmut_21, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_22': xǁManagedProcessǁ_start_stderr_relay__mutmut_22, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_23': xǁManagedProcessǁ_start_stderr_relay__mutmut_23, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_24': xǁManagedProcessǁ_start_stderr_relay__mutmut_24, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_25': xǁManagedProcessǁ_start_stderr_relay__mutmut_25, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_26': xǁManagedProcessǁ_start_stderr_relay__mutmut_26, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_27': xǁManagedProcessǁ_start_stderr_relay__mutmut_27, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_28': xǁManagedProcessǁ_start_stderr_relay__mutmut_28, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_29': xǁManagedProcessǁ_start_stderr_relay__mutmut_29, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_30': xǁManagedProcessǁ_start_stderr_relay__mutmut_30, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_31': xǁManagedProcessǁ_start_stderr_relay__mutmut_31, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_32': xǁManagedProcessǁ_start_stderr_relay__mutmut_32, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_33': xǁManagedProcessǁ_start_stderr_relay__mutmut_33, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_34': xǁManagedProcessǁ_start_stderr_relay__mutmut_34, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_35': xǁManagedProcessǁ_start_stderr_relay__mutmut_35, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_36': xǁManagedProcessǁ_start_stderr_relay__mutmut_36, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_37': xǁManagedProcessǁ_start_stderr_relay__mutmut_37, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_38': xǁManagedProcessǁ_start_stderr_relay__mutmut_38, 
-        'xǁManagedProcessǁ_start_stderr_relay__mutmut_39': xǁManagedProcessǁ_start_stderr_relay__mutmut_39
-    }
-    
-    def _start_stderr_relay(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁManagedProcessǁ_start_stderr_relay__mutmut_orig"), object.__getattribute__(self, "xǁManagedProcessǁ_start_stderr_relay__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _start_stderr_relay.__signature__ = _mutmut_signature(xǁManagedProcessǁ_start_stderr_relay__mutmut_orig)
-    xǁManagedProcessǁ_start_stderr_relay__mutmut_orig.__name__ = 'xǁManagedProcessǁ_start_stderr_relay'
 
-    async def xǁManagedProcessǁread_line_async__mutmut_orig(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    xǁManagedProcessǁ_start_stderr_relay__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_1": xǁManagedProcessǁ_start_stderr_relay__mutmut_1,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_2": xǁManagedProcessǁ_start_stderr_relay__mutmut_2,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_3": xǁManagedProcessǁ_start_stderr_relay__mutmut_3,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_4": xǁManagedProcessǁ_start_stderr_relay__mutmut_4,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_5": xǁManagedProcessǁ_start_stderr_relay__mutmut_5,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_6": xǁManagedProcessǁ_start_stderr_relay__mutmut_6,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_7": xǁManagedProcessǁ_start_stderr_relay__mutmut_7,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_8": xǁManagedProcessǁ_start_stderr_relay__mutmut_8,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_9": xǁManagedProcessǁ_start_stderr_relay__mutmut_9,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_10": xǁManagedProcessǁ_start_stderr_relay__mutmut_10,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_11": xǁManagedProcessǁ_start_stderr_relay__mutmut_11,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_12": xǁManagedProcessǁ_start_stderr_relay__mutmut_12,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_13": xǁManagedProcessǁ_start_stderr_relay__mutmut_13,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_14": xǁManagedProcessǁ_start_stderr_relay__mutmut_14,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_15": xǁManagedProcessǁ_start_stderr_relay__mutmut_15,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_16": xǁManagedProcessǁ_start_stderr_relay__mutmut_16,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_17": xǁManagedProcessǁ_start_stderr_relay__mutmut_17,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_18": xǁManagedProcessǁ_start_stderr_relay__mutmut_18,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_19": xǁManagedProcessǁ_start_stderr_relay__mutmut_19,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_20": xǁManagedProcessǁ_start_stderr_relay__mutmut_20,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_21": xǁManagedProcessǁ_start_stderr_relay__mutmut_21,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_22": xǁManagedProcessǁ_start_stderr_relay__mutmut_22,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_23": xǁManagedProcessǁ_start_stderr_relay__mutmut_23,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_24": xǁManagedProcessǁ_start_stderr_relay__mutmut_24,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_25": xǁManagedProcessǁ_start_stderr_relay__mutmut_25,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_26": xǁManagedProcessǁ_start_stderr_relay__mutmut_26,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_27": xǁManagedProcessǁ_start_stderr_relay__mutmut_27,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_28": xǁManagedProcessǁ_start_stderr_relay__mutmut_28,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_29": xǁManagedProcessǁ_start_stderr_relay__mutmut_29,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_30": xǁManagedProcessǁ_start_stderr_relay__mutmut_30,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_31": xǁManagedProcessǁ_start_stderr_relay__mutmut_31,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_32": xǁManagedProcessǁ_start_stderr_relay__mutmut_32,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_33": xǁManagedProcessǁ_start_stderr_relay__mutmut_33,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_34": xǁManagedProcessǁ_start_stderr_relay__mutmut_34,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_35": xǁManagedProcessǁ_start_stderr_relay__mutmut_35,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_36": xǁManagedProcessǁ_start_stderr_relay__mutmut_36,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_37": xǁManagedProcessǁ_start_stderr_relay__mutmut_37,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_38": xǁManagedProcessǁ_start_stderr_relay__mutmut_38,
+        "xǁManagedProcessǁ_start_stderr_relay__mutmut_39": xǁManagedProcessǁ_start_stderr_relay__mutmut_39,
+    }
+
+    def _start_stderr_relay(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁManagedProcessǁ_start_stderr_relay__mutmut_orig"),
+            object.__getattribute__(self, "xǁManagedProcessǁ_start_stderr_relay__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _start_stderr_relay.__signature__ = _mutmut_signature(xǁManagedProcessǁ_start_stderr_relay__mutmut_orig)
+    xǁManagedProcessǁ_start_stderr_relay__mutmut_orig.__name__ = "xǁManagedProcessǁ_start_stderr_relay"
+
+    async def xǁManagedProcessǁread_line_async__mutmut_orig(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3120,7 +3149,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_1(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_1(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process and not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3139,7 +3170,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_2(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_2(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3158,7 +3191,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_3(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_3(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3177,7 +3212,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_4(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_4(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError(None)
@@ -3196,7 +3233,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_5(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_5(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("XXProcess not running or stdout not availableXX")
@@ -3215,7 +3254,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_6(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_6(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("process not running or stdout not available")
@@ -3234,7 +3275,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_7(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_7(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("PROCESS NOT RUNNING OR STDOUT NOT AVAILABLE")
@@ -3253,7 +3296,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_8(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_8(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3272,7 +3317,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_9(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_9(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3291,7 +3338,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_10(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_10(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3310,7 +3359,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_11(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_11(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3329,7 +3380,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_12(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_12(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3348,7 +3401,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_13(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_13(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3367,7 +3422,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_14(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_14(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3386,7 +3443,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_15(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_15(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3397,7 +3456,9 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.readline)
 
         try:
-            line_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), )
+            line_data = await asyncio.wait_for(
+                loop.run_in_executor(None, read_func),
+            )
             return (
                 line_data.decode("utf-8", errors="replace") if isinstance(line_data, bytes) else str(line_data)
             ).strip()
@@ -3405,7 +3466,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_16(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_16(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3424,7 +3487,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_17(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_17(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3443,7 +3508,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_18(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_18(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3454,7 +3521,12 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.readline)
 
         try:
-            line_data = await asyncio.wait_for(loop.run_in_executor(None, ), timeout=timeout)
+            line_data = await asyncio.wait_for(
+                loop.run_in_executor(
+                    None,
+                ),
+                timeout=timeout,
+            )
             return (
                 line_data.decode("utf-8", errors="replace") if isinstance(line_data, bytes) else str(line_data)
             ).strip()
@@ -3462,7 +3534,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_19(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_19(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3481,7 +3555,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_20(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_20(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3500,7 +3576,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_21(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_21(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3519,7 +3597,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_22(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_22(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3532,13 +3612,19 @@ class ManagedProcess:
         try:
             line_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
             return (
-                line_data.decode("utf-8", ) if isinstance(line_data, bytes) else str(line_data)
+                line_data.decode(
+                    "utf-8",
+                )
+                if isinstance(line_data, bytes)
+                else str(line_data)
             ).strip()
         except TimeoutError as e:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_23(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_23(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3551,13 +3637,17 @@ class ManagedProcess:
         try:
             line_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
             return (
-                line_data.decode("XXutf-8XX", errors="replace") if isinstance(line_data, bytes) else str(line_data)
+                line_data.decode("XXutf-8XX", errors="replace")
+                if isinstance(line_data, bytes)
+                else str(line_data)
             ).strip()
         except TimeoutError as e:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_24(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_24(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3576,7 +3666,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_25(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_25(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3589,13 +3681,17 @@ class ManagedProcess:
         try:
             line_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
             return (
-                line_data.decode("utf-8", errors="XXreplaceXX") if isinstance(line_data, bytes) else str(line_data)
+                line_data.decode("utf-8", errors="XXreplaceXX")
+                if isinstance(line_data, bytes)
+                else str(line_data)
             ).strip()
         except TimeoutError as e:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_26(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_26(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3614,7 +3710,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_27(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_27(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3633,7 +3731,9 @@ class ManagedProcess:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_28(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_28(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3652,7 +3752,9 @@ class ManagedProcess:
             log.debug(None)
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_29(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_29(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3671,7 +3773,9 @@ class ManagedProcess:
             log.debug("XXRead timeout on managed process stdoutXX")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_30(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_30(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3690,7 +3794,9 @@ class ManagedProcess:
             log.debug("read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_31(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_31(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3709,7 +3815,9 @@ class ManagedProcess:
             log.debug("READ TIMEOUT ON MANAGED PROCESS STDOUT")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_line_async__mutmut_32(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_line_async__mutmut_32(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3727,50 +3835,58 @@ class ManagedProcess:
         except TimeoutError as e:
             log.debug("Read timeout on managed process stdout")
             raise TimeoutError(None) from e
-    
-    xǁManagedProcessǁread_line_async__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁManagedProcessǁread_line_async__mutmut_1': xǁManagedProcessǁread_line_async__mutmut_1, 
-        'xǁManagedProcessǁread_line_async__mutmut_2': xǁManagedProcessǁread_line_async__mutmut_2, 
-        'xǁManagedProcessǁread_line_async__mutmut_3': xǁManagedProcessǁread_line_async__mutmut_3, 
-        'xǁManagedProcessǁread_line_async__mutmut_4': xǁManagedProcessǁread_line_async__mutmut_4, 
-        'xǁManagedProcessǁread_line_async__mutmut_5': xǁManagedProcessǁread_line_async__mutmut_5, 
-        'xǁManagedProcessǁread_line_async__mutmut_6': xǁManagedProcessǁread_line_async__mutmut_6, 
-        'xǁManagedProcessǁread_line_async__mutmut_7': xǁManagedProcessǁread_line_async__mutmut_7, 
-        'xǁManagedProcessǁread_line_async__mutmut_8': xǁManagedProcessǁread_line_async__mutmut_8, 
-        'xǁManagedProcessǁread_line_async__mutmut_9': xǁManagedProcessǁread_line_async__mutmut_9, 
-        'xǁManagedProcessǁread_line_async__mutmut_10': xǁManagedProcessǁread_line_async__mutmut_10, 
-        'xǁManagedProcessǁread_line_async__mutmut_11': xǁManagedProcessǁread_line_async__mutmut_11, 
-        'xǁManagedProcessǁread_line_async__mutmut_12': xǁManagedProcessǁread_line_async__mutmut_12, 
-        'xǁManagedProcessǁread_line_async__mutmut_13': xǁManagedProcessǁread_line_async__mutmut_13, 
-        'xǁManagedProcessǁread_line_async__mutmut_14': xǁManagedProcessǁread_line_async__mutmut_14, 
-        'xǁManagedProcessǁread_line_async__mutmut_15': xǁManagedProcessǁread_line_async__mutmut_15, 
-        'xǁManagedProcessǁread_line_async__mutmut_16': xǁManagedProcessǁread_line_async__mutmut_16, 
-        'xǁManagedProcessǁread_line_async__mutmut_17': xǁManagedProcessǁread_line_async__mutmut_17, 
-        'xǁManagedProcessǁread_line_async__mutmut_18': xǁManagedProcessǁread_line_async__mutmut_18, 
-        'xǁManagedProcessǁread_line_async__mutmut_19': xǁManagedProcessǁread_line_async__mutmut_19, 
-        'xǁManagedProcessǁread_line_async__mutmut_20': xǁManagedProcessǁread_line_async__mutmut_20, 
-        'xǁManagedProcessǁread_line_async__mutmut_21': xǁManagedProcessǁread_line_async__mutmut_21, 
-        'xǁManagedProcessǁread_line_async__mutmut_22': xǁManagedProcessǁread_line_async__mutmut_22, 
-        'xǁManagedProcessǁread_line_async__mutmut_23': xǁManagedProcessǁread_line_async__mutmut_23, 
-        'xǁManagedProcessǁread_line_async__mutmut_24': xǁManagedProcessǁread_line_async__mutmut_24, 
-        'xǁManagedProcessǁread_line_async__mutmut_25': xǁManagedProcessǁread_line_async__mutmut_25, 
-        'xǁManagedProcessǁread_line_async__mutmut_26': xǁManagedProcessǁread_line_async__mutmut_26, 
-        'xǁManagedProcessǁread_line_async__mutmut_27': xǁManagedProcessǁread_line_async__mutmut_27, 
-        'xǁManagedProcessǁread_line_async__mutmut_28': xǁManagedProcessǁread_line_async__mutmut_28, 
-        'xǁManagedProcessǁread_line_async__mutmut_29': xǁManagedProcessǁread_line_async__mutmut_29, 
-        'xǁManagedProcessǁread_line_async__mutmut_30': xǁManagedProcessǁread_line_async__mutmut_30, 
-        'xǁManagedProcessǁread_line_async__mutmut_31': xǁManagedProcessǁread_line_async__mutmut_31, 
-        'xǁManagedProcessǁread_line_async__mutmut_32': xǁManagedProcessǁread_line_async__mutmut_32
-    }
-    
-    def read_line_async(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁManagedProcessǁread_line_async__mutmut_orig"), object.__getattribute__(self, "xǁManagedProcessǁread_line_async__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    read_line_async.__signature__ = _mutmut_signature(xǁManagedProcessǁread_line_async__mutmut_orig)
-    xǁManagedProcessǁread_line_async__mutmut_orig.__name__ = 'xǁManagedProcessǁread_line_async'
 
-    async def xǁManagedProcessǁread_char_async__mutmut_orig(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    xǁManagedProcessǁread_line_async__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁManagedProcessǁread_line_async__mutmut_1": xǁManagedProcessǁread_line_async__mutmut_1,
+        "xǁManagedProcessǁread_line_async__mutmut_2": xǁManagedProcessǁread_line_async__mutmut_2,
+        "xǁManagedProcessǁread_line_async__mutmut_3": xǁManagedProcessǁread_line_async__mutmut_3,
+        "xǁManagedProcessǁread_line_async__mutmut_4": xǁManagedProcessǁread_line_async__mutmut_4,
+        "xǁManagedProcessǁread_line_async__mutmut_5": xǁManagedProcessǁread_line_async__mutmut_5,
+        "xǁManagedProcessǁread_line_async__mutmut_6": xǁManagedProcessǁread_line_async__mutmut_6,
+        "xǁManagedProcessǁread_line_async__mutmut_7": xǁManagedProcessǁread_line_async__mutmut_7,
+        "xǁManagedProcessǁread_line_async__mutmut_8": xǁManagedProcessǁread_line_async__mutmut_8,
+        "xǁManagedProcessǁread_line_async__mutmut_9": xǁManagedProcessǁread_line_async__mutmut_9,
+        "xǁManagedProcessǁread_line_async__mutmut_10": xǁManagedProcessǁread_line_async__mutmut_10,
+        "xǁManagedProcessǁread_line_async__mutmut_11": xǁManagedProcessǁread_line_async__mutmut_11,
+        "xǁManagedProcessǁread_line_async__mutmut_12": xǁManagedProcessǁread_line_async__mutmut_12,
+        "xǁManagedProcessǁread_line_async__mutmut_13": xǁManagedProcessǁread_line_async__mutmut_13,
+        "xǁManagedProcessǁread_line_async__mutmut_14": xǁManagedProcessǁread_line_async__mutmut_14,
+        "xǁManagedProcessǁread_line_async__mutmut_15": xǁManagedProcessǁread_line_async__mutmut_15,
+        "xǁManagedProcessǁread_line_async__mutmut_16": xǁManagedProcessǁread_line_async__mutmut_16,
+        "xǁManagedProcessǁread_line_async__mutmut_17": xǁManagedProcessǁread_line_async__mutmut_17,
+        "xǁManagedProcessǁread_line_async__mutmut_18": xǁManagedProcessǁread_line_async__mutmut_18,
+        "xǁManagedProcessǁread_line_async__mutmut_19": xǁManagedProcessǁread_line_async__mutmut_19,
+        "xǁManagedProcessǁread_line_async__mutmut_20": xǁManagedProcessǁread_line_async__mutmut_20,
+        "xǁManagedProcessǁread_line_async__mutmut_21": xǁManagedProcessǁread_line_async__mutmut_21,
+        "xǁManagedProcessǁread_line_async__mutmut_22": xǁManagedProcessǁread_line_async__mutmut_22,
+        "xǁManagedProcessǁread_line_async__mutmut_23": xǁManagedProcessǁread_line_async__mutmut_23,
+        "xǁManagedProcessǁread_line_async__mutmut_24": xǁManagedProcessǁread_line_async__mutmut_24,
+        "xǁManagedProcessǁread_line_async__mutmut_25": xǁManagedProcessǁread_line_async__mutmut_25,
+        "xǁManagedProcessǁread_line_async__mutmut_26": xǁManagedProcessǁread_line_async__mutmut_26,
+        "xǁManagedProcessǁread_line_async__mutmut_27": xǁManagedProcessǁread_line_async__mutmut_27,
+        "xǁManagedProcessǁread_line_async__mutmut_28": xǁManagedProcessǁread_line_async__mutmut_28,
+        "xǁManagedProcessǁread_line_async__mutmut_29": xǁManagedProcessǁread_line_async__mutmut_29,
+        "xǁManagedProcessǁread_line_async__mutmut_30": xǁManagedProcessǁread_line_async__mutmut_30,
+        "xǁManagedProcessǁread_line_async__mutmut_31": xǁManagedProcessǁread_line_async__mutmut_31,
+        "xǁManagedProcessǁread_line_async__mutmut_32": xǁManagedProcessǁread_line_async__mutmut_32,
+    }
+
+    def read_line_async(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁManagedProcessǁread_line_async__mutmut_orig"),
+            object.__getattribute__(self, "xǁManagedProcessǁread_line_async__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    read_line_async.__signature__ = _mutmut_signature(xǁManagedProcessǁread_line_async__mutmut_orig)
+    xǁManagedProcessǁread_line_async__mutmut_orig.__name__ = "xǁManagedProcessǁread_line_async"
+
+    async def xǁManagedProcessǁread_char_async__mutmut_orig(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3791,7 +3907,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_1(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_1(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process and not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3812,7 +3930,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_2(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_2(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3833,7 +3953,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_3(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_3(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3854,7 +3976,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_4(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_4(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError(None)
@@ -3875,7 +3999,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_5(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_5(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("XXProcess not running or stdout not availableXX")
@@ -3896,7 +4022,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_6(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_6(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("process not running or stdout not available")
@@ -3917,7 +4045,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_7(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_7(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("PROCESS NOT RUNNING OR STDOUT NOT AVAILABLE")
@@ -3938,7 +4068,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_8(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_8(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3959,7 +4091,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_9(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_9(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -3980,7 +4114,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_10(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_10(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4001,7 +4137,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_11(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_11(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4022,7 +4160,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_12(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_12(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4043,7 +4183,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_13(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_13(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4051,7 +4193,9 @@ class ManagedProcess:
         loop = asyncio.get_event_loop()
 
         # Use functools.partial to avoid closure issues
-        read_func = functools.partial(self._process.stdout.read, )
+        read_func = functools.partial(
+            self._process.stdout.read,
+        )
 
         try:
             char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
@@ -4064,7 +4208,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_14(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_14(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4085,7 +4231,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_15(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_15(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4106,7 +4254,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_16(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_16(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4127,7 +4277,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_17(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_17(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4148,7 +4300,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_18(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_18(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4169,7 +4323,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_19(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_19(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4180,7 +4336,9 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.read, 1)
 
         try:
-            char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), )
+            char_data = await asyncio.wait_for(
+                loop.run_in_executor(None, read_func),
+            )
             if not char_data:
                 return ""
             return (
@@ -4190,7 +4348,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_20(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_20(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4211,7 +4371,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_21(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_21(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4232,7 +4394,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_22(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_22(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4243,7 +4407,12 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.read, 1)
 
         try:
-            char_data = await asyncio.wait_for(loop.run_in_executor(None, ), timeout=timeout)
+            char_data = await asyncio.wait_for(
+                loop.run_in_executor(
+                    None,
+                ),
+                timeout=timeout,
+            )
             if not char_data:
                 return ""
             return (
@@ -4253,7 +4422,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_23(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_23(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4274,7 +4445,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_24(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_24(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4295,7 +4468,72 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_25(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_25(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
+        """Read a single character from stdout asynchronously."""
+        if not self._process or not self._process.stdout:
+            raise ProcessError("Process not running or stdout not available")
+
+        loop = asyncio.get_event_loop()
+
+        # Use functools.partial to avoid closure issues
+        read_func = functools.partial(self._process.stdout.read, 1)
+
+        try:
+            char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
+            if not char_data:
+                return ""
+            return char_data.decode(None, errors="replace") if isinstance(char_data, bytes) else str(char_data)
+        except TimeoutError as e:
+            log.debug("Character read timeout on managed process stdout")
+            raise TimeoutError(f"Character read timeout after {timeout}s") from e
+
+    async def xǁManagedProcessǁread_char_async__mutmut_26(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
+        """Read a single character from stdout asynchronously."""
+        if not self._process or not self._process.stdout:
+            raise ProcessError("Process not running or stdout not available")
+
+        loop = asyncio.get_event_loop()
+
+        # Use functools.partial to avoid closure issues
+        read_func = functools.partial(self._process.stdout.read, 1)
+
+        try:
+            char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
+            if not char_data:
+                return ""
+            return char_data.decode("utf-8", errors=None) if isinstance(char_data, bytes) else str(char_data)
+        except TimeoutError as e:
+            log.debug("Character read timeout on managed process stdout")
+            raise TimeoutError(f"Character read timeout after {timeout}s") from e
+
+    async def xǁManagedProcessǁread_char_async__mutmut_27(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
+        """Read a single character from stdout asynchronously."""
+        if not self._process or not self._process.stdout:
+            raise ProcessError("Process not running or stdout not available")
+
+        loop = asyncio.get_event_loop()
+
+        # Use functools.partial to avoid closure issues
+        read_func = functools.partial(self._process.stdout.read, 1)
+
+        try:
+            char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
+            if not char_data:
+                return ""
+            return char_data.decode(errors="replace") if isinstance(char_data, bytes) else str(char_data)
+        except TimeoutError as e:
+            log.debug("Character read timeout on managed process stdout")
+            raise TimeoutError(f"Character read timeout after {timeout}s") from e
+
+    async def xǁManagedProcessǁread_char_async__mutmut_28(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4310,13 +4548,19 @@ class ManagedProcess:
             if not char_data:
                 return ""
             return (
-                char_data.decode(None, errors="replace") if isinstance(char_data, bytes) else str(char_data)
+                char_data.decode(
+                    "utf-8",
+                )
+                if isinstance(char_data, bytes)
+                else str(char_data)
             )
         except TimeoutError as e:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_26(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_29(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4331,76 +4575,17 @@ class ManagedProcess:
             if not char_data:
                 return ""
             return (
-                char_data.decode("utf-8", errors=None) if isinstance(char_data, bytes) else str(char_data)
+                char_data.decode("XXutf-8XX", errors="replace")
+                if isinstance(char_data, bytes)
+                else str(char_data)
             )
         except TimeoutError as e:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_27(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
-        """Read a single character from stdout asynchronously."""
-        if not self._process or not self._process.stdout:
-            raise ProcessError("Process not running or stdout not available")
-
-        loop = asyncio.get_event_loop()
-
-        # Use functools.partial to avoid closure issues
-        read_func = functools.partial(self._process.stdout.read, 1)
-
-        try:
-            char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
-            if not char_data:
-                return ""
-            return (
-                char_data.decode(errors="replace") if isinstance(char_data, bytes) else str(char_data)
-            )
-        except TimeoutError as e:
-            log.debug("Character read timeout on managed process stdout")
-            raise TimeoutError(f"Character read timeout after {timeout}s") from e
-
-    async def xǁManagedProcessǁread_char_async__mutmut_28(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
-        """Read a single character from stdout asynchronously."""
-        if not self._process or not self._process.stdout:
-            raise ProcessError("Process not running or stdout not available")
-
-        loop = asyncio.get_event_loop()
-
-        # Use functools.partial to avoid closure issues
-        read_func = functools.partial(self._process.stdout.read, 1)
-
-        try:
-            char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
-            if not char_data:
-                return ""
-            return (
-                char_data.decode("utf-8", ) if isinstance(char_data, bytes) else str(char_data)
-            )
-        except TimeoutError as e:
-            log.debug("Character read timeout on managed process stdout")
-            raise TimeoutError(f"Character read timeout after {timeout}s") from e
-
-    async def xǁManagedProcessǁread_char_async__mutmut_29(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
-        """Read a single character from stdout asynchronously."""
-        if not self._process or not self._process.stdout:
-            raise ProcessError("Process not running or stdout not available")
-
-        loop = asyncio.get_event_loop()
-
-        # Use functools.partial to avoid closure issues
-        read_func = functools.partial(self._process.stdout.read, 1)
-
-        try:
-            char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
-            if not char_data:
-                return ""
-            return (
-                char_data.decode("XXutf-8XX", errors="replace") if isinstance(char_data, bytes) else str(char_data)
-            )
-        except TimeoutError as e:
-            log.debug("Character read timeout on managed process stdout")
-            raise TimeoutError(f"Character read timeout after {timeout}s") from e
-
-    async def xǁManagedProcessǁread_char_async__mutmut_30(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_30(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4421,7 +4606,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_31(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_31(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4436,13 +4623,17 @@ class ManagedProcess:
             if not char_data:
                 return ""
             return (
-                char_data.decode("utf-8", errors="XXreplaceXX") if isinstance(char_data, bytes) else str(char_data)
+                char_data.decode("utf-8", errors="XXreplaceXX")
+                if isinstance(char_data, bytes)
+                else str(char_data)
             )
         except TimeoutError as e:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_32(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_32(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4463,7 +4654,9 @@ class ManagedProcess:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_33(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_33(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4477,14 +4670,14 @@ class ManagedProcess:
             char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
             if not char_data:
                 return ""
-            return (
-                char_data.decode("utf-8", errors="replace") if isinstance(char_data, bytes) else str(None)
-            )
+            return char_data.decode("utf-8", errors="replace") if isinstance(char_data, bytes) else str(None)
         except TimeoutError as e:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_34(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_34(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4505,7 +4698,9 @@ class ManagedProcess:
             log.debug(None)
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_35(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_35(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4526,7 +4721,9 @@ class ManagedProcess:
             log.debug("XXCharacter read timeout on managed process stdoutXX")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_36(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_36(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4547,7 +4744,9 @@ class ManagedProcess:
             log.debug("character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_37(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_37(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4568,7 +4767,9 @@ class ManagedProcess:
             log.debug("CHARACTER READ TIMEOUT ON MANAGED PROCESS STDOUT")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    async def xǁManagedProcessǁread_char_async__mutmut_38(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def xǁManagedProcessǁread_char_async__mutmut_38(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
@@ -4588,56 +4789,64 @@ class ManagedProcess:
         except TimeoutError as e:
             log.debug("Character read timeout on managed process stdout")
             raise TimeoutError(None) from e
-    
-    xǁManagedProcessǁread_char_async__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁManagedProcessǁread_char_async__mutmut_1': xǁManagedProcessǁread_char_async__mutmut_1, 
-        'xǁManagedProcessǁread_char_async__mutmut_2': xǁManagedProcessǁread_char_async__mutmut_2, 
-        'xǁManagedProcessǁread_char_async__mutmut_3': xǁManagedProcessǁread_char_async__mutmut_3, 
-        'xǁManagedProcessǁread_char_async__mutmut_4': xǁManagedProcessǁread_char_async__mutmut_4, 
-        'xǁManagedProcessǁread_char_async__mutmut_5': xǁManagedProcessǁread_char_async__mutmut_5, 
-        'xǁManagedProcessǁread_char_async__mutmut_6': xǁManagedProcessǁread_char_async__mutmut_6, 
-        'xǁManagedProcessǁread_char_async__mutmut_7': xǁManagedProcessǁread_char_async__mutmut_7, 
-        'xǁManagedProcessǁread_char_async__mutmut_8': xǁManagedProcessǁread_char_async__mutmut_8, 
-        'xǁManagedProcessǁread_char_async__mutmut_9': xǁManagedProcessǁread_char_async__mutmut_9, 
-        'xǁManagedProcessǁread_char_async__mutmut_10': xǁManagedProcessǁread_char_async__mutmut_10, 
-        'xǁManagedProcessǁread_char_async__mutmut_11': xǁManagedProcessǁread_char_async__mutmut_11, 
-        'xǁManagedProcessǁread_char_async__mutmut_12': xǁManagedProcessǁread_char_async__mutmut_12, 
-        'xǁManagedProcessǁread_char_async__mutmut_13': xǁManagedProcessǁread_char_async__mutmut_13, 
-        'xǁManagedProcessǁread_char_async__mutmut_14': xǁManagedProcessǁread_char_async__mutmut_14, 
-        'xǁManagedProcessǁread_char_async__mutmut_15': xǁManagedProcessǁread_char_async__mutmut_15, 
-        'xǁManagedProcessǁread_char_async__mutmut_16': xǁManagedProcessǁread_char_async__mutmut_16, 
-        'xǁManagedProcessǁread_char_async__mutmut_17': xǁManagedProcessǁread_char_async__mutmut_17, 
-        'xǁManagedProcessǁread_char_async__mutmut_18': xǁManagedProcessǁread_char_async__mutmut_18, 
-        'xǁManagedProcessǁread_char_async__mutmut_19': xǁManagedProcessǁread_char_async__mutmut_19, 
-        'xǁManagedProcessǁread_char_async__mutmut_20': xǁManagedProcessǁread_char_async__mutmut_20, 
-        'xǁManagedProcessǁread_char_async__mutmut_21': xǁManagedProcessǁread_char_async__mutmut_21, 
-        'xǁManagedProcessǁread_char_async__mutmut_22': xǁManagedProcessǁread_char_async__mutmut_22, 
-        'xǁManagedProcessǁread_char_async__mutmut_23': xǁManagedProcessǁread_char_async__mutmut_23, 
-        'xǁManagedProcessǁread_char_async__mutmut_24': xǁManagedProcessǁread_char_async__mutmut_24, 
-        'xǁManagedProcessǁread_char_async__mutmut_25': xǁManagedProcessǁread_char_async__mutmut_25, 
-        'xǁManagedProcessǁread_char_async__mutmut_26': xǁManagedProcessǁread_char_async__mutmut_26, 
-        'xǁManagedProcessǁread_char_async__mutmut_27': xǁManagedProcessǁread_char_async__mutmut_27, 
-        'xǁManagedProcessǁread_char_async__mutmut_28': xǁManagedProcessǁread_char_async__mutmut_28, 
-        'xǁManagedProcessǁread_char_async__mutmut_29': xǁManagedProcessǁread_char_async__mutmut_29, 
-        'xǁManagedProcessǁread_char_async__mutmut_30': xǁManagedProcessǁread_char_async__mutmut_30, 
-        'xǁManagedProcessǁread_char_async__mutmut_31': xǁManagedProcessǁread_char_async__mutmut_31, 
-        'xǁManagedProcessǁread_char_async__mutmut_32': xǁManagedProcessǁread_char_async__mutmut_32, 
-        'xǁManagedProcessǁread_char_async__mutmut_33': xǁManagedProcessǁread_char_async__mutmut_33, 
-        'xǁManagedProcessǁread_char_async__mutmut_34': xǁManagedProcessǁread_char_async__mutmut_34, 
-        'xǁManagedProcessǁread_char_async__mutmut_35': xǁManagedProcessǁread_char_async__mutmut_35, 
-        'xǁManagedProcessǁread_char_async__mutmut_36': xǁManagedProcessǁread_char_async__mutmut_36, 
-        'xǁManagedProcessǁread_char_async__mutmut_37': xǁManagedProcessǁread_char_async__mutmut_37, 
-        'xǁManagedProcessǁread_char_async__mutmut_38': xǁManagedProcessǁread_char_async__mutmut_38
-    }
-    
-    def read_char_async(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁManagedProcessǁread_char_async__mutmut_orig"), object.__getattribute__(self, "xǁManagedProcessǁread_char_async__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    read_char_async.__signature__ = _mutmut_signature(xǁManagedProcessǁread_char_async__mutmut_orig)
-    xǁManagedProcessǁread_char_async__mutmut_orig.__name__ = 'xǁManagedProcessǁread_char_async'
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_orig(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    xǁManagedProcessǁread_char_async__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁManagedProcessǁread_char_async__mutmut_1": xǁManagedProcessǁread_char_async__mutmut_1,
+        "xǁManagedProcessǁread_char_async__mutmut_2": xǁManagedProcessǁread_char_async__mutmut_2,
+        "xǁManagedProcessǁread_char_async__mutmut_3": xǁManagedProcessǁread_char_async__mutmut_3,
+        "xǁManagedProcessǁread_char_async__mutmut_4": xǁManagedProcessǁread_char_async__mutmut_4,
+        "xǁManagedProcessǁread_char_async__mutmut_5": xǁManagedProcessǁread_char_async__mutmut_5,
+        "xǁManagedProcessǁread_char_async__mutmut_6": xǁManagedProcessǁread_char_async__mutmut_6,
+        "xǁManagedProcessǁread_char_async__mutmut_7": xǁManagedProcessǁread_char_async__mutmut_7,
+        "xǁManagedProcessǁread_char_async__mutmut_8": xǁManagedProcessǁread_char_async__mutmut_8,
+        "xǁManagedProcessǁread_char_async__mutmut_9": xǁManagedProcessǁread_char_async__mutmut_9,
+        "xǁManagedProcessǁread_char_async__mutmut_10": xǁManagedProcessǁread_char_async__mutmut_10,
+        "xǁManagedProcessǁread_char_async__mutmut_11": xǁManagedProcessǁread_char_async__mutmut_11,
+        "xǁManagedProcessǁread_char_async__mutmut_12": xǁManagedProcessǁread_char_async__mutmut_12,
+        "xǁManagedProcessǁread_char_async__mutmut_13": xǁManagedProcessǁread_char_async__mutmut_13,
+        "xǁManagedProcessǁread_char_async__mutmut_14": xǁManagedProcessǁread_char_async__mutmut_14,
+        "xǁManagedProcessǁread_char_async__mutmut_15": xǁManagedProcessǁread_char_async__mutmut_15,
+        "xǁManagedProcessǁread_char_async__mutmut_16": xǁManagedProcessǁread_char_async__mutmut_16,
+        "xǁManagedProcessǁread_char_async__mutmut_17": xǁManagedProcessǁread_char_async__mutmut_17,
+        "xǁManagedProcessǁread_char_async__mutmut_18": xǁManagedProcessǁread_char_async__mutmut_18,
+        "xǁManagedProcessǁread_char_async__mutmut_19": xǁManagedProcessǁread_char_async__mutmut_19,
+        "xǁManagedProcessǁread_char_async__mutmut_20": xǁManagedProcessǁread_char_async__mutmut_20,
+        "xǁManagedProcessǁread_char_async__mutmut_21": xǁManagedProcessǁread_char_async__mutmut_21,
+        "xǁManagedProcessǁread_char_async__mutmut_22": xǁManagedProcessǁread_char_async__mutmut_22,
+        "xǁManagedProcessǁread_char_async__mutmut_23": xǁManagedProcessǁread_char_async__mutmut_23,
+        "xǁManagedProcessǁread_char_async__mutmut_24": xǁManagedProcessǁread_char_async__mutmut_24,
+        "xǁManagedProcessǁread_char_async__mutmut_25": xǁManagedProcessǁread_char_async__mutmut_25,
+        "xǁManagedProcessǁread_char_async__mutmut_26": xǁManagedProcessǁread_char_async__mutmut_26,
+        "xǁManagedProcessǁread_char_async__mutmut_27": xǁManagedProcessǁread_char_async__mutmut_27,
+        "xǁManagedProcessǁread_char_async__mutmut_28": xǁManagedProcessǁread_char_async__mutmut_28,
+        "xǁManagedProcessǁread_char_async__mutmut_29": xǁManagedProcessǁread_char_async__mutmut_29,
+        "xǁManagedProcessǁread_char_async__mutmut_30": xǁManagedProcessǁread_char_async__mutmut_30,
+        "xǁManagedProcessǁread_char_async__mutmut_31": xǁManagedProcessǁread_char_async__mutmut_31,
+        "xǁManagedProcessǁread_char_async__mutmut_32": xǁManagedProcessǁread_char_async__mutmut_32,
+        "xǁManagedProcessǁread_char_async__mutmut_33": xǁManagedProcessǁread_char_async__mutmut_33,
+        "xǁManagedProcessǁread_char_async__mutmut_34": xǁManagedProcessǁread_char_async__mutmut_34,
+        "xǁManagedProcessǁread_char_async__mutmut_35": xǁManagedProcessǁread_char_async__mutmut_35,
+        "xǁManagedProcessǁread_char_async__mutmut_36": xǁManagedProcessǁread_char_async__mutmut_36,
+        "xǁManagedProcessǁread_char_async__mutmut_37": xǁManagedProcessǁread_char_async__mutmut_37,
+        "xǁManagedProcessǁread_char_async__mutmut_38": xǁManagedProcessǁread_char_async__mutmut_38,
+    }
+
+    def read_char_async(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁManagedProcessǁread_char_async__mutmut_orig"),
+            object.__getattribute__(self, "xǁManagedProcessǁread_char_async__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    read_char_async.__signature__ = _mutmut_signature(xǁManagedProcessǁread_char_async__mutmut_orig)
+    xǁManagedProcessǁread_char_async__mutmut_orig.__name__ = "xǁManagedProcessǁread_char_async"
+
+    def xǁManagedProcessǁterminate_gracefully__mutmut_orig(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -4690,7 +4899,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_1(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_1(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -4743,7 +4954,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_2(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_2(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -4796,7 +5009,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_3(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_3(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -4849,7 +5064,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_4(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_4(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -4902,7 +5119,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_5(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_5(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -4955,7 +5174,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_6(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_6(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5008,7 +5229,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_7(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_7(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5022,7 +5245,9 @@ class ManagedProcess:
             return True
 
         if self._process.poll() is not None:
-            log.debug("Process already terminated", )
+            log.debug(
+                "Process already terminated",
+            )
             return True
 
         log.debug("🛑 Terminating managed process gracefully", pid=self._process.pid)
@@ -5061,7 +5286,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_8(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_8(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5114,7 +5341,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_9(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_9(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5167,7 +5396,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_10(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_10(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5220,7 +5451,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_11(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_11(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5273,7 +5506,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_12(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_12(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5326,7 +5561,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_13(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_13(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5379,7 +5616,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_14(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_14(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5432,7 +5671,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_15(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_15(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5449,7 +5690,9 @@ class ManagedProcess:
             log.debug("Process already terminated", returncode=self._process.returncode)
             return True
 
-        log.debug("🛑 Terminating managed process gracefully", )
+        log.debug(
+            "🛑 Terminating managed process gracefully",
+        )
 
         try:
             # Send SIGTERM
@@ -5485,7 +5728,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_16(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_16(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5538,7 +5783,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_17(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_17(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5591,7 +5838,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_18(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_18(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5644,7 +5893,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_19(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_19(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5697,7 +5948,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_20(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_20(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5750,7 +6003,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_21(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_21(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5803,7 +6058,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_22(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_22(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5825,7 +6082,9 @@ class ManagedProcess:
         try:
             # Send SIGTERM
             self._process.terminate()
-            log.debug("🛑 Sent SIGTERM to process", )
+            log.debug(
+                "🛑 Sent SIGTERM to process",
+            )
 
             # Wait for graceful termination
             try:
@@ -5856,7 +6115,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_23(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_23(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5909,7 +6170,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_24(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_24(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -5962,7 +6225,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_25(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_25(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6015,7 +6280,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_26(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_26(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6068,7 +6335,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_27(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_27(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6121,7 +6390,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_28(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_28(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6174,7 +6445,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_29(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_29(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6227,7 +6500,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_30(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_30(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6254,7 +6529,9 @@ class ManagedProcess:
             # Wait for graceful termination
             try:
                 self._process.wait(timeout=timeout)
-                log.info("🛑 Process terminated gracefully", )
+                log.info(
+                    "🛑 Process terminated gracefully",
+                )
                 return True
             except subprocess.TimeoutExpired:
                 log.warning(
@@ -6280,7 +6557,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_31(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_31(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6333,7 +6612,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_32(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_32(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6386,7 +6667,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_33(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_33(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6439,7 +6722,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_34(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_34(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6492,7 +6777,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_35(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_35(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6545,7 +6832,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_36(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_36(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6598,7 +6887,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_37(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_37(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6650,7 +6941,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_38(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_38(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6682,7 +6975,7 @@ class ManagedProcess:
             except subprocess.TimeoutExpired:
                 log.warning(
                     "🛑 Process did not terminate gracefully, force killing",
-                    )
+                )
                 # Force kill
                 self._process.kill()
                 try:
@@ -6702,7 +6995,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_39(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_39(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6755,7 +7050,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_40(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_40(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6808,7 +7105,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_41(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_41(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6861,7 +7160,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_42(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_42(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6914,7 +7215,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_43(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_43(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -6967,7 +7270,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_44(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_44(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7020,7 +7325,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_45(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_45(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7073,7 +7380,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_46(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_46(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7126,7 +7435,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_47(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_47(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7164,7 +7475,9 @@ class ManagedProcess:
                 self._process.kill()
                 try:
                     self._process.wait(timeout=2.0)
-                    log.info("🛑 Process force killed", )
+                    log.info(
+                        "🛑 Process force killed",
+                    )
                     return False
                 except subprocess.TimeoutExpired:
                     log.error("🛑 Process could not be killed", pid=self._process.pid)
@@ -7179,7 +7492,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_48(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_48(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7232,7 +7547,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_49(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_49(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7285,7 +7602,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_50(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_50(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7338,7 +7657,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_51(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_51(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7391,7 +7712,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_52(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_52(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7444,7 +7767,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_53(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_53(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7497,7 +7822,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_54(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_54(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7550,7 +7877,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_55(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_55(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7591,7 +7920,9 @@ class ManagedProcess:
                     log.info("🛑 Process force killed", pid=self._process.pid)
                     return False
                 except subprocess.TimeoutExpired:
-                    log.error("🛑 Process could not be killed", )
+                    log.error(
+                        "🛑 Process could not be killed",
+                    )
                     return False
 
         except Exception as e:
@@ -7603,7 +7934,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_56(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_56(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7656,7 +7989,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_57(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_57(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7709,7 +8044,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_58(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_58(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7762,7 +8099,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_59(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_59(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7815,7 +8154,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_60(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_60(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7868,7 +8209,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_61(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_61(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7921,7 +8264,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_62(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_62(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -7974,7 +8319,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_63(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_63(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8027,7 +8374,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_64(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_64(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8079,7 +8428,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_65(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_65(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8131,7 +8482,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_66(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_66(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8183,7 +8536,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_67(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_67(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8232,10 +8587,12 @@ class ManagedProcess:
                 "🛑❌ Error terminating process",
                 pid=self._process.pid if self._process else None,
                 error=str(e),
-                )
+            )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_68(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_68(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8288,7 +8645,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_69(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_69(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8341,7 +8700,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_70(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_70(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8394,7 +8755,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_71(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_71(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8447,7 +8810,9 @@ class ManagedProcess:
             )
             return False
 
-    def xǁManagedProcessǁterminate_gracefully__mutmut_72(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def xǁManagedProcessǁterminate_gracefully__mutmut_72(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """Terminate the process gracefully with a timeout.
 
         Args:
@@ -8499,88 +8864,94 @@ class ManagedProcess:
                 trace=traceback.format_exc(),
             )
             return True
-    
-    xǁManagedProcessǁterminate_gracefully__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁManagedProcessǁterminate_gracefully__mutmut_1': xǁManagedProcessǁterminate_gracefully__mutmut_1, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_2': xǁManagedProcessǁterminate_gracefully__mutmut_2, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_3': xǁManagedProcessǁterminate_gracefully__mutmut_3, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_4': xǁManagedProcessǁterminate_gracefully__mutmut_4, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_5': xǁManagedProcessǁterminate_gracefully__mutmut_5, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_6': xǁManagedProcessǁterminate_gracefully__mutmut_6, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_7': xǁManagedProcessǁterminate_gracefully__mutmut_7, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_8': xǁManagedProcessǁterminate_gracefully__mutmut_8, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_9': xǁManagedProcessǁterminate_gracefully__mutmut_9, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_10': xǁManagedProcessǁterminate_gracefully__mutmut_10, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_11': xǁManagedProcessǁterminate_gracefully__mutmut_11, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_12': xǁManagedProcessǁterminate_gracefully__mutmut_12, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_13': xǁManagedProcessǁterminate_gracefully__mutmut_13, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_14': xǁManagedProcessǁterminate_gracefully__mutmut_14, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_15': xǁManagedProcessǁterminate_gracefully__mutmut_15, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_16': xǁManagedProcessǁterminate_gracefully__mutmut_16, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_17': xǁManagedProcessǁterminate_gracefully__mutmut_17, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_18': xǁManagedProcessǁterminate_gracefully__mutmut_18, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_19': xǁManagedProcessǁterminate_gracefully__mutmut_19, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_20': xǁManagedProcessǁterminate_gracefully__mutmut_20, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_21': xǁManagedProcessǁterminate_gracefully__mutmut_21, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_22': xǁManagedProcessǁterminate_gracefully__mutmut_22, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_23': xǁManagedProcessǁterminate_gracefully__mutmut_23, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_24': xǁManagedProcessǁterminate_gracefully__mutmut_24, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_25': xǁManagedProcessǁterminate_gracefully__mutmut_25, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_26': xǁManagedProcessǁterminate_gracefully__mutmut_26, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_27': xǁManagedProcessǁterminate_gracefully__mutmut_27, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_28': xǁManagedProcessǁterminate_gracefully__mutmut_28, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_29': xǁManagedProcessǁterminate_gracefully__mutmut_29, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_30': xǁManagedProcessǁterminate_gracefully__mutmut_30, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_31': xǁManagedProcessǁterminate_gracefully__mutmut_31, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_32': xǁManagedProcessǁterminate_gracefully__mutmut_32, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_33': xǁManagedProcessǁterminate_gracefully__mutmut_33, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_34': xǁManagedProcessǁterminate_gracefully__mutmut_34, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_35': xǁManagedProcessǁterminate_gracefully__mutmut_35, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_36': xǁManagedProcessǁterminate_gracefully__mutmut_36, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_37': xǁManagedProcessǁterminate_gracefully__mutmut_37, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_38': xǁManagedProcessǁterminate_gracefully__mutmut_38, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_39': xǁManagedProcessǁterminate_gracefully__mutmut_39, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_40': xǁManagedProcessǁterminate_gracefully__mutmut_40, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_41': xǁManagedProcessǁterminate_gracefully__mutmut_41, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_42': xǁManagedProcessǁterminate_gracefully__mutmut_42, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_43': xǁManagedProcessǁterminate_gracefully__mutmut_43, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_44': xǁManagedProcessǁterminate_gracefully__mutmut_44, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_45': xǁManagedProcessǁterminate_gracefully__mutmut_45, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_46': xǁManagedProcessǁterminate_gracefully__mutmut_46, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_47': xǁManagedProcessǁterminate_gracefully__mutmut_47, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_48': xǁManagedProcessǁterminate_gracefully__mutmut_48, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_49': xǁManagedProcessǁterminate_gracefully__mutmut_49, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_50': xǁManagedProcessǁterminate_gracefully__mutmut_50, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_51': xǁManagedProcessǁterminate_gracefully__mutmut_51, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_52': xǁManagedProcessǁterminate_gracefully__mutmut_52, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_53': xǁManagedProcessǁterminate_gracefully__mutmut_53, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_54': xǁManagedProcessǁterminate_gracefully__mutmut_54, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_55': xǁManagedProcessǁterminate_gracefully__mutmut_55, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_56': xǁManagedProcessǁterminate_gracefully__mutmut_56, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_57': xǁManagedProcessǁterminate_gracefully__mutmut_57, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_58': xǁManagedProcessǁterminate_gracefully__mutmut_58, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_59': xǁManagedProcessǁterminate_gracefully__mutmut_59, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_60': xǁManagedProcessǁterminate_gracefully__mutmut_60, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_61': xǁManagedProcessǁterminate_gracefully__mutmut_61, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_62': xǁManagedProcessǁterminate_gracefully__mutmut_62, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_63': xǁManagedProcessǁterminate_gracefully__mutmut_63, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_64': xǁManagedProcessǁterminate_gracefully__mutmut_64, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_65': xǁManagedProcessǁterminate_gracefully__mutmut_65, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_66': xǁManagedProcessǁterminate_gracefully__mutmut_66, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_67': xǁManagedProcessǁterminate_gracefully__mutmut_67, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_68': xǁManagedProcessǁterminate_gracefully__mutmut_68, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_69': xǁManagedProcessǁterminate_gracefully__mutmut_69, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_70': xǁManagedProcessǁterminate_gracefully__mutmut_70, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_71': xǁManagedProcessǁterminate_gracefully__mutmut_71, 
-        'xǁManagedProcessǁterminate_gracefully__mutmut_72': xǁManagedProcessǁterminate_gracefully__mutmut_72
+
+    xǁManagedProcessǁterminate_gracefully__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁManagedProcessǁterminate_gracefully__mutmut_1": xǁManagedProcessǁterminate_gracefully__mutmut_1,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_2": xǁManagedProcessǁterminate_gracefully__mutmut_2,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_3": xǁManagedProcessǁterminate_gracefully__mutmut_3,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_4": xǁManagedProcessǁterminate_gracefully__mutmut_4,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_5": xǁManagedProcessǁterminate_gracefully__mutmut_5,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_6": xǁManagedProcessǁterminate_gracefully__mutmut_6,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_7": xǁManagedProcessǁterminate_gracefully__mutmut_7,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_8": xǁManagedProcessǁterminate_gracefully__mutmut_8,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_9": xǁManagedProcessǁterminate_gracefully__mutmut_9,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_10": xǁManagedProcessǁterminate_gracefully__mutmut_10,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_11": xǁManagedProcessǁterminate_gracefully__mutmut_11,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_12": xǁManagedProcessǁterminate_gracefully__mutmut_12,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_13": xǁManagedProcessǁterminate_gracefully__mutmut_13,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_14": xǁManagedProcessǁterminate_gracefully__mutmut_14,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_15": xǁManagedProcessǁterminate_gracefully__mutmut_15,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_16": xǁManagedProcessǁterminate_gracefully__mutmut_16,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_17": xǁManagedProcessǁterminate_gracefully__mutmut_17,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_18": xǁManagedProcessǁterminate_gracefully__mutmut_18,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_19": xǁManagedProcessǁterminate_gracefully__mutmut_19,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_20": xǁManagedProcessǁterminate_gracefully__mutmut_20,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_21": xǁManagedProcessǁterminate_gracefully__mutmut_21,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_22": xǁManagedProcessǁterminate_gracefully__mutmut_22,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_23": xǁManagedProcessǁterminate_gracefully__mutmut_23,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_24": xǁManagedProcessǁterminate_gracefully__mutmut_24,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_25": xǁManagedProcessǁterminate_gracefully__mutmut_25,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_26": xǁManagedProcessǁterminate_gracefully__mutmut_26,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_27": xǁManagedProcessǁterminate_gracefully__mutmut_27,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_28": xǁManagedProcessǁterminate_gracefully__mutmut_28,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_29": xǁManagedProcessǁterminate_gracefully__mutmut_29,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_30": xǁManagedProcessǁterminate_gracefully__mutmut_30,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_31": xǁManagedProcessǁterminate_gracefully__mutmut_31,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_32": xǁManagedProcessǁterminate_gracefully__mutmut_32,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_33": xǁManagedProcessǁterminate_gracefully__mutmut_33,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_34": xǁManagedProcessǁterminate_gracefully__mutmut_34,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_35": xǁManagedProcessǁterminate_gracefully__mutmut_35,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_36": xǁManagedProcessǁterminate_gracefully__mutmut_36,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_37": xǁManagedProcessǁterminate_gracefully__mutmut_37,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_38": xǁManagedProcessǁterminate_gracefully__mutmut_38,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_39": xǁManagedProcessǁterminate_gracefully__mutmut_39,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_40": xǁManagedProcessǁterminate_gracefully__mutmut_40,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_41": xǁManagedProcessǁterminate_gracefully__mutmut_41,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_42": xǁManagedProcessǁterminate_gracefully__mutmut_42,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_43": xǁManagedProcessǁterminate_gracefully__mutmut_43,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_44": xǁManagedProcessǁterminate_gracefully__mutmut_44,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_45": xǁManagedProcessǁterminate_gracefully__mutmut_45,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_46": xǁManagedProcessǁterminate_gracefully__mutmut_46,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_47": xǁManagedProcessǁterminate_gracefully__mutmut_47,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_48": xǁManagedProcessǁterminate_gracefully__mutmut_48,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_49": xǁManagedProcessǁterminate_gracefully__mutmut_49,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_50": xǁManagedProcessǁterminate_gracefully__mutmut_50,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_51": xǁManagedProcessǁterminate_gracefully__mutmut_51,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_52": xǁManagedProcessǁterminate_gracefully__mutmut_52,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_53": xǁManagedProcessǁterminate_gracefully__mutmut_53,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_54": xǁManagedProcessǁterminate_gracefully__mutmut_54,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_55": xǁManagedProcessǁterminate_gracefully__mutmut_55,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_56": xǁManagedProcessǁterminate_gracefully__mutmut_56,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_57": xǁManagedProcessǁterminate_gracefully__mutmut_57,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_58": xǁManagedProcessǁterminate_gracefully__mutmut_58,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_59": xǁManagedProcessǁterminate_gracefully__mutmut_59,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_60": xǁManagedProcessǁterminate_gracefully__mutmut_60,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_61": xǁManagedProcessǁterminate_gracefully__mutmut_61,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_62": xǁManagedProcessǁterminate_gracefully__mutmut_62,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_63": xǁManagedProcessǁterminate_gracefully__mutmut_63,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_64": xǁManagedProcessǁterminate_gracefully__mutmut_64,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_65": xǁManagedProcessǁterminate_gracefully__mutmut_65,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_66": xǁManagedProcessǁterminate_gracefully__mutmut_66,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_67": xǁManagedProcessǁterminate_gracefully__mutmut_67,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_68": xǁManagedProcessǁterminate_gracefully__mutmut_68,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_69": xǁManagedProcessǁterminate_gracefully__mutmut_69,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_70": xǁManagedProcessǁterminate_gracefully__mutmut_70,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_71": xǁManagedProcessǁterminate_gracefully__mutmut_71,
+        "xǁManagedProcessǁterminate_gracefully__mutmut_72": xǁManagedProcessǁterminate_gracefully__mutmut_72,
     }
-    
+
     def terminate_gracefully(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁManagedProcessǁterminate_gracefully__mutmut_orig"), object.__getattribute__(self, "xǁManagedProcessǁterminate_gracefully__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁManagedProcessǁterminate_gracefully__mutmut_orig"),
+            object.__getattribute__(self, "xǁManagedProcessǁterminate_gracefully__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     terminate_gracefully.__signature__ = _mutmut_signature(xǁManagedProcessǁterminate_gracefully__mutmut_orig)
-    xǁManagedProcessǁterminate_gracefully__mutmut_orig.__name__ = 'xǁManagedProcessǁterminate_gracefully'
+    xǁManagedProcessǁterminate_gracefully__mutmut_orig.__name__ = "xǁManagedProcessǁterminate_gracefully"
 
     def xǁManagedProcessǁcleanup__mutmut_orig(self) -> None:
         """Clean up process resources."""
@@ -8698,24 +9069,30 @@ class ManagedProcess:
             self._process = None
 
         log.debug("🧹 MANAGED PROCESS CLEANUP COMPLETED")
-    
-    xǁManagedProcessǁcleanup__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁManagedProcessǁcleanup__mutmut_1': xǁManagedProcessǁcleanup__mutmut_1, 
-        'xǁManagedProcessǁcleanup__mutmut_2': xǁManagedProcessǁcleanup__mutmut_2, 
-        'xǁManagedProcessǁcleanup__mutmut_3': xǁManagedProcessǁcleanup__mutmut_3, 
-        'xǁManagedProcessǁcleanup__mutmut_4': xǁManagedProcessǁcleanup__mutmut_4, 
-        'xǁManagedProcessǁcleanup__mutmut_5': xǁManagedProcessǁcleanup__mutmut_5, 
-        'xǁManagedProcessǁcleanup__mutmut_6': xǁManagedProcessǁcleanup__mutmut_6, 
-        'xǁManagedProcessǁcleanup__mutmut_7': xǁManagedProcessǁcleanup__mutmut_7, 
-        'xǁManagedProcessǁcleanup__mutmut_8': xǁManagedProcessǁcleanup__mutmut_8
+
+    xǁManagedProcessǁcleanup__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁManagedProcessǁcleanup__mutmut_1": xǁManagedProcessǁcleanup__mutmut_1,
+        "xǁManagedProcessǁcleanup__mutmut_2": xǁManagedProcessǁcleanup__mutmut_2,
+        "xǁManagedProcessǁcleanup__mutmut_3": xǁManagedProcessǁcleanup__mutmut_3,
+        "xǁManagedProcessǁcleanup__mutmut_4": xǁManagedProcessǁcleanup__mutmut_4,
+        "xǁManagedProcessǁcleanup__mutmut_5": xǁManagedProcessǁcleanup__mutmut_5,
+        "xǁManagedProcessǁcleanup__mutmut_6": xǁManagedProcessǁcleanup__mutmut_6,
+        "xǁManagedProcessǁcleanup__mutmut_7": xǁManagedProcessǁcleanup__mutmut_7,
+        "xǁManagedProcessǁcleanup__mutmut_8": xǁManagedProcessǁcleanup__mutmut_8,
     }
-    
+
     def cleanup(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁManagedProcessǁcleanup__mutmut_orig"), object.__getattribute__(self, "xǁManagedProcessǁcleanup__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁManagedProcessǁcleanup__mutmut_orig"),
+            object.__getattribute__(self, "xǁManagedProcessǁcleanup__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     cleanup.__signature__ = _mutmut_signature(xǁManagedProcessǁcleanup__mutmut_orig)
-    xǁManagedProcessǁcleanup__mutmut_orig.__name__ = 'xǁManagedProcessǁcleanup'
+    xǁManagedProcessǁcleanup__mutmut_orig.__name__ = "xǁManagedProcessǁcleanup"
 
     def __enter__(self) -> ManagedProcess:
         """Context manager entry."""

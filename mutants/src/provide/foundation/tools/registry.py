@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -73,17 +76,23 @@ class ToolRegistry:
         """Initialize the tool registry."""
         self.hub = None
         self._discover_tools()
-    
-    xǁToolRegistryǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolRegistryǁ__init____mutmut_1': xǁToolRegistryǁ__init____mutmut_1
+
+    xǁToolRegistryǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolRegistryǁ__init____mutmut_1": xǁToolRegistryǁ__init____mutmut_1
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolRegistryǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁToolRegistryǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolRegistryǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁToolRegistryǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁToolRegistryǁ__init____mutmut_orig)
-    xǁToolRegistryǁ__init____mutmut_orig.__name__ = 'xǁToolRegistryǁ__init__'
+    xǁToolRegistryǁ__init____mutmut_orig.__name__ = "xǁToolRegistryǁ__init__"
 
     def xǁToolRegistryǁ_discover_tools__mutmut_orig(self) -> None:
         """Auto-discover tool managers via entry points.
@@ -309,7 +318,9 @@ class ToolRegistry:
             for ep in group_eps:
                 try:
                     manager_class = ep.load()
-                    self.register_tool_manager(ep.name, )
+                    self.register_tool_manager(
+                        ep.name,
+                    )
                     log.debug(f"Auto-discovered tool manager: {ep.name}")
                 except Exception as e:
                     log.warning(f"Failed to load tool manager {ep.name}: {e}")
@@ -378,29 +389,35 @@ class ToolRegistry:
                     log.warning(f"Failed to load tool manager {ep.name}: {e}")
         except Exception as e:
             log.debug(None)
-    
-    xǁToolRegistryǁ_discover_tools__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolRegistryǁ_discover_tools__mutmut_1': xǁToolRegistryǁ_discover_tools__mutmut_1, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_2': xǁToolRegistryǁ_discover_tools__mutmut_2, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_3': xǁToolRegistryǁ_discover_tools__mutmut_3, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_4': xǁToolRegistryǁ_discover_tools__mutmut_4, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_5': xǁToolRegistryǁ_discover_tools__mutmut_5, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_6': xǁToolRegistryǁ_discover_tools__mutmut_6, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_7': xǁToolRegistryǁ_discover_tools__mutmut_7, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_8': xǁToolRegistryǁ_discover_tools__mutmut_8, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_9': xǁToolRegistryǁ_discover_tools__mutmut_9, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_10': xǁToolRegistryǁ_discover_tools__mutmut_10, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_11': xǁToolRegistryǁ_discover_tools__mutmut_11, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_12': xǁToolRegistryǁ_discover_tools__mutmut_12, 
-        'xǁToolRegistryǁ_discover_tools__mutmut_13': xǁToolRegistryǁ_discover_tools__mutmut_13
+
+    xǁToolRegistryǁ_discover_tools__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolRegistryǁ_discover_tools__mutmut_1": xǁToolRegistryǁ_discover_tools__mutmut_1,
+        "xǁToolRegistryǁ_discover_tools__mutmut_2": xǁToolRegistryǁ_discover_tools__mutmut_2,
+        "xǁToolRegistryǁ_discover_tools__mutmut_3": xǁToolRegistryǁ_discover_tools__mutmut_3,
+        "xǁToolRegistryǁ_discover_tools__mutmut_4": xǁToolRegistryǁ_discover_tools__mutmut_4,
+        "xǁToolRegistryǁ_discover_tools__mutmut_5": xǁToolRegistryǁ_discover_tools__mutmut_5,
+        "xǁToolRegistryǁ_discover_tools__mutmut_6": xǁToolRegistryǁ_discover_tools__mutmut_6,
+        "xǁToolRegistryǁ_discover_tools__mutmut_7": xǁToolRegistryǁ_discover_tools__mutmut_7,
+        "xǁToolRegistryǁ_discover_tools__mutmut_8": xǁToolRegistryǁ_discover_tools__mutmut_8,
+        "xǁToolRegistryǁ_discover_tools__mutmut_9": xǁToolRegistryǁ_discover_tools__mutmut_9,
+        "xǁToolRegistryǁ_discover_tools__mutmut_10": xǁToolRegistryǁ_discover_tools__mutmut_10,
+        "xǁToolRegistryǁ_discover_tools__mutmut_11": xǁToolRegistryǁ_discover_tools__mutmut_11,
+        "xǁToolRegistryǁ_discover_tools__mutmut_12": xǁToolRegistryǁ_discover_tools__mutmut_12,
+        "xǁToolRegistryǁ_discover_tools__mutmut_13": xǁToolRegistryǁ_discover_tools__mutmut_13,
     }
-    
+
     def _discover_tools(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolRegistryǁ_discover_tools__mutmut_orig"), object.__getattribute__(self, "xǁToolRegistryǁ_discover_tools__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolRegistryǁ_discover_tools__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolRegistryǁ_discover_tools__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _discover_tools.__signature__ = _mutmut_signature(xǁToolRegistryǁ_discover_tools__mutmut_orig)
-    xǁToolRegistryǁ_discover_tools__mutmut_orig.__name__ = 'xǁToolRegistryǁ_discover_tools'
+    xǁToolRegistryǁ_discover_tools__mutmut_orig.__name__ = "xǁToolRegistryǁ_discover_tools"
 
     def xǁToolRegistryǁregister_tool_manager__mutmut_orig(
         self,
@@ -1048,7 +1065,7 @@ class ToolRegistry:
             dimension=self.DIMENSION,
             metadata=metadata,
             aliases=aliases,
-            )
+        )
 
         log.info(f"Registered tool manager: {name}")
 
@@ -1117,37 +1134,43 @@ class ToolRegistry:
         )
 
         log.info(None)
-    
-    xǁToolRegistryǁregister_tool_manager__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolRegistryǁregister_tool_manager__mutmut_1': xǁToolRegistryǁregister_tool_manager__mutmut_1, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_2': xǁToolRegistryǁregister_tool_manager__mutmut_2, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_3': xǁToolRegistryǁregister_tool_manager__mutmut_3, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_4': xǁToolRegistryǁregister_tool_manager__mutmut_4, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_5': xǁToolRegistryǁregister_tool_manager__mutmut_5, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_6': xǁToolRegistryǁregister_tool_manager__mutmut_6, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_7': xǁToolRegistryǁregister_tool_manager__mutmut_7, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_8': xǁToolRegistryǁregister_tool_manager__mutmut_8, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_9': xǁToolRegistryǁregister_tool_manager__mutmut_9, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_10': xǁToolRegistryǁregister_tool_manager__mutmut_10, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_11': xǁToolRegistryǁregister_tool_manager__mutmut_11, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_12': xǁToolRegistryǁregister_tool_manager__mutmut_12, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_13': xǁToolRegistryǁregister_tool_manager__mutmut_13, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_14': xǁToolRegistryǁregister_tool_manager__mutmut_14, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_15': xǁToolRegistryǁregister_tool_manager__mutmut_15, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_16': xǁToolRegistryǁregister_tool_manager__mutmut_16, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_17': xǁToolRegistryǁregister_tool_manager__mutmut_17, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_18': xǁToolRegistryǁregister_tool_manager__mutmut_18, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_19': xǁToolRegistryǁregister_tool_manager__mutmut_19, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_20': xǁToolRegistryǁregister_tool_manager__mutmut_20, 
-        'xǁToolRegistryǁregister_tool_manager__mutmut_21': xǁToolRegistryǁregister_tool_manager__mutmut_21
+
+    xǁToolRegistryǁregister_tool_manager__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolRegistryǁregister_tool_manager__mutmut_1": xǁToolRegistryǁregister_tool_manager__mutmut_1,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_2": xǁToolRegistryǁregister_tool_manager__mutmut_2,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_3": xǁToolRegistryǁregister_tool_manager__mutmut_3,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_4": xǁToolRegistryǁregister_tool_manager__mutmut_4,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_5": xǁToolRegistryǁregister_tool_manager__mutmut_5,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_6": xǁToolRegistryǁregister_tool_manager__mutmut_6,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_7": xǁToolRegistryǁregister_tool_manager__mutmut_7,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_8": xǁToolRegistryǁregister_tool_manager__mutmut_8,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_9": xǁToolRegistryǁregister_tool_manager__mutmut_9,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_10": xǁToolRegistryǁregister_tool_manager__mutmut_10,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_11": xǁToolRegistryǁregister_tool_manager__mutmut_11,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_12": xǁToolRegistryǁregister_tool_manager__mutmut_12,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_13": xǁToolRegistryǁregister_tool_manager__mutmut_13,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_14": xǁToolRegistryǁregister_tool_manager__mutmut_14,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_15": xǁToolRegistryǁregister_tool_manager__mutmut_15,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_16": xǁToolRegistryǁregister_tool_manager__mutmut_16,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_17": xǁToolRegistryǁregister_tool_manager__mutmut_17,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_18": xǁToolRegistryǁregister_tool_manager__mutmut_18,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_19": xǁToolRegistryǁregister_tool_manager__mutmut_19,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_20": xǁToolRegistryǁregister_tool_manager__mutmut_20,
+        "xǁToolRegistryǁregister_tool_manager__mutmut_21": xǁToolRegistryǁregister_tool_manager__mutmut_21,
     }
-    
+
     def register_tool_manager(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolRegistryǁregister_tool_manager__mutmut_orig"), object.__getattribute__(self, "xǁToolRegistryǁregister_tool_manager__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolRegistryǁregister_tool_manager__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolRegistryǁregister_tool_manager__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     register_tool_manager.__signature__ = _mutmut_signature(xǁToolRegistryǁregister_tool_manager__mutmut_orig)
-    xǁToolRegistryǁregister_tool_manager__mutmut_orig.__name__ = 'xǁToolRegistryǁregister_tool_manager'
+    xǁToolRegistryǁregister_tool_manager__mutmut_orig.__name__ = "xǁToolRegistryǁregister_tool_manager"
 
     def xǁToolRegistryǁget_tool_manager_class__mutmut_orig(self, name: str) -> type[BaseToolManager] | None:
         """Get a tool manager class by name.
@@ -1207,23 +1230,35 @@ class ToolRegistry:
             Tool manager class, or None if not found.
 
         """
-        return self.hub._component_registry.get(name, )
-    
-    xǁToolRegistryǁget_tool_manager_class__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolRegistryǁget_tool_manager_class__mutmut_1': xǁToolRegistryǁget_tool_manager_class__mutmut_1, 
-        'xǁToolRegistryǁget_tool_manager_class__mutmut_2': xǁToolRegistryǁget_tool_manager_class__mutmut_2, 
-        'xǁToolRegistryǁget_tool_manager_class__mutmut_3': xǁToolRegistryǁget_tool_manager_class__mutmut_3, 
-        'xǁToolRegistryǁget_tool_manager_class__mutmut_4': xǁToolRegistryǁget_tool_manager_class__mutmut_4
-    }
-    
-    def get_tool_manager_class(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolRegistryǁget_tool_manager_class__mutmut_orig"), object.__getattribute__(self, "xǁToolRegistryǁget_tool_manager_class__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    get_tool_manager_class.__signature__ = _mutmut_signature(xǁToolRegistryǁget_tool_manager_class__mutmut_orig)
-    xǁToolRegistryǁget_tool_manager_class__mutmut_orig.__name__ = 'xǁToolRegistryǁget_tool_manager_class'
+        return self.hub._component_registry.get(
+            name,
+        )
 
-    def xǁToolRegistryǁcreate_tool_manager__mutmut_orig(self, name: str, config: BaseConfig) -> BaseToolManager | None:
+    xǁToolRegistryǁget_tool_manager_class__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolRegistryǁget_tool_manager_class__mutmut_1": xǁToolRegistryǁget_tool_manager_class__mutmut_1,
+        "xǁToolRegistryǁget_tool_manager_class__mutmut_2": xǁToolRegistryǁget_tool_manager_class__mutmut_2,
+        "xǁToolRegistryǁget_tool_manager_class__mutmut_3": xǁToolRegistryǁget_tool_manager_class__mutmut_3,
+        "xǁToolRegistryǁget_tool_manager_class__mutmut_4": xǁToolRegistryǁget_tool_manager_class__mutmut_4,
+    }
+
+    def get_tool_manager_class(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolRegistryǁget_tool_manager_class__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolRegistryǁget_tool_manager_class__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    get_tool_manager_class.__signature__ = _mutmut_signature(
+        xǁToolRegistryǁget_tool_manager_class__mutmut_orig
+    )
+    xǁToolRegistryǁget_tool_manager_class__mutmut_orig.__name__ = "xǁToolRegistryǁget_tool_manager_class"
+
+    def xǁToolRegistryǁcreate_tool_manager__mutmut_orig(
+        self, name: str, config: BaseConfig
+    ) -> BaseToolManager | None:
         """Create a tool manager instance.
 
         Args:
@@ -1239,7 +1274,9 @@ class ToolRegistry:
             return manager_class(config)
         return None
 
-    def xǁToolRegistryǁcreate_tool_manager__mutmut_1(self, name: str, config: BaseConfig) -> BaseToolManager | None:
+    def xǁToolRegistryǁcreate_tool_manager__mutmut_1(
+        self, name: str, config: BaseConfig
+    ) -> BaseToolManager | None:
         """Create a tool manager instance.
 
         Args:
@@ -1255,7 +1292,9 @@ class ToolRegistry:
             return manager_class(config)
         return None
 
-    def xǁToolRegistryǁcreate_tool_manager__mutmut_2(self, name: str, config: BaseConfig) -> BaseToolManager | None:
+    def xǁToolRegistryǁcreate_tool_manager__mutmut_2(
+        self, name: str, config: BaseConfig
+    ) -> BaseToolManager | None:
         """Create a tool manager instance.
 
         Args:
@@ -1271,7 +1310,9 @@ class ToolRegistry:
             return manager_class(config)
         return None
 
-    def xǁToolRegistryǁcreate_tool_manager__mutmut_3(self, name: str, config: BaseConfig) -> BaseToolManager | None:
+    def xǁToolRegistryǁcreate_tool_manager__mutmut_3(
+        self, name: str, config: BaseConfig
+    ) -> BaseToolManager | None:
         """Create a tool manager instance.
 
         Args:
@@ -1286,19 +1327,25 @@ class ToolRegistry:
         if manager_class:
             return manager_class(None)
         return None
-    
-    xǁToolRegistryǁcreate_tool_manager__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolRegistryǁcreate_tool_manager__mutmut_1': xǁToolRegistryǁcreate_tool_manager__mutmut_1, 
-        'xǁToolRegistryǁcreate_tool_manager__mutmut_2': xǁToolRegistryǁcreate_tool_manager__mutmut_2, 
-        'xǁToolRegistryǁcreate_tool_manager__mutmut_3': xǁToolRegistryǁcreate_tool_manager__mutmut_3
+
+    xǁToolRegistryǁcreate_tool_manager__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolRegistryǁcreate_tool_manager__mutmut_1": xǁToolRegistryǁcreate_tool_manager__mutmut_1,
+        "xǁToolRegistryǁcreate_tool_manager__mutmut_2": xǁToolRegistryǁcreate_tool_manager__mutmut_2,
+        "xǁToolRegistryǁcreate_tool_manager__mutmut_3": xǁToolRegistryǁcreate_tool_manager__mutmut_3,
     }
-    
+
     def create_tool_manager(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolRegistryǁcreate_tool_manager__mutmut_orig"), object.__getattribute__(self, "xǁToolRegistryǁcreate_tool_manager__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolRegistryǁcreate_tool_manager__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolRegistryǁcreate_tool_manager__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     create_tool_manager.__signature__ = _mutmut_signature(xǁToolRegistryǁcreate_tool_manager__mutmut_orig)
-    xǁToolRegistryǁcreate_tool_manager__mutmut_orig.__name__ = 'xǁToolRegistryǁcreate_tool_manager'
+    xǁToolRegistryǁcreate_tool_manager__mutmut_orig.__name__ = "xǁToolRegistryǁcreate_tool_manager"
 
     def xǁToolRegistryǁlist_tools__mutmut_orig(self) -> list[tuple[str, dict[str, Any]]]:
         """List all registered tools.
@@ -1446,7 +1493,13 @@ class ToolRegistry:
         dimension_list = self.hub._component_registry.list_dimension(self.DIMENSION)
         for item in dimension_list:
             name, entry = item  # type: ignore[misc]
-            metadata = entry.metadata if hasattr(entry, ) else {}  # type: ignore[has-type]
+            metadata = (
+                entry.metadata
+                if hasattr(
+                    entry,
+                )
+                else {}
+            )  # type: ignore[has-type]
             tools.append((name, metadata))  # type: ignore[has-type]
         return tools
 
@@ -1494,28 +1547,34 @@ class ToolRegistry:
             metadata = entry.metadata if hasattr(entry, "metadata") else {}  # type: ignore[has-type]
             tools.append(None)  # type: ignore[has-type]
         return tools
-    
-    xǁToolRegistryǁlist_tools__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolRegistryǁlist_tools__mutmut_1': xǁToolRegistryǁlist_tools__mutmut_1, 
-        'xǁToolRegistryǁlist_tools__mutmut_2': xǁToolRegistryǁlist_tools__mutmut_2, 
-        'xǁToolRegistryǁlist_tools__mutmut_3': xǁToolRegistryǁlist_tools__mutmut_3, 
-        'xǁToolRegistryǁlist_tools__mutmut_4': xǁToolRegistryǁlist_tools__mutmut_4, 
-        'xǁToolRegistryǁlist_tools__mutmut_5': xǁToolRegistryǁlist_tools__mutmut_5, 
-        'xǁToolRegistryǁlist_tools__mutmut_6': xǁToolRegistryǁlist_tools__mutmut_6, 
-        'xǁToolRegistryǁlist_tools__mutmut_7': xǁToolRegistryǁlist_tools__mutmut_7, 
-        'xǁToolRegistryǁlist_tools__mutmut_8': xǁToolRegistryǁlist_tools__mutmut_8, 
-        'xǁToolRegistryǁlist_tools__mutmut_9': xǁToolRegistryǁlist_tools__mutmut_9, 
-        'xǁToolRegistryǁlist_tools__mutmut_10': xǁToolRegistryǁlist_tools__mutmut_10, 
-        'xǁToolRegistryǁlist_tools__mutmut_11': xǁToolRegistryǁlist_tools__mutmut_11, 
-        'xǁToolRegistryǁlist_tools__mutmut_12': xǁToolRegistryǁlist_tools__mutmut_12
+
+    xǁToolRegistryǁlist_tools__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolRegistryǁlist_tools__mutmut_1": xǁToolRegistryǁlist_tools__mutmut_1,
+        "xǁToolRegistryǁlist_tools__mutmut_2": xǁToolRegistryǁlist_tools__mutmut_2,
+        "xǁToolRegistryǁlist_tools__mutmut_3": xǁToolRegistryǁlist_tools__mutmut_3,
+        "xǁToolRegistryǁlist_tools__mutmut_4": xǁToolRegistryǁlist_tools__mutmut_4,
+        "xǁToolRegistryǁlist_tools__mutmut_5": xǁToolRegistryǁlist_tools__mutmut_5,
+        "xǁToolRegistryǁlist_tools__mutmut_6": xǁToolRegistryǁlist_tools__mutmut_6,
+        "xǁToolRegistryǁlist_tools__mutmut_7": xǁToolRegistryǁlist_tools__mutmut_7,
+        "xǁToolRegistryǁlist_tools__mutmut_8": xǁToolRegistryǁlist_tools__mutmut_8,
+        "xǁToolRegistryǁlist_tools__mutmut_9": xǁToolRegistryǁlist_tools__mutmut_9,
+        "xǁToolRegistryǁlist_tools__mutmut_10": xǁToolRegistryǁlist_tools__mutmut_10,
+        "xǁToolRegistryǁlist_tools__mutmut_11": xǁToolRegistryǁlist_tools__mutmut_11,
+        "xǁToolRegistryǁlist_tools__mutmut_12": xǁToolRegistryǁlist_tools__mutmut_12,
     }
-    
+
     def list_tools(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolRegistryǁlist_tools__mutmut_orig"), object.__getattribute__(self, "xǁToolRegistryǁlist_tools__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolRegistryǁlist_tools__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolRegistryǁlist_tools__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     list_tools.__signature__ = _mutmut_signature(xǁToolRegistryǁlist_tools__mutmut_orig)
-    xǁToolRegistryǁlist_tools__mutmut_orig.__name__ = 'xǁToolRegistryǁlist_tools'
+    xǁToolRegistryǁlist_tools__mutmut_orig.__name__ = "xǁToolRegistryǁlist_tools"
 
     def xǁToolRegistryǁget_tool_info__mutmut_orig(self, name: str) -> dict[str, Any] | None:
         """Get information about a specific tool.
@@ -1602,7 +1661,9 @@ class ToolRegistry:
             Tool metadata dictionary, or None if not found.
 
         """
-        entry = self.hub._component_registry.get_entry(name, )
+        entry = self.hub._component_registry.get_entry(
+            name,
+        )
         if entry and hasattr(entry, "metadata"):
             return entry.metadata
         return None
@@ -1678,7 +1739,9 @@ class ToolRegistry:
 
         """
         entry = self.hub._component_registry.get_entry(name, dimension=self.DIMENSION)
-        if entry and hasattr(entry, ):
+        if entry and hasattr(
+            entry,
+        ):
             return entry.metadata
         return None
 
@@ -1711,28 +1774,34 @@ class ToolRegistry:
         if entry and hasattr(entry, "METADATA"):
             return entry.metadata
         return None
-    
-    xǁToolRegistryǁget_tool_info__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolRegistryǁget_tool_info__mutmut_1': xǁToolRegistryǁget_tool_info__mutmut_1, 
-        'xǁToolRegistryǁget_tool_info__mutmut_2': xǁToolRegistryǁget_tool_info__mutmut_2, 
-        'xǁToolRegistryǁget_tool_info__mutmut_3': xǁToolRegistryǁget_tool_info__mutmut_3, 
-        'xǁToolRegistryǁget_tool_info__mutmut_4': xǁToolRegistryǁget_tool_info__mutmut_4, 
-        'xǁToolRegistryǁget_tool_info__mutmut_5': xǁToolRegistryǁget_tool_info__mutmut_5, 
-        'xǁToolRegistryǁget_tool_info__mutmut_6': xǁToolRegistryǁget_tool_info__mutmut_6, 
-        'xǁToolRegistryǁget_tool_info__mutmut_7': xǁToolRegistryǁget_tool_info__mutmut_7, 
-        'xǁToolRegistryǁget_tool_info__mutmut_8': xǁToolRegistryǁget_tool_info__mutmut_8, 
-        'xǁToolRegistryǁget_tool_info__mutmut_9': xǁToolRegistryǁget_tool_info__mutmut_9, 
-        'xǁToolRegistryǁget_tool_info__mutmut_10': xǁToolRegistryǁget_tool_info__mutmut_10, 
-        'xǁToolRegistryǁget_tool_info__mutmut_11': xǁToolRegistryǁget_tool_info__mutmut_11, 
-        'xǁToolRegistryǁget_tool_info__mutmut_12': xǁToolRegistryǁget_tool_info__mutmut_12
+
+    xǁToolRegistryǁget_tool_info__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolRegistryǁget_tool_info__mutmut_1": xǁToolRegistryǁget_tool_info__mutmut_1,
+        "xǁToolRegistryǁget_tool_info__mutmut_2": xǁToolRegistryǁget_tool_info__mutmut_2,
+        "xǁToolRegistryǁget_tool_info__mutmut_3": xǁToolRegistryǁget_tool_info__mutmut_3,
+        "xǁToolRegistryǁget_tool_info__mutmut_4": xǁToolRegistryǁget_tool_info__mutmut_4,
+        "xǁToolRegistryǁget_tool_info__mutmut_5": xǁToolRegistryǁget_tool_info__mutmut_5,
+        "xǁToolRegistryǁget_tool_info__mutmut_6": xǁToolRegistryǁget_tool_info__mutmut_6,
+        "xǁToolRegistryǁget_tool_info__mutmut_7": xǁToolRegistryǁget_tool_info__mutmut_7,
+        "xǁToolRegistryǁget_tool_info__mutmut_8": xǁToolRegistryǁget_tool_info__mutmut_8,
+        "xǁToolRegistryǁget_tool_info__mutmut_9": xǁToolRegistryǁget_tool_info__mutmut_9,
+        "xǁToolRegistryǁget_tool_info__mutmut_10": xǁToolRegistryǁget_tool_info__mutmut_10,
+        "xǁToolRegistryǁget_tool_info__mutmut_11": xǁToolRegistryǁget_tool_info__mutmut_11,
+        "xǁToolRegistryǁget_tool_info__mutmut_12": xǁToolRegistryǁget_tool_info__mutmut_12,
     }
-    
+
     def get_tool_info(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolRegistryǁget_tool_info__mutmut_orig"), object.__getattribute__(self, "xǁToolRegistryǁget_tool_info__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolRegistryǁget_tool_info__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolRegistryǁget_tool_info__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_tool_info.__signature__ = _mutmut_signature(xǁToolRegistryǁget_tool_info__mutmut_orig)
-    xǁToolRegistryǁget_tool_info__mutmut_orig.__name__ = 'xǁToolRegistryǁget_tool_info'
+    xǁToolRegistryǁget_tool_info__mutmut_orig.__name__ = "xǁToolRegistryǁget_tool_info"
 
     def xǁToolRegistryǁis_tool_registered__mutmut_orig(self, name: str) -> bool:
         """Check if a tool is registered.
@@ -1769,18 +1838,24 @@ class ToolRegistry:
 
         """
         return self.get_tool_manager_class(name) is None
-    
-    xǁToolRegistryǁis_tool_registered__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolRegistryǁis_tool_registered__mutmut_1': xǁToolRegistryǁis_tool_registered__mutmut_1, 
-        'xǁToolRegistryǁis_tool_registered__mutmut_2': xǁToolRegistryǁis_tool_registered__mutmut_2
+
+    xǁToolRegistryǁis_tool_registered__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolRegistryǁis_tool_registered__mutmut_1": xǁToolRegistryǁis_tool_registered__mutmut_1,
+        "xǁToolRegistryǁis_tool_registered__mutmut_2": xǁToolRegistryǁis_tool_registered__mutmut_2,
     }
-    
+
     def is_tool_registered(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolRegistryǁis_tool_registered__mutmut_orig"), object.__getattribute__(self, "xǁToolRegistryǁis_tool_registered__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolRegistryǁis_tool_registered__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolRegistryǁis_tool_registered__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_tool_registered.__signature__ = _mutmut_signature(xǁToolRegistryǁis_tool_registered__mutmut_orig)
-    xǁToolRegistryǁis_tool_registered__mutmut_orig.__name__ = 'xǁToolRegistryǁis_tool_registered'
+    xǁToolRegistryǁis_tool_registered__mutmut_orig.__name__ = "xǁToolRegistryǁis_tool_registered"
 
 
 # Global registry instance
@@ -1825,17 +1900,22 @@ def x_get_tool_registry__mutmut_2() -> ToolRegistry:
         _tool_registry = None
     return _tool_registry
 
-x_get_tool_registry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_tool_registry__mutmut_1': x_get_tool_registry__mutmut_1, 
-    'x_get_tool_registry__mutmut_2': x_get_tool_registry__mutmut_2
+
+x_get_tool_registry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_tool_registry__mutmut_1": x_get_tool_registry__mutmut_1,
+    "x_get_tool_registry__mutmut_2": x_get_tool_registry__mutmut_2,
 }
 
+
 def get_tool_registry(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_tool_registry__mutmut_orig, x_get_tool_registry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_tool_registry__mutmut_orig, x_get_tool_registry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_tool_registry.__signature__ = _mutmut_signature(x_get_tool_registry__mutmut_orig)
-x_get_tool_registry__mutmut_orig.__name__ = 'x_get_tool_registry'
+x_get_tool_registry__mutmut_orig.__name__ = "x_get_tool_registry"
 
 
 def x_register_tool_manager__mutmut_orig(
@@ -1971,24 +2051,32 @@ def x_register_tool_manager__mutmut_7(
 
     """
     registry = get_tool_registry()
-    registry.register_tool_manager(name, manager_class, )
+    registry.register_tool_manager(
+        name,
+        manager_class,
+    )
 
-x_register_tool_manager__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register_tool_manager__mutmut_1': x_register_tool_manager__mutmut_1, 
-    'x_register_tool_manager__mutmut_2': x_register_tool_manager__mutmut_2, 
-    'x_register_tool_manager__mutmut_3': x_register_tool_manager__mutmut_3, 
-    'x_register_tool_manager__mutmut_4': x_register_tool_manager__mutmut_4, 
-    'x_register_tool_manager__mutmut_5': x_register_tool_manager__mutmut_5, 
-    'x_register_tool_manager__mutmut_6': x_register_tool_manager__mutmut_6, 
-    'x_register_tool_manager__mutmut_7': x_register_tool_manager__mutmut_7
+
+x_register_tool_manager__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register_tool_manager__mutmut_1": x_register_tool_manager__mutmut_1,
+    "x_register_tool_manager__mutmut_2": x_register_tool_manager__mutmut_2,
+    "x_register_tool_manager__mutmut_3": x_register_tool_manager__mutmut_3,
+    "x_register_tool_manager__mutmut_4": x_register_tool_manager__mutmut_4,
+    "x_register_tool_manager__mutmut_5": x_register_tool_manager__mutmut_5,
+    "x_register_tool_manager__mutmut_6": x_register_tool_manager__mutmut_6,
+    "x_register_tool_manager__mutmut_7": x_register_tool_manager__mutmut_7,
 }
 
+
 def register_tool_manager(*args, **kwargs):
-    result = _mutmut_trampoline(x_register_tool_manager__mutmut_orig, x_register_tool_manager__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_register_tool_manager__mutmut_orig, x_register_tool_manager__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 register_tool_manager.__signature__ = _mutmut_signature(x_register_tool_manager__mutmut_orig)
-x_register_tool_manager__mutmut_orig.__name__ = 'x_register_tool_manager'
+x_register_tool_manager__mutmut_orig.__name__ = "x_register_tool_manager"
 
 
 def x_get_tool_manager__mutmut_orig(name: str, config: BaseConfig) -> BaseToolManager | None:
@@ -2078,22 +2166,29 @@ def x_get_tool_manager__mutmut_5(name: str, config: BaseConfig) -> BaseToolManag
 
     """
     registry = get_tool_registry()
-    return registry.create_tool_manager(name, )
+    return registry.create_tool_manager(
+        name,
+    )
 
-x_get_tool_manager__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_tool_manager__mutmut_1': x_get_tool_manager__mutmut_1, 
-    'x_get_tool_manager__mutmut_2': x_get_tool_manager__mutmut_2, 
-    'x_get_tool_manager__mutmut_3': x_get_tool_manager__mutmut_3, 
-    'x_get_tool_manager__mutmut_4': x_get_tool_manager__mutmut_4, 
-    'x_get_tool_manager__mutmut_5': x_get_tool_manager__mutmut_5
+
+x_get_tool_manager__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_tool_manager__mutmut_1": x_get_tool_manager__mutmut_1,
+    "x_get_tool_manager__mutmut_2": x_get_tool_manager__mutmut_2,
+    "x_get_tool_manager__mutmut_3": x_get_tool_manager__mutmut_3,
+    "x_get_tool_manager__mutmut_4": x_get_tool_manager__mutmut_4,
+    "x_get_tool_manager__mutmut_5": x_get_tool_manager__mutmut_5,
 }
 
+
 def get_tool_manager(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_tool_manager__mutmut_orig, x_get_tool_manager__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_tool_manager__mutmut_orig, x_get_tool_manager__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_tool_manager.__signature__ = _mutmut_signature(x_get_tool_manager__mutmut_orig)
-x_get_tool_manager__mutmut_orig.__name__ = 'x_get_tool_manager'
+x_get_tool_manager__mutmut_orig.__name__ = "x_get_tool_manager"
 
 
 # <3 🧱🤝🔧🪄

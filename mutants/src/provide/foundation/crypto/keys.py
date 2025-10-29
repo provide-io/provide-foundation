@@ -37,23 +37,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -235,7 +238,7 @@ def x_generate_rsa_keypair__mutmut_5(
     if key_size not in SUPPORTED_RSA_SIZES:
         raise KeyGenerationError(
             f"Unsupported RSA key size: {key_size}. Must be one of {SUPPORTED_RSA_SIZES}",
-            )
+        )
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=key_size,
@@ -563,7 +566,7 @@ def x_generate_rsa_keypair__mutmut_16(
     private_key = rsa.generate_private_key(
         public_exponent=65537,
         key_size=key_size,
-        )
+    )
     return private_key, private_key.public_key()
 
 
@@ -596,32 +599,37 @@ def x_generate_rsa_keypair__mutmut_17(
     )
     return private_key, private_key.public_key()
 
-x_generate_rsa_keypair__mutmut_mutants : ClassVar[MutantDict] = {
-'x_generate_rsa_keypair__mutmut_1': x_generate_rsa_keypair__mutmut_1, 
-    'x_generate_rsa_keypair__mutmut_2': x_generate_rsa_keypair__mutmut_2, 
-    'x_generate_rsa_keypair__mutmut_3': x_generate_rsa_keypair__mutmut_3, 
-    'x_generate_rsa_keypair__mutmut_4': x_generate_rsa_keypair__mutmut_4, 
-    'x_generate_rsa_keypair__mutmut_5': x_generate_rsa_keypair__mutmut_5, 
-    'x_generate_rsa_keypair__mutmut_6': x_generate_rsa_keypair__mutmut_6, 
-    'x_generate_rsa_keypair__mutmut_7': x_generate_rsa_keypair__mutmut_7, 
-    'x_generate_rsa_keypair__mutmut_8': x_generate_rsa_keypair__mutmut_8, 
-    'x_generate_rsa_keypair__mutmut_9': x_generate_rsa_keypair__mutmut_9, 
-    'x_generate_rsa_keypair__mutmut_10': x_generate_rsa_keypair__mutmut_10, 
-    'x_generate_rsa_keypair__mutmut_11': x_generate_rsa_keypair__mutmut_11, 
-    'x_generate_rsa_keypair__mutmut_12': x_generate_rsa_keypair__mutmut_12, 
-    'x_generate_rsa_keypair__mutmut_13': x_generate_rsa_keypair__mutmut_13, 
-    'x_generate_rsa_keypair__mutmut_14': x_generate_rsa_keypair__mutmut_14, 
-    'x_generate_rsa_keypair__mutmut_15': x_generate_rsa_keypair__mutmut_15, 
-    'x_generate_rsa_keypair__mutmut_16': x_generate_rsa_keypair__mutmut_16, 
-    'x_generate_rsa_keypair__mutmut_17': x_generate_rsa_keypair__mutmut_17
+
+x_generate_rsa_keypair__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_generate_rsa_keypair__mutmut_1": x_generate_rsa_keypair__mutmut_1,
+    "x_generate_rsa_keypair__mutmut_2": x_generate_rsa_keypair__mutmut_2,
+    "x_generate_rsa_keypair__mutmut_3": x_generate_rsa_keypair__mutmut_3,
+    "x_generate_rsa_keypair__mutmut_4": x_generate_rsa_keypair__mutmut_4,
+    "x_generate_rsa_keypair__mutmut_5": x_generate_rsa_keypair__mutmut_5,
+    "x_generate_rsa_keypair__mutmut_6": x_generate_rsa_keypair__mutmut_6,
+    "x_generate_rsa_keypair__mutmut_7": x_generate_rsa_keypair__mutmut_7,
+    "x_generate_rsa_keypair__mutmut_8": x_generate_rsa_keypair__mutmut_8,
+    "x_generate_rsa_keypair__mutmut_9": x_generate_rsa_keypair__mutmut_9,
+    "x_generate_rsa_keypair__mutmut_10": x_generate_rsa_keypair__mutmut_10,
+    "x_generate_rsa_keypair__mutmut_11": x_generate_rsa_keypair__mutmut_11,
+    "x_generate_rsa_keypair__mutmut_12": x_generate_rsa_keypair__mutmut_12,
+    "x_generate_rsa_keypair__mutmut_13": x_generate_rsa_keypair__mutmut_13,
+    "x_generate_rsa_keypair__mutmut_14": x_generate_rsa_keypair__mutmut_14,
+    "x_generate_rsa_keypair__mutmut_15": x_generate_rsa_keypair__mutmut_15,
+    "x_generate_rsa_keypair__mutmut_16": x_generate_rsa_keypair__mutmut_16,
+    "x_generate_rsa_keypair__mutmut_17": x_generate_rsa_keypair__mutmut_17,
 }
 
+
 def generate_rsa_keypair(*args, **kwargs):
-    result = _mutmut_trampoline(x_generate_rsa_keypair__mutmut_orig, x_generate_rsa_keypair__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_generate_rsa_keypair__mutmut_orig, x_generate_rsa_keypair__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 generate_rsa_keypair.__signature__ = _mutmut_signature(x_generate_rsa_keypair__mutmut_orig)
-x_generate_rsa_keypair__mutmut_orig.__name__ = 'x_generate_rsa_keypair'
+x_generate_rsa_keypair__mutmut_orig.__name__ = "x_generate_rsa_keypair"
 
 
 def x_generate_ec_keypair__mutmut_orig(
@@ -788,7 +796,7 @@ def x_generate_ec_keypair__mutmut_5(
     if curve_name not in SUPPORTED_EC_CURVES:
         raise KeyGenerationError(
             f"Unsupported EC curve: {curve_name}. Must be one of {SUPPORTED_EC_CURVES}",
-            )
+        )
 
     # Map curve name to cryptography curve object
     curve_obj = getattr(ec, curve_name.upper())()
@@ -1052,7 +1060,9 @@ def x_generate_ec_keypair__mutmut_14(
         )
 
     # Map curve name to cryptography curve object
-    curve_obj = getattr(ec, )()
+    curve_obj = getattr(
+        ec,
+    )()
     private_key = ec.generate_private_key(curve_obj, backend=default_backend())
     return private_key, private_key.public_key()
 
@@ -1227,38 +1237,45 @@ def x_generate_ec_keypair__mutmut_20(
 
     # Map curve name to cryptography curve object
     curve_obj = getattr(ec, curve_name.upper())()
-    private_key = ec.generate_private_key(curve_obj, )
+    private_key = ec.generate_private_key(
+        curve_obj,
+    )
     return private_key, private_key.public_key()
 
-x_generate_ec_keypair__mutmut_mutants : ClassVar[MutantDict] = {
-'x_generate_ec_keypair__mutmut_1': x_generate_ec_keypair__mutmut_1, 
-    'x_generate_ec_keypair__mutmut_2': x_generate_ec_keypair__mutmut_2, 
-    'x_generate_ec_keypair__mutmut_3': x_generate_ec_keypair__mutmut_3, 
-    'x_generate_ec_keypair__mutmut_4': x_generate_ec_keypair__mutmut_4, 
-    'x_generate_ec_keypair__mutmut_5': x_generate_ec_keypair__mutmut_5, 
-    'x_generate_ec_keypair__mutmut_6': x_generate_ec_keypair__mutmut_6, 
-    'x_generate_ec_keypair__mutmut_7': x_generate_ec_keypair__mutmut_7, 
-    'x_generate_ec_keypair__mutmut_8': x_generate_ec_keypair__mutmut_8, 
-    'x_generate_ec_keypair__mutmut_9': x_generate_ec_keypair__mutmut_9, 
-    'x_generate_ec_keypair__mutmut_10': x_generate_ec_keypair__mutmut_10, 
-    'x_generate_ec_keypair__mutmut_11': x_generate_ec_keypair__mutmut_11, 
-    'x_generate_ec_keypair__mutmut_12': x_generate_ec_keypair__mutmut_12, 
-    'x_generate_ec_keypair__mutmut_13': x_generate_ec_keypair__mutmut_13, 
-    'x_generate_ec_keypair__mutmut_14': x_generate_ec_keypair__mutmut_14, 
-    'x_generate_ec_keypair__mutmut_15': x_generate_ec_keypair__mutmut_15, 
-    'x_generate_ec_keypair__mutmut_16': x_generate_ec_keypair__mutmut_16, 
-    'x_generate_ec_keypair__mutmut_17': x_generate_ec_keypair__mutmut_17, 
-    'x_generate_ec_keypair__mutmut_18': x_generate_ec_keypair__mutmut_18, 
-    'x_generate_ec_keypair__mutmut_19': x_generate_ec_keypair__mutmut_19, 
-    'x_generate_ec_keypair__mutmut_20': x_generate_ec_keypair__mutmut_20
+
+x_generate_ec_keypair__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_generate_ec_keypair__mutmut_1": x_generate_ec_keypair__mutmut_1,
+    "x_generate_ec_keypair__mutmut_2": x_generate_ec_keypair__mutmut_2,
+    "x_generate_ec_keypair__mutmut_3": x_generate_ec_keypair__mutmut_3,
+    "x_generate_ec_keypair__mutmut_4": x_generate_ec_keypair__mutmut_4,
+    "x_generate_ec_keypair__mutmut_5": x_generate_ec_keypair__mutmut_5,
+    "x_generate_ec_keypair__mutmut_6": x_generate_ec_keypair__mutmut_6,
+    "x_generate_ec_keypair__mutmut_7": x_generate_ec_keypair__mutmut_7,
+    "x_generate_ec_keypair__mutmut_8": x_generate_ec_keypair__mutmut_8,
+    "x_generate_ec_keypair__mutmut_9": x_generate_ec_keypair__mutmut_9,
+    "x_generate_ec_keypair__mutmut_10": x_generate_ec_keypair__mutmut_10,
+    "x_generate_ec_keypair__mutmut_11": x_generate_ec_keypair__mutmut_11,
+    "x_generate_ec_keypair__mutmut_12": x_generate_ec_keypair__mutmut_12,
+    "x_generate_ec_keypair__mutmut_13": x_generate_ec_keypair__mutmut_13,
+    "x_generate_ec_keypair__mutmut_14": x_generate_ec_keypair__mutmut_14,
+    "x_generate_ec_keypair__mutmut_15": x_generate_ec_keypair__mutmut_15,
+    "x_generate_ec_keypair__mutmut_16": x_generate_ec_keypair__mutmut_16,
+    "x_generate_ec_keypair__mutmut_17": x_generate_ec_keypair__mutmut_17,
+    "x_generate_ec_keypair__mutmut_18": x_generate_ec_keypair__mutmut_18,
+    "x_generate_ec_keypair__mutmut_19": x_generate_ec_keypair__mutmut_19,
+    "x_generate_ec_keypair__mutmut_20": x_generate_ec_keypair__mutmut_20,
 }
 
+
 def generate_ec_keypair(*args, **kwargs):
-    result = _mutmut_trampoline(x_generate_ec_keypair__mutmut_orig, x_generate_ec_keypair__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_generate_ec_keypair__mutmut_orig, x_generate_ec_keypair__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 generate_ec_keypair.__signature__ = _mutmut_signature(x_generate_ec_keypair__mutmut_orig)
-x_generate_ec_keypair__mutmut_orig.__name__ = 'x_generate_ec_keypair'
+x_generate_ec_keypair__mutmut_orig.__name__ = "x_generate_ec_keypair"
 
 
 def x_generate_ed25519_keypair__mutmut_orig() -> KeypairTuple:
@@ -1286,16 +1303,21 @@ def x_generate_ed25519_keypair__mutmut_1() -> KeypairTuple:
     signer = None
     return signer.export_private_key(), signer.public_key
 
-x_generate_ed25519_keypair__mutmut_mutants : ClassVar[MutantDict] = {
-'x_generate_ed25519_keypair__mutmut_1': x_generate_ed25519_keypair__mutmut_1
+
+x_generate_ed25519_keypair__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_generate_ed25519_keypair__mutmut_1": x_generate_ed25519_keypair__mutmut_1
 }
 
+
 def generate_ed25519_keypair(*args, **kwargs):
-    result = _mutmut_trampoline(x_generate_ed25519_keypair__mutmut_orig, x_generate_ed25519_keypair__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_generate_ed25519_keypair__mutmut_orig, x_generate_ed25519_keypair__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 generate_ed25519_keypair.__signature__ = _mutmut_signature(x_generate_ed25519_keypair__mutmut_orig)
-x_generate_ed25519_keypair__mutmut_orig.__name__ = 'x_generate_ed25519_keypair'
+x_generate_ed25519_keypair__mutmut_orig.__name__ = "x_generate_ed25519_keypair"
 
 
 def x_generate_keypair__mutmut_orig(
@@ -1996,7 +2018,7 @@ def x_generate_keypair__mutmut_16(
     else:
         raise KeyGenerationError(
             f"Unsupported key type: {key_type}. Must be one of {SUPPORTED_KEY_TYPES}",
-            )
+        )
 
     private_pem = priv.private_bytes(  # type: ignore[attr-defined]
         encoding=serialization.Encoding.PEM,
@@ -2457,7 +2479,7 @@ def x_generate_keypair__mutmut_27(
     private_pem = priv.private_bytes(  # type: ignore[attr-defined]
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
-        )
+    )
     public_pem = pub.public_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo,
@@ -2666,50 +2688,55 @@ def x_generate_keypair__mutmut_32(
     )
     public_pem = pub.public_bytes(
         encoding=serialization.Encoding.PEM,
-        )
+    )
     return private_pem, public_pem
 
-x_generate_keypair__mutmut_mutants : ClassVar[MutantDict] = {
-'x_generate_keypair__mutmut_1': x_generate_keypair__mutmut_1, 
-    'x_generate_keypair__mutmut_2': x_generate_keypair__mutmut_2, 
-    'x_generate_keypair__mutmut_3': x_generate_keypair__mutmut_3, 
-    'x_generate_keypair__mutmut_4': x_generate_keypair__mutmut_4, 
-    'x_generate_keypair__mutmut_5': x_generate_keypair__mutmut_5, 
-    'x_generate_keypair__mutmut_6': x_generate_keypair__mutmut_6, 
-    'x_generate_keypair__mutmut_7': x_generate_keypair__mutmut_7, 
-    'x_generate_keypair__mutmut_8': x_generate_keypair__mutmut_8, 
-    'x_generate_keypair__mutmut_9': x_generate_keypair__mutmut_9, 
-    'x_generate_keypair__mutmut_10': x_generate_keypair__mutmut_10, 
-    'x_generate_keypair__mutmut_11': x_generate_keypair__mutmut_11, 
-    'x_generate_keypair__mutmut_12': x_generate_keypair__mutmut_12, 
-    'x_generate_keypair__mutmut_13': x_generate_keypair__mutmut_13, 
-    'x_generate_keypair__mutmut_14': x_generate_keypair__mutmut_14, 
-    'x_generate_keypair__mutmut_15': x_generate_keypair__mutmut_15, 
-    'x_generate_keypair__mutmut_16': x_generate_keypair__mutmut_16, 
-    'x_generate_keypair__mutmut_17': x_generate_keypair__mutmut_17, 
-    'x_generate_keypair__mutmut_18': x_generate_keypair__mutmut_18, 
-    'x_generate_keypair__mutmut_19': x_generate_keypair__mutmut_19, 
-    'x_generate_keypair__mutmut_20': x_generate_keypair__mutmut_20, 
-    'x_generate_keypair__mutmut_21': x_generate_keypair__mutmut_21, 
-    'x_generate_keypair__mutmut_22': x_generate_keypair__mutmut_22, 
-    'x_generate_keypair__mutmut_23': x_generate_keypair__mutmut_23, 
-    'x_generate_keypair__mutmut_24': x_generate_keypair__mutmut_24, 
-    'x_generate_keypair__mutmut_25': x_generate_keypair__mutmut_25, 
-    'x_generate_keypair__mutmut_26': x_generate_keypair__mutmut_26, 
-    'x_generate_keypair__mutmut_27': x_generate_keypair__mutmut_27, 
-    'x_generate_keypair__mutmut_28': x_generate_keypair__mutmut_28, 
-    'x_generate_keypair__mutmut_29': x_generate_keypair__mutmut_29, 
-    'x_generate_keypair__mutmut_30': x_generate_keypair__mutmut_30, 
-    'x_generate_keypair__mutmut_31': x_generate_keypair__mutmut_31, 
-    'x_generate_keypair__mutmut_32': x_generate_keypair__mutmut_32
+
+x_generate_keypair__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_generate_keypair__mutmut_1": x_generate_keypair__mutmut_1,
+    "x_generate_keypair__mutmut_2": x_generate_keypair__mutmut_2,
+    "x_generate_keypair__mutmut_3": x_generate_keypair__mutmut_3,
+    "x_generate_keypair__mutmut_4": x_generate_keypair__mutmut_4,
+    "x_generate_keypair__mutmut_5": x_generate_keypair__mutmut_5,
+    "x_generate_keypair__mutmut_6": x_generate_keypair__mutmut_6,
+    "x_generate_keypair__mutmut_7": x_generate_keypair__mutmut_7,
+    "x_generate_keypair__mutmut_8": x_generate_keypair__mutmut_8,
+    "x_generate_keypair__mutmut_9": x_generate_keypair__mutmut_9,
+    "x_generate_keypair__mutmut_10": x_generate_keypair__mutmut_10,
+    "x_generate_keypair__mutmut_11": x_generate_keypair__mutmut_11,
+    "x_generate_keypair__mutmut_12": x_generate_keypair__mutmut_12,
+    "x_generate_keypair__mutmut_13": x_generate_keypair__mutmut_13,
+    "x_generate_keypair__mutmut_14": x_generate_keypair__mutmut_14,
+    "x_generate_keypair__mutmut_15": x_generate_keypair__mutmut_15,
+    "x_generate_keypair__mutmut_16": x_generate_keypair__mutmut_16,
+    "x_generate_keypair__mutmut_17": x_generate_keypair__mutmut_17,
+    "x_generate_keypair__mutmut_18": x_generate_keypair__mutmut_18,
+    "x_generate_keypair__mutmut_19": x_generate_keypair__mutmut_19,
+    "x_generate_keypair__mutmut_20": x_generate_keypair__mutmut_20,
+    "x_generate_keypair__mutmut_21": x_generate_keypair__mutmut_21,
+    "x_generate_keypair__mutmut_22": x_generate_keypair__mutmut_22,
+    "x_generate_keypair__mutmut_23": x_generate_keypair__mutmut_23,
+    "x_generate_keypair__mutmut_24": x_generate_keypair__mutmut_24,
+    "x_generate_keypair__mutmut_25": x_generate_keypair__mutmut_25,
+    "x_generate_keypair__mutmut_26": x_generate_keypair__mutmut_26,
+    "x_generate_keypair__mutmut_27": x_generate_keypair__mutmut_27,
+    "x_generate_keypair__mutmut_28": x_generate_keypair__mutmut_28,
+    "x_generate_keypair__mutmut_29": x_generate_keypair__mutmut_29,
+    "x_generate_keypair__mutmut_30": x_generate_keypair__mutmut_30,
+    "x_generate_keypair__mutmut_31": x_generate_keypair__mutmut_31,
+    "x_generate_keypair__mutmut_32": x_generate_keypair__mutmut_32,
 }
 
+
 def generate_keypair(*args, **kwargs):
-    result = _mutmut_trampoline(x_generate_keypair__mutmut_orig, x_generate_keypair__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_generate_keypair__mutmut_orig, x_generate_keypair__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 generate_keypair.__signature__ = _mutmut_signature(x_generate_keypair__mutmut_orig)
-x_generate_keypair__mutmut_orig.__name__ = 'x_generate_keypair'
+x_generate_keypair__mutmut_orig.__name__ = "x_generate_keypair"
 
 
 def generate_signing_keypair() -> KeypairTuple:
@@ -2778,18 +2805,23 @@ def x_generate_tls_keypair__mutmut_3(
     """
     return generate_keypair(None)
 
-x_generate_tls_keypair__mutmut_mutants : ClassVar[MutantDict] = {
-'x_generate_tls_keypair__mutmut_1': x_generate_tls_keypair__mutmut_1, 
-    'x_generate_tls_keypair__mutmut_2': x_generate_tls_keypair__mutmut_2, 
-    'x_generate_tls_keypair__mutmut_3': x_generate_tls_keypair__mutmut_3
+
+x_generate_tls_keypair__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_generate_tls_keypair__mutmut_1": x_generate_tls_keypair__mutmut_1,
+    "x_generate_tls_keypair__mutmut_2": x_generate_tls_keypair__mutmut_2,
+    "x_generate_tls_keypair__mutmut_3": x_generate_tls_keypair__mutmut_3,
 }
 
+
 def generate_tls_keypair(*args, **kwargs):
-    result = _mutmut_trampoline(x_generate_tls_keypair__mutmut_orig, x_generate_tls_keypair__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_generate_tls_keypair__mutmut_orig, x_generate_tls_keypair__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 generate_tls_keypair.__signature__ = _mutmut_signature(x_generate_tls_keypair__mutmut_orig)
-x_generate_tls_keypair__mutmut_orig.__name__ = 'x_generate_tls_keypair'
+x_generate_tls_keypair__mutmut_orig.__name__ = "x_generate_tls_keypair"
 
 
 __all__ = [

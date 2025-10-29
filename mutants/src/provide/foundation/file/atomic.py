@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1503,7 +1506,9 @@ def x_atomic_write__mutmut_15(
         backup_path = path.with_suffix(path.suffix + ".bak")
         try:
             path.rename(backup_path)
-            log.debug("Created backup", )
+            log.debug(
+                "Created backup",
+            )
         except OSError as e:
             log.warning("Failed to create backup", error=str(e))
 
@@ -2265,7 +2270,9 @@ def x_atomic_write__mutmut_23(
             path.rename(backup_path)
             log.debug("Created backup", backup=str(backup_path))
         except OSError as e:
-            log.warning("Failed to create backup", )
+            log.warning(
+                "Failed to create backup",
+            )
 
     # Ensure parent directory exists
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -3028,7 +3035,9 @@ def x_atomic_write__mutmut_31(
             log.warning("Failed to create backup", error=str(e))
 
     # Ensure parent directory exists
-    path.parent.mkdir(parents=True, )
+    path.parent.mkdir(
+        parents=True,
+    )
 
     # Determine final permissions before creating file (avoid race condition)
     final_mode = None
@@ -5422,7 +5431,7 @@ def x_atomic_write__mutmut_56(
     temp_fd, temp_path = tempfile.mkstemp(
         dir=path.parent,
         prefix=f".{path.name}.",
-        )
+    )
 
     try:
         # Set permissions immediately on the file descriptor (atomic)
@@ -5996,7 +6005,9 @@ def x_atomic_write__mutmut_62(
 
     try:
         # Set permissions immediately on the file descriptor (atomic)
-        os.fchmod(temp_fd, )
+        os.fchmod(
+            temp_fd,
+        )
 
         # Write data
         with os.fdopen(temp_fd, "wb") as f:
@@ -6379,7 +6390,9 @@ def x_atomic_write__mutmut_66(
         os.fchmod(temp_fd, final_mode)
 
         # Write data
-        with os.fdopen(temp_fd, ) as f:
+        with os.fdopen(
+            temp_fd,
+        ) as f:
             f.write(data)
             f.flush()
             os.fsync(f.fileno())
@@ -7718,7 +7731,7 @@ def x_atomic_write__mutmut_80(
             "Atomically wrote file",
             path=str(path),
             size=len(data),
-            )
+        )
     except (OSError, PermissionError) as e:
         # Clean up temp file on error
         log.error(
@@ -8957,7 +8970,7 @@ def x_atomic_write__mutmut_93(
             "Atomic write failed, cleaning up temp file",
             path=str(path),
             temp_path=temp_path,
-            )
+        )
         with contextlib.suppress(OSError):
             Path(temp_path).unlink()
         raise
@@ -9627,115 +9640,118 @@ def x_atomic_write__mutmut_100(
             Path(None).unlink()
         raise
 
-x_atomic_write__mutmut_mutants : ClassVar[MutantDict] = {
-'x_atomic_write__mutmut_1': x_atomic_write__mutmut_1, 
-    'x_atomic_write__mutmut_2': x_atomic_write__mutmut_2, 
-    'x_atomic_write__mutmut_3': x_atomic_write__mutmut_3, 
-    'x_atomic_write__mutmut_4': x_atomic_write__mutmut_4, 
-    'x_atomic_write__mutmut_5': x_atomic_write__mutmut_5, 
-    'x_atomic_write__mutmut_6': x_atomic_write__mutmut_6, 
-    'x_atomic_write__mutmut_7': x_atomic_write__mutmut_7, 
-    'x_atomic_write__mutmut_8': x_atomic_write__mutmut_8, 
-    'x_atomic_write__mutmut_9': x_atomic_write__mutmut_9, 
-    'x_atomic_write__mutmut_10': x_atomic_write__mutmut_10, 
-    'x_atomic_write__mutmut_11': x_atomic_write__mutmut_11, 
-    'x_atomic_write__mutmut_12': x_atomic_write__mutmut_12, 
-    'x_atomic_write__mutmut_13': x_atomic_write__mutmut_13, 
-    'x_atomic_write__mutmut_14': x_atomic_write__mutmut_14, 
-    'x_atomic_write__mutmut_15': x_atomic_write__mutmut_15, 
-    'x_atomic_write__mutmut_16': x_atomic_write__mutmut_16, 
-    'x_atomic_write__mutmut_17': x_atomic_write__mutmut_17, 
-    'x_atomic_write__mutmut_18': x_atomic_write__mutmut_18, 
-    'x_atomic_write__mutmut_19': x_atomic_write__mutmut_19, 
-    'x_atomic_write__mutmut_20': x_atomic_write__mutmut_20, 
-    'x_atomic_write__mutmut_21': x_atomic_write__mutmut_21, 
-    'x_atomic_write__mutmut_22': x_atomic_write__mutmut_22, 
-    'x_atomic_write__mutmut_23': x_atomic_write__mutmut_23, 
-    'x_atomic_write__mutmut_24': x_atomic_write__mutmut_24, 
-    'x_atomic_write__mutmut_25': x_atomic_write__mutmut_25, 
-    'x_atomic_write__mutmut_26': x_atomic_write__mutmut_26, 
-    'x_atomic_write__mutmut_27': x_atomic_write__mutmut_27, 
-    'x_atomic_write__mutmut_28': x_atomic_write__mutmut_28, 
-    'x_atomic_write__mutmut_29': x_atomic_write__mutmut_29, 
-    'x_atomic_write__mutmut_30': x_atomic_write__mutmut_30, 
-    'x_atomic_write__mutmut_31': x_atomic_write__mutmut_31, 
-    'x_atomic_write__mutmut_32': x_atomic_write__mutmut_32, 
-    'x_atomic_write__mutmut_33': x_atomic_write__mutmut_33, 
-    'x_atomic_write__mutmut_34': x_atomic_write__mutmut_34, 
-    'x_atomic_write__mutmut_35': x_atomic_write__mutmut_35, 
-    'x_atomic_write__mutmut_36': x_atomic_write__mutmut_36, 
-    'x_atomic_write__mutmut_37': x_atomic_write__mutmut_37, 
-    'x_atomic_write__mutmut_38': x_atomic_write__mutmut_38, 
-    'x_atomic_write__mutmut_39': x_atomic_write__mutmut_39, 
-    'x_atomic_write__mutmut_40': x_atomic_write__mutmut_40, 
-    'x_atomic_write__mutmut_41': x_atomic_write__mutmut_41, 
-    'x_atomic_write__mutmut_42': x_atomic_write__mutmut_42, 
-    'x_atomic_write__mutmut_43': x_atomic_write__mutmut_43, 
-    'x_atomic_write__mutmut_44': x_atomic_write__mutmut_44, 
-    'x_atomic_write__mutmut_45': x_atomic_write__mutmut_45, 
-    'x_atomic_write__mutmut_46': x_atomic_write__mutmut_46, 
-    'x_atomic_write__mutmut_47': x_atomic_write__mutmut_47, 
-    'x_atomic_write__mutmut_48': x_atomic_write__mutmut_48, 
-    'x_atomic_write__mutmut_49': x_atomic_write__mutmut_49, 
-    'x_atomic_write__mutmut_50': x_atomic_write__mutmut_50, 
-    'x_atomic_write__mutmut_51': x_atomic_write__mutmut_51, 
-    'x_atomic_write__mutmut_52': x_atomic_write__mutmut_52, 
-    'x_atomic_write__mutmut_53': x_atomic_write__mutmut_53, 
-    'x_atomic_write__mutmut_54': x_atomic_write__mutmut_54, 
-    'x_atomic_write__mutmut_55': x_atomic_write__mutmut_55, 
-    'x_atomic_write__mutmut_56': x_atomic_write__mutmut_56, 
-    'x_atomic_write__mutmut_57': x_atomic_write__mutmut_57, 
-    'x_atomic_write__mutmut_58': x_atomic_write__mutmut_58, 
-    'x_atomic_write__mutmut_59': x_atomic_write__mutmut_59, 
-    'x_atomic_write__mutmut_60': x_atomic_write__mutmut_60, 
-    'x_atomic_write__mutmut_61': x_atomic_write__mutmut_61, 
-    'x_atomic_write__mutmut_62': x_atomic_write__mutmut_62, 
-    'x_atomic_write__mutmut_63': x_atomic_write__mutmut_63, 
-    'x_atomic_write__mutmut_64': x_atomic_write__mutmut_64, 
-    'x_atomic_write__mutmut_65': x_atomic_write__mutmut_65, 
-    'x_atomic_write__mutmut_66': x_atomic_write__mutmut_66, 
-    'x_atomic_write__mutmut_67': x_atomic_write__mutmut_67, 
-    'x_atomic_write__mutmut_68': x_atomic_write__mutmut_68, 
-    'x_atomic_write__mutmut_69': x_atomic_write__mutmut_69, 
-    'x_atomic_write__mutmut_70': x_atomic_write__mutmut_70, 
-    'x_atomic_write__mutmut_71': x_atomic_write__mutmut_71, 
-    'x_atomic_write__mutmut_72': x_atomic_write__mutmut_72, 
-    'x_atomic_write__mutmut_73': x_atomic_write__mutmut_73, 
-    'x_atomic_write__mutmut_74': x_atomic_write__mutmut_74, 
-    'x_atomic_write__mutmut_75': x_atomic_write__mutmut_75, 
-    'x_atomic_write__mutmut_76': x_atomic_write__mutmut_76, 
-    'x_atomic_write__mutmut_77': x_atomic_write__mutmut_77, 
-    'x_atomic_write__mutmut_78': x_atomic_write__mutmut_78, 
-    'x_atomic_write__mutmut_79': x_atomic_write__mutmut_79, 
-    'x_atomic_write__mutmut_80': x_atomic_write__mutmut_80, 
-    'x_atomic_write__mutmut_81': x_atomic_write__mutmut_81, 
-    'x_atomic_write__mutmut_82': x_atomic_write__mutmut_82, 
-    'x_atomic_write__mutmut_83': x_atomic_write__mutmut_83, 
-    'x_atomic_write__mutmut_84': x_atomic_write__mutmut_84, 
-    'x_atomic_write__mutmut_85': x_atomic_write__mutmut_85, 
-    'x_atomic_write__mutmut_86': x_atomic_write__mutmut_86, 
-    'x_atomic_write__mutmut_87': x_atomic_write__mutmut_87, 
-    'x_atomic_write__mutmut_88': x_atomic_write__mutmut_88, 
-    'x_atomic_write__mutmut_89': x_atomic_write__mutmut_89, 
-    'x_atomic_write__mutmut_90': x_atomic_write__mutmut_90, 
-    'x_atomic_write__mutmut_91': x_atomic_write__mutmut_91, 
-    'x_atomic_write__mutmut_92': x_atomic_write__mutmut_92, 
-    'x_atomic_write__mutmut_93': x_atomic_write__mutmut_93, 
-    'x_atomic_write__mutmut_94': x_atomic_write__mutmut_94, 
-    'x_atomic_write__mutmut_95': x_atomic_write__mutmut_95, 
-    'x_atomic_write__mutmut_96': x_atomic_write__mutmut_96, 
-    'x_atomic_write__mutmut_97': x_atomic_write__mutmut_97, 
-    'x_atomic_write__mutmut_98': x_atomic_write__mutmut_98, 
-    'x_atomic_write__mutmut_99': x_atomic_write__mutmut_99, 
-    'x_atomic_write__mutmut_100': x_atomic_write__mutmut_100
+
+x_atomic_write__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_atomic_write__mutmut_1": x_atomic_write__mutmut_1,
+    "x_atomic_write__mutmut_2": x_atomic_write__mutmut_2,
+    "x_atomic_write__mutmut_3": x_atomic_write__mutmut_3,
+    "x_atomic_write__mutmut_4": x_atomic_write__mutmut_4,
+    "x_atomic_write__mutmut_5": x_atomic_write__mutmut_5,
+    "x_atomic_write__mutmut_6": x_atomic_write__mutmut_6,
+    "x_atomic_write__mutmut_7": x_atomic_write__mutmut_7,
+    "x_atomic_write__mutmut_8": x_atomic_write__mutmut_8,
+    "x_atomic_write__mutmut_9": x_atomic_write__mutmut_9,
+    "x_atomic_write__mutmut_10": x_atomic_write__mutmut_10,
+    "x_atomic_write__mutmut_11": x_atomic_write__mutmut_11,
+    "x_atomic_write__mutmut_12": x_atomic_write__mutmut_12,
+    "x_atomic_write__mutmut_13": x_atomic_write__mutmut_13,
+    "x_atomic_write__mutmut_14": x_atomic_write__mutmut_14,
+    "x_atomic_write__mutmut_15": x_atomic_write__mutmut_15,
+    "x_atomic_write__mutmut_16": x_atomic_write__mutmut_16,
+    "x_atomic_write__mutmut_17": x_atomic_write__mutmut_17,
+    "x_atomic_write__mutmut_18": x_atomic_write__mutmut_18,
+    "x_atomic_write__mutmut_19": x_atomic_write__mutmut_19,
+    "x_atomic_write__mutmut_20": x_atomic_write__mutmut_20,
+    "x_atomic_write__mutmut_21": x_atomic_write__mutmut_21,
+    "x_atomic_write__mutmut_22": x_atomic_write__mutmut_22,
+    "x_atomic_write__mutmut_23": x_atomic_write__mutmut_23,
+    "x_atomic_write__mutmut_24": x_atomic_write__mutmut_24,
+    "x_atomic_write__mutmut_25": x_atomic_write__mutmut_25,
+    "x_atomic_write__mutmut_26": x_atomic_write__mutmut_26,
+    "x_atomic_write__mutmut_27": x_atomic_write__mutmut_27,
+    "x_atomic_write__mutmut_28": x_atomic_write__mutmut_28,
+    "x_atomic_write__mutmut_29": x_atomic_write__mutmut_29,
+    "x_atomic_write__mutmut_30": x_atomic_write__mutmut_30,
+    "x_atomic_write__mutmut_31": x_atomic_write__mutmut_31,
+    "x_atomic_write__mutmut_32": x_atomic_write__mutmut_32,
+    "x_atomic_write__mutmut_33": x_atomic_write__mutmut_33,
+    "x_atomic_write__mutmut_34": x_atomic_write__mutmut_34,
+    "x_atomic_write__mutmut_35": x_atomic_write__mutmut_35,
+    "x_atomic_write__mutmut_36": x_atomic_write__mutmut_36,
+    "x_atomic_write__mutmut_37": x_atomic_write__mutmut_37,
+    "x_atomic_write__mutmut_38": x_atomic_write__mutmut_38,
+    "x_atomic_write__mutmut_39": x_atomic_write__mutmut_39,
+    "x_atomic_write__mutmut_40": x_atomic_write__mutmut_40,
+    "x_atomic_write__mutmut_41": x_atomic_write__mutmut_41,
+    "x_atomic_write__mutmut_42": x_atomic_write__mutmut_42,
+    "x_atomic_write__mutmut_43": x_atomic_write__mutmut_43,
+    "x_atomic_write__mutmut_44": x_atomic_write__mutmut_44,
+    "x_atomic_write__mutmut_45": x_atomic_write__mutmut_45,
+    "x_atomic_write__mutmut_46": x_atomic_write__mutmut_46,
+    "x_atomic_write__mutmut_47": x_atomic_write__mutmut_47,
+    "x_atomic_write__mutmut_48": x_atomic_write__mutmut_48,
+    "x_atomic_write__mutmut_49": x_atomic_write__mutmut_49,
+    "x_atomic_write__mutmut_50": x_atomic_write__mutmut_50,
+    "x_atomic_write__mutmut_51": x_atomic_write__mutmut_51,
+    "x_atomic_write__mutmut_52": x_atomic_write__mutmut_52,
+    "x_atomic_write__mutmut_53": x_atomic_write__mutmut_53,
+    "x_atomic_write__mutmut_54": x_atomic_write__mutmut_54,
+    "x_atomic_write__mutmut_55": x_atomic_write__mutmut_55,
+    "x_atomic_write__mutmut_56": x_atomic_write__mutmut_56,
+    "x_atomic_write__mutmut_57": x_atomic_write__mutmut_57,
+    "x_atomic_write__mutmut_58": x_atomic_write__mutmut_58,
+    "x_atomic_write__mutmut_59": x_atomic_write__mutmut_59,
+    "x_atomic_write__mutmut_60": x_atomic_write__mutmut_60,
+    "x_atomic_write__mutmut_61": x_atomic_write__mutmut_61,
+    "x_atomic_write__mutmut_62": x_atomic_write__mutmut_62,
+    "x_atomic_write__mutmut_63": x_atomic_write__mutmut_63,
+    "x_atomic_write__mutmut_64": x_atomic_write__mutmut_64,
+    "x_atomic_write__mutmut_65": x_atomic_write__mutmut_65,
+    "x_atomic_write__mutmut_66": x_atomic_write__mutmut_66,
+    "x_atomic_write__mutmut_67": x_atomic_write__mutmut_67,
+    "x_atomic_write__mutmut_68": x_atomic_write__mutmut_68,
+    "x_atomic_write__mutmut_69": x_atomic_write__mutmut_69,
+    "x_atomic_write__mutmut_70": x_atomic_write__mutmut_70,
+    "x_atomic_write__mutmut_71": x_atomic_write__mutmut_71,
+    "x_atomic_write__mutmut_72": x_atomic_write__mutmut_72,
+    "x_atomic_write__mutmut_73": x_atomic_write__mutmut_73,
+    "x_atomic_write__mutmut_74": x_atomic_write__mutmut_74,
+    "x_atomic_write__mutmut_75": x_atomic_write__mutmut_75,
+    "x_atomic_write__mutmut_76": x_atomic_write__mutmut_76,
+    "x_atomic_write__mutmut_77": x_atomic_write__mutmut_77,
+    "x_atomic_write__mutmut_78": x_atomic_write__mutmut_78,
+    "x_atomic_write__mutmut_79": x_atomic_write__mutmut_79,
+    "x_atomic_write__mutmut_80": x_atomic_write__mutmut_80,
+    "x_atomic_write__mutmut_81": x_atomic_write__mutmut_81,
+    "x_atomic_write__mutmut_82": x_atomic_write__mutmut_82,
+    "x_atomic_write__mutmut_83": x_atomic_write__mutmut_83,
+    "x_atomic_write__mutmut_84": x_atomic_write__mutmut_84,
+    "x_atomic_write__mutmut_85": x_atomic_write__mutmut_85,
+    "x_atomic_write__mutmut_86": x_atomic_write__mutmut_86,
+    "x_atomic_write__mutmut_87": x_atomic_write__mutmut_87,
+    "x_atomic_write__mutmut_88": x_atomic_write__mutmut_88,
+    "x_atomic_write__mutmut_89": x_atomic_write__mutmut_89,
+    "x_atomic_write__mutmut_90": x_atomic_write__mutmut_90,
+    "x_atomic_write__mutmut_91": x_atomic_write__mutmut_91,
+    "x_atomic_write__mutmut_92": x_atomic_write__mutmut_92,
+    "x_atomic_write__mutmut_93": x_atomic_write__mutmut_93,
+    "x_atomic_write__mutmut_94": x_atomic_write__mutmut_94,
+    "x_atomic_write__mutmut_95": x_atomic_write__mutmut_95,
+    "x_atomic_write__mutmut_96": x_atomic_write__mutmut_96,
+    "x_atomic_write__mutmut_97": x_atomic_write__mutmut_97,
+    "x_atomic_write__mutmut_98": x_atomic_write__mutmut_98,
+    "x_atomic_write__mutmut_99": x_atomic_write__mutmut_99,
+    "x_atomic_write__mutmut_100": x_atomic_write__mutmut_100,
 }
+
 
 def atomic_write(*args, **kwargs):
     result = _mutmut_trampoline(x_atomic_write__mutmut_orig, x_atomic_write__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 atomic_write.__signature__ = _mutmut_signature(x_atomic_write__mutmut_orig)
-x_atomic_write__mutmut_orig.__name__ = 'x_atomic_write'
+x_atomic_write__mutmut_orig.__name__ = "x_atomic_write"
 
 
 def x_atomic_write_text__mutmut_orig(
@@ -10194,33 +10210,43 @@ def x_atomic_write_text__mutmut_16(
 
     """
     data = text.encode(encoding)
-    atomic_write(path, data, mode=mode, backup=backup, )
+    atomic_write(
+        path,
+        data,
+        mode=mode,
+        backup=backup,
+    )
 
-x_atomic_write_text__mutmut_mutants : ClassVar[MutantDict] = {
-'x_atomic_write_text__mutmut_1': x_atomic_write_text__mutmut_1, 
-    'x_atomic_write_text__mutmut_2': x_atomic_write_text__mutmut_2, 
-    'x_atomic_write_text__mutmut_3': x_atomic_write_text__mutmut_3, 
-    'x_atomic_write_text__mutmut_4': x_atomic_write_text__mutmut_4, 
-    'x_atomic_write_text__mutmut_5': x_atomic_write_text__mutmut_5, 
-    'x_atomic_write_text__mutmut_6': x_atomic_write_text__mutmut_6, 
-    'x_atomic_write_text__mutmut_7': x_atomic_write_text__mutmut_7, 
-    'x_atomic_write_text__mutmut_8': x_atomic_write_text__mutmut_8, 
-    'x_atomic_write_text__mutmut_9': x_atomic_write_text__mutmut_9, 
-    'x_atomic_write_text__mutmut_10': x_atomic_write_text__mutmut_10, 
-    'x_atomic_write_text__mutmut_11': x_atomic_write_text__mutmut_11, 
-    'x_atomic_write_text__mutmut_12': x_atomic_write_text__mutmut_12, 
-    'x_atomic_write_text__mutmut_13': x_atomic_write_text__mutmut_13, 
-    'x_atomic_write_text__mutmut_14': x_atomic_write_text__mutmut_14, 
-    'x_atomic_write_text__mutmut_15': x_atomic_write_text__mutmut_15, 
-    'x_atomic_write_text__mutmut_16': x_atomic_write_text__mutmut_16
+
+x_atomic_write_text__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_atomic_write_text__mutmut_1": x_atomic_write_text__mutmut_1,
+    "x_atomic_write_text__mutmut_2": x_atomic_write_text__mutmut_2,
+    "x_atomic_write_text__mutmut_3": x_atomic_write_text__mutmut_3,
+    "x_atomic_write_text__mutmut_4": x_atomic_write_text__mutmut_4,
+    "x_atomic_write_text__mutmut_5": x_atomic_write_text__mutmut_5,
+    "x_atomic_write_text__mutmut_6": x_atomic_write_text__mutmut_6,
+    "x_atomic_write_text__mutmut_7": x_atomic_write_text__mutmut_7,
+    "x_atomic_write_text__mutmut_8": x_atomic_write_text__mutmut_8,
+    "x_atomic_write_text__mutmut_9": x_atomic_write_text__mutmut_9,
+    "x_atomic_write_text__mutmut_10": x_atomic_write_text__mutmut_10,
+    "x_atomic_write_text__mutmut_11": x_atomic_write_text__mutmut_11,
+    "x_atomic_write_text__mutmut_12": x_atomic_write_text__mutmut_12,
+    "x_atomic_write_text__mutmut_13": x_atomic_write_text__mutmut_13,
+    "x_atomic_write_text__mutmut_14": x_atomic_write_text__mutmut_14,
+    "x_atomic_write_text__mutmut_15": x_atomic_write_text__mutmut_15,
+    "x_atomic_write_text__mutmut_16": x_atomic_write_text__mutmut_16,
 }
 
+
 def atomic_write_text(*args, **kwargs):
-    result = _mutmut_trampoline(x_atomic_write_text__mutmut_orig, x_atomic_write_text__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_atomic_write_text__mutmut_orig, x_atomic_write_text__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 atomic_write_text.__signature__ = _mutmut_signature(x_atomic_write_text__mutmut_orig)
-x_atomic_write_text__mutmut_orig.__name__ = 'x_atomic_write_text'
+x_atomic_write_text__mutmut_orig.__name__ = "x_atomic_write_text"
 
 
 def x_atomic_replace__mutmut_orig(
@@ -10828,7 +10854,12 @@ def x_atomic_replace__mutmut_18(
 
     # When preserve_mode is False, we explicitly pass preserve_mode=False to atomic_write
     # and let it handle the non-preservation (atomic_write won't preserve even if file exists)
-    atomic_write(path, data, mode=mode, backup=False, )
+    atomic_write(
+        path,
+        data,
+        mode=mode,
+        backup=False,
+    )
 
 
 def x_atomic_replace__mutmut_19(
@@ -10862,34 +10893,37 @@ def x_atomic_replace__mutmut_19(
     # and let it handle the non-preservation (atomic_write won't preserve even if file exists)
     atomic_write(path, data, mode=mode, backup=True, preserve_mode=preserve_mode)
 
-x_atomic_replace__mutmut_mutants : ClassVar[MutantDict] = {
-'x_atomic_replace__mutmut_1': x_atomic_replace__mutmut_1, 
-    'x_atomic_replace__mutmut_2': x_atomic_replace__mutmut_2, 
-    'x_atomic_replace__mutmut_3': x_atomic_replace__mutmut_3, 
-    'x_atomic_replace__mutmut_4': x_atomic_replace__mutmut_4, 
-    'x_atomic_replace__mutmut_5': x_atomic_replace__mutmut_5, 
-    'x_atomic_replace__mutmut_6': x_atomic_replace__mutmut_6, 
-    'x_atomic_replace__mutmut_7': x_atomic_replace__mutmut_7, 
-    'x_atomic_replace__mutmut_8': x_atomic_replace__mutmut_8, 
-    'x_atomic_replace__mutmut_9': x_atomic_replace__mutmut_9, 
-    'x_atomic_replace__mutmut_10': x_atomic_replace__mutmut_10, 
-    'x_atomic_replace__mutmut_11': x_atomic_replace__mutmut_11, 
-    'x_atomic_replace__mutmut_12': x_atomic_replace__mutmut_12, 
-    'x_atomic_replace__mutmut_13': x_atomic_replace__mutmut_13, 
-    'x_atomic_replace__mutmut_14': x_atomic_replace__mutmut_14, 
-    'x_atomic_replace__mutmut_15': x_atomic_replace__mutmut_15, 
-    'x_atomic_replace__mutmut_16': x_atomic_replace__mutmut_16, 
-    'x_atomic_replace__mutmut_17': x_atomic_replace__mutmut_17, 
-    'x_atomic_replace__mutmut_18': x_atomic_replace__mutmut_18, 
-    'x_atomic_replace__mutmut_19': x_atomic_replace__mutmut_19
+
+x_atomic_replace__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_atomic_replace__mutmut_1": x_atomic_replace__mutmut_1,
+    "x_atomic_replace__mutmut_2": x_atomic_replace__mutmut_2,
+    "x_atomic_replace__mutmut_3": x_atomic_replace__mutmut_3,
+    "x_atomic_replace__mutmut_4": x_atomic_replace__mutmut_4,
+    "x_atomic_replace__mutmut_5": x_atomic_replace__mutmut_5,
+    "x_atomic_replace__mutmut_6": x_atomic_replace__mutmut_6,
+    "x_atomic_replace__mutmut_7": x_atomic_replace__mutmut_7,
+    "x_atomic_replace__mutmut_8": x_atomic_replace__mutmut_8,
+    "x_atomic_replace__mutmut_9": x_atomic_replace__mutmut_9,
+    "x_atomic_replace__mutmut_10": x_atomic_replace__mutmut_10,
+    "x_atomic_replace__mutmut_11": x_atomic_replace__mutmut_11,
+    "x_atomic_replace__mutmut_12": x_atomic_replace__mutmut_12,
+    "x_atomic_replace__mutmut_13": x_atomic_replace__mutmut_13,
+    "x_atomic_replace__mutmut_14": x_atomic_replace__mutmut_14,
+    "x_atomic_replace__mutmut_15": x_atomic_replace__mutmut_15,
+    "x_atomic_replace__mutmut_16": x_atomic_replace__mutmut_16,
+    "x_atomic_replace__mutmut_17": x_atomic_replace__mutmut_17,
+    "x_atomic_replace__mutmut_18": x_atomic_replace__mutmut_18,
+    "x_atomic_replace__mutmut_19": x_atomic_replace__mutmut_19,
 }
+
 
 def atomic_replace(*args, **kwargs):
     result = _mutmut_trampoline(x_atomic_replace__mutmut_orig, x_atomic_replace__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 atomic_replace.__signature__ = _mutmut_signature(x_atomic_replace__mutmut_orig)
-x_atomic_replace__mutmut_orig.__name__ = 'x_atomic_replace'
+x_atomic_replace__mutmut_orig.__name__ = "x_atomic_replace"
 
 
 __all__ = [

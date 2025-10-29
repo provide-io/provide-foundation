@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -71,17 +74,23 @@ class ProfileMetrics:
         """Initialize metrics with zero values and current timestamp."""
         self._lock = None
         self.reset()
-    
-    xǁProfileMetricsǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfileMetricsǁ__init____mutmut_1': xǁProfileMetricsǁ__init____mutmut_1
+
+    xǁProfileMetricsǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfileMetricsǁ__init____mutmut_1": xǁProfileMetricsǁ__init____mutmut_1
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfileMetricsǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁProfileMetricsǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfileMetricsǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁProfileMetricsǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁProfileMetricsǁ__init____mutmut_orig)
-    xǁProfileMetricsǁ__init____mutmut_orig.__name__ = 'xǁProfileMetricsǁ__init__'
+    xǁProfileMetricsǁ__init____mutmut_orig.__name__ = "xǁProfileMetricsǁ__init__"
 
     def xǁProfileMetricsǁrecord_message__mutmut_orig(
         self,
@@ -346,26 +355,32 @@ class ProfileMetrics:
 
             # Track field complexity (for future analysis)
             self._total_field_count -= field_count
-    
-    xǁProfileMetricsǁrecord_message__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfileMetricsǁrecord_message__mutmut_1': xǁProfileMetricsǁrecord_message__mutmut_1, 
-        'xǁProfileMetricsǁrecord_message__mutmut_2': xǁProfileMetricsǁrecord_message__mutmut_2, 
-        'xǁProfileMetricsǁrecord_message__mutmut_3': xǁProfileMetricsǁrecord_message__mutmut_3, 
-        'xǁProfileMetricsǁrecord_message__mutmut_4': xǁProfileMetricsǁrecord_message__mutmut_4, 
-        'xǁProfileMetricsǁrecord_message__mutmut_5': xǁProfileMetricsǁrecord_message__mutmut_5, 
-        'xǁProfileMetricsǁrecord_message__mutmut_6': xǁProfileMetricsǁrecord_message__mutmut_6, 
-        'xǁProfileMetricsǁrecord_message__mutmut_7': xǁProfileMetricsǁrecord_message__mutmut_7, 
-        'xǁProfileMetricsǁrecord_message__mutmut_8': xǁProfileMetricsǁrecord_message__mutmut_8, 
-        'xǁProfileMetricsǁrecord_message__mutmut_9': xǁProfileMetricsǁrecord_message__mutmut_9, 
-        'xǁProfileMetricsǁrecord_message__mutmut_10': xǁProfileMetricsǁrecord_message__mutmut_10
+
+    xǁProfileMetricsǁrecord_message__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfileMetricsǁrecord_message__mutmut_1": xǁProfileMetricsǁrecord_message__mutmut_1,
+        "xǁProfileMetricsǁrecord_message__mutmut_2": xǁProfileMetricsǁrecord_message__mutmut_2,
+        "xǁProfileMetricsǁrecord_message__mutmut_3": xǁProfileMetricsǁrecord_message__mutmut_3,
+        "xǁProfileMetricsǁrecord_message__mutmut_4": xǁProfileMetricsǁrecord_message__mutmut_4,
+        "xǁProfileMetricsǁrecord_message__mutmut_5": xǁProfileMetricsǁrecord_message__mutmut_5,
+        "xǁProfileMetricsǁrecord_message__mutmut_6": xǁProfileMetricsǁrecord_message__mutmut_6,
+        "xǁProfileMetricsǁrecord_message__mutmut_7": xǁProfileMetricsǁrecord_message__mutmut_7,
+        "xǁProfileMetricsǁrecord_message__mutmut_8": xǁProfileMetricsǁrecord_message__mutmut_8,
+        "xǁProfileMetricsǁrecord_message__mutmut_9": xǁProfileMetricsǁrecord_message__mutmut_9,
+        "xǁProfileMetricsǁrecord_message__mutmut_10": xǁProfileMetricsǁrecord_message__mutmut_10,
     }
-    
+
     def record_message(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfileMetricsǁrecord_message__mutmut_orig"), object.__getattribute__(self, "xǁProfileMetricsǁrecord_message__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfileMetricsǁrecord_message__mutmut_orig"),
+            object.__getattribute__(self, "xǁProfileMetricsǁrecord_message__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     record_message.__signature__ = _mutmut_signature(xǁProfileMetricsǁrecord_message__mutmut_orig)
-    xǁProfileMetricsǁrecord_message__mutmut_orig.__name__ = 'xǁProfileMetricsǁrecord_message'
+    xǁProfileMetricsǁrecord_message__mutmut_orig.__name__ = "xǁProfileMetricsǁrecord_message"
 
     def xǁProfileMetricsǁreset__mutmut_orig(self) -> None:
         """Reset all metrics to initial values with new start time."""
@@ -486,27 +501,33 @@ class ProfileMetrics:
             self.dropped_count = 0
             self.start_time = time.time()
             self._total_field_count = 1
-    
-    xǁProfileMetricsǁreset__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfileMetricsǁreset__mutmut_1': xǁProfileMetricsǁreset__mutmut_1, 
-        'xǁProfileMetricsǁreset__mutmut_2': xǁProfileMetricsǁreset__mutmut_2, 
-        'xǁProfileMetricsǁreset__mutmut_3': xǁProfileMetricsǁreset__mutmut_3, 
-        'xǁProfileMetricsǁreset__mutmut_4': xǁProfileMetricsǁreset__mutmut_4, 
-        'xǁProfileMetricsǁreset__mutmut_5': xǁProfileMetricsǁreset__mutmut_5, 
-        'xǁProfileMetricsǁreset__mutmut_6': xǁProfileMetricsǁreset__mutmut_6, 
-        'xǁProfileMetricsǁreset__mutmut_7': xǁProfileMetricsǁreset__mutmut_7, 
-        'xǁProfileMetricsǁreset__mutmut_8': xǁProfileMetricsǁreset__mutmut_8, 
-        'xǁProfileMetricsǁreset__mutmut_9': xǁProfileMetricsǁreset__mutmut_9, 
-        'xǁProfileMetricsǁreset__mutmut_10': xǁProfileMetricsǁreset__mutmut_10, 
-        'xǁProfileMetricsǁreset__mutmut_11': xǁProfileMetricsǁreset__mutmut_11
+
+    xǁProfileMetricsǁreset__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfileMetricsǁreset__mutmut_1": xǁProfileMetricsǁreset__mutmut_1,
+        "xǁProfileMetricsǁreset__mutmut_2": xǁProfileMetricsǁreset__mutmut_2,
+        "xǁProfileMetricsǁreset__mutmut_3": xǁProfileMetricsǁreset__mutmut_3,
+        "xǁProfileMetricsǁreset__mutmut_4": xǁProfileMetricsǁreset__mutmut_4,
+        "xǁProfileMetricsǁreset__mutmut_5": xǁProfileMetricsǁreset__mutmut_5,
+        "xǁProfileMetricsǁreset__mutmut_6": xǁProfileMetricsǁreset__mutmut_6,
+        "xǁProfileMetricsǁreset__mutmut_7": xǁProfileMetricsǁreset__mutmut_7,
+        "xǁProfileMetricsǁreset__mutmut_8": xǁProfileMetricsǁreset__mutmut_8,
+        "xǁProfileMetricsǁreset__mutmut_9": xǁProfileMetricsǁreset__mutmut_9,
+        "xǁProfileMetricsǁreset__mutmut_10": xǁProfileMetricsǁreset__mutmut_10,
+        "xǁProfileMetricsǁreset__mutmut_11": xǁProfileMetricsǁreset__mutmut_11,
     }
-    
+
     def reset(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfileMetricsǁreset__mutmut_orig"), object.__getattribute__(self, "xǁProfileMetricsǁreset__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfileMetricsǁreset__mutmut_orig"),
+            object.__getattribute__(self, "xǁProfileMetricsǁreset__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     reset.__signature__ = _mutmut_signature(xǁProfileMetricsǁreset__mutmut_orig)
-    xǁProfileMetricsǁreset__mutmut_orig.__name__ = 'xǁProfileMetricsǁreset'
+    xǁProfileMetricsǁreset__mutmut_orig.__name__ = "xǁProfileMetricsǁreset"
 
     @property
     def messages_per_second(self) -> float:
@@ -1581,7 +1602,9 @@ class ProfileMetrics:
             )
 
             return {
-                "messages_per_second": round(messages_per_second, ),
+                "messages_per_second": round(
+                    messages_per_second,
+                ),
                 "avg_latency_ms": round(avg_latency_ms, 4),
                 "emoji_overhead_percent": round(emoji_overhead_percent, 1),
                 "total_messages": self.message_count,
@@ -1806,7 +1829,9 @@ class ProfileMetrics:
 
             return {
                 "messages_per_second": round(messages_per_second, 2),
-                "avg_latency_ms": round(avg_latency_ms, ),
+                "avg_latency_ms": round(
+                    avg_latency_ms,
+                ),
                 "emoji_overhead_percent": round(emoji_overhead_percent, 1),
                 "total_messages": self.message_count,
                 "emoji_messages": self.emoji_message_count,
@@ -2031,7 +2056,9 @@ class ProfileMetrics:
             return {
                 "messages_per_second": round(messages_per_second, 2),
                 "avg_latency_ms": round(avg_latency_ms, 4),
-                "emoji_overhead_percent": round(emoji_overhead_percent, ),
+                "emoji_overhead_percent": round(
+                    emoji_overhead_percent,
+                ),
                 "total_messages": self.message_count,
                 "emoji_messages": self.emoji_message_count,
                 "dropped_messages": self.dropped_count,
@@ -2451,7 +2478,9 @@ class ProfileMetrics:
                 "total_messages": self.message_count,
                 "emoji_messages": self.emoji_message_count,
                 "dropped_messages": self.dropped_count,
-                "avg_fields_per_message": round(avg_fields_per_message, ),
+                "avg_fields_per_message": round(
+                    avg_fields_per_message,
+                ),
                 "uptime_seconds": round(elapsed, 1),
             }
 
@@ -2676,7 +2705,9 @@ class ProfileMetrics:
                 "emoji_messages": self.emoji_message_count,
                 "dropped_messages": self.dropped_count,
                 "avg_fields_per_message": round(avg_fields_per_message, 1),
-                "uptime_seconds": round(elapsed, ),
+                "uptime_seconds": round(
+                    elapsed,
+                ),
             }
 
     def xǁProfileMetricsǁto_dict__mutmut_67(self) -> dict[str, Any]:
@@ -2710,83 +2741,89 @@ class ProfileMetrics:
                 "avg_fields_per_message": round(avg_fields_per_message, 1),
                 "uptime_seconds": round(elapsed, 2),
             }
-    
-    xǁProfileMetricsǁto_dict__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfileMetricsǁto_dict__mutmut_1': xǁProfileMetricsǁto_dict__mutmut_1, 
-        'xǁProfileMetricsǁto_dict__mutmut_2': xǁProfileMetricsǁto_dict__mutmut_2, 
-        'xǁProfileMetricsǁto_dict__mutmut_3': xǁProfileMetricsǁto_dict__mutmut_3, 
-        'xǁProfileMetricsǁto_dict__mutmut_4': xǁProfileMetricsǁto_dict__mutmut_4, 
-        'xǁProfileMetricsǁto_dict__mutmut_5': xǁProfileMetricsǁto_dict__mutmut_5, 
-        'xǁProfileMetricsǁto_dict__mutmut_6': xǁProfileMetricsǁto_dict__mutmut_6, 
-        'xǁProfileMetricsǁto_dict__mutmut_7': xǁProfileMetricsǁto_dict__mutmut_7, 
-        'xǁProfileMetricsǁto_dict__mutmut_8': xǁProfileMetricsǁto_dict__mutmut_8, 
-        'xǁProfileMetricsǁto_dict__mutmut_9': xǁProfileMetricsǁto_dict__mutmut_9, 
-        'xǁProfileMetricsǁto_dict__mutmut_10': xǁProfileMetricsǁto_dict__mutmut_10, 
-        'xǁProfileMetricsǁto_dict__mutmut_11': xǁProfileMetricsǁto_dict__mutmut_11, 
-        'xǁProfileMetricsǁto_dict__mutmut_12': xǁProfileMetricsǁto_dict__mutmut_12, 
-        'xǁProfileMetricsǁto_dict__mutmut_13': xǁProfileMetricsǁto_dict__mutmut_13, 
-        'xǁProfileMetricsǁto_dict__mutmut_14': xǁProfileMetricsǁto_dict__mutmut_14, 
-        'xǁProfileMetricsǁto_dict__mutmut_15': xǁProfileMetricsǁto_dict__mutmut_15, 
-        'xǁProfileMetricsǁto_dict__mutmut_16': xǁProfileMetricsǁto_dict__mutmut_16, 
-        'xǁProfileMetricsǁto_dict__mutmut_17': xǁProfileMetricsǁto_dict__mutmut_17, 
-        'xǁProfileMetricsǁto_dict__mutmut_18': xǁProfileMetricsǁto_dict__mutmut_18, 
-        'xǁProfileMetricsǁto_dict__mutmut_19': xǁProfileMetricsǁto_dict__mutmut_19, 
-        'xǁProfileMetricsǁto_dict__mutmut_20': xǁProfileMetricsǁto_dict__mutmut_20, 
-        'xǁProfileMetricsǁto_dict__mutmut_21': xǁProfileMetricsǁto_dict__mutmut_21, 
-        'xǁProfileMetricsǁto_dict__mutmut_22': xǁProfileMetricsǁto_dict__mutmut_22, 
-        'xǁProfileMetricsǁto_dict__mutmut_23': xǁProfileMetricsǁto_dict__mutmut_23, 
-        'xǁProfileMetricsǁto_dict__mutmut_24': xǁProfileMetricsǁto_dict__mutmut_24, 
-        'xǁProfileMetricsǁto_dict__mutmut_25': xǁProfileMetricsǁto_dict__mutmut_25, 
-        'xǁProfileMetricsǁto_dict__mutmut_26': xǁProfileMetricsǁto_dict__mutmut_26, 
-        'xǁProfileMetricsǁto_dict__mutmut_27': xǁProfileMetricsǁto_dict__mutmut_27, 
-        'xǁProfileMetricsǁto_dict__mutmut_28': xǁProfileMetricsǁto_dict__mutmut_28, 
-        'xǁProfileMetricsǁto_dict__mutmut_29': xǁProfileMetricsǁto_dict__mutmut_29, 
-        'xǁProfileMetricsǁto_dict__mutmut_30': xǁProfileMetricsǁto_dict__mutmut_30, 
-        'xǁProfileMetricsǁto_dict__mutmut_31': xǁProfileMetricsǁto_dict__mutmut_31, 
-        'xǁProfileMetricsǁto_dict__mutmut_32': xǁProfileMetricsǁto_dict__mutmut_32, 
-        'xǁProfileMetricsǁto_dict__mutmut_33': xǁProfileMetricsǁto_dict__mutmut_33, 
-        'xǁProfileMetricsǁto_dict__mutmut_34': xǁProfileMetricsǁto_dict__mutmut_34, 
-        'xǁProfileMetricsǁto_dict__mutmut_35': xǁProfileMetricsǁto_dict__mutmut_35, 
-        'xǁProfileMetricsǁto_dict__mutmut_36': xǁProfileMetricsǁto_dict__mutmut_36, 
-        'xǁProfileMetricsǁto_dict__mutmut_37': xǁProfileMetricsǁto_dict__mutmut_37, 
-        'xǁProfileMetricsǁto_dict__mutmut_38': xǁProfileMetricsǁto_dict__mutmut_38, 
-        'xǁProfileMetricsǁto_dict__mutmut_39': xǁProfileMetricsǁto_dict__mutmut_39, 
-        'xǁProfileMetricsǁto_dict__mutmut_40': xǁProfileMetricsǁto_dict__mutmut_40, 
-        'xǁProfileMetricsǁto_dict__mutmut_41': xǁProfileMetricsǁto_dict__mutmut_41, 
-        'xǁProfileMetricsǁto_dict__mutmut_42': xǁProfileMetricsǁto_dict__mutmut_42, 
-        'xǁProfileMetricsǁto_dict__mutmut_43': xǁProfileMetricsǁto_dict__mutmut_43, 
-        'xǁProfileMetricsǁto_dict__mutmut_44': xǁProfileMetricsǁto_dict__mutmut_44, 
-        'xǁProfileMetricsǁto_dict__mutmut_45': xǁProfileMetricsǁto_dict__mutmut_45, 
-        'xǁProfileMetricsǁto_dict__mutmut_46': xǁProfileMetricsǁto_dict__mutmut_46, 
-        'xǁProfileMetricsǁto_dict__mutmut_47': xǁProfileMetricsǁto_dict__mutmut_47, 
-        'xǁProfileMetricsǁto_dict__mutmut_48': xǁProfileMetricsǁto_dict__mutmut_48, 
-        'xǁProfileMetricsǁto_dict__mutmut_49': xǁProfileMetricsǁto_dict__mutmut_49, 
-        'xǁProfileMetricsǁto_dict__mutmut_50': xǁProfileMetricsǁto_dict__mutmut_50, 
-        'xǁProfileMetricsǁto_dict__mutmut_51': xǁProfileMetricsǁto_dict__mutmut_51, 
-        'xǁProfileMetricsǁto_dict__mutmut_52': xǁProfileMetricsǁto_dict__mutmut_52, 
-        'xǁProfileMetricsǁto_dict__mutmut_53': xǁProfileMetricsǁto_dict__mutmut_53, 
-        'xǁProfileMetricsǁto_dict__mutmut_54': xǁProfileMetricsǁto_dict__mutmut_54, 
-        'xǁProfileMetricsǁto_dict__mutmut_55': xǁProfileMetricsǁto_dict__mutmut_55, 
-        'xǁProfileMetricsǁto_dict__mutmut_56': xǁProfileMetricsǁto_dict__mutmut_56, 
-        'xǁProfileMetricsǁto_dict__mutmut_57': xǁProfileMetricsǁto_dict__mutmut_57, 
-        'xǁProfileMetricsǁto_dict__mutmut_58': xǁProfileMetricsǁto_dict__mutmut_58, 
-        'xǁProfileMetricsǁto_dict__mutmut_59': xǁProfileMetricsǁto_dict__mutmut_59, 
-        'xǁProfileMetricsǁto_dict__mutmut_60': xǁProfileMetricsǁto_dict__mutmut_60, 
-        'xǁProfileMetricsǁto_dict__mutmut_61': xǁProfileMetricsǁto_dict__mutmut_61, 
-        'xǁProfileMetricsǁto_dict__mutmut_62': xǁProfileMetricsǁto_dict__mutmut_62, 
-        'xǁProfileMetricsǁto_dict__mutmut_63': xǁProfileMetricsǁto_dict__mutmut_63, 
-        'xǁProfileMetricsǁto_dict__mutmut_64': xǁProfileMetricsǁto_dict__mutmut_64, 
-        'xǁProfileMetricsǁto_dict__mutmut_65': xǁProfileMetricsǁto_dict__mutmut_65, 
-        'xǁProfileMetricsǁto_dict__mutmut_66': xǁProfileMetricsǁto_dict__mutmut_66, 
-        'xǁProfileMetricsǁto_dict__mutmut_67': xǁProfileMetricsǁto_dict__mutmut_67
+
+    xǁProfileMetricsǁto_dict__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfileMetricsǁto_dict__mutmut_1": xǁProfileMetricsǁto_dict__mutmut_1,
+        "xǁProfileMetricsǁto_dict__mutmut_2": xǁProfileMetricsǁto_dict__mutmut_2,
+        "xǁProfileMetricsǁto_dict__mutmut_3": xǁProfileMetricsǁto_dict__mutmut_3,
+        "xǁProfileMetricsǁto_dict__mutmut_4": xǁProfileMetricsǁto_dict__mutmut_4,
+        "xǁProfileMetricsǁto_dict__mutmut_5": xǁProfileMetricsǁto_dict__mutmut_5,
+        "xǁProfileMetricsǁto_dict__mutmut_6": xǁProfileMetricsǁto_dict__mutmut_6,
+        "xǁProfileMetricsǁto_dict__mutmut_7": xǁProfileMetricsǁto_dict__mutmut_7,
+        "xǁProfileMetricsǁto_dict__mutmut_8": xǁProfileMetricsǁto_dict__mutmut_8,
+        "xǁProfileMetricsǁto_dict__mutmut_9": xǁProfileMetricsǁto_dict__mutmut_9,
+        "xǁProfileMetricsǁto_dict__mutmut_10": xǁProfileMetricsǁto_dict__mutmut_10,
+        "xǁProfileMetricsǁto_dict__mutmut_11": xǁProfileMetricsǁto_dict__mutmut_11,
+        "xǁProfileMetricsǁto_dict__mutmut_12": xǁProfileMetricsǁto_dict__mutmut_12,
+        "xǁProfileMetricsǁto_dict__mutmut_13": xǁProfileMetricsǁto_dict__mutmut_13,
+        "xǁProfileMetricsǁto_dict__mutmut_14": xǁProfileMetricsǁto_dict__mutmut_14,
+        "xǁProfileMetricsǁto_dict__mutmut_15": xǁProfileMetricsǁto_dict__mutmut_15,
+        "xǁProfileMetricsǁto_dict__mutmut_16": xǁProfileMetricsǁto_dict__mutmut_16,
+        "xǁProfileMetricsǁto_dict__mutmut_17": xǁProfileMetricsǁto_dict__mutmut_17,
+        "xǁProfileMetricsǁto_dict__mutmut_18": xǁProfileMetricsǁto_dict__mutmut_18,
+        "xǁProfileMetricsǁto_dict__mutmut_19": xǁProfileMetricsǁto_dict__mutmut_19,
+        "xǁProfileMetricsǁto_dict__mutmut_20": xǁProfileMetricsǁto_dict__mutmut_20,
+        "xǁProfileMetricsǁto_dict__mutmut_21": xǁProfileMetricsǁto_dict__mutmut_21,
+        "xǁProfileMetricsǁto_dict__mutmut_22": xǁProfileMetricsǁto_dict__mutmut_22,
+        "xǁProfileMetricsǁto_dict__mutmut_23": xǁProfileMetricsǁto_dict__mutmut_23,
+        "xǁProfileMetricsǁto_dict__mutmut_24": xǁProfileMetricsǁto_dict__mutmut_24,
+        "xǁProfileMetricsǁto_dict__mutmut_25": xǁProfileMetricsǁto_dict__mutmut_25,
+        "xǁProfileMetricsǁto_dict__mutmut_26": xǁProfileMetricsǁto_dict__mutmut_26,
+        "xǁProfileMetricsǁto_dict__mutmut_27": xǁProfileMetricsǁto_dict__mutmut_27,
+        "xǁProfileMetricsǁto_dict__mutmut_28": xǁProfileMetricsǁto_dict__mutmut_28,
+        "xǁProfileMetricsǁto_dict__mutmut_29": xǁProfileMetricsǁto_dict__mutmut_29,
+        "xǁProfileMetricsǁto_dict__mutmut_30": xǁProfileMetricsǁto_dict__mutmut_30,
+        "xǁProfileMetricsǁto_dict__mutmut_31": xǁProfileMetricsǁto_dict__mutmut_31,
+        "xǁProfileMetricsǁto_dict__mutmut_32": xǁProfileMetricsǁto_dict__mutmut_32,
+        "xǁProfileMetricsǁto_dict__mutmut_33": xǁProfileMetricsǁto_dict__mutmut_33,
+        "xǁProfileMetricsǁto_dict__mutmut_34": xǁProfileMetricsǁto_dict__mutmut_34,
+        "xǁProfileMetricsǁto_dict__mutmut_35": xǁProfileMetricsǁto_dict__mutmut_35,
+        "xǁProfileMetricsǁto_dict__mutmut_36": xǁProfileMetricsǁto_dict__mutmut_36,
+        "xǁProfileMetricsǁto_dict__mutmut_37": xǁProfileMetricsǁto_dict__mutmut_37,
+        "xǁProfileMetricsǁto_dict__mutmut_38": xǁProfileMetricsǁto_dict__mutmut_38,
+        "xǁProfileMetricsǁto_dict__mutmut_39": xǁProfileMetricsǁto_dict__mutmut_39,
+        "xǁProfileMetricsǁto_dict__mutmut_40": xǁProfileMetricsǁto_dict__mutmut_40,
+        "xǁProfileMetricsǁto_dict__mutmut_41": xǁProfileMetricsǁto_dict__mutmut_41,
+        "xǁProfileMetricsǁto_dict__mutmut_42": xǁProfileMetricsǁto_dict__mutmut_42,
+        "xǁProfileMetricsǁto_dict__mutmut_43": xǁProfileMetricsǁto_dict__mutmut_43,
+        "xǁProfileMetricsǁto_dict__mutmut_44": xǁProfileMetricsǁto_dict__mutmut_44,
+        "xǁProfileMetricsǁto_dict__mutmut_45": xǁProfileMetricsǁto_dict__mutmut_45,
+        "xǁProfileMetricsǁto_dict__mutmut_46": xǁProfileMetricsǁto_dict__mutmut_46,
+        "xǁProfileMetricsǁto_dict__mutmut_47": xǁProfileMetricsǁto_dict__mutmut_47,
+        "xǁProfileMetricsǁto_dict__mutmut_48": xǁProfileMetricsǁto_dict__mutmut_48,
+        "xǁProfileMetricsǁto_dict__mutmut_49": xǁProfileMetricsǁto_dict__mutmut_49,
+        "xǁProfileMetricsǁto_dict__mutmut_50": xǁProfileMetricsǁto_dict__mutmut_50,
+        "xǁProfileMetricsǁto_dict__mutmut_51": xǁProfileMetricsǁto_dict__mutmut_51,
+        "xǁProfileMetricsǁto_dict__mutmut_52": xǁProfileMetricsǁto_dict__mutmut_52,
+        "xǁProfileMetricsǁto_dict__mutmut_53": xǁProfileMetricsǁto_dict__mutmut_53,
+        "xǁProfileMetricsǁto_dict__mutmut_54": xǁProfileMetricsǁto_dict__mutmut_54,
+        "xǁProfileMetricsǁto_dict__mutmut_55": xǁProfileMetricsǁto_dict__mutmut_55,
+        "xǁProfileMetricsǁto_dict__mutmut_56": xǁProfileMetricsǁto_dict__mutmut_56,
+        "xǁProfileMetricsǁto_dict__mutmut_57": xǁProfileMetricsǁto_dict__mutmut_57,
+        "xǁProfileMetricsǁto_dict__mutmut_58": xǁProfileMetricsǁto_dict__mutmut_58,
+        "xǁProfileMetricsǁto_dict__mutmut_59": xǁProfileMetricsǁto_dict__mutmut_59,
+        "xǁProfileMetricsǁto_dict__mutmut_60": xǁProfileMetricsǁto_dict__mutmut_60,
+        "xǁProfileMetricsǁto_dict__mutmut_61": xǁProfileMetricsǁto_dict__mutmut_61,
+        "xǁProfileMetricsǁto_dict__mutmut_62": xǁProfileMetricsǁto_dict__mutmut_62,
+        "xǁProfileMetricsǁto_dict__mutmut_63": xǁProfileMetricsǁto_dict__mutmut_63,
+        "xǁProfileMetricsǁto_dict__mutmut_64": xǁProfileMetricsǁto_dict__mutmut_64,
+        "xǁProfileMetricsǁto_dict__mutmut_65": xǁProfileMetricsǁto_dict__mutmut_65,
+        "xǁProfileMetricsǁto_dict__mutmut_66": xǁProfileMetricsǁto_dict__mutmut_66,
+        "xǁProfileMetricsǁto_dict__mutmut_67": xǁProfileMetricsǁto_dict__mutmut_67,
     }
-    
+
     def to_dict(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfileMetricsǁto_dict__mutmut_orig"), object.__getattribute__(self, "xǁProfileMetricsǁto_dict__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfileMetricsǁto_dict__mutmut_orig"),
+            object.__getattribute__(self, "xǁProfileMetricsǁto_dict__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     to_dict.__signature__ = _mutmut_signature(xǁProfileMetricsǁto_dict__mutmut_orig)
-    xǁProfileMetricsǁto_dict__mutmut_orig.__name__ = 'xǁProfileMetricsǁto_dict'
+    xǁProfileMetricsǁto_dict__mutmut_orig.__name__ = "xǁProfileMetricsǁto_dict"
 
 
 # <3 🧱🤝⏱️🪄

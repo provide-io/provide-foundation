@@ -39,23 +39,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -875,7 +878,9 @@ def x_ensure_parent_groups__mutmut_15(parent_path: str, registry: Registry) -> N
         registry_key = group_path
 
         # Check if this group already exists
-        if not registry.get_entry(registry_key, ):
+        if not registry.get_entry(
+            registry_key,
+        ):
             # Create a placeholder group
             def group_func() -> None:
                 """Auto-generated command group."""
@@ -1784,7 +1789,7 @@ def x_ensure_parent_groups__mutmut_32(parent_path: str, registry: Registry) -> N
                 func=group_func,
                 description=f"{parts[i].capitalize()} commands",
                 metadata={"is_group": True, "auto_created": True},
-                )
+            )
 
             registry.register(
                 name=registry_key,
@@ -2523,7 +2528,7 @@ def x_ensure_parent_groups__mutmut_46(parent_path: str, registry: Registry) -> N
                 name=registry_key,
                 value=group_func,
                 dimension=ComponentCategory.COMMAND.value,
-                )
+            )
 
             logger.debug(f"Auto-created group: {group_path}")  # type: ignore[attr-defined]
 
@@ -3216,77 +3221,84 @@ def x_ensure_parent_groups__mutmut_59(parent_path: str, registry: Registry) -> N
 
             logger.debug(None)  # type: ignore[attr-defined]
 
-x_ensure_parent_groups__mutmut_mutants : ClassVar[MutantDict] = {
-'x_ensure_parent_groups__mutmut_1': x_ensure_parent_groups__mutmut_1, 
-    'x_ensure_parent_groups__mutmut_2': x_ensure_parent_groups__mutmut_2, 
-    'x_ensure_parent_groups__mutmut_3': x_ensure_parent_groups__mutmut_3, 
-    'x_ensure_parent_groups__mutmut_4': x_ensure_parent_groups__mutmut_4, 
-    'x_ensure_parent_groups__mutmut_5': x_ensure_parent_groups__mutmut_5, 
-    'x_ensure_parent_groups__mutmut_6': x_ensure_parent_groups__mutmut_6, 
-    'x_ensure_parent_groups__mutmut_7': x_ensure_parent_groups__mutmut_7, 
-    'x_ensure_parent_groups__mutmut_8': x_ensure_parent_groups__mutmut_8, 
-    'x_ensure_parent_groups__mutmut_9': x_ensure_parent_groups__mutmut_9, 
-    'x_ensure_parent_groups__mutmut_10': x_ensure_parent_groups__mutmut_10, 
-    'x_ensure_parent_groups__mutmut_11': x_ensure_parent_groups__mutmut_11, 
-    'x_ensure_parent_groups__mutmut_12': x_ensure_parent_groups__mutmut_12, 
-    'x_ensure_parent_groups__mutmut_13': x_ensure_parent_groups__mutmut_13, 
-    'x_ensure_parent_groups__mutmut_14': x_ensure_parent_groups__mutmut_14, 
-    'x_ensure_parent_groups__mutmut_15': x_ensure_parent_groups__mutmut_15, 
-    'x_ensure_parent_groups__mutmut_16': x_ensure_parent_groups__mutmut_16, 
-    'x_ensure_parent_groups__mutmut_17': x_ensure_parent_groups__mutmut_17, 
-    'x_ensure_parent_groups__mutmut_18': x_ensure_parent_groups__mutmut_18, 
-    'x_ensure_parent_groups__mutmut_19': x_ensure_parent_groups__mutmut_19, 
-    'x_ensure_parent_groups__mutmut_20': x_ensure_parent_groups__mutmut_20, 
-    'x_ensure_parent_groups__mutmut_21': x_ensure_parent_groups__mutmut_21, 
-    'x_ensure_parent_groups__mutmut_22': x_ensure_parent_groups__mutmut_22, 
-    'x_ensure_parent_groups__mutmut_23': x_ensure_parent_groups__mutmut_23, 
-    'x_ensure_parent_groups__mutmut_24': x_ensure_parent_groups__mutmut_24, 
-    'x_ensure_parent_groups__mutmut_25': x_ensure_parent_groups__mutmut_25, 
-    'x_ensure_parent_groups__mutmut_26': x_ensure_parent_groups__mutmut_26, 
-    'x_ensure_parent_groups__mutmut_27': x_ensure_parent_groups__mutmut_27, 
-    'x_ensure_parent_groups__mutmut_28': x_ensure_parent_groups__mutmut_28, 
-    'x_ensure_parent_groups__mutmut_29': x_ensure_parent_groups__mutmut_29, 
-    'x_ensure_parent_groups__mutmut_30': x_ensure_parent_groups__mutmut_30, 
-    'x_ensure_parent_groups__mutmut_31': x_ensure_parent_groups__mutmut_31, 
-    'x_ensure_parent_groups__mutmut_32': x_ensure_parent_groups__mutmut_32, 
-    'x_ensure_parent_groups__mutmut_33': x_ensure_parent_groups__mutmut_33, 
-    'x_ensure_parent_groups__mutmut_34': x_ensure_parent_groups__mutmut_34, 
-    'x_ensure_parent_groups__mutmut_35': x_ensure_parent_groups__mutmut_35, 
-    'x_ensure_parent_groups__mutmut_36': x_ensure_parent_groups__mutmut_36, 
-    'x_ensure_parent_groups__mutmut_37': x_ensure_parent_groups__mutmut_37, 
-    'x_ensure_parent_groups__mutmut_38': x_ensure_parent_groups__mutmut_38, 
-    'x_ensure_parent_groups__mutmut_39': x_ensure_parent_groups__mutmut_39, 
-    'x_ensure_parent_groups__mutmut_40': x_ensure_parent_groups__mutmut_40, 
-    'x_ensure_parent_groups__mutmut_41': x_ensure_parent_groups__mutmut_41, 
-    'x_ensure_parent_groups__mutmut_42': x_ensure_parent_groups__mutmut_42, 
-    'x_ensure_parent_groups__mutmut_43': x_ensure_parent_groups__mutmut_43, 
-    'x_ensure_parent_groups__mutmut_44': x_ensure_parent_groups__mutmut_44, 
-    'x_ensure_parent_groups__mutmut_45': x_ensure_parent_groups__mutmut_45, 
-    'x_ensure_parent_groups__mutmut_46': x_ensure_parent_groups__mutmut_46, 
-    'x_ensure_parent_groups__mutmut_47': x_ensure_parent_groups__mutmut_47, 
-    'x_ensure_parent_groups__mutmut_48': x_ensure_parent_groups__mutmut_48, 
-    'x_ensure_parent_groups__mutmut_49': x_ensure_parent_groups__mutmut_49, 
-    'x_ensure_parent_groups__mutmut_50': x_ensure_parent_groups__mutmut_50, 
-    'x_ensure_parent_groups__mutmut_51': x_ensure_parent_groups__mutmut_51, 
-    'x_ensure_parent_groups__mutmut_52': x_ensure_parent_groups__mutmut_52, 
-    'x_ensure_parent_groups__mutmut_53': x_ensure_parent_groups__mutmut_53, 
-    'x_ensure_parent_groups__mutmut_54': x_ensure_parent_groups__mutmut_54, 
-    'x_ensure_parent_groups__mutmut_55': x_ensure_parent_groups__mutmut_55, 
-    'x_ensure_parent_groups__mutmut_56': x_ensure_parent_groups__mutmut_56, 
-    'x_ensure_parent_groups__mutmut_57': x_ensure_parent_groups__mutmut_57, 
-    'x_ensure_parent_groups__mutmut_58': x_ensure_parent_groups__mutmut_58, 
-    'x_ensure_parent_groups__mutmut_59': x_ensure_parent_groups__mutmut_59
+
+x_ensure_parent_groups__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_ensure_parent_groups__mutmut_1": x_ensure_parent_groups__mutmut_1,
+    "x_ensure_parent_groups__mutmut_2": x_ensure_parent_groups__mutmut_2,
+    "x_ensure_parent_groups__mutmut_3": x_ensure_parent_groups__mutmut_3,
+    "x_ensure_parent_groups__mutmut_4": x_ensure_parent_groups__mutmut_4,
+    "x_ensure_parent_groups__mutmut_5": x_ensure_parent_groups__mutmut_5,
+    "x_ensure_parent_groups__mutmut_6": x_ensure_parent_groups__mutmut_6,
+    "x_ensure_parent_groups__mutmut_7": x_ensure_parent_groups__mutmut_7,
+    "x_ensure_parent_groups__mutmut_8": x_ensure_parent_groups__mutmut_8,
+    "x_ensure_parent_groups__mutmut_9": x_ensure_parent_groups__mutmut_9,
+    "x_ensure_parent_groups__mutmut_10": x_ensure_parent_groups__mutmut_10,
+    "x_ensure_parent_groups__mutmut_11": x_ensure_parent_groups__mutmut_11,
+    "x_ensure_parent_groups__mutmut_12": x_ensure_parent_groups__mutmut_12,
+    "x_ensure_parent_groups__mutmut_13": x_ensure_parent_groups__mutmut_13,
+    "x_ensure_parent_groups__mutmut_14": x_ensure_parent_groups__mutmut_14,
+    "x_ensure_parent_groups__mutmut_15": x_ensure_parent_groups__mutmut_15,
+    "x_ensure_parent_groups__mutmut_16": x_ensure_parent_groups__mutmut_16,
+    "x_ensure_parent_groups__mutmut_17": x_ensure_parent_groups__mutmut_17,
+    "x_ensure_parent_groups__mutmut_18": x_ensure_parent_groups__mutmut_18,
+    "x_ensure_parent_groups__mutmut_19": x_ensure_parent_groups__mutmut_19,
+    "x_ensure_parent_groups__mutmut_20": x_ensure_parent_groups__mutmut_20,
+    "x_ensure_parent_groups__mutmut_21": x_ensure_parent_groups__mutmut_21,
+    "x_ensure_parent_groups__mutmut_22": x_ensure_parent_groups__mutmut_22,
+    "x_ensure_parent_groups__mutmut_23": x_ensure_parent_groups__mutmut_23,
+    "x_ensure_parent_groups__mutmut_24": x_ensure_parent_groups__mutmut_24,
+    "x_ensure_parent_groups__mutmut_25": x_ensure_parent_groups__mutmut_25,
+    "x_ensure_parent_groups__mutmut_26": x_ensure_parent_groups__mutmut_26,
+    "x_ensure_parent_groups__mutmut_27": x_ensure_parent_groups__mutmut_27,
+    "x_ensure_parent_groups__mutmut_28": x_ensure_parent_groups__mutmut_28,
+    "x_ensure_parent_groups__mutmut_29": x_ensure_parent_groups__mutmut_29,
+    "x_ensure_parent_groups__mutmut_30": x_ensure_parent_groups__mutmut_30,
+    "x_ensure_parent_groups__mutmut_31": x_ensure_parent_groups__mutmut_31,
+    "x_ensure_parent_groups__mutmut_32": x_ensure_parent_groups__mutmut_32,
+    "x_ensure_parent_groups__mutmut_33": x_ensure_parent_groups__mutmut_33,
+    "x_ensure_parent_groups__mutmut_34": x_ensure_parent_groups__mutmut_34,
+    "x_ensure_parent_groups__mutmut_35": x_ensure_parent_groups__mutmut_35,
+    "x_ensure_parent_groups__mutmut_36": x_ensure_parent_groups__mutmut_36,
+    "x_ensure_parent_groups__mutmut_37": x_ensure_parent_groups__mutmut_37,
+    "x_ensure_parent_groups__mutmut_38": x_ensure_parent_groups__mutmut_38,
+    "x_ensure_parent_groups__mutmut_39": x_ensure_parent_groups__mutmut_39,
+    "x_ensure_parent_groups__mutmut_40": x_ensure_parent_groups__mutmut_40,
+    "x_ensure_parent_groups__mutmut_41": x_ensure_parent_groups__mutmut_41,
+    "x_ensure_parent_groups__mutmut_42": x_ensure_parent_groups__mutmut_42,
+    "x_ensure_parent_groups__mutmut_43": x_ensure_parent_groups__mutmut_43,
+    "x_ensure_parent_groups__mutmut_44": x_ensure_parent_groups__mutmut_44,
+    "x_ensure_parent_groups__mutmut_45": x_ensure_parent_groups__mutmut_45,
+    "x_ensure_parent_groups__mutmut_46": x_ensure_parent_groups__mutmut_46,
+    "x_ensure_parent_groups__mutmut_47": x_ensure_parent_groups__mutmut_47,
+    "x_ensure_parent_groups__mutmut_48": x_ensure_parent_groups__mutmut_48,
+    "x_ensure_parent_groups__mutmut_49": x_ensure_parent_groups__mutmut_49,
+    "x_ensure_parent_groups__mutmut_50": x_ensure_parent_groups__mutmut_50,
+    "x_ensure_parent_groups__mutmut_51": x_ensure_parent_groups__mutmut_51,
+    "x_ensure_parent_groups__mutmut_52": x_ensure_parent_groups__mutmut_52,
+    "x_ensure_parent_groups__mutmut_53": x_ensure_parent_groups__mutmut_53,
+    "x_ensure_parent_groups__mutmut_54": x_ensure_parent_groups__mutmut_54,
+    "x_ensure_parent_groups__mutmut_55": x_ensure_parent_groups__mutmut_55,
+    "x_ensure_parent_groups__mutmut_56": x_ensure_parent_groups__mutmut_56,
+    "x_ensure_parent_groups__mutmut_57": x_ensure_parent_groups__mutmut_57,
+    "x_ensure_parent_groups__mutmut_58": x_ensure_parent_groups__mutmut_58,
+    "x_ensure_parent_groups__mutmut_59": x_ensure_parent_groups__mutmut_59,
 }
 
+
 def ensure_parent_groups(*args, **kwargs):
-    result = _mutmut_trampoline(x_ensure_parent_groups__mutmut_orig, x_ensure_parent_groups__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_ensure_parent_groups__mutmut_orig, x_ensure_parent_groups__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 ensure_parent_groups.__signature__ = _mutmut_signature(x_ensure_parent_groups__mutmut_orig)
-x_ensure_parent_groups__mutmut_orig.__name__ = 'x_ensure_parent_groups'
+x_ensure_parent_groups__mutmut_orig.__name__ = "x_ensure_parent_groups"
 
 
-def x_create_subgroup__mutmut_orig(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_orig(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3317,7 +3329,9 @@ def x_create_subgroup__mutmut_orig(cmd_name: str, entry: Any, groups: dict[str, 
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_1(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_1(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3348,7 +3362,9 @@ def x_create_subgroup__mutmut_1(cmd_name: str, entry: Any, groups: dict[str, Gro
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_2(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_2(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3379,7 +3395,9 @@ def x_create_subgroup__mutmut_2(cmd_name: str, entry: Any, groups: dict[str, Gro
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_3(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_3(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3410,7 +3428,9 @@ def x_create_subgroup__mutmut_3(cmd_name: str, entry: Any, groups: dict[str, Gro
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_4(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_4(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3441,7 +3461,9 @@ def x_create_subgroup__mutmut_4(cmd_name: str, entry: Any, groups: dict[str, Gro
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_5(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_5(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3472,7 +3494,9 @@ def x_create_subgroup__mutmut_5(cmd_name: str, entry: Any, groups: dict[str, Gro
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_6(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_6(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3503,7 +3527,9 @@ def x_create_subgroup__mutmut_6(cmd_name: str, entry: Any, groups: dict[str, Gro
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_7(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_7(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3534,7 +3560,9 @@ def x_create_subgroup__mutmut_7(cmd_name: str, entry: Any, groups: dict[str, Gro
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_8(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_8(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3565,7 +3593,9 @@ def x_create_subgroup__mutmut_8(cmd_name: str, entry: Any, groups: dict[str, Gro
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_9(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_9(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3596,7 +3626,9 @@ def x_create_subgroup__mutmut_9(cmd_name: str, entry: Any, groups: dict[str, Gro
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_10(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_10(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3627,7 +3659,9 @@ def x_create_subgroup__mutmut_10(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_11(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_11(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3658,7 +3692,9 @@ def x_create_subgroup__mutmut_11(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_12(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_12(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3689,7 +3725,9 @@ def x_create_subgroup__mutmut_12(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_13(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_13(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3720,7 +3758,9 @@ def x_create_subgroup__mutmut_13(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_14(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_14(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3747,7 +3787,9 @@ def x_create_subgroup__mutmut_14(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_15(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_15(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3778,7 +3820,9 @@ def x_create_subgroup__mutmut_15(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_16(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_16(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3809,7 +3853,9 @@ def x_create_subgroup__mutmut_16(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_17(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_17(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3840,7 +3886,9 @@ def x_create_subgroup__mutmut_17(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_18(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_18(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3870,7 +3918,9 @@ def x_create_subgroup__mutmut_18(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_19(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_19(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3900,7 +3950,9 @@ def x_create_subgroup__mutmut_19(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_20(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_20(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3919,7 +3971,7 @@ def x_create_subgroup__mutmut_20(cmd_name: str, entry: Any, groups: dict[str, Gr
     subgroup = click.Group(
         name=actual_name,
         help=info.description,
-        )
+    )
     groups[cmd_name] = subgroup
 
     # Add to parent or root
@@ -3930,7 +3982,9 @@ def x_create_subgroup__mutmut_20(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_21(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_21(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3961,7 +4015,9 @@ def x_create_subgroup__mutmut_21(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_22(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_22(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -3992,7 +4048,9 @@ def x_create_subgroup__mutmut_22(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_23(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_23(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -4023,7 +4081,9 @@ def x_create_subgroup__mutmut_23(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_24(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_24(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -4054,7 +4114,9 @@ def x_create_subgroup__mutmut_24(cmd_name: str, entry: Any, groups: dict[str, Gr
         root_group.add_command(subgroup)
 
 
-def x_create_subgroup__mutmut_25(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:
+def x_create_subgroup__mutmut_25(
+    cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent.
 
     Args:
@@ -4084,40 +4146,45 @@ def x_create_subgroup__mutmut_25(cmd_name: str, entry: Any, groups: dict[str, Gr
         # Parent not found or no parent, add to root
         root_group.add_command(None)
 
-x_create_subgroup__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_subgroup__mutmut_1': x_create_subgroup__mutmut_1, 
-    'x_create_subgroup__mutmut_2': x_create_subgroup__mutmut_2, 
-    'x_create_subgroup__mutmut_3': x_create_subgroup__mutmut_3, 
-    'x_create_subgroup__mutmut_4': x_create_subgroup__mutmut_4, 
-    'x_create_subgroup__mutmut_5': x_create_subgroup__mutmut_5, 
-    'x_create_subgroup__mutmut_6': x_create_subgroup__mutmut_6, 
-    'x_create_subgroup__mutmut_7': x_create_subgroup__mutmut_7, 
-    'x_create_subgroup__mutmut_8': x_create_subgroup__mutmut_8, 
-    'x_create_subgroup__mutmut_9': x_create_subgroup__mutmut_9, 
-    'x_create_subgroup__mutmut_10': x_create_subgroup__mutmut_10, 
-    'x_create_subgroup__mutmut_11': x_create_subgroup__mutmut_11, 
-    'x_create_subgroup__mutmut_12': x_create_subgroup__mutmut_12, 
-    'x_create_subgroup__mutmut_13': x_create_subgroup__mutmut_13, 
-    'x_create_subgroup__mutmut_14': x_create_subgroup__mutmut_14, 
-    'x_create_subgroup__mutmut_15': x_create_subgroup__mutmut_15, 
-    'x_create_subgroup__mutmut_16': x_create_subgroup__mutmut_16, 
-    'x_create_subgroup__mutmut_17': x_create_subgroup__mutmut_17, 
-    'x_create_subgroup__mutmut_18': x_create_subgroup__mutmut_18, 
-    'x_create_subgroup__mutmut_19': x_create_subgroup__mutmut_19, 
-    'x_create_subgroup__mutmut_20': x_create_subgroup__mutmut_20, 
-    'x_create_subgroup__mutmut_21': x_create_subgroup__mutmut_21, 
-    'x_create_subgroup__mutmut_22': x_create_subgroup__mutmut_22, 
-    'x_create_subgroup__mutmut_23': x_create_subgroup__mutmut_23, 
-    'x_create_subgroup__mutmut_24': x_create_subgroup__mutmut_24, 
-    'x_create_subgroup__mutmut_25': x_create_subgroup__mutmut_25
+
+x_create_subgroup__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_subgroup__mutmut_1": x_create_subgroup__mutmut_1,
+    "x_create_subgroup__mutmut_2": x_create_subgroup__mutmut_2,
+    "x_create_subgroup__mutmut_3": x_create_subgroup__mutmut_3,
+    "x_create_subgroup__mutmut_4": x_create_subgroup__mutmut_4,
+    "x_create_subgroup__mutmut_5": x_create_subgroup__mutmut_5,
+    "x_create_subgroup__mutmut_6": x_create_subgroup__mutmut_6,
+    "x_create_subgroup__mutmut_7": x_create_subgroup__mutmut_7,
+    "x_create_subgroup__mutmut_8": x_create_subgroup__mutmut_8,
+    "x_create_subgroup__mutmut_9": x_create_subgroup__mutmut_9,
+    "x_create_subgroup__mutmut_10": x_create_subgroup__mutmut_10,
+    "x_create_subgroup__mutmut_11": x_create_subgroup__mutmut_11,
+    "x_create_subgroup__mutmut_12": x_create_subgroup__mutmut_12,
+    "x_create_subgroup__mutmut_13": x_create_subgroup__mutmut_13,
+    "x_create_subgroup__mutmut_14": x_create_subgroup__mutmut_14,
+    "x_create_subgroup__mutmut_15": x_create_subgroup__mutmut_15,
+    "x_create_subgroup__mutmut_16": x_create_subgroup__mutmut_16,
+    "x_create_subgroup__mutmut_17": x_create_subgroup__mutmut_17,
+    "x_create_subgroup__mutmut_18": x_create_subgroup__mutmut_18,
+    "x_create_subgroup__mutmut_19": x_create_subgroup__mutmut_19,
+    "x_create_subgroup__mutmut_20": x_create_subgroup__mutmut_20,
+    "x_create_subgroup__mutmut_21": x_create_subgroup__mutmut_21,
+    "x_create_subgroup__mutmut_22": x_create_subgroup__mutmut_22,
+    "x_create_subgroup__mutmut_23": x_create_subgroup__mutmut_23,
+    "x_create_subgroup__mutmut_24": x_create_subgroup__mutmut_24,
+    "x_create_subgroup__mutmut_25": x_create_subgroup__mutmut_25,
 }
 
+
 def create_subgroup(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_subgroup__mutmut_orig, x_create_subgroup__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_subgroup__mutmut_orig, x_create_subgroup__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_subgroup.__signature__ = _mutmut_signature(x_create_subgroup__mutmut_orig)
-x_create_subgroup__mutmut_orig.__name__ = 'x_create_subgroup'
+x_create_subgroup__mutmut_orig.__name__ = "x_create_subgroup"
 
 
 def x_validate_command_entry__mutmut_orig(entry: Any) -> CommandInfo | None:
@@ -4326,23 +4393,28 @@ def x_validate_command_entry__mutmut_8(entry: Any) -> CommandInfo | None:
 
     return info
 
-x_validate_command_entry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_command_entry__mutmut_1': x_validate_command_entry__mutmut_1, 
-    'x_validate_command_entry__mutmut_2': x_validate_command_entry__mutmut_2, 
-    'x_validate_command_entry__mutmut_3': x_validate_command_entry__mutmut_3, 
-    'x_validate_command_entry__mutmut_4': x_validate_command_entry__mutmut_4, 
-    'x_validate_command_entry__mutmut_5': x_validate_command_entry__mutmut_5, 
-    'x_validate_command_entry__mutmut_6': x_validate_command_entry__mutmut_6, 
-    'x_validate_command_entry__mutmut_7': x_validate_command_entry__mutmut_7, 
-    'x_validate_command_entry__mutmut_8': x_validate_command_entry__mutmut_8
+
+x_validate_command_entry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_command_entry__mutmut_1": x_validate_command_entry__mutmut_1,
+    "x_validate_command_entry__mutmut_2": x_validate_command_entry__mutmut_2,
+    "x_validate_command_entry__mutmut_3": x_validate_command_entry__mutmut_3,
+    "x_validate_command_entry__mutmut_4": x_validate_command_entry__mutmut_4,
+    "x_validate_command_entry__mutmut_5": x_validate_command_entry__mutmut_5,
+    "x_validate_command_entry__mutmut_6": x_validate_command_entry__mutmut_6,
+    "x_validate_command_entry__mutmut_7": x_validate_command_entry__mutmut_7,
+    "x_validate_command_entry__mutmut_8": x_validate_command_entry__mutmut_8,
 }
 
+
 def validate_command_entry(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_command_entry__mutmut_orig, x_validate_command_entry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_command_entry__mutmut_orig, x_validate_command_entry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_command_entry.__signature__ = _mutmut_signature(x_validate_command_entry__mutmut_orig)
-x_validate_command_entry__mutmut_orig.__name__ = 'x_validate_command_entry'
+x_validate_command_entry__mutmut_orig.__name__ = "x_validate_command_entry"
 
 
 def x_should_skip_entry__mutmut_orig(entry: Any) -> bool:
@@ -4480,22 +4552,27 @@ def x_should_skip_entry__mutmut_7(entry: Any) -> bool:
     info = entry.metadata.get("info")
     return info
 
-x_should_skip_entry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_should_skip_entry__mutmut_1': x_should_skip_entry__mutmut_1, 
-    'x_should_skip_entry__mutmut_2': x_should_skip_entry__mutmut_2, 
-    'x_should_skip_entry__mutmut_3': x_should_skip_entry__mutmut_3, 
-    'x_should_skip_entry__mutmut_4': x_should_skip_entry__mutmut_4, 
-    'x_should_skip_entry__mutmut_5': x_should_skip_entry__mutmut_5, 
-    'x_should_skip_entry__mutmut_6': x_should_skip_entry__mutmut_6, 
-    'x_should_skip_entry__mutmut_7': x_should_skip_entry__mutmut_7
+
+x_should_skip_entry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_should_skip_entry__mutmut_1": x_should_skip_entry__mutmut_1,
+    "x_should_skip_entry__mutmut_2": x_should_skip_entry__mutmut_2,
+    "x_should_skip_entry__mutmut_3": x_should_skip_entry__mutmut_3,
+    "x_should_skip_entry__mutmut_4": x_should_skip_entry__mutmut_4,
+    "x_should_skip_entry__mutmut_5": x_should_skip_entry__mutmut_5,
+    "x_should_skip_entry__mutmut_6": x_should_skip_entry__mutmut_6,
+    "x_should_skip_entry__mutmut_7": x_should_skip_entry__mutmut_7,
 }
 
+
 def should_skip_entry(*args, **kwargs):
-    result = _mutmut_trampoline(x_should_skip_entry__mutmut_orig, x_should_skip_entry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_should_skip_entry__mutmut_orig, x_should_skip_entry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 should_skip_entry.__signature__ = _mutmut_signature(x_should_skip_entry__mutmut_orig)
-x_should_skip_entry__mutmut_orig.__name__ = 'x_should_skip_entry'
+x_should_skip_entry__mutmut_orig.__name__ = "x_should_skip_entry"
 
 
 def x_should_skip_command__mutmut_orig(entry: Any) -> bool:
@@ -4651,25 +4728,30 @@ def x_should_skip_command__mutmut_10(entry: Any) -> bool:
     info = entry.metadata.get("info")
     return not info or info.hidden or entry.metadata.get("IS_GROUP")
 
-x_should_skip_command__mutmut_mutants : ClassVar[MutantDict] = {
-'x_should_skip_command__mutmut_1': x_should_skip_command__mutmut_1, 
-    'x_should_skip_command__mutmut_2': x_should_skip_command__mutmut_2, 
-    'x_should_skip_command__mutmut_3': x_should_skip_command__mutmut_3, 
-    'x_should_skip_command__mutmut_4': x_should_skip_command__mutmut_4, 
-    'x_should_skip_command__mutmut_5': x_should_skip_command__mutmut_5, 
-    'x_should_skip_command__mutmut_6': x_should_skip_command__mutmut_6, 
-    'x_should_skip_command__mutmut_7': x_should_skip_command__mutmut_7, 
-    'x_should_skip_command__mutmut_8': x_should_skip_command__mutmut_8, 
-    'x_should_skip_command__mutmut_9': x_should_skip_command__mutmut_9, 
-    'x_should_skip_command__mutmut_10': x_should_skip_command__mutmut_10
+
+x_should_skip_command__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_should_skip_command__mutmut_1": x_should_skip_command__mutmut_1,
+    "x_should_skip_command__mutmut_2": x_should_skip_command__mutmut_2,
+    "x_should_skip_command__mutmut_3": x_should_skip_command__mutmut_3,
+    "x_should_skip_command__mutmut_4": x_should_skip_command__mutmut_4,
+    "x_should_skip_command__mutmut_5": x_should_skip_command__mutmut_5,
+    "x_should_skip_command__mutmut_6": x_should_skip_command__mutmut_6,
+    "x_should_skip_command__mutmut_7": x_should_skip_command__mutmut_7,
+    "x_should_skip_command__mutmut_8": x_should_skip_command__mutmut_8,
+    "x_should_skip_command__mutmut_9": x_should_skip_command__mutmut_9,
+    "x_should_skip_command__mutmut_10": x_should_skip_command__mutmut_10,
 }
 
+
 def should_skip_command(*args, **kwargs):
-    result = _mutmut_trampoline(x_should_skip_command__mutmut_orig, x_should_skip_command__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_should_skip_command__mutmut_orig, x_should_skip_command__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 should_skip_command.__signature__ = _mutmut_signature(x_should_skip_command__mutmut_orig)
-x_should_skip_command__mutmut_orig.__name__ = 'x_should_skip_command'
+x_should_skip_command__mutmut_orig.__name__ = "x_should_skip_command"
 
 
 # <3 🧱🤝💻🪄

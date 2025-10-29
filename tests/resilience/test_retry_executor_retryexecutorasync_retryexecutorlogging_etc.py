@@ -4,7 +4,6 @@ This test file follows TDD principles - tests are written before implementation.
 """
 
 import asyncio
-from typing import Never
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, MagicMock, patch

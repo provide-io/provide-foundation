@@ -32,23 +32,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -243,18 +246,24 @@ class BulkheadManager:
         """Initialize bulkhead manager."""
         self._bulkheads: dict[str, Bulkhead] = {}
         self._lock = None
-    
-    xǁBulkheadManagerǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBulkheadManagerǁ__init____mutmut_1': xǁBulkheadManagerǁ__init____mutmut_1, 
-        'xǁBulkheadManagerǁ__init____mutmut_2': xǁBulkheadManagerǁ__init____mutmut_2
+
+    xǁBulkheadManagerǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBulkheadManagerǁ__init____mutmut_1": xǁBulkheadManagerǁ__init____mutmut_1,
+        "xǁBulkheadManagerǁ__init____mutmut_2": xǁBulkheadManagerǁ__init____mutmut_2,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBulkheadManagerǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁBulkheadManagerǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBulkheadManagerǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁBulkheadManagerǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁBulkheadManagerǁ__init____mutmut_orig)
-    xǁBulkheadManagerǁ__init____mutmut_orig.__name__ = 'xǁBulkheadManagerǁ__init__'
+    xǁBulkheadManagerǁ__init____mutmut_orig.__name__ = "xǁBulkheadManagerǁ__init__"
 
     def xǁBulkheadManagerǁcreate_bulkhead__mutmut_orig(
         self,
@@ -745,7 +754,7 @@ class BulkheadManager:
                     pool = AsyncResourcePool(
                         max_concurrent=max_concurrent,
                         max_queue_size=max_queue_size,
-                        )
+                    )
                 else:
                     pool = SyncResourcePool(
                         max_concurrent=max_concurrent,
@@ -1017,7 +1026,7 @@ class BulkheadManager:
                     pool = SyncResourcePool(
                         max_concurrent=max_concurrent,
                         max_queue_size=max_queue_size,
-                        )
+                    )
                 self._bulkheads[name] = Bulkhead(name=name, pool=pool)
 
             return self._bulkheads[name]
@@ -1213,43 +1222,51 @@ class BulkheadManager:
                         max_queue_size=max_queue_size,
                         timeout=timeout,
                     )
-                self._bulkheads[name] = Bulkhead(name=name, )
+                self._bulkheads[name] = Bulkhead(
+                    name=name,
+                )
 
             return self._bulkheads[name]
-    
-    xǁBulkheadManagerǁcreate_bulkhead__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBulkheadManagerǁcreate_bulkhead__mutmut_1': xǁBulkheadManagerǁcreate_bulkhead__mutmut_1, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_2': xǁBulkheadManagerǁcreate_bulkhead__mutmut_2, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_3': xǁBulkheadManagerǁcreate_bulkhead__mutmut_3, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_4': xǁBulkheadManagerǁcreate_bulkhead__mutmut_4, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_5': xǁBulkheadManagerǁcreate_bulkhead__mutmut_5, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_6': xǁBulkheadManagerǁcreate_bulkhead__mutmut_6, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_7': xǁBulkheadManagerǁcreate_bulkhead__mutmut_7, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_8': xǁBulkheadManagerǁcreate_bulkhead__mutmut_8, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_9': xǁBulkheadManagerǁcreate_bulkhead__mutmut_9, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_10': xǁBulkheadManagerǁcreate_bulkhead__mutmut_10, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_11': xǁBulkheadManagerǁcreate_bulkhead__mutmut_11, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_12': xǁBulkheadManagerǁcreate_bulkhead__mutmut_12, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_13': xǁBulkheadManagerǁcreate_bulkhead__mutmut_13, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_14': xǁBulkheadManagerǁcreate_bulkhead__mutmut_14, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_15': xǁBulkheadManagerǁcreate_bulkhead__mutmut_15, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_16': xǁBulkheadManagerǁcreate_bulkhead__mutmut_16, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_17': xǁBulkheadManagerǁcreate_bulkhead__mutmut_17, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_18': xǁBulkheadManagerǁcreate_bulkhead__mutmut_18, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_19': xǁBulkheadManagerǁcreate_bulkhead__mutmut_19, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_20': xǁBulkheadManagerǁcreate_bulkhead__mutmut_20, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_21': xǁBulkheadManagerǁcreate_bulkhead__mutmut_21, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_22': xǁBulkheadManagerǁcreate_bulkhead__mutmut_22, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_23': xǁBulkheadManagerǁcreate_bulkhead__mutmut_23, 
-        'xǁBulkheadManagerǁcreate_bulkhead__mutmut_24': xǁBulkheadManagerǁcreate_bulkhead__mutmut_24
+
+    xǁBulkheadManagerǁcreate_bulkhead__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_1": xǁBulkheadManagerǁcreate_bulkhead__mutmut_1,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_2": xǁBulkheadManagerǁcreate_bulkhead__mutmut_2,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_3": xǁBulkheadManagerǁcreate_bulkhead__mutmut_3,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_4": xǁBulkheadManagerǁcreate_bulkhead__mutmut_4,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_5": xǁBulkheadManagerǁcreate_bulkhead__mutmut_5,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_6": xǁBulkheadManagerǁcreate_bulkhead__mutmut_6,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_7": xǁBulkheadManagerǁcreate_bulkhead__mutmut_7,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_8": xǁBulkheadManagerǁcreate_bulkhead__mutmut_8,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_9": xǁBulkheadManagerǁcreate_bulkhead__mutmut_9,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_10": xǁBulkheadManagerǁcreate_bulkhead__mutmut_10,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_11": xǁBulkheadManagerǁcreate_bulkhead__mutmut_11,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_12": xǁBulkheadManagerǁcreate_bulkhead__mutmut_12,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_13": xǁBulkheadManagerǁcreate_bulkhead__mutmut_13,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_14": xǁBulkheadManagerǁcreate_bulkhead__mutmut_14,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_15": xǁBulkheadManagerǁcreate_bulkhead__mutmut_15,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_16": xǁBulkheadManagerǁcreate_bulkhead__mutmut_16,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_17": xǁBulkheadManagerǁcreate_bulkhead__mutmut_17,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_18": xǁBulkheadManagerǁcreate_bulkhead__mutmut_18,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_19": xǁBulkheadManagerǁcreate_bulkhead__mutmut_19,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_20": xǁBulkheadManagerǁcreate_bulkhead__mutmut_20,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_21": xǁBulkheadManagerǁcreate_bulkhead__mutmut_21,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_22": xǁBulkheadManagerǁcreate_bulkhead__mutmut_22,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_23": xǁBulkheadManagerǁcreate_bulkhead__mutmut_23,
+        "xǁBulkheadManagerǁcreate_bulkhead__mutmut_24": xǁBulkheadManagerǁcreate_bulkhead__mutmut_24,
     }
-    
+
     def create_bulkhead(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBulkheadManagerǁcreate_bulkhead__mutmut_orig"), object.__getattribute__(self, "xǁBulkheadManagerǁcreate_bulkhead__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBulkheadManagerǁcreate_bulkhead__mutmut_orig"),
+            object.__getattribute__(self, "xǁBulkheadManagerǁcreate_bulkhead__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     create_bulkhead.__signature__ = _mutmut_signature(xǁBulkheadManagerǁcreate_bulkhead__mutmut_orig)
-    xǁBulkheadManagerǁcreate_bulkhead__mutmut_orig.__name__ = 'xǁBulkheadManagerǁcreate_bulkhead'
+    xǁBulkheadManagerǁcreate_bulkhead__mutmut_orig.__name__ = "xǁBulkheadManagerǁcreate_bulkhead"
 
     def xǁBulkheadManagerǁget_bulkhead__mutmut_orig(self, name: str) -> Bulkhead | None:
         """Get a bulkhead by name."""
@@ -1260,17 +1277,23 @@ class BulkheadManager:
         """Get a bulkhead by name."""
         with self._lock:
             return self._bulkheads.get(None)
-    
-    xǁBulkheadManagerǁget_bulkhead__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBulkheadManagerǁget_bulkhead__mutmut_1': xǁBulkheadManagerǁget_bulkhead__mutmut_1
+
+    xǁBulkheadManagerǁget_bulkhead__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBulkheadManagerǁget_bulkhead__mutmut_1": xǁBulkheadManagerǁget_bulkhead__mutmut_1
     }
-    
+
     def get_bulkhead(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBulkheadManagerǁget_bulkhead__mutmut_orig"), object.__getattribute__(self, "xǁBulkheadManagerǁget_bulkhead__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBulkheadManagerǁget_bulkhead__mutmut_orig"),
+            object.__getattribute__(self, "xǁBulkheadManagerǁget_bulkhead__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_bulkhead.__signature__ = _mutmut_signature(xǁBulkheadManagerǁget_bulkhead__mutmut_orig)
-    xǁBulkheadManagerǁget_bulkhead__mutmut_orig.__name__ = 'xǁBulkheadManagerǁget_bulkhead'
+    xǁBulkheadManagerǁget_bulkhead__mutmut_orig.__name__ = "xǁBulkheadManagerǁget_bulkhead"
 
     def xǁBulkheadManagerǁlist_bulkheads__mutmut_orig(self) -> list[str]:
         """List all bulkhead names."""
@@ -1281,17 +1304,23 @@ class BulkheadManager:
         """List all bulkhead names."""
         with self._lock:
             return list(None)
-    
-    xǁBulkheadManagerǁlist_bulkheads__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBulkheadManagerǁlist_bulkheads__mutmut_1': xǁBulkheadManagerǁlist_bulkheads__mutmut_1
+
+    xǁBulkheadManagerǁlist_bulkheads__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBulkheadManagerǁlist_bulkheads__mutmut_1": xǁBulkheadManagerǁlist_bulkheads__mutmut_1
     }
-    
+
     def list_bulkheads(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBulkheadManagerǁlist_bulkheads__mutmut_orig"), object.__getattribute__(self, "xǁBulkheadManagerǁlist_bulkheads__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBulkheadManagerǁlist_bulkheads__mutmut_orig"),
+            object.__getattribute__(self, "xǁBulkheadManagerǁlist_bulkheads__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     list_bulkheads.__signature__ = _mutmut_signature(xǁBulkheadManagerǁlist_bulkheads__mutmut_orig)
-    xǁBulkheadManagerǁlist_bulkheads__mutmut_orig.__name__ = 'xǁBulkheadManagerǁlist_bulkheads'
+    xǁBulkheadManagerǁlist_bulkheads__mutmut_orig.__name__ = "xǁBulkheadManagerǁlist_bulkheads"
 
     def get_all_status(self) -> dict[str, dict[str, Any]]:
         """Get status of all bulkheads."""
@@ -1357,19 +1386,25 @@ class BulkheadManager:
                 del self._bulkheads[name]
                 return True
             return True
-    
-    xǁBulkheadManagerǁremove_bulkhead__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBulkheadManagerǁremove_bulkhead__mutmut_1': xǁBulkheadManagerǁremove_bulkhead__mutmut_1, 
-        'xǁBulkheadManagerǁremove_bulkhead__mutmut_2': xǁBulkheadManagerǁremove_bulkhead__mutmut_2, 
-        'xǁBulkheadManagerǁremove_bulkhead__mutmut_3': xǁBulkheadManagerǁremove_bulkhead__mutmut_3
+
+    xǁBulkheadManagerǁremove_bulkhead__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBulkheadManagerǁremove_bulkhead__mutmut_1": xǁBulkheadManagerǁremove_bulkhead__mutmut_1,
+        "xǁBulkheadManagerǁremove_bulkhead__mutmut_2": xǁBulkheadManagerǁremove_bulkhead__mutmut_2,
+        "xǁBulkheadManagerǁremove_bulkhead__mutmut_3": xǁBulkheadManagerǁremove_bulkhead__mutmut_3,
     }
-    
+
     def remove_bulkhead(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBulkheadManagerǁremove_bulkhead__mutmut_orig"), object.__getattribute__(self, "xǁBulkheadManagerǁremove_bulkhead__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBulkheadManagerǁremove_bulkhead__mutmut_orig"),
+            object.__getattribute__(self, "xǁBulkheadManagerǁremove_bulkhead__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     remove_bulkhead.__signature__ = _mutmut_signature(xǁBulkheadManagerǁremove_bulkhead__mutmut_orig)
-    xǁBulkheadManagerǁremove_bulkhead__mutmut_orig.__name__ = 'xǁBulkheadManagerǁremove_bulkhead'
+    xǁBulkheadManagerǁremove_bulkhead__mutmut_orig.__name__ = "xǁBulkheadManagerǁremove_bulkhead"
 
 
 # Global bulkhead manager

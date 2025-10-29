@@ -17,23 +17,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -238,25 +241,31 @@ class FoundationError(Exception):
         if cause:
             self.__cause__ = cause
         super().__init__(None)
-    
-    xǁFoundationErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationErrorǁ__init____mutmut_1': xǁFoundationErrorǁ__init____mutmut_1, 
-        'xǁFoundationErrorǁ__init____mutmut_2': xǁFoundationErrorǁ__init____mutmut_2, 
-        'xǁFoundationErrorǁ__init____mutmut_3': xǁFoundationErrorǁ__init____mutmut_3, 
-        'xǁFoundationErrorǁ__init____mutmut_4': xǁFoundationErrorǁ__init____mutmut_4, 
-        'xǁFoundationErrorǁ__init____mutmut_5': xǁFoundationErrorǁ__init____mutmut_5, 
-        'xǁFoundationErrorǁ__init____mutmut_6': xǁFoundationErrorǁ__init____mutmut_6, 
-        'xǁFoundationErrorǁ__init____mutmut_7': xǁFoundationErrorǁ__init____mutmut_7, 
-        'xǁFoundationErrorǁ__init____mutmut_8': xǁFoundationErrorǁ__init____mutmut_8, 
-        'xǁFoundationErrorǁ__init____mutmut_9': xǁFoundationErrorǁ__init____mutmut_9
+
+    xǁFoundationErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationErrorǁ__init____mutmut_1": xǁFoundationErrorǁ__init____mutmut_1,
+        "xǁFoundationErrorǁ__init____mutmut_2": xǁFoundationErrorǁ__init____mutmut_2,
+        "xǁFoundationErrorǁ__init____mutmut_3": xǁFoundationErrorǁ__init____mutmut_3,
+        "xǁFoundationErrorǁ__init____mutmut_4": xǁFoundationErrorǁ__init____mutmut_4,
+        "xǁFoundationErrorǁ__init____mutmut_5": xǁFoundationErrorǁ__init____mutmut_5,
+        "xǁFoundationErrorǁ__init____mutmut_6": xǁFoundationErrorǁ__init____mutmut_6,
+        "xǁFoundationErrorǁ__init____mutmut_7": xǁFoundationErrorǁ__init____mutmut_7,
+        "xǁFoundationErrorǁ__init____mutmut_8": xǁFoundationErrorǁ__init____mutmut_8,
+        "xǁFoundationErrorǁ__init____mutmut_9": xǁFoundationErrorǁ__init____mutmut_9,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁFoundationErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁFoundationErrorǁ__init____mutmut_orig)
-    xǁFoundationErrorǁ__init____mutmut_orig.__name__ = 'xǁFoundationErrorǁ__init__'
+    xǁFoundationErrorǁ__init____mutmut_orig.__name__ = "xǁFoundationErrorǁ__init__"
 
     def xǁFoundationErrorǁ_default_code__mutmut_orig(self) -> str:
         """Return default error code for this exception type."""
@@ -269,18 +278,24 @@ class FoundationError(Exception):
     def xǁFoundationErrorǁ_default_code__mutmut_2(self) -> str:
         """Return default error code for this exception type."""
         return "provide_error"
-    
-    xǁFoundationErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationErrorǁ_default_code__mutmut_1': xǁFoundationErrorǁ_default_code__mutmut_1, 
-        'xǁFoundationErrorǁ_default_code__mutmut_2': xǁFoundationErrorǁ_default_code__mutmut_2
+
+    xǁFoundationErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationErrorǁ_default_code__mutmut_1": xǁFoundationErrorǁ_default_code__mutmut_1,
+        "xǁFoundationErrorǁ_default_code__mutmut_2": xǁFoundationErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁFoundationErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁFoundationErrorǁ_default_code__mutmut_orig)
-    xǁFoundationErrorǁ_default_code__mutmut_orig.__name__ = 'xǁFoundationErrorǁ_default_code'
+    xǁFoundationErrorǁ_default_code__mutmut_orig.__name__ = "xǁFoundationErrorǁ_default_code"
 
     def xǁFoundationErrorǁadd_context__mutmut_orig(self, key: str, value: Any) -> FoundationError:
         """Add context data to the error.
@@ -309,17 +324,23 @@ class FoundationError(Exception):
         """
         self.context[key] = None
         return self
-    
-    xǁFoundationErrorǁadd_context__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationErrorǁadd_context__mutmut_1': xǁFoundationErrorǁadd_context__mutmut_1
+
+    xǁFoundationErrorǁadd_context__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationErrorǁadd_context__mutmut_1": xǁFoundationErrorǁadd_context__mutmut_1
     }
-    
+
     def add_context(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationErrorǁadd_context__mutmut_orig"), object.__getattribute__(self, "xǁFoundationErrorǁadd_context__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationErrorǁadd_context__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationErrorǁadd_context__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     add_context.__signature__ = _mutmut_signature(xǁFoundationErrorǁadd_context__mutmut_orig)
-    xǁFoundationErrorǁadd_context__mutmut_orig.__name__ = 'xǁFoundationErrorǁadd_context'
+    xǁFoundationErrorǁadd_context__mutmut_orig.__name__ = "xǁFoundationErrorǁadd_context"
 
     def xǁFoundationErrorǁto_dict__mutmut_orig(self) -> dict[str, Any]:
         """Convert exception to dictionary for structured logging.
@@ -856,35 +877,41 @@ class FoundationError(Exception):
             result["error.cause_type"] = type(None).__name__
 
         return result
-    
-    xǁFoundationErrorǁto_dict__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFoundationErrorǁto_dict__mutmut_1': xǁFoundationErrorǁto_dict__mutmut_1, 
-        'xǁFoundationErrorǁto_dict__mutmut_2': xǁFoundationErrorǁto_dict__mutmut_2, 
-        'xǁFoundationErrorǁto_dict__mutmut_3': xǁFoundationErrorǁto_dict__mutmut_3, 
-        'xǁFoundationErrorǁto_dict__mutmut_4': xǁFoundationErrorǁto_dict__mutmut_4, 
-        'xǁFoundationErrorǁto_dict__mutmut_5': xǁFoundationErrorǁto_dict__mutmut_5, 
-        'xǁFoundationErrorǁto_dict__mutmut_6': xǁFoundationErrorǁto_dict__mutmut_6, 
-        'xǁFoundationErrorǁto_dict__mutmut_7': xǁFoundationErrorǁto_dict__mutmut_7, 
-        'xǁFoundationErrorǁto_dict__mutmut_8': xǁFoundationErrorǁto_dict__mutmut_8, 
-        'xǁFoundationErrorǁto_dict__mutmut_9': xǁFoundationErrorǁto_dict__mutmut_9, 
-        'xǁFoundationErrorǁto_dict__mutmut_10': xǁFoundationErrorǁto_dict__mutmut_10, 
-        'xǁFoundationErrorǁto_dict__mutmut_11': xǁFoundationErrorǁto_dict__mutmut_11, 
-        'xǁFoundationErrorǁto_dict__mutmut_12': xǁFoundationErrorǁto_dict__mutmut_12, 
-        'xǁFoundationErrorǁto_dict__mutmut_13': xǁFoundationErrorǁto_dict__mutmut_13, 
-        'xǁFoundationErrorǁto_dict__mutmut_14': xǁFoundationErrorǁto_dict__mutmut_14, 
-        'xǁFoundationErrorǁto_dict__mutmut_15': xǁFoundationErrorǁto_dict__mutmut_15, 
-        'xǁFoundationErrorǁto_dict__mutmut_16': xǁFoundationErrorǁto_dict__mutmut_16, 
-        'xǁFoundationErrorǁto_dict__mutmut_17': xǁFoundationErrorǁto_dict__mutmut_17, 
-        'xǁFoundationErrorǁto_dict__mutmut_18': xǁFoundationErrorǁto_dict__mutmut_18, 
-        'xǁFoundationErrorǁto_dict__mutmut_19': xǁFoundationErrorǁto_dict__mutmut_19
+
+    xǁFoundationErrorǁto_dict__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFoundationErrorǁto_dict__mutmut_1": xǁFoundationErrorǁto_dict__mutmut_1,
+        "xǁFoundationErrorǁto_dict__mutmut_2": xǁFoundationErrorǁto_dict__mutmut_2,
+        "xǁFoundationErrorǁto_dict__mutmut_3": xǁFoundationErrorǁto_dict__mutmut_3,
+        "xǁFoundationErrorǁto_dict__mutmut_4": xǁFoundationErrorǁto_dict__mutmut_4,
+        "xǁFoundationErrorǁto_dict__mutmut_5": xǁFoundationErrorǁto_dict__mutmut_5,
+        "xǁFoundationErrorǁto_dict__mutmut_6": xǁFoundationErrorǁto_dict__mutmut_6,
+        "xǁFoundationErrorǁto_dict__mutmut_7": xǁFoundationErrorǁto_dict__mutmut_7,
+        "xǁFoundationErrorǁto_dict__mutmut_8": xǁFoundationErrorǁto_dict__mutmut_8,
+        "xǁFoundationErrorǁto_dict__mutmut_9": xǁFoundationErrorǁto_dict__mutmut_9,
+        "xǁFoundationErrorǁto_dict__mutmut_10": xǁFoundationErrorǁto_dict__mutmut_10,
+        "xǁFoundationErrorǁto_dict__mutmut_11": xǁFoundationErrorǁto_dict__mutmut_11,
+        "xǁFoundationErrorǁto_dict__mutmut_12": xǁFoundationErrorǁto_dict__mutmut_12,
+        "xǁFoundationErrorǁto_dict__mutmut_13": xǁFoundationErrorǁto_dict__mutmut_13,
+        "xǁFoundationErrorǁto_dict__mutmut_14": xǁFoundationErrorǁto_dict__mutmut_14,
+        "xǁFoundationErrorǁto_dict__mutmut_15": xǁFoundationErrorǁto_dict__mutmut_15,
+        "xǁFoundationErrorǁto_dict__mutmut_16": xǁFoundationErrorǁto_dict__mutmut_16,
+        "xǁFoundationErrorǁto_dict__mutmut_17": xǁFoundationErrorǁto_dict__mutmut_17,
+        "xǁFoundationErrorǁto_dict__mutmut_18": xǁFoundationErrorǁto_dict__mutmut_18,
+        "xǁFoundationErrorǁto_dict__mutmut_19": xǁFoundationErrorǁto_dict__mutmut_19,
     }
-    
+
     def to_dict(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFoundationErrorǁto_dict__mutmut_orig"), object.__getattribute__(self, "xǁFoundationErrorǁto_dict__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFoundationErrorǁto_dict__mutmut_orig"),
+            object.__getattribute__(self, "xǁFoundationErrorǁto_dict__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     to_dict.__signature__ = _mutmut_signature(xǁFoundationErrorǁto_dict__mutmut_orig)
-    xǁFoundationErrorǁto_dict__mutmut_orig.__name__ = 'xǁFoundationErrorǁto_dict'
+    xǁFoundationErrorǁto_dict__mutmut_orig.__name__ = "xǁFoundationErrorǁto_dict"
 
 
 # <3 🧱🤝🐛🪄

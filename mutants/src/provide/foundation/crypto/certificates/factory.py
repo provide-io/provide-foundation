@@ -42,23 +42,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -831,7 +834,7 @@ def x_create_ca_certificate__mutmut_20(
         ecdsa_curve=ecdsa_curve,
         alt_names=[common_name],
         is_ca=False,  # Will be re-signed with is_ca=True below
-        )
+    )
     # Re-sign to ensure CA flags are correctly set for a CA
     logger.info("📜🔑🏭 Re-signing generated CA certificate to ensure is_ca=True")
     actual_ca_x509_cert = create_x509_certificate(
@@ -1475,7 +1478,7 @@ def x_create_ca_certificate__mutmut_37(
         private_key=ca_cert_obj._private_key,
         alt_names=ca_cert_obj.alt_names,
         is_ca=True,
-        )
+    )
     ca_cert_obj._cert = actual_ca_x509_cert
     ca_cert_obj.cert_pem = actual_ca_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
     return ca_cert_obj
@@ -1784,60 +1787,65 @@ def x_create_ca_certificate__mutmut_45(
     ca_cert_obj.cert_pem = actual_ca_x509_cert.public_bytes(serialization.Encoding.PEM).decode("UTF-8")
     return ca_cert_obj
 
-x_create_ca_certificate__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_ca_certificate__mutmut_1': x_create_ca_certificate__mutmut_1, 
-    'x_create_ca_certificate__mutmut_2': x_create_ca_certificate__mutmut_2, 
-    'x_create_ca_certificate__mutmut_3': x_create_ca_certificate__mutmut_3, 
-    'x_create_ca_certificate__mutmut_4': x_create_ca_certificate__mutmut_4, 
-    'x_create_ca_certificate__mutmut_5': x_create_ca_certificate__mutmut_5, 
-    'x_create_ca_certificate__mutmut_6': x_create_ca_certificate__mutmut_6, 
-    'x_create_ca_certificate__mutmut_7': x_create_ca_certificate__mutmut_7, 
-    'x_create_ca_certificate__mutmut_8': x_create_ca_certificate__mutmut_8, 
-    'x_create_ca_certificate__mutmut_9': x_create_ca_certificate__mutmut_9, 
-    'x_create_ca_certificate__mutmut_10': x_create_ca_certificate__mutmut_10, 
-    'x_create_ca_certificate__mutmut_11': x_create_ca_certificate__mutmut_11, 
-    'x_create_ca_certificate__mutmut_12': x_create_ca_certificate__mutmut_12, 
-    'x_create_ca_certificate__mutmut_13': x_create_ca_certificate__mutmut_13, 
-    'x_create_ca_certificate__mutmut_14': x_create_ca_certificate__mutmut_14, 
-    'x_create_ca_certificate__mutmut_15': x_create_ca_certificate__mutmut_15, 
-    'x_create_ca_certificate__mutmut_16': x_create_ca_certificate__mutmut_16, 
-    'x_create_ca_certificate__mutmut_17': x_create_ca_certificate__mutmut_17, 
-    'x_create_ca_certificate__mutmut_18': x_create_ca_certificate__mutmut_18, 
-    'x_create_ca_certificate__mutmut_19': x_create_ca_certificate__mutmut_19, 
-    'x_create_ca_certificate__mutmut_20': x_create_ca_certificate__mutmut_20, 
-    'x_create_ca_certificate__mutmut_21': x_create_ca_certificate__mutmut_21, 
-    'x_create_ca_certificate__mutmut_22': x_create_ca_certificate__mutmut_22, 
-    'x_create_ca_certificate__mutmut_23': x_create_ca_certificate__mutmut_23, 
-    'x_create_ca_certificate__mutmut_24': x_create_ca_certificate__mutmut_24, 
-    'x_create_ca_certificate__mutmut_25': x_create_ca_certificate__mutmut_25, 
-    'x_create_ca_certificate__mutmut_26': x_create_ca_certificate__mutmut_26, 
-    'x_create_ca_certificate__mutmut_27': x_create_ca_certificate__mutmut_27, 
-    'x_create_ca_certificate__mutmut_28': x_create_ca_certificate__mutmut_28, 
-    'x_create_ca_certificate__mutmut_29': x_create_ca_certificate__mutmut_29, 
-    'x_create_ca_certificate__mutmut_30': x_create_ca_certificate__mutmut_30, 
-    'x_create_ca_certificate__mutmut_31': x_create_ca_certificate__mutmut_31, 
-    'x_create_ca_certificate__mutmut_32': x_create_ca_certificate__mutmut_32, 
-    'x_create_ca_certificate__mutmut_33': x_create_ca_certificate__mutmut_33, 
-    'x_create_ca_certificate__mutmut_34': x_create_ca_certificate__mutmut_34, 
-    'x_create_ca_certificate__mutmut_35': x_create_ca_certificate__mutmut_35, 
-    'x_create_ca_certificate__mutmut_36': x_create_ca_certificate__mutmut_36, 
-    'x_create_ca_certificate__mutmut_37': x_create_ca_certificate__mutmut_37, 
-    'x_create_ca_certificate__mutmut_38': x_create_ca_certificate__mutmut_38, 
-    'x_create_ca_certificate__mutmut_39': x_create_ca_certificate__mutmut_39, 
-    'x_create_ca_certificate__mutmut_40': x_create_ca_certificate__mutmut_40, 
-    'x_create_ca_certificate__mutmut_41': x_create_ca_certificate__mutmut_41, 
-    'x_create_ca_certificate__mutmut_42': x_create_ca_certificate__mutmut_42, 
-    'x_create_ca_certificate__mutmut_43': x_create_ca_certificate__mutmut_43, 
-    'x_create_ca_certificate__mutmut_44': x_create_ca_certificate__mutmut_44, 
-    'x_create_ca_certificate__mutmut_45': x_create_ca_certificate__mutmut_45
+
+x_create_ca_certificate__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_ca_certificate__mutmut_1": x_create_ca_certificate__mutmut_1,
+    "x_create_ca_certificate__mutmut_2": x_create_ca_certificate__mutmut_2,
+    "x_create_ca_certificate__mutmut_3": x_create_ca_certificate__mutmut_3,
+    "x_create_ca_certificate__mutmut_4": x_create_ca_certificate__mutmut_4,
+    "x_create_ca_certificate__mutmut_5": x_create_ca_certificate__mutmut_5,
+    "x_create_ca_certificate__mutmut_6": x_create_ca_certificate__mutmut_6,
+    "x_create_ca_certificate__mutmut_7": x_create_ca_certificate__mutmut_7,
+    "x_create_ca_certificate__mutmut_8": x_create_ca_certificate__mutmut_8,
+    "x_create_ca_certificate__mutmut_9": x_create_ca_certificate__mutmut_9,
+    "x_create_ca_certificate__mutmut_10": x_create_ca_certificate__mutmut_10,
+    "x_create_ca_certificate__mutmut_11": x_create_ca_certificate__mutmut_11,
+    "x_create_ca_certificate__mutmut_12": x_create_ca_certificate__mutmut_12,
+    "x_create_ca_certificate__mutmut_13": x_create_ca_certificate__mutmut_13,
+    "x_create_ca_certificate__mutmut_14": x_create_ca_certificate__mutmut_14,
+    "x_create_ca_certificate__mutmut_15": x_create_ca_certificate__mutmut_15,
+    "x_create_ca_certificate__mutmut_16": x_create_ca_certificate__mutmut_16,
+    "x_create_ca_certificate__mutmut_17": x_create_ca_certificate__mutmut_17,
+    "x_create_ca_certificate__mutmut_18": x_create_ca_certificate__mutmut_18,
+    "x_create_ca_certificate__mutmut_19": x_create_ca_certificate__mutmut_19,
+    "x_create_ca_certificate__mutmut_20": x_create_ca_certificate__mutmut_20,
+    "x_create_ca_certificate__mutmut_21": x_create_ca_certificate__mutmut_21,
+    "x_create_ca_certificate__mutmut_22": x_create_ca_certificate__mutmut_22,
+    "x_create_ca_certificate__mutmut_23": x_create_ca_certificate__mutmut_23,
+    "x_create_ca_certificate__mutmut_24": x_create_ca_certificate__mutmut_24,
+    "x_create_ca_certificate__mutmut_25": x_create_ca_certificate__mutmut_25,
+    "x_create_ca_certificate__mutmut_26": x_create_ca_certificate__mutmut_26,
+    "x_create_ca_certificate__mutmut_27": x_create_ca_certificate__mutmut_27,
+    "x_create_ca_certificate__mutmut_28": x_create_ca_certificate__mutmut_28,
+    "x_create_ca_certificate__mutmut_29": x_create_ca_certificate__mutmut_29,
+    "x_create_ca_certificate__mutmut_30": x_create_ca_certificate__mutmut_30,
+    "x_create_ca_certificate__mutmut_31": x_create_ca_certificate__mutmut_31,
+    "x_create_ca_certificate__mutmut_32": x_create_ca_certificate__mutmut_32,
+    "x_create_ca_certificate__mutmut_33": x_create_ca_certificate__mutmut_33,
+    "x_create_ca_certificate__mutmut_34": x_create_ca_certificate__mutmut_34,
+    "x_create_ca_certificate__mutmut_35": x_create_ca_certificate__mutmut_35,
+    "x_create_ca_certificate__mutmut_36": x_create_ca_certificate__mutmut_36,
+    "x_create_ca_certificate__mutmut_37": x_create_ca_certificate__mutmut_37,
+    "x_create_ca_certificate__mutmut_38": x_create_ca_certificate__mutmut_38,
+    "x_create_ca_certificate__mutmut_39": x_create_ca_certificate__mutmut_39,
+    "x_create_ca_certificate__mutmut_40": x_create_ca_certificate__mutmut_40,
+    "x_create_ca_certificate__mutmut_41": x_create_ca_certificate__mutmut_41,
+    "x_create_ca_certificate__mutmut_42": x_create_ca_certificate__mutmut_42,
+    "x_create_ca_certificate__mutmut_43": x_create_ca_certificate__mutmut_43,
+    "x_create_ca_certificate__mutmut_44": x_create_ca_certificate__mutmut_44,
+    "x_create_ca_certificate__mutmut_45": x_create_ca_certificate__mutmut_45,
 }
 
+
 def create_ca_certificate(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_ca_certificate__mutmut_orig, x_create_ca_certificate__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_ca_certificate__mutmut_orig, x_create_ca_certificate__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_ca_certificate.__signature__ = _mutmut_signature(x_create_ca_certificate__mutmut_orig)
-x_create_ca_certificate__mutmut_orig.__name__ = 'x_create_ca_certificate'
+x_create_ca_certificate__mutmut_orig.__name__ = "x_create_ca_certificate"
 
 
 def x_create_signed_certificate__mutmut_orig(
@@ -2294,7 +2302,7 @@ def x_create_signed_certificate__mutmut_7(
     if not ca_certificate._private_key:
         raise CertificateError(
             message="CA certificate's private key is not available for signing.",
-            )
+        )
     if not ca_certificate.is_ca:
         logger.warning(
             f"📜🔑⚠️ Signing certificate (Subject: {ca_certificate.subject}) "
@@ -4151,7 +4159,7 @@ def x_create_signed_certificate__mutmut_37(
         key_size=key_size,
         ecdsa_curve=ecdsa_curve,
         is_ca=False,
-        )
+    )
 
     signed_x509_cert = create_x509_certificate(
         base=new_cert_obj._base,
@@ -5200,7 +5208,7 @@ def x_create_signed_certificate__mutmut_54(
         issuer_name_override=ca_certificate._base.subject,
         signing_key_override=ca_certificate._private_key,
         is_ca=False,
-        )
+    )
 
     new_cert_obj._cert = signed_x509_cert
     new_cert_obj.cert_pem = signed_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
@@ -5706,77 +5714,82 @@ def x_create_signed_certificate__mutmut_62(
     )
     return new_cert_obj
 
-x_create_signed_certificate__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_signed_certificate__mutmut_1': x_create_signed_certificate__mutmut_1, 
-    'x_create_signed_certificate__mutmut_2': x_create_signed_certificate__mutmut_2, 
-    'x_create_signed_certificate__mutmut_3': x_create_signed_certificate__mutmut_3, 
-    'x_create_signed_certificate__mutmut_4': x_create_signed_certificate__mutmut_4, 
-    'x_create_signed_certificate__mutmut_5': x_create_signed_certificate__mutmut_5, 
-    'x_create_signed_certificate__mutmut_6': x_create_signed_certificate__mutmut_6, 
-    'x_create_signed_certificate__mutmut_7': x_create_signed_certificate__mutmut_7, 
-    'x_create_signed_certificate__mutmut_8': x_create_signed_certificate__mutmut_8, 
-    'x_create_signed_certificate__mutmut_9': x_create_signed_certificate__mutmut_9, 
-    'x_create_signed_certificate__mutmut_10': x_create_signed_certificate__mutmut_10, 
-    'x_create_signed_certificate__mutmut_11': x_create_signed_certificate__mutmut_11, 
-    'x_create_signed_certificate__mutmut_12': x_create_signed_certificate__mutmut_12, 
-    'x_create_signed_certificate__mutmut_13': x_create_signed_certificate__mutmut_13, 
-    'x_create_signed_certificate__mutmut_14': x_create_signed_certificate__mutmut_14, 
-    'x_create_signed_certificate__mutmut_15': x_create_signed_certificate__mutmut_15, 
-    'x_create_signed_certificate__mutmut_16': x_create_signed_certificate__mutmut_16, 
-    'x_create_signed_certificate__mutmut_17': x_create_signed_certificate__mutmut_17, 
-    'x_create_signed_certificate__mutmut_18': x_create_signed_certificate__mutmut_18, 
-    'x_create_signed_certificate__mutmut_19': x_create_signed_certificate__mutmut_19, 
-    'x_create_signed_certificate__mutmut_20': x_create_signed_certificate__mutmut_20, 
-    'x_create_signed_certificate__mutmut_21': x_create_signed_certificate__mutmut_21, 
-    'x_create_signed_certificate__mutmut_22': x_create_signed_certificate__mutmut_22, 
-    'x_create_signed_certificate__mutmut_23': x_create_signed_certificate__mutmut_23, 
-    'x_create_signed_certificate__mutmut_24': x_create_signed_certificate__mutmut_24, 
-    'x_create_signed_certificate__mutmut_25': x_create_signed_certificate__mutmut_25, 
-    'x_create_signed_certificate__mutmut_26': x_create_signed_certificate__mutmut_26, 
-    'x_create_signed_certificate__mutmut_27': x_create_signed_certificate__mutmut_27, 
-    'x_create_signed_certificate__mutmut_28': x_create_signed_certificate__mutmut_28, 
-    'x_create_signed_certificate__mutmut_29': x_create_signed_certificate__mutmut_29, 
-    'x_create_signed_certificate__mutmut_30': x_create_signed_certificate__mutmut_30, 
-    'x_create_signed_certificate__mutmut_31': x_create_signed_certificate__mutmut_31, 
-    'x_create_signed_certificate__mutmut_32': x_create_signed_certificate__mutmut_32, 
-    'x_create_signed_certificate__mutmut_33': x_create_signed_certificate__mutmut_33, 
-    'x_create_signed_certificate__mutmut_34': x_create_signed_certificate__mutmut_34, 
-    'x_create_signed_certificate__mutmut_35': x_create_signed_certificate__mutmut_35, 
-    'x_create_signed_certificate__mutmut_36': x_create_signed_certificate__mutmut_36, 
-    'x_create_signed_certificate__mutmut_37': x_create_signed_certificate__mutmut_37, 
-    'x_create_signed_certificate__mutmut_38': x_create_signed_certificate__mutmut_38, 
-    'x_create_signed_certificate__mutmut_39': x_create_signed_certificate__mutmut_39, 
-    'x_create_signed_certificate__mutmut_40': x_create_signed_certificate__mutmut_40, 
-    'x_create_signed_certificate__mutmut_41': x_create_signed_certificate__mutmut_41, 
-    'x_create_signed_certificate__mutmut_42': x_create_signed_certificate__mutmut_42, 
-    'x_create_signed_certificate__mutmut_43': x_create_signed_certificate__mutmut_43, 
-    'x_create_signed_certificate__mutmut_44': x_create_signed_certificate__mutmut_44, 
-    'x_create_signed_certificate__mutmut_45': x_create_signed_certificate__mutmut_45, 
-    'x_create_signed_certificate__mutmut_46': x_create_signed_certificate__mutmut_46, 
-    'x_create_signed_certificate__mutmut_47': x_create_signed_certificate__mutmut_47, 
-    'x_create_signed_certificate__mutmut_48': x_create_signed_certificate__mutmut_48, 
-    'x_create_signed_certificate__mutmut_49': x_create_signed_certificate__mutmut_49, 
-    'x_create_signed_certificate__mutmut_50': x_create_signed_certificate__mutmut_50, 
-    'x_create_signed_certificate__mutmut_51': x_create_signed_certificate__mutmut_51, 
-    'x_create_signed_certificate__mutmut_52': x_create_signed_certificate__mutmut_52, 
-    'x_create_signed_certificate__mutmut_53': x_create_signed_certificate__mutmut_53, 
-    'x_create_signed_certificate__mutmut_54': x_create_signed_certificate__mutmut_54, 
-    'x_create_signed_certificate__mutmut_55': x_create_signed_certificate__mutmut_55, 
-    'x_create_signed_certificate__mutmut_56': x_create_signed_certificate__mutmut_56, 
-    'x_create_signed_certificate__mutmut_57': x_create_signed_certificate__mutmut_57, 
-    'x_create_signed_certificate__mutmut_58': x_create_signed_certificate__mutmut_58, 
-    'x_create_signed_certificate__mutmut_59': x_create_signed_certificate__mutmut_59, 
-    'x_create_signed_certificate__mutmut_60': x_create_signed_certificate__mutmut_60, 
-    'x_create_signed_certificate__mutmut_61': x_create_signed_certificate__mutmut_61, 
-    'x_create_signed_certificate__mutmut_62': x_create_signed_certificate__mutmut_62
+
+x_create_signed_certificate__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_signed_certificate__mutmut_1": x_create_signed_certificate__mutmut_1,
+    "x_create_signed_certificate__mutmut_2": x_create_signed_certificate__mutmut_2,
+    "x_create_signed_certificate__mutmut_3": x_create_signed_certificate__mutmut_3,
+    "x_create_signed_certificate__mutmut_4": x_create_signed_certificate__mutmut_4,
+    "x_create_signed_certificate__mutmut_5": x_create_signed_certificate__mutmut_5,
+    "x_create_signed_certificate__mutmut_6": x_create_signed_certificate__mutmut_6,
+    "x_create_signed_certificate__mutmut_7": x_create_signed_certificate__mutmut_7,
+    "x_create_signed_certificate__mutmut_8": x_create_signed_certificate__mutmut_8,
+    "x_create_signed_certificate__mutmut_9": x_create_signed_certificate__mutmut_9,
+    "x_create_signed_certificate__mutmut_10": x_create_signed_certificate__mutmut_10,
+    "x_create_signed_certificate__mutmut_11": x_create_signed_certificate__mutmut_11,
+    "x_create_signed_certificate__mutmut_12": x_create_signed_certificate__mutmut_12,
+    "x_create_signed_certificate__mutmut_13": x_create_signed_certificate__mutmut_13,
+    "x_create_signed_certificate__mutmut_14": x_create_signed_certificate__mutmut_14,
+    "x_create_signed_certificate__mutmut_15": x_create_signed_certificate__mutmut_15,
+    "x_create_signed_certificate__mutmut_16": x_create_signed_certificate__mutmut_16,
+    "x_create_signed_certificate__mutmut_17": x_create_signed_certificate__mutmut_17,
+    "x_create_signed_certificate__mutmut_18": x_create_signed_certificate__mutmut_18,
+    "x_create_signed_certificate__mutmut_19": x_create_signed_certificate__mutmut_19,
+    "x_create_signed_certificate__mutmut_20": x_create_signed_certificate__mutmut_20,
+    "x_create_signed_certificate__mutmut_21": x_create_signed_certificate__mutmut_21,
+    "x_create_signed_certificate__mutmut_22": x_create_signed_certificate__mutmut_22,
+    "x_create_signed_certificate__mutmut_23": x_create_signed_certificate__mutmut_23,
+    "x_create_signed_certificate__mutmut_24": x_create_signed_certificate__mutmut_24,
+    "x_create_signed_certificate__mutmut_25": x_create_signed_certificate__mutmut_25,
+    "x_create_signed_certificate__mutmut_26": x_create_signed_certificate__mutmut_26,
+    "x_create_signed_certificate__mutmut_27": x_create_signed_certificate__mutmut_27,
+    "x_create_signed_certificate__mutmut_28": x_create_signed_certificate__mutmut_28,
+    "x_create_signed_certificate__mutmut_29": x_create_signed_certificate__mutmut_29,
+    "x_create_signed_certificate__mutmut_30": x_create_signed_certificate__mutmut_30,
+    "x_create_signed_certificate__mutmut_31": x_create_signed_certificate__mutmut_31,
+    "x_create_signed_certificate__mutmut_32": x_create_signed_certificate__mutmut_32,
+    "x_create_signed_certificate__mutmut_33": x_create_signed_certificate__mutmut_33,
+    "x_create_signed_certificate__mutmut_34": x_create_signed_certificate__mutmut_34,
+    "x_create_signed_certificate__mutmut_35": x_create_signed_certificate__mutmut_35,
+    "x_create_signed_certificate__mutmut_36": x_create_signed_certificate__mutmut_36,
+    "x_create_signed_certificate__mutmut_37": x_create_signed_certificate__mutmut_37,
+    "x_create_signed_certificate__mutmut_38": x_create_signed_certificate__mutmut_38,
+    "x_create_signed_certificate__mutmut_39": x_create_signed_certificate__mutmut_39,
+    "x_create_signed_certificate__mutmut_40": x_create_signed_certificate__mutmut_40,
+    "x_create_signed_certificate__mutmut_41": x_create_signed_certificate__mutmut_41,
+    "x_create_signed_certificate__mutmut_42": x_create_signed_certificate__mutmut_42,
+    "x_create_signed_certificate__mutmut_43": x_create_signed_certificate__mutmut_43,
+    "x_create_signed_certificate__mutmut_44": x_create_signed_certificate__mutmut_44,
+    "x_create_signed_certificate__mutmut_45": x_create_signed_certificate__mutmut_45,
+    "x_create_signed_certificate__mutmut_46": x_create_signed_certificate__mutmut_46,
+    "x_create_signed_certificate__mutmut_47": x_create_signed_certificate__mutmut_47,
+    "x_create_signed_certificate__mutmut_48": x_create_signed_certificate__mutmut_48,
+    "x_create_signed_certificate__mutmut_49": x_create_signed_certificate__mutmut_49,
+    "x_create_signed_certificate__mutmut_50": x_create_signed_certificate__mutmut_50,
+    "x_create_signed_certificate__mutmut_51": x_create_signed_certificate__mutmut_51,
+    "x_create_signed_certificate__mutmut_52": x_create_signed_certificate__mutmut_52,
+    "x_create_signed_certificate__mutmut_53": x_create_signed_certificate__mutmut_53,
+    "x_create_signed_certificate__mutmut_54": x_create_signed_certificate__mutmut_54,
+    "x_create_signed_certificate__mutmut_55": x_create_signed_certificate__mutmut_55,
+    "x_create_signed_certificate__mutmut_56": x_create_signed_certificate__mutmut_56,
+    "x_create_signed_certificate__mutmut_57": x_create_signed_certificate__mutmut_57,
+    "x_create_signed_certificate__mutmut_58": x_create_signed_certificate__mutmut_58,
+    "x_create_signed_certificate__mutmut_59": x_create_signed_certificate__mutmut_59,
+    "x_create_signed_certificate__mutmut_60": x_create_signed_certificate__mutmut_60,
+    "x_create_signed_certificate__mutmut_61": x_create_signed_certificate__mutmut_61,
+    "x_create_signed_certificate__mutmut_62": x_create_signed_certificate__mutmut_62,
 }
 
+
 def create_signed_certificate(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_signed_certificate__mutmut_orig, x_create_signed_certificate__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_signed_certificate__mutmut_orig, x_create_signed_certificate__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_signed_certificate.__signature__ = _mutmut_signature(x_create_signed_certificate__mutmut_orig)
-x_create_signed_certificate__mutmut_orig.__name__ = 'x_create_signed_certificate'
+x_create_signed_certificate__mutmut_orig.__name__ = "x_create_signed_certificate"
 
 
 def x_create_self_signed_server_cert__mutmut_orig(
@@ -6447,7 +6460,7 @@ def x_create_self_signed_server_cert__mutmut_20(
         key_size=key_size,
         ecdsa_curve=ecdsa_curve,
         is_ca=False,
-        )
+    )
 
     logger.info(f"📜🔑✅ Successfully created self-signed SERVER certificate for CN={common_name}")
     return cert_obj
@@ -6584,39 +6597,47 @@ def x_create_self_signed_server_cert__mutmut_24(
     logger.info(None)
     return cert_obj
 
-x_create_self_signed_server_cert__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_self_signed_server_cert__mutmut_1': x_create_self_signed_server_cert__mutmut_1, 
-    'x_create_self_signed_server_cert__mutmut_2': x_create_self_signed_server_cert__mutmut_2, 
-    'x_create_self_signed_server_cert__mutmut_3': x_create_self_signed_server_cert__mutmut_3, 
-    'x_create_self_signed_server_cert__mutmut_4': x_create_self_signed_server_cert__mutmut_4, 
-    'x_create_self_signed_server_cert__mutmut_5': x_create_self_signed_server_cert__mutmut_5, 
-    'x_create_self_signed_server_cert__mutmut_6': x_create_self_signed_server_cert__mutmut_6, 
-    'x_create_self_signed_server_cert__mutmut_7': x_create_self_signed_server_cert__mutmut_7, 
-    'x_create_self_signed_server_cert__mutmut_8': x_create_self_signed_server_cert__mutmut_8, 
-    'x_create_self_signed_server_cert__mutmut_9': x_create_self_signed_server_cert__mutmut_9, 
-    'x_create_self_signed_server_cert__mutmut_10': x_create_self_signed_server_cert__mutmut_10, 
-    'x_create_self_signed_server_cert__mutmut_11': x_create_self_signed_server_cert__mutmut_11, 
-    'x_create_self_signed_server_cert__mutmut_12': x_create_self_signed_server_cert__mutmut_12, 
-    'x_create_self_signed_server_cert__mutmut_13': x_create_self_signed_server_cert__mutmut_13, 
-    'x_create_self_signed_server_cert__mutmut_14': x_create_self_signed_server_cert__mutmut_14, 
-    'x_create_self_signed_server_cert__mutmut_15': x_create_self_signed_server_cert__mutmut_15, 
-    'x_create_self_signed_server_cert__mutmut_16': x_create_self_signed_server_cert__mutmut_16, 
-    'x_create_self_signed_server_cert__mutmut_17': x_create_self_signed_server_cert__mutmut_17, 
-    'x_create_self_signed_server_cert__mutmut_18': x_create_self_signed_server_cert__mutmut_18, 
-    'x_create_self_signed_server_cert__mutmut_19': x_create_self_signed_server_cert__mutmut_19, 
-    'x_create_self_signed_server_cert__mutmut_20': x_create_self_signed_server_cert__mutmut_20, 
-    'x_create_self_signed_server_cert__mutmut_21': x_create_self_signed_server_cert__mutmut_21, 
-    'x_create_self_signed_server_cert__mutmut_22': x_create_self_signed_server_cert__mutmut_22, 
-    'x_create_self_signed_server_cert__mutmut_23': x_create_self_signed_server_cert__mutmut_23, 
-    'x_create_self_signed_server_cert__mutmut_24': x_create_self_signed_server_cert__mutmut_24
+
+x_create_self_signed_server_cert__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_self_signed_server_cert__mutmut_1": x_create_self_signed_server_cert__mutmut_1,
+    "x_create_self_signed_server_cert__mutmut_2": x_create_self_signed_server_cert__mutmut_2,
+    "x_create_self_signed_server_cert__mutmut_3": x_create_self_signed_server_cert__mutmut_3,
+    "x_create_self_signed_server_cert__mutmut_4": x_create_self_signed_server_cert__mutmut_4,
+    "x_create_self_signed_server_cert__mutmut_5": x_create_self_signed_server_cert__mutmut_5,
+    "x_create_self_signed_server_cert__mutmut_6": x_create_self_signed_server_cert__mutmut_6,
+    "x_create_self_signed_server_cert__mutmut_7": x_create_self_signed_server_cert__mutmut_7,
+    "x_create_self_signed_server_cert__mutmut_8": x_create_self_signed_server_cert__mutmut_8,
+    "x_create_self_signed_server_cert__mutmut_9": x_create_self_signed_server_cert__mutmut_9,
+    "x_create_self_signed_server_cert__mutmut_10": x_create_self_signed_server_cert__mutmut_10,
+    "x_create_self_signed_server_cert__mutmut_11": x_create_self_signed_server_cert__mutmut_11,
+    "x_create_self_signed_server_cert__mutmut_12": x_create_self_signed_server_cert__mutmut_12,
+    "x_create_self_signed_server_cert__mutmut_13": x_create_self_signed_server_cert__mutmut_13,
+    "x_create_self_signed_server_cert__mutmut_14": x_create_self_signed_server_cert__mutmut_14,
+    "x_create_self_signed_server_cert__mutmut_15": x_create_self_signed_server_cert__mutmut_15,
+    "x_create_self_signed_server_cert__mutmut_16": x_create_self_signed_server_cert__mutmut_16,
+    "x_create_self_signed_server_cert__mutmut_17": x_create_self_signed_server_cert__mutmut_17,
+    "x_create_self_signed_server_cert__mutmut_18": x_create_self_signed_server_cert__mutmut_18,
+    "x_create_self_signed_server_cert__mutmut_19": x_create_self_signed_server_cert__mutmut_19,
+    "x_create_self_signed_server_cert__mutmut_20": x_create_self_signed_server_cert__mutmut_20,
+    "x_create_self_signed_server_cert__mutmut_21": x_create_self_signed_server_cert__mutmut_21,
+    "x_create_self_signed_server_cert__mutmut_22": x_create_self_signed_server_cert__mutmut_22,
+    "x_create_self_signed_server_cert__mutmut_23": x_create_self_signed_server_cert__mutmut_23,
+    "x_create_self_signed_server_cert__mutmut_24": x_create_self_signed_server_cert__mutmut_24,
 }
 
+
 def create_self_signed_server_cert(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_self_signed_server_cert__mutmut_orig, x_create_self_signed_server_cert__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_self_signed_server_cert__mutmut_orig,
+        x_create_self_signed_server_cert__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 create_self_signed_server_cert.__signature__ = _mutmut_signature(x_create_self_signed_server_cert__mutmut_orig)
-x_create_self_signed_server_cert__mutmut_orig.__name__ = 'x_create_self_signed_server_cert'
+x_create_self_signed_server_cert__mutmut_orig.__name__ = "x_create_self_signed_server_cert"
 
 
 def x_create_self_signed_client_cert__mutmut_orig(
@@ -7287,7 +7308,7 @@ def x_create_self_signed_client_cert__mutmut_20(
         key_size=key_size,
         ecdsa_curve=ecdsa_curve,
         is_ca=False,
-        )
+    )
 
     logger.info(f"📜🔑✅ Successfully created self-signed CLIENT certificate for CN={common_name}")
     return cert_obj
@@ -7424,39 +7445,47 @@ def x_create_self_signed_client_cert__mutmut_24(
     logger.info(None)
     return cert_obj
 
-x_create_self_signed_client_cert__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_self_signed_client_cert__mutmut_1': x_create_self_signed_client_cert__mutmut_1, 
-    'x_create_self_signed_client_cert__mutmut_2': x_create_self_signed_client_cert__mutmut_2, 
-    'x_create_self_signed_client_cert__mutmut_3': x_create_self_signed_client_cert__mutmut_3, 
-    'x_create_self_signed_client_cert__mutmut_4': x_create_self_signed_client_cert__mutmut_4, 
-    'x_create_self_signed_client_cert__mutmut_5': x_create_self_signed_client_cert__mutmut_5, 
-    'x_create_self_signed_client_cert__mutmut_6': x_create_self_signed_client_cert__mutmut_6, 
-    'x_create_self_signed_client_cert__mutmut_7': x_create_self_signed_client_cert__mutmut_7, 
-    'x_create_self_signed_client_cert__mutmut_8': x_create_self_signed_client_cert__mutmut_8, 
-    'x_create_self_signed_client_cert__mutmut_9': x_create_self_signed_client_cert__mutmut_9, 
-    'x_create_self_signed_client_cert__mutmut_10': x_create_self_signed_client_cert__mutmut_10, 
-    'x_create_self_signed_client_cert__mutmut_11': x_create_self_signed_client_cert__mutmut_11, 
-    'x_create_self_signed_client_cert__mutmut_12': x_create_self_signed_client_cert__mutmut_12, 
-    'x_create_self_signed_client_cert__mutmut_13': x_create_self_signed_client_cert__mutmut_13, 
-    'x_create_self_signed_client_cert__mutmut_14': x_create_self_signed_client_cert__mutmut_14, 
-    'x_create_self_signed_client_cert__mutmut_15': x_create_self_signed_client_cert__mutmut_15, 
-    'x_create_self_signed_client_cert__mutmut_16': x_create_self_signed_client_cert__mutmut_16, 
-    'x_create_self_signed_client_cert__mutmut_17': x_create_self_signed_client_cert__mutmut_17, 
-    'x_create_self_signed_client_cert__mutmut_18': x_create_self_signed_client_cert__mutmut_18, 
-    'x_create_self_signed_client_cert__mutmut_19': x_create_self_signed_client_cert__mutmut_19, 
-    'x_create_self_signed_client_cert__mutmut_20': x_create_self_signed_client_cert__mutmut_20, 
-    'x_create_self_signed_client_cert__mutmut_21': x_create_self_signed_client_cert__mutmut_21, 
-    'x_create_self_signed_client_cert__mutmut_22': x_create_self_signed_client_cert__mutmut_22, 
-    'x_create_self_signed_client_cert__mutmut_23': x_create_self_signed_client_cert__mutmut_23, 
-    'x_create_self_signed_client_cert__mutmut_24': x_create_self_signed_client_cert__mutmut_24
+
+x_create_self_signed_client_cert__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_self_signed_client_cert__mutmut_1": x_create_self_signed_client_cert__mutmut_1,
+    "x_create_self_signed_client_cert__mutmut_2": x_create_self_signed_client_cert__mutmut_2,
+    "x_create_self_signed_client_cert__mutmut_3": x_create_self_signed_client_cert__mutmut_3,
+    "x_create_self_signed_client_cert__mutmut_4": x_create_self_signed_client_cert__mutmut_4,
+    "x_create_self_signed_client_cert__mutmut_5": x_create_self_signed_client_cert__mutmut_5,
+    "x_create_self_signed_client_cert__mutmut_6": x_create_self_signed_client_cert__mutmut_6,
+    "x_create_self_signed_client_cert__mutmut_7": x_create_self_signed_client_cert__mutmut_7,
+    "x_create_self_signed_client_cert__mutmut_8": x_create_self_signed_client_cert__mutmut_8,
+    "x_create_self_signed_client_cert__mutmut_9": x_create_self_signed_client_cert__mutmut_9,
+    "x_create_self_signed_client_cert__mutmut_10": x_create_self_signed_client_cert__mutmut_10,
+    "x_create_self_signed_client_cert__mutmut_11": x_create_self_signed_client_cert__mutmut_11,
+    "x_create_self_signed_client_cert__mutmut_12": x_create_self_signed_client_cert__mutmut_12,
+    "x_create_self_signed_client_cert__mutmut_13": x_create_self_signed_client_cert__mutmut_13,
+    "x_create_self_signed_client_cert__mutmut_14": x_create_self_signed_client_cert__mutmut_14,
+    "x_create_self_signed_client_cert__mutmut_15": x_create_self_signed_client_cert__mutmut_15,
+    "x_create_self_signed_client_cert__mutmut_16": x_create_self_signed_client_cert__mutmut_16,
+    "x_create_self_signed_client_cert__mutmut_17": x_create_self_signed_client_cert__mutmut_17,
+    "x_create_self_signed_client_cert__mutmut_18": x_create_self_signed_client_cert__mutmut_18,
+    "x_create_self_signed_client_cert__mutmut_19": x_create_self_signed_client_cert__mutmut_19,
+    "x_create_self_signed_client_cert__mutmut_20": x_create_self_signed_client_cert__mutmut_20,
+    "x_create_self_signed_client_cert__mutmut_21": x_create_self_signed_client_cert__mutmut_21,
+    "x_create_self_signed_client_cert__mutmut_22": x_create_self_signed_client_cert__mutmut_22,
+    "x_create_self_signed_client_cert__mutmut_23": x_create_self_signed_client_cert__mutmut_23,
+    "x_create_self_signed_client_cert__mutmut_24": x_create_self_signed_client_cert__mutmut_24,
 }
 
+
 def create_self_signed_client_cert(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_self_signed_client_cert__mutmut_orig, x_create_self_signed_client_cert__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_self_signed_client_cert__mutmut_orig,
+        x_create_self_signed_client_cert__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 create_self_signed_client_cert.__signature__ = _mutmut_signature(x_create_self_signed_client_cert__mutmut_orig)
-x_create_self_signed_client_cert__mutmut_orig.__name__ = 'x_create_self_signed_client_cert'
+x_create_self_signed_client_cert__mutmut_orig.__name__ = "x_create_self_signed_client_cert"
 
 
 # Convenience functions for common use cases
@@ -7755,7 +7784,7 @@ def x_create_self_signed__mutmut_15(
         organization_name=organization,
         validity_days=validity_days,
         alt_names=alt_names or [common_name],
-        )
+    )
 
 
 # Convenience functions for common use cases
@@ -7776,31 +7805,36 @@ def x_create_self_signed__mutmut_16(
         key_type=key_type,
     )
 
-x_create_self_signed__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_self_signed__mutmut_1': x_create_self_signed__mutmut_1, 
-    'x_create_self_signed__mutmut_2': x_create_self_signed__mutmut_2, 
-    'x_create_self_signed__mutmut_3': x_create_self_signed__mutmut_3, 
-    'x_create_self_signed__mutmut_4': x_create_self_signed__mutmut_4, 
-    'x_create_self_signed__mutmut_5': x_create_self_signed__mutmut_5, 
-    'x_create_self_signed__mutmut_6': x_create_self_signed__mutmut_6, 
-    'x_create_self_signed__mutmut_7': x_create_self_signed__mutmut_7, 
-    'x_create_self_signed__mutmut_8': x_create_self_signed__mutmut_8, 
-    'x_create_self_signed__mutmut_9': x_create_self_signed__mutmut_9, 
-    'x_create_self_signed__mutmut_10': x_create_self_signed__mutmut_10, 
-    'x_create_self_signed__mutmut_11': x_create_self_signed__mutmut_11, 
-    'x_create_self_signed__mutmut_12': x_create_self_signed__mutmut_12, 
-    'x_create_self_signed__mutmut_13': x_create_self_signed__mutmut_13, 
-    'x_create_self_signed__mutmut_14': x_create_self_signed__mutmut_14, 
-    'x_create_self_signed__mutmut_15': x_create_self_signed__mutmut_15, 
-    'x_create_self_signed__mutmut_16': x_create_self_signed__mutmut_16
+
+x_create_self_signed__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_self_signed__mutmut_1": x_create_self_signed__mutmut_1,
+    "x_create_self_signed__mutmut_2": x_create_self_signed__mutmut_2,
+    "x_create_self_signed__mutmut_3": x_create_self_signed__mutmut_3,
+    "x_create_self_signed__mutmut_4": x_create_self_signed__mutmut_4,
+    "x_create_self_signed__mutmut_5": x_create_self_signed__mutmut_5,
+    "x_create_self_signed__mutmut_6": x_create_self_signed__mutmut_6,
+    "x_create_self_signed__mutmut_7": x_create_self_signed__mutmut_7,
+    "x_create_self_signed__mutmut_8": x_create_self_signed__mutmut_8,
+    "x_create_self_signed__mutmut_9": x_create_self_signed__mutmut_9,
+    "x_create_self_signed__mutmut_10": x_create_self_signed__mutmut_10,
+    "x_create_self_signed__mutmut_11": x_create_self_signed__mutmut_11,
+    "x_create_self_signed__mutmut_12": x_create_self_signed__mutmut_12,
+    "x_create_self_signed__mutmut_13": x_create_self_signed__mutmut_13,
+    "x_create_self_signed__mutmut_14": x_create_self_signed__mutmut_14,
+    "x_create_self_signed__mutmut_15": x_create_self_signed__mutmut_15,
+    "x_create_self_signed__mutmut_16": x_create_self_signed__mutmut_16,
 }
 
+
 def create_self_signed(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_self_signed__mutmut_orig, x_create_self_signed__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_self_signed__mutmut_orig, x_create_self_signed__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_self_signed.__signature__ = _mutmut_signature(x_create_self_signed__mutmut_orig)
-x_create_self_signed__mutmut_orig.__name__ = 'x_create_self_signed'
+x_create_self_signed__mutmut_orig.__name__ = "x_create_self_signed"
 
 
 def x_create_ca__mutmut_orig(
@@ -7988,28 +8022,31 @@ def x_create_ca__mutmut_11(
         common_name=common_name,
         organization_name=organization,
         validity_days=validity_days,
-        )
+    )
 
-x_create_ca__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_ca__mutmut_1': x_create_ca__mutmut_1, 
-    'x_create_ca__mutmut_2': x_create_ca__mutmut_2, 
-    'x_create_ca__mutmut_3': x_create_ca__mutmut_3, 
-    'x_create_ca__mutmut_4': x_create_ca__mutmut_4, 
-    'x_create_ca__mutmut_5': x_create_ca__mutmut_5, 
-    'x_create_ca__mutmut_6': x_create_ca__mutmut_6, 
-    'x_create_ca__mutmut_7': x_create_ca__mutmut_7, 
-    'x_create_ca__mutmut_8': x_create_ca__mutmut_8, 
-    'x_create_ca__mutmut_9': x_create_ca__mutmut_9, 
-    'x_create_ca__mutmut_10': x_create_ca__mutmut_10, 
-    'x_create_ca__mutmut_11': x_create_ca__mutmut_11
+
+x_create_ca__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_ca__mutmut_1": x_create_ca__mutmut_1,
+    "x_create_ca__mutmut_2": x_create_ca__mutmut_2,
+    "x_create_ca__mutmut_3": x_create_ca__mutmut_3,
+    "x_create_ca__mutmut_4": x_create_ca__mutmut_4,
+    "x_create_ca__mutmut_5": x_create_ca__mutmut_5,
+    "x_create_ca__mutmut_6": x_create_ca__mutmut_6,
+    "x_create_ca__mutmut_7": x_create_ca__mutmut_7,
+    "x_create_ca__mutmut_8": x_create_ca__mutmut_8,
+    "x_create_ca__mutmut_9": x_create_ca__mutmut_9,
+    "x_create_ca__mutmut_10": x_create_ca__mutmut_10,
+    "x_create_ca__mutmut_11": x_create_ca__mutmut_11,
 }
+
 
 def create_ca(*args, **kwargs):
     result = _mutmut_trampoline(x_create_ca__mutmut_orig, x_create_ca__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 create_ca.__signature__ = _mutmut_signature(x_create_ca__mutmut_orig)
-x_create_ca__mutmut_orig.__name__ = 'x_create_ca'
+x_create_ca__mutmut_orig.__name__ = "x_create_ca"
 
 
 # <3 🧱🤝🔒🪄

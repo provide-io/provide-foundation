@@ -20,23 +20,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -96,18 +99,21 @@ def x_exit_success__mutmut_3(message: str | None = None) -> None:
         logger.info(f"Exiting successfully: {message}")
     sys.exit(None)
 
-x_exit_success__mutmut_mutants : ClassVar[MutantDict] = {
-'x_exit_success__mutmut_1': x_exit_success__mutmut_1, 
-    'x_exit_success__mutmut_2': x_exit_success__mutmut_2, 
-    'x_exit_success__mutmut_3': x_exit_success__mutmut_3
+
+x_exit_success__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_exit_success__mutmut_1": x_exit_success__mutmut_1,
+    "x_exit_success__mutmut_2": x_exit_success__mutmut_2,
+    "x_exit_success__mutmut_3": x_exit_success__mutmut_3,
 }
+
 
 def exit_success(*args, **kwargs):
     result = _mutmut_trampoline(x_exit_success__mutmut_orig, x_exit_success__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 exit_success.__signature__ = _mutmut_signature(x_exit_success__mutmut_orig)
-x_exit_success__mutmut_orig.__name__ = 'x_exit_success'
+x_exit_success__mutmut_orig.__name__ = "x_exit_success"
 
 
 def x_exit_error__mutmut_orig(message: str | None = None, code: int = EXIT_ERROR) -> None:
@@ -190,7 +196,9 @@ def x_exit_error__mutmut_5(message: str | None = None, code: int = EXIT_ERROR) -
     """
     if message:
         logger = get_foundation_logger()
-        logger.error(f"Exiting with error: {message}", )
+        logger.error(
+            f"Exiting with error: {message}",
+        )
     sys.exit(code)
 
 
@@ -207,21 +215,24 @@ def x_exit_error__mutmut_6(message: str | None = None, code: int = EXIT_ERROR) -
         logger.error(f"Exiting with error: {message}", exit_code=code)
     sys.exit(None)
 
-x_exit_error__mutmut_mutants : ClassVar[MutantDict] = {
-'x_exit_error__mutmut_1': x_exit_error__mutmut_1, 
-    'x_exit_error__mutmut_2': x_exit_error__mutmut_2, 
-    'x_exit_error__mutmut_3': x_exit_error__mutmut_3, 
-    'x_exit_error__mutmut_4': x_exit_error__mutmut_4, 
-    'x_exit_error__mutmut_5': x_exit_error__mutmut_5, 
-    'x_exit_error__mutmut_6': x_exit_error__mutmut_6
+
+x_exit_error__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_exit_error__mutmut_1": x_exit_error__mutmut_1,
+    "x_exit_error__mutmut_2": x_exit_error__mutmut_2,
+    "x_exit_error__mutmut_3": x_exit_error__mutmut_3,
+    "x_exit_error__mutmut_4": x_exit_error__mutmut_4,
+    "x_exit_error__mutmut_5": x_exit_error__mutmut_5,
+    "x_exit_error__mutmut_6": x_exit_error__mutmut_6,
 }
+
 
 def exit_error(*args, **kwargs):
     result = _mutmut_trampoline(x_exit_error__mutmut_orig, x_exit_error__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 exit_error.__signature__ = _mutmut_signature(x_exit_error__mutmut_orig)
-x_exit_error__mutmut_orig.__name__ = 'x_exit_error'
+x_exit_error__mutmut_orig.__name__ = "x_exit_error"
 
 
 def x_exit_interrupted__mutmut_orig(message: str = "Process interrupted") -> None:
@@ -307,21 +318,26 @@ def x_exit_interrupted__mutmut_6(message: str = "Process interrupted") -> None:
     logger.warning(f"Exiting due to interrupt: {message}")
     sys.exit(None)
 
-x_exit_interrupted__mutmut_mutants : ClassVar[MutantDict] = {
-'x_exit_interrupted__mutmut_1': x_exit_interrupted__mutmut_1, 
-    'x_exit_interrupted__mutmut_2': x_exit_interrupted__mutmut_2, 
-    'x_exit_interrupted__mutmut_3': x_exit_interrupted__mutmut_3, 
-    'x_exit_interrupted__mutmut_4': x_exit_interrupted__mutmut_4, 
-    'x_exit_interrupted__mutmut_5': x_exit_interrupted__mutmut_5, 
-    'x_exit_interrupted__mutmut_6': x_exit_interrupted__mutmut_6
+
+x_exit_interrupted__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_exit_interrupted__mutmut_1": x_exit_interrupted__mutmut_1,
+    "x_exit_interrupted__mutmut_2": x_exit_interrupted__mutmut_2,
+    "x_exit_interrupted__mutmut_3": x_exit_interrupted__mutmut_3,
+    "x_exit_interrupted__mutmut_4": x_exit_interrupted__mutmut_4,
+    "x_exit_interrupted__mutmut_5": x_exit_interrupted__mutmut_5,
+    "x_exit_interrupted__mutmut_6": x_exit_interrupted__mutmut_6,
 }
 
+
 def exit_interrupted(*args, **kwargs):
-    result = _mutmut_trampoline(x_exit_interrupted__mutmut_orig, x_exit_interrupted__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_exit_interrupted__mutmut_orig, x_exit_interrupted__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 exit_interrupted.__signature__ = _mutmut_signature(x_exit_interrupted__mutmut_orig)
-x_exit_interrupted__mutmut_orig.__name__ = 'x_exit_interrupted'
+x_exit_interrupted__mutmut_orig.__name__ = "x_exit_interrupted"
 
 
 # <3 🧱🤝🏃🪄

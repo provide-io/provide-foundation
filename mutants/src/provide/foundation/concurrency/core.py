@@ -21,23 +21,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -213,25 +216,30 @@ async def x_async_sleep__mutmut_7(delay: float) -> None:
         raise ValidationError("Sleep delay must be non-negative")
     await asyncio.sleep(None)
 
-x_async_sleep__mutmut_mutants : ClassVar[MutantDict] = {
-'x_async_sleep__mutmut_1': x_async_sleep__mutmut_1, 
-    'x_async_sleep__mutmut_2': x_async_sleep__mutmut_2, 
-    'x_async_sleep__mutmut_3': x_async_sleep__mutmut_3, 
-    'x_async_sleep__mutmut_4': x_async_sleep__mutmut_4, 
-    'x_async_sleep__mutmut_5': x_async_sleep__mutmut_5, 
-    'x_async_sleep__mutmut_6': x_async_sleep__mutmut_6, 
-    'x_async_sleep__mutmut_7': x_async_sleep__mutmut_7
+
+x_async_sleep__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_async_sleep__mutmut_1": x_async_sleep__mutmut_1,
+    "x_async_sleep__mutmut_2": x_async_sleep__mutmut_2,
+    "x_async_sleep__mutmut_3": x_async_sleep__mutmut_3,
+    "x_async_sleep__mutmut_4": x_async_sleep__mutmut_4,
+    "x_async_sleep__mutmut_5": x_async_sleep__mutmut_5,
+    "x_async_sleep__mutmut_6": x_async_sleep__mutmut_6,
+    "x_async_sleep__mutmut_7": x_async_sleep__mutmut_7,
 }
+
 
 def async_sleep(*args, **kwargs):
     result = _mutmut_trampoline(x_async_sleep__mutmut_orig, x_async_sleep__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 async_sleep.__signature__ = _mutmut_signature(x_async_sleep__mutmut_orig)
-x_async_sleep__mutmut_orig.__name__ = 'x_async_sleep'
+x_async_sleep__mutmut_orig.__name__ = "x_async_sleep"
 
 
-async def x_async_gather__mutmut_orig(*awaitables: Awaitable[Any], return_exceptions: bool = False) -> list[Any]:
+async def x_async_gather__mutmut_orig(
+    *awaitables: Awaitable[Any], return_exceptions: bool = False
+) -> list[Any]:
     """Run awaitables concurrently with Foundation tracking.
 
     Args:
@@ -558,26 +566,31 @@ async def x_async_gather__mutmut_9(*awaitables: Awaitable[Any], return_exception
     if not awaitables:
         raise ValidationError("At least one awaitable must be provided")
 
-    return await asyncio.gather(*awaitables, )
+    return await asyncio.gather(
+        *awaitables,
+    )
 
-x_async_gather__mutmut_mutants : ClassVar[MutantDict] = {
-'x_async_gather__mutmut_1': x_async_gather__mutmut_1, 
-    'x_async_gather__mutmut_2': x_async_gather__mutmut_2, 
-    'x_async_gather__mutmut_3': x_async_gather__mutmut_3, 
-    'x_async_gather__mutmut_4': x_async_gather__mutmut_4, 
-    'x_async_gather__mutmut_5': x_async_gather__mutmut_5, 
-    'x_async_gather__mutmut_6': x_async_gather__mutmut_6, 
-    'x_async_gather__mutmut_7': x_async_gather__mutmut_7, 
-    'x_async_gather__mutmut_8': x_async_gather__mutmut_8, 
-    'x_async_gather__mutmut_9': x_async_gather__mutmut_9
+
+x_async_gather__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_async_gather__mutmut_1": x_async_gather__mutmut_1,
+    "x_async_gather__mutmut_2": x_async_gather__mutmut_2,
+    "x_async_gather__mutmut_3": x_async_gather__mutmut_3,
+    "x_async_gather__mutmut_4": x_async_gather__mutmut_4,
+    "x_async_gather__mutmut_5": x_async_gather__mutmut_5,
+    "x_async_gather__mutmut_6": x_async_gather__mutmut_6,
+    "x_async_gather__mutmut_7": x_async_gather__mutmut_7,
+    "x_async_gather__mutmut_8": x_async_gather__mutmut_8,
+    "x_async_gather__mutmut_9": x_async_gather__mutmut_9,
 }
+
 
 def async_gather(*args, **kwargs):
     result = _mutmut_trampoline(x_async_gather__mutmut_orig, x_async_gather__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 async_gather.__signature__ = _mutmut_signature(x_async_gather__mutmut_orig)
-x_async_gather__mutmut_orig.__name__ = 'x_async_gather'
+x_async_gather__mutmut_orig.__name__ = "x_async_gather"
 
 
 async def x_async_wait_for__mutmut_orig(awaitable: Awaitable[Any], timeout: float | None) -> Any:
@@ -1032,29 +1045,34 @@ async def x_async_wait_for__mutmut_12(awaitable: Awaitable[Any], timeout: float 
     if timeout is not None and timeout < 0:
         raise ValidationError("Timeout must be non-negative")
 
-    return await asyncio.wait_for(awaitable, )
+    return await asyncio.wait_for(
+        awaitable,
+    )
 
-x_async_wait_for__mutmut_mutants : ClassVar[MutantDict] = {
-'x_async_wait_for__mutmut_1': x_async_wait_for__mutmut_1, 
-    'x_async_wait_for__mutmut_2': x_async_wait_for__mutmut_2, 
-    'x_async_wait_for__mutmut_3': x_async_wait_for__mutmut_3, 
-    'x_async_wait_for__mutmut_4': x_async_wait_for__mutmut_4, 
-    'x_async_wait_for__mutmut_5': x_async_wait_for__mutmut_5, 
-    'x_async_wait_for__mutmut_6': x_async_wait_for__mutmut_6, 
-    'x_async_wait_for__mutmut_7': x_async_wait_for__mutmut_7, 
-    'x_async_wait_for__mutmut_8': x_async_wait_for__mutmut_8, 
-    'x_async_wait_for__mutmut_9': x_async_wait_for__mutmut_9, 
-    'x_async_wait_for__mutmut_10': x_async_wait_for__mutmut_10, 
-    'x_async_wait_for__mutmut_11': x_async_wait_for__mutmut_11, 
-    'x_async_wait_for__mutmut_12': x_async_wait_for__mutmut_12
+
+x_async_wait_for__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_async_wait_for__mutmut_1": x_async_wait_for__mutmut_1,
+    "x_async_wait_for__mutmut_2": x_async_wait_for__mutmut_2,
+    "x_async_wait_for__mutmut_3": x_async_wait_for__mutmut_3,
+    "x_async_wait_for__mutmut_4": x_async_wait_for__mutmut_4,
+    "x_async_wait_for__mutmut_5": x_async_wait_for__mutmut_5,
+    "x_async_wait_for__mutmut_6": x_async_wait_for__mutmut_6,
+    "x_async_wait_for__mutmut_7": x_async_wait_for__mutmut_7,
+    "x_async_wait_for__mutmut_8": x_async_wait_for__mutmut_8,
+    "x_async_wait_for__mutmut_9": x_async_wait_for__mutmut_9,
+    "x_async_wait_for__mutmut_10": x_async_wait_for__mutmut_10,
+    "x_async_wait_for__mutmut_11": x_async_wait_for__mutmut_11,
+    "x_async_wait_for__mutmut_12": x_async_wait_for__mutmut_12,
 }
+
 
 def async_wait_for(*args, **kwargs):
     result = _mutmut_trampoline(x_async_wait_for__mutmut_orig, x_async_wait_for__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 async_wait_for.__signature__ = _mutmut_signature(x_async_wait_for__mutmut_orig)
-x_async_wait_for__mutmut_orig.__name__ = 'x_async_wait_for'
+x_async_wait_for__mutmut_orig.__name__ = "x_async_wait_for"
 
 
 def x_async_run__mutmut_orig(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> Any:
@@ -1390,28 +1408,33 @@ def x_async_run__mutmut_11(main: Callable[[], Awaitable[Any]], *, debug: bool = 
     if not callable(main):
         raise ValidationError("Main must be callable")
 
-    return asyncio.run(main(), )  # type: ignore[arg-type]
+    return asyncio.run(
+        main(),
+    )  # type: ignore[arg-type]
 
-x_async_run__mutmut_mutants : ClassVar[MutantDict] = {
-'x_async_run__mutmut_1': x_async_run__mutmut_1, 
-    'x_async_run__mutmut_2': x_async_run__mutmut_2, 
-    'x_async_run__mutmut_3': x_async_run__mutmut_3, 
-    'x_async_run__mutmut_4': x_async_run__mutmut_4, 
-    'x_async_run__mutmut_5': x_async_run__mutmut_5, 
-    'x_async_run__mutmut_6': x_async_run__mutmut_6, 
-    'x_async_run__mutmut_7': x_async_run__mutmut_7, 
-    'x_async_run__mutmut_8': x_async_run__mutmut_8, 
-    'x_async_run__mutmut_9': x_async_run__mutmut_9, 
-    'x_async_run__mutmut_10': x_async_run__mutmut_10, 
-    'x_async_run__mutmut_11': x_async_run__mutmut_11
+
+x_async_run__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_async_run__mutmut_1": x_async_run__mutmut_1,
+    "x_async_run__mutmut_2": x_async_run__mutmut_2,
+    "x_async_run__mutmut_3": x_async_run__mutmut_3,
+    "x_async_run__mutmut_4": x_async_run__mutmut_4,
+    "x_async_run__mutmut_5": x_async_run__mutmut_5,
+    "x_async_run__mutmut_6": x_async_run__mutmut_6,
+    "x_async_run__mutmut_7": x_async_run__mutmut_7,
+    "x_async_run__mutmut_8": x_async_run__mutmut_8,
+    "x_async_run__mutmut_9": x_async_run__mutmut_9,
+    "x_async_run__mutmut_10": x_async_run__mutmut_10,
+    "x_async_run__mutmut_11": x_async_run__mutmut_11,
 }
+
 
 def async_run(*args, **kwargs):
     result = _mutmut_trampoline(x_async_run__mutmut_orig, x_async_run__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 async_run.__signature__ = _mutmut_signature(x_async_run__mutmut_orig)
-x_async_run__mutmut_orig.__name__ = 'x_async_run'
+x_async_run__mutmut_orig.__name__ = "x_async_run"
 
 
 # <3 🧱🤝🧵🪄

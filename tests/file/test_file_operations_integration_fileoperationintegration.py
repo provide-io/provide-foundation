@@ -36,6 +36,7 @@ class FileEventCapture:
     def dispatch(self, event: Any) -> None:
         """Handle watchdog file system events."""
         from datetime import datetime
+
         from provide.foundation.file.operations import FileEventMetadata
 
         # Skip directory events for simplicity

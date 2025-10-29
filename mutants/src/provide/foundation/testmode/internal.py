@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -208,19 +211,24 @@ def x_reset_event_loops__mutmut_4() -> None:
         # If anything fails, continue - better to leak a loop than crash
         pass
 
-x_reset_event_loops__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_event_loops__mutmut_1': x_reset_event_loops__mutmut_1, 
-    'x_reset_event_loops__mutmut_2': x_reset_event_loops__mutmut_2, 
-    'x_reset_event_loops__mutmut_3': x_reset_event_loops__mutmut_3, 
-    'x_reset_event_loops__mutmut_4': x_reset_event_loops__mutmut_4
+
+x_reset_event_loops__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_event_loops__mutmut_1": x_reset_event_loops__mutmut_1,
+    "x_reset_event_loops__mutmut_2": x_reset_event_loops__mutmut_2,
+    "x_reset_event_loops__mutmut_3": x_reset_event_loops__mutmut_3,
+    "x_reset_event_loops__mutmut_4": x_reset_event_loops__mutmut_4,
 }
 
+
 def reset_event_loops(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_event_loops__mutmut_orig, x_reset_event_loops__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_event_loops__mutmut_orig, x_reset_event_loops__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_event_loops.__signature__ = _mutmut_signature(x_reset_event_loops__mutmut_orig)
-x_reset_event_loops__mutmut_orig.__name__ = 'x_reset_event_loops'
+x_reset_event_loops__mutmut_orig.__name__ = "x_reset_event_loops"
 
 
 def reset_time_machine_state() -> None:
@@ -784,34 +792,39 @@ def x_reset_logger_state__mutmut_19() -> None:
         # Skip if foundation_logger is a proxy without direct attribute access
         pass
 
-x_reset_logger_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_logger_state__mutmut_1': x_reset_logger_state__mutmut_1, 
-    'x_reset_logger_state__mutmut_2': x_reset_logger_state__mutmut_2, 
-    'x_reset_logger_state__mutmut_3': x_reset_logger_state__mutmut_3, 
-    'x_reset_logger_state__mutmut_4': x_reset_logger_state__mutmut_4, 
-    'x_reset_logger_state__mutmut_5': x_reset_logger_state__mutmut_5, 
-    'x_reset_logger_state__mutmut_6': x_reset_logger_state__mutmut_6, 
-    'x_reset_logger_state__mutmut_7': x_reset_logger_state__mutmut_7, 
-    'x_reset_logger_state__mutmut_8': x_reset_logger_state__mutmut_8, 
-    'x_reset_logger_state__mutmut_9': x_reset_logger_state__mutmut_9, 
-    'x_reset_logger_state__mutmut_10': x_reset_logger_state__mutmut_10, 
-    'x_reset_logger_state__mutmut_11': x_reset_logger_state__mutmut_11, 
-    'x_reset_logger_state__mutmut_12': x_reset_logger_state__mutmut_12, 
-    'x_reset_logger_state__mutmut_13': x_reset_logger_state__mutmut_13, 
-    'x_reset_logger_state__mutmut_14': x_reset_logger_state__mutmut_14, 
-    'x_reset_logger_state__mutmut_15': x_reset_logger_state__mutmut_15, 
-    'x_reset_logger_state__mutmut_16': x_reset_logger_state__mutmut_16, 
-    'x_reset_logger_state__mutmut_17': x_reset_logger_state__mutmut_17, 
-    'x_reset_logger_state__mutmut_18': x_reset_logger_state__mutmut_18, 
-    'x_reset_logger_state__mutmut_19': x_reset_logger_state__mutmut_19
+
+x_reset_logger_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_logger_state__mutmut_1": x_reset_logger_state__mutmut_1,
+    "x_reset_logger_state__mutmut_2": x_reset_logger_state__mutmut_2,
+    "x_reset_logger_state__mutmut_3": x_reset_logger_state__mutmut_3,
+    "x_reset_logger_state__mutmut_4": x_reset_logger_state__mutmut_4,
+    "x_reset_logger_state__mutmut_5": x_reset_logger_state__mutmut_5,
+    "x_reset_logger_state__mutmut_6": x_reset_logger_state__mutmut_6,
+    "x_reset_logger_state__mutmut_7": x_reset_logger_state__mutmut_7,
+    "x_reset_logger_state__mutmut_8": x_reset_logger_state__mutmut_8,
+    "x_reset_logger_state__mutmut_9": x_reset_logger_state__mutmut_9,
+    "x_reset_logger_state__mutmut_10": x_reset_logger_state__mutmut_10,
+    "x_reset_logger_state__mutmut_11": x_reset_logger_state__mutmut_11,
+    "x_reset_logger_state__mutmut_12": x_reset_logger_state__mutmut_12,
+    "x_reset_logger_state__mutmut_13": x_reset_logger_state__mutmut_13,
+    "x_reset_logger_state__mutmut_14": x_reset_logger_state__mutmut_14,
+    "x_reset_logger_state__mutmut_15": x_reset_logger_state__mutmut_15,
+    "x_reset_logger_state__mutmut_16": x_reset_logger_state__mutmut_16,
+    "x_reset_logger_state__mutmut_17": x_reset_logger_state__mutmut_17,
+    "x_reset_logger_state__mutmut_18": x_reset_logger_state__mutmut_18,
+    "x_reset_logger_state__mutmut_19": x_reset_logger_state__mutmut_19,
 }
 
+
 def reset_logger_state(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_logger_state__mutmut_orig, x_reset_logger_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_logger_state__mutmut_orig, x_reset_logger_state__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_logger_state.__signature__ = _mutmut_signature(x_reset_logger_state__mutmut_orig)
-x_reset_logger_state__mutmut_orig.__name__ = 'x_reset_logger_state'
+x_reset_logger_state__mutmut_orig.__name__ = "x_reset_logger_state"
 
 
 def x_reset_hub_state__mutmut_orig() -> None:
@@ -1098,19 +1111,24 @@ def x_reset_hub_state__mutmut_4() -> None:
     # and will be garbage collected naturally. The event bus has built-in
     # "already registered" checks to prevent duplicate registrations.
 
-x_reset_hub_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_hub_state__mutmut_1': x_reset_hub_state__mutmut_1, 
-    'x_reset_hub_state__mutmut_2': x_reset_hub_state__mutmut_2, 
-    'x_reset_hub_state__mutmut_3': x_reset_hub_state__mutmut_3, 
-    'x_reset_hub_state__mutmut_4': x_reset_hub_state__mutmut_4
+
+x_reset_hub_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_hub_state__mutmut_1": x_reset_hub_state__mutmut_1,
+    "x_reset_hub_state__mutmut_2": x_reset_hub_state__mutmut_2,
+    "x_reset_hub_state__mutmut_3": x_reset_hub_state__mutmut_3,
+    "x_reset_hub_state__mutmut_4": x_reset_hub_state__mutmut_4,
 }
 
+
 def reset_hub_state(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_hub_state__mutmut_orig, x_reset_hub_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_hub_state__mutmut_orig, x_reset_hub_state__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_hub_state.__signature__ = _mutmut_signature(x_reset_hub_state__mutmut_orig)
-x_reset_hub_state__mutmut_orig.__name__ = 'x_reset_hub_state'
+x_reset_hub_state__mutmut_orig.__name__ = "x_reset_hub_state"
 
 
 def reset_streams_state() -> None:
@@ -1341,7 +1359,9 @@ def x_reset_transport_registration_flags__mutmut_10() -> None:
         # Reset HTTP transport registration flag if module is loaded
         if "provide.foundation.transport.http" in sys.modules:
             http_module = sys.modules["provide.foundation.transport.http"]
-            if hasattr(http_module, ):
+            if hasattr(
+                http_module,
+            ):
                 http_module._http_transport_registered = False  # type: ignore[attr-defined]
     except Exception:
         # If reset fails, skip - the guard will be bypassed on next import
@@ -1427,29 +1447,39 @@ def x_reset_transport_registration_flags__mutmut_14() -> None:
         # If reset fails, skip - the guard will be bypassed on next import
         pass
 
-x_reset_transport_registration_flags__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_transport_registration_flags__mutmut_1': x_reset_transport_registration_flags__mutmut_1, 
-    'x_reset_transport_registration_flags__mutmut_2': x_reset_transport_registration_flags__mutmut_2, 
-    'x_reset_transport_registration_flags__mutmut_3': x_reset_transport_registration_flags__mutmut_3, 
-    'x_reset_transport_registration_flags__mutmut_4': x_reset_transport_registration_flags__mutmut_4, 
-    'x_reset_transport_registration_flags__mutmut_5': x_reset_transport_registration_flags__mutmut_5, 
-    'x_reset_transport_registration_flags__mutmut_6': x_reset_transport_registration_flags__mutmut_6, 
-    'x_reset_transport_registration_flags__mutmut_7': x_reset_transport_registration_flags__mutmut_7, 
-    'x_reset_transport_registration_flags__mutmut_8': x_reset_transport_registration_flags__mutmut_8, 
-    'x_reset_transport_registration_flags__mutmut_9': x_reset_transport_registration_flags__mutmut_9, 
-    'x_reset_transport_registration_flags__mutmut_10': x_reset_transport_registration_flags__mutmut_10, 
-    'x_reset_transport_registration_flags__mutmut_11': x_reset_transport_registration_flags__mutmut_11, 
-    'x_reset_transport_registration_flags__mutmut_12': x_reset_transport_registration_flags__mutmut_12, 
-    'x_reset_transport_registration_flags__mutmut_13': x_reset_transport_registration_flags__mutmut_13, 
-    'x_reset_transport_registration_flags__mutmut_14': x_reset_transport_registration_flags__mutmut_14
+
+x_reset_transport_registration_flags__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_transport_registration_flags__mutmut_1": x_reset_transport_registration_flags__mutmut_1,
+    "x_reset_transport_registration_flags__mutmut_2": x_reset_transport_registration_flags__mutmut_2,
+    "x_reset_transport_registration_flags__mutmut_3": x_reset_transport_registration_flags__mutmut_3,
+    "x_reset_transport_registration_flags__mutmut_4": x_reset_transport_registration_flags__mutmut_4,
+    "x_reset_transport_registration_flags__mutmut_5": x_reset_transport_registration_flags__mutmut_5,
+    "x_reset_transport_registration_flags__mutmut_6": x_reset_transport_registration_flags__mutmut_6,
+    "x_reset_transport_registration_flags__mutmut_7": x_reset_transport_registration_flags__mutmut_7,
+    "x_reset_transport_registration_flags__mutmut_8": x_reset_transport_registration_flags__mutmut_8,
+    "x_reset_transport_registration_flags__mutmut_9": x_reset_transport_registration_flags__mutmut_9,
+    "x_reset_transport_registration_flags__mutmut_10": x_reset_transport_registration_flags__mutmut_10,
+    "x_reset_transport_registration_flags__mutmut_11": x_reset_transport_registration_flags__mutmut_11,
+    "x_reset_transport_registration_flags__mutmut_12": x_reset_transport_registration_flags__mutmut_12,
+    "x_reset_transport_registration_flags__mutmut_13": x_reset_transport_registration_flags__mutmut_13,
+    "x_reset_transport_registration_flags__mutmut_14": x_reset_transport_registration_flags__mutmut_14,
 }
 
-def reset_transport_registration_flags(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_transport_registration_flags__mutmut_orig, x_reset_transport_registration_flags__mutmut_mutants, args, kwargs)
-    return result 
 
-reset_transport_registration_flags.__signature__ = _mutmut_signature(x_reset_transport_registration_flags__mutmut_orig)
-x_reset_transport_registration_flags__mutmut_orig.__name__ = 'x_reset_transport_registration_flags'
+def reset_transport_registration_flags(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_reset_transport_registration_flags__mutmut_orig,
+        x_reset_transport_registration_flags__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+reset_transport_registration_flags.__signature__ = _mutmut_signature(
+    x_reset_transport_registration_flags__mutmut_orig
+)
+x_reset_transport_registration_flags__mutmut_orig.__name__ = "x_reset_transport_registration_flags"
 
 
 def x_reset_eventsets_state__mutmut_orig() -> None:
@@ -1571,19 +1601,24 @@ def x_reset_eventsets_state__mutmut_4() -> None:
     finally:
         _eventsets_reset_in_progress = True
 
-x_reset_eventsets_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_eventsets_state__mutmut_1': x_reset_eventsets_state__mutmut_1, 
-    'x_reset_eventsets_state__mutmut_2': x_reset_eventsets_state__mutmut_2, 
-    'x_reset_eventsets_state__mutmut_3': x_reset_eventsets_state__mutmut_3, 
-    'x_reset_eventsets_state__mutmut_4': x_reset_eventsets_state__mutmut_4
+
+x_reset_eventsets_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_eventsets_state__mutmut_1": x_reset_eventsets_state__mutmut_1,
+    "x_reset_eventsets_state__mutmut_2": x_reset_eventsets_state__mutmut_2,
+    "x_reset_eventsets_state__mutmut_3": x_reset_eventsets_state__mutmut_3,
+    "x_reset_eventsets_state__mutmut_4": x_reset_eventsets_state__mutmut_4,
 }
 
+
 def reset_eventsets_state(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_eventsets_state__mutmut_orig, x_reset_eventsets_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_eventsets_state__mutmut_orig, x_reset_eventsets_state__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_eventsets_state.__signature__ = _mutmut_signature(x_reset_eventsets_state__mutmut_orig)
-x_reset_eventsets_state__mutmut_orig.__name__ = 'x_reset_eventsets_state'
+x_reset_eventsets_state__mutmut_orig.__name__ = "x_reset_eventsets_state"
 
 
 def reset_coordinator_state() -> None:
@@ -1716,20 +1751,25 @@ def x_reset_profiling_state__mutmut_5() -> None:
         # Profiling module or Hub not available, skip
         pass
 
-x_reset_profiling_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_profiling_state__mutmut_1': x_reset_profiling_state__mutmut_1, 
-    'x_reset_profiling_state__mutmut_2': x_reset_profiling_state__mutmut_2, 
-    'x_reset_profiling_state__mutmut_3': x_reset_profiling_state__mutmut_3, 
-    'x_reset_profiling_state__mutmut_4': x_reset_profiling_state__mutmut_4, 
-    'x_reset_profiling_state__mutmut_5': x_reset_profiling_state__mutmut_5
+
+x_reset_profiling_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_profiling_state__mutmut_1": x_reset_profiling_state__mutmut_1,
+    "x_reset_profiling_state__mutmut_2": x_reset_profiling_state__mutmut_2,
+    "x_reset_profiling_state__mutmut_3": x_reset_profiling_state__mutmut_3,
+    "x_reset_profiling_state__mutmut_4": x_reset_profiling_state__mutmut_4,
+    "x_reset_profiling_state__mutmut_5": x_reset_profiling_state__mutmut_5,
 }
 
+
 def reset_profiling_state(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_profiling_state__mutmut_orig, x_reset_profiling_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_profiling_state__mutmut_orig, x_reset_profiling_state__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_profiling_state.__signature__ = _mutmut_signature(x_reset_profiling_state__mutmut_orig)
-x_reset_profiling_state__mutmut_orig.__name__ = 'x_reset_profiling_state'
+x_reset_profiling_state__mutmut_orig.__name__ = "x_reset_profiling_state"
 
 
 def reset_global_coordinator() -> None:
@@ -2395,7 +2435,9 @@ def x__reset_direct_circuit_breaker_instances__mutmut_12() -> None:
         decorator_tracked_ids = set()
         for dimension in ["circuit_breaker", "circuit_breaker_test"]:
             for name in registry.list_dimension(dimension):
-                breaker = registry.get(name, )
+                breaker = registry.get(
+                    name,
+                )
                 if breaker:
                     decorator_tracked_ids.add(id(breaker))
 
@@ -2664,7 +2706,8 @@ def x__reset_direct_circuit_breaker_instances__mutmut_17() -> None:
         instances_found = 0
         for obj in gc.get_objects():
             if (
-                isinstance(obj, (SyncCircuitBreaker, AsyncCircuitBreaker)) or id(obj) not in decorator_tracked_ids
+                isinstance(obj, (SyncCircuitBreaker, AsyncCircuitBreaker))
+                or id(obj) not in decorator_tracked_ids
             ):
                 try:
                     # Only reset instances that are still alive and not tracked by decorators
@@ -2766,10 +2809,7 @@ def x__reset_direct_circuit_breaker_instances__mutmut_19() -> None:
         # Only reset those NOT tracked by decorators (i.e., created directly)
         instances_found = 0
         for obj in gc.get_objects():
-            if (
-                isinstance(obj, (SyncCircuitBreaker, AsyncCircuitBreaker))
-                and id(obj) in decorator_tracked_ids
-            ):
+            if isinstance(obj, (SyncCircuitBreaker, AsyncCircuitBreaker)) and id(obj) in decorator_tracked_ids:
                 try:
                     # Only reset instances that are still alive and not tracked by decorators
                     if obj is not None:
@@ -3100,40 +3140,50 @@ def x__reset_direct_circuit_breaker_instances__mutmut_25() -> None:
         # Circuit breaker module not available, skip
         pass
 
-x__reset_direct_circuit_breaker_instances__mutmut_mutants : ClassVar[MutantDict] = {
-'x__reset_direct_circuit_breaker_instances__mutmut_1': x__reset_direct_circuit_breaker_instances__mutmut_1, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_2': x__reset_direct_circuit_breaker_instances__mutmut_2, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_3': x__reset_direct_circuit_breaker_instances__mutmut_3, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_4': x__reset_direct_circuit_breaker_instances__mutmut_4, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_5': x__reset_direct_circuit_breaker_instances__mutmut_5, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_6': x__reset_direct_circuit_breaker_instances__mutmut_6, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_7': x__reset_direct_circuit_breaker_instances__mutmut_7, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_8': x__reset_direct_circuit_breaker_instances__mutmut_8, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_9': x__reset_direct_circuit_breaker_instances__mutmut_9, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_10': x__reset_direct_circuit_breaker_instances__mutmut_10, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_11': x__reset_direct_circuit_breaker_instances__mutmut_11, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_12': x__reset_direct_circuit_breaker_instances__mutmut_12, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_13': x__reset_direct_circuit_breaker_instances__mutmut_13, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_14': x__reset_direct_circuit_breaker_instances__mutmut_14, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_15': x__reset_direct_circuit_breaker_instances__mutmut_15, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_16': x__reset_direct_circuit_breaker_instances__mutmut_16, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_17': x__reset_direct_circuit_breaker_instances__mutmut_17, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_18': x__reset_direct_circuit_breaker_instances__mutmut_18, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_19': x__reset_direct_circuit_breaker_instances__mutmut_19, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_20': x__reset_direct_circuit_breaker_instances__mutmut_20, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_21': x__reset_direct_circuit_breaker_instances__mutmut_21, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_22': x__reset_direct_circuit_breaker_instances__mutmut_22, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_23': x__reset_direct_circuit_breaker_instances__mutmut_23, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_24': x__reset_direct_circuit_breaker_instances__mutmut_24, 
-    'x__reset_direct_circuit_breaker_instances__mutmut_25': x__reset_direct_circuit_breaker_instances__mutmut_25
+
+x__reset_direct_circuit_breaker_instances__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__reset_direct_circuit_breaker_instances__mutmut_1": x__reset_direct_circuit_breaker_instances__mutmut_1,
+    "x__reset_direct_circuit_breaker_instances__mutmut_2": x__reset_direct_circuit_breaker_instances__mutmut_2,
+    "x__reset_direct_circuit_breaker_instances__mutmut_3": x__reset_direct_circuit_breaker_instances__mutmut_3,
+    "x__reset_direct_circuit_breaker_instances__mutmut_4": x__reset_direct_circuit_breaker_instances__mutmut_4,
+    "x__reset_direct_circuit_breaker_instances__mutmut_5": x__reset_direct_circuit_breaker_instances__mutmut_5,
+    "x__reset_direct_circuit_breaker_instances__mutmut_6": x__reset_direct_circuit_breaker_instances__mutmut_6,
+    "x__reset_direct_circuit_breaker_instances__mutmut_7": x__reset_direct_circuit_breaker_instances__mutmut_7,
+    "x__reset_direct_circuit_breaker_instances__mutmut_8": x__reset_direct_circuit_breaker_instances__mutmut_8,
+    "x__reset_direct_circuit_breaker_instances__mutmut_9": x__reset_direct_circuit_breaker_instances__mutmut_9,
+    "x__reset_direct_circuit_breaker_instances__mutmut_10": x__reset_direct_circuit_breaker_instances__mutmut_10,
+    "x__reset_direct_circuit_breaker_instances__mutmut_11": x__reset_direct_circuit_breaker_instances__mutmut_11,
+    "x__reset_direct_circuit_breaker_instances__mutmut_12": x__reset_direct_circuit_breaker_instances__mutmut_12,
+    "x__reset_direct_circuit_breaker_instances__mutmut_13": x__reset_direct_circuit_breaker_instances__mutmut_13,
+    "x__reset_direct_circuit_breaker_instances__mutmut_14": x__reset_direct_circuit_breaker_instances__mutmut_14,
+    "x__reset_direct_circuit_breaker_instances__mutmut_15": x__reset_direct_circuit_breaker_instances__mutmut_15,
+    "x__reset_direct_circuit_breaker_instances__mutmut_16": x__reset_direct_circuit_breaker_instances__mutmut_16,
+    "x__reset_direct_circuit_breaker_instances__mutmut_17": x__reset_direct_circuit_breaker_instances__mutmut_17,
+    "x__reset_direct_circuit_breaker_instances__mutmut_18": x__reset_direct_circuit_breaker_instances__mutmut_18,
+    "x__reset_direct_circuit_breaker_instances__mutmut_19": x__reset_direct_circuit_breaker_instances__mutmut_19,
+    "x__reset_direct_circuit_breaker_instances__mutmut_20": x__reset_direct_circuit_breaker_instances__mutmut_20,
+    "x__reset_direct_circuit_breaker_instances__mutmut_21": x__reset_direct_circuit_breaker_instances__mutmut_21,
+    "x__reset_direct_circuit_breaker_instances__mutmut_22": x__reset_direct_circuit_breaker_instances__mutmut_22,
+    "x__reset_direct_circuit_breaker_instances__mutmut_23": x__reset_direct_circuit_breaker_instances__mutmut_23,
+    "x__reset_direct_circuit_breaker_instances__mutmut_24": x__reset_direct_circuit_breaker_instances__mutmut_24,
+    "x__reset_direct_circuit_breaker_instances__mutmut_25": x__reset_direct_circuit_breaker_instances__mutmut_25,
 }
 
-def _reset_direct_circuit_breaker_instances(*args, **kwargs):
-    result = _mutmut_trampoline(x__reset_direct_circuit_breaker_instances__mutmut_orig, x__reset_direct_circuit_breaker_instances__mutmut_mutants, args, kwargs)
-    return result 
 
-_reset_direct_circuit_breaker_instances.__signature__ = _mutmut_signature(x__reset_direct_circuit_breaker_instances__mutmut_orig)
-x__reset_direct_circuit_breaker_instances__mutmut_orig.__name__ = 'x__reset_direct_circuit_breaker_instances'
+def _reset_direct_circuit_breaker_instances(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__reset_direct_circuit_breaker_instances__mutmut_orig,
+        x__reset_direct_circuit_breaker_instances__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_reset_direct_circuit_breaker_instances.__signature__ = _mutmut_signature(
+    x__reset_direct_circuit_breaker_instances__mutmut_orig
+)
+x__reset_direct_circuit_breaker_instances__mutmut_orig.__name__ = "x__reset_direct_circuit_breaker_instances"
 
 
 def x_reset_circuit_breaker_state__mutmut_orig() -> None:
@@ -3258,17 +3308,22 @@ def x_reset_circuit_breaker_state__mutmut_2() -> None:
         # Resilience decorators module not available, skip
         pass
 
-x_reset_circuit_breaker_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_circuit_breaker_state__mutmut_1': x_reset_circuit_breaker_state__mutmut_1, 
-    'x_reset_circuit_breaker_state__mutmut_2': x_reset_circuit_breaker_state__mutmut_2
+
+x_reset_circuit_breaker_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_circuit_breaker_state__mutmut_1": x_reset_circuit_breaker_state__mutmut_1,
+    "x_reset_circuit_breaker_state__mutmut_2": x_reset_circuit_breaker_state__mutmut_2,
 }
 
+
 def reset_circuit_breaker_state(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_circuit_breaker_state__mutmut_orig, x_reset_circuit_breaker_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_circuit_breaker_state__mutmut_orig, x_reset_circuit_breaker_state__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_circuit_breaker_state.__signature__ = _mutmut_signature(x_reset_circuit_breaker_state__mutmut_orig)
-x_reset_circuit_breaker_state__mutmut_orig.__name__ = 'x_reset_circuit_breaker_state'
+x_reset_circuit_breaker_state__mutmut_orig.__name__ = "x_reset_circuit_breaker_state"
 
 
 def x_reset_state_managers__mutmut_orig() -> None:
@@ -3535,7 +3590,9 @@ def x_reset_state_managers__mutmut_10() -> None:
         # Reset logger state manager if available
         try:
             logger_state_manager = hub.get_component("logger_state_manager")
-            if logger_state_manager and hasattr(logger_state_manager, ):
+            if logger_state_manager and hasattr(
+                logger_state_manager,
+            ):
                 logger_state_manager.reset_to_default()
         except Exception:
             # Logger state manager not available or reset failed, skip
@@ -3595,27 +3652,32 @@ def x_reset_state_managers__mutmut_12() -> None:
         # Hub not available, skip
         pass
 
-x_reset_state_managers__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_state_managers__mutmut_1': x_reset_state_managers__mutmut_1, 
-    'x_reset_state_managers__mutmut_2': x_reset_state_managers__mutmut_2, 
-    'x_reset_state_managers__mutmut_3': x_reset_state_managers__mutmut_3, 
-    'x_reset_state_managers__mutmut_4': x_reset_state_managers__mutmut_4, 
-    'x_reset_state_managers__mutmut_5': x_reset_state_managers__mutmut_5, 
-    'x_reset_state_managers__mutmut_6': x_reset_state_managers__mutmut_6, 
-    'x_reset_state_managers__mutmut_7': x_reset_state_managers__mutmut_7, 
-    'x_reset_state_managers__mutmut_8': x_reset_state_managers__mutmut_8, 
-    'x_reset_state_managers__mutmut_9': x_reset_state_managers__mutmut_9, 
-    'x_reset_state_managers__mutmut_10': x_reset_state_managers__mutmut_10, 
-    'x_reset_state_managers__mutmut_11': x_reset_state_managers__mutmut_11, 
-    'x_reset_state_managers__mutmut_12': x_reset_state_managers__mutmut_12
+
+x_reset_state_managers__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_state_managers__mutmut_1": x_reset_state_managers__mutmut_1,
+    "x_reset_state_managers__mutmut_2": x_reset_state_managers__mutmut_2,
+    "x_reset_state_managers__mutmut_3": x_reset_state_managers__mutmut_3,
+    "x_reset_state_managers__mutmut_4": x_reset_state_managers__mutmut_4,
+    "x_reset_state_managers__mutmut_5": x_reset_state_managers__mutmut_5,
+    "x_reset_state_managers__mutmut_6": x_reset_state_managers__mutmut_6,
+    "x_reset_state_managers__mutmut_7": x_reset_state_managers__mutmut_7,
+    "x_reset_state_managers__mutmut_8": x_reset_state_managers__mutmut_8,
+    "x_reset_state_managers__mutmut_9": x_reset_state_managers__mutmut_9,
+    "x_reset_state_managers__mutmut_10": x_reset_state_managers__mutmut_10,
+    "x_reset_state_managers__mutmut_11": x_reset_state_managers__mutmut_11,
+    "x_reset_state_managers__mutmut_12": x_reset_state_managers__mutmut_12,
 }
 
+
 def reset_state_managers(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_state_managers__mutmut_orig, x_reset_state_managers__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_state_managers__mutmut_orig, x_reset_state_managers__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_state_managers.__signature__ = _mutmut_signature(x_reset_state_managers__mutmut_orig)
-x_reset_state_managers__mutmut_orig.__name__ = 'x_reset_state_managers'
+x_reset_state_managers__mutmut_orig.__name__ = "x_reset_state_managers"
 
 
 def x_reset_configuration_state__mutmut_orig() -> None:
@@ -3882,7 +3944,9 @@ def x_reset_configuration_state__mutmut_10() -> None:
         # Reset config manager if available
         try:
             config_manager = hub.get_component("config_manager")
-            if config_manager and hasattr(config_manager, ):
+            if config_manager and hasattr(
+                config_manager,
+            ):
                 config_manager.clear_all()
         except Exception:
             # Config manager not available or reset failed, skip
@@ -3942,27 +4006,32 @@ def x_reset_configuration_state__mutmut_12() -> None:
         # Hub not available, skip
         pass
 
-x_reset_configuration_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_configuration_state__mutmut_1': x_reset_configuration_state__mutmut_1, 
-    'x_reset_configuration_state__mutmut_2': x_reset_configuration_state__mutmut_2, 
-    'x_reset_configuration_state__mutmut_3': x_reset_configuration_state__mutmut_3, 
-    'x_reset_configuration_state__mutmut_4': x_reset_configuration_state__mutmut_4, 
-    'x_reset_configuration_state__mutmut_5': x_reset_configuration_state__mutmut_5, 
-    'x_reset_configuration_state__mutmut_6': x_reset_configuration_state__mutmut_6, 
-    'x_reset_configuration_state__mutmut_7': x_reset_configuration_state__mutmut_7, 
-    'x_reset_configuration_state__mutmut_8': x_reset_configuration_state__mutmut_8, 
-    'x_reset_configuration_state__mutmut_9': x_reset_configuration_state__mutmut_9, 
-    'x_reset_configuration_state__mutmut_10': x_reset_configuration_state__mutmut_10, 
-    'x_reset_configuration_state__mutmut_11': x_reset_configuration_state__mutmut_11, 
-    'x_reset_configuration_state__mutmut_12': x_reset_configuration_state__mutmut_12
+
+x_reset_configuration_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_configuration_state__mutmut_1": x_reset_configuration_state__mutmut_1,
+    "x_reset_configuration_state__mutmut_2": x_reset_configuration_state__mutmut_2,
+    "x_reset_configuration_state__mutmut_3": x_reset_configuration_state__mutmut_3,
+    "x_reset_configuration_state__mutmut_4": x_reset_configuration_state__mutmut_4,
+    "x_reset_configuration_state__mutmut_5": x_reset_configuration_state__mutmut_5,
+    "x_reset_configuration_state__mutmut_6": x_reset_configuration_state__mutmut_6,
+    "x_reset_configuration_state__mutmut_7": x_reset_configuration_state__mutmut_7,
+    "x_reset_configuration_state__mutmut_8": x_reset_configuration_state__mutmut_8,
+    "x_reset_configuration_state__mutmut_9": x_reset_configuration_state__mutmut_9,
+    "x_reset_configuration_state__mutmut_10": x_reset_configuration_state__mutmut_10,
+    "x_reset_configuration_state__mutmut_11": x_reset_configuration_state__mutmut_11,
+    "x_reset_configuration_state__mutmut_12": x_reset_configuration_state__mutmut_12,
 }
 
+
 def reset_configuration_state(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_configuration_state__mutmut_orig, x_reset_configuration_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_configuration_state__mutmut_orig, x_reset_configuration_state__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_configuration_state.__signature__ = _mutmut_signature(x_reset_configuration_state__mutmut_orig)
-x_reset_configuration_state__mutmut_orig.__name__ = 'x_reset_configuration_state'
+x_reset_configuration_state__mutmut_orig.__name__ = "x_reset_configuration_state"
 
 
 def reset_version_cache() -> None:

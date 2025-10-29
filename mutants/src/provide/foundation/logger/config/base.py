@@ -22,23 +22,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -240,7 +243,9 @@ def x_get_config_logger__mutmut_6() -> Any:
     from provide.foundation.utils.streams import get_foundation_log_stream
 
     try:
-        foundation_output = os.getenv("FOUNDATION_LOG_OUTPUT", ).lower()
+        foundation_output = os.getenv(
+            "FOUNDATION_LOG_OUTPUT",
+        ).lower()
         output_stream = get_foundation_log_stream(foundation_output)
     except Exception:
         output_stream = sys.stderr
@@ -744,7 +749,7 @@ def x_get_config_logger__mutmut_22() -> Any:
             processors=config.get("processors", [structlog.dev.ConsoleRenderer()]),
             logger_factory=structlog.PrintLoggerFactory(file=output_stream),
             wrapper_class=config.get("wrapper_class", structlog.BoundLogger),
-            )
+        )
     except Exception:
         structlog.configure(
             processors=[structlog.dev.ConsoleRenderer()],
@@ -864,7 +869,9 @@ def x_get_config_logger__mutmut_26() -> Any:
     try:
         config = structlog.get_config()
         structlog.configure(
-            processors=config.get("processors", ),
+            processors=config.get(
+                "processors",
+            ),
             logger_factory=structlog.PrintLoggerFactory(file=output_stream),
             wrapper_class=config.get("wrapper_class", structlog.BoundLogger),
             cache_logger_on_first_use=config.get("cache_logger_on_first_use", True),
@@ -1083,7 +1090,9 @@ def x_get_config_logger__mutmut_33() -> Any:
         structlog.configure(
             processors=config.get("processors", [structlog.dev.ConsoleRenderer()]),
             logger_factory=structlog.PrintLoggerFactory(file=output_stream),
-            wrapper_class=config.get("wrapper_class", ),
+            wrapper_class=config.get(
+                "wrapper_class",
+            ),
             cache_logger_on_first_use=config.get("cache_logger_on_first_use", True),
         )
     except Exception:
@@ -1270,7 +1279,9 @@ def x_get_config_logger__mutmut_39() -> Any:
             processors=config.get("processors", [structlog.dev.ConsoleRenderer()]),
             logger_factory=structlog.PrintLoggerFactory(file=output_stream),
             wrapper_class=config.get("wrapper_class", structlog.BoundLogger),
-            cache_logger_on_first_use=config.get("cache_logger_on_first_use", ),
+            cache_logger_on_first_use=config.get(
+                "cache_logger_on_first_use",
+            ),
         )
     except Exception:
         structlog.configure(
@@ -1615,7 +1626,7 @@ def x_get_config_logger__mutmut_50() -> Any:
             processors=[structlog.dev.ConsoleRenderer()],
             logger_factory=structlog.PrintLoggerFactory(file=output_stream),
             wrapper_class=structlog.BoundLogger,
-            )
+        )
 
     return structlog.get_logger().bind(logger_name="provide.foundation.logger.config")
 
@@ -1774,70 +1785,75 @@ def x_get_config_logger__mutmut_55() -> Any:
 
     return structlog.get_logger().bind(logger_name="PROVIDE.FOUNDATION.LOGGER.CONFIG")
 
-x_get_config_logger__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_config_logger__mutmut_1': x_get_config_logger__mutmut_1, 
-    'x_get_config_logger__mutmut_2': x_get_config_logger__mutmut_2, 
-    'x_get_config_logger__mutmut_3': x_get_config_logger__mutmut_3, 
-    'x_get_config_logger__mutmut_4': x_get_config_logger__mutmut_4, 
-    'x_get_config_logger__mutmut_5': x_get_config_logger__mutmut_5, 
-    'x_get_config_logger__mutmut_6': x_get_config_logger__mutmut_6, 
-    'x_get_config_logger__mutmut_7': x_get_config_logger__mutmut_7, 
-    'x_get_config_logger__mutmut_8': x_get_config_logger__mutmut_8, 
-    'x_get_config_logger__mutmut_9': x_get_config_logger__mutmut_9, 
-    'x_get_config_logger__mutmut_10': x_get_config_logger__mutmut_10, 
-    'x_get_config_logger__mutmut_11': x_get_config_logger__mutmut_11, 
-    'x_get_config_logger__mutmut_12': x_get_config_logger__mutmut_12, 
-    'x_get_config_logger__mutmut_13': x_get_config_logger__mutmut_13, 
-    'x_get_config_logger__mutmut_14': x_get_config_logger__mutmut_14, 
-    'x_get_config_logger__mutmut_15': x_get_config_logger__mutmut_15, 
-    'x_get_config_logger__mutmut_16': x_get_config_logger__mutmut_16, 
-    'x_get_config_logger__mutmut_17': x_get_config_logger__mutmut_17, 
-    'x_get_config_logger__mutmut_18': x_get_config_logger__mutmut_18, 
-    'x_get_config_logger__mutmut_19': x_get_config_logger__mutmut_19, 
-    'x_get_config_logger__mutmut_20': x_get_config_logger__mutmut_20, 
-    'x_get_config_logger__mutmut_21': x_get_config_logger__mutmut_21, 
-    'x_get_config_logger__mutmut_22': x_get_config_logger__mutmut_22, 
-    'x_get_config_logger__mutmut_23': x_get_config_logger__mutmut_23, 
-    'x_get_config_logger__mutmut_24': x_get_config_logger__mutmut_24, 
-    'x_get_config_logger__mutmut_25': x_get_config_logger__mutmut_25, 
-    'x_get_config_logger__mutmut_26': x_get_config_logger__mutmut_26, 
-    'x_get_config_logger__mutmut_27': x_get_config_logger__mutmut_27, 
-    'x_get_config_logger__mutmut_28': x_get_config_logger__mutmut_28, 
-    'x_get_config_logger__mutmut_29': x_get_config_logger__mutmut_29, 
-    'x_get_config_logger__mutmut_30': x_get_config_logger__mutmut_30, 
-    'x_get_config_logger__mutmut_31': x_get_config_logger__mutmut_31, 
-    'x_get_config_logger__mutmut_32': x_get_config_logger__mutmut_32, 
-    'x_get_config_logger__mutmut_33': x_get_config_logger__mutmut_33, 
-    'x_get_config_logger__mutmut_34': x_get_config_logger__mutmut_34, 
-    'x_get_config_logger__mutmut_35': x_get_config_logger__mutmut_35, 
-    'x_get_config_logger__mutmut_36': x_get_config_logger__mutmut_36, 
-    'x_get_config_logger__mutmut_37': x_get_config_logger__mutmut_37, 
-    'x_get_config_logger__mutmut_38': x_get_config_logger__mutmut_38, 
-    'x_get_config_logger__mutmut_39': x_get_config_logger__mutmut_39, 
-    'x_get_config_logger__mutmut_40': x_get_config_logger__mutmut_40, 
-    'x_get_config_logger__mutmut_41': x_get_config_logger__mutmut_41, 
-    'x_get_config_logger__mutmut_42': x_get_config_logger__mutmut_42, 
-    'x_get_config_logger__mutmut_43': x_get_config_logger__mutmut_43, 
-    'x_get_config_logger__mutmut_44': x_get_config_logger__mutmut_44, 
-    'x_get_config_logger__mutmut_45': x_get_config_logger__mutmut_45, 
-    'x_get_config_logger__mutmut_46': x_get_config_logger__mutmut_46, 
-    'x_get_config_logger__mutmut_47': x_get_config_logger__mutmut_47, 
-    'x_get_config_logger__mutmut_48': x_get_config_logger__mutmut_48, 
-    'x_get_config_logger__mutmut_49': x_get_config_logger__mutmut_49, 
-    'x_get_config_logger__mutmut_50': x_get_config_logger__mutmut_50, 
-    'x_get_config_logger__mutmut_51': x_get_config_logger__mutmut_51, 
-    'x_get_config_logger__mutmut_52': x_get_config_logger__mutmut_52, 
-    'x_get_config_logger__mutmut_53': x_get_config_logger__mutmut_53, 
-    'x_get_config_logger__mutmut_54': x_get_config_logger__mutmut_54, 
-    'x_get_config_logger__mutmut_55': x_get_config_logger__mutmut_55
+
+x_get_config_logger__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_config_logger__mutmut_1": x_get_config_logger__mutmut_1,
+    "x_get_config_logger__mutmut_2": x_get_config_logger__mutmut_2,
+    "x_get_config_logger__mutmut_3": x_get_config_logger__mutmut_3,
+    "x_get_config_logger__mutmut_4": x_get_config_logger__mutmut_4,
+    "x_get_config_logger__mutmut_5": x_get_config_logger__mutmut_5,
+    "x_get_config_logger__mutmut_6": x_get_config_logger__mutmut_6,
+    "x_get_config_logger__mutmut_7": x_get_config_logger__mutmut_7,
+    "x_get_config_logger__mutmut_8": x_get_config_logger__mutmut_8,
+    "x_get_config_logger__mutmut_9": x_get_config_logger__mutmut_9,
+    "x_get_config_logger__mutmut_10": x_get_config_logger__mutmut_10,
+    "x_get_config_logger__mutmut_11": x_get_config_logger__mutmut_11,
+    "x_get_config_logger__mutmut_12": x_get_config_logger__mutmut_12,
+    "x_get_config_logger__mutmut_13": x_get_config_logger__mutmut_13,
+    "x_get_config_logger__mutmut_14": x_get_config_logger__mutmut_14,
+    "x_get_config_logger__mutmut_15": x_get_config_logger__mutmut_15,
+    "x_get_config_logger__mutmut_16": x_get_config_logger__mutmut_16,
+    "x_get_config_logger__mutmut_17": x_get_config_logger__mutmut_17,
+    "x_get_config_logger__mutmut_18": x_get_config_logger__mutmut_18,
+    "x_get_config_logger__mutmut_19": x_get_config_logger__mutmut_19,
+    "x_get_config_logger__mutmut_20": x_get_config_logger__mutmut_20,
+    "x_get_config_logger__mutmut_21": x_get_config_logger__mutmut_21,
+    "x_get_config_logger__mutmut_22": x_get_config_logger__mutmut_22,
+    "x_get_config_logger__mutmut_23": x_get_config_logger__mutmut_23,
+    "x_get_config_logger__mutmut_24": x_get_config_logger__mutmut_24,
+    "x_get_config_logger__mutmut_25": x_get_config_logger__mutmut_25,
+    "x_get_config_logger__mutmut_26": x_get_config_logger__mutmut_26,
+    "x_get_config_logger__mutmut_27": x_get_config_logger__mutmut_27,
+    "x_get_config_logger__mutmut_28": x_get_config_logger__mutmut_28,
+    "x_get_config_logger__mutmut_29": x_get_config_logger__mutmut_29,
+    "x_get_config_logger__mutmut_30": x_get_config_logger__mutmut_30,
+    "x_get_config_logger__mutmut_31": x_get_config_logger__mutmut_31,
+    "x_get_config_logger__mutmut_32": x_get_config_logger__mutmut_32,
+    "x_get_config_logger__mutmut_33": x_get_config_logger__mutmut_33,
+    "x_get_config_logger__mutmut_34": x_get_config_logger__mutmut_34,
+    "x_get_config_logger__mutmut_35": x_get_config_logger__mutmut_35,
+    "x_get_config_logger__mutmut_36": x_get_config_logger__mutmut_36,
+    "x_get_config_logger__mutmut_37": x_get_config_logger__mutmut_37,
+    "x_get_config_logger__mutmut_38": x_get_config_logger__mutmut_38,
+    "x_get_config_logger__mutmut_39": x_get_config_logger__mutmut_39,
+    "x_get_config_logger__mutmut_40": x_get_config_logger__mutmut_40,
+    "x_get_config_logger__mutmut_41": x_get_config_logger__mutmut_41,
+    "x_get_config_logger__mutmut_42": x_get_config_logger__mutmut_42,
+    "x_get_config_logger__mutmut_43": x_get_config_logger__mutmut_43,
+    "x_get_config_logger__mutmut_44": x_get_config_logger__mutmut_44,
+    "x_get_config_logger__mutmut_45": x_get_config_logger__mutmut_45,
+    "x_get_config_logger__mutmut_46": x_get_config_logger__mutmut_46,
+    "x_get_config_logger__mutmut_47": x_get_config_logger__mutmut_47,
+    "x_get_config_logger__mutmut_48": x_get_config_logger__mutmut_48,
+    "x_get_config_logger__mutmut_49": x_get_config_logger__mutmut_49,
+    "x_get_config_logger__mutmut_50": x_get_config_logger__mutmut_50,
+    "x_get_config_logger__mutmut_51": x_get_config_logger__mutmut_51,
+    "x_get_config_logger__mutmut_52": x_get_config_logger__mutmut_52,
+    "x_get_config_logger__mutmut_53": x_get_config_logger__mutmut_53,
+    "x_get_config_logger__mutmut_54": x_get_config_logger__mutmut_54,
+    "x_get_config_logger__mutmut_55": x_get_config_logger__mutmut_55,
 }
 
+
 def get_config_logger(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_config_logger__mutmut_orig, x_get_config_logger__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_config_logger__mutmut_orig, x_get_config_logger__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_config_logger.__signature__ = _mutmut_signature(x_get_config_logger__mutmut_orig)
-x_get_config_logger__mutmut_orig.__name__ = 'x_get_config_logger'
+x_get_config_logger__mutmut_orig.__name__ = "x_get_config_logger"
 
 
 # <3 🧱🤝📝🪄

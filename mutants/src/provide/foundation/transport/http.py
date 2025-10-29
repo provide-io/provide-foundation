@@ -34,23 +34,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -584,7 +587,7 @@ def x__register_http_transport__mutmut_10() -> None:
             HTTPTransport,  # type: ignore[arg-type]
             schemes=HTTPTransport.SCHEMES,
             description="HTTP/HTTPS transport using httpx",
-            )
+        )
 
         _http_transport_registered = True
 
@@ -784,31 +787,36 @@ def x__register_http_transport__mutmut_16() -> None:
         # Registry not available yet, will be registered later
         pass
 
-x__register_http_transport__mutmut_mutants : ClassVar[MutantDict] = {
-'x__register_http_transport__mutmut_1': x__register_http_transport__mutmut_1, 
-    'x__register_http_transport__mutmut_2': x__register_http_transport__mutmut_2, 
-    'x__register_http_transport__mutmut_3': x__register_http_transport__mutmut_3, 
-    'x__register_http_transport__mutmut_4': x__register_http_transport__mutmut_4, 
-    'x__register_http_transport__mutmut_5': x__register_http_transport__mutmut_5, 
-    'x__register_http_transport__mutmut_6': x__register_http_transport__mutmut_6, 
-    'x__register_http_transport__mutmut_7': x__register_http_transport__mutmut_7, 
-    'x__register_http_transport__mutmut_8': x__register_http_transport__mutmut_8, 
-    'x__register_http_transport__mutmut_9': x__register_http_transport__mutmut_9, 
-    'x__register_http_transport__mutmut_10': x__register_http_transport__mutmut_10, 
-    'x__register_http_transport__mutmut_11': x__register_http_transport__mutmut_11, 
-    'x__register_http_transport__mutmut_12': x__register_http_transport__mutmut_12, 
-    'x__register_http_transport__mutmut_13': x__register_http_transport__mutmut_13, 
-    'x__register_http_transport__mutmut_14': x__register_http_transport__mutmut_14, 
-    'x__register_http_transport__mutmut_15': x__register_http_transport__mutmut_15, 
-    'x__register_http_transport__mutmut_16': x__register_http_transport__mutmut_16
+
+x__register_http_transport__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__register_http_transport__mutmut_1": x__register_http_transport__mutmut_1,
+    "x__register_http_transport__mutmut_2": x__register_http_transport__mutmut_2,
+    "x__register_http_transport__mutmut_3": x__register_http_transport__mutmut_3,
+    "x__register_http_transport__mutmut_4": x__register_http_transport__mutmut_4,
+    "x__register_http_transport__mutmut_5": x__register_http_transport__mutmut_5,
+    "x__register_http_transport__mutmut_6": x__register_http_transport__mutmut_6,
+    "x__register_http_transport__mutmut_7": x__register_http_transport__mutmut_7,
+    "x__register_http_transport__mutmut_8": x__register_http_transport__mutmut_8,
+    "x__register_http_transport__mutmut_9": x__register_http_transport__mutmut_9,
+    "x__register_http_transport__mutmut_10": x__register_http_transport__mutmut_10,
+    "x__register_http_transport__mutmut_11": x__register_http_transport__mutmut_11,
+    "x__register_http_transport__mutmut_12": x__register_http_transport__mutmut_12,
+    "x__register_http_transport__mutmut_13": x__register_http_transport__mutmut_13,
+    "x__register_http_transport__mutmut_14": x__register_http_transport__mutmut_14,
+    "x__register_http_transport__mutmut_15": x__register_http_transport__mutmut_15,
+    "x__register_http_transport__mutmut_16": x__register_http_transport__mutmut_16,
 }
 
+
 def _register_http_transport(*args, **kwargs):
-    result = _mutmut_trampoline(x__register_http_transport__mutmut_orig, x__register_http_transport__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__register_http_transport__mutmut_orig, x__register_http_transport__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _register_http_transport.__signature__ = _mutmut_signature(x__register_http_transport__mutmut_orig)
-x__register_http_transport__mutmut_orig.__name__ = 'x__register_http_transport'
+x__register_http_transport__mutmut_orig.__name__ = "x__register_http_transport"
 
 
 # Register when module is imported

@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -77,7 +80,9 @@ class ProfilingComponent:
 
     """
 
-    def xǁProfilingComponentǁ__init____mutmut_orig(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingComponentǁ__init____mutmut_orig(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling component.
 
         Args:
@@ -87,7 +92,9 @@ class ProfilingComponent:
         self.processor = ProfilingProcessor(sample_rate=sample_rate)
         self.enabled = False
 
-    def xǁProfilingComponentǁ__init____mutmut_1(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingComponentǁ__init____mutmut_1(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling component.
 
         Args:
@@ -97,7 +104,9 @@ class ProfilingComponent:
         self.processor = None
         self.enabled = False
 
-    def xǁProfilingComponentǁ__init____mutmut_2(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingComponentǁ__init____mutmut_2(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling component.
 
         Args:
@@ -107,7 +116,9 @@ class ProfilingComponent:
         self.processor = ProfilingProcessor(sample_rate=None)
         self.enabled = False
 
-    def xǁProfilingComponentǁ__init____mutmut_3(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingComponentǁ__init____mutmut_3(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling component.
 
         Args:
@@ -117,7 +128,9 @@ class ProfilingComponent:
         self.processor = ProfilingProcessor(sample_rate=sample_rate)
         self.enabled = None
 
-    def xǁProfilingComponentǁ__init____mutmut_4(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingComponentǁ__init____mutmut_4(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling component.
 
         Args:
@@ -126,20 +139,26 @@ class ProfilingComponent:
         """
         self.processor = ProfilingProcessor(sample_rate=sample_rate)
         self.enabled = True
-    
-    xǁProfilingComponentǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfilingComponentǁ__init____mutmut_1': xǁProfilingComponentǁ__init____mutmut_1, 
-        'xǁProfilingComponentǁ__init____mutmut_2': xǁProfilingComponentǁ__init____mutmut_2, 
-        'xǁProfilingComponentǁ__init____mutmut_3': xǁProfilingComponentǁ__init____mutmut_3, 
-        'xǁProfilingComponentǁ__init____mutmut_4': xǁProfilingComponentǁ__init____mutmut_4
+
+    xǁProfilingComponentǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfilingComponentǁ__init____mutmut_1": xǁProfilingComponentǁ__init____mutmut_1,
+        "xǁProfilingComponentǁ__init____mutmut_2": xǁProfilingComponentǁ__init____mutmut_2,
+        "xǁProfilingComponentǁ__init____mutmut_3": xǁProfilingComponentǁ__init____mutmut_3,
+        "xǁProfilingComponentǁ__init____mutmut_4": xǁProfilingComponentǁ__init____mutmut_4,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfilingComponentǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁProfilingComponentǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfilingComponentǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁProfilingComponentǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁProfilingComponentǁ__init____mutmut_orig)
-    xǁProfilingComponentǁ__init____mutmut_orig.__name__ = 'xǁProfilingComponentǁ__init__'
+    xǁProfilingComponentǁ__init____mutmut_orig.__name__ = "xǁProfilingComponentǁ__init__"
 
     @resilient(
         fallback=None,
@@ -261,22 +280,28 @@ class ProfilingComponent:
         status = "enabled" if self.enabled else "disabled"
         sample_rate = None
         return f"ProfilingComponent(enabled={status}, sample_rate={sample_rate})"
-    
-    xǁProfilingComponentǁ__repr____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfilingComponentǁ__repr____mutmut_1': xǁProfilingComponentǁ__repr____mutmut_1, 
-        'xǁProfilingComponentǁ__repr____mutmut_2': xǁProfilingComponentǁ__repr____mutmut_2, 
-        'xǁProfilingComponentǁ__repr____mutmut_3': xǁProfilingComponentǁ__repr____mutmut_3, 
-        'xǁProfilingComponentǁ__repr____mutmut_4': xǁProfilingComponentǁ__repr____mutmut_4, 
-        'xǁProfilingComponentǁ__repr____mutmut_5': xǁProfilingComponentǁ__repr____mutmut_5, 
-        'xǁProfilingComponentǁ__repr____mutmut_6': xǁProfilingComponentǁ__repr____mutmut_6
+
+    xǁProfilingComponentǁ__repr____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfilingComponentǁ__repr____mutmut_1": xǁProfilingComponentǁ__repr____mutmut_1,
+        "xǁProfilingComponentǁ__repr____mutmut_2": xǁProfilingComponentǁ__repr____mutmut_2,
+        "xǁProfilingComponentǁ__repr____mutmut_3": xǁProfilingComponentǁ__repr____mutmut_3,
+        "xǁProfilingComponentǁ__repr____mutmut_4": xǁProfilingComponentǁ__repr____mutmut_4,
+        "xǁProfilingComponentǁ__repr____mutmut_5": xǁProfilingComponentǁ__repr____mutmut_5,
+        "xǁProfilingComponentǁ__repr____mutmut_6": xǁProfilingComponentǁ__repr____mutmut_6,
     }
-    
+
     def __repr__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfilingComponentǁ__repr____mutmut_orig"), object.__getattribute__(self, "xǁProfilingComponentǁ__repr____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfilingComponentǁ__repr____mutmut_orig"),
+            object.__getattribute__(self, "xǁProfilingComponentǁ__repr____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __repr__.__signature__ = _mutmut_signature(xǁProfilingComponentǁ__repr____mutmut_orig)
-    xǁProfilingComponentǁ__repr____mutmut_orig.__name__ = 'xǁProfilingComponentǁ__repr__'
+    xǁProfilingComponentǁ__repr____mutmut_orig.__name__ = "xǁProfilingComponentǁ__repr__"
 
 
 @resilient(

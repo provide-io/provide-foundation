@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -64,16 +67,21 @@ def x_parse_log_level__mutmut_1(value: str) -> LogLevelStr:
 
     return _parse_log_level(None)
 
-x_parse_log_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_log_level__mutmut_1': x_parse_log_level__mutmut_1
+
+x_parse_log_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_log_level__mutmut_1": x_parse_log_level__mutmut_1
 }
 
+
 def parse_log_level(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_log_level__mutmut_orig, x_parse_log_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_log_level__mutmut_orig, x_parse_log_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_log_level.__signature__ = _mutmut_signature(x_parse_log_level__mutmut_orig)
-x_parse_log_level__mutmut_orig.__name__ = 'x_parse_log_level'
+x_parse_log_level__mutmut_orig.__name__ = "x_parse_log_level"
 
 
 def x_parse_module_levels__mutmut_orig(value: str | dict[str, str]) -> dict[str, LogLevelStr]:
@@ -1668,7 +1676,9 @@ def x_parse_module_levels__mutmut_21(value: str | dict[str, str]) -> dict[str, L
             # Skip invalid entries silently
             continue
 
-        module, level = pair.split(":", )
+        module, level = pair.split(
+            ":",
+        )
         module = module.strip()
         level = level.strip()
 
@@ -2265,44 +2275,49 @@ def x_parse_module_levels__mutmut_29(value: str | dict[str, str]) -> dict[str, L
 
     return result
 
-x_parse_module_levels__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_module_levels__mutmut_1': x_parse_module_levels__mutmut_1, 
-    'x_parse_module_levels__mutmut_2': x_parse_module_levels__mutmut_2, 
-    'x_parse_module_levels__mutmut_3': x_parse_module_levels__mutmut_3, 
-    'x_parse_module_levels__mutmut_4': x_parse_module_levels__mutmut_4, 
-    'x_parse_module_levels__mutmut_5': x_parse_module_levels__mutmut_5, 
-    'x_parse_module_levels__mutmut_6': x_parse_module_levels__mutmut_6, 
-    'x_parse_module_levels__mutmut_7': x_parse_module_levels__mutmut_7, 
-    'x_parse_module_levels__mutmut_8': x_parse_module_levels__mutmut_8, 
-    'x_parse_module_levels__mutmut_9': x_parse_module_levels__mutmut_9, 
-    'x_parse_module_levels__mutmut_10': x_parse_module_levels__mutmut_10, 
-    'x_parse_module_levels__mutmut_11': x_parse_module_levels__mutmut_11, 
-    'x_parse_module_levels__mutmut_12': x_parse_module_levels__mutmut_12, 
-    'x_parse_module_levels__mutmut_13': x_parse_module_levels__mutmut_13, 
-    'x_parse_module_levels__mutmut_14': x_parse_module_levels__mutmut_14, 
-    'x_parse_module_levels__mutmut_15': x_parse_module_levels__mutmut_15, 
-    'x_parse_module_levels__mutmut_16': x_parse_module_levels__mutmut_16, 
-    'x_parse_module_levels__mutmut_17': x_parse_module_levels__mutmut_17, 
-    'x_parse_module_levels__mutmut_18': x_parse_module_levels__mutmut_18, 
-    'x_parse_module_levels__mutmut_19': x_parse_module_levels__mutmut_19, 
-    'x_parse_module_levels__mutmut_20': x_parse_module_levels__mutmut_20, 
-    'x_parse_module_levels__mutmut_21': x_parse_module_levels__mutmut_21, 
-    'x_parse_module_levels__mutmut_22': x_parse_module_levels__mutmut_22, 
-    'x_parse_module_levels__mutmut_23': x_parse_module_levels__mutmut_23, 
-    'x_parse_module_levels__mutmut_24': x_parse_module_levels__mutmut_24, 
-    'x_parse_module_levels__mutmut_25': x_parse_module_levels__mutmut_25, 
-    'x_parse_module_levels__mutmut_26': x_parse_module_levels__mutmut_26, 
-    'x_parse_module_levels__mutmut_27': x_parse_module_levels__mutmut_27, 
-    'x_parse_module_levels__mutmut_28': x_parse_module_levels__mutmut_28, 
-    'x_parse_module_levels__mutmut_29': x_parse_module_levels__mutmut_29
+
+x_parse_module_levels__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_module_levels__mutmut_1": x_parse_module_levels__mutmut_1,
+    "x_parse_module_levels__mutmut_2": x_parse_module_levels__mutmut_2,
+    "x_parse_module_levels__mutmut_3": x_parse_module_levels__mutmut_3,
+    "x_parse_module_levels__mutmut_4": x_parse_module_levels__mutmut_4,
+    "x_parse_module_levels__mutmut_5": x_parse_module_levels__mutmut_5,
+    "x_parse_module_levels__mutmut_6": x_parse_module_levels__mutmut_6,
+    "x_parse_module_levels__mutmut_7": x_parse_module_levels__mutmut_7,
+    "x_parse_module_levels__mutmut_8": x_parse_module_levels__mutmut_8,
+    "x_parse_module_levels__mutmut_9": x_parse_module_levels__mutmut_9,
+    "x_parse_module_levels__mutmut_10": x_parse_module_levels__mutmut_10,
+    "x_parse_module_levels__mutmut_11": x_parse_module_levels__mutmut_11,
+    "x_parse_module_levels__mutmut_12": x_parse_module_levels__mutmut_12,
+    "x_parse_module_levels__mutmut_13": x_parse_module_levels__mutmut_13,
+    "x_parse_module_levels__mutmut_14": x_parse_module_levels__mutmut_14,
+    "x_parse_module_levels__mutmut_15": x_parse_module_levels__mutmut_15,
+    "x_parse_module_levels__mutmut_16": x_parse_module_levels__mutmut_16,
+    "x_parse_module_levels__mutmut_17": x_parse_module_levels__mutmut_17,
+    "x_parse_module_levels__mutmut_18": x_parse_module_levels__mutmut_18,
+    "x_parse_module_levels__mutmut_19": x_parse_module_levels__mutmut_19,
+    "x_parse_module_levels__mutmut_20": x_parse_module_levels__mutmut_20,
+    "x_parse_module_levels__mutmut_21": x_parse_module_levels__mutmut_21,
+    "x_parse_module_levels__mutmut_22": x_parse_module_levels__mutmut_22,
+    "x_parse_module_levels__mutmut_23": x_parse_module_levels__mutmut_23,
+    "x_parse_module_levels__mutmut_24": x_parse_module_levels__mutmut_24,
+    "x_parse_module_levels__mutmut_25": x_parse_module_levels__mutmut_25,
+    "x_parse_module_levels__mutmut_26": x_parse_module_levels__mutmut_26,
+    "x_parse_module_levels__mutmut_27": x_parse_module_levels__mutmut_27,
+    "x_parse_module_levels__mutmut_28": x_parse_module_levels__mutmut_28,
+    "x_parse_module_levels__mutmut_29": x_parse_module_levels__mutmut_29,
 }
 
+
 def parse_module_levels(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_module_levels__mutmut_orig, x_parse_module_levels__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_module_levels__mutmut_orig, x_parse_module_levels__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_module_levels.__signature__ = _mutmut_signature(x_parse_module_levels__mutmut_orig)
-x_parse_module_levels__mutmut_orig.__name__ = 'x_parse_module_levels'
+x_parse_module_levels__mutmut_orig.__name__ = "x_parse_module_levels"
 
 
 def x_parse_rate_limits__mutmut_orig(value: str) -> dict[str, tuple[float, float]]:
@@ -3942,40 +3957,45 @@ def x_parse_rate_limits__mutmut_25(value: str) -> dict[str, tuple[float, float]]
 
     return result
 
-x_parse_rate_limits__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_rate_limits__mutmut_1': x_parse_rate_limits__mutmut_1, 
-    'x_parse_rate_limits__mutmut_2': x_parse_rate_limits__mutmut_2, 
-    'x_parse_rate_limits__mutmut_3': x_parse_rate_limits__mutmut_3, 
-    'x_parse_rate_limits__mutmut_4': x_parse_rate_limits__mutmut_4, 
-    'x_parse_rate_limits__mutmut_5': x_parse_rate_limits__mutmut_5, 
-    'x_parse_rate_limits__mutmut_6': x_parse_rate_limits__mutmut_6, 
-    'x_parse_rate_limits__mutmut_7': x_parse_rate_limits__mutmut_7, 
-    'x_parse_rate_limits__mutmut_8': x_parse_rate_limits__mutmut_8, 
-    'x_parse_rate_limits__mutmut_9': x_parse_rate_limits__mutmut_9, 
-    'x_parse_rate_limits__mutmut_10': x_parse_rate_limits__mutmut_10, 
-    'x_parse_rate_limits__mutmut_11': x_parse_rate_limits__mutmut_11, 
-    'x_parse_rate_limits__mutmut_12': x_parse_rate_limits__mutmut_12, 
-    'x_parse_rate_limits__mutmut_13': x_parse_rate_limits__mutmut_13, 
-    'x_parse_rate_limits__mutmut_14': x_parse_rate_limits__mutmut_14, 
-    'x_parse_rate_limits__mutmut_15': x_parse_rate_limits__mutmut_15, 
-    'x_parse_rate_limits__mutmut_16': x_parse_rate_limits__mutmut_16, 
-    'x_parse_rate_limits__mutmut_17': x_parse_rate_limits__mutmut_17, 
-    'x_parse_rate_limits__mutmut_18': x_parse_rate_limits__mutmut_18, 
-    'x_parse_rate_limits__mutmut_19': x_parse_rate_limits__mutmut_19, 
-    'x_parse_rate_limits__mutmut_20': x_parse_rate_limits__mutmut_20, 
-    'x_parse_rate_limits__mutmut_21': x_parse_rate_limits__mutmut_21, 
-    'x_parse_rate_limits__mutmut_22': x_parse_rate_limits__mutmut_22, 
-    'x_parse_rate_limits__mutmut_23': x_parse_rate_limits__mutmut_23, 
-    'x_parse_rate_limits__mutmut_24': x_parse_rate_limits__mutmut_24, 
-    'x_parse_rate_limits__mutmut_25': x_parse_rate_limits__mutmut_25
+
+x_parse_rate_limits__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_rate_limits__mutmut_1": x_parse_rate_limits__mutmut_1,
+    "x_parse_rate_limits__mutmut_2": x_parse_rate_limits__mutmut_2,
+    "x_parse_rate_limits__mutmut_3": x_parse_rate_limits__mutmut_3,
+    "x_parse_rate_limits__mutmut_4": x_parse_rate_limits__mutmut_4,
+    "x_parse_rate_limits__mutmut_5": x_parse_rate_limits__mutmut_5,
+    "x_parse_rate_limits__mutmut_6": x_parse_rate_limits__mutmut_6,
+    "x_parse_rate_limits__mutmut_7": x_parse_rate_limits__mutmut_7,
+    "x_parse_rate_limits__mutmut_8": x_parse_rate_limits__mutmut_8,
+    "x_parse_rate_limits__mutmut_9": x_parse_rate_limits__mutmut_9,
+    "x_parse_rate_limits__mutmut_10": x_parse_rate_limits__mutmut_10,
+    "x_parse_rate_limits__mutmut_11": x_parse_rate_limits__mutmut_11,
+    "x_parse_rate_limits__mutmut_12": x_parse_rate_limits__mutmut_12,
+    "x_parse_rate_limits__mutmut_13": x_parse_rate_limits__mutmut_13,
+    "x_parse_rate_limits__mutmut_14": x_parse_rate_limits__mutmut_14,
+    "x_parse_rate_limits__mutmut_15": x_parse_rate_limits__mutmut_15,
+    "x_parse_rate_limits__mutmut_16": x_parse_rate_limits__mutmut_16,
+    "x_parse_rate_limits__mutmut_17": x_parse_rate_limits__mutmut_17,
+    "x_parse_rate_limits__mutmut_18": x_parse_rate_limits__mutmut_18,
+    "x_parse_rate_limits__mutmut_19": x_parse_rate_limits__mutmut_19,
+    "x_parse_rate_limits__mutmut_20": x_parse_rate_limits__mutmut_20,
+    "x_parse_rate_limits__mutmut_21": x_parse_rate_limits__mutmut_21,
+    "x_parse_rate_limits__mutmut_22": x_parse_rate_limits__mutmut_22,
+    "x_parse_rate_limits__mutmut_23": x_parse_rate_limits__mutmut_23,
+    "x_parse_rate_limits__mutmut_24": x_parse_rate_limits__mutmut_24,
+    "x_parse_rate_limits__mutmut_25": x_parse_rate_limits__mutmut_25,
 }
 
+
 def parse_rate_limits(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_rate_limits__mutmut_orig, x_parse_rate_limits__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_rate_limits__mutmut_orig, x_parse_rate_limits__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_rate_limits.__signature__ = _mutmut_signature(x_parse_rate_limits__mutmut_orig)
-x_parse_rate_limits__mutmut_orig.__name__ = 'x_parse_rate_limits'
+x_parse_rate_limits__mutmut_orig.__name__ = "x_parse_rate_limits"
 
 
 def x_parse_headers__mutmut_orig(value: str | dict[str, str]) -> dict[str, str]:
@@ -5084,7 +5104,9 @@ def x_parse_headers__mutmut_17(value: str | dict[str, str]) -> dict[str, str]:
             # Skip invalid entries
             continue
 
-        key, val = pair.split("=", )
+        key, val = pair.split(
+            "=",
+        )
         key = key.strip()
         val = val.strip()
 
@@ -5465,38 +5487,41 @@ def x_parse_headers__mutmut_23(value: str | dict[str, str]) -> dict[str, str]:
 
     return result
 
-x_parse_headers__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_headers__mutmut_1': x_parse_headers__mutmut_1, 
-    'x_parse_headers__mutmut_2': x_parse_headers__mutmut_2, 
-    'x_parse_headers__mutmut_3': x_parse_headers__mutmut_3, 
-    'x_parse_headers__mutmut_4': x_parse_headers__mutmut_4, 
-    'x_parse_headers__mutmut_5': x_parse_headers__mutmut_5, 
-    'x_parse_headers__mutmut_6': x_parse_headers__mutmut_6, 
-    'x_parse_headers__mutmut_7': x_parse_headers__mutmut_7, 
-    'x_parse_headers__mutmut_8': x_parse_headers__mutmut_8, 
-    'x_parse_headers__mutmut_9': x_parse_headers__mutmut_9, 
-    'x_parse_headers__mutmut_10': x_parse_headers__mutmut_10, 
-    'x_parse_headers__mutmut_11': x_parse_headers__mutmut_11, 
-    'x_parse_headers__mutmut_12': x_parse_headers__mutmut_12, 
-    'x_parse_headers__mutmut_13': x_parse_headers__mutmut_13, 
-    'x_parse_headers__mutmut_14': x_parse_headers__mutmut_14, 
-    'x_parse_headers__mutmut_15': x_parse_headers__mutmut_15, 
-    'x_parse_headers__mutmut_16': x_parse_headers__mutmut_16, 
-    'x_parse_headers__mutmut_17': x_parse_headers__mutmut_17, 
-    'x_parse_headers__mutmut_18': x_parse_headers__mutmut_18, 
-    'x_parse_headers__mutmut_19': x_parse_headers__mutmut_19, 
-    'x_parse_headers__mutmut_20': x_parse_headers__mutmut_20, 
-    'x_parse_headers__mutmut_21': x_parse_headers__mutmut_21, 
-    'x_parse_headers__mutmut_22': x_parse_headers__mutmut_22, 
-    'x_parse_headers__mutmut_23': x_parse_headers__mutmut_23
+
+x_parse_headers__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_headers__mutmut_1": x_parse_headers__mutmut_1,
+    "x_parse_headers__mutmut_2": x_parse_headers__mutmut_2,
+    "x_parse_headers__mutmut_3": x_parse_headers__mutmut_3,
+    "x_parse_headers__mutmut_4": x_parse_headers__mutmut_4,
+    "x_parse_headers__mutmut_5": x_parse_headers__mutmut_5,
+    "x_parse_headers__mutmut_6": x_parse_headers__mutmut_6,
+    "x_parse_headers__mutmut_7": x_parse_headers__mutmut_7,
+    "x_parse_headers__mutmut_8": x_parse_headers__mutmut_8,
+    "x_parse_headers__mutmut_9": x_parse_headers__mutmut_9,
+    "x_parse_headers__mutmut_10": x_parse_headers__mutmut_10,
+    "x_parse_headers__mutmut_11": x_parse_headers__mutmut_11,
+    "x_parse_headers__mutmut_12": x_parse_headers__mutmut_12,
+    "x_parse_headers__mutmut_13": x_parse_headers__mutmut_13,
+    "x_parse_headers__mutmut_14": x_parse_headers__mutmut_14,
+    "x_parse_headers__mutmut_15": x_parse_headers__mutmut_15,
+    "x_parse_headers__mutmut_16": x_parse_headers__mutmut_16,
+    "x_parse_headers__mutmut_17": x_parse_headers__mutmut_17,
+    "x_parse_headers__mutmut_18": x_parse_headers__mutmut_18,
+    "x_parse_headers__mutmut_19": x_parse_headers__mutmut_19,
+    "x_parse_headers__mutmut_20": x_parse_headers__mutmut_20,
+    "x_parse_headers__mutmut_21": x_parse_headers__mutmut_21,
+    "x_parse_headers__mutmut_22": x_parse_headers__mutmut_22,
+    "x_parse_headers__mutmut_23": x_parse_headers__mutmut_23,
 }
+
 
 def parse_headers(*args, **kwargs):
     result = _mutmut_trampoline(x_parse_headers__mutmut_orig, x_parse_headers__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 parse_headers.__signature__ = _mutmut_signature(x_parse_headers__mutmut_orig)
-x_parse_headers__mutmut_orig.__name__ = 'x_parse_headers'
+x_parse_headers__mutmut_orig.__name__ = "x_parse_headers"
 
 
 __all__ = [

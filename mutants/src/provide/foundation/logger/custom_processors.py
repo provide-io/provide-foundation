@@ -40,23 +40,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -163,7 +166,9 @@ def x_add_log_level_custom__mutmut_4(
     method_name: str,
     event_dict: structlog.types.EventDict,
 ) -> structlog.types.EventDict:
-    level_hint: str | None = event_dict.pop("_foundation_level_hint", )
+    level_hint: str | None = event_dict.pop(
+        "_foundation_level_hint",
+    )
     if level_hint is not None:
         event_dict["level"] = level_hint.lower()
     elif "level" not in event_dict:
@@ -989,58 +994,63 @@ def x_add_log_level_custom__mutmut_43(
                 event_dict["level"] = method_name.upper()
     return event_dict
 
-x_add_log_level_custom__mutmut_mutants : ClassVar[MutantDict] = {
-'x_add_log_level_custom__mutmut_1': x_add_log_level_custom__mutmut_1, 
-    'x_add_log_level_custom__mutmut_2': x_add_log_level_custom__mutmut_2, 
-    'x_add_log_level_custom__mutmut_3': x_add_log_level_custom__mutmut_3, 
-    'x_add_log_level_custom__mutmut_4': x_add_log_level_custom__mutmut_4, 
-    'x_add_log_level_custom__mutmut_5': x_add_log_level_custom__mutmut_5, 
-    'x_add_log_level_custom__mutmut_6': x_add_log_level_custom__mutmut_6, 
-    'x_add_log_level_custom__mutmut_7': x_add_log_level_custom__mutmut_7, 
-    'x_add_log_level_custom__mutmut_8': x_add_log_level_custom__mutmut_8, 
-    'x_add_log_level_custom__mutmut_9': x_add_log_level_custom__mutmut_9, 
-    'x_add_log_level_custom__mutmut_10': x_add_log_level_custom__mutmut_10, 
-    'x_add_log_level_custom__mutmut_11': x_add_log_level_custom__mutmut_11, 
-    'x_add_log_level_custom__mutmut_12': x_add_log_level_custom__mutmut_12, 
-    'x_add_log_level_custom__mutmut_13': x_add_log_level_custom__mutmut_13, 
-    'x_add_log_level_custom__mutmut_14': x_add_log_level_custom__mutmut_14, 
-    'x_add_log_level_custom__mutmut_15': x_add_log_level_custom__mutmut_15, 
-    'x_add_log_level_custom__mutmut_16': x_add_log_level_custom__mutmut_16, 
-    'x_add_log_level_custom__mutmut_17': x_add_log_level_custom__mutmut_17, 
-    'x_add_log_level_custom__mutmut_18': x_add_log_level_custom__mutmut_18, 
-    'x_add_log_level_custom__mutmut_19': x_add_log_level_custom__mutmut_19, 
-    'x_add_log_level_custom__mutmut_20': x_add_log_level_custom__mutmut_20, 
-    'x_add_log_level_custom__mutmut_21': x_add_log_level_custom__mutmut_21, 
-    'x_add_log_level_custom__mutmut_22': x_add_log_level_custom__mutmut_22, 
-    'x_add_log_level_custom__mutmut_23': x_add_log_level_custom__mutmut_23, 
-    'x_add_log_level_custom__mutmut_24': x_add_log_level_custom__mutmut_24, 
-    'x_add_log_level_custom__mutmut_25': x_add_log_level_custom__mutmut_25, 
-    'x_add_log_level_custom__mutmut_26': x_add_log_level_custom__mutmut_26, 
-    'x_add_log_level_custom__mutmut_27': x_add_log_level_custom__mutmut_27, 
-    'x_add_log_level_custom__mutmut_28': x_add_log_level_custom__mutmut_28, 
-    'x_add_log_level_custom__mutmut_29': x_add_log_level_custom__mutmut_29, 
-    'x_add_log_level_custom__mutmut_30': x_add_log_level_custom__mutmut_30, 
-    'x_add_log_level_custom__mutmut_31': x_add_log_level_custom__mutmut_31, 
-    'x_add_log_level_custom__mutmut_32': x_add_log_level_custom__mutmut_32, 
-    'x_add_log_level_custom__mutmut_33': x_add_log_level_custom__mutmut_33, 
-    'x_add_log_level_custom__mutmut_34': x_add_log_level_custom__mutmut_34, 
-    'x_add_log_level_custom__mutmut_35': x_add_log_level_custom__mutmut_35, 
-    'x_add_log_level_custom__mutmut_36': x_add_log_level_custom__mutmut_36, 
-    'x_add_log_level_custom__mutmut_37': x_add_log_level_custom__mutmut_37, 
-    'x_add_log_level_custom__mutmut_38': x_add_log_level_custom__mutmut_38, 
-    'x_add_log_level_custom__mutmut_39': x_add_log_level_custom__mutmut_39, 
-    'x_add_log_level_custom__mutmut_40': x_add_log_level_custom__mutmut_40, 
-    'x_add_log_level_custom__mutmut_41': x_add_log_level_custom__mutmut_41, 
-    'x_add_log_level_custom__mutmut_42': x_add_log_level_custom__mutmut_42, 
-    'x_add_log_level_custom__mutmut_43': x_add_log_level_custom__mutmut_43
+
+x_add_log_level_custom__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_add_log_level_custom__mutmut_1": x_add_log_level_custom__mutmut_1,
+    "x_add_log_level_custom__mutmut_2": x_add_log_level_custom__mutmut_2,
+    "x_add_log_level_custom__mutmut_3": x_add_log_level_custom__mutmut_3,
+    "x_add_log_level_custom__mutmut_4": x_add_log_level_custom__mutmut_4,
+    "x_add_log_level_custom__mutmut_5": x_add_log_level_custom__mutmut_5,
+    "x_add_log_level_custom__mutmut_6": x_add_log_level_custom__mutmut_6,
+    "x_add_log_level_custom__mutmut_7": x_add_log_level_custom__mutmut_7,
+    "x_add_log_level_custom__mutmut_8": x_add_log_level_custom__mutmut_8,
+    "x_add_log_level_custom__mutmut_9": x_add_log_level_custom__mutmut_9,
+    "x_add_log_level_custom__mutmut_10": x_add_log_level_custom__mutmut_10,
+    "x_add_log_level_custom__mutmut_11": x_add_log_level_custom__mutmut_11,
+    "x_add_log_level_custom__mutmut_12": x_add_log_level_custom__mutmut_12,
+    "x_add_log_level_custom__mutmut_13": x_add_log_level_custom__mutmut_13,
+    "x_add_log_level_custom__mutmut_14": x_add_log_level_custom__mutmut_14,
+    "x_add_log_level_custom__mutmut_15": x_add_log_level_custom__mutmut_15,
+    "x_add_log_level_custom__mutmut_16": x_add_log_level_custom__mutmut_16,
+    "x_add_log_level_custom__mutmut_17": x_add_log_level_custom__mutmut_17,
+    "x_add_log_level_custom__mutmut_18": x_add_log_level_custom__mutmut_18,
+    "x_add_log_level_custom__mutmut_19": x_add_log_level_custom__mutmut_19,
+    "x_add_log_level_custom__mutmut_20": x_add_log_level_custom__mutmut_20,
+    "x_add_log_level_custom__mutmut_21": x_add_log_level_custom__mutmut_21,
+    "x_add_log_level_custom__mutmut_22": x_add_log_level_custom__mutmut_22,
+    "x_add_log_level_custom__mutmut_23": x_add_log_level_custom__mutmut_23,
+    "x_add_log_level_custom__mutmut_24": x_add_log_level_custom__mutmut_24,
+    "x_add_log_level_custom__mutmut_25": x_add_log_level_custom__mutmut_25,
+    "x_add_log_level_custom__mutmut_26": x_add_log_level_custom__mutmut_26,
+    "x_add_log_level_custom__mutmut_27": x_add_log_level_custom__mutmut_27,
+    "x_add_log_level_custom__mutmut_28": x_add_log_level_custom__mutmut_28,
+    "x_add_log_level_custom__mutmut_29": x_add_log_level_custom__mutmut_29,
+    "x_add_log_level_custom__mutmut_30": x_add_log_level_custom__mutmut_30,
+    "x_add_log_level_custom__mutmut_31": x_add_log_level_custom__mutmut_31,
+    "x_add_log_level_custom__mutmut_32": x_add_log_level_custom__mutmut_32,
+    "x_add_log_level_custom__mutmut_33": x_add_log_level_custom__mutmut_33,
+    "x_add_log_level_custom__mutmut_34": x_add_log_level_custom__mutmut_34,
+    "x_add_log_level_custom__mutmut_35": x_add_log_level_custom__mutmut_35,
+    "x_add_log_level_custom__mutmut_36": x_add_log_level_custom__mutmut_36,
+    "x_add_log_level_custom__mutmut_37": x_add_log_level_custom__mutmut_37,
+    "x_add_log_level_custom__mutmut_38": x_add_log_level_custom__mutmut_38,
+    "x_add_log_level_custom__mutmut_39": x_add_log_level_custom__mutmut_39,
+    "x_add_log_level_custom__mutmut_40": x_add_log_level_custom__mutmut_40,
+    "x_add_log_level_custom__mutmut_41": x_add_log_level_custom__mutmut_41,
+    "x_add_log_level_custom__mutmut_42": x_add_log_level_custom__mutmut_42,
+    "x_add_log_level_custom__mutmut_43": x_add_log_level_custom__mutmut_43,
 }
 
+
 def add_log_level_custom(*args, **kwargs):
-    result = _mutmut_trampoline(x_add_log_level_custom__mutmut_orig, x_add_log_level_custom__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_add_log_level_custom__mutmut_orig, x_add_log_level_custom__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 add_log_level_custom.__signature__ = _mutmut_signature(x_add_log_level_custom__mutmut_orig)
-x_add_log_level_custom__mutmut_orig.__name__ = 'x_add_log_level_custom'
+x_add_log_level_custom__mutmut_orig.__name__ = "x_add_log_level_custom"
 
 
 class _LevelFilter:
@@ -1056,6 +1066,7 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=len, reverse=True)
+
     def xǁ_LevelFilterǁ__init____mutmut_1(
         self,
         default_level_str: LogLevelStr,
@@ -1068,6 +1079,7 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=len, reverse=True)
+
     def xǁ_LevelFilterǁ__init____mutmut_2(
         self,
         default_level_str: LogLevelStr,
@@ -1078,6 +1090,7 @@ class _LevelFilter:
         self.module_numeric_levels: dict[str, int] = None
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=len, reverse=True)
+
     def xǁ_LevelFilterǁ__init____mutmut_3(
         self,
         default_level_str: LogLevelStr,
@@ -1090,6 +1103,7 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = None
         self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=len, reverse=True)
+
     def xǁ_LevelFilterǁ__init____mutmut_4(
         self,
         default_level_str: LogLevelStr,
@@ -1102,6 +1116,7 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = None
+
     def xǁ_LevelFilterǁ__init____mutmut_5(
         self,
         default_level_str: LogLevelStr,
@@ -1114,6 +1129,7 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = sorted(None, key=len, reverse=True)
+
     def xǁ_LevelFilterǁ__init____mutmut_6(
         self,
         default_level_str: LogLevelStr,
@@ -1126,6 +1142,7 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=None, reverse=True)
+
     def xǁ_LevelFilterǁ__init____mutmut_7(
         self,
         default_level_str: LogLevelStr,
@@ -1138,6 +1155,7 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=len, reverse=None)
+
     def xǁ_LevelFilterǁ__init____mutmut_8(
         self,
         default_level_str: LogLevelStr,
@@ -1150,6 +1168,7 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = sorted(key=len, reverse=True)
+
     def xǁ_LevelFilterǁ__init____mutmut_9(
         self,
         default_level_str: LogLevelStr,
@@ -1162,6 +1181,7 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), reverse=True)
+
     def xǁ_LevelFilterǁ__init____mutmut_10(
         self,
         default_level_str: LogLevelStr,
@@ -1173,7 +1193,11 @@ class _LevelFilter:
             module: level_to_numeric_map[level_str] for module, level_str in module_levels.items()
         }
         self.level_to_numeric_map = level_to_numeric_map
-        self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=len, )
+        self.sorted_module_paths: list[str] = sorted(
+            self.module_numeric_levels.keys(),
+            key=len,
+        )
+
     def xǁ_LevelFilterǁ__init____mutmut_11(
         self,
         default_level_str: LogLevelStr,
@@ -1186,27 +1210,33 @@ class _LevelFilter:
         }
         self.level_to_numeric_map = level_to_numeric_map
         self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=len, reverse=False)
-    
-    xǁ_LevelFilterǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁ_LevelFilterǁ__init____mutmut_1': xǁ_LevelFilterǁ__init____mutmut_1, 
-        'xǁ_LevelFilterǁ__init____mutmut_2': xǁ_LevelFilterǁ__init____mutmut_2, 
-        'xǁ_LevelFilterǁ__init____mutmut_3': xǁ_LevelFilterǁ__init____mutmut_3, 
-        'xǁ_LevelFilterǁ__init____mutmut_4': xǁ_LevelFilterǁ__init____mutmut_4, 
-        'xǁ_LevelFilterǁ__init____mutmut_5': xǁ_LevelFilterǁ__init____mutmut_5, 
-        'xǁ_LevelFilterǁ__init____mutmut_6': xǁ_LevelFilterǁ__init____mutmut_6, 
-        'xǁ_LevelFilterǁ__init____mutmut_7': xǁ_LevelFilterǁ__init____mutmut_7, 
-        'xǁ_LevelFilterǁ__init____mutmut_8': xǁ_LevelFilterǁ__init____mutmut_8, 
-        'xǁ_LevelFilterǁ__init____mutmut_9': xǁ_LevelFilterǁ__init____mutmut_9, 
-        'xǁ_LevelFilterǁ__init____mutmut_10': xǁ_LevelFilterǁ__init____mutmut_10, 
-        'xǁ_LevelFilterǁ__init____mutmut_11': xǁ_LevelFilterǁ__init____mutmut_11
+
+    xǁ_LevelFilterǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁ_LevelFilterǁ__init____mutmut_1": xǁ_LevelFilterǁ__init____mutmut_1,
+        "xǁ_LevelFilterǁ__init____mutmut_2": xǁ_LevelFilterǁ__init____mutmut_2,
+        "xǁ_LevelFilterǁ__init____mutmut_3": xǁ_LevelFilterǁ__init____mutmut_3,
+        "xǁ_LevelFilterǁ__init____mutmut_4": xǁ_LevelFilterǁ__init____mutmut_4,
+        "xǁ_LevelFilterǁ__init____mutmut_5": xǁ_LevelFilterǁ__init____mutmut_5,
+        "xǁ_LevelFilterǁ__init____mutmut_6": xǁ_LevelFilterǁ__init____mutmut_6,
+        "xǁ_LevelFilterǁ__init____mutmut_7": xǁ_LevelFilterǁ__init____mutmut_7,
+        "xǁ_LevelFilterǁ__init____mutmut_8": xǁ_LevelFilterǁ__init____mutmut_8,
+        "xǁ_LevelFilterǁ__init____mutmut_9": xǁ_LevelFilterǁ__init____mutmut_9,
+        "xǁ_LevelFilterǁ__init____mutmut_10": xǁ_LevelFilterǁ__init____mutmut_10,
+        "xǁ_LevelFilterǁ__init____mutmut_11": xǁ_LevelFilterǁ__init____mutmut_11,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁ_LevelFilterǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁ_LevelFilterǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁ_LevelFilterǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁ_LevelFilterǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁ_LevelFilterǁ__init____mutmut_orig)
-    xǁ_LevelFilterǁ__init____mutmut_orig.__name__ = 'xǁ_LevelFilterǁ__init__'
+    xǁ_LevelFilterǁ__init____mutmut_orig.__name__ = "xǁ_LevelFilterǁ__init__"
 
     def xǁ_LevelFilterǁ__call____mutmut_orig(
         self,
@@ -1334,7 +1364,9 @@ class _LevelFilter:
         _method_name: str,
         event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
-        logger_name: str = event_dict.get("logger_name", )
+        logger_name: str = event_dict.get(
+            "logger_name",
+        )
         event_level_str_from_dict = str(event_dict.get("level", "info"))
 
         # Normalize the level and get numeric value safely
@@ -1575,7 +1607,11 @@ class _LevelFilter:
         event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
         logger_name: str = event_dict.get("logger_name", "unnamed_filter_target")
-        event_level_str_from_dict = str(event_dict.get("level", ))
+        event_level_str_from_dict = str(
+            event_dict.get(
+                "level",
+            )
+        )
 
         # Normalize the level and get numeric value safely
         normalized_level = normalize_level(event_level_str_from_dict)
@@ -1841,7 +1877,7 @@ class _LevelFilter:
         normalized_level = normalize_level(event_level_str_from_dict)
         event_num_level: int = get_numeric_level(
             normalized_level,
-            )
+        )
         threshold_num_level: int = self.default_numeric_level
         for path_prefix in self.sorted_module_paths:
             if logger_name.startswith(path_prefix):
@@ -1970,47 +2006,53 @@ class _LevelFilter:
         if event_num_level <= threshold_num_level:
             raise structlog.DropEvent
         return event_dict
-    
-    xǁ_LevelFilterǁ__call____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁ_LevelFilterǁ__call____mutmut_1': xǁ_LevelFilterǁ__call____mutmut_1, 
-        'xǁ_LevelFilterǁ__call____mutmut_2': xǁ_LevelFilterǁ__call____mutmut_2, 
-        'xǁ_LevelFilterǁ__call____mutmut_3': xǁ_LevelFilterǁ__call____mutmut_3, 
-        'xǁ_LevelFilterǁ__call____mutmut_4': xǁ_LevelFilterǁ__call____mutmut_4, 
-        'xǁ_LevelFilterǁ__call____mutmut_5': xǁ_LevelFilterǁ__call____mutmut_5, 
-        'xǁ_LevelFilterǁ__call____mutmut_6': xǁ_LevelFilterǁ__call____mutmut_6, 
-        'xǁ_LevelFilterǁ__call____mutmut_7': xǁ_LevelFilterǁ__call____mutmut_7, 
-        'xǁ_LevelFilterǁ__call____mutmut_8': xǁ_LevelFilterǁ__call____mutmut_8, 
-        'xǁ_LevelFilterǁ__call____mutmut_9': xǁ_LevelFilterǁ__call____mutmut_9, 
-        'xǁ_LevelFilterǁ__call____mutmut_10': xǁ_LevelFilterǁ__call____mutmut_10, 
-        'xǁ_LevelFilterǁ__call____mutmut_11': xǁ_LevelFilterǁ__call____mutmut_11, 
-        'xǁ_LevelFilterǁ__call____mutmut_12': xǁ_LevelFilterǁ__call____mutmut_12, 
-        'xǁ_LevelFilterǁ__call____mutmut_13': xǁ_LevelFilterǁ__call____mutmut_13, 
-        'xǁ_LevelFilterǁ__call____mutmut_14': xǁ_LevelFilterǁ__call____mutmut_14, 
-        'xǁ_LevelFilterǁ__call____mutmut_15': xǁ_LevelFilterǁ__call____mutmut_15, 
-        'xǁ_LevelFilterǁ__call____mutmut_16': xǁ_LevelFilterǁ__call____mutmut_16, 
-        'xǁ_LevelFilterǁ__call____mutmut_17': xǁ_LevelFilterǁ__call____mutmut_17, 
-        'xǁ_LevelFilterǁ__call____mutmut_18': xǁ_LevelFilterǁ__call____mutmut_18, 
-        'xǁ_LevelFilterǁ__call____mutmut_19': xǁ_LevelFilterǁ__call____mutmut_19, 
-        'xǁ_LevelFilterǁ__call____mutmut_20': xǁ_LevelFilterǁ__call____mutmut_20, 
-        'xǁ_LevelFilterǁ__call____mutmut_21': xǁ_LevelFilterǁ__call____mutmut_21, 
-        'xǁ_LevelFilterǁ__call____mutmut_22': xǁ_LevelFilterǁ__call____mutmut_22, 
-        'xǁ_LevelFilterǁ__call____mutmut_23': xǁ_LevelFilterǁ__call____mutmut_23, 
-        'xǁ_LevelFilterǁ__call____mutmut_24': xǁ_LevelFilterǁ__call____mutmut_24, 
-        'xǁ_LevelFilterǁ__call____mutmut_25': xǁ_LevelFilterǁ__call____mutmut_25, 
-        'xǁ_LevelFilterǁ__call____mutmut_26': xǁ_LevelFilterǁ__call____mutmut_26, 
-        'xǁ_LevelFilterǁ__call____mutmut_27': xǁ_LevelFilterǁ__call____mutmut_27, 
-        'xǁ_LevelFilterǁ__call____mutmut_28': xǁ_LevelFilterǁ__call____mutmut_28, 
-        'xǁ_LevelFilterǁ__call____mutmut_29': xǁ_LevelFilterǁ__call____mutmut_29, 
-        'xǁ_LevelFilterǁ__call____mutmut_30': xǁ_LevelFilterǁ__call____mutmut_30, 
-        'xǁ_LevelFilterǁ__call____mutmut_31': xǁ_LevelFilterǁ__call____mutmut_31
+
+    xǁ_LevelFilterǁ__call____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁ_LevelFilterǁ__call____mutmut_1": xǁ_LevelFilterǁ__call____mutmut_1,
+        "xǁ_LevelFilterǁ__call____mutmut_2": xǁ_LevelFilterǁ__call____mutmut_2,
+        "xǁ_LevelFilterǁ__call____mutmut_3": xǁ_LevelFilterǁ__call____mutmut_3,
+        "xǁ_LevelFilterǁ__call____mutmut_4": xǁ_LevelFilterǁ__call____mutmut_4,
+        "xǁ_LevelFilterǁ__call____mutmut_5": xǁ_LevelFilterǁ__call____mutmut_5,
+        "xǁ_LevelFilterǁ__call____mutmut_6": xǁ_LevelFilterǁ__call____mutmut_6,
+        "xǁ_LevelFilterǁ__call____mutmut_7": xǁ_LevelFilterǁ__call____mutmut_7,
+        "xǁ_LevelFilterǁ__call____mutmut_8": xǁ_LevelFilterǁ__call____mutmut_8,
+        "xǁ_LevelFilterǁ__call____mutmut_9": xǁ_LevelFilterǁ__call____mutmut_9,
+        "xǁ_LevelFilterǁ__call____mutmut_10": xǁ_LevelFilterǁ__call____mutmut_10,
+        "xǁ_LevelFilterǁ__call____mutmut_11": xǁ_LevelFilterǁ__call____mutmut_11,
+        "xǁ_LevelFilterǁ__call____mutmut_12": xǁ_LevelFilterǁ__call____mutmut_12,
+        "xǁ_LevelFilterǁ__call____mutmut_13": xǁ_LevelFilterǁ__call____mutmut_13,
+        "xǁ_LevelFilterǁ__call____mutmut_14": xǁ_LevelFilterǁ__call____mutmut_14,
+        "xǁ_LevelFilterǁ__call____mutmut_15": xǁ_LevelFilterǁ__call____mutmut_15,
+        "xǁ_LevelFilterǁ__call____mutmut_16": xǁ_LevelFilterǁ__call____mutmut_16,
+        "xǁ_LevelFilterǁ__call____mutmut_17": xǁ_LevelFilterǁ__call____mutmut_17,
+        "xǁ_LevelFilterǁ__call____mutmut_18": xǁ_LevelFilterǁ__call____mutmut_18,
+        "xǁ_LevelFilterǁ__call____mutmut_19": xǁ_LevelFilterǁ__call____mutmut_19,
+        "xǁ_LevelFilterǁ__call____mutmut_20": xǁ_LevelFilterǁ__call____mutmut_20,
+        "xǁ_LevelFilterǁ__call____mutmut_21": xǁ_LevelFilterǁ__call____mutmut_21,
+        "xǁ_LevelFilterǁ__call____mutmut_22": xǁ_LevelFilterǁ__call____mutmut_22,
+        "xǁ_LevelFilterǁ__call____mutmut_23": xǁ_LevelFilterǁ__call____mutmut_23,
+        "xǁ_LevelFilterǁ__call____mutmut_24": xǁ_LevelFilterǁ__call____mutmut_24,
+        "xǁ_LevelFilterǁ__call____mutmut_25": xǁ_LevelFilterǁ__call____mutmut_25,
+        "xǁ_LevelFilterǁ__call____mutmut_26": xǁ_LevelFilterǁ__call____mutmut_26,
+        "xǁ_LevelFilterǁ__call____mutmut_27": xǁ_LevelFilterǁ__call____mutmut_27,
+        "xǁ_LevelFilterǁ__call____mutmut_28": xǁ_LevelFilterǁ__call____mutmut_28,
+        "xǁ_LevelFilterǁ__call____mutmut_29": xǁ_LevelFilterǁ__call____mutmut_29,
+        "xǁ_LevelFilterǁ__call____mutmut_30": xǁ_LevelFilterǁ__call____mutmut_30,
+        "xǁ_LevelFilterǁ__call____mutmut_31": xǁ_LevelFilterǁ__call____mutmut_31,
     }
-    
+
     def __call__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁ_LevelFilterǁ__call____mutmut_orig"), object.__getattribute__(self, "xǁ_LevelFilterǁ__call____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁ_LevelFilterǁ__call____mutmut_orig"),
+            object.__getattribute__(self, "xǁ_LevelFilterǁ__call____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __call__.__signature__ = _mutmut_signature(xǁ_LevelFilterǁ__call____mutmut_orig)
-    xǁ_LevelFilterǁ__call____mutmut_orig.__name__ = 'xǁ_LevelFilterǁ__call__'
+    xǁ_LevelFilterǁ__call____mutmut_orig.__name__ = "xǁ_LevelFilterǁ__call__"
 
 
 def x_filter_by_level_custom__mutmut_orig(
@@ -2066,23 +2108,31 @@ def x_filter_by_level_custom__mutmut_6(
     module_levels: dict[str, LogLevelStr],
     level_to_numeric_map: dict[LogLevelStr, int],
 ) -> _LevelFilter:
-    return _LevelFilter(default_level_str, module_levels, )
+    return _LevelFilter(
+        default_level_str,
+        module_levels,
+    )
 
-x_filter_by_level_custom__mutmut_mutants : ClassVar[MutantDict] = {
-'x_filter_by_level_custom__mutmut_1': x_filter_by_level_custom__mutmut_1, 
-    'x_filter_by_level_custom__mutmut_2': x_filter_by_level_custom__mutmut_2, 
-    'x_filter_by_level_custom__mutmut_3': x_filter_by_level_custom__mutmut_3, 
-    'x_filter_by_level_custom__mutmut_4': x_filter_by_level_custom__mutmut_4, 
-    'x_filter_by_level_custom__mutmut_5': x_filter_by_level_custom__mutmut_5, 
-    'x_filter_by_level_custom__mutmut_6': x_filter_by_level_custom__mutmut_6
+
+x_filter_by_level_custom__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_filter_by_level_custom__mutmut_1": x_filter_by_level_custom__mutmut_1,
+    "x_filter_by_level_custom__mutmut_2": x_filter_by_level_custom__mutmut_2,
+    "x_filter_by_level_custom__mutmut_3": x_filter_by_level_custom__mutmut_3,
+    "x_filter_by_level_custom__mutmut_4": x_filter_by_level_custom__mutmut_4,
+    "x_filter_by_level_custom__mutmut_5": x_filter_by_level_custom__mutmut_5,
+    "x_filter_by_level_custom__mutmut_6": x_filter_by_level_custom__mutmut_6,
 }
 
+
 def filter_by_level_custom(*args, **kwargs):
-    result = _mutmut_trampoline(x_filter_by_level_custom__mutmut_orig, x_filter_by_level_custom__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_filter_by_level_custom__mutmut_orig, x_filter_by_level_custom__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 filter_by_level_custom.__signature__ = _mutmut_signature(x_filter_by_level_custom__mutmut_orig)
-x_filter_by_level_custom__mutmut_orig.__name__ = 'x_filter_by_level_custom'
+x_filter_by_level_custom__mutmut_orig.__name__ = "x_filter_by_level_custom"
 
 
 _LOGGER_NAME_EMOJI_PREFIXES: dict[str, str] = {
@@ -2217,7 +2267,9 @@ def x__compute_emoji_for_logger_name__mutmut_9(logger_name: str) -> str:
             continue
         if logger_name.startswith(keyword):
             return _LOGGER_NAME_EMOJI_PREFIXES[keyword]
-    return _LOGGER_NAME_EMOJI_PREFIXES.get("default", )
+    return _LOGGER_NAME_EMOJI_PREFIXES.get(
+        "default",
+    )
 
 
 def x__compute_emoji_for_logger_name__mutmut_10(logger_name: str) -> str:
@@ -2249,27 +2301,35 @@ def x__compute_emoji_for_logger_name__mutmut_12(logger_name: str) -> str:
             return _LOGGER_NAME_EMOJI_PREFIXES[keyword]
     return _LOGGER_NAME_EMOJI_PREFIXES.get("default", "XX🔹XX")
 
-x__compute_emoji_for_logger_name__mutmut_mutants : ClassVar[MutantDict] = {
-'x__compute_emoji_for_logger_name__mutmut_1': x__compute_emoji_for_logger_name__mutmut_1, 
-    'x__compute_emoji_for_logger_name__mutmut_2': x__compute_emoji_for_logger_name__mutmut_2, 
-    'x__compute_emoji_for_logger_name__mutmut_3': x__compute_emoji_for_logger_name__mutmut_3, 
-    'x__compute_emoji_for_logger_name__mutmut_4': x__compute_emoji_for_logger_name__mutmut_4, 
-    'x__compute_emoji_for_logger_name__mutmut_5': x__compute_emoji_for_logger_name__mutmut_5, 
-    'x__compute_emoji_for_logger_name__mutmut_6': x__compute_emoji_for_logger_name__mutmut_6, 
-    'x__compute_emoji_for_logger_name__mutmut_7': x__compute_emoji_for_logger_name__mutmut_7, 
-    'x__compute_emoji_for_logger_name__mutmut_8': x__compute_emoji_for_logger_name__mutmut_8, 
-    'x__compute_emoji_for_logger_name__mutmut_9': x__compute_emoji_for_logger_name__mutmut_9, 
-    'x__compute_emoji_for_logger_name__mutmut_10': x__compute_emoji_for_logger_name__mutmut_10, 
-    'x__compute_emoji_for_logger_name__mutmut_11': x__compute_emoji_for_logger_name__mutmut_11, 
-    'x__compute_emoji_for_logger_name__mutmut_12': x__compute_emoji_for_logger_name__mutmut_12
+
+x__compute_emoji_for_logger_name__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__compute_emoji_for_logger_name__mutmut_1": x__compute_emoji_for_logger_name__mutmut_1,
+    "x__compute_emoji_for_logger_name__mutmut_2": x__compute_emoji_for_logger_name__mutmut_2,
+    "x__compute_emoji_for_logger_name__mutmut_3": x__compute_emoji_for_logger_name__mutmut_3,
+    "x__compute_emoji_for_logger_name__mutmut_4": x__compute_emoji_for_logger_name__mutmut_4,
+    "x__compute_emoji_for_logger_name__mutmut_5": x__compute_emoji_for_logger_name__mutmut_5,
+    "x__compute_emoji_for_logger_name__mutmut_6": x__compute_emoji_for_logger_name__mutmut_6,
+    "x__compute_emoji_for_logger_name__mutmut_7": x__compute_emoji_for_logger_name__mutmut_7,
+    "x__compute_emoji_for_logger_name__mutmut_8": x__compute_emoji_for_logger_name__mutmut_8,
+    "x__compute_emoji_for_logger_name__mutmut_9": x__compute_emoji_for_logger_name__mutmut_9,
+    "x__compute_emoji_for_logger_name__mutmut_10": x__compute_emoji_for_logger_name__mutmut_10,
+    "x__compute_emoji_for_logger_name__mutmut_11": x__compute_emoji_for_logger_name__mutmut_11,
+    "x__compute_emoji_for_logger_name__mutmut_12": x__compute_emoji_for_logger_name__mutmut_12,
 }
 
+
 def _compute_emoji_for_logger_name(*args, **kwargs):
-    result = _mutmut_trampoline(x__compute_emoji_for_logger_name__mutmut_orig, x__compute_emoji_for_logger_name__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__compute_emoji_for_logger_name__mutmut_orig,
+        x__compute_emoji_for_logger_name__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 _compute_emoji_for_logger_name.__signature__ = _mutmut_signature(x__compute_emoji_for_logger_name__mutmut_orig)
-x__compute_emoji_for_logger_name__mutmut_orig.__name__ = 'x__compute_emoji_for_logger_name'
+x__compute_emoji_for_logger_name__mutmut_orig.__name__ = "x__compute_emoji_for_logger_name"
 
 
 def x_add_logger_name_emoji_prefix__mutmut_orig(
@@ -2377,7 +2437,9 @@ def x_add_logger_name_emoji_prefix__mutmut_5(
     _method_name: str,
     event_dict: structlog.types.EventDict,
 ) -> structlog.types.EventDict:
-    logger_name = event_dict.get("logger_name", )
+    logger_name = event_dict.get(
+        "logger_name",
+    )
     if logger_name in _EMOJI_LOOKUP_CACHE:
         chosen_emoji = _EMOJI_LOOKUP_CACHE[logger_name]
     else:
@@ -2811,41 +2873,49 @@ def x_add_logger_name_emoji_prefix__mutmut_26(
         event_dict["EVENT"] = chosen_emoji
     return event_dict
 
-x_add_logger_name_emoji_prefix__mutmut_mutants : ClassVar[MutantDict] = {
-'x_add_logger_name_emoji_prefix__mutmut_1': x_add_logger_name_emoji_prefix__mutmut_1, 
-    'x_add_logger_name_emoji_prefix__mutmut_2': x_add_logger_name_emoji_prefix__mutmut_2, 
-    'x_add_logger_name_emoji_prefix__mutmut_3': x_add_logger_name_emoji_prefix__mutmut_3, 
-    'x_add_logger_name_emoji_prefix__mutmut_4': x_add_logger_name_emoji_prefix__mutmut_4, 
-    'x_add_logger_name_emoji_prefix__mutmut_5': x_add_logger_name_emoji_prefix__mutmut_5, 
-    'x_add_logger_name_emoji_prefix__mutmut_6': x_add_logger_name_emoji_prefix__mutmut_6, 
-    'x_add_logger_name_emoji_prefix__mutmut_7': x_add_logger_name_emoji_prefix__mutmut_7, 
-    'x_add_logger_name_emoji_prefix__mutmut_8': x_add_logger_name_emoji_prefix__mutmut_8, 
-    'x_add_logger_name_emoji_prefix__mutmut_9': x_add_logger_name_emoji_prefix__mutmut_9, 
-    'x_add_logger_name_emoji_prefix__mutmut_10': x_add_logger_name_emoji_prefix__mutmut_10, 
-    'x_add_logger_name_emoji_prefix__mutmut_11': x_add_logger_name_emoji_prefix__mutmut_11, 
-    'x_add_logger_name_emoji_prefix__mutmut_12': x_add_logger_name_emoji_prefix__mutmut_12, 
-    'x_add_logger_name_emoji_prefix__mutmut_13': x_add_logger_name_emoji_prefix__mutmut_13, 
-    'x_add_logger_name_emoji_prefix__mutmut_14': x_add_logger_name_emoji_prefix__mutmut_14, 
-    'x_add_logger_name_emoji_prefix__mutmut_15': x_add_logger_name_emoji_prefix__mutmut_15, 
-    'x_add_logger_name_emoji_prefix__mutmut_16': x_add_logger_name_emoji_prefix__mutmut_16, 
-    'x_add_logger_name_emoji_prefix__mutmut_17': x_add_logger_name_emoji_prefix__mutmut_17, 
-    'x_add_logger_name_emoji_prefix__mutmut_18': x_add_logger_name_emoji_prefix__mutmut_18, 
-    'x_add_logger_name_emoji_prefix__mutmut_19': x_add_logger_name_emoji_prefix__mutmut_19, 
-    'x_add_logger_name_emoji_prefix__mutmut_20': x_add_logger_name_emoji_prefix__mutmut_20, 
-    'x_add_logger_name_emoji_prefix__mutmut_21': x_add_logger_name_emoji_prefix__mutmut_21, 
-    'x_add_logger_name_emoji_prefix__mutmut_22': x_add_logger_name_emoji_prefix__mutmut_22, 
-    'x_add_logger_name_emoji_prefix__mutmut_23': x_add_logger_name_emoji_prefix__mutmut_23, 
-    'x_add_logger_name_emoji_prefix__mutmut_24': x_add_logger_name_emoji_prefix__mutmut_24, 
-    'x_add_logger_name_emoji_prefix__mutmut_25': x_add_logger_name_emoji_prefix__mutmut_25, 
-    'x_add_logger_name_emoji_prefix__mutmut_26': x_add_logger_name_emoji_prefix__mutmut_26
+
+x_add_logger_name_emoji_prefix__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_add_logger_name_emoji_prefix__mutmut_1": x_add_logger_name_emoji_prefix__mutmut_1,
+    "x_add_logger_name_emoji_prefix__mutmut_2": x_add_logger_name_emoji_prefix__mutmut_2,
+    "x_add_logger_name_emoji_prefix__mutmut_3": x_add_logger_name_emoji_prefix__mutmut_3,
+    "x_add_logger_name_emoji_prefix__mutmut_4": x_add_logger_name_emoji_prefix__mutmut_4,
+    "x_add_logger_name_emoji_prefix__mutmut_5": x_add_logger_name_emoji_prefix__mutmut_5,
+    "x_add_logger_name_emoji_prefix__mutmut_6": x_add_logger_name_emoji_prefix__mutmut_6,
+    "x_add_logger_name_emoji_prefix__mutmut_7": x_add_logger_name_emoji_prefix__mutmut_7,
+    "x_add_logger_name_emoji_prefix__mutmut_8": x_add_logger_name_emoji_prefix__mutmut_8,
+    "x_add_logger_name_emoji_prefix__mutmut_9": x_add_logger_name_emoji_prefix__mutmut_9,
+    "x_add_logger_name_emoji_prefix__mutmut_10": x_add_logger_name_emoji_prefix__mutmut_10,
+    "x_add_logger_name_emoji_prefix__mutmut_11": x_add_logger_name_emoji_prefix__mutmut_11,
+    "x_add_logger_name_emoji_prefix__mutmut_12": x_add_logger_name_emoji_prefix__mutmut_12,
+    "x_add_logger_name_emoji_prefix__mutmut_13": x_add_logger_name_emoji_prefix__mutmut_13,
+    "x_add_logger_name_emoji_prefix__mutmut_14": x_add_logger_name_emoji_prefix__mutmut_14,
+    "x_add_logger_name_emoji_prefix__mutmut_15": x_add_logger_name_emoji_prefix__mutmut_15,
+    "x_add_logger_name_emoji_prefix__mutmut_16": x_add_logger_name_emoji_prefix__mutmut_16,
+    "x_add_logger_name_emoji_prefix__mutmut_17": x_add_logger_name_emoji_prefix__mutmut_17,
+    "x_add_logger_name_emoji_prefix__mutmut_18": x_add_logger_name_emoji_prefix__mutmut_18,
+    "x_add_logger_name_emoji_prefix__mutmut_19": x_add_logger_name_emoji_prefix__mutmut_19,
+    "x_add_logger_name_emoji_prefix__mutmut_20": x_add_logger_name_emoji_prefix__mutmut_20,
+    "x_add_logger_name_emoji_prefix__mutmut_21": x_add_logger_name_emoji_prefix__mutmut_21,
+    "x_add_logger_name_emoji_prefix__mutmut_22": x_add_logger_name_emoji_prefix__mutmut_22,
+    "x_add_logger_name_emoji_prefix__mutmut_23": x_add_logger_name_emoji_prefix__mutmut_23,
+    "x_add_logger_name_emoji_prefix__mutmut_24": x_add_logger_name_emoji_prefix__mutmut_24,
+    "x_add_logger_name_emoji_prefix__mutmut_25": x_add_logger_name_emoji_prefix__mutmut_25,
+    "x_add_logger_name_emoji_prefix__mutmut_26": x_add_logger_name_emoji_prefix__mutmut_26,
 }
 
+
 def add_logger_name_emoji_prefix(*args, **kwargs):
-    result = _mutmut_trampoline(x_add_logger_name_emoji_prefix__mutmut_orig, x_add_logger_name_emoji_prefix__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_add_logger_name_emoji_prefix__mutmut_orig,
+        x_add_logger_name_emoji_prefix__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 add_logger_name_emoji_prefix.__signature__ = _mutmut_signature(x_add_logger_name_emoji_prefix__mutmut_orig)
-x_add_logger_name_emoji_prefix__mutmut_orig.__name__ = 'x_add_logger_name_emoji_prefix'
+x_add_logger_name_emoji_prefix__mutmut_orig.__name__ = "x_add_logger_name_emoji_prefix"
 
 
 def x_get_emoji_cache_stats__mutmut_orig() -> dict[str, Any]:  # pragma: no cover
@@ -2977,27 +3047,32 @@ def x_get_emoji_cache_stats__mutmut_12() -> dict[str, Any]:  # pragma: no cover
         else 1,
     }
 
-x_get_emoji_cache_stats__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_emoji_cache_stats__mutmut_1': x_get_emoji_cache_stats__mutmut_1, 
-    'x_get_emoji_cache_stats__mutmut_2': x_get_emoji_cache_stats__mutmut_2, 
-    'x_get_emoji_cache_stats__mutmut_3': x_get_emoji_cache_stats__mutmut_3, 
-    'x_get_emoji_cache_stats__mutmut_4': x_get_emoji_cache_stats__mutmut_4, 
-    'x_get_emoji_cache_stats__mutmut_5': x_get_emoji_cache_stats__mutmut_5, 
-    'x_get_emoji_cache_stats__mutmut_6': x_get_emoji_cache_stats__mutmut_6, 
-    'x_get_emoji_cache_stats__mutmut_7': x_get_emoji_cache_stats__mutmut_7, 
-    'x_get_emoji_cache_stats__mutmut_8': x_get_emoji_cache_stats__mutmut_8, 
-    'x_get_emoji_cache_stats__mutmut_9': x_get_emoji_cache_stats__mutmut_9, 
-    'x_get_emoji_cache_stats__mutmut_10': x_get_emoji_cache_stats__mutmut_10, 
-    'x_get_emoji_cache_stats__mutmut_11': x_get_emoji_cache_stats__mutmut_11, 
-    'x_get_emoji_cache_stats__mutmut_12': x_get_emoji_cache_stats__mutmut_12
+
+x_get_emoji_cache_stats__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_emoji_cache_stats__mutmut_1": x_get_emoji_cache_stats__mutmut_1,
+    "x_get_emoji_cache_stats__mutmut_2": x_get_emoji_cache_stats__mutmut_2,
+    "x_get_emoji_cache_stats__mutmut_3": x_get_emoji_cache_stats__mutmut_3,
+    "x_get_emoji_cache_stats__mutmut_4": x_get_emoji_cache_stats__mutmut_4,
+    "x_get_emoji_cache_stats__mutmut_5": x_get_emoji_cache_stats__mutmut_5,
+    "x_get_emoji_cache_stats__mutmut_6": x_get_emoji_cache_stats__mutmut_6,
+    "x_get_emoji_cache_stats__mutmut_7": x_get_emoji_cache_stats__mutmut_7,
+    "x_get_emoji_cache_stats__mutmut_8": x_get_emoji_cache_stats__mutmut_8,
+    "x_get_emoji_cache_stats__mutmut_9": x_get_emoji_cache_stats__mutmut_9,
+    "x_get_emoji_cache_stats__mutmut_10": x_get_emoji_cache_stats__mutmut_10,
+    "x_get_emoji_cache_stats__mutmut_11": x_get_emoji_cache_stats__mutmut_11,
+    "x_get_emoji_cache_stats__mutmut_12": x_get_emoji_cache_stats__mutmut_12,
 }
 
+
 def get_emoji_cache_stats(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_emoji_cache_stats__mutmut_orig, x_get_emoji_cache_stats__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_emoji_cache_stats__mutmut_orig, x_get_emoji_cache_stats__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_emoji_cache_stats.__signature__ = _mutmut_signature(x_get_emoji_cache_stats__mutmut_orig)
-x_get_emoji_cache_stats__mutmut_orig.__name__ = 'x_get_emoji_cache_stats'
+x_get_emoji_cache_stats__mutmut_orig.__name__ = "x_get_emoji_cache_stats"
 
 
 def clear_emoji_cache() -> None:  # pragma: no cover

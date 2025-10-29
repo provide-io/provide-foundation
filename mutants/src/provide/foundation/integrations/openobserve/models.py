@@ -20,23 +20,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -3385,78 +3388,83 @@ def x_parse_relative_time__mutmut_63(time_str: str, now: datetime | None = None)
         dt = datetime.fromisoformat(time_str)
         return int(dt.timestamp() * 1000001)
 
-x_parse_relative_time__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_relative_time__mutmut_1': x_parse_relative_time__mutmut_1, 
-    'x_parse_relative_time__mutmut_2': x_parse_relative_time__mutmut_2, 
-    'x_parse_relative_time__mutmut_3': x_parse_relative_time__mutmut_3, 
-    'x_parse_relative_time__mutmut_4': x_parse_relative_time__mutmut_4, 
-    'x_parse_relative_time__mutmut_5': x_parse_relative_time__mutmut_5, 
-    'x_parse_relative_time__mutmut_6': x_parse_relative_time__mutmut_6, 
-    'x_parse_relative_time__mutmut_7': x_parse_relative_time__mutmut_7, 
-    'x_parse_relative_time__mutmut_8': x_parse_relative_time__mutmut_8, 
-    'x_parse_relative_time__mutmut_9': x_parse_relative_time__mutmut_9, 
-    'x_parse_relative_time__mutmut_10': x_parse_relative_time__mutmut_10, 
-    'x_parse_relative_time__mutmut_11': x_parse_relative_time__mutmut_11, 
-    'x_parse_relative_time__mutmut_12': x_parse_relative_time__mutmut_12, 
-    'x_parse_relative_time__mutmut_13': x_parse_relative_time__mutmut_13, 
-    'x_parse_relative_time__mutmut_14': x_parse_relative_time__mutmut_14, 
-    'x_parse_relative_time__mutmut_15': x_parse_relative_time__mutmut_15, 
-    'x_parse_relative_time__mutmut_16': x_parse_relative_time__mutmut_16, 
-    'x_parse_relative_time__mutmut_17': x_parse_relative_time__mutmut_17, 
-    'x_parse_relative_time__mutmut_18': x_parse_relative_time__mutmut_18, 
-    'x_parse_relative_time__mutmut_19': x_parse_relative_time__mutmut_19, 
-    'x_parse_relative_time__mutmut_20': x_parse_relative_time__mutmut_20, 
-    'x_parse_relative_time__mutmut_21': x_parse_relative_time__mutmut_21, 
-    'x_parse_relative_time__mutmut_22': x_parse_relative_time__mutmut_22, 
-    'x_parse_relative_time__mutmut_23': x_parse_relative_time__mutmut_23, 
-    'x_parse_relative_time__mutmut_24': x_parse_relative_time__mutmut_24, 
-    'x_parse_relative_time__mutmut_25': x_parse_relative_time__mutmut_25, 
-    'x_parse_relative_time__mutmut_26': x_parse_relative_time__mutmut_26, 
-    'x_parse_relative_time__mutmut_27': x_parse_relative_time__mutmut_27, 
-    'x_parse_relative_time__mutmut_28': x_parse_relative_time__mutmut_28, 
-    'x_parse_relative_time__mutmut_29': x_parse_relative_time__mutmut_29, 
-    'x_parse_relative_time__mutmut_30': x_parse_relative_time__mutmut_30, 
-    'x_parse_relative_time__mutmut_31': x_parse_relative_time__mutmut_31, 
-    'x_parse_relative_time__mutmut_32': x_parse_relative_time__mutmut_32, 
-    'x_parse_relative_time__mutmut_33': x_parse_relative_time__mutmut_33, 
-    'x_parse_relative_time__mutmut_34': x_parse_relative_time__mutmut_34, 
-    'x_parse_relative_time__mutmut_35': x_parse_relative_time__mutmut_35, 
-    'x_parse_relative_time__mutmut_36': x_parse_relative_time__mutmut_36, 
-    'x_parse_relative_time__mutmut_37': x_parse_relative_time__mutmut_37, 
-    'x_parse_relative_time__mutmut_38': x_parse_relative_time__mutmut_38, 
-    'x_parse_relative_time__mutmut_39': x_parse_relative_time__mutmut_39, 
-    'x_parse_relative_time__mutmut_40': x_parse_relative_time__mutmut_40, 
-    'x_parse_relative_time__mutmut_41': x_parse_relative_time__mutmut_41, 
-    'x_parse_relative_time__mutmut_42': x_parse_relative_time__mutmut_42, 
-    'x_parse_relative_time__mutmut_43': x_parse_relative_time__mutmut_43, 
-    'x_parse_relative_time__mutmut_44': x_parse_relative_time__mutmut_44, 
-    'x_parse_relative_time__mutmut_45': x_parse_relative_time__mutmut_45, 
-    'x_parse_relative_time__mutmut_46': x_parse_relative_time__mutmut_46, 
-    'x_parse_relative_time__mutmut_47': x_parse_relative_time__mutmut_47, 
-    'x_parse_relative_time__mutmut_48': x_parse_relative_time__mutmut_48, 
-    'x_parse_relative_time__mutmut_49': x_parse_relative_time__mutmut_49, 
-    'x_parse_relative_time__mutmut_50': x_parse_relative_time__mutmut_50, 
-    'x_parse_relative_time__mutmut_51': x_parse_relative_time__mutmut_51, 
-    'x_parse_relative_time__mutmut_52': x_parse_relative_time__mutmut_52, 
-    'x_parse_relative_time__mutmut_53': x_parse_relative_time__mutmut_53, 
-    'x_parse_relative_time__mutmut_54': x_parse_relative_time__mutmut_54, 
-    'x_parse_relative_time__mutmut_55': x_parse_relative_time__mutmut_55, 
-    'x_parse_relative_time__mutmut_56': x_parse_relative_time__mutmut_56, 
-    'x_parse_relative_time__mutmut_57': x_parse_relative_time__mutmut_57, 
-    'x_parse_relative_time__mutmut_58': x_parse_relative_time__mutmut_58, 
-    'x_parse_relative_time__mutmut_59': x_parse_relative_time__mutmut_59, 
-    'x_parse_relative_time__mutmut_60': x_parse_relative_time__mutmut_60, 
-    'x_parse_relative_time__mutmut_61': x_parse_relative_time__mutmut_61, 
-    'x_parse_relative_time__mutmut_62': x_parse_relative_time__mutmut_62, 
-    'x_parse_relative_time__mutmut_63': x_parse_relative_time__mutmut_63
+
+x_parse_relative_time__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_relative_time__mutmut_1": x_parse_relative_time__mutmut_1,
+    "x_parse_relative_time__mutmut_2": x_parse_relative_time__mutmut_2,
+    "x_parse_relative_time__mutmut_3": x_parse_relative_time__mutmut_3,
+    "x_parse_relative_time__mutmut_4": x_parse_relative_time__mutmut_4,
+    "x_parse_relative_time__mutmut_5": x_parse_relative_time__mutmut_5,
+    "x_parse_relative_time__mutmut_6": x_parse_relative_time__mutmut_6,
+    "x_parse_relative_time__mutmut_7": x_parse_relative_time__mutmut_7,
+    "x_parse_relative_time__mutmut_8": x_parse_relative_time__mutmut_8,
+    "x_parse_relative_time__mutmut_9": x_parse_relative_time__mutmut_9,
+    "x_parse_relative_time__mutmut_10": x_parse_relative_time__mutmut_10,
+    "x_parse_relative_time__mutmut_11": x_parse_relative_time__mutmut_11,
+    "x_parse_relative_time__mutmut_12": x_parse_relative_time__mutmut_12,
+    "x_parse_relative_time__mutmut_13": x_parse_relative_time__mutmut_13,
+    "x_parse_relative_time__mutmut_14": x_parse_relative_time__mutmut_14,
+    "x_parse_relative_time__mutmut_15": x_parse_relative_time__mutmut_15,
+    "x_parse_relative_time__mutmut_16": x_parse_relative_time__mutmut_16,
+    "x_parse_relative_time__mutmut_17": x_parse_relative_time__mutmut_17,
+    "x_parse_relative_time__mutmut_18": x_parse_relative_time__mutmut_18,
+    "x_parse_relative_time__mutmut_19": x_parse_relative_time__mutmut_19,
+    "x_parse_relative_time__mutmut_20": x_parse_relative_time__mutmut_20,
+    "x_parse_relative_time__mutmut_21": x_parse_relative_time__mutmut_21,
+    "x_parse_relative_time__mutmut_22": x_parse_relative_time__mutmut_22,
+    "x_parse_relative_time__mutmut_23": x_parse_relative_time__mutmut_23,
+    "x_parse_relative_time__mutmut_24": x_parse_relative_time__mutmut_24,
+    "x_parse_relative_time__mutmut_25": x_parse_relative_time__mutmut_25,
+    "x_parse_relative_time__mutmut_26": x_parse_relative_time__mutmut_26,
+    "x_parse_relative_time__mutmut_27": x_parse_relative_time__mutmut_27,
+    "x_parse_relative_time__mutmut_28": x_parse_relative_time__mutmut_28,
+    "x_parse_relative_time__mutmut_29": x_parse_relative_time__mutmut_29,
+    "x_parse_relative_time__mutmut_30": x_parse_relative_time__mutmut_30,
+    "x_parse_relative_time__mutmut_31": x_parse_relative_time__mutmut_31,
+    "x_parse_relative_time__mutmut_32": x_parse_relative_time__mutmut_32,
+    "x_parse_relative_time__mutmut_33": x_parse_relative_time__mutmut_33,
+    "x_parse_relative_time__mutmut_34": x_parse_relative_time__mutmut_34,
+    "x_parse_relative_time__mutmut_35": x_parse_relative_time__mutmut_35,
+    "x_parse_relative_time__mutmut_36": x_parse_relative_time__mutmut_36,
+    "x_parse_relative_time__mutmut_37": x_parse_relative_time__mutmut_37,
+    "x_parse_relative_time__mutmut_38": x_parse_relative_time__mutmut_38,
+    "x_parse_relative_time__mutmut_39": x_parse_relative_time__mutmut_39,
+    "x_parse_relative_time__mutmut_40": x_parse_relative_time__mutmut_40,
+    "x_parse_relative_time__mutmut_41": x_parse_relative_time__mutmut_41,
+    "x_parse_relative_time__mutmut_42": x_parse_relative_time__mutmut_42,
+    "x_parse_relative_time__mutmut_43": x_parse_relative_time__mutmut_43,
+    "x_parse_relative_time__mutmut_44": x_parse_relative_time__mutmut_44,
+    "x_parse_relative_time__mutmut_45": x_parse_relative_time__mutmut_45,
+    "x_parse_relative_time__mutmut_46": x_parse_relative_time__mutmut_46,
+    "x_parse_relative_time__mutmut_47": x_parse_relative_time__mutmut_47,
+    "x_parse_relative_time__mutmut_48": x_parse_relative_time__mutmut_48,
+    "x_parse_relative_time__mutmut_49": x_parse_relative_time__mutmut_49,
+    "x_parse_relative_time__mutmut_50": x_parse_relative_time__mutmut_50,
+    "x_parse_relative_time__mutmut_51": x_parse_relative_time__mutmut_51,
+    "x_parse_relative_time__mutmut_52": x_parse_relative_time__mutmut_52,
+    "x_parse_relative_time__mutmut_53": x_parse_relative_time__mutmut_53,
+    "x_parse_relative_time__mutmut_54": x_parse_relative_time__mutmut_54,
+    "x_parse_relative_time__mutmut_55": x_parse_relative_time__mutmut_55,
+    "x_parse_relative_time__mutmut_56": x_parse_relative_time__mutmut_56,
+    "x_parse_relative_time__mutmut_57": x_parse_relative_time__mutmut_57,
+    "x_parse_relative_time__mutmut_58": x_parse_relative_time__mutmut_58,
+    "x_parse_relative_time__mutmut_59": x_parse_relative_time__mutmut_59,
+    "x_parse_relative_time__mutmut_60": x_parse_relative_time__mutmut_60,
+    "x_parse_relative_time__mutmut_61": x_parse_relative_time__mutmut_61,
+    "x_parse_relative_time__mutmut_62": x_parse_relative_time__mutmut_62,
+    "x_parse_relative_time__mutmut_63": x_parse_relative_time__mutmut_63,
 }
 
+
 def parse_relative_time(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_relative_time__mutmut_orig, x_parse_relative_time__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_relative_time__mutmut_orig, x_parse_relative_time__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_relative_time.__signature__ = _mutmut_signature(x_parse_relative_time__mutmut_orig)
-x_parse_relative_time__mutmut_orig.__name__ = 'x_parse_relative_time'
+x_parse_relative_time__mutmut_orig.__name__ = "x_parse_relative_time"
 
 
 # <3 🧱🤝🔌🪄

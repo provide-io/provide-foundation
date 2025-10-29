@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -731,7 +734,7 @@ def x_get_available_space__mutmut_13(path: Path) -> int | None:
             "Disk space checked",
             path=str(check_path),
             available_bytes=available,
-            )
+        )
 
         return available
 
@@ -1539,7 +1542,7 @@ def x_get_available_space__mutmut_29(path: Path) -> int | None:
             "Could not check disk space",
             path=str(path),
             error=str(e),
-            )
+        )
         return None
 
 
@@ -1842,50 +1845,55 @@ def x_get_available_space__mutmut_35(path: Path) -> int | None:
         )
         return None
 
-x_get_available_space__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_available_space__mutmut_1': x_get_available_space__mutmut_1, 
-    'x_get_available_space__mutmut_2': x_get_available_space__mutmut_2, 
-    'x_get_available_space__mutmut_3': x_get_available_space__mutmut_3, 
-    'x_get_available_space__mutmut_4': x_get_available_space__mutmut_4, 
-    'x_get_available_space__mutmut_5': x_get_available_space__mutmut_5, 
-    'x_get_available_space__mutmut_6': x_get_available_space__mutmut_6, 
-    'x_get_available_space__mutmut_7': x_get_available_space__mutmut_7, 
-    'x_get_available_space__mutmut_8': x_get_available_space__mutmut_8, 
-    'x_get_available_space__mutmut_9': x_get_available_space__mutmut_9, 
-    'x_get_available_space__mutmut_10': x_get_available_space__mutmut_10, 
-    'x_get_available_space__mutmut_11': x_get_available_space__mutmut_11, 
-    'x_get_available_space__mutmut_12': x_get_available_space__mutmut_12, 
-    'x_get_available_space__mutmut_13': x_get_available_space__mutmut_13, 
-    'x_get_available_space__mutmut_14': x_get_available_space__mutmut_14, 
-    'x_get_available_space__mutmut_15': x_get_available_space__mutmut_15, 
-    'x_get_available_space__mutmut_16': x_get_available_space__mutmut_16, 
-    'x_get_available_space__mutmut_17': x_get_available_space__mutmut_17, 
-    'x_get_available_space__mutmut_18': x_get_available_space__mutmut_18, 
-    'x_get_available_space__mutmut_19': x_get_available_space__mutmut_19, 
-    'x_get_available_space__mutmut_20': x_get_available_space__mutmut_20, 
-    'x_get_available_space__mutmut_21': x_get_available_space__mutmut_21, 
-    'x_get_available_space__mutmut_22': x_get_available_space__mutmut_22, 
-    'x_get_available_space__mutmut_23': x_get_available_space__mutmut_23, 
-    'x_get_available_space__mutmut_24': x_get_available_space__mutmut_24, 
-    'x_get_available_space__mutmut_25': x_get_available_space__mutmut_25, 
-    'x_get_available_space__mutmut_26': x_get_available_space__mutmut_26, 
-    'x_get_available_space__mutmut_27': x_get_available_space__mutmut_27, 
-    'x_get_available_space__mutmut_28': x_get_available_space__mutmut_28, 
-    'x_get_available_space__mutmut_29': x_get_available_space__mutmut_29, 
-    'x_get_available_space__mutmut_30': x_get_available_space__mutmut_30, 
-    'x_get_available_space__mutmut_31': x_get_available_space__mutmut_31, 
-    'x_get_available_space__mutmut_32': x_get_available_space__mutmut_32, 
-    'x_get_available_space__mutmut_33': x_get_available_space__mutmut_33, 
-    'x_get_available_space__mutmut_34': x_get_available_space__mutmut_34, 
-    'x_get_available_space__mutmut_35': x_get_available_space__mutmut_35
+
+x_get_available_space__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_available_space__mutmut_1": x_get_available_space__mutmut_1,
+    "x_get_available_space__mutmut_2": x_get_available_space__mutmut_2,
+    "x_get_available_space__mutmut_3": x_get_available_space__mutmut_3,
+    "x_get_available_space__mutmut_4": x_get_available_space__mutmut_4,
+    "x_get_available_space__mutmut_5": x_get_available_space__mutmut_5,
+    "x_get_available_space__mutmut_6": x_get_available_space__mutmut_6,
+    "x_get_available_space__mutmut_7": x_get_available_space__mutmut_7,
+    "x_get_available_space__mutmut_8": x_get_available_space__mutmut_8,
+    "x_get_available_space__mutmut_9": x_get_available_space__mutmut_9,
+    "x_get_available_space__mutmut_10": x_get_available_space__mutmut_10,
+    "x_get_available_space__mutmut_11": x_get_available_space__mutmut_11,
+    "x_get_available_space__mutmut_12": x_get_available_space__mutmut_12,
+    "x_get_available_space__mutmut_13": x_get_available_space__mutmut_13,
+    "x_get_available_space__mutmut_14": x_get_available_space__mutmut_14,
+    "x_get_available_space__mutmut_15": x_get_available_space__mutmut_15,
+    "x_get_available_space__mutmut_16": x_get_available_space__mutmut_16,
+    "x_get_available_space__mutmut_17": x_get_available_space__mutmut_17,
+    "x_get_available_space__mutmut_18": x_get_available_space__mutmut_18,
+    "x_get_available_space__mutmut_19": x_get_available_space__mutmut_19,
+    "x_get_available_space__mutmut_20": x_get_available_space__mutmut_20,
+    "x_get_available_space__mutmut_21": x_get_available_space__mutmut_21,
+    "x_get_available_space__mutmut_22": x_get_available_space__mutmut_22,
+    "x_get_available_space__mutmut_23": x_get_available_space__mutmut_23,
+    "x_get_available_space__mutmut_24": x_get_available_space__mutmut_24,
+    "x_get_available_space__mutmut_25": x_get_available_space__mutmut_25,
+    "x_get_available_space__mutmut_26": x_get_available_space__mutmut_26,
+    "x_get_available_space__mutmut_27": x_get_available_space__mutmut_27,
+    "x_get_available_space__mutmut_28": x_get_available_space__mutmut_28,
+    "x_get_available_space__mutmut_29": x_get_available_space__mutmut_29,
+    "x_get_available_space__mutmut_30": x_get_available_space__mutmut_30,
+    "x_get_available_space__mutmut_31": x_get_available_space__mutmut_31,
+    "x_get_available_space__mutmut_32": x_get_available_space__mutmut_32,
+    "x_get_available_space__mutmut_33": x_get_available_space__mutmut_33,
+    "x_get_available_space__mutmut_34": x_get_available_space__mutmut_34,
+    "x_get_available_space__mutmut_35": x_get_available_space__mutmut_35,
 }
 
+
 def get_available_space(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_available_space__mutmut_orig, x_get_available_space__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_available_space__mutmut_orig, x_get_available_space__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_available_space.__signature__ = _mutmut_signature(x_get_available_space__mutmut_orig)
-x_get_available_space__mutmut_orig.__name__ = 'x_get_available_space'
+x_get_available_space__mutmut_orig.__name__ = "x_get_available_space"
 
 
 def x_check_disk_space__mutmut_orig(
@@ -3022,7 +3030,7 @@ def x_check_disk_space__mutmut_11(
             log.warning(
                 "Could not determine disk space, operation will proceed",
                 path=str(path),
-                )
+            )
             return True
 
         # Convert to GB for human-readable logging
@@ -5505,7 +5513,7 @@ def x_check_disk_space__mutmut_36(
             path=str(check_path),
             required_gb=f"{required_gb:.2f}",
             available_gb=f"{available_gb:.2f}",
-            )
+        )
 
         # Check if sufficient space available
         if available < required_bytes:
@@ -7195,7 +7203,7 @@ def x_check_disk_space__mutmut_53(
                 path=str(check_path),
                 required_gb=f"{required_gb:.2f}",
                 available_gb=f"{available_gb:.2f}",
-                )
+            )
 
             if raise_on_insufficient:
                 raise OSError(error_msg)
@@ -9190,7 +9198,7 @@ def x_check_disk_space__mutmut_73(
             "Unexpected error checking disk space, operation will proceed",
             path=str(path),
             error=str(e),
-            )
+        )
         return True
 
 
@@ -9886,95 +9894,100 @@ def x_check_disk_space__mutmut_80(
         )
         return False
 
-x_check_disk_space__mutmut_mutants : ClassVar[MutantDict] = {
-'x_check_disk_space__mutmut_1': x_check_disk_space__mutmut_1, 
-    'x_check_disk_space__mutmut_2': x_check_disk_space__mutmut_2, 
-    'x_check_disk_space__mutmut_3': x_check_disk_space__mutmut_3, 
-    'x_check_disk_space__mutmut_4': x_check_disk_space__mutmut_4, 
-    'x_check_disk_space__mutmut_5': x_check_disk_space__mutmut_5, 
-    'x_check_disk_space__mutmut_6': x_check_disk_space__mutmut_6, 
-    'x_check_disk_space__mutmut_7': x_check_disk_space__mutmut_7, 
-    'x_check_disk_space__mutmut_8': x_check_disk_space__mutmut_8, 
-    'x_check_disk_space__mutmut_9': x_check_disk_space__mutmut_9, 
-    'x_check_disk_space__mutmut_10': x_check_disk_space__mutmut_10, 
-    'x_check_disk_space__mutmut_11': x_check_disk_space__mutmut_11, 
-    'x_check_disk_space__mutmut_12': x_check_disk_space__mutmut_12, 
-    'x_check_disk_space__mutmut_13': x_check_disk_space__mutmut_13, 
-    'x_check_disk_space__mutmut_14': x_check_disk_space__mutmut_14, 
-    'x_check_disk_space__mutmut_15': x_check_disk_space__mutmut_15, 
-    'x_check_disk_space__mutmut_16': x_check_disk_space__mutmut_16, 
-    'x_check_disk_space__mutmut_17': x_check_disk_space__mutmut_17, 
-    'x_check_disk_space__mutmut_18': x_check_disk_space__mutmut_18, 
-    'x_check_disk_space__mutmut_19': x_check_disk_space__mutmut_19, 
-    'x_check_disk_space__mutmut_20': x_check_disk_space__mutmut_20, 
-    'x_check_disk_space__mutmut_21': x_check_disk_space__mutmut_21, 
-    'x_check_disk_space__mutmut_22': x_check_disk_space__mutmut_22, 
-    'x_check_disk_space__mutmut_23': x_check_disk_space__mutmut_23, 
-    'x_check_disk_space__mutmut_24': x_check_disk_space__mutmut_24, 
-    'x_check_disk_space__mutmut_25': x_check_disk_space__mutmut_25, 
-    'x_check_disk_space__mutmut_26': x_check_disk_space__mutmut_26, 
-    'x_check_disk_space__mutmut_27': x_check_disk_space__mutmut_27, 
-    'x_check_disk_space__mutmut_28': x_check_disk_space__mutmut_28, 
-    'x_check_disk_space__mutmut_29': x_check_disk_space__mutmut_29, 
-    'x_check_disk_space__mutmut_30': x_check_disk_space__mutmut_30, 
-    'x_check_disk_space__mutmut_31': x_check_disk_space__mutmut_31, 
-    'x_check_disk_space__mutmut_32': x_check_disk_space__mutmut_32, 
-    'x_check_disk_space__mutmut_33': x_check_disk_space__mutmut_33, 
-    'x_check_disk_space__mutmut_34': x_check_disk_space__mutmut_34, 
-    'x_check_disk_space__mutmut_35': x_check_disk_space__mutmut_35, 
-    'x_check_disk_space__mutmut_36': x_check_disk_space__mutmut_36, 
-    'x_check_disk_space__mutmut_37': x_check_disk_space__mutmut_37, 
-    'x_check_disk_space__mutmut_38': x_check_disk_space__mutmut_38, 
-    'x_check_disk_space__mutmut_39': x_check_disk_space__mutmut_39, 
-    'x_check_disk_space__mutmut_40': x_check_disk_space__mutmut_40, 
-    'x_check_disk_space__mutmut_41': x_check_disk_space__mutmut_41, 
-    'x_check_disk_space__mutmut_42': x_check_disk_space__mutmut_42, 
-    'x_check_disk_space__mutmut_43': x_check_disk_space__mutmut_43, 
-    'x_check_disk_space__mutmut_44': x_check_disk_space__mutmut_44, 
-    'x_check_disk_space__mutmut_45': x_check_disk_space__mutmut_45, 
-    'x_check_disk_space__mutmut_46': x_check_disk_space__mutmut_46, 
-    'x_check_disk_space__mutmut_47': x_check_disk_space__mutmut_47, 
-    'x_check_disk_space__mutmut_48': x_check_disk_space__mutmut_48, 
-    'x_check_disk_space__mutmut_49': x_check_disk_space__mutmut_49, 
-    'x_check_disk_space__mutmut_50': x_check_disk_space__mutmut_50, 
-    'x_check_disk_space__mutmut_51': x_check_disk_space__mutmut_51, 
-    'x_check_disk_space__mutmut_52': x_check_disk_space__mutmut_52, 
-    'x_check_disk_space__mutmut_53': x_check_disk_space__mutmut_53, 
-    'x_check_disk_space__mutmut_54': x_check_disk_space__mutmut_54, 
-    'x_check_disk_space__mutmut_55': x_check_disk_space__mutmut_55, 
-    'x_check_disk_space__mutmut_56': x_check_disk_space__mutmut_56, 
-    'x_check_disk_space__mutmut_57': x_check_disk_space__mutmut_57, 
-    'x_check_disk_space__mutmut_58': x_check_disk_space__mutmut_58, 
-    'x_check_disk_space__mutmut_59': x_check_disk_space__mutmut_59, 
-    'x_check_disk_space__mutmut_60': x_check_disk_space__mutmut_60, 
-    'x_check_disk_space__mutmut_61': x_check_disk_space__mutmut_61, 
-    'x_check_disk_space__mutmut_62': x_check_disk_space__mutmut_62, 
-    'x_check_disk_space__mutmut_63': x_check_disk_space__mutmut_63, 
-    'x_check_disk_space__mutmut_64': x_check_disk_space__mutmut_64, 
-    'x_check_disk_space__mutmut_65': x_check_disk_space__mutmut_65, 
-    'x_check_disk_space__mutmut_66': x_check_disk_space__mutmut_66, 
-    'x_check_disk_space__mutmut_67': x_check_disk_space__mutmut_67, 
-    'x_check_disk_space__mutmut_68': x_check_disk_space__mutmut_68, 
-    'x_check_disk_space__mutmut_69': x_check_disk_space__mutmut_69, 
-    'x_check_disk_space__mutmut_70': x_check_disk_space__mutmut_70, 
-    'x_check_disk_space__mutmut_71': x_check_disk_space__mutmut_71, 
-    'x_check_disk_space__mutmut_72': x_check_disk_space__mutmut_72, 
-    'x_check_disk_space__mutmut_73': x_check_disk_space__mutmut_73, 
-    'x_check_disk_space__mutmut_74': x_check_disk_space__mutmut_74, 
-    'x_check_disk_space__mutmut_75': x_check_disk_space__mutmut_75, 
-    'x_check_disk_space__mutmut_76': x_check_disk_space__mutmut_76, 
-    'x_check_disk_space__mutmut_77': x_check_disk_space__mutmut_77, 
-    'x_check_disk_space__mutmut_78': x_check_disk_space__mutmut_78, 
-    'x_check_disk_space__mutmut_79': x_check_disk_space__mutmut_79, 
-    'x_check_disk_space__mutmut_80': x_check_disk_space__mutmut_80
+
+x_check_disk_space__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_check_disk_space__mutmut_1": x_check_disk_space__mutmut_1,
+    "x_check_disk_space__mutmut_2": x_check_disk_space__mutmut_2,
+    "x_check_disk_space__mutmut_3": x_check_disk_space__mutmut_3,
+    "x_check_disk_space__mutmut_4": x_check_disk_space__mutmut_4,
+    "x_check_disk_space__mutmut_5": x_check_disk_space__mutmut_5,
+    "x_check_disk_space__mutmut_6": x_check_disk_space__mutmut_6,
+    "x_check_disk_space__mutmut_7": x_check_disk_space__mutmut_7,
+    "x_check_disk_space__mutmut_8": x_check_disk_space__mutmut_8,
+    "x_check_disk_space__mutmut_9": x_check_disk_space__mutmut_9,
+    "x_check_disk_space__mutmut_10": x_check_disk_space__mutmut_10,
+    "x_check_disk_space__mutmut_11": x_check_disk_space__mutmut_11,
+    "x_check_disk_space__mutmut_12": x_check_disk_space__mutmut_12,
+    "x_check_disk_space__mutmut_13": x_check_disk_space__mutmut_13,
+    "x_check_disk_space__mutmut_14": x_check_disk_space__mutmut_14,
+    "x_check_disk_space__mutmut_15": x_check_disk_space__mutmut_15,
+    "x_check_disk_space__mutmut_16": x_check_disk_space__mutmut_16,
+    "x_check_disk_space__mutmut_17": x_check_disk_space__mutmut_17,
+    "x_check_disk_space__mutmut_18": x_check_disk_space__mutmut_18,
+    "x_check_disk_space__mutmut_19": x_check_disk_space__mutmut_19,
+    "x_check_disk_space__mutmut_20": x_check_disk_space__mutmut_20,
+    "x_check_disk_space__mutmut_21": x_check_disk_space__mutmut_21,
+    "x_check_disk_space__mutmut_22": x_check_disk_space__mutmut_22,
+    "x_check_disk_space__mutmut_23": x_check_disk_space__mutmut_23,
+    "x_check_disk_space__mutmut_24": x_check_disk_space__mutmut_24,
+    "x_check_disk_space__mutmut_25": x_check_disk_space__mutmut_25,
+    "x_check_disk_space__mutmut_26": x_check_disk_space__mutmut_26,
+    "x_check_disk_space__mutmut_27": x_check_disk_space__mutmut_27,
+    "x_check_disk_space__mutmut_28": x_check_disk_space__mutmut_28,
+    "x_check_disk_space__mutmut_29": x_check_disk_space__mutmut_29,
+    "x_check_disk_space__mutmut_30": x_check_disk_space__mutmut_30,
+    "x_check_disk_space__mutmut_31": x_check_disk_space__mutmut_31,
+    "x_check_disk_space__mutmut_32": x_check_disk_space__mutmut_32,
+    "x_check_disk_space__mutmut_33": x_check_disk_space__mutmut_33,
+    "x_check_disk_space__mutmut_34": x_check_disk_space__mutmut_34,
+    "x_check_disk_space__mutmut_35": x_check_disk_space__mutmut_35,
+    "x_check_disk_space__mutmut_36": x_check_disk_space__mutmut_36,
+    "x_check_disk_space__mutmut_37": x_check_disk_space__mutmut_37,
+    "x_check_disk_space__mutmut_38": x_check_disk_space__mutmut_38,
+    "x_check_disk_space__mutmut_39": x_check_disk_space__mutmut_39,
+    "x_check_disk_space__mutmut_40": x_check_disk_space__mutmut_40,
+    "x_check_disk_space__mutmut_41": x_check_disk_space__mutmut_41,
+    "x_check_disk_space__mutmut_42": x_check_disk_space__mutmut_42,
+    "x_check_disk_space__mutmut_43": x_check_disk_space__mutmut_43,
+    "x_check_disk_space__mutmut_44": x_check_disk_space__mutmut_44,
+    "x_check_disk_space__mutmut_45": x_check_disk_space__mutmut_45,
+    "x_check_disk_space__mutmut_46": x_check_disk_space__mutmut_46,
+    "x_check_disk_space__mutmut_47": x_check_disk_space__mutmut_47,
+    "x_check_disk_space__mutmut_48": x_check_disk_space__mutmut_48,
+    "x_check_disk_space__mutmut_49": x_check_disk_space__mutmut_49,
+    "x_check_disk_space__mutmut_50": x_check_disk_space__mutmut_50,
+    "x_check_disk_space__mutmut_51": x_check_disk_space__mutmut_51,
+    "x_check_disk_space__mutmut_52": x_check_disk_space__mutmut_52,
+    "x_check_disk_space__mutmut_53": x_check_disk_space__mutmut_53,
+    "x_check_disk_space__mutmut_54": x_check_disk_space__mutmut_54,
+    "x_check_disk_space__mutmut_55": x_check_disk_space__mutmut_55,
+    "x_check_disk_space__mutmut_56": x_check_disk_space__mutmut_56,
+    "x_check_disk_space__mutmut_57": x_check_disk_space__mutmut_57,
+    "x_check_disk_space__mutmut_58": x_check_disk_space__mutmut_58,
+    "x_check_disk_space__mutmut_59": x_check_disk_space__mutmut_59,
+    "x_check_disk_space__mutmut_60": x_check_disk_space__mutmut_60,
+    "x_check_disk_space__mutmut_61": x_check_disk_space__mutmut_61,
+    "x_check_disk_space__mutmut_62": x_check_disk_space__mutmut_62,
+    "x_check_disk_space__mutmut_63": x_check_disk_space__mutmut_63,
+    "x_check_disk_space__mutmut_64": x_check_disk_space__mutmut_64,
+    "x_check_disk_space__mutmut_65": x_check_disk_space__mutmut_65,
+    "x_check_disk_space__mutmut_66": x_check_disk_space__mutmut_66,
+    "x_check_disk_space__mutmut_67": x_check_disk_space__mutmut_67,
+    "x_check_disk_space__mutmut_68": x_check_disk_space__mutmut_68,
+    "x_check_disk_space__mutmut_69": x_check_disk_space__mutmut_69,
+    "x_check_disk_space__mutmut_70": x_check_disk_space__mutmut_70,
+    "x_check_disk_space__mutmut_71": x_check_disk_space__mutmut_71,
+    "x_check_disk_space__mutmut_72": x_check_disk_space__mutmut_72,
+    "x_check_disk_space__mutmut_73": x_check_disk_space__mutmut_73,
+    "x_check_disk_space__mutmut_74": x_check_disk_space__mutmut_74,
+    "x_check_disk_space__mutmut_75": x_check_disk_space__mutmut_75,
+    "x_check_disk_space__mutmut_76": x_check_disk_space__mutmut_76,
+    "x_check_disk_space__mutmut_77": x_check_disk_space__mutmut_77,
+    "x_check_disk_space__mutmut_78": x_check_disk_space__mutmut_78,
+    "x_check_disk_space__mutmut_79": x_check_disk_space__mutmut_79,
+    "x_check_disk_space__mutmut_80": x_check_disk_space__mutmut_80,
 }
 
+
 def check_disk_space(*args, **kwargs):
-    result = _mutmut_trampoline(x_check_disk_space__mutmut_orig, x_check_disk_space__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_check_disk_space__mutmut_orig, x_check_disk_space__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 check_disk_space.__signature__ = _mutmut_signature(x_check_disk_space__mutmut_orig)
-x_check_disk_space__mutmut_orig.__name__ = 'x_check_disk_space'
+x_check_disk_space__mutmut_orig.__name__ = "x_check_disk_space"
 
 
 def x_get_disk_usage__mutmut_orig(path: Path) -> tuple[int, int, int] | None:
@@ -11039,7 +11052,7 @@ def x_get_disk_usage__mutmut_19(path: Path) -> tuple[int, int, int] | None:
             path=str(check_path),
             total_gb=f"{total / (1024**3):.2f}",
             used_gb=f"{used / (1024**3):.2f}",
-            )
+        )
 
         return (total, used, free)
 
@@ -12233,7 +12246,7 @@ def x_get_disk_usage__mutmut_41(path: Path) -> tuple[int, int, int] | None:
         log.debug(
             "Could not get disk usage",
             path=str(path),
-            )
+        )
         return None
 
 
@@ -12506,61 +12519,64 @@ def x_get_disk_usage__mutmut_46(path: Path) -> tuple[int, int, int] | None:
         )
         return None
 
-x_get_disk_usage__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_disk_usage__mutmut_1': x_get_disk_usage__mutmut_1, 
-    'x_get_disk_usage__mutmut_2': x_get_disk_usage__mutmut_2, 
-    'x_get_disk_usage__mutmut_3': x_get_disk_usage__mutmut_3, 
-    'x_get_disk_usage__mutmut_4': x_get_disk_usage__mutmut_4, 
-    'x_get_disk_usage__mutmut_5': x_get_disk_usage__mutmut_5, 
-    'x_get_disk_usage__mutmut_6': x_get_disk_usage__mutmut_6, 
-    'x_get_disk_usage__mutmut_7': x_get_disk_usage__mutmut_7, 
-    'x_get_disk_usage__mutmut_8': x_get_disk_usage__mutmut_8, 
-    'x_get_disk_usage__mutmut_9': x_get_disk_usage__mutmut_9, 
-    'x_get_disk_usage__mutmut_10': x_get_disk_usage__mutmut_10, 
-    'x_get_disk_usage__mutmut_11': x_get_disk_usage__mutmut_11, 
-    'x_get_disk_usage__mutmut_12': x_get_disk_usage__mutmut_12, 
-    'x_get_disk_usage__mutmut_13': x_get_disk_usage__mutmut_13, 
-    'x_get_disk_usage__mutmut_14': x_get_disk_usage__mutmut_14, 
-    'x_get_disk_usage__mutmut_15': x_get_disk_usage__mutmut_15, 
-    'x_get_disk_usage__mutmut_16': x_get_disk_usage__mutmut_16, 
-    'x_get_disk_usage__mutmut_17': x_get_disk_usage__mutmut_17, 
-    'x_get_disk_usage__mutmut_18': x_get_disk_usage__mutmut_18, 
-    'x_get_disk_usage__mutmut_19': x_get_disk_usage__mutmut_19, 
-    'x_get_disk_usage__mutmut_20': x_get_disk_usage__mutmut_20, 
-    'x_get_disk_usage__mutmut_21': x_get_disk_usage__mutmut_21, 
-    'x_get_disk_usage__mutmut_22': x_get_disk_usage__mutmut_22, 
-    'x_get_disk_usage__mutmut_23': x_get_disk_usage__mutmut_23, 
-    'x_get_disk_usage__mutmut_24': x_get_disk_usage__mutmut_24, 
-    'x_get_disk_usage__mutmut_25': x_get_disk_usage__mutmut_25, 
-    'x_get_disk_usage__mutmut_26': x_get_disk_usage__mutmut_26, 
-    'x_get_disk_usage__mutmut_27': x_get_disk_usage__mutmut_27, 
-    'x_get_disk_usage__mutmut_28': x_get_disk_usage__mutmut_28, 
-    'x_get_disk_usage__mutmut_29': x_get_disk_usage__mutmut_29, 
-    'x_get_disk_usage__mutmut_30': x_get_disk_usage__mutmut_30, 
-    'x_get_disk_usage__mutmut_31': x_get_disk_usage__mutmut_31, 
-    'x_get_disk_usage__mutmut_32': x_get_disk_usage__mutmut_32, 
-    'x_get_disk_usage__mutmut_33': x_get_disk_usage__mutmut_33, 
-    'x_get_disk_usage__mutmut_34': x_get_disk_usage__mutmut_34, 
-    'x_get_disk_usage__mutmut_35': x_get_disk_usage__mutmut_35, 
-    'x_get_disk_usage__mutmut_36': x_get_disk_usage__mutmut_36, 
-    'x_get_disk_usage__mutmut_37': x_get_disk_usage__mutmut_37, 
-    'x_get_disk_usage__mutmut_38': x_get_disk_usage__mutmut_38, 
-    'x_get_disk_usage__mutmut_39': x_get_disk_usage__mutmut_39, 
-    'x_get_disk_usage__mutmut_40': x_get_disk_usage__mutmut_40, 
-    'x_get_disk_usage__mutmut_41': x_get_disk_usage__mutmut_41, 
-    'x_get_disk_usage__mutmut_42': x_get_disk_usage__mutmut_42, 
-    'x_get_disk_usage__mutmut_43': x_get_disk_usage__mutmut_43, 
-    'x_get_disk_usage__mutmut_44': x_get_disk_usage__mutmut_44, 
-    'x_get_disk_usage__mutmut_45': x_get_disk_usage__mutmut_45, 
-    'x_get_disk_usage__mutmut_46': x_get_disk_usage__mutmut_46
+
+x_get_disk_usage__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_disk_usage__mutmut_1": x_get_disk_usage__mutmut_1,
+    "x_get_disk_usage__mutmut_2": x_get_disk_usage__mutmut_2,
+    "x_get_disk_usage__mutmut_3": x_get_disk_usage__mutmut_3,
+    "x_get_disk_usage__mutmut_4": x_get_disk_usage__mutmut_4,
+    "x_get_disk_usage__mutmut_5": x_get_disk_usage__mutmut_5,
+    "x_get_disk_usage__mutmut_6": x_get_disk_usage__mutmut_6,
+    "x_get_disk_usage__mutmut_7": x_get_disk_usage__mutmut_7,
+    "x_get_disk_usage__mutmut_8": x_get_disk_usage__mutmut_8,
+    "x_get_disk_usage__mutmut_9": x_get_disk_usage__mutmut_9,
+    "x_get_disk_usage__mutmut_10": x_get_disk_usage__mutmut_10,
+    "x_get_disk_usage__mutmut_11": x_get_disk_usage__mutmut_11,
+    "x_get_disk_usage__mutmut_12": x_get_disk_usage__mutmut_12,
+    "x_get_disk_usage__mutmut_13": x_get_disk_usage__mutmut_13,
+    "x_get_disk_usage__mutmut_14": x_get_disk_usage__mutmut_14,
+    "x_get_disk_usage__mutmut_15": x_get_disk_usage__mutmut_15,
+    "x_get_disk_usage__mutmut_16": x_get_disk_usage__mutmut_16,
+    "x_get_disk_usage__mutmut_17": x_get_disk_usage__mutmut_17,
+    "x_get_disk_usage__mutmut_18": x_get_disk_usage__mutmut_18,
+    "x_get_disk_usage__mutmut_19": x_get_disk_usage__mutmut_19,
+    "x_get_disk_usage__mutmut_20": x_get_disk_usage__mutmut_20,
+    "x_get_disk_usage__mutmut_21": x_get_disk_usage__mutmut_21,
+    "x_get_disk_usage__mutmut_22": x_get_disk_usage__mutmut_22,
+    "x_get_disk_usage__mutmut_23": x_get_disk_usage__mutmut_23,
+    "x_get_disk_usage__mutmut_24": x_get_disk_usage__mutmut_24,
+    "x_get_disk_usage__mutmut_25": x_get_disk_usage__mutmut_25,
+    "x_get_disk_usage__mutmut_26": x_get_disk_usage__mutmut_26,
+    "x_get_disk_usage__mutmut_27": x_get_disk_usage__mutmut_27,
+    "x_get_disk_usage__mutmut_28": x_get_disk_usage__mutmut_28,
+    "x_get_disk_usage__mutmut_29": x_get_disk_usage__mutmut_29,
+    "x_get_disk_usage__mutmut_30": x_get_disk_usage__mutmut_30,
+    "x_get_disk_usage__mutmut_31": x_get_disk_usage__mutmut_31,
+    "x_get_disk_usage__mutmut_32": x_get_disk_usage__mutmut_32,
+    "x_get_disk_usage__mutmut_33": x_get_disk_usage__mutmut_33,
+    "x_get_disk_usage__mutmut_34": x_get_disk_usage__mutmut_34,
+    "x_get_disk_usage__mutmut_35": x_get_disk_usage__mutmut_35,
+    "x_get_disk_usage__mutmut_36": x_get_disk_usage__mutmut_36,
+    "x_get_disk_usage__mutmut_37": x_get_disk_usage__mutmut_37,
+    "x_get_disk_usage__mutmut_38": x_get_disk_usage__mutmut_38,
+    "x_get_disk_usage__mutmut_39": x_get_disk_usage__mutmut_39,
+    "x_get_disk_usage__mutmut_40": x_get_disk_usage__mutmut_40,
+    "x_get_disk_usage__mutmut_41": x_get_disk_usage__mutmut_41,
+    "x_get_disk_usage__mutmut_42": x_get_disk_usage__mutmut_42,
+    "x_get_disk_usage__mutmut_43": x_get_disk_usage__mutmut_43,
+    "x_get_disk_usage__mutmut_44": x_get_disk_usage__mutmut_44,
+    "x_get_disk_usage__mutmut_45": x_get_disk_usage__mutmut_45,
+    "x_get_disk_usage__mutmut_46": x_get_disk_usage__mutmut_46,
 }
+
 
 def get_disk_usage(*args, **kwargs):
     result = _mutmut_trampoline(x_get_disk_usage__mutmut_orig, x_get_disk_usage__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_disk_usage.__signature__ = _mutmut_signature(x_get_disk_usage__mutmut_orig)
-x_get_disk_usage__mutmut_orig.__name__ = 'x_get_disk_usage'
+x_get_disk_usage__mutmut_orig.__name__ = "x_get_disk_usage"
 
 
 def x_format_bytes__mutmut_orig(num_bytes: int) -> str:
@@ -13210,38 +13226,41 @@ def x_format_bytes__mutmut_23(num_bytes: int) -> str:
         num_bytes_float /= 1025.0
     return f"{num_bytes_float:.2f} PB"
 
-x_format_bytes__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_bytes__mutmut_1': x_format_bytes__mutmut_1, 
-    'x_format_bytes__mutmut_2': x_format_bytes__mutmut_2, 
-    'x_format_bytes__mutmut_3': x_format_bytes__mutmut_3, 
-    'x_format_bytes__mutmut_4': x_format_bytes__mutmut_4, 
-    'x_format_bytes__mutmut_5': x_format_bytes__mutmut_5, 
-    'x_format_bytes__mutmut_6': x_format_bytes__mutmut_6, 
-    'x_format_bytes__mutmut_7': x_format_bytes__mutmut_7, 
-    'x_format_bytes__mutmut_8': x_format_bytes__mutmut_8, 
-    'x_format_bytes__mutmut_9': x_format_bytes__mutmut_9, 
-    'x_format_bytes__mutmut_10': x_format_bytes__mutmut_10, 
-    'x_format_bytes__mutmut_11': x_format_bytes__mutmut_11, 
-    'x_format_bytes__mutmut_12': x_format_bytes__mutmut_12, 
-    'x_format_bytes__mutmut_13': x_format_bytes__mutmut_13, 
-    'x_format_bytes__mutmut_14': x_format_bytes__mutmut_14, 
-    'x_format_bytes__mutmut_15': x_format_bytes__mutmut_15, 
-    'x_format_bytes__mutmut_16': x_format_bytes__mutmut_16, 
-    'x_format_bytes__mutmut_17': x_format_bytes__mutmut_17, 
-    'x_format_bytes__mutmut_18': x_format_bytes__mutmut_18, 
-    'x_format_bytes__mutmut_19': x_format_bytes__mutmut_19, 
-    'x_format_bytes__mutmut_20': x_format_bytes__mutmut_20, 
-    'x_format_bytes__mutmut_21': x_format_bytes__mutmut_21, 
-    'x_format_bytes__mutmut_22': x_format_bytes__mutmut_22, 
-    'x_format_bytes__mutmut_23': x_format_bytes__mutmut_23
+
+x_format_bytes__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_bytes__mutmut_1": x_format_bytes__mutmut_1,
+    "x_format_bytes__mutmut_2": x_format_bytes__mutmut_2,
+    "x_format_bytes__mutmut_3": x_format_bytes__mutmut_3,
+    "x_format_bytes__mutmut_4": x_format_bytes__mutmut_4,
+    "x_format_bytes__mutmut_5": x_format_bytes__mutmut_5,
+    "x_format_bytes__mutmut_6": x_format_bytes__mutmut_6,
+    "x_format_bytes__mutmut_7": x_format_bytes__mutmut_7,
+    "x_format_bytes__mutmut_8": x_format_bytes__mutmut_8,
+    "x_format_bytes__mutmut_9": x_format_bytes__mutmut_9,
+    "x_format_bytes__mutmut_10": x_format_bytes__mutmut_10,
+    "x_format_bytes__mutmut_11": x_format_bytes__mutmut_11,
+    "x_format_bytes__mutmut_12": x_format_bytes__mutmut_12,
+    "x_format_bytes__mutmut_13": x_format_bytes__mutmut_13,
+    "x_format_bytes__mutmut_14": x_format_bytes__mutmut_14,
+    "x_format_bytes__mutmut_15": x_format_bytes__mutmut_15,
+    "x_format_bytes__mutmut_16": x_format_bytes__mutmut_16,
+    "x_format_bytes__mutmut_17": x_format_bytes__mutmut_17,
+    "x_format_bytes__mutmut_18": x_format_bytes__mutmut_18,
+    "x_format_bytes__mutmut_19": x_format_bytes__mutmut_19,
+    "x_format_bytes__mutmut_20": x_format_bytes__mutmut_20,
+    "x_format_bytes__mutmut_21": x_format_bytes__mutmut_21,
+    "x_format_bytes__mutmut_22": x_format_bytes__mutmut_22,
+    "x_format_bytes__mutmut_23": x_format_bytes__mutmut_23,
 }
+
 
 def format_bytes(*args, **kwargs):
     result = _mutmut_trampoline(x_format_bytes__mutmut_orig, x_format_bytes__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 format_bytes.__signature__ = _mutmut_signature(x_format_bytes__mutmut_orig)
-x_format_bytes__mutmut_orig.__name__ = 'x_format_bytes'
+x_format_bytes__mutmut_orig.__name__ = "x_format_bytes"
 
 
 __all__ = [

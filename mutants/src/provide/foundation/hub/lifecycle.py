@@ -25,29 +25,33 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
     else:
         result = mutants[mutant_name](*call_args, **call_kwargs)
     return result
+
 
 # No global async lock - registry handles its own thread safety
 # and _initialized_components dict access is simplified
@@ -456,7 +460,9 @@ def x_get_or_initialize_component__mutmut_8(name: str, dimension: str) -> Any:
     if key in initialized_components:
         return initialized_components[key]
 
-    entry = registry.get_entry(name, )
+    entry = registry.get_entry(
+        name,
+    )
 
     if not entry:
         return None
@@ -803,7 +809,9 @@ def x_get_or_initialize_component__mutmut_15(name: str, dimension: str) -> Any:
         return entry.value
 
     # Initialize lazily
-    if entry.metadata.get("lazy", ):
+    if entry.metadata.get(
+        "lazy",
+    ):
         factory = entry.metadata.get("factory")
         if factory:
             try:
@@ -1674,7 +1682,7 @@ def x_get_or_initialize_component__mutmut_33(name: str, dimension: str) -> Any:
                     value=component,
                     dimension=dimension,
                     metadata=entry.metadata,
-                    )
+                )
                 initialized_components[key] = component
                 return component
             except Exception as e:
@@ -2159,7 +2167,7 @@ def x_get_or_initialize_component__mutmut_43(name: str, dimension: str) -> Any:
                     "Component initialization failed",
                     component=name,
                     dimension=dimension,
-                    )
+                )
                 # Return None on failure for resilient behavior
                 return None
 
@@ -2357,62 +2365,67 @@ def x_get_or_initialize_component__mutmut_47(name: str, dimension: str) -> Any:
 
     return entry.value
 
-x_get_or_initialize_component__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_or_initialize_component__mutmut_1': x_get_or_initialize_component__mutmut_1, 
-    'x_get_or_initialize_component__mutmut_2': x_get_or_initialize_component__mutmut_2, 
-    'x_get_or_initialize_component__mutmut_3': x_get_or_initialize_component__mutmut_3, 
-    'x_get_or_initialize_component__mutmut_4': x_get_or_initialize_component__mutmut_4, 
-    'x_get_or_initialize_component__mutmut_5': x_get_or_initialize_component__mutmut_5, 
-    'x_get_or_initialize_component__mutmut_6': x_get_or_initialize_component__mutmut_6, 
-    'x_get_or_initialize_component__mutmut_7': x_get_or_initialize_component__mutmut_7, 
-    'x_get_or_initialize_component__mutmut_8': x_get_or_initialize_component__mutmut_8, 
-    'x_get_or_initialize_component__mutmut_9': x_get_or_initialize_component__mutmut_9, 
-    'x_get_or_initialize_component__mutmut_10': x_get_or_initialize_component__mutmut_10, 
-    'x_get_or_initialize_component__mutmut_11': x_get_or_initialize_component__mutmut_11, 
-    'x_get_or_initialize_component__mutmut_12': x_get_or_initialize_component__mutmut_12, 
-    'x_get_or_initialize_component__mutmut_13': x_get_or_initialize_component__mutmut_13, 
-    'x_get_or_initialize_component__mutmut_14': x_get_or_initialize_component__mutmut_14, 
-    'x_get_or_initialize_component__mutmut_15': x_get_or_initialize_component__mutmut_15, 
-    'x_get_or_initialize_component__mutmut_16': x_get_or_initialize_component__mutmut_16, 
-    'x_get_or_initialize_component__mutmut_17': x_get_or_initialize_component__mutmut_17, 
-    'x_get_or_initialize_component__mutmut_18': x_get_or_initialize_component__mutmut_18, 
-    'x_get_or_initialize_component__mutmut_19': x_get_or_initialize_component__mutmut_19, 
-    'x_get_or_initialize_component__mutmut_20': x_get_or_initialize_component__mutmut_20, 
-    'x_get_or_initialize_component__mutmut_21': x_get_or_initialize_component__mutmut_21, 
-    'x_get_or_initialize_component__mutmut_22': x_get_or_initialize_component__mutmut_22, 
-    'x_get_or_initialize_component__mutmut_23': x_get_or_initialize_component__mutmut_23, 
-    'x_get_or_initialize_component__mutmut_24': x_get_or_initialize_component__mutmut_24, 
-    'x_get_or_initialize_component__mutmut_25': x_get_or_initialize_component__mutmut_25, 
-    'x_get_or_initialize_component__mutmut_26': x_get_or_initialize_component__mutmut_26, 
-    'x_get_or_initialize_component__mutmut_27': x_get_or_initialize_component__mutmut_27, 
-    'x_get_or_initialize_component__mutmut_28': x_get_or_initialize_component__mutmut_28, 
-    'x_get_or_initialize_component__mutmut_29': x_get_or_initialize_component__mutmut_29, 
-    'x_get_or_initialize_component__mutmut_30': x_get_or_initialize_component__mutmut_30, 
-    'x_get_or_initialize_component__mutmut_31': x_get_or_initialize_component__mutmut_31, 
-    'x_get_or_initialize_component__mutmut_32': x_get_or_initialize_component__mutmut_32, 
-    'x_get_or_initialize_component__mutmut_33': x_get_or_initialize_component__mutmut_33, 
-    'x_get_or_initialize_component__mutmut_34': x_get_or_initialize_component__mutmut_34, 
-    'x_get_or_initialize_component__mutmut_35': x_get_or_initialize_component__mutmut_35, 
-    'x_get_or_initialize_component__mutmut_36': x_get_or_initialize_component__mutmut_36, 
-    'x_get_or_initialize_component__mutmut_37': x_get_or_initialize_component__mutmut_37, 
-    'x_get_or_initialize_component__mutmut_38': x_get_or_initialize_component__mutmut_38, 
-    'x_get_or_initialize_component__mutmut_39': x_get_or_initialize_component__mutmut_39, 
-    'x_get_or_initialize_component__mutmut_40': x_get_or_initialize_component__mutmut_40, 
-    'x_get_or_initialize_component__mutmut_41': x_get_or_initialize_component__mutmut_41, 
-    'x_get_or_initialize_component__mutmut_42': x_get_or_initialize_component__mutmut_42, 
-    'x_get_or_initialize_component__mutmut_43': x_get_or_initialize_component__mutmut_43, 
-    'x_get_or_initialize_component__mutmut_44': x_get_or_initialize_component__mutmut_44, 
-    'x_get_or_initialize_component__mutmut_45': x_get_or_initialize_component__mutmut_45, 
-    'x_get_or_initialize_component__mutmut_46': x_get_or_initialize_component__mutmut_46, 
-    'x_get_or_initialize_component__mutmut_47': x_get_or_initialize_component__mutmut_47
+
+x_get_or_initialize_component__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_or_initialize_component__mutmut_1": x_get_or_initialize_component__mutmut_1,
+    "x_get_or_initialize_component__mutmut_2": x_get_or_initialize_component__mutmut_2,
+    "x_get_or_initialize_component__mutmut_3": x_get_or_initialize_component__mutmut_3,
+    "x_get_or_initialize_component__mutmut_4": x_get_or_initialize_component__mutmut_4,
+    "x_get_or_initialize_component__mutmut_5": x_get_or_initialize_component__mutmut_5,
+    "x_get_or_initialize_component__mutmut_6": x_get_or_initialize_component__mutmut_6,
+    "x_get_or_initialize_component__mutmut_7": x_get_or_initialize_component__mutmut_7,
+    "x_get_or_initialize_component__mutmut_8": x_get_or_initialize_component__mutmut_8,
+    "x_get_or_initialize_component__mutmut_9": x_get_or_initialize_component__mutmut_9,
+    "x_get_or_initialize_component__mutmut_10": x_get_or_initialize_component__mutmut_10,
+    "x_get_or_initialize_component__mutmut_11": x_get_or_initialize_component__mutmut_11,
+    "x_get_or_initialize_component__mutmut_12": x_get_or_initialize_component__mutmut_12,
+    "x_get_or_initialize_component__mutmut_13": x_get_or_initialize_component__mutmut_13,
+    "x_get_or_initialize_component__mutmut_14": x_get_or_initialize_component__mutmut_14,
+    "x_get_or_initialize_component__mutmut_15": x_get_or_initialize_component__mutmut_15,
+    "x_get_or_initialize_component__mutmut_16": x_get_or_initialize_component__mutmut_16,
+    "x_get_or_initialize_component__mutmut_17": x_get_or_initialize_component__mutmut_17,
+    "x_get_or_initialize_component__mutmut_18": x_get_or_initialize_component__mutmut_18,
+    "x_get_or_initialize_component__mutmut_19": x_get_or_initialize_component__mutmut_19,
+    "x_get_or_initialize_component__mutmut_20": x_get_or_initialize_component__mutmut_20,
+    "x_get_or_initialize_component__mutmut_21": x_get_or_initialize_component__mutmut_21,
+    "x_get_or_initialize_component__mutmut_22": x_get_or_initialize_component__mutmut_22,
+    "x_get_or_initialize_component__mutmut_23": x_get_or_initialize_component__mutmut_23,
+    "x_get_or_initialize_component__mutmut_24": x_get_or_initialize_component__mutmut_24,
+    "x_get_or_initialize_component__mutmut_25": x_get_or_initialize_component__mutmut_25,
+    "x_get_or_initialize_component__mutmut_26": x_get_or_initialize_component__mutmut_26,
+    "x_get_or_initialize_component__mutmut_27": x_get_or_initialize_component__mutmut_27,
+    "x_get_or_initialize_component__mutmut_28": x_get_or_initialize_component__mutmut_28,
+    "x_get_or_initialize_component__mutmut_29": x_get_or_initialize_component__mutmut_29,
+    "x_get_or_initialize_component__mutmut_30": x_get_or_initialize_component__mutmut_30,
+    "x_get_or_initialize_component__mutmut_31": x_get_or_initialize_component__mutmut_31,
+    "x_get_or_initialize_component__mutmut_32": x_get_or_initialize_component__mutmut_32,
+    "x_get_or_initialize_component__mutmut_33": x_get_or_initialize_component__mutmut_33,
+    "x_get_or_initialize_component__mutmut_34": x_get_or_initialize_component__mutmut_34,
+    "x_get_or_initialize_component__mutmut_35": x_get_or_initialize_component__mutmut_35,
+    "x_get_or_initialize_component__mutmut_36": x_get_or_initialize_component__mutmut_36,
+    "x_get_or_initialize_component__mutmut_37": x_get_or_initialize_component__mutmut_37,
+    "x_get_or_initialize_component__mutmut_38": x_get_or_initialize_component__mutmut_38,
+    "x_get_or_initialize_component__mutmut_39": x_get_or_initialize_component__mutmut_39,
+    "x_get_or_initialize_component__mutmut_40": x_get_or_initialize_component__mutmut_40,
+    "x_get_or_initialize_component__mutmut_41": x_get_or_initialize_component__mutmut_41,
+    "x_get_or_initialize_component__mutmut_42": x_get_or_initialize_component__mutmut_42,
+    "x_get_or_initialize_component__mutmut_43": x_get_or_initialize_component__mutmut_43,
+    "x_get_or_initialize_component__mutmut_44": x_get_or_initialize_component__mutmut_44,
+    "x_get_or_initialize_component__mutmut_45": x_get_or_initialize_component__mutmut_45,
+    "x_get_or_initialize_component__mutmut_46": x_get_or_initialize_component__mutmut_46,
+    "x_get_or_initialize_component__mutmut_47": x_get_or_initialize_component__mutmut_47,
 }
 
+
 def get_or_initialize_component(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_or_initialize_component__mutmut_orig, x_get_or_initialize_component__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_or_initialize_component__mutmut_orig, x_get_or_initialize_component__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_or_initialize_component.__signature__ = _mutmut_signature(x_get_or_initialize_component__mutmut_orig)
-x_get_or_initialize_component__mutmut_orig.__name__ = 'x_get_or_initialize_component'
+x_get_or_initialize_component__mutmut_orig.__name__ = "x_get_or_initialize_component"
 
 
 async def x_initialize_async_component__mutmut_orig(name: str, dimension: str) -> Any:
@@ -2913,7 +2926,9 @@ async def x_initialize_async_component__mutmut_8(name: str, dimension: str) -> A
         return initialized_components[key]
 
     # Registry operations are thread-safe internally, no external lock needed
-    entry = registry.get_entry(name, )
+    entry = registry.get_entry(
+        name,
+    )
 
     if not entry:
         return None
@@ -3285,7 +3300,9 @@ async def x_initialize_async_component__mutmut_14(name: str, dimension: str) -> 
         return None
 
     # If not async or no factory, return current value
-    if not entry.metadata.get("async", ):
+    if not entry.metadata.get(
+        "async",
+    ):
         return entry.value
 
     factory = entry.metadata.get("factory")
@@ -4648,7 +4665,7 @@ async def x_initialize_async_component__mutmut_36(name: str, dimension: str) -> 
             value=component,
             dimension=dimension,
             metadata=entry.metadata,
-            )
+        )
 
         # Update initialized_components cache
         # Final check before update (race condition is acceptable here)
@@ -5329,7 +5346,7 @@ async def x_initialize_async_component__mutmut_47(name: str, dimension: str) -> 
             "Async component initialization failed",
             component=name,
             dimension=dimension,
-            )
+        )
         # Return None on failure for resilient behavior
         return None
 
@@ -5577,66 +5594,71 @@ async def x_initialize_async_component__mutmut_51(name: str, dimension: str) -> 
         # Return None on failure for resilient behavior
         return None
 
-x_initialize_async_component__mutmut_mutants : ClassVar[MutantDict] = {
-'x_initialize_async_component__mutmut_1': x_initialize_async_component__mutmut_1, 
-    'x_initialize_async_component__mutmut_2': x_initialize_async_component__mutmut_2, 
-    'x_initialize_async_component__mutmut_3': x_initialize_async_component__mutmut_3, 
-    'x_initialize_async_component__mutmut_4': x_initialize_async_component__mutmut_4, 
-    'x_initialize_async_component__mutmut_5': x_initialize_async_component__mutmut_5, 
-    'x_initialize_async_component__mutmut_6': x_initialize_async_component__mutmut_6, 
-    'x_initialize_async_component__mutmut_7': x_initialize_async_component__mutmut_7, 
-    'x_initialize_async_component__mutmut_8': x_initialize_async_component__mutmut_8, 
-    'x_initialize_async_component__mutmut_9': x_initialize_async_component__mutmut_9, 
-    'x_initialize_async_component__mutmut_10': x_initialize_async_component__mutmut_10, 
-    'x_initialize_async_component__mutmut_11': x_initialize_async_component__mutmut_11, 
-    'x_initialize_async_component__mutmut_12': x_initialize_async_component__mutmut_12, 
-    'x_initialize_async_component__mutmut_13': x_initialize_async_component__mutmut_13, 
-    'x_initialize_async_component__mutmut_14': x_initialize_async_component__mutmut_14, 
-    'x_initialize_async_component__mutmut_15': x_initialize_async_component__mutmut_15, 
-    'x_initialize_async_component__mutmut_16': x_initialize_async_component__mutmut_16, 
-    'x_initialize_async_component__mutmut_17': x_initialize_async_component__mutmut_17, 
-    'x_initialize_async_component__mutmut_18': x_initialize_async_component__mutmut_18, 
-    'x_initialize_async_component__mutmut_19': x_initialize_async_component__mutmut_19, 
-    'x_initialize_async_component__mutmut_20': x_initialize_async_component__mutmut_20, 
-    'x_initialize_async_component__mutmut_21': x_initialize_async_component__mutmut_21, 
-    'x_initialize_async_component__mutmut_22': x_initialize_async_component__mutmut_22, 
-    'x_initialize_async_component__mutmut_23': x_initialize_async_component__mutmut_23, 
-    'x_initialize_async_component__mutmut_24': x_initialize_async_component__mutmut_24, 
-    'x_initialize_async_component__mutmut_25': x_initialize_async_component__mutmut_25, 
-    'x_initialize_async_component__mutmut_26': x_initialize_async_component__mutmut_26, 
-    'x_initialize_async_component__mutmut_27': x_initialize_async_component__mutmut_27, 
-    'x_initialize_async_component__mutmut_28': x_initialize_async_component__mutmut_28, 
-    'x_initialize_async_component__mutmut_29': x_initialize_async_component__mutmut_29, 
-    'x_initialize_async_component__mutmut_30': x_initialize_async_component__mutmut_30, 
-    'x_initialize_async_component__mutmut_31': x_initialize_async_component__mutmut_31, 
-    'x_initialize_async_component__mutmut_32': x_initialize_async_component__mutmut_32, 
-    'x_initialize_async_component__mutmut_33': x_initialize_async_component__mutmut_33, 
-    'x_initialize_async_component__mutmut_34': x_initialize_async_component__mutmut_34, 
-    'x_initialize_async_component__mutmut_35': x_initialize_async_component__mutmut_35, 
-    'x_initialize_async_component__mutmut_36': x_initialize_async_component__mutmut_36, 
-    'x_initialize_async_component__mutmut_37': x_initialize_async_component__mutmut_37, 
-    'x_initialize_async_component__mutmut_38': x_initialize_async_component__mutmut_38, 
-    'x_initialize_async_component__mutmut_39': x_initialize_async_component__mutmut_39, 
-    'x_initialize_async_component__mutmut_40': x_initialize_async_component__mutmut_40, 
-    'x_initialize_async_component__mutmut_41': x_initialize_async_component__mutmut_41, 
-    'x_initialize_async_component__mutmut_42': x_initialize_async_component__mutmut_42, 
-    'x_initialize_async_component__mutmut_43': x_initialize_async_component__mutmut_43, 
-    'x_initialize_async_component__mutmut_44': x_initialize_async_component__mutmut_44, 
-    'x_initialize_async_component__mutmut_45': x_initialize_async_component__mutmut_45, 
-    'x_initialize_async_component__mutmut_46': x_initialize_async_component__mutmut_46, 
-    'x_initialize_async_component__mutmut_47': x_initialize_async_component__mutmut_47, 
-    'x_initialize_async_component__mutmut_48': x_initialize_async_component__mutmut_48, 
-    'x_initialize_async_component__mutmut_49': x_initialize_async_component__mutmut_49, 
-    'x_initialize_async_component__mutmut_50': x_initialize_async_component__mutmut_50, 
-    'x_initialize_async_component__mutmut_51': x_initialize_async_component__mutmut_51
+
+x_initialize_async_component__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_initialize_async_component__mutmut_1": x_initialize_async_component__mutmut_1,
+    "x_initialize_async_component__mutmut_2": x_initialize_async_component__mutmut_2,
+    "x_initialize_async_component__mutmut_3": x_initialize_async_component__mutmut_3,
+    "x_initialize_async_component__mutmut_4": x_initialize_async_component__mutmut_4,
+    "x_initialize_async_component__mutmut_5": x_initialize_async_component__mutmut_5,
+    "x_initialize_async_component__mutmut_6": x_initialize_async_component__mutmut_6,
+    "x_initialize_async_component__mutmut_7": x_initialize_async_component__mutmut_7,
+    "x_initialize_async_component__mutmut_8": x_initialize_async_component__mutmut_8,
+    "x_initialize_async_component__mutmut_9": x_initialize_async_component__mutmut_9,
+    "x_initialize_async_component__mutmut_10": x_initialize_async_component__mutmut_10,
+    "x_initialize_async_component__mutmut_11": x_initialize_async_component__mutmut_11,
+    "x_initialize_async_component__mutmut_12": x_initialize_async_component__mutmut_12,
+    "x_initialize_async_component__mutmut_13": x_initialize_async_component__mutmut_13,
+    "x_initialize_async_component__mutmut_14": x_initialize_async_component__mutmut_14,
+    "x_initialize_async_component__mutmut_15": x_initialize_async_component__mutmut_15,
+    "x_initialize_async_component__mutmut_16": x_initialize_async_component__mutmut_16,
+    "x_initialize_async_component__mutmut_17": x_initialize_async_component__mutmut_17,
+    "x_initialize_async_component__mutmut_18": x_initialize_async_component__mutmut_18,
+    "x_initialize_async_component__mutmut_19": x_initialize_async_component__mutmut_19,
+    "x_initialize_async_component__mutmut_20": x_initialize_async_component__mutmut_20,
+    "x_initialize_async_component__mutmut_21": x_initialize_async_component__mutmut_21,
+    "x_initialize_async_component__mutmut_22": x_initialize_async_component__mutmut_22,
+    "x_initialize_async_component__mutmut_23": x_initialize_async_component__mutmut_23,
+    "x_initialize_async_component__mutmut_24": x_initialize_async_component__mutmut_24,
+    "x_initialize_async_component__mutmut_25": x_initialize_async_component__mutmut_25,
+    "x_initialize_async_component__mutmut_26": x_initialize_async_component__mutmut_26,
+    "x_initialize_async_component__mutmut_27": x_initialize_async_component__mutmut_27,
+    "x_initialize_async_component__mutmut_28": x_initialize_async_component__mutmut_28,
+    "x_initialize_async_component__mutmut_29": x_initialize_async_component__mutmut_29,
+    "x_initialize_async_component__mutmut_30": x_initialize_async_component__mutmut_30,
+    "x_initialize_async_component__mutmut_31": x_initialize_async_component__mutmut_31,
+    "x_initialize_async_component__mutmut_32": x_initialize_async_component__mutmut_32,
+    "x_initialize_async_component__mutmut_33": x_initialize_async_component__mutmut_33,
+    "x_initialize_async_component__mutmut_34": x_initialize_async_component__mutmut_34,
+    "x_initialize_async_component__mutmut_35": x_initialize_async_component__mutmut_35,
+    "x_initialize_async_component__mutmut_36": x_initialize_async_component__mutmut_36,
+    "x_initialize_async_component__mutmut_37": x_initialize_async_component__mutmut_37,
+    "x_initialize_async_component__mutmut_38": x_initialize_async_component__mutmut_38,
+    "x_initialize_async_component__mutmut_39": x_initialize_async_component__mutmut_39,
+    "x_initialize_async_component__mutmut_40": x_initialize_async_component__mutmut_40,
+    "x_initialize_async_component__mutmut_41": x_initialize_async_component__mutmut_41,
+    "x_initialize_async_component__mutmut_42": x_initialize_async_component__mutmut_42,
+    "x_initialize_async_component__mutmut_43": x_initialize_async_component__mutmut_43,
+    "x_initialize_async_component__mutmut_44": x_initialize_async_component__mutmut_44,
+    "x_initialize_async_component__mutmut_45": x_initialize_async_component__mutmut_45,
+    "x_initialize_async_component__mutmut_46": x_initialize_async_component__mutmut_46,
+    "x_initialize_async_component__mutmut_47": x_initialize_async_component__mutmut_47,
+    "x_initialize_async_component__mutmut_48": x_initialize_async_component__mutmut_48,
+    "x_initialize_async_component__mutmut_49": x_initialize_async_component__mutmut_49,
+    "x_initialize_async_component__mutmut_50": x_initialize_async_component__mutmut_50,
+    "x_initialize_async_component__mutmut_51": x_initialize_async_component__mutmut_51,
 }
 
+
 def initialize_async_component(*args, **kwargs):
-    result = _mutmut_trampoline(x_initialize_async_component__mutmut_orig, x_initialize_async_component__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_initialize_async_component__mutmut_orig, x_initialize_async_component__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 initialize_async_component.__signature__ = _mutmut_signature(x_initialize_async_component__mutmut_orig)
-x_initialize_async_component__mutmut_orig.__name__ = 'x_initialize_async_component'
+x_initialize_async_component__mutmut_orig.__name__ = "x_initialize_async_component"
 
 
 def x_cleanup_all_components__mutmut_orig(dimension: str | None = None) -> None:
@@ -5974,7 +5996,9 @@ def x_cleanup_all_components__mutmut_8(dimension: str | None = None) -> None:
     entries = [entry for entry in registry if entry.dimension == dimension] if dimension else list(registry)
 
     for entry in entries:
-        if entry.metadata.get("supports_cleanup", ):
+        if entry.metadata.get(
+            "supports_cleanup",
+        ):
             component = entry.value
             if hasattr(component, "cleanup"):
                 try:
@@ -6304,7 +6328,9 @@ def x_cleanup_all_components__mutmut_16(dimension: str | None = None) -> None:
     for entry in entries:
         if entry.metadata.get("supports_cleanup", False):
             component = entry.value
-            if hasattr(component, ):
+            if hasattr(
+                component,
+            ):
                 try:
                     cleanup_func = component.cleanup
                     if inspect.iscoroutinefunction(cleanup_func):
@@ -7189,7 +7215,7 @@ def x_cleanup_all_components__mutmut_37(dimension: str | None = None) -> None:
                         "Component cleanup failed",
                         component=entry.name,
                         dimension=entry.dimension,
-                        )
+                    )
                     # Log but don't re-raise during cleanup to allow other components to clean up
 
 
@@ -7356,56 +7382,61 @@ def x_cleanup_all_components__mutmut_41(dimension: str | None = None) -> None:
                     )
                     # Log but don't re-raise during cleanup to allow other components to clean up
 
-x_cleanup_all_components__mutmut_mutants : ClassVar[MutantDict] = {
-'x_cleanup_all_components__mutmut_1': x_cleanup_all_components__mutmut_1, 
-    'x_cleanup_all_components__mutmut_2': x_cleanup_all_components__mutmut_2, 
-    'x_cleanup_all_components__mutmut_3': x_cleanup_all_components__mutmut_3, 
-    'x_cleanup_all_components__mutmut_4': x_cleanup_all_components__mutmut_4, 
-    'x_cleanup_all_components__mutmut_5': x_cleanup_all_components__mutmut_5, 
-    'x_cleanup_all_components__mutmut_6': x_cleanup_all_components__mutmut_6, 
-    'x_cleanup_all_components__mutmut_7': x_cleanup_all_components__mutmut_7, 
-    'x_cleanup_all_components__mutmut_8': x_cleanup_all_components__mutmut_8, 
-    'x_cleanup_all_components__mutmut_9': x_cleanup_all_components__mutmut_9, 
-    'x_cleanup_all_components__mutmut_10': x_cleanup_all_components__mutmut_10, 
-    'x_cleanup_all_components__mutmut_11': x_cleanup_all_components__mutmut_11, 
-    'x_cleanup_all_components__mutmut_12': x_cleanup_all_components__mutmut_12, 
-    'x_cleanup_all_components__mutmut_13': x_cleanup_all_components__mutmut_13, 
-    'x_cleanup_all_components__mutmut_14': x_cleanup_all_components__mutmut_14, 
-    'x_cleanup_all_components__mutmut_15': x_cleanup_all_components__mutmut_15, 
-    'x_cleanup_all_components__mutmut_16': x_cleanup_all_components__mutmut_16, 
-    'x_cleanup_all_components__mutmut_17': x_cleanup_all_components__mutmut_17, 
-    'x_cleanup_all_components__mutmut_18': x_cleanup_all_components__mutmut_18, 
-    'x_cleanup_all_components__mutmut_19': x_cleanup_all_components__mutmut_19, 
-    'x_cleanup_all_components__mutmut_20': x_cleanup_all_components__mutmut_20, 
-    'x_cleanup_all_components__mutmut_21': x_cleanup_all_components__mutmut_21, 
-    'x_cleanup_all_components__mutmut_22': x_cleanup_all_components__mutmut_22, 
-    'x_cleanup_all_components__mutmut_23': x_cleanup_all_components__mutmut_23, 
-    'x_cleanup_all_components__mutmut_24': x_cleanup_all_components__mutmut_24, 
-    'x_cleanup_all_components__mutmut_25': x_cleanup_all_components__mutmut_25, 
-    'x_cleanup_all_components__mutmut_26': x_cleanup_all_components__mutmut_26, 
-    'x_cleanup_all_components__mutmut_27': x_cleanup_all_components__mutmut_27, 
-    'x_cleanup_all_components__mutmut_28': x_cleanup_all_components__mutmut_28, 
-    'x_cleanup_all_components__mutmut_29': x_cleanup_all_components__mutmut_29, 
-    'x_cleanup_all_components__mutmut_30': x_cleanup_all_components__mutmut_30, 
-    'x_cleanup_all_components__mutmut_31': x_cleanup_all_components__mutmut_31, 
-    'x_cleanup_all_components__mutmut_32': x_cleanup_all_components__mutmut_32, 
-    'x_cleanup_all_components__mutmut_33': x_cleanup_all_components__mutmut_33, 
-    'x_cleanup_all_components__mutmut_34': x_cleanup_all_components__mutmut_34, 
-    'x_cleanup_all_components__mutmut_35': x_cleanup_all_components__mutmut_35, 
-    'x_cleanup_all_components__mutmut_36': x_cleanup_all_components__mutmut_36, 
-    'x_cleanup_all_components__mutmut_37': x_cleanup_all_components__mutmut_37, 
-    'x_cleanup_all_components__mutmut_38': x_cleanup_all_components__mutmut_38, 
-    'x_cleanup_all_components__mutmut_39': x_cleanup_all_components__mutmut_39, 
-    'x_cleanup_all_components__mutmut_40': x_cleanup_all_components__mutmut_40, 
-    'x_cleanup_all_components__mutmut_41': x_cleanup_all_components__mutmut_41
+
+x_cleanup_all_components__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_cleanup_all_components__mutmut_1": x_cleanup_all_components__mutmut_1,
+    "x_cleanup_all_components__mutmut_2": x_cleanup_all_components__mutmut_2,
+    "x_cleanup_all_components__mutmut_3": x_cleanup_all_components__mutmut_3,
+    "x_cleanup_all_components__mutmut_4": x_cleanup_all_components__mutmut_4,
+    "x_cleanup_all_components__mutmut_5": x_cleanup_all_components__mutmut_5,
+    "x_cleanup_all_components__mutmut_6": x_cleanup_all_components__mutmut_6,
+    "x_cleanup_all_components__mutmut_7": x_cleanup_all_components__mutmut_7,
+    "x_cleanup_all_components__mutmut_8": x_cleanup_all_components__mutmut_8,
+    "x_cleanup_all_components__mutmut_9": x_cleanup_all_components__mutmut_9,
+    "x_cleanup_all_components__mutmut_10": x_cleanup_all_components__mutmut_10,
+    "x_cleanup_all_components__mutmut_11": x_cleanup_all_components__mutmut_11,
+    "x_cleanup_all_components__mutmut_12": x_cleanup_all_components__mutmut_12,
+    "x_cleanup_all_components__mutmut_13": x_cleanup_all_components__mutmut_13,
+    "x_cleanup_all_components__mutmut_14": x_cleanup_all_components__mutmut_14,
+    "x_cleanup_all_components__mutmut_15": x_cleanup_all_components__mutmut_15,
+    "x_cleanup_all_components__mutmut_16": x_cleanup_all_components__mutmut_16,
+    "x_cleanup_all_components__mutmut_17": x_cleanup_all_components__mutmut_17,
+    "x_cleanup_all_components__mutmut_18": x_cleanup_all_components__mutmut_18,
+    "x_cleanup_all_components__mutmut_19": x_cleanup_all_components__mutmut_19,
+    "x_cleanup_all_components__mutmut_20": x_cleanup_all_components__mutmut_20,
+    "x_cleanup_all_components__mutmut_21": x_cleanup_all_components__mutmut_21,
+    "x_cleanup_all_components__mutmut_22": x_cleanup_all_components__mutmut_22,
+    "x_cleanup_all_components__mutmut_23": x_cleanup_all_components__mutmut_23,
+    "x_cleanup_all_components__mutmut_24": x_cleanup_all_components__mutmut_24,
+    "x_cleanup_all_components__mutmut_25": x_cleanup_all_components__mutmut_25,
+    "x_cleanup_all_components__mutmut_26": x_cleanup_all_components__mutmut_26,
+    "x_cleanup_all_components__mutmut_27": x_cleanup_all_components__mutmut_27,
+    "x_cleanup_all_components__mutmut_28": x_cleanup_all_components__mutmut_28,
+    "x_cleanup_all_components__mutmut_29": x_cleanup_all_components__mutmut_29,
+    "x_cleanup_all_components__mutmut_30": x_cleanup_all_components__mutmut_30,
+    "x_cleanup_all_components__mutmut_31": x_cleanup_all_components__mutmut_31,
+    "x_cleanup_all_components__mutmut_32": x_cleanup_all_components__mutmut_32,
+    "x_cleanup_all_components__mutmut_33": x_cleanup_all_components__mutmut_33,
+    "x_cleanup_all_components__mutmut_34": x_cleanup_all_components__mutmut_34,
+    "x_cleanup_all_components__mutmut_35": x_cleanup_all_components__mutmut_35,
+    "x_cleanup_all_components__mutmut_36": x_cleanup_all_components__mutmut_36,
+    "x_cleanup_all_components__mutmut_37": x_cleanup_all_components__mutmut_37,
+    "x_cleanup_all_components__mutmut_38": x_cleanup_all_components__mutmut_38,
+    "x_cleanup_all_components__mutmut_39": x_cleanup_all_components__mutmut_39,
+    "x_cleanup_all_components__mutmut_40": x_cleanup_all_components__mutmut_40,
+    "x_cleanup_all_components__mutmut_41": x_cleanup_all_components__mutmut_41,
 }
 
+
 def cleanup_all_components(*args, **kwargs):
-    result = _mutmut_trampoline(x_cleanup_all_components__mutmut_orig, x_cleanup_all_components__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_cleanup_all_components__mutmut_orig, x_cleanup_all_components__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 cleanup_all_components.__signature__ = _mutmut_signature(x_cleanup_all_components__mutmut_orig)
-x_cleanup_all_components__mutmut_orig.__name__ = 'x_cleanup_all_components'
+x_cleanup_all_components__mutmut_orig.__name__ = "x_cleanup_all_components"
 
 
 async def x_initialize_all_async_components__mutmut_orig() -> None:
@@ -7557,7 +7588,13 @@ async def x_initialize_all_async_components__mutmut_6() -> None:
     registry, _ = _get_registry_and_globals()
 
     # Get all async components
-    async_components = [entry for entry in registry if entry.metadata.get("async", )]
+    async_components = [
+        entry
+        for entry in registry
+        if entry.metadata.get(
+            "async",
+        )
+    ]
 
     # Sort by priority for initialization order
     async_components.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
@@ -7728,7 +7765,9 @@ async def x_initialize_all_async_components__mutmut_13() -> None:
     async_components = [entry for entry in registry if entry.metadata.get("async", False)]
 
     # Sort by priority for initialization order
-    async_components.sort(key=lambda e: e.metadata.get("priority", 0), )
+    async_components.sort(
+        key=lambda e: e.metadata.get("priority", 0),
+    )
 
     # Initialize each component
     for entry in async_components:
@@ -7848,7 +7887,12 @@ async def x_initialize_all_async_components__mutmut_18() -> None:
     async_components = [entry for entry in registry if entry.metadata.get("async", False)]
 
     # Sort by priority for initialization order
-    async_components.sort(key=lambda e: e.metadata.get("priority", ), reverse=True)
+    async_components.sort(
+        key=lambda e: e.metadata.get(
+            "priority",
+        ),
+        reverse=True,
+    )
 
     # Initialize each component
     for entry in async_components:
@@ -8045,7 +8089,9 @@ async def x_initialize_all_async_components__mutmut_26() -> None:
     # Initialize each component
     for entry in async_components:
         try:
-            await initialize_async_component(entry.name, )
+            await initialize_async_component(
+                entry.name,
+            )
         except Exception as e:
             get_foundation_logger().error(
                 "Failed to initialize async component",
@@ -8240,7 +8286,7 @@ async def x_initialize_all_async_components__mutmut_34() -> None:
                 "Failed to initialize async component",
                 component=entry.name,
                 dimension=entry.dimension,
-                )
+            )
             # Log but don't re-raise to allow other components to initialize
 
 
@@ -8339,53 +8385,63 @@ async def x_initialize_all_async_components__mutmut_38() -> None:
             )
             # Log but don't re-raise to allow other components to initialize
 
-x_initialize_all_async_components__mutmut_mutants : ClassVar[MutantDict] = {
-'x_initialize_all_async_components__mutmut_1': x_initialize_all_async_components__mutmut_1, 
-    'x_initialize_all_async_components__mutmut_2': x_initialize_all_async_components__mutmut_2, 
-    'x_initialize_all_async_components__mutmut_3': x_initialize_all_async_components__mutmut_3, 
-    'x_initialize_all_async_components__mutmut_4': x_initialize_all_async_components__mutmut_4, 
-    'x_initialize_all_async_components__mutmut_5': x_initialize_all_async_components__mutmut_5, 
-    'x_initialize_all_async_components__mutmut_6': x_initialize_all_async_components__mutmut_6, 
-    'x_initialize_all_async_components__mutmut_7': x_initialize_all_async_components__mutmut_7, 
-    'x_initialize_all_async_components__mutmut_8': x_initialize_all_async_components__mutmut_8, 
-    'x_initialize_all_async_components__mutmut_9': x_initialize_all_async_components__mutmut_9, 
-    'x_initialize_all_async_components__mutmut_10': x_initialize_all_async_components__mutmut_10, 
-    'x_initialize_all_async_components__mutmut_11': x_initialize_all_async_components__mutmut_11, 
-    'x_initialize_all_async_components__mutmut_12': x_initialize_all_async_components__mutmut_12, 
-    'x_initialize_all_async_components__mutmut_13': x_initialize_all_async_components__mutmut_13, 
-    'x_initialize_all_async_components__mutmut_14': x_initialize_all_async_components__mutmut_14, 
-    'x_initialize_all_async_components__mutmut_15': x_initialize_all_async_components__mutmut_15, 
-    'x_initialize_all_async_components__mutmut_16': x_initialize_all_async_components__mutmut_16, 
-    'x_initialize_all_async_components__mutmut_17': x_initialize_all_async_components__mutmut_17, 
-    'x_initialize_all_async_components__mutmut_18': x_initialize_all_async_components__mutmut_18, 
-    'x_initialize_all_async_components__mutmut_19': x_initialize_all_async_components__mutmut_19, 
-    'x_initialize_all_async_components__mutmut_20': x_initialize_all_async_components__mutmut_20, 
-    'x_initialize_all_async_components__mutmut_21': x_initialize_all_async_components__mutmut_21, 
-    'x_initialize_all_async_components__mutmut_22': x_initialize_all_async_components__mutmut_22, 
-    'x_initialize_all_async_components__mutmut_23': x_initialize_all_async_components__mutmut_23, 
-    'x_initialize_all_async_components__mutmut_24': x_initialize_all_async_components__mutmut_24, 
-    'x_initialize_all_async_components__mutmut_25': x_initialize_all_async_components__mutmut_25, 
-    'x_initialize_all_async_components__mutmut_26': x_initialize_all_async_components__mutmut_26, 
-    'x_initialize_all_async_components__mutmut_27': x_initialize_all_async_components__mutmut_27, 
-    'x_initialize_all_async_components__mutmut_28': x_initialize_all_async_components__mutmut_28, 
-    'x_initialize_all_async_components__mutmut_29': x_initialize_all_async_components__mutmut_29, 
-    'x_initialize_all_async_components__mutmut_30': x_initialize_all_async_components__mutmut_30, 
-    'x_initialize_all_async_components__mutmut_31': x_initialize_all_async_components__mutmut_31, 
-    'x_initialize_all_async_components__mutmut_32': x_initialize_all_async_components__mutmut_32, 
-    'x_initialize_all_async_components__mutmut_33': x_initialize_all_async_components__mutmut_33, 
-    'x_initialize_all_async_components__mutmut_34': x_initialize_all_async_components__mutmut_34, 
-    'x_initialize_all_async_components__mutmut_35': x_initialize_all_async_components__mutmut_35, 
-    'x_initialize_all_async_components__mutmut_36': x_initialize_all_async_components__mutmut_36, 
-    'x_initialize_all_async_components__mutmut_37': x_initialize_all_async_components__mutmut_37, 
-    'x_initialize_all_async_components__mutmut_38': x_initialize_all_async_components__mutmut_38
+
+x_initialize_all_async_components__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_initialize_all_async_components__mutmut_1": x_initialize_all_async_components__mutmut_1,
+    "x_initialize_all_async_components__mutmut_2": x_initialize_all_async_components__mutmut_2,
+    "x_initialize_all_async_components__mutmut_3": x_initialize_all_async_components__mutmut_3,
+    "x_initialize_all_async_components__mutmut_4": x_initialize_all_async_components__mutmut_4,
+    "x_initialize_all_async_components__mutmut_5": x_initialize_all_async_components__mutmut_5,
+    "x_initialize_all_async_components__mutmut_6": x_initialize_all_async_components__mutmut_6,
+    "x_initialize_all_async_components__mutmut_7": x_initialize_all_async_components__mutmut_7,
+    "x_initialize_all_async_components__mutmut_8": x_initialize_all_async_components__mutmut_8,
+    "x_initialize_all_async_components__mutmut_9": x_initialize_all_async_components__mutmut_9,
+    "x_initialize_all_async_components__mutmut_10": x_initialize_all_async_components__mutmut_10,
+    "x_initialize_all_async_components__mutmut_11": x_initialize_all_async_components__mutmut_11,
+    "x_initialize_all_async_components__mutmut_12": x_initialize_all_async_components__mutmut_12,
+    "x_initialize_all_async_components__mutmut_13": x_initialize_all_async_components__mutmut_13,
+    "x_initialize_all_async_components__mutmut_14": x_initialize_all_async_components__mutmut_14,
+    "x_initialize_all_async_components__mutmut_15": x_initialize_all_async_components__mutmut_15,
+    "x_initialize_all_async_components__mutmut_16": x_initialize_all_async_components__mutmut_16,
+    "x_initialize_all_async_components__mutmut_17": x_initialize_all_async_components__mutmut_17,
+    "x_initialize_all_async_components__mutmut_18": x_initialize_all_async_components__mutmut_18,
+    "x_initialize_all_async_components__mutmut_19": x_initialize_all_async_components__mutmut_19,
+    "x_initialize_all_async_components__mutmut_20": x_initialize_all_async_components__mutmut_20,
+    "x_initialize_all_async_components__mutmut_21": x_initialize_all_async_components__mutmut_21,
+    "x_initialize_all_async_components__mutmut_22": x_initialize_all_async_components__mutmut_22,
+    "x_initialize_all_async_components__mutmut_23": x_initialize_all_async_components__mutmut_23,
+    "x_initialize_all_async_components__mutmut_24": x_initialize_all_async_components__mutmut_24,
+    "x_initialize_all_async_components__mutmut_25": x_initialize_all_async_components__mutmut_25,
+    "x_initialize_all_async_components__mutmut_26": x_initialize_all_async_components__mutmut_26,
+    "x_initialize_all_async_components__mutmut_27": x_initialize_all_async_components__mutmut_27,
+    "x_initialize_all_async_components__mutmut_28": x_initialize_all_async_components__mutmut_28,
+    "x_initialize_all_async_components__mutmut_29": x_initialize_all_async_components__mutmut_29,
+    "x_initialize_all_async_components__mutmut_30": x_initialize_all_async_components__mutmut_30,
+    "x_initialize_all_async_components__mutmut_31": x_initialize_all_async_components__mutmut_31,
+    "x_initialize_all_async_components__mutmut_32": x_initialize_all_async_components__mutmut_32,
+    "x_initialize_all_async_components__mutmut_33": x_initialize_all_async_components__mutmut_33,
+    "x_initialize_all_async_components__mutmut_34": x_initialize_all_async_components__mutmut_34,
+    "x_initialize_all_async_components__mutmut_35": x_initialize_all_async_components__mutmut_35,
+    "x_initialize_all_async_components__mutmut_36": x_initialize_all_async_components__mutmut_36,
+    "x_initialize_all_async_components__mutmut_37": x_initialize_all_async_components__mutmut_37,
+    "x_initialize_all_async_components__mutmut_38": x_initialize_all_async_components__mutmut_38,
 }
 
-def initialize_all_async_components(*args, **kwargs):
-    result = _mutmut_trampoline(x_initialize_all_async_components__mutmut_orig, x_initialize_all_async_components__mutmut_mutants, args, kwargs)
-    return result 
 
-initialize_all_async_components.__signature__ = _mutmut_signature(x_initialize_all_async_components__mutmut_orig)
-x_initialize_all_async_components__mutmut_orig.__name__ = 'x_initialize_all_async_components'
+def initialize_all_async_components(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_initialize_all_async_components__mutmut_orig,
+        x_initialize_all_async_components__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+initialize_all_async_components.__signature__ = _mutmut_signature(
+    x_initialize_all_async_components__mutmut_orig
+)
+x_initialize_all_async_components__mutmut_orig.__name__ = "x_initialize_all_async_components"
 
 
 __all__ = [

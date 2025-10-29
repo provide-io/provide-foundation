@@ -24,23 +24,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -2246,9 +2249,7 @@ class QueuedRateLimiter:
         self.overflow_policy = overflow_policy
 
         # Use deque for efficient FIFO operations
-        self.pending_queue: deque[Any] = deque(
-            maxlen=None
-        )
+        self.pending_queue: deque[Any] = deque(maxlen=None)
         self.queue_lock = threading.Lock()
 
         # Track statistics
@@ -3100,69 +3101,75 @@ class QueuedRateLimiter:
         # Worker thread for processing queue (not started automatically)
         self.running = False
         self.worker_thread: threading.Thread | None = ""
-    
-    xǁQueuedRateLimiterǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQueuedRateLimiterǁ__init____mutmut_1': xǁQueuedRateLimiterǁ__init____mutmut_1, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_2': xǁQueuedRateLimiterǁ__init____mutmut_2, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_3': xǁQueuedRateLimiterǁ__init____mutmut_3, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_4': xǁQueuedRateLimiterǁ__init____mutmut_4, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_5': xǁQueuedRateLimiterǁ__init____mutmut_5, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_6': xǁQueuedRateLimiterǁ__init____mutmut_6, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_7': xǁQueuedRateLimiterǁ__init____mutmut_7, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_8': xǁQueuedRateLimiterǁ__init____mutmut_8, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_9': xǁQueuedRateLimiterǁ__init____mutmut_9, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_10': xǁQueuedRateLimiterǁ__init____mutmut_10, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_11': xǁQueuedRateLimiterǁ__init____mutmut_11, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_12': xǁQueuedRateLimiterǁ__init____mutmut_12, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_13': xǁQueuedRateLimiterǁ__init____mutmut_13, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_14': xǁQueuedRateLimiterǁ__init____mutmut_14, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_15': xǁQueuedRateLimiterǁ__init____mutmut_15, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_16': xǁQueuedRateLimiterǁ__init____mutmut_16, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_17': xǁQueuedRateLimiterǁ__init____mutmut_17, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_18': xǁQueuedRateLimiterǁ__init____mutmut_18, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_19': xǁQueuedRateLimiterǁ__init____mutmut_19, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_20': xǁQueuedRateLimiterǁ__init____mutmut_20, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_21': xǁQueuedRateLimiterǁ__init____mutmut_21, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_22': xǁQueuedRateLimiterǁ__init____mutmut_22, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_23': xǁQueuedRateLimiterǁ__init____mutmut_23, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_24': xǁQueuedRateLimiterǁ__init____mutmut_24, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_25': xǁQueuedRateLimiterǁ__init____mutmut_25, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_26': xǁQueuedRateLimiterǁ__init____mutmut_26, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_27': xǁQueuedRateLimiterǁ__init____mutmut_27, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_28': xǁQueuedRateLimiterǁ__init____mutmut_28, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_29': xǁQueuedRateLimiterǁ__init____mutmut_29, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_30': xǁQueuedRateLimiterǁ__init____mutmut_30, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_31': xǁQueuedRateLimiterǁ__init____mutmut_31, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_32': xǁQueuedRateLimiterǁ__init____mutmut_32, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_33': xǁQueuedRateLimiterǁ__init____mutmut_33, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_34': xǁQueuedRateLimiterǁ__init____mutmut_34, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_35': xǁQueuedRateLimiterǁ__init____mutmut_35, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_36': xǁQueuedRateLimiterǁ__init____mutmut_36, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_37': xǁQueuedRateLimiterǁ__init____mutmut_37, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_38': xǁQueuedRateLimiterǁ__init____mutmut_38, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_39': xǁQueuedRateLimiterǁ__init____mutmut_39, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_40': xǁQueuedRateLimiterǁ__init____mutmut_40, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_41': xǁQueuedRateLimiterǁ__init____mutmut_41, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_42': xǁQueuedRateLimiterǁ__init____mutmut_42, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_43': xǁQueuedRateLimiterǁ__init____mutmut_43, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_44': xǁQueuedRateLimiterǁ__init____mutmut_44, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_45': xǁQueuedRateLimiterǁ__init____mutmut_45, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_46': xǁQueuedRateLimiterǁ__init____mutmut_46, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_47': xǁQueuedRateLimiterǁ__init____mutmut_47, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_48': xǁQueuedRateLimiterǁ__init____mutmut_48, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_49': xǁQueuedRateLimiterǁ__init____mutmut_49, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_50': xǁQueuedRateLimiterǁ__init____mutmut_50, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_51': xǁQueuedRateLimiterǁ__init____mutmut_51, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_52': xǁQueuedRateLimiterǁ__init____mutmut_52, 
-        'xǁQueuedRateLimiterǁ__init____mutmut_53': xǁQueuedRateLimiterǁ__init____mutmut_53
+
+    xǁQueuedRateLimiterǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQueuedRateLimiterǁ__init____mutmut_1": xǁQueuedRateLimiterǁ__init____mutmut_1,
+        "xǁQueuedRateLimiterǁ__init____mutmut_2": xǁQueuedRateLimiterǁ__init____mutmut_2,
+        "xǁQueuedRateLimiterǁ__init____mutmut_3": xǁQueuedRateLimiterǁ__init____mutmut_3,
+        "xǁQueuedRateLimiterǁ__init____mutmut_4": xǁQueuedRateLimiterǁ__init____mutmut_4,
+        "xǁQueuedRateLimiterǁ__init____mutmut_5": xǁQueuedRateLimiterǁ__init____mutmut_5,
+        "xǁQueuedRateLimiterǁ__init____mutmut_6": xǁQueuedRateLimiterǁ__init____mutmut_6,
+        "xǁQueuedRateLimiterǁ__init____mutmut_7": xǁQueuedRateLimiterǁ__init____mutmut_7,
+        "xǁQueuedRateLimiterǁ__init____mutmut_8": xǁQueuedRateLimiterǁ__init____mutmut_8,
+        "xǁQueuedRateLimiterǁ__init____mutmut_9": xǁQueuedRateLimiterǁ__init____mutmut_9,
+        "xǁQueuedRateLimiterǁ__init____mutmut_10": xǁQueuedRateLimiterǁ__init____mutmut_10,
+        "xǁQueuedRateLimiterǁ__init____mutmut_11": xǁQueuedRateLimiterǁ__init____mutmut_11,
+        "xǁQueuedRateLimiterǁ__init____mutmut_12": xǁQueuedRateLimiterǁ__init____mutmut_12,
+        "xǁQueuedRateLimiterǁ__init____mutmut_13": xǁQueuedRateLimiterǁ__init____mutmut_13,
+        "xǁQueuedRateLimiterǁ__init____mutmut_14": xǁQueuedRateLimiterǁ__init____mutmut_14,
+        "xǁQueuedRateLimiterǁ__init____mutmut_15": xǁQueuedRateLimiterǁ__init____mutmut_15,
+        "xǁQueuedRateLimiterǁ__init____mutmut_16": xǁQueuedRateLimiterǁ__init____mutmut_16,
+        "xǁQueuedRateLimiterǁ__init____mutmut_17": xǁQueuedRateLimiterǁ__init____mutmut_17,
+        "xǁQueuedRateLimiterǁ__init____mutmut_18": xǁQueuedRateLimiterǁ__init____mutmut_18,
+        "xǁQueuedRateLimiterǁ__init____mutmut_19": xǁQueuedRateLimiterǁ__init____mutmut_19,
+        "xǁQueuedRateLimiterǁ__init____mutmut_20": xǁQueuedRateLimiterǁ__init____mutmut_20,
+        "xǁQueuedRateLimiterǁ__init____mutmut_21": xǁQueuedRateLimiterǁ__init____mutmut_21,
+        "xǁQueuedRateLimiterǁ__init____mutmut_22": xǁQueuedRateLimiterǁ__init____mutmut_22,
+        "xǁQueuedRateLimiterǁ__init____mutmut_23": xǁQueuedRateLimiterǁ__init____mutmut_23,
+        "xǁQueuedRateLimiterǁ__init____mutmut_24": xǁQueuedRateLimiterǁ__init____mutmut_24,
+        "xǁQueuedRateLimiterǁ__init____mutmut_25": xǁQueuedRateLimiterǁ__init____mutmut_25,
+        "xǁQueuedRateLimiterǁ__init____mutmut_26": xǁQueuedRateLimiterǁ__init____mutmut_26,
+        "xǁQueuedRateLimiterǁ__init____mutmut_27": xǁQueuedRateLimiterǁ__init____mutmut_27,
+        "xǁQueuedRateLimiterǁ__init____mutmut_28": xǁQueuedRateLimiterǁ__init____mutmut_28,
+        "xǁQueuedRateLimiterǁ__init____mutmut_29": xǁQueuedRateLimiterǁ__init____mutmut_29,
+        "xǁQueuedRateLimiterǁ__init____mutmut_30": xǁQueuedRateLimiterǁ__init____mutmut_30,
+        "xǁQueuedRateLimiterǁ__init____mutmut_31": xǁQueuedRateLimiterǁ__init____mutmut_31,
+        "xǁQueuedRateLimiterǁ__init____mutmut_32": xǁQueuedRateLimiterǁ__init____mutmut_32,
+        "xǁQueuedRateLimiterǁ__init____mutmut_33": xǁQueuedRateLimiterǁ__init____mutmut_33,
+        "xǁQueuedRateLimiterǁ__init____mutmut_34": xǁQueuedRateLimiterǁ__init____mutmut_34,
+        "xǁQueuedRateLimiterǁ__init____mutmut_35": xǁQueuedRateLimiterǁ__init____mutmut_35,
+        "xǁQueuedRateLimiterǁ__init____mutmut_36": xǁQueuedRateLimiterǁ__init____mutmut_36,
+        "xǁQueuedRateLimiterǁ__init____mutmut_37": xǁQueuedRateLimiterǁ__init____mutmut_37,
+        "xǁQueuedRateLimiterǁ__init____mutmut_38": xǁQueuedRateLimiterǁ__init____mutmut_38,
+        "xǁQueuedRateLimiterǁ__init____mutmut_39": xǁQueuedRateLimiterǁ__init____mutmut_39,
+        "xǁQueuedRateLimiterǁ__init____mutmut_40": xǁQueuedRateLimiterǁ__init____mutmut_40,
+        "xǁQueuedRateLimiterǁ__init____mutmut_41": xǁQueuedRateLimiterǁ__init____mutmut_41,
+        "xǁQueuedRateLimiterǁ__init____mutmut_42": xǁQueuedRateLimiterǁ__init____mutmut_42,
+        "xǁQueuedRateLimiterǁ__init____mutmut_43": xǁQueuedRateLimiterǁ__init____mutmut_43,
+        "xǁQueuedRateLimiterǁ__init____mutmut_44": xǁQueuedRateLimiterǁ__init____mutmut_44,
+        "xǁQueuedRateLimiterǁ__init____mutmut_45": xǁQueuedRateLimiterǁ__init____mutmut_45,
+        "xǁQueuedRateLimiterǁ__init____mutmut_46": xǁQueuedRateLimiterǁ__init____mutmut_46,
+        "xǁQueuedRateLimiterǁ__init____mutmut_47": xǁQueuedRateLimiterǁ__init____mutmut_47,
+        "xǁQueuedRateLimiterǁ__init____mutmut_48": xǁQueuedRateLimiterǁ__init____mutmut_48,
+        "xǁQueuedRateLimiterǁ__init____mutmut_49": xǁQueuedRateLimiterǁ__init____mutmut_49,
+        "xǁQueuedRateLimiterǁ__init____mutmut_50": xǁQueuedRateLimiterǁ__init____mutmut_50,
+        "xǁQueuedRateLimiterǁ__init____mutmut_51": xǁQueuedRateLimiterǁ__init____mutmut_51,
+        "xǁQueuedRateLimiterǁ__init____mutmut_52": xǁQueuedRateLimiterǁ__init____mutmut_52,
+        "xǁQueuedRateLimiterǁ__init____mutmut_53": xǁQueuedRateLimiterǁ__init____mutmut_53,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQueuedRateLimiterǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁQueuedRateLimiterǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁQueuedRateLimiterǁ__init____mutmut_orig)
-    xǁQueuedRateLimiterǁ__init____mutmut_orig.__name__ = 'xǁQueuedRateLimiterǁ__init__'
+    xǁQueuedRateLimiterǁ__init____mutmut_orig.__name__ = "xǁQueuedRateLimiterǁ__init__"
 
     def xǁQueuedRateLimiterǁstart__mutmut_orig(self) -> None:
         """Start the worker thread for processing queued items.
@@ -3381,7 +3388,9 @@ class QueuedRateLimiter:
 
         # Start new worker thread
         self.running = True
-        self.worker_thread = threading.Thread(target=self._process_queue, )
+        self.worker_thread = threading.Thread(
+            target=self._process_queue,
+        )
         self.worker_thread.start()
 
     def xǁQueuedRateLimiterǁstart__mutmut_10(self) -> None:
@@ -3405,26 +3414,32 @@ class QueuedRateLimiter:
         self.running = True
         self.worker_thread = threading.Thread(target=self._process_queue, daemon=False)
         self.worker_thread.start()
-    
-    xǁQueuedRateLimiterǁstart__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQueuedRateLimiterǁstart__mutmut_1': xǁQueuedRateLimiterǁstart__mutmut_1, 
-        'xǁQueuedRateLimiterǁstart__mutmut_2': xǁQueuedRateLimiterǁstart__mutmut_2, 
-        'xǁQueuedRateLimiterǁstart__mutmut_3': xǁQueuedRateLimiterǁstart__mutmut_3, 
-        'xǁQueuedRateLimiterǁstart__mutmut_4': xǁQueuedRateLimiterǁstart__mutmut_4, 
-        'xǁQueuedRateLimiterǁstart__mutmut_5': xǁQueuedRateLimiterǁstart__mutmut_5, 
-        'xǁQueuedRateLimiterǁstart__mutmut_6': xǁQueuedRateLimiterǁstart__mutmut_6, 
-        'xǁQueuedRateLimiterǁstart__mutmut_7': xǁQueuedRateLimiterǁstart__mutmut_7, 
-        'xǁQueuedRateLimiterǁstart__mutmut_8': xǁQueuedRateLimiterǁstart__mutmut_8, 
-        'xǁQueuedRateLimiterǁstart__mutmut_9': xǁQueuedRateLimiterǁstart__mutmut_9, 
-        'xǁQueuedRateLimiterǁstart__mutmut_10': xǁQueuedRateLimiterǁstart__mutmut_10
+
+    xǁQueuedRateLimiterǁstart__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQueuedRateLimiterǁstart__mutmut_1": xǁQueuedRateLimiterǁstart__mutmut_1,
+        "xǁQueuedRateLimiterǁstart__mutmut_2": xǁQueuedRateLimiterǁstart__mutmut_2,
+        "xǁQueuedRateLimiterǁstart__mutmut_3": xǁQueuedRateLimiterǁstart__mutmut_3,
+        "xǁQueuedRateLimiterǁstart__mutmut_4": xǁQueuedRateLimiterǁstart__mutmut_4,
+        "xǁQueuedRateLimiterǁstart__mutmut_5": xǁQueuedRateLimiterǁstart__mutmut_5,
+        "xǁQueuedRateLimiterǁstart__mutmut_6": xǁQueuedRateLimiterǁstart__mutmut_6,
+        "xǁQueuedRateLimiterǁstart__mutmut_7": xǁQueuedRateLimiterǁstart__mutmut_7,
+        "xǁQueuedRateLimiterǁstart__mutmut_8": xǁQueuedRateLimiterǁstart__mutmut_8,
+        "xǁQueuedRateLimiterǁstart__mutmut_9": xǁQueuedRateLimiterǁstart__mutmut_9,
+        "xǁQueuedRateLimiterǁstart__mutmut_10": xǁQueuedRateLimiterǁstart__mutmut_10,
     }
-    
+
     def start(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQueuedRateLimiterǁstart__mutmut_orig"), object.__getattribute__(self, "xǁQueuedRateLimiterǁstart__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁstart__mutmut_orig"),
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁstart__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     start.__signature__ = _mutmut_signature(xǁQueuedRateLimiterǁstart__mutmut_orig)
-    xǁQueuedRateLimiterǁstart__mutmut_orig.__name__ = 'xǁQueuedRateLimiterǁstart'
+    xǁQueuedRateLimiterǁstart__mutmut_orig.__name__ = "xǁQueuedRateLimiterǁstart"
 
     def xǁQueuedRateLimiterǁstop__mutmut_orig(self, timeout: float = 1.0) -> None:
         """Stop the worker thread and wait for it to finish.
@@ -3521,21 +3536,27 @@ class QueuedRateLimiter:
         self.running = False
         if self.worker_thread and self.worker_thread.is_alive():
             self.worker_thread.join(timeout=None)
-    
-    xǁQueuedRateLimiterǁstop__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQueuedRateLimiterǁstop__mutmut_1': xǁQueuedRateLimiterǁstop__mutmut_1, 
-        'xǁQueuedRateLimiterǁstop__mutmut_2': xǁQueuedRateLimiterǁstop__mutmut_2, 
-        'xǁQueuedRateLimiterǁstop__mutmut_3': xǁQueuedRateLimiterǁstop__mutmut_3, 
-        'xǁQueuedRateLimiterǁstop__mutmut_4': xǁQueuedRateLimiterǁstop__mutmut_4, 
-        'xǁQueuedRateLimiterǁstop__mutmut_5': xǁQueuedRateLimiterǁstop__mutmut_5
+
+    xǁQueuedRateLimiterǁstop__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQueuedRateLimiterǁstop__mutmut_1": xǁQueuedRateLimiterǁstop__mutmut_1,
+        "xǁQueuedRateLimiterǁstop__mutmut_2": xǁQueuedRateLimiterǁstop__mutmut_2,
+        "xǁQueuedRateLimiterǁstop__mutmut_3": xǁQueuedRateLimiterǁstop__mutmut_3,
+        "xǁQueuedRateLimiterǁstop__mutmut_4": xǁQueuedRateLimiterǁstop__mutmut_4,
+        "xǁQueuedRateLimiterǁstop__mutmut_5": xǁQueuedRateLimiterǁstop__mutmut_5,
     }
-    
+
     def stop(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQueuedRateLimiterǁstop__mutmut_orig"), object.__getattribute__(self, "xǁQueuedRateLimiterǁstop__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁstop__mutmut_orig"),
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁstop__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     stop.__signature__ = _mutmut_signature(xǁQueuedRateLimiterǁstop__mutmut_orig)
-    xǁQueuedRateLimiterǁstop__mutmut_orig.__name__ = 'xǁQueuedRateLimiterǁstop'
+    xǁQueuedRateLimiterǁstop__mutmut_orig.__name__ = "xǁQueuedRateLimiterǁstop"
 
     def __enter__(self) -> QueuedRateLimiter:
         """Enter context manager, automatically starting the worker thread.
@@ -3569,17 +3590,23 @@ class QueuedRateLimiter:
         """Estimate memory size of an item."""
         # Simple estimation - can be made more sophisticated
         return sys.getsizeof(None)
-    
-    xǁQueuedRateLimiterǁ_estimate_size__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQueuedRateLimiterǁ_estimate_size__mutmut_1': xǁQueuedRateLimiterǁ_estimate_size__mutmut_1
+
+    xǁQueuedRateLimiterǁ_estimate_size__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQueuedRateLimiterǁ_estimate_size__mutmut_1": xǁQueuedRateLimiterǁ_estimate_size__mutmut_1
     }
-    
+
     def _estimate_size(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQueuedRateLimiterǁ_estimate_size__mutmut_orig"), object.__getattribute__(self, "xǁQueuedRateLimiterǁ_estimate_size__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁ_estimate_size__mutmut_orig"),
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁ_estimate_size__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _estimate_size.__signature__ = _mutmut_signature(xǁQueuedRateLimiterǁ_estimate_size__mutmut_orig)
-    xǁQueuedRateLimiterǁ_estimate_size__mutmut_orig.__name__ = 'xǁQueuedRateLimiterǁ_estimate_size'
+    xǁQueuedRateLimiterǁ_estimate_size__mutmut_orig.__name__ = "xǁQueuedRateLimiterǁ_estimate_size"
 
     def xǁQueuedRateLimiterǁ_refill_tokens__mutmut_orig(self) -> None:
         """Refill tokens based on elapsed time."""
@@ -3708,7 +3735,9 @@ class QueuedRateLimiter:
 
         if elapsed > 0:
             tokens_to_add = elapsed * self.refill_rate
-            self.tokens = min(self.capacity, )
+            self.tokens = min(
+                self.capacity,
+            )
             self.last_refill = now
 
     def xǁQueuedRateLimiterǁ_refill_tokens__mutmut_13(self) -> None:
@@ -3730,30 +3759,36 @@ class QueuedRateLimiter:
             tokens_to_add = elapsed * self.refill_rate
             self.tokens = min(self.capacity, self.tokens + tokens_to_add)
             self.last_refill = None
-    
-    xǁQueuedRateLimiterǁ_refill_tokens__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_1': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_1, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_2': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_2, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_3': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_3, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_4': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_4, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_5': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_5, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_6': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_6, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_7': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_7, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_8': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_8, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_9': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_9, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_10': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_10, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_11': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_11, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_12': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_12, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_13': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_13, 
-        'xǁQueuedRateLimiterǁ_refill_tokens__mutmut_14': xǁQueuedRateLimiterǁ_refill_tokens__mutmut_14
+
+    xǁQueuedRateLimiterǁ_refill_tokens__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_1": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_1,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_2": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_2,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_3": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_3,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_4": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_4,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_5": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_5,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_6": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_6,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_7": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_7,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_8": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_8,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_9": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_9,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_10": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_10,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_11": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_11,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_12": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_12,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_13": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_13,
+        "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_14": xǁQueuedRateLimiterǁ_refill_tokens__mutmut_14,
     }
-    
+
     def _refill_tokens(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_orig"), object.__getattribute__(self, "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_orig"),
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁ_refill_tokens__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _refill_tokens.__signature__ = _mutmut_signature(xǁQueuedRateLimiterǁ_refill_tokens__mutmut_orig)
-    xǁQueuedRateLimiterǁ_refill_tokens__mutmut_orig.__name__ = 'xǁQueuedRateLimiterǁ_refill_tokens'
+    xǁQueuedRateLimiterǁ_refill_tokens__mutmut_orig.__name__ = "xǁQueuedRateLimiterǁ_refill_tokens"
 
     def xǁQueuedRateLimiterǁenqueue__mutmut_orig(self, item: Any) -> tuple[bool, str | None]:
         """Add item to queue for rate-limited processing.
@@ -6098,66 +6133,72 @@ class QueuedRateLimiter:
                 self.estimated_memory += self._estimate_size(item)
 
             return False, None
-    
-    xǁQueuedRateLimiterǁenqueue__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQueuedRateLimiterǁenqueue__mutmut_1': xǁQueuedRateLimiterǁenqueue__mutmut_1, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_2': xǁQueuedRateLimiterǁenqueue__mutmut_2, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_3': xǁQueuedRateLimiterǁenqueue__mutmut_3, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_4': xǁQueuedRateLimiterǁenqueue__mutmut_4, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_5': xǁQueuedRateLimiterǁenqueue__mutmut_5, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_6': xǁQueuedRateLimiterǁenqueue__mutmut_6, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_7': xǁQueuedRateLimiterǁenqueue__mutmut_7, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_8': xǁQueuedRateLimiterǁenqueue__mutmut_8, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_9': xǁQueuedRateLimiterǁenqueue__mutmut_9, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_10': xǁQueuedRateLimiterǁenqueue__mutmut_10, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_11': xǁQueuedRateLimiterǁenqueue__mutmut_11, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_12': xǁQueuedRateLimiterǁenqueue__mutmut_12, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_13': xǁQueuedRateLimiterǁenqueue__mutmut_13, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_14': xǁQueuedRateLimiterǁenqueue__mutmut_14, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_15': xǁQueuedRateLimiterǁenqueue__mutmut_15, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_16': xǁQueuedRateLimiterǁenqueue__mutmut_16, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_17': xǁQueuedRateLimiterǁenqueue__mutmut_17, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_18': xǁQueuedRateLimiterǁenqueue__mutmut_18, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_19': xǁQueuedRateLimiterǁenqueue__mutmut_19, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_20': xǁQueuedRateLimiterǁenqueue__mutmut_20, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_21': xǁQueuedRateLimiterǁenqueue__mutmut_21, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_22': xǁQueuedRateLimiterǁenqueue__mutmut_22, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_23': xǁQueuedRateLimiterǁenqueue__mutmut_23, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_24': xǁQueuedRateLimiterǁenqueue__mutmut_24, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_25': xǁQueuedRateLimiterǁenqueue__mutmut_25, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_26': xǁQueuedRateLimiterǁenqueue__mutmut_26, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_27': xǁQueuedRateLimiterǁenqueue__mutmut_27, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_28': xǁQueuedRateLimiterǁenqueue__mutmut_28, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_29': xǁQueuedRateLimiterǁenqueue__mutmut_29, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_30': xǁQueuedRateLimiterǁenqueue__mutmut_30, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_31': xǁQueuedRateLimiterǁenqueue__mutmut_31, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_32': xǁQueuedRateLimiterǁenqueue__mutmut_32, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_33': xǁQueuedRateLimiterǁenqueue__mutmut_33, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_34': xǁQueuedRateLimiterǁenqueue__mutmut_34, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_35': xǁQueuedRateLimiterǁenqueue__mutmut_35, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_36': xǁQueuedRateLimiterǁenqueue__mutmut_36, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_37': xǁQueuedRateLimiterǁenqueue__mutmut_37, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_38': xǁQueuedRateLimiterǁenqueue__mutmut_38, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_39': xǁQueuedRateLimiterǁenqueue__mutmut_39, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_40': xǁQueuedRateLimiterǁenqueue__mutmut_40, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_41': xǁQueuedRateLimiterǁenqueue__mutmut_41, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_42': xǁQueuedRateLimiterǁenqueue__mutmut_42, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_43': xǁQueuedRateLimiterǁenqueue__mutmut_43, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_44': xǁQueuedRateLimiterǁenqueue__mutmut_44, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_45': xǁQueuedRateLimiterǁenqueue__mutmut_45, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_46': xǁQueuedRateLimiterǁenqueue__mutmut_46, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_47': xǁQueuedRateLimiterǁenqueue__mutmut_47, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_48': xǁQueuedRateLimiterǁenqueue__mutmut_48, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_49': xǁQueuedRateLimiterǁenqueue__mutmut_49, 
-        'xǁQueuedRateLimiterǁenqueue__mutmut_50': xǁQueuedRateLimiterǁenqueue__mutmut_50
+
+    xǁQueuedRateLimiterǁenqueue__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQueuedRateLimiterǁenqueue__mutmut_1": xǁQueuedRateLimiterǁenqueue__mutmut_1,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_2": xǁQueuedRateLimiterǁenqueue__mutmut_2,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_3": xǁQueuedRateLimiterǁenqueue__mutmut_3,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_4": xǁQueuedRateLimiterǁenqueue__mutmut_4,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_5": xǁQueuedRateLimiterǁenqueue__mutmut_5,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_6": xǁQueuedRateLimiterǁenqueue__mutmut_6,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_7": xǁQueuedRateLimiterǁenqueue__mutmut_7,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_8": xǁQueuedRateLimiterǁenqueue__mutmut_8,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_9": xǁQueuedRateLimiterǁenqueue__mutmut_9,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_10": xǁQueuedRateLimiterǁenqueue__mutmut_10,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_11": xǁQueuedRateLimiterǁenqueue__mutmut_11,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_12": xǁQueuedRateLimiterǁenqueue__mutmut_12,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_13": xǁQueuedRateLimiterǁenqueue__mutmut_13,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_14": xǁQueuedRateLimiterǁenqueue__mutmut_14,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_15": xǁQueuedRateLimiterǁenqueue__mutmut_15,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_16": xǁQueuedRateLimiterǁenqueue__mutmut_16,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_17": xǁQueuedRateLimiterǁenqueue__mutmut_17,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_18": xǁQueuedRateLimiterǁenqueue__mutmut_18,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_19": xǁQueuedRateLimiterǁenqueue__mutmut_19,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_20": xǁQueuedRateLimiterǁenqueue__mutmut_20,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_21": xǁQueuedRateLimiterǁenqueue__mutmut_21,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_22": xǁQueuedRateLimiterǁenqueue__mutmut_22,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_23": xǁQueuedRateLimiterǁenqueue__mutmut_23,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_24": xǁQueuedRateLimiterǁenqueue__mutmut_24,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_25": xǁQueuedRateLimiterǁenqueue__mutmut_25,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_26": xǁQueuedRateLimiterǁenqueue__mutmut_26,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_27": xǁQueuedRateLimiterǁenqueue__mutmut_27,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_28": xǁQueuedRateLimiterǁenqueue__mutmut_28,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_29": xǁQueuedRateLimiterǁenqueue__mutmut_29,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_30": xǁQueuedRateLimiterǁenqueue__mutmut_30,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_31": xǁQueuedRateLimiterǁenqueue__mutmut_31,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_32": xǁQueuedRateLimiterǁenqueue__mutmut_32,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_33": xǁQueuedRateLimiterǁenqueue__mutmut_33,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_34": xǁQueuedRateLimiterǁenqueue__mutmut_34,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_35": xǁQueuedRateLimiterǁenqueue__mutmut_35,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_36": xǁQueuedRateLimiterǁenqueue__mutmut_36,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_37": xǁQueuedRateLimiterǁenqueue__mutmut_37,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_38": xǁQueuedRateLimiterǁenqueue__mutmut_38,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_39": xǁQueuedRateLimiterǁenqueue__mutmut_39,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_40": xǁQueuedRateLimiterǁenqueue__mutmut_40,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_41": xǁQueuedRateLimiterǁenqueue__mutmut_41,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_42": xǁQueuedRateLimiterǁenqueue__mutmut_42,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_43": xǁQueuedRateLimiterǁenqueue__mutmut_43,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_44": xǁQueuedRateLimiterǁenqueue__mutmut_44,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_45": xǁQueuedRateLimiterǁenqueue__mutmut_45,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_46": xǁQueuedRateLimiterǁenqueue__mutmut_46,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_47": xǁQueuedRateLimiterǁenqueue__mutmut_47,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_48": xǁQueuedRateLimiterǁenqueue__mutmut_48,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_49": xǁQueuedRateLimiterǁenqueue__mutmut_49,
+        "xǁQueuedRateLimiterǁenqueue__mutmut_50": xǁQueuedRateLimiterǁenqueue__mutmut_50,
     }
-    
+
     def enqueue(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQueuedRateLimiterǁenqueue__mutmut_orig"), object.__getattribute__(self, "xǁQueuedRateLimiterǁenqueue__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁenqueue__mutmut_orig"),
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁenqueue__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     enqueue.__signature__ = _mutmut_signature(xǁQueuedRateLimiterǁenqueue__mutmut_orig)
-    xǁQueuedRateLimiterǁenqueue__mutmut_orig.__name__ = 'xǁQueuedRateLimiterǁenqueue'
+    xǁQueuedRateLimiterǁenqueue__mutmut_orig.__name__ = "xǁQueuedRateLimiterǁenqueue"
 
     def xǁQueuedRateLimiterǁ_process_queue__mutmut_orig(self) -> None:
         """Worker thread that processes queued items."""
@@ -6532,32 +6573,38 @@ class QueuedRateLimiter:
 
             # Sleep briefly to avoid busy waiting
             time.sleep(1.01)
-    
-    xǁQueuedRateLimiterǁ_process_queue__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQueuedRateLimiterǁ_process_queue__mutmut_1': xǁQueuedRateLimiterǁ_process_queue__mutmut_1, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_2': xǁQueuedRateLimiterǁ_process_queue__mutmut_2, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_3': xǁQueuedRateLimiterǁ_process_queue__mutmut_3, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_4': xǁQueuedRateLimiterǁ_process_queue__mutmut_4, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_5': xǁQueuedRateLimiterǁ_process_queue__mutmut_5, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_6': xǁQueuedRateLimiterǁ_process_queue__mutmut_6, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_7': xǁQueuedRateLimiterǁ_process_queue__mutmut_7, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_8': xǁQueuedRateLimiterǁ_process_queue__mutmut_8, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_9': xǁQueuedRateLimiterǁ_process_queue__mutmut_9, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_10': xǁQueuedRateLimiterǁ_process_queue__mutmut_10, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_11': xǁQueuedRateLimiterǁ_process_queue__mutmut_11, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_12': xǁQueuedRateLimiterǁ_process_queue__mutmut_12, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_13': xǁQueuedRateLimiterǁ_process_queue__mutmut_13, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_14': xǁQueuedRateLimiterǁ_process_queue__mutmut_14, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_15': xǁQueuedRateLimiterǁ_process_queue__mutmut_15, 
-        'xǁQueuedRateLimiterǁ_process_queue__mutmut_16': xǁQueuedRateLimiterǁ_process_queue__mutmut_16
+
+    xǁQueuedRateLimiterǁ_process_queue__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_1": xǁQueuedRateLimiterǁ_process_queue__mutmut_1,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_2": xǁQueuedRateLimiterǁ_process_queue__mutmut_2,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_3": xǁQueuedRateLimiterǁ_process_queue__mutmut_3,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_4": xǁQueuedRateLimiterǁ_process_queue__mutmut_4,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_5": xǁQueuedRateLimiterǁ_process_queue__mutmut_5,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_6": xǁQueuedRateLimiterǁ_process_queue__mutmut_6,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_7": xǁQueuedRateLimiterǁ_process_queue__mutmut_7,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_8": xǁQueuedRateLimiterǁ_process_queue__mutmut_8,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_9": xǁQueuedRateLimiterǁ_process_queue__mutmut_9,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_10": xǁQueuedRateLimiterǁ_process_queue__mutmut_10,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_11": xǁQueuedRateLimiterǁ_process_queue__mutmut_11,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_12": xǁQueuedRateLimiterǁ_process_queue__mutmut_12,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_13": xǁQueuedRateLimiterǁ_process_queue__mutmut_13,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_14": xǁQueuedRateLimiterǁ_process_queue__mutmut_14,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_15": xǁQueuedRateLimiterǁ_process_queue__mutmut_15,
+        "xǁQueuedRateLimiterǁ_process_queue__mutmut_16": xǁQueuedRateLimiterǁ_process_queue__mutmut_16,
     }
-    
+
     def _process_queue(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQueuedRateLimiterǁ_process_queue__mutmut_orig"), object.__getattribute__(self, "xǁQueuedRateLimiterǁ_process_queue__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁ_process_queue__mutmut_orig"),
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁ_process_queue__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _process_queue.__signature__ = _mutmut_signature(xǁQueuedRateLimiterǁ_process_queue__mutmut_orig)
-    xǁQueuedRateLimiterǁ_process_queue__mutmut_orig.__name__ = 'xǁQueuedRateLimiterǁ_process_queue'
+    xǁQueuedRateLimiterǁ_process_queue__mutmut_orig.__name__ = "xǁQueuedRateLimiterǁ_process_queue"
 
     def _process_item(self, item: Any) -> None:
         """Process a single item from the queue."""
@@ -6864,7 +6911,9 @@ class QueuedRateLimiter:
                 "total_queued": self.total_queued,
                 "total_dropped": self.total_dropped,
                 "total_processed": self.total_processed,
-                "XXestimated_memory_mbXX": self.estimated_memory / 1024 / 1024 if self.max_memory_bytes else None,
+                "XXestimated_memory_mbXX": self.estimated_memory / 1024 / 1024
+                if self.max_memory_bytes
+                else None,
                 "max_memory_mb": self.max_memory_bytes / 1024 / 1024 if self.max_memory_bytes else None,
                 "overflow_policy": self.overflow_policy,
             }
@@ -7089,46 +7138,52 @@ class QueuedRateLimiter:
                 "max_memory_mb": self.max_memory_bytes / 1024 / 1024 if self.max_memory_bytes else None,
                 "OVERFLOW_POLICY": self.overflow_policy,
             }
-    
-    xǁQueuedRateLimiterǁget_stats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQueuedRateLimiterǁget_stats__mutmut_1': xǁQueuedRateLimiterǁget_stats__mutmut_1, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_2': xǁQueuedRateLimiterǁget_stats__mutmut_2, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_3': xǁQueuedRateLimiterǁget_stats__mutmut_3, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_4': xǁQueuedRateLimiterǁget_stats__mutmut_4, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_5': xǁQueuedRateLimiterǁget_stats__mutmut_5, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_6': xǁQueuedRateLimiterǁget_stats__mutmut_6, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_7': xǁQueuedRateLimiterǁget_stats__mutmut_7, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_8': xǁQueuedRateLimiterǁget_stats__mutmut_8, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_9': xǁQueuedRateLimiterǁget_stats__mutmut_9, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_10': xǁQueuedRateLimiterǁget_stats__mutmut_10, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_11': xǁQueuedRateLimiterǁget_stats__mutmut_11, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_12': xǁQueuedRateLimiterǁget_stats__mutmut_12, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_13': xǁQueuedRateLimiterǁget_stats__mutmut_13, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_14': xǁQueuedRateLimiterǁget_stats__mutmut_14, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_15': xǁQueuedRateLimiterǁget_stats__mutmut_15, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_16': xǁQueuedRateLimiterǁget_stats__mutmut_16, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_17': xǁQueuedRateLimiterǁget_stats__mutmut_17, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_18': xǁQueuedRateLimiterǁget_stats__mutmut_18, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_19': xǁQueuedRateLimiterǁget_stats__mutmut_19, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_20': xǁQueuedRateLimiterǁget_stats__mutmut_20, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_21': xǁQueuedRateLimiterǁget_stats__mutmut_21, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_22': xǁQueuedRateLimiterǁget_stats__mutmut_22, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_23': xǁQueuedRateLimiterǁget_stats__mutmut_23, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_24': xǁQueuedRateLimiterǁget_stats__mutmut_24, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_25': xǁQueuedRateLimiterǁget_stats__mutmut_25, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_26': xǁQueuedRateLimiterǁget_stats__mutmut_26, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_27': xǁQueuedRateLimiterǁget_stats__mutmut_27, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_28': xǁQueuedRateLimiterǁget_stats__mutmut_28, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_29': xǁQueuedRateLimiterǁget_stats__mutmut_29, 
-        'xǁQueuedRateLimiterǁget_stats__mutmut_30': xǁQueuedRateLimiterǁget_stats__mutmut_30
+
+    xǁQueuedRateLimiterǁget_stats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQueuedRateLimiterǁget_stats__mutmut_1": xǁQueuedRateLimiterǁget_stats__mutmut_1,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_2": xǁQueuedRateLimiterǁget_stats__mutmut_2,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_3": xǁQueuedRateLimiterǁget_stats__mutmut_3,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_4": xǁQueuedRateLimiterǁget_stats__mutmut_4,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_5": xǁQueuedRateLimiterǁget_stats__mutmut_5,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_6": xǁQueuedRateLimiterǁget_stats__mutmut_6,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_7": xǁQueuedRateLimiterǁget_stats__mutmut_7,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_8": xǁQueuedRateLimiterǁget_stats__mutmut_8,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_9": xǁQueuedRateLimiterǁget_stats__mutmut_9,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_10": xǁQueuedRateLimiterǁget_stats__mutmut_10,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_11": xǁQueuedRateLimiterǁget_stats__mutmut_11,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_12": xǁQueuedRateLimiterǁget_stats__mutmut_12,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_13": xǁQueuedRateLimiterǁget_stats__mutmut_13,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_14": xǁQueuedRateLimiterǁget_stats__mutmut_14,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_15": xǁQueuedRateLimiterǁget_stats__mutmut_15,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_16": xǁQueuedRateLimiterǁget_stats__mutmut_16,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_17": xǁQueuedRateLimiterǁget_stats__mutmut_17,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_18": xǁQueuedRateLimiterǁget_stats__mutmut_18,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_19": xǁQueuedRateLimiterǁget_stats__mutmut_19,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_20": xǁQueuedRateLimiterǁget_stats__mutmut_20,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_21": xǁQueuedRateLimiterǁget_stats__mutmut_21,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_22": xǁQueuedRateLimiterǁget_stats__mutmut_22,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_23": xǁQueuedRateLimiterǁget_stats__mutmut_23,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_24": xǁQueuedRateLimiterǁget_stats__mutmut_24,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_25": xǁQueuedRateLimiterǁget_stats__mutmut_25,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_26": xǁQueuedRateLimiterǁget_stats__mutmut_26,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_27": xǁQueuedRateLimiterǁget_stats__mutmut_27,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_28": xǁQueuedRateLimiterǁget_stats__mutmut_28,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_29": xǁQueuedRateLimiterǁget_stats__mutmut_29,
+        "xǁQueuedRateLimiterǁget_stats__mutmut_30": xǁQueuedRateLimiterǁget_stats__mutmut_30,
     }
-    
+
     def get_stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQueuedRateLimiterǁget_stats__mutmut_orig"), object.__getattribute__(self, "xǁQueuedRateLimiterǁget_stats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁget_stats__mutmut_orig"),
+            object.__getattribute__(self, "xǁQueuedRateLimiterǁget_stats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_stats.__signature__ = _mutmut_signature(xǁQueuedRateLimiterǁget_stats__mutmut_orig)
-    xǁQueuedRateLimiterǁget_stats__mutmut_orig.__name__ = 'xǁQueuedRateLimiterǁget_stats'
+    xǁQueuedRateLimiterǁget_stats__mutmut_orig.__name__ = "xǁQueuedRateLimiterǁget_stats"
 
 
 class BufferedRateLimiter:
@@ -8356,50 +8411,58 @@ class BufferedRateLimiter:
         self.total_allowed = 0
         self.total_denied = 0
         self.total_bytes_dropped = 1
-    
-    xǁBufferedRateLimiterǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBufferedRateLimiterǁ__init____mutmut_1': xǁBufferedRateLimiterǁ__init____mutmut_1, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_2': xǁBufferedRateLimiterǁ__init____mutmut_2, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_3': xǁBufferedRateLimiterǁ__init____mutmut_3, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_4': xǁBufferedRateLimiterǁ__init____mutmut_4, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_5': xǁBufferedRateLimiterǁ__init____mutmut_5, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_6': xǁBufferedRateLimiterǁ__init____mutmut_6, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_7': xǁBufferedRateLimiterǁ__init____mutmut_7, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_8': xǁBufferedRateLimiterǁ__init____mutmut_8, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_9': xǁBufferedRateLimiterǁ__init____mutmut_9, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_10': xǁBufferedRateLimiterǁ__init____mutmut_10, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_11': xǁBufferedRateLimiterǁ__init____mutmut_11, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_12': xǁBufferedRateLimiterǁ__init____mutmut_12, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_13': xǁBufferedRateLimiterǁ__init____mutmut_13, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_14': xǁBufferedRateLimiterǁ__init____mutmut_14, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_15': xǁBufferedRateLimiterǁ__init____mutmut_15, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_16': xǁBufferedRateLimiterǁ__init____mutmut_16, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_17': xǁBufferedRateLimiterǁ__init____mutmut_17, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_18': xǁBufferedRateLimiterǁ__init____mutmut_18, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_19': xǁBufferedRateLimiterǁ__init____mutmut_19, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_20': xǁBufferedRateLimiterǁ__init____mutmut_20, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_21': xǁBufferedRateLimiterǁ__init____mutmut_21, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_22': xǁBufferedRateLimiterǁ__init____mutmut_22, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_23': xǁBufferedRateLimiterǁ__init____mutmut_23, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_24': xǁBufferedRateLimiterǁ__init____mutmut_24, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_25': xǁBufferedRateLimiterǁ__init____mutmut_25, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_26': xǁBufferedRateLimiterǁ__init____mutmut_26, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_27': xǁBufferedRateLimiterǁ__init____mutmut_27, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_28': xǁBufferedRateLimiterǁ__init____mutmut_28, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_29': xǁBufferedRateLimiterǁ__init____mutmut_29, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_30': xǁBufferedRateLimiterǁ__init____mutmut_30, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_31': xǁBufferedRateLimiterǁ__init____mutmut_31, 
-        'xǁBufferedRateLimiterǁ__init____mutmut_32': xǁBufferedRateLimiterǁ__init____mutmut_32
-    }
-    
-    def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBufferedRateLimiterǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁBufferedRateLimiterǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    __init__.__signature__ = _mutmut_signature(xǁBufferedRateLimiterǁ__init____mutmut_orig)
-    xǁBufferedRateLimiterǁ__init____mutmut_orig.__name__ = 'xǁBufferedRateLimiterǁ__init__'
 
-    def xǁBufferedRateLimiterǁis_allowed__mutmut_orig(self, item: Any | None = None) -> tuple[bool, str | None]:
+    xǁBufferedRateLimiterǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBufferedRateLimiterǁ__init____mutmut_1": xǁBufferedRateLimiterǁ__init____mutmut_1,
+        "xǁBufferedRateLimiterǁ__init____mutmut_2": xǁBufferedRateLimiterǁ__init____mutmut_2,
+        "xǁBufferedRateLimiterǁ__init____mutmut_3": xǁBufferedRateLimiterǁ__init____mutmut_3,
+        "xǁBufferedRateLimiterǁ__init____mutmut_4": xǁBufferedRateLimiterǁ__init____mutmut_4,
+        "xǁBufferedRateLimiterǁ__init____mutmut_5": xǁBufferedRateLimiterǁ__init____mutmut_5,
+        "xǁBufferedRateLimiterǁ__init____mutmut_6": xǁBufferedRateLimiterǁ__init____mutmut_6,
+        "xǁBufferedRateLimiterǁ__init____mutmut_7": xǁBufferedRateLimiterǁ__init____mutmut_7,
+        "xǁBufferedRateLimiterǁ__init____mutmut_8": xǁBufferedRateLimiterǁ__init____mutmut_8,
+        "xǁBufferedRateLimiterǁ__init____mutmut_9": xǁBufferedRateLimiterǁ__init____mutmut_9,
+        "xǁBufferedRateLimiterǁ__init____mutmut_10": xǁBufferedRateLimiterǁ__init____mutmut_10,
+        "xǁBufferedRateLimiterǁ__init____mutmut_11": xǁBufferedRateLimiterǁ__init____mutmut_11,
+        "xǁBufferedRateLimiterǁ__init____mutmut_12": xǁBufferedRateLimiterǁ__init____mutmut_12,
+        "xǁBufferedRateLimiterǁ__init____mutmut_13": xǁBufferedRateLimiterǁ__init____mutmut_13,
+        "xǁBufferedRateLimiterǁ__init____mutmut_14": xǁBufferedRateLimiterǁ__init____mutmut_14,
+        "xǁBufferedRateLimiterǁ__init____mutmut_15": xǁBufferedRateLimiterǁ__init____mutmut_15,
+        "xǁBufferedRateLimiterǁ__init____mutmut_16": xǁBufferedRateLimiterǁ__init____mutmut_16,
+        "xǁBufferedRateLimiterǁ__init____mutmut_17": xǁBufferedRateLimiterǁ__init____mutmut_17,
+        "xǁBufferedRateLimiterǁ__init____mutmut_18": xǁBufferedRateLimiterǁ__init____mutmut_18,
+        "xǁBufferedRateLimiterǁ__init____mutmut_19": xǁBufferedRateLimiterǁ__init____mutmut_19,
+        "xǁBufferedRateLimiterǁ__init____mutmut_20": xǁBufferedRateLimiterǁ__init____mutmut_20,
+        "xǁBufferedRateLimiterǁ__init____mutmut_21": xǁBufferedRateLimiterǁ__init____mutmut_21,
+        "xǁBufferedRateLimiterǁ__init____mutmut_22": xǁBufferedRateLimiterǁ__init____mutmut_22,
+        "xǁBufferedRateLimiterǁ__init____mutmut_23": xǁBufferedRateLimiterǁ__init____mutmut_23,
+        "xǁBufferedRateLimiterǁ__init____mutmut_24": xǁBufferedRateLimiterǁ__init____mutmut_24,
+        "xǁBufferedRateLimiterǁ__init____mutmut_25": xǁBufferedRateLimiterǁ__init____mutmut_25,
+        "xǁBufferedRateLimiterǁ__init____mutmut_26": xǁBufferedRateLimiterǁ__init____mutmut_26,
+        "xǁBufferedRateLimiterǁ__init____mutmut_27": xǁBufferedRateLimiterǁ__init____mutmut_27,
+        "xǁBufferedRateLimiterǁ__init____mutmut_28": xǁBufferedRateLimiterǁ__init____mutmut_28,
+        "xǁBufferedRateLimiterǁ__init____mutmut_29": xǁBufferedRateLimiterǁ__init____mutmut_29,
+        "xǁBufferedRateLimiterǁ__init____mutmut_30": xǁBufferedRateLimiterǁ__init____mutmut_30,
+        "xǁBufferedRateLimiterǁ__init____mutmut_31": xǁBufferedRateLimiterǁ__init____mutmut_31,
+        "xǁBufferedRateLimiterǁ__init____mutmut_32": xǁBufferedRateLimiterǁ__init____mutmut_32,
+    }
+
+    def __init__(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBufferedRateLimiterǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁBufferedRateLimiterǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    __init__.__signature__ = _mutmut_signature(xǁBufferedRateLimiterǁ__init____mutmut_orig)
+    xǁBufferedRateLimiterǁ__init____mutmut_orig.__name__ = "xǁBufferedRateLimiterǁ__init__"
+
+    def xǁBufferedRateLimiterǁis_allowed__mutmut_orig(
+        self, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """Check if item is allowed based on rate limit.
 
         Args:
@@ -8896,7 +8959,9 @@ class BufferedRateLimiter:
             # Refill tokens
             if elapsed > 0:
                 tokens_to_add = elapsed * self.refill_rate
-                self.tokens = min(self.capacity, )
+                self.tokens = min(
+                    self.capacity,
+                )
                 self.last_refill = now
 
             # Try to consume token
@@ -10114,58 +10179,64 @@ class BufferedRateLimiter:
                 self.total_bytes_dropped += sys.getsizeof(item)
 
             return True, f"Rate limit exceeded (tokens: {self.tokens:.1f})"
-    
-    xǁBufferedRateLimiterǁis_allowed__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBufferedRateLimiterǁis_allowed__mutmut_1': xǁBufferedRateLimiterǁis_allowed__mutmut_1, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_2': xǁBufferedRateLimiterǁis_allowed__mutmut_2, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_3': xǁBufferedRateLimiterǁis_allowed__mutmut_3, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_4': xǁBufferedRateLimiterǁis_allowed__mutmut_4, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_5': xǁBufferedRateLimiterǁis_allowed__mutmut_5, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_6': xǁBufferedRateLimiterǁis_allowed__mutmut_6, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_7': xǁBufferedRateLimiterǁis_allowed__mutmut_7, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_8': xǁBufferedRateLimiterǁis_allowed__mutmut_8, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_9': xǁBufferedRateLimiterǁis_allowed__mutmut_9, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_10': xǁBufferedRateLimiterǁis_allowed__mutmut_10, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_11': xǁBufferedRateLimiterǁis_allowed__mutmut_11, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_12': xǁBufferedRateLimiterǁis_allowed__mutmut_12, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_13': xǁBufferedRateLimiterǁis_allowed__mutmut_13, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_14': xǁBufferedRateLimiterǁis_allowed__mutmut_14, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_15': xǁBufferedRateLimiterǁis_allowed__mutmut_15, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_16': xǁBufferedRateLimiterǁis_allowed__mutmut_16, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_17': xǁBufferedRateLimiterǁis_allowed__mutmut_17, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_18': xǁBufferedRateLimiterǁis_allowed__mutmut_18, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_19': xǁBufferedRateLimiterǁis_allowed__mutmut_19, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_20': xǁBufferedRateLimiterǁis_allowed__mutmut_20, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_21': xǁBufferedRateLimiterǁis_allowed__mutmut_21, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_22': xǁBufferedRateLimiterǁis_allowed__mutmut_22, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_23': xǁBufferedRateLimiterǁis_allowed__mutmut_23, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_24': xǁBufferedRateLimiterǁis_allowed__mutmut_24, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_25': xǁBufferedRateLimiterǁis_allowed__mutmut_25, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_26': xǁBufferedRateLimiterǁis_allowed__mutmut_26, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_27': xǁBufferedRateLimiterǁis_allowed__mutmut_27, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_28': xǁBufferedRateLimiterǁis_allowed__mutmut_28, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_29': xǁBufferedRateLimiterǁis_allowed__mutmut_29, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_30': xǁBufferedRateLimiterǁis_allowed__mutmut_30, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_31': xǁBufferedRateLimiterǁis_allowed__mutmut_31, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_32': xǁBufferedRateLimiterǁis_allowed__mutmut_32, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_33': xǁBufferedRateLimiterǁis_allowed__mutmut_33, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_34': xǁBufferedRateLimiterǁis_allowed__mutmut_34, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_35': xǁBufferedRateLimiterǁis_allowed__mutmut_35, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_36': xǁBufferedRateLimiterǁis_allowed__mutmut_36, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_37': xǁBufferedRateLimiterǁis_allowed__mutmut_37, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_38': xǁBufferedRateLimiterǁis_allowed__mutmut_38, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_39': xǁBufferedRateLimiterǁis_allowed__mutmut_39, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_40': xǁBufferedRateLimiterǁis_allowed__mutmut_40, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_41': xǁBufferedRateLimiterǁis_allowed__mutmut_41, 
-        'xǁBufferedRateLimiterǁis_allowed__mutmut_42': xǁBufferedRateLimiterǁis_allowed__mutmut_42
+
+    xǁBufferedRateLimiterǁis_allowed__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_1": xǁBufferedRateLimiterǁis_allowed__mutmut_1,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_2": xǁBufferedRateLimiterǁis_allowed__mutmut_2,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_3": xǁBufferedRateLimiterǁis_allowed__mutmut_3,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_4": xǁBufferedRateLimiterǁis_allowed__mutmut_4,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_5": xǁBufferedRateLimiterǁis_allowed__mutmut_5,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_6": xǁBufferedRateLimiterǁis_allowed__mutmut_6,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_7": xǁBufferedRateLimiterǁis_allowed__mutmut_7,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_8": xǁBufferedRateLimiterǁis_allowed__mutmut_8,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_9": xǁBufferedRateLimiterǁis_allowed__mutmut_9,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_10": xǁBufferedRateLimiterǁis_allowed__mutmut_10,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_11": xǁBufferedRateLimiterǁis_allowed__mutmut_11,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_12": xǁBufferedRateLimiterǁis_allowed__mutmut_12,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_13": xǁBufferedRateLimiterǁis_allowed__mutmut_13,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_14": xǁBufferedRateLimiterǁis_allowed__mutmut_14,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_15": xǁBufferedRateLimiterǁis_allowed__mutmut_15,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_16": xǁBufferedRateLimiterǁis_allowed__mutmut_16,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_17": xǁBufferedRateLimiterǁis_allowed__mutmut_17,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_18": xǁBufferedRateLimiterǁis_allowed__mutmut_18,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_19": xǁBufferedRateLimiterǁis_allowed__mutmut_19,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_20": xǁBufferedRateLimiterǁis_allowed__mutmut_20,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_21": xǁBufferedRateLimiterǁis_allowed__mutmut_21,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_22": xǁBufferedRateLimiterǁis_allowed__mutmut_22,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_23": xǁBufferedRateLimiterǁis_allowed__mutmut_23,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_24": xǁBufferedRateLimiterǁis_allowed__mutmut_24,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_25": xǁBufferedRateLimiterǁis_allowed__mutmut_25,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_26": xǁBufferedRateLimiterǁis_allowed__mutmut_26,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_27": xǁBufferedRateLimiterǁis_allowed__mutmut_27,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_28": xǁBufferedRateLimiterǁis_allowed__mutmut_28,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_29": xǁBufferedRateLimiterǁis_allowed__mutmut_29,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_30": xǁBufferedRateLimiterǁis_allowed__mutmut_30,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_31": xǁBufferedRateLimiterǁis_allowed__mutmut_31,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_32": xǁBufferedRateLimiterǁis_allowed__mutmut_32,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_33": xǁBufferedRateLimiterǁis_allowed__mutmut_33,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_34": xǁBufferedRateLimiterǁis_allowed__mutmut_34,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_35": xǁBufferedRateLimiterǁis_allowed__mutmut_35,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_36": xǁBufferedRateLimiterǁis_allowed__mutmut_36,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_37": xǁBufferedRateLimiterǁis_allowed__mutmut_37,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_38": xǁBufferedRateLimiterǁis_allowed__mutmut_38,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_39": xǁBufferedRateLimiterǁis_allowed__mutmut_39,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_40": xǁBufferedRateLimiterǁis_allowed__mutmut_40,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_41": xǁBufferedRateLimiterǁis_allowed__mutmut_41,
+        "xǁBufferedRateLimiterǁis_allowed__mutmut_42": xǁBufferedRateLimiterǁis_allowed__mutmut_42,
     }
-    
+
     def is_allowed(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBufferedRateLimiterǁis_allowed__mutmut_orig"), object.__getattribute__(self, "xǁBufferedRateLimiterǁis_allowed__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBufferedRateLimiterǁis_allowed__mutmut_orig"),
+            object.__getattribute__(self, "xǁBufferedRateLimiterǁis_allowed__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_allowed.__signature__ = _mutmut_signature(xǁBufferedRateLimiterǁis_allowed__mutmut_orig)
-    xǁBufferedRateLimiterǁis_allowed__mutmut_orig.__name__ = 'xǁBufferedRateLimiterǁis_allowed'
+    xǁBufferedRateLimiterǁis_allowed__mutmut_orig.__name__ = "xǁBufferedRateLimiterǁis_allowed"
 
     def xǁBufferedRateLimiterǁget_dropped_samples__mutmut_orig(self, count: int = 10) -> list[Any]:
         """Get recent dropped items for debugging."""
@@ -10222,22 +10293,32 @@ class BufferedRateLimiter:
 
         with self.lock:
             return list(self.dropped_buffer)[+count:]
-    
-    xǁBufferedRateLimiterǁget_dropped_samples__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBufferedRateLimiterǁget_dropped_samples__mutmut_1': xǁBufferedRateLimiterǁget_dropped_samples__mutmut_1, 
-        'xǁBufferedRateLimiterǁget_dropped_samples__mutmut_2': xǁBufferedRateLimiterǁget_dropped_samples__mutmut_2, 
-        'xǁBufferedRateLimiterǁget_dropped_samples__mutmut_3': xǁBufferedRateLimiterǁget_dropped_samples__mutmut_3, 
-        'xǁBufferedRateLimiterǁget_dropped_samples__mutmut_4': xǁBufferedRateLimiterǁget_dropped_samples__mutmut_4, 
-        'xǁBufferedRateLimiterǁget_dropped_samples__mutmut_5': xǁBufferedRateLimiterǁget_dropped_samples__mutmut_5, 
-        'xǁBufferedRateLimiterǁget_dropped_samples__mutmut_6': xǁBufferedRateLimiterǁget_dropped_samples__mutmut_6
+
+    xǁBufferedRateLimiterǁget_dropped_samples__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_1": xǁBufferedRateLimiterǁget_dropped_samples__mutmut_1,
+        "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_2": xǁBufferedRateLimiterǁget_dropped_samples__mutmut_2,
+        "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_3": xǁBufferedRateLimiterǁget_dropped_samples__mutmut_3,
+        "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_4": xǁBufferedRateLimiterǁget_dropped_samples__mutmut_4,
+        "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_5": xǁBufferedRateLimiterǁget_dropped_samples__mutmut_5,
+        "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_6": xǁBufferedRateLimiterǁget_dropped_samples__mutmut_6,
     }
-    
+
     def get_dropped_samples(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_orig"), object.__getattribute__(self, "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    get_dropped_samples.__signature__ = _mutmut_signature(xǁBufferedRateLimiterǁget_dropped_samples__mutmut_orig)
-    xǁBufferedRateLimiterǁget_dropped_samples__mutmut_orig.__name__ = 'xǁBufferedRateLimiterǁget_dropped_samples'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_orig"),
+            object.__getattribute__(self, "xǁBufferedRateLimiterǁget_dropped_samples__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    get_dropped_samples.__signature__ = _mutmut_signature(
+        xǁBufferedRateLimiterǁget_dropped_samples__mutmut_orig
+    )
+    xǁBufferedRateLimiterǁget_dropped_samples__mutmut_orig.__name__ = (
+        "xǁBufferedRateLimiterǁget_dropped_samples"
+    )
 
     def xǁBufferedRateLimiterǁget_stats__mutmut_orig(self) -> dict[str, Any]:
         """Get statistics."""
@@ -10749,41 +10830,47 @@ class BufferedRateLimiter:
                 )
 
             return stats
-    
-    xǁBufferedRateLimiterǁget_stats__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁBufferedRateLimiterǁget_stats__mutmut_1': xǁBufferedRateLimiterǁget_stats__mutmut_1, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_2': xǁBufferedRateLimiterǁget_stats__mutmut_2, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_3': xǁBufferedRateLimiterǁget_stats__mutmut_3, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_4': xǁBufferedRateLimiterǁget_stats__mutmut_4, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_5': xǁBufferedRateLimiterǁget_stats__mutmut_5, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_6': xǁBufferedRateLimiterǁget_stats__mutmut_6, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_7': xǁBufferedRateLimiterǁget_stats__mutmut_7, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_8': xǁBufferedRateLimiterǁget_stats__mutmut_8, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_9': xǁBufferedRateLimiterǁget_stats__mutmut_9, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_10': xǁBufferedRateLimiterǁget_stats__mutmut_10, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_11': xǁBufferedRateLimiterǁget_stats__mutmut_11, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_12': xǁBufferedRateLimiterǁget_stats__mutmut_12, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_13': xǁBufferedRateLimiterǁget_stats__mutmut_13, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_14': xǁBufferedRateLimiterǁget_stats__mutmut_14, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_15': xǁBufferedRateLimiterǁget_stats__mutmut_15, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_16': xǁBufferedRateLimiterǁget_stats__mutmut_16, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_17': xǁBufferedRateLimiterǁget_stats__mutmut_17, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_18': xǁBufferedRateLimiterǁget_stats__mutmut_18, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_19': xǁBufferedRateLimiterǁget_stats__mutmut_19, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_20': xǁBufferedRateLimiterǁget_stats__mutmut_20, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_21': xǁBufferedRateLimiterǁget_stats__mutmut_21, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_22': xǁBufferedRateLimiterǁget_stats__mutmut_22, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_23': xǁBufferedRateLimiterǁget_stats__mutmut_23, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_24': xǁBufferedRateLimiterǁget_stats__mutmut_24, 
-        'xǁBufferedRateLimiterǁget_stats__mutmut_25': xǁBufferedRateLimiterǁget_stats__mutmut_25
+
+    xǁBufferedRateLimiterǁget_stats__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁBufferedRateLimiterǁget_stats__mutmut_1": xǁBufferedRateLimiterǁget_stats__mutmut_1,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_2": xǁBufferedRateLimiterǁget_stats__mutmut_2,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_3": xǁBufferedRateLimiterǁget_stats__mutmut_3,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_4": xǁBufferedRateLimiterǁget_stats__mutmut_4,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_5": xǁBufferedRateLimiterǁget_stats__mutmut_5,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_6": xǁBufferedRateLimiterǁget_stats__mutmut_6,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_7": xǁBufferedRateLimiterǁget_stats__mutmut_7,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_8": xǁBufferedRateLimiterǁget_stats__mutmut_8,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_9": xǁBufferedRateLimiterǁget_stats__mutmut_9,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_10": xǁBufferedRateLimiterǁget_stats__mutmut_10,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_11": xǁBufferedRateLimiterǁget_stats__mutmut_11,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_12": xǁBufferedRateLimiterǁget_stats__mutmut_12,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_13": xǁBufferedRateLimiterǁget_stats__mutmut_13,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_14": xǁBufferedRateLimiterǁget_stats__mutmut_14,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_15": xǁBufferedRateLimiterǁget_stats__mutmut_15,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_16": xǁBufferedRateLimiterǁget_stats__mutmut_16,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_17": xǁBufferedRateLimiterǁget_stats__mutmut_17,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_18": xǁBufferedRateLimiterǁget_stats__mutmut_18,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_19": xǁBufferedRateLimiterǁget_stats__mutmut_19,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_20": xǁBufferedRateLimiterǁget_stats__mutmut_20,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_21": xǁBufferedRateLimiterǁget_stats__mutmut_21,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_22": xǁBufferedRateLimiterǁget_stats__mutmut_22,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_23": xǁBufferedRateLimiterǁget_stats__mutmut_23,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_24": xǁBufferedRateLimiterǁget_stats__mutmut_24,
+        "xǁBufferedRateLimiterǁget_stats__mutmut_25": xǁBufferedRateLimiterǁget_stats__mutmut_25,
     }
-    
+
     def get_stats(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁBufferedRateLimiterǁget_stats__mutmut_orig"), object.__getattribute__(self, "xǁBufferedRateLimiterǁget_stats__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁBufferedRateLimiterǁget_stats__mutmut_orig"),
+            object.__getattribute__(self, "xǁBufferedRateLimiterǁget_stats__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_stats.__signature__ = _mutmut_signature(xǁBufferedRateLimiterǁget_stats__mutmut_orig)
-    xǁBufferedRateLimiterǁget_stats__mutmut_orig.__name__ = 'xǁBufferedRateLimiterǁget_stats'
+    xǁBufferedRateLimiterǁget_stats__mutmut_orig.__name__ = "xǁBufferedRateLimiterǁget_stats"
 
 
 # <3 🧱🤝📝🪄

@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -89,18 +92,23 @@ def x__get_stream_lock__mutmut_3() -> threading.RLock:
     # Lock is registered during Foundation initialization via register_foundation_locks()
     return get_lock_manager().get_lock("FOUNDATION.STREAM")
 
-x__get_stream_lock__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_stream_lock__mutmut_1': x__get_stream_lock__mutmut_1, 
-    'x__get_stream_lock__mutmut_2': x__get_stream_lock__mutmut_2, 
-    'x__get_stream_lock__mutmut_3': x__get_stream_lock__mutmut_3
+
+x__get_stream_lock__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_stream_lock__mutmut_1": x__get_stream_lock__mutmut_1,
+    "x__get_stream_lock__mutmut_2": x__get_stream_lock__mutmut_2,
+    "x__get_stream_lock__mutmut_3": x__get_stream_lock__mutmut_3,
 }
 
+
 def _get_stream_lock(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_stream_lock__mutmut_orig, x__get_stream_lock__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_stream_lock__mutmut_orig, x__get_stream_lock__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_stream_lock.__signature__ = _mutmut_signature(x__get_stream_lock__mutmut_orig)
-x__get_stream_lock__mutmut_orig.__name__ = 'x__get_stream_lock'
+x__get_stream_lock__mutmut_orig.__name__ = "x__get_stream_lock"
 
 
 def x_get_log_stream__mutmut_orig() -> TextIO:  # noqa: C901
@@ -449,7 +457,8 @@ def x_get_log_stream__mutmut_4() -> TextIO:  # noqa: C901
         # Check if this is a real stream that can be closed
         if (
             hasattr(_PROVIDE_LOG_STREAM, "closed")
-            and not hasattr(_PROVIDE_LOG_STREAM, "_mock_name") or _PROVIDE_LOG_STREAM.closed
+            and not hasattr(_PROVIDE_LOG_STREAM, "_mock_name")
+            or _PROVIDE_LOG_STREAM.closed
         ):
             # Stream is closed, reset to stderr
             try:
@@ -530,7 +539,8 @@ def x_get_log_stream__mutmut_5() -> TextIO:  # noqa: C901
         # Only validate real streams, not mock objects
         # Check if this is a real stream that can be closed
         if (
-            hasattr(_PROVIDE_LOG_STREAM, "closed") or not hasattr(_PROVIDE_LOG_STREAM, "_mock_name")  # Skip mock objects
+            hasattr(_PROVIDE_LOG_STREAM, "closed")
+            or not hasattr(_PROVIDE_LOG_STREAM, "_mock_name")  # Skip mock objects
             and _PROVIDE_LOG_STREAM.closed
         ):
             # Stream is closed, reset to stderr
@@ -861,7 +871,9 @@ def x_get_log_stream__mutmut_9() -> TextIO:  # noqa: C901
         # Only validate real streams, not mock objects
         # Check if this is a real stream that can be closed
         if (
-            hasattr(_PROVIDE_LOG_STREAM, )
+            hasattr(
+                _PROVIDE_LOG_STREAM,
+            )
             and not hasattr(_PROVIDE_LOG_STREAM, "_mock_name")  # Skip mock objects
             and _PROVIDE_LOG_STREAM.closed
         ):
@@ -1443,7 +1455,9 @@ def x_get_log_stream__mutmut_16() -> TextIO:  # noqa: C901
         # Check if this is a real stream that can be closed
         if (
             hasattr(_PROVIDE_LOG_STREAM, "closed")
-            and not hasattr(_PROVIDE_LOG_STREAM, )  # Skip mock objects
+            and not hasattr(
+                _PROVIDE_LOG_STREAM,
+            )  # Skip mock objects
             and _PROVIDE_LOG_STREAM.closed
         ):
             # Stream is closed, reset to stderr
@@ -2029,7 +2043,12 @@ def x_get_log_stream__mutmut_23() -> TextIO:  # noqa: C901
         ):
             # Stream is closed, reset to stderr
             try:
-                if hasattr(sys, ) and sys.stderr is not None:
+                if (
+                    hasattr(
+                        sys,
+                    )
+                    and sys.stderr is not None
+                ):
                     if not (hasattr(sys.stderr, "closed") and sys.stderr.closed):
                         _PROVIDE_LOG_STREAM = sys.stderr
                     else:
@@ -2362,7 +2381,7 @@ def x_get_log_stream__mutmut_27() -> TextIO:  # noqa: C901
             # Stream is closed, reset to stderr
             try:
                 if hasattr(sys, "stderr") and sys.stderr is not None:
-                    if (hasattr(sys.stderr, "closed") and sys.stderr.closed):
+                    if hasattr(sys.stderr, "closed") and sys.stderr.closed:
                         _PROVIDE_LOG_STREAM = sys.stderr
                     else:
                         # Even sys.stderr is closed, use a safe fallback
@@ -2777,7 +2796,12 @@ def x_get_log_stream__mutmut_32() -> TextIO:  # noqa: C901
             # Stream is closed, reset to stderr
             try:
                 if hasattr(sys, "stderr") and sys.stderr is not None:
-                    if not (hasattr(sys.stderr, ) and sys.stderr.closed):
+                    if not (
+                        hasattr(
+                            sys.stderr,
+                        )
+                        and sys.stderr.closed
+                    ):
                         _PROVIDE_LOG_STREAM = sys.stderr
                     else:
                         # Even sys.stderr is closed, use a safe fallback
@@ -3965,9 +3989,7 @@ def x_get_log_stream__mutmut_46() -> TextIO:  # noqa: C901
                 try:
                     from provide.foundation.console.output import perr
 
-                    perr(
-                        None
-                    )
+                    perr(None)
                 except Exception:
                     # Generic catch intentional: perr() import/call failed.
                     # Try direct stderr write as absolute last resort.
@@ -4055,9 +4077,7 @@ def x_get_log_stream__mutmut_47() -> TextIO:  # noqa: C901
                     # Generic catch intentional: perr() import/call failed.
                     # Try direct stderr write as absolute last resort.
                     try:
-                        sys.stderr.write(
-                            None
-                        )
+                        sys.stderr.write(None)
                         sys.stderr.flush()
                     except Exception:
                         # Generic catch intentional: Even stderr.write() failed.
@@ -4480,7 +4500,12 @@ def x_get_log_stream__mutmut_52() -> TextIO:  # noqa: C901
                         pass
 
                 # Try stderr one more time before giving up
-                if hasattr(sys, ) and sys.stderr is not None:
+                if (
+                    hasattr(
+                        sys,
+                    )
+                    and sys.stderr is not None
+                ):
                     try:
                         if not (hasattr(sys.stderr, "closed") and sys.stderr.closed):
                             _PROVIDE_LOG_STREAM = sys.stderr
@@ -4814,7 +4839,7 @@ def x_get_log_stream__mutmut_56() -> TextIO:  # noqa: C901
                 # Try stderr one more time before giving up
                 if hasattr(sys, "stderr") and sys.stderr is not None:
                     try:
-                        if (hasattr(sys.stderr, "closed") and sys.stderr.closed):
+                        if hasattr(sys.stderr, "closed") and sys.stderr.closed:
                             _PROVIDE_LOG_STREAM = sys.stderr
                         else:
                             # Even stderr is closed - this is a critical error
@@ -5229,7 +5254,12 @@ def x_get_log_stream__mutmut_61() -> TextIO:  # noqa: C901
                 # Try stderr one more time before giving up
                 if hasattr(sys, "stderr") and sys.stderr is not None:
                     try:
-                        if not (hasattr(sys.stderr, ) and sys.stderr.closed):
+                        if not (
+                            hasattr(
+                                sys.stderr,
+                            )
+                            and sys.stderr.closed
+                        ):
                             _PROVIDE_LOG_STREAM = sys.stderr
                         else:
                             # Even stderr is closed - this is a critical error
@@ -6490,91 +6520,94 @@ def x_get_log_stream__mutmut_76() -> TextIO:  # noqa: C901
     finally:
         _get_stream_lock().release()
 
-x_get_log_stream__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_log_stream__mutmut_1': x_get_log_stream__mutmut_1, 
-    'x_get_log_stream__mutmut_2': x_get_log_stream__mutmut_2, 
-    'x_get_log_stream__mutmut_3': x_get_log_stream__mutmut_3, 
-    'x_get_log_stream__mutmut_4': x_get_log_stream__mutmut_4, 
-    'x_get_log_stream__mutmut_5': x_get_log_stream__mutmut_5, 
-    'x_get_log_stream__mutmut_6': x_get_log_stream__mutmut_6, 
-    'x_get_log_stream__mutmut_7': x_get_log_stream__mutmut_7, 
-    'x_get_log_stream__mutmut_8': x_get_log_stream__mutmut_8, 
-    'x_get_log_stream__mutmut_9': x_get_log_stream__mutmut_9, 
-    'x_get_log_stream__mutmut_10': x_get_log_stream__mutmut_10, 
-    'x_get_log_stream__mutmut_11': x_get_log_stream__mutmut_11, 
-    'x_get_log_stream__mutmut_12': x_get_log_stream__mutmut_12, 
-    'x_get_log_stream__mutmut_13': x_get_log_stream__mutmut_13, 
-    'x_get_log_stream__mutmut_14': x_get_log_stream__mutmut_14, 
-    'x_get_log_stream__mutmut_15': x_get_log_stream__mutmut_15, 
-    'x_get_log_stream__mutmut_16': x_get_log_stream__mutmut_16, 
-    'x_get_log_stream__mutmut_17': x_get_log_stream__mutmut_17, 
-    'x_get_log_stream__mutmut_18': x_get_log_stream__mutmut_18, 
-    'x_get_log_stream__mutmut_19': x_get_log_stream__mutmut_19, 
-    'x_get_log_stream__mutmut_20': x_get_log_stream__mutmut_20, 
-    'x_get_log_stream__mutmut_21': x_get_log_stream__mutmut_21, 
-    'x_get_log_stream__mutmut_22': x_get_log_stream__mutmut_22, 
-    'x_get_log_stream__mutmut_23': x_get_log_stream__mutmut_23, 
-    'x_get_log_stream__mutmut_24': x_get_log_stream__mutmut_24, 
-    'x_get_log_stream__mutmut_25': x_get_log_stream__mutmut_25, 
-    'x_get_log_stream__mutmut_26': x_get_log_stream__mutmut_26, 
-    'x_get_log_stream__mutmut_27': x_get_log_stream__mutmut_27, 
-    'x_get_log_stream__mutmut_28': x_get_log_stream__mutmut_28, 
-    'x_get_log_stream__mutmut_29': x_get_log_stream__mutmut_29, 
-    'x_get_log_stream__mutmut_30': x_get_log_stream__mutmut_30, 
-    'x_get_log_stream__mutmut_31': x_get_log_stream__mutmut_31, 
-    'x_get_log_stream__mutmut_32': x_get_log_stream__mutmut_32, 
-    'x_get_log_stream__mutmut_33': x_get_log_stream__mutmut_33, 
-    'x_get_log_stream__mutmut_34': x_get_log_stream__mutmut_34, 
-    'x_get_log_stream__mutmut_35': x_get_log_stream__mutmut_35, 
-    'x_get_log_stream__mutmut_36': x_get_log_stream__mutmut_36, 
-    'x_get_log_stream__mutmut_37': x_get_log_stream__mutmut_37, 
-    'x_get_log_stream__mutmut_38': x_get_log_stream__mutmut_38, 
-    'x_get_log_stream__mutmut_39': x_get_log_stream__mutmut_39, 
-    'x_get_log_stream__mutmut_40': x_get_log_stream__mutmut_40, 
-    'x_get_log_stream__mutmut_41': x_get_log_stream__mutmut_41, 
-    'x_get_log_stream__mutmut_42': x_get_log_stream__mutmut_42, 
-    'x_get_log_stream__mutmut_43': x_get_log_stream__mutmut_43, 
-    'x_get_log_stream__mutmut_44': x_get_log_stream__mutmut_44, 
-    'x_get_log_stream__mutmut_45': x_get_log_stream__mutmut_45, 
-    'x_get_log_stream__mutmut_46': x_get_log_stream__mutmut_46, 
-    'x_get_log_stream__mutmut_47': x_get_log_stream__mutmut_47, 
-    'x_get_log_stream__mutmut_48': x_get_log_stream__mutmut_48, 
-    'x_get_log_stream__mutmut_49': x_get_log_stream__mutmut_49, 
-    'x_get_log_stream__mutmut_50': x_get_log_stream__mutmut_50, 
-    'x_get_log_stream__mutmut_51': x_get_log_stream__mutmut_51, 
-    'x_get_log_stream__mutmut_52': x_get_log_stream__mutmut_52, 
-    'x_get_log_stream__mutmut_53': x_get_log_stream__mutmut_53, 
-    'x_get_log_stream__mutmut_54': x_get_log_stream__mutmut_54, 
-    'x_get_log_stream__mutmut_55': x_get_log_stream__mutmut_55, 
-    'x_get_log_stream__mutmut_56': x_get_log_stream__mutmut_56, 
-    'x_get_log_stream__mutmut_57': x_get_log_stream__mutmut_57, 
-    'x_get_log_stream__mutmut_58': x_get_log_stream__mutmut_58, 
-    'x_get_log_stream__mutmut_59': x_get_log_stream__mutmut_59, 
-    'x_get_log_stream__mutmut_60': x_get_log_stream__mutmut_60, 
-    'x_get_log_stream__mutmut_61': x_get_log_stream__mutmut_61, 
-    'x_get_log_stream__mutmut_62': x_get_log_stream__mutmut_62, 
-    'x_get_log_stream__mutmut_63': x_get_log_stream__mutmut_63, 
-    'x_get_log_stream__mutmut_64': x_get_log_stream__mutmut_64, 
-    'x_get_log_stream__mutmut_65': x_get_log_stream__mutmut_65, 
-    'x_get_log_stream__mutmut_66': x_get_log_stream__mutmut_66, 
-    'x_get_log_stream__mutmut_67': x_get_log_stream__mutmut_67, 
-    'x_get_log_stream__mutmut_68': x_get_log_stream__mutmut_68, 
-    'x_get_log_stream__mutmut_69': x_get_log_stream__mutmut_69, 
-    'x_get_log_stream__mutmut_70': x_get_log_stream__mutmut_70, 
-    'x_get_log_stream__mutmut_71': x_get_log_stream__mutmut_71, 
-    'x_get_log_stream__mutmut_72': x_get_log_stream__mutmut_72, 
-    'x_get_log_stream__mutmut_73': x_get_log_stream__mutmut_73, 
-    'x_get_log_stream__mutmut_74': x_get_log_stream__mutmut_74, 
-    'x_get_log_stream__mutmut_75': x_get_log_stream__mutmut_75, 
-    'x_get_log_stream__mutmut_76': x_get_log_stream__mutmut_76
+
+x_get_log_stream__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_log_stream__mutmut_1": x_get_log_stream__mutmut_1,
+    "x_get_log_stream__mutmut_2": x_get_log_stream__mutmut_2,
+    "x_get_log_stream__mutmut_3": x_get_log_stream__mutmut_3,
+    "x_get_log_stream__mutmut_4": x_get_log_stream__mutmut_4,
+    "x_get_log_stream__mutmut_5": x_get_log_stream__mutmut_5,
+    "x_get_log_stream__mutmut_6": x_get_log_stream__mutmut_6,
+    "x_get_log_stream__mutmut_7": x_get_log_stream__mutmut_7,
+    "x_get_log_stream__mutmut_8": x_get_log_stream__mutmut_8,
+    "x_get_log_stream__mutmut_9": x_get_log_stream__mutmut_9,
+    "x_get_log_stream__mutmut_10": x_get_log_stream__mutmut_10,
+    "x_get_log_stream__mutmut_11": x_get_log_stream__mutmut_11,
+    "x_get_log_stream__mutmut_12": x_get_log_stream__mutmut_12,
+    "x_get_log_stream__mutmut_13": x_get_log_stream__mutmut_13,
+    "x_get_log_stream__mutmut_14": x_get_log_stream__mutmut_14,
+    "x_get_log_stream__mutmut_15": x_get_log_stream__mutmut_15,
+    "x_get_log_stream__mutmut_16": x_get_log_stream__mutmut_16,
+    "x_get_log_stream__mutmut_17": x_get_log_stream__mutmut_17,
+    "x_get_log_stream__mutmut_18": x_get_log_stream__mutmut_18,
+    "x_get_log_stream__mutmut_19": x_get_log_stream__mutmut_19,
+    "x_get_log_stream__mutmut_20": x_get_log_stream__mutmut_20,
+    "x_get_log_stream__mutmut_21": x_get_log_stream__mutmut_21,
+    "x_get_log_stream__mutmut_22": x_get_log_stream__mutmut_22,
+    "x_get_log_stream__mutmut_23": x_get_log_stream__mutmut_23,
+    "x_get_log_stream__mutmut_24": x_get_log_stream__mutmut_24,
+    "x_get_log_stream__mutmut_25": x_get_log_stream__mutmut_25,
+    "x_get_log_stream__mutmut_26": x_get_log_stream__mutmut_26,
+    "x_get_log_stream__mutmut_27": x_get_log_stream__mutmut_27,
+    "x_get_log_stream__mutmut_28": x_get_log_stream__mutmut_28,
+    "x_get_log_stream__mutmut_29": x_get_log_stream__mutmut_29,
+    "x_get_log_stream__mutmut_30": x_get_log_stream__mutmut_30,
+    "x_get_log_stream__mutmut_31": x_get_log_stream__mutmut_31,
+    "x_get_log_stream__mutmut_32": x_get_log_stream__mutmut_32,
+    "x_get_log_stream__mutmut_33": x_get_log_stream__mutmut_33,
+    "x_get_log_stream__mutmut_34": x_get_log_stream__mutmut_34,
+    "x_get_log_stream__mutmut_35": x_get_log_stream__mutmut_35,
+    "x_get_log_stream__mutmut_36": x_get_log_stream__mutmut_36,
+    "x_get_log_stream__mutmut_37": x_get_log_stream__mutmut_37,
+    "x_get_log_stream__mutmut_38": x_get_log_stream__mutmut_38,
+    "x_get_log_stream__mutmut_39": x_get_log_stream__mutmut_39,
+    "x_get_log_stream__mutmut_40": x_get_log_stream__mutmut_40,
+    "x_get_log_stream__mutmut_41": x_get_log_stream__mutmut_41,
+    "x_get_log_stream__mutmut_42": x_get_log_stream__mutmut_42,
+    "x_get_log_stream__mutmut_43": x_get_log_stream__mutmut_43,
+    "x_get_log_stream__mutmut_44": x_get_log_stream__mutmut_44,
+    "x_get_log_stream__mutmut_45": x_get_log_stream__mutmut_45,
+    "x_get_log_stream__mutmut_46": x_get_log_stream__mutmut_46,
+    "x_get_log_stream__mutmut_47": x_get_log_stream__mutmut_47,
+    "x_get_log_stream__mutmut_48": x_get_log_stream__mutmut_48,
+    "x_get_log_stream__mutmut_49": x_get_log_stream__mutmut_49,
+    "x_get_log_stream__mutmut_50": x_get_log_stream__mutmut_50,
+    "x_get_log_stream__mutmut_51": x_get_log_stream__mutmut_51,
+    "x_get_log_stream__mutmut_52": x_get_log_stream__mutmut_52,
+    "x_get_log_stream__mutmut_53": x_get_log_stream__mutmut_53,
+    "x_get_log_stream__mutmut_54": x_get_log_stream__mutmut_54,
+    "x_get_log_stream__mutmut_55": x_get_log_stream__mutmut_55,
+    "x_get_log_stream__mutmut_56": x_get_log_stream__mutmut_56,
+    "x_get_log_stream__mutmut_57": x_get_log_stream__mutmut_57,
+    "x_get_log_stream__mutmut_58": x_get_log_stream__mutmut_58,
+    "x_get_log_stream__mutmut_59": x_get_log_stream__mutmut_59,
+    "x_get_log_stream__mutmut_60": x_get_log_stream__mutmut_60,
+    "x_get_log_stream__mutmut_61": x_get_log_stream__mutmut_61,
+    "x_get_log_stream__mutmut_62": x_get_log_stream__mutmut_62,
+    "x_get_log_stream__mutmut_63": x_get_log_stream__mutmut_63,
+    "x_get_log_stream__mutmut_64": x_get_log_stream__mutmut_64,
+    "x_get_log_stream__mutmut_65": x_get_log_stream__mutmut_65,
+    "x_get_log_stream__mutmut_66": x_get_log_stream__mutmut_66,
+    "x_get_log_stream__mutmut_67": x_get_log_stream__mutmut_67,
+    "x_get_log_stream__mutmut_68": x_get_log_stream__mutmut_68,
+    "x_get_log_stream__mutmut_69": x_get_log_stream__mutmut_69,
+    "x_get_log_stream__mutmut_70": x_get_log_stream__mutmut_70,
+    "x_get_log_stream__mutmut_71": x_get_log_stream__mutmut_71,
+    "x_get_log_stream__mutmut_72": x_get_log_stream__mutmut_72,
+    "x_get_log_stream__mutmut_73": x_get_log_stream__mutmut_73,
+    "x_get_log_stream__mutmut_74": x_get_log_stream__mutmut_74,
+    "x_get_log_stream__mutmut_75": x_get_log_stream__mutmut_75,
+    "x_get_log_stream__mutmut_76": x_get_log_stream__mutmut_76,
 }
+
 
 def get_log_stream(*args, **kwargs):
     result = _mutmut_trampoline(x_get_log_stream__mutmut_orig, x_get_log_stream__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_log_stream.__signature__ = _mutmut_signature(x_get_log_stream__mutmut_orig)
-x_get_log_stream__mutmut_orig.__name__ = 'x_get_log_stream'
+x_get_log_stream__mutmut_orig.__name__ = "x_get_log_stream"
 
 
 def x__reconfigure_structlog_stream__mutmut_orig() -> None:
@@ -7069,31 +7102,39 @@ def x__reconfigure_structlog_stream__mutmut_16() -> None:
         # All cases are acceptable - just proceed without reconfiguration.
         pass
 
-x__reconfigure_structlog_stream__mutmut_mutants : ClassVar[MutantDict] = {
-'x__reconfigure_structlog_stream__mutmut_1': x__reconfigure_structlog_stream__mutmut_1, 
-    'x__reconfigure_structlog_stream__mutmut_2': x__reconfigure_structlog_stream__mutmut_2, 
-    'x__reconfigure_structlog_stream__mutmut_3': x__reconfigure_structlog_stream__mutmut_3, 
-    'x__reconfigure_structlog_stream__mutmut_4': x__reconfigure_structlog_stream__mutmut_4, 
-    'x__reconfigure_structlog_stream__mutmut_5': x__reconfigure_structlog_stream__mutmut_5, 
-    'x__reconfigure_structlog_stream__mutmut_6': x__reconfigure_structlog_stream__mutmut_6, 
-    'x__reconfigure_structlog_stream__mutmut_7': x__reconfigure_structlog_stream__mutmut_7, 
-    'x__reconfigure_structlog_stream__mutmut_8': x__reconfigure_structlog_stream__mutmut_8, 
-    'x__reconfigure_structlog_stream__mutmut_9': x__reconfigure_structlog_stream__mutmut_9, 
-    'x__reconfigure_structlog_stream__mutmut_10': x__reconfigure_structlog_stream__mutmut_10, 
-    'x__reconfigure_structlog_stream__mutmut_11': x__reconfigure_structlog_stream__mutmut_11, 
-    'x__reconfigure_structlog_stream__mutmut_12': x__reconfigure_structlog_stream__mutmut_12, 
-    'x__reconfigure_structlog_stream__mutmut_13': x__reconfigure_structlog_stream__mutmut_13, 
-    'x__reconfigure_structlog_stream__mutmut_14': x__reconfigure_structlog_stream__mutmut_14, 
-    'x__reconfigure_structlog_stream__mutmut_15': x__reconfigure_structlog_stream__mutmut_15, 
-    'x__reconfigure_structlog_stream__mutmut_16': x__reconfigure_structlog_stream__mutmut_16
+
+x__reconfigure_structlog_stream__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__reconfigure_structlog_stream__mutmut_1": x__reconfigure_structlog_stream__mutmut_1,
+    "x__reconfigure_structlog_stream__mutmut_2": x__reconfigure_structlog_stream__mutmut_2,
+    "x__reconfigure_structlog_stream__mutmut_3": x__reconfigure_structlog_stream__mutmut_3,
+    "x__reconfigure_structlog_stream__mutmut_4": x__reconfigure_structlog_stream__mutmut_4,
+    "x__reconfigure_structlog_stream__mutmut_5": x__reconfigure_structlog_stream__mutmut_5,
+    "x__reconfigure_structlog_stream__mutmut_6": x__reconfigure_structlog_stream__mutmut_6,
+    "x__reconfigure_structlog_stream__mutmut_7": x__reconfigure_structlog_stream__mutmut_7,
+    "x__reconfigure_structlog_stream__mutmut_8": x__reconfigure_structlog_stream__mutmut_8,
+    "x__reconfigure_structlog_stream__mutmut_9": x__reconfigure_structlog_stream__mutmut_9,
+    "x__reconfigure_structlog_stream__mutmut_10": x__reconfigure_structlog_stream__mutmut_10,
+    "x__reconfigure_structlog_stream__mutmut_11": x__reconfigure_structlog_stream__mutmut_11,
+    "x__reconfigure_structlog_stream__mutmut_12": x__reconfigure_structlog_stream__mutmut_12,
+    "x__reconfigure_structlog_stream__mutmut_13": x__reconfigure_structlog_stream__mutmut_13,
+    "x__reconfigure_structlog_stream__mutmut_14": x__reconfigure_structlog_stream__mutmut_14,
+    "x__reconfigure_structlog_stream__mutmut_15": x__reconfigure_structlog_stream__mutmut_15,
+    "x__reconfigure_structlog_stream__mutmut_16": x__reconfigure_structlog_stream__mutmut_16,
 }
 
+
 def _reconfigure_structlog_stream(*args, **kwargs):
-    result = _mutmut_trampoline(x__reconfigure_structlog_stream__mutmut_orig, x__reconfigure_structlog_stream__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__reconfigure_structlog_stream__mutmut_orig,
+        x__reconfigure_structlog_stream__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 _reconfigure_structlog_stream.__signature__ = _mutmut_signature(x__reconfigure_structlog_stream__mutmut_orig)
-x__reconfigure_structlog_stream__mutmut_orig.__name__ = 'x__reconfigure_structlog_stream'
+x__reconfigure_structlog_stream__mutmut_orig.__name__ = "x__reconfigure_structlog_stream"
 
 
 def x_set_log_stream_for_testing__mutmut_orig(stream: TextIO | None) -> None:
@@ -7270,21 +7311,26 @@ def x_set_log_stream_for_testing__mutmut_6(stream: TextIO | None) -> None:
     finally:
         _get_stream_lock().release()
 
-x_set_log_stream_for_testing__mutmut_mutants : ClassVar[MutantDict] = {
-'x_set_log_stream_for_testing__mutmut_1': x_set_log_stream_for_testing__mutmut_1, 
-    'x_set_log_stream_for_testing__mutmut_2': x_set_log_stream_for_testing__mutmut_2, 
-    'x_set_log_stream_for_testing__mutmut_3': x_set_log_stream_for_testing__mutmut_3, 
-    'x_set_log_stream_for_testing__mutmut_4': x_set_log_stream_for_testing__mutmut_4, 
-    'x_set_log_stream_for_testing__mutmut_5': x_set_log_stream_for_testing__mutmut_5, 
-    'x_set_log_stream_for_testing__mutmut_6': x_set_log_stream_for_testing__mutmut_6
+
+x_set_log_stream_for_testing__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_set_log_stream_for_testing__mutmut_1": x_set_log_stream_for_testing__mutmut_1,
+    "x_set_log_stream_for_testing__mutmut_2": x_set_log_stream_for_testing__mutmut_2,
+    "x_set_log_stream_for_testing__mutmut_3": x_set_log_stream_for_testing__mutmut_3,
+    "x_set_log_stream_for_testing__mutmut_4": x_set_log_stream_for_testing__mutmut_4,
+    "x_set_log_stream_for_testing__mutmut_5": x_set_log_stream_for_testing__mutmut_5,
+    "x_set_log_stream_for_testing__mutmut_6": x_set_log_stream_for_testing__mutmut_6,
 }
 
+
 def set_log_stream_for_testing(*args, **kwargs):
-    result = _mutmut_trampoline(x_set_log_stream_for_testing__mutmut_orig, x_set_log_stream_for_testing__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_set_log_stream_for_testing__mutmut_orig, x_set_log_stream_for_testing__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 set_log_stream_for_testing.__signature__ = _mutmut_signature(x_set_log_stream_for_testing__mutmut_orig)
-x_set_log_stream_for_testing__mutmut_orig.__name__ = 'x_set_log_stream_for_testing'
+x_set_log_stream_for_testing__mutmut_orig.__name__ = "x_set_log_stream_for_testing"
 
 
 def x_ensure_stderr_default__mutmut_orig() -> None:
@@ -7364,20 +7410,25 @@ def x_ensure_stderr_default__mutmut_5() -> None:
     finally:
         _get_stream_lock().release()
 
-x_ensure_stderr_default__mutmut_mutants : ClassVar[MutantDict] = {
-'x_ensure_stderr_default__mutmut_1': x_ensure_stderr_default__mutmut_1, 
-    'x_ensure_stderr_default__mutmut_2': x_ensure_stderr_default__mutmut_2, 
-    'x_ensure_stderr_default__mutmut_3': x_ensure_stderr_default__mutmut_3, 
-    'x_ensure_stderr_default__mutmut_4': x_ensure_stderr_default__mutmut_4, 
-    'x_ensure_stderr_default__mutmut_5': x_ensure_stderr_default__mutmut_5
+
+x_ensure_stderr_default__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_ensure_stderr_default__mutmut_1": x_ensure_stderr_default__mutmut_1,
+    "x_ensure_stderr_default__mutmut_2": x_ensure_stderr_default__mutmut_2,
+    "x_ensure_stderr_default__mutmut_3": x_ensure_stderr_default__mutmut_3,
+    "x_ensure_stderr_default__mutmut_4": x_ensure_stderr_default__mutmut_4,
+    "x_ensure_stderr_default__mutmut_5": x_ensure_stderr_default__mutmut_5,
 }
 
+
 def ensure_stderr_default(*args, **kwargs):
-    result = _mutmut_trampoline(x_ensure_stderr_default__mutmut_orig, x_ensure_stderr_default__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_ensure_stderr_default__mutmut_orig, x_ensure_stderr_default__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 ensure_stderr_default.__signature__ = _mutmut_signature(x_ensure_stderr_default__mutmut_orig)
-x_ensure_stderr_default__mutmut_orig.__name__ = 'x_ensure_stderr_default'
+x_ensure_stderr_default__mutmut_orig.__name__ = "x_ensure_stderr_default"
 
 
 # <3 🧱🤝🌊🪄

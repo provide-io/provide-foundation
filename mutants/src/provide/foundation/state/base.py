@@ -27,23 +27,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -160,21 +163,27 @@ class StateMachine(Generic[StateT, EventT], ABC):
 
         # Record initial state
         self._state_history.append(None)
-    
-    xǁStateMachineǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁStateMachineǁ__init____mutmut_1': xǁStateMachineǁ__init____mutmut_1, 
-        'xǁStateMachineǁ__init____mutmut_2': xǁStateMachineǁ__init____mutmut_2, 
-        'xǁStateMachineǁ__init____mutmut_3': xǁStateMachineǁ__init____mutmut_3, 
-        'xǁStateMachineǁ__init____mutmut_4': xǁStateMachineǁ__init____mutmut_4, 
-        'xǁStateMachineǁ__init____mutmut_5': xǁStateMachineǁ__init____mutmut_5
+
+    xǁStateMachineǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁStateMachineǁ__init____mutmut_1": xǁStateMachineǁ__init____mutmut_1,
+        "xǁStateMachineǁ__init____mutmut_2": xǁStateMachineǁ__init____mutmut_2,
+        "xǁStateMachineǁ__init____mutmut_3": xǁStateMachineǁ__init____mutmut_3,
+        "xǁStateMachineǁ__init____mutmut_4": xǁStateMachineǁ__init____mutmut_4,
+        "xǁStateMachineǁ__init____mutmut_5": xǁStateMachineǁ__init____mutmut_5,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁStateMachineǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁStateMachineǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁStateMachineǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁStateMachineǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁStateMachineǁ__init____mutmut_orig)
-    xǁStateMachineǁ__init____mutmut_orig.__name__ = 'xǁStateMachineǁ__init__'
+    xǁStateMachineǁ__init____mutmut_orig.__name__ = "xǁStateMachineǁ__init__"
 
     @property
     def current_state(self) -> StateT:
@@ -202,18 +211,24 @@ class StateMachine(Generic[StateT, EventT], ABC):
         """Add a state transition to the machine."""
         key = (transition.from_state, transition.event)
         self._transitions[key] = None
-    
-    xǁStateMachineǁadd_transition__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁStateMachineǁadd_transition__mutmut_1': xǁStateMachineǁadd_transition__mutmut_1, 
-        'xǁStateMachineǁadd_transition__mutmut_2': xǁStateMachineǁadd_transition__mutmut_2
+
+    xǁStateMachineǁadd_transition__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁStateMachineǁadd_transition__mutmut_1": xǁStateMachineǁadd_transition__mutmut_1,
+        "xǁStateMachineǁadd_transition__mutmut_2": xǁStateMachineǁadd_transition__mutmut_2,
     }
-    
+
     def add_transition(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁStateMachineǁadd_transition__mutmut_orig"), object.__getattribute__(self, "xǁStateMachineǁadd_transition__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁStateMachineǁadd_transition__mutmut_orig"),
+            object.__getattribute__(self, "xǁStateMachineǁadd_transition__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     add_transition.__signature__ = _mutmut_signature(xǁStateMachineǁadd_transition__mutmut_orig)
-    xǁStateMachineǁadd_transition__mutmut_orig.__name__ = 'xǁStateMachineǁadd_transition'
+    xǁStateMachineǁadd_transition__mutmut_orig.__name__ = "xǁStateMachineǁadd_transition"
 
     def xǁStateMachineǁtransition__mutmut_orig(self, event: EventT) -> bool:
         """Attempt to transition to a new state based on the event.
@@ -732,29 +747,35 @@ class StateMachine(Generic[StateT, EventT], ABC):
                 return False
 
             return False
-    
-    xǁStateMachineǁtransition__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁStateMachineǁtransition__mutmut_1': xǁStateMachineǁtransition__mutmut_1, 
-        'xǁStateMachineǁtransition__mutmut_2': xǁStateMachineǁtransition__mutmut_2, 
-        'xǁStateMachineǁtransition__mutmut_3': xǁStateMachineǁtransition__mutmut_3, 
-        'xǁStateMachineǁtransition__mutmut_4': xǁStateMachineǁtransition__mutmut_4, 
-        'xǁStateMachineǁtransition__mutmut_5': xǁStateMachineǁtransition__mutmut_5, 
-        'xǁStateMachineǁtransition__mutmut_6': xǁStateMachineǁtransition__mutmut_6, 
-        'xǁStateMachineǁtransition__mutmut_7': xǁStateMachineǁtransition__mutmut_7, 
-        'xǁStateMachineǁtransition__mutmut_8': xǁStateMachineǁtransition__mutmut_8, 
-        'xǁStateMachineǁtransition__mutmut_9': xǁStateMachineǁtransition__mutmut_9, 
-        'xǁStateMachineǁtransition__mutmut_10': xǁStateMachineǁtransition__mutmut_10, 
-        'xǁStateMachineǁtransition__mutmut_11': xǁStateMachineǁtransition__mutmut_11, 
-        'xǁStateMachineǁtransition__mutmut_12': xǁStateMachineǁtransition__mutmut_12, 
-        'xǁStateMachineǁtransition__mutmut_13': xǁStateMachineǁtransition__mutmut_13
+
+    xǁStateMachineǁtransition__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁStateMachineǁtransition__mutmut_1": xǁStateMachineǁtransition__mutmut_1,
+        "xǁStateMachineǁtransition__mutmut_2": xǁStateMachineǁtransition__mutmut_2,
+        "xǁStateMachineǁtransition__mutmut_3": xǁStateMachineǁtransition__mutmut_3,
+        "xǁStateMachineǁtransition__mutmut_4": xǁStateMachineǁtransition__mutmut_4,
+        "xǁStateMachineǁtransition__mutmut_5": xǁStateMachineǁtransition__mutmut_5,
+        "xǁStateMachineǁtransition__mutmut_6": xǁStateMachineǁtransition__mutmut_6,
+        "xǁStateMachineǁtransition__mutmut_7": xǁStateMachineǁtransition__mutmut_7,
+        "xǁStateMachineǁtransition__mutmut_8": xǁStateMachineǁtransition__mutmut_8,
+        "xǁStateMachineǁtransition__mutmut_9": xǁStateMachineǁtransition__mutmut_9,
+        "xǁStateMachineǁtransition__mutmut_10": xǁStateMachineǁtransition__mutmut_10,
+        "xǁStateMachineǁtransition__mutmut_11": xǁStateMachineǁtransition__mutmut_11,
+        "xǁStateMachineǁtransition__mutmut_12": xǁStateMachineǁtransition__mutmut_12,
+        "xǁStateMachineǁtransition__mutmut_13": xǁStateMachineǁtransition__mutmut_13,
     }
-    
+
     def transition(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁStateMachineǁtransition__mutmut_orig"), object.__getattribute__(self, "xǁStateMachineǁtransition__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁStateMachineǁtransition__mutmut_orig"),
+            object.__getattribute__(self, "xǁStateMachineǁtransition__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     transition.__signature__ = _mutmut_signature(xǁStateMachineǁtransition__mutmut_orig)
-    xǁStateMachineǁtransition__mutmut_orig.__name__ = 'xǁStateMachineǁtransition'
+    xǁStateMachineǁtransition__mutmut_orig.__name__ = "xǁStateMachineǁtransition"
 
     @abstractmethod
     def reset(self) -> None:

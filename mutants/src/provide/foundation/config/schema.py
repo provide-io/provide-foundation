@@ -24,23 +24,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -186,19 +189,25 @@ class ConfigSchema:
         """
         self.fields = fields or []
         self._field_map = None
-    
-    xǁConfigSchemaǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSchemaǁ__init____mutmut_1': xǁConfigSchemaǁ__init____mutmut_1, 
-        'xǁConfigSchemaǁ__init____mutmut_2': xǁConfigSchemaǁ__init____mutmut_2, 
-        'xǁConfigSchemaǁ__init____mutmut_3': xǁConfigSchemaǁ__init____mutmut_3
+
+    xǁConfigSchemaǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSchemaǁ__init____mutmut_1": xǁConfigSchemaǁ__init____mutmut_1,
+        "xǁConfigSchemaǁ__init____mutmut_2": xǁConfigSchemaǁ__init____mutmut_2,
+        "xǁConfigSchemaǁ__init____mutmut_3": xǁConfigSchemaǁ__init____mutmut_3,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSchemaǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁConfigSchemaǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSchemaǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSchemaǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁConfigSchemaǁ__init____mutmut_orig)
-    xǁConfigSchemaǁ__init____mutmut_orig.__name__ = 'xǁConfigSchemaǁ__init__'
+    xǁConfigSchemaǁ__init____mutmut_orig.__name__ = "xǁConfigSchemaǁ__init__"
 
     def xǁConfigSchemaǁadd_field__mutmut_orig(self, field: SchemaField) -> None:
         """Add a field to the schema."""
@@ -214,18 +223,24 @@ class ConfigSchema:
         """Add a field to the schema."""
         self.fields.append(field)
         self._field_map[field.name] = None
-    
-    xǁConfigSchemaǁadd_field__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSchemaǁadd_field__mutmut_1': xǁConfigSchemaǁadd_field__mutmut_1, 
-        'xǁConfigSchemaǁadd_field__mutmut_2': xǁConfigSchemaǁadd_field__mutmut_2
+
+    xǁConfigSchemaǁadd_field__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSchemaǁadd_field__mutmut_1": xǁConfigSchemaǁadd_field__mutmut_1,
+        "xǁConfigSchemaǁadd_field__mutmut_2": xǁConfigSchemaǁadd_field__mutmut_2,
     }
-    
+
     def add_field(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSchemaǁadd_field__mutmut_orig"), object.__getattribute__(self, "xǁConfigSchemaǁadd_field__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSchemaǁadd_field__mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSchemaǁadd_field__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     add_field.__signature__ = _mutmut_signature(xǁConfigSchemaǁadd_field__mutmut_orig)
-    xǁConfigSchemaǁadd_field__mutmut_orig.__name__ = 'xǁConfigSchemaǁadd_field'
+    xǁConfigSchemaǁadd_field__mutmut_orig.__name__ = "xǁConfigSchemaǁadd_field"
 
     def xǁConfigSchemaǁvalidate__mutmut_orig(self, data: ConfigDict) -> None:
         """Validate configuration data against schema.
@@ -360,7 +375,9 @@ class ConfigSchema:
         # Check required fields
         for field in self.fields:
             if field.required and field.name not in data:
-                raise ConfigValidationError("Required field missing", )
+                raise ConfigValidationError(
+                    "Required field missing",
+                )
 
         # Validate each field
         for key, value in data.items():
@@ -466,27 +483,33 @@ class ConfigSchema:
         for key, value in data.items():
             if key in self._field_map:
                 self._field_map[key].validate(None)
-    
-    xǁConfigSchemaǁvalidate__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSchemaǁvalidate__mutmut_1': xǁConfigSchemaǁvalidate__mutmut_1, 
-        'xǁConfigSchemaǁvalidate__mutmut_2': xǁConfigSchemaǁvalidate__mutmut_2, 
-        'xǁConfigSchemaǁvalidate__mutmut_3': xǁConfigSchemaǁvalidate__mutmut_3, 
-        'xǁConfigSchemaǁvalidate__mutmut_4': xǁConfigSchemaǁvalidate__mutmut_4, 
-        'xǁConfigSchemaǁvalidate__mutmut_5': xǁConfigSchemaǁvalidate__mutmut_5, 
-        'xǁConfigSchemaǁvalidate__mutmut_6': xǁConfigSchemaǁvalidate__mutmut_6, 
-        'xǁConfigSchemaǁvalidate__mutmut_7': xǁConfigSchemaǁvalidate__mutmut_7, 
-        'xǁConfigSchemaǁvalidate__mutmut_8': xǁConfigSchemaǁvalidate__mutmut_8, 
-        'xǁConfigSchemaǁvalidate__mutmut_9': xǁConfigSchemaǁvalidate__mutmut_9, 
-        'xǁConfigSchemaǁvalidate__mutmut_10': xǁConfigSchemaǁvalidate__mutmut_10, 
-        'xǁConfigSchemaǁvalidate__mutmut_11': xǁConfigSchemaǁvalidate__mutmut_11
+
+    xǁConfigSchemaǁvalidate__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSchemaǁvalidate__mutmut_1": xǁConfigSchemaǁvalidate__mutmut_1,
+        "xǁConfigSchemaǁvalidate__mutmut_2": xǁConfigSchemaǁvalidate__mutmut_2,
+        "xǁConfigSchemaǁvalidate__mutmut_3": xǁConfigSchemaǁvalidate__mutmut_3,
+        "xǁConfigSchemaǁvalidate__mutmut_4": xǁConfigSchemaǁvalidate__mutmut_4,
+        "xǁConfigSchemaǁvalidate__mutmut_5": xǁConfigSchemaǁvalidate__mutmut_5,
+        "xǁConfigSchemaǁvalidate__mutmut_6": xǁConfigSchemaǁvalidate__mutmut_6,
+        "xǁConfigSchemaǁvalidate__mutmut_7": xǁConfigSchemaǁvalidate__mutmut_7,
+        "xǁConfigSchemaǁvalidate__mutmut_8": xǁConfigSchemaǁvalidate__mutmut_8,
+        "xǁConfigSchemaǁvalidate__mutmut_9": xǁConfigSchemaǁvalidate__mutmut_9,
+        "xǁConfigSchemaǁvalidate__mutmut_10": xǁConfigSchemaǁvalidate__mutmut_10,
+        "xǁConfigSchemaǁvalidate__mutmut_11": xǁConfigSchemaǁvalidate__mutmut_11,
     }
-    
+
     def validate(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSchemaǁvalidate__mutmut_orig"), object.__getattribute__(self, "xǁConfigSchemaǁvalidate__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSchemaǁvalidate__mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSchemaǁvalidate__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     validate.__signature__ = _mutmut_signature(xǁConfigSchemaǁvalidate__mutmut_orig)
-    xǁConfigSchemaǁvalidate__mutmut_orig.__name__ = 'xǁConfigSchemaǁvalidate'
+    xǁConfigSchemaǁvalidate__mutmut_orig.__name__ = "xǁConfigSchemaǁvalidate"
 
     def xǁConfigSchemaǁapply_defaults__mutmut_orig(self, data: ConfigDict) -> ConfigDict:
         """Apply default values to configuration data.
@@ -595,21 +618,27 @@ class ConfigSchema:
                 result[field.name] = None
 
         return result
-    
-    xǁConfigSchemaǁapply_defaults__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSchemaǁapply_defaults__mutmut_1': xǁConfigSchemaǁapply_defaults__mutmut_1, 
-        'xǁConfigSchemaǁapply_defaults__mutmut_2': xǁConfigSchemaǁapply_defaults__mutmut_2, 
-        'xǁConfigSchemaǁapply_defaults__mutmut_3': xǁConfigSchemaǁapply_defaults__mutmut_3, 
-        'xǁConfigSchemaǁapply_defaults__mutmut_4': xǁConfigSchemaǁapply_defaults__mutmut_4, 
-        'xǁConfigSchemaǁapply_defaults__mutmut_5': xǁConfigSchemaǁapply_defaults__mutmut_5
+
+    xǁConfigSchemaǁapply_defaults__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSchemaǁapply_defaults__mutmut_1": xǁConfigSchemaǁapply_defaults__mutmut_1,
+        "xǁConfigSchemaǁapply_defaults__mutmut_2": xǁConfigSchemaǁapply_defaults__mutmut_2,
+        "xǁConfigSchemaǁapply_defaults__mutmut_3": xǁConfigSchemaǁapply_defaults__mutmut_3,
+        "xǁConfigSchemaǁapply_defaults__mutmut_4": xǁConfigSchemaǁapply_defaults__mutmut_4,
+        "xǁConfigSchemaǁapply_defaults__mutmut_5": xǁConfigSchemaǁapply_defaults__mutmut_5,
     }
-    
+
     def apply_defaults(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSchemaǁapply_defaults__mutmut_orig"), object.__getattribute__(self, "xǁConfigSchemaǁapply_defaults__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSchemaǁapply_defaults__mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSchemaǁapply_defaults__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     apply_defaults.__signature__ = _mutmut_signature(xǁConfigSchemaǁapply_defaults__mutmut_orig)
-    xǁConfigSchemaǁapply_defaults__mutmut_orig.__name__ = 'xǁConfigSchemaǁapply_defaults'
+    xǁConfigSchemaǁapply_defaults__mutmut_orig.__name__ = "xǁConfigSchemaǁapply_defaults"
 
     def xǁConfigSchemaǁfilter_extra_fields__mutmut_orig(self, data: ConfigDict) -> ConfigDict:
         """Remove fields not defined in schema.
@@ -634,17 +663,23 @@ class ConfigSchema:
 
         """
         return {k: v for k, v in data.items() if k not in self._field_map}
-    
-    xǁConfigSchemaǁfilter_extra_fields__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁConfigSchemaǁfilter_extra_fields__mutmut_1': xǁConfigSchemaǁfilter_extra_fields__mutmut_1
+
+    xǁConfigSchemaǁfilter_extra_fields__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁConfigSchemaǁfilter_extra_fields__mutmut_1": xǁConfigSchemaǁfilter_extra_fields__mutmut_1
     }
-    
+
     def filter_extra_fields(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁConfigSchemaǁfilter_extra_fields__mutmut_orig"), object.__getattribute__(self, "xǁConfigSchemaǁfilter_extra_fields__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁConfigSchemaǁfilter_extra_fields__mutmut_orig"),
+            object.__getattribute__(self, "xǁConfigSchemaǁfilter_extra_fields__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     filter_extra_fields.__signature__ = _mutmut_signature(xǁConfigSchemaǁfilter_extra_fields__mutmut_orig)
-    xǁConfigSchemaǁfilter_extra_fields__mutmut_orig.__name__ = 'xǁConfigSchemaǁfilter_extra_fields'
+    xǁConfigSchemaǁfilter_extra_fields__mutmut_orig.__name__ = "xǁConfigSchemaǁfilter_extra_fields"
 
     @classmethod
     def from_config_class(cls, config_class: type[BaseConfig]) -> ConfigSchema:
@@ -769,19 +804,24 @@ def x_validate_schema__mutmut_4(config: BaseConfig, schema: ConfigSchema) -> Non
     data = config.to_dict(include_sensitive=True)
     schema.validate(None)
 
-x_validate_schema__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_schema__mutmut_1': x_validate_schema__mutmut_1, 
-    'x_validate_schema__mutmut_2': x_validate_schema__mutmut_2, 
-    'x_validate_schema__mutmut_3': x_validate_schema__mutmut_3, 
-    'x_validate_schema__mutmut_4': x_validate_schema__mutmut_4
+
+x_validate_schema__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_schema__mutmut_1": x_validate_schema__mutmut_1,
+    "x_validate_schema__mutmut_2": x_validate_schema__mutmut_2,
+    "x_validate_schema__mutmut_3": x_validate_schema__mutmut_3,
+    "x_validate_schema__mutmut_4": x_validate_schema__mutmut_4,
 }
 
+
 def validate_schema(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_schema__mutmut_orig, x_validate_schema__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_schema__mutmut_orig, x_validate_schema__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_schema.__signature__ = _mutmut_signature(x_validate_schema__mutmut_orig)
-x_validate_schema__mutmut_orig.__name__ = 'x_validate_schema'
+x_validate_schema__mutmut_orig.__name__ = "x_validate_schema"
 
 
 # Common validators (all sync since they're simple checks)
@@ -813,19 +853,22 @@ def x_validate_port__mutmut_4(value: int) -> bool:
     """Validate port number."""
     return 1 <= value <= 65536
 
-x_validate_port__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_port__mutmut_1': x_validate_port__mutmut_1, 
-    'x_validate_port__mutmut_2': x_validate_port__mutmut_2, 
-    'x_validate_port__mutmut_3': x_validate_port__mutmut_3, 
-    'x_validate_port__mutmut_4': x_validate_port__mutmut_4
+
+x_validate_port__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_port__mutmut_1": x_validate_port__mutmut_1,
+    "x_validate_port__mutmut_2": x_validate_port__mutmut_2,
+    "x_validate_port__mutmut_3": x_validate_port__mutmut_3,
+    "x_validate_port__mutmut_4": x_validate_port__mutmut_4,
 }
+
 
 def validate_port(*args, **kwargs):
     result = _mutmut_trampoline(x_validate_port__mutmut_orig, x_validate_port__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 validate_port.__signature__ = _mutmut_signature(x_validate_port__mutmut_orig)
-x_validate_port__mutmut_orig.__name__ = 'x_validate_port'
+x_validate_port__mutmut_orig.__name__ = "x_validate_port"
 
 
 def x_validate_url__mutmut_orig(value: str) -> bool:
@@ -902,19 +945,22 @@ def x_validate_url__mutmut_4(value: str) -> bool:
         # Exception: Any other parsing errors
         return True
 
-x_validate_url__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_url__mutmut_1': x_validate_url__mutmut_1, 
-    'x_validate_url__mutmut_2': x_validate_url__mutmut_2, 
-    'x_validate_url__mutmut_3': x_validate_url__mutmut_3, 
-    'x_validate_url__mutmut_4': x_validate_url__mutmut_4
+
+x_validate_url__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_url__mutmut_1": x_validate_url__mutmut_1,
+    "x_validate_url__mutmut_2": x_validate_url__mutmut_2,
+    "x_validate_url__mutmut_3": x_validate_url__mutmut_3,
+    "x_validate_url__mutmut_4": x_validate_url__mutmut_4,
 }
+
 
 def validate_url(*args, **kwargs):
     result = _mutmut_trampoline(x_validate_url__mutmut_orig, x_validate_url__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 validate_url.__signature__ = _mutmut_signature(x_validate_url__mutmut_orig)
-x_validate_url__mutmut_orig.__name__ = 'x_validate_url'
+x_validate_url__mutmut_orig.__name__ = "x_validate_url"
 
 
 def x_validate_email__mutmut_orig(value: str) -> bool:
@@ -994,26 +1040,33 @@ def x_validate_email__mutmut_9(value: str) -> bool:
     import re
 
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-    return bool(re.match(pattern, ))
+    return bool(
+        re.match(
+            pattern,
+        )
+    )
 
-x_validate_email__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_email__mutmut_1': x_validate_email__mutmut_1, 
-    'x_validate_email__mutmut_2': x_validate_email__mutmut_2, 
-    'x_validate_email__mutmut_3': x_validate_email__mutmut_3, 
-    'x_validate_email__mutmut_4': x_validate_email__mutmut_4, 
-    'x_validate_email__mutmut_5': x_validate_email__mutmut_5, 
-    'x_validate_email__mutmut_6': x_validate_email__mutmut_6, 
-    'x_validate_email__mutmut_7': x_validate_email__mutmut_7, 
-    'x_validate_email__mutmut_8': x_validate_email__mutmut_8, 
-    'x_validate_email__mutmut_9': x_validate_email__mutmut_9
+
+x_validate_email__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_email__mutmut_1": x_validate_email__mutmut_1,
+    "x_validate_email__mutmut_2": x_validate_email__mutmut_2,
+    "x_validate_email__mutmut_3": x_validate_email__mutmut_3,
+    "x_validate_email__mutmut_4": x_validate_email__mutmut_4,
+    "x_validate_email__mutmut_5": x_validate_email__mutmut_5,
+    "x_validate_email__mutmut_6": x_validate_email__mutmut_6,
+    "x_validate_email__mutmut_7": x_validate_email__mutmut_7,
+    "x_validate_email__mutmut_8": x_validate_email__mutmut_8,
+    "x_validate_email__mutmut_9": x_validate_email__mutmut_9,
 }
+
 
 def validate_email(*args, **kwargs):
     result = _mutmut_trampoline(x_validate_email__mutmut_orig, x_validate_email__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 validate_email.__signature__ = _mutmut_signature(x_validate_email__mutmut_orig)
-x_validate_email__mutmut_orig.__name__ = 'x_validate_email'
+x_validate_email__mutmut_orig.__name__ = "x_validate_email"
 
 
 def x_validate_path__mutmut_orig(value: str) -> bool:
@@ -1071,18 +1124,21 @@ def x_validate_path__mutmut_3(value: str) -> bool:
         # Exception: Any other path creation errors
         return True
 
-x_validate_path__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_path__mutmut_1': x_validate_path__mutmut_1, 
-    'x_validate_path__mutmut_2': x_validate_path__mutmut_2, 
-    'x_validate_path__mutmut_3': x_validate_path__mutmut_3
+
+x_validate_path__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_path__mutmut_1": x_validate_path__mutmut_1,
+    "x_validate_path__mutmut_2": x_validate_path__mutmut_2,
+    "x_validate_path__mutmut_3": x_validate_path__mutmut_3,
 }
+
 
 def validate_path(*args, **kwargs):
     result = _mutmut_trampoline(x_validate_path__mutmut_orig, x_validate_path__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 validate_path.__signature__ = _mutmut_signature(x_validate_path__mutmut_orig)
-x_validate_path__mutmut_orig.__name__ = 'x_validate_path'
+x_validate_path__mutmut_orig.__name__ = "x_validate_path"
 
 
 def x_validate_version__mutmut_orig(value: str) -> bool:
@@ -1162,26 +1218,35 @@ def x_validate_version__mutmut_9(value: str) -> bool:
     import re
 
     pattern = r"^\d+\.\d+\.\d+(-[a-zA-Z0-9.-]+)?(\+[a-zA-Z0-9.-]+)?$"
-    return bool(re.match(pattern, ))
+    return bool(
+        re.match(
+            pattern,
+        )
+    )
 
-x_validate_version__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_version__mutmut_1': x_validate_version__mutmut_1, 
-    'x_validate_version__mutmut_2': x_validate_version__mutmut_2, 
-    'x_validate_version__mutmut_3': x_validate_version__mutmut_3, 
-    'x_validate_version__mutmut_4': x_validate_version__mutmut_4, 
-    'x_validate_version__mutmut_5': x_validate_version__mutmut_5, 
-    'x_validate_version__mutmut_6': x_validate_version__mutmut_6, 
-    'x_validate_version__mutmut_7': x_validate_version__mutmut_7, 
-    'x_validate_version__mutmut_8': x_validate_version__mutmut_8, 
-    'x_validate_version__mutmut_9': x_validate_version__mutmut_9
+
+x_validate_version__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_version__mutmut_1": x_validate_version__mutmut_1,
+    "x_validate_version__mutmut_2": x_validate_version__mutmut_2,
+    "x_validate_version__mutmut_3": x_validate_version__mutmut_3,
+    "x_validate_version__mutmut_4": x_validate_version__mutmut_4,
+    "x_validate_version__mutmut_5": x_validate_version__mutmut_5,
+    "x_validate_version__mutmut_6": x_validate_version__mutmut_6,
+    "x_validate_version__mutmut_7": x_validate_version__mutmut_7,
+    "x_validate_version__mutmut_8": x_validate_version__mutmut_8,
+    "x_validate_version__mutmut_9": x_validate_version__mutmut_9,
 }
 
+
 def validate_version(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_version__mutmut_orig, x_validate_version__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_version__mutmut_orig, x_validate_version__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_version.__signature__ = _mutmut_signature(x_validate_version__mutmut_orig)
-x_validate_version__mutmut_orig.__name__ = 'x_validate_version'
+x_validate_version__mutmut_orig.__name__ = "x_validate_version"
 
 
 # Example async validator for complex checks
@@ -1199,16 +1264,21 @@ def x_validate_url_accessible__mutmut_1(value: str) -> bool:
     # For now, just do basic URL validation
     return validate_url(None)
 
-x_validate_url_accessible__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_url_accessible__mutmut_1': x_validate_url_accessible__mutmut_1
+
+x_validate_url_accessible__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_url_accessible__mutmut_1": x_validate_url_accessible__mutmut_1
 }
 
+
 def validate_url_accessible(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_url_accessible__mutmut_orig, x_validate_url_accessible__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_url_accessible__mutmut_orig, x_validate_url_accessible__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_url_accessible.__signature__ = _mutmut_signature(x_validate_url_accessible__mutmut_orig)
-x_validate_url_accessible__mutmut_orig.__name__ = 'x_validate_url_accessible'
+x_validate_url_accessible__mutmut_orig.__name__ = "x_validate_url_accessible"
 
 
 # <3 🧱🤝⚙️🪄

@@ -32,23 +32,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -640,7 +643,7 @@ def x_hash_file__mutmut_9(
         raise ResourceError(
             f"File not found: {path}",
             resource_type="file",
-            )
+        )
 
     if not path.is_file():
         raise ResourceError(
@@ -1264,7 +1267,7 @@ def x_hash_file__mutmut_19(
         raise ResourceError(
             f"Path is not a file: {path}",
             resource_type="file",
-            )
+        )
 
     validate_algorithm(algorithm)
     hasher = get_hasher(algorithm)
@@ -2516,7 +2519,7 @@ def x_hash_file__mutmut_39(
             "🔐 Hashed file",
             path=str(path),
             algorithm=algorithm,
-            )
+        )
         return hash_value
 
     except OSError as e:
@@ -3327,7 +3330,7 @@ def x_hash_file__mutmut_52(
         raise ResourceError(
             f"Failed to read file: {path}",
             resource_type="file",
-            ) from e
+        ) from e
 
 
 def x_hash_file__mutmut_53(
@@ -3515,70 +3518,73 @@ def x_hash_file__mutmut_55(
             resource_path=str(None),
         ) from e
 
-x_hash_file__mutmut_mutants : ClassVar[MutantDict] = {
-'x_hash_file__mutmut_1': x_hash_file__mutmut_1, 
-    'x_hash_file__mutmut_2': x_hash_file__mutmut_2, 
-    'x_hash_file__mutmut_3': x_hash_file__mutmut_3, 
-    'x_hash_file__mutmut_4': x_hash_file__mutmut_4, 
-    'x_hash_file__mutmut_5': x_hash_file__mutmut_5, 
-    'x_hash_file__mutmut_6': x_hash_file__mutmut_6, 
-    'x_hash_file__mutmut_7': x_hash_file__mutmut_7, 
-    'x_hash_file__mutmut_8': x_hash_file__mutmut_8, 
-    'x_hash_file__mutmut_9': x_hash_file__mutmut_9, 
-    'x_hash_file__mutmut_10': x_hash_file__mutmut_10, 
-    'x_hash_file__mutmut_11': x_hash_file__mutmut_11, 
-    'x_hash_file__mutmut_12': x_hash_file__mutmut_12, 
-    'x_hash_file__mutmut_13': x_hash_file__mutmut_13, 
-    'x_hash_file__mutmut_14': x_hash_file__mutmut_14, 
-    'x_hash_file__mutmut_15': x_hash_file__mutmut_15, 
-    'x_hash_file__mutmut_16': x_hash_file__mutmut_16, 
-    'x_hash_file__mutmut_17': x_hash_file__mutmut_17, 
-    'x_hash_file__mutmut_18': x_hash_file__mutmut_18, 
-    'x_hash_file__mutmut_19': x_hash_file__mutmut_19, 
-    'x_hash_file__mutmut_20': x_hash_file__mutmut_20, 
-    'x_hash_file__mutmut_21': x_hash_file__mutmut_21, 
-    'x_hash_file__mutmut_22': x_hash_file__mutmut_22, 
-    'x_hash_file__mutmut_23': x_hash_file__mutmut_23, 
-    'x_hash_file__mutmut_24': x_hash_file__mutmut_24, 
-    'x_hash_file__mutmut_25': x_hash_file__mutmut_25, 
-    'x_hash_file__mutmut_26': x_hash_file__mutmut_26, 
-    'x_hash_file__mutmut_27': x_hash_file__mutmut_27, 
-    'x_hash_file__mutmut_28': x_hash_file__mutmut_28, 
-    'x_hash_file__mutmut_29': x_hash_file__mutmut_29, 
-    'x_hash_file__mutmut_30': x_hash_file__mutmut_30, 
-    'x_hash_file__mutmut_31': x_hash_file__mutmut_31, 
-    'x_hash_file__mutmut_32': x_hash_file__mutmut_32, 
-    'x_hash_file__mutmut_33': x_hash_file__mutmut_33, 
-    'x_hash_file__mutmut_34': x_hash_file__mutmut_34, 
-    'x_hash_file__mutmut_35': x_hash_file__mutmut_35, 
-    'x_hash_file__mutmut_36': x_hash_file__mutmut_36, 
-    'x_hash_file__mutmut_37': x_hash_file__mutmut_37, 
-    'x_hash_file__mutmut_38': x_hash_file__mutmut_38, 
-    'x_hash_file__mutmut_39': x_hash_file__mutmut_39, 
-    'x_hash_file__mutmut_40': x_hash_file__mutmut_40, 
-    'x_hash_file__mutmut_41': x_hash_file__mutmut_41, 
-    'x_hash_file__mutmut_42': x_hash_file__mutmut_42, 
-    'x_hash_file__mutmut_43': x_hash_file__mutmut_43, 
-    'x_hash_file__mutmut_44': x_hash_file__mutmut_44, 
-    'x_hash_file__mutmut_45': x_hash_file__mutmut_45, 
-    'x_hash_file__mutmut_46': x_hash_file__mutmut_46, 
-    'x_hash_file__mutmut_47': x_hash_file__mutmut_47, 
-    'x_hash_file__mutmut_48': x_hash_file__mutmut_48, 
-    'x_hash_file__mutmut_49': x_hash_file__mutmut_49, 
-    'x_hash_file__mutmut_50': x_hash_file__mutmut_50, 
-    'x_hash_file__mutmut_51': x_hash_file__mutmut_51, 
-    'x_hash_file__mutmut_52': x_hash_file__mutmut_52, 
-    'x_hash_file__mutmut_53': x_hash_file__mutmut_53, 
-    'x_hash_file__mutmut_54': x_hash_file__mutmut_54, 
-    'x_hash_file__mutmut_55': x_hash_file__mutmut_55
+
+x_hash_file__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_hash_file__mutmut_1": x_hash_file__mutmut_1,
+    "x_hash_file__mutmut_2": x_hash_file__mutmut_2,
+    "x_hash_file__mutmut_3": x_hash_file__mutmut_3,
+    "x_hash_file__mutmut_4": x_hash_file__mutmut_4,
+    "x_hash_file__mutmut_5": x_hash_file__mutmut_5,
+    "x_hash_file__mutmut_6": x_hash_file__mutmut_6,
+    "x_hash_file__mutmut_7": x_hash_file__mutmut_7,
+    "x_hash_file__mutmut_8": x_hash_file__mutmut_8,
+    "x_hash_file__mutmut_9": x_hash_file__mutmut_9,
+    "x_hash_file__mutmut_10": x_hash_file__mutmut_10,
+    "x_hash_file__mutmut_11": x_hash_file__mutmut_11,
+    "x_hash_file__mutmut_12": x_hash_file__mutmut_12,
+    "x_hash_file__mutmut_13": x_hash_file__mutmut_13,
+    "x_hash_file__mutmut_14": x_hash_file__mutmut_14,
+    "x_hash_file__mutmut_15": x_hash_file__mutmut_15,
+    "x_hash_file__mutmut_16": x_hash_file__mutmut_16,
+    "x_hash_file__mutmut_17": x_hash_file__mutmut_17,
+    "x_hash_file__mutmut_18": x_hash_file__mutmut_18,
+    "x_hash_file__mutmut_19": x_hash_file__mutmut_19,
+    "x_hash_file__mutmut_20": x_hash_file__mutmut_20,
+    "x_hash_file__mutmut_21": x_hash_file__mutmut_21,
+    "x_hash_file__mutmut_22": x_hash_file__mutmut_22,
+    "x_hash_file__mutmut_23": x_hash_file__mutmut_23,
+    "x_hash_file__mutmut_24": x_hash_file__mutmut_24,
+    "x_hash_file__mutmut_25": x_hash_file__mutmut_25,
+    "x_hash_file__mutmut_26": x_hash_file__mutmut_26,
+    "x_hash_file__mutmut_27": x_hash_file__mutmut_27,
+    "x_hash_file__mutmut_28": x_hash_file__mutmut_28,
+    "x_hash_file__mutmut_29": x_hash_file__mutmut_29,
+    "x_hash_file__mutmut_30": x_hash_file__mutmut_30,
+    "x_hash_file__mutmut_31": x_hash_file__mutmut_31,
+    "x_hash_file__mutmut_32": x_hash_file__mutmut_32,
+    "x_hash_file__mutmut_33": x_hash_file__mutmut_33,
+    "x_hash_file__mutmut_34": x_hash_file__mutmut_34,
+    "x_hash_file__mutmut_35": x_hash_file__mutmut_35,
+    "x_hash_file__mutmut_36": x_hash_file__mutmut_36,
+    "x_hash_file__mutmut_37": x_hash_file__mutmut_37,
+    "x_hash_file__mutmut_38": x_hash_file__mutmut_38,
+    "x_hash_file__mutmut_39": x_hash_file__mutmut_39,
+    "x_hash_file__mutmut_40": x_hash_file__mutmut_40,
+    "x_hash_file__mutmut_41": x_hash_file__mutmut_41,
+    "x_hash_file__mutmut_42": x_hash_file__mutmut_42,
+    "x_hash_file__mutmut_43": x_hash_file__mutmut_43,
+    "x_hash_file__mutmut_44": x_hash_file__mutmut_44,
+    "x_hash_file__mutmut_45": x_hash_file__mutmut_45,
+    "x_hash_file__mutmut_46": x_hash_file__mutmut_46,
+    "x_hash_file__mutmut_47": x_hash_file__mutmut_47,
+    "x_hash_file__mutmut_48": x_hash_file__mutmut_48,
+    "x_hash_file__mutmut_49": x_hash_file__mutmut_49,
+    "x_hash_file__mutmut_50": x_hash_file__mutmut_50,
+    "x_hash_file__mutmut_51": x_hash_file__mutmut_51,
+    "x_hash_file__mutmut_52": x_hash_file__mutmut_52,
+    "x_hash_file__mutmut_53": x_hash_file__mutmut_53,
+    "x_hash_file__mutmut_54": x_hash_file__mutmut_54,
+    "x_hash_file__mutmut_55": x_hash_file__mutmut_55,
 }
+
 
 def hash_file(*args, **kwargs):
     result = _mutmut_trampoline(x_hash_file__mutmut_orig, x_hash_file__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 hash_file.__signature__ = _mutmut_signature(x_hash_file__mutmut_orig)
-x_hash_file__mutmut_orig.__name__ = 'x_hash_file'
+x_hash_file__mutmut_orig.__name__ = "x_hash_file"
 
 
 def x_hash_data__mutmut_orig(
@@ -4007,7 +4013,7 @@ def x_hash_data__mutmut_13(
         "🔐 Hashed data",
         algorithm=algorithm,
         size=len(data),
-        )
+    )
     return hash_value
 
 
@@ -4196,34 +4202,37 @@ def x_hash_data__mutmut_19(
     )
     return hash_value
 
-x_hash_data__mutmut_mutants : ClassVar[MutantDict] = {
-'x_hash_data__mutmut_1': x_hash_data__mutmut_1, 
-    'x_hash_data__mutmut_2': x_hash_data__mutmut_2, 
-    'x_hash_data__mutmut_3': x_hash_data__mutmut_3, 
-    'x_hash_data__mutmut_4': x_hash_data__mutmut_4, 
-    'x_hash_data__mutmut_5': x_hash_data__mutmut_5, 
-    'x_hash_data__mutmut_6': x_hash_data__mutmut_6, 
-    'x_hash_data__mutmut_7': x_hash_data__mutmut_7, 
-    'x_hash_data__mutmut_8': x_hash_data__mutmut_8, 
-    'x_hash_data__mutmut_9': x_hash_data__mutmut_9, 
-    'x_hash_data__mutmut_10': x_hash_data__mutmut_10, 
-    'x_hash_data__mutmut_11': x_hash_data__mutmut_11, 
-    'x_hash_data__mutmut_12': x_hash_data__mutmut_12, 
-    'x_hash_data__mutmut_13': x_hash_data__mutmut_13, 
-    'x_hash_data__mutmut_14': x_hash_data__mutmut_14, 
-    'x_hash_data__mutmut_15': x_hash_data__mutmut_15, 
-    'x_hash_data__mutmut_16': x_hash_data__mutmut_16, 
-    'x_hash_data__mutmut_17': x_hash_data__mutmut_17, 
-    'x_hash_data__mutmut_18': x_hash_data__mutmut_18, 
-    'x_hash_data__mutmut_19': x_hash_data__mutmut_19
+
+x_hash_data__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_hash_data__mutmut_1": x_hash_data__mutmut_1,
+    "x_hash_data__mutmut_2": x_hash_data__mutmut_2,
+    "x_hash_data__mutmut_3": x_hash_data__mutmut_3,
+    "x_hash_data__mutmut_4": x_hash_data__mutmut_4,
+    "x_hash_data__mutmut_5": x_hash_data__mutmut_5,
+    "x_hash_data__mutmut_6": x_hash_data__mutmut_6,
+    "x_hash_data__mutmut_7": x_hash_data__mutmut_7,
+    "x_hash_data__mutmut_8": x_hash_data__mutmut_8,
+    "x_hash_data__mutmut_9": x_hash_data__mutmut_9,
+    "x_hash_data__mutmut_10": x_hash_data__mutmut_10,
+    "x_hash_data__mutmut_11": x_hash_data__mutmut_11,
+    "x_hash_data__mutmut_12": x_hash_data__mutmut_12,
+    "x_hash_data__mutmut_13": x_hash_data__mutmut_13,
+    "x_hash_data__mutmut_14": x_hash_data__mutmut_14,
+    "x_hash_data__mutmut_15": x_hash_data__mutmut_15,
+    "x_hash_data__mutmut_16": x_hash_data__mutmut_16,
+    "x_hash_data__mutmut_17": x_hash_data__mutmut_17,
+    "x_hash_data__mutmut_18": x_hash_data__mutmut_18,
+    "x_hash_data__mutmut_19": x_hash_data__mutmut_19,
 }
+
 
 def hash_data(*args, **kwargs):
     result = _mutmut_trampoline(x_hash_data__mutmut_orig, x_hash_data__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 hash_data.__signature__ = _mutmut_signature(x_hash_data__mutmut_orig)
-x_hash_data__mutmut_orig.__name__ = 'x_hash_data'
+x_hash_data__mutmut_orig.__name__ = "x_hash_data"
 
 
 def x_hash_string__mutmut_orig(
@@ -4377,7 +4386,9 @@ def x_hash_string__mutmut_6(
         ValidationError: If algorithm is not supported
 
     """
-    return hash_data(text.encode(encoding), )
+    return hash_data(
+        text.encode(encoding),
+    )
 
 
 def x_hash_string__mutmut_7(
@@ -4401,22 +4412,25 @@ def x_hash_string__mutmut_7(
     """
     return hash_data(text.encode(None), algorithm)
 
-x_hash_string__mutmut_mutants : ClassVar[MutantDict] = {
-'x_hash_string__mutmut_1': x_hash_string__mutmut_1, 
-    'x_hash_string__mutmut_2': x_hash_string__mutmut_2, 
-    'x_hash_string__mutmut_3': x_hash_string__mutmut_3, 
-    'x_hash_string__mutmut_4': x_hash_string__mutmut_4, 
-    'x_hash_string__mutmut_5': x_hash_string__mutmut_5, 
-    'x_hash_string__mutmut_6': x_hash_string__mutmut_6, 
-    'x_hash_string__mutmut_7': x_hash_string__mutmut_7
+
+x_hash_string__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_hash_string__mutmut_1": x_hash_string__mutmut_1,
+    "x_hash_string__mutmut_2": x_hash_string__mutmut_2,
+    "x_hash_string__mutmut_3": x_hash_string__mutmut_3,
+    "x_hash_string__mutmut_4": x_hash_string__mutmut_4,
+    "x_hash_string__mutmut_5": x_hash_string__mutmut_5,
+    "x_hash_string__mutmut_6": x_hash_string__mutmut_6,
+    "x_hash_string__mutmut_7": x_hash_string__mutmut_7,
 }
+
 
 def hash_string(*args, **kwargs):
     result = _mutmut_trampoline(x_hash_string__mutmut_orig, x_hash_string__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 hash_string.__signature__ = _mutmut_signature(x_hash_string__mutmut_orig)
-x_hash_string__mutmut_orig.__name__ = 'x_hash_string'
+x_hash_string__mutmut_orig.__name__ = "x_hash_string"
 
 
 def x_hash_stream__mutmut_orig(
@@ -5114,7 +5128,7 @@ def x_hash_stream__mutmut_18(
         "🔐 Hashed stream",
         algorithm=algorithm,
         bytes_read=bytes_read,
-        )
+    )
     return hash_value
 
 
@@ -5339,39 +5353,42 @@ def x_hash_stream__mutmut_24(
     )
     return hash_value
 
-x_hash_stream__mutmut_mutants : ClassVar[MutantDict] = {
-'x_hash_stream__mutmut_1': x_hash_stream__mutmut_1, 
-    'x_hash_stream__mutmut_2': x_hash_stream__mutmut_2, 
-    'x_hash_stream__mutmut_3': x_hash_stream__mutmut_3, 
-    'x_hash_stream__mutmut_4': x_hash_stream__mutmut_4, 
-    'x_hash_stream__mutmut_5': x_hash_stream__mutmut_5, 
-    'x_hash_stream__mutmut_6': x_hash_stream__mutmut_6, 
-    'x_hash_stream__mutmut_7': x_hash_stream__mutmut_7, 
-    'x_hash_stream__mutmut_8': x_hash_stream__mutmut_8, 
-    'x_hash_stream__mutmut_9': x_hash_stream__mutmut_9, 
-    'x_hash_stream__mutmut_10': x_hash_stream__mutmut_10, 
-    'x_hash_stream__mutmut_11': x_hash_stream__mutmut_11, 
-    'x_hash_stream__mutmut_12': x_hash_stream__mutmut_12, 
-    'x_hash_stream__mutmut_13': x_hash_stream__mutmut_13, 
-    'x_hash_stream__mutmut_14': x_hash_stream__mutmut_14, 
-    'x_hash_stream__mutmut_15': x_hash_stream__mutmut_15, 
-    'x_hash_stream__mutmut_16': x_hash_stream__mutmut_16, 
-    'x_hash_stream__mutmut_17': x_hash_stream__mutmut_17, 
-    'x_hash_stream__mutmut_18': x_hash_stream__mutmut_18, 
-    'x_hash_stream__mutmut_19': x_hash_stream__mutmut_19, 
-    'x_hash_stream__mutmut_20': x_hash_stream__mutmut_20, 
-    'x_hash_stream__mutmut_21': x_hash_stream__mutmut_21, 
-    'x_hash_stream__mutmut_22': x_hash_stream__mutmut_22, 
-    'x_hash_stream__mutmut_23': x_hash_stream__mutmut_23, 
-    'x_hash_stream__mutmut_24': x_hash_stream__mutmut_24
+
+x_hash_stream__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_hash_stream__mutmut_1": x_hash_stream__mutmut_1,
+    "x_hash_stream__mutmut_2": x_hash_stream__mutmut_2,
+    "x_hash_stream__mutmut_3": x_hash_stream__mutmut_3,
+    "x_hash_stream__mutmut_4": x_hash_stream__mutmut_4,
+    "x_hash_stream__mutmut_5": x_hash_stream__mutmut_5,
+    "x_hash_stream__mutmut_6": x_hash_stream__mutmut_6,
+    "x_hash_stream__mutmut_7": x_hash_stream__mutmut_7,
+    "x_hash_stream__mutmut_8": x_hash_stream__mutmut_8,
+    "x_hash_stream__mutmut_9": x_hash_stream__mutmut_9,
+    "x_hash_stream__mutmut_10": x_hash_stream__mutmut_10,
+    "x_hash_stream__mutmut_11": x_hash_stream__mutmut_11,
+    "x_hash_stream__mutmut_12": x_hash_stream__mutmut_12,
+    "x_hash_stream__mutmut_13": x_hash_stream__mutmut_13,
+    "x_hash_stream__mutmut_14": x_hash_stream__mutmut_14,
+    "x_hash_stream__mutmut_15": x_hash_stream__mutmut_15,
+    "x_hash_stream__mutmut_16": x_hash_stream__mutmut_16,
+    "x_hash_stream__mutmut_17": x_hash_stream__mutmut_17,
+    "x_hash_stream__mutmut_18": x_hash_stream__mutmut_18,
+    "x_hash_stream__mutmut_19": x_hash_stream__mutmut_19,
+    "x_hash_stream__mutmut_20": x_hash_stream__mutmut_20,
+    "x_hash_stream__mutmut_21": x_hash_stream__mutmut_21,
+    "x_hash_stream__mutmut_22": x_hash_stream__mutmut_22,
+    "x_hash_stream__mutmut_23": x_hash_stream__mutmut_23,
+    "x_hash_stream__mutmut_24": x_hash_stream__mutmut_24,
 }
+
 
 def hash_stream(*args, **kwargs):
     result = _mutmut_trampoline(x_hash_stream__mutmut_orig, x_hash_stream__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 hash_stream.__signature__ = _mutmut_signature(x_hash_stream__mutmut_orig)
-x_hash_stream__mutmut_orig.__name__ = 'x_hash_stream'
+x_hash_stream__mutmut_orig.__name__ = "x_hash_stream"
 
 
 def x_hash_file_multiple__mutmut_orig(
@@ -5977,7 +5994,7 @@ def x_hash_file_multiple__mutmut_9(
         raise ResourceError(
             f"File not found: {path}",
             resource_type="file",
-            )
+        )
 
     # Create hashers for all algorithms
     hashers = {}
@@ -7212,7 +7229,7 @@ def x_hash_file_multiple__mutmut_28(
         log.debug(
             "🔐 Hashed file with multiple algorithms",
             path=str(path),
-            )
+        )
 
         return results
 
@@ -7858,7 +7875,7 @@ def x_hash_file_multiple__mutmut_38(
         raise ResourceError(
             f"Failed to read file: {path}",
             resource_type="file",
-            ) from e
+        ) from e
 
 
 def x_hash_file_multiple__mutmut_39(
@@ -8052,56 +8069,61 @@ def x_hash_file_multiple__mutmut_41(
             resource_path=str(None),
         ) from e
 
-x_hash_file_multiple__mutmut_mutants : ClassVar[MutantDict] = {
-'x_hash_file_multiple__mutmut_1': x_hash_file_multiple__mutmut_1, 
-    'x_hash_file_multiple__mutmut_2': x_hash_file_multiple__mutmut_2, 
-    'x_hash_file_multiple__mutmut_3': x_hash_file_multiple__mutmut_3, 
-    'x_hash_file_multiple__mutmut_4': x_hash_file_multiple__mutmut_4, 
-    'x_hash_file_multiple__mutmut_5': x_hash_file_multiple__mutmut_5, 
-    'x_hash_file_multiple__mutmut_6': x_hash_file_multiple__mutmut_6, 
-    'x_hash_file_multiple__mutmut_7': x_hash_file_multiple__mutmut_7, 
-    'x_hash_file_multiple__mutmut_8': x_hash_file_multiple__mutmut_8, 
-    'x_hash_file_multiple__mutmut_9': x_hash_file_multiple__mutmut_9, 
-    'x_hash_file_multiple__mutmut_10': x_hash_file_multiple__mutmut_10, 
-    'x_hash_file_multiple__mutmut_11': x_hash_file_multiple__mutmut_11, 
-    'x_hash_file_multiple__mutmut_12': x_hash_file_multiple__mutmut_12, 
-    'x_hash_file_multiple__mutmut_13': x_hash_file_multiple__mutmut_13, 
-    'x_hash_file_multiple__mutmut_14': x_hash_file_multiple__mutmut_14, 
-    'x_hash_file_multiple__mutmut_15': x_hash_file_multiple__mutmut_15, 
-    'x_hash_file_multiple__mutmut_16': x_hash_file_multiple__mutmut_16, 
-    'x_hash_file_multiple__mutmut_17': x_hash_file_multiple__mutmut_17, 
-    'x_hash_file_multiple__mutmut_18': x_hash_file_multiple__mutmut_18, 
-    'x_hash_file_multiple__mutmut_19': x_hash_file_multiple__mutmut_19, 
-    'x_hash_file_multiple__mutmut_20': x_hash_file_multiple__mutmut_20, 
-    'x_hash_file_multiple__mutmut_21': x_hash_file_multiple__mutmut_21, 
-    'x_hash_file_multiple__mutmut_22': x_hash_file_multiple__mutmut_22, 
-    'x_hash_file_multiple__mutmut_23': x_hash_file_multiple__mutmut_23, 
-    'x_hash_file_multiple__mutmut_24': x_hash_file_multiple__mutmut_24, 
-    'x_hash_file_multiple__mutmut_25': x_hash_file_multiple__mutmut_25, 
-    'x_hash_file_multiple__mutmut_26': x_hash_file_multiple__mutmut_26, 
-    'x_hash_file_multiple__mutmut_27': x_hash_file_multiple__mutmut_27, 
-    'x_hash_file_multiple__mutmut_28': x_hash_file_multiple__mutmut_28, 
-    'x_hash_file_multiple__mutmut_29': x_hash_file_multiple__mutmut_29, 
-    'x_hash_file_multiple__mutmut_30': x_hash_file_multiple__mutmut_30, 
-    'x_hash_file_multiple__mutmut_31': x_hash_file_multiple__mutmut_31, 
-    'x_hash_file_multiple__mutmut_32': x_hash_file_multiple__mutmut_32, 
-    'x_hash_file_multiple__mutmut_33': x_hash_file_multiple__mutmut_33, 
-    'x_hash_file_multiple__mutmut_34': x_hash_file_multiple__mutmut_34, 
-    'x_hash_file_multiple__mutmut_35': x_hash_file_multiple__mutmut_35, 
-    'x_hash_file_multiple__mutmut_36': x_hash_file_multiple__mutmut_36, 
-    'x_hash_file_multiple__mutmut_37': x_hash_file_multiple__mutmut_37, 
-    'x_hash_file_multiple__mutmut_38': x_hash_file_multiple__mutmut_38, 
-    'x_hash_file_multiple__mutmut_39': x_hash_file_multiple__mutmut_39, 
-    'x_hash_file_multiple__mutmut_40': x_hash_file_multiple__mutmut_40, 
-    'x_hash_file_multiple__mutmut_41': x_hash_file_multiple__mutmut_41
+
+x_hash_file_multiple__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_hash_file_multiple__mutmut_1": x_hash_file_multiple__mutmut_1,
+    "x_hash_file_multiple__mutmut_2": x_hash_file_multiple__mutmut_2,
+    "x_hash_file_multiple__mutmut_3": x_hash_file_multiple__mutmut_3,
+    "x_hash_file_multiple__mutmut_4": x_hash_file_multiple__mutmut_4,
+    "x_hash_file_multiple__mutmut_5": x_hash_file_multiple__mutmut_5,
+    "x_hash_file_multiple__mutmut_6": x_hash_file_multiple__mutmut_6,
+    "x_hash_file_multiple__mutmut_7": x_hash_file_multiple__mutmut_7,
+    "x_hash_file_multiple__mutmut_8": x_hash_file_multiple__mutmut_8,
+    "x_hash_file_multiple__mutmut_9": x_hash_file_multiple__mutmut_9,
+    "x_hash_file_multiple__mutmut_10": x_hash_file_multiple__mutmut_10,
+    "x_hash_file_multiple__mutmut_11": x_hash_file_multiple__mutmut_11,
+    "x_hash_file_multiple__mutmut_12": x_hash_file_multiple__mutmut_12,
+    "x_hash_file_multiple__mutmut_13": x_hash_file_multiple__mutmut_13,
+    "x_hash_file_multiple__mutmut_14": x_hash_file_multiple__mutmut_14,
+    "x_hash_file_multiple__mutmut_15": x_hash_file_multiple__mutmut_15,
+    "x_hash_file_multiple__mutmut_16": x_hash_file_multiple__mutmut_16,
+    "x_hash_file_multiple__mutmut_17": x_hash_file_multiple__mutmut_17,
+    "x_hash_file_multiple__mutmut_18": x_hash_file_multiple__mutmut_18,
+    "x_hash_file_multiple__mutmut_19": x_hash_file_multiple__mutmut_19,
+    "x_hash_file_multiple__mutmut_20": x_hash_file_multiple__mutmut_20,
+    "x_hash_file_multiple__mutmut_21": x_hash_file_multiple__mutmut_21,
+    "x_hash_file_multiple__mutmut_22": x_hash_file_multiple__mutmut_22,
+    "x_hash_file_multiple__mutmut_23": x_hash_file_multiple__mutmut_23,
+    "x_hash_file_multiple__mutmut_24": x_hash_file_multiple__mutmut_24,
+    "x_hash_file_multiple__mutmut_25": x_hash_file_multiple__mutmut_25,
+    "x_hash_file_multiple__mutmut_26": x_hash_file_multiple__mutmut_26,
+    "x_hash_file_multiple__mutmut_27": x_hash_file_multiple__mutmut_27,
+    "x_hash_file_multiple__mutmut_28": x_hash_file_multiple__mutmut_28,
+    "x_hash_file_multiple__mutmut_29": x_hash_file_multiple__mutmut_29,
+    "x_hash_file_multiple__mutmut_30": x_hash_file_multiple__mutmut_30,
+    "x_hash_file_multiple__mutmut_31": x_hash_file_multiple__mutmut_31,
+    "x_hash_file_multiple__mutmut_32": x_hash_file_multiple__mutmut_32,
+    "x_hash_file_multiple__mutmut_33": x_hash_file_multiple__mutmut_33,
+    "x_hash_file_multiple__mutmut_34": x_hash_file_multiple__mutmut_34,
+    "x_hash_file_multiple__mutmut_35": x_hash_file_multiple__mutmut_35,
+    "x_hash_file_multiple__mutmut_36": x_hash_file_multiple__mutmut_36,
+    "x_hash_file_multiple__mutmut_37": x_hash_file_multiple__mutmut_37,
+    "x_hash_file_multiple__mutmut_38": x_hash_file_multiple__mutmut_38,
+    "x_hash_file_multiple__mutmut_39": x_hash_file_multiple__mutmut_39,
+    "x_hash_file_multiple__mutmut_40": x_hash_file_multiple__mutmut_40,
+    "x_hash_file_multiple__mutmut_41": x_hash_file_multiple__mutmut_41,
 }
 
+
 def hash_file_multiple(*args, **kwargs):
-    result = _mutmut_trampoline(x_hash_file_multiple__mutmut_orig, x_hash_file_multiple__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_hash_file_multiple__mutmut_orig, x_hash_file_multiple__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 hash_file_multiple.__signature__ = _mutmut_signature(x_hash_file_multiple__mutmut_orig)
-x_hash_file_multiple__mutmut_orig.__name__ = 'x_hash_file_multiple'
+x_hash_file_multiple__mutmut_orig.__name__ = "x_hash_file_multiple"
 
 
 def x_hash_chunks__mutmut_orig(
@@ -8762,7 +8784,7 @@ def x_hash_chunks__mutmut_17(
         "🔐 Hashed chunks",
         algorithm=algorithm,
         bytes_processed=bytes_processed,
-        )
+    )
     return hash_value
 
 
@@ -8987,38 +9009,41 @@ def x_hash_chunks__mutmut_23(
     )
     return hash_value
 
-x_hash_chunks__mutmut_mutants : ClassVar[MutantDict] = {
-'x_hash_chunks__mutmut_1': x_hash_chunks__mutmut_1, 
-    'x_hash_chunks__mutmut_2': x_hash_chunks__mutmut_2, 
-    'x_hash_chunks__mutmut_3': x_hash_chunks__mutmut_3, 
-    'x_hash_chunks__mutmut_4': x_hash_chunks__mutmut_4, 
-    'x_hash_chunks__mutmut_5': x_hash_chunks__mutmut_5, 
-    'x_hash_chunks__mutmut_6': x_hash_chunks__mutmut_6, 
-    'x_hash_chunks__mutmut_7': x_hash_chunks__mutmut_7, 
-    'x_hash_chunks__mutmut_8': x_hash_chunks__mutmut_8, 
-    'x_hash_chunks__mutmut_9': x_hash_chunks__mutmut_9, 
-    'x_hash_chunks__mutmut_10': x_hash_chunks__mutmut_10, 
-    'x_hash_chunks__mutmut_11': x_hash_chunks__mutmut_11, 
-    'x_hash_chunks__mutmut_12': x_hash_chunks__mutmut_12, 
-    'x_hash_chunks__mutmut_13': x_hash_chunks__mutmut_13, 
-    'x_hash_chunks__mutmut_14': x_hash_chunks__mutmut_14, 
-    'x_hash_chunks__mutmut_15': x_hash_chunks__mutmut_15, 
-    'x_hash_chunks__mutmut_16': x_hash_chunks__mutmut_16, 
-    'x_hash_chunks__mutmut_17': x_hash_chunks__mutmut_17, 
-    'x_hash_chunks__mutmut_18': x_hash_chunks__mutmut_18, 
-    'x_hash_chunks__mutmut_19': x_hash_chunks__mutmut_19, 
-    'x_hash_chunks__mutmut_20': x_hash_chunks__mutmut_20, 
-    'x_hash_chunks__mutmut_21': x_hash_chunks__mutmut_21, 
-    'x_hash_chunks__mutmut_22': x_hash_chunks__mutmut_22, 
-    'x_hash_chunks__mutmut_23': x_hash_chunks__mutmut_23
+
+x_hash_chunks__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_hash_chunks__mutmut_1": x_hash_chunks__mutmut_1,
+    "x_hash_chunks__mutmut_2": x_hash_chunks__mutmut_2,
+    "x_hash_chunks__mutmut_3": x_hash_chunks__mutmut_3,
+    "x_hash_chunks__mutmut_4": x_hash_chunks__mutmut_4,
+    "x_hash_chunks__mutmut_5": x_hash_chunks__mutmut_5,
+    "x_hash_chunks__mutmut_6": x_hash_chunks__mutmut_6,
+    "x_hash_chunks__mutmut_7": x_hash_chunks__mutmut_7,
+    "x_hash_chunks__mutmut_8": x_hash_chunks__mutmut_8,
+    "x_hash_chunks__mutmut_9": x_hash_chunks__mutmut_9,
+    "x_hash_chunks__mutmut_10": x_hash_chunks__mutmut_10,
+    "x_hash_chunks__mutmut_11": x_hash_chunks__mutmut_11,
+    "x_hash_chunks__mutmut_12": x_hash_chunks__mutmut_12,
+    "x_hash_chunks__mutmut_13": x_hash_chunks__mutmut_13,
+    "x_hash_chunks__mutmut_14": x_hash_chunks__mutmut_14,
+    "x_hash_chunks__mutmut_15": x_hash_chunks__mutmut_15,
+    "x_hash_chunks__mutmut_16": x_hash_chunks__mutmut_16,
+    "x_hash_chunks__mutmut_17": x_hash_chunks__mutmut_17,
+    "x_hash_chunks__mutmut_18": x_hash_chunks__mutmut_18,
+    "x_hash_chunks__mutmut_19": x_hash_chunks__mutmut_19,
+    "x_hash_chunks__mutmut_20": x_hash_chunks__mutmut_20,
+    "x_hash_chunks__mutmut_21": x_hash_chunks__mutmut_21,
+    "x_hash_chunks__mutmut_22": x_hash_chunks__mutmut_22,
+    "x_hash_chunks__mutmut_23": x_hash_chunks__mutmut_23,
 }
+
 
 def hash_chunks(*args, **kwargs):
     result = _mutmut_trampoline(x_hash_chunks__mutmut_orig, x_hash_chunks__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 hash_chunks.__signature__ = _mutmut_signature(x_hash_chunks__mutmut_orig)
-x_hash_chunks__mutmut_orig.__name__ = 'x_hash_chunks'
+x_hash_chunks__mutmut_orig.__name__ = "x_hash_chunks"
 
 
 # <3 🧱🤝🔒🪄

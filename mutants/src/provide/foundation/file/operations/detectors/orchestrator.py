@@ -38,23 +38,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -462,31 +465,37 @@ class OperationDetector:
         self._auto_flush_handler = AutoFlushHandler(
             time_window_ms=self.config.time_window_ms,
             on_operation_complete=on_operation_complete,
-            )
-    
-    xǁOperationDetectorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOperationDetectorǁ__init____mutmut_1': xǁOperationDetectorǁ__init____mutmut_1, 
-        'xǁOperationDetectorǁ__init____mutmut_2': xǁOperationDetectorǁ__init____mutmut_2, 
-        'xǁOperationDetectorǁ__init____mutmut_3': xǁOperationDetectorǁ__init____mutmut_3, 
-        'xǁOperationDetectorǁ__init____mutmut_4': xǁOperationDetectorǁ__init____mutmut_4, 
-        'xǁOperationDetectorǁ__init____mutmut_5': xǁOperationDetectorǁ__init____mutmut_5, 
-        'xǁOperationDetectorǁ__init____mutmut_6': xǁOperationDetectorǁ__init____mutmut_6, 
-        'xǁOperationDetectorǁ__init____mutmut_7': xǁOperationDetectorǁ__init____mutmut_7, 
-        'xǁOperationDetectorǁ__init____mutmut_8': xǁOperationDetectorǁ__init____mutmut_8, 
-        'xǁOperationDetectorǁ__init____mutmut_9': xǁOperationDetectorǁ__init____mutmut_9, 
-        'xǁOperationDetectorǁ__init____mutmut_10': xǁOperationDetectorǁ__init____mutmut_10, 
-        'xǁOperationDetectorǁ__init____mutmut_11': xǁOperationDetectorǁ__init____mutmut_11, 
-        'xǁOperationDetectorǁ__init____mutmut_12': xǁOperationDetectorǁ__init____mutmut_12, 
-        'xǁOperationDetectorǁ__init____mutmut_13': xǁOperationDetectorǁ__init____mutmut_13, 
-        'xǁOperationDetectorǁ__init____mutmut_14': xǁOperationDetectorǁ__init____mutmut_14
+        )
+
+    xǁOperationDetectorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOperationDetectorǁ__init____mutmut_1": xǁOperationDetectorǁ__init____mutmut_1,
+        "xǁOperationDetectorǁ__init____mutmut_2": xǁOperationDetectorǁ__init____mutmut_2,
+        "xǁOperationDetectorǁ__init____mutmut_3": xǁOperationDetectorǁ__init____mutmut_3,
+        "xǁOperationDetectorǁ__init____mutmut_4": xǁOperationDetectorǁ__init____mutmut_4,
+        "xǁOperationDetectorǁ__init____mutmut_5": xǁOperationDetectorǁ__init____mutmut_5,
+        "xǁOperationDetectorǁ__init____mutmut_6": xǁOperationDetectorǁ__init____mutmut_6,
+        "xǁOperationDetectorǁ__init____mutmut_7": xǁOperationDetectorǁ__init____mutmut_7,
+        "xǁOperationDetectorǁ__init____mutmut_8": xǁOperationDetectorǁ__init____mutmut_8,
+        "xǁOperationDetectorǁ__init____mutmut_9": xǁOperationDetectorǁ__init____mutmut_9,
+        "xǁOperationDetectorǁ__init____mutmut_10": xǁOperationDetectorǁ__init____mutmut_10,
+        "xǁOperationDetectorǁ__init____mutmut_11": xǁOperationDetectorǁ__init____mutmut_11,
+        "xǁOperationDetectorǁ__init____mutmut_12": xǁOperationDetectorǁ__init____mutmut_12,
+        "xǁOperationDetectorǁ__init____mutmut_13": xǁOperationDetectorǁ__init____mutmut_13,
+        "xǁOperationDetectorǁ__init____mutmut_14": xǁOperationDetectorǁ__init____mutmut_14,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOperationDetectorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁOperationDetectorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOperationDetectorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁOperationDetectorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁOperationDetectorǁ__init____mutmut_orig)
-    xǁOperationDetectorǁ__init____mutmut_orig.__name__ = 'xǁOperationDetectorǁ__init__'
+    xǁOperationDetectorǁ__init____mutmut_orig.__name__ = "xǁOperationDetectorǁ__init__"
 
     def xǁOperationDetectorǁdetect__mutmut_orig(self, events: list[FileEvent]) -> list[FileOperation]:
         """Detect all operations from a list of events.
@@ -657,7 +666,9 @@ class OperationDetector:
             return []
 
         # Sort events by timestamp
-        sorted_events = sorted(events, )
+        sorted_events = sorted(
+            events,
+        )
 
         # Group events by time windows
         event_groups = self._group_events_by_time(sorted_events)
@@ -851,29 +862,35 @@ class OperationDetector:
                 operations.append(None)
 
         return operations
-    
-    xǁOperationDetectorǁdetect__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOperationDetectorǁdetect__mutmut_1': xǁOperationDetectorǁdetect__mutmut_1, 
-        'xǁOperationDetectorǁdetect__mutmut_2': xǁOperationDetectorǁdetect__mutmut_2, 
-        'xǁOperationDetectorǁdetect__mutmut_3': xǁOperationDetectorǁdetect__mutmut_3, 
-        'xǁOperationDetectorǁdetect__mutmut_4': xǁOperationDetectorǁdetect__mutmut_4, 
-        'xǁOperationDetectorǁdetect__mutmut_5': xǁOperationDetectorǁdetect__mutmut_5, 
-        'xǁOperationDetectorǁdetect__mutmut_6': xǁOperationDetectorǁdetect__mutmut_6, 
-        'xǁOperationDetectorǁdetect__mutmut_7': xǁOperationDetectorǁdetect__mutmut_7, 
-        'xǁOperationDetectorǁdetect__mutmut_8': xǁOperationDetectorǁdetect__mutmut_8, 
-        'xǁOperationDetectorǁdetect__mutmut_9': xǁOperationDetectorǁdetect__mutmut_9, 
-        'xǁOperationDetectorǁdetect__mutmut_10': xǁOperationDetectorǁdetect__mutmut_10, 
-        'xǁOperationDetectorǁdetect__mutmut_11': xǁOperationDetectorǁdetect__mutmut_11, 
-        'xǁOperationDetectorǁdetect__mutmut_12': xǁOperationDetectorǁdetect__mutmut_12, 
-        'xǁOperationDetectorǁdetect__mutmut_13': xǁOperationDetectorǁdetect__mutmut_13
+
+    xǁOperationDetectorǁdetect__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOperationDetectorǁdetect__mutmut_1": xǁOperationDetectorǁdetect__mutmut_1,
+        "xǁOperationDetectorǁdetect__mutmut_2": xǁOperationDetectorǁdetect__mutmut_2,
+        "xǁOperationDetectorǁdetect__mutmut_3": xǁOperationDetectorǁdetect__mutmut_3,
+        "xǁOperationDetectorǁdetect__mutmut_4": xǁOperationDetectorǁdetect__mutmut_4,
+        "xǁOperationDetectorǁdetect__mutmut_5": xǁOperationDetectorǁdetect__mutmut_5,
+        "xǁOperationDetectorǁdetect__mutmut_6": xǁOperationDetectorǁdetect__mutmut_6,
+        "xǁOperationDetectorǁdetect__mutmut_7": xǁOperationDetectorǁdetect__mutmut_7,
+        "xǁOperationDetectorǁdetect__mutmut_8": xǁOperationDetectorǁdetect__mutmut_8,
+        "xǁOperationDetectorǁdetect__mutmut_9": xǁOperationDetectorǁdetect__mutmut_9,
+        "xǁOperationDetectorǁdetect__mutmut_10": xǁOperationDetectorǁdetect__mutmut_10,
+        "xǁOperationDetectorǁdetect__mutmut_11": xǁOperationDetectorǁdetect__mutmut_11,
+        "xǁOperationDetectorǁdetect__mutmut_12": xǁOperationDetectorǁdetect__mutmut_12,
+        "xǁOperationDetectorǁdetect__mutmut_13": xǁOperationDetectorǁdetect__mutmut_13,
     }
-    
+
     def detect(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOperationDetectorǁdetect__mutmut_orig"), object.__getattribute__(self, "xǁOperationDetectorǁdetect__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOperationDetectorǁdetect__mutmut_orig"),
+            object.__getattribute__(self, "xǁOperationDetectorǁdetect__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     detect.__signature__ = _mutmut_signature(xǁOperationDetectorǁdetect__mutmut_orig)
-    xǁOperationDetectorǁdetect__mutmut_orig.__name__ = 'xǁOperationDetectorǁdetect'
+    xǁOperationDetectorǁdetect__mutmut_orig.__name__ = "xǁOperationDetectorǁdetect"
 
     def xǁOperationDetectorǁdetect_streaming__mutmut_orig(self, event: FileEvent) -> FileOperation | None:
         """Process events in streaming fashion.
@@ -1034,23 +1051,29 @@ class OperationDetector:
             return self._flush_pending()
 
         return None
-    
-    xǁOperationDetectorǁdetect_streaming__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOperationDetectorǁdetect_streaming__mutmut_1': xǁOperationDetectorǁdetect_streaming__mutmut_1, 
-        'xǁOperationDetectorǁdetect_streaming__mutmut_2': xǁOperationDetectorǁdetect_streaming__mutmut_2, 
-        'xǁOperationDetectorǁdetect_streaming__mutmut_3': xǁOperationDetectorǁdetect_streaming__mutmut_3, 
-        'xǁOperationDetectorǁdetect_streaming__mutmut_4': xǁOperationDetectorǁdetect_streaming__mutmut_4, 
-        'xǁOperationDetectorǁdetect_streaming__mutmut_5': xǁOperationDetectorǁdetect_streaming__mutmut_5, 
-        'xǁOperationDetectorǁdetect_streaming__mutmut_6': xǁOperationDetectorǁdetect_streaming__mutmut_6, 
-        'xǁOperationDetectorǁdetect_streaming__mutmut_7': xǁOperationDetectorǁdetect_streaming__mutmut_7
+
+    xǁOperationDetectorǁdetect_streaming__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOperationDetectorǁdetect_streaming__mutmut_1": xǁOperationDetectorǁdetect_streaming__mutmut_1,
+        "xǁOperationDetectorǁdetect_streaming__mutmut_2": xǁOperationDetectorǁdetect_streaming__mutmut_2,
+        "xǁOperationDetectorǁdetect_streaming__mutmut_3": xǁOperationDetectorǁdetect_streaming__mutmut_3,
+        "xǁOperationDetectorǁdetect_streaming__mutmut_4": xǁOperationDetectorǁdetect_streaming__mutmut_4,
+        "xǁOperationDetectorǁdetect_streaming__mutmut_5": xǁOperationDetectorǁdetect_streaming__mutmut_5,
+        "xǁOperationDetectorǁdetect_streaming__mutmut_6": xǁOperationDetectorǁdetect_streaming__mutmut_6,
+        "xǁOperationDetectorǁdetect_streaming__mutmut_7": xǁOperationDetectorǁdetect_streaming__mutmut_7,
     }
-    
+
     def detect_streaming(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOperationDetectorǁdetect_streaming__mutmut_orig"), object.__getattribute__(self, "xǁOperationDetectorǁdetect_streaming__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOperationDetectorǁdetect_streaming__mutmut_orig"),
+            object.__getattribute__(self, "xǁOperationDetectorǁdetect_streaming__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     detect_streaming.__signature__ = _mutmut_signature(xǁOperationDetectorǁdetect_streaming__mutmut_orig)
-    xǁOperationDetectorǁdetect_streaming__mutmut_orig.__name__ = 'xǁOperationDetectorǁdetect_streaming'
+    xǁOperationDetectorǁdetect_streaming__mutmut_orig.__name__ = "xǁOperationDetectorǁdetect_streaming"
 
     def xǁOperationDetectorǁadd_event__mutmut_orig(self, event: FileEvent) -> None:
         """Add event with auto-flush and callback support.
@@ -1087,17 +1110,23 @@ class OperationDetector:
         """
         # Delegate to auto-flush handler
         self._auto_flush_handler.add_event(None)
-    
-    xǁOperationDetectorǁadd_event__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOperationDetectorǁadd_event__mutmut_1': xǁOperationDetectorǁadd_event__mutmut_1
+
+    xǁOperationDetectorǁadd_event__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOperationDetectorǁadd_event__mutmut_1": xǁOperationDetectorǁadd_event__mutmut_1
     }
-    
+
     def add_event(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOperationDetectorǁadd_event__mutmut_orig"), object.__getattribute__(self, "xǁOperationDetectorǁadd_event__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOperationDetectorǁadd_event__mutmut_orig"),
+            object.__getattribute__(self, "xǁOperationDetectorǁadd_event__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     add_event.__signature__ = _mutmut_signature(xǁOperationDetectorǁadd_event__mutmut_orig)
-    xǁOperationDetectorǁadd_event__mutmut_orig.__name__ = 'xǁOperationDetectorǁadd_event'
+    xǁOperationDetectorǁadd_event__mutmut_orig.__name__ = "xǁOperationDetectorǁadd_event"
 
     def xǁOperationDetectorǁflush__mutmut_orig(self) -> list[FileOperation]:
         """Get any pending operations and clear buffer."""
@@ -1134,19 +1163,25 @@ class OperationDetector:
             if operation:
                 operations.append(None)
         return operations
-    
-    xǁOperationDetectorǁflush__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOperationDetectorǁflush__mutmut_1': xǁOperationDetectorǁflush__mutmut_1, 
-        'xǁOperationDetectorǁflush__mutmut_2': xǁOperationDetectorǁflush__mutmut_2, 
-        'xǁOperationDetectorǁflush__mutmut_3': xǁOperationDetectorǁflush__mutmut_3
+
+    xǁOperationDetectorǁflush__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOperationDetectorǁflush__mutmut_1": xǁOperationDetectorǁflush__mutmut_1,
+        "xǁOperationDetectorǁflush__mutmut_2": xǁOperationDetectorǁflush__mutmut_2,
+        "xǁOperationDetectorǁflush__mutmut_3": xǁOperationDetectorǁflush__mutmut_3,
     }
-    
+
     def flush(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOperationDetectorǁflush__mutmut_orig"), object.__getattribute__(self, "xǁOperationDetectorǁflush__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOperationDetectorǁflush__mutmut_orig"),
+            object.__getattribute__(self, "xǁOperationDetectorǁflush__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     flush.__signature__ = _mutmut_signature(xǁOperationDetectorǁflush__mutmut_orig)
-    xǁOperationDetectorǁflush__mutmut_orig.__name__ = 'xǁOperationDetectorǁflush'
+    xǁOperationDetectorǁflush__mutmut_orig.__name__ = "xǁOperationDetectorǁflush"
 
     def xǁOperationDetectorǁ_flush_pending__mutmut_orig(self) -> FileOperation | None:
         """Analyze pending events and clear buffer."""
@@ -1197,22 +1232,30 @@ class OperationDetector:
         self._pending_events.clear()
         self._last_flush = None
         return operation
-    
-    xǁOperationDetectorǁ_flush_pending__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOperationDetectorǁ_flush_pending__mutmut_1': xǁOperationDetectorǁ_flush_pending__mutmut_1, 
-        'xǁOperationDetectorǁ_flush_pending__mutmut_2': xǁOperationDetectorǁ_flush_pending__mutmut_2, 
-        'xǁOperationDetectorǁ_flush_pending__mutmut_3': xǁOperationDetectorǁ_flush_pending__mutmut_3, 
-        'xǁOperationDetectorǁ_flush_pending__mutmut_4': xǁOperationDetectorǁ_flush_pending__mutmut_4
-    }
-    
-    def _flush_pending(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOperationDetectorǁ_flush_pending__mutmut_orig"), object.__getattribute__(self, "xǁOperationDetectorǁ_flush_pending__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _flush_pending.__signature__ = _mutmut_signature(xǁOperationDetectorǁ_flush_pending__mutmut_orig)
-    xǁOperationDetectorǁ_flush_pending__mutmut_orig.__name__ = 'xǁOperationDetectorǁ_flush_pending'
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_orig(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    xǁOperationDetectorǁ_flush_pending__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOperationDetectorǁ_flush_pending__mutmut_1": xǁOperationDetectorǁ_flush_pending__mutmut_1,
+        "xǁOperationDetectorǁ_flush_pending__mutmut_2": xǁOperationDetectorǁ_flush_pending__mutmut_2,
+        "xǁOperationDetectorǁ_flush_pending__mutmut_3": xǁOperationDetectorǁ_flush_pending__mutmut_3,
+        "xǁOperationDetectorǁ_flush_pending__mutmut_4": xǁOperationDetectorǁ_flush_pending__mutmut_4,
+    }
+
+    def _flush_pending(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOperationDetectorǁ_flush_pending__mutmut_orig"),
+            object.__getattribute__(self, "xǁOperationDetectorǁ_flush_pending__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _flush_pending.__signature__ = _mutmut_signature(xǁOperationDetectorǁ_flush_pending__mutmut_orig)
+    xǁOperationDetectorǁ_flush_pending__mutmut_orig.__name__ = "xǁOperationDetectorǁ_flush_pending"
+
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_orig(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1242,7 +1285,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_1(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_1(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1272,7 +1317,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_2(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_2(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1302,7 +1349,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_3(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_3(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1332,7 +1381,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_4(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_4(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1362,7 +1413,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_5(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_5(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1392,7 +1445,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_6(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_6(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1422,7 +1477,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_7(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_7(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1452,7 +1509,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_8(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_8(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1482,7 +1541,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_9(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_9(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1512,7 +1573,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_10(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_10(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1542,7 +1605,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_11(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_11(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1572,7 +1637,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_12(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_12(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1602,7 +1669,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_13(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_13(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1632,7 +1701,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_14(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_14(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1662,7 +1733,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_15(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_15(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1692,7 +1765,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_16(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_16(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1722,7 +1797,9 @@ class OperationDetector:
 
         return groups
 
-    def xǁOperationDetectorǁ_group_events_by_time__mutmut_17(self, events: list[FileEvent]) -> list[list[FileEvent]]:
+    def xǁOperationDetectorǁ_group_events_by_time__mutmut_17(
+        self, events: list[FileEvent]
+    ) -> list[list[FileEvent]]:
         """Group events that occur within time windows.
 
         Uses a fixed time window from the first event in each group to ensure
@@ -1751,35 +1828,47 @@ class OperationDetector:
             groups.append(None)
 
         return groups
-    
-    xǁOperationDetectorǁ_group_events_by_time__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOperationDetectorǁ_group_events_by_time__mutmut_1': xǁOperationDetectorǁ_group_events_by_time__mutmut_1, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_2': xǁOperationDetectorǁ_group_events_by_time__mutmut_2, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_3': xǁOperationDetectorǁ_group_events_by_time__mutmut_3, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_4': xǁOperationDetectorǁ_group_events_by_time__mutmut_4, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_5': xǁOperationDetectorǁ_group_events_by_time__mutmut_5, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_6': xǁOperationDetectorǁ_group_events_by_time__mutmut_6, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_7': xǁOperationDetectorǁ_group_events_by_time__mutmut_7, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_8': xǁOperationDetectorǁ_group_events_by_time__mutmut_8, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_9': xǁOperationDetectorǁ_group_events_by_time__mutmut_9, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_10': xǁOperationDetectorǁ_group_events_by_time__mutmut_10, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_11': xǁOperationDetectorǁ_group_events_by_time__mutmut_11, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_12': xǁOperationDetectorǁ_group_events_by_time__mutmut_12, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_13': xǁOperationDetectorǁ_group_events_by_time__mutmut_13, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_14': xǁOperationDetectorǁ_group_events_by_time__mutmut_14, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_15': xǁOperationDetectorǁ_group_events_by_time__mutmut_15, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_16': xǁOperationDetectorǁ_group_events_by_time__mutmut_16, 
-        'xǁOperationDetectorǁ_group_events_by_time__mutmut_17': xǁOperationDetectorǁ_group_events_by_time__mutmut_17
-    }
-    
-    def _group_events_by_time(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOperationDetectorǁ_group_events_by_time__mutmut_orig"), object.__getattribute__(self, "xǁOperationDetectorǁ_group_events_by_time__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _group_events_by_time.__signature__ = _mutmut_signature(xǁOperationDetectorǁ_group_events_by_time__mutmut_orig)
-    xǁOperationDetectorǁ_group_events_by_time__mutmut_orig.__name__ = 'xǁOperationDetectorǁ_group_events_by_time'
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_orig(self, events: list[FileEvent]) -> FileOperation | None:
+    xǁOperationDetectorǁ_group_events_by_time__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_1": xǁOperationDetectorǁ_group_events_by_time__mutmut_1,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_2": xǁOperationDetectorǁ_group_events_by_time__mutmut_2,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_3": xǁOperationDetectorǁ_group_events_by_time__mutmut_3,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_4": xǁOperationDetectorǁ_group_events_by_time__mutmut_4,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_5": xǁOperationDetectorǁ_group_events_by_time__mutmut_5,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_6": xǁOperationDetectorǁ_group_events_by_time__mutmut_6,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_7": xǁOperationDetectorǁ_group_events_by_time__mutmut_7,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_8": xǁOperationDetectorǁ_group_events_by_time__mutmut_8,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_9": xǁOperationDetectorǁ_group_events_by_time__mutmut_9,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_10": xǁOperationDetectorǁ_group_events_by_time__mutmut_10,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_11": xǁOperationDetectorǁ_group_events_by_time__mutmut_11,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_12": xǁOperationDetectorǁ_group_events_by_time__mutmut_12,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_13": xǁOperationDetectorǁ_group_events_by_time__mutmut_13,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_14": xǁOperationDetectorǁ_group_events_by_time__mutmut_14,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_15": xǁOperationDetectorǁ_group_events_by_time__mutmut_15,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_16": xǁOperationDetectorǁ_group_events_by_time__mutmut_16,
+        "xǁOperationDetectorǁ_group_events_by_time__mutmut_17": xǁOperationDetectorǁ_group_events_by_time__mutmut_17,
+    }
+
+    def _group_events_by_time(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOperationDetectorǁ_group_events_by_time__mutmut_orig"),
+            object.__getattribute__(self, "xǁOperationDetectorǁ_group_events_by_time__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _group_events_by_time.__signature__ = _mutmut_signature(
+        xǁOperationDetectorǁ_group_events_by_time__mutmut_orig
+    )
+    xǁOperationDetectorǁ_group_events_by_time__mutmut_orig.__name__ = (
+        "xǁOperationDetectorǁ_group_events_by_time"
+    )
+
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_orig(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -1870,7 +1959,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_1(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_1(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -1961,7 +2052,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_2(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_2(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2052,7 +2145,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_3(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_3(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2143,7 +2238,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_4(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_4(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2234,7 +2331,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_5(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_5(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2325,7 +2424,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_6(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_6(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2416,7 +2517,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_7(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_7(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2507,7 +2610,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_8(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_8(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2598,7 +2703,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_9(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_9(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2689,7 +2796,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_10(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_10(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2780,7 +2889,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_11(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_11(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2871,7 +2982,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_12(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_12(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -2884,7 +2997,10 @@ class OperationDetector:
 
         # Get all registered detectors from the instance's registry, sorted by priority
         all_entries = [entry for entry in self.registry if entry.dimension == "file_operation_detector"]
-        sorted_entries = sorted(all_entries, key=lambda e: e.metadata.get("priority", 0), )
+        sorted_entries = sorted(
+            all_entries,
+            key=lambda e: e.metadata.get("priority", 0),
+        )
         detectors = [(e.name, e.value, e.metadata.get("priority", 0)) for e in sorted_entries]
 
         best_operation = None
@@ -2962,7 +3078,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_13(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_13(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3053,7 +3171,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_14(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_14(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3144,7 +3264,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_15(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_15(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3235,7 +3357,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_16(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_16(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3326,7 +3450,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_17(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_17(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3339,7 +3465,13 @@ class OperationDetector:
 
         # Get all registered detectors from the instance's registry, sorted by priority
         all_entries = [entry for entry in self.registry if entry.dimension == "file_operation_detector"]
-        sorted_entries = sorted(all_entries, key=lambda e: e.metadata.get("priority", ), reverse=True)
+        sorted_entries = sorted(
+            all_entries,
+            key=lambda e: e.metadata.get(
+                "priority",
+            ),
+            reverse=True,
+        )
         detectors = [(e.name, e.value, e.metadata.get("priority", 0)) for e in sorted_entries]
 
         best_operation = None
@@ -3417,7 +3549,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_18(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_18(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3508,7 +3642,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_19(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_19(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3599,7 +3735,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_20(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_20(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3690,7 +3828,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_21(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_21(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3781,7 +3921,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_22(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_22(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3872,7 +4014,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_23(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_23(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -3963,7 +4107,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_24(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_24(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4054,7 +4200,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_25(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_25(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4145,7 +4293,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_26(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_26(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4159,7 +4309,16 @@ class OperationDetector:
         # Get all registered detectors from the instance's registry, sorted by priority
         all_entries = [entry for entry in self.registry if entry.dimension == "file_operation_detector"]
         sorted_entries = sorted(all_entries, key=lambda e: e.metadata.get("priority", 0), reverse=True)
-        detectors = [(e.name, e.value, e.metadata.get("priority", )) for e in sorted_entries]
+        detectors = [
+            (
+                e.name,
+                e.value,
+                e.metadata.get(
+                    "priority",
+                ),
+            )
+            for e in sorted_entries
+        ]
 
         best_operation = None
         best_confidence = 0.0
@@ -4236,7 +4395,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_27(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_27(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4327,7 +4488,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_28(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_28(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4418,7 +4581,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_29(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_29(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4509,7 +4674,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_30(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_30(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4600,7 +4767,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_31(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_31(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4691,7 +4860,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_32(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_32(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4782,7 +4953,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_33(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_33(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4873,7 +5046,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_34(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_34(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -4964,7 +5139,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_35(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_35(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5055,7 +5232,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_36(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_36(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5146,7 +5325,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_37(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_37(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5237,7 +5418,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_38(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_38(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5328,7 +5511,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_39(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_39(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5419,7 +5604,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_40(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_40(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5510,7 +5697,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_41(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_41(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5601,7 +5790,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_42(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_42(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5692,7 +5883,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_43(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_43(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5783,7 +5976,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_44(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_44(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5874,7 +6069,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_45(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_45(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -5965,7 +6162,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_46(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_46(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6056,7 +6255,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_47(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_47(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6146,7 +6347,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_48(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_48(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6236,7 +6439,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_49(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_49(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6326,7 +6531,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_50(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_50(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6416,7 +6623,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_51(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_51(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6506,7 +6715,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_52(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_52(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6539,7 +6750,7 @@ class OperationDetector:
                         priority=priority,
                         confidence=operation.confidence,
                         operation_type=operation.operation_type.value,
-                        )
+                    )
 
                     # Early termination: if we found a very high confidence match, stop searching
                     if best_confidence >= HIGH_CONFIDENCE_THRESHOLD:
@@ -6596,7 +6807,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_53(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_53(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6687,7 +6900,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_54(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_54(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6778,7 +6993,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_55(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_55(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6869,7 +7086,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_56(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_56(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -6960,7 +7179,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_57(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_57(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7051,7 +7272,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_58(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_58(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7142,7 +7365,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_59(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_59(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7233,7 +7458,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_60(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_60(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7324,7 +7551,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_61(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_61(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7414,7 +7643,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_62(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_62(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7504,7 +7735,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_63(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_63(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7545,7 +7778,7 @@ class OperationDetector:
                         log.debug(
                             "Early termination on high confidence match",
                             confidence=best_confidence,
-                            )
+                        )
                         break
 
             except Exception as e:
@@ -7594,7 +7827,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_64(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_64(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7685,7 +7920,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_65(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_65(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7776,7 +8013,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_66(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_66(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7867,7 +8106,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_67(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_67(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -7958,7 +8199,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_68(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_68(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8049,7 +8292,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_69(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_69(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8140,7 +8385,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_70(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_70(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8231,7 +8478,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_71(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_71(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8322,7 +8571,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_72(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_72(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8412,7 +8663,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_73(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_73(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8502,7 +8755,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_74(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_74(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8592,7 +8847,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_75(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_75(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8642,7 +8899,7 @@ class OperationDetector:
                     "Detector failed",
                     detector=detector_name,
                     priority=priority,
-                    )
+                )
 
         if best_operation and best_confidence >= self.config.min_confidence:
             # Validate that primary_path is not a temp file
@@ -8682,7 +8939,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_76(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_76(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8773,7 +9032,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_77(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_77(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8864,7 +9125,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_78(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_78(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -8955,7 +9218,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_79(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_79(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9046,7 +9311,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_80(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_80(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9137,7 +9404,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_81(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_81(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9228,7 +9497,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_82(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_82(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9319,7 +9590,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_83(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_83(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9410,7 +9683,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_84(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_84(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9501,7 +9776,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_85(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_85(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9592,7 +9869,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_86(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_86(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9682,7 +9961,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_87(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_87(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9772,7 +10053,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_88(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_88(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9831,7 +10114,7 @@ class OperationDetector:
                 log.warning(
                     "Detector returned temp file as primary_path, attempting to fix",
                     temp_path=str(best_operation.primary_path),
-                    )
+                )
                 # Try to find the real file from the events
                 real_file = self._find_real_file_from_events(best_operation.events)
                 if real_file:
@@ -9862,7 +10145,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_89(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_89(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -9953,7 +10238,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_90(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_90(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10044,7 +10331,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_91(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_91(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10135,7 +10424,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_92(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_92(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10226,7 +10517,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_93(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_93(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10317,7 +10610,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_94(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_94(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10408,7 +10703,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_95(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_95(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10499,7 +10796,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_96(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_96(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10590,7 +10889,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_97(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_97(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10681,7 +10982,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_98(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_98(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10772,7 +11075,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_99(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_99(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10840,7 +11145,9 @@ class OperationDetector:
                     # (FileOperation is frozen, so we need attrs.evolve or recreate)
                     from attrs import evolve
 
-                    best_operation = evolve(best_operation, )
+                    best_operation = evolve(
+                        best_operation,
+                    )
                     log.info(
                         "Corrected primary_path from temp to real file",
                         corrected_path=str(real_file),
@@ -10863,7 +11170,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_100(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_100(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -10954,7 +11263,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_101(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_101(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11045,7 +11356,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_102(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_102(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11135,7 +11448,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_103(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_103(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11206,7 +11521,7 @@ class OperationDetector:
                     best_operation = evolve(best_operation, primary_path=real_file)
                     log.info(
                         "Corrected primary_path from temp to real file",
-                        )
+                    )
                 else:
                     log.error(
                         "Could not find real file, rejecting operation",
@@ -11225,7 +11540,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_104(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_104(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11316,7 +11633,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_105(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_105(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11407,7 +11726,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_106(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_106(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11498,7 +11819,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_107(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_107(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11589,7 +11912,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_108(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_108(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11680,7 +12005,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_109(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_109(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11771,7 +12098,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_110(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_110(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11861,7 +12190,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_111(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_111(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -11937,7 +12268,7 @@ class OperationDetector:
                 else:
                     log.error(
                         "Could not find real file, rejecting operation",
-                        )
+                    )
                     return None
 
             log.debug(
@@ -11951,7 +12282,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_112(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_112(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12042,7 +12375,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_113(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_113(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12133,7 +12468,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_114(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_114(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12224,7 +12561,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_115(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_115(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12315,7 +12654,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_116(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_116(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12406,7 +12747,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_117(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_117(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12497,7 +12840,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_118(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_118(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12588,7 +12933,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_119(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_119(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12679,7 +13026,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_120(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_120(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12770,7 +13119,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_121(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_121(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12860,7 +13211,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_122(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_122(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -12950,7 +13303,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_123(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_123(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -13040,7 +13395,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_124(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_124(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -13130,7 +13487,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_125(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_125(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -13215,12 +13574,14 @@ class OperationDetector:
                 operation_type=best_operation.operation_type.value,
                 primary_path=str(best_operation.primary_path),
                 confidence=best_confidence,
-                )
+            )
             return best_operation
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_126(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_126(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -13311,7 +13672,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_127(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_127(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -13402,7 +13765,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_128(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_128(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -13493,7 +13858,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_129(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_129(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -13584,7 +13951,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_analyze_event_group__mutmut_130(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁOperationDetectorǁ_analyze_event_group__mutmut_130(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -13674,148 +14043,158 @@ class OperationDetector:
             return best_operation
 
         return None
-    
-    xǁOperationDetectorǁ_analyze_event_group__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOperationDetectorǁ_analyze_event_group__mutmut_1': xǁOperationDetectorǁ_analyze_event_group__mutmut_1, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_2': xǁOperationDetectorǁ_analyze_event_group__mutmut_2, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_3': xǁOperationDetectorǁ_analyze_event_group__mutmut_3, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_4': xǁOperationDetectorǁ_analyze_event_group__mutmut_4, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_5': xǁOperationDetectorǁ_analyze_event_group__mutmut_5, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_6': xǁOperationDetectorǁ_analyze_event_group__mutmut_6, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_7': xǁOperationDetectorǁ_analyze_event_group__mutmut_7, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_8': xǁOperationDetectorǁ_analyze_event_group__mutmut_8, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_9': xǁOperationDetectorǁ_analyze_event_group__mutmut_9, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_10': xǁOperationDetectorǁ_analyze_event_group__mutmut_10, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_11': xǁOperationDetectorǁ_analyze_event_group__mutmut_11, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_12': xǁOperationDetectorǁ_analyze_event_group__mutmut_12, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_13': xǁOperationDetectorǁ_analyze_event_group__mutmut_13, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_14': xǁOperationDetectorǁ_analyze_event_group__mutmut_14, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_15': xǁOperationDetectorǁ_analyze_event_group__mutmut_15, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_16': xǁOperationDetectorǁ_analyze_event_group__mutmut_16, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_17': xǁOperationDetectorǁ_analyze_event_group__mutmut_17, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_18': xǁOperationDetectorǁ_analyze_event_group__mutmut_18, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_19': xǁOperationDetectorǁ_analyze_event_group__mutmut_19, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_20': xǁOperationDetectorǁ_analyze_event_group__mutmut_20, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_21': xǁOperationDetectorǁ_analyze_event_group__mutmut_21, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_22': xǁOperationDetectorǁ_analyze_event_group__mutmut_22, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_23': xǁOperationDetectorǁ_analyze_event_group__mutmut_23, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_24': xǁOperationDetectorǁ_analyze_event_group__mutmut_24, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_25': xǁOperationDetectorǁ_analyze_event_group__mutmut_25, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_26': xǁOperationDetectorǁ_analyze_event_group__mutmut_26, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_27': xǁOperationDetectorǁ_analyze_event_group__mutmut_27, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_28': xǁOperationDetectorǁ_analyze_event_group__mutmut_28, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_29': xǁOperationDetectorǁ_analyze_event_group__mutmut_29, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_30': xǁOperationDetectorǁ_analyze_event_group__mutmut_30, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_31': xǁOperationDetectorǁ_analyze_event_group__mutmut_31, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_32': xǁOperationDetectorǁ_analyze_event_group__mutmut_32, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_33': xǁOperationDetectorǁ_analyze_event_group__mutmut_33, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_34': xǁOperationDetectorǁ_analyze_event_group__mutmut_34, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_35': xǁOperationDetectorǁ_analyze_event_group__mutmut_35, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_36': xǁOperationDetectorǁ_analyze_event_group__mutmut_36, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_37': xǁOperationDetectorǁ_analyze_event_group__mutmut_37, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_38': xǁOperationDetectorǁ_analyze_event_group__mutmut_38, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_39': xǁOperationDetectorǁ_analyze_event_group__mutmut_39, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_40': xǁOperationDetectorǁ_analyze_event_group__mutmut_40, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_41': xǁOperationDetectorǁ_analyze_event_group__mutmut_41, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_42': xǁOperationDetectorǁ_analyze_event_group__mutmut_42, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_43': xǁOperationDetectorǁ_analyze_event_group__mutmut_43, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_44': xǁOperationDetectorǁ_analyze_event_group__mutmut_44, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_45': xǁOperationDetectorǁ_analyze_event_group__mutmut_45, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_46': xǁOperationDetectorǁ_analyze_event_group__mutmut_46, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_47': xǁOperationDetectorǁ_analyze_event_group__mutmut_47, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_48': xǁOperationDetectorǁ_analyze_event_group__mutmut_48, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_49': xǁOperationDetectorǁ_analyze_event_group__mutmut_49, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_50': xǁOperationDetectorǁ_analyze_event_group__mutmut_50, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_51': xǁOperationDetectorǁ_analyze_event_group__mutmut_51, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_52': xǁOperationDetectorǁ_analyze_event_group__mutmut_52, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_53': xǁOperationDetectorǁ_analyze_event_group__mutmut_53, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_54': xǁOperationDetectorǁ_analyze_event_group__mutmut_54, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_55': xǁOperationDetectorǁ_analyze_event_group__mutmut_55, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_56': xǁOperationDetectorǁ_analyze_event_group__mutmut_56, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_57': xǁOperationDetectorǁ_analyze_event_group__mutmut_57, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_58': xǁOperationDetectorǁ_analyze_event_group__mutmut_58, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_59': xǁOperationDetectorǁ_analyze_event_group__mutmut_59, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_60': xǁOperationDetectorǁ_analyze_event_group__mutmut_60, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_61': xǁOperationDetectorǁ_analyze_event_group__mutmut_61, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_62': xǁOperationDetectorǁ_analyze_event_group__mutmut_62, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_63': xǁOperationDetectorǁ_analyze_event_group__mutmut_63, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_64': xǁOperationDetectorǁ_analyze_event_group__mutmut_64, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_65': xǁOperationDetectorǁ_analyze_event_group__mutmut_65, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_66': xǁOperationDetectorǁ_analyze_event_group__mutmut_66, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_67': xǁOperationDetectorǁ_analyze_event_group__mutmut_67, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_68': xǁOperationDetectorǁ_analyze_event_group__mutmut_68, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_69': xǁOperationDetectorǁ_analyze_event_group__mutmut_69, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_70': xǁOperationDetectorǁ_analyze_event_group__mutmut_70, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_71': xǁOperationDetectorǁ_analyze_event_group__mutmut_71, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_72': xǁOperationDetectorǁ_analyze_event_group__mutmut_72, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_73': xǁOperationDetectorǁ_analyze_event_group__mutmut_73, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_74': xǁOperationDetectorǁ_analyze_event_group__mutmut_74, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_75': xǁOperationDetectorǁ_analyze_event_group__mutmut_75, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_76': xǁOperationDetectorǁ_analyze_event_group__mutmut_76, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_77': xǁOperationDetectorǁ_analyze_event_group__mutmut_77, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_78': xǁOperationDetectorǁ_analyze_event_group__mutmut_78, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_79': xǁOperationDetectorǁ_analyze_event_group__mutmut_79, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_80': xǁOperationDetectorǁ_analyze_event_group__mutmut_80, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_81': xǁOperationDetectorǁ_analyze_event_group__mutmut_81, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_82': xǁOperationDetectorǁ_analyze_event_group__mutmut_82, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_83': xǁOperationDetectorǁ_analyze_event_group__mutmut_83, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_84': xǁOperationDetectorǁ_analyze_event_group__mutmut_84, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_85': xǁOperationDetectorǁ_analyze_event_group__mutmut_85, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_86': xǁOperationDetectorǁ_analyze_event_group__mutmut_86, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_87': xǁOperationDetectorǁ_analyze_event_group__mutmut_87, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_88': xǁOperationDetectorǁ_analyze_event_group__mutmut_88, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_89': xǁOperationDetectorǁ_analyze_event_group__mutmut_89, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_90': xǁOperationDetectorǁ_analyze_event_group__mutmut_90, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_91': xǁOperationDetectorǁ_analyze_event_group__mutmut_91, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_92': xǁOperationDetectorǁ_analyze_event_group__mutmut_92, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_93': xǁOperationDetectorǁ_analyze_event_group__mutmut_93, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_94': xǁOperationDetectorǁ_analyze_event_group__mutmut_94, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_95': xǁOperationDetectorǁ_analyze_event_group__mutmut_95, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_96': xǁOperationDetectorǁ_analyze_event_group__mutmut_96, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_97': xǁOperationDetectorǁ_analyze_event_group__mutmut_97, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_98': xǁOperationDetectorǁ_analyze_event_group__mutmut_98, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_99': xǁOperationDetectorǁ_analyze_event_group__mutmut_99, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_100': xǁOperationDetectorǁ_analyze_event_group__mutmut_100, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_101': xǁOperationDetectorǁ_analyze_event_group__mutmut_101, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_102': xǁOperationDetectorǁ_analyze_event_group__mutmut_102, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_103': xǁOperationDetectorǁ_analyze_event_group__mutmut_103, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_104': xǁOperationDetectorǁ_analyze_event_group__mutmut_104, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_105': xǁOperationDetectorǁ_analyze_event_group__mutmut_105, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_106': xǁOperationDetectorǁ_analyze_event_group__mutmut_106, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_107': xǁOperationDetectorǁ_analyze_event_group__mutmut_107, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_108': xǁOperationDetectorǁ_analyze_event_group__mutmut_108, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_109': xǁOperationDetectorǁ_analyze_event_group__mutmut_109, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_110': xǁOperationDetectorǁ_analyze_event_group__mutmut_110, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_111': xǁOperationDetectorǁ_analyze_event_group__mutmut_111, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_112': xǁOperationDetectorǁ_analyze_event_group__mutmut_112, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_113': xǁOperationDetectorǁ_analyze_event_group__mutmut_113, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_114': xǁOperationDetectorǁ_analyze_event_group__mutmut_114, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_115': xǁOperationDetectorǁ_analyze_event_group__mutmut_115, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_116': xǁOperationDetectorǁ_analyze_event_group__mutmut_116, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_117': xǁOperationDetectorǁ_analyze_event_group__mutmut_117, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_118': xǁOperationDetectorǁ_analyze_event_group__mutmut_118, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_119': xǁOperationDetectorǁ_analyze_event_group__mutmut_119, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_120': xǁOperationDetectorǁ_analyze_event_group__mutmut_120, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_121': xǁOperationDetectorǁ_analyze_event_group__mutmut_121, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_122': xǁOperationDetectorǁ_analyze_event_group__mutmut_122, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_123': xǁOperationDetectorǁ_analyze_event_group__mutmut_123, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_124': xǁOperationDetectorǁ_analyze_event_group__mutmut_124, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_125': xǁOperationDetectorǁ_analyze_event_group__mutmut_125, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_126': xǁOperationDetectorǁ_analyze_event_group__mutmut_126, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_127': xǁOperationDetectorǁ_analyze_event_group__mutmut_127, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_128': xǁOperationDetectorǁ_analyze_event_group__mutmut_128, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_129': xǁOperationDetectorǁ_analyze_event_group__mutmut_129, 
-        'xǁOperationDetectorǁ_analyze_event_group__mutmut_130': xǁOperationDetectorǁ_analyze_event_group__mutmut_130
-    }
-    
-    def _analyze_event_group(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOperationDetectorǁ_analyze_event_group__mutmut_orig"), object.__getattribute__(self, "xǁOperationDetectorǁ_analyze_event_group__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _analyze_event_group.__signature__ = _mutmut_signature(xǁOperationDetectorǁ_analyze_event_group__mutmut_orig)
-    xǁOperationDetectorǁ_analyze_event_group__mutmut_orig.__name__ = 'xǁOperationDetectorǁ_analyze_event_group'
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_orig(self, events: list[FileEvent]) -> Path | None:
+    xǁOperationDetectorǁ_analyze_event_group__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_1": xǁOperationDetectorǁ_analyze_event_group__mutmut_1,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_2": xǁOperationDetectorǁ_analyze_event_group__mutmut_2,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_3": xǁOperationDetectorǁ_analyze_event_group__mutmut_3,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_4": xǁOperationDetectorǁ_analyze_event_group__mutmut_4,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_5": xǁOperationDetectorǁ_analyze_event_group__mutmut_5,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_6": xǁOperationDetectorǁ_analyze_event_group__mutmut_6,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_7": xǁOperationDetectorǁ_analyze_event_group__mutmut_7,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_8": xǁOperationDetectorǁ_analyze_event_group__mutmut_8,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_9": xǁOperationDetectorǁ_analyze_event_group__mutmut_9,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_10": xǁOperationDetectorǁ_analyze_event_group__mutmut_10,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_11": xǁOperationDetectorǁ_analyze_event_group__mutmut_11,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_12": xǁOperationDetectorǁ_analyze_event_group__mutmut_12,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_13": xǁOperationDetectorǁ_analyze_event_group__mutmut_13,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_14": xǁOperationDetectorǁ_analyze_event_group__mutmut_14,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_15": xǁOperationDetectorǁ_analyze_event_group__mutmut_15,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_16": xǁOperationDetectorǁ_analyze_event_group__mutmut_16,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_17": xǁOperationDetectorǁ_analyze_event_group__mutmut_17,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_18": xǁOperationDetectorǁ_analyze_event_group__mutmut_18,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_19": xǁOperationDetectorǁ_analyze_event_group__mutmut_19,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_20": xǁOperationDetectorǁ_analyze_event_group__mutmut_20,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_21": xǁOperationDetectorǁ_analyze_event_group__mutmut_21,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_22": xǁOperationDetectorǁ_analyze_event_group__mutmut_22,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_23": xǁOperationDetectorǁ_analyze_event_group__mutmut_23,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_24": xǁOperationDetectorǁ_analyze_event_group__mutmut_24,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_25": xǁOperationDetectorǁ_analyze_event_group__mutmut_25,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_26": xǁOperationDetectorǁ_analyze_event_group__mutmut_26,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_27": xǁOperationDetectorǁ_analyze_event_group__mutmut_27,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_28": xǁOperationDetectorǁ_analyze_event_group__mutmut_28,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_29": xǁOperationDetectorǁ_analyze_event_group__mutmut_29,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_30": xǁOperationDetectorǁ_analyze_event_group__mutmut_30,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_31": xǁOperationDetectorǁ_analyze_event_group__mutmut_31,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_32": xǁOperationDetectorǁ_analyze_event_group__mutmut_32,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_33": xǁOperationDetectorǁ_analyze_event_group__mutmut_33,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_34": xǁOperationDetectorǁ_analyze_event_group__mutmut_34,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_35": xǁOperationDetectorǁ_analyze_event_group__mutmut_35,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_36": xǁOperationDetectorǁ_analyze_event_group__mutmut_36,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_37": xǁOperationDetectorǁ_analyze_event_group__mutmut_37,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_38": xǁOperationDetectorǁ_analyze_event_group__mutmut_38,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_39": xǁOperationDetectorǁ_analyze_event_group__mutmut_39,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_40": xǁOperationDetectorǁ_analyze_event_group__mutmut_40,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_41": xǁOperationDetectorǁ_analyze_event_group__mutmut_41,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_42": xǁOperationDetectorǁ_analyze_event_group__mutmut_42,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_43": xǁOperationDetectorǁ_analyze_event_group__mutmut_43,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_44": xǁOperationDetectorǁ_analyze_event_group__mutmut_44,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_45": xǁOperationDetectorǁ_analyze_event_group__mutmut_45,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_46": xǁOperationDetectorǁ_analyze_event_group__mutmut_46,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_47": xǁOperationDetectorǁ_analyze_event_group__mutmut_47,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_48": xǁOperationDetectorǁ_analyze_event_group__mutmut_48,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_49": xǁOperationDetectorǁ_analyze_event_group__mutmut_49,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_50": xǁOperationDetectorǁ_analyze_event_group__mutmut_50,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_51": xǁOperationDetectorǁ_analyze_event_group__mutmut_51,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_52": xǁOperationDetectorǁ_analyze_event_group__mutmut_52,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_53": xǁOperationDetectorǁ_analyze_event_group__mutmut_53,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_54": xǁOperationDetectorǁ_analyze_event_group__mutmut_54,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_55": xǁOperationDetectorǁ_analyze_event_group__mutmut_55,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_56": xǁOperationDetectorǁ_analyze_event_group__mutmut_56,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_57": xǁOperationDetectorǁ_analyze_event_group__mutmut_57,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_58": xǁOperationDetectorǁ_analyze_event_group__mutmut_58,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_59": xǁOperationDetectorǁ_analyze_event_group__mutmut_59,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_60": xǁOperationDetectorǁ_analyze_event_group__mutmut_60,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_61": xǁOperationDetectorǁ_analyze_event_group__mutmut_61,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_62": xǁOperationDetectorǁ_analyze_event_group__mutmut_62,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_63": xǁOperationDetectorǁ_analyze_event_group__mutmut_63,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_64": xǁOperationDetectorǁ_analyze_event_group__mutmut_64,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_65": xǁOperationDetectorǁ_analyze_event_group__mutmut_65,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_66": xǁOperationDetectorǁ_analyze_event_group__mutmut_66,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_67": xǁOperationDetectorǁ_analyze_event_group__mutmut_67,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_68": xǁOperationDetectorǁ_analyze_event_group__mutmut_68,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_69": xǁOperationDetectorǁ_analyze_event_group__mutmut_69,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_70": xǁOperationDetectorǁ_analyze_event_group__mutmut_70,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_71": xǁOperationDetectorǁ_analyze_event_group__mutmut_71,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_72": xǁOperationDetectorǁ_analyze_event_group__mutmut_72,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_73": xǁOperationDetectorǁ_analyze_event_group__mutmut_73,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_74": xǁOperationDetectorǁ_analyze_event_group__mutmut_74,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_75": xǁOperationDetectorǁ_analyze_event_group__mutmut_75,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_76": xǁOperationDetectorǁ_analyze_event_group__mutmut_76,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_77": xǁOperationDetectorǁ_analyze_event_group__mutmut_77,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_78": xǁOperationDetectorǁ_analyze_event_group__mutmut_78,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_79": xǁOperationDetectorǁ_analyze_event_group__mutmut_79,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_80": xǁOperationDetectorǁ_analyze_event_group__mutmut_80,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_81": xǁOperationDetectorǁ_analyze_event_group__mutmut_81,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_82": xǁOperationDetectorǁ_analyze_event_group__mutmut_82,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_83": xǁOperationDetectorǁ_analyze_event_group__mutmut_83,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_84": xǁOperationDetectorǁ_analyze_event_group__mutmut_84,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_85": xǁOperationDetectorǁ_analyze_event_group__mutmut_85,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_86": xǁOperationDetectorǁ_analyze_event_group__mutmut_86,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_87": xǁOperationDetectorǁ_analyze_event_group__mutmut_87,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_88": xǁOperationDetectorǁ_analyze_event_group__mutmut_88,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_89": xǁOperationDetectorǁ_analyze_event_group__mutmut_89,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_90": xǁOperationDetectorǁ_analyze_event_group__mutmut_90,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_91": xǁOperationDetectorǁ_analyze_event_group__mutmut_91,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_92": xǁOperationDetectorǁ_analyze_event_group__mutmut_92,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_93": xǁOperationDetectorǁ_analyze_event_group__mutmut_93,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_94": xǁOperationDetectorǁ_analyze_event_group__mutmut_94,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_95": xǁOperationDetectorǁ_analyze_event_group__mutmut_95,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_96": xǁOperationDetectorǁ_analyze_event_group__mutmut_96,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_97": xǁOperationDetectorǁ_analyze_event_group__mutmut_97,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_98": xǁOperationDetectorǁ_analyze_event_group__mutmut_98,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_99": xǁOperationDetectorǁ_analyze_event_group__mutmut_99,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_100": xǁOperationDetectorǁ_analyze_event_group__mutmut_100,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_101": xǁOperationDetectorǁ_analyze_event_group__mutmut_101,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_102": xǁOperationDetectorǁ_analyze_event_group__mutmut_102,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_103": xǁOperationDetectorǁ_analyze_event_group__mutmut_103,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_104": xǁOperationDetectorǁ_analyze_event_group__mutmut_104,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_105": xǁOperationDetectorǁ_analyze_event_group__mutmut_105,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_106": xǁOperationDetectorǁ_analyze_event_group__mutmut_106,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_107": xǁOperationDetectorǁ_analyze_event_group__mutmut_107,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_108": xǁOperationDetectorǁ_analyze_event_group__mutmut_108,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_109": xǁOperationDetectorǁ_analyze_event_group__mutmut_109,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_110": xǁOperationDetectorǁ_analyze_event_group__mutmut_110,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_111": xǁOperationDetectorǁ_analyze_event_group__mutmut_111,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_112": xǁOperationDetectorǁ_analyze_event_group__mutmut_112,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_113": xǁOperationDetectorǁ_analyze_event_group__mutmut_113,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_114": xǁOperationDetectorǁ_analyze_event_group__mutmut_114,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_115": xǁOperationDetectorǁ_analyze_event_group__mutmut_115,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_116": xǁOperationDetectorǁ_analyze_event_group__mutmut_116,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_117": xǁOperationDetectorǁ_analyze_event_group__mutmut_117,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_118": xǁOperationDetectorǁ_analyze_event_group__mutmut_118,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_119": xǁOperationDetectorǁ_analyze_event_group__mutmut_119,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_120": xǁOperationDetectorǁ_analyze_event_group__mutmut_120,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_121": xǁOperationDetectorǁ_analyze_event_group__mutmut_121,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_122": xǁOperationDetectorǁ_analyze_event_group__mutmut_122,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_123": xǁOperationDetectorǁ_analyze_event_group__mutmut_123,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_124": xǁOperationDetectorǁ_analyze_event_group__mutmut_124,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_125": xǁOperationDetectorǁ_analyze_event_group__mutmut_125,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_126": xǁOperationDetectorǁ_analyze_event_group__mutmut_126,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_127": xǁOperationDetectorǁ_analyze_event_group__mutmut_127,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_128": xǁOperationDetectorǁ_analyze_event_group__mutmut_128,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_129": xǁOperationDetectorǁ_analyze_event_group__mutmut_129,
+        "xǁOperationDetectorǁ_analyze_event_group__mutmut_130": xǁOperationDetectorǁ_analyze_event_group__mutmut_130,
+    }
+
+    def _analyze_event_group(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOperationDetectorǁ_analyze_event_group__mutmut_orig"),
+            object.__getattribute__(self, "xǁOperationDetectorǁ_analyze_event_group__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _analyze_event_group.__signature__ = _mutmut_signature(
+        xǁOperationDetectorǁ_analyze_event_group__mutmut_orig
+    )
+    xǁOperationDetectorǁ_analyze_event_group__mutmut_orig.__name__ = "xǁOperationDetectorǁ_analyze_event_group"
+
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_orig(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -13844,7 +14223,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_1(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_1(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(None):  # Start from most recent
@@ -13873,7 +14254,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_2(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_2(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -13902,7 +14285,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_3(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_3(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -13931,7 +14316,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_4(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_4(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -13960,7 +14347,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_5(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_5(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -13989,7 +14378,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_6(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_6(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14018,7 +14409,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_7(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_7(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14047,7 +14440,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_8(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_8(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14076,7 +14471,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_9(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_9(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14105,7 +14502,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_10(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_10(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14134,7 +14533,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_11(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_11(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14163,7 +14564,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_12(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_12(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14192,7 +14595,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_13(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_13(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14221,7 +14626,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_14(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_14(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14250,7 +14657,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_15(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_15(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14279,7 +14688,9 @@ class OperationDetector:
 
         return None
 
-    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_16(self, events: list[FileEvent]) -> Path | None:
+    def xǁOperationDetectorǁ_find_real_file_from_events__mutmut_16(
+        self, events: list[FileEvent]
+    ) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
@@ -14307,32 +14718,42 @@ class OperationDetector:
                     return real_path
 
         return None
-    
-    xǁOperationDetectorǁ_find_real_file_from_events__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_1': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_1, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_2': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_2, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_3': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_3, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_4': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_4, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_5': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_5, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_6': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_6, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_7': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_7, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_8': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_8, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_9': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_9, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_10': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_10, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_11': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_11, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_12': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_12, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_13': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_13, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_14': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_14, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_15': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_15, 
-        'xǁOperationDetectorǁ_find_real_file_from_events__mutmut_16': xǁOperationDetectorǁ_find_real_file_from_events__mutmut_16
+
+    xǁOperationDetectorǁ_find_real_file_from_events__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_1": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_1,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_2": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_2,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_3": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_3,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_4": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_4,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_5": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_5,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_6": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_6,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_7": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_7,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_8": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_8,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_9": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_9,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_10": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_10,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_11": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_11,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_12": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_12,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_13": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_13,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_14": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_14,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_15": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_15,
+        "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_16": xǁOperationDetectorǁ_find_real_file_from_events__mutmut_16,
     }
-    
+
     def _find_real_file_from_events(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_orig"), object.__getattribute__(self, "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _find_real_file_from_events.__signature__ = _mutmut_signature(xǁOperationDetectorǁ_find_real_file_from_events__mutmut_orig)
-    xǁOperationDetectorǁ_find_real_file_from_events__mutmut_orig.__name__ = 'xǁOperationDetectorǁ_find_real_file_from_events'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_orig"),
+            object.__getattribute__(self, "xǁOperationDetectorǁ_find_real_file_from_events__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _find_real_file_from_events.__signature__ = _mutmut_signature(
+        xǁOperationDetectorǁ_find_real_file_from_events__mutmut_orig
+    )
+    xǁOperationDetectorǁ_find_real_file_from_events__mutmut_orig.__name__ = (
+        "xǁOperationDetectorǁ_find_real_file_from_events"
+    )
 
 
 # <3 🧱🤝📄🪄

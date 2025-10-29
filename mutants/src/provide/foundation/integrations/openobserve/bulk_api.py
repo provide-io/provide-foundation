@@ -33,23 +33,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -832,34 +835,39 @@ def x_build_log_entry__mutmut_19(
     add_trace_context_to_attributes(None)
     return log_entry
 
-x_build_log_entry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_build_log_entry__mutmut_1': x_build_log_entry__mutmut_1, 
-    'x_build_log_entry__mutmut_2': x_build_log_entry__mutmut_2, 
-    'x_build_log_entry__mutmut_3': x_build_log_entry__mutmut_3, 
-    'x_build_log_entry__mutmut_4': x_build_log_entry__mutmut_4, 
-    'x_build_log_entry__mutmut_5': x_build_log_entry__mutmut_5, 
-    'x_build_log_entry__mutmut_6': x_build_log_entry__mutmut_6, 
-    'x_build_log_entry__mutmut_7': x_build_log_entry__mutmut_7, 
-    'x_build_log_entry__mutmut_8': x_build_log_entry__mutmut_8, 
-    'x_build_log_entry__mutmut_9': x_build_log_entry__mutmut_9, 
-    'x_build_log_entry__mutmut_10': x_build_log_entry__mutmut_10, 
-    'x_build_log_entry__mutmut_11': x_build_log_entry__mutmut_11, 
-    'x_build_log_entry__mutmut_12': x_build_log_entry__mutmut_12, 
-    'x_build_log_entry__mutmut_13': x_build_log_entry__mutmut_13, 
-    'x_build_log_entry__mutmut_14': x_build_log_entry__mutmut_14, 
-    'x_build_log_entry__mutmut_15': x_build_log_entry__mutmut_15, 
-    'x_build_log_entry__mutmut_16': x_build_log_entry__mutmut_16, 
-    'x_build_log_entry__mutmut_17': x_build_log_entry__mutmut_17, 
-    'x_build_log_entry__mutmut_18': x_build_log_entry__mutmut_18, 
-    'x_build_log_entry__mutmut_19': x_build_log_entry__mutmut_19
+
+x_build_log_entry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_build_log_entry__mutmut_1": x_build_log_entry__mutmut_1,
+    "x_build_log_entry__mutmut_2": x_build_log_entry__mutmut_2,
+    "x_build_log_entry__mutmut_3": x_build_log_entry__mutmut_3,
+    "x_build_log_entry__mutmut_4": x_build_log_entry__mutmut_4,
+    "x_build_log_entry__mutmut_5": x_build_log_entry__mutmut_5,
+    "x_build_log_entry__mutmut_6": x_build_log_entry__mutmut_6,
+    "x_build_log_entry__mutmut_7": x_build_log_entry__mutmut_7,
+    "x_build_log_entry__mutmut_8": x_build_log_entry__mutmut_8,
+    "x_build_log_entry__mutmut_9": x_build_log_entry__mutmut_9,
+    "x_build_log_entry__mutmut_10": x_build_log_entry__mutmut_10,
+    "x_build_log_entry__mutmut_11": x_build_log_entry__mutmut_11,
+    "x_build_log_entry__mutmut_12": x_build_log_entry__mutmut_12,
+    "x_build_log_entry__mutmut_13": x_build_log_entry__mutmut_13,
+    "x_build_log_entry__mutmut_14": x_build_log_entry__mutmut_14,
+    "x_build_log_entry__mutmut_15": x_build_log_entry__mutmut_15,
+    "x_build_log_entry__mutmut_16": x_build_log_entry__mutmut_16,
+    "x_build_log_entry__mutmut_17": x_build_log_entry__mutmut_17,
+    "x_build_log_entry__mutmut_18": x_build_log_entry__mutmut_18,
+    "x_build_log_entry__mutmut_19": x_build_log_entry__mutmut_19,
 }
 
+
 def build_log_entry(*args, **kwargs):
-    result = _mutmut_trampoline(x_build_log_entry__mutmut_orig, x_build_log_entry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_build_log_entry__mutmut_orig, x_build_log_entry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 build_log_entry.__signature__ = _mutmut_signature(x_build_log_entry__mutmut_orig)
-x_build_log_entry__mutmut_orig.__name__ = 'x_build_log_entry'
+x_build_log_entry__mutmut_orig.__name__ = "x_build_log_entry"
 
 
 def x_build_bulk_url__mutmut_orig(client: OpenObserveClient) -> str:
@@ -909,16 +917,19 @@ def x_build_bulk_url__mutmut_1(client: OpenObserveClient) -> str:
         return f"{client.url}/_bulk"
     return f"{client.url}/api/{client.organization}/_bulk"
 
-x_build_bulk_url__mutmut_mutants : ClassVar[MutantDict] = {
-'x_build_bulk_url__mutmut_1': x_build_bulk_url__mutmut_1
+
+x_build_bulk_url__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_build_bulk_url__mutmut_1": x_build_bulk_url__mutmut_1
 }
+
 
 def build_bulk_url(*args, **kwargs):
     result = _mutmut_trampoline(x_build_bulk_url__mutmut_orig, x_build_bulk_url__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 build_bulk_url.__signature__ = _mutmut_signature(x_build_bulk_url__mutmut_orig)
-x_build_bulk_url__mutmut_orig.__name__ = 'x_build_bulk_url'
+x_build_bulk_url__mutmut_orig.__name__ = "x_build_bulk_url"
 
 
 def x_build_bulk_request__mutmut_orig(
@@ -1311,7 +1322,12 @@ def x_build_bulk_request__mutmut_11(
         >>> "\\n" in bulk
         True
     """
-    log_entry = build_log_entry(message, level, service_name, attributes, )
+    log_entry = build_log_entry(
+        message,
+        level,
+        service_name,
+        attributes,
+    )
     index_line = json_dumps({"index": {"_index": stream}})
     data_line = json_dumps(log_entry)
     return f"{index_line}\n{data_line}\n"
@@ -1580,34 +1596,39 @@ def x_build_bulk_request__mutmut_19(
     data_line = json_dumps(None)
     return f"{index_line}\n{data_line}\n"
 
-x_build_bulk_request__mutmut_mutants : ClassVar[MutantDict] = {
-'x_build_bulk_request__mutmut_1': x_build_bulk_request__mutmut_1, 
-    'x_build_bulk_request__mutmut_2': x_build_bulk_request__mutmut_2, 
-    'x_build_bulk_request__mutmut_3': x_build_bulk_request__mutmut_3, 
-    'x_build_bulk_request__mutmut_4': x_build_bulk_request__mutmut_4, 
-    'x_build_bulk_request__mutmut_5': x_build_bulk_request__mutmut_5, 
-    'x_build_bulk_request__mutmut_6': x_build_bulk_request__mutmut_6, 
-    'x_build_bulk_request__mutmut_7': x_build_bulk_request__mutmut_7, 
-    'x_build_bulk_request__mutmut_8': x_build_bulk_request__mutmut_8, 
-    'x_build_bulk_request__mutmut_9': x_build_bulk_request__mutmut_9, 
-    'x_build_bulk_request__mutmut_10': x_build_bulk_request__mutmut_10, 
-    'x_build_bulk_request__mutmut_11': x_build_bulk_request__mutmut_11, 
-    'x_build_bulk_request__mutmut_12': x_build_bulk_request__mutmut_12, 
-    'x_build_bulk_request__mutmut_13': x_build_bulk_request__mutmut_13, 
-    'x_build_bulk_request__mutmut_14': x_build_bulk_request__mutmut_14, 
-    'x_build_bulk_request__mutmut_15': x_build_bulk_request__mutmut_15, 
-    'x_build_bulk_request__mutmut_16': x_build_bulk_request__mutmut_16, 
-    'x_build_bulk_request__mutmut_17': x_build_bulk_request__mutmut_17, 
-    'x_build_bulk_request__mutmut_18': x_build_bulk_request__mutmut_18, 
-    'x_build_bulk_request__mutmut_19': x_build_bulk_request__mutmut_19
+
+x_build_bulk_request__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_build_bulk_request__mutmut_1": x_build_bulk_request__mutmut_1,
+    "x_build_bulk_request__mutmut_2": x_build_bulk_request__mutmut_2,
+    "x_build_bulk_request__mutmut_3": x_build_bulk_request__mutmut_3,
+    "x_build_bulk_request__mutmut_4": x_build_bulk_request__mutmut_4,
+    "x_build_bulk_request__mutmut_5": x_build_bulk_request__mutmut_5,
+    "x_build_bulk_request__mutmut_6": x_build_bulk_request__mutmut_6,
+    "x_build_bulk_request__mutmut_7": x_build_bulk_request__mutmut_7,
+    "x_build_bulk_request__mutmut_8": x_build_bulk_request__mutmut_8,
+    "x_build_bulk_request__mutmut_9": x_build_bulk_request__mutmut_9,
+    "x_build_bulk_request__mutmut_10": x_build_bulk_request__mutmut_10,
+    "x_build_bulk_request__mutmut_11": x_build_bulk_request__mutmut_11,
+    "x_build_bulk_request__mutmut_12": x_build_bulk_request__mutmut_12,
+    "x_build_bulk_request__mutmut_13": x_build_bulk_request__mutmut_13,
+    "x_build_bulk_request__mutmut_14": x_build_bulk_request__mutmut_14,
+    "x_build_bulk_request__mutmut_15": x_build_bulk_request__mutmut_15,
+    "x_build_bulk_request__mutmut_16": x_build_bulk_request__mutmut_16,
+    "x_build_bulk_request__mutmut_17": x_build_bulk_request__mutmut_17,
+    "x_build_bulk_request__mutmut_18": x_build_bulk_request__mutmut_18,
+    "x_build_bulk_request__mutmut_19": x_build_bulk_request__mutmut_19,
 }
 
+
 def build_bulk_request(*args, **kwargs):
-    result = _mutmut_trampoline(x_build_bulk_request__mutmut_orig, x_build_bulk_request__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_build_bulk_request__mutmut_orig, x_build_bulk_request__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 build_bulk_request.__signature__ = _mutmut_signature(x_build_bulk_request__mutmut_orig)
-x_build_bulk_request__mutmut_orig.__name__ = 'x_build_bulk_request'
+x_build_bulk_request__mutmut_orig.__name__ = "x_build_bulk_request"
 
 
 def x_send_log_bulk__mutmut_orig(
@@ -3392,7 +3413,13 @@ def x_send_log_bulk__mutmut_26(
 
         # Build bulk request
         stream = oo_config.stream or "default"
-        bulk_data = build_bulk_request(message, level, service_name, attributes, config, )
+        bulk_data = build_bulk_request(
+            message,
+            level,
+            service_name,
+            attributes,
+            config,
+        )
 
         # Send via bulk API
         url = build_bulk_url(client)
@@ -4132,7 +4159,7 @@ def x_send_log_bulk__mutmut_37(
                 uri=url,
                 method="POST",
                 body=bulk_data,
-                )
+            )
 
             if response.is_success():
                 log.debug(f"Sent log via bulk API: {message[:50]}...")
@@ -5151,67 +5178,70 @@ def x_send_log_bulk__mutmut_52(
         log.debug(f"Failed to send via bulk API: {e}")
         return True
 
-x_send_log_bulk__mutmut_mutants : ClassVar[MutantDict] = {
-'x_send_log_bulk__mutmut_1': x_send_log_bulk__mutmut_1, 
-    'x_send_log_bulk__mutmut_2': x_send_log_bulk__mutmut_2, 
-    'x_send_log_bulk__mutmut_3': x_send_log_bulk__mutmut_3, 
-    'x_send_log_bulk__mutmut_4': x_send_log_bulk__mutmut_4, 
-    'x_send_log_bulk__mutmut_5': x_send_log_bulk__mutmut_5, 
-    'x_send_log_bulk__mutmut_6': x_send_log_bulk__mutmut_6, 
-    'x_send_log_bulk__mutmut_7': x_send_log_bulk__mutmut_7, 
-    'x_send_log_bulk__mutmut_8': x_send_log_bulk__mutmut_8, 
-    'x_send_log_bulk__mutmut_9': x_send_log_bulk__mutmut_9, 
-    'x_send_log_bulk__mutmut_10': x_send_log_bulk__mutmut_10, 
-    'x_send_log_bulk__mutmut_11': x_send_log_bulk__mutmut_11, 
-    'x_send_log_bulk__mutmut_12': x_send_log_bulk__mutmut_12, 
-    'x_send_log_bulk__mutmut_13': x_send_log_bulk__mutmut_13, 
-    'x_send_log_bulk__mutmut_14': x_send_log_bulk__mutmut_14, 
-    'x_send_log_bulk__mutmut_15': x_send_log_bulk__mutmut_15, 
-    'x_send_log_bulk__mutmut_16': x_send_log_bulk__mutmut_16, 
-    'x_send_log_bulk__mutmut_17': x_send_log_bulk__mutmut_17, 
-    'x_send_log_bulk__mutmut_18': x_send_log_bulk__mutmut_18, 
-    'x_send_log_bulk__mutmut_19': x_send_log_bulk__mutmut_19, 
-    'x_send_log_bulk__mutmut_20': x_send_log_bulk__mutmut_20, 
-    'x_send_log_bulk__mutmut_21': x_send_log_bulk__mutmut_21, 
-    'x_send_log_bulk__mutmut_22': x_send_log_bulk__mutmut_22, 
-    'x_send_log_bulk__mutmut_23': x_send_log_bulk__mutmut_23, 
-    'x_send_log_bulk__mutmut_24': x_send_log_bulk__mutmut_24, 
-    'x_send_log_bulk__mutmut_25': x_send_log_bulk__mutmut_25, 
-    'x_send_log_bulk__mutmut_26': x_send_log_bulk__mutmut_26, 
-    'x_send_log_bulk__mutmut_27': x_send_log_bulk__mutmut_27, 
-    'x_send_log_bulk__mutmut_28': x_send_log_bulk__mutmut_28, 
-    'x_send_log_bulk__mutmut_29': x_send_log_bulk__mutmut_29, 
-    'x_send_log_bulk__mutmut_30': x_send_log_bulk__mutmut_30, 
-    'x_send_log_bulk__mutmut_31': x_send_log_bulk__mutmut_31, 
-    'x_send_log_bulk__mutmut_32': x_send_log_bulk__mutmut_32, 
-    'x_send_log_bulk__mutmut_33': x_send_log_bulk__mutmut_33, 
-    'x_send_log_bulk__mutmut_34': x_send_log_bulk__mutmut_34, 
-    'x_send_log_bulk__mutmut_35': x_send_log_bulk__mutmut_35, 
-    'x_send_log_bulk__mutmut_36': x_send_log_bulk__mutmut_36, 
-    'x_send_log_bulk__mutmut_37': x_send_log_bulk__mutmut_37, 
-    'x_send_log_bulk__mutmut_38': x_send_log_bulk__mutmut_38, 
-    'x_send_log_bulk__mutmut_39': x_send_log_bulk__mutmut_39, 
-    'x_send_log_bulk__mutmut_40': x_send_log_bulk__mutmut_40, 
-    'x_send_log_bulk__mutmut_41': x_send_log_bulk__mutmut_41, 
-    'x_send_log_bulk__mutmut_42': x_send_log_bulk__mutmut_42, 
-    'x_send_log_bulk__mutmut_43': x_send_log_bulk__mutmut_43, 
-    'x_send_log_bulk__mutmut_44': x_send_log_bulk__mutmut_44, 
-    'x_send_log_bulk__mutmut_45': x_send_log_bulk__mutmut_45, 
-    'x_send_log_bulk__mutmut_46': x_send_log_bulk__mutmut_46, 
-    'x_send_log_bulk__mutmut_47': x_send_log_bulk__mutmut_47, 
-    'x_send_log_bulk__mutmut_48': x_send_log_bulk__mutmut_48, 
-    'x_send_log_bulk__mutmut_49': x_send_log_bulk__mutmut_49, 
-    'x_send_log_bulk__mutmut_50': x_send_log_bulk__mutmut_50, 
-    'x_send_log_bulk__mutmut_51': x_send_log_bulk__mutmut_51, 
-    'x_send_log_bulk__mutmut_52': x_send_log_bulk__mutmut_52
+
+x_send_log_bulk__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_send_log_bulk__mutmut_1": x_send_log_bulk__mutmut_1,
+    "x_send_log_bulk__mutmut_2": x_send_log_bulk__mutmut_2,
+    "x_send_log_bulk__mutmut_3": x_send_log_bulk__mutmut_3,
+    "x_send_log_bulk__mutmut_4": x_send_log_bulk__mutmut_4,
+    "x_send_log_bulk__mutmut_5": x_send_log_bulk__mutmut_5,
+    "x_send_log_bulk__mutmut_6": x_send_log_bulk__mutmut_6,
+    "x_send_log_bulk__mutmut_7": x_send_log_bulk__mutmut_7,
+    "x_send_log_bulk__mutmut_8": x_send_log_bulk__mutmut_8,
+    "x_send_log_bulk__mutmut_9": x_send_log_bulk__mutmut_9,
+    "x_send_log_bulk__mutmut_10": x_send_log_bulk__mutmut_10,
+    "x_send_log_bulk__mutmut_11": x_send_log_bulk__mutmut_11,
+    "x_send_log_bulk__mutmut_12": x_send_log_bulk__mutmut_12,
+    "x_send_log_bulk__mutmut_13": x_send_log_bulk__mutmut_13,
+    "x_send_log_bulk__mutmut_14": x_send_log_bulk__mutmut_14,
+    "x_send_log_bulk__mutmut_15": x_send_log_bulk__mutmut_15,
+    "x_send_log_bulk__mutmut_16": x_send_log_bulk__mutmut_16,
+    "x_send_log_bulk__mutmut_17": x_send_log_bulk__mutmut_17,
+    "x_send_log_bulk__mutmut_18": x_send_log_bulk__mutmut_18,
+    "x_send_log_bulk__mutmut_19": x_send_log_bulk__mutmut_19,
+    "x_send_log_bulk__mutmut_20": x_send_log_bulk__mutmut_20,
+    "x_send_log_bulk__mutmut_21": x_send_log_bulk__mutmut_21,
+    "x_send_log_bulk__mutmut_22": x_send_log_bulk__mutmut_22,
+    "x_send_log_bulk__mutmut_23": x_send_log_bulk__mutmut_23,
+    "x_send_log_bulk__mutmut_24": x_send_log_bulk__mutmut_24,
+    "x_send_log_bulk__mutmut_25": x_send_log_bulk__mutmut_25,
+    "x_send_log_bulk__mutmut_26": x_send_log_bulk__mutmut_26,
+    "x_send_log_bulk__mutmut_27": x_send_log_bulk__mutmut_27,
+    "x_send_log_bulk__mutmut_28": x_send_log_bulk__mutmut_28,
+    "x_send_log_bulk__mutmut_29": x_send_log_bulk__mutmut_29,
+    "x_send_log_bulk__mutmut_30": x_send_log_bulk__mutmut_30,
+    "x_send_log_bulk__mutmut_31": x_send_log_bulk__mutmut_31,
+    "x_send_log_bulk__mutmut_32": x_send_log_bulk__mutmut_32,
+    "x_send_log_bulk__mutmut_33": x_send_log_bulk__mutmut_33,
+    "x_send_log_bulk__mutmut_34": x_send_log_bulk__mutmut_34,
+    "x_send_log_bulk__mutmut_35": x_send_log_bulk__mutmut_35,
+    "x_send_log_bulk__mutmut_36": x_send_log_bulk__mutmut_36,
+    "x_send_log_bulk__mutmut_37": x_send_log_bulk__mutmut_37,
+    "x_send_log_bulk__mutmut_38": x_send_log_bulk__mutmut_38,
+    "x_send_log_bulk__mutmut_39": x_send_log_bulk__mutmut_39,
+    "x_send_log_bulk__mutmut_40": x_send_log_bulk__mutmut_40,
+    "x_send_log_bulk__mutmut_41": x_send_log_bulk__mutmut_41,
+    "x_send_log_bulk__mutmut_42": x_send_log_bulk__mutmut_42,
+    "x_send_log_bulk__mutmut_43": x_send_log_bulk__mutmut_43,
+    "x_send_log_bulk__mutmut_44": x_send_log_bulk__mutmut_44,
+    "x_send_log_bulk__mutmut_45": x_send_log_bulk__mutmut_45,
+    "x_send_log_bulk__mutmut_46": x_send_log_bulk__mutmut_46,
+    "x_send_log_bulk__mutmut_47": x_send_log_bulk__mutmut_47,
+    "x_send_log_bulk__mutmut_48": x_send_log_bulk__mutmut_48,
+    "x_send_log_bulk__mutmut_49": x_send_log_bulk__mutmut_49,
+    "x_send_log_bulk__mutmut_50": x_send_log_bulk__mutmut_50,
+    "x_send_log_bulk__mutmut_51": x_send_log_bulk__mutmut_51,
+    "x_send_log_bulk__mutmut_52": x_send_log_bulk__mutmut_52,
 }
+
 
 def send_log_bulk(*args, **kwargs):
     result = _mutmut_trampoline(x_send_log_bulk__mutmut_orig, x_send_log_bulk__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 send_log_bulk.__signature__ = _mutmut_signature(x_send_log_bulk__mutmut_orig)
-x_send_log_bulk__mutmut_orig.__name__ = 'x_send_log_bulk'
+x_send_log_bulk__mutmut_orig.__name__ = "x_send_log_bulk"
 
 
 __all__ = [

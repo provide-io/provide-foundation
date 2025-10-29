@@ -28,23 +28,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -228,7 +231,9 @@ class ToolCache:
 
         """
         self.cache_dir = cache_dir or (Path.home() / ".provide-foundation" / "cache")
-        self.cache_dir.mkdir(parents=True, )
+        self.cache_dir.mkdir(
+            parents=True,
+        )
 
         self.metadata_file = self.cache_dir / "metadata.json"
         self.metadata = self._load_metadata()
@@ -323,35 +328,41 @@ class ToolCache:
 
         self.metadata_file = self.cache_dir / "metadata.json"
         self.metadata = None
-    
-    xǁToolCacheǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁ__init____mutmut_1': xǁToolCacheǁ__init____mutmut_1, 
-        'xǁToolCacheǁ__init____mutmut_2': xǁToolCacheǁ__init____mutmut_2, 
-        'xǁToolCacheǁ__init____mutmut_3': xǁToolCacheǁ__init____mutmut_3, 
-        'xǁToolCacheǁ__init____mutmut_4': xǁToolCacheǁ__init____mutmut_4, 
-        'xǁToolCacheǁ__init____mutmut_5': xǁToolCacheǁ__init____mutmut_5, 
-        'xǁToolCacheǁ__init____mutmut_6': xǁToolCacheǁ__init____mutmut_6, 
-        'xǁToolCacheǁ__init____mutmut_7': xǁToolCacheǁ__init____mutmut_7, 
-        'xǁToolCacheǁ__init____mutmut_8': xǁToolCacheǁ__init____mutmut_8, 
-        'xǁToolCacheǁ__init____mutmut_9': xǁToolCacheǁ__init____mutmut_9, 
-        'xǁToolCacheǁ__init____mutmut_10': xǁToolCacheǁ__init____mutmut_10, 
-        'xǁToolCacheǁ__init____mutmut_11': xǁToolCacheǁ__init____mutmut_11, 
-        'xǁToolCacheǁ__init____mutmut_12': xǁToolCacheǁ__init____mutmut_12, 
-        'xǁToolCacheǁ__init____mutmut_13': xǁToolCacheǁ__init____mutmut_13, 
-        'xǁToolCacheǁ__init____mutmut_14': xǁToolCacheǁ__init____mutmut_14, 
-        'xǁToolCacheǁ__init____mutmut_15': xǁToolCacheǁ__init____mutmut_15, 
-        'xǁToolCacheǁ__init____mutmut_16': xǁToolCacheǁ__init____mutmut_16, 
-        'xǁToolCacheǁ__init____mutmut_17': xǁToolCacheǁ__init____mutmut_17, 
-        'xǁToolCacheǁ__init____mutmut_18': xǁToolCacheǁ__init____mutmut_18, 
-        'xǁToolCacheǁ__init____mutmut_19': xǁToolCacheǁ__init____mutmut_19
+
+    xǁToolCacheǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁ__init____mutmut_1": xǁToolCacheǁ__init____mutmut_1,
+        "xǁToolCacheǁ__init____mutmut_2": xǁToolCacheǁ__init____mutmut_2,
+        "xǁToolCacheǁ__init____mutmut_3": xǁToolCacheǁ__init____mutmut_3,
+        "xǁToolCacheǁ__init____mutmut_4": xǁToolCacheǁ__init____mutmut_4,
+        "xǁToolCacheǁ__init____mutmut_5": xǁToolCacheǁ__init____mutmut_5,
+        "xǁToolCacheǁ__init____mutmut_6": xǁToolCacheǁ__init____mutmut_6,
+        "xǁToolCacheǁ__init____mutmut_7": xǁToolCacheǁ__init____mutmut_7,
+        "xǁToolCacheǁ__init____mutmut_8": xǁToolCacheǁ__init____mutmut_8,
+        "xǁToolCacheǁ__init____mutmut_9": xǁToolCacheǁ__init____mutmut_9,
+        "xǁToolCacheǁ__init____mutmut_10": xǁToolCacheǁ__init____mutmut_10,
+        "xǁToolCacheǁ__init____mutmut_11": xǁToolCacheǁ__init____mutmut_11,
+        "xǁToolCacheǁ__init____mutmut_12": xǁToolCacheǁ__init____mutmut_12,
+        "xǁToolCacheǁ__init____mutmut_13": xǁToolCacheǁ__init____mutmut_13,
+        "xǁToolCacheǁ__init____mutmut_14": xǁToolCacheǁ__init____mutmut_14,
+        "xǁToolCacheǁ__init____mutmut_15": xǁToolCacheǁ__init____mutmut_15,
+        "xǁToolCacheǁ__init____mutmut_16": xǁToolCacheǁ__init____mutmut_16,
+        "xǁToolCacheǁ__init____mutmut_17": xǁToolCacheǁ__init____mutmut_17,
+        "xǁToolCacheǁ__init____mutmut_18": xǁToolCacheǁ__init____mutmut_18,
+        "xǁToolCacheǁ__init____mutmut_19": xǁToolCacheǁ__init____mutmut_19,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁToolCacheǁ__init____mutmut_orig)
-    xǁToolCacheǁ__init____mutmut_orig.__name__ = 'xǁToolCacheǁ__init__'
+    xǁToolCacheǁ__init____mutmut_orig.__name__ = "xǁToolCacheǁ__init__"
 
     def xǁToolCacheǁ_load_metadata__mutmut_orig(self) -> dict[str, dict]:
         """Load cache metadata from disk.
@@ -396,21 +407,29 @@ class ToolCache:
             Cache metadata dictionary.
 
         """
-        return read_json(self.metadata_file, )
-    
-    xǁToolCacheǁ_load_metadata__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁ_load_metadata__mutmut_1': xǁToolCacheǁ_load_metadata__mutmut_1, 
-        'xǁToolCacheǁ_load_metadata__mutmut_2': xǁToolCacheǁ_load_metadata__mutmut_2, 
-        'xǁToolCacheǁ_load_metadata__mutmut_3': xǁToolCacheǁ_load_metadata__mutmut_3, 
-        'xǁToolCacheǁ_load_metadata__mutmut_4': xǁToolCacheǁ_load_metadata__mutmut_4
+        return read_json(
+            self.metadata_file,
+        )
+
+    xǁToolCacheǁ_load_metadata__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁ_load_metadata__mutmut_1": xǁToolCacheǁ_load_metadata__mutmut_1,
+        "xǁToolCacheǁ_load_metadata__mutmut_2": xǁToolCacheǁ_load_metadata__mutmut_2,
+        "xǁToolCacheǁ_load_metadata__mutmut_3": xǁToolCacheǁ_load_metadata__mutmut_3,
+        "xǁToolCacheǁ_load_metadata__mutmut_4": xǁToolCacheǁ_load_metadata__mutmut_4,
     }
-    
+
     def _load_metadata(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁ_load_metadata__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁ_load_metadata__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁ_load_metadata__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁ_load_metadata__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _load_metadata.__signature__ = _mutmut_signature(xǁToolCacheǁ_load_metadata__mutmut_orig)
-    xǁToolCacheǁ_load_metadata__mutmut_orig.__name__ = 'xǁToolCacheǁ_load_metadata'
+    xǁToolCacheǁ_load_metadata__mutmut_orig.__name__ = "xǁToolCacheǁ_load_metadata"
 
     def xǁToolCacheǁ_save_metadata__mutmut_orig(self) -> None:
         """Save cache metadata to disk."""
@@ -463,7 +482,10 @@ class ToolCache:
     def xǁToolCacheǁ_save_metadata__mutmut_6(self) -> None:
         """Save cache metadata to disk."""
         try:
-            write_json(self.metadata_file, self.metadata, )
+            write_json(
+                self.metadata_file,
+                self.metadata,
+            )
         except Exception as e:
             log.error(f"Failed to save cache metadata: {e}")
             raise
@@ -483,24 +505,30 @@ class ToolCache:
         except Exception as e:
             log.error(None)
             raise
-    
-    xǁToolCacheǁ_save_metadata__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁ_save_metadata__mutmut_1': xǁToolCacheǁ_save_metadata__mutmut_1, 
-        'xǁToolCacheǁ_save_metadata__mutmut_2': xǁToolCacheǁ_save_metadata__mutmut_2, 
-        'xǁToolCacheǁ_save_metadata__mutmut_3': xǁToolCacheǁ_save_metadata__mutmut_3, 
-        'xǁToolCacheǁ_save_metadata__mutmut_4': xǁToolCacheǁ_save_metadata__mutmut_4, 
-        'xǁToolCacheǁ_save_metadata__mutmut_5': xǁToolCacheǁ_save_metadata__mutmut_5, 
-        'xǁToolCacheǁ_save_metadata__mutmut_6': xǁToolCacheǁ_save_metadata__mutmut_6, 
-        'xǁToolCacheǁ_save_metadata__mutmut_7': xǁToolCacheǁ_save_metadata__mutmut_7, 
-        'xǁToolCacheǁ_save_metadata__mutmut_8': xǁToolCacheǁ_save_metadata__mutmut_8
+
+    xǁToolCacheǁ_save_metadata__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁ_save_metadata__mutmut_1": xǁToolCacheǁ_save_metadata__mutmut_1,
+        "xǁToolCacheǁ_save_metadata__mutmut_2": xǁToolCacheǁ_save_metadata__mutmut_2,
+        "xǁToolCacheǁ_save_metadata__mutmut_3": xǁToolCacheǁ_save_metadata__mutmut_3,
+        "xǁToolCacheǁ_save_metadata__mutmut_4": xǁToolCacheǁ_save_metadata__mutmut_4,
+        "xǁToolCacheǁ_save_metadata__mutmut_5": xǁToolCacheǁ_save_metadata__mutmut_5,
+        "xǁToolCacheǁ_save_metadata__mutmut_6": xǁToolCacheǁ_save_metadata__mutmut_6,
+        "xǁToolCacheǁ_save_metadata__mutmut_7": xǁToolCacheǁ_save_metadata__mutmut_7,
+        "xǁToolCacheǁ_save_metadata__mutmut_8": xǁToolCacheǁ_save_metadata__mutmut_8,
     }
-    
+
     def _save_metadata(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁ_save_metadata__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁ_save_metadata__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁ_save_metadata__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁ_save_metadata__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _save_metadata.__signature__ = _mutmut_signature(xǁToolCacheǁ_save_metadata__mutmut_orig)
-    xǁToolCacheǁ_save_metadata__mutmut_orig.__name__ = 'xǁToolCacheǁ_save_metadata'
+    xǁToolCacheǁ_save_metadata__mutmut_orig.__name__ = "xǁToolCacheǁ_save_metadata"
 
     def xǁToolCacheǁget__mutmut_orig(self, tool: str, version: str) -> Path | None:
         """Get cached tool path if valid.
@@ -929,7 +957,9 @@ class ToolCache:
             # Check if path exists
             if not path.exists():
                 log.debug(f"Cache miss: {key} path doesn't exist")
-                self.invalidate(tool, )
+                self.invalidate(
+                    tool,
+                )
                 return None
 
             # Check if expired
@@ -1139,7 +1169,9 @@ class ToolCache:
             # Check if expired
             if self._is_expired(entry):
                 log.debug(f"Cache miss: {key} expired")
-                self.invalidate(tool, )
+                self.invalidate(
+                    tool,
+                )
                 return None
 
             log.debug(f"Cache hit: {key}")
@@ -1215,36 +1247,42 @@ class ToolCache:
 
         log.debug(None)
         return None
-    
-    xǁToolCacheǁget__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁget__mutmut_1': xǁToolCacheǁget__mutmut_1, 
-        'xǁToolCacheǁget__mutmut_2': xǁToolCacheǁget__mutmut_2, 
-        'xǁToolCacheǁget__mutmut_3': xǁToolCacheǁget__mutmut_3, 
-        'xǁToolCacheǁget__mutmut_4': xǁToolCacheǁget__mutmut_4, 
-        'xǁToolCacheǁget__mutmut_5': xǁToolCacheǁget__mutmut_5, 
-        'xǁToolCacheǁget__mutmut_6': xǁToolCacheǁget__mutmut_6, 
-        'xǁToolCacheǁget__mutmut_7': xǁToolCacheǁget__mutmut_7, 
-        'xǁToolCacheǁget__mutmut_8': xǁToolCacheǁget__mutmut_8, 
-        'xǁToolCacheǁget__mutmut_9': xǁToolCacheǁget__mutmut_9, 
-        'xǁToolCacheǁget__mutmut_10': xǁToolCacheǁget__mutmut_10, 
-        'xǁToolCacheǁget__mutmut_11': xǁToolCacheǁget__mutmut_11, 
-        'xǁToolCacheǁget__mutmut_12': xǁToolCacheǁget__mutmut_12, 
-        'xǁToolCacheǁget__mutmut_13': xǁToolCacheǁget__mutmut_13, 
-        'xǁToolCacheǁget__mutmut_14': xǁToolCacheǁget__mutmut_14, 
-        'xǁToolCacheǁget__mutmut_15': xǁToolCacheǁget__mutmut_15, 
-        'xǁToolCacheǁget__mutmut_16': xǁToolCacheǁget__mutmut_16, 
-        'xǁToolCacheǁget__mutmut_17': xǁToolCacheǁget__mutmut_17, 
-        'xǁToolCacheǁget__mutmut_18': xǁToolCacheǁget__mutmut_18, 
-        'xǁToolCacheǁget__mutmut_19': xǁToolCacheǁget__mutmut_19, 
-        'xǁToolCacheǁget__mutmut_20': xǁToolCacheǁget__mutmut_20
+
+    xǁToolCacheǁget__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁget__mutmut_1": xǁToolCacheǁget__mutmut_1,
+        "xǁToolCacheǁget__mutmut_2": xǁToolCacheǁget__mutmut_2,
+        "xǁToolCacheǁget__mutmut_3": xǁToolCacheǁget__mutmut_3,
+        "xǁToolCacheǁget__mutmut_4": xǁToolCacheǁget__mutmut_4,
+        "xǁToolCacheǁget__mutmut_5": xǁToolCacheǁget__mutmut_5,
+        "xǁToolCacheǁget__mutmut_6": xǁToolCacheǁget__mutmut_6,
+        "xǁToolCacheǁget__mutmut_7": xǁToolCacheǁget__mutmut_7,
+        "xǁToolCacheǁget__mutmut_8": xǁToolCacheǁget__mutmut_8,
+        "xǁToolCacheǁget__mutmut_9": xǁToolCacheǁget__mutmut_9,
+        "xǁToolCacheǁget__mutmut_10": xǁToolCacheǁget__mutmut_10,
+        "xǁToolCacheǁget__mutmut_11": xǁToolCacheǁget__mutmut_11,
+        "xǁToolCacheǁget__mutmut_12": xǁToolCacheǁget__mutmut_12,
+        "xǁToolCacheǁget__mutmut_13": xǁToolCacheǁget__mutmut_13,
+        "xǁToolCacheǁget__mutmut_14": xǁToolCacheǁget__mutmut_14,
+        "xǁToolCacheǁget__mutmut_15": xǁToolCacheǁget__mutmut_15,
+        "xǁToolCacheǁget__mutmut_16": xǁToolCacheǁget__mutmut_16,
+        "xǁToolCacheǁget__mutmut_17": xǁToolCacheǁget__mutmut_17,
+        "xǁToolCacheǁget__mutmut_18": xǁToolCacheǁget__mutmut_18,
+        "xǁToolCacheǁget__mutmut_19": xǁToolCacheǁget__mutmut_19,
+        "xǁToolCacheǁget__mutmut_20": xǁToolCacheǁget__mutmut_20,
     }
-    
+
     def get(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁget__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁget__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁget__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁget__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get.__signature__ = _mutmut_signature(xǁToolCacheǁget__mutmut_orig)
-    xǁToolCacheǁget__mutmut_orig.__name__ = 'xǁToolCacheǁget'
+    xǁToolCacheǁget__mutmut_orig.__name__ = "xǁToolCacheǁget"
 
     def xǁToolCacheǁstore__mutmut_orig(self, tool: str, version: str, path: Path, ttl_days: int = 7) -> None:
         """Store tool in cache.
@@ -1607,31 +1645,37 @@ class ToolCache:
 
         self._save_metadata()
         log.debug(None)
-    
-    xǁToolCacheǁstore__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁstore__mutmut_1': xǁToolCacheǁstore__mutmut_1, 
-        'xǁToolCacheǁstore__mutmut_2': xǁToolCacheǁstore__mutmut_2, 
-        'xǁToolCacheǁstore__mutmut_3': xǁToolCacheǁstore__mutmut_3, 
-        'xǁToolCacheǁstore__mutmut_4': xǁToolCacheǁstore__mutmut_4, 
-        'xǁToolCacheǁstore__mutmut_5': xǁToolCacheǁstore__mutmut_5, 
-        'xǁToolCacheǁstore__mutmut_6': xǁToolCacheǁstore__mutmut_6, 
-        'xǁToolCacheǁstore__mutmut_7': xǁToolCacheǁstore__mutmut_7, 
-        'xǁToolCacheǁstore__mutmut_8': xǁToolCacheǁstore__mutmut_8, 
-        'xǁToolCacheǁstore__mutmut_9': xǁToolCacheǁstore__mutmut_9, 
-        'xǁToolCacheǁstore__mutmut_10': xǁToolCacheǁstore__mutmut_10, 
-        'xǁToolCacheǁstore__mutmut_11': xǁToolCacheǁstore__mutmut_11, 
-        'xǁToolCacheǁstore__mutmut_12': xǁToolCacheǁstore__mutmut_12, 
-        'xǁToolCacheǁstore__mutmut_13': xǁToolCacheǁstore__mutmut_13, 
-        'xǁToolCacheǁstore__mutmut_14': xǁToolCacheǁstore__mutmut_14, 
-        'xǁToolCacheǁstore__mutmut_15': xǁToolCacheǁstore__mutmut_15
+
+    xǁToolCacheǁstore__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁstore__mutmut_1": xǁToolCacheǁstore__mutmut_1,
+        "xǁToolCacheǁstore__mutmut_2": xǁToolCacheǁstore__mutmut_2,
+        "xǁToolCacheǁstore__mutmut_3": xǁToolCacheǁstore__mutmut_3,
+        "xǁToolCacheǁstore__mutmut_4": xǁToolCacheǁstore__mutmut_4,
+        "xǁToolCacheǁstore__mutmut_5": xǁToolCacheǁstore__mutmut_5,
+        "xǁToolCacheǁstore__mutmut_6": xǁToolCacheǁstore__mutmut_6,
+        "xǁToolCacheǁstore__mutmut_7": xǁToolCacheǁstore__mutmut_7,
+        "xǁToolCacheǁstore__mutmut_8": xǁToolCacheǁstore__mutmut_8,
+        "xǁToolCacheǁstore__mutmut_9": xǁToolCacheǁstore__mutmut_9,
+        "xǁToolCacheǁstore__mutmut_10": xǁToolCacheǁstore__mutmut_10,
+        "xǁToolCacheǁstore__mutmut_11": xǁToolCacheǁstore__mutmut_11,
+        "xǁToolCacheǁstore__mutmut_12": xǁToolCacheǁstore__mutmut_12,
+        "xǁToolCacheǁstore__mutmut_13": xǁToolCacheǁstore__mutmut_13,
+        "xǁToolCacheǁstore__mutmut_14": xǁToolCacheǁstore__mutmut_14,
+        "xǁToolCacheǁstore__mutmut_15": xǁToolCacheǁstore__mutmut_15,
     }
-    
+
     def store(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁstore__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁstore__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁstore__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁstore__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     store.__signature__ = _mutmut_signature(xǁToolCacheǁstore__mutmut_orig)
-    xǁToolCacheǁstore__mutmut_orig.__name__ = 'xǁToolCacheǁstore'
+    xǁToolCacheǁstore__mutmut_orig.__name__ = "xǁToolCacheǁstore"
 
     def xǁToolCacheǁinvalidate__mutmut_orig(self, tool: str, version: str | None = None) -> None:
         """Invalidate cache entries.
@@ -1862,25 +1906,31 @@ class ToolCache:
                 log.debug(None)
 
         self._save_metadata()
-    
-    xǁToolCacheǁinvalidate__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁinvalidate__mutmut_1': xǁToolCacheǁinvalidate__mutmut_1, 
-        'xǁToolCacheǁinvalidate__mutmut_2': xǁToolCacheǁinvalidate__mutmut_2, 
-        'xǁToolCacheǁinvalidate__mutmut_3': xǁToolCacheǁinvalidate__mutmut_3, 
-        'xǁToolCacheǁinvalidate__mutmut_4': xǁToolCacheǁinvalidate__mutmut_4, 
-        'xǁToolCacheǁinvalidate__mutmut_5': xǁToolCacheǁinvalidate__mutmut_5, 
-        'xǁToolCacheǁinvalidate__mutmut_6': xǁToolCacheǁinvalidate__mutmut_6, 
-        'xǁToolCacheǁinvalidate__mutmut_7': xǁToolCacheǁinvalidate__mutmut_7, 
-        'xǁToolCacheǁinvalidate__mutmut_8': xǁToolCacheǁinvalidate__mutmut_8, 
-        'xǁToolCacheǁinvalidate__mutmut_9': xǁToolCacheǁinvalidate__mutmut_9
+
+    xǁToolCacheǁinvalidate__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁinvalidate__mutmut_1": xǁToolCacheǁinvalidate__mutmut_1,
+        "xǁToolCacheǁinvalidate__mutmut_2": xǁToolCacheǁinvalidate__mutmut_2,
+        "xǁToolCacheǁinvalidate__mutmut_3": xǁToolCacheǁinvalidate__mutmut_3,
+        "xǁToolCacheǁinvalidate__mutmut_4": xǁToolCacheǁinvalidate__mutmut_4,
+        "xǁToolCacheǁinvalidate__mutmut_5": xǁToolCacheǁinvalidate__mutmut_5,
+        "xǁToolCacheǁinvalidate__mutmut_6": xǁToolCacheǁinvalidate__mutmut_6,
+        "xǁToolCacheǁinvalidate__mutmut_7": xǁToolCacheǁinvalidate__mutmut_7,
+        "xǁToolCacheǁinvalidate__mutmut_8": xǁToolCacheǁinvalidate__mutmut_8,
+        "xǁToolCacheǁinvalidate__mutmut_9": xǁToolCacheǁinvalidate__mutmut_9,
     }
-    
+
     def invalidate(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁinvalidate__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁinvalidate__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁinvalidate__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁinvalidate__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     invalidate.__signature__ = _mutmut_signature(xǁToolCacheǁinvalidate__mutmut_orig)
-    xǁToolCacheǁinvalidate__mutmut_orig.__name__ = 'xǁToolCacheǁinvalidate'
+    xǁToolCacheǁinvalidate__mutmut_orig.__name__ = "xǁToolCacheǁinvalidate"
 
     def xǁToolCacheǁ_is_expired__mutmut_orig(self, entry: dict) -> bool:
         """Check if cache entry is expired.
@@ -2110,7 +2160,9 @@ class ToolCache:
         """
         try:
             cached_at = datetime.fromisoformat(entry["cached_at"])
-            ttl_days = entry.get("ttl_days", )
+            ttl_days = entry.get(
+                "ttl_days",
+            )
 
             if ttl_days <= 0:
                 # Never expires
@@ -2409,37 +2461,43 @@ class ToolCache:
         except Exception as e:
             log.debug(f"Error checking expiry: {e}")
             return False  # Treat as expired if we can't determine
-    
-    xǁToolCacheǁ_is_expired__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁ_is_expired__mutmut_1': xǁToolCacheǁ_is_expired__mutmut_1, 
-        'xǁToolCacheǁ_is_expired__mutmut_2': xǁToolCacheǁ_is_expired__mutmut_2, 
-        'xǁToolCacheǁ_is_expired__mutmut_3': xǁToolCacheǁ_is_expired__mutmut_3, 
-        'xǁToolCacheǁ_is_expired__mutmut_4': xǁToolCacheǁ_is_expired__mutmut_4, 
-        'xǁToolCacheǁ_is_expired__mutmut_5': xǁToolCacheǁ_is_expired__mutmut_5, 
-        'xǁToolCacheǁ_is_expired__mutmut_6': xǁToolCacheǁ_is_expired__mutmut_6, 
-        'xǁToolCacheǁ_is_expired__mutmut_7': xǁToolCacheǁ_is_expired__mutmut_7, 
-        'xǁToolCacheǁ_is_expired__mutmut_8': xǁToolCacheǁ_is_expired__mutmut_8, 
-        'xǁToolCacheǁ_is_expired__mutmut_9': xǁToolCacheǁ_is_expired__mutmut_9, 
-        'xǁToolCacheǁ_is_expired__mutmut_10': xǁToolCacheǁ_is_expired__mutmut_10, 
-        'xǁToolCacheǁ_is_expired__mutmut_11': xǁToolCacheǁ_is_expired__mutmut_11, 
-        'xǁToolCacheǁ_is_expired__mutmut_12': xǁToolCacheǁ_is_expired__mutmut_12, 
-        'xǁToolCacheǁ_is_expired__mutmut_13': xǁToolCacheǁ_is_expired__mutmut_13, 
-        'xǁToolCacheǁ_is_expired__mutmut_14': xǁToolCacheǁ_is_expired__mutmut_14, 
-        'xǁToolCacheǁ_is_expired__mutmut_15': xǁToolCacheǁ_is_expired__mutmut_15, 
-        'xǁToolCacheǁ_is_expired__mutmut_16': xǁToolCacheǁ_is_expired__mutmut_16, 
-        'xǁToolCacheǁ_is_expired__mutmut_17': xǁToolCacheǁ_is_expired__mutmut_17, 
-        'xǁToolCacheǁ_is_expired__mutmut_18': xǁToolCacheǁ_is_expired__mutmut_18, 
-        'xǁToolCacheǁ_is_expired__mutmut_19': xǁToolCacheǁ_is_expired__mutmut_19, 
-        'xǁToolCacheǁ_is_expired__mutmut_20': xǁToolCacheǁ_is_expired__mutmut_20, 
-        'xǁToolCacheǁ_is_expired__mutmut_21': xǁToolCacheǁ_is_expired__mutmut_21
+
+    xǁToolCacheǁ_is_expired__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁ_is_expired__mutmut_1": xǁToolCacheǁ_is_expired__mutmut_1,
+        "xǁToolCacheǁ_is_expired__mutmut_2": xǁToolCacheǁ_is_expired__mutmut_2,
+        "xǁToolCacheǁ_is_expired__mutmut_3": xǁToolCacheǁ_is_expired__mutmut_3,
+        "xǁToolCacheǁ_is_expired__mutmut_4": xǁToolCacheǁ_is_expired__mutmut_4,
+        "xǁToolCacheǁ_is_expired__mutmut_5": xǁToolCacheǁ_is_expired__mutmut_5,
+        "xǁToolCacheǁ_is_expired__mutmut_6": xǁToolCacheǁ_is_expired__mutmut_6,
+        "xǁToolCacheǁ_is_expired__mutmut_7": xǁToolCacheǁ_is_expired__mutmut_7,
+        "xǁToolCacheǁ_is_expired__mutmut_8": xǁToolCacheǁ_is_expired__mutmut_8,
+        "xǁToolCacheǁ_is_expired__mutmut_9": xǁToolCacheǁ_is_expired__mutmut_9,
+        "xǁToolCacheǁ_is_expired__mutmut_10": xǁToolCacheǁ_is_expired__mutmut_10,
+        "xǁToolCacheǁ_is_expired__mutmut_11": xǁToolCacheǁ_is_expired__mutmut_11,
+        "xǁToolCacheǁ_is_expired__mutmut_12": xǁToolCacheǁ_is_expired__mutmut_12,
+        "xǁToolCacheǁ_is_expired__mutmut_13": xǁToolCacheǁ_is_expired__mutmut_13,
+        "xǁToolCacheǁ_is_expired__mutmut_14": xǁToolCacheǁ_is_expired__mutmut_14,
+        "xǁToolCacheǁ_is_expired__mutmut_15": xǁToolCacheǁ_is_expired__mutmut_15,
+        "xǁToolCacheǁ_is_expired__mutmut_16": xǁToolCacheǁ_is_expired__mutmut_16,
+        "xǁToolCacheǁ_is_expired__mutmut_17": xǁToolCacheǁ_is_expired__mutmut_17,
+        "xǁToolCacheǁ_is_expired__mutmut_18": xǁToolCacheǁ_is_expired__mutmut_18,
+        "xǁToolCacheǁ_is_expired__mutmut_19": xǁToolCacheǁ_is_expired__mutmut_19,
+        "xǁToolCacheǁ_is_expired__mutmut_20": xǁToolCacheǁ_is_expired__mutmut_20,
+        "xǁToolCacheǁ_is_expired__mutmut_21": xǁToolCacheǁ_is_expired__mutmut_21,
     }
-    
+
     def _is_expired(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁ_is_expired__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁ_is_expired__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁ_is_expired__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁ_is_expired__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _is_expired.__signature__ = _mutmut_signature(xǁToolCacheǁ_is_expired__mutmut_orig)
-    xǁToolCacheǁ_is_expired__mutmut_orig.__name__ = 'xǁToolCacheǁ_is_expired'
+    xǁToolCacheǁ_is_expired__mutmut_orig.__name__ = "xǁToolCacheǁ_is_expired"
 
     def xǁToolCacheǁclear__mutmut_orig(self) -> None:
         """Clear all cache entries."""
@@ -2476,21 +2534,27 @@ class ToolCache:
         self.metadata = {}
         self._save_metadata()
         log.info("CLEARED TOOL CACHE")
-    
-    xǁToolCacheǁclear__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁclear__mutmut_1': xǁToolCacheǁclear__mutmut_1, 
-        'xǁToolCacheǁclear__mutmut_2': xǁToolCacheǁclear__mutmut_2, 
-        'xǁToolCacheǁclear__mutmut_3': xǁToolCacheǁclear__mutmut_3, 
-        'xǁToolCacheǁclear__mutmut_4': xǁToolCacheǁclear__mutmut_4, 
-        'xǁToolCacheǁclear__mutmut_5': xǁToolCacheǁclear__mutmut_5
+
+    xǁToolCacheǁclear__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁclear__mutmut_1": xǁToolCacheǁclear__mutmut_1,
+        "xǁToolCacheǁclear__mutmut_2": xǁToolCacheǁclear__mutmut_2,
+        "xǁToolCacheǁclear__mutmut_3": xǁToolCacheǁclear__mutmut_3,
+        "xǁToolCacheǁclear__mutmut_4": xǁToolCacheǁclear__mutmut_4,
+        "xǁToolCacheǁclear__mutmut_5": xǁToolCacheǁclear__mutmut_5,
     }
-    
+
     def clear(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁclear__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁclear__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁclear__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁclear__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     clear.__signature__ = _mutmut_signature(xǁToolCacheǁclear__mutmut_orig)
-    xǁToolCacheǁclear__mutmut_orig.__name__ = 'xǁToolCacheǁclear'
+    xǁToolCacheǁclear__mutmut_orig.__name__ = "xǁToolCacheǁclear"
 
     def xǁToolCacheǁlist_cached__mutmut_orig(self) -> list[dict]:
         """List all cached tools.
@@ -3086,7 +3150,9 @@ class ToolCache:
             # Calculate days until expiry
             try:
                 cached_at = datetime.fromisoformat(entry["cached_at"])
-                ttl_days = entry.get("ttl_days", )
+                ttl_days = entry.get(
+                    "ttl_days",
+                )
                 if ttl_days > 0:
                     expiry = cached_at + timedelta(days=ttl_days)
                     days_left = (expiry - datetime.now()).days
@@ -3634,7 +3700,9 @@ class ToolCache:
                 if ttl_days > 0:
                     expiry = cached_at + timedelta(days=ttl_days)
                     days_left = (expiry - datetime.now()).days
-                    entry["days_until_expiry"] = max(0, )
+                    entry["days_until_expiry"] = max(
+                        0,
+                    )
                 else:
                     entry["days_until_expiry"] = -1  # Never expires
             except Exception:
@@ -3995,62 +4063,68 @@ class ToolCache:
             results.append(None)
 
         return results
-    
-    xǁToolCacheǁlist_cached__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁlist_cached__mutmut_1': xǁToolCacheǁlist_cached__mutmut_1, 
-        'xǁToolCacheǁlist_cached__mutmut_2': xǁToolCacheǁlist_cached__mutmut_2, 
-        'xǁToolCacheǁlist_cached__mutmut_3': xǁToolCacheǁlist_cached__mutmut_3, 
-        'xǁToolCacheǁlist_cached__mutmut_4': xǁToolCacheǁlist_cached__mutmut_4, 
-        'xǁToolCacheǁlist_cached__mutmut_5': xǁToolCacheǁlist_cached__mutmut_5, 
-        'xǁToolCacheǁlist_cached__mutmut_6': xǁToolCacheǁlist_cached__mutmut_6, 
-        'xǁToolCacheǁlist_cached__mutmut_7': xǁToolCacheǁlist_cached__mutmut_7, 
-        'xǁToolCacheǁlist_cached__mutmut_8': xǁToolCacheǁlist_cached__mutmut_8, 
-        'xǁToolCacheǁlist_cached__mutmut_9': xǁToolCacheǁlist_cached__mutmut_9, 
-        'xǁToolCacheǁlist_cached__mutmut_10': xǁToolCacheǁlist_cached__mutmut_10, 
-        'xǁToolCacheǁlist_cached__mutmut_11': xǁToolCacheǁlist_cached__mutmut_11, 
-        'xǁToolCacheǁlist_cached__mutmut_12': xǁToolCacheǁlist_cached__mutmut_12, 
-        'xǁToolCacheǁlist_cached__mutmut_13': xǁToolCacheǁlist_cached__mutmut_13, 
-        'xǁToolCacheǁlist_cached__mutmut_14': xǁToolCacheǁlist_cached__mutmut_14, 
-        'xǁToolCacheǁlist_cached__mutmut_15': xǁToolCacheǁlist_cached__mutmut_15, 
-        'xǁToolCacheǁlist_cached__mutmut_16': xǁToolCacheǁlist_cached__mutmut_16, 
-        'xǁToolCacheǁlist_cached__mutmut_17': xǁToolCacheǁlist_cached__mutmut_17, 
-        'xǁToolCacheǁlist_cached__mutmut_18': xǁToolCacheǁlist_cached__mutmut_18, 
-        'xǁToolCacheǁlist_cached__mutmut_19': xǁToolCacheǁlist_cached__mutmut_19, 
-        'xǁToolCacheǁlist_cached__mutmut_20': xǁToolCacheǁlist_cached__mutmut_20, 
-        'xǁToolCacheǁlist_cached__mutmut_21': xǁToolCacheǁlist_cached__mutmut_21, 
-        'xǁToolCacheǁlist_cached__mutmut_22': xǁToolCacheǁlist_cached__mutmut_22, 
-        'xǁToolCacheǁlist_cached__mutmut_23': xǁToolCacheǁlist_cached__mutmut_23, 
-        'xǁToolCacheǁlist_cached__mutmut_24': xǁToolCacheǁlist_cached__mutmut_24, 
-        'xǁToolCacheǁlist_cached__mutmut_25': xǁToolCacheǁlist_cached__mutmut_25, 
-        'xǁToolCacheǁlist_cached__mutmut_26': xǁToolCacheǁlist_cached__mutmut_26, 
-        'xǁToolCacheǁlist_cached__mutmut_27': xǁToolCacheǁlist_cached__mutmut_27, 
-        'xǁToolCacheǁlist_cached__mutmut_28': xǁToolCacheǁlist_cached__mutmut_28, 
-        'xǁToolCacheǁlist_cached__mutmut_29': xǁToolCacheǁlist_cached__mutmut_29, 
-        'xǁToolCacheǁlist_cached__mutmut_30': xǁToolCacheǁlist_cached__mutmut_30, 
-        'xǁToolCacheǁlist_cached__mutmut_31': xǁToolCacheǁlist_cached__mutmut_31, 
-        'xǁToolCacheǁlist_cached__mutmut_32': xǁToolCacheǁlist_cached__mutmut_32, 
-        'xǁToolCacheǁlist_cached__mutmut_33': xǁToolCacheǁlist_cached__mutmut_33, 
-        'xǁToolCacheǁlist_cached__mutmut_34': xǁToolCacheǁlist_cached__mutmut_34, 
-        'xǁToolCacheǁlist_cached__mutmut_35': xǁToolCacheǁlist_cached__mutmut_35, 
-        'xǁToolCacheǁlist_cached__mutmut_36': xǁToolCacheǁlist_cached__mutmut_36, 
-        'xǁToolCacheǁlist_cached__mutmut_37': xǁToolCacheǁlist_cached__mutmut_37, 
-        'xǁToolCacheǁlist_cached__mutmut_38': xǁToolCacheǁlist_cached__mutmut_38, 
-        'xǁToolCacheǁlist_cached__mutmut_39': xǁToolCacheǁlist_cached__mutmut_39, 
-        'xǁToolCacheǁlist_cached__mutmut_40': xǁToolCacheǁlist_cached__mutmut_40, 
-        'xǁToolCacheǁlist_cached__mutmut_41': xǁToolCacheǁlist_cached__mutmut_41, 
-        'xǁToolCacheǁlist_cached__mutmut_42': xǁToolCacheǁlist_cached__mutmut_42, 
-        'xǁToolCacheǁlist_cached__mutmut_43': xǁToolCacheǁlist_cached__mutmut_43, 
-        'xǁToolCacheǁlist_cached__mutmut_44': xǁToolCacheǁlist_cached__mutmut_44, 
-        'xǁToolCacheǁlist_cached__mutmut_45': xǁToolCacheǁlist_cached__mutmut_45, 
-        'xǁToolCacheǁlist_cached__mutmut_46': xǁToolCacheǁlist_cached__mutmut_46
+
+    xǁToolCacheǁlist_cached__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁlist_cached__mutmut_1": xǁToolCacheǁlist_cached__mutmut_1,
+        "xǁToolCacheǁlist_cached__mutmut_2": xǁToolCacheǁlist_cached__mutmut_2,
+        "xǁToolCacheǁlist_cached__mutmut_3": xǁToolCacheǁlist_cached__mutmut_3,
+        "xǁToolCacheǁlist_cached__mutmut_4": xǁToolCacheǁlist_cached__mutmut_4,
+        "xǁToolCacheǁlist_cached__mutmut_5": xǁToolCacheǁlist_cached__mutmut_5,
+        "xǁToolCacheǁlist_cached__mutmut_6": xǁToolCacheǁlist_cached__mutmut_6,
+        "xǁToolCacheǁlist_cached__mutmut_7": xǁToolCacheǁlist_cached__mutmut_7,
+        "xǁToolCacheǁlist_cached__mutmut_8": xǁToolCacheǁlist_cached__mutmut_8,
+        "xǁToolCacheǁlist_cached__mutmut_9": xǁToolCacheǁlist_cached__mutmut_9,
+        "xǁToolCacheǁlist_cached__mutmut_10": xǁToolCacheǁlist_cached__mutmut_10,
+        "xǁToolCacheǁlist_cached__mutmut_11": xǁToolCacheǁlist_cached__mutmut_11,
+        "xǁToolCacheǁlist_cached__mutmut_12": xǁToolCacheǁlist_cached__mutmut_12,
+        "xǁToolCacheǁlist_cached__mutmut_13": xǁToolCacheǁlist_cached__mutmut_13,
+        "xǁToolCacheǁlist_cached__mutmut_14": xǁToolCacheǁlist_cached__mutmut_14,
+        "xǁToolCacheǁlist_cached__mutmut_15": xǁToolCacheǁlist_cached__mutmut_15,
+        "xǁToolCacheǁlist_cached__mutmut_16": xǁToolCacheǁlist_cached__mutmut_16,
+        "xǁToolCacheǁlist_cached__mutmut_17": xǁToolCacheǁlist_cached__mutmut_17,
+        "xǁToolCacheǁlist_cached__mutmut_18": xǁToolCacheǁlist_cached__mutmut_18,
+        "xǁToolCacheǁlist_cached__mutmut_19": xǁToolCacheǁlist_cached__mutmut_19,
+        "xǁToolCacheǁlist_cached__mutmut_20": xǁToolCacheǁlist_cached__mutmut_20,
+        "xǁToolCacheǁlist_cached__mutmut_21": xǁToolCacheǁlist_cached__mutmut_21,
+        "xǁToolCacheǁlist_cached__mutmut_22": xǁToolCacheǁlist_cached__mutmut_22,
+        "xǁToolCacheǁlist_cached__mutmut_23": xǁToolCacheǁlist_cached__mutmut_23,
+        "xǁToolCacheǁlist_cached__mutmut_24": xǁToolCacheǁlist_cached__mutmut_24,
+        "xǁToolCacheǁlist_cached__mutmut_25": xǁToolCacheǁlist_cached__mutmut_25,
+        "xǁToolCacheǁlist_cached__mutmut_26": xǁToolCacheǁlist_cached__mutmut_26,
+        "xǁToolCacheǁlist_cached__mutmut_27": xǁToolCacheǁlist_cached__mutmut_27,
+        "xǁToolCacheǁlist_cached__mutmut_28": xǁToolCacheǁlist_cached__mutmut_28,
+        "xǁToolCacheǁlist_cached__mutmut_29": xǁToolCacheǁlist_cached__mutmut_29,
+        "xǁToolCacheǁlist_cached__mutmut_30": xǁToolCacheǁlist_cached__mutmut_30,
+        "xǁToolCacheǁlist_cached__mutmut_31": xǁToolCacheǁlist_cached__mutmut_31,
+        "xǁToolCacheǁlist_cached__mutmut_32": xǁToolCacheǁlist_cached__mutmut_32,
+        "xǁToolCacheǁlist_cached__mutmut_33": xǁToolCacheǁlist_cached__mutmut_33,
+        "xǁToolCacheǁlist_cached__mutmut_34": xǁToolCacheǁlist_cached__mutmut_34,
+        "xǁToolCacheǁlist_cached__mutmut_35": xǁToolCacheǁlist_cached__mutmut_35,
+        "xǁToolCacheǁlist_cached__mutmut_36": xǁToolCacheǁlist_cached__mutmut_36,
+        "xǁToolCacheǁlist_cached__mutmut_37": xǁToolCacheǁlist_cached__mutmut_37,
+        "xǁToolCacheǁlist_cached__mutmut_38": xǁToolCacheǁlist_cached__mutmut_38,
+        "xǁToolCacheǁlist_cached__mutmut_39": xǁToolCacheǁlist_cached__mutmut_39,
+        "xǁToolCacheǁlist_cached__mutmut_40": xǁToolCacheǁlist_cached__mutmut_40,
+        "xǁToolCacheǁlist_cached__mutmut_41": xǁToolCacheǁlist_cached__mutmut_41,
+        "xǁToolCacheǁlist_cached__mutmut_42": xǁToolCacheǁlist_cached__mutmut_42,
+        "xǁToolCacheǁlist_cached__mutmut_43": xǁToolCacheǁlist_cached__mutmut_43,
+        "xǁToolCacheǁlist_cached__mutmut_44": xǁToolCacheǁlist_cached__mutmut_44,
+        "xǁToolCacheǁlist_cached__mutmut_45": xǁToolCacheǁlist_cached__mutmut_45,
+        "xǁToolCacheǁlist_cached__mutmut_46": xǁToolCacheǁlist_cached__mutmut_46,
     }
-    
+
     def list_cached(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁlist_cached__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁlist_cached__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁlist_cached__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁlist_cached__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     list_cached.__signature__ = _mutmut_signature(xǁToolCacheǁlist_cached__mutmut_orig)
-    xǁToolCacheǁlist_cached__mutmut_orig.__name__ = 'xǁToolCacheǁlist_cached'
+    xǁToolCacheǁlist_cached__mutmut_orig.__name__ = "xǁToolCacheǁlist_cached"
 
     def xǁToolCacheǁget_size__mutmut_orig(self) -> int:
         """Get total size of cached tools in bytes.
@@ -4471,30 +4545,36 @@ class ToolCache:
                 log.debug(None)
 
         return total
-    
-    xǁToolCacheǁget_size__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁget_size__mutmut_1': xǁToolCacheǁget_size__mutmut_1, 
-        'xǁToolCacheǁget_size__mutmut_2': xǁToolCacheǁget_size__mutmut_2, 
-        'xǁToolCacheǁget_size__mutmut_3': xǁToolCacheǁget_size__mutmut_3, 
-        'xǁToolCacheǁget_size__mutmut_4': xǁToolCacheǁget_size__mutmut_4, 
-        'xǁToolCacheǁget_size__mutmut_5': xǁToolCacheǁget_size__mutmut_5, 
-        'xǁToolCacheǁget_size__mutmut_6': xǁToolCacheǁget_size__mutmut_6, 
-        'xǁToolCacheǁget_size__mutmut_7': xǁToolCacheǁget_size__mutmut_7, 
-        'xǁToolCacheǁget_size__mutmut_8': xǁToolCacheǁget_size__mutmut_8, 
-        'xǁToolCacheǁget_size__mutmut_9': xǁToolCacheǁget_size__mutmut_9, 
-        'xǁToolCacheǁget_size__mutmut_10': xǁToolCacheǁget_size__mutmut_10, 
-        'xǁToolCacheǁget_size__mutmut_11': xǁToolCacheǁget_size__mutmut_11, 
-        'xǁToolCacheǁget_size__mutmut_12': xǁToolCacheǁget_size__mutmut_12, 
-        'xǁToolCacheǁget_size__mutmut_13': xǁToolCacheǁget_size__mutmut_13, 
-        'xǁToolCacheǁget_size__mutmut_14': xǁToolCacheǁget_size__mutmut_14
+
+    xǁToolCacheǁget_size__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁget_size__mutmut_1": xǁToolCacheǁget_size__mutmut_1,
+        "xǁToolCacheǁget_size__mutmut_2": xǁToolCacheǁget_size__mutmut_2,
+        "xǁToolCacheǁget_size__mutmut_3": xǁToolCacheǁget_size__mutmut_3,
+        "xǁToolCacheǁget_size__mutmut_4": xǁToolCacheǁget_size__mutmut_4,
+        "xǁToolCacheǁget_size__mutmut_5": xǁToolCacheǁget_size__mutmut_5,
+        "xǁToolCacheǁget_size__mutmut_6": xǁToolCacheǁget_size__mutmut_6,
+        "xǁToolCacheǁget_size__mutmut_7": xǁToolCacheǁget_size__mutmut_7,
+        "xǁToolCacheǁget_size__mutmut_8": xǁToolCacheǁget_size__mutmut_8,
+        "xǁToolCacheǁget_size__mutmut_9": xǁToolCacheǁget_size__mutmut_9,
+        "xǁToolCacheǁget_size__mutmut_10": xǁToolCacheǁget_size__mutmut_10,
+        "xǁToolCacheǁget_size__mutmut_11": xǁToolCacheǁget_size__mutmut_11,
+        "xǁToolCacheǁget_size__mutmut_12": xǁToolCacheǁget_size__mutmut_12,
+        "xǁToolCacheǁget_size__mutmut_13": xǁToolCacheǁget_size__mutmut_13,
+        "xǁToolCacheǁget_size__mutmut_14": xǁToolCacheǁget_size__mutmut_14,
     }
-    
+
     def get_size(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁget_size__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁget_size__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁget_size__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁget_size__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_size.__signature__ = _mutmut_signature(xǁToolCacheǁget_size__mutmut_orig)
-    xǁToolCacheǁget_size__mutmut_orig.__name__ = 'xǁToolCacheǁget_size'
+    xǁToolCacheǁget_size__mutmut_orig.__name__ = "xǁToolCacheǁget_size"
 
     def xǁToolCacheǁprune_expired__mutmut_orig(self) -> int:
         """Remove expired entries from cache.
@@ -4567,19 +4647,25 @@ class ToolCache:
             log.info(None)
 
         return len(expired_keys)
-    
-    xǁToolCacheǁprune_expired__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁToolCacheǁprune_expired__mutmut_1': xǁToolCacheǁprune_expired__mutmut_1, 
-        'xǁToolCacheǁprune_expired__mutmut_2': xǁToolCacheǁprune_expired__mutmut_2, 
-        'xǁToolCacheǁprune_expired__mutmut_3': xǁToolCacheǁprune_expired__mutmut_3
+
+    xǁToolCacheǁprune_expired__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁToolCacheǁprune_expired__mutmut_1": xǁToolCacheǁprune_expired__mutmut_1,
+        "xǁToolCacheǁprune_expired__mutmut_2": xǁToolCacheǁprune_expired__mutmut_2,
+        "xǁToolCacheǁprune_expired__mutmut_3": xǁToolCacheǁprune_expired__mutmut_3,
     }
-    
+
     def prune_expired(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁToolCacheǁprune_expired__mutmut_orig"), object.__getattribute__(self, "xǁToolCacheǁprune_expired__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁToolCacheǁprune_expired__mutmut_orig"),
+            object.__getattribute__(self, "xǁToolCacheǁprune_expired__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     prune_expired.__signature__ = _mutmut_signature(xǁToolCacheǁprune_expired__mutmut_orig)
-    xǁToolCacheǁprune_expired__mutmut_orig.__name__ = 'xǁToolCacheǁprune_expired'
+    xǁToolCacheǁprune_expired__mutmut_orig.__name__ = "xǁToolCacheǁprune_expired"
 
 
 # <3 🧱🤝🔧🪄

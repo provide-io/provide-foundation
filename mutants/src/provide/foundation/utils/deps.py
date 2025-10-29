@@ -17,23 +17,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -502,7 +505,7 @@ def x__check_click__mutmut_15() -> DependencyStatus:
             name="click",
             available=True,
             version=ver,
-            )
+        )
     except ImportError:
         return DependencyStatus(
             name="click",
@@ -882,7 +885,7 @@ def x__check_click__mutmut_28() -> DependencyStatus:
             name="click",
             available=False,
             version=None,
-            )
+        )
 
 
 def x__check_click__mutmut_29() -> DependencyStatus:
@@ -1058,49 +1061,52 @@ def x__check_click__mutmut_34() -> DependencyStatus:
             description="CLI FEATURES (CONSOLE I/O, COMMAND BUILDING)",
         )
 
-x__check_click__mutmut_mutants : ClassVar[MutantDict] = {
-'x__check_click__mutmut_1': x__check_click__mutmut_1, 
-    'x__check_click__mutmut_2': x__check_click__mutmut_2, 
-    'x__check_click__mutmut_3': x__check_click__mutmut_3, 
-    'x__check_click__mutmut_4': x__check_click__mutmut_4, 
-    'x__check_click__mutmut_5': x__check_click__mutmut_5, 
-    'x__check_click__mutmut_6': x__check_click__mutmut_6, 
-    'x__check_click__mutmut_7': x__check_click__mutmut_7, 
-    'x__check_click__mutmut_8': x__check_click__mutmut_8, 
-    'x__check_click__mutmut_9': x__check_click__mutmut_9, 
-    'x__check_click__mutmut_10': x__check_click__mutmut_10, 
-    'x__check_click__mutmut_11': x__check_click__mutmut_11, 
-    'x__check_click__mutmut_12': x__check_click__mutmut_12, 
-    'x__check_click__mutmut_13': x__check_click__mutmut_13, 
-    'x__check_click__mutmut_14': x__check_click__mutmut_14, 
-    'x__check_click__mutmut_15': x__check_click__mutmut_15, 
-    'x__check_click__mutmut_16': x__check_click__mutmut_16, 
-    'x__check_click__mutmut_17': x__check_click__mutmut_17, 
-    'x__check_click__mutmut_18': x__check_click__mutmut_18, 
-    'x__check_click__mutmut_19': x__check_click__mutmut_19, 
-    'x__check_click__mutmut_20': x__check_click__mutmut_20, 
-    'x__check_click__mutmut_21': x__check_click__mutmut_21, 
-    'x__check_click__mutmut_22': x__check_click__mutmut_22, 
-    'x__check_click__mutmut_23': x__check_click__mutmut_23, 
-    'x__check_click__mutmut_24': x__check_click__mutmut_24, 
-    'x__check_click__mutmut_25': x__check_click__mutmut_25, 
-    'x__check_click__mutmut_26': x__check_click__mutmut_26, 
-    'x__check_click__mutmut_27': x__check_click__mutmut_27, 
-    'x__check_click__mutmut_28': x__check_click__mutmut_28, 
-    'x__check_click__mutmut_29': x__check_click__mutmut_29, 
-    'x__check_click__mutmut_30': x__check_click__mutmut_30, 
-    'x__check_click__mutmut_31': x__check_click__mutmut_31, 
-    'x__check_click__mutmut_32': x__check_click__mutmut_32, 
-    'x__check_click__mutmut_33': x__check_click__mutmut_33, 
-    'x__check_click__mutmut_34': x__check_click__mutmut_34
+
+x__check_click__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__check_click__mutmut_1": x__check_click__mutmut_1,
+    "x__check_click__mutmut_2": x__check_click__mutmut_2,
+    "x__check_click__mutmut_3": x__check_click__mutmut_3,
+    "x__check_click__mutmut_4": x__check_click__mutmut_4,
+    "x__check_click__mutmut_5": x__check_click__mutmut_5,
+    "x__check_click__mutmut_6": x__check_click__mutmut_6,
+    "x__check_click__mutmut_7": x__check_click__mutmut_7,
+    "x__check_click__mutmut_8": x__check_click__mutmut_8,
+    "x__check_click__mutmut_9": x__check_click__mutmut_9,
+    "x__check_click__mutmut_10": x__check_click__mutmut_10,
+    "x__check_click__mutmut_11": x__check_click__mutmut_11,
+    "x__check_click__mutmut_12": x__check_click__mutmut_12,
+    "x__check_click__mutmut_13": x__check_click__mutmut_13,
+    "x__check_click__mutmut_14": x__check_click__mutmut_14,
+    "x__check_click__mutmut_15": x__check_click__mutmut_15,
+    "x__check_click__mutmut_16": x__check_click__mutmut_16,
+    "x__check_click__mutmut_17": x__check_click__mutmut_17,
+    "x__check_click__mutmut_18": x__check_click__mutmut_18,
+    "x__check_click__mutmut_19": x__check_click__mutmut_19,
+    "x__check_click__mutmut_20": x__check_click__mutmut_20,
+    "x__check_click__mutmut_21": x__check_click__mutmut_21,
+    "x__check_click__mutmut_22": x__check_click__mutmut_22,
+    "x__check_click__mutmut_23": x__check_click__mutmut_23,
+    "x__check_click__mutmut_24": x__check_click__mutmut_24,
+    "x__check_click__mutmut_25": x__check_click__mutmut_25,
+    "x__check_click__mutmut_26": x__check_click__mutmut_26,
+    "x__check_click__mutmut_27": x__check_click__mutmut_27,
+    "x__check_click__mutmut_28": x__check_click__mutmut_28,
+    "x__check_click__mutmut_29": x__check_click__mutmut_29,
+    "x__check_click__mutmut_30": x__check_click__mutmut_30,
+    "x__check_click__mutmut_31": x__check_click__mutmut_31,
+    "x__check_click__mutmut_32": x__check_click__mutmut_32,
+    "x__check_click__mutmut_33": x__check_click__mutmut_33,
+    "x__check_click__mutmut_34": x__check_click__mutmut_34,
 }
+
 
 def _check_click(*args, **kwargs):
     result = _mutmut_trampoline(x__check_click__mutmut_orig, x__check_click__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _check_click.__signature__ = _mutmut_signature(x__check_click__mutmut_orig)
-x__check_click__mutmut_orig.__name__ = 'x__check_click'
+x__check_click__mutmut_orig.__name__ = "x__check_click"
 
 
 def x__check_cryptography__mutmut_orig() -> DependencyStatus:
@@ -1270,7 +1276,10 @@ def x__check_cryptography__mutmut_7() -> DependencyStatus:
         import cryptography
 
         # Get version safely
-        version = getattr(cryptography, "__version__", )
+        version = getattr(
+            cryptography,
+            "__version__",
+        )
 
         return DependencyStatus(
             name="cryptography",
@@ -1549,7 +1558,7 @@ def x__check_cryptography__mutmut_19() -> DependencyStatus:
             name="cryptography",
             available=True,
             version=version,
-            )
+        )
     except ImportError:
         return DependencyStatus(
             name="cryptography",
@@ -1851,7 +1860,7 @@ def x__check_cryptography__mutmut_32() -> DependencyStatus:
             name="cryptography",
             available=False,
             version=None,
-            )
+        )
 
 
 def x__check_cryptography__mutmut_33() -> DependencyStatus:
@@ -1991,53 +2000,58 @@ def x__check_cryptography__mutmut_38() -> DependencyStatus:
             description="CRYPTO FEATURES (KEYS, CERTIFICATES, SIGNATURES)",
         )
 
-x__check_cryptography__mutmut_mutants : ClassVar[MutantDict] = {
-'x__check_cryptography__mutmut_1': x__check_cryptography__mutmut_1, 
-    'x__check_cryptography__mutmut_2': x__check_cryptography__mutmut_2, 
-    'x__check_cryptography__mutmut_3': x__check_cryptography__mutmut_3, 
-    'x__check_cryptography__mutmut_4': x__check_cryptography__mutmut_4, 
-    'x__check_cryptography__mutmut_5': x__check_cryptography__mutmut_5, 
-    'x__check_cryptography__mutmut_6': x__check_cryptography__mutmut_6, 
-    'x__check_cryptography__mutmut_7': x__check_cryptography__mutmut_7, 
-    'x__check_cryptography__mutmut_8': x__check_cryptography__mutmut_8, 
-    'x__check_cryptography__mutmut_9': x__check_cryptography__mutmut_9, 
-    'x__check_cryptography__mutmut_10': x__check_cryptography__mutmut_10, 
-    'x__check_cryptography__mutmut_11': x__check_cryptography__mutmut_11, 
-    'x__check_cryptography__mutmut_12': x__check_cryptography__mutmut_12, 
-    'x__check_cryptography__mutmut_13': x__check_cryptography__mutmut_13, 
-    'x__check_cryptography__mutmut_14': x__check_cryptography__mutmut_14, 
-    'x__check_cryptography__mutmut_15': x__check_cryptography__mutmut_15, 
-    'x__check_cryptography__mutmut_16': x__check_cryptography__mutmut_16, 
-    'x__check_cryptography__mutmut_17': x__check_cryptography__mutmut_17, 
-    'x__check_cryptography__mutmut_18': x__check_cryptography__mutmut_18, 
-    'x__check_cryptography__mutmut_19': x__check_cryptography__mutmut_19, 
-    'x__check_cryptography__mutmut_20': x__check_cryptography__mutmut_20, 
-    'x__check_cryptography__mutmut_21': x__check_cryptography__mutmut_21, 
-    'x__check_cryptography__mutmut_22': x__check_cryptography__mutmut_22, 
-    'x__check_cryptography__mutmut_23': x__check_cryptography__mutmut_23, 
-    'x__check_cryptography__mutmut_24': x__check_cryptography__mutmut_24, 
-    'x__check_cryptography__mutmut_25': x__check_cryptography__mutmut_25, 
-    'x__check_cryptography__mutmut_26': x__check_cryptography__mutmut_26, 
-    'x__check_cryptography__mutmut_27': x__check_cryptography__mutmut_27, 
-    'x__check_cryptography__mutmut_28': x__check_cryptography__mutmut_28, 
-    'x__check_cryptography__mutmut_29': x__check_cryptography__mutmut_29, 
-    'x__check_cryptography__mutmut_30': x__check_cryptography__mutmut_30, 
-    'x__check_cryptography__mutmut_31': x__check_cryptography__mutmut_31, 
-    'x__check_cryptography__mutmut_32': x__check_cryptography__mutmut_32, 
-    'x__check_cryptography__mutmut_33': x__check_cryptography__mutmut_33, 
-    'x__check_cryptography__mutmut_34': x__check_cryptography__mutmut_34, 
-    'x__check_cryptography__mutmut_35': x__check_cryptography__mutmut_35, 
-    'x__check_cryptography__mutmut_36': x__check_cryptography__mutmut_36, 
-    'x__check_cryptography__mutmut_37': x__check_cryptography__mutmut_37, 
-    'x__check_cryptography__mutmut_38': x__check_cryptography__mutmut_38
+
+x__check_cryptography__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__check_cryptography__mutmut_1": x__check_cryptography__mutmut_1,
+    "x__check_cryptography__mutmut_2": x__check_cryptography__mutmut_2,
+    "x__check_cryptography__mutmut_3": x__check_cryptography__mutmut_3,
+    "x__check_cryptography__mutmut_4": x__check_cryptography__mutmut_4,
+    "x__check_cryptography__mutmut_5": x__check_cryptography__mutmut_5,
+    "x__check_cryptography__mutmut_6": x__check_cryptography__mutmut_6,
+    "x__check_cryptography__mutmut_7": x__check_cryptography__mutmut_7,
+    "x__check_cryptography__mutmut_8": x__check_cryptography__mutmut_8,
+    "x__check_cryptography__mutmut_9": x__check_cryptography__mutmut_9,
+    "x__check_cryptography__mutmut_10": x__check_cryptography__mutmut_10,
+    "x__check_cryptography__mutmut_11": x__check_cryptography__mutmut_11,
+    "x__check_cryptography__mutmut_12": x__check_cryptography__mutmut_12,
+    "x__check_cryptography__mutmut_13": x__check_cryptography__mutmut_13,
+    "x__check_cryptography__mutmut_14": x__check_cryptography__mutmut_14,
+    "x__check_cryptography__mutmut_15": x__check_cryptography__mutmut_15,
+    "x__check_cryptography__mutmut_16": x__check_cryptography__mutmut_16,
+    "x__check_cryptography__mutmut_17": x__check_cryptography__mutmut_17,
+    "x__check_cryptography__mutmut_18": x__check_cryptography__mutmut_18,
+    "x__check_cryptography__mutmut_19": x__check_cryptography__mutmut_19,
+    "x__check_cryptography__mutmut_20": x__check_cryptography__mutmut_20,
+    "x__check_cryptography__mutmut_21": x__check_cryptography__mutmut_21,
+    "x__check_cryptography__mutmut_22": x__check_cryptography__mutmut_22,
+    "x__check_cryptography__mutmut_23": x__check_cryptography__mutmut_23,
+    "x__check_cryptography__mutmut_24": x__check_cryptography__mutmut_24,
+    "x__check_cryptography__mutmut_25": x__check_cryptography__mutmut_25,
+    "x__check_cryptography__mutmut_26": x__check_cryptography__mutmut_26,
+    "x__check_cryptography__mutmut_27": x__check_cryptography__mutmut_27,
+    "x__check_cryptography__mutmut_28": x__check_cryptography__mutmut_28,
+    "x__check_cryptography__mutmut_29": x__check_cryptography__mutmut_29,
+    "x__check_cryptography__mutmut_30": x__check_cryptography__mutmut_30,
+    "x__check_cryptography__mutmut_31": x__check_cryptography__mutmut_31,
+    "x__check_cryptography__mutmut_32": x__check_cryptography__mutmut_32,
+    "x__check_cryptography__mutmut_33": x__check_cryptography__mutmut_33,
+    "x__check_cryptography__mutmut_34": x__check_cryptography__mutmut_34,
+    "x__check_cryptography__mutmut_35": x__check_cryptography__mutmut_35,
+    "x__check_cryptography__mutmut_36": x__check_cryptography__mutmut_36,
+    "x__check_cryptography__mutmut_37": x__check_cryptography__mutmut_37,
+    "x__check_cryptography__mutmut_38": x__check_cryptography__mutmut_38,
 }
 
+
 def _check_cryptography(*args, **kwargs):
-    result = _mutmut_trampoline(x__check_cryptography__mutmut_orig, x__check_cryptography__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__check_cryptography__mutmut_orig, x__check_cryptography__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _check_cryptography.__signature__ = _mutmut_signature(x__check_cryptography__mutmut_orig)
-x__check_cryptography__mutmut_orig.__name__ = 'x__check_cryptography'
+x__check_cryptography__mutmut_orig.__name__ = "x__check_cryptography"
 
 
 def x__check_opentelemetry__mutmut_orig() -> DependencyStatus:
@@ -2474,7 +2488,7 @@ def x__check_opentelemetry__mutmut_15() -> DependencyStatus:
             name="opentelemetry",
             available=True,
             version=ver,
-            )
+        )
     except ImportError:
         return DependencyStatus(
             name="opentelemetry",
@@ -2841,7 +2855,7 @@ def x__check_opentelemetry__mutmut_28() -> DependencyStatus:
             name="opentelemetry",
             available=False,
             version=None,
-            )
+        )
 
 
 def x__check_opentelemetry__mutmut_29() -> DependencyStatus:
@@ -3011,49 +3025,54 @@ def x__check_opentelemetry__mutmut_34() -> DependencyStatus:
             description="ENHANCED TELEMETRY AND TRACING",
         )
 
-x__check_opentelemetry__mutmut_mutants : ClassVar[MutantDict] = {
-'x__check_opentelemetry__mutmut_1': x__check_opentelemetry__mutmut_1, 
-    'x__check_opentelemetry__mutmut_2': x__check_opentelemetry__mutmut_2, 
-    'x__check_opentelemetry__mutmut_3': x__check_opentelemetry__mutmut_3, 
-    'x__check_opentelemetry__mutmut_4': x__check_opentelemetry__mutmut_4, 
-    'x__check_opentelemetry__mutmut_5': x__check_opentelemetry__mutmut_5, 
-    'x__check_opentelemetry__mutmut_6': x__check_opentelemetry__mutmut_6, 
-    'x__check_opentelemetry__mutmut_7': x__check_opentelemetry__mutmut_7, 
-    'x__check_opentelemetry__mutmut_8': x__check_opentelemetry__mutmut_8, 
-    'x__check_opentelemetry__mutmut_9': x__check_opentelemetry__mutmut_9, 
-    'x__check_opentelemetry__mutmut_10': x__check_opentelemetry__mutmut_10, 
-    'x__check_opentelemetry__mutmut_11': x__check_opentelemetry__mutmut_11, 
-    'x__check_opentelemetry__mutmut_12': x__check_opentelemetry__mutmut_12, 
-    'x__check_opentelemetry__mutmut_13': x__check_opentelemetry__mutmut_13, 
-    'x__check_opentelemetry__mutmut_14': x__check_opentelemetry__mutmut_14, 
-    'x__check_opentelemetry__mutmut_15': x__check_opentelemetry__mutmut_15, 
-    'x__check_opentelemetry__mutmut_16': x__check_opentelemetry__mutmut_16, 
-    'x__check_opentelemetry__mutmut_17': x__check_opentelemetry__mutmut_17, 
-    'x__check_opentelemetry__mutmut_18': x__check_opentelemetry__mutmut_18, 
-    'x__check_opentelemetry__mutmut_19': x__check_opentelemetry__mutmut_19, 
-    'x__check_opentelemetry__mutmut_20': x__check_opentelemetry__mutmut_20, 
-    'x__check_opentelemetry__mutmut_21': x__check_opentelemetry__mutmut_21, 
-    'x__check_opentelemetry__mutmut_22': x__check_opentelemetry__mutmut_22, 
-    'x__check_opentelemetry__mutmut_23': x__check_opentelemetry__mutmut_23, 
-    'x__check_opentelemetry__mutmut_24': x__check_opentelemetry__mutmut_24, 
-    'x__check_opentelemetry__mutmut_25': x__check_opentelemetry__mutmut_25, 
-    'x__check_opentelemetry__mutmut_26': x__check_opentelemetry__mutmut_26, 
-    'x__check_opentelemetry__mutmut_27': x__check_opentelemetry__mutmut_27, 
-    'x__check_opentelemetry__mutmut_28': x__check_opentelemetry__mutmut_28, 
-    'x__check_opentelemetry__mutmut_29': x__check_opentelemetry__mutmut_29, 
-    'x__check_opentelemetry__mutmut_30': x__check_opentelemetry__mutmut_30, 
-    'x__check_opentelemetry__mutmut_31': x__check_opentelemetry__mutmut_31, 
-    'x__check_opentelemetry__mutmut_32': x__check_opentelemetry__mutmut_32, 
-    'x__check_opentelemetry__mutmut_33': x__check_opentelemetry__mutmut_33, 
-    'x__check_opentelemetry__mutmut_34': x__check_opentelemetry__mutmut_34
+
+x__check_opentelemetry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__check_opentelemetry__mutmut_1": x__check_opentelemetry__mutmut_1,
+    "x__check_opentelemetry__mutmut_2": x__check_opentelemetry__mutmut_2,
+    "x__check_opentelemetry__mutmut_3": x__check_opentelemetry__mutmut_3,
+    "x__check_opentelemetry__mutmut_4": x__check_opentelemetry__mutmut_4,
+    "x__check_opentelemetry__mutmut_5": x__check_opentelemetry__mutmut_5,
+    "x__check_opentelemetry__mutmut_6": x__check_opentelemetry__mutmut_6,
+    "x__check_opentelemetry__mutmut_7": x__check_opentelemetry__mutmut_7,
+    "x__check_opentelemetry__mutmut_8": x__check_opentelemetry__mutmut_8,
+    "x__check_opentelemetry__mutmut_9": x__check_opentelemetry__mutmut_9,
+    "x__check_opentelemetry__mutmut_10": x__check_opentelemetry__mutmut_10,
+    "x__check_opentelemetry__mutmut_11": x__check_opentelemetry__mutmut_11,
+    "x__check_opentelemetry__mutmut_12": x__check_opentelemetry__mutmut_12,
+    "x__check_opentelemetry__mutmut_13": x__check_opentelemetry__mutmut_13,
+    "x__check_opentelemetry__mutmut_14": x__check_opentelemetry__mutmut_14,
+    "x__check_opentelemetry__mutmut_15": x__check_opentelemetry__mutmut_15,
+    "x__check_opentelemetry__mutmut_16": x__check_opentelemetry__mutmut_16,
+    "x__check_opentelemetry__mutmut_17": x__check_opentelemetry__mutmut_17,
+    "x__check_opentelemetry__mutmut_18": x__check_opentelemetry__mutmut_18,
+    "x__check_opentelemetry__mutmut_19": x__check_opentelemetry__mutmut_19,
+    "x__check_opentelemetry__mutmut_20": x__check_opentelemetry__mutmut_20,
+    "x__check_opentelemetry__mutmut_21": x__check_opentelemetry__mutmut_21,
+    "x__check_opentelemetry__mutmut_22": x__check_opentelemetry__mutmut_22,
+    "x__check_opentelemetry__mutmut_23": x__check_opentelemetry__mutmut_23,
+    "x__check_opentelemetry__mutmut_24": x__check_opentelemetry__mutmut_24,
+    "x__check_opentelemetry__mutmut_25": x__check_opentelemetry__mutmut_25,
+    "x__check_opentelemetry__mutmut_26": x__check_opentelemetry__mutmut_26,
+    "x__check_opentelemetry__mutmut_27": x__check_opentelemetry__mutmut_27,
+    "x__check_opentelemetry__mutmut_28": x__check_opentelemetry__mutmut_28,
+    "x__check_opentelemetry__mutmut_29": x__check_opentelemetry__mutmut_29,
+    "x__check_opentelemetry__mutmut_30": x__check_opentelemetry__mutmut_30,
+    "x__check_opentelemetry__mutmut_31": x__check_opentelemetry__mutmut_31,
+    "x__check_opentelemetry__mutmut_32": x__check_opentelemetry__mutmut_32,
+    "x__check_opentelemetry__mutmut_33": x__check_opentelemetry__mutmut_33,
+    "x__check_opentelemetry__mutmut_34": x__check_opentelemetry__mutmut_34,
 }
 
+
 def _check_opentelemetry(*args, **kwargs):
-    result = _mutmut_trampoline(x__check_opentelemetry__mutmut_orig, x__check_opentelemetry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__check_opentelemetry__mutmut_orig, x__check_opentelemetry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _check_opentelemetry.__signature__ = _mutmut_signature(x__check_opentelemetry__mutmut_orig)
-x__check_opentelemetry__mutmut_orig.__name__ = 'x__check_opentelemetry'
+x__check_opentelemetry__mutmut_orig.__name__ = "x__check_opentelemetry"
 
 
 def x__check_httpx__mutmut_orig() -> DependencyStatus:
@@ -3223,7 +3242,10 @@ def x__check_httpx__mutmut_7() -> DependencyStatus:
         import httpx
 
         # Get version safely
-        version = getattr(httpx, "__version__", )
+        version = getattr(
+            httpx,
+            "__version__",
+        )
 
         return DependencyStatus(
             name="httpx",
@@ -3502,7 +3524,7 @@ def x__check_httpx__mutmut_19() -> DependencyStatus:
             name="httpx",
             available=True,
             version=version,
-            )
+        )
     except ImportError:
         return DependencyStatus(
             name="httpx",
@@ -3804,7 +3826,7 @@ def x__check_httpx__mutmut_32() -> DependencyStatus:
             name="httpx",
             available=False,
             version=None,
-            )
+        )
 
 
 def x__check_httpx__mutmut_33() -> DependencyStatus:
@@ -3944,53 +3966,56 @@ def x__check_httpx__mutmut_38() -> DependencyStatus:
             description="HTTP/HTTPS TRANSPORT SUPPORT",
         )
 
-x__check_httpx__mutmut_mutants : ClassVar[MutantDict] = {
-'x__check_httpx__mutmut_1': x__check_httpx__mutmut_1, 
-    'x__check_httpx__mutmut_2': x__check_httpx__mutmut_2, 
-    'x__check_httpx__mutmut_3': x__check_httpx__mutmut_3, 
-    'x__check_httpx__mutmut_4': x__check_httpx__mutmut_4, 
-    'x__check_httpx__mutmut_5': x__check_httpx__mutmut_5, 
-    'x__check_httpx__mutmut_6': x__check_httpx__mutmut_6, 
-    'x__check_httpx__mutmut_7': x__check_httpx__mutmut_7, 
-    'x__check_httpx__mutmut_8': x__check_httpx__mutmut_8, 
-    'x__check_httpx__mutmut_9': x__check_httpx__mutmut_9, 
-    'x__check_httpx__mutmut_10': x__check_httpx__mutmut_10, 
-    'x__check_httpx__mutmut_11': x__check_httpx__mutmut_11, 
-    'x__check_httpx__mutmut_12': x__check_httpx__mutmut_12, 
-    'x__check_httpx__mutmut_13': x__check_httpx__mutmut_13, 
-    'x__check_httpx__mutmut_14': x__check_httpx__mutmut_14, 
-    'x__check_httpx__mutmut_15': x__check_httpx__mutmut_15, 
-    'x__check_httpx__mutmut_16': x__check_httpx__mutmut_16, 
-    'x__check_httpx__mutmut_17': x__check_httpx__mutmut_17, 
-    'x__check_httpx__mutmut_18': x__check_httpx__mutmut_18, 
-    'x__check_httpx__mutmut_19': x__check_httpx__mutmut_19, 
-    'x__check_httpx__mutmut_20': x__check_httpx__mutmut_20, 
-    'x__check_httpx__mutmut_21': x__check_httpx__mutmut_21, 
-    'x__check_httpx__mutmut_22': x__check_httpx__mutmut_22, 
-    'x__check_httpx__mutmut_23': x__check_httpx__mutmut_23, 
-    'x__check_httpx__mutmut_24': x__check_httpx__mutmut_24, 
-    'x__check_httpx__mutmut_25': x__check_httpx__mutmut_25, 
-    'x__check_httpx__mutmut_26': x__check_httpx__mutmut_26, 
-    'x__check_httpx__mutmut_27': x__check_httpx__mutmut_27, 
-    'x__check_httpx__mutmut_28': x__check_httpx__mutmut_28, 
-    'x__check_httpx__mutmut_29': x__check_httpx__mutmut_29, 
-    'x__check_httpx__mutmut_30': x__check_httpx__mutmut_30, 
-    'x__check_httpx__mutmut_31': x__check_httpx__mutmut_31, 
-    'x__check_httpx__mutmut_32': x__check_httpx__mutmut_32, 
-    'x__check_httpx__mutmut_33': x__check_httpx__mutmut_33, 
-    'x__check_httpx__mutmut_34': x__check_httpx__mutmut_34, 
-    'x__check_httpx__mutmut_35': x__check_httpx__mutmut_35, 
-    'x__check_httpx__mutmut_36': x__check_httpx__mutmut_36, 
-    'x__check_httpx__mutmut_37': x__check_httpx__mutmut_37, 
-    'x__check_httpx__mutmut_38': x__check_httpx__mutmut_38
+
+x__check_httpx__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__check_httpx__mutmut_1": x__check_httpx__mutmut_1,
+    "x__check_httpx__mutmut_2": x__check_httpx__mutmut_2,
+    "x__check_httpx__mutmut_3": x__check_httpx__mutmut_3,
+    "x__check_httpx__mutmut_4": x__check_httpx__mutmut_4,
+    "x__check_httpx__mutmut_5": x__check_httpx__mutmut_5,
+    "x__check_httpx__mutmut_6": x__check_httpx__mutmut_6,
+    "x__check_httpx__mutmut_7": x__check_httpx__mutmut_7,
+    "x__check_httpx__mutmut_8": x__check_httpx__mutmut_8,
+    "x__check_httpx__mutmut_9": x__check_httpx__mutmut_9,
+    "x__check_httpx__mutmut_10": x__check_httpx__mutmut_10,
+    "x__check_httpx__mutmut_11": x__check_httpx__mutmut_11,
+    "x__check_httpx__mutmut_12": x__check_httpx__mutmut_12,
+    "x__check_httpx__mutmut_13": x__check_httpx__mutmut_13,
+    "x__check_httpx__mutmut_14": x__check_httpx__mutmut_14,
+    "x__check_httpx__mutmut_15": x__check_httpx__mutmut_15,
+    "x__check_httpx__mutmut_16": x__check_httpx__mutmut_16,
+    "x__check_httpx__mutmut_17": x__check_httpx__mutmut_17,
+    "x__check_httpx__mutmut_18": x__check_httpx__mutmut_18,
+    "x__check_httpx__mutmut_19": x__check_httpx__mutmut_19,
+    "x__check_httpx__mutmut_20": x__check_httpx__mutmut_20,
+    "x__check_httpx__mutmut_21": x__check_httpx__mutmut_21,
+    "x__check_httpx__mutmut_22": x__check_httpx__mutmut_22,
+    "x__check_httpx__mutmut_23": x__check_httpx__mutmut_23,
+    "x__check_httpx__mutmut_24": x__check_httpx__mutmut_24,
+    "x__check_httpx__mutmut_25": x__check_httpx__mutmut_25,
+    "x__check_httpx__mutmut_26": x__check_httpx__mutmut_26,
+    "x__check_httpx__mutmut_27": x__check_httpx__mutmut_27,
+    "x__check_httpx__mutmut_28": x__check_httpx__mutmut_28,
+    "x__check_httpx__mutmut_29": x__check_httpx__mutmut_29,
+    "x__check_httpx__mutmut_30": x__check_httpx__mutmut_30,
+    "x__check_httpx__mutmut_31": x__check_httpx__mutmut_31,
+    "x__check_httpx__mutmut_32": x__check_httpx__mutmut_32,
+    "x__check_httpx__mutmut_33": x__check_httpx__mutmut_33,
+    "x__check_httpx__mutmut_34": x__check_httpx__mutmut_34,
+    "x__check_httpx__mutmut_35": x__check_httpx__mutmut_35,
+    "x__check_httpx__mutmut_36": x__check_httpx__mutmut_36,
+    "x__check_httpx__mutmut_37": x__check_httpx__mutmut_37,
+    "x__check_httpx__mutmut_38": x__check_httpx__mutmut_38,
 }
+
 
 def _check_httpx(*args, **kwargs):
     result = _mutmut_trampoline(x__check_httpx__mutmut_orig, x__check_httpx__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _check_httpx.__signature__ = _mutmut_signature(x__check_httpx__mutmut_orig)
-x__check_httpx__mutmut_orig.__name__ = 'x__check_httpx'
+x__check_httpx__mutmut_orig.__name__ = "x__check_httpx"
 
 
 def x__check_mkdocs__mutmut_orig() -> DependencyStatus:
@@ -4427,7 +4452,7 @@ def x__check_mkdocs__mutmut_15() -> DependencyStatus:
             name="mkdocs",
             available=True,
             version=ver,
-            )
+        )
     except ImportError:
         return DependencyStatus(
             name="mkdocs",
@@ -4794,7 +4819,7 @@ def x__check_mkdocs__mutmut_28() -> DependencyStatus:
             name="mkdocs",
             available=False,
             version=None,
-            )
+        )
 
 
 def x__check_mkdocs__mutmut_29() -> DependencyStatus:
@@ -4964,49 +4989,52 @@ def x__check_mkdocs__mutmut_34() -> DependencyStatus:
             description="DOCUMENTATION GENERATION SUPPORT",
         )
 
-x__check_mkdocs__mutmut_mutants : ClassVar[MutantDict] = {
-'x__check_mkdocs__mutmut_1': x__check_mkdocs__mutmut_1, 
-    'x__check_mkdocs__mutmut_2': x__check_mkdocs__mutmut_2, 
-    'x__check_mkdocs__mutmut_3': x__check_mkdocs__mutmut_3, 
-    'x__check_mkdocs__mutmut_4': x__check_mkdocs__mutmut_4, 
-    'x__check_mkdocs__mutmut_5': x__check_mkdocs__mutmut_5, 
-    'x__check_mkdocs__mutmut_6': x__check_mkdocs__mutmut_6, 
-    'x__check_mkdocs__mutmut_7': x__check_mkdocs__mutmut_7, 
-    'x__check_mkdocs__mutmut_8': x__check_mkdocs__mutmut_8, 
-    'x__check_mkdocs__mutmut_9': x__check_mkdocs__mutmut_9, 
-    'x__check_mkdocs__mutmut_10': x__check_mkdocs__mutmut_10, 
-    'x__check_mkdocs__mutmut_11': x__check_mkdocs__mutmut_11, 
-    'x__check_mkdocs__mutmut_12': x__check_mkdocs__mutmut_12, 
-    'x__check_mkdocs__mutmut_13': x__check_mkdocs__mutmut_13, 
-    'x__check_mkdocs__mutmut_14': x__check_mkdocs__mutmut_14, 
-    'x__check_mkdocs__mutmut_15': x__check_mkdocs__mutmut_15, 
-    'x__check_mkdocs__mutmut_16': x__check_mkdocs__mutmut_16, 
-    'x__check_mkdocs__mutmut_17': x__check_mkdocs__mutmut_17, 
-    'x__check_mkdocs__mutmut_18': x__check_mkdocs__mutmut_18, 
-    'x__check_mkdocs__mutmut_19': x__check_mkdocs__mutmut_19, 
-    'x__check_mkdocs__mutmut_20': x__check_mkdocs__mutmut_20, 
-    'x__check_mkdocs__mutmut_21': x__check_mkdocs__mutmut_21, 
-    'x__check_mkdocs__mutmut_22': x__check_mkdocs__mutmut_22, 
-    'x__check_mkdocs__mutmut_23': x__check_mkdocs__mutmut_23, 
-    'x__check_mkdocs__mutmut_24': x__check_mkdocs__mutmut_24, 
-    'x__check_mkdocs__mutmut_25': x__check_mkdocs__mutmut_25, 
-    'x__check_mkdocs__mutmut_26': x__check_mkdocs__mutmut_26, 
-    'x__check_mkdocs__mutmut_27': x__check_mkdocs__mutmut_27, 
-    'x__check_mkdocs__mutmut_28': x__check_mkdocs__mutmut_28, 
-    'x__check_mkdocs__mutmut_29': x__check_mkdocs__mutmut_29, 
-    'x__check_mkdocs__mutmut_30': x__check_mkdocs__mutmut_30, 
-    'x__check_mkdocs__mutmut_31': x__check_mkdocs__mutmut_31, 
-    'x__check_mkdocs__mutmut_32': x__check_mkdocs__mutmut_32, 
-    'x__check_mkdocs__mutmut_33': x__check_mkdocs__mutmut_33, 
-    'x__check_mkdocs__mutmut_34': x__check_mkdocs__mutmut_34
+
+x__check_mkdocs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__check_mkdocs__mutmut_1": x__check_mkdocs__mutmut_1,
+    "x__check_mkdocs__mutmut_2": x__check_mkdocs__mutmut_2,
+    "x__check_mkdocs__mutmut_3": x__check_mkdocs__mutmut_3,
+    "x__check_mkdocs__mutmut_4": x__check_mkdocs__mutmut_4,
+    "x__check_mkdocs__mutmut_5": x__check_mkdocs__mutmut_5,
+    "x__check_mkdocs__mutmut_6": x__check_mkdocs__mutmut_6,
+    "x__check_mkdocs__mutmut_7": x__check_mkdocs__mutmut_7,
+    "x__check_mkdocs__mutmut_8": x__check_mkdocs__mutmut_8,
+    "x__check_mkdocs__mutmut_9": x__check_mkdocs__mutmut_9,
+    "x__check_mkdocs__mutmut_10": x__check_mkdocs__mutmut_10,
+    "x__check_mkdocs__mutmut_11": x__check_mkdocs__mutmut_11,
+    "x__check_mkdocs__mutmut_12": x__check_mkdocs__mutmut_12,
+    "x__check_mkdocs__mutmut_13": x__check_mkdocs__mutmut_13,
+    "x__check_mkdocs__mutmut_14": x__check_mkdocs__mutmut_14,
+    "x__check_mkdocs__mutmut_15": x__check_mkdocs__mutmut_15,
+    "x__check_mkdocs__mutmut_16": x__check_mkdocs__mutmut_16,
+    "x__check_mkdocs__mutmut_17": x__check_mkdocs__mutmut_17,
+    "x__check_mkdocs__mutmut_18": x__check_mkdocs__mutmut_18,
+    "x__check_mkdocs__mutmut_19": x__check_mkdocs__mutmut_19,
+    "x__check_mkdocs__mutmut_20": x__check_mkdocs__mutmut_20,
+    "x__check_mkdocs__mutmut_21": x__check_mkdocs__mutmut_21,
+    "x__check_mkdocs__mutmut_22": x__check_mkdocs__mutmut_22,
+    "x__check_mkdocs__mutmut_23": x__check_mkdocs__mutmut_23,
+    "x__check_mkdocs__mutmut_24": x__check_mkdocs__mutmut_24,
+    "x__check_mkdocs__mutmut_25": x__check_mkdocs__mutmut_25,
+    "x__check_mkdocs__mutmut_26": x__check_mkdocs__mutmut_26,
+    "x__check_mkdocs__mutmut_27": x__check_mkdocs__mutmut_27,
+    "x__check_mkdocs__mutmut_28": x__check_mkdocs__mutmut_28,
+    "x__check_mkdocs__mutmut_29": x__check_mkdocs__mutmut_29,
+    "x__check_mkdocs__mutmut_30": x__check_mkdocs__mutmut_30,
+    "x__check_mkdocs__mutmut_31": x__check_mkdocs__mutmut_31,
+    "x__check_mkdocs__mutmut_32": x__check_mkdocs__mutmut_32,
+    "x__check_mkdocs__mutmut_33": x__check_mkdocs__mutmut_33,
+    "x__check_mkdocs__mutmut_34": x__check_mkdocs__mutmut_34,
 }
+
 
 def _check_mkdocs(*args, **kwargs):
     result = _mutmut_trampoline(x__check_mkdocs__mutmut_orig, x__check_mkdocs__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _check_mkdocs.__signature__ = _mutmut_signature(x__check_mkdocs__mutmut_orig)
-x__check_mkdocs__mutmut_orig.__name__ = 'x__check_mkdocs'
+x__check_mkdocs__mutmut_orig.__name__ = "x__check_mkdocs"
 
 
 def get_optional_dependencies() -> list[DependencyStatus]:
@@ -5025,7 +5053,9 @@ def get_optional_dependencies() -> list[DependencyStatus]:
     ]
 
 
-def x_check_optional_deps__mutmut_orig(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_orig(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5071,7 +5101,9 @@ def x_check_optional_deps__mutmut_orig(*, quiet: bool = False, return_status: bo
     return None
 
 
-def x_check_optional_deps__mutmut_1(*, quiet: bool = True, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_1(
+    *, quiet: bool = True, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5117,7 +5149,9 @@ def x_check_optional_deps__mutmut_1(*, quiet: bool = True, return_status: bool =
     return None
 
 
-def x_check_optional_deps__mutmut_2(*, quiet: bool = False, return_status: bool = True) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_2(
+    *, quiet: bool = False, return_status: bool = True
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5163,7 +5197,9 @@ def x_check_optional_deps__mutmut_2(*, quiet: bool = False, return_status: bool 
     return None
 
 
-def x_check_optional_deps__mutmut_3(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_3(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5209,7 +5245,9 @@ def x_check_optional_deps__mutmut_3(*, quiet: bool = False, return_status: bool 
     return None
 
 
-def x_check_optional_deps__mutmut_4(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_4(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5255,7 +5293,9 @@ def x_check_optional_deps__mutmut_4(*, quiet: bool = False, return_status: bool 
     return None
 
 
-def x_check_optional_deps__mutmut_5(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_5(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5301,7 +5341,9 @@ def x_check_optional_deps__mutmut_5(*, quiet: bool = False, return_status: bool 
     return None
 
 
-def x_check_optional_deps__mutmut_6(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_6(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5347,7 +5389,9 @@ def x_check_optional_deps__mutmut_6(*, quiet: bool = False, return_status: bool 
     return None
 
 
-def x_check_optional_deps__mutmut_7(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_7(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5393,7 +5437,9 @@ def x_check_optional_deps__mutmut_7(*, quiet: bool = False, return_status: bool 
     return None
 
 
-def x_check_optional_deps__mutmut_8(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_8(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5439,7 +5485,9 @@ def x_check_optional_deps__mutmut_8(*, quiet: bool = False, return_status: bool 
     return None
 
 
-def x_check_optional_deps__mutmut_9(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_9(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5485,7 +5533,9 @@ def x_check_optional_deps__mutmut_9(*, quiet: bool = False, return_status: bool 
     return None
 
 
-def x_check_optional_deps__mutmut_10(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_10(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5531,7 +5581,9 @@ def x_check_optional_deps__mutmut_10(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_11(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_11(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5577,7 +5629,9 @@ def x_check_optional_deps__mutmut_11(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_12(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_12(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5623,7 +5677,9 @@ def x_check_optional_deps__mutmut_12(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_13(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_13(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5669,7 +5725,9 @@ def x_check_optional_deps__mutmut_13(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_14(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_14(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5715,7 +5773,9 @@ def x_check_optional_deps__mutmut_14(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_15(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_15(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5761,7 +5821,9 @@ def x_check_optional_deps__mutmut_15(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_16(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_16(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5807,7 +5869,9 @@ def x_check_optional_deps__mutmut_16(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_17(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_17(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5853,7 +5917,9 @@ def x_check_optional_deps__mutmut_17(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_18(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_18(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5899,7 +5965,9 @@ def x_check_optional_deps__mutmut_18(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_19(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_19(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5945,7 +6013,9 @@ def x_check_optional_deps__mutmut_19(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_20(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_20(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -5991,7 +6061,9 @@ def x_check_optional_deps__mutmut_20(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_21(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_21(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6037,7 +6109,9 @@ def x_check_optional_deps__mutmut_21(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_22(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_22(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6083,7 +6157,9 @@ def x_check_optional_deps__mutmut_22(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_23(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_23(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6129,7 +6205,9 @@ def x_check_optional_deps__mutmut_23(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_24(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_24(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6175,7 +6253,9 @@ def x_check_optional_deps__mutmut_24(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_25(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_25(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6221,7 +6301,9 @@ def x_check_optional_deps__mutmut_25(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_26(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_26(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6267,7 +6349,9 @@ def x_check_optional_deps__mutmut_26(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_27(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_27(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6313,7 +6397,9 @@ def x_check_optional_deps__mutmut_27(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_28(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_28(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6359,7 +6445,9 @@ def x_check_optional_deps__mutmut_28(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_29(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_29(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6405,7 +6493,9 @@ def x_check_optional_deps__mutmut_29(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_30(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_30(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6451,7 +6541,9 @@ def x_check_optional_deps__mutmut_30(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_31(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_31(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6497,7 +6589,9 @@ def x_check_optional_deps__mutmut_31(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_32(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_32(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6543,7 +6637,9 @@ def x_check_optional_deps__mutmut_32(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_33(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_33(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6589,7 +6685,9 @@ def x_check_optional_deps__mutmut_33(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_34(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_34(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6635,7 +6733,9 @@ def x_check_optional_deps__mutmut_34(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_35(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_35(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6681,7 +6781,9 @@ def x_check_optional_deps__mutmut_35(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_36(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_36(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6727,7 +6829,9 @@ def x_check_optional_deps__mutmut_36(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_37(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_37(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6773,7 +6877,9 @@ def x_check_optional_deps__mutmut_37(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_38(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_38(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6819,7 +6925,9 @@ def x_check_optional_deps__mutmut_38(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_39(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_39(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6865,7 +6973,9 @@ def x_check_optional_deps__mutmut_39(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_40(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_40(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6911,7 +7021,9 @@ def x_check_optional_deps__mutmut_40(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_41(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_41(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -6957,7 +7069,9 @@ def x_check_optional_deps__mutmut_41(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_42(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_42(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -7003,7 +7117,9 @@ def x_check_optional_deps__mutmut_42(*, quiet: bool = False, return_status: bool
     return None
 
 
-def x_check_optional_deps__mutmut_43(*, quiet: bool = False, return_status: bool = False) -> list[DependencyStatus] | None:
+def x_check_optional_deps__mutmut_43(
+    *, quiet: bool = False, return_status: bool = False
+) -> list[DependencyStatus] | None:
     """Check and display optional dependency status.
 
     Args:
@@ -7048,58 +7164,63 @@ def x_check_optional_deps__mutmut_43(*, quiet: bool = False, return_status: bool
         return deps
     return None
 
-x_check_optional_deps__mutmut_mutants : ClassVar[MutantDict] = {
-'x_check_optional_deps__mutmut_1': x_check_optional_deps__mutmut_1, 
-    'x_check_optional_deps__mutmut_2': x_check_optional_deps__mutmut_2, 
-    'x_check_optional_deps__mutmut_3': x_check_optional_deps__mutmut_3, 
-    'x_check_optional_deps__mutmut_4': x_check_optional_deps__mutmut_4, 
-    'x_check_optional_deps__mutmut_5': x_check_optional_deps__mutmut_5, 
-    'x_check_optional_deps__mutmut_6': x_check_optional_deps__mutmut_6, 
-    'x_check_optional_deps__mutmut_7': x_check_optional_deps__mutmut_7, 
-    'x_check_optional_deps__mutmut_8': x_check_optional_deps__mutmut_8, 
-    'x_check_optional_deps__mutmut_9': x_check_optional_deps__mutmut_9, 
-    'x_check_optional_deps__mutmut_10': x_check_optional_deps__mutmut_10, 
-    'x_check_optional_deps__mutmut_11': x_check_optional_deps__mutmut_11, 
-    'x_check_optional_deps__mutmut_12': x_check_optional_deps__mutmut_12, 
-    'x_check_optional_deps__mutmut_13': x_check_optional_deps__mutmut_13, 
-    'x_check_optional_deps__mutmut_14': x_check_optional_deps__mutmut_14, 
-    'x_check_optional_deps__mutmut_15': x_check_optional_deps__mutmut_15, 
-    'x_check_optional_deps__mutmut_16': x_check_optional_deps__mutmut_16, 
-    'x_check_optional_deps__mutmut_17': x_check_optional_deps__mutmut_17, 
-    'x_check_optional_deps__mutmut_18': x_check_optional_deps__mutmut_18, 
-    'x_check_optional_deps__mutmut_19': x_check_optional_deps__mutmut_19, 
-    'x_check_optional_deps__mutmut_20': x_check_optional_deps__mutmut_20, 
-    'x_check_optional_deps__mutmut_21': x_check_optional_deps__mutmut_21, 
-    'x_check_optional_deps__mutmut_22': x_check_optional_deps__mutmut_22, 
-    'x_check_optional_deps__mutmut_23': x_check_optional_deps__mutmut_23, 
-    'x_check_optional_deps__mutmut_24': x_check_optional_deps__mutmut_24, 
-    'x_check_optional_deps__mutmut_25': x_check_optional_deps__mutmut_25, 
-    'x_check_optional_deps__mutmut_26': x_check_optional_deps__mutmut_26, 
-    'x_check_optional_deps__mutmut_27': x_check_optional_deps__mutmut_27, 
-    'x_check_optional_deps__mutmut_28': x_check_optional_deps__mutmut_28, 
-    'x_check_optional_deps__mutmut_29': x_check_optional_deps__mutmut_29, 
-    'x_check_optional_deps__mutmut_30': x_check_optional_deps__mutmut_30, 
-    'x_check_optional_deps__mutmut_31': x_check_optional_deps__mutmut_31, 
-    'x_check_optional_deps__mutmut_32': x_check_optional_deps__mutmut_32, 
-    'x_check_optional_deps__mutmut_33': x_check_optional_deps__mutmut_33, 
-    'x_check_optional_deps__mutmut_34': x_check_optional_deps__mutmut_34, 
-    'x_check_optional_deps__mutmut_35': x_check_optional_deps__mutmut_35, 
-    'x_check_optional_deps__mutmut_36': x_check_optional_deps__mutmut_36, 
-    'x_check_optional_deps__mutmut_37': x_check_optional_deps__mutmut_37, 
-    'x_check_optional_deps__mutmut_38': x_check_optional_deps__mutmut_38, 
-    'x_check_optional_deps__mutmut_39': x_check_optional_deps__mutmut_39, 
-    'x_check_optional_deps__mutmut_40': x_check_optional_deps__mutmut_40, 
-    'x_check_optional_deps__mutmut_41': x_check_optional_deps__mutmut_41, 
-    'x_check_optional_deps__mutmut_42': x_check_optional_deps__mutmut_42, 
-    'x_check_optional_deps__mutmut_43': x_check_optional_deps__mutmut_43
+
+x_check_optional_deps__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_check_optional_deps__mutmut_1": x_check_optional_deps__mutmut_1,
+    "x_check_optional_deps__mutmut_2": x_check_optional_deps__mutmut_2,
+    "x_check_optional_deps__mutmut_3": x_check_optional_deps__mutmut_3,
+    "x_check_optional_deps__mutmut_4": x_check_optional_deps__mutmut_4,
+    "x_check_optional_deps__mutmut_5": x_check_optional_deps__mutmut_5,
+    "x_check_optional_deps__mutmut_6": x_check_optional_deps__mutmut_6,
+    "x_check_optional_deps__mutmut_7": x_check_optional_deps__mutmut_7,
+    "x_check_optional_deps__mutmut_8": x_check_optional_deps__mutmut_8,
+    "x_check_optional_deps__mutmut_9": x_check_optional_deps__mutmut_9,
+    "x_check_optional_deps__mutmut_10": x_check_optional_deps__mutmut_10,
+    "x_check_optional_deps__mutmut_11": x_check_optional_deps__mutmut_11,
+    "x_check_optional_deps__mutmut_12": x_check_optional_deps__mutmut_12,
+    "x_check_optional_deps__mutmut_13": x_check_optional_deps__mutmut_13,
+    "x_check_optional_deps__mutmut_14": x_check_optional_deps__mutmut_14,
+    "x_check_optional_deps__mutmut_15": x_check_optional_deps__mutmut_15,
+    "x_check_optional_deps__mutmut_16": x_check_optional_deps__mutmut_16,
+    "x_check_optional_deps__mutmut_17": x_check_optional_deps__mutmut_17,
+    "x_check_optional_deps__mutmut_18": x_check_optional_deps__mutmut_18,
+    "x_check_optional_deps__mutmut_19": x_check_optional_deps__mutmut_19,
+    "x_check_optional_deps__mutmut_20": x_check_optional_deps__mutmut_20,
+    "x_check_optional_deps__mutmut_21": x_check_optional_deps__mutmut_21,
+    "x_check_optional_deps__mutmut_22": x_check_optional_deps__mutmut_22,
+    "x_check_optional_deps__mutmut_23": x_check_optional_deps__mutmut_23,
+    "x_check_optional_deps__mutmut_24": x_check_optional_deps__mutmut_24,
+    "x_check_optional_deps__mutmut_25": x_check_optional_deps__mutmut_25,
+    "x_check_optional_deps__mutmut_26": x_check_optional_deps__mutmut_26,
+    "x_check_optional_deps__mutmut_27": x_check_optional_deps__mutmut_27,
+    "x_check_optional_deps__mutmut_28": x_check_optional_deps__mutmut_28,
+    "x_check_optional_deps__mutmut_29": x_check_optional_deps__mutmut_29,
+    "x_check_optional_deps__mutmut_30": x_check_optional_deps__mutmut_30,
+    "x_check_optional_deps__mutmut_31": x_check_optional_deps__mutmut_31,
+    "x_check_optional_deps__mutmut_32": x_check_optional_deps__mutmut_32,
+    "x_check_optional_deps__mutmut_33": x_check_optional_deps__mutmut_33,
+    "x_check_optional_deps__mutmut_34": x_check_optional_deps__mutmut_34,
+    "x_check_optional_deps__mutmut_35": x_check_optional_deps__mutmut_35,
+    "x_check_optional_deps__mutmut_36": x_check_optional_deps__mutmut_36,
+    "x_check_optional_deps__mutmut_37": x_check_optional_deps__mutmut_37,
+    "x_check_optional_deps__mutmut_38": x_check_optional_deps__mutmut_38,
+    "x_check_optional_deps__mutmut_39": x_check_optional_deps__mutmut_39,
+    "x_check_optional_deps__mutmut_40": x_check_optional_deps__mutmut_40,
+    "x_check_optional_deps__mutmut_41": x_check_optional_deps__mutmut_41,
+    "x_check_optional_deps__mutmut_42": x_check_optional_deps__mutmut_42,
+    "x_check_optional_deps__mutmut_43": x_check_optional_deps__mutmut_43,
 }
 
+
 def check_optional_deps(*args, **kwargs):
-    result = _mutmut_trampoline(x_check_optional_deps__mutmut_orig, x_check_optional_deps__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_check_optional_deps__mutmut_orig, x_check_optional_deps__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 check_optional_deps.__signature__ = _mutmut_signature(x_check_optional_deps__mutmut_orig)
-x_check_optional_deps__mutmut_orig.__name__ = 'x_check_optional_deps'
+x_check_optional_deps__mutmut_orig.__name__ = "x_check_optional_deps"
 
 
 def x_has_dependency__mutmut_orig(name: str) -> bool:
@@ -7169,18 +7290,21 @@ def x_has_dependency__mutmut_3(name: str) -> bool:
             return dep.available
     return True
 
-x_has_dependency__mutmut_mutants : ClassVar[MutantDict] = {
-'x_has_dependency__mutmut_1': x_has_dependency__mutmut_1, 
-    'x_has_dependency__mutmut_2': x_has_dependency__mutmut_2, 
-    'x_has_dependency__mutmut_3': x_has_dependency__mutmut_3
+
+x_has_dependency__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_has_dependency__mutmut_1": x_has_dependency__mutmut_1,
+    "x_has_dependency__mutmut_2": x_has_dependency__mutmut_2,
+    "x_has_dependency__mutmut_3": x_has_dependency__mutmut_3,
 }
+
 
 def has_dependency(*args, **kwargs):
     result = _mutmut_trampoline(x_has_dependency__mutmut_orig, x_has_dependency__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 has_dependency.__signature__ = _mutmut_signature(x_has_dependency__mutmut_orig)
-x_has_dependency__mutmut_orig.__name__ = 'x_has_dependency'
+x_has_dependency__mutmut_orig.__name__ = "x_has_dependency"
 
 
 def x_require_dependency__mutmut_orig(name: str) -> None:
@@ -7249,18 +7373,23 @@ def x_require_dependency__mutmut_3(name: str) -> None:
             None,
         )
 
-x_require_dependency__mutmut_mutants : ClassVar[MutantDict] = {
-'x_require_dependency__mutmut_1': x_require_dependency__mutmut_1, 
-    'x_require_dependency__mutmut_2': x_require_dependency__mutmut_2, 
-    'x_require_dependency__mutmut_3': x_require_dependency__mutmut_3
+
+x_require_dependency__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_require_dependency__mutmut_1": x_require_dependency__mutmut_1,
+    "x_require_dependency__mutmut_2": x_require_dependency__mutmut_2,
+    "x_require_dependency__mutmut_3": x_require_dependency__mutmut_3,
 }
 
+
 def require_dependency(*args, **kwargs):
-    result = _mutmut_trampoline(x_require_dependency__mutmut_orig, x_require_dependency__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_require_dependency__mutmut_orig, x_require_dependency__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 require_dependency.__signature__ = _mutmut_signature(x_require_dependency__mutmut_orig)
-x_require_dependency__mutmut_orig.__name__ = 'x_require_dependency'
+x_require_dependency__mutmut_orig.__name__ = "x_require_dependency"
 
 
 def x_get_available_features__mutmut_orig() -> dict[str, bool]:
@@ -7284,16 +7413,21 @@ def x_get_available_features__mutmut_1() -> dict[str, bool]:
     deps = None
     return {dep.name: dep.available for dep in deps}
 
-x_get_available_features__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_available_features__mutmut_1': x_get_available_features__mutmut_1
+
+x_get_available_features__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_available_features__mutmut_1": x_get_available_features__mutmut_1
 }
 
+
 def get_available_features(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_available_features__mutmut_orig, x_get_available_features__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_available_features__mutmut_orig, x_get_available_features__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_available_features.__signature__ = _mutmut_signature(x_get_available_features__mutmut_orig)
-x_get_available_features__mutmut_orig.__name__ = 'x_get_available_features'
+x_get_available_features__mutmut_orig.__name__ = "x_get_available_features"
 
 
 # <3 🧱🤝🧰🪄

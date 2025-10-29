@@ -24,23 +24,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -240,25 +243,31 @@ class ResilientErrorHandler:
         self.error_mapper = error_mapper
         self.suppress = suppress
         self.reraise = None
-    
-    xǁResilientErrorHandlerǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁResilientErrorHandlerǁ__init____mutmut_1': xǁResilientErrorHandlerǁ__init____mutmut_1, 
-        'xǁResilientErrorHandlerǁ__init____mutmut_2': xǁResilientErrorHandlerǁ__init____mutmut_2, 
-        'xǁResilientErrorHandlerǁ__init____mutmut_3': xǁResilientErrorHandlerǁ__init____mutmut_3, 
-        'xǁResilientErrorHandlerǁ__init____mutmut_4': xǁResilientErrorHandlerǁ__init____mutmut_4, 
-        'xǁResilientErrorHandlerǁ__init____mutmut_5': xǁResilientErrorHandlerǁ__init____mutmut_5, 
-        'xǁResilientErrorHandlerǁ__init____mutmut_6': xǁResilientErrorHandlerǁ__init____mutmut_6, 
-        'xǁResilientErrorHandlerǁ__init____mutmut_7': xǁResilientErrorHandlerǁ__init____mutmut_7, 
-        'xǁResilientErrorHandlerǁ__init____mutmut_8': xǁResilientErrorHandlerǁ__init____mutmut_8, 
-        'xǁResilientErrorHandlerǁ__init____mutmut_9': xǁResilientErrorHandlerǁ__init____mutmut_9
+
+    xǁResilientErrorHandlerǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁResilientErrorHandlerǁ__init____mutmut_1": xǁResilientErrorHandlerǁ__init____mutmut_1,
+        "xǁResilientErrorHandlerǁ__init____mutmut_2": xǁResilientErrorHandlerǁ__init____mutmut_2,
+        "xǁResilientErrorHandlerǁ__init____mutmut_3": xǁResilientErrorHandlerǁ__init____mutmut_3,
+        "xǁResilientErrorHandlerǁ__init____mutmut_4": xǁResilientErrorHandlerǁ__init____mutmut_4,
+        "xǁResilientErrorHandlerǁ__init____mutmut_5": xǁResilientErrorHandlerǁ__init____mutmut_5,
+        "xǁResilientErrorHandlerǁ__init____mutmut_6": xǁResilientErrorHandlerǁ__init____mutmut_6,
+        "xǁResilientErrorHandlerǁ__init____mutmut_7": xǁResilientErrorHandlerǁ__init____mutmut_7,
+        "xǁResilientErrorHandlerǁ__init____mutmut_8": xǁResilientErrorHandlerǁ__init____mutmut_8,
+        "xǁResilientErrorHandlerǁ__init____mutmut_9": xǁResilientErrorHandlerǁ__init____mutmut_9,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁResilientErrorHandlerǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁResilientErrorHandlerǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁResilientErrorHandlerǁ__init____mutmut_orig)
-    xǁResilientErrorHandlerǁ__init____mutmut_orig.__name__ = 'xǁResilientErrorHandlerǁ__init__'
+    xǁResilientErrorHandlerǁ__init____mutmut_orig.__name__ = "xǁResilientErrorHandlerǁ__init__"
 
     def xǁResilientErrorHandlerǁbuild_context__mutmut_orig(self) -> dict[str, Any]:
         """Build logging context from provider and static context."""
@@ -295,19 +304,25 @@ class ResilientErrorHandler:
         if self.context:
             log_context.update(None)
         return log_context
-    
-    xǁResilientErrorHandlerǁbuild_context__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁResilientErrorHandlerǁbuild_context__mutmut_1': xǁResilientErrorHandlerǁbuild_context__mutmut_1, 
-        'xǁResilientErrorHandlerǁbuild_context__mutmut_2': xǁResilientErrorHandlerǁbuild_context__mutmut_2, 
-        'xǁResilientErrorHandlerǁbuild_context__mutmut_3': xǁResilientErrorHandlerǁbuild_context__mutmut_3
+
+    xǁResilientErrorHandlerǁbuild_context__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁResilientErrorHandlerǁbuild_context__mutmut_1": xǁResilientErrorHandlerǁbuild_context__mutmut_1,
+        "xǁResilientErrorHandlerǁbuild_context__mutmut_2": xǁResilientErrorHandlerǁbuild_context__mutmut_2,
+        "xǁResilientErrorHandlerǁbuild_context__mutmut_3": xǁResilientErrorHandlerǁbuild_context__mutmut_3,
     }
-    
+
     def build_context(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁResilientErrorHandlerǁbuild_context__mutmut_orig"), object.__getattribute__(self, "xǁResilientErrorHandlerǁbuild_context__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁbuild_context__mutmut_orig"),
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁbuild_context__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     build_context.__signature__ = _mutmut_signature(xǁResilientErrorHandlerǁbuild_context__mutmut_orig)
-    xǁResilientErrorHandlerǁbuild_context__mutmut_orig.__name__ = 'xǁResilientErrorHandlerǁbuild_context'
+    xǁResilientErrorHandlerǁbuild_context__mutmut_orig.__name__ = "xǁResilientErrorHandlerǁbuild_context"
 
     def xǁResilientErrorHandlerǁshould_suppress__mutmut_orig(self, exception: Exception) -> bool:
         """Check if the error should be suppressed."""
@@ -320,20 +335,28 @@ class ResilientErrorHandler:
     def xǁResilientErrorHandlerǁshould_suppress__mutmut_2(self, exception: Exception) -> bool:
         """Check if the error should be suppressed."""
         return self.suppress is None and isinstance(exception, self.suppress)
-    
-    xǁResilientErrorHandlerǁshould_suppress__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁResilientErrorHandlerǁshould_suppress__mutmut_1': xǁResilientErrorHandlerǁshould_suppress__mutmut_1, 
-        'xǁResilientErrorHandlerǁshould_suppress__mutmut_2': xǁResilientErrorHandlerǁshould_suppress__mutmut_2
-    }
-    
-    def should_suppress(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁResilientErrorHandlerǁshould_suppress__mutmut_orig"), object.__getattribute__(self, "xǁResilientErrorHandlerǁshould_suppress__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    should_suppress.__signature__ = _mutmut_signature(xǁResilientErrorHandlerǁshould_suppress__mutmut_orig)
-    xǁResilientErrorHandlerǁshould_suppress__mutmut_orig.__name__ = 'xǁResilientErrorHandlerǁshould_suppress'
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_orig(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    xǁResilientErrorHandlerǁshould_suppress__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁResilientErrorHandlerǁshould_suppress__mutmut_1": xǁResilientErrorHandlerǁshould_suppress__mutmut_1,
+        "xǁResilientErrorHandlerǁshould_suppress__mutmut_2": xǁResilientErrorHandlerǁshould_suppress__mutmut_2,
+    }
+
+    def should_suppress(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁshould_suppress__mutmut_orig"),
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁshould_suppress__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    should_suppress.__signature__ = _mutmut_signature(xǁResilientErrorHandlerǁshould_suppress__mutmut_orig)
+    xǁResilientErrorHandlerǁshould_suppress__mutmut_orig.__name__ = "xǁResilientErrorHandlerǁshould_suppress"
+
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_orig(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -346,7 +369,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_1(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_1(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if self.log_errors:
             return
@@ -359,7 +384,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_2(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_2(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -372,7 +399,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_3(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_3(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -385,7 +414,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_4(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_4(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -398,7 +429,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_5(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_5(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -410,7 +443,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_6(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_6(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -422,7 +457,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_7(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_7(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -434,7 +471,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_8(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_8(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -444,9 +483,11 @@ class ResilientErrorHandler:
             f"Suppressed {type(exception).__name__} in {func_name}",
             function=func_name,
             error=str(exception),
-            )
+        )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_9(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_9(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -459,7 +500,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_10(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_suppressed__mutmut_10(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log a suppressed error."""
         if not self.log_errors:
             return
@@ -471,28 +514,36 @@ class ResilientErrorHandler:
             error=str(None),
             **log_context,
         )
-    
-    xǁResilientErrorHandlerǁlog_suppressed__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁResilientErrorHandlerǁlog_suppressed__mutmut_1': xǁResilientErrorHandlerǁlog_suppressed__mutmut_1, 
-        'xǁResilientErrorHandlerǁlog_suppressed__mutmut_2': xǁResilientErrorHandlerǁlog_suppressed__mutmut_2, 
-        'xǁResilientErrorHandlerǁlog_suppressed__mutmut_3': xǁResilientErrorHandlerǁlog_suppressed__mutmut_3, 
-        'xǁResilientErrorHandlerǁlog_suppressed__mutmut_4': xǁResilientErrorHandlerǁlog_suppressed__mutmut_4, 
-        'xǁResilientErrorHandlerǁlog_suppressed__mutmut_5': xǁResilientErrorHandlerǁlog_suppressed__mutmut_5, 
-        'xǁResilientErrorHandlerǁlog_suppressed__mutmut_6': xǁResilientErrorHandlerǁlog_suppressed__mutmut_6, 
-        'xǁResilientErrorHandlerǁlog_suppressed__mutmut_7': xǁResilientErrorHandlerǁlog_suppressed__mutmut_7, 
-        'xǁResilientErrorHandlerǁlog_suppressed__mutmut_8': xǁResilientErrorHandlerǁlog_suppressed__mutmut_8, 
-        'xǁResilientErrorHandlerǁlog_suppressed__mutmut_9': xǁResilientErrorHandlerǁlog_suppressed__mutmut_9, 
-        'xǁResilientErrorHandlerǁlog_suppressed__mutmut_10': xǁResilientErrorHandlerǁlog_suppressed__mutmut_10
-    }
-    
-    def log_suppressed(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁResilientErrorHandlerǁlog_suppressed__mutmut_orig"), object.__getattribute__(self, "xǁResilientErrorHandlerǁlog_suppressed__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    log_suppressed.__signature__ = _mutmut_signature(xǁResilientErrorHandlerǁlog_suppressed__mutmut_orig)
-    xǁResilientErrorHandlerǁlog_suppressed__mutmut_orig.__name__ = 'xǁResilientErrorHandlerǁlog_suppressed'
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_orig(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    xǁResilientErrorHandlerǁlog_suppressed__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_1": xǁResilientErrorHandlerǁlog_suppressed__mutmut_1,
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_2": xǁResilientErrorHandlerǁlog_suppressed__mutmut_2,
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_3": xǁResilientErrorHandlerǁlog_suppressed__mutmut_3,
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_4": xǁResilientErrorHandlerǁlog_suppressed__mutmut_4,
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_5": xǁResilientErrorHandlerǁlog_suppressed__mutmut_5,
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_6": xǁResilientErrorHandlerǁlog_suppressed__mutmut_6,
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_7": xǁResilientErrorHandlerǁlog_suppressed__mutmut_7,
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_8": xǁResilientErrorHandlerǁlog_suppressed__mutmut_8,
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_9": xǁResilientErrorHandlerǁlog_suppressed__mutmut_9,
+        "xǁResilientErrorHandlerǁlog_suppressed__mutmut_10": xǁResilientErrorHandlerǁlog_suppressed__mutmut_10,
+    }
+
+    def log_suppressed(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁlog_suppressed__mutmut_orig"),
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁlog_suppressed__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    log_suppressed.__signature__ = _mutmut_signature(xǁResilientErrorHandlerǁlog_suppressed__mutmut_orig)
+    xǁResilientErrorHandlerǁlog_suppressed__mutmut_orig.__name__ = "xǁResilientErrorHandlerǁlog_suppressed"
+
+    def xǁResilientErrorHandlerǁlog_error__mutmut_orig(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if not self.log_errors:
             return
@@ -505,7 +556,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_1(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_error__mutmut_1(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if self.log_errors:
             return
@@ -518,7 +571,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_2(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_error__mutmut_2(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if not self.log_errors:
             return
@@ -531,7 +586,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_3(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_error__mutmut_3(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if not self.log_errors:
             return
@@ -544,7 +601,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_4(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_error__mutmut_4(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if not self.log_errors:
             return
@@ -557,7 +616,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_5(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_error__mutmut_5(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if not self.log_errors:
             return
@@ -569,7 +630,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_6(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_error__mutmut_6(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if not self.log_errors:
             return
@@ -581,7 +644,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_7(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_error__mutmut_7(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if not self.log_errors:
             return
@@ -593,7 +658,9 @@ class ResilientErrorHandler:
             **log_context,
         )
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_8(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_error__mutmut_8(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if not self.log_errors:
             return
@@ -603,9 +670,11 @@ class ResilientErrorHandler:
             f"Error in {func_name}: {exception}",
             exc_info=True,
             function=func_name,
-            )
+        )
 
-    def xǁResilientErrorHandlerǁlog_error__mutmut_9(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+    def xǁResilientErrorHandlerǁlog_error__mutmut_9(
+        self, exception: Exception, func_name: str, log_context: dict[str, Any]
+    ) -> None:
         """Log an error with full details."""
         if not self.log_errors:
             return
@@ -617,25 +686,31 @@ class ResilientErrorHandler:
             function=func_name,
             **log_context,
         )
-    
-    xǁResilientErrorHandlerǁlog_error__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁResilientErrorHandlerǁlog_error__mutmut_1': xǁResilientErrorHandlerǁlog_error__mutmut_1, 
-        'xǁResilientErrorHandlerǁlog_error__mutmut_2': xǁResilientErrorHandlerǁlog_error__mutmut_2, 
-        'xǁResilientErrorHandlerǁlog_error__mutmut_3': xǁResilientErrorHandlerǁlog_error__mutmut_3, 
-        'xǁResilientErrorHandlerǁlog_error__mutmut_4': xǁResilientErrorHandlerǁlog_error__mutmut_4, 
-        'xǁResilientErrorHandlerǁlog_error__mutmut_5': xǁResilientErrorHandlerǁlog_error__mutmut_5, 
-        'xǁResilientErrorHandlerǁlog_error__mutmut_6': xǁResilientErrorHandlerǁlog_error__mutmut_6, 
-        'xǁResilientErrorHandlerǁlog_error__mutmut_7': xǁResilientErrorHandlerǁlog_error__mutmut_7, 
-        'xǁResilientErrorHandlerǁlog_error__mutmut_8': xǁResilientErrorHandlerǁlog_error__mutmut_8, 
-        'xǁResilientErrorHandlerǁlog_error__mutmut_9': xǁResilientErrorHandlerǁlog_error__mutmut_9
+
+    xǁResilientErrorHandlerǁlog_error__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁResilientErrorHandlerǁlog_error__mutmut_1": xǁResilientErrorHandlerǁlog_error__mutmut_1,
+        "xǁResilientErrorHandlerǁlog_error__mutmut_2": xǁResilientErrorHandlerǁlog_error__mutmut_2,
+        "xǁResilientErrorHandlerǁlog_error__mutmut_3": xǁResilientErrorHandlerǁlog_error__mutmut_3,
+        "xǁResilientErrorHandlerǁlog_error__mutmut_4": xǁResilientErrorHandlerǁlog_error__mutmut_4,
+        "xǁResilientErrorHandlerǁlog_error__mutmut_5": xǁResilientErrorHandlerǁlog_error__mutmut_5,
+        "xǁResilientErrorHandlerǁlog_error__mutmut_6": xǁResilientErrorHandlerǁlog_error__mutmut_6,
+        "xǁResilientErrorHandlerǁlog_error__mutmut_7": xǁResilientErrorHandlerǁlog_error__mutmut_7,
+        "xǁResilientErrorHandlerǁlog_error__mutmut_8": xǁResilientErrorHandlerǁlog_error__mutmut_8,
+        "xǁResilientErrorHandlerǁlog_error__mutmut_9": xǁResilientErrorHandlerǁlog_error__mutmut_9,
     }
-    
+
     def log_error(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁResilientErrorHandlerǁlog_error__mutmut_orig"), object.__getattribute__(self, "xǁResilientErrorHandlerǁlog_error__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁlog_error__mutmut_orig"),
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁlog_error__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     log_error.__signature__ = _mutmut_signature(xǁResilientErrorHandlerǁlog_error__mutmut_orig)
-    xǁResilientErrorHandlerǁlog_error__mutmut_orig.__name__ = 'xǁResilientErrorHandlerǁlog_error'
+    xǁResilientErrorHandlerǁlog_error__mutmut_orig.__name__ = "xǁResilientErrorHandlerǁlog_error"
 
     def xǁResilientErrorHandlerǁmap_error__mutmut_orig(self, exception: Exception) -> Exception:
         """Apply error mapping if configured.
@@ -1146,30 +1221,36 @@ class ResilientErrorHandler:
 
                 return mapped
         return exception
-    
-    xǁResilientErrorHandlerǁmap_error__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁResilientErrorHandlerǁmap_error__mutmut_1': xǁResilientErrorHandlerǁmap_error__mutmut_1, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_2': xǁResilientErrorHandlerǁmap_error__mutmut_2, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_3': xǁResilientErrorHandlerǁmap_error__mutmut_3, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_4': xǁResilientErrorHandlerǁmap_error__mutmut_4, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_5': xǁResilientErrorHandlerǁmap_error__mutmut_5, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_6': xǁResilientErrorHandlerǁmap_error__mutmut_6, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_7': xǁResilientErrorHandlerǁmap_error__mutmut_7, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_8': xǁResilientErrorHandlerǁmap_error__mutmut_8, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_9': xǁResilientErrorHandlerǁmap_error__mutmut_9, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_10': xǁResilientErrorHandlerǁmap_error__mutmut_10, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_11': xǁResilientErrorHandlerǁmap_error__mutmut_11, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_12': xǁResilientErrorHandlerǁmap_error__mutmut_12, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_13': xǁResilientErrorHandlerǁmap_error__mutmut_13, 
-        'xǁResilientErrorHandlerǁmap_error__mutmut_14': xǁResilientErrorHandlerǁmap_error__mutmut_14
+
+    xǁResilientErrorHandlerǁmap_error__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁResilientErrorHandlerǁmap_error__mutmut_1": xǁResilientErrorHandlerǁmap_error__mutmut_1,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_2": xǁResilientErrorHandlerǁmap_error__mutmut_2,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_3": xǁResilientErrorHandlerǁmap_error__mutmut_3,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_4": xǁResilientErrorHandlerǁmap_error__mutmut_4,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_5": xǁResilientErrorHandlerǁmap_error__mutmut_5,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_6": xǁResilientErrorHandlerǁmap_error__mutmut_6,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_7": xǁResilientErrorHandlerǁmap_error__mutmut_7,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_8": xǁResilientErrorHandlerǁmap_error__mutmut_8,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_9": xǁResilientErrorHandlerǁmap_error__mutmut_9,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_10": xǁResilientErrorHandlerǁmap_error__mutmut_10,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_11": xǁResilientErrorHandlerǁmap_error__mutmut_11,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_12": xǁResilientErrorHandlerǁmap_error__mutmut_12,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_13": xǁResilientErrorHandlerǁmap_error__mutmut_13,
+        "xǁResilientErrorHandlerǁmap_error__mutmut_14": xǁResilientErrorHandlerǁmap_error__mutmut_14,
     }
-    
+
     def map_error(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁResilientErrorHandlerǁmap_error__mutmut_orig"), object.__getattribute__(self, "xǁResilientErrorHandlerǁmap_error__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁmap_error__mutmut_orig"),
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁmap_error__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     map_error.__signature__ = _mutmut_signature(xǁResilientErrorHandlerǁmap_error__mutmut_orig)
-    xǁResilientErrorHandlerǁmap_error__mutmut_orig.__name__ = 'xǁResilientErrorHandlerǁmap_error'
+    xǁResilientErrorHandlerǁmap_error__mutmut_orig.__name__ = "xǁResilientErrorHandlerǁmap_error"
 
     def xǁResilientErrorHandlerǁprocess_error__mutmut_orig(self, exception: Exception, func_name: str) -> Any:
         """Process an error according to configuration."""
@@ -1369,7 +1450,10 @@ class ResilientErrorHandler:
 
         # Check if we should suppress this error
         if self.should_suppress(exception):
-            self.log_suppressed(exception, func_name, )
+            self.log_suppressed(
+                exception,
+                func_name,
+            )
             return self.fallback
 
         # Log the error if configured
@@ -1517,7 +1601,10 @@ class ResilientErrorHandler:
             return self.fallback
 
         # Log the error if configured
-        self.log_error(exception, func_name, )
+        self.log_error(
+            exception,
+            func_name,
+        )
 
         # If reraise=False, return fallback instead of raising
         if not self.reraise:
@@ -1626,34 +1713,40 @@ class ResilientErrorHandler:
 
         # Re-raise the original error
         raise exception
-    
-    xǁResilientErrorHandlerǁprocess_error__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁResilientErrorHandlerǁprocess_error__mutmut_1': xǁResilientErrorHandlerǁprocess_error__mutmut_1, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_2': xǁResilientErrorHandlerǁprocess_error__mutmut_2, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_3': xǁResilientErrorHandlerǁprocess_error__mutmut_3, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_4': xǁResilientErrorHandlerǁprocess_error__mutmut_4, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_5': xǁResilientErrorHandlerǁprocess_error__mutmut_5, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_6': xǁResilientErrorHandlerǁprocess_error__mutmut_6, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_7': xǁResilientErrorHandlerǁprocess_error__mutmut_7, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_8': xǁResilientErrorHandlerǁprocess_error__mutmut_8, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_9': xǁResilientErrorHandlerǁprocess_error__mutmut_9, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_10': xǁResilientErrorHandlerǁprocess_error__mutmut_10, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_11': xǁResilientErrorHandlerǁprocess_error__mutmut_11, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_12': xǁResilientErrorHandlerǁprocess_error__mutmut_12, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_13': xǁResilientErrorHandlerǁprocess_error__mutmut_13, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_14': xǁResilientErrorHandlerǁprocess_error__mutmut_14, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_15': xǁResilientErrorHandlerǁprocess_error__mutmut_15, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_16': xǁResilientErrorHandlerǁprocess_error__mutmut_16, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_17': xǁResilientErrorHandlerǁprocess_error__mutmut_17, 
-        'xǁResilientErrorHandlerǁprocess_error__mutmut_18': xǁResilientErrorHandlerǁprocess_error__mutmut_18
+
+    xǁResilientErrorHandlerǁprocess_error__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_1": xǁResilientErrorHandlerǁprocess_error__mutmut_1,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_2": xǁResilientErrorHandlerǁprocess_error__mutmut_2,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_3": xǁResilientErrorHandlerǁprocess_error__mutmut_3,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_4": xǁResilientErrorHandlerǁprocess_error__mutmut_4,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_5": xǁResilientErrorHandlerǁprocess_error__mutmut_5,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_6": xǁResilientErrorHandlerǁprocess_error__mutmut_6,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_7": xǁResilientErrorHandlerǁprocess_error__mutmut_7,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_8": xǁResilientErrorHandlerǁprocess_error__mutmut_8,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_9": xǁResilientErrorHandlerǁprocess_error__mutmut_9,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_10": xǁResilientErrorHandlerǁprocess_error__mutmut_10,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_11": xǁResilientErrorHandlerǁprocess_error__mutmut_11,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_12": xǁResilientErrorHandlerǁprocess_error__mutmut_12,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_13": xǁResilientErrorHandlerǁprocess_error__mutmut_13,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_14": xǁResilientErrorHandlerǁprocess_error__mutmut_14,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_15": xǁResilientErrorHandlerǁprocess_error__mutmut_15,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_16": xǁResilientErrorHandlerǁprocess_error__mutmut_16,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_17": xǁResilientErrorHandlerǁprocess_error__mutmut_17,
+        "xǁResilientErrorHandlerǁprocess_error__mutmut_18": xǁResilientErrorHandlerǁprocess_error__mutmut_18,
     }
-    
+
     def process_error(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁResilientErrorHandlerǁprocess_error__mutmut_orig"), object.__getattribute__(self, "xǁResilientErrorHandlerǁprocess_error__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁprocess_error__mutmut_orig"),
+            object.__getattribute__(self, "xǁResilientErrorHandlerǁprocess_error__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     process_error.__signature__ = _mutmut_signature(xǁResilientErrorHandlerǁprocess_error__mutmut_orig)
-    xǁResilientErrorHandlerǁprocess_error__mutmut_orig.__name__ = 'xǁResilientErrorHandlerǁprocess_error'
+    xǁResilientErrorHandlerǁprocess_error__mutmut_orig.__name__ = "xǁResilientErrorHandlerǁprocess_error"
 
 
 def _create_async_wrapper(func: F, handler: ResilientErrorHandler) -> F:
@@ -3312,7 +3405,7 @@ def x_resilient__mutmut_17(
             context=context,
             error_mapper=error_mapper,
             suppress=suppress,
-            )
+        )
 
         # Return appropriate wrapper based on function type
         if inspect.iscoroutinefunction(func):
@@ -3771,7 +3864,9 @@ def x_resilient__mutmut_22(
 
         # Return appropriate wrapper based on function type
         if inspect.iscoroutinefunction(func):
-            return _create_async_wrapper(func, )
+            return _create_async_wrapper(
+                func,
+            )
         return _create_sync_wrapper(func, handler)
 
     # Support both @resilient and @resilient(...) forms
@@ -4136,7 +4231,9 @@ def x_resilient__mutmut_26(
         # Return appropriate wrapper based on function type
         if inspect.iscoroutinefunction(func):
             return _create_async_wrapper(func, handler)
-        return _create_sync_wrapper(func, )
+        return _create_sync_wrapper(
+            func,
+        )
 
     # Support both @resilient and @resilient(...) forms
     if func is None:
@@ -4325,43 +4422,46 @@ def x_resilient__mutmut_28(
         return decorator
     return decorator(None)
 
-x_resilient__mutmut_mutants : ClassVar[MutantDict] = {
-'x_resilient__mutmut_1': x_resilient__mutmut_1, 
-    'x_resilient__mutmut_2': x_resilient__mutmut_2, 
-    'x_resilient__mutmut_3': x_resilient__mutmut_3, 
-    'x_resilient__mutmut_4': x_resilient__mutmut_4, 
-    'x_resilient__mutmut_5': x_resilient__mutmut_5, 
-    'x_resilient__mutmut_6': x_resilient__mutmut_6, 
-    'x_resilient__mutmut_7': x_resilient__mutmut_7, 
-    'x_resilient__mutmut_8': x_resilient__mutmut_8, 
-    'x_resilient__mutmut_9': x_resilient__mutmut_9, 
-    'x_resilient__mutmut_10': x_resilient__mutmut_10, 
-    'x_resilient__mutmut_11': x_resilient__mutmut_11, 
-    'x_resilient__mutmut_12': x_resilient__mutmut_12, 
-    'x_resilient__mutmut_13': x_resilient__mutmut_13, 
-    'x_resilient__mutmut_14': x_resilient__mutmut_14, 
-    'x_resilient__mutmut_15': x_resilient__mutmut_15, 
-    'x_resilient__mutmut_16': x_resilient__mutmut_16, 
-    'x_resilient__mutmut_17': x_resilient__mutmut_17, 
-    'x_resilient__mutmut_18': x_resilient__mutmut_18, 
-    'x_resilient__mutmut_19': x_resilient__mutmut_19, 
-    'x_resilient__mutmut_20': x_resilient__mutmut_20, 
-    'x_resilient__mutmut_21': x_resilient__mutmut_21, 
-    'x_resilient__mutmut_22': x_resilient__mutmut_22, 
-    'x_resilient__mutmut_23': x_resilient__mutmut_23, 
-    'x_resilient__mutmut_24': x_resilient__mutmut_24, 
-    'x_resilient__mutmut_25': x_resilient__mutmut_25, 
-    'x_resilient__mutmut_26': x_resilient__mutmut_26, 
-    'x_resilient__mutmut_27': x_resilient__mutmut_27, 
-    'x_resilient__mutmut_28': x_resilient__mutmut_28
+
+x_resilient__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_resilient__mutmut_1": x_resilient__mutmut_1,
+    "x_resilient__mutmut_2": x_resilient__mutmut_2,
+    "x_resilient__mutmut_3": x_resilient__mutmut_3,
+    "x_resilient__mutmut_4": x_resilient__mutmut_4,
+    "x_resilient__mutmut_5": x_resilient__mutmut_5,
+    "x_resilient__mutmut_6": x_resilient__mutmut_6,
+    "x_resilient__mutmut_7": x_resilient__mutmut_7,
+    "x_resilient__mutmut_8": x_resilient__mutmut_8,
+    "x_resilient__mutmut_9": x_resilient__mutmut_9,
+    "x_resilient__mutmut_10": x_resilient__mutmut_10,
+    "x_resilient__mutmut_11": x_resilient__mutmut_11,
+    "x_resilient__mutmut_12": x_resilient__mutmut_12,
+    "x_resilient__mutmut_13": x_resilient__mutmut_13,
+    "x_resilient__mutmut_14": x_resilient__mutmut_14,
+    "x_resilient__mutmut_15": x_resilient__mutmut_15,
+    "x_resilient__mutmut_16": x_resilient__mutmut_16,
+    "x_resilient__mutmut_17": x_resilient__mutmut_17,
+    "x_resilient__mutmut_18": x_resilient__mutmut_18,
+    "x_resilient__mutmut_19": x_resilient__mutmut_19,
+    "x_resilient__mutmut_20": x_resilient__mutmut_20,
+    "x_resilient__mutmut_21": x_resilient__mutmut_21,
+    "x_resilient__mutmut_22": x_resilient__mutmut_22,
+    "x_resilient__mutmut_23": x_resilient__mutmut_23,
+    "x_resilient__mutmut_24": x_resilient__mutmut_24,
+    "x_resilient__mutmut_25": x_resilient__mutmut_25,
+    "x_resilient__mutmut_26": x_resilient__mutmut_26,
+    "x_resilient__mutmut_27": x_resilient__mutmut_27,
+    "x_resilient__mutmut_28": x_resilient__mutmut_28,
 }
+
 
 def resilient(*args, **kwargs):
     result = _mutmut_trampoline(x_resilient__mutmut_orig, x_resilient__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 resilient.__signature__ = _mutmut_signature(x_resilient__mutmut_orig)
-x_resilient__mutmut_orig.__name__ = 'x_resilient'
+x_resilient__mutmut_orig.__name__ = "x_resilient"
 
 
 def x_suppress_and_log__mutmut_orig(
@@ -4516,17 +4616,22 @@ def x_suppress_and_log__mutmut_2(
 
     return decorator
 
-x_suppress_and_log__mutmut_mutants : ClassVar[MutantDict] = {
-'x_suppress_and_log__mutmut_1': x_suppress_and_log__mutmut_1, 
-    'x_suppress_and_log__mutmut_2': x_suppress_and_log__mutmut_2
+
+x_suppress_and_log__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_suppress_and_log__mutmut_1": x_suppress_and_log__mutmut_1,
+    "x_suppress_and_log__mutmut_2": x_suppress_and_log__mutmut_2,
 }
 
+
 def suppress_and_log(*args, **kwargs):
-    result = _mutmut_trampoline(x_suppress_and_log__mutmut_orig, x_suppress_and_log__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_suppress_and_log__mutmut_orig, x_suppress_and_log__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 suppress_and_log.__signature__ = _mutmut_signature(x_suppress_and_log__mutmut_orig)
-x_suppress_and_log__mutmut_orig.__name__ = 'x_suppress_and_log'
+x_suppress_and_log__mutmut_orig.__name__ = "x_suppress_and_log"
 
 
 def x_fallback_on_error__mutmut_orig(
@@ -4717,17 +4822,22 @@ def x_fallback_on_error__mutmut_2(
 
     return decorator
 
-x_fallback_on_error__mutmut_mutants : ClassVar[MutantDict] = {
-'x_fallback_on_error__mutmut_1': x_fallback_on_error__mutmut_1, 
-    'x_fallback_on_error__mutmut_2': x_fallback_on_error__mutmut_2
+
+x_fallback_on_error__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_fallback_on_error__mutmut_1": x_fallback_on_error__mutmut_1,
+    "x_fallback_on_error__mutmut_2": x_fallback_on_error__mutmut_2,
 }
 
+
 def fallback_on_error(*args, **kwargs):
-    result = _mutmut_trampoline(x_fallback_on_error__mutmut_orig, x_fallback_on_error__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_fallback_on_error__mutmut_orig, x_fallback_on_error__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 fallback_on_error.__signature__ = _mutmut_signature(x_fallback_on_error__mutmut_orig)
-x_fallback_on_error__mutmut_orig.__name__ = 'x_fallback_on_error'
+x_fallback_on_error__mutmut_orig.__name__ = "x_fallback_on_error"
 
 
 # <3 🧱🤝🐛🪄

@@ -44,23 +44,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1230,7 +1233,9 @@ def x_create_x509_certificate__mutmut_11(
         actual_signing_key = signing_key_override if signing_key_override else private_key
 
         if not actual_signing_key:
-            raise CertificateError("XXCannot sign certificate without a signing key (either own or override)XX")
+            raise CertificateError(
+                "XXCannot sign certificate without a signing key (either own or override)XX"
+            )
 
         builder = (
             x509.CertificateBuilder()
@@ -3005,7 +3010,9 @@ def x_create_x509_certificate__mutmut_28(
         san_list = [x509.DNSName(name) for name in (alt_names or []) if name]
         if san_list:
             # DNSName is a subtype of GeneralName, but mypy needs help understanding this
-            builder = builder.add_extension(x509.SubjectAlternativeName(cast(list, san_list)), )
+            builder = builder.add_extension(
+                x509.SubjectAlternativeName(cast(list, san_list)),
+            )
             logger.debug(f"📜📝✅ Added SANs: {alt_names or []}")
 
         builder = builder.add_extension(
@@ -3525,7 +3532,14 @@ def x_create_x509_certificate__mutmut_33(
         san_list = [x509.DNSName(name) for name in (alt_names or []) if name]
         if san_list:
             # DNSName is a subtype of GeneralName, but mypy needs help understanding this
-            builder = builder.add_extension(x509.SubjectAlternativeName(cast(list, )), critical=False)
+            builder = builder.add_extension(
+                x509.SubjectAlternativeName(
+                    cast(
+                        list,
+                    )
+                ),
+                critical=False,
+            )
             logger.debug(f"📜📝✅ Added SANs: {alt_names or []}")
 
         builder = builder.add_extension(
@@ -4358,7 +4372,7 @@ def x_create_x509_certificate__mutmut_41(
 
         builder = builder.add_extension(
             x509.BasicConstraints(ca=is_ca, path_length=None),
-            )
+        )
 
         if is_ca:
             builder = builder.add_extension(
@@ -4668,7 +4682,9 @@ def x_create_x509_certificate__mutmut_44(
             logger.debug(f"📜📝✅ Added SANs: {alt_names or []}")
 
         builder = builder.add_extension(
-            x509.BasicConstraints(ca=is_ca, ),
+            x509.BasicConstraints(
+                ca=is_ca,
+            ),
             critical=True,
         )
 
@@ -5275,7 +5291,7 @@ def x_create_x509_certificate__mutmut_50(
                     encipher_only=False,
                     decipher_only=False,
                 ),
-                )
+            )
         else:
             builder = builder.add_extension(
                 x509.KeyUsage(
@@ -7136,7 +7152,7 @@ def x_create_x509_certificate__mutmut_68(
                     key_cert_sign=True,
                     crl_sign=True,
                     encipher_only=False,
-                    ),
+                ),
                 critical=True,
             )
         else:
@@ -8674,7 +8690,7 @@ def x_create_x509_certificate__mutmut_83(
                     encipher_only=False,
                     decipher_only=False,
                 ),
-                )
+            )
             extended_usages = []
             if is_client_cert:
                 extended_usages.append(ExtendedKeyUsageOID.CLIENT_AUTH)
@@ -10531,7 +10547,7 @@ def x_create_x509_certificate__mutmut_101(
                     key_cert_sign=False,
                     crl_sign=False,
                     encipher_only=False,
-                    ),
+                ),
                 critical=True,
             )
             extended_usages = []
@@ -10729,9 +10745,7 @@ def x_create_x509_certificate__mutmut_103(
             builder = builder.add_extension(
                 x509.KeyUsage(
                     digital_signature=True,
-                    key_encipherment=(
-                        bool(None)
-                    ),
+                    key_encipherment=(bool(None)),
                     key_agreement=(bool(isinstance(base.public_key, ec.EllipticCurvePublicKey))),
                     content_commitment=False,
                     data_encipherment=False,
@@ -10937,9 +10951,7 @@ def x_create_x509_certificate__mutmut_105(
             builder = builder.add_extension(
                 x509.KeyUsage(
                     digital_signature=True,
-                    key_encipherment=(
-                        bool(is_client_cert and isinstance(base.public_key, rsa.RSAPublicKey))
-                    ),
+                    key_encipherment=(bool(is_client_cert and isinstance(base.public_key, rsa.RSAPublicKey))),
                     key_agreement=(bool(isinstance(base.public_key, ec.EllipticCurvePublicKey))),
                     content_commitment=False,
                     data_encipherment=False,
@@ -12619,7 +12631,7 @@ def x_create_x509_certificate__mutmut_121(
             if extended_usages:
                 builder = builder.add_extension(
                     x509.ExtendedKeyUsage(extended_usages),
-                    )
+                )
 
         logger.debug(
             f"📜📝✅ Added BasicConstraints (is_ca={is_ca}), "
@@ -13455,7 +13467,7 @@ def x_create_x509_certificate__mutmut_129(
 
         signed_cert = builder.sign(
             private_key=actual_signing_key,
-            )
+        )
         logger.debug("📜📝✅ Certificate signed successfully")
         return signed_cert
 
@@ -14293,7 +14305,7 @@ def x_create_x509_certificate__mutmut_137(
     except Exception as e:
         logger.error(
             f"📜❌ create_x509_certificate: Failed: {e}",
-            )
+        )
         raise CertificateError("Failed to create X.509 certificate object") from e
 
 
@@ -15232,161 +15244,166 @@ def x_create_x509_certificate__mutmut_146(
         )
         raise CertificateError("FAILED TO CREATE X.509 CERTIFICATE OBJECT") from e
 
-x_create_x509_certificate__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_x509_certificate__mutmut_1': x_create_x509_certificate__mutmut_1, 
-    'x_create_x509_certificate__mutmut_2': x_create_x509_certificate__mutmut_2, 
-    'x_create_x509_certificate__mutmut_3': x_create_x509_certificate__mutmut_3, 
-    'x_create_x509_certificate__mutmut_4': x_create_x509_certificate__mutmut_4, 
-    'x_create_x509_certificate__mutmut_5': x_create_x509_certificate__mutmut_5, 
-    'x_create_x509_certificate__mutmut_6': x_create_x509_certificate__mutmut_6, 
-    'x_create_x509_certificate__mutmut_7': x_create_x509_certificate__mutmut_7, 
-    'x_create_x509_certificate__mutmut_8': x_create_x509_certificate__mutmut_8, 
-    'x_create_x509_certificate__mutmut_9': x_create_x509_certificate__mutmut_9, 
-    'x_create_x509_certificate__mutmut_10': x_create_x509_certificate__mutmut_10, 
-    'x_create_x509_certificate__mutmut_11': x_create_x509_certificate__mutmut_11, 
-    'x_create_x509_certificate__mutmut_12': x_create_x509_certificate__mutmut_12, 
-    'x_create_x509_certificate__mutmut_13': x_create_x509_certificate__mutmut_13, 
-    'x_create_x509_certificate__mutmut_14': x_create_x509_certificate__mutmut_14, 
-    'x_create_x509_certificate__mutmut_15': x_create_x509_certificate__mutmut_15, 
-    'x_create_x509_certificate__mutmut_16': x_create_x509_certificate__mutmut_16, 
-    'x_create_x509_certificate__mutmut_17': x_create_x509_certificate__mutmut_17, 
-    'x_create_x509_certificate__mutmut_18': x_create_x509_certificate__mutmut_18, 
-    'x_create_x509_certificate__mutmut_19': x_create_x509_certificate__mutmut_19, 
-    'x_create_x509_certificate__mutmut_20': x_create_x509_certificate__mutmut_20, 
-    'x_create_x509_certificate__mutmut_21': x_create_x509_certificate__mutmut_21, 
-    'x_create_x509_certificate__mutmut_22': x_create_x509_certificate__mutmut_22, 
-    'x_create_x509_certificate__mutmut_23': x_create_x509_certificate__mutmut_23, 
-    'x_create_x509_certificate__mutmut_24': x_create_x509_certificate__mutmut_24, 
-    'x_create_x509_certificate__mutmut_25': x_create_x509_certificate__mutmut_25, 
-    'x_create_x509_certificate__mutmut_26': x_create_x509_certificate__mutmut_26, 
-    'x_create_x509_certificate__mutmut_27': x_create_x509_certificate__mutmut_27, 
-    'x_create_x509_certificate__mutmut_28': x_create_x509_certificate__mutmut_28, 
-    'x_create_x509_certificate__mutmut_29': x_create_x509_certificate__mutmut_29, 
-    'x_create_x509_certificate__mutmut_30': x_create_x509_certificate__mutmut_30, 
-    'x_create_x509_certificate__mutmut_31': x_create_x509_certificate__mutmut_31, 
-    'x_create_x509_certificate__mutmut_32': x_create_x509_certificate__mutmut_32, 
-    'x_create_x509_certificate__mutmut_33': x_create_x509_certificate__mutmut_33, 
-    'x_create_x509_certificate__mutmut_34': x_create_x509_certificate__mutmut_34, 
-    'x_create_x509_certificate__mutmut_35': x_create_x509_certificate__mutmut_35, 
-    'x_create_x509_certificate__mutmut_36': x_create_x509_certificate__mutmut_36, 
-    'x_create_x509_certificate__mutmut_37': x_create_x509_certificate__mutmut_37, 
-    'x_create_x509_certificate__mutmut_38': x_create_x509_certificate__mutmut_38, 
-    'x_create_x509_certificate__mutmut_39': x_create_x509_certificate__mutmut_39, 
-    'x_create_x509_certificate__mutmut_40': x_create_x509_certificate__mutmut_40, 
-    'x_create_x509_certificate__mutmut_41': x_create_x509_certificate__mutmut_41, 
-    'x_create_x509_certificate__mutmut_42': x_create_x509_certificate__mutmut_42, 
-    'x_create_x509_certificate__mutmut_43': x_create_x509_certificate__mutmut_43, 
-    'x_create_x509_certificate__mutmut_44': x_create_x509_certificate__mutmut_44, 
-    'x_create_x509_certificate__mutmut_45': x_create_x509_certificate__mutmut_45, 
-    'x_create_x509_certificate__mutmut_46': x_create_x509_certificate__mutmut_46, 
-    'x_create_x509_certificate__mutmut_47': x_create_x509_certificate__mutmut_47, 
-    'x_create_x509_certificate__mutmut_48': x_create_x509_certificate__mutmut_48, 
-    'x_create_x509_certificate__mutmut_49': x_create_x509_certificate__mutmut_49, 
-    'x_create_x509_certificate__mutmut_50': x_create_x509_certificate__mutmut_50, 
-    'x_create_x509_certificate__mutmut_51': x_create_x509_certificate__mutmut_51, 
-    'x_create_x509_certificate__mutmut_52': x_create_x509_certificate__mutmut_52, 
-    'x_create_x509_certificate__mutmut_53': x_create_x509_certificate__mutmut_53, 
-    'x_create_x509_certificate__mutmut_54': x_create_x509_certificate__mutmut_54, 
-    'x_create_x509_certificate__mutmut_55': x_create_x509_certificate__mutmut_55, 
-    'x_create_x509_certificate__mutmut_56': x_create_x509_certificate__mutmut_56, 
-    'x_create_x509_certificate__mutmut_57': x_create_x509_certificate__mutmut_57, 
-    'x_create_x509_certificate__mutmut_58': x_create_x509_certificate__mutmut_58, 
-    'x_create_x509_certificate__mutmut_59': x_create_x509_certificate__mutmut_59, 
-    'x_create_x509_certificate__mutmut_60': x_create_x509_certificate__mutmut_60, 
-    'x_create_x509_certificate__mutmut_61': x_create_x509_certificate__mutmut_61, 
-    'x_create_x509_certificate__mutmut_62': x_create_x509_certificate__mutmut_62, 
-    'x_create_x509_certificate__mutmut_63': x_create_x509_certificate__mutmut_63, 
-    'x_create_x509_certificate__mutmut_64': x_create_x509_certificate__mutmut_64, 
-    'x_create_x509_certificate__mutmut_65': x_create_x509_certificate__mutmut_65, 
-    'x_create_x509_certificate__mutmut_66': x_create_x509_certificate__mutmut_66, 
-    'x_create_x509_certificate__mutmut_67': x_create_x509_certificate__mutmut_67, 
-    'x_create_x509_certificate__mutmut_68': x_create_x509_certificate__mutmut_68, 
-    'x_create_x509_certificate__mutmut_69': x_create_x509_certificate__mutmut_69, 
-    'x_create_x509_certificate__mutmut_70': x_create_x509_certificate__mutmut_70, 
-    'x_create_x509_certificate__mutmut_71': x_create_x509_certificate__mutmut_71, 
-    'x_create_x509_certificate__mutmut_72': x_create_x509_certificate__mutmut_72, 
-    'x_create_x509_certificate__mutmut_73': x_create_x509_certificate__mutmut_73, 
-    'x_create_x509_certificate__mutmut_74': x_create_x509_certificate__mutmut_74, 
-    'x_create_x509_certificate__mutmut_75': x_create_x509_certificate__mutmut_75, 
-    'x_create_x509_certificate__mutmut_76': x_create_x509_certificate__mutmut_76, 
-    'x_create_x509_certificate__mutmut_77': x_create_x509_certificate__mutmut_77, 
-    'x_create_x509_certificate__mutmut_78': x_create_x509_certificate__mutmut_78, 
-    'x_create_x509_certificate__mutmut_79': x_create_x509_certificate__mutmut_79, 
-    'x_create_x509_certificate__mutmut_80': x_create_x509_certificate__mutmut_80, 
-    'x_create_x509_certificate__mutmut_81': x_create_x509_certificate__mutmut_81, 
-    'x_create_x509_certificate__mutmut_82': x_create_x509_certificate__mutmut_82, 
-    'x_create_x509_certificate__mutmut_83': x_create_x509_certificate__mutmut_83, 
-    'x_create_x509_certificate__mutmut_84': x_create_x509_certificate__mutmut_84, 
-    'x_create_x509_certificate__mutmut_85': x_create_x509_certificate__mutmut_85, 
-    'x_create_x509_certificate__mutmut_86': x_create_x509_certificate__mutmut_86, 
-    'x_create_x509_certificate__mutmut_87': x_create_x509_certificate__mutmut_87, 
-    'x_create_x509_certificate__mutmut_88': x_create_x509_certificate__mutmut_88, 
-    'x_create_x509_certificate__mutmut_89': x_create_x509_certificate__mutmut_89, 
-    'x_create_x509_certificate__mutmut_90': x_create_x509_certificate__mutmut_90, 
-    'x_create_x509_certificate__mutmut_91': x_create_x509_certificate__mutmut_91, 
-    'x_create_x509_certificate__mutmut_92': x_create_x509_certificate__mutmut_92, 
-    'x_create_x509_certificate__mutmut_93': x_create_x509_certificate__mutmut_93, 
-    'x_create_x509_certificate__mutmut_94': x_create_x509_certificate__mutmut_94, 
-    'x_create_x509_certificate__mutmut_95': x_create_x509_certificate__mutmut_95, 
-    'x_create_x509_certificate__mutmut_96': x_create_x509_certificate__mutmut_96, 
-    'x_create_x509_certificate__mutmut_97': x_create_x509_certificate__mutmut_97, 
-    'x_create_x509_certificate__mutmut_98': x_create_x509_certificate__mutmut_98, 
-    'x_create_x509_certificate__mutmut_99': x_create_x509_certificate__mutmut_99, 
-    'x_create_x509_certificate__mutmut_100': x_create_x509_certificate__mutmut_100, 
-    'x_create_x509_certificate__mutmut_101': x_create_x509_certificate__mutmut_101, 
-    'x_create_x509_certificate__mutmut_102': x_create_x509_certificate__mutmut_102, 
-    'x_create_x509_certificate__mutmut_103': x_create_x509_certificate__mutmut_103, 
-    'x_create_x509_certificate__mutmut_104': x_create_x509_certificate__mutmut_104, 
-    'x_create_x509_certificate__mutmut_105': x_create_x509_certificate__mutmut_105, 
-    'x_create_x509_certificate__mutmut_106': x_create_x509_certificate__mutmut_106, 
-    'x_create_x509_certificate__mutmut_107': x_create_x509_certificate__mutmut_107, 
-    'x_create_x509_certificate__mutmut_108': x_create_x509_certificate__mutmut_108, 
-    'x_create_x509_certificate__mutmut_109': x_create_x509_certificate__mutmut_109, 
-    'x_create_x509_certificate__mutmut_110': x_create_x509_certificate__mutmut_110, 
-    'x_create_x509_certificate__mutmut_111': x_create_x509_certificate__mutmut_111, 
-    'x_create_x509_certificate__mutmut_112': x_create_x509_certificate__mutmut_112, 
-    'x_create_x509_certificate__mutmut_113': x_create_x509_certificate__mutmut_113, 
-    'x_create_x509_certificate__mutmut_114': x_create_x509_certificate__mutmut_114, 
-    'x_create_x509_certificate__mutmut_115': x_create_x509_certificate__mutmut_115, 
-    'x_create_x509_certificate__mutmut_116': x_create_x509_certificate__mutmut_116, 
-    'x_create_x509_certificate__mutmut_117': x_create_x509_certificate__mutmut_117, 
-    'x_create_x509_certificate__mutmut_118': x_create_x509_certificate__mutmut_118, 
-    'x_create_x509_certificate__mutmut_119': x_create_x509_certificate__mutmut_119, 
-    'x_create_x509_certificate__mutmut_120': x_create_x509_certificate__mutmut_120, 
-    'x_create_x509_certificate__mutmut_121': x_create_x509_certificate__mutmut_121, 
-    'x_create_x509_certificate__mutmut_122': x_create_x509_certificate__mutmut_122, 
-    'x_create_x509_certificate__mutmut_123': x_create_x509_certificate__mutmut_123, 
-    'x_create_x509_certificate__mutmut_124': x_create_x509_certificate__mutmut_124, 
-    'x_create_x509_certificate__mutmut_125': x_create_x509_certificate__mutmut_125, 
-    'x_create_x509_certificate__mutmut_126': x_create_x509_certificate__mutmut_126, 
-    'x_create_x509_certificate__mutmut_127': x_create_x509_certificate__mutmut_127, 
-    'x_create_x509_certificate__mutmut_128': x_create_x509_certificate__mutmut_128, 
-    'x_create_x509_certificate__mutmut_129': x_create_x509_certificate__mutmut_129, 
-    'x_create_x509_certificate__mutmut_130': x_create_x509_certificate__mutmut_130, 
-    'x_create_x509_certificate__mutmut_131': x_create_x509_certificate__mutmut_131, 
-    'x_create_x509_certificate__mutmut_132': x_create_x509_certificate__mutmut_132, 
-    'x_create_x509_certificate__mutmut_133': x_create_x509_certificate__mutmut_133, 
-    'x_create_x509_certificate__mutmut_134': x_create_x509_certificate__mutmut_134, 
-    'x_create_x509_certificate__mutmut_135': x_create_x509_certificate__mutmut_135, 
-    'x_create_x509_certificate__mutmut_136': x_create_x509_certificate__mutmut_136, 
-    'x_create_x509_certificate__mutmut_137': x_create_x509_certificate__mutmut_137, 
-    'x_create_x509_certificate__mutmut_138': x_create_x509_certificate__mutmut_138, 
-    'x_create_x509_certificate__mutmut_139': x_create_x509_certificate__mutmut_139, 
-    'x_create_x509_certificate__mutmut_140': x_create_x509_certificate__mutmut_140, 
-    'x_create_x509_certificate__mutmut_141': x_create_x509_certificate__mutmut_141, 
-    'x_create_x509_certificate__mutmut_142': x_create_x509_certificate__mutmut_142, 
-    'x_create_x509_certificate__mutmut_143': x_create_x509_certificate__mutmut_143, 
-    'x_create_x509_certificate__mutmut_144': x_create_x509_certificate__mutmut_144, 
-    'x_create_x509_certificate__mutmut_145': x_create_x509_certificate__mutmut_145, 
-    'x_create_x509_certificate__mutmut_146': x_create_x509_certificate__mutmut_146
+
+x_create_x509_certificate__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_x509_certificate__mutmut_1": x_create_x509_certificate__mutmut_1,
+    "x_create_x509_certificate__mutmut_2": x_create_x509_certificate__mutmut_2,
+    "x_create_x509_certificate__mutmut_3": x_create_x509_certificate__mutmut_3,
+    "x_create_x509_certificate__mutmut_4": x_create_x509_certificate__mutmut_4,
+    "x_create_x509_certificate__mutmut_5": x_create_x509_certificate__mutmut_5,
+    "x_create_x509_certificate__mutmut_6": x_create_x509_certificate__mutmut_6,
+    "x_create_x509_certificate__mutmut_7": x_create_x509_certificate__mutmut_7,
+    "x_create_x509_certificate__mutmut_8": x_create_x509_certificate__mutmut_8,
+    "x_create_x509_certificate__mutmut_9": x_create_x509_certificate__mutmut_9,
+    "x_create_x509_certificate__mutmut_10": x_create_x509_certificate__mutmut_10,
+    "x_create_x509_certificate__mutmut_11": x_create_x509_certificate__mutmut_11,
+    "x_create_x509_certificate__mutmut_12": x_create_x509_certificate__mutmut_12,
+    "x_create_x509_certificate__mutmut_13": x_create_x509_certificate__mutmut_13,
+    "x_create_x509_certificate__mutmut_14": x_create_x509_certificate__mutmut_14,
+    "x_create_x509_certificate__mutmut_15": x_create_x509_certificate__mutmut_15,
+    "x_create_x509_certificate__mutmut_16": x_create_x509_certificate__mutmut_16,
+    "x_create_x509_certificate__mutmut_17": x_create_x509_certificate__mutmut_17,
+    "x_create_x509_certificate__mutmut_18": x_create_x509_certificate__mutmut_18,
+    "x_create_x509_certificate__mutmut_19": x_create_x509_certificate__mutmut_19,
+    "x_create_x509_certificate__mutmut_20": x_create_x509_certificate__mutmut_20,
+    "x_create_x509_certificate__mutmut_21": x_create_x509_certificate__mutmut_21,
+    "x_create_x509_certificate__mutmut_22": x_create_x509_certificate__mutmut_22,
+    "x_create_x509_certificate__mutmut_23": x_create_x509_certificate__mutmut_23,
+    "x_create_x509_certificate__mutmut_24": x_create_x509_certificate__mutmut_24,
+    "x_create_x509_certificate__mutmut_25": x_create_x509_certificate__mutmut_25,
+    "x_create_x509_certificate__mutmut_26": x_create_x509_certificate__mutmut_26,
+    "x_create_x509_certificate__mutmut_27": x_create_x509_certificate__mutmut_27,
+    "x_create_x509_certificate__mutmut_28": x_create_x509_certificate__mutmut_28,
+    "x_create_x509_certificate__mutmut_29": x_create_x509_certificate__mutmut_29,
+    "x_create_x509_certificate__mutmut_30": x_create_x509_certificate__mutmut_30,
+    "x_create_x509_certificate__mutmut_31": x_create_x509_certificate__mutmut_31,
+    "x_create_x509_certificate__mutmut_32": x_create_x509_certificate__mutmut_32,
+    "x_create_x509_certificate__mutmut_33": x_create_x509_certificate__mutmut_33,
+    "x_create_x509_certificate__mutmut_34": x_create_x509_certificate__mutmut_34,
+    "x_create_x509_certificate__mutmut_35": x_create_x509_certificate__mutmut_35,
+    "x_create_x509_certificate__mutmut_36": x_create_x509_certificate__mutmut_36,
+    "x_create_x509_certificate__mutmut_37": x_create_x509_certificate__mutmut_37,
+    "x_create_x509_certificate__mutmut_38": x_create_x509_certificate__mutmut_38,
+    "x_create_x509_certificate__mutmut_39": x_create_x509_certificate__mutmut_39,
+    "x_create_x509_certificate__mutmut_40": x_create_x509_certificate__mutmut_40,
+    "x_create_x509_certificate__mutmut_41": x_create_x509_certificate__mutmut_41,
+    "x_create_x509_certificate__mutmut_42": x_create_x509_certificate__mutmut_42,
+    "x_create_x509_certificate__mutmut_43": x_create_x509_certificate__mutmut_43,
+    "x_create_x509_certificate__mutmut_44": x_create_x509_certificate__mutmut_44,
+    "x_create_x509_certificate__mutmut_45": x_create_x509_certificate__mutmut_45,
+    "x_create_x509_certificate__mutmut_46": x_create_x509_certificate__mutmut_46,
+    "x_create_x509_certificate__mutmut_47": x_create_x509_certificate__mutmut_47,
+    "x_create_x509_certificate__mutmut_48": x_create_x509_certificate__mutmut_48,
+    "x_create_x509_certificate__mutmut_49": x_create_x509_certificate__mutmut_49,
+    "x_create_x509_certificate__mutmut_50": x_create_x509_certificate__mutmut_50,
+    "x_create_x509_certificate__mutmut_51": x_create_x509_certificate__mutmut_51,
+    "x_create_x509_certificate__mutmut_52": x_create_x509_certificate__mutmut_52,
+    "x_create_x509_certificate__mutmut_53": x_create_x509_certificate__mutmut_53,
+    "x_create_x509_certificate__mutmut_54": x_create_x509_certificate__mutmut_54,
+    "x_create_x509_certificate__mutmut_55": x_create_x509_certificate__mutmut_55,
+    "x_create_x509_certificate__mutmut_56": x_create_x509_certificate__mutmut_56,
+    "x_create_x509_certificate__mutmut_57": x_create_x509_certificate__mutmut_57,
+    "x_create_x509_certificate__mutmut_58": x_create_x509_certificate__mutmut_58,
+    "x_create_x509_certificate__mutmut_59": x_create_x509_certificate__mutmut_59,
+    "x_create_x509_certificate__mutmut_60": x_create_x509_certificate__mutmut_60,
+    "x_create_x509_certificate__mutmut_61": x_create_x509_certificate__mutmut_61,
+    "x_create_x509_certificate__mutmut_62": x_create_x509_certificate__mutmut_62,
+    "x_create_x509_certificate__mutmut_63": x_create_x509_certificate__mutmut_63,
+    "x_create_x509_certificate__mutmut_64": x_create_x509_certificate__mutmut_64,
+    "x_create_x509_certificate__mutmut_65": x_create_x509_certificate__mutmut_65,
+    "x_create_x509_certificate__mutmut_66": x_create_x509_certificate__mutmut_66,
+    "x_create_x509_certificate__mutmut_67": x_create_x509_certificate__mutmut_67,
+    "x_create_x509_certificate__mutmut_68": x_create_x509_certificate__mutmut_68,
+    "x_create_x509_certificate__mutmut_69": x_create_x509_certificate__mutmut_69,
+    "x_create_x509_certificate__mutmut_70": x_create_x509_certificate__mutmut_70,
+    "x_create_x509_certificate__mutmut_71": x_create_x509_certificate__mutmut_71,
+    "x_create_x509_certificate__mutmut_72": x_create_x509_certificate__mutmut_72,
+    "x_create_x509_certificate__mutmut_73": x_create_x509_certificate__mutmut_73,
+    "x_create_x509_certificate__mutmut_74": x_create_x509_certificate__mutmut_74,
+    "x_create_x509_certificate__mutmut_75": x_create_x509_certificate__mutmut_75,
+    "x_create_x509_certificate__mutmut_76": x_create_x509_certificate__mutmut_76,
+    "x_create_x509_certificate__mutmut_77": x_create_x509_certificate__mutmut_77,
+    "x_create_x509_certificate__mutmut_78": x_create_x509_certificate__mutmut_78,
+    "x_create_x509_certificate__mutmut_79": x_create_x509_certificate__mutmut_79,
+    "x_create_x509_certificate__mutmut_80": x_create_x509_certificate__mutmut_80,
+    "x_create_x509_certificate__mutmut_81": x_create_x509_certificate__mutmut_81,
+    "x_create_x509_certificate__mutmut_82": x_create_x509_certificate__mutmut_82,
+    "x_create_x509_certificate__mutmut_83": x_create_x509_certificate__mutmut_83,
+    "x_create_x509_certificate__mutmut_84": x_create_x509_certificate__mutmut_84,
+    "x_create_x509_certificate__mutmut_85": x_create_x509_certificate__mutmut_85,
+    "x_create_x509_certificate__mutmut_86": x_create_x509_certificate__mutmut_86,
+    "x_create_x509_certificate__mutmut_87": x_create_x509_certificate__mutmut_87,
+    "x_create_x509_certificate__mutmut_88": x_create_x509_certificate__mutmut_88,
+    "x_create_x509_certificate__mutmut_89": x_create_x509_certificate__mutmut_89,
+    "x_create_x509_certificate__mutmut_90": x_create_x509_certificate__mutmut_90,
+    "x_create_x509_certificate__mutmut_91": x_create_x509_certificate__mutmut_91,
+    "x_create_x509_certificate__mutmut_92": x_create_x509_certificate__mutmut_92,
+    "x_create_x509_certificate__mutmut_93": x_create_x509_certificate__mutmut_93,
+    "x_create_x509_certificate__mutmut_94": x_create_x509_certificate__mutmut_94,
+    "x_create_x509_certificate__mutmut_95": x_create_x509_certificate__mutmut_95,
+    "x_create_x509_certificate__mutmut_96": x_create_x509_certificate__mutmut_96,
+    "x_create_x509_certificate__mutmut_97": x_create_x509_certificate__mutmut_97,
+    "x_create_x509_certificate__mutmut_98": x_create_x509_certificate__mutmut_98,
+    "x_create_x509_certificate__mutmut_99": x_create_x509_certificate__mutmut_99,
+    "x_create_x509_certificate__mutmut_100": x_create_x509_certificate__mutmut_100,
+    "x_create_x509_certificate__mutmut_101": x_create_x509_certificate__mutmut_101,
+    "x_create_x509_certificate__mutmut_102": x_create_x509_certificate__mutmut_102,
+    "x_create_x509_certificate__mutmut_103": x_create_x509_certificate__mutmut_103,
+    "x_create_x509_certificate__mutmut_104": x_create_x509_certificate__mutmut_104,
+    "x_create_x509_certificate__mutmut_105": x_create_x509_certificate__mutmut_105,
+    "x_create_x509_certificate__mutmut_106": x_create_x509_certificate__mutmut_106,
+    "x_create_x509_certificate__mutmut_107": x_create_x509_certificate__mutmut_107,
+    "x_create_x509_certificate__mutmut_108": x_create_x509_certificate__mutmut_108,
+    "x_create_x509_certificate__mutmut_109": x_create_x509_certificate__mutmut_109,
+    "x_create_x509_certificate__mutmut_110": x_create_x509_certificate__mutmut_110,
+    "x_create_x509_certificate__mutmut_111": x_create_x509_certificate__mutmut_111,
+    "x_create_x509_certificate__mutmut_112": x_create_x509_certificate__mutmut_112,
+    "x_create_x509_certificate__mutmut_113": x_create_x509_certificate__mutmut_113,
+    "x_create_x509_certificate__mutmut_114": x_create_x509_certificate__mutmut_114,
+    "x_create_x509_certificate__mutmut_115": x_create_x509_certificate__mutmut_115,
+    "x_create_x509_certificate__mutmut_116": x_create_x509_certificate__mutmut_116,
+    "x_create_x509_certificate__mutmut_117": x_create_x509_certificate__mutmut_117,
+    "x_create_x509_certificate__mutmut_118": x_create_x509_certificate__mutmut_118,
+    "x_create_x509_certificate__mutmut_119": x_create_x509_certificate__mutmut_119,
+    "x_create_x509_certificate__mutmut_120": x_create_x509_certificate__mutmut_120,
+    "x_create_x509_certificate__mutmut_121": x_create_x509_certificate__mutmut_121,
+    "x_create_x509_certificate__mutmut_122": x_create_x509_certificate__mutmut_122,
+    "x_create_x509_certificate__mutmut_123": x_create_x509_certificate__mutmut_123,
+    "x_create_x509_certificate__mutmut_124": x_create_x509_certificate__mutmut_124,
+    "x_create_x509_certificate__mutmut_125": x_create_x509_certificate__mutmut_125,
+    "x_create_x509_certificate__mutmut_126": x_create_x509_certificate__mutmut_126,
+    "x_create_x509_certificate__mutmut_127": x_create_x509_certificate__mutmut_127,
+    "x_create_x509_certificate__mutmut_128": x_create_x509_certificate__mutmut_128,
+    "x_create_x509_certificate__mutmut_129": x_create_x509_certificate__mutmut_129,
+    "x_create_x509_certificate__mutmut_130": x_create_x509_certificate__mutmut_130,
+    "x_create_x509_certificate__mutmut_131": x_create_x509_certificate__mutmut_131,
+    "x_create_x509_certificate__mutmut_132": x_create_x509_certificate__mutmut_132,
+    "x_create_x509_certificate__mutmut_133": x_create_x509_certificate__mutmut_133,
+    "x_create_x509_certificate__mutmut_134": x_create_x509_certificate__mutmut_134,
+    "x_create_x509_certificate__mutmut_135": x_create_x509_certificate__mutmut_135,
+    "x_create_x509_certificate__mutmut_136": x_create_x509_certificate__mutmut_136,
+    "x_create_x509_certificate__mutmut_137": x_create_x509_certificate__mutmut_137,
+    "x_create_x509_certificate__mutmut_138": x_create_x509_certificate__mutmut_138,
+    "x_create_x509_certificate__mutmut_139": x_create_x509_certificate__mutmut_139,
+    "x_create_x509_certificate__mutmut_140": x_create_x509_certificate__mutmut_140,
+    "x_create_x509_certificate__mutmut_141": x_create_x509_certificate__mutmut_141,
+    "x_create_x509_certificate__mutmut_142": x_create_x509_certificate__mutmut_142,
+    "x_create_x509_certificate__mutmut_143": x_create_x509_certificate__mutmut_143,
+    "x_create_x509_certificate__mutmut_144": x_create_x509_certificate__mutmut_144,
+    "x_create_x509_certificate__mutmut_145": x_create_x509_certificate__mutmut_145,
+    "x_create_x509_certificate__mutmut_146": x_create_x509_certificate__mutmut_146,
 }
 
+
 def create_x509_certificate(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_x509_certificate__mutmut_orig, x_create_x509_certificate__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_x509_certificate__mutmut_orig, x_create_x509_certificate__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_x509_certificate.__signature__ = _mutmut_signature(x_create_x509_certificate__mutmut_orig)
-x_create_x509_certificate__mutmut_orig.__name__ = 'x_create_x509_certificate'
+x_create_x509_certificate__mutmut_orig.__name__ = "x_create_x509_certificate"
 
 
 def x_validate_signature__mutmut_orig(
@@ -16742,7 +16759,7 @@ def x_validate_signature__mutmut_26(
                 signature,
                 tbs_certificate_bytes,
                 padding.PKCS1v15(),
-                )
+            )
         elif isinstance(signing_public_key, ec.EllipticCurvePublicKey):
             cast("ec.EllipticCurvePublicKey", signing_public_key).verify(
                 signature,
@@ -16941,7 +16958,9 @@ def x_validate_signature__mutmut_30(
             return False
 
         if isinstance(signing_public_key, rsa.RSAPublicKey):
-            cast("rsa.RSAPublicKey", ).verify(
+            cast(
+                "rsa.RSAPublicKey",
+            ).verify(
                 signature,
                 tbs_certificate_bytes,
                 padding.PKCS1v15(),
@@ -17408,7 +17427,7 @@ def x_validate_signature__mutmut_39(
             cast("ec.EllipticCurvePublicKey", signing_public_key).verify(
                 signature,
                 tbs_certificate_bytes,
-                )
+            )
         else:
             logger.error(f"📜🔍❌ Unsupported signing public key type: {type(signing_public_key)}")
             return False
@@ -17608,7 +17627,9 @@ def x_validate_signature__mutmut_43(
                 signature_hash_algorithm,
             )
         elif isinstance(signing_public_key, ec.EllipticCurvePublicKey):
-            cast("ec.EllipticCurvePublicKey", ).verify(
+            cast(
+                "ec.EllipticCurvePublicKey",
+            ).verify(
                 signature,
                 tbs_certificate_bytes,
                 ec.ECDSA(signature_hash_algorithm),
@@ -18184,69 +18205,74 @@ def x_validate_signature__mutmut_54(
         logger.debug(f"📜🔍❌ Signature validation failed: {type(e).__name__}: {e}")
         return True
 
-x_validate_signature__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_signature__mutmut_1': x_validate_signature__mutmut_1, 
-    'x_validate_signature__mutmut_2': x_validate_signature__mutmut_2, 
-    'x_validate_signature__mutmut_3': x_validate_signature__mutmut_3, 
-    'x_validate_signature__mutmut_4': x_validate_signature__mutmut_4, 
-    'x_validate_signature__mutmut_5': x_validate_signature__mutmut_5, 
-    'x_validate_signature__mutmut_6': x_validate_signature__mutmut_6, 
-    'x_validate_signature__mutmut_7': x_validate_signature__mutmut_7, 
-    'x_validate_signature__mutmut_8': x_validate_signature__mutmut_8, 
-    'x_validate_signature__mutmut_9': x_validate_signature__mutmut_9, 
-    'x_validate_signature__mutmut_10': x_validate_signature__mutmut_10, 
-    'x_validate_signature__mutmut_11': x_validate_signature__mutmut_11, 
-    'x_validate_signature__mutmut_12': x_validate_signature__mutmut_12, 
-    'x_validate_signature__mutmut_13': x_validate_signature__mutmut_13, 
-    'x_validate_signature__mutmut_14': x_validate_signature__mutmut_14, 
-    'x_validate_signature__mutmut_15': x_validate_signature__mutmut_15, 
-    'x_validate_signature__mutmut_16': x_validate_signature__mutmut_16, 
-    'x_validate_signature__mutmut_17': x_validate_signature__mutmut_17, 
-    'x_validate_signature__mutmut_18': x_validate_signature__mutmut_18, 
-    'x_validate_signature__mutmut_19': x_validate_signature__mutmut_19, 
-    'x_validate_signature__mutmut_20': x_validate_signature__mutmut_20, 
-    'x_validate_signature__mutmut_21': x_validate_signature__mutmut_21, 
-    'x_validate_signature__mutmut_22': x_validate_signature__mutmut_22, 
-    'x_validate_signature__mutmut_23': x_validate_signature__mutmut_23, 
-    'x_validate_signature__mutmut_24': x_validate_signature__mutmut_24, 
-    'x_validate_signature__mutmut_25': x_validate_signature__mutmut_25, 
-    'x_validate_signature__mutmut_26': x_validate_signature__mutmut_26, 
-    'x_validate_signature__mutmut_27': x_validate_signature__mutmut_27, 
-    'x_validate_signature__mutmut_28': x_validate_signature__mutmut_28, 
-    'x_validate_signature__mutmut_29': x_validate_signature__mutmut_29, 
-    'x_validate_signature__mutmut_30': x_validate_signature__mutmut_30, 
-    'x_validate_signature__mutmut_31': x_validate_signature__mutmut_31, 
-    'x_validate_signature__mutmut_32': x_validate_signature__mutmut_32, 
-    'x_validate_signature__mutmut_33': x_validate_signature__mutmut_33, 
-    'x_validate_signature__mutmut_34': x_validate_signature__mutmut_34, 
-    'x_validate_signature__mutmut_35': x_validate_signature__mutmut_35, 
-    'x_validate_signature__mutmut_36': x_validate_signature__mutmut_36, 
-    'x_validate_signature__mutmut_37': x_validate_signature__mutmut_37, 
-    'x_validate_signature__mutmut_38': x_validate_signature__mutmut_38, 
-    'x_validate_signature__mutmut_39': x_validate_signature__mutmut_39, 
-    'x_validate_signature__mutmut_40': x_validate_signature__mutmut_40, 
-    'x_validate_signature__mutmut_41': x_validate_signature__mutmut_41, 
-    'x_validate_signature__mutmut_42': x_validate_signature__mutmut_42, 
-    'x_validate_signature__mutmut_43': x_validate_signature__mutmut_43, 
-    'x_validate_signature__mutmut_44': x_validate_signature__mutmut_44, 
-    'x_validate_signature__mutmut_45': x_validate_signature__mutmut_45, 
-    'x_validate_signature__mutmut_46': x_validate_signature__mutmut_46, 
-    'x_validate_signature__mutmut_47': x_validate_signature__mutmut_47, 
-    'x_validate_signature__mutmut_48': x_validate_signature__mutmut_48, 
-    'x_validate_signature__mutmut_49': x_validate_signature__mutmut_49, 
-    'x_validate_signature__mutmut_50': x_validate_signature__mutmut_50, 
-    'x_validate_signature__mutmut_51': x_validate_signature__mutmut_51, 
-    'x_validate_signature__mutmut_52': x_validate_signature__mutmut_52, 
-    'x_validate_signature__mutmut_53': x_validate_signature__mutmut_53, 
-    'x_validate_signature__mutmut_54': x_validate_signature__mutmut_54
+
+x_validate_signature__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_signature__mutmut_1": x_validate_signature__mutmut_1,
+    "x_validate_signature__mutmut_2": x_validate_signature__mutmut_2,
+    "x_validate_signature__mutmut_3": x_validate_signature__mutmut_3,
+    "x_validate_signature__mutmut_4": x_validate_signature__mutmut_4,
+    "x_validate_signature__mutmut_5": x_validate_signature__mutmut_5,
+    "x_validate_signature__mutmut_6": x_validate_signature__mutmut_6,
+    "x_validate_signature__mutmut_7": x_validate_signature__mutmut_7,
+    "x_validate_signature__mutmut_8": x_validate_signature__mutmut_8,
+    "x_validate_signature__mutmut_9": x_validate_signature__mutmut_9,
+    "x_validate_signature__mutmut_10": x_validate_signature__mutmut_10,
+    "x_validate_signature__mutmut_11": x_validate_signature__mutmut_11,
+    "x_validate_signature__mutmut_12": x_validate_signature__mutmut_12,
+    "x_validate_signature__mutmut_13": x_validate_signature__mutmut_13,
+    "x_validate_signature__mutmut_14": x_validate_signature__mutmut_14,
+    "x_validate_signature__mutmut_15": x_validate_signature__mutmut_15,
+    "x_validate_signature__mutmut_16": x_validate_signature__mutmut_16,
+    "x_validate_signature__mutmut_17": x_validate_signature__mutmut_17,
+    "x_validate_signature__mutmut_18": x_validate_signature__mutmut_18,
+    "x_validate_signature__mutmut_19": x_validate_signature__mutmut_19,
+    "x_validate_signature__mutmut_20": x_validate_signature__mutmut_20,
+    "x_validate_signature__mutmut_21": x_validate_signature__mutmut_21,
+    "x_validate_signature__mutmut_22": x_validate_signature__mutmut_22,
+    "x_validate_signature__mutmut_23": x_validate_signature__mutmut_23,
+    "x_validate_signature__mutmut_24": x_validate_signature__mutmut_24,
+    "x_validate_signature__mutmut_25": x_validate_signature__mutmut_25,
+    "x_validate_signature__mutmut_26": x_validate_signature__mutmut_26,
+    "x_validate_signature__mutmut_27": x_validate_signature__mutmut_27,
+    "x_validate_signature__mutmut_28": x_validate_signature__mutmut_28,
+    "x_validate_signature__mutmut_29": x_validate_signature__mutmut_29,
+    "x_validate_signature__mutmut_30": x_validate_signature__mutmut_30,
+    "x_validate_signature__mutmut_31": x_validate_signature__mutmut_31,
+    "x_validate_signature__mutmut_32": x_validate_signature__mutmut_32,
+    "x_validate_signature__mutmut_33": x_validate_signature__mutmut_33,
+    "x_validate_signature__mutmut_34": x_validate_signature__mutmut_34,
+    "x_validate_signature__mutmut_35": x_validate_signature__mutmut_35,
+    "x_validate_signature__mutmut_36": x_validate_signature__mutmut_36,
+    "x_validate_signature__mutmut_37": x_validate_signature__mutmut_37,
+    "x_validate_signature__mutmut_38": x_validate_signature__mutmut_38,
+    "x_validate_signature__mutmut_39": x_validate_signature__mutmut_39,
+    "x_validate_signature__mutmut_40": x_validate_signature__mutmut_40,
+    "x_validate_signature__mutmut_41": x_validate_signature__mutmut_41,
+    "x_validate_signature__mutmut_42": x_validate_signature__mutmut_42,
+    "x_validate_signature__mutmut_43": x_validate_signature__mutmut_43,
+    "x_validate_signature__mutmut_44": x_validate_signature__mutmut_44,
+    "x_validate_signature__mutmut_45": x_validate_signature__mutmut_45,
+    "x_validate_signature__mutmut_46": x_validate_signature__mutmut_46,
+    "x_validate_signature__mutmut_47": x_validate_signature__mutmut_47,
+    "x_validate_signature__mutmut_48": x_validate_signature__mutmut_48,
+    "x_validate_signature__mutmut_49": x_validate_signature__mutmut_49,
+    "x_validate_signature__mutmut_50": x_validate_signature__mutmut_50,
+    "x_validate_signature__mutmut_51": x_validate_signature__mutmut_51,
+    "x_validate_signature__mutmut_52": x_validate_signature__mutmut_52,
+    "x_validate_signature__mutmut_53": x_validate_signature__mutmut_53,
+    "x_validate_signature__mutmut_54": x_validate_signature__mutmut_54,
 }
 
+
 def validate_signature(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_signature__mutmut_orig, x_validate_signature__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_signature__mutmut_orig, x_validate_signature__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_signature.__signature__ = _mutmut_signature(x_validate_signature__mutmut_orig)
-x_validate_signature__mutmut_orig.__name__ = 'x_validate_signature'
+x_validate_signature__mutmut_orig.__name__ = "x_validate_signature"
 
 
 # <3 🧱🤝🔒🪄

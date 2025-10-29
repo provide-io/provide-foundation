@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -74,17 +77,23 @@ class VersionResolver:
     def xǁVersionResolverǁ__init____mutmut_1(self) -> None:
         """Initialize version resolver with pattern cache."""
         self._pattern_cache: dict[str, re.Pattern[str]] = None
-    
-    xǁVersionResolverǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁ__init____mutmut_1': xǁVersionResolverǁ__init____mutmut_1
+
+    xǁVersionResolverǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁ__init____mutmut_1": xǁVersionResolverǁ__init____mutmut_1
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁVersionResolverǁ__init____mutmut_orig)
-    xǁVersionResolverǁ__init____mutmut_orig.__name__ = 'xǁVersionResolverǁ__init__'
+    xǁVersionResolverǁ__init____mutmut_orig.__name__ = "xǁVersionResolverǁ__init__"
 
     def xǁVersionResolverǁresolve__mutmut_orig(self, spec: str, available: list[str]) -> str | None:
         """Resolve a version specification to a concrete version.
@@ -1072,7 +1081,9 @@ class VersionResolver:
 
         # Handle ranges
         if spec.startswith("~"):
-            return self.resolve_tilde(spec[1:], )
+            return self.resolve_tilde(
+                spec[1:],
+            )
         if spec.startswith("^"):
             return self.resolve_caret(spec[1:], available)
 
@@ -1354,7 +1365,9 @@ class VersionResolver:
         if spec.startswith("~"):
             return self.resolve_tilde(spec[1:], available)
         if spec.startswith("^"):
-            return self.resolve_caret(spec[1:], )
+            return self.resolve_caret(
+                spec[1:],
+            )
 
         # Handle wildcards
         if "*" in spec:
@@ -1638,7 +1651,9 @@ class VersionResolver:
 
         # Handle wildcards
         if "*" in spec:
-            return self.resolve_wildcard(spec, )
+            return self.resolve_wildcard(
+                spec,
+            )
 
         # Exact match
         if spec in available:
@@ -1685,55 +1700,61 @@ class VersionResolver:
             return spec
 
         return None
-    
-    xǁVersionResolverǁresolve__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁresolve__mutmut_1': xǁVersionResolverǁresolve__mutmut_1, 
-        'xǁVersionResolverǁresolve__mutmut_2': xǁVersionResolverǁresolve__mutmut_2, 
-        'xǁVersionResolverǁresolve__mutmut_3': xǁVersionResolverǁresolve__mutmut_3, 
-        'xǁVersionResolverǁresolve__mutmut_4': xǁVersionResolverǁresolve__mutmut_4, 
-        'xǁVersionResolverǁresolve__mutmut_5': xǁVersionResolverǁresolve__mutmut_5, 
-        'xǁVersionResolverǁresolve__mutmut_6': xǁVersionResolverǁresolve__mutmut_6, 
-        'xǁVersionResolverǁresolve__mutmut_7': xǁVersionResolverǁresolve__mutmut_7, 
-        'xǁVersionResolverǁresolve__mutmut_8': xǁVersionResolverǁresolve__mutmut_8, 
-        'xǁVersionResolverǁresolve__mutmut_9': xǁVersionResolverǁresolve__mutmut_9, 
-        'xǁVersionResolverǁresolve__mutmut_10': xǁVersionResolverǁresolve__mutmut_10, 
-        'xǁVersionResolverǁresolve__mutmut_11': xǁVersionResolverǁresolve__mutmut_11, 
-        'xǁVersionResolverǁresolve__mutmut_12': xǁVersionResolverǁresolve__mutmut_12, 
-        'xǁVersionResolverǁresolve__mutmut_13': xǁVersionResolverǁresolve__mutmut_13, 
-        'xǁVersionResolverǁresolve__mutmut_14': xǁVersionResolverǁresolve__mutmut_14, 
-        'xǁVersionResolverǁresolve__mutmut_15': xǁVersionResolverǁresolve__mutmut_15, 
-        'xǁVersionResolverǁresolve__mutmut_16': xǁVersionResolverǁresolve__mutmut_16, 
-        'xǁVersionResolverǁresolve__mutmut_17': xǁVersionResolverǁresolve__mutmut_17, 
-        'xǁVersionResolverǁresolve__mutmut_18': xǁVersionResolverǁresolve__mutmut_18, 
-        'xǁVersionResolverǁresolve__mutmut_19': xǁVersionResolverǁresolve__mutmut_19, 
-        'xǁVersionResolverǁresolve__mutmut_20': xǁVersionResolverǁresolve__mutmut_20, 
-        'xǁVersionResolverǁresolve__mutmut_21': xǁVersionResolverǁresolve__mutmut_21, 
-        'xǁVersionResolverǁresolve__mutmut_22': xǁVersionResolverǁresolve__mutmut_22, 
-        'xǁVersionResolverǁresolve__mutmut_23': xǁVersionResolverǁresolve__mutmut_23, 
-        'xǁVersionResolverǁresolve__mutmut_24': xǁVersionResolverǁresolve__mutmut_24, 
-        'xǁVersionResolverǁresolve__mutmut_25': xǁVersionResolverǁresolve__mutmut_25, 
-        'xǁVersionResolverǁresolve__mutmut_26': xǁVersionResolverǁresolve__mutmut_26, 
-        'xǁVersionResolverǁresolve__mutmut_27': xǁVersionResolverǁresolve__mutmut_27, 
-        'xǁVersionResolverǁresolve__mutmut_28': xǁVersionResolverǁresolve__mutmut_28, 
-        'xǁVersionResolverǁresolve__mutmut_29': xǁVersionResolverǁresolve__mutmut_29, 
-        'xǁVersionResolverǁresolve__mutmut_30': xǁVersionResolverǁresolve__mutmut_30, 
-        'xǁVersionResolverǁresolve__mutmut_31': xǁVersionResolverǁresolve__mutmut_31, 
-        'xǁVersionResolverǁresolve__mutmut_32': xǁVersionResolverǁresolve__mutmut_32, 
-        'xǁVersionResolverǁresolve__mutmut_33': xǁVersionResolverǁresolve__mutmut_33, 
-        'xǁVersionResolverǁresolve__mutmut_34': xǁVersionResolverǁresolve__mutmut_34, 
-        'xǁVersionResolverǁresolve__mutmut_35': xǁVersionResolverǁresolve__mutmut_35, 
-        'xǁVersionResolverǁresolve__mutmut_36': xǁVersionResolverǁresolve__mutmut_36, 
-        'xǁVersionResolverǁresolve__mutmut_37': xǁVersionResolverǁresolve__mutmut_37, 
-        'xǁVersionResolverǁresolve__mutmut_38': xǁVersionResolverǁresolve__mutmut_38, 
-        'xǁVersionResolverǁresolve__mutmut_39': xǁVersionResolverǁresolve__mutmut_39
+
+    xǁVersionResolverǁresolve__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁresolve__mutmut_1": xǁVersionResolverǁresolve__mutmut_1,
+        "xǁVersionResolverǁresolve__mutmut_2": xǁVersionResolverǁresolve__mutmut_2,
+        "xǁVersionResolverǁresolve__mutmut_3": xǁVersionResolverǁresolve__mutmut_3,
+        "xǁVersionResolverǁresolve__mutmut_4": xǁVersionResolverǁresolve__mutmut_4,
+        "xǁVersionResolverǁresolve__mutmut_5": xǁVersionResolverǁresolve__mutmut_5,
+        "xǁVersionResolverǁresolve__mutmut_6": xǁVersionResolverǁresolve__mutmut_6,
+        "xǁVersionResolverǁresolve__mutmut_7": xǁVersionResolverǁresolve__mutmut_7,
+        "xǁVersionResolverǁresolve__mutmut_8": xǁVersionResolverǁresolve__mutmut_8,
+        "xǁVersionResolverǁresolve__mutmut_9": xǁVersionResolverǁresolve__mutmut_9,
+        "xǁVersionResolverǁresolve__mutmut_10": xǁVersionResolverǁresolve__mutmut_10,
+        "xǁVersionResolverǁresolve__mutmut_11": xǁVersionResolverǁresolve__mutmut_11,
+        "xǁVersionResolverǁresolve__mutmut_12": xǁVersionResolverǁresolve__mutmut_12,
+        "xǁVersionResolverǁresolve__mutmut_13": xǁVersionResolverǁresolve__mutmut_13,
+        "xǁVersionResolverǁresolve__mutmut_14": xǁVersionResolverǁresolve__mutmut_14,
+        "xǁVersionResolverǁresolve__mutmut_15": xǁVersionResolverǁresolve__mutmut_15,
+        "xǁVersionResolverǁresolve__mutmut_16": xǁVersionResolverǁresolve__mutmut_16,
+        "xǁVersionResolverǁresolve__mutmut_17": xǁVersionResolverǁresolve__mutmut_17,
+        "xǁVersionResolverǁresolve__mutmut_18": xǁVersionResolverǁresolve__mutmut_18,
+        "xǁVersionResolverǁresolve__mutmut_19": xǁVersionResolverǁresolve__mutmut_19,
+        "xǁVersionResolverǁresolve__mutmut_20": xǁVersionResolverǁresolve__mutmut_20,
+        "xǁVersionResolverǁresolve__mutmut_21": xǁVersionResolverǁresolve__mutmut_21,
+        "xǁVersionResolverǁresolve__mutmut_22": xǁVersionResolverǁresolve__mutmut_22,
+        "xǁVersionResolverǁresolve__mutmut_23": xǁVersionResolverǁresolve__mutmut_23,
+        "xǁVersionResolverǁresolve__mutmut_24": xǁVersionResolverǁresolve__mutmut_24,
+        "xǁVersionResolverǁresolve__mutmut_25": xǁVersionResolverǁresolve__mutmut_25,
+        "xǁVersionResolverǁresolve__mutmut_26": xǁVersionResolverǁresolve__mutmut_26,
+        "xǁVersionResolverǁresolve__mutmut_27": xǁVersionResolverǁresolve__mutmut_27,
+        "xǁVersionResolverǁresolve__mutmut_28": xǁVersionResolverǁresolve__mutmut_28,
+        "xǁVersionResolverǁresolve__mutmut_29": xǁVersionResolverǁresolve__mutmut_29,
+        "xǁVersionResolverǁresolve__mutmut_30": xǁVersionResolverǁresolve__mutmut_30,
+        "xǁVersionResolverǁresolve__mutmut_31": xǁVersionResolverǁresolve__mutmut_31,
+        "xǁVersionResolverǁresolve__mutmut_32": xǁVersionResolverǁresolve__mutmut_32,
+        "xǁVersionResolverǁresolve__mutmut_33": xǁVersionResolverǁresolve__mutmut_33,
+        "xǁVersionResolverǁresolve__mutmut_34": xǁVersionResolverǁresolve__mutmut_34,
+        "xǁVersionResolverǁresolve__mutmut_35": xǁVersionResolverǁresolve__mutmut_35,
+        "xǁVersionResolverǁresolve__mutmut_36": xǁVersionResolverǁresolve__mutmut_36,
+        "xǁVersionResolverǁresolve__mutmut_37": xǁVersionResolverǁresolve__mutmut_37,
+        "xǁVersionResolverǁresolve__mutmut_38": xǁVersionResolverǁresolve__mutmut_38,
+        "xǁVersionResolverǁresolve__mutmut_39": xǁVersionResolverǁresolve__mutmut_39,
     }
-    
+
     def resolve(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁresolve__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁresolve__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁresolve__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁresolve__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     resolve.__signature__ = _mutmut_signature(xǁVersionResolverǁresolve__mutmut_orig)
-    xǁVersionResolverǁresolve__mutmut_orig.__name__ = 'xǁVersionResolverǁresolve'
+    xǁVersionResolverǁresolve__mutmut_orig.__name__ = "xǁVersionResolverǁresolve"
 
     def xǁVersionResolverǁget_latest_stable__mutmut_orig(self, versions: list[str]) -> str | None:
         """Get latest stable version (no pre-release).
@@ -1862,23 +1883,29 @@ class VersionResolver:
             return None
 
         return self.sort_versions(stable)[-2]
-    
-    xǁVersionResolverǁget_latest_stable__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁget_latest_stable__mutmut_1': xǁVersionResolverǁget_latest_stable__mutmut_1, 
-        'xǁVersionResolverǁget_latest_stable__mutmut_2': xǁVersionResolverǁget_latest_stable__mutmut_2, 
-        'xǁVersionResolverǁget_latest_stable__mutmut_3': xǁVersionResolverǁget_latest_stable__mutmut_3, 
-        'xǁVersionResolverǁget_latest_stable__mutmut_4': xǁVersionResolverǁget_latest_stable__mutmut_4, 
-        'xǁVersionResolverǁget_latest_stable__mutmut_5': xǁVersionResolverǁget_latest_stable__mutmut_5, 
-        'xǁVersionResolverǁget_latest_stable__mutmut_6': xǁVersionResolverǁget_latest_stable__mutmut_6, 
-        'xǁVersionResolverǁget_latest_stable__mutmut_7': xǁVersionResolverǁget_latest_stable__mutmut_7
+
+    xǁVersionResolverǁget_latest_stable__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁget_latest_stable__mutmut_1": xǁVersionResolverǁget_latest_stable__mutmut_1,
+        "xǁVersionResolverǁget_latest_stable__mutmut_2": xǁVersionResolverǁget_latest_stable__mutmut_2,
+        "xǁVersionResolverǁget_latest_stable__mutmut_3": xǁVersionResolverǁget_latest_stable__mutmut_3,
+        "xǁVersionResolverǁget_latest_stable__mutmut_4": xǁVersionResolverǁget_latest_stable__mutmut_4,
+        "xǁVersionResolverǁget_latest_stable__mutmut_5": xǁVersionResolverǁget_latest_stable__mutmut_5,
+        "xǁVersionResolverǁget_latest_stable__mutmut_6": xǁVersionResolverǁget_latest_stable__mutmut_6,
+        "xǁVersionResolverǁget_latest_stable__mutmut_7": xǁVersionResolverǁget_latest_stable__mutmut_7,
     }
-    
+
     def get_latest_stable(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁget_latest_stable__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁget_latest_stable__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁget_latest_stable__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁget_latest_stable__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_latest_stable.__signature__ = _mutmut_signature(xǁVersionResolverǁget_latest_stable__mutmut_orig)
-    xǁVersionResolverǁget_latest_stable__mutmut_orig.__name__ = 'xǁVersionResolverǁget_latest_stable'
+    xǁVersionResolverǁget_latest_stable__mutmut_orig.__name__ = "xǁVersionResolverǁget_latest_stable"
 
     def xǁVersionResolverǁget_latest_prerelease__mutmut_orig(self, versions: list[str]) -> str | None:
         """Get latest pre-release version.
@@ -1991,22 +2018,30 @@ class VersionResolver:
             return None
 
         return self.sort_versions(prerelease)[-2]
-    
-    xǁVersionResolverǁget_latest_prerelease__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁget_latest_prerelease__mutmut_1': xǁVersionResolverǁget_latest_prerelease__mutmut_1, 
-        'xǁVersionResolverǁget_latest_prerelease__mutmut_2': xǁVersionResolverǁget_latest_prerelease__mutmut_2, 
-        'xǁVersionResolverǁget_latest_prerelease__mutmut_3': xǁVersionResolverǁget_latest_prerelease__mutmut_3, 
-        'xǁVersionResolverǁget_latest_prerelease__mutmut_4': xǁVersionResolverǁget_latest_prerelease__mutmut_4, 
-        'xǁVersionResolverǁget_latest_prerelease__mutmut_5': xǁVersionResolverǁget_latest_prerelease__mutmut_5, 
-        'xǁVersionResolverǁget_latest_prerelease__mutmut_6': xǁVersionResolverǁget_latest_prerelease__mutmut_6
+
+    xǁVersionResolverǁget_latest_prerelease__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁget_latest_prerelease__mutmut_1": xǁVersionResolverǁget_latest_prerelease__mutmut_1,
+        "xǁVersionResolverǁget_latest_prerelease__mutmut_2": xǁVersionResolverǁget_latest_prerelease__mutmut_2,
+        "xǁVersionResolverǁget_latest_prerelease__mutmut_3": xǁVersionResolverǁget_latest_prerelease__mutmut_3,
+        "xǁVersionResolverǁget_latest_prerelease__mutmut_4": xǁVersionResolverǁget_latest_prerelease__mutmut_4,
+        "xǁVersionResolverǁget_latest_prerelease__mutmut_5": xǁVersionResolverǁget_latest_prerelease__mutmut_5,
+        "xǁVersionResolverǁget_latest_prerelease__mutmut_6": xǁVersionResolverǁget_latest_prerelease__mutmut_6,
     }
-    
+
     def get_latest_prerelease(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁget_latest_prerelease__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁget_latest_prerelease__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    get_latest_prerelease.__signature__ = _mutmut_signature(xǁVersionResolverǁget_latest_prerelease__mutmut_orig)
-    xǁVersionResolverǁget_latest_prerelease__mutmut_orig.__name__ = 'xǁVersionResolverǁget_latest_prerelease'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁget_latest_prerelease__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁget_latest_prerelease__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    get_latest_prerelease.__signature__ = _mutmut_signature(
+        xǁVersionResolverǁget_latest_prerelease__mutmut_orig
+    )
+    xǁVersionResolverǁget_latest_prerelease__mutmut_orig.__name__ = "xǁVersionResolverǁget_latest_prerelease"
 
     def xǁVersionResolverǁget_latest_any__mutmut_orig(self, versions: list[str]) -> str | None:
         """Get latest version (including pre-releases).
@@ -2082,20 +2117,26 @@ class VersionResolver:
             return None
 
         return self.sort_versions(versions)[-2]
-    
-    xǁVersionResolverǁget_latest_any__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁget_latest_any__mutmut_1': xǁVersionResolverǁget_latest_any__mutmut_1, 
-        'xǁVersionResolverǁget_latest_any__mutmut_2': xǁVersionResolverǁget_latest_any__mutmut_2, 
-        'xǁVersionResolverǁget_latest_any__mutmut_3': xǁVersionResolverǁget_latest_any__mutmut_3, 
-        'xǁVersionResolverǁget_latest_any__mutmut_4': xǁVersionResolverǁget_latest_any__mutmut_4
+
+    xǁVersionResolverǁget_latest_any__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁget_latest_any__mutmut_1": xǁVersionResolverǁget_latest_any__mutmut_1,
+        "xǁVersionResolverǁget_latest_any__mutmut_2": xǁVersionResolverǁget_latest_any__mutmut_2,
+        "xǁVersionResolverǁget_latest_any__mutmut_3": xǁVersionResolverǁget_latest_any__mutmut_3,
+        "xǁVersionResolverǁget_latest_any__mutmut_4": xǁVersionResolverǁget_latest_any__mutmut_4,
     }
-    
+
     def get_latest_any(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁget_latest_any__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁget_latest_any__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁget_latest_any__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁget_latest_any__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_latest_any.__signature__ = _mutmut_signature(xǁVersionResolverǁget_latest_any__mutmut_orig)
-    xǁVersionResolverǁget_latest_any__mutmut_orig.__name__ = 'xǁVersionResolverǁget_latest_any'
+    xǁVersionResolverǁget_latest_any__mutmut_orig.__name__ = "xǁVersionResolverǁget_latest_any"
 
     def xǁVersionResolverǁis_prerelease__mutmut_orig(self, version: str) -> bool:
         """Check if version is a pre-release.
@@ -3259,58 +3300,69 @@ class VersionResolver:
         ]
 
         version_lower = version.lower()
-        return any(re.search(pattern, ) for pattern in prerelease_patterns)
-    
-    xǁVersionResolverǁis_prerelease__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁis_prerelease__mutmut_1': xǁVersionResolverǁis_prerelease__mutmut_1, 
-        'xǁVersionResolverǁis_prerelease__mutmut_2': xǁVersionResolverǁis_prerelease__mutmut_2, 
-        'xǁVersionResolverǁis_prerelease__mutmut_3': xǁVersionResolverǁis_prerelease__mutmut_3, 
-        'xǁVersionResolverǁis_prerelease__mutmut_4': xǁVersionResolverǁis_prerelease__mutmut_4, 
-        'xǁVersionResolverǁis_prerelease__mutmut_5': xǁVersionResolverǁis_prerelease__mutmut_5, 
-        'xǁVersionResolverǁis_prerelease__mutmut_6': xǁVersionResolverǁis_prerelease__mutmut_6, 
-        'xǁVersionResolverǁis_prerelease__mutmut_7': xǁVersionResolverǁis_prerelease__mutmut_7, 
-        'xǁVersionResolverǁis_prerelease__mutmut_8': xǁVersionResolverǁis_prerelease__mutmut_8, 
-        'xǁVersionResolverǁis_prerelease__mutmut_9': xǁVersionResolverǁis_prerelease__mutmut_9, 
-        'xǁVersionResolverǁis_prerelease__mutmut_10': xǁVersionResolverǁis_prerelease__mutmut_10, 
-        'xǁVersionResolverǁis_prerelease__mutmut_11': xǁVersionResolverǁis_prerelease__mutmut_11, 
-        'xǁVersionResolverǁis_prerelease__mutmut_12': xǁVersionResolverǁis_prerelease__mutmut_12, 
-        'xǁVersionResolverǁis_prerelease__mutmut_13': xǁVersionResolverǁis_prerelease__mutmut_13, 
-        'xǁVersionResolverǁis_prerelease__mutmut_14': xǁVersionResolverǁis_prerelease__mutmut_14, 
-        'xǁVersionResolverǁis_prerelease__mutmut_15': xǁVersionResolverǁis_prerelease__mutmut_15, 
-        'xǁVersionResolverǁis_prerelease__mutmut_16': xǁVersionResolverǁis_prerelease__mutmut_16, 
-        'xǁVersionResolverǁis_prerelease__mutmut_17': xǁVersionResolverǁis_prerelease__mutmut_17, 
-        'xǁVersionResolverǁis_prerelease__mutmut_18': xǁVersionResolverǁis_prerelease__mutmut_18, 
-        'xǁVersionResolverǁis_prerelease__mutmut_19': xǁVersionResolverǁis_prerelease__mutmut_19, 
-        'xǁVersionResolverǁis_prerelease__mutmut_20': xǁVersionResolverǁis_prerelease__mutmut_20, 
-        'xǁVersionResolverǁis_prerelease__mutmut_21': xǁVersionResolverǁis_prerelease__mutmut_21, 
-        'xǁVersionResolverǁis_prerelease__mutmut_22': xǁVersionResolverǁis_prerelease__mutmut_22, 
-        'xǁVersionResolverǁis_prerelease__mutmut_23': xǁVersionResolverǁis_prerelease__mutmut_23, 
-        'xǁVersionResolverǁis_prerelease__mutmut_24': xǁVersionResolverǁis_prerelease__mutmut_24, 
-        'xǁVersionResolverǁis_prerelease__mutmut_25': xǁVersionResolverǁis_prerelease__mutmut_25, 
-        'xǁVersionResolverǁis_prerelease__mutmut_26': xǁVersionResolverǁis_prerelease__mutmut_26, 
-        'xǁVersionResolverǁis_prerelease__mutmut_27': xǁVersionResolverǁis_prerelease__mutmut_27, 
-        'xǁVersionResolverǁis_prerelease__mutmut_28': xǁVersionResolverǁis_prerelease__mutmut_28, 
-        'xǁVersionResolverǁis_prerelease__mutmut_29': xǁVersionResolverǁis_prerelease__mutmut_29, 
-        'xǁVersionResolverǁis_prerelease__mutmut_30': xǁVersionResolverǁis_prerelease__mutmut_30, 
-        'xǁVersionResolverǁis_prerelease__mutmut_31': xǁVersionResolverǁis_prerelease__mutmut_31, 
-        'xǁVersionResolverǁis_prerelease__mutmut_32': xǁVersionResolverǁis_prerelease__mutmut_32, 
-        'xǁVersionResolverǁis_prerelease__mutmut_33': xǁVersionResolverǁis_prerelease__mutmut_33, 
-        'xǁVersionResolverǁis_prerelease__mutmut_34': xǁVersionResolverǁis_prerelease__mutmut_34, 
-        'xǁVersionResolverǁis_prerelease__mutmut_35': xǁVersionResolverǁis_prerelease__mutmut_35, 
-        'xǁVersionResolverǁis_prerelease__mutmut_36': xǁVersionResolverǁis_prerelease__mutmut_36, 
-        'xǁVersionResolverǁis_prerelease__mutmut_37': xǁVersionResolverǁis_prerelease__mutmut_37, 
-        'xǁVersionResolverǁis_prerelease__mutmut_38': xǁVersionResolverǁis_prerelease__mutmut_38, 
-        'xǁVersionResolverǁis_prerelease__mutmut_39': xǁVersionResolverǁis_prerelease__mutmut_39, 
-        'xǁVersionResolverǁis_prerelease__mutmut_40': xǁVersionResolverǁis_prerelease__mutmut_40, 
-        'xǁVersionResolverǁis_prerelease__mutmut_41': xǁVersionResolverǁis_prerelease__mutmut_41
+        return any(
+            re.search(
+                pattern,
+            )
+            for pattern in prerelease_patterns
+        )
+
+    xǁVersionResolverǁis_prerelease__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁis_prerelease__mutmut_1": xǁVersionResolverǁis_prerelease__mutmut_1,
+        "xǁVersionResolverǁis_prerelease__mutmut_2": xǁVersionResolverǁis_prerelease__mutmut_2,
+        "xǁVersionResolverǁis_prerelease__mutmut_3": xǁVersionResolverǁis_prerelease__mutmut_3,
+        "xǁVersionResolverǁis_prerelease__mutmut_4": xǁVersionResolverǁis_prerelease__mutmut_4,
+        "xǁVersionResolverǁis_prerelease__mutmut_5": xǁVersionResolverǁis_prerelease__mutmut_5,
+        "xǁVersionResolverǁis_prerelease__mutmut_6": xǁVersionResolverǁis_prerelease__mutmut_6,
+        "xǁVersionResolverǁis_prerelease__mutmut_7": xǁVersionResolverǁis_prerelease__mutmut_7,
+        "xǁVersionResolverǁis_prerelease__mutmut_8": xǁVersionResolverǁis_prerelease__mutmut_8,
+        "xǁVersionResolverǁis_prerelease__mutmut_9": xǁVersionResolverǁis_prerelease__mutmut_9,
+        "xǁVersionResolverǁis_prerelease__mutmut_10": xǁVersionResolverǁis_prerelease__mutmut_10,
+        "xǁVersionResolverǁis_prerelease__mutmut_11": xǁVersionResolverǁis_prerelease__mutmut_11,
+        "xǁVersionResolverǁis_prerelease__mutmut_12": xǁVersionResolverǁis_prerelease__mutmut_12,
+        "xǁVersionResolverǁis_prerelease__mutmut_13": xǁVersionResolverǁis_prerelease__mutmut_13,
+        "xǁVersionResolverǁis_prerelease__mutmut_14": xǁVersionResolverǁis_prerelease__mutmut_14,
+        "xǁVersionResolverǁis_prerelease__mutmut_15": xǁVersionResolverǁis_prerelease__mutmut_15,
+        "xǁVersionResolverǁis_prerelease__mutmut_16": xǁVersionResolverǁis_prerelease__mutmut_16,
+        "xǁVersionResolverǁis_prerelease__mutmut_17": xǁVersionResolverǁis_prerelease__mutmut_17,
+        "xǁVersionResolverǁis_prerelease__mutmut_18": xǁVersionResolverǁis_prerelease__mutmut_18,
+        "xǁVersionResolverǁis_prerelease__mutmut_19": xǁVersionResolverǁis_prerelease__mutmut_19,
+        "xǁVersionResolverǁis_prerelease__mutmut_20": xǁVersionResolverǁis_prerelease__mutmut_20,
+        "xǁVersionResolverǁis_prerelease__mutmut_21": xǁVersionResolverǁis_prerelease__mutmut_21,
+        "xǁVersionResolverǁis_prerelease__mutmut_22": xǁVersionResolverǁis_prerelease__mutmut_22,
+        "xǁVersionResolverǁis_prerelease__mutmut_23": xǁVersionResolverǁis_prerelease__mutmut_23,
+        "xǁVersionResolverǁis_prerelease__mutmut_24": xǁVersionResolverǁis_prerelease__mutmut_24,
+        "xǁVersionResolverǁis_prerelease__mutmut_25": xǁVersionResolverǁis_prerelease__mutmut_25,
+        "xǁVersionResolverǁis_prerelease__mutmut_26": xǁVersionResolverǁis_prerelease__mutmut_26,
+        "xǁVersionResolverǁis_prerelease__mutmut_27": xǁVersionResolverǁis_prerelease__mutmut_27,
+        "xǁVersionResolverǁis_prerelease__mutmut_28": xǁVersionResolverǁis_prerelease__mutmut_28,
+        "xǁVersionResolverǁis_prerelease__mutmut_29": xǁVersionResolverǁis_prerelease__mutmut_29,
+        "xǁVersionResolverǁis_prerelease__mutmut_30": xǁVersionResolverǁis_prerelease__mutmut_30,
+        "xǁVersionResolverǁis_prerelease__mutmut_31": xǁVersionResolverǁis_prerelease__mutmut_31,
+        "xǁVersionResolverǁis_prerelease__mutmut_32": xǁVersionResolverǁis_prerelease__mutmut_32,
+        "xǁVersionResolverǁis_prerelease__mutmut_33": xǁVersionResolverǁis_prerelease__mutmut_33,
+        "xǁVersionResolverǁis_prerelease__mutmut_34": xǁVersionResolverǁis_prerelease__mutmut_34,
+        "xǁVersionResolverǁis_prerelease__mutmut_35": xǁVersionResolverǁis_prerelease__mutmut_35,
+        "xǁVersionResolverǁis_prerelease__mutmut_36": xǁVersionResolverǁis_prerelease__mutmut_36,
+        "xǁVersionResolverǁis_prerelease__mutmut_37": xǁVersionResolverǁis_prerelease__mutmut_37,
+        "xǁVersionResolverǁis_prerelease__mutmut_38": xǁVersionResolverǁis_prerelease__mutmut_38,
+        "xǁVersionResolverǁis_prerelease__mutmut_39": xǁVersionResolverǁis_prerelease__mutmut_39,
+        "xǁVersionResolverǁis_prerelease__mutmut_40": xǁVersionResolverǁis_prerelease__mutmut_40,
+        "xǁVersionResolverǁis_prerelease__mutmut_41": xǁVersionResolverǁis_prerelease__mutmut_41,
     }
-    
+
     def is_prerelease(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁis_prerelease__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁis_prerelease__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁis_prerelease__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁis_prerelease__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     is_prerelease.__signature__ = _mutmut_signature(xǁVersionResolverǁis_prerelease__mutmut_orig)
-    xǁVersionResolverǁis_prerelease__mutmut_orig.__name__ = 'xǁVersionResolverǁis_prerelease'
+    xǁVersionResolverǁis_prerelease__mutmut_orig.__name__ = "xǁVersionResolverǁis_prerelease"
 
     def xǁVersionResolverǁresolve_tilde__mutmut_orig(self, base: str, available: list[str]) -> str | None:
         """Resolve tilde range (~1.2.3 means >=1.2.3 <1.3.0).
@@ -4532,48 +4584,54 @@ class VersionResolver:
             log.debug(None)
 
         return None
-    
-    xǁVersionResolverǁresolve_tilde__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁresolve_tilde__mutmut_1': xǁVersionResolverǁresolve_tilde__mutmut_1, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_2': xǁVersionResolverǁresolve_tilde__mutmut_2, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_3': xǁVersionResolverǁresolve_tilde__mutmut_3, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_4': xǁVersionResolverǁresolve_tilde__mutmut_4, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_5': xǁVersionResolverǁresolve_tilde__mutmut_5, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_6': xǁVersionResolverǁresolve_tilde__mutmut_6, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_7': xǁVersionResolverǁresolve_tilde__mutmut_7, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_8': xǁVersionResolverǁresolve_tilde__mutmut_8, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_9': xǁVersionResolverǁresolve_tilde__mutmut_9, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_10': xǁVersionResolverǁresolve_tilde__mutmut_10, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_11': xǁVersionResolverǁresolve_tilde__mutmut_11, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_12': xǁVersionResolverǁresolve_tilde__mutmut_12, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_13': xǁVersionResolverǁresolve_tilde__mutmut_13, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_14': xǁVersionResolverǁresolve_tilde__mutmut_14, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_15': xǁVersionResolverǁresolve_tilde__mutmut_15, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_16': xǁVersionResolverǁresolve_tilde__mutmut_16, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_17': xǁVersionResolverǁresolve_tilde__mutmut_17, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_18': xǁVersionResolverǁresolve_tilde__mutmut_18, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_19': xǁVersionResolverǁresolve_tilde__mutmut_19, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_20': xǁVersionResolverǁresolve_tilde__mutmut_20, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_21': xǁVersionResolverǁresolve_tilde__mutmut_21, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_22': xǁVersionResolverǁresolve_tilde__mutmut_22, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_23': xǁVersionResolverǁresolve_tilde__mutmut_23, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_24': xǁVersionResolverǁresolve_tilde__mutmut_24, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_25': xǁVersionResolverǁresolve_tilde__mutmut_25, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_26': xǁVersionResolverǁresolve_tilde__mutmut_26, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_27': xǁVersionResolverǁresolve_tilde__mutmut_27, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_28': xǁVersionResolverǁresolve_tilde__mutmut_28, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_29': xǁVersionResolverǁresolve_tilde__mutmut_29, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_30': xǁVersionResolverǁresolve_tilde__mutmut_30, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_31': xǁVersionResolverǁresolve_tilde__mutmut_31, 
-        'xǁVersionResolverǁresolve_tilde__mutmut_32': xǁVersionResolverǁresolve_tilde__mutmut_32
+
+    xǁVersionResolverǁresolve_tilde__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁresolve_tilde__mutmut_1": xǁVersionResolverǁresolve_tilde__mutmut_1,
+        "xǁVersionResolverǁresolve_tilde__mutmut_2": xǁVersionResolverǁresolve_tilde__mutmut_2,
+        "xǁVersionResolverǁresolve_tilde__mutmut_3": xǁVersionResolverǁresolve_tilde__mutmut_3,
+        "xǁVersionResolverǁresolve_tilde__mutmut_4": xǁVersionResolverǁresolve_tilde__mutmut_4,
+        "xǁVersionResolverǁresolve_tilde__mutmut_5": xǁVersionResolverǁresolve_tilde__mutmut_5,
+        "xǁVersionResolverǁresolve_tilde__mutmut_6": xǁVersionResolverǁresolve_tilde__mutmut_6,
+        "xǁVersionResolverǁresolve_tilde__mutmut_7": xǁVersionResolverǁresolve_tilde__mutmut_7,
+        "xǁVersionResolverǁresolve_tilde__mutmut_8": xǁVersionResolverǁresolve_tilde__mutmut_8,
+        "xǁVersionResolverǁresolve_tilde__mutmut_9": xǁVersionResolverǁresolve_tilde__mutmut_9,
+        "xǁVersionResolverǁresolve_tilde__mutmut_10": xǁVersionResolverǁresolve_tilde__mutmut_10,
+        "xǁVersionResolverǁresolve_tilde__mutmut_11": xǁVersionResolverǁresolve_tilde__mutmut_11,
+        "xǁVersionResolverǁresolve_tilde__mutmut_12": xǁVersionResolverǁresolve_tilde__mutmut_12,
+        "xǁVersionResolverǁresolve_tilde__mutmut_13": xǁVersionResolverǁresolve_tilde__mutmut_13,
+        "xǁVersionResolverǁresolve_tilde__mutmut_14": xǁVersionResolverǁresolve_tilde__mutmut_14,
+        "xǁVersionResolverǁresolve_tilde__mutmut_15": xǁVersionResolverǁresolve_tilde__mutmut_15,
+        "xǁVersionResolverǁresolve_tilde__mutmut_16": xǁVersionResolverǁresolve_tilde__mutmut_16,
+        "xǁVersionResolverǁresolve_tilde__mutmut_17": xǁVersionResolverǁresolve_tilde__mutmut_17,
+        "xǁVersionResolverǁresolve_tilde__mutmut_18": xǁVersionResolverǁresolve_tilde__mutmut_18,
+        "xǁVersionResolverǁresolve_tilde__mutmut_19": xǁVersionResolverǁresolve_tilde__mutmut_19,
+        "xǁVersionResolverǁresolve_tilde__mutmut_20": xǁVersionResolverǁresolve_tilde__mutmut_20,
+        "xǁVersionResolverǁresolve_tilde__mutmut_21": xǁVersionResolverǁresolve_tilde__mutmut_21,
+        "xǁVersionResolverǁresolve_tilde__mutmut_22": xǁVersionResolverǁresolve_tilde__mutmut_22,
+        "xǁVersionResolverǁresolve_tilde__mutmut_23": xǁVersionResolverǁresolve_tilde__mutmut_23,
+        "xǁVersionResolverǁresolve_tilde__mutmut_24": xǁVersionResolverǁresolve_tilde__mutmut_24,
+        "xǁVersionResolverǁresolve_tilde__mutmut_25": xǁVersionResolverǁresolve_tilde__mutmut_25,
+        "xǁVersionResolverǁresolve_tilde__mutmut_26": xǁVersionResolverǁresolve_tilde__mutmut_26,
+        "xǁVersionResolverǁresolve_tilde__mutmut_27": xǁVersionResolverǁresolve_tilde__mutmut_27,
+        "xǁVersionResolverǁresolve_tilde__mutmut_28": xǁVersionResolverǁresolve_tilde__mutmut_28,
+        "xǁVersionResolverǁresolve_tilde__mutmut_29": xǁVersionResolverǁresolve_tilde__mutmut_29,
+        "xǁVersionResolverǁresolve_tilde__mutmut_30": xǁVersionResolverǁresolve_tilde__mutmut_30,
+        "xǁVersionResolverǁresolve_tilde__mutmut_31": xǁVersionResolverǁresolve_tilde__mutmut_31,
+        "xǁVersionResolverǁresolve_tilde__mutmut_32": xǁVersionResolverǁresolve_tilde__mutmut_32,
     }
-    
+
     def resolve_tilde(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁresolve_tilde__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁresolve_tilde__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁresolve_tilde__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁresolve_tilde__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     resolve_tilde.__signature__ = _mutmut_signature(xǁVersionResolverǁresolve_tilde__mutmut_orig)
-    xǁVersionResolverǁresolve_tilde__mutmut_orig.__name__ = 'xǁVersionResolverǁresolve_tilde'
+    xǁVersionResolverǁresolve_tilde__mutmut_orig.__name__ = "xǁVersionResolverǁresolve_tilde"
 
     def xǁVersionResolverǁresolve_caret__mutmut_orig(self, base: str, available: list[str]) -> str | None:
         """Resolve caret range (^1.2.3 means >=1.2.3 <2.0.0).
@@ -5125,7 +5183,14 @@ class VersionResolver:
             matches = []
             for v in available:
                 v_parts = self.parse_version(v)
-                if v_parts and v_parts[0] == major and self.compare_versions(v, ) >= 0:
+                if (
+                    v_parts
+                    and v_parts[0] == major
+                    and self.compare_versions(
+                        v,
+                    )
+                    >= 0
+                ):
                     # Must be >= base version
                     matches.append(v)
 
@@ -5366,41 +5431,49 @@ class VersionResolver:
             log.debug(None)
 
         return None
-    
-    xǁVersionResolverǁresolve_caret__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁresolve_caret__mutmut_1': xǁVersionResolverǁresolve_caret__mutmut_1, 
-        'xǁVersionResolverǁresolve_caret__mutmut_2': xǁVersionResolverǁresolve_caret__mutmut_2, 
-        'xǁVersionResolverǁresolve_caret__mutmut_3': xǁVersionResolverǁresolve_caret__mutmut_3, 
-        'xǁVersionResolverǁresolve_caret__mutmut_4': xǁVersionResolverǁresolve_caret__mutmut_4, 
-        'xǁVersionResolverǁresolve_caret__mutmut_5': xǁVersionResolverǁresolve_caret__mutmut_5, 
-        'xǁVersionResolverǁresolve_caret__mutmut_6': xǁVersionResolverǁresolve_caret__mutmut_6, 
-        'xǁVersionResolverǁresolve_caret__mutmut_7': xǁVersionResolverǁresolve_caret__mutmut_7, 
-        'xǁVersionResolverǁresolve_caret__mutmut_8': xǁVersionResolverǁresolve_caret__mutmut_8, 
-        'xǁVersionResolverǁresolve_caret__mutmut_9': xǁVersionResolverǁresolve_caret__mutmut_9, 
-        'xǁVersionResolverǁresolve_caret__mutmut_10': xǁVersionResolverǁresolve_caret__mutmut_10, 
-        'xǁVersionResolverǁresolve_caret__mutmut_11': xǁVersionResolverǁresolve_caret__mutmut_11, 
-        'xǁVersionResolverǁresolve_caret__mutmut_12': xǁVersionResolverǁresolve_caret__mutmut_12, 
-        'xǁVersionResolverǁresolve_caret__mutmut_13': xǁVersionResolverǁresolve_caret__mutmut_13, 
-        'xǁVersionResolverǁresolve_caret__mutmut_14': xǁVersionResolverǁresolve_caret__mutmut_14, 
-        'xǁVersionResolverǁresolve_caret__mutmut_15': xǁVersionResolverǁresolve_caret__mutmut_15, 
-        'xǁVersionResolverǁresolve_caret__mutmut_16': xǁVersionResolverǁresolve_caret__mutmut_16, 
-        'xǁVersionResolverǁresolve_caret__mutmut_17': xǁVersionResolverǁresolve_caret__mutmut_17, 
-        'xǁVersionResolverǁresolve_caret__mutmut_18': xǁVersionResolverǁresolve_caret__mutmut_18, 
-        'xǁVersionResolverǁresolve_caret__mutmut_19': xǁVersionResolverǁresolve_caret__mutmut_19, 
-        'xǁVersionResolverǁresolve_caret__mutmut_20': xǁVersionResolverǁresolve_caret__mutmut_20, 
-        'xǁVersionResolverǁresolve_caret__mutmut_21': xǁVersionResolverǁresolve_caret__mutmut_21, 
-        'xǁVersionResolverǁresolve_caret__mutmut_22': xǁVersionResolverǁresolve_caret__mutmut_22, 
-        'xǁVersionResolverǁresolve_caret__mutmut_23': xǁVersionResolverǁresolve_caret__mutmut_23
-    }
-    
-    def resolve_caret(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁresolve_caret__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁresolve_caret__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    resolve_caret.__signature__ = _mutmut_signature(xǁVersionResolverǁresolve_caret__mutmut_orig)
-    xǁVersionResolverǁresolve_caret__mutmut_orig.__name__ = 'xǁVersionResolverǁresolve_caret'
 
-    def xǁVersionResolverǁresolve_wildcard__mutmut_orig(self, pattern: str, available: list[str]) -> str | None:
+    xǁVersionResolverǁresolve_caret__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁresolve_caret__mutmut_1": xǁVersionResolverǁresolve_caret__mutmut_1,
+        "xǁVersionResolverǁresolve_caret__mutmut_2": xǁVersionResolverǁresolve_caret__mutmut_2,
+        "xǁVersionResolverǁresolve_caret__mutmut_3": xǁVersionResolverǁresolve_caret__mutmut_3,
+        "xǁVersionResolverǁresolve_caret__mutmut_4": xǁVersionResolverǁresolve_caret__mutmut_4,
+        "xǁVersionResolverǁresolve_caret__mutmut_5": xǁVersionResolverǁresolve_caret__mutmut_5,
+        "xǁVersionResolverǁresolve_caret__mutmut_6": xǁVersionResolverǁresolve_caret__mutmut_6,
+        "xǁVersionResolverǁresolve_caret__mutmut_7": xǁVersionResolverǁresolve_caret__mutmut_7,
+        "xǁVersionResolverǁresolve_caret__mutmut_8": xǁVersionResolverǁresolve_caret__mutmut_8,
+        "xǁVersionResolverǁresolve_caret__mutmut_9": xǁVersionResolverǁresolve_caret__mutmut_9,
+        "xǁVersionResolverǁresolve_caret__mutmut_10": xǁVersionResolverǁresolve_caret__mutmut_10,
+        "xǁVersionResolverǁresolve_caret__mutmut_11": xǁVersionResolverǁresolve_caret__mutmut_11,
+        "xǁVersionResolverǁresolve_caret__mutmut_12": xǁVersionResolverǁresolve_caret__mutmut_12,
+        "xǁVersionResolverǁresolve_caret__mutmut_13": xǁVersionResolverǁresolve_caret__mutmut_13,
+        "xǁVersionResolverǁresolve_caret__mutmut_14": xǁVersionResolverǁresolve_caret__mutmut_14,
+        "xǁVersionResolverǁresolve_caret__mutmut_15": xǁVersionResolverǁresolve_caret__mutmut_15,
+        "xǁVersionResolverǁresolve_caret__mutmut_16": xǁVersionResolverǁresolve_caret__mutmut_16,
+        "xǁVersionResolverǁresolve_caret__mutmut_17": xǁVersionResolverǁresolve_caret__mutmut_17,
+        "xǁVersionResolverǁresolve_caret__mutmut_18": xǁVersionResolverǁresolve_caret__mutmut_18,
+        "xǁVersionResolverǁresolve_caret__mutmut_19": xǁVersionResolverǁresolve_caret__mutmut_19,
+        "xǁVersionResolverǁresolve_caret__mutmut_20": xǁVersionResolverǁresolve_caret__mutmut_20,
+        "xǁVersionResolverǁresolve_caret__mutmut_21": xǁVersionResolverǁresolve_caret__mutmut_21,
+        "xǁVersionResolverǁresolve_caret__mutmut_22": xǁVersionResolverǁresolve_caret__mutmut_22,
+        "xǁVersionResolverǁresolve_caret__mutmut_23": xǁVersionResolverǁresolve_caret__mutmut_23,
+    }
+
+    def resolve_caret(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁresolve_caret__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁresolve_caret__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    resolve_caret.__signature__ = _mutmut_signature(xǁVersionResolverǁresolve_caret__mutmut_orig)
+    xǁVersionResolverǁresolve_caret__mutmut_orig.__name__ = "xǁVersionResolverǁresolve_caret"
+
+    def xǁVersionResolverǁresolve_wildcard__mutmut_orig(
+        self, pattern: str, available: list[str]
+    ) -> str | None:
         """Resolve wildcard pattern (1.2.* matches any 1.2.x).
 
         Args:
@@ -5572,7 +5645,9 @@ class VersionResolver:
 
         """
         # Convert wildcard to regex (with caching)
-        regex_pattern = pattern.replace(".", )
+        regex_pattern = pattern.replace(
+            ".",
+        )
         regex_pattern = regex_pattern.replace("*", r".*")
         regex_pattern = f"^{regex_pattern}$"
 
@@ -5861,7 +5936,9 @@ class VersionResolver:
         """
         # Convert wildcard to regex (with caching)
         regex_pattern = pattern.replace(".", r"\.")
-        regex_pattern = regex_pattern.replace("*", )
+        regex_pattern = regex_pattern.replace(
+            "*",
+        )
         regex_pattern = f"^{regex_pattern}$"
 
         try:
@@ -6359,45 +6436,51 @@ class VersionResolver:
             log.debug(None)
 
         return None
-    
-    xǁVersionResolverǁresolve_wildcard__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁresolve_wildcard__mutmut_1': xǁVersionResolverǁresolve_wildcard__mutmut_1, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_2': xǁVersionResolverǁresolve_wildcard__mutmut_2, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_3': xǁVersionResolverǁresolve_wildcard__mutmut_3, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_4': xǁVersionResolverǁresolve_wildcard__mutmut_4, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_5': xǁVersionResolverǁresolve_wildcard__mutmut_5, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_6': xǁVersionResolverǁresolve_wildcard__mutmut_6, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_7': xǁVersionResolverǁresolve_wildcard__mutmut_7, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_8': xǁVersionResolverǁresolve_wildcard__mutmut_8, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_9': xǁVersionResolverǁresolve_wildcard__mutmut_9, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_10': xǁVersionResolverǁresolve_wildcard__mutmut_10, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_11': xǁVersionResolverǁresolve_wildcard__mutmut_11, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_12': xǁVersionResolverǁresolve_wildcard__mutmut_12, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_13': xǁVersionResolverǁresolve_wildcard__mutmut_13, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_14': xǁVersionResolverǁresolve_wildcard__mutmut_14, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_15': xǁVersionResolverǁresolve_wildcard__mutmut_15, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_16': xǁVersionResolverǁresolve_wildcard__mutmut_16, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_17': xǁVersionResolverǁresolve_wildcard__mutmut_17, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_18': xǁVersionResolverǁresolve_wildcard__mutmut_18, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_19': xǁVersionResolverǁresolve_wildcard__mutmut_19, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_20': xǁVersionResolverǁresolve_wildcard__mutmut_20, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_21': xǁVersionResolverǁresolve_wildcard__mutmut_21, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_22': xǁVersionResolverǁresolve_wildcard__mutmut_22, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_23': xǁVersionResolverǁresolve_wildcard__mutmut_23, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_24': xǁVersionResolverǁresolve_wildcard__mutmut_24, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_25': xǁVersionResolverǁresolve_wildcard__mutmut_25, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_26': xǁVersionResolverǁresolve_wildcard__mutmut_26, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_27': xǁVersionResolverǁresolve_wildcard__mutmut_27, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_28': xǁVersionResolverǁresolve_wildcard__mutmut_28, 
-        'xǁVersionResolverǁresolve_wildcard__mutmut_29': xǁVersionResolverǁresolve_wildcard__mutmut_29
+
+    xǁVersionResolverǁresolve_wildcard__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁresolve_wildcard__mutmut_1": xǁVersionResolverǁresolve_wildcard__mutmut_1,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_2": xǁVersionResolverǁresolve_wildcard__mutmut_2,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_3": xǁVersionResolverǁresolve_wildcard__mutmut_3,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_4": xǁVersionResolverǁresolve_wildcard__mutmut_4,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_5": xǁVersionResolverǁresolve_wildcard__mutmut_5,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_6": xǁVersionResolverǁresolve_wildcard__mutmut_6,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_7": xǁVersionResolverǁresolve_wildcard__mutmut_7,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_8": xǁVersionResolverǁresolve_wildcard__mutmut_8,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_9": xǁVersionResolverǁresolve_wildcard__mutmut_9,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_10": xǁVersionResolverǁresolve_wildcard__mutmut_10,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_11": xǁVersionResolverǁresolve_wildcard__mutmut_11,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_12": xǁVersionResolverǁresolve_wildcard__mutmut_12,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_13": xǁVersionResolverǁresolve_wildcard__mutmut_13,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_14": xǁVersionResolverǁresolve_wildcard__mutmut_14,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_15": xǁVersionResolverǁresolve_wildcard__mutmut_15,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_16": xǁVersionResolverǁresolve_wildcard__mutmut_16,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_17": xǁVersionResolverǁresolve_wildcard__mutmut_17,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_18": xǁVersionResolverǁresolve_wildcard__mutmut_18,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_19": xǁVersionResolverǁresolve_wildcard__mutmut_19,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_20": xǁVersionResolverǁresolve_wildcard__mutmut_20,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_21": xǁVersionResolverǁresolve_wildcard__mutmut_21,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_22": xǁVersionResolverǁresolve_wildcard__mutmut_22,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_23": xǁVersionResolverǁresolve_wildcard__mutmut_23,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_24": xǁVersionResolverǁresolve_wildcard__mutmut_24,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_25": xǁVersionResolverǁresolve_wildcard__mutmut_25,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_26": xǁVersionResolverǁresolve_wildcard__mutmut_26,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_27": xǁVersionResolverǁresolve_wildcard__mutmut_27,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_28": xǁVersionResolverǁresolve_wildcard__mutmut_28,
+        "xǁVersionResolverǁresolve_wildcard__mutmut_29": xǁVersionResolverǁresolve_wildcard__mutmut_29,
     }
-    
+
     def resolve_wildcard(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁresolve_wildcard__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁresolve_wildcard__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁresolve_wildcard__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁresolve_wildcard__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     resolve_wildcard.__signature__ = _mutmut_signature(xǁVersionResolverǁresolve_wildcard__mutmut_orig)
-    xǁVersionResolverǁresolve_wildcard__mutmut_orig.__name__ = 'xǁVersionResolverǁresolve_wildcard'
+    xǁVersionResolverǁresolve_wildcard__mutmut_orig.__name__ = "xǁVersionResolverǁresolve_wildcard"
 
     def xǁVersionResolverǁparse_version__mutmut_orig(self, version: str) -> list[int]:
         """Parse version string into numeric components.
@@ -6540,7 +6623,9 @@ class VersionResolver:
 
         """
         # Extract just the numeric version part
-        match = re.match(r"^v?(\d+(?:\.\d+)*)", )
+        match = re.match(
+            r"^v?(\d+(?:\.\d+)*)",
+        )
         if not match:
             return []
 
@@ -6892,34 +6977,40 @@ class VersionResolver:
                 return
 
         return parts
-    
-    xǁVersionResolverǁparse_version__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁparse_version__mutmut_1': xǁVersionResolverǁparse_version__mutmut_1, 
-        'xǁVersionResolverǁparse_version__mutmut_2': xǁVersionResolverǁparse_version__mutmut_2, 
-        'xǁVersionResolverǁparse_version__mutmut_3': xǁVersionResolverǁparse_version__mutmut_3, 
-        'xǁVersionResolverǁparse_version__mutmut_4': xǁVersionResolverǁparse_version__mutmut_4, 
-        'xǁVersionResolverǁparse_version__mutmut_5': xǁVersionResolverǁparse_version__mutmut_5, 
-        'xǁVersionResolverǁparse_version__mutmut_6': xǁVersionResolverǁparse_version__mutmut_6, 
-        'xǁVersionResolverǁparse_version__mutmut_7': xǁVersionResolverǁparse_version__mutmut_7, 
-        'xǁVersionResolverǁparse_version__mutmut_8': xǁVersionResolverǁparse_version__mutmut_8, 
-        'xǁVersionResolverǁparse_version__mutmut_9': xǁVersionResolverǁparse_version__mutmut_9, 
-        'xǁVersionResolverǁparse_version__mutmut_10': xǁVersionResolverǁparse_version__mutmut_10, 
-        'xǁVersionResolverǁparse_version__mutmut_11': xǁVersionResolverǁparse_version__mutmut_11, 
-        'xǁVersionResolverǁparse_version__mutmut_12': xǁVersionResolverǁparse_version__mutmut_12, 
-        'xǁVersionResolverǁparse_version__mutmut_13': xǁVersionResolverǁparse_version__mutmut_13, 
-        'xǁVersionResolverǁparse_version__mutmut_14': xǁVersionResolverǁparse_version__mutmut_14, 
-        'xǁVersionResolverǁparse_version__mutmut_15': xǁVersionResolverǁparse_version__mutmut_15, 
-        'xǁVersionResolverǁparse_version__mutmut_16': xǁVersionResolverǁparse_version__mutmut_16, 
-        'xǁVersionResolverǁparse_version__mutmut_17': xǁVersionResolverǁparse_version__mutmut_17, 
-        'xǁVersionResolverǁparse_version__mutmut_18': xǁVersionResolverǁparse_version__mutmut_18
+
+    xǁVersionResolverǁparse_version__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁparse_version__mutmut_1": xǁVersionResolverǁparse_version__mutmut_1,
+        "xǁVersionResolverǁparse_version__mutmut_2": xǁVersionResolverǁparse_version__mutmut_2,
+        "xǁVersionResolverǁparse_version__mutmut_3": xǁVersionResolverǁparse_version__mutmut_3,
+        "xǁVersionResolverǁparse_version__mutmut_4": xǁVersionResolverǁparse_version__mutmut_4,
+        "xǁVersionResolverǁparse_version__mutmut_5": xǁVersionResolverǁparse_version__mutmut_5,
+        "xǁVersionResolverǁparse_version__mutmut_6": xǁVersionResolverǁparse_version__mutmut_6,
+        "xǁVersionResolverǁparse_version__mutmut_7": xǁVersionResolverǁparse_version__mutmut_7,
+        "xǁVersionResolverǁparse_version__mutmut_8": xǁVersionResolverǁparse_version__mutmut_8,
+        "xǁVersionResolverǁparse_version__mutmut_9": xǁVersionResolverǁparse_version__mutmut_9,
+        "xǁVersionResolverǁparse_version__mutmut_10": xǁVersionResolverǁparse_version__mutmut_10,
+        "xǁVersionResolverǁparse_version__mutmut_11": xǁVersionResolverǁparse_version__mutmut_11,
+        "xǁVersionResolverǁparse_version__mutmut_12": xǁVersionResolverǁparse_version__mutmut_12,
+        "xǁVersionResolverǁparse_version__mutmut_13": xǁVersionResolverǁparse_version__mutmut_13,
+        "xǁVersionResolverǁparse_version__mutmut_14": xǁVersionResolverǁparse_version__mutmut_14,
+        "xǁVersionResolverǁparse_version__mutmut_15": xǁVersionResolverǁparse_version__mutmut_15,
+        "xǁVersionResolverǁparse_version__mutmut_16": xǁVersionResolverǁparse_version__mutmut_16,
+        "xǁVersionResolverǁparse_version__mutmut_17": xǁVersionResolverǁparse_version__mutmut_17,
+        "xǁVersionResolverǁparse_version__mutmut_18": xǁVersionResolverǁparse_version__mutmut_18,
     }
-    
+
     def parse_version(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁparse_version__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁparse_version__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁparse_version__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁparse_version__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     parse_version.__signature__ = _mutmut_signature(xǁVersionResolverǁparse_version__mutmut_orig)
-    xǁVersionResolverǁparse_version__mutmut_orig.__name__ = 'xǁVersionResolverǁparse_version'
+    xǁVersionResolverǁparse_version__mutmut_orig.__name__ = "xǁVersionResolverǁparse_version"
 
     def xǁVersionResolverǁcompare_versions__mutmut_orig(self, v1: str, v2: str) -> int:
         """Compare two versions.
@@ -7179,7 +7270,9 @@ class VersionResolver:
         parts2 = self.parse_version(v2)
 
         # Pad with zeros
-        max_len = max(len(parts1), )
+        max_len = max(
+            len(parts1),
+        )
         parts1.extend([0] * (max_len - len(parts1)))
         parts2.extend([0] * (max_len - len(parts2)))
 
@@ -7561,7 +7654,10 @@ class VersionResolver:
         parts1.extend([0] * (max_len - len(parts1)))
         parts2.extend([0] * (max_len - len(parts2)))
 
-        for p1, p2 in zip(parts1, parts2, ):
+        for p1, p2 in zip(
+            parts1,
+            parts2,
+        ):
             if p1 < p2:
                 return -1
             if p1 > p2:
@@ -7757,46 +7853,52 @@ class VersionResolver:
                 return 1
 
         return 1
-    
-    xǁVersionResolverǁcompare_versions__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁcompare_versions__mutmut_1': xǁVersionResolverǁcompare_versions__mutmut_1, 
-        'xǁVersionResolverǁcompare_versions__mutmut_2': xǁVersionResolverǁcompare_versions__mutmut_2, 
-        'xǁVersionResolverǁcompare_versions__mutmut_3': xǁVersionResolverǁcompare_versions__mutmut_3, 
-        'xǁVersionResolverǁcompare_versions__mutmut_4': xǁVersionResolverǁcompare_versions__mutmut_4, 
-        'xǁVersionResolverǁcompare_versions__mutmut_5': xǁVersionResolverǁcompare_versions__mutmut_5, 
-        'xǁVersionResolverǁcompare_versions__mutmut_6': xǁVersionResolverǁcompare_versions__mutmut_6, 
-        'xǁVersionResolverǁcompare_versions__mutmut_7': xǁVersionResolverǁcompare_versions__mutmut_7, 
-        'xǁVersionResolverǁcompare_versions__mutmut_8': xǁVersionResolverǁcompare_versions__mutmut_8, 
-        'xǁVersionResolverǁcompare_versions__mutmut_9': xǁVersionResolverǁcompare_versions__mutmut_9, 
-        'xǁVersionResolverǁcompare_versions__mutmut_10': xǁVersionResolverǁcompare_versions__mutmut_10, 
-        'xǁVersionResolverǁcompare_versions__mutmut_11': xǁVersionResolverǁcompare_versions__mutmut_11, 
-        'xǁVersionResolverǁcompare_versions__mutmut_12': xǁVersionResolverǁcompare_versions__mutmut_12, 
-        'xǁVersionResolverǁcompare_versions__mutmut_13': xǁVersionResolverǁcompare_versions__mutmut_13, 
-        'xǁVersionResolverǁcompare_versions__mutmut_14': xǁVersionResolverǁcompare_versions__mutmut_14, 
-        'xǁVersionResolverǁcompare_versions__mutmut_15': xǁVersionResolverǁcompare_versions__mutmut_15, 
-        'xǁVersionResolverǁcompare_versions__mutmut_16': xǁVersionResolverǁcompare_versions__mutmut_16, 
-        'xǁVersionResolverǁcompare_versions__mutmut_17': xǁVersionResolverǁcompare_versions__mutmut_17, 
-        'xǁVersionResolverǁcompare_versions__mutmut_18': xǁVersionResolverǁcompare_versions__mutmut_18, 
-        'xǁVersionResolverǁcompare_versions__mutmut_19': xǁVersionResolverǁcompare_versions__mutmut_19, 
-        'xǁVersionResolverǁcompare_versions__mutmut_20': xǁVersionResolverǁcompare_versions__mutmut_20, 
-        'xǁVersionResolverǁcompare_versions__mutmut_21': xǁVersionResolverǁcompare_versions__mutmut_21, 
-        'xǁVersionResolverǁcompare_versions__mutmut_22': xǁVersionResolverǁcompare_versions__mutmut_22, 
-        'xǁVersionResolverǁcompare_versions__mutmut_23': xǁVersionResolverǁcompare_versions__mutmut_23, 
-        'xǁVersionResolverǁcompare_versions__mutmut_24': xǁVersionResolverǁcompare_versions__mutmut_24, 
-        'xǁVersionResolverǁcompare_versions__mutmut_25': xǁVersionResolverǁcompare_versions__mutmut_25, 
-        'xǁVersionResolverǁcompare_versions__mutmut_26': xǁVersionResolverǁcompare_versions__mutmut_26, 
-        'xǁVersionResolverǁcompare_versions__mutmut_27': xǁVersionResolverǁcompare_versions__mutmut_27, 
-        'xǁVersionResolverǁcompare_versions__mutmut_28': xǁVersionResolverǁcompare_versions__mutmut_28, 
-        'xǁVersionResolverǁcompare_versions__mutmut_29': xǁVersionResolverǁcompare_versions__mutmut_29, 
-        'xǁVersionResolverǁcompare_versions__mutmut_30': xǁVersionResolverǁcompare_versions__mutmut_30
+
+    xǁVersionResolverǁcompare_versions__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁcompare_versions__mutmut_1": xǁVersionResolverǁcompare_versions__mutmut_1,
+        "xǁVersionResolverǁcompare_versions__mutmut_2": xǁVersionResolverǁcompare_versions__mutmut_2,
+        "xǁVersionResolverǁcompare_versions__mutmut_3": xǁVersionResolverǁcompare_versions__mutmut_3,
+        "xǁVersionResolverǁcompare_versions__mutmut_4": xǁVersionResolverǁcompare_versions__mutmut_4,
+        "xǁVersionResolverǁcompare_versions__mutmut_5": xǁVersionResolverǁcompare_versions__mutmut_5,
+        "xǁVersionResolverǁcompare_versions__mutmut_6": xǁVersionResolverǁcompare_versions__mutmut_6,
+        "xǁVersionResolverǁcompare_versions__mutmut_7": xǁVersionResolverǁcompare_versions__mutmut_7,
+        "xǁVersionResolverǁcompare_versions__mutmut_8": xǁVersionResolverǁcompare_versions__mutmut_8,
+        "xǁVersionResolverǁcompare_versions__mutmut_9": xǁVersionResolverǁcompare_versions__mutmut_9,
+        "xǁVersionResolverǁcompare_versions__mutmut_10": xǁVersionResolverǁcompare_versions__mutmut_10,
+        "xǁVersionResolverǁcompare_versions__mutmut_11": xǁVersionResolverǁcompare_versions__mutmut_11,
+        "xǁVersionResolverǁcompare_versions__mutmut_12": xǁVersionResolverǁcompare_versions__mutmut_12,
+        "xǁVersionResolverǁcompare_versions__mutmut_13": xǁVersionResolverǁcompare_versions__mutmut_13,
+        "xǁVersionResolverǁcompare_versions__mutmut_14": xǁVersionResolverǁcompare_versions__mutmut_14,
+        "xǁVersionResolverǁcompare_versions__mutmut_15": xǁVersionResolverǁcompare_versions__mutmut_15,
+        "xǁVersionResolverǁcompare_versions__mutmut_16": xǁVersionResolverǁcompare_versions__mutmut_16,
+        "xǁVersionResolverǁcompare_versions__mutmut_17": xǁVersionResolverǁcompare_versions__mutmut_17,
+        "xǁVersionResolverǁcompare_versions__mutmut_18": xǁVersionResolverǁcompare_versions__mutmut_18,
+        "xǁVersionResolverǁcompare_versions__mutmut_19": xǁVersionResolverǁcompare_versions__mutmut_19,
+        "xǁVersionResolverǁcompare_versions__mutmut_20": xǁVersionResolverǁcompare_versions__mutmut_20,
+        "xǁVersionResolverǁcompare_versions__mutmut_21": xǁVersionResolverǁcompare_versions__mutmut_21,
+        "xǁVersionResolverǁcompare_versions__mutmut_22": xǁVersionResolverǁcompare_versions__mutmut_22,
+        "xǁVersionResolverǁcompare_versions__mutmut_23": xǁVersionResolverǁcompare_versions__mutmut_23,
+        "xǁVersionResolverǁcompare_versions__mutmut_24": xǁVersionResolverǁcompare_versions__mutmut_24,
+        "xǁVersionResolverǁcompare_versions__mutmut_25": xǁVersionResolverǁcompare_versions__mutmut_25,
+        "xǁVersionResolverǁcompare_versions__mutmut_26": xǁVersionResolverǁcompare_versions__mutmut_26,
+        "xǁVersionResolverǁcompare_versions__mutmut_27": xǁVersionResolverǁcompare_versions__mutmut_27,
+        "xǁVersionResolverǁcompare_versions__mutmut_28": xǁVersionResolverǁcompare_versions__mutmut_28,
+        "xǁVersionResolverǁcompare_versions__mutmut_29": xǁVersionResolverǁcompare_versions__mutmut_29,
+        "xǁVersionResolverǁcompare_versions__mutmut_30": xǁVersionResolverǁcompare_versions__mutmut_30,
     }
-    
+
     def compare_versions(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁcompare_versions__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁcompare_versions__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁcompare_versions__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁcompare_versions__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     compare_versions.__signature__ = _mutmut_signature(xǁVersionResolverǁcompare_versions__mutmut_orig)
-    xǁVersionResolverǁcompare_versions__mutmut_orig.__name__ = 'xǁVersionResolverǁcompare_versions'
+    xǁVersionResolverǁcompare_versions__mutmut_orig.__name__ = "xǁVersionResolverǁcompare_versions"
 
     def xǁVersionResolverǁsort_versions__mutmut_orig(self, versions: list[str]) -> list[str]:
         """Sort versions in ascending order.
@@ -7878,7 +7980,7 @@ class VersionResolver:
         """
         return sorted(
             versions,
-            )
+        )
 
     def xǁVersionResolverǁsort_versions__mutmut_5(self, versions: list[str]) -> list[str]:
         """Sort versions in ascending order.
@@ -7912,22 +8014,28 @@ class VersionResolver:
                 v,  # Secondary sort by string for pre-releases
             ),
         )
-    
-    xǁVersionResolverǁsort_versions__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁVersionResolverǁsort_versions__mutmut_1': xǁVersionResolverǁsort_versions__mutmut_1, 
-        'xǁVersionResolverǁsort_versions__mutmut_2': xǁVersionResolverǁsort_versions__mutmut_2, 
-        'xǁVersionResolverǁsort_versions__mutmut_3': xǁVersionResolverǁsort_versions__mutmut_3, 
-        'xǁVersionResolverǁsort_versions__mutmut_4': xǁVersionResolverǁsort_versions__mutmut_4, 
-        'xǁVersionResolverǁsort_versions__mutmut_5': xǁVersionResolverǁsort_versions__mutmut_5, 
-        'xǁVersionResolverǁsort_versions__mutmut_6': xǁVersionResolverǁsort_versions__mutmut_6
+
+    xǁVersionResolverǁsort_versions__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁVersionResolverǁsort_versions__mutmut_1": xǁVersionResolverǁsort_versions__mutmut_1,
+        "xǁVersionResolverǁsort_versions__mutmut_2": xǁVersionResolverǁsort_versions__mutmut_2,
+        "xǁVersionResolverǁsort_versions__mutmut_3": xǁVersionResolverǁsort_versions__mutmut_3,
+        "xǁVersionResolverǁsort_versions__mutmut_4": xǁVersionResolverǁsort_versions__mutmut_4,
+        "xǁVersionResolverǁsort_versions__mutmut_5": xǁVersionResolverǁsort_versions__mutmut_5,
+        "xǁVersionResolverǁsort_versions__mutmut_6": xǁVersionResolverǁsort_versions__mutmut_6,
     }
-    
+
     def sort_versions(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁVersionResolverǁsort_versions__mutmut_orig"), object.__getattribute__(self, "xǁVersionResolverǁsort_versions__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁVersionResolverǁsort_versions__mutmut_orig"),
+            object.__getattribute__(self, "xǁVersionResolverǁsort_versions__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     sort_versions.__signature__ = _mutmut_signature(xǁVersionResolverǁsort_versions__mutmut_orig)
-    xǁVersionResolverǁsort_versions__mutmut_orig.__name__ = 'xǁVersionResolverǁsort_versions'
+    xǁVersionResolverǁsort_versions__mutmut_orig.__name__ = "xǁVersionResolverǁsort_versions"
 
 
 # <3 🧱🤝🔧🪄

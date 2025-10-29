@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -85,17 +88,22 @@ def x_set_current_span__mutmut_2(span: Span | None) -> None:
     if span:
         _current_trace_id.set(None)
 
-x_set_current_span__mutmut_mutants : ClassVar[MutantDict] = {
-'x_set_current_span__mutmut_1': x_set_current_span__mutmut_1, 
-    'x_set_current_span__mutmut_2': x_set_current_span__mutmut_2
+
+x_set_current_span__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_set_current_span__mutmut_1": x_set_current_span__mutmut_1,
+    "x_set_current_span__mutmut_2": x_set_current_span__mutmut_2,
 }
 
+
 def set_current_span(*args, **kwargs):
-    result = _mutmut_trampoline(x_set_current_span__mutmut_orig, x_set_current_span__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_set_current_span__mutmut_orig, x_set_current_span__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 set_current_span.__signature__ = _mutmut_signature(x_set_current_span__mutmut_orig)
-x_set_current_span__mutmut_orig.__name__ = 'x_set_current_span'
+x_set_current_span__mutmut_orig.__name__ = "x_set_current_span"
 
 
 def x_create_child_span__mutmut_orig(name: str, parent: Span | None = None) -> Span:
@@ -265,7 +273,10 @@ def x_create_child_span__mutmut_8(name: str, parent: Span | None = None) -> Span
         parent = get_current_span()
 
     if parent:
-        return Span(name=name, parent_id=parent.span_id, )
+        return Span(
+            name=name,
+            parent_id=parent.span_id,
+        )
     return Span(name=name)
 
 
@@ -287,24 +298,29 @@ def x_create_child_span__mutmut_9(name: str, parent: Span | None = None) -> Span
         return Span(name=name, parent_id=parent.span_id, trace_id=parent.trace_id)
     return Span(name=None)
 
-x_create_child_span__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_child_span__mutmut_1': x_create_child_span__mutmut_1, 
-    'x_create_child_span__mutmut_2': x_create_child_span__mutmut_2, 
-    'x_create_child_span__mutmut_3': x_create_child_span__mutmut_3, 
-    'x_create_child_span__mutmut_4': x_create_child_span__mutmut_4, 
-    'x_create_child_span__mutmut_5': x_create_child_span__mutmut_5, 
-    'x_create_child_span__mutmut_6': x_create_child_span__mutmut_6, 
-    'x_create_child_span__mutmut_7': x_create_child_span__mutmut_7, 
-    'x_create_child_span__mutmut_8': x_create_child_span__mutmut_8, 
-    'x_create_child_span__mutmut_9': x_create_child_span__mutmut_9
+
+x_create_child_span__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_child_span__mutmut_1": x_create_child_span__mutmut_1,
+    "x_create_child_span__mutmut_2": x_create_child_span__mutmut_2,
+    "x_create_child_span__mutmut_3": x_create_child_span__mutmut_3,
+    "x_create_child_span__mutmut_4": x_create_child_span__mutmut_4,
+    "x_create_child_span__mutmut_5": x_create_child_span__mutmut_5,
+    "x_create_child_span__mutmut_6": x_create_child_span__mutmut_6,
+    "x_create_child_span__mutmut_7": x_create_child_span__mutmut_7,
+    "x_create_child_span__mutmut_8": x_create_child_span__mutmut_8,
+    "x_create_child_span__mutmut_9": x_create_child_span__mutmut_9,
 }
 
+
 def create_child_span(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_child_span__mutmut_orig, x_create_child_span__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_child_span__mutmut_orig, x_create_child_span__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_child_span.__signature__ = _mutmut_signature(x_create_child_span__mutmut_orig)
-x_create_child_span__mutmut_orig.__name__ = 'x_create_child_span'
+x_create_child_span__mutmut_orig.__name__ = "x_create_child_span"
 
 
 class SpanContext:
@@ -324,18 +340,24 @@ class SpanContext:
     def xǁSpanContextǁ__init____mutmut_2(self, span: Span) -> None:
         self.span = span
         self.previous_span: Span | None = ""
-    
-    xǁSpanContextǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSpanContextǁ__init____mutmut_1': xǁSpanContextǁ__init____mutmut_1, 
-        'xǁSpanContextǁ__init____mutmut_2': xǁSpanContextǁ__init____mutmut_2
+
+    xǁSpanContextǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSpanContextǁ__init____mutmut_1": xǁSpanContextǁ__init____mutmut_1,
+        "xǁSpanContextǁ__init____mutmut_2": xǁSpanContextǁ__init____mutmut_2,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSpanContextǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁSpanContextǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSpanContextǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁSpanContextǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁSpanContextǁ__init____mutmut_orig)
-    xǁSpanContextǁ__init____mutmut_orig.__name__ = 'xǁSpanContextǁ__init__'
+    xǁSpanContextǁ__init____mutmut_orig.__name__ = "xǁSpanContextǁ__init__"
 
     def xǁSpanContextǁ__enter____mutmut_orig(self) -> Span:
         """Enter the span context."""
@@ -354,18 +376,24 @@ class SpanContext:
         self.previous_span = get_current_span()
         set_current_span(None)
         return self.span
-    
-    xǁSpanContextǁ__enter____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSpanContextǁ__enter____mutmut_1': xǁSpanContextǁ__enter____mutmut_1, 
-        'xǁSpanContextǁ__enter____mutmut_2': xǁSpanContextǁ__enter____mutmut_2
+
+    xǁSpanContextǁ__enter____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSpanContextǁ__enter____mutmut_1": xǁSpanContextǁ__enter____mutmut_1,
+        "xǁSpanContextǁ__enter____mutmut_2": xǁSpanContextǁ__enter____mutmut_2,
     }
-    
+
     def __enter__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSpanContextǁ__enter____mutmut_orig"), object.__getattribute__(self, "xǁSpanContextǁ__enter____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSpanContextǁ__enter____mutmut_orig"),
+            object.__getattribute__(self, "xǁSpanContextǁ__enter____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __enter__.__signature__ = _mutmut_signature(xǁSpanContextǁ__enter____mutmut_orig)
-    xǁSpanContextǁ__enter____mutmut_orig.__name__ = 'xǁSpanContextǁ__enter__'
+    xǁSpanContextǁ__enter____mutmut_orig.__name__ = "xǁSpanContextǁ__enter__"
 
     def xǁSpanContextǁ__exit____mutmut_orig(
         self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any
@@ -402,19 +430,25 @@ class SpanContext:
             self.span.set_error(f"{exc_type.__name__}: {exc_val}")
         self.span.finish()
         set_current_span(None)
-    
-    xǁSpanContextǁ__exit____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSpanContextǁ__exit____mutmut_1': xǁSpanContextǁ__exit____mutmut_1, 
-        'xǁSpanContextǁ__exit____mutmut_2': xǁSpanContextǁ__exit____mutmut_2, 
-        'xǁSpanContextǁ__exit____mutmut_3': xǁSpanContextǁ__exit____mutmut_3
+
+    xǁSpanContextǁ__exit____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSpanContextǁ__exit____mutmut_1": xǁSpanContextǁ__exit____mutmut_1,
+        "xǁSpanContextǁ__exit____mutmut_2": xǁSpanContextǁ__exit____mutmut_2,
+        "xǁSpanContextǁ__exit____mutmut_3": xǁSpanContextǁ__exit____mutmut_3,
     }
-    
+
     def __exit__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSpanContextǁ__exit____mutmut_orig"), object.__getattribute__(self, "xǁSpanContextǁ__exit____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSpanContextǁ__exit____mutmut_orig"),
+            object.__getattribute__(self, "xǁSpanContextǁ__exit____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __exit__.__signature__ = _mutmut_signature(xǁSpanContextǁ__exit____mutmut_orig)
-    xǁSpanContextǁ__exit____mutmut_orig.__name__ = 'xǁSpanContextǁ__exit__'
+    xǁSpanContextǁ__exit____mutmut_orig.__name__ = "xǁSpanContextǁ__exit__"
 
 
 def x_with_span__mutmut_orig(name: str) -> SpanContext:
@@ -472,18 +506,21 @@ def x_with_span__mutmut_3(name: str) -> SpanContext:
     span = create_child_span(name)
     return SpanContext(None)
 
-x_with_span__mutmut_mutants : ClassVar[MutantDict] = {
-'x_with_span__mutmut_1': x_with_span__mutmut_1, 
-    'x_with_span__mutmut_2': x_with_span__mutmut_2, 
-    'x_with_span__mutmut_3': x_with_span__mutmut_3
+
+x_with_span__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_with_span__mutmut_1": x_with_span__mutmut_1,
+    "x_with_span__mutmut_2": x_with_span__mutmut_2,
+    "x_with_span__mutmut_3": x_with_span__mutmut_3,
 }
+
 
 def with_span(*args, **kwargs):
     result = _mutmut_trampoline(x_with_span__mutmut_orig, x_with_span__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 with_span.__signature__ = _mutmut_signature(x_with_span__mutmut_orig)
-x_with_span__mutmut_orig.__name__ = 'x_with_span'
+x_with_span__mutmut_orig.__name__ = "x_with_span"
 
 
 def x_get_trace_context__mutmut_orig() -> dict[str, Any]:
@@ -638,23 +675,28 @@ def x_get_trace_context__mutmut_8() -> dict[str, Any]:
         "SPAN_NAME": current_span.name if current_span else None,
     }
 
-x_get_trace_context__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_trace_context__mutmut_1': x_get_trace_context__mutmut_1, 
-    'x_get_trace_context__mutmut_2': x_get_trace_context__mutmut_2, 
-    'x_get_trace_context__mutmut_3': x_get_trace_context__mutmut_3, 
-    'x_get_trace_context__mutmut_4': x_get_trace_context__mutmut_4, 
-    'x_get_trace_context__mutmut_5': x_get_trace_context__mutmut_5, 
-    'x_get_trace_context__mutmut_6': x_get_trace_context__mutmut_6, 
-    'x_get_trace_context__mutmut_7': x_get_trace_context__mutmut_7, 
-    'x_get_trace_context__mutmut_8': x_get_trace_context__mutmut_8
+
+x_get_trace_context__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_trace_context__mutmut_1": x_get_trace_context__mutmut_1,
+    "x_get_trace_context__mutmut_2": x_get_trace_context__mutmut_2,
+    "x_get_trace_context__mutmut_3": x_get_trace_context__mutmut_3,
+    "x_get_trace_context__mutmut_4": x_get_trace_context__mutmut_4,
+    "x_get_trace_context__mutmut_5": x_get_trace_context__mutmut_5,
+    "x_get_trace_context__mutmut_6": x_get_trace_context__mutmut_6,
+    "x_get_trace_context__mutmut_7": x_get_trace_context__mutmut_7,
+    "x_get_trace_context__mutmut_8": x_get_trace_context__mutmut_8,
 }
 
+
 def get_trace_context(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_trace_context__mutmut_orig, x_get_trace_context__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_trace_context__mutmut_orig, x_get_trace_context__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_trace_context.__signature__ = _mutmut_signature(x_get_trace_context__mutmut_orig)
-x_get_trace_context__mutmut_orig.__name__ = 'x_get_trace_context'
+x_get_trace_context__mutmut_orig.__name__ = "x_get_trace_context"
 
 
 # <3 🧱🤝👣🪄

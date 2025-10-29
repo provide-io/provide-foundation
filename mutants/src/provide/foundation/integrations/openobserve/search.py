@@ -23,23 +23,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -85,7 +88,9 @@ def x__sanitize_stream_name__mutmut_4(stream: str) -> str:
 
 def x__sanitize_stream_name__mutmut_5(stream: str) -> str:
     """Sanitize stream name to prevent SQL injection."""
-    if not re.match(r"^[a-zA-Z0-9_]+$", ):
+    if not re.match(
+        r"^[a-zA-Z0-9_]+$",
+    ):
         raise ValueError(f"Invalid stream name: {stream}")
     return stream
 
@@ -117,24 +122,29 @@ def x__sanitize_stream_name__mutmut_9(stream: str) -> str:
         raise ValueError(None)
     return stream
 
-x__sanitize_stream_name__mutmut_mutants : ClassVar[MutantDict] = {
-'x__sanitize_stream_name__mutmut_1': x__sanitize_stream_name__mutmut_1, 
-    'x__sanitize_stream_name__mutmut_2': x__sanitize_stream_name__mutmut_2, 
-    'x__sanitize_stream_name__mutmut_3': x__sanitize_stream_name__mutmut_3, 
-    'x__sanitize_stream_name__mutmut_4': x__sanitize_stream_name__mutmut_4, 
-    'x__sanitize_stream_name__mutmut_5': x__sanitize_stream_name__mutmut_5, 
-    'x__sanitize_stream_name__mutmut_6': x__sanitize_stream_name__mutmut_6, 
-    'x__sanitize_stream_name__mutmut_7': x__sanitize_stream_name__mutmut_7, 
-    'x__sanitize_stream_name__mutmut_8': x__sanitize_stream_name__mutmut_8, 
-    'x__sanitize_stream_name__mutmut_9': x__sanitize_stream_name__mutmut_9
+
+x__sanitize_stream_name__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__sanitize_stream_name__mutmut_1": x__sanitize_stream_name__mutmut_1,
+    "x__sanitize_stream_name__mutmut_2": x__sanitize_stream_name__mutmut_2,
+    "x__sanitize_stream_name__mutmut_3": x__sanitize_stream_name__mutmut_3,
+    "x__sanitize_stream_name__mutmut_4": x__sanitize_stream_name__mutmut_4,
+    "x__sanitize_stream_name__mutmut_5": x__sanitize_stream_name__mutmut_5,
+    "x__sanitize_stream_name__mutmut_6": x__sanitize_stream_name__mutmut_6,
+    "x__sanitize_stream_name__mutmut_7": x__sanitize_stream_name__mutmut_7,
+    "x__sanitize_stream_name__mutmut_8": x__sanitize_stream_name__mutmut_8,
+    "x__sanitize_stream_name__mutmut_9": x__sanitize_stream_name__mutmut_9,
 }
 
+
 def _sanitize_stream_name(*args, **kwargs):
-    result = _mutmut_trampoline(x__sanitize_stream_name__mutmut_orig, x__sanitize_stream_name__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__sanitize_stream_name__mutmut_orig, x__sanitize_stream_name__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _sanitize_stream_name.__signature__ = _mutmut_signature(x__sanitize_stream_name__mutmut_orig)
-x__sanitize_stream_name__mutmut_orig.__name__ = 'x__sanitize_stream_name'
+x__sanitize_stream_name__mutmut_orig.__name__ = "x__sanitize_stream_name"
 
 
 def x__sanitize_trace_id__mutmut_orig(trace_id: str) -> str:
@@ -180,7 +190,9 @@ def x__sanitize_trace_id__mutmut_4(trace_id: str) -> str:
 def x__sanitize_trace_id__mutmut_5(trace_id: str) -> str:
     """Sanitize trace ID to prevent SQL injection."""
     # Allow hex strings and UUID format (with hyphens)
-    if not re.match(r"^[a-fA-F0-9\-]+$", ):
+    if not re.match(
+        r"^[a-fA-F0-9\-]+$",
+    ):
         raise ValueError(f"Invalid trace_id format: {trace_id}")
     return trace_id
 
@@ -216,24 +228,29 @@ def x__sanitize_trace_id__mutmut_9(trace_id: str) -> str:
         raise ValueError(None)
     return trace_id
 
-x__sanitize_trace_id__mutmut_mutants : ClassVar[MutantDict] = {
-'x__sanitize_trace_id__mutmut_1': x__sanitize_trace_id__mutmut_1, 
-    'x__sanitize_trace_id__mutmut_2': x__sanitize_trace_id__mutmut_2, 
-    'x__sanitize_trace_id__mutmut_3': x__sanitize_trace_id__mutmut_3, 
-    'x__sanitize_trace_id__mutmut_4': x__sanitize_trace_id__mutmut_4, 
-    'x__sanitize_trace_id__mutmut_5': x__sanitize_trace_id__mutmut_5, 
-    'x__sanitize_trace_id__mutmut_6': x__sanitize_trace_id__mutmut_6, 
-    'x__sanitize_trace_id__mutmut_7': x__sanitize_trace_id__mutmut_7, 
-    'x__sanitize_trace_id__mutmut_8': x__sanitize_trace_id__mutmut_8, 
-    'x__sanitize_trace_id__mutmut_9': x__sanitize_trace_id__mutmut_9
+
+x__sanitize_trace_id__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__sanitize_trace_id__mutmut_1": x__sanitize_trace_id__mutmut_1,
+    "x__sanitize_trace_id__mutmut_2": x__sanitize_trace_id__mutmut_2,
+    "x__sanitize_trace_id__mutmut_3": x__sanitize_trace_id__mutmut_3,
+    "x__sanitize_trace_id__mutmut_4": x__sanitize_trace_id__mutmut_4,
+    "x__sanitize_trace_id__mutmut_5": x__sanitize_trace_id__mutmut_5,
+    "x__sanitize_trace_id__mutmut_6": x__sanitize_trace_id__mutmut_6,
+    "x__sanitize_trace_id__mutmut_7": x__sanitize_trace_id__mutmut_7,
+    "x__sanitize_trace_id__mutmut_8": x__sanitize_trace_id__mutmut_8,
+    "x__sanitize_trace_id__mutmut_9": x__sanitize_trace_id__mutmut_9,
 }
 
+
 def _sanitize_trace_id(*args, **kwargs):
-    result = _mutmut_trampoline(x__sanitize_trace_id__mutmut_orig, x__sanitize_trace_id__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__sanitize_trace_id__mutmut_orig, x__sanitize_trace_id__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _sanitize_trace_id.__signature__ = _mutmut_signature(x__sanitize_trace_id__mutmut_orig)
-x__sanitize_trace_id__mutmut_orig.__name__ = 'x__sanitize_trace_id'
+x__sanitize_trace_id__mutmut_orig.__name__ = "x__sanitize_trace_id"
 
 
 def x__sanitize_log_level__mutmut_orig(level: str) -> str:
@@ -262,17 +279,22 @@ def x__sanitize_log_level__mutmut_2(level: str) -> str:
         raise ValueError(None)
     return level
 
-x__sanitize_log_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x__sanitize_log_level__mutmut_1': x__sanitize_log_level__mutmut_1, 
-    'x__sanitize_log_level__mutmut_2': x__sanitize_log_level__mutmut_2
+
+x__sanitize_log_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__sanitize_log_level__mutmut_1": x__sanitize_log_level__mutmut_1,
+    "x__sanitize_log_level__mutmut_2": x__sanitize_log_level__mutmut_2,
 }
 
+
 def _sanitize_log_level(*args, **kwargs):
-    result = _mutmut_trampoline(x__sanitize_log_level__mutmut_orig, x__sanitize_log_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__sanitize_log_level__mutmut_orig, x__sanitize_log_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _sanitize_log_level.__signature__ = _mutmut_signature(x__sanitize_log_level__mutmut_orig)
-x__sanitize_log_level__mutmut_orig.__name__ = 'x__sanitize_log_level'
+x__sanitize_log_level__mutmut_orig.__name__ = "x__sanitize_log_level"
 
 
 def x__sanitize_service_name__mutmut_orig(service: str) -> str:
@@ -312,7 +334,9 @@ def x__sanitize_service_name__mutmut_4(service: str) -> str:
 
 def x__sanitize_service_name__mutmut_5(service: str) -> str:
     """Sanitize service name to prevent SQL injection."""
-    if not re.match(r"^[a-zA-Z0-9_\-\.]+$", ):
+    if not re.match(
+        r"^[a-zA-Z0-9_\-\.]+$",
+    ):
         raise ValueError(f"Invalid service name: {service}")
     return service
 
@@ -344,24 +368,29 @@ def x__sanitize_service_name__mutmut_9(service: str) -> str:
         raise ValueError(None)
     return service
 
-x__sanitize_service_name__mutmut_mutants : ClassVar[MutantDict] = {
-'x__sanitize_service_name__mutmut_1': x__sanitize_service_name__mutmut_1, 
-    'x__sanitize_service_name__mutmut_2': x__sanitize_service_name__mutmut_2, 
-    'x__sanitize_service_name__mutmut_3': x__sanitize_service_name__mutmut_3, 
-    'x__sanitize_service_name__mutmut_4': x__sanitize_service_name__mutmut_4, 
-    'x__sanitize_service_name__mutmut_5': x__sanitize_service_name__mutmut_5, 
-    'x__sanitize_service_name__mutmut_6': x__sanitize_service_name__mutmut_6, 
-    'x__sanitize_service_name__mutmut_7': x__sanitize_service_name__mutmut_7, 
-    'x__sanitize_service_name__mutmut_8': x__sanitize_service_name__mutmut_8, 
-    'x__sanitize_service_name__mutmut_9': x__sanitize_service_name__mutmut_9
+
+x__sanitize_service_name__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__sanitize_service_name__mutmut_1": x__sanitize_service_name__mutmut_1,
+    "x__sanitize_service_name__mutmut_2": x__sanitize_service_name__mutmut_2,
+    "x__sanitize_service_name__mutmut_3": x__sanitize_service_name__mutmut_3,
+    "x__sanitize_service_name__mutmut_4": x__sanitize_service_name__mutmut_4,
+    "x__sanitize_service_name__mutmut_5": x__sanitize_service_name__mutmut_5,
+    "x__sanitize_service_name__mutmut_6": x__sanitize_service_name__mutmut_6,
+    "x__sanitize_service_name__mutmut_7": x__sanitize_service_name__mutmut_7,
+    "x__sanitize_service_name__mutmut_8": x__sanitize_service_name__mutmut_8,
+    "x__sanitize_service_name__mutmut_9": x__sanitize_service_name__mutmut_9,
 }
 
+
 def _sanitize_service_name(*args, **kwargs):
-    result = _mutmut_trampoline(x__sanitize_service_name__mutmut_orig, x__sanitize_service_name__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__sanitize_service_name__mutmut_orig, x__sanitize_service_name__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _sanitize_service_name.__signature__ = _mutmut_signature(x__sanitize_service_name__mutmut_orig)
-x__sanitize_service_name__mutmut_orig.__name__ = 'x__sanitize_service_name'
+x__sanitize_service_name__mutmut_orig.__name__ = "x__sanitize_service_name"
 
 
 async def x_search_logs__mutmut_orig(
@@ -729,28 +758,31 @@ async def x_search_logs__mutmut_11(
         sql=sql,
         start_time=start_time,
         end_time=end_time,
-        )
+    )
 
-x_search_logs__mutmut_mutants : ClassVar[MutantDict] = {
-'x_search_logs__mutmut_1': x_search_logs__mutmut_1, 
-    'x_search_logs__mutmut_2': x_search_logs__mutmut_2, 
-    'x_search_logs__mutmut_3': x_search_logs__mutmut_3, 
-    'x_search_logs__mutmut_4': x_search_logs__mutmut_4, 
-    'x_search_logs__mutmut_5': x_search_logs__mutmut_5, 
-    'x_search_logs__mutmut_6': x_search_logs__mutmut_6, 
-    'x_search_logs__mutmut_7': x_search_logs__mutmut_7, 
-    'x_search_logs__mutmut_8': x_search_logs__mutmut_8, 
-    'x_search_logs__mutmut_9': x_search_logs__mutmut_9, 
-    'x_search_logs__mutmut_10': x_search_logs__mutmut_10, 
-    'x_search_logs__mutmut_11': x_search_logs__mutmut_11
+
+x_search_logs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_search_logs__mutmut_1": x_search_logs__mutmut_1,
+    "x_search_logs__mutmut_2": x_search_logs__mutmut_2,
+    "x_search_logs__mutmut_3": x_search_logs__mutmut_3,
+    "x_search_logs__mutmut_4": x_search_logs__mutmut_4,
+    "x_search_logs__mutmut_5": x_search_logs__mutmut_5,
+    "x_search_logs__mutmut_6": x_search_logs__mutmut_6,
+    "x_search_logs__mutmut_7": x_search_logs__mutmut_7,
+    "x_search_logs__mutmut_8": x_search_logs__mutmut_8,
+    "x_search_logs__mutmut_9": x_search_logs__mutmut_9,
+    "x_search_logs__mutmut_10": x_search_logs__mutmut_10,
+    "x_search_logs__mutmut_11": x_search_logs__mutmut_11,
 }
+
 
 def search_logs(*args, **kwargs):
     result = _mutmut_trampoline(x_search_logs__mutmut_orig, x_search_logs__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 search_logs.__signature__ = _mutmut_signature(x_search_logs__mutmut_orig)
-x_search_logs__mutmut_orig.__name__ = 'x_search_logs'
+x_search_logs__mutmut_orig.__name__ = "x_search_logs"
 
 
 async def x_search_by_trace_id__mutmut_orig(
@@ -1072,7 +1104,10 @@ async def x_search_by_trace_id__mutmut_13(
     safe_stream = _sanitize_stream_name(stream)
     safe_trace_id = _sanitize_trace_id(trace_id)
     sql = f"SELECT * FROM {safe_stream} WHERE trace_id = '{safe_trace_id}' ORDER BY _timestamp ASC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
-    return await search_logs(sql=sql, start_time="-24h", )
+    return await search_logs(
+        sql=sql,
+        start_time="-24h",
+    )
 
 
 async def x_search_by_trace_id__mutmut_14(
@@ -1120,30 +1155,35 @@ async def x_search_by_trace_id__mutmut_15(
     sql = f"SELECT * FROM {safe_stream} WHERE trace_id = '{safe_trace_id}' ORDER BY _timestamp ASC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
     return await search_logs(sql=sql, start_time="-24H", client=client)
 
-x_search_by_trace_id__mutmut_mutants : ClassVar[MutantDict] = {
-'x_search_by_trace_id__mutmut_1': x_search_by_trace_id__mutmut_1, 
-    'x_search_by_trace_id__mutmut_2': x_search_by_trace_id__mutmut_2, 
-    'x_search_by_trace_id__mutmut_3': x_search_by_trace_id__mutmut_3, 
-    'x_search_by_trace_id__mutmut_4': x_search_by_trace_id__mutmut_4, 
-    'x_search_by_trace_id__mutmut_5': x_search_by_trace_id__mutmut_5, 
-    'x_search_by_trace_id__mutmut_6': x_search_by_trace_id__mutmut_6, 
-    'x_search_by_trace_id__mutmut_7': x_search_by_trace_id__mutmut_7, 
-    'x_search_by_trace_id__mutmut_8': x_search_by_trace_id__mutmut_8, 
-    'x_search_by_trace_id__mutmut_9': x_search_by_trace_id__mutmut_9, 
-    'x_search_by_trace_id__mutmut_10': x_search_by_trace_id__mutmut_10, 
-    'x_search_by_trace_id__mutmut_11': x_search_by_trace_id__mutmut_11, 
-    'x_search_by_trace_id__mutmut_12': x_search_by_trace_id__mutmut_12, 
-    'x_search_by_trace_id__mutmut_13': x_search_by_trace_id__mutmut_13, 
-    'x_search_by_trace_id__mutmut_14': x_search_by_trace_id__mutmut_14, 
-    'x_search_by_trace_id__mutmut_15': x_search_by_trace_id__mutmut_15
+
+x_search_by_trace_id__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_search_by_trace_id__mutmut_1": x_search_by_trace_id__mutmut_1,
+    "x_search_by_trace_id__mutmut_2": x_search_by_trace_id__mutmut_2,
+    "x_search_by_trace_id__mutmut_3": x_search_by_trace_id__mutmut_3,
+    "x_search_by_trace_id__mutmut_4": x_search_by_trace_id__mutmut_4,
+    "x_search_by_trace_id__mutmut_5": x_search_by_trace_id__mutmut_5,
+    "x_search_by_trace_id__mutmut_6": x_search_by_trace_id__mutmut_6,
+    "x_search_by_trace_id__mutmut_7": x_search_by_trace_id__mutmut_7,
+    "x_search_by_trace_id__mutmut_8": x_search_by_trace_id__mutmut_8,
+    "x_search_by_trace_id__mutmut_9": x_search_by_trace_id__mutmut_9,
+    "x_search_by_trace_id__mutmut_10": x_search_by_trace_id__mutmut_10,
+    "x_search_by_trace_id__mutmut_11": x_search_by_trace_id__mutmut_11,
+    "x_search_by_trace_id__mutmut_12": x_search_by_trace_id__mutmut_12,
+    "x_search_by_trace_id__mutmut_13": x_search_by_trace_id__mutmut_13,
+    "x_search_by_trace_id__mutmut_14": x_search_by_trace_id__mutmut_14,
+    "x_search_by_trace_id__mutmut_15": x_search_by_trace_id__mutmut_15,
 }
 
+
 def search_by_trace_id(*args, **kwargs):
-    result = _mutmut_trampoline(x_search_by_trace_id__mutmut_orig, x_search_by_trace_id__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_search_by_trace_id__mutmut_orig, x_search_by_trace_id__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 search_by_trace_id.__signature__ = _mutmut_signature(x_search_by_trace_id__mutmut_orig)
-x_search_by_trace_id__mutmut_orig.__name__ = 'x_search_by_trace_id'
+x_search_by_trace_id__mutmut_orig.__name__ = "x_search_by_trace_id"
 
 
 async def x_search_by_level__mutmut_orig(
@@ -1803,35 +1843,40 @@ async def x_search_by_level__mutmut_18(
         start_time=start_time,
         end_time=end_time,
         size=size,
-        )
+    )
 
-x_search_by_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x_search_by_level__mutmut_1': x_search_by_level__mutmut_1, 
-    'x_search_by_level__mutmut_2': x_search_by_level__mutmut_2, 
-    'x_search_by_level__mutmut_3': x_search_by_level__mutmut_3, 
-    'x_search_by_level__mutmut_4': x_search_by_level__mutmut_4, 
-    'x_search_by_level__mutmut_5': x_search_by_level__mutmut_5, 
-    'x_search_by_level__mutmut_6': x_search_by_level__mutmut_6, 
-    'x_search_by_level__mutmut_7': x_search_by_level__mutmut_7, 
-    'x_search_by_level__mutmut_8': x_search_by_level__mutmut_8, 
-    'x_search_by_level__mutmut_9': x_search_by_level__mutmut_9, 
-    'x_search_by_level__mutmut_10': x_search_by_level__mutmut_10, 
-    'x_search_by_level__mutmut_11': x_search_by_level__mutmut_11, 
-    'x_search_by_level__mutmut_12': x_search_by_level__mutmut_12, 
-    'x_search_by_level__mutmut_13': x_search_by_level__mutmut_13, 
-    'x_search_by_level__mutmut_14': x_search_by_level__mutmut_14, 
-    'x_search_by_level__mutmut_15': x_search_by_level__mutmut_15, 
-    'x_search_by_level__mutmut_16': x_search_by_level__mutmut_16, 
-    'x_search_by_level__mutmut_17': x_search_by_level__mutmut_17, 
-    'x_search_by_level__mutmut_18': x_search_by_level__mutmut_18
+
+x_search_by_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_search_by_level__mutmut_1": x_search_by_level__mutmut_1,
+    "x_search_by_level__mutmut_2": x_search_by_level__mutmut_2,
+    "x_search_by_level__mutmut_3": x_search_by_level__mutmut_3,
+    "x_search_by_level__mutmut_4": x_search_by_level__mutmut_4,
+    "x_search_by_level__mutmut_5": x_search_by_level__mutmut_5,
+    "x_search_by_level__mutmut_6": x_search_by_level__mutmut_6,
+    "x_search_by_level__mutmut_7": x_search_by_level__mutmut_7,
+    "x_search_by_level__mutmut_8": x_search_by_level__mutmut_8,
+    "x_search_by_level__mutmut_9": x_search_by_level__mutmut_9,
+    "x_search_by_level__mutmut_10": x_search_by_level__mutmut_10,
+    "x_search_by_level__mutmut_11": x_search_by_level__mutmut_11,
+    "x_search_by_level__mutmut_12": x_search_by_level__mutmut_12,
+    "x_search_by_level__mutmut_13": x_search_by_level__mutmut_13,
+    "x_search_by_level__mutmut_14": x_search_by_level__mutmut_14,
+    "x_search_by_level__mutmut_15": x_search_by_level__mutmut_15,
+    "x_search_by_level__mutmut_16": x_search_by_level__mutmut_16,
+    "x_search_by_level__mutmut_17": x_search_by_level__mutmut_17,
+    "x_search_by_level__mutmut_18": x_search_by_level__mutmut_18,
 }
 
+
 def search_by_level(*args, **kwargs):
-    result = _mutmut_trampoline(x_search_by_level__mutmut_orig, x_search_by_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_search_by_level__mutmut_orig, x_search_by_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 search_by_level.__signature__ = _mutmut_signature(x_search_by_level__mutmut_orig)
-x_search_by_level__mutmut_orig.__name__ = 'x_search_by_level'
+x_search_by_level__mutmut_orig.__name__ = "x_search_by_level"
 
 
 async def x_search_errors__mutmut_orig(
@@ -2204,7 +2249,7 @@ async def x_search_errors__mutmut_13(
         stream=stream,
         start_time=start_time,
         size=size,
-        )
+    )
 
 
 async def x_search_errors__mutmut_14(
@@ -2260,30 +2305,33 @@ async def x_search_errors__mutmut_15(
         client=client,
     )
 
-x_search_errors__mutmut_mutants : ClassVar[MutantDict] = {
-'x_search_errors__mutmut_1': x_search_errors__mutmut_1, 
-    'x_search_errors__mutmut_2': x_search_errors__mutmut_2, 
-    'x_search_errors__mutmut_3': x_search_errors__mutmut_3, 
-    'x_search_errors__mutmut_4': x_search_errors__mutmut_4, 
-    'x_search_errors__mutmut_5': x_search_errors__mutmut_5, 
-    'x_search_errors__mutmut_6': x_search_errors__mutmut_6, 
-    'x_search_errors__mutmut_7': x_search_errors__mutmut_7, 
-    'x_search_errors__mutmut_8': x_search_errors__mutmut_8, 
-    'x_search_errors__mutmut_9': x_search_errors__mutmut_9, 
-    'x_search_errors__mutmut_10': x_search_errors__mutmut_10, 
-    'x_search_errors__mutmut_11': x_search_errors__mutmut_11, 
-    'x_search_errors__mutmut_12': x_search_errors__mutmut_12, 
-    'x_search_errors__mutmut_13': x_search_errors__mutmut_13, 
-    'x_search_errors__mutmut_14': x_search_errors__mutmut_14, 
-    'x_search_errors__mutmut_15': x_search_errors__mutmut_15
+
+x_search_errors__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_search_errors__mutmut_1": x_search_errors__mutmut_1,
+    "x_search_errors__mutmut_2": x_search_errors__mutmut_2,
+    "x_search_errors__mutmut_3": x_search_errors__mutmut_3,
+    "x_search_errors__mutmut_4": x_search_errors__mutmut_4,
+    "x_search_errors__mutmut_5": x_search_errors__mutmut_5,
+    "x_search_errors__mutmut_6": x_search_errors__mutmut_6,
+    "x_search_errors__mutmut_7": x_search_errors__mutmut_7,
+    "x_search_errors__mutmut_8": x_search_errors__mutmut_8,
+    "x_search_errors__mutmut_9": x_search_errors__mutmut_9,
+    "x_search_errors__mutmut_10": x_search_errors__mutmut_10,
+    "x_search_errors__mutmut_11": x_search_errors__mutmut_11,
+    "x_search_errors__mutmut_12": x_search_errors__mutmut_12,
+    "x_search_errors__mutmut_13": x_search_errors__mutmut_13,
+    "x_search_errors__mutmut_14": x_search_errors__mutmut_14,
+    "x_search_errors__mutmut_15": x_search_errors__mutmut_15,
 }
+
 
 def search_errors(*args, **kwargs):
     result = _mutmut_trampoline(x_search_errors__mutmut_orig, x_search_errors__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 search_errors.__signature__ = _mutmut_signature(x_search_errors__mutmut_orig)
-x_search_errors__mutmut_orig.__name__ = 'x_search_errors'
+x_search_errors__mutmut_orig.__name__ = "x_search_errors"
 
 
 async def x_search_by_service__mutmut_orig(
@@ -2943,35 +2991,40 @@ async def x_search_by_service__mutmut_18(
         start_time=start_time,
         end_time=end_time,
         size=size,
-        )
+    )
 
-x_search_by_service__mutmut_mutants : ClassVar[MutantDict] = {
-'x_search_by_service__mutmut_1': x_search_by_service__mutmut_1, 
-    'x_search_by_service__mutmut_2': x_search_by_service__mutmut_2, 
-    'x_search_by_service__mutmut_3': x_search_by_service__mutmut_3, 
-    'x_search_by_service__mutmut_4': x_search_by_service__mutmut_4, 
-    'x_search_by_service__mutmut_5': x_search_by_service__mutmut_5, 
-    'x_search_by_service__mutmut_6': x_search_by_service__mutmut_6, 
-    'x_search_by_service__mutmut_7': x_search_by_service__mutmut_7, 
-    'x_search_by_service__mutmut_8': x_search_by_service__mutmut_8, 
-    'x_search_by_service__mutmut_9': x_search_by_service__mutmut_9, 
-    'x_search_by_service__mutmut_10': x_search_by_service__mutmut_10, 
-    'x_search_by_service__mutmut_11': x_search_by_service__mutmut_11, 
-    'x_search_by_service__mutmut_12': x_search_by_service__mutmut_12, 
-    'x_search_by_service__mutmut_13': x_search_by_service__mutmut_13, 
-    'x_search_by_service__mutmut_14': x_search_by_service__mutmut_14, 
-    'x_search_by_service__mutmut_15': x_search_by_service__mutmut_15, 
-    'x_search_by_service__mutmut_16': x_search_by_service__mutmut_16, 
-    'x_search_by_service__mutmut_17': x_search_by_service__mutmut_17, 
-    'x_search_by_service__mutmut_18': x_search_by_service__mutmut_18
+
+x_search_by_service__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_search_by_service__mutmut_1": x_search_by_service__mutmut_1,
+    "x_search_by_service__mutmut_2": x_search_by_service__mutmut_2,
+    "x_search_by_service__mutmut_3": x_search_by_service__mutmut_3,
+    "x_search_by_service__mutmut_4": x_search_by_service__mutmut_4,
+    "x_search_by_service__mutmut_5": x_search_by_service__mutmut_5,
+    "x_search_by_service__mutmut_6": x_search_by_service__mutmut_6,
+    "x_search_by_service__mutmut_7": x_search_by_service__mutmut_7,
+    "x_search_by_service__mutmut_8": x_search_by_service__mutmut_8,
+    "x_search_by_service__mutmut_9": x_search_by_service__mutmut_9,
+    "x_search_by_service__mutmut_10": x_search_by_service__mutmut_10,
+    "x_search_by_service__mutmut_11": x_search_by_service__mutmut_11,
+    "x_search_by_service__mutmut_12": x_search_by_service__mutmut_12,
+    "x_search_by_service__mutmut_13": x_search_by_service__mutmut_13,
+    "x_search_by_service__mutmut_14": x_search_by_service__mutmut_14,
+    "x_search_by_service__mutmut_15": x_search_by_service__mutmut_15,
+    "x_search_by_service__mutmut_16": x_search_by_service__mutmut_16,
+    "x_search_by_service__mutmut_17": x_search_by_service__mutmut_17,
+    "x_search_by_service__mutmut_18": x_search_by_service__mutmut_18,
 }
 
+
 def search_by_service(*args, **kwargs):
-    result = _mutmut_trampoline(x_search_by_service__mutmut_orig, x_search_by_service__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_search_by_service__mutmut_orig, x_search_by_service__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 search_by_service.__signature__ = _mutmut_signature(x_search_by_service__mutmut_orig)
-x_search_by_service__mutmut_orig.__name__ = 'x_search_by_service'
+x_search_by_service__mutmut_orig.__name__ = "x_search_by_service"
 
 
 async def x_aggregate_by_level__mutmut_orig(
@@ -3598,7 +3651,7 @@ async def x_aggregate_by_level__mutmut_16(
         start_time=start_time,
         end_time=end_time,
         size=1000,
-        )
+    )
 
     result = {}
     for hit in response.hits:
@@ -3868,7 +3921,9 @@ async def x_aggregate_by_level__mutmut_23(
 
     result = {}
     for hit in response.hits:
-        level = hit.get("level", )
+        level = hit.get(
+            "level",
+        )
         count = hit.get("count", 0)
         result[level] = count
 
@@ -4211,7 +4266,9 @@ async def x_aggregate_by_level__mutmut_32(
     result = {}
     for hit in response.hits:
         level = hit.get("level", "UNKNOWN")
-        count = hit.get("count", )
+        count = hit.get(
+            "count",
+        )
         result[level] = count
 
     return result
@@ -4368,51 +4425,56 @@ async def x_aggregate_by_level__mutmut_36(
 
     return result
 
-x_aggregate_by_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x_aggregate_by_level__mutmut_1': x_aggregate_by_level__mutmut_1, 
-    'x_aggregate_by_level__mutmut_2': x_aggregate_by_level__mutmut_2, 
-    'x_aggregate_by_level__mutmut_3': x_aggregate_by_level__mutmut_3, 
-    'x_aggregate_by_level__mutmut_4': x_aggregate_by_level__mutmut_4, 
-    'x_aggregate_by_level__mutmut_5': x_aggregate_by_level__mutmut_5, 
-    'x_aggregate_by_level__mutmut_6': x_aggregate_by_level__mutmut_6, 
-    'x_aggregate_by_level__mutmut_7': x_aggregate_by_level__mutmut_7, 
-    'x_aggregate_by_level__mutmut_8': x_aggregate_by_level__mutmut_8, 
-    'x_aggregate_by_level__mutmut_9': x_aggregate_by_level__mutmut_9, 
-    'x_aggregate_by_level__mutmut_10': x_aggregate_by_level__mutmut_10, 
-    'x_aggregate_by_level__mutmut_11': x_aggregate_by_level__mutmut_11, 
-    'x_aggregate_by_level__mutmut_12': x_aggregate_by_level__mutmut_12, 
-    'x_aggregate_by_level__mutmut_13': x_aggregate_by_level__mutmut_13, 
-    'x_aggregate_by_level__mutmut_14': x_aggregate_by_level__mutmut_14, 
-    'x_aggregate_by_level__mutmut_15': x_aggregate_by_level__mutmut_15, 
-    'x_aggregate_by_level__mutmut_16': x_aggregate_by_level__mutmut_16, 
-    'x_aggregate_by_level__mutmut_17': x_aggregate_by_level__mutmut_17, 
-    'x_aggregate_by_level__mutmut_18': x_aggregate_by_level__mutmut_18, 
-    'x_aggregate_by_level__mutmut_19': x_aggregate_by_level__mutmut_19, 
-    'x_aggregate_by_level__mutmut_20': x_aggregate_by_level__mutmut_20, 
-    'x_aggregate_by_level__mutmut_21': x_aggregate_by_level__mutmut_21, 
-    'x_aggregate_by_level__mutmut_22': x_aggregate_by_level__mutmut_22, 
-    'x_aggregate_by_level__mutmut_23': x_aggregate_by_level__mutmut_23, 
-    'x_aggregate_by_level__mutmut_24': x_aggregate_by_level__mutmut_24, 
-    'x_aggregate_by_level__mutmut_25': x_aggregate_by_level__mutmut_25, 
-    'x_aggregate_by_level__mutmut_26': x_aggregate_by_level__mutmut_26, 
-    'x_aggregate_by_level__mutmut_27': x_aggregate_by_level__mutmut_27, 
-    'x_aggregate_by_level__mutmut_28': x_aggregate_by_level__mutmut_28, 
-    'x_aggregate_by_level__mutmut_29': x_aggregate_by_level__mutmut_29, 
-    'x_aggregate_by_level__mutmut_30': x_aggregate_by_level__mutmut_30, 
-    'x_aggregate_by_level__mutmut_31': x_aggregate_by_level__mutmut_31, 
-    'x_aggregate_by_level__mutmut_32': x_aggregate_by_level__mutmut_32, 
-    'x_aggregate_by_level__mutmut_33': x_aggregate_by_level__mutmut_33, 
-    'x_aggregate_by_level__mutmut_34': x_aggregate_by_level__mutmut_34, 
-    'x_aggregate_by_level__mutmut_35': x_aggregate_by_level__mutmut_35, 
-    'x_aggregate_by_level__mutmut_36': x_aggregate_by_level__mutmut_36
+
+x_aggregate_by_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_aggregate_by_level__mutmut_1": x_aggregate_by_level__mutmut_1,
+    "x_aggregate_by_level__mutmut_2": x_aggregate_by_level__mutmut_2,
+    "x_aggregate_by_level__mutmut_3": x_aggregate_by_level__mutmut_3,
+    "x_aggregate_by_level__mutmut_4": x_aggregate_by_level__mutmut_4,
+    "x_aggregate_by_level__mutmut_5": x_aggregate_by_level__mutmut_5,
+    "x_aggregate_by_level__mutmut_6": x_aggregate_by_level__mutmut_6,
+    "x_aggregate_by_level__mutmut_7": x_aggregate_by_level__mutmut_7,
+    "x_aggregate_by_level__mutmut_8": x_aggregate_by_level__mutmut_8,
+    "x_aggregate_by_level__mutmut_9": x_aggregate_by_level__mutmut_9,
+    "x_aggregate_by_level__mutmut_10": x_aggregate_by_level__mutmut_10,
+    "x_aggregate_by_level__mutmut_11": x_aggregate_by_level__mutmut_11,
+    "x_aggregate_by_level__mutmut_12": x_aggregate_by_level__mutmut_12,
+    "x_aggregate_by_level__mutmut_13": x_aggregate_by_level__mutmut_13,
+    "x_aggregate_by_level__mutmut_14": x_aggregate_by_level__mutmut_14,
+    "x_aggregate_by_level__mutmut_15": x_aggregate_by_level__mutmut_15,
+    "x_aggregate_by_level__mutmut_16": x_aggregate_by_level__mutmut_16,
+    "x_aggregate_by_level__mutmut_17": x_aggregate_by_level__mutmut_17,
+    "x_aggregate_by_level__mutmut_18": x_aggregate_by_level__mutmut_18,
+    "x_aggregate_by_level__mutmut_19": x_aggregate_by_level__mutmut_19,
+    "x_aggregate_by_level__mutmut_20": x_aggregate_by_level__mutmut_20,
+    "x_aggregate_by_level__mutmut_21": x_aggregate_by_level__mutmut_21,
+    "x_aggregate_by_level__mutmut_22": x_aggregate_by_level__mutmut_22,
+    "x_aggregate_by_level__mutmut_23": x_aggregate_by_level__mutmut_23,
+    "x_aggregate_by_level__mutmut_24": x_aggregate_by_level__mutmut_24,
+    "x_aggregate_by_level__mutmut_25": x_aggregate_by_level__mutmut_25,
+    "x_aggregate_by_level__mutmut_26": x_aggregate_by_level__mutmut_26,
+    "x_aggregate_by_level__mutmut_27": x_aggregate_by_level__mutmut_27,
+    "x_aggregate_by_level__mutmut_28": x_aggregate_by_level__mutmut_28,
+    "x_aggregate_by_level__mutmut_29": x_aggregate_by_level__mutmut_29,
+    "x_aggregate_by_level__mutmut_30": x_aggregate_by_level__mutmut_30,
+    "x_aggregate_by_level__mutmut_31": x_aggregate_by_level__mutmut_31,
+    "x_aggregate_by_level__mutmut_32": x_aggregate_by_level__mutmut_32,
+    "x_aggregate_by_level__mutmut_33": x_aggregate_by_level__mutmut_33,
+    "x_aggregate_by_level__mutmut_34": x_aggregate_by_level__mutmut_34,
+    "x_aggregate_by_level__mutmut_35": x_aggregate_by_level__mutmut_35,
+    "x_aggregate_by_level__mutmut_36": x_aggregate_by_level__mutmut_36,
 }
 
+
 def aggregate_by_level(*args, **kwargs):
-    result = _mutmut_trampoline(x_aggregate_by_level__mutmut_orig, x_aggregate_by_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_aggregate_by_level__mutmut_orig, x_aggregate_by_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 aggregate_by_level.__signature__ = _mutmut_signature(x_aggregate_by_level__mutmut_orig)
-x_aggregate_by_level__mutmut_orig.__name__ = 'x_aggregate_by_level'
+x_aggregate_by_level__mutmut_orig.__name__ = "x_aggregate_by_level"
 
 
 async def x_get_current_trace_logs__mutmut_orig(
@@ -4905,7 +4967,10 @@ async def x_get_current_trace_logs__mutmut_12(
         if current_span and current_span.is_recording():
             span_context = current_span.get_span_context()
             trace_id = f"{span_context.trace_id:032x}"
-            return await search_by_trace_id(trace_id, stream=stream, )
+            return await search_by_trace_id(
+                trace_id,
+                stream=stream,
+            )
     except ImportError:
         pass
 
@@ -5188,40 +5253,48 @@ async def x_get_current_trace_logs__mutmut_19(
 
         trace_id = get_current_trace_id()  # type: ignore[assignment]
         if trace_id:
-            return await search_by_trace_id(trace_id, stream=stream, )
+            return await search_by_trace_id(
+                trace_id,
+                stream=stream,
+            )
     except ImportError:
         pass
 
     return None
 
-x_get_current_trace_logs__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_current_trace_logs__mutmut_1': x_get_current_trace_logs__mutmut_1, 
-    'x_get_current_trace_logs__mutmut_2': x_get_current_trace_logs__mutmut_2, 
-    'x_get_current_trace_logs__mutmut_3': x_get_current_trace_logs__mutmut_3, 
-    'x_get_current_trace_logs__mutmut_4': x_get_current_trace_logs__mutmut_4, 
-    'x_get_current_trace_logs__mutmut_5': x_get_current_trace_logs__mutmut_5, 
-    'x_get_current_trace_logs__mutmut_6': x_get_current_trace_logs__mutmut_6, 
-    'x_get_current_trace_logs__mutmut_7': x_get_current_trace_logs__mutmut_7, 
-    'x_get_current_trace_logs__mutmut_8': x_get_current_trace_logs__mutmut_8, 
-    'x_get_current_trace_logs__mutmut_9': x_get_current_trace_logs__mutmut_9, 
-    'x_get_current_trace_logs__mutmut_10': x_get_current_trace_logs__mutmut_10, 
-    'x_get_current_trace_logs__mutmut_11': x_get_current_trace_logs__mutmut_11, 
-    'x_get_current_trace_logs__mutmut_12': x_get_current_trace_logs__mutmut_12, 
-    'x_get_current_trace_logs__mutmut_13': x_get_current_trace_logs__mutmut_13, 
-    'x_get_current_trace_logs__mutmut_14': x_get_current_trace_logs__mutmut_14, 
-    'x_get_current_trace_logs__mutmut_15': x_get_current_trace_logs__mutmut_15, 
-    'x_get_current_trace_logs__mutmut_16': x_get_current_trace_logs__mutmut_16, 
-    'x_get_current_trace_logs__mutmut_17': x_get_current_trace_logs__mutmut_17, 
-    'x_get_current_trace_logs__mutmut_18': x_get_current_trace_logs__mutmut_18, 
-    'x_get_current_trace_logs__mutmut_19': x_get_current_trace_logs__mutmut_19
+
+x_get_current_trace_logs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_current_trace_logs__mutmut_1": x_get_current_trace_logs__mutmut_1,
+    "x_get_current_trace_logs__mutmut_2": x_get_current_trace_logs__mutmut_2,
+    "x_get_current_trace_logs__mutmut_3": x_get_current_trace_logs__mutmut_3,
+    "x_get_current_trace_logs__mutmut_4": x_get_current_trace_logs__mutmut_4,
+    "x_get_current_trace_logs__mutmut_5": x_get_current_trace_logs__mutmut_5,
+    "x_get_current_trace_logs__mutmut_6": x_get_current_trace_logs__mutmut_6,
+    "x_get_current_trace_logs__mutmut_7": x_get_current_trace_logs__mutmut_7,
+    "x_get_current_trace_logs__mutmut_8": x_get_current_trace_logs__mutmut_8,
+    "x_get_current_trace_logs__mutmut_9": x_get_current_trace_logs__mutmut_9,
+    "x_get_current_trace_logs__mutmut_10": x_get_current_trace_logs__mutmut_10,
+    "x_get_current_trace_logs__mutmut_11": x_get_current_trace_logs__mutmut_11,
+    "x_get_current_trace_logs__mutmut_12": x_get_current_trace_logs__mutmut_12,
+    "x_get_current_trace_logs__mutmut_13": x_get_current_trace_logs__mutmut_13,
+    "x_get_current_trace_logs__mutmut_14": x_get_current_trace_logs__mutmut_14,
+    "x_get_current_trace_logs__mutmut_15": x_get_current_trace_logs__mutmut_15,
+    "x_get_current_trace_logs__mutmut_16": x_get_current_trace_logs__mutmut_16,
+    "x_get_current_trace_logs__mutmut_17": x_get_current_trace_logs__mutmut_17,
+    "x_get_current_trace_logs__mutmut_18": x_get_current_trace_logs__mutmut_18,
+    "x_get_current_trace_logs__mutmut_19": x_get_current_trace_logs__mutmut_19,
 }
 
+
 def get_current_trace_logs(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_current_trace_logs__mutmut_orig, x_get_current_trace_logs__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_current_trace_logs__mutmut_orig, x_get_current_trace_logs__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_current_trace_logs.__signature__ = _mutmut_signature(x_get_current_trace_logs__mutmut_orig)
-x_get_current_trace_logs__mutmut_orig.__name__ = 'x_get_current_trace_logs'
+x_get_current_trace_logs__mutmut_orig.__name__ = "x_get_current_trace_logs"
 
 
 # <3 🧱🤝🔌🪄

@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -187,25 +190,31 @@ class QualityAnalyzer:
         self.detector = detector or OperationDetector()
         self.scenarios: list[OperationScenario] = []
         self.results: list[QualityResult] = None
-    
-    xǁQualityAnalyzerǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ__init____mutmut_1': xǁQualityAnalyzerǁ__init____mutmut_1, 
-        'xǁQualityAnalyzerǁ__init____mutmut_2': xǁQualityAnalyzerǁ__init____mutmut_2, 
-        'xǁQualityAnalyzerǁ__init____mutmut_3': xǁQualityAnalyzerǁ__init____mutmut_3, 
-        'xǁQualityAnalyzerǁ__init____mutmut_4': xǁQualityAnalyzerǁ__init____mutmut_4, 
-        'xǁQualityAnalyzerǁ__init____mutmut_5': xǁQualityAnalyzerǁ__init____mutmut_5, 
-        'xǁQualityAnalyzerǁ__init____mutmut_6': xǁQualityAnalyzerǁ__init____mutmut_6, 
-        'xǁQualityAnalyzerǁ__init____mutmut_7': xǁQualityAnalyzerǁ__init____mutmut_7, 
-        'xǁQualityAnalyzerǁ__init____mutmut_8': xǁQualityAnalyzerǁ__init____mutmut_8, 
-        'xǁQualityAnalyzerǁ__init____mutmut_9': xǁQualityAnalyzerǁ__init____mutmut_9
+
+    xǁQualityAnalyzerǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ__init____mutmut_1": xǁQualityAnalyzerǁ__init____mutmut_1,
+        "xǁQualityAnalyzerǁ__init____mutmut_2": xǁQualityAnalyzerǁ__init____mutmut_2,
+        "xǁQualityAnalyzerǁ__init____mutmut_3": xǁQualityAnalyzerǁ__init____mutmut_3,
+        "xǁQualityAnalyzerǁ__init____mutmut_4": xǁQualityAnalyzerǁ__init____mutmut_4,
+        "xǁQualityAnalyzerǁ__init____mutmut_5": xǁQualityAnalyzerǁ__init____mutmut_5,
+        "xǁQualityAnalyzerǁ__init____mutmut_6": xǁQualityAnalyzerǁ__init____mutmut_6,
+        "xǁQualityAnalyzerǁ__init____mutmut_7": xǁQualityAnalyzerǁ__init____mutmut_7,
+        "xǁQualityAnalyzerǁ__init____mutmut_8": xǁQualityAnalyzerǁ__init____mutmut_8,
+        "xǁQualityAnalyzerǁ__init____mutmut_9": xǁQualityAnalyzerǁ__init____mutmut_9,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ__init____mutmut_orig)
-    xǁQualityAnalyzerǁ__init____mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ__init__'
+    xǁQualityAnalyzerǁ__init____mutmut_orig.__name__ = "xǁQualityAnalyzerǁ__init__"
 
     def xǁQualityAnalyzerǁadd_scenario__mutmut_orig(self, scenario: OperationScenario) -> None:
         """Add a scenario for analysis.
@@ -222,19 +231,27 @@ class QualityAnalyzer:
             scenario: Scenario to add
         """
         self.scenarios.append(None)
-    
-    xǁQualityAnalyzerǁadd_scenario__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁadd_scenario__mutmut_1': xǁQualityAnalyzerǁadd_scenario__mutmut_1
-    }
-    
-    def add_scenario(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁadd_scenario__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁadd_scenario__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    add_scenario.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁadd_scenario__mutmut_orig)
-    xǁQualityAnalyzerǁadd_scenario__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁadd_scenario'
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_orig(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    xǁQualityAnalyzerǁadd_scenario__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁadd_scenario__mutmut_1": xǁQualityAnalyzerǁadd_scenario__mutmut_1
+    }
+
+    def add_scenario(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁadd_scenario__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁadd_scenario__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    add_scenario.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁadd_scenario__mutmut_orig)
+    xǁQualityAnalyzerǁadd_scenario__mutmut_orig.__name__ = "xǁQualityAnalyzerǁadd_scenario"
+
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_orig(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -258,7 +275,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_1(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_1(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -282,7 +301,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_2(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_2(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -306,7 +327,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_3(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_3(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -330,7 +353,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_4(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_4(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -354,7 +379,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_5(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_5(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -378,7 +405,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_6(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_6(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -402,7 +431,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_7(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_7(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -426,7 +457,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_8(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_8(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -450,7 +483,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_9(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_9(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -474,7 +509,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_10(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_10(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -498,7 +535,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_11(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_11(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -522,7 +561,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_12(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_12(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -546,7 +587,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_13(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_13(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -570,7 +613,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_14(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_14(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -594,7 +639,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_15(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_15(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -618,7 +665,9 @@ class QualityAnalyzer:
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_16(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_16(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -637,12 +686,17 @@ class QualityAnalyzer:
         detection_results, timing_results = self._collect_detection_data()
 
         # Calculate all requested metrics
-        results = self._calculate_metrics(metrics, detection_results, )
+        results = self._calculate_metrics(
+            metrics,
+            detection_results,
+        )
 
         self.results.extend(results.values())
         return results
 
-    def xǁQualityAnalyzerǁrun_analysis__mutmut_17(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+    def xǁQualityAnalyzerǁrun_analysis__mutmut_17(
+        self, metrics: list[AnalysisMetric] | None = None
+    ) -> dict[AnalysisMetric, QualityResult]:
         """Run quality analysis on all scenarios.
 
         Args:
@@ -665,35 +719,43 @@ class QualityAnalyzer:
 
         self.results.extend(None)
         return results
-    
-    xǁQualityAnalyzerǁrun_analysis__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁrun_analysis__mutmut_1': xǁQualityAnalyzerǁrun_analysis__mutmut_1, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_2': xǁQualityAnalyzerǁrun_analysis__mutmut_2, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_3': xǁQualityAnalyzerǁrun_analysis__mutmut_3, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_4': xǁQualityAnalyzerǁrun_analysis__mutmut_4, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_5': xǁQualityAnalyzerǁrun_analysis__mutmut_5, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_6': xǁQualityAnalyzerǁrun_analysis__mutmut_6, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_7': xǁQualityAnalyzerǁrun_analysis__mutmut_7, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_8': xǁQualityAnalyzerǁrun_analysis__mutmut_8, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_9': xǁQualityAnalyzerǁrun_analysis__mutmut_9, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_10': xǁQualityAnalyzerǁrun_analysis__mutmut_10, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_11': xǁQualityAnalyzerǁrun_analysis__mutmut_11, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_12': xǁQualityAnalyzerǁrun_analysis__mutmut_12, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_13': xǁQualityAnalyzerǁrun_analysis__mutmut_13, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_14': xǁQualityAnalyzerǁrun_analysis__mutmut_14, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_15': xǁQualityAnalyzerǁrun_analysis__mutmut_15, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_16': xǁQualityAnalyzerǁrun_analysis__mutmut_16, 
-        'xǁQualityAnalyzerǁrun_analysis__mutmut_17': xǁQualityAnalyzerǁrun_analysis__mutmut_17
-    }
-    
-    def run_analysis(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁrun_analysis__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁrun_analysis__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    run_analysis.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁrun_analysis__mutmut_orig)
-    xǁQualityAnalyzerǁrun_analysis__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁrun_analysis'
 
-    def xǁQualityAnalyzerǁ_collect_detection_data__mutmut_orig(self) -> tuple[list[dict[str, Any]], list[float]]:
+    xǁQualityAnalyzerǁrun_analysis__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_1": xǁQualityAnalyzerǁrun_analysis__mutmut_1,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_2": xǁQualityAnalyzerǁrun_analysis__mutmut_2,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_3": xǁQualityAnalyzerǁrun_analysis__mutmut_3,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_4": xǁQualityAnalyzerǁrun_analysis__mutmut_4,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_5": xǁQualityAnalyzerǁrun_analysis__mutmut_5,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_6": xǁQualityAnalyzerǁrun_analysis__mutmut_6,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_7": xǁQualityAnalyzerǁrun_analysis__mutmut_7,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_8": xǁQualityAnalyzerǁrun_analysis__mutmut_8,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_9": xǁQualityAnalyzerǁrun_analysis__mutmut_9,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_10": xǁQualityAnalyzerǁrun_analysis__mutmut_10,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_11": xǁQualityAnalyzerǁrun_analysis__mutmut_11,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_12": xǁQualityAnalyzerǁrun_analysis__mutmut_12,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_13": xǁQualityAnalyzerǁrun_analysis__mutmut_13,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_14": xǁQualityAnalyzerǁrun_analysis__mutmut_14,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_15": xǁQualityAnalyzerǁrun_analysis__mutmut_15,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_16": xǁQualityAnalyzerǁrun_analysis__mutmut_16,
+        "xǁQualityAnalyzerǁrun_analysis__mutmut_17": xǁQualityAnalyzerǁrun_analysis__mutmut_17,
+    }
+
+    def run_analysis(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁrun_analysis__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁrun_analysis__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    run_analysis.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁrun_analysis__mutmut_orig)
+    xǁQualityAnalyzerǁrun_analysis__mutmut_orig.__name__ = "xǁQualityAnalyzerǁrun_analysis"
+
+    def xǁQualityAnalyzerǁ_collect_detection_data__mutmut_orig(
+        self,
+    ) -> tuple[list[dict[str, Any]], list[float]]:
         """Collect detection results and timing data from scenarios."""
         detection_results = []
         timing_results = []
@@ -982,9 +1044,7 @@ class QualityAnalyzer:
             detection_time = (end_time - start_time) * 1000  # milliseconds
             timing_results.append(detection_time)
 
-            detection_results.append(
-                None
-            )
+            detection_results.append(None)
 
         return detection_results, timing_results
 
@@ -1125,34 +1185,44 @@ class QualityAnalyzer:
             )
 
         return detection_results, timing_results
-    
-    xǁQualityAnalyzerǁ_collect_detection_data__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_1': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_1, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_2': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_2, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_3': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_3, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_4': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_4, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_5': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_5, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_6': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_6, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_7': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_7, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_8': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_8, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_9': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_9, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_10': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_10, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_11': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_11, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_12': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_12, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_13': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_13, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_14': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_14, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_15': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_15, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_16': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_16, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_17': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_17, 
-        'xǁQualityAnalyzerǁ_collect_detection_data__mutmut_18': xǁQualityAnalyzerǁ_collect_detection_data__mutmut_18
+
+    xǁQualityAnalyzerǁ_collect_detection_data__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_1": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_1,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_2": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_2,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_3": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_3,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_4": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_4,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_5": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_5,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_6": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_6,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_7": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_7,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_8": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_8,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_9": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_9,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_10": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_10,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_11": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_11,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_12": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_12,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_13": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_13,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_14": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_14,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_15": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_15,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_16": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_16,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_17": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_17,
+        "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_18": xǁQualityAnalyzerǁ_collect_detection_data__mutmut_18,
     }
-    
+
     def _collect_detection_data(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _collect_detection_data.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_collect_detection_data__mutmut_orig)
-    xǁQualityAnalyzerǁ_collect_detection_data__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_collect_detection_data'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_collect_detection_data__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _collect_detection_data.__signature__ = _mutmut_signature(
+        xǁQualityAnalyzerǁ_collect_detection_data__mutmut_orig
+    )
+    xǁQualityAnalyzerǁ_collect_detection_data__mutmut_orig.__name__ = (
+        "xǁQualityAnalyzerǁ_collect_detection_data"
+    )
 
     def xǁQualityAnalyzerǁ_calculate_metrics__mutmut_orig(
         self,
@@ -1793,7 +1863,9 @@ class QualityAnalyzer:
             elif metric == AnalysisMetric.F1_SCORE:
                 precision = self._calculate_precision(detection_results)
                 recall = self._calculate_recall(detection_results)
-                results[metric] = self._calculate_f1_score(precision.value, )
+                results[metric] = self._calculate_f1_score(
+                    precision.value,
+                )
             elif metric == AnalysisMetric.CONFIDENCE_DISTRIBUTION:
                 results[metric] = self._analyze_confidence_distribution(detection_results)
             elif metric == AnalysisMetric.DETECTION_TIME:
@@ -2176,50 +2248,58 @@ class QualityAnalyzer:
                 results[metric] = self._calculate_false_negative_rate(None)
 
         return results
-    
-    xǁQualityAnalyzerǁ_calculate_metrics__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_1': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_1, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_2': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_2, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_3': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_3, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_4': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_4, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_5': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_5, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_6': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_6, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_7': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_7, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_8': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_8, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_9': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_9, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_10': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_10, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_11': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_11, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_12': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_12, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_13': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_13, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_14': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_14, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_15': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_15, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_16': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_16, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_17': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_17, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_18': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_18, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_19': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_19, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_20': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_20, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_21': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_21, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_22': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_22, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_23': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_23, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_24': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_24, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_25': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_25, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_26': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_26, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_27': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_27, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_28': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_28, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_29': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_29, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_30': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_30, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_31': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_31, 
-        'xǁQualityAnalyzerǁ_calculate_metrics__mutmut_32': xǁQualityAnalyzerǁ_calculate_metrics__mutmut_32
-    }
-    
-    def _calculate_metrics(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _calculate_metrics.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_metrics__mutmut_orig)
-    xǁQualityAnalyzerǁ_calculate_metrics__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_calculate_metrics'
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_orig(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    xǁQualityAnalyzerǁ_calculate_metrics__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_1": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_1,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_2": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_2,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_3": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_3,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_4": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_4,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_5": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_5,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_6": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_6,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_7": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_7,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_8": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_8,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_9": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_9,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_10": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_10,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_11": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_11,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_12": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_12,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_13": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_13,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_14": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_14,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_15": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_15,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_16": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_16,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_17": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_17,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_18": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_18,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_19": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_19,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_20": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_20,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_21": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_21,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_22": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_22,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_23": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_23,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_24": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_24,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_25": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_25,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_26": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_26,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_27": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_27,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_28": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_28,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_29": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_29,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_30": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_30,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_31": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_31,
+        "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_32": xǁQualityAnalyzerǁ_calculate_metrics__mutmut_32,
+    }
+
+    def _calculate_metrics(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_metrics__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _calculate_metrics.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_metrics__mutmut_orig)
+    xǁQualityAnalyzerǁ_calculate_metrics__mutmut_orig.__name__ = "xǁQualityAnalyzerǁ_calculate_metrics"
+
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_orig(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2256,7 +2336,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_1(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_1(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = None
         total_detections = 0
@@ -2293,7 +2375,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_2(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_2(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 1
         total_detections = 0
@@ -2330,7 +2414,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_3(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_3(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = None
@@ -2367,7 +2453,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_4(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_4(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 1
@@ -2404,7 +2492,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_5(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_5(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2441,7 +2531,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_6(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_6(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2478,7 +2570,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_7(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_7(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2515,7 +2609,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_8(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_8(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2552,7 +2648,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_9(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_9(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2589,7 +2687,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_10(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_10(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2626,7 +2726,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_11(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_11(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2663,7 +2765,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_12(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_12(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2700,7 +2804,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_13(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_13(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2737,7 +2843,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_14(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_14(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2774,7 +2882,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_15(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_15(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2811,7 +2921,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_16(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_16(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2848,7 +2960,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_17(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_17(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2885,7 +2999,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_18(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_18(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2922,7 +3038,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_19(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_19(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2959,7 +3077,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_20(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_20(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -2996,7 +3116,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_21(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_21(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3033,7 +3155,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_22(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_22(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3070,7 +3194,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_23(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_23(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3107,7 +3233,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_24(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_24(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3127,7 +3255,9 @@ class QualityAnalyzer:
 
             # Calculate overlap
             for op_type, expected_count in expected_counter.items():
-                detected_count = detected_counter.get(op_type, )
+                detected_count = detected_counter.get(
+                    op_type,
+                )
                 correct_detections += min(expected_count, detected_count)
 
             total_detections += max(len(detected_types), len(expected_types))
@@ -3144,7 +3274,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_25(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_25(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3181,7 +3313,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_26(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_26(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3218,7 +3352,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_27(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_27(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3255,7 +3391,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_28(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_28(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3292,7 +3430,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_29(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_29(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3329,7 +3469,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_30(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_30(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3366,7 +3508,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_31(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_31(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3387,7 +3531,9 @@ class QualityAnalyzer:
             # Calculate overlap
             for op_type, expected_count in expected_counter.items():
                 detected_count = detected_counter.get(op_type, 0)
-                correct_detections += min(expected_count, )
+                correct_detections += min(
+                    expected_count,
+                )
 
             total_detections += max(len(detected_types), len(expected_types))
 
@@ -3403,7 +3549,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_32(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_32(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3440,7 +3588,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_33(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_33(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3477,7 +3627,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_34(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_34(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3514,7 +3666,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_35(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_35(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3551,7 +3705,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_36(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_36(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3588,7 +3744,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_37(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_37(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3611,7 +3769,9 @@ class QualityAnalyzer:
                 detected_count = detected_counter.get(op_type, 0)
                 correct_detections += min(expected_count, detected_count)
 
-            total_detections += max(len(detected_types), )
+            total_detections += max(
+                len(detected_types),
+            )
 
         accuracy = correct_detections / total_detections if total_detections > 0 else 0.0
 
@@ -3625,7 +3785,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_38(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_38(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3662,7 +3824,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_39(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_39(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3699,7 +3863,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_40(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_40(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3736,7 +3902,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_41(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_41(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3773,7 +3941,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_42(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_42(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3810,7 +3980,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_43(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_43(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3847,7 +4019,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_44(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_44(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3884,7 +4058,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_45(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_45(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3917,7 +4093,9 @@ class QualityAnalyzer:
             details=None,
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_46(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_46(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3953,7 +4131,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_47(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_47(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -3989,7 +4169,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_48(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_48(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -4019,9 +4201,11 @@ class QualityAnalyzer:
         return QualityResult(
             metric=AnalysisMetric.ACCURACY,
             value=accuracy,
-            )
+        )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_49(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_49(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -4058,7 +4242,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_50(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_50(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -4095,7 +4281,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_51(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_51(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -4132,7 +4320,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_52(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_52(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -4169,7 +4359,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_53(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_53(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -4206,7 +4398,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_54(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_54(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -4243,7 +4437,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_55(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_55(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -4280,7 +4476,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_56(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_56(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate overall accuracy."""
         correct_detections = 0
         total_detections = 0
@@ -4316,74 +4514,82 @@ class QualityAnalyzer:
                 "percentage": accuracy * 101,
             },
         )
-    
-    xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_1': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_1, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_2': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_2, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_3': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_3, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_4': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_4, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_5': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_5, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_6': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_6, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_7': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_7, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_8': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_8, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_9': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_9, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_10': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_10, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_11': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_11, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_12': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_12, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_13': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_13, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_14': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_14, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_15': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_15, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_16': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_16, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_17': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_17, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_18': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_18, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_19': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_19, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_20': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_20, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_21': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_21, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_22': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_22, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_23': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_23, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_24': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_24, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_25': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_25, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_26': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_26, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_27': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_27, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_28': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_28, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_29': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_29, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_30': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_30, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_31': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_31, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_32': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_32, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_33': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_33, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_34': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_34, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_35': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_35, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_36': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_36, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_37': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_37, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_38': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_38, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_39': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_39, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_40': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_40, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_41': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_41, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_42': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_42, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_43': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_43, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_44': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_44, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_45': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_45, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_46': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_46, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_47': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_47, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_48': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_48, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_49': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_49, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_50': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_50, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_51': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_51, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_52': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_52, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_53': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_53, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_54': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_54, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_55': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_55, 
-        'xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_56': xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_56
-    }
-    
-    def _calculate_accuracy(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _calculate_accuracy.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_orig)
-    xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_calculate_accuracy'
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_orig(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_1": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_1,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_2": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_2,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_3": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_3,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_4": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_4,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_5": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_5,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_6": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_6,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_7": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_7,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_8": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_8,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_9": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_9,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_10": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_10,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_11": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_11,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_12": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_12,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_13": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_13,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_14": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_14,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_15": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_15,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_16": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_16,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_17": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_17,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_18": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_18,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_19": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_19,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_20": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_20,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_21": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_21,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_22": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_22,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_23": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_23,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_24": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_24,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_25": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_25,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_26": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_26,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_27": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_27,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_28": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_28,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_29": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_29,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_30": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_30,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_31": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_31,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_32": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_32,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_33": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_33,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_34": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_34,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_35": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_35,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_36": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_36,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_37": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_37,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_38": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_38,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_39": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_39,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_40": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_40,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_41": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_41,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_42": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_42,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_43": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_43,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_44": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_44,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_45": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_45,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_46": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_46,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_47": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_47,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_48": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_48,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_49": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_49,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_50": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_50,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_51": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_51,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_52": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_52,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_53": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_53,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_54": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_54,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_55": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_55,
+        "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_56": xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_56,
+    }
+
+    def _calculate_accuracy(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _calculate_accuracy.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_orig)
+    xǁQualityAnalyzerǁ_calculate_accuracy__mutmut_orig.__name__ = "xǁQualityAnalyzerǁ_calculate_accuracy"
+
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_orig(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4421,7 +4627,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_1(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_1(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = None
         false_positives = 0
@@ -4459,7 +4667,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_2(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_2(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 1
         false_positives = 0
@@ -4497,7 +4707,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_3(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_3(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = None
@@ -4535,7 +4747,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_4(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_4(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 1
@@ -4573,7 +4787,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_5(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_5(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4611,7 +4827,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_6(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_6(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4649,7 +4867,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_7(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_7(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4687,7 +4907,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_8(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_8(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4725,7 +4947,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_9(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_9(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4763,7 +4987,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_10(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_10(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4801,7 +5027,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_11(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_11(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4839,7 +5067,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_12(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_12(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4877,7 +5107,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_13(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_13(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4915,7 +5147,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_14(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_14(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4953,7 +5187,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_15(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_15(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -4991,7 +5227,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_16(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_16(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5029,7 +5267,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_17(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_17(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5067,7 +5307,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_18(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_18(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5105,7 +5347,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_19(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_19(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5143,7 +5387,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_20(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_20(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5181,7 +5427,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_21(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_21(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5197,7 +5445,12 @@ class QualityAnalyzer:
             expected_counter = Counter(expected_types)
 
             for detected_type in detected_types:
-                if expected_counter.get(detected_type, ) > 0:
+                if (
+                    expected_counter.get(
+                        detected_type,
+                    )
+                    > 0
+                ):
                     true_positives += 1
                     expected_counter[detected_type] -= 1
                 else:
@@ -5219,7 +5472,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_22(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_22(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5257,7 +5512,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_23(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_23(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5295,7 +5552,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_24(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_24(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5333,7 +5592,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_25(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_25(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5371,7 +5632,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_26(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_26(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5409,7 +5672,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_27(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_27(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5447,7 +5712,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_28(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_28(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5485,7 +5752,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_29(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_29(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5523,7 +5792,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_30(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_30(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5561,7 +5832,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_31(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_31(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5599,7 +5872,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_32(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_32(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5637,7 +5912,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_33(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_33(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5675,7 +5952,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_34(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_34(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5709,7 +5988,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_35(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_35(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5747,7 +6028,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_36(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_36(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5785,7 +6068,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_37(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_37(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5823,7 +6108,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_38(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_38(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5861,7 +6148,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_39(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_39(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5899,7 +6188,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_40(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_40(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5937,7 +6228,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_41(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_41(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -5975,7 +6268,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_42(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_42(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6013,7 +6308,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_43(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_43(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6047,7 +6344,9 @@ class QualityAnalyzer:
             details=None,
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_44(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_44(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6084,7 +6383,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_45(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_45(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6121,7 +6422,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_46(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_46(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6152,9 +6455,11 @@ class QualityAnalyzer:
         return QualityResult(
             metric=AnalysisMetric.PRECISION,
             value=precision,
-            )
+        )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_47(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_47(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6192,7 +6497,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_48(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_48(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6230,7 +6537,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_49(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_49(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6268,7 +6577,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_50(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_50(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6306,7 +6617,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_51(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_51(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6344,7 +6657,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_52(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_52(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6382,7 +6697,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_53(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_53(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6420,7 +6737,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_54(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_precision__mutmut_54(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate precision (true positives / (true positives + false positives))."""
         true_positives = 0
         false_positives = 0
@@ -6457,72 +6776,80 @@ class QualityAnalyzer:
                 "percentage": precision * 101,
             },
         )
-    
-    xǁQualityAnalyzerǁ_calculate_precision__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_calculate_precision__mutmut_1': xǁQualityAnalyzerǁ_calculate_precision__mutmut_1, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_2': xǁQualityAnalyzerǁ_calculate_precision__mutmut_2, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_3': xǁQualityAnalyzerǁ_calculate_precision__mutmut_3, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_4': xǁQualityAnalyzerǁ_calculate_precision__mutmut_4, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_5': xǁQualityAnalyzerǁ_calculate_precision__mutmut_5, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_6': xǁQualityAnalyzerǁ_calculate_precision__mutmut_6, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_7': xǁQualityAnalyzerǁ_calculate_precision__mutmut_7, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_8': xǁQualityAnalyzerǁ_calculate_precision__mutmut_8, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_9': xǁQualityAnalyzerǁ_calculate_precision__mutmut_9, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_10': xǁQualityAnalyzerǁ_calculate_precision__mutmut_10, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_11': xǁQualityAnalyzerǁ_calculate_precision__mutmut_11, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_12': xǁQualityAnalyzerǁ_calculate_precision__mutmut_12, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_13': xǁQualityAnalyzerǁ_calculate_precision__mutmut_13, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_14': xǁQualityAnalyzerǁ_calculate_precision__mutmut_14, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_15': xǁQualityAnalyzerǁ_calculate_precision__mutmut_15, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_16': xǁQualityAnalyzerǁ_calculate_precision__mutmut_16, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_17': xǁQualityAnalyzerǁ_calculate_precision__mutmut_17, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_18': xǁQualityAnalyzerǁ_calculate_precision__mutmut_18, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_19': xǁQualityAnalyzerǁ_calculate_precision__mutmut_19, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_20': xǁQualityAnalyzerǁ_calculate_precision__mutmut_20, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_21': xǁQualityAnalyzerǁ_calculate_precision__mutmut_21, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_22': xǁQualityAnalyzerǁ_calculate_precision__mutmut_22, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_23': xǁQualityAnalyzerǁ_calculate_precision__mutmut_23, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_24': xǁQualityAnalyzerǁ_calculate_precision__mutmut_24, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_25': xǁQualityAnalyzerǁ_calculate_precision__mutmut_25, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_26': xǁQualityAnalyzerǁ_calculate_precision__mutmut_26, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_27': xǁQualityAnalyzerǁ_calculate_precision__mutmut_27, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_28': xǁQualityAnalyzerǁ_calculate_precision__mutmut_28, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_29': xǁQualityAnalyzerǁ_calculate_precision__mutmut_29, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_30': xǁQualityAnalyzerǁ_calculate_precision__mutmut_30, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_31': xǁQualityAnalyzerǁ_calculate_precision__mutmut_31, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_32': xǁQualityAnalyzerǁ_calculate_precision__mutmut_32, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_33': xǁQualityAnalyzerǁ_calculate_precision__mutmut_33, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_34': xǁQualityAnalyzerǁ_calculate_precision__mutmut_34, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_35': xǁQualityAnalyzerǁ_calculate_precision__mutmut_35, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_36': xǁQualityAnalyzerǁ_calculate_precision__mutmut_36, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_37': xǁQualityAnalyzerǁ_calculate_precision__mutmut_37, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_38': xǁQualityAnalyzerǁ_calculate_precision__mutmut_38, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_39': xǁQualityAnalyzerǁ_calculate_precision__mutmut_39, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_40': xǁQualityAnalyzerǁ_calculate_precision__mutmut_40, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_41': xǁQualityAnalyzerǁ_calculate_precision__mutmut_41, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_42': xǁQualityAnalyzerǁ_calculate_precision__mutmut_42, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_43': xǁQualityAnalyzerǁ_calculate_precision__mutmut_43, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_44': xǁQualityAnalyzerǁ_calculate_precision__mutmut_44, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_45': xǁQualityAnalyzerǁ_calculate_precision__mutmut_45, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_46': xǁQualityAnalyzerǁ_calculate_precision__mutmut_46, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_47': xǁQualityAnalyzerǁ_calculate_precision__mutmut_47, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_48': xǁQualityAnalyzerǁ_calculate_precision__mutmut_48, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_49': xǁQualityAnalyzerǁ_calculate_precision__mutmut_49, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_50': xǁQualityAnalyzerǁ_calculate_precision__mutmut_50, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_51': xǁQualityAnalyzerǁ_calculate_precision__mutmut_51, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_52': xǁQualityAnalyzerǁ_calculate_precision__mutmut_52, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_53': xǁQualityAnalyzerǁ_calculate_precision__mutmut_53, 
-        'xǁQualityAnalyzerǁ_calculate_precision__mutmut_54': xǁQualityAnalyzerǁ_calculate_precision__mutmut_54
-    }
-    
-    def _calculate_precision(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_precision__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_precision__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _calculate_precision.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_precision__mutmut_orig)
-    xǁQualityAnalyzerǁ_calculate_precision__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_calculate_precision'
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_orig(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    xǁQualityAnalyzerǁ_calculate_precision__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_1": xǁQualityAnalyzerǁ_calculate_precision__mutmut_1,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_2": xǁQualityAnalyzerǁ_calculate_precision__mutmut_2,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_3": xǁQualityAnalyzerǁ_calculate_precision__mutmut_3,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_4": xǁQualityAnalyzerǁ_calculate_precision__mutmut_4,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_5": xǁQualityAnalyzerǁ_calculate_precision__mutmut_5,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_6": xǁQualityAnalyzerǁ_calculate_precision__mutmut_6,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_7": xǁQualityAnalyzerǁ_calculate_precision__mutmut_7,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_8": xǁQualityAnalyzerǁ_calculate_precision__mutmut_8,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_9": xǁQualityAnalyzerǁ_calculate_precision__mutmut_9,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_10": xǁQualityAnalyzerǁ_calculate_precision__mutmut_10,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_11": xǁQualityAnalyzerǁ_calculate_precision__mutmut_11,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_12": xǁQualityAnalyzerǁ_calculate_precision__mutmut_12,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_13": xǁQualityAnalyzerǁ_calculate_precision__mutmut_13,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_14": xǁQualityAnalyzerǁ_calculate_precision__mutmut_14,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_15": xǁQualityAnalyzerǁ_calculate_precision__mutmut_15,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_16": xǁQualityAnalyzerǁ_calculate_precision__mutmut_16,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_17": xǁQualityAnalyzerǁ_calculate_precision__mutmut_17,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_18": xǁQualityAnalyzerǁ_calculate_precision__mutmut_18,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_19": xǁQualityAnalyzerǁ_calculate_precision__mutmut_19,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_20": xǁQualityAnalyzerǁ_calculate_precision__mutmut_20,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_21": xǁQualityAnalyzerǁ_calculate_precision__mutmut_21,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_22": xǁQualityAnalyzerǁ_calculate_precision__mutmut_22,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_23": xǁQualityAnalyzerǁ_calculate_precision__mutmut_23,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_24": xǁQualityAnalyzerǁ_calculate_precision__mutmut_24,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_25": xǁQualityAnalyzerǁ_calculate_precision__mutmut_25,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_26": xǁQualityAnalyzerǁ_calculate_precision__mutmut_26,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_27": xǁQualityAnalyzerǁ_calculate_precision__mutmut_27,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_28": xǁQualityAnalyzerǁ_calculate_precision__mutmut_28,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_29": xǁQualityAnalyzerǁ_calculate_precision__mutmut_29,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_30": xǁQualityAnalyzerǁ_calculate_precision__mutmut_30,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_31": xǁQualityAnalyzerǁ_calculate_precision__mutmut_31,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_32": xǁQualityAnalyzerǁ_calculate_precision__mutmut_32,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_33": xǁQualityAnalyzerǁ_calculate_precision__mutmut_33,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_34": xǁQualityAnalyzerǁ_calculate_precision__mutmut_34,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_35": xǁQualityAnalyzerǁ_calculate_precision__mutmut_35,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_36": xǁQualityAnalyzerǁ_calculate_precision__mutmut_36,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_37": xǁQualityAnalyzerǁ_calculate_precision__mutmut_37,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_38": xǁQualityAnalyzerǁ_calculate_precision__mutmut_38,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_39": xǁQualityAnalyzerǁ_calculate_precision__mutmut_39,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_40": xǁQualityAnalyzerǁ_calculate_precision__mutmut_40,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_41": xǁQualityAnalyzerǁ_calculate_precision__mutmut_41,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_42": xǁQualityAnalyzerǁ_calculate_precision__mutmut_42,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_43": xǁQualityAnalyzerǁ_calculate_precision__mutmut_43,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_44": xǁQualityAnalyzerǁ_calculate_precision__mutmut_44,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_45": xǁQualityAnalyzerǁ_calculate_precision__mutmut_45,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_46": xǁQualityAnalyzerǁ_calculate_precision__mutmut_46,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_47": xǁQualityAnalyzerǁ_calculate_precision__mutmut_47,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_48": xǁQualityAnalyzerǁ_calculate_precision__mutmut_48,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_49": xǁQualityAnalyzerǁ_calculate_precision__mutmut_49,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_50": xǁQualityAnalyzerǁ_calculate_precision__mutmut_50,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_51": xǁQualityAnalyzerǁ_calculate_precision__mutmut_51,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_52": xǁQualityAnalyzerǁ_calculate_precision__mutmut_52,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_53": xǁQualityAnalyzerǁ_calculate_precision__mutmut_53,
+        "xǁQualityAnalyzerǁ_calculate_precision__mutmut_54": xǁQualityAnalyzerǁ_calculate_precision__mutmut_54,
+    }
+
+    def _calculate_precision(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_precision__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_precision__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _calculate_precision.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_precision__mutmut_orig)
+    xǁQualityAnalyzerǁ_calculate_precision__mutmut_orig.__name__ = "xǁQualityAnalyzerǁ_calculate_precision"
+
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_orig(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -6560,7 +6887,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_1(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_1(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = None
         false_negatives = 0
@@ -6598,7 +6927,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_2(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_2(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 1
         false_negatives = 0
@@ -6636,7 +6967,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_3(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_3(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = None
@@ -6674,7 +7007,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_4(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_4(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 1
@@ -6712,7 +7047,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_5(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_5(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -6750,7 +7087,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_6(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_6(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -6788,7 +7127,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_7(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_7(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -6826,7 +7167,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_8(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_8(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -6864,7 +7207,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_9(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_9(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -6902,7 +7247,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_10(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_10(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -6940,7 +7287,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_11(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_11(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -6978,7 +7327,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_12(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_12(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7016,7 +7367,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_13(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_13(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7054,7 +7407,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_14(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_14(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7092,7 +7447,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_15(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_15(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7130,7 +7487,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_16(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_16(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7168,7 +7527,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_17(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_17(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7206,7 +7567,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_18(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_18(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7244,7 +7607,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_19(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_19(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7282,7 +7647,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_20(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_20(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7320,7 +7687,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_21(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_21(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7336,7 +7705,12 @@ class QualityAnalyzer:
             detected_counter = Counter(detected_types)
 
             for expected_type in expected_types:
-                if detected_counter.get(expected_type, ) > 0:
+                if (
+                    detected_counter.get(
+                        expected_type,
+                    )
+                    > 0
+                ):
                     true_positives += 1
                     detected_counter[expected_type] -= 1
                 else:
@@ -7358,7 +7732,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_22(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_22(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7396,7 +7772,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_23(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_23(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7434,7 +7812,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_24(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_24(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7472,7 +7852,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_25(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_25(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7510,7 +7892,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_26(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_26(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7548,7 +7932,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_27(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_27(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7586,7 +7972,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_28(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_28(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7624,7 +8012,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_29(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_29(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7662,7 +8052,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_30(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_30(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7700,7 +8092,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_31(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_31(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7738,7 +8132,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_32(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_32(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7776,7 +8172,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_33(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_33(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7814,7 +8212,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_34(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_34(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7848,7 +8248,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_35(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_35(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7886,7 +8288,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_36(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_36(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7924,7 +8328,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_37(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_37(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -7962,7 +8368,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_38(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_38(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8000,7 +8408,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_39(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_39(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8038,7 +8448,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_40(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_40(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8076,7 +8488,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_41(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_41(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8114,7 +8528,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_42(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_42(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8152,7 +8568,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_43(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_43(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8186,7 +8604,9 @@ class QualityAnalyzer:
             details=None,
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_44(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_44(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8223,7 +8643,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_45(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_45(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8260,7 +8682,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_46(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_46(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8291,9 +8715,11 @@ class QualityAnalyzer:
         return QualityResult(
             metric=AnalysisMetric.RECALL,
             value=recall,
-            )
+        )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_47(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_47(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8331,7 +8757,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_48(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_48(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8369,7 +8797,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_49(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_49(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8407,7 +8837,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_50(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_50(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8445,7 +8877,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_51(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_51(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8483,7 +8917,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_52(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_52(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8521,7 +8957,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_53(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_53(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8559,7 +8997,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_54(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_recall__mutmut_54(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate recall (true positives / (true positives + false negatives))."""
         true_positives = 0
         false_negatives = 0
@@ -8596,72 +9036,80 @@ class QualityAnalyzer:
                 "percentage": recall * 101,
             },
         )
-    
-    xǁQualityAnalyzerǁ_calculate_recall__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_calculate_recall__mutmut_1': xǁQualityAnalyzerǁ_calculate_recall__mutmut_1, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_2': xǁQualityAnalyzerǁ_calculate_recall__mutmut_2, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_3': xǁQualityAnalyzerǁ_calculate_recall__mutmut_3, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_4': xǁQualityAnalyzerǁ_calculate_recall__mutmut_4, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_5': xǁQualityAnalyzerǁ_calculate_recall__mutmut_5, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_6': xǁQualityAnalyzerǁ_calculate_recall__mutmut_6, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_7': xǁQualityAnalyzerǁ_calculate_recall__mutmut_7, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_8': xǁQualityAnalyzerǁ_calculate_recall__mutmut_8, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_9': xǁQualityAnalyzerǁ_calculate_recall__mutmut_9, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_10': xǁQualityAnalyzerǁ_calculate_recall__mutmut_10, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_11': xǁQualityAnalyzerǁ_calculate_recall__mutmut_11, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_12': xǁQualityAnalyzerǁ_calculate_recall__mutmut_12, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_13': xǁQualityAnalyzerǁ_calculate_recall__mutmut_13, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_14': xǁQualityAnalyzerǁ_calculate_recall__mutmut_14, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_15': xǁQualityAnalyzerǁ_calculate_recall__mutmut_15, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_16': xǁQualityAnalyzerǁ_calculate_recall__mutmut_16, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_17': xǁQualityAnalyzerǁ_calculate_recall__mutmut_17, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_18': xǁQualityAnalyzerǁ_calculate_recall__mutmut_18, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_19': xǁQualityAnalyzerǁ_calculate_recall__mutmut_19, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_20': xǁQualityAnalyzerǁ_calculate_recall__mutmut_20, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_21': xǁQualityAnalyzerǁ_calculate_recall__mutmut_21, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_22': xǁQualityAnalyzerǁ_calculate_recall__mutmut_22, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_23': xǁQualityAnalyzerǁ_calculate_recall__mutmut_23, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_24': xǁQualityAnalyzerǁ_calculate_recall__mutmut_24, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_25': xǁQualityAnalyzerǁ_calculate_recall__mutmut_25, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_26': xǁQualityAnalyzerǁ_calculate_recall__mutmut_26, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_27': xǁQualityAnalyzerǁ_calculate_recall__mutmut_27, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_28': xǁQualityAnalyzerǁ_calculate_recall__mutmut_28, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_29': xǁQualityAnalyzerǁ_calculate_recall__mutmut_29, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_30': xǁQualityAnalyzerǁ_calculate_recall__mutmut_30, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_31': xǁQualityAnalyzerǁ_calculate_recall__mutmut_31, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_32': xǁQualityAnalyzerǁ_calculate_recall__mutmut_32, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_33': xǁQualityAnalyzerǁ_calculate_recall__mutmut_33, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_34': xǁQualityAnalyzerǁ_calculate_recall__mutmut_34, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_35': xǁQualityAnalyzerǁ_calculate_recall__mutmut_35, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_36': xǁQualityAnalyzerǁ_calculate_recall__mutmut_36, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_37': xǁQualityAnalyzerǁ_calculate_recall__mutmut_37, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_38': xǁQualityAnalyzerǁ_calculate_recall__mutmut_38, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_39': xǁQualityAnalyzerǁ_calculate_recall__mutmut_39, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_40': xǁQualityAnalyzerǁ_calculate_recall__mutmut_40, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_41': xǁQualityAnalyzerǁ_calculate_recall__mutmut_41, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_42': xǁQualityAnalyzerǁ_calculate_recall__mutmut_42, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_43': xǁQualityAnalyzerǁ_calculate_recall__mutmut_43, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_44': xǁQualityAnalyzerǁ_calculate_recall__mutmut_44, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_45': xǁQualityAnalyzerǁ_calculate_recall__mutmut_45, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_46': xǁQualityAnalyzerǁ_calculate_recall__mutmut_46, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_47': xǁQualityAnalyzerǁ_calculate_recall__mutmut_47, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_48': xǁQualityAnalyzerǁ_calculate_recall__mutmut_48, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_49': xǁQualityAnalyzerǁ_calculate_recall__mutmut_49, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_50': xǁQualityAnalyzerǁ_calculate_recall__mutmut_50, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_51': xǁQualityAnalyzerǁ_calculate_recall__mutmut_51, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_52': xǁQualityAnalyzerǁ_calculate_recall__mutmut_52, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_53': xǁQualityAnalyzerǁ_calculate_recall__mutmut_53, 
-        'xǁQualityAnalyzerǁ_calculate_recall__mutmut_54': xǁQualityAnalyzerǁ_calculate_recall__mutmut_54
-    }
-    
-    def _calculate_recall(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_recall__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_recall__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _calculate_recall.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_recall__mutmut_orig)
-    xǁQualityAnalyzerǁ_calculate_recall__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_calculate_recall'
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_orig(self, precision: float, recall: float) -> QualityResult:
+    xǁQualityAnalyzerǁ_calculate_recall__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_1": xǁQualityAnalyzerǁ_calculate_recall__mutmut_1,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_2": xǁQualityAnalyzerǁ_calculate_recall__mutmut_2,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_3": xǁQualityAnalyzerǁ_calculate_recall__mutmut_3,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_4": xǁQualityAnalyzerǁ_calculate_recall__mutmut_4,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_5": xǁQualityAnalyzerǁ_calculate_recall__mutmut_5,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_6": xǁQualityAnalyzerǁ_calculate_recall__mutmut_6,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_7": xǁQualityAnalyzerǁ_calculate_recall__mutmut_7,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_8": xǁQualityAnalyzerǁ_calculate_recall__mutmut_8,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_9": xǁQualityAnalyzerǁ_calculate_recall__mutmut_9,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_10": xǁQualityAnalyzerǁ_calculate_recall__mutmut_10,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_11": xǁQualityAnalyzerǁ_calculate_recall__mutmut_11,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_12": xǁQualityAnalyzerǁ_calculate_recall__mutmut_12,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_13": xǁQualityAnalyzerǁ_calculate_recall__mutmut_13,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_14": xǁQualityAnalyzerǁ_calculate_recall__mutmut_14,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_15": xǁQualityAnalyzerǁ_calculate_recall__mutmut_15,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_16": xǁQualityAnalyzerǁ_calculate_recall__mutmut_16,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_17": xǁQualityAnalyzerǁ_calculate_recall__mutmut_17,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_18": xǁQualityAnalyzerǁ_calculate_recall__mutmut_18,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_19": xǁQualityAnalyzerǁ_calculate_recall__mutmut_19,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_20": xǁQualityAnalyzerǁ_calculate_recall__mutmut_20,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_21": xǁQualityAnalyzerǁ_calculate_recall__mutmut_21,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_22": xǁQualityAnalyzerǁ_calculate_recall__mutmut_22,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_23": xǁQualityAnalyzerǁ_calculate_recall__mutmut_23,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_24": xǁQualityAnalyzerǁ_calculate_recall__mutmut_24,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_25": xǁQualityAnalyzerǁ_calculate_recall__mutmut_25,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_26": xǁQualityAnalyzerǁ_calculate_recall__mutmut_26,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_27": xǁQualityAnalyzerǁ_calculate_recall__mutmut_27,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_28": xǁQualityAnalyzerǁ_calculate_recall__mutmut_28,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_29": xǁQualityAnalyzerǁ_calculate_recall__mutmut_29,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_30": xǁQualityAnalyzerǁ_calculate_recall__mutmut_30,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_31": xǁQualityAnalyzerǁ_calculate_recall__mutmut_31,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_32": xǁQualityAnalyzerǁ_calculate_recall__mutmut_32,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_33": xǁQualityAnalyzerǁ_calculate_recall__mutmut_33,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_34": xǁQualityAnalyzerǁ_calculate_recall__mutmut_34,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_35": xǁQualityAnalyzerǁ_calculate_recall__mutmut_35,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_36": xǁQualityAnalyzerǁ_calculate_recall__mutmut_36,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_37": xǁQualityAnalyzerǁ_calculate_recall__mutmut_37,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_38": xǁQualityAnalyzerǁ_calculate_recall__mutmut_38,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_39": xǁQualityAnalyzerǁ_calculate_recall__mutmut_39,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_40": xǁQualityAnalyzerǁ_calculate_recall__mutmut_40,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_41": xǁQualityAnalyzerǁ_calculate_recall__mutmut_41,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_42": xǁQualityAnalyzerǁ_calculate_recall__mutmut_42,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_43": xǁQualityAnalyzerǁ_calculate_recall__mutmut_43,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_44": xǁQualityAnalyzerǁ_calculate_recall__mutmut_44,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_45": xǁQualityAnalyzerǁ_calculate_recall__mutmut_45,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_46": xǁQualityAnalyzerǁ_calculate_recall__mutmut_46,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_47": xǁQualityAnalyzerǁ_calculate_recall__mutmut_47,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_48": xǁQualityAnalyzerǁ_calculate_recall__mutmut_48,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_49": xǁQualityAnalyzerǁ_calculate_recall__mutmut_49,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_50": xǁQualityAnalyzerǁ_calculate_recall__mutmut_50,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_51": xǁQualityAnalyzerǁ_calculate_recall__mutmut_51,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_52": xǁQualityAnalyzerǁ_calculate_recall__mutmut_52,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_53": xǁQualityAnalyzerǁ_calculate_recall__mutmut_53,
+        "xǁQualityAnalyzerǁ_calculate_recall__mutmut_54": xǁQualityAnalyzerǁ_calculate_recall__mutmut_54,
+    }
+
+    def _calculate_recall(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_recall__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_recall__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _calculate_recall.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_recall__mutmut_orig)
+    xǁQualityAnalyzerǁ_calculate_recall__mutmut_orig.__name__ = "xǁQualityAnalyzerǁ_calculate_recall"
+
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_orig(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8675,7 +9123,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_1(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_1(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = None
 
@@ -8689,7 +9139,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_2(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_2(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) * (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8703,7 +9155,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_3(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_3(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 / (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8717,7 +9171,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_4(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_4(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 3 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8731,7 +9187,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_5(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_5(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision / recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8745,7 +9203,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_6(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_6(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision - recall) if (precision + recall) > 0 else 0.0
 
@@ -8759,7 +9219,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_7(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_7(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision - recall) > 0 else 0.0
 
@@ -8773,7 +9235,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_8(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_8(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) >= 0 else 0.0
 
@@ -8787,7 +9251,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_9(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_9(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 1 else 0.0
 
@@ -8801,7 +9267,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_10(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_10(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 1.0
 
@@ -8815,7 +9283,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_11(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_11(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8829,7 +9299,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_12(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_12(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8843,7 +9315,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_13(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_13(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8853,7 +9327,9 @@ class QualityAnalyzer:
             details=None,
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_14(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_14(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8866,7 +9342,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_15(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_15(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8879,16 +9357,20 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_16(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_16(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
         return QualityResult(
             metric=AnalysisMetric.F1_SCORE,
             value=f1,
-            )
+        )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_17(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_17(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8902,7 +9384,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_18(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_18(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8916,7 +9400,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_19(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_19(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8930,7 +9416,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_20(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_20(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8944,7 +9432,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_21(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_21(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8958,7 +9448,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_22(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_22(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8972,7 +9464,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_23(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_23(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8986,7 +9480,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_24(self, precision: float, recall: float) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_24(
+        self, precision: float, recall: float
+    ) -> QualityResult:
         """Calculate F1 score (harmonic mean of precision and recall)."""
         f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
 
@@ -8999,42 +9495,50 @@ class QualityAnalyzer:
                 "percentage": f1 * 101,
             },
         )
-    
-    xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_1': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_1, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_2': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_2, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_3': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_3, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_4': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_4, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_5': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_5, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_6': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_6, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_7': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_7, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_8': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_8, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_9': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_9, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_10': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_10, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_11': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_11, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_12': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_12, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_13': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_13, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_14': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_14, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_15': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_15, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_16': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_16, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_17': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_17, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_18': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_18, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_19': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_19, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_20': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_20, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_21': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_21, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_22': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_22, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_23': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_23, 
-        'xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_24': xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_24
-    }
-    
-    def _calculate_f1_score(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _calculate_f1_score.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_orig)
-    xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_calculate_f1_score'
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_orig(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_1": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_1,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_2": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_2,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_3": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_3,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_4": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_4,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_5": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_5,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_6": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_6,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_7": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_7,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_8": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_8,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_9": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_9,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_10": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_10,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_11": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_11,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_12": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_12,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_13": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_13,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_14": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_14,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_15": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_15,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_16": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_16,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_17": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_17,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_18": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_18,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_19": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_19,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_20": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_20,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_21": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_21,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_22": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_22,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_23": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_23,
+        "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_24": xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_24,
+    }
+
+    def _calculate_f1_score(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _calculate_f1_score.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_orig)
+    xǁQualityAnalyzerǁ_calculate_f1_score__mutmut_orig.__name__ = "xǁQualityAnalyzerǁ_calculate_f1_score"
+
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_orig(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9080,7 +9584,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_1(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_1(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = None
         confidence_by_type = defaultdict(list)
@@ -9126,7 +9632,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_2(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_2(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = None
@@ -9172,7 +9680,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_3(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_3(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(None)
@@ -9218,7 +9728,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_4(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_4(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9264,7 +9776,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_5(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_5(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9310,7 +9824,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_6(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_6(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9356,7 +9872,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_7(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_7(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9402,7 +9920,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_8(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_8(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9448,7 +9968,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_9(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_9(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9494,7 +10016,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_10(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_10(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9540,7 +10064,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_11(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_11(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9586,7 +10112,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_12(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_12(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9632,7 +10160,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_13(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_13(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9678,7 +10208,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_14(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_14(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9723,7 +10255,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_15(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_15(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9768,7 +10302,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_16(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_16(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9785,7 +10321,7 @@ class QualityAnalyzer:
             return QualityResult(
                 metric=AnalysisMetric.CONFIDENCE_DISTRIBUTION,
                 value=0.0,
-                )
+            )
 
         avg_confidence = sum(confidences) / len(confidences)
         min_confidence = min(confidences)
@@ -9813,7 +10349,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_17(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_17(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9859,7 +10397,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_18(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_18(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9905,7 +10445,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_19(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_19(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9951,7 +10493,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_20(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_20(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -9997,7 +10541,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_21(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_21(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10043,7 +10589,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_22(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_22(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10089,7 +10637,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_23(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_23(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10135,7 +10685,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_24(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_24(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10181,7 +10733,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_25(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_25(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10227,7 +10781,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_26(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_26(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10273,7 +10829,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_27(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_27(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10319,7 +10877,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_28(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_28(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10365,7 +10925,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_29(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_29(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10411,7 +10973,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_30(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_30(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10457,7 +11021,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_31(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_31(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10498,7 +11064,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_32(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_32(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10544,7 +11112,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_33(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_33(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10590,7 +11160,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_34(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_34(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10636,7 +11208,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_35(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_35(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10682,7 +11256,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_36(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_36(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10728,7 +11304,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_37(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_37(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10774,7 +11352,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_38(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_38(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10820,7 +11400,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_39(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_39(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10866,7 +11448,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_40(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_40(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10912,7 +11496,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_41(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_41(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -10958,7 +11544,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_42(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_42(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11004,7 +11592,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_43(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_43(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11050,7 +11640,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_44(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_44(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11096,7 +11688,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_45(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_45(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11142,7 +11736,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_46(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_46(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11182,7 +11778,9 @@ class QualityAnalyzer:
             details=None,
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_47(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_47(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11227,7 +11825,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_48(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_48(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11272,7 +11872,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_49(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_49(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11309,9 +11911,11 @@ class QualityAnalyzer:
         return QualityResult(
             metric=AnalysisMetric.CONFIDENCE_DISTRIBUTION,
             value=avg_confidence,
-            )
+        )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_50(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_50(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11357,7 +11961,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_51(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_51(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11403,7 +12009,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_52(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_52(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11449,7 +12057,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_53(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_53(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11495,7 +12105,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_54(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_54(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11541,7 +12153,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_55(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_55(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11587,7 +12201,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_56(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_56(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11633,7 +12249,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_57(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_57(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11679,7 +12297,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_58(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_58(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11725,7 +12345,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_59(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_59(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Analyze confidence score distribution."""
         confidences = []
         confidence_by_type = defaultdict(list)
@@ -11770,77 +12392,91 @@ class QualityAnalyzer:
                 "BY_TYPE": type_stats,
             },
         )
-    
-    xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_1': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_1, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_2': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_2, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_3': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_3, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_4': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_4, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_5': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_5, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_6': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_6, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_7': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_7, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_8': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_8, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_9': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_9, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_10': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_10, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_11': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_11, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_12': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_12, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_13': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_13, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_14': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_14, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_15': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_15, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_16': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_16, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_17': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_17, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_18': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_18, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_19': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_19, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_20': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_20, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_21': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_21, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_22': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_22, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_23': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_23, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_24': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_24, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_25': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_25, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_26': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_26, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_27': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_27, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_28': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_28, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_29': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_29, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_30': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_30, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_31': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_31, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_32': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_32, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_33': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_33, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_34': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_34, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_35': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_35, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_36': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_36, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_37': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_37, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_38': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_38, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_39': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_39, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_40': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_40, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_41': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_41, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_42': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_42, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_43': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_43, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_44': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_44, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_45': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_45, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_46': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_46, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_47': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_47, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_48': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_48, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_49': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_49, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_50': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_50, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_51': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_51, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_52': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_52, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_53': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_53, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_54': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_54, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_55': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_55, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_56': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_56, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_57': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_57, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_58': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_58, 
-        'xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_59': xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_59
-    }
-    
-    def _analyze_confidence_distribution(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _analyze_confidence_distribution.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_orig)
-    xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_analyze_confidence_distribution'
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_orig(self, timing_results: list[float]) -> QualityResult:
+    xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_1": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_1,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_2": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_2,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_3": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_3,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_4": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_4,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_5": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_5,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_6": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_6,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_7": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_7,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_8": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_8,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_9": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_9,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_10": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_10,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_11": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_11,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_12": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_12,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_13": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_13,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_14": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_14,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_15": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_15,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_16": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_16,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_17": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_17,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_18": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_18,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_19": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_19,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_20": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_20,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_21": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_21,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_22": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_22,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_23": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_23,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_24": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_24,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_25": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_25,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_26": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_26,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_27": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_27,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_28": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_28,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_29": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_29,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_30": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_30,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_31": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_31,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_32": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_32,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_33": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_33,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_34": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_34,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_35": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_35,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_36": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_36,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_37": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_37,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_38": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_38,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_39": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_39,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_40": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_40,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_41": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_41,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_42": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_42,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_43": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_43,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_44": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_44,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_45": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_45,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_46": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_46,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_47": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_47,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_48": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_48,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_49": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_49,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_50": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_50,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_51": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_51,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_52": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_52,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_53": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_53,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_54": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_54,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_55": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_55,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_56": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_56,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_57": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_57,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_58": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_58,
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_59": xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_59,
+    }
+
+    def _analyze_confidence_distribution(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_orig"),
+            object.__getattribute__(
+                self, "xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_mutants"
+            ),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _analyze_confidence_distribution.__signature__ = _mutmut_signature(
+        xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_orig
+    )
+    xǁQualityAnalyzerǁ_analyze_confidence_distribution__mutmut_orig.__name__ = (
+        "xǁQualityAnalyzerǁ_analyze_confidence_distribution"
+    )
+
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_orig(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -11872,7 +12508,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_1(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_1(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if timing_results:
             return QualityResult(
@@ -11904,12 +12542,12 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_2(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_2(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
-            return QualityResult(
-                metric=None, value=0.0, details={"error": "No timing data available"}
-            )
+            return QualityResult(metric=None, value=0.0, details={"error": "No timing data available"})
 
         avg_time = sum(timing_results) / len(timing_results)
         min_time = min(timing_results)
@@ -11936,7 +12574,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_3(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_3(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -11968,12 +12608,12 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_4(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_4(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
-            return QualityResult(
-                metric=AnalysisMetric.DETECTION_TIME, value=0.0, details=None
-            )
+            return QualityResult(metric=AnalysisMetric.DETECTION_TIME, value=0.0, details=None)
 
         avg_time = sum(timing_results) / len(timing_results)
         min_time = min(timing_results)
@@ -12000,12 +12640,12 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_5(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_5(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
-            return QualityResult(
-                value=0.0, details={"error": "No timing data available"}
-            )
+            return QualityResult(value=0.0, details={"error": "No timing data available"})
 
         avg_time = sum(timing_results) / len(timing_results)
         min_time = min(timing_results)
@@ -12032,7 +12672,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_6(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_6(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12064,11 +12706,15 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_7(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_7(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
-                metric=AnalysisMetric.DETECTION_TIME, value=0.0, )
+                metric=AnalysisMetric.DETECTION_TIME,
+                value=0.0,
+            )
 
         avg_time = sum(timing_results) / len(timing_results)
         min_time = min(timing_results)
@@ -12095,7 +12741,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_8(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_8(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12127,11 +12775,15 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_9(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_9(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
-                metric=AnalysisMetric.DETECTION_TIME, value=0.0, details={"XXerrorXX": "No timing data available"}
+                metric=AnalysisMetric.DETECTION_TIME,
+                value=0.0,
+                details={"XXerrorXX": "No timing data available"},
             )
 
         avg_time = sum(timing_results) / len(timing_results)
@@ -12159,7 +12811,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_10(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_10(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12191,11 +12845,15 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_11(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_11(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
-                metric=AnalysisMetric.DETECTION_TIME, value=0.0, details={"error": "XXNo timing data availableXX"}
+                metric=AnalysisMetric.DETECTION_TIME,
+                value=0.0,
+                details={"error": "XXNo timing data availableXX"},
             )
 
         avg_time = sum(timing_results) / len(timing_results)
@@ -12223,7 +12881,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_12(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_12(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12255,7 +12915,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_13(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_13(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12287,7 +12949,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_14(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_14(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12319,7 +12983,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_15(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_15(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12351,7 +13017,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_16(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_16(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12383,7 +13051,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_17(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_17(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12415,7 +13085,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_18(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_18(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12447,7 +13119,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_19(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_19(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12479,7 +13153,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_20(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_20(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12511,7 +13187,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_21(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_21(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12543,7 +13221,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_22(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_22(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12575,7 +13255,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_23(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_23(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12607,7 +13289,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_24(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_24(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12639,7 +13323,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_25(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_25(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12671,7 +13357,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_26(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_26(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12703,7 +13391,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_27(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_27(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12735,7 +13425,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_28(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_28(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12767,7 +13459,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_29(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_29(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12799,7 +13493,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_30(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_30(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12831,7 +13527,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_31(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_31(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12863,7 +13561,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_32(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_32(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12895,7 +13595,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_33(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_33(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12927,7 +13629,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_34(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_34(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12959,7 +13663,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_35(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_35(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -12991,7 +13697,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_36(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_36(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13023,7 +13731,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_37(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_37(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13047,7 +13757,9 @@ class QualityAnalyzer:
             details=None,
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_38(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_38(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13078,7 +13790,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_39(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_39(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13109,7 +13823,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_40(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_40(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13130,9 +13846,11 @@ class QualityAnalyzer:
         return QualityResult(
             metric=AnalysisMetric.DETECTION_TIME,
             value=avg_time,
-            )
+        )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_41(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_41(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13164,7 +13882,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_42(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_42(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13196,7 +13916,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_43(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_43(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13228,7 +13950,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_44(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_44(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13260,7 +13984,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_45(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_45(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13292,7 +14018,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_46(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_46(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13324,7 +14052,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_47(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_47(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13356,7 +14086,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_48(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_48(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13388,7 +14120,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_49(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_49(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13420,7 +14154,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_50(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_50(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13452,7 +14188,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_51(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_51(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13484,7 +14222,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_52(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_52(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13516,7 +14256,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_53(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_53(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13548,7 +14290,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_54(self, timing_results: list[float]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_54(
+        self, timing_results: list[float]
+    ) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
@@ -13579,72 +14323,84 @@ class QualityAnalyzer:
                 "P99_MS": p99,
             },
         )
-    
-    xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_1': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_1, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_2': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_2, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_3': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_3, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_4': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_4, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_5': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_5, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_6': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_6, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_7': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_7, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_8': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_8, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_9': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_9, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_10': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_10, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_11': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_11, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_12': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_12, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_13': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_13, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_14': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_14, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_15': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_15, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_16': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_16, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_17': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_17, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_18': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_18, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_19': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_19, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_20': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_20, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_21': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_21, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_22': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_22, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_23': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_23, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_24': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_24, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_25': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_25, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_26': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_26, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_27': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_27, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_28': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_28, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_29': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_29, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_30': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_30, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_31': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_31, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_32': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_32, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_33': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_33, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_34': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_34, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_35': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_35, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_36': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_36, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_37': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_37, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_38': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_38, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_39': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_39, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_40': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_40, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_41': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_41, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_42': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_42, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_43': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_43, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_44': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_44, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_45': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_45, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_46': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_46, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_47': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_47, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_48': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_48, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_49': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_49, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_50': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_50, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_51': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_51, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_52': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_52, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_53': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_53, 
-        'xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_54': xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_54
-    }
-    
-    def _analyze_detection_time(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _analyze_detection_time.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_orig)
-    xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_analyze_detection_time'
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_orig(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_1": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_1,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_2": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_2,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_3": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_3,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_4": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_4,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_5": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_5,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_6": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_6,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_7": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_7,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_8": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_8,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_9": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_9,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_10": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_10,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_11": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_11,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_12": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_12,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_13": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_13,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_14": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_14,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_15": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_15,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_16": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_16,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_17": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_17,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_18": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_18,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_19": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_19,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_20": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_20,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_21": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_21,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_22": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_22,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_23": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_23,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_24": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_24,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_25": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_25,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_26": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_26,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_27": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_27,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_28": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_28,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_29": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_29,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_30": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_30,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_31": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_31,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_32": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_32,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_33": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_33,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_34": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_34,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_35": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_35,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_36": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_36,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_37": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_37,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_38": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_38,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_39": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_39,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_40": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_40,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_41": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_41,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_42": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_42,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_43": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_43,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_44": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_44,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_45": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_45,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_46": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_46,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_47": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_47,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_48": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_48,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_49": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_49,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_50": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_50,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_51": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_51,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_52": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_52,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_53": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_53,
+        "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_54": xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_54,
+    }
+
+    def _analyze_detection_time(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _analyze_detection_time.__signature__ = _mutmut_signature(
+        xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_orig
+    )
+    xǁQualityAnalyzerǁ_analyze_detection_time__mutmut_orig.__name__ = (
+        "xǁQualityAnalyzerǁ_analyze_detection_time"
+    )
+
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_orig(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -13673,7 +14429,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_1(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_1(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = None
         total_negative_cases = 0
@@ -13702,7 +14460,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_2(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_2(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 1
         total_negative_cases = 0
@@ -13731,7 +14491,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_3(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_3(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = None
@@ -13760,7 +14522,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_4(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_4(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 1
@@ -13789,7 +14553,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_5(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_5(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -13818,7 +14584,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_6(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_6(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -13847,7 +14615,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_7(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_7(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -13876,7 +14646,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_8(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_8(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -13905,7 +14677,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_9(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_9(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -13934,7 +14708,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_10(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_10(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -13963,7 +14739,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_11(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_11(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -13992,7 +14770,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_12(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_12(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14021,7 +14801,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_13(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_13(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14050,7 +14832,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_14(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_14(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14079,7 +14863,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_15(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_15(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14108,7 +14894,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_16(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_16(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14137,7 +14925,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_17(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_17(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14166,7 +14956,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_18(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_18(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14195,7 +14987,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_19(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_19(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14224,7 +15018,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_20(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_20(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14253,7 +15049,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_21(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_21(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14282,7 +15080,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_22(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_22(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14311,7 +15111,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_23(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_23(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14340,7 +15142,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_24(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_24(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14369,7 +15173,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_25(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_25(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14398,7 +15204,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_26(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_26(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14427,7 +15235,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_27(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_27(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14456,7 +15266,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_28(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_28(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14485,7 +15297,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_29(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_29(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14514,7 +15328,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_30(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_30(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14539,7 +15355,9 @@ class QualityAnalyzer:
             details=None,
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_31(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_31(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14567,7 +15385,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_32(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_32(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14595,7 +15415,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_33(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_33(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14617,9 +15439,11 @@ class QualityAnalyzer:
         return QualityResult(
             metric=AnalysisMetric.FALSE_POSITIVE_RATE,
             value=fpr,
-            )
+        )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_34(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_34(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14648,7 +15472,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_35(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_35(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14677,7 +15503,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_36(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_36(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14706,7 +15534,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_37(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_37(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14735,7 +15565,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_38(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_38(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14764,7 +15596,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_39(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_39(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14793,7 +15627,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_40(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_40(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14822,7 +15658,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_41(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_41(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false positive rate."""
         false_positives = 0
         total_negative_cases = 0
@@ -14850,59 +15688,71 @@ class QualityAnalyzer:
                 "percentage": fpr * 101,
             },
         )
-    
-    xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_1': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_1, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_2': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_2, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_3': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_3, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_4': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_4, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_5': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_5, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_6': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_6, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_7': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_7, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_8': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_8, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_9': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_9, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_10': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_10, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_11': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_11, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_12': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_12, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_13': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_13, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_14': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_14, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_15': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_15, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_16': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_16, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_17': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_17, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_18': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_18, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_19': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_19, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_20': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_20, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_21': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_21, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_22': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_22, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_23': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_23, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_24': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_24, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_25': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_25, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_26': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_26, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_27': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_27, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_28': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_28, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_29': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_29, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_30': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_30, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_31': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_31, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_32': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_32, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_33': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_33, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_34': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_34, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_35': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_35, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_36': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_36, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_37': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_37, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_38': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_38, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_39': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_39, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_40': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_40, 
-        'xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_41': xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_41
-    }
-    
-    def _calculate_false_positive_rate(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _calculate_false_positive_rate.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_orig)
-    xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_calculate_false_positive_rate'
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_orig(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_1": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_1,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_2": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_2,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_3": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_3,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_4": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_4,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_5": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_5,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_6": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_6,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_7": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_7,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_8": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_8,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_9": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_9,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_10": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_10,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_11": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_11,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_12": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_12,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_13": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_13,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_14": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_14,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_15": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_15,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_16": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_16,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_17": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_17,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_18": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_18,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_19": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_19,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_20": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_20,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_21": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_21,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_22": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_22,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_23": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_23,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_24": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_24,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_25": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_25,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_26": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_26,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_27": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_27,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_28": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_28,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_29": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_29,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_30": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_30,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_31": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_31,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_32": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_32,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_33": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_33,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_34": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_34,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_35": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_35,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_36": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_36,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_37": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_37,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_38": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_38,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_39": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_39,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_40": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_40,
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_41": xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_41,
+    }
+
+    def _calculate_false_positive_rate(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _calculate_false_positive_rate.__signature__ = _mutmut_signature(
+        xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_orig
+    )
+    xǁQualityAnalyzerǁ_calculate_false_positive_rate__mutmut_orig.__name__ = (
+        "xǁQualityAnalyzerǁ_calculate_false_positive_rate"
+    )
+
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_orig(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -14937,7 +15787,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_1(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_1(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = None
         total_positive_cases = 0
@@ -14972,7 +15824,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_2(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_2(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 1
         total_positive_cases = 0
@@ -15007,7 +15861,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_3(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_3(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = None
@@ -15042,7 +15898,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_4(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_4(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 1
@@ -15077,7 +15935,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_5(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_5(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15112,7 +15972,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_6(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_6(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15147,7 +16009,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_7(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_7(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15182,7 +16046,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_8(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_8(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15217,7 +16083,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_9(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_9(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15252,7 +16120,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_10(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_10(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15287,7 +16157,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_11(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_11(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15322,7 +16194,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_12(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_12(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15357,7 +16231,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_13(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_13(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15392,7 +16268,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_14(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_14(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15427,7 +16305,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_15(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_15(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15462,7 +16342,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_16(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_16(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15497,7 +16379,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_17(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_17(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15532,7 +16416,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_18(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_18(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15567,7 +16453,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_19(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_19(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15602,7 +16490,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_20(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_20(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15637,7 +16527,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_21(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_21(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15672,7 +16564,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_22(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_22(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15707,7 +16601,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_23(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_23(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15725,7 +16621,12 @@ class QualityAnalyzer:
                 detected_counter = Counter(detected_types)
 
                 for expected_type in expected_types:
-                    if detected_counter.get(expected_type, ) > 0:
+                    if (
+                        detected_counter.get(
+                            expected_type,
+                        )
+                        > 0
+                    ):
                         detected_counter[expected_type] -= 1
                     else:
                         false_negatives += 1
@@ -15742,7 +16643,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_24(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_24(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15777,7 +16680,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_25(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_25(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15812,7 +16717,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_26(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_26(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15847,7 +16754,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_27(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_27(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15882,7 +16791,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_28(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_28(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15917,7 +16828,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_29(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_29(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15952,7 +16865,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_30(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_30(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -15987,7 +16902,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_31(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_31(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16022,7 +16939,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_32(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_32(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16057,7 +16976,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_33(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_33(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16092,7 +17013,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_34(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_34(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16127,7 +17050,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_35(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_35(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16162,7 +17087,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_36(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_36(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16197,7 +17124,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_37(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_37(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16232,7 +17161,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_38(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_38(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16267,7 +17198,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_39(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_39(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16302,7 +17235,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_40(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_40(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16333,7 +17268,9 @@ class QualityAnalyzer:
             details=None,
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_41(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_41(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16367,7 +17304,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_42(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_42(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16401,7 +17340,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_43(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_43(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16429,9 +17370,11 @@ class QualityAnalyzer:
         return QualityResult(
             metric=AnalysisMetric.FALSE_NEGATIVE_RATE,
             value=fnr,
-            )
+        )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_44(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_44(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16466,7 +17409,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_45(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_45(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16501,7 +17446,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_46(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_46(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16536,7 +17483,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_47(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_47(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16571,7 +17520,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_48(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_48(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16606,7 +17557,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_49(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_49(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16641,7 +17594,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_50(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_50(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16676,7 +17631,9 @@ class QualityAnalyzer:
             },
         )
 
-    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_51(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+    def xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_51(
+        self, detection_results: list[dict[str, Any]]
+    ) -> QualityResult:
         """Calculate false negative rate."""
         false_negatives = 0
         total_positive_cases = 0
@@ -16710,69 +17667,81 @@ class QualityAnalyzer:
                 "percentage": fnr * 101,
             },
         )
-    
-    xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_1': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_1, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_2': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_2, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_3': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_3, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_4': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_4, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_5': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_5, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_6': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_6, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_7': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_7, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_8': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_8, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_9': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_9, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_10': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_10, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_11': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_11, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_12': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_12, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_13': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_13, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_14': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_14, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_15': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_15, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_16': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_16, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_17': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_17, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_18': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_18, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_19': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_19, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_20': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_20, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_21': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_21, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_22': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_22, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_23': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_23, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_24': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_24, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_25': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_25, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_26': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_26, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_27': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_27, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_28': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_28, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_29': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_29, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_30': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_30, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_31': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_31, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_32': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_32, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_33': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_33, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_34': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_34, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_35': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_35, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_36': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_36, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_37': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_37, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_38': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_38, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_39': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_39, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_40': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_40, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_41': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_41, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_42': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_42, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_43': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_43, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_44': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_44, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_45': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_45, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_46': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_46, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_47': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_47, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_48': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_48, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_49': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_49, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_50': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_50, 
-        'xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_51': xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_51
-    }
-    
-    def _calculate_false_negative_rate(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _calculate_false_negative_rate.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_orig)
-    xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁ_calculate_false_negative_rate'
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_orig(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_1": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_1,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_2": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_2,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_3": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_3,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_4": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_4,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_5": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_5,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_6": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_6,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_7": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_7,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_8": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_8,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_9": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_9,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_10": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_10,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_11": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_11,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_12": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_12,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_13": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_13,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_14": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_14,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_15": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_15,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_16": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_16,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_17": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_17,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_18": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_18,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_19": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_19,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_20": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_20,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_21": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_21,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_22": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_22,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_23": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_23,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_24": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_24,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_25": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_25,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_26": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_26,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_27": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_27,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_28": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_28,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_29": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_29,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_30": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_30,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_31": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_31,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_32": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_32,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_33": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_33,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_34": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_34,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_35": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_35,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_36": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_36,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_37": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_37,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_38": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_38,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_39": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_39,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_40": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_40,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_41": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_41,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_42": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_42,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_43": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_43,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_44": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_44,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_45": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_45,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_46": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_46,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_47": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_47,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_48": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_48,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_49": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_49,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_50": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_50,
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_51": xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_51,
+    }
+
+    def _calculate_false_negative_rate(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _calculate_false_negative_rate.__signature__ = _mutmut_signature(
+        xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_orig
+    )
+    xǁQualityAnalyzerǁ_calculate_false_negative_rate__mutmut_orig.__name__ = (
+        "xǁQualityAnalyzerǁ_calculate_false_negative_rate"
+    )
+
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_orig(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -16818,7 +17787,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_1(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_1(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -16864,7 +17835,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_2(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_2(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -16910,7 +17883,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_3(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_3(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -16956,7 +17931,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_4(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_4(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17002,7 +17979,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_5(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_5(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17048,7 +18027,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_6(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_6(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17094,7 +18075,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_7(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_7(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17140,7 +18123,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_8(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_8(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17186,7 +18171,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_9(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_9(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17232,7 +18219,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_10(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_10(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17278,7 +18267,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_11(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_11(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17317,7 +18308,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_12(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_12(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17363,7 +18356,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_13(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_13(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17409,7 +18404,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_14(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_14(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17455,7 +18452,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_15(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_15(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17501,7 +18500,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_16(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_16(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17547,7 +18548,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_17(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_17(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17593,7 +18596,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_18(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_18(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17639,7 +18644,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_19(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_19(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17685,7 +18692,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_20(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_20(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17731,7 +18740,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_21(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_21(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17777,7 +18788,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_22(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_22(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17823,7 +18836,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_23(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_23(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17869,7 +18884,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_24(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_24(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17915,7 +18932,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_25(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_25(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -17961,7 +18980,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_26(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_26(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18007,7 +19028,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_27(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_27(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18053,7 +19076,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_28(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_28(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18099,7 +19124,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_29(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_29(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18145,7 +19172,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_30(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_30(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18175,7 +19204,7 @@ class QualityAnalyzer:
         ]
 
         for metric, result in results.items():
-            report_lines.append(f"  {metric.value.replace('_', ).title()}: {result.value:.3f}")
+            report_lines.append(f"  {metric.value.replace('_').title()}: {result.value:.3f}")
 
             # Add details for key metrics
             if metric == AnalysisMetric.ACCURACY and "percentage" in result.details:
@@ -18191,7 +19220,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_31(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_31(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18237,7 +19268,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_32(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_32(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18283,7 +19316,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_33(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_33(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18329,7 +19364,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_34(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_34(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18375,7 +19412,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_35(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_35(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18421,7 +19460,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_36(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_36(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18467,7 +19508,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_37(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_37(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18513,7 +19556,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_38(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_38(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18559,7 +19604,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_39(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_39(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18605,7 +19652,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_40(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_40(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18651,7 +19700,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_41(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_41(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18697,7 +19748,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_42(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_42(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18743,7 +19796,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_43(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_43(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18789,7 +19844,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_44(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_44(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18835,7 +19892,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_45(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_45(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18881,7 +19940,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_46(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_46(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18917,9 +19978,7 @@ class QualityAnalyzer:
             if metric == AnalysisMetric.ACCURACY and "percentage" in result.details:
                 report_lines.append(f"    ({result.details['percentage']:.1f}%)")
             elif metric == AnalysisMetric.DETECTION_TIME and "average_ms" in result.details:
-                report_lines.append(
-                    None
-                )
+                report_lines.append(None)
             elif metric == AnalysisMetric.CONFIDENCE_DISTRIBUTION and "by_type" in result.details:
                 report_lines.append("    By operation type:")
                 for op_type, stats in result.details["by_type"].items():
@@ -18927,7 +19986,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_47(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_47(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -18973,7 +20034,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_48(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_48(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19019,7 +20082,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_49(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_49(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19065,7 +20130,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_50(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_50(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19111,7 +20178,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_51(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_51(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19157,7 +20226,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_52(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_52(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19194,7 +20265,7 @@ class QualityAnalyzer:
                 report_lines.append(f"    ({result.details['percentage']:.1f}%)")
             elif metric == AnalysisMetric.DETECTION_TIME and "average_ms" in result.details:
                 report_lines.append(
-                    f"    (avg: {result.details['average_ms']:.2f}ms, p95: {result.details.get('p95_ms', ):.2f}ms)"
+                    f"    (avg: {result.details['average_ms']:.2f}ms, p95: {result.details.get('p95_ms'):.2f}ms)"
                 )
             elif metric == AnalysisMetric.CONFIDENCE_DISTRIBUTION and "by_type" in result.details:
                 report_lines.append("    By operation type:")
@@ -19203,7 +20274,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_53(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_53(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19249,7 +20322,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_54(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_54(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19295,7 +20370,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_55(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_55(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19341,7 +20418,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_56(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_56(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19387,7 +20466,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_57(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_57(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19433,7 +20514,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_58(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_58(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19479,7 +20562,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_59(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_59(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19525,7 +20610,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_60(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_60(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19571,7 +20658,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_61(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_61(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19617,7 +20706,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_62(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_62(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19663,7 +20754,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_63(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_63(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19709,7 +20802,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_64(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_64(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19755,7 +20850,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_65(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_65(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19801,7 +20898,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_66(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_66(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19847,7 +20946,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_67(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_67(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19893,7 +20994,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_68(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_68(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19935,11 +21038,15 @@ class QualityAnalyzer:
             elif metric == AnalysisMetric.CONFIDENCE_DISTRIBUTION and "by_type" in result.details:
                 report_lines.append("    By operation type:")
                 for op_type, stats in result.details["by_type"].items():
-                    report_lines.append(f"      {op_type}: {stats['XXaverageXX']:.3f} (count: {stats['count']})")
+                    report_lines.append(
+                        f"      {op_type}: {stats['XXaverageXX']:.3f} (count: {stats['count']})"
+                    )
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_69(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_69(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -19985,7 +21092,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_70(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_70(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -20027,11 +21136,15 @@ class QualityAnalyzer:
             elif metric == AnalysisMetric.CONFIDENCE_DISTRIBUTION and "by_type" in result.details:
                 report_lines.append("    By operation type:")
                 for op_type, stats in result.details["by_type"].items():
-                    report_lines.append(f"      {op_type}: {stats['average']:.3f} (count: {stats['XXcountXX']})")
+                    report_lines.append(
+                        f"      {op_type}: {stats['average']:.3f} (count: {stats['XXcountXX']})"
+                    )
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_71(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_71(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -20077,7 +21190,9 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_72(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_72(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -20123,7 +21238,9 @@ class QualityAnalyzer:
 
         return "\n".join(None)
 
-    def xǁQualityAnalyzerǁgenerate_report__mutmut_73(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+    def xǁQualityAnalyzerǁgenerate_report__mutmut_73(
+        self, results: dict[AnalysisMetric, QualityResult] | None = None
+    ) -> str:
         """Generate a quality analysis report.
 
         Args:
@@ -20168,89 +21285,95 @@ class QualityAnalyzer:
                     report_lines.append(f"      {op_type}: {stats['average']:.3f} (count: {stats['count']})")
 
         return "XX\nXX".join(report_lines)
-    
-    xǁQualityAnalyzerǁgenerate_report__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁQualityAnalyzerǁgenerate_report__mutmut_1': xǁQualityAnalyzerǁgenerate_report__mutmut_1, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_2': xǁQualityAnalyzerǁgenerate_report__mutmut_2, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_3': xǁQualityAnalyzerǁgenerate_report__mutmut_3, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_4': xǁQualityAnalyzerǁgenerate_report__mutmut_4, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_5': xǁQualityAnalyzerǁgenerate_report__mutmut_5, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_6': xǁQualityAnalyzerǁgenerate_report__mutmut_6, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_7': xǁQualityAnalyzerǁgenerate_report__mutmut_7, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_8': xǁQualityAnalyzerǁgenerate_report__mutmut_8, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_9': xǁQualityAnalyzerǁgenerate_report__mutmut_9, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_10': xǁQualityAnalyzerǁgenerate_report__mutmut_10, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_11': xǁQualityAnalyzerǁgenerate_report__mutmut_11, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_12': xǁQualityAnalyzerǁgenerate_report__mutmut_12, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_13': xǁQualityAnalyzerǁgenerate_report__mutmut_13, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_14': xǁQualityAnalyzerǁgenerate_report__mutmut_14, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_15': xǁQualityAnalyzerǁgenerate_report__mutmut_15, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_16': xǁQualityAnalyzerǁgenerate_report__mutmut_16, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_17': xǁQualityAnalyzerǁgenerate_report__mutmut_17, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_18': xǁQualityAnalyzerǁgenerate_report__mutmut_18, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_19': xǁQualityAnalyzerǁgenerate_report__mutmut_19, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_20': xǁQualityAnalyzerǁgenerate_report__mutmut_20, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_21': xǁQualityAnalyzerǁgenerate_report__mutmut_21, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_22': xǁQualityAnalyzerǁgenerate_report__mutmut_22, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_23': xǁQualityAnalyzerǁgenerate_report__mutmut_23, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_24': xǁQualityAnalyzerǁgenerate_report__mutmut_24, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_25': xǁQualityAnalyzerǁgenerate_report__mutmut_25, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_26': xǁQualityAnalyzerǁgenerate_report__mutmut_26, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_27': xǁQualityAnalyzerǁgenerate_report__mutmut_27, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_28': xǁQualityAnalyzerǁgenerate_report__mutmut_28, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_29': xǁQualityAnalyzerǁgenerate_report__mutmut_29, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_30': xǁQualityAnalyzerǁgenerate_report__mutmut_30, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_31': xǁQualityAnalyzerǁgenerate_report__mutmut_31, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_32': xǁQualityAnalyzerǁgenerate_report__mutmut_32, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_33': xǁQualityAnalyzerǁgenerate_report__mutmut_33, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_34': xǁQualityAnalyzerǁgenerate_report__mutmut_34, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_35': xǁQualityAnalyzerǁgenerate_report__mutmut_35, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_36': xǁQualityAnalyzerǁgenerate_report__mutmut_36, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_37': xǁQualityAnalyzerǁgenerate_report__mutmut_37, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_38': xǁQualityAnalyzerǁgenerate_report__mutmut_38, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_39': xǁQualityAnalyzerǁgenerate_report__mutmut_39, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_40': xǁQualityAnalyzerǁgenerate_report__mutmut_40, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_41': xǁQualityAnalyzerǁgenerate_report__mutmut_41, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_42': xǁQualityAnalyzerǁgenerate_report__mutmut_42, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_43': xǁQualityAnalyzerǁgenerate_report__mutmut_43, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_44': xǁQualityAnalyzerǁgenerate_report__mutmut_44, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_45': xǁQualityAnalyzerǁgenerate_report__mutmut_45, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_46': xǁQualityAnalyzerǁgenerate_report__mutmut_46, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_47': xǁQualityAnalyzerǁgenerate_report__mutmut_47, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_48': xǁQualityAnalyzerǁgenerate_report__mutmut_48, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_49': xǁQualityAnalyzerǁgenerate_report__mutmut_49, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_50': xǁQualityAnalyzerǁgenerate_report__mutmut_50, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_51': xǁQualityAnalyzerǁgenerate_report__mutmut_51, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_52': xǁQualityAnalyzerǁgenerate_report__mutmut_52, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_53': xǁQualityAnalyzerǁgenerate_report__mutmut_53, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_54': xǁQualityAnalyzerǁgenerate_report__mutmut_54, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_55': xǁQualityAnalyzerǁgenerate_report__mutmut_55, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_56': xǁQualityAnalyzerǁgenerate_report__mutmut_56, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_57': xǁQualityAnalyzerǁgenerate_report__mutmut_57, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_58': xǁQualityAnalyzerǁgenerate_report__mutmut_58, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_59': xǁQualityAnalyzerǁgenerate_report__mutmut_59, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_60': xǁQualityAnalyzerǁgenerate_report__mutmut_60, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_61': xǁQualityAnalyzerǁgenerate_report__mutmut_61, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_62': xǁQualityAnalyzerǁgenerate_report__mutmut_62, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_63': xǁQualityAnalyzerǁgenerate_report__mutmut_63, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_64': xǁQualityAnalyzerǁgenerate_report__mutmut_64, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_65': xǁQualityAnalyzerǁgenerate_report__mutmut_65, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_66': xǁQualityAnalyzerǁgenerate_report__mutmut_66, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_67': xǁQualityAnalyzerǁgenerate_report__mutmut_67, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_68': xǁQualityAnalyzerǁgenerate_report__mutmut_68, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_69': xǁQualityAnalyzerǁgenerate_report__mutmut_69, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_70': xǁQualityAnalyzerǁgenerate_report__mutmut_70, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_71': xǁQualityAnalyzerǁgenerate_report__mutmut_71, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_72': xǁQualityAnalyzerǁgenerate_report__mutmut_72, 
-        'xǁQualityAnalyzerǁgenerate_report__mutmut_73': xǁQualityAnalyzerǁgenerate_report__mutmut_73
+
+    xǁQualityAnalyzerǁgenerate_report__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_1": xǁQualityAnalyzerǁgenerate_report__mutmut_1,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_2": xǁQualityAnalyzerǁgenerate_report__mutmut_2,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_3": xǁQualityAnalyzerǁgenerate_report__mutmut_3,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_4": xǁQualityAnalyzerǁgenerate_report__mutmut_4,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_5": xǁQualityAnalyzerǁgenerate_report__mutmut_5,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_6": xǁQualityAnalyzerǁgenerate_report__mutmut_6,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_7": xǁQualityAnalyzerǁgenerate_report__mutmut_7,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_8": xǁQualityAnalyzerǁgenerate_report__mutmut_8,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_9": xǁQualityAnalyzerǁgenerate_report__mutmut_9,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_10": xǁQualityAnalyzerǁgenerate_report__mutmut_10,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_11": xǁQualityAnalyzerǁgenerate_report__mutmut_11,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_12": xǁQualityAnalyzerǁgenerate_report__mutmut_12,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_13": xǁQualityAnalyzerǁgenerate_report__mutmut_13,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_14": xǁQualityAnalyzerǁgenerate_report__mutmut_14,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_15": xǁQualityAnalyzerǁgenerate_report__mutmut_15,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_16": xǁQualityAnalyzerǁgenerate_report__mutmut_16,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_17": xǁQualityAnalyzerǁgenerate_report__mutmut_17,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_18": xǁQualityAnalyzerǁgenerate_report__mutmut_18,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_19": xǁQualityAnalyzerǁgenerate_report__mutmut_19,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_20": xǁQualityAnalyzerǁgenerate_report__mutmut_20,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_21": xǁQualityAnalyzerǁgenerate_report__mutmut_21,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_22": xǁQualityAnalyzerǁgenerate_report__mutmut_22,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_23": xǁQualityAnalyzerǁgenerate_report__mutmut_23,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_24": xǁQualityAnalyzerǁgenerate_report__mutmut_24,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_25": xǁQualityAnalyzerǁgenerate_report__mutmut_25,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_26": xǁQualityAnalyzerǁgenerate_report__mutmut_26,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_27": xǁQualityAnalyzerǁgenerate_report__mutmut_27,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_28": xǁQualityAnalyzerǁgenerate_report__mutmut_28,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_29": xǁQualityAnalyzerǁgenerate_report__mutmut_29,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_30": xǁQualityAnalyzerǁgenerate_report__mutmut_30,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_31": xǁQualityAnalyzerǁgenerate_report__mutmut_31,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_32": xǁQualityAnalyzerǁgenerate_report__mutmut_32,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_33": xǁQualityAnalyzerǁgenerate_report__mutmut_33,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_34": xǁQualityAnalyzerǁgenerate_report__mutmut_34,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_35": xǁQualityAnalyzerǁgenerate_report__mutmut_35,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_36": xǁQualityAnalyzerǁgenerate_report__mutmut_36,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_37": xǁQualityAnalyzerǁgenerate_report__mutmut_37,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_38": xǁQualityAnalyzerǁgenerate_report__mutmut_38,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_39": xǁQualityAnalyzerǁgenerate_report__mutmut_39,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_40": xǁQualityAnalyzerǁgenerate_report__mutmut_40,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_41": xǁQualityAnalyzerǁgenerate_report__mutmut_41,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_42": xǁQualityAnalyzerǁgenerate_report__mutmut_42,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_43": xǁQualityAnalyzerǁgenerate_report__mutmut_43,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_44": xǁQualityAnalyzerǁgenerate_report__mutmut_44,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_45": xǁQualityAnalyzerǁgenerate_report__mutmut_45,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_46": xǁQualityAnalyzerǁgenerate_report__mutmut_46,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_47": xǁQualityAnalyzerǁgenerate_report__mutmut_47,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_48": xǁQualityAnalyzerǁgenerate_report__mutmut_48,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_49": xǁQualityAnalyzerǁgenerate_report__mutmut_49,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_50": xǁQualityAnalyzerǁgenerate_report__mutmut_50,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_51": xǁQualityAnalyzerǁgenerate_report__mutmut_51,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_52": xǁQualityAnalyzerǁgenerate_report__mutmut_52,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_53": xǁQualityAnalyzerǁgenerate_report__mutmut_53,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_54": xǁQualityAnalyzerǁgenerate_report__mutmut_54,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_55": xǁQualityAnalyzerǁgenerate_report__mutmut_55,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_56": xǁQualityAnalyzerǁgenerate_report__mutmut_56,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_57": xǁQualityAnalyzerǁgenerate_report__mutmut_57,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_58": xǁQualityAnalyzerǁgenerate_report__mutmut_58,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_59": xǁQualityAnalyzerǁgenerate_report__mutmut_59,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_60": xǁQualityAnalyzerǁgenerate_report__mutmut_60,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_61": xǁQualityAnalyzerǁgenerate_report__mutmut_61,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_62": xǁQualityAnalyzerǁgenerate_report__mutmut_62,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_63": xǁQualityAnalyzerǁgenerate_report__mutmut_63,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_64": xǁQualityAnalyzerǁgenerate_report__mutmut_64,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_65": xǁQualityAnalyzerǁgenerate_report__mutmut_65,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_66": xǁQualityAnalyzerǁgenerate_report__mutmut_66,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_67": xǁQualityAnalyzerǁgenerate_report__mutmut_67,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_68": xǁQualityAnalyzerǁgenerate_report__mutmut_68,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_69": xǁQualityAnalyzerǁgenerate_report__mutmut_69,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_70": xǁQualityAnalyzerǁgenerate_report__mutmut_70,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_71": xǁQualityAnalyzerǁgenerate_report__mutmut_71,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_72": xǁQualityAnalyzerǁgenerate_report__mutmut_72,
+        "xǁQualityAnalyzerǁgenerate_report__mutmut_73": xǁQualityAnalyzerǁgenerate_report__mutmut_73,
     }
-    
+
     def generate_report(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁQualityAnalyzerǁgenerate_report__mutmut_orig"), object.__getattribute__(self, "xǁQualityAnalyzerǁgenerate_report__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁQualityAnalyzerǁgenerate_report__mutmut_orig"),
+            object.__getattribute__(self, "xǁQualityAnalyzerǁgenerate_report__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     generate_report.__signature__ = _mutmut_signature(xǁQualityAnalyzerǁgenerate_report__mutmut_orig)
-    xǁQualityAnalyzerǁgenerate_report__mutmut_orig.__name__ = 'xǁQualityAnalyzerǁgenerate_report'
+    xǁQualityAnalyzerǁgenerate_report__mutmut_orig.__name__ = "xǁQualityAnalyzerǁgenerate_report"
 
 
 # <3 🧱🤝📄🪄

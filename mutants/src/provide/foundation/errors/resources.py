@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -138,7 +141,9 @@ class ResourceError(FoundationError):
         **kwargs: Any,
     ) -> None:
         if resource_type:
-            kwargs.setdefault("context", )["resource.type"] = resource_type
+            kwargs.setdefault(
+                "context",
+            )["resource.type"] = resource_type
         if resource_path:
             kwargs.setdefault("context", {})["resource.path"] = resource_path
         super().__init__(message, **kwargs)
@@ -266,7 +271,9 @@ class ResourceError(FoundationError):
         if resource_type:
             kwargs.setdefault("context", {})["resource.type"] = resource_type
         if resource_path:
-            kwargs.setdefault("context", )["resource.path"] = resource_path
+            kwargs.setdefault(
+                "context",
+            )["resource.path"] = resource_path
         super().__init__(message, **kwargs)
 
     def xǁResourceErrorǁ__init____mutmut_15(
@@ -365,38 +372,46 @@ class ResourceError(FoundationError):
             kwargs.setdefault("context", {})["resource.type"] = resource_type
         if resource_path:
             kwargs.setdefault("context", {})["resource.path"] = resource_path
-        super().__init__(message, )
-    
-    xǁResourceErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁResourceErrorǁ__init____mutmut_1': xǁResourceErrorǁ__init____mutmut_1, 
-        'xǁResourceErrorǁ__init____mutmut_2': xǁResourceErrorǁ__init____mutmut_2, 
-        'xǁResourceErrorǁ__init____mutmut_3': xǁResourceErrorǁ__init____mutmut_3, 
-        'xǁResourceErrorǁ__init____mutmut_4': xǁResourceErrorǁ__init____mutmut_4, 
-        'xǁResourceErrorǁ__init____mutmut_5': xǁResourceErrorǁ__init____mutmut_5, 
-        'xǁResourceErrorǁ__init____mutmut_6': xǁResourceErrorǁ__init____mutmut_6, 
-        'xǁResourceErrorǁ__init____mutmut_7': xǁResourceErrorǁ__init____mutmut_7, 
-        'xǁResourceErrorǁ__init____mutmut_8': xǁResourceErrorǁ__init____mutmut_8, 
-        'xǁResourceErrorǁ__init____mutmut_9': xǁResourceErrorǁ__init____mutmut_9, 
-        'xǁResourceErrorǁ__init____mutmut_10': xǁResourceErrorǁ__init____mutmut_10, 
-        'xǁResourceErrorǁ__init____mutmut_11': xǁResourceErrorǁ__init____mutmut_11, 
-        'xǁResourceErrorǁ__init____mutmut_12': xǁResourceErrorǁ__init____mutmut_12, 
-        'xǁResourceErrorǁ__init____mutmut_13': xǁResourceErrorǁ__init____mutmut_13, 
-        'xǁResourceErrorǁ__init____mutmut_14': xǁResourceErrorǁ__init____mutmut_14, 
-        'xǁResourceErrorǁ__init____mutmut_15': xǁResourceErrorǁ__init____mutmut_15, 
-        'xǁResourceErrorǁ__init____mutmut_16': xǁResourceErrorǁ__init____mutmut_16, 
-        'xǁResourceErrorǁ__init____mutmut_17': xǁResourceErrorǁ__init____mutmut_17, 
-        'xǁResourceErrorǁ__init____mutmut_18': xǁResourceErrorǁ__init____mutmut_18, 
-        'xǁResourceErrorǁ__init____mutmut_19': xǁResourceErrorǁ__init____mutmut_19, 
-        'xǁResourceErrorǁ__init____mutmut_20': xǁResourceErrorǁ__init____mutmut_20, 
-        'xǁResourceErrorǁ__init____mutmut_21': xǁResourceErrorǁ__init____mutmut_21
+        super().__init__(
+            message,
+        )
+
+    xǁResourceErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁResourceErrorǁ__init____mutmut_1": xǁResourceErrorǁ__init____mutmut_1,
+        "xǁResourceErrorǁ__init____mutmut_2": xǁResourceErrorǁ__init____mutmut_2,
+        "xǁResourceErrorǁ__init____mutmut_3": xǁResourceErrorǁ__init____mutmut_3,
+        "xǁResourceErrorǁ__init____mutmut_4": xǁResourceErrorǁ__init____mutmut_4,
+        "xǁResourceErrorǁ__init____mutmut_5": xǁResourceErrorǁ__init____mutmut_5,
+        "xǁResourceErrorǁ__init____mutmut_6": xǁResourceErrorǁ__init____mutmut_6,
+        "xǁResourceErrorǁ__init____mutmut_7": xǁResourceErrorǁ__init____mutmut_7,
+        "xǁResourceErrorǁ__init____mutmut_8": xǁResourceErrorǁ__init____mutmut_8,
+        "xǁResourceErrorǁ__init____mutmut_9": xǁResourceErrorǁ__init____mutmut_9,
+        "xǁResourceErrorǁ__init____mutmut_10": xǁResourceErrorǁ__init____mutmut_10,
+        "xǁResourceErrorǁ__init____mutmut_11": xǁResourceErrorǁ__init____mutmut_11,
+        "xǁResourceErrorǁ__init____mutmut_12": xǁResourceErrorǁ__init____mutmut_12,
+        "xǁResourceErrorǁ__init____mutmut_13": xǁResourceErrorǁ__init____mutmut_13,
+        "xǁResourceErrorǁ__init____mutmut_14": xǁResourceErrorǁ__init____mutmut_14,
+        "xǁResourceErrorǁ__init____mutmut_15": xǁResourceErrorǁ__init____mutmut_15,
+        "xǁResourceErrorǁ__init____mutmut_16": xǁResourceErrorǁ__init____mutmut_16,
+        "xǁResourceErrorǁ__init____mutmut_17": xǁResourceErrorǁ__init____mutmut_17,
+        "xǁResourceErrorǁ__init____mutmut_18": xǁResourceErrorǁ__init____mutmut_18,
+        "xǁResourceErrorǁ__init____mutmut_19": xǁResourceErrorǁ__init____mutmut_19,
+        "xǁResourceErrorǁ__init____mutmut_20": xǁResourceErrorǁ__init____mutmut_20,
+        "xǁResourceErrorǁ__init____mutmut_21": xǁResourceErrorǁ__init____mutmut_21,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁResourceErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁResourceErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁResourceErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁResourceErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁResourceErrorǁ__init____mutmut_orig)
-    xǁResourceErrorǁ__init____mutmut_orig.__name__ = 'xǁResourceErrorǁ__init__'
+    xǁResourceErrorǁ__init____mutmut_orig.__name__ = "xǁResourceErrorǁ__init__"
 
     def xǁResourceErrorǁ_default_code__mutmut_orig(self) -> str:
         return "RESOURCE_ERROR"
@@ -406,18 +421,24 @@ class ResourceError(FoundationError):
 
     def xǁResourceErrorǁ_default_code__mutmut_2(self) -> str:
         return "resource_error"
-    
-    xǁResourceErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁResourceErrorǁ_default_code__mutmut_1': xǁResourceErrorǁ_default_code__mutmut_1, 
-        'xǁResourceErrorǁ_default_code__mutmut_2': xǁResourceErrorǁ_default_code__mutmut_2
+
+    xǁResourceErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁResourceErrorǁ_default_code__mutmut_1": xǁResourceErrorǁ_default_code__mutmut_1,
+        "xǁResourceErrorǁ_default_code__mutmut_2": xǁResourceErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁResourceErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁResourceErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁResourceErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁResourceErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁResourceErrorǁ_default_code__mutmut_orig)
-    xǁResourceErrorǁ_default_code__mutmut_orig.__name__ = 'xǁResourceErrorǁ_default_code'
+    xǁResourceErrorǁ_default_code__mutmut_orig.__name__ = "xǁResourceErrorǁ_default_code"
 
 
 class NotFoundError(FoundationError):
@@ -514,7 +535,9 @@ class NotFoundError(FoundationError):
         **kwargs: Any,
     ) -> None:
         if resource_type:
-            kwargs.setdefault("context", )["notfound.type"] = resource_type
+            kwargs.setdefault(
+                "context",
+            )["notfound.type"] = resource_type
         if resource_id:
             kwargs.setdefault("context", {})["notfound.id"] = resource_id
         super().__init__(message, **kwargs)
@@ -642,7 +665,9 @@ class NotFoundError(FoundationError):
         if resource_type:
             kwargs.setdefault("context", {})["notfound.type"] = resource_type
         if resource_id:
-            kwargs.setdefault("context", )["notfound.id"] = resource_id
+            kwargs.setdefault(
+                "context",
+            )["notfound.id"] = resource_id
         super().__init__(message, **kwargs)
 
     def xǁNotFoundErrorǁ__init____mutmut_15(
@@ -741,38 +766,46 @@ class NotFoundError(FoundationError):
             kwargs.setdefault("context", {})["notfound.type"] = resource_type
         if resource_id:
             kwargs.setdefault("context", {})["notfound.id"] = resource_id
-        super().__init__(message, )
-    
-    xǁNotFoundErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁNotFoundErrorǁ__init____mutmut_1': xǁNotFoundErrorǁ__init____mutmut_1, 
-        'xǁNotFoundErrorǁ__init____mutmut_2': xǁNotFoundErrorǁ__init____mutmut_2, 
-        'xǁNotFoundErrorǁ__init____mutmut_3': xǁNotFoundErrorǁ__init____mutmut_3, 
-        'xǁNotFoundErrorǁ__init____mutmut_4': xǁNotFoundErrorǁ__init____mutmut_4, 
-        'xǁNotFoundErrorǁ__init____mutmut_5': xǁNotFoundErrorǁ__init____mutmut_5, 
-        'xǁNotFoundErrorǁ__init____mutmut_6': xǁNotFoundErrorǁ__init____mutmut_6, 
-        'xǁNotFoundErrorǁ__init____mutmut_7': xǁNotFoundErrorǁ__init____mutmut_7, 
-        'xǁNotFoundErrorǁ__init____mutmut_8': xǁNotFoundErrorǁ__init____mutmut_8, 
-        'xǁNotFoundErrorǁ__init____mutmut_9': xǁNotFoundErrorǁ__init____mutmut_9, 
-        'xǁNotFoundErrorǁ__init____mutmut_10': xǁNotFoundErrorǁ__init____mutmut_10, 
-        'xǁNotFoundErrorǁ__init____mutmut_11': xǁNotFoundErrorǁ__init____mutmut_11, 
-        'xǁNotFoundErrorǁ__init____mutmut_12': xǁNotFoundErrorǁ__init____mutmut_12, 
-        'xǁNotFoundErrorǁ__init____mutmut_13': xǁNotFoundErrorǁ__init____mutmut_13, 
-        'xǁNotFoundErrorǁ__init____mutmut_14': xǁNotFoundErrorǁ__init____mutmut_14, 
-        'xǁNotFoundErrorǁ__init____mutmut_15': xǁNotFoundErrorǁ__init____mutmut_15, 
-        'xǁNotFoundErrorǁ__init____mutmut_16': xǁNotFoundErrorǁ__init____mutmut_16, 
-        'xǁNotFoundErrorǁ__init____mutmut_17': xǁNotFoundErrorǁ__init____mutmut_17, 
-        'xǁNotFoundErrorǁ__init____mutmut_18': xǁNotFoundErrorǁ__init____mutmut_18, 
-        'xǁNotFoundErrorǁ__init____mutmut_19': xǁNotFoundErrorǁ__init____mutmut_19, 
-        'xǁNotFoundErrorǁ__init____mutmut_20': xǁNotFoundErrorǁ__init____mutmut_20, 
-        'xǁNotFoundErrorǁ__init____mutmut_21': xǁNotFoundErrorǁ__init____mutmut_21
+        super().__init__(
+            message,
+        )
+
+    xǁNotFoundErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁNotFoundErrorǁ__init____mutmut_1": xǁNotFoundErrorǁ__init____mutmut_1,
+        "xǁNotFoundErrorǁ__init____mutmut_2": xǁNotFoundErrorǁ__init____mutmut_2,
+        "xǁNotFoundErrorǁ__init____mutmut_3": xǁNotFoundErrorǁ__init____mutmut_3,
+        "xǁNotFoundErrorǁ__init____mutmut_4": xǁNotFoundErrorǁ__init____mutmut_4,
+        "xǁNotFoundErrorǁ__init____mutmut_5": xǁNotFoundErrorǁ__init____mutmut_5,
+        "xǁNotFoundErrorǁ__init____mutmut_6": xǁNotFoundErrorǁ__init____mutmut_6,
+        "xǁNotFoundErrorǁ__init____mutmut_7": xǁNotFoundErrorǁ__init____mutmut_7,
+        "xǁNotFoundErrorǁ__init____mutmut_8": xǁNotFoundErrorǁ__init____mutmut_8,
+        "xǁNotFoundErrorǁ__init____mutmut_9": xǁNotFoundErrorǁ__init____mutmut_9,
+        "xǁNotFoundErrorǁ__init____mutmut_10": xǁNotFoundErrorǁ__init____mutmut_10,
+        "xǁNotFoundErrorǁ__init____mutmut_11": xǁNotFoundErrorǁ__init____mutmut_11,
+        "xǁNotFoundErrorǁ__init____mutmut_12": xǁNotFoundErrorǁ__init____mutmut_12,
+        "xǁNotFoundErrorǁ__init____mutmut_13": xǁNotFoundErrorǁ__init____mutmut_13,
+        "xǁNotFoundErrorǁ__init____mutmut_14": xǁNotFoundErrorǁ__init____mutmut_14,
+        "xǁNotFoundErrorǁ__init____mutmut_15": xǁNotFoundErrorǁ__init____mutmut_15,
+        "xǁNotFoundErrorǁ__init____mutmut_16": xǁNotFoundErrorǁ__init____mutmut_16,
+        "xǁNotFoundErrorǁ__init____mutmut_17": xǁNotFoundErrorǁ__init____mutmut_17,
+        "xǁNotFoundErrorǁ__init____mutmut_18": xǁNotFoundErrorǁ__init____mutmut_18,
+        "xǁNotFoundErrorǁ__init____mutmut_19": xǁNotFoundErrorǁ__init____mutmut_19,
+        "xǁNotFoundErrorǁ__init____mutmut_20": xǁNotFoundErrorǁ__init____mutmut_20,
+        "xǁNotFoundErrorǁ__init____mutmut_21": xǁNotFoundErrorǁ__init____mutmut_21,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁNotFoundErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁNotFoundErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁNotFoundErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁNotFoundErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁNotFoundErrorǁ__init____mutmut_orig)
-    xǁNotFoundErrorǁ__init____mutmut_orig.__name__ = 'xǁNotFoundErrorǁ__init__'
+    xǁNotFoundErrorǁ__init____mutmut_orig.__name__ = "xǁNotFoundErrorǁ__init__"
 
     def xǁNotFoundErrorǁ_default_code__mutmut_orig(self) -> str:
         return "NOT_FOUND_ERROR"
@@ -782,18 +815,24 @@ class NotFoundError(FoundationError):
 
     def xǁNotFoundErrorǁ_default_code__mutmut_2(self) -> str:
         return "not_found_error"
-    
-    xǁNotFoundErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁNotFoundErrorǁ_default_code__mutmut_1': xǁNotFoundErrorǁ_default_code__mutmut_1, 
-        'xǁNotFoundErrorǁ_default_code__mutmut_2': xǁNotFoundErrorǁ_default_code__mutmut_2
+
+    xǁNotFoundErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁNotFoundErrorǁ_default_code__mutmut_1": xǁNotFoundErrorǁ_default_code__mutmut_1,
+        "xǁNotFoundErrorǁ_default_code__mutmut_2": xǁNotFoundErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁNotFoundErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁNotFoundErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁNotFoundErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁNotFoundErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁNotFoundErrorǁ_default_code__mutmut_orig)
-    xǁNotFoundErrorǁ_default_code__mutmut_orig.__name__ = 'xǁNotFoundErrorǁ_default_code'
+    xǁNotFoundErrorǁ_default_code__mutmut_orig.__name__ = "xǁNotFoundErrorǁ_default_code"
 
 
 class AlreadyExistsError(FoundationError):
@@ -890,7 +929,9 @@ class AlreadyExistsError(FoundationError):
         **kwargs: Any,
     ) -> None:
         if resource_type:
-            kwargs.setdefault("context", )["exists.type"] = resource_type
+            kwargs.setdefault(
+                "context",
+            )["exists.type"] = resource_type
         if resource_id:
             kwargs.setdefault("context", {})["exists.id"] = resource_id
         super().__init__(message, **kwargs)
@@ -1018,7 +1059,9 @@ class AlreadyExistsError(FoundationError):
         if resource_type:
             kwargs.setdefault("context", {})["exists.type"] = resource_type
         if resource_id:
-            kwargs.setdefault("context", )["exists.id"] = resource_id
+            kwargs.setdefault(
+                "context",
+            )["exists.id"] = resource_id
         super().__init__(message, **kwargs)
 
     def xǁAlreadyExistsErrorǁ__init____mutmut_15(
@@ -1117,38 +1160,46 @@ class AlreadyExistsError(FoundationError):
             kwargs.setdefault("context", {})["exists.type"] = resource_type
         if resource_id:
             kwargs.setdefault("context", {})["exists.id"] = resource_id
-        super().__init__(message, )
-    
-    xǁAlreadyExistsErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAlreadyExistsErrorǁ__init____mutmut_1': xǁAlreadyExistsErrorǁ__init____mutmut_1, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_2': xǁAlreadyExistsErrorǁ__init____mutmut_2, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_3': xǁAlreadyExistsErrorǁ__init____mutmut_3, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_4': xǁAlreadyExistsErrorǁ__init____mutmut_4, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_5': xǁAlreadyExistsErrorǁ__init____mutmut_5, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_6': xǁAlreadyExistsErrorǁ__init____mutmut_6, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_7': xǁAlreadyExistsErrorǁ__init____mutmut_7, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_8': xǁAlreadyExistsErrorǁ__init____mutmut_8, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_9': xǁAlreadyExistsErrorǁ__init____mutmut_9, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_10': xǁAlreadyExistsErrorǁ__init____mutmut_10, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_11': xǁAlreadyExistsErrorǁ__init____mutmut_11, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_12': xǁAlreadyExistsErrorǁ__init____mutmut_12, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_13': xǁAlreadyExistsErrorǁ__init____mutmut_13, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_14': xǁAlreadyExistsErrorǁ__init____mutmut_14, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_15': xǁAlreadyExistsErrorǁ__init____mutmut_15, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_16': xǁAlreadyExistsErrorǁ__init____mutmut_16, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_17': xǁAlreadyExistsErrorǁ__init____mutmut_17, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_18': xǁAlreadyExistsErrorǁ__init____mutmut_18, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_19': xǁAlreadyExistsErrorǁ__init____mutmut_19, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_20': xǁAlreadyExistsErrorǁ__init____mutmut_20, 
-        'xǁAlreadyExistsErrorǁ__init____mutmut_21': xǁAlreadyExistsErrorǁ__init____mutmut_21
+        super().__init__(
+            message,
+        )
+
+    xǁAlreadyExistsErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAlreadyExistsErrorǁ__init____mutmut_1": xǁAlreadyExistsErrorǁ__init____mutmut_1,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_2": xǁAlreadyExistsErrorǁ__init____mutmut_2,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_3": xǁAlreadyExistsErrorǁ__init____mutmut_3,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_4": xǁAlreadyExistsErrorǁ__init____mutmut_4,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_5": xǁAlreadyExistsErrorǁ__init____mutmut_5,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_6": xǁAlreadyExistsErrorǁ__init____mutmut_6,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_7": xǁAlreadyExistsErrorǁ__init____mutmut_7,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_8": xǁAlreadyExistsErrorǁ__init____mutmut_8,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_9": xǁAlreadyExistsErrorǁ__init____mutmut_9,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_10": xǁAlreadyExistsErrorǁ__init____mutmut_10,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_11": xǁAlreadyExistsErrorǁ__init____mutmut_11,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_12": xǁAlreadyExistsErrorǁ__init____mutmut_12,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_13": xǁAlreadyExistsErrorǁ__init____mutmut_13,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_14": xǁAlreadyExistsErrorǁ__init____mutmut_14,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_15": xǁAlreadyExistsErrorǁ__init____mutmut_15,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_16": xǁAlreadyExistsErrorǁ__init____mutmut_16,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_17": xǁAlreadyExistsErrorǁ__init____mutmut_17,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_18": xǁAlreadyExistsErrorǁ__init____mutmut_18,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_19": xǁAlreadyExistsErrorǁ__init____mutmut_19,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_20": xǁAlreadyExistsErrorǁ__init____mutmut_20,
+        "xǁAlreadyExistsErrorǁ__init____mutmut_21": xǁAlreadyExistsErrorǁ__init____mutmut_21,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAlreadyExistsErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁAlreadyExistsErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAlreadyExistsErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁAlreadyExistsErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁAlreadyExistsErrorǁ__init____mutmut_orig)
-    xǁAlreadyExistsErrorǁ__init____mutmut_orig.__name__ = 'xǁAlreadyExistsErrorǁ__init__'
+    xǁAlreadyExistsErrorǁ__init____mutmut_orig.__name__ = "xǁAlreadyExistsErrorǁ__init__"
 
     def xǁAlreadyExistsErrorǁ_default_code__mutmut_orig(self) -> str:
         return "ALREADY_EXISTS_ERROR"
@@ -1158,18 +1209,24 @@ class AlreadyExistsError(FoundationError):
 
     def xǁAlreadyExistsErrorǁ_default_code__mutmut_2(self) -> str:
         return "already_exists_error"
-    
-    xǁAlreadyExistsErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAlreadyExistsErrorǁ_default_code__mutmut_1': xǁAlreadyExistsErrorǁ_default_code__mutmut_1, 
-        'xǁAlreadyExistsErrorǁ_default_code__mutmut_2': xǁAlreadyExistsErrorǁ_default_code__mutmut_2
+
+    xǁAlreadyExistsErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAlreadyExistsErrorǁ_default_code__mutmut_1": xǁAlreadyExistsErrorǁ_default_code__mutmut_1,
+        "xǁAlreadyExistsErrorǁ_default_code__mutmut_2": xǁAlreadyExistsErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAlreadyExistsErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁAlreadyExistsErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAlreadyExistsErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁAlreadyExistsErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁAlreadyExistsErrorǁ_default_code__mutmut_orig)
-    xǁAlreadyExistsErrorǁ_default_code__mutmut_orig.__name__ = 'xǁAlreadyExistsErrorǁ_default_code'
+    xǁAlreadyExistsErrorǁ_default_code__mutmut_orig.__name__ = "xǁAlreadyExistsErrorǁ_default_code"
 
 
 class LockError(FoundationError):
@@ -1266,7 +1323,9 @@ class LockError(FoundationError):
         **kwargs: Any,
     ) -> None:
         if lock_path:
-            kwargs.setdefault("context", )["lock.path"] = lock_path
+            kwargs.setdefault(
+                "context",
+            )["lock.path"] = lock_path
         if timeout is not None:
             kwargs.setdefault("context", {})["lock.timeout"] = timeout
         super().__init__(message, **kwargs)
@@ -1408,7 +1467,9 @@ class LockError(FoundationError):
         if lock_path:
             kwargs.setdefault("context", {})["lock.path"] = lock_path
         if timeout is not None:
-            kwargs.setdefault("context", )["lock.timeout"] = timeout
+            kwargs.setdefault(
+                "context",
+            )["lock.timeout"] = timeout
         super().__init__(message, **kwargs)
 
     def xǁLockErrorǁ__init____mutmut_16(
@@ -1507,39 +1568,47 @@ class LockError(FoundationError):
             kwargs.setdefault("context", {})["lock.path"] = lock_path
         if timeout is not None:
             kwargs.setdefault("context", {})["lock.timeout"] = timeout
-        super().__init__(message, )
-    
-    xǁLockErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁLockErrorǁ__init____mutmut_1': xǁLockErrorǁ__init____mutmut_1, 
-        'xǁLockErrorǁ__init____mutmut_2': xǁLockErrorǁ__init____mutmut_2, 
-        'xǁLockErrorǁ__init____mutmut_3': xǁLockErrorǁ__init____mutmut_3, 
-        'xǁLockErrorǁ__init____mutmut_4': xǁLockErrorǁ__init____mutmut_4, 
-        'xǁLockErrorǁ__init____mutmut_5': xǁLockErrorǁ__init____mutmut_5, 
-        'xǁLockErrorǁ__init____mutmut_6': xǁLockErrorǁ__init____mutmut_6, 
-        'xǁLockErrorǁ__init____mutmut_7': xǁLockErrorǁ__init____mutmut_7, 
-        'xǁLockErrorǁ__init____mutmut_8': xǁLockErrorǁ__init____mutmut_8, 
-        'xǁLockErrorǁ__init____mutmut_9': xǁLockErrorǁ__init____mutmut_9, 
-        'xǁLockErrorǁ__init____mutmut_10': xǁLockErrorǁ__init____mutmut_10, 
-        'xǁLockErrorǁ__init____mutmut_11': xǁLockErrorǁ__init____mutmut_11, 
-        'xǁLockErrorǁ__init____mutmut_12': xǁLockErrorǁ__init____mutmut_12, 
-        'xǁLockErrorǁ__init____mutmut_13': xǁLockErrorǁ__init____mutmut_13, 
-        'xǁLockErrorǁ__init____mutmut_14': xǁLockErrorǁ__init____mutmut_14, 
-        'xǁLockErrorǁ__init____mutmut_15': xǁLockErrorǁ__init____mutmut_15, 
-        'xǁLockErrorǁ__init____mutmut_16': xǁLockErrorǁ__init____mutmut_16, 
-        'xǁLockErrorǁ__init____mutmut_17': xǁLockErrorǁ__init____mutmut_17, 
-        'xǁLockErrorǁ__init____mutmut_18': xǁLockErrorǁ__init____mutmut_18, 
-        'xǁLockErrorǁ__init____mutmut_19': xǁLockErrorǁ__init____mutmut_19, 
-        'xǁLockErrorǁ__init____mutmut_20': xǁLockErrorǁ__init____mutmut_20, 
-        'xǁLockErrorǁ__init____mutmut_21': xǁLockErrorǁ__init____mutmut_21, 
-        'xǁLockErrorǁ__init____mutmut_22': xǁLockErrorǁ__init____mutmut_22
+        super().__init__(
+            message,
+        )
+
+    xǁLockErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁLockErrorǁ__init____mutmut_1": xǁLockErrorǁ__init____mutmut_1,
+        "xǁLockErrorǁ__init____mutmut_2": xǁLockErrorǁ__init____mutmut_2,
+        "xǁLockErrorǁ__init____mutmut_3": xǁLockErrorǁ__init____mutmut_3,
+        "xǁLockErrorǁ__init____mutmut_4": xǁLockErrorǁ__init____mutmut_4,
+        "xǁLockErrorǁ__init____mutmut_5": xǁLockErrorǁ__init____mutmut_5,
+        "xǁLockErrorǁ__init____mutmut_6": xǁLockErrorǁ__init____mutmut_6,
+        "xǁLockErrorǁ__init____mutmut_7": xǁLockErrorǁ__init____mutmut_7,
+        "xǁLockErrorǁ__init____mutmut_8": xǁLockErrorǁ__init____mutmut_8,
+        "xǁLockErrorǁ__init____mutmut_9": xǁLockErrorǁ__init____mutmut_9,
+        "xǁLockErrorǁ__init____mutmut_10": xǁLockErrorǁ__init____mutmut_10,
+        "xǁLockErrorǁ__init____mutmut_11": xǁLockErrorǁ__init____mutmut_11,
+        "xǁLockErrorǁ__init____mutmut_12": xǁLockErrorǁ__init____mutmut_12,
+        "xǁLockErrorǁ__init____mutmut_13": xǁLockErrorǁ__init____mutmut_13,
+        "xǁLockErrorǁ__init____mutmut_14": xǁLockErrorǁ__init____mutmut_14,
+        "xǁLockErrorǁ__init____mutmut_15": xǁLockErrorǁ__init____mutmut_15,
+        "xǁLockErrorǁ__init____mutmut_16": xǁLockErrorǁ__init____mutmut_16,
+        "xǁLockErrorǁ__init____mutmut_17": xǁLockErrorǁ__init____mutmut_17,
+        "xǁLockErrorǁ__init____mutmut_18": xǁLockErrorǁ__init____mutmut_18,
+        "xǁLockErrorǁ__init____mutmut_19": xǁLockErrorǁ__init____mutmut_19,
+        "xǁLockErrorǁ__init____mutmut_20": xǁLockErrorǁ__init____mutmut_20,
+        "xǁLockErrorǁ__init____mutmut_21": xǁLockErrorǁ__init____mutmut_21,
+        "xǁLockErrorǁ__init____mutmut_22": xǁLockErrorǁ__init____mutmut_22,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁLockErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁLockErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁLockErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁLockErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁLockErrorǁ__init____mutmut_orig)
-    xǁLockErrorǁ__init____mutmut_orig.__name__ = 'xǁLockErrorǁ__init__'
+    xǁLockErrorǁ__init____mutmut_orig.__name__ = "xǁLockErrorǁ__init__"
 
     def xǁLockErrorǁ_default_code__mutmut_orig(self) -> str:
         return "LOCK_ERROR"
@@ -1549,18 +1618,24 @@ class LockError(FoundationError):
 
     def xǁLockErrorǁ_default_code__mutmut_2(self) -> str:
         return "lock_error"
-    
-    xǁLockErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁLockErrorǁ_default_code__mutmut_1': xǁLockErrorǁ_default_code__mutmut_1, 
-        'xǁLockErrorǁ_default_code__mutmut_2': xǁLockErrorǁ_default_code__mutmut_2
+
+    xǁLockErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁLockErrorǁ_default_code__mutmut_1": xǁLockErrorǁ_default_code__mutmut_1,
+        "xǁLockErrorǁ_default_code__mutmut_2": xǁLockErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁLockErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁLockErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁLockErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁLockErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁLockErrorǁ_default_code__mutmut_orig)
-    xǁLockErrorǁ_default_code__mutmut_orig.__name__ = 'xǁLockErrorǁ_default_code'
+    xǁLockErrorǁ_default_code__mutmut_orig.__name__ = "xǁLockErrorǁ_default_code"
 
 
 # <3 🧱🤝🐛🪄

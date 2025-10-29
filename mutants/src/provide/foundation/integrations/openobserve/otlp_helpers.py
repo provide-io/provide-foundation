@@ -21,23 +21,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -364,7 +367,9 @@ def x_configure_otlp_exporter__mutmut_12(config: Any, oo_config: Any) -> tuple[s
 
     # Determine endpoint for logs
     if config.otlp_traces_endpoint:
-        logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", )
+        logs_endpoint = config.otlp_traces_endpoint.replace(
+            "/v1/traces",
+        )
     else:
         logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
 
@@ -495,32 +500,37 @@ def x_configure_otlp_exporter__mutmut_17(config: Any, oo_config: Any) -> tuple[s
 
     return logs_endpoint, headers
 
-x_configure_otlp_exporter__mutmut_mutants : ClassVar[MutantDict] = {
-'x_configure_otlp_exporter__mutmut_1': x_configure_otlp_exporter__mutmut_1, 
-    'x_configure_otlp_exporter__mutmut_2': x_configure_otlp_exporter__mutmut_2, 
-    'x_configure_otlp_exporter__mutmut_3': x_configure_otlp_exporter__mutmut_3, 
-    'x_configure_otlp_exporter__mutmut_4': x_configure_otlp_exporter__mutmut_4, 
-    'x_configure_otlp_exporter__mutmut_5': x_configure_otlp_exporter__mutmut_5, 
-    'x_configure_otlp_exporter__mutmut_6': x_configure_otlp_exporter__mutmut_6, 
-    'x_configure_otlp_exporter__mutmut_7': x_configure_otlp_exporter__mutmut_7, 
-    'x_configure_otlp_exporter__mutmut_8': x_configure_otlp_exporter__mutmut_8, 
-    'x_configure_otlp_exporter__mutmut_9': x_configure_otlp_exporter__mutmut_9, 
-    'x_configure_otlp_exporter__mutmut_10': x_configure_otlp_exporter__mutmut_10, 
-    'x_configure_otlp_exporter__mutmut_11': x_configure_otlp_exporter__mutmut_11, 
-    'x_configure_otlp_exporter__mutmut_12': x_configure_otlp_exporter__mutmut_12, 
-    'x_configure_otlp_exporter__mutmut_13': x_configure_otlp_exporter__mutmut_13, 
-    'x_configure_otlp_exporter__mutmut_14': x_configure_otlp_exporter__mutmut_14, 
-    'x_configure_otlp_exporter__mutmut_15': x_configure_otlp_exporter__mutmut_15, 
-    'x_configure_otlp_exporter__mutmut_16': x_configure_otlp_exporter__mutmut_16, 
-    'x_configure_otlp_exporter__mutmut_17': x_configure_otlp_exporter__mutmut_17
+
+x_configure_otlp_exporter__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_configure_otlp_exporter__mutmut_1": x_configure_otlp_exporter__mutmut_1,
+    "x_configure_otlp_exporter__mutmut_2": x_configure_otlp_exporter__mutmut_2,
+    "x_configure_otlp_exporter__mutmut_3": x_configure_otlp_exporter__mutmut_3,
+    "x_configure_otlp_exporter__mutmut_4": x_configure_otlp_exporter__mutmut_4,
+    "x_configure_otlp_exporter__mutmut_5": x_configure_otlp_exporter__mutmut_5,
+    "x_configure_otlp_exporter__mutmut_6": x_configure_otlp_exporter__mutmut_6,
+    "x_configure_otlp_exporter__mutmut_7": x_configure_otlp_exporter__mutmut_7,
+    "x_configure_otlp_exporter__mutmut_8": x_configure_otlp_exporter__mutmut_8,
+    "x_configure_otlp_exporter__mutmut_9": x_configure_otlp_exporter__mutmut_9,
+    "x_configure_otlp_exporter__mutmut_10": x_configure_otlp_exporter__mutmut_10,
+    "x_configure_otlp_exporter__mutmut_11": x_configure_otlp_exporter__mutmut_11,
+    "x_configure_otlp_exporter__mutmut_12": x_configure_otlp_exporter__mutmut_12,
+    "x_configure_otlp_exporter__mutmut_13": x_configure_otlp_exporter__mutmut_13,
+    "x_configure_otlp_exporter__mutmut_14": x_configure_otlp_exporter__mutmut_14,
+    "x_configure_otlp_exporter__mutmut_15": x_configure_otlp_exporter__mutmut_15,
+    "x_configure_otlp_exporter__mutmut_16": x_configure_otlp_exporter__mutmut_16,
+    "x_configure_otlp_exporter__mutmut_17": x_configure_otlp_exporter__mutmut_17,
 }
 
+
 def configure_otlp_exporter(*args, **kwargs):
-    result = _mutmut_trampoline(x_configure_otlp_exporter__mutmut_orig, x_configure_otlp_exporter__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_configure_otlp_exporter__mutmut_orig, x_configure_otlp_exporter__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 configure_otlp_exporter.__signature__ = _mutmut_signature(x_configure_otlp_exporter__mutmut_orig)
-x_configure_otlp_exporter__mutmut_orig.__name__ = 'x_configure_otlp_exporter'
+x_configure_otlp_exporter__mutmut_orig.__name__ = "x_configure_otlp_exporter"
 
 
 def x_create_otlp_resource__mutmut_orig(
@@ -624,18 +634,23 @@ def x_create_otlp_resource__mutmut_3(
 
     return resource_class.create(None)
 
-x_create_otlp_resource__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_otlp_resource__mutmut_1': x_create_otlp_resource__mutmut_1, 
-    'x_create_otlp_resource__mutmut_2': x_create_otlp_resource__mutmut_2, 
-    'x_create_otlp_resource__mutmut_3': x_create_otlp_resource__mutmut_3
+
+x_create_otlp_resource__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_otlp_resource__mutmut_1": x_create_otlp_resource__mutmut_1,
+    "x_create_otlp_resource__mutmut_2": x_create_otlp_resource__mutmut_2,
+    "x_create_otlp_resource__mutmut_3": x_create_otlp_resource__mutmut_3,
 }
 
+
 def create_otlp_resource(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_otlp_resource__mutmut_orig, x_create_otlp_resource__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_otlp_resource__mutmut_orig, x_create_otlp_resource__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_otlp_resource.__signature__ = _mutmut_signature(x_create_otlp_resource__mutmut_orig)
-x_create_otlp_resource__mutmut_orig.__name__ = 'x_create_otlp_resource'
+x_create_otlp_resource__mutmut_orig.__name__ = "x_create_otlp_resource"
 
 
 def x_add_trace_attributes__mutmut_orig(attributes: dict[str, Any], trace_module: Any) -> None:
@@ -777,24 +792,29 @@ def x_add_trace_attributes__mutmut_9(attributes: dict[str, Any], trace_module: A
         attributes["trace_id"] = f"{span_context.trace_id:032x}"
         attributes["SPAN_ID"] = f"{span_context.span_id:016x}"
 
-x_add_trace_attributes__mutmut_mutants : ClassVar[MutantDict] = {
-'x_add_trace_attributes__mutmut_1': x_add_trace_attributes__mutmut_1, 
-    'x_add_trace_attributes__mutmut_2': x_add_trace_attributes__mutmut_2, 
-    'x_add_trace_attributes__mutmut_3': x_add_trace_attributes__mutmut_3, 
-    'x_add_trace_attributes__mutmut_4': x_add_trace_attributes__mutmut_4, 
-    'x_add_trace_attributes__mutmut_5': x_add_trace_attributes__mutmut_5, 
-    'x_add_trace_attributes__mutmut_6': x_add_trace_attributes__mutmut_6, 
-    'x_add_trace_attributes__mutmut_7': x_add_trace_attributes__mutmut_7, 
-    'x_add_trace_attributes__mutmut_8': x_add_trace_attributes__mutmut_8, 
-    'x_add_trace_attributes__mutmut_9': x_add_trace_attributes__mutmut_9
+
+x_add_trace_attributes__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_add_trace_attributes__mutmut_1": x_add_trace_attributes__mutmut_1,
+    "x_add_trace_attributes__mutmut_2": x_add_trace_attributes__mutmut_2,
+    "x_add_trace_attributes__mutmut_3": x_add_trace_attributes__mutmut_3,
+    "x_add_trace_attributes__mutmut_4": x_add_trace_attributes__mutmut_4,
+    "x_add_trace_attributes__mutmut_5": x_add_trace_attributes__mutmut_5,
+    "x_add_trace_attributes__mutmut_6": x_add_trace_attributes__mutmut_6,
+    "x_add_trace_attributes__mutmut_7": x_add_trace_attributes__mutmut_7,
+    "x_add_trace_attributes__mutmut_8": x_add_trace_attributes__mutmut_8,
+    "x_add_trace_attributes__mutmut_9": x_add_trace_attributes__mutmut_9,
 }
 
+
 def add_trace_attributes(*args, **kwargs):
-    result = _mutmut_trampoline(x_add_trace_attributes__mutmut_orig, x_add_trace_attributes__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_add_trace_attributes__mutmut_orig, x_add_trace_attributes__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 add_trace_attributes.__signature__ = _mutmut_signature(x_add_trace_attributes__mutmut_orig)
-x_add_trace_attributes__mutmut_orig.__name__ = 'x_add_trace_attributes'
+x_add_trace_attributes__mutmut_orig.__name__ = "x_add_trace_attributes"
 
 
 def x_map_level_to_severity__mutmut_orig(level: str) -> int:
@@ -1445,7 +1465,9 @@ def x_map_level_to_severity__mutmut_29(level: str) -> int:
         "FATAL": 21,
         "CRITICAL": 21,
     }
-    return severity_map.get(level.upper(), )
+    return severity_map.get(
+        level.upper(),
+    )
 
 
 def x_map_level_to_severity__mutmut_30(level: str) -> int:
@@ -1491,46 +1513,51 @@ def x_map_level_to_severity__mutmut_31(level: str) -> int:
     }
     return severity_map.get(level.upper(), 10)
 
-x_map_level_to_severity__mutmut_mutants : ClassVar[MutantDict] = {
-'x_map_level_to_severity__mutmut_1': x_map_level_to_severity__mutmut_1, 
-    'x_map_level_to_severity__mutmut_2': x_map_level_to_severity__mutmut_2, 
-    'x_map_level_to_severity__mutmut_3': x_map_level_to_severity__mutmut_3, 
-    'x_map_level_to_severity__mutmut_4': x_map_level_to_severity__mutmut_4, 
-    'x_map_level_to_severity__mutmut_5': x_map_level_to_severity__mutmut_5, 
-    'x_map_level_to_severity__mutmut_6': x_map_level_to_severity__mutmut_6, 
-    'x_map_level_to_severity__mutmut_7': x_map_level_to_severity__mutmut_7, 
-    'x_map_level_to_severity__mutmut_8': x_map_level_to_severity__mutmut_8, 
-    'x_map_level_to_severity__mutmut_9': x_map_level_to_severity__mutmut_9, 
-    'x_map_level_to_severity__mutmut_10': x_map_level_to_severity__mutmut_10, 
-    'x_map_level_to_severity__mutmut_11': x_map_level_to_severity__mutmut_11, 
-    'x_map_level_to_severity__mutmut_12': x_map_level_to_severity__mutmut_12, 
-    'x_map_level_to_severity__mutmut_13': x_map_level_to_severity__mutmut_13, 
-    'x_map_level_to_severity__mutmut_14': x_map_level_to_severity__mutmut_14, 
-    'x_map_level_to_severity__mutmut_15': x_map_level_to_severity__mutmut_15, 
-    'x_map_level_to_severity__mutmut_16': x_map_level_to_severity__mutmut_16, 
-    'x_map_level_to_severity__mutmut_17': x_map_level_to_severity__mutmut_17, 
-    'x_map_level_to_severity__mutmut_18': x_map_level_to_severity__mutmut_18, 
-    'x_map_level_to_severity__mutmut_19': x_map_level_to_severity__mutmut_19, 
-    'x_map_level_to_severity__mutmut_20': x_map_level_to_severity__mutmut_20, 
-    'x_map_level_to_severity__mutmut_21': x_map_level_to_severity__mutmut_21, 
-    'x_map_level_to_severity__mutmut_22': x_map_level_to_severity__mutmut_22, 
-    'x_map_level_to_severity__mutmut_23': x_map_level_to_severity__mutmut_23, 
-    'x_map_level_to_severity__mutmut_24': x_map_level_to_severity__mutmut_24, 
-    'x_map_level_to_severity__mutmut_25': x_map_level_to_severity__mutmut_25, 
-    'x_map_level_to_severity__mutmut_26': x_map_level_to_severity__mutmut_26, 
-    'x_map_level_to_severity__mutmut_27': x_map_level_to_severity__mutmut_27, 
-    'x_map_level_to_severity__mutmut_28': x_map_level_to_severity__mutmut_28, 
-    'x_map_level_to_severity__mutmut_29': x_map_level_to_severity__mutmut_29, 
-    'x_map_level_to_severity__mutmut_30': x_map_level_to_severity__mutmut_30, 
-    'x_map_level_to_severity__mutmut_31': x_map_level_to_severity__mutmut_31
+
+x_map_level_to_severity__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_map_level_to_severity__mutmut_1": x_map_level_to_severity__mutmut_1,
+    "x_map_level_to_severity__mutmut_2": x_map_level_to_severity__mutmut_2,
+    "x_map_level_to_severity__mutmut_3": x_map_level_to_severity__mutmut_3,
+    "x_map_level_to_severity__mutmut_4": x_map_level_to_severity__mutmut_4,
+    "x_map_level_to_severity__mutmut_5": x_map_level_to_severity__mutmut_5,
+    "x_map_level_to_severity__mutmut_6": x_map_level_to_severity__mutmut_6,
+    "x_map_level_to_severity__mutmut_7": x_map_level_to_severity__mutmut_7,
+    "x_map_level_to_severity__mutmut_8": x_map_level_to_severity__mutmut_8,
+    "x_map_level_to_severity__mutmut_9": x_map_level_to_severity__mutmut_9,
+    "x_map_level_to_severity__mutmut_10": x_map_level_to_severity__mutmut_10,
+    "x_map_level_to_severity__mutmut_11": x_map_level_to_severity__mutmut_11,
+    "x_map_level_to_severity__mutmut_12": x_map_level_to_severity__mutmut_12,
+    "x_map_level_to_severity__mutmut_13": x_map_level_to_severity__mutmut_13,
+    "x_map_level_to_severity__mutmut_14": x_map_level_to_severity__mutmut_14,
+    "x_map_level_to_severity__mutmut_15": x_map_level_to_severity__mutmut_15,
+    "x_map_level_to_severity__mutmut_16": x_map_level_to_severity__mutmut_16,
+    "x_map_level_to_severity__mutmut_17": x_map_level_to_severity__mutmut_17,
+    "x_map_level_to_severity__mutmut_18": x_map_level_to_severity__mutmut_18,
+    "x_map_level_to_severity__mutmut_19": x_map_level_to_severity__mutmut_19,
+    "x_map_level_to_severity__mutmut_20": x_map_level_to_severity__mutmut_20,
+    "x_map_level_to_severity__mutmut_21": x_map_level_to_severity__mutmut_21,
+    "x_map_level_to_severity__mutmut_22": x_map_level_to_severity__mutmut_22,
+    "x_map_level_to_severity__mutmut_23": x_map_level_to_severity__mutmut_23,
+    "x_map_level_to_severity__mutmut_24": x_map_level_to_severity__mutmut_24,
+    "x_map_level_to_severity__mutmut_25": x_map_level_to_severity__mutmut_25,
+    "x_map_level_to_severity__mutmut_26": x_map_level_to_severity__mutmut_26,
+    "x_map_level_to_severity__mutmut_27": x_map_level_to_severity__mutmut_27,
+    "x_map_level_to_severity__mutmut_28": x_map_level_to_severity__mutmut_28,
+    "x_map_level_to_severity__mutmut_29": x_map_level_to_severity__mutmut_29,
+    "x_map_level_to_severity__mutmut_30": x_map_level_to_severity__mutmut_30,
+    "x_map_level_to_severity__mutmut_31": x_map_level_to_severity__mutmut_31,
 }
 
+
 def map_level_to_severity(*args, **kwargs):
-    result = _mutmut_trampoline(x_map_level_to_severity__mutmut_orig, x_map_level_to_severity__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_map_level_to_severity__mutmut_orig, x_map_level_to_severity__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 map_level_to_severity.__signature__ = _mutmut_signature(x_map_level_to_severity__mutmut_orig)
-x_map_level_to_severity__mutmut_orig.__name__ = 'x_map_level_to_severity'
+x_map_level_to_severity__mutmut_orig.__name__ = "x_map_level_to_severity"
 
 
 def x_add_trace_context_to_log_entry__mutmut_orig(log_entry: dict[str, Any]) -> None:
@@ -2292,34 +2319,42 @@ def x_add_trace_context_to_log_entry__mutmut_19(log_entry: dict[str, Any]) -> No
     except ImportError:
         pass
 
-x_add_trace_context_to_log_entry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_add_trace_context_to_log_entry__mutmut_1': x_add_trace_context_to_log_entry__mutmut_1, 
-    'x_add_trace_context_to_log_entry__mutmut_2': x_add_trace_context_to_log_entry__mutmut_2, 
-    'x_add_trace_context_to_log_entry__mutmut_3': x_add_trace_context_to_log_entry__mutmut_3, 
-    'x_add_trace_context_to_log_entry__mutmut_4': x_add_trace_context_to_log_entry__mutmut_4, 
-    'x_add_trace_context_to_log_entry__mutmut_5': x_add_trace_context_to_log_entry__mutmut_5, 
-    'x_add_trace_context_to_log_entry__mutmut_6': x_add_trace_context_to_log_entry__mutmut_6, 
-    'x_add_trace_context_to_log_entry__mutmut_7': x_add_trace_context_to_log_entry__mutmut_7, 
-    'x_add_trace_context_to_log_entry__mutmut_8': x_add_trace_context_to_log_entry__mutmut_8, 
-    'x_add_trace_context_to_log_entry__mutmut_9': x_add_trace_context_to_log_entry__mutmut_9, 
-    'x_add_trace_context_to_log_entry__mutmut_10': x_add_trace_context_to_log_entry__mutmut_10, 
-    'x_add_trace_context_to_log_entry__mutmut_11': x_add_trace_context_to_log_entry__mutmut_11, 
-    'x_add_trace_context_to_log_entry__mutmut_12': x_add_trace_context_to_log_entry__mutmut_12, 
-    'x_add_trace_context_to_log_entry__mutmut_13': x_add_trace_context_to_log_entry__mutmut_13, 
-    'x_add_trace_context_to_log_entry__mutmut_14': x_add_trace_context_to_log_entry__mutmut_14, 
-    'x_add_trace_context_to_log_entry__mutmut_15': x_add_trace_context_to_log_entry__mutmut_15, 
-    'x_add_trace_context_to_log_entry__mutmut_16': x_add_trace_context_to_log_entry__mutmut_16, 
-    'x_add_trace_context_to_log_entry__mutmut_17': x_add_trace_context_to_log_entry__mutmut_17, 
-    'x_add_trace_context_to_log_entry__mutmut_18': x_add_trace_context_to_log_entry__mutmut_18, 
-    'x_add_trace_context_to_log_entry__mutmut_19': x_add_trace_context_to_log_entry__mutmut_19
+
+x_add_trace_context_to_log_entry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_add_trace_context_to_log_entry__mutmut_1": x_add_trace_context_to_log_entry__mutmut_1,
+    "x_add_trace_context_to_log_entry__mutmut_2": x_add_trace_context_to_log_entry__mutmut_2,
+    "x_add_trace_context_to_log_entry__mutmut_3": x_add_trace_context_to_log_entry__mutmut_3,
+    "x_add_trace_context_to_log_entry__mutmut_4": x_add_trace_context_to_log_entry__mutmut_4,
+    "x_add_trace_context_to_log_entry__mutmut_5": x_add_trace_context_to_log_entry__mutmut_5,
+    "x_add_trace_context_to_log_entry__mutmut_6": x_add_trace_context_to_log_entry__mutmut_6,
+    "x_add_trace_context_to_log_entry__mutmut_7": x_add_trace_context_to_log_entry__mutmut_7,
+    "x_add_trace_context_to_log_entry__mutmut_8": x_add_trace_context_to_log_entry__mutmut_8,
+    "x_add_trace_context_to_log_entry__mutmut_9": x_add_trace_context_to_log_entry__mutmut_9,
+    "x_add_trace_context_to_log_entry__mutmut_10": x_add_trace_context_to_log_entry__mutmut_10,
+    "x_add_trace_context_to_log_entry__mutmut_11": x_add_trace_context_to_log_entry__mutmut_11,
+    "x_add_trace_context_to_log_entry__mutmut_12": x_add_trace_context_to_log_entry__mutmut_12,
+    "x_add_trace_context_to_log_entry__mutmut_13": x_add_trace_context_to_log_entry__mutmut_13,
+    "x_add_trace_context_to_log_entry__mutmut_14": x_add_trace_context_to_log_entry__mutmut_14,
+    "x_add_trace_context_to_log_entry__mutmut_15": x_add_trace_context_to_log_entry__mutmut_15,
+    "x_add_trace_context_to_log_entry__mutmut_16": x_add_trace_context_to_log_entry__mutmut_16,
+    "x_add_trace_context_to_log_entry__mutmut_17": x_add_trace_context_to_log_entry__mutmut_17,
+    "x_add_trace_context_to_log_entry__mutmut_18": x_add_trace_context_to_log_entry__mutmut_18,
+    "x_add_trace_context_to_log_entry__mutmut_19": x_add_trace_context_to_log_entry__mutmut_19,
 }
 
+
 def add_trace_context_to_log_entry(*args, **kwargs):
-    result = _mutmut_trampoline(x_add_trace_context_to_log_entry__mutmut_orig, x_add_trace_context_to_log_entry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_add_trace_context_to_log_entry__mutmut_orig,
+        x_add_trace_context_to_log_entry__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 add_trace_context_to_log_entry.__signature__ = _mutmut_signature(x_add_trace_context_to_log_entry__mutmut_orig)
-x_add_trace_context_to_log_entry__mutmut_orig.__name__ = 'x_add_trace_context_to_log_entry'
+x_add_trace_context_to_log_entry__mutmut_orig.__name__ = "x_add_trace_context_to_log_entry"
 
 
 def x_build_log_entry__mutmut_orig(
@@ -3016,34 +3051,39 @@ def x_build_log_entry__mutmut_19(
     add_trace_context_to_log_entry(None)
     return log_entry
 
-x_build_log_entry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_build_log_entry__mutmut_1': x_build_log_entry__mutmut_1, 
-    'x_build_log_entry__mutmut_2': x_build_log_entry__mutmut_2, 
-    'x_build_log_entry__mutmut_3': x_build_log_entry__mutmut_3, 
-    'x_build_log_entry__mutmut_4': x_build_log_entry__mutmut_4, 
-    'x_build_log_entry__mutmut_5': x_build_log_entry__mutmut_5, 
-    'x_build_log_entry__mutmut_6': x_build_log_entry__mutmut_6, 
-    'x_build_log_entry__mutmut_7': x_build_log_entry__mutmut_7, 
-    'x_build_log_entry__mutmut_8': x_build_log_entry__mutmut_8, 
-    'x_build_log_entry__mutmut_9': x_build_log_entry__mutmut_9, 
-    'x_build_log_entry__mutmut_10': x_build_log_entry__mutmut_10, 
-    'x_build_log_entry__mutmut_11': x_build_log_entry__mutmut_11, 
-    'x_build_log_entry__mutmut_12': x_build_log_entry__mutmut_12, 
-    'x_build_log_entry__mutmut_13': x_build_log_entry__mutmut_13, 
-    'x_build_log_entry__mutmut_14': x_build_log_entry__mutmut_14, 
-    'x_build_log_entry__mutmut_15': x_build_log_entry__mutmut_15, 
-    'x_build_log_entry__mutmut_16': x_build_log_entry__mutmut_16, 
-    'x_build_log_entry__mutmut_17': x_build_log_entry__mutmut_17, 
-    'x_build_log_entry__mutmut_18': x_build_log_entry__mutmut_18, 
-    'x_build_log_entry__mutmut_19': x_build_log_entry__mutmut_19
+
+x_build_log_entry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_build_log_entry__mutmut_1": x_build_log_entry__mutmut_1,
+    "x_build_log_entry__mutmut_2": x_build_log_entry__mutmut_2,
+    "x_build_log_entry__mutmut_3": x_build_log_entry__mutmut_3,
+    "x_build_log_entry__mutmut_4": x_build_log_entry__mutmut_4,
+    "x_build_log_entry__mutmut_5": x_build_log_entry__mutmut_5,
+    "x_build_log_entry__mutmut_6": x_build_log_entry__mutmut_6,
+    "x_build_log_entry__mutmut_7": x_build_log_entry__mutmut_7,
+    "x_build_log_entry__mutmut_8": x_build_log_entry__mutmut_8,
+    "x_build_log_entry__mutmut_9": x_build_log_entry__mutmut_9,
+    "x_build_log_entry__mutmut_10": x_build_log_entry__mutmut_10,
+    "x_build_log_entry__mutmut_11": x_build_log_entry__mutmut_11,
+    "x_build_log_entry__mutmut_12": x_build_log_entry__mutmut_12,
+    "x_build_log_entry__mutmut_13": x_build_log_entry__mutmut_13,
+    "x_build_log_entry__mutmut_14": x_build_log_entry__mutmut_14,
+    "x_build_log_entry__mutmut_15": x_build_log_entry__mutmut_15,
+    "x_build_log_entry__mutmut_16": x_build_log_entry__mutmut_16,
+    "x_build_log_entry__mutmut_17": x_build_log_entry__mutmut_17,
+    "x_build_log_entry__mutmut_18": x_build_log_entry__mutmut_18,
+    "x_build_log_entry__mutmut_19": x_build_log_entry__mutmut_19,
 }
 
+
 def build_log_entry(*args, **kwargs):
-    result = _mutmut_trampoline(x_build_log_entry__mutmut_orig, x_build_log_entry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_build_log_entry__mutmut_orig, x_build_log_entry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 build_log_entry.__signature__ = _mutmut_signature(x_build_log_entry__mutmut_orig)
-x_build_log_entry__mutmut_orig.__name__ = 'x_build_log_entry'
+x_build_log_entry__mutmut_orig.__name__ = "x_build_log_entry"
 
 
 def x_build_bulk_url__mutmut_orig(client: Any) -> str:
@@ -3073,16 +3113,19 @@ def x_build_bulk_url__mutmut_1(client: Any) -> str:
         return f"{client.url}/_bulk"
     return f"{client.url}/api/{client.organization}/_bulk"
 
-x_build_bulk_url__mutmut_mutants : ClassVar[MutantDict] = {
-'x_build_bulk_url__mutmut_1': x_build_bulk_url__mutmut_1
+
+x_build_bulk_url__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_build_bulk_url__mutmut_1": x_build_bulk_url__mutmut_1
 }
+
 
 def build_bulk_url(*args, **kwargs):
     result = _mutmut_trampoline(x_build_bulk_url__mutmut_orig, x_build_bulk_url__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 build_bulk_url.__signature__ = _mutmut_signature(x_build_bulk_url__mutmut_orig)
-x_build_bulk_url__mutmut_orig.__name__ = 'x_build_bulk_url'
+x_build_bulk_url__mutmut_orig.__name__ = "x_build_bulk_url"
 
 
 __all__ = [

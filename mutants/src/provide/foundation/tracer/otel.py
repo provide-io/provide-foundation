@@ -63,23 +63,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -167,23 +170,26 @@ def x__require_otel__mutmut_8() -> None:
             "INSTALL WITH: PIP INSTALL 'PROVIDE-FOUNDATION[OPENTELEMETRY]'",
         )
 
-x__require_otel__mutmut_mutants : ClassVar[MutantDict] = {
-'x__require_otel__mutmut_1': x__require_otel__mutmut_1, 
-    'x__require_otel__mutmut_2': x__require_otel__mutmut_2, 
-    'x__require_otel__mutmut_3': x__require_otel__mutmut_3, 
-    'x__require_otel__mutmut_4': x__require_otel__mutmut_4, 
-    'x__require_otel__mutmut_5': x__require_otel__mutmut_5, 
-    'x__require_otel__mutmut_6': x__require_otel__mutmut_6, 
-    'x__require_otel__mutmut_7': x__require_otel__mutmut_7, 
-    'x__require_otel__mutmut_8': x__require_otel__mutmut_8
+
+x__require_otel__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__require_otel__mutmut_1": x__require_otel__mutmut_1,
+    "x__require_otel__mutmut_2": x__require_otel__mutmut_2,
+    "x__require_otel__mutmut_3": x__require_otel__mutmut_3,
+    "x__require_otel__mutmut_4": x__require_otel__mutmut_4,
+    "x__require_otel__mutmut_5": x__require_otel__mutmut_5,
+    "x__require_otel__mutmut_6": x__require_otel__mutmut_6,
+    "x__require_otel__mutmut_7": x__require_otel__mutmut_7,
+    "x__require_otel__mutmut_8": x__require_otel__mutmut_8,
 }
+
 
 def _require_otel(*args, **kwargs):
     result = _mutmut_trampoline(x__require_otel__mutmut_orig, x__require_otel__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _require_otel.__signature__ = _mutmut_signature(x__require_otel__mutmut_orig)
-x__require_otel__mutmut_orig.__name__ = 'x__require_otel'
+x__require_otel__mutmut_orig.__name__ = "x__require_otel"
 
 
 def x_setup_opentelemetry_tracing__mutmut_orig(config: TelemetryConfig) -> None:
@@ -1732,7 +1738,9 @@ def x_setup_opentelemetry_tracing__mutmut_19(config: TelemetryConfig) -> None:
 
     # Create tracer provider with sampling
     sampler = TraceIdRatioBased(config.trace_sample_rate)
-    tracer_provider = TracerProvider(resource=resource, )
+    tracer_provider = TracerProvider(
+        resource=resource,
+    )
 
     # Setup OTLP exporter if endpoint is configured
     if config.otlp_endpoint or config.otlp_traces_endpoint:
@@ -2701,7 +2709,7 @@ def x_setup_opentelemetry_tracing__mutmut_31(config: TelemetryConfig) -> None:
         if config.otlp_protocol == "grpc":
             exporter: OTLPGrpcSpanExporter | OTLPHttpSpanExporter = OTLPGrpcSpanExporter(
                 endpoint=endpoint,
-                )
+            )
         else:  # http/protobuf
             exporter = OTLPHttpSpanExporter(
                 endpoint=endpoint,
@@ -3101,7 +3109,7 @@ def x_setup_opentelemetry_tracing__mutmut_36(config: TelemetryConfig) -> None:
         else:  # http/protobuf
             exporter = OTLPHttpSpanExporter(
                 endpoint=endpoint,
-                )
+            )
 
         # Add batch processor
         processor = BatchSpanProcessor(exporter)
@@ -3836,7 +3844,8 @@ def x_setup_opentelemetry_tracing__mutmut_45(config: TelemetryConfig) -> None:
         # 3. It's our own TracerProvider type (allow re-configuration)
         should_setup = (
             provider_type in ["NoOpTracerProvider", "ProxyTracerProvider", "Mock", "MagicMock"]
-            or not hasattr(current_provider, "add_span_processor") and current_provider.__class__.__module__.startswith("unittest.mock")
+            or not hasattr(current_provider, "add_span_processor")
+            and current_provider.__class__.__module__.startswith("unittest.mock")
         )
 
         if should_setup:
@@ -3914,7 +3923,8 @@ def x_setup_opentelemetry_tracing__mutmut_46(config: TelemetryConfig) -> None:
         # 2. It's a mock (for testing)
         # 3. It's our own TracerProvider type (allow re-configuration)
         should_setup = (
-            provider_type in ["NoOpTracerProvider", "ProxyTracerProvider", "Mock", "MagicMock"] and not hasattr(current_provider, "add_span_processor")
+            provider_type in ["NoOpTracerProvider", "ProxyTracerProvider", "Mock", "MagicMock"]
+            and not hasattr(current_provider, "add_span_processor")
             or current_provider.__class__.__module__.startswith("unittest.mock")
         )
 
@@ -5354,7 +5364,9 @@ def x_setup_opentelemetry_tracing__mutmut_64(config: TelemetryConfig) -> None:
         # 3. It's our own TracerProvider type (allow re-configuration)
         should_setup = (
             provider_type in ["NoOpTracerProvider", "ProxyTracerProvider", "Mock", "MagicMock"]
-            or not hasattr(current_provider, )
+            or not hasattr(
+                current_provider,
+            )
             or current_provider.__class__.__module__.startswith("unittest.mock")
         )
 
@@ -6889,98 +6901,103 @@ def x_setup_opentelemetry_tracing__mutmut_83(config: TelemetryConfig) -> None:
         otel_trace.set_tracer_provider(tracer_provider)
         slog.info("🔍✅ OPENTELEMETRY TRACING SETUP COMPLETE")
 
-x_setup_opentelemetry_tracing__mutmut_mutants : ClassVar[MutantDict] = {
-'x_setup_opentelemetry_tracing__mutmut_1': x_setup_opentelemetry_tracing__mutmut_1, 
-    'x_setup_opentelemetry_tracing__mutmut_2': x_setup_opentelemetry_tracing__mutmut_2, 
-    'x_setup_opentelemetry_tracing__mutmut_3': x_setup_opentelemetry_tracing__mutmut_3, 
-    'x_setup_opentelemetry_tracing__mutmut_4': x_setup_opentelemetry_tracing__mutmut_4, 
-    'x_setup_opentelemetry_tracing__mutmut_5': x_setup_opentelemetry_tracing__mutmut_5, 
-    'x_setup_opentelemetry_tracing__mutmut_6': x_setup_opentelemetry_tracing__mutmut_6, 
-    'x_setup_opentelemetry_tracing__mutmut_7': x_setup_opentelemetry_tracing__mutmut_7, 
-    'x_setup_opentelemetry_tracing__mutmut_8': x_setup_opentelemetry_tracing__mutmut_8, 
-    'x_setup_opentelemetry_tracing__mutmut_9': x_setup_opentelemetry_tracing__mutmut_9, 
-    'x_setup_opentelemetry_tracing__mutmut_10': x_setup_opentelemetry_tracing__mutmut_10, 
-    'x_setup_opentelemetry_tracing__mutmut_11': x_setup_opentelemetry_tracing__mutmut_11, 
-    'x_setup_opentelemetry_tracing__mutmut_12': x_setup_opentelemetry_tracing__mutmut_12, 
-    'x_setup_opentelemetry_tracing__mutmut_13': x_setup_opentelemetry_tracing__mutmut_13, 
-    'x_setup_opentelemetry_tracing__mutmut_14': x_setup_opentelemetry_tracing__mutmut_14, 
-    'x_setup_opentelemetry_tracing__mutmut_15': x_setup_opentelemetry_tracing__mutmut_15, 
-    'x_setup_opentelemetry_tracing__mutmut_16': x_setup_opentelemetry_tracing__mutmut_16, 
-    'x_setup_opentelemetry_tracing__mutmut_17': x_setup_opentelemetry_tracing__mutmut_17, 
-    'x_setup_opentelemetry_tracing__mutmut_18': x_setup_opentelemetry_tracing__mutmut_18, 
-    'x_setup_opentelemetry_tracing__mutmut_19': x_setup_opentelemetry_tracing__mutmut_19, 
-    'x_setup_opentelemetry_tracing__mutmut_20': x_setup_opentelemetry_tracing__mutmut_20, 
-    'x_setup_opentelemetry_tracing__mutmut_21': x_setup_opentelemetry_tracing__mutmut_21, 
-    'x_setup_opentelemetry_tracing__mutmut_22': x_setup_opentelemetry_tracing__mutmut_22, 
-    'x_setup_opentelemetry_tracing__mutmut_23': x_setup_opentelemetry_tracing__mutmut_23, 
-    'x_setup_opentelemetry_tracing__mutmut_24': x_setup_opentelemetry_tracing__mutmut_24, 
-    'x_setup_opentelemetry_tracing__mutmut_25': x_setup_opentelemetry_tracing__mutmut_25, 
-    'x_setup_opentelemetry_tracing__mutmut_26': x_setup_opentelemetry_tracing__mutmut_26, 
-    'x_setup_opentelemetry_tracing__mutmut_27': x_setup_opentelemetry_tracing__mutmut_27, 
-    'x_setup_opentelemetry_tracing__mutmut_28': x_setup_opentelemetry_tracing__mutmut_28, 
-    'x_setup_opentelemetry_tracing__mutmut_29': x_setup_opentelemetry_tracing__mutmut_29, 
-    'x_setup_opentelemetry_tracing__mutmut_30': x_setup_opentelemetry_tracing__mutmut_30, 
-    'x_setup_opentelemetry_tracing__mutmut_31': x_setup_opentelemetry_tracing__mutmut_31, 
-    'x_setup_opentelemetry_tracing__mutmut_32': x_setup_opentelemetry_tracing__mutmut_32, 
-    'x_setup_opentelemetry_tracing__mutmut_33': x_setup_opentelemetry_tracing__mutmut_33, 
-    'x_setup_opentelemetry_tracing__mutmut_34': x_setup_opentelemetry_tracing__mutmut_34, 
-    'x_setup_opentelemetry_tracing__mutmut_35': x_setup_opentelemetry_tracing__mutmut_35, 
-    'x_setup_opentelemetry_tracing__mutmut_36': x_setup_opentelemetry_tracing__mutmut_36, 
-    'x_setup_opentelemetry_tracing__mutmut_37': x_setup_opentelemetry_tracing__mutmut_37, 
-    'x_setup_opentelemetry_tracing__mutmut_38': x_setup_opentelemetry_tracing__mutmut_38, 
-    'x_setup_opentelemetry_tracing__mutmut_39': x_setup_opentelemetry_tracing__mutmut_39, 
-    'x_setup_opentelemetry_tracing__mutmut_40': x_setup_opentelemetry_tracing__mutmut_40, 
-    'x_setup_opentelemetry_tracing__mutmut_41': x_setup_opentelemetry_tracing__mutmut_41, 
-    'x_setup_opentelemetry_tracing__mutmut_42': x_setup_opentelemetry_tracing__mutmut_42, 
-    'x_setup_opentelemetry_tracing__mutmut_43': x_setup_opentelemetry_tracing__mutmut_43, 
-    'x_setup_opentelemetry_tracing__mutmut_44': x_setup_opentelemetry_tracing__mutmut_44, 
-    'x_setup_opentelemetry_tracing__mutmut_45': x_setup_opentelemetry_tracing__mutmut_45, 
-    'x_setup_opentelemetry_tracing__mutmut_46': x_setup_opentelemetry_tracing__mutmut_46, 
-    'x_setup_opentelemetry_tracing__mutmut_47': x_setup_opentelemetry_tracing__mutmut_47, 
-    'x_setup_opentelemetry_tracing__mutmut_48': x_setup_opentelemetry_tracing__mutmut_48, 
-    'x_setup_opentelemetry_tracing__mutmut_49': x_setup_opentelemetry_tracing__mutmut_49, 
-    'x_setup_opentelemetry_tracing__mutmut_50': x_setup_opentelemetry_tracing__mutmut_50, 
-    'x_setup_opentelemetry_tracing__mutmut_51': x_setup_opentelemetry_tracing__mutmut_51, 
-    'x_setup_opentelemetry_tracing__mutmut_52': x_setup_opentelemetry_tracing__mutmut_52, 
-    'x_setup_opentelemetry_tracing__mutmut_53': x_setup_opentelemetry_tracing__mutmut_53, 
-    'x_setup_opentelemetry_tracing__mutmut_54': x_setup_opentelemetry_tracing__mutmut_54, 
-    'x_setup_opentelemetry_tracing__mutmut_55': x_setup_opentelemetry_tracing__mutmut_55, 
-    'x_setup_opentelemetry_tracing__mutmut_56': x_setup_opentelemetry_tracing__mutmut_56, 
-    'x_setup_opentelemetry_tracing__mutmut_57': x_setup_opentelemetry_tracing__mutmut_57, 
-    'x_setup_opentelemetry_tracing__mutmut_58': x_setup_opentelemetry_tracing__mutmut_58, 
-    'x_setup_opentelemetry_tracing__mutmut_59': x_setup_opentelemetry_tracing__mutmut_59, 
-    'x_setup_opentelemetry_tracing__mutmut_60': x_setup_opentelemetry_tracing__mutmut_60, 
-    'x_setup_opentelemetry_tracing__mutmut_61': x_setup_opentelemetry_tracing__mutmut_61, 
-    'x_setup_opentelemetry_tracing__mutmut_62': x_setup_opentelemetry_tracing__mutmut_62, 
-    'x_setup_opentelemetry_tracing__mutmut_63': x_setup_opentelemetry_tracing__mutmut_63, 
-    'x_setup_opentelemetry_tracing__mutmut_64': x_setup_opentelemetry_tracing__mutmut_64, 
-    'x_setup_opentelemetry_tracing__mutmut_65': x_setup_opentelemetry_tracing__mutmut_65, 
-    'x_setup_opentelemetry_tracing__mutmut_66': x_setup_opentelemetry_tracing__mutmut_66, 
-    'x_setup_opentelemetry_tracing__mutmut_67': x_setup_opentelemetry_tracing__mutmut_67, 
-    'x_setup_opentelemetry_tracing__mutmut_68': x_setup_opentelemetry_tracing__mutmut_68, 
-    'x_setup_opentelemetry_tracing__mutmut_69': x_setup_opentelemetry_tracing__mutmut_69, 
-    'x_setup_opentelemetry_tracing__mutmut_70': x_setup_opentelemetry_tracing__mutmut_70, 
-    'x_setup_opentelemetry_tracing__mutmut_71': x_setup_opentelemetry_tracing__mutmut_71, 
-    'x_setup_opentelemetry_tracing__mutmut_72': x_setup_opentelemetry_tracing__mutmut_72, 
-    'x_setup_opentelemetry_tracing__mutmut_73': x_setup_opentelemetry_tracing__mutmut_73, 
-    'x_setup_opentelemetry_tracing__mutmut_74': x_setup_opentelemetry_tracing__mutmut_74, 
-    'x_setup_opentelemetry_tracing__mutmut_75': x_setup_opentelemetry_tracing__mutmut_75, 
-    'x_setup_opentelemetry_tracing__mutmut_76': x_setup_opentelemetry_tracing__mutmut_76, 
-    'x_setup_opentelemetry_tracing__mutmut_77': x_setup_opentelemetry_tracing__mutmut_77, 
-    'x_setup_opentelemetry_tracing__mutmut_78': x_setup_opentelemetry_tracing__mutmut_78, 
-    'x_setup_opentelemetry_tracing__mutmut_79': x_setup_opentelemetry_tracing__mutmut_79, 
-    'x_setup_opentelemetry_tracing__mutmut_80': x_setup_opentelemetry_tracing__mutmut_80, 
-    'x_setup_opentelemetry_tracing__mutmut_81': x_setup_opentelemetry_tracing__mutmut_81, 
-    'x_setup_opentelemetry_tracing__mutmut_82': x_setup_opentelemetry_tracing__mutmut_82, 
-    'x_setup_opentelemetry_tracing__mutmut_83': x_setup_opentelemetry_tracing__mutmut_83
+
+x_setup_opentelemetry_tracing__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_setup_opentelemetry_tracing__mutmut_1": x_setup_opentelemetry_tracing__mutmut_1,
+    "x_setup_opentelemetry_tracing__mutmut_2": x_setup_opentelemetry_tracing__mutmut_2,
+    "x_setup_opentelemetry_tracing__mutmut_3": x_setup_opentelemetry_tracing__mutmut_3,
+    "x_setup_opentelemetry_tracing__mutmut_4": x_setup_opentelemetry_tracing__mutmut_4,
+    "x_setup_opentelemetry_tracing__mutmut_5": x_setup_opentelemetry_tracing__mutmut_5,
+    "x_setup_opentelemetry_tracing__mutmut_6": x_setup_opentelemetry_tracing__mutmut_6,
+    "x_setup_opentelemetry_tracing__mutmut_7": x_setup_opentelemetry_tracing__mutmut_7,
+    "x_setup_opentelemetry_tracing__mutmut_8": x_setup_opentelemetry_tracing__mutmut_8,
+    "x_setup_opentelemetry_tracing__mutmut_9": x_setup_opentelemetry_tracing__mutmut_9,
+    "x_setup_opentelemetry_tracing__mutmut_10": x_setup_opentelemetry_tracing__mutmut_10,
+    "x_setup_opentelemetry_tracing__mutmut_11": x_setup_opentelemetry_tracing__mutmut_11,
+    "x_setup_opentelemetry_tracing__mutmut_12": x_setup_opentelemetry_tracing__mutmut_12,
+    "x_setup_opentelemetry_tracing__mutmut_13": x_setup_opentelemetry_tracing__mutmut_13,
+    "x_setup_opentelemetry_tracing__mutmut_14": x_setup_opentelemetry_tracing__mutmut_14,
+    "x_setup_opentelemetry_tracing__mutmut_15": x_setup_opentelemetry_tracing__mutmut_15,
+    "x_setup_opentelemetry_tracing__mutmut_16": x_setup_opentelemetry_tracing__mutmut_16,
+    "x_setup_opentelemetry_tracing__mutmut_17": x_setup_opentelemetry_tracing__mutmut_17,
+    "x_setup_opentelemetry_tracing__mutmut_18": x_setup_opentelemetry_tracing__mutmut_18,
+    "x_setup_opentelemetry_tracing__mutmut_19": x_setup_opentelemetry_tracing__mutmut_19,
+    "x_setup_opentelemetry_tracing__mutmut_20": x_setup_opentelemetry_tracing__mutmut_20,
+    "x_setup_opentelemetry_tracing__mutmut_21": x_setup_opentelemetry_tracing__mutmut_21,
+    "x_setup_opentelemetry_tracing__mutmut_22": x_setup_opentelemetry_tracing__mutmut_22,
+    "x_setup_opentelemetry_tracing__mutmut_23": x_setup_opentelemetry_tracing__mutmut_23,
+    "x_setup_opentelemetry_tracing__mutmut_24": x_setup_opentelemetry_tracing__mutmut_24,
+    "x_setup_opentelemetry_tracing__mutmut_25": x_setup_opentelemetry_tracing__mutmut_25,
+    "x_setup_opentelemetry_tracing__mutmut_26": x_setup_opentelemetry_tracing__mutmut_26,
+    "x_setup_opentelemetry_tracing__mutmut_27": x_setup_opentelemetry_tracing__mutmut_27,
+    "x_setup_opentelemetry_tracing__mutmut_28": x_setup_opentelemetry_tracing__mutmut_28,
+    "x_setup_opentelemetry_tracing__mutmut_29": x_setup_opentelemetry_tracing__mutmut_29,
+    "x_setup_opentelemetry_tracing__mutmut_30": x_setup_opentelemetry_tracing__mutmut_30,
+    "x_setup_opentelemetry_tracing__mutmut_31": x_setup_opentelemetry_tracing__mutmut_31,
+    "x_setup_opentelemetry_tracing__mutmut_32": x_setup_opentelemetry_tracing__mutmut_32,
+    "x_setup_opentelemetry_tracing__mutmut_33": x_setup_opentelemetry_tracing__mutmut_33,
+    "x_setup_opentelemetry_tracing__mutmut_34": x_setup_opentelemetry_tracing__mutmut_34,
+    "x_setup_opentelemetry_tracing__mutmut_35": x_setup_opentelemetry_tracing__mutmut_35,
+    "x_setup_opentelemetry_tracing__mutmut_36": x_setup_opentelemetry_tracing__mutmut_36,
+    "x_setup_opentelemetry_tracing__mutmut_37": x_setup_opentelemetry_tracing__mutmut_37,
+    "x_setup_opentelemetry_tracing__mutmut_38": x_setup_opentelemetry_tracing__mutmut_38,
+    "x_setup_opentelemetry_tracing__mutmut_39": x_setup_opentelemetry_tracing__mutmut_39,
+    "x_setup_opentelemetry_tracing__mutmut_40": x_setup_opentelemetry_tracing__mutmut_40,
+    "x_setup_opentelemetry_tracing__mutmut_41": x_setup_opentelemetry_tracing__mutmut_41,
+    "x_setup_opentelemetry_tracing__mutmut_42": x_setup_opentelemetry_tracing__mutmut_42,
+    "x_setup_opentelemetry_tracing__mutmut_43": x_setup_opentelemetry_tracing__mutmut_43,
+    "x_setup_opentelemetry_tracing__mutmut_44": x_setup_opentelemetry_tracing__mutmut_44,
+    "x_setup_opentelemetry_tracing__mutmut_45": x_setup_opentelemetry_tracing__mutmut_45,
+    "x_setup_opentelemetry_tracing__mutmut_46": x_setup_opentelemetry_tracing__mutmut_46,
+    "x_setup_opentelemetry_tracing__mutmut_47": x_setup_opentelemetry_tracing__mutmut_47,
+    "x_setup_opentelemetry_tracing__mutmut_48": x_setup_opentelemetry_tracing__mutmut_48,
+    "x_setup_opentelemetry_tracing__mutmut_49": x_setup_opentelemetry_tracing__mutmut_49,
+    "x_setup_opentelemetry_tracing__mutmut_50": x_setup_opentelemetry_tracing__mutmut_50,
+    "x_setup_opentelemetry_tracing__mutmut_51": x_setup_opentelemetry_tracing__mutmut_51,
+    "x_setup_opentelemetry_tracing__mutmut_52": x_setup_opentelemetry_tracing__mutmut_52,
+    "x_setup_opentelemetry_tracing__mutmut_53": x_setup_opentelemetry_tracing__mutmut_53,
+    "x_setup_opentelemetry_tracing__mutmut_54": x_setup_opentelemetry_tracing__mutmut_54,
+    "x_setup_opentelemetry_tracing__mutmut_55": x_setup_opentelemetry_tracing__mutmut_55,
+    "x_setup_opentelemetry_tracing__mutmut_56": x_setup_opentelemetry_tracing__mutmut_56,
+    "x_setup_opentelemetry_tracing__mutmut_57": x_setup_opentelemetry_tracing__mutmut_57,
+    "x_setup_opentelemetry_tracing__mutmut_58": x_setup_opentelemetry_tracing__mutmut_58,
+    "x_setup_opentelemetry_tracing__mutmut_59": x_setup_opentelemetry_tracing__mutmut_59,
+    "x_setup_opentelemetry_tracing__mutmut_60": x_setup_opentelemetry_tracing__mutmut_60,
+    "x_setup_opentelemetry_tracing__mutmut_61": x_setup_opentelemetry_tracing__mutmut_61,
+    "x_setup_opentelemetry_tracing__mutmut_62": x_setup_opentelemetry_tracing__mutmut_62,
+    "x_setup_opentelemetry_tracing__mutmut_63": x_setup_opentelemetry_tracing__mutmut_63,
+    "x_setup_opentelemetry_tracing__mutmut_64": x_setup_opentelemetry_tracing__mutmut_64,
+    "x_setup_opentelemetry_tracing__mutmut_65": x_setup_opentelemetry_tracing__mutmut_65,
+    "x_setup_opentelemetry_tracing__mutmut_66": x_setup_opentelemetry_tracing__mutmut_66,
+    "x_setup_opentelemetry_tracing__mutmut_67": x_setup_opentelemetry_tracing__mutmut_67,
+    "x_setup_opentelemetry_tracing__mutmut_68": x_setup_opentelemetry_tracing__mutmut_68,
+    "x_setup_opentelemetry_tracing__mutmut_69": x_setup_opentelemetry_tracing__mutmut_69,
+    "x_setup_opentelemetry_tracing__mutmut_70": x_setup_opentelemetry_tracing__mutmut_70,
+    "x_setup_opentelemetry_tracing__mutmut_71": x_setup_opentelemetry_tracing__mutmut_71,
+    "x_setup_opentelemetry_tracing__mutmut_72": x_setup_opentelemetry_tracing__mutmut_72,
+    "x_setup_opentelemetry_tracing__mutmut_73": x_setup_opentelemetry_tracing__mutmut_73,
+    "x_setup_opentelemetry_tracing__mutmut_74": x_setup_opentelemetry_tracing__mutmut_74,
+    "x_setup_opentelemetry_tracing__mutmut_75": x_setup_opentelemetry_tracing__mutmut_75,
+    "x_setup_opentelemetry_tracing__mutmut_76": x_setup_opentelemetry_tracing__mutmut_76,
+    "x_setup_opentelemetry_tracing__mutmut_77": x_setup_opentelemetry_tracing__mutmut_77,
+    "x_setup_opentelemetry_tracing__mutmut_78": x_setup_opentelemetry_tracing__mutmut_78,
+    "x_setup_opentelemetry_tracing__mutmut_79": x_setup_opentelemetry_tracing__mutmut_79,
+    "x_setup_opentelemetry_tracing__mutmut_80": x_setup_opentelemetry_tracing__mutmut_80,
+    "x_setup_opentelemetry_tracing__mutmut_81": x_setup_opentelemetry_tracing__mutmut_81,
+    "x_setup_opentelemetry_tracing__mutmut_82": x_setup_opentelemetry_tracing__mutmut_82,
+    "x_setup_opentelemetry_tracing__mutmut_83": x_setup_opentelemetry_tracing__mutmut_83,
 }
 
+
 def setup_opentelemetry_tracing(*args, **kwargs):
-    result = _mutmut_trampoline(x_setup_opentelemetry_tracing__mutmut_orig, x_setup_opentelemetry_tracing__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_setup_opentelemetry_tracing__mutmut_orig, x_setup_opentelemetry_tracing__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 setup_opentelemetry_tracing.__signature__ = _mutmut_signature(x_setup_opentelemetry_tracing__mutmut_orig)
-x_setup_opentelemetry_tracing__mutmut_orig.__name__ = 'x_setup_opentelemetry_tracing'
+x_setup_opentelemetry_tracing__mutmut_orig.__name__ = "x_setup_opentelemetry_tracing"
 
 
 def x_get_otel_tracer__mutmut_orig(name: str) -> otel_trace.Tracer | None:
@@ -7042,17 +7059,22 @@ def x_get_otel_tracer__mutmut_2(name: str) -> otel_trace.Tracer | None:
         # Broad catch intentional: OTEL tracing is optional, return None on any failure
         return None
 
-x_get_otel_tracer__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_otel_tracer__mutmut_1': x_get_otel_tracer__mutmut_1, 
-    'x_get_otel_tracer__mutmut_2': x_get_otel_tracer__mutmut_2
+
+x_get_otel_tracer__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_otel_tracer__mutmut_1": x_get_otel_tracer__mutmut_1,
+    "x_get_otel_tracer__mutmut_2": x_get_otel_tracer__mutmut_2,
 }
 
+
 def get_otel_tracer(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_otel_tracer__mutmut_orig, x_get_otel_tracer__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_otel_tracer__mutmut_orig, x_get_otel_tracer__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_otel_tracer.__signature__ = _mutmut_signature(x_get_otel_tracer__mutmut_orig)
-x_get_otel_tracer__mutmut_orig.__name__ = 'x_get_otel_tracer'
+x_get_otel_tracer__mutmut_orig.__name__ = "x_get_otel_tracer"
 
 
 def x_shutdown_opentelemetry__mutmut_orig() -> None:
@@ -7146,7 +7168,9 @@ def x_shutdown_opentelemetry__mutmut_6() -> None:
 
     try:
         tracer_provider = otel_trace.get_tracer_provider()
-        if hasattr(tracer_provider, ):
+        if hasattr(
+            tracer_provider,
+        ):
             tracer_provider.shutdown()
             slog.debug("🔍🛑 OpenTelemetry tracer provider shutdown")
     except Exception as e:
@@ -7250,28 +7274,33 @@ def x_shutdown_opentelemetry__mutmut_13() -> None:
     except Exception as e:
         slog.warning(None)
 
-x_shutdown_opentelemetry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_shutdown_opentelemetry__mutmut_1': x_shutdown_opentelemetry__mutmut_1, 
-    'x_shutdown_opentelemetry__mutmut_2': x_shutdown_opentelemetry__mutmut_2, 
-    'x_shutdown_opentelemetry__mutmut_3': x_shutdown_opentelemetry__mutmut_3, 
-    'x_shutdown_opentelemetry__mutmut_4': x_shutdown_opentelemetry__mutmut_4, 
-    'x_shutdown_opentelemetry__mutmut_5': x_shutdown_opentelemetry__mutmut_5, 
-    'x_shutdown_opentelemetry__mutmut_6': x_shutdown_opentelemetry__mutmut_6, 
-    'x_shutdown_opentelemetry__mutmut_7': x_shutdown_opentelemetry__mutmut_7, 
-    'x_shutdown_opentelemetry__mutmut_8': x_shutdown_opentelemetry__mutmut_8, 
-    'x_shutdown_opentelemetry__mutmut_9': x_shutdown_opentelemetry__mutmut_9, 
-    'x_shutdown_opentelemetry__mutmut_10': x_shutdown_opentelemetry__mutmut_10, 
-    'x_shutdown_opentelemetry__mutmut_11': x_shutdown_opentelemetry__mutmut_11, 
-    'x_shutdown_opentelemetry__mutmut_12': x_shutdown_opentelemetry__mutmut_12, 
-    'x_shutdown_opentelemetry__mutmut_13': x_shutdown_opentelemetry__mutmut_13
+
+x_shutdown_opentelemetry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_shutdown_opentelemetry__mutmut_1": x_shutdown_opentelemetry__mutmut_1,
+    "x_shutdown_opentelemetry__mutmut_2": x_shutdown_opentelemetry__mutmut_2,
+    "x_shutdown_opentelemetry__mutmut_3": x_shutdown_opentelemetry__mutmut_3,
+    "x_shutdown_opentelemetry__mutmut_4": x_shutdown_opentelemetry__mutmut_4,
+    "x_shutdown_opentelemetry__mutmut_5": x_shutdown_opentelemetry__mutmut_5,
+    "x_shutdown_opentelemetry__mutmut_6": x_shutdown_opentelemetry__mutmut_6,
+    "x_shutdown_opentelemetry__mutmut_7": x_shutdown_opentelemetry__mutmut_7,
+    "x_shutdown_opentelemetry__mutmut_8": x_shutdown_opentelemetry__mutmut_8,
+    "x_shutdown_opentelemetry__mutmut_9": x_shutdown_opentelemetry__mutmut_9,
+    "x_shutdown_opentelemetry__mutmut_10": x_shutdown_opentelemetry__mutmut_10,
+    "x_shutdown_opentelemetry__mutmut_11": x_shutdown_opentelemetry__mutmut_11,
+    "x_shutdown_opentelemetry__mutmut_12": x_shutdown_opentelemetry__mutmut_12,
+    "x_shutdown_opentelemetry__mutmut_13": x_shutdown_opentelemetry__mutmut_13,
 }
 
+
 def shutdown_opentelemetry(*args, **kwargs):
-    result = _mutmut_trampoline(x_shutdown_opentelemetry__mutmut_orig, x_shutdown_opentelemetry__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_shutdown_opentelemetry__mutmut_orig, x_shutdown_opentelemetry__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 shutdown_opentelemetry.__signature__ = _mutmut_signature(x_shutdown_opentelemetry__mutmut_orig)
-x_shutdown_opentelemetry__mutmut_orig.__name__ = 'x_shutdown_opentelemetry'
+x_shutdown_opentelemetry__mutmut_orig.__name__ = "x_shutdown_opentelemetry"
 
 
 # <3 🧱🤝👣🪄

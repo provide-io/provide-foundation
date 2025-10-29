@@ -41,23 +41,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1116,7 +1119,9 @@ def x_load_from_uri_or_pem__mutmut_37(data: str) -> str:
                 path = Path(path_str)
 
             logger.debug(f"📜📂🚀 Loading data from file: {path}")
-            with path.open("r", ) as f:
+            with path.open(
+                "r",
+            ) as f:
                 loaded_data = f.read().strip()
             logger.debug("📜📂✅ Loaded data from file")
             return loaded_data
@@ -1742,7 +1747,9 @@ def x_load_from_uri_or_pem__mutmut_59(data: str) -> str:
             logger.warning("📜📂⚠️ Data doesn't look like PEM format")
         return loaded_data
     except Exception as e:
-        logger.error(f"📜📂❌ Failed to load data: {e}", )
+        logger.error(
+            f"📜📂❌ Failed to load data: {e}",
+        )
         raise CertificateError(f"Failed to load data: {e}") from e
 
 
@@ -1857,78 +1864,83 @@ def x_load_from_uri_or_pem__mutmut_63(data: str) -> str:
         logger.error(f"📜📂❌ Failed to load data: {e}", extra={"error": str(e)})
         raise CertificateError(None) from e
 
-x_load_from_uri_or_pem__mutmut_mutants : ClassVar[MutantDict] = {
-'x_load_from_uri_or_pem__mutmut_1': x_load_from_uri_or_pem__mutmut_1, 
-    'x_load_from_uri_or_pem__mutmut_2': x_load_from_uri_or_pem__mutmut_2, 
-    'x_load_from_uri_or_pem__mutmut_3': x_load_from_uri_or_pem__mutmut_3, 
-    'x_load_from_uri_or_pem__mutmut_4': x_load_from_uri_or_pem__mutmut_4, 
-    'x_load_from_uri_or_pem__mutmut_5': x_load_from_uri_or_pem__mutmut_5, 
-    'x_load_from_uri_or_pem__mutmut_6': x_load_from_uri_or_pem__mutmut_6, 
-    'x_load_from_uri_or_pem__mutmut_7': x_load_from_uri_or_pem__mutmut_7, 
-    'x_load_from_uri_or_pem__mutmut_8': x_load_from_uri_or_pem__mutmut_8, 
-    'x_load_from_uri_or_pem__mutmut_9': x_load_from_uri_or_pem__mutmut_9, 
-    'x_load_from_uri_or_pem__mutmut_10': x_load_from_uri_or_pem__mutmut_10, 
-    'x_load_from_uri_or_pem__mutmut_11': x_load_from_uri_or_pem__mutmut_11, 
-    'x_load_from_uri_or_pem__mutmut_12': x_load_from_uri_or_pem__mutmut_12, 
-    'x_load_from_uri_or_pem__mutmut_13': x_load_from_uri_or_pem__mutmut_13, 
-    'x_load_from_uri_or_pem__mutmut_14': x_load_from_uri_or_pem__mutmut_14, 
-    'x_load_from_uri_or_pem__mutmut_15': x_load_from_uri_or_pem__mutmut_15, 
-    'x_load_from_uri_or_pem__mutmut_16': x_load_from_uri_or_pem__mutmut_16, 
-    'x_load_from_uri_or_pem__mutmut_17': x_load_from_uri_or_pem__mutmut_17, 
-    'x_load_from_uri_or_pem__mutmut_18': x_load_from_uri_or_pem__mutmut_18, 
-    'x_load_from_uri_or_pem__mutmut_19': x_load_from_uri_or_pem__mutmut_19, 
-    'x_load_from_uri_or_pem__mutmut_20': x_load_from_uri_or_pem__mutmut_20, 
-    'x_load_from_uri_or_pem__mutmut_21': x_load_from_uri_or_pem__mutmut_21, 
-    'x_load_from_uri_or_pem__mutmut_22': x_load_from_uri_or_pem__mutmut_22, 
-    'x_load_from_uri_or_pem__mutmut_23': x_load_from_uri_or_pem__mutmut_23, 
-    'x_load_from_uri_or_pem__mutmut_24': x_load_from_uri_or_pem__mutmut_24, 
-    'x_load_from_uri_or_pem__mutmut_25': x_load_from_uri_or_pem__mutmut_25, 
-    'x_load_from_uri_or_pem__mutmut_26': x_load_from_uri_or_pem__mutmut_26, 
-    'x_load_from_uri_or_pem__mutmut_27': x_load_from_uri_or_pem__mutmut_27, 
-    'x_load_from_uri_or_pem__mutmut_28': x_load_from_uri_or_pem__mutmut_28, 
-    'x_load_from_uri_or_pem__mutmut_29': x_load_from_uri_or_pem__mutmut_29, 
-    'x_load_from_uri_or_pem__mutmut_30': x_load_from_uri_or_pem__mutmut_30, 
-    'x_load_from_uri_or_pem__mutmut_31': x_load_from_uri_or_pem__mutmut_31, 
-    'x_load_from_uri_or_pem__mutmut_32': x_load_from_uri_or_pem__mutmut_32, 
-    'x_load_from_uri_or_pem__mutmut_33': x_load_from_uri_or_pem__mutmut_33, 
-    'x_load_from_uri_or_pem__mutmut_34': x_load_from_uri_or_pem__mutmut_34, 
-    'x_load_from_uri_or_pem__mutmut_35': x_load_from_uri_or_pem__mutmut_35, 
-    'x_load_from_uri_or_pem__mutmut_36': x_load_from_uri_or_pem__mutmut_36, 
-    'x_load_from_uri_or_pem__mutmut_37': x_load_from_uri_or_pem__mutmut_37, 
-    'x_load_from_uri_or_pem__mutmut_38': x_load_from_uri_or_pem__mutmut_38, 
-    'x_load_from_uri_or_pem__mutmut_39': x_load_from_uri_or_pem__mutmut_39, 
-    'x_load_from_uri_or_pem__mutmut_40': x_load_from_uri_or_pem__mutmut_40, 
-    'x_load_from_uri_or_pem__mutmut_41': x_load_from_uri_or_pem__mutmut_41, 
-    'x_load_from_uri_or_pem__mutmut_42': x_load_from_uri_or_pem__mutmut_42, 
-    'x_load_from_uri_or_pem__mutmut_43': x_load_from_uri_or_pem__mutmut_43, 
-    'x_load_from_uri_or_pem__mutmut_44': x_load_from_uri_or_pem__mutmut_44, 
-    'x_load_from_uri_or_pem__mutmut_45': x_load_from_uri_or_pem__mutmut_45, 
-    'x_load_from_uri_or_pem__mutmut_46': x_load_from_uri_or_pem__mutmut_46, 
-    'x_load_from_uri_or_pem__mutmut_47': x_load_from_uri_or_pem__mutmut_47, 
-    'x_load_from_uri_or_pem__mutmut_48': x_load_from_uri_or_pem__mutmut_48, 
-    'x_load_from_uri_or_pem__mutmut_49': x_load_from_uri_or_pem__mutmut_49, 
-    'x_load_from_uri_or_pem__mutmut_50': x_load_from_uri_or_pem__mutmut_50, 
-    'x_load_from_uri_or_pem__mutmut_51': x_load_from_uri_or_pem__mutmut_51, 
-    'x_load_from_uri_or_pem__mutmut_52': x_load_from_uri_or_pem__mutmut_52, 
-    'x_load_from_uri_or_pem__mutmut_53': x_load_from_uri_or_pem__mutmut_53, 
-    'x_load_from_uri_or_pem__mutmut_54': x_load_from_uri_or_pem__mutmut_54, 
-    'x_load_from_uri_or_pem__mutmut_55': x_load_from_uri_or_pem__mutmut_55, 
-    'x_load_from_uri_or_pem__mutmut_56': x_load_from_uri_or_pem__mutmut_56, 
-    'x_load_from_uri_or_pem__mutmut_57': x_load_from_uri_or_pem__mutmut_57, 
-    'x_load_from_uri_or_pem__mutmut_58': x_load_from_uri_or_pem__mutmut_58, 
-    'x_load_from_uri_or_pem__mutmut_59': x_load_from_uri_or_pem__mutmut_59, 
-    'x_load_from_uri_or_pem__mutmut_60': x_load_from_uri_or_pem__mutmut_60, 
-    'x_load_from_uri_or_pem__mutmut_61': x_load_from_uri_or_pem__mutmut_61, 
-    'x_load_from_uri_or_pem__mutmut_62': x_load_from_uri_or_pem__mutmut_62, 
-    'x_load_from_uri_or_pem__mutmut_63': x_load_from_uri_or_pem__mutmut_63
+
+x_load_from_uri_or_pem__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_load_from_uri_or_pem__mutmut_1": x_load_from_uri_or_pem__mutmut_1,
+    "x_load_from_uri_or_pem__mutmut_2": x_load_from_uri_or_pem__mutmut_2,
+    "x_load_from_uri_or_pem__mutmut_3": x_load_from_uri_or_pem__mutmut_3,
+    "x_load_from_uri_or_pem__mutmut_4": x_load_from_uri_or_pem__mutmut_4,
+    "x_load_from_uri_or_pem__mutmut_5": x_load_from_uri_or_pem__mutmut_5,
+    "x_load_from_uri_or_pem__mutmut_6": x_load_from_uri_or_pem__mutmut_6,
+    "x_load_from_uri_or_pem__mutmut_7": x_load_from_uri_or_pem__mutmut_7,
+    "x_load_from_uri_or_pem__mutmut_8": x_load_from_uri_or_pem__mutmut_8,
+    "x_load_from_uri_or_pem__mutmut_9": x_load_from_uri_or_pem__mutmut_9,
+    "x_load_from_uri_or_pem__mutmut_10": x_load_from_uri_or_pem__mutmut_10,
+    "x_load_from_uri_or_pem__mutmut_11": x_load_from_uri_or_pem__mutmut_11,
+    "x_load_from_uri_or_pem__mutmut_12": x_load_from_uri_or_pem__mutmut_12,
+    "x_load_from_uri_or_pem__mutmut_13": x_load_from_uri_or_pem__mutmut_13,
+    "x_load_from_uri_or_pem__mutmut_14": x_load_from_uri_or_pem__mutmut_14,
+    "x_load_from_uri_or_pem__mutmut_15": x_load_from_uri_or_pem__mutmut_15,
+    "x_load_from_uri_or_pem__mutmut_16": x_load_from_uri_or_pem__mutmut_16,
+    "x_load_from_uri_or_pem__mutmut_17": x_load_from_uri_or_pem__mutmut_17,
+    "x_load_from_uri_or_pem__mutmut_18": x_load_from_uri_or_pem__mutmut_18,
+    "x_load_from_uri_or_pem__mutmut_19": x_load_from_uri_or_pem__mutmut_19,
+    "x_load_from_uri_or_pem__mutmut_20": x_load_from_uri_or_pem__mutmut_20,
+    "x_load_from_uri_or_pem__mutmut_21": x_load_from_uri_or_pem__mutmut_21,
+    "x_load_from_uri_or_pem__mutmut_22": x_load_from_uri_or_pem__mutmut_22,
+    "x_load_from_uri_or_pem__mutmut_23": x_load_from_uri_or_pem__mutmut_23,
+    "x_load_from_uri_or_pem__mutmut_24": x_load_from_uri_or_pem__mutmut_24,
+    "x_load_from_uri_or_pem__mutmut_25": x_load_from_uri_or_pem__mutmut_25,
+    "x_load_from_uri_or_pem__mutmut_26": x_load_from_uri_or_pem__mutmut_26,
+    "x_load_from_uri_or_pem__mutmut_27": x_load_from_uri_or_pem__mutmut_27,
+    "x_load_from_uri_or_pem__mutmut_28": x_load_from_uri_or_pem__mutmut_28,
+    "x_load_from_uri_or_pem__mutmut_29": x_load_from_uri_or_pem__mutmut_29,
+    "x_load_from_uri_or_pem__mutmut_30": x_load_from_uri_or_pem__mutmut_30,
+    "x_load_from_uri_or_pem__mutmut_31": x_load_from_uri_or_pem__mutmut_31,
+    "x_load_from_uri_or_pem__mutmut_32": x_load_from_uri_or_pem__mutmut_32,
+    "x_load_from_uri_or_pem__mutmut_33": x_load_from_uri_or_pem__mutmut_33,
+    "x_load_from_uri_or_pem__mutmut_34": x_load_from_uri_or_pem__mutmut_34,
+    "x_load_from_uri_or_pem__mutmut_35": x_load_from_uri_or_pem__mutmut_35,
+    "x_load_from_uri_or_pem__mutmut_36": x_load_from_uri_or_pem__mutmut_36,
+    "x_load_from_uri_or_pem__mutmut_37": x_load_from_uri_or_pem__mutmut_37,
+    "x_load_from_uri_or_pem__mutmut_38": x_load_from_uri_or_pem__mutmut_38,
+    "x_load_from_uri_or_pem__mutmut_39": x_load_from_uri_or_pem__mutmut_39,
+    "x_load_from_uri_or_pem__mutmut_40": x_load_from_uri_or_pem__mutmut_40,
+    "x_load_from_uri_or_pem__mutmut_41": x_load_from_uri_or_pem__mutmut_41,
+    "x_load_from_uri_or_pem__mutmut_42": x_load_from_uri_or_pem__mutmut_42,
+    "x_load_from_uri_or_pem__mutmut_43": x_load_from_uri_or_pem__mutmut_43,
+    "x_load_from_uri_or_pem__mutmut_44": x_load_from_uri_or_pem__mutmut_44,
+    "x_load_from_uri_or_pem__mutmut_45": x_load_from_uri_or_pem__mutmut_45,
+    "x_load_from_uri_or_pem__mutmut_46": x_load_from_uri_or_pem__mutmut_46,
+    "x_load_from_uri_or_pem__mutmut_47": x_load_from_uri_or_pem__mutmut_47,
+    "x_load_from_uri_or_pem__mutmut_48": x_load_from_uri_or_pem__mutmut_48,
+    "x_load_from_uri_or_pem__mutmut_49": x_load_from_uri_or_pem__mutmut_49,
+    "x_load_from_uri_or_pem__mutmut_50": x_load_from_uri_or_pem__mutmut_50,
+    "x_load_from_uri_or_pem__mutmut_51": x_load_from_uri_or_pem__mutmut_51,
+    "x_load_from_uri_or_pem__mutmut_52": x_load_from_uri_or_pem__mutmut_52,
+    "x_load_from_uri_or_pem__mutmut_53": x_load_from_uri_or_pem__mutmut_53,
+    "x_load_from_uri_or_pem__mutmut_54": x_load_from_uri_or_pem__mutmut_54,
+    "x_load_from_uri_or_pem__mutmut_55": x_load_from_uri_or_pem__mutmut_55,
+    "x_load_from_uri_or_pem__mutmut_56": x_load_from_uri_or_pem__mutmut_56,
+    "x_load_from_uri_or_pem__mutmut_57": x_load_from_uri_or_pem__mutmut_57,
+    "x_load_from_uri_or_pem__mutmut_58": x_load_from_uri_or_pem__mutmut_58,
+    "x_load_from_uri_or_pem__mutmut_59": x_load_from_uri_or_pem__mutmut_59,
+    "x_load_from_uri_or_pem__mutmut_60": x_load_from_uri_or_pem__mutmut_60,
+    "x_load_from_uri_or_pem__mutmut_61": x_load_from_uri_or_pem__mutmut_61,
+    "x_load_from_uri_or_pem__mutmut_62": x_load_from_uri_or_pem__mutmut_62,
+    "x_load_from_uri_or_pem__mutmut_63": x_load_from_uri_or_pem__mutmut_63,
 }
 
+
 def load_from_uri_or_pem(*args, **kwargs):
-    result = _mutmut_trampoline(x_load_from_uri_or_pem__mutmut_orig, x_load_from_uri_or_pem__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_load_from_uri_or_pem__mutmut_orig, x_load_from_uri_or_pem__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 load_from_uri_or_pem.__signature__ = _mutmut_signature(x_load_from_uri_or_pem__mutmut_orig)
-x_load_from_uri_or_pem__mutmut_orig.__name__ = 'x_load_from_uri_or_pem'
+x_load_from_uri_or_pem__mutmut_orig.__name__ = "x_load_from_uri_or_pem"
 
 
 def x_load_certificate_from_pem__mutmut_orig(
@@ -4380,7 +4392,9 @@ def x_load_certificate_from_pem__mutmut_31(
             logger.debug("📜🔑🚀 Loading private key")
             key_data = load_from_uri_or_pem(key_pem_or_uri)
 
-            loaded_priv_key = load_pem_private_key(key_data.encode("utf-8"), )
+            loaded_priv_key = load_pem_private_key(
+                key_data.encode("utf-8"),
+            )
             if not isinstance(
                 loaded_priv_key,
                 rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey,
@@ -7675,7 +7689,7 @@ def x_load_certificate_from_pem__mutmut_73(
             public_key=cert_public_key,
             not_valid_before=loaded_not_valid_before,
             not_valid_after=loaded_not_valid_after,
-            )
+        )
         logger.debug("📜🔑✅ Reconstructed CertificateBase from loaded cert")
 
         return base, x509_cert, private_key, cert_data, key_data
@@ -8306,7 +8320,7 @@ def x_load_certificate_from_pem__mutmut_81(
     except Exception as e:
         logger.error(
             f"📜❌ Failed to load certificate. Error: {type(e).__name__}: {e}",
-            )
+        )
         raise CertificateError(f"Failed to initialize certificate. Original error: {type(e).__name__}") from e
 
 
@@ -8931,106 +8945,113 @@ def x_load_certificate_from_pem__mutmut_89(
             f"📜❌ Failed to load certificate. Error: {type(e).__name__}: {e}",
             extra={"error": str(e), "trace": traceback.format_exc()},
         )
-        raise CertificateError(f"Failed to initialize certificate. Original error: {type(None).__name__}") from e
+        raise CertificateError(
+            f"Failed to initialize certificate. Original error: {type(None).__name__}"
+        ) from e
 
-x_load_certificate_from_pem__mutmut_mutants : ClassVar[MutantDict] = {
-'x_load_certificate_from_pem__mutmut_1': x_load_certificate_from_pem__mutmut_1, 
-    'x_load_certificate_from_pem__mutmut_2': x_load_certificate_from_pem__mutmut_2, 
-    'x_load_certificate_from_pem__mutmut_3': x_load_certificate_from_pem__mutmut_3, 
-    'x_load_certificate_from_pem__mutmut_4': x_load_certificate_from_pem__mutmut_4, 
-    'x_load_certificate_from_pem__mutmut_5': x_load_certificate_from_pem__mutmut_5, 
-    'x_load_certificate_from_pem__mutmut_6': x_load_certificate_from_pem__mutmut_6, 
-    'x_load_certificate_from_pem__mutmut_7': x_load_certificate_from_pem__mutmut_7, 
-    'x_load_certificate_from_pem__mutmut_8': x_load_certificate_from_pem__mutmut_8, 
-    'x_load_certificate_from_pem__mutmut_9': x_load_certificate_from_pem__mutmut_9, 
-    'x_load_certificate_from_pem__mutmut_10': x_load_certificate_from_pem__mutmut_10, 
-    'x_load_certificate_from_pem__mutmut_11': x_load_certificate_from_pem__mutmut_11, 
-    'x_load_certificate_from_pem__mutmut_12': x_load_certificate_from_pem__mutmut_12, 
-    'x_load_certificate_from_pem__mutmut_13': x_load_certificate_from_pem__mutmut_13, 
-    'x_load_certificate_from_pem__mutmut_14': x_load_certificate_from_pem__mutmut_14, 
-    'x_load_certificate_from_pem__mutmut_15': x_load_certificate_from_pem__mutmut_15, 
-    'x_load_certificate_from_pem__mutmut_16': x_load_certificate_from_pem__mutmut_16, 
-    'x_load_certificate_from_pem__mutmut_17': x_load_certificate_from_pem__mutmut_17, 
-    'x_load_certificate_from_pem__mutmut_18': x_load_certificate_from_pem__mutmut_18, 
-    'x_load_certificate_from_pem__mutmut_19': x_load_certificate_from_pem__mutmut_19, 
-    'x_load_certificate_from_pem__mutmut_20': x_load_certificate_from_pem__mutmut_20, 
-    'x_load_certificate_from_pem__mutmut_21': x_load_certificate_from_pem__mutmut_21, 
-    'x_load_certificate_from_pem__mutmut_22': x_load_certificate_from_pem__mutmut_22, 
-    'x_load_certificate_from_pem__mutmut_23': x_load_certificate_from_pem__mutmut_23, 
-    'x_load_certificate_from_pem__mutmut_24': x_load_certificate_from_pem__mutmut_24, 
-    'x_load_certificate_from_pem__mutmut_25': x_load_certificate_from_pem__mutmut_25, 
-    'x_load_certificate_from_pem__mutmut_26': x_load_certificate_from_pem__mutmut_26, 
-    'x_load_certificate_from_pem__mutmut_27': x_load_certificate_from_pem__mutmut_27, 
-    'x_load_certificate_from_pem__mutmut_28': x_load_certificate_from_pem__mutmut_28, 
-    'x_load_certificate_from_pem__mutmut_29': x_load_certificate_from_pem__mutmut_29, 
-    'x_load_certificate_from_pem__mutmut_30': x_load_certificate_from_pem__mutmut_30, 
-    'x_load_certificate_from_pem__mutmut_31': x_load_certificate_from_pem__mutmut_31, 
-    'x_load_certificate_from_pem__mutmut_32': x_load_certificate_from_pem__mutmut_32, 
-    'x_load_certificate_from_pem__mutmut_33': x_load_certificate_from_pem__mutmut_33, 
-    'x_load_certificate_from_pem__mutmut_34': x_load_certificate_from_pem__mutmut_34, 
-    'x_load_certificate_from_pem__mutmut_35': x_load_certificate_from_pem__mutmut_35, 
-    'x_load_certificate_from_pem__mutmut_36': x_load_certificate_from_pem__mutmut_36, 
-    'x_load_certificate_from_pem__mutmut_37': x_load_certificate_from_pem__mutmut_37, 
-    'x_load_certificate_from_pem__mutmut_38': x_load_certificate_from_pem__mutmut_38, 
-    'x_load_certificate_from_pem__mutmut_39': x_load_certificate_from_pem__mutmut_39, 
-    'x_load_certificate_from_pem__mutmut_40': x_load_certificate_from_pem__mutmut_40, 
-    'x_load_certificate_from_pem__mutmut_41': x_load_certificate_from_pem__mutmut_41, 
-    'x_load_certificate_from_pem__mutmut_42': x_load_certificate_from_pem__mutmut_42, 
-    'x_load_certificate_from_pem__mutmut_43': x_load_certificate_from_pem__mutmut_43, 
-    'x_load_certificate_from_pem__mutmut_44': x_load_certificate_from_pem__mutmut_44, 
-    'x_load_certificate_from_pem__mutmut_45': x_load_certificate_from_pem__mutmut_45, 
-    'x_load_certificate_from_pem__mutmut_46': x_load_certificate_from_pem__mutmut_46, 
-    'x_load_certificate_from_pem__mutmut_47': x_load_certificate_from_pem__mutmut_47, 
-    'x_load_certificate_from_pem__mutmut_48': x_load_certificate_from_pem__mutmut_48, 
-    'x_load_certificate_from_pem__mutmut_49': x_load_certificate_from_pem__mutmut_49, 
-    'x_load_certificate_from_pem__mutmut_50': x_load_certificate_from_pem__mutmut_50, 
-    'x_load_certificate_from_pem__mutmut_51': x_load_certificate_from_pem__mutmut_51, 
-    'x_load_certificate_from_pem__mutmut_52': x_load_certificate_from_pem__mutmut_52, 
-    'x_load_certificate_from_pem__mutmut_53': x_load_certificate_from_pem__mutmut_53, 
-    'x_load_certificate_from_pem__mutmut_54': x_load_certificate_from_pem__mutmut_54, 
-    'x_load_certificate_from_pem__mutmut_55': x_load_certificate_from_pem__mutmut_55, 
-    'x_load_certificate_from_pem__mutmut_56': x_load_certificate_from_pem__mutmut_56, 
-    'x_load_certificate_from_pem__mutmut_57': x_load_certificate_from_pem__mutmut_57, 
-    'x_load_certificate_from_pem__mutmut_58': x_load_certificate_from_pem__mutmut_58, 
-    'x_load_certificate_from_pem__mutmut_59': x_load_certificate_from_pem__mutmut_59, 
-    'x_load_certificate_from_pem__mutmut_60': x_load_certificate_from_pem__mutmut_60, 
-    'x_load_certificate_from_pem__mutmut_61': x_load_certificate_from_pem__mutmut_61, 
-    'x_load_certificate_from_pem__mutmut_62': x_load_certificate_from_pem__mutmut_62, 
-    'x_load_certificate_from_pem__mutmut_63': x_load_certificate_from_pem__mutmut_63, 
-    'x_load_certificate_from_pem__mutmut_64': x_load_certificate_from_pem__mutmut_64, 
-    'x_load_certificate_from_pem__mutmut_65': x_load_certificate_from_pem__mutmut_65, 
-    'x_load_certificate_from_pem__mutmut_66': x_load_certificate_from_pem__mutmut_66, 
-    'x_load_certificate_from_pem__mutmut_67': x_load_certificate_from_pem__mutmut_67, 
-    'x_load_certificate_from_pem__mutmut_68': x_load_certificate_from_pem__mutmut_68, 
-    'x_load_certificate_from_pem__mutmut_69': x_load_certificate_from_pem__mutmut_69, 
-    'x_load_certificate_from_pem__mutmut_70': x_load_certificate_from_pem__mutmut_70, 
-    'x_load_certificate_from_pem__mutmut_71': x_load_certificate_from_pem__mutmut_71, 
-    'x_load_certificate_from_pem__mutmut_72': x_load_certificate_from_pem__mutmut_72, 
-    'x_load_certificate_from_pem__mutmut_73': x_load_certificate_from_pem__mutmut_73, 
-    'x_load_certificate_from_pem__mutmut_74': x_load_certificate_from_pem__mutmut_74, 
-    'x_load_certificate_from_pem__mutmut_75': x_load_certificate_from_pem__mutmut_75, 
-    'x_load_certificate_from_pem__mutmut_76': x_load_certificate_from_pem__mutmut_76, 
-    'x_load_certificate_from_pem__mutmut_77': x_load_certificate_from_pem__mutmut_77, 
-    'x_load_certificate_from_pem__mutmut_78': x_load_certificate_from_pem__mutmut_78, 
-    'x_load_certificate_from_pem__mutmut_79': x_load_certificate_from_pem__mutmut_79, 
-    'x_load_certificate_from_pem__mutmut_80': x_load_certificate_from_pem__mutmut_80, 
-    'x_load_certificate_from_pem__mutmut_81': x_load_certificate_from_pem__mutmut_81, 
-    'x_load_certificate_from_pem__mutmut_82': x_load_certificate_from_pem__mutmut_82, 
-    'x_load_certificate_from_pem__mutmut_83': x_load_certificate_from_pem__mutmut_83, 
-    'x_load_certificate_from_pem__mutmut_84': x_load_certificate_from_pem__mutmut_84, 
-    'x_load_certificate_from_pem__mutmut_85': x_load_certificate_from_pem__mutmut_85, 
-    'x_load_certificate_from_pem__mutmut_86': x_load_certificate_from_pem__mutmut_86, 
-    'x_load_certificate_from_pem__mutmut_87': x_load_certificate_from_pem__mutmut_87, 
-    'x_load_certificate_from_pem__mutmut_88': x_load_certificate_from_pem__mutmut_88, 
-    'x_load_certificate_from_pem__mutmut_89': x_load_certificate_from_pem__mutmut_89
+
+x_load_certificate_from_pem__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_load_certificate_from_pem__mutmut_1": x_load_certificate_from_pem__mutmut_1,
+    "x_load_certificate_from_pem__mutmut_2": x_load_certificate_from_pem__mutmut_2,
+    "x_load_certificate_from_pem__mutmut_3": x_load_certificate_from_pem__mutmut_3,
+    "x_load_certificate_from_pem__mutmut_4": x_load_certificate_from_pem__mutmut_4,
+    "x_load_certificate_from_pem__mutmut_5": x_load_certificate_from_pem__mutmut_5,
+    "x_load_certificate_from_pem__mutmut_6": x_load_certificate_from_pem__mutmut_6,
+    "x_load_certificate_from_pem__mutmut_7": x_load_certificate_from_pem__mutmut_7,
+    "x_load_certificate_from_pem__mutmut_8": x_load_certificate_from_pem__mutmut_8,
+    "x_load_certificate_from_pem__mutmut_9": x_load_certificate_from_pem__mutmut_9,
+    "x_load_certificate_from_pem__mutmut_10": x_load_certificate_from_pem__mutmut_10,
+    "x_load_certificate_from_pem__mutmut_11": x_load_certificate_from_pem__mutmut_11,
+    "x_load_certificate_from_pem__mutmut_12": x_load_certificate_from_pem__mutmut_12,
+    "x_load_certificate_from_pem__mutmut_13": x_load_certificate_from_pem__mutmut_13,
+    "x_load_certificate_from_pem__mutmut_14": x_load_certificate_from_pem__mutmut_14,
+    "x_load_certificate_from_pem__mutmut_15": x_load_certificate_from_pem__mutmut_15,
+    "x_load_certificate_from_pem__mutmut_16": x_load_certificate_from_pem__mutmut_16,
+    "x_load_certificate_from_pem__mutmut_17": x_load_certificate_from_pem__mutmut_17,
+    "x_load_certificate_from_pem__mutmut_18": x_load_certificate_from_pem__mutmut_18,
+    "x_load_certificate_from_pem__mutmut_19": x_load_certificate_from_pem__mutmut_19,
+    "x_load_certificate_from_pem__mutmut_20": x_load_certificate_from_pem__mutmut_20,
+    "x_load_certificate_from_pem__mutmut_21": x_load_certificate_from_pem__mutmut_21,
+    "x_load_certificate_from_pem__mutmut_22": x_load_certificate_from_pem__mutmut_22,
+    "x_load_certificate_from_pem__mutmut_23": x_load_certificate_from_pem__mutmut_23,
+    "x_load_certificate_from_pem__mutmut_24": x_load_certificate_from_pem__mutmut_24,
+    "x_load_certificate_from_pem__mutmut_25": x_load_certificate_from_pem__mutmut_25,
+    "x_load_certificate_from_pem__mutmut_26": x_load_certificate_from_pem__mutmut_26,
+    "x_load_certificate_from_pem__mutmut_27": x_load_certificate_from_pem__mutmut_27,
+    "x_load_certificate_from_pem__mutmut_28": x_load_certificate_from_pem__mutmut_28,
+    "x_load_certificate_from_pem__mutmut_29": x_load_certificate_from_pem__mutmut_29,
+    "x_load_certificate_from_pem__mutmut_30": x_load_certificate_from_pem__mutmut_30,
+    "x_load_certificate_from_pem__mutmut_31": x_load_certificate_from_pem__mutmut_31,
+    "x_load_certificate_from_pem__mutmut_32": x_load_certificate_from_pem__mutmut_32,
+    "x_load_certificate_from_pem__mutmut_33": x_load_certificate_from_pem__mutmut_33,
+    "x_load_certificate_from_pem__mutmut_34": x_load_certificate_from_pem__mutmut_34,
+    "x_load_certificate_from_pem__mutmut_35": x_load_certificate_from_pem__mutmut_35,
+    "x_load_certificate_from_pem__mutmut_36": x_load_certificate_from_pem__mutmut_36,
+    "x_load_certificate_from_pem__mutmut_37": x_load_certificate_from_pem__mutmut_37,
+    "x_load_certificate_from_pem__mutmut_38": x_load_certificate_from_pem__mutmut_38,
+    "x_load_certificate_from_pem__mutmut_39": x_load_certificate_from_pem__mutmut_39,
+    "x_load_certificate_from_pem__mutmut_40": x_load_certificate_from_pem__mutmut_40,
+    "x_load_certificate_from_pem__mutmut_41": x_load_certificate_from_pem__mutmut_41,
+    "x_load_certificate_from_pem__mutmut_42": x_load_certificate_from_pem__mutmut_42,
+    "x_load_certificate_from_pem__mutmut_43": x_load_certificate_from_pem__mutmut_43,
+    "x_load_certificate_from_pem__mutmut_44": x_load_certificate_from_pem__mutmut_44,
+    "x_load_certificate_from_pem__mutmut_45": x_load_certificate_from_pem__mutmut_45,
+    "x_load_certificate_from_pem__mutmut_46": x_load_certificate_from_pem__mutmut_46,
+    "x_load_certificate_from_pem__mutmut_47": x_load_certificate_from_pem__mutmut_47,
+    "x_load_certificate_from_pem__mutmut_48": x_load_certificate_from_pem__mutmut_48,
+    "x_load_certificate_from_pem__mutmut_49": x_load_certificate_from_pem__mutmut_49,
+    "x_load_certificate_from_pem__mutmut_50": x_load_certificate_from_pem__mutmut_50,
+    "x_load_certificate_from_pem__mutmut_51": x_load_certificate_from_pem__mutmut_51,
+    "x_load_certificate_from_pem__mutmut_52": x_load_certificate_from_pem__mutmut_52,
+    "x_load_certificate_from_pem__mutmut_53": x_load_certificate_from_pem__mutmut_53,
+    "x_load_certificate_from_pem__mutmut_54": x_load_certificate_from_pem__mutmut_54,
+    "x_load_certificate_from_pem__mutmut_55": x_load_certificate_from_pem__mutmut_55,
+    "x_load_certificate_from_pem__mutmut_56": x_load_certificate_from_pem__mutmut_56,
+    "x_load_certificate_from_pem__mutmut_57": x_load_certificate_from_pem__mutmut_57,
+    "x_load_certificate_from_pem__mutmut_58": x_load_certificate_from_pem__mutmut_58,
+    "x_load_certificate_from_pem__mutmut_59": x_load_certificate_from_pem__mutmut_59,
+    "x_load_certificate_from_pem__mutmut_60": x_load_certificate_from_pem__mutmut_60,
+    "x_load_certificate_from_pem__mutmut_61": x_load_certificate_from_pem__mutmut_61,
+    "x_load_certificate_from_pem__mutmut_62": x_load_certificate_from_pem__mutmut_62,
+    "x_load_certificate_from_pem__mutmut_63": x_load_certificate_from_pem__mutmut_63,
+    "x_load_certificate_from_pem__mutmut_64": x_load_certificate_from_pem__mutmut_64,
+    "x_load_certificate_from_pem__mutmut_65": x_load_certificate_from_pem__mutmut_65,
+    "x_load_certificate_from_pem__mutmut_66": x_load_certificate_from_pem__mutmut_66,
+    "x_load_certificate_from_pem__mutmut_67": x_load_certificate_from_pem__mutmut_67,
+    "x_load_certificate_from_pem__mutmut_68": x_load_certificate_from_pem__mutmut_68,
+    "x_load_certificate_from_pem__mutmut_69": x_load_certificate_from_pem__mutmut_69,
+    "x_load_certificate_from_pem__mutmut_70": x_load_certificate_from_pem__mutmut_70,
+    "x_load_certificate_from_pem__mutmut_71": x_load_certificate_from_pem__mutmut_71,
+    "x_load_certificate_from_pem__mutmut_72": x_load_certificate_from_pem__mutmut_72,
+    "x_load_certificate_from_pem__mutmut_73": x_load_certificate_from_pem__mutmut_73,
+    "x_load_certificate_from_pem__mutmut_74": x_load_certificate_from_pem__mutmut_74,
+    "x_load_certificate_from_pem__mutmut_75": x_load_certificate_from_pem__mutmut_75,
+    "x_load_certificate_from_pem__mutmut_76": x_load_certificate_from_pem__mutmut_76,
+    "x_load_certificate_from_pem__mutmut_77": x_load_certificate_from_pem__mutmut_77,
+    "x_load_certificate_from_pem__mutmut_78": x_load_certificate_from_pem__mutmut_78,
+    "x_load_certificate_from_pem__mutmut_79": x_load_certificate_from_pem__mutmut_79,
+    "x_load_certificate_from_pem__mutmut_80": x_load_certificate_from_pem__mutmut_80,
+    "x_load_certificate_from_pem__mutmut_81": x_load_certificate_from_pem__mutmut_81,
+    "x_load_certificate_from_pem__mutmut_82": x_load_certificate_from_pem__mutmut_82,
+    "x_load_certificate_from_pem__mutmut_83": x_load_certificate_from_pem__mutmut_83,
+    "x_load_certificate_from_pem__mutmut_84": x_load_certificate_from_pem__mutmut_84,
+    "x_load_certificate_from_pem__mutmut_85": x_load_certificate_from_pem__mutmut_85,
+    "x_load_certificate_from_pem__mutmut_86": x_load_certificate_from_pem__mutmut_86,
+    "x_load_certificate_from_pem__mutmut_87": x_load_certificate_from_pem__mutmut_87,
+    "x_load_certificate_from_pem__mutmut_88": x_load_certificate_from_pem__mutmut_88,
+    "x_load_certificate_from_pem__mutmut_89": x_load_certificate_from_pem__mutmut_89,
 }
 
+
 def load_certificate_from_pem(*args, **kwargs):
-    result = _mutmut_trampoline(x_load_certificate_from_pem__mutmut_orig, x_load_certificate_from_pem__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_load_certificate_from_pem__mutmut_orig, x_load_certificate_from_pem__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 load_certificate_from_pem.__signature__ = _mutmut_signature(x_load_certificate_from_pem__mutmut_orig)
-x_load_certificate_from_pem__mutmut_orig.__name__ = 'x_load_certificate_from_pem'
+x_load_certificate_from_pem__mutmut_orig.__name__ = "x_load_certificate_from_pem"
 
 
 # <3 🧱🤝🔒🪄

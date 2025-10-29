@@ -20,23 +20,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -77,20 +80,26 @@ class EventSetResolver:
         self._field_mappings: list[FieldMapping] = []
         self._event_mappings_by_set: dict[str, list[EventMapping]] = {}
         self._resolved = True
-    
-    xǁEventSetResolverǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetResolverǁ__init____mutmut_1': xǁEventSetResolverǁ__init____mutmut_1, 
-        'xǁEventSetResolverǁ__init____mutmut_2': xǁEventSetResolverǁ__init____mutmut_2, 
-        'xǁEventSetResolverǁ__init____mutmut_3': xǁEventSetResolverǁ__init____mutmut_3, 
-        'xǁEventSetResolverǁ__init____mutmut_4': xǁEventSetResolverǁ__init____mutmut_4
+
+    xǁEventSetResolverǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetResolverǁ__init____mutmut_1": xǁEventSetResolverǁ__init____mutmut_1,
+        "xǁEventSetResolverǁ__init____mutmut_2": xǁEventSetResolverǁ__init____mutmut_2,
+        "xǁEventSetResolverǁ__init____mutmut_3": xǁEventSetResolverǁ__init____mutmut_3,
+        "xǁEventSetResolverǁ__init____mutmut_4": xǁEventSetResolverǁ__init____mutmut_4,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetResolverǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁEventSetResolverǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetResolverǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetResolverǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁEventSetResolverǁ__init____mutmut_orig)
-    xǁEventSetResolverǁ__init____mutmut_orig.__name__ = 'xǁEventSetResolverǁ__init__'
+    xǁEventSetResolverǁ__init____mutmut_orig.__name__ = "xǁEventSetResolverǁ__init__"
 
     def xǁEventSetResolverǁresolve__mutmut_orig(self) -> None:
         """Resolve all registered event sets into a unified configuration.
@@ -252,22 +261,28 @@ class EventSetResolver:
             self._field_mappings.extend(event_set.field_mappings)
 
         self._resolved = False
-    
-    xǁEventSetResolverǁresolve__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetResolverǁresolve__mutmut_1': xǁEventSetResolverǁresolve__mutmut_1, 
-        'xǁEventSetResolverǁresolve__mutmut_2': xǁEventSetResolverǁresolve__mutmut_2, 
-        'xǁEventSetResolverǁresolve__mutmut_3': xǁEventSetResolverǁresolve__mutmut_3, 
-        'xǁEventSetResolverǁresolve__mutmut_4': xǁEventSetResolverǁresolve__mutmut_4, 
-        'xǁEventSetResolverǁresolve__mutmut_5': xǁEventSetResolverǁresolve__mutmut_5, 
-        'xǁEventSetResolverǁresolve__mutmut_6': xǁEventSetResolverǁresolve__mutmut_6
+
+    xǁEventSetResolverǁresolve__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetResolverǁresolve__mutmut_1": xǁEventSetResolverǁresolve__mutmut_1,
+        "xǁEventSetResolverǁresolve__mutmut_2": xǁEventSetResolverǁresolve__mutmut_2,
+        "xǁEventSetResolverǁresolve__mutmut_3": xǁEventSetResolverǁresolve__mutmut_3,
+        "xǁEventSetResolverǁresolve__mutmut_4": xǁEventSetResolverǁresolve__mutmut_4,
+        "xǁEventSetResolverǁresolve__mutmut_5": xǁEventSetResolverǁresolve__mutmut_5,
+        "xǁEventSetResolverǁresolve__mutmut_6": xǁEventSetResolverǁresolve__mutmut_6,
     }
-    
+
     def resolve(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetResolverǁresolve__mutmut_orig"), object.__getattribute__(self, "xǁEventSetResolverǁresolve__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetResolverǁresolve__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetResolverǁresolve__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     resolve.__signature__ = _mutmut_signature(xǁEventSetResolverǁresolve__mutmut_orig)
-    xǁEventSetResolverǁresolve__mutmut_orig.__name__ = 'xǁEventSetResolverǁresolve'
+    xǁEventSetResolverǁresolve__mutmut_orig.__name__ = "xǁEventSetResolverǁresolve"
 
     def xǁEventSetResolverǁ_process_field_enrichment__mutmut_orig(
         self, field_key: str, field_value: Any, event_dict: dict[str, Any]
@@ -442,7 +457,9 @@ class EventSetResolver:
         Returns:
             Visual marker if found, None otherwise
         """
-        event_mapping = self._find_event_mapping_for_field(field_key, )
+        event_mapping = self._find_event_mapping_for_field(
+            field_key,
+        )
         if not event_mapping:
             return None
 
@@ -947,7 +964,7 @@ class EventSetResolver:
         # Get visual marker
         visual_marker = event_mapping.visual_markers.get(
             value_str,
-            )
+        )
 
         # Apply metadata fields
         if value_str in event_mapping.metadata_fields:
@@ -1078,7 +1095,9 @@ class EventSetResolver:
         # Get visual marker
         visual_marker = event_mapping.visual_markers.get(
             value_str,
-            event_mapping.visual_markers.get(event_mapping.default_key, ),
+            event_mapping.visual_markers.get(
+                event_mapping.default_key,
+            ),
         )
 
         # Apply metadata fields
@@ -1220,46 +1239,58 @@ class EventSetResolver:
                     event_dict[meta_key] = None
 
         return visual_marker if visual_marker else None
-    
-    xǁEventSetResolverǁ_process_field_enrichment__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetResolverǁ_process_field_enrichment__mutmut_1': xǁEventSetResolverǁ_process_field_enrichment__mutmut_1, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_2': xǁEventSetResolverǁ_process_field_enrichment__mutmut_2, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_3': xǁEventSetResolverǁ_process_field_enrichment__mutmut_3, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_4': xǁEventSetResolverǁ_process_field_enrichment__mutmut_4, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_5': xǁEventSetResolverǁ_process_field_enrichment__mutmut_5, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_6': xǁEventSetResolverǁ_process_field_enrichment__mutmut_6, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_7': xǁEventSetResolverǁ_process_field_enrichment__mutmut_7, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_8': xǁEventSetResolverǁ_process_field_enrichment__mutmut_8, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_9': xǁEventSetResolverǁ_process_field_enrichment__mutmut_9, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_10': xǁEventSetResolverǁ_process_field_enrichment__mutmut_10, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_11': xǁEventSetResolverǁ_process_field_enrichment__mutmut_11, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_12': xǁEventSetResolverǁ_process_field_enrichment__mutmut_12, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_13': xǁEventSetResolverǁ_process_field_enrichment__mutmut_13, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_14': xǁEventSetResolverǁ_process_field_enrichment__mutmut_14, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_15': xǁEventSetResolverǁ_process_field_enrichment__mutmut_15, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_16': xǁEventSetResolverǁ_process_field_enrichment__mutmut_16, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_17': xǁEventSetResolverǁ_process_field_enrichment__mutmut_17, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_18': xǁEventSetResolverǁ_process_field_enrichment__mutmut_18, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_19': xǁEventSetResolverǁ_process_field_enrichment__mutmut_19, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_20': xǁEventSetResolverǁ_process_field_enrichment__mutmut_20, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_21': xǁEventSetResolverǁ_process_field_enrichment__mutmut_21, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_22': xǁEventSetResolverǁ_process_field_enrichment__mutmut_22, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_23': xǁEventSetResolverǁ_process_field_enrichment__mutmut_23, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_24': xǁEventSetResolverǁ_process_field_enrichment__mutmut_24, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_25': xǁEventSetResolverǁ_process_field_enrichment__mutmut_25, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_26': xǁEventSetResolverǁ_process_field_enrichment__mutmut_26, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_27': xǁEventSetResolverǁ_process_field_enrichment__mutmut_27, 
-        'xǁEventSetResolverǁ_process_field_enrichment__mutmut_28': xǁEventSetResolverǁ_process_field_enrichment__mutmut_28
-    }
-    
-    def _process_field_enrichment(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetResolverǁ_process_field_enrichment__mutmut_orig"), object.__getattribute__(self, "xǁEventSetResolverǁ_process_field_enrichment__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _process_field_enrichment.__signature__ = _mutmut_signature(xǁEventSetResolverǁ_process_field_enrichment__mutmut_orig)
-    xǁEventSetResolverǁ_process_field_enrichment__mutmut_orig.__name__ = 'xǁEventSetResolverǁ_process_field_enrichment'
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_orig(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    xǁEventSetResolverǁ_process_field_enrichment__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_1": xǁEventSetResolverǁ_process_field_enrichment__mutmut_1,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_2": xǁEventSetResolverǁ_process_field_enrichment__mutmut_2,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_3": xǁEventSetResolverǁ_process_field_enrichment__mutmut_3,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_4": xǁEventSetResolverǁ_process_field_enrichment__mutmut_4,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_5": xǁEventSetResolverǁ_process_field_enrichment__mutmut_5,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_6": xǁEventSetResolverǁ_process_field_enrichment__mutmut_6,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_7": xǁEventSetResolverǁ_process_field_enrichment__mutmut_7,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_8": xǁEventSetResolverǁ_process_field_enrichment__mutmut_8,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_9": xǁEventSetResolverǁ_process_field_enrichment__mutmut_9,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_10": xǁEventSetResolverǁ_process_field_enrichment__mutmut_10,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_11": xǁEventSetResolverǁ_process_field_enrichment__mutmut_11,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_12": xǁEventSetResolverǁ_process_field_enrichment__mutmut_12,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_13": xǁEventSetResolverǁ_process_field_enrichment__mutmut_13,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_14": xǁEventSetResolverǁ_process_field_enrichment__mutmut_14,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_15": xǁEventSetResolverǁ_process_field_enrichment__mutmut_15,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_16": xǁEventSetResolverǁ_process_field_enrichment__mutmut_16,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_17": xǁEventSetResolverǁ_process_field_enrichment__mutmut_17,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_18": xǁEventSetResolverǁ_process_field_enrichment__mutmut_18,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_19": xǁEventSetResolverǁ_process_field_enrichment__mutmut_19,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_20": xǁEventSetResolverǁ_process_field_enrichment__mutmut_20,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_21": xǁEventSetResolverǁ_process_field_enrichment__mutmut_21,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_22": xǁEventSetResolverǁ_process_field_enrichment__mutmut_22,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_23": xǁEventSetResolverǁ_process_field_enrichment__mutmut_23,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_24": xǁEventSetResolverǁ_process_field_enrichment__mutmut_24,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_25": xǁEventSetResolverǁ_process_field_enrichment__mutmut_25,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_26": xǁEventSetResolverǁ_process_field_enrichment__mutmut_26,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_27": xǁEventSetResolverǁ_process_field_enrichment__mutmut_27,
+        "xǁEventSetResolverǁ_process_field_enrichment__mutmut_28": xǁEventSetResolverǁ_process_field_enrichment__mutmut_28,
+    }
+
+    def _process_field_enrichment(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetResolverǁ_process_field_enrichment__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetResolverǁ_process_field_enrichment__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _process_field_enrichment.__signature__ = _mutmut_signature(
+        xǁEventSetResolverǁ_process_field_enrichment__mutmut_orig
+    )
+    xǁEventSetResolverǁ_process_field_enrichment__mutmut_orig.__name__ = (
+        "xǁEventSetResolverǁ_process_field_enrichment"
+    )
+
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_orig(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1268,7 +1299,9 @@ class EventSetResolver:
         event_msg = event_dict.get("event", "")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_1(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_1(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if enrichments:
             return
@@ -1277,7 +1310,9 @@ class EventSetResolver:
         event_msg = event_dict.get("event", "")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_2(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_2(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1286,7 +1321,9 @@ class EventSetResolver:
         event_msg = event_dict.get("event", "")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_3(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_3(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1295,7 +1332,9 @@ class EventSetResolver:
         event_msg = event_dict.get("event", "")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_4(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_4(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1304,7 +1343,9 @@ class EventSetResolver:
         event_msg = event_dict.get("event", "")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_5(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_5(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1313,7 +1354,9 @@ class EventSetResolver:
         event_msg = None
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_6(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_6(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1322,7 +1365,9 @@ class EventSetResolver:
         event_msg = event_dict.get(None, "")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_7(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_7(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1331,7 +1376,9 @@ class EventSetResolver:
         event_msg = event_dict.get("event", None)
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_8(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_8(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1340,16 +1387,22 @@ class EventSetResolver:
         event_msg = event_dict.get("")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_9(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_9(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
 
         prefix = "".join(f"[{e}]" for e in enrichments)
-        event_msg = event_dict.get("event", )
+        event_msg = event_dict.get(
+            "event",
+        )
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_10(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_10(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1358,7 +1411,9 @@ class EventSetResolver:
         event_msg = event_dict.get("XXeventXX", "")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_11(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_11(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1367,7 +1422,9 @@ class EventSetResolver:
         event_msg = event_dict.get("EVENT", "")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_12(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_12(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1376,7 +1433,9 @@ class EventSetResolver:
         event_msg = event_dict.get("event", "XXXX")
         event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_13(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_13(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1385,7 +1444,9 @@ class EventSetResolver:
         event_msg = event_dict.get("event", "")
         event_dict["event"] = None
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_14(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_14(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1394,7 +1455,9 @@ class EventSetResolver:
         event_msg = event_dict.get("event", "")
         event_dict["XXeventXX"] = f"{prefix} {event_msg}" if event_msg else prefix
 
-    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_15(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+    def xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_15(
+        self, enrichments: list[str], event_dict: dict[str, Any]
+    ) -> None:
         """Apply visual enrichments to the event message."""
         if not enrichments:
             return
@@ -1402,31 +1465,41 @@ class EventSetResolver:
         prefix = "".join(f"[{e}]" for e in enrichments)
         event_msg = event_dict.get("event", "")
         event_dict["EVENT"] = f"{prefix} {event_msg}" if event_msg else prefix
-    
-    xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_1': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_1, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_2': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_2, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_3': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_3, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_4': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_4, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_5': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_5, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_6': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_6, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_7': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_7, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_8': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_8, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_9': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_9, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_10': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_10, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_11': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_11, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_12': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_12, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_13': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_13, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_14': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_14, 
-        'xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_15': xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_15
+
+    xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_1": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_1,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_2": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_2,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_3": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_3,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_4": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_4,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_5": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_5,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_6": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_6,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_7": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_7,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_8": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_8,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_9": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_9,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_10": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_10,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_11": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_11,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_12": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_12,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_13": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_13,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_14": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_14,
+        "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_15": xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_15,
     }
-    
+
     def _apply_visual_enrichments(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_orig"), object.__getattribute__(self, "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _apply_visual_enrichments.__signature__ = _mutmut_signature(xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_orig)
-    xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_orig.__name__ = 'xǁEventSetResolverǁ_apply_visual_enrichments'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _apply_visual_enrichments.__signature__ = _mutmut_signature(
+        xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_orig
+    )
+    xǁEventSetResolverǁ_apply_visual_enrichments__mutmut_orig.__name__ = (
+        "xǁEventSetResolverǁ_apply_visual_enrichments"
+    )
 
     def xǁEventSetResolverǁenrich_event__mutmut_orig(self, event_dict: dict[str, Any]) -> dict[str, Any]:
         """Enrich a log event with event set data.
@@ -1912,7 +1985,10 @@ class EventSetResolver:
             if field_key == "event" or field_value is None:
                 continue
 
-            visual_marker = self._process_field_enrichment(field_key, field_value, )
+            visual_marker = self._process_field_enrichment(
+                field_key,
+                field_value,
+            )
             if visual_marker:
                 enrichments.append(visual_marker)
 
@@ -2062,42 +2138,52 @@ class EventSetResolver:
                 enrichments.append(visual_marker)
 
         # Add visual enrichments to event message
-        self._apply_visual_enrichments(enrichments, )
+        self._apply_visual_enrichments(
+            enrichments,
+        )
 
         return event_dict
-    
-    xǁEventSetResolverǁenrich_event__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetResolverǁenrich_event__mutmut_1': xǁEventSetResolverǁenrich_event__mutmut_1, 
-        'xǁEventSetResolverǁenrich_event__mutmut_2': xǁEventSetResolverǁenrich_event__mutmut_2, 
-        'xǁEventSetResolverǁenrich_event__mutmut_3': xǁEventSetResolverǁenrich_event__mutmut_3, 
-        'xǁEventSetResolverǁenrich_event__mutmut_4': xǁEventSetResolverǁenrich_event__mutmut_4, 
-        'xǁEventSetResolverǁenrich_event__mutmut_5': xǁEventSetResolverǁenrich_event__mutmut_5, 
-        'xǁEventSetResolverǁenrich_event__mutmut_6': xǁEventSetResolverǁenrich_event__mutmut_6, 
-        'xǁEventSetResolverǁenrich_event__mutmut_7': xǁEventSetResolverǁenrich_event__mutmut_7, 
-        'xǁEventSetResolverǁenrich_event__mutmut_8': xǁEventSetResolverǁenrich_event__mutmut_8, 
-        'xǁEventSetResolverǁenrich_event__mutmut_9': xǁEventSetResolverǁenrich_event__mutmut_9, 
-        'xǁEventSetResolverǁenrich_event__mutmut_10': xǁEventSetResolverǁenrich_event__mutmut_10, 
-        'xǁEventSetResolverǁenrich_event__mutmut_11': xǁEventSetResolverǁenrich_event__mutmut_11, 
-        'xǁEventSetResolverǁenrich_event__mutmut_12': xǁEventSetResolverǁenrich_event__mutmut_12, 
-        'xǁEventSetResolverǁenrich_event__mutmut_13': xǁEventSetResolverǁenrich_event__mutmut_13, 
-        'xǁEventSetResolverǁenrich_event__mutmut_14': xǁEventSetResolverǁenrich_event__mutmut_14, 
-        'xǁEventSetResolverǁenrich_event__mutmut_15': xǁEventSetResolverǁenrich_event__mutmut_15, 
-        'xǁEventSetResolverǁenrich_event__mutmut_16': xǁEventSetResolverǁenrich_event__mutmut_16, 
-        'xǁEventSetResolverǁenrich_event__mutmut_17': xǁEventSetResolverǁenrich_event__mutmut_17, 
-        'xǁEventSetResolverǁenrich_event__mutmut_18': xǁEventSetResolverǁenrich_event__mutmut_18, 
-        'xǁEventSetResolverǁenrich_event__mutmut_19': xǁEventSetResolverǁenrich_event__mutmut_19, 
-        'xǁEventSetResolverǁenrich_event__mutmut_20': xǁEventSetResolverǁenrich_event__mutmut_20, 
-        'xǁEventSetResolverǁenrich_event__mutmut_21': xǁEventSetResolverǁenrich_event__mutmut_21
-    }
-    
-    def enrich_event(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetResolverǁenrich_event__mutmut_orig"), object.__getattribute__(self, "xǁEventSetResolverǁenrich_event__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    enrich_event.__signature__ = _mutmut_signature(xǁEventSetResolverǁenrich_event__mutmut_orig)
-    xǁEventSetResolverǁenrich_event__mutmut_orig.__name__ = 'xǁEventSetResolverǁenrich_event'
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_orig(self, field_key: str, field_value: Any) -> EventMapping | None:
+    xǁEventSetResolverǁenrich_event__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetResolverǁenrich_event__mutmut_1": xǁEventSetResolverǁenrich_event__mutmut_1,
+        "xǁEventSetResolverǁenrich_event__mutmut_2": xǁEventSetResolverǁenrich_event__mutmut_2,
+        "xǁEventSetResolverǁenrich_event__mutmut_3": xǁEventSetResolverǁenrich_event__mutmut_3,
+        "xǁEventSetResolverǁenrich_event__mutmut_4": xǁEventSetResolverǁenrich_event__mutmut_4,
+        "xǁEventSetResolverǁenrich_event__mutmut_5": xǁEventSetResolverǁenrich_event__mutmut_5,
+        "xǁEventSetResolverǁenrich_event__mutmut_6": xǁEventSetResolverǁenrich_event__mutmut_6,
+        "xǁEventSetResolverǁenrich_event__mutmut_7": xǁEventSetResolverǁenrich_event__mutmut_7,
+        "xǁEventSetResolverǁenrich_event__mutmut_8": xǁEventSetResolverǁenrich_event__mutmut_8,
+        "xǁEventSetResolverǁenrich_event__mutmut_9": xǁEventSetResolverǁenrich_event__mutmut_9,
+        "xǁEventSetResolverǁenrich_event__mutmut_10": xǁEventSetResolverǁenrich_event__mutmut_10,
+        "xǁEventSetResolverǁenrich_event__mutmut_11": xǁEventSetResolverǁenrich_event__mutmut_11,
+        "xǁEventSetResolverǁenrich_event__mutmut_12": xǁEventSetResolverǁenrich_event__mutmut_12,
+        "xǁEventSetResolverǁenrich_event__mutmut_13": xǁEventSetResolverǁenrich_event__mutmut_13,
+        "xǁEventSetResolverǁenrich_event__mutmut_14": xǁEventSetResolverǁenrich_event__mutmut_14,
+        "xǁEventSetResolverǁenrich_event__mutmut_15": xǁEventSetResolverǁenrich_event__mutmut_15,
+        "xǁEventSetResolverǁenrich_event__mutmut_16": xǁEventSetResolverǁenrich_event__mutmut_16,
+        "xǁEventSetResolverǁenrich_event__mutmut_17": xǁEventSetResolverǁenrich_event__mutmut_17,
+        "xǁEventSetResolverǁenrich_event__mutmut_18": xǁEventSetResolverǁenrich_event__mutmut_18,
+        "xǁEventSetResolverǁenrich_event__mutmut_19": xǁEventSetResolverǁenrich_event__mutmut_19,
+        "xǁEventSetResolverǁenrich_event__mutmut_20": xǁEventSetResolverǁenrich_event__mutmut_20,
+        "xǁEventSetResolverǁenrich_event__mutmut_21": xǁEventSetResolverǁenrich_event__mutmut_21,
+    }
+
+    def enrich_event(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetResolverǁenrich_event__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetResolverǁenrich_event__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    enrich_event.__signature__ = _mutmut_signature(xǁEventSetResolverǁenrich_event__mutmut_orig)
+    xǁEventSetResolverǁenrich_event__mutmut_orig.__name__ = "xǁEventSetResolverǁenrich_event"
+
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_orig(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2145,7 +2231,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_1(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_1(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2193,7 +2281,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_2(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_2(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2241,7 +2331,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_3(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_3(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2289,7 +2381,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_4(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_4(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2337,7 +2431,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_5(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_5(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2385,7 +2481,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_6(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_6(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2433,7 +2531,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_7(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_7(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2481,7 +2581,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_8(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_8(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2529,7 +2631,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_9(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_9(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2549,7 +2653,8 @@ class EventSetResolver:
                 # Pattern matching for common cases
                 if (
                     field_key.startswith("http.")
-                    and mapping.name.startswith("http_") or field_key.replace(".", "_") == mapping.name
+                    and mapping.name.startswith("http_")
+                    or field_key.replace(".", "_") == mapping.name
                 ):
                     return mapping
 
@@ -2576,7 +2681,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_10(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_10(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2595,7 +2702,8 @@ class EventSetResolver:
 
                 # Pattern matching for common cases
                 if (
-                    field_key.startswith("http.") or mapping.name.startswith("http_")
+                    field_key.startswith("http.")
+                    or mapping.name.startswith("http_")
                     and field_key.replace(".", "_") == mapping.name
                 ):
                     return mapping
@@ -2623,7 +2731,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_11(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_11(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2671,7 +2781,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_12(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_12(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2719,7 +2831,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_13(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_13(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2767,7 +2881,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_14(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_14(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2815,7 +2931,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_15(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_15(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2863,7 +2981,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_16(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_16(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2911,7 +3031,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_17(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_17(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -2959,7 +3081,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_18(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_18(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3007,7 +3131,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_19(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_19(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3055,7 +3181,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_20(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_20(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3076,7 +3204,10 @@ class EventSetResolver:
                 if (
                     field_key.startswith("http.")
                     and mapping.name.startswith("http_")
-                    and field_key.replace(".", ) == mapping.name
+                    and field_key.replace(
+                        ".",
+                    )
+                    == mapping.name
                 ):
                     return mapping
 
@@ -3103,7 +3234,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_21(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_21(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3151,7 +3284,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_22(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_22(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3199,7 +3334,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_23(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_23(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3247,7 +3384,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_24(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_24(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3274,7 +3413,8 @@ class EventSetResolver:
 
                 if (
                     field_key.startswith("llm.")
-                    and mapping.name.startswith("llm_") or field_key.replace(".", "_") == mapping.name
+                    and mapping.name.startswith("llm_")
+                    or field_key.replace(".", "_") == mapping.name
                 ):
                     return mapping
 
@@ -3294,7 +3434,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_25(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_25(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3320,7 +3462,8 @@ class EventSetResolver:
                     return mapping
 
                 if (
-                    field_key.startswith("llm.") or mapping.name.startswith("llm_")
+                    field_key.startswith("llm.")
+                    or mapping.name.startswith("llm_")
                     and field_key.replace(".", "_") == mapping.name
                 ):
                     return mapping
@@ -3341,7 +3484,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_26(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_26(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3389,7 +3534,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_27(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_27(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3437,7 +3584,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_28(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_28(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3485,7 +3634,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_29(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_29(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3533,7 +3684,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_30(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_30(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3581,7 +3734,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_31(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_31(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3629,7 +3784,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_32(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_32(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3677,7 +3834,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_33(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_33(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3725,7 +3884,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_34(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_34(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3773,7 +3934,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_35(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_35(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3801,7 +3964,10 @@ class EventSetResolver:
                 if (
                     field_key.startswith("llm.")
                     and mapping.name.startswith("llm_")
-                    and field_key.replace(".", ) == mapping.name
+                    and field_key.replace(
+                        ".",
+                    )
+                    == mapping.name
                 ):
                     return mapping
 
@@ -3821,7 +3987,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_36(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_36(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3869,7 +4037,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_37(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_37(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3917,7 +4087,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_38(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_38(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3965,7 +4137,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_39(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_39(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -3999,7 +4173,8 @@ class EventSetResolver:
 
                 if (
                     field_key.startswith("db.")
-                    and mapping.name.startswith("db_") or field_key.replace(".", "_") == mapping.name
+                    and mapping.name.startswith("db_")
+                    or field_key.replace(".", "_") == mapping.name
                 ):
                     return mapping
 
@@ -4012,7 +4187,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_40(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_40(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4045,7 +4222,8 @@ class EventSetResolver:
                     return mapping
 
                 if (
-                    field_key.startswith("db.") or mapping.name.startswith("db_")
+                    field_key.startswith("db.")
+                    or mapping.name.startswith("db_")
                     and field_key.replace(".", "_") == mapping.name
                 ):
                     return mapping
@@ -4059,7 +4237,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_41(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_41(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4107,7 +4287,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_42(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_42(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4155,7 +4337,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_43(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_43(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4203,7 +4387,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_44(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_44(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4251,7 +4437,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_45(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_45(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4299,7 +4487,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_46(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_46(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4347,7 +4537,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_47(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_47(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4395,7 +4587,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_48(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_48(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4443,7 +4637,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_49(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_49(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4491,7 +4687,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_50(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_50(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4526,7 +4724,10 @@ class EventSetResolver:
                 if (
                     field_key.startswith("db.")
                     and mapping.name.startswith("db_")
-                    and field_key.replace(".", ) == mapping.name
+                    and field_key.replace(
+                        ".",
+                    )
+                    == mapping.name
                 ):
                     return mapping
 
@@ -4539,7 +4740,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_51(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_51(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4587,7 +4790,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_52(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_52(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4635,7 +4840,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_53(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_53(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4683,7 +4890,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_54(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_54(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4724,13 +4933,16 @@ class EventSetResolver:
 
                 if (
                     field_key.startswith("task.")
-                    and mapping.name.startswith("task_") or field_key.replace(".", "_") == mapping.name
+                    and mapping.name.startswith("task_")
+                    or field_key.replace(".", "_") == mapping.name
                 ):
                     return mapping
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_55(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_55(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4770,14 +4982,17 @@ class EventSetResolver:
                     return mapping
 
                 if (
-                    field_key.startswith("task.") or mapping.name.startswith("task_")
+                    field_key.startswith("task.")
+                    or mapping.name.startswith("task_")
                     and field_key.replace(".", "_") == mapping.name
                 ):
                     return mapping
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_56(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_56(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4825,7 +5040,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_57(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_57(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4873,7 +5090,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_58(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_58(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4921,7 +5140,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_59(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_59(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -4969,7 +5190,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_60(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_60(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -5017,7 +5240,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_61(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_61(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -5065,7 +5290,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_62(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_62(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -5113,7 +5340,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_63(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_63(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -5161,7 +5390,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_64(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_64(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -5209,7 +5440,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_65(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_65(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -5251,13 +5484,18 @@ class EventSetResolver:
                 if (
                     field_key.startswith("task.")
                     and mapping.name.startswith("task_")
-                    and field_key.replace(".", ) == mapping.name
+                    and field_key.replace(
+                        ".",
+                    )
+                    == mapping.name
                 ):
                     return mapping
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_66(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_66(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -5305,7 +5543,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_67(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_67(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -5353,7 +5593,9 @@ class EventSetResolver:
 
         return None
 
-    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_68(self, field_key: str, field_value: Any) -> EventMapping | None:
+    def xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_68(
+        self, field_key: str, field_value: Any
+    ) -> EventMapping | None:
         """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
@@ -5400,84 +5642,94 @@ class EventSetResolver:
                     return mapping
 
         return None
-    
-    xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_1': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_1, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_2': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_2, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_3': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_3, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_4': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_4, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_5': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_5, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_6': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_6, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_7': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_7, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_8': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_8, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_9': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_9, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_10': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_10, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_11': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_11, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_12': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_12, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_13': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_13, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_14': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_14, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_15': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_15, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_16': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_16, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_17': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_17, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_18': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_18, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_19': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_19, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_20': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_20, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_21': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_21, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_22': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_22, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_23': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_23, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_24': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_24, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_25': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_25, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_26': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_26, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_27': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_27, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_28': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_28, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_29': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_29, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_30': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_30, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_31': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_31, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_32': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_32, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_33': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_33, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_34': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_34, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_35': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_35, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_36': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_36, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_37': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_37, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_38': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_38, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_39': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_39, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_40': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_40, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_41': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_41, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_42': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_42, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_43': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_43, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_44': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_44, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_45': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_45, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_46': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_46, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_47': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_47, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_48': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_48, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_49': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_49, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_50': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_50, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_51': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_51, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_52': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_52, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_53': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_53, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_54': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_54, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_55': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_55, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_56': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_56, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_57': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_57, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_58': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_58, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_59': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_59, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_60': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_60, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_61': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_61, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_62': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_62, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_63': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_63, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_64': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_64, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_65': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_65, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_66': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_66, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_67': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_67, 
-        'xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_68': xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_68
+
+    xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_1": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_1,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_2": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_2,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_3": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_3,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_4": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_4,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_5": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_5,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_6": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_6,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_7": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_7,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_8": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_8,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_9": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_9,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_10": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_10,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_11": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_11,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_12": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_12,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_13": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_13,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_14": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_14,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_15": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_15,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_16": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_16,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_17": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_17,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_18": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_18,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_19": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_19,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_20": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_20,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_21": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_21,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_22": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_22,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_23": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_23,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_24": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_24,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_25": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_25,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_26": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_26,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_27": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_27,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_28": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_28,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_29": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_29,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_30": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_30,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_31": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_31,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_32": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_32,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_33": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_33,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_34": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_34,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_35": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_35,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_36": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_36,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_37": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_37,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_38": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_38,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_39": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_39,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_40": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_40,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_41": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_41,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_42": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_42,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_43": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_43,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_44": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_44,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_45": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_45,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_46": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_46,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_47": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_47,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_48": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_48,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_49": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_49,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_50": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_50,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_51": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_51,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_52": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_52,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_53": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_53,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_54": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_54,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_55": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_55,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_56": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_56,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_57": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_57,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_58": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_58,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_59": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_59,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_60": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_60,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_61": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_61,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_62": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_62,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_63": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_63,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_64": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_64,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_65": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_65,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_66": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_66,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_67": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_67,
+        "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_68": xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_68,
     }
-    
+
     def _find_event_mapping_for_field(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_orig"), object.__getattribute__(self, "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _find_event_mapping_for_field.__signature__ = _mutmut_signature(xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_orig)
-    xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_orig.__name__ = 'xǁEventSetResolverǁ_find_event_mapping_for_field'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _find_event_mapping_for_field.__signature__ = _mutmut_signature(
+        xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_orig
+    )
+    xǁEventSetResolverǁ_find_event_mapping_for_field__mutmut_orig.__name__ = (
+        "xǁEventSetResolverǁ_find_event_mapping_for_field"
+    )
 
     def xǁEventSetResolverǁget_visual_markers__mutmut_orig(self, event_dict: dict[str, Any]) -> list[str]:
         """Extract visual markers for an event without modifying it.
@@ -5940,7 +6192,9 @@ class EventSetResolver:
             if field_key == "event" or field_value is None:
                 continue
 
-            event_mapping = self._find_event_mapping_for_field(field_key, )
+            event_mapping = self._find_event_mapping_for_field(
+                field_key,
+            )
             if not event_mapping:
                 continue
 
@@ -6283,7 +6537,7 @@ class EventSetResolver:
             value_str = str(field_value).lower()
             marker = event_mapping.visual_markers.get(
                 value_str,
-                )
+            )
 
             if marker:
                 markers.append(marker)
@@ -6418,7 +6672,9 @@ class EventSetResolver:
             value_str = str(field_value).lower()
             marker = event_mapping.visual_markers.get(
                 value_str,
-                event_mapping.visual_markers.get(event_mapping.default_key, ),
+                event_mapping.visual_markers.get(
+                    event_mapping.default_key,
+                ),
             )
 
             if marker:
@@ -6493,45 +6749,51 @@ class EventSetResolver:
                 markers.append(None)
 
         return markers
-    
-    xǁEventSetResolverǁget_visual_markers__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetResolverǁget_visual_markers__mutmut_1': xǁEventSetResolverǁget_visual_markers__mutmut_1, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_2': xǁEventSetResolverǁget_visual_markers__mutmut_2, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_3': xǁEventSetResolverǁget_visual_markers__mutmut_3, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_4': xǁEventSetResolverǁget_visual_markers__mutmut_4, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_5': xǁEventSetResolverǁget_visual_markers__mutmut_5, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_6': xǁEventSetResolverǁget_visual_markers__mutmut_6, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_7': xǁEventSetResolverǁget_visual_markers__mutmut_7, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_8': xǁEventSetResolverǁget_visual_markers__mutmut_8, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_9': xǁEventSetResolverǁget_visual_markers__mutmut_9, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_10': xǁEventSetResolverǁget_visual_markers__mutmut_10, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_11': xǁEventSetResolverǁget_visual_markers__mutmut_11, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_12': xǁEventSetResolverǁget_visual_markers__mutmut_12, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_13': xǁEventSetResolverǁget_visual_markers__mutmut_13, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_14': xǁEventSetResolverǁget_visual_markers__mutmut_14, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_15': xǁEventSetResolverǁget_visual_markers__mutmut_15, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_16': xǁEventSetResolverǁget_visual_markers__mutmut_16, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_17': xǁEventSetResolverǁget_visual_markers__mutmut_17, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_18': xǁEventSetResolverǁget_visual_markers__mutmut_18, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_19': xǁEventSetResolverǁget_visual_markers__mutmut_19, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_20': xǁEventSetResolverǁget_visual_markers__mutmut_20, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_21': xǁEventSetResolverǁget_visual_markers__mutmut_21, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_22': xǁEventSetResolverǁget_visual_markers__mutmut_22, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_23': xǁEventSetResolverǁget_visual_markers__mutmut_23, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_24': xǁEventSetResolverǁget_visual_markers__mutmut_24, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_25': xǁEventSetResolverǁget_visual_markers__mutmut_25, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_26': xǁEventSetResolverǁget_visual_markers__mutmut_26, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_27': xǁEventSetResolverǁget_visual_markers__mutmut_27, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_28': xǁEventSetResolverǁget_visual_markers__mutmut_28, 
-        'xǁEventSetResolverǁget_visual_markers__mutmut_29': xǁEventSetResolverǁget_visual_markers__mutmut_29
+
+    xǁEventSetResolverǁget_visual_markers__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetResolverǁget_visual_markers__mutmut_1": xǁEventSetResolverǁget_visual_markers__mutmut_1,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_2": xǁEventSetResolverǁget_visual_markers__mutmut_2,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_3": xǁEventSetResolverǁget_visual_markers__mutmut_3,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_4": xǁEventSetResolverǁget_visual_markers__mutmut_4,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_5": xǁEventSetResolverǁget_visual_markers__mutmut_5,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_6": xǁEventSetResolverǁget_visual_markers__mutmut_6,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_7": xǁEventSetResolverǁget_visual_markers__mutmut_7,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_8": xǁEventSetResolverǁget_visual_markers__mutmut_8,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_9": xǁEventSetResolverǁget_visual_markers__mutmut_9,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_10": xǁEventSetResolverǁget_visual_markers__mutmut_10,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_11": xǁEventSetResolverǁget_visual_markers__mutmut_11,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_12": xǁEventSetResolverǁget_visual_markers__mutmut_12,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_13": xǁEventSetResolverǁget_visual_markers__mutmut_13,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_14": xǁEventSetResolverǁget_visual_markers__mutmut_14,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_15": xǁEventSetResolverǁget_visual_markers__mutmut_15,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_16": xǁEventSetResolverǁget_visual_markers__mutmut_16,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_17": xǁEventSetResolverǁget_visual_markers__mutmut_17,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_18": xǁEventSetResolverǁget_visual_markers__mutmut_18,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_19": xǁEventSetResolverǁget_visual_markers__mutmut_19,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_20": xǁEventSetResolverǁget_visual_markers__mutmut_20,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_21": xǁEventSetResolverǁget_visual_markers__mutmut_21,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_22": xǁEventSetResolverǁget_visual_markers__mutmut_22,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_23": xǁEventSetResolverǁget_visual_markers__mutmut_23,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_24": xǁEventSetResolverǁget_visual_markers__mutmut_24,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_25": xǁEventSetResolverǁget_visual_markers__mutmut_25,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_26": xǁEventSetResolverǁget_visual_markers__mutmut_26,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_27": xǁEventSetResolverǁget_visual_markers__mutmut_27,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_28": xǁEventSetResolverǁget_visual_markers__mutmut_28,
+        "xǁEventSetResolverǁget_visual_markers__mutmut_29": xǁEventSetResolverǁget_visual_markers__mutmut_29,
     }
-    
+
     def get_visual_markers(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetResolverǁget_visual_markers__mutmut_orig"), object.__getattribute__(self, "xǁEventSetResolverǁget_visual_markers__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetResolverǁget_visual_markers__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetResolverǁget_visual_markers__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_visual_markers.__signature__ = _mutmut_signature(xǁEventSetResolverǁget_visual_markers__mutmut_orig)
-    xǁEventSetResolverǁget_visual_markers__mutmut_orig.__name__ = 'xǁEventSetResolverǁget_visual_markers'
+    xǁEventSetResolverǁget_visual_markers__mutmut_orig.__name__ = "xǁEventSetResolverǁget_visual_markers"
 
 
 # Global resolver instance
@@ -6568,16 +6830,17 @@ def x_enrich_event__mutmut_1(event_dict: dict[str, Any]) -> dict[str, Any]:
     """
     return _resolver.enrich_event(None)
 
-x_enrich_event__mutmut_mutants : ClassVar[MutantDict] = {
-'x_enrich_event__mutmut_1': x_enrich_event__mutmut_1
-}
+
+x_enrich_event__mutmut_mutants: ClassVar[MutantDict] = {"x_enrich_event__mutmut_1": x_enrich_event__mutmut_1}
+
 
 def enrich_event(*args, **kwargs):
     result = _mutmut_trampoline(x_enrich_event__mutmut_orig, x_enrich_event__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 enrich_event.__signature__ = _mutmut_signature(x_enrich_event__mutmut_orig)
-x_enrich_event__mutmut_orig.__name__ = 'x_enrich_event'
+x_enrich_event__mutmut_orig.__name__ = "x_enrich_event"
 
 
 # <3 🧱🤝📊🪄

@@ -27,23 +27,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -817,7 +820,9 @@ def x_get_env__mutmut_17(
         from provide.foundation.file.safe import safe_read_text
 
         try:
-            value = safe_read_text(file_path, ).strip()
+            value = safe_read_text(
+                file_path,
+            ).strip()
             if not value:
                 raise ValueError(f"Secret file is empty: {file_path}")
         except Exception as e:
@@ -997,36 +1002,39 @@ def x_get_env__mutmut_21(
 
     return value
 
-x_get_env__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_env__mutmut_1': x_get_env__mutmut_1, 
-    'x_get_env__mutmut_2': x_get_env__mutmut_2, 
-    'x_get_env__mutmut_3': x_get_env__mutmut_3, 
-    'x_get_env__mutmut_4': x_get_env__mutmut_4, 
-    'x_get_env__mutmut_5': x_get_env__mutmut_5, 
-    'x_get_env__mutmut_6': x_get_env__mutmut_6, 
-    'x_get_env__mutmut_7': x_get_env__mutmut_7, 
-    'x_get_env__mutmut_8': x_get_env__mutmut_8, 
-    'x_get_env__mutmut_9': x_get_env__mutmut_9, 
-    'x_get_env__mutmut_10': x_get_env__mutmut_10, 
-    'x_get_env__mutmut_11': x_get_env__mutmut_11, 
-    'x_get_env__mutmut_12': x_get_env__mutmut_12, 
-    'x_get_env__mutmut_13': x_get_env__mutmut_13, 
-    'x_get_env__mutmut_14': x_get_env__mutmut_14, 
-    'x_get_env__mutmut_15': x_get_env__mutmut_15, 
-    'x_get_env__mutmut_16': x_get_env__mutmut_16, 
-    'x_get_env__mutmut_17': x_get_env__mutmut_17, 
-    'x_get_env__mutmut_18': x_get_env__mutmut_18, 
-    'x_get_env__mutmut_19': x_get_env__mutmut_19, 
-    'x_get_env__mutmut_20': x_get_env__mutmut_20, 
-    'x_get_env__mutmut_21': x_get_env__mutmut_21
+
+x_get_env__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_env__mutmut_1": x_get_env__mutmut_1,
+    "x_get_env__mutmut_2": x_get_env__mutmut_2,
+    "x_get_env__mutmut_3": x_get_env__mutmut_3,
+    "x_get_env__mutmut_4": x_get_env__mutmut_4,
+    "x_get_env__mutmut_5": x_get_env__mutmut_5,
+    "x_get_env__mutmut_6": x_get_env__mutmut_6,
+    "x_get_env__mutmut_7": x_get_env__mutmut_7,
+    "x_get_env__mutmut_8": x_get_env__mutmut_8,
+    "x_get_env__mutmut_9": x_get_env__mutmut_9,
+    "x_get_env__mutmut_10": x_get_env__mutmut_10,
+    "x_get_env__mutmut_11": x_get_env__mutmut_11,
+    "x_get_env__mutmut_12": x_get_env__mutmut_12,
+    "x_get_env__mutmut_13": x_get_env__mutmut_13,
+    "x_get_env__mutmut_14": x_get_env__mutmut_14,
+    "x_get_env__mutmut_15": x_get_env__mutmut_15,
+    "x_get_env__mutmut_16": x_get_env__mutmut_16,
+    "x_get_env__mutmut_17": x_get_env__mutmut_17,
+    "x_get_env__mutmut_18": x_get_env__mutmut_18,
+    "x_get_env__mutmut_19": x_get_env__mutmut_19,
+    "x_get_env__mutmut_20": x_get_env__mutmut_20,
+    "x_get_env__mutmut_21": x_get_env__mutmut_21,
 }
+
 
 def get_env(*args, **kwargs):
     result = _mutmut_trampoline(x_get_env__mutmut_orig, x_get_env__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_env.__signature__ = _mutmut_signature(x_get_env__mutmut_orig)
-x_get_env__mutmut_orig.__name__ = 'x_get_env'
+x_get_env__mutmut_orig.__name__ = "x_get_env"
 
 
 def x_env_field__mutmut_orig(
@@ -1197,7 +1205,9 @@ def x_env_field__mutmut_5(
         Field descriptor
 
     """
-    metadata = kwargs.pop("metadata", )
+    metadata = kwargs.pop(
+        "metadata",
+    )
 
     if env_var:
         metadata["env_var"] = env_var
@@ -1626,36 +1636,41 @@ def x_env_field__mutmut_19(
     if parser:
         metadata["env_parser"] = parser
 
-    return field(metadata=metadata, )
+    return field(
+        metadata=metadata,
+    )
 
-x_env_field__mutmut_mutants : ClassVar[MutantDict] = {
-'x_env_field__mutmut_1': x_env_field__mutmut_1, 
-    'x_env_field__mutmut_2': x_env_field__mutmut_2, 
-    'x_env_field__mutmut_3': x_env_field__mutmut_3, 
-    'x_env_field__mutmut_4': x_env_field__mutmut_4, 
-    'x_env_field__mutmut_5': x_env_field__mutmut_5, 
-    'x_env_field__mutmut_6': x_env_field__mutmut_6, 
-    'x_env_field__mutmut_7': x_env_field__mutmut_7, 
-    'x_env_field__mutmut_8': x_env_field__mutmut_8, 
-    'x_env_field__mutmut_9': x_env_field__mutmut_9, 
-    'x_env_field__mutmut_10': x_env_field__mutmut_10, 
-    'x_env_field__mutmut_11': x_env_field__mutmut_11, 
-    'x_env_field__mutmut_12': x_env_field__mutmut_12, 
-    'x_env_field__mutmut_13': x_env_field__mutmut_13, 
-    'x_env_field__mutmut_14': x_env_field__mutmut_14, 
-    'x_env_field__mutmut_15': x_env_field__mutmut_15, 
-    'x_env_field__mutmut_16': x_env_field__mutmut_16, 
-    'x_env_field__mutmut_17': x_env_field__mutmut_17, 
-    'x_env_field__mutmut_18': x_env_field__mutmut_18, 
-    'x_env_field__mutmut_19': x_env_field__mutmut_19
+
+x_env_field__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_env_field__mutmut_1": x_env_field__mutmut_1,
+    "x_env_field__mutmut_2": x_env_field__mutmut_2,
+    "x_env_field__mutmut_3": x_env_field__mutmut_3,
+    "x_env_field__mutmut_4": x_env_field__mutmut_4,
+    "x_env_field__mutmut_5": x_env_field__mutmut_5,
+    "x_env_field__mutmut_6": x_env_field__mutmut_6,
+    "x_env_field__mutmut_7": x_env_field__mutmut_7,
+    "x_env_field__mutmut_8": x_env_field__mutmut_8,
+    "x_env_field__mutmut_9": x_env_field__mutmut_9,
+    "x_env_field__mutmut_10": x_env_field__mutmut_10,
+    "x_env_field__mutmut_11": x_env_field__mutmut_11,
+    "x_env_field__mutmut_12": x_env_field__mutmut_12,
+    "x_env_field__mutmut_13": x_env_field__mutmut_13,
+    "x_env_field__mutmut_14": x_env_field__mutmut_14,
+    "x_env_field__mutmut_15": x_env_field__mutmut_15,
+    "x_env_field__mutmut_16": x_env_field__mutmut_16,
+    "x_env_field__mutmut_17": x_env_field__mutmut_17,
+    "x_env_field__mutmut_18": x_env_field__mutmut_18,
+    "x_env_field__mutmut_19": x_env_field__mutmut_19,
 }
+
 
 def env_field(*args, **kwargs):
     result = _mutmut_trampoline(x_env_field__mutmut_orig, x_env_field__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 env_field.__signature__ = _mutmut_signature(x_env_field__mutmut_orig)
-x_env_field__mutmut_orig.__name__ = 'x_env_field'
+x_env_field__mutmut_orig.__name__ = "x_env_field"
 
 
 class RuntimeConfig(BaseConfig):
@@ -1728,7 +1743,9 @@ class RuntimeConfig(BaseConfig):
 
         return cls.from_dict(data, source=ConfigSource.ENV)
 
-    def xǁRuntimeConfigǁto_env_dict__mutmut_orig(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
+    def xǁRuntimeConfigǁto_env_dict__mutmut_orig(
+        self, prefix: str = "", delimiter: str = "_"
+    ) -> dict[str, str]:
         """Convert configuration to environment variable dictionary.
 
         Args:
@@ -1771,7 +1788,9 @@ class RuntimeConfig(BaseConfig):
 
         return env_dict
 
-    def xǁRuntimeConfigǁto_env_dict__mutmut_1(self, prefix: str = "XXXX", delimiter: str = "_") -> dict[str, str]:
+    def xǁRuntimeConfigǁto_env_dict__mutmut_1(
+        self, prefix: str = "XXXX", delimiter: str = "_"
+    ) -> dict[str, str]:
         """Convert configuration to environment variable dictionary.
 
         Args:
@@ -1814,7 +1833,9 @@ class RuntimeConfig(BaseConfig):
 
         return env_dict
 
-    def xǁRuntimeConfigǁto_env_dict__mutmut_2(self, prefix: str = "", delimiter: str = "XX_XX") -> dict[str, str]:
+    def xǁRuntimeConfigǁto_env_dict__mutmut_2(
+        self, prefix: str = "", delimiter: str = "XX_XX"
+    ) -> dict[str, str]:
         """Convert configuration to environment variable dictionary.
 
         Args:
@@ -2129,7 +2150,9 @@ class RuntimeConfig(BaseConfig):
         env_dict = {}
 
         for attr in fields(self.__class__):
-            value = getattr(self, )
+            value = getattr(
+                self,
+            )
 
             # Skip None values
             if value is None:
@@ -2655,7 +2678,9 @@ class RuntimeConfig(BaseConfig):
             env_var = attr.metadata.get("env_var")
 
             if not env_var:
-                field_prefix = attr.metadata.get("env_prefix", )
+                field_prefix = attr.metadata.get(
+                    "env_prefix",
+                )
                 field_name = attr.name.upper()
 
                 env_var = f"{field_prefix}{delimiter}{field_name}" if field_prefix else field_name
@@ -3533,57 +3558,63 @@ class RuntimeConfig(BaseConfig):
             env_dict[env_var] = None
 
         return env_dict
-    
-    xǁRuntimeConfigǁto_env_dict__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRuntimeConfigǁto_env_dict__mutmut_1': xǁRuntimeConfigǁto_env_dict__mutmut_1, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_2': xǁRuntimeConfigǁto_env_dict__mutmut_2, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_3': xǁRuntimeConfigǁto_env_dict__mutmut_3, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_4': xǁRuntimeConfigǁto_env_dict__mutmut_4, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_5': xǁRuntimeConfigǁto_env_dict__mutmut_5, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_6': xǁRuntimeConfigǁto_env_dict__mutmut_6, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_7': xǁRuntimeConfigǁto_env_dict__mutmut_7, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_8': xǁRuntimeConfigǁto_env_dict__mutmut_8, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_9': xǁRuntimeConfigǁto_env_dict__mutmut_9, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_10': xǁRuntimeConfigǁto_env_dict__mutmut_10, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_11': xǁRuntimeConfigǁto_env_dict__mutmut_11, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_12': xǁRuntimeConfigǁto_env_dict__mutmut_12, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_13': xǁRuntimeConfigǁto_env_dict__mutmut_13, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_14': xǁRuntimeConfigǁto_env_dict__mutmut_14, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_15': xǁRuntimeConfigǁto_env_dict__mutmut_15, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_16': xǁRuntimeConfigǁto_env_dict__mutmut_16, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_17': xǁRuntimeConfigǁto_env_dict__mutmut_17, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_18': xǁRuntimeConfigǁto_env_dict__mutmut_18, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_19': xǁRuntimeConfigǁto_env_dict__mutmut_19, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_20': xǁRuntimeConfigǁto_env_dict__mutmut_20, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_21': xǁRuntimeConfigǁto_env_dict__mutmut_21, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_22': xǁRuntimeConfigǁto_env_dict__mutmut_22, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_23': xǁRuntimeConfigǁto_env_dict__mutmut_23, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_24': xǁRuntimeConfigǁto_env_dict__mutmut_24, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_25': xǁRuntimeConfigǁto_env_dict__mutmut_25, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_26': xǁRuntimeConfigǁto_env_dict__mutmut_26, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_27': xǁRuntimeConfigǁto_env_dict__mutmut_27, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_28': xǁRuntimeConfigǁto_env_dict__mutmut_28, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_29': xǁRuntimeConfigǁto_env_dict__mutmut_29, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_30': xǁRuntimeConfigǁto_env_dict__mutmut_30, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_31': xǁRuntimeConfigǁto_env_dict__mutmut_31, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_32': xǁRuntimeConfigǁto_env_dict__mutmut_32, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_33': xǁRuntimeConfigǁto_env_dict__mutmut_33, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_34': xǁRuntimeConfigǁto_env_dict__mutmut_34, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_35': xǁRuntimeConfigǁto_env_dict__mutmut_35, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_36': xǁRuntimeConfigǁto_env_dict__mutmut_36, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_37': xǁRuntimeConfigǁto_env_dict__mutmut_37, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_38': xǁRuntimeConfigǁto_env_dict__mutmut_38, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_39': xǁRuntimeConfigǁto_env_dict__mutmut_39, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_40': xǁRuntimeConfigǁto_env_dict__mutmut_40, 
-        'xǁRuntimeConfigǁto_env_dict__mutmut_41': xǁRuntimeConfigǁto_env_dict__mutmut_41
+
+    xǁRuntimeConfigǁto_env_dict__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRuntimeConfigǁto_env_dict__mutmut_1": xǁRuntimeConfigǁto_env_dict__mutmut_1,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_2": xǁRuntimeConfigǁto_env_dict__mutmut_2,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_3": xǁRuntimeConfigǁto_env_dict__mutmut_3,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_4": xǁRuntimeConfigǁto_env_dict__mutmut_4,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_5": xǁRuntimeConfigǁto_env_dict__mutmut_5,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_6": xǁRuntimeConfigǁto_env_dict__mutmut_6,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_7": xǁRuntimeConfigǁto_env_dict__mutmut_7,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_8": xǁRuntimeConfigǁto_env_dict__mutmut_8,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_9": xǁRuntimeConfigǁto_env_dict__mutmut_9,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_10": xǁRuntimeConfigǁto_env_dict__mutmut_10,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_11": xǁRuntimeConfigǁto_env_dict__mutmut_11,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_12": xǁRuntimeConfigǁto_env_dict__mutmut_12,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_13": xǁRuntimeConfigǁto_env_dict__mutmut_13,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_14": xǁRuntimeConfigǁto_env_dict__mutmut_14,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_15": xǁRuntimeConfigǁto_env_dict__mutmut_15,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_16": xǁRuntimeConfigǁto_env_dict__mutmut_16,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_17": xǁRuntimeConfigǁto_env_dict__mutmut_17,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_18": xǁRuntimeConfigǁto_env_dict__mutmut_18,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_19": xǁRuntimeConfigǁto_env_dict__mutmut_19,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_20": xǁRuntimeConfigǁto_env_dict__mutmut_20,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_21": xǁRuntimeConfigǁto_env_dict__mutmut_21,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_22": xǁRuntimeConfigǁto_env_dict__mutmut_22,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_23": xǁRuntimeConfigǁto_env_dict__mutmut_23,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_24": xǁRuntimeConfigǁto_env_dict__mutmut_24,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_25": xǁRuntimeConfigǁto_env_dict__mutmut_25,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_26": xǁRuntimeConfigǁto_env_dict__mutmut_26,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_27": xǁRuntimeConfigǁto_env_dict__mutmut_27,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_28": xǁRuntimeConfigǁto_env_dict__mutmut_28,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_29": xǁRuntimeConfigǁto_env_dict__mutmut_29,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_30": xǁRuntimeConfigǁto_env_dict__mutmut_30,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_31": xǁRuntimeConfigǁto_env_dict__mutmut_31,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_32": xǁRuntimeConfigǁto_env_dict__mutmut_32,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_33": xǁRuntimeConfigǁto_env_dict__mutmut_33,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_34": xǁRuntimeConfigǁto_env_dict__mutmut_34,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_35": xǁRuntimeConfigǁto_env_dict__mutmut_35,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_36": xǁRuntimeConfigǁto_env_dict__mutmut_36,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_37": xǁRuntimeConfigǁto_env_dict__mutmut_37,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_38": xǁRuntimeConfigǁto_env_dict__mutmut_38,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_39": xǁRuntimeConfigǁto_env_dict__mutmut_39,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_40": xǁRuntimeConfigǁto_env_dict__mutmut_40,
+        "xǁRuntimeConfigǁto_env_dict__mutmut_41": xǁRuntimeConfigǁto_env_dict__mutmut_41,
     }
-    
+
     def to_env_dict(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRuntimeConfigǁto_env_dict__mutmut_orig"), object.__getattribute__(self, "xǁRuntimeConfigǁto_env_dict__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRuntimeConfigǁto_env_dict__mutmut_orig"),
+            object.__getattribute__(self, "xǁRuntimeConfigǁto_env_dict__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     to_env_dict.__signature__ = _mutmut_signature(xǁRuntimeConfigǁto_env_dict__mutmut_orig)
-    xǁRuntimeConfigǁto_env_dict__mutmut_orig.__name__ = 'xǁRuntimeConfigǁto_env_dict'
+    xǁRuntimeConfigǁto_env_dict__mutmut_orig.__name__ = "xǁRuntimeConfigǁto_env_dict"
 
 
 # <3 🧱🤝⚙️🪄

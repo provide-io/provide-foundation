@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1179,9 +1182,7 @@ def x_stream_logs__mutmut_15(
     while True:
         try:
             # Search for new logs since last timestamp using async client
-            response = run_async(
-                None
-            )
+            response = run_async(None)
 
             # Process new logs
             for hit in response.hits:
@@ -1760,7 +1761,7 @@ def x_stream_logs__mutmut_23(
                     sql=sql,
                     start_time=last_timestamp,
                     end_time="now",
-                    )
+                )
             )
 
             # Process new logs
@@ -2350,7 +2351,9 @@ def x_stream_logs__mutmut_31(
             # Process new logs
             for hit in response.hits:
                 # Create a unique ID for deduplication
-                timestamp = hit.get("_timestamp", )
+                timestamp = hit.get(
+                    "_timestamp",
+                )
                 log_id = f"{timestamp}:{hash(json_dumps(hit, sort_keys=True))}"
 
                 if log_id not in seen_ids:
@@ -3008,7 +3011,7 @@ def x_stream_logs__mutmut_40(
             for hit in response.hits:
                 # Create a unique ID for deduplication
                 timestamp = hit.get("_timestamp", 0)
-                log_id = f"{timestamp}:{hash(json_dumps(hit, ))}"
+                log_id = f"{timestamp}:{hash(json_dumps(hit))}"
 
                 if log_id not in seen_ids:
                     seen_ids.add(log_id)
@@ -4564,76 +4567,79 @@ def x_stream_logs__mutmut_61(
             perr(f"Error during streaming: {e}")
             raise OpenObserveStreamingError(None) from e
 
-x_stream_logs__mutmut_mutants : ClassVar[MutantDict] = {
-'x_stream_logs__mutmut_1': x_stream_logs__mutmut_1, 
-    'x_stream_logs__mutmut_2': x_stream_logs__mutmut_2, 
-    'x_stream_logs__mutmut_3': x_stream_logs__mutmut_3, 
-    'x_stream_logs__mutmut_4': x_stream_logs__mutmut_4, 
-    'x_stream_logs__mutmut_5': x_stream_logs__mutmut_5, 
-    'x_stream_logs__mutmut_6': x_stream_logs__mutmut_6, 
-    'x_stream_logs__mutmut_7': x_stream_logs__mutmut_7, 
-    'x_stream_logs__mutmut_8': x_stream_logs__mutmut_8, 
-    'x_stream_logs__mutmut_9': x_stream_logs__mutmut_9, 
-    'x_stream_logs__mutmut_10': x_stream_logs__mutmut_10, 
-    'x_stream_logs__mutmut_11': x_stream_logs__mutmut_11, 
-    'x_stream_logs__mutmut_12': x_stream_logs__mutmut_12, 
-    'x_stream_logs__mutmut_13': x_stream_logs__mutmut_13, 
-    'x_stream_logs__mutmut_14': x_stream_logs__mutmut_14, 
-    'x_stream_logs__mutmut_15': x_stream_logs__mutmut_15, 
-    'x_stream_logs__mutmut_16': x_stream_logs__mutmut_16, 
-    'x_stream_logs__mutmut_17': x_stream_logs__mutmut_17, 
-    'x_stream_logs__mutmut_18': x_stream_logs__mutmut_18, 
-    'x_stream_logs__mutmut_19': x_stream_logs__mutmut_19, 
-    'x_stream_logs__mutmut_20': x_stream_logs__mutmut_20, 
-    'x_stream_logs__mutmut_21': x_stream_logs__mutmut_21, 
-    'x_stream_logs__mutmut_22': x_stream_logs__mutmut_22, 
-    'x_stream_logs__mutmut_23': x_stream_logs__mutmut_23, 
-    'x_stream_logs__mutmut_24': x_stream_logs__mutmut_24, 
-    'x_stream_logs__mutmut_25': x_stream_logs__mutmut_25, 
-    'x_stream_logs__mutmut_26': x_stream_logs__mutmut_26, 
-    'x_stream_logs__mutmut_27': x_stream_logs__mutmut_27, 
-    'x_stream_logs__mutmut_28': x_stream_logs__mutmut_28, 
-    'x_stream_logs__mutmut_29': x_stream_logs__mutmut_29, 
-    'x_stream_logs__mutmut_30': x_stream_logs__mutmut_30, 
-    'x_stream_logs__mutmut_31': x_stream_logs__mutmut_31, 
-    'x_stream_logs__mutmut_32': x_stream_logs__mutmut_32, 
-    'x_stream_logs__mutmut_33': x_stream_logs__mutmut_33, 
-    'x_stream_logs__mutmut_34': x_stream_logs__mutmut_34, 
-    'x_stream_logs__mutmut_35': x_stream_logs__mutmut_35, 
-    'x_stream_logs__mutmut_36': x_stream_logs__mutmut_36, 
-    'x_stream_logs__mutmut_37': x_stream_logs__mutmut_37, 
-    'x_stream_logs__mutmut_38': x_stream_logs__mutmut_38, 
-    'x_stream_logs__mutmut_39': x_stream_logs__mutmut_39, 
-    'x_stream_logs__mutmut_40': x_stream_logs__mutmut_40, 
-    'x_stream_logs__mutmut_41': x_stream_logs__mutmut_41, 
-    'x_stream_logs__mutmut_42': x_stream_logs__mutmut_42, 
-    'x_stream_logs__mutmut_43': x_stream_logs__mutmut_43, 
-    'x_stream_logs__mutmut_44': x_stream_logs__mutmut_44, 
-    'x_stream_logs__mutmut_45': x_stream_logs__mutmut_45, 
-    'x_stream_logs__mutmut_46': x_stream_logs__mutmut_46, 
-    'x_stream_logs__mutmut_47': x_stream_logs__mutmut_47, 
-    'x_stream_logs__mutmut_48': x_stream_logs__mutmut_48, 
-    'x_stream_logs__mutmut_49': x_stream_logs__mutmut_49, 
-    'x_stream_logs__mutmut_50': x_stream_logs__mutmut_50, 
-    'x_stream_logs__mutmut_51': x_stream_logs__mutmut_51, 
-    'x_stream_logs__mutmut_52': x_stream_logs__mutmut_52, 
-    'x_stream_logs__mutmut_53': x_stream_logs__mutmut_53, 
-    'x_stream_logs__mutmut_54': x_stream_logs__mutmut_54, 
-    'x_stream_logs__mutmut_55': x_stream_logs__mutmut_55, 
-    'x_stream_logs__mutmut_56': x_stream_logs__mutmut_56, 
-    'x_stream_logs__mutmut_57': x_stream_logs__mutmut_57, 
-    'x_stream_logs__mutmut_58': x_stream_logs__mutmut_58, 
-    'x_stream_logs__mutmut_59': x_stream_logs__mutmut_59, 
-    'x_stream_logs__mutmut_60': x_stream_logs__mutmut_60, 
-    'x_stream_logs__mutmut_61': x_stream_logs__mutmut_61
+
+x_stream_logs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_stream_logs__mutmut_1": x_stream_logs__mutmut_1,
+    "x_stream_logs__mutmut_2": x_stream_logs__mutmut_2,
+    "x_stream_logs__mutmut_3": x_stream_logs__mutmut_3,
+    "x_stream_logs__mutmut_4": x_stream_logs__mutmut_4,
+    "x_stream_logs__mutmut_5": x_stream_logs__mutmut_5,
+    "x_stream_logs__mutmut_6": x_stream_logs__mutmut_6,
+    "x_stream_logs__mutmut_7": x_stream_logs__mutmut_7,
+    "x_stream_logs__mutmut_8": x_stream_logs__mutmut_8,
+    "x_stream_logs__mutmut_9": x_stream_logs__mutmut_9,
+    "x_stream_logs__mutmut_10": x_stream_logs__mutmut_10,
+    "x_stream_logs__mutmut_11": x_stream_logs__mutmut_11,
+    "x_stream_logs__mutmut_12": x_stream_logs__mutmut_12,
+    "x_stream_logs__mutmut_13": x_stream_logs__mutmut_13,
+    "x_stream_logs__mutmut_14": x_stream_logs__mutmut_14,
+    "x_stream_logs__mutmut_15": x_stream_logs__mutmut_15,
+    "x_stream_logs__mutmut_16": x_stream_logs__mutmut_16,
+    "x_stream_logs__mutmut_17": x_stream_logs__mutmut_17,
+    "x_stream_logs__mutmut_18": x_stream_logs__mutmut_18,
+    "x_stream_logs__mutmut_19": x_stream_logs__mutmut_19,
+    "x_stream_logs__mutmut_20": x_stream_logs__mutmut_20,
+    "x_stream_logs__mutmut_21": x_stream_logs__mutmut_21,
+    "x_stream_logs__mutmut_22": x_stream_logs__mutmut_22,
+    "x_stream_logs__mutmut_23": x_stream_logs__mutmut_23,
+    "x_stream_logs__mutmut_24": x_stream_logs__mutmut_24,
+    "x_stream_logs__mutmut_25": x_stream_logs__mutmut_25,
+    "x_stream_logs__mutmut_26": x_stream_logs__mutmut_26,
+    "x_stream_logs__mutmut_27": x_stream_logs__mutmut_27,
+    "x_stream_logs__mutmut_28": x_stream_logs__mutmut_28,
+    "x_stream_logs__mutmut_29": x_stream_logs__mutmut_29,
+    "x_stream_logs__mutmut_30": x_stream_logs__mutmut_30,
+    "x_stream_logs__mutmut_31": x_stream_logs__mutmut_31,
+    "x_stream_logs__mutmut_32": x_stream_logs__mutmut_32,
+    "x_stream_logs__mutmut_33": x_stream_logs__mutmut_33,
+    "x_stream_logs__mutmut_34": x_stream_logs__mutmut_34,
+    "x_stream_logs__mutmut_35": x_stream_logs__mutmut_35,
+    "x_stream_logs__mutmut_36": x_stream_logs__mutmut_36,
+    "x_stream_logs__mutmut_37": x_stream_logs__mutmut_37,
+    "x_stream_logs__mutmut_38": x_stream_logs__mutmut_38,
+    "x_stream_logs__mutmut_39": x_stream_logs__mutmut_39,
+    "x_stream_logs__mutmut_40": x_stream_logs__mutmut_40,
+    "x_stream_logs__mutmut_41": x_stream_logs__mutmut_41,
+    "x_stream_logs__mutmut_42": x_stream_logs__mutmut_42,
+    "x_stream_logs__mutmut_43": x_stream_logs__mutmut_43,
+    "x_stream_logs__mutmut_44": x_stream_logs__mutmut_44,
+    "x_stream_logs__mutmut_45": x_stream_logs__mutmut_45,
+    "x_stream_logs__mutmut_46": x_stream_logs__mutmut_46,
+    "x_stream_logs__mutmut_47": x_stream_logs__mutmut_47,
+    "x_stream_logs__mutmut_48": x_stream_logs__mutmut_48,
+    "x_stream_logs__mutmut_49": x_stream_logs__mutmut_49,
+    "x_stream_logs__mutmut_50": x_stream_logs__mutmut_50,
+    "x_stream_logs__mutmut_51": x_stream_logs__mutmut_51,
+    "x_stream_logs__mutmut_52": x_stream_logs__mutmut_52,
+    "x_stream_logs__mutmut_53": x_stream_logs__mutmut_53,
+    "x_stream_logs__mutmut_54": x_stream_logs__mutmut_54,
+    "x_stream_logs__mutmut_55": x_stream_logs__mutmut_55,
+    "x_stream_logs__mutmut_56": x_stream_logs__mutmut_56,
+    "x_stream_logs__mutmut_57": x_stream_logs__mutmut_57,
+    "x_stream_logs__mutmut_58": x_stream_logs__mutmut_58,
+    "x_stream_logs__mutmut_59": x_stream_logs__mutmut_59,
+    "x_stream_logs__mutmut_60": x_stream_logs__mutmut_60,
+    "x_stream_logs__mutmut_61": x_stream_logs__mutmut_61,
 }
+
 
 def stream_logs(*args, **kwargs):
     result = _mutmut_trampoline(x_stream_logs__mutmut_orig, x_stream_logs__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 stream_logs.__signature__ = _mutmut_signature(x_stream_logs__mutmut_orig)
-x_stream_logs__mutmut_orig.__name__ = 'x_stream_logs'
+x_stream_logs__mutmut_orig.__name__ = "x_stream_logs"
 
 
 def x__parse_time_param__mutmut_orig(time_param: str | int | None, default: str) -> int:
@@ -4671,18 +4677,23 @@ def x__parse_time_param__mutmut_3(time_param: str | int | None, default: str) ->
         return parse_relative_time(None)
     return time_param
 
-x__parse_time_param__mutmut_mutants : ClassVar[MutantDict] = {
-'x__parse_time_param__mutmut_1': x__parse_time_param__mutmut_1, 
-    'x__parse_time_param__mutmut_2': x__parse_time_param__mutmut_2, 
-    'x__parse_time_param__mutmut_3': x__parse_time_param__mutmut_3
+
+x__parse_time_param__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__parse_time_param__mutmut_1": x__parse_time_param__mutmut_1,
+    "x__parse_time_param__mutmut_2": x__parse_time_param__mutmut_2,
+    "x__parse_time_param__mutmut_3": x__parse_time_param__mutmut_3,
 }
 
+
 def _parse_time_param(*args, **kwargs):
-    result = _mutmut_trampoline(x__parse_time_param__mutmut_orig, x__parse_time_param__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__parse_time_param__mutmut_orig, x__parse_time_param__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _parse_time_param.__signature__ = _mutmut_signature(x__parse_time_param__mutmut_orig)
-x__parse_time_param__mutmut_orig.__name__ = 'x__parse_time_param'
+x__parse_time_param__mutmut_orig.__name__ = "x__parse_time_param"
 
 
 def x__process_stream_line__mutmut_orig(line: str) -> list[dict[str, Any]]:
@@ -4837,23 +4848,28 @@ def x__process_stream_line__mutmut_8(line: str) -> list[dict[str, Any]]:
 
     return []
 
-x__process_stream_line__mutmut_mutants : ClassVar[MutantDict] = {
-'x__process_stream_line__mutmut_1': x__process_stream_line__mutmut_1, 
-    'x__process_stream_line__mutmut_2': x__process_stream_line__mutmut_2, 
-    'x__process_stream_line__mutmut_3': x__process_stream_line__mutmut_3, 
-    'x__process_stream_line__mutmut_4': x__process_stream_line__mutmut_4, 
-    'x__process_stream_line__mutmut_5': x__process_stream_line__mutmut_5, 
-    'x__process_stream_line__mutmut_6': x__process_stream_line__mutmut_6, 
-    'x__process_stream_line__mutmut_7': x__process_stream_line__mutmut_7, 
-    'x__process_stream_line__mutmut_8': x__process_stream_line__mutmut_8
+
+x__process_stream_line__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__process_stream_line__mutmut_1": x__process_stream_line__mutmut_1,
+    "x__process_stream_line__mutmut_2": x__process_stream_line__mutmut_2,
+    "x__process_stream_line__mutmut_3": x__process_stream_line__mutmut_3,
+    "x__process_stream_line__mutmut_4": x__process_stream_line__mutmut_4,
+    "x__process_stream_line__mutmut_5": x__process_stream_line__mutmut_5,
+    "x__process_stream_line__mutmut_6": x__process_stream_line__mutmut_6,
+    "x__process_stream_line__mutmut_7": x__process_stream_line__mutmut_7,
+    "x__process_stream_line__mutmut_8": x__process_stream_line__mutmut_8,
 }
 
+
 def _process_stream_line(*args, **kwargs):
-    result = _mutmut_trampoline(x__process_stream_line__mutmut_orig, x__process_stream_line__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__process_stream_line__mutmut_orig, x__process_stream_line__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _process_stream_line.__signature__ = _mutmut_signature(x__process_stream_line__mutmut_orig)
-x__process_stream_line__mutmut_orig.__name__ = 'x__process_stream_line'
+x__process_stream_line__mutmut_orig.__name__ = "x__process_stream_line"
 
 
 async def x_stream_search_http2_async__mutmut_orig(
@@ -5244,7 +5260,9 @@ async def x_stream_search_http2_async__mutmut_7(
         client = OpenObserveClient.from_config()
 
     # Parse times
-    start_ts = _parse_time_param(start_time, )
+    start_ts = _parse_time_param(
+        start_time,
+    )
     end_ts = _parse_time_param(end_time, "now")
 
     # Prepare request
@@ -5609,7 +5627,9 @@ async def x_stream_search_http2_async__mutmut_14(
 
     # Parse times
     start_ts = _parse_time_param(start_time, "-1h")
-    end_ts = _parse_time_param(end_time, )
+    end_ts = _parse_time_param(
+        end_time,
+    )
 
     # Prepare request
     uri = f"{client.url}/api/{client.organization}/_search_stream"
@@ -7022,7 +7042,11 @@ async def x_stream_search_http2_async__mutmut_41(
 
     try:
         # Use Foundation's transport for streaming
-        async for chunk in client._client.stream(uri=uri, method="POST", params=params, ):
+        async for chunk in client._client.stream(
+            uri=uri,
+            method="POST",
+            params=params,
+        ):
             # Decode chunk and process lines
             lines = chunk.decode("utf-8").strip().split("\n")
             for line in lines:
@@ -7552,66 +7576,71 @@ async def x_stream_search_http2_async__mutmut_51(
     except Exception as e:
         raise OpenObserveStreamingError(None) from e
 
-x_stream_search_http2_async__mutmut_mutants : ClassVar[MutantDict] = {
-'x_stream_search_http2_async__mutmut_1': x_stream_search_http2_async__mutmut_1, 
-    'x_stream_search_http2_async__mutmut_2': x_stream_search_http2_async__mutmut_2, 
-    'x_stream_search_http2_async__mutmut_3': x_stream_search_http2_async__mutmut_3, 
-    'x_stream_search_http2_async__mutmut_4': x_stream_search_http2_async__mutmut_4, 
-    'x_stream_search_http2_async__mutmut_5': x_stream_search_http2_async__mutmut_5, 
-    'x_stream_search_http2_async__mutmut_6': x_stream_search_http2_async__mutmut_6, 
-    'x_stream_search_http2_async__mutmut_7': x_stream_search_http2_async__mutmut_7, 
-    'x_stream_search_http2_async__mutmut_8': x_stream_search_http2_async__mutmut_8, 
-    'x_stream_search_http2_async__mutmut_9': x_stream_search_http2_async__mutmut_9, 
-    'x_stream_search_http2_async__mutmut_10': x_stream_search_http2_async__mutmut_10, 
-    'x_stream_search_http2_async__mutmut_11': x_stream_search_http2_async__mutmut_11, 
-    'x_stream_search_http2_async__mutmut_12': x_stream_search_http2_async__mutmut_12, 
-    'x_stream_search_http2_async__mutmut_13': x_stream_search_http2_async__mutmut_13, 
-    'x_stream_search_http2_async__mutmut_14': x_stream_search_http2_async__mutmut_14, 
-    'x_stream_search_http2_async__mutmut_15': x_stream_search_http2_async__mutmut_15, 
-    'x_stream_search_http2_async__mutmut_16': x_stream_search_http2_async__mutmut_16, 
-    'x_stream_search_http2_async__mutmut_17': x_stream_search_http2_async__mutmut_17, 
-    'x_stream_search_http2_async__mutmut_18': x_stream_search_http2_async__mutmut_18, 
-    'x_stream_search_http2_async__mutmut_19': x_stream_search_http2_async__mutmut_19, 
-    'x_stream_search_http2_async__mutmut_20': x_stream_search_http2_async__mutmut_20, 
-    'x_stream_search_http2_async__mutmut_21': x_stream_search_http2_async__mutmut_21, 
-    'x_stream_search_http2_async__mutmut_22': x_stream_search_http2_async__mutmut_22, 
-    'x_stream_search_http2_async__mutmut_23': x_stream_search_http2_async__mutmut_23, 
-    'x_stream_search_http2_async__mutmut_24': x_stream_search_http2_async__mutmut_24, 
-    'x_stream_search_http2_async__mutmut_25': x_stream_search_http2_async__mutmut_25, 
-    'x_stream_search_http2_async__mutmut_26': x_stream_search_http2_async__mutmut_26, 
-    'x_stream_search_http2_async__mutmut_27': x_stream_search_http2_async__mutmut_27, 
-    'x_stream_search_http2_async__mutmut_28': x_stream_search_http2_async__mutmut_28, 
-    'x_stream_search_http2_async__mutmut_29': x_stream_search_http2_async__mutmut_29, 
-    'x_stream_search_http2_async__mutmut_30': x_stream_search_http2_async__mutmut_30, 
-    'x_stream_search_http2_async__mutmut_31': x_stream_search_http2_async__mutmut_31, 
-    'x_stream_search_http2_async__mutmut_32': x_stream_search_http2_async__mutmut_32, 
-    'x_stream_search_http2_async__mutmut_33': x_stream_search_http2_async__mutmut_33, 
-    'x_stream_search_http2_async__mutmut_34': x_stream_search_http2_async__mutmut_34, 
-    'x_stream_search_http2_async__mutmut_35': x_stream_search_http2_async__mutmut_35, 
-    'x_stream_search_http2_async__mutmut_36': x_stream_search_http2_async__mutmut_36, 
-    'x_stream_search_http2_async__mutmut_37': x_stream_search_http2_async__mutmut_37, 
-    'x_stream_search_http2_async__mutmut_38': x_stream_search_http2_async__mutmut_38, 
-    'x_stream_search_http2_async__mutmut_39': x_stream_search_http2_async__mutmut_39, 
-    'x_stream_search_http2_async__mutmut_40': x_stream_search_http2_async__mutmut_40, 
-    'x_stream_search_http2_async__mutmut_41': x_stream_search_http2_async__mutmut_41, 
-    'x_stream_search_http2_async__mutmut_42': x_stream_search_http2_async__mutmut_42, 
-    'x_stream_search_http2_async__mutmut_43': x_stream_search_http2_async__mutmut_43, 
-    'x_stream_search_http2_async__mutmut_44': x_stream_search_http2_async__mutmut_44, 
-    'x_stream_search_http2_async__mutmut_45': x_stream_search_http2_async__mutmut_45, 
-    'x_stream_search_http2_async__mutmut_46': x_stream_search_http2_async__mutmut_46, 
-    'x_stream_search_http2_async__mutmut_47': x_stream_search_http2_async__mutmut_47, 
-    'x_stream_search_http2_async__mutmut_48': x_stream_search_http2_async__mutmut_48, 
-    'x_stream_search_http2_async__mutmut_49': x_stream_search_http2_async__mutmut_49, 
-    'x_stream_search_http2_async__mutmut_50': x_stream_search_http2_async__mutmut_50, 
-    'x_stream_search_http2_async__mutmut_51': x_stream_search_http2_async__mutmut_51
+
+x_stream_search_http2_async__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_stream_search_http2_async__mutmut_1": x_stream_search_http2_async__mutmut_1,
+    "x_stream_search_http2_async__mutmut_2": x_stream_search_http2_async__mutmut_2,
+    "x_stream_search_http2_async__mutmut_3": x_stream_search_http2_async__mutmut_3,
+    "x_stream_search_http2_async__mutmut_4": x_stream_search_http2_async__mutmut_4,
+    "x_stream_search_http2_async__mutmut_5": x_stream_search_http2_async__mutmut_5,
+    "x_stream_search_http2_async__mutmut_6": x_stream_search_http2_async__mutmut_6,
+    "x_stream_search_http2_async__mutmut_7": x_stream_search_http2_async__mutmut_7,
+    "x_stream_search_http2_async__mutmut_8": x_stream_search_http2_async__mutmut_8,
+    "x_stream_search_http2_async__mutmut_9": x_stream_search_http2_async__mutmut_9,
+    "x_stream_search_http2_async__mutmut_10": x_stream_search_http2_async__mutmut_10,
+    "x_stream_search_http2_async__mutmut_11": x_stream_search_http2_async__mutmut_11,
+    "x_stream_search_http2_async__mutmut_12": x_stream_search_http2_async__mutmut_12,
+    "x_stream_search_http2_async__mutmut_13": x_stream_search_http2_async__mutmut_13,
+    "x_stream_search_http2_async__mutmut_14": x_stream_search_http2_async__mutmut_14,
+    "x_stream_search_http2_async__mutmut_15": x_stream_search_http2_async__mutmut_15,
+    "x_stream_search_http2_async__mutmut_16": x_stream_search_http2_async__mutmut_16,
+    "x_stream_search_http2_async__mutmut_17": x_stream_search_http2_async__mutmut_17,
+    "x_stream_search_http2_async__mutmut_18": x_stream_search_http2_async__mutmut_18,
+    "x_stream_search_http2_async__mutmut_19": x_stream_search_http2_async__mutmut_19,
+    "x_stream_search_http2_async__mutmut_20": x_stream_search_http2_async__mutmut_20,
+    "x_stream_search_http2_async__mutmut_21": x_stream_search_http2_async__mutmut_21,
+    "x_stream_search_http2_async__mutmut_22": x_stream_search_http2_async__mutmut_22,
+    "x_stream_search_http2_async__mutmut_23": x_stream_search_http2_async__mutmut_23,
+    "x_stream_search_http2_async__mutmut_24": x_stream_search_http2_async__mutmut_24,
+    "x_stream_search_http2_async__mutmut_25": x_stream_search_http2_async__mutmut_25,
+    "x_stream_search_http2_async__mutmut_26": x_stream_search_http2_async__mutmut_26,
+    "x_stream_search_http2_async__mutmut_27": x_stream_search_http2_async__mutmut_27,
+    "x_stream_search_http2_async__mutmut_28": x_stream_search_http2_async__mutmut_28,
+    "x_stream_search_http2_async__mutmut_29": x_stream_search_http2_async__mutmut_29,
+    "x_stream_search_http2_async__mutmut_30": x_stream_search_http2_async__mutmut_30,
+    "x_stream_search_http2_async__mutmut_31": x_stream_search_http2_async__mutmut_31,
+    "x_stream_search_http2_async__mutmut_32": x_stream_search_http2_async__mutmut_32,
+    "x_stream_search_http2_async__mutmut_33": x_stream_search_http2_async__mutmut_33,
+    "x_stream_search_http2_async__mutmut_34": x_stream_search_http2_async__mutmut_34,
+    "x_stream_search_http2_async__mutmut_35": x_stream_search_http2_async__mutmut_35,
+    "x_stream_search_http2_async__mutmut_36": x_stream_search_http2_async__mutmut_36,
+    "x_stream_search_http2_async__mutmut_37": x_stream_search_http2_async__mutmut_37,
+    "x_stream_search_http2_async__mutmut_38": x_stream_search_http2_async__mutmut_38,
+    "x_stream_search_http2_async__mutmut_39": x_stream_search_http2_async__mutmut_39,
+    "x_stream_search_http2_async__mutmut_40": x_stream_search_http2_async__mutmut_40,
+    "x_stream_search_http2_async__mutmut_41": x_stream_search_http2_async__mutmut_41,
+    "x_stream_search_http2_async__mutmut_42": x_stream_search_http2_async__mutmut_42,
+    "x_stream_search_http2_async__mutmut_43": x_stream_search_http2_async__mutmut_43,
+    "x_stream_search_http2_async__mutmut_44": x_stream_search_http2_async__mutmut_44,
+    "x_stream_search_http2_async__mutmut_45": x_stream_search_http2_async__mutmut_45,
+    "x_stream_search_http2_async__mutmut_46": x_stream_search_http2_async__mutmut_46,
+    "x_stream_search_http2_async__mutmut_47": x_stream_search_http2_async__mutmut_47,
+    "x_stream_search_http2_async__mutmut_48": x_stream_search_http2_async__mutmut_48,
+    "x_stream_search_http2_async__mutmut_49": x_stream_search_http2_async__mutmut_49,
+    "x_stream_search_http2_async__mutmut_50": x_stream_search_http2_async__mutmut_50,
+    "x_stream_search_http2_async__mutmut_51": x_stream_search_http2_async__mutmut_51,
 }
 
+
 def stream_search_http2_async(*args, **kwargs):
-    result = _mutmut_trampoline(x_stream_search_http2_async__mutmut_orig, x_stream_search_http2_async__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_stream_search_http2_async__mutmut_orig, x_stream_search_http2_async__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 stream_search_http2_async.__signature__ = _mutmut_signature(x_stream_search_http2_async__mutmut_orig)
-x_stream_search_http2_async__mutmut_orig.__name__ = 'x_stream_search_http2_async'
+x_stream_search_http2_async__mutmut_orig.__name__ = "x_stream_search_http2_async"
 
 
 def x_stream_search_http2__mutmut_orig(
@@ -7835,9 +7864,7 @@ def x_stream_search_http2__mutmut_6(
 
     async def _stream() -> list[dict[str, Any]]:
         results = []
-        async for item in stream_search_http2_async(
-            start_time=start_time, end_time=end_time, client=client
-        ):
+        async for item in stream_search_http2_async(start_time=start_time, end_time=end_time, client=client):
             results.append(item)
         return results
 
@@ -7868,9 +7895,7 @@ def x_stream_search_http2__mutmut_7(
 
     async def _stream() -> list[dict[str, Any]]:
         results = []
-        async for item in stream_search_http2_async(
-            sql=sql, end_time=end_time, client=client
-        ):
+        async for item in stream_search_http2_async(sql=sql, end_time=end_time, client=client):
             results.append(item)
         return results
 
@@ -7901,9 +7926,7 @@ def x_stream_search_http2__mutmut_8(
 
     async def _stream() -> list[dict[str, Any]]:
         results = []
-        async for item in stream_search_http2_async(
-            sql=sql, start_time=start_time, client=client
-        ):
+        async for item in stream_search_http2_async(sql=sql, start_time=start_time, client=client):
             results.append(item)
         return results
 
@@ -7935,7 +7958,10 @@ def x_stream_search_http2__mutmut_9(
     async def _stream() -> list[dict[str, Any]]:
         results = []
         async for item in stream_search_http2_async(
-            sql=sql, start_time=start_time, end_time=end_time, ):
+            sql=sql,
+            start_time=start_time,
+            end_time=end_time,
+        ):
             results.append(item)
         return results
 
@@ -8041,27 +8067,32 @@ def x_stream_search_http2__mutmut_12(
     results = run_async(None)
     yield from results
 
-x_stream_search_http2__mutmut_mutants : ClassVar[MutantDict] = {
-'x_stream_search_http2__mutmut_1': x_stream_search_http2__mutmut_1, 
-    'x_stream_search_http2__mutmut_2': x_stream_search_http2__mutmut_2, 
-    'x_stream_search_http2__mutmut_3': x_stream_search_http2__mutmut_3, 
-    'x_stream_search_http2__mutmut_4': x_stream_search_http2__mutmut_4, 
-    'x_stream_search_http2__mutmut_5': x_stream_search_http2__mutmut_5, 
-    'x_stream_search_http2__mutmut_6': x_stream_search_http2__mutmut_6, 
-    'x_stream_search_http2__mutmut_7': x_stream_search_http2__mutmut_7, 
-    'x_stream_search_http2__mutmut_8': x_stream_search_http2__mutmut_8, 
-    'x_stream_search_http2__mutmut_9': x_stream_search_http2__mutmut_9, 
-    'x_stream_search_http2__mutmut_10': x_stream_search_http2__mutmut_10, 
-    'x_stream_search_http2__mutmut_11': x_stream_search_http2__mutmut_11, 
-    'x_stream_search_http2__mutmut_12': x_stream_search_http2__mutmut_12
+
+x_stream_search_http2__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_stream_search_http2__mutmut_1": x_stream_search_http2__mutmut_1,
+    "x_stream_search_http2__mutmut_2": x_stream_search_http2__mutmut_2,
+    "x_stream_search_http2__mutmut_3": x_stream_search_http2__mutmut_3,
+    "x_stream_search_http2__mutmut_4": x_stream_search_http2__mutmut_4,
+    "x_stream_search_http2__mutmut_5": x_stream_search_http2__mutmut_5,
+    "x_stream_search_http2__mutmut_6": x_stream_search_http2__mutmut_6,
+    "x_stream_search_http2__mutmut_7": x_stream_search_http2__mutmut_7,
+    "x_stream_search_http2__mutmut_8": x_stream_search_http2__mutmut_8,
+    "x_stream_search_http2__mutmut_9": x_stream_search_http2__mutmut_9,
+    "x_stream_search_http2__mutmut_10": x_stream_search_http2__mutmut_10,
+    "x_stream_search_http2__mutmut_11": x_stream_search_http2__mutmut_11,
+    "x_stream_search_http2__mutmut_12": x_stream_search_http2__mutmut_12,
 }
 
+
 def stream_search_http2(*args, **kwargs):
-    result = _mutmut_trampoline(x_stream_search_http2__mutmut_orig, x_stream_search_http2__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_stream_search_http2__mutmut_orig, x_stream_search_http2__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 stream_search_http2.__signature__ = _mutmut_signature(x_stream_search_http2__mutmut_orig)
-x_stream_search_http2__mutmut_orig.__name__ = 'x_stream_search_http2'
+x_stream_search_http2__mutmut_orig.__name__ = "x_stream_search_http2"
 
 
 def x__build_where_clause_from_filters__mutmut_orig(filters: dict[str, str]) -> str:
@@ -8216,7 +8247,9 @@ def x__build_where_clause_from_filters__mutmut_8(filters: dict[str, str]) -> str
     conditions = []
     for key, value in filters.items():
         # Sanitize column name (key)
-        if not re.match(r"^[a-zA-Z0-9_]+$", ):
+        if not re.match(
+            r"^[a-zA-Z0-9_]+$",
+        ):
             raise ValidationError(f"Invalid filter key: {key}")
 
         # Escape single quotes in value
@@ -8382,7 +8415,9 @@ def x__build_where_clause_from_filters__mutmut_17(filters: dict[str, str]) -> st
             raise ValidationError(f"Invalid filter key: {key}")
 
         # Escape single quotes in value
-        escaped_value = value.replace("'", )
+        escaped_value = value.replace(
+            "'",
+        )
         conditions.append(f"{key} = '{escaped_value}'")
 
     return f"WHERE {' AND '.join(conditions)}"
@@ -8495,38 +8530,48 @@ def x__build_where_clause_from_filters__mutmut_23(filters: dict[str, str]) -> st
 
     return f"WHERE {' and '.join(conditions)}"
 
-x__build_where_clause_from_filters__mutmut_mutants : ClassVar[MutantDict] = {
-'x__build_where_clause_from_filters__mutmut_1': x__build_where_clause_from_filters__mutmut_1, 
-    'x__build_where_clause_from_filters__mutmut_2': x__build_where_clause_from_filters__mutmut_2, 
-    'x__build_where_clause_from_filters__mutmut_3': x__build_where_clause_from_filters__mutmut_3, 
-    'x__build_where_clause_from_filters__mutmut_4': x__build_where_clause_from_filters__mutmut_4, 
-    'x__build_where_clause_from_filters__mutmut_5': x__build_where_clause_from_filters__mutmut_5, 
-    'x__build_where_clause_from_filters__mutmut_6': x__build_where_clause_from_filters__mutmut_6, 
-    'x__build_where_clause_from_filters__mutmut_7': x__build_where_clause_from_filters__mutmut_7, 
-    'x__build_where_clause_from_filters__mutmut_8': x__build_where_clause_from_filters__mutmut_8, 
-    'x__build_where_clause_from_filters__mutmut_9': x__build_where_clause_from_filters__mutmut_9, 
-    'x__build_where_clause_from_filters__mutmut_10': x__build_where_clause_from_filters__mutmut_10, 
-    'x__build_where_clause_from_filters__mutmut_11': x__build_where_clause_from_filters__mutmut_11, 
-    'x__build_where_clause_from_filters__mutmut_12': x__build_where_clause_from_filters__mutmut_12, 
-    'x__build_where_clause_from_filters__mutmut_13': x__build_where_clause_from_filters__mutmut_13, 
-    'x__build_where_clause_from_filters__mutmut_14': x__build_where_clause_from_filters__mutmut_14, 
-    'x__build_where_clause_from_filters__mutmut_15': x__build_where_clause_from_filters__mutmut_15, 
-    'x__build_where_clause_from_filters__mutmut_16': x__build_where_clause_from_filters__mutmut_16, 
-    'x__build_where_clause_from_filters__mutmut_17': x__build_where_clause_from_filters__mutmut_17, 
-    'x__build_where_clause_from_filters__mutmut_18': x__build_where_clause_from_filters__mutmut_18, 
-    'x__build_where_clause_from_filters__mutmut_19': x__build_where_clause_from_filters__mutmut_19, 
-    'x__build_where_clause_from_filters__mutmut_20': x__build_where_clause_from_filters__mutmut_20, 
-    'x__build_where_clause_from_filters__mutmut_21': x__build_where_clause_from_filters__mutmut_21, 
-    'x__build_where_clause_from_filters__mutmut_22': x__build_where_clause_from_filters__mutmut_22, 
-    'x__build_where_clause_from_filters__mutmut_23': x__build_where_clause_from_filters__mutmut_23
+
+x__build_where_clause_from_filters__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__build_where_clause_from_filters__mutmut_1": x__build_where_clause_from_filters__mutmut_1,
+    "x__build_where_clause_from_filters__mutmut_2": x__build_where_clause_from_filters__mutmut_2,
+    "x__build_where_clause_from_filters__mutmut_3": x__build_where_clause_from_filters__mutmut_3,
+    "x__build_where_clause_from_filters__mutmut_4": x__build_where_clause_from_filters__mutmut_4,
+    "x__build_where_clause_from_filters__mutmut_5": x__build_where_clause_from_filters__mutmut_5,
+    "x__build_where_clause_from_filters__mutmut_6": x__build_where_clause_from_filters__mutmut_6,
+    "x__build_where_clause_from_filters__mutmut_7": x__build_where_clause_from_filters__mutmut_7,
+    "x__build_where_clause_from_filters__mutmut_8": x__build_where_clause_from_filters__mutmut_8,
+    "x__build_where_clause_from_filters__mutmut_9": x__build_where_clause_from_filters__mutmut_9,
+    "x__build_where_clause_from_filters__mutmut_10": x__build_where_clause_from_filters__mutmut_10,
+    "x__build_where_clause_from_filters__mutmut_11": x__build_where_clause_from_filters__mutmut_11,
+    "x__build_where_clause_from_filters__mutmut_12": x__build_where_clause_from_filters__mutmut_12,
+    "x__build_where_clause_from_filters__mutmut_13": x__build_where_clause_from_filters__mutmut_13,
+    "x__build_where_clause_from_filters__mutmut_14": x__build_where_clause_from_filters__mutmut_14,
+    "x__build_where_clause_from_filters__mutmut_15": x__build_where_clause_from_filters__mutmut_15,
+    "x__build_where_clause_from_filters__mutmut_16": x__build_where_clause_from_filters__mutmut_16,
+    "x__build_where_clause_from_filters__mutmut_17": x__build_where_clause_from_filters__mutmut_17,
+    "x__build_where_clause_from_filters__mutmut_18": x__build_where_clause_from_filters__mutmut_18,
+    "x__build_where_clause_from_filters__mutmut_19": x__build_where_clause_from_filters__mutmut_19,
+    "x__build_where_clause_from_filters__mutmut_20": x__build_where_clause_from_filters__mutmut_20,
+    "x__build_where_clause_from_filters__mutmut_21": x__build_where_clause_from_filters__mutmut_21,
+    "x__build_where_clause_from_filters__mutmut_22": x__build_where_clause_from_filters__mutmut_22,
+    "x__build_where_clause_from_filters__mutmut_23": x__build_where_clause_from_filters__mutmut_23,
 }
 
-def _build_where_clause_from_filters(*args, **kwargs):
-    result = _mutmut_trampoline(x__build_where_clause_from_filters__mutmut_orig, x__build_where_clause_from_filters__mutmut_mutants, args, kwargs)
-    return result 
 
-_build_where_clause_from_filters.__signature__ = _mutmut_signature(x__build_where_clause_from_filters__mutmut_orig)
-x__build_where_clause_from_filters__mutmut_orig.__name__ = 'x__build_where_clause_from_filters'
+def _build_where_clause_from_filters(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__build_where_clause_from_filters__mutmut_orig,
+        x__build_where_clause_from_filters__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_build_where_clause_from_filters.__signature__ = _mutmut_signature(
+    x__build_where_clause_from_filters__mutmut_orig
+)
+x__build_where_clause_from_filters__mutmut_orig.__name__ = "x__build_where_clause_from_filters"
 
 
 def x_tail_logs__mutmut_orig(
@@ -9126,7 +9171,9 @@ def x_tail_logs__mutmut_9(
 
     """
     # Sanitize stream name to prevent SQL injection
-    if not re.match(r"^[a-zA-Z0-9_]+$", ):
+    if not re.match(
+        r"^[a-zA-Z0-9_]+$",
+    ):
         raise ValidationError(
             "Invalid stream name", code="INVALID_STREAM_NAME", stream=stream, allowed_pattern="^[a-zA-Z0-9_]+$"
         )
@@ -9639,9 +9686,7 @@ def x_tail_logs__mutmut_17(
     """
     # Sanitize stream name to prevent SQL injection
     if not re.match(r"^[a-zA-Z0-9_]+$", stream):
-        raise ValidationError(
-            code="INVALID_STREAM_NAME", stream=stream, allowed_pattern="^[a-zA-Z0-9_]+$"
-        )
+        raise ValidationError(code="INVALID_STREAM_NAME", stream=stream, allowed_pattern="^[a-zA-Z0-9_]+$")
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
@@ -9703,9 +9748,7 @@ def x_tail_logs__mutmut_18(
     """
     # Sanitize stream name to prevent SQL injection
     if not re.match(r"^[a-zA-Z0-9_]+$", stream):
-        raise ValidationError(
-            "Invalid stream name", stream=stream, allowed_pattern="^[a-zA-Z0-9_]+$"
-        )
+        raise ValidationError("Invalid stream name", stream=stream, allowed_pattern="^[a-zA-Z0-9_]+$")
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
@@ -9832,7 +9875,10 @@ def x_tail_logs__mutmut_20(
     # Sanitize stream name to prevent SQL injection
     if not re.match(r"^[a-zA-Z0-9_]+$", stream):
         raise ValidationError(
-            "Invalid stream name", code="INVALID_STREAM_NAME", stream=stream, )
+            "Invalid stream name",
+            code="INVALID_STREAM_NAME",
+            stream=stream,
+        )
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
@@ -9895,7 +9941,10 @@ def x_tail_logs__mutmut_21(
     # Sanitize stream name to prevent SQL injection
     if not re.match(r"^[a-zA-Z0-9_]+$", stream):
         raise ValidationError(
-            "XXInvalid stream nameXX", code="INVALID_STREAM_NAME", stream=stream, allowed_pattern="^[a-zA-Z0-9_]+$"
+            "XXInvalid stream nameXX",
+            code="INVALID_STREAM_NAME",
+            stream=stream,
+            allowed_pattern="^[a-zA-Z0-9_]+$",
         )
 
     # Validate lines parameter
@@ -10087,7 +10136,10 @@ def x_tail_logs__mutmut_24(
     # Sanitize stream name to prevent SQL injection
     if not re.match(r"^[a-zA-Z0-9_]+$", stream):
         raise ValidationError(
-            "Invalid stream name", code="XXINVALID_STREAM_NAMEXX", stream=stream, allowed_pattern="^[a-zA-Z0-9_]+$"
+            "Invalid stream name",
+            code="XXINVALID_STREAM_NAMEXX",
+            stream=stream,
+            allowed_pattern="^[a-zA-Z0-9_]+$",
         )
 
     # Validate lines parameter
@@ -10215,7 +10267,10 @@ def x_tail_logs__mutmut_26(
     # Sanitize stream name to prevent SQL injection
     if not re.match(r"^[a-zA-Z0-9_]+$", stream):
         raise ValidationError(
-            "Invalid stream name", code="INVALID_STREAM_NAME", stream=stream, allowed_pattern="XX^[a-zA-Z0-9_]+$XX"
+            "Invalid stream name",
+            code="INVALID_STREAM_NAME",
+            stream=stream,
+            allowed_pattern="XX^[a-zA-Z0-9_]+$XX",
         )
 
     # Validate lines parameter
@@ -10860,9 +10915,7 @@ def x_tail_logs__mutmut_36(
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
-        raise ValidationError(
-            None, code="INVALID_LINES_PARAM", lines=lines, expected_range="1-10000"
-        )
+        raise ValidationError(None, code="INVALID_LINES_PARAM", lines=lines, expected_range="1-10000")
 
     # Build WHERE clause safely from filters
     where_clause = _build_where_clause_from_filters(filters or {})
@@ -10924,9 +10977,7 @@ def x_tail_logs__mutmut_37(
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
-        raise ValidationError(
-            "Invalid lines parameter", code=None, lines=lines, expected_range="1-10000"
-        )
+        raise ValidationError("Invalid lines parameter", code=None, lines=lines, expected_range="1-10000")
 
     # Build WHERE clause safely from filters
     where_clause = _build_where_clause_from_filters(filters or {})
@@ -11116,9 +11167,7 @@ def x_tail_logs__mutmut_40(
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
-        raise ValidationError(
-            code="INVALID_LINES_PARAM", lines=lines, expected_range="1-10000"
-        )
+        raise ValidationError(code="INVALID_LINES_PARAM", lines=lines, expected_range="1-10000")
 
     # Build WHERE clause safely from filters
     where_clause = _build_where_clause_from_filters(filters or {})
@@ -11180,9 +11229,7 @@ def x_tail_logs__mutmut_41(
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
-        raise ValidationError(
-            "Invalid lines parameter", lines=lines, expected_range="1-10000"
-        )
+        raise ValidationError("Invalid lines parameter", lines=lines, expected_range="1-10000")
 
     # Build WHERE clause safely from filters
     where_clause = _build_where_clause_from_filters(filters or {})
@@ -11244,9 +11291,7 @@ def x_tail_logs__mutmut_42(
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
-        raise ValidationError(
-            "Invalid lines parameter", code="INVALID_LINES_PARAM", expected_range="1-10000"
-        )
+        raise ValidationError("Invalid lines parameter", code="INVALID_LINES_PARAM", expected_range="1-10000")
 
     # Build WHERE clause safely from filters
     where_clause = _build_where_clause_from_filters(filters or {})
@@ -11309,7 +11354,10 @@ def x_tail_logs__mutmut_43(
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
         raise ValidationError(
-            "Invalid lines parameter", code="INVALID_LINES_PARAM", lines=lines, )
+            "Invalid lines parameter",
+            code="INVALID_LINES_PARAM",
+            lines=lines,
+        )
 
     # Build WHERE clause safely from filters
     where_clause = _build_where_clause_from_filters(filters or {})
@@ -12471,7 +12519,11 @@ def x_tail_logs__mutmut_61(
         client = OpenObserveClient.from_config()
 
     # Get initial logs using async client
-    response = run_async(client.search(sql=sql, ))
+    response = run_async(
+        client.search(
+            sql=sql,
+        )
+    )
 
     # Yield initial logs in reverse order (oldest first)
     yield from reversed(response.hits)
@@ -13056,7 +13108,12 @@ def x_tail_logs__mutmut_70(
     if follow:
         # Get the latest timestamp from initial results
         if response.hits:
-            last_timestamp = max(hit.get("_timestamp", ) for hit in response.hits)
+            last_timestamp = max(
+                hit.get(
+                    "_timestamp",
+                )
+                for hit in response.hits
+            )
         else:
             last_timestamp = parse_relative_time("-1s")
 
@@ -13961,7 +14018,7 @@ def x_tail_logs__mutmut_84(
         yield from stream_logs(
             sql=stream_sql,
             start_time=last_timestamp + 1,
-            )
+        )
 
 
 def x_tail_logs__mutmut_85(
@@ -14091,101 +14148,104 @@ def x_tail_logs__mutmut_86(
             client=client,
         )
 
-x_tail_logs__mutmut_mutants : ClassVar[MutantDict] = {
-'x_tail_logs__mutmut_1': x_tail_logs__mutmut_1, 
-    'x_tail_logs__mutmut_2': x_tail_logs__mutmut_2, 
-    'x_tail_logs__mutmut_3': x_tail_logs__mutmut_3, 
-    'x_tail_logs__mutmut_4': x_tail_logs__mutmut_4, 
-    'x_tail_logs__mutmut_5': x_tail_logs__mutmut_5, 
-    'x_tail_logs__mutmut_6': x_tail_logs__mutmut_6, 
-    'x_tail_logs__mutmut_7': x_tail_logs__mutmut_7, 
-    'x_tail_logs__mutmut_8': x_tail_logs__mutmut_8, 
-    'x_tail_logs__mutmut_9': x_tail_logs__mutmut_9, 
-    'x_tail_logs__mutmut_10': x_tail_logs__mutmut_10, 
-    'x_tail_logs__mutmut_11': x_tail_logs__mutmut_11, 
-    'x_tail_logs__mutmut_12': x_tail_logs__mutmut_12, 
-    'x_tail_logs__mutmut_13': x_tail_logs__mutmut_13, 
-    'x_tail_logs__mutmut_14': x_tail_logs__mutmut_14, 
-    'x_tail_logs__mutmut_15': x_tail_logs__mutmut_15, 
-    'x_tail_logs__mutmut_16': x_tail_logs__mutmut_16, 
-    'x_tail_logs__mutmut_17': x_tail_logs__mutmut_17, 
-    'x_tail_logs__mutmut_18': x_tail_logs__mutmut_18, 
-    'x_tail_logs__mutmut_19': x_tail_logs__mutmut_19, 
-    'x_tail_logs__mutmut_20': x_tail_logs__mutmut_20, 
-    'x_tail_logs__mutmut_21': x_tail_logs__mutmut_21, 
-    'x_tail_logs__mutmut_22': x_tail_logs__mutmut_22, 
-    'x_tail_logs__mutmut_23': x_tail_logs__mutmut_23, 
-    'x_tail_logs__mutmut_24': x_tail_logs__mutmut_24, 
-    'x_tail_logs__mutmut_25': x_tail_logs__mutmut_25, 
-    'x_tail_logs__mutmut_26': x_tail_logs__mutmut_26, 
-    'x_tail_logs__mutmut_27': x_tail_logs__mutmut_27, 
-    'x_tail_logs__mutmut_28': x_tail_logs__mutmut_28, 
-    'x_tail_logs__mutmut_29': x_tail_logs__mutmut_29, 
-    'x_tail_logs__mutmut_30': x_tail_logs__mutmut_30, 
-    'x_tail_logs__mutmut_31': x_tail_logs__mutmut_31, 
-    'x_tail_logs__mutmut_32': x_tail_logs__mutmut_32, 
-    'x_tail_logs__mutmut_33': x_tail_logs__mutmut_33, 
-    'x_tail_logs__mutmut_34': x_tail_logs__mutmut_34, 
-    'x_tail_logs__mutmut_35': x_tail_logs__mutmut_35, 
-    'x_tail_logs__mutmut_36': x_tail_logs__mutmut_36, 
-    'x_tail_logs__mutmut_37': x_tail_logs__mutmut_37, 
-    'x_tail_logs__mutmut_38': x_tail_logs__mutmut_38, 
-    'x_tail_logs__mutmut_39': x_tail_logs__mutmut_39, 
-    'x_tail_logs__mutmut_40': x_tail_logs__mutmut_40, 
-    'x_tail_logs__mutmut_41': x_tail_logs__mutmut_41, 
-    'x_tail_logs__mutmut_42': x_tail_logs__mutmut_42, 
-    'x_tail_logs__mutmut_43': x_tail_logs__mutmut_43, 
-    'x_tail_logs__mutmut_44': x_tail_logs__mutmut_44, 
-    'x_tail_logs__mutmut_45': x_tail_logs__mutmut_45, 
-    'x_tail_logs__mutmut_46': x_tail_logs__mutmut_46, 
-    'x_tail_logs__mutmut_47': x_tail_logs__mutmut_47, 
-    'x_tail_logs__mutmut_48': x_tail_logs__mutmut_48, 
-    'x_tail_logs__mutmut_49': x_tail_logs__mutmut_49, 
-    'x_tail_logs__mutmut_50': x_tail_logs__mutmut_50, 
-    'x_tail_logs__mutmut_51': x_tail_logs__mutmut_51, 
-    'x_tail_logs__mutmut_52': x_tail_logs__mutmut_52, 
-    'x_tail_logs__mutmut_53': x_tail_logs__mutmut_53, 
-    'x_tail_logs__mutmut_54': x_tail_logs__mutmut_54, 
-    'x_tail_logs__mutmut_55': x_tail_logs__mutmut_55, 
-    'x_tail_logs__mutmut_56': x_tail_logs__mutmut_56, 
-    'x_tail_logs__mutmut_57': x_tail_logs__mutmut_57, 
-    'x_tail_logs__mutmut_58': x_tail_logs__mutmut_58, 
-    'x_tail_logs__mutmut_59': x_tail_logs__mutmut_59, 
-    'x_tail_logs__mutmut_60': x_tail_logs__mutmut_60, 
-    'x_tail_logs__mutmut_61': x_tail_logs__mutmut_61, 
-    'x_tail_logs__mutmut_62': x_tail_logs__mutmut_62, 
-    'x_tail_logs__mutmut_63': x_tail_logs__mutmut_63, 
-    'x_tail_logs__mutmut_64': x_tail_logs__mutmut_64, 
-    'x_tail_logs__mutmut_65': x_tail_logs__mutmut_65, 
-    'x_tail_logs__mutmut_66': x_tail_logs__mutmut_66, 
-    'x_tail_logs__mutmut_67': x_tail_logs__mutmut_67, 
-    'x_tail_logs__mutmut_68': x_tail_logs__mutmut_68, 
-    'x_tail_logs__mutmut_69': x_tail_logs__mutmut_69, 
-    'x_tail_logs__mutmut_70': x_tail_logs__mutmut_70, 
-    'x_tail_logs__mutmut_71': x_tail_logs__mutmut_71, 
-    'x_tail_logs__mutmut_72': x_tail_logs__mutmut_72, 
-    'x_tail_logs__mutmut_73': x_tail_logs__mutmut_73, 
-    'x_tail_logs__mutmut_74': x_tail_logs__mutmut_74, 
-    'x_tail_logs__mutmut_75': x_tail_logs__mutmut_75, 
-    'x_tail_logs__mutmut_76': x_tail_logs__mutmut_76, 
-    'x_tail_logs__mutmut_77': x_tail_logs__mutmut_77, 
-    'x_tail_logs__mutmut_78': x_tail_logs__mutmut_78, 
-    'x_tail_logs__mutmut_79': x_tail_logs__mutmut_79, 
-    'x_tail_logs__mutmut_80': x_tail_logs__mutmut_80, 
-    'x_tail_logs__mutmut_81': x_tail_logs__mutmut_81, 
-    'x_tail_logs__mutmut_82': x_tail_logs__mutmut_82, 
-    'x_tail_logs__mutmut_83': x_tail_logs__mutmut_83, 
-    'x_tail_logs__mutmut_84': x_tail_logs__mutmut_84, 
-    'x_tail_logs__mutmut_85': x_tail_logs__mutmut_85, 
-    'x_tail_logs__mutmut_86': x_tail_logs__mutmut_86
+
+x_tail_logs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_tail_logs__mutmut_1": x_tail_logs__mutmut_1,
+    "x_tail_logs__mutmut_2": x_tail_logs__mutmut_2,
+    "x_tail_logs__mutmut_3": x_tail_logs__mutmut_3,
+    "x_tail_logs__mutmut_4": x_tail_logs__mutmut_4,
+    "x_tail_logs__mutmut_5": x_tail_logs__mutmut_5,
+    "x_tail_logs__mutmut_6": x_tail_logs__mutmut_6,
+    "x_tail_logs__mutmut_7": x_tail_logs__mutmut_7,
+    "x_tail_logs__mutmut_8": x_tail_logs__mutmut_8,
+    "x_tail_logs__mutmut_9": x_tail_logs__mutmut_9,
+    "x_tail_logs__mutmut_10": x_tail_logs__mutmut_10,
+    "x_tail_logs__mutmut_11": x_tail_logs__mutmut_11,
+    "x_tail_logs__mutmut_12": x_tail_logs__mutmut_12,
+    "x_tail_logs__mutmut_13": x_tail_logs__mutmut_13,
+    "x_tail_logs__mutmut_14": x_tail_logs__mutmut_14,
+    "x_tail_logs__mutmut_15": x_tail_logs__mutmut_15,
+    "x_tail_logs__mutmut_16": x_tail_logs__mutmut_16,
+    "x_tail_logs__mutmut_17": x_tail_logs__mutmut_17,
+    "x_tail_logs__mutmut_18": x_tail_logs__mutmut_18,
+    "x_tail_logs__mutmut_19": x_tail_logs__mutmut_19,
+    "x_tail_logs__mutmut_20": x_tail_logs__mutmut_20,
+    "x_tail_logs__mutmut_21": x_tail_logs__mutmut_21,
+    "x_tail_logs__mutmut_22": x_tail_logs__mutmut_22,
+    "x_tail_logs__mutmut_23": x_tail_logs__mutmut_23,
+    "x_tail_logs__mutmut_24": x_tail_logs__mutmut_24,
+    "x_tail_logs__mutmut_25": x_tail_logs__mutmut_25,
+    "x_tail_logs__mutmut_26": x_tail_logs__mutmut_26,
+    "x_tail_logs__mutmut_27": x_tail_logs__mutmut_27,
+    "x_tail_logs__mutmut_28": x_tail_logs__mutmut_28,
+    "x_tail_logs__mutmut_29": x_tail_logs__mutmut_29,
+    "x_tail_logs__mutmut_30": x_tail_logs__mutmut_30,
+    "x_tail_logs__mutmut_31": x_tail_logs__mutmut_31,
+    "x_tail_logs__mutmut_32": x_tail_logs__mutmut_32,
+    "x_tail_logs__mutmut_33": x_tail_logs__mutmut_33,
+    "x_tail_logs__mutmut_34": x_tail_logs__mutmut_34,
+    "x_tail_logs__mutmut_35": x_tail_logs__mutmut_35,
+    "x_tail_logs__mutmut_36": x_tail_logs__mutmut_36,
+    "x_tail_logs__mutmut_37": x_tail_logs__mutmut_37,
+    "x_tail_logs__mutmut_38": x_tail_logs__mutmut_38,
+    "x_tail_logs__mutmut_39": x_tail_logs__mutmut_39,
+    "x_tail_logs__mutmut_40": x_tail_logs__mutmut_40,
+    "x_tail_logs__mutmut_41": x_tail_logs__mutmut_41,
+    "x_tail_logs__mutmut_42": x_tail_logs__mutmut_42,
+    "x_tail_logs__mutmut_43": x_tail_logs__mutmut_43,
+    "x_tail_logs__mutmut_44": x_tail_logs__mutmut_44,
+    "x_tail_logs__mutmut_45": x_tail_logs__mutmut_45,
+    "x_tail_logs__mutmut_46": x_tail_logs__mutmut_46,
+    "x_tail_logs__mutmut_47": x_tail_logs__mutmut_47,
+    "x_tail_logs__mutmut_48": x_tail_logs__mutmut_48,
+    "x_tail_logs__mutmut_49": x_tail_logs__mutmut_49,
+    "x_tail_logs__mutmut_50": x_tail_logs__mutmut_50,
+    "x_tail_logs__mutmut_51": x_tail_logs__mutmut_51,
+    "x_tail_logs__mutmut_52": x_tail_logs__mutmut_52,
+    "x_tail_logs__mutmut_53": x_tail_logs__mutmut_53,
+    "x_tail_logs__mutmut_54": x_tail_logs__mutmut_54,
+    "x_tail_logs__mutmut_55": x_tail_logs__mutmut_55,
+    "x_tail_logs__mutmut_56": x_tail_logs__mutmut_56,
+    "x_tail_logs__mutmut_57": x_tail_logs__mutmut_57,
+    "x_tail_logs__mutmut_58": x_tail_logs__mutmut_58,
+    "x_tail_logs__mutmut_59": x_tail_logs__mutmut_59,
+    "x_tail_logs__mutmut_60": x_tail_logs__mutmut_60,
+    "x_tail_logs__mutmut_61": x_tail_logs__mutmut_61,
+    "x_tail_logs__mutmut_62": x_tail_logs__mutmut_62,
+    "x_tail_logs__mutmut_63": x_tail_logs__mutmut_63,
+    "x_tail_logs__mutmut_64": x_tail_logs__mutmut_64,
+    "x_tail_logs__mutmut_65": x_tail_logs__mutmut_65,
+    "x_tail_logs__mutmut_66": x_tail_logs__mutmut_66,
+    "x_tail_logs__mutmut_67": x_tail_logs__mutmut_67,
+    "x_tail_logs__mutmut_68": x_tail_logs__mutmut_68,
+    "x_tail_logs__mutmut_69": x_tail_logs__mutmut_69,
+    "x_tail_logs__mutmut_70": x_tail_logs__mutmut_70,
+    "x_tail_logs__mutmut_71": x_tail_logs__mutmut_71,
+    "x_tail_logs__mutmut_72": x_tail_logs__mutmut_72,
+    "x_tail_logs__mutmut_73": x_tail_logs__mutmut_73,
+    "x_tail_logs__mutmut_74": x_tail_logs__mutmut_74,
+    "x_tail_logs__mutmut_75": x_tail_logs__mutmut_75,
+    "x_tail_logs__mutmut_76": x_tail_logs__mutmut_76,
+    "x_tail_logs__mutmut_77": x_tail_logs__mutmut_77,
+    "x_tail_logs__mutmut_78": x_tail_logs__mutmut_78,
+    "x_tail_logs__mutmut_79": x_tail_logs__mutmut_79,
+    "x_tail_logs__mutmut_80": x_tail_logs__mutmut_80,
+    "x_tail_logs__mutmut_81": x_tail_logs__mutmut_81,
+    "x_tail_logs__mutmut_82": x_tail_logs__mutmut_82,
+    "x_tail_logs__mutmut_83": x_tail_logs__mutmut_83,
+    "x_tail_logs__mutmut_84": x_tail_logs__mutmut_84,
+    "x_tail_logs__mutmut_85": x_tail_logs__mutmut_85,
+    "x_tail_logs__mutmut_86": x_tail_logs__mutmut_86,
 }
+
 
 def tail_logs(*args, **kwargs):
     result = _mutmut_trampoline(x_tail_logs__mutmut_orig, x_tail_logs__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 tail_logs.__signature__ = _mutmut_signature(x_tail_logs__mutmut_orig)
-x_tail_logs__mutmut_orig.__name__ = 'x_tail_logs'
+x_tail_logs__mutmut_orig.__name__ = "x_tail_logs"
 
 
 # <3 🧱🤝🔌🪄

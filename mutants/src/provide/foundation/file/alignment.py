@@ -28,23 +28,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -647,31 +650,34 @@ def x_align_offset__mutmut_16(offset: int, alignment: int = DEFAULT_ALIGNMENT) -
 
     return (offset + alignment - 1) & ~(alignment - 2)
 
-x_align_offset__mutmut_mutants : ClassVar[MutantDict] = {
-'x_align_offset__mutmut_1': x_align_offset__mutmut_1, 
-    'x_align_offset__mutmut_2': x_align_offset__mutmut_2, 
-    'x_align_offset__mutmut_3': x_align_offset__mutmut_3, 
-    'x_align_offset__mutmut_4': x_align_offset__mutmut_4, 
-    'x_align_offset__mutmut_5': x_align_offset__mutmut_5, 
-    'x_align_offset__mutmut_6': x_align_offset__mutmut_6, 
-    'x_align_offset__mutmut_7': x_align_offset__mutmut_7, 
-    'x_align_offset__mutmut_8': x_align_offset__mutmut_8, 
-    'x_align_offset__mutmut_9': x_align_offset__mutmut_9, 
-    'x_align_offset__mutmut_10': x_align_offset__mutmut_10, 
-    'x_align_offset__mutmut_11': x_align_offset__mutmut_11, 
-    'x_align_offset__mutmut_12': x_align_offset__mutmut_12, 
-    'x_align_offset__mutmut_13': x_align_offset__mutmut_13, 
-    'x_align_offset__mutmut_14': x_align_offset__mutmut_14, 
-    'x_align_offset__mutmut_15': x_align_offset__mutmut_15, 
-    'x_align_offset__mutmut_16': x_align_offset__mutmut_16
+
+x_align_offset__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_align_offset__mutmut_1": x_align_offset__mutmut_1,
+    "x_align_offset__mutmut_2": x_align_offset__mutmut_2,
+    "x_align_offset__mutmut_3": x_align_offset__mutmut_3,
+    "x_align_offset__mutmut_4": x_align_offset__mutmut_4,
+    "x_align_offset__mutmut_5": x_align_offset__mutmut_5,
+    "x_align_offset__mutmut_6": x_align_offset__mutmut_6,
+    "x_align_offset__mutmut_7": x_align_offset__mutmut_7,
+    "x_align_offset__mutmut_8": x_align_offset__mutmut_8,
+    "x_align_offset__mutmut_9": x_align_offset__mutmut_9,
+    "x_align_offset__mutmut_10": x_align_offset__mutmut_10,
+    "x_align_offset__mutmut_11": x_align_offset__mutmut_11,
+    "x_align_offset__mutmut_12": x_align_offset__mutmut_12,
+    "x_align_offset__mutmut_13": x_align_offset__mutmut_13,
+    "x_align_offset__mutmut_14": x_align_offset__mutmut_14,
+    "x_align_offset__mutmut_15": x_align_offset__mutmut_15,
+    "x_align_offset__mutmut_16": x_align_offset__mutmut_16,
 }
+
 
 def align_offset(*args, **kwargs):
     result = _mutmut_trampoline(x_align_offset__mutmut_orig, x_align_offset__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 align_offset.__signature__ = _mutmut_signature(x_align_offset__mutmut_orig)
-x_align_offset__mutmut_orig.__name__ = 'x_align_offset'
+x_align_offset__mutmut_orig.__name__ = "x_align_offset"
 
 
 def x_align_to_page__mutmut_orig(offset: int, page_size: int = PAGE_SIZE_4K) -> int:
@@ -841,21 +847,26 @@ def x_align_to_page__mutmut_4(offset: int, page_size: int = PAGE_SIZE_4K) -> int
     See Also:
         get_system_page_size() for detecting the system's page size
     """
-    return align_offset(offset, )
+    return align_offset(
+        offset,
+    )
 
-x_align_to_page__mutmut_mutants : ClassVar[MutantDict] = {
-'x_align_to_page__mutmut_1': x_align_to_page__mutmut_1, 
-    'x_align_to_page__mutmut_2': x_align_to_page__mutmut_2, 
-    'x_align_to_page__mutmut_3': x_align_to_page__mutmut_3, 
-    'x_align_to_page__mutmut_4': x_align_to_page__mutmut_4
+
+x_align_to_page__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_align_to_page__mutmut_1": x_align_to_page__mutmut_1,
+    "x_align_to_page__mutmut_2": x_align_to_page__mutmut_2,
+    "x_align_to_page__mutmut_3": x_align_to_page__mutmut_3,
+    "x_align_to_page__mutmut_4": x_align_to_page__mutmut_4,
 }
+
 
 def align_to_page(*args, **kwargs):
     result = _mutmut_trampoline(x_align_to_page__mutmut_orig, x_align_to_page__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 align_to_page.__signature__ = _mutmut_signature(x_align_to_page__mutmut_orig)
-x_align_to_page__mutmut_orig.__name__ = 'x_align_to_page'
+x_align_to_page__mutmut_orig.__name__ = "x_align_to_page"
 
 
 def x_is_aligned__mutmut_orig(offset: int, alignment: int = DEFAULT_ALIGNMENT) -> bool:
@@ -1352,29 +1363,32 @@ def x_is_aligned__mutmut_14(offset: int, alignment: int = DEFAULT_ALIGNMENT) -> 
 
     return (offset & (alignment - 1)) == 1
 
-x_is_aligned__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_aligned__mutmut_1': x_is_aligned__mutmut_1, 
-    'x_is_aligned__mutmut_2': x_is_aligned__mutmut_2, 
-    'x_is_aligned__mutmut_3': x_is_aligned__mutmut_3, 
-    'x_is_aligned__mutmut_4': x_is_aligned__mutmut_4, 
-    'x_is_aligned__mutmut_5': x_is_aligned__mutmut_5, 
-    'x_is_aligned__mutmut_6': x_is_aligned__mutmut_6, 
-    'x_is_aligned__mutmut_7': x_is_aligned__mutmut_7, 
-    'x_is_aligned__mutmut_8': x_is_aligned__mutmut_8, 
-    'x_is_aligned__mutmut_9': x_is_aligned__mutmut_9, 
-    'x_is_aligned__mutmut_10': x_is_aligned__mutmut_10, 
-    'x_is_aligned__mutmut_11': x_is_aligned__mutmut_11, 
-    'x_is_aligned__mutmut_12': x_is_aligned__mutmut_12, 
-    'x_is_aligned__mutmut_13': x_is_aligned__mutmut_13, 
-    'x_is_aligned__mutmut_14': x_is_aligned__mutmut_14
+
+x_is_aligned__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_aligned__mutmut_1": x_is_aligned__mutmut_1,
+    "x_is_aligned__mutmut_2": x_is_aligned__mutmut_2,
+    "x_is_aligned__mutmut_3": x_is_aligned__mutmut_3,
+    "x_is_aligned__mutmut_4": x_is_aligned__mutmut_4,
+    "x_is_aligned__mutmut_5": x_is_aligned__mutmut_5,
+    "x_is_aligned__mutmut_6": x_is_aligned__mutmut_6,
+    "x_is_aligned__mutmut_7": x_is_aligned__mutmut_7,
+    "x_is_aligned__mutmut_8": x_is_aligned__mutmut_8,
+    "x_is_aligned__mutmut_9": x_is_aligned__mutmut_9,
+    "x_is_aligned__mutmut_10": x_is_aligned__mutmut_10,
+    "x_is_aligned__mutmut_11": x_is_aligned__mutmut_11,
+    "x_is_aligned__mutmut_12": x_is_aligned__mutmut_12,
+    "x_is_aligned__mutmut_13": x_is_aligned__mutmut_13,
+    "x_is_aligned__mutmut_14": x_is_aligned__mutmut_14,
 }
+
 
 def is_aligned(*args, **kwargs):
     result = _mutmut_trampoline(x_is_aligned__mutmut_orig, x_is_aligned__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 is_aligned.__signature__ = _mutmut_signature(x_is_aligned__mutmut_orig)
-x_is_aligned__mutmut_orig.__name__ = 'x_is_aligned'
+x_is_aligned__mutmut_orig.__name__ = "x_is_aligned"
 
 
 def x_calculate_padding__mutmut_orig(current_offset: int, alignment: int = DEFAULT_ALIGNMENT) -> int:
@@ -1883,7 +1897,9 @@ def x_calculate_padding__mutmut_14(current_offset: int, alignment: int = DEFAULT
     if alignment <= 0 or (alignment & (alignment - 1)) != 0:
         raise ValueError(f"Alignment must be a positive power of 2, got {alignment}")
 
-    aligned = align_offset(current_offset, )
+    aligned = align_offset(
+        current_offset,
+    )
     return aligned - current_offset
 
 
@@ -1920,30 +1936,35 @@ def x_calculate_padding__mutmut_15(current_offset: int, alignment: int = DEFAULT
     aligned = align_offset(current_offset, alignment)
     return aligned + current_offset
 
-x_calculate_padding__mutmut_mutants : ClassVar[MutantDict] = {
-'x_calculate_padding__mutmut_1': x_calculate_padding__mutmut_1, 
-    'x_calculate_padding__mutmut_2': x_calculate_padding__mutmut_2, 
-    'x_calculate_padding__mutmut_3': x_calculate_padding__mutmut_3, 
-    'x_calculate_padding__mutmut_4': x_calculate_padding__mutmut_4, 
-    'x_calculate_padding__mutmut_5': x_calculate_padding__mutmut_5, 
-    'x_calculate_padding__mutmut_6': x_calculate_padding__mutmut_6, 
-    'x_calculate_padding__mutmut_7': x_calculate_padding__mutmut_7, 
-    'x_calculate_padding__mutmut_8': x_calculate_padding__mutmut_8, 
-    'x_calculate_padding__mutmut_9': x_calculate_padding__mutmut_9, 
-    'x_calculate_padding__mutmut_10': x_calculate_padding__mutmut_10, 
-    'x_calculate_padding__mutmut_11': x_calculate_padding__mutmut_11, 
-    'x_calculate_padding__mutmut_12': x_calculate_padding__mutmut_12, 
-    'x_calculate_padding__mutmut_13': x_calculate_padding__mutmut_13, 
-    'x_calculate_padding__mutmut_14': x_calculate_padding__mutmut_14, 
-    'x_calculate_padding__mutmut_15': x_calculate_padding__mutmut_15
+
+x_calculate_padding__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_calculate_padding__mutmut_1": x_calculate_padding__mutmut_1,
+    "x_calculate_padding__mutmut_2": x_calculate_padding__mutmut_2,
+    "x_calculate_padding__mutmut_3": x_calculate_padding__mutmut_3,
+    "x_calculate_padding__mutmut_4": x_calculate_padding__mutmut_4,
+    "x_calculate_padding__mutmut_5": x_calculate_padding__mutmut_5,
+    "x_calculate_padding__mutmut_6": x_calculate_padding__mutmut_6,
+    "x_calculate_padding__mutmut_7": x_calculate_padding__mutmut_7,
+    "x_calculate_padding__mutmut_8": x_calculate_padding__mutmut_8,
+    "x_calculate_padding__mutmut_9": x_calculate_padding__mutmut_9,
+    "x_calculate_padding__mutmut_10": x_calculate_padding__mutmut_10,
+    "x_calculate_padding__mutmut_11": x_calculate_padding__mutmut_11,
+    "x_calculate_padding__mutmut_12": x_calculate_padding__mutmut_12,
+    "x_calculate_padding__mutmut_13": x_calculate_padding__mutmut_13,
+    "x_calculate_padding__mutmut_14": x_calculate_padding__mutmut_14,
+    "x_calculate_padding__mutmut_15": x_calculate_padding__mutmut_15,
 }
 
+
 def calculate_padding(*args, **kwargs):
-    result = _mutmut_trampoline(x_calculate_padding__mutmut_orig, x_calculate_padding__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_calculate_padding__mutmut_orig, x_calculate_padding__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 calculate_padding.__signature__ = _mutmut_signature(x_calculate_padding__mutmut_orig)
-x_calculate_padding__mutmut_orig.__name__ = 'x_calculate_padding'
+x_calculate_padding__mutmut_orig.__name__ = "x_calculate_padding"
 
 
 def x_get_system_page_size__mutmut_orig() -> int:
@@ -2045,18 +2066,23 @@ def x_get_system_page_size__mutmut_3() -> int:
         # Fallback to common default
         return PAGE_SIZE_4K
 
-x_get_system_page_size__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_system_page_size__mutmut_1': x_get_system_page_size__mutmut_1, 
-    'x_get_system_page_size__mutmut_2': x_get_system_page_size__mutmut_2, 
-    'x_get_system_page_size__mutmut_3': x_get_system_page_size__mutmut_3
+
+x_get_system_page_size__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_system_page_size__mutmut_1": x_get_system_page_size__mutmut_1,
+    "x_get_system_page_size__mutmut_2": x_get_system_page_size__mutmut_2,
+    "x_get_system_page_size__mutmut_3": x_get_system_page_size__mutmut_3,
 }
 
+
 def get_system_page_size(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_system_page_size__mutmut_orig, x_get_system_page_size__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_system_page_size__mutmut_orig, x_get_system_page_size__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_system_page_size.__signature__ = _mutmut_signature(x_get_system_page_size__mutmut_orig)
-x_get_system_page_size__mutmut_orig.__name__ = 'x_get_system_page_size'
+x_get_system_page_size__mutmut_orig.__name__ = "x_get_system_page_size"
 
 
 def x_is_power_of_two__mutmut_orig(value: int) -> bool:
@@ -2283,23 +2309,28 @@ def x_is_power_of_two__mutmut_8(value: int) -> bool:
     """
     return value > 0 and (value & (value - 1)) == 1
 
-x_is_power_of_two__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_power_of_two__mutmut_1': x_is_power_of_two__mutmut_1, 
-    'x_is_power_of_two__mutmut_2': x_is_power_of_two__mutmut_2, 
-    'x_is_power_of_two__mutmut_3': x_is_power_of_two__mutmut_3, 
-    'x_is_power_of_two__mutmut_4': x_is_power_of_two__mutmut_4, 
-    'x_is_power_of_two__mutmut_5': x_is_power_of_two__mutmut_5, 
-    'x_is_power_of_two__mutmut_6': x_is_power_of_two__mutmut_6, 
-    'x_is_power_of_two__mutmut_7': x_is_power_of_two__mutmut_7, 
-    'x_is_power_of_two__mutmut_8': x_is_power_of_two__mutmut_8
+
+x_is_power_of_two__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_power_of_two__mutmut_1": x_is_power_of_two__mutmut_1,
+    "x_is_power_of_two__mutmut_2": x_is_power_of_two__mutmut_2,
+    "x_is_power_of_two__mutmut_3": x_is_power_of_two__mutmut_3,
+    "x_is_power_of_two__mutmut_4": x_is_power_of_two__mutmut_4,
+    "x_is_power_of_two__mutmut_5": x_is_power_of_two__mutmut_5,
+    "x_is_power_of_two__mutmut_6": x_is_power_of_two__mutmut_6,
+    "x_is_power_of_two__mutmut_7": x_is_power_of_two__mutmut_7,
+    "x_is_power_of_two__mutmut_8": x_is_power_of_two__mutmut_8,
 }
 
+
 def is_power_of_two(*args, **kwargs):
-    result = _mutmut_trampoline(x_is_power_of_two__mutmut_orig, x_is_power_of_two__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_is_power_of_two__mutmut_orig, x_is_power_of_two__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 is_power_of_two.__signature__ = _mutmut_signature(x_is_power_of_two__mutmut_orig)
-x_is_power_of_two__mutmut_orig.__name__ = 'x_is_power_of_two'
+x_is_power_of_two__mutmut_orig.__name__ = "x_is_power_of_two"
 
 
 __all__ = [

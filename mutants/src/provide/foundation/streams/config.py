@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -142,17 +145,22 @@ def x_get_stream_config__mutmut_2() -> StreamConfig:
         _stream_config = None
     return _stream_config
 
-x_get_stream_config__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_stream_config__mutmut_1': x_get_stream_config__mutmut_1, 
-    'x_get_stream_config__mutmut_2': x_get_stream_config__mutmut_2
+
+x_get_stream_config__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_stream_config__mutmut_1": x_get_stream_config__mutmut_1,
+    "x_get_stream_config__mutmut_2": x_get_stream_config__mutmut_2,
 }
 
+
 def get_stream_config(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_stream_config__mutmut_orig, x_get_stream_config__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_stream_config__mutmut_orig, x_get_stream_config__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_stream_config.__signature__ = _mutmut_signature(x_get_stream_config__mutmut_orig)
-x_get_stream_config__mutmut_orig.__name__ = 'x_get_stream_config'
+x_get_stream_config__mutmut_orig.__name__ = "x_get_stream_config"
 
 
 def x_reset_stream_config__mutmut_orig() -> None:
@@ -166,16 +174,21 @@ def x_reset_stream_config__mutmut_1() -> None:
     global _stream_config
     _stream_config = ""
 
-x_reset_stream_config__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_stream_config__mutmut_1': x_reset_stream_config__mutmut_1
+
+x_reset_stream_config__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_stream_config__mutmut_1": x_reset_stream_config__mutmut_1
 }
 
+
 def reset_stream_config(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_stream_config__mutmut_orig, x_reset_stream_config__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_stream_config__mutmut_orig, x_reset_stream_config__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_stream_config.__signature__ = _mutmut_signature(x_reset_stream_config__mutmut_orig)
-x_reset_stream_config__mutmut_orig.__name__ = 'x_reset_stream_config'
+x_reset_stream_config__mutmut_orig.__name__ = "x_reset_stream_config"
 
 
 # <3 🧱🤝🌊🪄

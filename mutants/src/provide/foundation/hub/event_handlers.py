@@ -28,23 +28,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -172,19 +175,24 @@ def x__get_logger_safely__mutmut_4() -> Any:
         # If logger isn't ready yet, gracefully ignore
         return None
 
-x__get_logger_safely__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_logger_safely__mutmut_1': x__get_logger_safely__mutmut_1, 
-    'x__get_logger_safely__mutmut_2': x__get_logger_safely__mutmut_2, 
-    'x__get_logger_safely__mutmut_3': x__get_logger_safely__mutmut_3, 
-    'x__get_logger_safely__mutmut_4': x__get_logger_safely__mutmut_4
+
+x__get_logger_safely__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_logger_safely__mutmut_1": x__get_logger_safely__mutmut_1,
+    "x__get_logger_safely__mutmut_2": x__get_logger_safely__mutmut_2,
+    "x__get_logger_safely__mutmut_3": x__get_logger_safely__mutmut_3,
+    "x__get_logger_safely__mutmut_4": x__get_logger_safely__mutmut_4,
 }
 
+
 def _get_logger_safely(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_logger_safely__mutmut_orig, x__get_logger_safely__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_logger_safely__mutmut_orig, x__get_logger_safely__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_logger_safely.__signature__ = _mutmut_signature(x__get_logger_safely__mutmut_orig)
-x__get_logger_safely__mutmut_orig.__name__ = 'x__get_logger_safely'
+x__get_logger_safely__mutmut_orig.__name__ = "x__get_logger_safely"
 
 
 def x_set_reset_in_progress__mutmut_orig(in_progress: bool) -> None:
@@ -212,16 +220,21 @@ def x_set_reset_in_progress__mutmut_1(in_progress: bool) -> None:
     global _reset_in_progress
     _reset_in_progress = None
 
-x_set_reset_in_progress__mutmut_mutants : ClassVar[MutantDict] = {
-'x_set_reset_in_progress__mutmut_1': x_set_reset_in_progress__mutmut_1
+
+x_set_reset_in_progress__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_set_reset_in_progress__mutmut_1": x_set_reset_in_progress__mutmut_1
 }
 
+
 def set_reset_in_progress(*args, **kwargs):
-    result = _mutmut_trampoline(x_set_reset_in_progress__mutmut_orig, x_set_reset_in_progress__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_set_reset_in_progress__mutmut_orig, x_set_reset_in_progress__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 set_reset_in_progress.__signature__ = _mutmut_signature(x_set_reset_in_progress__mutmut_orig)
-x_set_reset_in_progress__mutmut_orig.__name__ = 'x_set_reset_in_progress'
+x_set_reset_in_progress__mutmut_orig.__name__ = "x_set_reset_in_progress"
 
 
 def x_handle_registry_event__mutmut_orig(event: Event | RegistryEvent) -> None:
@@ -614,7 +627,7 @@ def x_handle_registry_event__mutmut_13(event: Event | RegistryEvent) -> None:
                 "Registered item",
                 item_name=event.item_name,
                 dimension=event.dimension,
-                )
+            )
         elif event.operation == "remove":
             logger.debug(
                 "Removed item",
@@ -1023,7 +1036,7 @@ def x_handle_registry_event__mutmut_27(event: Event | RegistryEvent) -> None:
                 "Removed item",
                 item_name=event.item_name,
                 dimension=event.dimension,
-                )
+            )
     elif event.name.startswith("registry."):
         logger.debug("Registry event", event_name=event.name, data=event.data)
 
@@ -1373,7 +1386,10 @@ def x_handle_registry_event__mutmut_39(event: Event | RegistryEvent) -> None:
                 data=event.data,
             )
     elif event.name.startswith("registry."):
-        logger.debug("Registry event", event_name=event.name, )
+        logger.debug(
+            "Registry event",
+            event_name=event.name,
+        )
 
 
 def x_handle_registry_event__mutmut_40(event: Event | RegistryEvent) -> None:
@@ -1462,57 +1478,62 @@ def x_handle_registry_event__mutmut_42(event: Event | RegistryEvent) -> None:
     elif event.name.startswith("registry."):
         logger.debug("REGISTRY EVENT", event_name=event.name, data=event.data)
 
-x_handle_registry_event__mutmut_mutants : ClassVar[MutantDict] = {
-'x_handle_registry_event__mutmut_1': x_handle_registry_event__mutmut_1, 
-    'x_handle_registry_event__mutmut_2': x_handle_registry_event__mutmut_2, 
-    'x_handle_registry_event__mutmut_3': x_handle_registry_event__mutmut_3, 
-    'x_handle_registry_event__mutmut_4': x_handle_registry_event__mutmut_4, 
-    'x_handle_registry_event__mutmut_5': x_handle_registry_event__mutmut_5, 
-    'x_handle_registry_event__mutmut_6': x_handle_registry_event__mutmut_6, 
-    'x_handle_registry_event__mutmut_7': x_handle_registry_event__mutmut_7, 
-    'x_handle_registry_event__mutmut_8': x_handle_registry_event__mutmut_8, 
-    'x_handle_registry_event__mutmut_9': x_handle_registry_event__mutmut_9, 
-    'x_handle_registry_event__mutmut_10': x_handle_registry_event__mutmut_10, 
-    'x_handle_registry_event__mutmut_11': x_handle_registry_event__mutmut_11, 
-    'x_handle_registry_event__mutmut_12': x_handle_registry_event__mutmut_12, 
-    'x_handle_registry_event__mutmut_13': x_handle_registry_event__mutmut_13, 
-    'x_handle_registry_event__mutmut_14': x_handle_registry_event__mutmut_14, 
-    'x_handle_registry_event__mutmut_15': x_handle_registry_event__mutmut_15, 
-    'x_handle_registry_event__mutmut_16': x_handle_registry_event__mutmut_16, 
-    'x_handle_registry_event__mutmut_17': x_handle_registry_event__mutmut_17, 
-    'x_handle_registry_event__mutmut_18': x_handle_registry_event__mutmut_18, 
-    'x_handle_registry_event__mutmut_19': x_handle_registry_event__mutmut_19, 
-    'x_handle_registry_event__mutmut_20': x_handle_registry_event__mutmut_20, 
-    'x_handle_registry_event__mutmut_21': x_handle_registry_event__mutmut_21, 
-    'x_handle_registry_event__mutmut_22': x_handle_registry_event__mutmut_22, 
-    'x_handle_registry_event__mutmut_23': x_handle_registry_event__mutmut_23, 
-    'x_handle_registry_event__mutmut_24': x_handle_registry_event__mutmut_24, 
-    'x_handle_registry_event__mutmut_25': x_handle_registry_event__mutmut_25, 
-    'x_handle_registry_event__mutmut_26': x_handle_registry_event__mutmut_26, 
-    'x_handle_registry_event__mutmut_27': x_handle_registry_event__mutmut_27, 
-    'x_handle_registry_event__mutmut_28': x_handle_registry_event__mutmut_28, 
-    'x_handle_registry_event__mutmut_29': x_handle_registry_event__mutmut_29, 
-    'x_handle_registry_event__mutmut_30': x_handle_registry_event__mutmut_30, 
-    'x_handle_registry_event__mutmut_31': x_handle_registry_event__mutmut_31, 
-    'x_handle_registry_event__mutmut_32': x_handle_registry_event__mutmut_32, 
-    'x_handle_registry_event__mutmut_33': x_handle_registry_event__mutmut_33, 
-    'x_handle_registry_event__mutmut_34': x_handle_registry_event__mutmut_34, 
-    'x_handle_registry_event__mutmut_35': x_handle_registry_event__mutmut_35, 
-    'x_handle_registry_event__mutmut_36': x_handle_registry_event__mutmut_36, 
-    'x_handle_registry_event__mutmut_37': x_handle_registry_event__mutmut_37, 
-    'x_handle_registry_event__mutmut_38': x_handle_registry_event__mutmut_38, 
-    'x_handle_registry_event__mutmut_39': x_handle_registry_event__mutmut_39, 
-    'x_handle_registry_event__mutmut_40': x_handle_registry_event__mutmut_40, 
-    'x_handle_registry_event__mutmut_41': x_handle_registry_event__mutmut_41, 
-    'x_handle_registry_event__mutmut_42': x_handle_registry_event__mutmut_42
+
+x_handle_registry_event__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_handle_registry_event__mutmut_1": x_handle_registry_event__mutmut_1,
+    "x_handle_registry_event__mutmut_2": x_handle_registry_event__mutmut_2,
+    "x_handle_registry_event__mutmut_3": x_handle_registry_event__mutmut_3,
+    "x_handle_registry_event__mutmut_4": x_handle_registry_event__mutmut_4,
+    "x_handle_registry_event__mutmut_5": x_handle_registry_event__mutmut_5,
+    "x_handle_registry_event__mutmut_6": x_handle_registry_event__mutmut_6,
+    "x_handle_registry_event__mutmut_7": x_handle_registry_event__mutmut_7,
+    "x_handle_registry_event__mutmut_8": x_handle_registry_event__mutmut_8,
+    "x_handle_registry_event__mutmut_9": x_handle_registry_event__mutmut_9,
+    "x_handle_registry_event__mutmut_10": x_handle_registry_event__mutmut_10,
+    "x_handle_registry_event__mutmut_11": x_handle_registry_event__mutmut_11,
+    "x_handle_registry_event__mutmut_12": x_handle_registry_event__mutmut_12,
+    "x_handle_registry_event__mutmut_13": x_handle_registry_event__mutmut_13,
+    "x_handle_registry_event__mutmut_14": x_handle_registry_event__mutmut_14,
+    "x_handle_registry_event__mutmut_15": x_handle_registry_event__mutmut_15,
+    "x_handle_registry_event__mutmut_16": x_handle_registry_event__mutmut_16,
+    "x_handle_registry_event__mutmut_17": x_handle_registry_event__mutmut_17,
+    "x_handle_registry_event__mutmut_18": x_handle_registry_event__mutmut_18,
+    "x_handle_registry_event__mutmut_19": x_handle_registry_event__mutmut_19,
+    "x_handle_registry_event__mutmut_20": x_handle_registry_event__mutmut_20,
+    "x_handle_registry_event__mutmut_21": x_handle_registry_event__mutmut_21,
+    "x_handle_registry_event__mutmut_22": x_handle_registry_event__mutmut_22,
+    "x_handle_registry_event__mutmut_23": x_handle_registry_event__mutmut_23,
+    "x_handle_registry_event__mutmut_24": x_handle_registry_event__mutmut_24,
+    "x_handle_registry_event__mutmut_25": x_handle_registry_event__mutmut_25,
+    "x_handle_registry_event__mutmut_26": x_handle_registry_event__mutmut_26,
+    "x_handle_registry_event__mutmut_27": x_handle_registry_event__mutmut_27,
+    "x_handle_registry_event__mutmut_28": x_handle_registry_event__mutmut_28,
+    "x_handle_registry_event__mutmut_29": x_handle_registry_event__mutmut_29,
+    "x_handle_registry_event__mutmut_30": x_handle_registry_event__mutmut_30,
+    "x_handle_registry_event__mutmut_31": x_handle_registry_event__mutmut_31,
+    "x_handle_registry_event__mutmut_32": x_handle_registry_event__mutmut_32,
+    "x_handle_registry_event__mutmut_33": x_handle_registry_event__mutmut_33,
+    "x_handle_registry_event__mutmut_34": x_handle_registry_event__mutmut_34,
+    "x_handle_registry_event__mutmut_35": x_handle_registry_event__mutmut_35,
+    "x_handle_registry_event__mutmut_36": x_handle_registry_event__mutmut_36,
+    "x_handle_registry_event__mutmut_37": x_handle_registry_event__mutmut_37,
+    "x_handle_registry_event__mutmut_38": x_handle_registry_event__mutmut_38,
+    "x_handle_registry_event__mutmut_39": x_handle_registry_event__mutmut_39,
+    "x_handle_registry_event__mutmut_40": x_handle_registry_event__mutmut_40,
+    "x_handle_registry_event__mutmut_41": x_handle_registry_event__mutmut_41,
+    "x_handle_registry_event__mutmut_42": x_handle_registry_event__mutmut_42,
 }
 
+
 def handle_registry_event(*args, **kwargs):
-    result = _mutmut_trampoline(x_handle_registry_event__mutmut_orig, x_handle_registry_event__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_handle_registry_event__mutmut_orig, x_handle_registry_event__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 handle_registry_event.__signature__ = _mutmut_signature(x_handle_registry_event__mutmut_orig)
-x_handle_registry_event__mutmut_orig.__name__ = 'x_handle_registry_event'
+x_handle_registry_event__mutmut_orig.__name__ = "x_handle_registry_event"
 
 
 def x_handle_circuit_breaker_event__mutmut_orig(event: Event) -> None:
@@ -1724,7 +1745,9 @@ def x_handle_circuit_breaker_event__mutmut_9(event: Event) -> None:
         return
 
     if event.name == "circuit_breaker.recovered":
-        logger.info("Circuit breaker recovered - closing circuit", )
+        logger.info(
+            "Circuit breaker recovered - closing circuit",
+        )
     elif event.name == "circuit_breaker.opened":
         logger.error("Circuit breaker opened due to failures", data=event.data)
     elif event.name == "circuit_breaker.recovery_failed":
@@ -1946,7 +1969,9 @@ def x_handle_circuit_breaker_event__mutmut_19(event: Event) -> None:
     if event.name == "circuit_breaker.recovered":
         logger.info("Circuit breaker recovered - closing circuit", data=event.data)
     elif event.name == "circuit_breaker.opened":
-        logger.error("Circuit breaker opened due to failures", )
+        logger.error(
+            "Circuit breaker opened due to failures",
+        )
     elif event.name == "circuit_breaker.recovery_failed":
         logger.warning("Circuit breaker recovery failed - opening circuit", data=event.data)
     elif event.name == "circuit_breaker.attempting_recovery":
@@ -2168,7 +2193,9 @@ def x_handle_circuit_breaker_event__mutmut_29(event: Event) -> None:
     elif event.name == "circuit_breaker.opened":
         logger.error("Circuit breaker opened due to failures", data=event.data)
     elif event.name == "circuit_breaker.recovery_failed":
-        logger.warning("Circuit breaker recovery failed - opening circuit", )
+        logger.warning(
+            "Circuit breaker recovery failed - opening circuit",
+        )
     elif event.name == "circuit_breaker.attempting_recovery":
         logger.info("Circuit breaker attempting recovery", data=event.data)
     elif event.name == "circuit_breaker.manual_reset":
@@ -2390,7 +2417,9 @@ def x_handle_circuit_breaker_event__mutmut_39(event: Event) -> None:
     elif event.name == "circuit_breaker.recovery_failed":
         logger.warning("Circuit breaker recovery failed - opening circuit", data=event.data)
     elif event.name == "circuit_breaker.attempting_recovery":
-        logger.info("Circuit breaker attempting recovery", )
+        logger.info(
+            "Circuit breaker attempting recovery",
+        )
     elif event.name == "circuit_breaker.manual_reset":
         logger.info("Circuit breaker manually reset", data=event.data)
 
@@ -2612,7 +2641,9 @@ def x_handle_circuit_breaker_event__mutmut_49(event: Event) -> None:
     elif event.name == "circuit_breaker.attempting_recovery":
         logger.info("Circuit breaker attempting recovery", data=event.data)
     elif event.name == "circuit_breaker.manual_reset":
-        logger.info("Circuit breaker manually reset", )
+        logger.info(
+            "Circuit breaker manually reset",
+        )
 
 
 def x_handle_circuit_breaker_event__mutmut_50(event: Event) -> None:
@@ -2680,67 +2711,75 @@ def x_handle_circuit_breaker_event__mutmut_52(event: Event) -> None:
     elif event.name == "circuit_breaker.manual_reset":
         logger.info("CIRCUIT BREAKER MANUALLY RESET", data=event.data)
 
-x_handle_circuit_breaker_event__mutmut_mutants : ClassVar[MutantDict] = {
-'x_handle_circuit_breaker_event__mutmut_1': x_handle_circuit_breaker_event__mutmut_1, 
-    'x_handle_circuit_breaker_event__mutmut_2': x_handle_circuit_breaker_event__mutmut_2, 
-    'x_handle_circuit_breaker_event__mutmut_3': x_handle_circuit_breaker_event__mutmut_3, 
-    'x_handle_circuit_breaker_event__mutmut_4': x_handle_circuit_breaker_event__mutmut_4, 
-    'x_handle_circuit_breaker_event__mutmut_5': x_handle_circuit_breaker_event__mutmut_5, 
-    'x_handle_circuit_breaker_event__mutmut_6': x_handle_circuit_breaker_event__mutmut_6, 
-    'x_handle_circuit_breaker_event__mutmut_7': x_handle_circuit_breaker_event__mutmut_7, 
-    'x_handle_circuit_breaker_event__mutmut_8': x_handle_circuit_breaker_event__mutmut_8, 
-    'x_handle_circuit_breaker_event__mutmut_9': x_handle_circuit_breaker_event__mutmut_9, 
-    'x_handle_circuit_breaker_event__mutmut_10': x_handle_circuit_breaker_event__mutmut_10, 
-    'x_handle_circuit_breaker_event__mutmut_11': x_handle_circuit_breaker_event__mutmut_11, 
-    'x_handle_circuit_breaker_event__mutmut_12': x_handle_circuit_breaker_event__mutmut_12, 
-    'x_handle_circuit_breaker_event__mutmut_13': x_handle_circuit_breaker_event__mutmut_13, 
-    'x_handle_circuit_breaker_event__mutmut_14': x_handle_circuit_breaker_event__mutmut_14, 
-    'x_handle_circuit_breaker_event__mutmut_15': x_handle_circuit_breaker_event__mutmut_15, 
-    'x_handle_circuit_breaker_event__mutmut_16': x_handle_circuit_breaker_event__mutmut_16, 
-    'x_handle_circuit_breaker_event__mutmut_17': x_handle_circuit_breaker_event__mutmut_17, 
-    'x_handle_circuit_breaker_event__mutmut_18': x_handle_circuit_breaker_event__mutmut_18, 
-    'x_handle_circuit_breaker_event__mutmut_19': x_handle_circuit_breaker_event__mutmut_19, 
-    'x_handle_circuit_breaker_event__mutmut_20': x_handle_circuit_breaker_event__mutmut_20, 
-    'x_handle_circuit_breaker_event__mutmut_21': x_handle_circuit_breaker_event__mutmut_21, 
-    'x_handle_circuit_breaker_event__mutmut_22': x_handle_circuit_breaker_event__mutmut_22, 
-    'x_handle_circuit_breaker_event__mutmut_23': x_handle_circuit_breaker_event__mutmut_23, 
-    'x_handle_circuit_breaker_event__mutmut_24': x_handle_circuit_breaker_event__mutmut_24, 
-    'x_handle_circuit_breaker_event__mutmut_25': x_handle_circuit_breaker_event__mutmut_25, 
-    'x_handle_circuit_breaker_event__mutmut_26': x_handle_circuit_breaker_event__mutmut_26, 
-    'x_handle_circuit_breaker_event__mutmut_27': x_handle_circuit_breaker_event__mutmut_27, 
-    'x_handle_circuit_breaker_event__mutmut_28': x_handle_circuit_breaker_event__mutmut_28, 
-    'x_handle_circuit_breaker_event__mutmut_29': x_handle_circuit_breaker_event__mutmut_29, 
-    'x_handle_circuit_breaker_event__mutmut_30': x_handle_circuit_breaker_event__mutmut_30, 
-    'x_handle_circuit_breaker_event__mutmut_31': x_handle_circuit_breaker_event__mutmut_31, 
-    'x_handle_circuit_breaker_event__mutmut_32': x_handle_circuit_breaker_event__mutmut_32, 
-    'x_handle_circuit_breaker_event__mutmut_33': x_handle_circuit_breaker_event__mutmut_33, 
-    'x_handle_circuit_breaker_event__mutmut_34': x_handle_circuit_breaker_event__mutmut_34, 
-    'x_handle_circuit_breaker_event__mutmut_35': x_handle_circuit_breaker_event__mutmut_35, 
-    'x_handle_circuit_breaker_event__mutmut_36': x_handle_circuit_breaker_event__mutmut_36, 
-    'x_handle_circuit_breaker_event__mutmut_37': x_handle_circuit_breaker_event__mutmut_37, 
-    'x_handle_circuit_breaker_event__mutmut_38': x_handle_circuit_breaker_event__mutmut_38, 
-    'x_handle_circuit_breaker_event__mutmut_39': x_handle_circuit_breaker_event__mutmut_39, 
-    'x_handle_circuit_breaker_event__mutmut_40': x_handle_circuit_breaker_event__mutmut_40, 
-    'x_handle_circuit_breaker_event__mutmut_41': x_handle_circuit_breaker_event__mutmut_41, 
-    'x_handle_circuit_breaker_event__mutmut_42': x_handle_circuit_breaker_event__mutmut_42, 
-    'x_handle_circuit_breaker_event__mutmut_43': x_handle_circuit_breaker_event__mutmut_43, 
-    'x_handle_circuit_breaker_event__mutmut_44': x_handle_circuit_breaker_event__mutmut_44, 
-    'x_handle_circuit_breaker_event__mutmut_45': x_handle_circuit_breaker_event__mutmut_45, 
-    'x_handle_circuit_breaker_event__mutmut_46': x_handle_circuit_breaker_event__mutmut_46, 
-    'x_handle_circuit_breaker_event__mutmut_47': x_handle_circuit_breaker_event__mutmut_47, 
-    'x_handle_circuit_breaker_event__mutmut_48': x_handle_circuit_breaker_event__mutmut_48, 
-    'x_handle_circuit_breaker_event__mutmut_49': x_handle_circuit_breaker_event__mutmut_49, 
-    'x_handle_circuit_breaker_event__mutmut_50': x_handle_circuit_breaker_event__mutmut_50, 
-    'x_handle_circuit_breaker_event__mutmut_51': x_handle_circuit_breaker_event__mutmut_51, 
-    'x_handle_circuit_breaker_event__mutmut_52': x_handle_circuit_breaker_event__mutmut_52
+
+x_handle_circuit_breaker_event__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_handle_circuit_breaker_event__mutmut_1": x_handle_circuit_breaker_event__mutmut_1,
+    "x_handle_circuit_breaker_event__mutmut_2": x_handle_circuit_breaker_event__mutmut_2,
+    "x_handle_circuit_breaker_event__mutmut_3": x_handle_circuit_breaker_event__mutmut_3,
+    "x_handle_circuit_breaker_event__mutmut_4": x_handle_circuit_breaker_event__mutmut_4,
+    "x_handle_circuit_breaker_event__mutmut_5": x_handle_circuit_breaker_event__mutmut_5,
+    "x_handle_circuit_breaker_event__mutmut_6": x_handle_circuit_breaker_event__mutmut_6,
+    "x_handle_circuit_breaker_event__mutmut_7": x_handle_circuit_breaker_event__mutmut_7,
+    "x_handle_circuit_breaker_event__mutmut_8": x_handle_circuit_breaker_event__mutmut_8,
+    "x_handle_circuit_breaker_event__mutmut_9": x_handle_circuit_breaker_event__mutmut_9,
+    "x_handle_circuit_breaker_event__mutmut_10": x_handle_circuit_breaker_event__mutmut_10,
+    "x_handle_circuit_breaker_event__mutmut_11": x_handle_circuit_breaker_event__mutmut_11,
+    "x_handle_circuit_breaker_event__mutmut_12": x_handle_circuit_breaker_event__mutmut_12,
+    "x_handle_circuit_breaker_event__mutmut_13": x_handle_circuit_breaker_event__mutmut_13,
+    "x_handle_circuit_breaker_event__mutmut_14": x_handle_circuit_breaker_event__mutmut_14,
+    "x_handle_circuit_breaker_event__mutmut_15": x_handle_circuit_breaker_event__mutmut_15,
+    "x_handle_circuit_breaker_event__mutmut_16": x_handle_circuit_breaker_event__mutmut_16,
+    "x_handle_circuit_breaker_event__mutmut_17": x_handle_circuit_breaker_event__mutmut_17,
+    "x_handle_circuit_breaker_event__mutmut_18": x_handle_circuit_breaker_event__mutmut_18,
+    "x_handle_circuit_breaker_event__mutmut_19": x_handle_circuit_breaker_event__mutmut_19,
+    "x_handle_circuit_breaker_event__mutmut_20": x_handle_circuit_breaker_event__mutmut_20,
+    "x_handle_circuit_breaker_event__mutmut_21": x_handle_circuit_breaker_event__mutmut_21,
+    "x_handle_circuit_breaker_event__mutmut_22": x_handle_circuit_breaker_event__mutmut_22,
+    "x_handle_circuit_breaker_event__mutmut_23": x_handle_circuit_breaker_event__mutmut_23,
+    "x_handle_circuit_breaker_event__mutmut_24": x_handle_circuit_breaker_event__mutmut_24,
+    "x_handle_circuit_breaker_event__mutmut_25": x_handle_circuit_breaker_event__mutmut_25,
+    "x_handle_circuit_breaker_event__mutmut_26": x_handle_circuit_breaker_event__mutmut_26,
+    "x_handle_circuit_breaker_event__mutmut_27": x_handle_circuit_breaker_event__mutmut_27,
+    "x_handle_circuit_breaker_event__mutmut_28": x_handle_circuit_breaker_event__mutmut_28,
+    "x_handle_circuit_breaker_event__mutmut_29": x_handle_circuit_breaker_event__mutmut_29,
+    "x_handle_circuit_breaker_event__mutmut_30": x_handle_circuit_breaker_event__mutmut_30,
+    "x_handle_circuit_breaker_event__mutmut_31": x_handle_circuit_breaker_event__mutmut_31,
+    "x_handle_circuit_breaker_event__mutmut_32": x_handle_circuit_breaker_event__mutmut_32,
+    "x_handle_circuit_breaker_event__mutmut_33": x_handle_circuit_breaker_event__mutmut_33,
+    "x_handle_circuit_breaker_event__mutmut_34": x_handle_circuit_breaker_event__mutmut_34,
+    "x_handle_circuit_breaker_event__mutmut_35": x_handle_circuit_breaker_event__mutmut_35,
+    "x_handle_circuit_breaker_event__mutmut_36": x_handle_circuit_breaker_event__mutmut_36,
+    "x_handle_circuit_breaker_event__mutmut_37": x_handle_circuit_breaker_event__mutmut_37,
+    "x_handle_circuit_breaker_event__mutmut_38": x_handle_circuit_breaker_event__mutmut_38,
+    "x_handle_circuit_breaker_event__mutmut_39": x_handle_circuit_breaker_event__mutmut_39,
+    "x_handle_circuit_breaker_event__mutmut_40": x_handle_circuit_breaker_event__mutmut_40,
+    "x_handle_circuit_breaker_event__mutmut_41": x_handle_circuit_breaker_event__mutmut_41,
+    "x_handle_circuit_breaker_event__mutmut_42": x_handle_circuit_breaker_event__mutmut_42,
+    "x_handle_circuit_breaker_event__mutmut_43": x_handle_circuit_breaker_event__mutmut_43,
+    "x_handle_circuit_breaker_event__mutmut_44": x_handle_circuit_breaker_event__mutmut_44,
+    "x_handle_circuit_breaker_event__mutmut_45": x_handle_circuit_breaker_event__mutmut_45,
+    "x_handle_circuit_breaker_event__mutmut_46": x_handle_circuit_breaker_event__mutmut_46,
+    "x_handle_circuit_breaker_event__mutmut_47": x_handle_circuit_breaker_event__mutmut_47,
+    "x_handle_circuit_breaker_event__mutmut_48": x_handle_circuit_breaker_event__mutmut_48,
+    "x_handle_circuit_breaker_event__mutmut_49": x_handle_circuit_breaker_event__mutmut_49,
+    "x_handle_circuit_breaker_event__mutmut_50": x_handle_circuit_breaker_event__mutmut_50,
+    "x_handle_circuit_breaker_event__mutmut_51": x_handle_circuit_breaker_event__mutmut_51,
+    "x_handle_circuit_breaker_event__mutmut_52": x_handle_circuit_breaker_event__mutmut_52,
 }
 
+
 def handle_circuit_breaker_event(*args, **kwargs):
-    result = _mutmut_trampoline(x_handle_circuit_breaker_event__mutmut_orig, x_handle_circuit_breaker_event__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_handle_circuit_breaker_event__mutmut_orig,
+        x_handle_circuit_breaker_event__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 handle_circuit_breaker_event.__signature__ = _mutmut_signature(x_handle_circuit_breaker_event__mutmut_orig)
-x_handle_circuit_breaker_event__mutmut_orig.__name__ = 'x_handle_circuit_breaker_event'
+x_handle_circuit_breaker_event__mutmut_orig.__name__ = "x_handle_circuit_breaker_event"
 
 
 def x_setup_event_logging__mutmut_orig() -> None:
@@ -2852,7 +2891,9 @@ def x_setup_event_logging__mutmut_5() -> None:
     event_bus = get_event_bus()
 
     # Subscribe to registry events
-    event_bus.subscribe("registry.register", )
+    event_bus.subscribe(
+        "registry.register",
+    )
     event_bus.subscribe("registry.remove", handle_registry_event)
 
     # Subscribe to circuit breaker events
@@ -2973,7 +3014,9 @@ def x_setup_event_logging__mutmut_11() -> None:
 
     # Subscribe to registry events
     event_bus.subscribe("registry.register", handle_registry_event)
-    event_bus.subscribe("registry.remove", )
+    event_bus.subscribe(
+        "registry.remove",
+    )
 
     # Subscribe to circuit breaker events
     event_bus.subscribe("circuit_breaker.recovered", handle_circuit_breaker_event)
@@ -3096,7 +3139,9 @@ def x_setup_event_logging__mutmut_17() -> None:
     event_bus.subscribe("registry.remove", handle_registry_event)
 
     # Subscribe to circuit breaker events
-    event_bus.subscribe("circuit_breaker.recovered", )
+    event_bus.subscribe(
+        "circuit_breaker.recovered",
+    )
     event_bus.subscribe("circuit_breaker.opened", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.recovery_failed", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.attempting_recovery", handle_circuit_breaker_event)
@@ -3217,7 +3262,9 @@ def x_setup_event_logging__mutmut_23() -> None:
 
     # Subscribe to circuit breaker events
     event_bus.subscribe("circuit_breaker.recovered", handle_circuit_breaker_event)
-    event_bus.subscribe("circuit_breaker.opened", )
+    event_bus.subscribe(
+        "circuit_breaker.opened",
+    )
     event_bus.subscribe("circuit_breaker.recovery_failed", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.attempting_recovery", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.manual_reset", handle_circuit_breaker_event)
@@ -3338,7 +3385,9 @@ def x_setup_event_logging__mutmut_29() -> None:
     # Subscribe to circuit breaker events
     event_bus.subscribe("circuit_breaker.recovered", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.opened", handle_circuit_breaker_event)
-    event_bus.subscribe("circuit_breaker.recovery_failed", )
+    event_bus.subscribe(
+        "circuit_breaker.recovery_failed",
+    )
     event_bus.subscribe("circuit_breaker.attempting_recovery", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.manual_reset", handle_circuit_breaker_event)
 
@@ -3459,7 +3508,9 @@ def x_setup_event_logging__mutmut_35() -> None:
     event_bus.subscribe("circuit_breaker.recovered", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.opened", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.recovery_failed", handle_circuit_breaker_event)
-    event_bus.subscribe("circuit_breaker.attempting_recovery", )
+    event_bus.subscribe(
+        "circuit_breaker.attempting_recovery",
+    )
     event_bus.subscribe("circuit_breaker.manual_reset", handle_circuit_breaker_event)
 
 
@@ -3580,7 +3631,9 @@ def x_setup_event_logging__mutmut_41() -> None:
     event_bus.subscribe("circuit_breaker.opened", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.recovery_failed", handle_circuit_breaker_event)
     event_bus.subscribe("circuit_breaker.attempting_recovery", handle_circuit_breaker_event)
-    event_bus.subscribe("circuit_breaker.manual_reset", )
+    event_bus.subscribe(
+        "circuit_breaker.manual_reset",
+    )
 
 
 def x_setup_event_logging__mutmut_42() -> None:
@@ -3622,58 +3675,63 @@ def x_setup_event_logging__mutmut_43() -> None:
     event_bus.subscribe("circuit_breaker.attempting_recovery", handle_circuit_breaker_event)
     event_bus.subscribe("CIRCUIT_BREAKER.MANUAL_RESET", handle_circuit_breaker_event)
 
-x_setup_event_logging__mutmut_mutants : ClassVar[MutantDict] = {
-'x_setup_event_logging__mutmut_1': x_setup_event_logging__mutmut_1, 
-    'x_setup_event_logging__mutmut_2': x_setup_event_logging__mutmut_2, 
-    'x_setup_event_logging__mutmut_3': x_setup_event_logging__mutmut_3, 
-    'x_setup_event_logging__mutmut_4': x_setup_event_logging__mutmut_4, 
-    'x_setup_event_logging__mutmut_5': x_setup_event_logging__mutmut_5, 
-    'x_setup_event_logging__mutmut_6': x_setup_event_logging__mutmut_6, 
-    'x_setup_event_logging__mutmut_7': x_setup_event_logging__mutmut_7, 
-    'x_setup_event_logging__mutmut_8': x_setup_event_logging__mutmut_8, 
-    'x_setup_event_logging__mutmut_9': x_setup_event_logging__mutmut_9, 
-    'x_setup_event_logging__mutmut_10': x_setup_event_logging__mutmut_10, 
-    'x_setup_event_logging__mutmut_11': x_setup_event_logging__mutmut_11, 
-    'x_setup_event_logging__mutmut_12': x_setup_event_logging__mutmut_12, 
-    'x_setup_event_logging__mutmut_13': x_setup_event_logging__mutmut_13, 
-    'x_setup_event_logging__mutmut_14': x_setup_event_logging__mutmut_14, 
-    'x_setup_event_logging__mutmut_15': x_setup_event_logging__mutmut_15, 
-    'x_setup_event_logging__mutmut_16': x_setup_event_logging__mutmut_16, 
-    'x_setup_event_logging__mutmut_17': x_setup_event_logging__mutmut_17, 
-    'x_setup_event_logging__mutmut_18': x_setup_event_logging__mutmut_18, 
-    'x_setup_event_logging__mutmut_19': x_setup_event_logging__mutmut_19, 
-    'x_setup_event_logging__mutmut_20': x_setup_event_logging__mutmut_20, 
-    'x_setup_event_logging__mutmut_21': x_setup_event_logging__mutmut_21, 
-    'x_setup_event_logging__mutmut_22': x_setup_event_logging__mutmut_22, 
-    'x_setup_event_logging__mutmut_23': x_setup_event_logging__mutmut_23, 
-    'x_setup_event_logging__mutmut_24': x_setup_event_logging__mutmut_24, 
-    'x_setup_event_logging__mutmut_25': x_setup_event_logging__mutmut_25, 
-    'x_setup_event_logging__mutmut_26': x_setup_event_logging__mutmut_26, 
-    'x_setup_event_logging__mutmut_27': x_setup_event_logging__mutmut_27, 
-    'x_setup_event_logging__mutmut_28': x_setup_event_logging__mutmut_28, 
-    'x_setup_event_logging__mutmut_29': x_setup_event_logging__mutmut_29, 
-    'x_setup_event_logging__mutmut_30': x_setup_event_logging__mutmut_30, 
-    'x_setup_event_logging__mutmut_31': x_setup_event_logging__mutmut_31, 
-    'x_setup_event_logging__mutmut_32': x_setup_event_logging__mutmut_32, 
-    'x_setup_event_logging__mutmut_33': x_setup_event_logging__mutmut_33, 
-    'x_setup_event_logging__mutmut_34': x_setup_event_logging__mutmut_34, 
-    'x_setup_event_logging__mutmut_35': x_setup_event_logging__mutmut_35, 
-    'x_setup_event_logging__mutmut_36': x_setup_event_logging__mutmut_36, 
-    'x_setup_event_logging__mutmut_37': x_setup_event_logging__mutmut_37, 
-    'x_setup_event_logging__mutmut_38': x_setup_event_logging__mutmut_38, 
-    'x_setup_event_logging__mutmut_39': x_setup_event_logging__mutmut_39, 
-    'x_setup_event_logging__mutmut_40': x_setup_event_logging__mutmut_40, 
-    'x_setup_event_logging__mutmut_41': x_setup_event_logging__mutmut_41, 
-    'x_setup_event_logging__mutmut_42': x_setup_event_logging__mutmut_42, 
-    'x_setup_event_logging__mutmut_43': x_setup_event_logging__mutmut_43
+
+x_setup_event_logging__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_setup_event_logging__mutmut_1": x_setup_event_logging__mutmut_1,
+    "x_setup_event_logging__mutmut_2": x_setup_event_logging__mutmut_2,
+    "x_setup_event_logging__mutmut_3": x_setup_event_logging__mutmut_3,
+    "x_setup_event_logging__mutmut_4": x_setup_event_logging__mutmut_4,
+    "x_setup_event_logging__mutmut_5": x_setup_event_logging__mutmut_5,
+    "x_setup_event_logging__mutmut_6": x_setup_event_logging__mutmut_6,
+    "x_setup_event_logging__mutmut_7": x_setup_event_logging__mutmut_7,
+    "x_setup_event_logging__mutmut_8": x_setup_event_logging__mutmut_8,
+    "x_setup_event_logging__mutmut_9": x_setup_event_logging__mutmut_9,
+    "x_setup_event_logging__mutmut_10": x_setup_event_logging__mutmut_10,
+    "x_setup_event_logging__mutmut_11": x_setup_event_logging__mutmut_11,
+    "x_setup_event_logging__mutmut_12": x_setup_event_logging__mutmut_12,
+    "x_setup_event_logging__mutmut_13": x_setup_event_logging__mutmut_13,
+    "x_setup_event_logging__mutmut_14": x_setup_event_logging__mutmut_14,
+    "x_setup_event_logging__mutmut_15": x_setup_event_logging__mutmut_15,
+    "x_setup_event_logging__mutmut_16": x_setup_event_logging__mutmut_16,
+    "x_setup_event_logging__mutmut_17": x_setup_event_logging__mutmut_17,
+    "x_setup_event_logging__mutmut_18": x_setup_event_logging__mutmut_18,
+    "x_setup_event_logging__mutmut_19": x_setup_event_logging__mutmut_19,
+    "x_setup_event_logging__mutmut_20": x_setup_event_logging__mutmut_20,
+    "x_setup_event_logging__mutmut_21": x_setup_event_logging__mutmut_21,
+    "x_setup_event_logging__mutmut_22": x_setup_event_logging__mutmut_22,
+    "x_setup_event_logging__mutmut_23": x_setup_event_logging__mutmut_23,
+    "x_setup_event_logging__mutmut_24": x_setup_event_logging__mutmut_24,
+    "x_setup_event_logging__mutmut_25": x_setup_event_logging__mutmut_25,
+    "x_setup_event_logging__mutmut_26": x_setup_event_logging__mutmut_26,
+    "x_setup_event_logging__mutmut_27": x_setup_event_logging__mutmut_27,
+    "x_setup_event_logging__mutmut_28": x_setup_event_logging__mutmut_28,
+    "x_setup_event_logging__mutmut_29": x_setup_event_logging__mutmut_29,
+    "x_setup_event_logging__mutmut_30": x_setup_event_logging__mutmut_30,
+    "x_setup_event_logging__mutmut_31": x_setup_event_logging__mutmut_31,
+    "x_setup_event_logging__mutmut_32": x_setup_event_logging__mutmut_32,
+    "x_setup_event_logging__mutmut_33": x_setup_event_logging__mutmut_33,
+    "x_setup_event_logging__mutmut_34": x_setup_event_logging__mutmut_34,
+    "x_setup_event_logging__mutmut_35": x_setup_event_logging__mutmut_35,
+    "x_setup_event_logging__mutmut_36": x_setup_event_logging__mutmut_36,
+    "x_setup_event_logging__mutmut_37": x_setup_event_logging__mutmut_37,
+    "x_setup_event_logging__mutmut_38": x_setup_event_logging__mutmut_38,
+    "x_setup_event_logging__mutmut_39": x_setup_event_logging__mutmut_39,
+    "x_setup_event_logging__mutmut_40": x_setup_event_logging__mutmut_40,
+    "x_setup_event_logging__mutmut_41": x_setup_event_logging__mutmut_41,
+    "x_setup_event_logging__mutmut_42": x_setup_event_logging__mutmut_42,
+    "x_setup_event_logging__mutmut_43": x_setup_event_logging__mutmut_43,
 }
 
+
 def setup_event_logging(*args, **kwargs):
-    result = _mutmut_trampoline(x_setup_event_logging__mutmut_orig, x_setup_event_logging__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_setup_event_logging__mutmut_orig, x_setup_event_logging__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 setup_event_logging.__signature__ = _mutmut_signature(x_setup_event_logging__mutmut_orig)
-x_setup_event_logging__mutmut_orig.__name__ = 'x_setup_event_logging'
+x_setup_event_logging__mutmut_orig.__name__ = "x_setup_event_logging"
 
 
 __all__ = ["handle_circuit_breaker_event", "handle_registry_event", "setup_event_logging"]

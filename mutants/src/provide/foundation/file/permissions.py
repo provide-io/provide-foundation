@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -976,7 +979,9 @@ def x_parse_permissions__mutmut_18(perms_str: str | None, default: int = DEFAULT
             cleaned = cleaned[1:]
 
         # Try parsing as octal
-        return int(cleaned, )
+        return int(
+            cleaned,
+        )
     except (ValueError, TypeError):
         log.warning(
             "Invalid permission string, using default",
@@ -1322,7 +1327,7 @@ def x_parse_permissions__mutmut_25(perms_str: str | None, default: int = DEFAULT
         log.warning(
             "Invalid permission string, using default",
             perms_str=perms_str,
-            )
+        )
         return default
 
 
@@ -1521,44 +1526,49 @@ def x_parse_permissions__mutmut_29(perms_str: str | None, default: int = DEFAULT
         )
         return default
 
-x_parse_permissions__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_permissions__mutmut_1': x_parse_permissions__mutmut_1, 
-    'x_parse_permissions__mutmut_2': x_parse_permissions__mutmut_2, 
-    'x_parse_permissions__mutmut_3': x_parse_permissions__mutmut_3, 
-    'x_parse_permissions__mutmut_4': x_parse_permissions__mutmut_4, 
-    'x_parse_permissions__mutmut_5': x_parse_permissions__mutmut_5, 
-    'x_parse_permissions__mutmut_6': x_parse_permissions__mutmut_6, 
-    'x_parse_permissions__mutmut_7': x_parse_permissions__mutmut_7, 
-    'x_parse_permissions__mutmut_8': x_parse_permissions__mutmut_8, 
-    'x_parse_permissions__mutmut_9': x_parse_permissions__mutmut_9, 
-    'x_parse_permissions__mutmut_10': x_parse_permissions__mutmut_10, 
-    'x_parse_permissions__mutmut_11': x_parse_permissions__mutmut_11, 
-    'x_parse_permissions__mutmut_12': x_parse_permissions__mutmut_12, 
-    'x_parse_permissions__mutmut_13': x_parse_permissions__mutmut_13, 
-    'x_parse_permissions__mutmut_14': x_parse_permissions__mutmut_14, 
-    'x_parse_permissions__mutmut_15': x_parse_permissions__mutmut_15, 
-    'x_parse_permissions__mutmut_16': x_parse_permissions__mutmut_16, 
-    'x_parse_permissions__mutmut_17': x_parse_permissions__mutmut_17, 
-    'x_parse_permissions__mutmut_18': x_parse_permissions__mutmut_18, 
-    'x_parse_permissions__mutmut_19': x_parse_permissions__mutmut_19, 
-    'x_parse_permissions__mutmut_20': x_parse_permissions__mutmut_20, 
-    'x_parse_permissions__mutmut_21': x_parse_permissions__mutmut_21, 
-    'x_parse_permissions__mutmut_22': x_parse_permissions__mutmut_22, 
-    'x_parse_permissions__mutmut_23': x_parse_permissions__mutmut_23, 
-    'x_parse_permissions__mutmut_24': x_parse_permissions__mutmut_24, 
-    'x_parse_permissions__mutmut_25': x_parse_permissions__mutmut_25, 
-    'x_parse_permissions__mutmut_26': x_parse_permissions__mutmut_26, 
-    'x_parse_permissions__mutmut_27': x_parse_permissions__mutmut_27, 
-    'x_parse_permissions__mutmut_28': x_parse_permissions__mutmut_28, 
-    'x_parse_permissions__mutmut_29': x_parse_permissions__mutmut_29
+
+x_parse_permissions__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_permissions__mutmut_1": x_parse_permissions__mutmut_1,
+    "x_parse_permissions__mutmut_2": x_parse_permissions__mutmut_2,
+    "x_parse_permissions__mutmut_3": x_parse_permissions__mutmut_3,
+    "x_parse_permissions__mutmut_4": x_parse_permissions__mutmut_4,
+    "x_parse_permissions__mutmut_5": x_parse_permissions__mutmut_5,
+    "x_parse_permissions__mutmut_6": x_parse_permissions__mutmut_6,
+    "x_parse_permissions__mutmut_7": x_parse_permissions__mutmut_7,
+    "x_parse_permissions__mutmut_8": x_parse_permissions__mutmut_8,
+    "x_parse_permissions__mutmut_9": x_parse_permissions__mutmut_9,
+    "x_parse_permissions__mutmut_10": x_parse_permissions__mutmut_10,
+    "x_parse_permissions__mutmut_11": x_parse_permissions__mutmut_11,
+    "x_parse_permissions__mutmut_12": x_parse_permissions__mutmut_12,
+    "x_parse_permissions__mutmut_13": x_parse_permissions__mutmut_13,
+    "x_parse_permissions__mutmut_14": x_parse_permissions__mutmut_14,
+    "x_parse_permissions__mutmut_15": x_parse_permissions__mutmut_15,
+    "x_parse_permissions__mutmut_16": x_parse_permissions__mutmut_16,
+    "x_parse_permissions__mutmut_17": x_parse_permissions__mutmut_17,
+    "x_parse_permissions__mutmut_18": x_parse_permissions__mutmut_18,
+    "x_parse_permissions__mutmut_19": x_parse_permissions__mutmut_19,
+    "x_parse_permissions__mutmut_20": x_parse_permissions__mutmut_20,
+    "x_parse_permissions__mutmut_21": x_parse_permissions__mutmut_21,
+    "x_parse_permissions__mutmut_22": x_parse_permissions__mutmut_22,
+    "x_parse_permissions__mutmut_23": x_parse_permissions__mutmut_23,
+    "x_parse_permissions__mutmut_24": x_parse_permissions__mutmut_24,
+    "x_parse_permissions__mutmut_25": x_parse_permissions__mutmut_25,
+    "x_parse_permissions__mutmut_26": x_parse_permissions__mutmut_26,
+    "x_parse_permissions__mutmut_27": x_parse_permissions__mutmut_27,
+    "x_parse_permissions__mutmut_28": x_parse_permissions__mutmut_28,
+    "x_parse_permissions__mutmut_29": x_parse_permissions__mutmut_29,
 }
 
+
 def parse_permissions(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_permissions__mutmut_orig, x_parse_permissions__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_permissions__mutmut_orig, x_parse_permissions__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_permissions.__signature__ = _mutmut_signature(x_parse_permissions__mutmut_orig)
-x_parse_permissions__mutmut_orig.__name__ = 'x_parse_permissions'
+x_parse_permissions__mutmut_orig.__name__ = "x_parse_permissions"
 
 
 def x_format_permissions__mutmut_orig(mode: int) -> str:
@@ -1648,18 +1658,23 @@ def x_format_permissions__mutmut_3(mode: int) -> str:
     perms_only = mode & 512
     return f"0{perms_only:03o}"
 
-x_format_permissions__mutmut_mutants : ClassVar[MutantDict] = {
-'x_format_permissions__mutmut_1': x_format_permissions__mutmut_1, 
-    'x_format_permissions__mutmut_2': x_format_permissions__mutmut_2, 
-    'x_format_permissions__mutmut_3': x_format_permissions__mutmut_3
+
+x_format_permissions__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_format_permissions__mutmut_1": x_format_permissions__mutmut_1,
+    "x_format_permissions__mutmut_2": x_format_permissions__mutmut_2,
+    "x_format_permissions__mutmut_3": x_format_permissions__mutmut_3,
 }
 
+
 def format_permissions(*args, **kwargs):
-    result = _mutmut_trampoline(x_format_permissions__mutmut_orig, x_format_permissions__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_format_permissions__mutmut_orig, x_format_permissions__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 format_permissions.__signature__ = _mutmut_signature(x_format_permissions__mutmut_orig)
-x_format_permissions__mutmut_orig.__name__ = 'x_format_permissions'
+x_format_permissions__mutmut_orig.__name__ = "x_format_permissions"
 
 
 def x_set_file_permissions__mutmut_orig(path: Path, mode: int) -> None:
@@ -1945,7 +1960,7 @@ def x_set_file_permissions__mutmut_8(path: Path, mode: int) -> None:
         log.trace(
             "Set file permissions",
             path=str(path),
-            )
+        )
     except OSError as e:
         log.warning(
             "Could not set permissions",
@@ -2377,7 +2392,7 @@ def x_set_file_permissions__mutmut_21(path: Path, mode: int) -> None:
             "Could not set permissions",
             path=str(path),
             mode=format_permissions(mode),
-            )
+        )
         raise
 
 
@@ -2578,42 +2593,47 @@ def x_set_file_permissions__mutmut_27(path: Path, mode: int) -> None:
         )
         raise
 
-x_set_file_permissions__mutmut_mutants : ClassVar[MutantDict] = {
-'x_set_file_permissions__mutmut_1': x_set_file_permissions__mutmut_1, 
-    'x_set_file_permissions__mutmut_2': x_set_file_permissions__mutmut_2, 
-    'x_set_file_permissions__mutmut_3': x_set_file_permissions__mutmut_3, 
-    'x_set_file_permissions__mutmut_4': x_set_file_permissions__mutmut_4, 
-    'x_set_file_permissions__mutmut_5': x_set_file_permissions__mutmut_5, 
-    'x_set_file_permissions__mutmut_6': x_set_file_permissions__mutmut_6, 
-    'x_set_file_permissions__mutmut_7': x_set_file_permissions__mutmut_7, 
-    'x_set_file_permissions__mutmut_8': x_set_file_permissions__mutmut_8, 
-    'x_set_file_permissions__mutmut_9': x_set_file_permissions__mutmut_9, 
-    'x_set_file_permissions__mutmut_10': x_set_file_permissions__mutmut_10, 
-    'x_set_file_permissions__mutmut_11': x_set_file_permissions__mutmut_11, 
-    'x_set_file_permissions__mutmut_12': x_set_file_permissions__mutmut_12, 
-    'x_set_file_permissions__mutmut_13': x_set_file_permissions__mutmut_13, 
-    'x_set_file_permissions__mutmut_14': x_set_file_permissions__mutmut_14, 
-    'x_set_file_permissions__mutmut_15': x_set_file_permissions__mutmut_15, 
-    'x_set_file_permissions__mutmut_16': x_set_file_permissions__mutmut_16, 
-    'x_set_file_permissions__mutmut_17': x_set_file_permissions__mutmut_17, 
-    'x_set_file_permissions__mutmut_18': x_set_file_permissions__mutmut_18, 
-    'x_set_file_permissions__mutmut_19': x_set_file_permissions__mutmut_19, 
-    'x_set_file_permissions__mutmut_20': x_set_file_permissions__mutmut_20, 
-    'x_set_file_permissions__mutmut_21': x_set_file_permissions__mutmut_21, 
-    'x_set_file_permissions__mutmut_22': x_set_file_permissions__mutmut_22, 
-    'x_set_file_permissions__mutmut_23': x_set_file_permissions__mutmut_23, 
-    'x_set_file_permissions__mutmut_24': x_set_file_permissions__mutmut_24, 
-    'x_set_file_permissions__mutmut_25': x_set_file_permissions__mutmut_25, 
-    'x_set_file_permissions__mutmut_26': x_set_file_permissions__mutmut_26, 
-    'x_set_file_permissions__mutmut_27': x_set_file_permissions__mutmut_27
+
+x_set_file_permissions__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_set_file_permissions__mutmut_1": x_set_file_permissions__mutmut_1,
+    "x_set_file_permissions__mutmut_2": x_set_file_permissions__mutmut_2,
+    "x_set_file_permissions__mutmut_3": x_set_file_permissions__mutmut_3,
+    "x_set_file_permissions__mutmut_4": x_set_file_permissions__mutmut_4,
+    "x_set_file_permissions__mutmut_5": x_set_file_permissions__mutmut_5,
+    "x_set_file_permissions__mutmut_6": x_set_file_permissions__mutmut_6,
+    "x_set_file_permissions__mutmut_7": x_set_file_permissions__mutmut_7,
+    "x_set_file_permissions__mutmut_8": x_set_file_permissions__mutmut_8,
+    "x_set_file_permissions__mutmut_9": x_set_file_permissions__mutmut_9,
+    "x_set_file_permissions__mutmut_10": x_set_file_permissions__mutmut_10,
+    "x_set_file_permissions__mutmut_11": x_set_file_permissions__mutmut_11,
+    "x_set_file_permissions__mutmut_12": x_set_file_permissions__mutmut_12,
+    "x_set_file_permissions__mutmut_13": x_set_file_permissions__mutmut_13,
+    "x_set_file_permissions__mutmut_14": x_set_file_permissions__mutmut_14,
+    "x_set_file_permissions__mutmut_15": x_set_file_permissions__mutmut_15,
+    "x_set_file_permissions__mutmut_16": x_set_file_permissions__mutmut_16,
+    "x_set_file_permissions__mutmut_17": x_set_file_permissions__mutmut_17,
+    "x_set_file_permissions__mutmut_18": x_set_file_permissions__mutmut_18,
+    "x_set_file_permissions__mutmut_19": x_set_file_permissions__mutmut_19,
+    "x_set_file_permissions__mutmut_20": x_set_file_permissions__mutmut_20,
+    "x_set_file_permissions__mutmut_21": x_set_file_permissions__mutmut_21,
+    "x_set_file_permissions__mutmut_22": x_set_file_permissions__mutmut_22,
+    "x_set_file_permissions__mutmut_23": x_set_file_permissions__mutmut_23,
+    "x_set_file_permissions__mutmut_24": x_set_file_permissions__mutmut_24,
+    "x_set_file_permissions__mutmut_25": x_set_file_permissions__mutmut_25,
+    "x_set_file_permissions__mutmut_26": x_set_file_permissions__mutmut_26,
+    "x_set_file_permissions__mutmut_27": x_set_file_permissions__mutmut_27,
 }
 
+
 def set_file_permissions(*args, **kwargs):
-    result = _mutmut_trampoline(x_set_file_permissions__mutmut_orig, x_set_file_permissions__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_set_file_permissions__mutmut_orig, x_set_file_permissions__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 set_file_permissions.__signature__ = _mutmut_signature(x_set_file_permissions__mutmut_orig)
-x_set_file_permissions__mutmut_orig.__name__ = 'x_set_file_permissions'
+x_set_file_permissions__mutmut_orig.__name__ = "x_set_file_permissions"
 
 
 def x_get_permissions__mutmut_orig(path: Path) -> int:
@@ -2879,7 +2899,7 @@ def x_get_permissions__mutmut_8(path: Path) -> int:
         log.debug(
             "Could not read permissions",
             path=str(path),
-            )
+        )
         return 0
 
 
@@ -3062,29 +3082,34 @@ def x_get_permissions__mutmut_14(path: Path) -> int:
         )
         return 1
 
-x_get_permissions__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_permissions__mutmut_1': x_get_permissions__mutmut_1, 
-    'x_get_permissions__mutmut_2': x_get_permissions__mutmut_2, 
-    'x_get_permissions__mutmut_3': x_get_permissions__mutmut_3, 
-    'x_get_permissions__mutmut_4': x_get_permissions__mutmut_4, 
-    'x_get_permissions__mutmut_5': x_get_permissions__mutmut_5, 
-    'x_get_permissions__mutmut_6': x_get_permissions__mutmut_6, 
-    'x_get_permissions__mutmut_7': x_get_permissions__mutmut_7, 
-    'x_get_permissions__mutmut_8': x_get_permissions__mutmut_8, 
-    'x_get_permissions__mutmut_9': x_get_permissions__mutmut_9, 
-    'x_get_permissions__mutmut_10': x_get_permissions__mutmut_10, 
-    'x_get_permissions__mutmut_11': x_get_permissions__mutmut_11, 
-    'x_get_permissions__mutmut_12': x_get_permissions__mutmut_12, 
-    'x_get_permissions__mutmut_13': x_get_permissions__mutmut_13, 
-    'x_get_permissions__mutmut_14': x_get_permissions__mutmut_14
+
+x_get_permissions__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_permissions__mutmut_1": x_get_permissions__mutmut_1,
+    "x_get_permissions__mutmut_2": x_get_permissions__mutmut_2,
+    "x_get_permissions__mutmut_3": x_get_permissions__mutmut_3,
+    "x_get_permissions__mutmut_4": x_get_permissions__mutmut_4,
+    "x_get_permissions__mutmut_5": x_get_permissions__mutmut_5,
+    "x_get_permissions__mutmut_6": x_get_permissions__mutmut_6,
+    "x_get_permissions__mutmut_7": x_get_permissions__mutmut_7,
+    "x_get_permissions__mutmut_8": x_get_permissions__mutmut_8,
+    "x_get_permissions__mutmut_9": x_get_permissions__mutmut_9,
+    "x_get_permissions__mutmut_10": x_get_permissions__mutmut_10,
+    "x_get_permissions__mutmut_11": x_get_permissions__mutmut_11,
+    "x_get_permissions__mutmut_12": x_get_permissions__mutmut_12,
+    "x_get_permissions__mutmut_13": x_get_permissions__mutmut_13,
+    "x_get_permissions__mutmut_14": x_get_permissions__mutmut_14,
 }
 
+
 def get_permissions(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_permissions__mutmut_orig, x_get_permissions__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_permissions__mutmut_orig, x_get_permissions__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_permissions.__signature__ = _mutmut_signature(x_get_permissions__mutmut_orig)
-x_get_permissions__mutmut_orig.__name__ = 'x_get_permissions'
+x_get_permissions__mutmut_orig.__name__ = "x_get_permissions"
 
 
 def x_ensure_secure_permissions__mutmut_orig(
@@ -3554,7 +3579,9 @@ def x_ensure_secure_permissions__mutmut_8(
     else:
         mode = file_mode
 
-    set_file_permissions(path, )
+    set_file_permissions(
+        path,
+    )
     log.trace(
         "Applied secure permissions",
         path=str(path),
@@ -4086,7 +4113,7 @@ def x_ensure_secure_permissions__mutmut_18(
         path=str(path),
         mode=format_permissions(mode),
         is_dir=path.is_dir(),
-        )
+    )
 
 
 def x_ensure_secure_permissions__mutmut_19(
@@ -4353,38 +4380,43 @@ def x_ensure_secure_permissions__mutmut_23(
         is_executable=is_executable,
     )
 
-x_ensure_secure_permissions__mutmut_mutants : ClassVar[MutantDict] = {
-'x_ensure_secure_permissions__mutmut_1': x_ensure_secure_permissions__mutmut_1, 
-    'x_ensure_secure_permissions__mutmut_2': x_ensure_secure_permissions__mutmut_2, 
-    'x_ensure_secure_permissions__mutmut_3': x_ensure_secure_permissions__mutmut_3, 
-    'x_ensure_secure_permissions__mutmut_4': x_ensure_secure_permissions__mutmut_4, 
-    'x_ensure_secure_permissions__mutmut_5': x_ensure_secure_permissions__mutmut_5, 
-    'x_ensure_secure_permissions__mutmut_6': x_ensure_secure_permissions__mutmut_6, 
-    'x_ensure_secure_permissions__mutmut_7': x_ensure_secure_permissions__mutmut_7, 
-    'x_ensure_secure_permissions__mutmut_8': x_ensure_secure_permissions__mutmut_8, 
-    'x_ensure_secure_permissions__mutmut_9': x_ensure_secure_permissions__mutmut_9, 
-    'x_ensure_secure_permissions__mutmut_10': x_ensure_secure_permissions__mutmut_10, 
-    'x_ensure_secure_permissions__mutmut_11': x_ensure_secure_permissions__mutmut_11, 
-    'x_ensure_secure_permissions__mutmut_12': x_ensure_secure_permissions__mutmut_12, 
-    'x_ensure_secure_permissions__mutmut_13': x_ensure_secure_permissions__mutmut_13, 
-    'x_ensure_secure_permissions__mutmut_14': x_ensure_secure_permissions__mutmut_14, 
-    'x_ensure_secure_permissions__mutmut_15': x_ensure_secure_permissions__mutmut_15, 
-    'x_ensure_secure_permissions__mutmut_16': x_ensure_secure_permissions__mutmut_16, 
-    'x_ensure_secure_permissions__mutmut_17': x_ensure_secure_permissions__mutmut_17, 
-    'x_ensure_secure_permissions__mutmut_18': x_ensure_secure_permissions__mutmut_18, 
-    'x_ensure_secure_permissions__mutmut_19': x_ensure_secure_permissions__mutmut_19, 
-    'x_ensure_secure_permissions__mutmut_20': x_ensure_secure_permissions__mutmut_20, 
-    'x_ensure_secure_permissions__mutmut_21': x_ensure_secure_permissions__mutmut_21, 
-    'x_ensure_secure_permissions__mutmut_22': x_ensure_secure_permissions__mutmut_22, 
-    'x_ensure_secure_permissions__mutmut_23': x_ensure_secure_permissions__mutmut_23
+
+x_ensure_secure_permissions__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_ensure_secure_permissions__mutmut_1": x_ensure_secure_permissions__mutmut_1,
+    "x_ensure_secure_permissions__mutmut_2": x_ensure_secure_permissions__mutmut_2,
+    "x_ensure_secure_permissions__mutmut_3": x_ensure_secure_permissions__mutmut_3,
+    "x_ensure_secure_permissions__mutmut_4": x_ensure_secure_permissions__mutmut_4,
+    "x_ensure_secure_permissions__mutmut_5": x_ensure_secure_permissions__mutmut_5,
+    "x_ensure_secure_permissions__mutmut_6": x_ensure_secure_permissions__mutmut_6,
+    "x_ensure_secure_permissions__mutmut_7": x_ensure_secure_permissions__mutmut_7,
+    "x_ensure_secure_permissions__mutmut_8": x_ensure_secure_permissions__mutmut_8,
+    "x_ensure_secure_permissions__mutmut_9": x_ensure_secure_permissions__mutmut_9,
+    "x_ensure_secure_permissions__mutmut_10": x_ensure_secure_permissions__mutmut_10,
+    "x_ensure_secure_permissions__mutmut_11": x_ensure_secure_permissions__mutmut_11,
+    "x_ensure_secure_permissions__mutmut_12": x_ensure_secure_permissions__mutmut_12,
+    "x_ensure_secure_permissions__mutmut_13": x_ensure_secure_permissions__mutmut_13,
+    "x_ensure_secure_permissions__mutmut_14": x_ensure_secure_permissions__mutmut_14,
+    "x_ensure_secure_permissions__mutmut_15": x_ensure_secure_permissions__mutmut_15,
+    "x_ensure_secure_permissions__mutmut_16": x_ensure_secure_permissions__mutmut_16,
+    "x_ensure_secure_permissions__mutmut_17": x_ensure_secure_permissions__mutmut_17,
+    "x_ensure_secure_permissions__mutmut_18": x_ensure_secure_permissions__mutmut_18,
+    "x_ensure_secure_permissions__mutmut_19": x_ensure_secure_permissions__mutmut_19,
+    "x_ensure_secure_permissions__mutmut_20": x_ensure_secure_permissions__mutmut_20,
+    "x_ensure_secure_permissions__mutmut_21": x_ensure_secure_permissions__mutmut_21,
+    "x_ensure_secure_permissions__mutmut_22": x_ensure_secure_permissions__mutmut_22,
+    "x_ensure_secure_permissions__mutmut_23": x_ensure_secure_permissions__mutmut_23,
 }
 
+
 def ensure_secure_permissions(*args, **kwargs):
-    result = _mutmut_trampoline(x_ensure_secure_permissions__mutmut_orig, x_ensure_secure_permissions__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_ensure_secure_permissions__mutmut_orig, x_ensure_secure_permissions__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 ensure_secure_permissions.__signature__ = _mutmut_signature(x_ensure_secure_permissions__mutmut_orig)
-x_ensure_secure_permissions__mutmut_orig.__name__ = 'x_ensure_secure_permissions'
+x_ensure_secure_permissions__mutmut_orig.__name__ = "x_ensure_secure_permissions"
 
 
 __all__ = [

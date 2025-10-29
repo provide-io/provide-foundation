@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -179,7 +182,7 @@ def x_validate_log_level__mutmut_8(instance: Any, attribute: Any, value: str) ->
             _format_invalid_value_error(
                 attribute.name,
                 value,
-                ),
+            ),
         )
 
 
@@ -197,24 +200,29 @@ def x_validate_log_level__mutmut_9(instance: Any, attribute: Any, value: str) ->
             ),
         )
 
-x_validate_log_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_log_level__mutmut_1': x_validate_log_level__mutmut_1, 
-    'x_validate_log_level__mutmut_2': x_validate_log_level__mutmut_2, 
-    'x_validate_log_level__mutmut_3': x_validate_log_level__mutmut_3, 
-    'x_validate_log_level__mutmut_4': x_validate_log_level__mutmut_4, 
-    'x_validate_log_level__mutmut_5': x_validate_log_level__mutmut_5, 
-    'x_validate_log_level__mutmut_6': x_validate_log_level__mutmut_6, 
-    'x_validate_log_level__mutmut_7': x_validate_log_level__mutmut_7, 
-    'x_validate_log_level__mutmut_8': x_validate_log_level__mutmut_8, 
-    'x_validate_log_level__mutmut_9': x_validate_log_level__mutmut_9
+
+x_validate_log_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_log_level__mutmut_1": x_validate_log_level__mutmut_1,
+    "x_validate_log_level__mutmut_2": x_validate_log_level__mutmut_2,
+    "x_validate_log_level__mutmut_3": x_validate_log_level__mutmut_3,
+    "x_validate_log_level__mutmut_4": x_validate_log_level__mutmut_4,
+    "x_validate_log_level__mutmut_5": x_validate_log_level__mutmut_5,
+    "x_validate_log_level__mutmut_6": x_validate_log_level__mutmut_6,
+    "x_validate_log_level__mutmut_7": x_validate_log_level__mutmut_7,
+    "x_validate_log_level__mutmut_8": x_validate_log_level__mutmut_8,
+    "x_validate_log_level__mutmut_9": x_validate_log_level__mutmut_9,
 }
 
+
 def validate_log_level(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_log_level__mutmut_orig, x_validate_log_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_log_level__mutmut_orig, x_validate_log_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_log_level.__signature__ = _mutmut_signature(x_validate_log_level__mutmut_orig)
-x_validate_log_level__mutmut_orig.__name__ = 'x_validate_log_level'
+x_validate_log_level__mutmut_orig.__name__ = "x_validate_log_level"
 
 
 def x_validate_sample_rate__mutmut_orig(instance: Any, attribute: Any, value: float) -> None:
@@ -356,7 +364,10 @@ def x_validate_sample_rate__mutmut_12(instance: Any, attribute: Any, value: floa
 
     if not 0.0 <= value <= 1.0:
         raise ValidationError(
-            _format_validation_error(attribute.name, value, ),
+            _format_validation_error(
+                attribute.name,
+                value,
+            ),
         )
 
 
@@ -381,29 +392,34 @@ def x_validate_sample_rate__mutmut_14(instance: Any, attribute: Any, value: floa
             _format_validation_error(attribute.name, value, "MUST BE BETWEEN 0.0 AND 1.0"),
         )
 
-x_validate_sample_rate__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_sample_rate__mutmut_1': x_validate_sample_rate__mutmut_1, 
-    'x_validate_sample_rate__mutmut_2': x_validate_sample_rate__mutmut_2, 
-    'x_validate_sample_rate__mutmut_3': x_validate_sample_rate__mutmut_3, 
-    'x_validate_sample_rate__mutmut_4': x_validate_sample_rate__mutmut_4, 
-    'x_validate_sample_rate__mutmut_5': x_validate_sample_rate__mutmut_5, 
-    'x_validate_sample_rate__mutmut_6': x_validate_sample_rate__mutmut_6, 
-    'x_validate_sample_rate__mutmut_7': x_validate_sample_rate__mutmut_7, 
-    'x_validate_sample_rate__mutmut_8': x_validate_sample_rate__mutmut_8, 
-    'x_validate_sample_rate__mutmut_9': x_validate_sample_rate__mutmut_9, 
-    'x_validate_sample_rate__mutmut_10': x_validate_sample_rate__mutmut_10, 
-    'x_validate_sample_rate__mutmut_11': x_validate_sample_rate__mutmut_11, 
-    'x_validate_sample_rate__mutmut_12': x_validate_sample_rate__mutmut_12, 
-    'x_validate_sample_rate__mutmut_13': x_validate_sample_rate__mutmut_13, 
-    'x_validate_sample_rate__mutmut_14': x_validate_sample_rate__mutmut_14
+
+x_validate_sample_rate__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_sample_rate__mutmut_1": x_validate_sample_rate__mutmut_1,
+    "x_validate_sample_rate__mutmut_2": x_validate_sample_rate__mutmut_2,
+    "x_validate_sample_rate__mutmut_3": x_validate_sample_rate__mutmut_3,
+    "x_validate_sample_rate__mutmut_4": x_validate_sample_rate__mutmut_4,
+    "x_validate_sample_rate__mutmut_5": x_validate_sample_rate__mutmut_5,
+    "x_validate_sample_rate__mutmut_6": x_validate_sample_rate__mutmut_6,
+    "x_validate_sample_rate__mutmut_7": x_validate_sample_rate__mutmut_7,
+    "x_validate_sample_rate__mutmut_8": x_validate_sample_rate__mutmut_8,
+    "x_validate_sample_rate__mutmut_9": x_validate_sample_rate__mutmut_9,
+    "x_validate_sample_rate__mutmut_10": x_validate_sample_rate__mutmut_10,
+    "x_validate_sample_rate__mutmut_11": x_validate_sample_rate__mutmut_11,
+    "x_validate_sample_rate__mutmut_12": x_validate_sample_rate__mutmut_12,
+    "x_validate_sample_rate__mutmut_13": x_validate_sample_rate__mutmut_13,
+    "x_validate_sample_rate__mutmut_14": x_validate_sample_rate__mutmut_14,
 }
 
+
 def validate_sample_rate(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_sample_rate__mutmut_orig, x_validate_sample_rate__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_sample_rate__mutmut_orig, x_validate_sample_rate__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_sample_rate.__signature__ = _mutmut_signature(x_validate_sample_rate__mutmut_orig)
-x_validate_sample_rate__mutmut_orig.__name__ = 'x_validate_sample_rate'
+x_validate_sample_rate__mutmut_orig.__name__ = "x_validate_sample_rate"
 
 
 def x_validate_port__mutmut_orig(instance: Any, attribute: Any, value: int) -> None:
@@ -545,7 +561,10 @@ def x_validate_port__mutmut_12(instance: Any, attribute: Any, value: int) -> Non
 
     if not 1 <= value <= 65535:
         raise ValidationError(
-            _format_validation_error(attribute.name, value, ),
+            _format_validation_error(
+                attribute.name,
+                value,
+            ),
         )
 
 
@@ -570,29 +589,32 @@ def x_validate_port__mutmut_14(instance: Any, attribute: Any, value: int) -> Non
             _format_validation_error(attribute.name, value, "MUST BE BETWEEN 1 AND 65535"),
         )
 
-x_validate_port__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_port__mutmut_1': x_validate_port__mutmut_1, 
-    'x_validate_port__mutmut_2': x_validate_port__mutmut_2, 
-    'x_validate_port__mutmut_3': x_validate_port__mutmut_3, 
-    'x_validate_port__mutmut_4': x_validate_port__mutmut_4, 
-    'x_validate_port__mutmut_5': x_validate_port__mutmut_5, 
-    'x_validate_port__mutmut_6': x_validate_port__mutmut_6, 
-    'x_validate_port__mutmut_7': x_validate_port__mutmut_7, 
-    'x_validate_port__mutmut_8': x_validate_port__mutmut_8, 
-    'x_validate_port__mutmut_9': x_validate_port__mutmut_9, 
-    'x_validate_port__mutmut_10': x_validate_port__mutmut_10, 
-    'x_validate_port__mutmut_11': x_validate_port__mutmut_11, 
-    'x_validate_port__mutmut_12': x_validate_port__mutmut_12, 
-    'x_validate_port__mutmut_13': x_validate_port__mutmut_13, 
-    'x_validate_port__mutmut_14': x_validate_port__mutmut_14
+
+x_validate_port__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_port__mutmut_1": x_validate_port__mutmut_1,
+    "x_validate_port__mutmut_2": x_validate_port__mutmut_2,
+    "x_validate_port__mutmut_3": x_validate_port__mutmut_3,
+    "x_validate_port__mutmut_4": x_validate_port__mutmut_4,
+    "x_validate_port__mutmut_5": x_validate_port__mutmut_5,
+    "x_validate_port__mutmut_6": x_validate_port__mutmut_6,
+    "x_validate_port__mutmut_7": x_validate_port__mutmut_7,
+    "x_validate_port__mutmut_8": x_validate_port__mutmut_8,
+    "x_validate_port__mutmut_9": x_validate_port__mutmut_9,
+    "x_validate_port__mutmut_10": x_validate_port__mutmut_10,
+    "x_validate_port__mutmut_11": x_validate_port__mutmut_11,
+    "x_validate_port__mutmut_12": x_validate_port__mutmut_12,
+    "x_validate_port__mutmut_13": x_validate_port__mutmut_13,
+    "x_validate_port__mutmut_14": x_validate_port__mutmut_14,
 }
+
 
 def validate_port(*args, **kwargs):
     result = _mutmut_trampoline(x_validate_port__mutmut_orig, x_validate_port__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 validate_port.__signature__ = _mutmut_signature(x_validate_port__mutmut_orig)
-x_validate_port__mutmut_orig.__name__ = 'x_validate_port'
+x_validate_port__mutmut_orig.__name__ = "x_validate_port"
 
 
 def x_validate_positive__mutmut_orig(instance: Any, attribute: Any, value: float) -> None:
@@ -812,7 +834,10 @@ def x_validate_positive__mutmut_12(instance: Any, attribute: Any, value: float) 
 
     if value <= 0:
         raise ValidationError(
-            _format_validation_error(attribute.name, value, ),
+            _format_validation_error(
+                attribute.name,
+                value,
+            ),
         )
 
 
@@ -849,29 +874,34 @@ def x_validate_positive__mutmut_14(instance: Any, attribute: Any, value: float) 
             _format_validation_error(attribute.name, value, "MUST BE POSITIVE"),
         )
 
-x_validate_positive__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_positive__mutmut_1': x_validate_positive__mutmut_1, 
-    'x_validate_positive__mutmut_2': x_validate_positive__mutmut_2, 
-    'x_validate_positive__mutmut_3': x_validate_positive__mutmut_3, 
-    'x_validate_positive__mutmut_4': x_validate_positive__mutmut_4, 
-    'x_validate_positive__mutmut_5': x_validate_positive__mutmut_5, 
-    'x_validate_positive__mutmut_6': x_validate_positive__mutmut_6, 
-    'x_validate_positive__mutmut_7': x_validate_positive__mutmut_7, 
-    'x_validate_positive__mutmut_8': x_validate_positive__mutmut_8, 
-    'x_validate_positive__mutmut_9': x_validate_positive__mutmut_9, 
-    'x_validate_positive__mutmut_10': x_validate_positive__mutmut_10, 
-    'x_validate_positive__mutmut_11': x_validate_positive__mutmut_11, 
-    'x_validate_positive__mutmut_12': x_validate_positive__mutmut_12, 
-    'x_validate_positive__mutmut_13': x_validate_positive__mutmut_13, 
-    'x_validate_positive__mutmut_14': x_validate_positive__mutmut_14
+
+x_validate_positive__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_positive__mutmut_1": x_validate_positive__mutmut_1,
+    "x_validate_positive__mutmut_2": x_validate_positive__mutmut_2,
+    "x_validate_positive__mutmut_3": x_validate_positive__mutmut_3,
+    "x_validate_positive__mutmut_4": x_validate_positive__mutmut_4,
+    "x_validate_positive__mutmut_5": x_validate_positive__mutmut_5,
+    "x_validate_positive__mutmut_6": x_validate_positive__mutmut_6,
+    "x_validate_positive__mutmut_7": x_validate_positive__mutmut_7,
+    "x_validate_positive__mutmut_8": x_validate_positive__mutmut_8,
+    "x_validate_positive__mutmut_9": x_validate_positive__mutmut_9,
+    "x_validate_positive__mutmut_10": x_validate_positive__mutmut_10,
+    "x_validate_positive__mutmut_11": x_validate_positive__mutmut_11,
+    "x_validate_positive__mutmut_12": x_validate_positive__mutmut_12,
+    "x_validate_positive__mutmut_13": x_validate_positive__mutmut_13,
+    "x_validate_positive__mutmut_14": x_validate_positive__mutmut_14,
 }
 
+
 def validate_positive(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_positive__mutmut_orig, x_validate_positive__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_positive__mutmut_orig, x_validate_positive__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_positive.__signature__ = _mutmut_signature(x_validate_positive__mutmut_orig)
-x_validate_positive__mutmut_orig.__name__ = 'x_validate_positive'
+x_validate_positive__mutmut_orig.__name__ = "x_validate_positive"
 
 
 def x_validate_non_negative__mutmut_orig(instance: Any, attribute: Any, value: float) -> None:
@@ -1091,7 +1121,10 @@ def x_validate_non_negative__mutmut_12(instance: Any, attribute: Any, value: flo
 
     if value < 0:
         raise ValidationError(
-            _format_validation_error(attribute.name, value, ),
+            _format_validation_error(
+                attribute.name,
+                value,
+            ),
         )
 
 
@@ -1128,29 +1161,34 @@ def x_validate_non_negative__mutmut_14(instance: Any, attribute: Any, value: flo
             _format_validation_error(attribute.name, value, "MUST BE NON-NEGATIVE"),
         )
 
-x_validate_non_negative__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_non_negative__mutmut_1': x_validate_non_negative__mutmut_1, 
-    'x_validate_non_negative__mutmut_2': x_validate_non_negative__mutmut_2, 
-    'x_validate_non_negative__mutmut_3': x_validate_non_negative__mutmut_3, 
-    'x_validate_non_negative__mutmut_4': x_validate_non_negative__mutmut_4, 
-    'x_validate_non_negative__mutmut_5': x_validate_non_negative__mutmut_5, 
-    'x_validate_non_negative__mutmut_6': x_validate_non_negative__mutmut_6, 
-    'x_validate_non_negative__mutmut_7': x_validate_non_negative__mutmut_7, 
-    'x_validate_non_negative__mutmut_8': x_validate_non_negative__mutmut_8, 
-    'x_validate_non_negative__mutmut_9': x_validate_non_negative__mutmut_9, 
-    'x_validate_non_negative__mutmut_10': x_validate_non_negative__mutmut_10, 
-    'x_validate_non_negative__mutmut_11': x_validate_non_negative__mutmut_11, 
-    'x_validate_non_negative__mutmut_12': x_validate_non_negative__mutmut_12, 
-    'x_validate_non_negative__mutmut_13': x_validate_non_negative__mutmut_13, 
-    'x_validate_non_negative__mutmut_14': x_validate_non_negative__mutmut_14
+
+x_validate_non_negative__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_non_negative__mutmut_1": x_validate_non_negative__mutmut_1,
+    "x_validate_non_negative__mutmut_2": x_validate_non_negative__mutmut_2,
+    "x_validate_non_negative__mutmut_3": x_validate_non_negative__mutmut_3,
+    "x_validate_non_negative__mutmut_4": x_validate_non_negative__mutmut_4,
+    "x_validate_non_negative__mutmut_5": x_validate_non_negative__mutmut_5,
+    "x_validate_non_negative__mutmut_6": x_validate_non_negative__mutmut_6,
+    "x_validate_non_negative__mutmut_7": x_validate_non_negative__mutmut_7,
+    "x_validate_non_negative__mutmut_8": x_validate_non_negative__mutmut_8,
+    "x_validate_non_negative__mutmut_9": x_validate_non_negative__mutmut_9,
+    "x_validate_non_negative__mutmut_10": x_validate_non_negative__mutmut_10,
+    "x_validate_non_negative__mutmut_11": x_validate_non_negative__mutmut_11,
+    "x_validate_non_negative__mutmut_12": x_validate_non_negative__mutmut_12,
+    "x_validate_non_negative__mutmut_13": x_validate_non_negative__mutmut_13,
+    "x_validate_non_negative__mutmut_14": x_validate_non_negative__mutmut_14,
 }
 
+
 def validate_non_negative(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_non_negative__mutmut_orig, x_validate_non_negative__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_non_negative__mutmut_orig, x_validate_non_negative__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_non_negative.__signature__ = _mutmut_signature(x_validate_non_negative__mutmut_orig)
-x_validate_non_negative__mutmut_orig.__name__ = 'x_validate_non_negative'
+x_validate_non_negative__mutmut_orig.__name__ = "x_validate_non_negative"
 
 
 def x_validate_overflow_policy__mutmut_orig(instance: Any, attribute: Any, value: str) -> None:
@@ -1277,7 +1315,7 @@ def x_validate_overflow_policy__mutmut_8(instance: Any, attribute: Any, value: s
             _format_invalid_value_error(
                 attribute.name,
                 value,
-                ),
+            ),
         )
 
 
@@ -1295,24 +1333,29 @@ def x_validate_overflow_policy__mutmut_9(instance: Any, attribute: Any, value: s
             ),
         )
 
-x_validate_overflow_policy__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_overflow_policy__mutmut_1': x_validate_overflow_policy__mutmut_1, 
-    'x_validate_overflow_policy__mutmut_2': x_validate_overflow_policy__mutmut_2, 
-    'x_validate_overflow_policy__mutmut_3': x_validate_overflow_policy__mutmut_3, 
-    'x_validate_overflow_policy__mutmut_4': x_validate_overflow_policy__mutmut_4, 
-    'x_validate_overflow_policy__mutmut_5': x_validate_overflow_policy__mutmut_5, 
-    'x_validate_overflow_policy__mutmut_6': x_validate_overflow_policy__mutmut_6, 
-    'x_validate_overflow_policy__mutmut_7': x_validate_overflow_policy__mutmut_7, 
-    'x_validate_overflow_policy__mutmut_8': x_validate_overflow_policy__mutmut_8, 
-    'x_validate_overflow_policy__mutmut_9': x_validate_overflow_policy__mutmut_9
+
+x_validate_overflow_policy__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_overflow_policy__mutmut_1": x_validate_overflow_policy__mutmut_1,
+    "x_validate_overflow_policy__mutmut_2": x_validate_overflow_policy__mutmut_2,
+    "x_validate_overflow_policy__mutmut_3": x_validate_overflow_policy__mutmut_3,
+    "x_validate_overflow_policy__mutmut_4": x_validate_overflow_policy__mutmut_4,
+    "x_validate_overflow_policy__mutmut_5": x_validate_overflow_policy__mutmut_5,
+    "x_validate_overflow_policy__mutmut_6": x_validate_overflow_policy__mutmut_6,
+    "x_validate_overflow_policy__mutmut_7": x_validate_overflow_policy__mutmut_7,
+    "x_validate_overflow_policy__mutmut_8": x_validate_overflow_policy__mutmut_8,
+    "x_validate_overflow_policy__mutmut_9": x_validate_overflow_policy__mutmut_9,
 }
 
+
 def validate_overflow_policy(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_overflow_policy__mutmut_orig, x_validate_overflow_policy__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_overflow_policy__mutmut_orig, x_validate_overflow_policy__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_overflow_policy.__signature__ = _mutmut_signature(x_validate_overflow_policy__mutmut_orig)
-x_validate_overflow_policy__mutmut_orig.__name__ = 'x_validate_overflow_policy'
+x_validate_overflow_policy__mutmut_orig.__name__ = "x_validate_overflow_policy"
 
 
 def x_validate_choice__mutmut_orig(choices: list[Any]) -> Callable[[Any, Any, Any], None]:
@@ -1383,17 +1426,22 @@ def x_validate_choice__mutmut_2(choices: list[Any]) -> Callable[[Any, Any, Any],
 
     return validator
 
-x_validate_choice__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_choice__mutmut_1': x_validate_choice__mutmut_1, 
-    'x_validate_choice__mutmut_2': x_validate_choice__mutmut_2
+
+x_validate_choice__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_choice__mutmut_1": x_validate_choice__mutmut_1,
+    "x_validate_choice__mutmut_2": x_validate_choice__mutmut_2,
 }
 
+
 def validate_choice(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_choice__mutmut_orig, x_validate_choice__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_choice__mutmut_orig, x_validate_choice__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_choice.__signature__ = _mutmut_signature(x_validate_choice__mutmut_orig)
-x_validate_choice__mutmut_orig.__name__ = 'x_validate_choice'
+x_validate_choice__mutmut_orig.__name__ = "x_validate_choice"
 
 
 def x_validate_range__mutmut_orig(min_val: float, max_val: float) -> Callable[[Any, Any, Any], None]:
@@ -1538,7 +1586,7 @@ def x_validate_range__mutmut_4(min_val: float, max_val: float) -> Callable[[Any,
                 f"Value must be a number, got {type(value).__name__}",
             )
 
-        if (min_val <= value <= max_val):
+        if min_val <= value <= max_val:
             raise ValidationError(
                 f"Value must be between {min_val} and {max_val}, got {value}",
             )
@@ -1635,22 +1683,25 @@ def x_validate_range__mutmut_7(min_val: float, max_val: float) -> Callable[[Any,
 
     return validator
 
-x_validate_range__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_range__mutmut_1': x_validate_range__mutmut_1, 
-    'x_validate_range__mutmut_2': x_validate_range__mutmut_2, 
-    'x_validate_range__mutmut_3': x_validate_range__mutmut_3, 
-    'x_validate_range__mutmut_4': x_validate_range__mutmut_4, 
-    'x_validate_range__mutmut_5': x_validate_range__mutmut_5, 
-    'x_validate_range__mutmut_6': x_validate_range__mutmut_6, 
-    'x_validate_range__mutmut_7': x_validate_range__mutmut_7
+
+x_validate_range__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_range__mutmut_1": x_validate_range__mutmut_1,
+    "x_validate_range__mutmut_2": x_validate_range__mutmut_2,
+    "x_validate_range__mutmut_3": x_validate_range__mutmut_3,
+    "x_validate_range__mutmut_4": x_validate_range__mutmut_4,
+    "x_validate_range__mutmut_5": x_validate_range__mutmut_5,
+    "x_validate_range__mutmut_6": x_validate_range__mutmut_6,
+    "x_validate_range__mutmut_7": x_validate_range__mutmut_7,
 }
+
 
 def validate_range(*args, **kwargs):
     result = _mutmut_trampoline(x_validate_range__mutmut_orig, x_validate_range__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 validate_range.__signature__ = _mutmut_signature(x_validate_range__mutmut_orig)
-x_validate_range__mutmut_orig.__name__ = 'x_validate_range'
+x_validate_range__mutmut_orig.__name__ = "x_validate_range"
 
 
 __all__ = [

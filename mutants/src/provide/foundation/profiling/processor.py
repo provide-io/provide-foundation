@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -72,7 +75,9 @@ class ProfilingProcessor:
 
     """
 
-    def xǁProfilingProcessorǁ__init____mutmut_orig(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_orig(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -87,7 +92,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_1(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_1(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -102,7 +109,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_2(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_2(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -117,7 +126,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_3(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_3(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -132,7 +143,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_4(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_4(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -147,7 +160,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_5(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_5(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -162,7 +177,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_6(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_6(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -177,7 +194,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_7(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_7(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -192,7 +211,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_8(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_8(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -207,7 +228,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_9(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_9(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -216,13 +239,17 @@ class ProfilingProcessor:
 
         """
         if not 0.0 <= sample_rate <= 1.0:
-            raise SamplingError("Sample rate must be between 0.0 and 1.0", )
+            raise SamplingError(
+                "Sample rate must be between 0.0 and 1.0",
+            )
 
         self.sample_rate = sample_rate
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_10(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_10(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -237,7 +264,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_11(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_11(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -252,7 +281,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_12(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_12(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -267,7 +298,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_13(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_13(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -282,7 +315,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_14(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_14(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -297,7 +332,9 @@ class ProfilingProcessor:
         self.metrics = None
         self._enabled = True
 
-    def xǁProfilingProcessorǁ__init____mutmut_15(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_15(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -312,7 +349,9 @@ class ProfilingProcessor:
         self.metrics = ProfileMetrics()
         self._enabled = None
 
-    def xǁProfilingProcessorǁ__init____mutmut_16(self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE) -> None:
+    def xǁProfilingProcessorǁ__init____mutmut_16(
+        self, sample_rate: float = DEFAULT_PROFILING_SAMPLE_RATE
+    ) -> None:
         """Initialize profiling processor with sampling configuration.
 
         Args:
@@ -326,32 +365,38 @@ class ProfilingProcessor:
         self.sample_rate = sample_rate
         self.metrics = ProfileMetrics()
         self._enabled = False
-    
-    xǁProfilingProcessorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfilingProcessorǁ__init____mutmut_1': xǁProfilingProcessorǁ__init____mutmut_1, 
-        'xǁProfilingProcessorǁ__init____mutmut_2': xǁProfilingProcessorǁ__init____mutmut_2, 
-        'xǁProfilingProcessorǁ__init____mutmut_3': xǁProfilingProcessorǁ__init____mutmut_3, 
-        'xǁProfilingProcessorǁ__init____mutmut_4': xǁProfilingProcessorǁ__init____mutmut_4, 
-        'xǁProfilingProcessorǁ__init____mutmut_5': xǁProfilingProcessorǁ__init____mutmut_5, 
-        'xǁProfilingProcessorǁ__init____mutmut_6': xǁProfilingProcessorǁ__init____mutmut_6, 
-        'xǁProfilingProcessorǁ__init____mutmut_7': xǁProfilingProcessorǁ__init____mutmut_7, 
-        'xǁProfilingProcessorǁ__init____mutmut_8': xǁProfilingProcessorǁ__init____mutmut_8, 
-        'xǁProfilingProcessorǁ__init____mutmut_9': xǁProfilingProcessorǁ__init____mutmut_9, 
-        'xǁProfilingProcessorǁ__init____mutmut_10': xǁProfilingProcessorǁ__init____mutmut_10, 
-        'xǁProfilingProcessorǁ__init____mutmut_11': xǁProfilingProcessorǁ__init____mutmut_11, 
-        'xǁProfilingProcessorǁ__init____mutmut_12': xǁProfilingProcessorǁ__init____mutmut_12, 
-        'xǁProfilingProcessorǁ__init____mutmut_13': xǁProfilingProcessorǁ__init____mutmut_13, 
-        'xǁProfilingProcessorǁ__init____mutmut_14': xǁProfilingProcessorǁ__init____mutmut_14, 
-        'xǁProfilingProcessorǁ__init____mutmut_15': xǁProfilingProcessorǁ__init____mutmut_15, 
-        'xǁProfilingProcessorǁ__init____mutmut_16': xǁProfilingProcessorǁ__init____mutmut_16
+
+    xǁProfilingProcessorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfilingProcessorǁ__init____mutmut_1": xǁProfilingProcessorǁ__init____mutmut_1,
+        "xǁProfilingProcessorǁ__init____mutmut_2": xǁProfilingProcessorǁ__init____mutmut_2,
+        "xǁProfilingProcessorǁ__init____mutmut_3": xǁProfilingProcessorǁ__init____mutmut_3,
+        "xǁProfilingProcessorǁ__init____mutmut_4": xǁProfilingProcessorǁ__init____mutmut_4,
+        "xǁProfilingProcessorǁ__init____mutmut_5": xǁProfilingProcessorǁ__init____mutmut_5,
+        "xǁProfilingProcessorǁ__init____mutmut_6": xǁProfilingProcessorǁ__init____mutmut_6,
+        "xǁProfilingProcessorǁ__init____mutmut_7": xǁProfilingProcessorǁ__init____mutmut_7,
+        "xǁProfilingProcessorǁ__init____mutmut_8": xǁProfilingProcessorǁ__init____mutmut_8,
+        "xǁProfilingProcessorǁ__init____mutmut_9": xǁProfilingProcessorǁ__init____mutmut_9,
+        "xǁProfilingProcessorǁ__init____mutmut_10": xǁProfilingProcessorǁ__init____mutmut_10,
+        "xǁProfilingProcessorǁ__init____mutmut_11": xǁProfilingProcessorǁ__init____mutmut_11,
+        "xǁProfilingProcessorǁ__init____mutmut_12": xǁProfilingProcessorǁ__init____mutmut_12,
+        "xǁProfilingProcessorǁ__init____mutmut_13": xǁProfilingProcessorǁ__init____mutmut_13,
+        "xǁProfilingProcessorǁ__init____mutmut_14": xǁProfilingProcessorǁ__init____mutmut_14,
+        "xǁProfilingProcessorǁ__init____mutmut_15": xǁProfilingProcessorǁ__init____mutmut_15,
+        "xǁProfilingProcessorǁ__init____mutmut_16": xǁProfilingProcessorǁ__init____mutmut_16,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfilingProcessorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁProfilingProcessorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfilingProcessorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁProfilingProcessorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁProfilingProcessorǁ__init____mutmut_orig)
-    xǁProfilingProcessorǁ__init____mutmut_orig.__name__ = 'xǁProfilingProcessorǁ__init__'
+    xǁProfilingProcessorǁ__init____mutmut_orig.__name__ = "xǁProfilingProcessorǁ__init__"
 
     def xǁProfilingProcessorǁ__call____mutmut_orig(
         self,
@@ -1106,7 +1151,7 @@ class ProfilingProcessor:
             self.metrics.record_message(
                 duration_ns=processing_time,
                 has_emoji=has_emoji,
-                )
+            )
 
         except Exception:
             # Never let profiling break the logging pipeline
@@ -1114,32 +1159,40 @@ class ProfilingProcessor:
             pass
 
         return event_dict
-    
-    xǁProfilingProcessorǁ__call____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfilingProcessorǁ__call____mutmut_1': xǁProfilingProcessorǁ__call____mutmut_1, 
-        'xǁProfilingProcessorǁ__call____mutmut_2': xǁProfilingProcessorǁ__call____mutmut_2, 
-        'xǁProfilingProcessorǁ__call____mutmut_3': xǁProfilingProcessorǁ__call____mutmut_3, 
-        'xǁProfilingProcessorǁ__call____mutmut_4': xǁProfilingProcessorǁ__call____mutmut_4, 
-        'xǁProfilingProcessorǁ__call____mutmut_5': xǁProfilingProcessorǁ__call____mutmut_5, 
-        'xǁProfilingProcessorǁ__call____mutmut_6': xǁProfilingProcessorǁ__call____mutmut_6, 
-        'xǁProfilingProcessorǁ__call____mutmut_7': xǁProfilingProcessorǁ__call____mutmut_7, 
-        'xǁProfilingProcessorǁ__call____mutmut_8': xǁProfilingProcessorǁ__call____mutmut_8, 
-        'xǁProfilingProcessorǁ__call____mutmut_9': xǁProfilingProcessorǁ__call____mutmut_9, 
-        'xǁProfilingProcessorǁ__call____mutmut_10': xǁProfilingProcessorǁ__call____mutmut_10, 
-        'xǁProfilingProcessorǁ__call____mutmut_11': xǁProfilingProcessorǁ__call____mutmut_11, 
-        'xǁProfilingProcessorǁ__call____mutmut_12': xǁProfilingProcessorǁ__call____mutmut_12, 
-        'xǁProfilingProcessorǁ__call____mutmut_13': xǁProfilingProcessorǁ__call____mutmut_13, 
-        'xǁProfilingProcessorǁ__call____mutmut_14': xǁProfilingProcessorǁ__call____mutmut_14
-    }
-    
-    def __call__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfilingProcessorǁ__call____mutmut_orig"), object.__getattribute__(self, "xǁProfilingProcessorǁ__call____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    __call__.__signature__ = _mutmut_signature(xǁProfilingProcessorǁ__call____mutmut_orig)
-    xǁProfilingProcessorǁ__call____mutmut_orig.__name__ = 'xǁProfilingProcessorǁ__call__'
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_orig(self, event_dict: structlog.types.EventDict) -> bool:
+    xǁProfilingProcessorǁ__call____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfilingProcessorǁ__call____mutmut_1": xǁProfilingProcessorǁ__call____mutmut_1,
+        "xǁProfilingProcessorǁ__call____mutmut_2": xǁProfilingProcessorǁ__call____mutmut_2,
+        "xǁProfilingProcessorǁ__call____mutmut_3": xǁProfilingProcessorǁ__call____mutmut_3,
+        "xǁProfilingProcessorǁ__call____mutmut_4": xǁProfilingProcessorǁ__call____mutmut_4,
+        "xǁProfilingProcessorǁ__call____mutmut_5": xǁProfilingProcessorǁ__call____mutmut_5,
+        "xǁProfilingProcessorǁ__call____mutmut_6": xǁProfilingProcessorǁ__call____mutmut_6,
+        "xǁProfilingProcessorǁ__call____mutmut_7": xǁProfilingProcessorǁ__call____mutmut_7,
+        "xǁProfilingProcessorǁ__call____mutmut_8": xǁProfilingProcessorǁ__call____mutmut_8,
+        "xǁProfilingProcessorǁ__call____mutmut_9": xǁProfilingProcessorǁ__call____mutmut_9,
+        "xǁProfilingProcessorǁ__call____mutmut_10": xǁProfilingProcessorǁ__call____mutmut_10,
+        "xǁProfilingProcessorǁ__call____mutmut_11": xǁProfilingProcessorǁ__call____mutmut_11,
+        "xǁProfilingProcessorǁ__call____mutmut_12": xǁProfilingProcessorǁ__call____mutmut_12,
+        "xǁProfilingProcessorǁ__call____mutmut_13": xǁProfilingProcessorǁ__call____mutmut_13,
+        "xǁProfilingProcessorǁ__call____mutmut_14": xǁProfilingProcessorǁ__call____mutmut_14,
+    }
+
+    def __call__(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfilingProcessorǁ__call____mutmut_orig"),
+            object.__getattribute__(self, "xǁProfilingProcessorǁ__call____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    __call__.__signature__ = _mutmut_signature(xǁProfilingProcessorǁ__call____mutmut_orig)
+    xǁProfilingProcessorǁ__call____mutmut_orig.__name__ = "xǁProfilingProcessorǁ__call__"
+
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_orig(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1154,7 +1207,9 @@ class ProfilingProcessor:
 
         return any(key in event_dict for key in emoji_indicators)
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_1(self, event_dict: structlog.types.EventDict) -> bool:
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_1(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1169,7 +1224,9 @@ class ProfilingProcessor:
 
         return any(key in event_dict for key in emoji_indicators)
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_2(self, event_dict: structlog.types.EventDict) -> bool:
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_2(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1184,7 +1241,9 @@ class ProfilingProcessor:
 
         return any(key in event_dict for key in emoji_indicators)
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_3(self, event_dict: structlog.types.EventDict) -> bool:
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_3(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1199,7 +1258,9 @@ class ProfilingProcessor:
 
         return any(key in event_dict for key in emoji_indicators)
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_4(self, event_dict: structlog.types.EventDict) -> bool:
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_4(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1214,7 +1275,9 @@ class ProfilingProcessor:
 
         return any(key in event_dict for key in emoji_indicators)
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_5(self, event_dict: structlog.types.EventDict) -> bool:
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_5(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1229,7 +1292,9 @@ class ProfilingProcessor:
 
         return any(key in event_dict for key in emoji_indicators)
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_6(self, event_dict: structlog.types.EventDict) -> bool:
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_6(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1244,7 +1309,9 @@ class ProfilingProcessor:
 
         return any(key in event_dict for key in emoji_indicators)
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_7(self, event_dict: structlog.types.EventDict) -> bool:
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_7(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1259,7 +1326,9 @@ class ProfilingProcessor:
 
         return any(key in event_dict for key in emoji_indicators)
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_8(self, event_dict: structlog.types.EventDict) -> bool:
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_8(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1274,7 +1343,9 @@ class ProfilingProcessor:
 
         return any(None)
 
-    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_9(self, event_dict: structlog.types.EventDict) -> bool:
+    def xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_9(
+        self, event_dict: structlog.types.EventDict
+    ) -> bool:
         """Detect if this log event involved emoji processing.
 
         Args:
@@ -1288,25 +1359,35 @@ class ProfilingProcessor:
         emoji_indicators = ["emoji", "emoji_prefix", "logger_name_emoji"]
 
         return any(key not in event_dict for key in emoji_indicators)
-    
-    xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_1': xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_1, 
-        'xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_2': xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_2, 
-        'xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_3': xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_3, 
-        'xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_4': xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_4, 
-        'xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_5': xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_5, 
-        'xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_6': xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_6, 
-        'xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_7': xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_7, 
-        'xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_8': xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_8, 
-        'xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_9': xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_9
+
+    xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_1": xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_1,
+        "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_2": xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_2,
+        "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_3": xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_3,
+        "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_4": xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_4,
+        "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_5": xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_5,
+        "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_6": xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_6,
+        "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_7": xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_7,
+        "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_8": xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_8,
+        "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_9": xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_9,
     }
-    
+
     def _detect_emoji_processing(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_orig"), object.__getattribute__(self, "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _detect_emoji_processing.__signature__ = _mutmut_signature(xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_orig)
-    xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_orig.__name__ = 'xǁProfilingProcessorǁ_detect_emoji_processing'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_orig"),
+            object.__getattribute__(self, "xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _detect_emoji_processing.__signature__ = _mutmut_signature(
+        xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_orig
+    )
+    xǁProfilingProcessorǁ_detect_emoji_processing__mutmut_orig.__name__ = (
+        "xǁProfilingProcessorǁ_detect_emoji_processing"
+    )
 
     def xǁProfilingProcessorǁenable__mutmut_orig(self) -> None:
         """Enable metrics collection."""
@@ -1319,18 +1400,24 @@ class ProfilingProcessor:
     def xǁProfilingProcessorǁenable__mutmut_2(self) -> None:
         """Enable metrics collection."""
         self._enabled = False
-    
-    xǁProfilingProcessorǁenable__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfilingProcessorǁenable__mutmut_1': xǁProfilingProcessorǁenable__mutmut_1, 
-        'xǁProfilingProcessorǁenable__mutmut_2': xǁProfilingProcessorǁenable__mutmut_2
+
+    xǁProfilingProcessorǁenable__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfilingProcessorǁenable__mutmut_1": xǁProfilingProcessorǁenable__mutmut_1,
+        "xǁProfilingProcessorǁenable__mutmut_2": xǁProfilingProcessorǁenable__mutmut_2,
     }
-    
+
     def enable(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfilingProcessorǁenable__mutmut_orig"), object.__getattribute__(self, "xǁProfilingProcessorǁenable__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfilingProcessorǁenable__mutmut_orig"),
+            object.__getattribute__(self, "xǁProfilingProcessorǁenable__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     enable.__signature__ = _mutmut_signature(xǁProfilingProcessorǁenable__mutmut_orig)
-    xǁProfilingProcessorǁenable__mutmut_orig.__name__ = 'xǁProfilingProcessorǁenable'
+    xǁProfilingProcessorǁenable__mutmut_orig.__name__ = "xǁProfilingProcessorǁenable"
 
     def xǁProfilingProcessorǁdisable__mutmut_orig(self) -> None:
         """Disable metrics collection."""
@@ -1343,18 +1430,24 @@ class ProfilingProcessor:
     def xǁProfilingProcessorǁdisable__mutmut_2(self) -> None:
         """Disable metrics collection."""
         self._enabled = True
-    
-    xǁProfilingProcessorǁdisable__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁProfilingProcessorǁdisable__mutmut_1': xǁProfilingProcessorǁdisable__mutmut_1, 
-        'xǁProfilingProcessorǁdisable__mutmut_2': xǁProfilingProcessorǁdisable__mutmut_2
+
+    xǁProfilingProcessorǁdisable__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁProfilingProcessorǁdisable__mutmut_1": xǁProfilingProcessorǁdisable__mutmut_1,
+        "xǁProfilingProcessorǁdisable__mutmut_2": xǁProfilingProcessorǁdisable__mutmut_2,
     }
-    
+
     def disable(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁProfilingProcessorǁdisable__mutmut_orig"), object.__getattribute__(self, "xǁProfilingProcessorǁdisable__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁProfilingProcessorǁdisable__mutmut_orig"),
+            object.__getattribute__(self, "xǁProfilingProcessorǁdisable__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     disable.__signature__ = _mutmut_signature(xǁProfilingProcessorǁdisable__mutmut_orig)
-    xǁProfilingProcessorǁdisable__mutmut_orig.__name__ = 'xǁProfilingProcessorǁdisable'
+    xǁProfilingProcessorǁdisable__mutmut_orig.__name__ = "xǁProfilingProcessorǁdisable"
 
     def reset(self) -> None:
         """Reset collected metrics."""

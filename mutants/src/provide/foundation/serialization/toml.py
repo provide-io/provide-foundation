@@ -22,23 +22,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -454,26 +457,29 @@ def x_toml_dumps__mutmut_11(obj: dict[str, Any]) -> str:
     except Exception as e:
         raise ValidationError(None) from e
 
-x_toml_dumps__mutmut_mutants : ClassVar[MutantDict] = {
-'x_toml_dumps__mutmut_1': x_toml_dumps__mutmut_1, 
-    'x_toml_dumps__mutmut_2': x_toml_dumps__mutmut_2, 
-    'x_toml_dumps__mutmut_3': x_toml_dumps__mutmut_3, 
-    'x_toml_dumps__mutmut_4': x_toml_dumps__mutmut_4, 
-    'x_toml_dumps__mutmut_5': x_toml_dumps__mutmut_5, 
-    'x_toml_dumps__mutmut_6': x_toml_dumps__mutmut_6, 
-    'x_toml_dumps__mutmut_7': x_toml_dumps__mutmut_7, 
-    'x_toml_dumps__mutmut_8': x_toml_dumps__mutmut_8, 
-    'x_toml_dumps__mutmut_9': x_toml_dumps__mutmut_9, 
-    'x_toml_dumps__mutmut_10': x_toml_dumps__mutmut_10, 
-    'x_toml_dumps__mutmut_11': x_toml_dumps__mutmut_11
+
+x_toml_dumps__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_toml_dumps__mutmut_1": x_toml_dumps__mutmut_1,
+    "x_toml_dumps__mutmut_2": x_toml_dumps__mutmut_2,
+    "x_toml_dumps__mutmut_3": x_toml_dumps__mutmut_3,
+    "x_toml_dumps__mutmut_4": x_toml_dumps__mutmut_4,
+    "x_toml_dumps__mutmut_5": x_toml_dumps__mutmut_5,
+    "x_toml_dumps__mutmut_6": x_toml_dumps__mutmut_6,
+    "x_toml_dumps__mutmut_7": x_toml_dumps__mutmut_7,
+    "x_toml_dumps__mutmut_8": x_toml_dumps__mutmut_8,
+    "x_toml_dumps__mutmut_9": x_toml_dumps__mutmut_9,
+    "x_toml_dumps__mutmut_10": x_toml_dumps__mutmut_10,
+    "x_toml_dumps__mutmut_11": x_toml_dumps__mutmut_11,
 }
+
 
 def toml_dumps(*args, **kwargs):
     result = _mutmut_trampoline(x_toml_dumps__mutmut_orig, x_toml_dumps__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 toml_dumps.__signature__ = _mutmut_signature(x_toml_dumps__mutmut_orig)
-x_toml_dumps__mutmut_orig.__name__ = 'x_toml_dumps'
+x_toml_dumps__mutmut_orig.__name__ = "x_toml_dumps"
 
 
 def x_toml_loads__mutmut_orig(s: str, *, use_cache: bool = True) -> dict[str, Any]:
@@ -1017,7 +1023,9 @@ def x_toml_loads__mutmut_12(s: str, *, use_cache: bool = True) -> dict[str, Any]
 
     # Check cache first if enabled
     if use_cache and get_cache_enabled():
-        cache_key = get_cache_key(s, )
+        cache_key = get_cache_key(
+            s,
+        )
         cached = get_serialization_cache().get(cache_key)
         if cached is not None:
             return cached
@@ -1631,7 +1639,9 @@ def x_toml_loads__mutmut_26(s: str, *, use_cache: bool = True) -> dict[str, Any]
 
     # Cache result
     if use_cache and get_cache_enabled():
-        cache_key = get_cache_key(s, )
+        cache_key = get_cache_key(
+            s,
+        )
         get_serialization_cache().set(cache_key, result)
 
     return result
@@ -1890,51 +1900,56 @@ def x_toml_loads__mutmut_32(s: str, *, use_cache: bool = True) -> dict[str, Any]
     # Cache result
     if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "toml")
-        get_serialization_cache().set(cache_key, )
+        get_serialization_cache().set(
+            cache_key,
+        )
 
     return result
 
-x_toml_loads__mutmut_mutants : ClassVar[MutantDict] = {
-'x_toml_loads__mutmut_1': x_toml_loads__mutmut_1, 
-    'x_toml_loads__mutmut_2': x_toml_loads__mutmut_2, 
-    'x_toml_loads__mutmut_3': x_toml_loads__mutmut_3, 
-    'x_toml_loads__mutmut_4': x_toml_loads__mutmut_4, 
-    'x_toml_loads__mutmut_5': x_toml_loads__mutmut_5, 
-    'x_toml_loads__mutmut_6': x_toml_loads__mutmut_6, 
-    'x_toml_loads__mutmut_7': x_toml_loads__mutmut_7, 
-    'x_toml_loads__mutmut_8': x_toml_loads__mutmut_8, 
-    'x_toml_loads__mutmut_9': x_toml_loads__mutmut_9, 
-    'x_toml_loads__mutmut_10': x_toml_loads__mutmut_10, 
-    'x_toml_loads__mutmut_11': x_toml_loads__mutmut_11, 
-    'x_toml_loads__mutmut_12': x_toml_loads__mutmut_12, 
-    'x_toml_loads__mutmut_13': x_toml_loads__mutmut_13, 
-    'x_toml_loads__mutmut_14': x_toml_loads__mutmut_14, 
-    'x_toml_loads__mutmut_15': x_toml_loads__mutmut_15, 
-    'x_toml_loads__mutmut_16': x_toml_loads__mutmut_16, 
-    'x_toml_loads__mutmut_17': x_toml_loads__mutmut_17, 
-    'x_toml_loads__mutmut_18': x_toml_loads__mutmut_18, 
-    'x_toml_loads__mutmut_19': x_toml_loads__mutmut_19, 
-    'x_toml_loads__mutmut_20': x_toml_loads__mutmut_20, 
-    'x_toml_loads__mutmut_21': x_toml_loads__mutmut_21, 
-    'x_toml_loads__mutmut_22': x_toml_loads__mutmut_22, 
-    'x_toml_loads__mutmut_23': x_toml_loads__mutmut_23, 
-    'x_toml_loads__mutmut_24': x_toml_loads__mutmut_24, 
-    'x_toml_loads__mutmut_25': x_toml_loads__mutmut_25, 
-    'x_toml_loads__mutmut_26': x_toml_loads__mutmut_26, 
-    'x_toml_loads__mutmut_27': x_toml_loads__mutmut_27, 
-    'x_toml_loads__mutmut_28': x_toml_loads__mutmut_28, 
-    'x_toml_loads__mutmut_29': x_toml_loads__mutmut_29, 
-    'x_toml_loads__mutmut_30': x_toml_loads__mutmut_30, 
-    'x_toml_loads__mutmut_31': x_toml_loads__mutmut_31, 
-    'x_toml_loads__mutmut_32': x_toml_loads__mutmut_32
+
+x_toml_loads__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_toml_loads__mutmut_1": x_toml_loads__mutmut_1,
+    "x_toml_loads__mutmut_2": x_toml_loads__mutmut_2,
+    "x_toml_loads__mutmut_3": x_toml_loads__mutmut_3,
+    "x_toml_loads__mutmut_4": x_toml_loads__mutmut_4,
+    "x_toml_loads__mutmut_5": x_toml_loads__mutmut_5,
+    "x_toml_loads__mutmut_6": x_toml_loads__mutmut_6,
+    "x_toml_loads__mutmut_7": x_toml_loads__mutmut_7,
+    "x_toml_loads__mutmut_8": x_toml_loads__mutmut_8,
+    "x_toml_loads__mutmut_9": x_toml_loads__mutmut_9,
+    "x_toml_loads__mutmut_10": x_toml_loads__mutmut_10,
+    "x_toml_loads__mutmut_11": x_toml_loads__mutmut_11,
+    "x_toml_loads__mutmut_12": x_toml_loads__mutmut_12,
+    "x_toml_loads__mutmut_13": x_toml_loads__mutmut_13,
+    "x_toml_loads__mutmut_14": x_toml_loads__mutmut_14,
+    "x_toml_loads__mutmut_15": x_toml_loads__mutmut_15,
+    "x_toml_loads__mutmut_16": x_toml_loads__mutmut_16,
+    "x_toml_loads__mutmut_17": x_toml_loads__mutmut_17,
+    "x_toml_loads__mutmut_18": x_toml_loads__mutmut_18,
+    "x_toml_loads__mutmut_19": x_toml_loads__mutmut_19,
+    "x_toml_loads__mutmut_20": x_toml_loads__mutmut_20,
+    "x_toml_loads__mutmut_21": x_toml_loads__mutmut_21,
+    "x_toml_loads__mutmut_22": x_toml_loads__mutmut_22,
+    "x_toml_loads__mutmut_23": x_toml_loads__mutmut_23,
+    "x_toml_loads__mutmut_24": x_toml_loads__mutmut_24,
+    "x_toml_loads__mutmut_25": x_toml_loads__mutmut_25,
+    "x_toml_loads__mutmut_26": x_toml_loads__mutmut_26,
+    "x_toml_loads__mutmut_27": x_toml_loads__mutmut_27,
+    "x_toml_loads__mutmut_28": x_toml_loads__mutmut_28,
+    "x_toml_loads__mutmut_29": x_toml_loads__mutmut_29,
+    "x_toml_loads__mutmut_30": x_toml_loads__mutmut_30,
+    "x_toml_loads__mutmut_31": x_toml_loads__mutmut_31,
+    "x_toml_loads__mutmut_32": x_toml_loads__mutmut_32,
 }
+
 
 def toml_loads(*args, **kwargs):
     result = _mutmut_trampoline(x_toml_loads__mutmut_orig, x_toml_loads__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 toml_loads.__signature__ = _mutmut_signature(x_toml_loads__mutmut_orig)
-x_toml_loads__mutmut_orig.__name__ = 'x_toml_loads'
+x_toml_loads__mutmut_orig.__name__ = "x_toml_loads"
 
 
 __all__ = [

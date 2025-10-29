@@ -31,23 +31,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -844,7 +847,9 @@ def x_extract_cli_hint__mutmut_9(annotation: Any, param_name: str) -> tuple[Any,
             # Simple regex pattern for CLI hints
             import re
 
-            hint_match = re.search(r"['\"](\w+)['\"]", )
+            hint_match = re.search(
+                r"['\"](\w+)['\"]",
+            )
             if hint_match:
                 hint = hint_match.group(1)
                 if hint in ("argument", "option"):
@@ -2053,7 +2058,9 @@ def x_extract_cli_hint__mutmut_24(annotation: Any, param_name: str) -> tuple[Any
                     return annotation, hint
                 else:
                     # Invalid hint
-                    raise InvalidCLIHintError(hint, )
+                    raise InvalidCLIHintError(
+                        hint,
+                    )
 
         # Not Annotated or no hint found
         return annotation, None
@@ -3591,7 +3598,9 @@ def x_extract_cli_hint__mutmut_43(annotation: Any, param_name: str) -> tuple[Any
                     return base_type, item
                 else:
                     # Invalid hint - raise Foundation error with clear message
-                    raise InvalidCLIHintError(item, )
+                    raise InvalidCLIHintError(
+                        item,
+                    )
 
         # No CLI hint found in metadata
         return base_type, None
@@ -3599,58 +3608,63 @@ def x_extract_cli_hint__mutmut_43(annotation: Any, param_name: str) -> tuple[Any
     # Not an Annotated type
     return annotation, None
 
-x_extract_cli_hint__mutmut_mutants : ClassVar[MutantDict] = {
-'x_extract_cli_hint__mutmut_1': x_extract_cli_hint__mutmut_1, 
-    'x_extract_cli_hint__mutmut_2': x_extract_cli_hint__mutmut_2, 
-    'x_extract_cli_hint__mutmut_3': x_extract_cli_hint__mutmut_3, 
-    'x_extract_cli_hint__mutmut_4': x_extract_cli_hint__mutmut_4, 
-    'x_extract_cli_hint__mutmut_5': x_extract_cli_hint__mutmut_5, 
-    'x_extract_cli_hint__mutmut_6': x_extract_cli_hint__mutmut_6, 
-    'x_extract_cli_hint__mutmut_7': x_extract_cli_hint__mutmut_7, 
-    'x_extract_cli_hint__mutmut_8': x_extract_cli_hint__mutmut_8, 
-    'x_extract_cli_hint__mutmut_9': x_extract_cli_hint__mutmut_9, 
-    'x_extract_cli_hint__mutmut_10': x_extract_cli_hint__mutmut_10, 
-    'x_extract_cli_hint__mutmut_11': x_extract_cli_hint__mutmut_11, 
-    'x_extract_cli_hint__mutmut_12': x_extract_cli_hint__mutmut_12, 
-    'x_extract_cli_hint__mutmut_13': x_extract_cli_hint__mutmut_13, 
-    'x_extract_cli_hint__mutmut_14': x_extract_cli_hint__mutmut_14, 
-    'x_extract_cli_hint__mutmut_15': x_extract_cli_hint__mutmut_15, 
-    'x_extract_cli_hint__mutmut_16': x_extract_cli_hint__mutmut_16, 
-    'x_extract_cli_hint__mutmut_17': x_extract_cli_hint__mutmut_17, 
-    'x_extract_cli_hint__mutmut_18': x_extract_cli_hint__mutmut_18, 
-    'x_extract_cli_hint__mutmut_19': x_extract_cli_hint__mutmut_19, 
-    'x_extract_cli_hint__mutmut_20': x_extract_cli_hint__mutmut_20, 
-    'x_extract_cli_hint__mutmut_21': x_extract_cli_hint__mutmut_21, 
-    'x_extract_cli_hint__mutmut_22': x_extract_cli_hint__mutmut_22, 
-    'x_extract_cli_hint__mutmut_23': x_extract_cli_hint__mutmut_23, 
-    'x_extract_cli_hint__mutmut_24': x_extract_cli_hint__mutmut_24, 
-    'x_extract_cli_hint__mutmut_25': x_extract_cli_hint__mutmut_25, 
-    'x_extract_cli_hint__mutmut_26': x_extract_cli_hint__mutmut_26, 
-    'x_extract_cli_hint__mutmut_27': x_extract_cli_hint__mutmut_27, 
-    'x_extract_cli_hint__mutmut_28': x_extract_cli_hint__mutmut_28, 
-    'x_extract_cli_hint__mutmut_29': x_extract_cli_hint__mutmut_29, 
-    'x_extract_cli_hint__mutmut_30': x_extract_cli_hint__mutmut_30, 
-    'x_extract_cli_hint__mutmut_31': x_extract_cli_hint__mutmut_31, 
-    'x_extract_cli_hint__mutmut_32': x_extract_cli_hint__mutmut_32, 
-    'x_extract_cli_hint__mutmut_33': x_extract_cli_hint__mutmut_33, 
-    'x_extract_cli_hint__mutmut_34': x_extract_cli_hint__mutmut_34, 
-    'x_extract_cli_hint__mutmut_35': x_extract_cli_hint__mutmut_35, 
-    'x_extract_cli_hint__mutmut_36': x_extract_cli_hint__mutmut_36, 
-    'x_extract_cli_hint__mutmut_37': x_extract_cli_hint__mutmut_37, 
-    'x_extract_cli_hint__mutmut_38': x_extract_cli_hint__mutmut_38, 
-    'x_extract_cli_hint__mutmut_39': x_extract_cli_hint__mutmut_39, 
-    'x_extract_cli_hint__mutmut_40': x_extract_cli_hint__mutmut_40, 
-    'x_extract_cli_hint__mutmut_41': x_extract_cli_hint__mutmut_41, 
-    'x_extract_cli_hint__mutmut_42': x_extract_cli_hint__mutmut_42, 
-    'x_extract_cli_hint__mutmut_43': x_extract_cli_hint__mutmut_43
+
+x_extract_cli_hint__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_extract_cli_hint__mutmut_1": x_extract_cli_hint__mutmut_1,
+    "x_extract_cli_hint__mutmut_2": x_extract_cli_hint__mutmut_2,
+    "x_extract_cli_hint__mutmut_3": x_extract_cli_hint__mutmut_3,
+    "x_extract_cli_hint__mutmut_4": x_extract_cli_hint__mutmut_4,
+    "x_extract_cli_hint__mutmut_5": x_extract_cli_hint__mutmut_5,
+    "x_extract_cli_hint__mutmut_6": x_extract_cli_hint__mutmut_6,
+    "x_extract_cli_hint__mutmut_7": x_extract_cli_hint__mutmut_7,
+    "x_extract_cli_hint__mutmut_8": x_extract_cli_hint__mutmut_8,
+    "x_extract_cli_hint__mutmut_9": x_extract_cli_hint__mutmut_9,
+    "x_extract_cli_hint__mutmut_10": x_extract_cli_hint__mutmut_10,
+    "x_extract_cli_hint__mutmut_11": x_extract_cli_hint__mutmut_11,
+    "x_extract_cli_hint__mutmut_12": x_extract_cli_hint__mutmut_12,
+    "x_extract_cli_hint__mutmut_13": x_extract_cli_hint__mutmut_13,
+    "x_extract_cli_hint__mutmut_14": x_extract_cli_hint__mutmut_14,
+    "x_extract_cli_hint__mutmut_15": x_extract_cli_hint__mutmut_15,
+    "x_extract_cli_hint__mutmut_16": x_extract_cli_hint__mutmut_16,
+    "x_extract_cli_hint__mutmut_17": x_extract_cli_hint__mutmut_17,
+    "x_extract_cli_hint__mutmut_18": x_extract_cli_hint__mutmut_18,
+    "x_extract_cli_hint__mutmut_19": x_extract_cli_hint__mutmut_19,
+    "x_extract_cli_hint__mutmut_20": x_extract_cli_hint__mutmut_20,
+    "x_extract_cli_hint__mutmut_21": x_extract_cli_hint__mutmut_21,
+    "x_extract_cli_hint__mutmut_22": x_extract_cli_hint__mutmut_22,
+    "x_extract_cli_hint__mutmut_23": x_extract_cli_hint__mutmut_23,
+    "x_extract_cli_hint__mutmut_24": x_extract_cli_hint__mutmut_24,
+    "x_extract_cli_hint__mutmut_25": x_extract_cli_hint__mutmut_25,
+    "x_extract_cli_hint__mutmut_26": x_extract_cli_hint__mutmut_26,
+    "x_extract_cli_hint__mutmut_27": x_extract_cli_hint__mutmut_27,
+    "x_extract_cli_hint__mutmut_28": x_extract_cli_hint__mutmut_28,
+    "x_extract_cli_hint__mutmut_29": x_extract_cli_hint__mutmut_29,
+    "x_extract_cli_hint__mutmut_30": x_extract_cli_hint__mutmut_30,
+    "x_extract_cli_hint__mutmut_31": x_extract_cli_hint__mutmut_31,
+    "x_extract_cli_hint__mutmut_32": x_extract_cli_hint__mutmut_32,
+    "x_extract_cli_hint__mutmut_33": x_extract_cli_hint__mutmut_33,
+    "x_extract_cli_hint__mutmut_34": x_extract_cli_hint__mutmut_34,
+    "x_extract_cli_hint__mutmut_35": x_extract_cli_hint__mutmut_35,
+    "x_extract_cli_hint__mutmut_36": x_extract_cli_hint__mutmut_36,
+    "x_extract_cli_hint__mutmut_37": x_extract_cli_hint__mutmut_37,
+    "x_extract_cli_hint__mutmut_38": x_extract_cli_hint__mutmut_38,
+    "x_extract_cli_hint__mutmut_39": x_extract_cli_hint__mutmut_39,
+    "x_extract_cli_hint__mutmut_40": x_extract_cli_hint__mutmut_40,
+    "x_extract_cli_hint__mutmut_41": x_extract_cli_hint__mutmut_41,
+    "x_extract_cli_hint__mutmut_42": x_extract_cli_hint__mutmut_42,
+    "x_extract_cli_hint__mutmut_43": x_extract_cli_hint__mutmut_43,
 }
 
+
 def extract_cli_hint(*args, **kwargs):
-    result = _mutmut_trampoline(x_extract_cli_hint__mutmut_orig, x_extract_cli_hint__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_extract_cli_hint__mutmut_orig, x_extract_cli_hint__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 extract_cli_hint.__signature__ = _mutmut_signature(x_extract_cli_hint__mutmut_orig)
-x_extract_cli_hint__mutmut_orig.__name__ = 'x_extract_cli_hint'
+x_extract_cli_hint__mutmut_orig.__name__ = "x_extract_cli_hint"
 
 
 def x_introspect_parameters__mutmut_orig(func: Callable[..., Any]) -> list[ParameterInfo]:
@@ -4994,7 +5008,9 @@ def x_introspect_parameters__mutmut_20(func: Callable[..., Any]) -> list[Paramet
             base_type = str
             cli_hint = None
         else:
-            base_type, cli_hint = extract_cli_hint(annotation, )
+            base_type, cli_hint = extract_cli_hint(
+                annotation,
+            )
 
         # Extract concrete type for framework use
         concrete = str if base_type == inspect.Parameter.empty else extract_concrete_type(base_type)
@@ -6361,7 +6377,7 @@ def x_introspect_parameters__mutmut_41(func: Callable[..., Any]) -> list[Paramet
             default=default_value,
             has_default=has_default,
             is_required=not has_default,
-            )
+        )
 
         result.append(param_info)
 
@@ -6497,58 +6513,63 @@ def x_introspect_parameters__mutmut_43(func: Callable[..., Any]) -> list[Paramet
 
     return result
 
-x_introspect_parameters__mutmut_mutants : ClassVar[MutantDict] = {
-'x_introspect_parameters__mutmut_1': x_introspect_parameters__mutmut_1, 
-    'x_introspect_parameters__mutmut_2': x_introspect_parameters__mutmut_2, 
-    'x_introspect_parameters__mutmut_3': x_introspect_parameters__mutmut_3, 
-    'x_introspect_parameters__mutmut_4': x_introspect_parameters__mutmut_4, 
-    'x_introspect_parameters__mutmut_5': x_introspect_parameters__mutmut_5, 
-    'x_introspect_parameters__mutmut_6': x_introspect_parameters__mutmut_6, 
-    'x_introspect_parameters__mutmut_7': x_introspect_parameters__mutmut_7, 
-    'x_introspect_parameters__mutmut_8': x_introspect_parameters__mutmut_8, 
-    'x_introspect_parameters__mutmut_9': x_introspect_parameters__mutmut_9, 
-    'x_introspect_parameters__mutmut_10': x_introspect_parameters__mutmut_10, 
-    'x_introspect_parameters__mutmut_11': x_introspect_parameters__mutmut_11, 
-    'x_introspect_parameters__mutmut_12': x_introspect_parameters__mutmut_12, 
-    'x_introspect_parameters__mutmut_13': x_introspect_parameters__mutmut_13, 
-    'x_introspect_parameters__mutmut_14': x_introspect_parameters__mutmut_14, 
-    'x_introspect_parameters__mutmut_15': x_introspect_parameters__mutmut_15, 
-    'x_introspect_parameters__mutmut_16': x_introspect_parameters__mutmut_16, 
-    'x_introspect_parameters__mutmut_17': x_introspect_parameters__mutmut_17, 
-    'x_introspect_parameters__mutmut_18': x_introspect_parameters__mutmut_18, 
-    'x_introspect_parameters__mutmut_19': x_introspect_parameters__mutmut_19, 
-    'x_introspect_parameters__mutmut_20': x_introspect_parameters__mutmut_20, 
-    'x_introspect_parameters__mutmut_21': x_introspect_parameters__mutmut_21, 
-    'x_introspect_parameters__mutmut_22': x_introspect_parameters__mutmut_22, 
-    'x_introspect_parameters__mutmut_23': x_introspect_parameters__mutmut_23, 
-    'x_introspect_parameters__mutmut_24': x_introspect_parameters__mutmut_24, 
-    'x_introspect_parameters__mutmut_25': x_introspect_parameters__mutmut_25, 
-    'x_introspect_parameters__mutmut_26': x_introspect_parameters__mutmut_26, 
-    'x_introspect_parameters__mutmut_27': x_introspect_parameters__mutmut_27, 
-    'x_introspect_parameters__mutmut_28': x_introspect_parameters__mutmut_28, 
-    'x_introspect_parameters__mutmut_29': x_introspect_parameters__mutmut_29, 
-    'x_introspect_parameters__mutmut_30': x_introspect_parameters__mutmut_30, 
-    'x_introspect_parameters__mutmut_31': x_introspect_parameters__mutmut_31, 
-    'x_introspect_parameters__mutmut_32': x_introspect_parameters__mutmut_32, 
-    'x_introspect_parameters__mutmut_33': x_introspect_parameters__mutmut_33, 
-    'x_introspect_parameters__mutmut_34': x_introspect_parameters__mutmut_34, 
-    'x_introspect_parameters__mutmut_35': x_introspect_parameters__mutmut_35, 
-    'x_introspect_parameters__mutmut_36': x_introspect_parameters__mutmut_36, 
-    'x_introspect_parameters__mutmut_37': x_introspect_parameters__mutmut_37, 
-    'x_introspect_parameters__mutmut_38': x_introspect_parameters__mutmut_38, 
-    'x_introspect_parameters__mutmut_39': x_introspect_parameters__mutmut_39, 
-    'x_introspect_parameters__mutmut_40': x_introspect_parameters__mutmut_40, 
-    'x_introspect_parameters__mutmut_41': x_introspect_parameters__mutmut_41, 
-    'x_introspect_parameters__mutmut_42': x_introspect_parameters__mutmut_42, 
-    'x_introspect_parameters__mutmut_43': x_introspect_parameters__mutmut_43
+
+x_introspect_parameters__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_introspect_parameters__mutmut_1": x_introspect_parameters__mutmut_1,
+    "x_introspect_parameters__mutmut_2": x_introspect_parameters__mutmut_2,
+    "x_introspect_parameters__mutmut_3": x_introspect_parameters__mutmut_3,
+    "x_introspect_parameters__mutmut_4": x_introspect_parameters__mutmut_4,
+    "x_introspect_parameters__mutmut_5": x_introspect_parameters__mutmut_5,
+    "x_introspect_parameters__mutmut_6": x_introspect_parameters__mutmut_6,
+    "x_introspect_parameters__mutmut_7": x_introspect_parameters__mutmut_7,
+    "x_introspect_parameters__mutmut_8": x_introspect_parameters__mutmut_8,
+    "x_introspect_parameters__mutmut_9": x_introspect_parameters__mutmut_9,
+    "x_introspect_parameters__mutmut_10": x_introspect_parameters__mutmut_10,
+    "x_introspect_parameters__mutmut_11": x_introspect_parameters__mutmut_11,
+    "x_introspect_parameters__mutmut_12": x_introspect_parameters__mutmut_12,
+    "x_introspect_parameters__mutmut_13": x_introspect_parameters__mutmut_13,
+    "x_introspect_parameters__mutmut_14": x_introspect_parameters__mutmut_14,
+    "x_introspect_parameters__mutmut_15": x_introspect_parameters__mutmut_15,
+    "x_introspect_parameters__mutmut_16": x_introspect_parameters__mutmut_16,
+    "x_introspect_parameters__mutmut_17": x_introspect_parameters__mutmut_17,
+    "x_introspect_parameters__mutmut_18": x_introspect_parameters__mutmut_18,
+    "x_introspect_parameters__mutmut_19": x_introspect_parameters__mutmut_19,
+    "x_introspect_parameters__mutmut_20": x_introspect_parameters__mutmut_20,
+    "x_introspect_parameters__mutmut_21": x_introspect_parameters__mutmut_21,
+    "x_introspect_parameters__mutmut_22": x_introspect_parameters__mutmut_22,
+    "x_introspect_parameters__mutmut_23": x_introspect_parameters__mutmut_23,
+    "x_introspect_parameters__mutmut_24": x_introspect_parameters__mutmut_24,
+    "x_introspect_parameters__mutmut_25": x_introspect_parameters__mutmut_25,
+    "x_introspect_parameters__mutmut_26": x_introspect_parameters__mutmut_26,
+    "x_introspect_parameters__mutmut_27": x_introspect_parameters__mutmut_27,
+    "x_introspect_parameters__mutmut_28": x_introspect_parameters__mutmut_28,
+    "x_introspect_parameters__mutmut_29": x_introspect_parameters__mutmut_29,
+    "x_introspect_parameters__mutmut_30": x_introspect_parameters__mutmut_30,
+    "x_introspect_parameters__mutmut_31": x_introspect_parameters__mutmut_31,
+    "x_introspect_parameters__mutmut_32": x_introspect_parameters__mutmut_32,
+    "x_introspect_parameters__mutmut_33": x_introspect_parameters__mutmut_33,
+    "x_introspect_parameters__mutmut_34": x_introspect_parameters__mutmut_34,
+    "x_introspect_parameters__mutmut_35": x_introspect_parameters__mutmut_35,
+    "x_introspect_parameters__mutmut_36": x_introspect_parameters__mutmut_36,
+    "x_introspect_parameters__mutmut_37": x_introspect_parameters__mutmut_37,
+    "x_introspect_parameters__mutmut_38": x_introspect_parameters__mutmut_38,
+    "x_introspect_parameters__mutmut_39": x_introspect_parameters__mutmut_39,
+    "x_introspect_parameters__mutmut_40": x_introspect_parameters__mutmut_40,
+    "x_introspect_parameters__mutmut_41": x_introspect_parameters__mutmut_41,
+    "x_introspect_parameters__mutmut_42": x_introspect_parameters__mutmut_42,
+    "x_introspect_parameters__mutmut_43": x_introspect_parameters__mutmut_43,
 }
 
+
 def introspect_parameters(*args, **kwargs):
-    result = _mutmut_trampoline(x_introspect_parameters__mutmut_orig, x_introspect_parameters__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_introspect_parameters__mutmut_orig, x_introspect_parameters__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 introspect_parameters.__signature__ = _mutmut_signature(x_introspect_parameters__mutmut_orig)
-x_introspect_parameters__mutmut_orig.__name__ = 'x_introspect_parameters'
+x_introspect_parameters__mutmut_orig.__name__ = "x_introspect_parameters"
 
 
 # <3 🧱🤝🌐🪄

@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -414,7 +417,10 @@ class Hub(CoreHub):
 
         """
         # Determine if we should use shared registries
-        use_shared = should_use_shared_registries(use_shared_registries, component_registry, )
+        use_shared = should_use_shared_registries(
+            use_shared_registries,
+            component_registry,
+        )
 
         # Setup registries
         if component_registry:
@@ -912,7 +918,10 @@ class Hub(CoreHub):
             cmd_registry = Registry()
 
         # Initialize core hub functionality
-        super().__init__(context, comp_registry, )
+        super().__init__(
+            context,
+            comp_registry,
+        )
 
         # Initialize Foundation management, injecting self
         self._foundation = FoundationManager(hub=self, registry=self._component_registry)
@@ -1115,42 +1124,50 @@ class Hub(CoreHub):
         super().__init__(context, comp_registry, cmd_registry)
 
         # Initialize Foundation management, injecting self
-        self._foundation = FoundationManager(hub=self, )
-    
-    xǁHubǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁHubǁ__init____mutmut_1': xǁHubǁ__init____mutmut_1, 
-        'xǁHubǁ__init____mutmut_2': xǁHubǁ__init____mutmut_2, 
-        'xǁHubǁ__init____mutmut_3': xǁHubǁ__init____mutmut_3, 
-        'xǁHubǁ__init____mutmut_4': xǁHubǁ__init____mutmut_4, 
-        'xǁHubǁ__init____mutmut_5': xǁHubǁ__init____mutmut_5, 
-        'xǁHubǁ__init____mutmut_6': xǁHubǁ__init____mutmut_6, 
-        'xǁHubǁ__init____mutmut_7': xǁHubǁ__init____mutmut_7, 
-        'xǁHubǁ__init____mutmut_8': xǁHubǁ__init____mutmut_8, 
-        'xǁHubǁ__init____mutmut_9': xǁHubǁ__init____mutmut_9, 
-        'xǁHubǁ__init____mutmut_10': xǁHubǁ__init____mutmut_10, 
-        'xǁHubǁ__init____mutmut_11': xǁHubǁ__init____mutmut_11, 
-        'xǁHubǁ__init____mutmut_12': xǁHubǁ__init____mutmut_12, 
-        'xǁHubǁ__init____mutmut_13': xǁHubǁ__init____mutmut_13, 
-        'xǁHubǁ__init____mutmut_14': xǁHubǁ__init____mutmut_14, 
-        'xǁHubǁ__init____mutmut_15': xǁHubǁ__init____mutmut_15, 
-        'xǁHubǁ__init____mutmut_16': xǁHubǁ__init____mutmut_16, 
-        'xǁHubǁ__init____mutmut_17': xǁHubǁ__init____mutmut_17, 
-        'xǁHubǁ__init____mutmut_18': xǁHubǁ__init____mutmut_18, 
-        'xǁHubǁ__init____mutmut_19': xǁHubǁ__init____mutmut_19, 
-        'xǁHubǁ__init____mutmut_20': xǁHubǁ__init____mutmut_20, 
-        'xǁHubǁ__init____mutmut_21': xǁHubǁ__init____mutmut_21, 
-        'xǁHubǁ__init____mutmut_22': xǁHubǁ__init____mutmut_22, 
-        'xǁHubǁ__init____mutmut_23': xǁHubǁ__init____mutmut_23, 
-        'xǁHubǁ__init____mutmut_24': xǁHubǁ__init____mutmut_24, 
-        'xǁHubǁ__init____mutmut_25': xǁHubǁ__init____mutmut_25
+        self._foundation = FoundationManager(
+            hub=self,
+        )
+
+    xǁHubǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁHubǁ__init____mutmut_1": xǁHubǁ__init____mutmut_1,
+        "xǁHubǁ__init____mutmut_2": xǁHubǁ__init____mutmut_2,
+        "xǁHubǁ__init____mutmut_3": xǁHubǁ__init____mutmut_3,
+        "xǁHubǁ__init____mutmut_4": xǁHubǁ__init____mutmut_4,
+        "xǁHubǁ__init____mutmut_5": xǁHubǁ__init____mutmut_5,
+        "xǁHubǁ__init____mutmut_6": xǁHubǁ__init____mutmut_6,
+        "xǁHubǁ__init____mutmut_7": xǁHubǁ__init____mutmut_7,
+        "xǁHubǁ__init____mutmut_8": xǁHubǁ__init____mutmut_8,
+        "xǁHubǁ__init____mutmut_9": xǁHubǁ__init____mutmut_9,
+        "xǁHubǁ__init____mutmut_10": xǁHubǁ__init____mutmut_10,
+        "xǁHubǁ__init____mutmut_11": xǁHubǁ__init____mutmut_11,
+        "xǁHubǁ__init____mutmut_12": xǁHubǁ__init____mutmut_12,
+        "xǁHubǁ__init____mutmut_13": xǁHubǁ__init____mutmut_13,
+        "xǁHubǁ__init____mutmut_14": xǁHubǁ__init____mutmut_14,
+        "xǁHubǁ__init____mutmut_15": xǁHubǁ__init____mutmut_15,
+        "xǁHubǁ__init____mutmut_16": xǁHubǁ__init____mutmut_16,
+        "xǁHubǁ__init____mutmut_17": xǁHubǁ__init____mutmut_17,
+        "xǁHubǁ__init____mutmut_18": xǁHubǁ__init____mutmut_18,
+        "xǁHubǁ__init____mutmut_19": xǁHubǁ__init____mutmut_19,
+        "xǁHubǁ__init____mutmut_20": xǁHubǁ__init____mutmut_20,
+        "xǁHubǁ__init____mutmut_21": xǁHubǁ__init____mutmut_21,
+        "xǁHubǁ__init____mutmut_22": xǁHubǁ__init____mutmut_22,
+        "xǁHubǁ__init____mutmut_23": xǁHubǁ__init____mutmut_23,
+        "xǁHubǁ__init____mutmut_24": xǁHubǁ__init____mutmut_24,
+        "xǁHubǁ__init____mutmut_25": xǁHubǁ__init____mutmut_25,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁHubǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁHubǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁHubǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁHubǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁHubǁ__init____mutmut_orig)
-    xǁHubǁ__init____mutmut_orig.__name__ = 'xǁHubǁ__init__'
+    xǁHubǁ__init____mutmut_orig.__name__ = "xǁHubǁ__init__"
 
     # Foundation Integration Methods
 
@@ -1240,22 +1257,30 @@ class Hub(CoreHub):
             force: If True, force re-initialization even if already initialized
 
         """
-        self._foundation.initialize_foundation(config, )
-    
-    xǁHubǁinitialize_foundation__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁHubǁinitialize_foundation__mutmut_1': xǁHubǁinitialize_foundation__mutmut_1, 
-        'xǁHubǁinitialize_foundation__mutmut_2': xǁHubǁinitialize_foundation__mutmut_2, 
-        'xǁHubǁinitialize_foundation__mutmut_3': xǁHubǁinitialize_foundation__mutmut_3, 
-        'xǁHubǁinitialize_foundation__mutmut_4': xǁHubǁinitialize_foundation__mutmut_4, 
-        'xǁHubǁinitialize_foundation__mutmut_5': xǁHubǁinitialize_foundation__mutmut_5
+        self._foundation.initialize_foundation(
+            config,
+        )
+
+    xǁHubǁinitialize_foundation__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁHubǁinitialize_foundation__mutmut_1": xǁHubǁinitialize_foundation__mutmut_1,
+        "xǁHubǁinitialize_foundation__mutmut_2": xǁHubǁinitialize_foundation__mutmut_2,
+        "xǁHubǁinitialize_foundation__mutmut_3": xǁHubǁinitialize_foundation__mutmut_3,
+        "xǁHubǁinitialize_foundation__mutmut_4": xǁHubǁinitialize_foundation__mutmut_4,
+        "xǁHubǁinitialize_foundation__mutmut_5": xǁHubǁinitialize_foundation__mutmut_5,
     }
-    
+
     def initialize_foundation(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁHubǁinitialize_foundation__mutmut_orig"), object.__getattribute__(self, "xǁHubǁinitialize_foundation__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁHubǁinitialize_foundation__mutmut_orig"),
+            object.__getattribute__(self, "xǁHubǁinitialize_foundation__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     initialize_foundation.__signature__ = _mutmut_signature(xǁHubǁinitialize_foundation__mutmut_orig)
-    xǁHubǁinitialize_foundation__mutmut_orig.__name__ = 'xǁHubǁinitialize_foundation'
+    xǁHubǁinitialize_foundation__mutmut_orig.__name__ = "xǁHubǁinitialize_foundation"
 
     def xǁHubǁget_foundation_logger__mutmut_orig(self, name: str | None = None) -> Any:
         """Get Foundation logger instance through Hub.
@@ -1286,17 +1311,23 @@ class Hub(CoreHub):
 
         """
         return self._foundation.get_foundation_logger(None)
-    
-    xǁHubǁget_foundation_logger__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁHubǁget_foundation_logger__mutmut_1': xǁHubǁget_foundation_logger__mutmut_1
+
+    xǁHubǁget_foundation_logger__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁHubǁget_foundation_logger__mutmut_1": xǁHubǁget_foundation_logger__mutmut_1
     }
-    
+
     def get_foundation_logger(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁHubǁget_foundation_logger__mutmut_orig"), object.__getattribute__(self, "xǁHubǁget_foundation_logger__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁHubǁget_foundation_logger__mutmut_orig"),
+            object.__getattribute__(self, "xǁHubǁget_foundation_logger__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_foundation_logger.__signature__ = _mutmut_signature(xǁHubǁget_foundation_logger__mutmut_orig)
-    xǁHubǁget_foundation_logger__mutmut_orig.__name__ = 'xǁHubǁget_foundation_logger'
+    xǁHubǁget_foundation_logger__mutmut_orig.__name__ = "xǁHubǁget_foundation_logger"
 
     def is_foundation_initialized(self) -> bool:
         """Check if Foundation system is initialized."""
@@ -1431,24 +1462,30 @@ class Hub(CoreHub):
         # Reset Foundation state when clearing all or foundation-specific dimensions
         if dimension is None or dimension in ("singleton", "FOUNDATION"):
             self._foundation.clear_foundation_state()
-    
-    xǁHubǁclear__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁHubǁclear__mutmut_1': xǁHubǁclear__mutmut_1, 
-        'xǁHubǁclear__mutmut_2': xǁHubǁclear__mutmut_2, 
-        'xǁHubǁclear__mutmut_3': xǁHubǁclear__mutmut_3, 
-        'xǁHubǁclear__mutmut_4': xǁHubǁclear__mutmut_4, 
-        'xǁHubǁclear__mutmut_5': xǁHubǁclear__mutmut_5, 
-        'xǁHubǁclear__mutmut_6': xǁHubǁclear__mutmut_6, 
-        'xǁHubǁclear__mutmut_7': xǁHubǁclear__mutmut_7, 
-        'xǁHubǁclear__mutmut_8': xǁHubǁclear__mutmut_8
+
+    xǁHubǁclear__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁHubǁclear__mutmut_1": xǁHubǁclear__mutmut_1,
+        "xǁHubǁclear__mutmut_2": xǁHubǁclear__mutmut_2,
+        "xǁHubǁclear__mutmut_3": xǁHubǁclear__mutmut_3,
+        "xǁHubǁclear__mutmut_4": xǁHubǁclear__mutmut_4,
+        "xǁHubǁclear__mutmut_5": xǁHubǁclear__mutmut_5,
+        "xǁHubǁclear__mutmut_6": xǁHubǁclear__mutmut_6,
+        "xǁHubǁclear__mutmut_7": xǁHubǁclear__mutmut_7,
+        "xǁHubǁclear__mutmut_8": xǁHubǁclear__mutmut_8,
     }
-    
+
     def clear(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁHubǁclear__mutmut_orig"), object.__getattribute__(self, "xǁHubǁclear__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁHubǁclear__mutmut_orig"),
+            object.__getattribute__(self, "xǁHubǁclear__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     clear.__signature__ = _mutmut_signature(xǁHubǁclear__mutmut_orig)
-    xǁHubǁclear__mutmut_orig.__name__ = 'xǁHubǁclear'
+    xǁHubǁclear__mutmut_orig.__name__ = "xǁHubǁclear"
 
     def xǁHubǁdispose_all__mutmut_orig(self) -> None:
         """Dispose of all managed resources without clearing registrations."""
@@ -1477,7 +1514,9 @@ class Hub(CoreHub):
     def xǁHubǁdispose_all__mutmut_4(self) -> None:
         """Dispose of all managed resources without clearing registrations."""
         self._component_registry.dispose_all()
-        if hasattr(self._command_registry, ):
+        if hasattr(
+            self._command_registry,
+        ):
             self._command_registry.dispose_all()
 
     def xǁHubǁdispose_all__mutmut_5(self) -> None:
@@ -1491,22 +1530,28 @@ class Hub(CoreHub):
         self._component_registry.dispose_all()
         if hasattr(self._command_registry, "DISPOSE_ALL"):
             self._command_registry.dispose_all()
-    
-    xǁHubǁdispose_all__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁHubǁdispose_all__mutmut_1': xǁHubǁdispose_all__mutmut_1, 
-        'xǁHubǁdispose_all__mutmut_2': xǁHubǁdispose_all__mutmut_2, 
-        'xǁHubǁdispose_all__mutmut_3': xǁHubǁdispose_all__mutmut_3, 
-        'xǁHubǁdispose_all__mutmut_4': xǁHubǁdispose_all__mutmut_4, 
-        'xǁHubǁdispose_all__mutmut_5': xǁHubǁdispose_all__mutmut_5, 
-        'xǁHubǁdispose_all__mutmut_6': xǁHubǁdispose_all__mutmut_6
+
+    xǁHubǁdispose_all__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁHubǁdispose_all__mutmut_1": xǁHubǁdispose_all__mutmut_1,
+        "xǁHubǁdispose_all__mutmut_2": xǁHubǁdispose_all__mutmut_2,
+        "xǁHubǁdispose_all__mutmut_3": xǁHubǁdispose_all__mutmut_3,
+        "xǁHubǁdispose_all__mutmut_4": xǁHubǁdispose_all__mutmut_4,
+        "xǁHubǁdispose_all__mutmut_5": xǁHubǁdispose_all__mutmut_5,
+        "xǁHubǁdispose_all__mutmut_6": xǁHubǁdispose_all__mutmut_6,
     }
-    
+
     def dispose_all(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁHubǁdispose_all__mutmut_orig"), object.__getattribute__(self, "xǁHubǁdispose_all__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁHubǁdispose_all__mutmut_orig"),
+            object.__getattribute__(self, "xǁHubǁdispose_all__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     dispose_all.__signature__ = _mutmut_signature(xǁHubǁdispose_all__mutmut_orig)
-    xǁHubǁdispose_all__mutmut_orig.__name__ = 'xǁHubǁdispose_all'
+    xǁHubǁdispose_all__mutmut_orig.__name__ = "xǁHubǁdispose_all"
 
 
 # Global hub instance for thread-safe singleton initialization
@@ -2142,24 +2187,27 @@ def x_get_hub__mutmut_9() -> Hub:
 
     return _global_hub
 
-x_get_hub__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_hub__mutmut_1': x_get_hub__mutmut_1, 
-    'x_get_hub__mutmut_2': x_get_hub__mutmut_2, 
-    'x_get_hub__mutmut_3': x_get_hub__mutmut_3, 
-    'x_get_hub__mutmut_4': x_get_hub__mutmut_4, 
-    'x_get_hub__mutmut_5': x_get_hub__mutmut_5, 
-    'x_get_hub__mutmut_6': x_get_hub__mutmut_6, 
-    'x_get_hub__mutmut_7': x_get_hub__mutmut_7, 
-    'x_get_hub__mutmut_8': x_get_hub__mutmut_8, 
-    'x_get_hub__mutmut_9': x_get_hub__mutmut_9
+
+x_get_hub__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_hub__mutmut_1": x_get_hub__mutmut_1,
+    "x_get_hub__mutmut_2": x_get_hub__mutmut_2,
+    "x_get_hub__mutmut_3": x_get_hub__mutmut_3,
+    "x_get_hub__mutmut_4": x_get_hub__mutmut_4,
+    "x_get_hub__mutmut_5": x_get_hub__mutmut_5,
+    "x_get_hub__mutmut_6": x_get_hub__mutmut_6,
+    "x_get_hub__mutmut_7": x_get_hub__mutmut_7,
+    "x_get_hub__mutmut_8": x_get_hub__mutmut_8,
+    "x_get_hub__mutmut_9": x_get_hub__mutmut_9,
 }
+
 
 def get_hub(*args, **kwargs):
     result = _mutmut_trampoline(x_get_hub__mutmut_orig, x_get_hub__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_hub.__signature__ = _mutmut_signature(x_get_hub__mutmut_orig)
-x_get_hub__mutmut_orig.__name__ = 'x_get_hub'
+x_get_hub__mutmut_orig.__name__ = "x_get_hub"
 
 
 def x_clear_hub__mutmut_orig() -> None:
@@ -2187,16 +2235,17 @@ def x_clear_hub__mutmut_1() -> None:
         _global_hub.clear()
     _global_hub = ""
 
-x_clear_hub__mutmut_mutants : ClassVar[MutantDict] = {
-'x_clear_hub__mutmut_1': x_clear_hub__mutmut_1
-}
+
+x_clear_hub__mutmut_mutants: ClassVar[MutantDict] = {"x_clear_hub__mutmut_1": x_clear_hub__mutmut_1}
+
 
 def clear_hub(*args, **kwargs):
     result = _mutmut_trampoline(x_clear_hub__mutmut_orig, x_clear_hub__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 clear_hub.__signature__ = _mutmut_signature(x_clear_hub__mutmut_orig)
-x_clear_hub__mutmut_orig.__name__ = 'x_clear_hub'
+x_clear_hub__mutmut_orig.__name__ = "x_clear_hub"
 
 
 # <3 🧱🤝🌐🪄

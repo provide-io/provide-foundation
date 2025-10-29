@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -436,7 +439,9 @@ def x__group_foundation_error_context__mutmut_8(error_context: dict[str, Any]) -
 
     for key, value in error_context.items():
         if "." in key:
-            namespace, subkey = key.split(".", )
+            namespace, subkey = key.split(
+                ".",
+            )
             if namespace not in grouped:
                 grouped[namespace] = {}
             grouped[namespace][subkey] = value
@@ -733,38 +738,48 @@ def x__group_foundation_error_context__mutmut_23(error_context: dict[str, Any]) 
 
     return grouped
 
-x__group_foundation_error_context__mutmut_mutants : ClassVar[MutantDict] = {
-'x__group_foundation_error_context__mutmut_1': x__group_foundation_error_context__mutmut_1, 
-    'x__group_foundation_error_context__mutmut_2': x__group_foundation_error_context__mutmut_2, 
-    'x__group_foundation_error_context__mutmut_3': x__group_foundation_error_context__mutmut_3, 
-    'x__group_foundation_error_context__mutmut_4': x__group_foundation_error_context__mutmut_4, 
-    'x__group_foundation_error_context__mutmut_5': x__group_foundation_error_context__mutmut_5, 
-    'x__group_foundation_error_context__mutmut_6': x__group_foundation_error_context__mutmut_6, 
-    'x__group_foundation_error_context__mutmut_7': x__group_foundation_error_context__mutmut_7, 
-    'x__group_foundation_error_context__mutmut_8': x__group_foundation_error_context__mutmut_8, 
-    'x__group_foundation_error_context__mutmut_9': x__group_foundation_error_context__mutmut_9, 
-    'x__group_foundation_error_context__mutmut_10': x__group_foundation_error_context__mutmut_10, 
-    'x__group_foundation_error_context__mutmut_11': x__group_foundation_error_context__mutmut_11, 
-    'x__group_foundation_error_context__mutmut_12': x__group_foundation_error_context__mutmut_12, 
-    'x__group_foundation_error_context__mutmut_13': x__group_foundation_error_context__mutmut_13, 
-    'x__group_foundation_error_context__mutmut_14': x__group_foundation_error_context__mutmut_14, 
-    'x__group_foundation_error_context__mutmut_15': x__group_foundation_error_context__mutmut_15, 
-    'x__group_foundation_error_context__mutmut_16': x__group_foundation_error_context__mutmut_16, 
-    'x__group_foundation_error_context__mutmut_17': x__group_foundation_error_context__mutmut_17, 
-    'x__group_foundation_error_context__mutmut_18': x__group_foundation_error_context__mutmut_18, 
-    'x__group_foundation_error_context__mutmut_19': x__group_foundation_error_context__mutmut_19, 
-    'x__group_foundation_error_context__mutmut_20': x__group_foundation_error_context__mutmut_20, 
-    'x__group_foundation_error_context__mutmut_21': x__group_foundation_error_context__mutmut_21, 
-    'x__group_foundation_error_context__mutmut_22': x__group_foundation_error_context__mutmut_22, 
-    'x__group_foundation_error_context__mutmut_23': x__group_foundation_error_context__mutmut_23
+
+x__group_foundation_error_context__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__group_foundation_error_context__mutmut_1": x__group_foundation_error_context__mutmut_1,
+    "x__group_foundation_error_context__mutmut_2": x__group_foundation_error_context__mutmut_2,
+    "x__group_foundation_error_context__mutmut_3": x__group_foundation_error_context__mutmut_3,
+    "x__group_foundation_error_context__mutmut_4": x__group_foundation_error_context__mutmut_4,
+    "x__group_foundation_error_context__mutmut_5": x__group_foundation_error_context__mutmut_5,
+    "x__group_foundation_error_context__mutmut_6": x__group_foundation_error_context__mutmut_6,
+    "x__group_foundation_error_context__mutmut_7": x__group_foundation_error_context__mutmut_7,
+    "x__group_foundation_error_context__mutmut_8": x__group_foundation_error_context__mutmut_8,
+    "x__group_foundation_error_context__mutmut_9": x__group_foundation_error_context__mutmut_9,
+    "x__group_foundation_error_context__mutmut_10": x__group_foundation_error_context__mutmut_10,
+    "x__group_foundation_error_context__mutmut_11": x__group_foundation_error_context__mutmut_11,
+    "x__group_foundation_error_context__mutmut_12": x__group_foundation_error_context__mutmut_12,
+    "x__group_foundation_error_context__mutmut_13": x__group_foundation_error_context__mutmut_13,
+    "x__group_foundation_error_context__mutmut_14": x__group_foundation_error_context__mutmut_14,
+    "x__group_foundation_error_context__mutmut_15": x__group_foundation_error_context__mutmut_15,
+    "x__group_foundation_error_context__mutmut_16": x__group_foundation_error_context__mutmut_16,
+    "x__group_foundation_error_context__mutmut_17": x__group_foundation_error_context__mutmut_17,
+    "x__group_foundation_error_context__mutmut_18": x__group_foundation_error_context__mutmut_18,
+    "x__group_foundation_error_context__mutmut_19": x__group_foundation_error_context__mutmut_19,
+    "x__group_foundation_error_context__mutmut_20": x__group_foundation_error_context__mutmut_20,
+    "x__group_foundation_error_context__mutmut_21": x__group_foundation_error_context__mutmut_21,
+    "x__group_foundation_error_context__mutmut_22": x__group_foundation_error_context__mutmut_22,
+    "x__group_foundation_error_context__mutmut_23": x__group_foundation_error_context__mutmut_23,
 }
 
-def _group_foundation_error_context(*args, **kwargs):
-    result = _mutmut_trampoline(x__group_foundation_error_context__mutmut_orig, x__group_foundation_error_context__mutmut_mutants, args, kwargs)
-    return result 
 
-_group_foundation_error_context.__signature__ = _mutmut_signature(x__group_foundation_error_context__mutmut_orig)
-x__group_foundation_error_context__mutmut_orig.__name__ = 'x__group_foundation_error_context'
+def _group_foundation_error_context(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__group_foundation_error_context__mutmut_orig,
+        x__group_foundation_error_context__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_group_foundation_error_context.__signature__ = _mutmut_signature(
+    x__group_foundation_error_context__mutmut_orig
+)
+x__group_foundation_error_context__mutmut_orig.__name__ = "x__group_foundation_error_context"
 
 
 def x_capture_error_context__mutmut_orig(
@@ -1485,7 +1500,9 @@ def x_capture_error_context__mutmut_11(
         category = _determine_error_category(error)
 
     # Create context
-    ctx = ErrorContext(severity=severity, )
+    ctx = ErrorContext(
+        severity=severity,
+    )
 
     # Add error details
     ctx.add_namespace(
@@ -1734,7 +1751,7 @@ def x_capture_error_context__mutmut_15(
     # Add error details
     ctx.add_namespace(
         "error",
-        )
+    )
 
     # Add any namespaces provided
     for namespace, data in namespaces.items():
@@ -2482,7 +2499,9 @@ def x_capture_error_context__mutmut_27(
 
     # Add any namespaces provided
     for namespace, data in namespaces.items():
-        ctx.add_namespace(namespace, )
+        ctx.add_namespace(
+            namespace,
+        )
 
     # Add context from FoundationError if applicable
     from provide.foundation.errors.base import FoundationError
@@ -2924,53 +2943,60 @@ def x_capture_error_context__mutmut_34(
     if isinstance(error, FoundationError) and error.context:
         grouped = _group_foundation_error_context(error.context)
         for namespace, data in grouped.items():
-            ctx.update_namespace(namespace, )
+            ctx.update_namespace(
+                namespace,
+            )
 
     return ctx
 
-x_capture_error_context__mutmut_mutants : ClassVar[MutantDict] = {
-'x_capture_error_context__mutmut_1': x_capture_error_context__mutmut_1, 
-    'x_capture_error_context__mutmut_2': x_capture_error_context__mutmut_2, 
-    'x_capture_error_context__mutmut_3': x_capture_error_context__mutmut_3, 
-    'x_capture_error_context__mutmut_4': x_capture_error_context__mutmut_4, 
-    'x_capture_error_context__mutmut_5': x_capture_error_context__mutmut_5, 
-    'x_capture_error_context__mutmut_6': x_capture_error_context__mutmut_6, 
-    'x_capture_error_context__mutmut_7': x_capture_error_context__mutmut_7, 
-    'x_capture_error_context__mutmut_8': x_capture_error_context__mutmut_8, 
-    'x_capture_error_context__mutmut_9': x_capture_error_context__mutmut_9, 
-    'x_capture_error_context__mutmut_10': x_capture_error_context__mutmut_10, 
-    'x_capture_error_context__mutmut_11': x_capture_error_context__mutmut_11, 
-    'x_capture_error_context__mutmut_12': x_capture_error_context__mutmut_12, 
-    'x_capture_error_context__mutmut_13': x_capture_error_context__mutmut_13, 
-    'x_capture_error_context__mutmut_14': x_capture_error_context__mutmut_14, 
-    'x_capture_error_context__mutmut_15': x_capture_error_context__mutmut_15, 
-    'x_capture_error_context__mutmut_16': x_capture_error_context__mutmut_16, 
-    'x_capture_error_context__mutmut_17': x_capture_error_context__mutmut_17, 
-    'x_capture_error_context__mutmut_18': x_capture_error_context__mutmut_18, 
-    'x_capture_error_context__mutmut_19': x_capture_error_context__mutmut_19, 
-    'x_capture_error_context__mutmut_20': x_capture_error_context__mutmut_20, 
-    'x_capture_error_context__mutmut_21': x_capture_error_context__mutmut_21, 
-    'x_capture_error_context__mutmut_22': x_capture_error_context__mutmut_22, 
-    'x_capture_error_context__mutmut_23': x_capture_error_context__mutmut_23, 
-    'x_capture_error_context__mutmut_24': x_capture_error_context__mutmut_24, 
-    'x_capture_error_context__mutmut_25': x_capture_error_context__mutmut_25, 
-    'x_capture_error_context__mutmut_26': x_capture_error_context__mutmut_26, 
-    'x_capture_error_context__mutmut_27': x_capture_error_context__mutmut_27, 
-    'x_capture_error_context__mutmut_28': x_capture_error_context__mutmut_28, 
-    'x_capture_error_context__mutmut_29': x_capture_error_context__mutmut_29, 
-    'x_capture_error_context__mutmut_30': x_capture_error_context__mutmut_30, 
-    'x_capture_error_context__mutmut_31': x_capture_error_context__mutmut_31, 
-    'x_capture_error_context__mutmut_32': x_capture_error_context__mutmut_32, 
-    'x_capture_error_context__mutmut_33': x_capture_error_context__mutmut_33, 
-    'x_capture_error_context__mutmut_34': x_capture_error_context__mutmut_34
+
+x_capture_error_context__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_capture_error_context__mutmut_1": x_capture_error_context__mutmut_1,
+    "x_capture_error_context__mutmut_2": x_capture_error_context__mutmut_2,
+    "x_capture_error_context__mutmut_3": x_capture_error_context__mutmut_3,
+    "x_capture_error_context__mutmut_4": x_capture_error_context__mutmut_4,
+    "x_capture_error_context__mutmut_5": x_capture_error_context__mutmut_5,
+    "x_capture_error_context__mutmut_6": x_capture_error_context__mutmut_6,
+    "x_capture_error_context__mutmut_7": x_capture_error_context__mutmut_7,
+    "x_capture_error_context__mutmut_8": x_capture_error_context__mutmut_8,
+    "x_capture_error_context__mutmut_9": x_capture_error_context__mutmut_9,
+    "x_capture_error_context__mutmut_10": x_capture_error_context__mutmut_10,
+    "x_capture_error_context__mutmut_11": x_capture_error_context__mutmut_11,
+    "x_capture_error_context__mutmut_12": x_capture_error_context__mutmut_12,
+    "x_capture_error_context__mutmut_13": x_capture_error_context__mutmut_13,
+    "x_capture_error_context__mutmut_14": x_capture_error_context__mutmut_14,
+    "x_capture_error_context__mutmut_15": x_capture_error_context__mutmut_15,
+    "x_capture_error_context__mutmut_16": x_capture_error_context__mutmut_16,
+    "x_capture_error_context__mutmut_17": x_capture_error_context__mutmut_17,
+    "x_capture_error_context__mutmut_18": x_capture_error_context__mutmut_18,
+    "x_capture_error_context__mutmut_19": x_capture_error_context__mutmut_19,
+    "x_capture_error_context__mutmut_20": x_capture_error_context__mutmut_20,
+    "x_capture_error_context__mutmut_21": x_capture_error_context__mutmut_21,
+    "x_capture_error_context__mutmut_22": x_capture_error_context__mutmut_22,
+    "x_capture_error_context__mutmut_23": x_capture_error_context__mutmut_23,
+    "x_capture_error_context__mutmut_24": x_capture_error_context__mutmut_24,
+    "x_capture_error_context__mutmut_25": x_capture_error_context__mutmut_25,
+    "x_capture_error_context__mutmut_26": x_capture_error_context__mutmut_26,
+    "x_capture_error_context__mutmut_27": x_capture_error_context__mutmut_27,
+    "x_capture_error_context__mutmut_28": x_capture_error_context__mutmut_28,
+    "x_capture_error_context__mutmut_29": x_capture_error_context__mutmut_29,
+    "x_capture_error_context__mutmut_30": x_capture_error_context__mutmut_30,
+    "x_capture_error_context__mutmut_31": x_capture_error_context__mutmut_31,
+    "x_capture_error_context__mutmut_32": x_capture_error_context__mutmut_32,
+    "x_capture_error_context__mutmut_33": x_capture_error_context__mutmut_33,
+    "x_capture_error_context__mutmut_34": x_capture_error_context__mutmut_34,
 }
 
+
 def capture_error_context(*args, **kwargs):
-    result = _mutmut_trampoline(x_capture_error_context__mutmut_orig, x_capture_error_context__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_capture_error_context__mutmut_orig, x_capture_error_context__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 capture_error_context.__signature__ = _mutmut_signature(x_capture_error_context__mutmut_orig)
-x_capture_error_context__mutmut_orig.__name__ = 'x_capture_error_context'
+x_capture_error_context__mutmut_orig.__name__ = "x_capture_error_context"
 
 
 # <3 🧱🤝🐛🪄

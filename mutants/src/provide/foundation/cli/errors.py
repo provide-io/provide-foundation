@@ -20,23 +20,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -62,18 +65,24 @@ class CLIError(FoundationError):
     def xǁCLIErrorǁ_default_code__mutmut_2(self) -> str:
         """Return default error code."""
         return "cli_error"
-    
-    xǁCLIErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁCLIErrorǁ_default_code__mutmut_1': xǁCLIErrorǁ_default_code__mutmut_1, 
-        'xǁCLIErrorǁ_default_code__mutmut_2': xǁCLIErrorǁ_default_code__mutmut_2
+
+    xǁCLIErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁCLIErrorǁ_default_code__mutmut_1": xǁCLIErrorǁ_default_code__mutmut_1,
+        "xǁCLIErrorǁ_default_code__mutmut_2": xǁCLIErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁCLIErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁCLIErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁCLIErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁCLIErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁCLIErrorǁ_default_code__mutmut_orig)
-    xǁCLIErrorǁ_default_code__mutmut_orig.__name__ = 'xǁCLIErrorǁ_default_code'
+    xǁCLIErrorǁ_default_code__mutmut_orig.__name__ = "xǁCLIErrorǁ_default_code"
 
 
 class InvalidCLIHintError(CLIError):
@@ -236,7 +245,7 @@ class InvalidCLIHintError(CLIError):
             f"Invalid CLI hint '{hint}' for parameter '{param_name}'. Must be 'option' or 'argument'.",
             code="CLI_INVALID_HINT",
             hint=hint,
-            )
+        )
         self.hint = hint
         self.param_name = param_name
 
@@ -307,28 +316,34 @@ class InvalidCLIHintError(CLIError):
         )
         self.hint = hint
         self.param_name = None
-    
-    xǁInvalidCLIHintErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁInvalidCLIHintErrorǁ__init____mutmut_1': xǁInvalidCLIHintErrorǁ__init____mutmut_1, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_2': xǁInvalidCLIHintErrorǁ__init____mutmut_2, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_3': xǁInvalidCLIHintErrorǁ__init____mutmut_3, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_4': xǁInvalidCLIHintErrorǁ__init____mutmut_4, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_5': xǁInvalidCLIHintErrorǁ__init____mutmut_5, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_6': xǁInvalidCLIHintErrorǁ__init____mutmut_6, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_7': xǁInvalidCLIHintErrorǁ__init____mutmut_7, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_8': xǁInvalidCLIHintErrorǁ__init____mutmut_8, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_9': xǁInvalidCLIHintErrorǁ__init____mutmut_9, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_10': xǁInvalidCLIHintErrorǁ__init____mutmut_10, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_11': xǁInvalidCLIHintErrorǁ__init____mutmut_11, 
-        'xǁInvalidCLIHintErrorǁ__init____mutmut_12': xǁInvalidCLIHintErrorǁ__init____mutmut_12
+
+    xǁInvalidCLIHintErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_1": xǁInvalidCLIHintErrorǁ__init____mutmut_1,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_2": xǁInvalidCLIHintErrorǁ__init____mutmut_2,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_3": xǁInvalidCLIHintErrorǁ__init____mutmut_3,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_4": xǁInvalidCLIHintErrorǁ__init____mutmut_4,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_5": xǁInvalidCLIHintErrorǁ__init____mutmut_5,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_6": xǁInvalidCLIHintErrorǁ__init____mutmut_6,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_7": xǁInvalidCLIHintErrorǁ__init____mutmut_7,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_8": xǁInvalidCLIHintErrorǁ__init____mutmut_8,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_9": xǁInvalidCLIHintErrorǁ__init____mutmut_9,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_10": xǁInvalidCLIHintErrorǁ__init____mutmut_10,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_11": xǁInvalidCLIHintErrorǁ__init____mutmut_11,
+        "xǁInvalidCLIHintErrorǁ__init____mutmut_12": xǁInvalidCLIHintErrorǁ__init____mutmut_12,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁInvalidCLIHintErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁInvalidCLIHintErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁInvalidCLIHintErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁInvalidCLIHintErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁInvalidCLIHintErrorǁ__init____mutmut_orig)
-    xǁInvalidCLIHintErrorǁ__init____mutmut_orig.__name__ = 'xǁInvalidCLIHintErrorǁ__init__'
+    xǁInvalidCLIHintErrorǁ__init____mutmut_orig.__name__ = "xǁInvalidCLIHintErrorǁ__init__"
 
 
 class CLIAdapterNotFoundError(CLIError):
@@ -343,7 +358,9 @@ class CLIAdapterNotFoundError(CLIError):
 
     """
 
-    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_orig(self, framework: str, package: str | None = None) -> None:
+    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_orig(
+        self, framework: str, package: str | None = None
+    ) -> None:
         """Initialize with framework details.
 
         Args:
@@ -520,7 +537,9 @@ class CLIAdapterNotFoundError(CLIError):
         self.framework = framework
         self.package = pkg
 
-    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_10(self, framework: str, package: str | None = None) -> None:
+    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_10(
+        self, framework: str, package: str | None = None
+    ) -> None:
         """Initialize with framework details.
 
         Args:
@@ -533,11 +552,13 @@ class CLIAdapterNotFoundError(CLIError):
             f"CLI adapter for '{framework}' requires: pip install 'provide-foundation[{pkg}]'",
             code="CLI_ADAPTER_NOT_FOUND",
             framework=framework,
-            )
+        )
         self.framework = framework
         self.package = pkg
 
-    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_11(self, framework: str, package: str | None = None) -> None:
+    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_11(
+        self, framework: str, package: str | None = None
+    ) -> None:
         """Initialize with framework details.
 
         Args:
@@ -555,7 +576,9 @@ class CLIAdapterNotFoundError(CLIError):
         self.framework = framework
         self.package = pkg
 
-    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_12(self, framework: str, package: str | None = None) -> None:
+    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_12(
+        self, framework: str, package: str | None = None
+    ) -> None:
         """Initialize with framework details.
 
         Args:
@@ -573,7 +596,9 @@ class CLIAdapterNotFoundError(CLIError):
         self.framework = framework
         self.package = pkg
 
-    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_13(self, framework: str, package: str | None = None) -> None:
+    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_13(
+        self, framework: str, package: str | None = None
+    ) -> None:
         """Initialize with framework details.
 
         Args:
@@ -591,7 +616,9 @@ class CLIAdapterNotFoundError(CLIError):
         self.framework = None
         self.package = pkg
 
-    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_14(self, framework: str, package: str | None = None) -> None:
+    def xǁCLIAdapterNotFoundErrorǁ__init____mutmut_14(
+        self, framework: str, package: str | None = None
+    ) -> None:
         """Initialize with framework details.
 
         Args:
@@ -608,30 +635,36 @@ class CLIAdapterNotFoundError(CLIError):
         )
         self.framework = framework
         self.package = None
-    
-    xǁCLIAdapterNotFoundErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_1': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_1, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_2': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_2, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_3': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_3, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_4': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_4, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_5': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_5, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_6': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_6, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_7': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_7, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_8': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_8, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_9': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_9, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_10': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_10, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_11': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_11, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_12': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_12, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_13': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_13, 
-        'xǁCLIAdapterNotFoundErrorǁ__init____mutmut_14': xǁCLIAdapterNotFoundErrorǁ__init____mutmut_14
+
+    xǁCLIAdapterNotFoundErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_1": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_1,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_2": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_2,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_3": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_3,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_4": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_4,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_5": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_5,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_6": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_6,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_7": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_7,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_8": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_8,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_9": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_9,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_10": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_10,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_11": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_11,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_12": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_12,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_13": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_13,
+        "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_14": xǁCLIAdapterNotFoundErrorǁ__init____mutmut_14,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁCLIAdapterNotFoundErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁCLIAdapterNotFoundErrorǁ__init____mutmut_orig)
-    xǁCLIAdapterNotFoundErrorǁ__init____mutmut_orig.__name__ = 'xǁCLIAdapterNotFoundErrorǁ__init__'
+    xǁCLIAdapterNotFoundErrorǁ__init____mutmut_orig.__name__ = "xǁCLIAdapterNotFoundErrorǁ__init__"
 
 
 class CLIBuildError(CLIError):
@@ -652,18 +685,24 @@ class CLIBuildError(CLIError):
     def xǁCLIBuildErrorǁ_default_code__mutmut_2(self) -> str:
         """Return default error code."""
         return "cli_build_error"
-    
-    xǁCLIBuildErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁCLIBuildErrorǁ_default_code__mutmut_1': xǁCLIBuildErrorǁ_default_code__mutmut_1, 
-        'xǁCLIBuildErrorǁ_default_code__mutmut_2': xǁCLIBuildErrorǁ_default_code__mutmut_2
+
+    xǁCLIBuildErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁCLIBuildErrorǁ_default_code__mutmut_1": xǁCLIBuildErrorǁ_default_code__mutmut_1,
+        "xǁCLIBuildErrorǁ_default_code__mutmut_2": xǁCLIBuildErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁCLIBuildErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁCLIBuildErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁCLIBuildErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁCLIBuildErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁCLIBuildErrorǁ_default_code__mutmut_orig)
-    xǁCLIBuildErrorǁ_default_code__mutmut_orig.__name__ = 'xǁCLIBuildErrorǁ_default_code'
+    xǁCLIBuildErrorǁ_default_code__mutmut_orig.__name__ = "xǁCLIBuildErrorǁ_default_code"
 
 
 __all__ = [

@@ -33,23 +33,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -321,7 +324,7 @@ def x_parse_log_level__mutmut_10(value: str) -> LogLevelStr:
             _format_invalid_value_error(
                 "log_level",
                 value,
-                ),
+            ),
         )
     return cast("LogLevelStr", level)
 
@@ -498,7 +501,9 @@ def x_parse_log_level__mutmut_17(value: str) -> LogLevelStr:
                 valid_options=list(_VALID_LOG_LEVEL_TUPLE),
             ),
         )
-    return cast("LogLevelStr", )
+    return cast(
+        "LogLevelStr",
+    )
 
 
 def x_parse_log_level__mutmut_18(value: str) -> LogLevelStr:
@@ -575,35 +580,40 @@ def x_parse_log_level__mutmut_20(value: str) -> LogLevelStr:
         )
     return cast("LOGLEVELSTR", level)
 
-x_parse_log_level__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_log_level__mutmut_1': x_parse_log_level__mutmut_1, 
-    'x_parse_log_level__mutmut_2': x_parse_log_level__mutmut_2, 
-    'x_parse_log_level__mutmut_3': x_parse_log_level__mutmut_3, 
-    'x_parse_log_level__mutmut_4': x_parse_log_level__mutmut_4, 
-    'x_parse_log_level__mutmut_5': x_parse_log_level__mutmut_5, 
-    'x_parse_log_level__mutmut_6': x_parse_log_level__mutmut_6, 
-    'x_parse_log_level__mutmut_7': x_parse_log_level__mutmut_7, 
-    'x_parse_log_level__mutmut_8': x_parse_log_level__mutmut_8, 
-    'x_parse_log_level__mutmut_9': x_parse_log_level__mutmut_9, 
-    'x_parse_log_level__mutmut_10': x_parse_log_level__mutmut_10, 
-    'x_parse_log_level__mutmut_11': x_parse_log_level__mutmut_11, 
-    'x_parse_log_level__mutmut_12': x_parse_log_level__mutmut_12, 
-    'x_parse_log_level__mutmut_13': x_parse_log_level__mutmut_13, 
-    'x_parse_log_level__mutmut_14': x_parse_log_level__mutmut_14, 
-    'x_parse_log_level__mutmut_15': x_parse_log_level__mutmut_15, 
-    'x_parse_log_level__mutmut_16': x_parse_log_level__mutmut_16, 
-    'x_parse_log_level__mutmut_17': x_parse_log_level__mutmut_17, 
-    'x_parse_log_level__mutmut_18': x_parse_log_level__mutmut_18, 
-    'x_parse_log_level__mutmut_19': x_parse_log_level__mutmut_19, 
-    'x_parse_log_level__mutmut_20': x_parse_log_level__mutmut_20
+
+x_parse_log_level__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_log_level__mutmut_1": x_parse_log_level__mutmut_1,
+    "x_parse_log_level__mutmut_2": x_parse_log_level__mutmut_2,
+    "x_parse_log_level__mutmut_3": x_parse_log_level__mutmut_3,
+    "x_parse_log_level__mutmut_4": x_parse_log_level__mutmut_4,
+    "x_parse_log_level__mutmut_5": x_parse_log_level__mutmut_5,
+    "x_parse_log_level__mutmut_6": x_parse_log_level__mutmut_6,
+    "x_parse_log_level__mutmut_7": x_parse_log_level__mutmut_7,
+    "x_parse_log_level__mutmut_8": x_parse_log_level__mutmut_8,
+    "x_parse_log_level__mutmut_9": x_parse_log_level__mutmut_9,
+    "x_parse_log_level__mutmut_10": x_parse_log_level__mutmut_10,
+    "x_parse_log_level__mutmut_11": x_parse_log_level__mutmut_11,
+    "x_parse_log_level__mutmut_12": x_parse_log_level__mutmut_12,
+    "x_parse_log_level__mutmut_13": x_parse_log_level__mutmut_13,
+    "x_parse_log_level__mutmut_14": x_parse_log_level__mutmut_14,
+    "x_parse_log_level__mutmut_15": x_parse_log_level__mutmut_15,
+    "x_parse_log_level__mutmut_16": x_parse_log_level__mutmut_16,
+    "x_parse_log_level__mutmut_17": x_parse_log_level__mutmut_17,
+    "x_parse_log_level__mutmut_18": x_parse_log_level__mutmut_18,
+    "x_parse_log_level__mutmut_19": x_parse_log_level__mutmut_19,
+    "x_parse_log_level__mutmut_20": x_parse_log_level__mutmut_20,
 }
 
+
 def parse_log_level(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_log_level__mutmut_orig, x_parse_log_level__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_log_level__mutmut_orig, x_parse_log_level__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_log_level.__signature__ = _mutmut_signature(x_parse_log_level__mutmut_orig)
-x_parse_log_level__mutmut_orig.__name__ = 'x_parse_log_level'
+x_parse_log_level__mutmut_orig.__name__ = "x_parse_log_level"
 
 
 def x_parse_console_formatter__mutmut_orig(value: str) -> ConsoleFormatterStr:
@@ -869,7 +879,7 @@ def x_parse_console_formatter__mutmut_10(value: str) -> ConsoleFormatterStr:
             _format_invalid_value_error(
                 "console_formatter",
                 value,
-                ),
+            ),
         )
     return cast("ConsoleFormatterStr", formatter)
 
@@ -1046,7 +1056,9 @@ def x_parse_console_formatter__mutmut_17(value: str) -> ConsoleFormatterStr:
                 valid_options=list(_VALID_FORMATTER_TUPLE),
             ),
         )
-    return cast("ConsoleFormatterStr", )
+    return cast(
+        "ConsoleFormatterStr",
+    )
 
 
 def x_parse_console_formatter__mutmut_18(value: str) -> ConsoleFormatterStr:
@@ -1123,35 +1135,40 @@ def x_parse_console_formatter__mutmut_20(value: str) -> ConsoleFormatterStr:
         )
     return cast("CONSOLEFORMATTERSTR", formatter)
 
-x_parse_console_formatter__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_console_formatter__mutmut_1': x_parse_console_formatter__mutmut_1, 
-    'x_parse_console_formatter__mutmut_2': x_parse_console_formatter__mutmut_2, 
-    'x_parse_console_formatter__mutmut_3': x_parse_console_formatter__mutmut_3, 
-    'x_parse_console_formatter__mutmut_4': x_parse_console_formatter__mutmut_4, 
-    'x_parse_console_formatter__mutmut_5': x_parse_console_formatter__mutmut_5, 
-    'x_parse_console_formatter__mutmut_6': x_parse_console_formatter__mutmut_6, 
-    'x_parse_console_formatter__mutmut_7': x_parse_console_formatter__mutmut_7, 
-    'x_parse_console_formatter__mutmut_8': x_parse_console_formatter__mutmut_8, 
-    'x_parse_console_formatter__mutmut_9': x_parse_console_formatter__mutmut_9, 
-    'x_parse_console_formatter__mutmut_10': x_parse_console_formatter__mutmut_10, 
-    'x_parse_console_formatter__mutmut_11': x_parse_console_formatter__mutmut_11, 
-    'x_parse_console_formatter__mutmut_12': x_parse_console_formatter__mutmut_12, 
-    'x_parse_console_formatter__mutmut_13': x_parse_console_formatter__mutmut_13, 
-    'x_parse_console_formatter__mutmut_14': x_parse_console_formatter__mutmut_14, 
-    'x_parse_console_formatter__mutmut_15': x_parse_console_formatter__mutmut_15, 
-    'x_parse_console_formatter__mutmut_16': x_parse_console_formatter__mutmut_16, 
-    'x_parse_console_formatter__mutmut_17': x_parse_console_formatter__mutmut_17, 
-    'x_parse_console_formatter__mutmut_18': x_parse_console_formatter__mutmut_18, 
-    'x_parse_console_formatter__mutmut_19': x_parse_console_formatter__mutmut_19, 
-    'x_parse_console_formatter__mutmut_20': x_parse_console_formatter__mutmut_20
+
+x_parse_console_formatter__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_console_formatter__mutmut_1": x_parse_console_formatter__mutmut_1,
+    "x_parse_console_formatter__mutmut_2": x_parse_console_formatter__mutmut_2,
+    "x_parse_console_formatter__mutmut_3": x_parse_console_formatter__mutmut_3,
+    "x_parse_console_formatter__mutmut_4": x_parse_console_formatter__mutmut_4,
+    "x_parse_console_formatter__mutmut_5": x_parse_console_formatter__mutmut_5,
+    "x_parse_console_formatter__mutmut_6": x_parse_console_formatter__mutmut_6,
+    "x_parse_console_formatter__mutmut_7": x_parse_console_formatter__mutmut_7,
+    "x_parse_console_formatter__mutmut_8": x_parse_console_formatter__mutmut_8,
+    "x_parse_console_formatter__mutmut_9": x_parse_console_formatter__mutmut_9,
+    "x_parse_console_formatter__mutmut_10": x_parse_console_formatter__mutmut_10,
+    "x_parse_console_formatter__mutmut_11": x_parse_console_formatter__mutmut_11,
+    "x_parse_console_formatter__mutmut_12": x_parse_console_formatter__mutmut_12,
+    "x_parse_console_formatter__mutmut_13": x_parse_console_formatter__mutmut_13,
+    "x_parse_console_formatter__mutmut_14": x_parse_console_formatter__mutmut_14,
+    "x_parse_console_formatter__mutmut_15": x_parse_console_formatter__mutmut_15,
+    "x_parse_console_formatter__mutmut_16": x_parse_console_formatter__mutmut_16,
+    "x_parse_console_formatter__mutmut_17": x_parse_console_formatter__mutmut_17,
+    "x_parse_console_formatter__mutmut_18": x_parse_console_formatter__mutmut_18,
+    "x_parse_console_formatter__mutmut_19": x_parse_console_formatter__mutmut_19,
+    "x_parse_console_formatter__mutmut_20": x_parse_console_formatter__mutmut_20,
 }
 
+
 def parse_console_formatter(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_console_formatter__mutmut_orig, x_parse_console_formatter__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_console_formatter__mutmut_orig, x_parse_console_formatter__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_console_formatter.__signature__ = _mutmut_signature(x_parse_console_formatter__mutmut_orig)
-x_parse_console_formatter__mutmut_orig.__name__ = 'x_parse_console_formatter'
+x_parse_console_formatter__mutmut_orig.__name__ = "x_parse_console_formatter"
 
 
 def x_parse_foundation_log_output__mutmut_orig(value: str) -> str:
@@ -1773,7 +1790,7 @@ def x_parse_foundation_log_output__mutmut_20(value: str) -> str:
         _format_invalid_value_error(
             "foundation_log_output",
             value,
-            ),
+        ),
     )
 
 
@@ -1866,38 +1883,43 @@ def x_parse_foundation_log_output__mutmut_23(value: str) -> str:
         ),
     )
 
-x_parse_foundation_log_output__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_foundation_log_output__mutmut_1': x_parse_foundation_log_output__mutmut_1, 
-    'x_parse_foundation_log_output__mutmut_2': x_parse_foundation_log_output__mutmut_2, 
-    'x_parse_foundation_log_output__mutmut_3': x_parse_foundation_log_output__mutmut_3, 
-    'x_parse_foundation_log_output__mutmut_4': x_parse_foundation_log_output__mutmut_4, 
-    'x_parse_foundation_log_output__mutmut_5': x_parse_foundation_log_output__mutmut_5, 
-    'x_parse_foundation_log_output__mutmut_6': x_parse_foundation_log_output__mutmut_6, 
-    'x_parse_foundation_log_output__mutmut_7': x_parse_foundation_log_output__mutmut_7, 
-    'x_parse_foundation_log_output__mutmut_8': x_parse_foundation_log_output__mutmut_8, 
-    'x_parse_foundation_log_output__mutmut_9': x_parse_foundation_log_output__mutmut_9, 
-    'x_parse_foundation_log_output__mutmut_10': x_parse_foundation_log_output__mutmut_10, 
-    'x_parse_foundation_log_output__mutmut_11': x_parse_foundation_log_output__mutmut_11, 
-    'x_parse_foundation_log_output__mutmut_12': x_parse_foundation_log_output__mutmut_12, 
-    'x_parse_foundation_log_output__mutmut_13': x_parse_foundation_log_output__mutmut_13, 
-    'x_parse_foundation_log_output__mutmut_14': x_parse_foundation_log_output__mutmut_14, 
-    'x_parse_foundation_log_output__mutmut_15': x_parse_foundation_log_output__mutmut_15, 
-    'x_parse_foundation_log_output__mutmut_16': x_parse_foundation_log_output__mutmut_16, 
-    'x_parse_foundation_log_output__mutmut_17': x_parse_foundation_log_output__mutmut_17, 
-    'x_parse_foundation_log_output__mutmut_18': x_parse_foundation_log_output__mutmut_18, 
-    'x_parse_foundation_log_output__mutmut_19': x_parse_foundation_log_output__mutmut_19, 
-    'x_parse_foundation_log_output__mutmut_20': x_parse_foundation_log_output__mutmut_20, 
-    'x_parse_foundation_log_output__mutmut_21': x_parse_foundation_log_output__mutmut_21, 
-    'x_parse_foundation_log_output__mutmut_22': x_parse_foundation_log_output__mutmut_22, 
-    'x_parse_foundation_log_output__mutmut_23': x_parse_foundation_log_output__mutmut_23
+
+x_parse_foundation_log_output__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_foundation_log_output__mutmut_1": x_parse_foundation_log_output__mutmut_1,
+    "x_parse_foundation_log_output__mutmut_2": x_parse_foundation_log_output__mutmut_2,
+    "x_parse_foundation_log_output__mutmut_3": x_parse_foundation_log_output__mutmut_3,
+    "x_parse_foundation_log_output__mutmut_4": x_parse_foundation_log_output__mutmut_4,
+    "x_parse_foundation_log_output__mutmut_5": x_parse_foundation_log_output__mutmut_5,
+    "x_parse_foundation_log_output__mutmut_6": x_parse_foundation_log_output__mutmut_6,
+    "x_parse_foundation_log_output__mutmut_7": x_parse_foundation_log_output__mutmut_7,
+    "x_parse_foundation_log_output__mutmut_8": x_parse_foundation_log_output__mutmut_8,
+    "x_parse_foundation_log_output__mutmut_9": x_parse_foundation_log_output__mutmut_9,
+    "x_parse_foundation_log_output__mutmut_10": x_parse_foundation_log_output__mutmut_10,
+    "x_parse_foundation_log_output__mutmut_11": x_parse_foundation_log_output__mutmut_11,
+    "x_parse_foundation_log_output__mutmut_12": x_parse_foundation_log_output__mutmut_12,
+    "x_parse_foundation_log_output__mutmut_13": x_parse_foundation_log_output__mutmut_13,
+    "x_parse_foundation_log_output__mutmut_14": x_parse_foundation_log_output__mutmut_14,
+    "x_parse_foundation_log_output__mutmut_15": x_parse_foundation_log_output__mutmut_15,
+    "x_parse_foundation_log_output__mutmut_16": x_parse_foundation_log_output__mutmut_16,
+    "x_parse_foundation_log_output__mutmut_17": x_parse_foundation_log_output__mutmut_17,
+    "x_parse_foundation_log_output__mutmut_18": x_parse_foundation_log_output__mutmut_18,
+    "x_parse_foundation_log_output__mutmut_19": x_parse_foundation_log_output__mutmut_19,
+    "x_parse_foundation_log_output__mutmut_20": x_parse_foundation_log_output__mutmut_20,
+    "x_parse_foundation_log_output__mutmut_21": x_parse_foundation_log_output__mutmut_21,
+    "x_parse_foundation_log_output__mutmut_22": x_parse_foundation_log_output__mutmut_22,
+    "x_parse_foundation_log_output__mutmut_23": x_parse_foundation_log_output__mutmut_23,
 }
 
+
 def parse_foundation_log_output(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_foundation_log_output__mutmut_orig, x_parse_foundation_log_output__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_foundation_log_output__mutmut_orig, x_parse_foundation_log_output__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_foundation_log_output.__signature__ = _mutmut_signature(x_parse_foundation_log_output__mutmut_orig)
-x_parse_foundation_log_output__mutmut_orig.__name__ = 'x_parse_foundation_log_output'
+x_parse_foundation_log_output__mutmut_orig.__name__ = "x_parse_foundation_log_output"
 
 
 __all__ = [

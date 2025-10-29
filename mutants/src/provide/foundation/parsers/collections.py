@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -253,21 +256,24 @@ def x_parse_list__mutmut_6(
 
     return items
 
-x_parse_list__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_list__mutmut_1': x_parse_list__mutmut_1, 
-    'x_parse_list__mutmut_2': x_parse_list__mutmut_2, 
-    'x_parse_list__mutmut_3': x_parse_list__mutmut_3, 
-    'x_parse_list__mutmut_4': x_parse_list__mutmut_4, 
-    'x_parse_list__mutmut_5': x_parse_list__mutmut_5, 
-    'x_parse_list__mutmut_6': x_parse_list__mutmut_6
+
+x_parse_list__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_list__mutmut_1": x_parse_list__mutmut_1,
+    "x_parse_list__mutmut_2": x_parse_list__mutmut_2,
+    "x_parse_list__mutmut_3": x_parse_list__mutmut_3,
+    "x_parse_list__mutmut_4": x_parse_list__mutmut_4,
+    "x_parse_list__mutmut_5": x_parse_list__mutmut_5,
+    "x_parse_list__mutmut_6": x_parse_list__mutmut_6,
 }
+
 
 def parse_list(*args, **kwargs):
     result = _mutmut_trampoline(x_parse_list__mutmut_orig, x_parse_list__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 parse_list.__signature__ = _mutmut_signature(x_parse_list__mutmut_orig)
-x_parse_list__mutmut_orig.__name__ = 'x_parse_list'
+x_parse_list__mutmut_orig.__name__ = "x_parse_list"
 
 
 def x_parse_tuple__mutmut_orig(
@@ -506,7 +512,10 @@ def x_parse_tuple__mutmut_9(
         return value
 
     # Reuse list parsing logic
-    items = parse_list(value, separator=separator, )
+    items = parse_list(
+        value,
+        separator=separator,
+    )
     return tuple(items)
 
 
@@ -533,25 +542,28 @@ def x_parse_tuple__mutmut_10(
     items = parse_list(value, separator=separator, strip=strip)
     return tuple(None)
 
-x_parse_tuple__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_tuple__mutmut_1': x_parse_tuple__mutmut_1, 
-    'x_parse_tuple__mutmut_2': x_parse_tuple__mutmut_2, 
-    'x_parse_tuple__mutmut_3': x_parse_tuple__mutmut_3, 
-    'x_parse_tuple__mutmut_4': x_parse_tuple__mutmut_4, 
-    'x_parse_tuple__mutmut_5': x_parse_tuple__mutmut_5, 
-    'x_parse_tuple__mutmut_6': x_parse_tuple__mutmut_6, 
-    'x_parse_tuple__mutmut_7': x_parse_tuple__mutmut_7, 
-    'x_parse_tuple__mutmut_8': x_parse_tuple__mutmut_8, 
-    'x_parse_tuple__mutmut_9': x_parse_tuple__mutmut_9, 
-    'x_parse_tuple__mutmut_10': x_parse_tuple__mutmut_10
+
+x_parse_tuple__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_tuple__mutmut_1": x_parse_tuple__mutmut_1,
+    "x_parse_tuple__mutmut_2": x_parse_tuple__mutmut_2,
+    "x_parse_tuple__mutmut_3": x_parse_tuple__mutmut_3,
+    "x_parse_tuple__mutmut_4": x_parse_tuple__mutmut_4,
+    "x_parse_tuple__mutmut_5": x_parse_tuple__mutmut_5,
+    "x_parse_tuple__mutmut_6": x_parse_tuple__mutmut_6,
+    "x_parse_tuple__mutmut_7": x_parse_tuple__mutmut_7,
+    "x_parse_tuple__mutmut_8": x_parse_tuple__mutmut_8,
+    "x_parse_tuple__mutmut_9": x_parse_tuple__mutmut_9,
+    "x_parse_tuple__mutmut_10": x_parse_tuple__mutmut_10,
 }
+
 
 def parse_tuple(*args, **kwargs):
     result = _mutmut_trampoline(x_parse_tuple__mutmut_orig, x_parse_tuple__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 parse_tuple.__signature__ = _mutmut_signature(x_parse_tuple__mutmut_orig)
-x_parse_tuple__mutmut_orig.__name__ = 'x_parse_tuple'
+x_parse_tuple__mutmut_orig.__name__ = "x_parse_tuple"
 
 
 def x_parse_set__mutmut_orig(
@@ -790,7 +802,10 @@ def x_parse_set__mutmut_9(
         return value
 
     # Reuse list parsing logic, then convert to set
-    items = parse_list(value, separator=separator, )
+    items = parse_list(
+        value,
+        separator=separator,
+    )
     return set(items)
 
 
@@ -817,25 +832,28 @@ def x_parse_set__mutmut_10(
     items = parse_list(value, separator=separator, strip=strip)
     return set(None)
 
-x_parse_set__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_set__mutmut_1': x_parse_set__mutmut_1, 
-    'x_parse_set__mutmut_2': x_parse_set__mutmut_2, 
-    'x_parse_set__mutmut_3': x_parse_set__mutmut_3, 
-    'x_parse_set__mutmut_4': x_parse_set__mutmut_4, 
-    'x_parse_set__mutmut_5': x_parse_set__mutmut_5, 
-    'x_parse_set__mutmut_6': x_parse_set__mutmut_6, 
-    'x_parse_set__mutmut_7': x_parse_set__mutmut_7, 
-    'x_parse_set__mutmut_8': x_parse_set__mutmut_8, 
-    'x_parse_set__mutmut_9': x_parse_set__mutmut_9, 
-    'x_parse_set__mutmut_10': x_parse_set__mutmut_10
+
+x_parse_set__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_set__mutmut_1": x_parse_set__mutmut_1,
+    "x_parse_set__mutmut_2": x_parse_set__mutmut_2,
+    "x_parse_set__mutmut_3": x_parse_set__mutmut_3,
+    "x_parse_set__mutmut_4": x_parse_set__mutmut_4,
+    "x_parse_set__mutmut_5": x_parse_set__mutmut_5,
+    "x_parse_set__mutmut_6": x_parse_set__mutmut_6,
+    "x_parse_set__mutmut_7": x_parse_set__mutmut_7,
+    "x_parse_set__mutmut_8": x_parse_set__mutmut_8,
+    "x_parse_set__mutmut_9": x_parse_set__mutmut_9,
+    "x_parse_set__mutmut_10": x_parse_set__mutmut_10,
 }
+
 
 def parse_set(*args, **kwargs):
     result = _mutmut_trampoline(x_parse_set__mutmut_orig, x_parse_set__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 parse_set.__signature__ = _mutmut_signature(x_parse_set__mutmut_orig)
-x_parse_set__mutmut_orig.__name__ = 'x_parse_set'
+x_parse_set__mutmut_orig.__name__ = "x_parse_set"
 
 
 def x_parse_dict__mutmut_orig(
@@ -1677,7 +1695,9 @@ def x_parse_dict__mutmut_16(
         if key_separator not in item:
             raise ValueError(f"Invalid dict format: '{item}' missing '{key_separator}'")
 
-        key, val = item.split(key_separator, )
+        key, val = item.split(
+            key_separator,
+        )
 
         if strip:
             key = key.strip()
@@ -1937,36 +1957,39 @@ def x_parse_dict__mutmut_21(
 
     return result
 
-x_parse_dict__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_dict__mutmut_1': x_parse_dict__mutmut_1, 
-    'x_parse_dict__mutmut_2': x_parse_dict__mutmut_2, 
-    'x_parse_dict__mutmut_3': x_parse_dict__mutmut_3, 
-    'x_parse_dict__mutmut_4': x_parse_dict__mutmut_4, 
-    'x_parse_dict__mutmut_5': x_parse_dict__mutmut_5, 
-    'x_parse_dict__mutmut_6': x_parse_dict__mutmut_6, 
-    'x_parse_dict__mutmut_7': x_parse_dict__mutmut_7, 
-    'x_parse_dict__mutmut_8': x_parse_dict__mutmut_8, 
-    'x_parse_dict__mutmut_9': x_parse_dict__mutmut_9, 
-    'x_parse_dict__mutmut_10': x_parse_dict__mutmut_10, 
-    'x_parse_dict__mutmut_11': x_parse_dict__mutmut_11, 
-    'x_parse_dict__mutmut_12': x_parse_dict__mutmut_12, 
-    'x_parse_dict__mutmut_13': x_parse_dict__mutmut_13, 
-    'x_parse_dict__mutmut_14': x_parse_dict__mutmut_14, 
-    'x_parse_dict__mutmut_15': x_parse_dict__mutmut_15, 
-    'x_parse_dict__mutmut_16': x_parse_dict__mutmut_16, 
-    'x_parse_dict__mutmut_17': x_parse_dict__mutmut_17, 
-    'x_parse_dict__mutmut_18': x_parse_dict__mutmut_18, 
-    'x_parse_dict__mutmut_19': x_parse_dict__mutmut_19, 
-    'x_parse_dict__mutmut_20': x_parse_dict__mutmut_20, 
-    'x_parse_dict__mutmut_21': x_parse_dict__mutmut_21
+
+x_parse_dict__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_dict__mutmut_1": x_parse_dict__mutmut_1,
+    "x_parse_dict__mutmut_2": x_parse_dict__mutmut_2,
+    "x_parse_dict__mutmut_3": x_parse_dict__mutmut_3,
+    "x_parse_dict__mutmut_4": x_parse_dict__mutmut_4,
+    "x_parse_dict__mutmut_5": x_parse_dict__mutmut_5,
+    "x_parse_dict__mutmut_6": x_parse_dict__mutmut_6,
+    "x_parse_dict__mutmut_7": x_parse_dict__mutmut_7,
+    "x_parse_dict__mutmut_8": x_parse_dict__mutmut_8,
+    "x_parse_dict__mutmut_9": x_parse_dict__mutmut_9,
+    "x_parse_dict__mutmut_10": x_parse_dict__mutmut_10,
+    "x_parse_dict__mutmut_11": x_parse_dict__mutmut_11,
+    "x_parse_dict__mutmut_12": x_parse_dict__mutmut_12,
+    "x_parse_dict__mutmut_13": x_parse_dict__mutmut_13,
+    "x_parse_dict__mutmut_14": x_parse_dict__mutmut_14,
+    "x_parse_dict__mutmut_15": x_parse_dict__mutmut_15,
+    "x_parse_dict__mutmut_16": x_parse_dict__mutmut_16,
+    "x_parse_dict__mutmut_17": x_parse_dict__mutmut_17,
+    "x_parse_dict__mutmut_18": x_parse_dict__mutmut_18,
+    "x_parse_dict__mutmut_19": x_parse_dict__mutmut_19,
+    "x_parse_dict__mutmut_20": x_parse_dict__mutmut_20,
+    "x_parse_dict__mutmut_21": x_parse_dict__mutmut_21,
 }
+
 
 def parse_dict(*args, **kwargs):
     result = _mutmut_trampoline(x_parse_dict__mutmut_orig, x_parse_dict__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 parse_dict.__signature__ = _mutmut_signature(x_parse_dict__mutmut_orig)
-x_parse_dict__mutmut_orig.__name__ = 'x_parse_dict'
+x_parse_dict__mutmut_orig.__name__ = "x_parse_dict"
 
 
 def x_parse_comma_list__mutmut_orig(value: str) -> list[str]:
@@ -2064,20 +2087,25 @@ def x_parse_comma_list__mutmut_5(value: str) -> list[str]:
 
     return [item.strip() for item in value.split("XX,XX") if item.strip()]
 
-x_parse_comma_list__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_comma_list__mutmut_1': x_parse_comma_list__mutmut_1, 
-    'x_parse_comma_list__mutmut_2': x_parse_comma_list__mutmut_2, 
-    'x_parse_comma_list__mutmut_3': x_parse_comma_list__mutmut_3, 
-    'x_parse_comma_list__mutmut_4': x_parse_comma_list__mutmut_4, 
-    'x_parse_comma_list__mutmut_5': x_parse_comma_list__mutmut_5
+
+x_parse_comma_list__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_comma_list__mutmut_1": x_parse_comma_list__mutmut_1,
+    "x_parse_comma_list__mutmut_2": x_parse_comma_list__mutmut_2,
+    "x_parse_comma_list__mutmut_3": x_parse_comma_list__mutmut_3,
+    "x_parse_comma_list__mutmut_4": x_parse_comma_list__mutmut_4,
+    "x_parse_comma_list__mutmut_5": x_parse_comma_list__mutmut_5,
 }
 
+
 def parse_comma_list(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_comma_list__mutmut_orig, x_parse_comma_list__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_comma_list__mutmut_orig, x_parse_comma_list__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_comma_list.__signature__ = _mutmut_signature(x_parse_comma_list__mutmut_orig)
-x_parse_comma_list__mutmut_orig.__name__ = 'x_parse_comma_list'
+x_parse_comma_list__mutmut_orig.__name__ = "x_parse_comma_list"
 
 
 __all__ = [

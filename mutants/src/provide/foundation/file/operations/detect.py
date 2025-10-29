@@ -41,23 +41,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -89,17 +92,22 @@ def x__get_default_detector__mutmut_2() -> OperationDetector:
         _default_detector = None
     return _default_detector
 
-x__get_default_detector__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_default_detector__mutmut_1': x__get_default_detector__mutmut_1, 
-    'x__get_default_detector__mutmut_2': x__get_default_detector__mutmut_2
+
+x__get_default_detector__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_default_detector__mutmut_1": x__get_default_detector__mutmut_1,
+    "x__get_default_detector__mutmut_2": x__get_default_detector__mutmut_2,
 }
 
+
 def _get_default_detector(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_default_detector__mutmut_orig, x__get_default_detector__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_default_detector__mutmut_orig, x__get_default_detector__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_default_detector.__signature__ = _mutmut_signature(x__get_default_detector__mutmut_orig)
-x__get_default_detector__mutmut_orig.__name__ = 'x__get_default_detector'
+x__get_default_detector__mutmut_orig.__name__ = "x__get_default_detector"
 
 
 @overload
@@ -413,25 +421,30 @@ def x_detect__mutmut_7(
     # Handle list of events
     return detector.detect(None)
 
-x_detect__mutmut_mutants : ClassVar[MutantDict] = {
-'x_detect__mutmut_1': x_detect__mutmut_1, 
-    'x_detect__mutmut_2': x_detect__mutmut_2, 
-    'x_detect__mutmut_3': x_detect__mutmut_3, 
-    'x_detect__mutmut_4': x_detect__mutmut_4, 
-    'x_detect__mutmut_5': x_detect__mutmut_5, 
-    'x_detect__mutmut_6': x_detect__mutmut_6, 
-    'x_detect__mutmut_7': x_detect__mutmut_7
+
+x_detect__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_detect__mutmut_1": x_detect__mutmut_1,
+    "x_detect__mutmut_2": x_detect__mutmut_2,
+    "x_detect__mutmut_3": x_detect__mutmut_3,
+    "x_detect__mutmut_4": x_detect__mutmut_4,
+    "x_detect__mutmut_5": x_detect__mutmut_5,
+    "x_detect__mutmut_6": x_detect__mutmut_6,
+    "x_detect__mutmut_7": x_detect__mutmut_7,
 }
+
 
 def detect(*args, **kwargs):
     result = _mutmut_trampoline(x_detect__mutmut_orig, x_detect__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 detect.__signature__ = _mutmut_signature(x_detect__mutmut_orig)
-x_detect__mutmut_orig.__name__ = 'x_detect'
+x_detect__mutmut_orig.__name__ = "x_detect"
 
 
-def x_detect_all__mutmut_orig(events: list[FileEvent], config: DetectorConfig | None = None) -> list[FileOperation]:
+def x_detect_all__mutmut_orig(
+    events: list[FileEvent], config: DetectorConfig | None = None
+) -> list[FileOperation]:
     """Detect all operations from a list of events.
 
     Explicit function for when you always want a list result, even for single events.
@@ -452,7 +465,9 @@ def x_detect_all__mutmut_orig(events: list[FileEvent], config: DetectorConfig | 
     return detector.detect(events)
 
 
-def x_detect_all__mutmut_1(events: list[FileEvent], config: DetectorConfig | None = None) -> list[FileOperation]:
+def x_detect_all__mutmut_1(
+    events: list[FileEvent], config: DetectorConfig | None = None
+) -> list[FileOperation]:
     """Detect all operations from a list of events.
 
     Explicit function for when you always want a list result, even for single events.
@@ -473,7 +488,9 @@ def x_detect_all__mutmut_1(events: list[FileEvent], config: DetectorConfig | Non
     return detector.detect(events)
 
 
-def x_detect_all__mutmut_2(events: list[FileEvent], config: DetectorConfig | None = None) -> list[FileOperation]:
+def x_detect_all__mutmut_2(
+    events: list[FileEvent], config: DetectorConfig | None = None
+) -> list[FileOperation]:
     """Detect all operations from a list of events.
 
     Explicit function for when you always want a list result, even for single events.
@@ -494,7 +511,9 @@ def x_detect_all__mutmut_2(events: list[FileEvent], config: DetectorConfig | Non
     return detector.detect(events)
 
 
-def x_detect_all__mutmut_3(events: list[FileEvent], config: DetectorConfig | None = None) -> list[FileOperation]:
+def x_detect_all__mutmut_3(
+    events: list[FileEvent], config: DetectorConfig | None = None
+) -> list[FileOperation]:
     """Detect all operations from a list of events.
 
     Explicit function for when you always want a list result, even for single events.
@@ -515,7 +534,9 @@ def x_detect_all__mutmut_3(events: list[FileEvent], config: DetectorConfig | Non
     return detector.detect(events)
 
 
-def x_detect_all__mutmut_4(events: list[FileEvent], config: DetectorConfig | None = None) -> list[FileOperation]:
+def x_detect_all__mutmut_4(
+    events: list[FileEvent], config: DetectorConfig | None = None
+) -> list[FileOperation]:
     """Detect all operations from a list of events.
 
     Explicit function for when you always want a list result, even for single events.
@@ -535,19 +556,22 @@ def x_detect_all__mutmut_4(events: list[FileEvent], config: DetectorConfig | Non
     detector = _get_default_detector() if config is None else OperationDetector(config)
     return detector.detect(None)
 
-x_detect_all__mutmut_mutants : ClassVar[MutantDict] = {
-'x_detect_all__mutmut_1': x_detect_all__mutmut_1, 
-    'x_detect_all__mutmut_2': x_detect_all__mutmut_2, 
-    'x_detect_all__mutmut_3': x_detect_all__mutmut_3, 
-    'x_detect_all__mutmut_4': x_detect_all__mutmut_4
+
+x_detect_all__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_detect_all__mutmut_1": x_detect_all__mutmut_1,
+    "x_detect_all__mutmut_2": x_detect_all__mutmut_2,
+    "x_detect_all__mutmut_3": x_detect_all__mutmut_3,
+    "x_detect_all__mutmut_4": x_detect_all__mutmut_4,
 }
+
 
 def detect_all(*args, **kwargs):
     result = _mutmut_trampoline(x_detect_all__mutmut_orig, x_detect_all__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 detect_all.__signature__ = _mutmut_signature(x_detect_all__mutmut_orig)
-x_detect_all__mutmut_orig.__name__ = 'x_detect_all'
+x_detect_all__mutmut_orig.__name__ = "x_detect_all"
 
 
 def x_detect_streaming__mutmut_orig(
@@ -709,18 +733,23 @@ def x_detect_streaming__mutmut_3(
 
     return detector.detect_streaming(None)
 
-x_detect_streaming__mutmut_mutants : ClassVar[MutantDict] = {
-'x_detect_streaming__mutmut_1': x_detect_streaming__mutmut_1, 
-    'x_detect_streaming__mutmut_2': x_detect_streaming__mutmut_2, 
-    'x_detect_streaming__mutmut_3': x_detect_streaming__mutmut_3
+
+x_detect_streaming__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_detect_streaming__mutmut_1": x_detect_streaming__mutmut_1,
+    "x_detect_streaming__mutmut_2": x_detect_streaming__mutmut_2,
+    "x_detect_streaming__mutmut_3": x_detect_streaming__mutmut_3,
 }
 
+
 def detect_streaming(*args, **kwargs):
-    result = _mutmut_trampoline(x_detect_streaming__mutmut_orig, x_detect_streaming__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_detect_streaming__mutmut_orig, x_detect_streaming__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 detect_streaming.__signature__ = _mutmut_signature(x_detect_streaming__mutmut_orig)
-x_detect_streaming__mutmut_orig.__name__ = 'x_detect_streaming'
+x_detect_streaming__mutmut_orig.__name__ = "x_detect_streaming"
 
 
 # For backward compatibility and convenience
@@ -776,13 +805,18 @@ def x_create_detector__mutmut_1(config: DetectorConfig | None = None) -> Operati
     """
     return OperationDetector(None)
 
-x_create_detector__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_detector__mutmut_1': x_create_detector__mutmut_1
+
+x_create_detector__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_detector__mutmut_1": x_create_detector__mutmut_1
 }
 
+
 def create_detector(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_detector__mutmut_orig, x_create_detector__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_detector__mutmut_orig, x_create_detector__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_detector.__signature__ = _mutmut_signature(x_create_detector__mutmut_orig)
-x_create_detector__mutmut_orig.__name__ = 'x_create_detector'
+x_create_detector__mutmut_orig.__name__ = "x_create_detector"

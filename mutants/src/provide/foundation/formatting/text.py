@@ -24,23 +24,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -546,7 +549,10 @@ def x_truncate__mutmut_13(text: str, max_length: int, suffix: str = "...", whole
 
     if whole_words:
         # Find last space before truncate point
-        space_pos = text.rfind(" ", 0, )
+        space_pos = text.rfind(
+            " ",
+            0,
+        )
         if space_pos > 0:
             truncate_at = space_pos
 
@@ -804,35 +810,38 @@ def x_truncate__mutmut_20(text: str, max_length: int, suffix: str = "...", whole
 
     return text[:truncate_at] - suffix
 
-x_truncate__mutmut_mutants : ClassVar[MutantDict] = {
-'x_truncate__mutmut_1': x_truncate__mutmut_1, 
-    'x_truncate__mutmut_2': x_truncate__mutmut_2, 
-    'x_truncate__mutmut_3': x_truncate__mutmut_3, 
-    'x_truncate__mutmut_4': x_truncate__mutmut_4, 
-    'x_truncate__mutmut_5': x_truncate__mutmut_5, 
-    'x_truncate__mutmut_6': x_truncate__mutmut_6, 
-    'x_truncate__mutmut_7': x_truncate__mutmut_7, 
-    'x_truncate__mutmut_8': x_truncate__mutmut_8, 
-    'x_truncate__mutmut_9': x_truncate__mutmut_9, 
-    'x_truncate__mutmut_10': x_truncate__mutmut_10, 
-    'x_truncate__mutmut_11': x_truncate__mutmut_11, 
-    'x_truncate__mutmut_12': x_truncate__mutmut_12, 
-    'x_truncate__mutmut_13': x_truncate__mutmut_13, 
-    'x_truncate__mutmut_14': x_truncate__mutmut_14, 
-    'x_truncate__mutmut_15': x_truncate__mutmut_15, 
-    'x_truncate__mutmut_16': x_truncate__mutmut_16, 
-    'x_truncate__mutmut_17': x_truncate__mutmut_17, 
-    'x_truncate__mutmut_18': x_truncate__mutmut_18, 
-    'x_truncate__mutmut_19': x_truncate__mutmut_19, 
-    'x_truncate__mutmut_20': x_truncate__mutmut_20
+
+x_truncate__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_truncate__mutmut_1": x_truncate__mutmut_1,
+    "x_truncate__mutmut_2": x_truncate__mutmut_2,
+    "x_truncate__mutmut_3": x_truncate__mutmut_3,
+    "x_truncate__mutmut_4": x_truncate__mutmut_4,
+    "x_truncate__mutmut_5": x_truncate__mutmut_5,
+    "x_truncate__mutmut_6": x_truncate__mutmut_6,
+    "x_truncate__mutmut_7": x_truncate__mutmut_7,
+    "x_truncate__mutmut_8": x_truncate__mutmut_8,
+    "x_truncate__mutmut_9": x_truncate__mutmut_9,
+    "x_truncate__mutmut_10": x_truncate__mutmut_10,
+    "x_truncate__mutmut_11": x_truncate__mutmut_11,
+    "x_truncate__mutmut_12": x_truncate__mutmut_12,
+    "x_truncate__mutmut_13": x_truncate__mutmut_13,
+    "x_truncate__mutmut_14": x_truncate__mutmut_14,
+    "x_truncate__mutmut_15": x_truncate__mutmut_15,
+    "x_truncate__mutmut_16": x_truncate__mutmut_16,
+    "x_truncate__mutmut_17": x_truncate__mutmut_17,
+    "x_truncate__mutmut_18": x_truncate__mutmut_18,
+    "x_truncate__mutmut_19": x_truncate__mutmut_19,
+    "x_truncate__mutmut_20": x_truncate__mutmut_20,
 }
+
 
 def truncate(*args, **kwargs):
     result = _mutmut_trampoline(x_truncate__mutmut_orig, x_truncate__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 truncate.__signature__ = _mutmut_signature(x_truncate__mutmut_orig)
-x_truncate__mutmut_orig.__name__ = 'x_truncate'
+x_truncate__mutmut_orig.__name__ = "x_truncate"
 
 
 def x_pluralize__mutmut_orig(count: int, singular: str, plural: str | None = None) -> str:
@@ -996,20 +1005,23 @@ def x_pluralize__mutmut_5(count: int, singular: str, plural: str | None = None) 
     word = singular if count == 2 else plural
     return f"{count} {word}"
 
-x_pluralize__mutmut_mutants : ClassVar[MutantDict] = {
-'x_pluralize__mutmut_1': x_pluralize__mutmut_1, 
-    'x_pluralize__mutmut_2': x_pluralize__mutmut_2, 
-    'x_pluralize__mutmut_3': x_pluralize__mutmut_3, 
-    'x_pluralize__mutmut_4': x_pluralize__mutmut_4, 
-    'x_pluralize__mutmut_5': x_pluralize__mutmut_5
+
+x_pluralize__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_pluralize__mutmut_1": x_pluralize__mutmut_1,
+    "x_pluralize__mutmut_2": x_pluralize__mutmut_2,
+    "x_pluralize__mutmut_3": x_pluralize__mutmut_3,
+    "x_pluralize__mutmut_4": x_pluralize__mutmut_4,
+    "x_pluralize__mutmut_5": x_pluralize__mutmut_5,
 }
+
 
 def pluralize(*args, **kwargs):
     result = _mutmut_trampoline(x_pluralize__mutmut_orig, x_pluralize__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 pluralize.__signature__ = _mutmut_signature(x_pluralize__mutmut_orig)
-x_pluralize__mutmut_orig.__name__ = 'x_pluralize'
+x_pluralize__mutmut_orig.__name__ = "x_pluralize"
 
 
 def x_indent__mutmut_orig(text: str, spaces: int = 2, first_line: bool = True) -> str:
@@ -1651,34 +1663,37 @@ def x_indent__mutmut_19(text: str, spaces: int = 2, first_line: bool = True) -> 
 
     return "XX\nXX".join(result)
 
-x_indent__mutmut_mutants : ClassVar[MutantDict] = {
-'x_indent__mutmut_1': x_indent__mutmut_1, 
-    'x_indent__mutmut_2': x_indent__mutmut_2, 
-    'x_indent__mutmut_3': x_indent__mutmut_3, 
-    'x_indent__mutmut_4': x_indent__mutmut_4, 
-    'x_indent__mutmut_5': x_indent__mutmut_5, 
-    'x_indent__mutmut_6': x_indent__mutmut_6, 
-    'x_indent__mutmut_7': x_indent__mutmut_7, 
-    'x_indent__mutmut_8': x_indent__mutmut_8, 
-    'x_indent__mutmut_9': x_indent__mutmut_9, 
-    'x_indent__mutmut_10': x_indent__mutmut_10, 
-    'x_indent__mutmut_11': x_indent__mutmut_11, 
-    'x_indent__mutmut_12': x_indent__mutmut_12, 
-    'x_indent__mutmut_13': x_indent__mutmut_13, 
-    'x_indent__mutmut_14': x_indent__mutmut_14, 
-    'x_indent__mutmut_15': x_indent__mutmut_15, 
-    'x_indent__mutmut_16': x_indent__mutmut_16, 
-    'x_indent__mutmut_17': x_indent__mutmut_17, 
-    'x_indent__mutmut_18': x_indent__mutmut_18, 
-    'x_indent__mutmut_19': x_indent__mutmut_19
+
+x_indent__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_indent__mutmut_1": x_indent__mutmut_1,
+    "x_indent__mutmut_2": x_indent__mutmut_2,
+    "x_indent__mutmut_3": x_indent__mutmut_3,
+    "x_indent__mutmut_4": x_indent__mutmut_4,
+    "x_indent__mutmut_5": x_indent__mutmut_5,
+    "x_indent__mutmut_6": x_indent__mutmut_6,
+    "x_indent__mutmut_7": x_indent__mutmut_7,
+    "x_indent__mutmut_8": x_indent__mutmut_8,
+    "x_indent__mutmut_9": x_indent__mutmut_9,
+    "x_indent__mutmut_10": x_indent__mutmut_10,
+    "x_indent__mutmut_11": x_indent__mutmut_11,
+    "x_indent__mutmut_12": x_indent__mutmut_12,
+    "x_indent__mutmut_13": x_indent__mutmut_13,
+    "x_indent__mutmut_14": x_indent__mutmut_14,
+    "x_indent__mutmut_15": x_indent__mutmut_15,
+    "x_indent__mutmut_16": x_indent__mutmut_16,
+    "x_indent__mutmut_17": x_indent__mutmut_17,
+    "x_indent__mutmut_18": x_indent__mutmut_18,
+    "x_indent__mutmut_19": x_indent__mutmut_19,
 }
+
 
 def indent(*args, **kwargs):
     result = _mutmut_trampoline(x_indent__mutmut_orig, x_indent__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 indent.__signature__ = _mutmut_signature(x_indent__mutmut_orig)
-x_indent__mutmut_orig.__name__ = 'x_indent'
+x_indent__mutmut_orig.__name__ = "x_indent"
 
 
 def x_wrap_text__mutmut_orig(text: str, width: int = 80, indent_first: int = 0, indent_rest: int = 0) -> str:
@@ -2055,7 +2070,7 @@ def x_wrap_text__mutmut_14(text: str, width: int = 80, indent_first: int = 0, in
         initial_indent=" " * indent_first,
         subsequent_indent=" " * indent_rest,
         break_long_words=False,
-        )
+    )
 
     return wrapper.fill(text)
 
@@ -2241,36 +2256,39 @@ def x_wrap_text__mutmut_21(text: str, width: int = 80, indent_first: int = 0, in
 
     return wrapper.fill(None)
 
-x_wrap_text__mutmut_mutants : ClassVar[MutantDict] = {
-'x_wrap_text__mutmut_1': x_wrap_text__mutmut_1, 
-    'x_wrap_text__mutmut_2': x_wrap_text__mutmut_2, 
-    'x_wrap_text__mutmut_3': x_wrap_text__mutmut_3, 
-    'x_wrap_text__mutmut_4': x_wrap_text__mutmut_4, 
-    'x_wrap_text__mutmut_5': x_wrap_text__mutmut_5, 
-    'x_wrap_text__mutmut_6': x_wrap_text__mutmut_6, 
-    'x_wrap_text__mutmut_7': x_wrap_text__mutmut_7, 
-    'x_wrap_text__mutmut_8': x_wrap_text__mutmut_8, 
-    'x_wrap_text__mutmut_9': x_wrap_text__mutmut_9, 
-    'x_wrap_text__mutmut_10': x_wrap_text__mutmut_10, 
-    'x_wrap_text__mutmut_11': x_wrap_text__mutmut_11, 
-    'x_wrap_text__mutmut_12': x_wrap_text__mutmut_12, 
-    'x_wrap_text__mutmut_13': x_wrap_text__mutmut_13, 
-    'x_wrap_text__mutmut_14': x_wrap_text__mutmut_14, 
-    'x_wrap_text__mutmut_15': x_wrap_text__mutmut_15, 
-    'x_wrap_text__mutmut_16': x_wrap_text__mutmut_16, 
-    'x_wrap_text__mutmut_17': x_wrap_text__mutmut_17, 
-    'x_wrap_text__mutmut_18': x_wrap_text__mutmut_18, 
-    'x_wrap_text__mutmut_19': x_wrap_text__mutmut_19, 
-    'x_wrap_text__mutmut_20': x_wrap_text__mutmut_20, 
-    'x_wrap_text__mutmut_21': x_wrap_text__mutmut_21
+
+x_wrap_text__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_wrap_text__mutmut_1": x_wrap_text__mutmut_1,
+    "x_wrap_text__mutmut_2": x_wrap_text__mutmut_2,
+    "x_wrap_text__mutmut_3": x_wrap_text__mutmut_3,
+    "x_wrap_text__mutmut_4": x_wrap_text__mutmut_4,
+    "x_wrap_text__mutmut_5": x_wrap_text__mutmut_5,
+    "x_wrap_text__mutmut_6": x_wrap_text__mutmut_6,
+    "x_wrap_text__mutmut_7": x_wrap_text__mutmut_7,
+    "x_wrap_text__mutmut_8": x_wrap_text__mutmut_8,
+    "x_wrap_text__mutmut_9": x_wrap_text__mutmut_9,
+    "x_wrap_text__mutmut_10": x_wrap_text__mutmut_10,
+    "x_wrap_text__mutmut_11": x_wrap_text__mutmut_11,
+    "x_wrap_text__mutmut_12": x_wrap_text__mutmut_12,
+    "x_wrap_text__mutmut_13": x_wrap_text__mutmut_13,
+    "x_wrap_text__mutmut_14": x_wrap_text__mutmut_14,
+    "x_wrap_text__mutmut_15": x_wrap_text__mutmut_15,
+    "x_wrap_text__mutmut_16": x_wrap_text__mutmut_16,
+    "x_wrap_text__mutmut_17": x_wrap_text__mutmut_17,
+    "x_wrap_text__mutmut_18": x_wrap_text__mutmut_18,
+    "x_wrap_text__mutmut_19": x_wrap_text__mutmut_19,
+    "x_wrap_text__mutmut_20": x_wrap_text__mutmut_20,
+    "x_wrap_text__mutmut_21": x_wrap_text__mutmut_21,
 }
+
 
 def wrap_text(*args, **kwargs):
     result = _mutmut_trampoline(x_wrap_text__mutmut_orig, x_wrap_text__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 wrap_text.__signature__ = _mutmut_signature(x_wrap_text__mutmut_orig)
-x_wrap_text__mutmut_orig.__name__ = 'x_wrap_text'
+x_wrap_text__mutmut_orig.__name__ = "x_wrap_text"
 
 
 def x_strip_ansi__mutmut_orig(text: str) -> str:
@@ -2335,7 +2353,9 @@ def x_strip_ansi__mutmut_4(text: str) -> str:
         Text without ANSI codes
 
     """
-    return ANSI_PATTERN.sub("", )
+    return ANSI_PATTERN.sub(
+        "",
+    )
 
 
 def x_strip_ansi__mutmut_5(text: str) -> str:
@@ -2350,20 +2370,23 @@ def x_strip_ansi__mutmut_5(text: str) -> str:
     """
     return ANSI_PATTERN.sub("XXXX", text)
 
-x_strip_ansi__mutmut_mutants : ClassVar[MutantDict] = {
-'x_strip_ansi__mutmut_1': x_strip_ansi__mutmut_1, 
-    'x_strip_ansi__mutmut_2': x_strip_ansi__mutmut_2, 
-    'x_strip_ansi__mutmut_3': x_strip_ansi__mutmut_3, 
-    'x_strip_ansi__mutmut_4': x_strip_ansi__mutmut_4, 
-    'x_strip_ansi__mutmut_5': x_strip_ansi__mutmut_5
+
+x_strip_ansi__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_strip_ansi__mutmut_1": x_strip_ansi__mutmut_1,
+    "x_strip_ansi__mutmut_2": x_strip_ansi__mutmut_2,
+    "x_strip_ansi__mutmut_3": x_strip_ansi__mutmut_3,
+    "x_strip_ansi__mutmut_4": x_strip_ansi__mutmut_4,
+    "x_strip_ansi__mutmut_5": x_strip_ansi__mutmut_5,
 }
+
 
 def strip_ansi(*args, **kwargs):
     result = _mutmut_trampoline(x_strip_ansi__mutmut_orig, x_strip_ansi__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 strip_ansi.__signature__ = _mutmut_signature(x_strip_ansi__mutmut_orig)
-x_strip_ansi__mutmut_orig.__name__ = 'x_strip_ansi'
+x_strip_ansi__mutmut_orig.__name__ = "x_strip_ansi"
 
 
 __all__ = [

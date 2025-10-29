@@ -22,23 +22,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -417,28 +420,34 @@ class AsyncCircuitBreaker:
         self._state = CircuitState.CLOSED
         self._failure_count = 0
         self._last_failure_time: float | None = ""
-    
-    xǁAsyncCircuitBreakerǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncCircuitBreakerǁ__init____mutmut_1': xǁAsyncCircuitBreakerǁ__init____mutmut_1, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_2': xǁAsyncCircuitBreakerǁ__init____mutmut_2, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_3': xǁAsyncCircuitBreakerǁ__init____mutmut_3, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_4': xǁAsyncCircuitBreakerǁ__init____mutmut_4, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_5': xǁAsyncCircuitBreakerǁ__init____mutmut_5, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_6': xǁAsyncCircuitBreakerǁ__init____mutmut_6, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_7': xǁAsyncCircuitBreakerǁ__init____mutmut_7, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_8': xǁAsyncCircuitBreakerǁ__init____mutmut_8, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_9': xǁAsyncCircuitBreakerǁ__init____mutmut_9, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_10': xǁAsyncCircuitBreakerǁ__init____mutmut_10, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_11': xǁAsyncCircuitBreakerǁ__init____mutmut_11, 
-        'xǁAsyncCircuitBreakerǁ__init____mutmut_12': xǁAsyncCircuitBreakerǁ__init____mutmut_12
+
+    xǁAsyncCircuitBreakerǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_1": xǁAsyncCircuitBreakerǁ__init____mutmut_1,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_2": xǁAsyncCircuitBreakerǁ__init____mutmut_2,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_3": xǁAsyncCircuitBreakerǁ__init____mutmut_3,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_4": xǁAsyncCircuitBreakerǁ__init____mutmut_4,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_5": xǁAsyncCircuitBreakerǁ__init____mutmut_5,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_6": xǁAsyncCircuitBreakerǁ__init____mutmut_6,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_7": xǁAsyncCircuitBreakerǁ__init____mutmut_7,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_8": xǁAsyncCircuitBreakerǁ__init____mutmut_8,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_9": xǁAsyncCircuitBreakerǁ__init____mutmut_9,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_10": xǁAsyncCircuitBreakerǁ__init____mutmut_10,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_11": xǁAsyncCircuitBreakerǁ__init____mutmut_11,
+        "xǁAsyncCircuitBreakerǁ__init____mutmut_12": xǁAsyncCircuitBreakerǁ__init____mutmut_12,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁAsyncCircuitBreakerǁ__init____mutmut_orig)
-    xǁAsyncCircuitBreakerǁ__init____mutmut_orig.__name__ = 'xǁAsyncCircuitBreakerǁ__init__'
+    xǁAsyncCircuitBreakerǁ__init____mutmut_orig.__name__ = "xǁAsyncCircuitBreakerǁ__init__"
 
     async def xǁAsyncCircuitBreakerǁstate__mutmut_orig(self) -> CircuitState:
         """Get the current state of the circuit breaker.
@@ -475,18 +484,24 @@ class AsyncCircuitBreaker:
                 # This is a view of the state; the actual transition happens in call()
                 return CircuitState.HALF_OPEN
             return self._state
-    
-    xǁAsyncCircuitBreakerǁstate__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncCircuitBreakerǁstate__mutmut_1': xǁAsyncCircuitBreakerǁstate__mutmut_1, 
-        'xǁAsyncCircuitBreakerǁstate__mutmut_2': xǁAsyncCircuitBreakerǁstate__mutmut_2
+
+    xǁAsyncCircuitBreakerǁstate__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncCircuitBreakerǁstate__mutmut_1": xǁAsyncCircuitBreakerǁstate__mutmut_1,
+        "xǁAsyncCircuitBreakerǁstate__mutmut_2": xǁAsyncCircuitBreakerǁstate__mutmut_2,
     }
-    
+
     def state(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncCircuitBreakerǁstate__mutmut_orig"), object.__getattribute__(self, "xǁAsyncCircuitBreakerǁstate__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁstate__mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁstate__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     state.__signature__ = _mutmut_signature(xǁAsyncCircuitBreakerǁstate__mutmut_orig)
-    xǁAsyncCircuitBreakerǁstate__mutmut_orig.__name__ = 'xǁAsyncCircuitBreakerǁstate'
+    xǁAsyncCircuitBreakerǁstate__mutmut_orig.__name__ = "xǁAsyncCircuitBreakerǁstate"
 
     async def failure_count(self) -> int:
         """Get the current failure count.
@@ -516,20 +531,30 @@ class AsyncCircuitBreaker:
     def xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_4(self) -> bool:
         """Check if the circuit can attempt recovery."""
         return self._time_source() >= (self._last_failure_time or 1) + self.recovery_timeout
-    
-    xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_1': xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_1, 
-        'xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_2': xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_2, 
-        'xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_3': xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_3, 
-        'xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_4': xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_4
+
+    xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_1": xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_1,
+        "xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_2": xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_2,
+        "xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_3": xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_3,
+        "xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_4": xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_4,
     }
-    
+
     def _can_attempt_recovery(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_orig"), object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    _can_attempt_recovery.__signature__ = _mutmut_signature(xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_orig)
-    xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_orig.__name__ = 'xǁAsyncCircuitBreakerǁ_can_attempt_recovery'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    _can_attempt_recovery.__signature__ = _mutmut_signature(
+        xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_orig
+    )
+    xǁAsyncCircuitBreakerǁ_can_attempt_recovery__mutmut_orig.__name__ = (
+        "xǁAsyncCircuitBreakerǁ_can_attempt_recovery"
+    )
 
     async def xǁAsyncCircuitBreakerǁcall__mutmut_orig(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
         """Execute an asynchronous function through the circuit breaker.
@@ -843,32 +868,40 @@ class AsyncCircuitBreaker:
             # If HALF_OPEN or recovery possible, we proceed with the call
 
         try:
-            result = await func(*args, )
+            result = await func(
+                *args,
+            )
             await self._on_success()
             return result
         except self.expected_exception as e:
             await self._on_failure()
             raise e
-    
-    xǁAsyncCircuitBreakerǁcall__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncCircuitBreakerǁcall__mutmut_1': xǁAsyncCircuitBreakerǁcall__mutmut_1, 
-        'xǁAsyncCircuitBreakerǁcall__mutmut_2': xǁAsyncCircuitBreakerǁcall__mutmut_2, 
-        'xǁAsyncCircuitBreakerǁcall__mutmut_3': xǁAsyncCircuitBreakerǁcall__mutmut_3, 
-        'xǁAsyncCircuitBreakerǁcall__mutmut_4': xǁAsyncCircuitBreakerǁcall__mutmut_4, 
-        'xǁAsyncCircuitBreakerǁcall__mutmut_5': xǁAsyncCircuitBreakerǁcall__mutmut_5, 
-        'xǁAsyncCircuitBreakerǁcall__mutmut_6': xǁAsyncCircuitBreakerǁcall__mutmut_6, 
-        'xǁAsyncCircuitBreakerǁcall__mutmut_7': xǁAsyncCircuitBreakerǁcall__mutmut_7, 
-        'xǁAsyncCircuitBreakerǁcall__mutmut_8': xǁAsyncCircuitBreakerǁcall__mutmut_8, 
-        'xǁAsyncCircuitBreakerǁcall__mutmut_9': xǁAsyncCircuitBreakerǁcall__mutmut_9, 
-        'xǁAsyncCircuitBreakerǁcall__mutmut_10': xǁAsyncCircuitBreakerǁcall__mutmut_10
+
+    xǁAsyncCircuitBreakerǁcall__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncCircuitBreakerǁcall__mutmut_1": xǁAsyncCircuitBreakerǁcall__mutmut_1,
+        "xǁAsyncCircuitBreakerǁcall__mutmut_2": xǁAsyncCircuitBreakerǁcall__mutmut_2,
+        "xǁAsyncCircuitBreakerǁcall__mutmut_3": xǁAsyncCircuitBreakerǁcall__mutmut_3,
+        "xǁAsyncCircuitBreakerǁcall__mutmut_4": xǁAsyncCircuitBreakerǁcall__mutmut_4,
+        "xǁAsyncCircuitBreakerǁcall__mutmut_5": xǁAsyncCircuitBreakerǁcall__mutmut_5,
+        "xǁAsyncCircuitBreakerǁcall__mutmut_6": xǁAsyncCircuitBreakerǁcall__mutmut_6,
+        "xǁAsyncCircuitBreakerǁcall__mutmut_7": xǁAsyncCircuitBreakerǁcall__mutmut_7,
+        "xǁAsyncCircuitBreakerǁcall__mutmut_8": xǁAsyncCircuitBreakerǁcall__mutmut_8,
+        "xǁAsyncCircuitBreakerǁcall__mutmut_9": xǁAsyncCircuitBreakerǁcall__mutmut_9,
+        "xǁAsyncCircuitBreakerǁcall__mutmut_10": xǁAsyncCircuitBreakerǁcall__mutmut_10,
     }
-    
+
     def call(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncCircuitBreakerǁcall__mutmut_orig"), object.__getattribute__(self, "xǁAsyncCircuitBreakerǁcall__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁcall__mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁcall__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     call.__signature__ = _mutmut_signature(xǁAsyncCircuitBreakerǁcall__mutmut_orig)
-    xǁAsyncCircuitBreakerǁcall__mutmut_orig.__name__ = 'xǁAsyncCircuitBreakerǁcall'
+    xǁAsyncCircuitBreakerǁcall__mutmut_orig.__name__ = "xǁAsyncCircuitBreakerǁcall"
 
     async def xǁAsyncCircuitBreakerǁ_on_success__mutmut_orig(self) -> None:
         """Handle a successful call."""
@@ -909,20 +942,26 @@ class AsyncCircuitBreaker:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = ""
-    
-    xǁAsyncCircuitBreakerǁ_on_success__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncCircuitBreakerǁ_on_success__mutmut_1': xǁAsyncCircuitBreakerǁ_on_success__mutmut_1, 
-        'xǁAsyncCircuitBreakerǁ_on_success__mutmut_2': xǁAsyncCircuitBreakerǁ_on_success__mutmut_2, 
-        'xǁAsyncCircuitBreakerǁ_on_success__mutmut_3': xǁAsyncCircuitBreakerǁ_on_success__mutmut_3, 
-        'xǁAsyncCircuitBreakerǁ_on_success__mutmut_4': xǁAsyncCircuitBreakerǁ_on_success__mutmut_4
+
+    xǁAsyncCircuitBreakerǁ_on_success__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncCircuitBreakerǁ_on_success__mutmut_1": xǁAsyncCircuitBreakerǁ_on_success__mutmut_1,
+        "xǁAsyncCircuitBreakerǁ_on_success__mutmut_2": xǁAsyncCircuitBreakerǁ_on_success__mutmut_2,
+        "xǁAsyncCircuitBreakerǁ_on_success__mutmut_3": xǁAsyncCircuitBreakerǁ_on_success__mutmut_3,
+        "xǁAsyncCircuitBreakerǁ_on_success__mutmut_4": xǁAsyncCircuitBreakerǁ_on_success__mutmut_4,
     }
-    
+
     def _on_success(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_on_success__mutmut_orig"), object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_on_success__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_on_success__mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_on_success__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _on_success.__signature__ = _mutmut_signature(xǁAsyncCircuitBreakerǁ_on_success__mutmut_orig)
-    xǁAsyncCircuitBreakerǁ_on_success__mutmut_orig.__name__ = 'xǁAsyncCircuitBreakerǁ_on_success'
+    xǁAsyncCircuitBreakerǁ_on_success__mutmut_orig.__name__ = "xǁAsyncCircuitBreakerǁ_on_success"
 
     async def xǁAsyncCircuitBreakerǁ_on_failure__mutmut_orig(self) -> None:
         """Handle a failed call."""
@@ -993,22 +1032,28 @@ class AsyncCircuitBreaker:
                 # or for the single attempt in HALF_OPEN state.
                 self._state = CircuitState.OPEN
                 self._last_failure_time = None
-    
-    xǁAsyncCircuitBreakerǁ_on_failure__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncCircuitBreakerǁ_on_failure__mutmut_1': xǁAsyncCircuitBreakerǁ_on_failure__mutmut_1, 
-        'xǁAsyncCircuitBreakerǁ_on_failure__mutmut_2': xǁAsyncCircuitBreakerǁ_on_failure__mutmut_2, 
-        'xǁAsyncCircuitBreakerǁ_on_failure__mutmut_3': xǁAsyncCircuitBreakerǁ_on_failure__mutmut_3, 
-        'xǁAsyncCircuitBreakerǁ_on_failure__mutmut_4': xǁAsyncCircuitBreakerǁ_on_failure__mutmut_4, 
-        'xǁAsyncCircuitBreakerǁ_on_failure__mutmut_5': xǁAsyncCircuitBreakerǁ_on_failure__mutmut_5, 
-        'xǁAsyncCircuitBreakerǁ_on_failure__mutmut_6': xǁAsyncCircuitBreakerǁ_on_failure__mutmut_6
+
+    xǁAsyncCircuitBreakerǁ_on_failure__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_1": xǁAsyncCircuitBreakerǁ_on_failure__mutmut_1,
+        "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_2": xǁAsyncCircuitBreakerǁ_on_failure__mutmut_2,
+        "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_3": xǁAsyncCircuitBreakerǁ_on_failure__mutmut_3,
+        "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_4": xǁAsyncCircuitBreakerǁ_on_failure__mutmut_4,
+        "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_5": xǁAsyncCircuitBreakerǁ_on_failure__mutmut_5,
+        "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_6": xǁAsyncCircuitBreakerǁ_on_failure__mutmut_6,
     }
-    
+
     def _on_failure(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_orig"), object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁ_on_failure__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _on_failure.__signature__ = _mutmut_signature(xǁAsyncCircuitBreakerǁ_on_failure__mutmut_orig)
-    xǁAsyncCircuitBreakerǁ_on_failure__mutmut_orig.__name__ = 'xǁAsyncCircuitBreakerǁ_on_failure'
+    xǁAsyncCircuitBreakerǁ_on_failure__mutmut_orig.__name__ = "xǁAsyncCircuitBreakerǁ_on_failure"
 
     async def xǁAsyncCircuitBreakerǁreset__mutmut_orig(self) -> None:
         """Reset the circuit breaker to its initial state."""
@@ -1044,20 +1089,26 @@ class AsyncCircuitBreaker:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = ""
-    
-    xǁAsyncCircuitBreakerǁreset__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAsyncCircuitBreakerǁreset__mutmut_1': xǁAsyncCircuitBreakerǁreset__mutmut_1, 
-        'xǁAsyncCircuitBreakerǁreset__mutmut_2': xǁAsyncCircuitBreakerǁreset__mutmut_2, 
-        'xǁAsyncCircuitBreakerǁreset__mutmut_3': xǁAsyncCircuitBreakerǁreset__mutmut_3, 
-        'xǁAsyncCircuitBreakerǁreset__mutmut_4': xǁAsyncCircuitBreakerǁreset__mutmut_4
+
+    xǁAsyncCircuitBreakerǁreset__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAsyncCircuitBreakerǁreset__mutmut_1": xǁAsyncCircuitBreakerǁreset__mutmut_1,
+        "xǁAsyncCircuitBreakerǁreset__mutmut_2": xǁAsyncCircuitBreakerǁreset__mutmut_2,
+        "xǁAsyncCircuitBreakerǁreset__mutmut_3": xǁAsyncCircuitBreakerǁreset__mutmut_3,
+        "xǁAsyncCircuitBreakerǁreset__mutmut_4": xǁAsyncCircuitBreakerǁreset__mutmut_4,
     }
-    
+
     def reset(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAsyncCircuitBreakerǁreset__mutmut_orig"), object.__getattribute__(self, "xǁAsyncCircuitBreakerǁreset__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁreset__mutmut_orig"),
+            object.__getattribute__(self, "xǁAsyncCircuitBreakerǁreset__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     reset.__signature__ = _mutmut_signature(xǁAsyncCircuitBreakerǁreset__mutmut_orig)
-    xǁAsyncCircuitBreakerǁreset__mutmut_orig.__name__ = 'xǁAsyncCircuitBreakerǁreset'
+    xǁAsyncCircuitBreakerǁreset__mutmut_orig.__name__ = "xǁAsyncCircuitBreakerǁreset"
 
 
 # <3 🧱🤝💪🪄

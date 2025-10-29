@@ -36,23 +36,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -725,7 +728,9 @@ def x_lazy_import__mutmut_6(parent_module: str, name: str) -> object:
     module_name = f"{parent_module}.{name}"
 
     # Initialize thread-local state if needed
-    if not hasattr(_thread_local, ):
+    if not hasattr(
+        _thread_local,
+    ):
         _thread_local.getattr_in_progress = set()
         _thread_local.import_depth = 0
         _thread_local.import_chain = []
@@ -1877,9 +1882,7 @@ def x_lazy_import__mutmut_17(parent_module: str, name: str) -> object:
     # Check recursion depth to prevent stack overflow from complex import chains
     if _thread_local.import_depth >= MAX_LAZY_IMPORT_DEPTH:
         chain_str = " -> ".join([*_thread_local.import_chain, name])
-        raise RecursionError(
-            None
-        )
+        raise RecursionError(None)
 
     # Check if we've already entered recursion for this specific module
     # This prevents infinite loops when a module has been corrupted
@@ -2405,9 +2408,7 @@ def x_lazy_import__mutmut_22(parent_module: str, name: str) -> object:
     # This prevents infinite loops when a module has been corrupted
     if name in _thread_local.getattr_in_progress:
         chain_str = " -> ".join([*_thread_local.import_chain, name])
-        raise AttributeError(
-            None
-        )
+        raise AttributeError(None)
 
     # Set recursion guards
     _thread_local.getattr_in_progress.add(name)
@@ -3778,7 +3779,9 @@ def x_lazy_import__mutmut_35(parent_module: str, name: str) -> object:
 
         # Import the submodule with appropriate error handling
         try:
-            mod = __import__(module_name, )
+            mod = __import__(
+                module_name,
+            )
             sys.modules[module_name] = mod
             return mod
         except ImportError as e:
@@ -4412,7 +4415,8 @@ def x_lazy_import__mutmut_41(parent_module: str, name: str) -> object:
                 # Check if error is about missing dependency for this feature
                 if (
                     (name == "cli" and "click" in error_str)
-                    or (name == "transport" and "httpx" in error_str) and (name == "docs" and ("mkdocs" in error_str or "mkdocstrings" in error_str))
+                    or (name == "transport" and "httpx" in error_str)
+                    and (name == "docs" and ("mkdocs" in error_str or "mkdocstrings" in error_str))
                 ):
                     raise ImportError(SPECIAL_MODULES[name]) from e
             raise
@@ -4514,7 +4518,8 @@ def x_lazy_import__mutmut_42(parent_module: str, name: str) -> object:
                 error_str = str(e)
                 # Check if error is about missing dependency for this feature
                 if (
-                    (name == "cli" and "click" in error_str) and (name == "transport" and "httpx" in error_str)
+                    (name == "cli" and "click" in error_str)
+                    and (name == "transport" and "httpx" in error_str)
                     or (name == "docs" and ("mkdocs" in error_str or "mkdocstrings" in error_str))
                 ):
                     raise ImportError(SPECIAL_MODULES[name]) from e
@@ -8062,91 +8067,94 @@ def x_lazy_import__mutmut_76(parent_module: str, name: str) -> object:
         if _thread_local.import_chain and _thread_local.import_chain[-1] != name:
             _thread_local.import_chain.pop()
 
-x_lazy_import__mutmut_mutants : ClassVar[MutantDict] = {
-'x_lazy_import__mutmut_1': x_lazy_import__mutmut_1, 
-    'x_lazy_import__mutmut_2': x_lazy_import__mutmut_2, 
-    'x_lazy_import__mutmut_3': x_lazy_import__mutmut_3, 
-    'x_lazy_import__mutmut_4': x_lazy_import__mutmut_4, 
-    'x_lazy_import__mutmut_5': x_lazy_import__mutmut_5, 
-    'x_lazy_import__mutmut_6': x_lazy_import__mutmut_6, 
-    'x_lazy_import__mutmut_7': x_lazy_import__mutmut_7, 
-    'x_lazy_import__mutmut_8': x_lazy_import__mutmut_8, 
-    'x_lazy_import__mutmut_9': x_lazy_import__mutmut_9, 
-    'x_lazy_import__mutmut_10': x_lazy_import__mutmut_10, 
-    'x_lazy_import__mutmut_11': x_lazy_import__mutmut_11, 
-    'x_lazy_import__mutmut_12': x_lazy_import__mutmut_12, 
-    'x_lazy_import__mutmut_13': x_lazy_import__mutmut_13, 
-    'x_lazy_import__mutmut_14': x_lazy_import__mutmut_14, 
-    'x_lazy_import__mutmut_15': x_lazy_import__mutmut_15, 
-    'x_lazy_import__mutmut_16': x_lazy_import__mutmut_16, 
-    'x_lazy_import__mutmut_17': x_lazy_import__mutmut_17, 
-    'x_lazy_import__mutmut_18': x_lazy_import__mutmut_18, 
-    'x_lazy_import__mutmut_19': x_lazy_import__mutmut_19, 
-    'x_lazy_import__mutmut_20': x_lazy_import__mutmut_20, 
-    'x_lazy_import__mutmut_21': x_lazy_import__mutmut_21, 
-    'x_lazy_import__mutmut_22': x_lazy_import__mutmut_22, 
-    'x_lazy_import__mutmut_23': x_lazy_import__mutmut_23, 
-    'x_lazy_import__mutmut_24': x_lazy_import__mutmut_24, 
-    'x_lazy_import__mutmut_25': x_lazy_import__mutmut_25, 
-    'x_lazy_import__mutmut_26': x_lazy_import__mutmut_26, 
-    'x_lazy_import__mutmut_27': x_lazy_import__mutmut_27, 
-    'x_lazy_import__mutmut_28': x_lazy_import__mutmut_28, 
-    'x_lazy_import__mutmut_29': x_lazy_import__mutmut_29, 
-    'x_lazy_import__mutmut_30': x_lazy_import__mutmut_30, 
-    'x_lazy_import__mutmut_31': x_lazy_import__mutmut_31, 
-    'x_lazy_import__mutmut_32': x_lazy_import__mutmut_32, 
-    'x_lazy_import__mutmut_33': x_lazy_import__mutmut_33, 
-    'x_lazy_import__mutmut_34': x_lazy_import__mutmut_34, 
-    'x_lazy_import__mutmut_35': x_lazy_import__mutmut_35, 
-    'x_lazy_import__mutmut_36': x_lazy_import__mutmut_36, 
-    'x_lazy_import__mutmut_37': x_lazy_import__mutmut_37, 
-    'x_lazy_import__mutmut_38': x_lazy_import__mutmut_38, 
-    'x_lazy_import__mutmut_39': x_lazy_import__mutmut_39, 
-    'x_lazy_import__mutmut_40': x_lazy_import__mutmut_40, 
-    'x_lazy_import__mutmut_41': x_lazy_import__mutmut_41, 
-    'x_lazy_import__mutmut_42': x_lazy_import__mutmut_42, 
-    'x_lazy_import__mutmut_43': x_lazy_import__mutmut_43, 
-    'x_lazy_import__mutmut_44': x_lazy_import__mutmut_44, 
-    'x_lazy_import__mutmut_45': x_lazy_import__mutmut_45, 
-    'x_lazy_import__mutmut_46': x_lazy_import__mutmut_46, 
-    'x_lazy_import__mutmut_47': x_lazy_import__mutmut_47, 
-    'x_lazy_import__mutmut_48': x_lazy_import__mutmut_48, 
-    'x_lazy_import__mutmut_49': x_lazy_import__mutmut_49, 
-    'x_lazy_import__mutmut_50': x_lazy_import__mutmut_50, 
-    'x_lazy_import__mutmut_51': x_lazy_import__mutmut_51, 
-    'x_lazy_import__mutmut_52': x_lazy_import__mutmut_52, 
-    'x_lazy_import__mutmut_53': x_lazy_import__mutmut_53, 
-    'x_lazy_import__mutmut_54': x_lazy_import__mutmut_54, 
-    'x_lazy_import__mutmut_55': x_lazy_import__mutmut_55, 
-    'x_lazy_import__mutmut_56': x_lazy_import__mutmut_56, 
-    'x_lazy_import__mutmut_57': x_lazy_import__mutmut_57, 
-    'x_lazy_import__mutmut_58': x_lazy_import__mutmut_58, 
-    'x_lazy_import__mutmut_59': x_lazy_import__mutmut_59, 
-    'x_lazy_import__mutmut_60': x_lazy_import__mutmut_60, 
-    'x_lazy_import__mutmut_61': x_lazy_import__mutmut_61, 
-    'x_lazy_import__mutmut_62': x_lazy_import__mutmut_62, 
-    'x_lazy_import__mutmut_63': x_lazy_import__mutmut_63, 
-    'x_lazy_import__mutmut_64': x_lazy_import__mutmut_64, 
-    'x_lazy_import__mutmut_65': x_lazy_import__mutmut_65, 
-    'x_lazy_import__mutmut_66': x_lazy_import__mutmut_66, 
-    'x_lazy_import__mutmut_67': x_lazy_import__mutmut_67, 
-    'x_lazy_import__mutmut_68': x_lazy_import__mutmut_68, 
-    'x_lazy_import__mutmut_69': x_lazy_import__mutmut_69, 
-    'x_lazy_import__mutmut_70': x_lazy_import__mutmut_70, 
-    'x_lazy_import__mutmut_71': x_lazy_import__mutmut_71, 
-    'x_lazy_import__mutmut_72': x_lazy_import__mutmut_72, 
-    'x_lazy_import__mutmut_73': x_lazy_import__mutmut_73, 
-    'x_lazy_import__mutmut_74': x_lazy_import__mutmut_74, 
-    'x_lazy_import__mutmut_75': x_lazy_import__mutmut_75, 
-    'x_lazy_import__mutmut_76': x_lazy_import__mutmut_76
+
+x_lazy_import__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_lazy_import__mutmut_1": x_lazy_import__mutmut_1,
+    "x_lazy_import__mutmut_2": x_lazy_import__mutmut_2,
+    "x_lazy_import__mutmut_3": x_lazy_import__mutmut_3,
+    "x_lazy_import__mutmut_4": x_lazy_import__mutmut_4,
+    "x_lazy_import__mutmut_5": x_lazy_import__mutmut_5,
+    "x_lazy_import__mutmut_6": x_lazy_import__mutmut_6,
+    "x_lazy_import__mutmut_7": x_lazy_import__mutmut_7,
+    "x_lazy_import__mutmut_8": x_lazy_import__mutmut_8,
+    "x_lazy_import__mutmut_9": x_lazy_import__mutmut_9,
+    "x_lazy_import__mutmut_10": x_lazy_import__mutmut_10,
+    "x_lazy_import__mutmut_11": x_lazy_import__mutmut_11,
+    "x_lazy_import__mutmut_12": x_lazy_import__mutmut_12,
+    "x_lazy_import__mutmut_13": x_lazy_import__mutmut_13,
+    "x_lazy_import__mutmut_14": x_lazy_import__mutmut_14,
+    "x_lazy_import__mutmut_15": x_lazy_import__mutmut_15,
+    "x_lazy_import__mutmut_16": x_lazy_import__mutmut_16,
+    "x_lazy_import__mutmut_17": x_lazy_import__mutmut_17,
+    "x_lazy_import__mutmut_18": x_lazy_import__mutmut_18,
+    "x_lazy_import__mutmut_19": x_lazy_import__mutmut_19,
+    "x_lazy_import__mutmut_20": x_lazy_import__mutmut_20,
+    "x_lazy_import__mutmut_21": x_lazy_import__mutmut_21,
+    "x_lazy_import__mutmut_22": x_lazy_import__mutmut_22,
+    "x_lazy_import__mutmut_23": x_lazy_import__mutmut_23,
+    "x_lazy_import__mutmut_24": x_lazy_import__mutmut_24,
+    "x_lazy_import__mutmut_25": x_lazy_import__mutmut_25,
+    "x_lazy_import__mutmut_26": x_lazy_import__mutmut_26,
+    "x_lazy_import__mutmut_27": x_lazy_import__mutmut_27,
+    "x_lazy_import__mutmut_28": x_lazy_import__mutmut_28,
+    "x_lazy_import__mutmut_29": x_lazy_import__mutmut_29,
+    "x_lazy_import__mutmut_30": x_lazy_import__mutmut_30,
+    "x_lazy_import__mutmut_31": x_lazy_import__mutmut_31,
+    "x_lazy_import__mutmut_32": x_lazy_import__mutmut_32,
+    "x_lazy_import__mutmut_33": x_lazy_import__mutmut_33,
+    "x_lazy_import__mutmut_34": x_lazy_import__mutmut_34,
+    "x_lazy_import__mutmut_35": x_lazy_import__mutmut_35,
+    "x_lazy_import__mutmut_36": x_lazy_import__mutmut_36,
+    "x_lazy_import__mutmut_37": x_lazy_import__mutmut_37,
+    "x_lazy_import__mutmut_38": x_lazy_import__mutmut_38,
+    "x_lazy_import__mutmut_39": x_lazy_import__mutmut_39,
+    "x_lazy_import__mutmut_40": x_lazy_import__mutmut_40,
+    "x_lazy_import__mutmut_41": x_lazy_import__mutmut_41,
+    "x_lazy_import__mutmut_42": x_lazy_import__mutmut_42,
+    "x_lazy_import__mutmut_43": x_lazy_import__mutmut_43,
+    "x_lazy_import__mutmut_44": x_lazy_import__mutmut_44,
+    "x_lazy_import__mutmut_45": x_lazy_import__mutmut_45,
+    "x_lazy_import__mutmut_46": x_lazy_import__mutmut_46,
+    "x_lazy_import__mutmut_47": x_lazy_import__mutmut_47,
+    "x_lazy_import__mutmut_48": x_lazy_import__mutmut_48,
+    "x_lazy_import__mutmut_49": x_lazy_import__mutmut_49,
+    "x_lazy_import__mutmut_50": x_lazy_import__mutmut_50,
+    "x_lazy_import__mutmut_51": x_lazy_import__mutmut_51,
+    "x_lazy_import__mutmut_52": x_lazy_import__mutmut_52,
+    "x_lazy_import__mutmut_53": x_lazy_import__mutmut_53,
+    "x_lazy_import__mutmut_54": x_lazy_import__mutmut_54,
+    "x_lazy_import__mutmut_55": x_lazy_import__mutmut_55,
+    "x_lazy_import__mutmut_56": x_lazy_import__mutmut_56,
+    "x_lazy_import__mutmut_57": x_lazy_import__mutmut_57,
+    "x_lazy_import__mutmut_58": x_lazy_import__mutmut_58,
+    "x_lazy_import__mutmut_59": x_lazy_import__mutmut_59,
+    "x_lazy_import__mutmut_60": x_lazy_import__mutmut_60,
+    "x_lazy_import__mutmut_61": x_lazy_import__mutmut_61,
+    "x_lazy_import__mutmut_62": x_lazy_import__mutmut_62,
+    "x_lazy_import__mutmut_63": x_lazy_import__mutmut_63,
+    "x_lazy_import__mutmut_64": x_lazy_import__mutmut_64,
+    "x_lazy_import__mutmut_65": x_lazy_import__mutmut_65,
+    "x_lazy_import__mutmut_66": x_lazy_import__mutmut_66,
+    "x_lazy_import__mutmut_67": x_lazy_import__mutmut_67,
+    "x_lazy_import__mutmut_68": x_lazy_import__mutmut_68,
+    "x_lazy_import__mutmut_69": x_lazy_import__mutmut_69,
+    "x_lazy_import__mutmut_70": x_lazy_import__mutmut_70,
+    "x_lazy_import__mutmut_71": x_lazy_import__mutmut_71,
+    "x_lazy_import__mutmut_72": x_lazy_import__mutmut_72,
+    "x_lazy_import__mutmut_73": x_lazy_import__mutmut_73,
+    "x_lazy_import__mutmut_74": x_lazy_import__mutmut_74,
+    "x_lazy_import__mutmut_75": x_lazy_import__mutmut_75,
+    "x_lazy_import__mutmut_76": x_lazy_import__mutmut_76,
 }
+
 
 def lazy_import(*args, **kwargs):
     result = _mutmut_trampoline(x_lazy_import__mutmut_orig, x_lazy_import__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 lazy_import.__signature__ = _mutmut_signature(x_lazy_import__mutmut_orig)
-x_lazy_import__mutmut_orig.__name__ = 'x_lazy_import'
+x_lazy_import__mutmut_orig.__name__ = "x_lazy_import"
 
 
 # <3 🧱🤝🧰🪄

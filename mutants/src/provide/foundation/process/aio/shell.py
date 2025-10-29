@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -809,7 +812,7 @@ async def x_async_shell__mutmut_11(
             "Shell command must be a string",
             code="INVALID_SHELL_COMMAND",
             expected_type="str",
-            )
+        )
 
     # Validate shell safety - raises ShellFeatureError if dangerous patterns found
     validate_shell_safety(cmd, allow_shell_features=allow_shell_features)
@@ -1592,7 +1595,9 @@ async def x_async_shell__mutmut_23(
         )
 
     # Validate shell safety - raises ShellFeatureError if dangerous patterns found
-    validate_shell_safety(cmd, )
+    validate_shell_safety(
+        cmd,
+    )
 
     return await async_run(
         cmd,
@@ -2570,7 +2575,7 @@ async def x_async_shell__mutmut_38(
         check=check,
         timeout=timeout,
         shell=True,  # nosec B604 - Intentional shell usage with validation
-        )
+    )
 
 
 async def x_async_shell__mutmut_39(
@@ -2637,54 +2642,57 @@ async def x_async_shell__mutmut_39(
         **kwargs,
     )
 
-x_async_shell__mutmut_mutants : ClassVar[MutantDict] = {
-'x_async_shell__mutmut_1': x_async_shell__mutmut_1, 
-    'x_async_shell__mutmut_2': x_async_shell__mutmut_2, 
-    'x_async_shell__mutmut_3': x_async_shell__mutmut_3, 
-    'x_async_shell__mutmut_4': x_async_shell__mutmut_4, 
-    'x_async_shell__mutmut_5': x_async_shell__mutmut_5, 
-    'x_async_shell__mutmut_6': x_async_shell__mutmut_6, 
-    'x_async_shell__mutmut_7': x_async_shell__mutmut_7, 
-    'x_async_shell__mutmut_8': x_async_shell__mutmut_8, 
-    'x_async_shell__mutmut_9': x_async_shell__mutmut_9, 
-    'x_async_shell__mutmut_10': x_async_shell__mutmut_10, 
-    'x_async_shell__mutmut_11': x_async_shell__mutmut_11, 
-    'x_async_shell__mutmut_12': x_async_shell__mutmut_12, 
-    'x_async_shell__mutmut_13': x_async_shell__mutmut_13, 
-    'x_async_shell__mutmut_14': x_async_shell__mutmut_14, 
-    'x_async_shell__mutmut_15': x_async_shell__mutmut_15, 
-    'x_async_shell__mutmut_16': x_async_shell__mutmut_16, 
-    'x_async_shell__mutmut_17': x_async_shell__mutmut_17, 
-    'x_async_shell__mutmut_18': x_async_shell__mutmut_18, 
-    'x_async_shell__mutmut_19': x_async_shell__mutmut_19, 
-    'x_async_shell__mutmut_20': x_async_shell__mutmut_20, 
-    'x_async_shell__mutmut_21': x_async_shell__mutmut_21, 
-    'x_async_shell__mutmut_22': x_async_shell__mutmut_22, 
-    'x_async_shell__mutmut_23': x_async_shell__mutmut_23, 
-    'x_async_shell__mutmut_24': x_async_shell__mutmut_24, 
-    'x_async_shell__mutmut_25': x_async_shell__mutmut_25, 
-    'x_async_shell__mutmut_26': x_async_shell__mutmut_26, 
-    'x_async_shell__mutmut_27': x_async_shell__mutmut_27, 
-    'x_async_shell__mutmut_28': x_async_shell__mutmut_28, 
-    'x_async_shell__mutmut_29': x_async_shell__mutmut_29, 
-    'x_async_shell__mutmut_30': x_async_shell__mutmut_30, 
-    'x_async_shell__mutmut_31': x_async_shell__mutmut_31, 
-    'x_async_shell__mutmut_32': x_async_shell__mutmut_32, 
-    'x_async_shell__mutmut_33': x_async_shell__mutmut_33, 
-    'x_async_shell__mutmut_34': x_async_shell__mutmut_34, 
-    'x_async_shell__mutmut_35': x_async_shell__mutmut_35, 
-    'x_async_shell__mutmut_36': x_async_shell__mutmut_36, 
-    'x_async_shell__mutmut_37': x_async_shell__mutmut_37, 
-    'x_async_shell__mutmut_38': x_async_shell__mutmut_38, 
-    'x_async_shell__mutmut_39': x_async_shell__mutmut_39
+
+x_async_shell__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_async_shell__mutmut_1": x_async_shell__mutmut_1,
+    "x_async_shell__mutmut_2": x_async_shell__mutmut_2,
+    "x_async_shell__mutmut_3": x_async_shell__mutmut_3,
+    "x_async_shell__mutmut_4": x_async_shell__mutmut_4,
+    "x_async_shell__mutmut_5": x_async_shell__mutmut_5,
+    "x_async_shell__mutmut_6": x_async_shell__mutmut_6,
+    "x_async_shell__mutmut_7": x_async_shell__mutmut_7,
+    "x_async_shell__mutmut_8": x_async_shell__mutmut_8,
+    "x_async_shell__mutmut_9": x_async_shell__mutmut_9,
+    "x_async_shell__mutmut_10": x_async_shell__mutmut_10,
+    "x_async_shell__mutmut_11": x_async_shell__mutmut_11,
+    "x_async_shell__mutmut_12": x_async_shell__mutmut_12,
+    "x_async_shell__mutmut_13": x_async_shell__mutmut_13,
+    "x_async_shell__mutmut_14": x_async_shell__mutmut_14,
+    "x_async_shell__mutmut_15": x_async_shell__mutmut_15,
+    "x_async_shell__mutmut_16": x_async_shell__mutmut_16,
+    "x_async_shell__mutmut_17": x_async_shell__mutmut_17,
+    "x_async_shell__mutmut_18": x_async_shell__mutmut_18,
+    "x_async_shell__mutmut_19": x_async_shell__mutmut_19,
+    "x_async_shell__mutmut_20": x_async_shell__mutmut_20,
+    "x_async_shell__mutmut_21": x_async_shell__mutmut_21,
+    "x_async_shell__mutmut_22": x_async_shell__mutmut_22,
+    "x_async_shell__mutmut_23": x_async_shell__mutmut_23,
+    "x_async_shell__mutmut_24": x_async_shell__mutmut_24,
+    "x_async_shell__mutmut_25": x_async_shell__mutmut_25,
+    "x_async_shell__mutmut_26": x_async_shell__mutmut_26,
+    "x_async_shell__mutmut_27": x_async_shell__mutmut_27,
+    "x_async_shell__mutmut_28": x_async_shell__mutmut_28,
+    "x_async_shell__mutmut_29": x_async_shell__mutmut_29,
+    "x_async_shell__mutmut_30": x_async_shell__mutmut_30,
+    "x_async_shell__mutmut_31": x_async_shell__mutmut_31,
+    "x_async_shell__mutmut_32": x_async_shell__mutmut_32,
+    "x_async_shell__mutmut_33": x_async_shell__mutmut_33,
+    "x_async_shell__mutmut_34": x_async_shell__mutmut_34,
+    "x_async_shell__mutmut_35": x_async_shell__mutmut_35,
+    "x_async_shell__mutmut_36": x_async_shell__mutmut_36,
+    "x_async_shell__mutmut_37": x_async_shell__mutmut_37,
+    "x_async_shell__mutmut_38": x_async_shell__mutmut_38,
+    "x_async_shell__mutmut_39": x_async_shell__mutmut_39,
 }
+
 
 def async_shell(*args, **kwargs):
     result = _mutmut_trampoline(x_async_shell__mutmut_orig, x_async_shell__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 async_shell.__signature__ = _mutmut_signature(x_async_shell__mutmut_orig)
-x_async_shell__mutmut_orig.__name__ = 'x_async_shell'
+x_async_shell__mutmut_orig.__name__ = "x_async_shell"
 
 
 # <3 🧱🤝🏃🪄

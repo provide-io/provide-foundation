@@ -21,23 +21,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -204,22 +207,25 @@ def x_provide_sleep__mutmut_7(seconds: float) -> None:
         raise ValidationError("Sleep duration must be non-negative")
     time.sleep(None)
 
-x_provide_sleep__mutmut_mutants : ClassVar[MutantDict] = {
-'x_provide_sleep__mutmut_1': x_provide_sleep__mutmut_1, 
-    'x_provide_sleep__mutmut_2': x_provide_sleep__mutmut_2, 
-    'x_provide_sleep__mutmut_3': x_provide_sleep__mutmut_3, 
-    'x_provide_sleep__mutmut_4': x_provide_sleep__mutmut_4, 
-    'x_provide_sleep__mutmut_5': x_provide_sleep__mutmut_5, 
-    'x_provide_sleep__mutmut_6': x_provide_sleep__mutmut_6, 
-    'x_provide_sleep__mutmut_7': x_provide_sleep__mutmut_7
+
+x_provide_sleep__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_provide_sleep__mutmut_1": x_provide_sleep__mutmut_1,
+    "x_provide_sleep__mutmut_2": x_provide_sleep__mutmut_2,
+    "x_provide_sleep__mutmut_3": x_provide_sleep__mutmut_3,
+    "x_provide_sleep__mutmut_4": x_provide_sleep__mutmut_4,
+    "x_provide_sleep__mutmut_5": x_provide_sleep__mutmut_5,
+    "x_provide_sleep__mutmut_6": x_provide_sleep__mutmut_6,
+    "x_provide_sleep__mutmut_7": x_provide_sleep__mutmut_7,
 }
+
 
 def provide_sleep(*args, **kwargs):
     result = _mutmut_trampoline(x_provide_sleep__mutmut_orig, x_provide_sleep__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 provide_sleep.__signature__ = _mutmut_signature(x_provide_sleep__mutmut_orig)
-x_provide_sleep__mutmut_orig.__name__ = 'x_provide_sleep'
+x_provide_sleep__mutmut_orig.__name__ = "x_provide_sleep"
 
 
 def x_provide_now__mutmut_orig(tz: str | ZoneInfo | None = None) -> datetime:
@@ -346,19 +352,22 @@ def x_provide_now__mutmut_4(tz: str | ZoneInfo | None = None) -> datetime:
 
     return datetime.now(None)
 
-x_provide_now__mutmut_mutants : ClassVar[MutantDict] = {
-'x_provide_now__mutmut_1': x_provide_now__mutmut_1, 
-    'x_provide_now__mutmut_2': x_provide_now__mutmut_2, 
-    'x_provide_now__mutmut_3': x_provide_now__mutmut_3, 
-    'x_provide_now__mutmut_4': x_provide_now__mutmut_4
+
+x_provide_now__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_provide_now__mutmut_1": x_provide_now__mutmut_1,
+    "x_provide_now__mutmut_2": x_provide_now__mutmut_2,
+    "x_provide_now__mutmut_3": x_provide_now__mutmut_3,
+    "x_provide_now__mutmut_4": x_provide_now__mutmut_4,
 }
+
 
 def provide_now(*args, **kwargs):
     result = _mutmut_trampoline(x_provide_now__mutmut_orig, x_provide_now__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 provide_now.__signature__ = _mutmut_signature(x_provide_now__mutmut_orig)
-x_provide_now__mutmut_orig.__name__ = 'x_provide_now'
+x_provide_now__mutmut_orig.__name__ = "x_provide_now"
 
 
 # <3 🧱🤝🕰️🪄

@@ -7,9 +7,9 @@ Run with: pytest tests/integrations/openobserve/test_client_error_handling.py -v
 from __future__ import annotations
 
 from typing import Any
-from provide.testkit.mocking import MagicMock
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient

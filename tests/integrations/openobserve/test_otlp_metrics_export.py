@@ -12,7 +12,6 @@ import time
 
 import pytest
 
-from provide.foundation import get_hub
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.config import OpenObserveConfig
 from provide.foundation.logger.config.telemetry import TelemetryConfig

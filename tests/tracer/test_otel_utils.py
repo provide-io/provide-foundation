@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import sys
-from provide.testkit.mocking import Mock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 # Import _HAS_OTEL and other needed components
 try:

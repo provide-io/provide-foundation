@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -369,24 +372,29 @@ def x_sanitize_headers__mutmut_9(
 
     return sanitized
 
-x_sanitize_headers__mutmut_mutants : ClassVar[MutantDict] = {
-'x_sanitize_headers__mutmut_1': x_sanitize_headers__mutmut_1, 
-    'x_sanitize_headers__mutmut_2': x_sanitize_headers__mutmut_2, 
-    'x_sanitize_headers__mutmut_3': x_sanitize_headers__mutmut_3, 
-    'x_sanitize_headers__mutmut_4': x_sanitize_headers__mutmut_4, 
-    'x_sanitize_headers__mutmut_5': x_sanitize_headers__mutmut_5, 
-    'x_sanitize_headers__mutmut_6': x_sanitize_headers__mutmut_6, 
-    'x_sanitize_headers__mutmut_7': x_sanitize_headers__mutmut_7, 
-    'x_sanitize_headers__mutmut_8': x_sanitize_headers__mutmut_8, 
-    'x_sanitize_headers__mutmut_9': x_sanitize_headers__mutmut_9
+
+x_sanitize_headers__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_sanitize_headers__mutmut_1": x_sanitize_headers__mutmut_1,
+    "x_sanitize_headers__mutmut_2": x_sanitize_headers__mutmut_2,
+    "x_sanitize_headers__mutmut_3": x_sanitize_headers__mutmut_3,
+    "x_sanitize_headers__mutmut_4": x_sanitize_headers__mutmut_4,
+    "x_sanitize_headers__mutmut_5": x_sanitize_headers__mutmut_5,
+    "x_sanitize_headers__mutmut_6": x_sanitize_headers__mutmut_6,
+    "x_sanitize_headers__mutmut_7": x_sanitize_headers__mutmut_7,
+    "x_sanitize_headers__mutmut_8": x_sanitize_headers__mutmut_8,
+    "x_sanitize_headers__mutmut_9": x_sanitize_headers__mutmut_9,
 }
 
+
 def sanitize_headers(*args, **kwargs):
-    result = _mutmut_trampoline(x_sanitize_headers__mutmut_orig, x_sanitize_headers__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_sanitize_headers__mutmut_orig, x_sanitize_headers__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 sanitize_headers.__signature__ = _mutmut_signature(x_sanitize_headers__mutmut_orig)
-x_sanitize_headers__mutmut_orig.__name__ = 'x_sanitize_headers'
+x_sanitize_headers__mutmut_orig.__name__ = "x_sanitize_headers"
 
 
 def x_sanitize_uri__mutmut_orig(
@@ -896,7 +904,9 @@ def x_sanitize_uri__mutmut_10(
         return uri
 
     # Parse query parameters
-    params = parse_qs(parsed.query, )
+    params = parse_qs(
+        parsed.query,
+    )
 
     # Convert sensitive params to lowercase for case-insensitive matching
     sensitive_lower = {p.lower() for p in sensitive_params}
@@ -1583,7 +1593,9 @@ def x_sanitize_uri__mutmut_24(
             sanitized_params[key] = values
 
     # Rebuild query string
-    new_query = urlencode(sanitized_params, )
+    new_query = urlencode(
+        sanitized_params,
+    )
 
     # Rebuild URI
     return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, new_query, parsed.fragment))
@@ -1684,41 +1696,44 @@ def x_sanitize_uri__mutmut_26(
     # Rebuild URI
     return urlunparse(None)
 
-x_sanitize_uri__mutmut_mutants : ClassVar[MutantDict] = {
-'x_sanitize_uri__mutmut_1': x_sanitize_uri__mutmut_1, 
-    'x_sanitize_uri__mutmut_2': x_sanitize_uri__mutmut_2, 
-    'x_sanitize_uri__mutmut_3': x_sanitize_uri__mutmut_3, 
-    'x_sanitize_uri__mutmut_4': x_sanitize_uri__mutmut_4, 
-    'x_sanitize_uri__mutmut_5': x_sanitize_uri__mutmut_5, 
-    'x_sanitize_uri__mutmut_6': x_sanitize_uri__mutmut_6, 
-    'x_sanitize_uri__mutmut_7': x_sanitize_uri__mutmut_7, 
-    'x_sanitize_uri__mutmut_8': x_sanitize_uri__mutmut_8, 
-    'x_sanitize_uri__mutmut_9': x_sanitize_uri__mutmut_9, 
-    'x_sanitize_uri__mutmut_10': x_sanitize_uri__mutmut_10, 
-    'x_sanitize_uri__mutmut_11': x_sanitize_uri__mutmut_11, 
-    'x_sanitize_uri__mutmut_12': x_sanitize_uri__mutmut_12, 
-    'x_sanitize_uri__mutmut_13': x_sanitize_uri__mutmut_13, 
-    'x_sanitize_uri__mutmut_14': x_sanitize_uri__mutmut_14, 
-    'x_sanitize_uri__mutmut_15': x_sanitize_uri__mutmut_15, 
-    'x_sanitize_uri__mutmut_16': x_sanitize_uri__mutmut_16, 
-    'x_sanitize_uri__mutmut_17': x_sanitize_uri__mutmut_17, 
-    'x_sanitize_uri__mutmut_18': x_sanitize_uri__mutmut_18, 
-    'x_sanitize_uri__mutmut_19': x_sanitize_uri__mutmut_19, 
-    'x_sanitize_uri__mutmut_20': x_sanitize_uri__mutmut_20, 
-    'x_sanitize_uri__mutmut_21': x_sanitize_uri__mutmut_21, 
-    'x_sanitize_uri__mutmut_22': x_sanitize_uri__mutmut_22, 
-    'x_sanitize_uri__mutmut_23': x_sanitize_uri__mutmut_23, 
-    'x_sanitize_uri__mutmut_24': x_sanitize_uri__mutmut_24, 
-    'x_sanitize_uri__mutmut_25': x_sanitize_uri__mutmut_25, 
-    'x_sanitize_uri__mutmut_26': x_sanitize_uri__mutmut_26
+
+x_sanitize_uri__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_sanitize_uri__mutmut_1": x_sanitize_uri__mutmut_1,
+    "x_sanitize_uri__mutmut_2": x_sanitize_uri__mutmut_2,
+    "x_sanitize_uri__mutmut_3": x_sanitize_uri__mutmut_3,
+    "x_sanitize_uri__mutmut_4": x_sanitize_uri__mutmut_4,
+    "x_sanitize_uri__mutmut_5": x_sanitize_uri__mutmut_5,
+    "x_sanitize_uri__mutmut_6": x_sanitize_uri__mutmut_6,
+    "x_sanitize_uri__mutmut_7": x_sanitize_uri__mutmut_7,
+    "x_sanitize_uri__mutmut_8": x_sanitize_uri__mutmut_8,
+    "x_sanitize_uri__mutmut_9": x_sanitize_uri__mutmut_9,
+    "x_sanitize_uri__mutmut_10": x_sanitize_uri__mutmut_10,
+    "x_sanitize_uri__mutmut_11": x_sanitize_uri__mutmut_11,
+    "x_sanitize_uri__mutmut_12": x_sanitize_uri__mutmut_12,
+    "x_sanitize_uri__mutmut_13": x_sanitize_uri__mutmut_13,
+    "x_sanitize_uri__mutmut_14": x_sanitize_uri__mutmut_14,
+    "x_sanitize_uri__mutmut_15": x_sanitize_uri__mutmut_15,
+    "x_sanitize_uri__mutmut_16": x_sanitize_uri__mutmut_16,
+    "x_sanitize_uri__mutmut_17": x_sanitize_uri__mutmut_17,
+    "x_sanitize_uri__mutmut_18": x_sanitize_uri__mutmut_18,
+    "x_sanitize_uri__mutmut_19": x_sanitize_uri__mutmut_19,
+    "x_sanitize_uri__mutmut_20": x_sanitize_uri__mutmut_20,
+    "x_sanitize_uri__mutmut_21": x_sanitize_uri__mutmut_21,
+    "x_sanitize_uri__mutmut_22": x_sanitize_uri__mutmut_22,
+    "x_sanitize_uri__mutmut_23": x_sanitize_uri__mutmut_23,
+    "x_sanitize_uri__mutmut_24": x_sanitize_uri__mutmut_24,
+    "x_sanitize_uri__mutmut_25": x_sanitize_uri__mutmut_25,
+    "x_sanitize_uri__mutmut_26": x_sanitize_uri__mutmut_26,
 }
+
 
 def sanitize_uri(*args, **kwargs):
     result = _mutmut_trampoline(x_sanitize_uri__mutmut_orig, x_sanitize_uri__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 sanitize_uri.__signature__ = _mutmut_signature(x_sanitize_uri__mutmut_orig)
-x_sanitize_uri__mutmut_orig.__name__ = 'x_sanitize_uri'
+x_sanitize_uri__mutmut_orig.__name__ = "x_sanitize_uri"
 
 
 def x_sanitize_dict__mutmut_orig(
@@ -2611,7 +2626,11 @@ def x_sanitize_dict__mutmut_20(
         if key.lower() in sensitive_lower:
             sanitized[key] = redacted
         elif recursive and isinstance(value, dict):
-            sanitized[key] = sanitize_dict(value, sensitive_keys, redacted, )
+            sanitized[key] = sanitize_dict(
+                value,
+                sensitive_keys,
+                redacted,
+            )
         elif recursive and isinstance(value, list):
             # Sanitize list elements if they're dicts
             sanitized[key] = [
@@ -2956,8 +2975,7 @@ def x_sanitize_dict__mutmut_28(
         elif recursive and isinstance(value, list):
             # Sanitize list elements if they're dicts
             sanitized[key] = [
-                sanitize_dict(item, redacted, recursive) if isinstance(item, dict) else item
-                for item in value
+                sanitize_dict(item, redacted, recursive) if isinstance(item, dict) else item for item in value
             ]
         else:
             sanitized[key] = value
@@ -3042,7 +3060,13 @@ def x_sanitize_dict__mutmut_30(
         elif recursive and isinstance(value, list):
             # Sanitize list elements if they're dicts
             sanitized[key] = [
-                sanitize_dict(item, sensitive_keys, redacted, ) if isinstance(item, dict) else item
+                sanitize_dict(
+                    item,
+                    sensitive_keys,
+                    redacted,
+                )
+                if isinstance(item, dict)
+                else item
                 for item in value
             ]
         else:
@@ -3093,46 +3117,49 @@ def x_sanitize_dict__mutmut_31(
 
     return sanitized
 
-x_sanitize_dict__mutmut_mutants : ClassVar[MutantDict] = {
-'x_sanitize_dict__mutmut_1': x_sanitize_dict__mutmut_1, 
-    'x_sanitize_dict__mutmut_2': x_sanitize_dict__mutmut_2, 
-    'x_sanitize_dict__mutmut_3': x_sanitize_dict__mutmut_3, 
-    'x_sanitize_dict__mutmut_4': x_sanitize_dict__mutmut_4, 
-    'x_sanitize_dict__mutmut_5': x_sanitize_dict__mutmut_5, 
-    'x_sanitize_dict__mutmut_6': x_sanitize_dict__mutmut_6, 
-    'x_sanitize_dict__mutmut_7': x_sanitize_dict__mutmut_7, 
-    'x_sanitize_dict__mutmut_8': x_sanitize_dict__mutmut_8, 
-    'x_sanitize_dict__mutmut_9': x_sanitize_dict__mutmut_9, 
-    'x_sanitize_dict__mutmut_10': x_sanitize_dict__mutmut_10, 
-    'x_sanitize_dict__mutmut_11': x_sanitize_dict__mutmut_11, 
-    'x_sanitize_dict__mutmut_12': x_sanitize_dict__mutmut_12, 
-    'x_sanitize_dict__mutmut_13': x_sanitize_dict__mutmut_13, 
-    'x_sanitize_dict__mutmut_14': x_sanitize_dict__mutmut_14, 
-    'x_sanitize_dict__mutmut_15': x_sanitize_dict__mutmut_15, 
-    'x_sanitize_dict__mutmut_16': x_sanitize_dict__mutmut_16, 
-    'x_sanitize_dict__mutmut_17': x_sanitize_dict__mutmut_17, 
-    'x_sanitize_dict__mutmut_18': x_sanitize_dict__mutmut_18, 
-    'x_sanitize_dict__mutmut_19': x_sanitize_dict__mutmut_19, 
-    'x_sanitize_dict__mutmut_20': x_sanitize_dict__mutmut_20, 
-    'x_sanitize_dict__mutmut_21': x_sanitize_dict__mutmut_21, 
-    'x_sanitize_dict__mutmut_22': x_sanitize_dict__mutmut_22, 
-    'x_sanitize_dict__mutmut_23': x_sanitize_dict__mutmut_23, 
-    'x_sanitize_dict__mutmut_24': x_sanitize_dict__mutmut_24, 
-    'x_sanitize_dict__mutmut_25': x_sanitize_dict__mutmut_25, 
-    'x_sanitize_dict__mutmut_26': x_sanitize_dict__mutmut_26, 
-    'x_sanitize_dict__mutmut_27': x_sanitize_dict__mutmut_27, 
-    'x_sanitize_dict__mutmut_28': x_sanitize_dict__mutmut_28, 
-    'x_sanitize_dict__mutmut_29': x_sanitize_dict__mutmut_29, 
-    'x_sanitize_dict__mutmut_30': x_sanitize_dict__mutmut_30, 
-    'x_sanitize_dict__mutmut_31': x_sanitize_dict__mutmut_31
+
+x_sanitize_dict__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_sanitize_dict__mutmut_1": x_sanitize_dict__mutmut_1,
+    "x_sanitize_dict__mutmut_2": x_sanitize_dict__mutmut_2,
+    "x_sanitize_dict__mutmut_3": x_sanitize_dict__mutmut_3,
+    "x_sanitize_dict__mutmut_4": x_sanitize_dict__mutmut_4,
+    "x_sanitize_dict__mutmut_5": x_sanitize_dict__mutmut_5,
+    "x_sanitize_dict__mutmut_6": x_sanitize_dict__mutmut_6,
+    "x_sanitize_dict__mutmut_7": x_sanitize_dict__mutmut_7,
+    "x_sanitize_dict__mutmut_8": x_sanitize_dict__mutmut_8,
+    "x_sanitize_dict__mutmut_9": x_sanitize_dict__mutmut_9,
+    "x_sanitize_dict__mutmut_10": x_sanitize_dict__mutmut_10,
+    "x_sanitize_dict__mutmut_11": x_sanitize_dict__mutmut_11,
+    "x_sanitize_dict__mutmut_12": x_sanitize_dict__mutmut_12,
+    "x_sanitize_dict__mutmut_13": x_sanitize_dict__mutmut_13,
+    "x_sanitize_dict__mutmut_14": x_sanitize_dict__mutmut_14,
+    "x_sanitize_dict__mutmut_15": x_sanitize_dict__mutmut_15,
+    "x_sanitize_dict__mutmut_16": x_sanitize_dict__mutmut_16,
+    "x_sanitize_dict__mutmut_17": x_sanitize_dict__mutmut_17,
+    "x_sanitize_dict__mutmut_18": x_sanitize_dict__mutmut_18,
+    "x_sanitize_dict__mutmut_19": x_sanitize_dict__mutmut_19,
+    "x_sanitize_dict__mutmut_20": x_sanitize_dict__mutmut_20,
+    "x_sanitize_dict__mutmut_21": x_sanitize_dict__mutmut_21,
+    "x_sanitize_dict__mutmut_22": x_sanitize_dict__mutmut_22,
+    "x_sanitize_dict__mutmut_23": x_sanitize_dict__mutmut_23,
+    "x_sanitize_dict__mutmut_24": x_sanitize_dict__mutmut_24,
+    "x_sanitize_dict__mutmut_25": x_sanitize_dict__mutmut_25,
+    "x_sanitize_dict__mutmut_26": x_sanitize_dict__mutmut_26,
+    "x_sanitize_dict__mutmut_27": x_sanitize_dict__mutmut_27,
+    "x_sanitize_dict__mutmut_28": x_sanitize_dict__mutmut_28,
+    "x_sanitize_dict__mutmut_29": x_sanitize_dict__mutmut_29,
+    "x_sanitize_dict__mutmut_30": x_sanitize_dict__mutmut_30,
+    "x_sanitize_dict__mutmut_31": x_sanitize_dict__mutmut_31,
 }
+
 
 def sanitize_dict(*args, **kwargs):
     result = _mutmut_trampoline(x_sanitize_dict__mutmut_orig, x_sanitize_dict__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 sanitize_dict.__signature__ = _mutmut_signature(x_sanitize_dict__mutmut_orig)
-x_sanitize_dict__mutmut_orig.__name__ = 'x_sanitize_dict'
+x_sanitize_dict__mutmut_orig.__name__ = "x_sanitize_dict"
 
 
 def x_should_sanitize_body__mutmut_orig(content_type: str | None) -> bool:
@@ -3280,9 +3307,7 @@ def x_should_sanitize_body__mutmut_5(content_type: str | None) -> bool:
 
     # Sanitize JSON and form data, skip binary formats
     content_type_lower = content_type.lower()
-    return any(
-        None
-    )
+    return any(None)
 
 
 def x_should_sanitize_body__mutmut_6(content_type: str | None) -> bool:
@@ -3518,29 +3543,34 @@ def x_should_sanitize_body__mutmut_14(content_type: str | None) -> bool:
         ]
     )
 
-x_should_sanitize_body__mutmut_mutants : ClassVar[MutantDict] = {
-'x_should_sanitize_body__mutmut_1': x_should_sanitize_body__mutmut_1, 
-    'x_should_sanitize_body__mutmut_2': x_should_sanitize_body__mutmut_2, 
-    'x_should_sanitize_body__mutmut_3': x_should_sanitize_body__mutmut_3, 
-    'x_should_sanitize_body__mutmut_4': x_should_sanitize_body__mutmut_4, 
-    'x_should_sanitize_body__mutmut_5': x_should_sanitize_body__mutmut_5, 
-    'x_should_sanitize_body__mutmut_6': x_should_sanitize_body__mutmut_6, 
-    'x_should_sanitize_body__mutmut_7': x_should_sanitize_body__mutmut_7, 
-    'x_should_sanitize_body__mutmut_8': x_should_sanitize_body__mutmut_8, 
-    'x_should_sanitize_body__mutmut_9': x_should_sanitize_body__mutmut_9, 
-    'x_should_sanitize_body__mutmut_10': x_should_sanitize_body__mutmut_10, 
-    'x_should_sanitize_body__mutmut_11': x_should_sanitize_body__mutmut_11, 
-    'x_should_sanitize_body__mutmut_12': x_should_sanitize_body__mutmut_12, 
-    'x_should_sanitize_body__mutmut_13': x_should_sanitize_body__mutmut_13, 
-    'x_should_sanitize_body__mutmut_14': x_should_sanitize_body__mutmut_14
+
+x_should_sanitize_body__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_should_sanitize_body__mutmut_1": x_should_sanitize_body__mutmut_1,
+    "x_should_sanitize_body__mutmut_2": x_should_sanitize_body__mutmut_2,
+    "x_should_sanitize_body__mutmut_3": x_should_sanitize_body__mutmut_3,
+    "x_should_sanitize_body__mutmut_4": x_should_sanitize_body__mutmut_4,
+    "x_should_sanitize_body__mutmut_5": x_should_sanitize_body__mutmut_5,
+    "x_should_sanitize_body__mutmut_6": x_should_sanitize_body__mutmut_6,
+    "x_should_sanitize_body__mutmut_7": x_should_sanitize_body__mutmut_7,
+    "x_should_sanitize_body__mutmut_8": x_should_sanitize_body__mutmut_8,
+    "x_should_sanitize_body__mutmut_9": x_should_sanitize_body__mutmut_9,
+    "x_should_sanitize_body__mutmut_10": x_should_sanitize_body__mutmut_10,
+    "x_should_sanitize_body__mutmut_11": x_should_sanitize_body__mutmut_11,
+    "x_should_sanitize_body__mutmut_12": x_should_sanitize_body__mutmut_12,
+    "x_should_sanitize_body__mutmut_13": x_should_sanitize_body__mutmut_13,
+    "x_should_sanitize_body__mutmut_14": x_should_sanitize_body__mutmut_14,
 }
 
+
 def should_sanitize_body(*args, **kwargs):
-    result = _mutmut_trampoline(x_should_sanitize_body__mutmut_orig, x_should_sanitize_body__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_should_sanitize_body__mutmut_orig, x_should_sanitize_body__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 should_sanitize_body.__signature__ = _mutmut_signature(x_should_sanitize_body__mutmut_orig)
-x_should_sanitize_body__mutmut_orig.__name__ = 'x_should_sanitize_body'
+x_should_sanitize_body__mutmut_orig.__name__ = "x_should_sanitize_body"
 
 
 __all__ = [

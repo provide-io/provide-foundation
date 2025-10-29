@@ -66,29 +66,33 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
     else:
         result = mutants[mutant_name](*call_args, **call_kwargs)
     return result
+
 
 # =================================
 # Factory Functions
@@ -99,6 +103,7 @@ def x_default_certificate_alt_names__mutmut_orig() -> list[str]:
     """Factory for default certificate alternative names."""
     return ["localhost"]
 
+
 # =================================
 # Factory Functions
 # =================================
@@ -107,6 +112,7 @@ def x_default_certificate_alt_names__mutmut_orig() -> list[str]:
 def x_default_certificate_alt_names__mutmut_1() -> list[str]:
     """Factory for default certificate alternative names."""
     return ["XXlocalhostXX"]
+
 
 # =================================
 # Factory Functions
@@ -117,17 +123,25 @@ def x_default_certificate_alt_names__mutmut_2() -> list[str]:
     """Factory for default certificate alternative names."""
     return ["LOCALHOST"]
 
-x_default_certificate_alt_names__mutmut_mutants : ClassVar[MutantDict] = {
-'x_default_certificate_alt_names__mutmut_1': x_default_certificate_alt_names__mutmut_1, 
-    'x_default_certificate_alt_names__mutmut_2': x_default_certificate_alt_names__mutmut_2
+
+x_default_certificate_alt_names__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_default_certificate_alt_names__mutmut_1": x_default_certificate_alt_names__mutmut_1,
+    "x_default_certificate_alt_names__mutmut_2": x_default_certificate_alt_names__mutmut_2,
 }
 
+
 def default_certificate_alt_names(*args, **kwargs):
-    result = _mutmut_trampoline(x_default_certificate_alt_names__mutmut_orig, x_default_certificate_alt_names__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_default_certificate_alt_names__mutmut_orig,
+        x_default_certificate_alt_names__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 default_certificate_alt_names.__signature__ = _mutmut_signature(x_default_certificate_alt_names__mutmut_orig)
-x_default_certificate_alt_names__mutmut_orig.__name__ = 'x_default_certificate_alt_names'
+x_default_certificate_alt_names__mutmut_orig.__name__ = "x_default_certificate_alt_names"
 
 
 def default_supported_ec_curves() -> set[str]:
@@ -340,7 +354,9 @@ def x__get_config_value__mutmut_8(key: str, default: str | int) -> str | int:
         from provide.foundation.config import get_config
 
         config = get_config(f"crypto.{key}")
-        if config is not None and hasattr(config, ):
+        if config is not None and hasattr(
+            config,
+        ):
             value = config.value
             # Cast to str | int based on default type
             if isinstance(default, int):
@@ -489,29 +505,34 @@ def x__get_config_value__mutmut_14(key: str, default: str | int) -> str | int:
         # Config system not available, use defaults
         return default
 
-x__get_config_value__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_config_value__mutmut_1': x__get_config_value__mutmut_1, 
-    'x__get_config_value__mutmut_2': x__get_config_value__mutmut_2, 
-    'x__get_config_value__mutmut_3': x__get_config_value__mutmut_3, 
-    'x__get_config_value__mutmut_4': x__get_config_value__mutmut_4, 
-    'x__get_config_value__mutmut_5': x__get_config_value__mutmut_5, 
-    'x__get_config_value__mutmut_6': x__get_config_value__mutmut_6, 
-    'x__get_config_value__mutmut_7': x__get_config_value__mutmut_7, 
-    'x__get_config_value__mutmut_8': x__get_config_value__mutmut_8, 
-    'x__get_config_value__mutmut_9': x__get_config_value__mutmut_9, 
-    'x__get_config_value__mutmut_10': x__get_config_value__mutmut_10, 
-    'x__get_config_value__mutmut_11': x__get_config_value__mutmut_11, 
-    'x__get_config_value__mutmut_12': x__get_config_value__mutmut_12, 
-    'x__get_config_value__mutmut_13': x__get_config_value__mutmut_13, 
-    'x__get_config_value__mutmut_14': x__get_config_value__mutmut_14
+
+x__get_config_value__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_config_value__mutmut_1": x__get_config_value__mutmut_1,
+    "x__get_config_value__mutmut_2": x__get_config_value__mutmut_2,
+    "x__get_config_value__mutmut_3": x__get_config_value__mutmut_3,
+    "x__get_config_value__mutmut_4": x__get_config_value__mutmut_4,
+    "x__get_config_value__mutmut_5": x__get_config_value__mutmut_5,
+    "x__get_config_value__mutmut_6": x__get_config_value__mutmut_6,
+    "x__get_config_value__mutmut_7": x__get_config_value__mutmut_7,
+    "x__get_config_value__mutmut_8": x__get_config_value__mutmut_8,
+    "x__get_config_value__mutmut_9": x__get_config_value__mutmut_9,
+    "x__get_config_value__mutmut_10": x__get_config_value__mutmut_10,
+    "x__get_config_value__mutmut_11": x__get_config_value__mutmut_11,
+    "x__get_config_value__mutmut_12": x__get_config_value__mutmut_12,
+    "x__get_config_value__mutmut_13": x__get_config_value__mutmut_13,
+    "x__get_config_value__mutmut_14": x__get_config_value__mutmut_14,
 }
 
+
 def _get_config_value(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_config_value__mutmut_orig, x__get_config_value__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_config_value__mutmut_orig, x__get_config_value__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_config_value.__signature__ = _mutmut_signature(x__get_config_value__mutmut_orig)
-x__get_config_value__mutmut_orig.__name__ = 'x__get_config_value'
+x__get_config_value__mutmut_orig.__name__ = "x__get_config_value"
 
 
 def x_get_default_hash_algorithm__mutmut_orig() -> str:
@@ -553,7 +574,11 @@ def x_get_default_hash_algorithm__mutmut_5() -> str:
     """Get default hash algorithm from config or fallback."""
     from provide.foundation.crypto.algorithms import DEFAULT_ALGORITHM
 
-    return str(_get_config_value("hash_algorithm", ))
+    return str(
+        _get_config_value(
+            "hash_algorithm",
+        )
+    )
 
 
 def x_get_default_hash_algorithm__mutmut_6() -> str:
@@ -569,22 +594,27 @@ def x_get_default_hash_algorithm__mutmut_7() -> str:
 
     return str(_get_config_value("HASH_ALGORITHM", DEFAULT_ALGORITHM))
 
-x_get_default_hash_algorithm__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_default_hash_algorithm__mutmut_1': x_get_default_hash_algorithm__mutmut_1, 
-    'x_get_default_hash_algorithm__mutmut_2': x_get_default_hash_algorithm__mutmut_2, 
-    'x_get_default_hash_algorithm__mutmut_3': x_get_default_hash_algorithm__mutmut_3, 
-    'x_get_default_hash_algorithm__mutmut_4': x_get_default_hash_algorithm__mutmut_4, 
-    'x_get_default_hash_algorithm__mutmut_5': x_get_default_hash_algorithm__mutmut_5, 
-    'x_get_default_hash_algorithm__mutmut_6': x_get_default_hash_algorithm__mutmut_6, 
-    'x_get_default_hash_algorithm__mutmut_7': x_get_default_hash_algorithm__mutmut_7
+
+x_get_default_hash_algorithm__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_default_hash_algorithm__mutmut_1": x_get_default_hash_algorithm__mutmut_1,
+    "x_get_default_hash_algorithm__mutmut_2": x_get_default_hash_algorithm__mutmut_2,
+    "x_get_default_hash_algorithm__mutmut_3": x_get_default_hash_algorithm__mutmut_3,
+    "x_get_default_hash_algorithm__mutmut_4": x_get_default_hash_algorithm__mutmut_4,
+    "x_get_default_hash_algorithm__mutmut_5": x_get_default_hash_algorithm__mutmut_5,
+    "x_get_default_hash_algorithm__mutmut_6": x_get_default_hash_algorithm__mutmut_6,
+    "x_get_default_hash_algorithm__mutmut_7": x_get_default_hash_algorithm__mutmut_7,
 }
 
+
 def get_default_hash_algorithm(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_default_hash_algorithm__mutmut_orig, x_get_default_hash_algorithm__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_get_default_hash_algorithm__mutmut_orig, x_get_default_hash_algorithm__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 get_default_hash_algorithm.__signature__ = _mutmut_signature(x_get_default_hash_algorithm__mutmut_orig)
-x_get_default_hash_algorithm__mutmut_orig.__name__ = 'x_get_default_hash_algorithm'
+x_get_default_hash_algorithm__mutmut_orig.__name__ = "x_get_default_hash_algorithm"
 
 
 def x_get_default_signature_algorithm__mutmut_orig() -> str:
@@ -614,7 +644,11 @@ def x_get_default_signature_algorithm__mutmut_4() -> str:
 
 def x_get_default_signature_algorithm__mutmut_5() -> str:
     """Get default signature algorithm from config or fallback."""
-    return str(_get_config_value("signature_algorithm", ))
+    return str(
+        _get_config_value(
+            "signature_algorithm",
+        )
+    )
 
 
 def x_get_default_signature_algorithm__mutmut_6() -> str:
@@ -626,22 +660,32 @@ def x_get_default_signature_algorithm__mutmut_7() -> str:
     """Get default signature algorithm from config or fallback."""
     return str(_get_config_value("SIGNATURE_ALGORITHM", DEFAULT_SIGNATURE_ALGORITHM))
 
-x_get_default_signature_algorithm__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_default_signature_algorithm__mutmut_1': x_get_default_signature_algorithm__mutmut_1, 
-    'x_get_default_signature_algorithm__mutmut_2': x_get_default_signature_algorithm__mutmut_2, 
-    'x_get_default_signature_algorithm__mutmut_3': x_get_default_signature_algorithm__mutmut_3, 
-    'x_get_default_signature_algorithm__mutmut_4': x_get_default_signature_algorithm__mutmut_4, 
-    'x_get_default_signature_algorithm__mutmut_5': x_get_default_signature_algorithm__mutmut_5, 
-    'x_get_default_signature_algorithm__mutmut_6': x_get_default_signature_algorithm__mutmut_6, 
-    'x_get_default_signature_algorithm__mutmut_7': x_get_default_signature_algorithm__mutmut_7
+
+x_get_default_signature_algorithm__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_default_signature_algorithm__mutmut_1": x_get_default_signature_algorithm__mutmut_1,
+    "x_get_default_signature_algorithm__mutmut_2": x_get_default_signature_algorithm__mutmut_2,
+    "x_get_default_signature_algorithm__mutmut_3": x_get_default_signature_algorithm__mutmut_3,
+    "x_get_default_signature_algorithm__mutmut_4": x_get_default_signature_algorithm__mutmut_4,
+    "x_get_default_signature_algorithm__mutmut_5": x_get_default_signature_algorithm__mutmut_5,
+    "x_get_default_signature_algorithm__mutmut_6": x_get_default_signature_algorithm__mutmut_6,
+    "x_get_default_signature_algorithm__mutmut_7": x_get_default_signature_algorithm__mutmut_7,
 }
 
-def get_default_signature_algorithm(*args, **kwargs):
-    result = _mutmut_trampoline(x_get_default_signature_algorithm__mutmut_orig, x_get_default_signature_algorithm__mutmut_mutants, args, kwargs)
-    return result 
 
-get_default_signature_algorithm.__signature__ = _mutmut_signature(x_get_default_signature_algorithm__mutmut_orig)
-x_get_default_signature_algorithm__mutmut_orig.__name__ = 'x_get_default_signature_algorithm'
+def get_default_signature_algorithm(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x_get_default_signature_algorithm__mutmut_orig,
+        x_get_default_signature_algorithm__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+get_default_signature_algorithm.__signature__ = _mutmut_signature(
+    x_get_default_signature_algorithm__mutmut_orig
+)
+x_get_default_signature_algorithm__mutmut_orig.__name__ = "x_get_default_signature_algorithm"
 
 
 __all__ = [

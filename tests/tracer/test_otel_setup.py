@@ -1,6 +1,5 @@
 """Comprehensive tests for tracer/otel.py module."""
 
-
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
 import pytest

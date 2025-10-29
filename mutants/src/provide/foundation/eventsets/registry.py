@@ -29,23 +29,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -297,7 +300,7 @@ class EventSetRegistry(Registry):
                 event_set.name,
                 event_set,
                 "eventset",
-                )
+            )
             logger.debug(
                 "Registered event set",
                 name=event_set.name,
@@ -691,7 +694,7 @@ class EventSetRegistry(Registry):
                 name=event_set.name,
                 priority=event_set.priority,
                 field_count=len(event_set.field_mappings),
-                )
+            )
         except AlreadyExistsError:
             logger.trace("Event set already registered", name=event_set.name)
             raise
@@ -889,7 +892,9 @@ class EventSetRegistry(Registry):
                 mapping_count=len(event_set.mappings),
             )
         except AlreadyExistsError:
-            logger.trace("Event set already registered", )
+            logger.trace(
+                "Event set already registered",
+            )
             raise
 
     def xǁEventSetRegistryǁregister_event_set__mutmut_30(self, event_set: EventSet) -> None:
@@ -975,48 +980,54 @@ class EventSetRegistry(Registry):
         except AlreadyExistsError:
             logger.trace("EVENT SET ALREADY REGISTERED", name=event_set.name)
             raise
-    
-    xǁEventSetRegistryǁregister_event_set__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetRegistryǁregister_event_set__mutmut_1': xǁEventSetRegistryǁregister_event_set__mutmut_1, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_2': xǁEventSetRegistryǁregister_event_set__mutmut_2, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_3': xǁEventSetRegistryǁregister_event_set__mutmut_3, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_4': xǁEventSetRegistryǁregister_event_set__mutmut_4, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_5': xǁEventSetRegistryǁregister_event_set__mutmut_5, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_6': xǁEventSetRegistryǁregister_event_set__mutmut_6, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_7': xǁEventSetRegistryǁregister_event_set__mutmut_7, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_8': xǁEventSetRegistryǁregister_event_set__mutmut_8, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_9': xǁEventSetRegistryǁregister_event_set__mutmut_9, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_10': xǁEventSetRegistryǁregister_event_set__mutmut_10, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_11': xǁEventSetRegistryǁregister_event_set__mutmut_11, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_12': xǁEventSetRegistryǁregister_event_set__mutmut_12, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_13': xǁEventSetRegistryǁregister_event_set__mutmut_13, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_14': xǁEventSetRegistryǁregister_event_set__mutmut_14, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_15': xǁEventSetRegistryǁregister_event_set__mutmut_15, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_16': xǁEventSetRegistryǁregister_event_set__mutmut_16, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_17': xǁEventSetRegistryǁregister_event_set__mutmut_17, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_18': xǁEventSetRegistryǁregister_event_set__mutmut_18, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_19': xǁEventSetRegistryǁregister_event_set__mutmut_19, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_20': xǁEventSetRegistryǁregister_event_set__mutmut_20, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_21': xǁEventSetRegistryǁregister_event_set__mutmut_21, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_22': xǁEventSetRegistryǁregister_event_set__mutmut_22, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_23': xǁEventSetRegistryǁregister_event_set__mutmut_23, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_24': xǁEventSetRegistryǁregister_event_set__mutmut_24, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_25': xǁEventSetRegistryǁregister_event_set__mutmut_25, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_26': xǁEventSetRegistryǁregister_event_set__mutmut_26, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_27': xǁEventSetRegistryǁregister_event_set__mutmut_27, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_28': xǁEventSetRegistryǁregister_event_set__mutmut_28, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_29': xǁEventSetRegistryǁregister_event_set__mutmut_29, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_30': xǁEventSetRegistryǁregister_event_set__mutmut_30, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_31': xǁEventSetRegistryǁregister_event_set__mutmut_31, 
-        'xǁEventSetRegistryǁregister_event_set__mutmut_32': xǁEventSetRegistryǁregister_event_set__mutmut_32
+
+    xǁEventSetRegistryǁregister_event_set__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetRegistryǁregister_event_set__mutmut_1": xǁEventSetRegistryǁregister_event_set__mutmut_1,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_2": xǁEventSetRegistryǁregister_event_set__mutmut_2,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_3": xǁEventSetRegistryǁregister_event_set__mutmut_3,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_4": xǁEventSetRegistryǁregister_event_set__mutmut_4,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_5": xǁEventSetRegistryǁregister_event_set__mutmut_5,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_6": xǁEventSetRegistryǁregister_event_set__mutmut_6,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_7": xǁEventSetRegistryǁregister_event_set__mutmut_7,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_8": xǁEventSetRegistryǁregister_event_set__mutmut_8,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_9": xǁEventSetRegistryǁregister_event_set__mutmut_9,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_10": xǁEventSetRegistryǁregister_event_set__mutmut_10,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_11": xǁEventSetRegistryǁregister_event_set__mutmut_11,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_12": xǁEventSetRegistryǁregister_event_set__mutmut_12,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_13": xǁEventSetRegistryǁregister_event_set__mutmut_13,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_14": xǁEventSetRegistryǁregister_event_set__mutmut_14,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_15": xǁEventSetRegistryǁregister_event_set__mutmut_15,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_16": xǁEventSetRegistryǁregister_event_set__mutmut_16,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_17": xǁEventSetRegistryǁregister_event_set__mutmut_17,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_18": xǁEventSetRegistryǁregister_event_set__mutmut_18,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_19": xǁEventSetRegistryǁregister_event_set__mutmut_19,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_20": xǁEventSetRegistryǁregister_event_set__mutmut_20,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_21": xǁEventSetRegistryǁregister_event_set__mutmut_21,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_22": xǁEventSetRegistryǁregister_event_set__mutmut_22,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_23": xǁEventSetRegistryǁregister_event_set__mutmut_23,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_24": xǁEventSetRegistryǁregister_event_set__mutmut_24,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_25": xǁEventSetRegistryǁregister_event_set__mutmut_25,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_26": xǁEventSetRegistryǁregister_event_set__mutmut_26,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_27": xǁEventSetRegistryǁregister_event_set__mutmut_27,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_28": xǁEventSetRegistryǁregister_event_set__mutmut_28,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_29": xǁEventSetRegistryǁregister_event_set__mutmut_29,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_30": xǁEventSetRegistryǁregister_event_set__mutmut_30,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_31": xǁEventSetRegistryǁregister_event_set__mutmut_31,
+        "xǁEventSetRegistryǁregister_event_set__mutmut_32": xǁEventSetRegistryǁregister_event_set__mutmut_32,
     }
-    
+
     def register_event_set(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetRegistryǁregister_event_set__mutmut_orig"), object.__getattribute__(self, "xǁEventSetRegistryǁregister_event_set__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetRegistryǁregister_event_set__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetRegistryǁregister_event_set__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     register_event_set.__signature__ = _mutmut_signature(xǁEventSetRegistryǁregister_event_set__mutmut_orig)
-    xǁEventSetRegistryǁregister_event_set__mutmut_orig.__name__ = 'xǁEventSetRegistryǁregister_event_set'
+    xǁEventSetRegistryǁregister_event_set__mutmut_orig.__name__ = "xǁEventSetRegistryǁregister_event_set"
 
     def xǁEventSetRegistryǁget_event_set__mutmut_orig(self, name: str) -> EventSet:
         """Retrieve an event set by name.
@@ -1121,7 +1132,9 @@ class EventSetRegistry(Registry):
             NotFoundError: If no event set with this name exists
 
         """
-        event_set = self.get(name, )
+        event_set = self.get(
+            name,
+        )
         if event_set is None:
             raise NotFoundError(f"Event set '{name}' not found")
         return event_set
@@ -1197,25 +1210,31 @@ class EventSetRegistry(Registry):
         if event_set is None:
             raise NotFoundError(None)
         return event_set
-    
-    xǁEventSetRegistryǁget_event_set__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetRegistryǁget_event_set__mutmut_1': xǁEventSetRegistryǁget_event_set__mutmut_1, 
-        'xǁEventSetRegistryǁget_event_set__mutmut_2': xǁEventSetRegistryǁget_event_set__mutmut_2, 
-        'xǁEventSetRegistryǁget_event_set__mutmut_3': xǁEventSetRegistryǁget_event_set__mutmut_3, 
-        'xǁEventSetRegistryǁget_event_set__mutmut_4': xǁEventSetRegistryǁget_event_set__mutmut_4, 
-        'xǁEventSetRegistryǁget_event_set__mutmut_5': xǁEventSetRegistryǁget_event_set__mutmut_5, 
-        'xǁEventSetRegistryǁget_event_set__mutmut_6': xǁEventSetRegistryǁget_event_set__mutmut_6, 
-        'xǁEventSetRegistryǁget_event_set__mutmut_7': xǁEventSetRegistryǁget_event_set__mutmut_7, 
-        'xǁEventSetRegistryǁget_event_set__mutmut_8': xǁEventSetRegistryǁget_event_set__mutmut_8, 
-        'xǁEventSetRegistryǁget_event_set__mutmut_9': xǁEventSetRegistryǁget_event_set__mutmut_9
+
+    xǁEventSetRegistryǁget_event_set__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetRegistryǁget_event_set__mutmut_1": xǁEventSetRegistryǁget_event_set__mutmut_1,
+        "xǁEventSetRegistryǁget_event_set__mutmut_2": xǁEventSetRegistryǁget_event_set__mutmut_2,
+        "xǁEventSetRegistryǁget_event_set__mutmut_3": xǁEventSetRegistryǁget_event_set__mutmut_3,
+        "xǁEventSetRegistryǁget_event_set__mutmut_4": xǁEventSetRegistryǁget_event_set__mutmut_4,
+        "xǁEventSetRegistryǁget_event_set__mutmut_5": xǁEventSetRegistryǁget_event_set__mutmut_5,
+        "xǁEventSetRegistryǁget_event_set__mutmut_6": xǁEventSetRegistryǁget_event_set__mutmut_6,
+        "xǁEventSetRegistryǁget_event_set__mutmut_7": xǁEventSetRegistryǁget_event_set__mutmut_7,
+        "xǁEventSetRegistryǁget_event_set__mutmut_8": xǁEventSetRegistryǁget_event_set__mutmut_8,
+        "xǁEventSetRegistryǁget_event_set__mutmut_9": xǁEventSetRegistryǁget_event_set__mutmut_9,
     }
-    
+
     def get_event_set(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetRegistryǁget_event_set__mutmut_orig"), object.__getattribute__(self, "xǁEventSetRegistryǁget_event_set__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetRegistryǁget_event_set__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetRegistryǁget_event_set__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     get_event_set.__signature__ = _mutmut_signature(xǁEventSetRegistryǁget_event_set__mutmut_orig)
-    xǁEventSetRegistryǁget_event_set__mutmut_orig.__name__ = 'xǁEventSetRegistryǁget_event_set'
+    xǁEventSetRegistryǁget_event_set__mutmut_orig.__name__ = "xǁEventSetRegistryǁget_event_set"
 
     def xǁEventSetRegistryǁlist_event_sets__mutmut_orig(self) -> list[EventSet]:
         """List all registered event sets sorted by priority.
@@ -1342,7 +1361,12 @@ class EventSetRegistry(Registry):
 
         """
         names = self.list_dimension("eventset")
-        entries = [self.get_entry(name, ) for name in names]
+        entries = [
+            self.get_entry(
+                name,
+            )
+            for name in names
+        ]
         valid_entries = [entry for entry in entries if entry is not None]
         valid_entries.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
         return [entry.value for entry in valid_entries]
@@ -1448,7 +1472,9 @@ class EventSetRegistry(Registry):
         names = self.list_dimension("eventset")
         entries = [self.get_entry(name, "eventset") for name in names]
         valid_entries = [entry for entry in entries if entry is not None]
-        valid_entries.sort(key=lambda e: e.metadata.get("priority", 0), )
+        valid_entries.sort(
+            key=lambda e: e.metadata.get("priority", 0),
+        )
         return [entry.value for entry in valid_entries]
 
     def xǁEventSetRegistryǁlist_event_sets__mutmut_18(self) -> list[EventSet]:
@@ -1513,7 +1539,12 @@ class EventSetRegistry(Registry):
         names = self.list_dimension("eventset")
         entries = [self.get_entry(name, "eventset") for name in names]
         valid_entries = [entry for entry in entries if entry is not None]
-        valid_entries.sort(key=lambda e: e.metadata.get("priority", ), reverse=True)
+        valid_entries.sort(
+            key=lambda e: e.metadata.get(
+                "priority",
+            ),
+            reverse=True,
+        )
         return [entry.value for entry in valid_entries]
 
     def xǁEventSetRegistryǁlist_event_sets__mutmut_23(self) -> list[EventSet]:
@@ -1567,42 +1598,48 @@ class EventSetRegistry(Registry):
         valid_entries = [entry for entry in entries if entry is not None]
         valid_entries.sort(key=lambda e: e.metadata.get("priority", 0), reverse=False)
         return [entry.value for entry in valid_entries]
-    
-    xǁEventSetRegistryǁlist_event_sets__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetRegistryǁlist_event_sets__mutmut_1': xǁEventSetRegistryǁlist_event_sets__mutmut_1, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_2': xǁEventSetRegistryǁlist_event_sets__mutmut_2, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_3': xǁEventSetRegistryǁlist_event_sets__mutmut_3, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_4': xǁEventSetRegistryǁlist_event_sets__mutmut_4, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_5': xǁEventSetRegistryǁlist_event_sets__mutmut_5, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_6': xǁEventSetRegistryǁlist_event_sets__mutmut_6, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_7': xǁEventSetRegistryǁlist_event_sets__mutmut_7, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_8': xǁEventSetRegistryǁlist_event_sets__mutmut_8, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_9': xǁEventSetRegistryǁlist_event_sets__mutmut_9, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_10': xǁEventSetRegistryǁlist_event_sets__mutmut_10, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_11': xǁEventSetRegistryǁlist_event_sets__mutmut_11, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_12': xǁEventSetRegistryǁlist_event_sets__mutmut_12, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_13': xǁEventSetRegistryǁlist_event_sets__mutmut_13, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_14': xǁEventSetRegistryǁlist_event_sets__mutmut_14, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_15': xǁEventSetRegistryǁlist_event_sets__mutmut_15, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_16': xǁEventSetRegistryǁlist_event_sets__mutmut_16, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_17': xǁEventSetRegistryǁlist_event_sets__mutmut_17, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_18': xǁEventSetRegistryǁlist_event_sets__mutmut_18, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_19': xǁEventSetRegistryǁlist_event_sets__mutmut_19, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_20': xǁEventSetRegistryǁlist_event_sets__mutmut_20, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_21': xǁEventSetRegistryǁlist_event_sets__mutmut_21, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_22': xǁEventSetRegistryǁlist_event_sets__mutmut_22, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_23': xǁEventSetRegistryǁlist_event_sets__mutmut_23, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_24': xǁEventSetRegistryǁlist_event_sets__mutmut_24, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_25': xǁEventSetRegistryǁlist_event_sets__mutmut_25, 
-        'xǁEventSetRegistryǁlist_event_sets__mutmut_26': xǁEventSetRegistryǁlist_event_sets__mutmut_26
+
+    xǁEventSetRegistryǁlist_event_sets__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_1": xǁEventSetRegistryǁlist_event_sets__mutmut_1,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_2": xǁEventSetRegistryǁlist_event_sets__mutmut_2,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_3": xǁEventSetRegistryǁlist_event_sets__mutmut_3,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_4": xǁEventSetRegistryǁlist_event_sets__mutmut_4,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_5": xǁEventSetRegistryǁlist_event_sets__mutmut_5,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_6": xǁEventSetRegistryǁlist_event_sets__mutmut_6,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_7": xǁEventSetRegistryǁlist_event_sets__mutmut_7,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_8": xǁEventSetRegistryǁlist_event_sets__mutmut_8,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_9": xǁEventSetRegistryǁlist_event_sets__mutmut_9,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_10": xǁEventSetRegistryǁlist_event_sets__mutmut_10,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_11": xǁEventSetRegistryǁlist_event_sets__mutmut_11,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_12": xǁEventSetRegistryǁlist_event_sets__mutmut_12,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_13": xǁEventSetRegistryǁlist_event_sets__mutmut_13,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_14": xǁEventSetRegistryǁlist_event_sets__mutmut_14,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_15": xǁEventSetRegistryǁlist_event_sets__mutmut_15,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_16": xǁEventSetRegistryǁlist_event_sets__mutmut_16,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_17": xǁEventSetRegistryǁlist_event_sets__mutmut_17,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_18": xǁEventSetRegistryǁlist_event_sets__mutmut_18,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_19": xǁEventSetRegistryǁlist_event_sets__mutmut_19,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_20": xǁEventSetRegistryǁlist_event_sets__mutmut_20,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_21": xǁEventSetRegistryǁlist_event_sets__mutmut_21,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_22": xǁEventSetRegistryǁlist_event_sets__mutmut_22,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_23": xǁEventSetRegistryǁlist_event_sets__mutmut_23,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_24": xǁEventSetRegistryǁlist_event_sets__mutmut_24,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_25": xǁEventSetRegistryǁlist_event_sets__mutmut_25,
+        "xǁEventSetRegistryǁlist_event_sets__mutmut_26": xǁEventSetRegistryǁlist_event_sets__mutmut_26,
     }
-    
+
     def list_event_sets(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetRegistryǁlist_event_sets__mutmut_orig"), object.__getattribute__(self, "xǁEventSetRegistryǁlist_event_sets__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetRegistryǁlist_event_sets__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetRegistryǁlist_event_sets__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     list_event_sets.__signature__ = _mutmut_signature(xǁEventSetRegistryǁlist_event_sets__mutmut_orig)
-    xǁEventSetRegistryǁlist_event_sets__mutmut_orig.__name__ = 'xǁEventSetRegistryǁlist_event_sets'
+    xǁEventSetRegistryǁlist_event_sets__mutmut_orig.__name__ = "xǁEventSetRegistryǁlist_event_sets"
 
     def xǁEventSetRegistryǁdiscover_sets__mutmut_orig(self) -> None:
         """Auto-discover and register event sets from the sets/ directory.
@@ -2743,7 +2780,9 @@ class EventSetRegistry(Registry):
             try:
                 module = importlib.import_module(module_name)
 
-                if hasattr(module, ):
+                if hasattr(
+                    module,
+                ):
                     event_set = module.EVENT_SET
                     if isinstance(event_set, EventSet):
                         try:
@@ -3309,7 +3348,7 @@ class EventSetRegistry(Registry):
                             logger.debug(
                                 "Auto-discovered event set",
                                 module=module_name,
-                                )
+                            )
                         except AlreadyExistsError:
                             logger.trace(
                                 "Event set already registered during discovery",
@@ -3816,7 +3855,7 @@ class EventSetRegistry(Registry):
                             logger.trace(
                                 "Event set already registered during discovery",
                                 module=module_name,
-                                )
+                            )
                     else:
                         logger.warning(
                             "EVENT_SET is not an EventSet",
@@ -4323,7 +4362,7 @@ class EventSetRegistry(Registry):
                         logger.warning(
                             "EVENT_SET is not an EventSet",
                             module=module_name,
-                            )
+                        )
 
             except ImportError as e:
                 logger.debug(
@@ -4887,7 +4926,7 @@ class EventSetRegistry(Registry):
                 logger.debug(
                     "Failed to import event set module",
                     module=module_name,
-                    )
+                )
             except Exception as e:
                 logger.warning(
                     "Error during event set discovery",
@@ -5562,7 +5601,7 @@ class EventSetRegistry(Registry):
                     "Error during event set discovery",
                     module=module_name,
                     error=str(e),
-                    )
+                )
 
     def xǁEventSetRegistryǁdiscover_sets__mutmut_71(self) -> None:
         """Auto-discover and register event sets from the sets/ directory.
@@ -5843,91 +5882,97 @@ class EventSetRegistry(Registry):
                     error=str(e),
                     error_type=type(None).__name__,
                 )
-    
-    xǁEventSetRegistryǁdiscover_sets__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁEventSetRegistryǁdiscover_sets__mutmut_1': xǁEventSetRegistryǁdiscover_sets__mutmut_1, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_2': xǁEventSetRegistryǁdiscover_sets__mutmut_2, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_3': xǁEventSetRegistryǁdiscover_sets__mutmut_3, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_4': xǁEventSetRegistryǁdiscover_sets__mutmut_4, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_5': xǁEventSetRegistryǁdiscover_sets__mutmut_5, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_6': xǁEventSetRegistryǁdiscover_sets__mutmut_6, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_7': xǁEventSetRegistryǁdiscover_sets__mutmut_7, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_8': xǁEventSetRegistryǁdiscover_sets__mutmut_8, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_9': xǁEventSetRegistryǁdiscover_sets__mutmut_9, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_10': xǁEventSetRegistryǁdiscover_sets__mutmut_10, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_11': xǁEventSetRegistryǁdiscover_sets__mutmut_11, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_12': xǁEventSetRegistryǁdiscover_sets__mutmut_12, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_13': xǁEventSetRegistryǁdiscover_sets__mutmut_13, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_14': xǁEventSetRegistryǁdiscover_sets__mutmut_14, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_15': xǁEventSetRegistryǁdiscover_sets__mutmut_15, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_16': xǁEventSetRegistryǁdiscover_sets__mutmut_16, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_17': xǁEventSetRegistryǁdiscover_sets__mutmut_17, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_18': xǁEventSetRegistryǁdiscover_sets__mutmut_18, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_19': xǁEventSetRegistryǁdiscover_sets__mutmut_19, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_20': xǁEventSetRegistryǁdiscover_sets__mutmut_20, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_21': xǁEventSetRegistryǁdiscover_sets__mutmut_21, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_22': xǁEventSetRegistryǁdiscover_sets__mutmut_22, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_23': xǁEventSetRegistryǁdiscover_sets__mutmut_23, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_24': xǁEventSetRegistryǁdiscover_sets__mutmut_24, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_25': xǁEventSetRegistryǁdiscover_sets__mutmut_25, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_26': xǁEventSetRegistryǁdiscover_sets__mutmut_26, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_27': xǁEventSetRegistryǁdiscover_sets__mutmut_27, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_28': xǁEventSetRegistryǁdiscover_sets__mutmut_28, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_29': xǁEventSetRegistryǁdiscover_sets__mutmut_29, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_30': xǁEventSetRegistryǁdiscover_sets__mutmut_30, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_31': xǁEventSetRegistryǁdiscover_sets__mutmut_31, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_32': xǁEventSetRegistryǁdiscover_sets__mutmut_32, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_33': xǁEventSetRegistryǁdiscover_sets__mutmut_33, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_34': xǁEventSetRegistryǁdiscover_sets__mutmut_34, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_35': xǁEventSetRegistryǁdiscover_sets__mutmut_35, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_36': xǁEventSetRegistryǁdiscover_sets__mutmut_36, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_37': xǁEventSetRegistryǁdiscover_sets__mutmut_37, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_38': xǁEventSetRegistryǁdiscover_sets__mutmut_38, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_39': xǁEventSetRegistryǁdiscover_sets__mutmut_39, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_40': xǁEventSetRegistryǁdiscover_sets__mutmut_40, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_41': xǁEventSetRegistryǁdiscover_sets__mutmut_41, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_42': xǁEventSetRegistryǁdiscover_sets__mutmut_42, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_43': xǁEventSetRegistryǁdiscover_sets__mutmut_43, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_44': xǁEventSetRegistryǁdiscover_sets__mutmut_44, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_45': xǁEventSetRegistryǁdiscover_sets__mutmut_45, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_46': xǁEventSetRegistryǁdiscover_sets__mutmut_46, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_47': xǁEventSetRegistryǁdiscover_sets__mutmut_47, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_48': xǁEventSetRegistryǁdiscover_sets__mutmut_48, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_49': xǁEventSetRegistryǁdiscover_sets__mutmut_49, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_50': xǁEventSetRegistryǁdiscover_sets__mutmut_50, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_51': xǁEventSetRegistryǁdiscover_sets__mutmut_51, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_52': xǁEventSetRegistryǁdiscover_sets__mutmut_52, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_53': xǁEventSetRegistryǁdiscover_sets__mutmut_53, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_54': xǁEventSetRegistryǁdiscover_sets__mutmut_54, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_55': xǁEventSetRegistryǁdiscover_sets__mutmut_55, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_56': xǁEventSetRegistryǁdiscover_sets__mutmut_56, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_57': xǁEventSetRegistryǁdiscover_sets__mutmut_57, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_58': xǁEventSetRegistryǁdiscover_sets__mutmut_58, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_59': xǁEventSetRegistryǁdiscover_sets__mutmut_59, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_60': xǁEventSetRegistryǁdiscover_sets__mutmut_60, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_61': xǁEventSetRegistryǁdiscover_sets__mutmut_61, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_62': xǁEventSetRegistryǁdiscover_sets__mutmut_62, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_63': xǁEventSetRegistryǁdiscover_sets__mutmut_63, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_64': xǁEventSetRegistryǁdiscover_sets__mutmut_64, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_65': xǁEventSetRegistryǁdiscover_sets__mutmut_65, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_66': xǁEventSetRegistryǁdiscover_sets__mutmut_66, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_67': xǁEventSetRegistryǁdiscover_sets__mutmut_67, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_68': xǁEventSetRegistryǁdiscover_sets__mutmut_68, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_69': xǁEventSetRegistryǁdiscover_sets__mutmut_69, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_70': xǁEventSetRegistryǁdiscover_sets__mutmut_70, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_71': xǁEventSetRegistryǁdiscover_sets__mutmut_71, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_72': xǁEventSetRegistryǁdiscover_sets__mutmut_72, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_73': xǁEventSetRegistryǁdiscover_sets__mutmut_73, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_74': xǁEventSetRegistryǁdiscover_sets__mutmut_74, 
-        'xǁEventSetRegistryǁdiscover_sets__mutmut_75': xǁEventSetRegistryǁdiscover_sets__mutmut_75
+
+    xǁEventSetRegistryǁdiscover_sets__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_1": xǁEventSetRegistryǁdiscover_sets__mutmut_1,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_2": xǁEventSetRegistryǁdiscover_sets__mutmut_2,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_3": xǁEventSetRegistryǁdiscover_sets__mutmut_3,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_4": xǁEventSetRegistryǁdiscover_sets__mutmut_4,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_5": xǁEventSetRegistryǁdiscover_sets__mutmut_5,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_6": xǁEventSetRegistryǁdiscover_sets__mutmut_6,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_7": xǁEventSetRegistryǁdiscover_sets__mutmut_7,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_8": xǁEventSetRegistryǁdiscover_sets__mutmut_8,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_9": xǁEventSetRegistryǁdiscover_sets__mutmut_9,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_10": xǁEventSetRegistryǁdiscover_sets__mutmut_10,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_11": xǁEventSetRegistryǁdiscover_sets__mutmut_11,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_12": xǁEventSetRegistryǁdiscover_sets__mutmut_12,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_13": xǁEventSetRegistryǁdiscover_sets__mutmut_13,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_14": xǁEventSetRegistryǁdiscover_sets__mutmut_14,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_15": xǁEventSetRegistryǁdiscover_sets__mutmut_15,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_16": xǁEventSetRegistryǁdiscover_sets__mutmut_16,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_17": xǁEventSetRegistryǁdiscover_sets__mutmut_17,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_18": xǁEventSetRegistryǁdiscover_sets__mutmut_18,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_19": xǁEventSetRegistryǁdiscover_sets__mutmut_19,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_20": xǁEventSetRegistryǁdiscover_sets__mutmut_20,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_21": xǁEventSetRegistryǁdiscover_sets__mutmut_21,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_22": xǁEventSetRegistryǁdiscover_sets__mutmut_22,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_23": xǁEventSetRegistryǁdiscover_sets__mutmut_23,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_24": xǁEventSetRegistryǁdiscover_sets__mutmut_24,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_25": xǁEventSetRegistryǁdiscover_sets__mutmut_25,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_26": xǁEventSetRegistryǁdiscover_sets__mutmut_26,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_27": xǁEventSetRegistryǁdiscover_sets__mutmut_27,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_28": xǁEventSetRegistryǁdiscover_sets__mutmut_28,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_29": xǁEventSetRegistryǁdiscover_sets__mutmut_29,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_30": xǁEventSetRegistryǁdiscover_sets__mutmut_30,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_31": xǁEventSetRegistryǁdiscover_sets__mutmut_31,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_32": xǁEventSetRegistryǁdiscover_sets__mutmut_32,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_33": xǁEventSetRegistryǁdiscover_sets__mutmut_33,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_34": xǁEventSetRegistryǁdiscover_sets__mutmut_34,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_35": xǁEventSetRegistryǁdiscover_sets__mutmut_35,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_36": xǁEventSetRegistryǁdiscover_sets__mutmut_36,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_37": xǁEventSetRegistryǁdiscover_sets__mutmut_37,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_38": xǁEventSetRegistryǁdiscover_sets__mutmut_38,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_39": xǁEventSetRegistryǁdiscover_sets__mutmut_39,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_40": xǁEventSetRegistryǁdiscover_sets__mutmut_40,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_41": xǁEventSetRegistryǁdiscover_sets__mutmut_41,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_42": xǁEventSetRegistryǁdiscover_sets__mutmut_42,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_43": xǁEventSetRegistryǁdiscover_sets__mutmut_43,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_44": xǁEventSetRegistryǁdiscover_sets__mutmut_44,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_45": xǁEventSetRegistryǁdiscover_sets__mutmut_45,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_46": xǁEventSetRegistryǁdiscover_sets__mutmut_46,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_47": xǁEventSetRegistryǁdiscover_sets__mutmut_47,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_48": xǁEventSetRegistryǁdiscover_sets__mutmut_48,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_49": xǁEventSetRegistryǁdiscover_sets__mutmut_49,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_50": xǁEventSetRegistryǁdiscover_sets__mutmut_50,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_51": xǁEventSetRegistryǁdiscover_sets__mutmut_51,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_52": xǁEventSetRegistryǁdiscover_sets__mutmut_52,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_53": xǁEventSetRegistryǁdiscover_sets__mutmut_53,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_54": xǁEventSetRegistryǁdiscover_sets__mutmut_54,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_55": xǁEventSetRegistryǁdiscover_sets__mutmut_55,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_56": xǁEventSetRegistryǁdiscover_sets__mutmut_56,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_57": xǁEventSetRegistryǁdiscover_sets__mutmut_57,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_58": xǁEventSetRegistryǁdiscover_sets__mutmut_58,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_59": xǁEventSetRegistryǁdiscover_sets__mutmut_59,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_60": xǁEventSetRegistryǁdiscover_sets__mutmut_60,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_61": xǁEventSetRegistryǁdiscover_sets__mutmut_61,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_62": xǁEventSetRegistryǁdiscover_sets__mutmut_62,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_63": xǁEventSetRegistryǁdiscover_sets__mutmut_63,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_64": xǁEventSetRegistryǁdiscover_sets__mutmut_64,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_65": xǁEventSetRegistryǁdiscover_sets__mutmut_65,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_66": xǁEventSetRegistryǁdiscover_sets__mutmut_66,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_67": xǁEventSetRegistryǁdiscover_sets__mutmut_67,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_68": xǁEventSetRegistryǁdiscover_sets__mutmut_68,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_69": xǁEventSetRegistryǁdiscover_sets__mutmut_69,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_70": xǁEventSetRegistryǁdiscover_sets__mutmut_70,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_71": xǁEventSetRegistryǁdiscover_sets__mutmut_71,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_72": xǁEventSetRegistryǁdiscover_sets__mutmut_72,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_73": xǁEventSetRegistryǁdiscover_sets__mutmut_73,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_74": xǁEventSetRegistryǁdiscover_sets__mutmut_74,
+        "xǁEventSetRegistryǁdiscover_sets__mutmut_75": xǁEventSetRegistryǁdiscover_sets__mutmut_75,
     }
-    
+
     def discover_sets(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁEventSetRegistryǁdiscover_sets__mutmut_orig"), object.__getattribute__(self, "xǁEventSetRegistryǁdiscover_sets__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁEventSetRegistryǁdiscover_sets__mutmut_orig"),
+            object.__getattribute__(self, "xǁEventSetRegistryǁdiscover_sets__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     discover_sets.__signature__ = _mutmut_signature(xǁEventSetRegistryǁdiscover_sets__mutmut_orig)
-    xǁEventSetRegistryǁdiscover_sets__mutmut_orig.__name__ = 'xǁEventSetRegistryǁdiscover_sets'
+    xǁEventSetRegistryǁdiscover_sets__mutmut_orig.__name__ = "xǁEventSetRegistryǁdiscover_sets"
 
 
 # Global registry instance
@@ -5959,16 +6004,21 @@ def x_register_event_set__mutmut_1(event_set: EventSet) -> None:
     """
     _registry.register_event_set(None)
 
-x_register_event_set__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register_event_set__mutmut_1': x_register_event_set__mutmut_1
+
+x_register_event_set__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register_event_set__mutmut_1": x_register_event_set__mutmut_1
 }
 
+
 def register_event_set(*args, **kwargs):
-    result = _mutmut_trampoline(x_register_event_set__mutmut_orig, x_register_event_set__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_register_event_set__mutmut_orig, x_register_event_set__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 register_event_set.__signature__ = _mutmut_signature(x_register_event_set__mutmut_orig)
-x_register_event_set__mutmut_orig.__name__ = 'x_register_event_set'
+x_register_event_set__mutmut_orig.__name__ = "x_register_event_set"
 
 
 def x_discover_event_sets__mutmut_orig() -> None:
@@ -6165,29 +6215,34 @@ def x_discover_event_sets__mutmut_14() -> None:
     _discovery_completed = True
     logger.debug("EVENT SET DISCOVERY COMPLETED")
 
-x_discover_event_sets__mutmut_mutants : ClassVar[MutantDict] = {
-'x_discover_event_sets__mutmut_1': x_discover_event_sets__mutmut_1, 
-    'x_discover_event_sets__mutmut_2': x_discover_event_sets__mutmut_2, 
-    'x_discover_event_sets__mutmut_3': x_discover_event_sets__mutmut_3, 
-    'x_discover_event_sets__mutmut_4': x_discover_event_sets__mutmut_4, 
-    'x_discover_event_sets__mutmut_5': x_discover_event_sets__mutmut_5, 
-    'x_discover_event_sets__mutmut_6': x_discover_event_sets__mutmut_6, 
-    'x_discover_event_sets__mutmut_7': x_discover_event_sets__mutmut_7, 
-    'x_discover_event_sets__mutmut_8': x_discover_event_sets__mutmut_8, 
-    'x_discover_event_sets__mutmut_9': x_discover_event_sets__mutmut_9, 
-    'x_discover_event_sets__mutmut_10': x_discover_event_sets__mutmut_10, 
-    'x_discover_event_sets__mutmut_11': x_discover_event_sets__mutmut_11, 
-    'x_discover_event_sets__mutmut_12': x_discover_event_sets__mutmut_12, 
-    'x_discover_event_sets__mutmut_13': x_discover_event_sets__mutmut_13, 
-    'x_discover_event_sets__mutmut_14': x_discover_event_sets__mutmut_14
+
+x_discover_event_sets__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_discover_event_sets__mutmut_1": x_discover_event_sets__mutmut_1,
+    "x_discover_event_sets__mutmut_2": x_discover_event_sets__mutmut_2,
+    "x_discover_event_sets__mutmut_3": x_discover_event_sets__mutmut_3,
+    "x_discover_event_sets__mutmut_4": x_discover_event_sets__mutmut_4,
+    "x_discover_event_sets__mutmut_5": x_discover_event_sets__mutmut_5,
+    "x_discover_event_sets__mutmut_6": x_discover_event_sets__mutmut_6,
+    "x_discover_event_sets__mutmut_7": x_discover_event_sets__mutmut_7,
+    "x_discover_event_sets__mutmut_8": x_discover_event_sets__mutmut_8,
+    "x_discover_event_sets__mutmut_9": x_discover_event_sets__mutmut_9,
+    "x_discover_event_sets__mutmut_10": x_discover_event_sets__mutmut_10,
+    "x_discover_event_sets__mutmut_11": x_discover_event_sets__mutmut_11,
+    "x_discover_event_sets__mutmut_12": x_discover_event_sets__mutmut_12,
+    "x_discover_event_sets__mutmut_13": x_discover_event_sets__mutmut_13,
+    "x_discover_event_sets__mutmut_14": x_discover_event_sets__mutmut_14,
 }
 
+
 def discover_event_sets(*args, **kwargs):
-    result = _mutmut_trampoline(x_discover_event_sets__mutmut_orig, x_discover_event_sets__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_discover_event_sets__mutmut_orig, x_discover_event_sets__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 discover_event_sets.__signature__ = _mutmut_signature(x_discover_event_sets__mutmut_orig)
-x_discover_event_sets__mutmut_orig.__name__ = 'x_discover_event_sets'
+x_discover_event_sets__mutmut_orig.__name__ = "x_discover_event_sets"
 
 
 def x_reset_discovery_state__mutmut_orig() -> None:
@@ -6238,21 +6293,26 @@ def x_reset_discovery_state__mutmut_6() -> None:
     _discovery_completed = False
     logger.trace("EVENT SET DISCOVERY STATE RESET")
 
-x_reset_discovery_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_discovery_state__mutmut_1': x_reset_discovery_state__mutmut_1, 
-    'x_reset_discovery_state__mutmut_2': x_reset_discovery_state__mutmut_2, 
-    'x_reset_discovery_state__mutmut_3': x_reset_discovery_state__mutmut_3, 
-    'x_reset_discovery_state__mutmut_4': x_reset_discovery_state__mutmut_4, 
-    'x_reset_discovery_state__mutmut_5': x_reset_discovery_state__mutmut_5, 
-    'x_reset_discovery_state__mutmut_6': x_reset_discovery_state__mutmut_6
+
+x_reset_discovery_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_discovery_state__mutmut_1": x_reset_discovery_state__mutmut_1,
+    "x_reset_discovery_state__mutmut_2": x_reset_discovery_state__mutmut_2,
+    "x_reset_discovery_state__mutmut_3": x_reset_discovery_state__mutmut_3,
+    "x_reset_discovery_state__mutmut_4": x_reset_discovery_state__mutmut_4,
+    "x_reset_discovery_state__mutmut_5": x_reset_discovery_state__mutmut_5,
+    "x_reset_discovery_state__mutmut_6": x_reset_discovery_state__mutmut_6,
 }
 
+
 def reset_discovery_state(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_discovery_state__mutmut_orig, x_reset_discovery_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_discovery_state__mutmut_orig, x_reset_discovery_state__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_discovery_state.__signature__ = _mutmut_signature(x_reset_discovery_state__mutmut_orig)
-x_reset_discovery_state__mutmut_orig.__name__ = 'x_reset_discovery_state'
+x_reset_discovery_state__mutmut_orig.__name__ = "x_reset_discovery_state"
 
 
 def x_clear_registry__mutmut_orig() -> None:
@@ -6318,22 +6378,25 @@ def x_clear_registry__mutmut_7() -> None:
     _discovery_completed = False
     logger.trace("EVENT SET REGISTRY CLEARED")
 
-x_clear_registry__mutmut_mutants : ClassVar[MutantDict] = {
-'x_clear_registry__mutmut_1': x_clear_registry__mutmut_1, 
-    'x_clear_registry__mutmut_2': x_clear_registry__mutmut_2, 
-    'x_clear_registry__mutmut_3': x_clear_registry__mutmut_3, 
-    'x_clear_registry__mutmut_4': x_clear_registry__mutmut_4, 
-    'x_clear_registry__mutmut_5': x_clear_registry__mutmut_5, 
-    'x_clear_registry__mutmut_6': x_clear_registry__mutmut_6, 
-    'x_clear_registry__mutmut_7': x_clear_registry__mutmut_7
+
+x_clear_registry__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_clear_registry__mutmut_1": x_clear_registry__mutmut_1,
+    "x_clear_registry__mutmut_2": x_clear_registry__mutmut_2,
+    "x_clear_registry__mutmut_3": x_clear_registry__mutmut_3,
+    "x_clear_registry__mutmut_4": x_clear_registry__mutmut_4,
+    "x_clear_registry__mutmut_5": x_clear_registry__mutmut_5,
+    "x_clear_registry__mutmut_6": x_clear_registry__mutmut_6,
+    "x_clear_registry__mutmut_7": x_clear_registry__mutmut_7,
 }
+
 
 def clear_registry(*args, **kwargs):
     result = _mutmut_trampoline(x_clear_registry__mutmut_orig, x_clear_registry__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 clear_registry.__signature__ = _mutmut_signature(x_clear_registry__mutmut_orig)
-x_clear_registry__mutmut_orig.__name__ = 'x_clear_registry'
+x_clear_registry__mutmut_orig.__name__ = "x_clear_registry"
 
 
 # <3 🧱🤝📊🪄

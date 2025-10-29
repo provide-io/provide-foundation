@@ -27,23 +27,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -512,30 +515,35 @@ def x__format_event_set_config__mutmut_15(config: EventSet, lines: list[str]) ->
                 None,
             )
 
-x__format_event_set_config__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_event_set_config__mutmut_1': x__format_event_set_config__mutmut_1, 
-    'x__format_event_set_config__mutmut_2': x__format_event_set_config__mutmut_2, 
-    'x__format_event_set_config__mutmut_3': x__format_event_set_config__mutmut_3, 
-    'x__format_event_set_config__mutmut_4': x__format_event_set_config__mutmut_4, 
-    'x__format_event_set_config__mutmut_5': x__format_event_set_config__mutmut_5, 
-    'x__format_event_set_config__mutmut_6': x__format_event_set_config__mutmut_6, 
-    'x__format_event_set_config__mutmut_7': x__format_event_set_config__mutmut_7, 
-    'x__format_event_set_config__mutmut_8': x__format_event_set_config__mutmut_8, 
-    'x__format_event_set_config__mutmut_9': x__format_event_set_config__mutmut_9, 
-    'x__format_event_set_config__mutmut_10': x__format_event_set_config__mutmut_10, 
-    'x__format_event_set_config__mutmut_11': x__format_event_set_config__mutmut_11, 
-    'x__format_event_set_config__mutmut_12': x__format_event_set_config__mutmut_12, 
-    'x__format_event_set_config__mutmut_13': x__format_event_set_config__mutmut_13, 
-    'x__format_event_set_config__mutmut_14': x__format_event_set_config__mutmut_14, 
-    'x__format_event_set_config__mutmut_15': x__format_event_set_config__mutmut_15
+
+x__format_event_set_config__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_event_set_config__mutmut_1": x__format_event_set_config__mutmut_1,
+    "x__format_event_set_config__mutmut_2": x__format_event_set_config__mutmut_2,
+    "x__format_event_set_config__mutmut_3": x__format_event_set_config__mutmut_3,
+    "x__format_event_set_config__mutmut_4": x__format_event_set_config__mutmut_4,
+    "x__format_event_set_config__mutmut_5": x__format_event_set_config__mutmut_5,
+    "x__format_event_set_config__mutmut_6": x__format_event_set_config__mutmut_6,
+    "x__format_event_set_config__mutmut_7": x__format_event_set_config__mutmut_7,
+    "x__format_event_set_config__mutmut_8": x__format_event_set_config__mutmut_8,
+    "x__format_event_set_config__mutmut_9": x__format_event_set_config__mutmut_9,
+    "x__format_event_set_config__mutmut_10": x__format_event_set_config__mutmut_10,
+    "x__format_event_set_config__mutmut_11": x__format_event_set_config__mutmut_11,
+    "x__format_event_set_config__mutmut_12": x__format_event_set_config__mutmut_12,
+    "x__format_event_set_config__mutmut_13": x__format_event_set_config__mutmut_13,
+    "x__format_event_set_config__mutmut_14": x__format_event_set_config__mutmut_14,
+    "x__format_event_set_config__mutmut_15": x__format_event_set_config__mutmut_15,
 }
 
+
 def _format_event_set_config(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_event_set_config__mutmut_orig, x__format_event_set_config__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_event_set_config__mutmut_orig, x__format_event_set_config__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _format_event_set_config.__signature__ = _mutmut_signature(x__format_event_set_config__mutmut_orig)
-x__format_event_set_config__mutmut_orig.__name__ = 'x__format_event_set_config'
+x__format_event_set_config__mutmut_orig.__name__ = "x__format_event_set_config"
 
 
 def x__format_registered_event_sets__mutmut_orig(event_sets: list[EventSet], lines: list[str]) -> None:
@@ -593,7 +601,9 @@ def x__format_registered_event_sets__mutmut_5(event_sets: list[EventSet], lines:
     if event_sets:
         lines.append(f"\nRegistered Event Sets ({len(event_sets)}):")
         for config in event_sets:
-            _format_event_set_config(config, )
+            _format_event_set_config(
+                config,
+            )
     else:
         lines.append("\n  (No event sets registered)")
 
@@ -637,24 +647,32 @@ def x__format_registered_event_sets__mutmut_9(event_sets: list[EventSet], lines:
     else:
         lines.append("\n  (NO EVENT SETS REGISTERED)")
 
-x__format_registered_event_sets__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_registered_event_sets__mutmut_1': x__format_registered_event_sets__mutmut_1, 
-    'x__format_registered_event_sets__mutmut_2': x__format_registered_event_sets__mutmut_2, 
-    'x__format_registered_event_sets__mutmut_3': x__format_registered_event_sets__mutmut_3, 
-    'x__format_registered_event_sets__mutmut_4': x__format_registered_event_sets__mutmut_4, 
-    'x__format_registered_event_sets__mutmut_5': x__format_registered_event_sets__mutmut_5, 
-    'x__format_registered_event_sets__mutmut_6': x__format_registered_event_sets__mutmut_6, 
-    'x__format_registered_event_sets__mutmut_7': x__format_registered_event_sets__mutmut_7, 
-    'x__format_registered_event_sets__mutmut_8': x__format_registered_event_sets__mutmut_8, 
-    'x__format_registered_event_sets__mutmut_9': x__format_registered_event_sets__mutmut_9
+
+x__format_registered_event_sets__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_registered_event_sets__mutmut_1": x__format_registered_event_sets__mutmut_1,
+    "x__format_registered_event_sets__mutmut_2": x__format_registered_event_sets__mutmut_2,
+    "x__format_registered_event_sets__mutmut_3": x__format_registered_event_sets__mutmut_3,
+    "x__format_registered_event_sets__mutmut_4": x__format_registered_event_sets__mutmut_4,
+    "x__format_registered_event_sets__mutmut_5": x__format_registered_event_sets__mutmut_5,
+    "x__format_registered_event_sets__mutmut_6": x__format_registered_event_sets__mutmut_6,
+    "x__format_registered_event_sets__mutmut_7": x__format_registered_event_sets__mutmut_7,
+    "x__format_registered_event_sets__mutmut_8": x__format_registered_event_sets__mutmut_8,
+    "x__format_registered_event_sets__mutmut_9": x__format_registered_event_sets__mutmut_9,
 }
 
+
 def _format_registered_event_sets(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_registered_event_sets__mutmut_orig, x__format_registered_event_sets__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_registered_event_sets__mutmut_orig,
+        x__format_registered_event_sets__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 _format_registered_event_sets.__signature__ = _mutmut_signature(x__format_registered_event_sets__mutmut_orig)
-x__format_registered_event_sets__mutmut_orig.__name__ = 'x__format_registered_event_sets'
+x__format_registered_event_sets__mutmut_orig.__name__ = "x__format_registered_event_sets"
 
 
 def x__format_resolver_state__mutmut_orig(resolver: EventSetResolver, lines: list[str]) -> None:
@@ -1184,38 +1202,43 @@ def x__format_resolver_state__mutmut_23(resolver: EventSetResolver, lines: list[
     else:
         lines.append("\n  (RESOLVER NOT YET INITIALIZED)")
 
-x__format_resolver_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x__format_resolver_state__mutmut_1': x__format_resolver_state__mutmut_1, 
-    'x__format_resolver_state__mutmut_2': x__format_resolver_state__mutmut_2, 
-    'x__format_resolver_state__mutmut_3': x__format_resolver_state__mutmut_3, 
-    'x__format_resolver_state__mutmut_4': x__format_resolver_state__mutmut_4, 
-    'x__format_resolver_state__mutmut_5': x__format_resolver_state__mutmut_5, 
-    'x__format_resolver_state__mutmut_6': x__format_resolver_state__mutmut_6, 
-    'x__format_resolver_state__mutmut_7': x__format_resolver_state__mutmut_7, 
-    'x__format_resolver_state__mutmut_8': x__format_resolver_state__mutmut_8, 
-    'x__format_resolver_state__mutmut_9': x__format_resolver_state__mutmut_9, 
-    'x__format_resolver_state__mutmut_10': x__format_resolver_state__mutmut_10, 
-    'x__format_resolver_state__mutmut_11': x__format_resolver_state__mutmut_11, 
-    'x__format_resolver_state__mutmut_12': x__format_resolver_state__mutmut_12, 
-    'x__format_resolver_state__mutmut_13': x__format_resolver_state__mutmut_13, 
-    'x__format_resolver_state__mutmut_14': x__format_resolver_state__mutmut_14, 
-    'x__format_resolver_state__mutmut_15': x__format_resolver_state__mutmut_15, 
-    'x__format_resolver_state__mutmut_16': x__format_resolver_state__mutmut_16, 
-    'x__format_resolver_state__mutmut_17': x__format_resolver_state__mutmut_17, 
-    'x__format_resolver_state__mutmut_18': x__format_resolver_state__mutmut_18, 
-    'x__format_resolver_state__mutmut_19': x__format_resolver_state__mutmut_19, 
-    'x__format_resolver_state__mutmut_20': x__format_resolver_state__mutmut_20, 
-    'x__format_resolver_state__mutmut_21': x__format_resolver_state__mutmut_21, 
-    'x__format_resolver_state__mutmut_22': x__format_resolver_state__mutmut_22, 
-    'x__format_resolver_state__mutmut_23': x__format_resolver_state__mutmut_23
+
+x__format_resolver_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__format_resolver_state__mutmut_1": x__format_resolver_state__mutmut_1,
+    "x__format_resolver_state__mutmut_2": x__format_resolver_state__mutmut_2,
+    "x__format_resolver_state__mutmut_3": x__format_resolver_state__mutmut_3,
+    "x__format_resolver_state__mutmut_4": x__format_resolver_state__mutmut_4,
+    "x__format_resolver_state__mutmut_5": x__format_resolver_state__mutmut_5,
+    "x__format_resolver_state__mutmut_6": x__format_resolver_state__mutmut_6,
+    "x__format_resolver_state__mutmut_7": x__format_resolver_state__mutmut_7,
+    "x__format_resolver_state__mutmut_8": x__format_resolver_state__mutmut_8,
+    "x__format_resolver_state__mutmut_9": x__format_resolver_state__mutmut_9,
+    "x__format_resolver_state__mutmut_10": x__format_resolver_state__mutmut_10,
+    "x__format_resolver_state__mutmut_11": x__format_resolver_state__mutmut_11,
+    "x__format_resolver_state__mutmut_12": x__format_resolver_state__mutmut_12,
+    "x__format_resolver_state__mutmut_13": x__format_resolver_state__mutmut_13,
+    "x__format_resolver_state__mutmut_14": x__format_resolver_state__mutmut_14,
+    "x__format_resolver_state__mutmut_15": x__format_resolver_state__mutmut_15,
+    "x__format_resolver_state__mutmut_16": x__format_resolver_state__mutmut_16,
+    "x__format_resolver_state__mutmut_17": x__format_resolver_state__mutmut_17,
+    "x__format_resolver_state__mutmut_18": x__format_resolver_state__mutmut_18,
+    "x__format_resolver_state__mutmut_19": x__format_resolver_state__mutmut_19,
+    "x__format_resolver_state__mutmut_20": x__format_resolver_state__mutmut_20,
+    "x__format_resolver_state__mutmut_21": x__format_resolver_state__mutmut_21,
+    "x__format_resolver_state__mutmut_22": x__format_resolver_state__mutmut_22,
+    "x__format_resolver_state__mutmut_23": x__format_resolver_state__mutmut_23,
 }
 
+
 def _format_resolver_state(*args, **kwargs):
-    result = _mutmut_trampoline(x__format_resolver_state__mutmut_orig, x__format_resolver_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__format_resolver_state__mutmut_orig, x__format_resolver_state__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _format_resolver_state.__signature__ = _mutmut_signature(x__format_resolver_state__mutmut_orig)
-x__format_resolver_state__mutmut_orig.__name__ = 'x__format_resolver_state'
+x__format_resolver_state__mutmut_orig.__name__ = "x__format_resolver_state"
 
 
 def x_show_event_matrix__mutmut_orig() -> None:
@@ -1671,7 +1694,9 @@ def x_show_event_matrix__mutmut_15() -> None:
 
     # Show registered event sets
     event_sets = registry.list_event_sets()
-    _format_registered_event_sets(event_sets, )
+    _format_registered_event_sets(
+        event_sets,
+    )
 
     lines.append("\n" + "=" * 70)
 
@@ -1966,7 +1991,9 @@ def x_show_event_matrix__mutmut_25() -> None:
     lines.append("\n" + "=" * 70)
 
     # Show resolved state
-    _format_resolver_state(resolver, )
+    _format_resolver_state(
+        resolver,
+    )
 
     # Log the complete display
     log.info("\n".join(lines))
@@ -2058,43 +2085,48 @@ def x_show_event_matrix__mutmut_28() -> None:
     # Log the complete display
     log.info("XX\nXX".join(lines))
 
-x_show_event_matrix__mutmut_mutants : ClassVar[MutantDict] = {
-'x_show_event_matrix__mutmut_1': x_show_event_matrix__mutmut_1, 
-    'x_show_event_matrix__mutmut_2': x_show_event_matrix__mutmut_2, 
-    'x_show_event_matrix__mutmut_3': x_show_event_matrix__mutmut_3, 
-    'x_show_event_matrix__mutmut_4': x_show_event_matrix__mutmut_4, 
-    'x_show_event_matrix__mutmut_5': x_show_event_matrix__mutmut_5, 
-    'x_show_event_matrix__mutmut_6': x_show_event_matrix__mutmut_6, 
-    'x_show_event_matrix__mutmut_7': x_show_event_matrix__mutmut_7, 
-    'x_show_event_matrix__mutmut_8': x_show_event_matrix__mutmut_8, 
-    'x_show_event_matrix__mutmut_9': x_show_event_matrix__mutmut_9, 
-    'x_show_event_matrix__mutmut_10': x_show_event_matrix__mutmut_10, 
-    'x_show_event_matrix__mutmut_11': x_show_event_matrix__mutmut_11, 
-    'x_show_event_matrix__mutmut_12': x_show_event_matrix__mutmut_12, 
-    'x_show_event_matrix__mutmut_13': x_show_event_matrix__mutmut_13, 
-    'x_show_event_matrix__mutmut_14': x_show_event_matrix__mutmut_14, 
-    'x_show_event_matrix__mutmut_15': x_show_event_matrix__mutmut_15, 
-    'x_show_event_matrix__mutmut_16': x_show_event_matrix__mutmut_16, 
-    'x_show_event_matrix__mutmut_17': x_show_event_matrix__mutmut_17, 
-    'x_show_event_matrix__mutmut_18': x_show_event_matrix__mutmut_18, 
-    'x_show_event_matrix__mutmut_19': x_show_event_matrix__mutmut_19, 
-    'x_show_event_matrix__mutmut_20': x_show_event_matrix__mutmut_20, 
-    'x_show_event_matrix__mutmut_21': x_show_event_matrix__mutmut_21, 
-    'x_show_event_matrix__mutmut_22': x_show_event_matrix__mutmut_22, 
-    'x_show_event_matrix__mutmut_23': x_show_event_matrix__mutmut_23, 
-    'x_show_event_matrix__mutmut_24': x_show_event_matrix__mutmut_24, 
-    'x_show_event_matrix__mutmut_25': x_show_event_matrix__mutmut_25, 
-    'x_show_event_matrix__mutmut_26': x_show_event_matrix__mutmut_26, 
-    'x_show_event_matrix__mutmut_27': x_show_event_matrix__mutmut_27, 
-    'x_show_event_matrix__mutmut_28': x_show_event_matrix__mutmut_28
+
+x_show_event_matrix__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_show_event_matrix__mutmut_1": x_show_event_matrix__mutmut_1,
+    "x_show_event_matrix__mutmut_2": x_show_event_matrix__mutmut_2,
+    "x_show_event_matrix__mutmut_3": x_show_event_matrix__mutmut_3,
+    "x_show_event_matrix__mutmut_4": x_show_event_matrix__mutmut_4,
+    "x_show_event_matrix__mutmut_5": x_show_event_matrix__mutmut_5,
+    "x_show_event_matrix__mutmut_6": x_show_event_matrix__mutmut_6,
+    "x_show_event_matrix__mutmut_7": x_show_event_matrix__mutmut_7,
+    "x_show_event_matrix__mutmut_8": x_show_event_matrix__mutmut_8,
+    "x_show_event_matrix__mutmut_9": x_show_event_matrix__mutmut_9,
+    "x_show_event_matrix__mutmut_10": x_show_event_matrix__mutmut_10,
+    "x_show_event_matrix__mutmut_11": x_show_event_matrix__mutmut_11,
+    "x_show_event_matrix__mutmut_12": x_show_event_matrix__mutmut_12,
+    "x_show_event_matrix__mutmut_13": x_show_event_matrix__mutmut_13,
+    "x_show_event_matrix__mutmut_14": x_show_event_matrix__mutmut_14,
+    "x_show_event_matrix__mutmut_15": x_show_event_matrix__mutmut_15,
+    "x_show_event_matrix__mutmut_16": x_show_event_matrix__mutmut_16,
+    "x_show_event_matrix__mutmut_17": x_show_event_matrix__mutmut_17,
+    "x_show_event_matrix__mutmut_18": x_show_event_matrix__mutmut_18,
+    "x_show_event_matrix__mutmut_19": x_show_event_matrix__mutmut_19,
+    "x_show_event_matrix__mutmut_20": x_show_event_matrix__mutmut_20,
+    "x_show_event_matrix__mutmut_21": x_show_event_matrix__mutmut_21,
+    "x_show_event_matrix__mutmut_22": x_show_event_matrix__mutmut_22,
+    "x_show_event_matrix__mutmut_23": x_show_event_matrix__mutmut_23,
+    "x_show_event_matrix__mutmut_24": x_show_event_matrix__mutmut_24,
+    "x_show_event_matrix__mutmut_25": x_show_event_matrix__mutmut_25,
+    "x_show_event_matrix__mutmut_26": x_show_event_matrix__mutmut_26,
+    "x_show_event_matrix__mutmut_27": x_show_event_matrix__mutmut_27,
+    "x_show_event_matrix__mutmut_28": x_show_event_matrix__mutmut_28,
 }
 
+
 def show_event_matrix(*args, **kwargs):
-    result = _mutmut_trampoline(x_show_event_matrix__mutmut_orig, x_show_event_matrix__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_show_event_matrix__mutmut_orig, x_show_event_matrix__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 show_event_matrix.__signature__ = _mutmut_signature(x_show_event_matrix__mutmut_orig)
-x_show_event_matrix__mutmut_orig.__name__ = 'x_show_event_matrix'
+x_show_event_matrix__mutmut_orig.__name__ = "x_show_event_matrix"
 
 
 # <3 🧱🤝📊🪄

@@ -5,9 +5,8 @@ Run with: pytest tests/utils/test_optional_deps.py -v
 
 from __future__ import annotations
 
-from provide.testkit.mocking import MagicMock, patch
-
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.utils.optional_deps import (

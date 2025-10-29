@@ -45,23 +45,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -175,7 +178,13 @@ def x__get_context__mutmut_10() -> CLIContext | None:
     if not _HAS_CLICK:
         return None
     ctx = click.get_current_context(silent=True)
-    if ctx and hasattr(ctx, ) and isinstance(ctx.obj, CLIContext):
+    if (
+        ctx
+        and hasattr(
+            ctx,
+        )
+        and isinstance(ctx.obj, CLIContext)
+    ):
         return ctx.obj
     return None
 
@@ -199,27 +208,30 @@ def x__get_context__mutmut_12() -> CLIContext | None:
         return ctx.obj
     return None
 
-x__get_context__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_context__mutmut_1': x__get_context__mutmut_1, 
-    'x__get_context__mutmut_2': x__get_context__mutmut_2, 
-    'x__get_context__mutmut_3': x__get_context__mutmut_3, 
-    'x__get_context__mutmut_4': x__get_context__mutmut_4, 
-    'x__get_context__mutmut_5': x__get_context__mutmut_5, 
-    'x__get_context__mutmut_6': x__get_context__mutmut_6, 
-    'x__get_context__mutmut_7': x__get_context__mutmut_7, 
-    'x__get_context__mutmut_8': x__get_context__mutmut_8, 
-    'x__get_context__mutmut_9': x__get_context__mutmut_9, 
-    'x__get_context__mutmut_10': x__get_context__mutmut_10, 
-    'x__get_context__mutmut_11': x__get_context__mutmut_11, 
-    'x__get_context__mutmut_12': x__get_context__mutmut_12
+
+x__get_context__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_context__mutmut_1": x__get_context__mutmut_1,
+    "x__get_context__mutmut_2": x__get_context__mutmut_2,
+    "x__get_context__mutmut_3": x__get_context__mutmut_3,
+    "x__get_context__mutmut_4": x__get_context__mutmut_4,
+    "x__get_context__mutmut_5": x__get_context__mutmut_5,
+    "x__get_context__mutmut_6": x__get_context__mutmut_6,
+    "x__get_context__mutmut_7": x__get_context__mutmut_7,
+    "x__get_context__mutmut_8": x__get_context__mutmut_8,
+    "x__get_context__mutmut_9": x__get_context__mutmut_9,
+    "x__get_context__mutmut_10": x__get_context__mutmut_10,
+    "x__get_context__mutmut_11": x__get_context__mutmut_11,
+    "x__get_context__mutmut_12": x__get_context__mutmut_12,
 }
+
 
 def _get_context(*args, **kwargs):
     result = _mutmut_trampoline(x__get_context__mutmut_orig, x__get_context__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _get_context.__signature__ = _mutmut_signature(x__get_context__mutmut_orig)
-x__get_context__mutmut_orig.__name__ = 'x__get_context'
+x__get_context__mutmut_orig.__name__ = "x__get_context"
 
 
 def x__should_use_json__mutmut_orig(ctx: CLIContext | None = None) -> bool:
@@ -249,18 +261,23 @@ def x__should_use_json__mutmut_3(ctx: CLIContext | None = None) -> bool:
         ctx = _get_context()
     return ctx.json_output if ctx else True
 
-x__should_use_json__mutmut_mutants : ClassVar[MutantDict] = {
-'x__should_use_json__mutmut_1': x__should_use_json__mutmut_1, 
-    'x__should_use_json__mutmut_2': x__should_use_json__mutmut_2, 
-    'x__should_use_json__mutmut_3': x__should_use_json__mutmut_3
+
+x__should_use_json__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__should_use_json__mutmut_1": x__should_use_json__mutmut_1,
+    "x__should_use_json__mutmut_2": x__should_use_json__mutmut_2,
+    "x__should_use_json__mutmut_3": x__should_use_json__mutmut_3,
 }
 
+
 def _should_use_json(*args, **kwargs):
-    result = _mutmut_trampoline(x__should_use_json__mutmut_orig, x__should_use_json__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__should_use_json__mutmut_orig, x__should_use_json__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _should_use_json.__signature__ = _mutmut_signature(x__should_use_json__mutmut_orig)
-x__should_use_json__mutmut_orig.__name__ = 'x__should_use_json'
+x__should_use_json__mutmut_orig.__name__ = "x__should_use_json"
 
 
 def x__should_use_color__mutmut_orig(ctx: CLIContext | None = None) -> bool:
@@ -289,17 +306,22 @@ def x__should_use_color__mutmut_2(ctx: CLIContext | None = None) -> bool:
     # Check if stdin is a TTY
     return sys.stdin.isatty()
 
-x__should_use_color__mutmut_mutants : ClassVar[MutantDict] = {
-'x__should_use_color__mutmut_1': x__should_use_color__mutmut_1, 
-    'x__should_use_color__mutmut_2': x__should_use_color__mutmut_2
+
+x__should_use_color__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__should_use_color__mutmut_1": x__should_use_color__mutmut_1,
+    "x__should_use_color__mutmut_2": x__should_use_color__mutmut_2,
 }
 
+
 def _should_use_color(*args, **kwargs):
-    result = _mutmut_trampoline(x__should_use_color__mutmut_orig, x__should_use_color__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__should_use_color__mutmut_orig, x__should_use_color__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _should_use_color.__signature__ = _mutmut_signature(x__should_use_color__mutmut_orig)
-x__should_use_color__mutmut_orig.__name__ = 'x__should_use_color'
+x__should_use_color__mutmut_orig.__name__ = "x__should_use_color"
 
 
 def x__handle_json_input__mutmut_orig(prompt: str, kwargs: dict[str, Any]) -> str | dict[str, Any] | None:
@@ -553,7 +575,10 @@ def x__handle_json_input__mutmut_7(prompt: str, kwargs: dict[str, Any]) -> str |
         if sys.stdin.isatty() and prompt:
             # Interactive mode, still show prompt to stderr
             if _HAS_CLICK:
-                click.echo(prompt, err=True, )
+                click.echo(
+                    prompt,
+                    err=True,
+                )
             else:
                 print(prompt, file=sys.stderr, end="")
 
@@ -835,7 +860,10 @@ def x__handle_json_input__mutmut_15(prompt: str, kwargs: dict[str, Any]) -> str 
             if _HAS_CLICK:
                 click.echo(prompt, err=True, nl=False)
             else:
-                print(prompt, file=sys.stderr, )
+                print(
+                    prompt,
+                    file=sys.stderr,
+                )
 
         line = sys.stdin.readline().strip()
 
@@ -1268,7 +1296,9 @@ def x__handle_json_input__mutmut_27(prompt: str, kwargs: dict[str, Any]) -> str 
 
         # Apply type conversion if specified
         if type_func := kwargs.get("type"):
-            with contextlib.suppress(TypeError, ):
+            with contextlib.suppress(
+                TypeError,
+            ):
                 data = type_func(data)
 
         if json_key := kwargs.get("json_key"):
@@ -1591,7 +1621,9 @@ def x__handle_json_input__mutmut_36(prompt: str, kwargs: dict[str, Any]) -> str 
         return data
 
     except Exception as e:
-        log.error("Failed to read JSON input", )
+        log.error(
+            "Failed to read JSON input",
+        )
         if json_key := kwargs.get("json_key"):
             return {json_key: None, "error": str(e)}
         return None
@@ -1946,61 +1978,66 @@ def x__handle_json_input__mutmut_46(prompt: str, kwargs: dict[str, Any]) -> str 
             return {json_key: None, "error": str(None)}
         return None
 
-x__handle_json_input__mutmut_mutants : ClassVar[MutantDict] = {
-'x__handle_json_input__mutmut_1': x__handle_json_input__mutmut_1, 
-    'x__handle_json_input__mutmut_2': x__handle_json_input__mutmut_2, 
-    'x__handle_json_input__mutmut_3': x__handle_json_input__mutmut_3, 
-    'x__handle_json_input__mutmut_4': x__handle_json_input__mutmut_4, 
-    'x__handle_json_input__mutmut_5': x__handle_json_input__mutmut_5, 
-    'x__handle_json_input__mutmut_6': x__handle_json_input__mutmut_6, 
-    'x__handle_json_input__mutmut_7': x__handle_json_input__mutmut_7, 
-    'x__handle_json_input__mutmut_8': x__handle_json_input__mutmut_8, 
-    'x__handle_json_input__mutmut_9': x__handle_json_input__mutmut_9, 
-    'x__handle_json_input__mutmut_10': x__handle_json_input__mutmut_10, 
-    'x__handle_json_input__mutmut_11': x__handle_json_input__mutmut_11, 
-    'x__handle_json_input__mutmut_12': x__handle_json_input__mutmut_12, 
-    'x__handle_json_input__mutmut_13': x__handle_json_input__mutmut_13, 
-    'x__handle_json_input__mutmut_14': x__handle_json_input__mutmut_14, 
-    'x__handle_json_input__mutmut_15': x__handle_json_input__mutmut_15, 
-    'x__handle_json_input__mutmut_16': x__handle_json_input__mutmut_16, 
-    'x__handle_json_input__mutmut_17': x__handle_json_input__mutmut_17, 
-    'x__handle_json_input__mutmut_18': x__handle_json_input__mutmut_18, 
-    'x__handle_json_input__mutmut_19': x__handle_json_input__mutmut_19, 
-    'x__handle_json_input__mutmut_20': x__handle_json_input__mutmut_20, 
-    'x__handle_json_input__mutmut_21': x__handle_json_input__mutmut_21, 
-    'x__handle_json_input__mutmut_22': x__handle_json_input__mutmut_22, 
-    'x__handle_json_input__mutmut_23': x__handle_json_input__mutmut_23, 
-    'x__handle_json_input__mutmut_24': x__handle_json_input__mutmut_24, 
-    'x__handle_json_input__mutmut_25': x__handle_json_input__mutmut_25, 
-    'x__handle_json_input__mutmut_26': x__handle_json_input__mutmut_26, 
-    'x__handle_json_input__mutmut_27': x__handle_json_input__mutmut_27, 
-    'x__handle_json_input__mutmut_28': x__handle_json_input__mutmut_28, 
-    'x__handle_json_input__mutmut_29': x__handle_json_input__mutmut_29, 
-    'x__handle_json_input__mutmut_30': x__handle_json_input__mutmut_30, 
-    'x__handle_json_input__mutmut_31': x__handle_json_input__mutmut_31, 
-    'x__handle_json_input__mutmut_32': x__handle_json_input__mutmut_32, 
-    'x__handle_json_input__mutmut_33': x__handle_json_input__mutmut_33, 
-    'x__handle_json_input__mutmut_34': x__handle_json_input__mutmut_34, 
-    'x__handle_json_input__mutmut_35': x__handle_json_input__mutmut_35, 
-    'x__handle_json_input__mutmut_36': x__handle_json_input__mutmut_36, 
-    'x__handle_json_input__mutmut_37': x__handle_json_input__mutmut_37, 
-    'x__handle_json_input__mutmut_38': x__handle_json_input__mutmut_38, 
-    'x__handle_json_input__mutmut_39': x__handle_json_input__mutmut_39, 
-    'x__handle_json_input__mutmut_40': x__handle_json_input__mutmut_40, 
-    'x__handle_json_input__mutmut_41': x__handle_json_input__mutmut_41, 
-    'x__handle_json_input__mutmut_42': x__handle_json_input__mutmut_42, 
-    'x__handle_json_input__mutmut_43': x__handle_json_input__mutmut_43, 
-    'x__handle_json_input__mutmut_44': x__handle_json_input__mutmut_44, 
-    'x__handle_json_input__mutmut_45': x__handle_json_input__mutmut_45, 
-    'x__handle_json_input__mutmut_46': x__handle_json_input__mutmut_46
+
+x__handle_json_input__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__handle_json_input__mutmut_1": x__handle_json_input__mutmut_1,
+    "x__handle_json_input__mutmut_2": x__handle_json_input__mutmut_2,
+    "x__handle_json_input__mutmut_3": x__handle_json_input__mutmut_3,
+    "x__handle_json_input__mutmut_4": x__handle_json_input__mutmut_4,
+    "x__handle_json_input__mutmut_5": x__handle_json_input__mutmut_5,
+    "x__handle_json_input__mutmut_6": x__handle_json_input__mutmut_6,
+    "x__handle_json_input__mutmut_7": x__handle_json_input__mutmut_7,
+    "x__handle_json_input__mutmut_8": x__handle_json_input__mutmut_8,
+    "x__handle_json_input__mutmut_9": x__handle_json_input__mutmut_9,
+    "x__handle_json_input__mutmut_10": x__handle_json_input__mutmut_10,
+    "x__handle_json_input__mutmut_11": x__handle_json_input__mutmut_11,
+    "x__handle_json_input__mutmut_12": x__handle_json_input__mutmut_12,
+    "x__handle_json_input__mutmut_13": x__handle_json_input__mutmut_13,
+    "x__handle_json_input__mutmut_14": x__handle_json_input__mutmut_14,
+    "x__handle_json_input__mutmut_15": x__handle_json_input__mutmut_15,
+    "x__handle_json_input__mutmut_16": x__handle_json_input__mutmut_16,
+    "x__handle_json_input__mutmut_17": x__handle_json_input__mutmut_17,
+    "x__handle_json_input__mutmut_18": x__handle_json_input__mutmut_18,
+    "x__handle_json_input__mutmut_19": x__handle_json_input__mutmut_19,
+    "x__handle_json_input__mutmut_20": x__handle_json_input__mutmut_20,
+    "x__handle_json_input__mutmut_21": x__handle_json_input__mutmut_21,
+    "x__handle_json_input__mutmut_22": x__handle_json_input__mutmut_22,
+    "x__handle_json_input__mutmut_23": x__handle_json_input__mutmut_23,
+    "x__handle_json_input__mutmut_24": x__handle_json_input__mutmut_24,
+    "x__handle_json_input__mutmut_25": x__handle_json_input__mutmut_25,
+    "x__handle_json_input__mutmut_26": x__handle_json_input__mutmut_26,
+    "x__handle_json_input__mutmut_27": x__handle_json_input__mutmut_27,
+    "x__handle_json_input__mutmut_28": x__handle_json_input__mutmut_28,
+    "x__handle_json_input__mutmut_29": x__handle_json_input__mutmut_29,
+    "x__handle_json_input__mutmut_30": x__handle_json_input__mutmut_30,
+    "x__handle_json_input__mutmut_31": x__handle_json_input__mutmut_31,
+    "x__handle_json_input__mutmut_32": x__handle_json_input__mutmut_32,
+    "x__handle_json_input__mutmut_33": x__handle_json_input__mutmut_33,
+    "x__handle_json_input__mutmut_34": x__handle_json_input__mutmut_34,
+    "x__handle_json_input__mutmut_35": x__handle_json_input__mutmut_35,
+    "x__handle_json_input__mutmut_36": x__handle_json_input__mutmut_36,
+    "x__handle_json_input__mutmut_37": x__handle_json_input__mutmut_37,
+    "x__handle_json_input__mutmut_38": x__handle_json_input__mutmut_38,
+    "x__handle_json_input__mutmut_39": x__handle_json_input__mutmut_39,
+    "x__handle_json_input__mutmut_40": x__handle_json_input__mutmut_40,
+    "x__handle_json_input__mutmut_41": x__handle_json_input__mutmut_41,
+    "x__handle_json_input__mutmut_42": x__handle_json_input__mutmut_42,
+    "x__handle_json_input__mutmut_43": x__handle_json_input__mutmut_43,
+    "x__handle_json_input__mutmut_44": x__handle_json_input__mutmut_44,
+    "x__handle_json_input__mutmut_45": x__handle_json_input__mutmut_45,
+    "x__handle_json_input__mutmut_46": x__handle_json_input__mutmut_46,
 }
 
+
 def _handle_json_input(*args, **kwargs):
-    result = _mutmut_trampoline(x__handle_json_input__mutmut_orig, x__handle_json_input__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__handle_json_input__mutmut_orig, x__handle_json_input__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _handle_json_input.__signature__ = _mutmut_signature(x__handle_json_input__mutmut_orig)
-x__handle_json_input__mutmut_orig.__name__ = 'x__handle_json_input'
+x__handle_json_input__mutmut_orig.__name__ = "x__handle_json_input"
 
 
 def x__build_click_prompt_kwargs__mutmut_orig(kwargs: dict[str, Any]) -> dict[str, Any]:
@@ -3115,67 +3152,72 @@ def x__build_click_prompt_kwargs__mutmut_52(kwargs: dict[str, Any]) -> dict[str,
 
     return prompt_kwargs
 
-x__build_click_prompt_kwargs__mutmut_mutants : ClassVar[MutantDict] = {
-'x__build_click_prompt_kwargs__mutmut_1': x__build_click_prompt_kwargs__mutmut_1, 
-    'x__build_click_prompt_kwargs__mutmut_2': x__build_click_prompt_kwargs__mutmut_2, 
-    'x__build_click_prompt_kwargs__mutmut_3': x__build_click_prompt_kwargs__mutmut_3, 
-    'x__build_click_prompt_kwargs__mutmut_4': x__build_click_prompt_kwargs__mutmut_4, 
-    'x__build_click_prompt_kwargs__mutmut_5': x__build_click_prompt_kwargs__mutmut_5, 
-    'x__build_click_prompt_kwargs__mutmut_6': x__build_click_prompt_kwargs__mutmut_6, 
-    'x__build_click_prompt_kwargs__mutmut_7': x__build_click_prompt_kwargs__mutmut_7, 
-    'x__build_click_prompt_kwargs__mutmut_8': x__build_click_prompt_kwargs__mutmut_8, 
-    'x__build_click_prompt_kwargs__mutmut_9': x__build_click_prompt_kwargs__mutmut_9, 
-    'x__build_click_prompt_kwargs__mutmut_10': x__build_click_prompt_kwargs__mutmut_10, 
-    'x__build_click_prompt_kwargs__mutmut_11': x__build_click_prompt_kwargs__mutmut_11, 
-    'x__build_click_prompt_kwargs__mutmut_12': x__build_click_prompt_kwargs__mutmut_12, 
-    'x__build_click_prompt_kwargs__mutmut_13': x__build_click_prompt_kwargs__mutmut_13, 
-    'x__build_click_prompt_kwargs__mutmut_14': x__build_click_prompt_kwargs__mutmut_14, 
-    'x__build_click_prompt_kwargs__mutmut_15': x__build_click_prompt_kwargs__mutmut_15, 
-    'x__build_click_prompt_kwargs__mutmut_16': x__build_click_prompt_kwargs__mutmut_16, 
-    'x__build_click_prompt_kwargs__mutmut_17': x__build_click_prompt_kwargs__mutmut_17, 
-    'x__build_click_prompt_kwargs__mutmut_18': x__build_click_prompt_kwargs__mutmut_18, 
-    'x__build_click_prompt_kwargs__mutmut_19': x__build_click_prompt_kwargs__mutmut_19, 
-    'x__build_click_prompt_kwargs__mutmut_20': x__build_click_prompt_kwargs__mutmut_20, 
-    'x__build_click_prompt_kwargs__mutmut_21': x__build_click_prompt_kwargs__mutmut_21, 
-    'x__build_click_prompt_kwargs__mutmut_22': x__build_click_prompt_kwargs__mutmut_22, 
-    'x__build_click_prompt_kwargs__mutmut_23': x__build_click_prompt_kwargs__mutmut_23, 
-    'x__build_click_prompt_kwargs__mutmut_24': x__build_click_prompt_kwargs__mutmut_24, 
-    'x__build_click_prompt_kwargs__mutmut_25': x__build_click_prompt_kwargs__mutmut_25, 
-    'x__build_click_prompt_kwargs__mutmut_26': x__build_click_prompt_kwargs__mutmut_26, 
-    'x__build_click_prompt_kwargs__mutmut_27': x__build_click_prompt_kwargs__mutmut_27, 
-    'x__build_click_prompt_kwargs__mutmut_28': x__build_click_prompt_kwargs__mutmut_28, 
-    'x__build_click_prompt_kwargs__mutmut_29': x__build_click_prompt_kwargs__mutmut_29, 
-    'x__build_click_prompt_kwargs__mutmut_30': x__build_click_prompt_kwargs__mutmut_30, 
-    'x__build_click_prompt_kwargs__mutmut_31': x__build_click_prompt_kwargs__mutmut_31, 
-    'x__build_click_prompt_kwargs__mutmut_32': x__build_click_prompt_kwargs__mutmut_32, 
-    'x__build_click_prompt_kwargs__mutmut_33': x__build_click_prompt_kwargs__mutmut_33, 
-    'x__build_click_prompt_kwargs__mutmut_34': x__build_click_prompt_kwargs__mutmut_34, 
-    'x__build_click_prompt_kwargs__mutmut_35': x__build_click_prompt_kwargs__mutmut_35, 
-    'x__build_click_prompt_kwargs__mutmut_36': x__build_click_prompt_kwargs__mutmut_36, 
-    'x__build_click_prompt_kwargs__mutmut_37': x__build_click_prompt_kwargs__mutmut_37, 
-    'x__build_click_prompt_kwargs__mutmut_38': x__build_click_prompt_kwargs__mutmut_38, 
-    'x__build_click_prompt_kwargs__mutmut_39': x__build_click_prompt_kwargs__mutmut_39, 
-    'x__build_click_prompt_kwargs__mutmut_40': x__build_click_prompt_kwargs__mutmut_40, 
-    'x__build_click_prompt_kwargs__mutmut_41': x__build_click_prompt_kwargs__mutmut_41, 
-    'x__build_click_prompt_kwargs__mutmut_42': x__build_click_prompt_kwargs__mutmut_42, 
-    'x__build_click_prompt_kwargs__mutmut_43': x__build_click_prompt_kwargs__mutmut_43, 
-    'x__build_click_prompt_kwargs__mutmut_44': x__build_click_prompt_kwargs__mutmut_44, 
-    'x__build_click_prompt_kwargs__mutmut_45': x__build_click_prompt_kwargs__mutmut_45, 
-    'x__build_click_prompt_kwargs__mutmut_46': x__build_click_prompt_kwargs__mutmut_46, 
-    'x__build_click_prompt_kwargs__mutmut_47': x__build_click_prompt_kwargs__mutmut_47, 
-    'x__build_click_prompt_kwargs__mutmut_48': x__build_click_prompt_kwargs__mutmut_48, 
-    'x__build_click_prompt_kwargs__mutmut_49': x__build_click_prompt_kwargs__mutmut_49, 
-    'x__build_click_prompt_kwargs__mutmut_50': x__build_click_prompt_kwargs__mutmut_50, 
-    'x__build_click_prompt_kwargs__mutmut_51': x__build_click_prompt_kwargs__mutmut_51, 
-    'x__build_click_prompt_kwargs__mutmut_52': x__build_click_prompt_kwargs__mutmut_52
+
+x__build_click_prompt_kwargs__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__build_click_prompt_kwargs__mutmut_1": x__build_click_prompt_kwargs__mutmut_1,
+    "x__build_click_prompt_kwargs__mutmut_2": x__build_click_prompt_kwargs__mutmut_2,
+    "x__build_click_prompt_kwargs__mutmut_3": x__build_click_prompt_kwargs__mutmut_3,
+    "x__build_click_prompt_kwargs__mutmut_4": x__build_click_prompt_kwargs__mutmut_4,
+    "x__build_click_prompt_kwargs__mutmut_5": x__build_click_prompt_kwargs__mutmut_5,
+    "x__build_click_prompt_kwargs__mutmut_6": x__build_click_prompt_kwargs__mutmut_6,
+    "x__build_click_prompt_kwargs__mutmut_7": x__build_click_prompt_kwargs__mutmut_7,
+    "x__build_click_prompt_kwargs__mutmut_8": x__build_click_prompt_kwargs__mutmut_8,
+    "x__build_click_prompt_kwargs__mutmut_9": x__build_click_prompt_kwargs__mutmut_9,
+    "x__build_click_prompt_kwargs__mutmut_10": x__build_click_prompt_kwargs__mutmut_10,
+    "x__build_click_prompt_kwargs__mutmut_11": x__build_click_prompt_kwargs__mutmut_11,
+    "x__build_click_prompt_kwargs__mutmut_12": x__build_click_prompt_kwargs__mutmut_12,
+    "x__build_click_prompt_kwargs__mutmut_13": x__build_click_prompt_kwargs__mutmut_13,
+    "x__build_click_prompt_kwargs__mutmut_14": x__build_click_prompt_kwargs__mutmut_14,
+    "x__build_click_prompt_kwargs__mutmut_15": x__build_click_prompt_kwargs__mutmut_15,
+    "x__build_click_prompt_kwargs__mutmut_16": x__build_click_prompt_kwargs__mutmut_16,
+    "x__build_click_prompt_kwargs__mutmut_17": x__build_click_prompt_kwargs__mutmut_17,
+    "x__build_click_prompt_kwargs__mutmut_18": x__build_click_prompt_kwargs__mutmut_18,
+    "x__build_click_prompt_kwargs__mutmut_19": x__build_click_prompt_kwargs__mutmut_19,
+    "x__build_click_prompt_kwargs__mutmut_20": x__build_click_prompt_kwargs__mutmut_20,
+    "x__build_click_prompt_kwargs__mutmut_21": x__build_click_prompt_kwargs__mutmut_21,
+    "x__build_click_prompt_kwargs__mutmut_22": x__build_click_prompt_kwargs__mutmut_22,
+    "x__build_click_prompt_kwargs__mutmut_23": x__build_click_prompt_kwargs__mutmut_23,
+    "x__build_click_prompt_kwargs__mutmut_24": x__build_click_prompt_kwargs__mutmut_24,
+    "x__build_click_prompt_kwargs__mutmut_25": x__build_click_prompt_kwargs__mutmut_25,
+    "x__build_click_prompt_kwargs__mutmut_26": x__build_click_prompt_kwargs__mutmut_26,
+    "x__build_click_prompt_kwargs__mutmut_27": x__build_click_prompt_kwargs__mutmut_27,
+    "x__build_click_prompt_kwargs__mutmut_28": x__build_click_prompt_kwargs__mutmut_28,
+    "x__build_click_prompt_kwargs__mutmut_29": x__build_click_prompt_kwargs__mutmut_29,
+    "x__build_click_prompt_kwargs__mutmut_30": x__build_click_prompt_kwargs__mutmut_30,
+    "x__build_click_prompt_kwargs__mutmut_31": x__build_click_prompt_kwargs__mutmut_31,
+    "x__build_click_prompt_kwargs__mutmut_32": x__build_click_prompt_kwargs__mutmut_32,
+    "x__build_click_prompt_kwargs__mutmut_33": x__build_click_prompt_kwargs__mutmut_33,
+    "x__build_click_prompt_kwargs__mutmut_34": x__build_click_prompt_kwargs__mutmut_34,
+    "x__build_click_prompt_kwargs__mutmut_35": x__build_click_prompt_kwargs__mutmut_35,
+    "x__build_click_prompt_kwargs__mutmut_36": x__build_click_prompt_kwargs__mutmut_36,
+    "x__build_click_prompt_kwargs__mutmut_37": x__build_click_prompt_kwargs__mutmut_37,
+    "x__build_click_prompt_kwargs__mutmut_38": x__build_click_prompt_kwargs__mutmut_38,
+    "x__build_click_prompt_kwargs__mutmut_39": x__build_click_prompt_kwargs__mutmut_39,
+    "x__build_click_prompt_kwargs__mutmut_40": x__build_click_prompt_kwargs__mutmut_40,
+    "x__build_click_prompt_kwargs__mutmut_41": x__build_click_prompt_kwargs__mutmut_41,
+    "x__build_click_prompt_kwargs__mutmut_42": x__build_click_prompt_kwargs__mutmut_42,
+    "x__build_click_prompt_kwargs__mutmut_43": x__build_click_prompt_kwargs__mutmut_43,
+    "x__build_click_prompt_kwargs__mutmut_44": x__build_click_prompt_kwargs__mutmut_44,
+    "x__build_click_prompt_kwargs__mutmut_45": x__build_click_prompt_kwargs__mutmut_45,
+    "x__build_click_prompt_kwargs__mutmut_46": x__build_click_prompt_kwargs__mutmut_46,
+    "x__build_click_prompt_kwargs__mutmut_47": x__build_click_prompt_kwargs__mutmut_47,
+    "x__build_click_prompt_kwargs__mutmut_48": x__build_click_prompt_kwargs__mutmut_48,
+    "x__build_click_prompt_kwargs__mutmut_49": x__build_click_prompt_kwargs__mutmut_49,
+    "x__build_click_prompt_kwargs__mutmut_50": x__build_click_prompt_kwargs__mutmut_50,
+    "x__build_click_prompt_kwargs__mutmut_51": x__build_click_prompt_kwargs__mutmut_51,
+    "x__build_click_prompt_kwargs__mutmut_52": x__build_click_prompt_kwargs__mutmut_52,
 }
 
+
 def _build_click_prompt_kwargs(*args, **kwargs):
-    result = _mutmut_trampoline(x__build_click_prompt_kwargs__mutmut_orig, x__build_click_prompt_kwargs__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__build_click_prompt_kwargs__mutmut_orig, x__build_click_prompt_kwargs__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _build_click_prompt_kwargs.__signature__ = _mutmut_signature(x__build_click_prompt_kwargs__mutmut_orig)
-x__build_click_prompt_kwargs__mutmut_orig.__name__ = 'x__build_click_prompt_kwargs'
+x__build_click_prompt_kwargs__mutmut_orig.__name__ = "x__build_click_prompt_kwargs"
 
 
 def x__apply_prompt_styling__mutmut_orig(prompt: str, kwargs: dict[str, Any], ctx: CLIContext | None) -> str:
@@ -3340,7 +3382,9 @@ def x__apply_prompt_styling__mutmut_13(prompt: str, kwargs: dict[str, Any], ctx:
         return prompt
 
     color = kwargs.get("color")
-    bold = kwargs.get("bold", )
+    bold = kwargs.get(
+        "bold",
+    )
     if color or bold:
         return click.style(prompt, fg=color, bold=bold)
     return prompt
@@ -3462,41 +3506,49 @@ def x__apply_prompt_styling__mutmut_23(prompt: str, kwargs: dict[str, Any], ctx:
     color = kwargs.get("color")
     bold = kwargs.get("bold", False)
     if color or bold:
-        return click.style(prompt, fg=color, )
+        return click.style(
+            prompt,
+            fg=color,
+        )
     return prompt
 
-x__apply_prompt_styling__mutmut_mutants : ClassVar[MutantDict] = {
-'x__apply_prompt_styling__mutmut_1': x__apply_prompt_styling__mutmut_1, 
-    'x__apply_prompt_styling__mutmut_2': x__apply_prompt_styling__mutmut_2, 
-    'x__apply_prompt_styling__mutmut_3': x__apply_prompt_styling__mutmut_3, 
-    'x__apply_prompt_styling__mutmut_4': x__apply_prompt_styling__mutmut_4, 
-    'x__apply_prompt_styling__mutmut_5': x__apply_prompt_styling__mutmut_5, 
-    'x__apply_prompt_styling__mutmut_6': x__apply_prompt_styling__mutmut_6, 
-    'x__apply_prompt_styling__mutmut_7': x__apply_prompt_styling__mutmut_7, 
-    'x__apply_prompt_styling__mutmut_8': x__apply_prompt_styling__mutmut_8, 
-    'x__apply_prompt_styling__mutmut_9': x__apply_prompt_styling__mutmut_9, 
-    'x__apply_prompt_styling__mutmut_10': x__apply_prompt_styling__mutmut_10, 
-    'x__apply_prompt_styling__mutmut_11': x__apply_prompt_styling__mutmut_11, 
-    'x__apply_prompt_styling__mutmut_12': x__apply_prompt_styling__mutmut_12, 
-    'x__apply_prompt_styling__mutmut_13': x__apply_prompt_styling__mutmut_13, 
-    'x__apply_prompt_styling__mutmut_14': x__apply_prompt_styling__mutmut_14, 
-    'x__apply_prompt_styling__mutmut_15': x__apply_prompt_styling__mutmut_15, 
-    'x__apply_prompt_styling__mutmut_16': x__apply_prompt_styling__mutmut_16, 
-    'x__apply_prompt_styling__mutmut_17': x__apply_prompt_styling__mutmut_17, 
-    'x__apply_prompt_styling__mutmut_18': x__apply_prompt_styling__mutmut_18, 
-    'x__apply_prompt_styling__mutmut_19': x__apply_prompt_styling__mutmut_19, 
-    'x__apply_prompt_styling__mutmut_20': x__apply_prompt_styling__mutmut_20, 
-    'x__apply_prompt_styling__mutmut_21': x__apply_prompt_styling__mutmut_21, 
-    'x__apply_prompt_styling__mutmut_22': x__apply_prompt_styling__mutmut_22, 
-    'x__apply_prompt_styling__mutmut_23': x__apply_prompt_styling__mutmut_23
+
+x__apply_prompt_styling__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__apply_prompt_styling__mutmut_1": x__apply_prompt_styling__mutmut_1,
+    "x__apply_prompt_styling__mutmut_2": x__apply_prompt_styling__mutmut_2,
+    "x__apply_prompt_styling__mutmut_3": x__apply_prompt_styling__mutmut_3,
+    "x__apply_prompt_styling__mutmut_4": x__apply_prompt_styling__mutmut_4,
+    "x__apply_prompt_styling__mutmut_5": x__apply_prompt_styling__mutmut_5,
+    "x__apply_prompt_styling__mutmut_6": x__apply_prompt_styling__mutmut_6,
+    "x__apply_prompt_styling__mutmut_7": x__apply_prompt_styling__mutmut_7,
+    "x__apply_prompt_styling__mutmut_8": x__apply_prompt_styling__mutmut_8,
+    "x__apply_prompt_styling__mutmut_9": x__apply_prompt_styling__mutmut_9,
+    "x__apply_prompt_styling__mutmut_10": x__apply_prompt_styling__mutmut_10,
+    "x__apply_prompt_styling__mutmut_11": x__apply_prompt_styling__mutmut_11,
+    "x__apply_prompt_styling__mutmut_12": x__apply_prompt_styling__mutmut_12,
+    "x__apply_prompt_styling__mutmut_13": x__apply_prompt_styling__mutmut_13,
+    "x__apply_prompt_styling__mutmut_14": x__apply_prompt_styling__mutmut_14,
+    "x__apply_prompt_styling__mutmut_15": x__apply_prompt_styling__mutmut_15,
+    "x__apply_prompt_styling__mutmut_16": x__apply_prompt_styling__mutmut_16,
+    "x__apply_prompt_styling__mutmut_17": x__apply_prompt_styling__mutmut_17,
+    "x__apply_prompt_styling__mutmut_18": x__apply_prompt_styling__mutmut_18,
+    "x__apply_prompt_styling__mutmut_19": x__apply_prompt_styling__mutmut_19,
+    "x__apply_prompt_styling__mutmut_20": x__apply_prompt_styling__mutmut_20,
+    "x__apply_prompt_styling__mutmut_21": x__apply_prompt_styling__mutmut_21,
+    "x__apply_prompt_styling__mutmut_22": x__apply_prompt_styling__mutmut_22,
+    "x__apply_prompt_styling__mutmut_23": x__apply_prompt_styling__mutmut_23,
 }
 
+
 def _apply_prompt_styling(*args, **kwargs):
-    result = _mutmut_trampoline(x__apply_prompt_styling__mutmut_orig, x__apply_prompt_styling__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__apply_prompt_styling__mutmut_orig, x__apply_prompt_styling__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _apply_prompt_styling.__signature__ = _mutmut_signature(x__apply_prompt_styling__mutmut_orig)
-x__apply_prompt_styling__mutmut_orig.__name__ = 'x__apply_prompt_styling'
+x__apply_prompt_styling__mutmut_orig.__name__ = "x__apply_prompt_styling"
 
 
 def x__handle_click_input__mutmut_orig(prompt: str, kwargs: dict[str, Any], ctx: CLIContext | None) -> Any:
@@ -3565,7 +3617,10 @@ def x__handle_click_input__mutmut_8(prompt: str, kwargs: dict[str, Any], ctx: CL
 def x__handle_click_input__mutmut_9(prompt: str, kwargs: dict[str, Any], ctx: CLIContext | None) -> Any:
     """Handle input using click.prompt."""
     prompt_kwargs = _build_click_prompt_kwargs(kwargs)
-    styled_prompt = _apply_prompt_styling(prompt, kwargs, )
+    styled_prompt = _apply_prompt_styling(
+        prompt,
+        kwargs,
+    )
     return click.prompt(styled_prompt, **prompt_kwargs)
 
 
@@ -3587,29 +3642,36 @@ def x__handle_click_input__mutmut_12(prompt: str, kwargs: dict[str, Any], ctx: C
     """Handle input using click.prompt."""
     prompt_kwargs = _build_click_prompt_kwargs(kwargs)
     styled_prompt = _apply_prompt_styling(prompt, kwargs, ctx)
-    return click.prompt(styled_prompt, )
+    return click.prompt(
+        styled_prompt,
+    )
 
-x__handle_click_input__mutmut_mutants : ClassVar[MutantDict] = {
-'x__handle_click_input__mutmut_1': x__handle_click_input__mutmut_1, 
-    'x__handle_click_input__mutmut_2': x__handle_click_input__mutmut_2, 
-    'x__handle_click_input__mutmut_3': x__handle_click_input__mutmut_3, 
-    'x__handle_click_input__mutmut_4': x__handle_click_input__mutmut_4, 
-    'x__handle_click_input__mutmut_5': x__handle_click_input__mutmut_5, 
-    'x__handle_click_input__mutmut_6': x__handle_click_input__mutmut_6, 
-    'x__handle_click_input__mutmut_7': x__handle_click_input__mutmut_7, 
-    'x__handle_click_input__mutmut_8': x__handle_click_input__mutmut_8, 
-    'x__handle_click_input__mutmut_9': x__handle_click_input__mutmut_9, 
-    'x__handle_click_input__mutmut_10': x__handle_click_input__mutmut_10, 
-    'x__handle_click_input__mutmut_11': x__handle_click_input__mutmut_11, 
-    'x__handle_click_input__mutmut_12': x__handle_click_input__mutmut_12
+
+x__handle_click_input__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__handle_click_input__mutmut_1": x__handle_click_input__mutmut_1,
+    "x__handle_click_input__mutmut_2": x__handle_click_input__mutmut_2,
+    "x__handle_click_input__mutmut_3": x__handle_click_input__mutmut_3,
+    "x__handle_click_input__mutmut_4": x__handle_click_input__mutmut_4,
+    "x__handle_click_input__mutmut_5": x__handle_click_input__mutmut_5,
+    "x__handle_click_input__mutmut_6": x__handle_click_input__mutmut_6,
+    "x__handle_click_input__mutmut_7": x__handle_click_input__mutmut_7,
+    "x__handle_click_input__mutmut_8": x__handle_click_input__mutmut_8,
+    "x__handle_click_input__mutmut_9": x__handle_click_input__mutmut_9,
+    "x__handle_click_input__mutmut_10": x__handle_click_input__mutmut_10,
+    "x__handle_click_input__mutmut_11": x__handle_click_input__mutmut_11,
+    "x__handle_click_input__mutmut_12": x__handle_click_input__mutmut_12,
 }
 
+
 def _handle_click_input(*args, **kwargs):
-    result = _mutmut_trampoline(x__handle_click_input__mutmut_orig, x__handle_click_input__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__handle_click_input__mutmut_orig, x__handle_click_input__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _handle_click_input.__signature__ = _mutmut_signature(x__handle_click_input__mutmut_orig)
-x__handle_click_input__mutmut_orig.__name__ = 'x__handle_click_input'
+x__handle_click_input__mutmut_orig.__name__ = "x__handle_click_input"
 
 
 def x__build_fallback_prompt__mutmut_orig(prompt: str, kwargs: dict[str, Any]) -> str:
@@ -3686,7 +3748,9 @@ def x__build_fallback_prompt__mutmut_7(prompt: str, kwargs: dict[str, Any]) -> s
 
 def x__build_fallback_prompt__mutmut_8(prompt: str, kwargs: dict[str, Any]) -> str:
     """Build prompt for fallback input when click is not available."""
-    if kwargs.get("default") and kwargs.get("show_default", ):
+    if kwargs.get("default") and kwargs.get(
+        "show_default",
+    ):
         return f"{prompt} [{kwargs['default']}]: "
     elif prompt and not prompt.endswith(": "):
         return f"{prompt}: "
@@ -3773,32 +3837,37 @@ def x__build_fallback_prompt__mutmut_17(prompt: str, kwargs: dict[str, Any]) -> 
         return f"{prompt}: "
     return prompt
 
-x__build_fallback_prompt__mutmut_mutants : ClassVar[MutantDict] = {
-'x__build_fallback_prompt__mutmut_1': x__build_fallback_prompt__mutmut_1, 
-    'x__build_fallback_prompt__mutmut_2': x__build_fallback_prompt__mutmut_2, 
-    'x__build_fallback_prompt__mutmut_3': x__build_fallback_prompt__mutmut_3, 
-    'x__build_fallback_prompt__mutmut_4': x__build_fallback_prompt__mutmut_4, 
-    'x__build_fallback_prompt__mutmut_5': x__build_fallback_prompt__mutmut_5, 
-    'x__build_fallback_prompt__mutmut_6': x__build_fallback_prompt__mutmut_6, 
-    'x__build_fallback_prompt__mutmut_7': x__build_fallback_prompt__mutmut_7, 
-    'x__build_fallback_prompt__mutmut_8': x__build_fallback_prompt__mutmut_8, 
-    'x__build_fallback_prompt__mutmut_9': x__build_fallback_prompt__mutmut_9, 
-    'x__build_fallback_prompt__mutmut_10': x__build_fallback_prompt__mutmut_10, 
-    'x__build_fallback_prompt__mutmut_11': x__build_fallback_prompt__mutmut_11, 
-    'x__build_fallback_prompt__mutmut_12': x__build_fallback_prompt__mutmut_12, 
-    'x__build_fallback_prompt__mutmut_13': x__build_fallback_prompt__mutmut_13, 
-    'x__build_fallback_prompt__mutmut_14': x__build_fallback_prompt__mutmut_14, 
-    'x__build_fallback_prompt__mutmut_15': x__build_fallback_prompt__mutmut_15, 
-    'x__build_fallback_prompt__mutmut_16': x__build_fallback_prompt__mutmut_16, 
-    'x__build_fallback_prompt__mutmut_17': x__build_fallback_prompt__mutmut_17
+
+x__build_fallback_prompt__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__build_fallback_prompt__mutmut_1": x__build_fallback_prompt__mutmut_1,
+    "x__build_fallback_prompt__mutmut_2": x__build_fallback_prompt__mutmut_2,
+    "x__build_fallback_prompt__mutmut_3": x__build_fallback_prompt__mutmut_3,
+    "x__build_fallback_prompt__mutmut_4": x__build_fallback_prompt__mutmut_4,
+    "x__build_fallback_prompt__mutmut_5": x__build_fallback_prompt__mutmut_5,
+    "x__build_fallback_prompt__mutmut_6": x__build_fallback_prompt__mutmut_6,
+    "x__build_fallback_prompt__mutmut_7": x__build_fallback_prompt__mutmut_7,
+    "x__build_fallback_prompt__mutmut_8": x__build_fallback_prompt__mutmut_8,
+    "x__build_fallback_prompt__mutmut_9": x__build_fallback_prompt__mutmut_9,
+    "x__build_fallback_prompt__mutmut_10": x__build_fallback_prompt__mutmut_10,
+    "x__build_fallback_prompt__mutmut_11": x__build_fallback_prompt__mutmut_11,
+    "x__build_fallback_prompt__mutmut_12": x__build_fallback_prompt__mutmut_12,
+    "x__build_fallback_prompt__mutmut_13": x__build_fallback_prompt__mutmut_13,
+    "x__build_fallback_prompt__mutmut_14": x__build_fallback_prompt__mutmut_14,
+    "x__build_fallback_prompt__mutmut_15": x__build_fallback_prompt__mutmut_15,
+    "x__build_fallback_prompt__mutmut_16": x__build_fallback_prompt__mutmut_16,
+    "x__build_fallback_prompt__mutmut_17": x__build_fallback_prompt__mutmut_17,
 }
 
+
 def _build_fallback_prompt(*args, **kwargs):
-    result = _mutmut_trampoline(x__build_fallback_prompt__mutmut_orig, x__build_fallback_prompt__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__build_fallback_prompt__mutmut_orig, x__build_fallback_prompt__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _build_fallback_prompt.__signature__ = _mutmut_signature(x__build_fallback_prompt__mutmut_orig)
-x__build_fallback_prompt__mutmut_orig.__name__ = 'x__build_fallback_prompt'
+x__build_fallback_prompt__mutmut_orig.__name__ = "x__build_fallback_prompt"
 
 
 def x__get_fallback_input__mutmut_orig(display_prompt: str, kwargs: dict[str, Any]) -> str:
@@ -3900,24 +3969,29 @@ def x__get_fallback_input__mutmut_9(display_prompt: str, kwargs: dict[str, Any])
     else:
         return input(None)
 
-x__get_fallback_input__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_fallback_input__mutmut_1': x__get_fallback_input__mutmut_1, 
-    'x__get_fallback_input__mutmut_2': x__get_fallback_input__mutmut_2, 
-    'x__get_fallback_input__mutmut_3': x__get_fallback_input__mutmut_3, 
-    'x__get_fallback_input__mutmut_4': x__get_fallback_input__mutmut_4, 
-    'x__get_fallback_input__mutmut_5': x__get_fallback_input__mutmut_5, 
-    'x__get_fallback_input__mutmut_6': x__get_fallback_input__mutmut_6, 
-    'x__get_fallback_input__mutmut_7': x__get_fallback_input__mutmut_7, 
-    'x__get_fallback_input__mutmut_8': x__get_fallback_input__mutmut_8, 
-    'x__get_fallback_input__mutmut_9': x__get_fallback_input__mutmut_9
+
+x__get_fallback_input__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_fallback_input__mutmut_1": x__get_fallback_input__mutmut_1,
+    "x__get_fallback_input__mutmut_2": x__get_fallback_input__mutmut_2,
+    "x__get_fallback_input__mutmut_3": x__get_fallback_input__mutmut_3,
+    "x__get_fallback_input__mutmut_4": x__get_fallback_input__mutmut_4,
+    "x__get_fallback_input__mutmut_5": x__get_fallback_input__mutmut_5,
+    "x__get_fallback_input__mutmut_6": x__get_fallback_input__mutmut_6,
+    "x__get_fallback_input__mutmut_7": x__get_fallback_input__mutmut_7,
+    "x__get_fallback_input__mutmut_8": x__get_fallback_input__mutmut_8,
+    "x__get_fallback_input__mutmut_9": x__get_fallback_input__mutmut_9,
 }
 
+
 def _get_fallback_input(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_fallback_input__mutmut_orig, x__get_fallback_input__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_fallback_input__mutmut_orig, x__get_fallback_input__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_fallback_input.__signature__ = _mutmut_signature(x__get_fallback_input__mutmut_orig)
-x__get_fallback_input__mutmut_orig.__name__ = 'x__get_fallback_input'
+x__get_fallback_input__mutmut_orig.__name__ = "x__get_fallback_input"
 
 
 def x__apply_type_conversion__mutmut_orig(user_input: str, kwargs: dict[str, Any]) -> Any:
@@ -3969,19 +4043,24 @@ def x__apply_type_conversion__mutmut_4(user_input: str, kwargs: dict[str, Any]) 
             return user_input
     return user_input
 
-x__apply_type_conversion__mutmut_mutants : ClassVar[MutantDict] = {
-'x__apply_type_conversion__mutmut_1': x__apply_type_conversion__mutmut_1, 
-    'x__apply_type_conversion__mutmut_2': x__apply_type_conversion__mutmut_2, 
-    'x__apply_type_conversion__mutmut_3': x__apply_type_conversion__mutmut_3, 
-    'x__apply_type_conversion__mutmut_4': x__apply_type_conversion__mutmut_4
+
+x__apply_type_conversion__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__apply_type_conversion__mutmut_1": x__apply_type_conversion__mutmut_1,
+    "x__apply_type_conversion__mutmut_2": x__apply_type_conversion__mutmut_2,
+    "x__apply_type_conversion__mutmut_3": x__apply_type_conversion__mutmut_3,
+    "x__apply_type_conversion__mutmut_4": x__apply_type_conversion__mutmut_4,
 }
 
+
 def _apply_type_conversion(*args, **kwargs):
-    result = _mutmut_trampoline(x__apply_type_conversion__mutmut_orig, x__apply_type_conversion__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__apply_type_conversion__mutmut_orig, x__apply_type_conversion__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _apply_type_conversion.__signature__ = _mutmut_signature(x__apply_type_conversion__mutmut_orig)
-x__apply_type_conversion__mutmut_orig.__name__ = 'x__apply_type_conversion'
+x__apply_type_conversion__mutmut_orig.__name__ = "x__apply_type_conversion"
 
 
 def x__handle_fallback_input__mutmut_orig(prompt: str, kwargs: dict[str, Any]) -> Any:
@@ -4046,7 +4125,9 @@ def x__handle_fallback_input__mutmut_4(prompt: str, kwargs: dict[str, Any]) -> A
 
 def x__handle_fallback_input__mutmut_5(prompt: str, kwargs: dict[str, Any]) -> Any:
     """Handle input using fallback methods."""
-    display_prompt = _build_fallback_prompt(prompt, )
+    display_prompt = _build_fallback_prompt(
+        prompt,
+    )
     user_input = _get_fallback_input(display_prompt, kwargs)
 
     # Handle default value
@@ -4107,7 +4188,9 @@ def x__handle_fallback_input__mutmut_9(prompt: str, kwargs: dict[str, Any]) -> A
 def x__handle_fallback_input__mutmut_10(prompt: str, kwargs: dict[str, Any]) -> Any:
     """Handle input using fallback methods."""
     display_prompt = _build_fallback_prompt(prompt, kwargs)
-    user_input = _get_fallback_input(display_prompt, )
+    user_input = _get_fallback_input(
+        display_prompt,
+    )
 
     # Handle default value
     if not user_input and "default" in kwargs:
@@ -4269,43 +4352,52 @@ def x__handle_fallback_input__mutmut_23(prompt: str, kwargs: dict[str, Any]) -> 
     if not user_input and "default" in kwargs:
         user_input = str(kwargs["default"])
 
-    return _apply_type_conversion(user_input, )
+    return _apply_type_conversion(
+        user_input,
+    )
 
-x__handle_fallback_input__mutmut_mutants : ClassVar[MutantDict] = {
-'x__handle_fallback_input__mutmut_1': x__handle_fallback_input__mutmut_1, 
-    'x__handle_fallback_input__mutmut_2': x__handle_fallback_input__mutmut_2, 
-    'x__handle_fallback_input__mutmut_3': x__handle_fallback_input__mutmut_3, 
-    'x__handle_fallback_input__mutmut_4': x__handle_fallback_input__mutmut_4, 
-    'x__handle_fallback_input__mutmut_5': x__handle_fallback_input__mutmut_5, 
-    'x__handle_fallback_input__mutmut_6': x__handle_fallback_input__mutmut_6, 
-    'x__handle_fallback_input__mutmut_7': x__handle_fallback_input__mutmut_7, 
-    'x__handle_fallback_input__mutmut_8': x__handle_fallback_input__mutmut_8, 
-    'x__handle_fallback_input__mutmut_9': x__handle_fallback_input__mutmut_9, 
-    'x__handle_fallback_input__mutmut_10': x__handle_fallback_input__mutmut_10, 
-    'x__handle_fallback_input__mutmut_11': x__handle_fallback_input__mutmut_11, 
-    'x__handle_fallback_input__mutmut_12': x__handle_fallback_input__mutmut_12, 
-    'x__handle_fallback_input__mutmut_13': x__handle_fallback_input__mutmut_13, 
-    'x__handle_fallback_input__mutmut_14': x__handle_fallback_input__mutmut_14, 
-    'x__handle_fallback_input__mutmut_15': x__handle_fallback_input__mutmut_15, 
-    'x__handle_fallback_input__mutmut_16': x__handle_fallback_input__mutmut_16, 
-    'x__handle_fallback_input__mutmut_17': x__handle_fallback_input__mutmut_17, 
-    'x__handle_fallback_input__mutmut_18': x__handle_fallback_input__mutmut_18, 
-    'x__handle_fallback_input__mutmut_19': x__handle_fallback_input__mutmut_19, 
-    'x__handle_fallback_input__mutmut_20': x__handle_fallback_input__mutmut_20, 
-    'x__handle_fallback_input__mutmut_21': x__handle_fallback_input__mutmut_21, 
-    'x__handle_fallback_input__mutmut_22': x__handle_fallback_input__mutmut_22, 
-    'x__handle_fallback_input__mutmut_23': x__handle_fallback_input__mutmut_23
+
+x__handle_fallback_input__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__handle_fallback_input__mutmut_1": x__handle_fallback_input__mutmut_1,
+    "x__handle_fallback_input__mutmut_2": x__handle_fallback_input__mutmut_2,
+    "x__handle_fallback_input__mutmut_3": x__handle_fallback_input__mutmut_3,
+    "x__handle_fallback_input__mutmut_4": x__handle_fallback_input__mutmut_4,
+    "x__handle_fallback_input__mutmut_5": x__handle_fallback_input__mutmut_5,
+    "x__handle_fallback_input__mutmut_6": x__handle_fallback_input__mutmut_6,
+    "x__handle_fallback_input__mutmut_7": x__handle_fallback_input__mutmut_7,
+    "x__handle_fallback_input__mutmut_8": x__handle_fallback_input__mutmut_8,
+    "x__handle_fallback_input__mutmut_9": x__handle_fallback_input__mutmut_9,
+    "x__handle_fallback_input__mutmut_10": x__handle_fallback_input__mutmut_10,
+    "x__handle_fallback_input__mutmut_11": x__handle_fallback_input__mutmut_11,
+    "x__handle_fallback_input__mutmut_12": x__handle_fallback_input__mutmut_12,
+    "x__handle_fallback_input__mutmut_13": x__handle_fallback_input__mutmut_13,
+    "x__handle_fallback_input__mutmut_14": x__handle_fallback_input__mutmut_14,
+    "x__handle_fallback_input__mutmut_15": x__handle_fallback_input__mutmut_15,
+    "x__handle_fallback_input__mutmut_16": x__handle_fallback_input__mutmut_16,
+    "x__handle_fallback_input__mutmut_17": x__handle_fallback_input__mutmut_17,
+    "x__handle_fallback_input__mutmut_18": x__handle_fallback_input__mutmut_18,
+    "x__handle_fallback_input__mutmut_19": x__handle_fallback_input__mutmut_19,
+    "x__handle_fallback_input__mutmut_20": x__handle_fallback_input__mutmut_20,
+    "x__handle_fallback_input__mutmut_21": x__handle_fallback_input__mutmut_21,
+    "x__handle_fallback_input__mutmut_22": x__handle_fallback_input__mutmut_22,
+    "x__handle_fallback_input__mutmut_23": x__handle_fallback_input__mutmut_23,
 }
 
+
 def _handle_fallback_input(*args, **kwargs):
-    result = _mutmut_trampoline(x__handle_fallback_input__mutmut_orig, x__handle_fallback_input__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__handle_fallback_input__mutmut_orig, x__handle_fallback_input__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _handle_fallback_input.__signature__ = _mutmut_signature(x__handle_fallback_input__mutmut_orig)
-x__handle_fallback_input__mutmut_orig.__name__ = 'x__handle_fallback_input'
+x__handle_fallback_input__mutmut_orig.__name__ = "x__handle_fallback_input"
 
 
-def x__handle_interactive_input__mutmut_orig(prompt: str, kwargs: dict[str, Any], ctx: CLIContext | None) -> Any:
+def x__handle_interactive_input__mutmut_orig(
+    prompt: str, kwargs: dict[str, Any], ctx: CLIContext | None
+) -> Any:
     """Handle input in interactive mode."""
     if _HAS_CLICK:
         return _handle_click_input(prompt, kwargs, ctx)
@@ -4356,7 +4448,10 @@ def x__handle_interactive_input__mutmut_5(prompt: str, kwargs: dict[str, Any], c
 def x__handle_interactive_input__mutmut_6(prompt: str, kwargs: dict[str, Any], ctx: CLIContext | None) -> Any:
     """Handle input in interactive mode."""
     if _HAS_CLICK:
-        return _handle_click_input(prompt, kwargs, )
+        return _handle_click_input(
+            prompt,
+            kwargs,
+        )
     else:
         return _handle_fallback_input(prompt, kwargs)
 
@@ -4390,27 +4485,34 @@ def x__handle_interactive_input__mutmut_10(prompt: str, kwargs: dict[str, Any], 
     if _HAS_CLICK:
         return _handle_click_input(prompt, kwargs, ctx)
     else:
-        return _handle_fallback_input(prompt, )
+        return _handle_fallback_input(
+            prompt,
+        )
 
-x__handle_interactive_input__mutmut_mutants : ClassVar[MutantDict] = {
-'x__handle_interactive_input__mutmut_1': x__handle_interactive_input__mutmut_1, 
-    'x__handle_interactive_input__mutmut_2': x__handle_interactive_input__mutmut_2, 
-    'x__handle_interactive_input__mutmut_3': x__handle_interactive_input__mutmut_3, 
-    'x__handle_interactive_input__mutmut_4': x__handle_interactive_input__mutmut_4, 
-    'x__handle_interactive_input__mutmut_5': x__handle_interactive_input__mutmut_5, 
-    'x__handle_interactive_input__mutmut_6': x__handle_interactive_input__mutmut_6, 
-    'x__handle_interactive_input__mutmut_7': x__handle_interactive_input__mutmut_7, 
-    'x__handle_interactive_input__mutmut_8': x__handle_interactive_input__mutmut_8, 
-    'x__handle_interactive_input__mutmut_9': x__handle_interactive_input__mutmut_9, 
-    'x__handle_interactive_input__mutmut_10': x__handle_interactive_input__mutmut_10
+
+x__handle_interactive_input__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__handle_interactive_input__mutmut_1": x__handle_interactive_input__mutmut_1,
+    "x__handle_interactive_input__mutmut_2": x__handle_interactive_input__mutmut_2,
+    "x__handle_interactive_input__mutmut_3": x__handle_interactive_input__mutmut_3,
+    "x__handle_interactive_input__mutmut_4": x__handle_interactive_input__mutmut_4,
+    "x__handle_interactive_input__mutmut_5": x__handle_interactive_input__mutmut_5,
+    "x__handle_interactive_input__mutmut_6": x__handle_interactive_input__mutmut_6,
+    "x__handle_interactive_input__mutmut_7": x__handle_interactive_input__mutmut_7,
+    "x__handle_interactive_input__mutmut_8": x__handle_interactive_input__mutmut_8,
+    "x__handle_interactive_input__mutmut_9": x__handle_interactive_input__mutmut_9,
+    "x__handle_interactive_input__mutmut_10": x__handle_interactive_input__mutmut_10,
 }
 
+
 def _handle_interactive_input(*args, **kwargs):
-    result = _mutmut_trampoline(x__handle_interactive_input__mutmut_orig, x__handle_interactive_input__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__handle_interactive_input__mutmut_orig, x__handle_interactive_input__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _handle_interactive_input.__signature__ = _mutmut_signature(x__handle_interactive_input__mutmut_orig)
-x__handle_interactive_input__mutmut_orig.__name__ = 'x__handle_interactive_input'
+x__handle_interactive_input__mutmut_orig.__name__ = "x__handle_interactive_input"
 
 
 def x_pin__mutmut_orig(prompt: str = "", **kwargs: Any) -> str | Any:
@@ -4852,7 +4954,9 @@ def x_pin__mutmut_11(prompt: str = "", **kwargs: Any) -> str | Any:
     ctx = kwargs.get("ctx") or _get_context()
 
     if _should_use_json(ctx):
-        return _handle_json_input(prompt, )
+        return _handle_json_input(
+            prompt,
+        )
     else:
         return _handle_interactive_input(prompt, kwargs, ctx)
 
@@ -5076,34 +5180,40 @@ def x_pin__mutmut_17(prompt: str = "", **kwargs: Any) -> str | Any:
     if _should_use_json(ctx):
         return _handle_json_input(prompt, kwargs)
     else:
-        return _handle_interactive_input(prompt, kwargs, )
+        return _handle_interactive_input(
+            prompt,
+            kwargs,
+        )
 
-x_pin__mutmut_mutants : ClassVar[MutantDict] = {
-'x_pin__mutmut_1': x_pin__mutmut_1, 
-    'x_pin__mutmut_2': x_pin__mutmut_2, 
-    'x_pin__mutmut_3': x_pin__mutmut_3, 
-    'x_pin__mutmut_4': x_pin__mutmut_4, 
-    'x_pin__mutmut_5': x_pin__mutmut_5, 
-    'x_pin__mutmut_6': x_pin__mutmut_6, 
-    'x_pin__mutmut_7': x_pin__mutmut_7, 
-    'x_pin__mutmut_8': x_pin__mutmut_8, 
-    'x_pin__mutmut_9': x_pin__mutmut_9, 
-    'x_pin__mutmut_10': x_pin__mutmut_10, 
-    'x_pin__mutmut_11': x_pin__mutmut_11, 
-    'x_pin__mutmut_12': x_pin__mutmut_12, 
-    'x_pin__mutmut_13': x_pin__mutmut_13, 
-    'x_pin__mutmut_14': x_pin__mutmut_14, 
-    'x_pin__mutmut_15': x_pin__mutmut_15, 
-    'x_pin__mutmut_16': x_pin__mutmut_16, 
-    'x_pin__mutmut_17': x_pin__mutmut_17
+
+x_pin__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_pin__mutmut_1": x_pin__mutmut_1,
+    "x_pin__mutmut_2": x_pin__mutmut_2,
+    "x_pin__mutmut_3": x_pin__mutmut_3,
+    "x_pin__mutmut_4": x_pin__mutmut_4,
+    "x_pin__mutmut_5": x_pin__mutmut_5,
+    "x_pin__mutmut_6": x_pin__mutmut_6,
+    "x_pin__mutmut_7": x_pin__mutmut_7,
+    "x_pin__mutmut_8": x_pin__mutmut_8,
+    "x_pin__mutmut_9": x_pin__mutmut_9,
+    "x_pin__mutmut_10": x_pin__mutmut_10,
+    "x_pin__mutmut_11": x_pin__mutmut_11,
+    "x_pin__mutmut_12": x_pin__mutmut_12,
+    "x_pin__mutmut_13": x_pin__mutmut_13,
+    "x_pin__mutmut_14": x_pin__mutmut_14,
+    "x_pin__mutmut_15": x_pin__mutmut_15,
+    "x_pin__mutmut_16": x_pin__mutmut_16,
+    "x_pin__mutmut_17": x_pin__mutmut_17,
 }
+
 
 def pin(*args, **kwargs):
     result = _mutmut_trampoline(x_pin__mutmut_orig, x_pin__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 pin.__signature__ = _mutmut_signature(x_pin__mutmut_orig)
-x_pin__mutmut_orig.__name__ = 'x_pin'
+x_pin__mutmut_orig.__name__ = "x_pin"
 
 
 def x_pin_stream__mutmut_orig() -> Iterator[str]:
@@ -6360,7 +6470,10 @@ def x_pin_stream__mutmut_27() -> Iterator[str]:
             for line in sys.stdin:
                 line = line.rstrip("\n\r")
                 line_count += 1
-                log.trace("📥 Stream line", line_num=line_count, )
+                log.trace(
+                    "📥 Stream line",
+                    line_num=line_count,
+                )
                 yield line
         finally:
             log.debug("📥 Input stream ended", lines=line_count)
@@ -6678,7 +6791,9 @@ def x_pin_stream__mutmut_34() -> Iterator[str]:
                 log.trace("📥 Stream line", line_num=line_count, length=len(line))
                 yield line
         finally:
-            log.debug("📥 Input stream ended", )
+            log.debug(
+                "📥 Input stream ended",
+            )
 
 
 def x_pin_stream__mutmut_35() -> Iterator[str]:
@@ -6815,52 +6930,55 @@ def x_pin_stream__mutmut_37() -> Iterator[str]:
         finally:
             log.debug("📥 INPUT STREAM ENDED", lines=line_count)
 
-x_pin_stream__mutmut_mutants : ClassVar[MutantDict] = {
-'x_pin_stream__mutmut_1': x_pin_stream__mutmut_1, 
-    'x_pin_stream__mutmut_2': x_pin_stream__mutmut_2, 
-    'x_pin_stream__mutmut_3': x_pin_stream__mutmut_3, 
-    'x_pin_stream__mutmut_4': x_pin_stream__mutmut_4, 
-    'x_pin_stream__mutmut_5': x_pin_stream__mutmut_5, 
-    'x_pin_stream__mutmut_6': x_pin_stream__mutmut_6, 
-    'x_pin_stream__mutmut_7': x_pin_stream__mutmut_7, 
-    'x_pin_stream__mutmut_8': x_pin_stream__mutmut_8, 
-    'x_pin_stream__mutmut_9': x_pin_stream__mutmut_9, 
-    'x_pin_stream__mutmut_10': x_pin_stream__mutmut_10, 
-    'x_pin_stream__mutmut_11': x_pin_stream__mutmut_11, 
-    'x_pin_stream__mutmut_12': x_pin_stream__mutmut_12, 
-    'x_pin_stream__mutmut_13': x_pin_stream__mutmut_13, 
-    'x_pin_stream__mutmut_14': x_pin_stream__mutmut_14, 
-    'x_pin_stream__mutmut_15': x_pin_stream__mutmut_15, 
-    'x_pin_stream__mutmut_16': x_pin_stream__mutmut_16, 
-    'x_pin_stream__mutmut_17': x_pin_stream__mutmut_17, 
-    'x_pin_stream__mutmut_18': x_pin_stream__mutmut_18, 
-    'x_pin_stream__mutmut_19': x_pin_stream__mutmut_19, 
-    'x_pin_stream__mutmut_20': x_pin_stream__mutmut_20, 
-    'x_pin_stream__mutmut_21': x_pin_stream__mutmut_21, 
-    'x_pin_stream__mutmut_22': x_pin_stream__mutmut_22, 
-    'x_pin_stream__mutmut_23': x_pin_stream__mutmut_23, 
-    'x_pin_stream__mutmut_24': x_pin_stream__mutmut_24, 
-    'x_pin_stream__mutmut_25': x_pin_stream__mutmut_25, 
-    'x_pin_stream__mutmut_26': x_pin_stream__mutmut_26, 
-    'x_pin_stream__mutmut_27': x_pin_stream__mutmut_27, 
-    'x_pin_stream__mutmut_28': x_pin_stream__mutmut_28, 
-    'x_pin_stream__mutmut_29': x_pin_stream__mutmut_29, 
-    'x_pin_stream__mutmut_30': x_pin_stream__mutmut_30, 
-    'x_pin_stream__mutmut_31': x_pin_stream__mutmut_31, 
-    'x_pin_stream__mutmut_32': x_pin_stream__mutmut_32, 
-    'x_pin_stream__mutmut_33': x_pin_stream__mutmut_33, 
-    'x_pin_stream__mutmut_34': x_pin_stream__mutmut_34, 
-    'x_pin_stream__mutmut_35': x_pin_stream__mutmut_35, 
-    'x_pin_stream__mutmut_36': x_pin_stream__mutmut_36, 
-    'x_pin_stream__mutmut_37': x_pin_stream__mutmut_37
+
+x_pin_stream__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_pin_stream__mutmut_1": x_pin_stream__mutmut_1,
+    "x_pin_stream__mutmut_2": x_pin_stream__mutmut_2,
+    "x_pin_stream__mutmut_3": x_pin_stream__mutmut_3,
+    "x_pin_stream__mutmut_4": x_pin_stream__mutmut_4,
+    "x_pin_stream__mutmut_5": x_pin_stream__mutmut_5,
+    "x_pin_stream__mutmut_6": x_pin_stream__mutmut_6,
+    "x_pin_stream__mutmut_7": x_pin_stream__mutmut_7,
+    "x_pin_stream__mutmut_8": x_pin_stream__mutmut_8,
+    "x_pin_stream__mutmut_9": x_pin_stream__mutmut_9,
+    "x_pin_stream__mutmut_10": x_pin_stream__mutmut_10,
+    "x_pin_stream__mutmut_11": x_pin_stream__mutmut_11,
+    "x_pin_stream__mutmut_12": x_pin_stream__mutmut_12,
+    "x_pin_stream__mutmut_13": x_pin_stream__mutmut_13,
+    "x_pin_stream__mutmut_14": x_pin_stream__mutmut_14,
+    "x_pin_stream__mutmut_15": x_pin_stream__mutmut_15,
+    "x_pin_stream__mutmut_16": x_pin_stream__mutmut_16,
+    "x_pin_stream__mutmut_17": x_pin_stream__mutmut_17,
+    "x_pin_stream__mutmut_18": x_pin_stream__mutmut_18,
+    "x_pin_stream__mutmut_19": x_pin_stream__mutmut_19,
+    "x_pin_stream__mutmut_20": x_pin_stream__mutmut_20,
+    "x_pin_stream__mutmut_21": x_pin_stream__mutmut_21,
+    "x_pin_stream__mutmut_22": x_pin_stream__mutmut_22,
+    "x_pin_stream__mutmut_23": x_pin_stream__mutmut_23,
+    "x_pin_stream__mutmut_24": x_pin_stream__mutmut_24,
+    "x_pin_stream__mutmut_25": x_pin_stream__mutmut_25,
+    "x_pin_stream__mutmut_26": x_pin_stream__mutmut_26,
+    "x_pin_stream__mutmut_27": x_pin_stream__mutmut_27,
+    "x_pin_stream__mutmut_28": x_pin_stream__mutmut_28,
+    "x_pin_stream__mutmut_29": x_pin_stream__mutmut_29,
+    "x_pin_stream__mutmut_30": x_pin_stream__mutmut_30,
+    "x_pin_stream__mutmut_31": x_pin_stream__mutmut_31,
+    "x_pin_stream__mutmut_32": x_pin_stream__mutmut_32,
+    "x_pin_stream__mutmut_33": x_pin_stream__mutmut_33,
+    "x_pin_stream__mutmut_34": x_pin_stream__mutmut_34,
+    "x_pin_stream__mutmut_35": x_pin_stream__mutmut_35,
+    "x_pin_stream__mutmut_36": x_pin_stream__mutmut_36,
+    "x_pin_stream__mutmut_37": x_pin_stream__mutmut_37,
 }
+
 
 def pin_stream(*args, **kwargs):
     result = _mutmut_trampoline(x_pin_stream__mutmut_orig, x_pin_stream__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 pin_stream.__signature__ = _mutmut_signature(x_pin_stream__mutmut_orig)
-x_pin_stream__mutmut_orig.__name__ = 'x_pin_stream'
+x_pin_stream__mutmut_orig.__name__ = "x_pin_stream"
 
 
 async def x_apin__mutmut_orig(prompt: str = "", **kwargs: Any) -> str | Any:
@@ -7075,7 +7193,10 @@ async def x_apin__mutmut_8(prompt: str = "", **kwargs: Any) -> str | Any:
     import functools
 
     loop = asyncio.get_event_loop()
-    func = functools.partial(pin, prompt, )
+    func = functools.partial(
+        pin,
+        prompt,
+    )
     return await loop.run_in_executor(None, func)
 
 
@@ -7148,28 +7269,33 @@ async def x_apin__mutmut_11(prompt: str = "", **kwargs: Any) -> str | Any:
 
     loop = asyncio.get_event_loop()
     func = functools.partial(pin, prompt, **kwargs)
-    return await loop.run_in_executor(None, )
+    return await loop.run_in_executor(
+        None,
+    )
 
-x_apin__mutmut_mutants : ClassVar[MutantDict] = {
-'x_apin__mutmut_1': x_apin__mutmut_1, 
-    'x_apin__mutmut_2': x_apin__mutmut_2, 
-    'x_apin__mutmut_3': x_apin__mutmut_3, 
-    'x_apin__mutmut_4': x_apin__mutmut_4, 
-    'x_apin__mutmut_5': x_apin__mutmut_5, 
-    'x_apin__mutmut_6': x_apin__mutmut_6, 
-    'x_apin__mutmut_7': x_apin__mutmut_7, 
-    'x_apin__mutmut_8': x_apin__mutmut_8, 
-    'x_apin__mutmut_9': x_apin__mutmut_9, 
-    'x_apin__mutmut_10': x_apin__mutmut_10, 
-    'x_apin__mutmut_11': x_apin__mutmut_11
+
+x_apin__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_apin__mutmut_1": x_apin__mutmut_1,
+    "x_apin__mutmut_2": x_apin__mutmut_2,
+    "x_apin__mutmut_3": x_apin__mutmut_3,
+    "x_apin__mutmut_4": x_apin__mutmut_4,
+    "x_apin__mutmut_5": x_apin__mutmut_5,
+    "x_apin__mutmut_6": x_apin__mutmut_6,
+    "x_apin__mutmut_7": x_apin__mutmut_7,
+    "x_apin__mutmut_8": x_apin__mutmut_8,
+    "x_apin__mutmut_9": x_apin__mutmut_9,
+    "x_apin__mutmut_10": x_apin__mutmut_10,
+    "x_apin__mutmut_11": x_apin__mutmut_11,
 }
+
 
 def apin(*args, **kwargs):
     result = _mutmut_trampoline(x_apin__mutmut_orig, x_apin__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 apin.__signature__ = _mutmut_signature(x_apin__mutmut_orig)
-x_apin__mutmut_orig.__name__ = 'x_apin'
+x_apin__mutmut_orig.__name__ = "x_apin"
 
 
 async def x_apin_stream__mutmut_orig() -> AsyncIterator[str]:
@@ -8274,7 +8400,9 @@ async def x_apin_stream__mutmut_16() -> AsyncIterator[str]:
                 # Fall back to line-by-line reading - content already read
                 return [line.rstrip("\n\r") for line in stdin_content.splitlines() if line]
 
-        lines = await loop.run_in_executor(None, )
+        lines = await loop.run_in_executor(
+            None,
+        )
         for line in lines:
             yield line
     else:
@@ -9225,7 +9353,9 @@ async def x_apin_stream__mutmut_30() -> AsyncIterator[str]:
         reader = asyncio.StreamReader()
         protocol = asyncio.StreamReaderProtocol(reader)
 
-        await loop.connect_read_pipe(lambda: protocol, )
+        await loop.connect_read_pipe(
+            lambda: protocol,
+        )
 
         try:
             while True:
@@ -10643,7 +10773,10 @@ async def x_apin_stream__mutmut_51() -> AsyncIterator[str]:
 
                     line = line_bytes.decode("utf-8").rstrip("\n\r")
                     line_count += 1
-                    log.trace("📥 Async stream line", line_num=line_count, )
+                    log.trace(
+                        "📥 Async stream line",
+                        line_num=line_count,
+                    )
                     yield line
 
                 except asyncio.CancelledError:
@@ -11116,7 +11249,9 @@ async def x_apin_stream__mutmut_58() -> AsyncIterator[str]:
                     yield line
 
                 except asyncio.CancelledError:
-                    log.debug("📥 Async stream cancelled", )
+                    log.debug(
+                        "📥 Async stream cancelled",
+                    )
                     break
                 except Exception as e:
                     log.error("📥 Async stream error", error=str(e), lines=line_count)
@@ -11789,7 +11924,10 @@ async def x_apin_stream__mutmut_68() -> AsyncIterator[str]:
                     log.debug("📥 Async stream cancelled", lines=line_count)
                     break
                 except Exception as e:
-                    log.error("📥 Async stream error", error=str(e), )
+                    log.error(
+                        "📥 Async stream error",
+                        error=str(e),
+                    )
                     break
         finally:
             log.debug("📥 Async input stream ended", lines=line_count)
@@ -12395,7 +12533,9 @@ async def x_apin_stream__mutmut_77() -> AsyncIterator[str]:
                     log.error("📥 Async stream error", error=str(e), lines=line_count)
                     break
         finally:
-            log.debug("📥 Async input stream ended", )
+            log.debug(
+                "📥 Async input stream ended",
+            )
 
 
 async def x_apin_stream__mutmut_78() -> AsyncIterator[str]:
@@ -12598,95 +12738,98 @@ async def x_apin_stream__mutmut_80() -> AsyncIterator[str]:
         finally:
             log.debug("📥 ASYNC INPUT STREAM ENDED", lines=line_count)
 
-x_apin_stream__mutmut_mutants : ClassVar[MutantDict] = {
-'x_apin_stream__mutmut_1': x_apin_stream__mutmut_1, 
-    'x_apin_stream__mutmut_2': x_apin_stream__mutmut_2, 
-    'x_apin_stream__mutmut_3': x_apin_stream__mutmut_3, 
-    'x_apin_stream__mutmut_4': x_apin_stream__mutmut_4, 
-    'x_apin_stream__mutmut_5': x_apin_stream__mutmut_5, 
-    'x_apin_stream__mutmut_6': x_apin_stream__mutmut_6, 
-    'x_apin_stream__mutmut_7': x_apin_stream__mutmut_7, 
-    'x_apin_stream__mutmut_8': x_apin_stream__mutmut_8, 
-    'x_apin_stream__mutmut_9': x_apin_stream__mutmut_9, 
-    'x_apin_stream__mutmut_10': x_apin_stream__mutmut_10, 
-    'x_apin_stream__mutmut_11': x_apin_stream__mutmut_11, 
-    'x_apin_stream__mutmut_12': x_apin_stream__mutmut_12, 
-    'x_apin_stream__mutmut_13': x_apin_stream__mutmut_13, 
-    'x_apin_stream__mutmut_14': x_apin_stream__mutmut_14, 
-    'x_apin_stream__mutmut_15': x_apin_stream__mutmut_15, 
-    'x_apin_stream__mutmut_16': x_apin_stream__mutmut_16, 
-    'x_apin_stream__mutmut_17': x_apin_stream__mutmut_17, 
-    'x_apin_stream__mutmut_18': x_apin_stream__mutmut_18, 
-    'x_apin_stream__mutmut_19': x_apin_stream__mutmut_19, 
-    'x_apin_stream__mutmut_20': x_apin_stream__mutmut_20, 
-    'x_apin_stream__mutmut_21': x_apin_stream__mutmut_21, 
-    'x_apin_stream__mutmut_22': x_apin_stream__mutmut_22, 
-    'x_apin_stream__mutmut_23': x_apin_stream__mutmut_23, 
-    'x_apin_stream__mutmut_24': x_apin_stream__mutmut_24, 
-    'x_apin_stream__mutmut_25': x_apin_stream__mutmut_25, 
-    'x_apin_stream__mutmut_26': x_apin_stream__mutmut_26, 
-    'x_apin_stream__mutmut_27': x_apin_stream__mutmut_27, 
-    'x_apin_stream__mutmut_28': x_apin_stream__mutmut_28, 
-    'x_apin_stream__mutmut_29': x_apin_stream__mutmut_29, 
-    'x_apin_stream__mutmut_30': x_apin_stream__mutmut_30, 
-    'x_apin_stream__mutmut_31': x_apin_stream__mutmut_31, 
-    'x_apin_stream__mutmut_32': x_apin_stream__mutmut_32, 
-    'x_apin_stream__mutmut_33': x_apin_stream__mutmut_33, 
-    'x_apin_stream__mutmut_34': x_apin_stream__mutmut_34, 
-    'x_apin_stream__mutmut_35': x_apin_stream__mutmut_35, 
-    'x_apin_stream__mutmut_36': x_apin_stream__mutmut_36, 
-    'x_apin_stream__mutmut_37': x_apin_stream__mutmut_37, 
-    'x_apin_stream__mutmut_38': x_apin_stream__mutmut_38, 
-    'x_apin_stream__mutmut_39': x_apin_stream__mutmut_39, 
-    'x_apin_stream__mutmut_40': x_apin_stream__mutmut_40, 
-    'x_apin_stream__mutmut_41': x_apin_stream__mutmut_41, 
-    'x_apin_stream__mutmut_42': x_apin_stream__mutmut_42, 
-    'x_apin_stream__mutmut_43': x_apin_stream__mutmut_43, 
-    'x_apin_stream__mutmut_44': x_apin_stream__mutmut_44, 
-    'x_apin_stream__mutmut_45': x_apin_stream__mutmut_45, 
-    'x_apin_stream__mutmut_46': x_apin_stream__mutmut_46, 
-    'x_apin_stream__mutmut_47': x_apin_stream__mutmut_47, 
-    'x_apin_stream__mutmut_48': x_apin_stream__mutmut_48, 
-    'x_apin_stream__mutmut_49': x_apin_stream__mutmut_49, 
-    'x_apin_stream__mutmut_50': x_apin_stream__mutmut_50, 
-    'x_apin_stream__mutmut_51': x_apin_stream__mutmut_51, 
-    'x_apin_stream__mutmut_52': x_apin_stream__mutmut_52, 
-    'x_apin_stream__mutmut_53': x_apin_stream__mutmut_53, 
-    'x_apin_stream__mutmut_54': x_apin_stream__mutmut_54, 
-    'x_apin_stream__mutmut_55': x_apin_stream__mutmut_55, 
-    'x_apin_stream__mutmut_56': x_apin_stream__mutmut_56, 
-    'x_apin_stream__mutmut_57': x_apin_stream__mutmut_57, 
-    'x_apin_stream__mutmut_58': x_apin_stream__mutmut_58, 
-    'x_apin_stream__mutmut_59': x_apin_stream__mutmut_59, 
-    'x_apin_stream__mutmut_60': x_apin_stream__mutmut_60, 
-    'x_apin_stream__mutmut_61': x_apin_stream__mutmut_61, 
-    'x_apin_stream__mutmut_62': x_apin_stream__mutmut_62, 
-    'x_apin_stream__mutmut_63': x_apin_stream__mutmut_63, 
-    'x_apin_stream__mutmut_64': x_apin_stream__mutmut_64, 
-    'x_apin_stream__mutmut_65': x_apin_stream__mutmut_65, 
-    'x_apin_stream__mutmut_66': x_apin_stream__mutmut_66, 
-    'x_apin_stream__mutmut_67': x_apin_stream__mutmut_67, 
-    'x_apin_stream__mutmut_68': x_apin_stream__mutmut_68, 
-    'x_apin_stream__mutmut_69': x_apin_stream__mutmut_69, 
-    'x_apin_stream__mutmut_70': x_apin_stream__mutmut_70, 
-    'x_apin_stream__mutmut_71': x_apin_stream__mutmut_71, 
-    'x_apin_stream__mutmut_72': x_apin_stream__mutmut_72, 
-    'x_apin_stream__mutmut_73': x_apin_stream__mutmut_73, 
-    'x_apin_stream__mutmut_74': x_apin_stream__mutmut_74, 
-    'x_apin_stream__mutmut_75': x_apin_stream__mutmut_75, 
-    'x_apin_stream__mutmut_76': x_apin_stream__mutmut_76, 
-    'x_apin_stream__mutmut_77': x_apin_stream__mutmut_77, 
-    'x_apin_stream__mutmut_78': x_apin_stream__mutmut_78, 
-    'x_apin_stream__mutmut_79': x_apin_stream__mutmut_79, 
-    'x_apin_stream__mutmut_80': x_apin_stream__mutmut_80
+
+x_apin_stream__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_apin_stream__mutmut_1": x_apin_stream__mutmut_1,
+    "x_apin_stream__mutmut_2": x_apin_stream__mutmut_2,
+    "x_apin_stream__mutmut_3": x_apin_stream__mutmut_3,
+    "x_apin_stream__mutmut_4": x_apin_stream__mutmut_4,
+    "x_apin_stream__mutmut_5": x_apin_stream__mutmut_5,
+    "x_apin_stream__mutmut_6": x_apin_stream__mutmut_6,
+    "x_apin_stream__mutmut_7": x_apin_stream__mutmut_7,
+    "x_apin_stream__mutmut_8": x_apin_stream__mutmut_8,
+    "x_apin_stream__mutmut_9": x_apin_stream__mutmut_9,
+    "x_apin_stream__mutmut_10": x_apin_stream__mutmut_10,
+    "x_apin_stream__mutmut_11": x_apin_stream__mutmut_11,
+    "x_apin_stream__mutmut_12": x_apin_stream__mutmut_12,
+    "x_apin_stream__mutmut_13": x_apin_stream__mutmut_13,
+    "x_apin_stream__mutmut_14": x_apin_stream__mutmut_14,
+    "x_apin_stream__mutmut_15": x_apin_stream__mutmut_15,
+    "x_apin_stream__mutmut_16": x_apin_stream__mutmut_16,
+    "x_apin_stream__mutmut_17": x_apin_stream__mutmut_17,
+    "x_apin_stream__mutmut_18": x_apin_stream__mutmut_18,
+    "x_apin_stream__mutmut_19": x_apin_stream__mutmut_19,
+    "x_apin_stream__mutmut_20": x_apin_stream__mutmut_20,
+    "x_apin_stream__mutmut_21": x_apin_stream__mutmut_21,
+    "x_apin_stream__mutmut_22": x_apin_stream__mutmut_22,
+    "x_apin_stream__mutmut_23": x_apin_stream__mutmut_23,
+    "x_apin_stream__mutmut_24": x_apin_stream__mutmut_24,
+    "x_apin_stream__mutmut_25": x_apin_stream__mutmut_25,
+    "x_apin_stream__mutmut_26": x_apin_stream__mutmut_26,
+    "x_apin_stream__mutmut_27": x_apin_stream__mutmut_27,
+    "x_apin_stream__mutmut_28": x_apin_stream__mutmut_28,
+    "x_apin_stream__mutmut_29": x_apin_stream__mutmut_29,
+    "x_apin_stream__mutmut_30": x_apin_stream__mutmut_30,
+    "x_apin_stream__mutmut_31": x_apin_stream__mutmut_31,
+    "x_apin_stream__mutmut_32": x_apin_stream__mutmut_32,
+    "x_apin_stream__mutmut_33": x_apin_stream__mutmut_33,
+    "x_apin_stream__mutmut_34": x_apin_stream__mutmut_34,
+    "x_apin_stream__mutmut_35": x_apin_stream__mutmut_35,
+    "x_apin_stream__mutmut_36": x_apin_stream__mutmut_36,
+    "x_apin_stream__mutmut_37": x_apin_stream__mutmut_37,
+    "x_apin_stream__mutmut_38": x_apin_stream__mutmut_38,
+    "x_apin_stream__mutmut_39": x_apin_stream__mutmut_39,
+    "x_apin_stream__mutmut_40": x_apin_stream__mutmut_40,
+    "x_apin_stream__mutmut_41": x_apin_stream__mutmut_41,
+    "x_apin_stream__mutmut_42": x_apin_stream__mutmut_42,
+    "x_apin_stream__mutmut_43": x_apin_stream__mutmut_43,
+    "x_apin_stream__mutmut_44": x_apin_stream__mutmut_44,
+    "x_apin_stream__mutmut_45": x_apin_stream__mutmut_45,
+    "x_apin_stream__mutmut_46": x_apin_stream__mutmut_46,
+    "x_apin_stream__mutmut_47": x_apin_stream__mutmut_47,
+    "x_apin_stream__mutmut_48": x_apin_stream__mutmut_48,
+    "x_apin_stream__mutmut_49": x_apin_stream__mutmut_49,
+    "x_apin_stream__mutmut_50": x_apin_stream__mutmut_50,
+    "x_apin_stream__mutmut_51": x_apin_stream__mutmut_51,
+    "x_apin_stream__mutmut_52": x_apin_stream__mutmut_52,
+    "x_apin_stream__mutmut_53": x_apin_stream__mutmut_53,
+    "x_apin_stream__mutmut_54": x_apin_stream__mutmut_54,
+    "x_apin_stream__mutmut_55": x_apin_stream__mutmut_55,
+    "x_apin_stream__mutmut_56": x_apin_stream__mutmut_56,
+    "x_apin_stream__mutmut_57": x_apin_stream__mutmut_57,
+    "x_apin_stream__mutmut_58": x_apin_stream__mutmut_58,
+    "x_apin_stream__mutmut_59": x_apin_stream__mutmut_59,
+    "x_apin_stream__mutmut_60": x_apin_stream__mutmut_60,
+    "x_apin_stream__mutmut_61": x_apin_stream__mutmut_61,
+    "x_apin_stream__mutmut_62": x_apin_stream__mutmut_62,
+    "x_apin_stream__mutmut_63": x_apin_stream__mutmut_63,
+    "x_apin_stream__mutmut_64": x_apin_stream__mutmut_64,
+    "x_apin_stream__mutmut_65": x_apin_stream__mutmut_65,
+    "x_apin_stream__mutmut_66": x_apin_stream__mutmut_66,
+    "x_apin_stream__mutmut_67": x_apin_stream__mutmut_67,
+    "x_apin_stream__mutmut_68": x_apin_stream__mutmut_68,
+    "x_apin_stream__mutmut_69": x_apin_stream__mutmut_69,
+    "x_apin_stream__mutmut_70": x_apin_stream__mutmut_70,
+    "x_apin_stream__mutmut_71": x_apin_stream__mutmut_71,
+    "x_apin_stream__mutmut_72": x_apin_stream__mutmut_72,
+    "x_apin_stream__mutmut_73": x_apin_stream__mutmut_73,
+    "x_apin_stream__mutmut_74": x_apin_stream__mutmut_74,
+    "x_apin_stream__mutmut_75": x_apin_stream__mutmut_75,
+    "x_apin_stream__mutmut_76": x_apin_stream__mutmut_76,
+    "x_apin_stream__mutmut_77": x_apin_stream__mutmut_77,
+    "x_apin_stream__mutmut_78": x_apin_stream__mutmut_78,
+    "x_apin_stream__mutmut_79": x_apin_stream__mutmut_79,
+    "x_apin_stream__mutmut_80": x_apin_stream__mutmut_80,
 }
+
 
 def apin_stream(*args, **kwargs):
     result = _mutmut_trampoline(x_apin_stream__mutmut_orig, x_apin_stream__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 apin_stream.__signature__ = _mutmut_signature(x_apin_stream__mutmut_orig)
-x_apin_stream__mutmut_orig.__name__ = 'x_apin_stream'
+x_apin_stream__mutmut_orig.__name__ = "x_apin_stream"
 
 
 def x_pin_lines__mutmut_orig(count: int | None = None) -> list[str]:
@@ -12908,24 +13051,27 @@ def x_pin_lines__mutmut_9(count: int | None = None) -> list[str]:
             return
     return lines
 
-x_pin_lines__mutmut_mutants : ClassVar[MutantDict] = {
-'x_pin_lines__mutmut_1': x_pin_lines__mutmut_1, 
-    'x_pin_lines__mutmut_2': x_pin_lines__mutmut_2, 
-    'x_pin_lines__mutmut_3': x_pin_lines__mutmut_3, 
-    'x_pin_lines__mutmut_4': x_pin_lines__mutmut_4, 
-    'x_pin_lines__mutmut_5': x_pin_lines__mutmut_5, 
-    'x_pin_lines__mutmut_6': x_pin_lines__mutmut_6, 
-    'x_pin_lines__mutmut_7': x_pin_lines__mutmut_7, 
-    'x_pin_lines__mutmut_8': x_pin_lines__mutmut_8, 
-    'x_pin_lines__mutmut_9': x_pin_lines__mutmut_9
+
+x_pin_lines__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_pin_lines__mutmut_1": x_pin_lines__mutmut_1,
+    "x_pin_lines__mutmut_2": x_pin_lines__mutmut_2,
+    "x_pin_lines__mutmut_3": x_pin_lines__mutmut_3,
+    "x_pin_lines__mutmut_4": x_pin_lines__mutmut_4,
+    "x_pin_lines__mutmut_5": x_pin_lines__mutmut_5,
+    "x_pin_lines__mutmut_6": x_pin_lines__mutmut_6,
+    "x_pin_lines__mutmut_7": x_pin_lines__mutmut_7,
+    "x_pin_lines__mutmut_8": x_pin_lines__mutmut_8,
+    "x_pin_lines__mutmut_9": x_pin_lines__mutmut_9,
 }
+
 
 def pin_lines(*args, **kwargs):
     result = _mutmut_trampoline(x_pin_lines__mutmut_orig, x_pin_lines__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 pin_lines.__signature__ = _mutmut_signature(x_pin_lines__mutmut_orig)
-x_pin_lines__mutmut_orig.__name__ = 'x_pin_lines'
+x_pin_lines__mutmut_orig.__name__ = "x_pin_lines"
 
 
 async def x_apin_lines__mutmut_orig(count: int | None = None) -> list[str]:
@@ -13215,26 +13361,29 @@ async def x_apin_lines__mutmut_11(count: int | None = None) -> list[str]:
             return
     return lines
 
-x_apin_lines__mutmut_mutants : ClassVar[MutantDict] = {
-'x_apin_lines__mutmut_1': x_apin_lines__mutmut_1, 
-    'x_apin_lines__mutmut_2': x_apin_lines__mutmut_2, 
-    'x_apin_lines__mutmut_3': x_apin_lines__mutmut_3, 
-    'x_apin_lines__mutmut_4': x_apin_lines__mutmut_4, 
-    'x_apin_lines__mutmut_5': x_apin_lines__mutmut_5, 
-    'x_apin_lines__mutmut_6': x_apin_lines__mutmut_6, 
-    'x_apin_lines__mutmut_7': x_apin_lines__mutmut_7, 
-    'x_apin_lines__mutmut_8': x_apin_lines__mutmut_8, 
-    'x_apin_lines__mutmut_9': x_apin_lines__mutmut_9, 
-    'x_apin_lines__mutmut_10': x_apin_lines__mutmut_10, 
-    'x_apin_lines__mutmut_11': x_apin_lines__mutmut_11
+
+x_apin_lines__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_apin_lines__mutmut_1": x_apin_lines__mutmut_1,
+    "x_apin_lines__mutmut_2": x_apin_lines__mutmut_2,
+    "x_apin_lines__mutmut_3": x_apin_lines__mutmut_3,
+    "x_apin_lines__mutmut_4": x_apin_lines__mutmut_4,
+    "x_apin_lines__mutmut_5": x_apin_lines__mutmut_5,
+    "x_apin_lines__mutmut_6": x_apin_lines__mutmut_6,
+    "x_apin_lines__mutmut_7": x_apin_lines__mutmut_7,
+    "x_apin_lines__mutmut_8": x_apin_lines__mutmut_8,
+    "x_apin_lines__mutmut_9": x_apin_lines__mutmut_9,
+    "x_apin_lines__mutmut_10": x_apin_lines__mutmut_10,
+    "x_apin_lines__mutmut_11": x_apin_lines__mutmut_11,
 }
+
 
 def apin_lines(*args, **kwargs):
     result = _mutmut_trampoline(x_apin_lines__mutmut_orig, x_apin_lines__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 apin_lines.__signature__ = _mutmut_signature(x_apin_lines__mutmut_orig)
-x_apin_lines__mutmut_orig.__name__ = 'x_apin_lines'
+x_apin_lines__mutmut_orig.__name__ = "x_apin_lines"
 
 
 # <3 🧱🤝🖥️🪄

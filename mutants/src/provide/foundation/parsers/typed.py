@@ -26,23 +26,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -154,22 +157,27 @@ def x__parse_basic_type__mutmut_7(value: str, target_type: type) -> Any:
         return value
     return None  # Not a basic type
 
-x__parse_basic_type__mutmut_mutants : ClassVar[MutantDict] = {
-'x__parse_basic_type__mutmut_1': x__parse_basic_type__mutmut_1, 
-    'x__parse_basic_type__mutmut_2': x__parse_basic_type__mutmut_2, 
-    'x__parse_basic_type__mutmut_3': x__parse_basic_type__mutmut_3, 
-    'x__parse_basic_type__mutmut_4': x__parse_basic_type__mutmut_4, 
-    'x__parse_basic_type__mutmut_5': x__parse_basic_type__mutmut_5, 
-    'x__parse_basic_type__mutmut_6': x__parse_basic_type__mutmut_6, 
-    'x__parse_basic_type__mutmut_7': x__parse_basic_type__mutmut_7
+
+x__parse_basic_type__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__parse_basic_type__mutmut_1": x__parse_basic_type__mutmut_1,
+    "x__parse_basic_type__mutmut_2": x__parse_basic_type__mutmut_2,
+    "x__parse_basic_type__mutmut_3": x__parse_basic_type__mutmut_3,
+    "x__parse_basic_type__mutmut_4": x__parse_basic_type__mutmut_4,
+    "x__parse_basic_type__mutmut_5": x__parse_basic_type__mutmut_5,
+    "x__parse_basic_type__mutmut_6": x__parse_basic_type__mutmut_6,
+    "x__parse_basic_type__mutmut_7": x__parse_basic_type__mutmut_7,
 }
 
+
 def _parse_basic_type(*args, **kwargs):
-    result = _mutmut_trampoline(x__parse_basic_type__mutmut_orig, x__parse_basic_type__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__parse_basic_type__mutmut_orig, x__parse_basic_type__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _parse_basic_type.__signature__ = _mutmut_signature(x__parse_basic_type__mutmut_orig)
-x__parse_basic_type__mutmut_orig.__name__ = 'x__parse_basic_type'
+x__parse_basic_type__mutmut_orig.__name__ = "x__parse_basic_type"
 
 
 def x__parse_list_type__mutmut_orig(value: str, target_type: type) -> list[Any]:
@@ -388,7 +396,12 @@ def x__parse_list_type__mutmut_13(value: str, target_type: type) -> list[Any]:
         str_list = parse_list(value)
         try:
             # Convert each item to the target type
-            return [parse_typed_value(item, ) for item in str_list]
+            return [
+                parse_typed_value(
+                    item,
+                )
+                for item in str_list
+            ]
         except (ValueError, TypeError) as e:
             raise ValueError(f"Cannot convert list items to {item_type.__name__}: {e}") from e
     else:
@@ -427,30 +440,35 @@ def x__parse_list_type__mutmut_15(value: str, target_type: type) -> list[Any]:
         # list without type parameter, return as list[str]
         return parse_list(None)
 
-x__parse_list_type__mutmut_mutants : ClassVar[MutantDict] = {
-'x__parse_list_type__mutmut_1': x__parse_list_type__mutmut_1, 
-    'x__parse_list_type__mutmut_2': x__parse_list_type__mutmut_2, 
-    'x__parse_list_type__mutmut_3': x__parse_list_type__mutmut_3, 
-    'x__parse_list_type__mutmut_4': x__parse_list_type__mutmut_4, 
-    'x__parse_list_type__mutmut_5': x__parse_list_type__mutmut_5, 
-    'x__parse_list_type__mutmut_6': x__parse_list_type__mutmut_6, 
-    'x__parse_list_type__mutmut_7': x__parse_list_type__mutmut_7, 
-    'x__parse_list_type__mutmut_8': x__parse_list_type__mutmut_8, 
-    'x__parse_list_type__mutmut_9': x__parse_list_type__mutmut_9, 
-    'x__parse_list_type__mutmut_10': x__parse_list_type__mutmut_10, 
-    'x__parse_list_type__mutmut_11': x__parse_list_type__mutmut_11, 
-    'x__parse_list_type__mutmut_12': x__parse_list_type__mutmut_12, 
-    'x__parse_list_type__mutmut_13': x__parse_list_type__mutmut_13, 
-    'x__parse_list_type__mutmut_14': x__parse_list_type__mutmut_14, 
-    'x__parse_list_type__mutmut_15': x__parse_list_type__mutmut_15
+
+x__parse_list_type__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__parse_list_type__mutmut_1": x__parse_list_type__mutmut_1,
+    "x__parse_list_type__mutmut_2": x__parse_list_type__mutmut_2,
+    "x__parse_list_type__mutmut_3": x__parse_list_type__mutmut_3,
+    "x__parse_list_type__mutmut_4": x__parse_list_type__mutmut_4,
+    "x__parse_list_type__mutmut_5": x__parse_list_type__mutmut_5,
+    "x__parse_list_type__mutmut_6": x__parse_list_type__mutmut_6,
+    "x__parse_list_type__mutmut_7": x__parse_list_type__mutmut_7,
+    "x__parse_list_type__mutmut_8": x__parse_list_type__mutmut_8,
+    "x__parse_list_type__mutmut_9": x__parse_list_type__mutmut_9,
+    "x__parse_list_type__mutmut_10": x__parse_list_type__mutmut_10,
+    "x__parse_list_type__mutmut_11": x__parse_list_type__mutmut_11,
+    "x__parse_list_type__mutmut_12": x__parse_list_type__mutmut_12,
+    "x__parse_list_type__mutmut_13": x__parse_list_type__mutmut_13,
+    "x__parse_list_type__mutmut_14": x__parse_list_type__mutmut_14,
+    "x__parse_list_type__mutmut_15": x__parse_list_type__mutmut_15,
 }
 
+
 def _parse_list_type(*args, **kwargs):
-    result = _mutmut_trampoline(x__parse_list_type__mutmut_orig, x__parse_list_type__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__parse_list_type__mutmut_orig, x__parse_list_type__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _parse_list_type.__signature__ = _mutmut_signature(x__parse_list_type__mutmut_orig)
-x__parse_list_type__mutmut_orig.__name__ = 'x__parse_list_type'
+x__parse_list_type__mutmut_orig.__name__ = "x__parse_list_type"
 
 
 def x__parse_tuple_type__mutmut_orig(value: str, target_type: type) -> tuple:
@@ -642,7 +660,12 @@ def x__parse_tuple_type__mutmut_14(value: str, target_type: type) -> tuple:
         item_type = args[0]
         str_tuple = parse_tuple(value)
         try:
-            return tuple(parse_typed_value(item, ) for item in str_tuple)
+            return tuple(
+                parse_typed_value(
+                    item,
+                )
+                for item in str_tuple
+            )
         except (ValueError, TypeError) as e:
             raise ValueError(f"Cannot convert tuple items to {item_type.__name__}: {e}") from e
     return parse_tuple(value)
@@ -673,31 +696,36 @@ def x__parse_tuple_type__mutmut_16(value: str, target_type: type) -> tuple:
             raise ValueError(f"Cannot convert tuple items to {item_type.__name__}: {e}") from e
     return parse_tuple(None)
 
-x__parse_tuple_type__mutmut_mutants : ClassVar[MutantDict] = {
-'x__parse_tuple_type__mutmut_1': x__parse_tuple_type__mutmut_1, 
-    'x__parse_tuple_type__mutmut_2': x__parse_tuple_type__mutmut_2, 
-    'x__parse_tuple_type__mutmut_3': x__parse_tuple_type__mutmut_3, 
-    'x__parse_tuple_type__mutmut_4': x__parse_tuple_type__mutmut_4, 
-    'x__parse_tuple_type__mutmut_5': x__parse_tuple_type__mutmut_5, 
-    'x__parse_tuple_type__mutmut_6': x__parse_tuple_type__mutmut_6, 
-    'x__parse_tuple_type__mutmut_7': x__parse_tuple_type__mutmut_7, 
-    'x__parse_tuple_type__mutmut_8': x__parse_tuple_type__mutmut_8, 
-    'x__parse_tuple_type__mutmut_9': x__parse_tuple_type__mutmut_9, 
-    'x__parse_tuple_type__mutmut_10': x__parse_tuple_type__mutmut_10, 
-    'x__parse_tuple_type__mutmut_11': x__parse_tuple_type__mutmut_11, 
-    'x__parse_tuple_type__mutmut_12': x__parse_tuple_type__mutmut_12, 
-    'x__parse_tuple_type__mutmut_13': x__parse_tuple_type__mutmut_13, 
-    'x__parse_tuple_type__mutmut_14': x__parse_tuple_type__mutmut_14, 
-    'x__parse_tuple_type__mutmut_15': x__parse_tuple_type__mutmut_15, 
-    'x__parse_tuple_type__mutmut_16': x__parse_tuple_type__mutmut_16
+
+x__parse_tuple_type__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__parse_tuple_type__mutmut_1": x__parse_tuple_type__mutmut_1,
+    "x__parse_tuple_type__mutmut_2": x__parse_tuple_type__mutmut_2,
+    "x__parse_tuple_type__mutmut_3": x__parse_tuple_type__mutmut_3,
+    "x__parse_tuple_type__mutmut_4": x__parse_tuple_type__mutmut_4,
+    "x__parse_tuple_type__mutmut_5": x__parse_tuple_type__mutmut_5,
+    "x__parse_tuple_type__mutmut_6": x__parse_tuple_type__mutmut_6,
+    "x__parse_tuple_type__mutmut_7": x__parse_tuple_type__mutmut_7,
+    "x__parse_tuple_type__mutmut_8": x__parse_tuple_type__mutmut_8,
+    "x__parse_tuple_type__mutmut_9": x__parse_tuple_type__mutmut_9,
+    "x__parse_tuple_type__mutmut_10": x__parse_tuple_type__mutmut_10,
+    "x__parse_tuple_type__mutmut_11": x__parse_tuple_type__mutmut_11,
+    "x__parse_tuple_type__mutmut_12": x__parse_tuple_type__mutmut_12,
+    "x__parse_tuple_type__mutmut_13": x__parse_tuple_type__mutmut_13,
+    "x__parse_tuple_type__mutmut_14": x__parse_tuple_type__mutmut_14,
+    "x__parse_tuple_type__mutmut_15": x__parse_tuple_type__mutmut_15,
+    "x__parse_tuple_type__mutmut_16": x__parse_tuple_type__mutmut_16,
 }
 
+
 def _parse_tuple_type(*args, **kwargs):
-    result = _mutmut_trampoline(x__parse_tuple_type__mutmut_orig, x__parse_tuple_type__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__parse_tuple_type__mutmut_orig, x__parse_tuple_type__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _parse_tuple_type.__signature__ = _mutmut_signature(x__parse_tuple_type__mutmut_orig)
-x__parse_tuple_type__mutmut_orig.__name__ = 'x__parse_tuple_type'
+x__parse_tuple_type__mutmut_orig.__name__ = "x__parse_tuple_type"
 
 
 def x__parse_set_type__mutmut_orig(value: str, target_type: type) -> set:
@@ -876,7 +904,12 @@ def x__parse_set_type__mutmut_13(value: str, target_type: type) -> set:
         item_type = args[0]
         str_set = parse_set(value)
         try:
-            return {parse_typed_value(item, ) for item in str_set}
+            return {
+                parse_typed_value(
+                    item,
+                )
+                for item in str_set
+            }
         except (ValueError, TypeError) as e:
             raise ValueError(f"Cannot convert set items to {item_type.__name__}: {e}") from e
     return parse_set(value)
@@ -907,30 +940,35 @@ def x__parse_set_type__mutmut_15(value: str, target_type: type) -> set:
             raise ValueError(f"Cannot convert set items to {item_type.__name__}: {e}") from e
     return parse_set(None)
 
-x__parse_set_type__mutmut_mutants : ClassVar[MutantDict] = {
-'x__parse_set_type__mutmut_1': x__parse_set_type__mutmut_1, 
-    'x__parse_set_type__mutmut_2': x__parse_set_type__mutmut_2, 
-    'x__parse_set_type__mutmut_3': x__parse_set_type__mutmut_3, 
-    'x__parse_set_type__mutmut_4': x__parse_set_type__mutmut_4, 
-    'x__parse_set_type__mutmut_5': x__parse_set_type__mutmut_5, 
-    'x__parse_set_type__mutmut_6': x__parse_set_type__mutmut_6, 
-    'x__parse_set_type__mutmut_7': x__parse_set_type__mutmut_7, 
-    'x__parse_set_type__mutmut_8': x__parse_set_type__mutmut_8, 
-    'x__parse_set_type__mutmut_9': x__parse_set_type__mutmut_9, 
-    'x__parse_set_type__mutmut_10': x__parse_set_type__mutmut_10, 
-    'x__parse_set_type__mutmut_11': x__parse_set_type__mutmut_11, 
-    'x__parse_set_type__mutmut_12': x__parse_set_type__mutmut_12, 
-    'x__parse_set_type__mutmut_13': x__parse_set_type__mutmut_13, 
-    'x__parse_set_type__mutmut_14': x__parse_set_type__mutmut_14, 
-    'x__parse_set_type__mutmut_15': x__parse_set_type__mutmut_15
+
+x__parse_set_type__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__parse_set_type__mutmut_1": x__parse_set_type__mutmut_1,
+    "x__parse_set_type__mutmut_2": x__parse_set_type__mutmut_2,
+    "x__parse_set_type__mutmut_3": x__parse_set_type__mutmut_3,
+    "x__parse_set_type__mutmut_4": x__parse_set_type__mutmut_4,
+    "x__parse_set_type__mutmut_5": x__parse_set_type__mutmut_5,
+    "x__parse_set_type__mutmut_6": x__parse_set_type__mutmut_6,
+    "x__parse_set_type__mutmut_7": x__parse_set_type__mutmut_7,
+    "x__parse_set_type__mutmut_8": x__parse_set_type__mutmut_8,
+    "x__parse_set_type__mutmut_9": x__parse_set_type__mutmut_9,
+    "x__parse_set_type__mutmut_10": x__parse_set_type__mutmut_10,
+    "x__parse_set_type__mutmut_11": x__parse_set_type__mutmut_11,
+    "x__parse_set_type__mutmut_12": x__parse_set_type__mutmut_12,
+    "x__parse_set_type__mutmut_13": x__parse_set_type__mutmut_13,
+    "x__parse_set_type__mutmut_14": x__parse_set_type__mutmut_14,
+    "x__parse_set_type__mutmut_15": x__parse_set_type__mutmut_15,
 }
 
+
 def _parse_set_type(*args, **kwargs):
-    result = _mutmut_trampoline(x__parse_set_type__mutmut_orig, x__parse_set_type__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__parse_set_type__mutmut_orig, x__parse_set_type__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _parse_set_type.__signature__ = _mutmut_signature(x__parse_set_type__mutmut_orig)
-x__parse_set_type__mutmut_orig.__name__ = 'x__parse_set_type'
+x__parse_set_type__mutmut_orig.__name__ = "x__parse_set_type"
 
 
 def x__parse_generic_type__mutmut_orig(value: str, target_type: type) -> Any:
@@ -1120,7 +1158,9 @@ def x__parse_generic_type__mutmut_7(value: str, target_type: type) -> Any:
     origin = get_origin(target_type)
 
     if origin is list:
-        return _parse_list_type(value, )
+        return _parse_list_type(
+            value,
+        )
     if origin is tuple:
         return _parse_tuple_type(value, target_type)
     if origin is set:
@@ -1252,7 +1292,9 @@ def x__parse_generic_type__mutmut_12(value: str, target_type: type) -> Any:
     if origin is list:
         return _parse_list_type(value, target_type)
     if origin is tuple:
-        return _parse_tuple_type(value, )
+        return _parse_tuple_type(
+            value,
+        )
     if origin is set:
         return _parse_set_type(value, target_type)
     if origin is dict:
@@ -1384,7 +1426,9 @@ def x__parse_generic_type__mutmut_17(value: str, target_type: type) -> Any:
     if origin is tuple:
         return _parse_tuple_type(value, target_type)
     if origin is set:
-        return _parse_set_type(value, )
+        return _parse_set_type(
+            value,
+        )
     if origin is dict:
         return parse_dict(value)
     if origin is None:
@@ -1686,43 +1730,48 @@ def x__parse_generic_type__mutmut_28(value: str, target_type: type) -> Any:
 
     return None  # Not a recognized generic type
 
-x__parse_generic_type__mutmut_mutants : ClassVar[MutantDict] = {
-'x__parse_generic_type__mutmut_1': x__parse_generic_type__mutmut_1, 
-    'x__parse_generic_type__mutmut_2': x__parse_generic_type__mutmut_2, 
-    'x__parse_generic_type__mutmut_3': x__parse_generic_type__mutmut_3, 
-    'x__parse_generic_type__mutmut_4': x__parse_generic_type__mutmut_4, 
-    'x__parse_generic_type__mutmut_5': x__parse_generic_type__mutmut_5, 
-    'x__parse_generic_type__mutmut_6': x__parse_generic_type__mutmut_6, 
-    'x__parse_generic_type__mutmut_7': x__parse_generic_type__mutmut_7, 
-    'x__parse_generic_type__mutmut_8': x__parse_generic_type__mutmut_8, 
-    'x__parse_generic_type__mutmut_9': x__parse_generic_type__mutmut_9, 
-    'x__parse_generic_type__mutmut_10': x__parse_generic_type__mutmut_10, 
-    'x__parse_generic_type__mutmut_11': x__parse_generic_type__mutmut_11, 
-    'x__parse_generic_type__mutmut_12': x__parse_generic_type__mutmut_12, 
-    'x__parse_generic_type__mutmut_13': x__parse_generic_type__mutmut_13, 
-    'x__parse_generic_type__mutmut_14': x__parse_generic_type__mutmut_14, 
-    'x__parse_generic_type__mutmut_15': x__parse_generic_type__mutmut_15, 
-    'x__parse_generic_type__mutmut_16': x__parse_generic_type__mutmut_16, 
-    'x__parse_generic_type__mutmut_17': x__parse_generic_type__mutmut_17, 
-    'x__parse_generic_type__mutmut_18': x__parse_generic_type__mutmut_18, 
-    'x__parse_generic_type__mutmut_19': x__parse_generic_type__mutmut_19, 
-    'x__parse_generic_type__mutmut_20': x__parse_generic_type__mutmut_20, 
-    'x__parse_generic_type__mutmut_21': x__parse_generic_type__mutmut_21, 
-    'x__parse_generic_type__mutmut_22': x__parse_generic_type__mutmut_22, 
-    'x__parse_generic_type__mutmut_23': x__parse_generic_type__mutmut_23, 
-    'x__parse_generic_type__mutmut_24': x__parse_generic_type__mutmut_24, 
-    'x__parse_generic_type__mutmut_25': x__parse_generic_type__mutmut_25, 
-    'x__parse_generic_type__mutmut_26': x__parse_generic_type__mutmut_26, 
-    'x__parse_generic_type__mutmut_27': x__parse_generic_type__mutmut_27, 
-    'x__parse_generic_type__mutmut_28': x__parse_generic_type__mutmut_28
+
+x__parse_generic_type__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__parse_generic_type__mutmut_1": x__parse_generic_type__mutmut_1,
+    "x__parse_generic_type__mutmut_2": x__parse_generic_type__mutmut_2,
+    "x__parse_generic_type__mutmut_3": x__parse_generic_type__mutmut_3,
+    "x__parse_generic_type__mutmut_4": x__parse_generic_type__mutmut_4,
+    "x__parse_generic_type__mutmut_5": x__parse_generic_type__mutmut_5,
+    "x__parse_generic_type__mutmut_6": x__parse_generic_type__mutmut_6,
+    "x__parse_generic_type__mutmut_7": x__parse_generic_type__mutmut_7,
+    "x__parse_generic_type__mutmut_8": x__parse_generic_type__mutmut_8,
+    "x__parse_generic_type__mutmut_9": x__parse_generic_type__mutmut_9,
+    "x__parse_generic_type__mutmut_10": x__parse_generic_type__mutmut_10,
+    "x__parse_generic_type__mutmut_11": x__parse_generic_type__mutmut_11,
+    "x__parse_generic_type__mutmut_12": x__parse_generic_type__mutmut_12,
+    "x__parse_generic_type__mutmut_13": x__parse_generic_type__mutmut_13,
+    "x__parse_generic_type__mutmut_14": x__parse_generic_type__mutmut_14,
+    "x__parse_generic_type__mutmut_15": x__parse_generic_type__mutmut_15,
+    "x__parse_generic_type__mutmut_16": x__parse_generic_type__mutmut_16,
+    "x__parse_generic_type__mutmut_17": x__parse_generic_type__mutmut_17,
+    "x__parse_generic_type__mutmut_18": x__parse_generic_type__mutmut_18,
+    "x__parse_generic_type__mutmut_19": x__parse_generic_type__mutmut_19,
+    "x__parse_generic_type__mutmut_20": x__parse_generic_type__mutmut_20,
+    "x__parse_generic_type__mutmut_21": x__parse_generic_type__mutmut_21,
+    "x__parse_generic_type__mutmut_22": x__parse_generic_type__mutmut_22,
+    "x__parse_generic_type__mutmut_23": x__parse_generic_type__mutmut_23,
+    "x__parse_generic_type__mutmut_24": x__parse_generic_type__mutmut_24,
+    "x__parse_generic_type__mutmut_25": x__parse_generic_type__mutmut_25,
+    "x__parse_generic_type__mutmut_26": x__parse_generic_type__mutmut_26,
+    "x__parse_generic_type__mutmut_27": x__parse_generic_type__mutmut_27,
+    "x__parse_generic_type__mutmut_28": x__parse_generic_type__mutmut_28,
 }
 
+
 def _parse_generic_type(*args, **kwargs):
-    result = _mutmut_trampoline(x__parse_generic_type__mutmut_orig, x__parse_generic_type__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__parse_generic_type__mutmut_orig, x__parse_generic_type__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _parse_generic_type.__signature__ = _mutmut_signature(x__parse_generic_type__mutmut_orig)
-x__parse_generic_type__mutmut_orig.__name__ = 'x__parse_generic_type'
+x__parse_generic_type__mutmut_orig.__name__ = "x__parse_generic_type"
 
 
 def x_extract_concrete_type__mutmut_orig(annotation: Any) -> type:
@@ -5165,7 +5214,9 @@ def x_extract_concrete_type__mutmut_40(annotation: Any) -> type:
             "pathlib.Path": str,
         }
 
-        return type_mapping.get(annotation, )
+        return type_mapping.get(
+            annotation,
+        )
 
     # Handle None type
     if annotation is type(None):
@@ -6196,7 +6247,12 @@ def x_extract_concrete_type__mutmut_52(annotation: Any) -> type:
     args = get_args(annotation)
 
     # Handle Union types (including Optional which is Union[T, None])
-    if origin is typing.Union or (hasattr(types, ) and isinstance(annotation, types.UnionType)):
+    if origin is typing.Union or (
+        hasattr(
+            types,
+        )
+        and isinstance(annotation, types.UnionType)
+    ):
         # For Python 3.10+ union syntax (str | None)
         if hasattr(annotation, "__args__"):
             args = annotation.__args__
@@ -6793,7 +6849,9 @@ def x_extract_concrete_type__mutmut_59(annotation: Any) -> type:
     # Handle Union types (including Optional which is Union[T, None])
     if origin is typing.Union or (hasattr(types, "UnionType") and isinstance(annotation, types.UnionType)):
         # For Python 3.10+ union syntax (str | None)
-        if hasattr(annotation, ):
+        if hasattr(
+            annotation,
+        ):
             args = annotation.__args__
 
         # Filter out None type to get the actual type
@@ -7408,81 +7466,86 @@ def x_extract_concrete_type__mutmut_66(annotation: Any) -> type:
     # For non-generic types, return as-is
     return annotation
 
-x_extract_concrete_type__mutmut_mutants : ClassVar[MutantDict] = {
-'x_extract_concrete_type__mutmut_1': x_extract_concrete_type__mutmut_1, 
-    'x_extract_concrete_type__mutmut_2': x_extract_concrete_type__mutmut_2, 
-    'x_extract_concrete_type__mutmut_3': x_extract_concrete_type__mutmut_3, 
-    'x_extract_concrete_type__mutmut_4': x_extract_concrete_type__mutmut_4, 
-    'x_extract_concrete_type__mutmut_5': x_extract_concrete_type__mutmut_5, 
-    'x_extract_concrete_type__mutmut_6': x_extract_concrete_type__mutmut_6, 
-    'x_extract_concrete_type__mutmut_7': x_extract_concrete_type__mutmut_7, 
-    'x_extract_concrete_type__mutmut_8': x_extract_concrete_type__mutmut_8, 
-    'x_extract_concrete_type__mutmut_9': x_extract_concrete_type__mutmut_9, 
-    'x_extract_concrete_type__mutmut_10': x_extract_concrete_type__mutmut_10, 
-    'x_extract_concrete_type__mutmut_11': x_extract_concrete_type__mutmut_11, 
-    'x_extract_concrete_type__mutmut_12': x_extract_concrete_type__mutmut_12, 
-    'x_extract_concrete_type__mutmut_13': x_extract_concrete_type__mutmut_13, 
-    'x_extract_concrete_type__mutmut_14': x_extract_concrete_type__mutmut_14, 
-    'x_extract_concrete_type__mutmut_15': x_extract_concrete_type__mutmut_15, 
-    'x_extract_concrete_type__mutmut_16': x_extract_concrete_type__mutmut_16, 
-    'x_extract_concrete_type__mutmut_17': x_extract_concrete_type__mutmut_17, 
-    'x_extract_concrete_type__mutmut_18': x_extract_concrete_type__mutmut_18, 
-    'x_extract_concrete_type__mutmut_19': x_extract_concrete_type__mutmut_19, 
-    'x_extract_concrete_type__mutmut_20': x_extract_concrete_type__mutmut_20, 
-    'x_extract_concrete_type__mutmut_21': x_extract_concrete_type__mutmut_21, 
-    'x_extract_concrete_type__mutmut_22': x_extract_concrete_type__mutmut_22, 
-    'x_extract_concrete_type__mutmut_23': x_extract_concrete_type__mutmut_23, 
-    'x_extract_concrete_type__mutmut_24': x_extract_concrete_type__mutmut_24, 
-    'x_extract_concrete_type__mutmut_25': x_extract_concrete_type__mutmut_25, 
-    'x_extract_concrete_type__mutmut_26': x_extract_concrete_type__mutmut_26, 
-    'x_extract_concrete_type__mutmut_27': x_extract_concrete_type__mutmut_27, 
-    'x_extract_concrete_type__mutmut_28': x_extract_concrete_type__mutmut_28, 
-    'x_extract_concrete_type__mutmut_29': x_extract_concrete_type__mutmut_29, 
-    'x_extract_concrete_type__mutmut_30': x_extract_concrete_type__mutmut_30, 
-    'x_extract_concrete_type__mutmut_31': x_extract_concrete_type__mutmut_31, 
-    'x_extract_concrete_type__mutmut_32': x_extract_concrete_type__mutmut_32, 
-    'x_extract_concrete_type__mutmut_33': x_extract_concrete_type__mutmut_33, 
-    'x_extract_concrete_type__mutmut_34': x_extract_concrete_type__mutmut_34, 
-    'x_extract_concrete_type__mutmut_35': x_extract_concrete_type__mutmut_35, 
-    'x_extract_concrete_type__mutmut_36': x_extract_concrete_type__mutmut_36, 
-    'x_extract_concrete_type__mutmut_37': x_extract_concrete_type__mutmut_37, 
-    'x_extract_concrete_type__mutmut_38': x_extract_concrete_type__mutmut_38, 
-    'x_extract_concrete_type__mutmut_39': x_extract_concrete_type__mutmut_39, 
-    'x_extract_concrete_type__mutmut_40': x_extract_concrete_type__mutmut_40, 
-    'x_extract_concrete_type__mutmut_41': x_extract_concrete_type__mutmut_41, 
-    'x_extract_concrete_type__mutmut_42': x_extract_concrete_type__mutmut_42, 
-    'x_extract_concrete_type__mutmut_43': x_extract_concrete_type__mutmut_43, 
-    'x_extract_concrete_type__mutmut_44': x_extract_concrete_type__mutmut_44, 
-    'x_extract_concrete_type__mutmut_45': x_extract_concrete_type__mutmut_45, 
-    'x_extract_concrete_type__mutmut_46': x_extract_concrete_type__mutmut_46, 
-    'x_extract_concrete_type__mutmut_47': x_extract_concrete_type__mutmut_47, 
-    'x_extract_concrete_type__mutmut_48': x_extract_concrete_type__mutmut_48, 
-    'x_extract_concrete_type__mutmut_49': x_extract_concrete_type__mutmut_49, 
-    'x_extract_concrete_type__mutmut_50': x_extract_concrete_type__mutmut_50, 
-    'x_extract_concrete_type__mutmut_51': x_extract_concrete_type__mutmut_51, 
-    'x_extract_concrete_type__mutmut_52': x_extract_concrete_type__mutmut_52, 
-    'x_extract_concrete_type__mutmut_53': x_extract_concrete_type__mutmut_53, 
-    'x_extract_concrete_type__mutmut_54': x_extract_concrete_type__mutmut_54, 
-    'x_extract_concrete_type__mutmut_55': x_extract_concrete_type__mutmut_55, 
-    'x_extract_concrete_type__mutmut_56': x_extract_concrete_type__mutmut_56, 
-    'x_extract_concrete_type__mutmut_57': x_extract_concrete_type__mutmut_57, 
-    'x_extract_concrete_type__mutmut_58': x_extract_concrete_type__mutmut_58, 
-    'x_extract_concrete_type__mutmut_59': x_extract_concrete_type__mutmut_59, 
-    'x_extract_concrete_type__mutmut_60': x_extract_concrete_type__mutmut_60, 
-    'x_extract_concrete_type__mutmut_61': x_extract_concrete_type__mutmut_61, 
-    'x_extract_concrete_type__mutmut_62': x_extract_concrete_type__mutmut_62, 
-    'x_extract_concrete_type__mutmut_63': x_extract_concrete_type__mutmut_63, 
-    'x_extract_concrete_type__mutmut_64': x_extract_concrete_type__mutmut_64, 
-    'x_extract_concrete_type__mutmut_65': x_extract_concrete_type__mutmut_65, 
-    'x_extract_concrete_type__mutmut_66': x_extract_concrete_type__mutmut_66
+
+x_extract_concrete_type__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_extract_concrete_type__mutmut_1": x_extract_concrete_type__mutmut_1,
+    "x_extract_concrete_type__mutmut_2": x_extract_concrete_type__mutmut_2,
+    "x_extract_concrete_type__mutmut_3": x_extract_concrete_type__mutmut_3,
+    "x_extract_concrete_type__mutmut_4": x_extract_concrete_type__mutmut_4,
+    "x_extract_concrete_type__mutmut_5": x_extract_concrete_type__mutmut_5,
+    "x_extract_concrete_type__mutmut_6": x_extract_concrete_type__mutmut_6,
+    "x_extract_concrete_type__mutmut_7": x_extract_concrete_type__mutmut_7,
+    "x_extract_concrete_type__mutmut_8": x_extract_concrete_type__mutmut_8,
+    "x_extract_concrete_type__mutmut_9": x_extract_concrete_type__mutmut_9,
+    "x_extract_concrete_type__mutmut_10": x_extract_concrete_type__mutmut_10,
+    "x_extract_concrete_type__mutmut_11": x_extract_concrete_type__mutmut_11,
+    "x_extract_concrete_type__mutmut_12": x_extract_concrete_type__mutmut_12,
+    "x_extract_concrete_type__mutmut_13": x_extract_concrete_type__mutmut_13,
+    "x_extract_concrete_type__mutmut_14": x_extract_concrete_type__mutmut_14,
+    "x_extract_concrete_type__mutmut_15": x_extract_concrete_type__mutmut_15,
+    "x_extract_concrete_type__mutmut_16": x_extract_concrete_type__mutmut_16,
+    "x_extract_concrete_type__mutmut_17": x_extract_concrete_type__mutmut_17,
+    "x_extract_concrete_type__mutmut_18": x_extract_concrete_type__mutmut_18,
+    "x_extract_concrete_type__mutmut_19": x_extract_concrete_type__mutmut_19,
+    "x_extract_concrete_type__mutmut_20": x_extract_concrete_type__mutmut_20,
+    "x_extract_concrete_type__mutmut_21": x_extract_concrete_type__mutmut_21,
+    "x_extract_concrete_type__mutmut_22": x_extract_concrete_type__mutmut_22,
+    "x_extract_concrete_type__mutmut_23": x_extract_concrete_type__mutmut_23,
+    "x_extract_concrete_type__mutmut_24": x_extract_concrete_type__mutmut_24,
+    "x_extract_concrete_type__mutmut_25": x_extract_concrete_type__mutmut_25,
+    "x_extract_concrete_type__mutmut_26": x_extract_concrete_type__mutmut_26,
+    "x_extract_concrete_type__mutmut_27": x_extract_concrete_type__mutmut_27,
+    "x_extract_concrete_type__mutmut_28": x_extract_concrete_type__mutmut_28,
+    "x_extract_concrete_type__mutmut_29": x_extract_concrete_type__mutmut_29,
+    "x_extract_concrete_type__mutmut_30": x_extract_concrete_type__mutmut_30,
+    "x_extract_concrete_type__mutmut_31": x_extract_concrete_type__mutmut_31,
+    "x_extract_concrete_type__mutmut_32": x_extract_concrete_type__mutmut_32,
+    "x_extract_concrete_type__mutmut_33": x_extract_concrete_type__mutmut_33,
+    "x_extract_concrete_type__mutmut_34": x_extract_concrete_type__mutmut_34,
+    "x_extract_concrete_type__mutmut_35": x_extract_concrete_type__mutmut_35,
+    "x_extract_concrete_type__mutmut_36": x_extract_concrete_type__mutmut_36,
+    "x_extract_concrete_type__mutmut_37": x_extract_concrete_type__mutmut_37,
+    "x_extract_concrete_type__mutmut_38": x_extract_concrete_type__mutmut_38,
+    "x_extract_concrete_type__mutmut_39": x_extract_concrete_type__mutmut_39,
+    "x_extract_concrete_type__mutmut_40": x_extract_concrete_type__mutmut_40,
+    "x_extract_concrete_type__mutmut_41": x_extract_concrete_type__mutmut_41,
+    "x_extract_concrete_type__mutmut_42": x_extract_concrete_type__mutmut_42,
+    "x_extract_concrete_type__mutmut_43": x_extract_concrete_type__mutmut_43,
+    "x_extract_concrete_type__mutmut_44": x_extract_concrete_type__mutmut_44,
+    "x_extract_concrete_type__mutmut_45": x_extract_concrete_type__mutmut_45,
+    "x_extract_concrete_type__mutmut_46": x_extract_concrete_type__mutmut_46,
+    "x_extract_concrete_type__mutmut_47": x_extract_concrete_type__mutmut_47,
+    "x_extract_concrete_type__mutmut_48": x_extract_concrete_type__mutmut_48,
+    "x_extract_concrete_type__mutmut_49": x_extract_concrete_type__mutmut_49,
+    "x_extract_concrete_type__mutmut_50": x_extract_concrete_type__mutmut_50,
+    "x_extract_concrete_type__mutmut_51": x_extract_concrete_type__mutmut_51,
+    "x_extract_concrete_type__mutmut_52": x_extract_concrete_type__mutmut_52,
+    "x_extract_concrete_type__mutmut_53": x_extract_concrete_type__mutmut_53,
+    "x_extract_concrete_type__mutmut_54": x_extract_concrete_type__mutmut_54,
+    "x_extract_concrete_type__mutmut_55": x_extract_concrete_type__mutmut_55,
+    "x_extract_concrete_type__mutmut_56": x_extract_concrete_type__mutmut_56,
+    "x_extract_concrete_type__mutmut_57": x_extract_concrete_type__mutmut_57,
+    "x_extract_concrete_type__mutmut_58": x_extract_concrete_type__mutmut_58,
+    "x_extract_concrete_type__mutmut_59": x_extract_concrete_type__mutmut_59,
+    "x_extract_concrete_type__mutmut_60": x_extract_concrete_type__mutmut_60,
+    "x_extract_concrete_type__mutmut_61": x_extract_concrete_type__mutmut_61,
+    "x_extract_concrete_type__mutmut_62": x_extract_concrete_type__mutmut_62,
+    "x_extract_concrete_type__mutmut_63": x_extract_concrete_type__mutmut_63,
+    "x_extract_concrete_type__mutmut_64": x_extract_concrete_type__mutmut_64,
+    "x_extract_concrete_type__mutmut_65": x_extract_concrete_type__mutmut_65,
+    "x_extract_concrete_type__mutmut_66": x_extract_concrete_type__mutmut_66,
 }
 
+
 def extract_concrete_type(*args, **kwargs):
-    result = _mutmut_trampoline(x_extract_concrete_type__mutmut_orig, x_extract_concrete_type__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_extract_concrete_type__mutmut_orig, x_extract_concrete_type__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 extract_concrete_type.__signature__ = _mutmut_signature(x_extract_concrete_type__mutmut_orig)
-x_extract_concrete_type__mutmut_orig.__name__ = 'x_extract_concrete_type'
+x_extract_concrete_type__mutmut_orig.__name__ = "x_extract_concrete_type"
 
 
 def x_parse_typed_value__mutmut_orig(value: str, target_type: type) -> Any:
@@ -7745,7 +7808,9 @@ def x_parse_typed_value__mutmut_6(value: str, target_type: type) -> Any:
         return None
 
     # Try basic types first
-    result = _parse_basic_type(value, )
+    result = _parse_basic_type(
+        value,
+    )
     if result is not None or target_type in (bool, int, float, str):
         return result
 
@@ -8062,7 +8127,9 @@ def x_parse_typed_value__mutmut_14(value: str, target_type: type) -> Any:
         return result
 
     # Try generic types
-    result = _parse_generic_type(value, )
+    result = _parse_generic_type(
+        value,
+    )
     if result is not None:
         return result
 
@@ -8108,30 +8175,35 @@ def x_parse_typed_value__mutmut_15(value: str, target_type: type) -> Any:
     # Default to string
     return value
 
-x_parse_typed_value__mutmut_mutants : ClassVar[MutantDict] = {
-'x_parse_typed_value__mutmut_1': x_parse_typed_value__mutmut_1, 
-    'x_parse_typed_value__mutmut_2': x_parse_typed_value__mutmut_2, 
-    'x_parse_typed_value__mutmut_3': x_parse_typed_value__mutmut_3, 
-    'x_parse_typed_value__mutmut_4': x_parse_typed_value__mutmut_4, 
-    'x_parse_typed_value__mutmut_5': x_parse_typed_value__mutmut_5, 
-    'x_parse_typed_value__mutmut_6': x_parse_typed_value__mutmut_6, 
-    'x_parse_typed_value__mutmut_7': x_parse_typed_value__mutmut_7, 
-    'x_parse_typed_value__mutmut_8': x_parse_typed_value__mutmut_8, 
-    'x_parse_typed_value__mutmut_9': x_parse_typed_value__mutmut_9, 
-    'x_parse_typed_value__mutmut_10': x_parse_typed_value__mutmut_10, 
-    'x_parse_typed_value__mutmut_11': x_parse_typed_value__mutmut_11, 
-    'x_parse_typed_value__mutmut_12': x_parse_typed_value__mutmut_12, 
-    'x_parse_typed_value__mutmut_13': x_parse_typed_value__mutmut_13, 
-    'x_parse_typed_value__mutmut_14': x_parse_typed_value__mutmut_14, 
-    'x_parse_typed_value__mutmut_15': x_parse_typed_value__mutmut_15
+
+x_parse_typed_value__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_parse_typed_value__mutmut_1": x_parse_typed_value__mutmut_1,
+    "x_parse_typed_value__mutmut_2": x_parse_typed_value__mutmut_2,
+    "x_parse_typed_value__mutmut_3": x_parse_typed_value__mutmut_3,
+    "x_parse_typed_value__mutmut_4": x_parse_typed_value__mutmut_4,
+    "x_parse_typed_value__mutmut_5": x_parse_typed_value__mutmut_5,
+    "x_parse_typed_value__mutmut_6": x_parse_typed_value__mutmut_6,
+    "x_parse_typed_value__mutmut_7": x_parse_typed_value__mutmut_7,
+    "x_parse_typed_value__mutmut_8": x_parse_typed_value__mutmut_8,
+    "x_parse_typed_value__mutmut_9": x_parse_typed_value__mutmut_9,
+    "x_parse_typed_value__mutmut_10": x_parse_typed_value__mutmut_10,
+    "x_parse_typed_value__mutmut_11": x_parse_typed_value__mutmut_11,
+    "x_parse_typed_value__mutmut_12": x_parse_typed_value__mutmut_12,
+    "x_parse_typed_value__mutmut_13": x_parse_typed_value__mutmut_13,
+    "x_parse_typed_value__mutmut_14": x_parse_typed_value__mutmut_14,
+    "x_parse_typed_value__mutmut_15": x_parse_typed_value__mutmut_15,
 }
 
+
 def parse_typed_value(*args, **kwargs):
-    result = _mutmut_trampoline(x_parse_typed_value__mutmut_orig, x_parse_typed_value__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_parse_typed_value__mutmut_orig, x_parse_typed_value__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 parse_typed_value.__signature__ = _mutmut_signature(x_parse_typed_value__mutmut_orig)
-x_parse_typed_value__mutmut_orig.__name__ = 'x_parse_typed_value'
+x_parse_typed_value__mutmut_orig.__name__ = "x_parse_typed_value"
 
 
 __all__ = [

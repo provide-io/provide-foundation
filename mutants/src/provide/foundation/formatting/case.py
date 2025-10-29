@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -203,7 +206,9 @@ def x_to_snake_case__mutmut_5(text: str) -> str:
     import re
 
     # Replace hyphens with underscores
-    text = text.replace("-", )
+    text = text.replace(
+        "-",
+    )
 
     # Insert underscore before uppercase letters
     text = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", text)
@@ -458,7 +463,10 @@ def x_to_snake_case__mutmut_14(text: str) -> str:
     text = text.replace("-", "_")
 
     # Insert underscore before uppercase letters
-    text = re.sub(r"([a-z0-9])([A-Z])", r"\1_\2", )
+    text = re.sub(
+        r"([a-z0-9])([A-Z])",
+        r"\1_\2",
+    )
 
     # Convert to lowercase
     return text.lower()
@@ -659,36 +667,39 @@ def x_to_snake_case__mutmut_21(text: str) -> str:
     # Convert to lowercase
     return text.upper()
 
-x_to_snake_case__mutmut_mutants : ClassVar[MutantDict] = {
-'x_to_snake_case__mutmut_1': x_to_snake_case__mutmut_1, 
-    'x_to_snake_case__mutmut_2': x_to_snake_case__mutmut_2, 
-    'x_to_snake_case__mutmut_3': x_to_snake_case__mutmut_3, 
-    'x_to_snake_case__mutmut_4': x_to_snake_case__mutmut_4, 
-    'x_to_snake_case__mutmut_5': x_to_snake_case__mutmut_5, 
-    'x_to_snake_case__mutmut_6': x_to_snake_case__mutmut_6, 
-    'x_to_snake_case__mutmut_7': x_to_snake_case__mutmut_7, 
-    'x_to_snake_case__mutmut_8': x_to_snake_case__mutmut_8, 
-    'x_to_snake_case__mutmut_9': x_to_snake_case__mutmut_9, 
-    'x_to_snake_case__mutmut_10': x_to_snake_case__mutmut_10, 
-    'x_to_snake_case__mutmut_11': x_to_snake_case__mutmut_11, 
-    'x_to_snake_case__mutmut_12': x_to_snake_case__mutmut_12, 
-    'x_to_snake_case__mutmut_13': x_to_snake_case__mutmut_13, 
-    'x_to_snake_case__mutmut_14': x_to_snake_case__mutmut_14, 
-    'x_to_snake_case__mutmut_15': x_to_snake_case__mutmut_15, 
-    'x_to_snake_case__mutmut_16': x_to_snake_case__mutmut_16, 
-    'x_to_snake_case__mutmut_17': x_to_snake_case__mutmut_17, 
-    'x_to_snake_case__mutmut_18': x_to_snake_case__mutmut_18, 
-    'x_to_snake_case__mutmut_19': x_to_snake_case__mutmut_19, 
-    'x_to_snake_case__mutmut_20': x_to_snake_case__mutmut_20, 
-    'x_to_snake_case__mutmut_21': x_to_snake_case__mutmut_21
+
+x_to_snake_case__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_to_snake_case__mutmut_1": x_to_snake_case__mutmut_1,
+    "x_to_snake_case__mutmut_2": x_to_snake_case__mutmut_2,
+    "x_to_snake_case__mutmut_3": x_to_snake_case__mutmut_3,
+    "x_to_snake_case__mutmut_4": x_to_snake_case__mutmut_4,
+    "x_to_snake_case__mutmut_5": x_to_snake_case__mutmut_5,
+    "x_to_snake_case__mutmut_6": x_to_snake_case__mutmut_6,
+    "x_to_snake_case__mutmut_7": x_to_snake_case__mutmut_7,
+    "x_to_snake_case__mutmut_8": x_to_snake_case__mutmut_8,
+    "x_to_snake_case__mutmut_9": x_to_snake_case__mutmut_9,
+    "x_to_snake_case__mutmut_10": x_to_snake_case__mutmut_10,
+    "x_to_snake_case__mutmut_11": x_to_snake_case__mutmut_11,
+    "x_to_snake_case__mutmut_12": x_to_snake_case__mutmut_12,
+    "x_to_snake_case__mutmut_13": x_to_snake_case__mutmut_13,
+    "x_to_snake_case__mutmut_14": x_to_snake_case__mutmut_14,
+    "x_to_snake_case__mutmut_15": x_to_snake_case__mutmut_15,
+    "x_to_snake_case__mutmut_16": x_to_snake_case__mutmut_16,
+    "x_to_snake_case__mutmut_17": x_to_snake_case__mutmut_17,
+    "x_to_snake_case__mutmut_18": x_to_snake_case__mutmut_18,
+    "x_to_snake_case__mutmut_19": x_to_snake_case__mutmut_19,
+    "x_to_snake_case__mutmut_20": x_to_snake_case__mutmut_20,
+    "x_to_snake_case__mutmut_21": x_to_snake_case__mutmut_21,
 }
+
 
 def to_snake_case(*args, **kwargs):
     result = _mutmut_trampoline(x_to_snake_case__mutmut_orig, x_to_snake_case__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 to_snake_case.__signature__ = _mutmut_signature(x_to_snake_case__mutmut_orig)
-x_to_snake_case__mutmut_orig.__name__ = 'x_to_snake_case'
+x_to_snake_case__mutmut_orig.__name__ = "x_to_snake_case"
 
 
 def x_to_kebab_case__mutmut_orig(text: str) -> str:
@@ -850,7 +861,9 @@ def x_to_kebab_case__mutmut_5(text: str) -> str:
     import re
 
     # Replace underscores with hyphens
-    text = text.replace("_", )
+    text = text.replace(
+        "_",
+    )
 
     # Insert hyphen before uppercase letters
     text = re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", text)
@@ -1105,7 +1118,10 @@ def x_to_kebab_case__mutmut_14(text: str) -> str:
     text = text.replace("_", "-")
 
     # Insert hyphen before uppercase letters
-    text = re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", )
+    text = re.sub(
+        r"([a-z0-9])([A-Z])",
+        r"\1-\2",
+    )
 
     # Convert to lowercase
     return text.lower()
@@ -1306,36 +1322,39 @@ def x_to_kebab_case__mutmut_21(text: str) -> str:
     # Convert to lowercase
     return text.upper()
 
-x_to_kebab_case__mutmut_mutants : ClassVar[MutantDict] = {
-'x_to_kebab_case__mutmut_1': x_to_kebab_case__mutmut_1, 
-    'x_to_kebab_case__mutmut_2': x_to_kebab_case__mutmut_2, 
-    'x_to_kebab_case__mutmut_3': x_to_kebab_case__mutmut_3, 
-    'x_to_kebab_case__mutmut_4': x_to_kebab_case__mutmut_4, 
-    'x_to_kebab_case__mutmut_5': x_to_kebab_case__mutmut_5, 
-    'x_to_kebab_case__mutmut_6': x_to_kebab_case__mutmut_6, 
-    'x_to_kebab_case__mutmut_7': x_to_kebab_case__mutmut_7, 
-    'x_to_kebab_case__mutmut_8': x_to_kebab_case__mutmut_8, 
-    'x_to_kebab_case__mutmut_9': x_to_kebab_case__mutmut_9, 
-    'x_to_kebab_case__mutmut_10': x_to_kebab_case__mutmut_10, 
-    'x_to_kebab_case__mutmut_11': x_to_kebab_case__mutmut_11, 
-    'x_to_kebab_case__mutmut_12': x_to_kebab_case__mutmut_12, 
-    'x_to_kebab_case__mutmut_13': x_to_kebab_case__mutmut_13, 
-    'x_to_kebab_case__mutmut_14': x_to_kebab_case__mutmut_14, 
-    'x_to_kebab_case__mutmut_15': x_to_kebab_case__mutmut_15, 
-    'x_to_kebab_case__mutmut_16': x_to_kebab_case__mutmut_16, 
-    'x_to_kebab_case__mutmut_17': x_to_kebab_case__mutmut_17, 
-    'x_to_kebab_case__mutmut_18': x_to_kebab_case__mutmut_18, 
-    'x_to_kebab_case__mutmut_19': x_to_kebab_case__mutmut_19, 
-    'x_to_kebab_case__mutmut_20': x_to_kebab_case__mutmut_20, 
-    'x_to_kebab_case__mutmut_21': x_to_kebab_case__mutmut_21
+
+x_to_kebab_case__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_to_kebab_case__mutmut_1": x_to_kebab_case__mutmut_1,
+    "x_to_kebab_case__mutmut_2": x_to_kebab_case__mutmut_2,
+    "x_to_kebab_case__mutmut_3": x_to_kebab_case__mutmut_3,
+    "x_to_kebab_case__mutmut_4": x_to_kebab_case__mutmut_4,
+    "x_to_kebab_case__mutmut_5": x_to_kebab_case__mutmut_5,
+    "x_to_kebab_case__mutmut_6": x_to_kebab_case__mutmut_6,
+    "x_to_kebab_case__mutmut_7": x_to_kebab_case__mutmut_7,
+    "x_to_kebab_case__mutmut_8": x_to_kebab_case__mutmut_8,
+    "x_to_kebab_case__mutmut_9": x_to_kebab_case__mutmut_9,
+    "x_to_kebab_case__mutmut_10": x_to_kebab_case__mutmut_10,
+    "x_to_kebab_case__mutmut_11": x_to_kebab_case__mutmut_11,
+    "x_to_kebab_case__mutmut_12": x_to_kebab_case__mutmut_12,
+    "x_to_kebab_case__mutmut_13": x_to_kebab_case__mutmut_13,
+    "x_to_kebab_case__mutmut_14": x_to_kebab_case__mutmut_14,
+    "x_to_kebab_case__mutmut_15": x_to_kebab_case__mutmut_15,
+    "x_to_kebab_case__mutmut_16": x_to_kebab_case__mutmut_16,
+    "x_to_kebab_case__mutmut_17": x_to_kebab_case__mutmut_17,
+    "x_to_kebab_case__mutmut_18": x_to_kebab_case__mutmut_18,
+    "x_to_kebab_case__mutmut_19": x_to_kebab_case__mutmut_19,
+    "x_to_kebab_case__mutmut_20": x_to_kebab_case__mutmut_20,
+    "x_to_kebab_case__mutmut_21": x_to_kebab_case__mutmut_21,
 }
+
 
 def to_kebab_case(*args, **kwargs):
     result = _mutmut_trampoline(x_to_kebab_case__mutmut_orig, x_to_kebab_case__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 to_kebab_case.__signature__ = _mutmut_signature(x_to_kebab_case__mutmut_orig)
-x_to_kebab_case__mutmut_orig.__name__ = 'x_to_kebab_case'
+x_to_kebab_case__mutmut_orig.__name__ = "x_to_kebab_case"
 
 
 def x_to_camel_case__mutmut_orig(text: str, upper_first: bool = False) -> str:
@@ -1574,7 +1593,9 @@ def x_to_camel_case__mutmut_6(text: str, upper_first: bool = False) -> str:
     import re
 
     # Split on underscores, hyphens, and spaces
-    parts = re.split(r"[-_\s]+", )
+    parts = re.split(
+        r"[-_\s]+",
+    )
 
     if not parts:
         return text
@@ -2165,37 +2186,40 @@ def x_to_camel_case__mutmut_22(text: str, upper_first: bool = False) -> str:
 
     return "XXXX".join(result)
 
-x_to_camel_case__mutmut_mutants : ClassVar[MutantDict] = {
-'x_to_camel_case__mutmut_1': x_to_camel_case__mutmut_1, 
-    'x_to_camel_case__mutmut_2': x_to_camel_case__mutmut_2, 
-    'x_to_camel_case__mutmut_3': x_to_camel_case__mutmut_3, 
-    'x_to_camel_case__mutmut_4': x_to_camel_case__mutmut_4, 
-    'x_to_camel_case__mutmut_5': x_to_camel_case__mutmut_5, 
-    'x_to_camel_case__mutmut_6': x_to_camel_case__mutmut_6, 
-    'x_to_camel_case__mutmut_7': x_to_camel_case__mutmut_7, 
-    'x_to_camel_case__mutmut_8': x_to_camel_case__mutmut_8, 
-    'x_to_camel_case__mutmut_9': x_to_camel_case__mutmut_9, 
-    'x_to_camel_case__mutmut_10': x_to_camel_case__mutmut_10, 
-    'x_to_camel_case__mutmut_11': x_to_camel_case__mutmut_11, 
-    'x_to_camel_case__mutmut_12': x_to_camel_case__mutmut_12, 
-    'x_to_camel_case__mutmut_13': x_to_camel_case__mutmut_13, 
-    'x_to_camel_case__mutmut_14': x_to_camel_case__mutmut_14, 
-    'x_to_camel_case__mutmut_15': x_to_camel_case__mutmut_15, 
-    'x_to_camel_case__mutmut_16': x_to_camel_case__mutmut_16, 
-    'x_to_camel_case__mutmut_17': x_to_camel_case__mutmut_17, 
-    'x_to_camel_case__mutmut_18': x_to_camel_case__mutmut_18, 
-    'x_to_camel_case__mutmut_19': x_to_camel_case__mutmut_19, 
-    'x_to_camel_case__mutmut_20': x_to_camel_case__mutmut_20, 
-    'x_to_camel_case__mutmut_21': x_to_camel_case__mutmut_21, 
-    'x_to_camel_case__mutmut_22': x_to_camel_case__mutmut_22
+
+x_to_camel_case__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_to_camel_case__mutmut_1": x_to_camel_case__mutmut_1,
+    "x_to_camel_case__mutmut_2": x_to_camel_case__mutmut_2,
+    "x_to_camel_case__mutmut_3": x_to_camel_case__mutmut_3,
+    "x_to_camel_case__mutmut_4": x_to_camel_case__mutmut_4,
+    "x_to_camel_case__mutmut_5": x_to_camel_case__mutmut_5,
+    "x_to_camel_case__mutmut_6": x_to_camel_case__mutmut_6,
+    "x_to_camel_case__mutmut_7": x_to_camel_case__mutmut_7,
+    "x_to_camel_case__mutmut_8": x_to_camel_case__mutmut_8,
+    "x_to_camel_case__mutmut_9": x_to_camel_case__mutmut_9,
+    "x_to_camel_case__mutmut_10": x_to_camel_case__mutmut_10,
+    "x_to_camel_case__mutmut_11": x_to_camel_case__mutmut_11,
+    "x_to_camel_case__mutmut_12": x_to_camel_case__mutmut_12,
+    "x_to_camel_case__mutmut_13": x_to_camel_case__mutmut_13,
+    "x_to_camel_case__mutmut_14": x_to_camel_case__mutmut_14,
+    "x_to_camel_case__mutmut_15": x_to_camel_case__mutmut_15,
+    "x_to_camel_case__mutmut_16": x_to_camel_case__mutmut_16,
+    "x_to_camel_case__mutmut_17": x_to_camel_case__mutmut_17,
+    "x_to_camel_case__mutmut_18": x_to_camel_case__mutmut_18,
+    "x_to_camel_case__mutmut_19": x_to_camel_case__mutmut_19,
+    "x_to_camel_case__mutmut_20": x_to_camel_case__mutmut_20,
+    "x_to_camel_case__mutmut_21": x_to_camel_case__mutmut_21,
+    "x_to_camel_case__mutmut_22": x_to_camel_case__mutmut_22,
 }
+
 
 def to_camel_case(*args, **kwargs):
     result = _mutmut_trampoline(x_to_camel_case__mutmut_orig, x_to_camel_case__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 to_camel_case.__signature__ = _mutmut_signature(x_to_camel_case__mutmut_orig)
-x_to_camel_case__mutmut_orig.__name__ = 'x_to_camel_case'
+x_to_camel_case__mutmut_orig.__name__ = "x_to_camel_case"
 
 
 __all__ = [

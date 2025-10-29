@@ -31,23 +31,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1897,7 +1900,9 @@ def x_verify_trust__mutmut_34(
 
     for trusted_cert in trust_chain:
         logger.debug(f"📜🔍🔁 Checking signature against trusted cert S/N {trusted_cert.serial_number}")
-        if validate_signature_wrapper(signed_cert=other_cert, ):
+        if validate_signature_wrapper(
+            signed_cert=other_cert,
+        ):
             logger.debug(
                 f"📜🔍✅ Trust verified: Other cert signed by trusted cert S/N {trusted_cert.serial_number}",
             )
@@ -2385,58 +2390,61 @@ def x_verify_trust__mutmut_43(
     )
     return True
 
-x_verify_trust__mutmut_mutants : ClassVar[MutantDict] = {
-'x_verify_trust__mutmut_1': x_verify_trust__mutmut_1, 
-    'x_verify_trust__mutmut_2': x_verify_trust__mutmut_2, 
-    'x_verify_trust__mutmut_3': x_verify_trust__mutmut_3, 
-    'x_verify_trust__mutmut_4': x_verify_trust__mutmut_4, 
-    'x_verify_trust__mutmut_5': x_verify_trust__mutmut_5, 
-    'x_verify_trust__mutmut_6': x_verify_trust__mutmut_6, 
-    'x_verify_trust__mutmut_7': x_verify_trust__mutmut_7, 
-    'x_verify_trust__mutmut_8': x_verify_trust__mutmut_8, 
-    'x_verify_trust__mutmut_9': x_verify_trust__mutmut_9, 
-    'x_verify_trust__mutmut_10': x_verify_trust__mutmut_10, 
-    'x_verify_trust__mutmut_11': x_verify_trust__mutmut_11, 
-    'x_verify_trust__mutmut_12': x_verify_trust__mutmut_12, 
-    'x_verify_trust__mutmut_13': x_verify_trust__mutmut_13, 
-    'x_verify_trust__mutmut_14': x_verify_trust__mutmut_14, 
-    'x_verify_trust__mutmut_15': x_verify_trust__mutmut_15, 
-    'x_verify_trust__mutmut_16': x_verify_trust__mutmut_16, 
-    'x_verify_trust__mutmut_17': x_verify_trust__mutmut_17, 
-    'x_verify_trust__mutmut_18': x_verify_trust__mutmut_18, 
-    'x_verify_trust__mutmut_19': x_verify_trust__mutmut_19, 
-    'x_verify_trust__mutmut_20': x_verify_trust__mutmut_20, 
-    'x_verify_trust__mutmut_21': x_verify_trust__mutmut_21, 
-    'x_verify_trust__mutmut_22': x_verify_trust__mutmut_22, 
-    'x_verify_trust__mutmut_23': x_verify_trust__mutmut_23, 
-    'x_verify_trust__mutmut_24': x_verify_trust__mutmut_24, 
-    'x_verify_trust__mutmut_25': x_verify_trust__mutmut_25, 
-    'x_verify_trust__mutmut_26': x_verify_trust__mutmut_26, 
-    'x_verify_trust__mutmut_27': x_verify_trust__mutmut_27, 
-    'x_verify_trust__mutmut_28': x_verify_trust__mutmut_28, 
-    'x_verify_trust__mutmut_29': x_verify_trust__mutmut_29, 
-    'x_verify_trust__mutmut_30': x_verify_trust__mutmut_30, 
-    'x_verify_trust__mutmut_31': x_verify_trust__mutmut_31, 
-    'x_verify_trust__mutmut_32': x_verify_trust__mutmut_32, 
-    'x_verify_trust__mutmut_33': x_verify_trust__mutmut_33, 
-    'x_verify_trust__mutmut_34': x_verify_trust__mutmut_34, 
-    'x_verify_trust__mutmut_35': x_verify_trust__mutmut_35, 
-    'x_verify_trust__mutmut_36': x_verify_trust__mutmut_36, 
-    'x_verify_trust__mutmut_37': x_verify_trust__mutmut_37, 
-    'x_verify_trust__mutmut_38': x_verify_trust__mutmut_38, 
-    'x_verify_trust__mutmut_39': x_verify_trust__mutmut_39, 
-    'x_verify_trust__mutmut_40': x_verify_trust__mutmut_40, 
-    'x_verify_trust__mutmut_41': x_verify_trust__mutmut_41, 
-    'x_verify_trust__mutmut_42': x_verify_trust__mutmut_42, 
-    'x_verify_trust__mutmut_43': x_verify_trust__mutmut_43
+
+x_verify_trust__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_verify_trust__mutmut_1": x_verify_trust__mutmut_1,
+    "x_verify_trust__mutmut_2": x_verify_trust__mutmut_2,
+    "x_verify_trust__mutmut_3": x_verify_trust__mutmut_3,
+    "x_verify_trust__mutmut_4": x_verify_trust__mutmut_4,
+    "x_verify_trust__mutmut_5": x_verify_trust__mutmut_5,
+    "x_verify_trust__mutmut_6": x_verify_trust__mutmut_6,
+    "x_verify_trust__mutmut_7": x_verify_trust__mutmut_7,
+    "x_verify_trust__mutmut_8": x_verify_trust__mutmut_8,
+    "x_verify_trust__mutmut_9": x_verify_trust__mutmut_9,
+    "x_verify_trust__mutmut_10": x_verify_trust__mutmut_10,
+    "x_verify_trust__mutmut_11": x_verify_trust__mutmut_11,
+    "x_verify_trust__mutmut_12": x_verify_trust__mutmut_12,
+    "x_verify_trust__mutmut_13": x_verify_trust__mutmut_13,
+    "x_verify_trust__mutmut_14": x_verify_trust__mutmut_14,
+    "x_verify_trust__mutmut_15": x_verify_trust__mutmut_15,
+    "x_verify_trust__mutmut_16": x_verify_trust__mutmut_16,
+    "x_verify_trust__mutmut_17": x_verify_trust__mutmut_17,
+    "x_verify_trust__mutmut_18": x_verify_trust__mutmut_18,
+    "x_verify_trust__mutmut_19": x_verify_trust__mutmut_19,
+    "x_verify_trust__mutmut_20": x_verify_trust__mutmut_20,
+    "x_verify_trust__mutmut_21": x_verify_trust__mutmut_21,
+    "x_verify_trust__mutmut_22": x_verify_trust__mutmut_22,
+    "x_verify_trust__mutmut_23": x_verify_trust__mutmut_23,
+    "x_verify_trust__mutmut_24": x_verify_trust__mutmut_24,
+    "x_verify_trust__mutmut_25": x_verify_trust__mutmut_25,
+    "x_verify_trust__mutmut_26": x_verify_trust__mutmut_26,
+    "x_verify_trust__mutmut_27": x_verify_trust__mutmut_27,
+    "x_verify_trust__mutmut_28": x_verify_trust__mutmut_28,
+    "x_verify_trust__mutmut_29": x_verify_trust__mutmut_29,
+    "x_verify_trust__mutmut_30": x_verify_trust__mutmut_30,
+    "x_verify_trust__mutmut_31": x_verify_trust__mutmut_31,
+    "x_verify_trust__mutmut_32": x_verify_trust__mutmut_32,
+    "x_verify_trust__mutmut_33": x_verify_trust__mutmut_33,
+    "x_verify_trust__mutmut_34": x_verify_trust__mutmut_34,
+    "x_verify_trust__mutmut_35": x_verify_trust__mutmut_35,
+    "x_verify_trust__mutmut_36": x_verify_trust__mutmut_36,
+    "x_verify_trust__mutmut_37": x_verify_trust__mutmut_37,
+    "x_verify_trust__mutmut_38": x_verify_trust__mutmut_38,
+    "x_verify_trust__mutmut_39": x_verify_trust__mutmut_39,
+    "x_verify_trust__mutmut_40": x_verify_trust__mutmut_40,
+    "x_verify_trust__mutmut_41": x_verify_trust__mutmut_41,
+    "x_verify_trust__mutmut_42": x_verify_trust__mutmut_42,
+    "x_verify_trust__mutmut_43": x_verify_trust__mutmut_43,
 }
+
 
 def verify_trust(*args, **kwargs):
     result = _mutmut_trampoline(x_verify_trust__mutmut_orig, x_verify_trust__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 verify_trust.__signature__ = _mutmut_signature(x_verify_trust__mutmut_orig)
-x_verify_trust__mutmut_orig.__name__ = 'x_verify_trust'
+x_verify_trust__mutmut_orig.__name__ = "x_verify_trust"
 
 
 def x_validate_signature_wrapper__mutmut_orig(signed_cert: Certificate, signing_cert: Certificate) -> bool:
@@ -2558,7 +2566,9 @@ def x_validate_signature_wrapper__mutmut_6(signed_cert: Certificate, signing_cer
         True if signature is valid, False otherwise
 
     """
-    if not hasattr(signed_cert, ) or not hasattr(signing_cert, "_cert"):
+    if not hasattr(
+        signed_cert,
+    ) or not hasattr(signing_cert, "_cert"):
         logger.error("📜🔍❌ Cannot validate signature: Certificate object(s) not initialized")
         return False
 
@@ -2684,7 +2694,9 @@ def x_validate_signature_wrapper__mutmut_13(signed_cert: Certificate, signing_ce
         True if signature is valid, False otherwise
 
     """
-    if not hasattr(signed_cert, "_cert") or not hasattr(signing_cert, ):
+    if not hasattr(signed_cert, "_cert") or not hasattr(
+        signing_cert,
+    ):
         logger.error("📜🔍❌ Cannot validate signature: Certificate object(s) not initialized")
         return False
 
@@ -2922,43 +2934,51 @@ def x_validate_signature_wrapper__mutmut_26(signed_cert: Certificate, signing_ce
         logger.error("📜🔍❌ Cannot validate signature: Certificate object(s) not initialized")
         return False
 
-    return validate_signature(signed_cert._cert, signing_cert._cert, )
+    return validate_signature(
+        signed_cert._cert,
+        signing_cert._cert,
+    )
 
-x_validate_signature_wrapper__mutmut_mutants : ClassVar[MutantDict] = {
-'x_validate_signature_wrapper__mutmut_1': x_validate_signature_wrapper__mutmut_1, 
-    'x_validate_signature_wrapper__mutmut_2': x_validate_signature_wrapper__mutmut_2, 
-    'x_validate_signature_wrapper__mutmut_3': x_validate_signature_wrapper__mutmut_3, 
-    'x_validate_signature_wrapper__mutmut_4': x_validate_signature_wrapper__mutmut_4, 
-    'x_validate_signature_wrapper__mutmut_5': x_validate_signature_wrapper__mutmut_5, 
-    'x_validate_signature_wrapper__mutmut_6': x_validate_signature_wrapper__mutmut_6, 
-    'x_validate_signature_wrapper__mutmut_7': x_validate_signature_wrapper__mutmut_7, 
-    'x_validate_signature_wrapper__mutmut_8': x_validate_signature_wrapper__mutmut_8, 
-    'x_validate_signature_wrapper__mutmut_9': x_validate_signature_wrapper__mutmut_9, 
-    'x_validate_signature_wrapper__mutmut_10': x_validate_signature_wrapper__mutmut_10, 
-    'x_validate_signature_wrapper__mutmut_11': x_validate_signature_wrapper__mutmut_11, 
-    'x_validate_signature_wrapper__mutmut_12': x_validate_signature_wrapper__mutmut_12, 
-    'x_validate_signature_wrapper__mutmut_13': x_validate_signature_wrapper__mutmut_13, 
-    'x_validate_signature_wrapper__mutmut_14': x_validate_signature_wrapper__mutmut_14, 
-    'x_validate_signature_wrapper__mutmut_15': x_validate_signature_wrapper__mutmut_15, 
-    'x_validate_signature_wrapper__mutmut_16': x_validate_signature_wrapper__mutmut_16, 
-    'x_validate_signature_wrapper__mutmut_17': x_validate_signature_wrapper__mutmut_17, 
-    'x_validate_signature_wrapper__mutmut_18': x_validate_signature_wrapper__mutmut_18, 
-    'x_validate_signature_wrapper__mutmut_19': x_validate_signature_wrapper__mutmut_19, 
-    'x_validate_signature_wrapper__mutmut_20': x_validate_signature_wrapper__mutmut_20, 
-    'x_validate_signature_wrapper__mutmut_21': x_validate_signature_wrapper__mutmut_21, 
-    'x_validate_signature_wrapper__mutmut_22': x_validate_signature_wrapper__mutmut_22, 
-    'x_validate_signature_wrapper__mutmut_23': x_validate_signature_wrapper__mutmut_23, 
-    'x_validate_signature_wrapper__mutmut_24': x_validate_signature_wrapper__mutmut_24, 
-    'x_validate_signature_wrapper__mutmut_25': x_validate_signature_wrapper__mutmut_25, 
-    'x_validate_signature_wrapper__mutmut_26': x_validate_signature_wrapper__mutmut_26
+
+x_validate_signature_wrapper__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_validate_signature_wrapper__mutmut_1": x_validate_signature_wrapper__mutmut_1,
+    "x_validate_signature_wrapper__mutmut_2": x_validate_signature_wrapper__mutmut_2,
+    "x_validate_signature_wrapper__mutmut_3": x_validate_signature_wrapper__mutmut_3,
+    "x_validate_signature_wrapper__mutmut_4": x_validate_signature_wrapper__mutmut_4,
+    "x_validate_signature_wrapper__mutmut_5": x_validate_signature_wrapper__mutmut_5,
+    "x_validate_signature_wrapper__mutmut_6": x_validate_signature_wrapper__mutmut_6,
+    "x_validate_signature_wrapper__mutmut_7": x_validate_signature_wrapper__mutmut_7,
+    "x_validate_signature_wrapper__mutmut_8": x_validate_signature_wrapper__mutmut_8,
+    "x_validate_signature_wrapper__mutmut_9": x_validate_signature_wrapper__mutmut_9,
+    "x_validate_signature_wrapper__mutmut_10": x_validate_signature_wrapper__mutmut_10,
+    "x_validate_signature_wrapper__mutmut_11": x_validate_signature_wrapper__mutmut_11,
+    "x_validate_signature_wrapper__mutmut_12": x_validate_signature_wrapper__mutmut_12,
+    "x_validate_signature_wrapper__mutmut_13": x_validate_signature_wrapper__mutmut_13,
+    "x_validate_signature_wrapper__mutmut_14": x_validate_signature_wrapper__mutmut_14,
+    "x_validate_signature_wrapper__mutmut_15": x_validate_signature_wrapper__mutmut_15,
+    "x_validate_signature_wrapper__mutmut_16": x_validate_signature_wrapper__mutmut_16,
+    "x_validate_signature_wrapper__mutmut_17": x_validate_signature_wrapper__mutmut_17,
+    "x_validate_signature_wrapper__mutmut_18": x_validate_signature_wrapper__mutmut_18,
+    "x_validate_signature_wrapper__mutmut_19": x_validate_signature_wrapper__mutmut_19,
+    "x_validate_signature_wrapper__mutmut_20": x_validate_signature_wrapper__mutmut_20,
+    "x_validate_signature_wrapper__mutmut_21": x_validate_signature_wrapper__mutmut_21,
+    "x_validate_signature_wrapper__mutmut_22": x_validate_signature_wrapper__mutmut_22,
+    "x_validate_signature_wrapper__mutmut_23": x_validate_signature_wrapper__mutmut_23,
+    "x_validate_signature_wrapper__mutmut_24": x_validate_signature_wrapper__mutmut_24,
+    "x_validate_signature_wrapper__mutmut_25": x_validate_signature_wrapper__mutmut_25,
+    "x_validate_signature_wrapper__mutmut_26": x_validate_signature_wrapper__mutmut_26,
 }
 
+
 def validate_signature_wrapper(*args, **kwargs):
-    result = _mutmut_trampoline(x_validate_signature_wrapper__mutmut_orig, x_validate_signature_wrapper__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_validate_signature_wrapper__mutmut_orig, x_validate_signature_wrapper__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 validate_signature_wrapper.__signature__ = _mutmut_signature(x_validate_signature_wrapper__mutmut_orig)
-x_validate_signature_wrapper__mutmut_orig.__name__ = 'x_validate_signature_wrapper'
+x_validate_signature_wrapper__mutmut_orig.__name__ = "x_validate_signature_wrapper"
 
 
 # <3 🧱🤝🔒🪄

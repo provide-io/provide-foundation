@@ -31,23 +31,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -99,18 +102,21 @@ def x__get_click__mutmut_3() -> tuple[Any, bool]:
         _HAS_CLICK = None
     return _click_module, _HAS_CLICK
 
-x__get_click__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_click__mutmut_1': x__get_click__mutmut_1, 
-    'x__get_click__mutmut_2': x__get_click__mutmut_2, 
-    'x__get_click__mutmut_3': x__get_click__mutmut_3
+
+x__get_click__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_click__mutmut_1": x__get_click__mutmut_1,
+    "x__get_click__mutmut_2": x__get_click__mutmut_2,
+    "x__get_click__mutmut_3": x__get_click__mutmut_3,
 }
+
 
 def _get_click(*args, **kwargs):
     result = _mutmut_trampoline(x__get_click__mutmut_orig, x__get_click__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 _get_click.__signature__ = _mutmut_signature(x__get_click__mutmut_orig)
-x__get_click__mutmut_orig.__name__ = 'x__get_click'
+x__get_click__mutmut_orig.__name__ = "x__get_click"
 
 
 # Defer click hierarchy import to avoid circular dependency
@@ -142,17 +148,22 @@ def x__get_ensure_parent_groups__mutmut_2() -> Any:
 
     return ensure_parent_groups
 
-x__get_ensure_parent_groups__mutmut_mutants : ClassVar[MutantDict] = {
-'x__get_ensure_parent_groups__mutmut_1': x__get_ensure_parent_groups__mutmut_1, 
-    'x__get_ensure_parent_groups__mutmut_2': x__get_ensure_parent_groups__mutmut_2
+
+x__get_ensure_parent_groups__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__get_ensure_parent_groups__mutmut_1": x__get_ensure_parent_groups__mutmut_1,
+    "x__get_ensure_parent_groups__mutmut_2": x__get_ensure_parent_groups__mutmut_2,
 }
 
+
 def _get_ensure_parent_groups(*args, **kwargs):
-    result = _mutmut_trampoline(x__get_ensure_parent_groups__mutmut_orig, x__get_ensure_parent_groups__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__get_ensure_parent_groups__mutmut_orig, x__get_ensure_parent_groups__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _get_ensure_parent_groups.__signature__ = _mutmut_signature(x__get_ensure_parent_groups__mutmut_orig)
-x__get_ensure_parent_groups__mutmut_orig.__name__ = 'x__get_ensure_parent_groups'
+x__get_ensure_parent_groups__mutmut_orig.__name__ = "x__get_ensure_parent_groups"
 
 
 F = TypeVar("F", bound=Callable[..., Any])
@@ -2539,7 +2550,7 @@ def x_register_command__mutmut_25(  # type: ignore[misc]
             group=group,
             replace=replace,
             registry=registry,
-            )
+        )
 
     # Handle @register_command(...) (with arguments)
     # At this point, name_or_func must be str | None (not F)
@@ -4571,66 +4582,71 @@ def x_register_command__mutmut_47(  # type: ignore[misc]
             group=group,
             replace=replace,
             registry=registry,
-            )
+        )
 
     return decorator
 
-x_register_command__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register_command__mutmut_1': x_register_command__mutmut_1, 
-    'x_register_command__mutmut_2': x_register_command__mutmut_2, 
-    'x_register_command__mutmut_3': x_register_command__mutmut_3, 
-    'x_register_command__mutmut_4': x_register_command__mutmut_4, 
-    'x_register_command__mutmut_5': x_register_command__mutmut_5, 
-    'x_register_command__mutmut_6': x_register_command__mutmut_6, 
-    'x_register_command__mutmut_7': x_register_command__mutmut_7, 
-    'x_register_command__mutmut_8': x_register_command__mutmut_8, 
-    'x_register_command__mutmut_9': x_register_command__mutmut_9, 
-    'x_register_command__mutmut_10': x_register_command__mutmut_10, 
-    'x_register_command__mutmut_11': x_register_command__mutmut_11, 
-    'x_register_command__mutmut_12': x_register_command__mutmut_12, 
-    'x_register_command__mutmut_13': x_register_command__mutmut_13, 
-    'x_register_command__mutmut_14': x_register_command__mutmut_14, 
-    'x_register_command__mutmut_15': x_register_command__mutmut_15, 
-    'x_register_command__mutmut_16': x_register_command__mutmut_16, 
-    'x_register_command__mutmut_17': x_register_command__mutmut_17, 
-    'x_register_command__mutmut_18': x_register_command__mutmut_18, 
-    'x_register_command__mutmut_19': x_register_command__mutmut_19, 
-    'x_register_command__mutmut_20': x_register_command__mutmut_20, 
-    'x_register_command__mutmut_21': x_register_command__mutmut_21, 
-    'x_register_command__mutmut_22': x_register_command__mutmut_22, 
-    'x_register_command__mutmut_23': x_register_command__mutmut_23, 
-    'x_register_command__mutmut_24': x_register_command__mutmut_24, 
-    'x_register_command__mutmut_25': x_register_command__mutmut_25, 
-    'x_register_command__mutmut_26': x_register_command__mutmut_26, 
-    'x_register_command__mutmut_27': x_register_command__mutmut_27, 
-    'x_register_command__mutmut_28': x_register_command__mutmut_28, 
-    'x_register_command__mutmut_29': x_register_command__mutmut_29, 
-    'x_register_command__mutmut_30': x_register_command__mutmut_30, 
-    'x_register_command__mutmut_31': x_register_command__mutmut_31, 
-    'x_register_command__mutmut_32': x_register_command__mutmut_32, 
-    'x_register_command__mutmut_33': x_register_command__mutmut_33, 
-    'x_register_command__mutmut_34': x_register_command__mutmut_34, 
-    'x_register_command__mutmut_35': x_register_command__mutmut_35, 
-    'x_register_command__mutmut_36': x_register_command__mutmut_36, 
-    'x_register_command__mutmut_37': x_register_command__mutmut_37, 
-    'x_register_command__mutmut_38': x_register_command__mutmut_38, 
-    'x_register_command__mutmut_39': x_register_command__mutmut_39, 
-    'x_register_command__mutmut_40': x_register_command__mutmut_40, 
-    'x_register_command__mutmut_41': x_register_command__mutmut_41, 
-    'x_register_command__mutmut_42': x_register_command__mutmut_42, 
-    'x_register_command__mutmut_43': x_register_command__mutmut_43, 
-    'x_register_command__mutmut_44': x_register_command__mutmut_44, 
-    'x_register_command__mutmut_45': x_register_command__mutmut_45, 
-    'x_register_command__mutmut_46': x_register_command__mutmut_46, 
-    'x_register_command__mutmut_47': x_register_command__mutmut_47
+
+x_register_command__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register_command__mutmut_1": x_register_command__mutmut_1,
+    "x_register_command__mutmut_2": x_register_command__mutmut_2,
+    "x_register_command__mutmut_3": x_register_command__mutmut_3,
+    "x_register_command__mutmut_4": x_register_command__mutmut_4,
+    "x_register_command__mutmut_5": x_register_command__mutmut_5,
+    "x_register_command__mutmut_6": x_register_command__mutmut_6,
+    "x_register_command__mutmut_7": x_register_command__mutmut_7,
+    "x_register_command__mutmut_8": x_register_command__mutmut_8,
+    "x_register_command__mutmut_9": x_register_command__mutmut_9,
+    "x_register_command__mutmut_10": x_register_command__mutmut_10,
+    "x_register_command__mutmut_11": x_register_command__mutmut_11,
+    "x_register_command__mutmut_12": x_register_command__mutmut_12,
+    "x_register_command__mutmut_13": x_register_command__mutmut_13,
+    "x_register_command__mutmut_14": x_register_command__mutmut_14,
+    "x_register_command__mutmut_15": x_register_command__mutmut_15,
+    "x_register_command__mutmut_16": x_register_command__mutmut_16,
+    "x_register_command__mutmut_17": x_register_command__mutmut_17,
+    "x_register_command__mutmut_18": x_register_command__mutmut_18,
+    "x_register_command__mutmut_19": x_register_command__mutmut_19,
+    "x_register_command__mutmut_20": x_register_command__mutmut_20,
+    "x_register_command__mutmut_21": x_register_command__mutmut_21,
+    "x_register_command__mutmut_22": x_register_command__mutmut_22,
+    "x_register_command__mutmut_23": x_register_command__mutmut_23,
+    "x_register_command__mutmut_24": x_register_command__mutmut_24,
+    "x_register_command__mutmut_25": x_register_command__mutmut_25,
+    "x_register_command__mutmut_26": x_register_command__mutmut_26,
+    "x_register_command__mutmut_27": x_register_command__mutmut_27,
+    "x_register_command__mutmut_28": x_register_command__mutmut_28,
+    "x_register_command__mutmut_29": x_register_command__mutmut_29,
+    "x_register_command__mutmut_30": x_register_command__mutmut_30,
+    "x_register_command__mutmut_31": x_register_command__mutmut_31,
+    "x_register_command__mutmut_32": x_register_command__mutmut_32,
+    "x_register_command__mutmut_33": x_register_command__mutmut_33,
+    "x_register_command__mutmut_34": x_register_command__mutmut_34,
+    "x_register_command__mutmut_35": x_register_command__mutmut_35,
+    "x_register_command__mutmut_36": x_register_command__mutmut_36,
+    "x_register_command__mutmut_37": x_register_command__mutmut_37,
+    "x_register_command__mutmut_38": x_register_command__mutmut_38,
+    "x_register_command__mutmut_39": x_register_command__mutmut_39,
+    "x_register_command__mutmut_40": x_register_command__mutmut_40,
+    "x_register_command__mutmut_41": x_register_command__mutmut_41,
+    "x_register_command__mutmut_42": x_register_command__mutmut_42,
+    "x_register_command__mutmut_43": x_register_command__mutmut_43,
+    "x_register_command__mutmut_44": x_register_command__mutmut_44,
+    "x_register_command__mutmut_45": x_register_command__mutmut_45,
+    "x_register_command__mutmut_46": x_register_command__mutmut_46,
+    "x_register_command__mutmut_47": x_register_command__mutmut_47,
 }
 
+
 def register_command(*args, **kwargs):
-    result = _mutmut_trampoline(x_register_command__mutmut_orig, x_register_command__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_register_command__mutmut_orig, x_register_command__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 register_command.__signature__ = _mutmut_signature(x_register_command__mutmut_orig)
-x_register_command__mutmut_orig.__name__ = 'x_register_command'
+x_register_command__mutmut_orig.__name__ = "x_register_command"
 
 
 def x__register_command_func__mutmut_orig(
@@ -7014,7 +7030,9 @@ def x__register_command_func__mutmut_24(
             if has_click:
                 ensure_parent_groups_fn = _get_ensure_parent_groups()
                 if ensure_parent_groups_fn:
-                    ensure_parent_groups_fn(parent, )
+                    ensure_parent_groups_fn(
+                        parent,
+                    )
         else:
             parent = None
             command_name = name
@@ -8001,7 +8019,10 @@ def x__register_command_func__mutmut_34(
     else:
         # Use function name as command name
         parent = None
-        command_name = getattr(func, "__name__", )
+        command_name = getattr(
+            func,
+            "__name__",
+        )
 
     # Check if it's already a Click command
     click_cmd = None
@@ -11046,7 +11067,7 @@ def x__register_command_func__mutmut_65(
         hidden=hidden,
         category=category,
         metadata=cmd_metadata,
-        )
+    )
 
     # Build full registry key
     full_name = f"{parent}.{command_name}" if parent else command_name
@@ -14291,7 +14312,7 @@ def x__register_command_func__mutmut_98(
         dimension=ComponentCategory.COMMAND.value,
         metadata=reg_metadata,
         aliases=aliases,
-        )
+    )
 
     # Add metadata to the function
     func.__registry_name__ = command_name  # type: ignore[attr-defined]
@@ -14694,117 +14715,122 @@ def x__register_command_func__mutmut_102(
 
     return func
 
-x__register_command_func__mutmut_mutants : ClassVar[MutantDict] = {
-'x__register_command_func__mutmut_1': x__register_command_func__mutmut_1, 
-    'x__register_command_func__mutmut_2': x__register_command_func__mutmut_2, 
-    'x__register_command_func__mutmut_3': x__register_command_func__mutmut_3, 
-    'x__register_command_func__mutmut_4': x__register_command_func__mutmut_4, 
-    'x__register_command_func__mutmut_5': x__register_command_func__mutmut_5, 
-    'x__register_command_func__mutmut_6': x__register_command_func__mutmut_6, 
-    'x__register_command_func__mutmut_7': x__register_command_func__mutmut_7, 
-    'x__register_command_func__mutmut_8': x__register_command_func__mutmut_8, 
-    'x__register_command_func__mutmut_9': x__register_command_func__mutmut_9, 
-    'x__register_command_func__mutmut_10': x__register_command_func__mutmut_10, 
-    'x__register_command_func__mutmut_11': x__register_command_func__mutmut_11, 
-    'x__register_command_func__mutmut_12': x__register_command_func__mutmut_12, 
-    'x__register_command_func__mutmut_13': x__register_command_func__mutmut_13, 
-    'x__register_command_func__mutmut_14': x__register_command_func__mutmut_14, 
-    'x__register_command_func__mutmut_15': x__register_command_func__mutmut_15, 
-    'x__register_command_func__mutmut_16': x__register_command_func__mutmut_16, 
-    'x__register_command_func__mutmut_17': x__register_command_func__mutmut_17, 
-    'x__register_command_func__mutmut_18': x__register_command_func__mutmut_18, 
-    'x__register_command_func__mutmut_19': x__register_command_func__mutmut_19, 
-    'x__register_command_func__mutmut_20': x__register_command_func__mutmut_20, 
-    'x__register_command_func__mutmut_21': x__register_command_func__mutmut_21, 
-    'x__register_command_func__mutmut_22': x__register_command_func__mutmut_22, 
-    'x__register_command_func__mutmut_23': x__register_command_func__mutmut_23, 
-    'x__register_command_func__mutmut_24': x__register_command_func__mutmut_24, 
-    'x__register_command_func__mutmut_25': x__register_command_func__mutmut_25, 
-    'x__register_command_func__mutmut_26': x__register_command_func__mutmut_26, 
-    'x__register_command_func__mutmut_27': x__register_command_func__mutmut_27, 
-    'x__register_command_func__mutmut_28': x__register_command_func__mutmut_28, 
-    'x__register_command_func__mutmut_29': x__register_command_func__mutmut_29, 
-    'x__register_command_func__mutmut_30': x__register_command_func__mutmut_30, 
-    'x__register_command_func__mutmut_31': x__register_command_func__mutmut_31, 
-    'x__register_command_func__mutmut_32': x__register_command_func__mutmut_32, 
-    'x__register_command_func__mutmut_33': x__register_command_func__mutmut_33, 
-    'x__register_command_func__mutmut_34': x__register_command_func__mutmut_34, 
-    'x__register_command_func__mutmut_35': x__register_command_func__mutmut_35, 
-    'x__register_command_func__mutmut_36': x__register_command_func__mutmut_36, 
-    'x__register_command_func__mutmut_37': x__register_command_func__mutmut_37, 
-    'x__register_command_func__mutmut_38': x__register_command_func__mutmut_38, 
-    'x__register_command_func__mutmut_39': x__register_command_func__mutmut_39, 
-    'x__register_command_func__mutmut_40': x__register_command_func__mutmut_40, 
-    'x__register_command_func__mutmut_41': x__register_command_func__mutmut_41, 
-    'x__register_command_func__mutmut_42': x__register_command_func__mutmut_42, 
-    'x__register_command_func__mutmut_43': x__register_command_func__mutmut_43, 
-    'x__register_command_func__mutmut_44': x__register_command_func__mutmut_44, 
-    'x__register_command_func__mutmut_45': x__register_command_func__mutmut_45, 
-    'x__register_command_func__mutmut_46': x__register_command_func__mutmut_46, 
-    'x__register_command_func__mutmut_47': x__register_command_func__mutmut_47, 
-    'x__register_command_func__mutmut_48': x__register_command_func__mutmut_48, 
-    'x__register_command_func__mutmut_49': x__register_command_func__mutmut_49, 
-    'x__register_command_func__mutmut_50': x__register_command_func__mutmut_50, 
-    'x__register_command_func__mutmut_51': x__register_command_func__mutmut_51, 
-    'x__register_command_func__mutmut_52': x__register_command_func__mutmut_52, 
-    'x__register_command_func__mutmut_53': x__register_command_func__mutmut_53, 
-    'x__register_command_func__mutmut_54': x__register_command_func__mutmut_54, 
-    'x__register_command_func__mutmut_55': x__register_command_func__mutmut_55, 
-    'x__register_command_func__mutmut_56': x__register_command_func__mutmut_56, 
-    'x__register_command_func__mutmut_57': x__register_command_func__mutmut_57, 
-    'x__register_command_func__mutmut_58': x__register_command_func__mutmut_58, 
-    'x__register_command_func__mutmut_59': x__register_command_func__mutmut_59, 
-    'x__register_command_func__mutmut_60': x__register_command_func__mutmut_60, 
-    'x__register_command_func__mutmut_61': x__register_command_func__mutmut_61, 
-    'x__register_command_func__mutmut_62': x__register_command_func__mutmut_62, 
-    'x__register_command_func__mutmut_63': x__register_command_func__mutmut_63, 
-    'x__register_command_func__mutmut_64': x__register_command_func__mutmut_64, 
-    'x__register_command_func__mutmut_65': x__register_command_func__mutmut_65, 
-    'x__register_command_func__mutmut_66': x__register_command_func__mutmut_66, 
-    'x__register_command_func__mutmut_67': x__register_command_func__mutmut_67, 
-    'x__register_command_func__mutmut_68': x__register_command_func__mutmut_68, 
-    'x__register_command_func__mutmut_69': x__register_command_func__mutmut_69, 
-    'x__register_command_func__mutmut_70': x__register_command_func__mutmut_70, 
-    'x__register_command_func__mutmut_71': x__register_command_func__mutmut_71, 
-    'x__register_command_func__mutmut_72': x__register_command_func__mutmut_72, 
-    'x__register_command_func__mutmut_73': x__register_command_func__mutmut_73, 
-    'x__register_command_func__mutmut_74': x__register_command_func__mutmut_74, 
-    'x__register_command_func__mutmut_75': x__register_command_func__mutmut_75, 
-    'x__register_command_func__mutmut_76': x__register_command_func__mutmut_76, 
-    'x__register_command_func__mutmut_77': x__register_command_func__mutmut_77, 
-    'x__register_command_func__mutmut_78': x__register_command_func__mutmut_78, 
-    'x__register_command_func__mutmut_79': x__register_command_func__mutmut_79, 
-    'x__register_command_func__mutmut_80': x__register_command_func__mutmut_80, 
-    'x__register_command_func__mutmut_81': x__register_command_func__mutmut_81, 
-    'x__register_command_func__mutmut_82': x__register_command_func__mutmut_82, 
-    'x__register_command_func__mutmut_83': x__register_command_func__mutmut_83, 
-    'x__register_command_func__mutmut_84': x__register_command_func__mutmut_84, 
-    'x__register_command_func__mutmut_85': x__register_command_func__mutmut_85, 
-    'x__register_command_func__mutmut_86': x__register_command_func__mutmut_86, 
-    'x__register_command_func__mutmut_87': x__register_command_func__mutmut_87, 
-    'x__register_command_func__mutmut_88': x__register_command_func__mutmut_88, 
-    'x__register_command_func__mutmut_89': x__register_command_func__mutmut_89, 
-    'x__register_command_func__mutmut_90': x__register_command_func__mutmut_90, 
-    'x__register_command_func__mutmut_91': x__register_command_func__mutmut_91, 
-    'x__register_command_func__mutmut_92': x__register_command_func__mutmut_92, 
-    'x__register_command_func__mutmut_93': x__register_command_func__mutmut_93, 
-    'x__register_command_func__mutmut_94': x__register_command_func__mutmut_94, 
-    'x__register_command_func__mutmut_95': x__register_command_func__mutmut_95, 
-    'x__register_command_func__mutmut_96': x__register_command_func__mutmut_96, 
-    'x__register_command_func__mutmut_97': x__register_command_func__mutmut_97, 
-    'x__register_command_func__mutmut_98': x__register_command_func__mutmut_98, 
-    'x__register_command_func__mutmut_99': x__register_command_func__mutmut_99, 
-    'x__register_command_func__mutmut_100': x__register_command_func__mutmut_100, 
-    'x__register_command_func__mutmut_101': x__register_command_func__mutmut_101, 
-    'x__register_command_func__mutmut_102': x__register_command_func__mutmut_102
+
+x__register_command_func__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__register_command_func__mutmut_1": x__register_command_func__mutmut_1,
+    "x__register_command_func__mutmut_2": x__register_command_func__mutmut_2,
+    "x__register_command_func__mutmut_3": x__register_command_func__mutmut_3,
+    "x__register_command_func__mutmut_4": x__register_command_func__mutmut_4,
+    "x__register_command_func__mutmut_5": x__register_command_func__mutmut_5,
+    "x__register_command_func__mutmut_6": x__register_command_func__mutmut_6,
+    "x__register_command_func__mutmut_7": x__register_command_func__mutmut_7,
+    "x__register_command_func__mutmut_8": x__register_command_func__mutmut_8,
+    "x__register_command_func__mutmut_9": x__register_command_func__mutmut_9,
+    "x__register_command_func__mutmut_10": x__register_command_func__mutmut_10,
+    "x__register_command_func__mutmut_11": x__register_command_func__mutmut_11,
+    "x__register_command_func__mutmut_12": x__register_command_func__mutmut_12,
+    "x__register_command_func__mutmut_13": x__register_command_func__mutmut_13,
+    "x__register_command_func__mutmut_14": x__register_command_func__mutmut_14,
+    "x__register_command_func__mutmut_15": x__register_command_func__mutmut_15,
+    "x__register_command_func__mutmut_16": x__register_command_func__mutmut_16,
+    "x__register_command_func__mutmut_17": x__register_command_func__mutmut_17,
+    "x__register_command_func__mutmut_18": x__register_command_func__mutmut_18,
+    "x__register_command_func__mutmut_19": x__register_command_func__mutmut_19,
+    "x__register_command_func__mutmut_20": x__register_command_func__mutmut_20,
+    "x__register_command_func__mutmut_21": x__register_command_func__mutmut_21,
+    "x__register_command_func__mutmut_22": x__register_command_func__mutmut_22,
+    "x__register_command_func__mutmut_23": x__register_command_func__mutmut_23,
+    "x__register_command_func__mutmut_24": x__register_command_func__mutmut_24,
+    "x__register_command_func__mutmut_25": x__register_command_func__mutmut_25,
+    "x__register_command_func__mutmut_26": x__register_command_func__mutmut_26,
+    "x__register_command_func__mutmut_27": x__register_command_func__mutmut_27,
+    "x__register_command_func__mutmut_28": x__register_command_func__mutmut_28,
+    "x__register_command_func__mutmut_29": x__register_command_func__mutmut_29,
+    "x__register_command_func__mutmut_30": x__register_command_func__mutmut_30,
+    "x__register_command_func__mutmut_31": x__register_command_func__mutmut_31,
+    "x__register_command_func__mutmut_32": x__register_command_func__mutmut_32,
+    "x__register_command_func__mutmut_33": x__register_command_func__mutmut_33,
+    "x__register_command_func__mutmut_34": x__register_command_func__mutmut_34,
+    "x__register_command_func__mutmut_35": x__register_command_func__mutmut_35,
+    "x__register_command_func__mutmut_36": x__register_command_func__mutmut_36,
+    "x__register_command_func__mutmut_37": x__register_command_func__mutmut_37,
+    "x__register_command_func__mutmut_38": x__register_command_func__mutmut_38,
+    "x__register_command_func__mutmut_39": x__register_command_func__mutmut_39,
+    "x__register_command_func__mutmut_40": x__register_command_func__mutmut_40,
+    "x__register_command_func__mutmut_41": x__register_command_func__mutmut_41,
+    "x__register_command_func__mutmut_42": x__register_command_func__mutmut_42,
+    "x__register_command_func__mutmut_43": x__register_command_func__mutmut_43,
+    "x__register_command_func__mutmut_44": x__register_command_func__mutmut_44,
+    "x__register_command_func__mutmut_45": x__register_command_func__mutmut_45,
+    "x__register_command_func__mutmut_46": x__register_command_func__mutmut_46,
+    "x__register_command_func__mutmut_47": x__register_command_func__mutmut_47,
+    "x__register_command_func__mutmut_48": x__register_command_func__mutmut_48,
+    "x__register_command_func__mutmut_49": x__register_command_func__mutmut_49,
+    "x__register_command_func__mutmut_50": x__register_command_func__mutmut_50,
+    "x__register_command_func__mutmut_51": x__register_command_func__mutmut_51,
+    "x__register_command_func__mutmut_52": x__register_command_func__mutmut_52,
+    "x__register_command_func__mutmut_53": x__register_command_func__mutmut_53,
+    "x__register_command_func__mutmut_54": x__register_command_func__mutmut_54,
+    "x__register_command_func__mutmut_55": x__register_command_func__mutmut_55,
+    "x__register_command_func__mutmut_56": x__register_command_func__mutmut_56,
+    "x__register_command_func__mutmut_57": x__register_command_func__mutmut_57,
+    "x__register_command_func__mutmut_58": x__register_command_func__mutmut_58,
+    "x__register_command_func__mutmut_59": x__register_command_func__mutmut_59,
+    "x__register_command_func__mutmut_60": x__register_command_func__mutmut_60,
+    "x__register_command_func__mutmut_61": x__register_command_func__mutmut_61,
+    "x__register_command_func__mutmut_62": x__register_command_func__mutmut_62,
+    "x__register_command_func__mutmut_63": x__register_command_func__mutmut_63,
+    "x__register_command_func__mutmut_64": x__register_command_func__mutmut_64,
+    "x__register_command_func__mutmut_65": x__register_command_func__mutmut_65,
+    "x__register_command_func__mutmut_66": x__register_command_func__mutmut_66,
+    "x__register_command_func__mutmut_67": x__register_command_func__mutmut_67,
+    "x__register_command_func__mutmut_68": x__register_command_func__mutmut_68,
+    "x__register_command_func__mutmut_69": x__register_command_func__mutmut_69,
+    "x__register_command_func__mutmut_70": x__register_command_func__mutmut_70,
+    "x__register_command_func__mutmut_71": x__register_command_func__mutmut_71,
+    "x__register_command_func__mutmut_72": x__register_command_func__mutmut_72,
+    "x__register_command_func__mutmut_73": x__register_command_func__mutmut_73,
+    "x__register_command_func__mutmut_74": x__register_command_func__mutmut_74,
+    "x__register_command_func__mutmut_75": x__register_command_func__mutmut_75,
+    "x__register_command_func__mutmut_76": x__register_command_func__mutmut_76,
+    "x__register_command_func__mutmut_77": x__register_command_func__mutmut_77,
+    "x__register_command_func__mutmut_78": x__register_command_func__mutmut_78,
+    "x__register_command_func__mutmut_79": x__register_command_func__mutmut_79,
+    "x__register_command_func__mutmut_80": x__register_command_func__mutmut_80,
+    "x__register_command_func__mutmut_81": x__register_command_func__mutmut_81,
+    "x__register_command_func__mutmut_82": x__register_command_func__mutmut_82,
+    "x__register_command_func__mutmut_83": x__register_command_func__mutmut_83,
+    "x__register_command_func__mutmut_84": x__register_command_func__mutmut_84,
+    "x__register_command_func__mutmut_85": x__register_command_func__mutmut_85,
+    "x__register_command_func__mutmut_86": x__register_command_func__mutmut_86,
+    "x__register_command_func__mutmut_87": x__register_command_func__mutmut_87,
+    "x__register_command_func__mutmut_88": x__register_command_func__mutmut_88,
+    "x__register_command_func__mutmut_89": x__register_command_func__mutmut_89,
+    "x__register_command_func__mutmut_90": x__register_command_func__mutmut_90,
+    "x__register_command_func__mutmut_91": x__register_command_func__mutmut_91,
+    "x__register_command_func__mutmut_92": x__register_command_func__mutmut_92,
+    "x__register_command_func__mutmut_93": x__register_command_func__mutmut_93,
+    "x__register_command_func__mutmut_94": x__register_command_func__mutmut_94,
+    "x__register_command_func__mutmut_95": x__register_command_func__mutmut_95,
+    "x__register_command_func__mutmut_96": x__register_command_func__mutmut_96,
+    "x__register_command_func__mutmut_97": x__register_command_func__mutmut_97,
+    "x__register_command_func__mutmut_98": x__register_command_func__mutmut_98,
+    "x__register_command_func__mutmut_99": x__register_command_func__mutmut_99,
+    "x__register_command_func__mutmut_100": x__register_command_func__mutmut_100,
+    "x__register_command_func__mutmut_101": x__register_command_func__mutmut_101,
+    "x__register_command_func__mutmut_102": x__register_command_func__mutmut_102,
 }
 
+
 def _register_command_func(*args, **kwargs):
-    result = _mutmut_trampoline(x__register_command_func__mutmut_orig, x__register_command_func__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__register_command_func__mutmut_orig, x__register_command_func__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _register_command_func.__signature__ = _mutmut_signature(x__register_command_func__mutmut_orig)
-x__register_command_func__mutmut_orig.__name__ = 'x__register_command_func'
+x__register_command_func__mutmut_orig.__name__ = "x__register_command_func"
 
 
 # <3 🧱🤝🌐🪄

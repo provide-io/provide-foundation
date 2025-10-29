@@ -17,23 +17,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -339,7 +342,9 @@ class DependencyError(FoundationError):
         message = f"Optional dependency '{package}' is required for this feature. Install with: {cmd}"
 
         # Add context
-        context = kwargs.setdefault("context", )
+        context = kwargs.setdefault(
+            "context",
+        )
         context["dependency.package"] = package
         context["dependency.install_command"] = cmd
         if feature:
@@ -751,40 +756,48 @@ class DependencyError(FoundationError):
         if feature:
             context["dependency.feature"] = feature
 
-        super().__init__(message, )
-    
-    xǁDependencyErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁDependencyErrorǁ__init____mutmut_1': xǁDependencyErrorǁ__init____mutmut_1, 
-        'xǁDependencyErrorǁ__init____mutmut_2': xǁDependencyErrorǁ__init____mutmut_2, 
-        'xǁDependencyErrorǁ__init____mutmut_3': xǁDependencyErrorǁ__init____mutmut_3, 
-        'xǁDependencyErrorǁ__init____mutmut_4': xǁDependencyErrorǁ__init____mutmut_4, 
-        'xǁDependencyErrorǁ__init____mutmut_5': xǁDependencyErrorǁ__init____mutmut_5, 
-        'xǁDependencyErrorǁ__init____mutmut_6': xǁDependencyErrorǁ__init____mutmut_6, 
-        'xǁDependencyErrorǁ__init____mutmut_7': xǁDependencyErrorǁ__init____mutmut_7, 
-        'xǁDependencyErrorǁ__init____mutmut_8': xǁDependencyErrorǁ__init____mutmut_8, 
-        'xǁDependencyErrorǁ__init____mutmut_9': xǁDependencyErrorǁ__init____mutmut_9, 
-        'xǁDependencyErrorǁ__init____mutmut_10': xǁDependencyErrorǁ__init____mutmut_10, 
-        'xǁDependencyErrorǁ__init____mutmut_11': xǁDependencyErrorǁ__init____mutmut_11, 
-        'xǁDependencyErrorǁ__init____mutmut_12': xǁDependencyErrorǁ__init____mutmut_12, 
-        'xǁDependencyErrorǁ__init____mutmut_13': xǁDependencyErrorǁ__init____mutmut_13, 
-        'xǁDependencyErrorǁ__init____mutmut_14': xǁDependencyErrorǁ__init____mutmut_14, 
-        'xǁDependencyErrorǁ__init____mutmut_15': xǁDependencyErrorǁ__init____mutmut_15, 
-        'xǁDependencyErrorǁ__init____mutmut_16': xǁDependencyErrorǁ__init____mutmut_16, 
-        'xǁDependencyErrorǁ__init____mutmut_17': xǁDependencyErrorǁ__init____mutmut_17, 
-        'xǁDependencyErrorǁ__init____mutmut_18': xǁDependencyErrorǁ__init____mutmut_18, 
-        'xǁDependencyErrorǁ__init____mutmut_19': xǁDependencyErrorǁ__init____mutmut_19, 
-        'xǁDependencyErrorǁ__init____mutmut_20': xǁDependencyErrorǁ__init____mutmut_20, 
-        'xǁDependencyErrorǁ__init____mutmut_21': xǁDependencyErrorǁ__init____mutmut_21, 
-        'xǁDependencyErrorǁ__init____mutmut_22': xǁDependencyErrorǁ__init____mutmut_22, 
-        'xǁDependencyErrorǁ__init____mutmut_23': xǁDependencyErrorǁ__init____mutmut_23
+        super().__init__(
+            message,
+        )
+
+    xǁDependencyErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁDependencyErrorǁ__init____mutmut_1": xǁDependencyErrorǁ__init____mutmut_1,
+        "xǁDependencyErrorǁ__init____mutmut_2": xǁDependencyErrorǁ__init____mutmut_2,
+        "xǁDependencyErrorǁ__init____mutmut_3": xǁDependencyErrorǁ__init____mutmut_3,
+        "xǁDependencyErrorǁ__init____mutmut_4": xǁDependencyErrorǁ__init____mutmut_4,
+        "xǁDependencyErrorǁ__init____mutmut_5": xǁDependencyErrorǁ__init____mutmut_5,
+        "xǁDependencyErrorǁ__init____mutmut_6": xǁDependencyErrorǁ__init____mutmut_6,
+        "xǁDependencyErrorǁ__init____mutmut_7": xǁDependencyErrorǁ__init____mutmut_7,
+        "xǁDependencyErrorǁ__init____mutmut_8": xǁDependencyErrorǁ__init____mutmut_8,
+        "xǁDependencyErrorǁ__init____mutmut_9": xǁDependencyErrorǁ__init____mutmut_9,
+        "xǁDependencyErrorǁ__init____mutmut_10": xǁDependencyErrorǁ__init____mutmut_10,
+        "xǁDependencyErrorǁ__init____mutmut_11": xǁDependencyErrorǁ__init____mutmut_11,
+        "xǁDependencyErrorǁ__init____mutmut_12": xǁDependencyErrorǁ__init____mutmut_12,
+        "xǁDependencyErrorǁ__init____mutmut_13": xǁDependencyErrorǁ__init____mutmut_13,
+        "xǁDependencyErrorǁ__init____mutmut_14": xǁDependencyErrorǁ__init____mutmut_14,
+        "xǁDependencyErrorǁ__init____mutmut_15": xǁDependencyErrorǁ__init____mutmut_15,
+        "xǁDependencyErrorǁ__init____mutmut_16": xǁDependencyErrorǁ__init____mutmut_16,
+        "xǁDependencyErrorǁ__init____mutmut_17": xǁDependencyErrorǁ__init____mutmut_17,
+        "xǁDependencyErrorǁ__init____mutmut_18": xǁDependencyErrorǁ__init____mutmut_18,
+        "xǁDependencyErrorǁ__init____mutmut_19": xǁDependencyErrorǁ__init____mutmut_19,
+        "xǁDependencyErrorǁ__init____mutmut_20": xǁDependencyErrorǁ__init____mutmut_20,
+        "xǁDependencyErrorǁ__init____mutmut_21": xǁDependencyErrorǁ__init____mutmut_21,
+        "xǁDependencyErrorǁ__init____mutmut_22": xǁDependencyErrorǁ__init____mutmut_22,
+        "xǁDependencyErrorǁ__init____mutmut_23": xǁDependencyErrorǁ__init____mutmut_23,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁDependencyErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁDependencyErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁDependencyErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁDependencyErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁDependencyErrorǁ__init____mutmut_orig)
-    xǁDependencyErrorǁ__init____mutmut_orig.__name__ = 'xǁDependencyErrorǁ__init__'
+    xǁDependencyErrorǁ__init____mutmut_orig.__name__ = "xǁDependencyErrorǁ__init__"
 
     def xǁDependencyErrorǁ_default_code__mutmut_orig(self) -> str:
         return "DEPENDENCY_MISSING"
@@ -794,18 +807,24 @@ class DependencyError(FoundationError):
 
     def xǁDependencyErrorǁ_default_code__mutmut_2(self) -> str:
         return "dependency_missing"
-    
-    xǁDependencyErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁDependencyErrorǁ_default_code__mutmut_1': xǁDependencyErrorǁ_default_code__mutmut_1, 
-        'xǁDependencyErrorǁ_default_code__mutmut_2': xǁDependencyErrorǁ_default_code__mutmut_2
+
+    xǁDependencyErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁDependencyErrorǁ_default_code__mutmut_1": xǁDependencyErrorǁ_default_code__mutmut_1,
+        "xǁDependencyErrorǁ_default_code__mutmut_2": xǁDependencyErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁDependencyErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁDependencyErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁDependencyErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁDependencyErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁDependencyErrorǁ_default_code__mutmut_orig)
-    xǁDependencyErrorǁ_default_code__mutmut_orig.__name__ = 'xǁDependencyErrorǁ_default_code'
+    xǁDependencyErrorǁ_default_code__mutmut_orig.__name__ = "xǁDependencyErrorǁ_default_code"
 
 
 class DependencyMismatchError(FoundationError):
@@ -965,7 +984,9 @@ class DependencyMismatchError(FoundationError):
         )
 
         # Add context
-        context = kwargs.setdefault("context", )
+        context = kwargs.setdefault(
+            "context",
+        )
         context["dependency.package"] = package
         context["dependency.required_version"] = required_version
         context["dependency.current_version"] = current_version
@@ -1278,37 +1299,45 @@ class DependencyMismatchError(FoundationError):
         context["dependency.required_version"] = required_version
         context["dependency.current_version"] = current_version
 
-        super().__init__(message, )
-    
-    xǁDependencyMismatchErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁDependencyMismatchErrorǁ__init____mutmut_1': xǁDependencyMismatchErrorǁ__init____mutmut_1, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_2': xǁDependencyMismatchErrorǁ__init____mutmut_2, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_3': xǁDependencyMismatchErrorǁ__init____mutmut_3, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_4': xǁDependencyMismatchErrorǁ__init____mutmut_4, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_5': xǁDependencyMismatchErrorǁ__init____mutmut_5, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_6': xǁDependencyMismatchErrorǁ__init____mutmut_6, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_7': xǁDependencyMismatchErrorǁ__init____mutmut_7, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_8': xǁDependencyMismatchErrorǁ__init____mutmut_8, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_9': xǁDependencyMismatchErrorǁ__init____mutmut_9, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_10': xǁDependencyMismatchErrorǁ__init____mutmut_10, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_11': xǁDependencyMismatchErrorǁ__init____mutmut_11, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_12': xǁDependencyMismatchErrorǁ__init____mutmut_12, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_13': xǁDependencyMismatchErrorǁ__init____mutmut_13, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_14': xǁDependencyMismatchErrorǁ__init____mutmut_14, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_15': xǁDependencyMismatchErrorǁ__init____mutmut_15, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_16': xǁDependencyMismatchErrorǁ__init____mutmut_16, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_17': xǁDependencyMismatchErrorǁ__init____mutmut_17, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_18': xǁDependencyMismatchErrorǁ__init____mutmut_18, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_19': xǁDependencyMismatchErrorǁ__init____mutmut_19, 
-        'xǁDependencyMismatchErrorǁ__init____mutmut_20': xǁDependencyMismatchErrorǁ__init____mutmut_20
+        super().__init__(
+            message,
+        )
+
+    xǁDependencyMismatchErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁDependencyMismatchErrorǁ__init____mutmut_1": xǁDependencyMismatchErrorǁ__init____mutmut_1,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_2": xǁDependencyMismatchErrorǁ__init____mutmut_2,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_3": xǁDependencyMismatchErrorǁ__init____mutmut_3,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_4": xǁDependencyMismatchErrorǁ__init____mutmut_4,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_5": xǁDependencyMismatchErrorǁ__init____mutmut_5,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_6": xǁDependencyMismatchErrorǁ__init____mutmut_6,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_7": xǁDependencyMismatchErrorǁ__init____mutmut_7,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_8": xǁDependencyMismatchErrorǁ__init____mutmut_8,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_9": xǁDependencyMismatchErrorǁ__init____mutmut_9,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_10": xǁDependencyMismatchErrorǁ__init____mutmut_10,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_11": xǁDependencyMismatchErrorǁ__init____mutmut_11,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_12": xǁDependencyMismatchErrorǁ__init____mutmut_12,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_13": xǁDependencyMismatchErrorǁ__init____mutmut_13,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_14": xǁDependencyMismatchErrorǁ__init____mutmut_14,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_15": xǁDependencyMismatchErrorǁ__init____mutmut_15,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_16": xǁDependencyMismatchErrorǁ__init____mutmut_16,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_17": xǁDependencyMismatchErrorǁ__init____mutmut_17,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_18": xǁDependencyMismatchErrorǁ__init____mutmut_18,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_19": xǁDependencyMismatchErrorǁ__init____mutmut_19,
+        "xǁDependencyMismatchErrorǁ__init____mutmut_20": xǁDependencyMismatchErrorǁ__init____mutmut_20,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁDependencyMismatchErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁDependencyMismatchErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁDependencyMismatchErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁDependencyMismatchErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁDependencyMismatchErrorǁ__init____mutmut_orig)
-    xǁDependencyMismatchErrorǁ__init____mutmut_orig.__name__ = 'xǁDependencyMismatchErrorǁ__init__'
+    xǁDependencyMismatchErrorǁ__init____mutmut_orig.__name__ = "xǁDependencyMismatchErrorǁ__init__"
 
     def xǁDependencyMismatchErrorǁ_default_code__mutmut_orig(self) -> str:
         return "DEPENDENCY_VERSION_MISMATCH"
@@ -1318,18 +1347,24 @@ class DependencyMismatchError(FoundationError):
 
     def xǁDependencyMismatchErrorǁ_default_code__mutmut_2(self) -> str:
         return "dependency_version_mismatch"
-    
-    xǁDependencyMismatchErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁDependencyMismatchErrorǁ_default_code__mutmut_1': xǁDependencyMismatchErrorǁ_default_code__mutmut_1, 
-        'xǁDependencyMismatchErrorǁ_default_code__mutmut_2': xǁDependencyMismatchErrorǁ_default_code__mutmut_2
+
+    xǁDependencyMismatchErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁDependencyMismatchErrorǁ_default_code__mutmut_1": xǁDependencyMismatchErrorǁ_default_code__mutmut_1,
+        "xǁDependencyMismatchErrorǁ_default_code__mutmut_2": xǁDependencyMismatchErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁDependencyMismatchErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁDependencyMismatchErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁDependencyMismatchErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁDependencyMismatchErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁDependencyMismatchErrorǁ_default_code__mutmut_orig)
-    xǁDependencyMismatchErrorǁ_default_code__mutmut_orig.__name__ = 'xǁDependencyMismatchErrorǁ_default_code'
+    xǁDependencyMismatchErrorǁ_default_code__mutmut_orig.__name__ = "xǁDependencyMismatchErrorǁ_default_code"
 
 
 # <3 🧱🤝🐛🪄

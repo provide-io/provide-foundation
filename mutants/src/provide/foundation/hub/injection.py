@@ -49,23 +49,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -851,7 +854,7 @@ def x_injectable__mutmut_9(cls: type[T]) -> type[T]:
         raise ValidationError(
             f"Injectable class {cls.__name__} must define its own __init__ method",
             code="INJECTABLE_NO_INIT",
-            )
+        )
 
     # Get type hints for __init__
     try:
@@ -1773,7 +1776,10 @@ def x_injectable__mutmut_20(cls: type[T]) -> type[T]:
 
         module = sys.modules.get(cls.__module__)
         localns = vars(module) if module else {}
-        get_type_hints(cls.__init__, globalns=None, )
+        get_type_hints(
+            cls.__init__,
+            globalns=None,
+        )
     except NameError:
         # Forward reference couldn't be resolved - that's okay for now
         # The actual resolution will happen at runtime
@@ -2444,7 +2450,7 @@ def x_injectable__mutmut_28(cls: type[T]) -> type[T]:
             f"Failed to get type hints for {cls.__name__}.__init__: {e}",
             code="INJECTABLE_TYPE_HINT_ERROR",
             class_name=cls.__name__,
-            ) from e
+        ) from e
 
     # Get signature to check for untyped parameters
     sig = inspect.signature(cls.__init__)
@@ -4120,7 +4126,7 @@ def x_injectable__mutmut_48(cls: type[T]) -> type[T]:
             "All constructor parameters must have type hints for dependency injection.",
             code="INJECTABLE_UNTYPED_PARAMS",
             class_name=cls.__name__,
-            )
+        )
 
     # Mark as injectable (for introspection/documentation)
     setattr(cls, _INJECTABLE_MARKER, True)
@@ -5036,7 +5042,10 @@ def x_injectable__mutmut_59(cls: type[T]) -> type[T]:
         )
 
     # Mark as injectable (for introspection/documentation)
-    setattr(cls, _INJECTABLE_MARKER, )
+    setattr(
+        cls,
+        _INJECTABLE_MARKER,
+    )
 
     return cls
 
@@ -5123,75 +5132,78 @@ def x_injectable__mutmut_60(cls: type[T]) -> type[T]:
 
     return cls
 
-x_injectable__mutmut_mutants : ClassVar[MutantDict] = {
-'x_injectable__mutmut_1': x_injectable__mutmut_1, 
-    'x_injectable__mutmut_2': x_injectable__mutmut_2, 
-    'x_injectable__mutmut_3': x_injectable__mutmut_3, 
-    'x_injectable__mutmut_4': x_injectable__mutmut_4, 
-    'x_injectable__mutmut_5': x_injectable__mutmut_5, 
-    'x_injectable__mutmut_6': x_injectable__mutmut_6, 
-    'x_injectable__mutmut_7': x_injectable__mutmut_7, 
-    'x_injectable__mutmut_8': x_injectable__mutmut_8, 
-    'x_injectable__mutmut_9': x_injectable__mutmut_9, 
-    'x_injectable__mutmut_10': x_injectable__mutmut_10, 
-    'x_injectable__mutmut_11': x_injectable__mutmut_11, 
-    'x_injectable__mutmut_12': x_injectable__mutmut_12, 
-    'x_injectable__mutmut_13': x_injectable__mutmut_13, 
-    'x_injectable__mutmut_14': x_injectable__mutmut_14, 
-    'x_injectable__mutmut_15': x_injectable__mutmut_15, 
-    'x_injectable__mutmut_16': x_injectable__mutmut_16, 
-    'x_injectable__mutmut_17': x_injectable__mutmut_17, 
-    'x_injectable__mutmut_18': x_injectable__mutmut_18, 
-    'x_injectable__mutmut_19': x_injectable__mutmut_19, 
-    'x_injectable__mutmut_20': x_injectable__mutmut_20, 
-    'x_injectable__mutmut_21': x_injectable__mutmut_21, 
-    'x_injectable__mutmut_22': x_injectable__mutmut_22, 
-    'x_injectable__mutmut_23': x_injectable__mutmut_23, 
-    'x_injectable__mutmut_24': x_injectable__mutmut_24, 
-    'x_injectable__mutmut_25': x_injectable__mutmut_25, 
-    'x_injectable__mutmut_26': x_injectable__mutmut_26, 
-    'x_injectable__mutmut_27': x_injectable__mutmut_27, 
-    'x_injectable__mutmut_28': x_injectable__mutmut_28, 
-    'x_injectable__mutmut_29': x_injectable__mutmut_29, 
-    'x_injectable__mutmut_30': x_injectable__mutmut_30, 
-    'x_injectable__mutmut_31': x_injectable__mutmut_31, 
-    'x_injectable__mutmut_32': x_injectable__mutmut_32, 
-    'x_injectable__mutmut_33': x_injectable__mutmut_33, 
-    'x_injectable__mutmut_34': x_injectable__mutmut_34, 
-    'x_injectable__mutmut_35': x_injectable__mutmut_35, 
-    'x_injectable__mutmut_36': x_injectable__mutmut_36, 
-    'x_injectable__mutmut_37': x_injectable__mutmut_37, 
-    'x_injectable__mutmut_38': x_injectable__mutmut_38, 
-    'x_injectable__mutmut_39': x_injectable__mutmut_39, 
-    'x_injectable__mutmut_40': x_injectable__mutmut_40, 
-    'x_injectable__mutmut_41': x_injectable__mutmut_41, 
-    'x_injectable__mutmut_42': x_injectable__mutmut_42, 
-    'x_injectable__mutmut_43': x_injectable__mutmut_43, 
-    'x_injectable__mutmut_44': x_injectable__mutmut_44, 
-    'x_injectable__mutmut_45': x_injectable__mutmut_45, 
-    'x_injectable__mutmut_46': x_injectable__mutmut_46, 
-    'x_injectable__mutmut_47': x_injectable__mutmut_47, 
-    'x_injectable__mutmut_48': x_injectable__mutmut_48, 
-    'x_injectable__mutmut_49': x_injectable__mutmut_49, 
-    'x_injectable__mutmut_50': x_injectable__mutmut_50, 
-    'x_injectable__mutmut_51': x_injectable__mutmut_51, 
-    'x_injectable__mutmut_52': x_injectable__mutmut_52, 
-    'x_injectable__mutmut_53': x_injectable__mutmut_53, 
-    'x_injectable__mutmut_54': x_injectable__mutmut_54, 
-    'x_injectable__mutmut_55': x_injectable__mutmut_55, 
-    'x_injectable__mutmut_56': x_injectable__mutmut_56, 
-    'x_injectable__mutmut_57': x_injectable__mutmut_57, 
-    'x_injectable__mutmut_58': x_injectable__mutmut_58, 
-    'x_injectable__mutmut_59': x_injectable__mutmut_59, 
-    'x_injectable__mutmut_60': x_injectable__mutmut_60
+
+x_injectable__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_injectable__mutmut_1": x_injectable__mutmut_1,
+    "x_injectable__mutmut_2": x_injectable__mutmut_2,
+    "x_injectable__mutmut_3": x_injectable__mutmut_3,
+    "x_injectable__mutmut_4": x_injectable__mutmut_4,
+    "x_injectable__mutmut_5": x_injectable__mutmut_5,
+    "x_injectable__mutmut_6": x_injectable__mutmut_6,
+    "x_injectable__mutmut_7": x_injectable__mutmut_7,
+    "x_injectable__mutmut_8": x_injectable__mutmut_8,
+    "x_injectable__mutmut_9": x_injectable__mutmut_9,
+    "x_injectable__mutmut_10": x_injectable__mutmut_10,
+    "x_injectable__mutmut_11": x_injectable__mutmut_11,
+    "x_injectable__mutmut_12": x_injectable__mutmut_12,
+    "x_injectable__mutmut_13": x_injectable__mutmut_13,
+    "x_injectable__mutmut_14": x_injectable__mutmut_14,
+    "x_injectable__mutmut_15": x_injectable__mutmut_15,
+    "x_injectable__mutmut_16": x_injectable__mutmut_16,
+    "x_injectable__mutmut_17": x_injectable__mutmut_17,
+    "x_injectable__mutmut_18": x_injectable__mutmut_18,
+    "x_injectable__mutmut_19": x_injectable__mutmut_19,
+    "x_injectable__mutmut_20": x_injectable__mutmut_20,
+    "x_injectable__mutmut_21": x_injectable__mutmut_21,
+    "x_injectable__mutmut_22": x_injectable__mutmut_22,
+    "x_injectable__mutmut_23": x_injectable__mutmut_23,
+    "x_injectable__mutmut_24": x_injectable__mutmut_24,
+    "x_injectable__mutmut_25": x_injectable__mutmut_25,
+    "x_injectable__mutmut_26": x_injectable__mutmut_26,
+    "x_injectable__mutmut_27": x_injectable__mutmut_27,
+    "x_injectable__mutmut_28": x_injectable__mutmut_28,
+    "x_injectable__mutmut_29": x_injectable__mutmut_29,
+    "x_injectable__mutmut_30": x_injectable__mutmut_30,
+    "x_injectable__mutmut_31": x_injectable__mutmut_31,
+    "x_injectable__mutmut_32": x_injectable__mutmut_32,
+    "x_injectable__mutmut_33": x_injectable__mutmut_33,
+    "x_injectable__mutmut_34": x_injectable__mutmut_34,
+    "x_injectable__mutmut_35": x_injectable__mutmut_35,
+    "x_injectable__mutmut_36": x_injectable__mutmut_36,
+    "x_injectable__mutmut_37": x_injectable__mutmut_37,
+    "x_injectable__mutmut_38": x_injectable__mutmut_38,
+    "x_injectable__mutmut_39": x_injectable__mutmut_39,
+    "x_injectable__mutmut_40": x_injectable__mutmut_40,
+    "x_injectable__mutmut_41": x_injectable__mutmut_41,
+    "x_injectable__mutmut_42": x_injectable__mutmut_42,
+    "x_injectable__mutmut_43": x_injectable__mutmut_43,
+    "x_injectable__mutmut_44": x_injectable__mutmut_44,
+    "x_injectable__mutmut_45": x_injectable__mutmut_45,
+    "x_injectable__mutmut_46": x_injectable__mutmut_46,
+    "x_injectable__mutmut_47": x_injectable__mutmut_47,
+    "x_injectable__mutmut_48": x_injectable__mutmut_48,
+    "x_injectable__mutmut_49": x_injectable__mutmut_49,
+    "x_injectable__mutmut_50": x_injectable__mutmut_50,
+    "x_injectable__mutmut_51": x_injectable__mutmut_51,
+    "x_injectable__mutmut_52": x_injectable__mutmut_52,
+    "x_injectable__mutmut_53": x_injectable__mutmut_53,
+    "x_injectable__mutmut_54": x_injectable__mutmut_54,
+    "x_injectable__mutmut_55": x_injectable__mutmut_55,
+    "x_injectable__mutmut_56": x_injectable__mutmut_56,
+    "x_injectable__mutmut_57": x_injectable__mutmut_57,
+    "x_injectable__mutmut_58": x_injectable__mutmut_58,
+    "x_injectable__mutmut_59": x_injectable__mutmut_59,
+    "x_injectable__mutmut_60": x_injectable__mutmut_60,
 }
+
 
 def injectable(*args, **kwargs):
     result = _mutmut_trampoline(x_injectable__mutmut_orig, x_injectable__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 injectable.__signature__ = _mutmut_signature(x_injectable__mutmut_orig)
-x_injectable__mutmut_orig.__name__ = 'x_injectable'
+x_injectable__mutmut_orig.__name__ = "x_injectable"
 
 
 def x_is_injectable__mutmut_orig(cls: type[Any]) -> bool:
@@ -5275,7 +5287,10 @@ def x_is_injectable__mutmut_6(cls: type[Any]) -> bool:
     Returns:
         True if class is marked with @injectable decorator
     """
-    return getattr(cls, _INJECTABLE_MARKER, )
+    return getattr(
+        cls,
+        _INJECTABLE_MARKER,
+    )
 
 
 def x_is_injectable__mutmut_7(cls: type[Any]) -> bool:
@@ -5289,22 +5304,25 @@ def x_is_injectable__mutmut_7(cls: type[Any]) -> bool:
     """
     return getattr(cls, _INJECTABLE_MARKER, True)
 
-x_is_injectable__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_injectable__mutmut_1': x_is_injectable__mutmut_1, 
-    'x_is_injectable__mutmut_2': x_is_injectable__mutmut_2, 
-    'x_is_injectable__mutmut_3': x_is_injectable__mutmut_3, 
-    'x_is_injectable__mutmut_4': x_is_injectable__mutmut_4, 
-    'x_is_injectable__mutmut_5': x_is_injectable__mutmut_5, 
-    'x_is_injectable__mutmut_6': x_is_injectable__mutmut_6, 
-    'x_is_injectable__mutmut_7': x_is_injectable__mutmut_7
+
+x_is_injectable__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_injectable__mutmut_1": x_is_injectable__mutmut_1,
+    "x_is_injectable__mutmut_2": x_is_injectable__mutmut_2,
+    "x_is_injectable__mutmut_3": x_is_injectable__mutmut_3,
+    "x_is_injectable__mutmut_4": x_is_injectable__mutmut_4,
+    "x_is_injectable__mutmut_5": x_is_injectable__mutmut_5,
+    "x_is_injectable__mutmut_6": x_is_injectable__mutmut_6,
+    "x_is_injectable__mutmut_7": x_is_injectable__mutmut_7,
 }
+
 
 def is_injectable(*args, **kwargs):
     result = _mutmut_trampoline(x_is_injectable__mutmut_orig, x_is_injectable__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 is_injectable.__signature__ = _mutmut_signature(x_is_injectable__mutmut_orig)
-x_is_injectable__mutmut_orig.__name__ = 'x_is_injectable'
+x_is_injectable__mutmut_orig.__name__ = "x_is_injectable"
 
 
 def x_resolve_dependencies__mutmut_orig(  # noqa: C901
@@ -6670,7 +6688,10 @@ def x_resolve_dependencies__mutmut_11(  # noqa: C901
 
         module = sys.modules.get(cls.__module__)
         localns = vars(module) if module else {}
-        hints = get_type_hints(cls.__init__, globalns=None, )
+        hints = get_type_hints(
+            cls.__init__,
+            globalns=None,
+        )
     except NameError:
         # Forward reference error - collect what we can from annotations
         hints = {}
@@ -8740,7 +8761,7 @@ def x_resolve_dependencies__mutmut_28(  # noqa: C901
             f"Failed to get type hints for {cls.__name__}.__init__: {e}",
             code="RESOLVE_TYPE_HINT_ERROR",
             class_name=cls.__name__,
-            ) from e
+        ) from e
 
     # Get signature
     sig = inspect.signature(cls.__init__)
@@ -11789,7 +11810,7 @@ def x_resolve_dependencies__mutmut_53(  # noqa: C901
                 f"Parameter '{param.name}' of {cls.__name__}.__init__ has no type hint",
                 code="RESOLVE_NO_TYPE_HINT",
                 class_name=cls.__name__,
-                )
+            )
 
         # If param_type is a string (forward reference), try to resolve it
         if isinstance(param_type, str):
@@ -12886,7 +12907,9 @@ def x_resolve_dependencies__mutmut_62(  # noqa: C901
             import sys
 
             module = sys.modules.get(cls.__module__)
-            if module and hasattr(module, ):
+            if module and hasattr(
+                module,
+            ):
                 param_type = getattr(module, param_type)
             else:
                 if allow_missing:
@@ -13492,7 +13515,9 @@ def x_resolve_dependencies__mutmut_67(  # noqa: C901
 
             module = sys.modules.get(cls.__module__)
             if module and hasattr(module, param_type):
-                param_type = getattr(module, )
+                param_type = getattr(
+                    module,
+                )
             else:
                 if allow_missing:
                     missing.append(param.name)
@@ -14950,7 +14975,7 @@ def x_resolve_dependencies__mutmut_79(  # noqa: C901
                     code="RESOLVE_FORWARD_REF_ERROR",
                     class_name=cls.__name__,
                     param_name=param.name,
-                    )
+                )
 
         # Try to resolve from registry by type
         # Strategy: Look for registered instance of this type
@@ -16654,7 +16679,10 @@ def x_resolve_dependencies__mutmut_93(  # noqa: C901
             if allow_missing:
                 missing.append(param.name)
                 continue
-            type_name = getattr(param_type, "__name__", )
+            type_name = getattr(
+                param_type,
+                "__name__",
+            )
             raise NotFoundError(
                 f"Dependency '{type_name}' required by {cls.__name__} not found in registry",
                 code="RESOLVE_DEPENDENCY_NOT_FOUND",
@@ -18229,7 +18257,7 @@ def x_resolve_dependencies__mutmut_106(  # noqa: C901
                 code="RESOLVE_DEPENDENCY_NOT_FOUND",
                 class_name=cls.__name__,
                 param_name=param.name,
-                )
+            )
 
         resolved[param.name] = instance
 
@@ -18598,124 +18626,129 @@ def x_resolve_dependencies__mutmut_109(  # noqa: C901
 
     return resolved
 
-x_resolve_dependencies__mutmut_mutants : ClassVar[MutantDict] = {
-'x_resolve_dependencies__mutmut_1': x_resolve_dependencies__mutmut_1, 
-    'x_resolve_dependencies__mutmut_2': x_resolve_dependencies__mutmut_2, 
-    'x_resolve_dependencies__mutmut_3': x_resolve_dependencies__mutmut_3, 
-    'x_resolve_dependencies__mutmut_4': x_resolve_dependencies__mutmut_4, 
-    'x_resolve_dependencies__mutmut_5': x_resolve_dependencies__mutmut_5, 
-    'x_resolve_dependencies__mutmut_6': x_resolve_dependencies__mutmut_6, 
-    'x_resolve_dependencies__mutmut_7': x_resolve_dependencies__mutmut_7, 
-    'x_resolve_dependencies__mutmut_8': x_resolve_dependencies__mutmut_8, 
-    'x_resolve_dependencies__mutmut_9': x_resolve_dependencies__mutmut_9, 
-    'x_resolve_dependencies__mutmut_10': x_resolve_dependencies__mutmut_10, 
-    'x_resolve_dependencies__mutmut_11': x_resolve_dependencies__mutmut_11, 
-    'x_resolve_dependencies__mutmut_12': x_resolve_dependencies__mutmut_12, 
-    'x_resolve_dependencies__mutmut_13': x_resolve_dependencies__mutmut_13, 
-    'x_resolve_dependencies__mutmut_14': x_resolve_dependencies__mutmut_14, 
-    'x_resolve_dependencies__mutmut_15': x_resolve_dependencies__mutmut_15, 
-    'x_resolve_dependencies__mutmut_16': x_resolve_dependencies__mutmut_16, 
-    'x_resolve_dependencies__mutmut_17': x_resolve_dependencies__mutmut_17, 
-    'x_resolve_dependencies__mutmut_18': x_resolve_dependencies__mutmut_18, 
-    'x_resolve_dependencies__mutmut_19': x_resolve_dependencies__mutmut_19, 
-    'x_resolve_dependencies__mutmut_20': x_resolve_dependencies__mutmut_20, 
-    'x_resolve_dependencies__mutmut_21': x_resolve_dependencies__mutmut_21, 
-    'x_resolve_dependencies__mutmut_22': x_resolve_dependencies__mutmut_22, 
-    'x_resolve_dependencies__mutmut_23': x_resolve_dependencies__mutmut_23, 
-    'x_resolve_dependencies__mutmut_24': x_resolve_dependencies__mutmut_24, 
-    'x_resolve_dependencies__mutmut_25': x_resolve_dependencies__mutmut_25, 
-    'x_resolve_dependencies__mutmut_26': x_resolve_dependencies__mutmut_26, 
-    'x_resolve_dependencies__mutmut_27': x_resolve_dependencies__mutmut_27, 
-    'x_resolve_dependencies__mutmut_28': x_resolve_dependencies__mutmut_28, 
-    'x_resolve_dependencies__mutmut_29': x_resolve_dependencies__mutmut_29, 
-    'x_resolve_dependencies__mutmut_30': x_resolve_dependencies__mutmut_30, 
-    'x_resolve_dependencies__mutmut_31': x_resolve_dependencies__mutmut_31, 
-    'x_resolve_dependencies__mutmut_32': x_resolve_dependencies__mutmut_32, 
-    'x_resolve_dependencies__mutmut_33': x_resolve_dependencies__mutmut_33, 
-    'x_resolve_dependencies__mutmut_34': x_resolve_dependencies__mutmut_34, 
-    'x_resolve_dependencies__mutmut_35': x_resolve_dependencies__mutmut_35, 
-    'x_resolve_dependencies__mutmut_36': x_resolve_dependencies__mutmut_36, 
-    'x_resolve_dependencies__mutmut_37': x_resolve_dependencies__mutmut_37, 
-    'x_resolve_dependencies__mutmut_38': x_resolve_dependencies__mutmut_38, 
-    'x_resolve_dependencies__mutmut_39': x_resolve_dependencies__mutmut_39, 
-    'x_resolve_dependencies__mutmut_40': x_resolve_dependencies__mutmut_40, 
-    'x_resolve_dependencies__mutmut_41': x_resolve_dependencies__mutmut_41, 
-    'x_resolve_dependencies__mutmut_42': x_resolve_dependencies__mutmut_42, 
-    'x_resolve_dependencies__mutmut_43': x_resolve_dependencies__mutmut_43, 
-    'x_resolve_dependencies__mutmut_44': x_resolve_dependencies__mutmut_44, 
-    'x_resolve_dependencies__mutmut_45': x_resolve_dependencies__mutmut_45, 
-    'x_resolve_dependencies__mutmut_46': x_resolve_dependencies__mutmut_46, 
-    'x_resolve_dependencies__mutmut_47': x_resolve_dependencies__mutmut_47, 
-    'x_resolve_dependencies__mutmut_48': x_resolve_dependencies__mutmut_48, 
-    'x_resolve_dependencies__mutmut_49': x_resolve_dependencies__mutmut_49, 
-    'x_resolve_dependencies__mutmut_50': x_resolve_dependencies__mutmut_50, 
-    'x_resolve_dependencies__mutmut_51': x_resolve_dependencies__mutmut_51, 
-    'x_resolve_dependencies__mutmut_52': x_resolve_dependencies__mutmut_52, 
-    'x_resolve_dependencies__mutmut_53': x_resolve_dependencies__mutmut_53, 
-    'x_resolve_dependencies__mutmut_54': x_resolve_dependencies__mutmut_54, 
-    'x_resolve_dependencies__mutmut_55': x_resolve_dependencies__mutmut_55, 
-    'x_resolve_dependencies__mutmut_56': x_resolve_dependencies__mutmut_56, 
-    'x_resolve_dependencies__mutmut_57': x_resolve_dependencies__mutmut_57, 
-    'x_resolve_dependencies__mutmut_58': x_resolve_dependencies__mutmut_58, 
-    'x_resolve_dependencies__mutmut_59': x_resolve_dependencies__mutmut_59, 
-    'x_resolve_dependencies__mutmut_60': x_resolve_dependencies__mutmut_60, 
-    'x_resolve_dependencies__mutmut_61': x_resolve_dependencies__mutmut_61, 
-    'x_resolve_dependencies__mutmut_62': x_resolve_dependencies__mutmut_62, 
-    'x_resolve_dependencies__mutmut_63': x_resolve_dependencies__mutmut_63, 
-    'x_resolve_dependencies__mutmut_64': x_resolve_dependencies__mutmut_64, 
-    'x_resolve_dependencies__mutmut_65': x_resolve_dependencies__mutmut_65, 
-    'x_resolve_dependencies__mutmut_66': x_resolve_dependencies__mutmut_66, 
-    'x_resolve_dependencies__mutmut_67': x_resolve_dependencies__mutmut_67, 
-    'x_resolve_dependencies__mutmut_68': x_resolve_dependencies__mutmut_68, 
-    'x_resolve_dependencies__mutmut_69': x_resolve_dependencies__mutmut_69, 
-    'x_resolve_dependencies__mutmut_70': x_resolve_dependencies__mutmut_70, 
-    'x_resolve_dependencies__mutmut_71': x_resolve_dependencies__mutmut_71, 
-    'x_resolve_dependencies__mutmut_72': x_resolve_dependencies__mutmut_72, 
-    'x_resolve_dependencies__mutmut_73': x_resolve_dependencies__mutmut_73, 
-    'x_resolve_dependencies__mutmut_74': x_resolve_dependencies__mutmut_74, 
-    'x_resolve_dependencies__mutmut_75': x_resolve_dependencies__mutmut_75, 
-    'x_resolve_dependencies__mutmut_76': x_resolve_dependencies__mutmut_76, 
-    'x_resolve_dependencies__mutmut_77': x_resolve_dependencies__mutmut_77, 
-    'x_resolve_dependencies__mutmut_78': x_resolve_dependencies__mutmut_78, 
-    'x_resolve_dependencies__mutmut_79': x_resolve_dependencies__mutmut_79, 
-    'x_resolve_dependencies__mutmut_80': x_resolve_dependencies__mutmut_80, 
-    'x_resolve_dependencies__mutmut_81': x_resolve_dependencies__mutmut_81, 
-    'x_resolve_dependencies__mutmut_82': x_resolve_dependencies__mutmut_82, 
-    'x_resolve_dependencies__mutmut_83': x_resolve_dependencies__mutmut_83, 
-    'x_resolve_dependencies__mutmut_84': x_resolve_dependencies__mutmut_84, 
-    'x_resolve_dependencies__mutmut_85': x_resolve_dependencies__mutmut_85, 
-    'x_resolve_dependencies__mutmut_86': x_resolve_dependencies__mutmut_86, 
-    'x_resolve_dependencies__mutmut_87': x_resolve_dependencies__mutmut_87, 
-    'x_resolve_dependencies__mutmut_88': x_resolve_dependencies__mutmut_88, 
-    'x_resolve_dependencies__mutmut_89': x_resolve_dependencies__mutmut_89, 
-    'x_resolve_dependencies__mutmut_90': x_resolve_dependencies__mutmut_90, 
-    'x_resolve_dependencies__mutmut_91': x_resolve_dependencies__mutmut_91, 
-    'x_resolve_dependencies__mutmut_92': x_resolve_dependencies__mutmut_92, 
-    'x_resolve_dependencies__mutmut_93': x_resolve_dependencies__mutmut_93, 
-    'x_resolve_dependencies__mutmut_94': x_resolve_dependencies__mutmut_94, 
-    'x_resolve_dependencies__mutmut_95': x_resolve_dependencies__mutmut_95, 
-    'x_resolve_dependencies__mutmut_96': x_resolve_dependencies__mutmut_96, 
-    'x_resolve_dependencies__mutmut_97': x_resolve_dependencies__mutmut_97, 
-    'x_resolve_dependencies__mutmut_98': x_resolve_dependencies__mutmut_98, 
-    'x_resolve_dependencies__mutmut_99': x_resolve_dependencies__mutmut_99, 
-    'x_resolve_dependencies__mutmut_100': x_resolve_dependencies__mutmut_100, 
-    'x_resolve_dependencies__mutmut_101': x_resolve_dependencies__mutmut_101, 
-    'x_resolve_dependencies__mutmut_102': x_resolve_dependencies__mutmut_102, 
-    'x_resolve_dependencies__mutmut_103': x_resolve_dependencies__mutmut_103, 
-    'x_resolve_dependencies__mutmut_104': x_resolve_dependencies__mutmut_104, 
-    'x_resolve_dependencies__mutmut_105': x_resolve_dependencies__mutmut_105, 
-    'x_resolve_dependencies__mutmut_106': x_resolve_dependencies__mutmut_106, 
-    'x_resolve_dependencies__mutmut_107': x_resolve_dependencies__mutmut_107, 
-    'x_resolve_dependencies__mutmut_108': x_resolve_dependencies__mutmut_108, 
-    'x_resolve_dependencies__mutmut_109': x_resolve_dependencies__mutmut_109
+
+x_resolve_dependencies__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_resolve_dependencies__mutmut_1": x_resolve_dependencies__mutmut_1,
+    "x_resolve_dependencies__mutmut_2": x_resolve_dependencies__mutmut_2,
+    "x_resolve_dependencies__mutmut_3": x_resolve_dependencies__mutmut_3,
+    "x_resolve_dependencies__mutmut_4": x_resolve_dependencies__mutmut_4,
+    "x_resolve_dependencies__mutmut_5": x_resolve_dependencies__mutmut_5,
+    "x_resolve_dependencies__mutmut_6": x_resolve_dependencies__mutmut_6,
+    "x_resolve_dependencies__mutmut_7": x_resolve_dependencies__mutmut_7,
+    "x_resolve_dependencies__mutmut_8": x_resolve_dependencies__mutmut_8,
+    "x_resolve_dependencies__mutmut_9": x_resolve_dependencies__mutmut_9,
+    "x_resolve_dependencies__mutmut_10": x_resolve_dependencies__mutmut_10,
+    "x_resolve_dependencies__mutmut_11": x_resolve_dependencies__mutmut_11,
+    "x_resolve_dependencies__mutmut_12": x_resolve_dependencies__mutmut_12,
+    "x_resolve_dependencies__mutmut_13": x_resolve_dependencies__mutmut_13,
+    "x_resolve_dependencies__mutmut_14": x_resolve_dependencies__mutmut_14,
+    "x_resolve_dependencies__mutmut_15": x_resolve_dependencies__mutmut_15,
+    "x_resolve_dependencies__mutmut_16": x_resolve_dependencies__mutmut_16,
+    "x_resolve_dependencies__mutmut_17": x_resolve_dependencies__mutmut_17,
+    "x_resolve_dependencies__mutmut_18": x_resolve_dependencies__mutmut_18,
+    "x_resolve_dependencies__mutmut_19": x_resolve_dependencies__mutmut_19,
+    "x_resolve_dependencies__mutmut_20": x_resolve_dependencies__mutmut_20,
+    "x_resolve_dependencies__mutmut_21": x_resolve_dependencies__mutmut_21,
+    "x_resolve_dependencies__mutmut_22": x_resolve_dependencies__mutmut_22,
+    "x_resolve_dependencies__mutmut_23": x_resolve_dependencies__mutmut_23,
+    "x_resolve_dependencies__mutmut_24": x_resolve_dependencies__mutmut_24,
+    "x_resolve_dependencies__mutmut_25": x_resolve_dependencies__mutmut_25,
+    "x_resolve_dependencies__mutmut_26": x_resolve_dependencies__mutmut_26,
+    "x_resolve_dependencies__mutmut_27": x_resolve_dependencies__mutmut_27,
+    "x_resolve_dependencies__mutmut_28": x_resolve_dependencies__mutmut_28,
+    "x_resolve_dependencies__mutmut_29": x_resolve_dependencies__mutmut_29,
+    "x_resolve_dependencies__mutmut_30": x_resolve_dependencies__mutmut_30,
+    "x_resolve_dependencies__mutmut_31": x_resolve_dependencies__mutmut_31,
+    "x_resolve_dependencies__mutmut_32": x_resolve_dependencies__mutmut_32,
+    "x_resolve_dependencies__mutmut_33": x_resolve_dependencies__mutmut_33,
+    "x_resolve_dependencies__mutmut_34": x_resolve_dependencies__mutmut_34,
+    "x_resolve_dependencies__mutmut_35": x_resolve_dependencies__mutmut_35,
+    "x_resolve_dependencies__mutmut_36": x_resolve_dependencies__mutmut_36,
+    "x_resolve_dependencies__mutmut_37": x_resolve_dependencies__mutmut_37,
+    "x_resolve_dependencies__mutmut_38": x_resolve_dependencies__mutmut_38,
+    "x_resolve_dependencies__mutmut_39": x_resolve_dependencies__mutmut_39,
+    "x_resolve_dependencies__mutmut_40": x_resolve_dependencies__mutmut_40,
+    "x_resolve_dependencies__mutmut_41": x_resolve_dependencies__mutmut_41,
+    "x_resolve_dependencies__mutmut_42": x_resolve_dependencies__mutmut_42,
+    "x_resolve_dependencies__mutmut_43": x_resolve_dependencies__mutmut_43,
+    "x_resolve_dependencies__mutmut_44": x_resolve_dependencies__mutmut_44,
+    "x_resolve_dependencies__mutmut_45": x_resolve_dependencies__mutmut_45,
+    "x_resolve_dependencies__mutmut_46": x_resolve_dependencies__mutmut_46,
+    "x_resolve_dependencies__mutmut_47": x_resolve_dependencies__mutmut_47,
+    "x_resolve_dependencies__mutmut_48": x_resolve_dependencies__mutmut_48,
+    "x_resolve_dependencies__mutmut_49": x_resolve_dependencies__mutmut_49,
+    "x_resolve_dependencies__mutmut_50": x_resolve_dependencies__mutmut_50,
+    "x_resolve_dependencies__mutmut_51": x_resolve_dependencies__mutmut_51,
+    "x_resolve_dependencies__mutmut_52": x_resolve_dependencies__mutmut_52,
+    "x_resolve_dependencies__mutmut_53": x_resolve_dependencies__mutmut_53,
+    "x_resolve_dependencies__mutmut_54": x_resolve_dependencies__mutmut_54,
+    "x_resolve_dependencies__mutmut_55": x_resolve_dependencies__mutmut_55,
+    "x_resolve_dependencies__mutmut_56": x_resolve_dependencies__mutmut_56,
+    "x_resolve_dependencies__mutmut_57": x_resolve_dependencies__mutmut_57,
+    "x_resolve_dependencies__mutmut_58": x_resolve_dependencies__mutmut_58,
+    "x_resolve_dependencies__mutmut_59": x_resolve_dependencies__mutmut_59,
+    "x_resolve_dependencies__mutmut_60": x_resolve_dependencies__mutmut_60,
+    "x_resolve_dependencies__mutmut_61": x_resolve_dependencies__mutmut_61,
+    "x_resolve_dependencies__mutmut_62": x_resolve_dependencies__mutmut_62,
+    "x_resolve_dependencies__mutmut_63": x_resolve_dependencies__mutmut_63,
+    "x_resolve_dependencies__mutmut_64": x_resolve_dependencies__mutmut_64,
+    "x_resolve_dependencies__mutmut_65": x_resolve_dependencies__mutmut_65,
+    "x_resolve_dependencies__mutmut_66": x_resolve_dependencies__mutmut_66,
+    "x_resolve_dependencies__mutmut_67": x_resolve_dependencies__mutmut_67,
+    "x_resolve_dependencies__mutmut_68": x_resolve_dependencies__mutmut_68,
+    "x_resolve_dependencies__mutmut_69": x_resolve_dependencies__mutmut_69,
+    "x_resolve_dependencies__mutmut_70": x_resolve_dependencies__mutmut_70,
+    "x_resolve_dependencies__mutmut_71": x_resolve_dependencies__mutmut_71,
+    "x_resolve_dependencies__mutmut_72": x_resolve_dependencies__mutmut_72,
+    "x_resolve_dependencies__mutmut_73": x_resolve_dependencies__mutmut_73,
+    "x_resolve_dependencies__mutmut_74": x_resolve_dependencies__mutmut_74,
+    "x_resolve_dependencies__mutmut_75": x_resolve_dependencies__mutmut_75,
+    "x_resolve_dependencies__mutmut_76": x_resolve_dependencies__mutmut_76,
+    "x_resolve_dependencies__mutmut_77": x_resolve_dependencies__mutmut_77,
+    "x_resolve_dependencies__mutmut_78": x_resolve_dependencies__mutmut_78,
+    "x_resolve_dependencies__mutmut_79": x_resolve_dependencies__mutmut_79,
+    "x_resolve_dependencies__mutmut_80": x_resolve_dependencies__mutmut_80,
+    "x_resolve_dependencies__mutmut_81": x_resolve_dependencies__mutmut_81,
+    "x_resolve_dependencies__mutmut_82": x_resolve_dependencies__mutmut_82,
+    "x_resolve_dependencies__mutmut_83": x_resolve_dependencies__mutmut_83,
+    "x_resolve_dependencies__mutmut_84": x_resolve_dependencies__mutmut_84,
+    "x_resolve_dependencies__mutmut_85": x_resolve_dependencies__mutmut_85,
+    "x_resolve_dependencies__mutmut_86": x_resolve_dependencies__mutmut_86,
+    "x_resolve_dependencies__mutmut_87": x_resolve_dependencies__mutmut_87,
+    "x_resolve_dependencies__mutmut_88": x_resolve_dependencies__mutmut_88,
+    "x_resolve_dependencies__mutmut_89": x_resolve_dependencies__mutmut_89,
+    "x_resolve_dependencies__mutmut_90": x_resolve_dependencies__mutmut_90,
+    "x_resolve_dependencies__mutmut_91": x_resolve_dependencies__mutmut_91,
+    "x_resolve_dependencies__mutmut_92": x_resolve_dependencies__mutmut_92,
+    "x_resolve_dependencies__mutmut_93": x_resolve_dependencies__mutmut_93,
+    "x_resolve_dependencies__mutmut_94": x_resolve_dependencies__mutmut_94,
+    "x_resolve_dependencies__mutmut_95": x_resolve_dependencies__mutmut_95,
+    "x_resolve_dependencies__mutmut_96": x_resolve_dependencies__mutmut_96,
+    "x_resolve_dependencies__mutmut_97": x_resolve_dependencies__mutmut_97,
+    "x_resolve_dependencies__mutmut_98": x_resolve_dependencies__mutmut_98,
+    "x_resolve_dependencies__mutmut_99": x_resolve_dependencies__mutmut_99,
+    "x_resolve_dependencies__mutmut_100": x_resolve_dependencies__mutmut_100,
+    "x_resolve_dependencies__mutmut_101": x_resolve_dependencies__mutmut_101,
+    "x_resolve_dependencies__mutmut_102": x_resolve_dependencies__mutmut_102,
+    "x_resolve_dependencies__mutmut_103": x_resolve_dependencies__mutmut_103,
+    "x_resolve_dependencies__mutmut_104": x_resolve_dependencies__mutmut_104,
+    "x_resolve_dependencies__mutmut_105": x_resolve_dependencies__mutmut_105,
+    "x_resolve_dependencies__mutmut_106": x_resolve_dependencies__mutmut_106,
+    "x_resolve_dependencies__mutmut_107": x_resolve_dependencies__mutmut_107,
+    "x_resolve_dependencies__mutmut_108": x_resolve_dependencies__mutmut_108,
+    "x_resolve_dependencies__mutmut_109": x_resolve_dependencies__mutmut_109,
 }
 
+
 def resolve_dependencies(*args, **kwargs):
-    result = _mutmut_trampoline(x_resolve_dependencies__mutmut_orig, x_resolve_dependencies__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_resolve_dependencies__mutmut_orig, x_resolve_dependencies__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 resolve_dependencies.__signature__ = _mutmut_signature(x_resolve_dependencies__mutmut_orig)
-x_resolve_dependencies__mutmut_orig.__name__ = 'x_resolve_dependencies'
+x_resolve_dependencies__mutmut_orig.__name__ = "x_resolve_dependencies"
 
 
 def x_register__mutmut_orig(
@@ -18904,25 +18937,31 @@ def x_register__mutmut_8(
         name: Optional name (defaults to type name)
     """
     registration_name = name or type_hint.__name__
-    registry.register_type(type_hint, instance, )
+    registry.register_type(
+        type_hint,
+        instance,
+    )
 
-x_register__mutmut_mutants : ClassVar[MutantDict] = {
-'x_register__mutmut_1': x_register__mutmut_1, 
-    'x_register__mutmut_2': x_register__mutmut_2, 
-    'x_register__mutmut_3': x_register__mutmut_3, 
-    'x_register__mutmut_4': x_register__mutmut_4, 
-    'x_register__mutmut_5': x_register__mutmut_5, 
-    'x_register__mutmut_6': x_register__mutmut_6, 
-    'x_register__mutmut_7': x_register__mutmut_7, 
-    'x_register__mutmut_8': x_register__mutmut_8
+
+x_register__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_register__mutmut_1": x_register__mutmut_1,
+    "x_register__mutmut_2": x_register__mutmut_2,
+    "x_register__mutmut_3": x_register__mutmut_3,
+    "x_register__mutmut_4": x_register__mutmut_4,
+    "x_register__mutmut_5": x_register__mutmut_5,
+    "x_register__mutmut_6": x_register__mutmut_6,
+    "x_register__mutmut_7": x_register__mutmut_7,
+    "x_register__mutmut_8": x_register__mutmut_8,
 }
+
 
 def register(*args, **kwargs):
     result = _mutmut_trampoline(x_register__mutmut_orig, x_register__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 register.__signature__ = _mutmut_signature(x_register__mutmut_orig)
-x_register__mutmut_orig.__name__ = 'x_register'
+x_register__mutmut_orig.__name__ = "x_register"
 
 
 def x_create_instance__mutmut_orig(
@@ -19297,7 +19336,10 @@ def x_create_instance__mutmut_7(
     """
     # Resolve dependencies
     # Only allow missing if overrides will provide them
-    resolved = resolve_dependencies(cls, registry, )
+    resolved = resolve_dependencies(
+        cls,
+        registry,
+    )
 
     # Apply overrides
     resolved.update(overrides)
@@ -19800,7 +19842,7 @@ def x_create_instance__mutmut_17(
             f"Failed to create instance of {cls.__name__}: {e}",
             code="CREATE_INSTANCE_ERROR",
             class_name=cls.__name__,
-            ) from e
+        ) from e
 
 
 def x_create_instance__mutmut_18(
@@ -19900,34 +19942,39 @@ def x_create_instance__mutmut_19(
             cause=e,
         ) from e
 
-x_create_instance__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_instance__mutmut_1': x_create_instance__mutmut_1, 
-    'x_create_instance__mutmut_2': x_create_instance__mutmut_2, 
-    'x_create_instance__mutmut_3': x_create_instance__mutmut_3, 
-    'x_create_instance__mutmut_4': x_create_instance__mutmut_4, 
-    'x_create_instance__mutmut_5': x_create_instance__mutmut_5, 
-    'x_create_instance__mutmut_6': x_create_instance__mutmut_6, 
-    'x_create_instance__mutmut_7': x_create_instance__mutmut_7, 
-    'x_create_instance__mutmut_8': x_create_instance__mutmut_8, 
-    'x_create_instance__mutmut_9': x_create_instance__mutmut_9, 
-    'x_create_instance__mutmut_10': x_create_instance__mutmut_10, 
-    'x_create_instance__mutmut_11': x_create_instance__mutmut_11, 
-    'x_create_instance__mutmut_12': x_create_instance__mutmut_12, 
-    'x_create_instance__mutmut_13': x_create_instance__mutmut_13, 
-    'x_create_instance__mutmut_14': x_create_instance__mutmut_14, 
-    'x_create_instance__mutmut_15': x_create_instance__mutmut_15, 
-    'x_create_instance__mutmut_16': x_create_instance__mutmut_16, 
-    'x_create_instance__mutmut_17': x_create_instance__mutmut_17, 
-    'x_create_instance__mutmut_18': x_create_instance__mutmut_18, 
-    'x_create_instance__mutmut_19': x_create_instance__mutmut_19
+
+x_create_instance__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_instance__mutmut_1": x_create_instance__mutmut_1,
+    "x_create_instance__mutmut_2": x_create_instance__mutmut_2,
+    "x_create_instance__mutmut_3": x_create_instance__mutmut_3,
+    "x_create_instance__mutmut_4": x_create_instance__mutmut_4,
+    "x_create_instance__mutmut_5": x_create_instance__mutmut_5,
+    "x_create_instance__mutmut_6": x_create_instance__mutmut_6,
+    "x_create_instance__mutmut_7": x_create_instance__mutmut_7,
+    "x_create_instance__mutmut_8": x_create_instance__mutmut_8,
+    "x_create_instance__mutmut_9": x_create_instance__mutmut_9,
+    "x_create_instance__mutmut_10": x_create_instance__mutmut_10,
+    "x_create_instance__mutmut_11": x_create_instance__mutmut_11,
+    "x_create_instance__mutmut_12": x_create_instance__mutmut_12,
+    "x_create_instance__mutmut_13": x_create_instance__mutmut_13,
+    "x_create_instance__mutmut_14": x_create_instance__mutmut_14,
+    "x_create_instance__mutmut_15": x_create_instance__mutmut_15,
+    "x_create_instance__mutmut_16": x_create_instance__mutmut_16,
+    "x_create_instance__mutmut_17": x_create_instance__mutmut_17,
+    "x_create_instance__mutmut_18": x_create_instance__mutmut_18,
+    "x_create_instance__mutmut_19": x_create_instance__mutmut_19,
 }
 
+
 def create_instance(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_instance__mutmut_orig, x_create_instance__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_instance__mutmut_orig, x_create_instance__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_instance.__signature__ = _mutmut_signature(x_create_instance__mutmut_orig)
-x_create_instance__mutmut_orig.__name__ = 'x_create_instance'
+x_create_instance__mutmut_orig.__name__ = "x_create_instance"
 
 
 __all__ = [

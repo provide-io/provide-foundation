@@ -25,23 +25,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -2028,7 +2031,9 @@ class HumanFormatter(SchemaFormatter):
         # Group by category
         by_category: dict[str, list[tuple[str, Any]]] = {}
         for config_name, config_schema in schemas_to_display.items():
-            meta = schema.metadata.get(config_name, )
+            meta = schema.metadata.get(
+                config_name,
+            )
             cat = meta.get("category", "core")
             if cat not in by_category:
                 by_category[cat] = []
@@ -2509,7 +2514,9 @@ class HumanFormatter(SchemaFormatter):
         by_category: dict[str, list[tuple[str, Any]]] = {}
         for config_name, config_schema in schemas_to_display.items():
             meta = schema.metadata.get(config_name, {})
-            cat = meta.get("category", )
+            cat = meta.get(
+                "category",
+            )
             if cat not in by_category:
                 by_category[cat] = []
             by_category[cat].append((config_name, config_schema))
@@ -4730,7 +4737,9 @@ class HumanFormatter(SchemaFormatter):
 
             for config_name, config_schema in sorted(by_category[cat]):
                 output_lines.append(f"  {config_name}")
-                meta = schema.metadata.get(config_name, )
+                meta = schema.metadata.get(
+                    config_name,
+                )
                 doc = meta.get("doc", "").strip()
                 if doc:
                     # Get first line of doc
@@ -5211,7 +5220,9 @@ class HumanFormatter(SchemaFormatter):
             for config_name, config_schema in sorted(by_category[cat]):
                 output_lines.append(f"  {config_name}")
                 meta = schema.metadata.get(config_name, {})
-                doc = meta.get("doc", ).strip()
+                doc = meta.get(
+                    "doc",
+                ).strip()
                 if doc:
                     # Get first line of doc
                     first_line = doc.split("\n")[0].strip()
@@ -8215,7 +8226,10 @@ class HumanFormatter(SchemaFormatter):
                     # Type
                     type_name = "Any"
                     if field.field_type:
-                        type_name = getattr(field.field_type, "__name__", )
+                        type_name = getattr(
+                            field.field_type,
+                            "__name__",
+                        )
                     field_lines.append(f"      Type: {type_name}")
 
                     # Required/Default
@@ -10445,123 +10459,129 @@ class HumanFormatter(SchemaFormatter):
             output_lines.append("")
 
         return "XX\nXX".join(output_lines)
-    
-    xǁHumanFormatterǁformat__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁHumanFormatterǁformat__mutmut_1': xǁHumanFormatterǁformat__mutmut_1, 
-        'xǁHumanFormatterǁformat__mutmut_2': xǁHumanFormatterǁformat__mutmut_2, 
-        'xǁHumanFormatterǁformat__mutmut_3': xǁHumanFormatterǁformat__mutmut_3, 
-        'xǁHumanFormatterǁformat__mutmut_4': xǁHumanFormatterǁformat__mutmut_4, 
-        'xǁHumanFormatterǁformat__mutmut_5': xǁHumanFormatterǁformat__mutmut_5, 
-        'xǁHumanFormatterǁformat__mutmut_6': xǁHumanFormatterǁformat__mutmut_6, 
-        'xǁHumanFormatterǁformat__mutmut_7': xǁHumanFormatterǁformat__mutmut_7, 
-        'xǁHumanFormatterǁformat__mutmut_8': xǁHumanFormatterǁformat__mutmut_8, 
-        'xǁHumanFormatterǁformat__mutmut_9': xǁHumanFormatterǁformat__mutmut_9, 
-        'xǁHumanFormatterǁformat__mutmut_10': xǁHumanFormatterǁformat__mutmut_10, 
-        'xǁHumanFormatterǁformat__mutmut_11': xǁHumanFormatterǁformat__mutmut_11, 
-        'xǁHumanFormatterǁformat__mutmut_12': xǁHumanFormatterǁformat__mutmut_12, 
-        'xǁHumanFormatterǁformat__mutmut_13': xǁHumanFormatterǁformat__mutmut_13, 
-        'xǁHumanFormatterǁformat__mutmut_14': xǁHumanFormatterǁformat__mutmut_14, 
-        'xǁHumanFormatterǁformat__mutmut_15': xǁHumanFormatterǁformat__mutmut_15, 
-        'xǁHumanFormatterǁformat__mutmut_16': xǁHumanFormatterǁformat__mutmut_16, 
-        'xǁHumanFormatterǁformat__mutmut_17': xǁHumanFormatterǁformat__mutmut_17, 
-        'xǁHumanFormatterǁformat__mutmut_18': xǁHumanFormatterǁformat__mutmut_18, 
-        'xǁHumanFormatterǁformat__mutmut_19': xǁHumanFormatterǁformat__mutmut_19, 
-        'xǁHumanFormatterǁformat__mutmut_20': xǁHumanFormatterǁformat__mutmut_20, 
-        'xǁHumanFormatterǁformat__mutmut_21': xǁHumanFormatterǁformat__mutmut_21, 
-        'xǁHumanFormatterǁformat__mutmut_22': xǁHumanFormatterǁformat__mutmut_22, 
-        'xǁHumanFormatterǁformat__mutmut_23': xǁHumanFormatterǁformat__mutmut_23, 
-        'xǁHumanFormatterǁformat__mutmut_24': xǁHumanFormatterǁformat__mutmut_24, 
-        'xǁHumanFormatterǁformat__mutmut_25': xǁHumanFormatterǁformat__mutmut_25, 
-        'xǁHumanFormatterǁformat__mutmut_26': xǁHumanFormatterǁformat__mutmut_26, 
-        'xǁHumanFormatterǁformat__mutmut_27': xǁHumanFormatterǁformat__mutmut_27, 
-        'xǁHumanFormatterǁformat__mutmut_28': xǁHumanFormatterǁformat__mutmut_28, 
-        'xǁHumanFormatterǁformat__mutmut_29': xǁHumanFormatterǁformat__mutmut_29, 
-        'xǁHumanFormatterǁformat__mutmut_30': xǁHumanFormatterǁformat__mutmut_30, 
-        'xǁHumanFormatterǁformat__mutmut_31': xǁHumanFormatterǁformat__mutmut_31, 
-        'xǁHumanFormatterǁformat__mutmut_32': xǁHumanFormatterǁformat__mutmut_32, 
-        'xǁHumanFormatterǁformat__mutmut_33': xǁHumanFormatterǁformat__mutmut_33, 
-        'xǁHumanFormatterǁformat__mutmut_34': xǁHumanFormatterǁformat__mutmut_34, 
-        'xǁHumanFormatterǁformat__mutmut_35': xǁHumanFormatterǁformat__mutmut_35, 
-        'xǁHumanFormatterǁformat__mutmut_36': xǁHumanFormatterǁformat__mutmut_36, 
-        'xǁHumanFormatterǁformat__mutmut_37': xǁHumanFormatterǁformat__mutmut_37, 
-        'xǁHumanFormatterǁformat__mutmut_38': xǁHumanFormatterǁformat__mutmut_38, 
-        'xǁHumanFormatterǁformat__mutmut_39': xǁHumanFormatterǁformat__mutmut_39, 
-        'xǁHumanFormatterǁformat__mutmut_40': xǁHumanFormatterǁformat__mutmut_40, 
-        'xǁHumanFormatterǁformat__mutmut_41': xǁHumanFormatterǁformat__mutmut_41, 
-        'xǁHumanFormatterǁformat__mutmut_42': xǁHumanFormatterǁformat__mutmut_42, 
-        'xǁHumanFormatterǁformat__mutmut_43': xǁHumanFormatterǁformat__mutmut_43, 
-        'xǁHumanFormatterǁformat__mutmut_44': xǁHumanFormatterǁformat__mutmut_44, 
-        'xǁHumanFormatterǁformat__mutmut_45': xǁHumanFormatterǁformat__mutmut_45, 
-        'xǁHumanFormatterǁformat__mutmut_46': xǁHumanFormatterǁformat__mutmut_46, 
-        'xǁHumanFormatterǁformat__mutmut_47': xǁHumanFormatterǁformat__mutmut_47, 
-        'xǁHumanFormatterǁformat__mutmut_48': xǁHumanFormatterǁformat__mutmut_48, 
-        'xǁHumanFormatterǁformat__mutmut_49': xǁHumanFormatterǁformat__mutmut_49, 
-        'xǁHumanFormatterǁformat__mutmut_50': xǁHumanFormatterǁformat__mutmut_50, 
-        'xǁHumanFormatterǁformat__mutmut_51': xǁHumanFormatterǁformat__mutmut_51, 
-        'xǁHumanFormatterǁformat__mutmut_52': xǁHumanFormatterǁformat__mutmut_52, 
-        'xǁHumanFormatterǁformat__mutmut_53': xǁHumanFormatterǁformat__mutmut_53, 
-        'xǁHumanFormatterǁformat__mutmut_54': xǁHumanFormatterǁformat__mutmut_54, 
-        'xǁHumanFormatterǁformat__mutmut_55': xǁHumanFormatterǁformat__mutmut_55, 
-        'xǁHumanFormatterǁformat__mutmut_56': xǁHumanFormatterǁformat__mutmut_56, 
-        'xǁHumanFormatterǁformat__mutmut_57': xǁHumanFormatterǁformat__mutmut_57, 
-        'xǁHumanFormatterǁformat__mutmut_58': xǁHumanFormatterǁformat__mutmut_58, 
-        'xǁHumanFormatterǁformat__mutmut_59': xǁHumanFormatterǁformat__mutmut_59, 
-        'xǁHumanFormatterǁformat__mutmut_60': xǁHumanFormatterǁformat__mutmut_60, 
-        'xǁHumanFormatterǁformat__mutmut_61': xǁHumanFormatterǁformat__mutmut_61, 
-        'xǁHumanFormatterǁformat__mutmut_62': xǁHumanFormatterǁformat__mutmut_62, 
-        'xǁHumanFormatterǁformat__mutmut_63': xǁHumanFormatterǁformat__mutmut_63, 
-        'xǁHumanFormatterǁformat__mutmut_64': xǁHumanFormatterǁformat__mutmut_64, 
-        'xǁHumanFormatterǁformat__mutmut_65': xǁHumanFormatterǁformat__mutmut_65, 
-        'xǁHumanFormatterǁformat__mutmut_66': xǁHumanFormatterǁformat__mutmut_66, 
-        'xǁHumanFormatterǁformat__mutmut_67': xǁHumanFormatterǁformat__mutmut_67, 
-        'xǁHumanFormatterǁformat__mutmut_68': xǁHumanFormatterǁformat__mutmut_68, 
-        'xǁHumanFormatterǁformat__mutmut_69': xǁHumanFormatterǁformat__mutmut_69, 
-        'xǁHumanFormatterǁformat__mutmut_70': xǁHumanFormatterǁformat__mutmut_70, 
-        'xǁHumanFormatterǁformat__mutmut_71': xǁHumanFormatterǁformat__mutmut_71, 
-        'xǁHumanFormatterǁformat__mutmut_72': xǁHumanFormatterǁformat__mutmut_72, 
-        'xǁHumanFormatterǁformat__mutmut_73': xǁHumanFormatterǁformat__mutmut_73, 
-        'xǁHumanFormatterǁformat__mutmut_74': xǁHumanFormatterǁformat__mutmut_74, 
-        'xǁHumanFormatterǁformat__mutmut_75': xǁHumanFormatterǁformat__mutmut_75, 
-        'xǁHumanFormatterǁformat__mutmut_76': xǁHumanFormatterǁformat__mutmut_76, 
-        'xǁHumanFormatterǁformat__mutmut_77': xǁHumanFormatterǁformat__mutmut_77, 
-        'xǁHumanFormatterǁformat__mutmut_78': xǁHumanFormatterǁformat__mutmut_78, 
-        'xǁHumanFormatterǁformat__mutmut_79': xǁHumanFormatterǁformat__mutmut_79, 
-        'xǁHumanFormatterǁformat__mutmut_80': xǁHumanFormatterǁformat__mutmut_80, 
-        'xǁHumanFormatterǁformat__mutmut_81': xǁHumanFormatterǁformat__mutmut_81, 
-        'xǁHumanFormatterǁformat__mutmut_82': xǁHumanFormatterǁformat__mutmut_82, 
-        'xǁHumanFormatterǁformat__mutmut_83': xǁHumanFormatterǁformat__mutmut_83, 
-        'xǁHumanFormatterǁformat__mutmut_84': xǁHumanFormatterǁformat__mutmut_84, 
-        'xǁHumanFormatterǁformat__mutmut_85': xǁHumanFormatterǁformat__mutmut_85, 
-        'xǁHumanFormatterǁformat__mutmut_86': xǁHumanFormatterǁformat__mutmut_86, 
-        'xǁHumanFormatterǁformat__mutmut_87': xǁHumanFormatterǁformat__mutmut_87, 
-        'xǁHumanFormatterǁformat__mutmut_88': xǁHumanFormatterǁformat__mutmut_88, 
-        'xǁHumanFormatterǁformat__mutmut_89': xǁHumanFormatterǁformat__mutmut_89, 
-        'xǁHumanFormatterǁformat__mutmut_90': xǁHumanFormatterǁformat__mutmut_90, 
-        'xǁHumanFormatterǁformat__mutmut_91': xǁHumanFormatterǁformat__mutmut_91, 
-        'xǁHumanFormatterǁformat__mutmut_92': xǁHumanFormatterǁformat__mutmut_92, 
-        'xǁHumanFormatterǁformat__mutmut_93': xǁHumanFormatterǁformat__mutmut_93, 
-        'xǁHumanFormatterǁformat__mutmut_94': xǁHumanFormatterǁformat__mutmut_94, 
-        'xǁHumanFormatterǁformat__mutmut_95': xǁHumanFormatterǁformat__mutmut_95, 
-        'xǁHumanFormatterǁformat__mutmut_96': xǁHumanFormatterǁformat__mutmut_96, 
-        'xǁHumanFormatterǁformat__mutmut_97': xǁHumanFormatterǁformat__mutmut_97, 
-        'xǁHumanFormatterǁformat__mutmut_98': xǁHumanFormatterǁformat__mutmut_98, 
-        'xǁHumanFormatterǁformat__mutmut_99': xǁHumanFormatterǁformat__mutmut_99, 
-        'xǁHumanFormatterǁformat__mutmut_100': xǁHumanFormatterǁformat__mutmut_100, 
-        'xǁHumanFormatterǁformat__mutmut_101': xǁHumanFormatterǁformat__mutmut_101, 
-        'xǁHumanFormatterǁformat__mutmut_102': xǁHumanFormatterǁformat__mutmut_102, 
-        'xǁHumanFormatterǁformat__mutmut_103': xǁHumanFormatterǁformat__mutmut_103, 
-        'xǁHumanFormatterǁformat__mutmut_104': xǁHumanFormatterǁformat__mutmut_104, 
-        'xǁHumanFormatterǁformat__mutmut_105': xǁHumanFormatterǁformat__mutmut_105, 
-        'xǁHumanFormatterǁformat__mutmut_106': xǁHumanFormatterǁformat__mutmut_106, 
-        'xǁHumanFormatterǁformat__mutmut_107': xǁHumanFormatterǁformat__mutmut_107
+
+    xǁHumanFormatterǁformat__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁHumanFormatterǁformat__mutmut_1": xǁHumanFormatterǁformat__mutmut_1,
+        "xǁHumanFormatterǁformat__mutmut_2": xǁHumanFormatterǁformat__mutmut_2,
+        "xǁHumanFormatterǁformat__mutmut_3": xǁHumanFormatterǁformat__mutmut_3,
+        "xǁHumanFormatterǁformat__mutmut_4": xǁHumanFormatterǁformat__mutmut_4,
+        "xǁHumanFormatterǁformat__mutmut_5": xǁHumanFormatterǁformat__mutmut_5,
+        "xǁHumanFormatterǁformat__mutmut_6": xǁHumanFormatterǁformat__mutmut_6,
+        "xǁHumanFormatterǁformat__mutmut_7": xǁHumanFormatterǁformat__mutmut_7,
+        "xǁHumanFormatterǁformat__mutmut_8": xǁHumanFormatterǁformat__mutmut_8,
+        "xǁHumanFormatterǁformat__mutmut_9": xǁHumanFormatterǁformat__mutmut_9,
+        "xǁHumanFormatterǁformat__mutmut_10": xǁHumanFormatterǁformat__mutmut_10,
+        "xǁHumanFormatterǁformat__mutmut_11": xǁHumanFormatterǁformat__mutmut_11,
+        "xǁHumanFormatterǁformat__mutmut_12": xǁHumanFormatterǁformat__mutmut_12,
+        "xǁHumanFormatterǁformat__mutmut_13": xǁHumanFormatterǁformat__mutmut_13,
+        "xǁHumanFormatterǁformat__mutmut_14": xǁHumanFormatterǁformat__mutmut_14,
+        "xǁHumanFormatterǁformat__mutmut_15": xǁHumanFormatterǁformat__mutmut_15,
+        "xǁHumanFormatterǁformat__mutmut_16": xǁHumanFormatterǁformat__mutmut_16,
+        "xǁHumanFormatterǁformat__mutmut_17": xǁHumanFormatterǁformat__mutmut_17,
+        "xǁHumanFormatterǁformat__mutmut_18": xǁHumanFormatterǁformat__mutmut_18,
+        "xǁHumanFormatterǁformat__mutmut_19": xǁHumanFormatterǁformat__mutmut_19,
+        "xǁHumanFormatterǁformat__mutmut_20": xǁHumanFormatterǁformat__mutmut_20,
+        "xǁHumanFormatterǁformat__mutmut_21": xǁHumanFormatterǁformat__mutmut_21,
+        "xǁHumanFormatterǁformat__mutmut_22": xǁHumanFormatterǁformat__mutmut_22,
+        "xǁHumanFormatterǁformat__mutmut_23": xǁHumanFormatterǁformat__mutmut_23,
+        "xǁHumanFormatterǁformat__mutmut_24": xǁHumanFormatterǁformat__mutmut_24,
+        "xǁHumanFormatterǁformat__mutmut_25": xǁHumanFormatterǁformat__mutmut_25,
+        "xǁHumanFormatterǁformat__mutmut_26": xǁHumanFormatterǁformat__mutmut_26,
+        "xǁHumanFormatterǁformat__mutmut_27": xǁHumanFormatterǁformat__mutmut_27,
+        "xǁHumanFormatterǁformat__mutmut_28": xǁHumanFormatterǁformat__mutmut_28,
+        "xǁHumanFormatterǁformat__mutmut_29": xǁHumanFormatterǁformat__mutmut_29,
+        "xǁHumanFormatterǁformat__mutmut_30": xǁHumanFormatterǁformat__mutmut_30,
+        "xǁHumanFormatterǁformat__mutmut_31": xǁHumanFormatterǁformat__mutmut_31,
+        "xǁHumanFormatterǁformat__mutmut_32": xǁHumanFormatterǁformat__mutmut_32,
+        "xǁHumanFormatterǁformat__mutmut_33": xǁHumanFormatterǁformat__mutmut_33,
+        "xǁHumanFormatterǁformat__mutmut_34": xǁHumanFormatterǁformat__mutmut_34,
+        "xǁHumanFormatterǁformat__mutmut_35": xǁHumanFormatterǁformat__mutmut_35,
+        "xǁHumanFormatterǁformat__mutmut_36": xǁHumanFormatterǁformat__mutmut_36,
+        "xǁHumanFormatterǁformat__mutmut_37": xǁHumanFormatterǁformat__mutmut_37,
+        "xǁHumanFormatterǁformat__mutmut_38": xǁHumanFormatterǁformat__mutmut_38,
+        "xǁHumanFormatterǁformat__mutmut_39": xǁHumanFormatterǁformat__mutmut_39,
+        "xǁHumanFormatterǁformat__mutmut_40": xǁHumanFormatterǁformat__mutmut_40,
+        "xǁHumanFormatterǁformat__mutmut_41": xǁHumanFormatterǁformat__mutmut_41,
+        "xǁHumanFormatterǁformat__mutmut_42": xǁHumanFormatterǁformat__mutmut_42,
+        "xǁHumanFormatterǁformat__mutmut_43": xǁHumanFormatterǁformat__mutmut_43,
+        "xǁHumanFormatterǁformat__mutmut_44": xǁHumanFormatterǁformat__mutmut_44,
+        "xǁHumanFormatterǁformat__mutmut_45": xǁHumanFormatterǁformat__mutmut_45,
+        "xǁHumanFormatterǁformat__mutmut_46": xǁHumanFormatterǁformat__mutmut_46,
+        "xǁHumanFormatterǁformat__mutmut_47": xǁHumanFormatterǁformat__mutmut_47,
+        "xǁHumanFormatterǁformat__mutmut_48": xǁHumanFormatterǁformat__mutmut_48,
+        "xǁHumanFormatterǁformat__mutmut_49": xǁHumanFormatterǁformat__mutmut_49,
+        "xǁHumanFormatterǁformat__mutmut_50": xǁHumanFormatterǁformat__mutmut_50,
+        "xǁHumanFormatterǁformat__mutmut_51": xǁHumanFormatterǁformat__mutmut_51,
+        "xǁHumanFormatterǁformat__mutmut_52": xǁHumanFormatterǁformat__mutmut_52,
+        "xǁHumanFormatterǁformat__mutmut_53": xǁHumanFormatterǁformat__mutmut_53,
+        "xǁHumanFormatterǁformat__mutmut_54": xǁHumanFormatterǁformat__mutmut_54,
+        "xǁHumanFormatterǁformat__mutmut_55": xǁHumanFormatterǁformat__mutmut_55,
+        "xǁHumanFormatterǁformat__mutmut_56": xǁHumanFormatterǁformat__mutmut_56,
+        "xǁHumanFormatterǁformat__mutmut_57": xǁHumanFormatterǁformat__mutmut_57,
+        "xǁHumanFormatterǁformat__mutmut_58": xǁHumanFormatterǁformat__mutmut_58,
+        "xǁHumanFormatterǁformat__mutmut_59": xǁHumanFormatterǁformat__mutmut_59,
+        "xǁHumanFormatterǁformat__mutmut_60": xǁHumanFormatterǁformat__mutmut_60,
+        "xǁHumanFormatterǁformat__mutmut_61": xǁHumanFormatterǁformat__mutmut_61,
+        "xǁHumanFormatterǁformat__mutmut_62": xǁHumanFormatterǁformat__mutmut_62,
+        "xǁHumanFormatterǁformat__mutmut_63": xǁHumanFormatterǁformat__mutmut_63,
+        "xǁHumanFormatterǁformat__mutmut_64": xǁHumanFormatterǁformat__mutmut_64,
+        "xǁHumanFormatterǁformat__mutmut_65": xǁHumanFormatterǁformat__mutmut_65,
+        "xǁHumanFormatterǁformat__mutmut_66": xǁHumanFormatterǁformat__mutmut_66,
+        "xǁHumanFormatterǁformat__mutmut_67": xǁHumanFormatterǁformat__mutmut_67,
+        "xǁHumanFormatterǁformat__mutmut_68": xǁHumanFormatterǁformat__mutmut_68,
+        "xǁHumanFormatterǁformat__mutmut_69": xǁHumanFormatterǁformat__mutmut_69,
+        "xǁHumanFormatterǁformat__mutmut_70": xǁHumanFormatterǁformat__mutmut_70,
+        "xǁHumanFormatterǁformat__mutmut_71": xǁHumanFormatterǁformat__mutmut_71,
+        "xǁHumanFormatterǁformat__mutmut_72": xǁHumanFormatterǁformat__mutmut_72,
+        "xǁHumanFormatterǁformat__mutmut_73": xǁHumanFormatterǁformat__mutmut_73,
+        "xǁHumanFormatterǁformat__mutmut_74": xǁHumanFormatterǁformat__mutmut_74,
+        "xǁHumanFormatterǁformat__mutmut_75": xǁHumanFormatterǁformat__mutmut_75,
+        "xǁHumanFormatterǁformat__mutmut_76": xǁHumanFormatterǁformat__mutmut_76,
+        "xǁHumanFormatterǁformat__mutmut_77": xǁHumanFormatterǁformat__mutmut_77,
+        "xǁHumanFormatterǁformat__mutmut_78": xǁHumanFormatterǁformat__mutmut_78,
+        "xǁHumanFormatterǁformat__mutmut_79": xǁHumanFormatterǁformat__mutmut_79,
+        "xǁHumanFormatterǁformat__mutmut_80": xǁHumanFormatterǁformat__mutmut_80,
+        "xǁHumanFormatterǁformat__mutmut_81": xǁHumanFormatterǁformat__mutmut_81,
+        "xǁHumanFormatterǁformat__mutmut_82": xǁHumanFormatterǁformat__mutmut_82,
+        "xǁHumanFormatterǁformat__mutmut_83": xǁHumanFormatterǁformat__mutmut_83,
+        "xǁHumanFormatterǁformat__mutmut_84": xǁHumanFormatterǁformat__mutmut_84,
+        "xǁHumanFormatterǁformat__mutmut_85": xǁHumanFormatterǁformat__mutmut_85,
+        "xǁHumanFormatterǁformat__mutmut_86": xǁHumanFormatterǁformat__mutmut_86,
+        "xǁHumanFormatterǁformat__mutmut_87": xǁHumanFormatterǁformat__mutmut_87,
+        "xǁHumanFormatterǁformat__mutmut_88": xǁHumanFormatterǁformat__mutmut_88,
+        "xǁHumanFormatterǁformat__mutmut_89": xǁHumanFormatterǁformat__mutmut_89,
+        "xǁHumanFormatterǁformat__mutmut_90": xǁHumanFormatterǁformat__mutmut_90,
+        "xǁHumanFormatterǁformat__mutmut_91": xǁHumanFormatterǁformat__mutmut_91,
+        "xǁHumanFormatterǁformat__mutmut_92": xǁHumanFormatterǁformat__mutmut_92,
+        "xǁHumanFormatterǁformat__mutmut_93": xǁHumanFormatterǁformat__mutmut_93,
+        "xǁHumanFormatterǁformat__mutmut_94": xǁHumanFormatterǁformat__mutmut_94,
+        "xǁHumanFormatterǁformat__mutmut_95": xǁHumanFormatterǁformat__mutmut_95,
+        "xǁHumanFormatterǁformat__mutmut_96": xǁHumanFormatterǁformat__mutmut_96,
+        "xǁHumanFormatterǁformat__mutmut_97": xǁHumanFormatterǁformat__mutmut_97,
+        "xǁHumanFormatterǁformat__mutmut_98": xǁHumanFormatterǁformat__mutmut_98,
+        "xǁHumanFormatterǁformat__mutmut_99": xǁHumanFormatterǁformat__mutmut_99,
+        "xǁHumanFormatterǁformat__mutmut_100": xǁHumanFormatterǁformat__mutmut_100,
+        "xǁHumanFormatterǁformat__mutmut_101": xǁHumanFormatterǁformat__mutmut_101,
+        "xǁHumanFormatterǁformat__mutmut_102": xǁHumanFormatterǁformat__mutmut_102,
+        "xǁHumanFormatterǁformat__mutmut_103": xǁHumanFormatterǁformat__mutmut_103,
+        "xǁHumanFormatterǁformat__mutmut_104": xǁHumanFormatterǁformat__mutmut_104,
+        "xǁHumanFormatterǁformat__mutmut_105": xǁHumanFormatterǁformat__mutmut_105,
+        "xǁHumanFormatterǁformat__mutmut_106": xǁHumanFormatterǁformat__mutmut_106,
+        "xǁHumanFormatterǁformat__mutmut_107": xǁHumanFormatterǁformat__mutmut_107,
     }
-    
+
     def format(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁHumanFormatterǁformat__mutmut_orig"), object.__getattribute__(self, "xǁHumanFormatterǁformat__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁHumanFormatterǁformat__mutmut_orig"),
+            object.__getattribute__(self, "xǁHumanFormatterǁformat__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     format.__signature__ = _mutmut_signature(xǁHumanFormatterǁformat__mutmut_orig)
-    xǁHumanFormatterǁformat__mutmut_orig.__name__ = 'xǁHumanFormatterǁformat'
+    xǁHumanFormatterǁformat__mutmut_orig.__name__ = "xǁHumanFormatterǁformat"
 
 
 class JSONFormatter(SchemaFormatter):
@@ -11777,7 +11797,9 @@ class JSONFormatter(SchemaFormatter):
         }
 
         for config_name, config_schema in schemas_to_display.items():
-            meta = schema.metadata.get(config_name, )
+            meta = schema.metadata.get(
+                config_name,
+            )
 
             config_data: dict[str, Any] = {
                 "module": meta.get("module", ""),
@@ -12329,7 +12351,9 @@ class JSONFormatter(SchemaFormatter):
             meta = schema.metadata.get(config_name, {})
 
             config_data: dict[str, Any] = {
-                "module": meta.get("module", ),
+                "module": meta.get(
+                    "module",
+                ),
                 "category": meta.get("category", "core"),
                 "fields": {},
             }
@@ -13041,7 +13065,9 @@ class JSONFormatter(SchemaFormatter):
 
             config_data: dict[str, Any] = {
                 "module": meta.get("module", ""),
-                "category": meta.get("category", ),
+                "category": meta.get(
+                    "category",
+                ),
                 "fields": {},
             }
 
@@ -14874,7 +14900,10 @@ class JSONFormatter(SchemaFormatter):
                 # Get type name
                 type_name = "Any"
                 if field.field_type:
-                    type_name = getattr(field.field_type, "__name__", )
+                    type_name = getattr(
+                        field.field_type,
+                        "__name__",
+                    )
 
                 # Build field data
                 field_data: dict[str, Any] = {
@@ -18218,7 +18247,9 @@ class JSONFormatter(SchemaFormatter):
 
             output["configs"][config_name] = config_data
 
-        return json.dumps(output, )
+        return json.dumps(
+            output,
+        )
 
     def xǁJSONFormatterǁformat__mutmut_97(  # noqa: C901
         self,
@@ -18298,113 +18329,119 @@ class JSONFormatter(SchemaFormatter):
             output["configs"][config_name] = config_data
 
         return json.dumps(output, indent=3)
-    
-    xǁJSONFormatterǁformat__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁJSONFormatterǁformat__mutmut_1': xǁJSONFormatterǁformat__mutmut_1, 
-        'xǁJSONFormatterǁformat__mutmut_2': xǁJSONFormatterǁformat__mutmut_2, 
-        'xǁJSONFormatterǁformat__mutmut_3': xǁJSONFormatterǁformat__mutmut_3, 
-        'xǁJSONFormatterǁformat__mutmut_4': xǁJSONFormatterǁformat__mutmut_4, 
-        'xǁJSONFormatterǁformat__mutmut_5': xǁJSONFormatterǁformat__mutmut_5, 
-        'xǁJSONFormatterǁformat__mutmut_6': xǁJSONFormatterǁformat__mutmut_6, 
-        'xǁJSONFormatterǁformat__mutmut_7': xǁJSONFormatterǁformat__mutmut_7, 
-        'xǁJSONFormatterǁformat__mutmut_8': xǁJSONFormatterǁformat__mutmut_8, 
-        'xǁJSONFormatterǁformat__mutmut_9': xǁJSONFormatterǁformat__mutmut_9, 
-        'xǁJSONFormatterǁformat__mutmut_10': xǁJSONFormatterǁformat__mutmut_10, 
-        'xǁJSONFormatterǁformat__mutmut_11': xǁJSONFormatterǁformat__mutmut_11, 
-        'xǁJSONFormatterǁformat__mutmut_12': xǁJSONFormatterǁformat__mutmut_12, 
-        'xǁJSONFormatterǁformat__mutmut_13': xǁJSONFormatterǁformat__mutmut_13, 
-        'xǁJSONFormatterǁformat__mutmut_14': xǁJSONFormatterǁformat__mutmut_14, 
-        'xǁJSONFormatterǁformat__mutmut_15': xǁJSONFormatterǁformat__mutmut_15, 
-        'xǁJSONFormatterǁformat__mutmut_16': xǁJSONFormatterǁformat__mutmut_16, 
-        'xǁJSONFormatterǁformat__mutmut_17': xǁJSONFormatterǁformat__mutmut_17, 
-        'xǁJSONFormatterǁformat__mutmut_18': xǁJSONFormatterǁformat__mutmut_18, 
-        'xǁJSONFormatterǁformat__mutmut_19': xǁJSONFormatterǁformat__mutmut_19, 
-        'xǁJSONFormatterǁformat__mutmut_20': xǁJSONFormatterǁformat__mutmut_20, 
-        'xǁJSONFormatterǁformat__mutmut_21': xǁJSONFormatterǁformat__mutmut_21, 
-        'xǁJSONFormatterǁformat__mutmut_22': xǁJSONFormatterǁformat__mutmut_22, 
-        'xǁJSONFormatterǁformat__mutmut_23': xǁJSONFormatterǁformat__mutmut_23, 
-        'xǁJSONFormatterǁformat__mutmut_24': xǁJSONFormatterǁformat__mutmut_24, 
-        'xǁJSONFormatterǁformat__mutmut_25': xǁJSONFormatterǁformat__mutmut_25, 
-        'xǁJSONFormatterǁformat__mutmut_26': xǁJSONFormatterǁformat__mutmut_26, 
-        'xǁJSONFormatterǁformat__mutmut_27': xǁJSONFormatterǁformat__mutmut_27, 
-        'xǁJSONFormatterǁformat__mutmut_28': xǁJSONFormatterǁformat__mutmut_28, 
-        'xǁJSONFormatterǁformat__mutmut_29': xǁJSONFormatterǁformat__mutmut_29, 
-        'xǁJSONFormatterǁformat__mutmut_30': xǁJSONFormatterǁformat__mutmut_30, 
-        'xǁJSONFormatterǁformat__mutmut_31': xǁJSONFormatterǁformat__mutmut_31, 
-        'xǁJSONFormatterǁformat__mutmut_32': xǁJSONFormatterǁformat__mutmut_32, 
-        'xǁJSONFormatterǁformat__mutmut_33': xǁJSONFormatterǁformat__mutmut_33, 
-        'xǁJSONFormatterǁformat__mutmut_34': xǁJSONFormatterǁformat__mutmut_34, 
-        'xǁJSONFormatterǁformat__mutmut_35': xǁJSONFormatterǁformat__mutmut_35, 
-        'xǁJSONFormatterǁformat__mutmut_36': xǁJSONFormatterǁformat__mutmut_36, 
-        'xǁJSONFormatterǁformat__mutmut_37': xǁJSONFormatterǁformat__mutmut_37, 
-        'xǁJSONFormatterǁformat__mutmut_38': xǁJSONFormatterǁformat__mutmut_38, 
-        'xǁJSONFormatterǁformat__mutmut_39': xǁJSONFormatterǁformat__mutmut_39, 
-        'xǁJSONFormatterǁformat__mutmut_40': xǁJSONFormatterǁformat__mutmut_40, 
-        'xǁJSONFormatterǁformat__mutmut_41': xǁJSONFormatterǁformat__mutmut_41, 
-        'xǁJSONFormatterǁformat__mutmut_42': xǁJSONFormatterǁformat__mutmut_42, 
-        'xǁJSONFormatterǁformat__mutmut_43': xǁJSONFormatterǁformat__mutmut_43, 
-        'xǁJSONFormatterǁformat__mutmut_44': xǁJSONFormatterǁformat__mutmut_44, 
-        'xǁJSONFormatterǁformat__mutmut_45': xǁJSONFormatterǁformat__mutmut_45, 
-        'xǁJSONFormatterǁformat__mutmut_46': xǁJSONFormatterǁformat__mutmut_46, 
-        'xǁJSONFormatterǁformat__mutmut_47': xǁJSONFormatterǁformat__mutmut_47, 
-        'xǁJSONFormatterǁformat__mutmut_48': xǁJSONFormatterǁformat__mutmut_48, 
-        'xǁJSONFormatterǁformat__mutmut_49': xǁJSONFormatterǁformat__mutmut_49, 
-        'xǁJSONFormatterǁformat__mutmut_50': xǁJSONFormatterǁformat__mutmut_50, 
-        'xǁJSONFormatterǁformat__mutmut_51': xǁJSONFormatterǁformat__mutmut_51, 
-        'xǁJSONFormatterǁformat__mutmut_52': xǁJSONFormatterǁformat__mutmut_52, 
-        'xǁJSONFormatterǁformat__mutmut_53': xǁJSONFormatterǁformat__mutmut_53, 
-        'xǁJSONFormatterǁformat__mutmut_54': xǁJSONFormatterǁformat__mutmut_54, 
-        'xǁJSONFormatterǁformat__mutmut_55': xǁJSONFormatterǁformat__mutmut_55, 
-        'xǁJSONFormatterǁformat__mutmut_56': xǁJSONFormatterǁformat__mutmut_56, 
-        'xǁJSONFormatterǁformat__mutmut_57': xǁJSONFormatterǁformat__mutmut_57, 
-        'xǁJSONFormatterǁformat__mutmut_58': xǁJSONFormatterǁformat__mutmut_58, 
-        'xǁJSONFormatterǁformat__mutmut_59': xǁJSONFormatterǁformat__mutmut_59, 
-        'xǁJSONFormatterǁformat__mutmut_60': xǁJSONFormatterǁformat__mutmut_60, 
-        'xǁJSONFormatterǁformat__mutmut_61': xǁJSONFormatterǁformat__mutmut_61, 
-        'xǁJSONFormatterǁformat__mutmut_62': xǁJSONFormatterǁformat__mutmut_62, 
-        'xǁJSONFormatterǁformat__mutmut_63': xǁJSONFormatterǁformat__mutmut_63, 
-        'xǁJSONFormatterǁformat__mutmut_64': xǁJSONFormatterǁformat__mutmut_64, 
-        'xǁJSONFormatterǁformat__mutmut_65': xǁJSONFormatterǁformat__mutmut_65, 
-        'xǁJSONFormatterǁformat__mutmut_66': xǁJSONFormatterǁformat__mutmut_66, 
-        'xǁJSONFormatterǁformat__mutmut_67': xǁJSONFormatterǁformat__mutmut_67, 
-        'xǁJSONFormatterǁformat__mutmut_68': xǁJSONFormatterǁformat__mutmut_68, 
-        'xǁJSONFormatterǁformat__mutmut_69': xǁJSONFormatterǁformat__mutmut_69, 
-        'xǁJSONFormatterǁformat__mutmut_70': xǁJSONFormatterǁformat__mutmut_70, 
-        'xǁJSONFormatterǁformat__mutmut_71': xǁJSONFormatterǁformat__mutmut_71, 
-        'xǁJSONFormatterǁformat__mutmut_72': xǁJSONFormatterǁformat__mutmut_72, 
-        'xǁJSONFormatterǁformat__mutmut_73': xǁJSONFormatterǁformat__mutmut_73, 
-        'xǁJSONFormatterǁformat__mutmut_74': xǁJSONFormatterǁformat__mutmut_74, 
-        'xǁJSONFormatterǁformat__mutmut_75': xǁJSONFormatterǁformat__mutmut_75, 
-        'xǁJSONFormatterǁformat__mutmut_76': xǁJSONFormatterǁformat__mutmut_76, 
-        'xǁJSONFormatterǁformat__mutmut_77': xǁJSONFormatterǁformat__mutmut_77, 
-        'xǁJSONFormatterǁformat__mutmut_78': xǁJSONFormatterǁformat__mutmut_78, 
-        'xǁJSONFormatterǁformat__mutmut_79': xǁJSONFormatterǁformat__mutmut_79, 
-        'xǁJSONFormatterǁformat__mutmut_80': xǁJSONFormatterǁformat__mutmut_80, 
-        'xǁJSONFormatterǁformat__mutmut_81': xǁJSONFormatterǁformat__mutmut_81, 
-        'xǁJSONFormatterǁformat__mutmut_82': xǁJSONFormatterǁformat__mutmut_82, 
-        'xǁJSONFormatterǁformat__mutmut_83': xǁJSONFormatterǁformat__mutmut_83, 
-        'xǁJSONFormatterǁformat__mutmut_84': xǁJSONFormatterǁformat__mutmut_84, 
-        'xǁJSONFormatterǁformat__mutmut_85': xǁJSONFormatterǁformat__mutmut_85, 
-        'xǁJSONFormatterǁformat__mutmut_86': xǁJSONFormatterǁformat__mutmut_86, 
-        'xǁJSONFormatterǁformat__mutmut_87': xǁJSONFormatterǁformat__mutmut_87, 
-        'xǁJSONFormatterǁformat__mutmut_88': xǁJSONFormatterǁformat__mutmut_88, 
-        'xǁJSONFormatterǁformat__mutmut_89': xǁJSONFormatterǁformat__mutmut_89, 
-        'xǁJSONFormatterǁformat__mutmut_90': xǁJSONFormatterǁformat__mutmut_90, 
-        'xǁJSONFormatterǁformat__mutmut_91': xǁJSONFormatterǁformat__mutmut_91, 
-        'xǁJSONFormatterǁformat__mutmut_92': xǁJSONFormatterǁformat__mutmut_92, 
-        'xǁJSONFormatterǁformat__mutmut_93': xǁJSONFormatterǁformat__mutmut_93, 
-        'xǁJSONFormatterǁformat__mutmut_94': xǁJSONFormatterǁformat__mutmut_94, 
-        'xǁJSONFormatterǁformat__mutmut_95': xǁJSONFormatterǁformat__mutmut_95, 
-        'xǁJSONFormatterǁformat__mutmut_96': xǁJSONFormatterǁformat__mutmut_96, 
-        'xǁJSONFormatterǁformat__mutmut_97': xǁJSONFormatterǁformat__mutmut_97
+
+    xǁJSONFormatterǁformat__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁJSONFormatterǁformat__mutmut_1": xǁJSONFormatterǁformat__mutmut_1,
+        "xǁJSONFormatterǁformat__mutmut_2": xǁJSONFormatterǁformat__mutmut_2,
+        "xǁJSONFormatterǁformat__mutmut_3": xǁJSONFormatterǁformat__mutmut_3,
+        "xǁJSONFormatterǁformat__mutmut_4": xǁJSONFormatterǁformat__mutmut_4,
+        "xǁJSONFormatterǁformat__mutmut_5": xǁJSONFormatterǁformat__mutmut_5,
+        "xǁJSONFormatterǁformat__mutmut_6": xǁJSONFormatterǁformat__mutmut_6,
+        "xǁJSONFormatterǁformat__mutmut_7": xǁJSONFormatterǁformat__mutmut_7,
+        "xǁJSONFormatterǁformat__mutmut_8": xǁJSONFormatterǁformat__mutmut_8,
+        "xǁJSONFormatterǁformat__mutmut_9": xǁJSONFormatterǁformat__mutmut_9,
+        "xǁJSONFormatterǁformat__mutmut_10": xǁJSONFormatterǁformat__mutmut_10,
+        "xǁJSONFormatterǁformat__mutmut_11": xǁJSONFormatterǁformat__mutmut_11,
+        "xǁJSONFormatterǁformat__mutmut_12": xǁJSONFormatterǁformat__mutmut_12,
+        "xǁJSONFormatterǁformat__mutmut_13": xǁJSONFormatterǁformat__mutmut_13,
+        "xǁJSONFormatterǁformat__mutmut_14": xǁJSONFormatterǁformat__mutmut_14,
+        "xǁJSONFormatterǁformat__mutmut_15": xǁJSONFormatterǁformat__mutmut_15,
+        "xǁJSONFormatterǁformat__mutmut_16": xǁJSONFormatterǁformat__mutmut_16,
+        "xǁJSONFormatterǁformat__mutmut_17": xǁJSONFormatterǁformat__mutmut_17,
+        "xǁJSONFormatterǁformat__mutmut_18": xǁJSONFormatterǁformat__mutmut_18,
+        "xǁJSONFormatterǁformat__mutmut_19": xǁJSONFormatterǁformat__mutmut_19,
+        "xǁJSONFormatterǁformat__mutmut_20": xǁJSONFormatterǁformat__mutmut_20,
+        "xǁJSONFormatterǁformat__mutmut_21": xǁJSONFormatterǁformat__mutmut_21,
+        "xǁJSONFormatterǁformat__mutmut_22": xǁJSONFormatterǁformat__mutmut_22,
+        "xǁJSONFormatterǁformat__mutmut_23": xǁJSONFormatterǁformat__mutmut_23,
+        "xǁJSONFormatterǁformat__mutmut_24": xǁJSONFormatterǁformat__mutmut_24,
+        "xǁJSONFormatterǁformat__mutmut_25": xǁJSONFormatterǁformat__mutmut_25,
+        "xǁJSONFormatterǁformat__mutmut_26": xǁJSONFormatterǁformat__mutmut_26,
+        "xǁJSONFormatterǁformat__mutmut_27": xǁJSONFormatterǁformat__mutmut_27,
+        "xǁJSONFormatterǁformat__mutmut_28": xǁJSONFormatterǁformat__mutmut_28,
+        "xǁJSONFormatterǁformat__mutmut_29": xǁJSONFormatterǁformat__mutmut_29,
+        "xǁJSONFormatterǁformat__mutmut_30": xǁJSONFormatterǁformat__mutmut_30,
+        "xǁJSONFormatterǁformat__mutmut_31": xǁJSONFormatterǁformat__mutmut_31,
+        "xǁJSONFormatterǁformat__mutmut_32": xǁJSONFormatterǁformat__mutmut_32,
+        "xǁJSONFormatterǁformat__mutmut_33": xǁJSONFormatterǁformat__mutmut_33,
+        "xǁJSONFormatterǁformat__mutmut_34": xǁJSONFormatterǁformat__mutmut_34,
+        "xǁJSONFormatterǁformat__mutmut_35": xǁJSONFormatterǁformat__mutmut_35,
+        "xǁJSONFormatterǁformat__mutmut_36": xǁJSONFormatterǁformat__mutmut_36,
+        "xǁJSONFormatterǁformat__mutmut_37": xǁJSONFormatterǁformat__mutmut_37,
+        "xǁJSONFormatterǁformat__mutmut_38": xǁJSONFormatterǁformat__mutmut_38,
+        "xǁJSONFormatterǁformat__mutmut_39": xǁJSONFormatterǁformat__mutmut_39,
+        "xǁJSONFormatterǁformat__mutmut_40": xǁJSONFormatterǁformat__mutmut_40,
+        "xǁJSONFormatterǁformat__mutmut_41": xǁJSONFormatterǁformat__mutmut_41,
+        "xǁJSONFormatterǁformat__mutmut_42": xǁJSONFormatterǁformat__mutmut_42,
+        "xǁJSONFormatterǁformat__mutmut_43": xǁJSONFormatterǁformat__mutmut_43,
+        "xǁJSONFormatterǁformat__mutmut_44": xǁJSONFormatterǁformat__mutmut_44,
+        "xǁJSONFormatterǁformat__mutmut_45": xǁJSONFormatterǁformat__mutmut_45,
+        "xǁJSONFormatterǁformat__mutmut_46": xǁJSONFormatterǁformat__mutmut_46,
+        "xǁJSONFormatterǁformat__mutmut_47": xǁJSONFormatterǁformat__mutmut_47,
+        "xǁJSONFormatterǁformat__mutmut_48": xǁJSONFormatterǁformat__mutmut_48,
+        "xǁJSONFormatterǁformat__mutmut_49": xǁJSONFormatterǁformat__mutmut_49,
+        "xǁJSONFormatterǁformat__mutmut_50": xǁJSONFormatterǁformat__mutmut_50,
+        "xǁJSONFormatterǁformat__mutmut_51": xǁJSONFormatterǁformat__mutmut_51,
+        "xǁJSONFormatterǁformat__mutmut_52": xǁJSONFormatterǁformat__mutmut_52,
+        "xǁJSONFormatterǁformat__mutmut_53": xǁJSONFormatterǁformat__mutmut_53,
+        "xǁJSONFormatterǁformat__mutmut_54": xǁJSONFormatterǁformat__mutmut_54,
+        "xǁJSONFormatterǁformat__mutmut_55": xǁJSONFormatterǁformat__mutmut_55,
+        "xǁJSONFormatterǁformat__mutmut_56": xǁJSONFormatterǁformat__mutmut_56,
+        "xǁJSONFormatterǁformat__mutmut_57": xǁJSONFormatterǁformat__mutmut_57,
+        "xǁJSONFormatterǁformat__mutmut_58": xǁJSONFormatterǁformat__mutmut_58,
+        "xǁJSONFormatterǁformat__mutmut_59": xǁJSONFormatterǁformat__mutmut_59,
+        "xǁJSONFormatterǁformat__mutmut_60": xǁJSONFormatterǁformat__mutmut_60,
+        "xǁJSONFormatterǁformat__mutmut_61": xǁJSONFormatterǁformat__mutmut_61,
+        "xǁJSONFormatterǁformat__mutmut_62": xǁJSONFormatterǁformat__mutmut_62,
+        "xǁJSONFormatterǁformat__mutmut_63": xǁJSONFormatterǁformat__mutmut_63,
+        "xǁJSONFormatterǁformat__mutmut_64": xǁJSONFormatterǁformat__mutmut_64,
+        "xǁJSONFormatterǁformat__mutmut_65": xǁJSONFormatterǁformat__mutmut_65,
+        "xǁJSONFormatterǁformat__mutmut_66": xǁJSONFormatterǁformat__mutmut_66,
+        "xǁJSONFormatterǁformat__mutmut_67": xǁJSONFormatterǁformat__mutmut_67,
+        "xǁJSONFormatterǁformat__mutmut_68": xǁJSONFormatterǁformat__mutmut_68,
+        "xǁJSONFormatterǁformat__mutmut_69": xǁJSONFormatterǁformat__mutmut_69,
+        "xǁJSONFormatterǁformat__mutmut_70": xǁJSONFormatterǁformat__mutmut_70,
+        "xǁJSONFormatterǁformat__mutmut_71": xǁJSONFormatterǁformat__mutmut_71,
+        "xǁJSONFormatterǁformat__mutmut_72": xǁJSONFormatterǁformat__mutmut_72,
+        "xǁJSONFormatterǁformat__mutmut_73": xǁJSONFormatterǁformat__mutmut_73,
+        "xǁJSONFormatterǁformat__mutmut_74": xǁJSONFormatterǁformat__mutmut_74,
+        "xǁJSONFormatterǁformat__mutmut_75": xǁJSONFormatterǁformat__mutmut_75,
+        "xǁJSONFormatterǁformat__mutmut_76": xǁJSONFormatterǁformat__mutmut_76,
+        "xǁJSONFormatterǁformat__mutmut_77": xǁJSONFormatterǁformat__mutmut_77,
+        "xǁJSONFormatterǁformat__mutmut_78": xǁJSONFormatterǁformat__mutmut_78,
+        "xǁJSONFormatterǁformat__mutmut_79": xǁJSONFormatterǁformat__mutmut_79,
+        "xǁJSONFormatterǁformat__mutmut_80": xǁJSONFormatterǁformat__mutmut_80,
+        "xǁJSONFormatterǁformat__mutmut_81": xǁJSONFormatterǁformat__mutmut_81,
+        "xǁJSONFormatterǁformat__mutmut_82": xǁJSONFormatterǁformat__mutmut_82,
+        "xǁJSONFormatterǁformat__mutmut_83": xǁJSONFormatterǁformat__mutmut_83,
+        "xǁJSONFormatterǁformat__mutmut_84": xǁJSONFormatterǁformat__mutmut_84,
+        "xǁJSONFormatterǁformat__mutmut_85": xǁJSONFormatterǁformat__mutmut_85,
+        "xǁJSONFormatterǁformat__mutmut_86": xǁJSONFormatterǁformat__mutmut_86,
+        "xǁJSONFormatterǁformat__mutmut_87": xǁJSONFormatterǁformat__mutmut_87,
+        "xǁJSONFormatterǁformat__mutmut_88": xǁJSONFormatterǁformat__mutmut_88,
+        "xǁJSONFormatterǁformat__mutmut_89": xǁJSONFormatterǁformat__mutmut_89,
+        "xǁJSONFormatterǁformat__mutmut_90": xǁJSONFormatterǁformat__mutmut_90,
+        "xǁJSONFormatterǁformat__mutmut_91": xǁJSONFormatterǁformat__mutmut_91,
+        "xǁJSONFormatterǁformat__mutmut_92": xǁJSONFormatterǁformat__mutmut_92,
+        "xǁJSONFormatterǁformat__mutmut_93": xǁJSONFormatterǁformat__mutmut_93,
+        "xǁJSONFormatterǁformat__mutmut_94": xǁJSONFormatterǁformat__mutmut_94,
+        "xǁJSONFormatterǁformat__mutmut_95": xǁJSONFormatterǁformat__mutmut_95,
+        "xǁJSONFormatterǁformat__mutmut_96": xǁJSONFormatterǁformat__mutmut_96,
+        "xǁJSONFormatterǁformat__mutmut_97": xǁJSONFormatterǁformat__mutmut_97,
     }
-    
+
     def format(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁJSONFormatterǁformat__mutmut_orig"), object.__getattribute__(self, "xǁJSONFormatterǁformat__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁJSONFormatterǁformat__mutmut_orig"),
+            object.__getattribute__(self, "xǁJSONFormatterǁformat__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     format.__signature__ = _mutmut_signature(xǁJSONFormatterǁformat__mutmut_orig)
-    xǁJSONFormatterǁformat__mutmut_orig.__name__ = 'xǁJSONFormatterǁformat'
+    xǁJSONFormatterǁformat__mutmut_orig.__name__ = "xǁJSONFormatterǁformat"
 
 
 class YAMLFormatter(SchemaFormatter):
@@ -20026,7 +20063,9 @@ class YAMLFormatter(SchemaFormatter):
         output_lines.append("configs:")
 
         for config_name, config_schema in sorted(schemas_to_display.items()):
-            meta = schema.metadata.get(config_name, )
+            meta = schema.metadata.get(
+                config_name,
+            )
 
             output_lines.append(f"  {config_name}:")
             output_lines.append(f"    module: {meta.get('module', '')}")
@@ -20443,7 +20482,7 @@ class YAMLFormatter(SchemaFormatter):
             meta = schema.metadata.get(config_name, {})
 
             output_lines.append(f"  {config_name}:")
-            output_lines.append(f"    module: {meta.get('module', )}")
+            output_lines.append(f"    module: {meta.get('module')}")
             output_lines.append(f"    category: {meta.get('category', 'core')}")
             output_lines.append("    fields:")
 
@@ -20996,7 +21035,7 @@ class YAMLFormatter(SchemaFormatter):
 
             output_lines.append(f"  {config_name}:")
             output_lines.append(f"    module: {meta.get('module', '')}")
-            output_lines.append(f"    category: {meta.get('category', )}")
+            output_lines.append(f"    category: {meta.get('category')}")
             output_lines.append("    fields:")
 
             for field in config_schema.fields:
@@ -22667,7 +22706,10 @@ class YAMLFormatter(SchemaFormatter):
                 # Get type name
                 type_name = "Any"
                 if field.field_type:
-                    type_name = getattr(field.field_type, "__name__", )
+                    type_name = getattr(
+                        field.field_type,
+                        "__name__",
+                    )
 
                 output_lines.append(f"      {field.name}:")
                 output_lines.append(f"        type: {type_name}")
@@ -24274,100 +24316,106 @@ class YAMLFormatter(SchemaFormatter):
 
         output_lines.append("")
         return "XX\nXX".join(output_lines)
-    
-    xǁYAMLFormatterǁformat__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁYAMLFormatterǁformat__mutmut_1': xǁYAMLFormatterǁformat__mutmut_1, 
-        'xǁYAMLFormatterǁformat__mutmut_2': xǁYAMLFormatterǁformat__mutmut_2, 
-        'xǁYAMLFormatterǁformat__mutmut_3': xǁYAMLFormatterǁformat__mutmut_3, 
-        'xǁYAMLFormatterǁformat__mutmut_4': xǁYAMLFormatterǁformat__mutmut_4, 
-        'xǁYAMLFormatterǁformat__mutmut_5': xǁYAMLFormatterǁformat__mutmut_5, 
-        'xǁYAMLFormatterǁformat__mutmut_6': xǁYAMLFormatterǁformat__mutmut_6, 
-        'xǁYAMLFormatterǁformat__mutmut_7': xǁYAMLFormatterǁformat__mutmut_7, 
-        'xǁYAMLFormatterǁformat__mutmut_8': xǁYAMLFormatterǁformat__mutmut_8, 
-        'xǁYAMLFormatterǁformat__mutmut_9': xǁYAMLFormatterǁformat__mutmut_9, 
-        'xǁYAMLFormatterǁformat__mutmut_10': xǁYAMLFormatterǁformat__mutmut_10, 
-        'xǁYAMLFormatterǁformat__mutmut_11': xǁYAMLFormatterǁformat__mutmut_11, 
-        'xǁYAMLFormatterǁformat__mutmut_12': xǁYAMLFormatterǁformat__mutmut_12, 
-        'xǁYAMLFormatterǁformat__mutmut_13': xǁYAMLFormatterǁformat__mutmut_13, 
-        'xǁYAMLFormatterǁformat__mutmut_14': xǁYAMLFormatterǁformat__mutmut_14, 
-        'xǁYAMLFormatterǁformat__mutmut_15': xǁYAMLFormatterǁformat__mutmut_15, 
-        'xǁYAMLFormatterǁformat__mutmut_16': xǁYAMLFormatterǁformat__mutmut_16, 
-        'xǁYAMLFormatterǁformat__mutmut_17': xǁYAMLFormatterǁformat__mutmut_17, 
-        'xǁYAMLFormatterǁformat__mutmut_18': xǁYAMLFormatterǁformat__mutmut_18, 
-        'xǁYAMLFormatterǁformat__mutmut_19': xǁYAMLFormatterǁformat__mutmut_19, 
-        'xǁYAMLFormatterǁformat__mutmut_20': xǁYAMLFormatterǁformat__mutmut_20, 
-        'xǁYAMLFormatterǁformat__mutmut_21': xǁYAMLFormatterǁformat__mutmut_21, 
-        'xǁYAMLFormatterǁformat__mutmut_22': xǁYAMLFormatterǁformat__mutmut_22, 
-        'xǁYAMLFormatterǁformat__mutmut_23': xǁYAMLFormatterǁformat__mutmut_23, 
-        'xǁYAMLFormatterǁformat__mutmut_24': xǁYAMLFormatterǁformat__mutmut_24, 
-        'xǁYAMLFormatterǁformat__mutmut_25': xǁYAMLFormatterǁformat__mutmut_25, 
-        'xǁYAMLFormatterǁformat__mutmut_26': xǁYAMLFormatterǁformat__mutmut_26, 
-        'xǁYAMLFormatterǁformat__mutmut_27': xǁYAMLFormatterǁformat__mutmut_27, 
-        'xǁYAMLFormatterǁformat__mutmut_28': xǁYAMLFormatterǁformat__mutmut_28, 
-        'xǁYAMLFormatterǁformat__mutmut_29': xǁYAMLFormatterǁformat__mutmut_29, 
-        'xǁYAMLFormatterǁformat__mutmut_30': xǁYAMLFormatterǁformat__mutmut_30, 
-        'xǁYAMLFormatterǁformat__mutmut_31': xǁYAMLFormatterǁformat__mutmut_31, 
-        'xǁYAMLFormatterǁformat__mutmut_32': xǁYAMLFormatterǁformat__mutmut_32, 
-        'xǁYAMLFormatterǁformat__mutmut_33': xǁYAMLFormatterǁformat__mutmut_33, 
-        'xǁYAMLFormatterǁformat__mutmut_34': xǁYAMLFormatterǁformat__mutmut_34, 
-        'xǁYAMLFormatterǁformat__mutmut_35': xǁYAMLFormatterǁformat__mutmut_35, 
-        'xǁYAMLFormatterǁformat__mutmut_36': xǁYAMLFormatterǁformat__mutmut_36, 
-        'xǁYAMLFormatterǁformat__mutmut_37': xǁYAMLFormatterǁformat__mutmut_37, 
-        'xǁYAMLFormatterǁformat__mutmut_38': xǁYAMLFormatterǁformat__mutmut_38, 
-        'xǁYAMLFormatterǁformat__mutmut_39': xǁYAMLFormatterǁformat__mutmut_39, 
-        'xǁYAMLFormatterǁformat__mutmut_40': xǁYAMLFormatterǁformat__mutmut_40, 
-        'xǁYAMLFormatterǁformat__mutmut_41': xǁYAMLFormatterǁformat__mutmut_41, 
-        'xǁYAMLFormatterǁformat__mutmut_42': xǁYAMLFormatterǁformat__mutmut_42, 
-        'xǁYAMLFormatterǁformat__mutmut_43': xǁYAMLFormatterǁformat__mutmut_43, 
-        'xǁYAMLFormatterǁformat__mutmut_44': xǁYAMLFormatterǁformat__mutmut_44, 
-        'xǁYAMLFormatterǁformat__mutmut_45': xǁYAMLFormatterǁformat__mutmut_45, 
-        'xǁYAMLFormatterǁformat__mutmut_46': xǁYAMLFormatterǁformat__mutmut_46, 
-        'xǁYAMLFormatterǁformat__mutmut_47': xǁYAMLFormatterǁformat__mutmut_47, 
-        'xǁYAMLFormatterǁformat__mutmut_48': xǁYAMLFormatterǁformat__mutmut_48, 
-        'xǁYAMLFormatterǁformat__mutmut_49': xǁYAMLFormatterǁformat__mutmut_49, 
-        'xǁYAMLFormatterǁformat__mutmut_50': xǁYAMLFormatterǁformat__mutmut_50, 
-        'xǁYAMLFormatterǁformat__mutmut_51': xǁYAMLFormatterǁformat__mutmut_51, 
-        'xǁYAMLFormatterǁformat__mutmut_52': xǁYAMLFormatterǁformat__mutmut_52, 
-        'xǁYAMLFormatterǁformat__mutmut_53': xǁYAMLFormatterǁformat__mutmut_53, 
-        'xǁYAMLFormatterǁformat__mutmut_54': xǁYAMLFormatterǁformat__mutmut_54, 
-        'xǁYAMLFormatterǁformat__mutmut_55': xǁYAMLFormatterǁformat__mutmut_55, 
-        'xǁYAMLFormatterǁformat__mutmut_56': xǁYAMLFormatterǁformat__mutmut_56, 
-        'xǁYAMLFormatterǁformat__mutmut_57': xǁYAMLFormatterǁformat__mutmut_57, 
-        'xǁYAMLFormatterǁformat__mutmut_58': xǁYAMLFormatterǁformat__mutmut_58, 
-        'xǁYAMLFormatterǁformat__mutmut_59': xǁYAMLFormatterǁformat__mutmut_59, 
-        'xǁYAMLFormatterǁformat__mutmut_60': xǁYAMLFormatterǁformat__mutmut_60, 
-        'xǁYAMLFormatterǁformat__mutmut_61': xǁYAMLFormatterǁformat__mutmut_61, 
-        'xǁYAMLFormatterǁformat__mutmut_62': xǁYAMLFormatterǁformat__mutmut_62, 
-        'xǁYAMLFormatterǁformat__mutmut_63': xǁYAMLFormatterǁformat__mutmut_63, 
-        'xǁYAMLFormatterǁformat__mutmut_64': xǁYAMLFormatterǁformat__mutmut_64, 
-        'xǁYAMLFormatterǁformat__mutmut_65': xǁYAMLFormatterǁformat__mutmut_65, 
-        'xǁYAMLFormatterǁformat__mutmut_66': xǁYAMLFormatterǁformat__mutmut_66, 
-        'xǁYAMLFormatterǁformat__mutmut_67': xǁYAMLFormatterǁformat__mutmut_67, 
-        'xǁYAMLFormatterǁformat__mutmut_68': xǁYAMLFormatterǁformat__mutmut_68, 
-        'xǁYAMLFormatterǁformat__mutmut_69': xǁYAMLFormatterǁformat__mutmut_69, 
-        'xǁYAMLFormatterǁformat__mutmut_70': xǁYAMLFormatterǁformat__mutmut_70, 
-        'xǁYAMLFormatterǁformat__mutmut_71': xǁYAMLFormatterǁformat__mutmut_71, 
-        'xǁYAMLFormatterǁformat__mutmut_72': xǁYAMLFormatterǁformat__mutmut_72, 
-        'xǁYAMLFormatterǁformat__mutmut_73': xǁYAMLFormatterǁformat__mutmut_73, 
-        'xǁYAMLFormatterǁformat__mutmut_74': xǁYAMLFormatterǁformat__mutmut_74, 
-        'xǁYAMLFormatterǁformat__mutmut_75': xǁYAMLFormatterǁformat__mutmut_75, 
-        'xǁYAMLFormatterǁformat__mutmut_76': xǁYAMLFormatterǁformat__mutmut_76, 
-        'xǁYAMLFormatterǁformat__mutmut_77': xǁYAMLFormatterǁformat__mutmut_77, 
-        'xǁYAMLFormatterǁformat__mutmut_78': xǁYAMLFormatterǁformat__mutmut_78, 
-        'xǁYAMLFormatterǁformat__mutmut_79': xǁYAMLFormatterǁformat__mutmut_79, 
-        'xǁYAMLFormatterǁformat__mutmut_80': xǁYAMLFormatterǁformat__mutmut_80, 
-        'xǁYAMLFormatterǁformat__mutmut_81': xǁYAMLFormatterǁformat__mutmut_81, 
-        'xǁYAMLFormatterǁformat__mutmut_82': xǁYAMLFormatterǁformat__mutmut_82, 
-        'xǁYAMLFormatterǁformat__mutmut_83': xǁYAMLFormatterǁformat__mutmut_83, 
-        'xǁYAMLFormatterǁformat__mutmut_84': xǁYAMLFormatterǁformat__mutmut_84
+
+    xǁYAMLFormatterǁformat__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁYAMLFormatterǁformat__mutmut_1": xǁYAMLFormatterǁformat__mutmut_1,
+        "xǁYAMLFormatterǁformat__mutmut_2": xǁYAMLFormatterǁformat__mutmut_2,
+        "xǁYAMLFormatterǁformat__mutmut_3": xǁYAMLFormatterǁformat__mutmut_3,
+        "xǁYAMLFormatterǁformat__mutmut_4": xǁYAMLFormatterǁformat__mutmut_4,
+        "xǁYAMLFormatterǁformat__mutmut_5": xǁYAMLFormatterǁformat__mutmut_5,
+        "xǁYAMLFormatterǁformat__mutmut_6": xǁYAMLFormatterǁformat__mutmut_6,
+        "xǁYAMLFormatterǁformat__mutmut_7": xǁYAMLFormatterǁformat__mutmut_7,
+        "xǁYAMLFormatterǁformat__mutmut_8": xǁYAMLFormatterǁformat__mutmut_8,
+        "xǁYAMLFormatterǁformat__mutmut_9": xǁYAMLFormatterǁformat__mutmut_9,
+        "xǁYAMLFormatterǁformat__mutmut_10": xǁYAMLFormatterǁformat__mutmut_10,
+        "xǁYAMLFormatterǁformat__mutmut_11": xǁYAMLFormatterǁformat__mutmut_11,
+        "xǁYAMLFormatterǁformat__mutmut_12": xǁYAMLFormatterǁformat__mutmut_12,
+        "xǁYAMLFormatterǁformat__mutmut_13": xǁYAMLFormatterǁformat__mutmut_13,
+        "xǁYAMLFormatterǁformat__mutmut_14": xǁYAMLFormatterǁformat__mutmut_14,
+        "xǁYAMLFormatterǁformat__mutmut_15": xǁYAMLFormatterǁformat__mutmut_15,
+        "xǁYAMLFormatterǁformat__mutmut_16": xǁYAMLFormatterǁformat__mutmut_16,
+        "xǁYAMLFormatterǁformat__mutmut_17": xǁYAMLFormatterǁformat__mutmut_17,
+        "xǁYAMLFormatterǁformat__mutmut_18": xǁYAMLFormatterǁformat__mutmut_18,
+        "xǁYAMLFormatterǁformat__mutmut_19": xǁYAMLFormatterǁformat__mutmut_19,
+        "xǁYAMLFormatterǁformat__mutmut_20": xǁYAMLFormatterǁformat__mutmut_20,
+        "xǁYAMLFormatterǁformat__mutmut_21": xǁYAMLFormatterǁformat__mutmut_21,
+        "xǁYAMLFormatterǁformat__mutmut_22": xǁYAMLFormatterǁformat__mutmut_22,
+        "xǁYAMLFormatterǁformat__mutmut_23": xǁYAMLFormatterǁformat__mutmut_23,
+        "xǁYAMLFormatterǁformat__mutmut_24": xǁYAMLFormatterǁformat__mutmut_24,
+        "xǁYAMLFormatterǁformat__mutmut_25": xǁYAMLFormatterǁformat__mutmut_25,
+        "xǁYAMLFormatterǁformat__mutmut_26": xǁYAMLFormatterǁformat__mutmut_26,
+        "xǁYAMLFormatterǁformat__mutmut_27": xǁYAMLFormatterǁformat__mutmut_27,
+        "xǁYAMLFormatterǁformat__mutmut_28": xǁYAMLFormatterǁformat__mutmut_28,
+        "xǁYAMLFormatterǁformat__mutmut_29": xǁYAMLFormatterǁformat__mutmut_29,
+        "xǁYAMLFormatterǁformat__mutmut_30": xǁYAMLFormatterǁformat__mutmut_30,
+        "xǁYAMLFormatterǁformat__mutmut_31": xǁYAMLFormatterǁformat__mutmut_31,
+        "xǁYAMLFormatterǁformat__mutmut_32": xǁYAMLFormatterǁformat__mutmut_32,
+        "xǁYAMLFormatterǁformat__mutmut_33": xǁYAMLFormatterǁformat__mutmut_33,
+        "xǁYAMLFormatterǁformat__mutmut_34": xǁYAMLFormatterǁformat__mutmut_34,
+        "xǁYAMLFormatterǁformat__mutmut_35": xǁYAMLFormatterǁformat__mutmut_35,
+        "xǁYAMLFormatterǁformat__mutmut_36": xǁYAMLFormatterǁformat__mutmut_36,
+        "xǁYAMLFormatterǁformat__mutmut_37": xǁYAMLFormatterǁformat__mutmut_37,
+        "xǁYAMLFormatterǁformat__mutmut_38": xǁYAMLFormatterǁformat__mutmut_38,
+        "xǁYAMLFormatterǁformat__mutmut_39": xǁYAMLFormatterǁformat__mutmut_39,
+        "xǁYAMLFormatterǁformat__mutmut_40": xǁYAMLFormatterǁformat__mutmut_40,
+        "xǁYAMLFormatterǁformat__mutmut_41": xǁYAMLFormatterǁformat__mutmut_41,
+        "xǁYAMLFormatterǁformat__mutmut_42": xǁYAMLFormatterǁformat__mutmut_42,
+        "xǁYAMLFormatterǁformat__mutmut_43": xǁYAMLFormatterǁformat__mutmut_43,
+        "xǁYAMLFormatterǁformat__mutmut_44": xǁYAMLFormatterǁformat__mutmut_44,
+        "xǁYAMLFormatterǁformat__mutmut_45": xǁYAMLFormatterǁformat__mutmut_45,
+        "xǁYAMLFormatterǁformat__mutmut_46": xǁYAMLFormatterǁformat__mutmut_46,
+        "xǁYAMLFormatterǁformat__mutmut_47": xǁYAMLFormatterǁformat__mutmut_47,
+        "xǁYAMLFormatterǁformat__mutmut_48": xǁYAMLFormatterǁformat__mutmut_48,
+        "xǁYAMLFormatterǁformat__mutmut_49": xǁYAMLFormatterǁformat__mutmut_49,
+        "xǁYAMLFormatterǁformat__mutmut_50": xǁYAMLFormatterǁformat__mutmut_50,
+        "xǁYAMLFormatterǁformat__mutmut_51": xǁYAMLFormatterǁformat__mutmut_51,
+        "xǁYAMLFormatterǁformat__mutmut_52": xǁYAMLFormatterǁformat__mutmut_52,
+        "xǁYAMLFormatterǁformat__mutmut_53": xǁYAMLFormatterǁformat__mutmut_53,
+        "xǁYAMLFormatterǁformat__mutmut_54": xǁYAMLFormatterǁformat__mutmut_54,
+        "xǁYAMLFormatterǁformat__mutmut_55": xǁYAMLFormatterǁformat__mutmut_55,
+        "xǁYAMLFormatterǁformat__mutmut_56": xǁYAMLFormatterǁformat__mutmut_56,
+        "xǁYAMLFormatterǁformat__mutmut_57": xǁYAMLFormatterǁformat__mutmut_57,
+        "xǁYAMLFormatterǁformat__mutmut_58": xǁYAMLFormatterǁformat__mutmut_58,
+        "xǁYAMLFormatterǁformat__mutmut_59": xǁYAMLFormatterǁformat__mutmut_59,
+        "xǁYAMLFormatterǁformat__mutmut_60": xǁYAMLFormatterǁformat__mutmut_60,
+        "xǁYAMLFormatterǁformat__mutmut_61": xǁYAMLFormatterǁformat__mutmut_61,
+        "xǁYAMLFormatterǁformat__mutmut_62": xǁYAMLFormatterǁformat__mutmut_62,
+        "xǁYAMLFormatterǁformat__mutmut_63": xǁYAMLFormatterǁformat__mutmut_63,
+        "xǁYAMLFormatterǁformat__mutmut_64": xǁYAMLFormatterǁformat__mutmut_64,
+        "xǁYAMLFormatterǁformat__mutmut_65": xǁYAMLFormatterǁformat__mutmut_65,
+        "xǁYAMLFormatterǁformat__mutmut_66": xǁYAMLFormatterǁformat__mutmut_66,
+        "xǁYAMLFormatterǁformat__mutmut_67": xǁYAMLFormatterǁformat__mutmut_67,
+        "xǁYAMLFormatterǁformat__mutmut_68": xǁYAMLFormatterǁformat__mutmut_68,
+        "xǁYAMLFormatterǁformat__mutmut_69": xǁYAMLFormatterǁformat__mutmut_69,
+        "xǁYAMLFormatterǁformat__mutmut_70": xǁYAMLFormatterǁformat__mutmut_70,
+        "xǁYAMLFormatterǁformat__mutmut_71": xǁYAMLFormatterǁformat__mutmut_71,
+        "xǁYAMLFormatterǁformat__mutmut_72": xǁYAMLFormatterǁformat__mutmut_72,
+        "xǁYAMLFormatterǁformat__mutmut_73": xǁYAMLFormatterǁformat__mutmut_73,
+        "xǁYAMLFormatterǁformat__mutmut_74": xǁYAMLFormatterǁformat__mutmut_74,
+        "xǁYAMLFormatterǁformat__mutmut_75": xǁYAMLFormatterǁformat__mutmut_75,
+        "xǁYAMLFormatterǁformat__mutmut_76": xǁYAMLFormatterǁformat__mutmut_76,
+        "xǁYAMLFormatterǁformat__mutmut_77": xǁYAMLFormatterǁformat__mutmut_77,
+        "xǁYAMLFormatterǁformat__mutmut_78": xǁYAMLFormatterǁformat__mutmut_78,
+        "xǁYAMLFormatterǁformat__mutmut_79": xǁYAMLFormatterǁformat__mutmut_79,
+        "xǁYAMLFormatterǁformat__mutmut_80": xǁYAMLFormatterǁformat__mutmut_80,
+        "xǁYAMLFormatterǁformat__mutmut_81": xǁYAMLFormatterǁformat__mutmut_81,
+        "xǁYAMLFormatterǁformat__mutmut_82": xǁYAMLFormatterǁformat__mutmut_82,
+        "xǁYAMLFormatterǁformat__mutmut_83": xǁYAMLFormatterǁformat__mutmut_83,
+        "xǁYAMLFormatterǁformat__mutmut_84": xǁYAMLFormatterǁformat__mutmut_84,
     }
-    
+
     def format(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁYAMLFormatterǁformat__mutmut_orig"), object.__getattribute__(self, "xǁYAMLFormatterǁformat__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁYAMLFormatterǁformat__mutmut_orig"),
+            object.__getattribute__(self, "xǁYAMLFormatterǁformat__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     format.__signature__ = _mutmut_signature(xǁYAMLFormatterǁformat__mutmut_orig)
-    xǁYAMLFormatterǁformat__mutmut_orig.__name__ = 'xǁYAMLFormatterǁformat'
+    xǁYAMLFormatterǁformat__mutmut_orig.__name__ = "xǁYAMLFormatterǁformat"
 
 
 class MarkdownFormatter(SchemaFormatter):
@@ -25949,7 +25997,9 @@ class MarkdownFormatter(SchemaFormatter):
         # Group by category
         by_category: dict[str, list[tuple[str, Any]]] = {}
         for config_name, config_schema in schemas_to_display.items():
-            meta = schema.metadata.get(config_name, )
+            meta = schema.metadata.get(
+                config_name,
+            )
             cat = meta.get("category", "core")
             if cat not in by_category:
                 by_category[cat] = []
@@ -26405,7 +26455,9 @@ class MarkdownFormatter(SchemaFormatter):
         by_category: dict[str, list[tuple[str, Any]]] = {}
         for config_name, config_schema in schemas_to_display.items():
             meta = schema.metadata.get(config_name, {})
-            cat = meta.get("category", )
+            cat = meta.get(
+                "category",
+            )
             if cat not in by_category:
                 by_category[cat] = []
             by_category[cat].append((config_name, config_schema))
@@ -28239,7 +28291,9 @@ class MarkdownFormatter(SchemaFormatter):
                 output_lines.append(f"### {config_name}")
                 output_lines.append("")
 
-                meta = schema.metadata.get(config_name, )
+                meta = schema.metadata.get(
+                    config_name,
+                )
                 doc = meta.get("doc", "").strip()
                 if doc:
                     output_lines.append(doc)
@@ -28695,7 +28749,9 @@ class MarkdownFormatter(SchemaFormatter):
                 output_lines.append("")
 
                 meta = schema.metadata.get(config_name, {})
-                doc = meta.get("doc", ).strip()
+                doc = meta.get(
+                    "doc",
+                ).strip()
                 if doc:
                     output_lines.append(doc)
                     output_lines.append("")
@@ -29430,7 +29486,9 @@ class MarkdownFormatter(SchemaFormatter):
 
                 # Table header
                 if env_only:
-                    output_lines.append("XX| Environment Variable | Type | Required | Default | Description |XX")
+                    output_lines.append(
+                        "XX| Environment Variable | Type | Required | Default | Description |XX"
+                    )
                     output_lines.append("|---------------------|------|----------|---------|-------------|")
                 else:
                     output_lines.append("| Field | Type | Required | Default | Description |")
@@ -29795,7 +29853,9 @@ class MarkdownFormatter(SchemaFormatter):
                 # Table header
                 if env_only:
                     output_lines.append("| Environment Variable | Type | Required | Default | Description |")
-                    output_lines.append("XX|---------------------|------|----------|---------|-------------|XX")
+                    output_lines.append(
+                        "XX|---------------------|------|----------|---------|-------------|XX"
+                    )
                 else:
                     output_lines.append("| Field | Type | Required | Default | Description |")
                     output_lines.append("|-------|------|----------|---------|-------------|")
@@ -31906,7 +31966,10 @@ class MarkdownFormatter(SchemaFormatter):
                     # Get type name
                     type_name = "Any"
                     if field.field_type:
-                        type_name = getattr(field.field_type, "__name__", )
+                        type_name = getattr(
+                            field.field_type,
+                            "__name__",
+                        )
 
                     # Field name or env var
                     name = field.env_var if env_only and field.env_var else field.name
@@ -34382,125 +34445,131 @@ class MarkdownFormatter(SchemaFormatter):
                 output_lines.append("")
 
         return "XX\nXX".join(output_lines)
-    
-    xǁMarkdownFormatterǁformat__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁMarkdownFormatterǁformat__mutmut_1': xǁMarkdownFormatterǁformat__mutmut_1, 
-        'xǁMarkdownFormatterǁformat__mutmut_2': xǁMarkdownFormatterǁformat__mutmut_2, 
-        'xǁMarkdownFormatterǁformat__mutmut_3': xǁMarkdownFormatterǁformat__mutmut_3, 
-        'xǁMarkdownFormatterǁformat__mutmut_4': xǁMarkdownFormatterǁformat__mutmut_4, 
-        'xǁMarkdownFormatterǁformat__mutmut_5': xǁMarkdownFormatterǁformat__mutmut_5, 
-        'xǁMarkdownFormatterǁformat__mutmut_6': xǁMarkdownFormatterǁformat__mutmut_6, 
-        'xǁMarkdownFormatterǁformat__mutmut_7': xǁMarkdownFormatterǁformat__mutmut_7, 
-        'xǁMarkdownFormatterǁformat__mutmut_8': xǁMarkdownFormatterǁformat__mutmut_8, 
-        'xǁMarkdownFormatterǁformat__mutmut_9': xǁMarkdownFormatterǁformat__mutmut_9, 
-        'xǁMarkdownFormatterǁformat__mutmut_10': xǁMarkdownFormatterǁformat__mutmut_10, 
-        'xǁMarkdownFormatterǁformat__mutmut_11': xǁMarkdownFormatterǁformat__mutmut_11, 
-        'xǁMarkdownFormatterǁformat__mutmut_12': xǁMarkdownFormatterǁformat__mutmut_12, 
-        'xǁMarkdownFormatterǁformat__mutmut_13': xǁMarkdownFormatterǁformat__mutmut_13, 
-        'xǁMarkdownFormatterǁformat__mutmut_14': xǁMarkdownFormatterǁformat__mutmut_14, 
-        'xǁMarkdownFormatterǁformat__mutmut_15': xǁMarkdownFormatterǁformat__mutmut_15, 
-        'xǁMarkdownFormatterǁformat__mutmut_16': xǁMarkdownFormatterǁformat__mutmut_16, 
-        'xǁMarkdownFormatterǁformat__mutmut_17': xǁMarkdownFormatterǁformat__mutmut_17, 
-        'xǁMarkdownFormatterǁformat__mutmut_18': xǁMarkdownFormatterǁformat__mutmut_18, 
-        'xǁMarkdownFormatterǁformat__mutmut_19': xǁMarkdownFormatterǁformat__mutmut_19, 
-        'xǁMarkdownFormatterǁformat__mutmut_20': xǁMarkdownFormatterǁformat__mutmut_20, 
-        'xǁMarkdownFormatterǁformat__mutmut_21': xǁMarkdownFormatterǁformat__mutmut_21, 
-        'xǁMarkdownFormatterǁformat__mutmut_22': xǁMarkdownFormatterǁformat__mutmut_22, 
-        'xǁMarkdownFormatterǁformat__mutmut_23': xǁMarkdownFormatterǁformat__mutmut_23, 
-        'xǁMarkdownFormatterǁformat__mutmut_24': xǁMarkdownFormatterǁformat__mutmut_24, 
-        'xǁMarkdownFormatterǁformat__mutmut_25': xǁMarkdownFormatterǁformat__mutmut_25, 
-        'xǁMarkdownFormatterǁformat__mutmut_26': xǁMarkdownFormatterǁformat__mutmut_26, 
-        'xǁMarkdownFormatterǁformat__mutmut_27': xǁMarkdownFormatterǁformat__mutmut_27, 
-        'xǁMarkdownFormatterǁformat__mutmut_28': xǁMarkdownFormatterǁformat__mutmut_28, 
-        'xǁMarkdownFormatterǁformat__mutmut_29': xǁMarkdownFormatterǁformat__mutmut_29, 
-        'xǁMarkdownFormatterǁformat__mutmut_30': xǁMarkdownFormatterǁformat__mutmut_30, 
-        'xǁMarkdownFormatterǁformat__mutmut_31': xǁMarkdownFormatterǁformat__mutmut_31, 
-        'xǁMarkdownFormatterǁformat__mutmut_32': xǁMarkdownFormatterǁformat__mutmut_32, 
-        'xǁMarkdownFormatterǁformat__mutmut_33': xǁMarkdownFormatterǁformat__mutmut_33, 
-        'xǁMarkdownFormatterǁformat__mutmut_34': xǁMarkdownFormatterǁformat__mutmut_34, 
-        'xǁMarkdownFormatterǁformat__mutmut_35': xǁMarkdownFormatterǁformat__mutmut_35, 
-        'xǁMarkdownFormatterǁformat__mutmut_36': xǁMarkdownFormatterǁformat__mutmut_36, 
-        'xǁMarkdownFormatterǁformat__mutmut_37': xǁMarkdownFormatterǁformat__mutmut_37, 
-        'xǁMarkdownFormatterǁformat__mutmut_38': xǁMarkdownFormatterǁformat__mutmut_38, 
-        'xǁMarkdownFormatterǁformat__mutmut_39': xǁMarkdownFormatterǁformat__mutmut_39, 
-        'xǁMarkdownFormatterǁformat__mutmut_40': xǁMarkdownFormatterǁformat__mutmut_40, 
-        'xǁMarkdownFormatterǁformat__mutmut_41': xǁMarkdownFormatterǁformat__mutmut_41, 
-        'xǁMarkdownFormatterǁformat__mutmut_42': xǁMarkdownFormatterǁformat__mutmut_42, 
-        'xǁMarkdownFormatterǁformat__mutmut_43': xǁMarkdownFormatterǁformat__mutmut_43, 
-        'xǁMarkdownFormatterǁformat__mutmut_44': xǁMarkdownFormatterǁformat__mutmut_44, 
-        'xǁMarkdownFormatterǁformat__mutmut_45': xǁMarkdownFormatterǁformat__mutmut_45, 
-        'xǁMarkdownFormatterǁformat__mutmut_46': xǁMarkdownFormatterǁformat__mutmut_46, 
-        'xǁMarkdownFormatterǁformat__mutmut_47': xǁMarkdownFormatterǁformat__mutmut_47, 
-        'xǁMarkdownFormatterǁformat__mutmut_48': xǁMarkdownFormatterǁformat__mutmut_48, 
-        'xǁMarkdownFormatterǁformat__mutmut_49': xǁMarkdownFormatterǁformat__mutmut_49, 
-        'xǁMarkdownFormatterǁformat__mutmut_50': xǁMarkdownFormatterǁformat__mutmut_50, 
-        'xǁMarkdownFormatterǁformat__mutmut_51': xǁMarkdownFormatterǁformat__mutmut_51, 
-        'xǁMarkdownFormatterǁformat__mutmut_52': xǁMarkdownFormatterǁformat__mutmut_52, 
-        'xǁMarkdownFormatterǁformat__mutmut_53': xǁMarkdownFormatterǁformat__mutmut_53, 
-        'xǁMarkdownFormatterǁformat__mutmut_54': xǁMarkdownFormatterǁformat__mutmut_54, 
-        'xǁMarkdownFormatterǁformat__mutmut_55': xǁMarkdownFormatterǁformat__mutmut_55, 
-        'xǁMarkdownFormatterǁformat__mutmut_56': xǁMarkdownFormatterǁformat__mutmut_56, 
-        'xǁMarkdownFormatterǁformat__mutmut_57': xǁMarkdownFormatterǁformat__mutmut_57, 
-        'xǁMarkdownFormatterǁformat__mutmut_58': xǁMarkdownFormatterǁformat__mutmut_58, 
-        'xǁMarkdownFormatterǁformat__mutmut_59': xǁMarkdownFormatterǁformat__mutmut_59, 
-        'xǁMarkdownFormatterǁformat__mutmut_60': xǁMarkdownFormatterǁformat__mutmut_60, 
-        'xǁMarkdownFormatterǁformat__mutmut_61': xǁMarkdownFormatterǁformat__mutmut_61, 
-        'xǁMarkdownFormatterǁformat__mutmut_62': xǁMarkdownFormatterǁformat__mutmut_62, 
-        'xǁMarkdownFormatterǁformat__mutmut_63': xǁMarkdownFormatterǁformat__mutmut_63, 
-        'xǁMarkdownFormatterǁformat__mutmut_64': xǁMarkdownFormatterǁformat__mutmut_64, 
-        'xǁMarkdownFormatterǁformat__mutmut_65': xǁMarkdownFormatterǁformat__mutmut_65, 
-        'xǁMarkdownFormatterǁformat__mutmut_66': xǁMarkdownFormatterǁformat__mutmut_66, 
-        'xǁMarkdownFormatterǁformat__mutmut_67': xǁMarkdownFormatterǁformat__mutmut_67, 
-        'xǁMarkdownFormatterǁformat__mutmut_68': xǁMarkdownFormatterǁformat__mutmut_68, 
-        'xǁMarkdownFormatterǁformat__mutmut_69': xǁMarkdownFormatterǁformat__mutmut_69, 
-        'xǁMarkdownFormatterǁformat__mutmut_70': xǁMarkdownFormatterǁformat__mutmut_70, 
-        'xǁMarkdownFormatterǁformat__mutmut_71': xǁMarkdownFormatterǁformat__mutmut_71, 
-        'xǁMarkdownFormatterǁformat__mutmut_72': xǁMarkdownFormatterǁformat__mutmut_72, 
-        'xǁMarkdownFormatterǁformat__mutmut_73': xǁMarkdownFormatterǁformat__mutmut_73, 
-        'xǁMarkdownFormatterǁformat__mutmut_74': xǁMarkdownFormatterǁformat__mutmut_74, 
-        'xǁMarkdownFormatterǁformat__mutmut_75': xǁMarkdownFormatterǁformat__mutmut_75, 
-        'xǁMarkdownFormatterǁformat__mutmut_76': xǁMarkdownFormatterǁformat__mutmut_76, 
-        'xǁMarkdownFormatterǁformat__mutmut_77': xǁMarkdownFormatterǁformat__mutmut_77, 
-        'xǁMarkdownFormatterǁformat__mutmut_78': xǁMarkdownFormatterǁformat__mutmut_78, 
-        'xǁMarkdownFormatterǁformat__mutmut_79': xǁMarkdownFormatterǁformat__mutmut_79, 
-        'xǁMarkdownFormatterǁformat__mutmut_80': xǁMarkdownFormatterǁformat__mutmut_80, 
-        'xǁMarkdownFormatterǁformat__mutmut_81': xǁMarkdownFormatterǁformat__mutmut_81, 
-        'xǁMarkdownFormatterǁformat__mutmut_82': xǁMarkdownFormatterǁformat__mutmut_82, 
-        'xǁMarkdownFormatterǁformat__mutmut_83': xǁMarkdownFormatterǁformat__mutmut_83, 
-        'xǁMarkdownFormatterǁformat__mutmut_84': xǁMarkdownFormatterǁformat__mutmut_84, 
-        'xǁMarkdownFormatterǁformat__mutmut_85': xǁMarkdownFormatterǁformat__mutmut_85, 
-        'xǁMarkdownFormatterǁformat__mutmut_86': xǁMarkdownFormatterǁformat__mutmut_86, 
-        'xǁMarkdownFormatterǁformat__mutmut_87': xǁMarkdownFormatterǁformat__mutmut_87, 
-        'xǁMarkdownFormatterǁformat__mutmut_88': xǁMarkdownFormatterǁformat__mutmut_88, 
-        'xǁMarkdownFormatterǁformat__mutmut_89': xǁMarkdownFormatterǁformat__mutmut_89, 
-        'xǁMarkdownFormatterǁformat__mutmut_90': xǁMarkdownFormatterǁformat__mutmut_90, 
-        'xǁMarkdownFormatterǁformat__mutmut_91': xǁMarkdownFormatterǁformat__mutmut_91, 
-        'xǁMarkdownFormatterǁformat__mutmut_92': xǁMarkdownFormatterǁformat__mutmut_92, 
-        'xǁMarkdownFormatterǁformat__mutmut_93': xǁMarkdownFormatterǁformat__mutmut_93, 
-        'xǁMarkdownFormatterǁformat__mutmut_94': xǁMarkdownFormatterǁformat__mutmut_94, 
-        'xǁMarkdownFormatterǁformat__mutmut_95': xǁMarkdownFormatterǁformat__mutmut_95, 
-        'xǁMarkdownFormatterǁformat__mutmut_96': xǁMarkdownFormatterǁformat__mutmut_96, 
-        'xǁMarkdownFormatterǁformat__mutmut_97': xǁMarkdownFormatterǁformat__mutmut_97, 
-        'xǁMarkdownFormatterǁformat__mutmut_98': xǁMarkdownFormatterǁformat__mutmut_98, 
-        'xǁMarkdownFormatterǁformat__mutmut_99': xǁMarkdownFormatterǁformat__mutmut_99, 
-        'xǁMarkdownFormatterǁformat__mutmut_100': xǁMarkdownFormatterǁformat__mutmut_100, 
-        'xǁMarkdownFormatterǁformat__mutmut_101': xǁMarkdownFormatterǁformat__mutmut_101, 
-        'xǁMarkdownFormatterǁformat__mutmut_102': xǁMarkdownFormatterǁformat__mutmut_102, 
-        'xǁMarkdownFormatterǁformat__mutmut_103': xǁMarkdownFormatterǁformat__mutmut_103, 
-        'xǁMarkdownFormatterǁformat__mutmut_104': xǁMarkdownFormatterǁformat__mutmut_104, 
-        'xǁMarkdownFormatterǁformat__mutmut_105': xǁMarkdownFormatterǁformat__mutmut_105, 
-        'xǁMarkdownFormatterǁformat__mutmut_106': xǁMarkdownFormatterǁformat__mutmut_106, 
-        'xǁMarkdownFormatterǁformat__mutmut_107': xǁMarkdownFormatterǁformat__mutmut_107, 
-        'xǁMarkdownFormatterǁformat__mutmut_108': xǁMarkdownFormatterǁformat__mutmut_108, 
-        'xǁMarkdownFormatterǁformat__mutmut_109': xǁMarkdownFormatterǁformat__mutmut_109
+
+    xǁMarkdownFormatterǁformat__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁMarkdownFormatterǁformat__mutmut_1": xǁMarkdownFormatterǁformat__mutmut_1,
+        "xǁMarkdownFormatterǁformat__mutmut_2": xǁMarkdownFormatterǁformat__mutmut_2,
+        "xǁMarkdownFormatterǁformat__mutmut_3": xǁMarkdownFormatterǁformat__mutmut_3,
+        "xǁMarkdownFormatterǁformat__mutmut_4": xǁMarkdownFormatterǁformat__mutmut_4,
+        "xǁMarkdownFormatterǁformat__mutmut_5": xǁMarkdownFormatterǁformat__mutmut_5,
+        "xǁMarkdownFormatterǁformat__mutmut_6": xǁMarkdownFormatterǁformat__mutmut_6,
+        "xǁMarkdownFormatterǁformat__mutmut_7": xǁMarkdownFormatterǁformat__mutmut_7,
+        "xǁMarkdownFormatterǁformat__mutmut_8": xǁMarkdownFormatterǁformat__mutmut_8,
+        "xǁMarkdownFormatterǁformat__mutmut_9": xǁMarkdownFormatterǁformat__mutmut_9,
+        "xǁMarkdownFormatterǁformat__mutmut_10": xǁMarkdownFormatterǁformat__mutmut_10,
+        "xǁMarkdownFormatterǁformat__mutmut_11": xǁMarkdownFormatterǁformat__mutmut_11,
+        "xǁMarkdownFormatterǁformat__mutmut_12": xǁMarkdownFormatterǁformat__mutmut_12,
+        "xǁMarkdownFormatterǁformat__mutmut_13": xǁMarkdownFormatterǁformat__mutmut_13,
+        "xǁMarkdownFormatterǁformat__mutmut_14": xǁMarkdownFormatterǁformat__mutmut_14,
+        "xǁMarkdownFormatterǁformat__mutmut_15": xǁMarkdownFormatterǁformat__mutmut_15,
+        "xǁMarkdownFormatterǁformat__mutmut_16": xǁMarkdownFormatterǁformat__mutmut_16,
+        "xǁMarkdownFormatterǁformat__mutmut_17": xǁMarkdownFormatterǁformat__mutmut_17,
+        "xǁMarkdownFormatterǁformat__mutmut_18": xǁMarkdownFormatterǁformat__mutmut_18,
+        "xǁMarkdownFormatterǁformat__mutmut_19": xǁMarkdownFormatterǁformat__mutmut_19,
+        "xǁMarkdownFormatterǁformat__mutmut_20": xǁMarkdownFormatterǁformat__mutmut_20,
+        "xǁMarkdownFormatterǁformat__mutmut_21": xǁMarkdownFormatterǁformat__mutmut_21,
+        "xǁMarkdownFormatterǁformat__mutmut_22": xǁMarkdownFormatterǁformat__mutmut_22,
+        "xǁMarkdownFormatterǁformat__mutmut_23": xǁMarkdownFormatterǁformat__mutmut_23,
+        "xǁMarkdownFormatterǁformat__mutmut_24": xǁMarkdownFormatterǁformat__mutmut_24,
+        "xǁMarkdownFormatterǁformat__mutmut_25": xǁMarkdownFormatterǁformat__mutmut_25,
+        "xǁMarkdownFormatterǁformat__mutmut_26": xǁMarkdownFormatterǁformat__mutmut_26,
+        "xǁMarkdownFormatterǁformat__mutmut_27": xǁMarkdownFormatterǁformat__mutmut_27,
+        "xǁMarkdownFormatterǁformat__mutmut_28": xǁMarkdownFormatterǁformat__mutmut_28,
+        "xǁMarkdownFormatterǁformat__mutmut_29": xǁMarkdownFormatterǁformat__mutmut_29,
+        "xǁMarkdownFormatterǁformat__mutmut_30": xǁMarkdownFormatterǁformat__mutmut_30,
+        "xǁMarkdownFormatterǁformat__mutmut_31": xǁMarkdownFormatterǁformat__mutmut_31,
+        "xǁMarkdownFormatterǁformat__mutmut_32": xǁMarkdownFormatterǁformat__mutmut_32,
+        "xǁMarkdownFormatterǁformat__mutmut_33": xǁMarkdownFormatterǁformat__mutmut_33,
+        "xǁMarkdownFormatterǁformat__mutmut_34": xǁMarkdownFormatterǁformat__mutmut_34,
+        "xǁMarkdownFormatterǁformat__mutmut_35": xǁMarkdownFormatterǁformat__mutmut_35,
+        "xǁMarkdownFormatterǁformat__mutmut_36": xǁMarkdownFormatterǁformat__mutmut_36,
+        "xǁMarkdownFormatterǁformat__mutmut_37": xǁMarkdownFormatterǁformat__mutmut_37,
+        "xǁMarkdownFormatterǁformat__mutmut_38": xǁMarkdownFormatterǁformat__mutmut_38,
+        "xǁMarkdownFormatterǁformat__mutmut_39": xǁMarkdownFormatterǁformat__mutmut_39,
+        "xǁMarkdownFormatterǁformat__mutmut_40": xǁMarkdownFormatterǁformat__mutmut_40,
+        "xǁMarkdownFormatterǁformat__mutmut_41": xǁMarkdownFormatterǁformat__mutmut_41,
+        "xǁMarkdownFormatterǁformat__mutmut_42": xǁMarkdownFormatterǁformat__mutmut_42,
+        "xǁMarkdownFormatterǁformat__mutmut_43": xǁMarkdownFormatterǁformat__mutmut_43,
+        "xǁMarkdownFormatterǁformat__mutmut_44": xǁMarkdownFormatterǁformat__mutmut_44,
+        "xǁMarkdownFormatterǁformat__mutmut_45": xǁMarkdownFormatterǁformat__mutmut_45,
+        "xǁMarkdownFormatterǁformat__mutmut_46": xǁMarkdownFormatterǁformat__mutmut_46,
+        "xǁMarkdownFormatterǁformat__mutmut_47": xǁMarkdownFormatterǁformat__mutmut_47,
+        "xǁMarkdownFormatterǁformat__mutmut_48": xǁMarkdownFormatterǁformat__mutmut_48,
+        "xǁMarkdownFormatterǁformat__mutmut_49": xǁMarkdownFormatterǁformat__mutmut_49,
+        "xǁMarkdownFormatterǁformat__mutmut_50": xǁMarkdownFormatterǁformat__mutmut_50,
+        "xǁMarkdownFormatterǁformat__mutmut_51": xǁMarkdownFormatterǁformat__mutmut_51,
+        "xǁMarkdownFormatterǁformat__mutmut_52": xǁMarkdownFormatterǁformat__mutmut_52,
+        "xǁMarkdownFormatterǁformat__mutmut_53": xǁMarkdownFormatterǁformat__mutmut_53,
+        "xǁMarkdownFormatterǁformat__mutmut_54": xǁMarkdownFormatterǁformat__mutmut_54,
+        "xǁMarkdownFormatterǁformat__mutmut_55": xǁMarkdownFormatterǁformat__mutmut_55,
+        "xǁMarkdownFormatterǁformat__mutmut_56": xǁMarkdownFormatterǁformat__mutmut_56,
+        "xǁMarkdownFormatterǁformat__mutmut_57": xǁMarkdownFormatterǁformat__mutmut_57,
+        "xǁMarkdownFormatterǁformat__mutmut_58": xǁMarkdownFormatterǁformat__mutmut_58,
+        "xǁMarkdownFormatterǁformat__mutmut_59": xǁMarkdownFormatterǁformat__mutmut_59,
+        "xǁMarkdownFormatterǁformat__mutmut_60": xǁMarkdownFormatterǁformat__mutmut_60,
+        "xǁMarkdownFormatterǁformat__mutmut_61": xǁMarkdownFormatterǁformat__mutmut_61,
+        "xǁMarkdownFormatterǁformat__mutmut_62": xǁMarkdownFormatterǁformat__mutmut_62,
+        "xǁMarkdownFormatterǁformat__mutmut_63": xǁMarkdownFormatterǁformat__mutmut_63,
+        "xǁMarkdownFormatterǁformat__mutmut_64": xǁMarkdownFormatterǁformat__mutmut_64,
+        "xǁMarkdownFormatterǁformat__mutmut_65": xǁMarkdownFormatterǁformat__mutmut_65,
+        "xǁMarkdownFormatterǁformat__mutmut_66": xǁMarkdownFormatterǁformat__mutmut_66,
+        "xǁMarkdownFormatterǁformat__mutmut_67": xǁMarkdownFormatterǁformat__mutmut_67,
+        "xǁMarkdownFormatterǁformat__mutmut_68": xǁMarkdownFormatterǁformat__mutmut_68,
+        "xǁMarkdownFormatterǁformat__mutmut_69": xǁMarkdownFormatterǁformat__mutmut_69,
+        "xǁMarkdownFormatterǁformat__mutmut_70": xǁMarkdownFormatterǁformat__mutmut_70,
+        "xǁMarkdownFormatterǁformat__mutmut_71": xǁMarkdownFormatterǁformat__mutmut_71,
+        "xǁMarkdownFormatterǁformat__mutmut_72": xǁMarkdownFormatterǁformat__mutmut_72,
+        "xǁMarkdownFormatterǁformat__mutmut_73": xǁMarkdownFormatterǁformat__mutmut_73,
+        "xǁMarkdownFormatterǁformat__mutmut_74": xǁMarkdownFormatterǁformat__mutmut_74,
+        "xǁMarkdownFormatterǁformat__mutmut_75": xǁMarkdownFormatterǁformat__mutmut_75,
+        "xǁMarkdownFormatterǁformat__mutmut_76": xǁMarkdownFormatterǁformat__mutmut_76,
+        "xǁMarkdownFormatterǁformat__mutmut_77": xǁMarkdownFormatterǁformat__mutmut_77,
+        "xǁMarkdownFormatterǁformat__mutmut_78": xǁMarkdownFormatterǁformat__mutmut_78,
+        "xǁMarkdownFormatterǁformat__mutmut_79": xǁMarkdownFormatterǁformat__mutmut_79,
+        "xǁMarkdownFormatterǁformat__mutmut_80": xǁMarkdownFormatterǁformat__mutmut_80,
+        "xǁMarkdownFormatterǁformat__mutmut_81": xǁMarkdownFormatterǁformat__mutmut_81,
+        "xǁMarkdownFormatterǁformat__mutmut_82": xǁMarkdownFormatterǁformat__mutmut_82,
+        "xǁMarkdownFormatterǁformat__mutmut_83": xǁMarkdownFormatterǁformat__mutmut_83,
+        "xǁMarkdownFormatterǁformat__mutmut_84": xǁMarkdownFormatterǁformat__mutmut_84,
+        "xǁMarkdownFormatterǁformat__mutmut_85": xǁMarkdownFormatterǁformat__mutmut_85,
+        "xǁMarkdownFormatterǁformat__mutmut_86": xǁMarkdownFormatterǁformat__mutmut_86,
+        "xǁMarkdownFormatterǁformat__mutmut_87": xǁMarkdownFormatterǁformat__mutmut_87,
+        "xǁMarkdownFormatterǁformat__mutmut_88": xǁMarkdownFormatterǁformat__mutmut_88,
+        "xǁMarkdownFormatterǁformat__mutmut_89": xǁMarkdownFormatterǁformat__mutmut_89,
+        "xǁMarkdownFormatterǁformat__mutmut_90": xǁMarkdownFormatterǁformat__mutmut_90,
+        "xǁMarkdownFormatterǁformat__mutmut_91": xǁMarkdownFormatterǁformat__mutmut_91,
+        "xǁMarkdownFormatterǁformat__mutmut_92": xǁMarkdownFormatterǁformat__mutmut_92,
+        "xǁMarkdownFormatterǁformat__mutmut_93": xǁMarkdownFormatterǁformat__mutmut_93,
+        "xǁMarkdownFormatterǁformat__mutmut_94": xǁMarkdownFormatterǁformat__mutmut_94,
+        "xǁMarkdownFormatterǁformat__mutmut_95": xǁMarkdownFormatterǁformat__mutmut_95,
+        "xǁMarkdownFormatterǁformat__mutmut_96": xǁMarkdownFormatterǁformat__mutmut_96,
+        "xǁMarkdownFormatterǁformat__mutmut_97": xǁMarkdownFormatterǁformat__mutmut_97,
+        "xǁMarkdownFormatterǁformat__mutmut_98": xǁMarkdownFormatterǁformat__mutmut_98,
+        "xǁMarkdownFormatterǁformat__mutmut_99": xǁMarkdownFormatterǁformat__mutmut_99,
+        "xǁMarkdownFormatterǁformat__mutmut_100": xǁMarkdownFormatterǁformat__mutmut_100,
+        "xǁMarkdownFormatterǁformat__mutmut_101": xǁMarkdownFormatterǁformat__mutmut_101,
+        "xǁMarkdownFormatterǁformat__mutmut_102": xǁMarkdownFormatterǁformat__mutmut_102,
+        "xǁMarkdownFormatterǁformat__mutmut_103": xǁMarkdownFormatterǁformat__mutmut_103,
+        "xǁMarkdownFormatterǁformat__mutmut_104": xǁMarkdownFormatterǁformat__mutmut_104,
+        "xǁMarkdownFormatterǁformat__mutmut_105": xǁMarkdownFormatterǁformat__mutmut_105,
+        "xǁMarkdownFormatterǁformat__mutmut_106": xǁMarkdownFormatterǁformat__mutmut_106,
+        "xǁMarkdownFormatterǁformat__mutmut_107": xǁMarkdownFormatterǁformat__mutmut_107,
+        "xǁMarkdownFormatterǁformat__mutmut_108": xǁMarkdownFormatterǁformat__mutmut_108,
+        "xǁMarkdownFormatterǁformat__mutmut_109": xǁMarkdownFormatterǁformat__mutmut_109,
     }
-    
+
     def format(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁMarkdownFormatterǁformat__mutmut_orig"), object.__getattribute__(self, "xǁMarkdownFormatterǁformat__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁMarkdownFormatterǁformat__mutmut_orig"),
+            object.__getattribute__(self, "xǁMarkdownFormatterǁformat__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     format.__signature__ = _mutmut_signature(xǁMarkdownFormatterǁformat__mutmut_orig)
-    xǁMarkdownFormatterǁformat__mutmut_orig.__name__ = 'xǁMarkdownFormatterǁformat'
+    xǁMarkdownFormatterǁformat__mutmut_orig.__name__ = "xǁMarkdownFormatterǁformat"
 
 
 def x_get_formatter__mutmut_orig(format_name: str) -> SchemaFormatter:
@@ -34929,30 +34998,33 @@ def x_get_formatter__mutmut_15(format_name: str) -> SchemaFormatter:
 
     return formatter
 
-x_get_formatter__mutmut_mutants : ClassVar[MutantDict] = {
-'x_get_formatter__mutmut_1': x_get_formatter__mutmut_1, 
-    'x_get_formatter__mutmut_2': x_get_formatter__mutmut_2, 
-    'x_get_formatter__mutmut_3': x_get_formatter__mutmut_3, 
-    'x_get_formatter__mutmut_4': x_get_formatter__mutmut_4, 
-    'x_get_formatter__mutmut_5': x_get_formatter__mutmut_5, 
-    'x_get_formatter__mutmut_6': x_get_formatter__mutmut_6, 
-    'x_get_formatter__mutmut_7': x_get_formatter__mutmut_7, 
-    'x_get_formatter__mutmut_8': x_get_formatter__mutmut_8, 
-    'x_get_formatter__mutmut_9': x_get_formatter__mutmut_9, 
-    'x_get_formatter__mutmut_10': x_get_formatter__mutmut_10, 
-    'x_get_formatter__mutmut_11': x_get_formatter__mutmut_11, 
-    'x_get_formatter__mutmut_12': x_get_formatter__mutmut_12, 
-    'x_get_formatter__mutmut_13': x_get_formatter__mutmut_13, 
-    'x_get_formatter__mutmut_14': x_get_formatter__mutmut_14, 
-    'x_get_formatter__mutmut_15': x_get_formatter__mutmut_15
+
+x_get_formatter__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_get_formatter__mutmut_1": x_get_formatter__mutmut_1,
+    "x_get_formatter__mutmut_2": x_get_formatter__mutmut_2,
+    "x_get_formatter__mutmut_3": x_get_formatter__mutmut_3,
+    "x_get_formatter__mutmut_4": x_get_formatter__mutmut_4,
+    "x_get_formatter__mutmut_5": x_get_formatter__mutmut_5,
+    "x_get_formatter__mutmut_6": x_get_formatter__mutmut_6,
+    "x_get_formatter__mutmut_7": x_get_formatter__mutmut_7,
+    "x_get_formatter__mutmut_8": x_get_formatter__mutmut_8,
+    "x_get_formatter__mutmut_9": x_get_formatter__mutmut_9,
+    "x_get_formatter__mutmut_10": x_get_formatter__mutmut_10,
+    "x_get_formatter__mutmut_11": x_get_formatter__mutmut_11,
+    "x_get_formatter__mutmut_12": x_get_formatter__mutmut_12,
+    "x_get_formatter__mutmut_13": x_get_formatter__mutmut_13,
+    "x_get_formatter__mutmut_14": x_get_formatter__mutmut_14,
+    "x_get_formatter__mutmut_15": x_get_formatter__mutmut_15,
 }
+
 
 def get_formatter(*args, **kwargs):
     result = _mutmut_trampoline(x_get_formatter__mutmut_orig, x_get_formatter__mutmut_mutants, args, kwargs)
-    return result 
+    return result
+
 
 get_formatter.__signature__ = _mutmut_signature(x_get_formatter__mutmut_orig)
-x_get_formatter__mutmut_orig.__name__ = 'x_get_formatter'
+x_get_formatter__mutmut_orig.__name__ = "x_get_formatter"
 
 
 # <3 🧱🤝⚙️🪄

@@ -40,23 +40,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -760,7 +763,9 @@ def x_create_command_group__mutmut_8(  # noqa: C901
     reg = registry or get_command_registry()
 
     try:
-        group = click.Group(name=name, )
+        group = click.Group(
+            name=name,
+        )
         groups: dict[str, Group] = {}
 
         # Get commands to include
@@ -1506,7 +1511,9 @@ def x_create_command_group__mutmut_17(  # noqa: C901
             commands = reg.list_dimension(ComponentCategory.COMMAND.value)
 
         # Sort commands to ensure parents are created before children
-        sorted_commands = sorted(commands, )
+        sorted_commands = sorted(
+            commands,
+        )
 
         # First pass: create all groups
         for cmd_name in sorted_commands:
@@ -2166,7 +2173,9 @@ def x_create_command_group__mutmut_25(  # noqa: C901
 
         # First pass: create all groups
         for cmd_name in sorted_commands:
-            entry = reg.get_entry(cmd_name, )
+            entry = reg.get_entry(
+                cmd_name,
+            )
             if should_skip_entry(entry):
                 continue
 
@@ -3320,7 +3329,11 @@ def x_create_command_group__mutmut_39(  # noqa: C901
 
             # Check if this is a group
             if entry and entry.metadata.get("is_group"):
-                create_subgroup(cmd_name, entry, groups, )
+                create_subgroup(
+                    cmd_name,
+                    entry,
+                    groups,
+                )
 
         # Second pass: add commands to groups
         for cmd_name in sorted_commands:
@@ -3734,7 +3747,9 @@ def x_create_command_group__mutmut_44(  # noqa: C901
 
         # Second pass: add commands to groups
         for cmd_name in sorted_commands:
-            entry = reg.get_entry(cmd_name, )
+            entry = reg.get_entry(
+                cmd_name,
+            )
             if should_skip_entry(entry) or should_skip_command(entry):
                 continue
 
@@ -5135,7 +5150,11 @@ def x_create_command_group__mutmut_61(  # noqa: C901
             if entry is not None:
                 info = entry.metadata.get("info")
                 if info:
-                    add_command_to_group(info, groups, group, )
+                    add_command_to_group(
+                        info,
+                        groups,
+                        group,
+                    )
 
         return group
 
@@ -5635,84 +5654,89 @@ def x_create_command_group__mutmut_67(  # noqa: C901
         raise CLIBuildError(
             f"Failed to create Click command group '{name}': {e}",
             group_name=name,
-            ) from e
+        ) from e
 
-x_create_command_group__mutmut_mutants : ClassVar[MutantDict] = {
-'x_create_command_group__mutmut_1': x_create_command_group__mutmut_1, 
-    'x_create_command_group__mutmut_2': x_create_command_group__mutmut_2, 
-    'x_create_command_group__mutmut_3': x_create_command_group__mutmut_3, 
-    'x_create_command_group__mutmut_4': x_create_command_group__mutmut_4, 
-    'x_create_command_group__mutmut_5': x_create_command_group__mutmut_5, 
-    'x_create_command_group__mutmut_6': x_create_command_group__mutmut_6, 
-    'x_create_command_group__mutmut_7': x_create_command_group__mutmut_7, 
-    'x_create_command_group__mutmut_8': x_create_command_group__mutmut_8, 
-    'x_create_command_group__mutmut_9': x_create_command_group__mutmut_9, 
-    'x_create_command_group__mutmut_10': x_create_command_group__mutmut_10, 
-    'x_create_command_group__mutmut_11': x_create_command_group__mutmut_11, 
-    'x_create_command_group__mutmut_12': x_create_command_group__mutmut_12, 
-    'x_create_command_group__mutmut_13': x_create_command_group__mutmut_13, 
-    'x_create_command_group__mutmut_14': x_create_command_group__mutmut_14, 
-    'x_create_command_group__mutmut_15': x_create_command_group__mutmut_15, 
-    'x_create_command_group__mutmut_16': x_create_command_group__mutmut_16, 
-    'x_create_command_group__mutmut_17': x_create_command_group__mutmut_17, 
-    'x_create_command_group__mutmut_18': x_create_command_group__mutmut_18, 
-    'x_create_command_group__mutmut_19': x_create_command_group__mutmut_19, 
-    'x_create_command_group__mutmut_20': x_create_command_group__mutmut_20, 
-    'x_create_command_group__mutmut_21': x_create_command_group__mutmut_21, 
-    'x_create_command_group__mutmut_22': x_create_command_group__mutmut_22, 
-    'x_create_command_group__mutmut_23': x_create_command_group__mutmut_23, 
-    'x_create_command_group__mutmut_24': x_create_command_group__mutmut_24, 
-    'x_create_command_group__mutmut_25': x_create_command_group__mutmut_25, 
-    'x_create_command_group__mutmut_26': x_create_command_group__mutmut_26, 
-    'x_create_command_group__mutmut_27': x_create_command_group__mutmut_27, 
-    'x_create_command_group__mutmut_28': x_create_command_group__mutmut_28, 
-    'x_create_command_group__mutmut_29': x_create_command_group__mutmut_29, 
-    'x_create_command_group__mutmut_30': x_create_command_group__mutmut_30, 
-    'x_create_command_group__mutmut_31': x_create_command_group__mutmut_31, 
-    'x_create_command_group__mutmut_32': x_create_command_group__mutmut_32, 
-    'x_create_command_group__mutmut_33': x_create_command_group__mutmut_33, 
-    'x_create_command_group__mutmut_34': x_create_command_group__mutmut_34, 
-    'x_create_command_group__mutmut_35': x_create_command_group__mutmut_35, 
-    'x_create_command_group__mutmut_36': x_create_command_group__mutmut_36, 
-    'x_create_command_group__mutmut_37': x_create_command_group__mutmut_37, 
-    'x_create_command_group__mutmut_38': x_create_command_group__mutmut_38, 
-    'x_create_command_group__mutmut_39': x_create_command_group__mutmut_39, 
-    'x_create_command_group__mutmut_40': x_create_command_group__mutmut_40, 
-    'x_create_command_group__mutmut_41': x_create_command_group__mutmut_41, 
-    'x_create_command_group__mutmut_42': x_create_command_group__mutmut_42, 
-    'x_create_command_group__mutmut_43': x_create_command_group__mutmut_43, 
-    'x_create_command_group__mutmut_44': x_create_command_group__mutmut_44, 
-    'x_create_command_group__mutmut_45': x_create_command_group__mutmut_45, 
-    'x_create_command_group__mutmut_46': x_create_command_group__mutmut_46, 
-    'x_create_command_group__mutmut_47': x_create_command_group__mutmut_47, 
-    'x_create_command_group__mutmut_48': x_create_command_group__mutmut_48, 
-    'x_create_command_group__mutmut_49': x_create_command_group__mutmut_49, 
-    'x_create_command_group__mutmut_50': x_create_command_group__mutmut_50, 
-    'x_create_command_group__mutmut_51': x_create_command_group__mutmut_51, 
-    'x_create_command_group__mutmut_52': x_create_command_group__mutmut_52, 
-    'x_create_command_group__mutmut_53': x_create_command_group__mutmut_53, 
-    'x_create_command_group__mutmut_54': x_create_command_group__mutmut_54, 
-    'x_create_command_group__mutmut_55': x_create_command_group__mutmut_55, 
-    'x_create_command_group__mutmut_56': x_create_command_group__mutmut_56, 
-    'x_create_command_group__mutmut_57': x_create_command_group__mutmut_57, 
-    'x_create_command_group__mutmut_58': x_create_command_group__mutmut_58, 
-    'x_create_command_group__mutmut_59': x_create_command_group__mutmut_59, 
-    'x_create_command_group__mutmut_60': x_create_command_group__mutmut_60, 
-    'x_create_command_group__mutmut_61': x_create_command_group__mutmut_61, 
-    'x_create_command_group__mutmut_62': x_create_command_group__mutmut_62, 
-    'x_create_command_group__mutmut_63': x_create_command_group__mutmut_63, 
-    'x_create_command_group__mutmut_64': x_create_command_group__mutmut_64, 
-    'x_create_command_group__mutmut_65': x_create_command_group__mutmut_65, 
-    'x_create_command_group__mutmut_66': x_create_command_group__mutmut_66, 
-    'x_create_command_group__mutmut_67': x_create_command_group__mutmut_67
+
+x_create_command_group__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_create_command_group__mutmut_1": x_create_command_group__mutmut_1,
+    "x_create_command_group__mutmut_2": x_create_command_group__mutmut_2,
+    "x_create_command_group__mutmut_3": x_create_command_group__mutmut_3,
+    "x_create_command_group__mutmut_4": x_create_command_group__mutmut_4,
+    "x_create_command_group__mutmut_5": x_create_command_group__mutmut_5,
+    "x_create_command_group__mutmut_6": x_create_command_group__mutmut_6,
+    "x_create_command_group__mutmut_7": x_create_command_group__mutmut_7,
+    "x_create_command_group__mutmut_8": x_create_command_group__mutmut_8,
+    "x_create_command_group__mutmut_9": x_create_command_group__mutmut_9,
+    "x_create_command_group__mutmut_10": x_create_command_group__mutmut_10,
+    "x_create_command_group__mutmut_11": x_create_command_group__mutmut_11,
+    "x_create_command_group__mutmut_12": x_create_command_group__mutmut_12,
+    "x_create_command_group__mutmut_13": x_create_command_group__mutmut_13,
+    "x_create_command_group__mutmut_14": x_create_command_group__mutmut_14,
+    "x_create_command_group__mutmut_15": x_create_command_group__mutmut_15,
+    "x_create_command_group__mutmut_16": x_create_command_group__mutmut_16,
+    "x_create_command_group__mutmut_17": x_create_command_group__mutmut_17,
+    "x_create_command_group__mutmut_18": x_create_command_group__mutmut_18,
+    "x_create_command_group__mutmut_19": x_create_command_group__mutmut_19,
+    "x_create_command_group__mutmut_20": x_create_command_group__mutmut_20,
+    "x_create_command_group__mutmut_21": x_create_command_group__mutmut_21,
+    "x_create_command_group__mutmut_22": x_create_command_group__mutmut_22,
+    "x_create_command_group__mutmut_23": x_create_command_group__mutmut_23,
+    "x_create_command_group__mutmut_24": x_create_command_group__mutmut_24,
+    "x_create_command_group__mutmut_25": x_create_command_group__mutmut_25,
+    "x_create_command_group__mutmut_26": x_create_command_group__mutmut_26,
+    "x_create_command_group__mutmut_27": x_create_command_group__mutmut_27,
+    "x_create_command_group__mutmut_28": x_create_command_group__mutmut_28,
+    "x_create_command_group__mutmut_29": x_create_command_group__mutmut_29,
+    "x_create_command_group__mutmut_30": x_create_command_group__mutmut_30,
+    "x_create_command_group__mutmut_31": x_create_command_group__mutmut_31,
+    "x_create_command_group__mutmut_32": x_create_command_group__mutmut_32,
+    "x_create_command_group__mutmut_33": x_create_command_group__mutmut_33,
+    "x_create_command_group__mutmut_34": x_create_command_group__mutmut_34,
+    "x_create_command_group__mutmut_35": x_create_command_group__mutmut_35,
+    "x_create_command_group__mutmut_36": x_create_command_group__mutmut_36,
+    "x_create_command_group__mutmut_37": x_create_command_group__mutmut_37,
+    "x_create_command_group__mutmut_38": x_create_command_group__mutmut_38,
+    "x_create_command_group__mutmut_39": x_create_command_group__mutmut_39,
+    "x_create_command_group__mutmut_40": x_create_command_group__mutmut_40,
+    "x_create_command_group__mutmut_41": x_create_command_group__mutmut_41,
+    "x_create_command_group__mutmut_42": x_create_command_group__mutmut_42,
+    "x_create_command_group__mutmut_43": x_create_command_group__mutmut_43,
+    "x_create_command_group__mutmut_44": x_create_command_group__mutmut_44,
+    "x_create_command_group__mutmut_45": x_create_command_group__mutmut_45,
+    "x_create_command_group__mutmut_46": x_create_command_group__mutmut_46,
+    "x_create_command_group__mutmut_47": x_create_command_group__mutmut_47,
+    "x_create_command_group__mutmut_48": x_create_command_group__mutmut_48,
+    "x_create_command_group__mutmut_49": x_create_command_group__mutmut_49,
+    "x_create_command_group__mutmut_50": x_create_command_group__mutmut_50,
+    "x_create_command_group__mutmut_51": x_create_command_group__mutmut_51,
+    "x_create_command_group__mutmut_52": x_create_command_group__mutmut_52,
+    "x_create_command_group__mutmut_53": x_create_command_group__mutmut_53,
+    "x_create_command_group__mutmut_54": x_create_command_group__mutmut_54,
+    "x_create_command_group__mutmut_55": x_create_command_group__mutmut_55,
+    "x_create_command_group__mutmut_56": x_create_command_group__mutmut_56,
+    "x_create_command_group__mutmut_57": x_create_command_group__mutmut_57,
+    "x_create_command_group__mutmut_58": x_create_command_group__mutmut_58,
+    "x_create_command_group__mutmut_59": x_create_command_group__mutmut_59,
+    "x_create_command_group__mutmut_60": x_create_command_group__mutmut_60,
+    "x_create_command_group__mutmut_61": x_create_command_group__mutmut_61,
+    "x_create_command_group__mutmut_62": x_create_command_group__mutmut_62,
+    "x_create_command_group__mutmut_63": x_create_command_group__mutmut_63,
+    "x_create_command_group__mutmut_64": x_create_command_group__mutmut_64,
+    "x_create_command_group__mutmut_65": x_create_command_group__mutmut_65,
+    "x_create_command_group__mutmut_66": x_create_command_group__mutmut_66,
+    "x_create_command_group__mutmut_67": x_create_command_group__mutmut_67,
 }
 
+
 def create_command_group(*args, **kwargs):
-    result = _mutmut_trampoline(x_create_command_group__mutmut_orig, x_create_command_group__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_create_command_group__mutmut_orig, x_create_command_group__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 create_command_group.__signature__ = _mutmut_signature(x_create_command_group__mutmut_orig)
-x_create_command_group__mutmut_orig.__name__ = 'x_create_command_group'
+x_create_command_group__mutmut_orig.__name__ = "x_create_command_group"
 
 
 # <3 🧱🤝💻🪄

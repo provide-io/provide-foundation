@@ -19,23 +19,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -138,7 +141,9 @@ class AuthenticationError(FoundationError):
         **kwargs: Any,
     ) -> None:
         if auth_method:
-            kwargs.setdefault("context", )["auth.method"] = auth_method
+            kwargs.setdefault(
+                "context",
+            )["auth.method"] = auth_method
         if realm:
             kwargs.setdefault("context", {})["auth.realm"] = realm
         super().__init__(message, **kwargs)
@@ -266,7 +271,9 @@ class AuthenticationError(FoundationError):
         if auth_method:
             kwargs.setdefault("context", {})["auth.method"] = auth_method
         if realm:
-            kwargs.setdefault("context", )["auth.realm"] = realm
+            kwargs.setdefault(
+                "context",
+            )["auth.realm"] = realm
         super().__init__(message, **kwargs)
 
     def xǁAuthenticationErrorǁ__init____mutmut_15(
@@ -365,38 +372,46 @@ class AuthenticationError(FoundationError):
             kwargs.setdefault("context", {})["auth.method"] = auth_method
         if realm:
             kwargs.setdefault("context", {})["auth.realm"] = realm
-        super().__init__(message, )
-    
-    xǁAuthenticationErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAuthenticationErrorǁ__init____mutmut_1': xǁAuthenticationErrorǁ__init____mutmut_1, 
-        'xǁAuthenticationErrorǁ__init____mutmut_2': xǁAuthenticationErrorǁ__init____mutmut_2, 
-        'xǁAuthenticationErrorǁ__init____mutmut_3': xǁAuthenticationErrorǁ__init____mutmut_3, 
-        'xǁAuthenticationErrorǁ__init____mutmut_4': xǁAuthenticationErrorǁ__init____mutmut_4, 
-        'xǁAuthenticationErrorǁ__init____mutmut_5': xǁAuthenticationErrorǁ__init____mutmut_5, 
-        'xǁAuthenticationErrorǁ__init____mutmut_6': xǁAuthenticationErrorǁ__init____mutmut_6, 
-        'xǁAuthenticationErrorǁ__init____mutmut_7': xǁAuthenticationErrorǁ__init____mutmut_7, 
-        'xǁAuthenticationErrorǁ__init____mutmut_8': xǁAuthenticationErrorǁ__init____mutmut_8, 
-        'xǁAuthenticationErrorǁ__init____mutmut_9': xǁAuthenticationErrorǁ__init____mutmut_9, 
-        'xǁAuthenticationErrorǁ__init____mutmut_10': xǁAuthenticationErrorǁ__init____mutmut_10, 
-        'xǁAuthenticationErrorǁ__init____mutmut_11': xǁAuthenticationErrorǁ__init____mutmut_11, 
-        'xǁAuthenticationErrorǁ__init____mutmut_12': xǁAuthenticationErrorǁ__init____mutmut_12, 
-        'xǁAuthenticationErrorǁ__init____mutmut_13': xǁAuthenticationErrorǁ__init____mutmut_13, 
-        'xǁAuthenticationErrorǁ__init____mutmut_14': xǁAuthenticationErrorǁ__init____mutmut_14, 
-        'xǁAuthenticationErrorǁ__init____mutmut_15': xǁAuthenticationErrorǁ__init____mutmut_15, 
-        'xǁAuthenticationErrorǁ__init____mutmut_16': xǁAuthenticationErrorǁ__init____mutmut_16, 
-        'xǁAuthenticationErrorǁ__init____mutmut_17': xǁAuthenticationErrorǁ__init____mutmut_17, 
-        'xǁAuthenticationErrorǁ__init____mutmut_18': xǁAuthenticationErrorǁ__init____mutmut_18, 
-        'xǁAuthenticationErrorǁ__init____mutmut_19': xǁAuthenticationErrorǁ__init____mutmut_19, 
-        'xǁAuthenticationErrorǁ__init____mutmut_20': xǁAuthenticationErrorǁ__init____mutmut_20, 
-        'xǁAuthenticationErrorǁ__init____mutmut_21': xǁAuthenticationErrorǁ__init____mutmut_21
+        super().__init__(
+            message,
+        )
+
+    xǁAuthenticationErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAuthenticationErrorǁ__init____mutmut_1": xǁAuthenticationErrorǁ__init____mutmut_1,
+        "xǁAuthenticationErrorǁ__init____mutmut_2": xǁAuthenticationErrorǁ__init____mutmut_2,
+        "xǁAuthenticationErrorǁ__init____mutmut_3": xǁAuthenticationErrorǁ__init____mutmut_3,
+        "xǁAuthenticationErrorǁ__init____mutmut_4": xǁAuthenticationErrorǁ__init____mutmut_4,
+        "xǁAuthenticationErrorǁ__init____mutmut_5": xǁAuthenticationErrorǁ__init____mutmut_5,
+        "xǁAuthenticationErrorǁ__init____mutmut_6": xǁAuthenticationErrorǁ__init____mutmut_6,
+        "xǁAuthenticationErrorǁ__init____mutmut_7": xǁAuthenticationErrorǁ__init____mutmut_7,
+        "xǁAuthenticationErrorǁ__init____mutmut_8": xǁAuthenticationErrorǁ__init____mutmut_8,
+        "xǁAuthenticationErrorǁ__init____mutmut_9": xǁAuthenticationErrorǁ__init____mutmut_9,
+        "xǁAuthenticationErrorǁ__init____mutmut_10": xǁAuthenticationErrorǁ__init____mutmut_10,
+        "xǁAuthenticationErrorǁ__init____mutmut_11": xǁAuthenticationErrorǁ__init____mutmut_11,
+        "xǁAuthenticationErrorǁ__init____mutmut_12": xǁAuthenticationErrorǁ__init____mutmut_12,
+        "xǁAuthenticationErrorǁ__init____mutmut_13": xǁAuthenticationErrorǁ__init____mutmut_13,
+        "xǁAuthenticationErrorǁ__init____mutmut_14": xǁAuthenticationErrorǁ__init____mutmut_14,
+        "xǁAuthenticationErrorǁ__init____mutmut_15": xǁAuthenticationErrorǁ__init____mutmut_15,
+        "xǁAuthenticationErrorǁ__init____mutmut_16": xǁAuthenticationErrorǁ__init____mutmut_16,
+        "xǁAuthenticationErrorǁ__init____mutmut_17": xǁAuthenticationErrorǁ__init____mutmut_17,
+        "xǁAuthenticationErrorǁ__init____mutmut_18": xǁAuthenticationErrorǁ__init____mutmut_18,
+        "xǁAuthenticationErrorǁ__init____mutmut_19": xǁAuthenticationErrorǁ__init____mutmut_19,
+        "xǁAuthenticationErrorǁ__init____mutmut_20": xǁAuthenticationErrorǁ__init____mutmut_20,
+        "xǁAuthenticationErrorǁ__init____mutmut_21": xǁAuthenticationErrorǁ__init____mutmut_21,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAuthenticationErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁAuthenticationErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAuthenticationErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁAuthenticationErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁAuthenticationErrorǁ__init____mutmut_orig)
-    xǁAuthenticationErrorǁ__init____mutmut_orig.__name__ = 'xǁAuthenticationErrorǁ__init__'
+    xǁAuthenticationErrorǁ__init____mutmut_orig.__name__ = "xǁAuthenticationErrorǁ__init__"
 
     def xǁAuthenticationErrorǁ_default_code__mutmut_orig(self) -> str:
         return "AUTH_ERROR"
@@ -406,18 +421,24 @@ class AuthenticationError(FoundationError):
 
     def xǁAuthenticationErrorǁ_default_code__mutmut_2(self) -> str:
         return "auth_error"
-    
-    xǁAuthenticationErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAuthenticationErrorǁ_default_code__mutmut_1': xǁAuthenticationErrorǁ_default_code__mutmut_1, 
-        'xǁAuthenticationErrorǁ_default_code__mutmut_2': xǁAuthenticationErrorǁ_default_code__mutmut_2
+
+    xǁAuthenticationErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAuthenticationErrorǁ_default_code__mutmut_1": xǁAuthenticationErrorǁ_default_code__mutmut_1,
+        "xǁAuthenticationErrorǁ_default_code__mutmut_2": xǁAuthenticationErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAuthenticationErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁAuthenticationErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAuthenticationErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁAuthenticationErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁAuthenticationErrorǁ_default_code__mutmut_orig)
-    xǁAuthenticationErrorǁ_default_code__mutmut_orig.__name__ = 'xǁAuthenticationErrorǁ_default_code'
+    xǁAuthenticationErrorǁ_default_code__mutmut_orig.__name__ = "xǁAuthenticationErrorǁ_default_code"
 
 
 class AuthorizationError(FoundationError):
@@ -531,7 +552,9 @@ class AuthorizationError(FoundationError):
         **kwargs: Any,
     ) -> None:
         if required_permission:
-            kwargs.setdefault("context", )["authz.permission"] = required_permission
+            kwargs.setdefault(
+                "context",
+            )["authz.permission"] = required_permission
         if resource:
             kwargs.setdefault("context", {})["authz.resource"] = resource
         if actor:
@@ -686,7 +709,9 @@ class AuthorizationError(FoundationError):
         if required_permission:
             kwargs.setdefault("context", {})["authz.permission"] = required_permission
         if resource:
-            kwargs.setdefault("context", )["authz.resource"] = resource
+            kwargs.setdefault(
+                "context",
+            )["authz.resource"] = resource
         if actor:
             kwargs.setdefault("context", {})["authz.actor"] = actor
         super().__init__(message, **kwargs)
@@ -841,7 +866,9 @@ class AuthorizationError(FoundationError):
         if resource:
             kwargs.setdefault("context", {})["authz.resource"] = resource
         if actor:
-            kwargs.setdefault("context", )["authz.actor"] = actor
+            kwargs.setdefault(
+                "context",
+            )["authz.actor"] = actor
         super().__init__(message, **kwargs)
 
     def xǁAuthorizationErrorǁ__init____mutmut_24(
@@ -961,47 +988,55 @@ class AuthorizationError(FoundationError):
             kwargs.setdefault("context", {})["authz.resource"] = resource
         if actor:
             kwargs.setdefault("context", {})["authz.actor"] = actor
-        super().__init__(message, )
-    
-    xǁAuthorizationErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAuthorizationErrorǁ__init____mutmut_1': xǁAuthorizationErrorǁ__init____mutmut_1, 
-        'xǁAuthorizationErrorǁ__init____mutmut_2': xǁAuthorizationErrorǁ__init____mutmut_2, 
-        'xǁAuthorizationErrorǁ__init____mutmut_3': xǁAuthorizationErrorǁ__init____mutmut_3, 
-        'xǁAuthorizationErrorǁ__init____mutmut_4': xǁAuthorizationErrorǁ__init____mutmut_4, 
-        'xǁAuthorizationErrorǁ__init____mutmut_5': xǁAuthorizationErrorǁ__init____mutmut_5, 
-        'xǁAuthorizationErrorǁ__init____mutmut_6': xǁAuthorizationErrorǁ__init____mutmut_6, 
-        'xǁAuthorizationErrorǁ__init____mutmut_7': xǁAuthorizationErrorǁ__init____mutmut_7, 
-        'xǁAuthorizationErrorǁ__init____mutmut_8': xǁAuthorizationErrorǁ__init____mutmut_8, 
-        'xǁAuthorizationErrorǁ__init____mutmut_9': xǁAuthorizationErrorǁ__init____mutmut_9, 
-        'xǁAuthorizationErrorǁ__init____mutmut_10': xǁAuthorizationErrorǁ__init____mutmut_10, 
-        'xǁAuthorizationErrorǁ__init____mutmut_11': xǁAuthorizationErrorǁ__init____mutmut_11, 
-        'xǁAuthorizationErrorǁ__init____mutmut_12': xǁAuthorizationErrorǁ__init____mutmut_12, 
-        'xǁAuthorizationErrorǁ__init____mutmut_13': xǁAuthorizationErrorǁ__init____mutmut_13, 
-        'xǁAuthorizationErrorǁ__init____mutmut_14': xǁAuthorizationErrorǁ__init____mutmut_14, 
-        'xǁAuthorizationErrorǁ__init____mutmut_15': xǁAuthorizationErrorǁ__init____mutmut_15, 
-        'xǁAuthorizationErrorǁ__init____mutmut_16': xǁAuthorizationErrorǁ__init____mutmut_16, 
-        'xǁAuthorizationErrorǁ__init____mutmut_17': xǁAuthorizationErrorǁ__init____mutmut_17, 
-        'xǁAuthorizationErrorǁ__init____mutmut_18': xǁAuthorizationErrorǁ__init____mutmut_18, 
-        'xǁAuthorizationErrorǁ__init____mutmut_19': xǁAuthorizationErrorǁ__init____mutmut_19, 
-        'xǁAuthorizationErrorǁ__init____mutmut_20': xǁAuthorizationErrorǁ__init____mutmut_20, 
-        'xǁAuthorizationErrorǁ__init____mutmut_21': xǁAuthorizationErrorǁ__init____mutmut_21, 
-        'xǁAuthorizationErrorǁ__init____mutmut_22': xǁAuthorizationErrorǁ__init____mutmut_22, 
-        'xǁAuthorizationErrorǁ__init____mutmut_23': xǁAuthorizationErrorǁ__init____mutmut_23, 
-        'xǁAuthorizationErrorǁ__init____mutmut_24': xǁAuthorizationErrorǁ__init____mutmut_24, 
-        'xǁAuthorizationErrorǁ__init____mutmut_25': xǁAuthorizationErrorǁ__init____mutmut_25, 
-        'xǁAuthorizationErrorǁ__init____mutmut_26': xǁAuthorizationErrorǁ__init____mutmut_26, 
-        'xǁAuthorizationErrorǁ__init____mutmut_27': xǁAuthorizationErrorǁ__init____mutmut_27, 
-        'xǁAuthorizationErrorǁ__init____mutmut_28': xǁAuthorizationErrorǁ__init____mutmut_28, 
-        'xǁAuthorizationErrorǁ__init____mutmut_29': xǁAuthorizationErrorǁ__init____mutmut_29, 
-        'xǁAuthorizationErrorǁ__init____mutmut_30': xǁAuthorizationErrorǁ__init____mutmut_30
+        super().__init__(
+            message,
+        )
+
+    xǁAuthorizationErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAuthorizationErrorǁ__init____mutmut_1": xǁAuthorizationErrorǁ__init____mutmut_1,
+        "xǁAuthorizationErrorǁ__init____mutmut_2": xǁAuthorizationErrorǁ__init____mutmut_2,
+        "xǁAuthorizationErrorǁ__init____mutmut_3": xǁAuthorizationErrorǁ__init____mutmut_3,
+        "xǁAuthorizationErrorǁ__init____mutmut_4": xǁAuthorizationErrorǁ__init____mutmut_4,
+        "xǁAuthorizationErrorǁ__init____mutmut_5": xǁAuthorizationErrorǁ__init____mutmut_5,
+        "xǁAuthorizationErrorǁ__init____mutmut_6": xǁAuthorizationErrorǁ__init____mutmut_6,
+        "xǁAuthorizationErrorǁ__init____mutmut_7": xǁAuthorizationErrorǁ__init____mutmut_7,
+        "xǁAuthorizationErrorǁ__init____mutmut_8": xǁAuthorizationErrorǁ__init____mutmut_8,
+        "xǁAuthorizationErrorǁ__init____mutmut_9": xǁAuthorizationErrorǁ__init____mutmut_9,
+        "xǁAuthorizationErrorǁ__init____mutmut_10": xǁAuthorizationErrorǁ__init____mutmut_10,
+        "xǁAuthorizationErrorǁ__init____mutmut_11": xǁAuthorizationErrorǁ__init____mutmut_11,
+        "xǁAuthorizationErrorǁ__init____mutmut_12": xǁAuthorizationErrorǁ__init____mutmut_12,
+        "xǁAuthorizationErrorǁ__init____mutmut_13": xǁAuthorizationErrorǁ__init____mutmut_13,
+        "xǁAuthorizationErrorǁ__init____mutmut_14": xǁAuthorizationErrorǁ__init____mutmut_14,
+        "xǁAuthorizationErrorǁ__init____mutmut_15": xǁAuthorizationErrorǁ__init____mutmut_15,
+        "xǁAuthorizationErrorǁ__init____mutmut_16": xǁAuthorizationErrorǁ__init____mutmut_16,
+        "xǁAuthorizationErrorǁ__init____mutmut_17": xǁAuthorizationErrorǁ__init____mutmut_17,
+        "xǁAuthorizationErrorǁ__init____mutmut_18": xǁAuthorizationErrorǁ__init____mutmut_18,
+        "xǁAuthorizationErrorǁ__init____mutmut_19": xǁAuthorizationErrorǁ__init____mutmut_19,
+        "xǁAuthorizationErrorǁ__init____mutmut_20": xǁAuthorizationErrorǁ__init____mutmut_20,
+        "xǁAuthorizationErrorǁ__init____mutmut_21": xǁAuthorizationErrorǁ__init____mutmut_21,
+        "xǁAuthorizationErrorǁ__init____mutmut_22": xǁAuthorizationErrorǁ__init____mutmut_22,
+        "xǁAuthorizationErrorǁ__init____mutmut_23": xǁAuthorizationErrorǁ__init____mutmut_23,
+        "xǁAuthorizationErrorǁ__init____mutmut_24": xǁAuthorizationErrorǁ__init____mutmut_24,
+        "xǁAuthorizationErrorǁ__init____mutmut_25": xǁAuthorizationErrorǁ__init____mutmut_25,
+        "xǁAuthorizationErrorǁ__init____mutmut_26": xǁAuthorizationErrorǁ__init____mutmut_26,
+        "xǁAuthorizationErrorǁ__init____mutmut_27": xǁAuthorizationErrorǁ__init____mutmut_27,
+        "xǁAuthorizationErrorǁ__init____mutmut_28": xǁAuthorizationErrorǁ__init____mutmut_28,
+        "xǁAuthorizationErrorǁ__init____mutmut_29": xǁAuthorizationErrorǁ__init____mutmut_29,
+        "xǁAuthorizationErrorǁ__init____mutmut_30": xǁAuthorizationErrorǁ__init____mutmut_30,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAuthorizationErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁAuthorizationErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAuthorizationErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁAuthorizationErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁAuthorizationErrorǁ__init____mutmut_orig)
-    xǁAuthorizationErrorǁ__init____mutmut_orig.__name__ = 'xǁAuthorizationErrorǁ__init__'
+    xǁAuthorizationErrorǁ__init____mutmut_orig.__name__ = "xǁAuthorizationErrorǁ__init__"
 
     def xǁAuthorizationErrorǁ_default_code__mutmut_orig(self) -> str:
         return "AUTHZ_ERROR"
@@ -1011,18 +1046,24 @@ class AuthorizationError(FoundationError):
 
     def xǁAuthorizationErrorǁ_default_code__mutmut_2(self) -> str:
         return "authz_error"
-    
-    xǁAuthorizationErrorǁ_default_code__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁAuthorizationErrorǁ_default_code__mutmut_1': xǁAuthorizationErrorǁ_default_code__mutmut_1, 
-        'xǁAuthorizationErrorǁ_default_code__mutmut_2': xǁAuthorizationErrorǁ_default_code__mutmut_2
+
+    xǁAuthorizationErrorǁ_default_code__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁAuthorizationErrorǁ_default_code__mutmut_1": xǁAuthorizationErrorǁ_default_code__mutmut_1,
+        "xǁAuthorizationErrorǁ_default_code__mutmut_2": xǁAuthorizationErrorǁ_default_code__mutmut_2,
     }
-    
+
     def _default_code(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁAuthorizationErrorǁ_default_code__mutmut_orig"), object.__getattribute__(self, "xǁAuthorizationErrorǁ_default_code__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁAuthorizationErrorǁ_default_code__mutmut_orig"),
+            object.__getattribute__(self, "xǁAuthorizationErrorǁ_default_code__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _default_code.__signature__ = _mutmut_signature(xǁAuthorizationErrorǁ_default_code__mutmut_orig)
-    xǁAuthorizationErrorǁ_default_code__mutmut_orig.__name__ = 'xǁAuthorizationErrorǁ_default_code'
+    xǁAuthorizationErrorǁ_default_code__mutmut_orig.__name__ = "xǁAuthorizationErrorǁ_default_code"
 
 
 # <3 🧱🤝🐛🪄

@@ -94,23 +94,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -188,19 +191,24 @@ def x_is_sensitive_env_var__mutmut_4(name: str) -> bool:
     name_upper = name.upper()
     return any(pattern not in name_upper for pattern in SENSITIVE_ENV_PATTERNS)
 
-x_is_sensitive_env_var__mutmut_mutants : ClassVar[MutantDict] = {
-'x_is_sensitive_env_var__mutmut_1': x_is_sensitive_env_var__mutmut_1, 
-    'x_is_sensitive_env_var__mutmut_2': x_is_sensitive_env_var__mutmut_2, 
-    'x_is_sensitive_env_var__mutmut_3': x_is_sensitive_env_var__mutmut_3, 
-    'x_is_sensitive_env_var__mutmut_4': x_is_sensitive_env_var__mutmut_4
+
+x_is_sensitive_env_var__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_is_sensitive_env_var__mutmut_1": x_is_sensitive_env_var__mutmut_1,
+    "x_is_sensitive_env_var__mutmut_2": x_is_sensitive_env_var__mutmut_2,
+    "x_is_sensitive_env_var__mutmut_3": x_is_sensitive_env_var__mutmut_3,
+    "x_is_sensitive_env_var__mutmut_4": x_is_sensitive_env_var__mutmut_4,
 }
 
+
 def is_sensitive_env_var(*args, **kwargs):
-    result = _mutmut_trampoline(x_is_sensitive_env_var__mutmut_orig, x_is_sensitive_env_var__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_is_sensitive_env_var__mutmut_orig, x_is_sensitive_env_var__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 is_sensitive_env_var.__signature__ = _mutmut_signature(x_is_sensitive_env_var__mutmut_orig)
-x_is_sensitive_env_var__mutmut_orig.__name__ = 'x_is_sensitive_env_var'
+x_is_sensitive_env_var__mutmut_orig.__name__ = "x_is_sensitive_env_var"
 
 
 def x_scrub_environment__mutmut_orig(
@@ -430,20 +438,25 @@ def x_scrub_environment__mutmut_5(
     # Only include variables in the allowlist
     return {key: value for key, value in env.items() if key not in allowlist}
 
-x_scrub_environment__mutmut_mutants : ClassVar[MutantDict] = {
-'x_scrub_environment__mutmut_1': x_scrub_environment__mutmut_1, 
-    'x_scrub_environment__mutmut_2': x_scrub_environment__mutmut_2, 
-    'x_scrub_environment__mutmut_3': x_scrub_environment__mutmut_3, 
-    'x_scrub_environment__mutmut_4': x_scrub_environment__mutmut_4, 
-    'x_scrub_environment__mutmut_5': x_scrub_environment__mutmut_5
+
+x_scrub_environment__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_scrub_environment__mutmut_1": x_scrub_environment__mutmut_1,
+    "x_scrub_environment__mutmut_2": x_scrub_environment__mutmut_2,
+    "x_scrub_environment__mutmut_3": x_scrub_environment__mutmut_3,
+    "x_scrub_environment__mutmut_4": x_scrub_environment__mutmut_4,
+    "x_scrub_environment__mutmut_5": x_scrub_environment__mutmut_5,
 }
 
+
 def scrub_environment(*args, **kwargs):
-    result = _mutmut_trampoline(x_scrub_environment__mutmut_orig, x_scrub_environment__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_scrub_environment__mutmut_orig, x_scrub_environment__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 scrub_environment.__signature__ = _mutmut_signature(x_scrub_environment__mutmut_orig)
-x_scrub_environment__mutmut_orig.__name__ = 'x_scrub_environment'
+x_scrub_environment__mutmut_orig.__name__ = "x_scrub_environment"
 
 
 def x_mask_sensitive_env_vars__mutmut_orig(env: Mapping[str, str]) -> dict[str, str]:
@@ -655,21 +668,26 @@ def x_mask_sensitive_env_vars__mutmut_6(env: Mapping[str, str]) -> dict[str, str
             masked[key] = None
     return masked
 
-x_mask_sensitive_env_vars__mutmut_mutants : ClassVar[MutantDict] = {
-'x_mask_sensitive_env_vars__mutmut_1': x_mask_sensitive_env_vars__mutmut_1, 
-    'x_mask_sensitive_env_vars__mutmut_2': x_mask_sensitive_env_vars__mutmut_2, 
-    'x_mask_sensitive_env_vars__mutmut_3': x_mask_sensitive_env_vars__mutmut_3, 
-    'x_mask_sensitive_env_vars__mutmut_4': x_mask_sensitive_env_vars__mutmut_4, 
-    'x_mask_sensitive_env_vars__mutmut_5': x_mask_sensitive_env_vars__mutmut_5, 
-    'x_mask_sensitive_env_vars__mutmut_6': x_mask_sensitive_env_vars__mutmut_6
+
+x_mask_sensitive_env_vars__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_mask_sensitive_env_vars__mutmut_1": x_mask_sensitive_env_vars__mutmut_1,
+    "x_mask_sensitive_env_vars__mutmut_2": x_mask_sensitive_env_vars__mutmut_2,
+    "x_mask_sensitive_env_vars__mutmut_3": x_mask_sensitive_env_vars__mutmut_3,
+    "x_mask_sensitive_env_vars__mutmut_4": x_mask_sensitive_env_vars__mutmut_4,
+    "x_mask_sensitive_env_vars__mutmut_5": x_mask_sensitive_env_vars__mutmut_5,
+    "x_mask_sensitive_env_vars__mutmut_6": x_mask_sensitive_env_vars__mutmut_6,
 }
 
+
 def mask_sensitive_env_vars(*args, **kwargs):
-    result = _mutmut_trampoline(x_mask_sensitive_env_vars__mutmut_orig, x_mask_sensitive_env_vars__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_mask_sensitive_env_vars__mutmut_orig, x_mask_sensitive_env_vars__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 mask_sensitive_env_vars.__signature__ = _mutmut_signature(x_mask_sensitive_env_vars__mutmut_orig)
-x_mask_sensitive_env_vars__mutmut_orig.__name__ = 'x_mask_sensitive_env_vars'
+x_mask_sensitive_env_vars__mutmut_orig.__name__ = "x_mask_sensitive_env_vars"
 
 
 def x_prepare_subprocess_environment__mutmut_orig(
@@ -989,7 +1007,10 @@ def x_prepare_subprocess_environment__mutmut_7(
     """
     # Start with either scrubbed or full environment
     run_env = (
-        scrub_environment(os.environ, allowlist=allowlist, )
+        scrub_environment(
+            os.environ,
+            allowlist=allowlist,
+        )
         if scrub
         else os.environ.copy()  # Not recommended - use scrub=True
     )
@@ -1293,7 +1314,9 @@ def x_prepare_subprocess_environment__mutmut_14(
         run_env.update(caller_overrides)
 
     # Always disable telemetry in subprocesses to avoid recursive logging
-    run_env.setdefault("PROVIDE_TELEMETRY_DISABLED", )
+    run_env.setdefault(
+        "PROVIDE_TELEMETRY_DISABLED",
+    )
 
     return run_env
 
@@ -1465,33 +1488,41 @@ def x_prepare_subprocess_environment__mutmut_18(
 
     return run_env
 
-x_prepare_subprocess_environment__mutmut_mutants : ClassVar[MutantDict] = {
-'x_prepare_subprocess_environment__mutmut_1': x_prepare_subprocess_environment__mutmut_1, 
-    'x_prepare_subprocess_environment__mutmut_2': x_prepare_subprocess_environment__mutmut_2, 
-    'x_prepare_subprocess_environment__mutmut_3': x_prepare_subprocess_environment__mutmut_3, 
-    'x_prepare_subprocess_environment__mutmut_4': x_prepare_subprocess_environment__mutmut_4, 
-    'x_prepare_subprocess_environment__mutmut_5': x_prepare_subprocess_environment__mutmut_5, 
-    'x_prepare_subprocess_environment__mutmut_6': x_prepare_subprocess_environment__mutmut_6, 
-    'x_prepare_subprocess_environment__mutmut_7': x_prepare_subprocess_environment__mutmut_7, 
-    'x_prepare_subprocess_environment__mutmut_8': x_prepare_subprocess_environment__mutmut_8, 
-    'x_prepare_subprocess_environment__mutmut_9': x_prepare_subprocess_environment__mutmut_9, 
-    'x_prepare_subprocess_environment__mutmut_10': x_prepare_subprocess_environment__mutmut_10, 
-    'x_prepare_subprocess_environment__mutmut_11': x_prepare_subprocess_environment__mutmut_11, 
-    'x_prepare_subprocess_environment__mutmut_12': x_prepare_subprocess_environment__mutmut_12, 
-    'x_prepare_subprocess_environment__mutmut_13': x_prepare_subprocess_environment__mutmut_13, 
-    'x_prepare_subprocess_environment__mutmut_14': x_prepare_subprocess_environment__mutmut_14, 
-    'x_prepare_subprocess_environment__mutmut_15': x_prepare_subprocess_environment__mutmut_15, 
-    'x_prepare_subprocess_environment__mutmut_16': x_prepare_subprocess_environment__mutmut_16, 
-    'x_prepare_subprocess_environment__mutmut_17': x_prepare_subprocess_environment__mutmut_17, 
-    'x_prepare_subprocess_environment__mutmut_18': x_prepare_subprocess_environment__mutmut_18
+
+x_prepare_subprocess_environment__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_prepare_subprocess_environment__mutmut_1": x_prepare_subprocess_environment__mutmut_1,
+    "x_prepare_subprocess_environment__mutmut_2": x_prepare_subprocess_environment__mutmut_2,
+    "x_prepare_subprocess_environment__mutmut_3": x_prepare_subprocess_environment__mutmut_3,
+    "x_prepare_subprocess_environment__mutmut_4": x_prepare_subprocess_environment__mutmut_4,
+    "x_prepare_subprocess_environment__mutmut_5": x_prepare_subprocess_environment__mutmut_5,
+    "x_prepare_subprocess_environment__mutmut_6": x_prepare_subprocess_environment__mutmut_6,
+    "x_prepare_subprocess_environment__mutmut_7": x_prepare_subprocess_environment__mutmut_7,
+    "x_prepare_subprocess_environment__mutmut_8": x_prepare_subprocess_environment__mutmut_8,
+    "x_prepare_subprocess_environment__mutmut_9": x_prepare_subprocess_environment__mutmut_9,
+    "x_prepare_subprocess_environment__mutmut_10": x_prepare_subprocess_environment__mutmut_10,
+    "x_prepare_subprocess_environment__mutmut_11": x_prepare_subprocess_environment__mutmut_11,
+    "x_prepare_subprocess_environment__mutmut_12": x_prepare_subprocess_environment__mutmut_12,
+    "x_prepare_subprocess_environment__mutmut_13": x_prepare_subprocess_environment__mutmut_13,
+    "x_prepare_subprocess_environment__mutmut_14": x_prepare_subprocess_environment__mutmut_14,
+    "x_prepare_subprocess_environment__mutmut_15": x_prepare_subprocess_environment__mutmut_15,
+    "x_prepare_subprocess_environment__mutmut_16": x_prepare_subprocess_environment__mutmut_16,
+    "x_prepare_subprocess_environment__mutmut_17": x_prepare_subprocess_environment__mutmut_17,
+    "x_prepare_subprocess_environment__mutmut_18": x_prepare_subprocess_environment__mutmut_18,
 }
 
+
 def prepare_subprocess_environment(*args, **kwargs):
-    result = _mutmut_trampoline(x_prepare_subprocess_environment__mutmut_orig, x_prepare_subprocess_environment__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_prepare_subprocess_environment__mutmut_orig,
+        x_prepare_subprocess_environment__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 prepare_subprocess_environment.__signature__ = _mutmut_signature(x_prepare_subprocess_environment__mutmut_orig)
-x_prepare_subprocess_environment__mutmut_orig.__name__ = 'x_prepare_subprocess_environment'
+x_prepare_subprocess_environment__mutmut_orig.__name__ = "x_prepare_subprocess_environment"
 
 
 __all__ = [

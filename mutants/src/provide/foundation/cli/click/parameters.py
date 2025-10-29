@@ -30,23 +30,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -1414,34 +1417,42 @@ def x_separate_arguments_and_options__mutmut_19(
 
     return arguments, options
 
-x_separate_arguments_and_options__mutmut_mutants : ClassVar[MutantDict] = {
-'x_separate_arguments_and_options__mutmut_1': x_separate_arguments_and_options__mutmut_1, 
-    'x_separate_arguments_and_options__mutmut_2': x_separate_arguments_and_options__mutmut_2, 
-    'x_separate_arguments_and_options__mutmut_3': x_separate_arguments_and_options__mutmut_3, 
-    'x_separate_arguments_and_options__mutmut_4': x_separate_arguments_and_options__mutmut_4, 
-    'x_separate_arguments_and_options__mutmut_5': x_separate_arguments_and_options__mutmut_5, 
-    'x_separate_arguments_and_options__mutmut_6': x_separate_arguments_and_options__mutmut_6, 
-    'x_separate_arguments_and_options__mutmut_7': x_separate_arguments_and_options__mutmut_7, 
-    'x_separate_arguments_and_options__mutmut_8': x_separate_arguments_and_options__mutmut_8, 
-    'x_separate_arguments_and_options__mutmut_9': x_separate_arguments_and_options__mutmut_9, 
-    'x_separate_arguments_and_options__mutmut_10': x_separate_arguments_and_options__mutmut_10, 
-    'x_separate_arguments_and_options__mutmut_11': x_separate_arguments_and_options__mutmut_11, 
-    'x_separate_arguments_and_options__mutmut_12': x_separate_arguments_and_options__mutmut_12, 
-    'x_separate_arguments_and_options__mutmut_13': x_separate_arguments_and_options__mutmut_13, 
-    'x_separate_arguments_and_options__mutmut_14': x_separate_arguments_and_options__mutmut_14, 
-    'x_separate_arguments_and_options__mutmut_15': x_separate_arguments_and_options__mutmut_15, 
-    'x_separate_arguments_and_options__mutmut_16': x_separate_arguments_and_options__mutmut_16, 
-    'x_separate_arguments_and_options__mutmut_17': x_separate_arguments_and_options__mutmut_17, 
-    'x_separate_arguments_and_options__mutmut_18': x_separate_arguments_and_options__mutmut_18, 
-    'x_separate_arguments_and_options__mutmut_19': x_separate_arguments_and_options__mutmut_19
+
+x_separate_arguments_and_options__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_separate_arguments_and_options__mutmut_1": x_separate_arguments_and_options__mutmut_1,
+    "x_separate_arguments_and_options__mutmut_2": x_separate_arguments_and_options__mutmut_2,
+    "x_separate_arguments_and_options__mutmut_3": x_separate_arguments_and_options__mutmut_3,
+    "x_separate_arguments_and_options__mutmut_4": x_separate_arguments_and_options__mutmut_4,
+    "x_separate_arguments_and_options__mutmut_5": x_separate_arguments_and_options__mutmut_5,
+    "x_separate_arguments_and_options__mutmut_6": x_separate_arguments_and_options__mutmut_6,
+    "x_separate_arguments_and_options__mutmut_7": x_separate_arguments_and_options__mutmut_7,
+    "x_separate_arguments_and_options__mutmut_8": x_separate_arguments_and_options__mutmut_8,
+    "x_separate_arguments_and_options__mutmut_9": x_separate_arguments_and_options__mutmut_9,
+    "x_separate_arguments_and_options__mutmut_10": x_separate_arguments_and_options__mutmut_10,
+    "x_separate_arguments_and_options__mutmut_11": x_separate_arguments_and_options__mutmut_11,
+    "x_separate_arguments_and_options__mutmut_12": x_separate_arguments_and_options__mutmut_12,
+    "x_separate_arguments_and_options__mutmut_13": x_separate_arguments_and_options__mutmut_13,
+    "x_separate_arguments_and_options__mutmut_14": x_separate_arguments_and_options__mutmut_14,
+    "x_separate_arguments_and_options__mutmut_15": x_separate_arguments_and_options__mutmut_15,
+    "x_separate_arguments_and_options__mutmut_16": x_separate_arguments_and_options__mutmut_16,
+    "x_separate_arguments_and_options__mutmut_17": x_separate_arguments_and_options__mutmut_17,
+    "x_separate_arguments_and_options__mutmut_18": x_separate_arguments_and_options__mutmut_18,
+    "x_separate_arguments_and_options__mutmut_19": x_separate_arguments_and_options__mutmut_19,
 }
 
+
 def separate_arguments_and_options(*args, **kwargs):
-    result = _mutmut_trampoline(x_separate_arguments_and_options__mutmut_orig, x_separate_arguments_and_options__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_separate_arguments_and_options__mutmut_orig,
+        x_separate_arguments_and_options__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 separate_arguments_and_options.__signature__ = _mutmut_signature(x_separate_arguments_and_options__mutmut_orig)
-x_separate_arguments_and_options__mutmut_orig.__name__ = 'x_separate_arguments_and_options'
+x_separate_arguments_and_options__mutmut_orig.__name__ = "x_separate_arguments_and_options"
 
 
 def x_apply_click_option__mutmut_orig(func: Any, param: ParameterInfo) -> Any:
@@ -1635,7 +1646,7 @@ def x_apply_click_option__mutmut_5(func: Any, param: ParameterInfo) -> Any:
         Decorated function
 
     """
-    option_name = f"--{param.name.replace('_', )}"
+    option_name = f"--{param.name.replace('_')}"
 
     # Determine if this is a required option (explicit hint='option' without default)
     is_required = param.cli_hint == "option" and not param.has_default
@@ -2363,7 +2374,7 @@ def x_apply_click_option__mutmut_25(func: Any, param: ParameterInfo) -> Any:
             is_flag=True,
             default=param.default if param.has_default else None,
             required=is_required,
-            )(func)
+        )(func)
 
     # Handle regular options
     return click.option(
@@ -2799,54 +2810,59 @@ def x_apply_click_option__mutmut_37(func: Any, param: ParameterInfo) -> Any:
         type=param.concrete_type,
         default=param.default if param.has_default else None,
         required=is_required,
-        )(func)
+    )(func)
 
-x_apply_click_option__mutmut_mutants : ClassVar[MutantDict] = {
-'x_apply_click_option__mutmut_1': x_apply_click_option__mutmut_1, 
-    'x_apply_click_option__mutmut_2': x_apply_click_option__mutmut_2, 
-    'x_apply_click_option__mutmut_3': x_apply_click_option__mutmut_3, 
-    'x_apply_click_option__mutmut_4': x_apply_click_option__mutmut_4, 
-    'x_apply_click_option__mutmut_5': x_apply_click_option__mutmut_5, 
-    'x_apply_click_option__mutmut_6': x_apply_click_option__mutmut_6, 
-    'x_apply_click_option__mutmut_7': x_apply_click_option__mutmut_7, 
-    'x_apply_click_option__mutmut_8': x_apply_click_option__mutmut_8, 
-    'x_apply_click_option__mutmut_9': x_apply_click_option__mutmut_9, 
-    'x_apply_click_option__mutmut_10': x_apply_click_option__mutmut_10, 
-    'x_apply_click_option__mutmut_11': x_apply_click_option__mutmut_11, 
-    'x_apply_click_option__mutmut_12': x_apply_click_option__mutmut_12, 
-    'x_apply_click_option__mutmut_13': x_apply_click_option__mutmut_13, 
-    'x_apply_click_option__mutmut_14': x_apply_click_option__mutmut_14, 
-    'x_apply_click_option__mutmut_15': x_apply_click_option__mutmut_15, 
-    'x_apply_click_option__mutmut_16': x_apply_click_option__mutmut_16, 
-    'x_apply_click_option__mutmut_17': x_apply_click_option__mutmut_17, 
-    'x_apply_click_option__mutmut_18': x_apply_click_option__mutmut_18, 
-    'x_apply_click_option__mutmut_19': x_apply_click_option__mutmut_19, 
-    'x_apply_click_option__mutmut_20': x_apply_click_option__mutmut_20, 
-    'x_apply_click_option__mutmut_21': x_apply_click_option__mutmut_21, 
-    'x_apply_click_option__mutmut_22': x_apply_click_option__mutmut_22, 
-    'x_apply_click_option__mutmut_23': x_apply_click_option__mutmut_23, 
-    'x_apply_click_option__mutmut_24': x_apply_click_option__mutmut_24, 
-    'x_apply_click_option__mutmut_25': x_apply_click_option__mutmut_25, 
-    'x_apply_click_option__mutmut_26': x_apply_click_option__mutmut_26, 
-    'x_apply_click_option__mutmut_27': x_apply_click_option__mutmut_27, 
-    'x_apply_click_option__mutmut_28': x_apply_click_option__mutmut_28, 
-    'x_apply_click_option__mutmut_29': x_apply_click_option__mutmut_29, 
-    'x_apply_click_option__mutmut_30': x_apply_click_option__mutmut_30, 
-    'x_apply_click_option__mutmut_31': x_apply_click_option__mutmut_31, 
-    'x_apply_click_option__mutmut_32': x_apply_click_option__mutmut_32, 
-    'x_apply_click_option__mutmut_33': x_apply_click_option__mutmut_33, 
-    'x_apply_click_option__mutmut_34': x_apply_click_option__mutmut_34, 
-    'x_apply_click_option__mutmut_35': x_apply_click_option__mutmut_35, 
-    'x_apply_click_option__mutmut_36': x_apply_click_option__mutmut_36, 
-    'x_apply_click_option__mutmut_37': x_apply_click_option__mutmut_37
+
+x_apply_click_option__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_apply_click_option__mutmut_1": x_apply_click_option__mutmut_1,
+    "x_apply_click_option__mutmut_2": x_apply_click_option__mutmut_2,
+    "x_apply_click_option__mutmut_3": x_apply_click_option__mutmut_3,
+    "x_apply_click_option__mutmut_4": x_apply_click_option__mutmut_4,
+    "x_apply_click_option__mutmut_5": x_apply_click_option__mutmut_5,
+    "x_apply_click_option__mutmut_6": x_apply_click_option__mutmut_6,
+    "x_apply_click_option__mutmut_7": x_apply_click_option__mutmut_7,
+    "x_apply_click_option__mutmut_8": x_apply_click_option__mutmut_8,
+    "x_apply_click_option__mutmut_9": x_apply_click_option__mutmut_9,
+    "x_apply_click_option__mutmut_10": x_apply_click_option__mutmut_10,
+    "x_apply_click_option__mutmut_11": x_apply_click_option__mutmut_11,
+    "x_apply_click_option__mutmut_12": x_apply_click_option__mutmut_12,
+    "x_apply_click_option__mutmut_13": x_apply_click_option__mutmut_13,
+    "x_apply_click_option__mutmut_14": x_apply_click_option__mutmut_14,
+    "x_apply_click_option__mutmut_15": x_apply_click_option__mutmut_15,
+    "x_apply_click_option__mutmut_16": x_apply_click_option__mutmut_16,
+    "x_apply_click_option__mutmut_17": x_apply_click_option__mutmut_17,
+    "x_apply_click_option__mutmut_18": x_apply_click_option__mutmut_18,
+    "x_apply_click_option__mutmut_19": x_apply_click_option__mutmut_19,
+    "x_apply_click_option__mutmut_20": x_apply_click_option__mutmut_20,
+    "x_apply_click_option__mutmut_21": x_apply_click_option__mutmut_21,
+    "x_apply_click_option__mutmut_22": x_apply_click_option__mutmut_22,
+    "x_apply_click_option__mutmut_23": x_apply_click_option__mutmut_23,
+    "x_apply_click_option__mutmut_24": x_apply_click_option__mutmut_24,
+    "x_apply_click_option__mutmut_25": x_apply_click_option__mutmut_25,
+    "x_apply_click_option__mutmut_26": x_apply_click_option__mutmut_26,
+    "x_apply_click_option__mutmut_27": x_apply_click_option__mutmut_27,
+    "x_apply_click_option__mutmut_28": x_apply_click_option__mutmut_28,
+    "x_apply_click_option__mutmut_29": x_apply_click_option__mutmut_29,
+    "x_apply_click_option__mutmut_30": x_apply_click_option__mutmut_30,
+    "x_apply_click_option__mutmut_31": x_apply_click_option__mutmut_31,
+    "x_apply_click_option__mutmut_32": x_apply_click_option__mutmut_32,
+    "x_apply_click_option__mutmut_33": x_apply_click_option__mutmut_33,
+    "x_apply_click_option__mutmut_34": x_apply_click_option__mutmut_34,
+    "x_apply_click_option__mutmut_35": x_apply_click_option__mutmut_35,
+    "x_apply_click_option__mutmut_36": x_apply_click_option__mutmut_36,
+    "x_apply_click_option__mutmut_37": x_apply_click_option__mutmut_37,
 }
 
+
 def apply_click_option(*args, **kwargs):
-    result = _mutmut_trampoline(x_apply_click_option__mutmut_orig, x_apply_click_option__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_apply_click_option__mutmut_orig, x_apply_click_option__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 apply_click_option.__signature__ = _mutmut_signature(x_apply_click_option__mutmut_orig)
-x_apply_click_option__mutmut_orig.__name__ = 'x_apply_click_option'
+x_apply_click_option__mutmut_orig.__name__ = "x_apply_click_option"
 
 
 def x_apply_click_argument__mutmut_orig(func: Any, param: ParameterInfo) -> Any:
@@ -3038,7 +3054,7 @@ def x_apply_click_argument__mutmut_7(func: Any, param: ParameterInfo) -> Any:
         return click.argument(
             param.name,
             type=param.concrete_type,
-            )(func)
+        )(func)
     else:
         return click.argument(
             param.name,
@@ -3166,29 +3182,34 @@ def x_apply_click_argument__mutmut_12(func: Any, param: ParameterInfo) -> Any:
     else:
         return click.argument(
             param.name,
-            )(func)
+        )(func)
 
-x_apply_click_argument__mutmut_mutants : ClassVar[MutantDict] = {
-'x_apply_click_argument__mutmut_1': x_apply_click_argument__mutmut_1, 
-    'x_apply_click_argument__mutmut_2': x_apply_click_argument__mutmut_2, 
-    'x_apply_click_argument__mutmut_3': x_apply_click_argument__mutmut_3, 
-    'x_apply_click_argument__mutmut_4': x_apply_click_argument__mutmut_4, 
-    'x_apply_click_argument__mutmut_5': x_apply_click_argument__mutmut_5, 
-    'x_apply_click_argument__mutmut_6': x_apply_click_argument__mutmut_6, 
-    'x_apply_click_argument__mutmut_7': x_apply_click_argument__mutmut_7, 
-    'x_apply_click_argument__mutmut_8': x_apply_click_argument__mutmut_8, 
-    'x_apply_click_argument__mutmut_9': x_apply_click_argument__mutmut_9, 
-    'x_apply_click_argument__mutmut_10': x_apply_click_argument__mutmut_10, 
-    'x_apply_click_argument__mutmut_11': x_apply_click_argument__mutmut_11, 
-    'x_apply_click_argument__mutmut_12': x_apply_click_argument__mutmut_12
+
+x_apply_click_argument__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_apply_click_argument__mutmut_1": x_apply_click_argument__mutmut_1,
+    "x_apply_click_argument__mutmut_2": x_apply_click_argument__mutmut_2,
+    "x_apply_click_argument__mutmut_3": x_apply_click_argument__mutmut_3,
+    "x_apply_click_argument__mutmut_4": x_apply_click_argument__mutmut_4,
+    "x_apply_click_argument__mutmut_5": x_apply_click_argument__mutmut_5,
+    "x_apply_click_argument__mutmut_6": x_apply_click_argument__mutmut_6,
+    "x_apply_click_argument__mutmut_7": x_apply_click_argument__mutmut_7,
+    "x_apply_click_argument__mutmut_8": x_apply_click_argument__mutmut_8,
+    "x_apply_click_argument__mutmut_9": x_apply_click_argument__mutmut_9,
+    "x_apply_click_argument__mutmut_10": x_apply_click_argument__mutmut_10,
+    "x_apply_click_argument__mutmut_11": x_apply_click_argument__mutmut_11,
+    "x_apply_click_argument__mutmut_12": x_apply_click_argument__mutmut_12,
 }
 
+
 def apply_click_argument(*args, **kwargs):
-    result = _mutmut_trampoline(x_apply_click_argument__mutmut_orig, x_apply_click_argument__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_apply_click_argument__mutmut_orig, x_apply_click_argument__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 apply_click_argument.__signature__ = _mutmut_signature(x_apply_click_argument__mutmut_orig)
-x_apply_click_argument__mutmut_orig.__name__ = 'x_apply_click_argument'
+x_apply_click_argument__mutmut_orig.__name__ = "x_apply_click_argument"
 
 
 # <3 🧱🤝💻🪄

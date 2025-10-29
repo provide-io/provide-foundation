@@ -22,23 +22,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -50,39 +53,57 @@ def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
 class TransportError(FoundationError):
     """Base transport error."""
 
-    def xǁTransportErrorǁ__init____mutmut_orig(self, message: str, *, request: Request | None = None, **kwargs: Any) -> None:
+    def xǁTransportErrorǁ__init____mutmut_orig(
+        self, message: str, *, request: Request | None = None, **kwargs: Any
+    ) -> None:
         super().__init__(message, **kwargs)
         self.request = request
 
-    def xǁTransportErrorǁ__init____mutmut_1(self, message: str, *, request: Request | None = None, **kwargs: Any) -> None:
+    def xǁTransportErrorǁ__init____mutmut_1(
+        self, message: str, *, request: Request | None = None, **kwargs: Any
+    ) -> None:
         super().__init__(None, **kwargs)
         self.request = request
 
-    def xǁTransportErrorǁ__init____mutmut_2(self, message: str, *, request: Request | None = None, **kwargs: Any) -> None:
+    def xǁTransportErrorǁ__init____mutmut_2(
+        self, message: str, *, request: Request | None = None, **kwargs: Any
+    ) -> None:
         super().__init__(**kwargs)
         self.request = request
 
-    def xǁTransportErrorǁ__init____mutmut_3(self, message: str, *, request: Request | None = None, **kwargs: Any) -> None:
-        super().__init__(message, )
+    def xǁTransportErrorǁ__init____mutmut_3(
+        self, message: str, *, request: Request | None = None, **kwargs: Any
+    ) -> None:
+        super().__init__(
+            message,
+        )
         self.request = request
 
-    def xǁTransportErrorǁ__init____mutmut_4(self, message: str, *, request: Request | None = None, **kwargs: Any) -> None:
+    def xǁTransportErrorǁ__init____mutmut_4(
+        self, message: str, *, request: Request | None = None, **kwargs: Any
+    ) -> None:
         super().__init__(message, **kwargs)
         self.request = None
-    
-    xǁTransportErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTransportErrorǁ__init____mutmut_1': xǁTransportErrorǁ__init____mutmut_1, 
-        'xǁTransportErrorǁ__init____mutmut_2': xǁTransportErrorǁ__init____mutmut_2, 
-        'xǁTransportErrorǁ__init____mutmut_3': xǁTransportErrorǁ__init____mutmut_3, 
-        'xǁTransportErrorǁ__init____mutmut_4': xǁTransportErrorǁ__init____mutmut_4
+
+    xǁTransportErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTransportErrorǁ__init____mutmut_1": xǁTransportErrorǁ__init____mutmut_1,
+        "xǁTransportErrorǁ__init____mutmut_2": xǁTransportErrorǁ__init____mutmut_2,
+        "xǁTransportErrorǁ__init____mutmut_3": xǁTransportErrorǁ__init____mutmut_3,
+        "xǁTransportErrorǁ__init____mutmut_4": xǁTransportErrorǁ__init____mutmut_4,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTransportErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁTransportErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTransportErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁTransportErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁTransportErrorǁ__init____mutmut_orig)
-    xǁTransportErrorǁ__init____mutmut_orig.__name__ = 'xǁTransportErrorǁ__init__'
+    xǁTransportErrorǁ__init____mutmut_orig.__name__ = "xǁTransportErrorǁ__init__"
 
 
 class TransportConnectionError(TransportError):
@@ -96,50 +117,70 @@ class TransportTimeoutError(TransportError):
 class HTTPResponseError(TransportError):
     """HTTP response error (4xx/5xx status codes)."""
 
-    def xǁHTTPResponseErrorǁ__init____mutmut_orig(self, message: str, *, status_code: int, response: Response, **kwargs: Any) -> None:
+    def xǁHTTPResponseErrorǁ__init____mutmut_orig(
+        self, message: str, *, status_code: int, response: Response, **kwargs: Any
+    ) -> None:
         super().__init__(message, **kwargs)
         self.status_code = status_code
         self.response = response
 
-    def xǁHTTPResponseErrorǁ__init____mutmut_1(self, message: str, *, status_code: int, response: Response, **kwargs: Any) -> None:
+    def xǁHTTPResponseErrorǁ__init____mutmut_1(
+        self, message: str, *, status_code: int, response: Response, **kwargs: Any
+    ) -> None:
         super().__init__(None, **kwargs)
         self.status_code = status_code
         self.response = response
 
-    def xǁHTTPResponseErrorǁ__init____mutmut_2(self, message: str, *, status_code: int, response: Response, **kwargs: Any) -> None:
+    def xǁHTTPResponseErrorǁ__init____mutmut_2(
+        self, message: str, *, status_code: int, response: Response, **kwargs: Any
+    ) -> None:
         super().__init__(**kwargs)
         self.status_code = status_code
         self.response = response
 
-    def xǁHTTPResponseErrorǁ__init____mutmut_3(self, message: str, *, status_code: int, response: Response, **kwargs: Any) -> None:
-        super().__init__(message, )
+    def xǁHTTPResponseErrorǁ__init____mutmut_3(
+        self, message: str, *, status_code: int, response: Response, **kwargs: Any
+    ) -> None:
+        super().__init__(
+            message,
+        )
         self.status_code = status_code
         self.response = response
 
-    def xǁHTTPResponseErrorǁ__init____mutmut_4(self, message: str, *, status_code: int, response: Response, **kwargs: Any) -> None:
+    def xǁHTTPResponseErrorǁ__init____mutmut_4(
+        self, message: str, *, status_code: int, response: Response, **kwargs: Any
+    ) -> None:
         super().__init__(message, **kwargs)
         self.status_code = None
         self.response = response
 
-    def xǁHTTPResponseErrorǁ__init____mutmut_5(self, message: str, *, status_code: int, response: Response, **kwargs: Any) -> None:
+    def xǁHTTPResponseErrorǁ__init____mutmut_5(
+        self, message: str, *, status_code: int, response: Response, **kwargs: Any
+    ) -> None:
         super().__init__(message, **kwargs)
         self.status_code = status_code
         self.response = None
-    
-    xǁHTTPResponseErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁHTTPResponseErrorǁ__init____mutmut_1': xǁHTTPResponseErrorǁ__init____mutmut_1, 
-        'xǁHTTPResponseErrorǁ__init____mutmut_2': xǁHTTPResponseErrorǁ__init____mutmut_2, 
-        'xǁHTTPResponseErrorǁ__init____mutmut_3': xǁHTTPResponseErrorǁ__init____mutmut_3, 
-        'xǁHTTPResponseErrorǁ__init____mutmut_4': xǁHTTPResponseErrorǁ__init____mutmut_4, 
-        'xǁHTTPResponseErrorǁ__init____mutmut_5': xǁHTTPResponseErrorǁ__init____mutmut_5
+
+    xǁHTTPResponseErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁHTTPResponseErrorǁ__init____mutmut_1": xǁHTTPResponseErrorǁ__init____mutmut_1,
+        "xǁHTTPResponseErrorǁ__init____mutmut_2": xǁHTTPResponseErrorǁ__init____mutmut_2,
+        "xǁHTTPResponseErrorǁ__init____mutmut_3": xǁHTTPResponseErrorǁ__init____mutmut_3,
+        "xǁHTTPResponseErrorǁ__init____mutmut_4": xǁHTTPResponseErrorǁ__init____mutmut_4,
+        "xǁHTTPResponseErrorǁ__init____mutmut_5": xǁHTTPResponseErrorǁ__init____mutmut_5,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁHTTPResponseErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁHTTPResponseErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁHTTPResponseErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁHTTPResponseErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁHTTPResponseErrorǁ__init____mutmut_orig)
-    xǁHTTPResponseErrorǁ__init____mutmut_orig.__name__ = 'xǁHTTPResponseErrorǁ__init__'
+    xǁHTTPResponseErrorǁ__init____mutmut_orig.__name__ = "xǁHTTPResponseErrorǁ__init__"
 
 
 class TransportConfigurationError(TransportError):
@@ -149,7 +190,9 @@ class TransportConfigurationError(TransportError):
 class TransportNotFoundError(TransportError):
     """No transport found for the given URI scheme."""
 
-    def xǁTransportNotFoundErrorǁ__init____mutmut_orig(self, message: str, *, scheme: str, **kwargs: Any) -> None:
+    def xǁTransportNotFoundErrorǁ__init____mutmut_orig(
+        self, message: str, *, scheme: str, **kwargs: Any
+    ) -> None:
         super().__init__(message, **kwargs)
         self.scheme = scheme
 
@@ -162,26 +205,34 @@ class TransportNotFoundError(TransportError):
         self.scheme = scheme
 
     def xǁTransportNotFoundErrorǁ__init____mutmut_3(self, message: str, *, scheme: str, **kwargs: Any) -> None:
-        super().__init__(message, )
+        super().__init__(
+            message,
+        )
         self.scheme = scheme
 
     def xǁTransportNotFoundErrorǁ__init____mutmut_4(self, message: str, *, scheme: str, **kwargs: Any) -> None:
         super().__init__(message, **kwargs)
         self.scheme = None
-    
-    xǁTransportNotFoundErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTransportNotFoundErrorǁ__init____mutmut_1': xǁTransportNotFoundErrorǁ__init____mutmut_1, 
-        'xǁTransportNotFoundErrorǁ__init____mutmut_2': xǁTransportNotFoundErrorǁ__init____mutmut_2, 
-        'xǁTransportNotFoundErrorǁ__init____mutmut_3': xǁTransportNotFoundErrorǁ__init____mutmut_3, 
-        'xǁTransportNotFoundErrorǁ__init____mutmut_4': xǁTransportNotFoundErrorǁ__init____mutmut_4
+
+    xǁTransportNotFoundErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTransportNotFoundErrorǁ__init____mutmut_1": xǁTransportNotFoundErrorǁ__init____mutmut_1,
+        "xǁTransportNotFoundErrorǁ__init____mutmut_2": xǁTransportNotFoundErrorǁ__init____mutmut_2,
+        "xǁTransportNotFoundErrorǁ__init____mutmut_3": xǁTransportNotFoundErrorǁ__init____mutmut_3,
+        "xǁTransportNotFoundErrorǁ__init____mutmut_4": xǁTransportNotFoundErrorǁ__init____mutmut_4,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTransportNotFoundErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁTransportNotFoundErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTransportNotFoundErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁTransportNotFoundErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁTransportNotFoundErrorǁ__init____mutmut_orig)
-    xǁTransportNotFoundErrorǁ__init____mutmut_orig.__name__ = 'xǁTransportNotFoundErrorǁ__init__'
+    xǁTransportNotFoundErrorǁ__init____mutmut_orig.__name__ = "xǁTransportNotFoundErrorǁ__init__"
 
 
 class TransportCacheEvictedError(TransportError):
@@ -231,7 +282,9 @@ class TransportCacheEvictedError(TransportError):
         consecutive_failures: int,
         **kwargs: Any,
     ) -> None:
-        super().__init__(message, )
+        super().__init__(
+            message,
+        )
         self.scheme = scheme
         self.consecutive_failures = consecutive_failures
 
@@ -258,21 +311,27 @@ class TransportCacheEvictedError(TransportError):
         super().__init__(message, **kwargs)
         self.scheme = scheme
         self.consecutive_failures = None
-    
-    xǁTransportCacheEvictedErrorǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁTransportCacheEvictedErrorǁ__init____mutmut_1': xǁTransportCacheEvictedErrorǁ__init____mutmut_1, 
-        'xǁTransportCacheEvictedErrorǁ__init____mutmut_2': xǁTransportCacheEvictedErrorǁ__init____mutmut_2, 
-        'xǁTransportCacheEvictedErrorǁ__init____mutmut_3': xǁTransportCacheEvictedErrorǁ__init____mutmut_3, 
-        'xǁTransportCacheEvictedErrorǁ__init____mutmut_4': xǁTransportCacheEvictedErrorǁ__init____mutmut_4, 
-        'xǁTransportCacheEvictedErrorǁ__init____mutmut_5': xǁTransportCacheEvictedErrorǁ__init____mutmut_5
+
+    xǁTransportCacheEvictedErrorǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁTransportCacheEvictedErrorǁ__init____mutmut_1": xǁTransportCacheEvictedErrorǁ__init____mutmut_1,
+        "xǁTransportCacheEvictedErrorǁ__init____mutmut_2": xǁTransportCacheEvictedErrorǁ__init____mutmut_2,
+        "xǁTransportCacheEvictedErrorǁ__init____mutmut_3": xǁTransportCacheEvictedErrorǁ__init____mutmut_3,
+        "xǁTransportCacheEvictedErrorǁ__init____mutmut_4": xǁTransportCacheEvictedErrorǁ__init____mutmut_4,
+        "xǁTransportCacheEvictedErrorǁ__init____mutmut_5": xǁTransportCacheEvictedErrorǁ__init____mutmut_5,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁTransportCacheEvictedErrorǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁTransportCacheEvictedErrorǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁTransportCacheEvictedErrorǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁTransportCacheEvictedErrorǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁTransportCacheEvictedErrorǁ__init____mutmut_orig)
-    xǁTransportCacheEvictedErrorǁ__init____mutmut_orig.__name__ = 'xǁTransportCacheEvictedErrorǁ__init__'
+    xǁTransportCacheEvictedErrorǁ__init____mutmut_orig.__name__ = "xǁTransportCacheEvictedErrorǁ__init__"
 
 
 __all__ = [

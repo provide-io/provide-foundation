@@ -58,23 +58,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -674,7 +677,9 @@ def x__auto_register_builtin_detectors__mutmut_5() -> None:
     registry = get_detector_registry()
 
     # Check if already registered (idempotent)
-    if registry.get("detect_temp_rename_pattern", ):
+    if registry.get(
+        "detect_temp_rename_pattern",
+    ):
         return
 
     # Create detector instances
@@ -2525,7 +2530,7 @@ def x__auto_register_builtin_detectors__mutmut_21() -> None:
         name="detect_temp_rename_pattern",
         func=temp_detector.detect_temp_rename_pattern,
         priority=95,
-        )
+    )
 
     register_detector(
         name="detect_delete_temp_pattern",
@@ -4138,7 +4143,7 @@ def x__auto_register_builtin_detectors__mutmut_35() -> None:
         name="detect_delete_temp_pattern",
         func=temp_detector.detect_delete_temp_pattern,
         priority=94,
-        )
+    )
 
     register_detector(
         name="detect_temp_modify_pattern",
@@ -5751,7 +5756,7 @@ def x__auto_register_builtin_detectors__mutmut_49() -> None:
         name="detect_temp_modify_pattern",
         func=temp_detector.detect_temp_modify_pattern,
         priority=93,
-        )
+    )
 
     register_detector(
         name="detect_temp_create_delete_pattern",
@@ -7364,7 +7369,7 @@ def x__auto_register_builtin_detectors__mutmut_63() -> None:
         name="detect_temp_create_delete_pattern",
         func=temp_detector.detect_temp_create_delete_pattern,
         priority=92,
-        )
+    )
 
     # Atomic save patterns
     register_detector(
@@ -8978,7 +8983,7 @@ def x__auto_register_builtin_detectors__mutmut_77() -> None:
         name="detect_atomic_save",
         func=atomic_detector.detect_atomic_save,
         priority=85,
-        )
+    )
 
     register_detector(
         name="detect_safe_write",
@@ -10591,7 +10596,7 @@ def x__auto_register_builtin_detectors__mutmut_91() -> None:
         name="detect_safe_write",
         func=atomic_detector.detect_safe_write,
         priority=84,
-        )
+    )
 
     # Batch and sequence patterns
     register_detector(
@@ -12205,7 +12210,7 @@ def x__auto_register_builtin_detectors__mutmut_105() -> None:
         name="detect_rename_sequence",
         func=batch_detector.detect_rename_sequence,
         priority=75,
-        )
+    )
 
     register_detector(
         name="detect_backup_create",
@@ -13818,7 +13823,7 @@ def x__auto_register_builtin_detectors__mutmut_119() -> None:
         name="detect_backup_create",
         func=batch_detector.detect_backup_create,
         priority=74,
-        )
+    )
 
     register_detector(
         name="detect_batch_update",
@@ -15431,7 +15436,7 @@ def x__auto_register_builtin_detectors__mutmut_133() -> None:
         name="detect_batch_update",
         func=batch_detector.detect_batch_update,
         priority=73,
-        )
+    )
 
     # Simple patterns (lower specificity)
     register_detector(
@@ -17045,7 +17050,7 @@ def x__auto_register_builtin_detectors__mutmut_147() -> None:
         name="detect_same_file_delete_create_pattern",
         func=simple_detector.detect_same_file_delete_create_pattern,
         priority=65,
-        )
+    )
 
     register_detector(
         name="detect_direct_modification",
@@ -18658,7 +18663,7 @@ def x__auto_register_builtin_detectors__mutmut_161() -> None:
         name="detect_direct_modification",
         func=simple_detector.detect_direct_modification,
         priority=64,
-        )
+    )
 
     # Fallback for unmatched events (lowest priority)
     register_detector(
@@ -20272,7 +20277,7 @@ def x__auto_register_builtin_detectors__mutmut_175() -> None:
         name="detect_simple_operation",
         func=simple_detector.detect_simple_operation,
         priority=10,
-        )
+    )
 
 
 def x__auto_register_builtin_detectors__mutmut_176() -> None:
@@ -20964,196 +20969,206 @@ def x__auto_register_builtin_detectors__mutmut_181() -> None:
         description="DETECTS SIMPLE SINGLE-EVENT OPERATIONS (FALLBACK)",
     )
 
-x__auto_register_builtin_detectors__mutmut_mutants : ClassVar[MutantDict] = {
-'x__auto_register_builtin_detectors__mutmut_1': x__auto_register_builtin_detectors__mutmut_1, 
-    'x__auto_register_builtin_detectors__mutmut_2': x__auto_register_builtin_detectors__mutmut_2, 
-    'x__auto_register_builtin_detectors__mutmut_3': x__auto_register_builtin_detectors__mutmut_3, 
-    'x__auto_register_builtin_detectors__mutmut_4': x__auto_register_builtin_detectors__mutmut_4, 
-    'x__auto_register_builtin_detectors__mutmut_5': x__auto_register_builtin_detectors__mutmut_5, 
-    'x__auto_register_builtin_detectors__mutmut_6': x__auto_register_builtin_detectors__mutmut_6, 
-    'x__auto_register_builtin_detectors__mutmut_7': x__auto_register_builtin_detectors__mutmut_7, 
-    'x__auto_register_builtin_detectors__mutmut_8': x__auto_register_builtin_detectors__mutmut_8, 
-    'x__auto_register_builtin_detectors__mutmut_9': x__auto_register_builtin_detectors__mutmut_9, 
-    'x__auto_register_builtin_detectors__mutmut_10': x__auto_register_builtin_detectors__mutmut_10, 
-    'x__auto_register_builtin_detectors__mutmut_11': x__auto_register_builtin_detectors__mutmut_11, 
-    'x__auto_register_builtin_detectors__mutmut_12': x__auto_register_builtin_detectors__mutmut_12, 
-    'x__auto_register_builtin_detectors__mutmut_13': x__auto_register_builtin_detectors__mutmut_13, 
-    'x__auto_register_builtin_detectors__mutmut_14': x__auto_register_builtin_detectors__mutmut_14, 
-    'x__auto_register_builtin_detectors__mutmut_15': x__auto_register_builtin_detectors__mutmut_15, 
-    'x__auto_register_builtin_detectors__mutmut_16': x__auto_register_builtin_detectors__mutmut_16, 
-    'x__auto_register_builtin_detectors__mutmut_17': x__auto_register_builtin_detectors__mutmut_17, 
-    'x__auto_register_builtin_detectors__mutmut_18': x__auto_register_builtin_detectors__mutmut_18, 
-    'x__auto_register_builtin_detectors__mutmut_19': x__auto_register_builtin_detectors__mutmut_19, 
-    'x__auto_register_builtin_detectors__mutmut_20': x__auto_register_builtin_detectors__mutmut_20, 
-    'x__auto_register_builtin_detectors__mutmut_21': x__auto_register_builtin_detectors__mutmut_21, 
-    'x__auto_register_builtin_detectors__mutmut_22': x__auto_register_builtin_detectors__mutmut_22, 
-    'x__auto_register_builtin_detectors__mutmut_23': x__auto_register_builtin_detectors__mutmut_23, 
-    'x__auto_register_builtin_detectors__mutmut_24': x__auto_register_builtin_detectors__mutmut_24, 
-    'x__auto_register_builtin_detectors__mutmut_25': x__auto_register_builtin_detectors__mutmut_25, 
-    'x__auto_register_builtin_detectors__mutmut_26': x__auto_register_builtin_detectors__mutmut_26, 
-    'x__auto_register_builtin_detectors__mutmut_27': x__auto_register_builtin_detectors__mutmut_27, 
-    'x__auto_register_builtin_detectors__mutmut_28': x__auto_register_builtin_detectors__mutmut_28, 
-    'x__auto_register_builtin_detectors__mutmut_29': x__auto_register_builtin_detectors__mutmut_29, 
-    'x__auto_register_builtin_detectors__mutmut_30': x__auto_register_builtin_detectors__mutmut_30, 
-    'x__auto_register_builtin_detectors__mutmut_31': x__auto_register_builtin_detectors__mutmut_31, 
-    'x__auto_register_builtin_detectors__mutmut_32': x__auto_register_builtin_detectors__mutmut_32, 
-    'x__auto_register_builtin_detectors__mutmut_33': x__auto_register_builtin_detectors__mutmut_33, 
-    'x__auto_register_builtin_detectors__mutmut_34': x__auto_register_builtin_detectors__mutmut_34, 
-    'x__auto_register_builtin_detectors__mutmut_35': x__auto_register_builtin_detectors__mutmut_35, 
-    'x__auto_register_builtin_detectors__mutmut_36': x__auto_register_builtin_detectors__mutmut_36, 
-    'x__auto_register_builtin_detectors__mutmut_37': x__auto_register_builtin_detectors__mutmut_37, 
-    'x__auto_register_builtin_detectors__mutmut_38': x__auto_register_builtin_detectors__mutmut_38, 
-    'x__auto_register_builtin_detectors__mutmut_39': x__auto_register_builtin_detectors__mutmut_39, 
-    'x__auto_register_builtin_detectors__mutmut_40': x__auto_register_builtin_detectors__mutmut_40, 
-    'x__auto_register_builtin_detectors__mutmut_41': x__auto_register_builtin_detectors__mutmut_41, 
-    'x__auto_register_builtin_detectors__mutmut_42': x__auto_register_builtin_detectors__mutmut_42, 
-    'x__auto_register_builtin_detectors__mutmut_43': x__auto_register_builtin_detectors__mutmut_43, 
-    'x__auto_register_builtin_detectors__mutmut_44': x__auto_register_builtin_detectors__mutmut_44, 
-    'x__auto_register_builtin_detectors__mutmut_45': x__auto_register_builtin_detectors__mutmut_45, 
-    'x__auto_register_builtin_detectors__mutmut_46': x__auto_register_builtin_detectors__mutmut_46, 
-    'x__auto_register_builtin_detectors__mutmut_47': x__auto_register_builtin_detectors__mutmut_47, 
-    'x__auto_register_builtin_detectors__mutmut_48': x__auto_register_builtin_detectors__mutmut_48, 
-    'x__auto_register_builtin_detectors__mutmut_49': x__auto_register_builtin_detectors__mutmut_49, 
-    'x__auto_register_builtin_detectors__mutmut_50': x__auto_register_builtin_detectors__mutmut_50, 
-    'x__auto_register_builtin_detectors__mutmut_51': x__auto_register_builtin_detectors__mutmut_51, 
-    'x__auto_register_builtin_detectors__mutmut_52': x__auto_register_builtin_detectors__mutmut_52, 
-    'x__auto_register_builtin_detectors__mutmut_53': x__auto_register_builtin_detectors__mutmut_53, 
-    'x__auto_register_builtin_detectors__mutmut_54': x__auto_register_builtin_detectors__mutmut_54, 
-    'x__auto_register_builtin_detectors__mutmut_55': x__auto_register_builtin_detectors__mutmut_55, 
-    'x__auto_register_builtin_detectors__mutmut_56': x__auto_register_builtin_detectors__mutmut_56, 
-    'x__auto_register_builtin_detectors__mutmut_57': x__auto_register_builtin_detectors__mutmut_57, 
-    'x__auto_register_builtin_detectors__mutmut_58': x__auto_register_builtin_detectors__mutmut_58, 
-    'x__auto_register_builtin_detectors__mutmut_59': x__auto_register_builtin_detectors__mutmut_59, 
-    'x__auto_register_builtin_detectors__mutmut_60': x__auto_register_builtin_detectors__mutmut_60, 
-    'x__auto_register_builtin_detectors__mutmut_61': x__auto_register_builtin_detectors__mutmut_61, 
-    'x__auto_register_builtin_detectors__mutmut_62': x__auto_register_builtin_detectors__mutmut_62, 
-    'x__auto_register_builtin_detectors__mutmut_63': x__auto_register_builtin_detectors__mutmut_63, 
-    'x__auto_register_builtin_detectors__mutmut_64': x__auto_register_builtin_detectors__mutmut_64, 
-    'x__auto_register_builtin_detectors__mutmut_65': x__auto_register_builtin_detectors__mutmut_65, 
-    'x__auto_register_builtin_detectors__mutmut_66': x__auto_register_builtin_detectors__mutmut_66, 
-    'x__auto_register_builtin_detectors__mutmut_67': x__auto_register_builtin_detectors__mutmut_67, 
-    'x__auto_register_builtin_detectors__mutmut_68': x__auto_register_builtin_detectors__mutmut_68, 
-    'x__auto_register_builtin_detectors__mutmut_69': x__auto_register_builtin_detectors__mutmut_69, 
-    'x__auto_register_builtin_detectors__mutmut_70': x__auto_register_builtin_detectors__mutmut_70, 
-    'x__auto_register_builtin_detectors__mutmut_71': x__auto_register_builtin_detectors__mutmut_71, 
-    'x__auto_register_builtin_detectors__mutmut_72': x__auto_register_builtin_detectors__mutmut_72, 
-    'x__auto_register_builtin_detectors__mutmut_73': x__auto_register_builtin_detectors__mutmut_73, 
-    'x__auto_register_builtin_detectors__mutmut_74': x__auto_register_builtin_detectors__mutmut_74, 
-    'x__auto_register_builtin_detectors__mutmut_75': x__auto_register_builtin_detectors__mutmut_75, 
-    'x__auto_register_builtin_detectors__mutmut_76': x__auto_register_builtin_detectors__mutmut_76, 
-    'x__auto_register_builtin_detectors__mutmut_77': x__auto_register_builtin_detectors__mutmut_77, 
-    'x__auto_register_builtin_detectors__mutmut_78': x__auto_register_builtin_detectors__mutmut_78, 
-    'x__auto_register_builtin_detectors__mutmut_79': x__auto_register_builtin_detectors__mutmut_79, 
-    'x__auto_register_builtin_detectors__mutmut_80': x__auto_register_builtin_detectors__mutmut_80, 
-    'x__auto_register_builtin_detectors__mutmut_81': x__auto_register_builtin_detectors__mutmut_81, 
-    'x__auto_register_builtin_detectors__mutmut_82': x__auto_register_builtin_detectors__mutmut_82, 
-    'x__auto_register_builtin_detectors__mutmut_83': x__auto_register_builtin_detectors__mutmut_83, 
-    'x__auto_register_builtin_detectors__mutmut_84': x__auto_register_builtin_detectors__mutmut_84, 
-    'x__auto_register_builtin_detectors__mutmut_85': x__auto_register_builtin_detectors__mutmut_85, 
-    'x__auto_register_builtin_detectors__mutmut_86': x__auto_register_builtin_detectors__mutmut_86, 
-    'x__auto_register_builtin_detectors__mutmut_87': x__auto_register_builtin_detectors__mutmut_87, 
-    'x__auto_register_builtin_detectors__mutmut_88': x__auto_register_builtin_detectors__mutmut_88, 
-    'x__auto_register_builtin_detectors__mutmut_89': x__auto_register_builtin_detectors__mutmut_89, 
-    'x__auto_register_builtin_detectors__mutmut_90': x__auto_register_builtin_detectors__mutmut_90, 
-    'x__auto_register_builtin_detectors__mutmut_91': x__auto_register_builtin_detectors__mutmut_91, 
-    'x__auto_register_builtin_detectors__mutmut_92': x__auto_register_builtin_detectors__mutmut_92, 
-    'x__auto_register_builtin_detectors__mutmut_93': x__auto_register_builtin_detectors__mutmut_93, 
-    'x__auto_register_builtin_detectors__mutmut_94': x__auto_register_builtin_detectors__mutmut_94, 
-    'x__auto_register_builtin_detectors__mutmut_95': x__auto_register_builtin_detectors__mutmut_95, 
-    'x__auto_register_builtin_detectors__mutmut_96': x__auto_register_builtin_detectors__mutmut_96, 
-    'x__auto_register_builtin_detectors__mutmut_97': x__auto_register_builtin_detectors__mutmut_97, 
-    'x__auto_register_builtin_detectors__mutmut_98': x__auto_register_builtin_detectors__mutmut_98, 
-    'x__auto_register_builtin_detectors__mutmut_99': x__auto_register_builtin_detectors__mutmut_99, 
-    'x__auto_register_builtin_detectors__mutmut_100': x__auto_register_builtin_detectors__mutmut_100, 
-    'x__auto_register_builtin_detectors__mutmut_101': x__auto_register_builtin_detectors__mutmut_101, 
-    'x__auto_register_builtin_detectors__mutmut_102': x__auto_register_builtin_detectors__mutmut_102, 
-    'x__auto_register_builtin_detectors__mutmut_103': x__auto_register_builtin_detectors__mutmut_103, 
-    'x__auto_register_builtin_detectors__mutmut_104': x__auto_register_builtin_detectors__mutmut_104, 
-    'x__auto_register_builtin_detectors__mutmut_105': x__auto_register_builtin_detectors__mutmut_105, 
-    'x__auto_register_builtin_detectors__mutmut_106': x__auto_register_builtin_detectors__mutmut_106, 
-    'x__auto_register_builtin_detectors__mutmut_107': x__auto_register_builtin_detectors__mutmut_107, 
-    'x__auto_register_builtin_detectors__mutmut_108': x__auto_register_builtin_detectors__mutmut_108, 
-    'x__auto_register_builtin_detectors__mutmut_109': x__auto_register_builtin_detectors__mutmut_109, 
-    'x__auto_register_builtin_detectors__mutmut_110': x__auto_register_builtin_detectors__mutmut_110, 
-    'x__auto_register_builtin_detectors__mutmut_111': x__auto_register_builtin_detectors__mutmut_111, 
-    'x__auto_register_builtin_detectors__mutmut_112': x__auto_register_builtin_detectors__mutmut_112, 
-    'x__auto_register_builtin_detectors__mutmut_113': x__auto_register_builtin_detectors__mutmut_113, 
-    'x__auto_register_builtin_detectors__mutmut_114': x__auto_register_builtin_detectors__mutmut_114, 
-    'x__auto_register_builtin_detectors__mutmut_115': x__auto_register_builtin_detectors__mutmut_115, 
-    'x__auto_register_builtin_detectors__mutmut_116': x__auto_register_builtin_detectors__mutmut_116, 
-    'x__auto_register_builtin_detectors__mutmut_117': x__auto_register_builtin_detectors__mutmut_117, 
-    'x__auto_register_builtin_detectors__mutmut_118': x__auto_register_builtin_detectors__mutmut_118, 
-    'x__auto_register_builtin_detectors__mutmut_119': x__auto_register_builtin_detectors__mutmut_119, 
-    'x__auto_register_builtin_detectors__mutmut_120': x__auto_register_builtin_detectors__mutmut_120, 
-    'x__auto_register_builtin_detectors__mutmut_121': x__auto_register_builtin_detectors__mutmut_121, 
-    'x__auto_register_builtin_detectors__mutmut_122': x__auto_register_builtin_detectors__mutmut_122, 
-    'x__auto_register_builtin_detectors__mutmut_123': x__auto_register_builtin_detectors__mutmut_123, 
-    'x__auto_register_builtin_detectors__mutmut_124': x__auto_register_builtin_detectors__mutmut_124, 
-    'x__auto_register_builtin_detectors__mutmut_125': x__auto_register_builtin_detectors__mutmut_125, 
-    'x__auto_register_builtin_detectors__mutmut_126': x__auto_register_builtin_detectors__mutmut_126, 
-    'x__auto_register_builtin_detectors__mutmut_127': x__auto_register_builtin_detectors__mutmut_127, 
-    'x__auto_register_builtin_detectors__mutmut_128': x__auto_register_builtin_detectors__mutmut_128, 
-    'x__auto_register_builtin_detectors__mutmut_129': x__auto_register_builtin_detectors__mutmut_129, 
-    'x__auto_register_builtin_detectors__mutmut_130': x__auto_register_builtin_detectors__mutmut_130, 
-    'x__auto_register_builtin_detectors__mutmut_131': x__auto_register_builtin_detectors__mutmut_131, 
-    'x__auto_register_builtin_detectors__mutmut_132': x__auto_register_builtin_detectors__mutmut_132, 
-    'x__auto_register_builtin_detectors__mutmut_133': x__auto_register_builtin_detectors__mutmut_133, 
-    'x__auto_register_builtin_detectors__mutmut_134': x__auto_register_builtin_detectors__mutmut_134, 
-    'x__auto_register_builtin_detectors__mutmut_135': x__auto_register_builtin_detectors__mutmut_135, 
-    'x__auto_register_builtin_detectors__mutmut_136': x__auto_register_builtin_detectors__mutmut_136, 
-    'x__auto_register_builtin_detectors__mutmut_137': x__auto_register_builtin_detectors__mutmut_137, 
-    'x__auto_register_builtin_detectors__mutmut_138': x__auto_register_builtin_detectors__mutmut_138, 
-    'x__auto_register_builtin_detectors__mutmut_139': x__auto_register_builtin_detectors__mutmut_139, 
-    'x__auto_register_builtin_detectors__mutmut_140': x__auto_register_builtin_detectors__mutmut_140, 
-    'x__auto_register_builtin_detectors__mutmut_141': x__auto_register_builtin_detectors__mutmut_141, 
-    'x__auto_register_builtin_detectors__mutmut_142': x__auto_register_builtin_detectors__mutmut_142, 
-    'x__auto_register_builtin_detectors__mutmut_143': x__auto_register_builtin_detectors__mutmut_143, 
-    'x__auto_register_builtin_detectors__mutmut_144': x__auto_register_builtin_detectors__mutmut_144, 
-    'x__auto_register_builtin_detectors__mutmut_145': x__auto_register_builtin_detectors__mutmut_145, 
-    'x__auto_register_builtin_detectors__mutmut_146': x__auto_register_builtin_detectors__mutmut_146, 
-    'x__auto_register_builtin_detectors__mutmut_147': x__auto_register_builtin_detectors__mutmut_147, 
-    'x__auto_register_builtin_detectors__mutmut_148': x__auto_register_builtin_detectors__mutmut_148, 
-    'x__auto_register_builtin_detectors__mutmut_149': x__auto_register_builtin_detectors__mutmut_149, 
-    'x__auto_register_builtin_detectors__mutmut_150': x__auto_register_builtin_detectors__mutmut_150, 
-    'x__auto_register_builtin_detectors__mutmut_151': x__auto_register_builtin_detectors__mutmut_151, 
-    'x__auto_register_builtin_detectors__mutmut_152': x__auto_register_builtin_detectors__mutmut_152, 
-    'x__auto_register_builtin_detectors__mutmut_153': x__auto_register_builtin_detectors__mutmut_153, 
-    'x__auto_register_builtin_detectors__mutmut_154': x__auto_register_builtin_detectors__mutmut_154, 
-    'x__auto_register_builtin_detectors__mutmut_155': x__auto_register_builtin_detectors__mutmut_155, 
-    'x__auto_register_builtin_detectors__mutmut_156': x__auto_register_builtin_detectors__mutmut_156, 
-    'x__auto_register_builtin_detectors__mutmut_157': x__auto_register_builtin_detectors__mutmut_157, 
-    'x__auto_register_builtin_detectors__mutmut_158': x__auto_register_builtin_detectors__mutmut_158, 
-    'x__auto_register_builtin_detectors__mutmut_159': x__auto_register_builtin_detectors__mutmut_159, 
-    'x__auto_register_builtin_detectors__mutmut_160': x__auto_register_builtin_detectors__mutmut_160, 
-    'x__auto_register_builtin_detectors__mutmut_161': x__auto_register_builtin_detectors__mutmut_161, 
-    'x__auto_register_builtin_detectors__mutmut_162': x__auto_register_builtin_detectors__mutmut_162, 
-    'x__auto_register_builtin_detectors__mutmut_163': x__auto_register_builtin_detectors__mutmut_163, 
-    'x__auto_register_builtin_detectors__mutmut_164': x__auto_register_builtin_detectors__mutmut_164, 
-    'x__auto_register_builtin_detectors__mutmut_165': x__auto_register_builtin_detectors__mutmut_165, 
-    'x__auto_register_builtin_detectors__mutmut_166': x__auto_register_builtin_detectors__mutmut_166, 
-    'x__auto_register_builtin_detectors__mutmut_167': x__auto_register_builtin_detectors__mutmut_167, 
-    'x__auto_register_builtin_detectors__mutmut_168': x__auto_register_builtin_detectors__mutmut_168, 
-    'x__auto_register_builtin_detectors__mutmut_169': x__auto_register_builtin_detectors__mutmut_169, 
-    'x__auto_register_builtin_detectors__mutmut_170': x__auto_register_builtin_detectors__mutmut_170, 
-    'x__auto_register_builtin_detectors__mutmut_171': x__auto_register_builtin_detectors__mutmut_171, 
-    'x__auto_register_builtin_detectors__mutmut_172': x__auto_register_builtin_detectors__mutmut_172, 
-    'x__auto_register_builtin_detectors__mutmut_173': x__auto_register_builtin_detectors__mutmut_173, 
-    'x__auto_register_builtin_detectors__mutmut_174': x__auto_register_builtin_detectors__mutmut_174, 
-    'x__auto_register_builtin_detectors__mutmut_175': x__auto_register_builtin_detectors__mutmut_175, 
-    'x__auto_register_builtin_detectors__mutmut_176': x__auto_register_builtin_detectors__mutmut_176, 
-    'x__auto_register_builtin_detectors__mutmut_177': x__auto_register_builtin_detectors__mutmut_177, 
-    'x__auto_register_builtin_detectors__mutmut_178': x__auto_register_builtin_detectors__mutmut_178, 
-    'x__auto_register_builtin_detectors__mutmut_179': x__auto_register_builtin_detectors__mutmut_179, 
-    'x__auto_register_builtin_detectors__mutmut_180': x__auto_register_builtin_detectors__mutmut_180, 
-    'x__auto_register_builtin_detectors__mutmut_181': x__auto_register_builtin_detectors__mutmut_181
+
+x__auto_register_builtin_detectors__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__auto_register_builtin_detectors__mutmut_1": x__auto_register_builtin_detectors__mutmut_1,
+    "x__auto_register_builtin_detectors__mutmut_2": x__auto_register_builtin_detectors__mutmut_2,
+    "x__auto_register_builtin_detectors__mutmut_3": x__auto_register_builtin_detectors__mutmut_3,
+    "x__auto_register_builtin_detectors__mutmut_4": x__auto_register_builtin_detectors__mutmut_4,
+    "x__auto_register_builtin_detectors__mutmut_5": x__auto_register_builtin_detectors__mutmut_5,
+    "x__auto_register_builtin_detectors__mutmut_6": x__auto_register_builtin_detectors__mutmut_6,
+    "x__auto_register_builtin_detectors__mutmut_7": x__auto_register_builtin_detectors__mutmut_7,
+    "x__auto_register_builtin_detectors__mutmut_8": x__auto_register_builtin_detectors__mutmut_8,
+    "x__auto_register_builtin_detectors__mutmut_9": x__auto_register_builtin_detectors__mutmut_9,
+    "x__auto_register_builtin_detectors__mutmut_10": x__auto_register_builtin_detectors__mutmut_10,
+    "x__auto_register_builtin_detectors__mutmut_11": x__auto_register_builtin_detectors__mutmut_11,
+    "x__auto_register_builtin_detectors__mutmut_12": x__auto_register_builtin_detectors__mutmut_12,
+    "x__auto_register_builtin_detectors__mutmut_13": x__auto_register_builtin_detectors__mutmut_13,
+    "x__auto_register_builtin_detectors__mutmut_14": x__auto_register_builtin_detectors__mutmut_14,
+    "x__auto_register_builtin_detectors__mutmut_15": x__auto_register_builtin_detectors__mutmut_15,
+    "x__auto_register_builtin_detectors__mutmut_16": x__auto_register_builtin_detectors__mutmut_16,
+    "x__auto_register_builtin_detectors__mutmut_17": x__auto_register_builtin_detectors__mutmut_17,
+    "x__auto_register_builtin_detectors__mutmut_18": x__auto_register_builtin_detectors__mutmut_18,
+    "x__auto_register_builtin_detectors__mutmut_19": x__auto_register_builtin_detectors__mutmut_19,
+    "x__auto_register_builtin_detectors__mutmut_20": x__auto_register_builtin_detectors__mutmut_20,
+    "x__auto_register_builtin_detectors__mutmut_21": x__auto_register_builtin_detectors__mutmut_21,
+    "x__auto_register_builtin_detectors__mutmut_22": x__auto_register_builtin_detectors__mutmut_22,
+    "x__auto_register_builtin_detectors__mutmut_23": x__auto_register_builtin_detectors__mutmut_23,
+    "x__auto_register_builtin_detectors__mutmut_24": x__auto_register_builtin_detectors__mutmut_24,
+    "x__auto_register_builtin_detectors__mutmut_25": x__auto_register_builtin_detectors__mutmut_25,
+    "x__auto_register_builtin_detectors__mutmut_26": x__auto_register_builtin_detectors__mutmut_26,
+    "x__auto_register_builtin_detectors__mutmut_27": x__auto_register_builtin_detectors__mutmut_27,
+    "x__auto_register_builtin_detectors__mutmut_28": x__auto_register_builtin_detectors__mutmut_28,
+    "x__auto_register_builtin_detectors__mutmut_29": x__auto_register_builtin_detectors__mutmut_29,
+    "x__auto_register_builtin_detectors__mutmut_30": x__auto_register_builtin_detectors__mutmut_30,
+    "x__auto_register_builtin_detectors__mutmut_31": x__auto_register_builtin_detectors__mutmut_31,
+    "x__auto_register_builtin_detectors__mutmut_32": x__auto_register_builtin_detectors__mutmut_32,
+    "x__auto_register_builtin_detectors__mutmut_33": x__auto_register_builtin_detectors__mutmut_33,
+    "x__auto_register_builtin_detectors__mutmut_34": x__auto_register_builtin_detectors__mutmut_34,
+    "x__auto_register_builtin_detectors__mutmut_35": x__auto_register_builtin_detectors__mutmut_35,
+    "x__auto_register_builtin_detectors__mutmut_36": x__auto_register_builtin_detectors__mutmut_36,
+    "x__auto_register_builtin_detectors__mutmut_37": x__auto_register_builtin_detectors__mutmut_37,
+    "x__auto_register_builtin_detectors__mutmut_38": x__auto_register_builtin_detectors__mutmut_38,
+    "x__auto_register_builtin_detectors__mutmut_39": x__auto_register_builtin_detectors__mutmut_39,
+    "x__auto_register_builtin_detectors__mutmut_40": x__auto_register_builtin_detectors__mutmut_40,
+    "x__auto_register_builtin_detectors__mutmut_41": x__auto_register_builtin_detectors__mutmut_41,
+    "x__auto_register_builtin_detectors__mutmut_42": x__auto_register_builtin_detectors__mutmut_42,
+    "x__auto_register_builtin_detectors__mutmut_43": x__auto_register_builtin_detectors__mutmut_43,
+    "x__auto_register_builtin_detectors__mutmut_44": x__auto_register_builtin_detectors__mutmut_44,
+    "x__auto_register_builtin_detectors__mutmut_45": x__auto_register_builtin_detectors__mutmut_45,
+    "x__auto_register_builtin_detectors__mutmut_46": x__auto_register_builtin_detectors__mutmut_46,
+    "x__auto_register_builtin_detectors__mutmut_47": x__auto_register_builtin_detectors__mutmut_47,
+    "x__auto_register_builtin_detectors__mutmut_48": x__auto_register_builtin_detectors__mutmut_48,
+    "x__auto_register_builtin_detectors__mutmut_49": x__auto_register_builtin_detectors__mutmut_49,
+    "x__auto_register_builtin_detectors__mutmut_50": x__auto_register_builtin_detectors__mutmut_50,
+    "x__auto_register_builtin_detectors__mutmut_51": x__auto_register_builtin_detectors__mutmut_51,
+    "x__auto_register_builtin_detectors__mutmut_52": x__auto_register_builtin_detectors__mutmut_52,
+    "x__auto_register_builtin_detectors__mutmut_53": x__auto_register_builtin_detectors__mutmut_53,
+    "x__auto_register_builtin_detectors__mutmut_54": x__auto_register_builtin_detectors__mutmut_54,
+    "x__auto_register_builtin_detectors__mutmut_55": x__auto_register_builtin_detectors__mutmut_55,
+    "x__auto_register_builtin_detectors__mutmut_56": x__auto_register_builtin_detectors__mutmut_56,
+    "x__auto_register_builtin_detectors__mutmut_57": x__auto_register_builtin_detectors__mutmut_57,
+    "x__auto_register_builtin_detectors__mutmut_58": x__auto_register_builtin_detectors__mutmut_58,
+    "x__auto_register_builtin_detectors__mutmut_59": x__auto_register_builtin_detectors__mutmut_59,
+    "x__auto_register_builtin_detectors__mutmut_60": x__auto_register_builtin_detectors__mutmut_60,
+    "x__auto_register_builtin_detectors__mutmut_61": x__auto_register_builtin_detectors__mutmut_61,
+    "x__auto_register_builtin_detectors__mutmut_62": x__auto_register_builtin_detectors__mutmut_62,
+    "x__auto_register_builtin_detectors__mutmut_63": x__auto_register_builtin_detectors__mutmut_63,
+    "x__auto_register_builtin_detectors__mutmut_64": x__auto_register_builtin_detectors__mutmut_64,
+    "x__auto_register_builtin_detectors__mutmut_65": x__auto_register_builtin_detectors__mutmut_65,
+    "x__auto_register_builtin_detectors__mutmut_66": x__auto_register_builtin_detectors__mutmut_66,
+    "x__auto_register_builtin_detectors__mutmut_67": x__auto_register_builtin_detectors__mutmut_67,
+    "x__auto_register_builtin_detectors__mutmut_68": x__auto_register_builtin_detectors__mutmut_68,
+    "x__auto_register_builtin_detectors__mutmut_69": x__auto_register_builtin_detectors__mutmut_69,
+    "x__auto_register_builtin_detectors__mutmut_70": x__auto_register_builtin_detectors__mutmut_70,
+    "x__auto_register_builtin_detectors__mutmut_71": x__auto_register_builtin_detectors__mutmut_71,
+    "x__auto_register_builtin_detectors__mutmut_72": x__auto_register_builtin_detectors__mutmut_72,
+    "x__auto_register_builtin_detectors__mutmut_73": x__auto_register_builtin_detectors__mutmut_73,
+    "x__auto_register_builtin_detectors__mutmut_74": x__auto_register_builtin_detectors__mutmut_74,
+    "x__auto_register_builtin_detectors__mutmut_75": x__auto_register_builtin_detectors__mutmut_75,
+    "x__auto_register_builtin_detectors__mutmut_76": x__auto_register_builtin_detectors__mutmut_76,
+    "x__auto_register_builtin_detectors__mutmut_77": x__auto_register_builtin_detectors__mutmut_77,
+    "x__auto_register_builtin_detectors__mutmut_78": x__auto_register_builtin_detectors__mutmut_78,
+    "x__auto_register_builtin_detectors__mutmut_79": x__auto_register_builtin_detectors__mutmut_79,
+    "x__auto_register_builtin_detectors__mutmut_80": x__auto_register_builtin_detectors__mutmut_80,
+    "x__auto_register_builtin_detectors__mutmut_81": x__auto_register_builtin_detectors__mutmut_81,
+    "x__auto_register_builtin_detectors__mutmut_82": x__auto_register_builtin_detectors__mutmut_82,
+    "x__auto_register_builtin_detectors__mutmut_83": x__auto_register_builtin_detectors__mutmut_83,
+    "x__auto_register_builtin_detectors__mutmut_84": x__auto_register_builtin_detectors__mutmut_84,
+    "x__auto_register_builtin_detectors__mutmut_85": x__auto_register_builtin_detectors__mutmut_85,
+    "x__auto_register_builtin_detectors__mutmut_86": x__auto_register_builtin_detectors__mutmut_86,
+    "x__auto_register_builtin_detectors__mutmut_87": x__auto_register_builtin_detectors__mutmut_87,
+    "x__auto_register_builtin_detectors__mutmut_88": x__auto_register_builtin_detectors__mutmut_88,
+    "x__auto_register_builtin_detectors__mutmut_89": x__auto_register_builtin_detectors__mutmut_89,
+    "x__auto_register_builtin_detectors__mutmut_90": x__auto_register_builtin_detectors__mutmut_90,
+    "x__auto_register_builtin_detectors__mutmut_91": x__auto_register_builtin_detectors__mutmut_91,
+    "x__auto_register_builtin_detectors__mutmut_92": x__auto_register_builtin_detectors__mutmut_92,
+    "x__auto_register_builtin_detectors__mutmut_93": x__auto_register_builtin_detectors__mutmut_93,
+    "x__auto_register_builtin_detectors__mutmut_94": x__auto_register_builtin_detectors__mutmut_94,
+    "x__auto_register_builtin_detectors__mutmut_95": x__auto_register_builtin_detectors__mutmut_95,
+    "x__auto_register_builtin_detectors__mutmut_96": x__auto_register_builtin_detectors__mutmut_96,
+    "x__auto_register_builtin_detectors__mutmut_97": x__auto_register_builtin_detectors__mutmut_97,
+    "x__auto_register_builtin_detectors__mutmut_98": x__auto_register_builtin_detectors__mutmut_98,
+    "x__auto_register_builtin_detectors__mutmut_99": x__auto_register_builtin_detectors__mutmut_99,
+    "x__auto_register_builtin_detectors__mutmut_100": x__auto_register_builtin_detectors__mutmut_100,
+    "x__auto_register_builtin_detectors__mutmut_101": x__auto_register_builtin_detectors__mutmut_101,
+    "x__auto_register_builtin_detectors__mutmut_102": x__auto_register_builtin_detectors__mutmut_102,
+    "x__auto_register_builtin_detectors__mutmut_103": x__auto_register_builtin_detectors__mutmut_103,
+    "x__auto_register_builtin_detectors__mutmut_104": x__auto_register_builtin_detectors__mutmut_104,
+    "x__auto_register_builtin_detectors__mutmut_105": x__auto_register_builtin_detectors__mutmut_105,
+    "x__auto_register_builtin_detectors__mutmut_106": x__auto_register_builtin_detectors__mutmut_106,
+    "x__auto_register_builtin_detectors__mutmut_107": x__auto_register_builtin_detectors__mutmut_107,
+    "x__auto_register_builtin_detectors__mutmut_108": x__auto_register_builtin_detectors__mutmut_108,
+    "x__auto_register_builtin_detectors__mutmut_109": x__auto_register_builtin_detectors__mutmut_109,
+    "x__auto_register_builtin_detectors__mutmut_110": x__auto_register_builtin_detectors__mutmut_110,
+    "x__auto_register_builtin_detectors__mutmut_111": x__auto_register_builtin_detectors__mutmut_111,
+    "x__auto_register_builtin_detectors__mutmut_112": x__auto_register_builtin_detectors__mutmut_112,
+    "x__auto_register_builtin_detectors__mutmut_113": x__auto_register_builtin_detectors__mutmut_113,
+    "x__auto_register_builtin_detectors__mutmut_114": x__auto_register_builtin_detectors__mutmut_114,
+    "x__auto_register_builtin_detectors__mutmut_115": x__auto_register_builtin_detectors__mutmut_115,
+    "x__auto_register_builtin_detectors__mutmut_116": x__auto_register_builtin_detectors__mutmut_116,
+    "x__auto_register_builtin_detectors__mutmut_117": x__auto_register_builtin_detectors__mutmut_117,
+    "x__auto_register_builtin_detectors__mutmut_118": x__auto_register_builtin_detectors__mutmut_118,
+    "x__auto_register_builtin_detectors__mutmut_119": x__auto_register_builtin_detectors__mutmut_119,
+    "x__auto_register_builtin_detectors__mutmut_120": x__auto_register_builtin_detectors__mutmut_120,
+    "x__auto_register_builtin_detectors__mutmut_121": x__auto_register_builtin_detectors__mutmut_121,
+    "x__auto_register_builtin_detectors__mutmut_122": x__auto_register_builtin_detectors__mutmut_122,
+    "x__auto_register_builtin_detectors__mutmut_123": x__auto_register_builtin_detectors__mutmut_123,
+    "x__auto_register_builtin_detectors__mutmut_124": x__auto_register_builtin_detectors__mutmut_124,
+    "x__auto_register_builtin_detectors__mutmut_125": x__auto_register_builtin_detectors__mutmut_125,
+    "x__auto_register_builtin_detectors__mutmut_126": x__auto_register_builtin_detectors__mutmut_126,
+    "x__auto_register_builtin_detectors__mutmut_127": x__auto_register_builtin_detectors__mutmut_127,
+    "x__auto_register_builtin_detectors__mutmut_128": x__auto_register_builtin_detectors__mutmut_128,
+    "x__auto_register_builtin_detectors__mutmut_129": x__auto_register_builtin_detectors__mutmut_129,
+    "x__auto_register_builtin_detectors__mutmut_130": x__auto_register_builtin_detectors__mutmut_130,
+    "x__auto_register_builtin_detectors__mutmut_131": x__auto_register_builtin_detectors__mutmut_131,
+    "x__auto_register_builtin_detectors__mutmut_132": x__auto_register_builtin_detectors__mutmut_132,
+    "x__auto_register_builtin_detectors__mutmut_133": x__auto_register_builtin_detectors__mutmut_133,
+    "x__auto_register_builtin_detectors__mutmut_134": x__auto_register_builtin_detectors__mutmut_134,
+    "x__auto_register_builtin_detectors__mutmut_135": x__auto_register_builtin_detectors__mutmut_135,
+    "x__auto_register_builtin_detectors__mutmut_136": x__auto_register_builtin_detectors__mutmut_136,
+    "x__auto_register_builtin_detectors__mutmut_137": x__auto_register_builtin_detectors__mutmut_137,
+    "x__auto_register_builtin_detectors__mutmut_138": x__auto_register_builtin_detectors__mutmut_138,
+    "x__auto_register_builtin_detectors__mutmut_139": x__auto_register_builtin_detectors__mutmut_139,
+    "x__auto_register_builtin_detectors__mutmut_140": x__auto_register_builtin_detectors__mutmut_140,
+    "x__auto_register_builtin_detectors__mutmut_141": x__auto_register_builtin_detectors__mutmut_141,
+    "x__auto_register_builtin_detectors__mutmut_142": x__auto_register_builtin_detectors__mutmut_142,
+    "x__auto_register_builtin_detectors__mutmut_143": x__auto_register_builtin_detectors__mutmut_143,
+    "x__auto_register_builtin_detectors__mutmut_144": x__auto_register_builtin_detectors__mutmut_144,
+    "x__auto_register_builtin_detectors__mutmut_145": x__auto_register_builtin_detectors__mutmut_145,
+    "x__auto_register_builtin_detectors__mutmut_146": x__auto_register_builtin_detectors__mutmut_146,
+    "x__auto_register_builtin_detectors__mutmut_147": x__auto_register_builtin_detectors__mutmut_147,
+    "x__auto_register_builtin_detectors__mutmut_148": x__auto_register_builtin_detectors__mutmut_148,
+    "x__auto_register_builtin_detectors__mutmut_149": x__auto_register_builtin_detectors__mutmut_149,
+    "x__auto_register_builtin_detectors__mutmut_150": x__auto_register_builtin_detectors__mutmut_150,
+    "x__auto_register_builtin_detectors__mutmut_151": x__auto_register_builtin_detectors__mutmut_151,
+    "x__auto_register_builtin_detectors__mutmut_152": x__auto_register_builtin_detectors__mutmut_152,
+    "x__auto_register_builtin_detectors__mutmut_153": x__auto_register_builtin_detectors__mutmut_153,
+    "x__auto_register_builtin_detectors__mutmut_154": x__auto_register_builtin_detectors__mutmut_154,
+    "x__auto_register_builtin_detectors__mutmut_155": x__auto_register_builtin_detectors__mutmut_155,
+    "x__auto_register_builtin_detectors__mutmut_156": x__auto_register_builtin_detectors__mutmut_156,
+    "x__auto_register_builtin_detectors__mutmut_157": x__auto_register_builtin_detectors__mutmut_157,
+    "x__auto_register_builtin_detectors__mutmut_158": x__auto_register_builtin_detectors__mutmut_158,
+    "x__auto_register_builtin_detectors__mutmut_159": x__auto_register_builtin_detectors__mutmut_159,
+    "x__auto_register_builtin_detectors__mutmut_160": x__auto_register_builtin_detectors__mutmut_160,
+    "x__auto_register_builtin_detectors__mutmut_161": x__auto_register_builtin_detectors__mutmut_161,
+    "x__auto_register_builtin_detectors__mutmut_162": x__auto_register_builtin_detectors__mutmut_162,
+    "x__auto_register_builtin_detectors__mutmut_163": x__auto_register_builtin_detectors__mutmut_163,
+    "x__auto_register_builtin_detectors__mutmut_164": x__auto_register_builtin_detectors__mutmut_164,
+    "x__auto_register_builtin_detectors__mutmut_165": x__auto_register_builtin_detectors__mutmut_165,
+    "x__auto_register_builtin_detectors__mutmut_166": x__auto_register_builtin_detectors__mutmut_166,
+    "x__auto_register_builtin_detectors__mutmut_167": x__auto_register_builtin_detectors__mutmut_167,
+    "x__auto_register_builtin_detectors__mutmut_168": x__auto_register_builtin_detectors__mutmut_168,
+    "x__auto_register_builtin_detectors__mutmut_169": x__auto_register_builtin_detectors__mutmut_169,
+    "x__auto_register_builtin_detectors__mutmut_170": x__auto_register_builtin_detectors__mutmut_170,
+    "x__auto_register_builtin_detectors__mutmut_171": x__auto_register_builtin_detectors__mutmut_171,
+    "x__auto_register_builtin_detectors__mutmut_172": x__auto_register_builtin_detectors__mutmut_172,
+    "x__auto_register_builtin_detectors__mutmut_173": x__auto_register_builtin_detectors__mutmut_173,
+    "x__auto_register_builtin_detectors__mutmut_174": x__auto_register_builtin_detectors__mutmut_174,
+    "x__auto_register_builtin_detectors__mutmut_175": x__auto_register_builtin_detectors__mutmut_175,
+    "x__auto_register_builtin_detectors__mutmut_176": x__auto_register_builtin_detectors__mutmut_176,
+    "x__auto_register_builtin_detectors__mutmut_177": x__auto_register_builtin_detectors__mutmut_177,
+    "x__auto_register_builtin_detectors__mutmut_178": x__auto_register_builtin_detectors__mutmut_178,
+    "x__auto_register_builtin_detectors__mutmut_179": x__auto_register_builtin_detectors__mutmut_179,
+    "x__auto_register_builtin_detectors__mutmut_180": x__auto_register_builtin_detectors__mutmut_180,
+    "x__auto_register_builtin_detectors__mutmut_181": x__auto_register_builtin_detectors__mutmut_181,
 }
 
-def _auto_register_builtin_detectors(*args, **kwargs):
-    result = _mutmut_trampoline(x__auto_register_builtin_detectors__mutmut_orig, x__auto_register_builtin_detectors__mutmut_mutants, args, kwargs)
-    return result 
 
-_auto_register_builtin_detectors.__signature__ = _mutmut_signature(x__auto_register_builtin_detectors__mutmut_orig)
-x__auto_register_builtin_detectors__mutmut_orig.__name__ = 'x__auto_register_builtin_detectors'
+def _auto_register_builtin_detectors(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__auto_register_builtin_detectors__mutmut_orig,
+        x__auto_register_builtin_detectors__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_auto_register_builtin_detectors.__signature__ = _mutmut_signature(
+    x__auto_register_builtin_detectors__mutmut_orig
+)
+x__auto_register_builtin_detectors__mutmut_orig.__name__ = "x__auto_register_builtin_detectors"
 
 
 # Auto-register built-in detectors on module import

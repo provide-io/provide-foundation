@@ -32,23 +32,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -95,7 +98,9 @@ def x__reset_otel_once_flag__mutmut_3(once_obj: Any) -> None:
 
 def x__reset_otel_once_flag__mutmut_4(once_obj: Any) -> None:
     """Reset OpenTelemetry Once flag to allow re-initialization."""
-    if hasattr(once_obj, ):
+    if hasattr(
+        once_obj,
+    ):
         once_obj._done = False
     if hasattr(once_obj, "_lock"):
         with once_obj._lock:
@@ -169,7 +174,9 @@ def x__reset_otel_once_flag__mutmut_12(once_obj: Any) -> None:
     """Reset OpenTelemetry Once flag to allow re-initialization."""
     if hasattr(once_obj, "_done"):
         once_obj._done = False
-    if hasattr(once_obj, ):
+    if hasattr(
+        once_obj,
+    ):
         with once_obj._lock:
             once_obj._done = False
 
@@ -209,31 +216,36 @@ def x__reset_otel_once_flag__mutmut_16(once_obj: Any) -> None:
         with once_obj._lock:
             once_obj._done = True
 
-x__reset_otel_once_flag__mutmut_mutants : ClassVar[MutantDict] = {
-'x__reset_otel_once_flag__mutmut_1': x__reset_otel_once_flag__mutmut_1, 
-    'x__reset_otel_once_flag__mutmut_2': x__reset_otel_once_flag__mutmut_2, 
-    'x__reset_otel_once_flag__mutmut_3': x__reset_otel_once_flag__mutmut_3, 
-    'x__reset_otel_once_flag__mutmut_4': x__reset_otel_once_flag__mutmut_4, 
-    'x__reset_otel_once_flag__mutmut_5': x__reset_otel_once_flag__mutmut_5, 
-    'x__reset_otel_once_flag__mutmut_6': x__reset_otel_once_flag__mutmut_6, 
-    'x__reset_otel_once_flag__mutmut_7': x__reset_otel_once_flag__mutmut_7, 
-    'x__reset_otel_once_flag__mutmut_8': x__reset_otel_once_flag__mutmut_8, 
-    'x__reset_otel_once_flag__mutmut_9': x__reset_otel_once_flag__mutmut_9, 
-    'x__reset_otel_once_flag__mutmut_10': x__reset_otel_once_flag__mutmut_10, 
-    'x__reset_otel_once_flag__mutmut_11': x__reset_otel_once_flag__mutmut_11, 
-    'x__reset_otel_once_flag__mutmut_12': x__reset_otel_once_flag__mutmut_12, 
-    'x__reset_otel_once_flag__mutmut_13': x__reset_otel_once_flag__mutmut_13, 
-    'x__reset_otel_once_flag__mutmut_14': x__reset_otel_once_flag__mutmut_14, 
-    'x__reset_otel_once_flag__mutmut_15': x__reset_otel_once_flag__mutmut_15, 
-    'x__reset_otel_once_flag__mutmut_16': x__reset_otel_once_flag__mutmut_16
+
+x__reset_otel_once_flag__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__reset_otel_once_flag__mutmut_1": x__reset_otel_once_flag__mutmut_1,
+    "x__reset_otel_once_flag__mutmut_2": x__reset_otel_once_flag__mutmut_2,
+    "x__reset_otel_once_flag__mutmut_3": x__reset_otel_once_flag__mutmut_3,
+    "x__reset_otel_once_flag__mutmut_4": x__reset_otel_once_flag__mutmut_4,
+    "x__reset_otel_once_flag__mutmut_5": x__reset_otel_once_flag__mutmut_5,
+    "x__reset_otel_once_flag__mutmut_6": x__reset_otel_once_flag__mutmut_6,
+    "x__reset_otel_once_flag__mutmut_7": x__reset_otel_once_flag__mutmut_7,
+    "x__reset_otel_once_flag__mutmut_8": x__reset_otel_once_flag__mutmut_8,
+    "x__reset_otel_once_flag__mutmut_9": x__reset_otel_once_flag__mutmut_9,
+    "x__reset_otel_once_flag__mutmut_10": x__reset_otel_once_flag__mutmut_10,
+    "x__reset_otel_once_flag__mutmut_11": x__reset_otel_once_flag__mutmut_11,
+    "x__reset_otel_once_flag__mutmut_12": x__reset_otel_once_flag__mutmut_12,
+    "x__reset_otel_once_flag__mutmut_13": x__reset_otel_once_flag__mutmut_13,
+    "x__reset_otel_once_flag__mutmut_14": x__reset_otel_once_flag__mutmut_14,
+    "x__reset_otel_once_flag__mutmut_15": x__reset_otel_once_flag__mutmut_15,
+    "x__reset_otel_once_flag__mutmut_16": x__reset_otel_once_flag__mutmut_16,
 }
 
+
 def _reset_otel_once_flag(*args, **kwargs):
-    result = _mutmut_trampoline(x__reset_otel_once_flag__mutmut_orig, x__reset_otel_once_flag__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__reset_otel_once_flag__mutmut_orig, x__reset_otel_once_flag__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _reset_otel_once_flag.__signature__ = _mutmut_signature(x__reset_otel_once_flag__mutmut_orig)
-x__reset_otel_once_flag__mutmut_orig.__name__ = 'x__reset_otel_once_flag'
+x__reset_otel_once_flag__mutmut_orig.__name__ = "x__reset_otel_once_flag"
 
 
 def x__reset_tracer_provider__mutmut_orig() -> None:
@@ -314,7 +326,9 @@ def x__reset_tracer_provider__mutmut_4() -> None:
         import opentelemetry.trace as otel_trace
 
         # Reset the Once flag to allow re-initialization
-        if hasattr(otel_trace, ):
+        if hasattr(
+            otel_trace,
+        ):
             _reset_otel_once_flag(otel_trace._TRACER_PROVIDER_SET_ONCE)
 
         # Reset to NoOpTracerProvider
@@ -397,23 +411,28 @@ def x__reset_tracer_provider__mutmut_8() -> None:
         # Ignore errors during reset - better to continue than fail
         pass
 
-x__reset_tracer_provider__mutmut_mutants : ClassVar[MutantDict] = {
-'x__reset_tracer_provider__mutmut_1': x__reset_tracer_provider__mutmut_1, 
-    'x__reset_tracer_provider__mutmut_2': x__reset_tracer_provider__mutmut_2, 
-    'x__reset_tracer_provider__mutmut_3': x__reset_tracer_provider__mutmut_3, 
-    'x__reset_tracer_provider__mutmut_4': x__reset_tracer_provider__mutmut_4, 
-    'x__reset_tracer_provider__mutmut_5': x__reset_tracer_provider__mutmut_5, 
-    'x__reset_tracer_provider__mutmut_6': x__reset_tracer_provider__mutmut_6, 
-    'x__reset_tracer_provider__mutmut_7': x__reset_tracer_provider__mutmut_7, 
-    'x__reset_tracer_provider__mutmut_8': x__reset_tracer_provider__mutmut_8
+
+x__reset_tracer_provider__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__reset_tracer_provider__mutmut_1": x__reset_tracer_provider__mutmut_1,
+    "x__reset_tracer_provider__mutmut_2": x__reset_tracer_provider__mutmut_2,
+    "x__reset_tracer_provider__mutmut_3": x__reset_tracer_provider__mutmut_3,
+    "x__reset_tracer_provider__mutmut_4": x__reset_tracer_provider__mutmut_4,
+    "x__reset_tracer_provider__mutmut_5": x__reset_tracer_provider__mutmut_5,
+    "x__reset_tracer_provider__mutmut_6": x__reset_tracer_provider__mutmut_6,
+    "x__reset_tracer_provider__mutmut_7": x__reset_tracer_provider__mutmut_7,
+    "x__reset_tracer_provider__mutmut_8": x__reset_tracer_provider__mutmut_8,
 }
 
+
 def _reset_tracer_provider(*args, **kwargs):
-    result = _mutmut_trampoline(x__reset_tracer_provider__mutmut_orig, x__reset_tracer_provider__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__reset_tracer_provider__mutmut_orig, x__reset_tracer_provider__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _reset_tracer_provider.__signature__ = _mutmut_signature(x__reset_tracer_provider__mutmut_orig)
-x__reset_tracer_provider__mutmut_orig.__name__ = 'x__reset_tracer_provider'
+x__reset_tracer_provider__mutmut_orig.__name__ = "x__reset_tracer_provider"
 
 
 def x__reset_meter_provider__mutmut_orig() -> None:
@@ -499,7 +518,9 @@ def x__reset_meter_provider__mutmut_4() -> None:
         import opentelemetry.metrics._internal as otel_metrics_internal
 
         # Reset the Once flag to allow re-initialization
-        if hasattr(otel_metrics_internal, ):
+        if hasattr(
+            otel_metrics_internal,
+        ):
             _reset_otel_once_flag(otel_metrics_internal._METER_PROVIDER_SET_ONCE)
 
         # Reset to NoOpMeterProvider
@@ -586,23 +607,28 @@ def x__reset_meter_provider__mutmut_8() -> None:
         # Ignore errors during reset - better to continue than fail
         pass
 
-x__reset_meter_provider__mutmut_mutants : ClassVar[MutantDict] = {
-'x__reset_meter_provider__mutmut_1': x__reset_meter_provider__mutmut_1, 
-    'x__reset_meter_provider__mutmut_2': x__reset_meter_provider__mutmut_2, 
-    'x__reset_meter_provider__mutmut_3': x__reset_meter_provider__mutmut_3, 
-    'x__reset_meter_provider__mutmut_4': x__reset_meter_provider__mutmut_4, 
-    'x__reset_meter_provider__mutmut_5': x__reset_meter_provider__mutmut_5, 
-    'x__reset_meter_provider__mutmut_6': x__reset_meter_provider__mutmut_6, 
-    'x__reset_meter_provider__mutmut_7': x__reset_meter_provider__mutmut_7, 
-    'x__reset_meter_provider__mutmut_8': x__reset_meter_provider__mutmut_8
+
+x__reset_meter_provider__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__reset_meter_provider__mutmut_1": x__reset_meter_provider__mutmut_1,
+    "x__reset_meter_provider__mutmut_2": x__reset_meter_provider__mutmut_2,
+    "x__reset_meter_provider__mutmut_3": x__reset_meter_provider__mutmut_3,
+    "x__reset_meter_provider__mutmut_4": x__reset_meter_provider__mutmut_4,
+    "x__reset_meter_provider__mutmut_5": x__reset_meter_provider__mutmut_5,
+    "x__reset_meter_provider__mutmut_6": x__reset_meter_provider__mutmut_6,
+    "x__reset_meter_provider__mutmut_7": x__reset_meter_provider__mutmut_7,
+    "x__reset_meter_provider__mutmut_8": x__reset_meter_provider__mutmut_8,
 }
 
+
 def _reset_meter_provider(*args, **kwargs):
-    result = _mutmut_trampoline(x__reset_meter_provider__mutmut_orig, x__reset_meter_provider__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__reset_meter_provider__mutmut_orig, x__reset_meter_provider__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _reset_meter_provider.__signature__ = _mutmut_signature(x__reset_meter_provider__mutmut_orig)
-x__reset_meter_provider__mutmut_orig.__name__ = 'x__reset_meter_provider'
+x__reset_meter_provider__mutmut_orig.__name__ = "x__reset_meter_provider"
 
 
 def _reset_opentelemetry_providers() -> None:
@@ -1387,34 +1413,44 @@ def x__reset_foundation_environment_variables__mutmut_19() -> None:
             # This is conservative - when in doubt, preserve
             del os.environ[env_var]
 
-x__reset_foundation_environment_variables__mutmut_mutants : ClassVar[MutantDict] = {
-'x__reset_foundation_environment_variables__mutmut_1': x__reset_foundation_environment_variables__mutmut_1, 
-    'x__reset_foundation_environment_variables__mutmut_2': x__reset_foundation_environment_variables__mutmut_2, 
-    'x__reset_foundation_environment_variables__mutmut_3': x__reset_foundation_environment_variables__mutmut_3, 
-    'x__reset_foundation_environment_variables__mutmut_4': x__reset_foundation_environment_variables__mutmut_4, 
-    'x__reset_foundation_environment_variables__mutmut_5': x__reset_foundation_environment_variables__mutmut_5, 
-    'x__reset_foundation_environment_variables__mutmut_6': x__reset_foundation_environment_variables__mutmut_6, 
-    'x__reset_foundation_environment_variables__mutmut_7': x__reset_foundation_environment_variables__mutmut_7, 
-    'x__reset_foundation_environment_variables__mutmut_8': x__reset_foundation_environment_variables__mutmut_8, 
-    'x__reset_foundation_environment_variables__mutmut_9': x__reset_foundation_environment_variables__mutmut_9, 
-    'x__reset_foundation_environment_variables__mutmut_10': x__reset_foundation_environment_variables__mutmut_10, 
-    'x__reset_foundation_environment_variables__mutmut_11': x__reset_foundation_environment_variables__mutmut_11, 
-    'x__reset_foundation_environment_variables__mutmut_12': x__reset_foundation_environment_variables__mutmut_12, 
-    'x__reset_foundation_environment_variables__mutmut_13': x__reset_foundation_environment_variables__mutmut_13, 
-    'x__reset_foundation_environment_variables__mutmut_14': x__reset_foundation_environment_variables__mutmut_14, 
-    'x__reset_foundation_environment_variables__mutmut_15': x__reset_foundation_environment_variables__mutmut_15, 
-    'x__reset_foundation_environment_variables__mutmut_16': x__reset_foundation_environment_variables__mutmut_16, 
-    'x__reset_foundation_environment_variables__mutmut_17': x__reset_foundation_environment_variables__mutmut_17, 
-    'x__reset_foundation_environment_variables__mutmut_18': x__reset_foundation_environment_variables__mutmut_18, 
-    'x__reset_foundation_environment_variables__mutmut_19': x__reset_foundation_environment_variables__mutmut_19
+
+x__reset_foundation_environment_variables__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__reset_foundation_environment_variables__mutmut_1": x__reset_foundation_environment_variables__mutmut_1,
+    "x__reset_foundation_environment_variables__mutmut_2": x__reset_foundation_environment_variables__mutmut_2,
+    "x__reset_foundation_environment_variables__mutmut_3": x__reset_foundation_environment_variables__mutmut_3,
+    "x__reset_foundation_environment_variables__mutmut_4": x__reset_foundation_environment_variables__mutmut_4,
+    "x__reset_foundation_environment_variables__mutmut_5": x__reset_foundation_environment_variables__mutmut_5,
+    "x__reset_foundation_environment_variables__mutmut_6": x__reset_foundation_environment_variables__mutmut_6,
+    "x__reset_foundation_environment_variables__mutmut_7": x__reset_foundation_environment_variables__mutmut_7,
+    "x__reset_foundation_environment_variables__mutmut_8": x__reset_foundation_environment_variables__mutmut_8,
+    "x__reset_foundation_environment_variables__mutmut_9": x__reset_foundation_environment_variables__mutmut_9,
+    "x__reset_foundation_environment_variables__mutmut_10": x__reset_foundation_environment_variables__mutmut_10,
+    "x__reset_foundation_environment_variables__mutmut_11": x__reset_foundation_environment_variables__mutmut_11,
+    "x__reset_foundation_environment_variables__mutmut_12": x__reset_foundation_environment_variables__mutmut_12,
+    "x__reset_foundation_environment_variables__mutmut_13": x__reset_foundation_environment_variables__mutmut_13,
+    "x__reset_foundation_environment_variables__mutmut_14": x__reset_foundation_environment_variables__mutmut_14,
+    "x__reset_foundation_environment_variables__mutmut_15": x__reset_foundation_environment_variables__mutmut_15,
+    "x__reset_foundation_environment_variables__mutmut_16": x__reset_foundation_environment_variables__mutmut_16,
+    "x__reset_foundation_environment_variables__mutmut_17": x__reset_foundation_environment_variables__mutmut_17,
+    "x__reset_foundation_environment_variables__mutmut_18": x__reset_foundation_environment_variables__mutmut_18,
+    "x__reset_foundation_environment_variables__mutmut_19": x__reset_foundation_environment_variables__mutmut_19,
 }
 
-def _reset_foundation_environment_variables(*args, **kwargs):
-    result = _mutmut_trampoline(x__reset_foundation_environment_variables__mutmut_orig, x__reset_foundation_environment_variables__mutmut_mutants, args, kwargs)
-    return result 
 
-_reset_foundation_environment_variables.__signature__ = _mutmut_signature(x__reset_foundation_environment_variables__mutmut_orig)
-x__reset_foundation_environment_variables__mutmut_orig.__name__ = 'x__reset_foundation_environment_variables'
+def _reset_foundation_environment_variables(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__reset_foundation_environment_variables__mutmut_orig,
+        x__reset_foundation_environment_variables__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_reset_foundation_environment_variables.__signature__ = _mutmut_signature(
+    x__reset_foundation_environment_variables__mutmut_orig
+)
+x__reset_foundation_environment_variables__mutmut_orig.__name__ = "x__reset_foundation_environment_variables"
 
 
 def x_reset_foundation_state__mutmut_orig() -> None:
@@ -3728,31 +3764,36 @@ def x_reset_foundation_state__mutmut_16() -> None:
         except ImportError:
             pass
 
-x_reset_foundation_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_foundation_state__mutmut_1': x_reset_foundation_state__mutmut_1, 
-    'x_reset_foundation_state__mutmut_2': x_reset_foundation_state__mutmut_2, 
-    'x_reset_foundation_state__mutmut_3': x_reset_foundation_state__mutmut_3, 
-    'x_reset_foundation_state__mutmut_4': x_reset_foundation_state__mutmut_4, 
-    'x_reset_foundation_state__mutmut_5': x_reset_foundation_state__mutmut_5, 
-    'x_reset_foundation_state__mutmut_6': x_reset_foundation_state__mutmut_6, 
-    'x_reset_foundation_state__mutmut_7': x_reset_foundation_state__mutmut_7, 
-    'x_reset_foundation_state__mutmut_8': x_reset_foundation_state__mutmut_8, 
-    'x_reset_foundation_state__mutmut_9': x_reset_foundation_state__mutmut_9, 
-    'x_reset_foundation_state__mutmut_10': x_reset_foundation_state__mutmut_10, 
-    'x_reset_foundation_state__mutmut_11': x_reset_foundation_state__mutmut_11, 
-    'x_reset_foundation_state__mutmut_12': x_reset_foundation_state__mutmut_12, 
-    'x_reset_foundation_state__mutmut_13': x_reset_foundation_state__mutmut_13, 
-    'x_reset_foundation_state__mutmut_14': x_reset_foundation_state__mutmut_14, 
-    'x_reset_foundation_state__mutmut_15': x_reset_foundation_state__mutmut_15, 
-    'x_reset_foundation_state__mutmut_16': x_reset_foundation_state__mutmut_16
+
+x_reset_foundation_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_foundation_state__mutmut_1": x_reset_foundation_state__mutmut_1,
+    "x_reset_foundation_state__mutmut_2": x_reset_foundation_state__mutmut_2,
+    "x_reset_foundation_state__mutmut_3": x_reset_foundation_state__mutmut_3,
+    "x_reset_foundation_state__mutmut_4": x_reset_foundation_state__mutmut_4,
+    "x_reset_foundation_state__mutmut_5": x_reset_foundation_state__mutmut_5,
+    "x_reset_foundation_state__mutmut_6": x_reset_foundation_state__mutmut_6,
+    "x_reset_foundation_state__mutmut_7": x_reset_foundation_state__mutmut_7,
+    "x_reset_foundation_state__mutmut_8": x_reset_foundation_state__mutmut_8,
+    "x_reset_foundation_state__mutmut_9": x_reset_foundation_state__mutmut_9,
+    "x_reset_foundation_state__mutmut_10": x_reset_foundation_state__mutmut_10,
+    "x_reset_foundation_state__mutmut_11": x_reset_foundation_state__mutmut_11,
+    "x_reset_foundation_state__mutmut_12": x_reset_foundation_state__mutmut_12,
+    "x_reset_foundation_state__mutmut_13": x_reset_foundation_state__mutmut_13,
+    "x_reset_foundation_state__mutmut_14": x_reset_foundation_state__mutmut_14,
+    "x_reset_foundation_state__mutmut_15": x_reset_foundation_state__mutmut_15,
+    "x_reset_foundation_state__mutmut_16": x_reset_foundation_state__mutmut_16,
 }
 
+
 def reset_foundation_state(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_foundation_state__mutmut_orig, x_reset_foundation_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_foundation_state__mutmut_orig, x_reset_foundation_state__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 reset_foundation_state.__signature__ = _mutmut_signature(x_reset_foundation_state__mutmut_orig)
-x_reset_foundation_state__mutmut_orig.__name__ = 'x_reset_foundation_state'
+x_reset_foundation_state__mutmut_orig.__name__ = "x_reset_foundation_state"
 
 
 def x_reset_foundation_for_testing__mutmut_orig() -> None:
@@ -5141,33 +5182,41 @@ def x_reset_foundation_for_testing__mutmut_18() -> None:
         # Always clear the in-progress flag
         _reset_for_testing_in_progress = True
 
-x_reset_foundation_for_testing__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_foundation_for_testing__mutmut_1': x_reset_foundation_for_testing__mutmut_1, 
-    'x_reset_foundation_for_testing__mutmut_2': x_reset_foundation_for_testing__mutmut_2, 
-    'x_reset_foundation_for_testing__mutmut_3': x_reset_foundation_for_testing__mutmut_3, 
-    'x_reset_foundation_for_testing__mutmut_4': x_reset_foundation_for_testing__mutmut_4, 
-    'x_reset_foundation_for_testing__mutmut_5': x_reset_foundation_for_testing__mutmut_5, 
-    'x_reset_foundation_for_testing__mutmut_6': x_reset_foundation_for_testing__mutmut_6, 
-    'x_reset_foundation_for_testing__mutmut_7': x_reset_foundation_for_testing__mutmut_7, 
-    'x_reset_foundation_for_testing__mutmut_8': x_reset_foundation_for_testing__mutmut_8, 
-    'x_reset_foundation_for_testing__mutmut_9': x_reset_foundation_for_testing__mutmut_9, 
-    'x_reset_foundation_for_testing__mutmut_10': x_reset_foundation_for_testing__mutmut_10, 
-    'x_reset_foundation_for_testing__mutmut_11': x_reset_foundation_for_testing__mutmut_11, 
-    'x_reset_foundation_for_testing__mutmut_12': x_reset_foundation_for_testing__mutmut_12, 
-    'x_reset_foundation_for_testing__mutmut_13': x_reset_foundation_for_testing__mutmut_13, 
-    'x_reset_foundation_for_testing__mutmut_14': x_reset_foundation_for_testing__mutmut_14, 
-    'x_reset_foundation_for_testing__mutmut_15': x_reset_foundation_for_testing__mutmut_15, 
-    'x_reset_foundation_for_testing__mutmut_16': x_reset_foundation_for_testing__mutmut_16, 
-    'x_reset_foundation_for_testing__mutmut_17': x_reset_foundation_for_testing__mutmut_17, 
-    'x_reset_foundation_for_testing__mutmut_18': x_reset_foundation_for_testing__mutmut_18
+
+x_reset_foundation_for_testing__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_foundation_for_testing__mutmut_1": x_reset_foundation_for_testing__mutmut_1,
+    "x_reset_foundation_for_testing__mutmut_2": x_reset_foundation_for_testing__mutmut_2,
+    "x_reset_foundation_for_testing__mutmut_3": x_reset_foundation_for_testing__mutmut_3,
+    "x_reset_foundation_for_testing__mutmut_4": x_reset_foundation_for_testing__mutmut_4,
+    "x_reset_foundation_for_testing__mutmut_5": x_reset_foundation_for_testing__mutmut_5,
+    "x_reset_foundation_for_testing__mutmut_6": x_reset_foundation_for_testing__mutmut_6,
+    "x_reset_foundation_for_testing__mutmut_7": x_reset_foundation_for_testing__mutmut_7,
+    "x_reset_foundation_for_testing__mutmut_8": x_reset_foundation_for_testing__mutmut_8,
+    "x_reset_foundation_for_testing__mutmut_9": x_reset_foundation_for_testing__mutmut_9,
+    "x_reset_foundation_for_testing__mutmut_10": x_reset_foundation_for_testing__mutmut_10,
+    "x_reset_foundation_for_testing__mutmut_11": x_reset_foundation_for_testing__mutmut_11,
+    "x_reset_foundation_for_testing__mutmut_12": x_reset_foundation_for_testing__mutmut_12,
+    "x_reset_foundation_for_testing__mutmut_13": x_reset_foundation_for_testing__mutmut_13,
+    "x_reset_foundation_for_testing__mutmut_14": x_reset_foundation_for_testing__mutmut_14,
+    "x_reset_foundation_for_testing__mutmut_15": x_reset_foundation_for_testing__mutmut_15,
+    "x_reset_foundation_for_testing__mutmut_16": x_reset_foundation_for_testing__mutmut_16,
+    "x_reset_foundation_for_testing__mutmut_17": x_reset_foundation_for_testing__mutmut_17,
+    "x_reset_foundation_for_testing__mutmut_18": x_reset_foundation_for_testing__mutmut_18,
 }
 
+
 def reset_foundation_for_testing(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_foundation_for_testing__mutmut_orig, x_reset_foundation_for_testing__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_foundation_for_testing__mutmut_orig,
+        x_reset_foundation_for_testing__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 reset_foundation_for_testing.__signature__ = _mutmut_signature(x_reset_foundation_for_testing__mutmut_orig)
-x_reset_foundation_for_testing__mutmut_orig.__name__ = 'x_reset_foundation_for_testing'
+x_reset_foundation_for_testing__mutmut_orig.__name__ = "x_reset_foundation_for_testing"
 
 
 # <3 🧱🤝🧪🪄

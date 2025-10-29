@@ -38,23 +38,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -195,7 +198,9 @@ def x__config_create_service_name_processor__mutmut_8(
             event_dict["service_name"] = service_name
         return event_dict
 
-    return cast("StructlogProcessor", )
+    return cast(
+        "StructlogProcessor",
+    )
 
 
 def x__config_create_service_name_processor__mutmut_9(
@@ -242,26 +247,36 @@ def x__config_create_service_name_processor__mutmut_11(
 
     return cast("STRUCTLOGPROCESSOR", processor)
 
-x__config_create_service_name_processor__mutmut_mutants : ClassVar[MutantDict] = {
-'x__config_create_service_name_processor__mutmut_1': x__config_create_service_name_processor__mutmut_1, 
-    'x__config_create_service_name_processor__mutmut_2': x__config_create_service_name_processor__mutmut_2, 
-    'x__config_create_service_name_processor__mutmut_3': x__config_create_service_name_processor__mutmut_3, 
-    'x__config_create_service_name_processor__mutmut_4': x__config_create_service_name_processor__mutmut_4, 
-    'x__config_create_service_name_processor__mutmut_5': x__config_create_service_name_processor__mutmut_5, 
-    'x__config_create_service_name_processor__mutmut_6': x__config_create_service_name_processor__mutmut_6, 
-    'x__config_create_service_name_processor__mutmut_7': x__config_create_service_name_processor__mutmut_7, 
-    'x__config_create_service_name_processor__mutmut_8': x__config_create_service_name_processor__mutmut_8, 
-    'x__config_create_service_name_processor__mutmut_9': x__config_create_service_name_processor__mutmut_9, 
-    'x__config_create_service_name_processor__mutmut_10': x__config_create_service_name_processor__mutmut_10, 
-    'x__config_create_service_name_processor__mutmut_11': x__config_create_service_name_processor__mutmut_11
+
+x__config_create_service_name_processor__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__config_create_service_name_processor__mutmut_1": x__config_create_service_name_processor__mutmut_1,
+    "x__config_create_service_name_processor__mutmut_2": x__config_create_service_name_processor__mutmut_2,
+    "x__config_create_service_name_processor__mutmut_3": x__config_create_service_name_processor__mutmut_3,
+    "x__config_create_service_name_processor__mutmut_4": x__config_create_service_name_processor__mutmut_4,
+    "x__config_create_service_name_processor__mutmut_5": x__config_create_service_name_processor__mutmut_5,
+    "x__config_create_service_name_processor__mutmut_6": x__config_create_service_name_processor__mutmut_6,
+    "x__config_create_service_name_processor__mutmut_7": x__config_create_service_name_processor__mutmut_7,
+    "x__config_create_service_name_processor__mutmut_8": x__config_create_service_name_processor__mutmut_8,
+    "x__config_create_service_name_processor__mutmut_9": x__config_create_service_name_processor__mutmut_9,
+    "x__config_create_service_name_processor__mutmut_10": x__config_create_service_name_processor__mutmut_10,
+    "x__config_create_service_name_processor__mutmut_11": x__config_create_service_name_processor__mutmut_11,
 }
 
-def _config_create_service_name_processor(*args, **kwargs):
-    result = _mutmut_trampoline(x__config_create_service_name_processor__mutmut_orig, x__config_create_service_name_processor__mutmut_mutants, args, kwargs)
-    return result 
 
-_config_create_service_name_processor.__signature__ = _mutmut_signature(x__config_create_service_name_processor__mutmut_orig)
-x__config_create_service_name_processor__mutmut_orig.__name__ = 'x__config_create_service_name_processor'
+def _config_create_service_name_processor(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__config_create_service_name_processor__mutmut_orig,
+        x__config_create_service_name_processor__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_config_create_service_name_processor.__signature__ = _mutmut_signature(
+    x__config_create_service_name_processor__mutmut_orig
+)
+x__config_create_service_name_processor__mutmut_orig.__name__ = "x__config_create_service_name_processor"
 
 
 def x__config_create_timestamp_processors__mutmut_orig(
@@ -366,7 +381,9 @@ def x__config_create_timestamp_processors__mutmut_5(
     omit_timestamp: bool,
 ) -> list[StructlogProcessor]:
     processors: list[StructlogProcessor] = [
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S.%f", ),
+        structlog.processors.TimeStamper(
+            fmt="%Y-%m-%d %H:%M:%S.%f",
+        ),
     ]
     if omit_timestamp:
 
@@ -515,7 +532,9 @@ def x__config_create_timestamp_processors__mutmut_12(
             _method_name: str,
             event_dict: structlog.types.EventDict,
         ) -> structlog.types.EventDict:
-            event_dict.pop("timestamp", )
+            event_dict.pop(
+                "timestamp",
+            )
             return event_dict
 
         processors.append(cast("StructlogProcessor", pop_timestamp_processor))
@@ -658,7 +677,11 @@ def x__config_create_timestamp_processors__mutmut_19(
             event_dict.pop("timestamp", None)
             return event_dict
 
-        processors.append(cast("StructlogProcessor", ))
+        processors.append(
+            cast(
+                "StructlogProcessor",
+            )
+        )
     return processors
 
 
@@ -721,37 +744,47 @@ def x__config_create_timestamp_processors__mutmut_22(
         processors.append(cast("STRUCTLOGPROCESSOR", pop_timestamp_processor))
     return processors
 
-x__config_create_timestamp_processors__mutmut_mutants : ClassVar[MutantDict] = {
-'x__config_create_timestamp_processors__mutmut_1': x__config_create_timestamp_processors__mutmut_1, 
-    'x__config_create_timestamp_processors__mutmut_2': x__config_create_timestamp_processors__mutmut_2, 
-    'x__config_create_timestamp_processors__mutmut_3': x__config_create_timestamp_processors__mutmut_3, 
-    'x__config_create_timestamp_processors__mutmut_4': x__config_create_timestamp_processors__mutmut_4, 
-    'x__config_create_timestamp_processors__mutmut_5': x__config_create_timestamp_processors__mutmut_5, 
-    'x__config_create_timestamp_processors__mutmut_6': x__config_create_timestamp_processors__mutmut_6, 
-    'x__config_create_timestamp_processors__mutmut_7': x__config_create_timestamp_processors__mutmut_7, 
-    'x__config_create_timestamp_processors__mutmut_8': x__config_create_timestamp_processors__mutmut_8, 
-    'x__config_create_timestamp_processors__mutmut_9': x__config_create_timestamp_processors__mutmut_9, 
-    'x__config_create_timestamp_processors__mutmut_10': x__config_create_timestamp_processors__mutmut_10, 
-    'x__config_create_timestamp_processors__mutmut_11': x__config_create_timestamp_processors__mutmut_11, 
-    'x__config_create_timestamp_processors__mutmut_12': x__config_create_timestamp_processors__mutmut_12, 
-    'x__config_create_timestamp_processors__mutmut_13': x__config_create_timestamp_processors__mutmut_13, 
-    'x__config_create_timestamp_processors__mutmut_14': x__config_create_timestamp_processors__mutmut_14, 
-    'x__config_create_timestamp_processors__mutmut_15': x__config_create_timestamp_processors__mutmut_15, 
-    'x__config_create_timestamp_processors__mutmut_16': x__config_create_timestamp_processors__mutmut_16, 
-    'x__config_create_timestamp_processors__mutmut_17': x__config_create_timestamp_processors__mutmut_17, 
-    'x__config_create_timestamp_processors__mutmut_18': x__config_create_timestamp_processors__mutmut_18, 
-    'x__config_create_timestamp_processors__mutmut_19': x__config_create_timestamp_processors__mutmut_19, 
-    'x__config_create_timestamp_processors__mutmut_20': x__config_create_timestamp_processors__mutmut_20, 
-    'x__config_create_timestamp_processors__mutmut_21': x__config_create_timestamp_processors__mutmut_21, 
-    'x__config_create_timestamp_processors__mutmut_22': x__config_create_timestamp_processors__mutmut_22
+
+x__config_create_timestamp_processors__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__config_create_timestamp_processors__mutmut_1": x__config_create_timestamp_processors__mutmut_1,
+    "x__config_create_timestamp_processors__mutmut_2": x__config_create_timestamp_processors__mutmut_2,
+    "x__config_create_timestamp_processors__mutmut_3": x__config_create_timestamp_processors__mutmut_3,
+    "x__config_create_timestamp_processors__mutmut_4": x__config_create_timestamp_processors__mutmut_4,
+    "x__config_create_timestamp_processors__mutmut_5": x__config_create_timestamp_processors__mutmut_5,
+    "x__config_create_timestamp_processors__mutmut_6": x__config_create_timestamp_processors__mutmut_6,
+    "x__config_create_timestamp_processors__mutmut_7": x__config_create_timestamp_processors__mutmut_7,
+    "x__config_create_timestamp_processors__mutmut_8": x__config_create_timestamp_processors__mutmut_8,
+    "x__config_create_timestamp_processors__mutmut_9": x__config_create_timestamp_processors__mutmut_9,
+    "x__config_create_timestamp_processors__mutmut_10": x__config_create_timestamp_processors__mutmut_10,
+    "x__config_create_timestamp_processors__mutmut_11": x__config_create_timestamp_processors__mutmut_11,
+    "x__config_create_timestamp_processors__mutmut_12": x__config_create_timestamp_processors__mutmut_12,
+    "x__config_create_timestamp_processors__mutmut_13": x__config_create_timestamp_processors__mutmut_13,
+    "x__config_create_timestamp_processors__mutmut_14": x__config_create_timestamp_processors__mutmut_14,
+    "x__config_create_timestamp_processors__mutmut_15": x__config_create_timestamp_processors__mutmut_15,
+    "x__config_create_timestamp_processors__mutmut_16": x__config_create_timestamp_processors__mutmut_16,
+    "x__config_create_timestamp_processors__mutmut_17": x__config_create_timestamp_processors__mutmut_17,
+    "x__config_create_timestamp_processors__mutmut_18": x__config_create_timestamp_processors__mutmut_18,
+    "x__config_create_timestamp_processors__mutmut_19": x__config_create_timestamp_processors__mutmut_19,
+    "x__config_create_timestamp_processors__mutmut_20": x__config_create_timestamp_processors__mutmut_20,
+    "x__config_create_timestamp_processors__mutmut_21": x__config_create_timestamp_processors__mutmut_21,
+    "x__config_create_timestamp_processors__mutmut_22": x__config_create_timestamp_processors__mutmut_22,
 }
 
-def _config_create_timestamp_processors(*args, **kwargs):
-    result = _mutmut_trampoline(x__config_create_timestamp_processors__mutmut_orig, x__config_create_timestamp_processors__mutmut_mutants, args, kwargs)
-    return result 
 
-_config_create_timestamp_processors.__signature__ = _mutmut_signature(x__config_create_timestamp_processors__mutmut_orig)
-x__config_create_timestamp_processors__mutmut_orig.__name__ = 'x__config_create_timestamp_processors'
+def _config_create_timestamp_processors(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__config_create_timestamp_processors__mutmut_orig,
+        x__config_create_timestamp_processors__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_config_create_timestamp_processors.__signature__ = _mutmut_signature(
+    x__config_create_timestamp_processors__mutmut_orig
+)
+x__config_create_timestamp_processors__mutmut_orig.__name__ = "x__config_create_timestamp_processors"
 
 
 def x__config_create_event_enrichment_processors__mutmut_orig(
@@ -1011,7 +1044,11 @@ def x__config_create_event_enrichment_processors__mutmut_6(
 ) -> list[StructlogProcessor]:
     processors: list[StructlogProcessor] = []
     if logging_config.logger_name_emoji_prefix_enabled:
-        processors.append(cast("StructlogProcessor", ))
+        processors.append(
+            cast(
+                "StructlogProcessor",
+            )
+        )
     if logging_config.das_emoji_prefix_enabled:
 
         def add_event_enrichment_processor(
@@ -1968,7 +2005,11 @@ def x__config_create_event_enrichment_processors__mutmut_28(
             resolver = get_resolver()
             return resolver.enrich_event(event_dict)
 
-        processors.append(cast("StructlogProcessor", ))
+        processors.append(
+            cast(
+                "StructlogProcessor",
+            )
+        )
     return processors
 
 
@@ -2097,46 +2138,58 @@ def x__config_create_event_enrichment_processors__mutmut_31(
         processors.append(cast("STRUCTLOGPROCESSOR", add_event_enrichment_processor))
     return processors
 
-x__config_create_event_enrichment_processors__mutmut_mutants : ClassVar[MutantDict] = {
-'x__config_create_event_enrichment_processors__mutmut_1': x__config_create_event_enrichment_processors__mutmut_1, 
-    'x__config_create_event_enrichment_processors__mutmut_2': x__config_create_event_enrichment_processors__mutmut_2, 
-    'x__config_create_event_enrichment_processors__mutmut_3': x__config_create_event_enrichment_processors__mutmut_3, 
-    'x__config_create_event_enrichment_processors__mutmut_4': x__config_create_event_enrichment_processors__mutmut_4, 
-    'x__config_create_event_enrichment_processors__mutmut_5': x__config_create_event_enrichment_processors__mutmut_5, 
-    'x__config_create_event_enrichment_processors__mutmut_6': x__config_create_event_enrichment_processors__mutmut_6, 
-    'x__config_create_event_enrichment_processors__mutmut_7': x__config_create_event_enrichment_processors__mutmut_7, 
-    'x__config_create_event_enrichment_processors__mutmut_8': x__config_create_event_enrichment_processors__mutmut_8, 
-    'x__config_create_event_enrichment_processors__mutmut_9': x__config_create_event_enrichment_processors__mutmut_9, 
-    'x__config_create_event_enrichment_processors__mutmut_10': x__config_create_event_enrichment_processors__mutmut_10, 
-    'x__config_create_event_enrichment_processors__mutmut_11': x__config_create_event_enrichment_processors__mutmut_11, 
-    'x__config_create_event_enrichment_processors__mutmut_12': x__config_create_event_enrichment_processors__mutmut_12, 
-    'x__config_create_event_enrichment_processors__mutmut_13': x__config_create_event_enrichment_processors__mutmut_13, 
-    'x__config_create_event_enrichment_processors__mutmut_14': x__config_create_event_enrichment_processors__mutmut_14, 
-    'x__config_create_event_enrichment_processors__mutmut_15': x__config_create_event_enrichment_processors__mutmut_15, 
-    'x__config_create_event_enrichment_processors__mutmut_16': x__config_create_event_enrichment_processors__mutmut_16, 
-    'x__config_create_event_enrichment_processors__mutmut_17': x__config_create_event_enrichment_processors__mutmut_17, 
-    'x__config_create_event_enrichment_processors__mutmut_18': x__config_create_event_enrichment_processors__mutmut_18, 
-    'x__config_create_event_enrichment_processors__mutmut_19': x__config_create_event_enrichment_processors__mutmut_19, 
-    'x__config_create_event_enrichment_processors__mutmut_20': x__config_create_event_enrichment_processors__mutmut_20, 
-    'x__config_create_event_enrichment_processors__mutmut_21': x__config_create_event_enrichment_processors__mutmut_21, 
-    'x__config_create_event_enrichment_processors__mutmut_22': x__config_create_event_enrichment_processors__mutmut_22, 
-    'x__config_create_event_enrichment_processors__mutmut_23': x__config_create_event_enrichment_processors__mutmut_23, 
-    'x__config_create_event_enrichment_processors__mutmut_24': x__config_create_event_enrichment_processors__mutmut_24, 
-    'x__config_create_event_enrichment_processors__mutmut_25': x__config_create_event_enrichment_processors__mutmut_25, 
-    'x__config_create_event_enrichment_processors__mutmut_26': x__config_create_event_enrichment_processors__mutmut_26, 
-    'x__config_create_event_enrichment_processors__mutmut_27': x__config_create_event_enrichment_processors__mutmut_27, 
-    'x__config_create_event_enrichment_processors__mutmut_28': x__config_create_event_enrichment_processors__mutmut_28, 
-    'x__config_create_event_enrichment_processors__mutmut_29': x__config_create_event_enrichment_processors__mutmut_29, 
-    'x__config_create_event_enrichment_processors__mutmut_30': x__config_create_event_enrichment_processors__mutmut_30, 
-    'x__config_create_event_enrichment_processors__mutmut_31': x__config_create_event_enrichment_processors__mutmut_31
+
+x__config_create_event_enrichment_processors__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__config_create_event_enrichment_processors__mutmut_1": x__config_create_event_enrichment_processors__mutmut_1,
+    "x__config_create_event_enrichment_processors__mutmut_2": x__config_create_event_enrichment_processors__mutmut_2,
+    "x__config_create_event_enrichment_processors__mutmut_3": x__config_create_event_enrichment_processors__mutmut_3,
+    "x__config_create_event_enrichment_processors__mutmut_4": x__config_create_event_enrichment_processors__mutmut_4,
+    "x__config_create_event_enrichment_processors__mutmut_5": x__config_create_event_enrichment_processors__mutmut_5,
+    "x__config_create_event_enrichment_processors__mutmut_6": x__config_create_event_enrichment_processors__mutmut_6,
+    "x__config_create_event_enrichment_processors__mutmut_7": x__config_create_event_enrichment_processors__mutmut_7,
+    "x__config_create_event_enrichment_processors__mutmut_8": x__config_create_event_enrichment_processors__mutmut_8,
+    "x__config_create_event_enrichment_processors__mutmut_9": x__config_create_event_enrichment_processors__mutmut_9,
+    "x__config_create_event_enrichment_processors__mutmut_10": x__config_create_event_enrichment_processors__mutmut_10,
+    "x__config_create_event_enrichment_processors__mutmut_11": x__config_create_event_enrichment_processors__mutmut_11,
+    "x__config_create_event_enrichment_processors__mutmut_12": x__config_create_event_enrichment_processors__mutmut_12,
+    "x__config_create_event_enrichment_processors__mutmut_13": x__config_create_event_enrichment_processors__mutmut_13,
+    "x__config_create_event_enrichment_processors__mutmut_14": x__config_create_event_enrichment_processors__mutmut_14,
+    "x__config_create_event_enrichment_processors__mutmut_15": x__config_create_event_enrichment_processors__mutmut_15,
+    "x__config_create_event_enrichment_processors__mutmut_16": x__config_create_event_enrichment_processors__mutmut_16,
+    "x__config_create_event_enrichment_processors__mutmut_17": x__config_create_event_enrichment_processors__mutmut_17,
+    "x__config_create_event_enrichment_processors__mutmut_18": x__config_create_event_enrichment_processors__mutmut_18,
+    "x__config_create_event_enrichment_processors__mutmut_19": x__config_create_event_enrichment_processors__mutmut_19,
+    "x__config_create_event_enrichment_processors__mutmut_20": x__config_create_event_enrichment_processors__mutmut_20,
+    "x__config_create_event_enrichment_processors__mutmut_21": x__config_create_event_enrichment_processors__mutmut_21,
+    "x__config_create_event_enrichment_processors__mutmut_22": x__config_create_event_enrichment_processors__mutmut_22,
+    "x__config_create_event_enrichment_processors__mutmut_23": x__config_create_event_enrichment_processors__mutmut_23,
+    "x__config_create_event_enrichment_processors__mutmut_24": x__config_create_event_enrichment_processors__mutmut_24,
+    "x__config_create_event_enrichment_processors__mutmut_25": x__config_create_event_enrichment_processors__mutmut_25,
+    "x__config_create_event_enrichment_processors__mutmut_26": x__config_create_event_enrichment_processors__mutmut_26,
+    "x__config_create_event_enrichment_processors__mutmut_27": x__config_create_event_enrichment_processors__mutmut_27,
+    "x__config_create_event_enrichment_processors__mutmut_28": x__config_create_event_enrichment_processors__mutmut_28,
+    "x__config_create_event_enrichment_processors__mutmut_29": x__config_create_event_enrichment_processors__mutmut_29,
+    "x__config_create_event_enrichment_processors__mutmut_30": x__config_create_event_enrichment_processors__mutmut_30,
+    "x__config_create_event_enrichment_processors__mutmut_31": x__config_create_event_enrichment_processors__mutmut_31,
 }
 
-def _config_create_event_enrichment_processors(*args, **kwargs):
-    result = _mutmut_trampoline(x__config_create_event_enrichment_processors__mutmut_orig, x__config_create_event_enrichment_processors__mutmut_mutants, args, kwargs)
-    return result 
 
-_config_create_event_enrichment_processors.__signature__ = _mutmut_signature(x__config_create_event_enrichment_processors__mutmut_orig)
-x__config_create_event_enrichment_processors__mutmut_orig.__name__ = 'x__config_create_event_enrichment_processors'
+def _config_create_event_enrichment_processors(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__config_create_event_enrichment_processors__mutmut_orig,
+        x__config_create_event_enrichment_processors__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_config_create_event_enrichment_processors.__signature__ = _mutmut_signature(
+    x__config_create_event_enrichment_processors__mutmut_orig
+)
+x__config_create_event_enrichment_processors__mutmut_orig.__name__ = (
+    "x__config_create_event_enrichment_processors"
+)
 
 
 def x_set_reset_in_progress__mutmut_orig(in_progress: bool) -> None:
@@ -2156,16 +2209,21 @@ def x_set_reset_in_progress__mutmut_1(in_progress: bool) -> None:
     global _reset_in_progress
     _reset_in_progress = None
 
-x_set_reset_in_progress__mutmut_mutants : ClassVar[MutantDict] = {
-'x_set_reset_in_progress__mutmut_1': x_set_reset_in_progress__mutmut_1
+
+x_set_reset_in_progress__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_set_reset_in_progress__mutmut_1": x_set_reset_in_progress__mutmut_1
 }
 
+
 def set_reset_in_progress(*args, **kwargs):
-    result = _mutmut_trampoline(x_set_reset_in_progress__mutmut_orig, x_set_reset_in_progress__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_set_reset_in_progress__mutmut_orig, x_set_reset_in_progress__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 set_reset_in_progress.__signature__ = _mutmut_signature(x_set_reset_in_progress__mutmut_orig)
-x_set_reset_in_progress__mutmut_orig.__name__ = 'x_set_reset_in_progress'
+x_set_reset_in_progress__mutmut_orig.__name__ = "x_set_reset_in_progress"
 
 
 def x_reset_event_enrichment_state__mutmut_orig() -> None:
@@ -2197,17 +2255,25 @@ def x_reset_event_enrichment_state__mutmut_2() -> None:
     global _event_enrichment_initialized
     _event_enrichment_initialized = True
 
-x_reset_event_enrichment_state__mutmut_mutants : ClassVar[MutantDict] = {
-'x_reset_event_enrichment_state__mutmut_1': x_reset_event_enrichment_state__mutmut_1, 
-    'x_reset_event_enrichment_state__mutmut_2': x_reset_event_enrichment_state__mutmut_2
+
+x_reset_event_enrichment_state__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_reset_event_enrichment_state__mutmut_1": x_reset_event_enrichment_state__mutmut_1,
+    "x_reset_event_enrichment_state__mutmut_2": x_reset_event_enrichment_state__mutmut_2,
 }
 
+
 def reset_event_enrichment_state(*args, **kwargs):
-    result = _mutmut_trampoline(x_reset_event_enrichment_state__mutmut_orig, x_reset_event_enrichment_state__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_reset_event_enrichment_state__mutmut_orig,
+        x_reset_event_enrichment_state__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
 
 reset_event_enrichment_state.__signature__ = _mutmut_signature(x_reset_event_enrichment_state__mutmut_orig)
-x_reset_event_enrichment_state__mutmut_orig.__name__ = 'x_reset_event_enrichment_state'
+x_reset_event_enrichment_state__mutmut_orig.__name__ = "x_reset_event_enrichment_state"
 
 
 def x__build_core_processors_list__mutmut_orig(config: TelemetryConfig) -> list[StructlogProcessor]:
@@ -2685,7 +2751,9 @@ def x__build_core_processors_list__mutmut_6(config: TelemetryConfig) -> list[Str
     log_cfg = config.logging
     processors: list[StructlogProcessor] = [
         structlog.contextvars.merge_contextvars,
-        cast("StructlogProcessor", ),
+        cast(
+            "StructlogProcessor",
+        ),
     ]
 
     # Add timestamps, service name, and trace context early
@@ -3880,7 +3948,11 @@ def x__build_core_processors_list__mutmut_21(config: TelemetryConfig) -> list[St
 
     # Add trace context injection if tracing is enabled
     if config.tracing_enabled and not config.globally_disabled:
-        processors.append(cast("StructlogProcessor", ))
+        processors.append(
+            cast(
+                "StructlogProcessor",
+            )
+        )
 
     # Add sanitization processor early to sanitize all logged data
     if log_cfg.sanitization_enabled:
@@ -4675,7 +4747,7 @@ def x__build_core_processors_list__mutmut_31(config: TelemetryConfig) -> list[St
         sanitization_processor = create_sanitization_processor(
             enabled=log_cfg.sanitization_enabled,
             mask_patterns=log_cfg.sanitization_mask_patterns,
-            )
+        )
         processors.append(cast("StructlogProcessor", sanitization_processor))
 
     # Add event enrichment (emojis) BEFORE OTLP so enriched logs are exported
@@ -5071,7 +5143,11 @@ def x__build_core_processors_list__mutmut_36(config: TelemetryConfig) -> list[St
             mask_patterns=log_cfg.sanitization_mask_patterns,
             sanitize_dicts=log_cfg.sanitization_sanitize_dicts,
         )
-        processors.append(cast("StructlogProcessor", ))
+        processors.append(
+            cast(
+                "StructlogProcessor",
+            )
+        )
 
     # Add event enrichment (emojis) BEFORE OTLP so enriched logs are exported
     processors.extend(_config_create_event_enrichment_processors(log_cfg))
@@ -6110,7 +6186,11 @@ def x__build_core_processors_list__mutmut_49(config: TelemetryConfig) -> list[St
 
         otlp_processor = create_otlp_processor(config)
         if otlp_processor is not None:
-            processors.append(cast("StructlogProcessor", ))
+            processors.append(
+                cast(
+                    "StructlogProcessor",
+                )
+            )
 
     # Add level filter for console output (this doesn't affect OTLP which already processed logs)
     processors.append(
@@ -6429,9 +6509,7 @@ def x__build_core_processors_list__mutmut_53(config: TelemetryConfig) -> list[St
             processors.append(cast("StructlogProcessor", otlp_processor))
 
     # Add level filter for console output (this doesn't affect OTLP which already processed logs)
-    processors.append(
-        None
-    )
+    processors.append(None)
 
     processors.extend(
         [
@@ -6736,7 +6814,7 @@ def x__build_core_processors_list__mutmut_57(config: TelemetryConfig) -> list[St
     processors.append(
         cast(
             "StructlogProcessor",
-            )
+        )
     )
 
     processors.extend(
@@ -7443,7 +7521,7 @@ def x__build_core_processors_list__mutmut_66(config: TelemetryConfig) -> list[St
             filter_by_level_custom(
                 default_level_str=log_cfg.default_level,
                 module_levels=log_cfg.module_levels,
-                ),
+            ),
         )
     )
 
@@ -7526,9 +7604,7 @@ def x__build_core_processors_list__mutmut_67(config: TelemetryConfig) -> list[St
         )
     )
 
-    processors.extend(
-        None
-    )
+    processors.extend(None)
 
     # Add rate limiting processor if enabled
     if log_cfg.rate_limit_enabled:
@@ -8869,7 +8945,7 @@ def x__build_core_processors_list__mutmut_84(config: TelemetryConfig) -> list[St
             summary_interval=log_cfg.rate_limit_summary_interval,
             max_queue_size=log_cfg.rate_limit_max_queue_size,
             max_memory_mb=log_cfg.rate_limit_max_memory_mb,
-            )
+        )
         processors.append(cast("StructlogProcessor", rate_limiter_processor))
 
     return processors
@@ -9265,7 +9341,11 @@ def x__build_core_processors_list__mutmut_89(config: TelemetryConfig) -> list[St
             max_memory_mb=log_cfg.rate_limit_max_memory_mb,
             overflow_policy=log_cfg.rate_limit_overflow_policy,
         )
-        processors.append(cast("StructlogProcessor", ))
+        processors.append(
+            cast(
+                "StructlogProcessor",
+            )
+        )
 
     return processors
 
@@ -9506,107 +9586,112 @@ def x__build_core_processors_list__mutmut_92(config: TelemetryConfig) -> list[St
 
     return processors
 
-x__build_core_processors_list__mutmut_mutants : ClassVar[MutantDict] = {
-'x__build_core_processors_list__mutmut_1': x__build_core_processors_list__mutmut_1, 
-    'x__build_core_processors_list__mutmut_2': x__build_core_processors_list__mutmut_2, 
-    'x__build_core_processors_list__mutmut_3': x__build_core_processors_list__mutmut_3, 
-    'x__build_core_processors_list__mutmut_4': x__build_core_processors_list__mutmut_4, 
-    'x__build_core_processors_list__mutmut_5': x__build_core_processors_list__mutmut_5, 
-    'x__build_core_processors_list__mutmut_6': x__build_core_processors_list__mutmut_6, 
-    'x__build_core_processors_list__mutmut_7': x__build_core_processors_list__mutmut_7, 
-    'x__build_core_processors_list__mutmut_8': x__build_core_processors_list__mutmut_8, 
-    'x__build_core_processors_list__mutmut_9': x__build_core_processors_list__mutmut_9, 
-    'x__build_core_processors_list__mutmut_10': x__build_core_processors_list__mutmut_10, 
-    'x__build_core_processors_list__mutmut_11': x__build_core_processors_list__mutmut_11, 
-    'x__build_core_processors_list__mutmut_12': x__build_core_processors_list__mutmut_12, 
-    'x__build_core_processors_list__mutmut_13': x__build_core_processors_list__mutmut_13, 
-    'x__build_core_processors_list__mutmut_14': x__build_core_processors_list__mutmut_14, 
-    'x__build_core_processors_list__mutmut_15': x__build_core_processors_list__mutmut_15, 
-    'x__build_core_processors_list__mutmut_16': x__build_core_processors_list__mutmut_16, 
-    'x__build_core_processors_list__mutmut_17': x__build_core_processors_list__mutmut_17, 
-    'x__build_core_processors_list__mutmut_18': x__build_core_processors_list__mutmut_18, 
-    'x__build_core_processors_list__mutmut_19': x__build_core_processors_list__mutmut_19, 
-    'x__build_core_processors_list__mutmut_20': x__build_core_processors_list__mutmut_20, 
-    'x__build_core_processors_list__mutmut_21': x__build_core_processors_list__mutmut_21, 
-    'x__build_core_processors_list__mutmut_22': x__build_core_processors_list__mutmut_22, 
-    'x__build_core_processors_list__mutmut_23': x__build_core_processors_list__mutmut_23, 
-    'x__build_core_processors_list__mutmut_24': x__build_core_processors_list__mutmut_24, 
-    'x__build_core_processors_list__mutmut_25': x__build_core_processors_list__mutmut_25, 
-    'x__build_core_processors_list__mutmut_26': x__build_core_processors_list__mutmut_26, 
-    'x__build_core_processors_list__mutmut_27': x__build_core_processors_list__mutmut_27, 
-    'x__build_core_processors_list__mutmut_28': x__build_core_processors_list__mutmut_28, 
-    'x__build_core_processors_list__mutmut_29': x__build_core_processors_list__mutmut_29, 
-    'x__build_core_processors_list__mutmut_30': x__build_core_processors_list__mutmut_30, 
-    'x__build_core_processors_list__mutmut_31': x__build_core_processors_list__mutmut_31, 
-    'x__build_core_processors_list__mutmut_32': x__build_core_processors_list__mutmut_32, 
-    'x__build_core_processors_list__mutmut_33': x__build_core_processors_list__mutmut_33, 
-    'x__build_core_processors_list__mutmut_34': x__build_core_processors_list__mutmut_34, 
-    'x__build_core_processors_list__mutmut_35': x__build_core_processors_list__mutmut_35, 
-    'x__build_core_processors_list__mutmut_36': x__build_core_processors_list__mutmut_36, 
-    'x__build_core_processors_list__mutmut_37': x__build_core_processors_list__mutmut_37, 
-    'x__build_core_processors_list__mutmut_38': x__build_core_processors_list__mutmut_38, 
-    'x__build_core_processors_list__mutmut_39': x__build_core_processors_list__mutmut_39, 
-    'x__build_core_processors_list__mutmut_40': x__build_core_processors_list__mutmut_40, 
-    'x__build_core_processors_list__mutmut_41': x__build_core_processors_list__mutmut_41, 
-    'x__build_core_processors_list__mutmut_42': x__build_core_processors_list__mutmut_42, 
-    'x__build_core_processors_list__mutmut_43': x__build_core_processors_list__mutmut_43, 
-    'x__build_core_processors_list__mutmut_44': x__build_core_processors_list__mutmut_44, 
-    'x__build_core_processors_list__mutmut_45': x__build_core_processors_list__mutmut_45, 
-    'x__build_core_processors_list__mutmut_46': x__build_core_processors_list__mutmut_46, 
-    'x__build_core_processors_list__mutmut_47': x__build_core_processors_list__mutmut_47, 
-    'x__build_core_processors_list__mutmut_48': x__build_core_processors_list__mutmut_48, 
-    'x__build_core_processors_list__mutmut_49': x__build_core_processors_list__mutmut_49, 
-    'x__build_core_processors_list__mutmut_50': x__build_core_processors_list__mutmut_50, 
-    'x__build_core_processors_list__mutmut_51': x__build_core_processors_list__mutmut_51, 
-    'x__build_core_processors_list__mutmut_52': x__build_core_processors_list__mutmut_52, 
-    'x__build_core_processors_list__mutmut_53': x__build_core_processors_list__mutmut_53, 
-    'x__build_core_processors_list__mutmut_54': x__build_core_processors_list__mutmut_54, 
-    'x__build_core_processors_list__mutmut_55': x__build_core_processors_list__mutmut_55, 
-    'x__build_core_processors_list__mutmut_56': x__build_core_processors_list__mutmut_56, 
-    'x__build_core_processors_list__mutmut_57': x__build_core_processors_list__mutmut_57, 
-    'x__build_core_processors_list__mutmut_58': x__build_core_processors_list__mutmut_58, 
-    'x__build_core_processors_list__mutmut_59': x__build_core_processors_list__mutmut_59, 
-    'x__build_core_processors_list__mutmut_60': x__build_core_processors_list__mutmut_60, 
-    'x__build_core_processors_list__mutmut_61': x__build_core_processors_list__mutmut_61, 
-    'x__build_core_processors_list__mutmut_62': x__build_core_processors_list__mutmut_62, 
-    'x__build_core_processors_list__mutmut_63': x__build_core_processors_list__mutmut_63, 
-    'x__build_core_processors_list__mutmut_64': x__build_core_processors_list__mutmut_64, 
-    'x__build_core_processors_list__mutmut_65': x__build_core_processors_list__mutmut_65, 
-    'x__build_core_processors_list__mutmut_66': x__build_core_processors_list__mutmut_66, 
-    'x__build_core_processors_list__mutmut_67': x__build_core_processors_list__mutmut_67, 
-    'x__build_core_processors_list__mutmut_68': x__build_core_processors_list__mutmut_68, 
-    'x__build_core_processors_list__mutmut_69': x__build_core_processors_list__mutmut_69, 
-    'x__build_core_processors_list__mutmut_70': x__build_core_processors_list__mutmut_70, 
-    'x__build_core_processors_list__mutmut_71': x__build_core_processors_list__mutmut_71, 
-    'x__build_core_processors_list__mutmut_72': x__build_core_processors_list__mutmut_72, 
-    'x__build_core_processors_list__mutmut_73': x__build_core_processors_list__mutmut_73, 
-    'x__build_core_processors_list__mutmut_74': x__build_core_processors_list__mutmut_74, 
-    'x__build_core_processors_list__mutmut_75': x__build_core_processors_list__mutmut_75, 
-    'x__build_core_processors_list__mutmut_76': x__build_core_processors_list__mutmut_76, 
-    'x__build_core_processors_list__mutmut_77': x__build_core_processors_list__mutmut_77, 
-    'x__build_core_processors_list__mutmut_78': x__build_core_processors_list__mutmut_78, 
-    'x__build_core_processors_list__mutmut_79': x__build_core_processors_list__mutmut_79, 
-    'x__build_core_processors_list__mutmut_80': x__build_core_processors_list__mutmut_80, 
-    'x__build_core_processors_list__mutmut_81': x__build_core_processors_list__mutmut_81, 
-    'x__build_core_processors_list__mutmut_82': x__build_core_processors_list__mutmut_82, 
-    'x__build_core_processors_list__mutmut_83': x__build_core_processors_list__mutmut_83, 
-    'x__build_core_processors_list__mutmut_84': x__build_core_processors_list__mutmut_84, 
-    'x__build_core_processors_list__mutmut_85': x__build_core_processors_list__mutmut_85, 
-    'x__build_core_processors_list__mutmut_86': x__build_core_processors_list__mutmut_86, 
-    'x__build_core_processors_list__mutmut_87': x__build_core_processors_list__mutmut_87, 
-    'x__build_core_processors_list__mutmut_88': x__build_core_processors_list__mutmut_88, 
-    'x__build_core_processors_list__mutmut_89': x__build_core_processors_list__mutmut_89, 
-    'x__build_core_processors_list__mutmut_90': x__build_core_processors_list__mutmut_90, 
-    'x__build_core_processors_list__mutmut_91': x__build_core_processors_list__mutmut_91, 
-    'x__build_core_processors_list__mutmut_92': x__build_core_processors_list__mutmut_92
+
+x__build_core_processors_list__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__build_core_processors_list__mutmut_1": x__build_core_processors_list__mutmut_1,
+    "x__build_core_processors_list__mutmut_2": x__build_core_processors_list__mutmut_2,
+    "x__build_core_processors_list__mutmut_3": x__build_core_processors_list__mutmut_3,
+    "x__build_core_processors_list__mutmut_4": x__build_core_processors_list__mutmut_4,
+    "x__build_core_processors_list__mutmut_5": x__build_core_processors_list__mutmut_5,
+    "x__build_core_processors_list__mutmut_6": x__build_core_processors_list__mutmut_6,
+    "x__build_core_processors_list__mutmut_7": x__build_core_processors_list__mutmut_7,
+    "x__build_core_processors_list__mutmut_8": x__build_core_processors_list__mutmut_8,
+    "x__build_core_processors_list__mutmut_9": x__build_core_processors_list__mutmut_9,
+    "x__build_core_processors_list__mutmut_10": x__build_core_processors_list__mutmut_10,
+    "x__build_core_processors_list__mutmut_11": x__build_core_processors_list__mutmut_11,
+    "x__build_core_processors_list__mutmut_12": x__build_core_processors_list__mutmut_12,
+    "x__build_core_processors_list__mutmut_13": x__build_core_processors_list__mutmut_13,
+    "x__build_core_processors_list__mutmut_14": x__build_core_processors_list__mutmut_14,
+    "x__build_core_processors_list__mutmut_15": x__build_core_processors_list__mutmut_15,
+    "x__build_core_processors_list__mutmut_16": x__build_core_processors_list__mutmut_16,
+    "x__build_core_processors_list__mutmut_17": x__build_core_processors_list__mutmut_17,
+    "x__build_core_processors_list__mutmut_18": x__build_core_processors_list__mutmut_18,
+    "x__build_core_processors_list__mutmut_19": x__build_core_processors_list__mutmut_19,
+    "x__build_core_processors_list__mutmut_20": x__build_core_processors_list__mutmut_20,
+    "x__build_core_processors_list__mutmut_21": x__build_core_processors_list__mutmut_21,
+    "x__build_core_processors_list__mutmut_22": x__build_core_processors_list__mutmut_22,
+    "x__build_core_processors_list__mutmut_23": x__build_core_processors_list__mutmut_23,
+    "x__build_core_processors_list__mutmut_24": x__build_core_processors_list__mutmut_24,
+    "x__build_core_processors_list__mutmut_25": x__build_core_processors_list__mutmut_25,
+    "x__build_core_processors_list__mutmut_26": x__build_core_processors_list__mutmut_26,
+    "x__build_core_processors_list__mutmut_27": x__build_core_processors_list__mutmut_27,
+    "x__build_core_processors_list__mutmut_28": x__build_core_processors_list__mutmut_28,
+    "x__build_core_processors_list__mutmut_29": x__build_core_processors_list__mutmut_29,
+    "x__build_core_processors_list__mutmut_30": x__build_core_processors_list__mutmut_30,
+    "x__build_core_processors_list__mutmut_31": x__build_core_processors_list__mutmut_31,
+    "x__build_core_processors_list__mutmut_32": x__build_core_processors_list__mutmut_32,
+    "x__build_core_processors_list__mutmut_33": x__build_core_processors_list__mutmut_33,
+    "x__build_core_processors_list__mutmut_34": x__build_core_processors_list__mutmut_34,
+    "x__build_core_processors_list__mutmut_35": x__build_core_processors_list__mutmut_35,
+    "x__build_core_processors_list__mutmut_36": x__build_core_processors_list__mutmut_36,
+    "x__build_core_processors_list__mutmut_37": x__build_core_processors_list__mutmut_37,
+    "x__build_core_processors_list__mutmut_38": x__build_core_processors_list__mutmut_38,
+    "x__build_core_processors_list__mutmut_39": x__build_core_processors_list__mutmut_39,
+    "x__build_core_processors_list__mutmut_40": x__build_core_processors_list__mutmut_40,
+    "x__build_core_processors_list__mutmut_41": x__build_core_processors_list__mutmut_41,
+    "x__build_core_processors_list__mutmut_42": x__build_core_processors_list__mutmut_42,
+    "x__build_core_processors_list__mutmut_43": x__build_core_processors_list__mutmut_43,
+    "x__build_core_processors_list__mutmut_44": x__build_core_processors_list__mutmut_44,
+    "x__build_core_processors_list__mutmut_45": x__build_core_processors_list__mutmut_45,
+    "x__build_core_processors_list__mutmut_46": x__build_core_processors_list__mutmut_46,
+    "x__build_core_processors_list__mutmut_47": x__build_core_processors_list__mutmut_47,
+    "x__build_core_processors_list__mutmut_48": x__build_core_processors_list__mutmut_48,
+    "x__build_core_processors_list__mutmut_49": x__build_core_processors_list__mutmut_49,
+    "x__build_core_processors_list__mutmut_50": x__build_core_processors_list__mutmut_50,
+    "x__build_core_processors_list__mutmut_51": x__build_core_processors_list__mutmut_51,
+    "x__build_core_processors_list__mutmut_52": x__build_core_processors_list__mutmut_52,
+    "x__build_core_processors_list__mutmut_53": x__build_core_processors_list__mutmut_53,
+    "x__build_core_processors_list__mutmut_54": x__build_core_processors_list__mutmut_54,
+    "x__build_core_processors_list__mutmut_55": x__build_core_processors_list__mutmut_55,
+    "x__build_core_processors_list__mutmut_56": x__build_core_processors_list__mutmut_56,
+    "x__build_core_processors_list__mutmut_57": x__build_core_processors_list__mutmut_57,
+    "x__build_core_processors_list__mutmut_58": x__build_core_processors_list__mutmut_58,
+    "x__build_core_processors_list__mutmut_59": x__build_core_processors_list__mutmut_59,
+    "x__build_core_processors_list__mutmut_60": x__build_core_processors_list__mutmut_60,
+    "x__build_core_processors_list__mutmut_61": x__build_core_processors_list__mutmut_61,
+    "x__build_core_processors_list__mutmut_62": x__build_core_processors_list__mutmut_62,
+    "x__build_core_processors_list__mutmut_63": x__build_core_processors_list__mutmut_63,
+    "x__build_core_processors_list__mutmut_64": x__build_core_processors_list__mutmut_64,
+    "x__build_core_processors_list__mutmut_65": x__build_core_processors_list__mutmut_65,
+    "x__build_core_processors_list__mutmut_66": x__build_core_processors_list__mutmut_66,
+    "x__build_core_processors_list__mutmut_67": x__build_core_processors_list__mutmut_67,
+    "x__build_core_processors_list__mutmut_68": x__build_core_processors_list__mutmut_68,
+    "x__build_core_processors_list__mutmut_69": x__build_core_processors_list__mutmut_69,
+    "x__build_core_processors_list__mutmut_70": x__build_core_processors_list__mutmut_70,
+    "x__build_core_processors_list__mutmut_71": x__build_core_processors_list__mutmut_71,
+    "x__build_core_processors_list__mutmut_72": x__build_core_processors_list__mutmut_72,
+    "x__build_core_processors_list__mutmut_73": x__build_core_processors_list__mutmut_73,
+    "x__build_core_processors_list__mutmut_74": x__build_core_processors_list__mutmut_74,
+    "x__build_core_processors_list__mutmut_75": x__build_core_processors_list__mutmut_75,
+    "x__build_core_processors_list__mutmut_76": x__build_core_processors_list__mutmut_76,
+    "x__build_core_processors_list__mutmut_77": x__build_core_processors_list__mutmut_77,
+    "x__build_core_processors_list__mutmut_78": x__build_core_processors_list__mutmut_78,
+    "x__build_core_processors_list__mutmut_79": x__build_core_processors_list__mutmut_79,
+    "x__build_core_processors_list__mutmut_80": x__build_core_processors_list__mutmut_80,
+    "x__build_core_processors_list__mutmut_81": x__build_core_processors_list__mutmut_81,
+    "x__build_core_processors_list__mutmut_82": x__build_core_processors_list__mutmut_82,
+    "x__build_core_processors_list__mutmut_83": x__build_core_processors_list__mutmut_83,
+    "x__build_core_processors_list__mutmut_84": x__build_core_processors_list__mutmut_84,
+    "x__build_core_processors_list__mutmut_85": x__build_core_processors_list__mutmut_85,
+    "x__build_core_processors_list__mutmut_86": x__build_core_processors_list__mutmut_86,
+    "x__build_core_processors_list__mutmut_87": x__build_core_processors_list__mutmut_87,
+    "x__build_core_processors_list__mutmut_88": x__build_core_processors_list__mutmut_88,
+    "x__build_core_processors_list__mutmut_89": x__build_core_processors_list__mutmut_89,
+    "x__build_core_processors_list__mutmut_90": x__build_core_processors_list__mutmut_90,
+    "x__build_core_processors_list__mutmut_91": x__build_core_processors_list__mutmut_91,
+    "x__build_core_processors_list__mutmut_92": x__build_core_processors_list__mutmut_92,
 }
 
+
 def _build_core_processors_list(*args, **kwargs):
-    result = _mutmut_trampoline(x__build_core_processors_list__mutmut_orig, x__build_core_processors_list__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x__build_core_processors_list__mutmut_orig, x__build_core_processors_list__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 _build_core_processors_list.__signature__ = _mutmut_signature(x__build_core_processors_list__mutmut_orig)
-x__build_core_processors_list__mutmut_orig.__name__ = 'x__build_core_processors_list'
+x__build_core_processors_list__mutmut_orig.__name__ = "x__build_core_processors_list"
 
 
 def x__config_create_json_formatter_processors__mutmut_orig() -> list[StructlogProcessor]:
@@ -9640,7 +9725,9 @@ def x__config_create_json_formatter_processors__mutmut_3() -> list[StructlogProc
 def x__config_create_json_formatter_processors__mutmut_4() -> list[StructlogProcessor]:
     return [
         structlog.processors.format_exc_info,
-        structlog.processors.JSONRenderer(serializer=json_dumps, ),
+        structlog.processors.JSONRenderer(
+            serializer=json_dumps,
+        ),
     ]
 
 
@@ -9650,20 +9737,30 @@ def x__config_create_json_formatter_processors__mutmut_5() -> list[StructlogProc
         structlog.processors.JSONRenderer(serializer=json_dumps, sort_keys=True),
     ]
 
-x__config_create_json_formatter_processors__mutmut_mutants : ClassVar[MutantDict] = {
-'x__config_create_json_formatter_processors__mutmut_1': x__config_create_json_formatter_processors__mutmut_1, 
-    'x__config_create_json_formatter_processors__mutmut_2': x__config_create_json_formatter_processors__mutmut_2, 
-    'x__config_create_json_formatter_processors__mutmut_3': x__config_create_json_formatter_processors__mutmut_3, 
-    'x__config_create_json_formatter_processors__mutmut_4': x__config_create_json_formatter_processors__mutmut_4, 
-    'x__config_create_json_formatter_processors__mutmut_5': x__config_create_json_formatter_processors__mutmut_5
+
+x__config_create_json_formatter_processors__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__config_create_json_formatter_processors__mutmut_1": x__config_create_json_formatter_processors__mutmut_1,
+    "x__config_create_json_formatter_processors__mutmut_2": x__config_create_json_formatter_processors__mutmut_2,
+    "x__config_create_json_formatter_processors__mutmut_3": x__config_create_json_formatter_processors__mutmut_3,
+    "x__config_create_json_formatter_processors__mutmut_4": x__config_create_json_formatter_processors__mutmut_4,
+    "x__config_create_json_formatter_processors__mutmut_5": x__config_create_json_formatter_processors__mutmut_5,
 }
 
-def _config_create_json_formatter_processors(*args, **kwargs):
-    result = _mutmut_trampoline(x__config_create_json_formatter_processors__mutmut_orig, x__config_create_json_formatter_processors__mutmut_mutants, args, kwargs)
-    return result 
 
-_config_create_json_formatter_processors.__signature__ = _mutmut_signature(x__config_create_json_formatter_processors__mutmut_orig)
-x__config_create_json_formatter_processors__mutmut_orig.__name__ = 'x__config_create_json_formatter_processors'
+def _config_create_json_formatter_processors(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__config_create_json_formatter_processors__mutmut_orig,
+        x__config_create_json_formatter_processors__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_config_create_json_formatter_processors.__signature__ = _mutmut_signature(
+    x__config_create_json_formatter_processors__mutmut_orig
+)
+x__config_create_json_formatter_processors__mutmut_orig.__name__ = "x__config_create_json_formatter_processors"
 
 
 def x__config_create_keyvalue_formatter_processors__mutmut_orig(
@@ -9728,7 +9825,9 @@ def x__config_create_keyvalue_formatter_processors__mutmut_3(
         _method_name: str,
         event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
-        event_dict.pop("logger_name", )
+        event_dict.pop(
+            "logger_name",
+        )
         return event_dict
 
     is_tty = hasattr(output_stream, "isatty") and output_stream.isatty()
@@ -9875,7 +9974,12 @@ def x__config_create_keyvalue_formatter_processors__mutmut_11(
         event_dict.pop("logger_name", None)
         return event_dict
 
-    is_tty = hasattr(output_stream, ) and output_stream.isatty()
+    is_tty = (
+        hasattr(
+            output_stream,
+        )
+        and output_stream.isatty()
+    )
     return [
         cast("StructlogProcessor", pop_logger_name_processor),
         structlog.dev.ConsoleRenderer(colors=is_tty, exception_formatter=structlog.dev.plain_traceback),
@@ -9985,7 +10089,9 @@ def x__config_create_keyvalue_formatter_processors__mutmut_17(
 
     is_tty = hasattr(output_stream, "isatty") and output_stream.isatty()
     return [
-        cast("StructlogProcessor", ),
+        cast(
+            "StructlogProcessor",
+        ),
         structlog.dev.ConsoleRenderer(colors=is_tty, exception_formatter=structlog.dev.plain_traceback),
     ]
 
@@ -10112,42 +10218,56 @@ def x__config_create_keyvalue_formatter_processors__mutmut_24(
     is_tty = hasattr(output_stream, "isatty") and output_stream.isatty()
     return [
         cast("StructlogProcessor", pop_logger_name_processor),
-        structlog.dev.ConsoleRenderer(colors=is_tty, ),
+        structlog.dev.ConsoleRenderer(
+            colors=is_tty,
+        ),
     ]
 
-x__config_create_keyvalue_formatter_processors__mutmut_mutants : ClassVar[MutantDict] = {
-'x__config_create_keyvalue_formatter_processors__mutmut_1': x__config_create_keyvalue_formatter_processors__mutmut_1, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_2': x__config_create_keyvalue_formatter_processors__mutmut_2, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_3': x__config_create_keyvalue_formatter_processors__mutmut_3, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_4': x__config_create_keyvalue_formatter_processors__mutmut_4, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_5': x__config_create_keyvalue_formatter_processors__mutmut_5, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_6': x__config_create_keyvalue_formatter_processors__mutmut_6, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_7': x__config_create_keyvalue_formatter_processors__mutmut_7, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_8': x__config_create_keyvalue_formatter_processors__mutmut_8, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_9': x__config_create_keyvalue_formatter_processors__mutmut_9, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_10': x__config_create_keyvalue_formatter_processors__mutmut_10, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_11': x__config_create_keyvalue_formatter_processors__mutmut_11, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_12': x__config_create_keyvalue_formatter_processors__mutmut_12, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_13': x__config_create_keyvalue_formatter_processors__mutmut_13, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_14': x__config_create_keyvalue_formatter_processors__mutmut_14, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_15': x__config_create_keyvalue_formatter_processors__mutmut_15, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_16': x__config_create_keyvalue_formatter_processors__mutmut_16, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_17': x__config_create_keyvalue_formatter_processors__mutmut_17, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_18': x__config_create_keyvalue_formatter_processors__mutmut_18, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_19': x__config_create_keyvalue_formatter_processors__mutmut_19, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_20': x__config_create_keyvalue_formatter_processors__mutmut_20, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_21': x__config_create_keyvalue_formatter_processors__mutmut_21, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_22': x__config_create_keyvalue_formatter_processors__mutmut_22, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_23': x__config_create_keyvalue_formatter_processors__mutmut_23, 
-    'x__config_create_keyvalue_formatter_processors__mutmut_24': x__config_create_keyvalue_formatter_processors__mutmut_24
+
+x__config_create_keyvalue_formatter_processors__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__config_create_keyvalue_formatter_processors__mutmut_1": x__config_create_keyvalue_formatter_processors__mutmut_1,
+    "x__config_create_keyvalue_formatter_processors__mutmut_2": x__config_create_keyvalue_formatter_processors__mutmut_2,
+    "x__config_create_keyvalue_formatter_processors__mutmut_3": x__config_create_keyvalue_formatter_processors__mutmut_3,
+    "x__config_create_keyvalue_formatter_processors__mutmut_4": x__config_create_keyvalue_formatter_processors__mutmut_4,
+    "x__config_create_keyvalue_formatter_processors__mutmut_5": x__config_create_keyvalue_formatter_processors__mutmut_5,
+    "x__config_create_keyvalue_formatter_processors__mutmut_6": x__config_create_keyvalue_formatter_processors__mutmut_6,
+    "x__config_create_keyvalue_formatter_processors__mutmut_7": x__config_create_keyvalue_formatter_processors__mutmut_7,
+    "x__config_create_keyvalue_formatter_processors__mutmut_8": x__config_create_keyvalue_formatter_processors__mutmut_8,
+    "x__config_create_keyvalue_formatter_processors__mutmut_9": x__config_create_keyvalue_formatter_processors__mutmut_9,
+    "x__config_create_keyvalue_formatter_processors__mutmut_10": x__config_create_keyvalue_formatter_processors__mutmut_10,
+    "x__config_create_keyvalue_formatter_processors__mutmut_11": x__config_create_keyvalue_formatter_processors__mutmut_11,
+    "x__config_create_keyvalue_formatter_processors__mutmut_12": x__config_create_keyvalue_formatter_processors__mutmut_12,
+    "x__config_create_keyvalue_formatter_processors__mutmut_13": x__config_create_keyvalue_formatter_processors__mutmut_13,
+    "x__config_create_keyvalue_formatter_processors__mutmut_14": x__config_create_keyvalue_formatter_processors__mutmut_14,
+    "x__config_create_keyvalue_formatter_processors__mutmut_15": x__config_create_keyvalue_formatter_processors__mutmut_15,
+    "x__config_create_keyvalue_formatter_processors__mutmut_16": x__config_create_keyvalue_formatter_processors__mutmut_16,
+    "x__config_create_keyvalue_formatter_processors__mutmut_17": x__config_create_keyvalue_formatter_processors__mutmut_17,
+    "x__config_create_keyvalue_formatter_processors__mutmut_18": x__config_create_keyvalue_formatter_processors__mutmut_18,
+    "x__config_create_keyvalue_formatter_processors__mutmut_19": x__config_create_keyvalue_formatter_processors__mutmut_19,
+    "x__config_create_keyvalue_formatter_processors__mutmut_20": x__config_create_keyvalue_formatter_processors__mutmut_20,
+    "x__config_create_keyvalue_formatter_processors__mutmut_21": x__config_create_keyvalue_formatter_processors__mutmut_21,
+    "x__config_create_keyvalue_formatter_processors__mutmut_22": x__config_create_keyvalue_formatter_processors__mutmut_22,
+    "x__config_create_keyvalue_formatter_processors__mutmut_23": x__config_create_keyvalue_formatter_processors__mutmut_23,
+    "x__config_create_keyvalue_formatter_processors__mutmut_24": x__config_create_keyvalue_formatter_processors__mutmut_24,
 }
 
-def _config_create_keyvalue_formatter_processors(*args, **kwargs):
-    result = _mutmut_trampoline(x__config_create_keyvalue_formatter_processors__mutmut_orig, x__config_create_keyvalue_formatter_processors__mutmut_mutants, args, kwargs)
-    return result 
 
-_config_create_keyvalue_formatter_processors.__signature__ = _mutmut_signature(x__config_create_keyvalue_formatter_processors__mutmut_orig)
-x__config_create_keyvalue_formatter_processors__mutmut_orig.__name__ = 'x__config_create_keyvalue_formatter_processors'
+def _config_create_keyvalue_formatter_processors(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__config_create_keyvalue_formatter_processors__mutmut_orig,
+        x__config_create_keyvalue_formatter_processors__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_config_create_keyvalue_formatter_processors.__signature__ = _mutmut_signature(
+    x__config_create_keyvalue_formatter_processors__mutmut_orig
+)
+x__config_create_keyvalue_formatter_processors__mutmut_orig.__name__ = (
+    "x__config_create_keyvalue_formatter_processors"
+)
 
 
 def x__build_formatter_processors_list__mutmut_orig(
@@ -10419,26 +10539,36 @@ def x__build_formatter_processors_list__mutmut_11(
             )
             return _config_create_keyvalue_formatter_processors(None)
 
-x__build_formatter_processors_list__mutmut_mutants : ClassVar[MutantDict] = {
-'x__build_formatter_processors_list__mutmut_1': x__build_formatter_processors_list__mutmut_1, 
-    'x__build_formatter_processors_list__mutmut_2': x__build_formatter_processors_list__mutmut_2, 
-    'x__build_formatter_processors_list__mutmut_3': x__build_formatter_processors_list__mutmut_3, 
-    'x__build_formatter_processors_list__mutmut_4': x__build_formatter_processors_list__mutmut_4, 
-    'x__build_formatter_processors_list__mutmut_5': x__build_formatter_processors_list__mutmut_5, 
-    'x__build_formatter_processors_list__mutmut_6': x__build_formatter_processors_list__mutmut_6, 
-    'x__build_formatter_processors_list__mutmut_7': x__build_formatter_processors_list__mutmut_7, 
-    'x__build_formatter_processors_list__mutmut_8': x__build_formatter_processors_list__mutmut_8, 
-    'x__build_formatter_processors_list__mutmut_9': x__build_formatter_processors_list__mutmut_9, 
-    'x__build_formatter_processors_list__mutmut_10': x__build_formatter_processors_list__mutmut_10, 
-    'x__build_formatter_processors_list__mutmut_11': x__build_formatter_processors_list__mutmut_11
+
+x__build_formatter_processors_list__mutmut_mutants: ClassVar[MutantDict] = {
+    "x__build_formatter_processors_list__mutmut_1": x__build_formatter_processors_list__mutmut_1,
+    "x__build_formatter_processors_list__mutmut_2": x__build_formatter_processors_list__mutmut_2,
+    "x__build_formatter_processors_list__mutmut_3": x__build_formatter_processors_list__mutmut_3,
+    "x__build_formatter_processors_list__mutmut_4": x__build_formatter_processors_list__mutmut_4,
+    "x__build_formatter_processors_list__mutmut_5": x__build_formatter_processors_list__mutmut_5,
+    "x__build_formatter_processors_list__mutmut_6": x__build_formatter_processors_list__mutmut_6,
+    "x__build_formatter_processors_list__mutmut_7": x__build_formatter_processors_list__mutmut_7,
+    "x__build_formatter_processors_list__mutmut_8": x__build_formatter_processors_list__mutmut_8,
+    "x__build_formatter_processors_list__mutmut_9": x__build_formatter_processors_list__mutmut_9,
+    "x__build_formatter_processors_list__mutmut_10": x__build_formatter_processors_list__mutmut_10,
+    "x__build_formatter_processors_list__mutmut_11": x__build_formatter_processors_list__mutmut_11,
 }
 
-def _build_formatter_processors_list(*args, **kwargs):
-    result = _mutmut_trampoline(x__build_formatter_processors_list__mutmut_orig, x__build_formatter_processors_list__mutmut_mutants, args, kwargs)
-    return result 
 
-_build_formatter_processors_list.__signature__ = _mutmut_signature(x__build_formatter_processors_list__mutmut_orig)
-x__build_formatter_processors_list__mutmut_orig.__name__ = 'x__build_formatter_processors_list'
+def _build_formatter_processors_list(*args, **kwargs):
+    result = _mutmut_trampoline(
+        x__build_formatter_processors_list__mutmut_orig,
+        x__build_formatter_processors_list__mutmut_mutants,
+        args,
+        kwargs,
+    )
+    return result
+
+
+_build_formatter_processors_list.__signature__ = _mutmut_signature(
+    x__build_formatter_processors_list__mutmut_orig
+)
+x__build_formatter_processors_list__mutmut_orig.__name__ = "x__build_formatter_processors_list"
 
 
 # <3 🧱🤝📝🪄

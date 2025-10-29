@@ -27,23 +27,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -2724,7 +2727,7 @@ class SimpleOperationDetector:
                             is_atomic=True,
                             is_safe=True,
                             files_affected=[Path(path_str)],
-                            )
+                        )
 
         return None
 
@@ -3207,83 +3210,99 @@ class SimpleOperationDetector:
                         )
 
         return None
-    
-    xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_1': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_1, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_2': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_2, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_3': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_3, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_4': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_4, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_5': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_5, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_6': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_6, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_7': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_7, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_8': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_8, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_9': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_9, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_10': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_10, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_11': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_11, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_12': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_12, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_13': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_13, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_14': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_14, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_15': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_15, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_16': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_16, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_17': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_17, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_18': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_18, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_19': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_19, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_20': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_20, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_21': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_21, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_22': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_22, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_23': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_23, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_24': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_24, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_25': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_25, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_26': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_26, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_27': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_27, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_28': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_28, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_29': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_29, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_30': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_30, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_31': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_31, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_32': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_32, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_33': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_33, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_34': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_34, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_35': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_35, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_36': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_36, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_37': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_37, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_38': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_38, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_39': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_39, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_40': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_40, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_41': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_41, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_42': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_42, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_43': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_43, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_44': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_44, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_45': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_45, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_46': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_46, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_47': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_47, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_48': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_48, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_49': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_49, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_50': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_50, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_51': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_51, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_52': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_52, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_53': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_53, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_54': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_54, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_55': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_55, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_56': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_56, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_57': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_57, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_58': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_58, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_59': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_59, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_60': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_60, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_61': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_61, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_62': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_62, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_63': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_63, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_64': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_64, 
-        'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_65': xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_65
-    }
-    
-    def detect_same_file_delete_create_pattern(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_orig"), object.__getattribute__(self, "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    detect_same_file_delete_create_pattern.__signature__ = _mutmut_signature(xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_orig)
-    xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_orig.__name__ = 'xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern'
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_orig(self, events: list[FileEvent]) -> FileOperation | None:
+    xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_1": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_1,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_2": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_2,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_3": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_3,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_4": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_4,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_5": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_5,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_6": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_6,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_7": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_7,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_8": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_8,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_9": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_9,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_10": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_10,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_11": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_11,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_12": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_12,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_13": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_13,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_14": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_14,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_15": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_15,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_16": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_16,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_17": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_17,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_18": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_18,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_19": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_19,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_20": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_20,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_21": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_21,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_22": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_22,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_23": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_23,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_24": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_24,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_25": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_25,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_26": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_26,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_27": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_27,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_28": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_28,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_29": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_29,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_30": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_30,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_31": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_31,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_32": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_32,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_33": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_33,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_34": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_34,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_35": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_35,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_36": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_36,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_37": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_37,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_38": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_38,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_39": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_39,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_40": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_40,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_41": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_41,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_42": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_42,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_43": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_43,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_44": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_44,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_45": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_45,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_46": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_46,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_47": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_47,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_48": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_48,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_49": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_49,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_50": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_50,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_51": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_51,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_52": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_52,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_53": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_53,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_54": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_54,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_55": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_55,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_56": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_56,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_57": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_57,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_58": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_58,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_59": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_59,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_60": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_60,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_61": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_61,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_62": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_62,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_63": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_63,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_64": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_64,
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_65": xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_65,
+    }
+
+    def detect_same_file_delete_create_pattern(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(
+                self, "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_orig"
+            ),
+            object.__getattribute__(
+                self, "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_mutants"
+            ),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    detect_same_file_delete_create_pattern.__signature__ = _mutmut_signature(
+        xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_orig
+    )
+    xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern__mutmut_orig.__name__ = (
+        "xǁSimpleOperationDetectorǁdetect_same_file_delete_create_pattern"
+    )
+
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_orig(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3334,7 +3353,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_1(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_1(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) == 1:
             return None
@@ -3385,7 +3406,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_2(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_2(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 2:
             return None
@@ -3436,7 +3459,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_3(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_3(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3487,7 +3512,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_4(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_4(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3538,7 +3565,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_5(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_5(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3584,7 +3613,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_6(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_6(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3635,7 +3666,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_7(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_7(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3686,7 +3719,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_8(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_8(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3737,7 +3772,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_9(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_9(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3788,7 +3825,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_10(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_10(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3839,7 +3878,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_11(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_11(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3890,7 +3931,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_12(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_12(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3941,7 +3984,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_13(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_13(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -3992,7 +4037,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_14(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_14(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4043,7 +4090,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_15(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_15(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4094,7 +4143,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_16(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_16(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4145,7 +4196,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_17(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_17(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4196,7 +4249,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_18(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_18(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4247,7 +4302,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_19(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_19(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4298,7 +4355,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_20(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_20(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4349,7 +4408,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_21(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_21(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4397,7 +4458,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_22(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_22(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4448,7 +4511,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_23(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_23(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4499,7 +4564,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_24(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_24(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4550,7 +4617,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_25(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_25(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4601,7 +4670,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_26(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_26(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4652,7 +4723,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_27(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_27(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4703,7 +4776,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_28(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_28(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4754,7 +4829,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_29(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_29(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4805,7 +4882,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_30(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_30(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4854,7 +4933,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_31(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_31(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4905,7 +4986,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_32(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_32(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -4956,7 +5039,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_33(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_33(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5007,7 +5092,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_34(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_34(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5058,7 +5145,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_35(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_35(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5109,7 +5198,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_36(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_36(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5160,7 +5251,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_37(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_37(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5211,7 +5304,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_38(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_38(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5262,7 +5357,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_39(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_39(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5313,7 +5410,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_40(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_40(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5364,7 +5463,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_41(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_41(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5415,7 +5516,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_42(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_42(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5466,7 +5569,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_43(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_43(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5517,7 +5622,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_44(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_44(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5568,7 +5675,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_45(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_45(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5619,7 +5728,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_46(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_46(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5670,7 +5781,9 @@ class SimpleOperationDetector:
             metadata=None,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_47(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_47(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5720,7 +5833,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_48(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_48(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5770,7 +5885,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_49(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_49(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5820,7 +5937,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_50(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_50(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5870,7 +5989,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_51(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_51(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5920,7 +6041,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_52(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_52(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -5970,7 +6093,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_53(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_53(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -6020,7 +6145,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_54(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_54(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -6070,7 +6197,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_55(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_55(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -6120,7 +6249,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_56(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_56(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -6170,7 +6301,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_57(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_57(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -6220,7 +6353,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_58(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_58(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -6268,9 +6403,11 @@ class SimpleOperationDetector:
             is_safe=True,
             has_backup=is_backup_path,
             files_affected=[primary_path],
-            )
+        )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_59(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_59(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -6321,7 +6458,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_60(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_60(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -6372,7 +6511,9 @@ class SimpleOperationDetector:
             metadata=metadata,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_61(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_61(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect simple single-event operations."""
         if len(events) != 1:
             return None
@@ -6422,79 +6563,91 @@ class SimpleOperationDetector:
             files_affected=[primary_path],
             metadata=metadata,
         )
-    
-    xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_1': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_1, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_2': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_2, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_3': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_3, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_4': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_4, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_5': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_5, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_6': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_6, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_7': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_7, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_8': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_8, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_9': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_9, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_10': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_10, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_11': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_11, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_12': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_12, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_13': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_13, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_14': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_14, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_15': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_15, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_16': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_16, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_17': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_17, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_18': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_18, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_19': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_19, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_20': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_20, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_21': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_21, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_22': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_22, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_23': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_23, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_24': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_24, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_25': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_25, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_26': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_26, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_27': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_27, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_28': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_28, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_29': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_29, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_30': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_30, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_31': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_31, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_32': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_32, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_33': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_33, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_34': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_34, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_35': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_35, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_36': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_36, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_37': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_37, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_38': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_38, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_39': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_39, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_40': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_40, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_41': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_41, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_42': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_42, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_43': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_43, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_44': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_44, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_45': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_45, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_46': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_46, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_47': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_47, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_48': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_48, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_49': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_49, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_50': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_50, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_51': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_51, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_52': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_52, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_53': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_53, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_54': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_54, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_55': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_55, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_56': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_56, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_57': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_57, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_58': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_58, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_59': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_59, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_60': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_60, 
-        'xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_61': xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_61
-    }
-    
-    def detect_simple_operation(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_orig"), object.__getattribute__(self, "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    detect_simple_operation.__signature__ = _mutmut_signature(xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_orig)
-    xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_orig.__name__ = 'xǁSimpleOperationDetectorǁdetect_simple_operation'
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_orig(self, events: list[FileEvent]) -> FileOperation | None:
+    xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_1": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_1,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_2": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_2,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_3": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_3,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_4": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_4,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_5": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_5,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_6": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_6,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_7": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_7,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_8": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_8,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_9": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_9,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_10": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_10,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_11": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_11,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_12": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_12,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_13": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_13,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_14": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_14,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_15": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_15,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_16": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_16,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_17": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_17,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_18": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_18,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_19": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_19,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_20": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_20,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_21": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_21,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_22": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_22,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_23": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_23,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_24": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_24,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_25": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_25,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_26": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_26,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_27": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_27,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_28": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_28,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_29": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_29,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_30": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_30,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_31": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_31,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_32": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_32,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_33": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_33,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_34": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_34,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_35": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_35,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_36": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_36,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_37": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_37,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_38": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_38,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_39": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_39,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_40": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_40,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_41": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_41,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_42": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_42,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_43": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_43,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_44": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_44,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_45": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_45,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_46": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_46,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_47": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_47,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_48": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_48,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_49": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_49,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_50": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_50,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_51": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_51,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_52": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_52,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_53": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_53,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_54": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_54,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_55": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_55,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_56": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_56,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_57": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_57,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_58": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_58,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_59": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_59,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_60": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_60,
+        "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_61": xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_61,
+    }
+
+    def detect_simple_operation(self, *args, **kwargs):
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_orig"),
+            object.__getattribute__(self, "xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    detect_simple_operation.__signature__ = _mutmut_signature(
+        xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_orig
+    )
+    xǁSimpleOperationDetectorǁdetect_simple_operation__mutmut_orig.__name__ = (
+        "xǁSimpleOperationDetectorǁdetect_simple_operation"
+    )
+
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_orig(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -6542,7 +6695,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_1(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_1(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) <= 2:
             return None
@@ -6590,7 +6745,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_2(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_2(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 3:
             return None
@@ -6638,7 +6795,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_3(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_3(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -6686,7 +6845,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_4(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_4(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -6734,7 +6895,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_5(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_5(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -6782,7 +6945,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_6(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_6(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -6830,7 +6995,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_7(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_7(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -6878,7 +7045,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_8(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_8(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -6926,7 +7095,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_9(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_9(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -6974,7 +7145,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_10(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_10(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7022,7 +7195,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_11(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_11(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7070,7 +7245,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_12(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_12(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7081,7 +7258,9 @@ class SimpleOperationDetector:
             return None
 
         # Sort by timestamp
-        sorted_events = sorted(events, )
+        sorted_events = sorted(
+            events,
+        )
 
         # Check if this is all modifies OR created followed by modifies
         event_types = [e.event_type for e in sorted_events]
@@ -7118,7 +7297,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_13(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_13(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7166,7 +7347,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_14(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_14(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7214,7 +7397,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_15(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_15(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7262,7 +7447,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_16(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_16(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7310,7 +7497,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_17(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_17(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7358,7 +7547,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_18(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_18(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7406,7 +7597,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_19(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_19(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7454,7 +7647,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_20(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_20(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7500,7 +7695,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_21(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_21(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7548,7 +7745,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_22(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_22(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7596,7 +7795,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_23(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_23(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7644,7 +7845,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_24(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_24(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7692,7 +7895,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_25(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_25(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7740,7 +7945,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_26(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_26(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7756,9 +7963,7 @@ class SimpleOperationDetector:
         # Check if this is all modifies OR created followed by modifies
         event_types = [e.event_type for e in sorted_events]
         is_all_modifies = all(et == "modified" for et in event_types)
-        is_create_then_modifies = event_types[0] == "created" and all(
-            None
-        )
+        is_create_then_modifies = event_types[0] == "created" and all(None)
 
         if not (is_all_modifies or is_create_then_modifies):
             return None
@@ -7788,7 +7993,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_27(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_27(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7836,7 +8043,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_28(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_28(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7884,7 +8093,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_29(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_29(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7932,7 +8143,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_30(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_30(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -7980,7 +8193,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_31(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_31(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8000,7 +8215,7 @@ class SimpleOperationDetector:
             et == "modified" for et in event_types[1:]
         )
 
-        if (is_all_modifies or is_create_then_modifies):
+        if is_all_modifies or is_create_then_modifies:
             return None
 
         # Determine operation type based on pattern
@@ -8028,7 +8243,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_32(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_32(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8076,7 +8293,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_33(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_33(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8124,7 +8343,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_34(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_34(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8172,7 +8393,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_35(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_35(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8220,7 +8443,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_36(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_36(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8268,7 +8493,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_37(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_37(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8316,7 +8543,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_38(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_38(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8364,7 +8593,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_39(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_39(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8412,7 +8643,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_40(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_40(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8460,7 +8693,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_41(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_41(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8508,7 +8743,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_42(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_42(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8556,7 +8793,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_43(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_43(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8604,7 +8843,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_44(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_44(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8652,7 +8893,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_45(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_45(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8700,7 +8943,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_46(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_46(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8748,7 +8993,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_47(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_47(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8793,7 +9040,9 @@ class SimpleOperationDetector:
             metadata=None,
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_48(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_48(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8840,7 +9089,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_49(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_49(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8887,7 +9138,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_50(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_50(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8934,7 +9187,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_51(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_51(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -8981,7 +9236,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_52(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_52(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9028,7 +9285,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_53(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_53(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9075,7 +9334,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_54(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_54(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9122,7 +9383,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_55(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_55(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9169,7 +9432,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_56(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_56(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9216,7 +9481,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_57(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_57(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9263,7 +9530,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_58(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_58(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9305,9 +9574,11 @@ class SimpleOperationDetector:
             is_atomic=False,
             is_safe=True,
             files_affected=[first_event.path],
-            )
+        )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_59(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_59(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9355,7 +9626,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_60(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_60(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9403,7 +9676,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_61(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_61(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9451,7 +9726,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_62(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_62(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9499,7 +9776,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_63(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_63(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9547,7 +9826,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_64(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_64(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9595,7 +9876,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_65(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_65(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9643,7 +9926,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_66(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_66(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9691,7 +9976,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_67(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_67(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9739,7 +10026,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_68(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_68(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9787,7 +10076,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_69(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_69(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9835,7 +10126,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_70(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_70(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9883,7 +10176,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_71(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_71(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9931,7 +10226,9 @@ class SimpleOperationDetector:
             },
         )
 
-    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_72(self, events: list[FileEvent]) -> FileOperation | None:
+    def xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_72(
+        self, events: list[FileEvent]
+    ) -> FileOperation | None:
         """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
@@ -9978,88 +10275,100 @@ class SimpleOperationDetector:
                 "pattern": "direct_modification" if is_all_modifies else "CREATE_MODIFY",
             },
         )
-    
-    xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_1': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_1, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_2': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_2, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_3': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_3, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_4': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_4, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_5': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_5, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_6': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_6, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_7': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_7, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_8': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_8, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_9': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_9, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_10': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_10, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_11': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_11, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_12': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_12, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_13': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_13, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_14': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_14, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_15': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_15, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_16': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_16, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_17': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_17, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_18': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_18, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_19': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_19, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_20': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_20, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_21': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_21, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_22': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_22, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_23': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_23, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_24': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_24, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_25': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_25, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_26': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_26, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_27': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_27, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_28': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_28, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_29': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_29, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_30': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_30, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_31': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_31, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_32': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_32, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_33': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_33, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_34': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_34, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_35': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_35, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_36': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_36, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_37': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_37, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_38': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_38, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_39': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_39, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_40': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_40, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_41': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_41, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_42': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_42, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_43': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_43, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_44': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_44, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_45': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_45, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_46': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_46, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_47': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_47, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_48': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_48, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_49': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_49, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_50': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_50, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_51': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_51, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_52': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_52, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_53': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_53, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_54': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_54, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_55': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_55, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_56': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_56, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_57': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_57, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_58': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_58, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_59': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_59, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_60': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_60, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_61': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_61, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_62': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_62, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_63': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_63, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_64': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_64, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_65': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_65, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_66': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_66, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_67': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_67, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_68': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_68, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_69': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_69, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_70': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_70, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_71': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_71, 
-        'xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_72': xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_72
+
+    xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_1": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_1,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_2": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_2,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_3": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_3,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_4": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_4,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_5": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_5,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_6": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_6,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_7": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_7,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_8": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_8,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_9": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_9,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_10": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_10,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_11": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_11,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_12": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_12,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_13": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_13,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_14": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_14,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_15": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_15,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_16": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_16,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_17": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_17,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_18": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_18,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_19": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_19,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_20": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_20,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_21": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_21,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_22": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_22,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_23": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_23,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_24": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_24,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_25": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_25,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_26": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_26,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_27": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_27,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_28": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_28,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_29": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_29,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_30": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_30,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_31": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_31,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_32": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_32,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_33": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_33,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_34": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_34,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_35": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_35,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_36": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_36,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_37": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_37,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_38": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_38,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_39": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_39,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_40": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_40,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_41": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_41,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_42": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_42,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_43": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_43,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_44": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_44,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_45": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_45,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_46": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_46,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_47": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_47,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_48": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_48,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_49": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_49,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_50": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_50,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_51": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_51,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_52": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_52,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_53": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_53,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_54": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_54,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_55": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_55,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_56": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_56,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_57": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_57,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_58": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_58,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_59": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_59,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_60": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_60,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_61": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_61,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_62": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_62,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_63": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_63,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_64": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_64,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_65": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_65,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_66": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_66,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_67": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_67,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_68": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_68,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_69": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_69,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_70": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_70,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_71": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_71,
+        "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_72": xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_72,
     }
-    
+
     def detect_direct_modification(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_orig"), object.__getattribute__(self, "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
-    detect_direct_modification.__signature__ = _mutmut_signature(xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_orig)
-    xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_orig.__name__ = 'xǁSimpleOperationDetectorǁdetect_direct_modification'
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_orig"),
+            object.__getattribute__(
+                self, "xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_mutants"
+            ),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
+    detect_direct_modification.__signature__ = _mutmut_signature(
+        xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_orig
+    )
+    xǁSimpleOperationDetectorǁdetect_direct_modification__mutmut_orig.__name__ = (
+        "xǁSimpleOperationDetectorǁdetect_direct_modification"
+    )
 
 
 # <3 🧱🤝📄🪄

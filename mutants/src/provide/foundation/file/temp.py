@@ -34,23 +34,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -86,16 +89,21 @@ def x_system_temp_dir__mutmut_1() -> Path:
     """
     return Path(None)
 
-x_system_temp_dir__mutmut_mutants : ClassVar[MutantDict] = {
-'x_system_temp_dir__mutmut_1': x_system_temp_dir__mutmut_1
+
+x_system_temp_dir__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_system_temp_dir__mutmut_1": x_system_temp_dir__mutmut_1
 }
 
+
 def system_temp_dir(*args, **kwargs):
-    result = _mutmut_trampoline(x_system_temp_dir__mutmut_orig, x_system_temp_dir__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_system_temp_dir__mutmut_orig, x_system_temp_dir__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 system_temp_dir.__signature__ = _mutmut_signature(x_system_temp_dir__mutmut_orig)
-x_system_temp_dir__mutmut_orig.__name__ = 'x_system_temp_dir'
+x_system_temp_dir__mutmut_orig.__name__ = "x_system_temp_dir"
 
 
 def x_secure_temp_file__mutmut_orig(
@@ -534,7 +542,10 @@ def x_secure_temp_file__mutmut_10(
     if dir and isinstance(dir, Path):
         dir = str(dir)
 
-    fd, temp_path = tempfile.mkstemp(suffix=suffix, prefix=prefix, )
+    fd, temp_path = tempfile.mkstemp(
+        suffix=suffix,
+        prefix=prefix,
+    )
     return fd, Path(temp_path)
 
 
@@ -577,26 +588,31 @@ def x_secure_temp_file__mutmut_11(
     fd, temp_path = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=dir)
     return fd, Path(None)
 
-x_secure_temp_file__mutmut_mutants : ClassVar[MutantDict] = {
-'x_secure_temp_file__mutmut_1': x_secure_temp_file__mutmut_1, 
-    'x_secure_temp_file__mutmut_2': x_secure_temp_file__mutmut_2, 
-    'x_secure_temp_file__mutmut_3': x_secure_temp_file__mutmut_3, 
-    'x_secure_temp_file__mutmut_4': x_secure_temp_file__mutmut_4, 
-    'x_secure_temp_file__mutmut_5': x_secure_temp_file__mutmut_5, 
-    'x_secure_temp_file__mutmut_6': x_secure_temp_file__mutmut_6, 
-    'x_secure_temp_file__mutmut_7': x_secure_temp_file__mutmut_7, 
-    'x_secure_temp_file__mutmut_8': x_secure_temp_file__mutmut_8, 
-    'x_secure_temp_file__mutmut_9': x_secure_temp_file__mutmut_9, 
-    'x_secure_temp_file__mutmut_10': x_secure_temp_file__mutmut_10, 
-    'x_secure_temp_file__mutmut_11': x_secure_temp_file__mutmut_11
+
+x_secure_temp_file__mutmut_mutants: ClassVar[MutantDict] = {
+    "x_secure_temp_file__mutmut_1": x_secure_temp_file__mutmut_1,
+    "x_secure_temp_file__mutmut_2": x_secure_temp_file__mutmut_2,
+    "x_secure_temp_file__mutmut_3": x_secure_temp_file__mutmut_3,
+    "x_secure_temp_file__mutmut_4": x_secure_temp_file__mutmut_4,
+    "x_secure_temp_file__mutmut_5": x_secure_temp_file__mutmut_5,
+    "x_secure_temp_file__mutmut_6": x_secure_temp_file__mutmut_6,
+    "x_secure_temp_file__mutmut_7": x_secure_temp_file__mutmut_7,
+    "x_secure_temp_file__mutmut_8": x_secure_temp_file__mutmut_8,
+    "x_secure_temp_file__mutmut_9": x_secure_temp_file__mutmut_9,
+    "x_secure_temp_file__mutmut_10": x_secure_temp_file__mutmut_10,
+    "x_secure_temp_file__mutmut_11": x_secure_temp_file__mutmut_11,
 }
 
+
 def secure_temp_file(*args, **kwargs):
-    result = _mutmut_trampoline(x_secure_temp_file__mutmut_orig, x_secure_temp_file__mutmut_mutants, args, kwargs)
-    return result 
+    result = _mutmut_trampoline(
+        x_secure_temp_file__mutmut_orig, x_secure_temp_file__mutmut_mutants, args, kwargs
+    )
+    return result
+
 
 secure_temp_file.__signature__ = _mutmut_signature(x_secure_temp_file__mutmut_orig)
-x_secure_temp_file__mutmut_orig.__name__ = 'x_secure_temp_file'
+x_secure_temp_file__mutmut_orig.__name__ = "x_secure_temp_file"
 
 
 @contextmanager

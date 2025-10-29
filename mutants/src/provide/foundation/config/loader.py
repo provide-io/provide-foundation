@@ -31,23 +31,26 @@ from typing import ClassVar
 MutantDict = Annotated[dict[str, Callable], "Mutant"]
 
 
-def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
+def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg=None):
     """Forward call to original or mutated function, depending on the environment"""
     import os
-    mutant_under_test = os.environ['MUTANT_UNDER_TEST']
-    if mutant_under_test == 'fail':
+
+    mutant_under_test = os.environ["MUTANT_UNDER_TEST"]
+    if mutant_under_test == "fail":
         from mutmut.__main__ import MutmutProgrammaticFailException
-        raise MutmutProgrammaticFailException('Failed programmatically')      
-    elif mutant_under_test == 'stats':
+
+        raise MutmutProgrammaticFailException("Failed programmatically")
+    elif mutant_under_test == "stats":
         from mutmut.__main__ import record_trampoline_hit
-        record_trampoline_hit(orig.__module__ + '.' + orig.__name__)
+
+        record_trampoline_hit(orig.__module__ + "." + orig.__name__)
         result = orig(*call_args, **call_kwargs)
         return result
-    prefix = orig.__module__ + '.' + orig.__name__ + '__mutmut_'
+    prefix = orig.__module__ + "." + orig.__name__ + "__mutmut_"
     if not mutant_under_test.startswith(prefix):
         result = orig(*call_args, **call_kwargs)
         return result
-    mutant_name = mutant_under_test.rpartition('.')[-1]
+    mutant_name = mutant_under_test.rpartition(".")[-1]
     if self_arg:
         # call to a class method where self is not bound
         result = mutants[mutant_name](self_arg, *call_args, **call_kwargs)
@@ -564,7 +567,7 @@ class FileConfigLoader(ConfigLoader):
                 raise ConfigurationError(
                     f"Cannot determine format for file: {self.path}",
                     code="CONFIG_FORMAT_UNKNOWN",
-                    )
+                )
 
         self.format = format
 
@@ -679,36 +682,42 @@ class FileConfigLoader(ConfigLoader):
                 )
 
         self.format = None
-    
-    xǁFileConfigLoaderǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFileConfigLoaderǁ__init____mutmut_1': xǁFileConfigLoaderǁ__init____mutmut_1, 
-        'xǁFileConfigLoaderǁ__init____mutmut_2': xǁFileConfigLoaderǁ__init____mutmut_2, 
-        'xǁFileConfigLoaderǁ__init____mutmut_3': xǁFileConfigLoaderǁ__init____mutmut_3, 
-        'xǁFileConfigLoaderǁ__init____mutmut_4': xǁFileConfigLoaderǁ__init____mutmut_4, 
-        'xǁFileConfigLoaderǁ__init____mutmut_5': xǁFileConfigLoaderǁ__init____mutmut_5, 
-        'xǁFileConfigLoaderǁ__init____mutmut_6': xǁFileConfigLoaderǁ__init____mutmut_6, 
-        'xǁFileConfigLoaderǁ__init____mutmut_7': xǁFileConfigLoaderǁ__init____mutmut_7, 
-        'xǁFileConfigLoaderǁ__init____mutmut_8': xǁFileConfigLoaderǁ__init____mutmut_8, 
-        'xǁFileConfigLoaderǁ__init____mutmut_9': xǁFileConfigLoaderǁ__init____mutmut_9, 
-        'xǁFileConfigLoaderǁ__init____mutmut_10': xǁFileConfigLoaderǁ__init____mutmut_10, 
-        'xǁFileConfigLoaderǁ__init____mutmut_11': xǁFileConfigLoaderǁ__init____mutmut_11, 
-        'xǁFileConfigLoaderǁ__init____mutmut_12': xǁFileConfigLoaderǁ__init____mutmut_12, 
-        'xǁFileConfigLoaderǁ__init____mutmut_13': xǁFileConfigLoaderǁ__init____mutmut_13, 
-        'xǁFileConfigLoaderǁ__init____mutmut_14': xǁFileConfigLoaderǁ__init____mutmut_14, 
-        'xǁFileConfigLoaderǁ__init____mutmut_15': xǁFileConfigLoaderǁ__init____mutmut_15, 
-        'xǁFileConfigLoaderǁ__init____mutmut_16': xǁFileConfigLoaderǁ__init____mutmut_16, 
-        'xǁFileConfigLoaderǁ__init____mutmut_17': xǁFileConfigLoaderǁ__init____mutmut_17, 
-        'xǁFileConfigLoaderǁ__init____mutmut_18': xǁFileConfigLoaderǁ__init____mutmut_18, 
-        'xǁFileConfigLoaderǁ__init____mutmut_19': xǁFileConfigLoaderǁ__init____mutmut_19, 
-        'xǁFileConfigLoaderǁ__init____mutmut_20': xǁFileConfigLoaderǁ__init____mutmut_20
+
+    xǁFileConfigLoaderǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFileConfigLoaderǁ__init____mutmut_1": xǁFileConfigLoaderǁ__init____mutmut_1,
+        "xǁFileConfigLoaderǁ__init____mutmut_2": xǁFileConfigLoaderǁ__init____mutmut_2,
+        "xǁFileConfigLoaderǁ__init____mutmut_3": xǁFileConfigLoaderǁ__init____mutmut_3,
+        "xǁFileConfigLoaderǁ__init____mutmut_4": xǁFileConfigLoaderǁ__init____mutmut_4,
+        "xǁFileConfigLoaderǁ__init____mutmut_5": xǁFileConfigLoaderǁ__init____mutmut_5,
+        "xǁFileConfigLoaderǁ__init____mutmut_6": xǁFileConfigLoaderǁ__init____mutmut_6,
+        "xǁFileConfigLoaderǁ__init____mutmut_7": xǁFileConfigLoaderǁ__init____mutmut_7,
+        "xǁFileConfigLoaderǁ__init____mutmut_8": xǁFileConfigLoaderǁ__init____mutmut_8,
+        "xǁFileConfigLoaderǁ__init____mutmut_9": xǁFileConfigLoaderǁ__init____mutmut_9,
+        "xǁFileConfigLoaderǁ__init____mutmut_10": xǁFileConfigLoaderǁ__init____mutmut_10,
+        "xǁFileConfigLoaderǁ__init____mutmut_11": xǁFileConfigLoaderǁ__init____mutmut_11,
+        "xǁFileConfigLoaderǁ__init____mutmut_12": xǁFileConfigLoaderǁ__init____mutmut_12,
+        "xǁFileConfigLoaderǁ__init____mutmut_13": xǁFileConfigLoaderǁ__init____mutmut_13,
+        "xǁFileConfigLoaderǁ__init____mutmut_14": xǁFileConfigLoaderǁ__init____mutmut_14,
+        "xǁFileConfigLoaderǁ__init____mutmut_15": xǁFileConfigLoaderǁ__init____mutmut_15,
+        "xǁFileConfigLoaderǁ__init____mutmut_16": xǁFileConfigLoaderǁ__init____mutmut_16,
+        "xǁFileConfigLoaderǁ__init____mutmut_17": xǁFileConfigLoaderǁ__init____mutmut_17,
+        "xǁFileConfigLoaderǁ__init____mutmut_18": xǁFileConfigLoaderǁ__init____mutmut_18,
+        "xǁFileConfigLoaderǁ__init____mutmut_19": xǁFileConfigLoaderǁ__init____mutmut_19,
+        "xǁFileConfigLoaderǁ__init____mutmut_20": xǁFileConfigLoaderǁ__init____mutmut_20,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFileConfigLoaderǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁFileConfigLoaderǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFileConfigLoaderǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁFileConfigLoaderǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁFileConfigLoaderǁ__init____mutmut_orig)
-    xǁFileConfigLoaderǁ__init____mutmut_orig.__name__ = 'xǁFileConfigLoaderǁ__init__'
+    xǁFileConfigLoaderǁ__init____mutmut_orig.__name__ = "xǁFileConfigLoaderǁ__init__"
 
     def exists(self) -> bool:
         """Check if configuration file exists."""
@@ -896,7 +905,9 @@ class FileConfigLoader(ConfigLoader):
 
     def xǁFileConfigLoaderǁ_read_file__mutmut_5(self) -> ConfigDict:
         """Read and parse configuration file."""
-        content = safe_read_text(self.path, )
+        content = safe_read_text(
+            self.path,
+        )
         if not content:
             raise ConfigurationError(
                 f"Failed to read config file: {self.path}",
@@ -1109,7 +1120,7 @@ class FileConfigLoader(ConfigLoader):
             raise ConfigurationError(
                 f"Failed to read config file: {self.path}",
                 code="CONFIG_READ_ERROR",
-                )
+            )
 
         if self.format == ConfigFormat.JSON:
             return json_loads(content)
@@ -1816,7 +1827,7 @@ class FileConfigLoader(ConfigLoader):
         raise ConfigurationError(
             f"Unsupported format: {self.format}",
             code="CONFIG_FORMAT_UNSUPPORTED",
-            )
+        )
 
     def xǁFileConfigLoaderǁ_read_file__mutmut_36(self) -> ConfigDict:
         """Read and parse configuration file."""
@@ -1907,60 +1918,68 @@ class FileConfigLoader(ConfigLoader):
             code="CONFIG_FORMAT_UNSUPPORTED",
             format=str(None),
         )
-    
-    xǁFileConfigLoaderǁ_read_file__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁFileConfigLoaderǁ_read_file__mutmut_1': xǁFileConfigLoaderǁ_read_file__mutmut_1, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_2': xǁFileConfigLoaderǁ_read_file__mutmut_2, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_3': xǁFileConfigLoaderǁ_read_file__mutmut_3, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_4': xǁFileConfigLoaderǁ_read_file__mutmut_4, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_5': xǁFileConfigLoaderǁ_read_file__mutmut_5, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_6': xǁFileConfigLoaderǁ_read_file__mutmut_6, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_7': xǁFileConfigLoaderǁ_read_file__mutmut_7, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_8': xǁFileConfigLoaderǁ_read_file__mutmut_8, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_9': xǁFileConfigLoaderǁ_read_file__mutmut_9, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_10': xǁFileConfigLoaderǁ_read_file__mutmut_10, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_11': xǁFileConfigLoaderǁ_read_file__mutmut_11, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_12': xǁFileConfigLoaderǁ_read_file__mutmut_12, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_13': xǁFileConfigLoaderǁ_read_file__mutmut_13, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_14': xǁFileConfigLoaderǁ_read_file__mutmut_14, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_15': xǁFileConfigLoaderǁ_read_file__mutmut_15, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_16': xǁFileConfigLoaderǁ_read_file__mutmut_16, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_17': xǁFileConfigLoaderǁ_read_file__mutmut_17, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_18': xǁFileConfigLoaderǁ_read_file__mutmut_18, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_19': xǁFileConfigLoaderǁ_read_file__mutmut_19, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_20': xǁFileConfigLoaderǁ_read_file__mutmut_20, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_21': xǁFileConfigLoaderǁ_read_file__mutmut_21, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_22': xǁFileConfigLoaderǁ_read_file__mutmut_22, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_23': xǁFileConfigLoaderǁ_read_file__mutmut_23, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_24': xǁFileConfigLoaderǁ_read_file__mutmut_24, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_25': xǁFileConfigLoaderǁ_read_file__mutmut_25, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_26': xǁFileConfigLoaderǁ_read_file__mutmut_26, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_27': xǁFileConfigLoaderǁ_read_file__mutmut_27, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_28': xǁFileConfigLoaderǁ_read_file__mutmut_28, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_29': xǁFileConfigLoaderǁ_read_file__mutmut_29, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_30': xǁFileConfigLoaderǁ_read_file__mutmut_30, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_31': xǁFileConfigLoaderǁ_read_file__mutmut_31, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_32': xǁFileConfigLoaderǁ_read_file__mutmut_32, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_33': xǁFileConfigLoaderǁ_read_file__mutmut_33, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_34': xǁFileConfigLoaderǁ_read_file__mutmut_34, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_35': xǁFileConfigLoaderǁ_read_file__mutmut_35, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_36': xǁFileConfigLoaderǁ_read_file__mutmut_36, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_37': xǁFileConfigLoaderǁ_read_file__mutmut_37, 
-        'xǁFileConfigLoaderǁ_read_file__mutmut_38': xǁFileConfigLoaderǁ_read_file__mutmut_38
+
+    xǁFileConfigLoaderǁ_read_file__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁFileConfigLoaderǁ_read_file__mutmut_1": xǁFileConfigLoaderǁ_read_file__mutmut_1,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_2": xǁFileConfigLoaderǁ_read_file__mutmut_2,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_3": xǁFileConfigLoaderǁ_read_file__mutmut_3,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_4": xǁFileConfigLoaderǁ_read_file__mutmut_4,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_5": xǁFileConfigLoaderǁ_read_file__mutmut_5,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_6": xǁFileConfigLoaderǁ_read_file__mutmut_6,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_7": xǁFileConfigLoaderǁ_read_file__mutmut_7,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_8": xǁFileConfigLoaderǁ_read_file__mutmut_8,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_9": xǁFileConfigLoaderǁ_read_file__mutmut_9,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_10": xǁFileConfigLoaderǁ_read_file__mutmut_10,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_11": xǁFileConfigLoaderǁ_read_file__mutmut_11,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_12": xǁFileConfigLoaderǁ_read_file__mutmut_12,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_13": xǁFileConfigLoaderǁ_read_file__mutmut_13,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_14": xǁFileConfigLoaderǁ_read_file__mutmut_14,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_15": xǁFileConfigLoaderǁ_read_file__mutmut_15,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_16": xǁFileConfigLoaderǁ_read_file__mutmut_16,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_17": xǁFileConfigLoaderǁ_read_file__mutmut_17,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_18": xǁFileConfigLoaderǁ_read_file__mutmut_18,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_19": xǁFileConfigLoaderǁ_read_file__mutmut_19,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_20": xǁFileConfigLoaderǁ_read_file__mutmut_20,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_21": xǁFileConfigLoaderǁ_read_file__mutmut_21,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_22": xǁFileConfigLoaderǁ_read_file__mutmut_22,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_23": xǁFileConfigLoaderǁ_read_file__mutmut_23,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_24": xǁFileConfigLoaderǁ_read_file__mutmut_24,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_25": xǁFileConfigLoaderǁ_read_file__mutmut_25,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_26": xǁFileConfigLoaderǁ_read_file__mutmut_26,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_27": xǁFileConfigLoaderǁ_read_file__mutmut_27,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_28": xǁFileConfigLoaderǁ_read_file__mutmut_28,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_29": xǁFileConfigLoaderǁ_read_file__mutmut_29,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_30": xǁFileConfigLoaderǁ_read_file__mutmut_30,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_31": xǁFileConfigLoaderǁ_read_file__mutmut_31,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_32": xǁFileConfigLoaderǁ_read_file__mutmut_32,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_33": xǁFileConfigLoaderǁ_read_file__mutmut_33,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_34": xǁFileConfigLoaderǁ_read_file__mutmut_34,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_35": xǁFileConfigLoaderǁ_read_file__mutmut_35,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_36": xǁFileConfigLoaderǁ_read_file__mutmut_36,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_37": xǁFileConfigLoaderǁ_read_file__mutmut_37,
+        "xǁFileConfigLoaderǁ_read_file__mutmut_38": xǁFileConfigLoaderǁ_read_file__mutmut_38,
     }
-    
+
     def _read_file(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁFileConfigLoaderǁ_read_file__mutmut_orig"), object.__getattribute__(self, "xǁFileConfigLoaderǁ_read_file__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁFileConfigLoaderǁ_read_file__mutmut_orig"),
+            object.__getattribute__(self, "xǁFileConfigLoaderǁ_read_file__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     _read_file.__signature__ = _mutmut_signature(xǁFileConfigLoaderǁ_read_file__mutmut_orig)
-    xǁFileConfigLoaderǁ_read_file__mutmut_orig.__name__ = 'xǁFileConfigLoaderǁ_read_file'
+    xǁFileConfigLoaderǁ_read_file__mutmut_orig.__name__ = "xǁFileConfigLoaderǁ_read_file"
 
 
 class RuntimeConfigLoader(ConfigLoader):
     """Load configuration from environment variables."""
 
-    def xǁRuntimeConfigLoaderǁ__init____mutmut_orig(self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False) -> None:
+    def xǁRuntimeConfigLoaderǁ__init____mutmut_orig(
+        self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False
+    ) -> None:
         """Initialize environment configuration loader.
 
         Args:
@@ -1973,7 +1992,9 @@ class RuntimeConfigLoader(ConfigLoader):
         self.delimiter = delimiter
         self.case_sensitive = case_sensitive
 
-    def xǁRuntimeConfigLoaderǁ__init____mutmut_1(self, prefix: str = "XXXX", delimiter: str = "_", case_sensitive: bool = False) -> None:
+    def xǁRuntimeConfigLoaderǁ__init____mutmut_1(
+        self, prefix: str = "XXXX", delimiter: str = "_", case_sensitive: bool = False
+    ) -> None:
         """Initialize environment configuration loader.
 
         Args:
@@ -1986,7 +2007,9 @@ class RuntimeConfigLoader(ConfigLoader):
         self.delimiter = delimiter
         self.case_sensitive = case_sensitive
 
-    def xǁRuntimeConfigLoaderǁ__init____mutmut_2(self, prefix: str = "", delimiter: str = "XX_XX", case_sensitive: bool = False) -> None:
+    def xǁRuntimeConfigLoaderǁ__init____mutmut_2(
+        self, prefix: str = "", delimiter: str = "XX_XX", case_sensitive: bool = False
+    ) -> None:
         """Initialize environment configuration loader.
 
         Args:
@@ -1999,7 +2022,9 @@ class RuntimeConfigLoader(ConfigLoader):
         self.delimiter = delimiter
         self.case_sensitive = case_sensitive
 
-    def xǁRuntimeConfigLoaderǁ__init____mutmut_3(self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = True) -> None:
+    def xǁRuntimeConfigLoaderǁ__init____mutmut_3(
+        self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = True
+    ) -> None:
         """Initialize environment configuration loader.
 
         Args:
@@ -2012,7 +2037,9 @@ class RuntimeConfigLoader(ConfigLoader):
         self.delimiter = delimiter
         self.case_sensitive = case_sensitive
 
-    def xǁRuntimeConfigLoaderǁ__init____mutmut_4(self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False) -> None:
+    def xǁRuntimeConfigLoaderǁ__init____mutmut_4(
+        self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False
+    ) -> None:
         """Initialize environment configuration loader.
 
         Args:
@@ -2025,7 +2052,9 @@ class RuntimeConfigLoader(ConfigLoader):
         self.delimiter = delimiter
         self.case_sensitive = case_sensitive
 
-    def xǁRuntimeConfigLoaderǁ__init____mutmut_5(self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False) -> None:
+    def xǁRuntimeConfigLoaderǁ__init____mutmut_5(
+        self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False
+    ) -> None:
         """Initialize environment configuration loader.
 
         Args:
@@ -2038,7 +2067,9 @@ class RuntimeConfigLoader(ConfigLoader):
         self.delimiter = None
         self.case_sensitive = case_sensitive
 
-    def xǁRuntimeConfigLoaderǁ__init____mutmut_6(self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False) -> None:
+    def xǁRuntimeConfigLoaderǁ__init____mutmut_6(
+        self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False
+    ) -> None:
         """Initialize environment configuration loader.
 
         Args:
@@ -2050,22 +2081,28 @@ class RuntimeConfigLoader(ConfigLoader):
         self.prefix = prefix
         self.delimiter = delimiter
         self.case_sensitive = None
-    
-    xǁRuntimeConfigLoaderǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRuntimeConfigLoaderǁ__init____mutmut_1': xǁRuntimeConfigLoaderǁ__init____mutmut_1, 
-        'xǁRuntimeConfigLoaderǁ__init____mutmut_2': xǁRuntimeConfigLoaderǁ__init____mutmut_2, 
-        'xǁRuntimeConfigLoaderǁ__init____mutmut_3': xǁRuntimeConfigLoaderǁ__init____mutmut_3, 
-        'xǁRuntimeConfigLoaderǁ__init____mutmut_4': xǁRuntimeConfigLoaderǁ__init____mutmut_4, 
-        'xǁRuntimeConfigLoaderǁ__init____mutmut_5': xǁRuntimeConfigLoaderǁ__init____mutmut_5, 
-        'xǁRuntimeConfigLoaderǁ__init____mutmut_6': xǁRuntimeConfigLoaderǁ__init____mutmut_6
+
+    xǁRuntimeConfigLoaderǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRuntimeConfigLoaderǁ__init____mutmut_1": xǁRuntimeConfigLoaderǁ__init____mutmut_1,
+        "xǁRuntimeConfigLoaderǁ__init____mutmut_2": xǁRuntimeConfigLoaderǁ__init____mutmut_2,
+        "xǁRuntimeConfigLoaderǁ__init____mutmut_3": xǁRuntimeConfigLoaderǁ__init____mutmut_3,
+        "xǁRuntimeConfigLoaderǁ__init____mutmut_4": xǁRuntimeConfigLoaderǁ__init____mutmut_4,
+        "xǁRuntimeConfigLoaderǁ__init____mutmut_5": xǁRuntimeConfigLoaderǁ__init____mutmut_5,
+        "xǁRuntimeConfigLoaderǁ__init____mutmut_6": xǁRuntimeConfigLoaderǁ__init____mutmut_6,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRuntimeConfigLoaderǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁRuntimeConfigLoaderǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRuntimeConfigLoaderǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁRuntimeConfigLoaderǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁRuntimeConfigLoaderǁ__init____mutmut_orig)
-    xǁRuntimeConfigLoaderǁ__init____mutmut_orig.__name__ = 'xǁRuntimeConfigLoaderǁ__init__'
+    xǁRuntimeConfigLoaderǁ__init____mutmut_orig.__name__ = "xǁRuntimeConfigLoaderǁ__init__"
 
     def xǁRuntimeConfigLoaderǁexists__mutmut_orig(self) -> bool:
         """Check if any relevant environment variables exist."""
@@ -2101,20 +2138,26 @@ class RuntimeConfigLoader(ConfigLoader):
             prefix_with_delim = f"{self.prefix}{self.delimiter}"
             return any(key.startswith(prefix_with_delim) for key in os.environ)
         return bool(None)
-    
-    xǁRuntimeConfigLoaderǁexists__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRuntimeConfigLoaderǁexists__mutmut_1': xǁRuntimeConfigLoaderǁexists__mutmut_1, 
-        'xǁRuntimeConfigLoaderǁexists__mutmut_2': xǁRuntimeConfigLoaderǁexists__mutmut_2, 
-        'xǁRuntimeConfigLoaderǁexists__mutmut_3': xǁRuntimeConfigLoaderǁexists__mutmut_3, 
-        'xǁRuntimeConfigLoaderǁexists__mutmut_4': xǁRuntimeConfigLoaderǁexists__mutmut_4
+
+    xǁRuntimeConfigLoaderǁexists__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRuntimeConfigLoaderǁexists__mutmut_1": xǁRuntimeConfigLoaderǁexists__mutmut_1,
+        "xǁRuntimeConfigLoaderǁexists__mutmut_2": xǁRuntimeConfigLoaderǁexists__mutmut_2,
+        "xǁRuntimeConfigLoaderǁexists__mutmut_3": xǁRuntimeConfigLoaderǁexists__mutmut_3,
+        "xǁRuntimeConfigLoaderǁexists__mutmut_4": xǁRuntimeConfigLoaderǁexists__mutmut_4,
     }
-    
+
     def exists(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRuntimeConfigLoaderǁexists__mutmut_orig"), object.__getattribute__(self, "xǁRuntimeConfigLoaderǁexists__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRuntimeConfigLoaderǁexists__mutmut_orig"),
+            object.__getattribute__(self, "xǁRuntimeConfigLoaderǁexists__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     exists.__signature__ = _mutmut_signature(xǁRuntimeConfigLoaderǁexists__mutmut_orig)
-    xǁRuntimeConfigLoaderǁexists__mutmut_orig.__name__ = 'xǁRuntimeConfigLoaderǁexists'
+    xǁRuntimeConfigLoaderǁexists__mutmut_orig.__name__ = "xǁRuntimeConfigLoaderǁexists"
 
     def xǁRuntimeConfigLoaderǁload__mutmut_orig(self, config_class: type[T]) -> T:
         """Load configuration from environment variables."""
@@ -2173,7 +2216,9 @@ class RuntimeConfigLoader(ConfigLoader):
 
     def xǁRuntimeConfigLoaderǁload__mutmut_5(self, config_class: type[T]) -> T:
         """Load configuration from environment variables."""
-        if not issubclass(config_class, ):
+        if not issubclass(
+            config_class,
+        ):
             raise TypeError(f"{config_class.__name__} must inherit from RuntimeConfig")
 
         return config_class.from_env(
@@ -2254,35 +2299,43 @@ class RuntimeConfigLoader(ConfigLoader):
         return config_class.from_env(
             prefix=self.prefix,
             delimiter=self.delimiter,
-            )
-    
-    xǁRuntimeConfigLoaderǁload__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁRuntimeConfigLoaderǁload__mutmut_1': xǁRuntimeConfigLoaderǁload__mutmut_1, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_2': xǁRuntimeConfigLoaderǁload__mutmut_2, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_3': xǁRuntimeConfigLoaderǁload__mutmut_3, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_4': xǁRuntimeConfigLoaderǁload__mutmut_4, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_5': xǁRuntimeConfigLoaderǁload__mutmut_5, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_6': xǁRuntimeConfigLoaderǁload__mutmut_6, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_7': xǁRuntimeConfigLoaderǁload__mutmut_7, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_8': xǁRuntimeConfigLoaderǁload__mutmut_8, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_9': xǁRuntimeConfigLoaderǁload__mutmut_9, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_10': xǁRuntimeConfigLoaderǁload__mutmut_10, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_11': xǁRuntimeConfigLoaderǁload__mutmut_11, 
-        'xǁRuntimeConfigLoaderǁload__mutmut_12': xǁRuntimeConfigLoaderǁload__mutmut_12
+        )
+
+    xǁRuntimeConfigLoaderǁload__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁRuntimeConfigLoaderǁload__mutmut_1": xǁRuntimeConfigLoaderǁload__mutmut_1,
+        "xǁRuntimeConfigLoaderǁload__mutmut_2": xǁRuntimeConfigLoaderǁload__mutmut_2,
+        "xǁRuntimeConfigLoaderǁload__mutmut_3": xǁRuntimeConfigLoaderǁload__mutmut_3,
+        "xǁRuntimeConfigLoaderǁload__mutmut_4": xǁRuntimeConfigLoaderǁload__mutmut_4,
+        "xǁRuntimeConfigLoaderǁload__mutmut_5": xǁRuntimeConfigLoaderǁload__mutmut_5,
+        "xǁRuntimeConfigLoaderǁload__mutmut_6": xǁRuntimeConfigLoaderǁload__mutmut_6,
+        "xǁRuntimeConfigLoaderǁload__mutmut_7": xǁRuntimeConfigLoaderǁload__mutmut_7,
+        "xǁRuntimeConfigLoaderǁload__mutmut_8": xǁRuntimeConfigLoaderǁload__mutmut_8,
+        "xǁRuntimeConfigLoaderǁload__mutmut_9": xǁRuntimeConfigLoaderǁload__mutmut_9,
+        "xǁRuntimeConfigLoaderǁload__mutmut_10": xǁRuntimeConfigLoaderǁload__mutmut_10,
+        "xǁRuntimeConfigLoaderǁload__mutmut_11": xǁRuntimeConfigLoaderǁload__mutmut_11,
+        "xǁRuntimeConfigLoaderǁload__mutmut_12": xǁRuntimeConfigLoaderǁload__mutmut_12,
     }
-    
+
     def load(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁRuntimeConfigLoaderǁload__mutmut_orig"), object.__getattribute__(self, "xǁRuntimeConfigLoaderǁload__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁRuntimeConfigLoaderǁload__mutmut_orig"),
+            object.__getattribute__(self, "xǁRuntimeConfigLoaderǁload__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     load.__signature__ = _mutmut_signature(xǁRuntimeConfigLoaderǁload__mutmut_orig)
-    xǁRuntimeConfigLoaderǁload__mutmut_orig.__name__ = 'xǁRuntimeConfigLoaderǁload'
+    xǁRuntimeConfigLoaderǁload__mutmut_orig.__name__ = "xǁRuntimeConfigLoaderǁload"
 
 
 class DictConfigLoader(ConfigLoader):
     """Load configuration from a dictionary."""
 
-    def xǁDictConfigLoaderǁ__init____mutmut_orig(self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
+    def xǁDictConfigLoaderǁ__init____mutmut_orig(
+        self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
+    ) -> None:
         """Initialize dictionary configuration loader.
 
         Args:
@@ -2293,7 +2346,9 @@ class DictConfigLoader(ConfigLoader):
         self.data = data
         self.source = source
 
-    def xǁDictConfigLoaderǁ__init____mutmut_1(self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
+    def xǁDictConfigLoaderǁ__init____mutmut_1(
+        self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
+    ) -> None:
         """Initialize dictionary configuration loader.
 
         Args:
@@ -2304,7 +2359,9 @@ class DictConfigLoader(ConfigLoader):
         self.data = None
         self.source = source
 
-    def xǁDictConfigLoaderǁ__init____mutmut_2(self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
+    def xǁDictConfigLoaderǁ__init____mutmut_2(
+        self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
+    ) -> None:
         """Initialize dictionary configuration loader.
 
         Args:
@@ -2314,18 +2371,24 @@ class DictConfigLoader(ConfigLoader):
         """
         self.data = data
         self.source = None
-    
-    xǁDictConfigLoaderǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁDictConfigLoaderǁ__init____mutmut_1': xǁDictConfigLoaderǁ__init____mutmut_1, 
-        'xǁDictConfigLoaderǁ__init____mutmut_2': xǁDictConfigLoaderǁ__init____mutmut_2
+
+    xǁDictConfigLoaderǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁDictConfigLoaderǁ__init____mutmut_1": xǁDictConfigLoaderǁ__init____mutmut_1,
+        "xǁDictConfigLoaderǁ__init____mutmut_2": xǁDictConfigLoaderǁ__init____mutmut_2,
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁDictConfigLoaderǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁDictConfigLoaderǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁDictConfigLoaderǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁDictConfigLoaderǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁDictConfigLoaderǁ__init____mutmut_orig)
-    xǁDictConfigLoaderǁ__init____mutmut_orig.__name__ = 'xǁDictConfigLoaderǁ__init__'
+    xǁDictConfigLoaderǁ__init____mutmut_orig.__name__ = "xǁDictConfigLoaderǁ__init__"
 
     def xǁDictConfigLoaderǁexists__mutmut_orig(self) -> bool:
         """Check if configuration data exists."""
@@ -2334,17 +2397,23 @@ class DictConfigLoader(ConfigLoader):
     def xǁDictConfigLoaderǁexists__mutmut_1(self) -> bool:
         """Check if configuration data exists."""
         return self.data is None
-    
-    xǁDictConfigLoaderǁexists__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁDictConfigLoaderǁexists__mutmut_1': xǁDictConfigLoaderǁexists__mutmut_1
+
+    xǁDictConfigLoaderǁexists__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁDictConfigLoaderǁexists__mutmut_1": xǁDictConfigLoaderǁexists__mutmut_1
     }
-    
+
     def exists(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁDictConfigLoaderǁexists__mutmut_orig"), object.__getattribute__(self, "xǁDictConfigLoaderǁexists__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁDictConfigLoaderǁexists__mutmut_orig"),
+            object.__getattribute__(self, "xǁDictConfigLoaderǁexists__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     exists.__signature__ = _mutmut_signature(xǁDictConfigLoaderǁexists__mutmut_orig)
-    xǁDictConfigLoaderǁexists__mutmut_orig.__name__ = 'xǁDictConfigLoaderǁexists'
+    xǁDictConfigLoaderǁexists__mutmut_orig.__name__ = "xǁDictConfigLoaderǁexists"
 
     def xǁDictConfigLoaderǁload__mutmut_orig(self, config_class: type[T]) -> T:
         """Load configuration from dictionary."""
@@ -2364,21 +2433,29 @@ class DictConfigLoader(ConfigLoader):
 
     def xǁDictConfigLoaderǁload__mutmut_4(self, config_class: type[T]) -> T:
         """Load configuration from dictionary."""
-        return config_class.from_dict(self.data, )
-    
-    xǁDictConfigLoaderǁload__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁDictConfigLoaderǁload__mutmut_1': xǁDictConfigLoaderǁload__mutmut_1, 
-        'xǁDictConfigLoaderǁload__mutmut_2': xǁDictConfigLoaderǁload__mutmut_2, 
-        'xǁDictConfigLoaderǁload__mutmut_3': xǁDictConfigLoaderǁload__mutmut_3, 
-        'xǁDictConfigLoaderǁload__mutmut_4': xǁDictConfigLoaderǁload__mutmut_4
+        return config_class.from_dict(
+            self.data,
+        )
+
+    xǁDictConfigLoaderǁload__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁDictConfigLoaderǁload__mutmut_1": xǁDictConfigLoaderǁload__mutmut_1,
+        "xǁDictConfigLoaderǁload__mutmut_2": xǁDictConfigLoaderǁload__mutmut_2,
+        "xǁDictConfigLoaderǁload__mutmut_3": xǁDictConfigLoaderǁload__mutmut_3,
+        "xǁDictConfigLoaderǁload__mutmut_4": xǁDictConfigLoaderǁload__mutmut_4,
     }
-    
+
     def load(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁDictConfigLoaderǁload__mutmut_orig"), object.__getattribute__(self, "xǁDictConfigLoaderǁload__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁDictConfigLoaderǁload__mutmut_orig"),
+            object.__getattribute__(self, "xǁDictConfigLoaderǁload__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     load.__signature__ = _mutmut_signature(xǁDictConfigLoaderǁload__mutmut_orig)
-    xǁDictConfigLoaderǁload__mutmut_orig.__name__ = 'xǁDictConfigLoaderǁload'
+    xǁDictConfigLoaderǁload__mutmut_orig.__name__ = "xǁDictConfigLoaderǁload"
 
 
 class MultiSourceLoader(ConfigLoader):
@@ -2401,17 +2478,23 @@ class MultiSourceLoader(ConfigLoader):
 
         """
         self.loaders = None
-    
-    xǁMultiSourceLoaderǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁMultiSourceLoaderǁ__init____mutmut_1': xǁMultiSourceLoaderǁ__init____mutmut_1
+
+    xǁMultiSourceLoaderǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁMultiSourceLoaderǁ__init____mutmut_1": xǁMultiSourceLoaderǁ__init____mutmut_1
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁMultiSourceLoaderǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁMultiSourceLoaderǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁMultiSourceLoaderǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁMultiSourceLoaderǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁMultiSourceLoaderǁ__init____mutmut_orig)
-    xǁMultiSourceLoaderǁ__init____mutmut_orig.__name__ = 'xǁMultiSourceLoaderǁ__init__'
+    xǁMultiSourceLoaderǁ__init____mutmut_orig.__name__ = "xǁMultiSourceLoaderǁ__init__"
 
     def xǁMultiSourceLoaderǁexists__mutmut_orig(self) -> bool:
         """Check if any configuration source exists."""
@@ -2420,17 +2503,23 @@ class MultiSourceLoader(ConfigLoader):
     def xǁMultiSourceLoaderǁexists__mutmut_1(self) -> bool:
         """Check if any configuration source exists."""
         return any(None)
-    
-    xǁMultiSourceLoaderǁexists__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁMultiSourceLoaderǁexists__mutmut_1': xǁMultiSourceLoaderǁexists__mutmut_1
+
+    xǁMultiSourceLoaderǁexists__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁMultiSourceLoaderǁexists__mutmut_1": xǁMultiSourceLoaderǁexists__mutmut_1
     }
-    
+
     def exists(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁMultiSourceLoaderǁexists__mutmut_orig"), object.__getattribute__(self, "xǁMultiSourceLoaderǁexists__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁMultiSourceLoaderǁexists__mutmut_orig"),
+            object.__getattribute__(self, "xǁMultiSourceLoaderǁexists__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     exists.__signature__ = _mutmut_signature(xǁMultiSourceLoaderǁexists__mutmut_orig)
-    xǁMultiSourceLoaderǁexists__mutmut_orig.__name__ = 'xǁMultiSourceLoaderǁexists'
+    xǁMultiSourceLoaderǁexists__mutmut_orig.__name__ = "xǁMultiSourceLoaderǁexists"
 
     def xǁMultiSourceLoaderǁload__mutmut_orig(self, config_class: type[T]) -> T:
         """Load and merge configuration from multiple sources."""
@@ -2976,7 +3065,9 @@ class MultiSourceLoader(ConfigLoader):
                     for key, value in new_dict.items():
                         source = new_config.get_source(key)
                         if source is not None:
-                            config.update({key: value}, )
+                            config.update(
+                                {key: value},
+                            )
 
         if config is None:
             raise ValueError("Failed to load configuration from any source")
@@ -3106,42 +3197,48 @@ class MultiSourceLoader(ConfigLoader):
         if config is None:
             raise ValueError("FAILED TO LOAD CONFIGURATION FROM ANY SOURCE")
         return config
-    
-    xǁMultiSourceLoaderǁload__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁMultiSourceLoaderǁload__mutmut_1': xǁMultiSourceLoaderǁload__mutmut_1, 
-        'xǁMultiSourceLoaderǁload__mutmut_2': xǁMultiSourceLoaderǁload__mutmut_2, 
-        'xǁMultiSourceLoaderǁload__mutmut_3': xǁMultiSourceLoaderǁload__mutmut_3, 
-        'xǁMultiSourceLoaderǁload__mutmut_4': xǁMultiSourceLoaderǁload__mutmut_4, 
-        'xǁMultiSourceLoaderǁload__mutmut_5': xǁMultiSourceLoaderǁload__mutmut_5, 
-        'xǁMultiSourceLoaderǁload__mutmut_6': xǁMultiSourceLoaderǁload__mutmut_6, 
-        'xǁMultiSourceLoaderǁload__mutmut_7': xǁMultiSourceLoaderǁload__mutmut_7, 
-        'xǁMultiSourceLoaderǁload__mutmut_8': xǁMultiSourceLoaderǁload__mutmut_8, 
-        'xǁMultiSourceLoaderǁload__mutmut_9': xǁMultiSourceLoaderǁload__mutmut_9, 
-        'xǁMultiSourceLoaderǁload__mutmut_10': xǁMultiSourceLoaderǁload__mutmut_10, 
-        'xǁMultiSourceLoaderǁload__mutmut_11': xǁMultiSourceLoaderǁload__mutmut_11, 
-        'xǁMultiSourceLoaderǁload__mutmut_12': xǁMultiSourceLoaderǁload__mutmut_12, 
-        'xǁMultiSourceLoaderǁload__mutmut_13': xǁMultiSourceLoaderǁload__mutmut_13, 
-        'xǁMultiSourceLoaderǁload__mutmut_14': xǁMultiSourceLoaderǁload__mutmut_14, 
-        'xǁMultiSourceLoaderǁload__mutmut_15': xǁMultiSourceLoaderǁload__mutmut_15, 
-        'xǁMultiSourceLoaderǁload__mutmut_16': xǁMultiSourceLoaderǁload__mutmut_16, 
-        'xǁMultiSourceLoaderǁload__mutmut_17': xǁMultiSourceLoaderǁload__mutmut_17, 
-        'xǁMultiSourceLoaderǁload__mutmut_18': xǁMultiSourceLoaderǁload__mutmut_18, 
-        'xǁMultiSourceLoaderǁload__mutmut_19': xǁMultiSourceLoaderǁload__mutmut_19, 
-        'xǁMultiSourceLoaderǁload__mutmut_20': xǁMultiSourceLoaderǁload__mutmut_20, 
-        'xǁMultiSourceLoaderǁload__mutmut_21': xǁMultiSourceLoaderǁload__mutmut_21, 
-        'xǁMultiSourceLoaderǁload__mutmut_22': xǁMultiSourceLoaderǁload__mutmut_22, 
-        'xǁMultiSourceLoaderǁload__mutmut_23': xǁMultiSourceLoaderǁload__mutmut_23, 
-        'xǁMultiSourceLoaderǁload__mutmut_24': xǁMultiSourceLoaderǁload__mutmut_24, 
-        'xǁMultiSourceLoaderǁload__mutmut_25': xǁMultiSourceLoaderǁload__mutmut_25, 
-        'xǁMultiSourceLoaderǁload__mutmut_26': xǁMultiSourceLoaderǁload__mutmut_26
+
+    xǁMultiSourceLoaderǁload__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁMultiSourceLoaderǁload__mutmut_1": xǁMultiSourceLoaderǁload__mutmut_1,
+        "xǁMultiSourceLoaderǁload__mutmut_2": xǁMultiSourceLoaderǁload__mutmut_2,
+        "xǁMultiSourceLoaderǁload__mutmut_3": xǁMultiSourceLoaderǁload__mutmut_3,
+        "xǁMultiSourceLoaderǁload__mutmut_4": xǁMultiSourceLoaderǁload__mutmut_4,
+        "xǁMultiSourceLoaderǁload__mutmut_5": xǁMultiSourceLoaderǁload__mutmut_5,
+        "xǁMultiSourceLoaderǁload__mutmut_6": xǁMultiSourceLoaderǁload__mutmut_6,
+        "xǁMultiSourceLoaderǁload__mutmut_7": xǁMultiSourceLoaderǁload__mutmut_7,
+        "xǁMultiSourceLoaderǁload__mutmut_8": xǁMultiSourceLoaderǁload__mutmut_8,
+        "xǁMultiSourceLoaderǁload__mutmut_9": xǁMultiSourceLoaderǁload__mutmut_9,
+        "xǁMultiSourceLoaderǁload__mutmut_10": xǁMultiSourceLoaderǁload__mutmut_10,
+        "xǁMultiSourceLoaderǁload__mutmut_11": xǁMultiSourceLoaderǁload__mutmut_11,
+        "xǁMultiSourceLoaderǁload__mutmut_12": xǁMultiSourceLoaderǁload__mutmut_12,
+        "xǁMultiSourceLoaderǁload__mutmut_13": xǁMultiSourceLoaderǁload__mutmut_13,
+        "xǁMultiSourceLoaderǁload__mutmut_14": xǁMultiSourceLoaderǁload__mutmut_14,
+        "xǁMultiSourceLoaderǁload__mutmut_15": xǁMultiSourceLoaderǁload__mutmut_15,
+        "xǁMultiSourceLoaderǁload__mutmut_16": xǁMultiSourceLoaderǁload__mutmut_16,
+        "xǁMultiSourceLoaderǁload__mutmut_17": xǁMultiSourceLoaderǁload__mutmut_17,
+        "xǁMultiSourceLoaderǁload__mutmut_18": xǁMultiSourceLoaderǁload__mutmut_18,
+        "xǁMultiSourceLoaderǁload__mutmut_19": xǁMultiSourceLoaderǁload__mutmut_19,
+        "xǁMultiSourceLoaderǁload__mutmut_20": xǁMultiSourceLoaderǁload__mutmut_20,
+        "xǁMultiSourceLoaderǁload__mutmut_21": xǁMultiSourceLoaderǁload__mutmut_21,
+        "xǁMultiSourceLoaderǁload__mutmut_22": xǁMultiSourceLoaderǁload__mutmut_22,
+        "xǁMultiSourceLoaderǁload__mutmut_23": xǁMultiSourceLoaderǁload__mutmut_23,
+        "xǁMultiSourceLoaderǁload__mutmut_24": xǁMultiSourceLoaderǁload__mutmut_24,
+        "xǁMultiSourceLoaderǁload__mutmut_25": xǁMultiSourceLoaderǁload__mutmut_25,
+        "xǁMultiSourceLoaderǁload__mutmut_26": xǁMultiSourceLoaderǁload__mutmut_26,
     }
-    
+
     def load(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁMultiSourceLoaderǁload__mutmut_orig"), object.__getattribute__(self, "xǁMultiSourceLoaderǁload__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁMultiSourceLoaderǁload__mutmut_orig"),
+            object.__getattribute__(self, "xǁMultiSourceLoaderǁload__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     load.__signature__ = _mutmut_signature(xǁMultiSourceLoaderǁload__mutmut_orig)
-    xǁMultiSourceLoaderǁload__mutmut_orig.__name__ = 'xǁMultiSourceLoaderǁload'
+    xǁMultiSourceLoaderǁload__mutmut_orig.__name__ = "xǁMultiSourceLoaderǁload"
 
 
 class ChainedLoader(ConfigLoader):
@@ -3164,17 +3261,23 @@ class ChainedLoader(ConfigLoader):
 
         """
         self.loaders = None
-    
-    xǁChainedLoaderǁ__init____mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁChainedLoaderǁ__init____mutmut_1': xǁChainedLoaderǁ__init____mutmut_1
+
+    xǁChainedLoaderǁ__init____mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁChainedLoaderǁ__init____mutmut_1": xǁChainedLoaderǁ__init____mutmut_1
     }
-    
+
     def __init__(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁChainedLoaderǁ__init____mutmut_orig"), object.__getattribute__(self, "xǁChainedLoaderǁ__init____mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁChainedLoaderǁ__init____mutmut_orig"),
+            object.__getattribute__(self, "xǁChainedLoaderǁ__init____mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     __init__.__signature__ = _mutmut_signature(xǁChainedLoaderǁ__init____mutmut_orig)
-    xǁChainedLoaderǁ__init____mutmut_orig.__name__ = 'xǁChainedLoaderǁ__init__'
+    xǁChainedLoaderǁ__init____mutmut_orig.__name__ = "xǁChainedLoaderǁ__init__"
 
     def xǁChainedLoaderǁexists__mutmut_orig(self) -> bool:
         """Check if any configuration source exists."""
@@ -3183,17 +3286,23 @@ class ChainedLoader(ConfigLoader):
     def xǁChainedLoaderǁexists__mutmut_1(self) -> bool:
         """Check if any configuration source exists."""
         return any(None)
-    
-    xǁChainedLoaderǁexists__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁChainedLoaderǁexists__mutmut_1': xǁChainedLoaderǁexists__mutmut_1
+
+    xǁChainedLoaderǁexists__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁChainedLoaderǁexists__mutmut_1": xǁChainedLoaderǁexists__mutmut_1
     }
-    
+
     def exists(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁChainedLoaderǁexists__mutmut_orig"), object.__getattribute__(self, "xǁChainedLoaderǁexists__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁChainedLoaderǁexists__mutmut_orig"),
+            object.__getattribute__(self, "xǁChainedLoaderǁexists__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     exists.__signature__ = _mutmut_signature(xǁChainedLoaderǁexists__mutmut_orig)
-    xǁChainedLoaderǁexists__mutmut_orig.__name__ = 'xǁChainedLoaderǁexists'
+    xǁChainedLoaderǁexists__mutmut_orig.__name__ = "xǁChainedLoaderǁexists"
 
     def xǁChainedLoaderǁload__mutmut_orig(self, config_class: type[T]) -> T:
         """Load configuration from first available source."""
@@ -3242,21 +3351,27 @@ class ChainedLoader(ConfigLoader):
                 return loader.load(config_class)
 
         raise ValueError("NO CONFIGURATION SOURCE AVAILABLE")
-    
-    xǁChainedLoaderǁload__mutmut_mutants : ClassVar[MutantDict] = {
-    'xǁChainedLoaderǁload__mutmut_1': xǁChainedLoaderǁload__mutmut_1, 
-        'xǁChainedLoaderǁload__mutmut_2': xǁChainedLoaderǁload__mutmut_2, 
-        'xǁChainedLoaderǁload__mutmut_3': xǁChainedLoaderǁload__mutmut_3, 
-        'xǁChainedLoaderǁload__mutmut_4': xǁChainedLoaderǁload__mutmut_4, 
-        'xǁChainedLoaderǁload__mutmut_5': xǁChainedLoaderǁload__mutmut_5
+
+    xǁChainedLoaderǁload__mutmut_mutants: ClassVar[MutantDict] = {
+        "xǁChainedLoaderǁload__mutmut_1": xǁChainedLoaderǁload__mutmut_1,
+        "xǁChainedLoaderǁload__mutmut_2": xǁChainedLoaderǁload__mutmut_2,
+        "xǁChainedLoaderǁload__mutmut_3": xǁChainedLoaderǁload__mutmut_3,
+        "xǁChainedLoaderǁload__mutmut_4": xǁChainedLoaderǁload__mutmut_4,
+        "xǁChainedLoaderǁload__mutmut_5": xǁChainedLoaderǁload__mutmut_5,
     }
-    
+
     def load(self, *args, **kwargs):
-        result = _mutmut_trampoline(object.__getattribute__(self, "xǁChainedLoaderǁload__mutmut_orig"), object.__getattribute__(self, "xǁChainedLoaderǁload__mutmut_mutants"), args, kwargs, self)
-        return result 
-    
+        result = _mutmut_trampoline(
+            object.__getattribute__(self, "xǁChainedLoaderǁload__mutmut_orig"),
+            object.__getattribute__(self, "xǁChainedLoaderǁload__mutmut_mutants"),
+            args,
+            kwargs,
+            self,
+        )
+        return result
+
     load.__signature__ = _mutmut_signature(xǁChainedLoaderǁload__mutmut_orig)
-    xǁChainedLoaderǁload__mutmut_orig.__name__ = 'xǁChainedLoaderǁload'
+    xǁChainedLoaderǁload__mutmut_orig.__name__ = "xǁChainedLoaderǁload"
 
 
 # <3 🧱🤝⚙️🪄
