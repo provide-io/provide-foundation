@@ -1,3 +1,7 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 """Comprehensive tests for tracer/otel.py module."""
 
 from provide.testkit import FoundationTestCase
@@ -315,3 +319,6 @@ class TestGetOtelTracer(FoundationTestCase):
                 result = get_otel_tracer("test-tracer")
 
                 assert result is None
+
+# 🧱🏗️🔚
+
