@@ -156,6 +156,8 @@ class TestSpanContext(FoundationTestCase):
 
     def test_span_context_no_previous_span(self) -> None:
         """Test SpanContext when no previous span exists."""
+        span = Span(name="test_op") 
+
         with SpanContext(span):
             assert get_current_span() == span
 
