@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/05_exception_handling.py
 """Demonstrates exception logging with automatic traceback inclusion."""
 
@@ -15,7 +19,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 
 from typing import Never  # noqa: E402
 
-from provide.foundation import logger, get_hub  # noqa: E402
+from provide.foundation import get_hub, logger  # noqa: E402
 from provide.foundation.console.output import pout  # noqa: E402
 from provide.foundation.logger.config import (  # noqa: E402
     LoggingConfig,
@@ -76,3 +80,5 @@ def example_5_exception_handling() -> None:
 if __name__ == "__main__":
     example_5_exception_handling()
     pout("\n✅ Example 5 completed.")
+
+# 🧱🏗️🔚

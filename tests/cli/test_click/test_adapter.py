@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from provide.testkit.mocking import Mock, patch
-
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.cli.click.adapter import ClickAdapter
 from provide.foundation.hub.info import CommandInfo

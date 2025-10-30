@@ -1,5 +1,4 @@
-"""Comprehensive tests for tracer/otel.py module."""
-
+from typing import Any
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
@@ -34,7 +33,7 @@ class TestRequireOtel(FoundationTestCase):
 class TestSetupOpentelemetryTracing(FoundationTestCase):
     """Test setup_opentelemetry_tracing function."""
 
-    def create_mock_config(self, **kwargs) -> Mock:
+    def create_mock_config(self, **kwargs: Any) -> Mock:
         """Create a mock TelemetryConfig with defaults."""
         defaults = {
             "tracing_enabled": True,
@@ -187,36 +186,32 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
         mock_exporter = Mock()
         mock_processor = Mock()
 
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
-                with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
-                    with patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class:
-                        with patch(
-                            "provide.foundation.tracer.otel.OTLPHttpSpanExporter"
-                        ) as mock_exporter_class:
-                            with patch(
-                                "provide.foundation.tracer.otel.BatchSpanProcessor"
-                            ) as mock_processor_class:
-                                with patch("provide.foundation.tracer.otel.otel_trace"):
-                                    with patch("provide.foundation.tracer.otel.slog") as mock_log:
-                                        mock_resource_class.create.return_value = mock_resource
-                                        mock_sampler_class.return_value = mock_sampler
-                                        mock_provider_class.return_value = mock_tracer_provider
-                                        mock_exporter_class.return_value = mock_exporter
-                                        mock_processor_class.return_value = mock_processor
+        with (
+            patch("provide.foundation.tracer.otel._HAS_OTEL", True),
+            patch("provide.foundation.tracer.otel.Resource") as mock_resource_class,
+            patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class,
+            patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class,
+            patch("provide.foundation.tracer.otel.OTLPHttpSpanExporter") as mock_exporter_class,
+            patch("provide.foundation.tracer.otel.BatchSpanProcessor") as mock_processor_class,
+            patch("provide.foundation.tracer.otel.otel_trace"),
+            patch("provide.foundation.tracer.otel.slog") as mock_log,
+        ):
+            mock_resource_class.create.return_value = mock_resource
+            mock_sampler_class.return_value = mock_sampler
+            mock_provider_class.return_value = mock_tracer_provider
+            mock_exporter_class.return_value = mock_exporter
+            mock_processor_class.return_value = mock_processor
 
-                                        setup_opentelemetry_tracing(config)
+            setup_opentelemetry_tracing(config)
 
-                                        # Verify HTTP exporter creation
-                                        mock_exporter_class.assert_called_once_with(
-                                            endpoint="http://localhost:4318/v1/traces",
-                                            headers={"x-api-key": "test-key"},
-                                        )
+            # Verify HTTP exporter creation
+            mock_exporter_class.assert_called_once_with(
+                endpoint="http://localhost:4318/v1/traces",
+                headers={"x-api-key": "test-key"},
+            )
 
-                                        # Verify debug logging for OTLP
-                                        mock_log.debug.assert_called_once_with(
-                                            "✅ OTLP span exporter configured: http"
-                                        )
+            # Verify debug logging for OTLP
+            mock_log.debug.assert_called_once_with("✅ OTLP span exporter configured: http")
 
     def test_setup_otlp_endpoint_priority(self) -> None:
         """Test that otlp_traces_endpoint takes priority over otlp_endpoint."""
@@ -232,31 +227,29 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
         mock_exporter = Mock()
         mock_processor = Mock()
 
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
-                with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
-                    with patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class:
-                        with patch(
-                            "provide.foundation.tracer.otel.OTLPHttpSpanExporter"
-                        ) as mock_exporter_class:
-                            with patch(
-                                "provide.foundation.tracer.otel.BatchSpanProcessor"
-                            ) as mock_processor_class:
-                                with patch("provide.foundation.tracer.otel.otel_trace"):
-                                    with patch("provide.foundation.tracer.otel.slog"):
-                                        mock_resource_class.create.return_value = mock_resource
-                                        mock_sampler_class.return_value = mock_sampler
-                                        mock_provider_class.return_value = mock_tracer_provider
-                                        mock_exporter_class.return_value = mock_exporter
-                                        mock_processor_class.return_value = mock_processor
+        with (
+            patch("provide.foundation.tracer.otel._HAS_OTEL", True),
+            patch("provide.foundation.tracer.otel.Resource") as mock_resource_class,
+            patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class,
+            patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class,
+            patch("provide.foundation.tracer.otel.OTLPHttpSpanExporter") as mock_exporter_class,
+            patch("provide.foundation.tracer.otel.BatchSpanProcessor") as mock_processor_class,
+            patch("provide.foundation.tracer.otel.otel_trace"),
+            patch("provide.foundation.tracer.otel.slog"),
+        ):
+            mock_resource_class.create.return_value = mock_resource
+            mock_sampler_class.return_value = mock_sampler
+            mock_provider_class.return_value = mock_tracer_provider
+            mock_exporter_class.return_value = mock_exporter
+            mock_processor_class.return_value = mock_processor
 
-                                        setup_opentelemetry_tracing(config)
+            setup_opentelemetry_tracing(config)
 
-                                        # Verify that otlp_traces_endpoint was used
-                                        mock_exporter_class.assert_called_once_with(
-                                            endpoint="http://localhost:4318/v1/traces",
-                                            headers={"x-api-key": "test-key"},
-                                        )
+            # Verify that otlp_traces_endpoint was used
+            mock_exporter_class.assert_called_once_with(
+                endpoint="http://localhost:4318/v1/traces",
+                headers={"x-api-key": "test-key"},
+            )
 
     def test_setup_minimal_service_info(self) -> None:
         """Test setup with minimal service information."""
@@ -269,20 +262,22 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
         mock_sampler = Mock()
         mock_tracer_provider = Mock()
 
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
-                with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
-                    with patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class:
-                        with patch("provide.foundation.tracer.otel.otel_trace"):
-                            with patch("provide.foundation.tracer.otel.slog"):
-                                mock_resource_class.create.return_value = mock_resource
-                                mock_sampler_class.return_value = mock_sampler
-                                mock_provider_class.return_value = mock_tracer_provider
+        with (
+            patch("provide.foundation.tracer.otel._HAS_OTEL", True),
+            patch("provide.foundation.tracer.otel.Resource") as mock_resource_class,
+            patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class,
+            patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class,
+            patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
+            patch("provide.foundation.tracer.otel.slog") as mock_log,
+        ):
+            mock_resource_class.create.return_value = mock_resource
+            mock_sampler_class.return_value = mock_sampler
+            mock_provider_class.return_value = mock_tracer_provider
 
-                                setup_opentelemetry_tracing(config)
+            setup_opentelemetry_tracing(config)
 
-                                # Verify resource creation with empty attributes
-                                mock_resource_class.create.assert_called_once_with({})
+            # Verify resource creation with empty attributes
+            mock_resource_class.create.assert_called_once_with({})
 
 
 class TestGetOtelTracer(FoundationTestCase):
@@ -298,21 +293,27 @@ class TestGetOtelTracer(FoundationTestCase):
         """Test getting tracer successfully."""
         mock_tracer = Mock()
 
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
-                mock_trace.get_tracer.return_value = mock_tracer
+        with (
+            patch("provide.foundation.tracer.otel._HAS_OTEL", True),
+            patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
+        ):
+            mock_trace.get_tracer.return_value = mock_tracer
+            result = get_otel_tracer("test-tracer")
 
-                result = get_otel_tracer("test-tracer")
-
-                assert result == mock_tracer
-                mock_trace.get_tracer.assert_called_once_with("test-tracer")
+            assert result == mock_tracer
+            mock_trace.get_tracer.assert_called_once_with("test-tracer")
 
     def test_get_tracer_exception(self) -> None:
         """Test getting tracer when an exception occurs."""
-        with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
-                mock_trace.get_tracer.side_effect = Exception("Tracer error")
+        with (
+            patch("provide.foundation.tracer.otel._HAS_OTEL", True),
+            patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
+        ):
+            mock_trace.get_tracer.side_effect = Exception("Tracer error")
 
-                result = get_otel_tracer("test-tracer")
+            result = get_otel_tracer("test-tracer")
 
-                assert result is None
+            assert result is None
+
+
+# 🧱🏗️🔚

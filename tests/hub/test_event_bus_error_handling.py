@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from io import StringIO
 import threading
-from provide.testkit.mocking import patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 from provide.foundation.hub.events import Event, EventBus, RegistryEvent
 

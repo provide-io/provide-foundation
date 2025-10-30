@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from collections.abc import Generator
 import sys
-from provide.testkit.mocking import Mock, patch
 
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 # Skip all tests in this module if opentelemetry is not installed

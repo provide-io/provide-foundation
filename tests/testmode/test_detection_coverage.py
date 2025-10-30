@@ -6,9 +6,9 @@ These tests target uncovered lines and edge cases in test environment detection.
 from __future__ import annotations
 
 import sys
-from provide.testkit.mocking import Mock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.testmode.detection import (
     _clear_test_mode_cache,

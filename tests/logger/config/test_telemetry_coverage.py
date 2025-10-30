@@ -6,9 +6,9 @@ These tests target uncovered lines and edge cases in telemetry configuration.
 from __future__ import annotations
 
 import base64
-from provide.testkit.mocking import Mock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.logger.config.telemetry import (
     TelemetryConfig,
@@ -190,11 +190,14 @@ class TestTelemetryConfigFromEnv(FoundationTestCase):
 
     def test_from_env_calls_auto_configure_when_no_endpoint(self) -> None:
         """Test auto-configure is called when no OTLP endpoint set."""
-        with patch.dict("os.environ", {}, clear=True), patch.object(
-            TelemetryConfig,
-            "_auto_configure_openobserve_otlp",
-            return_value=TelemetryConfig(),
-        ) as mock_auto:
+        with (
+            patch.dict("os.environ", {}, clear=True),
+            patch.object(
+                TelemetryConfig,
+                "_auto_configure_openobserve_otlp",
+                return_value=TelemetryConfig(),
+            ) as mock_auto,
+        ):
             TelemetryConfig.from_env()
 
             # Should call auto-configure

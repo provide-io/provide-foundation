@@ -6,9 +6,8 @@ Run with: pytest tests/metrics/test_simple_unit.py -v
 
 from __future__ import annotations
 
-from provide.testkit.mocking import MagicMock
-
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 
 from provide.foundation.metrics.simple import SimpleCounter, SimpleGauge, SimpleHistogram
 

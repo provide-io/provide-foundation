@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 """Foundation Error Handling Patterns Example
 
 This example demonstrates Foundation's comprehensive error handling utilities,
@@ -34,9 +38,9 @@ if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 from provide.foundation import (  # noqa: E402
+    get_hub,
     logger,
     pout,
-    get_hub,
 )
 from provide.foundation.errors import (  # noqa: E402
     FoundationError,
@@ -274,3 +278,5 @@ def example_error_handling() -> None:
 
 if __name__ == "__main__":
     example_error_handling()
+
+# 🧱🏗️🔚

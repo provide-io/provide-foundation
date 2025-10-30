@@ -7,8 +7,8 @@ from __future__ import annotations
 
 from collections.abc import AsyncGenerator
 from pathlib import Path
-from provide.testkit.mocking import AsyncMock, Mock
 
+from provide.testkit.mocking import AsyncMock, Mock
 import pytest
 
 from provide.foundation.tools.downloader import DownloadError, ToolDownloader

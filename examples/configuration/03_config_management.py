@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/configuration/03_config_management.py
 """Configuration Management Example - Complete Configuration System
 
@@ -266,7 +270,6 @@ def example_multi_source() -> None:
     pout("Example 4: Multi-source Configuration")
     pout("=" * 60)
 
-    import asyncio
 
     with temp_dir() as tmppath:
         # Create default config file
@@ -307,7 +310,6 @@ def example_schema_validation() -> None:
     pout("Example 5: Schema Validation")
     pout("=" * 60)
 
-    import asyncio
 
     # Define schema
     schema = ConfigSchema(
@@ -416,3 +418,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# 🧱🏗️🔚

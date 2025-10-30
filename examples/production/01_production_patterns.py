@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/10_production_patterns.py
 """Demonstrates production-ready logging patterns with Foundation Telemetry."""
 
@@ -18,8 +22,8 @@ from provide.testkit import reset_foundation_setup_for_testing  # noqa: E402
 from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
-    logger,
     get_hub,
+    logger,
 )
 from provide.foundation.console.output import pout  # noqa: E402
 
@@ -111,3 +115,5 @@ if __name__ == "__main__":
     reset_foundation_setup_for_testing()
     example_10_production_patterns()
     pout("\n✅ Example 10 completed.")
+
+# 🧱🏗️🔚

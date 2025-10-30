@@ -6,9 +6,9 @@ This module tests protocol definitions and resource management abstractions.
 from __future__ import annotations
 
 from typing import Any
-from provide.testkit.mocking import AsyncMock, MagicMock
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, MagicMock
 import pytest
 
 from provide.foundation.hub.protocols import (

@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-from provide.testkit.mocking import MagicMock, patch
-
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 try:
     from provide.foundation.integrations.openobserve.commands import _HAS_CLICK

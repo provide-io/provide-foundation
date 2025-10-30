@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import itertools
 from typing import Any
-from provide.testkit.mocking import MagicMock, patch
 
 from click.testing import CliRunner
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.cli.commands.logs.generate import generate_logs_command

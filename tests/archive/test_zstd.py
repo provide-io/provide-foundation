@@ -7,9 +7,9 @@ Run with: pytest tests/archive/test_zstd.py -v
 from __future__ import annotations
 
 import io
-from provide.testkit.mocking import patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.archive.zstd import ZstdCompressor
