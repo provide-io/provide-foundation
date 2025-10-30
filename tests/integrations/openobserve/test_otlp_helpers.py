@@ -6,8 +6,8 @@ Tests all helper functions in integrations/openobserve/otlp_helpers.py.
 from __future__ import annotations
 
 from typing import Any
-from provide.testkit.mocking import Mock, patch
 
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 # Skip all tests in this module if opentelemetry is not installed

@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 """Celery Integration - Metrics Tracking and Signal Handlers
 
 This module contains the metrics tracking system and Celery signal handlers
@@ -234,3 +238,5 @@ if __name__ == "__main__":
 
     stats = metrics.get_stats()
     pout(f"Demo stats: {stats}")
+
+# 🧱🏗️🔚

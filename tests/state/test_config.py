@@ -8,10 +8,10 @@ from __future__ import annotations
 
 import threading
 import time
-from provide.testkit.mocking import MagicMock
 
 from attrs.exceptions import FrozenInstanceError
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.state.base import ImmutableState

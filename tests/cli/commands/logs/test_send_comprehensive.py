@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from io import StringIO
+
 from provide.testkit.mocking import patch
 
 

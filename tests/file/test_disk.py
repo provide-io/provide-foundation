@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from provide.testkit.mocking import patch
 
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.file.disk import (

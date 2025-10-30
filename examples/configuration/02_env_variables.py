@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 # examples/foundation_telemetry/08_env_variables_config.py
 """Demonstrates configuring Foundation Telemetry using environment variables."""
 
@@ -15,8 +19,8 @@ if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 from provide.foundation import (  # noqa: E402
-    logger,
     get_hub,
+    logger,
 )
 from provide.foundation.console.output import pout  # noqa: E402
 
@@ -90,3 +94,5 @@ def example_8_environment_configuration() -> None:
 if __name__ == "__main__":
     example_8_environment_configuration()
     pout("\n✅ Example 8 completed.")
+
+# 🧱🏗️🔚

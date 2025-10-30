@@ -25,7 +25,7 @@ sys.path.insert(0, str(project_root / "src"))
 
 from provide.testkit import AsyncMock, Mock, patch
 
-from provide.foundation import logger, get_hub
+from provide.foundation import get_hub, logger
 from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 from provide.foundation.transport import (
     UniversalClient,

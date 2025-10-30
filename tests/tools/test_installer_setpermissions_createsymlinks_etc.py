@@ -10,9 +10,9 @@ import io
 from pathlib import Path
 import platform
 import tarfile
-from provide.testkit.mocking import Mock, patch
 import zipfile
 
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.tools.base import ToolMetadata

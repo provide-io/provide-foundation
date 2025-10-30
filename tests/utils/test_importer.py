@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import sys
 import threading
-from provide.testkit.mocking import patch
 
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.utils.importer import MAX_LAZY_IMPORT_DEPTH, lazy_import

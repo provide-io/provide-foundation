@@ -3,9 +3,7 @@
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
-
 
 # Mapping of broken import lines to their correct imports
 IMPORT_FIXES = {

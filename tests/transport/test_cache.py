@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from provide.testkit.mocking import AsyncMock, MagicMock
-
 import pytest
 
 from provide.foundation.transport.cache import TransportCache, TransportHealth

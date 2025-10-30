@@ -1,6 +1,8 @@
 #
-# test_spans.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Tests for Foundation tracer spans module."""
 
 from typing import Never
@@ -200,3 +202,6 @@ class TestSpanEdgeCases(FoundationTestCase):
         assert result["tags"] == {"user": "test"}
         assert result["status"] == "pending"
         assert result["error"] == "Test error"
+
+
+# 🧱🏗️🔚

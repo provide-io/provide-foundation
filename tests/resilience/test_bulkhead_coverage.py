@@ -5,9 +5,8 @@ These tests target uncovered lines and edge cases in the bulkhead pattern.
 
 from __future__ import annotations
 
-from provide.testkit.mocking import patch
-
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.resilience.bulkhead import (

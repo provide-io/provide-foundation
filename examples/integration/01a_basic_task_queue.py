@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 """Basic Task Queue Example (No External Dependencies)
 
 Demonstrates Foundation logging for task queue patterns using Python's
@@ -29,7 +33,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from provide.foundation import logger, pout, get_hub  # noqa: E402
+from provide.foundation import get_hub, logger, pout  # noqa: E402
 from provide.foundation.errors import error_boundary  # noqa: E402
 from provide.foundation.logger.config import (  # noqa: E402
     LoggingConfig,
@@ -344,3 +348,5 @@ async def basic_task_queue_example() -> None:
 if __name__ == "__main__":
     asyncio.run(basic_task_queue_example())
     pout("\n✅ Basic Task Queue Example completed!")
+
+# 🧱🏗️🔚

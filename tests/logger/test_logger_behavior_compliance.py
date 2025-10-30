@@ -148,8 +148,6 @@ class TestDocumentedBehaviorCompliance(FoundationTestCase):
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
-        import time
-
         # Stress test with many threads starting simultaneously
         thread_count = 50
         barrier = threading.Barrier(thread_count)
@@ -206,8 +204,6 @@ class TestDocumentedBehaviorCompliance(FoundationTestCase):
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
-
-        import time
 
         # Test initialization overhead
         start_time = time.time()

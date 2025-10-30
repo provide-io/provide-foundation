@@ -6,9 +6,8 @@ Requires click to be installed.
 
 from __future__ import annotations
 
-from provide.testkit.mocking import MagicMock, patch
-
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 # Import _HAS_CLICK to check if click is available
 try:

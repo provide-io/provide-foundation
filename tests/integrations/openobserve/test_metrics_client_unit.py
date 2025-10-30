@@ -8,7 +8,6 @@
 from __future__ import annotations
 
 from provide.testkit.mocking import AsyncMock, patch
-
 import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient

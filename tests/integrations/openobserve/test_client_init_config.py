@@ -7,9 +7,9 @@ Run with: pytest tests/integrations/openobserve/test_client_init_config.py -v
 from __future__ import annotations
 
 from typing import Any
-from provide.testkit.mocking import MagicMock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient

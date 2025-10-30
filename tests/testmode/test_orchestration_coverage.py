@@ -7,9 +7,9 @@ from __future__ import annotations
 
 import os
 import sys
-from provide.testkit.mocking import MagicMock, Mock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, Mock, patch
 
 from provide.foundation.testmode.orchestration import (
     _reset_foundation_environment_variables,

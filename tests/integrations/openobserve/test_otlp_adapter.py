@@ -6,8 +6,8 @@ Tests all functions and classes in integrations/openobserve/otlp_adapter.py.
 from __future__ import annotations
 
 import base64
-from provide.testkit.mocking import Mock, patch
 
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.integrations.openobserve.config import OpenObserveConfig

@@ -7,7 +7,6 @@ and endpoint building.
 from __future__ import annotations
 
 from provide.testkit.mocking import Mock, patch
-
 import pytest
 
 from provide.foundation.logger.otlp.client import OTLPLogClient

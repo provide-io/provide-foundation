@@ -6,8 +6,8 @@ Tests parallel downloads and mirror fallback functionality.
 from __future__ import annotations
 
 from pathlib import Path
-from provide.testkit.mocking import Mock, patch
 
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.tools.downloader import DownloadError, ToolDownloader

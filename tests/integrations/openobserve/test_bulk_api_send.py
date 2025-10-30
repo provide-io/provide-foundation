@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from provide.testkit.mocking import AsyncMock, Mock, patch
-
 import pytest
 
 from provide.foundation.integrations.openobserve.bulk_api import send_log_bulk

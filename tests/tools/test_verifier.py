@@ -9,8 +9,8 @@ from __future__ import annotations
 import base64
 from pathlib import Path
 import sys
-from provide.testkit.mocking import Mock, patch
 
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.crypto import Ed25519Signer

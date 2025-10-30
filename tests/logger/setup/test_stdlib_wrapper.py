@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import logging
+
 from provide.testkit.mocking import MagicMock
 
 from provide.foundation.logger.setup.stdlib_wrapper import StructuredStdlibLogger
