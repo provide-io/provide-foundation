@@ -124,5 +124,4 @@ __all__ = [
     "map_severity_to_level",
 ]
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

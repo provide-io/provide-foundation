@@ -300,7 +300,4 @@ def register_foundation_locks() -> None:
 
 __all__ = ["LockInfo", "LockManager", "get_lock_manager", "register_foundation_locks"]
 
-
-# <3 🧱🤝🧵🪄
-
 # 🧱🏗️🔚

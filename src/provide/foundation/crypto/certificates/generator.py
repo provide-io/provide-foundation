@@ -211,7 +211,4 @@ def generate_certificate(
         )
         raise CertificateError(f"Failed to initialize certificate. Original error: {type(e).__name__}") from e
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

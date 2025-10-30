@@ -227,5 +227,4 @@ def validate_command_type(cmd: list[str] | str, shell: bool) -> None:
             actual="str without shell=True",
         )
 
-
-# <3 🧱🤝🏃🪄
+# 🧱🏗️🔚

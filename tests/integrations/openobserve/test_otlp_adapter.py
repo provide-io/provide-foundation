@@ -476,4 +476,4 @@ class TestOpenObserveOTLPClient:
         assert client.headers["X-Custom-2"] == "value2"
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

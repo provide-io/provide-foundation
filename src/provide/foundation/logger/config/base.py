@@ -45,5 +45,4 @@ def get_config_logger() -> Any:
 
     return structlog.get_logger().bind(logger_name="provide.foundation.logger.config")
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

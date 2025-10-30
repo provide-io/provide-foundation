@@ -78,5 +78,4 @@ if __name__ == "__main__":
     simple_logging_example()
     pout("\n🎉 That's it! No setup required - logging just works.")
     pout("💡 For advanced features like tracing, see other examples.")
-
 # 🧱🏗️🔚

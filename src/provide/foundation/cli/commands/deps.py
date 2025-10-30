@@ -64,5 +64,4 @@ def deps_command(quiet: bool, check: str | None) -> None:
 # Export the command
 __all__ = ["deps_command"]
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

@@ -227,5 +227,4 @@ def query_command(
 
     return None
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

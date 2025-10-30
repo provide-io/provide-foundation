@@ -195,5 +195,4 @@ if __name__ == "__main__":
     pout(f"📊 Broker: {app.conf.broker_url}")
     pout(f"💾 Result backend: {app.conf.result_backend}")
     pout(f"📁 Working directory: {temp_dir}")
-
 # 🧱🏗️🔚

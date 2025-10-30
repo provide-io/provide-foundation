@@ -90,5 +90,4 @@ class FoundationError(Exception):
 
         return result
 
-
-# <3 🧱🤝🐛🪄
+# 🧱🏗️🔚

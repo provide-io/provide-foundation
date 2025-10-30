@@ -116,5 +116,4 @@ __all__ = [
     "create_otlp_resource",
 ]
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

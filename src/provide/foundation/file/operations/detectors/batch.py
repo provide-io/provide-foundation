@@ -217,5 +217,4 @@ class BatchOperationDetector:
 
         return type_mapping.get(most_common_type, OperationType.BATCH_UPDATE)
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

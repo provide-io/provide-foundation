@@ -82,5 +82,4 @@ async def async_shell(
         **kwargs,
     )
 
-
-# <3 🧱🤝🏃🪄
+# 🧱🏗️🔚

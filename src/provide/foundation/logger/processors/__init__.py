@@ -19,5 +19,4 @@ __all__ = [
     "inject_trace_context",
 ]
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

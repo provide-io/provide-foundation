@@ -90,6 +90,6 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
         sys.stderr.flush()
 
 
-# <3 🧱🤝🌊🪄
+# 🧱🏗️🔚
 
 # 🧱🏗️🔚

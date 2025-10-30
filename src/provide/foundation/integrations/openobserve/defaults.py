@@ -20,7 +20,4 @@ __all__ = [
     "DEFAULT_OPENOBSERVE_TIMEOUT",
 ]
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

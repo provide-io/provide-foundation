@@ -290,4 +290,4 @@ class TestConfigCommandRegistration(FoundationTestCase):
             pytest.skip("Click not available")
 
 
-# <3 🧱🤝⚙️🪄
+# 🧱🏗️🔚

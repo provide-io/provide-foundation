@@ -394,7 +394,4 @@ def format_metric_output(
     # Default to table
     return format_query_result_table(result)
 
-
-# <3 🧱🤝📊🪄
-
 # 🧱🏗️🔚

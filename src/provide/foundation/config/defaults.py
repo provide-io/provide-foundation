@@ -108,7 +108,4 @@ def path_converter(x: str | None) -> Path | None:
     """Convert string to Path or None."""
     return Path(x) if x else None
 
-
-# <3 🧱🤝⚙️🪄
-
 # 🧱🏗️🔚

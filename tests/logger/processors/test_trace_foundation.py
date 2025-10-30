@@ -218,4 +218,4 @@ class TestTraceProcessorFoundationLogging(FoundationTestCase):
             assert result["event"] == "test"
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

@@ -195,4 +195,4 @@ class TestDownloadWithProgress:
         assert not dest.exists()
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

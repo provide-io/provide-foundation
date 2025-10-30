@@ -86,5 +86,4 @@ async def example_9_async_usage() -> None:
 if __name__ == "__main__":
     asyncio.run(example_9_async_usage())
     pout("\n✅ Example 9 completed.")
-
 # 🧱🏗️🔚

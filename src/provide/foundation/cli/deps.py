@@ -30,5 +30,4 @@ click = _click_dep.import_package()
 
 __all__ = ["_HAS_CLICK", "click"]
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

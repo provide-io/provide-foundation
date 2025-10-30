@@ -190,4 +190,4 @@ class TestDownloadWithMirrors:
             assert dest.read_text() == "complete content"
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

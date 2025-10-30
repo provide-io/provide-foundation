@@ -182,7 +182,4 @@ __all__ = [
     "generate_tls_keypair",
 ]
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

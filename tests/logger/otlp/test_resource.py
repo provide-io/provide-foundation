@@ -391,4 +391,4 @@ class TestIntegration:
         assert minimal_attrs["service.name"] == "minimal-service"
 
 
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

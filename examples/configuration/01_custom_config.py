@@ -59,5 +59,4 @@ def example_2_configuration() -> None:
 if __name__ == "__main__":
     example_2_configuration()
     pout("\n✅ Example 2 completed.")
-
 # 🧱🏗️🔚

@@ -221,5 +221,4 @@ __all__ = [
     "set_file_permissions",
 ]
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

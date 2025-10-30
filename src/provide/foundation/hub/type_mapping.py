@@ -36,5 +36,4 @@ def extract_click_type(annotation: Any) -> type:
 
 __all__ = ["extract_click_type"]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

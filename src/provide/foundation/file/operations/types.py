@@ -167,5 +167,4 @@ class DetectorConfig:
         ]
     )
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

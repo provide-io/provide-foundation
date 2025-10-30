@@ -56,7 +56,4 @@ class Bzip2Compressor(BaseCompressor):
         """Library-specific bytes decompression implementation."""
         return bz2.decompress(data)
 
-
-# <3 🧱🤝📦🪄
-
 # 🧱🏗️🔚

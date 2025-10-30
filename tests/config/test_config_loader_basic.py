@@ -178,4 +178,4 @@ class TestDictConfigLoader(FoundationTestCase):
         assert config.enabled is True
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

@@ -402,5 +402,4 @@ if __name__ == "__main__":
     # Create and run the CLI
     cli = create_dogfooding_cli()
     cli()
-
 # 🧱🏗️🔚

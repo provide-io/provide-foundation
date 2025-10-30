@@ -257,4 +257,4 @@ class TestBuildBulkRequest:
         assert index_line["index"]["_index"] == "custom-logs"
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

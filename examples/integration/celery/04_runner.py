@@ -305,5 +305,4 @@ transport (no Redis required). Real-world patterns include:
 
 if __name__ == "__main__":
     main()
-
 # 🧱🏗️🔚

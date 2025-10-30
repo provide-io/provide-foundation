@@ -48,5 +48,4 @@ def group_related_events(events: list[FileEvent], time_window_ms: int = 500) -> 
     detector = OperationDetector(config)
     return detector._group_events_by_time(sorted(events, key=lambda e: e.timestamp))
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

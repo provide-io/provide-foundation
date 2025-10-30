@@ -97,7 +97,4 @@ class DependencyMismatchError(FoundationError):
     def _default_code(self) -> str:
         return "DEPENDENCY_VERSION_MISMATCH"
 
-
-# <3 🧱🤝🐛🪄
-
 # 🧱🏗️🔚

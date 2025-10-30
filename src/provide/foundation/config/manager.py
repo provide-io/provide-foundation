@@ -379,7 +379,4 @@ def load_config(name: str, config_class: type[T], loader: ConfigLoader | None = 
     """
     return _manager.load(name, config_class, loader)
 
-
-# <3 🧱🤝⚙️🪄
-
 # 🧱🏗️🔚

@@ -136,4 +136,4 @@ class AsyncResourcePool:
 __all__ = ["AsyncResourcePool"]
 
 
-# <3 🧱🤝💪🪄
+# 🧱🏗️🔚

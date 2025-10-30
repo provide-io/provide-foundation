@@ -373,7 +373,4 @@ class ArchiveOperations:
 
         raise ArchiveError(f"Cannot detect format of {file}")
 
-
-# <3 🧱🤝📦🪄
-
 # 🧱🏗️🔚

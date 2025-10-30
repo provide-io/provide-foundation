@@ -279,5 +279,4 @@ def generate_api_docs(
     )
     return generator.generate()
 
-
-# <3 🧱🤝📚🪄
+# 🧱🏗️🔚

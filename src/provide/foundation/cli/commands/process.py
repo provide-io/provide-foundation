@@ -109,5 +109,4 @@ def info_command() -> None:
 # Export the command group
 __all__ = ["process_group"]
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

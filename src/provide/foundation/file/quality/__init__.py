@@ -29,5 +29,4 @@ __all__ = [
     "create_scenarios_from_patterns",
 ]
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

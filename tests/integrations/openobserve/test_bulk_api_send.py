@@ -280,4 +280,4 @@ class TestSendLogBulk:
         assert data_line["user"] == "admin"
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

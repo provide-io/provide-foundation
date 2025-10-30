@@ -79,5 +79,4 @@ __all__ = [
     "get_handlers_for_exception",
 ]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

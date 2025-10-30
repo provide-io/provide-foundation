@@ -274,7 +274,4 @@ async def get_current_trace_logs(
 
     return None
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

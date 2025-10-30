@@ -115,5 +115,4 @@ def create_scenarios_from_patterns() -> list[OperationScenario]:
 
     return scenarios
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

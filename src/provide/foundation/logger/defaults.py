@@ -92,5 +92,4 @@ __all__ = [
     "default_rate_limits",
 ]
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

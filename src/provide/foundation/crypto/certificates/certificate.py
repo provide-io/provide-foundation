@@ -454,7 +454,4 @@ class Certificate:
             f"key_type='{self.key_type}')"
         )
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

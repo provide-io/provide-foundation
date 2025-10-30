@@ -18,7 +18,4 @@ __all__: list[str] = [
     # "openobserve",
 ]
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

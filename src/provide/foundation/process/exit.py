@@ -51,5 +51,4 @@ def exit_interrupted(message: str = "Process interrupted") -> None:
     logger.warning(f"Exiting due to interrupt: {message}")
     sys.exit(EXIT_SIGINT)
 
-
-# <3 🧱🤝🏃🪄
+# 🧱🏗️🔚

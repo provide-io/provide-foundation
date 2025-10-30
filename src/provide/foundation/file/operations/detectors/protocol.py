@@ -36,5 +36,4 @@ class DetectorFunc(Protocol):
 
 __all__ = ["DetectorFunc"]
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

@@ -376,5 +376,4 @@ async def async_run(
             command=cmd_str,
         ) from e
 
-
-# <3 🧱🤝🏃🪄
+# 🧱🏗️🔚

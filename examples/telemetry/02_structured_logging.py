@@ -81,5 +81,4 @@ def example_1_quick_start() -> None:
 if __name__ == "__main__":
     example_1_quick_start()
     pout("\n✅ Example 1 completed.")
-
 # 🧱🏗️🔚

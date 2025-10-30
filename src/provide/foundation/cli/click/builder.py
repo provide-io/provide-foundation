@@ -114,5 +114,4 @@ def create_command_group(  # noqa: C901
             cause=e,
         ) from e
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

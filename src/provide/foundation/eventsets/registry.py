@@ -192,5 +192,4 @@ def clear_registry() -> None:
     _discovery_completed = False
     logger.trace("Event set registry cleared")
 
-
-# <3 🧱🤝📊🪄
+# 🧱🏗️🔚

@@ -255,7 +255,4 @@ class BaseCompressor(ABC):
         except (OSError, ValueError) as e:
             raise ArchiveError(f"Failed to decompress bytes: {e}") from e
 
-
-# <3 🧱🤝📦🪄
-
 # 🧱🏗️🔚

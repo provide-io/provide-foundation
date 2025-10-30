@@ -155,7 +155,4 @@ __all__ = [
     "get_operation_from_string",
 ]
 
-
-# <3 🧱🤝📦🪄
-
 # 🧱🏗️🔚

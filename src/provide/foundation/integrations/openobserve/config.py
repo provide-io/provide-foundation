@@ -100,7 +100,4 @@ class OpenObserveConfig(RuntimeConfig):
         except Exception:
             return False
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

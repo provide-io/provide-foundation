@@ -348,5 +348,4 @@ async def basic_task_queue_example() -> None:
 if __name__ == "__main__":
     asyncio.run(basic_task_queue_example())
     pout("\n✅ Basic Task Queue Example completed!")
-
 # 🧱🏗️🔚

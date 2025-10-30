@@ -111,5 +111,4 @@ EVENT_SET = EventSet(
     priority=70,
 )
 
-
-# <3 🧱🤝📊🪄
+# 🧱🏗️🔚

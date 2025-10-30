@@ -183,4 +183,4 @@ class TestCPUInfo(FoundationTestCase):
             assert isinstance(result, int)
 
 
-# <3 🧱🤝🧪🪄
+# 🧱🏗️🔚

@@ -297,5 +297,4 @@ class ManagedProcess:
         self.terminate_gracefully()
         self.cleanup()
 
-
-# <3 🧱🤝🏃🪄
+# 🧱🏗️🔚

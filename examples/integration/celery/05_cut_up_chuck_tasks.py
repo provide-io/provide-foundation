@@ -396,5 +396,4 @@ if __name__ == "__main__":
     pout("• continuous_generator - Orchestrate continuous log generation")
     pout(f"• {len(CUT_UP_PHRASES)} cut-up phrases available")
     pout(f"• {len(LOGGER_CONTEXTS)} logger contexts available")
-
 # 🧱🏗️🔚

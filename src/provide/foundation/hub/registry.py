@@ -390,5 +390,4 @@ def get_command_registry() -> Registry:
 
 __all__ = ["Registry", "RegistryEntry", "get_command_registry"]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

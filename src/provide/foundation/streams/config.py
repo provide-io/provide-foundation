@@ -93,6 +93,6 @@ def reset_stream_config() -> None:
     _stream_config = None
 
 
-# <3 🧱🤝🌊🪄
+# 🧱🏗️🔚
 
 # 🧱🏗️🔚

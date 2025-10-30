@@ -246,7 +246,4 @@ def is_strong_checksum(checksum_str: str) -> bool:
         )
         return False
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

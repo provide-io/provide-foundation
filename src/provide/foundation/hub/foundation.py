@@ -225,5 +225,4 @@ def get_foundation_logger(name: str | None = None) -> Any:
         return logger.get_logger(name)
     return logger
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

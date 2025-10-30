@@ -72,4 +72,4 @@ def provide_now(tz: str | ZoneInfo | None = None) -> datetime:
     return datetime.now(zone)
 
 
-# <3 🧱🤝🕰️🪄
+# 🧱🏗️🔚

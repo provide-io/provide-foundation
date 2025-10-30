@@ -81,7 +81,4 @@ def validate_credentials(username: str | None, password: str | None) -> tuple[st
 
     return username, password
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

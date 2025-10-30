@@ -224,7 +224,4 @@ def perr(message: Any, **kwargs: Any) -> None:
         else:
             print(output, file=sys.stderr, end="")
 
-
-# <3 🧱🤝🖥️🪄
-
 # 🧱🏗️🔚

@@ -180,7 +180,4 @@ def is_valid_hash(hash_value: str, algorithm: str | None = None) -> bool:
 
     return True
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

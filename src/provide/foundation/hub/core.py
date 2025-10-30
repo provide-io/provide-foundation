@@ -498,5 +498,4 @@ class CoreHub:
         """Context manager exit."""
         self.cleanup()
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

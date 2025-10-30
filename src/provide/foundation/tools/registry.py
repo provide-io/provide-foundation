@@ -211,4 +211,4 @@ def get_tool_manager(name: str, config: BaseConfig) -> BaseToolManager | None:
     return registry.create_tool_manager(name, config)
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

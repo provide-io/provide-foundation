@@ -175,5 +175,4 @@ __all__ = [
     "set_process_title_from_argv",
 ]
 
-
-# <3 🧱🤝🏃🪄
+# 🧱🏗️🔚

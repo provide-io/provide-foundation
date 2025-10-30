@@ -125,5 +125,4 @@ def _set_meter(meter: object) -> None:
     global _meter
     _meter = meter
 
-
-# <3 🧱🤝📈🪄
+# 🧱🏗️🔚

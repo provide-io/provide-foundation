@@ -40,5 +40,4 @@ __all__ = [
     "DEFAULT_SHELL_ALLOW_FEATURES",
 ]
 
-
-# <3 🧱🤝🏃🪄
+# 🧱🏗️🔚

@@ -108,6 +108,6 @@ def __getattr__(name: str) -> Any:
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
-# <3 🧱🤝🧰🪄
+# 🧱🏗️🔚
 
 # 🧱🏗️🔚

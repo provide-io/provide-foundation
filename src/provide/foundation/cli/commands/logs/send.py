@@ -164,5 +164,4 @@ def send_command(
 
     return None
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

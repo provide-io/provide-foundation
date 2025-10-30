@@ -168,7 +168,4 @@ class CertificateBase:
             ],
         )
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

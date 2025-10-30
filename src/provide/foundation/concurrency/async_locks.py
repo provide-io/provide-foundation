@@ -381,7 +381,4 @@ async def register_foundation_async_locks() -> None:
 
 __all__ = ["AsyncLockInfo", "AsyncLockManager", "get_async_lock_manager", "register_foundation_async_locks"]
 
-
-# <3 🧱🤝🧵🪄
-
 # 🧱🏗️🔚

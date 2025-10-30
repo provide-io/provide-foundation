@@ -88,4 +88,4 @@ class TestConcurrencyError(FoundationTestCase):
         assert "v" in error.context["concurrency.version_actual"]
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

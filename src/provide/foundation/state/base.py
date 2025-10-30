@@ -224,6 +224,6 @@ class StateManager:
             self._observers.remove(observer)
 
 
-# <3 🧱🤝💾🪄
+# 🧱🏗️🔚
 
 # 🧱🏗️🔚

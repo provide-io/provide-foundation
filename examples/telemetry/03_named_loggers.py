@@ -89,5 +89,4 @@ def example_3_named_loggers() -> None:
 if __name__ == "__main__":
     example_3_named_loggers()
     pout("\n✅ Example 3 completed.")
-
 # 🧱🏗️🔚

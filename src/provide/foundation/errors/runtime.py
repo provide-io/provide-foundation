@@ -154,5 +154,4 @@ class RateLimitExceededError(FoundationError):
     def _default_code(self) -> str:
         return "INTEGRATION_RATE_LIMIT"
 
-
-# <3 🧱🤝🐛🪄
+# 🧱🏗️🔚

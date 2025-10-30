@@ -131,5 +131,4 @@ def setup_event_logging() -> None:
 
 __all__ = ["handle_circuit_breaker_event", "handle_registry_event", "setup_event_logging"]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

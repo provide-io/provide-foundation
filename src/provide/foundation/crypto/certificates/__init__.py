@@ -45,7 +45,4 @@ __all__ = [
     "validate_signature",
 ]
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

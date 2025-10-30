@@ -293,5 +293,4 @@ async def example_async_examples() -> None:
 
 if __name__ == "__main__":
     main()
-
 # 🧱🏗️🔚

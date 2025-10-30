@@ -98,5 +98,4 @@ __all__ = [
     "register_command",
 ]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

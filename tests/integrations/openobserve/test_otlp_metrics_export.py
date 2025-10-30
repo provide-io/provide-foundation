@@ -196,4 +196,4 @@ class TestOTLPMetricsExport:
             pytest.skip(f"Metrics query failed (may need more time for ingestion): {e}")
 
 
-# <3 🧱🤝📊🪄
+# 🧱🏗️🔚
