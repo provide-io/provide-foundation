@@ -230,4 +230,4 @@ def verify_signature_command(
         perr(f"✗ Signature INVALID: {e}", color="red")
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

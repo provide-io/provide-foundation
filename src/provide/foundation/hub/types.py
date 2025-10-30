@@ -17,5 +17,4 @@ class Registrable(Protocol):
     __registry_dimension__: str
     __registry_metadata__: dict[str, Any]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

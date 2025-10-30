@@ -79,5 +79,4 @@ def example_7_module_level_filtering() -> None:
 if __name__ == "__main__":
     example_7_module_level_filtering()
     pout("\n✅ Example 7 completed.")
-
 # 🧱🏗️🔚

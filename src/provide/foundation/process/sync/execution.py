@@ -177,5 +177,4 @@ def run_simple(
     result = run(cmd, cwd=cwd, capture_output=True, check=True, **kwargs)
     return result.stdout.strip()
 
-
-# <3 🧱🤝🏃🪄
+# 🧱🏗️🔚

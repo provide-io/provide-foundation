@@ -301,4 +301,4 @@ class TestConsolidatedSchema(FoundationTestCase):
         assert consolidated.metadata == metadata
 
 
-# <3 🧱🤝⚙️🪄
+# 🧱🏗️🔚

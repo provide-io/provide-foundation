@@ -259,5 +259,4 @@ def _register_command_func(
 
     return func
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

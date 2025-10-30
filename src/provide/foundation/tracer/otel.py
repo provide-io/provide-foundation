@@ -179,4 +179,4 @@ def shutdown_opentelemetry() -> None:
         slog.warning(f"⚠️ Error shutting down OpenTelemetry: {e}")
 
 
-# <3 🧱🤝👣🪄
+# 🧱🏗️🔚

@@ -80,5 +80,4 @@ def example_5_exception_handling() -> None:
 if __name__ == "__main__":
     example_5_exception_handling()
     pout("\n✅ Example 5 completed.")
-
 # 🧱🏗️🔚

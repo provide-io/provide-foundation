@@ -260,6 +260,6 @@ def get_available_features() -> dict[str, bool]:
     return {dep.name: dep.available for dep in deps}
 
 
-# <3 🧱🤝🧰🪄
+# 🧱🏗️🔚
 
 # 🧱🏗️🔚

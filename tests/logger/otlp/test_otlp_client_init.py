@@ -151,4 +151,4 @@ class TestEndpointBuilding:
         assert client.endpoint == "https://api.example.com/v1/logs"
 
 
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

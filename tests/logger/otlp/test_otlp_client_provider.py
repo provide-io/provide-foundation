@@ -220,4 +220,4 @@ class TestGetStats:
         assert stats["otlp_available"] is False
 
 
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

@@ -82,4 +82,4 @@ class TestStructuredStdlibLogger:
         assert calls[4][0][0] == logging.CRITICAL
 
 
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

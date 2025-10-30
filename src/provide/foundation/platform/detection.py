@@ -222,5 +222,4 @@ def normalize_platform_components(os_name: str, arch_name: str) -> tuple[str, st
 
     return normalized_os, normalized_arch
 
-
-# <3 🧱🤝🏗️🪄
+# 🧱🏗️🔚

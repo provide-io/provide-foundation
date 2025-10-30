@@ -237,7 +237,4 @@ def create_ca(
         key_type=key_type,
     )
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

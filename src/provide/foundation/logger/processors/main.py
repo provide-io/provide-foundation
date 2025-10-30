@@ -254,5 +254,4 @@ def _build_formatter_processors_list(
             )
             return _config_create_keyvalue_formatter_processors(output_stream)
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

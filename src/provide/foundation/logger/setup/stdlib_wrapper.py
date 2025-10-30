@@ -65,5 +65,4 @@ class StructuredStdlibLogger:
 
 __all__ = ["StructuredStdlibLogger"]
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

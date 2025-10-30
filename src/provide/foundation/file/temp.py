@@ -167,5 +167,4 @@ def temp_dir(
                 with contextlib.suppress(ValueError, OSError):
                     log.debug("Cleaned up temp directory", path=str(temp_path))
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

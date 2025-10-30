@@ -61,7 +61,4 @@ class XzCompressor(BaseCompressor):
         """Library-specific bytes decompression implementation."""
         return lzma.decompress(data)
 
-
-# <3 🧱🤝📦🪄
-
 # 🧱🏗️🔚

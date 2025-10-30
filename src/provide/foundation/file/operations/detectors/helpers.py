@@ -172,5 +172,4 @@ def find_real_file_from_events(events: list) -> Path | None:
 
     return None
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

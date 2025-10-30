@@ -44,7 +44,4 @@ __all__ = [
     "DEFAULT_PROFILING_TRACK_MEMORY",
 ]
 
-
-# <3 🧱🤝⏱️🪄
-
 # 🧱🏗️🔚

@@ -104,5 +104,4 @@ def generate_logs_command(
         total_time = time.time() - start_time
         print_final_stats(logs_sent, logs_failed, logs_rate_limited, total_time, rate, enable_rate_limit)
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

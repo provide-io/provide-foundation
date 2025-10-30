@@ -183,5 +183,4 @@ __all__ = [
     "register_detector",
 ]
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

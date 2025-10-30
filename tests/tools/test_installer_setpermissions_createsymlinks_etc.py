@@ -257,4 +257,4 @@ class TestInstall:
         mock_symlinks.assert_called_once()
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

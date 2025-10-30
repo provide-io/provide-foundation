@@ -183,6 +183,6 @@ def ensure_stderr_default() -> None:
         _get_stream_lock().release()
 
 
-# <3 🧱🤝🌊🪄
+# 🧱🏗️🔚
 
 # 🧱🏗️🔚

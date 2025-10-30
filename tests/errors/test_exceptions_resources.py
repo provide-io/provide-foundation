@@ -71,4 +71,4 @@ class TestAlreadyExistsError(FoundationTestCase):
         assert error.context["exists.id"] == "user@example.com"
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

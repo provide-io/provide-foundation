@@ -182,7 +182,4 @@ class SearchOperationsMixin:
         await self.list_streams()
         return True
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

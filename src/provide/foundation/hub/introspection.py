@@ -192,5 +192,4 @@ def introspect_parameters(func: Callable[..., Any]) -> list[ParameterInfo]:
 
     return result
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

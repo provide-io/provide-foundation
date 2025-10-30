@@ -114,7 +114,4 @@ class ConfigValidationError(ValidationError):
     def _default_code(self) -> str:
         return "CONFIG_VALIDATION_ERROR"
 
-
-# <3 🧱🤝🐛🪄
-
 # 🧱🏗️🔚

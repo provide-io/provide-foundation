@@ -269,4 +269,4 @@ class TestDeterministicArchives(FoundationTestCase):
         ).read_text()
 
 
-# <3 🧱🤝📦🪄
+# 🧱🏗️🔚

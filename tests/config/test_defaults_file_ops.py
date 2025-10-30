@@ -72,4 +72,4 @@ class TestAtomicWriteDefaults(FoundationTestCase):
         "test".encode(DEFAULT_ATOMIC_ENCODING)
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

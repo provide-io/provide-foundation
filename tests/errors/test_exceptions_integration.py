@@ -89,4 +89,4 @@ class TestTimeoutError(FoundationTestCase):
         assert error.context["timeout.elapsed"] == 45.5
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

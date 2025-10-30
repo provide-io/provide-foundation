@@ -206,5 +206,4 @@ __all__ = [
     "reset_otlp_circuit_breaker",
 ]
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

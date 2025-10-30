@@ -124,7 +124,4 @@ def discover_and_register_configs() -> None:
             replace=True,  # Allow re-registration
         )
 
-
-# <3 🧱🤝⚙️🪄
-
 # 🧱🏗️🔚

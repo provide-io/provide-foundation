@@ -235,7 +235,4 @@ __all__ = [
     "get_openobserve_otlp_metrics_endpoint",
 ]
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

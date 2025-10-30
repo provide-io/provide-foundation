@@ -56,7 +56,4 @@ __all__ = [
     "DEFAULT_ZSTD_COMPRESSION_LEVEL",
 ]
 
-
-# <3 🧱🤝📦🪄
-
 # 🧱🏗️🔚

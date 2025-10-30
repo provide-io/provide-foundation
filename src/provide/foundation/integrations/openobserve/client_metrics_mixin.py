@@ -220,7 +220,4 @@ class MetricsOperationsMixin:
 
         return []
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

@@ -70,5 +70,4 @@ def example_6_trace_logging() -> None:
 if __name__ == "__main__":
     example_6_trace_logging()
     pout("\n✅ Example 6 completed.")
-
 # 🧱🏗️🔚

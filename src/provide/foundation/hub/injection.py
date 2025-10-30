@@ -336,5 +336,4 @@ __all__ = [
     "resolve_dependencies",
 ]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

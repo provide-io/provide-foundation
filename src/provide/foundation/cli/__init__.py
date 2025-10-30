@@ -111,5 +111,4 @@ def get_cli_adapter(framework: str = "click") -> CLIAdapter:
 
     raise ValueError(f"Unknown CLI framework: {framework}. Supported frameworks: click")
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

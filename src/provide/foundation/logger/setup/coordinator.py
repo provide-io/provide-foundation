@@ -476,5 +476,4 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
             log_file_enabled=current_config.logging.log_file is not None,
         )
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

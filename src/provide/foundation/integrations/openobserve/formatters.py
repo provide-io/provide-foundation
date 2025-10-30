@@ -344,7 +344,4 @@ def format_output(
             # Default to log format
             return _format_as_log(response)
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

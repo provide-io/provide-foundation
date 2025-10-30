@@ -139,5 +139,4 @@ def add_command_to_group(
         # Parent not found or no parent, add to root
         root_group.add_command(click_cmd)
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

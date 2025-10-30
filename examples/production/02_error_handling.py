@@ -278,5 +278,4 @@ def example_error_handling() -> None:
 
 if __name__ == "__main__":
     example_error_handling()
-
 # 🧱🏗️🔚

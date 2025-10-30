@@ -189,5 +189,4 @@ class LoggingConfig(RuntimeConfig):
         description="Enable sanitization of dictionary values (headers, config, etc.)",
     )
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

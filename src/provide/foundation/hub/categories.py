@@ -47,5 +47,4 @@ class ComponentCategory(Enum):
 
 __all__ = ["ComponentCategory"]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

@@ -52,4 +52,4 @@ class TestAuthorizationError(FoundationTestCase):
         assert error.context["authz.actor"] == "user:123"
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

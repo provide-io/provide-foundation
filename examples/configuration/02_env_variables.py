@@ -94,5 +94,4 @@ def example_8_environment_configuration() -> None:
 if __name__ == "__main__":
     example_8_environment_configuration()
     pout("\n✅ Example 8 completed.")
-
 # 🧱🏗️🔚

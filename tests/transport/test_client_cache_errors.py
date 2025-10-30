@@ -162,4 +162,4 @@ async def test_universal_client_cache_success_marking(httpx_mock: HTTPXMock) -> 
         # Success count should be tracked (implementation detail, but verifies logic)
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

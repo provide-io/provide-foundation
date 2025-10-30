@@ -128,6 +128,6 @@ def reset_streams() -> None:
         close_log_streams()
 
 
-# <3 🧱🤝🌊🪄
+# 🧱🏗️🔚
 
 # 🧱🏗️🔚

@@ -279,7 +279,4 @@ def hash_chunks(
     )
     return hash_value
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

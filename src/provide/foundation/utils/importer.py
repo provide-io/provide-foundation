@@ -135,6 +135,6 @@ def lazy_import(parent_module: str, name: str) -> object:
             _thread_local.import_chain.pop()
 
 
-# <3 🧱🤝🧰🪄
+# 🧱🏗️🔚
 
 # 🧱🏗️🔚

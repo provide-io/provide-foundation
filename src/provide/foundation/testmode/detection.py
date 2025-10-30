@@ -189,4 +189,4 @@ def configure_structlog_for_test_safety() -> None:
     )
 
 
-# <3 🧱🤝🧪🪄
+# 🧱🏗️🔚

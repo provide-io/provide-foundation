@@ -216,5 +216,4 @@ def stream(
             command=cmd_str,
         ) from e
 
-
-# <3 🧱🤝🏃🪄
+# 🧱🏗️🔚

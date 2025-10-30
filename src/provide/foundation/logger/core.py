@@ -377,5 +377,4 @@ class GlobalLoggerProxy:
 # Global logger instance (now a proxy)
 logger = GlobalLoggerProxy()
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

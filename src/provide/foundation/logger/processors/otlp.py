@@ -192,5 +192,4 @@ __all__ = [
     "reset_otlp_provider",
 ]
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

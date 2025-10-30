@@ -287,4 +287,4 @@ class ToolInstaller:
             log.debug(f"Created symlink {latest_link} -> {install_dir}")
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

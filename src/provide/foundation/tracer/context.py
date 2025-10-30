@@ -116,4 +116,4 @@ def get_trace_context() -> dict[str, Any]:
     }
 
 
-# <3 🧱🤝👣🪄
+# 🧱🏗️🔚

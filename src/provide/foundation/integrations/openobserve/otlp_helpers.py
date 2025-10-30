@@ -200,7 +200,4 @@ __all__ = [
     "map_level_to_severity",
 ]
 
-
-# <3 🧱🤝🔌🪄
-
 # 🧱🏗️🔚

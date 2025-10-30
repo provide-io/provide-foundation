@@ -464,4 +464,4 @@ class TestResetOtlpProvider:
         assert otlp_mod._OTLP_LOGGER_PROVIDER is None
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

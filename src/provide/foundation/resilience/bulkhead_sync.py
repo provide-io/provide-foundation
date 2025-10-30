@@ -134,4 +134,4 @@ class SyncResourcePool:
 __all__ = ["SyncResourcePool"]
 
 
-# <3 🧱🤝💪🪄
+# 🧱🏗️🔚

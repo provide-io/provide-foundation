@@ -158,5 +158,4 @@ __all__ = [
     "resolve_config_value",
 ]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

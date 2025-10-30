@@ -186,4 +186,4 @@ class TestLoggerBind(FoundationTestCase):
         assert "test_event" in test_entries[0]["event"]
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

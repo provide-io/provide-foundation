@@ -283,4 +283,4 @@ async def test_universal_client_request_with_bytes_body(httpx_mock: HTTPXMock) -
     assert response.status == 200
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

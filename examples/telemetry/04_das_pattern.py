@@ -104,5 +104,4 @@ def example_4_das_logging() -> None:
 if __name__ == "__main__":
     example_4_das_logging()
     pout("\n✅ Example 4 completed.")
-
 # 🧱🏗️🔚

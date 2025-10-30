@@ -18,5 +18,4 @@ __all__ = [
     "TelemetryConfig",
 ]
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

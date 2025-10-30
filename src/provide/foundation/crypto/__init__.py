@@ -143,7 +143,4 @@ __all__ = [
     "write_checksum_file",
 ]
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

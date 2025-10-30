@@ -47,7 +47,4 @@ __all__ = [
     "register_foundation_locks",
 ]
 
-
-# <3 🧱🤝🧵🪄
-
 # 🧱🏗️🔚

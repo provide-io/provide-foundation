@@ -240,4 +240,4 @@ class ToolDownloader:
         raise DownloadError(f"All mirrors failed: {last_error}") from last_error
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

@@ -36,5 +36,4 @@ class QualityResult:
     details: dict[str, Any] = field(factory=dict)
     timestamp: datetime = field(factory=datetime.now)
 
-
-# <3 🧱🤝📄🪄
+# 🧱🏗️🔚

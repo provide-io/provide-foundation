@@ -266,4 +266,4 @@ class TestTraceProcessorOtelLogging(FoundationTestCase):
                 assert result["trace_id"] == "foundation_trace_123"
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

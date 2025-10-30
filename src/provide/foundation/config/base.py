@@ -308,7 +308,4 @@ class BaseConfig:
 
         return f"{self.__class__.__name__}({', '.join(parts)})"
 
-
-# <3 🧱🤝⚙️🪄
-
 # 🧱🏗️🔚

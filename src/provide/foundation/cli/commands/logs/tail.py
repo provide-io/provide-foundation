@@ -144,5 +144,4 @@ def tail_command(
 
     return None
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

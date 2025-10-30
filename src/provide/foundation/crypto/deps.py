@@ -160,7 +160,4 @@ __all__ = [
     "get_default_signature_algorithm",
 ]
 
-
-# <3 🧱🤝🔒🪄
-
 # 🧱🏗️🔚

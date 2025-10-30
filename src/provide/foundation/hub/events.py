@@ -264,5 +264,4 @@ def emit_registry_event(operation: str, item_name: str, dimension: str, **kwargs
 
 __all__ = ["Event", "EventBus", "RegistryEvent", "emit_registry_event", "get_event_bus"]
 
-
-# <3 🧱🤝🌐🪄
+# 🧱🏗️🔚

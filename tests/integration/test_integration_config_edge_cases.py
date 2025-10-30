@@ -173,4 +173,4 @@ def test_configuration_immutability() -> None:
     assert config_logging.default_level == "DEBUG"
 
 
-# <3 🧱🤝🔧🪄
+# 🧱🏗️🔚

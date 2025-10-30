@@ -154,5 +154,4 @@ def should_inject_trace_context() -> bool:
 
     return False
 
-
-# <3 🧱🤝📝🪄
+# 🧱🏗️🔚

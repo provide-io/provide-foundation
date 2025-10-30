@@ -37,4 +37,4 @@ class TestTraceProcessorImports(FoundationTestCase):
             assert trace.otel_trace_runtime is None
 
 
-# <3 🧱🤝🔌🪄
+# 🧱🏗️🔚

@@ -212,5 +212,4 @@ def assert_cli_error(
     if expected_error and expected_error not in result.output:
         raise AssertionError(f"Expected error not found.\nExpected: {expected_error}\nActual: {result.output}")
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚

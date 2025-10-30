@@ -177,5 +177,4 @@ def is_64bit() -> bool:
     """Check if running on 64-bit architecture."""
     return platform.machine().endswith("64") or sys.maxsize > 2**32
 
-
-# <3 🧱🤝🏗️🪄
+# 🧱🏗️🔚

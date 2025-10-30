@@ -126,4 +126,4 @@ class TestProfilingCLI(FoundationTestCase):
         assert mock_pout.call_args_list[0].kwargs.get("json_key") == "metrics"
 
 
-# <3 🧱🤝📦🪄
+# 🧱🏗️🔚

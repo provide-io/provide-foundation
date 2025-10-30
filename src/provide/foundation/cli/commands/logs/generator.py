@@ -248,5 +248,4 @@ class LogGenerator:
 
         return logs_sent, logs_failed, logs_rate_limited
 
-
-# <3 🧱🤝💻🪄
+# 🧱🏗️🔚
