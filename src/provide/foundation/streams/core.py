@@ -182,7 +182,4 @@ def ensure_stderr_default() -> None:
     finally:
         _get_stream_lock().release()
 
-
-# 🧱🏗️🔚
-
 # 🧱🏗️🔚

@@ -1,12 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for optional cryptography dependency behavior."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import _HAS_CRYPTO
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestOptionalCryptoDependency(FoundationTestCase):
@@ -278,3 +283,5 @@ class TestCryptoInstallationMessage(FoundationTestCase):
                 # Should not be overly technical
                 assert len(error_msg) < 200  # Reasonable length
                 assert "optional dependencies" in error_msg.lower()
+
+# 🧱🏗️🔚

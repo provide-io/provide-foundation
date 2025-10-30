@@ -1,3 +1,10 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 import pytest
@@ -189,3 +196,5 @@ class TestModuleExports:
         """All exported symbols should be callable."""
         for symbol in toml.__all__:
             assert callable(getattr(toml, symbol))
+
+# 🧱🏗️🔚

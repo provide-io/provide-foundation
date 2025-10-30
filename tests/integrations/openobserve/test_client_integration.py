@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Integration tests for OpenObserve client.
 
 This module contains integration tests that require a running OpenObserve instance.
@@ -7,12 +12,10 @@ Environment variables required (loaded via Foundation config):
     OPENOBSERVE_URL: OpenObserve instance URL
     OPENOBSERVE_USER: Username for authentication
     OPENOBSERVE_PASSWORD: Password for authentication
-    OPENOBSERVE_ORG: Organization name (default: "default")
-"""
+    OPENOBSERVE_ORG: Organization name (default: "default")"""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
@@ -21,6 +24,7 @@ from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveQueryError,
 )
 from provide.foundation.integrations.openobserve.models import StreamInfo
+from provide.testkit import FoundationTestCase
 
 
 @pytest.mark.integration
@@ -268,3 +272,5 @@ __all__ = [
     "TestListStreams",
     "TestSearchHistory",
 ]
+
+# 🧱🏗️🔚

@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for file operation detection."""
 
 from __future__ import annotations
@@ -5,12 +10,11 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
-
 from provide.foundation.file.operations import (
     FileEvent,
     FileEventMetadata,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestFileEvent(FoundationTestCase):
@@ -89,3 +93,5 @@ class TestFileEvent(FoundationTestCase):
         metadata3 = FileEventMetadata(timestamp=datetime.now(), sequence_number=1, size_before=100)
         event3 = FileEvent(path=Path("test.txt"), event_type="modified", metadata=metadata3)
         assert event3.size_delta is None
+
+# 🧱🏗️🔚

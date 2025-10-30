@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """TDD tests for emoji set and processor component registration.
 
 This test suite covers emoji set registration, discovery, priority ordering,
-and processor pipeline management through the registry system.
-"""
+and processor pipeline management through the registry system."""
 
 from __future__ import annotations
 
@@ -150,3 +154,5 @@ class TestProcessorRegistration(FoundationTestCase):
         assert entry is not None
         assert "conditions" in entry.metadata
         assert entry.metadata["conditions"]["min_level"] == "INFO"
+
+# 🧱🏗️🔚

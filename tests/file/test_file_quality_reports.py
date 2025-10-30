@@ -227,5 +227,4 @@ class TestQualityAnalyzerFalseRates(FoundationTestCase):
         assert "false_negatives" in fnr.details
         assert "total_positive_cases" in fnr.details
 
-
 # 🧱🏗️🔚

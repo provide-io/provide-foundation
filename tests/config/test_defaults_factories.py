@@ -294,5 +294,4 @@ class TestCryptoFactoryFunctions(FoundationTestCase):
         result2 = default_supported_rsa_sizes()
         assert result1 is not result2
 
-
 # 🧱🏗️🔚

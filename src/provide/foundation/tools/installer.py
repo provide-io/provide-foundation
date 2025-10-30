@@ -286,5 +286,4 @@ class ToolInstaller:
             latest_link.symlink_to(install_dir)
             log.debug(f"Created symlink {latest_link} -> {install_dir}")
 
-
 # 🧱🏗️🔚

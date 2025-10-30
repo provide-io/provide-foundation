@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Test to verify unused modules are not imported."""
 
 from __future__ import annotations
@@ -47,3 +52,5 @@ class TestUnusedModules(FoundationTestCase):
 
         for op in file_ops:
             assert op not in exported, f"{op} should not be in utils exports"
+
+# 🧱🏗️🔚

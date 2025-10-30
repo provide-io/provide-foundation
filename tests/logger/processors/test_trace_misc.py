@@ -36,5 +36,4 @@ class TestTraceProcessorImports(FoundationTestCase):
         else:
             assert trace.otel_trace_runtime is None
 
-
 # 🧱🏗️🔚

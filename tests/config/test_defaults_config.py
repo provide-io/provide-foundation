@@ -215,5 +215,4 @@ class TestExitCodes(FoundationTestCase):
         codes = [EXIT_SUCCESS, EXIT_ERROR, EXIT_SIGINT]
         assert len(set(codes)) == len(codes)
 
-
 # 🧱🏗️🔚

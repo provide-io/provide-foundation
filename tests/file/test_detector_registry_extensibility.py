@@ -1,14 +1,16 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Test file operation detector registry extensibility.
 
-Verifies that custom detectors can be registered and used alongside built-in detectors.
-"""
+Verifies that custom detectors can be registered and used alongside built-in detectors."""
 
 from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.file.operations.detectors import (
     clear_detector_registry,
@@ -24,6 +26,7 @@ from provide.foundation.file.operations.types import (
     FileOperation,
     OperationType,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestDetectorRegistryExtensibility(FoundationTestCase):
@@ -415,3 +418,5 @@ class TestDetectorRegistryBuiltins(FoundationTestCase):
 
         # Fallback (0-9)
         assert detector_map["detect_simple_operation"] == 10
+
+# 🧱🏗️🔚

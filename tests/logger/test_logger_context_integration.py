@@ -223,5 +223,4 @@ class TestLoggerBindingEdgeCases(FoundationTestCase):
         assert entry["bool_val"] is True
         assert entry["float_val"] == 3.14
 
-
 # 🧱🏗️🔚

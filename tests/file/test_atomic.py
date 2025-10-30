@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for atomic file operations."""
 
 from __future__ import annotations
@@ -5,7 +10,6 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.atomic import (
@@ -13,6 +17,7 @@ from provide.foundation.file.atomic import (
     atomic_write,
     atomic_write_text,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestAtomicFileOperations(FoundationTestCase):
@@ -173,3 +178,5 @@ class TestAtomicFileOperations(FoundationTestCase):
         mode = path.stat().st_mode & 0o777
         assert mode != 0o600
         assert mode >= 0o644  # Should have at least standard read permissions
+
+# 🧱🏗️🔚

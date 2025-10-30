@@ -1,7 +1,11 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for dependency injection edge cases.
 
-Tests advanced scenarios, error handling, and boundary conditions.
-"""
+Tests advanced scenarios, error handling, and boundary conditions."""
 
 from __future__ import annotations
 
@@ -304,3 +308,5 @@ class TestDependencyInjectionEdgeCases:
         # We expect a ValidationError about unresolvable forward reference
         with pytest.raises(ValidationError):
             resolve_dependencies(ServiceWithNameError, registry, allow_missing=False)
+
+# 🧱🏗️🔚

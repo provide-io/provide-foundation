@@ -1,20 +1,23 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for OpenObserve table and CSV formatters.
 
 This module contains unit tests for table and CSV output formatters.
-These are pure unit tests that don't require a running OpenObserve instance.
-"""
+These are pure unit tests that don't require a running OpenObserve instance."""
 
 from __future__ import annotations
 
 from datetime import datetime
-
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.integrations.openobserve.formatters import (
     format_csv,
     format_table,
 )
 from provide.foundation.integrations.openobserve.models import SearchResponse
+from provide.testkit import FoundationTestCase
 
 
 class TestFormatTable(FoundationTestCase):
@@ -220,3 +223,5 @@ __all__ = [
     "TestFormatCsv",
     "TestFormatTable",
 ]
+
+# 🧱🏗️🔚

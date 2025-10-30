@@ -213,5 +213,4 @@ class TestLoggerTryUnbind(FoundationTestCase):
         assert unbound_logger is not bound_logger
         assert unbound_logger is not global_logger
 
-
 # 🧱🏗️🔚

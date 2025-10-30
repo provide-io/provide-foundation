@@ -125,5 +125,4 @@ class TestProfilingCLI(FoundationTestCase):
         # Verify first call has json_key="metrics"
         assert mock_pout.call_args_list[0].kwargs.get("json_key") == "metrics"
 
-
 # 🧱🏗️🔚

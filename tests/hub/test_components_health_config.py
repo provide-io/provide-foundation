@@ -1,9 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Component health, configuration schema, and initialization tests for hub components module."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock, Mock
 import pytest
 
 from provide.foundation.hub.components import (
@@ -14,6 +17,8 @@ from provide.foundation.hub.components import (
     initialize_all_async_components,
     initialize_async_component,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock
 
 
 class TestComponentHealth(FoundationTestCase):
@@ -388,3 +393,5 @@ class TestComponentInitialization(FoundationTestCase):
 
         failing_factory.assert_called_once()
         working_factory.assert_called_once()
+
+# 🧱🏗️🔚

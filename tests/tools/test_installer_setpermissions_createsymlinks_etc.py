@@ -256,5 +256,4 @@ class TestInstall:
         mock_permissions.assert_called_once()
         mock_symlinks.assert_called_once()
 
-
 # 🧱🏗️🔚

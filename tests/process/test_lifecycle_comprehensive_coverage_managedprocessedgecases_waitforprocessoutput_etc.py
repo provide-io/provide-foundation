@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for process/lifecycle.py module."""
 
 from __future__ import annotations
@@ -5,12 +10,12 @@ from __future__ import annotations
 import sys
 from typing import Any, Never
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.errors.process import ProcessError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
 class TestManagedProcessEdgeCases(FoundationTestCase):
@@ -245,3 +250,5 @@ class TestProcessLifecycleIntegration(FoundationTestCase):
         assert "TEST_VAR=test_value_12345" in stdout
 
         proc.cleanup()
+
+# 🧱🏗️🔚

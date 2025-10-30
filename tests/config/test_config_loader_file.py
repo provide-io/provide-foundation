@@ -236,5 +236,4 @@ class TestFileConfigLoader(FoundationTestCase):
         assert default_section["default_key"] == "default_value"
         assert section1["key1"] == "value1"
 
-
 # 🧱🏗️🔚

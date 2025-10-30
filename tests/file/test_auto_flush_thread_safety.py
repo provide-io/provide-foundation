@@ -1,7 +1,11 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Thread safety and concurrency tests for AutoFlushHandler.
 
-Tests thread safety, race conditions, and concurrent access patterns.
-"""
+Tests thread safety, race conditions, and concurrent access patterns."""
 
 from __future__ import annotations
 
@@ -10,11 +14,11 @@ from pathlib import Path
 import threading
 import time
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations.detectors.auto_flush import AutoFlushHandler
 from provide.foundation.file.operations.types import FileEvent, FileEventMetadata, FileOperation
+from provide.testkit import FoundationTestCase
 
 
 @pytest.fixture
@@ -421,3 +425,5 @@ class TestAutoFlushHandlerEdgeCases(FoundationTestCase):
 
         # Should be buffered normally
         assert len(handler.pending_events) == 1
+
+# 🧱🏗️🔚

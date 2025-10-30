@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for tool installer.
 
 Tests all functionality in tools/installer.py including archive extraction,
-binary installation, and security validations.
-"""
+binary installation, and security validations."""
 
 from __future__ import annotations
 
@@ -368,3 +372,5 @@ class TestInstallBinary:
 
         assert dest.exists()
         assert (dest / "bin").exists()
+
+# 🧱🏗️🔚

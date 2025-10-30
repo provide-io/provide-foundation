@@ -1,14 +1,15 @@
 #
-# tests/conftest.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Pytest configuration and global fixtures for provide-foundation tests.
 
 This file contains only the essential global fixtures and configuration
 that must be at the root level for pytest.
 
 All tests should inherit from FoundationTestCase which handles
-Foundation reset automatically.
-"""
+Foundation reset automatically."""
 
 from __future__ import annotations
 
@@ -17,8 +18,9 @@ import logging as stdlib_logging
 import os
 import sys
 
-import provide.testkit  # noqa: F401 - Installs setproctitle blocker early
 import pytest
+
+import provide.testkit  # noqa: F401 - Installs setproctitle blocker early
 
 # Register plugins for assertion rewriting at the root level
 pytest_plugins = [
@@ -379,3 +381,5 @@ __all__ = [
     "valid_cert_pem",
     "valid_key_pem",
 ]
+
+# 🧱🏗️🔚

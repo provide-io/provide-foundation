@@ -185,5 +185,4 @@ class TestLoggerBind(FoundationTestCase):
         assert len(test_entries) == 1
         assert "test_event" in test_entries[0]["event"]
 
-
 # 🧱🏗️🔚

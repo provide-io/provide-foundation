@@ -1,9 +1,13 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for VSCode temporary file pattern detection and handling.
 
 This test module verifies that VSCode's atomic save pattern (.filename.ext.tmp.XX)
 is correctly detected and processed, ensuring the final file path is correctly
-extracted without the leading dot that's part of the temp file pattern.
-"""
+extracted without the leading dot that's part of the temp file pattern."""
 
 from __future__ import annotations
 
@@ -309,3 +313,5 @@ class TestVSCodePatternEdgeCases:
         temp_path = Path(".file.txt.tmp.abc123")
         assert is_temp_file(temp_path) is True
         assert extract_base_name(temp_path) == "file.txt"
+
+# 🧱🏗️🔚

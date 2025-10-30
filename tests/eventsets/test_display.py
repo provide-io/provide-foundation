@@ -431,5 +431,4 @@ class TestShowEventMatrix:
         assert "Total Event Sets: 1" in logged_message
         assert "Sample Visual Markers:" in logged_message
 
-
 # 🧱🏗️🔚

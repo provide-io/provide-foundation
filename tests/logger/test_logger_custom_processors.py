@@ -1,9 +1,10 @@
 #
-# tests/test_custom_processors.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Unit tests for src.provide.foundation.logger.custom_processors.py"""
 
-from provide.testkit import FoundationTestCase
 import pytest
 import structlog  # For DropEvent
 
@@ -15,6 +16,7 @@ from provide.foundation.logger.custom_processors import (
     filter_by_level_custom,
 )
 from provide.foundation.logger.types import LogLevelStr  # Corrected import for type hints
+from provide.testkit import FoundationTestCase
 
 # Helper for level to numeric mapping, mirroring what's in config.py
 _LEVEL_TO_NUMERIC_TEST_MAP: dict[LogLevelStr, int] = {
@@ -134,3 +136,5 @@ class TestAddLoggerNameEmojiPrefix(FoundationTestCase):
 
         assert "event" in processed_event
         assert processed_event["event"] == f"{expected_emoji} {original_message}"
+
+# 🧱🏗️🔚

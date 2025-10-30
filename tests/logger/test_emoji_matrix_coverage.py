@@ -1,12 +1,16 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Test coverage for EventSet integration with logging."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 from provide.foundation.eventsets.resolver import get_resolver
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
+from provide.testkit import FoundationTestCase
 
 
 class TestEventSetIntegration(FoundationTestCase):
@@ -164,3 +168,5 @@ class TestEventSetIntegration(FoundationTestCase):
         assert event_set.mappings[1].name == "action"
         assert len(event_set.field_mappings) == 1
         assert event_set.field_mappings[0].log_key == "system.status"
+
+# 🧱🏗️🔚

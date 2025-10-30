@@ -161,5 +161,4 @@ async def test_universal_client_cache_success_marking(httpx_mock: HTTPXMock) -> 
         assert "https" in client._cache._transports
         # Success count should be tracked (implementation detail, but verifies logic)
 
-
 # 🧱🏗️🔚

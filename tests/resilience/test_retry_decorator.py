@@ -1,15 +1,20 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for @retry decorator."""
 
 import asyncio
 from typing import Any, Never
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import ANY, AsyncMock, MagicMock, patch
-from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.decorators import retry
 from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import ANY, AsyncMock, MagicMock, patch
+from provide.testkit.time import make_controlled_time
 
 
 class TestRetryDecoratorSync(FoundationTestCase):
@@ -458,3 +463,5 @@ class TestRetryDecoratorLogging:
 
         # Should log the final failure
         assert mock_logger.error.called
+
+# 🧱🏗️🔚

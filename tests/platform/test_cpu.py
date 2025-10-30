@@ -182,5 +182,4 @@ class TestCPUInfo(FoundationTestCase):
             assert result == 8
             assert isinstance(result, int)
 
-
 # 🧱🏗️🔚

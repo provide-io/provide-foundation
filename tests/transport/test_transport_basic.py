@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Basic transport system tests."""
 
 from __future__ import annotations
@@ -142,3 +147,5 @@ def test_transport_type_enum() -> None:
     assert TransportType.WS == "ws"
     assert TransportType.WSS == "wss"
     assert TransportType.GRPC == "grpc"
+
+# 🧱🏗️🔚

@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Chaos tests for CircuitBreaker implementation.
 
 Property-based tests using Hypothesis to explore edge cases in circuit breaking,
-including concurrent access, state transitions, and recovery scenarios.
-"""
+including concurrent access, state transitions, and recovery scenarios."""
 
 from __future__ import annotations
 
@@ -12,6 +16,9 @@ import contextlib
 import time
 
 from hypothesis import HealthCheck, given, settings, strategies as st
+import pytest
+
+from provide.foundation.resilience.circuit_sync import CircuitState, SyncCircuitBreaker
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     chaos_timings,
@@ -19,9 +26,6 @@ from provide.testkit.chaos import (
     thread_counts,
     time_advances,
 )
-import pytest
-
-from provide.foundation.resilience.circuit_sync import CircuitState, SyncCircuitBreaker
 
 
 class TestCircuitBreakerChaos(FoundationTestCase):
@@ -263,3 +267,5 @@ __all__ = [
     "TestAsyncCircuitBreakerChaos",
     "TestCircuitBreakerChaos",
 ]
+
+# 🧱🏗️🔚

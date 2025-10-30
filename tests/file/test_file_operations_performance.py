@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Performance benchmarks for file operation detection."""
 
 from __future__ import annotations
@@ -6,7 +11,6 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import time
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
@@ -20,6 +24,7 @@ from provide.foundation.file.quality import (
     QualityAnalyzer,
     create_scenarios_from_patterns,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestFileOperationsPerformance(FoundationTestCase):
@@ -416,3 +421,5 @@ class TestFileOperationsPerformance(FoundationTestCase):
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--benchmark-only"])
+
+# 🧱🏗️🔚

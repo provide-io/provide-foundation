@@ -172,5 +172,4 @@ def test_configuration_immutability() -> None:
     config_logging.update({"default_level": "DEBUG"})
     assert config_logging.default_level == "DEBUG"
 
-
 # 🧱🏗️🔚

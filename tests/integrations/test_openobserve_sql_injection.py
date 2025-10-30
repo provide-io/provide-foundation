@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """SQL injection security tests for OpenObserve integration.
 
 These tests verify that all SQL query construction properly sanitizes inputs
-and prevents SQL injection attacks.
-"""
+and prevents SQL injection attacks."""
 
 from __future__ import annotations
 
@@ -306,3 +310,5 @@ __all__ = [
     "TestSQLQueryConstruction",
     "TestSanitization",
 ]
+
+# 🧱🏗️🔚

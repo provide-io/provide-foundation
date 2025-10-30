@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for EnvPrefix numeric getter methods."""
 
 from __future__ import annotations
@@ -7,10 +12,10 @@ import os
 from pathlib import Path
 from typing import Any
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.utils.environment.prefix import EnvPrefix
+from provide.testkit import FoundationTestCase
 
 
 @pytest.fixture
@@ -70,3 +75,5 @@ class TestGetPath(FoundationTestCase):
         env = EnvPrefix("app")
         result = env.get_path("config_path", default="/default/path")
         assert result == Path("/default/path")
+
+# 🧱🏗️🔚

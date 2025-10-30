@@ -1,3 +1,10 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 import pytest
@@ -107,3 +114,5 @@ class TestModuleExports:
     def test_all_exports(self) -> None:
         """Module should export expected symbols."""
         assert set(ini.__all__) == {"ini_dumps", "ini_loads"}
+
+# 🧱🏗️🔚

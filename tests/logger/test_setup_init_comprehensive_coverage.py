@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for logger/setup/__init__.py module."""
 
 import importlib
@@ -224,3 +229,5 @@ class TestModuleDocumentation:
         # __all__ should be a list
         assert isinstance(setup_module.__all__, list)
         assert len(setup_module.__all__) > 0
+
+# 🧱🏗️🔚

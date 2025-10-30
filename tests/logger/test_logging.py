@@ -1,6 +1,8 @@
 #
-# test_logging.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Tests for the Foundation Telemetry logging system."""
 
 import io
@@ -8,7 +10,6 @@ import json
 import re
 from typing import Any
 
-from provide.testkit import FoundationTestCase
 import pytest
 from pytest import CaptureFixture, MonkeyPatch
 
@@ -17,6 +18,7 @@ from provide.foundation import (
     TelemetryConfig,
     logger as global_logger,
 )
+from provide.testkit import FoundationTestCase
 
 
 def _filter_application_logs(output: str) -> list[str]:
@@ -285,3 +287,5 @@ class TestFactoriesModule(FoundationTestCase):
 
         output = captured_stderr_for_foundation.getvalue()
         assert "Test debug message from factory" in output
+
+# 🧱🏗️🔚

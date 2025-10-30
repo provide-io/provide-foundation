@@ -328,7 +328,4 @@ class ConfigManager:
             with contextlib.suppress(Exception):
                 listener(old_state, new_state)
 
-
-# 🧱🏗️🔚
-
 # 🧱🏗️🔚

@@ -181,5 +181,4 @@ class TestLazyInitializationDocumentation(FoundationTestCase):
         log_data = json.loads(json_lines[0])
         assert log_data["service_name"] == "migrated-service"
 
-
 # 🧱🏗️🔚

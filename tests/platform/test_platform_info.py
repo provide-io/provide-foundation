@@ -1,14 +1,18 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for system information gathering."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
-
 from provide.foundation.platform import SystemInfo, get_system_info
 from provide.foundation.platform.info import is_64bit, is_arm, is_linux, is_macos, is_windows
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 
 class TestSystemInfo(FoundationTestCase):
@@ -216,3 +220,5 @@ class TestSystemInfo(FoundationTestCase):
         assert info.platform == "linux_amd64"
         assert info.num_cpus == 4
         assert info.total_memory == 8000000000
+
+# 🧱🏗️🔚

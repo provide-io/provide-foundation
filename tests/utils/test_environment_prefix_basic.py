@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for utils/environment/prefix.py module."""
 
 from __future__ import annotations
@@ -6,10 +11,10 @@ from collections.abc import Generator
 import os
 from typing import Any
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.utils.environment.prefix import EnvPrefix
+from provide.testkit import FoundationTestCase
 
 
 @pytest.fixture
@@ -150,3 +155,5 @@ class TestGetFloat(FoundationTestCase):
         """Test getting missing variable without default."""
         env = EnvPrefix("app")
         assert env.get_float("timeout") is None
+
+# 🧱🏗️🔚

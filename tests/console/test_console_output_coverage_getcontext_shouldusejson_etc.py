@@ -1,11 +1,13 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for console/output.py module."""
 
 from __future__ import annotations
 
 import sys
-
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.console.output import (
     _get_context,
@@ -15,6 +17,8 @@ from provide.foundation.console.output import (
     pout,
 )
 from provide.foundation.context import CLIContext
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
 class TestGetContext(FoundationTestCase):
@@ -354,3 +358,5 @@ class TestPoutFunction(FoundationTestCase):
             mock_click.reset_mock()
             pout("test2", nl=False, newline=True)
             mock_click.echo.assert_called_with("test2", nl=False)
+
+# 🧱🏗️🔚

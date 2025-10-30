@@ -1,14 +1,19 @@
-# pyvider/rpcplugin/tests/crypto/test_certificate_loading.py
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import Certificate, CertificateError
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, temporary_cert_file, valid_cert_pem, temporary_key_file, invalid_cert_pem, malformed_cert_pem, empty_cert
@@ -148,3 +153,5 @@ class TestCertificateLoading(FoundationTestCase):
 
 
 # 🐍🔌🧪🪄
+
+# 🧱🏗️🔚

@@ -1,13 +1,20 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 from click.testing import CliRunner
-from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.cli.commands.logs.tail import (
     _parse_filter_string_for_tail,
     tail_command,
 )
+from provide.testkit.mocking import MagicMock, patch
 
 
 @pytest.fixture
@@ -150,3 +157,5 @@ class TestTailCommand:
             lines=50,
             client=mock_client,
         )
+
+# 🧱🏗️🔚

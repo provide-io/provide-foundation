@@ -144,7 +144,4 @@ class ProfilingProcessor:
         """
         return self.metrics
 
-
-# 🧱🏗️🔚
-
 # 🧱🏗️🔚

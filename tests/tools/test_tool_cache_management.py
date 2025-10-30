@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for ToolCache management operations (clear, list, size, prune)."""
 
 from __future__ import annotations
@@ -6,11 +11,11 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import tempfile
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.tools.cache import ToolCache
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestToolCacheManagement(FoundationTestCase):
@@ -342,3 +347,5 @@ class TestToolCacheManagement(FoundationTestCase):
         # Verify cache miss after invalidation
         result = cache.get("mytool", "1.2.3")
         assert result is None
+
+# 🧱🏗️🔚

@@ -230,5 +230,4 @@ class TestDocumentedBehaviorCompliance(FoundationTestCase):
         captured = capsys.readouterr()
         assert "First message triggers initialization" in captured.err
 
-
 # 🧱🏗️🔚

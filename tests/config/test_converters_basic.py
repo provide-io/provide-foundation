@@ -1,6 +1,10 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for configuration field converters."""
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.config.converters import (
@@ -11,6 +15,7 @@ from provide.foundation.config.converters import (
     parse_module_levels,
     parse_rate_limits,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestLogLevelParsing(FoundationTestCase):
@@ -162,3 +167,5 @@ class TestFloatValidationParsing(FoundationTestCase):
         """Test parsing invalid floats raises error."""
         with pytest.raises(ValueError, match="Invalid float"):
             parse_float_with_validation("not_a_number")
+
+# 🧱🏗️🔚

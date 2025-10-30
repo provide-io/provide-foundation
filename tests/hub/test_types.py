@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for hub type definitions."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub.components import ComponentInfo
@@ -11,6 +15,7 @@ from provide.foundation.hub.registry import RegistryEntry
 from provide.foundation.hub.types import (
     Registrable,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestRegistryEntry(FoundationTestCase):
@@ -227,3 +232,5 @@ class TestComponentInfo:
         )
 
         assert comp_info1 == comp_info2
+
+# 🧱🏗️🔚

@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Integration tests for error handling across foundation modules."""
 
 from __future__ import annotations
@@ -5,7 +10,6 @@ from __future__ import annotations
 import tempfile
 from typing import Never
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.config.loader import FileConfigLoader
@@ -17,6 +21,7 @@ from provide.foundation.errors import (
 )
 from provide.foundation.hub import Hub
 from provide.foundation.hub.registry import Registry
+from provide.testkit import FoundationTestCase
 
 
 class TestErrorHandlingIntegration(FoundationTestCase):
@@ -165,3 +170,5 @@ class TestErrorHandlingIntegration(FoundationTestCase):
         output = captured_stderr_for_foundation.getvalue()
         assert "Error in failing_func" in output
         assert "Test error for logging" in output
+
+# 🧱🏗️🔚

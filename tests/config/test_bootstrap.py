@@ -177,5 +177,4 @@ class TestConfigSchemaIntegration(FoundationTestCase):
         if entry is not None:
             assert entry.value == TestConfig
 
-
 # 🧱🏗️🔚

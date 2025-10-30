@@ -1,18 +1,23 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for logger testing utilities."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.logger import (
-    reset_foundation_setup_for_testing,
-    reset_foundation_state,
-)
 import pytest
 import structlog
 
 from provide.foundation.logger.core import (
     _LAZY_SETUP_STATE,
     logger as foundation_logger,
+)
+from provide.testkit import FoundationTestCase
+from provide.testkit.logger import (
+    reset_foundation_setup_for_testing,
+    reset_foundation_state,
 )
 
 
@@ -150,3 +155,5 @@ class TestLoggerTestingUtilities(FoundationTestCase):
 
         assert foundation_logger._is_configured_by_setup == initial_config_state
         assert initial_lazy_state == _LAZY_SETUP_STATE
+
+# 🧱🏗️🔚

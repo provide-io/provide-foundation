@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for OpenObserve CLI data commands."""
 
 from __future__ import annotations
@@ -168,3 +173,5 @@ if _HAS_CLICK:
 
                 assert result.exit_code == 0
                 assert "No search history found" in result.output
+
+# 🧱🏗️🔚

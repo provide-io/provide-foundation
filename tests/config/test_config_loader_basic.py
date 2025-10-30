@@ -177,5 +177,4 @@ class TestDictConfigLoader(FoundationTestCase):
         assert config.value == 500
         assert config.enabled is True
 
-
 # 🧱🏗️🔚

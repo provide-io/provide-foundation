@@ -1,15 +1,20 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for crypto module dependency handling and stubs."""
 
 from __future__ import annotations
 
 import sys
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import _HAS_CRYPTO
 from provide.foundation.errors import DependencyError
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 # Skip message for when cryptography is available
 SKIP_REASON = (
@@ -339,3 +344,5 @@ class TestCryptoDependencyStubs(FoundationTestCase):
             assert error.context["dependency.package"] == "cryptography"
             assert error.context["dependency.feature"] == "crypto"
             assert "provide-foundation[crypto]" in error.context["dependency.install_command"]
+
+# 🧱🏗️🔚

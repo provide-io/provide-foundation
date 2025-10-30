@@ -139,5 +139,4 @@ class TestSystemdIntegration(FoundationTestCase):
             result = notify_error(5, "test error message")
             assert result is False
 
-
 # 🧱🏗️🔚

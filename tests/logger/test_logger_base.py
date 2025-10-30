@@ -1,9 +1,10 @@
 #
-# base.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Foundation Telemetry Base Logger Implementation.
-Defines FoundationLogger with lazy initialization, thread safety, and standard logging methods.
-"""
+Defines FoundationLogger with lazy initialization, thread safety, and standard logging methods."""
 
 import contextlib
 import io
@@ -204,3 +205,5 @@ class FoundationLogger:
 
 
 logger: FoundationLogger = FoundationLogger()
+
+# 🧱🏗️🔚

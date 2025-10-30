@@ -1,14 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for fallback functionality."""
 
 from __future__ import annotations
 
 from typing import Never
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.resilience.fallback import FallbackChain, fallback
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 
 
 class TestFallbackChain(FoundationTestCase):
@@ -254,3 +259,5 @@ class TestFallbackDecorator(FoundationTestCase):
 
         assert primary_func.__name__ == "primary_func"
         assert primary_func.__doc__ == "Primary function docstring."
+
+# 🧱🏗️🔚

@@ -1,13 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for RetryExecutor - the unified retry execution engine.
 
-This test file follows TDD principles - tests are written before implementation.
-"""
+This test file follows TDD principles - tests are written before implementation."""
 
 import asyncio
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock, MagicMock, patch
-from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.retry import (
@@ -15,6 +16,9 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, MagicMock, patch
+from provide.testkit.time import make_controlled_time
 
 
 class TestRetryExecutorAsync(FoundationTestCase):
@@ -306,3 +310,5 @@ class TestRetryExecutorEdgeCases:
         # Should return a generator that can be consumed
         values = list(result)
         assert values == [1, 2, 3]
+
+# 🧱🏗️🔚

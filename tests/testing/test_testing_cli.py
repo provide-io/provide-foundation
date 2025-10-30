@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for CLI testing utilities."""
 
 from __future__ import annotations
@@ -10,6 +15,8 @@ import tempfile
 
 import click
 from click.testing import CliRunner
+import pytest
+
 from provide.testkit import (
     CliTestCase,
     FoundationTestCase,
@@ -19,7 +26,6 @@ from provide.testkit import (
     temp_config_file,
 )
 from provide.testkit.mocking import Mock
-import pytest
 
 
 class TestMockContext(FoundationTestCase):
@@ -273,3 +279,5 @@ class TestCliTestCase(FoundationTestCase):
 
         with pytest.raises(AssertionError, match="not valid JSON"):
             test_case.assert_json_output(result, {"key": "value"})
+
+# 🧱🏗️🔚

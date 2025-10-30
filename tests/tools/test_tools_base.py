@@ -1,15 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Test-driven development tests for BaseToolManager.
 
-These tests define the expected behavior before implementation.
-"""
+These tests define the expected behavior before implementation."""
 
 from __future__ import annotations
 
 from pathlib import Path
 from typing import ClassVar
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.config import BaseConfig
@@ -21,6 +23,8 @@ from provide.foundation.tools.base import (
     ToolNotFoundError,
     ToolVerificationError,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 
 class TestToolMetadata(FoundationTestCase):
@@ -329,3 +333,5 @@ class TestBaseToolManager(FoundationTestCase):
         assert concrete_manager._verifier is not None
         assert concrete_manager._installer is not None
         assert concrete_manager._resolver is not None
+
+# 🧱🏗️🔚

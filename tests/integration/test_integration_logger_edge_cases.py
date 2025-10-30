@@ -237,5 +237,4 @@ def test_trace_level_edge_cases(
     trace_count = sum(1 for line in lines if "trace" in line.lower())
     assert trace_count >= 4, "TRACE level not properly handled"
 
-
 # 🧱🏗️🔚

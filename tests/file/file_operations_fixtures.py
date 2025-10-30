@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """File operations testing fixtures for the provide-foundation.
 
 This module provides pytest fixtures and utilities for testing file operation detection,
-simulating various editor save patterns, and validating operation detection accuracy.
-"""
+simulating various editor save patterns, and validating operation detection accuracy."""
 
 from __future__ import annotations
 
@@ -428,3 +432,5 @@ def file_operation_pattern(*patterns: str):
         return requires_file_operations(func)
 
     return decorator
+
+# 🧱🏗️🔚

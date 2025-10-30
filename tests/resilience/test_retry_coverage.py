@@ -1,14 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Additional tests for retry module to improve coverage."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock, Mock, patch
-from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.retry import RetryExecutor, RetryPolicy
 from provide.foundation.resilience.types import BackoffStrategy
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock, patch
+from provide.testkit.time import make_controlled_time
 
 
 class TestRetryPolicyEdgeCases(FoundationTestCase):
@@ -396,3 +401,5 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
 
         # Should be called max_attempts times
         assert mock_func.call_count == 2
+
+# 🧱🏗️🔚

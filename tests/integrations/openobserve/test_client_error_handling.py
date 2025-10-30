@@ -1,15 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for OpenObserve client error handling.
 
 This module tests error message extraction, response error checking, and exception handling.
-Run with: pytest tests/integrations/openobserve/test_client_error_handling.py -v
-"""
+Run with: pytest tests/integrations/openobserve/test_client_error_handling.py -v"""
 
 from __future__ import annotations
 
 from typing import Any
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
@@ -17,6 +19,8 @@ from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveConnectionError,
     OpenObserveQueryError,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 
 
 class MockResponse:
@@ -155,3 +159,5 @@ __all__ = [
     "TestCheckResponseErrors",
     "TestExtractErrorMessage",
 ]
+
+# 🧱🏗️🔚

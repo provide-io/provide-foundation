@@ -1,9 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 import time
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.context import CLIContext
@@ -17,6 +22,8 @@ from provide.foundation.testmode import (
     reset_streams_state,
     reset_structlog_state,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
 class TestProfileMetrics(FoundationTestCase):
@@ -416,3 +423,5 @@ class TestProfilingIntegration(FoundationTestCase):
         # Should handle concurrent access without errors
         metrics = component.get_metrics()
         assert metrics.message_count >= 0  # Some messages may be recorded
+
+# 🧱🏗️🔚

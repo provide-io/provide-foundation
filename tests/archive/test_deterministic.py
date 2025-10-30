@@ -268,5 +268,4 @@ class TestDeterministicArchives(FoundationTestCase):
             extract2 / "subdir" / "file3.txt"
         ).read_text()
 
-
 # 🧱🏗️🔚

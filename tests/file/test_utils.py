@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for file utility functions."""
 
 from __future__ import annotations
@@ -5,7 +10,6 @@ from __future__ import annotations
 from pathlib import Path
 import time
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.utils import (
@@ -15,6 +19,7 @@ from provide.foundation.file.utils import (
     get_size,
     touch,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestFileUtils(FoundationTestCase):
@@ -319,3 +324,5 @@ class TestFileUtils(FoundationTestCase):
         assert backup_path is not None
         # shutil.copy2 should preserve permissions
         assert backup_path.stat().st_mode & 0o777 == 0o600
+
+# 🧱🏗️🔚

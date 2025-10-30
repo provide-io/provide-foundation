@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Simple tests for file operations fixtures."""
 
 from __future__ import annotations
@@ -6,9 +11,9 @@ from collections.abc import Generator
 from pathlib import Path
 import tempfile
 
-from provide.testkit import FoundationTestCase
 import pytest
 
+from provide.testkit import FoundationTestCase
 from tests.file.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
@@ -100,3 +105,5 @@ class TestFileOperationFixtures(FoundationTestCase):
         assert summary["total"] == 2
         assert summary["valid"] == 1
         assert summary["success_rate"] == 0.5
+
+# 🧱🏗️🔚

@@ -1,11 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for async lock manager initialization and race condition handling."""
 
 from __future__ import annotations
 
 import asyncio
 
-from provide.testkit import FoundationTestCase
 import pytest
+
+from provide.testkit import FoundationTestCase
 
 
 class TestAsyncLockManagerInitialization(FoundationTestCase):
@@ -393,3 +399,5 @@ __all__ = [
     "TestAsyncLockManagerFailureRecovery",
     "TestAsyncLockManagerInitialization",
 ]
+
+# 🧱🏗️🔚

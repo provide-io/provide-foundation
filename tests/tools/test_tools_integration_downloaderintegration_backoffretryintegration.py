@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Integration tests for tools module with real network requests.
 
 These tests depend on external services (httpbin.org) and may be skipped
-if the service is unavailable.
-"""
+if the service is unavailable."""
 
 from __future__ import annotations
 
@@ -10,13 +14,13 @@ from pathlib import Path
 import tempfile
 import time
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.hub import get_hub
 from provide.foundation.tools.downloader import DownloadError, ToolDownloader
 from provide.foundation.transport.client import UniversalClient
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 # Mark all tests in this module as requiring external services
 pytestmark = pytest.mark.external_service
@@ -404,3 +408,5 @@ class TestBackoffRetryIntegration(FoundationTestCase):
         # Should eventually succeed
         result = await test_downloader.download_with_progress("https://test.com/file", dest)
         assert result == dest
+
+# 🧱🏗️🔚

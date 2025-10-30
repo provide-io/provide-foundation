@@ -1,11 +1,15 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for CircuitBreaker issue fixes.
 
 This module tests 4 specific issues that were fixed:
 1. Inconsistent sync properties in AsyncCircuitBreaker
 2. Unsafe event loop creation
 3. Type signature inconsistency for expected_exception
-4. Counter thread safety
-"""
+4. Counter thread safety"""
 
 from __future__ import annotations
 
@@ -13,12 +17,12 @@ import asyncio
 import threading
 from typing import TYPE_CHECKING
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
 from provide.foundation.resilience.circuit_sync import SyncCircuitBreaker
 from provide.foundation.resilience.decorators import circuit_breaker
+from provide.testkit import FoundationTestCase
 
 if TYPE_CHECKING:
     pass
@@ -344,3 +348,5 @@ class TestSyncCircuitBreakerStillWorks(FoundationTestCase):
         assert hasattr(breaker, "reset"), "SyncCircuitBreaker should have reset() method"
         assert not asyncio.iscoroutinefunction(breaker.reset), "reset() should be sync"
         breaker.reset()
+
+# 🧱🏗️🔚

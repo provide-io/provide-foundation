@@ -1,4 +1,9 @@
-# pyvider/rpcplugin/tests/crypto/test_certificate_chains.py
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -6,11 +11,11 @@ from datetime import UTC, datetime
 
 from cryptography import x509
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import Certificate, CertificateError
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert
@@ -177,3 +182,5 @@ class TestCertificateChains(FoundationTestCase):
 
 
 # 🐍🔌🧪🪄
+
+# 🧱🏗️🔚

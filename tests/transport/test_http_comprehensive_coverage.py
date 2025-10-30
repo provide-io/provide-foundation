@@ -1,12 +1,15 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive HTTP transport tests for improved coverage.
 
-This module adds tests for edge cases and missing coverage areas.
-"""
+This module adds tests for edge cases and missing coverage areas."""
 
 from __future__ import annotations
 
 import httpx
-from provide.testkit.mocking import AsyncMock, patch
 import pytest
 from pytest_httpx import HTTPXMock
 
@@ -18,6 +21,7 @@ from provide.foundation.transport import (
 )
 from provide.foundation.transport.config import HTTPConfig
 from provide.foundation.transport.types import TransportType
+from provide.testkit.mocking import AsyncMock, patch
 
 
 @pytest.fixture
@@ -374,3 +378,5 @@ class TestRequestTimeout:
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+# 🧱🏗️🔚

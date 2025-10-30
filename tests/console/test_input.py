@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for console input functions."""
 
 from __future__ import annotations
@@ -6,8 +11,6 @@ import asyncio
 from io import StringIO
 from typing import Never
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.console.input import (
@@ -19,6 +22,8 @@ from provide.foundation.console.input import (
     pin_stream,
 )
 from provide.foundation.context import CLIContext
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestPin(FoundationTestCase):
@@ -431,3 +436,5 @@ class TestEdgeCases(FoundationTestCase):
             # Should have logged error
             mock_log.error.assert_called()
             assert "Test error" in str(mock_log.error.call_args)
+
+# 🧱🏗️🔚

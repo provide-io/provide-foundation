@@ -1,15 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for OpenObserve client initialization and configuration.
 
 This module tests client initialization, configuration loading, and basic setup.
-Run with: pytest tests/integrations/openobserve/test_client_init_config.py -v
-"""
+Run with: pytest tests/integrations/openobserve/test_client_init_config.py -v"""
 
 from __future__ import annotations
 
 from typing import Any
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
@@ -17,6 +19,8 @@ from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveAuthenticationError,
     OpenObserveConfigError,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 
 class MockResponse:
@@ -195,3 +199,5 @@ __all__ = [
     "TestClientFromConfig",
     "TestClientInitialization",
 ]
+
+# 🧱🏗️🔚

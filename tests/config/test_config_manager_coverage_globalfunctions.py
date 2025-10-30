@@ -1,8 +1,11 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for config manager module."""
 
 from attrs import define
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock
 
 from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.loader import ConfigLoader
@@ -14,6 +17,8 @@ from provide.foundation.config.manager import (
     set_config,
 )
 from provide.foundation.config.schema import ConfigSchema
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
 
 
 @define
@@ -69,3 +74,5 @@ class TestGlobalFunctions(FoundationTestCase):
 
         assert result is self.test_config
         loader.load.assert_called_once_with(SampleConfigClass)
+
+# 🧱🏗️🔚

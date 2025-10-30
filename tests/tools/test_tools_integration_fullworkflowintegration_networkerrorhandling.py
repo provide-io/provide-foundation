@@ -1,14 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Integration tests for tools module with real network requests.
 
-These tests depend on external services and may be skipped if unavailable.
-"""
+These tests depend on external services and may be skipped if unavailable."""
 
 from __future__ import annotations
 
 from pathlib import Path
 import tempfile
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.config import BaseConfig
@@ -17,6 +20,7 @@ from provide.foundation.tools.cache import ToolCache
 from provide.foundation.tools.downloader import ToolDownloader
 from provide.foundation.tools.resolver import VersionResolver
 from provide.foundation.transport.client import UniversalClient
+from provide.testkit import FoundationTestCase
 
 # Mark all tests in this module as requiring external services
 pytestmark = pytest.mark.external_service
@@ -214,3 +218,5 @@ class TestNetworkErrorHandling(FoundationTestCase):
                 pytest.skip(f"httpbin issue - this is an integration test limitation: {e}")
             else:
                 raise
+
+# 🧱🏗️🔚

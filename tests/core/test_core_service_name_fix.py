@@ -1,6 +1,8 @@
 #
-# test_service_name_fix.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Test to verify the service name injection fix works correctly."""
 
 import json
@@ -146,3 +148,5 @@ def test_key_value_still_has_emojis() -> None:
 # Removed __main__ block
 
 # 🧪✅
+
+# 🧱🏗️🔚

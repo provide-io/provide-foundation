@@ -289,5 +289,4 @@ class TestConfigCommandRegistration(FoundationTestCase):
         except ImportError:
             pytest.skip("Click not available")
 
-
 # 🧱🏗️🔚

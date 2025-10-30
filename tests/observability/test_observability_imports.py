@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Direct import path testing for observability module.
 
 These tests verify the different import paths in observability/__init__.py
-without reloading the module, focusing on specific code coverage gaps.
-"""
+without reloading the module, focusing on specific code coverage gaps."""
 
 from __future__ import annotations
 
@@ -255,3 +259,5 @@ __all__ = [
     "TestObservabilityStubs",
     "TestObservabilityTypeChecking",
 ]
+
+# 🧱🏗️🔚

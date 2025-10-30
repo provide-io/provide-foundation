@@ -1,10 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for environment variable scrubbing and security."""
 
 from __future__ import annotations
 
 import os
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.process.env import (
@@ -15,6 +19,7 @@ from provide.foundation.process.env import (
     prepare_subprocess_environment,
     scrub_environment,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestSafeEnvAllowlist(FoundationTestCase):
@@ -344,3 +349,5 @@ class TestIntegrationWithProcessExecution(FoundationTestCase):
 
         # No env overrides provided, so should be None
         assert result.env is None
+
+# 🧱🏗️🔚

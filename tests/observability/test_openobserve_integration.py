@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Integration test for OpenObserve that generates and queries logs."""
 
 from __future__ import annotations
@@ -8,9 +13,10 @@ import os
 import random
 import time
 
-from provide.testkit import FoundationTestCase
 import pytest
 import requests
+
+from provide.testkit import FoundationTestCase
 
 # Skip tests if OpenObserve is not available
 pytestmark = [
@@ -321,3 +327,5 @@ if __name__ == "__main__":
 
         traceback.print_exc()
         exit(1)
+
+# 🧱🏗️🔚

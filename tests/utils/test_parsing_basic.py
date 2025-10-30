@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for utils/parsing.py module."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.parsers import (
@@ -10,6 +14,7 @@ from provide.foundation.parsers import (
     parse_dict,
     parse_list,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestParseBool(FoundationTestCase):
@@ -161,3 +166,5 @@ class TestParseDict(FoundationTestCase):
     def test_parse_dict_empty_items(self) -> None:
         """Test parsing dict with empty items."""
         assert parse_dict("a=1,,b=2") == {"a": "1", "b": "2"}  # Empty items are skipped
+
+# 🧱🏗️🔚

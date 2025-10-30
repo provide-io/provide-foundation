@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Integration tests for file operation detection with real filesystem operations."""
 
 from __future__ import annotations
@@ -8,7 +13,6 @@ from pathlib import Path
 import tempfile
 import time
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
@@ -16,6 +20,7 @@ from provide.foundation.file.operations import (
     FileEventMetadata,
     OperationDetector,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestFileOperationsStressTesting(FoundationTestCase):
@@ -272,3 +277,5 @@ class TestFileOperationsStressTesting(FoundationTestCase):
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+# 🧱🏗️🔚

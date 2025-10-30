@@ -338,5 +338,4 @@ class TestTraceContextIntegration(FoundationTestCase):
         assert inner_span.status == "error"
         assert "ValueError" in inner_span.error
 
-
 # 🧱🏗️🔚

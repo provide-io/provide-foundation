@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Core integration tests for the Foundation library."""
 
 from __future__ import annotations
@@ -5,8 +10,6 @@ from __future__ import annotations
 import io
 import os
 
-from provide.testkit import TestEnvironment, isolated_cli_runner
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation import (
@@ -18,6 +21,8 @@ from provide.foundation import (
 from provide.foundation.errors import FoundationError
 from provide.foundation.hub import register_command
 from provide.foundation.hub.registry import Registry
+from provide.testkit import TestEnvironment, isolated_cli_runner
+from provide.testkit.mocking import patch
 
 # Mark all tests in this file to run serially to avoid global state pollution
 pytestmark = pytest.mark.serial
@@ -200,3 +205,5 @@ def test_configuration_edge_cases() -> None:
     with patch.dict(os.environ, {}, clear=True):
         hub = get_hub()
         assert hub.get_foundation_config().service_name is None
+
+# 🧱🏗️🔚

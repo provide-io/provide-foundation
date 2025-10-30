@@ -180,5 +180,4 @@ async def test_universal_client_default_timeout_override(httpx_mock: HTTPXMock) 
 
     assert response.status == 200
 
-
 # 🧱🏗️🔚

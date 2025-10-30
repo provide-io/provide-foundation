@@ -1,15 +1,21 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 from pathlib import Path
 import tempfile
-
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.streams.file import (
     close_log_streams,
     configure_file_logging,
     flush_log_streams,
 )
+from provide.testkit import FoundationTestCase
 
 #
 # test_file.py
@@ -52,3 +58,5 @@ class TestFileStreams(FoundationTestCase):
 
         # Clean up
         close_log_streams()
+
+# 🧱🏗️🔚

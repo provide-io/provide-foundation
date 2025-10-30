@@ -1,11 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for platform detection functions."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.platform import PlatformError
@@ -17,6 +20,8 @@ from provide.foundation.platform.detection import (
     get_platform_string,
     normalize_platform_components,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestPlatformDetection(FoundationTestCase):
@@ -260,3 +265,5 @@ class TestPlatformDetection(FoundationTestCase):
         os_name, arch_name = normalize_platform_components("LINUX", "AMD64")
         assert os_name == "linux"
         assert arch_name == "amd64"
+
+# 🧱🏗️🔚

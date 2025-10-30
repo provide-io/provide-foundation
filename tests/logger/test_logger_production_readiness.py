@@ -164,5 +164,4 @@ class TestProductionReadinessScenarios(FoundationTestCase):
         assert "Application starting with lazy init" in captured.err
         assert "Message after shutdown" in captured.err
 
-
 # 🧱🏗️🔚

@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for HTTP transport log sanitization."""
 
 from __future__ import annotations
@@ -5,12 +10,12 @@ from __future__ import annotations
 import io
 
 import httpx
-from provide.testkit import set_log_stream_for_testing
 import pytest
 from pytest_httpx import HTTPXMock
 
 from provide.foundation.transport import HTTPTransport, Request
 from provide.foundation.transport.config import HTTPConfig
+from provide.testkit import set_log_stream_for_testing
 
 
 @pytest.fixture(autouse=True)
@@ -346,3 +351,5 @@ async def test_empty_param_values_handled(
 
     # Normal param should be visible
     assert "normal_param=value" in log_output
+
+# 🧱🏗️🔚

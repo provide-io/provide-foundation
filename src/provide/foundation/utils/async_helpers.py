@@ -127,7 +127,4 @@ def run_async(coro: Coroutine[None, None, T] | Awaitable[T], *, warn: bool = Fal
 
 __all__ = ["run_async"]
 
-
-# 🧱🏗️🔚
-
 # 🧱🏗️🔚

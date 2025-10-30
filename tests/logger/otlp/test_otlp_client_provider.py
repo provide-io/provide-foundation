@@ -219,5 +219,4 @@ class TestGetStats:
         assert "circuit_breaker" not in stats
         assert stats["otlp_available"] is False
 
-
 # 🧱🏗️🔚

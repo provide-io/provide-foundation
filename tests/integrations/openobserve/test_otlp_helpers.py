@@ -426,5 +426,4 @@ class TestBuildBulkUrl:
 
         assert url == "http://localhost:5080/api/test-org/_bulk"
 
-
 # 🧱🏗️🔚

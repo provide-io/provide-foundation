@@ -70,5 +70,4 @@ class TestAlreadyExistsError(FoundationTestCase):
         error = AlreadyExistsError("Conflict", resource_id="user@example.com")
         assert error.context["exists.id"] == "user@example.com"
 
-
 # 🧱🏗️🔚

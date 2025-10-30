@@ -1,10 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for Foundation rate limiting system."""
 
 import asyncio
 import threading
 import time
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.logger.ratelimit.limiters import (
@@ -12,6 +16,7 @@ from provide.foundation.logger.ratelimit.limiters import (
     GlobalRateLimiter,
     SyncRateLimiter,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestSyncRateLimiter(FoundationTestCase):
@@ -491,3 +496,5 @@ class TestRateLimiterIntegration(FoundationTestCase):
 
         # Token count should be bounded
         assert 0 <= stats["tokens_available"] <= stats["capacity"]
+
+# 🧱🏗️🔚

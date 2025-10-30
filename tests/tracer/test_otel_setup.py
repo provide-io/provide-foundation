@@ -315,5 +315,4 @@ class TestGetOtelTracer(FoundationTestCase):
 
             assert result is None
 
-
 # 🧱🏗️🔚

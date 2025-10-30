@@ -1,17 +1,20 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for OpenObserve configuration.
 
 This module contains unit tests for OpenObserveConfig with mocked dependencies.
-Run with: pytest tests/integrations/openobserve/test_config_unit.py -v
-"""
+Run with: pytest tests/integrations/openobserve/test_config_unit.py -v"""
 
 from __future__ import annotations
 
 import os
 
+from provide.foundation.integrations.openobserve.config import OpenObserveConfig
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
-
-from provide.foundation.integrations.openobserve.config import OpenObserveConfig
 
 
 class TestOpenObserveConfigInitialization(FoundationTestCase):
@@ -373,3 +376,5 @@ __all__ = [
     "TestIsConfigured",
     "TestOpenObserveConfigInitialization",
 ]
+
+# 🧱🏗️🔚

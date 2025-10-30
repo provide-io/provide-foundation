@@ -1,11 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for docs/__init__.py module."""
 
 from __future__ import annotations
 
 import contextlib
 
-from provide.testkit import FoundationTestCase
 import pytest
+
+from provide.testkit import FoundationTestCase
 
 
 class TestDocsModuleStructure(FoundationTestCase):
@@ -222,3 +228,5 @@ class TestModuleIntegration(FoundationTestCase):
         # All should refer to the same module
         assert provide.foundation.docs is docs
         assert provide.foundation.docs is docs_module
+
+# 🧱🏗️🔚

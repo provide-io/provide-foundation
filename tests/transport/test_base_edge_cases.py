@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Edge case tests for transport base classes and types."""
 
 from __future__ import annotations
@@ -5,13 +10,13 @@ from __future__ import annotations
 import json
 from typing import Never
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock
 import pytest
 
 from provide.foundation.transport.base import Request, Response, TransportBase
 from provide.foundation.transport.errors import HTTPResponseError
 from provide.foundation.transport.types import TransportType
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock
 
 
 class TestRequestEdgeCases(FoundationTestCase):
@@ -200,3 +205,5 @@ class TestTransportBaseEdgeCases(FoundationTestCase):
         # Disconnect should still be called even with exception
         transport.connect.assert_called_once()
         transport.disconnect.assert_called_once()
+
+# 🧱🏗️🔚

@@ -1,15 +1,20 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Test asyncio debug message suppression via module-level log configuration."""
 
 from __future__ import annotations
 
 from io import StringIO
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import structlog
 
 from provide.foundation.logger.config import TelemetryConfig
 from provide.foundation.logger.setup.processors import configure_structlog_output
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestAsyncioDebugSuppression(FoundationTestCase):
@@ -142,3 +147,5 @@ class TestAsyncioDebugSuppression(FoundationTestCase):
                     f"asyncio modules should have INFO level (20), got {expected_threshold}"
                 )
                 break
+
+# 🧱🏗️🔚

@@ -1,6 +1,8 @@
 #
-# test_runner_coverage.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Additional tests to achieve full coverage for process/runner.py."""
 
 from __future__ import annotations
@@ -8,12 +10,12 @@ from __future__ import annotations
 import sys
 from typing import Any
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.sync import run, shell, stream
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestInputHandling(FoundationTestCase):
@@ -271,3 +273,5 @@ class TestCompletedProcessConstruction(FoundationTestCase):
         # Test with no env
         result = run(["echo", "test"], env=None, capture_output=True)
         assert result.env is None
+
+# 🧱🏗️🔚

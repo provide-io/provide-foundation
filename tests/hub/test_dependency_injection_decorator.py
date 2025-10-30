@@ -1,7 +1,11 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for @injectable decorator functionality.
 
-Tests the @injectable decorator, is_injectable() helper, and validation.
-"""
+Tests the @injectable decorator, is_injectable() helper, and validation."""
 
 from __future__ import annotations
 
@@ -126,3 +130,5 @@ class TestInjectableDecorator:
 
             assert "Failed to get type hints" in str(exc_info.value)
             assert "Mock error" in str(exc_info.value)
+
+# 🧱🏗️🔚

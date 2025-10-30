@@ -1,12 +1,12 @@
 #
-# tests/test_lazy_initialization_integration.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
 
 """Integration tests for lazy initialization with real-world scenarios and migration patterns.
 
 This module tests end-to-end scenarios that combine lazy initialization with
-real-world usage patterns, ensuring the feature works in practical applications.
-"""
+real-world usage patterns, ensuring the feature works in practical applications."""
 
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,8 +15,6 @@ import json
 import os
 from typing import Any
 
-from provide.testkit import FoundationTestCase, TestEnvironment
-from provide.testkit.mocking import patch
 import pytest
 from pytest import CaptureFixture  # Added for capsys
 
@@ -26,6 +24,8 @@ from provide.foundation import (
     get_hub,
     logger as global_logger,
 )
+from provide.testkit import FoundationTestCase, TestEnvironment
+from provide.testkit.mocking import patch
 
 
 class TestRealWorldScenarios(FoundationTestCase):
@@ -489,3 +489,5 @@ class TestMigrationFromExplicitSetup(FoundationTestCase):
             ]
             log_data = json.loads(json_lines[0])
             assert log_data["service_name"] == "explicit-service"
+
+# 🧱🏗️🔚

@@ -14,5 +14,4 @@ These defaults are stored centrally per project guidelines - no inline defaults.
 DEFAULT_SERIALIZATION_CACHE_ENABLED: bool = True
 DEFAULT_SERIALIZATION_CACHE_SIZE: int = 128
 
-
 # 🧱🏗️🔚

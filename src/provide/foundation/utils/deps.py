@@ -259,7 +259,4 @@ def get_available_features() -> dict[str, bool]:
     deps = get_optional_dependencies()
     return {dep.name: dep.available for dep in deps}
 
-
-# 🧱🏗️🔚
-
 # 🧱🏗️🔚

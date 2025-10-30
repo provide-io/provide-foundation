@@ -1,15 +1,20 @@
-# pyvider/rpcplugin/tests/crypto/test_certificate_properties.py
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.crypto import Certificate, CertificateError
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert
@@ -254,3 +259,5 @@ class TestCertificateProperties(FoundationTestCase):
 
 
 # 🐍🔌🧪🪄
+
+# 🧱🏗️🔚

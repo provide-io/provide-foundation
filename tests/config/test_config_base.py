@@ -1,14 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for base configuration classes."""
 
 from __future__ import annotations
 
 from attrs import define
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.types import ConfigSource
 from provide.foundation.errors import ConfigValidationError
+from provide.testkit import FoundationTestCase
 
 
 @define(repr=False)
@@ -227,3 +232,5 @@ class TestConfigValidationError(FoundationTestCase):
         assert "Invalid value" in str(error)
         # The field is in the context, not necessarily in the string representation
         assert error.message == "Invalid value"
+
+# 🧱🏗️🔚

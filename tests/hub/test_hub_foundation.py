@@ -1,15 +1,20 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for hub/foundation.py module."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.hub.foundation import FoundationManager, get_foundation_logger
 from provide.foundation.hub.manager import get_hub
 from provide.foundation.hub.registry import Registry
 from provide.foundation.logger.config import TelemetryConfig
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 
 class TestFoundationManager(FoundationTestCase):
@@ -369,3 +374,5 @@ class TestGetFoundationLogger(FoundationTestCase):
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+# 🧱🏗️🔚

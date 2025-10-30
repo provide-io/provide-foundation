@@ -1,14 +1,16 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for hub/protocols.py module.
 
-This module tests protocol definitions and resource management abstractions.
-"""
+This module tests protocol definitions and resource management abstractions."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock, MagicMock
 import pytest
 
 from provide.foundation.hub.protocols import (
@@ -21,6 +23,8 @@ from provide.foundation.hub.protocols import (
     Initializable,
     ResourceManager,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, MagicMock
 
 
 class TestDisposableProtocol(FoundationTestCase):
@@ -482,3 +486,5 @@ class TestProtocolCombinations(FoundationTestCase):
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+# 🧱🏗️🔚

@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Test predictable initialization behavior.
 
 Tests that Foundation initialization is deterministic and predictable
-across different usage patterns and scenarios.
-"""
+across different usage patterns and scenarios."""
 
 from __future__ import annotations
 
@@ -12,12 +16,12 @@ from pathlib import Path
 import tempfile
 import time
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestPredictableInitialization(FoundationTestCase):
@@ -79,9 +83,8 @@ class TestPredictableInitialization(FoundationTestCase):
         # 2. Environment should be used when no explicit config
         clear_hub()
         # Also reset Foundation state to ensure clean environment
-        from provide.testkit import reset_foundation_setup_for_testing
-
         from provide.foundation.testmode.internal import reset_global_coordinator
+        from provide.testkit import reset_foundation_setup_for_testing
 
         reset_foundation_setup_for_testing()
         reset_global_coordinator()
@@ -394,3 +397,5 @@ class TestPredictableInitialization(FoundationTestCase):
 
         # All exception scenarios should be handled gracefully
         assert True  # If we get here, exception handling worked
+
+# 🧱🏗️🔚

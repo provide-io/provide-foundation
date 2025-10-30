@@ -134,7 +134,4 @@ def lazy_import(parent_module: str, name: str) -> object:
         if _thread_local.import_chain and _thread_local.import_chain[-1] == name:
             _thread_local.import_chain.pop()
 
-
-# 🧱🏗️🔚
-
 # 🧱🏗️🔚

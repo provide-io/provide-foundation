@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for ToolCache operations (get, store, invalidate, expiry)."""
 
 from __future__ import annotations
@@ -6,10 +11,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import tempfile
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.tools.cache import ToolCache
+from provide.testkit import FoundationTestCase
 
 
 class TestToolCacheOperations(FoundationTestCase):
@@ -212,3 +217,5 @@ class TestToolCacheOperations(FoundationTestCase):
         entry = {"cached_at": past_time.isoformat()}
 
         assert cache._is_expired(entry)
+
+# 🧱🏗️🔚

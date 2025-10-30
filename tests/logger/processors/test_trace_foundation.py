@@ -217,5 +217,4 @@ class TestTraceProcessorFoundationLogging(FoundationTestCase):
             # Should still return the original event dict
             assert result["event"] == "test"
 
-
 # 🧱🏗️🔚

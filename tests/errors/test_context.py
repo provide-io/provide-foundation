@@ -1,10 +1,13 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for provide.foundation.errors.context module."""
 
 from __future__ import annotations
 
 from datetime import datetime
-
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.errors.auth import AuthenticationError
 from provide.foundation.errors.base import FoundationError
@@ -16,6 +19,7 @@ from provide.foundation.errors.context import (
     capture_error_context,
 )
 from provide.foundation.errors.integration import IntegrationError, NetworkError
+from provide.testkit import FoundationTestCase
 
 
 class TestErrorSeverity(FoundationTestCase):
@@ -443,3 +447,5 @@ class TestErrorContextIntegration(FoundationTestCase):
 
         assert ctx.category == ErrorCategory.EXTERNAL
         assert ctx.get_namespace("error")["type"] == "IntegrationError"
+
+# 🧱🏗️🔚

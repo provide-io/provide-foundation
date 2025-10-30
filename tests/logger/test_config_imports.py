@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Test coverage for logger config module imports."""
 
 from __future__ import annotations
@@ -42,3 +47,5 @@ class TestLoggerConfigImports(FoundationTestCase):
 
         # The star import should have worked without error
         # and made the expected names available in local scope
+
+# 🧱🏗️🔚

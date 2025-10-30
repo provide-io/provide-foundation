@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for GZIP compression implementation."""
 
 from __future__ import annotations
@@ -6,11 +11,11 @@ from collections.abc import Callable
 from io import BytesIO
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.gzip import GzipCompressor
+from provide.testkit import FoundationTestCase
 
 
 class TestGzipCompressor(FoundationTestCase):
@@ -158,3 +163,5 @@ class TestGzipCompressor(FoundationTestCase):
         # Test decompressing invalid bytes
         with pytest.raises(ArchiveError):
             gzip_compressor.decompress_bytes(b"not gzip data")
+
+# 🧱🏗️🔚

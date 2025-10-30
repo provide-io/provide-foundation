@@ -1,9 +1,15 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Basic coverage tests for logs CLI commands."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
+
+from provide.testkit import FoundationTestCase
 
 
 class TestLogsCLIBasicCoverage(FoundationTestCase):
@@ -85,3 +91,5 @@ class TestLogsCLIBasicCoverage(FoundationTestCase):
         from provide.foundation.cli.commands.logs import __all__
 
         assert isinstance(__all__, list)
+
+# 🧱🏗️🔚

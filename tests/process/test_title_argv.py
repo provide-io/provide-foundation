@@ -162,5 +162,4 @@ class TestSetProcessTitleFromArgv(FoundationTestCase):
 
         assert title == "soup serve --port 8080 --workers 4"
 
-
 # 🧱🏗️🔚

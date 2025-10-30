@@ -413,5 +413,4 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
             assert span._active is False
             assert span.end_time is not None
 
-
 # 🧱🏗️🔚

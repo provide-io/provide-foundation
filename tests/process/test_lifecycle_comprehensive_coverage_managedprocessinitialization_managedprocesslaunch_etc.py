@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for process/lifecycle.py module."""
 
 from __future__ import annotations
@@ -7,13 +12,13 @@ import sys
 import tempfile
 import threading
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.errors.process import ProcessError
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
 class TestManagedProcessInitialization(FoundationTestCase):
@@ -374,3 +379,5 @@ class TestManagedProcessContextManager(FoundationTestCase):
 
         # Process should still be cleaned up
         assert not proc.is_running()
+
+# 🧱🏗️🔚

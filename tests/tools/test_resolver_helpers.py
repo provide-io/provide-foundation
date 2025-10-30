@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for Foundation tool version resolver helper methods."""
 
 from __future__ import annotations
@@ -180,3 +185,5 @@ class TestVersionResolverHelpers:
 
         result = resolver.sort_versions(versions)
         assert result == ["1.0", "1.0.0", "1.0.1", "2.0"]
+
+# 🧱🏗️🔚

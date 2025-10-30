@@ -81,5 +81,4 @@ class TestStructuredStdlibLogger:
         assert calls[3][0][0] == logging.ERROR
         assert calls[4][0][0] == logging.CRITICAL
 
-
 # 🧱🏗️🔚

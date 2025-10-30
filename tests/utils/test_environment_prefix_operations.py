@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for EnvPrefix operations."""
 
 from __future__ import annotations
@@ -6,11 +11,11 @@ from collections.abc import Generator
 import os
 from typing import Any
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.utils.environment.prefix import EnvPrefix
+from provide.testkit import FoundationTestCase
 
 
 @pytest.fixture
@@ -163,3 +168,5 @@ class TestAllWithPrefix(FoundationTestCase):
             "DEBUG": "true",
         }
         assert result == expected
+
+# 🧱🏗️🔚

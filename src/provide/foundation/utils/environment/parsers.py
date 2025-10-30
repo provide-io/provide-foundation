@@ -125,7 +125,4 @@ def parse_size(value: str) -> int:
 
     return int(amount * units[unit])
 
-
-# 🧱🏗️🔚
-
 # 🧱🏗️🔚

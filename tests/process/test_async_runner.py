@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for async subprocess runner."""
 
 from __future__ import annotations
@@ -5,11 +10,11 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_run, async_shell, async_stream
+from provide.testkit import FoundationTestCase
 
 
 class TestAsyncRunCommand(FoundationTestCase):
@@ -181,3 +186,5 @@ class TestAsyncRunShell(FoundationTestCase):
         result = await async_shell("cat test.txt", cwd=tmp_path)
 
         assert "content" in result.stdout
+
+# 🧱🏗️🔚

@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for metrics module API.
 
 This module contains unit tests for the metrics module API (counter, gauge, histogram).
-Run with: pytest tests/metrics/test_metrics_api_unit.py -v
-"""
+Run with: pytest tests/metrics/test_metrics_api_unit.py -v"""
 
 from __future__ import annotations
 
@@ -266,3 +270,5 @@ __all__ = [
     "TestModuleConstants",
     "TestSetMeter",
 ]
+
+# 🧱🏗️🔚

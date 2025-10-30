@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Fixtures and configuration for OpenObserve integration tests.
 
 This module provides fixtures for integration tests that connect to a real
@@ -20,8 +25,7 @@ Example:
     export OPENOBSERVE_ORG=default
     export OPENOBSERVE_STREAM=default
 
-    pytest tests/integrations/openobserve/ --integration -v
-"""
+    pytest tests/integrations/openobserve/ --integration -v"""
 
 from __future__ import annotations
 
@@ -189,3 +193,5 @@ def test_organization(openobserve_config: OpenObserveConfig) -> str:
 
     """
     return openobserve_config.org or "default"
+
+# 🧱🏗️🔚

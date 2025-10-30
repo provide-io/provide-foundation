@@ -146,5 +146,4 @@ class TestQualityAnalyzerBasic(FoundationTestCase):
         assert AnalysisMetric.FALSE_POSITIVE_RATE in results
         assert AnalysisMetric.FALSE_NEGATIVE_RATE in results
 
-
 # 🧱🏗️🔚

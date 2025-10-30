@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Async support tests for provide-foundation."""
 
 from __future__ import annotations
@@ -6,7 +11,6 @@ import asyncio
 from typing import Any
 
 from attrs import define
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub import (
@@ -16,6 +20,7 @@ from provide.foundation.hub import (
 )
 from provide.foundation.hub.registry import Registry
 from provide.foundation.logger import get_logger
+from provide.testkit import FoundationTestCase
 
 
 class TestAsyncRegistryCompatibility(FoundationTestCase):
@@ -427,3 +432,5 @@ class TestAsyncMixedOperations(FoundationTestCase):
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+# 🧱🏗️🔚

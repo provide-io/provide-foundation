@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for advanced config converters."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.config.validators import (
@@ -21,6 +25,7 @@ from provide.foundation.parsers.primitives import (
     parse_sample_rate,
 )
 from provide.foundation.parsers.structured import parse_headers
+from provide.testkit import FoundationTestCase
 
 
 class TestSampleRateParsing(FoundationTestCase):
@@ -214,3 +219,5 @@ class TestValidators(FoundationTestCase):
 
         with pytest.raises(ValidationError, match="Invalid test"):
             validate_overflow_policy(None, type("attr", (), {"name": "test"})(), "")
+
+# 🧱🏗️🔚

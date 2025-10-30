@@ -148,5 +148,4 @@ class TestIntegration:
             result = shutdown_opentelemetry()
             assert result is None
 
-
 # 🧱🏗️🔚

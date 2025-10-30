@@ -408,5 +408,4 @@ class TestVerifySignatureCommand:
         mock_perr.assert_called_once()
         assert "INVALID" in str(mock_perr.call_args)
 
-
 # 🧱🏗️🔚
