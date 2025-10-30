@@ -30,14 +30,21 @@ class TestIntegrationVerification(FoundationTestCase):
     def test_service_name_injection(self) -> None:
         """Test service name injection with JSON format."""
 
-        # Set environment like the failing test
-        os.environ["PROVIDE_SERVICE_NAME"] = "test-service"
-        os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "json"
+        from provide.testkit.mocking import patch
 
-        from provide.foundation import logger
+        # Set environment like the failing test (restored automatically after context)
+        with patch.dict(
+            os.environ,
+            {
+                "PROVIDE_SERVICE_NAME": "test-service",
+                "PROVIDE_LOG_CONSOLE_FORMATTER": "json",
+            },
+            clear=False,
+        ):
+            from provide.foundation import logger
 
-        logger.info("Message with service name")
-        # If we get here without error, the test passes
+            logger.info("Message with service name")
+            # If we get here without error, the test passes
 
     def test_emergency_fallback(self) -> None:
         """Test emergency fallback doesn't crash."""
