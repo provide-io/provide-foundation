@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for BZIP2 compression implementation."""
 
 from __future__ import annotations
@@ -6,11 +11,11 @@ from collections.abc import Callable
 from io import BytesIO
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.bzip2 import Bzip2Compressor
+from provide.testkit import FoundationTestCase
 
 
 class TestBzip2Compressor(FoundationTestCase):
@@ -157,3 +162,5 @@ class TestBzip2Compressor(FoundationTestCase):
         # Test decompressing invalid bytes
         with pytest.raises(ArchiveError):
             bzip2_compressor.decompress_bytes(b"not bzip2 data")
+
+# 🧱🏗️🔚

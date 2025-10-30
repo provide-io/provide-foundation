@@ -1,22 +1,26 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Chaos tests for logger system.
 
 Property-based tests using Hypothesis to explore edge cases in logging,
-including emoji processing, Unicode handling, and rate-limited logging.
-"""
+including emoji processing, Unicode handling, and rate-limited logging."""
 
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 
 from hypothesis import HealthCheck, given, settings, strategies as st
+
+from provide.foundation.logger import get_logger
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     rate_burst_patterns,
     thread_counts,
     unicode_chaos,
 )
-
-from provide.foundation.logger import get_logger
 
 
 class TestLoggerUnicodeChaos(FoundationTestCase):
@@ -199,3 +203,5 @@ __all__ = [
     "TestLoggerConcurrencyChaos",
     "TestLoggerUnicodeChaos",
 ]
+
+# 🧱🏗️🔚

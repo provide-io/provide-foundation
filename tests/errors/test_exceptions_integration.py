@@ -88,5 +88,4 @@ class TestTimeoutError(FoundationTestCase):
         error = TimeoutError("Too slow", elapsed_seconds=45.5)
         assert error.context["timeout.elapsed"] == 45.5
 
-
 # 🧱🏗️🔚

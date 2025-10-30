@@ -351,5 +351,4 @@ class BaseToolManager(ABC):
 
         return {"platform": system, "arch": arch}
 
-
 # 🧱🏗️🔚

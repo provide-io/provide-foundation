@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for CLI logs send command."""
 
 from __future__ import annotations
@@ -331,3 +336,5 @@ class TestEdgeCases:
         expected = {"negative_float": -123.45, "negative_int": "-123"}
         assert result_attrs == expected
         assert result_code == 0
+
+# 🧱🏗️🔚

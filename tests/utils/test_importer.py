@@ -1,12 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 import sys
 import threading
 
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.utils.importer import MAX_LAZY_IMPORT_DEPTH, lazy_import
+from provide.testkit.mocking import patch
 
 """Tests for the lazy import utility module."""
 
@@ -251,3 +258,5 @@ class TestLazyImportEdgeCases:
         assert "cli" in SPECIAL_MODULES
         assert "pip install" in SPECIAL_MODULES["cli"]
         assert "provide-foundation[cli]" in SPECIAL_MODULES["cli"]
+
+# 🧱🏗️🔚

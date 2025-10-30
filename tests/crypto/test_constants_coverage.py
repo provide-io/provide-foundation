@@ -1,11 +1,15 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Additional tests for crypto defaults to improve code coverage."""
 
 from __future__ import annotations
 
+from provide.foundation.crypto import defaults as constants
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
-
-from provide.foundation.crypto import defaults as constants
 
 
 class TestCryptoConstantsCoverage(FoundationTestCase):
@@ -124,3 +128,5 @@ class TestCryptoConstantsCoverage(FoundationTestCase):
         assert result1 == result2
         assert isinstance(result1, str)
         assert result1 == constants.DEFAULT_SIGNATURE_ALGORITHM
+
+# 🧱🏗️🔚

@@ -1,13 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for RetryExecutor - the unified retry execution engine.
 
-This test file follows TDD principles - tests are written before implementation.
-"""
+This test file follows TDD principles - tests are written before implementation."""
 
 from typing import Never
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
-from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.retry import (
@@ -15,6 +16,9 @@ from provide.foundation.resilience.retry import (
     RetryPolicy,
 )
 from provide.foundation.resilience.types import BackoffStrategy
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
+from provide.testkit.time import make_controlled_time
 
 
 class TestRetryExecutorSync(FoundationTestCase):
@@ -265,3 +269,5 @@ class TestRetryExecutorSync(FoundationTestCase):
 
         # Function should have been called 3 times (all attempts)
         assert mock_func.call_count == 3
+
+# 🧱🏗️🔚

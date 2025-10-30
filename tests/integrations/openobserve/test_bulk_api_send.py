@@ -279,5 +279,4 @@ class TestSendLogBulk:
         assert data_line["error_code"] == "500"
         assert data_line["user"] == "admin"
 
-
 # 🧱🏗️🔚

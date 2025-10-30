@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for CLI decorators."""
 
 from __future__ import annotations
@@ -7,13 +12,13 @@ import tempfile
 
 import click
 from click.testing import CliRunner
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.cli.decorators import (
     config_options,
     logging_options,
     output_options,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestLoggingOptions(FoundationTestCase):
@@ -195,3 +200,5 @@ class TestConfigOptions(FoundationTestCase):
         result = runner.invoke(cmd, ["--profile", "production"])
         assert result.exit_code == 0
         assert "profile=production" in result.output
+
+# 🧱🏗️🔚

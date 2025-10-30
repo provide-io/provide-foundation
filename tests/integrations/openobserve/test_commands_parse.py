@@ -58,5 +58,4 @@ class TestParseFilterToDict(FoundationTestCase):
         result = _parse_filter_to_dict("http_status_code=500")
         assert result == {"http_status_code": "500"}
 
-
 # 🧱🏗️🔚

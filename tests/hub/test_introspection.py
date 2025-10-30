@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for framework-agnostic parameter introspection."""
 
 from __future__ import annotations
@@ -5,7 +10,6 @@ from __future__ import annotations
 import inspect
 from typing import Annotated
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.cli.errors import InvalidCLIHintError
@@ -14,6 +18,7 @@ from provide.foundation.hub.introspection import (
     extract_cli_hint,
     introspect_parameters,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestExtractCLIHint(FoundationTestCase):
@@ -249,3 +254,5 @@ class TestParameterInfo(FoundationTestCase):
         assert param.cli_hint == "option"
         assert param.is_required is True
         assert param.has_default is False
+
+# 🧱🏗️🔚

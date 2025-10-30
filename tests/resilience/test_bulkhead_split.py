@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for ResourcePool split into SyncResourcePool and AsyncResourcePool.
 
 This module tests the separation of sync and async resource pools to prevent
-mixing of threading and asyncio primitives.
-"""
+mixing of threading and asyncio primitives."""
 
 from __future__ import annotations
 
@@ -11,10 +15,10 @@ import threading
 import time
 from typing import TYPE_CHECKING
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.resilience.bulkhead import AsyncResourcePool, Bulkhead, SyncResourcePool
+from provide.testkit import FoundationTestCase
 
 if TYPE_CHECKING:
     pass
@@ -434,3 +438,5 @@ __all__ = [
     "TestSyncResourcePoolAPI",
     "TestSyncResourcePoolThreadSafety",
 ]
+
+# 🧱🏗️🔚

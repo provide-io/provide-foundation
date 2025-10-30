@@ -1,13 +1,18 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for special config converters."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.parsers.primitives import parse_bool_strict
 from provide.foundation.parsers.structured import parse_module_levels
 from provide.foundation.parsers.telemetry import parse_foundation_log_output
+from provide.testkit import FoundationTestCase
 
 
 class TestFoundationLogOutputParsing(FoundationTestCase):
@@ -141,3 +146,5 @@ class TestModuleLevelsDictInput(FoundationTestCase):
     def test_parse_module_levels_dict_empty(self) -> None:
         """Test parsing empty dict."""
         assert parse_module_levels({}) == {}
+
+# 🧱🏗️🔚

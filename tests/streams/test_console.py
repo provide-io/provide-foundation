@@ -1,10 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 import os
 import sys
-
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.streams.console import (
     get_console_stream,
@@ -12,6 +16,8 @@ from provide.foundation.streams.console import (
     supports_color,
     write_to_console,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 #
 # test_console.py
@@ -317,9 +323,8 @@ class TestWriteToConsole(FoundationTestCase):
 
     def test_write_to_console_with_logging_failure_fallback(self) -> None:
         """Test write_to_console when both stream and Foundation logger fail."""
-        from provide.testkit.mocking import patch
-
         from provide.foundation.streams.core import set_log_stream_for_testing
+        from provide.testkit.mocking import patch
 
         # Create stream that raises exception on write
         mock_stream = Mock()
@@ -413,3 +418,5 @@ class TestConsoleIntegration(FoundationTestCase):
             assert supports_color() is False
         finally:
             set_log_stream_for_testing(None)
+
+# 🧱🏗️🔚

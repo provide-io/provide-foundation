@@ -1,10 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from attrs import define
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.state import (
     ImmutableState,
     StateManager,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestImmutableState(FoundationTestCase):
@@ -46,3 +53,5 @@ class TestStateManager(FoundationTestCase):
         assert manager.current_state is new_state
         assert new_state.generation == 10
         assert old_state.generation == 0
+
+# 🧱🏗️🔚

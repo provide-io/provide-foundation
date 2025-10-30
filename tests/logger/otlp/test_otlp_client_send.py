@@ -153,5 +153,4 @@ class TestSendLog:
         # Should return False due to OTLP unavailable
         assert result is False
 
-
 # 🧱🏗️🔚

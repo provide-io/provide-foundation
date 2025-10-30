@@ -1,12 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for transport cache with health tracking."""
 
 from __future__ import annotations
 
-from provide.testkit.mocking import AsyncMock, MagicMock
 import pytest
 
 from provide.foundation.transport.cache import TransportCache, TransportHealth
 from provide.foundation.transport.errors import TransportCacheEvictedError, TransportError
+from provide.testkit.mocking import AsyncMock, MagicMock
 
 
 class TestTransportHealth:
@@ -383,3 +388,5 @@ class TestTransportCacheCustomThreshold:
 
         # Should never evict with threshold=0
         assert not cache.is_evicted("http")
+
+# 🧱🏗️🔚

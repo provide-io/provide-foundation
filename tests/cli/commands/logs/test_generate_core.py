@@ -1,11 +1,13 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for log generation core functionality."""
 
 from __future__ import annotations
 
 import random
-
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.cli.commands.logs.constants import (
     BURROUGHS_PHRASES,
@@ -13,6 +15,8 @@ from provide.foundation.cli.commands.logs.constants import (
     SERVICE_NAMES,
 )
 from provide.foundation.cli.commands.logs.generator import LogGenerator
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
 class TestGenerateLogEntry(FoundationTestCase):
@@ -301,3 +305,5 @@ class TestHelperFunctions(FoundationTestCase):
 
         # Should call click.echo multiple times for the final report
         assert mock_click.echo.call_count >= 5
+
+# 🧱🏗️🔚

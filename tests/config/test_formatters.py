@@ -405,5 +405,4 @@ class TestFormatterSensitiveHandling(FoundationTestCase):
         password_field = test_config["fields"]["password"]
         assert password_field["default"] == "***SENSITIVE***"
 
-
 # 🧱🏗️🔚

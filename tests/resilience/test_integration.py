@@ -1,11 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Integration tests for resilience module with transport middleware and other components."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.decorators import retry
@@ -17,6 +20,8 @@ from provide.foundation.resilience.retry import (
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.errors import TransportError
 from provide.foundation.transport.middleware import RetryMiddleware
+from provide.testkit import FoundationTestCase
+from provide.testkit.time import make_controlled_time
 
 
 class TestRetryMiddlewareIntegration(FoundationTestCase):
@@ -399,3 +404,5 @@ class TestRetryExecutorWithRealWorld(FoundationTestCase):
 
         assert result == "success"
         assert not breaker.is_open  # Circuit closed
+
+# 🧱🏗️🔚

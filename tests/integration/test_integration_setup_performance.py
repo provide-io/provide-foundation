@@ -142,5 +142,4 @@ def test_performance_with_disabled_features(
     messages_per_second = message_count / duration if duration > 0 else float("inf")
     assert messages_per_second > 500, f"Performance too slow: {messages_per_second:.1f} msg/sec"
 
-
 # 🧱🏗️🔚

@@ -254,5 +254,4 @@ class TestProcessCommandsIntegration(FoundationTestCase):
             # Verify output
             assert mock_pout.call_count == 2
 
-
 # 🧱🏗️🔚

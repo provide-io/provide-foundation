@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for ToolCache initialization and metadata operations."""
 
 from __future__ import annotations
@@ -6,11 +11,11 @@ import json
 from pathlib import Path
 import tempfile
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.tools.cache import ToolCache
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestToolCacheInit(FoundationTestCase):
@@ -119,3 +124,5 @@ class TestToolCacheInit(FoundationTestCase):
 
         # Restore permissions
         cache.cache_dir.chmod(0o755)
+
+# 🧱🏗️🔚

@@ -1,10 +1,16 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for observability/__init__.py module."""
 
 from __future__ import annotations
 
+import pytest
+
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
-import pytest
 
 
 class TestObservabilityModule(FoundationTestCase):
@@ -361,3 +367,5 @@ class TestRealWorldScenarios:
 
         # Should not raise any exceptions
         assert isinstance(is_openobserve_available(), bool)
+
+# 🧱🏗️🔚

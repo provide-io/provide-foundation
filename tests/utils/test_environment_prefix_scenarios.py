@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for EnvPrefix integration scenarios and edge cases."""
 
 from __future__ import annotations
@@ -6,11 +11,11 @@ from collections.abc import Generator
 import os
 from typing import Any
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.utils.environment.prefix import EnvPrefix
+from provide.testkit import FoundationTestCase
 
 
 @pytest.fixture
@@ -137,3 +142,5 @@ class TestModuleIntegration(FoundationTestCase):
         # Just verify it exists and is a TypeVar
         assert T is not None
         assert hasattr(T, "__name__")
+
+# 🧱🏗️🔚

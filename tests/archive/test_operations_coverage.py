@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for archive operations."""
 
 from __future__ import annotations
@@ -5,12 +10,12 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Never
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.operations import ArchiveOperations, OperationChain
 from provide.foundation.archive.types import ArchiveOperation
+from provide.testkit import FoundationTestCase
 
 
 class TestOperationChainConfiguration(FoundationTestCase):
@@ -360,3 +365,5 @@ __all__ = [
     "TestOperationChainTemporaryFileManagement",
     "TestOperationChainWithSubdirectories",
 ]
+
+# 🧱🏗️🔚

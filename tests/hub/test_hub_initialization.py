@@ -1,7 +1,11 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Test Hub initialization and Foundation lifecycle management.
 
-Tests for the unified initialization through Hub, replacing legacy setup functions.
-"""
+Tests for the unified initialization through Hub, replacing legacy setup functions."""
 
 from __future__ import annotations
 
@@ -11,12 +15,12 @@ import threading
 import time
 from typing import TextIO
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestHubInitialization(FoundationTestCase):
@@ -250,3 +254,5 @@ class TestHubInitialization(FoundationTestCase):
 
         # Should create logger in <1ms average
         assert avg_time < 0.001, f"Logger creation averaged {avg_time:.6f}s, expected <0.001s"
+
+# 🧱🏗️🔚

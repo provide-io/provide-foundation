@@ -1,7 +1,13 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Basic coverage tests for utils modules."""
 
-from provide.testkit import FoundationTestCase
 import pytest
+
+from provide.testkit import FoundationTestCase
 
 
 class TestUtilsBasicCoverage(FoundationTestCase):
@@ -125,3 +131,5 @@ class TestUtilsBasicCoverage(FoundationTestCase):
         stderr = get_safe_stderr()
         assert hasattr(stderr, "write")
         assert callable(stderr.write)
+
+# 🧱🏗️🔚

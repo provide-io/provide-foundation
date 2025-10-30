@@ -463,5 +463,4 @@ class TestResetOtlpProvider:
         # Should still clear provider despite flush error
         assert otlp_mod._OTLP_LOGGER_PROVIDER is None
 
-
 # 🧱🏗️🔚

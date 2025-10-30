@@ -1,3 +1,10 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 import json
@@ -6,12 +13,12 @@ from pathlib import Path
 import socket
 import time
 
-from provide.testkit import MinimalTestCase
-from provide.testkit.mocking import MagicMock, patch
 import psutil
 import pytest
 
 from provide.foundation.file.lock import FileLock, LockError
+from provide.testkit import MinimalTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 """Tests for PID recycling protection in file locks."""
 
@@ -476,3 +483,5 @@ class TestFileLockPIDRecyclingEdgeCases(MinimalTestCase):
         assert abs(lock_info["start_time"] - proc.create_time()) < 1.0
 
         lock.release()
+
+# 🧱🏗️🔚

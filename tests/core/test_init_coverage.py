@@ -1,12 +1,18 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Coverage tests for foundation __init__.py module."""
 
 from __future__ import annotations
 
 import sys
 
+import pytest
+
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
-import pytest
 
 
 class TestFoundationInit(FoundationTestCase):
@@ -278,3 +284,5 @@ class TestModuleAttributes(FoundationTestCase):
 
         for export in config_exports:
             assert hasattr(provide.foundation, export), f"Missing config export: {export}"
+
+# 🧱🏗️🔚

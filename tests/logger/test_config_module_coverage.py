@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for logger/config.py module."""
 
 from __future__ import annotations
@@ -72,3 +77,5 @@ class TestLoggerConfigModule(FoundationTestCase):
         assert "TelemetryConfig" in exec_globals
         # Should only import what's in __all__
         assert len([k for k in exec_globals if not k.startswith("__")]) == 2
+
+# 🧱🏗️🔚

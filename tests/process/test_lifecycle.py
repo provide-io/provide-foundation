@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for process lifecycle management."""
 
 from __future__ import annotations
@@ -5,12 +10,12 @@ from __future__ import annotations
 import asyncio
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.process import ProcessError
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
+from provide.testkit import FoundationTestCase
 
 
 class TestManagedProcess(FoundationTestCase):
@@ -257,3 +262,5 @@ class TestWaitForProcessOutput(FoundationTestCase):
         finally:
             process.terminate_gracefully()
             process.cleanup()
+
+# 🧱🏗️🔚

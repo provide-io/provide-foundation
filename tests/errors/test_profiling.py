@@ -1,12 +1,15 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for errors/profiling.py.
 
 This module contains comprehensive tests for profiling-related exception classes.
-Run with: pytest tests/errors/test_profiling.py -v
-"""
+Run with: pytest tests/errors/test_profiling.py -v"""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.profiling import (
@@ -15,6 +18,7 @@ from provide.foundation.errors.profiling import (
     ProfilingError,
     SamplingError,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestProfilingError(FoundationTestCase):
@@ -293,3 +297,5 @@ __all__ = [
     "TestProfilingErrorExceptionHierarchy",
     "TestSamplingError",
 ]
+
+# 🧱🏗️🔚

@@ -1,12 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for utils/environment/parsers.py module."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.utils.environment.parsers import parse_duration, parse_size
+from provide.testkit import FoundationTestCase
 
 
 class TestParseDuration(FoundationTestCase):
@@ -365,3 +370,5 @@ class TestEdgeCasesAndRegressions(FoundationTestCase):
         # Zero values
         assert parse_duration("0") == 0
         assert parse_size("0") == 0
+
+# 🧱🏗️🔚

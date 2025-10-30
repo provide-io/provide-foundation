@@ -1,9 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 # tests/test_eventsets.py
 """Tests for Event Set configuration, resolution, and processing."""
-
-from provide.testkit import FoundationTestCase
 
 from provide.foundation import (
     logger as global_logger,
@@ -15,6 +20,7 @@ from provide.foundation.eventsets.types import (
     EventSet,
     FieldMapping,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestEventSetRegistry(FoundationTestCase):
@@ -176,3 +182,5 @@ class TestLoggingIntegration(FoundationTestCase):
             assert True
         except Exception as e:
             raise AssertionError(f"Event enrichment failed: {e}") from e
+
+# 🧱🏗️🔚

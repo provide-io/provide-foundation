@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for OpenObserve CLI commands.
 
 Tests all CLI command functionality with mocked dependencies.
-Requires click to be installed.
-"""
+Requires click to be installed."""
 
 from __future__ import annotations
 
@@ -220,3 +224,5 @@ if _HAS_CLICK:
 
                 assert result.exit_code == 0
                 assert "Stopped tailing" in result.output
+
+# 🧱🏗️🔚

@@ -1,14 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for SchemaField validation and edge cases."""
 
 from typing import Never
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.config.schema import (
     SchemaField,
 )
 from provide.foundation.errors import ConfigValidationError
+from provide.testkit import FoundationTestCase
 
 
 class TestSchemaFieldComprehensive(FoundationTestCase):
@@ -310,3 +315,5 @@ class TestSchemaFieldEdgeCases(FoundationTestCase):
 
         with pytest.raises(ConfigValidationError, match="Value must be >= aaa"):
             field_obj.validate("aa")  # Below min alphabetically
+
+# 🧱🏗️🔚

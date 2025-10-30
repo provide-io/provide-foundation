@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for stream testing utilities."""
 
 from __future__ import annotations
@@ -153,3 +158,5 @@ class TestStreamTestingUtilities(FoundationTestCase):
         finally:
             reset_log_stream()
             reset_foundation_setup_for_testing()
+
+# 🧱🏗️🔚

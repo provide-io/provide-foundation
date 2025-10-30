@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for hub/type_mapping.py module."""
 
 from __future__ import annotations
@@ -7,11 +12,11 @@ import types
 import typing
 from typing import Any, Optional, Union
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.hub.type_mapping import extract_click_type
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestExtractClickTypeBasicTypes(FoundationTestCase):
@@ -387,3 +392,5 @@ class TestTypeMappingIntegration(FoundationTestCase):
 
         # Should extract the first non-None type from the union
         assert result in (str, int)  # Could be either depending on implementation
+
+# 🧱🏗️🔚

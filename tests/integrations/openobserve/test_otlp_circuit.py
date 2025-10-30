@@ -450,5 +450,4 @@ class TestThreadSafety:
                 result = future.result()
                 assert result >= 0
 
-
 # 🧱🏗️🔚

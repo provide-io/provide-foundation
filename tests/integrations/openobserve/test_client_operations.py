@@ -1,15 +1,17 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for OpenObserve client operations with mocked transport.
 
 This module tests search, list streams, and connection testing operations.
-Run with: pytest tests/integrations/openobserve/test_client_operations.py -v
-"""
+Run with: pytest tests/integrations/openobserve/test_client_operations.py -v"""
 
 from __future__ import annotations
 
 from typing import Any
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock
 import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
@@ -23,6 +25,8 @@ from provide.foundation.transport.errors import (
     TransportError,
     TransportTimeoutError,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock
 
 
 class MockResponse:
@@ -395,3 +399,5 @@ __all__ = [
     "TestMakeRequest",
     "TestSearch",
 ]
+
+# 🧱🏗️🔚

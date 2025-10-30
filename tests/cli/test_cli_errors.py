@@ -1,8 +1,11 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for CLI error classes."""
 
 from __future__ import annotations
-
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.cli.errors import (
     CLIAdapterNotFoundError,
@@ -10,6 +13,7 @@ from provide.foundation.cli.errors import (
     CLIError,
     InvalidCLIHintError,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestCLIErrors(FoundationTestCase):
@@ -76,3 +80,5 @@ class TestCLIErrors(FoundationTestCase):
 
         assert error.cause is cause
         assert error.__cause__ is cause
+
+# 🧱🏗️🔚

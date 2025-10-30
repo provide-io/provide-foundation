@@ -1,3 +1,10 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from __future__ import annotations
 
 """Performance benchmarks using pytest-benchmark.
@@ -14,12 +21,11 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 import io
 
+from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 from provide.testkit import (
     FoundationTestCase,
     set_log_stream_for_testing,
 )
-
-from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 
 
 @contextmanager
@@ -323,3 +329,5 @@ class TestLargePayloadPerformance(FoundationTestCase):
             benchmark(log_large_payloads)
 
             # Performance validated by benchmark output - large payloads handled efficiently
+
+# 🧱🏗️🔚

@@ -1,12 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for cli/__init__.py.
 
-These tests target uncovered lines and edge cases in the CLI module initialization.
-"""
+These tests target uncovered lines and edge cases in the CLI module initialization."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.cli import (
@@ -16,6 +18,8 @@ from provide.foundation.cli import (
     CLIError,
     get_cli_adapter,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 
 class TestGetCLIAdapter(FoundationTestCase):
@@ -280,3 +284,5 @@ __all__ = [
     "TestGetCLIAdapterImportErrors",
     "TestGetCLIAdapterIntegration",
 ]
+
+# 🧱🏗️🔚

@@ -257,5 +257,4 @@ class TestConfigLoaderIntegration(FoundationTestCase):
         with pytest.raises(ConfigurationError):
             loader.load(TestConfig)
 
-
 # 🧱🏗️🔚

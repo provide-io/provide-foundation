@@ -51,5 +51,4 @@ class TestAuthorizationError(FoundationTestCase):
         error = AuthorizationError("Denied", actor="user:123")
         assert error.context["authz.actor"] == "user:123"
 
-
 # 🧱🏗️🔚

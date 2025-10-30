@@ -1,11 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for archive/types.py.
 
-These tests target uncovered lines and edge cases in the archive types module.
-"""
+These tests target uncovered lines and edge cases in the archive types module."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.types import (
@@ -14,6 +17,7 @@ from provide.foundation.archive.types import (
     ArchiveOperation,
     get_operation_from_string,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestArchiveOperationEnum(FoundationTestCase):
@@ -336,3 +340,5 @@ __all__ = [
     "TestInverseOperations",
     "TestOperationNames",
 ]
+
+# 🧱🏗️🔚

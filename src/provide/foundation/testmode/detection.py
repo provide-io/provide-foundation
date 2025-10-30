@@ -188,5 +188,4 @@ def configure_structlog_for_test_safety() -> None:
         cache_logger_on_first_use=False,  # Disable caching for test isolation
     )
 
-
 # 🧱🏗️🔚

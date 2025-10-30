@@ -1,10 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for provide.foundation.errors.exceptions module."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-
 from provide.foundation.errors.base import FoundationError
+from provide.testkit import FoundationTestCase
 
 
 class TestFoundationError(FoundationTestCase):
@@ -128,3 +132,5 @@ class TestFoundationError(FoundationTestCase):
         # Can still override with explicit code
         error2 = CustomError("Test", code="OVERRIDE")
         assert error2.code == "OVERRIDE"
+
+# 🧱🏗️🔚

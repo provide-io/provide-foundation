@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive coverage tests for logger/config.py re-exports module."""
 
 from __future__ import annotations
@@ -154,3 +159,5 @@ class TestConfigModuleIntegration:
         except ImportError as e:
             # If there's an import error, it should be from the underlying modules
             assert "logging" in str(e) or "telemetry" in str(e)
+
+# 🧱🏗️🔚

@@ -1,6 +1,9 @@
-"""Tests for config.errors module."""
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 
-from provide.testkit import FoundationTestCase
+"""Tests for config.errors module."""
 
 from provide.foundation.config.errors import (
     ConfigError,
@@ -9,6 +12,7 @@ from provide.foundation.config.errors import (
     format_invalid_value_error,
     format_validation_error,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestConfigError(FoundationTestCase):
@@ -310,3 +314,5 @@ class TestErrorIntegration(FoundationTestCase):
         except ParseError as e:
             assert e.__cause__ == original_error
             assert isinstance(e, ConfigError)
+
+# 🧱🏗️🔚

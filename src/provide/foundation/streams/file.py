@@ -127,7 +127,4 @@ def reset_streams() -> None:
     if not is_in_click_testing():
         close_log_streams()
 
-
-# 🧱🏗️🔚
-
 # 🧱🏗️🔚

@@ -66,5 +66,4 @@ __all__ = [
     "skip_in_test_mode",
 ]
 
-
 # 🧱🏗️🔚

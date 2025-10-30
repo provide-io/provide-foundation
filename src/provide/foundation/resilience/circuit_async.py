@@ -129,5 +129,4 @@ class AsyncCircuitBreaker:
             self._failure_count = 0
             self._last_failure_time = None
 
-
 # 🧱🏗️🔚

@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for file locking."""
 
 from __future__ import annotations
@@ -9,10 +14,10 @@ from pathlib import Path
 import threading
 import time
 
-from provide.testkit import MinimalTestCase
 import pytest
 
 from provide.foundation.file.lock import FileLock, LockError
+from provide.testkit import MinimalTestCase
 
 
 class TestFileLock(MinimalTestCase):
@@ -331,3 +336,5 @@ class TestFileLock(MinimalTestCase):
         lock.release()
         assert not lock.locked
         assert not lock_path.exists()
+
+# 🧱🏗️🔚

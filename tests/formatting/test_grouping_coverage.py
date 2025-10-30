@@ -1,10 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for formatting/grouping.py module."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-
 from provide.foundation.formatting.grouping import format_grouped
+from provide.testkit import FoundationTestCase
 
 
 class TestFormatGrouped(FoundationTestCase):
@@ -276,3 +280,5 @@ class TestRealWorldUseCases:
         long_id = "verylongidentifierthatshouldbetruncat"
         result = format_grouped(long_id, group_size=4, groups=3, separator=" ")
         assert result == "very long iden"  # Shows first 3 groups only
+
+# 🧱🏗️🔚

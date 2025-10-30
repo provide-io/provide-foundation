@@ -1,7 +1,11 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for Hub and Container dependency injection.
 
-Tests Hub.register(), Hub.resolve(), and Container class functionality.
-"""
+Tests Hub.register(), Hub.resolve(), and Container class functionality."""
 
 from __future__ import annotations
 
@@ -313,3 +317,5 @@ class TestDependencyInjectionIntegration:
 
         assert repo.db is db
         assert repo.logger is logger
+
+# 🧱🏗️🔚

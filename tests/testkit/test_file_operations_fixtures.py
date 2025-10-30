@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for testkit file operations fixtures."""
 
 from __future__ import annotations
@@ -5,7 +10,6 @@ from __future__ import annotations
 from pathlib import Path
 
 from provide.testkit import FoundationTestCase
-
 from tests.file.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
@@ -302,3 +306,5 @@ class TestIntegrationScenarios(FoundationTestCase):
                 assert operation.confidence <= 1.0, (
                     f"Invalid confidence in {pattern_name}: {operation.confidence}"
                 )
+
+# 🧱🏗️🔚

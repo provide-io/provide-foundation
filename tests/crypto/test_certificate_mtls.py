@@ -1,11 +1,17 @@
-# pyvider/rpcplugin/tests/test_certificate_mtls.py
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
 from typing import Any
 
-from provide.testkit import FoundationTestCase
 import pytest
+
+from provide.testkit import FoundationTestCase
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert
@@ -28,3 +34,5 @@ class TestCertificateMTLS(FoundationTestCase):
 
 
 # 🐍🔌🧪🪄
+
+# 🧱🏗️🔚

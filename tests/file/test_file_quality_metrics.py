@@ -227,5 +227,4 @@ class TestQualityAnalyzerMetrics(FoundationTestCase):
         # Should handle empty results gracefully
         assert confidence.value >= 0.0
 
-
 # 🧱🏗️🔚

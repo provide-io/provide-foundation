@@ -71,5 +71,4 @@ class TestAtomicWriteDefaults(FoundationTestCase):
         # Should be a valid Python encoding
         "test".encode(DEFAULT_ATOMIC_ENCODING)
 
-
 # 🧱🏗️🔚

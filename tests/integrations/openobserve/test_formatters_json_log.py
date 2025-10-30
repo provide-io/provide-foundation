@@ -1,20 +1,23 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for OpenObserve JSON and log formatters.
 
 This module contains unit tests for JSON and log line formatting.
-These are pure unit tests that don't require a running OpenObserve instance.
-"""
+These are pure unit tests that don't require a running OpenObserve instance."""
 
 from __future__ import annotations
 
 from datetime import datetime
-
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.integrations.openobserve.formatters import (
     format_json,
     format_log_line,
 )
 from provide.foundation.integrations.openobserve.models import SearchResponse
+from provide.testkit import FoundationTestCase
 
 
 class TestFormatJson(FoundationTestCase):
@@ -167,3 +170,5 @@ __all__ = [
     "TestFormatJson",
     "TestFormatLogLine",
 ]
+
+# 🧱🏗️🔚

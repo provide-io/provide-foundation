@@ -449,5 +449,4 @@ def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
 
     return decorator
 
-
 # 🧱🏗️🔚

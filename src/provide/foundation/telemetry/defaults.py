@@ -35,5 +35,4 @@ __all__ = [
     "default_otlp_headers",
 ]
 
-
 # 🧱🏗️🔚

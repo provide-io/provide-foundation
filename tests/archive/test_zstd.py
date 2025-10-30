@@ -1,18 +1,22 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for archive/zstd.py.
 
 This module contains comprehensive tests for Zstandard compression.
-Run with: pytest tests/archive/test_zstd.py -v
-"""
+Run with: pytest tests/archive/test_zstd.py -v"""
 
 from __future__ import annotations
 
 import io
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.archive.zstd import ZstdCompressor
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 # Check if zstandard is available
 try:
@@ -266,3 +270,5 @@ __all__ = [
     "TestZstdCompressorStream",
     "TestZstdCompressorValidation",
 ]
+
+# 🧱🏗️🔚

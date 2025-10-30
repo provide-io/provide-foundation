@@ -1,9 +1,11 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Advanced cleanup, config loading, and miscellaneous tests for hub components module."""
 
 from __future__ import annotations
-
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock, Mock
 
 from provide.foundation.hub.components import (
     ComponentCategory,
@@ -14,6 +16,8 @@ from provide.foundation.hub.components import (
     get_component_registry,
     load_config_from_registry,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock
 
 
 class TestAdvancedCleanup(FoundationTestCase):
@@ -217,3 +221,5 @@ class TestMiscellaneousFunctionality(FoundationTestCase):
         with lock_manager.acquire("foundation.registry"):
             registry = get_component_registry()
             assert registry is not None
+
+# 🧱🏗️🔚

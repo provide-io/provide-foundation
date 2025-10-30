@@ -35,5 +35,4 @@ class SerializationCacheConfig(RuntimeConfig):
         description="Maximum number of cached serialization results",
     )
 
-
 # 🧱🏗️🔚

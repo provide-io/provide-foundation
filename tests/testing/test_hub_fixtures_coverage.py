@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Additional tests for testing hub fixtures to improve code coverage."""
 
 from __future__ import annotations
@@ -66,3 +71,5 @@ class TestHubFixturesCoverage(FoundationTestCase):
 
         # Test parent access
         assert config_file.parent == default_container_directory
+
+# 🧱🏗️🔚

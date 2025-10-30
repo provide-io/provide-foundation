@@ -1,14 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for the unified Context class."""
 
 import os
 from pathlib import Path
 import tempfile
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.context import CLIContext as Context
 from provide.foundation.errors.runtime import StateError
+from provide.testkit import FoundationTestCase
 
 
 class TestContext(FoundationTestCase):
@@ -300,3 +305,5 @@ profile = "config_profile"
         # Modifying copy shouldn't affect original
         copy.log_level = "INFO"
         assert ctx.log_level == "DEBUG"
+
+# 🧱🏗️🔚

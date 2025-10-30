@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for the shared versioning utility."""
 
 from __future__ import annotations
@@ -161,3 +166,5 @@ def test_reset_version_cache_all_packages(monkeypatch: pytest.MonkeyPatch) -> No
 
     assert version1 == "0.0.0-dev"  # Default since packages don't exist
     assert version2 == "0.0.0-dev"
+
+# 🧱🏗️🔚

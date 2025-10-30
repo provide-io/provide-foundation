@@ -1,15 +1,18 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for simplified file operations API.
 
 These tests demonstrate and validate the new simple functional API for
-file operation detection, providing a cleaner interface for common use cases.
-"""
+file operation detection, providing a cleaner interface for common use cases."""
 
 from __future__ import annotations
 
 from datetime import datetime, timedelta
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 # Test the new simple API
@@ -23,6 +26,7 @@ from provide.foundation.file.operations import (
     detect_all,
     detect_streaming,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestSimpleDetectAPI(FoundationTestCase):
@@ -256,3 +260,5 @@ class TestBackwardCompatibility(FoundationTestCase):
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+# 🧱🏗️🔚

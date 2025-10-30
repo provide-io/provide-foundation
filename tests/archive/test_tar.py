@@ -1,14 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for TAR archive implementation."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.tar import TarArchive
+from provide.testkit import FoundationTestCase
 
 
 class TestTarArchive(FoundationTestCase):
@@ -127,3 +132,5 @@ class TestTarArchive(FoundationTestCase):
         # Test extracting non-existent archive
         with pytest.raises(ArchiveError):
             tar_archive.extract(temp_path / "nonexistent.tar", temp_path / "output")
+
+# 🧱🏗️🔚

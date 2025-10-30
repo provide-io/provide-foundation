@@ -203,5 +203,4 @@ class TestSpanEdgeCases(FoundationTestCase):
         assert result["status"] == "pending"
         assert result["error"] == "Test error"
 
-
 # 🧱🏗️🔚

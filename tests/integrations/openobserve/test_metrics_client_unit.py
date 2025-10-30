@@ -450,5 +450,4 @@ class TestGetLabelValues:
                 params={"match[]": ["{job='api'}"]},
             )
 
-
 # 🧱🏗️🔚

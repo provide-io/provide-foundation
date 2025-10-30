@@ -143,5 +143,4 @@ class TestProcessTitle(FoundationTestCase):
             result = set_process_title(long_title)
             assert result is True
 
-
 # 🧱🏗️🔚

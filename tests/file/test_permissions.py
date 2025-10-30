@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for file permissions utilities."""
 
 from __future__ import annotations
@@ -286,3 +291,5 @@ class TestPermissionsIntegration:
         new_perms = parse_permissions("0400")
         set_file_permissions(test_file, new_perms)
         assert get_permissions(test_file) == 0o400
+
+# 🧱🏗️🔚

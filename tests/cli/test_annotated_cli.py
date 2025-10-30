@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for Annotated type hint support in CLI building."""
 
 from __future__ import annotations
@@ -5,11 +10,11 @@ from __future__ import annotations
 from typing import Annotated
 
 from click.testing import CliRunner
-from provide.testkit import FoundationTestCase
 
 from provide.foundation.cli import get_cli_adapter
 from provide.foundation.hub.commands import register_command
 from provide.foundation.hub.manager import clear_hub, get_hub
+from provide.testkit import FoundationTestCase
 
 
 class TestAnnotatedCLISupport(FoundationTestCase):
@@ -182,3 +187,5 @@ class TestAnnotatedCLISupport(FoundationTestCase):
         # Test without message (uses default None)
         result = runner.invoke(cli, ["send", "--level", "ERROR"])
         assert result.exit_code == 0
+
+# 🧱🏗️🔚

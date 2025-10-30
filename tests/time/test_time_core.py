@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for Foundation time utilities."""
 
 from datetime import UTC, datetime
@@ -5,12 +10,12 @@ import time
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from provide.testkit import FoundationTestCase, MinimalTestCase
-from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.time import provide_now, provide_sleep, provide_time
+from provide.testkit import FoundationTestCase, MinimalTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 
 class TestProvideTime(MinimalTestCase):
@@ -225,3 +230,5 @@ class TestTimeUtilitiesIntegration(FoundationTestCase):
         # provide_now with invalid timezone should raise ZoneInfo error
         with pytest.raises(Exception):  # noqa: B017
             provide_now("Invalid/Timezone")
+
+# 🧱🏗️🔚

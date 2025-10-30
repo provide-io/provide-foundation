@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Mock components for testing."""
 
 from typing import Any
@@ -24,3 +29,5 @@ class MockEntryPointGroup:
 
     def select(self, group: str) -> list[MockEntryPoint]:
         return self.entries.get(group, [])
+
+# 🧱🏗️🔚

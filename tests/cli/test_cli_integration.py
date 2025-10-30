@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Integration tests for CLI functionality."""
 
 from __future__ import annotations
@@ -7,7 +12,6 @@ from pathlib import Path
 import tempfile
 
 import click
-from provide.testkit import CliTestRunner, FoundationTestCase
 
 from provide.foundation.cli.decorators import (
     flexible_options,
@@ -17,6 +21,7 @@ from provide.foundation.cli.decorators import (
 from provide.foundation.cli.utils import setup_cli_logging
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
+from provide.testkit import CliTestRunner, FoundationTestCase
 
 
 class TestCompleteCliIntegration(FoundationTestCase):
@@ -391,3 +396,5 @@ class TestRealWorldScenarios(FoundationTestCase):
         assert result.exit_code == 0
         assert "🔧 Development mode active" in result.output
         # Debug logging configuration is validated by successful execution
+
+# 🧱🏗️🔚

@@ -1,13 +1,18 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for common testing fixtures."""
 
 from __future__ import annotations
 
 import io
 
-from provide.testkit import FoundationTestCase, captured_stderr_for_foundation
 import pytest
 
 from provide.foundation import TelemetryConfig
+from provide.testkit import FoundationTestCase, captured_stderr_for_foundation
 
 
 class TestTestingFixtures(FoundationTestCase):
@@ -124,3 +129,5 @@ class TestTestingFixtures(FoundationTestCase):
         # Verify the interaction
         output = captured_stderr.getvalue()
         assert "Setup called with service: test" in output
+
+# 🧱🏗️🔚

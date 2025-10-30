@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for Foundation queue-based rate limiting."""
 
 from __future__ import annotations
@@ -6,13 +11,13 @@ import sys
 import threading
 import time
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.logger.ratelimit.queue_limiter import (
     BufferedRateLimiter,
     QueuedRateLimiter,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestBufferedRateLimiter(FoundationTestCase):
@@ -324,3 +329,5 @@ class TestQueueLimiterIntegration(FoundationTestCase):
         for _ in range(100):
             allowed, _ = limiter.is_allowed()
             assert allowed is True  # High refill rate should keep allowing
+
+# 🧱🏗️🔚

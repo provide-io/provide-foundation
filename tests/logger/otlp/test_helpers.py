@@ -463,5 +463,4 @@ class TestNormalizeAttributes:
         assert result["bool_true"] is attributes["bool_true"]
         assert result["bool_false"] is attributes["bool_false"]
 
-
 # 🧱🏗️🔚

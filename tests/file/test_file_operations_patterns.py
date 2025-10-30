@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Pattern-specific tests using testkit file operations fixtures."""
 
 from __future__ import annotations
@@ -5,9 +10,9 @@ from __future__ import annotations
 from pathlib import Path
 import tempfile
 
-from provide.testkit import FoundationTestCase
 import pytest
 
+from provide.testkit import FoundationTestCase
 from tests.file.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
@@ -411,3 +416,5 @@ class TestValidationScenarios(FoundationTestCase):
 
 if __name__ == "__main__":
     pytest.main([__file__])
+
+# 🧱🏗️🔚

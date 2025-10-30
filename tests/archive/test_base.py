@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for the BaseArchive abstract interface."""
 
 from __future__ import annotations
@@ -6,10 +11,10 @@ from abc import ABCMeta
 from pathlib import Path
 from typing import Any
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.testkit import FoundationTestCase
 
 
 class TestBaseArchiveInterface(FoundationTestCase):
@@ -168,3 +173,5 @@ class TestBaseArchiveCommonBehavior(FoundationTestCase):
 
         with pytest.raises(ArchiveError, match="Failed to validate archive"):
             archiver.validate(Path("archive"))
+
+# 🧱🏗️🔚

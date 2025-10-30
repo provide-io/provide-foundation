@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for bulkhead pattern and resource pools."""
 
 from __future__ import annotations
@@ -6,10 +11,10 @@ import asyncio
 import threading
 import time
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.resilience.bulkhead import AsyncResourcePool, Bulkhead, SyncResourcePool
+from provide.testkit import FoundationTestCase
 
 
 class TestSyncResourcePool(FoundationTestCase):
@@ -163,3 +168,5 @@ class TestBulkhead(FoundationTestCase):
             bulkhead.execute(lambda: None)
 
         t.join()
+
+# 🧱🏗️🔚

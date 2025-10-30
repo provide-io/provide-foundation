@@ -1,10 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for safe file operations."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.safe import (
@@ -14,6 +18,7 @@ from provide.foundation.file.safe import (
     safe_read,
     safe_read_text,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestSafeFileOperations(FoundationTestCase):
@@ -273,3 +278,5 @@ class TestSafeFileOperations(FoundationTestCase):
 
         with pytest.raises(FileNotFoundError):
             safe_copy(src, dst)
+
+# 🧱🏗️🔚

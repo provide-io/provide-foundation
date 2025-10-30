@@ -1,12 +1,16 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests to achieve 100% coverage - final missing lines."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
-
 from provide.foundation.eventsets.types import FieldMapping
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
 class TestIntegrationFinalCoverage(FoundationTestCase):
@@ -145,3 +149,5 @@ class TestIntegrationFinalCoverage(FoundationTestCase):
         assert field_mapping.description is None
         assert field_mapping.value_type is None
         assert field_mapping.default_value is None
+
+# 🧱🏗️🔚

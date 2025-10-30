@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for environment variable utilities."""
 
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors import ValidationError
@@ -19,6 +23,7 @@ from provide.foundation.utils.environment import (
     parse_size,
     require,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestBasicGetters(FoundationTestCase):
@@ -347,3 +352,5 @@ class TestParsers(FoundationTestCase):
         with pytest.raises(ValidationError) as exc_info:
             parse_size("invalid")
         assert "Invalid size format" in str(exc_info.value)
+
+# 🧱🏗️🔚

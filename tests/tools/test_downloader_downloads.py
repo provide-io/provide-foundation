@@ -194,5 +194,4 @@ class TestDownloadWithProgress:
         # File should be deleted after error
         assert not dest.exists()
 
-
 # 🧱🏗️🔚

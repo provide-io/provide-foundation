@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for hashing operations."""
 
 from __future__ import annotations
@@ -6,7 +11,6 @@ import hashlib
 from io import BytesIO
 from pathlib import Path
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.crypto import (
@@ -18,6 +22,7 @@ from provide.foundation.crypto import (
 from provide.foundation.crypto.hashing import hash_chunks, hash_file_multiple
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.resources import ResourceError
+from provide.testkit import FoundationTestCase
 
 
 class TestHashFile(FoundationTestCase):
@@ -243,3 +248,5 @@ class TestHashChunks(FoundationTestCase):
         result = hash_chunks(iter(chunks))
 
         assert result == expected
+
+# 🧱🏗️🔚

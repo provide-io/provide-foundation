@@ -223,7 +223,4 @@ class StateManager:
         with self._lock, contextlib.suppress(ValueError):
             self._observers.remove(observer)
 
-
-# 🧱🏗️🔚
-
 # 🧱🏗️🔚

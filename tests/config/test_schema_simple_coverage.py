@@ -1,7 +1,9 @@
-"""Simplified tests for config schema to improve code coverage."""
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
+"""Simplified tests for config schema to improve code coverage."""
 
 from provide.foundation.config.schema import (
     ConfigSchema,
@@ -13,6 +15,8 @@ from provide.foundation.config.schema import (
     validate_url_accessible,
     validate_version,
 )
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
 class TestSchemaFieldSimple(FoundationTestCase):
@@ -308,3 +312,5 @@ class TestValidators(FoundationTestCase):
         # Since this is just an example that delegates to validate_url
         assert validate_url_accessible("http://example.com") is True
         assert validate_url_accessible("not-a-url") is False
+
+# 🧱🏗️🔚

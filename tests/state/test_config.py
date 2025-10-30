@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for state/config.py.
 
 This module contains comprehensive tests for VersionedConfig and ConfigManager.
-Run with: pytest tests/state/test_config.py -v
-"""
+Run with: pytest tests/state/test_config.py -v"""
 
 from __future__ import annotations
 
@@ -10,12 +14,12 @@ import threading
 import time
 
 from attrs.exceptions import FrozenInstanceError
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.state.base import ImmutableState
 from provide.foundation.state.config import ConfigManager, VersionedConfig
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 
 
 class TestVersionedConfig(FoundationTestCase):
@@ -459,3 +463,5 @@ __all__ = [
     "TestConfigManager",
     "TestVersionedConfig",
 ]
+
+# 🧱🏗️🔚

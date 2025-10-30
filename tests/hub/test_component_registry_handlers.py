@@ -1,8 +1,12 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """TDD tests for error handler components and thread-safe registry access.
 
 This test suite covers error handler registration, exception type matching,
-priority chains, and thread-safe component access patterns.
-"""
+priority chains, and thread-safe component access patterns."""
 
 from __future__ import annotations
 
@@ -320,3 +324,5 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
         # Cleanup should call component cleanup
         cleanup_all_components("test")
         assert "cleaned" in cleanup_called
+
+# 🧱🏗️🔚

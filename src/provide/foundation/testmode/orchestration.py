@@ -332,5 +332,4 @@ def reset_foundation_for_testing() -> None:
         # Always clear the in-progress flag
         _reset_for_testing_in_progress = False
 
-
 # 🧱🏗️🔚

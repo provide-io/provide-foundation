@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for directory operations."""
 
 from __future__ import annotations
@@ -5,7 +10,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Never
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file import temp_dir
@@ -14,6 +18,7 @@ from provide.foundation.file.directory import (
     ensure_parent_dir,
     safe_rmtree,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestDirectoryOperations(FoundationTestCase):
@@ -222,3 +227,5 @@ class TestDirectoryOperations(FoundationTestCase):
 
             # Restore permissions for cleanup
             protected.chmod(0o755)
+
+# 🧱🏗️🔚

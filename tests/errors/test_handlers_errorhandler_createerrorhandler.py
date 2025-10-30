@@ -1,11 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for provide.foundation.errors.handlers module."""
 
 from __future__ import annotations
 
 from typing import Never
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.errors.base import FoundationError
@@ -15,6 +18,8 @@ from provide.foundation.errors.handlers import (
     create_error_handler,
 )
 from provide.foundation.errors.integration import NetworkError
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 
 class TestErrorHandler(FoundationTestCase):
@@ -230,3 +235,5 @@ class TestCreateErrorHandler(FoundationTestCase):
 
             # Invalid type falls back to default
             assert handler.handle(ValueError("test")) == "default"
+
+# 🧱🏗️🔚

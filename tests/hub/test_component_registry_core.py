@@ -1,17 +1,20 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """TDD tests for core registry-based component management architecture.
 
 This test suite defines Foundation's core registry architecture, metadata handling,
-and bootstrap integration. No backward compatibility is maintained.
-"""
+and bootstrap integration. No backward compatibility is maintained."""
 
 from __future__ import annotations
 
 from contextlib import suppress
 
+from provide.foundation.hub.registry import Registry
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, Mock
-
-from provide.foundation.hub.registry import Registry
 
 
 class TestComponentRegistryArchitecture(FoundationTestCase):
@@ -321,3 +324,5 @@ class TestFoundationBootstrapIntegration(FoundationTestCase):
         # Component should be gone
         retrieved = registry.get("test_isolation", "test")
         assert retrieved is None
+
+# 🧱🏗️🔚

@@ -1,14 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for utils/rate_limiting.py module."""
 
 from __future__ import annotations
 
 import asyncio
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
+from provide.testkit import FoundationTestCase
+from provide.testkit.time import make_controlled_time
 
 
 class TestTokenBucketRateLimiter(FoundationTestCase):
@@ -412,3 +417,5 @@ class TestRateLimitingIntegration(FoundationTestCase):
         assert await limiter2.is_allowed() is True
         assert await limiter2.is_allowed() is True
         assert await limiter2.is_allowed() is False
+
+# 🧱🏗️🔚

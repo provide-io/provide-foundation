@@ -132,5 +132,4 @@ class TestDecoratorRegistry(FoundationTestCase):
             f"Registered functions: {list(registry.keys())}"
         )
 
-
 # 🧱🏗️🔚

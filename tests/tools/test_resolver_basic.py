@@ -1,10 +1,14 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for Foundation tool version resolver."""
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
-
 from provide.foundation.tools.resolver import VersionResolver
+from provide.testkit import FoundationTestCase
 
 
 class TestVersionResolver(FoundationTestCase):
@@ -124,3 +128,5 @@ class TestVersionResolver(FoundationTestCase):
 
         result = resolver.resolve("  latest  ", available)
         assert result == "2.0.0"
+
+# 🧱🏗️🔚

@@ -1,3 +1,8 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Thread safety tests for provide-foundation."""
 
 from __future__ import annotations
@@ -5,7 +10,6 @@ from __future__ import annotations
 import concurrent.futures
 import threading
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub import (
@@ -14,6 +18,7 @@ from provide.foundation.hub import (
     register_command,
 )
 from provide.foundation.hub.registry import Registry
+from provide.testkit import FoundationTestCase
 
 
 class TestRegistryThreadSafety(FoundationTestCase):
@@ -398,3 +403,5 @@ class TestLoggerThreadSafety(FoundationTestCase):
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
+
+# 🧱🏗️🔚

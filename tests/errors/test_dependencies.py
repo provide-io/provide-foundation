@@ -1,14 +1,19 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for dependency-related exceptions."""
 
 from __future__ import annotations
 
 from typing import Never
 
-from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.dependencies import DependencyError, DependencyMismatchError
+from provide.testkit import FoundationTestCase
 
 
 class TestDependencyError(FoundationTestCase):
@@ -202,3 +207,5 @@ class TestDependencyErrorIntegration(FoundationTestCase):
         assert error_dict["dependency.package"] == "test_package"
         assert error_dict["dependency.feature"] == "test"
         assert "No module named 'test_package'" in error_dict["error.cause"]
+
+# 🧱🏗️🔚
