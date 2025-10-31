@@ -142,6 +142,7 @@ class LoggingMiddleware(Middleware):
     def _get_status_emoji(self, status_code: int) -> str:
         """Get emoji for status code."""
         if 200 <= status_code < 300:
+            return "✅"
         if 300 <= status_code < 400:
             return "↩️"
         if 400 <= status_code < 500:
