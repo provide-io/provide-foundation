@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -54,5 +54,6 @@ def configure_hypothesis_for_chaos() -> None:
     # Use --hypothesis-profile=chaos for full testing
     # Use --hypothesis-profile=chaos_ci for CI
     settings.load_profile("chaos_smoke")
+
 
 # 🧱🏗️🔚

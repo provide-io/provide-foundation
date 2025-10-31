@@ -284,4 +284,5 @@ class TarArchive(BaseArchive):
         with file_path.open("rb") as f:
             tar.addfile(tarinfo, f)
 
+
 # 🧱🏗️🔚

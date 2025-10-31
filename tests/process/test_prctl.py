@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -165,5 +165,6 @@ class TestPrctl(FoundationTestCase):
         assert name is None or isinstance(name, str)
 
     # Skipping detailed exception/mock tests for optional Linux modules on non-Linux systems
+
 
 # 🧱🏗️🔚

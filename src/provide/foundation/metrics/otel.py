@@ -106,7 +106,6 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
         reader = PeriodicExportingMetricReader(exporter, export_interval_millis=60000)
         readers.append(reader)
 
-
     # Create meter provider
     meter_provider = MeterProvider(resource=resource, metric_readers=readers)
 
@@ -148,7 +147,6 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
         _set_meter(meter)
 
 
-
 def shutdown_opentelemetry_metrics() -> None:
     """Shutdown OpenTelemetry metrics."""
     if not _HAS_OTEL_METRICS:
@@ -161,5 +159,6 @@ def shutdown_opentelemetry_metrics() -> None:
             slog.debug("📊🛑 OpenTelemetry meter provider shutdown")
     except Exception as e:
         slog.warning(f"⚠️ Error shutting down OpenTelemetry metrics: {e}")
+
 
 # 🧱🏗️🔚

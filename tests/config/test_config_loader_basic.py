@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -181,5 +181,6 @@ class TestDictConfigLoader(FoundationTestCase):
         assert config.name == "dict_config"
         assert config.value == 500
         assert config.enabled is True
+
 
 # 🧱🏗️🔚

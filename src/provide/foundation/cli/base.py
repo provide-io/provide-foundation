@@ -93,4 +93,5 @@ class CLIAdapter(Protocol):
         """
         ...
 
+
 # 🧱🏗️🔚

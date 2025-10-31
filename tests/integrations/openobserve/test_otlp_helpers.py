@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -429,5 +429,6 @@ class TestBuildBulkUrl:
         url = build_bulk_url(client)
 
         assert url == "http://localhost:5080/api/test-org/_bulk"
+
 
 # 🧱🏗️🔚

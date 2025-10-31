@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -75,5 +75,6 @@ class TestAtomicWriteDefaults(FoundationTestCase):
         """Test atomic write encoding is valid."""
         # Should be a valid Python encoding
         "test".encode(DEFAULT_ATOMIC_ENCODING)
+
 
 # 🧱🏗️🔚

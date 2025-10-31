@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -6,6 +6,8 @@
 """Comprehensive coverage tests for ConfigSchema class and schema validation."""
 
 from attrs import define, field
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
 import pytest
 
 from provide.foundation.config.base import BaseConfig
@@ -15,8 +17,6 @@ from provide.foundation.config.schema import (
     validate_schema,
 )
 from provide.foundation.errors import ConfigValidationError
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock
 
 
 class TestConfigSchemaComprehensive(FoundationTestCase):
@@ -284,5 +284,6 @@ class TestValidateSchema(FoundationTestCase):
 
         with pytest.raises(ConfigValidationError, match="Expected type str"):
             validate_schema(mock_config, schema)
+
 
 # 🧱🏗️🔚

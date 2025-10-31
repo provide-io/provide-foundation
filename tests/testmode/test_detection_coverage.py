@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,6 +11,9 @@ from __future__ import annotations
 
 import sys
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
+
 from provide.foundation.testmode.detection import (
     _clear_test_mode_cache,
     is_in_click_testing,
@@ -18,8 +21,6 @@ from provide.foundation.testmode.detection import (
     should_allow_stream_redirect,
     should_use_shared_registries,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 
 class TestIsInTestMode(FoundationTestCase):

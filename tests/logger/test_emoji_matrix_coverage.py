@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,10 +7,11 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 from provide.foundation.eventsets.resolver import get_resolver
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
-from provide.testkit import FoundationTestCase
 
 
 class TestEventSetIntegration(FoundationTestCase):
@@ -21,6 +22,11 @@ class TestEventSetIntegration(FoundationTestCase):
         mapping = EventMapping(
             name="test_mapping",
             default_key="default",
+            visual_markers={
+                "error": "❌",
+                "info": "💡",
+                "success": "✅",
+            },
         )
 
         assert mapping.name == "test_mapping"
@@ -94,7 +100,7 @@ class TestEventSetIntegration(FoundationTestCase):
             "status": "success",
         }
 
-        enriched = resolver.enrich_event(event.copy())
+        resolver.enrich_event(event.copy())
 
         # Should have visual markers added
 
@@ -116,6 +122,7 @@ class TestEventSetIntegration(FoundationTestCase):
 
         mapping = EventMapping(
             name="status_mapping",
+            visual_markers={"success": "✅", "error": "❌"},
             metadata_fields={"success_meta": {"type": "boolean", "value": True}},
             transformations={"uppercase": uppercase_transform},
             default_key="info",
@@ -162,5 +169,6 @@ class TestEventSetIntegration(FoundationTestCase):
         assert event_set.mappings[1].name == "action"
         assert len(event_set.field_mappings) == 1
         assert event_set.field_mappings[0].log_key == "system.status"
+
 
 # 🧱🏗️🔚

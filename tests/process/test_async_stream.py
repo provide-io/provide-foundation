@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,13 +12,13 @@ from pathlib import Path
 import sys
 import tempfile
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock, patch
 import pytest
 
 from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_stream
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock, Mock, patch
 
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial
@@ -279,5 +279,6 @@ class TestAsyncStreamCommand(FoundationTestCase):
                 lines.append(line)
 
             assert len(lines) == 0
+
 
 # 🧱🏗️🔚

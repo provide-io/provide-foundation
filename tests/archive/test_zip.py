@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,11 +9,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.zip import ZipArchive
-from provide.testkit import FoundationTestCase
 
 
 class TestZipArchive(FoundationTestCase):
@@ -179,5 +179,6 @@ class TestZipArchive(FoundationTestCase):
 
         with pytest.raises(ArchiveError):
             zip_archive.extract_file(test_archive, "nonexistent.txt", temp_path / "out.txt")
+
 
 # 🧱🏗️🔚

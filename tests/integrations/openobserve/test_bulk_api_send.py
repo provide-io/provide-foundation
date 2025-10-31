@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -283,5 +283,6 @@ class TestSendLogBulk:
         assert data_line["service"] == "custom-service"
         assert data_line["error_code"] == "500"
         assert data_line["user"] == "admin"
+
 
 # 🧱🏗️🔚

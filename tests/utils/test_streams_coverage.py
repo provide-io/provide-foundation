@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,12 +10,13 @@ from __future__ import annotations
 import io
 import sys
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
+
 from provide.foundation.utils.streams import (
     get_foundation_log_stream,
     get_safe_stderr,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 
 class TestStreamsCoverage(FoundationTestCase):
@@ -184,5 +185,6 @@ class TestStreamsCoverage(FoundationTestCase):
         stdout_stream = get_foundation_log_stream("stdout")
         assert hasattr(stdout_stream, "write")
         assert hasattr(stdout_stream, "flush")
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -227,5 +227,6 @@ def test_trace_level_edge_cases(
     assert len(lines) >= 4, "Not all trace messages were logged"
     trace_count = sum(1 for line in lines if "trace" in line.lower())
     assert trace_count >= 4, "TRACE level not properly handled"
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,9 +7,8 @@
 
 from __future__ import annotations
 
-import pytest
-
 from provide.testkit import FoundationTestCase
+import pytest
 
 
 class TestCLIMainCoverage(FoundationTestCase):
@@ -74,5 +73,6 @@ class TestCLIMainCoverage(FoundationTestCase):
         # Should have these key attributes
         assert hasattr(main, "_HAS_CLICK")
         assert hasattr(main, "_require_click")
+
 
 # 🧱🏗️🔚

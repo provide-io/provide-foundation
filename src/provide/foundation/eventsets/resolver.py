@@ -222,4 +222,5 @@ def enrich_event(event_dict: dict[str, Any]) -> dict[str, Any]:
     """
     return _resolver.enrich_event(event_dict)
 
+
 # 🧱🏗️🔚

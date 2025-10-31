@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,8 @@ from __future__ import annotations
 import time
 
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import (
@@ -19,8 +21,6 @@ from provide.foundation.crypto import (
     generate_rsa_keypair,
 )
 from provide.foundation.crypto.keys import KeyGenerationError
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 # Constants for compatibility
 KEY_TYPE_RSA = "rsa"
@@ -129,5 +129,6 @@ class TestKeys(FoundationTestCase):
         Certificate.generate(key_type=KEY_TYPE_RSA, key_size=2048)
         generation_time = time.time() - start_time
         assert generation_time < 1.0  # Should complete within 1 second
+
 
 # 🧱🏗️🔚

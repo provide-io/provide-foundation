@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -15,14 +15,14 @@ import math
 import sys
 
 from hypothesis import HealthCheck, given, settings, strategies as st
-import pytest
-
-from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     rate_burst_patterns,
     time_advances,
 )
+import pytest
+
+from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 
 
 class TestTokenBucketChaos(FoundationTestCase):

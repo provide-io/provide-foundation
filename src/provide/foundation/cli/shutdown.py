@@ -79,12 +79,14 @@ def _cleanup_foundation_resources() -> None:
 
 
 def _signal_handler(signum: int, frame: Any) -> None:
-    """Handle interrupt signals (SIGINT, SIGTERM).
+    """Handle interrupt signals (SIGINT, SIGTERM on Unix).
 
     Args:
         signum: Signal number
         frame: Current stack frame
 
+    Note:
+        On Windows, only SIGINT is supported. SIGTERM doesn't exist.
     """
     signal_name = signal.Signals(signum).name
     log.info(f"Received {signal_name}, cleaning up...")
@@ -110,7 +112,8 @@ def _restore_signal_handlers() -> None:
     if _original_sigint_handler is not None:
         signal.signal(signal.SIGINT, _original_sigint_handler)
 
-    if _original_sigterm_handler is not None:
+    # SIGTERM only exists on Unix-like systems
+    if sys.platform != "win32" and _original_sigterm_handler is not None:
         signal.signal(signal.SIGTERM, _original_sigterm_handler)
 
     _handlers_registered = False
@@ -142,11 +145,17 @@ def register_cleanup_handlers(*, manage_signals: bool = True) -> None:
     if manage_signals:
         # Save original handlers
         _original_sigint_handler = signal.getsignal(signal.SIGINT)
-        _original_sigterm_handler = signal.getsignal(signal.SIGTERM)
+
+        # SIGTERM only exists on Unix-like systems
+        if sys.platform != "win32":
+            _original_sigterm_handler = signal.getsignal(signal.SIGTERM)
 
         # Register our handlers
         signal.signal(signal.SIGINT, _signal_handler)
-        signal.signal(signal.SIGTERM, _signal_handler)
+
+        # Register SIGTERM handler on Unix only
+        if sys.platform != "win32":
+            signal.signal(signal.SIGTERM, _signal_handler)
 
         _handlers_registered = True
         log.trace("Registered cleanup handlers with signal management")

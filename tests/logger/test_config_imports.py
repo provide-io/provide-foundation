@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -47,5 +47,6 @@ class TestLoggerConfigImports(FoundationTestCase):
 
         # The star import should have worked without error
         # and made the expected names available in local scope
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -159,5 +159,6 @@ class TestConfigModuleIntegration:
         except ImportError as e:
             # If there's an import error, it should be from the underlying modules
             assert "logging" in str(e) or "telemetry" in str(e)
+
 
 # 🧱🏗️🔚

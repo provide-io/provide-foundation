@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -393,5 +393,6 @@ class TestIntegration:
         minimal_attrs = build_resource_attributes("minimal-service")
         assert len(minimal_attrs) == 1
         assert minimal_attrs["service.name"] == "minimal-service"
+
 
 # 🧱🏗️🔚

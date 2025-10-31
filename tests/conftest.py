@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -18,9 +18,8 @@ import logging as stdlib_logging
 import os
 import sys
 
-import pytest
-
 import provide.testkit  # noqa: F401 - Installs setproctitle blocker early
+import pytest
 
 # Register plugins for assertion rewriting at the root level
 pytest_plugins = [
@@ -68,7 +67,7 @@ def _get_conftest_diag_logger() -> stdlib_logging.Logger:
 
 conftest_diag_logger = _get_conftest_diag_logger()
 if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
-
+    pass  # Placeholder for potential diagnostic logging
 
 # Removed no_cover hook - not needed, issue is time_machine + asyncio, not coverage
 

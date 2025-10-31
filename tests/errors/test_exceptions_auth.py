@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -55,5 +55,6 @@ class TestAuthorizationError(FoundationTestCase):
         """Test with actor parameter."""
         error = AuthorizationError("Denied", actor="user:123")
         assert error.context["authz.actor"] == "user:123"
+
 
 # 🧱🏗️🔚

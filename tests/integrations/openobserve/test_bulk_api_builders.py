@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -259,5 +259,6 @@ class TestBuildBulkRequest:
         index_line = json_loads(lines[0])
 
         assert index_line["index"]["_index"] == "custom-logs"
+
 
 # 🧱🏗️🔚

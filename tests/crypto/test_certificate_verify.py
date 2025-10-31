@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,8 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 # Removed: import sys
@@ -22,8 +24,6 @@ from provide.foundation.crypto import (
     CertificateError,
     KeyType,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert
@@ -293,5 +293,6 @@ class TestCertificateVerify(FoundationTestCase):
         # Force serial number and subject to be identical
         cert2._base = cert1._base
         assert cert1 == cert2, "Certificates with identical serial and subject should be equal"
+
 
 # 🧱🏗️🔚

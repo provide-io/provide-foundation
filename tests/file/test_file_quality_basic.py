@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -150,5 +150,6 @@ class TestQualityAnalyzerBasic(FoundationTestCase):
         assert AnalysisMetric.F1_SCORE in results
         assert AnalysisMetric.FALSE_POSITIVE_RATE in results
         assert AnalysisMetric.FALSE_NEGATIVE_RATE in results
+
 
 # 🧱🏗️🔚

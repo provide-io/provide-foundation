@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -8,11 +8,11 @@
 import asyncio
 from typing import Never
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
-from provide.testkit import FoundationTestCase
-from provide.testkit.time import make_controlled_time
 
 
 class TestTokenBucketRateLimiter(FoundationTestCase):
@@ -295,5 +295,6 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
         mock_logger.warning.assert_called_once()
         denied_call = mock_logger.warning.call_args[0][0]
         assert "Request denied" in denied_call
+
 
 # 🧱🏗️🔚

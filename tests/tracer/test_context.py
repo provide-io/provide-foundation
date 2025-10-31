@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -338,5 +338,6 @@ class TestTraceContextIntegration(FoundationTestCase):
         # Inner span should also be marked as error
         assert inner_span.status == "error"
         assert "ValueError" in inner_span.error
+
 
 # 🧱🏗️🔚

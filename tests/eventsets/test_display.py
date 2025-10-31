@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -110,6 +110,7 @@ class TestFormatEventSetConfig:
             ),
             EventMapping(
                 name="http-status",
+                visual_markers={"200": "✅", "404": "❌"},
                 metadata_fields={},
                 transformations={},
             ),
@@ -277,6 +278,7 @@ class TestFormatResolverState:
         mapping1.visual_markers = {"GET": "🔍"}
 
         mapping2 = Mock()
+        mapping2.visual_markers = {"200": "✅"}
 
         mapping3 = Mock()
         mapping3.visual_markers = {"ERROR": "❌"}
@@ -432,5 +434,6 @@ class TestShowEventMatrix:
         assert "Total Field Mappings: 3" in logged_message
         assert "Total Event Sets: 1" in logged_message
         assert "Sample Visual Markers:" in logged_message
+
 
 # 🧱🏗️🔚

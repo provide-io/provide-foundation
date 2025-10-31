@@ -328,6 +328,9 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
             def format(self, record: logging.LogRecord) -> str:
                 # Add log emoji prefix to stdlib logger messages
 
+                # Get the base message
+                message = record.getMessage()
+
                 # Extract structured logging key-value pairs from record.__dict__
                 # These are added via the extra={} parameter
                 kvs = []
@@ -476,5 +479,6 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
             processors_configured=True,
             log_file_enabled=current_config.logging.log_file is not None,
         )
+
 
 # 🧱🏗️🔚

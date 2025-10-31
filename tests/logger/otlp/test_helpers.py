@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -466,5 +466,6 @@ class TestNormalizeAttributes:
         assert result["float"] is attributes["float"]
         assert result["bool_true"] is attributes["bool_true"]
         assert result["bool_false"] is attributes["bool_false"]
+
 
 # 🧱🏗️🔚

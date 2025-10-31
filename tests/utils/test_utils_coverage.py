@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,12 +11,12 @@ import io
 from typing import Any
 
 from attrs import define, field, fields
+from provide.testkit import FoundationTestCase
 
 from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 from provide.foundation.formatting import format_table, to_camel_case
 from provide.foundation.parsers import auto_parse, parse_typed_value
 from provide.foundation.utils import timed_block
-from provide.testkit import FoundationTestCase
 
 
 class TestCaseConversionCoverage(FoundationTestCase):
@@ -182,9 +182,10 @@ class TestEnvUtilsCoverage(FoundationTestCase):
         """Test edge cases for get_bool function."""
         import os
 
+        from provide.testkit.mocking import patch
+
         from provide.foundation.errors.config import ValidationError
         from provide.foundation.utils.environment import get_bool
-        from provide.testkit.mocking import patch
 
         # Test with empty string (returns None with warning)
         with patch.dict(os.environ, {"TEST_BOOL": ""}):
@@ -206,9 +207,10 @@ class TestEnvUtilsCoverage(FoundationTestCase):
         """Test edge cases for get_int function."""
         import os
 
+        from provide.testkit.mocking import patch
+
         from provide.foundation.errors.config import ValidationError
         from provide.foundation.utils.environment import get_int
-        from provide.testkit.mocking import patch
 
         # Test negative numbers
         with patch.dict(os.environ, {"TEST_INT": "-42"}):
@@ -230,9 +232,10 @@ class TestEnvUtilsCoverage(FoundationTestCase):
         """Test edge cases for get_float function."""
         import os
 
+        from provide.testkit.mocking import patch
+
         from provide.foundation.errors.config import ValidationError
         from provide.foundation.utils.environment import get_float
-        from provide.testkit.mocking import patch
 
         # Test scientific notation
         with patch.dict(os.environ, {"TEST_FLOAT": "1e-3"}):
@@ -254,8 +257,9 @@ class TestEnvUtilsCoverage(FoundationTestCase):
         """Test get_str with default value."""
         import os
 
-        from provide.foundation.utils.environment import get_str
         from provide.testkit.mocking import patch
+
+        from provide.foundation.utils.environment import get_str
 
         # Test with missing env var (should use default)
         result = get_str("NON_EXISTENT_STR", default="default_value")
@@ -265,5 +269,6 @@ class TestEnvUtilsCoverage(FoundationTestCase):
         with patch.dict(os.environ, {"TEST_STR": "actual_value"}):
             result = get_str("TEST_STR", default="default_value")
             assert result == "actual_value"
+
 
 # 🧱🏗️🔚

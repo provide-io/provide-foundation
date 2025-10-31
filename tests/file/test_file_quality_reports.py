@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -231,5 +231,6 @@ class TestQualityAnalyzerFalseRates(FoundationTestCase):
         fnr = results[AnalysisMetric.FALSE_NEGATIVE_RATE]
         assert "false_negatives" in fnr.details
         assert "total_positive_cases" in fnr.details
+
 
 # 🧱🏗️🔚

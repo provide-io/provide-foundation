@@ -221,6 +221,7 @@ def main() -> None:
 
     user = user_service.get_user(1)
     if user:
+        print(f"\n✅ Retrieved user: {user.name} ({user.email})")
     else:
         print("\n❌ User not found")
 

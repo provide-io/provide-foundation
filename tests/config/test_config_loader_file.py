@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -240,5 +240,6 @@ class TestFileConfigLoader(FoundationTestCase):
         section1 = cast(dict[str, Any], data["section1"])
         assert default_section["default_key"] == "default_value"
         assert section1["key1"] == "value1"
+
 
 # 🧱🏗️🔚

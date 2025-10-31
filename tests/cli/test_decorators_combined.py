@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import click
 from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.cli.decorators import flexible_options, standard_options
-from provide.testkit import FoundationTestCase
 
 
 class TestFlexibleOptions(FoundationTestCase):
@@ -96,5 +96,6 @@ class TestStandardOptions(FoundationTestCase):
         assert "--json" in result.output
         assert "--no-color" in result.output
         assert "--no-emoji" in result.output
+
 
 # 🧱🏗️🔚

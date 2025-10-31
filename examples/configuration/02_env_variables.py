@@ -71,9 +71,10 @@ def example_8_environment_configuration() -> None:
         logger.trace(
             "Token validation trace details",
             _foundation_logger_name="auth.service.tokens",
+        )
         auth_service_logger.debug(
             "User 'test' authentication check",
-
+        )
         db_logger.warning(
             "DB query warning (should be filtered)",
         )  # ❌ Filtered (database is ERROR)

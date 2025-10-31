@@ -85,4 +85,5 @@ class ConfigFormat(Enum):
                 return format_type
         return None
 
+
 # 🧱🏗️🔚

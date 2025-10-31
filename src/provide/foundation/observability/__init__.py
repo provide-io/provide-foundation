@@ -78,4 +78,5 @@ def is_openobserve_available() -> bool:
     """
     return _HAS_OTEL and "OpenObserveClient" in globals()
 
+
 # 🧱🏗️🔚

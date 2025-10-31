@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,6 +11,7 @@ import asyncio
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from provide.testkit.mocking import Mock
 import pytest
 
 from provide.foundation.file.operations import (
@@ -20,7 +21,6 @@ from provide.foundation.file.operations import (
     OperationDetector,
     OperationType,
 )
-from provide.testkit.mocking import Mock
 
 
 @pytest.fixture
@@ -438,5 +438,6 @@ class TestRealWorldPatterns:
         # Main file should be in the results
         all_operations = [call[0][0] for call in mock_callback.call_args_list]
         assert any(op.primary_path == main_file for op in all_operations)
+
 
 # 🧱🏗️🔚

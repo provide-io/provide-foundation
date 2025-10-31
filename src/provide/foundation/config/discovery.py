@@ -209,4 +209,5 @@ def get_consolidated_schema() -> ConsolidatedSchema:
 
     return ConsolidatedSchema(schemas=schemas, metadata=metadata)
 
+
 # 🧱🏗️🔚

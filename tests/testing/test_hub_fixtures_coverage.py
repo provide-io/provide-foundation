@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -71,5 +71,6 @@ class TestHubFixturesCoverage(FoundationTestCase):
 
         # Test parent access
         assert config_file.parent == default_container_directory
+
 
 # 🧱🏗️🔚

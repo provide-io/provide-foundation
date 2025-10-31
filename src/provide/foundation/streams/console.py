@@ -89,4 +89,5 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
         sys.stderr.write(message)
         sys.stderr.flush()
 
+
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,13 +7,14 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.utils.formatting import (
     format_duration,
     format_number,
     format_percentage,
     format_size,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestFormatSize(FoundationTestCase):
@@ -297,5 +298,6 @@ class TestInternalHelpers:
         assert _format_duration_long(0, 0, 0, 5) == "5 seconds"
         assert _format_duration_long(0, 0, 0, 0) == "0 seconds"
         assert _format_duration_long(1, 0, 0, 0) == "1 day"
+
 
 # 🧱🏗️🔚

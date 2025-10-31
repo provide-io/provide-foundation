@@ -98,4 +98,5 @@ def timed_block(
         logger_instance.error(f"{event_name} failed", exc_info=True, **all_kvs)
         raise
 
+
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -15,6 +15,8 @@ import json
 import os
 from typing import Any
 
+from provide.testkit import FoundationTestCase, TestEnvironment
+from provide.testkit.mocking import patch
 import pytest
 from pytest import CaptureFixture  # Added for capsys
 
@@ -24,8 +26,6 @@ from provide.foundation import (
     get_hub,
     logger as global_logger,
 )
-from provide.testkit import FoundationTestCase, TestEnvironment
-from provide.testkit.mocking import patch
 
 
 class TestRealWorldScenarios(FoundationTestCase):
@@ -488,5 +488,6 @@ class TestMigrationFromExplicitSetup(FoundationTestCase):
             ]
             log_data = json.loads(json_lines[0])
             assert log_data["service_name"] == "explicit-service"
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -219,5 +219,6 @@ class TestExitCodes(FoundationTestCase):
         """Test that exit codes are unique."""
         codes = [EXIT_SUCCESS, EXIT_ERROR, EXIT_SIGINT]
         assert len(set(codes)) == len(codes)
+
 
 # 🧱🏗️🔚

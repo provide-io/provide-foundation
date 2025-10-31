@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -13,13 +13,13 @@ import sys
 import tempfile
 from typing import Any
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors import ProcessError
 from provide.foundation.errors.process import ProcessTimeoutError
 from provide.foundation.process.sync import run, run_simple, shell, stream
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 
 class TestProcessRunnerCoverage(FoundationTestCase):
@@ -179,5 +179,6 @@ class TestProcessRunnerCoverage(FoundationTestCase):
             run(["invalid_command"], check=True)
 
         assert "Failed to execute command" in str(exc_info.value)
+
 
 # 🧱🏗️🔚

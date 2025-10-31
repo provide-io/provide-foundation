@@ -81,4 +81,5 @@ def get_foundation_log_stream(output_setting: str) -> TextIO:
             pass
         return get_safe_stderr()
 
+
 # 🧱🏗️🔚

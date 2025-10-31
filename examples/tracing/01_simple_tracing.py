@@ -180,7 +180,6 @@ def main() -> None:
         logger.info("Expected error caught", error=str(e))
 
 
-
 if __name__ == "__main__":
     main()
 

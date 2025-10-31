@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,6 +11,7 @@ from typing import Never
 
 import click
 from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.cli.decorators import (
@@ -20,7 +21,6 @@ from provide.foundation.cli.decorators import (
     pass_context,
 )
 from provide.foundation.context import CLIContext
-from provide.testkit import FoundationTestCase
 
 
 class TestPassContext(FoundationTestCase):
@@ -128,5 +128,6 @@ class TestErrorHandler(FoundationTestCase):
         result = runner.invoke(cmd)
         assert result.exit_code == 130  # Standard exit code for SIGINT
         assert "Interrupted by user" in result.output
+
 
 # 🧱🏗️🔚

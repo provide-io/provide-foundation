@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,8 +7,9 @@
 
 from __future__ import annotations
 
-from provide.foundation.errors.config import ConfigurationError, ValidationError
 from provide.testkit import FoundationTestCase
+
+from provide.foundation.errors.config import ConfigurationError, ValidationError
 
 
 class TestConfigurationError(FoundationTestCase):
@@ -85,5 +86,6 @@ class TestValidationError(FoundationTestCase):
         """Test that value is converted to string."""
         error = ValidationError("Invalid", value={"complex": "object"})
         assert error.context["validation.value"] == "{'complex': 'object'}"
+
 
 # 🧱🏗️🔚

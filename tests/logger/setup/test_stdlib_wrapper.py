@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -82,5 +82,6 @@ class TestStructuredStdlibLogger:
         assert calls[2][0][0] == logging.WARNING
         assert calls[3][0][0] == logging.ERROR
         assert calls[4][0][0] == logging.CRITICAL
+
 
 # 🧱🏗️🔚

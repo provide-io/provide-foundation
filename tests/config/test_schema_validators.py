@@ -1,9 +1,11 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
 
 """Comprehensive coverage tests for built-in schema validators."""
+
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.schema import (
     validate_email,
@@ -13,7 +15,6 @@ from provide.foundation.config.schema import (
     validate_url_accessible,
     validate_version,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestBuiltinValidators(FoundationTestCase):
@@ -114,5 +115,6 @@ class TestBuiltinValidators(FoundationTestCase):
         # This is just an example implementation that calls validate_url
         assert validate_url_accessible("https://example.com") is True
         assert validate_url_accessible("not_a_url") is False
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,6 +12,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.errors import ValidationError
@@ -27,8 +29,6 @@ from provide.foundation.integrations.openobserve.streaming import (
     stream_search_http2_async,
     tail_logs,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 
 
 class TestParseTimeParam(FoundationTestCase):

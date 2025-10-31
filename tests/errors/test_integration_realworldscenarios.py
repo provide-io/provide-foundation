@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors import (
@@ -16,7 +17,6 @@ from provide.foundation.errors import (
     transactional,
 )
 from provide.foundation.resilience import circuit_breaker, retry
-from provide.testkit import FoundationTestCase
 
 
 class TestRealWorldScenarios(FoundationTestCase):
@@ -115,5 +115,6 @@ class TestRealWorldScenarios(FoundationTestCase):
         result = call_user_service(123)
         assert result["id"] == 123
         assert len(service_calls) == 2  # One failure, one success
+
 
 # 🧱🏗️🔚

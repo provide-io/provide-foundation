@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections.abc import Iterator, Mapping
 from pathlib import Path
 import subprocess
+import sys
 from typing import Any
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
@@ -22,7 +23,17 @@ log = get_logger(__name__)
 
 
 def _make_stdout_nonblocking(stdout: Any) -> None:
-    """Make stdout non-blocking for timeout handling."""
+    """Make stdout non-blocking for timeout handling.
+
+    Note:
+        This is a no-op on Windows as fcntl module doesn't exist.
+        Windows uses different mechanisms for non-blocking I/O.
+    """
+    if sys.platform == "win32":
+        # Windows doesn't support fcntl; non-blocking I/O uses different APIs
+        # For basic streaming, we can skip this on Windows
+        return
+
     import fcntl
     import os
 
@@ -84,8 +95,12 @@ def _finalize_remaining_data(stdout: Any, buffer: str) -> Iterator[str]:
 
 
 def _stream_with_timeout(process: Any, timeout: float, cmd_str: str) -> Iterator[str]:
-    """Stream output with timeout handling."""
-    import select
+    """Stream output with timeout handling.
+
+    Note:
+        On Windows, uses polling instead of select since select.select
+        only works with sockets on Windows, not file descriptors.
+    """
     import time
 
     if not process.stdout:
@@ -98,10 +113,27 @@ def _stream_with_timeout(process: Any, timeout: float, cmd_str: str) -> Iterator
     while True:
         _check_timeout_expired(start_time, timeout, cmd_str, process)
 
-        # Use select with timeout
-        elapsed = time.time() - start_time
-        remaining = timeout - elapsed
-        ready, _, _ = select.select([process.stdout], [], [], min(0.1, remaining))
+        # Check if data is available
+        # On Unix: Use select
+        # On Windows: Use simple polling (select doesn't work with pipes)
+        if sys.platform == "win32":
+            # Windows: Simple polling with small sleep
+            import time
+
+            elapsed = time.time() - start_time
+            remaining = timeout - elapsed
+
+            # Check if handle has data (non-blocking on Windows)
+            # For simplicity, just try to read with a small timeout
+            ready = True  # Assume ready, will handle EOF in _read_chunk_from_stdout
+            time.sleep(min(0.01, remaining))  # Small sleep to avoid busy-wait
+        else:
+            # Unix: Use select
+            import select
+
+            elapsed = time.time() - start_time
+            remaining = timeout - elapsed
+            ready, _, _ = select.select([process.stdout], [], [], min(0.1, remaining))
 
         if ready:
             buffer, eof = _read_chunk_from_stdout(process.stdout, buffer)
@@ -215,5 +247,6 @@ def stream(
             code="PROCESS_STREAM_ERROR",
             command=cmd_str,
         ) from e
+
 
 # 🧱🏗️🔚

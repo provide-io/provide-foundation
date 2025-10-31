@@ -150,4 +150,5 @@ def apply_click_argument(func: Any, param: ParameterInfo) -> Any:
             type=param.concrete_type,
         )(func)
 
+
 # 🧱🏗️🔚

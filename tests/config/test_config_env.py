@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 from attrs import define
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.config.base import field
@@ -21,7 +22,6 @@ from provide.foundation.parsers import (
     parse_dict,
     parse_list,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestEnvUtilities(FoundationTestCase):
@@ -224,5 +224,6 @@ class TestRuntimeConfigClass(FoundationTestCase):
         assert config.int_val == 42
         assert config.float_val == 3.14
         assert config.bool_val is True
+
 
 # 🧱🏗️🔚

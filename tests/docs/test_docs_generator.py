@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,11 +10,11 @@ from __future__ import annotations
 from pathlib import Path
 import tempfile
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, mock_open, patch
 import pytest
 
 from provide.foundation.docs.generator import APIDocGenerator, generate_api_docs
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, mock_open, patch
 
 
 class TestAPIDocGenerator(FoundationTestCase):
@@ -463,5 +463,6 @@ class TestAPIDocGeneratorIntegration(FoundationTestCase):
                 assert result["total_files"] == 4
                 assert result["processed_files"] == 2  # Only non-init files should be processed
                 assert result["skipped_files"] == 2  # The two small __init__.py files should be skipped
+
 
 # 🧱🏗️🔚

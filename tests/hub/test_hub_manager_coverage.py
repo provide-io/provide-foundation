@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,10 +10,10 @@ from __future__ import annotations
 from typing import Never
 
 import click
-
-from provide.foundation.hub.manager import Hub
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+
+from provide.foundation.hub.manager import Hub
 
 
 class TestHubManagerCoverage(FoundationTestCase):
@@ -214,5 +214,6 @@ class TestHubManagerCoverage(FoundationTestCase):
 
         # Check that cleanup was called when exiting context
         assert ComponentWithCleanup.cleaned_up is True
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,13 +10,14 @@ from __future__ import annotations
 from datetime import datetime
 import json
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
+
 from provide.foundation.errors.types import (
     ErrorCode,
     ErrorMetadata,
     ErrorResponse,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 
 class TestErrorCode(FoundationTestCase):
@@ -261,5 +262,6 @@ class TestErrorResponse(FoundationTestCase):
         # Should be indented (2 spaces)
         assert "\n" in json_str
         assert "  " in json_str
+
 
 # 🧱🏗️🔚

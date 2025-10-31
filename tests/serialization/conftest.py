@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,9 +10,8 @@ from __future__ import annotations
 import os
 from typing import Any
 
-import pytest
-
 from provide.testkit import reset_foundation_setup_for_testing
+import pytest
 
 
 @pytest.fixture(autouse=True)
@@ -118,5 +117,6 @@ def env_sample_data() -> dict[str, str]:
         "DEBUG": "true",
         "PORT": "8000",
     }
+
 
 # 🧱🏗️🔚

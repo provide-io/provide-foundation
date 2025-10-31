@@ -227,4 +227,5 @@ def verify_signature_command(
     except VerificationError as e:
         perr(f"✗ Signature INVALID: {e}", color="red")
 
+
 # 🧱🏗️🔚

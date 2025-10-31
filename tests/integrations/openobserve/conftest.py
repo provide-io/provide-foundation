@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -193,5 +193,6 @@ def test_organization(openobserve_config: OpenObserveConfig) -> str:
 
     """
     return openobserve_config.org or "default"
+
 
 # 🧱🏗️🔚

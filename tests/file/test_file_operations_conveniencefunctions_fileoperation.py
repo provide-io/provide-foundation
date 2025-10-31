@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
@@ -22,7 +23,6 @@ from provide.foundation.file.operations import (
     group_related_events,
     is_temp_file,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestConvenienceFunctions(FoundationTestCase):

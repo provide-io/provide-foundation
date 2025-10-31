@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,13 +7,13 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub.components import (
     discover_components,
 )
 from provide.foundation.hub.manager import clear_hub
-from provide.testkit import FoundationTestCase
 
 # Legacy component registration tests removed - replaced by registry-based architecture
 #
@@ -101,8 +101,9 @@ class TestComponentDiscovery(FoundationTestCase):
         """Test that discovered components are registered in the hub registry."""
         from importlib import metadata
 
-        from provide.foundation.hub.components import get_component_registry
         from provide.testkit.mocking import Mock
+
+        from provide.foundation.hub.components import get_component_registry
 
         # Create a mock entry point
         mock_entry_point = Mock()
@@ -135,5 +136,6 @@ class TestComponentDiscovery(FoundationTestCase):
         assert entry.metadata["entry_point"] == "registered_component"
         assert entry.metadata["module"] == "test.module"
         assert entry.metadata["discovered"] is True
+
 
 # 🧱🏗️🔚

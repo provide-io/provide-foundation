@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -13,6 +13,7 @@ import tempfile
 import time
 from typing import Any
 
+from provide.testkit import FoundationTestCase
 import pytest
 from watchdog.observers import Observer
 
@@ -22,7 +23,6 @@ from provide.foundation.file.operations import (
     OperationDetector,
     OperationType,
 )
-from provide.testkit import FoundationTestCase
 
 
 class FileEventCapture:
@@ -360,5 +360,6 @@ class TestFileOperationIntegration(FoundationTestCase):
 
         # Should not crash and may detect some operation
         assert isinstance(operations, list)
+
 
 # 🧱🏗️🔚

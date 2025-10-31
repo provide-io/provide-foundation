@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,11 +10,11 @@ from __future__ import annotations
 import contextvars
 import time
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.utils.timing import _PROVIDE_CONTEXT_TRACE_ID, timed_block
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 
 class TestTimedBlock(FoundationTestCase):
@@ -408,5 +408,6 @@ class TestTimedBlockIntegration:
         for call in debug_calls:
             assert "trace_id" in call[1]
             assert call[1]["trace_id"] == trace_id
+
 
 # 🧱🏗️🔚

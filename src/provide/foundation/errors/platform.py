@@ -46,4 +46,5 @@ class PlatformError(FoundationError):
     def _default_code(self) -> str:
         return "PLATFORM_ERROR"
 
+
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -181,5 +181,6 @@ class TestConfigSchemaIntegration(FoundationTestCase):
         # vs when discovery was run, but test should not fail
         if entry is not None:
             assert entry.value == TestConfig
+
 
 # 🧱🏗️🔚

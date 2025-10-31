@@ -374,4 +374,5 @@ def create_error_handler(**policies: Callable[[Exception], Any]) -> ErrorHandler
 
     return ErrorHandler(policies=error_policies, default_action=default)
 
+
 # 🧱🏗️🔚

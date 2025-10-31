@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,13 +7,13 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
 import pytest
 
 from provide.foundation.parsers import (
     parse_typed_value,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock
 
 
 class TestParseTypedValue(FoundationTestCase):
@@ -190,5 +190,6 @@ class TestInternalHelpers:
         # Field missing type attribute
         field_missing_type = Mock(spec=[])
         assert _extract_field_type(field_missing_type) is None
+
 
 # 🧱🏗️🔚

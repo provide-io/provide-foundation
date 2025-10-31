@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.hub.components import ComponentCategory
@@ -19,8 +21,6 @@ from provide.foundation.transport.registry import (
     register_transport,
 )
 from provide.foundation.transport.types import TransportType
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 from tests.transport.test_transport_basic import MockTransport
 
 
@@ -273,5 +273,6 @@ class TestIntegration(FoundationTestCase):
             # Verify unregistered scheme fails
             with pytest.raises(TransportNotFoundError):
                 get_transport_for_scheme("ftp")
+
 
 # 🧱🏗️🔚

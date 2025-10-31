@@ -231,7 +231,6 @@ async def async_monitoring_demo() -> None:
     monitor.flush_pending()
 
 
-
 def main() -> None:
     """Main streaming detection demo."""
 

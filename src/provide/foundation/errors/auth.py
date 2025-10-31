@@ -83,4 +83,5 @@ class AuthorizationError(FoundationError):
     def _default_code(self) -> str:
         return "AUTHZ_ERROR"
 
+
 # 🧱🏗️🔚

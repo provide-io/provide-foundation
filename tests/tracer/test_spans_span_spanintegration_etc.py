@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -413,5 +413,6 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
             # Should still finish local span even if OTEL fails
             assert span._active is False
             assert span.end_time is not None
+
 
 # 🧱🏗️🔚

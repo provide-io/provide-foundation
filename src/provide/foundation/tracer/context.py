@@ -117,4 +117,5 @@ def get_trace_context() -> dict[str, Any]:
         "span_name": current_span.name if current_span else None,
     }
 
+
 # 🧱🏗️🔚

@@ -256,4 +256,5 @@ class TempPatternDetector:
 
         return None
 
+
 # 🧱🏗️🔚

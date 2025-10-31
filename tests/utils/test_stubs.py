@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors import DependencyError
@@ -15,7 +16,6 @@ from provide.foundation.utils.stubs import (
     create_function_stub,
     create_module_stub,
 )
-from provide.testkit import FoundationTestCase
 
 """Tests for dependency stub utilities."""
 
@@ -204,5 +204,6 @@ class TestDependencyErrorContext(FoundationTestCase):
         error_msg = str(exc_info.value)
         # Should reference the feature via install command
         assert "transport" in error_msg or "provide-foundation[" in error_msg
+
 
 # 🧱🏗️🔚

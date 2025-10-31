@@ -185,4 +185,5 @@ def clear_emoji_cache() -> None:  # pragma: no cover
     global _EMOJI_LOOKUP_CACHE
     _EMOJI_LOOKUP_CACHE.clear()
 
+
 # 🧱🏗️🔚

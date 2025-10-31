@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -92,5 +92,6 @@ class TestTimeoutError(FoundationTestCase):
         """Test with elapsed_seconds parameter."""
         error = TimeoutError("Too slow", elapsed_seconds=45.5)
         assert error.context["timeout.elapsed"] == 45.5
+
 
 # 🧱🏗️🔚

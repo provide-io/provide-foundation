@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -24,7 +24,7 @@ class TestProcessCommandsWithSetproctitle(FoundationTestCase):
                 return_value=True,
             ),
             patch("provide.foundation.cli.commands.process.set_process_title") as mock_set,
-            patch("provide.foundation.cli.commands.process.pout") as mock_pout,
+            patch("provide.foundation.cli.commands.process.pout"),
         ):
             _set_title_impl("test-app")
 
@@ -100,8 +100,7 @@ class TestProcessCommandsWithSetproctitle(FoundationTestCase):
         ):
             _info_impl()
 
-            assert mock_pout.call_count == 2
-            mock_pout.assert_any_call("Current title: info-test")
+            mock_pout.assert_called_once_with("Current title: info-test")
 
     def test_info_implementation_not_available(self) -> None:
         """Test info command when setproctitle is not available."""
@@ -254,7 +253,8 @@ class TestProcessCommandsIntegration(FoundationTestCase):
             _get_title_impl()
             mock_get.assert_called_once()
 
-            # Verify output
-            assert mock_pout.call_count == 2
+            # Verify output - only get_title outputs to user
+            mock_pout.assert_called_once_with("Current process title: integration-test")
+
 
 # 🧱🏗️🔚

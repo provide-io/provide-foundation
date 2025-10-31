@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -409,5 +409,6 @@ class TestFormatterSensitiveHandling(FoundationTestCase):
         test_config = data["configs"]["TestConfig"]
         password_field = test_config["fields"]["password"]
         assert password_field["default"] == "***SENSITIVE***"
+
 
 # 🧱🏗️🔚

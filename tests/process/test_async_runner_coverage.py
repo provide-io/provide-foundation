@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,12 +11,12 @@ import asyncio
 import sys
 from typing import Any
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_run, async_shell, async_stream
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 
 class TestAsyncInputHandling(FoundationTestCase):
@@ -287,5 +287,6 @@ class TestAsyncContextualBehavior(FoundationTestCase):
         for i, result in enumerate(results):
             assert result.returncode == 0
             assert f"hello{i}" in result.stdout
+
 
 # 🧱🏗️🔚

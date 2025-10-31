@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -124,5 +124,6 @@ class TestProfilingCLI(FoundationTestCase):
         assert mock_pout.call_count > 0
         # Verify first call has json_key="metrics"
         assert mock_pout.call_args_list[0].kwargs.get("json_key") == "metrics"
+
 
 # 🧱🏗️🔚

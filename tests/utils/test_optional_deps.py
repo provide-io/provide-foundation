@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,14 +9,14 @@ Run with: pytest tests/utils/test_optional_deps.py -v"""
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.utils.optional_deps import (
     OptionalDependency,
     load_optional_dependency,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 
 
 class TestOptionalDependencyInit(FoundationTestCase):

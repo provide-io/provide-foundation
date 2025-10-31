@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -266,5 +266,6 @@ class TestDeterministicArchives(FoundationTestCase):
         assert (extract1 / "subdir" / "file3.txt").read_text() == (
             extract2 / "subdir" / "file3.txt"
         ).read_text()
+
 
 # 🧱🏗️🔚

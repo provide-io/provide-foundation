@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import click
 from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.cli.decorators import (
     flexible_options,
@@ -16,7 +17,6 @@ from provide.foundation.cli.decorators import (
     output_options,
     version_option,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestVersionOption(FoundationTestCase):
@@ -134,5 +134,6 @@ class TestEnvironmentVariables(FoundationTestCase):
         result = runner.invoke(cmd, ["--log-level", "DEBUG"], env=env)
         assert result.exit_code == 0
         assert "log_level=DEBUG" in result.output  # CLI arg wins
+
 
 # 🧱🏗️🔚

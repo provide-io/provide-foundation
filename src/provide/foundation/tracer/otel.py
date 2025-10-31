@@ -118,7 +118,6 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
         processor = BatchSpanProcessor(exporter)
         tracer_provider.add_span_processor(processor)
 
-
     # Set the global tracer provider (only if not already set)
     try:
         current_provider = otel_trace.get_tracer_provider()
@@ -176,5 +175,6 @@ def shutdown_opentelemetry() -> None:
             slog.debug("🔍🛑 OpenTelemetry tracer provider shutdown")
     except Exception as e:
         slog.warning(f"⚠️ Error shutting down OpenTelemetry: {e}")
+
 
 # 🧱🏗️🔚

@@ -8,7 +8,6 @@
 import ast
 import os
 import sys
-from typing import Optional, Tuple
 
 # --- Protocol Constants ---
 
@@ -24,7 +23,8 @@ FOOTER = "# 🧱🏗️🔚"
 
 # --- Logic ---
 
-def find_module_docstring_and_body_start(content: str) -> Tuple[Optional[str], int]:
+
+def find_module_docstring_and_body_start(content: str) -> tuple[str | None, int]:
     """
     Parses the Python source code to find the module-level docstring
     and the line number where the main body of the code starts.
@@ -50,7 +50,7 @@ def find_module_docstring_and_body_start(content: str) -> Tuple[Optional[str], i
                 start_lineno = tree.body[1].lineno
             else:
                 # The file ONLY contains a docstring
-                start_lineno = len(content.splitlines()) + 1 # End of file
+                start_lineno = len(content.splitlines()) + 1  # End of file
 
         return docstring, start_lineno
     except SyntaxError:
@@ -64,20 +64,21 @@ def conform_file(filepath: str) -> None:
     Applies the header and footer protocol to a single Python file.
     """
     try:
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             lines = f.readlines()
             content = "".join(lines)
-    except (IOError, UnicodeDecodeError) as e:
+    except (OSError, UnicodeDecodeError) as e:
         print(f"Error reading file {filepath}: {e}", file=sys.stderr)
         return
 
     if not lines:
         # Handle empty files
-        final_content = "\n".join([HEADER_LIBRARY] + SPDX_BLOCK) + "\n\n" + PLACEHOLDER_DOCSTRING + "\n\n" + FOOTER + "\n"
+        final_content = (
+            "\n".join([HEADER_LIBRARY] + SPDX_BLOCK) + "\n\n" + PLACEHOLDER_DOCSTRING + "\n\n" + FOOTER + "\n"
+        )
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(final_content)
         return
-
 
     # 1. Determine Header Type
     is_executable = lines[0].strip().startswith("#!")
@@ -92,11 +93,10 @@ def conform_file(filepath: str) -> None:
         # Preserve original docstring formatting
         docstring_str = f'"""{docstring}"""'
 
-
     # 3. Extract the code body
     # The body is everything from the determined start line to the end,
     # minus any old footers.
-    body_lines = lines[body_start_lineno - 1:]
+    body_lines = lines[body_start_lineno - 1 :]
     body_content = "".join(body_lines).rstrip()
 
     # Strip any old footers
@@ -108,23 +108,21 @@ def conform_file(filepath: str) -> None:
 
     body_content = "\n".join(cleaned_body_lines).rstrip()
 
-
     # 4. Construct the new file content
     final_header = "\n".join([header_first_line] + SPDX_BLOCK)
 
     # Ensure there's content to separate from the footer
     if body_content:
         final_content = f"{final_header}\n\n{docstring_str}\n\n{body_content}\n\n{FOOTER}\n"
-    else: # Handles files that might only have a docstring
+    else:  # Handles files that might only have a docstring
         final_content = f"{final_header}\n\n{docstring_str}\n\n{FOOTER}\n"
-
 
     # 5. Write the conformed content back to the file
     try:
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(final_content)
         # print(f"Conformed: {filepath}")
-    except IOError as e:
+    except OSError as e:
         print(f"Error writing to file {filepath}: {e}", file=sys.stderr)
 
 

@@ -85,7 +85,6 @@ def create_and_record_metrics() -> dict[str, object]:
         "seconds",
     )
 
-
     # Record some values
     print("\n📝 Recording metric values...")
 
@@ -280,7 +279,6 @@ async def main() -> None:
     if not await client.test_connection():
         print("❌ Failed to connect to OpenObserve")
         return
-
 
     # Query and display metrics
     await query_and_display_metrics(client)

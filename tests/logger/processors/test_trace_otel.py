@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -269,5 +269,6 @@ class TestTraceProcessorOtelLogging(FoundationTestCase):
                 # Check fallback to Foundation tracer worked
                 assert "trace_id" in result
                 assert result["trace_id"] == "foundation_trace_123"
+
 
 # 🧱🏗️🔚

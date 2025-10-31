@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -144,5 +144,6 @@ class TestProcessTitle(FoundationTestCase):
             long_title = "a" * 1000
             result = set_process_title(long_title)
             assert result is True
+
 
 # 🧱🏗️🔚

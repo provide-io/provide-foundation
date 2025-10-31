@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -6,6 +6,8 @@
 """Tests for crypto hash utilities."""
 
 from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.crypto.utils import (
     compare_hash,
@@ -17,7 +19,6 @@ from provide.foundation.crypto.utils import (
     quick_hash,
     truncate_hash,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestHashUtils(FoundationTestCase):
@@ -128,5 +129,6 @@ class TestHashUtils(FoundationTestCase):
 
         # Invalid algorithm
         assert is_valid_hash("abc", "invalid_algo") is False
+
 
 # 🧱🏗️🔚

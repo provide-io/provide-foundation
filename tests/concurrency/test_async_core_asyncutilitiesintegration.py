@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,7 @@ import asyncio
 import time
 from typing import Never
 
+from provide.testkit import MinimalTestCase
 import pytest
 
 from provide.foundation.concurrency import (
@@ -18,7 +19,6 @@ from provide.foundation.concurrency import (
     async_wait_for,
 )
 from provide.foundation.errors import ValidationError
-from provide.testkit import MinimalTestCase
 
 
 class TestAsyncUtilitiesIntegration(MinimalTestCase):
@@ -157,5 +157,6 @@ class TestAsyncUtilitiesIntegration(MinimalTestCase):
 
         result = async_run(test_sleep_error)
         assert result is True
+
 
 # 🧱🏗️🔚

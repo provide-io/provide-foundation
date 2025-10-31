@@ -192,6 +192,7 @@ def check_optional_deps(*, quiet: bool = False, return_status: bool = False) -> 
         total_count = len(deps)
 
         for dep in deps:
+            status_icon = "✅" if dep.available else "❌"
             version_info = f" (v{dep.version})" if dep.version else ""
             log.info(f"  {status_icon} {dep.name}{version_info}")
             log.info(f"     {dep.description}")
@@ -256,5 +257,6 @@ def get_available_features() -> dict[str, bool]:
     """
     deps = get_optional_dependencies()
     return {dep.name: dep.available for dep in deps}
+
 
 # 🧱🏗️🔚

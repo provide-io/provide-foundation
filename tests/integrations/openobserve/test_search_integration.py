@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -16,6 +16,7 @@ Environment variables required (loaded via Foundation config):
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
@@ -32,7 +33,6 @@ from provide.foundation.integrations.openobserve.search import (
     search_errors,
     search_logs,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestSanitizationFunctions(FoundationTestCase):

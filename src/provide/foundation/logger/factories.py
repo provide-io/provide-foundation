@@ -92,4 +92,5 @@ def get_logger(name: str | None = None) -> Any:
         # Always decrement depth counter to allow future attempts
         _is_initializing.depth = max(0, depth)
 
+
 # 🧱🏗️🔚

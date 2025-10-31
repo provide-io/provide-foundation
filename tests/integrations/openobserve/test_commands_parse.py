@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -61,5 +61,6 @@ class TestParseFilterToDict(FoundationTestCase):
         """Test parsing filter with numbers in key name."""
         result = _parse_filter_to_dict("http_status_code=500")
         assert result == {"http_status_code": "500"}
+
 
 # 🧱🏗️🔚

@@ -191,4 +191,5 @@ class OpenObserveClientBase:
         except Exception as e:
             raise OpenObserveQueryError(f"Unexpected error: {e}") from e
 
+
 # 🧱🏗️🔚

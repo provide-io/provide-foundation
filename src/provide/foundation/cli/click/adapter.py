@@ -96,4 +96,5 @@ class ClickAdapter:
         """
         ensure_parent_groups(parent_path, registry)
 
+
 # 🧱🏗️🔚

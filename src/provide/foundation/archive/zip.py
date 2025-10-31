@@ -375,4 +375,5 @@ class ZipArchive(BaseArchive):
         except Exception as e:
             raise ArchiveError(f"Failed to extract file from ZIP: {e}") from e
 
+
 # 🧱🏗️🔚

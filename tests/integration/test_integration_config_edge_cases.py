@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -173,5 +173,6 @@ def test_configuration_immutability() -> None:
     config_logging = LoggingConfig(default_level="INFO")
     config_logging.update({"default_level": "DEBUG"})
     assert config_logging.default_level == "DEBUG"
+
 
 # 🧱🏗️🔚

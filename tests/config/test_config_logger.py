@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -8,6 +8,7 @@
 import io
 from typing import Any
 
+from provide.testkit import FoundationTestCase
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
@@ -22,7 +23,6 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from provide.testkit import FoundationTestCase
 
 
 def get_proc_name(proc: Any) -> str:
@@ -83,5 +83,6 @@ class TestTelemetryConfigFromEnvEventSets(FoundationTestCase):
         # These fields should not exist anymore
         assert not hasattr(config.logging, "enabled_emoji_sets")
         assert not hasattr(config.logging, "custom_emoji_sets")
+
 
 # 🧱🏗️🔚

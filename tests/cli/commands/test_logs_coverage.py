@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,9 +7,8 @@
 
 from __future__ import annotations
 
-import pytest
-
 from provide.testkit import FoundationTestCase
+import pytest
 
 
 class TestLogsCLIBasicCoverage(FoundationTestCase):
@@ -91,5 +90,6 @@ class TestLogsCLIBasicCoverage(FoundationTestCase):
         from provide.foundation.cli.commands.logs import __all__
 
         assert isinstance(__all__, list)
+
 
 # 🧱🏗️🔚

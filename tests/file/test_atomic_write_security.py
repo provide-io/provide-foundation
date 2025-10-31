@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -15,10 +15,10 @@ import stat
 import tempfile
 import threading
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.atomic import atomic_replace, atomic_write, atomic_write_text
-from provide.testkit import FoundationTestCase
 
 
 class TestAtomicWritePermissionSecurity(FoundationTestCase):
@@ -350,5 +350,6 @@ class TestAtomicWritePermissionTransitions(FoundationTestCase):
             atomic_write(self.test_file, f"iteration-{i}".encode(), preserve_mode=True)
             actual = self.test_file.stat().st_mode & 0o777
             assert actual == original_mode, f"Iteration {i} changed permissions"
+
 
 # 🧱🏗️🔚

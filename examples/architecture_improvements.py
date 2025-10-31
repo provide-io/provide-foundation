@@ -115,7 +115,6 @@ def example_resource_cleanup() -> None:
     resource2 = ExampleResource("Resource-2")
     hub.register(name="example.resource2", value=resource2, dimension="singleton")
 
-
     # Use the resources
     print(f"🔨 {resource1.do_work()}")
     print(f"🔨 {resource2.do_work()}")
@@ -123,7 +122,6 @@ def example_resource_cleanup() -> None:
     # Clear the singleton dimension - this will automatically dispose resources
     print("\n🧹 Clearing hub dimension (will auto-dispose resources)...")
     hub.clear(dimension="singleton")
-
 
 
 def example_circuit_breaker() -> None:
@@ -143,7 +141,6 @@ def example_circuit_breaker() -> None:
         if call_count <= 4:  # Fail first 4 calls
             raise RuntimeError(f"Service failure #{call_count}")
         return f"Success on call #{call_count}"
-
 
     # Try to call the unreliable service
     for i in range(7):
@@ -171,7 +168,6 @@ def example_bulkhead_pattern() -> None:
     # Create bulkheads for different services
     db_bulkhead = manager.create_bulkhead("database", max_concurrent=3, timeout=2.0)
     api_bulkhead = manager.create_bulkhead("external_api", max_concurrent=2, timeout=1.0)
-
 
     # Simulate database operations
     def database_operation(query_id: int) -> str:
@@ -256,7 +252,6 @@ async def example_async_resource_cleanup() -> None:
     await resource2.dispose_async()
 
 
-
 def main() -> None:
     """Run all examples."""
     print("=" * 60)
@@ -270,7 +265,6 @@ def main() -> None:
     # Run async examples
     print("\n🔄 Running async examples...")
     asyncio.run(example_async_examples())
-
 
 
 async def example_async_examples() -> None:

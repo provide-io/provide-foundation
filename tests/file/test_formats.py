@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.formats import (
@@ -19,7 +20,6 @@ from provide.foundation.file.formats import (
     write_toml,
     write_yaml,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestFileFormats(FoundationTestCase):
@@ -352,5 +352,6 @@ foo = "1.2.3"
         write_toml(path, data, atomic=False)
 
         assert path.exists()
+
 
 # 🧱🏗️🔚

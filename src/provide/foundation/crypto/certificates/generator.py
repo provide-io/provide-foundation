@@ -200,7 +200,6 @@ def generate_certificate(
         # Serialize to PEM format
         cert_pem, key_pem = _serialize_to_pem(x509_cert, private_key)
 
-
         return base, x509_cert, private_key, cert_pem, key_pem
 
     except Exception as e:
@@ -208,6 +207,9 @@ def generate_certificate(
             f"📜❌ Failed to generate certificate. Error: {type(e).__name__}: {e}",
             extra={"error": str(e), "trace": traceback.format_exc()},
         )
-        raise CertificateError(f"Failed to initialize certificate. Original error: {type(e).__name__}: {e}") from e
+        raise CertificateError(
+            f"Failed to initialize certificate. Original error: {type(e).__name__}: {e}"
+        ) from e
+
 
 # 🧱🏗️🔚

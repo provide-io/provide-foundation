@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -251,5 +251,6 @@ async def test_http_transport_parameters(http_transport: HTTPTransport, httpx_mo
     assert response.status == 200
     data = response.json()
     assert len(data["results"]) == 2
+
 
 # 🧱🏗️🔚

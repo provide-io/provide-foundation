@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.file.disk import (
@@ -17,7 +18,6 @@ from provide.foundation.file.disk import (
     get_available_space,
     get_disk_usage,
 )
-from provide.testkit.mocking import patch
 
 
 class TestGetAvailableSpace:
@@ -325,5 +325,6 @@ class TestDiskUtilitiesEdgeCases:
 
         # get_disk_usage should return None
         assert get_disk_usage(tmp_path) is None
+
 
 # 🧱🏗️🔚

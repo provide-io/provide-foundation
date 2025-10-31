@@ -145,4 +145,5 @@ class LockError(FoundationError):
     def _default_code(self) -> str:
         return "LOCK_ERROR"
 
+
 # 🧱🏗️🔚

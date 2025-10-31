@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -163,5 +163,6 @@ class TestProductionReadinessScenarios(FoundationTestCase):
         captured = capsys.readouterr()
         assert "Application starting with lazy init" in captured.err
         assert "Message after shutdown" in captured.err
+
 
 # 🧱🏗️🔚

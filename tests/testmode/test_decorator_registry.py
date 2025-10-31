@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -133,5 +133,6 @@ class TestDecoratorRegistry(FoundationTestCase):
             f"Expected {expected_count} test-unsafe features, but found {actual_count}. "
             f"Registered functions: {list(registry.keys())}"
         )
+
 
 # 🧱🏗️🔚

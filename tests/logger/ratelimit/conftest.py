@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -40,5 +40,6 @@ def ensure_limiter_cleanup() -> Generator[Callable[[QueuedRateLimiter], QueuedRa
     for limiter in limiters:
         if limiter.running:
             limiter.stop()
+
 
 # 🧱🏗️🔚

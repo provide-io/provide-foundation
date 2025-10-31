@@ -105,4 +105,5 @@ class ZstdCompressor(BaseCompressor):
         dctx = zstd.ZstdDecompressor()
         return dctx.decompress(data)
 
+
 # 🧱🏗️🔚

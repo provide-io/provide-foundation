@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -14,6 +14,7 @@ from __future__ import annotations
 
 from itertools import islice
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.config import ValidationError
@@ -27,7 +28,6 @@ from provide.foundation.integrations.openobserve.streaming import (
     stream_search_http2,
     tail_logs,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestBuildWhereClause(FoundationTestCase):

@@ -57,7 +57,7 @@ def example_7_module_level_filtering() -> None:
     auth_logger.debug(
         "Token validation details",
         token_id="tkn_short",
-
+    )
     db_logger.info("Query executed successfully")  # ❌ Filtered (database is ERROR)
     db_logger.warning("Slow query detected: 2500ms")  # ❌ Filtered
 

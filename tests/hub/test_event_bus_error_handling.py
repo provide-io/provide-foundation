@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -13,9 +13,10 @@ from __future__ import annotations
 from io import StringIO
 import threading
 
-from provide.foundation.hub.events import Event, EventBus, RegistryEvent
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
+
+from provide.foundation.hub.events import Event, EventBus, RegistryEvent
 
 
 class TestEventBusErrorHandling(FoundationTestCase):
@@ -405,5 +406,6 @@ class TestEventBusEdgeCases(FoundationTestCase):
 
         # Error tracked
         assert self.bus.get_error_stats()["failed_handler_count"] == 1
+
 
 # 🧱🏗️🔚

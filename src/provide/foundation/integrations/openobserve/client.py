@@ -23,4 +23,5 @@ class OpenObserveClient(SearchOperationsMixin, MetricsOperationsMixin, OpenObser
     Combines search/streams operations and Prometheus metrics API.
     """
 
+
 # 🧱🏗️🔚

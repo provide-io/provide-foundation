@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -15,12 +15,13 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.file.operations.detectors.batch import BatchOperationDetector
 from provide.foundation.file.operations.detectors.helpers import is_temp_file
 from provide.foundation.file.operations.detectors.orchestrator import OperationDetector
 from provide.foundation.file.operations.detectors.temp import TempPatternDetector
 from provide.foundation.file.operations.types import DetectorConfig, FileEvent, FileEventMetadata
-from provide.testkit import FoundationTestCase
 
 
 class TestTempCleanupBugFix(FoundationTestCase):
@@ -353,5 +354,6 @@ class TestIntegrationBugFixes(FoundationTestCase):
         operation = backup_ops[0]
         assert operation.primary_path == real_file, "Should use real file as primary_path"
         assert not is_temp_file(operation.primary_path), "Primary path should not be temp"
+
 
 # 🧱🏗️🔚

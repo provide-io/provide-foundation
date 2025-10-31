@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,6 +12,8 @@ from contextvars import ContextVar
 import json
 from typing import Never
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors import (
@@ -36,8 +38,6 @@ from provide.foundation.errors import (
     transactional,
 )
 from provide.foundation.resilience import circuit_breaker, retry
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 
 class TestErrorSystemIntegration(FoundationTestCase):
@@ -458,5 +458,6 @@ class TestErrorSystemIntegration(FoundationTestCase):
         assert all(r.startswith("handled_") for r in results)
         # Should be fast (less than 500ms for 100 errors)
         assert duration < 0.5
+
 
 # 🧱🏗️🔚

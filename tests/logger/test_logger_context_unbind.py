@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -213,5 +213,6 @@ class TestLoggerTryUnbind(FoundationTestCase):
 
         assert unbound_logger is not bound_logger
         assert unbound_logger is not global_logger
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,6 +11,7 @@ from collections.abc import Callable
 import io
 import re
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation import (
@@ -20,7 +21,6 @@ from provide.foundation import (
 )
 from provide.foundation.utils import timed_block
 from provide.foundation.utils.timing import _PROVIDE_CONTEXT_TRACE_ID
-from provide.testkit import FoundationTestCase
 
 
 def parse_kv_log_line(line: str) -> dict:
@@ -188,5 +188,6 @@ class TestTimedBlock(FoundationTestCase):
         assert log_data.get("request_id") == "req_123"
         assert log_data.get("extra_key") == "extra_value"
         assert log_data.get("outcome") == "success"
+
 
 # 🧱🏗️🔚

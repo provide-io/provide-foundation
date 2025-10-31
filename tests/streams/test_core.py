@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,13 +12,14 @@ from __future__ import annotations
 import io
 import sys
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, Mock, patch
+
 from provide.foundation.streams.core import (
     ensure_stderr_default,
     get_log_stream,
     set_log_stream_for_testing,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, Mock, patch
 
 
 class TestGetLogStream(FoundationTestCase):

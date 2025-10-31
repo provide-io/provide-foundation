@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -13,10 +13,9 @@ import os
 import random
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 import requests
-
-from provide.testkit import FoundationTestCase
 
 # Skip tests if OpenObserve is not available
 pytestmark = [
@@ -243,8 +242,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
                     start_time="-10m",
                     client=client,
                 )
-                print(
-                )
+                print()
 
         # Test 5: Performance metrics
         response = await search_logs(
@@ -259,7 +257,6 @@ class TestOpenObserveIntegration(FoundationTestCase):
             print(f"   - Avg duration: {metrics.get('avg_duration', 0):.2f}ms")
             print(f"   - Max duration: {metrics.get('max_duration', 0)}ms")
             print(f"   - Min duration: {metrics.get('min_duration', 0)}ms")
-
 
     def test_rapid_ingestion(self) -> None:
         """Test rapid ingestion of logs in batches."""

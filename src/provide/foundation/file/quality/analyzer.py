@@ -440,4 +440,5 @@ class QualityAnalyzer:
 
         return "\n".join(report_lines)
 
+
 # 🧱🏗️🔚

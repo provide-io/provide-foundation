@@ -76,4 +76,5 @@ class CryptoSignatureError(CryptoError):
         """Return default error code for crypto signature errors."""
         return "CRYPTO_SIGNATURE_ERROR"
 
+
 # 🧱🏗️🔚

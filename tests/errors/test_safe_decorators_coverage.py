@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,12 +10,12 @@ from __future__ import annotations
 import asyncio
 from typing import Never
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.safe_decorators import (
     log_only_error_context,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestSafeDecoratorsCoverage(FoundationTestCase):
@@ -231,5 +231,6 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
         with pytest.raises(Exception) as exc_info:
             await async_test_func()
         assert "Async context provider failed" in str(exc_info.value)
+
 
 # 🧱🏗️🔚

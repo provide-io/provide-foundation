@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -192,5 +192,6 @@ class TestDownloadWithMirrors:
 
             assert result == dest
             assert dest.read_text() == "complete content"
+
 
 # 🧱🏗️🔚

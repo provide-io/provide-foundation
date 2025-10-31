@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -222,5 +222,6 @@ class TestGetStats:
 
         assert "circuit_breaker" not in stats
         assert stats["otlp_available"] is False
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -13,6 +13,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 # Test the new simple API
@@ -26,7 +27,6 @@ from provide.foundation.file.operations import (
     detect_all,
     detect_streaming,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestSimpleDetectAPI(FoundationTestCase):

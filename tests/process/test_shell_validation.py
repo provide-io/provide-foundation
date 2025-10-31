@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.process import ProcessError
@@ -15,7 +16,6 @@ from provide.foundation.process.validation import (
     ShellFeatureError,
     validate_shell_safety,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestDangerousPatterns(FoundationTestCase):
@@ -272,5 +272,6 @@ class TestShellFunctionIntegration(FoundationTestCase):
         result = await async_shell("echo hello | grep h", allow_shell_features=True)
         assert result.returncode == 0
         assert "hello" in result.stdout
+
 
 # 🧱🏗️🔚

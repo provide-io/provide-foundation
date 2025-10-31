@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -13,14 +13,14 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 
 from hypothesis import HealthCheck, given, settings, strategies as st
-
-from provide.foundation.logger import get_logger
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     rate_burst_patterns,
     thread_counts,
     unicode_chaos,
 )
+
+from provide.foundation.logger import get_logger
 
 
 class TestLoggerUnicodeChaos(FoundationTestCase):

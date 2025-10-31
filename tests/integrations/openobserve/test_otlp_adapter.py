@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -478,5 +478,6 @@ class TestOpenObserveOTLPClient:
         assert client.headers["stream-name"] == "custom-stream"
         assert client.headers["X-Custom-1"] == "value1"
         assert client.headers["X-Custom-2"] == "value2"
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,8 @@ from __future__ import annotations
 from contextlib import suppress
 import time
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, Mock, patch
 import pytest
 import structlog
 
@@ -18,8 +20,6 @@ from provide.foundation.logger.ratelimit.processor import (
     RateLimiterProcessor,
     create_rate_limiter_processor,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, Mock, patch
 
 
 class TestCreateRateLimiterProcessor(FoundationTestCase):
@@ -279,5 +279,6 @@ class TestRateLimiterProcessorIntegration(FoundationTestCase):
 
         assert per_logger_stats["total_allowed"] == 2
         assert per_logger_stats["total_denied"] == 1
+
 
 # 🧱🏗️🔚
