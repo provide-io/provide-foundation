@@ -413,6 +413,7 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
 
     if not current_config.globally_disabled:
         core_setup_logger.debug(
+            "🔧 Logger configuration initialized",
             service_name=current_config.service_name,
             log_level=current_config.logging.default_level,
             formatter=current_config.logging.console_formatter,
@@ -471,6 +472,7 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
 
     if not current_config.globally_disabled:
         core_setup_logger.debug(
+            "✅ Logger setup complete",
             processors_configured=True,
             log_file_enabled=current_config.logging.log_file is not None,
         )
