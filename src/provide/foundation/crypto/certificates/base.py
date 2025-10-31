@@ -117,6 +117,9 @@ class CertificateBase:
                 not_valid_after = not_valid_after.replace(tzinfo=UTC)
 
             logger.debug(
+                "📜📅 Certificate validity dates configured",
+                not_valid_before=not_valid_before.isoformat(),
+                not_valid_after=not_valid_after.isoformat(),
             )
 
             private_key: KeyPair
