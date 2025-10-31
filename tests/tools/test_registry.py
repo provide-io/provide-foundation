@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,6 +12,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.config import BaseConfig
@@ -22,8 +24,6 @@ from provide.foundation.tools.registry import (
     get_tool_registry,
     register_tool_manager,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 
 class MockToolManager(BaseToolManager):
@@ -462,5 +462,6 @@ class TestRegistryDimension(FoundationTestCase):
         for call in dimension_calls:
             if "dimension" in call[1]:
                 assert call[1]["dimension"] == ToolRegistry.DIMENSION
+
 
 # 🧱🏗️🔚

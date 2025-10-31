@@ -267,7 +267,6 @@ def example_multi_source() -> None:
     pout("Example 4: Multi-source Configuration")
     pout("=" * 60)
 
-
     with temp_dir() as tmppath:
         # Create default config file
         default_file = tmppath / "defaults.json"
@@ -306,7 +305,6 @@ def example_schema_validation() -> None:
     pout("\n" + "=" * 60)
     pout("Example 5: Schema Validation")
     pout("=" * 60)
-
 
     # Define schema
     schema = ConfigSchema(
@@ -409,7 +407,6 @@ def main() -> None:
     example_multi_source()
     example_schema_validation()
     example_config_manager()
-
 
 
 if __name__ == "__main__":

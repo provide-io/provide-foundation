@@ -1,9 +1,11 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
 
 """Tests for formatting utilities."""
+
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.formatting import (
     format_duration,
@@ -20,7 +22,6 @@ from provide.foundation.formatting import (
     truncate,
     wrap_text,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestSizeFormatting(FoundationTestCase):
@@ -289,5 +290,6 @@ class TestTableFormatting(FoundationTestCase):
         assert "45.67" in table
         assert "True" in table
         assert "False" in table
+
 
 # 🧱🏗️🔚

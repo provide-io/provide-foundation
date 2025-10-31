@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,11 +11,11 @@ from pathlib import Path
 import tarfile
 import tempfile
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError, ArchiveFormatError
 from provide.foundation.archive.tar import TarArchive
-from provide.testkit import FoundationTestCase
 
 
 class TestTarArchiveEdgeCases(FoundationTestCase):
@@ -346,5 +346,6 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         )
         # Verify the deep file is included
         assert any("deep_file.txt" in path for path in contents)
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,9 +7,8 @@
 
 from __future__ import annotations
 
-import pytest
-
 from provide.testkit import FoundationTestCase
+import pytest
 
 
 class TestPlatformBasicCoverage(FoundationTestCase):
@@ -146,5 +145,6 @@ class TestTracerBasicCoverage(FoundationTestCase):
         assert span.name == "test_span"
         assert hasattr(span, "span_id")
         assert hasattr(span, "trace_id")
+
 
 # 🧱🏗️🔚

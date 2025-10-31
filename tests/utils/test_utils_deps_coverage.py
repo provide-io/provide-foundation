@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.utils.deps import (
@@ -20,8 +22,6 @@ from provide.foundation.utils.deps import (
     has_dependency,
     require_dependency,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 
 class TestDependencyStatus(FoundationTestCase):
@@ -340,5 +340,6 @@ class TestModuleIntegration(FoundationTestCase):
         for dep in deps:
             assert dep.name in features
             assert features[dep.name] == dep.available
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,9 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.transport.base import Request, Response
@@ -20,9 +23,6 @@ from provide.foundation.transport.middleware import (
     get_middleware_by_category,
     register_middleware,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
-from provide.testkit.time import make_controlled_time
 
 
 class TestLoggingMiddlewareEdgeCases(FoundationTestCase):
@@ -439,5 +439,6 @@ class TestBuiltinRegistration(FoundationTestCase):
             assert "logging" in middleware_names
             assert "retry" in middleware_names
             assert "metrics" in middleware_names
+
 
 # 🧱🏗️🔚

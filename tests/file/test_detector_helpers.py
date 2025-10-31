@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,9 +12,10 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.file.operations.detectors.helpers import find_real_file_from_events
 from provide.foundation.file.operations.types import FileEvent, FileEventMetadata
-from provide.testkit import FoundationTestCase
 
 
 class TestFindRealFileHelper(FoundationTestCase):
@@ -191,5 +192,6 @@ class TestFindRealFileHelper(FoundationTestCase):
         # Should extract "config.json" from ".config.json.tmp.999"
         assert result is not None, "Should extract base name"
         assert result.name == "config.json", f"Should extract correct base name, got {result.name}"
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -453,5 +453,6 @@ class TestThreadSafety:
                 # Should not raise any exceptions
                 result = future.result()
                 assert result >= 0
+
 
 # 🧱🏗️🔚

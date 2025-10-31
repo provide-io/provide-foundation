@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -216,5 +216,6 @@ class TestVersionResolverIntegration:
         assert resolver.resolve("~16.15.0", available) == "16.15.0"  # Tilde only matches same minor version
         assert resolver.resolve("^18.0.0", available) == "18.2.0"
         assert resolver.resolve("18.*", available) == "18.2.0"
+
 
 # 🧱🏗️🔚

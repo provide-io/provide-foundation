@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -449,5 +449,6 @@ class TestGetLabelValues:
                 endpoint="prometheus/api/v1/label/status_code/values",
                 params={"match[]": ["{job='api'}"]},
             )
+
 
 # 🧱🏗️🔚

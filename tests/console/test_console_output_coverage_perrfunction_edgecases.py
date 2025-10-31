@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,14 +10,15 @@ from __future__ import annotations
 import json
 import sys
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
+
 from provide.foundation.console.output import (
     _get_context,
     _output_json,
     perr,
     pout,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 
 class TestPerrFunction(FoundationTestCase):
@@ -204,5 +205,6 @@ class TestEdgeCases(FoundationTestCase):
                 dim=True,
                 nl=False,
             )
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.integrations.openobserve.models import (
@@ -21,7 +22,6 @@ from provide.foundation.integrations.openobserve.models import (
     StreamInfo,
     parse_relative_time,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestSearchQuery(FoundationTestCase):
@@ -375,5 +375,6 @@ class TestParseRelativeTime(FoundationTestCase):
         current_microseconds = int(datetime.now().timestamp() * 1_000_000)
         # Allow 1 second tolerance
         assert abs(result - current_microseconds) < 1_000_000
+
 
 # 🧱🏗️🔚

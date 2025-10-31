@@ -176,4 +176,5 @@ class SimpleHistogram:
             return 0.0
         return self.sum / self.count
 
+
 # 🧱🏗️🔚

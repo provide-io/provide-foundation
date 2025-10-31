@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.crypto import (
     calculate_checksums,
     parse_checksum_file,
@@ -17,7 +19,6 @@ from provide.foundation.crypto import (
     write_checksum_file,
 )
 from provide.foundation.crypto.checksums import verify_checksum_file
-from provide.testkit import FoundationTestCase
 
 
 class TestVerifyFile(FoundationTestCase):
@@ -224,5 +225,6 @@ class TestChecksumFiles(FoundationTestCase):
 
         assert len(verified) == 0
         assert len(failed) == 1  # Should stop after first failure
+
 
 # 🧱🏗️🔚

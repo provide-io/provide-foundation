@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,6 +12,7 @@ from pathlib import Path
 import tempfile
 
 import click
+from provide.testkit import CliTestRunner, FoundationTestCase
 
 from provide.foundation.cli.decorators import (
     flexible_options,
@@ -21,7 +22,6 @@ from provide.foundation.cli.decorators import (
 from provide.foundation.cli.utils import setup_cli_logging
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
-from provide.testkit import CliTestRunner, FoundationTestCase
 
 
 class TestCompleteCliIntegration(FoundationTestCase):
@@ -62,6 +62,7 @@ class TestCompleteCliIntegration(FoundationTestCase):
             if ctx.json_output:
                 click.echo(json.dumps({"status": "success", "migrations": 5}))
             else:
+                click.echo("Migration successful (5 migrations)")
 
         @cli.command()
         @pass_context
@@ -141,6 +142,7 @@ class TestCompleteCliIntegration(FoundationTestCase):
             if ctx.json_output:
                 click.echo(json.dumps({"status": "success", "migrations": 5}))
             else:
+                click.echo("Migration completed successfully")
 
         runner = CliTestRunner()
         result = runner.invoke(migrate_cmd, ["--json", "--log-level", "WARNING"])
@@ -287,6 +289,7 @@ class TestOutputFormatting(FoundationTestCase):
         @output_options
         @pass_context
         def cmd(ctx: CLIContext, **kwargs) -> None:
+            pass
 
         runner = CliTestRunner()
         result = runner.invoke(cmd, ["--no-emoji"])
@@ -390,5 +393,6 @@ class TestRealWorldScenarios(FoundationTestCase):
         result = runner.invoke(develop, ["--log-level", "DEBUG"])
         assert result.exit_code == 0
         # Debug logging configuration is validated by successful execution
+
 
 # 🧱🏗️🔚

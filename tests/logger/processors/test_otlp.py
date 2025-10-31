@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -466,5 +466,6 @@ class TestResetOtlpProvider:
 
         # Should still clear provider despite flush error
         assert otlp_mod._OTLP_LOGGER_PROVIDER is None
+
 
 # 🧱🏗️🔚

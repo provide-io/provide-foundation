@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -223,5 +223,6 @@ class TestLoggerBindingEdgeCases(FoundationTestCase):
         assert entry["tuple_val"] == [4, 5, 6]  # JSON converts tuples to lists
         assert entry["bool_val"] is True
         assert entry["float_val"] == 3.14
+
 
 # 🧱🏗️🔚

@@ -242,9 +242,7 @@ All modules are documented with their public APIs, including:
         self.generate_navigation()
         self.generate_index()
 
-        log.info(
-            f"{stats['processed_files']} processed, {stats['skipped_files']} skipped"
-        )
+        log.info(f"{stats['processed_files']} processed, {stats['skipped_files']} skipped")
 
         return stats
 
@@ -276,5 +274,6 @@ def generate_api_docs(
         **kwargs,
     )
     return generator.generate()
+
 
 # 🧱🏗️🔚

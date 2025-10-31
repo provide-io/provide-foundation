@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,10 +11,9 @@ from collections.abc import Generator
 import threading
 from typing import Any
 
-import pytest
-
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+import pytest
 
 # Global lock to prevent parallel tests from interfering with module reloading
 _MODULE_RELOAD_LOCK = threading.Lock()
@@ -249,5 +248,6 @@ class TestDepsCommandEdgeCases(FoundationTestCase):
                 _deps_command_impl(quiet=False, check="nonexistent")
 
             assert exc_info.value.code == 1
+
 
 # 🧱🏗️🔚

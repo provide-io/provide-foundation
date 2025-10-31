@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,11 +10,11 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import Certificate, CertificateError
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert
@@ -56,6 +56,7 @@ class TestCertificateLifecycle(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_certificate_validity_period(self, client_cert: Any) -> None:
         """Test certificate validity period checking."""
+        now = datetime.now(UTC)
         assert client_cert._base.not_valid_before <= now
         assert now <= client_cert._base.not_valid_after
 
@@ -126,5 +127,6 @@ class TestCertificateLifecycle(FoundationTestCase):
             assert not relying_party_cert.verify_trust(end_entity_cert), (
                 "Verification of an unrelated certificate (or one with a bad signature if issuers matched) should fail."
             )
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -8,9 +8,8 @@
 from __future__ import annotations
 
 from attrs import define
-import pytest
-
 from provide.testkit import FoundationTestCase
+import pytest
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert
@@ -157,5 +156,6 @@ class TestCertificateCredentials(FoundationTestCase):
         assert isinstance(creds.root_certificates, bytes)
         assert creds.private_key is None
         assert creds.certificate_chain is None
+
 
 # 🧱🏗️🔚

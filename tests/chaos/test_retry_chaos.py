@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -14,10 +14,6 @@ import asyncio
 from typing import Any
 
 from hypothesis import HealthCheck, given, settings, strategies as st
-import pytest
-
-from provide.foundation.resilience.retry import RetryExecutor, RetryPolicy
-from provide.foundation.resilience.types import BackoffStrategy
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     chaos_timings,
@@ -25,6 +21,10 @@ from provide.testkit.chaos import (
     retry_backoff_patterns,
     timeout_patterns,
 )
+import pytest
+
+from provide.foundation.resilience.retry import RetryExecutor, RetryPolicy
+from provide.foundation.resilience.types import BackoffStrategy
 
 
 class TestRetryPolicyChaos(FoundationTestCase):

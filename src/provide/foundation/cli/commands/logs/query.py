@@ -229,4 +229,5 @@ def query_command(
 
     return None
 
+
 # 🧱🏗️🔚

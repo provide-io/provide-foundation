@@ -148,7 +148,6 @@ def config_demo_command() -> None:
     pout(f"   API URL:     {api_url}")
 
 
-
 @register_command("file-demo", category="demo")
 def file_demo_command() -> None:
     """Demonstrate safe file I/O operations.
@@ -178,6 +177,7 @@ def file_demo_command() -> None:
     pout("-" * 60)
     read_content = safe_read_text(demo_file)
     if read_content:
+        pout(f"   ✅ Read {len(read_content)} characters")
     else:
         perr("   ❌ Read failed")
         return
@@ -223,7 +223,6 @@ def process_demo_command() -> None:
         perr(f"   ❌ Command failed: {e}")
 
 
-
 @register_command("parse-demo", category="demo")
 def parse_demo_command(value: str = "42") -> None:
     """Demonstrate typed value parsing.
@@ -258,7 +257,6 @@ def parse_demo_command(value: str = "42") -> None:
             pout(f"   {description:20s} '{test_val}' → {type(parsed).__name__}: {parsed}")
         except Exception as e:
             perr(f"   {description:20s} '{test_val}' → Error: {e}")
-
 
 
 @register_command("hash-demo", category="demo")
@@ -297,7 +295,6 @@ def hash_demo_command(file: str = "README.md") -> None:
             perr(f"   {algo.upper():8s}: Error: {e}")
 
 
-
 @register_command("error-demo", category="demo")
 def error_demo_command() -> None:
     """Demonstrate error handling with @resilient.
@@ -329,7 +326,6 @@ def error_demo_command() -> None:
     pout(f"   ⚠️  Result: {result} (returned default)")
 
 
-
 @register_command("output-demo", category="demo")
 def output_demo_command() -> None:
     """Demonstrate console output helpers.
@@ -358,7 +354,6 @@ def output_demo_command() -> None:
     echo_success("   Success message")
     echo_warning("   Warning message")
     echo_error("   Error message")
-
 
 
 # ==============================================================================

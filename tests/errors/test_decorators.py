@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from typing import Never
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.base import FoundationError
@@ -17,8 +19,6 @@ from provide.foundation.errors.decorators import (
     resilient,
     suppress_and_log,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 
 class TestWithErrorHandling(FoundationTestCase):
@@ -377,5 +377,6 @@ class TestFallbackOnError(FoundationTestCase):
         # Should log both original error and fallback failure
         assert mock_logger.return_value.warning.call_count >= 1
         assert mock_logger.return_value.error.call_count >= 1
+
 
 # 🧱🏗️🔚

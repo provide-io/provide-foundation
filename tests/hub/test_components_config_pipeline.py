@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock
 import pytest
 
 from provide.foundation.hub.components import (
@@ -16,8 +18,6 @@ from provide.foundation.hub.components import (
     get_processors_for_stage,
     load_all_configs,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock, Mock
 
 
 class TestAsyncConfigLoading(FoundationTestCase):
@@ -194,5 +194,6 @@ class TestProcessorPipeline(FoundationTestCase):
 
         assert len(format_processors) == 1
         assert format_processors[0].value is format_proc
+
 
 # 🧱🏗️🔚

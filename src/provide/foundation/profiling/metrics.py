@@ -136,4 +136,5 @@ class ProfileMetrics:
                 "uptime_seconds": round(elapsed, 1),
             }
 
+
 # 🧱🏗️🔚

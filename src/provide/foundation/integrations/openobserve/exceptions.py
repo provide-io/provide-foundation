@@ -35,4 +35,5 @@ class OpenObserveStreamingError(OpenObserveError):
 class OpenObserveConfigError(OpenObserveError):
     """Configuration error for OpenObserve."""
 
+
 # 🧱🏗️🔚

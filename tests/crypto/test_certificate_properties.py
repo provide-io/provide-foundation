@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,15 +10,14 @@ from __future__ import annotations
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.crypto import Certificate, CertificateError
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert
-
 
 
 @pytest.mark.asyncio
@@ -50,14 +49,10 @@ async def test_certificate_subject_not_equal_to_issuer_for_non_self_signed(
     )
 
 
-
-
 @pytest.mark.asyncio
 async def test_certificate_is_ca(client_cert) -> None:
     """Ensure the certificate correctly reports its CA status."""
     assert isinstance(client_cert.is_ca, bool), "CA status should be a boolean"
-
-
 
 
 @pytest.mark.asyncio
@@ -76,8 +71,6 @@ async def test_server_certificate_public_key(server_cert) -> None:
     assert server_cert.public_key, "Server certificate public key should not be empty"
 
 
-
-
 @pytest.mark.asyncio
 async def test_certificate_serial_number(client_cert) -> None:
     """Ensure the certificate serial number is valid."""
@@ -91,8 +84,6 @@ async def test_certificate_fingerprint(client_cert) -> None:
     fingerprint = client_cert._cert.fingerprint(hashes.SHA256())
     assert isinstance(fingerprint, bytes), "Fingerprint should be in bytes format"
     assert len(fingerprint) == 32, "SHA-256 fingerprint should be 32 bytes long"
-
-
 
 
 @pytest.mark.asyncio
@@ -139,8 +130,6 @@ async def test_certificate_extended_key_usage(client_cert) -> None:
         assert len(ext.value) >= 1, "Extended Key Usage should have at least one value"
     except Exception:
         pytest.skip("Skipping test: Extended Key Usage extension not found")
-
-
 
 
 @pytest.mark.asyncio
@@ -247,5 +236,6 @@ class TestCertificateProperties(FoundationTestCase):
         cert2._base = cert1._base
 
         assert hash(cert1) == hash(cert2), "Identical serials should hash the same"
+
 
 # 🧱🏗️🔚

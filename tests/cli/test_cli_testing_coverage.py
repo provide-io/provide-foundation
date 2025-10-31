@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -14,8 +14,6 @@ import tempfile
 
 import click
 from click.testing import CliRunner
-import pytest
-
 from provide.testkit import (
     CliTestCase,
     FoundationTestCase,
@@ -25,6 +23,7 @@ from provide.testkit import (
     temp_config_file,
 )
 from provide.testkit.mocking import Mock, patch
+import pytest
 
 
 class TestMockContext(FoundationTestCase):
@@ -480,5 +479,6 @@ class TestCliTestCase(FoundationTestCase):
 
         with pytest.raises(AssertionError, match="Value mismatch for 'key1'"):
             test_case.assert_json_output(mock_result, expected)
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -130,5 +130,6 @@ class TestInjectableDecorator:
 
             assert "Failed to get type hints" in str(exc_info.value)
             assert "Mock error" in str(exc_info.value)
+
 
 # 🧱🏗️🔚

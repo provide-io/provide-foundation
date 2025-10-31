@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -13,6 +13,7 @@ from pathlib import Path
 import tempfile
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
@@ -20,7 +21,6 @@ from provide.foundation.file.operations import (
     FileEventMetadata,
     OperationDetector,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestFileOperationsStressTesting(FoundationTestCase):

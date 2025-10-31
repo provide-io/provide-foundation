@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -74,5 +74,6 @@ class TestAlreadyExistsError(FoundationTestCase):
         """Test with resource_id parameter."""
         error = AlreadyExistsError("Conflict", resource_id="user@example.com")
         assert error.context["exists.id"] == "user@example.com"
+
 
 # 🧱🏗️🔚

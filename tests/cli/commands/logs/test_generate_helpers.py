@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.cli.commands.logs.constants import (
@@ -15,7 +16,6 @@ from provide.foundation.cli.commands.logs.constants import (
     SERVICE_NAMES,
 )
 from provide.foundation.cli.commands.logs.generator import LogGenerator
-from provide.testkit import FoundationTestCase
 
 
 class TestClickIntegration(FoundationTestCase):
@@ -118,5 +118,6 @@ class TestLogEntryDataIntegrity(FoundationTestCase):
         burroughs_entries = [burroughs_generator.generate_log_entry(i) for i in range(10)]
         for entry in burroughs_entries:
             assert entry["message"] in BURROUGHS_PHRASES
+
 
 # 🧱🏗️🔚

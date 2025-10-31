@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -19,10 +19,6 @@ import time
 from typing import Any
 
 from hypothesis import HealthCheck, given, settings, strategies as st
-import pytest
-
-from provide.foundation.errors.resources import LockError
-from provide.foundation.file.lock import FileLock
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     chaos_timings,
@@ -30,6 +26,10 @@ from provide.testkit.chaos import (
     pid_recycling_scenarios,
     thread_counts,
 )
+import pytest
+
+from provide.foundation.errors.resources import LockError
+from provide.foundation.file.lock import FileLock
 
 
 class TestFileLockChaos(FoundationTestCase):

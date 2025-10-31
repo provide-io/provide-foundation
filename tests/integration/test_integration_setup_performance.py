@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -140,5 +140,6 @@ def test_performance_with_disabled_features(
     # Guard against division by zero when test completes very quickly (parallel execution)
     messages_per_second = message_count / duration if duration > 0 else float("inf")
     assert messages_per_second > 500, f"Performance too slow: {messages_per_second:.1f} msg/sec"
+
 
 # 🧱🏗️🔚

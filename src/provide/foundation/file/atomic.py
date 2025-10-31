@@ -10,6 +10,7 @@ from __future__ import annotations
 import contextlib
 import os
 from pathlib import Path
+import sys
 
 from provide.foundation.logger import get_logger
 
@@ -65,11 +66,16 @@ def atomic_write(
             final_mode = path.stat().st_mode
 
     if final_mode is None:
-        # Default permissions (respecting umask)
+        # Default permissions (respecting umask on Unix, simplified on Windows)
         default_mode = 0o666
-        current_umask = os.umask(0)
-        os.umask(current_umask)
-        final_mode = default_mode & ~current_umask
+        if sys.platform == "win32":
+            # Windows doesn't support umask; use default mode
+            final_mode = default_mode
+        else:
+            # Unix: Respect umask
+            current_umask = os.umask(0)
+            os.umask(current_umask)
+            final_mode = default_mode & ~current_umask
 
     # Create temp file with final permissions in a single operation (no race)
     # Use os.open() instead of secure_temp_file for atomic permission setting
@@ -83,7 +89,9 @@ def atomic_write(
 
     try:
         # Set permissions immediately on the file descriptor (atomic)
-        os.fchmod(temp_fd, final_mode)
+        # On Windows, fchmod has limited effect (only read-only bit)
+        if sys.platform != "win32":
+            os.fchmod(temp_fd, final_mode)
 
         # Write data
         with os.fdopen(temp_fd, "wb") as f:

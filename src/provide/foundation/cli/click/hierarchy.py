@@ -168,4 +168,5 @@ def should_skip_command(entry: Any) -> bool:
     info = entry.metadata.get("info")
     return not info or info.hidden or entry.metadata.get("is_group")
 
+
 # 🧱🏗️🔚

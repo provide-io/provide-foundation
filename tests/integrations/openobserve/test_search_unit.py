@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,8 @@ requiring a running OpenObserve instance."""
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock, patch
 import pytest
 
 from provide.foundation.integrations.openobserve.models import SearchResponse
@@ -22,8 +24,6 @@ from provide.foundation.integrations.openobserve.search import (
     search_errors,
     search_logs,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock, Mock, patch
 
 
 class TestSearchLogsUnit(FoundationTestCase):

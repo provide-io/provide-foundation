@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,12 +7,13 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
+
 from provide.foundation.hub.components import (
     ComponentCategory,
     ComponentInfo,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock
 
 
 class TestComponentInfo(FoundationTestCase):
@@ -64,5 +65,6 @@ class TestComponentCategory(FoundationTestCase):
         assert ComponentCategory.ERROR_HANDLER.value == "error_handler"
         assert ComponentCategory.FORMATTER.value == "formatter"
         assert ComponentCategory.FILTER.value == "filter"
+
 
 # 🧱🏗️🔚

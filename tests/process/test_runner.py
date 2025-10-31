@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,11 +10,11 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.sync import run, shell, stream
-from provide.testkit import FoundationTestCase
 
 
 class TestRunCommand(FoundationTestCase):
@@ -169,5 +169,6 @@ class TestRunShell(FoundationTestCase):
         )
 
         assert "test_value" in result.stdout
+
 
 # 🧱🏗️🔚

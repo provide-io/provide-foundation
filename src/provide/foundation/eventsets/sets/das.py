@@ -59,6 +59,7 @@ EVENT_SET = EventSet(
                 "login": "➡️",
                 "logout": "⬅️",
                 "auth": "🔑",
+                "register": "📋",
                 "error": "🔥",
                 "encrypt": "🛡️",
                 "decrypt": "🔓",

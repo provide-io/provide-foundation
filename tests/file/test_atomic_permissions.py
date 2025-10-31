@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,12 +10,13 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.file.atomic import (
     atomic_replace,
     atomic_write,
     atomic_write_text,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestAtomicPermissions(FoundationTestCase):
@@ -201,5 +202,6 @@ class TestAtomicPermissions(FoundationTestCase):
 
         finally:
             os.umask(original_umask)  # Restore original umask
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -202,5 +202,6 @@ class TestSpanEdgeCases(FoundationTestCase):
         assert result["tags"] == {"user": "test"}
         assert result["status"] == "pending"
         assert result["error"] == "Test error"
+
 
 # 🧱🏗️🔚

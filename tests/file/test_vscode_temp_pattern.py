@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -313,5 +313,6 @@ class TestVSCodePatternEdgeCases:
         temp_path = Path(".file.txt.tmp.abc123")
         assert is_temp_file(temp_path) is True
         assert extract_base_name(temp_path) == "file.txt"
+
 
 # 🧱🏗️🔚

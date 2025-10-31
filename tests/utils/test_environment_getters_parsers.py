@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from typing import Any, get_origin
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.config import ValidationError
@@ -29,7 +30,6 @@ from provide.foundation.utils.environment.getters import (
     get_str,
     require,
 )
-from provide.testkit import FoundationTestCase
 
 
 @pytest.fixture
@@ -310,5 +310,6 @@ class TestIntegrationScenarios(FoundationTestCase):
 
         origin = get_origin(str)
         assert origin is None
+
 
 # 🧱🏗️🔚

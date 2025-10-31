@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -73,5 +73,6 @@ class TestIntegrationVerification(FoundationTestCase):
             # For now, just ensuring it doesn't crash is the main goal of this test.
         except Exception as e:  # pragma: no cover
             raise AssertionError(f"Emergency fallback test failed: {e}") from e  # B904
+
 
 # 🧱🏗️🔚

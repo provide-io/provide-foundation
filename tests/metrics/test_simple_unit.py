@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,9 +10,10 @@ Run with: pytest tests/metrics/test_simple_unit.py -v"""
 
 from __future__ import annotations
 
-from provide.foundation.metrics.simple import SimpleCounter, SimpleGauge, SimpleHistogram
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock
+
+from provide.foundation.metrics.simple import SimpleCounter, SimpleGauge, SimpleHistogram
 
 
 class TestSimpleCounter(FoundationTestCase):

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.crypto import (
@@ -19,7 +20,6 @@ from provide.foundation.crypto import (
     generate_signing_keypair,
 )
 from provide.foundation.errors.crypto import CryptoKeyError
-from provide.testkit import FoundationTestCase
 
 
 class TestEd25519KeyGeneration(FoundationTestCase):
@@ -102,5 +102,6 @@ class TestEd25519Signatures(FoundationTestCase):
 
         with pytest.raises(CryptoKeyError, match="public key must be 32 bytes"):
             Ed25519Verifier(invalid_public_key)
+
 
 # 🧱🏗️🔚

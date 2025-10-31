@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,9 +12,10 @@ from __future__ import annotations
 
 from typing import Any
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.utils.environment import EnvPrefix
 from provide.foundation.utils.environment.parsers import parse_duration, parse_size
-from provide.testkit import FoundationTestCase
 
 
 class TestParserCachingBenchmarks(FoundationTestCase):
@@ -152,5 +153,6 @@ class TestRealWorldScenarios(FoundationTestCase):
                 parse_duration("30s")
 
         benchmark(hot_path)
+
 
 # 🧱🏗️🔚

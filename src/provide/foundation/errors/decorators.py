@@ -397,4 +397,5 @@ def fallback_on_error(
 
     return decorator
 
+
 # 🧱🏗️🔚

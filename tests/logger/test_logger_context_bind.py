@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -185,5 +185,6 @@ class TestLoggerBind(FoundationTestCase):
         test_entries = [e for e in entries if "test_event" in e.get("event", "")]
         assert len(test_entries) == 1
         assert "test_event" in test_entries[0]["event"]
+
 
 # 🧱🏗️🔚

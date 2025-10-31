@@ -183,4 +183,5 @@ def register_profiling(hub: Hub, sample_rate: float = DEFAULT_PROFILING_SAMPLE_R
         # CLI components may not be available in all environments
         pass
 
+
 # 🧱🏗️🔚

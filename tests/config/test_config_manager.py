@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -8,11 +8,11 @@
 from __future__ import annotations
 
 from attrs import define
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.manager import ConfigManager
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock
 
 
 @define
@@ -187,5 +187,6 @@ class TestConfigManager(FoundationTestCase):
 
         assert config.name == "updated"
         assert config.value == 200
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from typing import Never
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.errors.base import FoundationError
@@ -17,8 +19,6 @@ from provide.foundation.errors.handlers import (
     handle_error,
     transactional,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 
 
 class TestErrorBoundary(FoundationTestCase):
@@ -331,5 +331,6 @@ class TestHandleError(FoundationTestCase):
 
         call_args = mock_logger.return_value.error.call_args[1]
         assert call_args["captured"] == "data"
+
 
 # 🧱🏗️🔚

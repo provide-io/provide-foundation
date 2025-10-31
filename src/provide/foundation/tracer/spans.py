@@ -193,4 +193,5 @@ class Span:
             "error": self.error,
         }
 
+
 # 🧱🏗️🔚

@@ -140,4 +140,5 @@ class AtomicOperationDetector:
 
         return None
 
+
 # 🧱🏗️🔚

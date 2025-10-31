@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -168,6 +168,7 @@ class HTTPTransport(TransportBase):
 
         # Log streaming request with sanitized URI
         sanitized_uri = sanitize_uri(request.uri)
+        log.info(f"🚀 {request.method} {sanitized_uri} (streaming)")
 
         try:
             # Only pass params if explicitly set (empty dict would override URI query params)

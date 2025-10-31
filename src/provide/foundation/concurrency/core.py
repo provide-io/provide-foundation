@@ -132,4 +132,5 @@ def async_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> Any
 
     return asyncio.run(main(), debug=debug)  # type: ignore[arg-type]
 
+
 # 🧱🏗️🔚

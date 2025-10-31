@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,11 +9,11 @@ from __future__ import annotations
 
 import json
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation import perr, pout
 from provide.foundation.context import CLIContext
-from provide.testkit import FoundationTestCase
 
 
 class TestConsoleOutput(FoundationTestCase):
@@ -142,5 +142,6 @@ class TestConsoleOutput(FoundationTestCase):
         assert captured.out == ""
         data = json.loads(captured.err)
         assert data == {"error": "Not found", "code": 404}
+
 
 # 🧱🏗️🔚

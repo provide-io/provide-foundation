@@ -190,4 +190,5 @@ def validate_signature(
         logger.debug(f"📜🔍❌ Signature validation failed: {type(e).__name__}: {e}")
         return False
 
+
 # 🧱🏗️🔚

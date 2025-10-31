@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,10 +11,10 @@ from collections.abc import Generator
 import os
 from typing import Any
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.utils.environment.prefix import EnvPrefix
-from provide.testkit import FoundationTestCase
 
 
 @pytest.fixture
@@ -80,5 +80,6 @@ class TestGetDict(FoundationTestCase):
         env = EnvPrefix("app")
         result = env.get_dict("tags", item_separator=";", key_value_separator=":")
         assert result == {"env": "prod", "version": "1.0"}
+
 
 # 🧱🏗️🔚

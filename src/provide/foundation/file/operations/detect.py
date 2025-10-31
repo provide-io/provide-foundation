@@ -179,4 +179,5 @@ def create_detector(config: DetectorConfig | None = None) -> OperationDetector:
     """
     return OperationDetector(config)
 
+
 # 🧱🏗️🔚

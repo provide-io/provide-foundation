@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -184,5 +184,6 @@ async def test_universal_client_default_timeout_override(httpx_mock: HTTPXMock) 
         response = await client.get("https://api.example.com/timeout", timeout=5.0)
 
     assert response.status == 200
+
 
 # 🧱🏗️🔚

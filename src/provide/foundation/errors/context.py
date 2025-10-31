@@ -328,4 +328,5 @@ def capture_error_context(
 
     return ctx
 
+
 # 🧱🏗️🔚

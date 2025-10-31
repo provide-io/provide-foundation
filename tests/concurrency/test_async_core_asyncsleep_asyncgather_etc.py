@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,8 @@ import asyncio
 import time
 from typing import Never
 
+from provide.testkit import MinimalTestCase
+from provide.testkit.mocking import AsyncMock, patch
 import pytest
 
 from provide.foundation.concurrency import (
@@ -18,8 +20,6 @@ from provide.foundation.concurrency import (
     async_wait_for,
 )
 from provide.foundation.errors import ValidationError
-from provide.testkit import MinimalTestCase
-from provide.testkit.mocking import AsyncMock, patch
 
 
 class TestAsyncSleep(MinimalTestCase):
@@ -420,5 +420,6 @@ class TestAsyncRun(MinimalTestCase):
         # not a coroutine that async_run expects
         with pytest.raises((TypeError, RuntimeError, ValueError)):
             async_run(async_gen)
+
 
 # 🧱🏗️🔚

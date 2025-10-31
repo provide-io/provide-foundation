@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -14,12 +14,12 @@ import threading
 import time
 
 from attrs.exceptions import FrozenInstanceError
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.state.base import ImmutableState
 from provide.foundation.state.config import ConfigManager, VersionedConfig
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock
 
 
 class TestVersionedConfig(FoundationTestCase):

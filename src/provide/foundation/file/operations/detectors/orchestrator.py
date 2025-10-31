@@ -293,4 +293,5 @@ class OperationDetector:
 
         return None
 
+
 # 🧱🏗️🔚

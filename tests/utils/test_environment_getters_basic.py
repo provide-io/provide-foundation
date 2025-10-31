@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 from typing import Any
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.config import ValidationError
@@ -25,7 +26,6 @@ from provide.foundation.utils.environment.getters import (
     get_path,
     get_str,
 )
-from provide.testkit import FoundationTestCase
 
 
 @pytest.fixture
@@ -228,5 +228,6 @@ class TestGetPath(FoundationTestCase):
 
         result = get_path("TEST_PATH")
         assert result == Path("/first/second/path")
+
 
 # 🧱🏗️🔚

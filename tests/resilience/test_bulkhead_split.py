@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -15,10 +15,10 @@ import threading
 import time
 from typing import TYPE_CHECKING
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.resilience.bulkhead import AsyncResourcePool, Bulkhead, SyncResourcePool
-from provide.testkit import FoundationTestCase
 
 if TYPE_CHECKING:
     pass

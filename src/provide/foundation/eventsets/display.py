@@ -111,4 +111,5 @@ def show_event_matrix() -> None:
     # Log the complete display
     log.info("\n".join(lines))
 
+
 # 🧱🏗️🔚

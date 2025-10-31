@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,9 +10,9 @@ from __future__ import annotations
 from pathlib import Path
 import tempfile
 
+from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.testkit import FoundationTestCase
 from tests.file.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,12 +10,12 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.serialization import json_dumps, json_loads
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 """Tests for Foundation serialization utilities."""
 
@@ -449,5 +449,6 @@ class TestSerializationIntegration(FoundationTestCase):
         assert isinstance(result["string"], str)
         assert isinstance(result["list"], list)
         assert isinstance(result["dict"], dict)
+
 
 # 🧱🏗️🔚

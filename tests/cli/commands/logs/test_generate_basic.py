@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,13 +9,14 @@ from __future__ import annotations
 
 import threading
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.cli.commands.logs.constants import (
     BURROUGHS_PHRASES,
     OPERATIONS,
     SERVICE_NAMES,
 )
 from provide.foundation.cli.commands.logs.generator import LogGenerator
-from provide.testkit import FoundationTestCase
 
 
 class TestConstants(FoundationTestCase):
@@ -108,5 +109,6 @@ class TestTraceSpanGeneration(FoundationTestCase):
         # Should have 50 unique span IDs
         assert len(span_ids) == 50
         assert len(set(span_ids)) == 50
+
 
 # 🧱🏗️🔚

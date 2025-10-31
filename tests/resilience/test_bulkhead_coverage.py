@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,8 @@ These tests target uncovered lines and edge cases in the bulkhead pattern."""
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.resilience.bulkhead import (
@@ -18,8 +20,6 @@ from provide.foundation.resilience.bulkhead import (
 )
 from provide.foundation.resilience.bulkhead_async import AsyncResourcePool
 from provide.foundation.resilience.bulkhead_sync import SyncResourcePool
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 
 class TestBulkheadTypeValidation(FoundationTestCase):

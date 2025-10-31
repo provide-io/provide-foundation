@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -180,5 +180,6 @@ class TestLazyInitializationDocumentation(FoundationTestCase):
 
         log_data = json.loads(json_lines[0])
         assert log_data["service_name"] == "migrated-service"
+
 
 # 🧱🏗️🔚

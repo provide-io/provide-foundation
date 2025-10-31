@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,6 +9,7 @@ Tests Ed25519Signer/Verifier and RSASigner/Verifier classes with ~100% coverage.
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.crypto import (
@@ -22,7 +23,6 @@ from provide.foundation.crypto import (
     RSAVerifier,
 )
 from provide.foundation.errors.crypto import CryptoKeyError
-from provide.testkit import FoundationTestCase
 
 
 class TestEd25519Signer(FoundationTestCase):
@@ -457,5 +457,6 @@ class TestSignerVerifierIntegration(FoundationTestCase):
         # RSA signature won't verify with Ed25519
         ed_verifier = Ed25519Verifier(ed_signer.public_key)
         assert not ed_verifier.verify(data, rsa_signature)
+
 
 # 🧱🏗️🔚

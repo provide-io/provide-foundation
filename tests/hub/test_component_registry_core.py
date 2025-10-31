@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,9 +12,10 @@ from __future__ import annotations
 
 from contextlib import suppress
 
-from provide.foundation.hub.registry import Registry
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, Mock
+
+from provide.foundation.hub.registry import Registry
 
 
 class TestComponentRegistryArchitecture(FoundationTestCase):
@@ -324,5 +325,6 @@ class TestFoundationBootstrapIntegration(FoundationTestCase):
         # Component should be gone
         retrieved = registry.get("test_isolation", "test")
         assert retrieved is None
+
 
 # 🧱🏗️🔚

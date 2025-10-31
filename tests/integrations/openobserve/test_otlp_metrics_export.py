@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -194,5 +194,6 @@ class TestOTLPMetricsExport:
             # Query might fail if metrics haven't been ingested yet
             print(f"Query exception: {e}")
             pytest.skip(f"Metrics query failed (may need more time for ingestion): {e}")
+
 
 # 🧱🏗️🔚

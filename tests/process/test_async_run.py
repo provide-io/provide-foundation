@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,14 +12,14 @@ from pathlib import Path
 import sys
 import tempfile
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock, patch
 import pytest
 
 from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_run
 from provide.foundation.process.shared import CompletedProcess
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import AsyncMock, Mock, patch
 
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial
@@ -304,5 +304,6 @@ class TestAsyncRunEdgeCases(FoundationTestCase):
             assert "extra_kwarg" not in call_kwargs  # Invalid kwarg should be filtered
             assert "encoding" in call_kwargs  # Valid kwarg should be kept
             assert "shell" not in call_kwargs  # shell is handled separately, not passed as kwarg
+
 
 # 🧱🏗️🔚

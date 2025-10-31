@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Never
 
 import click
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub.commands import (
@@ -17,7 +18,6 @@ from provide.foundation.hub.commands import (
     register_command,
 )
 from provide.foundation.hub.manager import clear_hub, get_hub
-from provide.testkit import FoundationTestCase
 
 
 class TestCommandRegistration(FoundationTestCase):
@@ -284,5 +284,6 @@ class TestCommandRegistration(FoundationTestCase):
 
         assert command is new_command
         assert command() == "new"
+
 
 # 🧱🏗️🔚

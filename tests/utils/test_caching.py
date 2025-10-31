@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,7 @@ from __future__ import annotations
 import threading
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.utils.caching import (
@@ -19,7 +20,6 @@ from provide.foundation.utils.caching import (
     get_cache_stats,
     register_cache,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestLRUCache(FoundationTestCase):
@@ -352,5 +352,6 @@ class TestCachingIntegration(FoundationTestCase):
         # Cached should be faster (at least 2x)
         # Note: This is a rough check and may vary by system
         assert cached_time < first_time
+
 
 # 🧱🏗️🔚

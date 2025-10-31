@@ -142,4 +142,5 @@ def parse_relative_time(time_str: str, now: datetime | None = None) -> int:
         dt = datetime.fromisoformat(time_str)
         return int(dt.timestamp() * 1_000_000)
 
+
 # 🧱🏗️🔚

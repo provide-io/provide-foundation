@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,10 +11,10 @@ import itertools
 from typing import Any
 
 from click.testing import CliRunner
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.cli.commands.logs.generate import generate_logs_command
-from provide.testkit.mocking import MagicMock, patch
 
 
 @pytest.fixture
@@ -193,5 +193,6 @@ class TestGenerateLogsCommand:
             ["--count", "1", "--enable-rate-limit", "--rate-limit", "50"],
         )
         mock_configure_limiter.assert_called_once_with(True, 50.0)
+
 
 # 🧱🏗️🔚

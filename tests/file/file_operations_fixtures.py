@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -432,5 +432,6 @@ def file_operation_pattern(*patterns: str):
         return requires_file_operations(func)
 
     return decorator
+
 
 # 🧱🏗️🔚

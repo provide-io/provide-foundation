@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,11 +9,11 @@ from __future__ import annotations
 
 """Tests for the foundation registry functionality."""
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors import AlreadyExistsError
 from provide.foundation.hub.registry import Registry
-from provide.testkit import FoundationTestCase
 
 
 class TestRegistry(FoundationTestCase):
@@ -212,5 +212,6 @@ class TestRegistry(FoundationTestCase):
 
         reg.remove("comp1")
         assert len(reg) == 1
+
 
 # 🧱🏗️🔚

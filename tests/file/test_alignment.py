@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -322,5 +322,6 @@ class TestAlignmentEdgeCases:
             aligned = align_offset(offset, alignment)
             assert is_aligned(aligned, alignment)
             assert aligned >= offset
+
 
 # 🧱🏗️🔚

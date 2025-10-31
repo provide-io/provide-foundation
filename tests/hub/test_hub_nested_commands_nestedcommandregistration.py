@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -9,11 +9,11 @@ from __future__ import annotations
 
 import click
 from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.hub import get_hub
 from provide.foundation.hub.commands import create_command_group, register_command
 from provide.foundation.hub.manager import clear_hub
-from provide.testkit import FoundationTestCase
 
 
 class TestNestedCommandRegistration(FoundationTestCase):
@@ -397,5 +397,6 @@ class TestNestedCommandRegistration(FoundationTestCase):
         # Try to find where it ended up
         hub = get_hub()
         assert hub.get_command("nonexistent.orphan") is orphan_command
+
 
 # 🧱🏗️🔚

@@ -49,4 +49,5 @@ class CommandInfo:
     parent: str | None = None  # Parent path extracted from dot notation
     parameters: list[ParameterInfo] | None = None
 
+
 # 🧱🏗️🔚

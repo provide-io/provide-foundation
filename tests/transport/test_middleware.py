@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.transport.base import Request, Response
@@ -16,8 +18,6 @@ from provide.foundation.transport.middleware import (
     MiddlewarePipeline,
     RetryMiddleware,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.time import make_controlled_time
 
 
 @pytest.mark.asyncio
@@ -242,5 +242,6 @@ async def test_retry_middleware_execute() -> None:
 
     assert response.status == 200
     assert call_count == 3  # 1 initial + 2 retries
+
 
 # 🧱🏗️🔚

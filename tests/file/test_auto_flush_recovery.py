@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -13,11 +13,11 @@ from datetime import datetime
 from pathlib import Path
 import threading
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations.detectors.auto_flush import AutoFlushHandler
 from provide.foundation.file.operations.types import FileEvent, FileEventMetadata, FileOperation, OperationType
-from provide.testkit import FoundationTestCase
 
 
 @pytest.fixture
@@ -280,5 +280,6 @@ class TestEventLossRecovery(FoundationTestCase):
 
         # Original should be unchanged
         assert handler.failed_operations_count == 1
+
 
 # 🧱🏗️🔚

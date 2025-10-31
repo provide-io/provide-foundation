@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -16,13 +16,13 @@ import io
 import sys
 from typing import Any
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 from pytest import CaptureFixture
 
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 from provide.foundation.utils.streams import get_foundation_log_stream
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import patch
 
 
 class TestFoundationLogOutputEnvironmentVariable(FoundationTestCase):
@@ -175,5 +175,6 @@ class TestFoundationLogOutputIntegration(FoundationTestCase):
 
         # The important behavior is that FOUNDATION_LOG_OUTPUT=stderr is respected
         assert test_config.foundation_log_output == "stderr"
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -162,5 +162,6 @@ class TestVerifyChecksum:
         result = downloader.verify_checksum(file_path, expected)
 
         assert result is False
+
 
 # 🧱🏗️🔚

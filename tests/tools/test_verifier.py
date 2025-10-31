@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -411,5 +411,6 @@ class TestVerifySignatureCommand:
 
         mock_perr.assert_called_once()
         assert "INVALID" in str(mock_perr.call_args)
+
 
 # 🧱🏗️🔚

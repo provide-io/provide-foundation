@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
@@ -18,7 +19,6 @@ from provide.foundation.archive.operations import (
     OperationChain,
 )
 from provide.foundation.archive.types import ArchiveOperation
-from provide.testkit import FoundationTestCase
 
 
 class TestOperationChain(FoundationTestCase):
@@ -225,5 +225,6 @@ class TestArchiveOperations(FoundationTestCase):
         # Both should be valid
         assert archive1.exists()
         assert archive2.exists()
+
 
 # 🧱🏗️🔚

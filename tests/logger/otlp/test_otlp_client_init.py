@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -153,5 +153,6 @@ class TestEndpointBuilding:
 
         # Should not duplicate /v1/logs
         assert client.endpoint == "https://api.example.com/v1/logs"
+
 
 # 🧱🏗️🔚

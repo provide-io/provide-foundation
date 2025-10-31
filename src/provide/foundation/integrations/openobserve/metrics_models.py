@@ -266,4 +266,5 @@ class MetricLabels:
             "label_values": self.label_values,
         }
 
+
 # 🧱🏗️🔚

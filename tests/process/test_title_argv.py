@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -166,5 +166,6 @@ class TestSetProcessTitleFromArgv(FoundationTestCase):
         title = f"{cmd_name} {' '.join(args)}" if args else cmd_name
 
         assert title == "soup serve --port 8080 --workers 4"
+
 
 # 🧱🏗️🔚

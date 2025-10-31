@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -85,5 +85,6 @@ def test_isolated_fixtures_documentation() -> None:
     assert isolated_hub.__doc__ is not None
     assert "isolated" in isolated_hub.__doc__.lower()
     assert "Hub" in isolated_hub.__doc__
+
 
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,7 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import FileEvent, FileEventMetadata
@@ -20,7 +21,6 @@ from provide.foundation.file.quality import (
     QualityResult,
     create_scenarios_from_patterns,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestQualityAnalyzer(FoundationTestCase):
@@ -135,5 +135,6 @@ class TestCreateScenariosFromPatterns(FoundationTestCase):
         assert "vscode_atomic_save" in names
         assert "safe_write_with_backup" in names
         assert "batch_format_operation" in names
+
 
 # 🧱🏗️🔚

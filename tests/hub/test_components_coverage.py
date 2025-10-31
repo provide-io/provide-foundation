@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,9 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
+
 from provide.foundation.hub.components import (
     ComponentCategory,
     cleanup_all_components,
@@ -14,8 +17,6 @@ from provide.foundation.hub.components import (
     get_config_chain,
     resolve_config_value,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock
 
 
 class TestComponentLifecycle(FoundationTestCase):
@@ -218,5 +219,6 @@ class TestConfigSourceFunctionality(FoundationTestCase):
 
         # Cleanup
         registry.clear()
+
 
 # 🧱🏗️🔚

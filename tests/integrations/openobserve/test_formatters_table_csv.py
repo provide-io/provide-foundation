@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -12,12 +12,13 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.integrations.openobserve.formatters import (
     format_csv,
     format_table,
 )
 from provide.foundation.integrations.openobserve.models import SearchResponse
-from provide.testkit import FoundationTestCase
 
 
 class TestFormatTable(FoundationTestCase):

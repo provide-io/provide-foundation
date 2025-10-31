@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,13 +11,14 @@ from __future__ import annotations
 
 import base64
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
+
 from provide.foundation.logger.config.telemetry import (
     TelemetryConfig,
     _get_service_name,
     _get_service_version,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock, patch
 
 
 class TestGetServiceName(FoundationTestCase):

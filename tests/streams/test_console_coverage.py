@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -61,5 +61,6 @@ class TestFileStreams(FoundationTestCase):
 
         # Should not raise an exception
         close_log_streams()
+
 
 # 🧱🏗️🔚

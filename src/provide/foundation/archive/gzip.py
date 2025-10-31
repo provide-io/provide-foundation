@@ -56,4 +56,5 @@ class GzipCompressor(BaseCompressor):
         """Library-specific bytes decompression implementation."""
         return gzip.decompress(data)
 
+
 # 🧱🏗️🔚

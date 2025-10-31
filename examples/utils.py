@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -40,5 +40,6 @@ def print_example_header(example_num: int, title: str, description: str) -> None
 
 def print_example_completion(example_num: int) -> None:
     """Print a standardized example completion message."""
+
 
 # 🧱🏗️🔚

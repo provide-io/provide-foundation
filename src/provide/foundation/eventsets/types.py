@@ -78,4 +78,5 @@ class EventSet:
     field_mappings: list[FieldMapping] = field(factory=list)
     priority: int = field(default=0, converter=int)
 
+
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -221,5 +221,6 @@ class TestTraceProcessorFoundationLogging(FoundationTestCase):
             assert "trace_id" not in result or result.get("trace_id") is None
             # Should still return the original event dict
             assert result["event"] == "test"
+
 
 # 🧱🏗️🔚

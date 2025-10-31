@@ -276,4 +276,5 @@ def version_option(version: str | None = None, prog_name: str | None = None) -> 
 
     return decorator
 
+
 # 🧱🏗️🔚

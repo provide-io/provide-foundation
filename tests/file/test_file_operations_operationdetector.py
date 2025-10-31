@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,6 +10,8 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.file.operations import (
     DetectorConfig,
     FileEvent,
@@ -17,7 +19,6 @@ from provide.foundation.file.operations import (
     OperationDetector,
     OperationType,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestOperationDetector(FoundationTestCase):
@@ -399,5 +400,6 @@ class TestOperationDetector(FoundationTestCase):
             t.join(timeout=10.0)
 
         assert len(results) == 3
+
 
 # 🧱🏗️🔚

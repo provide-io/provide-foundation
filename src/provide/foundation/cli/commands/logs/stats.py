@@ -131,4 +131,5 @@ def print_progress(current: int, total: int) -> None:
         progress = (current + 1) / total * 100
         click.echo(f"Progress: {progress:.0f}% ({current + 1}/{total})")
 
+
 # 🧱🏗️🔚

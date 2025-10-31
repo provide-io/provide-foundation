@@ -95,4 +95,5 @@ def validate_signature_wrapper(signed_cert: Certificate, signing_cert: Certifica
 
     return validate_signature(signed_cert._cert, signing_cert._cert, signing_cert.public_key)
 
+
 # 🧱🏗️🔚

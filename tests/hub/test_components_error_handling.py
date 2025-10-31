@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,6 +7,9 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
+
 from provide.foundation.hub.components import (
     ComponentCategory,
     execute_error_handlers,
@@ -14,8 +17,6 @@ from provide.foundation.hub.components import (
     get_handlers_for_exception,
     resolve_component_dependencies,
 )
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import Mock
 
 
 class TestErrorHandlers(FoundationTestCase):
@@ -229,5 +230,6 @@ class TestComponentDependencies(FoundationTestCase):
         """Test resolve_component_dependencies handles non-existent component."""
         deps = resolve_component_dependencies("nonexistent", "test_dimension")
         assert deps == {}
+
 
 # 🧱🏗️🔚

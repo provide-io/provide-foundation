@@ -250,7 +250,6 @@ async def query_logs() -> None:
         print("❌ Failed to connect to OpenObserve")
         return
 
-
     # Query 1: Get all recent logs
     print("=" * 80)
     print("Query 1: All recent logs from last 10 minutes")
@@ -294,6 +293,7 @@ async def query_logs() -> None:
     if errors.hits:
         print(format_output(errors, format_type="log"))
     else:
+        print("⚠️  No errors found in last 10 minutes")
 
     # Query 3: Search by specific domain
     print("\n" + "=" * 80)

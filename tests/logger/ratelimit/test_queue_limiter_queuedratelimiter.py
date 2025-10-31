@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -10,12 +10,12 @@ from __future__ import annotations
 import sys
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.logger.ratelimit.queue_limiter import (
     QueuedRateLimiter,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestQueuedRateLimiter(FoundationTestCase):
@@ -311,5 +311,6 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         assert limiter.running is False
         assert not limiter.worker_thread.is_alive()
+
 
 # 🧱🏗️🔚

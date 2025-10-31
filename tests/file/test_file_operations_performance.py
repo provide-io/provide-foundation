@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
@@ -24,7 +25,6 @@ from provide.foundation.file.quality import (
     QualityAnalyzer,
     create_scenarios_from_patterns,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestFileOperationsPerformance(FoundationTestCase):

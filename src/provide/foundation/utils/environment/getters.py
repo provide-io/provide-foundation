@@ -366,4 +366,5 @@ def require(name: str, type_hint: type[T] | None = None) -> Any:
     else:
         return _parse_complex_type(name, origin)
 
+
 # 🧱🏗️🔚

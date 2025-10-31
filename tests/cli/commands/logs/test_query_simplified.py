@@ -1,4 +1,4 @@
-# 
+#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -7,10 +7,9 @@
 
 from __future__ import annotations
 
-import pytest
-
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+import pytest
 
 
 class TestBuildQuerySql(FoundationTestCase):
@@ -287,5 +286,6 @@ class TestModuleImports(FoundationTestCase):
         assert hasattr(log, "info")
         assert hasattr(log, "debug")
         assert hasattr(log, "error")
+
 
 # 🧱🏗️🔚

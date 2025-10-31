@@ -22,6 +22,7 @@ def _deps_command_impl(quiet: bool, check: str | None) -> None:
     if check:
         available = has_dependency(check)
         if not quiet:
+            status = "✅" if available else "❌"
             pout(f"{status} {check}: {'Available' if available else 'Missing'}")
             if not available:
                 pout(f"Install with: pip install 'provide-foundation[{check}]'")
