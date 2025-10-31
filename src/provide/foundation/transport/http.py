@@ -201,6 +201,7 @@ class HTTPTransport(TransportBase):
     def _get_status_emoji(self, status_code: int) -> str:
         """Get emoji for HTTP status code."""
         if 200 <= status_code < 300:
+            return "✅"  # Success
         if 300 <= status_code < 400:
             return "↩️"  # Redirect
         if 400 <= status_code < 500:
