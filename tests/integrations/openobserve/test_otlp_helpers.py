@@ -1,7 +1,11 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for OpenObserve OTLP helpers.
 
-Tests all helper functions in integrations/openobserve/otlp_helpers.py.
-"""
+Tests all helper functions in integrations/openobserve/otlp_helpers.py."""
 
 from __future__ import annotations
 

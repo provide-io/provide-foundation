@@ -1,7 +1,9 @@
-# provide/foundation/transport/cache.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -88,7 +90,6 @@ class TransportCache:
 
         # Get or create transport
         if scheme not in self._transports:
-            log.debug("🏗️ Creating new transport", scheme=scheme)
             transport = factory(scheme)
             await transport.connect()
             self._transports[scheme] = transport
@@ -104,7 +105,6 @@ class TransportCache:
         """
         if scheme in self._health:
             self._health[scheme].record_success()
-            log.trace("✅ Transport request succeeded", scheme=scheme)
 
     def mark_failure(self, scheme: str, error: Exception) -> None:
         """Mark a failed request for scheme.

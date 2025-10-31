@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Celery Integration - Task Definitions
 
 This module contains example Celery tasks that demonstrate real-world patterns
@@ -19,8 +19,7 @@ Usage:
     from examples.integration.celery.tasks import process_payment, generate_report
 
     # Execute tasks
-    result = process_payment.delay("order_123", 99.99, "credit_card")
-"""
+    result = process_payment.delay("order_123", 99.99, "credit_card")"""
 
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -296,4 +295,5 @@ if __name__ == "__main__":
     pout("• send_notification - Multi-channel notifications")
     pout("• process_batch_data - Batch processing with error handling")
     pout("• cleanup_old_data - Data cleanup operations")
+
 # 🧱🏗️🔚

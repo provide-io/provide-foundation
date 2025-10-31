@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -149,7 +149,6 @@ def verify_checksum(data: bytes, checksum_str: str) -> bool:
 
         if matches:
             log.debug(
-                "✅ Prefixed checksum verified",
                 algorithm=algorithm,
                 size=len(data),
             )

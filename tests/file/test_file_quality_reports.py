@@ -1,3 +1,8 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for QualityAnalyzer report generation and edge case handling."""
 
 from __future__ import annotations

@@ -1,7 +1,9 @@
-# provide/foundation/process/sync/streaming.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -168,7 +170,6 @@ def stream(
 
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    log.info("🌊 Streaming command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
     run_env = prepare_environment(env)
     cwd = normalize_cwd(cwd)
@@ -202,7 +203,6 @@ def stream(
                     return_code=returncode,
                 )
 
-            log.debug("✅ Stream completed", command=cmd_str)
         finally:
             _cleanup_process(process)
 

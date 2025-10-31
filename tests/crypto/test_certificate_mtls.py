@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -31,8 +31,5 @@ class TestCertificateMTLS(FoundationTestCase):
         """Ensure the server certificate loads correctly."""
         assert server_cert.subject, "Server certificate subject should not be empty"
         assert server_cert.issuer, "Server certificate issuer should not be empty"
-
-
-# 🐍🔌🧪🪄
 
 # 🧱🏗️🔚

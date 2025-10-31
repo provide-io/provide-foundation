@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/openobserve/02_metrics_integration.py
+
 """OpenObserve Metrics Integration Example.
 
 This example demonstrates the complete OpenObserve metrics integration workflow:
@@ -27,8 +26,7 @@ Usage:
     export OPENOBSERVE_USER=tim@provide.io
     export OPENOBSERVE_PASSWORD=password
 
-    python examples/openobserve/02_metrics_integration.py
-"""
+    python examples/openobserve/02_metrics_integration.py"""
 
 from __future__ import annotations
 
@@ -87,7 +85,6 @@ def create_and_record_metrics() -> dict[str, object]:
         "seconds",
     )
 
-    print("✅ Created 3 metrics: counter, gauge, histogram")
 
     # Record some values
     print("\n📝 Recording metric values...")
@@ -133,7 +130,6 @@ async def query_and_display_metrics(client: OpenObserveClient) -> None:  # noqa:
         example_metrics = [m for m in metrics if m.startswith("example_")]
 
         if example_metrics:
-            print(f"\n✅ Found {len(example_metrics)} example metrics:")
             for metric in example_metrics:
                 print(f"  - {metric}")
         else:
@@ -165,7 +161,6 @@ async def query_and_display_metrics(client: OpenObserveClient) -> None:  # noqa:
         result = await client.query_promql("example_http_requests_total")
 
         if result.is_success and result.result:
-            print("\n✅ Query successful!")
             print(format_metric_output(result, format_type="table"))
         else:
             print(f"⚠️  No data or query failed: {result.error if not result.is_success else 'no results'}")
@@ -179,7 +174,6 @@ async def query_and_display_metrics(client: OpenObserveClient) -> None:  # noqa:
         result = await client.query_promql("example_active_connections")
 
         if result.is_success and result.result:
-            print("\n✅ Query successful!")
             print(format_metric_output(result, format_type="summary"))
         else:
             print(f"⚠️  No data or query failed: {result.error if not result.is_success else 'no results'}")
@@ -201,7 +195,6 @@ async def query_and_display_metrics(client: OpenObserveClient) -> None:  # noqa:
         )
 
         if result.is_success and result.result:
-            print("\n✅ Range query successful!")
             print(f"Result type: {result.result_type}")
             print(f"Series count: {len(result.result)}")
 
@@ -224,7 +217,6 @@ async def query_and_display_metrics(client: OpenObserveClient) -> None:  # noqa:
         labels = await client.get_metric_labels("example_http_requests_total")
 
         if labels:
-            print(f"\n✅ Found {len(labels)} labels:")
             for label in labels:
                 print(f"  - {label}")
         else:
@@ -250,13 +242,11 @@ async def main() -> None:
         print("     OPENOBSERVE_PASSWORD=password")
         return
 
-    print("\n✅ OpenObserve configured:")
     print(f"   URL: {oo_config.url}")
     print(f"   User: {oo_config.user}")
     print(f"   Organization: {oo_config.org or 'default'}")
 
     # Setup OTLP metrics export
-    print("\n🔧 Configuring OTLP metrics export...")
     otlp_endpoint = get_openobserve_otlp_metrics_endpoint(oo_config.url, oo_config.org)  # type: ignore[arg-type]
     print(f"   OTLP endpoint: {otlp_endpoint}")
 
@@ -270,7 +260,6 @@ async def main() -> None:
     )
 
     setup_opentelemetry_metrics(telemetry_config)
-    print("✅ OpenTelemetry metrics configured")
 
     # Create and record metrics
     create_and_record_metrics()
@@ -278,7 +267,6 @@ async def main() -> None:
     # Force metrics export by shutting down provider
     print("\n⏳ Forcing metrics export (shutting down provider)...")
     shutdown_opentelemetry_metrics()
-    print("✅ Metrics exported")
 
     # Wait for metrics to reach OpenObserve
     print("\n⏳ Waiting 5 seconds for metrics to be ingested by OpenObserve...")
@@ -293,7 +281,6 @@ async def main() -> None:
         print("❌ Failed to connect to OpenObserve")
         return
 
-    print("✅ Connected to OpenObserve")
 
     # Query and display metrics
     await query_and_display_metrics(client)
@@ -302,11 +289,6 @@ async def main() -> None:
     print("\n" + "=" * 80)
     print("✨ Demo complete!")
     print("\nWhat we demonstrated:")
-    print("  1. ✅ Created metrics (counter, gauge, histogram)")
-    print("  2. ✅ Recorded metric values")
-    print("  3. ✅ Exported metrics to OpenObserve via OTLP")
-    print("  4. ✅ Queried metrics using Prometheus API")
-    print("  5. ✅ Displayed results in various formats")
     print("\nTo view metrics in OpenObserve UI:")
     print("  1. Open http://localhost:5080")
     print("  2. Login with your credentials")
@@ -321,4 +303,5 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 # 🧱🏗️🔚

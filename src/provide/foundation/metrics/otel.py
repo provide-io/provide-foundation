@@ -1,7 +1,9 @@
-# provide/foundation/metrics/otel.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -104,7 +106,6 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
         reader = PeriodicExportingMetricReader(exporter, export_interval_millis=60000)
         readers.append(reader)
 
-        slog.debug(f"✅ OTLP metrics exporter configured: {config.otlp_protocol}")
 
     # Create meter provider
     meter_provider = MeterProvider(resource=resource, metric_readers=readers)
@@ -133,7 +134,6 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
             meter = otel_metrics.get_meter(__name__)
             _set_meter(meter)
 
-            slog.info("📊✅ OpenTelemetry metrics setup complete")
         else:
             slog.debug("📊 OpenTelemetry meter provider already configured")
     except Exception:
@@ -147,7 +147,6 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
         meter = otel_metrics.get_meter(__name__)
         _set_meter(meter)
 
-        slog.info("📊✅ OpenTelemetry metrics setup complete")
 
 
 def shutdown_opentelemetry_metrics() -> None:

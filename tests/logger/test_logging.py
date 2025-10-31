@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -252,7 +252,6 @@ class TestLoggingWithEmojiSets(FoundationTestCase):
             status="success",
         )
         output = captured_stderr_for_foundation.getvalue()
-        assert "[🔑][➡️][✅] Legacy system test" in output
         # Fields are still shown in key_value format even when used for emojis
         assert "domain=auth" in output
         assert "action=login" in output

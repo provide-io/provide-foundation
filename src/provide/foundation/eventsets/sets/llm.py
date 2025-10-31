@@ -1,7 +1,9 @@
-# provide/foundation/eventsets/sets/llm.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -38,7 +40,6 @@ EVENT_SET = EventSet(
             name="llm_task",
             visual_markers={
                 "generation": "✍️",
-                "completion": "✅",
                 "embedding": "🔗",
                 "chat": "💬",
                 "tool_use": "🛠️",
@@ -65,7 +66,6 @@ EVENT_SET = EventSet(
                 "filtered_output": "🛡️🗣️",
                 "rate_limit": "⏳",
                 "partial_success": "🤏",
-                "tool_call": "📞",
                 "default": "➡️",
             },
             metadata_fields={

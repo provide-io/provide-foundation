@@ -1,7 +1,7 @@
-# provide/foundation/file/operations/__init__.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """File operation detection and analysis.
 
@@ -30,8 +30,7 @@ For streaming detection or custom configuration:
     >>>
     >>> for event in event_stream:
     ...     if operation := detector.detect_streaming(event):
-    ...         handle_operation(operation)
-"""
+    ...         handle_operation(operation)"""
 
 from __future__ import annotations
 

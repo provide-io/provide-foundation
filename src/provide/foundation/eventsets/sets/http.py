@@ -1,7 +1,9 @@
-# provide/foundation/eventsets/sets/http.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -22,7 +24,6 @@ EVENT_SET = EventSet(
                 "delete": "🗑️",
                 "patch": "🩹",
                 "head": "👤❔",
-                "options": "⚙️❔",
                 "default": "🌐",
             },
             default_key="default",
@@ -31,7 +32,6 @@ EVENT_SET = EventSet(
             name="http_status_class",
             visual_markers={
                 "1xx": "i",
-                "2xx": "✅",
                 "3xx": "↪️",
                 "4xx": "⚠️CLIENT",
                 "5xx": "🔥SERVER",

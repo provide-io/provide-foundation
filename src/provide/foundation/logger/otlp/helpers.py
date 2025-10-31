@@ -1,7 +1,7 @@
-# provide/foundation/logger/otlp/helpers.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Generic OTLP helper functions for trace context, endpoints, and log formatting.
 
@@ -9,8 +9,7 @@ Provides utility functions for working with OTLP/OpenTelemetry including:
 - Trace context extraction
 - Endpoint URL building
 - Header construction
-- Attribute normalization
-"""
+- Attribute normalization"""
 
 from __future__ import annotations
 

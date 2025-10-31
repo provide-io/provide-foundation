@@ -1,14 +1,13 @@
-# provide/foundation/hub/introspection.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Framework-agnostic parameter introspection.
 
 This module provides utilities to extract parameter information from
 function signatures in a framework-agnostic way, supporting modern
-Python type hints including typing.Annotated for CLI rendering hints.
-"""
+Python type hints including typing.Annotated for CLI rendering hints."""
 
 from __future__ import annotations
 

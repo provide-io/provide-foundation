@@ -1,12 +1,11 @@
-# provide/foundation/hub/commands.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Command registration and management for the hub.
 
-This module re-exports from the split modules for convenience.
-"""
+This module re-exports from the split modules for convenience."""
 
 from __future__ import annotations
 

@@ -1,21 +1,15 @@
 #!/usr/bin/env python3
-# cut_up_chuck.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Continuously emits diverse log messages every second until Ctrl+C.
 
 This script serves as a demonstration and a simple load test for the
 provide.foundation logging system. It showcases various logging features,
 including different log levels, named loggers, DAS (Domain-Action-Status)
-logging, and the custom trace level.
-"""
+logging, and the custom trace level."""
 
-#!/usr/bin/env python3
-#
-# cut_up_chuck.py
-#
-# Note: The `depy` persona mandates this header. If direct execution is desired,
-# the shebang `#!/usr/bin/env python3` would typically be the first line.
-#
 import asyncio
 from collections.abc import Callable  # For type hinting log_level_method
 import os
@@ -164,3 +158,5 @@ if __name__ == "__main__":
         print("🎬 Example script finished.")
 
 # 📜☕
+
+# 🧱🏗️🔚

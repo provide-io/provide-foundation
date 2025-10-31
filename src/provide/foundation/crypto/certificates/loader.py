@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -52,7 +52,6 @@ def load_from_uri_or_pem(data: str) -> str:
             logger.debug(f"📜📂🚀 Loading data from file: {path}")
             with path.open("r", encoding="utf-8") as f:
                 loaded_data = f.read().strip()
-            logger.debug("📜📂✅ Loaded data from file")
             return loaded_data
 
         loaded_data = data.strip()
@@ -86,7 +85,6 @@ def load_certificate_from_pem(
 
         logger.debug("📜🔑🔍 Loading X.509 certificate from PEM data")
         x509_cert = x509.load_pem_x509_certificate(cert_data.encode("utf-8"))
-        logger.debug("📜🔑✅ X.509 certificate object loaded from PEM")
 
         private_key = None
         key_data = None
@@ -105,7 +103,6 @@ def load_certificate_from_pem(
                     "Expected RSA or ECDSA private key.",
                 )
             private_key = loaded_priv_key
-            logger.debug("📜🔑✅ Private key object loaded and type validated")
 
         # Extract certificate details for CertificateBase
         loaded_not_valid_before = x509_cert.not_valid_before_utc  # type: ignore[attr-defined]
@@ -130,7 +127,6 @@ def load_certificate_from_pem(
             not_valid_after=loaded_not_valid_after,
             serial_number=x509_cert.serial_number,
         )
-        logger.debug("📜🔑✅ Reconstructed CertificateBase from loaded cert")
 
         return base, x509_cert, private_key, cert_data, key_data
 

@@ -1,14 +1,12 @@
-# provide/foundation/tools/verifier.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
-"""
-Verifier Tool for Foundation.
+"""Verifier Tool for Foundation.
 
 Provides CLI commands for verifying checksums and digital signatures.
-Also provides ToolVerifier class for programmatic checksum verification.
-"""
+Also provides ToolVerifier class for programmatic checksum verification."""
 
 from __future__ import annotations
 

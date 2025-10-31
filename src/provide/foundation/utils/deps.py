@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -186,14 +186,12 @@ def check_optional_deps(*, quiet: bool = False, return_status: bool = False) -> 
         from provide.foundation.hub.foundation import get_foundation_logger
 
         log = get_foundation_logger()
-        log.info("📦 provide-foundation Optional Dependencies Status")
         log.info("=" * 50)
 
         available_count = sum(1 for dep in deps if dep.available)
         total_count = len(deps)
 
         for dep in deps:
-            status_icon = "✅" if dep.available else "❌"
             version_info = f" (v{dep.version})" if dep.version else ""
             log.info(f"  {status_icon} {dep.name}{version_info}")
             log.info(f"     {dep.description}")

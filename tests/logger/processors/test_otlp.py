@@ -1,8 +1,12 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for logger OTLP processor.
 
 Tests all functions in logger/processors/otlp.py including timestamp conversion,
-processor creation, log flushing, and provider reset.
-"""
+processor creation, log flushing, and provider reset."""
 
 from __future__ import annotations
 

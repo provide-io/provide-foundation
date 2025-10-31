@@ -1,8 +1,12 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for event set display utilities.
 
 Tests all functionality in eventsets/display.py including event set formatting
-and display.
-"""
+and display."""
 
 from __future__ import annotations
 
@@ -106,7 +110,6 @@ class TestFormatEventSetConfig:
             ),
             EventMapping(
                 name="http-status",
-                visual_markers={"200": "✅", "404": "❌"},
                 metadata_fields={},
                 transformations={},
             ),
@@ -274,7 +277,6 @@ class TestFormatResolverState:
         mapping1.visual_markers = {"GET": "🔍"}
 
         mapping2 = Mock()
-        mapping2.visual_markers = {"200": "✅"}
 
         mapping3 = Mock()
         mapping3.visual_markers = {"ERROR": "❌"}

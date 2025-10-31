@@ -1,3 +1,8 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Universal client cache management and error handling tests."""
 
 from __future__ import annotations

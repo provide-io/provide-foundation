@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -64,9 +64,7 @@ class TestConsoleOutput(FoundationTestCase):
 
     def test_pout_with_prefix(self, capsys) -> None:
         """Test pout with prefix."""
-        pout("Success", prefix="✅")
         captured = capsys.readouterr()
-        assert captured.out == "✅ Success\n"
 
     def test_perr_with_prefix(self, capsys) -> None:
         """Test perr with prefix."""

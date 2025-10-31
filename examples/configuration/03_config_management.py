@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/configuration/03_config_management.py
+
 """Configuration Management Example - Complete Configuration System
 
 This comprehensive example demonstrates all aspects of provide.foundation's
@@ -42,9 +41,7 @@ Expected output:
 
 See Also:
     - examples/02_custom_configuration.py for custom telemetry configuration
-    - examples/08_env_variables_config.py for environment-specific patterns
-
-"""
+    - examples/08_env_variables_config.py for environment-specific patterns"""
 
 from __future__ import annotations
 
@@ -413,9 +410,9 @@ def main() -> None:
     example_schema_validation()
     example_config_manager()
 
-    logger.info("✅ Configuration examples completed")
 
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

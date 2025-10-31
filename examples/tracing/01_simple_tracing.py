@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-#
-# examples/tracing/01_simple_tracing.py
-#
+
 """Simple example showing basic tracing with Foundation.
 
 Demonstrates how to add operation timing and context tracking
-to your applications without external dependencies.
-"""
+to your applications without external dependencies."""
 
 from provide.foundation import logger
 from provide.foundation.tracer import get_trace_context, with_span
@@ -183,9 +179,9 @@ def main() -> None:
     except ValueError as e:
         logger.info("Expected error caught", error=str(e))
 
-    logger.info("✅ Simple tracing demo completed!")
 
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

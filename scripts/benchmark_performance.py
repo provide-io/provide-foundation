@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-# benchmark_performance.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Performance benchmarking script for Foundation Telemetry.
 
 This script measures the performance characteristics of the logging system
@@ -16,8 +18,7 @@ The benchmarks include:
 - Async logging patterns performance
 
 Results are saved to benchmark-results.json for analysis and tracking
-performance regressions over time.
-"""
+performance regressions over time."""
 
 import asyncio
 from collections.abc import Generator
@@ -602,3 +603,5 @@ if __name__ == "__main__":
     main()
 
 # 📊⚡
+
+# 🧱🏗️🔚

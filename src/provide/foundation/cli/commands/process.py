@@ -1,7 +1,9 @@
-# provide/foundation/cli/commands/process.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -26,7 +28,6 @@ def _set_title_impl(title: str) -> None:
         return
 
     set_process_title(title)
-    pout(f"✅ Process title set to: {title}")
 
 
 def _get_title_impl() -> None:
@@ -43,7 +44,6 @@ def _get_title_impl() -> None:
 def _info_impl() -> None:
     """Implementation of info command logic."""
     if has_setproctitle():
-        pout("✅ Process title support: Available")
         current = get_process_title()
         pout(f"Current title: {current}")
     else:

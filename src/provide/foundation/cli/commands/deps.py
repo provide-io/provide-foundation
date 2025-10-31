@@ -1,7 +1,9 @@
-# provide/foundation/cli/commands/deps.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -20,7 +22,6 @@ def _deps_command_impl(quiet: bool, check: str | None) -> None:
     if check:
         available = has_dependency(check)
         if not quiet:
-            status = "✅" if available else "❌"
             pout(f"{status} {check}: {'Available' if available else 'Missing'}")
             if not available:
                 pout(f"Install with: pip install 'provide-foundation[{check}]'")

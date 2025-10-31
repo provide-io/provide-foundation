@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Foundation Error Handling Patterns Example
 
 This example demonstrates Foundation's comprehensive error handling utilities,
@@ -24,8 +24,7 @@ Usage:
     python examples/production/02_error_handling.py
 
 Expected output:
-    Structured error handling demonstrations with Foundation's error utilities.
-"""
+    Structured error handling demonstrations with Foundation's error utilities."""
 
 from pathlib import Path
 import sys
@@ -129,7 +128,6 @@ def example_error_handling() -> None:
     logger.info("Network error handled", fallback_result=profile)
 
     # Example 3: Custom Foundation Exceptions
-    pout("\n🏗️ Example 3: Custom Foundation Exceptions")
 
     class UserServiceError(FoundationError):
         """Custom exception for user service operations."""
@@ -267,7 +265,6 @@ def example_error_handling() -> None:
     logger.info("Testing error context enrichment")
     complex_operation_with_context()
 
-    pout("\n✅ Foundation Error Handling Examples completed!")
     logger.info(
         "Error handling demonstration completed",
         domain="examples",
@@ -278,4 +275,5 @@ def example_error_handling() -> None:
 
 if __name__ == "__main__":
     example_error_handling()
+
 # 🧱🏗️🔚

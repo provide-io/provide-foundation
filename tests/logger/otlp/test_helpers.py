@@ -1,8 +1,12 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for logger OTLP helpers.
 
 Tests all functions in logger/otlp/helpers.py including trace context
-extraction, endpoint building, header construction, and attribute normalization.
-"""
+extraction, endpoint building, header construction, and attribute normalization."""
 
 from __future__ import annotations
 

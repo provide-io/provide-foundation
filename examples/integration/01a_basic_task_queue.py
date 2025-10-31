@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Basic Task Queue Example (No External Dependencies)
 
 Demonstrates Foundation logging for task queue patterns using Python's
@@ -17,8 +17,7 @@ Usage:
 
 Expected output:
     Structured logging showing task lifecycle, worker operations,
-    and queue monitoring with Foundation's telemetry features.
-"""
+    and queue monitoring with Foundation's telemetry features."""
 
 import asyncio
 from pathlib import Path
@@ -347,5 +346,5 @@ async def basic_task_queue_example() -> None:
 
 if __name__ == "__main__":
     asyncio.run(basic_task_queue_example())
-    pout("\n✅ Basic Task Queue Example completed!")
+
 # 🧱🏗️🔚

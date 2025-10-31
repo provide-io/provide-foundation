@@ -1,7 +1,7 @@
-# provide/foundation/file/operations/detectors/__init__.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """File operation detection system with extensible registry.
 
@@ -30,8 +30,7 @@ Example - Registering custom detector:
     ...     func=detect_my_pattern,
     ...     priority=85,
     ...     description="Detects custom pattern"
-    ... )
-"""
+    ... )"""
 
 from __future__ import annotations
 

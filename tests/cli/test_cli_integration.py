@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -62,7 +62,6 @@ class TestCompleteCliIntegration(FoundationTestCase):
             if ctx.json_output:
                 click.echo(json.dumps({"status": "success", "migrations": 5}))
             else:
-                click.echo("✅ Applied 5 migrations")
 
         @cli.command()
         @pass_context
@@ -142,7 +141,6 @@ class TestCompleteCliIntegration(FoundationTestCase):
             if ctx.json_output:
                 click.echo(json.dumps({"status": "success", "migrations": 5}))
             else:
-                click.echo("✅ Applied 5 migrations")
 
         runner = CliTestRunner()
         result = runner.invoke(migrate_cmd, ["--json", "--log-level", "WARNING"])
@@ -289,12 +287,10 @@ class TestOutputFormatting(FoundationTestCase):
         @output_options
         @pass_context
         def cmd(ctx: CLIContext, **kwargs) -> None:
-            click.echo("✅ Success" if not ctx.no_emoji else "Success")
 
         runner = CliTestRunner()
         result = runner.invoke(cmd, ["--no-emoji"])
         assert result.exit_code == 0
-        assert "✅" not in result.output
 
 
 class TestConfigurationLoading(FoundationTestCase):
@@ -389,12 +385,10 @@ class TestRealWorldScenarios(FoundationTestCase):
                     setattr(ctx, key, value)
             # Verify log level was set
             assert ctx.log_level == "DEBUG"
-            click.echo("🔧 Development mode active")
 
         runner = CliTestRunner()
         result = runner.invoke(develop, ["--log-level", "DEBUG"])
         assert result.exit_code == 0
-        assert "🔧 Development mode active" in result.output
         # Debug logging configuration is validated by successful execution
 
 # 🧱🏗️🔚

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Celery Integration - Distributed Cut-Up Chuck Runner
 
 This module orchestrates the distributed cut-up chuck log generation system,
@@ -16,8 +16,7 @@ Part 6 of 6: Cut-Up Chuck Distributed Runner
 - Graceful shutdown and cleanup
 
 Usage:
-    python 06_cut_up_chuck_runner.py
-"""
+    python 06_cut_up_chuck_runner.py"""
 
 from pathlib import Path
 import random
@@ -114,7 +113,6 @@ class DistributedCutUpChuck:
 
         # Give worker time to start
         time.sleep(2)
-        pout("✅ Distributed worker started!\n")
 
         self.logger.info(
             "distributed_worker_started",
@@ -392,7 +390,6 @@ Transforms the original cut_up_chuck.py into a distributed task system:
             pout(f"\n💥 Error: {e}")
         finally:
             self.display_final_metrics()
-            pout("\n✅ Distributed Cut-Up Chuck Example Completed!")
             pout("\n🎯 Demonstrated Patterns:")
             pout("   • Distributed log generation across workers")
             pout("   • Parallel batch processing")
@@ -412,4 +409,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

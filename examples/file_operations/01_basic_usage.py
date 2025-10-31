@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/file_operations/01_basic_usage.py
+
 """Basic usage of file operation detection for monitoring file changes."""
 
 from datetime import datetime, timedelta
@@ -35,7 +34,6 @@ def main() -> None:
     print("=" * 50)
 
     # Example 1: Checking if files are temporary
-    print("\n📁 Example 1: Temporary File Detection")
     test_files = [
         "document.txt",
         "document.txt.tmp.12345",
@@ -93,7 +91,6 @@ def main() -> None:
         print(f"       → Description: {operation.description}")
 
     # Example 3: Custom detector configuration
-    print("\n⚙️ Example 3: Custom Detector Configuration")
 
     # Configure for faster detection with lower confidence threshold
     config = DetectorConfig(
@@ -149,7 +146,6 @@ def main() -> None:
 
         # Analyze real events
         real_operations = detector.detect(real_events)
-        print(f"  ✅ Detected {len(real_operations)} operations from real files")
 
         for operation in real_operations:
             print(f"     🎯 {operation.operation_type.value}: {operation.primary_path.name}")
@@ -159,4 +155,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

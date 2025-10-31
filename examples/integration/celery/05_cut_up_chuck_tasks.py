@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Celery Integration - Distributed Cut-Up Chuck Tasks
 
 This module transforms the original cut_up_chuck.py script into distributed
@@ -17,8 +17,7 @@ Part 5 of 6: Cut-Up Chuck Distributed Tasks
 - Phrase selection and processing
 
 Usage:
-    from examples.integration.celery.cut_up_chuck_tasks import generate_log_entry, generate_batch
-"""
+    from examples.integration.celery.cut_up_chuck_tasks import generate_log_entry, generate_batch"""
 
 from pathlib import Path
 import random
@@ -396,4 +395,5 @@ if __name__ == "__main__":
     pout("• continuous_generator - Orchestrate continuous log generation")
     pout(f"• {len(CUT_UP_PHRASES)} cut-up phrases available")
     pout(f"• {len(LOGGER_CONTEXTS)} logger contexts available")
+
 # 🧱🏗️🔚

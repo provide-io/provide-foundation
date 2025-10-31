@@ -1,7 +1,9 @@
-# provide/foundation/logger/setup/coordinator.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -325,7 +327,6 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> objec
 
             def format(self, record: logging.LogRecord) -> str:
                 # Add log emoji prefix to stdlib logger messages
-                message = f"🧱 {record.getMessage()}"
 
                 # Extract structured logging key-value pairs from record.__dict__
                 # These are added via the extra={} parameter
@@ -412,7 +413,6 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
 
     if not current_config.globally_disabled:
         core_setup_logger.debug(
-            "⚙️➡️🚀 Starting Foundation (structlog) setup",
             service_name=current_config.service_name,
             log_level=current_config.logging.default_level,
             formatter=current_config.logging.console_formatter,
@@ -471,7 +471,6 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
 
     if not current_config.globally_disabled:
         core_setup_logger.debug(
-            "⚙️➡️✅ Foundation (structlog) setup completed",
             processors_configured=True,
             log_file_enabled=current_config.logging.log_file is not None,
         )

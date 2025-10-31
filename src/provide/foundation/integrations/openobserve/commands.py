@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -441,7 +441,6 @@ if _HAS_CLICK:
         click.echo(f"Testing connection to {client.url}...")
 
         if run_async(client.test_connection()):
-            click.echo("✅ Connection successful!")
             click.echo(f"Organization: {client.organization}")
             click.echo(f"User: {client.username}")
         else:

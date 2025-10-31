@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -129,11 +129,5 @@ class TestKeys(FoundationTestCase):
         Certificate.generate(key_type=KEY_TYPE_RSA, key_size=2048)
         generation_time = time.time() - start_time
         assert generation_time < 1.0  # Should complete within 1 second
-
-
-### 🐍🏗🧪️
-
-
-# 🐍🔌🧪🪄
 
 # 🧱🏗️🔚

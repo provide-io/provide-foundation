@@ -1,7 +1,9 @@
-# provide/foundation/transport/client.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -142,7 +144,6 @@ class UniversalClient:
         transport = await self._get_transport(request.transport_type.value)
 
         # Stream response
-        log.info(f"🌊 Streaming {method} {uri}")
         async for chunk in transport.stream(request):
             yield chunk
 

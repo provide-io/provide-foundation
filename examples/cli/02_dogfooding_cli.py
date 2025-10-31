@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/cli/02_dogfooding_cli.py
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -122,7 +122,6 @@ def config_demo_command() -> None:
     - Direct environment variable access with utils/environment
     - Better than os.environ.get() with manual parsing
     """
-    pout("\n🔧 Configuration Dogfooding Demo\n")
     pout("=" * 60)
 
     # Method 1: Structured configuration class (best for application config)
@@ -148,7 +147,6 @@ def config_demo_command() -> None:
     pout(f"   Verbose:     {verbose}")
     pout(f"   API URL:     {api_url}")
 
-    pout("\n✅ Benefits: Type safety, validation, consistent parsing\n")
 
 
 @register_command("file-demo", category="demo")
@@ -160,7 +158,6 @@ def file_demo_command() -> None:
     - safe_read_text() with error handling
     - hash_file() for checksums
     """
-    pout("\n📁 File I/O Dogfooding Demo\n")
     pout("=" * 60)
 
     demo_file = Path("/tmp/dogfooding_demo.txt")
@@ -172,8 +169,6 @@ def file_demo_command() -> None:
 
     try:
         atomic_write_text(demo_file, content)
-        pout(f"   ✅ Wrote to: {demo_file}")
-        pout(f"   ✅ Content: {len(content)} bytes")
     except Exception as e:
         perr(f"   ❌ Write failed: {e}")
         return
@@ -183,8 +178,6 @@ def file_demo_command() -> None:
     pout("-" * 60)
     read_content = safe_read_text(demo_file)
     if read_content:
-        pout(f"   ✅ Read: {len(read_content)} bytes")
-        pout(f"   ✅ Preview: {read_content[:50]}...")
     else:
         perr("   ❌ Read failed")
         return
@@ -193,11 +186,9 @@ def file_demo_command() -> None:
     pout("\n3️⃣  File Hashing:")
     pout("-" * 60)
     file_hash = hash_file(demo_file, algorithm="sha256")
-    pout(f"   ✅ SHA256: {file_hash}")
 
     # Cleanup
     demo_file.unlink()
-    pout("\n✅ Benefits: Atomic operations, error handling, checksums\n")
 
 
 @register_command("process-demo", category="demo")
@@ -209,7 +200,6 @@ def process_demo_command() -> None:
     - run_simple() for simple output
     - Better than subprocess.run() directly
     """
-    pout("\n⚙️  Process Execution Dogfooding Demo\n")
     pout("=" * 60)
 
     # Simple command (returns stdout)
@@ -217,7 +207,6 @@ def process_demo_command() -> None:
     pout("-" * 60)
     try:
         output = run_simple(["echo", "Hello from Foundation!"])
-        pout(f"   ✅ Output: {output}")
     except Exception as e:
         perr(f"   ❌ Command failed: {e}")
 
@@ -230,12 +219,9 @@ def process_demo_command() -> None:
             capture_output=True,
             check=True,
         )
-        pout(f"   ✅ Exit code: {result.returncode}")
-        pout(f"   ✅ Output: {result.stdout.strip()}")
     except Exception as e:
         perr(f"   ❌ Command failed: {e}")
 
-    pout("\n✅ Benefits: Consistent error handling, logging, security\n")
 
 
 @register_command("parse-demo", category="demo")
@@ -273,7 +259,6 @@ def parse_demo_command(value: str = "42") -> None:
         except Exception as e:
             perr(f"   {description:20s} '{test_val}' → Error: {e}")
 
-    pout("\n✅ Benefits: Type-safe parsing, consistent conversion\n")
 
 
 @register_command("hash-demo", category="demo")
@@ -311,7 +296,6 @@ def hash_demo_command(file: str = "README.md") -> None:
         except Exception as e:
             perr(f"   {algo.upper():8s}: Error: {e}")
 
-    pout("\n✅ Benefits: Consistent hashing, multiple algorithms\n")
 
 
 @register_command("error-demo", category="demo")
@@ -338,14 +322,12 @@ def error_demo_command() -> None:
     pout("\n1️⃣  Successful Operation:")
     pout("-" * 60)
     result = risky_operation(should_fail=False)
-    pout(f"   ✅ Result: {result}")
 
     pout("\n2️⃣  Failed Operation (graceful degradation):")
     pout("-" * 60)
     result = risky_operation(should_fail=True)
     pout(f"   ⚠️  Result: {result} (returned default)")
 
-    pout("\n✅ Benefits: Automatic error logging, graceful degradation\n")
 
 
 @register_command("output-demo", category="demo")
@@ -377,7 +359,6 @@ def output_demo_command() -> None:
     echo_warning("   Warning message")
     echo_error("   Error message")
 
-    pout("\n✅ Benefits: JSON mode, styling, consistent output\n")
 
 
 # ==============================================================================
@@ -402,4 +383,5 @@ if __name__ == "__main__":
     # Create and run the CLI
     cli = create_dogfooding_cli()
     cli()
+
 # 🧱🏗️🔚

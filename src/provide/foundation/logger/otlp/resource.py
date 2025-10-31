@@ -1,15 +1,14 @@
-# provide/foundation/logger/otlp/resource.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """OpenTelemetry Resource creation and service attribute management.
 
 Provides functions for building OTLP Resource instances with standard service
 attributes according to the OpenTelemetry specification.
 
-Reference: https://opentelemetry.io/docs/specs/otel/resource/semantic_conventions/
-"""
+Reference: https://opentelemetry.io/docs/specs/otel/resource/semantic_conventions/"""
 
 from __future__ import annotations
 

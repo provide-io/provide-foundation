@@ -1,8 +1,12 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for OTLP resource creation and attribute management.
 
 Tests all functionality in logger/otlp/resource.py including resource attribute
-building and OpenTelemetry Resource instance creation.
-"""
+building and OpenTelemetry Resource instance creation."""
 
 from __future__ import annotations
 

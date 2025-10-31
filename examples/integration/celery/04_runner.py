@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Celery Integration - Task Workflow Runner
 
 This module demonstrates comprehensive Celery task patterns with provide.foundation
@@ -15,8 +15,7 @@ Part 4 of 4: Task Workflow Runner
 - Comprehensive logging patterns
 
 Usage:
-    python 04_runner.py
-"""
+    python 04_runner.py"""
 
 from pathlib import Path
 import random
@@ -94,7 +93,6 @@ def run_worker() -> None:
 
     # Give worker time to start
     time.sleep(2)
-    pout("✅ Worker started!\n")
 
 
 def demonstrate_task_workflows() -> None:
@@ -289,7 +287,6 @@ transport (no Redis required). Real-world patterns include:
     # Run demonstrations
     demonstrate_task_workflows()
 
-    pout("\n✅ Celery Integration Example Completed!")
     pout("\n🎯 Key Patterns Demonstrated:")
     pout("   • Payment processing with automatic retries")
     pout("   • Long-running tasks with progress tracking")
@@ -305,4 +302,5 @@ transport (no Redis required). Real-world patterns include:
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

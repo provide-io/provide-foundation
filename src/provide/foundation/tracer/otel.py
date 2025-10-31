@@ -1,7 +1,9 @@
-# provide/foundation/tracer/otel.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -116,7 +118,6 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
         processor = BatchSpanProcessor(exporter)
         tracer_provider.add_span_processor(processor)
 
-        slog.debug(f"✅ OTLP span exporter configured: {config.otlp_protocol}")
 
     # Set the global tracer provider (only if not already set)
     try:
@@ -135,14 +136,12 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
 
         if should_setup:
             otel_trace.set_tracer_provider(tracer_provider)
-            slog.info("🔍✅ OpenTelemetry tracing setup complete")
         else:
             slog.debug("🔍 OpenTelemetry tracer provider already configured")
     except Exception:
         # Broad catch intentional: get_tracer_provider() may fail in various OTEL environments
         # Proceed with setup if provider check fails
         otel_trace.set_tracer_provider(tracer_provider)
-        slog.info("🔍✅ OpenTelemetry tracing setup complete")
 
 
 def get_otel_tracer(name: str) -> otel_trace.Tracer | None:

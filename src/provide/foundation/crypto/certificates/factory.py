@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -131,7 +131,6 @@ def create_signed_certificate(
     new_cert_obj.cert_pem = signed_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
     logger.info(
-        f"📜🔑✅ Successfully created and signed certificate for "
         f"CN={common_name} by CA='{ca_certificate.subject}'",
     )
     return new_cert_obj
@@ -166,7 +165,6 @@ def create_self_signed_server_cert(
         is_client_cert=False,
     )
 
-    logger.info(f"📜🔑✅ Successfully created self-signed SERVER certificate for CN={common_name}")
     return cert_obj
 
 
@@ -199,7 +197,6 @@ def create_self_signed_client_cert(
         is_client_cert=True,  # This is the key difference from server cert
     )
 
-    logger.info(f"📜🔑✅ Successfully created self-signed CLIENT certificate for CN={common_name}")
     return cert_obj
 
 

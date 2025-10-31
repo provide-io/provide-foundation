@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -49,7 +49,6 @@ def verify_file(
 
         if matches:
             log.debug(
-                "✅ Checksum verified",
                 path=str(path),
                 algorithm=algorithm,
             )
@@ -96,7 +95,6 @@ def verify_data(
 
     if matches:
         log.debug(
-            "✅ Data checksum verified",
             algorithm=algorithm,
             size=len(data),
         )
@@ -199,7 +197,6 @@ def parse_checksum_file(
                 checksums[filename] = hash_value.lower()
 
         log.debug(
-            "📄 Parsed checksum file",
             path=str(path),
             entries=len(checksums),
             algorithm=algorithm,

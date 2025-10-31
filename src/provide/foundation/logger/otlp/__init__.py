@@ -1,7 +1,7 @@
-# provide/foundation/logger/otlp/__init__.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Generic OTLP (OpenTelemetry Protocol) support for Foundation logger.
 
@@ -22,8 +22,7 @@ Example:
     ...     service_name="my-service",
     ... )
     >>>
-    >>> client.send_log("Hello from OTLP", level="INFO")
-"""
+    >>> client.send_log("Hello from OTLP", level="INFO")"""
 
 from __future__ import annotations
 

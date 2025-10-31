@@ -1,8 +1,12 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for OTLP client send_log method.
 
 Tests all log sending functionality including success cases, error handling,
-circuit breaker integration, and attribute handling.
-"""
+circuit breaker integration, and attribute handling."""
 
 from __future__ import annotations
 

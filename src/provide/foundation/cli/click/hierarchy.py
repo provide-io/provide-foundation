@@ -1,13 +1,12 @@
-# provide/foundation/cli/click/hierarchy.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Click group hierarchy management and validation.
 
 Handles creation of Click command groups, parent group hierarchies,
-and validation of command registry entries.
-"""
+and validation of command registry entries."""
 
 from __future__ import annotations
 

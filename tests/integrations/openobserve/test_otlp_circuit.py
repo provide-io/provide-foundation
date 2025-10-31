@@ -1,8 +1,12 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for OTLP circuit breaker.
 
 Tests all functionality in integrations/openobserve/otlp_circuit.py including
-state transitions, exponential backoff, and threading safety.
-"""
+state transitions, exponential backoff, and threading safety."""
 
 from __future__ import annotations
 

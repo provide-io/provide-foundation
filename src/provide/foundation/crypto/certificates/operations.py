@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -72,7 +72,6 @@ def create_x509_certificate(
         if san_list:
             # DNSName is a subtype of GeneralName, but mypy needs help understanding this
             builder = builder.add_extension(x509.SubjectAlternativeName(cast(list, san_list)), critical=False)
-            logger.debug(f"📜📝✅ Added SANs: {alt_names or []}")
 
         builder = builder.add_extension(
             x509.BasicConstraints(ca=is_ca, path_length=None),
@@ -124,7 +123,6 @@ def create_x509_certificate(
                 )
 
         logger.debug(
-            f"📜📝✅ Added BasicConstraints (is_ca={is_ca}), "
             f"KeyUsage, ExtendedKeyUsage (is_client_cert={is_client_cert})",
         )
 
@@ -132,7 +130,6 @@ def create_x509_certificate(
             private_key=actual_signing_key,
             algorithm=hashes.SHA256(),
         )
-        logger.debug("📜📝✅ Certificate signed successfully")
         return signed_cert
 
     except Exception as e:

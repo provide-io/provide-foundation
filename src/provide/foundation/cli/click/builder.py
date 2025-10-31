@@ -1,13 +1,12 @@
-# provide/foundation/cli/click/builder.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Click command group builder and orchestration.
 
 Main orchestrator for building Click CLI groups from registered commands.
-Coordinates parameter processing, command building, and group hierarchy.
-"""
+Coordinates parameter processing, command building, and group hierarchy."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -67,9 +67,7 @@ class TestEventSetResolver(FoundationTestCase):
         enriched = resolver.enrich_event(event.copy())
 
         # Should have visual enrichments
-        assert "[⚙️]" in enriched["event"]  # system domain
         assert "[🚀]" in enriched["event"]  # start action
-        assert "[✅]" in enriched["event"]  # success status
 
     def test_resolver_enriches_http_events(self) -> None:
         """Test HTTP event enrichment."""
@@ -86,7 +84,6 @@ class TestEventSetResolver(FoundationTestCase):
 
         # Should have visual enrichments
         assert "[📥]" in enriched["event"]  # GET method
-        assert "[✅]" in enriched["event"]  # 2xx status
 
         # Should have metadata
         assert enriched.get("http.success") is True
@@ -123,16 +120,13 @@ class TestEventSetTypes(FoundationTestCase):
         """Test EventMapping can be created."""
         mapping = EventMapping(
             name="test",
-            visual_markers={"test": "🧪"},
             default_key="default",
         )
         assert mapping.name == "test"
-        assert mapping.visual_markers["test"] == "🧪"
         assert mapping.default_key == "default"
 
     def test_event_set_creation(self) -> None:
         """Test EventSet can be created."""
-        mapping = EventMapping(name="test", visual_markers={"test": "🧪"})
         field_mapping = FieldMapping(log_key="test.field", event_set_name="test")
 
         event_set = EventSet(

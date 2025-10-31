@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -200,7 +200,6 @@ def generate_certificate(
         # Serialize to PEM format
         cert_pem, key_pem = _serialize_to_pem(x509_cert, private_key)
 
-        logger.debug("📜🔑✅ Generated cert and key")
 
         return base, x509_cert, private_key, cert_pem, key_pem
 

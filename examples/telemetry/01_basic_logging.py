@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/telemetry/01_basic_logging.py
+
 """Simple Start Example - Zero Setup Logging
 
 This example demonstrates the simplest possible usage of provide.foundation.
@@ -17,8 +16,7 @@ Expected output:
     Colored, emoji-prefixed log messages with structured data.
 
 To see INFO-level messages:
-    PROVIDE_LOG_LEVEL=INFO python examples/telemetry/01_basic_logging.py
-"""
+    PROVIDE_LOG_LEVEL=INFO python examples/telemetry/01_basic_logging.py"""
 
 from pathlib import Path
 import sys
@@ -78,4 +76,5 @@ if __name__ == "__main__":
     simple_logging_example()
     pout("\n🎉 That's it! No setup required - logging just works.")
     pout("💡 For advanced features like tracing, see other examples.")
+
 # 🧱🏗️🔚

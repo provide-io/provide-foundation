@@ -1,8 +1,12 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for OTLP client initialization, configuration, and setup.
 
 Tests OTLPLogClient initialization, from_config class method, availability checking,
-and endpoint building.
-"""
+and endpoint building."""
 
 from __future__ import annotations
 

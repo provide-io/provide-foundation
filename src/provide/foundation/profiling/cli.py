@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -88,7 +88,6 @@ def show_profile_metrics(ctx: CLIContext) -> None:
             perr("  ⚠️  Status: Disabled", color="yellow")
         else:
             sample_rate = profiler.processor.sample_rate * 100
-            pout(f"  ✅ Status: Enabled ({sample_rate:.1f}% sampling)", color="green")
 
 
 @register_command("profile")

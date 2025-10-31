@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -147,11 +147,5 @@ class TestCertificateLoading(FoundationTestCase):
         cert_pem = f"\n\n{client_cert.cert_pem}\n\n"
         cert = Certificate.from_pem(cert_pem=cert_pem)
         assert cert.subject, "Whitespace should not affect certificate loading"
-
-
-### 🐍🏗🧪️
-
-
-# 🐍🔌🧪🪄
 
 # 🧱🏗️🔚

@@ -1,3 +1,8 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for FoundationLogger bind() method."""
 
 from __future__ import annotations
@@ -32,11 +37,7 @@ def get_log_entries(output: TextIO) -> list[dict[str, Any]]:
                     hub_event in entry["event"]
                     for hub_event in [
                         "🗣️ Registered item",
-                        "⚙️ Registered",
                         "🗣️ Foundation bootstrap",
-                        "⚙️➡️🚀 Starting Foundation",
-                        "⚙️➡️✅ Foundation",
-                        "⚙️ Foundation initialized",
                     ]
                 ):
                     continue

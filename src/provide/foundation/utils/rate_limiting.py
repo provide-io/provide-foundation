@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -105,7 +105,6 @@ class TokenBucketRateLimiter:
                 self._tokens -= 1.0
                 if self._logger:
                     self._logger.debug(
-                        f"🔩🗑️✅ Request allowed. Tokens remaining: {self._tokens:.2f}/{self._capacity:.2f}",
                     )
                 return True
             if self._logger:

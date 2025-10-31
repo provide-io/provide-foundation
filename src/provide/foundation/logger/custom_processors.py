@@ -1,7 +1,9 @@
-# provide/foundation/logger/custom_processors.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -111,15 +113,12 @@ def filter_by_level_custom(
 
 
 _LOGGER_NAME_EMOJI_PREFIXES: dict[str, str] = {
-    "provide.foundation.core.test": "⚙️",
     "provide.foundation.core_setup": "🛠️",
     "provide.foundation.emoji_matrix_display": "💡",
-    "provide.foundation": "⚙️",
     "provide.foundation.logger": "📝",
     "provide.foundation.logger.config": "🔩",
     "pyvider.dynamic_call_trace": "👣",
     "pyvider.dynamic_call": "🗣️",
-    "pyvider.default": "📦",
     "formatter.test": "🎨",
     "service.alpha": "🇦",
     "service.beta": "🇧",
@@ -129,10 +128,7 @@ _LOGGER_NAME_EMOJI_PREFIXES: dict[str, str] = {
     "das.test": "🃏",
     "json.exc.test": "💥",
     "service.name.test": "📛",
-    "simple": "📄",
-    "test.basic": "🧪",
     "unknown": "❓",
-    "test": "🧪",
     "default": "🔹",
     "emoji.test": "🎭",
 }

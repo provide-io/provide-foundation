@@ -1,3 +1,10 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from pathlib import Path
 import re
 import sys
@@ -122,3 +129,5 @@ def modify_file(filepath_str):
 if __name__ == "__main__":
     for file_path in sys.argv[1:]:
         modify_file(file_path)
+
+# 🧱🏗️🔚

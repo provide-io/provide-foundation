@@ -1,7 +1,7 @@
-# provide/foundation/docs/generator.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """API documentation generator for MkDocs with mkdocstrings."""
 
@@ -219,7 +219,6 @@ All modules are documented with their public APIs, including:
         Returns:
             Dictionary with generation statistics
         """
-        log.info(f"🏗️ Generating API documentation from {self.src_root}")
 
         stats = {
             "processed_files": 0,
@@ -244,7 +243,6 @@ All modules are documented with their public APIs, including:
         self.generate_index()
 
         log.info(
-            f"✅ Documentation generation complete: "
             f"{stats['processed_files']} processed, {stats['skipped_files']} skipped"
         )
 

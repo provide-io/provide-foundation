@@ -1,7 +1,11 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Unit tests for OpenObserve CLI command parsing functionality.
 
-Tests the _parse_filter_to_dict helper function for parsing filter strings.
-"""
+Tests the _parse_filter_to_dict helper function for parsing filter strings."""
 
 from __future__ import annotations
 

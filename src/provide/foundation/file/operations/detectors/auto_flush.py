@@ -1,13 +1,12 @@
-# provide/foundation/file/operations/detectors/auto_flush.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Auto-flush handler for streaming file operation detection.
 
 Handles automatic flushing of pending events after a time window,
-with temp file filtering and operation emission callbacks.
-"""
+with temp file filtering and operation emission callbacks."""
 
 from __future__ import annotations
 
@@ -208,7 +207,6 @@ class AutoFlushHandler:
         if has_real_file:
             # Operation touches at least one real file - emit it
             log.info(
-                "✅ OPERATION DETECTED - EMITTING",
                 operation_type=operation.operation_type.value,
                 primary_file=operation.primary_path.name,
                 event_count=len(operation.events),
@@ -261,7 +259,6 @@ class AutoFlushHandler:
             else:
                 # Event touches a real file - emit it
                 log.info(
-                    "  ✅ Emitting real file event",
                     file=event.path.name,
                     event_type=event.event_type,
                 )

@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -68,7 +68,6 @@ def _get_conftest_diag_logger() -> stdlib_logging.Logger:
 
 conftest_diag_logger = _get_conftest_diag_logger()
 if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
-    conftest_diag_logger.debug("⚙️➡️🔍 Conftest loaded.")
 
 
 # Removed no_cover hook - not needed, issue is time_machine + asyncio, not coverage

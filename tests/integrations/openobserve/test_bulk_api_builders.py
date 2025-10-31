@@ -1,7 +1,11 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for OpenObserve bulk API builder functions.
 
-Tests build_log_entry, build_bulk_url, and build_bulk_request functions.
-"""
+Tests build_log_entry, build_bulk_url, and build_bulk_request functions."""
 
 from __future__ import annotations
 
