@@ -1,7 +1,11 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for ToolDownloader basic functionality.
 
-Tests initialization, callbacks, progress reporting, and checksum verification.
-"""
+Tests initialization, callbacks, progress reporting, and checksum verification."""
 
 from __future__ import annotations
 

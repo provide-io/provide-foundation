@@ -1,13 +1,12 @@
-# provide/foundation/logger/otlp/client.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Generic OTLP client for any OpenTelemetry-compatible backend.
 
 Provides OTLPLogClient for sending logs via OTLP to any compatible backend
-(OpenObserve, Datadog, Honeycomb, etc.).
-"""
+(OpenObserve, Datadog, Honeycomb, etc.)."""
 
 from __future__ import annotations
 

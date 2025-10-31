@@ -1,7 +1,9 @@
-# provide/foundation/eventsets/sets/database.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -45,9 +47,7 @@ EVENT_SET = EventSet(
                 "connect": "🔗",
                 "disconnect": "💔",
                 "transaction_begin": "💳🟢",
-                "transaction_commit": "💳✅",
                 "transaction_rollback": "💳❌",
-                "default": "⚙️",
             },
             metadata_fields={
                 "select": {"db.read": True},

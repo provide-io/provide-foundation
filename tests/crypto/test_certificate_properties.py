@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -19,7 +19,6 @@ from provide.testkit.mocking import MagicMock
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert
 
-### ✅ BASIC CERTIFICATE PROPERTY TESTS ###
 
 
 @pytest.mark.asyncio
@@ -51,7 +50,6 @@ async def test_certificate_subject_not_equal_to_issuer_for_non_self_signed(
     )
 
 
-### ✅ CA STATUS CHECK ###
 
 
 @pytest.mark.asyncio
@@ -60,7 +58,6 @@ async def test_certificate_is_ca(client_cert) -> None:
     assert isinstance(client_cert.is_ca, bool), "CA status should be a boolean"
 
 
-### ✅ PUBLIC KEY HANDLING TESTS ###
 
 
 @pytest.mark.asyncio
@@ -79,7 +76,6 @@ async def test_server_certificate_public_key(server_cert) -> None:
     assert server_cert.public_key, "Server certificate public key should not be empty"
 
 
-### ✅ SERIAL NUMBER & HASHING TESTS ###
 
 
 @pytest.mark.asyncio
@@ -97,7 +93,6 @@ async def test_certificate_fingerprint(client_cert) -> None:
     assert len(fingerprint) == 32, "SHA-256 fingerprint should be 32 bytes long"
 
 
-### ✅ CERTIFICATE EXTENSIONS TESTS ###
 
 
 @pytest.mark.asyncio
@@ -146,7 +141,6 @@ async def test_certificate_extended_key_usage(client_cert) -> None:
         pytest.skip("Skipping test: Extended Key Usage extension not found")
 
 
-### ✅ EDGE CASES ###
 
 
 @pytest.mark.asyncio
@@ -253,11 +247,5 @@ class TestCertificateProperties(FoundationTestCase):
         cert2._base = cert1._base
 
         assert hash(cert1) == hash(cert2), "Identical serials should hash the same"
-
-
-### 🐍🏗🧪️
-
-
-# 🐍🔌🧪🪄
 
 # 🧱🏗️🔚

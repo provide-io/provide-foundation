@@ -1,13 +1,12 @@
-# provide/foundation/file/permissions.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """File permission utilities for Unix-like systems.
 
 Provides safe, cross-platform utilities for working with file permissions including
-parsing, formatting, and applying permission modes.
-"""
+parsing, formatting, and applying permission modes."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -176,7 +176,6 @@ class TestOpenObserveIntegration(FoundationTestCase):
         result = response.json()
         assert not result.get("errors", True), f"Ingestion had errors: {result}"
 
-        print(f"✅ Ingestion successful in {ingestion_time:.2f}s")
         print(f"   - Items: {len(result.get('items', []))}")
         print(f"   - Took: {result.get('took', 0)}ms")
 
@@ -207,7 +206,6 @@ class TestOpenObserveIntegration(FoundationTestCase):
 
         if response.hits:
             count = response.hits[0].get("count", 0)
-            print(f"✅ Total logs in stream: {count}")
             assert count >= 900, f"Expected at least 900 logs, got {count}"
 
         # Test 2: Get error logs
@@ -216,7 +214,6 @@ class TestOpenObserveIntegration(FoundationTestCase):
             start_time="-10m",
             client=client,
         )
-        print(f"✅ Found {len(response.hits)} error logs")
 
         # Test 3: Aggregate by level
         response = await search_logs(
@@ -247,7 +244,6 @@ class TestOpenObserveIntegration(FoundationTestCase):
                     client=client,
                 )
                 print(
-                    f"✅ Found {len(trace_response.hits)} logs for trace {sample_trace}",
                 )
 
         # Test 5: Performance metrics
@@ -264,7 +260,6 @@ class TestOpenObserveIntegration(FoundationTestCase):
             print(f"   - Max duration: {metrics.get('max_duration', 0)}ms")
             print(f"   - Min duration: {metrics.get('min_duration', 0)}ms")
 
-        print("\n✅ All integration tests passed!")
 
     def test_rapid_ingestion(self) -> None:
         """Test rapid ingestion of logs in batches."""
@@ -297,7 +292,6 @@ class TestOpenObserveIntegration(FoundationTestCase):
         elapsed = time.time() - start_time
         rate = total_logs / elapsed
 
-        print("\n✅ Rapid ingestion complete:")
         print(f"   - Total logs: {total_logs}")
         print(f"   - Time: {elapsed:.2f}s")
         print(f"   - Rate: {rate:.0f} logs/second")
@@ -319,7 +313,6 @@ if __name__ == "__main__":
         test.test_bulk_ingestion_and_query()
         test.test_rapid_ingestion()
         print("\n" + "=" * 60)
-        print("✅ ALL TESTS PASSED!")
         print("=" * 60)
     except Exception as e:
         print(f"\n❌ TEST FAILED: {e}")

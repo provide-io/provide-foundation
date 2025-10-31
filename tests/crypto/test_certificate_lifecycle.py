@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -56,10 +56,8 @@ class TestCertificateLifecycle(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_certificate_validity_period(self, client_cert: Any) -> None:
         """Test certificate validity period checking."""
-        now = datetime.now(UTC)  # ✅ Ensure timezone-aware datetime
         assert client_cert._base.not_valid_before <= now
         assert now <= client_cert._base.not_valid_after
-        assert client_cert.is_valid  # ✅ No function call () since it's @cached_property
 
     @pytest.mark.asyncio
     async def test_verify_expired_certificate(self) -> None:
@@ -128,11 +126,5 @@ class TestCertificateLifecycle(FoundationTestCase):
             assert not relying_party_cert.verify_trust(end_entity_cert), (
                 "Verification of an unrelated certificate (or one with a bad signature if issuers matched) should fail."
             )
-
-
-### 🐍🏗🧪️
-
-
-# 🐍🔌🧪🪄
 
 # 🧱🏗️🔚

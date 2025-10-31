@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -157,11 +157,5 @@ class TestCertificateCredentials(FoundationTestCase):
         assert isinstance(creds.root_certificates, bytes)
         assert creds.private_key is None
         assert creds.certificate_chain is None
-
-
-### 🐍🏗🧪️
-
-
-# 🐍🔌🧪🪄
 
 # 🧱🏗️🔚

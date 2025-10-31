@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """GitHub Organization Helper Token Setup.
 
 Configures git authentication for private repositories across organizations
-using helper tokens stored in GH_ORG_HELPERS environment variable.
-"""
+using helper tokens stored in GH_ORG_HELPERS environment variable."""
 
 from __future__ import annotations
 
@@ -63,3 +66,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# 🧱🏗️🔚

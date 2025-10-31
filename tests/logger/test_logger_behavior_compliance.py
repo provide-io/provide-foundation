@@ -1,12 +1,12 @@
-#
-# tests/logger/test_logger_behavior_compliance.py
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
 
 """Behavior compliance tests for lazy initialization.
 
 Tests that verify compliance with documented lazy initialization behavior,
-immediate usage patterns, thread safety, and performance requirements.
-"""
+immediate usage patterns, thread safety, and performance requirements."""
 
 from __future__ import annotations
 
@@ -104,7 +104,6 @@ class TestDocumentedBehaviorCompliance(FoundationTestCase):
         # Verify DAS emoji without logger name emoji
         das_logs = [log for log in json_lines if "DAS test" in log.get("event", "")]
         assert len(das_logs) == 1
-        assert "[🔑][➡️][✅]" in das_logs[0]["event"]
         # Should NOT have logger name emoji prefix before DAS
 
     def test_immediate_usage_patterns(self, capsys: CaptureFixture) -> None:

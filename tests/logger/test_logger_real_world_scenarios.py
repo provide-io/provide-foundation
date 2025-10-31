@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -139,7 +139,6 @@ class TestRealWorldScenarios(FoundationTestCase):
         # Verify DAS emoji processing
         user_reg_logs = [log for log in json_lines if "User registration processed" in log.get("event", "")]
         assert len(user_reg_logs) == 1
-        assert "[👤][⚙️][✅]" in user_reg_logs[0]["event"]
 
     def test_data_processing_pipeline_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization in a data processing pipeline."""

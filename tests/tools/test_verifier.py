@@ -1,8 +1,12 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Comprehensive tests for tool verifier.
 
 Tests all functionality in tools/verifier.py including checksum verification,
-signature verification, and CLI commands.
-"""
+signature verification, and CLI commands."""
 
 from __future__ import annotations
 

@@ -1,6 +1,8 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
-# test_integration_logger_edge_cases.py
-#
+
 """Logger behavior edge case tests for Foundation Telemetry."""
 
 from __future__ import annotations
@@ -60,9 +62,6 @@ def test_logger_with_extreme_names(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-        and "⚙️➡️🚀 Starting Foundation" not in line
-        and "⚙️➡️✅ Foundation" not in line
-        and "⚙️ Foundation initialized through Hub" not in line
         and "Configuring structlog output processors" not in line
         and "🗣️ Registered item" not in line
         and not ("[trace    ]" in line or "trace    " in line)
@@ -112,9 +111,6 @@ def test_log_message_edge_cases(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-        and "⚙️➡️🚀 Starting Foundation" not in line
-        and "⚙️➡️✅ Foundation" not in line
-        and "⚙️ Foundation initialized through Hub" not in line
         and "Configuring structlog output processors" not in line
         and "🗣️ Registered item" not in line
         and not ("[trace    ]" in line or "trace    " in line)
@@ -184,9 +180,6 @@ def test_logger_args_formatting_edge_cases(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-        and "⚙️➡️🚀 Starting Foundation" not in line
-        and "⚙️➡️✅ Foundation" not in line
-        and "⚙️ Foundation initialized through Hub" not in line
         and "Configuring structlog output processors" not in line
         and "🗣️ Registered item" not in line
         and not ("[trace    ]" in line or "trace    " in line)
@@ -218,8 +211,6 @@ def test_trace_level_edge_cases(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-        and "⚙️➡️🚀 Starting Foundation" not in line
-        and "⚙️➡️✅ Foundation" not in line
         and "Configuring structlog output processors" not in line
         and not (
             ("[trace    ]" in line or "trace    " in line)

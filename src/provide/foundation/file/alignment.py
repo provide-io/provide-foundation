@@ -1,7 +1,7 @@
-# provide/foundation/file/alignment.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Memory and file alignment utilities for binary I/O and mmap operations.
 
@@ -9,8 +9,7 @@ Provides functions for aligning offsets to power-of-2 boundaries, which is criti
 - Memory-mapped file operations (mmap requires page alignment)
 - Binary file formats and protocols
 - Database and index structures
-- Network packet alignment
-"""
+- Network packet alignment"""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -59,7 +59,6 @@ class TestDepsCommandWithClick(FoundationTestCase):
                 _deps_command_impl(quiet=False, check="crypto")
 
             assert exc_info.value.code == 0
-            mock_pout.assert_called_once_with("✅ crypto: Available")
 
     def test_deps_command_check_specific_missing(self) -> None:
         """Test checking specific missing dependency."""

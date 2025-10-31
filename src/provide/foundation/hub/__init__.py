@@ -1,7 +1,7 @@
-# provide/foundation/hub/__init__.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Provide Foundation Hub - Component and Command Coordination System
 ===================================================================
@@ -30,8 +30,7 @@ Example Usage:
     >>> hub = Hub()
     >>> hub.add_component(MyResource, name="my_resource", version="1.0.0")
     >>> resource_class = hub.get_component("my_resource")
-    >>> command = hub.get_command("init")
-"""
+    >>> command = hub.get_command("init")"""
 
 from __future__ import annotations
 

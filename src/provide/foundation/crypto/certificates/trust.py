@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -57,18 +57,15 @@ def verify_trust(
         raise CertificateError("Cannot verify trust: Other certificate has no public key")
 
     if cert == other_cert:
-        logger.debug("📜🔍✅ Trust verified: Certificates are identical (based on subject/serial)")
         return True
 
     if other_cert in trust_chain:
-        logger.debug("📜🔍✅ Trust verified: Other certificate found in trust chain")
         return True
 
     for trusted_cert in trust_chain:
         logger.debug(f"📜🔍🔁 Checking signature against trusted cert S/N {trusted_cert.serial_number}")
         if validate_signature_wrapper(signed_cert=other_cert, signing_cert=trusted_cert):
             logger.debug(
-                f"📜🔍✅ Trust verified: Other cert signed by trusted cert S/N {trusted_cert.serial_number}",
             )
             return True
 

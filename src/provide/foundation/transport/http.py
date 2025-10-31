@@ -1,7 +1,9 @@
-# provide/foundation/transport/http.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -166,7 +168,6 @@ class HTTPTransport(TransportBase):
 
         # Log streaming request with sanitized URI
         sanitized_uri = sanitize_uri(request.uri)
-        log.info(f"🌊 Streaming {request.method} {sanitized_uri}")
 
         try:
             # Only pass params if explicitly set (empty dict would override URI query params)
@@ -200,7 +201,6 @@ class HTTPTransport(TransportBase):
     def _get_status_emoji(self, status_code: int) -> str:
         """Get emoji for HTTP status code."""
         if 200 <= status_code < 300:
-            return "✅"  # Success
         if 300 <= status_code < 400:
             return "↩️"  # Redirect
         if 400 <= status_code < 500:

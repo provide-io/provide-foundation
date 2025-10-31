@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Script to split large test files into smaller ones.
 
 This script identifies test files over 500 LOC and splits them
-into smaller, more manageable files based on test classes.
-"""
+into smaller, more manageable files based on test classes."""
 
 from __future__ import annotations
 
@@ -172,3 +175,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# 🧱🏗️🔚

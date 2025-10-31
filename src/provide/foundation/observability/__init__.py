@@ -1,18 +1,17 @@
-# provide/foundation/observability/__init__.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""Observability module for Foundation.
+
+Provides integration with observability platforms like OpenObserve.
+Only available when OpenTelemetry dependencies are installed."""
 
 from __future__ import annotations
 
 from contextlib import suppress
 from typing import TYPE_CHECKING, Any
-
-"""Observability module for Foundation.
-
-Provides integration with observability platforms like OpenObserve.
-Only available when OpenTelemetry dependencies are installed.
-"""
 
 # OpenTelemetry feature detection - Pattern 1: _HAS_* flag
 if TYPE_CHECKING:

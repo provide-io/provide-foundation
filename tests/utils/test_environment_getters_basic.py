@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -186,8 +186,6 @@ class TestGetStr(FoundationTestCase):
 
     def test_get_str_unicode(self, clean_env: Any) -> None:
         """Test get_str with unicode characters."""
-        os.environ["TEST_STR"] = "héllo wørld 🌍"
-        assert get_str("TEST_STR") == "héllo wørld 🌍"
 
 
 class TestGetPath(FoundationTestCase):

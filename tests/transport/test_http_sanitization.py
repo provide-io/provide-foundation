@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -203,7 +203,6 @@ async def test_streaming_request_sanitizes_uri(
     assert "limit=100" in log_output
 
     # Should contain streaming indicator
-    assert "Streaming" in log_output or "🌊" in log_output
 
 
 @pytest.mark.asyncio

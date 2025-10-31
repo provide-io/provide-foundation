@@ -1,6 +1,8 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
-# test_integration_config_edge_cases.py
-#
+
 """Configuration and environment variable edge case tests for Foundation Telemetry."""
 
 from __future__ import annotations

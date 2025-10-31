@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/openobserve/01_openobserve_integration.py
+
 """OpenObserve Integration Example
 
 This example demonstrates the complete OpenObserve integration workflow:
@@ -27,8 +26,7 @@ Usage:
     export OPENOBSERVE_USER=root@example.com
     export OPENOBSERVE_PASSWORD=password
 
-    python examples/openobserve/01_openobserve_integration.py
-"""
+    python examples/openobserve/01_openobserve_integration.py"""
 
 from __future__ import annotations
 
@@ -252,7 +250,6 @@ async def query_logs() -> None:
         print("❌ Failed to connect to OpenObserve")
         return
 
-    print("✅ Connected to OpenObserve successfully\n")
 
     # Query 1: Get all recent logs
     print("=" * 80)
@@ -297,7 +294,6 @@ async def query_logs() -> None:
     if errors.hits:
         print(format_output(errors, format_type="log"))
     else:
-        print("✅ No errors found")
 
     # Query 3: Search by specific domain
     print("\n" + "=" * 80)
@@ -386,14 +382,12 @@ async def main() -> None:
         return
 
     stream = config.stream or "default"
-    print(f"✅ Connected to OpenObserve at {config.url}")
     print(f"   Organization: {config.org or 'default'}")
     print(f"   Stream: {stream}")
 
     # Generate and send test logs
     print("\n📝 Generating and sending test logs...")
     logs_sent = generate_test_logs(client, stream)
-    print(f"✅ Successfully sent {logs_sent} logs to OpenObserve")
 
     # Query the logs
     await query_logs()
@@ -409,4 +403,5 @@ async def main() -> None:
 
 if __name__ == "__main__":
     asyncio.run(main())
+
 # 🧱🏗️🔚

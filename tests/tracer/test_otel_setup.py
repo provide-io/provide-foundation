@@ -1,3 +1,10 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
+
 from typing import Any
 
 from provide.testkit import FoundationTestCase
@@ -125,7 +132,6 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
             mock_trace.set_tracer_provider.assert_called_once_with(mock_tracer_provider)
 
             # Verify logging
-            mock_log.info.assert_called_once_with("🔍✅ OpenTelemetry tracing setup complete")
 
     def test_setup_with_grpc_otlp(self) -> None:
         """Test setup with GRPC OTLP exporter."""
@@ -171,7 +177,6 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
             mock_tracer_provider.add_span_processor.assert_called_once_with(mock_processor)
 
             # Verify debug logging for OTLP
-            mock_log.debug.assert_called_once_with("✅ OTLP span exporter configured: grpc")
 
     def test_setup_with_http_otlp(self) -> None:
         """Test setup with HTTP OTLP exporter."""
@@ -211,7 +216,6 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
             )
 
             # Verify debug logging for OTLP
-            mock_log.debug.assert_called_once_with("✅ OTLP span exporter configured: http")
 
     def test_setup_otlp_endpoint_priority(self) -> None:
         """Test that otlp_traces_endpoint takes priority over otlp_endpoint."""

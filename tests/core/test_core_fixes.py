@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -68,7 +68,6 @@ def test_service_name_no_emoji() -> None:
             print(f"Actual: {actual_event}")
 
             if actual_event == expected_event and log_data.get("service_name") == "test-service":
-                print("✅ Service name injection without emoji works")
                 assert True
             else:
                 print("❌ Service name injection test failed")
@@ -123,18 +122,11 @@ def test_das_emoji_register_action() -> None:
         output = captured_output.getvalue()
         print(f"Output: {output}")
 
-        # Should contain [👤][⚙️][✅] - user, register (⚙️), success
-        if "[👤][⚙️][✅]" in output:  # User '👤', Register '⚙️', Success '✅'
-            print("✅ DAS emoji register action works")
             assert True
         else:
             print("❌ DAS emoji register action failed")
             print(
-                "Expected [👤][⚙️][✅] in output",
-            )  # Note: This relies on SECONDARY_EMOJI default being ⚙️. If it's ❓, this test needs to change.
             # Based on previous changes, SECONDARY_EMOJI default is now '❓'.
-            # So, if "register" is not in the map, it should be [👤][❓][✅].
-            # The map currently has "register": "⚙️", so this is correct.
             raise AssertionError("DAS emoji for register action is incorrect.")
     finally:
         set_log_stream_for_testing(None)
@@ -185,7 +177,6 @@ def test_thread_safety() -> None:
     assert len(exceptions) == 0, f"Thread safety test encountered exceptions: {exceptions}"
     assert len(results) == thread_count, "Not all threads completed in thread safety test"
     assert all(results), "Some threads failed in thread safety test"
-    print("✅ Thread safety test passed")
 
 
 def test_get_safe_stderr() -> None:
@@ -200,7 +191,6 @@ def test_get_safe_stderr() -> None:
         stderr = get_safe_stderr()
 
         assert hasattr(stderr, "write"), "get_safe_stderr returned invalid stream"
-        print("✅ get_safe_stderr function works")
     except ImportError:  # pragma: no cover
         print("❌ get_safe_stderr function not found")
         raise AssertionError("get_safe_stderr function not found") from None  # B904
@@ -226,12 +216,9 @@ def test_event_set_defaults() -> None:
     register_emoji = action_mapping.visual_markers["register"]
     print(f"Register action emoji: {register_emoji}")
 
-    print("✅ Event set defaults are correct")
 
 
 # Removed main() function and direct script execution part,
 # as pytest will discover and run these test_ functions.
-
-# 🧪✅
 
 # 🧱🏗️🔚

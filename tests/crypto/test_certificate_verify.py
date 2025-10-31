@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -293,11 +293,5 @@ class TestCertificateVerify(FoundationTestCase):
         # Force serial number and subject to be identical
         cert2._base = cert1._base
         assert cert1 == cert2, "Certificates with identical serial and subject should be equal"
-
-
-### 🐍🏗🧪️
-
-
-# 🐍🔌🧪🪄
 
 # 🧱🏗️🔚

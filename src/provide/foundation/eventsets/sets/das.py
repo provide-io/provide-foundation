@@ -1,7 +1,9 @@
-# provide/foundation/eventsets/sets/das.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -16,7 +18,6 @@ EVENT_SET = EventSet(
         EventMapping(
             name="domain",
             visual_markers={
-                "system": "⚙️",
                 "server": "🛎️",
                 "client": "🙋",
                 "network": "🌐",
@@ -25,14 +26,10 @@ EVENT_SET = EventSet(
                 "database": "🗄️",
                 "cache": "💾",
                 "task": "🔄",
-                "plugin": "🔌",
                 "telemetry": "🛰️",
                 "di": "💉",
                 "protocol": "📡",
-                "file": "📄",
                 "user": "👤",
-                "test": "🧪",
-                "utils": "🧰",
                 "core": "🌟",
                 "auth": "🔑",
                 "entity": "🦎",
@@ -53,9 +50,7 @@ EVENT_SET = EventSet(
                 "listen": "👂",
                 "send": "📤",
                 "receive": "📥",
-                "read": "📖",
                 "write": "📝",
-                "process": "⚙️",
                 "validate": "🛡️",
                 "execute": "▶️",
                 "query": "🔍",
@@ -67,16 +62,13 @@ EVENT_SET = EventSet(
                 "error": "🔥",
                 "encrypt": "🛡️",
                 "decrypt": "🔓",
-                "parse": "🧩",
                 "transmit": "📡",
-                "build": "🏗️",
                 "schedule": "📅",
                 "emit": "📢",
                 "load": "💡",
                 "observe": "🧐",
                 "request": "🗣️",
                 "interrupt": "🚦",
-                "register": "⚙️",
                 "default": "❓",
             },
             default_key="default",
@@ -84,7 +76,6 @@ EVENT_SET = EventSet(
         EventMapping(
             name="status",
             visual_markers={
-                "success": "✅",
                 "failure": "❌",
                 "error": "🔥",
                 "warning": "⚠️",

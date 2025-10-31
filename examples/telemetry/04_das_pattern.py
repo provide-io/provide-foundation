@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/foundation_telemetry/04_das_logging.py
+
 """Demonstrates Domain-Action-Status (DAS) structured logging."""
 
 from pathlib import Path
@@ -34,7 +33,6 @@ def example_4_das_logging() -> None:
     represented by emojis if DAS emoji prefixing is enabled.
     """
     pout("\n" + "=" * 60)
-    pout("🏗️ Example 4: Domain-Action-Status (DAS) Logging")
     pout(
         " Demonstrates: Using domain, action, status for semantic, emoji-enhanced logs.",
     )
@@ -103,5 +101,5 @@ def example_4_das_logging() -> None:
 
 if __name__ == "__main__":
     example_4_das_logging()
-    pout("\n✅ Example 4 completed.")
+
 # 🧱🏗️🔚

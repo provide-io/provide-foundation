@@ -1,7 +1,7 @@
-# provide/foundation/logger/otlp/circuit.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Circuit breaker pattern for OTLP connection failures.
 
@@ -11,8 +11,7 @@ This prevents log spam when OTLP endpoint is unreachable by:
 - Implementing exponential backoff before retry attempts
 - Auto-recovering after cooldown period
 
-This generic implementation works with any OTLP-compatible backend.
-"""
+This generic implementation works with any OTLP-compatible backend."""
 
 from __future__ import annotations
 

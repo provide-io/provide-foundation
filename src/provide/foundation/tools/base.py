@@ -1,13 +1,12 @@
-# provide/foundation/tools/base.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Base classes for tool management.
 
 This module provides the foundation for tool managers, including
-the base manager class and metadata structures.
-"""
+the base manager class and metadata structures."""
 
 from __future__ import annotations
 

@@ -1,7 +1,11 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for OTLP client provider creation and status methods.
 
-Tests logger provider creation, availability checking, and stats retrieval.
-"""
+Tests logger provider creation, availability checking, and stats retrieval."""
 
 from __future__ import annotations
 

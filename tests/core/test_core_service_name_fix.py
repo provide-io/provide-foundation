@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -80,7 +80,6 @@ def test_service_name_injection_fix() -> None:
                 f"Event message mismatch. Expected: '{expected_event}', Got: '{actual_event}'"
             )
             assert log_data.get("service_name") == "lazy-service-test", "Service name mismatch or missing"
-            print("✅ Service name injection test PASSED!")
 
         else:
             print("❌ No JSON log output found!")
@@ -137,7 +136,6 @@ def test_key_value_still_has_emojis() -> None:
         print(f"Key-value output: {output!r}")
 
         assert "🔹" in output, "Default emoji missing in key-value format"
-        print("✅ Key-value format still has emojis!")
 
     finally:
         set_log_stream_for_testing(None)
@@ -146,7 +144,5 @@ def test_key_value_still_has_emojis() -> None:
 
 
 # Removed __main__ block
-
-# 🧪✅
 
 # 🧱🏗️🔚

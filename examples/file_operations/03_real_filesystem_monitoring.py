@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/file_operations/03_real_filesystem_monitoring.py
+
 """Real filesystem monitoring with watchdog integration."""
 
 from datetime import datetime
@@ -247,7 +246,6 @@ def main() -> None:
         print("Install it with: pip install watchdog")
         return
 
-    print("📁 File Operations - Real Filesystem Monitoring")
     print("=" * 55)
 
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -320,4 +318,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

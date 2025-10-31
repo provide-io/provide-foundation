@@ -1,3 +1,8 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Simple functional API for file operation detection.
 
 This module provides a minimal, user-friendly API for detecting file operations
@@ -16,8 +21,7 @@ Examples:
     >>> # Multiple operations detection
     >>> operations = detect_all(events)
     >>> for op in operations:
-    ...     print(f"{op.type}: {op.path}")
-"""
+    ...     print(f"{op.type}: {op.path}")"""
 
 from __future__ import annotations
 
@@ -174,3 +178,5 @@ def create_detector(config: DetectorConfig | None = None) -> OperationDetector:
         ...     operation = detector.detect_streaming(event)
     """
     return OperationDetector(config)
+
+# 🧱🏗️🔚

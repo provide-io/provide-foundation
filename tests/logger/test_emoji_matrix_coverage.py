@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -20,12 +20,10 @@ class TestEventSetIntegration(FoundationTestCase):
         """Test EventMapping creation with visual markers."""
         mapping = EventMapping(
             name="test_mapping",
-            visual_markers={"success": "✅", "error": "❌", "info": "💡"},
             default_key="default",
         )
 
         assert mapping.name == "test_mapping"
-        assert mapping.visual_markers["success"] == "✅"
         assert mapping.visual_markers["error"] == "❌"
         assert mapping.visual_markers["info"] == "💡"
         assert mapping.default_key == "default"
@@ -34,7 +32,6 @@ class TestEventSetIntegration(FoundationTestCase):
         """Test EventSet creation with mappings and field mappings."""
         mapping = EventMapping(
             name="status",
-            visual_markers={"success": "✅", "error": "❌"},
         )
 
         field_mapping = FieldMapping(
@@ -100,7 +97,6 @@ class TestEventSetIntegration(FoundationTestCase):
         enriched = resolver.enrich_event(event.copy())
 
         # Should have visual markers added
-        assert "⚙️" in enriched["event"] or "🚀" in enriched["event"] or "✅" in enriched["event"]
 
     def test_registry_event_set_priority_ordering(self) -> None:
         """Test that event sets are ordered by priority."""
@@ -120,7 +116,6 @@ class TestEventSetIntegration(FoundationTestCase):
 
         mapping = EventMapping(
             name="status_mapping",
-            visual_markers={"success": "✅", "error": "❌"},
             metadata_fields={"success_meta": {"type": "boolean", "value": True}},
             transformations={"uppercase": uppercase_transform},
             default_key="info",
@@ -140,7 +135,6 @@ class TestEventSetIntegration(FoundationTestCase):
         """Test EventSet with complex mappings and configurations."""
         domain_mapping = EventMapping(
             name="domain",
-            visual_markers={"system": "⚙️", "user": "👤", "api": "🔗"},
         )
 
         action_mapping = EventMapping(

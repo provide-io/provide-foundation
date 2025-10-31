@@ -1,12 +1,12 @@
-#
-# tests/logger/test_logger_production_readiness.py
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
 
 """Production readiness tests for lazy initialization.
 
 Tests that verify production readiness scenarios like high throughput,
-memory stability, error resilience, and graceful shutdown.
-"""
+memory stability, error resilience, and graceful shutdown."""
 
 from __future__ import annotations
 

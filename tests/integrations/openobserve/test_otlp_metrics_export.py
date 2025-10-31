@@ -1,7 +1,7 @@
-# tests/integrations/openobserve/test_otlp_metrics_export.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Integration tests for OTLP metrics export to OpenObserve."""
 

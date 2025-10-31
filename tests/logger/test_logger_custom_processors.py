@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -92,9 +92,7 @@ class TestAddLoggerNameEmojiPrefix(FoundationTestCase):
         """
         # Ensure a known logger name that has an emoji
         # From _LOGGER_NAME_EMOJI_PREFIXES in custom_processors.py:
-        # 'test.basic': '🧪'
         logger_name_with_emoji = "test.basic"
-        expected_emoji = "🧪"
 
         event_dict = {
             "logger_name": logger_name_with_emoji,

@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -56,7 +56,6 @@ def run_async(coro: Coroutine[None, None, T] | Awaitable[T], *, warn: bool = Fal
         ```python
         from provide.foundation.utils.async_helpers import run_async
 
-        # ✅ GOOD: In a sync CLI command
         async def fetch_data():
             client = UniversalClient()
             return await client.get("https://api.example.com/data")

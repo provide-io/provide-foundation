@@ -1,7 +1,9 @@
-# provide/foundation/process/aio/streaming.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
+
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -171,7 +173,6 @@ async def async_stream(
         ProcessTimeoutError: If timeout is exceeded
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    log.info("🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
     # Prepare environment and working directory
     run_env = prepare_environment(env)
@@ -202,7 +203,6 @@ async def async_stream(
                 await process.wait()
                 check_stream_exit_code(process, cmd_str)
 
-            log.debug("✅ Async stream completed", command=cmd_str)
         finally:
             await cleanup_stream_process(process)
 

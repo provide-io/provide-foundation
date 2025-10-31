@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Polyglot Dependency Injection Pattern - Python Example.
 
 This example demonstrates the dependency injection pattern that is
@@ -18,8 +18,7 @@ The structure is identical:
 2. Create Composition Root (main function)
 3. Instantiate dependencies
 4. Wire them together
-5. Run application
-"""
+5. Run application"""
 
 from __future__ import annotations
 
@@ -222,11 +221,11 @@ def main() -> None:
 
     user = user_service.get_user(1)
     if user:
-        print(f"\n✅ Successfully retrieved user: {user.name} ({user.email})")
     else:
         print("\n❌ User not found")
 
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

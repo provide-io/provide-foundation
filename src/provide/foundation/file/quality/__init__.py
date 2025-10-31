@@ -1,13 +1,12 @@
-# provide/foundation/file/quality/__init__.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """File operation quality analysis tools.
 
 This package provides utilities to analyze and measure the quality,
-accuracy, and performance of file operation detection algorithms.
-"""
+accuracy, and performance of file operation detection algorithms."""
 
 from __future__ import annotations
 

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Celery Integration - Setup and Configuration
 
 This module contains the core Celery app setup, configuration, and
@@ -14,8 +14,7 @@ Part 1 of 4: Setup and Configuration
 - Self-contained operation (no Redis required)
 
 Usage:
-    from examples.integration.celery.setup_and_config import app, setup_celery_logging
-"""
+    from examples.integration.celery.setup_and_config import app, setup_celery_logging"""
 
 from pathlib import Path
 import sys
@@ -191,8 +190,7 @@ class CeleryTaskLogger:
 
 
 if __name__ == "__main__":
-    pout(f"🔧 Celery app configured: {app.main}")
     pout(f"📊 Broker: {app.conf.broker_url}")
     pout(f"💾 Result backend: {app.conf.result_backend}")
-    pout(f"📁 Working directory: {temp_dir}")
+
 # 🧱🏗️🔚

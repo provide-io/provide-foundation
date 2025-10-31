@@ -1,12 +1,12 @@
-#
-# tests/logger/test_logger_lazy_init_docs.py
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
 
 """Documentation examples tests for lazy initialization.
 
 Tests that verify examples from documentation work correctly,
-including basic usage, named loggers, environment configuration, and migration.
-"""
+including basic usage, named loggers, environment configuration, and migration."""
 
 from __future__ import annotations
 

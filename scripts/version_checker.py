@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-# scripts/check_version_consistency.py
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
 #
+
 """Version consistency checker for Foundation Telemetry.
 
 This script ensures that version numbers are consistent across the project
@@ -14,8 +16,7 @@ The checker validates:
 - Changelog entries for current version
 
 This tool is designed to be run as part of CI/CD pipelines and pre-commit
-hooks to catch version-related issues early in the development process.
-"""
+hooks to catch version-related issues early in the development process."""
 
 from pathlib import Path
 import sys
@@ -309,3 +310,5 @@ if __name__ == "__main__":
     main()
 
 # 🔍📋
+
+# 🧱🏗️🔚

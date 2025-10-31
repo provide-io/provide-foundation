@@ -1,3 +1,8 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Generate the API reference pages for mkdocs."""
 
 from pathlib import Path
@@ -42,3 +47,5 @@ for path in sorted(src_root.rglob("*.py")):
 
 with mkdocs_gen_files.open("reference/SUMMARY.md", "w") as nav_file:
     nav_file.writelines(nav.build_literate_nav())
+
+# 🧱🏗️🔚

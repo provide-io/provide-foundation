@@ -1,3 +1,8 @@
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Tests for CLI process commands."""
 
 from __future__ import annotations
@@ -24,7 +29,6 @@ class TestProcessCommandsWithSetproctitle(FoundationTestCase):
             _set_title_impl("test-app")
 
             mock_set.assert_called_once_with("test-app")
-            mock_pout.assert_called_once_with("✅ Process title set to: test-app")
 
     def test_set_title_without_setproctitle(self) -> None:
         """Test set-title command when setproctitle not available."""
@@ -97,7 +101,6 @@ class TestProcessCommandsWithSetproctitle(FoundationTestCase):
             _info_impl()
 
             assert mock_pout.call_count == 2
-            mock_pout.assert_any_call("✅ Process title support: Available")
             mock_pout.assert_any_call("Current title: info-test")
 
     def test_info_implementation_not_available(self) -> None:

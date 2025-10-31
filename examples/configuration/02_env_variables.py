@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/foundation_telemetry/08_env_variables_config.py
+
 """Demonstrates configuring Foundation Telemetry using environment variables."""
 
 import os
@@ -32,7 +31,6 @@ def example_8_environment_configuration() -> None:
     allowing settings to be changed without code modification.
     """
     pout("\n" + "=" * 60)
-    pout("🌍 Example 8: Environment Configuration")
     pout(" Demonstrates: Configuring telemetry via environment variables.")
     pout("=" * 60)
 
@@ -73,15 +71,12 @@ def example_8_environment_configuration() -> None:
         logger.trace(
             "Token validation trace details",
             _foundation_logger_name="auth.service.tokens",
-        )  # ✅ Shows (auth.service is TRACE)
         auth_service_logger.debug(
             "User 'test' authentication check",
-        )  # ✅ Shows (.debug is fine on BoundLogger)
 
         db_logger.warning(
             "DB query warning (should be filtered)",
         )  # ❌ Filtered (database is ERROR)
-        db_logger.error("DB connection error (should show)")  # ✅ Shows
     finally:
         # Restore original environment to avoid affecting other tests/examples
         for key in original_env:
@@ -93,5 +88,5 @@ def example_8_environment_configuration() -> None:
 
 if __name__ == "__main__":
     example_8_environment_configuration()
-    pout("\n✅ Example 8 completed.")
+
 # 🧱🏗️🔚

@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -158,7 +158,6 @@ class Ed25519Signer:
                 code="CRYPTO_INVALID_SIGNATURE_SIZE",
             )
 
-        logger.debug(f"✅ Created Ed25519 signature ({len(signature)} bytes)")
         return signature
 
     def export_private_key(self) -> bytes:
@@ -226,7 +225,6 @@ class Ed25519Verifier:
 
         try:
             self._public_key_obj.verify(signature, data)
-            logger.debug("✅ Ed25519 signature verification successful")
             return True
         except Exception as e:
             logger.debug(f"❌ Invalid Ed25519 signature: {e}")

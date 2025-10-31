@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -164,7 +164,6 @@ class RSASigner:
                 hashes.SHA256(),
             )
 
-            logger.debug(f"✅ Created RSA-PSS signature ({len(signature)} bytes)")
             return signature
         except Exception as e:
             raise CryptoSignatureError(
@@ -240,7 +239,6 @@ class RSAVerifier:
                 ),
                 hashes.SHA256(),
             )
-            logger.debug("✅ RSA-PSS signature verification successful")
             return True
         except Exception as e:
             logger.debug(f"❌ Invalid RSA-PSS signature: {e}")

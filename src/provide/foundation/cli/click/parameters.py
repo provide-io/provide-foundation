@@ -1,13 +1,12 @@
-# provide/foundation/cli/click/parameters.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """Click parameter processing and decorator application.
 
 Handles separation of arguments/options and application of Click decorators
-based on parameter introspection and type hints.
-"""
+based on parameter introspection and type hints."""
 
 from __future__ import annotations
 

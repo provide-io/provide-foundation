@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/foundation_telemetry/07_module_filtering.py
+
 """Demonstrates module-specific log level configuration."""
 
 from pathlib import Path
@@ -58,25 +57,20 @@ def example_7_module_level_filtering() -> None:
     auth_logger.debug(
         "Token validation details",
         token_id="tkn_short",
-    )  # ✅ Shows (auth is DEBUG)
-    auth_logger.info("User 'admin' logged in")  # ✅ Shows
 
     db_logger.info("Query executed successfully")  # ❌ Filtered (database is ERROR)
     db_logger.warning("Slow query detected: 2500ms")  # ❌ Filtered
-    db_logger.error("Failed to connect to replica set 'rs0'")  # ✅ Shows
 
     net_comms_logger.info(
         "Packet sent successfully",
     )  # ❌ Filtered (network.comms is WARNING)
-    net_comms_logger.warning("High latency on connection to peer X")  # ✅ Shows
 
     other_logger.debug(
         "Debug details for other component",
     )  # ❌ Filtered (default is INFO)
-    other_logger.info("Standard operation in other component")  # ✅ Shows
 
 
 if __name__ == "__main__":
     example_7_module_level_filtering()
-    pout("\n✅ Example 7 completed.")
+
 # 🧱🏗️🔚

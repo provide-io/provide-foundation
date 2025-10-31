@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -11,8 +10,7 @@ This file showcases the new features added in the comprehensive refactoring:
 - Thread-safe circuit breaker
 - Bulkhead pattern for resource isolation
 - Event-driven architecture
-- Memory management with weak references
-"""
+- Memory management with weak references"""
 
 from __future__ import annotations
 
@@ -37,7 +35,6 @@ class ExampleResource(Disposable):
         """Initialize the resource."""
         self.name = name
         self.is_disposed = False
-        print(f"📦 Created resource: {self.name}")
 
     def do_work(self) -> str:
         """Perform some work."""
@@ -59,7 +56,6 @@ class AsyncExampleResource(AsyncDisposable):
         """Initialize the async resource."""
         self.name = name
         self.is_disposed = False
-        print(f"📦 Created async resource: {self.name}")
 
     async def do_async_work(self) -> str:
         """Perform some async work."""
@@ -119,7 +115,6 @@ def example_resource_cleanup() -> None:
     resource2 = ExampleResource("Resource-2")
     hub.register(name="example.resource2", value=resource2, dimension="singleton")
 
-    print("✅ Registered resources in hub")
 
     # Use the resources
     print(f"🔨 {resource1.do_work()}")
@@ -129,7 +124,6 @@ def example_resource_cleanup() -> None:
     print("\n🧹 Clearing hub dimension (will auto-dispose resources)...")
     hub.clear(dimension="singleton")
 
-    print("✅ Resource cleanup example completed")
 
 
 def example_circuit_breaker() -> None:
@@ -150,13 +144,11 @@ def example_circuit_breaker() -> None:
             raise RuntimeError(f"Service failure #{call_count}")
         return f"Success on call #{call_count}"
 
-    print(f"🔧 Created circuit breaker (threshold: {circuit_breaker.failure_threshold})")
 
     # Try to call the unreliable service
     for i in range(7):
         try:
             result = circuit_breaker.call(unreliable_service)
-            print(f"✅ Call {i + 1}: {result}")
         except Exception as e:
             print(f"❌ Call {i + 1}: {e}")
 
@@ -180,7 +172,6 @@ def example_bulkhead_pattern() -> None:
     db_bulkhead = manager.create_bulkhead("database", max_concurrent=3, timeout=2.0)
     api_bulkhead = manager.create_bulkhead("external_api", max_concurrent=2, timeout=1.0)
 
-    print(f"🏗️  Created bulkheads: {manager.list_bulkheads()}")
 
     # Simulate database operations
     def database_operation(query_id: int) -> str:
@@ -264,12 +255,10 @@ async def example_async_resource_cleanup() -> None:
     await resource1.dispose_async()
     await resource2.dispose_async()
 
-    print("✅ Async resource cleanup completed")
 
 
 def main() -> None:
     """Run all examples."""
-    print("🏗️  provide-foundation Architecture Improvements Examples")
     print("=" * 60)
 
     # Run synchronous examples
@@ -282,7 +271,6 @@ def main() -> None:
     print("\n🔄 Running async examples...")
     asyncio.run(example_async_examples())
 
-    print("\n✅ All examples completed successfully!")
 
 
 async def example_async_examples() -> None:
@@ -293,4 +281,5 @@ async def example_async_examples() -> None:
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

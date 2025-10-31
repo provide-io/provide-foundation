@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -176,11 +176,5 @@ class TestCertificateChains(FoundationTestCase):
             assert not ca_cert.verify_trust(cert_to_check), (
                 "Verification of an unrelated certificate (or one with a bad signature if issuers matched) should fail."
             )
-
-
-### 🐍🏗🧪️
-
-
-# 🐍🔌🧪🪄
 
 # 🧱🏗️🔚

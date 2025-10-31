@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
 """Example: Transport Client Usage with Foundation Mocking
 
 Demonstrates using the Foundation transport system for HTTP requests with:
@@ -10,8 +14,7 @@ Demonstrates using the Foundation transport system for HTTP requests with:
 - Foundation's mocking for self-contained examples
 
 This example showcases the full transport API using Foundation's testing utilities
-for realistic but controlled scenarios.
-"""
+for realistic but controlled scenarios."""
 
 import asyncio
 from pathlib import Path
@@ -501,3 +504,5 @@ if __name__ == "__main__":
 
     # Run the async example
     asyncio.run(main())
+
+# 🧱🏗️🔚

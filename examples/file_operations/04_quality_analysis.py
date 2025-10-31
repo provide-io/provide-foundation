@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
+
 """Example: File Operation Quality Analysis
 
 This example demonstrates how to use the quality analysis tools to measure
-and evaluate the effectiveness of file operation detection algorithms.
-"""
+and evaluate the effectiveness of file operation detection algorithms."""
 
 from __future__ import annotations
 
@@ -43,7 +42,6 @@ def main():
     print(f"\nTotal test cases: {len(analyzer.scenarios)}")
 
     # Run comprehensive analysis
-    print("\n🧪 Running quality analysis...")
     metrics = [
         AnalysisMetric.ACCURACY,
         AnalysisMetric.PRECISION,
@@ -92,7 +90,6 @@ def main():
             print(f"  Details: {total_ops} operations, range {min_conf:.3f}-{max_conf:.3f}")
 
     # Generate and display comprehensive report
-    print("\n📄 Quality Report:")
     print("=" * 50)
     report = analyzer.generate_report(results)
     print(report)
@@ -146,4 +143,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

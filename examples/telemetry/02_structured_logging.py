@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/telemetry/02_structured_logging.py
+
 """Quick Start Example - Structured Logging with Full Setup
 
 This example demonstrates how to use Foundation's Hub-based initialization,
@@ -25,8 +24,7 @@ Usage:
     PROVIDE_LOG_LEVEL=ERROR python examples/telemetry/02_structured_logging.py
 
 Expected output:
-    Colored, emoji-prefixed log messages with optional tracing/metrics setup.
-"""
+    Colored, emoji-prefixed log messages with optional tracing/metrics setup."""
 
 from pathlib import Path
 import sys
@@ -80,5 +78,5 @@ def example_1_quick_start() -> None:
 
 if __name__ == "__main__":
     example_1_quick_start()
-    pout("\n✅ Example 1 completed.")
+
 # 🧱🏗️🔚

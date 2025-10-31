@@ -1,12 +1,11 @@
-# provide/foundation/file/operations/detectors/orchestrator.py
-#
-# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# 
+# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+#
 
 """File operation detector orchestrator.
 
-Coordinates detector functions via registry to identify the best match for file events.
-"""
+Coordinates detector functions via registry to identify the best match for file events."""
 
 from __future__ import annotations
 

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-#
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
-# examples/file_operations/02_streaming_detection.py
+
 """Streaming file operation detection for real-time monitoring."""
 
 import asyncio
@@ -231,13 +230,11 @@ async def async_monitoring_demo() -> None:
     # Final flush
     monitor.flush_pending()
 
-    print("✅ Async processing complete")
 
 
 def main() -> None:
     """Main streaming detection demo."""
 
-    print("🌊 File Operations - Streaming Detection Example")
     print("=" * 55)
 
     # Create temporary directory for demo
@@ -272,4 +269,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 # 🧱🏗️🔚

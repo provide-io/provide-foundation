@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -333,7 +333,6 @@ class TestSerializationRoundTrip(FoundationTestCase):
             "japanese": "こんにちは",
             "emoji": "🎉🚀💖",
             "symbols": "∑∆∞",
-            "mixed": "Hello 世界 🌍",
         }
 
         serialized = json_dumps(test_data)

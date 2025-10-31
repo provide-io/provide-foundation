@@ -1,4 +1,4 @@
-#
+# 
 # SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 #
@@ -117,7 +117,6 @@ class CertificateBase:
                 not_valid_after = not_valid_after.replace(tzinfo=UTC)
 
             logger.debug(
-                f"📜⏳✅ CertificateBase.create: Using validity: {not_valid_before} to {not_valid_after}",
             )
 
             private_key: KeyPair
@@ -138,7 +137,6 @@ class CertificateBase:
             issuer = cls._create_name(config["common_name"], config["organization"])
 
             serial_number = x509.random_serial_number()
-            logger.debug(f"📜🔑✅ Generated serial number: {serial_number}")
 
             base = cls(
                 subject=subject,
@@ -148,7 +146,6 @@ class CertificateBase:
                 not_valid_after=not_valid_after,
                 serial_number=serial_number,
             )
-            logger.debug("📜📝✅ CertificateBase.create: Base creation complete")
             return base, private_key
 
         except Exception as e:
