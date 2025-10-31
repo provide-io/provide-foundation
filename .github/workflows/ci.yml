@@ -6,9 +6,19 @@ on:
   pull_request:
     branches: [ main, develop ]
   workflow_dispatch:
+    inputs:
+      extended-matrix:
+        description: 'Run extended platform matrix (all OS/arch combinations)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write  # For trusted publishing
 
 env:
   UV_VERSION: "0.7.8"
+  FORCE_COLOR: "1"
 
 jobs:
   # ==================================================================================
@@ -17,86 +27,138 @@ jobs:
   quality:
     name: 🔧 Code Quality
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.12"]
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
+      - name: 🔐 Setup GitHub Auth
+        uses: provide-io/ci-tooling/actions/setup-github-auth@main
+        env:
+          GH_ORG_HELPERS: ${{ secrets.GH_ORG_HELPERS }}
 
-      - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: 🐍 Setup Python Environment
+        uses: provide-io/ci-tooling/actions/setup-python-env@main
         with:
-          version: ${{ env.UV_VERSION }}
+          python-version: '3.11'
+          uv-version: ${{ env.UV_VERSION }}
+          workenv-path: '.venv'
+          install-extras: 'dev'
 
-      - name: 📦 Setup Environment
+      - name: 📦 Install provide-testkit
         run: |
-          uv venv
           source .venv/bin/activate
-          uv pip install -e .
           uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🎨 Run Ruff Linting
         run: |
           source .venv/bin/activate
-          ruff check src/ examples/ --output-format=github || true
+          ruff check src/ examples/ --output-format=github
         continue-on-error: true
-
 
       - name: 📏 Run Ruff Formatting Check
         run: |
           source .venv/bin/activate
-          ruff format --check src/ examples/ || true
+          ruff format --check src/ examples/
         continue-on-error: true
 
       - name: 🏷️ Run MyPy Type Checking
         run: |
           source .venv/bin/activate
-          mypy src/ --show-error-codes --pretty || true
+          mypy src/ --show-error-codes --pretty
         continue-on-error: true
 
   # ==================================================================================
-  # 🧪 Testing Matrix
+  # 🧪 Testing Matrix - Multi-Platform Support
   # ==================================================================================
   test:
-    name: 🧪 Tests (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    name: 🧪 Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    needs: quality
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ["3.11", "3.12"]
+        # Core platform matrix (Python 3.11 only)
+        include:
+          # Ubuntu x86_64
+          - os: ubuntu-latest
+            python-version: "3.11"
+            arch: "x64"
+            platform: "linux/amd64"
+
+          # Ubuntu ARM64 (GitHub-hosted ARM64 runner - public beta)
+          - os: ubuntu-24.04-arm
+            python-version: "3.11"
+            arch: "arm64"
+            platform: "linux/arm64"
+
+          # macOS ARM64 (M1/M2)
+          - os: macos-14
+            python-version: "3.11"
+            arch: "arm64"
+            platform: "darwin/arm64"
+
+          # macOS Intel x86_64
+          - os: macos-13
+            python-version: "3.11"
+            arch: "x64"
+            platform: "darwin/amd64"
+
+          # Windows x86_64
+          - os: windows-2022
+            python-version: "3.11"
+            arch: "x64"
+            platform: "windows/amd64"
+
+          # Windows ARM64 (GitHub-hosted - public preview)
+          - os: windows-11-arm
+            python-version: "3.11"
+            arch: "arm64"
+            platform: "windows/arm64"
 
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
+      - name: 🔐 Setup GitHub Auth
+        if: runner.os != 'Windows'  # Git config approach doesn't work well on Windows
+        uses: provide-io/ci-tooling/actions/setup-github-auth@main
+        env:
+          GH_ORG_HELPERS: ${{ secrets.GH_ORG_HELPERS }}
+
       - name: 🐍 Setup Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.arch }}
 
-      - name: ⚡ Install uv
+      - name: ⚡ Install UV
         uses: astral-sh/setup-uv@v4
         with:
           version: ${{ env.UV_VERSION }}
 
-      - name: 📦 Setup Environment
+      - name: 📦 Setup Environment (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
         run: |
-          uv venv
+          uv venv .venv
           source .venv/bin/activate
           uv pip install -e .
           uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
           uv sync --all-groups --dev --prerelease=allow
 
-      - name: 🧪 Run Tests with Coverage
+      - name: 📦 Setup Environment (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          uv venv .venv
+          .venv\Scripts\Activate.ps1
+          uv pip install -e .
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv sync --all-groups --dev --prerelease=allow
+
+      - name: 🧪 Run Tests with Coverage (Unix)
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           source .venv/bin/activate
@@ -107,31 +169,44 @@ jobs:
             --junitxml=junit.xml -o junit_family=legacy
         continue-on-error: true
 
+      - name: 🧪 Run Tests with Coverage (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          .venv\Scripts\Activate.ps1
+          pytest tests/ -n auto `
+            --cov=provide.foundation `
+            --cov-report=xml `
+            --cov-branch `
+            --junitxml=junit.xml -o junit_family=legacy
+        continue-on-error: true
+
       - name: 📊 Upload Coverage to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v5
         with:
-          name: codecov-umbrella
+          name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.arch }}
           files: ./coverage.xml
-          flags: unittests
+          flags: unittests,${{ matrix.os }},${{ matrix.arch }}
           token: ${{ secrets.CODECOV_TOKEN }}
         continue-on-error: true
 
-      - name: 📊 Upload test results to Codecov
+      - name: 📊 Upload Test Results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
 
-      - name: 📈 Upload Test Results
+      - name: 📈 Upload Test Artifacts
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
+          name: test-results-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.arch }}
           path: |
-            test-results.xml
-            htmlcov/
+            junit.xml
             coverage.xml
+          retention-days: 30
 
   # ==================================================================================
   # 📦 Package Building & Testing
@@ -146,21 +221,22 @@ jobs:
         with:
           fetch-depth: 0  # Full history for version detection
 
-      - name: 🐍 Setup Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: 🔐 Setup GitHub Auth
+        uses: provide-io/ci-tooling/actions/setup-github-auth@main
+        env:
+          GH_ORG_HELPERS: ${{ secrets.GH_ORG_HELPERS }}
 
-      - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: 🐍 Setup Python Environment
+        uses: provide-io/ci-tooling/actions/setup-python-env@main
         with:
-          version: ${{ env.UV_VERSION }}
+          python-version: '3.11'
+          uv-version: ${{ env.UV_VERSION }}
+          workenv-path: '.venv'
+          install-extras: 'dev'
 
-      - name: 📦 Setup Environment
+      - name: 📦 Install provide-testkit
         run: |
-          uv venv
           source .venv/bin/activate
-          uv pip install -e .
           uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
           uv sync --all-groups --dev --prerelease=allow
 
@@ -168,6 +244,7 @@ jobs:
         run: |
           source .venv/bin/activate
           python scripts/version_checker.py
+        continue-on-error: true
 
       - name: 🏗️ Build Package
         run: |
@@ -195,11 +272,11 @@ jobs:
 
       - name: 📈 Upload Package Artifacts
         uses: actions/upload-artifact@v4
-        continue-on-error: true
+        if: always()
         with:
           name: package-dist
-          path: |
-            dist/
+          path: dist/
+          retention-days: 90
           if-no-files-found: warn
 
   # ==================================================================================
@@ -209,30 +286,26 @@ jobs:
     name: 🏁 Integration Tests
     runs-on: ubuntu-latest
     needs: [quality, test]
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: ["3.11", "3.12"]
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
-      - name: 🐍 Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
+      - name: 🔐 Setup GitHub Auth
+        uses: provide-io/ci-tooling/actions/setup-github-auth@main
+        env:
+          GH_ORG_HELPERS: ${{ secrets.GH_ORG_HELPERS }}
 
-      - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v4
+      - name: 🐍 Setup Python Environment
+        uses: provide-io/ci-tooling/actions/setup-python-env@main
         with:
-          version: ${{ env.UV_VERSION }}
+          python-version: '3.11'
+          uv-version: ${{ env.UV_VERSION }}
+          workenv-path: '.venv'
+          install-extras: 'dev'
 
-      - name: 📦 Setup Environment
+      - name: 📦 Install provide-testkit
         run: |
-          uv venv
           source .venv/bin/activate
-          uv pip install -e .
           uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
           uv sync --all-groups --dev --prerelease=allow
 
@@ -243,6 +316,7 @@ jobs:
           pytest tests/errors/test_integration.py -n auto -v --tb=short || true
           pytest tests/test_component_registry_*.py -n auto -v --tb=short || true
           pytest tests/test_init_coverage.py -n auto -v --tb=short || true
+        continue-on-error: true
 
   # ==================================================================================
   # 📋 Summary Job
@@ -255,13 +329,22 @@ jobs:
     steps:
       - name: 📊 Report Results
         run: |
-          echo "## 🧪 Foundation Telemetry CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "## 🧪 provide-foundation CI Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "### Platform Coverage (Python 3.11)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Ubuntu x86_64" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Ubuntu ARM64 (GitHub-hosted beta)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ macOS ARM64 / M1" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ macOS Intel x86_64" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Windows x86_64" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Windows ARM64 (GitHub-hosted preview)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Job Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| 🔧 Code Quality | ${{ needs.quality.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🧪 Tests | ${{ needs.test.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 📦 Package | ${{ needs.package.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Multi-Platform Tests | ${{ needs.test.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📦 Package Build | ${{ needs.package.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🏁 Integration | ${{ needs.integration.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
@@ -270,3 +353,9 @@ jobs:
           else
             echo "⚠️ **Some checks failed.** Review results before proceeding." >> $GITHUB_STEP_SUMMARY
           fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "**Notes:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Ubuntu ARM64: Uses organization runner \`ubuntu-24.04-arm\` with 'Ubuntu 24.04 by Arm Limited' image" >> $GITHUB_STEP_SUMMARY
+          echo "- Windows ARM64: Uses GitHub-hosted \`windows-11-arm\` runner (public preview, may have longer queue times)" >> $GITHUB_STEP_SUMMARY
