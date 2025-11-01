@@ -4,6 +4,13 @@
 
 Built on industry-standard libraries like `structlog`, `click`, and `attrs`, `provide.foundation` offers a superior developer experience with beautiful console output, powerful error handling, and cross-platform system utilities.
 
+!!! info "Beta Status"
+    provide-foundation is in beta. Core features are stable, but the API may evolve.
+
+    - **Current version:** v0.0.1026
+    - **Status:** Beta (Development Status: 4)
+    - **Production use:** Use with caution; API may change
+
 ## Why provide.foundation?
 
 | For Developers | For Teams |
