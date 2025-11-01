@@ -180,7 +180,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         ),
         refill_rate=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=20, suppress_health_check=[])
+    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
     async def test_edge_value_capacity_chaos(
         self,
         capacity: float,
