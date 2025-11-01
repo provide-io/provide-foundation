@@ -114,6 +114,7 @@ extra_javascript:
 
 nav:
   - Home: index.md
+  - Ecosystem: ecosystem.md
 
   - Overview:
     - Features: information/features.md

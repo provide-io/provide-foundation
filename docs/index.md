@@ -82,6 +82,16 @@ def process_data(file: str, force: bool = False):
     fetch_data_from_api()
 ```
 
+## Part of the provide.io Ecosystem
+
+This project is part of a larger ecosystem of tools for Python and Terraform development.
+
+**[View Ecosystem Overview →](ecosystem.md)**
+
+Understand how provide-foundation, pyvider, flavorpack, and other projects work together.
+
+---
+
 ## System Requirements
 
 -   Python 3.11 or higher
