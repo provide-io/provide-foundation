@@ -2,7 +2,7 @@
 INHERIT: .provide/foundry/base-mkdocs.yml
 
 # Project-Specific Configuration
-site_name: provide.foundation documentation
+site_name: provide-foundation
 site_description: Beautiful, Performant, Structured Logging for Python - Enterprise-grade telemetry built on structlog
 site_author: provide.io
 site_url: https://foundry.provide.io/foundation/
@@ -43,7 +43,7 @@ theme:
 plugins:
   - gen-files:
       scripts:
-        - docs/scripts/gen_api.py
+        - scripts/mkdocs_gen_ref_pages.py
   - literate-nav:
       nav_file: SUMMARY.md
 
