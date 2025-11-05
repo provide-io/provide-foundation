@@ -1,5 +1,5 @@
 # Inherit shared configuration from provide-foundry
-INHERIT: ../provide-foundry/base-mkdocs.yml
+INHERIT: .provide/foundry/base-mkdocs.yml
 
 # Project-Specific Configuration
 site_name: provide.foundation documentation
