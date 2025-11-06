@@ -218,7 +218,7 @@ class RetryExecutor:
             Result from successful execution
 
         Raises:
-            Last exception if all retries are exhausted
+            Exception: The last exception raised if all retry attempts are exhausted
 
         """
         last_exception = None
@@ -290,7 +290,7 @@ class RetryExecutor:
             Result from successful execution
 
         Raises:
-            Last exception if all retries are exhausted
+            Exception: The last exception raised if all retry attempts are exhausted
 
         """
         last_exception = None
