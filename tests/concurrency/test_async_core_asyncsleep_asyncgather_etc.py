@@ -6,8 +6,9 @@
 """Tests for Foundation concurrency utilities."""
 
 import asyncio
+from collections.abc import AsyncIterator
 import time
-from typing import Never
+from typing import Any, Never
 
 from provide.testkit import MinimalTestCase
 from provide.testkit.mocking import AsyncMock, patch
@@ -55,7 +56,7 @@ class TestAsyncSleep(MinimalTestCase):
 
     @pytest.mark.asyncio
     @patch("provide.foundation.concurrency.core.asyncio")
-    async def test_async_sleep_uses_asyncio_module(self, mock_asyncio) -> None:
+    async def test_async_sleep_uses_asyncio_module(self, mock_asyncio: Any) -> None:
         """Test async_sleep calls asyncio.sleep()."""
         mock_asyncio.sleep = AsyncMock()
         await async_sleep(0.5)
@@ -96,7 +97,7 @@ class TestAsyncGather(MinimalTestCase):
     async def test_async_gather_basic_multiple_tasks(self) -> None:
         """Test async_gather with multiple async tasks."""
 
-        async def multiply(n, factor):
+        async def multiply(n: int, factor: int) -> int:
             await async_sleep(0.01)
             return n * factor
 
@@ -108,7 +109,7 @@ class TestAsyncGather(MinimalTestCase):
     async def test_async_gather_preserves_order(self) -> None:
         """Test async_gather preserves order of results."""
 
-        async def delayed_return(value, delay):
+        async def delayed_return(value: str, delay: float) -> str:
             await async_sleep(delay)
             return value
 
@@ -185,10 +186,10 @@ class TestAsyncGather(MinimalTestCase):
         async def return_str() -> str:
             return "hello"
 
-        async def return_list():
+        async def return_list() -> list[int]:
             return [1, 2, 3]
 
-        async def return_dict():
+        async def return_dict() -> dict[str, str]:
             return {"key": "value"}
 
         results = await async_gather(
@@ -202,7 +203,7 @@ class TestAsyncGather(MinimalTestCase):
 
     @pytest.mark.asyncio
     @patch("provide.foundation.concurrency.core.asyncio")
-    async def test_async_gather_uses_asyncio_module(self, mock_asyncio) -> None:
+    async def test_async_gather_uses_asyncio_module(self, mock_asyncio: Any) -> None:
         """Test async_gather calls asyncio.gather()."""
         mock_coro1 = AsyncMock(return_value="result1")
         mock_coro2 = AsyncMock(return_value="result2")
@@ -289,7 +290,7 @@ class TestAsyncWaitFor(MinimalTestCase):
 
     @pytest.mark.asyncio
     @patch("provide.foundation.concurrency.core.asyncio")
-    async def test_async_wait_for_uses_asyncio_module(self, mock_asyncio) -> None:
+    async def test_async_wait_for_uses_asyncio_module(self, mock_asyncio: Any) -> None:
         """Test async_wait_for calls asyncio.wait_for()."""
         mock_coro = AsyncMock(return_value="result")
         mock_asyncio.wait_for = AsyncMock(return_value="result")
@@ -338,7 +339,7 @@ class TestAsyncRun(MinimalTestCase):
     def test_async_run_with_complex_return_value(self) -> None:
         """Test async_run handles complex return values."""
 
-        async def complex_data():
+        async def complex_data() -> dict[str, Any]:
             return {
                 "numbers": [1, 2, 3],
                 "nested": {"key": "value"},
@@ -374,14 +375,14 @@ class TestAsyncRun(MinimalTestCase):
             async_run(failing_main)
 
     @patch("provide.foundation.concurrency.core.asyncio")
-    def test_async_run_uses_asyncio_module(self, mock_asyncio) -> None:
+    def test_async_run_uses_asyncio_module(self, mock_asyncio: Any) -> None:
         """Test async_run calls asyncio.run()."""
 
         async def main() -> str:
             return "test"
 
         # Set up mock to properly handle the coroutine
-        def mock_run(coro, **kwargs) -> str:
+        def mock_run(coro: Any, **kwargs: Any) -> str:
             # Close the coroutine to avoid warnings
             if hasattr(coro, "close"):
                 coro.close()
@@ -412,7 +413,7 @@ class TestAsyncRun(MinimalTestCase):
     def test_async_run_with_async_generator(self) -> None:
         """Test async_run doesn't work with async generators (by design)."""
 
-        async def async_gen():
+        async def async_gen() -> AsyncIterator[int]:
             yield 1
             yield 2
 

@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
@@ -100,7 +101,7 @@ class TestCertificateCreate(FoundationTestCase):
         with pytest.raises(CertificateError, match="Unsupported key type: 123"):
             CertificateBase.create(config)
 
-    def test_certificate_base_create_unsupported_key_type_str(self, mocker) -> None:
+    def test_certificate_base_create_unsupported_key_type_str(self, mocker: Any) -> None:
         """Test CertificateBase.create with an unsupported string for key_type in config."""
         now = datetime.now(UTC)
         # Prepare a config with an unsupported key_type string
@@ -132,7 +133,7 @@ class TestCertificateCreate(FoundationTestCase):
         )
 
     @pytest.mark.asyncio  # Keep async if other tests are, though this one is sync
-    async def test_certificate_init_invalid_ecdsa_curve(self, mocker) -> None:
+    async def test_certificate_init_invalid_ecdsa_curve(self, mocker: Any) -> None:
         """Test Certificate instantiation with an invalid ecdsa_curve string."""
         mock_logger_error = mocker.patch(
             "provide.foundation.crypto.certificates.generator.logger.error",

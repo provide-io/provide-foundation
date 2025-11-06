@@ -6,6 +6,7 @@
 """Tests for factory functions, converters, consistency checks, and crypto defaults."""
 
 from pathlib import Path
+from typing import Any
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
@@ -131,7 +132,7 @@ class TestFactoryFunctions(FoundationTestCase):
         assert isinstance(next(iter(result1.values())), str)
 
     @patch("provide.foundation.logger.config.logging.LoggingConfig.from_env")
-    def test_default_logging_config(self, mock_from_env) -> None:
+    def test_default_logging_config(self, mock_from_env: Any) -> None:
         """Test default_logging_config factory."""
         mock_config = "mock_logging_config"
         mock_from_env.return_value = mock_config
@@ -142,7 +143,7 @@ class TestFactoryFunctions(FoundationTestCase):
         mock_from_env.assert_called_once()
 
     @patch("provide.foundation.logger.config.logging.LoggingConfig.from_env")
-    def test_default_logging_config_import_location(self, mock_from_env) -> None:
+    def test_default_logging_config_import_location(self, mock_from_env: Any) -> None:
         """Test that default_logging_config imports from correct location."""
         mock_config = "mock_logging_config"
         mock_from_env.return_value = mock_config

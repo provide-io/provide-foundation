@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -19,35 +20,35 @@ from provide.foundation.context import CLIContext
 class TestConsoleOutput(FoundationTestCase):
     """Test console output functions."""
 
-    def test_pout_basic(self, capsys) -> None:
+    def test_pout_basic(self, capsys: Any) -> None:
         """Test basic pout to stdout."""
         pout("Hello world")
         captured = capsys.readouterr()
         assert captured.out == "Hello world\n"
         assert captured.err == ""
 
-    def test_perr_basic(self, capsys) -> None:
+    def test_perr_basic(self, capsys: Any) -> None:
         """Test basic perr to stderr."""
         perr("Error message")
         captured = capsys.readouterr()
         assert captured.out == ""
         assert captured.err == "Error message\n"
 
-    def test_pout_no_newline(self, capsys) -> None:
+    def test_pout_no_newline(self, capsys: Any) -> None:
         """Test pout without newline."""
         pout("Hello", nl=False)
         pout(" world")
         captured = capsys.readouterr()
         assert captured.out == "Hello world\n"
 
-    def test_perr_no_newline(self, capsys) -> None:
+    def test_perr_no_newline(self, capsys: Any) -> None:
         """Test perr without newline."""
         perr("Error", newline=False)
         perr(" occurred")
         captured = capsys.readouterr()
         assert captured.err == "Error occurred\n"
 
-    def test_pout_with_dict(self, capsys) -> None:
+    def test_pout_with_dict(self, capsys: Any) -> None:
         """Test pout with dictionary (should output as JSON in JSON mode)."""
         pout({"key": "value", "number": 42})
         captured = capsys.readouterr()
@@ -55,18 +56,20 @@ class TestConsoleOutput(FoundationTestCase):
         assert "key" in captured.out
         assert "value" in captured.out
 
-    def test_pout_with_list(self, capsys) -> None:
+    def test_pout_with_list(self, capsys: Any) -> None:
         """Test pout with list."""
         pout(["item1", "item2", "item3"])
         captured = capsys.readouterr()
         assert "item1" in captured.out
         assert "item2" in captured.out
 
-    def test_pout_with_prefix(self, capsys) -> None:
+    def test_pout_with_prefix(self, capsys: Any) -> None:
         """Test pout with prefix."""
+        pout("Success", prefix="✅")
         captured = capsys.readouterr()
+        assert captured.out == "✅ Success\n"
 
-    def test_perr_with_prefix(self, capsys) -> None:
+    def test_perr_with_prefix(self, capsys: Any) -> None:
         """Test perr with prefix."""
         perr("Failed", prefix="❌")
         captured = capsys.readouterr()
@@ -76,7 +79,7 @@ class TestConsoleOutput(FoundationTestCase):
     # Users should use logger directly instead
 
     @pytest.mark.parametrize("color", ["red", "green", "yellow", "blue"])
-    def test_colors_non_tty(self, capsys, color) -> None:
+    def test_colors_non_tty(self, capsys: Any, color: str) -> None:
         """Test that colors are ignored in non-TTY mode."""
         # capsys makes stdout/stderr non-TTY
         pout("Colored text", color=color)
@@ -85,7 +88,7 @@ class TestConsoleOutput(FoundationTestCase):
         assert captured.out == "Colored text\n"
         assert "\033[" not in captured.out
 
-    def test_json_mode_with_context(self, capsys, monkeypatch) -> None:
+    def test_json_mode_with_context(self, capsys: Any, monkeypatch: Any) -> None:
         """Test JSON output mode via context."""
         # Create a mock Click context with JSON output enabled
         import click
@@ -93,7 +96,7 @@ class TestConsoleOutput(FoundationTestCase):
         ctx = click.Context(click.Command("test"))
         ctx.obj = CLIContext(json_output=True)
 
-        def mock_get_current_context(*args, **kwargs):
+        def mock_get_current_context(*args: Any, **kwargs: Any) -> click.Context:
             return ctx
 
         monkeypatch.setattr(click, "get_current_context", mock_get_current_context)
@@ -105,14 +108,14 @@ class TestConsoleOutput(FoundationTestCase):
         data = json.loads(captured.out)
         assert data == {"data": "value"}
 
-    def test_json_mode_with_json_key(self, capsys, monkeypatch) -> None:
+    def test_json_mode_with_json_key(self, capsys: Any, monkeypatch: Any) -> None:
         """Test JSON output with json_key."""
         import click
 
         ctx = click.Context(click.Command("test"))
         ctx.obj = CLIContext(json_output=True)
 
-        def mock_get_current_context(*args, **kwargs):
+        def mock_get_current_context(*args: Any, **kwargs: Any) -> click.Context:
             return ctx
 
         monkeypatch.setattr(click, "get_current_context", mock_get_current_context)
@@ -123,14 +126,14 @@ class TestConsoleOutput(FoundationTestCase):
         data = json.loads(captured.out)
         assert data == {"result": "Success message"}
 
-    def test_perr_json_mode(self, capsys, monkeypatch) -> None:
+    def test_perr_json_mode(self, capsys: Any, monkeypatch: Any) -> None:
         """Test perr in JSON mode."""
         import click
 
         ctx = click.Context(click.Command("test"))
         ctx.obj = CLIContext(json_output=True)
 
-        def mock_get_current_context(*args, **kwargs):
+        def mock_get_current_context(*args: Any, **kwargs: Any) -> click.Context:
             return ctx
 
         monkeypatch.setattr(click, "get_current_context", mock_get_current_context)

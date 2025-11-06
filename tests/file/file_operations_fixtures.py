@@ -10,12 +10,12 @@ simulating various editor save patterns, and validating operation detection accu
 
 from __future__ import annotations
 
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from datetime import datetime, timedelta
 from pathlib import Path
 import random
 import tempfile
-from typing import Any
+from typing import Any, TypeVar
 
 import pytest
 
@@ -25,12 +25,14 @@ try:
         FileEvent,
         FileEventMetadata,
         OperationDetector,
-        OperationType,
     )
 
     HAS_OPERATIONS_MODULE = True
 except ImportError:
     HAS_OPERATIONS_MODULE = False
+
+
+T = TypeVar("T", bound=Callable[..., Any])
 
 
 class FileOperationSimulator:
@@ -414,20 +416,20 @@ def operation_detector() -> OperationDetector | None:
 
 
 # Decorator for tests that require file operations module
-def requires_file_operations(func):
+def requires_file_operations(func: T) -> T:
     """Decorator to skip tests when file operations module is not available."""
     return pytest.mark.skipif(not HAS_OPERATIONS_MODULE, reason="File operations module not available")(func)
 
 
 # Pattern-specific test decorators
-def file_operation_pattern(*patterns: str):
+def file_operation_pattern(*patterns: str) -> Callable[[T], T]:
     """Decorator for file operation pattern tests.
 
     Args:
         *patterns: Patterns to test (vscode, vim, emacs, sublime, batch, etc.)
     """
 
-    def decorator(func):
+    def decorator(func: T) -> T:
         func._file_operation_patterns = patterns
         return requires_file_operations(func)
 

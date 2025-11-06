@@ -11,7 +11,9 @@ priority chains, and thread-safe component access patterns."""
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import threading
+from typing import Any
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock
@@ -30,7 +32,7 @@ class TestErrorHandlerComponents(FoundationTestCase):
         registry = get_component_registry()
 
         # Create test error handler
-        def test_error_handler(exception, context):
+        def test_error_handler(exception: Exception, context: Any) -> dict[str, Any]:
             return {"handled": True, "error": str(exception)}
 
         registry.register(
@@ -72,7 +74,7 @@ class TestErrorHandlerComponents(FoundationTestCase):
         registry = get_component_registry()
 
         # High priority handler that doesn't handle
-        def high_priority_handler(exception, context) -> None:
+        def high_priority_handler(exception: Exception, context: Any) -> None:
             return None  # Don't handle
 
         registry.register(
@@ -83,7 +85,7 @@ class TestErrorHandlerComponents(FoundationTestCase):
         )
 
         # Low priority handler that handles
-        def low_priority_handler(exception, context):
+        def low_priority_handler(exception: Exception, context: Any) -> dict[str, Any]:
             return {"handled": True, "handler": "low_priority"}
 
         registry.register(
@@ -118,7 +120,7 @@ class TestErrorHandlerComponents(FoundationTestCase):
 
         registry = get_component_registry()
 
-        async def async_error_handler(exception, context):
+        async def async_error_handler(exception: Exception, context: Any) -> dict[str, Any]:
             await asyncio.sleep(0)  # Simulate async work
             return {"handled": True, "async": True}
 
@@ -147,7 +149,7 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
         results = []
         errors = []
 
-        def register_component(i) -> None:
+        def register_component(i: int) -> None:
             try:
                 component = Mock()
                 component.id = i
@@ -233,7 +235,7 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
         # Component factory
         initialization_count = 0
 
-        def component_factory():
+        def component_factory() -> Mock:
             nonlocal initialization_count
             initialization_count += 1
             component = Mock()
@@ -273,7 +275,7 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
         registry = get_component_registry()
 
         # Async component factory with minimal sleep to avoid event loop issues
-        async def async_component_factory():
+        async def async_component_factory() -> Mock:
             # Use asyncio.sleep(0) instead of 0.01 to avoid timing issues in parallel tests
             await asyncio.sleep(0)  # Minimal async yield
             component = Mock()
@@ -295,10 +297,8 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
             assert component.async_initialized is True
         finally:
             # Clean up registry to prevent state contamination
-            try:
+            with contextlib.suppress(Exception):
                 registry.remove("async_component", "test")
-            except Exception:
-                pass  # Registry might not have remove method
 
     def test_component_cleanup_on_shutdown(self) -> None:
         """Components must support cleanup on shutdown."""

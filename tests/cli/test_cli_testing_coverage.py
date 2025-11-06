@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
+from typing import Any
 
 import click
 from click.testing import CliRunner
@@ -139,8 +140,8 @@ class TestTempConfigFile(FoundationTestCase):
             assert config_path.exists()
             assert config_path.suffix == ".json"
 
-            with open(config_path) as f:
-                loaded_data = json.load(f)
+            with config_path.open(encoding="utf-8") as file:
+                loaded_data = json.load(file)
             assert loaded_data == config_data
 
         # File should be cleaned up
@@ -154,8 +155,8 @@ class TestTempConfigFile(FoundationTestCase):
             assert config_path.exists()
             assert config_path.suffix == ".json"
 
-            with open(config_path) as f:
-                content = f.read()
+            with config_path.open(encoding="utf-8") as file:
+                content = file.read()
             assert content == config_string
 
     def test_temp_config_file_toml_dict_with_tomli_w(self) -> None:
@@ -190,8 +191,8 @@ class TestTempConfigFile(FoundationTestCase):
                 assert config_path.exists()
                 assert config_path.suffix == ".toml"
 
-                with open(config_path) as f:
-                    content = f.read()
+                with config_path.open(encoding="utf-8") as file:
+                    content = file.read()
 
                 # Check fallback format
                 assert 'string_key = "value1"' in content
@@ -208,7 +209,7 @@ class TestTempConfigFile(FoundationTestCase):
         mock_yaml = Mock()
 
         # Mock safe_dump to write something
-        def mock_safe_dump(data, file) -> None:
+        def mock_safe_dump(data: Any, file: Any) -> None:
             file.write("key1: value1\nkey2:\n- 1\n- 2\n- 3\n")
 
         mock_yaml.safe_dump = mock_safe_dump
@@ -233,7 +234,7 @@ class TestTempConfigFile(FoundationTestCase):
 
         original_import = builtins.__import__
 
-        def mock_import(name, *args, **kwargs):
+        def mock_import(name: str, *args: Any, **kwargs: Any) -> Any:
             if name == "yaml":
                 raise ImportError("No module named 'yaml'")
             return original_import(name, *args, **kwargs)
@@ -317,7 +318,7 @@ class TestCreateTestCli(FoundationTestCase):
 class TestMockLogger(FoundationTestCase):
     """Test mock_logger function."""
 
-    def test_mock_logger_creation(self, mock_logger) -> None:
+    def test_mock_logger_creation(self, mock_logger: Any) -> None:
         """Test mock_logger creates proper mock."""
         assert hasattr(mock_logger, "debug")
         assert hasattr(mock_logger, "info")
@@ -325,7 +326,7 @@ class TestMockLogger(FoundationTestCase):
         assert hasattr(mock_logger, "error")
         assert hasattr(mock_logger, "critical")
 
-    def test_mock_logger_methods_callable(self, mock_logger) -> None:
+    def test_mock_logger_methods_callable(self, mock_logger: Any) -> None:
         """Test mock_logger methods are callable."""
         # Should not raise exceptions
         mock_logger.debug("test message")
@@ -334,7 +335,7 @@ class TestMockLogger(FoundationTestCase):
         mock_logger.error("test message")
         mock_logger.critical("test message")
 
-    def test_mock_logger_call_tracking(self, mock_logger) -> None:
+    def test_mock_logger_call_tracking(self, mock_logger: Any) -> None:
         """Test mock_logger methods track calls."""
         mock_logger.debug("debug message")
         mock_logger.info("info message", extra="data")
@@ -405,8 +406,8 @@ class TestCliTestCase(FoundationTestCase):
         assert temp_path.suffix == ".txt"
         assert temp_path in test_case.temp_files
 
-        with open(temp_path) as f:
-            assert f.read() == content
+        with temp_path.open(encoding="utf-8") as file:
+            assert file.read() == content
 
     def test_cli_test_case_create_temp_file_empty_content(self) -> None:
         """Test CliTestCase create_temp_file with empty content."""
@@ -416,8 +417,8 @@ class TestCliTestCase(FoundationTestCase):
         temp_path = test_case.create_temp_file()
         assert temp_path.exists()
 
-        with open(temp_path) as f:
-            assert f.read() == ""
+        with temp_path.open(encoding="utf-8") as file:
+            assert file.read() == ""
 
     def test_cli_test_case_assert_json_output_valid(self) -> None:
         """Test CliTestCase assert_json_output with valid JSON."""

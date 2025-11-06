@@ -18,12 +18,16 @@ Part 6 of 6: Cut-Up Chuck Distributed Runner
 Usage:
     python 06_cut_up_chuck_runner.py"""
 
+from __future__ import annotations
+
+import importlib.util
 from pathlib import Path
 import random
 import signal
 import sys
 import threading
 import time
+from types import FrameType, ModuleType
 
 # Add src to path for examples
 example_file = Path(__file__).resolve()
@@ -38,13 +42,14 @@ if str(current_dir) not in sys.path:
     sys.path.insert(0, str(current_dir))
 
 # Load modules by file path
-import importlib.util
-
-from provide.foundation import logger, pout
+from provide.foundation import logger, pout  # noqa: E402
 
 
-def load_module_from_file(name, filepath):
+def load_module_from_file(name: str, filepath: Path) -> ModuleType:
     spec = importlib.util.spec_from_file_location(name, filepath)
+    if spec is None or spec.loader is None:
+        msg = f"Unable to load module: {name}"
+        raise ImportError(msg)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -306,7 +311,8 @@ class DistributedCutUpChuck:
         pout(f"   Anomalies: {self.stats['anomalies_detected']}")
         pout(f"   Heartbeats: {self.stats['heartbeats_sent']}")
         pout(f"   Errors: {self.stats['errors']}")
-        pout(f"   Task Rate: {self.stats['total_tasks'] / duration:.1f} tasks/sec")
+        task_rate = self.stats["total_tasks"] / duration if duration > 0 else 0
+        pout(f"   Task Rate: {task_rate:.1f} tasks/sec")
 
         # Display Celery metrics
         celery_stats = metrics.get_stats()
@@ -335,7 +341,7 @@ class DistributedCutUpChuck:
     def setup_signal_handlers(self) -> None:
         """Setup graceful shutdown signal handlers."""
 
-        def signal_handler(signum, frame) -> None:
+        def signal_handler(signum: int, frame: FrameType | None) -> None:
             pout(f"\n🛑 Received signal {signum}, initiating graceful shutdown...")
             self.shutdown_event.set()
             self.running = False

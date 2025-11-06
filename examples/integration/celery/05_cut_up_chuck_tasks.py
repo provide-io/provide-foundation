@@ -19,10 +19,12 @@ Part 5 of 6: Cut-Up Chuck Distributed Tasks
 Usage:
     from examples.integration.celery.cut_up_chuck_tasks import generate_log_entry, generate_batch"""
 
+import importlib.util
 from pathlib import Path
 import random
 import sys
 import time
+from types import ModuleType
 from typing import Any
 
 # Add src to path for examples
@@ -37,12 +39,13 @@ current_dir = Path(__file__).parent
 if str(current_dir) not in sys.path:
     sys.path.insert(0, str(current_dir))
 
+
 # Load setup_and_config module by file path
-import importlib.util
-
-
-def load_module_from_file(name, filepath):
+def load_module_from_file(name: str, filepath: Path) -> ModuleType:
     spec = importlib.util.spec_from_file_location(name, filepath)
+    if spec is None or spec.loader is None:
+        msg = f"Unable to load module: {name}"
+        raise ImportError(msg)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -52,7 +55,7 @@ current_dir = Path(__file__).parent
 setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
 app = setup_config.app
 CeleryTaskLogger = setup_config.CeleryTaskLogger
-from provide.foundation import logger
+from provide.foundation import logger  # noqa: E402
 
 # Cut-Up Phrases (from original cut_up_chuck.py)
 CUT_UP_PHRASES: list[str] = [
@@ -90,7 +93,7 @@ LOG_LEVELS: list[str] = [
 
 
 @app.task(bind=True)
-def generate_log_entry(self, iteration: int, context_override: str | None = None) -> dict[str, Any]:
+def generate_log_entry(self: Any, iteration: int, context_override: str | None = None) -> dict[str, Any]:
     """Generate a single cut-up phrase log entry with structured data.
 
     Args:
@@ -145,7 +148,9 @@ def generate_log_entry(self, iteration: int, context_override: str | None = None
 
 
 @app.task(bind=True)
-def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | None = None) -> dict[str, Any]:
+def generate_batch(
+    self: Any, batch_id: str, batch_size: int, context_filter: str | None = None
+) -> dict[str, Any]:
     """Generate a batch of cut-up phrase log entries in parallel.
 
     Args:
@@ -210,7 +215,7 @@ def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | N
 
 
 @app.task(bind=True)
-def detect_anomaly(self, anomaly_type: str | None = None) -> dict[str, Any]:
+def detect_anomaly(self: Any, anomaly_type: str | None = None) -> dict[str, Any]:
     """Generate anomaly detection log entries (equivalent to trace events in original).
 
     Args:
@@ -255,7 +260,7 @@ def detect_anomaly(self, anomaly_type: str | None = None) -> dict[str, Any]:
 
 
 @app.task(bind=True)
-def system_heartbeat(self, worker_id: str | None = None) -> dict[str, Any]:
+def system_heartbeat(self: Any, worker_id: str | None = None) -> dict[str, Any]:
     """Generate system heartbeat log entries with health metrics.
 
     Args:
@@ -303,7 +308,7 @@ def system_heartbeat(self, worker_id: str | None = None) -> dict[str, Any]:
 
 
 @app.task(bind=True)
-def continuous_generator(self, duration_minutes: int = 2, entries_per_minute: int = 30) -> dict[str, Any]:
+def continuous_generator(self: Any, duration_minutes: int = 2, entries_per_minute: int = 30) -> dict[str, Any]:
     """Orchestrate continuous log generation for a specified duration.
 
     Args:

@@ -8,8 +8,9 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import AsyncIterator
 from io import StringIO
-from typing import Never
+from typing import Any, Never
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
@@ -245,7 +246,7 @@ class TestAsyncPin(FoundationTestCase):
         """Test basic async streaming."""
         test_lines = ["line1", "line2", "line3"]
 
-        async def mock_stream():
+        async def mock_stream() -> AsyncIterator[str]:
             for line in test_lines:
                 yield line
 
@@ -264,7 +265,7 @@ class TestAsyncPin(FoundationTestCase):
         """Test apin_lines() with specific count."""
         test_lines = ["line1", "line2", "line3", "line4"]
 
-        async def mock_stream():
+        async def mock_stream() -> AsyncIterator[str]:
             for line in test_lines:
                 yield line
 
@@ -280,7 +281,7 @@ class TestAsyncPin(FoundationTestCase):
         """Test apin_lines() reading all lines."""
         test_lines = ["line1", "line2", "line3"]
 
-        async def mock_stream():
+        async def mock_stream() -> AsyncIterator[str]:
             for line in test_lines:
                 yield line
 
@@ -306,7 +307,7 @@ class TestAsyncStreamIntegration(FoundationTestCase):
         reader.feed_data(test_data)
         reader.feed_eof()
 
-        async def mock_connect(*args):
+        async def mock_connect(*args: Any) -> tuple[None, None]:
             return (None, None)
 
         with (
@@ -391,7 +392,7 @@ class TestEdgeCases(FoundationTestCase):
             await asyncio.sleep(0.01)
             raise asyncio.CancelledError()
 
-        async def mock_connect(*args):
+        async def mock_connect(*args: Any) -> tuple[None, None]:
             return (None, None)
 
         with (
@@ -418,7 +419,7 @@ class TestEdgeCases(FoundationTestCase):
         async def raise_error() -> Never:
             raise ValueError("Test error")
 
-        async def mock_connect(*args):
+        async def mock_connect(*args: Any) -> tuple[None, None]:
             return (None, None)
 
         with (
