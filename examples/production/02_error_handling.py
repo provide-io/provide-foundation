@@ -60,22 +60,7 @@ from provide.foundation.resilience.decorators import (  # noqa: E402
 )
 
 
-def example_error_handling() -> None:
-    """Demonstrates Foundation's comprehensive error handling patterns.
-
-    This example shows how to use Foundation's error handling utilities
-    to build robust applications with proper error management, logging,
-    and recovery strategies.
-    """
-    pout("\n" + "=" * 60)
-    pout("🛡️ Example: Foundation Error Handling Patterns")
-    pout(" Demonstrates: error_boundary, decorators, custom exceptions, retry patterns")
-    pout("=" * 60)
-
-    # Initialize Foundation logging
-    get_hub().initialize_foundation()
-
-    # Example 1: Error Boundary Context Manager
+def _demo_error_boundary() -> None:
     pout("\n🔒 Example 1: Error Boundary Context Manager")
     logger.info("Demonstrating error_boundary context manager")
 
@@ -97,7 +82,8 @@ def example_error_handling() -> None:
 
     logger.info("Operation completed", result=result)
 
-    # Example 2: resilient Decorator
+
+def _demo_resilient_decorator() -> None:
     pout("\n🎯 Example 2: resilient Decorator")
 
     @resilient(
@@ -127,7 +113,9 @@ def example_error_handling() -> None:
     profile = fetch_user_profile("network_fail")
     logger.info("Network error handled", fallback_result=profile)
 
-    # Example 3: Custom Foundation Exceptions
+
+def _demo_custom_exceptions() -> None:
+    pout("\n🧩 Example 3: Custom Foundation Exceptions")
 
     class UserServiceError(FoundationError):
         """Custom exception for user service operations."""
@@ -148,7 +136,7 @@ def example_error_handling() -> None:
         return {"user_id": user_id, "action": action, "status": "completed"}
 
     try:
-        result = process_user_action("admin_user", "delete_admin")
+        process_user_action("admin_user", "delete_admin")
     except UserServiceError as e:
         # Capture rich error context
         error_context = capture_error_context(e)
@@ -162,10 +150,10 @@ def example_error_handling() -> None:
             status="error",
         )
 
-    # Example 4: Retry Patterns with Foundation
+
+def _demo_retry_patterns() -> None:
     pout("\n🔄 Example 4: Retry Patterns and Resilience")
 
-    # Simple retry with decorator
     attempt_count = 0
 
     @retry(
@@ -179,7 +167,7 @@ def example_error_handling() -> None:
         nonlocal attempt_count
         attempt_count += 1
 
-        logger.info(f"API call attempt {attempt_count}")
+        logger.info("API call attempt %s", attempt_count)
 
         if attempt_count < 3:
             raise NetworkError(f"API temporarily unavailable (attempt {attempt_count})")
@@ -193,10 +181,8 @@ def example_error_handling() -> None:
     except NetworkError as e:
         logger.error("API call failed after all retries", error=str(e))
 
-    # Reset for next example
-    attempt_count = 0
 
-    # Example 5: Circuit Breaker Pattern
+def _demo_circuit_breaker() -> None:
     pout("\n⚡ Example 5: Circuit Breaker Pattern")
 
     @circuit_breaker(failure_threshold=2, recovery_timeout=0.5)
@@ -206,18 +192,17 @@ def example_error_handling() -> None:
             raise NetworkError("External service is down")
         return {"status": "success", "service": "external_api"}
 
-    # Test circuit breaker
     logger.info("Testing circuit breaker pattern")
 
-    # First few calls will fail and trigger circuit breaker
     for i in range(4):
         try:
             result = external_service_call(should_fail=i < 3)
-            logger.info(f"Service call {i + 1} succeeded", result=result)
+            logger.info("Service call %s succeeded", i + 1, result=result)
         except Exception as e:
-            logger.warning(f"Service call {i + 1} failed", error=str(e))
+            logger.warning("Service call %s failed", i + 1, error=str(e))
 
-    # Example 6: Fallback Chains
+
+def _demo_fallback_strategies() -> None:
     pout("\n🎯 Example 6: Fallback Strategies")
 
     @fallback(
@@ -226,14 +211,14 @@ def example_error_handling() -> None:
     )
     def get_data_with_fallback() -> dict[str, str]:
         """Get data with multiple fallback strategies."""
-        # Simulate primary service failure
         raise NetworkError("Primary service unavailable")
 
     logger.info("Testing fallback strategies")
     result = get_data_with_fallback()
     logger.info("Fallback strategy used", result=result)
 
-    # Example 7: Error Context Enrichment
+
+def _demo_error_context_enrichment() -> None:
     pout("\n📋 Example 7: Error Context Enrichment")
 
     def complex_operation_with_context() -> None:
@@ -246,10 +231,8 @@ def example_error_handling() -> None:
         }
 
         try:
-            # Simulate an operation that fails
             raise NotFoundError("Resource not found in database")
         except NotFoundError as e:
-            # Enrich error with operational context
             error_context = capture_error_context(e)
 
             logger.error(
@@ -264,6 +247,29 @@ def example_error_handling() -> None:
 
     logger.info("Testing error context enrichment")
     complex_operation_with_context()
+
+
+def example_error_handling() -> None:
+    """Demonstrates Foundation's comprehensive error handling patterns.
+
+    This example shows how to use Foundation's error handling utilities
+    to build robust applications with proper error management, logging,
+    and recovery strategies.
+    """
+    pout("\n" + "=" * 60)
+    pout("🛡️ Example: Foundation Error Handling Patterns")
+    pout(" Demonstrates: error_boundary, decorators, custom exceptions, retry patterns")
+    pout("=" * 60)
+
+    get_hub().initialize_foundation()
+
+    _demo_error_boundary()
+    _demo_resilient_decorator()
+    _demo_custom_exceptions()
+    _demo_retry_patterns()
+    _demo_circuit_breaker()
+    _demo_fallback_strategies()
+    _demo_error_context_enrichment()
 
     logger.info(
         "Error handling demonstration completed",

@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Never
+from typing import Any, Never
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
@@ -37,7 +37,7 @@ class TestErrorHandler(FoundationTestCase):
     def test_creation_with_policies(self) -> None:
         """Test creating ErrorHandler with policies."""
 
-        def handle_value_error(e) -> str:
+        def handle_value_error(e: ValueError) -> str:
             return "handled"
 
         policies = {ValueError: handle_value_error}
@@ -49,7 +49,7 @@ class TestErrorHandler(FoundationTestCase):
         """Test adding a policy."""
         handler = ErrorHandler()
 
-        def handle_error(e) -> str:
+        def handle_error(e: ValueError) -> str:
             return "handled"
 
         result = handler.add_policy(ValueError, handle_error)
@@ -71,7 +71,7 @@ class TestErrorHandler(FoundationTestCase):
     def test_handle_with_matching_policy(self) -> None:
         """Test handling error with matching policy."""
 
-        def handle_value(e) -> str:
+        def handle_value(e: ValueError) -> str:
             return f"handled: {e}"
 
         handler = ErrorHandler(policies={ValueError: handle_value})
@@ -84,7 +84,7 @@ class TestErrorHandler(FoundationTestCase):
     def test_handle_with_default_action(self) -> None:
         """Test handling error with default action."""
 
-        def default(e) -> str:
+        def default(e: Exception) -> str:
             return "default"
 
         handler = ErrorHandler(default_action=default)
@@ -97,7 +97,7 @@ class TestErrorHandler(FoundationTestCase):
     def test_handle_inheritance(self) -> None:
         """Test that policies match inherited error types."""
 
-        def handle_foundation(e) -> str:
+        def handle_foundation(e: FoundationError) -> str:
             return "foundation"
 
         handler = ErrorHandler(policies={FoundationError: handle_foundation})
@@ -116,7 +116,7 @@ class TestErrorHandler(FoundationTestCase):
             handler.handle(ValueError("test"))
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_reraise_unhandled_logs_warning(self, mock_logger) -> None:
+    def test_reraise_unhandled_logs_warning(self, mock_logger: Any) -> None:
         """Test that reraising unhandled errors logs a warning."""
         handler = ErrorHandler(reraise_unhandled=True)
 
@@ -127,7 +127,7 @@ class TestErrorHandler(FoundationTestCase):
         assert "No handler for ValueError" in mock_logger.return_value.warning.call_args[0][0]
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_logging_enabled(self, mock_logger) -> None:
+    def test_logging_enabled(self, mock_logger: Any) -> None:
         """Test that handling is logged when log_all=True."""
         handler = ErrorHandler(policies={ValueError: lambda e: "handled"}, log_all=True)
 
@@ -137,7 +137,7 @@ class TestErrorHandler(FoundationTestCase):
         assert "Handling ValueError" in mock_logger.return_value.info.call_args[0][0]
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_logging_disabled(self, mock_logger) -> None:
+    def test_logging_disabled(self, mock_logger: Any) -> None:
         """Test that handling is not logged when log_all=False."""
         handler = ErrorHandler(
             policies={ValueError: lambda e: "handled"},
@@ -149,7 +149,7 @@ class TestErrorHandler(FoundationTestCase):
         mock_logger.return_value.info.assert_not_called()
 
     @patch("provide.foundation.errors.handlers.capture_error_context")
-    def test_context_capture(self, mock_capture) -> None:
+    def test_context_capture(self, mock_capture: Any) -> None:
         """Test that context is captured when enabled."""
         mock_context = MagicMock()
         mock_context.to_dict.return_value = {}
@@ -164,7 +164,7 @@ class TestErrorHandler(FoundationTestCase):
     def test_handler_exception_propagates(self) -> None:
         """Test that exceptions in handlers propagate."""
 
-        def bad_handler(e) -> Never:
+        def bad_handler(e: Exception) -> Never:
             raise RuntimeError("handler failed")
 
         handler = ErrorHandler(policies={ValueError: bad_handler})
@@ -176,10 +176,10 @@ class TestErrorHandler(FoundationTestCase):
         assert exc_info.value.__cause__.args[0] == "original"
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_handler_exception_logged(self, mock_logger) -> None:
+    def test_handler_exception_logged(self, mock_logger: Any) -> None:
         """Test that handler exceptions are logged."""
 
-        def bad_handler(e) -> Never:
+        def bad_handler(e: Exception) -> Never:
             raise RuntimeError("handler failed")
 
         handler = ErrorHandler(policies={ValueError: bad_handler}, log_all=True)

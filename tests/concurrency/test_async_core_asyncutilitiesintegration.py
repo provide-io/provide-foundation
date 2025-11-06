@@ -28,11 +28,11 @@ class TestAsyncUtilitiesIntegration(MinimalTestCase):
     async def test_async_utilities_work_together(self) -> None:
         """Test async utilities work together in complex scenarios."""
 
-        async def task_with_timeout(value, delay):
+        async def task_with_timeout(value: int, delay: float) -> int:
             await async_sleep(delay)
             return value * 2
 
-        async def main_workflow():
+        async def main_workflow() -> int:
             # Use async_gather to run multiple tasks
             tasks = await async_gather(
                 async_wait_for(task_with_timeout(1, 0.01), timeout=0.1),
@@ -47,7 +47,7 @@ class TestAsyncUtilitiesIntegration(MinimalTestCase):
     def test_async_run_with_complex_async_workflow(self) -> None:
         """Test async_run with complex async workflow."""
 
-        async def complex_workflow():
+        async def complex_workflow() -> int:
             # Phase 1: Gather initial data
             await async_gather(
                 async_sleep(0.01),
@@ -55,7 +55,7 @@ class TestAsyncUtilitiesIntegration(MinimalTestCase):
             )
 
             # Phase 2: Process data with timeout
-            async def process_data():
+            async def process_data() -> list[int]:
                 await async_sleep(0.02)
                 return [1, 2, 3]
 
@@ -118,7 +118,7 @@ class TestAsyncUtilitiesIntegration(MinimalTestCase):
     async def test_performance_comparison(self) -> None:
         """Test performance characteristics of async utilities."""
 
-        async def fast_task(n):
+        async def fast_task(n: int) -> int:
             await async_sleep(0.001)
             return n
 
@@ -148,7 +148,7 @@ class TestAsyncUtilitiesIntegration(MinimalTestCase):
             assert "Main must be callable" in str(e)
 
         # Test async_sleep error (need to run in event loop)
-        async def test_sleep_error():
+        async def test_sleep_error() -> bool:
             try:
                 await async_sleep(-1)
             except ValidationError as e:

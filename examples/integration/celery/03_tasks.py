@@ -39,7 +39,7 @@ from examples.integration.celery.setup_and_config import CeleryTaskLogger, app  
 
 
 @app.task(bind=True, max_retries=3)
-def process_payment(self, order_id: str, amount: float, payment_method: str) -> dict[str, Any]:
+def process_payment(self: Any, order_id: str, amount: float, payment_method: str) -> dict[str, Any]:
     """Process payment with retry logic and detailed logging."""
     task_logger = CeleryTaskLogger("process_payment")
 
@@ -88,7 +88,7 @@ def process_payment(self, order_id: str, amount: float, payment_method: str) -> 
 
 
 @app.task(bind=True)
-def generate_report(self, report_type: str, date_range: dict[str, str], user_id: str) -> dict[str, Any]:
+def generate_report(self: Any, report_type: str, date_range: dict[str, str], user_id: str) -> dict[str, Any]:
     """Generate report with progress tracking."""
     task_logger = CeleryTaskLogger("generate_report")
 

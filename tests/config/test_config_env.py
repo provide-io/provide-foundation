@@ -7,6 +7,9 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Any
+
 from attrs import define
 from provide.testkit import FoundationTestCase
 import pytest
@@ -27,7 +30,7 @@ from provide.foundation.parsers import (
 class TestEnvUtilities(FoundationTestCase):
     """Test environment variable utilities."""
 
-    def test_get_env_existing(self, monkeypatch) -> None:
+    def test_get_env_existing(self, monkeypatch: Any) -> None:
         """Test getting existing environment variable."""
         monkeypatch.setenv("TEST_VAR", "test_value")
         assert get_env("TEST_VAR") == "test_value"
@@ -41,7 +44,7 @@ class TestEnvUtilities(FoundationTestCase):
         with pytest.raises(ValueError, match="Required environment variable"):
             get_env("MISSING_VAR", required=True)
 
-    def test_get_env_file_secret(self, tmp_path, monkeypatch) -> None:
+    def test_get_env_file_secret(self, tmp_path: Path, monkeypatch: Any) -> None:
         """Test reading secret from file."""
         secret_file = tmp_path / "secret.txt"
         secret_file.write_text("secret_value\n")
@@ -49,7 +52,7 @@ class TestEnvUtilities(FoundationTestCase):
         monkeypatch.setenv("SECRET_VAR", f"file://{secret_file}")
         assert get_env("SECRET_VAR") == "secret_value"
 
-    def test_get_env_file_secret_missing(self, monkeypatch) -> None:
+    def test_get_env_file_secret_missing(self, monkeypatch: Any) -> None:
         """Test reading secret from missing file."""
         monkeypatch.setenv("SECRET_VAR", "file:///nonexistent/file")
 
@@ -137,15 +140,15 @@ class TestRuntimeConfig(RuntimeConfig):
     app_name: str = env_field(default="test_app")
     port: int = env_field(default=8080, parser=int)
     debug: bool = env_field(default=False, parser=parse_bool)
-    hosts: list[str] = env_field(factory=list, parser=parse_list)
-    metadata: dict[str, str] = env_field(factory=dict, parser=parse_dict)
+    hosts: list[str] = env_field(factory=list, parser=parse_list)  # noqa: RUF009
+    metadata: dict[str, str] = env_field(factory=dict, parser=parse_dict)  # noqa: RUF009
     custom_var: str = env_field(env_var="CUSTOM_ENV_VAR", default="")
 
 
 class TestRuntimeConfigClass(FoundationTestCase):
     """Test RuntimeConfig class functionality."""
 
-    def test_from_env_with_prefix(self, monkeypatch) -> None:
+    def test_from_env_with_prefix(self, monkeypatch: Any) -> None:
         """Test loading from environment with prefix."""
         monkeypatch.setenv("TEST_APP_NAME", "my_app")
         monkeypatch.setenv("TEST_PORT", "3000")
@@ -161,7 +164,7 @@ class TestRuntimeConfigClass(FoundationTestCase):
         assert config.hosts == ["host1", "host2"]
         assert config.metadata == {"key1": "val1", "key2": "val2"}
 
-    def test_from_env_custom_var(self, monkeypatch) -> None:
+    def test_from_env_custom_var(self, monkeypatch: Any) -> None:
         """Test loading with custom environment variable name."""
         monkeypatch.setenv("CUSTOM_ENV_VAR", "custom_value")
 
@@ -203,7 +206,7 @@ class TestRuntimeConfigClass(FoundationTestCase):
 
         assert "APP__APP_NAME" in env_dict
 
-    def test_auto_parse_types(self, monkeypatch) -> None:
+    def test_auto_parse_types(self, monkeypatch: Any) -> None:
         """Test automatic type parsing."""
 
         @define

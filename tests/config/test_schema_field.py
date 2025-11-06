@@ -5,7 +5,7 @@
 
 """Comprehensive coverage tests for SchemaField validation and edge cases."""
 
-from typing import Never
+from typing import Any, Never
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -122,7 +122,7 @@ class TestSchemaFieldComprehensive(FoundationTestCase):
     def test_validate_sync_validator_pass(self) -> None:
         """Test validation with passing sync validator."""
 
-        def validator(value):
+        def validator(value: int) -> bool:
             return value > 0
 
         field_obj = SchemaField(name="test_field", validator=validator)
@@ -133,7 +133,7 @@ class TestSchemaFieldComprehensive(FoundationTestCase):
     def test_validate_sync_validator_fail(self) -> None:
         """Test validation with failing sync validator."""
 
-        def validator(value):
+        def validator(value: int) -> bool:
             return value > 0
 
         field_obj = SchemaField(name="test_field", validator=validator)
@@ -144,7 +144,7 @@ class TestSchemaFieldComprehensive(FoundationTestCase):
     def test_validate_sync_validator_pass_2(self) -> None:
         """Test validation with passing sync validator (additional test)."""
 
-        def sync_validator(value):
+        def sync_validator(value: int) -> bool:
             return value > 0
 
         field_obj = SchemaField(name="test_field", validator=sync_validator)
@@ -155,7 +155,7 @@ class TestSchemaFieldComprehensive(FoundationTestCase):
     def test_validate_sync_validator_fail_2(self) -> None:
         """Test validation with failing sync validator (additional test)."""
 
-        def sync_validator(value):
+        def sync_validator(value: int) -> bool:
             return value > 0
 
         field_obj = SchemaField(name="test_field", validator=sync_validator)
@@ -166,7 +166,7 @@ class TestSchemaFieldComprehensive(FoundationTestCase):
     def test_validate_validator_raises_config_error(self) -> None:
         """Test validator that raises ConfigValidationError directly."""
 
-        def validator(value) -> bool:
+        def validator(value: int) -> bool:
             if value < 0:
                 raise ConfigValidationError(
                     "Must be positive",
@@ -183,7 +183,7 @@ class TestSchemaFieldComprehensive(FoundationTestCase):
     def test_validate_validator_raises_generic_error(self) -> None:
         """Test validator that raises generic exception."""
 
-        def validator(value) -> Never:
+        def validator(value: Any) -> Never:
             raise ValueError("Generic error")
 
         field_obj = SchemaField(name="test_field", validator=validator)
@@ -197,7 +197,7 @@ class TestSchemaFieldComprehensive(FoundationTestCase):
     def test_validate_lambda_validator(self) -> None:
         """Test validation with lambda validator."""
 
-        def lambda_validator(x):
+        def lambda_validator(x: int) -> bool:
             return x > 0
 
         field_obj = SchemaField(name="test_field", validator=lambda_validator)
@@ -208,7 +208,7 @@ class TestSchemaFieldComprehensive(FoundationTestCase):
     def test_validate_all_constraints_combined(self) -> None:
         """Test validation with all constraints combined."""
 
-        def custom_validator(value):
+        def custom_validator(value: str) -> bool:
             return len(value) > 5
 
         field_obj = SchemaField(
@@ -275,7 +275,7 @@ class TestSchemaFieldEdgeCases(FoundationTestCase):
     def test_validate_sync_validator_simple(self) -> None:
         """Test simple sync validator functionality."""
 
-        def sync_validator(value) -> bool:
+        def sync_validator(value: Any) -> bool:
             return True
 
         field_obj = SchemaField(name="test", validator=sync_validator)
@@ -286,7 +286,7 @@ class TestSchemaFieldEdgeCases(FoundationTestCase):
     def test_validate_complex_nested_validation(self) -> None:
         """Test validation with complex nested constraints."""
 
-        def complex_validator(value):
+        def complex_validator(value: Any) -> bool:
             # Multi-step validation
             if not isinstance(value, str):
                 return False

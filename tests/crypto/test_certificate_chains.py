@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from typing import Any
 
 from cryptography import x509
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
@@ -25,7 +26,7 @@ class TestCertificateChains(FoundationTestCase):
     """Test certificate chain functionality."""
 
     @pytest.mark.asyncio
-    async def test_certificate_chain_validation(self, client_cert, server_cert) -> None:
+    async def test_certificate_chain_validation(self, client_cert: Any, server_cert: Any) -> None:
         """Test validation of a certificate chain."""
         # Add server cert to client's trust chain
         client_cert.trust_chain.append(server_cert)
@@ -34,7 +35,7 @@ class TestCertificateChains(FoundationTestCase):
         assert client_cert.verify_trust(server_cert)
 
     @pytest.mark.asyncio
-    async def test_certificate_chain_validation_no_trust(self, client_cert, server_cert) -> None:
+    async def test_certificate_chain_validation_no_trust(self, client_cert: Any, server_cert: Any) -> None:
         """Test validation behavior when certificates are not in trust chain."""
         # First ensure trust chain is empty
         client_cert.trust_chain = []
@@ -47,7 +48,7 @@ class TestCertificateChains(FoundationTestCase):
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize("cert_fixture", ["client_cert", "server_cert"])
-    async def test_certificate_basic_properties(self, cert_fixture, request) -> None:
+    async def test_certificate_basic_properties(self, cert_fixture: str, request: Any) -> None:
         """Test basic certificate properties."""
         cert = request.getfixturevalue(cert_fixture)
 
@@ -59,7 +60,7 @@ class TestCertificateChains(FoundationTestCase):
         assert isinstance(cert.public_key, (rsa.RSAPublicKey, ec.EllipticCurvePublicKey))
 
     @pytest.mark.asyncio
-    async def test_certificate_self_signed_validation(self, client_cert) -> None:
+    async def test_certificate_self_signed_validation(self, client_cert: Any) -> None:
         """Test self-signed certificate validation."""
         # Clear trust chain first
         client_cert.trust_chain = []
@@ -73,7 +74,7 @@ class TestCertificateChains(FoundationTestCase):
         else:
             pytest.skip("Certificate is not self-signed")
 
-    def test_certificate_extensions(self, client_cert) -> None:
+    def test_certificate_extensions(self, client_cert: Any) -> None:
         """Test certificate extensions are present and valid."""
         x509_cert = client_cert._cert
 
@@ -100,7 +101,7 @@ class TestCertificateChains(FoundationTestCase):
             pytest.skip("SAN extension not present")
 
     @pytest.mark.asyncio
-    async def test_certificate_validity_period(self, client_cert) -> None:
+    async def test_certificate_validity_period(self, client_cert: Any) -> None:
         """Test certificate validity period checking."""
         now = datetime.now(UTC)
         assert client_cert._cert.not_valid_before_utc <= now
@@ -108,7 +109,7 @@ class TestCertificateChains(FoundationTestCase):
         assert client_cert.is_valid
 
     @pytest.mark.asyncio
-    async def test_certificate_unique_serial(self, client_cert, server_cert) -> None:
+    async def test_certificate_unique_serial(self, client_cert: Any, server_cert: Any) -> None:
         """Test certificates have unique serial numbers."""
         assert client_cert._cert.serial_number != server_cert._cert.serial_number
 
@@ -129,7 +130,7 @@ class TestCertificateChains(FoundationTestCase):
         assert "ca=" in cert_repr
 
     @pytest.mark.asyncio
-    async def test_certificate_hash(self, client_cert) -> None:
+    async def test_certificate_hash(self, client_cert: Any) -> None:
         """Test certificate hash generation."""
         cert_hash = hash(client_cert)
         assert isinstance(cert_hash, int)

@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import click
 from click.testing import CliRunner
 from provide.testkit import FoundationTestCase
@@ -45,7 +47,7 @@ class TestOptionInheritance(FoundationTestCase):
         @click.group()
         @flexible_options
         @click.pass_context
-        def cli(ctx, **kwargs) -> None:
+        def cli(ctx: click.Context, **kwargs: Any) -> None:
             ctx.ensure_object(dict)
             for key, value in kwargs.items():
                 if value is not None:
@@ -53,7 +55,7 @@ class TestOptionInheritance(FoundationTestCase):
 
         @cli.command()
         @click.pass_context
-        def subcommand(ctx) -> None:
+        def subcommand(ctx: click.Context) -> None:
             parent_log_level = ctx.obj.get("log_level")
             click.echo(f"parent_log_level={parent_log_level}")
 
@@ -68,14 +70,14 @@ class TestOptionInheritance(FoundationTestCase):
         @click.group()
         @flexible_options
         @click.pass_context
-        def cli(ctx, **kwargs) -> None:
+        def cli(ctx: click.Context, **kwargs: Any) -> None:
             ctx.ensure_object(dict)
             ctx.obj["log_level"] = kwargs.get("log_level", "INFO")
 
         @cli.command()
         @flexible_options
         @click.pass_context
-        def subcommand(ctx, **kwargs) -> None:
+        def subcommand(ctx: click.Context, **kwargs: Any) -> None:
             # Subcommand's option should take precedence
             log_level = kwargs.get("log_level") or ctx.obj.get("log_level")
             click.echo(f"effective_log_level={log_level}")
@@ -99,7 +101,7 @@ class TestEnvironmentVariables(FoundationTestCase):
         @click.command()
         @flexible_options
         @output_options
-        def cmd(**kwargs) -> None:
+        def cmd(**kwargs: Any) -> None:
             click.echo(f"log_level={kwargs.get('log_level')}")
             click.echo(f"log_format={kwargs.get('log_format')}")
             click.echo(f"profile={kwargs.get('profile')}")
@@ -125,7 +127,7 @@ class TestEnvironmentVariables(FoundationTestCase):
 
         @click.command()
         @logging_options
-        def cmd(**kwargs) -> None:
+        def cmd(**kwargs: Any) -> None:
             click.echo(f"log_level={kwargs.get('log_level')}")
 
         runner = CliRunner()

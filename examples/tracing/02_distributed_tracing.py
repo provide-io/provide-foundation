@@ -221,7 +221,7 @@ async def async_user_operations() -> None:
         user_ids = [1001, 1002, 1003, 1004, 1005]
         batch_span.set_tag("user_count", len(user_ids))
 
-        async def process_single_user(user_id: int):
+        async def process_single_user(user_id: int) -> None:
             """Process a single user (async)."""
             # Note: In real async code, you'd need to properly propagate context
             with with_span(f"process_user_{user_id}") as user_span:

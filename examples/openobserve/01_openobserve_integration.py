@@ -388,6 +388,7 @@ async def main() -> None:
     # Generate and send test logs
     print("\n📝 Generating and sending test logs...")
     logs_sent = generate_test_logs(client, stream)
+    print(f"   ✅ Sent {logs_sent} logs to OpenObserve")
 
     # Query the logs
     await query_logs()

@@ -7,6 +7,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from attrs import define
 from provide.testkit import FoundationTestCase
 import pytest
@@ -80,7 +82,7 @@ class TestCertificateCredentials(FoundationTestCase):
     """Test certificate credentials functionality."""
 
     # Tests using conftest fixtures
-    def test_mock_channel_credentials_with_client_cert(self, client_cert) -> None:
+    def test_mock_channel_credentials_with_client_cert(self, client_cert: Any) -> None:
         """Test creating channel credentials using client certificate fixture."""
         creds = mock_ssl_channel_credentials(
             root_certificates=client_cert.cert_pem.encode(),
@@ -94,7 +96,7 @@ class TestCertificateCredentials(FoundationTestCase):
         assert creds.private_key == client_cert.key_pem.encode()
         assert creds.certificate_chain == client_cert.cert_pem.encode()
 
-    def test_mock_server_credentials_with_server_cert(self, server_cert, client_cert) -> None:
+    def test_mock_server_credentials_with_server_cert(self, server_cert: Any, client_cert: Any) -> None:
         """Test creating server credentials using server certificate fixture."""
         pairs = [(server_cert.key_pem.encode(), server_cert.cert_pem.encode())]
         creds = mock_ssl_server_credentials(
@@ -109,7 +111,7 @@ class TestCertificateCredentials(FoundationTestCase):
         assert creds.root_certificates == client_cert.cert_pem.encode()
         assert creds.require_client_auth is True
 
-    def test_mock_server_credentials_multiple_certs(self, server_cert, client_cert) -> None:
+    def test_mock_server_credentials_multiple_certs(self, server_cert: Any, client_cert: Any) -> None:
         """Test creating server credentials with multiple certificate pairs."""
         # Using both server and client certs as pairs for testing
         pairs = [
@@ -126,8 +128,8 @@ class TestCertificateCredentials(FoundationTestCase):
 
     def test_mock_server_credentials_validation_with_certs(
         self,
-        server_cert,
-        client_cert,
+        server_cert: Any,
+        client_cert: Any,
     ) -> None:
         """Test validation rules with real certificates."""
         # Test requiring client auth without root certs
@@ -147,7 +149,7 @@ class TestCertificateCredentials(FoundationTestCase):
                 ],
             )
 
-    def test_mock_channel_credentials_none_values(self, client_cert) -> None:
+    def test_mock_channel_credentials_none_values(self, client_cert: Any) -> None:
         """Test channel credentials with optional parameters as None."""
         creds = mock_ssl_channel_credentials(
             root_certificates=client_cert.cert_pem.encode(),

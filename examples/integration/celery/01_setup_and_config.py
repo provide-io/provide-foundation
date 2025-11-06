@@ -16,8 +16,11 @@ Part 1 of 4: Setup and Configuration
 Usage:
     from examples.integration.celery.setup_and_config import app, setup_celery_logging"""
 
+from __future__ import annotations
+
 from pathlib import Path
 import sys
+from typing import Any
 
 # Add src to path for examples
 example_file = Path(__file__).resolve()
@@ -145,7 +148,7 @@ class CeleryTaskLogger:
             message=message,
         )
 
-    def log_task_success(self, task_id: str, result, duration: float, metrics_tracker) -> None:
+    def log_task_success(self, task_id: str, result: Any, duration: float, metrics_tracker: Any) -> None:
         """Log successful task completion with metrics."""
         metrics_tracker.record_execution(self.task_name, duration, True)
         self.logger.info(
@@ -158,7 +161,7 @@ class CeleryTaskLogger:
             total_executions=metrics_tracker.task_counts[self.task_name],
         )
 
-    def log_task_failure(self, task_id: str, error: Exception, duration: float, metrics_tracker) -> None:
+    def log_task_failure(self, task_id: str, error: Exception, duration: float, metrics_tracker: Any) -> None:
         """Log task failure with context."""
         metrics_tracker.record_execution(self.task_name, duration, False)
         self.logger.error(
@@ -173,7 +176,7 @@ class CeleryTaskLogger:
         )
 
     def log_task_retry(
-        self, task_id: str, exc: Exception, countdown: int, retry_count: int, metrics_tracker
+        self, task_id: str, exc: Exception, countdown: int, retry_count: int, metrics_tracker: Any
     ) -> None:
         """Log task retry attempt."""
         metrics_tracker.record_retry(self.task_name)

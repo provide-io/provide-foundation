@@ -127,7 +127,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
 
         output = temp_path / "extracted"
 
-        with pytest.raises(ArchiveError, match="Unsafe link target in archive|Absolute path in link target"):
+        with pytest.raises(ArchiveError, match=r"Unsafe link target in archive|Absolute path in link target"):
             tar_archive.extract(archive, output)
 
     def test_extract_unsafe_symlink_relative_escape(
