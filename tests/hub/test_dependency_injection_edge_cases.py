@@ -18,6 +18,7 @@ from provide.foundation.hub import injectable, is_injectable
 from provide.foundation.testmode import reset_foundation_for_testing
 
 if TYPE_CHECKING:
+
     class SomeUnknownType:  # pragma: no cover - used only for typing
         ...
 
