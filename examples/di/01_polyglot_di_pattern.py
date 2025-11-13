@@ -32,7 +32,7 @@ from provide.foundation.hub import Container, injectable
 class User:
     """A user in our system."""
 
-    def __init__(self, id: int, name: str, email: str) -> None:
+    def __init__(self, id: int, name: str, email: str):
         self.id = id
         self.name = name
         self.email = email
@@ -46,7 +46,7 @@ class User:
 class Database:
     """Database client for persistence."""
 
-    def __init__(self, connection_string: str) -> None:
+    def __init__(self, connection_string: str):
         self.connection_string = connection_string
         print(f"[Database] Connected to {connection_string}")
 
@@ -60,7 +60,7 @@ class Database:
 class HTTPClient:
     """HTTP client for external API calls."""
 
-    def __init__(self, base_url: str, timeout: int = 30) -> None:
+    def __init__(self, base_url: str, timeout: int = 30):
         self.base_url = base_url
         self.timeout = timeout
         print(f"[HTTPClient] Configured for {base_url} (timeout: {timeout}s)")
@@ -76,7 +76,7 @@ class HTTPClient:
 class Logger:
     """Application logger."""
 
-    def __init__(self, level: str = "INFO") -> None:
+    def __init__(self, level: str = "INFO"):
         self.level = level
         print(f"[Logger] Initialized with level {level}")
 
@@ -98,7 +98,7 @@ class Logger:
 class UserRepository:
     """Repository for user data access."""
 
-    def __init__(self, db: Database, logger: Logger) -> None:
+    def __init__(self, db: Database, logger: Logger):
         """Initialize repository with dependencies.
 
         Note: Dependencies are explicit in the constructor signature.
@@ -126,7 +126,7 @@ class UserRepository:
 class NotificationService:
     """Service for sending notifications."""
 
-    def __init__(self, http_client: HTTPClient, logger: Logger) -> None:
+    def __init__(self, http_client: HTTPClient, logger: Logger):
         """Initialize service with dependencies."""
         self.http_client = http_client
         self.logger = logger
@@ -151,7 +151,7 @@ class UserService:
         repository: UserRepository,
         notifications: NotificationService,
         logger: Logger,
-    ) -> None:
+    ):
         """Initialize service with dependencies.
 
         Note: This class depends on other application services.

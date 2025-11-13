@@ -70,7 +70,7 @@ class TestBoolStrictParsing(FoundationTestCase):
             ("OFF", False),
         ],
     )
-    def test_parse_bool_strict_valid(self, value: str, expected: bool) -> None:
+    def test_parse_bool_strict_valid(self, value, expected) -> None:
         """Test parsing valid boolean representations."""
         assert parse_bool_strict(value) == expected
 

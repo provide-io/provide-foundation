@@ -24,13 +24,13 @@ from provide.foundation.file.operations import (
 
 
 @pytest.fixture
-def mock_callback() -> Mock:
+def mock_callback():
     """Mock callback for operation completion."""
     return Mock()
 
 
 @pytest.fixture
-def detector_with_callback(mock_callback: Mock) -> OperationDetector:
+def detector_with_callback(mock_callback):
     """Create detector with callback configured."""
     config = DetectorConfig(time_window_ms=100, min_confidence=0.7)
     return OperationDetector(config=config, on_operation_complete=mock_callback)
@@ -40,9 +40,7 @@ class TestStreamingDetectionCallback:
     """Test streaming detection with callback API."""
 
     @pytest.mark.asyncio
-    async def test_callback_fires_on_operation_complete(
-        self, detector_with_callback: OperationDetector, mock_callback: Mock
-    ) -> None:
+    async def test_callback_fires_on_operation_complete(self, detector_with_callback, mock_callback) -> None:
         """Test that callback is called when operation is detected."""
         base_time = datetime.now()
         temp_file = Path(".test.py.tmp.123")
@@ -83,9 +81,7 @@ class TestStreamingDetectionCallback:
         assert operation.primary_path == final_file
 
     @pytest.mark.asyncio
-    async def test_temp_files_hidden_until_completion(
-        self, detector_with_callback: OperationDetector, mock_callback: Mock
-    ) -> None:
+    async def test_temp_files_hidden_until_completion(self, detector_with_callback, mock_callback) -> None:
         """Test that temp file events don't trigger callback until operation completes."""
         base_time = datetime.now()
         temp_file = Path(".test.py.tmp.456")
@@ -137,9 +133,7 @@ class TestStreamingDetectionCallback:
         assert operation.event_count == 3
 
     @pytest.mark.asyncio
-    async def test_non_temp_file_emits_after_flush(
-        self, detector_with_callback: OperationDetector, mock_callback: Mock
-    ) -> None:
+    async def test_non_temp_file_emits_after_flush(self, detector_with_callback, mock_callback) -> None:
         """Test that non-temp files emit after auto-flush if no operation detected."""
         base_time = datetime.now()
         regular_file = Path("test.py")
@@ -165,7 +159,7 @@ class TestStreamingDetectionCallback:
         assert operation.primary_path == regular_file
 
     @pytest.mark.asyncio
-    async def test_auto_flush_on_timeout(self, mock_callback: Mock) -> None:
+    async def test_auto_flush_on_timeout(self, mock_callback) -> None:
         """Test that pending events flush automatically after time window."""
         config = DetectorConfig(time_window_ms=100)
         detector = OperationDetector(config=config, on_operation_complete=mock_callback)
@@ -194,9 +188,7 @@ class TestStreamingDetectionCallback:
         assert operation.primary_path == real_file
 
     @pytest.mark.asyncio
-    async def test_multiple_operations_detected(
-        self, detector_with_callback: OperationDetector, mock_callback: Mock
-    ) -> None:
+    async def test_multiple_operations_detected(self, detector_with_callback, mock_callback) -> None:
         """Test that multiple separate operations are detected correctly."""
         base_time = datetime.now()
 
@@ -264,7 +256,7 @@ class TestTempFileFiltering:
     """Test filtering of pure temp file events."""
 
     @pytest.mark.asyncio
-    async def test_temp_file_churn_hidden(self, mock_callback: Mock) -> None:
+    async def test_temp_file_churn_hidden(self, mock_callback) -> None:
         """Test that temp file create/delete churn is hidden."""
         config = DetectorConfig(time_window_ms=100)
         detector = OperationDetector(config=config, on_operation_complete=mock_callback)
@@ -296,7 +288,7 @@ class TestTempFileFiltering:
         assert mock_callback.call_count == 0
 
     @pytest.mark.asyncio
-    async def test_temp_to_temp_move_hidden(self, mock_callback: Mock) -> None:
+    async def test_temp_to_temp_move_hidden(self, mock_callback) -> None:
         """Test that temp to temp moves are hidden."""
         config = DetectorConfig(time_window_ms=100)
         detector = OperationDetector(config=config, on_operation_complete=mock_callback)
@@ -322,7 +314,7 @@ class TestTempFileFiltering:
         assert mock_callback.call_count == 0
 
     @pytest.mark.asyncio
-    async def test_real_file_with_temp_churn_emitted(self, mock_callback: Mock) -> None:
+    async def test_real_file_with_temp_churn_emitted(self, mock_callback) -> None:
         """Test that real file events are emitted even with temp file churn."""
         config = DetectorConfig(time_window_ms=100)
         detector = OperationDetector(config=config, on_operation_complete=mock_callback)
@@ -368,7 +360,7 @@ class TestRealWorldPatterns:
     """Test real-world editor save patterns."""
 
     @pytest.mark.asyncio
-    async def test_vscode_atomic_save(self, mock_callback: Mock) -> None:
+    async def test_vscode_atomic_save(self, mock_callback) -> None:
         """Test VSCode atomic save pattern."""
         config = DetectorConfig(time_window_ms=100)
         detector = OperationDetector(config=config, on_operation_complete=mock_callback)
@@ -411,7 +403,7 @@ class TestRealWorldPatterns:
         assert operation.is_atomic is True
 
     @pytest.mark.asyncio
-    async def test_vim_backup_pattern(self, mock_callback: Mock) -> None:
+    async def test_vim_backup_pattern(self, mock_callback) -> None:
         """Test Vim backup file pattern."""
         config = DetectorConfig(time_window_ms=150)
         detector = OperationDetector(config=config, on_operation_complete=mock_callback)

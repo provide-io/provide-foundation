@@ -185,7 +185,7 @@ def file_demo_command() -> None:
     # Hash verification
     pout("\n3️⃣  File Hashing:")
     pout("-" * 60)
-    pout(f"   ✅ SHA-256: {hash_file(demo_file, algorithm='sha256')}")
+    file_hash = hash_file(demo_file, algorithm="sha256")
 
     # Cleanup
     demo_file.unlink()
@@ -207,7 +207,6 @@ def process_demo_command() -> None:
     pout("-" * 60)
     try:
         output = run_simple(["echo", "Hello from Foundation!"])
-        pout(f"   ✅ Output: {output.strip()}")
     except Exception as e:
         perr(f"   ❌ Command failed: {e}")
 
@@ -220,9 +219,6 @@ def process_demo_command() -> None:
             capture_output=True,
             check=True,
         )
-        pout(f"   ✅ Return code: {result.returncode}")
-        if result.stdout:
-            pout(f"   🔉 stdout: {result.stdout.strip()}")
     except Exception as e:
         perr(f"   ❌ Command failed: {e}")
 

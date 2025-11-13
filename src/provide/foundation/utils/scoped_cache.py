@@ -81,8 +81,8 @@ class ContextScopedCache(Generic[K, V]):
         Yields:
             None (use cache methods within the context)
 
-        Note:
-            Cleanup is guaranteed even on errors.
+        Raises:
+            No exceptions - cleanup is guaranteed even on errors
         """
         if self._context_var.get() is None:
             # No existing cache - create new scope

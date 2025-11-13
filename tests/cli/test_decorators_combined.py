@@ -7,8 +7,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 import click
 from click.testing import CliRunner
 from provide.testkit import FoundationTestCase
@@ -24,7 +22,7 @@ class TestFlexibleOptions(FoundationTestCase):
 
         @click.command()
         @flexible_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"log_level={kwargs.get('log_level')}")
             click.echo(f"profile={kwargs.get('profile')}")
 
@@ -39,7 +37,7 @@ class TestFlexibleOptions(FoundationTestCase):
 
         @click.command()
         @flexible_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             pass
 
         runner = CliRunner()
@@ -54,12 +52,12 @@ class TestFlexibleOptions(FoundationTestCase):
 
         @click.group()
         @flexible_options
-        def cli(**kwargs: Any) -> None:
+        def cli(**kwargs) -> None:
             pass
 
         @cli.command()
         @flexible_options
-        def subcommand(**kwargs: Any) -> None:
+        def subcommand(**kwargs) -> None:
             click.echo(f"log_level={kwargs.get('log_level')}")
 
         runner = CliRunner()
@@ -81,7 +79,7 @@ class TestStandardOptions(FoundationTestCase):
 
         @click.command()
         @standard_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             pass
 
         runner = CliRunner()

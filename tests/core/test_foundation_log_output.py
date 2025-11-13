@@ -3,9 +3,14 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""Tests for FOUNDATION_LOG_OUTPUT environment variable functionality."""
+"""TODO: Add module docstring."""
 
 from __future__ import annotations
+
+#
+# tests/core/test_foundation_log_output.py
+#
+"""Tests for FOUNDATION_LOG_OUTPUT environment variable functionality."""
 
 import io
 import sys

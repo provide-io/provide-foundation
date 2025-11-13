@@ -34,7 +34,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
         """Test log_only_error_context with sync function - success case."""
 
         @log_only_error_context(log_success=True, log_level="debug")
-        def test_func(x: int, y: int) -> int:
+        def test_func(x, y):
             return x + y
 
         result = test_func(2, 3)
@@ -43,7 +43,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
     def test_log_only_error_context_sync_function_with_context(self) -> None:
         """Test log_only_error_context with context provider."""
 
-        def context_func() -> dict[str, str]:
+        def context_func():
             return {"operation": "test_operation", "user": "test_user"}
 
         @log_only_error_context(
@@ -51,7 +51,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
             log_level="debug",
             log_success=True,
         )
-        def test_func(value: int) -> int:
+        def test_func(value):
             return value * 2
 
         result = test_func(5)
@@ -73,7 +73,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
         """Test log_only_error_context with trace log level."""
 
         @log_only_error_context(log_level="trace")
-        def test_func(x: int) -> int:
+        def test_func(x):
             return x**2
 
         result = test_func(4)
@@ -83,7 +83,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
         """Test log_only_error_context with info log level (no entry logging)."""
 
         @log_only_error_context(log_level="info")
-        def test_func(x: int) -> int:
+        def test_func(x):
             return x + 10
 
         result = test_func(5)
@@ -104,7 +104,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
         """Test log_only_error_context with async function - success case."""
 
         @log_only_error_context(log_success=True, log_level="debug")
-        async def async_test_func(x: int, y: int) -> int:
+        async def async_test_func(x, y):
             await asyncio.sleep(0)  # Yield control without timing dependency
             return x * y
 
@@ -115,7 +115,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
     async def test_log_only_error_context_async_function_with_context(self) -> None:
         """Test log_only_error_context with async function and context."""
 
-        def context_func() -> dict[str, str]:
+        def context_func():
             return {"async_operation": "multiplication", "version": "1.0"}
 
         @log_only_error_context(
@@ -123,7 +123,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
             log_level="trace",
             log_success=True,
         )
-        async def async_test_func(value: int) -> int:
+        async def async_test_func(value):
             await asyncio.sleep(0)
             return value**3
 
@@ -149,7 +149,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
         """Test log_only_error_context with async function without context."""
 
         @log_only_error_context(log_level="debug", log_success=True)
-        async def async_test_func(msg: str) -> str:
+        async def async_test_func(msg) -> str:
             await asyncio.sleep(0)
             return f"processed: {msg}"
 
@@ -159,7 +159,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
     def test_decorator_preserves_function_metadata(self) -> None:
         """Test that decorator preserves original function metadata."""
 
-        def original_func(a: int, b: int) -> int:
+        def original_func(a, b):
             """Original docstring."""
             return a + b
 
@@ -172,7 +172,7 @@ class TestSafeDecoratorsCoverage(FoundationTestCase):
     async def test_async_decorator_preserves_function_metadata(self) -> None:
         """Test that async decorator preserves original function metadata."""
 
-        async def original_async_func(x: int) -> int:
+        async def original_async_func(x):
             """Original async docstring."""
             return x * 2
 

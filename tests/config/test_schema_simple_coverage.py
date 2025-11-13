@@ -39,7 +39,7 @@ class TestSchemaFieldSimple(FoundationTestCase):
         )
 
         assert field.name == "test_field"
-        assert field.field_type is str
+        assert field.field_type == str
         assert field.required is True
         assert field.default == "default"
         assert field.description == "Test field"
@@ -187,7 +187,7 @@ class TestConfigSchemaSimple(FoundationTestCase):
         schema_field = ConfigSchema._attr_to_schema_field(mock_attr)
 
         assert schema_field.name == "test_field"
-        assert schema_field.field_type is str
+        assert schema_field.field_type == str
         assert schema_field.required is True
         assert schema_field.description == "Test field"
 

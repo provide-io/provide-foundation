@@ -23,11 +23,11 @@ class SampleConfig(BaseConfig):
     name: str = field(default="test")
     port: int = field(default=8080)
     debug: bool = field(default=False)
-    tags: list[str] = field(factory=list)  # noqa: RUF009
-    metadata: dict[str, str] = field(factory=dict)  # noqa: RUF009
+    tags: list[str] = field(factory=list)
+    metadata: dict[str, str] = field(factory=dict)
     secret: str = field(default="", sensitive=True)
 
-    def __attrs_post_init__(self) -> None:
+    def __attrs_post_init__(self):
         super().__attrs_post_init__()
 
 

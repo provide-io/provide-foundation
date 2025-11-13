@@ -9,30 +9,11 @@ Tests advanced scenarios, error handling, and boundary conditions."""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.hub import injectable, is_injectable
 from provide.foundation.testmode import reset_foundation_for_testing
-
-if TYPE_CHECKING:
-
-    class SomeUnknownType:  # pragma: no cover - used only for typing
-        ...
-
-    class CompletelyUnknownType:  # pragma: no cover - used only for typing
-        ...
-
-    class UnknownType:  # pragma: no cover - used only for typing
-        ...
-
-    class MissingType:  # pragma: no cover - used only for typing
-        ...
-
-    class UndefinedForwardRef:  # pragma: no cover - used only for typing
-        ...
 
 
 @pytest.fixture(autouse=True)

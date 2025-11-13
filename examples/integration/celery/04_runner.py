@@ -17,14 +17,11 @@ Part 4 of 4: Task Workflow Runner
 Usage:
     python 04_runner.py"""
 
-import importlib.util
 from pathlib import Path
 import random
 import sys
 import threading
 import time
-from types import ModuleType
-from typing import Any
 
 # Add src to path for examples
 example_file = Path(__file__).resolve()
@@ -38,15 +35,15 @@ current_dir = Path(__file__).parent
 if str(current_dir) not in sys.path:
     sys.path.insert(0, str(current_dir))
 
+# Import our setup and tasks
+import importlib.util
+
 from provide.foundation import logger, pout  # noqa: E402
 
 
 # Load modules by file path to handle hyphenated names
-def load_module_from_file(name: str, filepath: Path) -> ModuleType:
+def load_module_from_file(name, filepath):
     spec = importlib.util.spec_from_file_location(name, filepath)
-    if spec is None or spec.loader is None:
-        msg = f"Unable to load module: {name}"
-        raise ImportError(msg)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -245,7 +242,7 @@ def demonstrate_task_workflows() -> None:
     display_final_metrics(example_logger)
 
 
-def display_final_metrics(example_logger: Any) -> None:
+def display_final_metrics(example_logger) -> None:
     """Display final execution metrics."""
     pout("\n📊 Task Execution Metrics")
     pout("=" * 40)

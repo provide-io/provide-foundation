@@ -181,7 +181,7 @@ class TestConfigSchemaComprehensive(FoundationTestCase):
 
         name_field = schema._field_map["name"]
         assert name_field.name == "name"
-        assert name_field.field_type is str
+        assert name_field.field_type == str
         assert name_field.default == "test"
 
     def test_from_config_class_with_metadata(self) -> None:
@@ -214,7 +214,7 @@ class TestConfigSchemaComprehensive(FoundationTestCase):
 
         assert field_obj.required is True
         assert field_obj.name == "required_field"
-        assert field_obj.field_type is str
+        assert field_obj.field_type == str
 
     def test_attr_to_schema_field_optional_with_default(self) -> None:
         """Test _attr_to_schema_field optional field with default."""

@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Never
+from typing import Never
 
 import click
 from click.testing import CliRunner
@@ -47,7 +47,7 @@ class TestPassContext(FoundationTestCase):
         @logging_options
         @output_options
         @pass_context
-        def cmd(ctx: CLIContext, **kwargs: Any) -> None:
+        def cmd(ctx: CLIContext, **kwargs) -> None:
             click.echo(f"log_level={getattr(ctx, 'log_level', None)}")
             click.echo(f"log_format={getattr(ctx, 'log_format', None)}")
             click.echo(f"json_output={getattr(ctx, 'json_output', None)}")
@@ -68,7 +68,7 @@ class TestPassContext(FoundationTestCase):
         @click.command()
         @logging_options
         @pass_context
-        def cmd(ctx: CLIContext, **kwargs: Any) -> None:
+        def cmd(ctx: CLIContext, **kwargs) -> None:
             # These should have been removed from kwargs
             assert "log_level" not in kwargs
             assert "log_file" not in kwargs
@@ -89,7 +89,7 @@ class TestErrorHandler(FoundationTestCase):
 
         @click.command()
         @error_handler
-        def cmd(**kwargs: Any) -> Never:
+        def cmd(**kwargs) -> Never:
             raise ValueError("Test error")
 
         runner = CliRunner()
@@ -103,7 +103,7 @@ class TestErrorHandler(FoundationTestCase):
         @click.command()
         @click.option("--debug", is_flag=True, default=False)
         @error_handler
-        def cmd(debug: bool = False, **kwargs: Any) -> Never:
+        def cmd(debug=False, **kwargs) -> Never:
             raise ValueError("Test error")
 
         runner = CliRunner()
@@ -121,7 +121,7 @@ class TestErrorHandler(FoundationTestCase):
 
         @click.command()
         @error_handler
-        def cmd(**kwargs: Any) -> Never:
+        def cmd(**kwargs) -> Never:
             raise KeyboardInterrupt
 
         runner = CliRunner()

@@ -10,7 +10,6 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 import time
-from typing import Any
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -31,7 +30,7 @@ from provide.foundation.file.quality import (
 class TestFileOperationsPerformance(FoundationTestCase):
     """Performance benchmarks for file operations detection."""
 
-    def test_single_operation_detection_performance(self, benchmark: Any) -> None:
+    def test_single_operation_detection_performance(self, benchmark) -> None:
         """Benchmark single operation detection."""
         detector = OperationDetector()
         base_time = datetime.now()
@@ -60,7 +59,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
         assert len(result) >= 1
         assert result[0].operation_type.value == "atomic_save"
 
-    def test_batch_operation_detection_performance(self, benchmark: Any) -> None:
+    def test_batch_operation_detection_performance(self, benchmark) -> None:
         """Benchmark batch operation detection with many files."""
         detector = OperationDetector()
         base_time = datetime.now()
@@ -87,7 +86,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
         # Verify result
         assert len(result) >= 1
 
-    def test_streaming_detection_performance(self, benchmark: Any) -> None:
+    def test_streaming_detection_performance(self, benchmark) -> None:
         """Benchmark streaming detection performance."""
         detector = OperationDetector()
         base_time = datetime.now()
@@ -109,7 +108,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
             ),
         ]
 
-        def streaming_process() -> list[Any]:
+        def streaming_process():
             operations = []
             for event in events:
                 result = detector.detect_streaming(event)
@@ -123,7 +122,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
         result = benchmark(streaming_process)
         assert len(result) >= 0  # May or may not detect based on timing
 
-    def test_large_event_set_performance(self, benchmark: Any) -> None:
+    def test_large_event_set_performance(self, benchmark) -> None:
         """Benchmark detection with large number of mixed events."""
         detector = OperationDetector()
         base_time = datetime.now()
@@ -185,7 +184,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
         # With 500ms time window and 100ms gaps, most operations get grouped together
         assert len(result) >= 1  # Should detect at least one operation
 
-    def test_detector_configuration_performance(self, benchmark: Any) -> None:
+    def test_detector_configuration_performance(self, benchmark) -> None:
         """Benchmark different detector configurations."""
         # Test with different time window configurations
         configs = [
@@ -211,7 +210,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
             ),
         ]
 
-        def test_with_config(config: DetectorConfig) -> list[Any]:
+        def test_with_config(config):
             detector = OperationDetector(config)
             return detector.detect(events)
 
@@ -219,7 +218,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
         result = benchmark(test_with_config, configs[0])
         assert len(result) >= 0
 
-    def test_quality_analyzer_performance(self, benchmark: Any) -> None:
+    def test_quality_analyzer_performance(self, benchmark) -> None:
         """Benchmark quality analysis performance."""
         analyzer = QualityAnalyzer()
 
@@ -242,7 +241,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
         assert result[AnalysisMetric.ACCURACY].value >= 0.0
 
     @pytest.mark.parametrize("event_count", [10, 50, 100, 500])
-    def test_scalability_with_event_count(self, benchmark: Any, event_count: int) -> None:
+    def test_scalability_with_event_count(self, benchmark, event_count: int) -> None:
         """Test scalability with different event counts."""
         detector = OperationDetector()
         base_time = datetime.now()
@@ -373,7 +372,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
             assert len(result["operations"]) >= 0
             assert result["duration"] >= 0
 
-    def test_pattern_complexity_performance(self, benchmark: Any) -> None:
+    def test_pattern_complexity_performance(self, benchmark) -> None:
         """Test performance with complex file patterns."""
         detector = OperationDetector()
         base_time = datetime.now()
