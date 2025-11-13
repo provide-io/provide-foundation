@@ -1,6 +1,6 @@
 # Makefile for provide-foundation development
 
-.PHONY: help setup test lint typecheck coverage clean build all docs-setup docs-build docs-serve docs-clean
+.PHONY: help setup test lint typecheck coverage clean build all
 
 # Default target
 help:
@@ -63,15 +63,3 @@ build:
 # Run all quality checks
 all: lint typecheck test
 	@echo "All checks completed!"
-# Documentation targets
-docs-setup:
-	@python -c "from provide.foundry.config import extract_base_mkdocs; from pathlib import Path; extract_base_mkdocs(Path('.'))"
-
-docs-build: docs-setup
-	@mkdocs build
-
-docs-serve: docs-setup
-	@mkdocs serve
-
-docs-clean:
-	@rm -rf site .provide

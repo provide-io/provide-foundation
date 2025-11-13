@@ -9,7 +9,6 @@ from __future__ import annotations
 
 from pathlib import Path
 import tempfile
-from typing import Any
 
 import click
 from click.testing import CliRunner
@@ -30,7 +29,7 @@ class TestLoggingOptions(FoundationTestCase):
 
         @click.command()
         @logging_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"log_level={kwargs.get('log_level')}")
 
         runner = CliRunner()
@@ -45,7 +44,7 @@ class TestLoggingOptions(FoundationTestCase):
 
         @click.command()
         @logging_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"log_file={kwargs.get('log_file')}")
 
         runner = CliRunner()
@@ -61,7 +60,7 @@ class TestLoggingOptions(FoundationTestCase):
 
         @click.command()
         @logging_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"log_format={kwargs.get('log_format')}")
 
         runner = CliRunner()
@@ -74,7 +73,7 @@ class TestLoggingOptions(FoundationTestCase):
 
         @click.command()
         @logging_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"log_level={kwargs.get('log_level')}")
 
         runner = CliRunner()
@@ -88,7 +87,7 @@ class TestLoggingOptions(FoundationTestCase):
 
         @click.command()
         @logging_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"log_format={kwargs.get('log_format')}")
 
         runner = CliRunner()
@@ -101,7 +100,7 @@ class TestLoggingOptions(FoundationTestCase):
 
         @click.command()
         @logging_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             pass
 
         runner = CliRunner()
@@ -118,7 +117,7 @@ class TestOutputOptions(FoundationTestCase):
 
         @click.command()
         @output_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"json_output={kwargs.get('json_output')}")
 
         runner = CliRunner()
@@ -131,7 +130,7 @@ class TestOutputOptions(FoundationTestCase):
 
         @click.command()
         @output_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"no_color={kwargs.get('no_color')}")
 
         runner = CliRunner()
@@ -144,7 +143,7 @@ class TestOutputOptions(FoundationTestCase):
 
         @click.command()
         @output_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"no_emoji={kwargs.get('no_emoji')}")
 
         runner = CliRunner()
@@ -157,7 +156,7 @@ class TestOutputOptions(FoundationTestCase):
 
         @click.command()
         @output_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             pass
 
         runner = CliRunner()
@@ -178,7 +177,7 @@ class TestConfigOptions(FoundationTestCase):
 
         @click.command()
         @config_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"config={kwargs.get('config')}")
 
         runner = CliRunner()
@@ -194,7 +193,7 @@ class TestConfigOptions(FoundationTestCase):
 
         @click.command()
         @config_options
-        def cmd(**kwargs: Any) -> None:
+        def cmd(**kwargs) -> None:
             click.echo(f"profile={kwargs.get('profile')}")
 
         runner = CliRunner()

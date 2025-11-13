@@ -118,6 +118,8 @@ def register_command(  # type: ignore[misc]
         category: Command category for grouping
         group: Whether this is a command group (not a command)
         replace: Whether to replace existing registration
+        force_options: If True, all parameters with defaults become --options
+                      (disables Position-Based Hybrid for first parameter)
         registry: Custom registry (defaults to global)
         **metadata: Additional metadata stored in CommandInfo.metadata
 

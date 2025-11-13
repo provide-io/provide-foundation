@@ -244,7 +244,7 @@ def memory_stress_test() -> dict[str, Any]:
         large_data = {
             "large_string": "x" * 5000,  # 5KB string
             "large_list": list(range(1000)),
-            "nested_data": {f"level_{i}": f"data_{i}" * 100 for i in range(100)},
+            "nested_data": {"level_%d" % i: f"data_{i}" * 100 for i in range(100)},
         }
 
         for i in range(10000):

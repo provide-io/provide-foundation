@@ -68,11 +68,9 @@ class TestAPIDocGenerator(FoundationTestCase):
         """Test APIDocGenerator raises error when mkdocs_gen_files is unavailable."""
         from provide.foundation.errors import DependencyError
 
-        with (
-            patch("provide.foundation.docs.generator.mkdocs_gen_files", None),
-            pytest.raises(DependencyError, match="mkdocs-gen-files"),
-        ):
-            APIDocGenerator()
+        with patch("provide.foundation.docs.generator.mkdocs_gen_files", None):
+            with pytest.raises(DependencyError, match="mkdocs-gen-files"):
+                APIDocGenerator()
 
     def test_should_skip_patterns(self) -> None:
         """Test should_skip method with skip patterns."""
@@ -234,18 +232,16 @@ class TestAPIDocGenerator(FoundationTestCase):
             file_path = Mock(spec=Path)
             file_path.relative_to.return_value = Path("package/module.py")
 
-            with (
-                patch.object(generator, "generate_module_doc") as mock_generate,
-                patch.object(mock_mkdocs, "set_edit_path"),
-            ):
-                generator.process_python_file(file_path)
+            with patch.object(generator, "generate_module_doc") as mock_generate:
+                with patch.object(mock_mkdocs, "set_edit_path"):
+                    generator.process_python_file(file_path)
 
-                # Verify navigation was updated
-                assert ("package", "module") in mock_nav
-                assert mock_nav[("package", "module")] == "api/reference/package/module.md"
+                    # Verify navigation was updated
+                    assert ("package", "module") in mock_nav
+                    assert mock_nav[("package", "module")] == "api/reference/package/module.md"
 
-                # Verify doc generation was called
-                mock_generate.assert_called_once()
+                    # Verify doc generation was called
+                    mock_generate.assert_called_once()
 
     def test_process_python_file_init_module(self) -> None:
         """Test process_python_file with __init__.py module."""
@@ -259,15 +255,13 @@ class TestAPIDocGenerator(FoundationTestCase):
             file_path = Mock(spec=Path)
             file_path.relative_to.return_value = Path("package/__init__.py")
 
-            with (
-                patch.object(generator, "generate_module_doc"),
-                patch.object(mock_mkdocs, "set_edit_path"),
-            ):
-                generator.process_python_file(file_path)
+            with patch.object(generator, "generate_module_doc"):
+                with patch.object(mock_mkdocs, "set_edit_path"):
+                    generator.process_python_file(file_path)
 
-                # Verify navigation was updated (without __init__ part)
-                assert ("package",) in mock_nav
-                assert mock_nav[("package",)] == "api/reference/package/index.md"
+                    # Verify navigation was updated (without __init__ part)
+                    assert ("package",) in mock_nav
+                    assert mock_nav[("package",)] == "api/reference/package/index.md"
 
     def test_process_python_file_duplicate(self) -> None:
         """Test process_python_file skips already processed files."""
@@ -360,23 +354,21 @@ class TestAPIDocGenerator(FoundationTestCase):
 
             with patch("pathlib.Path.rglob", return_value=mock_files):
                 generator = APIDocGenerator(src_root="test_src")
-                with (
-                    patch.object(generator, "should_skip", side_effect=[False, False, True]),
-                    patch.object(generator, "process_python_file") as mock_process,
-                    patch.object(generator, "generate_navigation") as mock_nav,
-                    patch.object(generator, "generate_index") as mock_index,
-                ):
-                    result = generator.generate()
+                with patch.object(generator, "should_skip", side_effect=[False, False, True]):
+                    with patch.object(generator, "process_python_file") as mock_process:
+                        with patch.object(generator, "generate_navigation") as mock_nav:
+                            with patch.object(generator, "generate_index") as mock_index:
+                                result = generator.generate()
 
-                    # Verify statistics
-                    assert result["total_files"] == 3
-                    assert result["processed_files"] == 2
-                    assert result["skipped_files"] == 1
+                                # Verify statistics
+                                assert result["total_files"] == 3
+                                assert result["processed_files"] == 2
+                                assert result["skipped_files"] == 1
 
-                    # Verify methods were called
-                    assert mock_process.call_count == 2
-                    mock_nav.assert_called_once()
-                    mock_index.assert_called_once()
+                                # Verify methods were called
+                                assert mock_process.call_count == 2
+                                mock_nav.assert_called_once()
+                                mock_index.assert_called_once()
 
 
 class TestGenerateApiDocs(FoundationTestCase):
@@ -455,7 +447,7 @@ class TestAPIDocGeneratorIntegration(FoundationTestCase):
             with patch("provide.foundation.docs.generator.mkdocs_gen_files") as mock_mkdocs:
                 # Create a mock that behaves like both a dict and has the method
                 class MockNav(dict):
-                    def build_literate_nav(self) -> list[str]:
+                    def build_literate_nav(self):
                         return ["nav line 1", "nav line 2"]
 
                 mock_nav = MockNav()

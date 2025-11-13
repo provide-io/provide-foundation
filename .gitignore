@@ -403,6 +403,3 @@ ai_studio_code.sh
 docs/.shared-theme/
 chunk_*
 bf-*.txt
-
-# Extracted provide.io tooling artifacts
-.provide/

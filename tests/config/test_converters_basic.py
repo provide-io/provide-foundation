@@ -139,7 +139,7 @@ class TestBoolExtendedParsing(FoundationTestCase):
             ("anything_else", False),
         ],
     )
-    def test_parse_bool_extended(self, value: str, expected: bool) -> None:
+    def test_parse_bool_extended(self, value, expected) -> None:
         """Test parsing various boolean representations."""
         assert parse_bool_extended(value) == expected
 
@@ -157,10 +157,10 @@ class TestFloatValidationParsing(FoundationTestCase):
         """Test parsing with range validation."""
         assert parse_float_with_validation("5.0", min_val=0.0, max_val=10.0) == 5.0
 
-        with pytest.raises(ValueError, match=r"must be >= 0\.0"):
+        with pytest.raises(ValueError, match="must be >= 0.0"):
             parse_float_with_validation("-1.0", min_val=0.0)
 
-        with pytest.raises(ValueError, match=r"must be <= 10\.0"):
+        with pytest.raises(ValueError, match="must be <= 10.0"):
             parse_float_with_validation("11.0", max_val=10.0)
 
     def test_parse_float_with_validation_invalid(self) -> None:

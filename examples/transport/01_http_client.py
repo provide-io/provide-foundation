@@ -16,12 +16,9 @@ Demonstrates using the Foundation transport system for HTTP requests with:
 This example showcases the full transport API using Foundation's testing utilities
 for realistic but controlled scenarios."""
 
-from __future__ import annotations
-
 import asyncio
 from pathlib import Path
 import sys
-from typing import Any
 
 # Add project root to path for imports
 example_file = Path(__file__).resolve()
@@ -29,23 +26,23 @@ project_root = example_file.parent.parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
 
-from provide.testkit import AsyncMock, Mock, patch  # noqa: E402
+from provide.testkit import AsyncMock, Mock, patch
 
-from provide.foundation import get_hub, logger  # noqa: E402
-from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy  # noqa: E402
-from provide.foundation.transport import (  # noqa: E402
+from provide.foundation import get_hub, logger
+from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
+from provide.foundation.transport import (
     UniversalClient,
     get,
     get_default_client,
     post,
 )
-from provide.foundation.transport.errors import (  # noqa: E402
+from provide.foundation.transport.errors import (
     HTTPResponseError,
     TransportConnectionError,
     TransportError,
     TransportTimeoutError,
 )
-from provide.foundation.transport.middleware import (  # noqa: E402
+from provide.foundation.transport.middleware import (
     LoggingMiddleware,
     MetricsMiddleware,
     MiddlewarePipeline,
@@ -79,7 +76,7 @@ async def demonstrate_basic_requests() -> None:
     # Mock httpx.AsyncClient.request method
     with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
         # Configure mock to return appropriate responses based on method
-        def mock_request_side_effect(method: str, **kwargs: Any) -> Mock:
+        def mock_request_side_effect(method, **kwargs):
             if method == "GET":
                 return mock_get_httpx_response
             if method == "POST":
@@ -162,7 +159,7 @@ async def demonstrate_client_session() -> None:
         # Mock httpx.AsyncClient.request for all client operations
         with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
 
-            def mock_request_side_effect(method: str, url: str, **kwargs: Any) -> Mock:
+            def mock_request_side_effect(method, url, **kwargs):
                 if "users" in url and method == "GET":
                     return mock_users_response
                 if "users" in url and method == "POST":
@@ -445,7 +442,7 @@ async def demonstrate_default_client() -> None:
     # Test direct function calls (which use the default client)
     with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
 
-        def mock_request_side_effect(method: str, url: str, **kwargs: Any) -> Mock:
+        def mock_request_side_effect(method, url, **kwargs):
             if "uuid" in url:
                 return uuid_httpx_response
             if method == "POST":

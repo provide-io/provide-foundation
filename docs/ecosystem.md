@@ -14,8 +14,8 @@ Choose your journey based on your goals:
 
 **Path:** pyvider → pyvider-components → terraform-provider-pyvider
 
-1. **[pyvider](../pyvider/index.md)** - Learn the framework for building Terraform providers
-2. **[pyvider-components](../pyvider-components/index.md)** - Study 100+ example components
+1. **[pyvider](../pyvider/)** - Learn the framework for building Terraform providers
+2. **[pyvider-components](../pyvider-components/)** - Study 100+ example components
 3. **[terraform-provider-pyvider](../terraform-provider-pyvider/)** - See a complete working provider
 
 **Time to first provider:** 2-4 hours
@@ -26,8 +26,8 @@ Choose your journey based on your goals:
 
 **Path:** provide-foundation → flavorpack
 
-1. **[provide-foundation](../provide-foundation/index.md)** - Core utilities and patterns
-2. **[flavorpack](../flavorpack/index.md)** - PSPF packaging system
+1. **[provide-foundation](../provide-foundation/)** - Core utilities and patterns
+2. **[flavorpack](../flavorpack/)** - PSPF packaging system
 
 **Time to first package:** 1-2 hours
 
@@ -37,8 +37,8 @@ Choose your journey based on your goals:
 
 **Path:** provide-foundation → provide-testkit
 
-1. **[provide-foundation](../provide-foundation/index.md)** - Core testing utilities
-2. **[provide-testkit](../provide-testkit/index.md)** - Advanced testing patterns
+1. **[provide-foundation](../provide-foundation/)** - Core testing utilities
+2. **[provide-testkit](../provide-testkit/)** - Advanced testing patterns
 
 **Time to first test:** 30 minutes
 
@@ -48,7 +48,7 @@ Choose your journey based on your goals:
 
 **Path:** pyvider → plating
 
-1. **[pyvider](../pyvider/index.md)** - Build your provider
+1. **[pyvider](../pyvider/)** - Build your provider
 2. **[plating](../plating/)** - Generate Terraform Registry docs
 
 **Time to documentation:** 1 hour
@@ -71,7 +71,7 @@ Choose your journey based on your goals:
 
 **Status:** Beta (v0.0.1026)
 **When to use:** Building any Python project in the ecosystem
-**Documentation:** [provide-foundation docs](../provide-foundation/index.md)
+**Documentation:** [provide-foundation docs](../provide-foundation/)
 
 ---
 
@@ -90,7 +90,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha (active development)
 **When to use:** Building custom Terraform providers in Python
-**Documentation:** [pyvider docs](../pyvider/index.md)
+**Documentation:** [pyvider docs](../pyvider/)
 
 ---
 
@@ -106,7 +106,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha (example library)
 **When to use:** Learning pyvider or referencing component patterns
-**Documentation:** [pyvider-components docs](../pyvider-components/index.md)
+**Documentation:** [pyvider-components docs](../pyvider-components/)
 
 ---
 
@@ -140,7 +140,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha
 **When to use:** Working with Terraform types in Python
-**Documentation:** [pyvider-cty docs](../pyvider-cty/index.md)
+**Documentation:** [pyvider-cty docs](../pyvider-cty/)
 
 ---
 
@@ -156,7 +156,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha
 **When to use:** Parsing HCL configurations in Python
-**Documentation:** [pyvider-hcl docs](../pyvider-hcl/index.md)
+**Documentation:** [pyvider-hcl docs](../pyvider-hcl/)
 
 ---
 
@@ -172,7 +172,7 @@ Choose your journey based on your goals:
 
 **Status:** Production
 **When to use:** Implementing Terraform provider protocol
-**Documentation:** [pyvider-rpcplugin docs](../pyvider-rpcplugin/index.md)
+**Documentation:** [pyvider-rpcplugin docs](../pyvider-rpcplugin/)
 
 ---
 
@@ -190,7 +190,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha
 **When to use:** Packaging Python applications for distribution
-**Documentation:** [flavorpack docs](../flavorpack/index.md)
+**Documentation:** [flavorpack docs](../flavorpack/)
 
 ---
 
@@ -226,7 +226,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha
 **When to use:** Testing Python infrastructure code
-**Documentation:** [provide-testkit docs](../provide-testkit/index.md)
+**Documentation:** [provide-testkit docs](../provide-testkit/)
 
 ---
 

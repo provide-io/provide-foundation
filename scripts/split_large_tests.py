@@ -30,21 +30,36 @@ def find_test_class_boundaries(content: str) -> list[tuple[int, str, int]]:
 
     # Calculate end lines (next class start or EOF)
     class_ranges = []
-    for idx, (start, _name) in enumerate(classes):
-        end = classes[idx + 1][0] - 1 if idx + 1 < len(classes) else len(lines)
-        class_ranges.append((start, _name, end))
+    for idx, (start, name) in enumerate(classes):
+        if idx + 1 < len(classes):
+            end = classes[idx + 1][0] - 1
+        else:
+            end = len(lines)
+        class_ranges.append((start, name, end))
 
     return class_ranges
 
 
-def _extract_header(lines: list[str]) -> str:
+def split_test_file(file_path: Path, target_lines: int = 400) -> list[Path]:
+    """Split a test file into multiple files based on test classes.
+
+    Args:
+        file_path: Path to the test file to split
+        target_lines: Target maximum lines per output file
+
+    Returns:
+        List of created file paths
+    """
+    content = file_path.read_text()
+    lines = content.split("\n")
+
+    # Find imports and module docstring (header)
     header_end = 0
     in_docstring = False
-
     for i, line in enumerate(lines):
         if line.strip().startswith('"""') and not in_docstring:
             in_docstring = True
-            if line.count('"""') == 2:
+            if line.count('"""') == 2:  # Single-line docstring
                 in_docstring = False
         elif '"""' in line and in_docstring:
             in_docstring = False
@@ -56,13 +71,16 @@ def _extract_header(lines: list[str]) -> str:
         elif not in_docstring and line and not line.startswith("#"):
             break
 
-    return "\n".join(lines[:header_end])
+    header = "\n".join(lines[:header_end])
 
+    # Find test classes
+    class_ranges = find_test_class_boundaries(content)
 
-def _group_class_ranges(
-    class_ranges: list[tuple[int, str, int]],
-    target_lines: int,
-) -> list[list[tuple[int, str, int]]]:
+    if not class_ranges:
+        print(f"No test classes found in {file_path}")
+        return []
+
+    # Group classes into output files
     groups: list[list[tuple[int, str, int]]] = []
     current_group: list[tuple[int, str, int]] = []
     current_lines = 0
@@ -81,40 +99,11 @@ def _group_class_ranges(
     if current_group:
         groups.append(current_group)
 
-    return groups
-
-
-def split_test_file(file_path: Path, target_lines: int = 400) -> list[Path]:
-    """Split a test file into multiple files based on test classes.
-
-    Args:
-        file_path: Path to the test file to split
-        target_lines: Target maximum lines per output file
-
-    Returns:
-        List of created file paths
-    """
-    content = file_path.read_text()
-    lines = content.split("\n")
-
-    # Find imports and module docstring (header)
-    header = _extract_header(lines)
-
-    # Find test classes
-    class_ranges = find_test_class_boundaries(content)
-
-    if not class_ranges:
-        print(f"No test classes found in {file_path}")
-        return []
-
-    # Group classes into output files
-    groups = _group_class_ranges(class_ranges, target_lines)
-
     # Create output files
     base_name = file_path.stem  # Remove .py
     created_files = []
 
-    for _idx, group in enumerate(groups, 1):
+    for idx, group in enumerate(groups, 1):
         # Generate descriptive name from class names
         class_names = [name.replace("Test", "").lower() for _, name, _ in group]
         suffix = "_".join(class_names[:2])  # Use first 2 class names
@@ -127,7 +116,7 @@ def split_test_file(file_path: Path, target_lines: int = 400) -> list[Path]:
         # Build content
         output_lines = [header, ""]
 
-        for start, _name, end in group:
+        for start, name, end in group:
             # Extract class content (0-indexed)
             class_content = "\n".join(lines[start - 1 : end])
             output_lines.append(class_content)

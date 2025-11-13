@@ -8,7 +8,6 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 from provide.testkit.mocking import patch
 import pytest
@@ -51,7 +50,7 @@ class TestGetAvailableSpace:
         assert space > 0
 
     @patch("os.statvfs")
-    def test_get_available_space_handles_os_error(self, mock_statvfs: Any, tmp_path: Path) -> None:
+    def test_get_available_space_handles_os_error(self, mock_statvfs, tmp_path: Path) -> None:
         """Should return None when os.statvfs raises OSError."""
         mock_statvfs.side_effect = OSError("Permission denied")
 
@@ -60,7 +59,7 @@ class TestGetAvailableSpace:
         assert space is None
 
     @patch("os.statvfs")
-    def test_get_available_space_handles_attribute_error(self, mock_statvfs: Any, tmp_path: Path) -> None:
+    def test_get_available_space_handles_attribute_error(self, mock_statvfs, tmp_path: Path) -> None:
         """Should return None when statvfs is not available (Windows)."""
         mock_statvfs.side_effect = AttributeError("statvfs not available")
 
@@ -113,7 +112,7 @@ class TestCheckDiskSpace:
         assert result is True
 
     @patch("provide.foundation.file.disk.get_available_space")
-    def test_check_disk_space_when_space_unknown(self, mock_get_space: Any, tmp_path: Path) -> None:
+    def test_check_disk_space_when_space_unknown(self, mock_get_space, tmp_path: Path) -> None:
         """Should return True (allow operation) when space cannot be determined."""
         mock_get_space.return_value = None
 
@@ -185,7 +184,7 @@ class TestGetDiskUsage:
         assert free > 0
 
     @patch("os.statvfs")
-    def test_get_disk_usage_handles_os_error(self, mock_statvfs: Any, tmp_path: Path) -> None:
+    def test_get_disk_usage_handles_os_error(self, mock_statvfs, tmp_path: Path) -> None:
         """Should return None when os.statvfs raises OSError."""
         mock_statvfs.side_effect = OSError("Permission denied")
 
@@ -194,7 +193,7 @@ class TestGetDiskUsage:
         assert usage is None
 
     @patch("os.statvfs")
-    def test_get_disk_usage_handles_attribute_error(self, mock_statvfs: Any, tmp_path: Path) -> None:
+    def test_get_disk_usage_handles_attribute_error(self, mock_statvfs, tmp_path: Path) -> None:
         """Should return None when statvfs not available."""
         mock_statvfs.side_effect = AttributeError("statvfs not available")
 
@@ -314,7 +313,7 @@ class TestDiskUtilitiesEdgeCases:
         assert "-" in result
 
     @patch("os.statvfs")
-    def test_all_functions_graceful_failure(self, mock_statvfs: Any, tmp_path: Path) -> None:
+    def test_all_functions_graceful_failure(self, mock_statvfs, tmp_path: Path) -> None:
         """Test that all functions handle statvfs unavailability gracefully."""
         mock_statvfs.side_effect = AttributeError("Not available")
 

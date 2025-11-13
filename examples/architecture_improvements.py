@@ -145,7 +145,7 @@ def example_circuit_breaker() -> None:
     # Try to call the unreliable service
     for i in range(7):
         try:
-            circuit_breaker.call(unreliable_service)
+            result = circuit_breaker.call(unreliable_service)
         except Exception as e:
             print(f"❌ Call {i + 1}: {e}")
 

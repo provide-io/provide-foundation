@@ -97,7 +97,7 @@ def check_dynamic_versioning() -> str:
         match __version__:
             case "0.0.0-dev":
                 print(
-                    "Info: Using development fallback version (expected in dev environment)",
+                    "ℹ️  Using development fallback version (expected in dev environment)",
                 )
                 return __version__
             case version_str if version_str:
@@ -221,11 +221,11 @@ def check_git_tag_consistency(version: str) -> bool:
                 print(f"⚠️  Git tag mismatch: tag={latest_tag}, version=v{version}")
                 return False
             case _:
-                print("Info: No exact git tag for current commit (normal for development)")
+                print("ℹ️  No exact git tag for current commit (normal for development)")
                 return True
 
     except FileNotFoundError:
-        print("Info: Git not available - skipping tag check")
+        print("ℹ️  Git not available - skipping tag check")
         return True
     except Exception as e:
         print(f"⚠️  Git tag check failed: {e}")
@@ -264,7 +264,7 @@ def main() -> None:
             # Handle development environment case
             match dynamic_version:
                 case "0.0.0-dev":
-                    print("Info: Development environment detected")
+                    print("ℹ️  Development environment detected")
                 case version if version != pyproject_version:
                     print("❌ Version mismatch!")
                     print(f"   pyproject.toml: {pyproject_version}")

@@ -7,8 +7,6 @@
 
 from __future__ import annotations
 
-from typing import Any
-
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
@@ -23,7 +21,7 @@ from provide.foundation.crypto import Certificate, CertificateError
 
 
 @pytest.mark.asyncio
-async def test_certificate_subject(client_cert: Any) -> None:
+async def test_certificate_subject(client_cert) -> None:
     """Ensure the subject is correctly extracted."""
     assert client_cert.subject, "Certificate subject should not be empty"
     assert isinstance(client_cert.subject, str), "Subject should be a string"
@@ -31,7 +29,7 @@ async def test_certificate_subject(client_cert: Any) -> None:
 
 
 @pytest.mark.asyncio
-async def test_certificate_issuer(client_cert: Any) -> None:
+async def test_certificate_issuer(client_cert) -> None:
     """Ensure the issuer is correctly extracted."""
     assert client_cert.issuer, "Certificate issuer should not be empty"
     assert isinstance(client_cert.issuer, str), "Issuer should be a string"
@@ -40,7 +38,7 @@ async def test_certificate_issuer(client_cert: Any) -> None:
 
 @pytest.mark.asyncio
 async def test_certificate_subject_not_equal_to_issuer_for_non_self_signed(
-    client_cert: Any,
+    client_cert,
 ) -> None:
     """Ensure subject and issuer are different for non-self-signed certificates."""
     if client_cert.subject == client_cert.issuer:
@@ -52,13 +50,13 @@ async def test_certificate_subject_not_equal_to_issuer_for_non_self_signed(
 
 
 @pytest.mark.asyncio
-async def test_certificate_is_ca(client_cert: Any) -> None:
+async def test_certificate_is_ca(client_cert) -> None:
     """Ensure the certificate correctly reports its CA status."""
     assert isinstance(client_cert.is_ca, bool), "CA status should be a boolean"
 
 
 @pytest.mark.asyncio
-async def test_certificate_public_key(client_cert: Any) -> None:
+async def test_certificate_public_key(client_cert) -> None:
     """Ensure the public key is correctly loaded."""
     assert client_cert.public_key, "Certificate public key should not be empty"
     assert isinstance(
@@ -68,20 +66,20 @@ async def test_certificate_public_key(client_cert: Any) -> None:
 
 
 @pytest.mark.asyncio
-async def test_server_certificate_public_key(server_cert: Any) -> None:
+async def test_server_certificate_public_key(server_cert) -> None:
     """Ensure the server certificate's public key is correctly loaded."""
     assert server_cert.public_key, "Server certificate public key should not be empty"
 
 
 @pytest.mark.asyncio
-async def test_certificate_serial_number(client_cert: Any) -> None:
+async def test_certificate_serial_number(client_cert) -> None:
     """Ensure the certificate serial number is valid."""
     assert isinstance(client_cert._cert.serial_number, int), "Serial number should be an integer"
     assert client_cert._cert.serial_number > 0, "Serial number should be positive"
 
 
 @pytest.mark.asyncio
-async def test_certificate_fingerprint(client_cert: Any) -> None:
+async def test_certificate_fingerprint(client_cert) -> None:
     """Ensure fingerprinting works as expected."""
     fingerprint = client_cert._cert.fingerprint(hashes.SHA256())
     assert isinstance(fingerprint, bytes), "Fingerprint should be in bytes format"
@@ -89,13 +87,13 @@ async def test_certificate_fingerprint(client_cert: Any) -> None:
 
 
 @pytest.mark.asyncio
-async def test_certificate_has_extensions(client_cert: Any) -> None:
+async def test_certificate_has_extensions(client_cert) -> None:
     """Ensure certificate has extensions (basic constraints, key usage, etc.)."""
     assert len(client_cert._cert.extensions) >= 1, "Certificate should have at least one extension"
 
 
 @pytest.mark.asyncio
-async def test_certificate_basic_constraints(client_cert: Any) -> None:
+async def test_certificate_basic_constraints(client_cert) -> None:
     """Ensure Basic Constraints extension is correctly set."""
     from cryptography.x509.oid import ExtensionOID
 
@@ -109,7 +107,7 @@ async def test_certificate_basic_constraints(client_cert: Any) -> None:
 
 
 @pytest.mark.asyncio
-async def test_certificate_key_usage(client_cert: Any) -> None:
+async def test_certificate_key_usage(client_cert) -> None:
     """Ensure Key Usage extension is correctly set."""
     from cryptography.x509.oid import ExtensionOID
 
@@ -121,7 +119,7 @@ async def test_certificate_key_usage(client_cert: Any) -> None:
 
 
 @pytest.mark.asyncio
-async def test_certificate_extended_key_usage(client_cert: Any) -> None:
+async def test_certificate_extended_key_usage(client_cert) -> None:
     """Ensure Extended Key Usage extension is correctly set."""
     from cryptography.x509.oid import ExtensionOID
 
@@ -182,7 +180,7 @@ class TestCertificateProperties(FoundationTestCase):
         assert cert.is_ca is False
 
     @pytest.mark.asyncio
-    async def test_is_ca_extension_not_found_logs_debug(self, mocker: Any) -> None:
+    async def test_is_ca_extension_not_found_logs_debug(self, mocker) -> None:
         """Test is_ca property logs debug when BasicConstraints extension is not found."""
         # Create a Certificate instance (it will generate a real cert initially)
         cert_instance = Certificate.generate()
@@ -217,14 +215,14 @@ class TestCertificateProperties(FoundationTestCase):
         # cert_instance._cert.extensions = original_extensions # Not strictly needed here
 
     @pytest.mark.asyncio
-    async def test_unique_serial_numbers(self, client_cert: Any, server_cert: Any) -> None:
+    async def test_unique_serial_numbers(self, client_cert, server_cert) -> None:
         """Ensure unique serial numbers for different certificates."""
         assert client_cert._cert.serial_number != server_cert._cert.serial_number, (
             "Serial numbers should be unique"
         )
 
     @pytest.mark.asyncio
-    async def test_certificate_hash_uniqueness(self, client_cert: Any, server_cert: Any) -> None:
+    async def test_certificate_hash_uniqueness(self, client_cert, server_cert) -> None:
         """Ensure different certificates have unique hashes."""
         assert hash(client_cert) != hash(server_cert), "Different certs should not hash the same"
 

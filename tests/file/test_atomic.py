@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from provide.testkit import FoundationTestCase
@@ -129,7 +130,7 @@ class TestAtomicFileOperations(FoundationTestCase):
         """Test atomic replace without preserving mode."""
         path = temp_directory / "test.txt"
         path.write_bytes(b"Original")
-        path.chmod(0o600)
+        os.chmod(path, 0o600)
 
         new_data = b"Replaced"
         atomic_replace(path, new_data, preserve_mode=False)
@@ -159,7 +160,7 @@ class TestAtomicFileOperations(FoundationTestCase):
         """Test atomic write preserves existing file permissions by default."""
         path = temp_directory / "test.txt"
         path.write_bytes(b"Original")
-        path.chmod(0o600)
+        os.chmod(path, 0o600)
 
         atomic_write(path, b"New content")  # preserve_mode=True by default
 
@@ -169,7 +170,7 @@ class TestAtomicFileOperations(FoundationTestCase):
         """Test atomic write without preserving permissions."""
         path = temp_directory / "test.txt"
         path.write_bytes(b"Original")
-        path.chmod(0o600)
+        os.chmod(path, 0o600)
 
         atomic_write(path, b"New content", preserve_mode=False)
 
