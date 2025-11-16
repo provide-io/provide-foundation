@@ -403,3 +403,6 @@ ai_studio_code.sh
 docs/.shared-theme/
 chunk_*
 bf-*.txt
+
+# Provide tooling artifacts
+.provide/foundry/
