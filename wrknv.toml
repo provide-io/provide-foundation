@@ -1,0 +1,86 @@
+# Python Library wrknv.toml Template
+# Canonical task configuration for Python library projects in the provide.io ecosystem
+
+# Usage:
+#   we tasks              # List all available tasks
+#   we <task>             # Run a task (e.g., we test, we lint)
+#   we run <task>         # Explicit run command
+
+# ==============================================================================
+# Testing
+# ==============================================================================
+
+[tasks.test]
+_default = "pytest"
+parallel = "pytest -n auto"
+verbose = "pytest -vvv"
+unit = "pytest -m unit"
+integration = "pytest -m integration"
+
+[tasks.test.coverage]
+_default = "pytest --cov=provide.foundation --cov-report=html --cov-report=term-missing"
+xml = "pytest --cov=provide.foundation --cov-report=xml --cov-report=term"
+
+# ==============================================================================
+# Code Quality
+# ==============================================================================
+
+[tasks.lint]
+_default = "ruff check ."
+fix = "ruff check . --fix"
+
+[tasks.format]
+_default = "ruff format ."
+check = "ruff format . --check"
+
+[tasks.quality]
+_default = ["lint", "typecheck"]
+all = ["format.check", "lint", "typecheck", "test"]
+
+# ==============================================================================
+# Build & Package
+# ==============================================================================
+
+[tasks.pkg]
+install = "uv pip install -e ."
+lock = "uv lock"
+
+# ==============================================================================
+# Clean
+# ==============================================================================
+
+[tasks.clean]
+run = """
+rm -rf build/ dist/ *.egg-info .pytest_cache .mypy_cache .ruff_cache .hypothesis htmlcov/ .coverage site/
+find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+find . -type f -name '*.pyc' -delete 2>/dev/null || true
+"""
+
+# ==============================================================================
+# Documentation
+# ==============================================================================
+
+[tasks.docs]
+_default = "mkdocs serve"
+build = "mkdocs build"
+serve = "mkdocs serve"
+
+# ==============================================================================
+# Development Workflow
+# ==============================================================================
+
+[tasks.dev]
+setup = "uv sync"
+test = "pytest -n auto"
+check = "ruff format . && ruff check . && mypy src/"
+
+# ==============================================================================
+# Simple Top-Level Tasks
+# ==============================================================================
+
+[tasks]
+typecheck = "mypy src/"
+build = "uv build"
+
+[tasks.setup]
+_default = "uv sync"

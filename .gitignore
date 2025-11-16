@@ -129,6 +129,7 @@ htmlcov/
 .nox/
 .coverage
 .coverage.*
+.coverage-artifacts/
 .cache
 nosetests.xml
 coverage.xml
@@ -406,3 +407,13 @@ bf-*.txt
 
 # Provide tooling artifacts
 .provide/foundry/
+
+# Work environment
+workenv/
+
+# Shared docs theme
+docs/.shared-theme/
+
+# Bfiles artifacts
+bf-*.txt
+*.bf.txt
