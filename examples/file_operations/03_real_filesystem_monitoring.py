@@ -28,7 +28,7 @@ except ImportError:
     print("⚠️  Watchdog not available. Install with: pip install watchdog")
     WATCHDOG_AVAILABLE = False
 
-from provide.foundation.file.operations import (  # noqa: E402
+from provide.foundation.file.operations import (
     DetectorConfig,
     FileEvent,
     FileEventMetadata,

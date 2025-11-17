@@ -75,12 +75,14 @@ class HyperConfig(RuntimeConfig):
 
 class TaskStatus(str, Enum):
     """Task status."""
+
     PENDING = "pending"
     COMPLETED = "completed"
 
 
 class TaskType(str, Enum):
     """Task type."""
+
     HTTP = "http"
     COMPUTE = "compute"
     BATCH = "batch"
@@ -89,6 +91,7 @@ class TaskType(str, Enum):
 @dataclass
 class HyperTask:
     """Hyper-minimal task model using dataclass for speed."""
+
     task_id: str
     task_type: str
     status: str = "pending"
@@ -123,7 +126,7 @@ throughput_v4 = gauge("throughput.v4", "Tasks per second")
 class HyperQueue:
     """Hyper-optimized in-memory queue."""
 
-    def __init__(self, config: HyperConfig):
+    def __init__(self, config: HyperConfig) -> None:
         self.config = config
         self.queue_dir = Path(config.queue_dir)
         self.pending: list[HyperTask] = []  # List is faster than dict for iteration
@@ -205,7 +208,7 @@ class HyperExecutor:
 class HyperWorkerPool:
     """Hyper-optimized worker pool with 32+ workers."""
 
-    def __init__(self, config: HyperConfig, queue: HyperQueue):
+    def __init__(self, config: HyperConfig, queue: HyperQueue) -> None:
         self.config = config
         self.queue = queue
         self.executor = HyperExecutor()
@@ -323,7 +326,7 @@ def demo(ctx: click.Context, count: int) -> None:
     # Compare to v3
     if count >= 100:
         v3_throughput = 32000  # v3 best case
-        v4_throughput = stats['throughput']
+        v4_throughput = stats["throughput"]
         speedup = v4_throughput / v3_throughput if v3_throughput > 0 else 0
         pout("  v3 throughput: ~32,000 tasks/sec")
         pout(f"  v4 throughput: {v4_throughput:.0f} tasks/sec")
@@ -346,7 +349,7 @@ def benchmark(ctx: click.Context, tasks: int) -> None:
 
     # Create tasks
     task_list = []
-    for i in range(tasks):
+    for _i in range(tasks):
         task = HyperTask(
             task_id=str(uuid4()),
             task_type="compute",

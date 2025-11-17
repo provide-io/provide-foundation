@@ -74,6 +74,7 @@ class UltimateConfig(RuntimeConfig):
 @dataclass
 class UltimateTask:
     """Ultimate minimal task."""
+
     task_id: str
     task_type: str
     status: str = "pending"
@@ -129,7 +130,7 @@ throughput_v5 = gauge("throughput.v5", "Tasks per second")
 class UltimateQueue:
     """Ultimate queue for multiprocessing."""
 
-    def __init__(self, config: UltimateConfig):
+    def __init__(self, config: UltimateConfig) -> None:
         self.config = config
         self.queue_dir = Path(config.queue_dir)
         self.tasks: list[dict] = []  # Store as dicts for easy pickling
@@ -161,7 +162,7 @@ class UltimateQueue:
 class UltimateProcessor:
     """Ultimate processor with true multiprocessing."""
 
-    def __init__(self, config: UltimateConfig):
+    def __init__(self, config: UltimateConfig) -> None:
         self.config = config
         # Auto-detect CPU count
         self.num_processes = config.num_processes or mp.cpu_count()
@@ -176,7 +177,7 @@ class UltimateProcessor:
 
         # Split tasks into chunks for each process
         chunk_size = max(1, total // self.num_processes)
-        chunks = [tasks[i:i + chunk_size] for i in range(0, total, chunk_size)]
+        chunks = [tasks[i : i + chunk_size] for i in range(0, total, chunk_size)]
 
         # Process chunks in parallel using process pool
         results = []
@@ -271,7 +272,7 @@ def demo(ctx: click.Context, count: int) -> None:
     # Compare to v4
     if count >= 200:
         v4_best = 1_000_000  # v4 peak throughput
-        v5_throughput = stats['throughput']
+        v5_throughput = stats["throughput"]
         speedup = v5_throughput / v4_best if v4_best > 0 else 0
         pout("  v4 peak: ~1,000,000 tasks/sec (single process)")
         pout(f"  v5 throughput: {v5_throughput:.0f} tasks/sec ({stats['processes']} processes)")
@@ -299,7 +300,7 @@ def benchmark(ctx: click.Context, tasks: int) -> None:
 
     # Create tasks
     task_list = []
-    for i in range(tasks):
+    for _i in range(tasks):
         task = UltimateTask(
             task_id=str(uuid4()),
             task_type="compute",
@@ -360,5 +361,5 @@ def info(ctx: click.Context) -> None:
 
 if __name__ == "__main__":
     # Required for Windows multiprocessing
-    mp.set_start_method('spawn', force=True)
+    mp.set_start_method("spawn", force=True)
     cli()

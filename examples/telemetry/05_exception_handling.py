@@ -16,11 +16,11 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from typing import Never  # noqa: E402
+from typing import Never
 
-from provide.foundation import get_hub, logger  # noqa: E402
-from provide.foundation.console.output import pout  # noqa: E402
-from provide.foundation.logger.config import (  # noqa: E402
+from provide.foundation import get_hub, logger
+from provide.foundation.console.output import pout
+from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )

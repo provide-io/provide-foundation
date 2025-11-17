@@ -36,7 +36,7 @@ class AppConfig(RuntimeConfig):
     debug_mode: bool = env_field(env_var="DEBUG", default=False)
 
 
-def demo_logging():
+def demo_logging() -> None:
     """Demonstrate structured logging with emojis."""
     pout("\n📝 DEMO: Structured Logging")
     pout("─" * 60)
@@ -90,7 +90,7 @@ def unreliable_operation(attempt_count: list[int]) -> str:
     return "Success!"
 
 
-def demo_resilience():
+def demo_resilience() -> None:
     """Demonstrate resilience patterns."""
     pout("\n🔄 DEMO: Resilience Patterns (Retry)")
     pout("─" * 60)
@@ -114,7 +114,7 @@ def protected_operation(should_fail: bool) -> str:
     return "OK"
 
 
-def demo_circuit_breaker():
+def demo_circuit_breaker() -> None:
     """Demonstrate circuit breaker pattern."""
     pout("\n⚡ DEMO: Circuit Breaker")
     pout("─" * 60)
@@ -137,7 +137,7 @@ def demo_circuit_breaker():
     pout("✅ Circuit breaker protects against cascading failures")
 
 
-def demo_error_handling():
+def demo_error_handling() -> None:
     """Demonstrate error handling with context."""
     pout("\n❌ DEMO: Error Handling")
     pout("─" * 60)
@@ -152,7 +152,7 @@ def demo_error_handling():
     pout("✅ Automatic exception logging with stack traces")
 
 
-def main():
+def main() -> None:
     """Run all demos."""
     pout("\n" + "=" * 60)
     pout("🚀 provide.foundation - Demo Application")

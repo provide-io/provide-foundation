@@ -139,7 +139,7 @@ def is_injectable(cls: type[Any]) -> bool:
     return getattr(cls, _INJECTABLE_MARKER, False)
 
 
-def resolve_dependencies(  # noqa: C901
+def resolve_dependencies(
     cls: type[T],
     registry: Any,  # Registry type
     allow_missing: bool = False,

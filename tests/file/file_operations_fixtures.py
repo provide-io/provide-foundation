@@ -25,7 +25,7 @@ try:
         FileEvent,
         FileEventMetadata,
         OperationDetector,
-        OperationType,
+        OperationType,  # noqa: F401 - Used conditionally
     )
 
     HAS_OPERATIONS_MODULE = True

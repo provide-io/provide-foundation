@@ -33,7 +33,7 @@ def _get_stream_lock() -> threading.RLock:
     return get_lock_manager().get_lock("foundation.stream")
 
 
-def get_log_stream() -> TextIO:  # noqa: C901
+def get_log_stream() -> TextIO:
     """Get the current log stream.
 
     Note: High complexity is intentional for robust stream handling across test/prod.

@@ -89,6 +89,7 @@ class UltraConfig(RuntimeConfig):
 
 class TaskStatus(str, Enum):
     """Task status."""
+
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -97,6 +98,7 @@ class TaskStatus(str, Enum):
 
 class TaskType(str, Enum):
     """Task type."""
+
     HTTP = "http"
     COMPUTE = "compute"
     BATCH = "batch"
@@ -165,7 +167,7 @@ execution_time_v3 = histogram("execution.time.v3", "Execution time")
 class UltraQueue:
     """Ultra-fast in-memory queue with bulk persistence."""
 
-    def __init__(self, config: UltraConfig):
+    def __init__(self, config: UltraConfig) -> None:
         self.config = config
         self.queue_dir = Path(config.queue_dir)
         self.tasks: dict[str, UltraTask] = {}  # In-memory storage
@@ -349,7 +351,7 @@ class UltraBatchExecutor(UltraExecutor):
 class UltraWorkerPool:
     """Ultra-high-performance worker pool."""
 
-    def __init__(self, config: UltraConfig, queue: UltraQueue):
+    def __init__(self, config: UltraConfig, queue: UltraQueue) -> None:
         self.config = config
         self.queue = queue
         self.worker_id = str(uuid4())[:8]
@@ -515,7 +517,7 @@ def demo(ctx: click.Context, count: int) -> None:
     # Compare to v2
     if count >= 100:
         v2_time = count / 50  # ~50 tasks/sec in v2
-        v3_time = stats['duration_ms'] / 1000
+        v3_time = stats["duration_ms"] / 1000
         speedup = v2_time / v3_time if v3_time > 0 else 0
         pout(f"  v2 estimated: {v2_time:.2f}s")
         pout(f"  v3 actual: {v3_time:.2f}s")
@@ -541,12 +543,8 @@ def benchmark(ctx: click.Context, tasks: int) -> None:
 
     # Create tasks
     task_list = []
-    for i in range(tasks):
-        task = UltraTask(
-            task_type=TaskType.COMPUTE,
-            data={"operation": "fibonacci", "n": 15},
-            priority=5
-        )
+    for _i in range(tasks):
+        task = UltraTask(task_type=TaskType.COMPUTE, data={"operation": "fibonacci", "n": 15}, priority=5)
         task_list.append(task)
 
     queue.bulk_submit(task_list)

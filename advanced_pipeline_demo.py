@@ -9,7 +9,7 @@ advanced features of provide.foundation:
 
 - Async/await throughout the pipeline
 - HTTP transport simulation with retries
-- Distributed tracing context propagation  
+- Distributed tracing context propagation
 - File operations with atomic writes
 - Archive creation with checksums
 - Multiple resilience patterns (retry, circuit breaker)
@@ -53,6 +53,7 @@ from provide.foundation.tracer import with_span
 @define
 class PipelineConfig(RuntimeConfig):
     """Data pipeline configuration."""
+
     pipeline_name: str = env_field(env_var="PIPELINE_NAME", default="data-processor")
     batch_size: int = env_field(env_var="BATCH_SIZE", default=10)
     output_dir: str = env_field(env_var="OUTPUT_DIR", default="/tmp/pipeline-output")
@@ -69,6 +70,7 @@ archive_size = gauge("pipeline.archive.size_bytes", "Archive size")
 @define
 class DataItem:
     """A data item to process."""
+
     id: str
     content: str
     metadata: dict[str, Any]
@@ -77,6 +79,7 @@ class DataItem:
 @define
 class ProcessingResult:
     """Result of processing."""
+
     item_id: str
     success: bool
     output_file: str | None = None
@@ -87,7 +90,7 @@ class ProcessingResult:
 class DataSource:
     """Simulates data fetching with retries."""
 
-    def __init__(self, config: PipelineConfig):
+    def __init__(self, config: PipelineConfig) -> None:
         self.config = config
         self._request_count = 0
 
@@ -112,11 +115,13 @@ class DataSource:
             items = []
             for i in range(self.config.batch_size):
                 item_id = f"item_{batch_id:03d}_{i:03d}"
-                items.append(DataItem(
-                    id=item_id,
-                    content=f"Data content for {item_id}",
-                    metadata={"batch": batch_id, "index": i},
-                ))
+                items.append(
+                    DataItem(
+                        id=item_id,
+                        content=f"Data content for {item_id}",
+                        metadata={"batch": batch_id, "index": i},
+                    )
+                )
 
             logger.info("Batch fetched", item_count=len(items))
             return items
@@ -125,7 +130,7 @@ class DataSource:
 class DataProcessor:
     """Processes data items with async workers."""
 
-    def __init__(self, config: PipelineConfig):
+    def __init__(self, config: PipelineConfig) -> None:
         self.config = config
         self.output_dir = Path(config.output_dir)
         ensure_dir(str(self.output_dir))
@@ -182,11 +187,13 @@ class DataProcessor:
             processed_results = []
             for i, result in enumerate(results):
                 if isinstance(result, Exception):
-                    processed_results.append(ProcessingResult(
-                        item_id=items[i].id,
-                        success=False,
-                        error=str(result),
-                    ))
+                    processed_results.append(
+                        ProcessingResult(
+                            item_id=items[i].id,
+                            success=False,
+                            error=str(result),
+                        )
+                    )
                 else:
                     processed_results.append(result)
 
@@ -199,7 +206,7 @@ class DataProcessor:
 class ArchiveManager:
     """Creates archives with checksums."""
 
-    def __init__(self, config: PipelineConfig):
+    def __init__(self, config: PipelineConfig) -> None:
         self.config = config
 
     def create_archive(self, source_dir: str, archive_path: str) -> tuple[str, int, str]:
@@ -233,7 +240,7 @@ class ArchiveManager:
 class UploadService:
     """Handles uploads with circuit breaker."""
 
-    def __init__(self, config: PipelineConfig):
+    def __init__(self, config: PipelineConfig) -> None:
         self.config = config
         self._upload_count = 0
 
@@ -257,7 +264,7 @@ class UploadService:
 class DataPipeline:
     """Main pipeline orchestrator."""
 
-    def __init__(self, config: PipelineConfig):
+    def __init__(self, config: PipelineConfig) -> None:
         self.config = config
         self.data_source = DataSource(config)
         self.processor = DataProcessor(config)
@@ -314,7 +321,7 @@ class DataPipeline:
                 raise
 
 
-async def main():
+async def main() -> None:
     """Run the advanced pipeline demo."""
     pout("\n" + "=" * 70)
     pout("🏗️  Advanced Data Processing Pipeline")

@@ -167,7 +167,7 @@ class TempPatternDetector:
 
         return None
 
-    def detect_temp_create_delete_pattern(  # noqa: C901
+    def detect_temp_create_delete_pattern(
         self, events: list[FileEvent], temp_window_ms: int = 5000
     ) -> FileOperation | None:
         """Detect pattern: create temp -> delete temp -> create real file.

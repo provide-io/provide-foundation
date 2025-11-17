@@ -207,7 +207,7 @@ worker_utilization = gauge("workers.utilization", "Worker pool utilization")
 class TaskQueue:
     """Persistent task queue with atomic operations."""
 
-    def __init__(self, config: SystemConfig):
+    def __init__(self, config: SystemConfig) -> None:
         self.config = config
         self.queue_dir = Path(config.queue_dir)
         ensure_dir(str(self.queue_dir))
@@ -427,7 +427,7 @@ class DataTransformTaskExecutor(TaskExecutor):
 class WorkerPool:
     """Async worker pool with resilience patterns."""
 
-    def __init__(self, config: SystemConfig, queue: TaskQueue):
+    def __init__(self, config: SystemConfig, queue: TaskQueue) -> None:
         self.config = config
         self.queue = queue
         self.executors: dict[TaskType, TaskExecutor] = {
@@ -607,7 +607,12 @@ def cli(ctx: click.Context) -> None:
 
 
 @cli.command()
-@click.option("--type", "task_type", required=True, type=click.Choice(["http", "compute", "file_process", "data_transform"]))
+@click.option(
+    "--type",
+    "task_type",
+    required=True,
+    type=click.Choice(["http", "compute", "file_process", "data_transform"]),
+)
 @click.option("--data", required=True, help="Task data as JSON string")
 @click.option("--priority", default=5, type=int, help="Task priority (1-10)")
 @click.pass_context
@@ -638,10 +643,10 @@ def submit(ctx: click.Context, task_type: str, data: str, priority: int) -> None
 
     except json.JSONDecodeError:
         perr("❌ Invalid JSON data")
-        raise click.Abort()
+        raise click.Abort() from None
     except Exception as e:
         perr(f"❌ Failed to submit task: {e}")
-        raise click.Abort()
+        raise click.Abort() from None
 
 
 @cli.command()
@@ -684,7 +689,7 @@ def process(ctx: click.Context, workers: int | None, max_tasks: int | None) -> N
     except Exception as e:
         perr(f"❌ Processing failed: {e}")
         logger.exception("Worker pool failed")
-        raise click.Abort()
+        raise click.Abort() from None
 
 
 @cli.command()
@@ -721,7 +726,9 @@ def status(ctx: click.Context) -> None:
                 TaskStatus.FAILED: "❌",
                 TaskStatus.RETRYING: "🔁",
             }
-            pout(f"  {status_emoji[task.status]} {task.task_id[:8]} - {task.task_type.value} - {task.status.value}")
+            pout(
+                f"  {status_emoji[task.status]} {task.task_id[:8]} - {task.task_type.value} - {task.status.value}"
+            )
 
     pout("=" * 70)
 
@@ -751,7 +758,7 @@ def backup(ctx: click.Context) -> None:
 
     except Exception as e:
         perr(f"❌ Backup failed: {e}")
-        raise click.Abort()
+        raise click.Abort() from None
 
 
 @cli.command()

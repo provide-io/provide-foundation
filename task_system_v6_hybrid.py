@@ -74,6 +74,7 @@ class HybridConfig(RuntimeConfig):
 @dataclass
 class HybridTask:
     """Minimal task model."""
+
     task_id: str
     task_type: str
     status: str = "pending"
@@ -106,7 +107,7 @@ async def process_batch_async(task_dicts: list[dict], workers: int) -> list[dict
     """Process batch of tasks with async workers."""
     # Split tasks among async workers
     chunk_size = max(1, len(task_dicts) // workers)
-    chunks = [task_dicts[i:i + chunk_size] for i in range(0, len(task_dicts), chunk_size)]
+    chunks = [task_dicts[i : i + chunk_size] for i in range(0, len(task_dicts), chunk_size)]
 
     # Process chunks concurrently with async workers
     async def process_chunk(chunk: list[dict]) -> list[dict]:
@@ -163,7 +164,7 @@ throughput_v6 = gauge("throughput.v6", "Tasks per second")
 class HybridQueue:
     """Hybrid queue for multiprocessing + async."""
 
-    def __init__(self, config: HybridConfig):
+    def __init__(self, config: HybridConfig) -> None:
         self.config = config
         self.queue_dir = Path(config.queue_dir)
         self.tasks: list[dict] = []
@@ -195,7 +196,7 @@ class HybridQueue:
 class HybridProcessor:
     """Hybrid processor with multiprocessing + async workers."""
 
-    def __init__(self, config: HybridConfig):
+    def __init__(self, config: HybridConfig) -> None:
         self.config = config
         self.num_processes = config.num_processes or mp.cpu_count()
         self.workers_per_process = config.workers_per_process
@@ -219,7 +220,7 @@ class HybridProcessor:
         # Split tasks into chunks for each process
         # Use larger chunks to amortize multiprocessing overhead
         chunk_size = max(1, total // self.num_processes)
-        chunks = [tasks[i:i + chunk_size] for i in range(0, total, chunk_size)]
+        chunks = [tasks[i : i + chunk_size] for i in range(0, total, chunk_size)]
 
         # Prepare args for each process (chunk + worker count)
         process_args = [(chunk, self.workers_per_process) for chunk in chunks]
@@ -302,7 +303,9 @@ def demo(ctx: click.Context, count: int) -> None:
     queue.bulk_submit(tasks)
     pout(f"✅ Submitted {count} tasks")
     pout("")
-    pout(f"🚀 Processing with {processor.num_processes} processes × {processor.workers_per_process} async workers...")
+    pout(
+        f"🚀 Processing with {processor.num_processes} processes × {processor.workers_per_process} async workers..."
+    )
     pout("")
 
     # Process with hybrid approach
@@ -352,7 +355,7 @@ def benchmark(ctx: click.Context, tasks: int) -> None:
 
     # Create tasks
     task_list = []
-    for i in range(tasks):
+    for _i in range(tasks):
         task = HybridTask(
             task_id=str(uuid4()),
             task_type="compute",
@@ -425,5 +428,5 @@ def info(ctx: click.Context) -> None:
 
 if __name__ == "__main__":
     # Required for Windows multiprocessing
-    mp.set_start_method('spawn', force=True)
+    mp.set_start_method("spawn", force=True)
     cli()

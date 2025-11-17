@@ -30,7 +30,7 @@ if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 # Simple import and immediate usage - no setup needed
-from provide.foundation import logger, pout  # noqa: E402
+from provide.foundation import logger, pout
 
 
 def simple_logging_example() -> None:

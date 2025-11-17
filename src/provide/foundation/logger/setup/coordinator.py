@@ -130,7 +130,7 @@ def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
     return _FOUNDATION_LOG_LEVEL
 
 
-def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:  # noqa: C901
+def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
     """Create Foundation's internal setup logger (structlog).
 
     This is used internally by Foundation during its own initialization.

@@ -292,7 +292,7 @@ batch_size_hist = histogram("batch.size", "Batch sizes processed")
 class ResultCache:
     """In-memory result cache with TTL."""
 
-    def __init__(self, cache_dir: str, ttl: int = 3600):
+    def __init__(self, cache_dir: str, ttl: int = 3600) -> None:
         self.cache_dir = Path(cache_dir)
         self.ttl = ttl
         self.memory_cache: dict[str, tuple[dict[str, Any], float]] = {}
@@ -361,7 +361,7 @@ class ResultCache:
 class TaskDAG:
     """Directed Acyclic Graph for task dependencies."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.graph: dict[str, set[str]] = defaultdict(set)  # task_id -> dependencies
         self.reverse_graph: dict[str, set[str]] = defaultdict(set)  # task_id -> dependents
 
@@ -403,11 +403,7 @@ class TaskDAG:
             rec_stack.remove(task_id)
             return False
 
-        for task_id in self.graph:
-            if task_id not in visited:
-                if has_cycle_util(task_id):
-                    return True
-        return False
+        return any(task_id not in visited and has_cycle_util(task_id) for task_id in self.graph)
 
     def topological_sort(self) -> list[str]:
         """Return tasks in topological order (dependencies first)."""
@@ -435,7 +431,7 @@ class TaskDAG:
 class EnhancedTaskQueue:
     """High-performance task queue with DAG execution and caching."""
 
-    def __init__(self, config: EnhancedConfig):
+    def __init__(self, config: EnhancedConfig) -> None:
         self.config = config
         self.queue_dir = Path(config.queue_dir)
         self.dag = TaskDAG()
@@ -517,12 +513,15 @@ class EnhancedTaskQueue:
         completed_ids = {tid for tid, t in all_tasks.items() if t.status == TaskStatus.COMPLETED}
 
         for task in all_tasks.values():
-            if task.status == TaskStatus.WAITING and completed_task_id in task.depends_on:
-                # Check if all dependencies are completed
-                if set(task.depends_on).issubset(completed_ids):
-                    task.status = TaskStatus.READY
-                    self.update(task)
-                    logger.info("Task ready (dependencies satisfied)", task_id=task.task_id)
+            if (
+                task.status == TaskStatus.WAITING
+                and completed_task_id in task.depends_on
+                and set(task.depends_on).issubset(completed_ids)
+            ):
+                # All dependencies are completed - mark task as ready
+                task.status = TaskStatus.READY
+                self.update(task)
+                logger.info("Task ready (dependencies satisfied)", task_id=task.task_id)
 
     def list_ready(self) -> list[Task]:
         """List all ready tasks (dependencies satisfied) sorted by priority."""
@@ -584,12 +583,12 @@ class EnhancedTaskQueue:
 class ConnectionPool:
     """Simulated connection pool for HTTP tasks."""
 
-    def __init__(self, size: int = 10):
+    def __init__(self, size: int = 10) -> None:
         self.size = size
         self.connections = asyncio.Queue(maxsize=size)
         self._initialized = False
 
-    async def initialize(self):
+    async def initialize(self) -> None:
         """Initialize connection pool."""
         if not self._initialized:
             for i in range(self.size):
@@ -609,11 +608,11 @@ class ConnectionPool:
 class OptimizedHTTPExecutor:
     """HTTP executor with connection pooling."""
 
-    def __init__(self, pool_size: int = 10):
+    def __init__(self, pool_size: int = 10) -> None:
         self.pool = ConnectionPool(pool_size)
         self._pool_initialized = False
 
-    async def _ensure_pool(self):
+    async def _ensure_pool(self) -> None:
         """Ensure connection pool is initialized."""
         if not self._pool_initialized:
             await self.pool.initialize()
@@ -686,7 +685,7 @@ class BatchComputeExecutor:
 class EnhancedWorkerPool:
     """High-performance async worker pool with advanced features."""
 
-    def __init__(self, config: EnhancedConfig, queue: EnhancedTaskQueue):
+    def __init__(self, config: EnhancedConfig, queue: EnhancedTaskQueue) -> None:
         self.config = config
         self.queue = queue
         self.worker_id = str(uuid4())[:8]
@@ -786,7 +785,9 @@ class EnhancedWorkerPool:
             # Process all tasks concurrently up to worker limit
             await asyncio.gather(*[self.process_task(task) for task in tasks])
 
-    async def run_live(self, max_tasks: int | None = None, progress_callback: Callable | None = None) -> dict[str, Any]:
+    async def run_live(
+        self, max_tasks: int | None = None, progress_callback: Callable | None = None
+    ) -> dict[str, Any]:
         """Run with live progress updates."""
         with with_span("worker.run_live"):
             start_time = time.time()
@@ -891,7 +892,7 @@ def demo(ctx: click.Context, count: int, live: bool) -> None:
     if live:
         last_progress = 0
 
-        def progress_callback(current: int, total: int):
+        def progress_callback(current: int, total: int) -> None:
             nonlocal last_progress
             if current != last_progress:
                 pct = (current / total) * 100
@@ -936,7 +937,7 @@ def process(ctx: click.Context, workers: int | None, max_tasks: int | None, live
 
     if live:
 
-        def progress_callback(current: int, total: int):
+        def progress_callback(current: int, total: int) -> None:
             pct = (current / total) * 100
             pout(f"  ⚡ {current}/{total} ({pct:.0f}%)")
 

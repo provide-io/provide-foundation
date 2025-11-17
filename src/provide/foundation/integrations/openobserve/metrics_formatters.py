@@ -223,7 +223,7 @@ def format_query_result_csv(result: MetricQueryResult) -> str:
     return "\n".join(lines)
 
 
-def format_time_series_chart(result: MetricQueryResult, width: int = 60, height: int = 20) -> str:  # noqa: C901
+def format_time_series_chart(result: MetricQueryResult, width: int = 60, height: int = 20) -> str:
     """Format time series as ASCII chart.
 
     Args:
@@ -291,7 +291,7 @@ def format_time_series_chart(result: MetricQueryResult, width: int = 60, height:
     return "\n".join(lines)
 
 
-def format_metric_summary(result: MetricQueryResult) -> str:  # noqa: C901
+def format_metric_summary(result: MetricQueryResult) -> str:
     """Format query result as statistical summary.
 
     Args:

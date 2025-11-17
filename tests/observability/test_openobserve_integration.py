@@ -169,7 +169,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
             data=bulk_data,
         )
 
-        ingestion_time = time.time() - start_time
+        time.time() - start_time
         assert response.status_code == 200, f"Bulk ingestion failed: {response.text}"
 
         result = response.json()
@@ -237,7 +237,7 @@ class TestOpenObserveIntegration(FoundationTestCase):
         if response.hits:
             sample_trace = response.hits[0].get("trace_id")
             if sample_trace:
-                trace_response = await search_logs(
+                await search_logs(
                     sql=f"SELECT * FROM {self.test_stream} WHERE trace_id = '{sample_trace}'",
                     start_time="-10m",
                     client=client,
