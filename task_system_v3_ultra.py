@@ -37,30 +37,27 @@ Usage:
 from __future__ import annotations
 
 import asyncio
-import json
-import time
 from collections import defaultdict
-from dataclasses import dataclass
-from datetime import datetime, timezone
 from enum import Enum
+import json
 from pathlib import Path
+import time
 from typing import Any
 from uuid import uuid4
 
-import click
 from attrs import define, field
+import click
 
 from provide.foundation import logger
 from provide.foundation.config import env_field
 from provide.foundation.config.env import RuntimeConfig
-from provide.foundation.console.output import perr, pout
+from provide.foundation.console.output import pout
 from provide.foundation.file.atomic import atomic_write_text
 from provide.foundation.file.directory import ensure_dir
 from provide.foundation.hub import get_hub
 from provide.foundation.metrics import counter, gauge, histogram
 from provide.foundation.resilience.decorators import retry
 from provide.foundation.resilience.types import BackoffStrategy
-from provide.foundation.tracer.context import with_span
 
 # ============================================================================
 # Ultra-Fast Configuration
@@ -476,8 +473,8 @@ def demo(ctx: click.Context, count: int) -> None:
     pout("=" * 70)
     pout(f"Workers: {config.default_workers} (16 = 2x v2, 4x v1)")
     pout(f"Batch Size: {config.batch_size}")
-    pout(f"In-Memory Queue: Yes (bulk persistence)")
-    pout(f"Smart Grouping: Yes")
+    pout("In-Memory Queue: Yes (bulk persistence)")
+    pout("Smart Grouping: Yes")
     pout("")
     pout(f"Creating {count} tasks...")
 
@@ -599,7 +596,7 @@ def status(ctx: click.Context) -> None:
     pout(f"  Pending: {len(pending)}")
     pout(f"  Completed: {len(completed)}")
     pout(f"  Failed: {len(failed)}")
-    pout(f"  In-Memory: Yes")
+    pout("  In-Memory: Yes")
     pout(f"  Workers: {config.default_workers}")
     pout("=" * 70)
 

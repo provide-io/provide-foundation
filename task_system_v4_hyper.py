@@ -30,17 +30,16 @@ Usage:
 from __future__ import annotations
 
 import asyncio
-import json
-import time
-from dataclasses import dataclass, asdict
-from datetime import datetime, timezone
+from dataclasses import asdict, dataclass
 from enum import Enum
+import json
 from pathlib import Path
+import time
 from typing import Any
 from uuid import uuid4
 
+from attrs import define
 import click
-from attrs import define, field
 
 from provide.foundation import logger
 from provide.foundation.config import env_field
@@ -326,7 +325,7 @@ def demo(ctx: click.Context, count: int) -> None:
         v3_throughput = 32000  # v3 best case
         v4_throughput = stats['throughput']
         speedup = v4_throughput / v3_throughput if v3_throughput > 0 else 0
-        pout(f"  v3 throughput: ~32,000 tasks/sec")
+        pout("  v3 throughput: ~32,000 tasks/sec")
         pout(f"  v4 throughput: {v4_throughput:.0f} tasks/sec")
         pout(f"  SPEEDUP: {speedup:.1f}x faster than v3! 🔥")
 

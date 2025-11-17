@@ -31,23 +31,20 @@ Usage:
 
 from __future__ import annotations
 
-import json
-import multiprocessing as mp
-import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
+import multiprocessing as mp
 from pathlib import Path
+import time
 from typing import Any
 from uuid import uuid4
 
-import click
 from attrs import define
+import click
 
-from provide.foundation import logger
 from provide.foundation.config import env_field
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.console.output import pout
-from provide.foundation.file.atomic import atomic_write_text
 from provide.foundation.file.directory import ensure_dir
 from provide.foundation.hub import get_hub
 from provide.foundation.metrics import counter, gauge
@@ -276,13 +273,13 @@ def demo(ctx: click.Context, count: int) -> None:
         v4_best = 1_000_000  # v4 peak throughput
         v5_throughput = stats['throughput']
         speedup = v5_throughput / v4_best if v4_best > 0 else 0
-        pout(f"  v4 peak: ~1,000,000 tasks/sec (single process)")
+        pout("  v4 peak: ~1,000,000 tasks/sec (single process)")
         pout(f"  v5 throughput: {v5_throughput:.0f} tasks/sec ({stats['processes']} processes)")
         if speedup >= 1:
             pout(f"  SPEEDUP: {speedup:.1f}x faster than v4! 🔥")
         else:
-            pout(f"  Note: Multiprocessing overhead for small batches")
-            pout(f"        v5 excels at larger workloads (1000+ tasks)")
+            pout("  Note: Multiprocessing overhead for small batches")
+            pout("        v5 excels at larger workloads (1000+ tasks)")
 
     pout("=" * 70)
 
@@ -346,11 +343,11 @@ def info(ctx: click.Context) -> None:
     pout("=" * 70)
     pout("🔥 Ultimate System v5 Info")
     pout("=" * 70)
-    pout(f"  Architecture: True Multiprocessing")
+    pout("  Architecture: True Multiprocessing")
     pout(f"  CPU Cores: {mp.cpu_count()}")
     pout(f"  Processes: {processor.num_processes}")
-    pout(f"  GIL Contention: None (separate processes)")
-    pout(f"  Parallelism: True (OS-level)")
+    pout("  GIL Contention: None (separate processes)")
+    pout("  Parallelism: True (OS-level)")
     pout("")
     pout("Key Advantages:")
     pout("  ✓ Uses ALL CPU cores")
