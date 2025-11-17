@@ -32,7 +32,7 @@ __all__ = [
 ]
 
 
-def create_command_group(  # noqa: C901
+def create_command_group(
     name: str = "cli",
     commands: list[str] | None = None,
     registry: Registry | None = None,

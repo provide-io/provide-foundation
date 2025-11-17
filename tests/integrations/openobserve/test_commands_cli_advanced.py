@@ -142,8 +142,6 @@ else:
             assert not _HAS_CLICK
 
 
-__all__ = [
-    "TestParseFilterToDict",
-]
+__all__: list[str] = []
 
 # 🧱🏗️🔚

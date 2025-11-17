@@ -74,7 +74,7 @@ def conform_file(filepath: str) -> None:
     if not lines:
         # Handle empty files
         final_content = (
-            "\n".join([HEADER_LIBRARY] + SPDX_BLOCK) + "\n\n" + PLACEHOLDER_DOCSTRING + "\n\n" + FOOTER + "\n"
+            "\n".join([HEADER_LIBRARY, *SPDX_BLOCK]) + "\n\n" + PLACEHOLDER_DOCSTRING + "\n\n" + FOOTER + "\n"
         )
         with open(filepath, "w", encoding="utf-8") as f:
             f.write(final_content)
@@ -109,7 +109,7 @@ def conform_file(filepath: str) -> None:
     body_content = "\n".join(cleaned_body_lines).rstrip()
 
     # 4. Construct the new file content
-    final_header = "\n".join([header_first_line] + SPDX_BLOCK)
+    final_header = "\n".join([header_first_line, *SPDX_BLOCK])
 
     # Ensure there's content to separate from the footer
     if body_content:

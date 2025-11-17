@@ -64,7 +64,7 @@ class TestConsoleOutput(FoundationTestCase):
 
     def test_pout_with_prefix(self, capsys) -> None:
         """Test pout with prefix."""
-        captured = capsys.readouterr()
+        capsys.readouterr()
 
     def test_perr_with_prefix(self, capsys) -> None:
         """Test perr with prefix."""

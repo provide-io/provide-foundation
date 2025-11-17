@@ -42,16 +42,16 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from provide.foundation import get_hub  # noqa: E402
-from provide.foundation.integrations.openobserve.client import OpenObserveClient  # noqa: E402
-from provide.foundation.integrations.openobserve.config import OpenObserveConfig  # noqa: E402
-from provide.foundation.integrations.openobserve.formatters import (  # noqa: E402
+from provide.foundation import get_hub
+from provide.foundation.integrations.openobserve.client import OpenObserveClient
+from provide.foundation.integrations.openobserve.config import OpenObserveConfig
+from provide.foundation.integrations.openobserve.formatters import (
     format_json as format_json_response,
     format_output,
     format_summary,
     format_table,
 )
-from provide.foundation.integrations.openobserve.search import (  # noqa: E402
+from provide.foundation.integrations.openobserve.search import (
     aggregate_by_level,
     search_by_level,
     search_errors,
@@ -387,7 +387,7 @@ async def main() -> None:
 
     # Generate and send test logs
     print("\n📝 Generating and sending test logs...")
-    logs_sent = generate_test_logs(client, stream)
+    generate_test_logs(client, stream)
 
     # Query the logs
     await query_logs()

@@ -284,7 +284,7 @@ class TestFileLockChaos(FoundationTestCase):
         suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
         deadline=None,
     )
-    def test_lock_file_scenarios_chaos(  # noqa: C901
+    def test_lock_file_scenarios_chaos(
         self,
         tmp_path: Path,
         scenario: dict[str, Any],

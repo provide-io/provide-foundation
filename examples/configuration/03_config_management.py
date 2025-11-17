@@ -59,8 +59,8 @@ if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 # Import using the new simplified imports
-from provide.foundation import logger, pout  # noqa: E402
-from provide.foundation.config import (  # noqa: E402
+from provide.foundation import logger, pout
+from provide.foundation.config import (
     BaseConfig,
     ConfigManager,
     ConfigSchema,
@@ -73,7 +73,7 @@ from provide.foundation.config import (  # noqa: E402
     field,
     parse_bool,
 )
-from provide.foundation.file import temp_dir  # noqa: E402
+from provide.foundation.file import temp_dir
 
 
 # Example 1: Simple configuration class

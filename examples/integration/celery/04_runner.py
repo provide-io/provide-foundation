@@ -38,7 +38,7 @@ if str(current_dir) not in sys.path:
 # Import our setup and tasks
 import importlib.util
 
-from provide.foundation import logger, pout  # noqa: E402
+from provide.foundation import logger, pout
 
 
 # Load modules by file path to handle hyphenated names

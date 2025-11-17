@@ -228,7 +228,7 @@ class TestTimeUtilitiesIntegration(FoundationTestCase):
             provide_sleep(-1)
 
         # provide_now with invalid timezone should raise ZoneInfo error
-        with pytest.raises(Exception):  # noqa: B017
+        with pytest.raises(Exception):
             provide_now("Invalid/Timezone")
 
 

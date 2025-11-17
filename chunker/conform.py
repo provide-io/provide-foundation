@@ -16,6 +16,7 @@ SPDX_BLOCK = """# SPDX-FileCopyrightText: Copyright (c) 2025 provide.io llc. All
 # SPDX-License-Identifier: Apache-2.0
 #"""
 PLACEHOLDER_DOCSTRING = '"""TODO: Add module docstring."""'
+FOOTER = "# End of file"
 
 # Exclude files that are not part of the source code, are vendored, or are this script itself.
 EXCLUDE_FILES = [

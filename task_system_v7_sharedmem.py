@@ -73,6 +73,7 @@ class SharedMemConfig(RuntimeConfig):
 @dataclass
 class SharedTask:
     """Task model for shared memory."""
+
     task_id: str
     task_type: str
     status: str = "pending"
@@ -95,7 +96,7 @@ RESULTS = {
 class SharedMemoryManager:
     """Manages shared memory for zero-copy IPC."""
 
-    def __init__(self, config: SharedMemConfig):
+    def __init__(self, config: SharedMemConfig) -> None:
         self.config = config
         self.max_tasks = config.max_tasks
         self.task_size = config.task_size_bytes
@@ -104,11 +105,7 @@ class SharedMemoryManager:
         self.total_size = self.max_tasks * self.task_size
 
         # Create shared memory block
-        self.shm = shared_memory.SharedMemory(
-            create=True,
-            size=self.total_size,
-            name=f"task_shm_{id(self)}"
-        )
+        self.shm = shared_memory.SharedMemory(create=True, size=self.total_size, name=f"task_shm_{id(self)}")
 
         self.shm_name = self.shm.name
         pout(f"📦 Created shared memory: {self.shm_name} ({self.total_size:,} bytes)")
@@ -118,7 +115,7 @@ class SharedMemoryManager:
         # Serialize task to JSON
         task_dict = asdict(task)
         task_json = json.dumps(task_dict)
-        task_bytes = task_json.encode('utf-8')
+        task_bytes = task_json.encode("utf-8")
 
         # Ensure it fits
         if len(task_bytes) > self.task_size - 1:
@@ -126,7 +123,7 @@ class SharedMemoryManager:
 
         # Write to shared memory
         offset = index * self.task_size
-        self.shm.buf[offset:offset + len(task_bytes)] = task_bytes
+        self.shm.buf[offset : offset + len(task_bytes)] = task_bytes
         self.shm.buf[offset + len(task_bytes)] = 0  # Null terminator
 
     def read_task(self, index: int) -> SharedTask:
@@ -142,7 +139,7 @@ class SharedMemoryManager:
             task_bytes.append(byte)
 
         # Deserialize
-        task_json = task_bytes.decode('utf-8')
+        task_json = task_bytes.decode("utf-8")
         task_dict = json.loads(task_json)
         return SharedTask(**task_dict)
 
@@ -194,7 +191,7 @@ def process_batch_sharedmem(args: tuple[str, list[int]]) -> int:
                 task_bytes.append(byte)
 
             # Deserialize
-            task_json = task_bytes.decode('utf-8')
+            task_json = task_bytes.decode("utf-8")
             task_dict = json.loads(task_json)
             task = SharedTask(**task_dict)
 
@@ -207,8 +204,8 @@ def process_batch_sharedmem(args: tuple[str, list[int]]) -> int:
 
             # Write back to shared memory
             updated_json = json.dumps(asdict(task))
-            updated_bytes = updated_json.encode('utf-8')
-            shm.buf[offset:offset + len(updated_bytes)] = updated_bytes
+            updated_bytes = updated_json.encode("utf-8")
+            shm.buf[offset : offset + len(updated_bytes)] = updated_bytes
             shm.buf[offset + len(updated_bytes)] = 0
 
         return len(indices)
@@ -233,7 +230,7 @@ throughput_v7 = gauge("throughput.v7", "Tasks per second")
 class SharedMemQueue:
     """Queue using shared memory for zero-copy."""
 
-    def __init__(self, config: SharedMemConfig):
+    def __init__(self, config: SharedMemConfig) -> None:
         self.config = config
         self.queue_dir = Path(config.queue_dir)
         self.task_count = 0
@@ -273,7 +270,7 @@ class SharedMemQueue:
 class SharedMemProcessor:
     """Processor using shared memory for zero-copy IPC."""
 
-    def __init__(self, config: SharedMemConfig, shm_name: str):
+    def __init__(self, config: SharedMemConfig, shm_name: str) -> None:
         self.config = config
         self.num_processes = config.num_processes or mp.cpu_count()
         self.shm_name = shm_name
@@ -294,17 +291,14 @@ class SharedMemProcessor:
 
         # Split indices into chunks for each process
         chunk_size = max(1, total // self.num_processes)
-        chunks = [task_indices[i:i + chunk_size] for i in range(0, total, chunk_size)]
+        chunks = [task_indices[i : i + chunk_size] for i in range(0, total, chunk_size)]
 
         # Process chunks in parallel
         # Pass only indices, not full task objects (zero-copy!)
         completed = 0
         with ProcessPoolExecutor(max_workers=self.num_processes) as executor:
             # Each process gets: (shm_name, indices)
-            futures = [
-                executor.submit(process_batch_sharedmem, (self.shm_name, chunk))
-                for chunk in chunks
-            ]
+            futures = [executor.submit(process_batch_sharedmem, (self.shm_name, chunk)) for chunk in chunks]
 
             for future in as_completed(futures):
                 count = future.result()
@@ -429,7 +423,7 @@ def benchmark(ctx: click.Context, tasks: int) -> None:
 
         # Create tasks
         task_list = []
-        for i in range(tasks):
+        for _i in range(tasks):
             task = SharedTask(
                 task_id=str(uuid4()),
                 task_type="compute",
@@ -507,5 +501,5 @@ def info(ctx: click.Context) -> None:
 
 if __name__ == "__main__":
     # Required for multiprocessing
-    mp.set_start_method('spawn', force=True)
+    mp.set_start_method("spawn", force=True)
     cli()

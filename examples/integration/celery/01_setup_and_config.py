@@ -34,8 +34,8 @@ try:
 except ImportError:
     CELERY_AVAILABLE = False
 
-from provide.foundation import logger, perr, pout, setup_telemetry  # noqa: E402
-from provide.foundation.logger.config import (  # noqa: E402
+from provide.foundation import logger, perr, pout, setup_telemetry
+from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )

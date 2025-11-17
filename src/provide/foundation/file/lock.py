@@ -78,7 +78,7 @@ class FileLock:
         self.pid = os.getpid()
         self._thread_lock = threading.RLock()  # Protect instance state from concurrent threads
 
-    def acquire(self, blocking: bool = True) -> bool:  # noqa: C901
+    def acquire(self, blocking: bool = True) -> bool:
         """Acquire the lock.
 
         Args:
@@ -228,7 +228,7 @@ class FileLock:
             finally:
                 self.locked = False
 
-    def _check_stale_lock(self) -> bool:  # noqa: C901
+    def _check_stale_lock(self) -> bool:
         """Check if lock file is stale and remove if so.
 
         Uses psutil to validate process start time, preventing PID recycling attacks.

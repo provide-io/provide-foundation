@@ -22,12 +22,14 @@ from provide.foundation.hub import get_hub
 # Check which frameworks are available
 try:
     import click
+
     HAS_CLICK = True
 except ImportError:
     HAS_CLICK = False
 
 try:
     import typer
+
     HAS_TYPER = True
 except ImportError:
     HAS_TYPER = False
@@ -70,7 +72,7 @@ def process_tasks(count: int, workers: int, config: AppConfig) -> None:
     # Simulate work
     for i in range(min(count, 5)):  # Just show first 5
         logger.debug("Processing task", task_id=i)
-        pout(f"   ✓ Task {i+1}/{count}")
+        pout(f"   ✓ Task {i + 1}/{count}")
 
     if count > 5:
         pout(f"   ... ({count - 5} more tasks)")
@@ -97,6 +99,7 @@ def show_config(config: AppConfig) -> None:
 # ============================================================================
 
 if HAS_CLICK:
+
     @click.group()
     @click.pass_context
     def click_cli(ctx: click.Context) -> None:
@@ -117,17 +120,8 @@ if HAS_CLICK:
         logger.debug("Click CLI initialized", app_name=config.app_name)
 
     @click_cli.command(name="process")
-    @click.option(
-        "--count",
-        default=100,
-        type=int,
-        help="Number of tasks to process"
-    )
-    @click.option(
-        "--workers",
-        type=int,
-        help="Number of workers (overrides config)"
-    )
+    @click.option("--count", default=100, type=int, help="Number of tasks to process")
+    @click.option("--workers", type=int, help="Number of workers (overrides config)")
     @click.pass_context
     def click_process(ctx: click.Context, count: int, workers: int | None) -> None:
         """Process tasks with Click."""
@@ -152,11 +146,17 @@ if HAS_CLICK:
 
         if format == "json":
             import json
-            pout(json.dumps({
-                "app": config.app_name,
-                "workers": config.default_workers,
-                "debug": config.debug,
-            }, indent=2))
+
+            pout(
+                json.dumps(
+                    {
+                        "app": config.app_name,
+                        "workers": config.default_workers,
+                        "debug": config.debug,
+                    },
+                    indent=2,
+                )
+            )
         else:
             pout("Status: Running")
             pout(f"App: {config.app_name}")
@@ -206,11 +206,17 @@ if HAS_TYPER:
         """Show application status with Typer."""
         if format == "json":
             import json
-            typer.echo(json.dumps({
-                "app": config.app_name,
-                "workers": config.default_workers,
-                "debug": config.debug,
-            }, indent=2))
+
+            typer.echo(
+                json.dumps(
+                    {
+                        "app": config.app_name,
+                        "workers": config.default_workers,
+                        "debug": config.debug,
+                    },
+                    indent=2,
+                )
+            )
         else:
             typer.echo("Status: Running")
             typer.echo(f"App: {config.app_name}")

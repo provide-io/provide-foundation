@@ -124,7 +124,7 @@ class TestDependencyInjectionEdgeCases:
         # This should not raise during decoration (line 88-91 coverage)
         @injectable
         class ServiceWithForwardRef:
-            def __init__(self, dep: SomeUnknownType) -> None:
+            def __init__(self, dep: SomeUnknownType) -> None:  # noqa: F821
                 self.dep = dep
 
         # The decorator should succeed - error happens at resolution time
@@ -158,7 +158,7 @@ class TestDependencyInjectionEdgeCases:
 
         @injectable
         class ServiceWithBadRef:
-            def __init__(self, dep: CompletelyUnknownType) -> None:
+            def __init__(self, dep: CompletelyUnknownType) -> None:  # noqa: F821
                 self.dep = dep
 
         registry = Registry()
@@ -176,7 +176,7 @@ class TestDependencyInjectionEdgeCases:
 
         @injectable
         class ServiceWithBadRef:
-            def __init__(self, dep: UnknownType) -> None:
+            def __init__(self, dep: UnknownType) -> None:  # noqa: F821
                 self.dep = dep
 
         registry = Registry()
@@ -277,7 +277,7 @@ class TestDependencyInjectionEdgeCases:
 
         @injectable
         class ServiceWithMissingDep:
-            def __init__(self, missing: MissingType) -> None:
+            def __init__(self, missing: MissingType) -> None:  # noqa: F821
                 self.missing = missing
 
         registry = Registry()
@@ -299,7 +299,7 @@ class TestDependencyInjectionEdgeCases:
         # This happens when there's a forward reference to an undefined type
         @injectable
         class ServiceWithNameError:
-            def __init__(self, dep: UndefinedForwardRef) -> None:
+            def __init__(self, dep: UndefinedForwardRef) -> None:  # noqa: F821
                 self.dep = dep
 
         registry = Registry()

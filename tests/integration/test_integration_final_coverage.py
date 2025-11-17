@@ -70,7 +70,7 @@ class TestIntegrationFinalCoverage(FoundationTestCase):
         with patch(
             "provide.foundation.logger.custom_processors._compute_emoji_for_logger_name",
         ):
-            result = add_logger_name_emoji_prefix(None, "info", event_dict)
+            add_logger_name_emoji_prefix(None, "info", event_dict)
 
             # Should have emoji as the event
 

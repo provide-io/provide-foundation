@@ -31,10 +31,7 @@ def find_test_class_boundaries(content: str) -> list[tuple[int, str, int]]:
     # Calculate end lines (next class start or EOF)
     class_ranges = []
     for idx, (start, name) in enumerate(classes):
-        if idx + 1 < len(classes):
-            end = classes[idx + 1][0] - 1
-        else:
-            end = len(lines)
+        end = classes[idx + 1][0] - 1 if idx + 1 < len(classes) else len(lines)
         class_ranges.append((start, name, end))
 
     return class_ranges
@@ -103,7 +100,7 @@ def split_test_file(file_path: Path, target_lines: int = 400) -> list[Path]:
     base_name = file_path.stem  # Remove .py
     created_files = []
 
-    for idx, group in enumerate(groups, 1):
+    for _idx, group in enumerate(groups, 1):
         # Generate descriptive name from class names
         class_names = [name.replace("Test", "").lower() for _, name, _ in group]
         suffix = "_".join(class_names[:2])  # Use first 2 class names

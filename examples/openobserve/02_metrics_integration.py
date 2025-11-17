@@ -42,17 +42,17 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from provide.foundation.integrations.openobserve.client import OpenObserveClient  # noqa: E402
-from provide.foundation.integrations.openobserve.config import OpenObserveConfig  # noqa: E402
-from provide.foundation.integrations.openobserve.metrics_formatters import (  # noqa: E402
+from provide.foundation.integrations.openobserve.client import OpenObserveClient
+from provide.foundation.integrations.openobserve.config import OpenObserveConfig
+from provide.foundation.integrations.openobserve.metrics_formatters import (
     format_metric_output,
 )
-from provide.foundation.integrations.openobserve.otlp_adapter import (  # noqa: E402
+from provide.foundation.integrations.openobserve.otlp_adapter import (
     get_openobserve_otlp_metrics_endpoint,
 )
-from provide.foundation.logger.config.telemetry import TelemetryConfig  # noqa: E402
-from provide.foundation.metrics import counter, gauge, histogram  # noqa: E402
-from provide.foundation.metrics.otel import (  # noqa: E402
+from provide.foundation.logger.config.telemetry import TelemetryConfig
+from provide.foundation.metrics import counter, gauge, histogram
+from provide.foundation.metrics.otel import (
     setup_opentelemetry_metrics,
     shutdown_opentelemetry_metrics,
 )
@@ -112,7 +112,7 @@ def create_and_record_metrics() -> dict[str, object]:
     }
 
 
-async def query_and_display_metrics(client: OpenObserveClient) -> None:  # noqa: C901
+async def query_and_display_metrics(client: OpenObserveClient) -> None:
     """Query metrics from OpenObserve and display in various formats.
 
     Args:

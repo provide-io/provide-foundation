@@ -185,7 +185,7 @@ def file_demo_command() -> None:
     # Hash verification
     pout("\n3️⃣  File Hashing:")
     pout("-" * 60)
-    file_hash = hash_file(demo_file, algorithm="sha256")
+    hash_file(demo_file, algorithm="sha256")
 
     # Cleanup
     demo_file.unlink()
@@ -206,7 +206,7 @@ def process_demo_command() -> None:
     pout("\n1️⃣  Simple Command (run_simple):")
     pout("-" * 60)
     try:
-        output = run_simple(["echo", "Hello from Foundation!"])
+        run_simple(["echo", "Hello from Foundation!"])
     except Exception as e:
         perr(f"   ❌ Command failed: {e}")
 
@@ -214,7 +214,7 @@ def process_demo_command() -> None:
     pout("\n2️⃣  Full Control (run):")
     pout("-" * 60)
     try:
-        result = run(
+        run(
             ["python", "-c", "print('Python subprocess')"],
             capture_output=True,
             check=True,

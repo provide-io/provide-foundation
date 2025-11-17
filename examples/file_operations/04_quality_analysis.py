@@ -23,7 +23,7 @@ from provide.foundation.file.quality import (
 )
 
 
-def main():
+def main() -> None:
     """Demonstrate quality analysis functionality."""
     print("🔍 File Operation Quality Analysis Example")
     print("=" * 50)

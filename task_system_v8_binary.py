@@ -41,6 +41,7 @@ import click
 # NumPy is optional - only used for batch operations
 try:
     import numpy as np
+
     HAS_NUMPY = True
 except ImportError:
     HAS_NUMPY = False
@@ -79,12 +80,13 @@ class TaskStruct(ctypes.Structure):
 
     No serialization needed - direct memory access!
     """
-    _fields_ = [
-        ('task_id', ctypes.c_uint64),      # 8 bytes: unique task ID
-        ('task_type', ctypes.c_uint8),     # 1 byte: 0=http, 1=compute, 2=batch
-        ('status', ctypes.c_uint8),        # 1 byte: 0=pending, 1=processing, 2=completed
-        ('padding', ctypes.c_uint16),      # 2 bytes: alignment
-        ('result', ctypes.c_uint32),       # 4 bytes: result value
+
+    _fields_ = [  # noqa: RUF012 - ctypes special attribute
+        ("task_id", ctypes.c_uint64),  # 8 bytes: unique task ID
+        ("task_type", ctypes.c_uint8),  # 1 byte: 0=http, 1=compute, 2=batch
+        ("status", ctypes.c_uint8),  # 1 byte: 0=pending, 1=processing, 2=completed
+        ("padding", ctypes.c_uint16),  # 2 bytes: alignment
+        ("result", ctypes.c_uint32),  # 4 bytes: result value
     ]
 
 
@@ -114,7 +116,7 @@ RESULTS = {
 class BinaryMemoryManager:
     """Manages binary structs in shared memory - NO SERIALIZATION."""
 
-    def __init__(self, config: BinaryConfig):
+    def __init__(self, config: BinaryConfig) -> None:
         self.config = config
         self.max_tasks = config.max_tasks
         self.struct_size = ctypes.sizeof(TaskStruct)
@@ -123,11 +125,7 @@ class BinaryMemoryManager:
         self.total_size = self.max_tasks * self.struct_size
 
         # Create shared memory
-        self.shm = shared_memory.SharedMemory(
-            create=True,
-            size=self.total_size,
-            name=f"binary_shm_{id(self)}"
-        )
+        self.shm = shared_memory.SharedMemory(create=True, size=self.total_size, name=f"binary_shm_{id(self)}")
 
         self.shm_name = self.shm.name
 
@@ -141,13 +139,13 @@ class BinaryMemoryManager:
             self.np_view = np.ndarray(
                 (self.max_tasks,),
                 dtype=[
-                    ('task_id', np.uint64),
-                    ('task_type', np.uint8),
-                    ('status', np.uint8),
-                    ('padding', np.uint16),
-                    ('result', np.uint32),
+                    ("task_id", np.uint64),
+                    ("task_type", np.uint8),
+                    ("status", np.uint8),
+                    ("padding", np.uint16),
+                    ("result", np.uint32),
                 ],
-                buffer=self.shm.buf
+                buffer=self.shm.buf,
             )
 
         pout(f"🔢 Binary memory: {self.shm_name}")
@@ -245,7 +243,7 @@ throughput_v8 = gauge("throughput.v8", "Tasks per second")
 class BinaryQueue:
     """Queue using binary structs."""
 
-    def __init__(self, config: BinaryConfig):
+    def __init__(self, config: BinaryConfig) -> None:
         self.config = config
         self.queue_dir = Path(config.queue_dir)
         self.task_count = 0
@@ -276,7 +274,7 @@ class BinaryQueue:
         """Count completed tasks."""
         if HAS_NUMPY and self.mem_manager.np_view is not None:
             # Ultra-fast NumPy operation
-            completed = np.sum(self.mem_manager.np_view['status'][:self.task_count] == STATUS_COMPLETED)
+            completed = np.sum(self.mem_manager.np_view["status"][: self.task_count] == STATUS_COMPLETED)
             return int(completed)
         else:
             # Fallback: manual count
@@ -299,7 +297,7 @@ class BinaryQueue:
 class BinaryProcessor:
     """Processor using binary structs - zero serialization."""
 
-    def __init__(self, config: BinaryConfig, shm_name: str, struct_size: int):
+    def __init__(self, config: BinaryConfig, shm_name: str, struct_size: int) -> None:
         self.config = config
         self.num_processes = config.num_processes or mp.cpu_count()
         self.shm_name = shm_name
@@ -320,7 +318,7 @@ class BinaryProcessor:
 
         # Split indices into chunks
         chunk_size = max(1, total // self.num_processes)
-        chunks = [task_indices[i:i + chunk_size] for i in range(0, total, chunk_size)]
+        chunks = [task_indices[i : i + chunk_size] for i in range(0, total, chunk_size)]
 
         # Process chunks - only pass indices!
         completed = 0
@@ -392,11 +390,7 @@ def demo(ctx: click.Context, count: int) -> None:
         pout("")
 
         # Process
-        processor = BinaryProcessor(
-            config,
-            queue.mem_manager.shm_name,
-            ctypes.sizeof(TaskStruct)
-        )
+        processor = BinaryProcessor(config, queue.mem_manager.shm_name, ctypes.sizeof(TaskStruct))
         pout(f"🔢 Processing with {processor.num_processes} processes...")
         pout("")
 
@@ -426,8 +420,8 @@ def demo(ctx: click.Context, count: int) -> None:
             pout(f"  v8 (binary structs): {stats['throughput']:.0f} tasks/sec")
             pout("")
 
-            if stats['throughput'] > 7000:
-                improvement = stats['throughput'] / 5500
+            if stats["throughput"] > 7000:
+                improvement = stats["throughput"] / 5500
                 pout(f"✨ {improvement:.1f}x FASTER than v5-v7!")
                 pout("")
 
@@ -465,11 +459,7 @@ def benchmark(ctx: click.Context, tasks: int) -> None:
         # Benchmark
         pout("🔢 Starting binary benchmark...")
         start = time.time()
-        processor = BinaryProcessor(
-            config,
-            queue.mem_manager.shm_name,
-            ctypes.sizeof(TaskStruct)
-        )
+        processor = BinaryProcessor(config, queue.mem_manager.shm_name, ctypes.sizeof(TaskStruct))
         stats = processor.process_all(indices)
         wall_time = time.time() - start
 
@@ -543,5 +533,5 @@ def info(ctx: click.Context) -> None:
 
 
 if __name__ == "__main__":
-    mp.set_start_method('spawn', force=True)
+    mp.set_start_method("spawn", force=True)
     cli()

@@ -57,7 +57,7 @@ def get_subsystem_emoji(filepath_str: str) -> str:
         return EMOJI_MAP["default"]
 
 
-def modify_file(filepath_str):
+def modify_file(filepath_str) -> None:
     """
     This function modifies a file by replacing its header and adding an emoji line at the end.
     """
@@ -90,10 +90,7 @@ def modify_file(filepath_str):
         ):
             has_existing_header = True
 
-    if has_existing_header:
-        content_lines = lines[header_end_index:]
-    else:
-        content_lines = lines
+    content_lines = lines[header_end_index:] if has_existing_header else lines
 
     # Create new header
     try:

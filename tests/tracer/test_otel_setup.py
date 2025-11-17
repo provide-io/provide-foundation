@@ -103,7 +103,7 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
             patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class,
             patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class,
             patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
-            patch("provide.foundation.tracer.otel.slog") as mock_log,
+            patch("provide.foundation.tracer.otel.slog"),
         ):
             mock_resource_class.create.return_value = mock_resource
             mock_sampler_class.return_value = mock_sampler
@@ -154,7 +154,7 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
             patch("provide.foundation.tracer.otel.OTLPGrpcSpanExporter") as mock_exporter_class,
             patch("provide.foundation.tracer.otel.BatchSpanProcessor") as mock_processor_class,
             patch("provide.foundation.tracer.otel.otel_trace"),
-            patch("provide.foundation.tracer.otel.slog") as mock_log,
+            patch("provide.foundation.tracer.otel.slog"),
         ):
             mock_resource_class.create.return_value = mock_resource
             mock_sampler_class.return_value = mock_sampler
@@ -199,7 +199,7 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
             patch("provide.foundation.tracer.otel.OTLPHttpSpanExporter") as mock_exporter_class,
             patch("provide.foundation.tracer.otel.BatchSpanProcessor") as mock_processor_class,
             patch("provide.foundation.tracer.otel.otel_trace"),
-            patch("provide.foundation.tracer.otel.slog") as mock_log,
+            patch("provide.foundation.tracer.otel.slog"),
         ):
             mock_resource_class.create.return_value = mock_resource
             mock_sampler_class.return_value = mock_sampler
@@ -271,8 +271,8 @@ class TestSetupOpentelemetryTracing(FoundationTestCase):
             patch("provide.foundation.tracer.otel.Resource") as mock_resource_class,
             patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class,
             patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class,
-            patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
-            patch("provide.foundation.tracer.otel.slog") as mock_log,
+            patch("provide.foundation.tracer.otel.otel_trace"),
+            patch("provide.foundation.tracer.otel.slog"),
         ):
             mock_resource_class.create.return_value = mock_resource
             mock_sampler_class.return_value = mock_sampler

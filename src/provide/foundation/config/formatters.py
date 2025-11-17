@@ -45,7 +45,7 @@ class SchemaFormatter(ABC):
 class HumanFormatter(SchemaFormatter):
     """Human-readable table format."""
 
-    def format(  # noqa: C901
+    def format(
         self,
         schema: ConsolidatedSchema,
         env_only: bool = False,
@@ -145,7 +145,7 @@ class HumanFormatter(SchemaFormatter):
 class JSONFormatter(SchemaFormatter):
     """Machine-readable JSON format."""
 
-    def format(  # noqa: C901
+    def format(
         self,
         schema: ConsolidatedSchema,
         env_only: bool = False,
@@ -228,7 +228,7 @@ class JSONFormatter(SchemaFormatter):
 class YAMLFormatter(SchemaFormatter):
     """YAML format for configuration files."""
 
-    def format(  # noqa: C901
+    def format(
         self,
         schema: ConsolidatedSchema,
         env_only: bool = False,
@@ -301,7 +301,7 @@ class YAMLFormatter(SchemaFormatter):
 class MarkdownFormatter(SchemaFormatter):
     """Markdown tables for documentation."""
 
-    def format(  # noqa: C901
+    def format(
         self,
         schema: ConsolidatedSchema,
         env_only: bool = False,

@@ -57,7 +57,7 @@ class TestYamlDumps:
         """Should sort keys when requested."""
         data = {"z": 1, "a": 2, "m": 3}
         result = yaml.yaml_dumps(data, sort_keys=True)
-        [l for l in result.split("\n") if l.strip()]
+        [line for line in result.split("\n") if line.strip()]
         # Keys should appear in sorted order
         assert "a:" in result
         assert "m:" in result
