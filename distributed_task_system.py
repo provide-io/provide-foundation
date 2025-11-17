@@ -40,17 +40,16 @@ Usage:
 from __future__ import annotations
 
 import asyncio
-import json
-import time
-from collections.abc import Callable
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
+import json
 from pathlib import Path
+import time
 from typing import Any
 from uuid import uuid4
 
-import click
 from attrs import define, field
+import click
 
 # Foundation imports - showcasing comprehensive usage
 from provide.foundation import logger
@@ -134,8 +133,8 @@ class Task:
     data: dict[str, Any] = field(factory=dict)
     status: TaskStatus = field(default=TaskStatus.PENDING)
     priority: int = field(default=5)
-    created_at: str = field(factory=lambda: datetime.now(timezone.utc).isoformat())
-    updated_at: str = field(factory=lambda: datetime.now(timezone.utc).isoformat())
+    created_at: str = field(factory=lambda: datetime.now(UTC).isoformat())
+    updated_at: str = field(factory=lambda: datetime.now(UTC).isoformat())
     started_at: str | None = field(default=None)
     completed_at: str | None = field(default=None)
     attempts: int = field(default=0)
@@ -250,7 +249,7 @@ class TaskQueue:
 
     def update(self, task: Task) -> None:
         """Update task status."""
-        task.updated_at = datetime.now(timezone.utc).isoformat()
+        task.updated_at = datetime.now(UTC).isoformat()
         task_file = self.queue_dir / f"{task.task_id}.json"
         atomic_write_text(str(task_file), json.dumps(task.to_dict(), indent=2))
         queue_size.set(len(self.list_pending()))
@@ -452,7 +451,7 @@ class WorkerPool:
             try:
                 # Update task status
                 task.status = TaskStatus.RUNNING
-                task.started_at = datetime.now(timezone.utc).isoformat()
+                task.started_at = datetime.now(UTC).isoformat()
                 task.attempts += 1
                 task.worker_id = self.worker_id
                 self.queue.update(task)
@@ -473,7 +472,7 @@ class WorkerPool:
                 # Update task as completed
                 execution_time = (time.time() - start_time) * 1000
                 task.status = TaskStatus.COMPLETED
-                task.completed_at = datetime.now(timezone.utc).isoformat()
+                task.completed_at = datetime.now(UTC).isoformat()
                 task.result = result
                 task.execution_time_ms = execution_time
                 self.queue.update(task)
@@ -632,7 +631,7 @@ def submit(ctx: click.Context, task_type: str, data: str, priority: int) -> None
         # Submit task
         task_id = queue.submit(task)
 
-        pout(f"✅ Task submitted successfully")
+        pout("✅ Task submitted successfully")
         pout(f"   Task ID: {task_id}")
         pout(f"   Type: {task_type}")
         pout(f"   Priority: {priority}")
@@ -738,7 +737,7 @@ def backup(ctx: click.Context) -> None:
         backup_dir = Path(config.backup_dir)
         ensure_dir(str(backup_dir))
 
-        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         backup_path = str(backup_dir / f"tasks_backup_{timestamp}.tar")
 
         pout("📦 Creating backup...")

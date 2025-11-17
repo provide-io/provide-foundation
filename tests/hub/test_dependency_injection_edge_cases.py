@@ -193,7 +193,7 @@ class TestDependencyInjectionEdgeCases:
 
         # Create a class without @injectable to bypass decorator validation
         class UntypedService:
-            def __init__(self, untyped_param) -> None:  # noqa: ANN001
+            def __init__(self, untyped_param) -> None:
                 self.untyped_param = untyped_param
 
         registry = Registry()
@@ -210,7 +210,7 @@ class TestDependencyInjectionEdgeCases:
         from provide.foundation.hub.registry import Registry
 
         class UntypedService:
-            def __init__(self, untyped_param) -> None:  # noqa: ANN001
+            def __init__(self, untyped_param) -> None:
                 self.untyped_param = untyped_param
 
         registry = Registry()

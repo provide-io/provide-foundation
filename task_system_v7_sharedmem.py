@@ -27,20 +27,19 @@ Usage:
 
 from __future__ import annotations
 
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from dataclasses import asdict, dataclass
 import json
 import multiprocessing as mp
-import time
-from concurrent.futures import ProcessPoolExecutor, as_completed
-from dataclasses import dataclass, asdict
 from multiprocessing import shared_memory
 from pathlib import Path
+import time
 from typing import Any
 from uuid import uuid4
 
-import click
 from attrs import define
+import click
 
-from provide.foundation import logger
 from provide.foundation.config import env_field
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.console.output import pout
@@ -399,8 +398,8 @@ def demo(ctx: click.Context, count: int) -> None:
 
         if count >= 1000:
             pout("Comparison:")
-            pout(f"  v5 (multiprocessing): ~2,800 tasks/sec")
-            pout(f"  v6 (hybrid): ~2,800 tasks/sec")
+            pout("  v5 (multiprocessing): ~2,800 tasks/sec")
+            pout("  v6 (hybrid): ~2,800 tasks/sec")
             pout(f"  v7 (shared memory): {stats['throughput']:.0f} tasks/sec")
             pout("")
             pout("v7 Advantages:")
@@ -482,13 +481,13 @@ def info(ctx: click.Context) -> None:
     pout("=" * 70)
     pout("💾 Shared Memory System v7 Info")
     pout("=" * 70)
-    pout(f"  Architecture: Multiprocessing with Shared Memory")
+    pout("  Architecture: Multiprocessing with Shared Memory")
     pout(f"  CPU Cores: {mp.cpu_count()}")
     pout(f"  Processes: {config.num_processes or mp.cpu_count()}")
     pout(f"  Max Tasks: {config.max_tasks:,}")
     pout(f"  Task Size: {config.task_size_bytes} bytes")
     pout(f"  Total Memory: {config.max_tasks * config.task_size_bytes:,} bytes")
-    pout(f"  IPC Method: Zero-copy shared memory")
+    pout("  IPC Method: Zero-copy shared memory")
     pout("")
     pout("Key Advantages over v5/v6:")
     pout("  ✓ Zero-copy IPC (no serialization)")

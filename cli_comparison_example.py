@@ -9,7 +9,7 @@ Run with: python cli_comparison_example.py [click|typer] process --count 100
 from __future__ import annotations
 
 import sys
-from typing import Optional, Annotated
+from typing import Annotated
 
 from attrs import define
 
@@ -129,7 +129,7 @@ if HAS_CLICK:
         help="Number of workers (overrides config)"
     )
     @click.pass_context
-    def click_process(ctx: click.Context, count: int, workers: Optional[int]) -> None:
+    def click_process(ctx: click.Context, count: int, workers: int | None) -> None:
         """Process tasks with Click."""
         config: AppConfig = ctx.obj["config"]
         actual_workers = workers if workers is not None else config.default_workers
@@ -158,7 +158,7 @@ if HAS_CLICK:
                 "debug": config.debug,
             }, indent=2))
         else:
-            pout(f"Status: Running")
+            pout("Status: Running")
             pout(f"App: {config.app_name}")
             pout(f"Workers: {config.default_workers}")
 
@@ -184,7 +184,7 @@ if HAS_TYPER:
     @typer_app.command(name="process")
     def typer_process(
         count: Annotated[int, typer.Option(help="Number of tasks to process")] = 100,
-        workers: Annotated[Optional[int], typer.Option(help="Number of workers (overrides config)")] = None,
+        workers: Annotated[int | None, typer.Option(help="Number of workers (overrides config)")] = None,
         config: Annotated[AppConfig, typer.Depends(get_config)] = None,
     ) -> None:
         """Process tasks with Typer."""
@@ -212,7 +212,7 @@ if HAS_TYPER:
                 "debug": config.debug,
             }, indent=2))
         else:
-            typer.echo(f"Status: Running")
+            typer.echo("Status: Running")
             typer.echo(f"App: {config.app_name}")
             typer.echo(f"Workers: {config.default_workers}")
 

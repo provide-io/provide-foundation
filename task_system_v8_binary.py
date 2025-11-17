@@ -27,16 +27,16 @@ Usage:
 
 from __future__ import annotations
 
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import ctypes
 import multiprocessing as mp
-import time
-from concurrent.futures import ProcessPoolExecutor, as_completed
 from multiprocessing import shared_memory
 from pathlib import Path
+import time
 from typing import Any
 
-import click
 from attrs import define
+import click
 
 # NumPy is optional - only used for batch operations
 try:
@@ -45,7 +45,6 @@ try:
 except ImportError:
     HAS_NUMPY = False
 
-from provide.foundation import logger
 from provide.foundation.config import env_field
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.console.output import pout
@@ -154,7 +153,7 @@ class BinaryMemoryManager:
         pout(f"🔢 Binary memory: {self.shm_name}")
         pout(f"   Size: {self.total_size:,} bytes ({self.max_tasks:,} tasks)")
         pout(f"   Struct: {self.struct_size} bytes/task")
-        pout(f"   Zero-copy: TRUE (direct memory access)")
+        pout("   Zero-copy: TRUE (direct memory access)")
 
     def write_task(self, index: int, task_id: int, task_type: int) -> None:
         """Write task directly to memory - NO SERIALIZATION."""
@@ -421,9 +420,9 @@ def demo(ctx: click.Context, count: int) -> None:
 
         if count >= 1000:
             pout("Comparison:")
-            pout(f"  v5 (pickle): ~5,400 tasks/sec")
-            pout(f"  v6 (pickle+async): ~5,600 tasks/sec")
-            pout(f"  v7 (JSON in shmem): ~5,500 tasks/sec")
+            pout("  v5 (pickle): ~5,400 tasks/sec")
+            pout("  v6 (pickle+async): ~5,600 tasks/sec")
+            pout("  v7 (JSON in shmem): ~5,500 tasks/sec")
             pout(f"  v8 (binary structs): {stats['throughput']:.0f} tasks/sec")
             pout("")
 
@@ -513,13 +512,13 @@ def info(ctx: click.Context) -> None:
     pout("=" * 70)
     pout("🔢 Binary Struct System v8 Info")
     pout("=" * 70)
-    pout(f"  Architecture: Binary ctypes structs")
+    pout("  Architecture: Binary ctypes structs")
     pout(f"  CPU Cores: {mp.cpu_count()}")
     pout(f"  Processes: {config.num_processes or mp.cpu_count()}")
     pout(f"  Max Tasks: {config.max_tasks:,}")
     pout(f"  Struct Size: {ctypes.sizeof(TaskStruct)} bytes")
     pout(f"  Total Memory: {config.max_tasks * ctypes.sizeof(TaskStruct):,} bytes")
-    pout(f"  Serialization: NONE")
+    pout("  Serialization: NONE")
     pout("")
     pout("Binary Task Struct Layout (16 bytes):")
     pout("  - task_id: uint64 (8 bytes)")

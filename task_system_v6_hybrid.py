@@ -30,18 +30,17 @@ Usage:
 from __future__ import annotations
 
 import asyncio
-import multiprocessing as mp
-import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
+import multiprocessing as mp
 from pathlib import Path
+import time
 from typing import Any
 from uuid import uuid4
 
-import click
 from attrs import define
+import click
 
-from provide.foundation import logger
 from provide.foundation.config import env_field
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.console.output import pout
@@ -326,8 +325,8 @@ def demo(ctx: click.Context, count: int) -> None:
     # Compare to v4 and v5
     if count >= 500:
         pout("Comparison:")
-        pout(f"  v4 (32 async, 1 process): ~112,000 tasks/sec")
-        pout(f"  v5 (16 processes, no async): ~1,100 tasks/sec")
+        pout("  v4 (32 async, 1 process): ~112,000 tasks/sec")
+        pout("  v5 (16 processes, no async): ~1,100 tasks/sec")
         pout(f"  v6 (16 processes × 8 async): {stats['throughput']:.0f} tasks/sec")
         pout("")
         pout("v6 Advantages:")
@@ -400,13 +399,13 @@ def info(ctx: click.Context) -> None:
     pout("=" * 70)
     pout("🚀 Hybrid System v6 Info")
     pout("=" * 70)
-    pout(f"  Architecture: Multiprocessing + Async")
+    pout("  Architecture: Multiprocessing + Async")
     pout(f"  CPU Cores: {mp.cpu_count()}")
     pout(f"  Processes: {processor.num_processes}")
     pout(f"  Workers per Process: {processor.workers_per_process}")
     pout(f"  Total Workers: {processor.total_workers}")
-    pout(f"  GIL Contention: None between processes")
-    pout(f"  Async: High throughput within processes")
+    pout("  GIL Contention: None between processes")
+    pout("  Async: High throughput within processes")
     pout("")
     pout("Key Advantages:")
     pout("  ✓ True multi-core parallelism (multiprocessing)")

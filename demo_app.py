@@ -12,18 +12,18 @@ This demo application demonstrates key features:
 - Console I/O utilities
 """
 
+from attrs import define
+
 from provide.foundation import (
-    logger,
-    pout,
-    perr,
-    retry,
-    circuit_breaker,
-    error_boundary,
     BackoffStrategy,
+    circuit_breaker,
+    logger,
+    perr,
+    pout,
+    retry,
 )
 from provide.foundation.config import env_field
 from provide.foundation.config.env import RuntimeConfig
-from attrs import define
 
 
 @define

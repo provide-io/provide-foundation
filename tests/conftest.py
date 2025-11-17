@@ -33,9 +33,9 @@ os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
-import contextlib  # noqa: E402
+import contextlib
 
-from provide.testkit import set_log_stream_for_testing  # noqa: E402 # type: ignore
+from provide.testkit import set_log_stream_for_testing  # type: ignore
 
 # Restore original warning suppression state
 if with_suppression is None:
@@ -276,7 +276,7 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
 
 
 # Import and re-export fixtures from the unified testing module
-from provide.testkit import (  # noqa: E402
+from provide.testkit import (
     async_stream_reader,
     async_timeout,
     binary_file,

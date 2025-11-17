@@ -57,7 +57,7 @@ class TestInjectableDecorator:
 
             @injectable
             class NoTypeHints:
-                def __init__(self, value) -> None:  # noqa: ANN001
+                def __init__(self, value) -> None:
                     self.value = value
 
         assert "untyped parameters" in str(exc_info.value).lower()

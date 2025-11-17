@@ -44,26 +44,23 @@ Usage:
 from __future__ import annotations
 
 import asyncio
-import json
-import time
 from collections import defaultdict, deque
 from collections.abc import Callable
-from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
+import json
 from pathlib import Path
+import time
 from typing import Any
 from uuid import uuid4
 
-import click
 from attrs import define, field
+import click
 
 from provide.foundation import logger
-from provide.foundation.archive.tar import TarArchive
 from provide.foundation.config import env_field
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.console.output import perr, pout
-from provide.foundation.crypto.hashing import hash_file
 from provide.foundation.file.atomic import atomic_write_text
 from provide.foundation.file.directory import ensure_dir
 from provide.foundation.hub import get_hub
@@ -165,8 +162,8 @@ class Task:
     priority: int = field(default=5)
 
     # Lifecycle timestamps
-    created_at: str = field(factory=lambda: datetime.now(timezone.utc).isoformat())
-    updated_at: str = field(factory=lambda: datetime.now(timezone.utc).isoformat())
+    created_at: str = field(factory=lambda: datetime.now(UTC).isoformat())
+    updated_at: str = field(factory=lambda: datetime.now(UTC).isoformat())
     started_at: str | None = field(default=None)
     completed_at: str | None = field(default=None)
 
@@ -504,7 +501,7 @@ class EnhancedTaskQueue:
 
     def update(self, task: Task) -> None:
         """Update task status."""
-        task.updated_at = datetime.now(timezone.utc).isoformat()
+        task.updated_at = datetime.now(UTC).isoformat()
         task_file = self.queue_dir / f"{task.task_id}.json"
         atomic_write_text(str(task_file), json.dumps(task.to_dict(), indent=2))
 
@@ -711,7 +708,7 @@ class EnhancedWorkerPool:
 
             # Calculate queue time
             created = datetime.fromisoformat(task.created_at)
-            queue_time = (datetime.now(timezone.utc) - created).total_seconds() * 1000
+            queue_time = (datetime.now(UTC) - created).total_seconds() * 1000
             task.metrics.queue_time_ms = queue_time
             task_queue_time.observe(queue_time)
 
@@ -719,7 +716,7 @@ class EnhancedWorkerPool:
 
             try:
                 task.status = TaskStatus.RUNNING
-                task.started_at = datetime.now(timezone.utc).isoformat()
+                task.started_at = datetime.now(UTC).isoformat()
                 task.attempts += 1
                 task.metrics.worker_id = self.worker_id
                 self.queue.update(task)
@@ -739,7 +736,7 @@ class EnhancedWorkerPool:
                 # Update task
                 execution_time = (time.time() - start_time) * 1000
                 task.status = TaskStatus.COMPLETED
-                task.completed_at = datetime.now(timezone.utc).isoformat()
+                task.completed_at = datetime.now(UTC).isoformat()
                 task.result = result
                 task.metrics.execution_time_ms = execution_time
                 task.metrics.retry_count = task.attempts - 1

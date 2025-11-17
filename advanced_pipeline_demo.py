@@ -26,27 +26,27 @@ import json
 from pathlib import Path
 from typing import Any
 
+from attrs import define
+
 from provide.foundation import (
-    logger,
-    pout,
-    perr,
-    retry,
-    circuit_breaker,
     BackoffStrategy,
+    circuit_breaker,
+    logger,
+    perr,
+    pout,
+    retry,
 )
-from provide.foundation.config import env_field
-from provide.foundation.config.env import RuntimeConfig
-from provide.foundation.tracer import with_span
-from provide.foundation.metrics import counter, gauge, histogram
-from provide.foundation.file import (
-    atomic_write_text,
-    safe_read_text,
-    ensure_dir,
-)
-from provide.foundation.crypto import hash_file
 from provide.foundation.archive import TarArchive
 from provide.foundation.concurrency import async_gather
-from attrs import define
+from provide.foundation.config import env_field
+from provide.foundation.config.env import RuntimeConfig
+from provide.foundation.crypto import hash_file
+from provide.foundation.file import (
+    atomic_write_text,
+    ensure_dir,
+)
+from provide.foundation.metrics import counter, gauge, histogram
+from provide.foundation.tracer import with_span
 
 
 # Configuration
@@ -86,7 +86,7 @@ class ProcessingResult:
 
 class DataSource:
     """Simulates data fetching with retries."""
-    
+
     def __init__(self, config: PipelineConfig):
         self.config = config
         self._request_count = 0
@@ -96,18 +96,18 @@ class DataSource:
         """Fetch a batch of data with automatic retry."""
         with with_span("fetch_data") as span:
             span.set_tag("batch_id", batch_id)
-            
+
             logger.info("Fetching data batch", batch_id=batch_id)
-            
+
             # Simulate network delay
             await asyncio.sleep(0.1)
-            
+
             # Simulate occasional failures (triggers retry)
             self._request_count += 1
             if self._request_count % 5 == 0 and batch_id > 0:
                 logger.warning("Simulated timeout", attempt=self._request_count)
                 raise TimeoutError("Network timeout")
-            
+
             # Generate synthetic data
             items = []
             for i in range(self.config.batch_size):
@@ -117,14 +117,14 @@ class DataSource:
                     content=f"Data content for {item_id}",
                     metadata={"batch": batch_id, "index": i},
                 ))
-            
+
             logger.info("Batch fetched", item_count=len(items))
             return items
 
 
 class DataProcessor:
     """Processes data items with async workers."""
-    
+
     def __init__(self, config: PipelineConfig):
         self.config = config
         self.output_dir = Path(config.output_dir)
@@ -134,36 +134,36 @@ class DataProcessor:
         """Process a single item with tracing."""
         with with_span("process_item") as span:
             span.set_tag("item.id", item.id)
-            
+
             try:
                 logger.debug("Processing item", item_id=item.id)
-                
+
                 # Simulate processing
                 await asyncio.sleep(0.05)
-                
+
                 # Transform data
                 processed = {
                     "id": item.id,
                     "processed_content": item.content.upper(),
                     "metadata": item.metadata,
                 }
-                
+
                 # Write atomically
                 output_file = self.output_dir / f"{item.id}.json"
                 atomic_write_text(str(output_file), json.dumps(processed, indent=2))
-                
+
                 # Calculate checksum
                 checksum = hash_file(str(output_file), algorithm="sha256")
-                
+
                 items_processed.inc()
-                
+
                 return ProcessingResult(
                     item_id=item.id,
                     success=True,
                     output_file=str(output_file),
                     checksum=checksum,
                 )
-                
+
             except Exception as e:
                 items_failed.inc()
                 logger.exception("Failed to process", item_id=item.id)
@@ -173,11 +173,11 @@ class DataProcessor:
         """Process batch concurrently."""
         with with_span("process_batch"):
             logger.info("Processing batch", item_count=len(items))
-            
+
             # Process concurrently
             tasks = [self.process_item(item) for item in items]
             results = await async_gather(*tasks, return_exceptions=True)
-            
+
             # Handle exceptions
             processed_results = []
             for i, result in enumerate(results):
@@ -189,16 +189,16 @@ class DataProcessor:
                     ))
                 else:
                     processed_results.append(result)
-            
+
             successful = sum(1 for r in processed_results if r.success)
             logger.info("Batch complete", successful=successful, failed=len(items) - successful)
-            
+
             return processed_results
 
 
 class ArchiveManager:
     """Creates archives with checksums."""
-    
+
     def __init__(self, config: PipelineConfig):
         self.config = config
 
@@ -232,7 +232,7 @@ class ArchiveManager:
 
 class UploadService:
     """Handles uploads with circuit breaker."""
-    
+
     def __init__(self, config: PipelineConfig):
         self.config = config
         self._upload_count = 0
@@ -241,22 +241,22 @@ class UploadService:
     async def upload_archive(self, archive_path: str, checksum: str) -> bool:
         """Upload with circuit breaker protection."""
         logger.info("Uploading archive", checksum=checksum[:16])
-        
+
         await asyncio.sleep(0.2)
-        
+
         # Simulate occasional failures
         self._upload_count += 1
         if self._upload_count > 3 and self._upload_count % 3 == 0:
             logger.error("Upload failed", reason="service_unavailable")
             raise RuntimeError("Upload service unavailable")
-        
+
         logger.info("Upload successful")
         return True
 
 
 class DataPipeline:
     """Main pipeline orchestrator."""
-    
+
     def __init__(self, config: PipelineConfig):
         self.config = config
         self.data_source = DataSource(config)
@@ -268,35 +268,35 @@ class DataPipeline:
         """Run the complete pipeline."""
         with with_span("run_pipeline"):
             logger.info("Starting pipeline", batches=num_batches)
-            
+
             all_results = []
             start_time = asyncio.get_event_loop().time()
-            
+
             try:
                 # Phase 1: Fetch and process
                 for batch_id in range(num_batches):
                     logger.info("Processing batch", batch=batch_id + 1, total=num_batches)
-                    
+
                     items = await self.data_source.fetch_batch(batch_id)
                     results = await self.processor.process_batch(items)
                     all_results.extend(results)
-                
+
                 # Phase 2: Create archive
                 archive_path = str(Path(self.config.output_dir) / "results.tar.gz")
                 archive_path, size_bytes, checksum = self.archive_manager.create_archive(
                     self.config.output_dir,
                     archive_path,
                 )
-                
+
                 # Phase 3: Upload
                 await self.upload_service.upload_archive(archive_path, checksum)
-                
+
                 # Summary
                 elapsed = asyncio.get_event_loop().time() - start_time
                 processing_time.observe(elapsed)
-                
+
                 successful = sum(1 for r in all_results if r.success)
-                
+
                 summary = {
                     "total_items": len(all_results),
                     "successful": successful,
@@ -305,11 +305,11 @@ class DataPipeline:
                     "checksum": checksum,
                     "elapsed_seconds": round(elapsed, 2),
                 }
-                
+
                 logger.info("Pipeline completed", **summary)
                 return summary
-                
-            except Exception as e:
+
+            except Exception:
                 logger.exception("Pipeline failed")
                 raise
 
@@ -330,19 +330,19 @@ async def main():
     pout("  • Metrics collection")
     pout("  • Structured logging with context")
     pout("=" * 70)
-    
+
     config = PipelineConfig.from_env()
     pout(f"\n📋 Configuration: {config.pipeline_name}")
     pout(f"   Batch Size: {config.batch_size}")
     pout(f"   Output: {config.output_dir}\n")
-    
+
     pipeline = DataPipeline(config)
-    
+
     try:
         pout("🚀 Starting pipeline...\n")
-        
+
         summary = await pipeline.run(num_batches=3)
-        
+
         pout("\n" + "=" * 70)
         pout("✨ Pipeline Summary")
         pout("=" * 70)
@@ -353,14 +353,14 @@ async def main():
         pout(f"  Checksum: {summary['checksum'][:32]}...")
         pout(f"  Duration: {summary['elapsed_seconds']}s")
         pout("=" * 70)
-        
-        pout(f"\n📊 Metrics:")
+
+        pout("\n📊 Metrics:")
         pout(f"  Processed: {items_processed._value}")
         pout(f"  Failed: {items_failed._value}")
         pout(f"  Archive Size: {archive_size._value:,} bytes")
-        
+
         pout("\n✅ Pipeline completed successfully!")
-        
+
     except Exception as e:
         perr(f"\n❌ Pipeline failed: {e}")
         raise
