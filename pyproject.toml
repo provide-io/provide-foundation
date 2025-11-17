@@ -181,18 +181,12 @@ select = [
 ignore = [ "ANN401", "B008", "E501" ] # Removed ANN101, ANN102
 
 [tool.ruff.lint.per-file-ignores]
-<<<<<<< Updated upstream
 "tests/**/*.py" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN206", "C901", "B017", "SIM117", "RUF012", "RUF009", "RUF043", "UP007", "UP045", "PTH123", "PTH101", "SIM103", "SIM105", "E402"]
 "examples/**/*.py" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN206", "C901", "E402"]
 "scripts/**/*.py" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "E402", "PTH123", "C901", "PTH100", "PTH118", "PTH120", "UP031", "RUF001", "B007"]
 "chunker/**/*.py" = ["ANN001", "ANN201", "PTH118", "PTH119", "PTH123"]
 "conform.py" = ["ANN001", "ANN201", "SIM108", "PTH123", "PTH113"]  # Root level conform script
 "*.py" = ["ANN001", "ANN201", "ANN202", "C901", "RUF001", "RUF002", "B904"]  # Root level demo files and scripts
-=======
-"tests/**" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "E402"]
-"examples/**" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "E402"]
-"scripts/**" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "E402"]
->>>>>>> Stashed changes
 
 [tool.ruff.lint.isort]
 known-first-party = ["pyvider", "tests"]
