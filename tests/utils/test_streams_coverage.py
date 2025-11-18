@@ -43,9 +43,7 @@ class TestStreamsCoverage(FoundationTestCase):
         with patch("builtins.hasattr") as mock_hasattr:
 
             def hasattr_side_effect(obj, attr) -> bool:
-                if obj is sys and attr == "stderr":
-                    return False
-                return True  # Return True for other calls
+                return not (obj is sys and attr == "stderr")
 
             mock_hasattr.side_effect = hasattr_side_effect
             stream = get_safe_stderr()
