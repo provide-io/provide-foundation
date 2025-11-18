@@ -65,6 +65,8 @@ allowed_hosts = get_list("ALLOWED_HOSTS", default=["localhost"])
 - `get_float(name, default=None, required=False)` - Parse floating point numbers
 - `get_str(name, default=None, required=False)` - Get string values
 - `get_list(name, default=None, separator=",", required=False)` - Parse comma-separated lists
+- `get_tuple(name, default=None, separator=",", required=False)` - Parse comma-separated tuples
+- `get_set(name, default=None, separator=",", required=False)` - Parse comma-separated sets (duplicates removed)
 - `get_dict(name, default=None, required=False)` - Parse key=value pairs
 - `get_path(name, default=None, required=False)` - Get filesystem paths
 - `require(name)` - Require an environment variable (raises if missing)
@@ -74,11 +76,11 @@ allowed_hosts = get_list("ALLOWED_HOSTS", default=["localhost"])
 Use for building structured, validated configuration objects with file-based secret support:
 
 ```python
-from provide.foundation.config import BaseConfig, env_field
+from provide.foundation.config import RuntimeConfig, env_field
 from attrs import define
 
 @define
-class DatabaseConfig(BaseConfig):
+class DatabaseConfig(RuntimeConfig):
     host: str = env_field(env_var="DB_HOST", default="localhost")
     port: int = env_field(env_var="DB_PORT", default=5432)
     # Supports file:// prefix for reading secrets from files
@@ -100,7 +102,7 @@ config = DatabaseConfig.from_env()
 - Type validation through attrs
 - Support for `file://` prefix to read secrets from files
 - Automatic parsing based on field types
-- Integration with BaseConfig for additional features
+- Integration with RuntimeConfig for environment variable loading
 
 ### Examples
 
@@ -114,11 +116,11 @@ debug = get_bool("DEBUG", default=False)
 
 **Application configuration**:
 ```python
-from provide.foundation.config import BaseConfig, env_field
+from provide.foundation.config import RuntimeConfig, env_field
 from attrs import define
 
 @define
-class AppConfig(BaseConfig):
+class AppConfig(RuntimeConfig):
     api_key: str = env_field(env_var="API_KEY")  # Required
     timeout: int = env_field(env_var="TIMEOUT", default=30)
     retry_enabled: bool = env_field(env_var="RETRY", default=True)

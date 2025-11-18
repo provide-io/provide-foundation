@@ -139,7 +139,7 @@ class TestTempConfigFile(FoundationTestCase):
             assert config_path.exists()
             assert config_path.suffix == ".json"
 
-            with open(config_path) as f:
+            with config_path.open() as f:
                 loaded_data = json.load(f)
             assert loaded_data == config_data
 
@@ -154,7 +154,7 @@ class TestTempConfigFile(FoundationTestCase):
             assert config_path.exists()
             assert config_path.suffix == ".json"
 
-            with open(config_path) as f:
+            with config_path.open() as f:
                 content = f.read()
             assert content == config_string
 
@@ -190,7 +190,7 @@ class TestTempConfigFile(FoundationTestCase):
                 assert config_path.exists()
                 assert config_path.suffix == ".toml"
 
-                with open(config_path) as f:
+                with config_path.open() as f:
                     content = f.read()
 
                 # Check fallback format
@@ -405,7 +405,7 @@ class TestCliTestCase(FoundationTestCase):
         assert temp_path.suffix == ".txt"
         assert temp_path in test_case.temp_files
 
-        with open(temp_path) as f:
+        with temp_path.open() as f:
             assert f.read() == content
 
     def test_cli_test_case_create_temp_file_empty_content(self) -> None:
@@ -416,7 +416,7 @@ class TestCliTestCase(FoundationTestCase):
         temp_path = test_case.create_temp_file()
         assert temp_path.exists()
 
-        with open(temp_path) as f:
+        with temp_path.open() as f:
             assert f.read() == ""
 
     def test_cli_test_case_assert_json_output_valid(self) -> None:

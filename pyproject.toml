@@ -181,12 +181,14 @@ select = [
 ignore = [ "ANN401", "B008", "E501" ] # Removed ANN101, ANN102
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN206", "C901", "B017", "SIM117", "RUF012", "RUF009", "RUF043", "UP007", "UP045", "PTH123", "PTH101", "SIM103", "SIM105", "E402"]
+# Tests - Enforce pathlib (PTH123, PTH101) and clean booleans (SIM103)
+"tests/**/*.py" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN206", "C901", "B017", "SIM117", "RUF012", "RUF009", "RUF043", "UP007", "UP045", "SIM105", "E402"]
+# Examples - Show best practices
 "examples/**/*.py" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN206", "C901", "E402"]
+# Scripts - Keep os.path for compatibility
 "scripts/**/*.py" = ["ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "E402", "PTH123", "C901", "PTH100", "PTH118", "PTH120", "UP031", "RUF001", "B007"]
-"chunker/**/*.py" = ["ANN001", "ANN201", "PTH118", "PTH119", "PTH123"]
-"conform.py" = ["ANN001", "ANN201", "SIM108", "PTH123", "PTH113"]  # Root level conform script
-"*.py" = ["ANN001", "ANN201", "ANN202", "C901", "RUF001", "RUF002", "B904"]  # Root level demo files and scripts
+# Root demo files - Enforce exception chaining (B904)
+"*.py" = ["ANN001", "ANN201", "ANN202", "C901", "RUF001", "RUF002"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["pyvider", "tests"]
