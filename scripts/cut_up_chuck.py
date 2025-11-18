@@ -12,17 +12,17 @@ logging, and the custom trace level."""
 
 import asyncio
 from collections.abc import Callable  # For type hinting log_level_method
-import os
+from pathlib import Path
 import random
 import sys
 import time  # For iteration count in a long-running scenario
 from typing import Any  # For type hinting chosen_logger
 
 # Ensure the package can be found
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-src_path = os.path.join(project_root, "src")
-if src_path not in sys.path:
-    sys.path.insert(0, src_path)
+project_root = Path(__file__).resolve().parent.parent
+src_path = project_root / "src"
+if str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
 
 from provide.foundation import (
     LoggingConfig,

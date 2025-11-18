@@ -65,7 +65,7 @@ def modify_file(filepath_str) -> None:
     if not filepath.is_file():
         return
 
-    with open(filepath) as f:
+    with filepath.open() as f:
         lines = f.readlines()
 
     # Remove old emoji line if it exists
@@ -119,7 +119,7 @@ def modify_file(filepath_str) -> None:
 
     new_content_lines = header + content_lines + [emoji_line]
 
-    with open(filepath, "w") as f:
+    with filepath.open("w") as f:
         f.writelines(new_content_lines)
 
 
