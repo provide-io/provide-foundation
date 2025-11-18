@@ -176,6 +176,7 @@ config = AppConfig.from_env()
 - **Foundation reset**: ALWAYS use `reset_foundation_setup_for_testing()` in test fixtures
 - **Log stream control**: Use `set_log_stream_for_testing()` for capturing Foundation logs
 - **Context detection**: Testkit automatically detects testing environments
+- **Security scanning**: Use `SecurityFixture` or `SecurityScanner` for automated security analysis
 
 ### Standard Testing Pattern
 
@@ -190,6 +191,47 @@ from provide.testkit import (
 def reset_foundation():
     """Reset Foundation state before each test."""
     reset_foundation_setup_for_testing()
+```
+
+### Security Testing
+
+Use testkit's built-in security scanning tools to validate code security:
+
+```python
+from pathlib import Path
+from provide.testkit.quality.security import SecurityScanner
+
+def test_security_scan():
+    """Run security scan on codebase."""
+    scanner = SecurityScanner()
+    result = scanner.analyze(Path("src/"))
+
+    # Check for high-severity issues
+    assert result.metadata.get("severity", {}).get("high", 0) == 0
+
+    # Generate report
+    report = scanner.report(result, format="terminal")
+    print(report)
+```
+
+Or use as a pytest fixture:
+
+```python
+from provide.testkit.quality.security import SecurityFixture
+
+@pytest.fixture
+def security_scanner():
+    """Security scanning fixture."""
+    fixture = SecurityFixture()
+    fixture.setup()
+    yield fixture
+    fixture.teardown()
+
+def test_no_hardcoded_secrets(security_scanner):
+    """Ensure no hardcoded secrets in source."""
+    results = security_scanner.scan(Path("src/"))
+    # Assert no S105, S106 violations
+    assert "S105" not in str(results)
 ```
 
 ### FoundationTestCase Setup Pattern
