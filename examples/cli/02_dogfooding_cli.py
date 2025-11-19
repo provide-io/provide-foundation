@@ -18,6 +18,7 @@ from provide.foundation.crypto.hashing import hash_file
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.file.atomic import atomic_write_text
 from provide.foundation.file.safe import safe_read_text
+from provide.foundation.file.temp import system_temp_dir
 from provide.foundation.hub import Hub, register_command
 from provide.foundation.logger import get_logger
 from provide.foundation.parsers.primitives import parse_bool
@@ -159,7 +160,8 @@ def file_demo_command() -> None:
     """
     pout("=" * 60)
 
-    demo_file = Path("/tmp/dogfooding_demo.txt")
+    # ✅ Use system_temp_dir() instead of hardcoded /tmp
+    demo_file = system_temp_dir() / "dogfooding_demo.txt"
 
     # Write atomically (prevents corruption on failure)
     pout("\n1️⃣  Atomic Write:")
