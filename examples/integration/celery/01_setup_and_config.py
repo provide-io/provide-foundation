@@ -35,6 +35,7 @@ except ImportError:
     CELERY_AVAILABLE = False
 
 from provide.foundation import logger, perr, pout, setup_telemetry
+from provide.foundation.file.temp import system_temp_dir
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
@@ -74,7 +75,8 @@ setup_celery_logging()
 app = Celery("celery_foundation_example")
 
 # Setup filesystem directories
-temp_dir = Path("/tmp/celery_foundation")
+# ✅ Use system_temp_dir() instead of hardcoded /tmp
+temp_dir = system_temp_dir() / "celery_foundation"
 temp_dir.mkdir(exist_ok=True)
 
 # Create required directories for filesystem transport
