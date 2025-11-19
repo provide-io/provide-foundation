@@ -1,36 +1,38 @@
 # provide-testkit Improvements Needed
 
 **Generated:** 2025-11-17
+**Updated:** 2025-11-17 (after testkit 0.0.1113 update)
 **Source:** Security scanner testing in provide-foundation
 
-## Issues Found
+## Recent Updates
 
-### 1. Excessive Noise in SecurityScanner Output
+**Testkit upgraded:** 0.0.1100 → 0.0.1113
 
-**Priority:** HIGH
+### ✅ Fixed in 0.0.1113
+- **"Test in comment" spam** - Completely resolved! Output is much cleaner.
+
+## Remaining Issues
+
+### 1. Reduce "nosec" Message Noise
+
+**Priority:** MEDIUM (was HIGH, improved in 0.0.1113)
 **Effort:** LOW
 
 **Problem:**
-The SecurityScanner outputs many informational messages that clutter the actual security findings:
+The SecurityScanner still outputs "nosec encountered" messages, though much fewer than before:
 
 ```
 nosec encountered (B110), but no failed test on line 230
 nosec encountered (B110), but no failed test on line 278
-Test in comment: Test is not a test name or id, ignoring
-Test in comment: data is not a test name or id, ignoring
-... (hundreds of these lines)
+... (11 occurrences)
 ```
 
 **Impact:**
-- Hard to read actual security findings
-- Users may miss real issues in the noise
-- Poor user experience
+- Still creates some noise in output (but much better than before)
+- Users may overlook these expected annotations
 
 **Solution:**
-1. Move "nosec encountered" messages to DEBUG level or suppress entirely
-2. Move "Test in comment" warnings to DEBUG level
-3. Only show warnings/errors in default output
-4. Add verbosity control: `scanner.analyze(path, verbosity='quiet'|'normal'|'verbose')`
+Move "nosec encountered" messages to DEBUG level or suppress entirely.
 
 **Location:** `provide.testkit.quality.security.scanner`
 
@@ -127,9 +129,10 @@ Add comprehensive documentation:
 
 | Issue | Priority | Effort | Status |
 |-------|----------|--------|--------|
-| Excessive noise in output | HIGH | LOW | Open |
-| Path handling bug | MEDIUM | MEDIUM | Open |
-| No verbosity control | MEDIUM | LOW | Open |
+| "Test in comment" warnings | ~~HIGH~~ | ~~LOW~~ | ✅ **FIXED in 0.0.1113** |
+| "nosec" message noise | MEDIUM | LOW | Open |
+| Path handling bug | MEDIUM | MEDIUM | Open (not verified yet) |
+| No verbosity control | LOW | LOW | Open |
 | Insufficient documentation | LOW | MEDIUM | Open |
 
 ## Testing Recommendations
