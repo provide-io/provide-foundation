@@ -201,14 +201,11 @@ def example_env_loading() -> None:
     pout("Example 2: Environment Variable Loading")
     pout("=" * 60)
 
-    # Set some environment variables for demo
+    # Set some environment variables
     os.environ["DB_HOST"] = "prod.db.example.com"
     os.environ["DB_PORT"] = "5433"
     os.environ["DB_USER"] = "admin"
-    # ✅ SECURITY: Never hardcode real passwords. In production:
-    #    - Use environment variables from secure secret management
-    #    - Or use file:// prefix: DB_PASSWORD=file:///run/secrets/db_password
-    os.environ["DB_PASSWORD"] = "PLACEHOLDER_CHANGE_ME"
+    os.environ["DB_PASSWORD"] = "secret123"
     os.environ["DB_SSL"] = "true"
 
     # Load configuration from environment

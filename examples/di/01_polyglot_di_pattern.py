@@ -50,16 +50,9 @@ class Database:
         self.connection_string = connection_string
         print(f"[Database] Connected to {connection_string}")
 
-    def query(self, sql: str, params: tuple[object, ...] = ()) -> list[dict[str, object]]:
-        """Execute a SQL query with parameters.
-
-        Args:
-            sql: SQL query with ? placeholders
-            params: Tuple of parameters to bind to query
-
-        Security: Always use parameterized queries to prevent SQL injection.
-        """
-        print(f"[Database] Executing: {sql} with params {params}")
+    def query(self, sql: str) -> list[dict[str, object]]:
+        """Execute a SQL query."""
+        print(f"[Database] Executing: {sql}")
         # Mock implementation
         return [{"id": 1, "name": "Alice", "email": "alice@example.com"}]
 
@@ -118,9 +111,7 @@ class UserRepository:
     def find_by_id(self, user_id: int) -> User | None:
         """Find user by ID."""
         self.logger.info(f"Finding user {user_id}")
-        # ✅ SECURE: Use parameterized query to prevent SQL injection
-        # Never use f-strings or string concatenation for SQL queries
-        rows = self.db.query("SELECT * FROM users WHERE id = ?", (user_id,))
+        rows = self.db.query(f"SELECT * FROM users WHERE id = {user_id}")
         if not rows:
             return None
         row = rows[0]
