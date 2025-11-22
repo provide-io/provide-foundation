@@ -26,7 +26,6 @@ from provide.foundation.file.operations import (
     FileEventMetadata,
     OperationDetector,
 )
-from provide.foundation.file.temp import system_temp_dir
 
 
 class StreamingFileMonitor:
@@ -169,8 +168,7 @@ def demonstrate_streaming_with_timeout() -> None:
 
     # Short time window for quick demo
     monitor = StreamingFileMonitor(time_window_ms=200)
-    # ✅ Use system_temp_dir() instead of hardcoded /tmp
-    base_path = system_temp_dir() / "demo"
+    base_path = Path("/tmp/demo")
 
     # Create event
     monitor.process_event(
@@ -201,8 +199,7 @@ async def async_monitoring_demo() -> None:
     events_to_process = queue.Queue()
 
     # Add some events to queue
-    # ✅ Use system_temp_dir() instead of hardcoded /tmp
-    base_path = system_temp_dir() / "async_demo"
+    base_path = Path("/tmp/async_demo")
 
     events_to_process.put(
         FileEvent(
