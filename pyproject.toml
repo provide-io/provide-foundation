@@ -118,7 +118,7 @@ pythonpath = ["src", "."]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*", "*Tests"]
 python_functions = ["test_*", "*_test"]
-addopts = "-m 'not integration and not benchmark and not slow and not time_sensitive and not external_service' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean --dist worksteal"
+addopts = "-m 'not integration and not benchmark and not slow and not time_sensitive and not external_service' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean --dist load"
 markers = [
     "serial: run tests serially to avoid event loop conflicts",
     "time_sensitive: tests with strict timing requirements (run serially)",
