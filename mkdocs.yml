@@ -1,3 +1,7 @@
+# Inherit shared configuration from provide-foundry
+INHERIT: .provide/foundry/base-mkdocs.yml
+
+# Project-Specific Configuration
 site_name: provide-foundation
 site_description: Beautiful, Performant, Structured Logging for Python - Enterprise-grade telemetry built on structlog
 site_author: provide.io
@@ -63,8 +67,6 @@ plugins:
         - docs/reference/gen_ref_pages.py
   - literate-nav:
       nav_file: SUMMARY.md
-  - macros:
-      include_dir: docs/.shared-theme/data
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -101,16 +103,7 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
 
-extra_css:
-  - .shared-theme/stylesheets/provide-theme.css
-  - .shared-theme/stylesheets/termynal.css
-  - stylesheets/extra.css  # Project-specific overrides
-
-extra_javascript:
-  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
-  - .shared-theme/javascripts/mermaid-init.js
-  - .shared-theme/javascripts/termynal.js
-  - .shared-theme/javascripts/custom.js
+# CSS and JavaScript are inherited from base-mkdocs.yml
 
 nav:
   - Home: index.md
