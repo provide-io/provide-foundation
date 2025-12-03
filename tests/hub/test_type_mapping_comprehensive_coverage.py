@@ -128,7 +128,6 @@ class TestExtractClickTypeOptionalTypes(FoundationTestCase):
         assert result is CustomType
 
 
-@pytest.mark.skipif(sys.version_info < (3, 10), reason="Python 3.10+ union syntax")
 class TestExtractClickTypeModernUnionSyntax(FoundationTestCase):
     """Test extract_click_type with Python 3.10+ union syntax."""
 
@@ -170,16 +169,10 @@ class TestExtractClickTypeUnionTypeDetection(FoundationTestCase):
 
         assert origin is typing.Union
 
-    @pytest.mark.skipif(
-        not hasattr(types, "UnionType"),
-        reason="UnionType not available",
-    )
     def test_types_union_detection(self) -> None:
         """Test detection of types.UnionType (Python 3.10+)."""
-        # Create a UnionType if available
-        if hasattr(types, "UnionType"):
-            union_annotation = eval("str | int")
-            assert isinstance(union_annotation, types.UnionType)
+        union_annotation = eval("str | int")
+        assert isinstance(union_annotation, types.UnionType)
 
     def test_union_args_extraction(self) -> None:
         """Test extraction of union arguments."""
