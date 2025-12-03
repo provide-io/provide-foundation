@@ -12,6 +12,18 @@ from __future__ import annotations
 
 from typing import Any
 
+import pytest
+
+# Check if pytest-benchmark is available
+try:
+    import pytest_benchmark  # noqa: F401
+
+    HAS_BENCHMARK = True
+except ImportError:
+    HAS_BENCHMARK = False
+
+pytestmark = pytest.mark.skipif(not HAS_BENCHMARK, reason="pytest-benchmark not installed")
+
 from provide.testkit import FoundationTestCase
 
 from provide.foundation.utils.environment import EnvPrefix

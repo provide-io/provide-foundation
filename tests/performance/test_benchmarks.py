@@ -3,10 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""TODO: Add module docstring."""
-
-from __future__ import annotations
-
 """Performance benchmarks using pytest-benchmark.
 
 This module provides pytest-benchmark integration for Foundation's performance
@@ -20,6 +16,18 @@ even after internal improvements like dogfooding structured logging.
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 import io
+
+import pytest
+
+# Check if pytest-benchmark is available
+try:
+    import pytest_benchmark  # noqa: F401
+
+    HAS_BENCHMARK = True
+except ImportError:
+    HAS_BENCHMARK = False
+
+pytestmark = pytest.mark.skipif(not HAS_BENCHMARK, reason="pytest-benchmark not installed")
 
 from provide.testkit import (
     FoundationTestCase,
