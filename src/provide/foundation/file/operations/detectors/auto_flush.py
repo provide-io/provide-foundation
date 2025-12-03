@@ -16,7 +16,7 @@ import threading
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from provide.foundation.file.operations.detectors.types import (  # type: ignore[import-untyped]
+    from provide.foundation.file.operations.detectors.types import (
         FileEvent,
         FileOperation,
     )

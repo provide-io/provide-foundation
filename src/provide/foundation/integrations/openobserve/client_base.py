@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Self
 from urllib.parse import urljoin
 
 from provide.foundation.hub import get_hub
@@ -70,7 +70,7 @@ class OpenObserveClientBase:
         )
 
     @classmethod
-    def from_config(cls) -> OpenObserveClientBase:
+    def from_config(cls) -> Self:
         """Create client from OpenObserveConfig.
 
         Returns:

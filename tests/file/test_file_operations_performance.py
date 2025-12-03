@@ -14,6 +14,14 @@ import time
 from provide.testkit import FoundationTestCase
 import pytest
 
+# Check if pytest-benchmark is available
+try:
+    import pytest_benchmark  # noqa: F401
+
+    HAS_BENCHMARK = True
+except ImportError:
+    HAS_BENCHMARK = False
+
 from provide.foundation.file.operations import (
     DetectorConfig,
     FileEvent,
@@ -27,6 +35,7 @@ from provide.foundation.file.quality import (
 )
 
 
+@pytest.mark.skipif(not HAS_BENCHMARK, reason="pytest-benchmark not installed")
 class TestFileOperationsPerformance(FoundationTestCase):
     """Performance benchmarks for file operations detection."""
 
