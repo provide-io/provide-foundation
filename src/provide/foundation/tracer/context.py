@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -78,7 +77,7 @@ class SpanContext:
         return self.span
 
     def __exit__(
-        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any
+        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, _exc_tb: Any
     ) -> None:
         """Exit the span context."""
         if exc_type is not None:

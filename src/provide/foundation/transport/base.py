@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -127,7 +126,7 @@ class Transport(Protocol):
         return self
 
     async def __aexit__(
-        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any
+        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, _exc_tb: Any
     ) -> None:
         """Context manager exit."""
         await self.disconnect()
@@ -175,7 +174,7 @@ class TransportBase(ABC):
         return self
 
     async def __aexit__(
-        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any
+        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, _exc_tb: Any
     ) -> None:
         await self.disconnect()
 

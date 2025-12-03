@@ -33,7 +33,7 @@ classifiers = [
 ]
 dependencies = [
     "aiofiles>=23.2.1",
-    "attrs>=23.1.0",
+    "attrs>=25.3.0",
     "structlog>=25.3.0",
     "tomli_w>=1.0.0",
 ]
@@ -48,7 +48,7 @@ Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
 
 [project.optional-dependencies]
 cli = [
-    "click>=8.1.7",
+    "click>=8.1.8",
 ]
 compression = [
     "zstandard>=0.22.0",
@@ -57,7 +57,7 @@ crypto = [
     "cryptography>=45.0.7",
 ]
 transport = [
-    "httpx>=0.27.0",
+    "httpx>=0.28.1",
 ]
 opentelemetry = [
     "opentelemetry-api>=1.22.0",

@@ -75,7 +75,7 @@ class TestWaitForProcessOutput(FoundationTestCase):
             [
                 sys.executable,
                 "-c",
-                "import sys; print('start|middle|end', flush=True)",
+                "import sys, time; print('start|middle|end', flush=True); time.sleep(1)",
             ],
             capture_output=True,
             text_mode=True,
@@ -216,7 +216,7 @@ class TestProcessLifecycleIntegration(FoundationTestCase):
             [
                 sys.executable,
                 "-c",
-                "import sys; print('ready', flush=True); import time; time.sleep(1)",
+                "import sys, time; print('ready', flush=True); time.sleep(2)",
             ],
             capture_output=True,
             text_mode=True,
