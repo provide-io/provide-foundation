@@ -160,14 +160,9 @@ class TestFileFormats(FoundationTestCase):
 
     # YAML Tests
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("yaml", reason="PyYAML not installed"),
-        reason="PyYAML required",
-    )
     def test_read_yaml(self, temp_directory: Path) -> None:
         """Test reading YAML file."""
-
-        import yaml
+        yaml = pytest.importorskip("yaml")
 
         path = temp_directory / "test.yaml"
         data = {"name": "test", "value": 42, "items": [1, 2, 3]}
@@ -176,13 +171,9 @@ class TestFileFormats(FoundationTestCase):
         result = read_yaml(path)
         assert result == data
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("yaml", reason="PyYAML not installed"),
-        reason="PyYAML required",
-    )
     def test_read_yaml_missing_file(self, temp_directory: Path) -> None:
         """Test reading missing YAML file returns default."""
-
+        pytest.importorskip("yaml")
         path = temp_directory / "nonexistent.yaml"
 
         result = read_yaml(path)
@@ -192,28 +183,18 @@ class TestFileFormats(FoundationTestCase):
         result = read_yaml(path, default=default)
         assert result == default
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("yaml", reason="PyYAML not installed"),
-        reason="PyYAML required",
-    )
     def test_read_yaml_invalid(self, temp_directory: Path) -> None:
         """Test reading invalid YAML returns default."""
-
+        pytest.importorskip("yaml")
         path = temp_directory / "invalid.yaml"
         path.write_text("@invalid: [yaml content")
 
         result = read_yaml(path)
         assert result is None
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("yaml", reason="PyYAML not installed"),
-        reason="PyYAML required",
-    )
     def test_write_yaml(self, temp_directory: Path) -> None:
         """Test writing YAML file."""
-
-        import yaml
-
+        yaml = pytest.importorskip("yaml")
         path = temp_directory / "test.yaml"
         data = {"name": "test", "value": 42, "nested": {"key": "value"}}
 
@@ -223,13 +204,9 @@ class TestFileFormats(FoundationTestCase):
         loaded = yaml.safe_load(path.read_text())
         assert loaded == data
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("yaml", reason="PyYAML not installed"),
-        reason="PyYAML required",
-    )
     def test_write_yaml_flow_style(self, temp_directory: Path) -> None:
         """Test writing YAML in flow style."""
-
+        pytest.importorskip("yaml")
         path = temp_directory / "test.yaml"
         data = {"a": [1, 2, 3]}
 
@@ -238,15 +215,9 @@ class TestFileFormats(FoundationTestCase):
         content = path.read_text()
         assert "{a: [1, 2, 3]}" in content
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("yaml", reason="PyYAML not installed"),
-        reason="PyYAML required",
-    )
     def test_write_yaml_unicode(self, temp_directory: Path) -> None:
         """Test writing YAML with Unicode."""
-
-        import yaml
-
+        yaml = pytest.importorskip("yaml")
         path = temp_directory / "test.yaml"
         data = {"message": "Hello 世界 🚀"}
 
@@ -305,13 +276,9 @@ foo = "1.2.3"
         result = read_toml(path)
         assert result == {}
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("tomli_w", reason="tomli-w not installed"),
-        reason="tomli-w required for TOML writing",
-    )
     def test_write_toml(self, temp_directory: Path) -> None:
         """Test writing TOML file."""
-
+        pytest.importorskip("tomli_w")
         import tomllib
 
         path = temp_directory / "test.toml"
@@ -326,13 +293,9 @@ foo = "1.2.3"
         loaded = tomllib.loads(path.read_text())
         assert loaded == data
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("tomli_w", reason="tomli-w not installed"),
-        reason="tomli-w required for TOML writing",
-    )
     def test_write_toml_creates_parent_dirs(self, temp_directory: Path) -> None:
         """Test write_toml creates parent directories."""
-
+        pytest.importorskip("tomli_w")
         path = temp_directory / "subdir" / "nested" / "test.toml"
         data = {"test": {"value": True}}
 
@@ -340,13 +303,9 @@ foo = "1.2.3"
 
         assert path.exists()
 
-    @pytest.mark.skipif(
-        not pytest.importorskip("tomli_w", reason="tomli-w not installed"),
-        reason="tomli-w required for TOML writing",
-    )
     def test_write_toml_non_atomic(self, temp_directory: Path) -> None:
         """Test non-atomic TOML write."""
-
+        pytest.importorskip("tomli_w")
         path = temp_directory / "test.toml"
         data = {"test": True}
 
