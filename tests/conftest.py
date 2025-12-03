@@ -378,6 +378,22 @@ __all__ = [
     # "time_machine",  # Not available in current testkit version
     "valid_cert_pem",
     "valid_key_pem",
+    "benchmark",
 ]
+
+
+# Only define benchmark fixture if pytest-benchmark is NOT installed
+# This prevents shadowing the real benchmark fixture when it's available
+try:
+    import pytest_benchmark  # noqa: F401
+
+    # pytest-benchmark is installed, it will provide the benchmark fixture
+except ImportError:
+    # pytest-benchmark not installed, provide a skip fixture
+    @pytest.fixture
+    def benchmark():
+        """Benchmark fixture that skips when pytest-benchmark is not installed."""
+        pytest.skip("pytest-benchmark not installed")
+
 
 # 🧱🏗️🔚
