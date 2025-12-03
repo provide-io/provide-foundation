@@ -30,49 +30,43 @@ except ImportError:
 class TestZstdCompressorInitialization(FoundationTestCase):
     """Tests for ZstdCompressor initialization."""
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
+    pytestmark = pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
+
     def test_zstd_compressor_default_level(self) -> None:
         """Test ZstdCompressor with default compression level."""
         compressor = ZstdCompressor()
         assert compressor.level == 3  # DEFAULT_ZSTD_COMPRESSION_LEVEL
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_zstd_compressor_custom_level(self) -> None:
         """Test ZstdCompressor with custom compression level."""
         compressor = ZstdCompressor(level=10)
         assert compressor.level == 10
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_zstd_compressor_min_level(self) -> None:
         """Test ZstdCompressor with minimum compression level."""
         compressor = ZstdCompressor(level=1)
         assert compressor.level == 1
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_zstd_compressor_max_level(self) -> None:
         """Test ZstdCompressor with maximum compression level."""
         compressor = ZstdCompressor(level=22)
         assert compressor.level == 22
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_zstd_compressor_invalid_level_too_low(self) -> None:
         """Test ZstdCompressor rejects level below 1."""
         with pytest.raises(ValueError, match="must be between 1 and 22"):
             ZstdCompressor(level=0)
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_zstd_compressor_invalid_level_too_high(self) -> None:
         """Test ZstdCompressor rejects level above 22."""
         with pytest.raises(ValueError, match="must be between 1 and 22"):
             ZstdCompressor(level=23)
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_zstd_compressor_invalid_level_negative(self) -> None:
         """Test ZstdCompressor rejects negative level."""
         with pytest.raises(ValueError, match="must be between 1 and 22"):
             ZstdCompressor(level=-1)
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_zstd_compressor_format_name(self) -> None:
         """Test ZstdCompressor format_name property."""
         compressor = ZstdCompressor()
@@ -82,7 +76,8 @@ class TestZstdCompressorInitialization(FoundationTestCase):
 class TestZstdCompressorBytes(FoundationTestCase):
     """Tests for bytes compression and decompression."""
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
+    pytestmark = pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
+
     def test_compress_bytes(self) -> None:
         """Test compressing bytes."""
         compressor = ZstdCompressor()
@@ -93,7 +88,6 @@ class TestZstdCompressorBytes(FoundationTestCase):
         assert len(compressed) < len(data)
         assert compressed != data
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_decompress_bytes(self) -> None:
         """Test decompressing bytes."""
         compressor = ZstdCompressor()
@@ -105,7 +99,6 @@ class TestZstdCompressorBytes(FoundationTestCase):
 
         assert decompressed == original
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_compress_bytes_empty(self) -> None:
         """Test compressing empty bytes."""
         compressor = ZstdCompressor()
@@ -114,7 +107,6 @@ class TestZstdCompressorBytes(FoundationTestCase):
 
         assert decompressed == b""
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_compress_bytes_different_levels(self) -> None:
         """Test that different compression levels work."""
         data = b"Hello, World! " * 100
@@ -134,7 +126,6 @@ class TestZstdCompressorBytes(FoundationTestCase):
         # Higher level should produce smaller or equal size
         assert len(compressed22) <= len(compressed1)
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_compress_bytes_large_data(self) -> None:
         """Test compressing large data."""
         compressor = ZstdCompressor()
@@ -152,7 +143,8 @@ class TestZstdCompressorBytes(FoundationTestCase):
 class TestZstdCompressorStream(FoundationTestCase):
     """Tests for stream compression and decompression."""
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
+    pytestmark = pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
+
     def test_compress_stream(self) -> None:
         """Test compressing stream using bytes compression as oracle."""
         compressor = ZstdCompressor()
@@ -168,7 +160,6 @@ class TestZstdCompressorStream(FoundationTestCase):
         # This should not raise
         compressor._compress_stream(input_stream, output_stream)
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_decompress_stream(self) -> None:
         """Test decompressing stream via round trip."""
         compressor = ZstdCompressor()
@@ -180,7 +171,6 @@ class TestZstdCompressorStream(FoundationTestCase):
 
         assert decompressed == original
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_compress_stream_empty(self) -> None:
         """Test compressing empty stream."""
         compressor = ZstdCompressor()
@@ -243,13 +233,13 @@ class TestZstdCompressorImportError(FoundationTestCase):
 class TestZstdCompressorValidation(FoundationTestCase):
     """Tests for validation logic."""
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
+    pytestmark = pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
+
     def test_level_must_be_int(self) -> None:
         """Test that level must be an integer."""
         with pytest.raises(TypeError):
             ZstdCompressor(level="3")  # type: ignore[arg-type]
 
-    @pytest.mark.skipif(not _HAS_ZSTD, reason="zstandard package not installed")
     def test_level_boundary_values(self) -> None:
         """Test compression level boundary values."""
         # Test all valid levels work
