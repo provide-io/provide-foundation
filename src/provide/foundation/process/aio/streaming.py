@@ -193,9 +193,12 @@ async def async_stream(
                 for line in lines:
                     yield line
             else:
-                # No timeout - stream normally
+                # No timeout - stream normally using readline for proper line buffering
                 if process.stdout:
-                    async for line in process.stdout:
+                    while True:
+                        line = await process.stdout.readline()
+                        if not line:
+                            break
                         yield line.decode(errors="replace").rstrip()
 
                 # Wait for process to complete and check exit code
