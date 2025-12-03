@@ -23,9 +23,29 @@ log = get_logger(__name__)
 
 
 def _drain_remaining_output(process: ManagedProcess, buffer: str) -> str:
-    """Drain any remaining output from process pipes."""
-    if process._process and process._process.stdout:
-        try:
+    """Drain any remaining output from process pipes.
+
+    Uses communicate() for exited processes to properly drain all buffered output.
+    Falls back to direct read() for running processes or if communicate() fails.
+    """
+    if not process._process:
+        return buffer
+
+    try:
+        # For exited processes, communicate() is the reliable way to get all output
+        # It handles pipe draining correctly even after process termination
+        if process._process.poll() is not None:
+            # Process has exited - use communicate to drain pipes
+            stdout_data, _ = process._process.communicate(timeout=1.0)
+            if stdout_data:
+                if isinstance(stdout_data, bytes):
+                    remaining = stdout_data.decode("utf-8", errors="replace")
+                else:
+                    remaining = str(stdout_data)
+                buffer += remaining
+                log.debug("Drained output via communicate()", size=len(remaining))
+        elif process._process.stdout:
+            # Process still running - try non-blocking read
             remaining = process._process.stdout.read()
             if remaining:
                 buffer += (
@@ -33,12 +53,14 @@ def _drain_remaining_output(process: ManagedProcess, buffer: str) -> str:
                     if isinstance(remaining, bytes)
                     else str(remaining)
                 )
-                log.debug("Read remaining output from exited process", size=len(remaining))
-        except (OSError, ValueError, AttributeError):
-            # OSError: stream/file read errors
-            # ValueError: invalid stream state or decoding errors
-            # AttributeError: stdout/stderr unavailable
-            pass
+                log.debug("Read remaining output from process", size=len(remaining))
+    except (OSError, ValueError, AttributeError, TimeoutError):
+        # OSError: stream/file read errors
+        # ValueError: invalid stream state or decoding errors
+        # AttributeError: stdout/stderr unavailable
+        # TimeoutError: communicate() timed out
+        pass
+
     return buffer
 
 
