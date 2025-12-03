@@ -60,6 +60,7 @@ class TestBasicLoggingPerformance(FoundationTestCase):
 
         Target: >14,000 messages per second
         """
+        pytest.importorskip("pytest_benchmark")
         config = TelemetryConfig(
             logging=LoggingConfig(
                 default_level="INFO",
@@ -90,6 +91,7 @@ class TestBasicLoggingPerformance(FoundationTestCase):
 
         Target: >500 messages per second for JSON formatting
         """
+        pytest.importorskip("pytest_benchmark")
         config = TelemetryConfig(
             logging=LoggingConfig(
                 default_level="INFO",
@@ -123,6 +125,7 @@ class TestBasicLoggingPerformance(FoundationTestCase):
 
     def test_emoji_processing_performance(self, benchmark) -> None:
         """Benchmark emoji processing overhead."""
+        pytest.importorskip("pytest_benchmark")
         config = TelemetryConfig(
             logging=LoggingConfig(
                 default_level="INFO",
@@ -162,6 +165,7 @@ class TestConcurrentPerformance(FoundationTestCase):
 
     def test_multithreaded_logging_performance(self, benchmark) -> None:
         """Benchmark thread safety and concurrent performance."""
+        pytest.importorskip("pytest_benchmark")
         config = TelemetryConfig(
             logging=LoggingConfig(
                 default_level="INFO",
@@ -203,6 +207,7 @@ class TestConcurrentPerformance(FoundationTestCase):
 
     def test_level_filtering_performance(self, benchmark) -> None:
         """Benchmark log level filtering efficiency."""
+        pytest.importorskip("pytest_benchmark")
         config = TelemetryConfig(
             logging=LoggingConfig(
                 default_level="ERROR",  # High threshold to filter most messages
@@ -239,6 +244,7 @@ class TestDogfoodingPerformance(FoundationTestCase):
 
     def test_config_warning_performance(self, benchmark) -> None:
         """Benchmark config system warning generation with structured logging."""
+        pytest.importorskip("pytest_benchmark")
 
         def generate_config_warnings() -> None:
             """Test config warnings (which now use structured logging)."""
@@ -257,6 +263,7 @@ class TestDogfoodingPerformance(FoundationTestCase):
 
     def test_foundation_setup_performance(self, benchmark) -> None:
         """Benchmark Foundation setup with structured logging improvements."""
+        pytest.importorskip("pytest_benchmark")
 
         def foundation_setup() -> None:
             """Test the improved Foundation setup process."""
@@ -278,6 +285,7 @@ class TestDogfoodingPerformance(FoundationTestCase):
 
     def test_core_setup_logger_performance(self, benchmark) -> None:
         """Benchmark the Foundation setup process with structured logging."""
+        pytest.importorskip("pytest_benchmark")
 
         def foundation_setup_cycle() -> None:
             """Test the Foundation setup/reset cycle performance."""
@@ -306,6 +314,7 @@ class TestLargePayloadPerformance(FoundationTestCase):
 
     def test_large_payload_performance(self, benchmark) -> None:
         """Benchmark performance with large structured data."""
+        pytest.importorskip("pytest_benchmark")
         config = TelemetryConfig(
             logging=LoggingConfig(
                 default_level="INFO",

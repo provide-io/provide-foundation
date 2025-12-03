@@ -39,6 +39,7 @@ class TestParserCachingBenchmarks(FoundationTestCase):
         This measures the cost of regex compilation and matching
         on every call without any caching benefits.
         """
+        pytest.importorskip("pytest_benchmark")
 
         def parse_multiple_durations() -> None:
             """Parse various duration formats."""
@@ -58,6 +59,7 @@ class TestParserCachingBenchmarks(FoundationTestCase):
 
         Expected: 10-50x faster than uncached baseline.
         """
+        pytest.importorskip("pytest_benchmark")
 
         # Prime the cache with common formats
         common_formats = ["30s", "5m", "2h", "1d", "1h30m"]
@@ -76,6 +78,7 @@ class TestParserCachingBenchmarks(FoundationTestCase):
 
         Expected: 10-50x faster than uncached baseline.
         """
+        pytest.importorskip("pytest_benchmark")
 
         # Prime the cache
         common_formats = ["1KB", "10MB", "1GB", "1.5GB", "500MB"]
@@ -98,6 +101,7 @@ class TestEnvPrefixCachingBenchmarks(FoundationTestCase):
 
         Expected: 5-20x faster than uncached baseline.
         """
+        pytest.importorskip("pytest_benchmark")
         env = EnvPrefix("APP")
 
         # Prime the cache
@@ -121,6 +125,7 @@ class TestRealWorldScenarios(FoundationTestCase):
 
         Expected: 3-10x faster than uncached baseline.
         """
+        pytest.importorskip("pytest_benchmark")
 
         # Prime all caches with first load
         parse_duration("30s")
@@ -155,6 +160,7 @@ class TestRealWorldScenarios(FoundationTestCase):
 
         Expected: 20-100x faster than uncached baseline.
         """
+        pytest.importorskip("pytest_benchmark")
 
         # Prime cache
         parse_duration("30s")

@@ -41,6 +41,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
 
     def test_single_operation_detection_performance(self, benchmark) -> None:
         """Benchmark single operation detection."""
+        pytest.importorskip("pytest_benchmark")
         detector = OperationDetector()
         base_time = datetime.now()
 
@@ -70,6 +71,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
 
     def test_batch_operation_detection_performance(self, benchmark) -> None:
         """Benchmark batch operation detection with many files."""
+        pytest.importorskip("pytest_benchmark")
         detector = OperationDetector()
         base_time = datetime.now()
 
@@ -97,6 +99,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
 
     def test_streaming_detection_performance(self, benchmark) -> None:
         """Benchmark streaming detection performance."""
+        pytest.importorskip("pytest_benchmark")
         detector = OperationDetector()
         base_time = datetime.now()
 
@@ -133,6 +136,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
 
     def test_large_event_set_performance(self, benchmark) -> None:
         """Benchmark detection with large number of mixed events."""
+        pytest.importorskip("pytest_benchmark")
         detector = OperationDetector()
         base_time = datetime.now()
 
@@ -195,6 +199,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
 
     def test_detector_configuration_performance(self, benchmark) -> None:
         """Benchmark different detector configurations."""
+        pytest.importorskip("pytest_benchmark")
         # Test with different time window configurations
         configs = [
             DetectorConfig(time_window_ms=100),
@@ -229,6 +234,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
 
     def test_quality_analyzer_performance(self, benchmark) -> None:
         """Benchmark quality analysis performance."""
+        pytest.importorskip("pytest_benchmark")
         analyzer = QualityAnalyzer()
 
         # Add standard test cases
@@ -252,6 +258,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
     @pytest.mark.parametrize("event_count", [10, 50, 100, 500])
     def test_scalability_with_event_count(self, benchmark, event_count: int) -> None:
         """Test scalability with different event counts."""
+        pytest.importorskip("pytest_benchmark")
         detector = OperationDetector()
         base_time = datetime.now()
 
@@ -383,6 +390,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
 
     def test_pattern_complexity_performance(self, benchmark) -> None:
         """Test performance with complex file patterns."""
+        pytest.importorskip("pytest_benchmark")
         detector = OperationDetector()
         base_time = datetime.now()
 

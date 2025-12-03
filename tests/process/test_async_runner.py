@@ -121,8 +121,14 @@ class TestAsyncStreamCommand(FoundationTestCase):
         """Test streaming command output."""
         lines = []
 
+        # Use sleep between prints to force line-by-line buffering in subprocess pipes
         async for line in async_stream(
-            [sys.executable, "-c", "for i in range(3): print(f'line {i}')"],
+            [
+                sys.executable,
+                "-u",
+                "-c",
+                "import time; [print(f'line {i}', flush=True) or time.sleep(0.01) for i in range(3)]",
+            ],
         ):
             lines.append(line)
 
