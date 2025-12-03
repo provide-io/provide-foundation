@@ -210,7 +210,8 @@ class TestOutputJson(FoundationTestCase):
 
             mock_click.echo.assert_called_once()
             _, kwargs = mock_click.echo.call_args
-            assert kwargs["file"] is sys.stdout
+            # Check it's a stdout stream (pytest captures stdout, so can't use identity check)
+            assert kwargs["file"].name == "<stdout>"
 
 
 class TestPoutFunction(FoundationTestCase):
