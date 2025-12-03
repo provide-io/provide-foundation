@@ -8,9 +8,17 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from provide.foundation.errors.decorators import resilient
+
+if TYPE_CHECKING:
+    from provide.foundation.integrations.openobserve.client_base import OpenObserveClientBase
+
+    _MixinBase = OpenObserveClientBase
+else:
+    _MixinBase = object
+
 from provide.foundation.integrations.openobserve.exceptions import OpenObserveQueryError
 from provide.foundation.integrations.openobserve.models import (
     SearchQuery,
@@ -23,7 +31,7 @@ from provide.foundation.logger import get_logger
 log = get_logger(__name__)
 
 
-class SearchOperationsMixin:
+class SearchOperationsMixin(_MixinBase):
     """Mixin providing search and streams operations."""
 
     async def search(

@@ -7,14 +7,21 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from provide.foundation.integrations.openobserve.client_base import OpenObserveClientBase
+
+    _MixinBase = OpenObserveClientBase
+else:
+    _MixinBase = object
 
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 
 
-class MetricsOperationsMixin:
+class MetricsOperationsMixin(_MixinBase):
     """Mixin providing Prometheus-compatible metrics operations."""
 
     async def list_metrics(self) -> list[str]:
