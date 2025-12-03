@@ -318,20 +318,22 @@ class TestManagedProcessTermination(FoundationTestCase):
 
     def test_terminate_gracefully_timeout(self) -> None:
         """Test graceful termination with timeout (kill)."""
-        # Create a process that ignores SIGTERM
+        # Create a process that ignores SIGTERM and confirms handler installation
         proc = ManagedProcess(
             [
                 sys.executable,
                 "-c",
-                "import signal, time; signal.signal(signal.SIGTERM, signal.SIG_IGN); time.sleep(1)",
+                "import signal, time, sys; signal.signal(signal.SIGTERM, signal.SIG_IGN); "
+                "print('ready', flush=True); time.sleep(10)",
             ],
+            capture_output=True,
+            text_mode=True,
         )
         proc.launch()
 
-        # Give process time to install signal handler
-        import time
-
-        time.sleep(0.1)
+        # Wait for confirmation that signal handler is installed
+        line = proc._process.stdout.readline()  # type: ignore[union-attr]
+        assert "ready" in line
 
         # Should timeout and force kill (returns False because force-killed)
         result = proc.terminate_gracefully(timeout=0.5)

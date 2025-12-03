@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -156,13 +155,13 @@ class QueuedRateLimiter:
         self.start()
         return self
 
-    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> None:
+    def __exit__(self, exc_type: Any, exc_val: Any, _exc_tb: Any) -> None:
         """Exit context manager, automatically stopping the worker thread.
 
         Args:
             exc_type: Exception type (if any)
             exc_val: Exception value (if any)
-            exc_tb: Exception traceback (if any)
+            _exc_tb: Exception traceback (unused)
         """
         self.stop()
 

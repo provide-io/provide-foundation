@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -359,14 +358,12 @@ class FileLock:
             log.debug("Error checking stale lock", path=str(self.path), error=str(e))
             return False
 
-        return False
-
     def __enter__(self) -> FileLock:
         """Context manager entry."""
         self.acquire()
         return self
 
-    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
+    def __exit__(self, exc_type: object, exc_val: object, _exc_tb: object) -> None:
         """Context manager exit."""
         self.release()
 

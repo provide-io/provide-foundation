@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""TODO: Add module docstring."""
 
 from __future__ import annotations
 
@@ -25,11 +24,11 @@ orchestrating logging, tracing, and other subsystems.
 _EXPLICIT_SETUP_DONE = False
 
 
-async def shutdown_foundation(timeout_millis: int = 5000) -> None:
+async def shutdown_foundation(_timeout_millis: int = 5000) -> None:
     """Gracefully shutdown all Foundation subsystems.
 
     Args:
-        timeout_millis: Timeout for shutdown (currently unused)
+        _timeout_millis: Timeout for shutdown (reserved for future use)
 
     """
     with get_lock_manager().acquire("foundation.logger.setup"):
