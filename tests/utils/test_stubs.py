@@ -85,14 +85,14 @@ class TestCreateFunctionStub(FoundationTestCase):
 
     def test_function_stub_error_message(self) -> None:
         """Test that function stub error includes install instructions."""
-        stub_func = create_function_stub("mkdocs", "docs")
+        stub_func = create_function_stub("httpx", "transport")
 
         with pytest.raises(DependencyError) as exc_info:
             stub_func()
 
         error_msg = str(exc_info.value)
-        assert "mkdocs" in error_msg
-        assert "provide-foundation[docs]" in error_msg
+        assert "httpx" in error_msg
+        assert "provide-foundation[transport]" in error_msg
 
     def test_function_stub_accepts_args(self) -> None:
         """Test that function stub accepts arguments before raising."""
@@ -103,10 +103,10 @@ class TestCreateFunctionStub(FoundationTestCase):
 
     def test_function_stub_has_meaningful_name(self) -> None:
         """Test that function stub has a meaningful name."""
-        stub_func = create_function_stub("mkdocs", "docs")
+        stub_func = create_function_stub("httpx", "transport")
 
-        assert stub_func.__name__ == "docs_stub"
-        assert stub_func.__qualname__ == "docs_stub"
+        assert stub_func.__name__ == "transport_stub"
+        assert stub_func.__qualname__ == "transport_stub"
 
 
 class TestCreateModuleStub(FoundationTestCase):
@@ -147,25 +147,12 @@ class TestStubIntegration(FoundationTestCase):
 
         assert isinstance(_HAS_HTTPX, bool)
 
-    def test_docs_module_has_mkdocs_flag(self) -> None:
-        """Test that docs module exports _HAS_MKDOCS flag."""
-        from provide.foundation.docs import _HAS_MKDOCS
-
-        assert isinstance(_HAS_MKDOCS, bool)
-
     def test_transport_imports_successfully(self) -> None:
         """Test that transport module can be imported regardless of httpx availability."""
         # This test verifies graceful degradation - module always imports
         from provide.foundation.transport import HTTPTransport
 
         assert HTTPTransport is not None
-
-    def test_docs_imports_successfully(self) -> None:
-        """Test that docs module can be imported regardless of mkdocs availability."""
-        # This test verifies graceful degradation - module always imports
-        from provide.foundation.docs import APIDocGenerator
-
-        assert APIDocGenerator is not None
 
     def test_stub_utilities_exported_from_utils(self) -> None:
         """Test that stub utilities are accessible from utils module."""

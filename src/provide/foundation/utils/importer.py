@@ -27,7 +27,6 @@ MAX_LAZY_IMPORT_DEPTH = 5
 SPECIAL_MODULES = {
     "cli": "CLI features require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
     "transport": "HTTP/HTTPS transport requires optional dependencies. Install with: pip install 'provide-foundation[transport]'",
-    "docs": "Documentation generation requires optional dependencies. Install with: pip install 'provide-foundation[docs]'",
 }
 
 
@@ -42,7 +41,6 @@ def lazy_import(parent_module: str, name: str) -> object:
     Commonly lazy-loaded modules:
     - cli: Requires optional 'click' dependency
     - crypto: Cryptographic utilities
-    - docs: Documentation generation
     - formatting: Text formatting utilities
     - metrics: Metrics collection
     - observability: Observability features
@@ -120,11 +118,7 @@ def lazy_import(parent_module: str, name: str) -> object:
             if name in SPECIAL_MODULES:
                 error_str = str(e)
                 # Check if error is about missing dependency for this feature
-                if (
-                    (name == "cli" and "click" in error_str)
-                    or (name == "transport" and "httpx" in error_str)
-                    or (name == "docs" and ("mkdocs" in error_str or "mkdocstrings" in error_str))
-                ):
+                if (name == "cli" and "click" in error_str) or (name == "transport" and "httpx" in error_str):
                     raise ImportError(SPECIAL_MODULES[name]) from e
             raise
     finally:
