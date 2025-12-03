@@ -146,8 +146,6 @@ __all__ = [
     "config",
     # Crypto module (lazy loaded)
     "crypto",
-    # Docs module (lazy loaded)
-    "docs",
     "error_boundary",
     "errors",  # The errors module for detailed imports
     "fallback",
