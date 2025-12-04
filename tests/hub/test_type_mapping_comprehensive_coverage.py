@@ -7,14 +7,12 @@
 
 from __future__ import annotations
 
-import sys
 import types
 import typing
 from typing import Any, Optional, Union
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
-import pytest
 
 from provide.foundation.hub.type_mapping import extract_click_type
 
@@ -280,21 +278,15 @@ class TestExtractClickTypeEdgeCases(FoundationTestCase):
 class TestExtractClickTypeUnionTypeComparisons(FoundationTestCase):
     """Test UnionType detection and comparison logic."""
 
-    @pytest.mark.skipif(
-        not hasattr(types, "UnionType"),
-        reason="UnionType not available",
-    )
     def test_union_type_isinstance_check(self) -> None:
         """Test isinstance check for UnionType."""
-        if hasattr(types, "UnionType"):
-            union_annotation = eval("str | int")
-            assert isinstance(union_annotation, types.UnionType)
+        union_annotation = str | int
+        assert isinstance(union_annotation, types.UnionType)
 
     def test_union_type_hasattr_check(self) -> None:
         """Test hasattr check for UnionType."""
-        has_union_type = hasattr(types, "UnionType")
-        # This should work regardless of Python version
-        assert isinstance(has_union_type, bool)
+        # Python 3.11+ always has types.UnionType
+        assert hasattr(types, "UnionType")
 
     def test_union_detection_logic_coverage(self) -> None:
         """Test the complete union detection logic."""
@@ -305,10 +297,9 @@ class TestExtractClickTypeUnionTypeComparisons(FoundationTestCase):
         # First condition: origin is typing.Union
         assert origin is typing.Union
 
-        # Second condition would be tested if UnionType is available
-        if hasattr(types, "UnionType"):
-            modern_union = eval("str | None")
-            assert isinstance(modern_union, types.UnionType)
+        # Python 3.10+ style union syntax
+        modern_union = str | None
+        assert isinstance(modern_union, types.UnionType)
 
 
 class TestModuleExports(FoundationTestCase):

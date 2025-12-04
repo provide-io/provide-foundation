@@ -3,9 +3,10 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""TODO: Add module docstring."""
 
 from __future__ import annotations
+
+import sys
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
@@ -87,7 +88,7 @@ class TestSystemdIntegration(FoundationTestCase):
             assert result is False
 
     @pytest.mark.skipif(
-        not __import__("sys").platform.startswith("linux"),
+        not sys.platform.startswith("linux"),
         reason="systemd only available on Linux",
     )
     def test_notify_ready_with_systemd_available(self) -> None:
