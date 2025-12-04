@@ -116,7 +116,8 @@ class ExtractionTracker:
         self.total_extracted_size += size
         if self.total_extracted_size > self.limits.max_total_size:
             raise ArchiveError(
-                f"Total extracted size exceeds maximum: {self.total_extracted_size} > {self.limits.max_total_size}",
+                f"Total extracted size exceeds maximum: "
+                f"{self.total_extracted_size} > {self.limits.max_total_size}",
                 code="MAX_TOTAL_SIZE_EXCEEDED",
             )
 
@@ -173,7 +174,8 @@ class ExtractionTracker:
             member_ratio = member_size / compressed_member_size
             if self.limits.enabled and member_ratio > self.limits.max_compression_ratio:
                 raise ArchiveError(
-                    f"File compression ratio exceeds maximum: {member_ratio:.1f} > {self.limits.max_compression_ratio}",
+                    f"File compression ratio exceeds maximum: "
+                    f"{member_ratio:.1f} > {self.limits.max_compression_ratio}",
                     code="MAX_COMPRESSION_RATIO_EXCEEDED",
                 )
 
