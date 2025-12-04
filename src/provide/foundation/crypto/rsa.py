@@ -180,7 +180,7 @@ class RSASigner:
         Warning:
             Private keys should be stored securely. Consider encryption.
         """
-        return self.private_key_pem  # type: ignore
+        return self.private_key_pem  # type: ignore[return-value]
 
 
 @define(slots=True)

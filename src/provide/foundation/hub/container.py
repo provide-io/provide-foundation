@@ -180,7 +180,6 @@ class Container:
     def __exit__(self, *args: object) -> None:
         """Context manager exit."""
         # Cleanup is handled by the Hub
-        pass
 
 
 def create_container() -> Container:

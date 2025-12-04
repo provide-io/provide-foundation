@@ -114,7 +114,6 @@ def register_profile_command(hub: Hub) -> None:
     """
     # The @register_command decorator handles registration automatically
     # This function exists for explicit registration if needed
-    pass
 
 
 # 🧱🏗️🔚

@@ -21,7 +21,6 @@ if _HAS_CLICK:
     @click.group("config", help="Configuration management commands")
     def config_group() -> None:
         """Configuration management commands."""
-        pass
 
     @config_group.command("schema")
     @click.option(

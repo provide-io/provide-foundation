@@ -111,7 +111,7 @@ def log_only_error_context(
                     _log_function_error(logger, func, e, context)
                     raise
 
-            return async_wrapper  # type: ignore
+            return async_wrapper  # type: ignore[return-value]
 
         @functools.wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -132,7 +132,7 @@ def log_only_error_context(
                 _log_function_error(logger, func, e, context)
                 raise
 
-        return wrapper  # type: ignore
+        return wrapper  # type: ignore[return-value]
 
     return decorator
 

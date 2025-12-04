@@ -64,17 +64,14 @@ class ResourceManager(ABC):
     @abstractmethod
     def acquire_resource(self, resource_id: str) -> Any:
         """Acquire a resource by ID."""
-        pass
 
     @abstractmethod
     def release_resource(self, resource_id: str) -> None:
         """Release a resource by ID."""
-        pass
 
     @abstractmethod
     def cleanup_all(self) -> None:
         """Clean up all managed resources."""
-        pass
 
 
 class AsyncResourceManager(ABC):
@@ -83,17 +80,14 @@ class AsyncResourceManager(ABC):
     @abstractmethod
     async def acquire_resource_async(self, resource_id: str) -> Any:
         """Acquire a resource by ID asynchronously."""
-        pass
 
     @abstractmethod
     async def release_resource_async(self, resource_id: str) -> None:
         """Release a resource by ID asynchronously."""
-        pass
 
     @abstractmethod
     async def cleanup_all_async(self) -> None:
         """Clean up all managed resources asynchronously."""
-        pass
 
 
 class AsyncContextResource(AbstractAsyncContextManager[Any]):

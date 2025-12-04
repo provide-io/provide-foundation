@@ -69,7 +69,7 @@ def configure_file_logging(log_file_path: str | None) -> None:
         if log_file_path:
             try:
                 Path(log_file_path).parent.mkdir(parents=True, exist_ok=True)
-                core_module._LOG_FILE_HANDLE = Path(log_file_path).open("a", encoding="utf-8", buffering=1)  # noqa: SIM115
+                core_module._LOG_FILE_HANDLE = Path(log_file_path).open("a", encoding="utf-8", buffering=1)
                 core_module._PROVIDE_LOG_STREAM = core_module._LOG_FILE_HANDLE
                 # Reconfigure structlog to use the new file stream
                 _reconfigure_structlog_stream()

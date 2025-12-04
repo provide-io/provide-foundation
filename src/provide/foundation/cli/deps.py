@@ -20,8 +20,6 @@ This now uses the centralized OptionalDependency utility to eliminate
 repetitive try/except ImportError boilerplate.
 """
 
-if TYPE_CHECKING:
-    pass
 
 # Load click using centralized dependency handler
 _click_dep = OptionalDependency("click", "cli")

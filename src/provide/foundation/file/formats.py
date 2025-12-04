@@ -108,7 +108,7 @@ def read_yaml(
 
     """
     try:
-        import yaml  # noqa: F401
+        import yaml
     except ImportError:
         log.warning("PyYAML not installed, returning default")
         return default
@@ -144,7 +144,7 @@ def write_yaml(
 
     """
     try:
-        import yaml  # noqa: F401
+        import yaml
     except ImportError as e:
         raise ImportError("PyYAML is required for YAML operations") from e
 
@@ -215,7 +215,7 @@ def write_toml(
 
     """
     try:
-        import tomli_w  # noqa: F401
+        import tomli_w
     except ImportError as e:
         raise ImportError("tomli-w is required for TOML write operations") from e
 

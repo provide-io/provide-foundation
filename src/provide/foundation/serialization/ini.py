@@ -10,8 +10,6 @@ from configparser import ConfigParser
 from io import StringIO
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    pass
 from provide.foundation.serialization.cache import get_cache_enabled, get_cache_key, get_serialization_cache
 
 """INI format serialization with caching support."""

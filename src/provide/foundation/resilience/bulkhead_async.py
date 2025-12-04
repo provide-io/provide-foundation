@@ -47,7 +47,6 @@ class AsyncResourcePool:
 
     def __attrs_post_init__(self) -> None:
         """Initialize internal state."""
-        pass
 
     async def active_count(self) -> int:
         """Number of currently active operations."""

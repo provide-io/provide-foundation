@@ -17,8 +17,6 @@ from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.registry import get_command_registry
 
 # Delay CLI imports to avoid circular dependency (cli.click.builder imports hub.registry)
-if TYPE_CHECKING:
-    pass
 
 # Pattern 1: Check for click at runtime (delayed to avoid circular import)
 _HAS_CLICK: bool | None = None
@@ -29,7 +27,7 @@ def _check_click() -> bool:
     global _HAS_CLICK
     if _HAS_CLICK is None:
         try:
-            import click  # noqa: F401
+            import click
 
             _HAS_CLICK = True
         except ImportError:

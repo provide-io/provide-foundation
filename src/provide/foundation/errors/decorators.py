@@ -156,7 +156,7 @@ def _create_async_wrapper(func: F, handler: ResilientErrorHandler) -> F:
         except Exception as e:
             return handler.process_error(e, getattr(func, "__name__", "<anonymous>"))
 
-    return async_wrapper  # type: ignore
+    return async_wrapper  # type: ignore[return-value]
 
 
 def _create_sync_wrapper(func: F, handler: ResilientErrorHandler) -> F:
@@ -169,7 +169,7 @@ def _create_sync_wrapper(func: F, handler: ResilientErrorHandler) -> F:
         except Exception as e:
             return handler.process_error(e, getattr(func, "__name__", "<anonymous>"))
 
-    return wrapper  # type: ignore
+    return wrapper  # type: ignore[return-value]
 
 
 @overload
@@ -329,7 +329,7 @@ def suppress_and_log(
 
                 return fallback
 
-        return wrapper  # type: ignore
+        return wrapper  # type: ignore[return-value]
 
     return decorator
 
@@ -392,7 +392,7 @@ def fallback_on_error(
                     # Re-raise the fallback error
                     raise fallback_error from e
 
-        return wrapper  # type: ignore
+        return wrapper  # type: ignore[return-value]
 
     return decorator
 

@@ -96,7 +96,6 @@ def run_async(coro: Coroutine[None, None, T] | Awaitable[T], *, warn: bool = Fal
         if "Cannot use run_async()" in str(e):
             raise
         # Otherwise, no running loop which is what we expect
-        pass
 
     # Try to get or create an event loop
     try:

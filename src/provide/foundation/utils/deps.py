@@ -24,7 +24,7 @@ class DependencyStatus:
 def _check_click() -> DependencyStatus:
     """Check click availability."""
     try:
-        import click  # noqa: F401
+        import click
 
         # Use importlib.metadata to avoid deprecation warning
         try:
@@ -76,7 +76,7 @@ def _check_cryptography() -> DependencyStatus:
 def _check_opentelemetry() -> DependencyStatus:
     """Check OpenTelemetry availability."""
     try:
-        import opentelemetry  # noqa: F401
+        import opentelemetry
 
         try:
             from importlib.metadata import PackageNotFoundError, version
@@ -127,7 +127,7 @@ def _check_httpx() -> DependencyStatus:
 def _check_mkdocs() -> DependencyStatus:
     """Check mkdocs availability for documentation generation."""
     try:
-        import mkdocs  # noqa: F401
+        import mkdocs
 
         try:
             from importlib.metadata import PackageNotFoundError, version

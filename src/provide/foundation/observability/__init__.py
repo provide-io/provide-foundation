@@ -39,7 +39,7 @@ if _HAS_OTEL:
 
         # Commands will auto-register if click is available
         with suppress(ImportError):
-            from provide.foundation.integrations.openobserve.commands import (  # noqa: F401
+            from provide.foundation.integrations.openobserve.commands import (
                 openobserve_group,
             )
     except ImportError:

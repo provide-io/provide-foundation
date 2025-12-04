@@ -121,7 +121,7 @@ def _get_entry_points(group: str) -> Any:
         from importlib import metadata
     except ImportError:
         # Python < 3.8 fallback
-        import importlib_metadata as metadata  # type: ignore
+        import importlib_metadata as metadata  # type: ignore[import-not-found]
 
     try:
         entry_points = metadata.entry_points()

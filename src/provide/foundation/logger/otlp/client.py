@@ -86,7 +86,7 @@ class OTLPLogClient:
     def _check_otlp_availability(self) -> bool:
         """Check if OpenTelemetry SDK is available."""
         try:
-            import opentelemetry.sdk._logs  # noqa: F401
+            import opentelemetry.sdk._logs
 
             return True
         except ImportError:

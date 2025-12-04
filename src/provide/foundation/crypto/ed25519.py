@@ -169,7 +169,7 @@ class Ed25519Signer:
         Warning:
             Private keys should be stored securely. Consider encryption.
         """
-        return self.private_key  # type: ignore
+        return self.private_key  # type: ignore[return-value]
 
 
 @define(slots=True)
