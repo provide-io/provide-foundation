@@ -19,7 +19,7 @@ from provide.foundation.cli.decorators import (
 )
 
 # Centralized Click dependency handling
-from provide.foundation.cli.deps import _HAS_CLICK, click  # noqa: F401
+from provide.foundation.cli.deps import _HAS_CLICK, click
 from provide.foundation.cli.errors import (
     CLIAdapterNotFoundError,
     CLIBuildError,

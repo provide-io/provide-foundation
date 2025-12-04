@@ -8,7 +8,7 @@ from __future__ import annotations
 
 # Check for Click availability
 try:
-    import click  # noqa: F401
+    import click
 
     _HAS_CLICK = True
 except ImportError:

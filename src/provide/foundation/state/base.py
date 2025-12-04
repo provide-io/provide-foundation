@@ -142,7 +142,6 @@ class StateMachine(Generic[StateT, EventT], ABC):
     @abstractmethod
     def reset(self) -> None:
         """Reset the state machine to its initial state."""
-        pass
 
 
 @define(kw_only=True, slots=True)

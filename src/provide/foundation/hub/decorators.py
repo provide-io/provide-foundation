@@ -17,8 +17,6 @@ from provide.foundation.hub.registry import Registry, get_command_registry
 """Command registration decorators."""
 
 # Lazy import to avoid circular dependency
-if TYPE_CHECKING:
-    pass
 
 # Import click lazily to avoid circular imports
 _click_module: Any = None

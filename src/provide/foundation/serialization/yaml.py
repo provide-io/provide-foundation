@@ -8,8 +8,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-if TYPE_CHECKING:
-    pass
 from provide.foundation.serialization.cache import get_cache_enabled, get_cache_key, get_serialization_cache
 
 """YAML serialization with caching support."""

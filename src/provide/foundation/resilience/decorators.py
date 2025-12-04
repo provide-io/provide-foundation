@@ -440,13 +440,13 @@ def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
             async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
                 return await chain.execute_async(func, *args, **kwargs)
 
-            return async_wrapper  # type: ignore
+            return async_wrapper  # type: ignore[return-value]
 
         @functools.wraps(func)
         def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
             return chain.execute(func, *args, **kwargs)
 
-        return sync_wrapper  # type: ignore
+        return sync_wrapper  # type: ignore[return-value]
 
     return decorator
 

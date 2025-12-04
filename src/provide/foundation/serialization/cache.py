@@ -10,8 +10,6 @@ import hashlib
 import threading
 from typing import TYPE_CHECKING, Any
 
-if TYPE_CHECKING:
-    pass
 
 """Caching utilities for serialization operations.
 

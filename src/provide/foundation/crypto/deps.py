@@ -20,8 +20,6 @@ This now uses the centralized OptionalDependency utility to eliminate
 repetitive try/except ImportError boilerplate.
 """
 
-if TYPE_CHECKING:
-    pass  # All certificate types are available at runtime
 
 # Initialize cryptography dependency handler
 _crypto_dep = OptionalDependency("cryptography", "crypto")

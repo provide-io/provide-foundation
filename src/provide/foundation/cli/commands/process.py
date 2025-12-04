@@ -73,7 +73,6 @@ def process_group() -> None:
     Commands for managing process titles and process information.
     Requires the 'process' extra: pip install 'provide-foundation[process]'
     """
-    pass
 
 
 @process_group.command("set-title")

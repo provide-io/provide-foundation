@@ -12,8 +12,6 @@ import structlog
 
 """Trace context processor for injecting trace/span IDs into logs."""
 
-if TYPE_CHECKING:
-    pass
 
 # Note: Cannot import get_logger here due to circular dependency during setup
 # Use structlog directly but bind logger_name for OTLP exports

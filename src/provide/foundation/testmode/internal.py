@@ -64,7 +64,6 @@ def reset_time_machine_state() -> None:
     for the next test. This function remains as a no-op safety fallback.
     """
     # Cleanup is now handled by conftest fixture which runs earlier
-    pass
 
 
 def reset_test_mode_cache() -> None:

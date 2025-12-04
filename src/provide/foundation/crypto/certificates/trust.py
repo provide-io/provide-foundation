@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from provide.foundation.crypto.certificates.certificate import Certificate
 
 try:
-    import cryptography  # noqa: F401
+    import cryptography
 
     _HAS_CRYPTO = True
 except ImportError:

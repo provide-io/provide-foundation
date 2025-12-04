@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-# ruff: noqa: RUF009
 from pathlib import Path
 
 from attrs import define
