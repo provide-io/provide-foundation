@@ -8,8 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import threading
-from typing import TYPE_CHECKING, Any
-
+from typing import Any
 
 """Caching utilities for serialization operations.
 

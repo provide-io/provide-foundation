@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, TypeVar, overload
+from typing import Any, TypeVar, overload
 
 from provide.foundation.hub.categories import ComponentCategory
 from provide.foundation.hub.foundation import get_foundation_logger

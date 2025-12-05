@@ -6,9 +6,6 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-
 from provide.foundation.serialization.cache import get_cache_enabled, get_cache_key, get_serialization_cache
 
 """.env file format serialization with caching support."""

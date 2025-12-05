@@ -8,7 +8,6 @@ from __future__ import annotations
 
 from configparser import ConfigParser
 from io import StringIO
-from typing import TYPE_CHECKING
 
 from provide.foundation.serialization.cache import get_cache_enabled, get_cache_key, get_serialization_cache
 
