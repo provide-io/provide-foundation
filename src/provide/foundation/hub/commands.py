@@ -9,7 +9,7 @@ This module re-exports from the split modules for convenience."""
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 # Core hub features (always available)
 from provide.foundation.hub.decorators import register_command
