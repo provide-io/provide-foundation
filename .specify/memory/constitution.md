@@ -1,50 +1,88 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# provide-foundation Constitution
 
-## Core Principles
+## 0) Purpose
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+This repository is developed using a spec-driven workflow. Specs and decisions are first-class artifacts.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+## 1) Workflow (default order)
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+1. Clarify requirements and constraints when they materially affect APIs, data models, or persistence.
+2. Write/update a spec (problem, goals/non-goals, acceptance criteria).
+3. Produce a plan (architecture + approach) that maps to the spec.
+4. Produce tasks that are independently checkable.
+5. Implement only after tasks exist.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+If steps are skipped, the reason must be recorded in `DECISIONS.md`.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+## 2) Repo layout conventions
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+- Specs live under `specs/<id>-<slug>/` and contain:
+  - `spec.md` (what/why + acceptance criteria)
+  - `plan.md` (how)
+  - `tasks.md` (what to do)
+  - optional: `notes.md` (research links, experiments)
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- Decisions are appended to `DECISIONS.md` as short entries:
+  - Date, decision, rationale, consequences.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## 3) Tooling constraints
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- Python: 3.11+ (prefer 3.12+ features when the repo baseline allows).
+- Packaging/exec: `uv` is the default tool runner and dependency manager.
+- Lint/format: `ruff` is the default linter/formatter.
+- Type checking: `mypy` is the default type checker.
+- Tests: `pytest` is the default test runner.
+- Testing: `provide-testkit` is required for Foundation-specific test fixtures.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+If a different tool is required, record the rationale in `DECISIONS.md`.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+## 4) Project-specific constraints
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+- **No backward compatibility**: This is a pre-release project. Implement features in their target state without migration logic, compatibility shims, or transition code.
+- **Absolute imports only**: Never use relative imports. All imports must be absolute.
+- **No inline defaults**: Defaults must be stored in `defaults.py` or `constants.py` files, never inline in field definitions.
+
+## 5) Output constraints for assistants/agents
+
+- Do not generate code or patches unless explicitly requested.
+- Prefer concise, actionable guidance over narrative.
+- When asked to create/update/delete files, output **one** self-contained bash script:
+  - starts with `set -eo pipefail`
+  - uses emoji-prefixed logging functions
+  - uses `mkdir -p` for directories
+  - writes complete file contents via `cat <<'EOF' > path`
+  - deletes files via `rm -f`
+  - uses paths **relative to repo root**
+
+## 6) Engineering standards (definition of done)
+
+A change is "done" when:
+- `uv run ruff check .` passes
+- `uv run ruff format .` has been applied (or formatting is already compliant)
+- `uv run mypy src/` passes
+- `uv run pytest -q` passes (if tests exist for the touched area)
+- Coverage threshold (80%) is maintained for modified code
+
+Security gate:
+- `uv run bandit -r src/` passes (excluding test directories)
+
+## 7) Decision policy (when to ask vs decide)
+
+Ask a clarifying question when:
+- the choice affects a public API, wire format, schema, or persisted data
+- the change may break existing functionality
+- there are multiple valid approaches with different tradeoffs
+
+Decide autonomously when:
+- the choice is internal-only and reversible
+- conventions already exist in this repo
+- performance/security implications are minimal and testable
+
+## 8) Change policy for specs
+
+- Specs may evolve, but acceptance criteria must remain testable.
+- If implementation deviates from spec, update the spec and record why in `DECISIONS.md`.
+
+---
+
+**Version**: 1.0.0 | **Ratified**: 2025-12-19 | **Last Amended**: 2025-12-19
