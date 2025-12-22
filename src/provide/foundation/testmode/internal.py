@@ -296,7 +296,14 @@ def _reset_direct_circuit_breaker_instances() -> None:
     that exist in memory but are NOT tracked by the decorator registries.
     This ensures we only reset orphaned instances created directly, while
     preserving the state of decorator-created instances within a test.
+
+    For SyncCircuitBreaker instances, the reset is synchronous.
+    For AsyncCircuitBreaker instances, the reset is async:
+    - If called from a sync context (no running loop), asyncio.run() is used
+    - If called from an async context (running loop), the reset is skipped
+      (it will be reset when called from sync context, e.g., during fixture teardown)
     """
+    import asyncio
     import gc
 
     try:
@@ -326,7 +333,21 @@ def _reset_direct_circuit_breaker_instances() -> None:
                     # Only reset instances that are still alive and not tracked by decorators
                     if obj is not None:
                         # Reset each circuit breaker instance to clean state
-                        obj.reset()
+                        # Handle both sync (SyncCircuitBreaker) and async (AsyncCircuitBreaker)
+                        reset_result = obj.reset()
+
+                        # If reset() returns a coroutine (AsyncCircuitBreaker), run it
+                        if asyncio.iscoroutine(reset_result):
+                            # Check if we're in an async context (running event loop)
+                            try:
+                                asyncio.get_running_loop()
+                                # We're in an async context - can't block waiting for reset
+                                # Skip the reset now; it will happen when called from sync context
+                                reset_result.close()  # Clean up the coroutine
+                            except RuntimeError:
+                                # No running loop - safe to use asyncio.run()
+                                asyncio.run(reset_result)
+
                         instances_found += 1
                 except Exception:
                     # Skip instances that can't be reset (might be in an inconsistent state)
