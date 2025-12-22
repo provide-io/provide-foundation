@@ -107,8 +107,8 @@ def create_otlp_processor(config: Any) -> Any | None:
                 level: str = str(event_dict.get("level", "info")).lower()
 
                 # Build attributes (everything except 'event' and 'timestamp')
-                attributes: dict[str, str] = {
-                    k: str(v) for k, v in event_dict.items() if k not in ("event", "timestamp")
+                attributes: dict[str, Any] = {
+                    k: v for k, v in event_dict.items() if k not in ("event", "timestamp")
                 }
 
                 # Add message and level attributes
@@ -122,13 +122,12 @@ def create_otlp_processor(config: Any) -> Any | None:
                 severity_number_int = map_level_to_severity(level)
                 severity_text: str = level.upper()
 
-                # Emit to OTLP using APILogRecord (new API)
-                from opentelemetry.sdk._logs._internal import APILogRecord, SeverityNumber
+                # Emit to OTLP using public API
+                from opentelemetry._logs import LogRecord, SeverityNumber
 
-                log_record = APILogRecord(
+                log_record = LogRecord(
                     timestamp=timestamp,
                     observed_timestamp=timestamp,
-                    context=None,
                     severity_text=severity_text,
                     severity_number=SeverityNumber(severity_number_int),
                     body=message,
