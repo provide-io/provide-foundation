@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from provide.foundation.file.operations.detectors.helpers import is_backup_file
+from provide.foundation.file.operations.detectors.helpers import is_backup_file, is_temp_file
 from provide.foundation.file.operations.types import (
     FileEvent,
     FileOperation,
@@ -77,6 +77,8 @@ class SimpleOperationDetector:
             return None
 
         event = events[0]
+        if is_temp_file(event.path) and not is_backup_file(event.path):
+            return None
 
         # Map event types to operation types
         type_mapping = {

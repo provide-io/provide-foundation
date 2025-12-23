@@ -248,6 +248,11 @@ async def wait_for_process_output(
     if _check_pattern_found(buffer, expected_parts):
         return buffer
 
+    # Try to drain any remaining output before timing out
+    buffer = _drain_remaining_output(process, buffer)
+    if _check_pattern_found(buffer, expected_parts):
+        return buffer
+
     # If process exited with 0 but we didn't get output, that's still a timeout
     log.error(
         "Timeout waiting for pattern",
