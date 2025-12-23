@@ -23,6 +23,7 @@ from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
     FileOperation,
+    OperationType,
 )
 from provide.foundation.hub.registry import Registry
 from provide.foundation.logger import get_logger
@@ -52,6 +53,8 @@ class OperationDetector:
         self.registry = registry or get_detector_registry()
         self._pending_events: list[FileEvent] = []
         self._last_flush = datetime.now()
+
+        self._ensure_builtin_detectors()
 
         # Create auto-flush handler for streaming mode
         self._auto_flush_handler = AutoFlushHandler(
@@ -83,6 +86,11 @@ class OperationDetector:
             operation = self._analyze_event_group(group)
             if operation:
                 operations.append(operation)
+
+        if not operations and len(sorted_events) > 1:
+            fallback = self._analyze_event_group(sorted_events)
+            if fallback:
+                return [fallback]
 
         return operations
 
@@ -228,7 +236,9 @@ class OperationDetector:
 
         if best_operation and best_confidence >= self.config.min_confidence:
             # Validate that primary_path is not a temp file
-            if is_temp_file(best_operation.primary_path):
+            if is_temp_file(best_operation.primary_path) and (
+                best_operation.operation_type != OperationType.BACKUP_CREATE
+            ):
                 log.warning(
                     "Detector returned temp file as primary_path, attempting to fix",
                     temp_path=str(best_operation.primary_path),
@@ -263,6 +273,17 @@ class OperationDetector:
             return best_operation
 
         return None
+
+    def _ensure_builtin_detectors(self) -> None:
+        """Ensure built-in detectors are registered after registry clears."""
+        if any(entry for entry in self.registry if entry.dimension == "file_operation_detector"):
+            return
+
+        from provide.foundation.file.operations.detectors import (
+            _auto_register_builtin_detectors,
+        )
+
+        _auto_register_builtin_detectors()
 
     def _find_real_file_from_events(self, events: list[FileEvent]) -> Path | None:
         """Find the real (non-temp) file path from a list of events."""
