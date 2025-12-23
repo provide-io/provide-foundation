@@ -82,13 +82,20 @@ class OperationDetector:
         event_groups = self._group_events_by_time(sorted_events)
 
         operations = []
+        emit_logs = len(event_groups) <= 10
         for group in event_groups:
-            operation = self._analyze_event_group(group)
+            operation = self._analyze_event_group(group, emit_logs=emit_logs)
             if operation:
                 operations.append(operation)
 
+        if len(sorted_events) > 1 and operations:
+            best_confidence = max(op.confidence for op in operations)
+            # Skip expensive fallback if we already found a high-confidence match.
+            if best_confidence >= 0.95:
+                return operations
+
         if len(sorted_events) > 1:
-            fallback = self._analyze_event_group(sorted_events)
+            fallback = self._analyze_event_group(sorted_events, emit_logs=emit_logs)
             if fallback:
                 if not operations:
                     return [fallback]
@@ -186,7 +193,9 @@ class OperationDetector:
 
         return groups
 
-    def _analyze_event_group(self, events: list[FileEvent]) -> FileOperation | None:
+    def _analyze_event_group(
+        self, events: list[FileEvent], emit_logs: bool = True
+    ) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
@@ -213,22 +222,24 @@ class OperationDetector:
                 if operation and operation.confidence > best_confidence:
                     best_operation = operation
                     best_confidence = operation.confidence
-                    log.debug(
-                        "Found better operation match",
-                        detector=detector_name,
-                        priority=priority,
-                        confidence=operation.confidence,
-                        operation_type=operation.operation_type.value,
-                        primary_path=str(operation.primary_path),
-                    )
+                    if emit_logs:
+                        log.debug(
+                            "Found better operation match",
+                            detector=detector_name,
+                            priority=priority,
+                            confidence=operation.confidence,
+                            operation_type=operation.operation_type.value,
+                            primary_path=str(operation.primary_path),
+                        )
 
                     # Early termination: if we found a very high confidence match, stop searching
                     if best_confidence >= HIGH_CONFIDENCE_THRESHOLD:
-                        log.debug(
-                            "Early termination on high confidence match",
-                            confidence=best_confidence,
-                            detector=detector_name,
-                        )
+                        if emit_logs:
+                            log.debug(
+                                "Early termination on high confidence match",
+                                confidence=best_confidence,
+                                detector=detector_name,
+                            )
                         break
 
             except Exception as e:
@@ -241,9 +252,7 @@ class OperationDetector:
 
         if best_operation and best_confidence >= self.config.min_confidence:
             # Validate that primary_path is not a temp file
-            if is_temp_file(best_operation.primary_path) and (
-                best_operation.operation_type != OperationType.BACKUP_CREATE
-            ):
+            if is_temp_file(best_operation.primary_path):
                 log.warning(
                     "Detector returned temp file as primary_path, attempting to fix",
                     temp_path=str(best_operation.primary_path),
@@ -251,7 +260,7 @@ class OperationDetector:
                 )
                 # Try to find the real file from the events
                 real_file = self._find_real_file_from_events(best_operation.events)
-                if real_file:
+                if real_file and not is_temp_file(real_file):
                     # Create a new operation with the corrected path
                     # (FileOperation is frozen, so we need attrs.evolve or recreate)
                     from attrs import evolve
@@ -268,13 +277,14 @@ class OperationDetector:
                     )
                     return None
 
-            log.debug(
-                "Selected operation",
-                operation_type=best_operation.operation_type.value,
-                primary_path=str(best_operation.primary_path),
-                confidence=best_confidence,
-                is_temp=is_temp_file(best_operation.primary_path),
-            )
+            if emit_logs:
+                log.debug(
+                    "Selected operation",
+                    operation_type=best_operation.operation_type.value,
+                    primary_path=str(best_operation.primary_path),
+                    confidence=best_confidence,
+                    is_temp=is_temp_file(best_operation.primary_path),
+                )
             return best_operation
 
         return None
