@@ -79,17 +79,13 @@ class TestWaitForProcessOutput(FoundationTestCase):
                 sys.executable,
                 "-u",
                 "-c",
-                """
-import sys
-import time
-
-for token in ["start", "middle", "end"]:
-    print(token, flush=True)
-    time.sleep(0.3)
-
-print("finished", flush=True)
-time.sleep(0.5)
-""",
+                (
+                    "import sys, time; "
+                    "print('start', flush=True); "
+                    "print('middle', flush=True); "
+                    "print('end', flush=True); "
+                    "time.sleep(3)"
+                ),
             ],
             capture_output=True,
             text_mode=True,
@@ -231,7 +227,7 @@ class TestProcessLifecycleIntegration(FoundationTestCase):
                 sys.executable,
                 "-u",
                 "-c",
-                "import sys; print('ready', flush=True); import time; time.sleep(4)",
+                "import sys; print('ready', flush=True); import time; time.sleep(5)",
             ],
             capture_output=True,
             text_mode=True,

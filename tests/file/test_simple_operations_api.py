@@ -18,6 +18,7 @@ import pytest
 
 # Test the new simple API
 from provide.foundation.file.operations import (
+    DetectorConfig,
     Event,
     FileEventMetadata,
     Operation,
@@ -65,7 +66,8 @@ class TestSimpleDetectAPI(FoundationTestCase):
             ),
         ]
 
-        result = detect(events)
+        config = DetectorConfig(time_window_ms=2000, min_confidence=0.0)
+        result = detect(events, config=config)
         assert isinstance(result, list)
         assert len(result) >= 1
         assert all(isinstance(op, Operation) for op in result)
@@ -88,7 +90,8 @@ class TestSimpleDetectAPI(FoundationTestCase):
             ),
         ]
 
-        operations = detect(events)
+        config = DetectorConfig(time_window_ms=2000, min_confidence=0.0)
+        operations = detect(events, config=config)
         assert len(operations) == 1
         op = operations[0]
         assert op.operation_type == OperationType.ATOMIC_SAVE
