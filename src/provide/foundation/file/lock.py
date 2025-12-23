@@ -99,14 +99,14 @@ class FileLock:
                 return True
 
             # Use a finite loop with hard limits to prevent any possibility of hanging
-            start_time = time.time()
+            start_time = time.monotonic()
             end_time = start_time + self.timeout
             max_iterations = 1000  # Hard limit regardless of timeout
             iteration = 0
 
             while iteration < max_iterations:
                 iteration += 1
-                current_time = time.time()
+                current_time = time.monotonic()
 
                 # Hard timeout check - exit immediately if time is up
                 if current_time >= end_time:
@@ -125,7 +125,7 @@ class FileLock:
                         lock_info = {
                             "pid": self.pid,
                             "hostname": socket.gethostname(),
-                            "created": current_time,
+                            "created": time.time(),
                         }
                         # Add process start time for PID recycling protection (if psutil available)
                         if _HAS_PSUTIL:
@@ -165,12 +165,12 @@ class FileLock:
                         break
 
                     # Sleep for a small fixed interval or remaining time, whichever is smaller
-                    sleep_time = min(0.01, remaining * 0.5)  # Never sleep more than 10ms
+                    sleep_time = min(self.check_interval, remaining * 0.5)
                     if sleep_time > 0:
                         time.sleep(sleep_time)
 
             # If we exit the loop without acquiring the lock
-            elapsed = time.time() - start_time
+            elapsed = time.monotonic() - start_time
             raise LockError(
                 f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, iterations: {iteration})",
                 code="LOCK_TIMEOUT",

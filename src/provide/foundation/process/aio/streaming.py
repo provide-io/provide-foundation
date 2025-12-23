@@ -66,26 +66,48 @@ async def read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) ->
         return lines
 
     try:
-        remaining_timeout = timeout
-        start_time = asyncio.get_event_loop().time()
+        loop = asyncio.get_event_loop()
+        start_time = loop.time()
 
         while True:
-            elapsed = asyncio.get_event_loop().time() - start_time
+            elapsed = loop.time() - start_time
             remaining_timeout = timeout - elapsed
 
             if remaining_timeout <= 0:
                 raise builtins.TimeoutError()
 
-            # Wait for a line with remaining timeout
-            line = await asyncio.wait_for(
-                process.stdout.readline(),
+            read_task = asyncio.create_task(process.stdout.readline())
+            wait_task = asyncio.create_task(process.wait())
+            done, pending = await asyncio.wait(
+                {read_task, wait_task},
                 timeout=remaining_timeout,
+                return_when=asyncio.FIRST_COMPLETED,
             )
 
-            if not line:
-                break  # EOF
+            if not done:
+                for task in pending:
+                    task.cancel()
+                await asyncio.gather(*pending, return_exceptions=True)
+                raise builtins.TimeoutError()
 
-            lines.append(line.decode(errors="replace").rstrip())
+            if read_task in done:
+                wait_task.cancel()
+                await asyncio.gather(wait_task, return_exceptions=True)
+                line = read_task.result()
+                if not line:
+                    break  # EOF
+                lines.append(line.decode(errors="replace").rstrip())
+                continue
+
+            if wait_task in done:
+                read_task.cancel()
+                await asyncio.gather(read_task, return_exceptions=True)
+                if process.stdout:
+                    remaining = await process.stdout.read()
+                    if remaining:
+                        decoded = remaining.decode(errors="replace").splitlines()
+                        lines.extend(decoded)
+                break
     except builtins.TimeoutError as e:
         process.kill()
         await process.wait()
