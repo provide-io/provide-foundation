@@ -66,68 +66,12 @@ async def read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) ->
         return lines
 
     try:
-        loop = asyncio.get_event_loop()
-        start_time = loop.time()
-
-        read_task: asyncio.Task | None = None
-        wait_task: asyncio.Task | None = None
-
-        while True:
-            elapsed = loop.time() - start_time
-            remaining_timeout = timeout - elapsed
-
-            if remaining_timeout <= 0:
-                raise builtins.TimeoutError()
-
-            if read_task is None:
-                read_task = asyncio.create_task(process.stdout.readline())
-            if wait_task is None:
-                wait_task = asyncio.create_task(process.wait())
-            done, pending = await asyncio.wait(
-                {read_task, wait_task},
-                timeout=remaining_timeout,
-                return_when=asyncio.FIRST_COMPLETED,
-            )
-
-            if not done:
-                for task in pending:
-                    task.cancel()
-                await asyncio.gather(*pending, return_exceptions=True)
-                raise builtins.TimeoutError()
-
-            if read_task in done:
-                if wait_task:
-                    wait_task.cancel()
-                    await asyncio.gather(wait_task, return_exceptions=True)
-                try:
-                    line = read_task.result()
-                except builtins.TimeoutError:
-                    raise
-                if not line:
-                    break  # EOF
-                lines.append(line.decode(errors="replace").rstrip())
-                read_task = None
-                wait_task = None
-                continue
-
-            if wait_task in done:
-                if read_task:
-                    read_task.cancel()
-                    await asyncio.gather(read_task, return_exceptions=True)
-                read_task = None
-                wait_task = None
-                if process.stdout:
-                    remaining = await process.stdout.read()
-                    if remaining:
-                        decoded = remaining.decode(errors="replace").splitlines()
-                        lines.extend(decoded)
-                break
+        stdout_data, _ = await asyncio.wait_for(process.communicate(), timeout=timeout)
+        if stdout_data:
+            lines.extend(stdout_data.decode(errors="replace").splitlines())
     except builtins.TimeoutError as e:
         process.kill()
-        if wait_task and not wait_task.cancelled():
-            await wait_task
-        else:
-            await process.wait()
+        await process.wait()
         if getattr(process, "returncode", None) is None:
             process.returncode = -9
         log.error("⏱️ Async stream timed out", command=cmd_str, timeout=timeout)
