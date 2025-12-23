@@ -87,10 +87,15 @@ class OperationDetector:
             if operation:
                 operations.append(operation)
 
-        if not operations and len(sorted_events) > 1:
+        if len(sorted_events) > 1:
             fallback = self._analyze_event_group(sorted_events)
             if fallback:
-                return [fallback]
+                if not operations:
+                    return [fallback]
+
+                best_confidence = max(op.confidence for op in operations)
+                if fallback.confidence > best_confidence:
+                    return [fallback]
 
         return operations
 
