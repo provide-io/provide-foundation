@@ -109,7 +109,7 @@ class BatchOperationDetector:
             else:
                 i += 1
 
-        if len(steps) < 2:
+        if not steps:
             return None
 
         chain_events: list[FileEvent] = []
