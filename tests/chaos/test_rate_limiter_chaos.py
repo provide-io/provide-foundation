@@ -69,7 +69,16 @@ class TestTokenBucketChaos(FoundationTestCase):
         - Requests beyond capacity are rate limited
         - Token refill works correctly
         """
-        limiter = TokenBucketRateLimiter(capacity=capacity, refill_rate=refill_rate)
+        time_value = [0.0]
+
+        def time_source() -> float:
+            return time_value[0]
+
+        limiter = TokenBucketRateLimiter(
+            capacity=capacity,
+            refill_rate=refill_rate,
+            time_source=time_source,
+        )
 
         # Attempt burst
         successful = 0
