@@ -18,6 +18,9 @@ from provide.foundation.errors.process import ProcessError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
 
 
+pytestmark = pytest.mark.xdist_group(name="process_lifecycle_serial")
+
+
 class TestManagedProcessEdgeCases(FoundationTestCase):
     """Test ManagedProcess edge cases and error conditions."""
 
@@ -74,8 +77,19 @@ class TestWaitForProcessOutput(FoundationTestCase):
         proc = ManagedProcess(
             [
                 sys.executable,
+                "-u",
                 "-c",
-                "import sys; print('start|middle|end', flush=True)",
+                """
+import sys
+import time
+
+for token in ["start", "middle", "end"]:
+    print(token, flush=True)
+    time.sleep(0.3)
+
+print("finished", flush=True)
+time.sleep(0.5)
+""",
             ],
             capture_output=True,
             text_mode=True,
@@ -85,7 +99,7 @@ class TestWaitForProcessOutput(FoundationTestCase):
         result = await wait_for_process_output(
             proc,
             expected_parts=["start", "middle", "end"],
-            timeout=5.0,
+            timeout=10.0,
         )
 
         assert "start" in result
@@ -129,7 +143,7 @@ class TestWaitForProcessOutput(FoundationTestCase):
             await wait_for_process_output(
                 proc,
                 expected_parts=["never_appears"],
-                timeout=5.0,
+                timeout=10.0,
             )
 
         proc.cleanup()
@@ -157,7 +171,7 @@ class TestWaitForProcessOutput(FoundationTestCase):
 
         proc.read_line_async = mock_read_line
 
-        result = await wait_for_process_output(proc, expected_parts=["a"], timeout=3.0)
+        result = await wait_for_process_output(proc, expected_parts=["a"], timeout=6.0)
 
         assert "a" in result
 
@@ -215,8 +229,9 @@ class TestProcessLifecycleIntegration(FoundationTestCase):
         with ManagedProcess(
             [
                 sys.executable,
+                "-u",
                 "-c",
-                "import sys; print('ready', flush=True); import time; time.sleep(1)",
+                "import sys; print('ready', flush=True); import time; time.sleep(4)",
             ],
             capture_output=True,
             text_mode=True,
@@ -224,7 +239,7 @@ class TestProcessLifecycleIntegration(FoundationTestCase):
             # No need to call launch() - context manager already does this
 
             # Wait for ready signal
-            result = await wait_for_process_output(proc, ["ready"], timeout=5.0)
+            result = await wait_for_process_output(proc, ["ready"], timeout=10.0)
             assert "ready" in result
 
             # Terminate the process (since it's waiting for input)

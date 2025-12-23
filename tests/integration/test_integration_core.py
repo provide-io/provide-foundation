@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import io
 import os
+from collections.abc import Callable
 
 from provide.testkit import TestEnvironment, isolated_cli_runner
 from provide.testkit.mocking import patch
@@ -23,6 +24,14 @@ from provide.foundation import (
 from provide.foundation.errors import FoundationError
 from provide.foundation.hub import register_command
 from provide.foundation.hub.registry import Registry
+
+
+def setup_json_logging(setup_func: Callable[[TelemetryConfig | None], None]) -> None:
+    """Use JSON formatter at DEBUG level for deterministic test output."""
+    config = TelemetryConfig(
+        logging=LoggingConfig(console_formatter="json", default_level="DEBUG"),
+    )
+    setup_func(config)
 
 # Mark all tests in this file to run serially to avoid global state pollution
 pytestmark = pytest.mark.serial
@@ -166,12 +175,17 @@ def test_foundation_testbed_integration(captured_stderr_for_foundation: io.Strin
         assert "Testbed debug message" in captured_stderr_for_foundation.getvalue()
 
 
-def test_context_propagation_in_logs(captured_stderr_for_foundation: io.StringIO) -> None:
+def test_context_propagation_in_logs(
+    captured_stderr_for_foundation: io.StringIO,
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+) -> None:
     """Test context propagation in logs."""
+    setup_json_logging(setup_foundation_telemetry_for_test)
     bound_logger = logger.bind(request_id="req-123")
     bound_logger.info("Processing request")
 
     log_output = captured_stderr_for_foundation.getvalue()
+    assert log_output, "Expected log output to be emitted"
     # Check for request_id in both key-value and JSON formats
     assert "request_id=req-123" in log_output or '"request_id": "req-123"' in log_output, (
         f"request_id not found in output: {log_output}"

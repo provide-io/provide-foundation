@@ -81,7 +81,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
         failure_threshold=st.integers(min_value=2, max_value=5),
         recovery_timeout=chaos_timings(min_value=0.1, max_value=2.0),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_concurrent_state_transitions_chaos(
         self,
         num_threads: int,

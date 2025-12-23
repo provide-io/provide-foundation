@@ -136,14 +136,14 @@ class TestCheckDiskSpace:
 
     def test_check_disk_space_one_byte_over(self, tmp_path: Path) -> None:
         """Should fail when requirement is one byte more than available."""
-        available = get_available_space(tmp_path)
-        assert available is not None
+        with patch("provide.foundation.file.disk.get_available_space") as mock_get_space:
+            mock_get_space.return_value = 1024
 
-        # Request one byte more
-        result = check_disk_space(tmp_path, available + 1, raise_on_insufficient=False)
+            result = check_disk_space(tmp_path, 1025, raise_on_insufficient=False)
 
-        # Should fail
-        assert result is False
+            # Should fail
+            assert result is False
+            mock_get_space.assert_called_once_with(tmp_path)
 
 
 class TestGetDiskUsage:
