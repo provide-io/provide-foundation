@@ -12,6 +12,7 @@ import select
 
 from provide.foundation.errors.process import ProcessError
 from provide.foundation.logger import get_logger
+from provide.foundation.utils.timing import apply_timeout_factor
 from provide.foundation.process.defaults import DEFAULT_PROCESS_WAIT_TIMEOUT
 from provide.foundation.process.lifecycle.managed import ManagedProcess
 
@@ -190,6 +191,7 @@ async def wait_for_process_output(
         TimeoutError: If pattern is not found within timeout
 
     """
+    timeout = apply_timeout_factor(timeout)
     loop = asyncio.get_event_loop()
     start_time = loop.time()
     buffer = ""

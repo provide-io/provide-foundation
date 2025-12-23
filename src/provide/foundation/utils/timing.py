@@ -9,6 +9,7 @@ from __future__ import annotations
 from collections.abc import Generator
 from contextlib import contextmanager
 import contextvars
+import os
 import time
 from typing import TYPE_CHECKING, Any
 
@@ -23,6 +24,23 @@ if TYPE_CHECKING:
 
 # Context variable for trace_id (applications can set this for request tracing)
 _PROVIDE_CONTEXT_TRACE_ID = contextvars.ContextVar("foundation_context_trace_id", default=None)
+
+
+def apply_timeout_factor(timeout: float) -> float:
+    """Scale timeout values using PROVIDE_TEST_TIMEOUT_FACTOR when set."""
+    factor_raw = os.getenv("PROVIDE_TEST_TIMEOUT_FACTOR")
+    if not factor_raw:
+        return timeout
+
+    try:
+        factor = float(factor_raw)
+    except ValueError:
+        return timeout
+
+    if factor <= 1.0:
+        return timeout
+
+    return timeout * factor
 
 
 @contextmanager
