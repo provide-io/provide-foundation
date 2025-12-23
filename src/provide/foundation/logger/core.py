@@ -257,9 +257,8 @@ class FoundationLogger:
             A new logger instance with the bound context
 
         """
-        self._ensure_configured()
-        # Get the actual structlog logger and bind context to it
-        return self._internal_logger.bind(**kwargs)
+        log = self.get_logger()
+        return log.bind(**kwargs)
 
     def unbind(self, *keys: str) -> Any:
         """Create a new logger with specified keys removed from context.
@@ -271,9 +270,8 @@ class FoundationLogger:
             A new logger instance without the specified keys
 
         """
-        self._ensure_configured()
-        # Get the actual structlog logger and unbind context from it
-        return self._internal_logger.unbind(*keys)
+        log = self.get_logger()
+        return log.unbind(*keys)
 
     def try_unbind(self, *keys: str) -> Any:
         """Create a new logger with specified keys removed from context.
@@ -286,9 +284,8 @@ class FoundationLogger:
             A new logger instance without the specified keys
 
         """
-        self._ensure_configured()
-        # Get the actual structlog logger and try_unbind context from it
-        return self._internal_logger.try_unbind(*keys)
+        log = self.get_logger()
+        return log.try_unbind(*keys)
 
     def __setattr__(self, name: str, value: Any) -> None:
         """Override setattr to prevent accidental modification of logger state."""

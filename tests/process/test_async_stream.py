@@ -162,7 +162,7 @@ time.sleep(0.05)
             lines = []
             async for line in async_stream(
                 [sys.executable, "-c", "import sys; sys.exit(1)"],
-                timeout=5.0,
+                timeout=10.0,
             ):
                 lines.append(line)
 

@@ -340,8 +340,8 @@ class TestOtlpProcessor:
 
     @patch("provide.foundation.logger.processors.otlp.map_level_to_severity")
     @patch("provide.foundation.logger.processors.otlp.OTLPLogClient")
-    @patch("opentelemetry.sdk._logs._internal.APILogRecord")
-    @patch("opentelemetry.sdk._logs._internal.SeverityNumber")
+    @patch("opentelemetry._logs.LogRecord")
+    @patch("opentelemetry._logs.SeverityNumber")
     def test_processor_builds_attributes_correctly(
         self,
         mock_severity_class: Mock,
