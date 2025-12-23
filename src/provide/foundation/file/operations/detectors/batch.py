@@ -31,7 +31,7 @@ class BatchOperationDetector:
         # Look for chain of moves: A -> B -> C
         move_events = [e for e in events if e.event_type == "moved"]
         if len(move_events) < 2:
-            return None
+            return self._detect_delete_create_rename_sequence(events)
 
         # Build rename chains
         chains = []
@@ -81,6 +81,59 @@ class BatchOperationDetector:
             )
 
         return None
+
+    def _detect_delete_create_rename_sequence(self, events: list[FileEvent]) -> FileOperation | None:
+        """Detect rename sequences that show up as delete/create pairs."""
+        sorted_events = sorted(events, key=lambda e: e.timestamp)
+        steps: list[tuple[FileEvent, FileEvent]] = []
+
+        i = 0
+        while i < len(sorted_events) - 1:
+            current = sorted_events[i]
+            if current.event_type != "deleted":
+                i += 1
+                continue
+
+            for j in range(i + 1, len(sorted_events)):
+                next_event = sorted_events[j]
+                if next_event.event_type != "created":
+                    continue
+                if next_event.path == current.path:
+                    continue
+
+                time_diff = (next_event.timestamp - current.timestamp).total_seconds()
+                if time_diff <= 1.0:
+                    steps.append((current, next_event))
+                    i = j
+                    break
+            else:
+                i += 1
+
+        if len(steps) < 2:
+            return None
+
+        chain_events: list[FileEvent] = []
+        for delete_event, create_event in steps:
+            chain_events.extend([delete_event, create_event])
+
+        final_path = steps[-1][1].path
+        return FileOperation(
+            operation_type=OperationType.RENAME_SEQUENCE,
+            primary_path=final_path,
+            events=chain_events,
+            confidence=0.80,
+            description=f"Rename sequence of {len(steps)} steps",
+            start_time=chain_events[0].timestamp,
+            end_time=chain_events[-1].timestamp,
+            is_atomic=True,
+            is_safe=True,
+            files_affected=[final_path],
+            metadata={
+                "original_path": str(steps[0][0].path),
+                "chain_length": len(steps),
+                "pattern": "rename_sequence_delete_create",
+            },
+        )
 
     def detect_batch_update(self, events: list[FileEvent]) -> FileOperation | None:
         """Detect batch update pattern (multiple related files updated together)."""

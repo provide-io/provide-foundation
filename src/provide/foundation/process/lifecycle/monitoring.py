@@ -7,6 +7,8 @@
 from __future__ import annotations
 
 import asyncio
+import os
+import select
 
 from provide.foundation.errors.process import ProcessError
 from provide.foundation.logger import get_logger
@@ -22,43 +24,47 @@ output patterns from managed processes.
 log = get_logger(__name__)
 
 
-def _drain_remaining_output(process: ManagedProcess, buffer: str) -> str:
-    """Drain any remaining output from process pipes.
+def _stdout_fd(process: ManagedProcess) -> int | None:
+    """Get the stdout file descriptor if available."""
+    if not process._process or not process._process.stdout:
+        return None
 
-    Uses communicate() for exited processes to properly drain all buffered output.
-    Falls back to direct read() for running processes or if communicate() fails.
-    """
-    if not process._process:
+    try:
+        return process._process.stdout.fileno()
+    except (OSError, ValueError, AttributeError):
+        return None
+
+
+def _drain_remaining_output(process: ManagedProcess, buffer: str, buffer_size: int = 1024) -> str:
+    """Drain any remaining output from process pipes."""
+    if not process._process or not process._process.stdout:
         return buffer
 
     try:
-        # For exited processes, communicate() is the reliable way to get all output
-        # It handles pipe draining correctly even after process termination
         if process._process.poll() is not None:
-            # Process has exited - use communicate to drain pipes
             stdout_data, _ = process._process.communicate(timeout=1.0)
             if stdout_data:
-                if isinstance(stdout_data, bytes):
-                    remaining = stdout_data.decode("utf-8", errors="replace")
-                else:
-                    remaining = str(stdout_data)
-                buffer += remaining
-                log.debug("Drained output via communicate()", size=len(remaining))
-        elif process._process.stdout:
-            # Process still running - try non-blocking read
-            remaining = process._process.stdout.read()
-            if remaining:
-                buffer += (
-                    remaining.decode("utf-8", errors="replace")
-                    if isinstance(remaining, bytes)
-                    else str(remaining)
-                )
-                log.debug("Read remaining output from process", size=len(remaining))
+                buffer += stdout_data if isinstance(stdout_data, str) else stdout_data.decode("utf-8", "replace")
+            return buffer
     except (OSError, ValueError, AttributeError, TimeoutError):
+        pass
+
+    fd = _stdout_fd(process)
+    if fd is None:
+        return buffer
+
+    try:
+        while True:
+            ready, _, _ = select.select([fd], [], [], 0)
+            if not ready:
+                break
+            chunk = os.read(fd, buffer_size)
+            if not chunk:
+                break
+            buffer += chunk.decode("utf-8", errors="replace")
+    except (OSError, ValueError):
         # OSError: stream/file read errors
         # ValueError: invalid stream state or decoding errors
-        # AttributeError: stdout/stderr unavailable
-        # TimeoutError: communicate() timed out
         pass
 
     return buffer
@@ -117,25 +123,57 @@ async def _handle_exited_process(
     return buffer  # Should never reach here due to exceptions above
 
 
-async def _try_read_process_line(
-    process: ManagedProcess, buffer: str, expected_parts: list[str]
-) -> tuple[str, bool]:
-    """Try to read a line from process. Returns (new_buffer, pattern_found)."""
-    try:
-        # Try to read a line with reasonable timeout for subprocess I/O
-        # Note: Too short a timeout can miss data due to executor latency
-        line = await process.read_line_async(timeout=0.5)
-        if line:
-            buffer += line + "\n"  # Add newline back since readline strips it
-            log.debug("Read line from process", line=line[:100])
+def _stdout_ready(process: ManagedProcess) -> bool:
+    """Check if process stdout has data ready to read."""
+    fd = _stdout_fd(process)
+    if fd is None:
+        return False
 
-            # Check if we have all expected parts
+    try:
+        ready, _, _ = select.select([fd], [], [], 0)
+        return bool(ready)
+    except (OSError, ValueError, AttributeError):
+        # If readiness can't be determined, fall back to attempting a read.
+        return True
+
+
+def _read_stdout_chunk(process: ManagedProcess, buffer_size: int) -> str:
+    """Read available stdout bytes without blocking."""
+    if not process._process or not process._process.stdout:
+        return ""
+
+    fd = _stdout_fd(process)
+    if fd is None:
+        return ""
+
+    try:
+        chunk = os.read(fd, buffer_size)
+    except (OSError, ValueError, AttributeError, BlockingIOError):
+        return ""
+
+    if not chunk:
+        return ""
+
+    return chunk.decode("utf-8", errors="replace")
+
+
+async def _try_read_process_line(
+    process: ManagedProcess, buffer: str, expected_parts: list[str], buffer_size: int
+) -> tuple[str, bool]:
+    """Try to read available output from process. Returns (new_buffer, pattern_found)."""
+    try:
+        if not _stdout_ready(process):
+            return buffer, False
+
+        chunk = _read_stdout_chunk(process, buffer_size)
+        if chunk:
+            buffer += chunk
+            log.debug("Read output from process", chunk=chunk[:100])
+
             if _check_pattern_found(buffer, expected_parts):
                 log.debug("Found expected pattern in buffer")
                 return buffer, True
 
-    except TimeoutError:
-        pass
     except (ProcessLookupError, PermissionError, OSError):
         # ProcessLookupError: process already exited
         # PermissionError: process inaccessible
@@ -189,7 +227,9 @@ async def wait_for_process_output(
             return await _handle_exited_process(process, buffer, expected_parts, last_exit_code)
 
         # Try to read line from running process
-        buffer, pattern_found = await _try_read_process_line(process, buffer, expected_parts)
+        buffer, pattern_found = await _try_read_process_line(
+            process, buffer, expected_parts, buffer_size
+        )
         if pattern_found:
             return buffer
 
