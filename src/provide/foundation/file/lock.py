@@ -16,6 +16,7 @@ from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
 from provide.foundation.errors.resources import LockError
 from provide.foundation.logger import get_logger
 from provide.foundation.serialization import json_dumps, json_loads
+from provide.foundation.utils.timing import apply_timeout_factor
 
 """File-based locking for concurrent access control.
 
@@ -71,7 +72,7 @@ class FileLock:
 
         """
         self.path = Path(path)
-        self.timeout = timeout
+        self.timeout = apply_timeout_factor(timeout)
         self.check_interval = check_interval
         self.locked = False
         self.pid = os.getpid()

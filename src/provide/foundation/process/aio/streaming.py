@@ -15,6 +15,7 @@ from typing import Any
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.logger import get_logger
 from provide.foundation.process.shared import filter_subprocess_kwargs, prepare_environment
+from provide.foundation.utils.timing import apply_timeout_factor
 
 """Async subprocess streaming execution."""
 
@@ -170,7 +171,8 @@ async def async_stream(
         try:
             # Stream output with optional timeout
             if timeout:
-                lines = await read_lines_with_timeout(process, timeout, cmd_str)
+                scaled_timeout = apply_timeout_factor(timeout)
+                lines = await read_lines_with_timeout(process, scaled_timeout, cmd_str)
                 await process.wait()
                 check_stream_exit_code(process, cmd_str)
 

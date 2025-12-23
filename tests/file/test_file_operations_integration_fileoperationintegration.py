@@ -24,6 +24,7 @@ from provide.foundation.file.operations import (
     OperationType,
 )
 from provide.foundation.file.operations.types import FileOperation
+from provide.foundation.utils.timing import apply_timeout_factor
 
 
 pytestmark = pytest.mark.xdist_group(name="file_operations_integration_serial")
@@ -89,7 +90,7 @@ class FileEventCapture:
 
 def wait_for_file_events(file_monitor: FileEventCapture, timeout: float = 5.0) -> list[FileEvent]:
     """Wait for filesystem events to appear before proceeding."""
-    deadline = time.time() + timeout
+    deadline = time.time() + apply_timeout_factor(timeout)
     while time.time() < deadline:
         if file_monitor.events:
             return file_monitor.events
@@ -104,7 +105,7 @@ def detect_operations(
     delay: float = 0.1,
 ) -> list[FileOperation]:
     """Run the detector until operations are found or the timeout expires."""
-    deadline = time.time() + timeout
+    deadline = time.time() + apply_timeout_factor(timeout)
     while time.time() < deadline:
         snapshot = list(file_monitor.events)
         if not snapshot:
