@@ -16,6 +16,7 @@ from typing import Any
 from provide.foundation.file.operations.detectors.auto_flush import AutoFlushHandler
 from provide.foundation.file.operations.detectors.helpers import (
     extract_base_name,
+    is_backup_file,
     is_temp_file,
 )
 from provide.foundation.file.operations.detectors.registry import get_detector_registry
@@ -213,6 +214,7 @@ class OperationDetector:
 
         best_operation = None
         best_confidence = 0.0
+        best_detector_name = None
         # Early termination threshold - stop searching if we find a very high confidence match
         HIGH_CONFIDENCE_THRESHOLD = 0.95
 
@@ -222,6 +224,7 @@ class OperationDetector:
                 if operation and operation.confidence > best_confidence:
                     best_operation = operation
                     best_confidence = operation.confidence
+                    best_detector_name = detector_name
                     if emit_logs:
                         log.debug(
                             "Found better operation match",
@@ -251,6 +254,15 @@ class OperationDetector:
                 )
 
         if best_operation and best_confidence >= self.config.min_confidence:
+            if (
+                best_detector_name == "detect_simple_operation"
+                and best_operation.operation_type == OperationType.BACKUP_CREATE
+                and not is_backup_file(best_operation.primary_path)
+            ):
+                event_age_ms = (datetime.now() - best_operation.start_time).total_seconds() * 1000
+                if event_age_ms < self.config.time_window_ms:
+                    return None
+
             # Validate that primary_path is not a temp file
             if is_temp_file(best_operation.primary_path):
                 log.warning(
