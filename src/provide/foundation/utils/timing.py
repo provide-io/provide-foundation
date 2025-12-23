@@ -27,9 +27,15 @@ _PROVIDE_CONTEXT_TRACE_ID = contextvars.ContextVar("foundation_context_trace_id"
 
 
 def apply_timeout_factor(timeout: float) -> float:
-    """Scale timeout values using PROVIDE_TEST_TIMEOUT_FACTOR when set."""
+    """Scale timeout values using PROVIDE_TEST_TIMEOUT_FACTOR when set.
+
+    Only applies to longer timeouts to avoid breaking timeout expectation tests.
+    """
     factor_raw = os.getenv("PROVIDE_TEST_TIMEOUT_FACTOR")
     if not factor_raw:
+        return timeout
+
+    if timeout < 5.0:
         return timeout
 
     try:
@@ -39,6 +45,9 @@ def apply_timeout_factor(timeout: float) -> float:
 
     if factor <= 1.0:
         return timeout
+
+    if factor > 10.0:
+        factor = 10.0
 
     return timeout * factor
 

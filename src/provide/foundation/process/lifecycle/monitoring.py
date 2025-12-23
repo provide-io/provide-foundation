@@ -196,7 +196,6 @@ async def wait_for_process_output(
     start_time = loop.time()
     buffer = ""
     last_exit_code = None
-    read_future: asyncio.Future | None = None
 
     log.debug(
         "⏳ Waiting for process output pattern",
@@ -211,37 +210,28 @@ async def wait_for_process_output(
             log.debug("Process exited", returncode=last_exit_code)
             return await _handle_exited_process(process, buffer, expected_parts, last_exit_code)
 
-        # Try to read line from running process without canceling reads
+        # Try to read line from running process, fallback to char reads on timeout.
         remaining = timeout - (loop.time() - start_time)
         read_timeout = min(0.1, remaining)
         if read_timeout <= 0:
             break
 
-        if read_future is None:
-            read_future = _start_stdout_read(process, loop)
-
-        if read_future:
-            done, _ = await asyncio.wait({read_future}, timeout=read_timeout)
-            if done:
-                line_data = read_future.result()
-                read_future = None
-                if line_data:
-                    decoded = (
-                        line_data
-                        if isinstance(line_data, str)
-                        else line_data.decode("utf-8", errors="replace")
-                    )
-                    buffer += decoded
-                    log.debug("Read output from process", chunk=decoded[:100])
-                    if _check_pattern_found(buffer, expected_parts):
-                        log.debug("Found expected pattern in buffer")
-                        return buffer
-                else:
-                    if not process.is_running():
-                        last_exit_code = process.returncode
-                        return await _handle_exited_process(
-                            process, buffer, expected_parts, last_exit_code
-                        )
+        if _stdout_ready(process):
+            chunk = _read_stdout_chunk(process, buffer_size=buffer_size)
+            if chunk:
+                buffer += chunk
+                log.debug("Read output from process", chunk=chunk[:100])
+                if _check_pattern_found(buffer, expected_parts):
+                    log.debug("Found expected pattern in buffer")
+                    return buffer
+            else:
+                if not process.is_running():
+                    last_exit_code = process.returncode
+                    return await _handle_exited_process(process, buffer, expected_parts, last_exit_code)
+        else:
+            if not process.is_running():
+                last_exit_code = process.returncode
+                return await _handle_exited_process(process, buffer, expected_parts, last_exit_code)
 
         # Short sleep to avoid busy loop
         await asyncio.sleep(0.01)
