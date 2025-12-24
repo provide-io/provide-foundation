@@ -201,11 +201,13 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
         )
 
         results = []
+        lock = threading.Lock()
 
         def access_component() -> None:
             component = registry.get("shared_component", "test")
-            component.increment()
-            results.append(component.access_count)
+            with lock:
+                component.increment()
+                results.append(component.access_count)
 
         # Access component concurrently
         threads = []
