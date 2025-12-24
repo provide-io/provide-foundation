@@ -12,7 +12,6 @@ from typing import Any
 from provide.foundation.context import CLIContext
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.serialization import json_dumps
-from provide.foundation.utils.caching import cached
 from provide.foundation.utils.environment import get_bool, get_str
 
 """Core console output functions for standardized CLI output.
@@ -49,7 +48,6 @@ def _should_use_json(ctx: CLIContext | None = None) -> bool:
     return ctx.json_output if ctx else False
 
 
-@cached()
 def _get_color_env_settings() -> tuple[bool | None, bool | None]:
     """Get cached color environment variable settings.
 
