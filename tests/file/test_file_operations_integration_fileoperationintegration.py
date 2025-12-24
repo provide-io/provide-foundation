@@ -26,7 +26,6 @@ from provide.foundation.file.operations import (
 from provide.foundation.file.operations.types import FileOperation
 from provide.foundation.utils.timing import apply_timeout_factor
 
-
 pytestmark = pytest.mark.xdist_group(name="file_operations_integration_serial")
 
 
@@ -126,6 +125,29 @@ class TestFileOperationIntegration(FoundationTestCase):
     filesystem watchers. Running multiple instances in parallel can exceed system
     limits (especially kqueue on macOS) and freeze the entire system.
     """
+
+    @pytest.fixture(autouse=True)
+    def ensure_detector_registry(self) -> Generator[None, None, None]:
+        """Ensure detector registry is properly initialized for each test.
+
+        This fixture prevents race conditions with parallel tests (pytest-xdist)
+        where another test might clear the global detector registry.
+        """
+        from provide.foundation.file.operations.detectors import (
+            _auto_register_builtin_detectors,
+        )
+        from provide.foundation.file.operations.detectors.registry import (
+            clear_detector_registry,
+        )
+
+        # Clear and re-register to ensure a clean state
+        clear_detector_registry()
+        _auto_register_builtin_detectors()
+
+        yield
+
+        # Clean up after test
+        clear_detector_registry()
 
     @pytest.fixture
     def temp_dir(self) -> Generator[Path, None, None]:
