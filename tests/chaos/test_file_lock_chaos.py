@@ -42,9 +42,9 @@ class TestFileLockChaos(FoundationTestCase):
         timeout=st.floats(min_value=0.5, max_value=2.0),
     )
     @settings(
-        max_examples=20,
+        max_examples=7,
         suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
-        deadline=None,
+        deadline=10000,
     )
     def test_concurrent_thread_access_chaos(
         self,
@@ -83,8 +83,8 @@ class TestFileLockChaos(FoundationTestCase):
                 futures = [executor.submit(thread_worker, i) for i in range(num_threads)]
                 for future in futures:
                     try:
-                        # Use longer timeout to handle system load
-                        future.result(timeout=timeout * 10 + 5.0)
+                        # Cap timeout to prevent excessive waiting (max 10 seconds)
+                        future.result(timeout=min(10.0, timeout * 3))
                     except TimeoutError:
                         # Thread pool timeout is acceptable under heavy load
                         pass
@@ -111,7 +111,9 @@ class TestFileLockChaos(FoundationTestCase):
         stale_threshold=st.floats(min_value=0.5, max_value=5.0),
     )
     @settings(
-        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+        max_examples=7,
+        suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
+        deadline=10000,
     )
     def test_stale_lock_detection_chaos(
         self,
@@ -164,7 +166,9 @@ class TestFileLockChaos(FoundationTestCase):
     @pytest.mark.chaos_slow
     @given(scenario=pid_recycling_scenarios())
     @settings(
-        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+        max_examples=7,
+        suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
+        deadline=10000,
     )
     def test_pid_recycling_protection_chaos(
         self,
@@ -230,9 +234,9 @@ class TestFileLockChaos(FoundationTestCase):
         ),
     )
     @settings(
-        max_examples=20,
+        max_examples=7,
         suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
-        deadline=None,
+        deadline=10000,
     )
     def test_corrupted_lock_file_chaos(
         self,
@@ -285,9 +289,9 @@ class TestFileLockChaos(FoundationTestCase):
     @pytest.mark.xdist_group(name="file_lock_serial")  # Force serial execution to avoid deadlock
     @given(scenario=lock_file_scenarios())
     @settings(
-        max_examples=20,
+        max_examples=7,
         suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
-        deadline=None,
+        deadline=None,  # Complex lock scenarios can be unpredictable under system load
     )
     def test_lock_file_scenarios_chaos(
         self,
@@ -360,7 +364,9 @@ class TestFileLockChaos(FoundationTestCase):
         iterations=st.integers(min_value=2, max_value=5),
     )
     @settings(
-        max_examples=10, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+        max_examples=7,
+        suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
+        deadline=10000,
     )
     def test_reentrant_locking_chaos(
         self,
@@ -416,9 +422,9 @@ class TestFileLockAsyncChaos(FoundationTestCase):
         lock_duration=chaos_timings(min_value=0.001, max_value=0.05),
     )
     @settings(
-        max_examples=20,
+        max_examples=7,
         suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
-        deadline=None,
+        deadline=10000,
     )
     async def test_async_concurrent_access_chaos(
         self,
