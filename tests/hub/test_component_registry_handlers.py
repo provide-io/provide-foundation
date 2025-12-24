@@ -185,14 +185,19 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
 
         registry = get_component_registry()
 
-        # Register a component
+        # Create lock first so increment can capture it
+        lock = threading.Lock()
+
+        # Register a component with thread-safe increment
         test_component = Mock()
         test_component.access_count = 0
-        test_component.increment = lambda: setattr(
-            test_component,
-            "access_count",
-            test_component.access_count + 1,
-        )
+
+        # Define increment as a proper function that captures the lock
+        def _thread_safe_increment() -> None:
+            with lock:
+                test_component.access_count += 1
+
+        test_component.increment = _thread_safe_increment
 
         registry.register(
             name="shared_component",
@@ -201,12 +206,11 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
         )
 
         results = []
-        lock = threading.Lock()
 
         def access_component() -> None:
             component = registry.get("shared_component", "test")
+            component.increment()
             with lock:
-                component.increment()
                 results.append(component.access_count)
 
         # Access component concurrently

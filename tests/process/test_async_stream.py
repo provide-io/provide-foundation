@@ -28,6 +28,15 @@ pytestmark = pytest.mark.serial
 class TestAsyncStreamCommand(FoundationTestCase):
     """Test async_stream function."""
 
+    @pytest.fixture(autouse=True)
+    def ensure_clean_event_loop(self, clean_event_loop) -> None:
+        """Ensure a clean event loop before each test.
+
+        This prevents event loop pollution from previous tests (especially those
+        that used time_machine) from causing flaky failures under pytest-xdist.
+        """
+        # The clean_event_loop fixture from testkit handles the cleanup
+
     async def test_basic_stream_success(self) -> None:
         """Test successful basic stream execution."""
         lines = []
