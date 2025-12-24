@@ -68,8 +68,6 @@ async def read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) ->
 
     try:
         stdout_data, _ = await asyncio.wait_for(process.communicate(), timeout=timeout)
-        if stdout_data:
-            lines.extend(stdout_data.decode(errors="replace").splitlines())
     except builtins.TimeoutError as e:
         process.kill()
         await process.wait()
@@ -82,6 +80,8 @@ async def read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) ->
             command=cmd_str,
             timeout_seconds=timeout,
         ) from e
+    if stdout_data:
+        lines.extend(stdout_data.decode(errors="replace").splitlines())
 
     return lines
 
@@ -173,7 +173,6 @@ async def async_stream(
             if timeout:
                 scaled_timeout = apply_timeout_factor(timeout)
                 lines = await read_lines_with_timeout(process, scaled_timeout, cmd_str)
-                await process.wait()
                 check_stream_exit_code(process, cmd_str)
 
                 # Yield lines as they were read

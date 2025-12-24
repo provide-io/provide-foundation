@@ -102,7 +102,7 @@ class BatchOperationDetector:
                     continue
 
                 time_diff = (next_event.timestamp - current.timestamp).total_seconds()
-                if time_diff <= 1.0:
+                if time_diff <= 2.0:
                     steps.append((current, next_event))
                     i = j
                     break
