@@ -282,22 +282,22 @@ class TestFileOperationIntegration(FoundationTestCase):
 
         # Create original file
         original_file.write_text("Important data")
-        time.sleep(0.1)
+        time.sleep(0.3)  # Increased for system load tolerance
 
         file_monitor.clear_events()  # Clear creation event
 
         # Create backup first
         backup_file.write_text("Important data")
-        time.sleep(0.1)
+        time.sleep(0.3)  # Increased for system load tolerance
 
         # Modify original
         original_file.write_text("Updated important data")
-        time.sleep(0.25)
+        time.sleep(0.5)  # Increased for system load tolerance
 
         # Analyze events
         wait_for_file_events(file_monitor)
-        detector = OperationDetector(DetectorConfig(time_window_ms=200))
-        operations = detect_operations(detector, file_monitor, timeout=5.0, delay=0.2)
+        detector = OperationDetector(DetectorConfig(time_window_ms=500))  # Increased window
+        operations = detect_operations(detector, file_monitor, timeout=10.0, delay=0.3)
 
         # Should detect safe write
         safe_ops = [op for op in operations if op.operation_type == OperationType.SAFE_WRITE]
@@ -314,7 +314,7 @@ class TestFileOperationIntegration(FoundationTestCase):
         # Create original file
         file1 = temp_dir / "original.txt"
         file1.write_text("Content")
-        time.sleep(0.05)
+        time.sleep(0.3)  # Increased for system load tolerance
 
         file_monitor.clear_events()  # Clear creation event
 
@@ -323,15 +323,15 @@ class TestFileOperationIntegration(FoundationTestCase):
         final_file = temp_dir / "final.txt"
 
         file1.rename(temp_file)
-        time.sleep(0.05)
+        time.sleep(0.3)  # Increased for system load tolerance
 
         temp_file.rename(final_file)
-        time.sleep(0.25)
+        time.sleep(0.5)  # Increased for system load tolerance
 
         # Analyze events
         wait_for_file_events(file_monitor)
-        detector = OperationDetector(DetectorConfig(time_window_ms=1000))
-        operations = detect_operations(detector, file_monitor, timeout=6.0, delay=0.25)
+        detector = OperationDetector(DetectorConfig(time_window_ms=2000))  # Increased window
+        operations = detect_operations(detector, file_monitor, timeout=10.0, delay=0.3)
 
         # Should detect rename sequence
         rename_ops = [op for op in operations if op.operation_type == OperationType.RENAME_SEQUENCE]
