@@ -155,12 +155,26 @@ class OperationDetector:
         return operations
 
     def _flush_pending(self) -> FileOperation | None:
-        """Analyze pending events and clear buffer."""
+        """Analyze pending events and clear buffer.
+
+        When an operation is detected, only removes events that were part of
+        that operation. Remaining events (e.g., the triggering event for a new
+        operation) are preserved in the buffer.
+        """
         if not self._pending_events:
             return None
 
         operation = self._analyze_event_group(self._pending_events)
-        self._pending_events.clear()
+
+        if operation:
+            # Only remove events that were part of the detected operation
+            # Keep any remaining events for subsequent operations
+            operation_event_ids = {id(e) for e in operation.events}
+            self._pending_events = [e for e in self._pending_events if id(e) not in operation_event_ids]
+        else:
+            # No operation detected, clear all events
+            self._pending_events.clear()
+
         self._last_flush = datetime.now()
         return operation
 
@@ -194,9 +208,7 @@ class OperationDetector:
 
         return groups
 
-    def _analyze_event_group(
-        self, events: list[FileEvent], emit_logs: bool = True
-    ) -> FileOperation | None:
+    def _analyze_event_group(self, events: list[FileEvent], emit_logs: bool = True) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
         Performance optimizations:
