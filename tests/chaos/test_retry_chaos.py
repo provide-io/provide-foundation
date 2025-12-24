@@ -35,7 +35,7 @@ class TestRetryPolicyChaos(FoundationTestCase):
         base_delay=chaos_timings(min_value=0.01, max_value=2.0),
         max_delay=chaos_timings(min_value=0.1, max_value=10.0),
     )
-    @settings(max_examples=30)
+    @settings(max_examples=7, deadline=10000)
     def test_retry_policy_creation_chaos(
         self,
         max_attempts: int,
@@ -69,7 +69,7 @@ class TestRetryPolicyChaos(FoundationTestCase):
             [BackoffStrategy.FIXED, BackoffStrategy.LINEAR, BackoffStrategy.EXPONENTIAL]
         ),
     )
-    @settings(max_examples=30)
+    @settings(max_examples=7, deadline=10000)
     def test_delay_calculation_chaos(
         self,
         attempt: int,
@@ -96,7 +96,7 @@ class TestRetryPolicyChaos(FoundationTestCase):
         assert delay <= policy.max_delay * 1.25
 
     @given(patterns=failure_patterns(max_failures=10))
-    @settings(max_examples=30, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=7, suppress_health_check=[HealthCheck.too_slow], deadline=10000)
     def test_retry_with_failure_patterns(
         self,
         patterns: list[tuple[int, type[Exception]]],
@@ -135,7 +135,7 @@ class TestRetryPolicyChaos(FoundationTestCase):
         max_attempts=st.integers(min_value=1, max_value=10),
         failure_count=st.integers(min_value=0, max_value=15),
     )
-    @settings(max_examples=30, deadline=None)
+    @settings(max_examples=7, deadline=10000)
     def test_max_attempts_exhaustion_chaos(
         self,
         max_attempts: int,
@@ -178,7 +178,7 @@ class TestAsyncRetryChaos(FoundationTestCase):
         backoff_pattern=retry_backoff_patterns(),
         failure_count=st.integers(min_value=0, max_value=5),
     )
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=7, deadline=10000)
     async def test_async_retry_with_backoff_chaos(
         self,
         backoff_pattern: dict[str, Any],

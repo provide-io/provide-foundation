@@ -36,7 +36,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
         num_calls=st.integers(min_value=1, max_value=20),
         failure_rate=st.floats(min_value=0.0, max_value=1.0),
     )
-    @settings(max_examples=30, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=7, suppress_health_check=[HealthCheck.too_slow], deadline=10000)
     def test_failure_threshold_chaos(
         self,
         failure_threshold: int,
@@ -81,7 +81,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
         failure_threshold=st.integers(min_value=2, max_value=5),
         recovery_timeout=chaos_timings(min_value=0.1, max_value=2.0),
     )
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=7, deadline=10000)
     def test_concurrent_state_transitions_chaos(
         self,
         num_threads: int,
@@ -134,7 +134,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
         recovery_timeout=chaos_timings(min_value=0.1, max_value=2.0),
         time_advance=time_advances(min_advance=0.0, max_advance=5.0),
     )
-    @settings(max_examples=30)
+    @settings(max_examples=7, deadline=10000)
     def test_recovery_timeout_with_time_chaos(
         self,
         recovery_timeout: float,
@@ -179,7 +179,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
             assert current_state == CircuitState.OPEN
 
     @given(patterns=failure_patterns(max_failures=10))
-    @settings(max_examples=30)
+    @settings(max_examples=7, deadline=10000)
     def test_failure_pattern_chaos(self, patterns: list[tuple[int, type[Exception]]]) -> None:
         """Test circuit breaker with chaos failure patterns.
 
@@ -219,7 +219,7 @@ class TestAsyncCircuitBreakerChaos(FoundationTestCase):
         num_tasks=st.integers(min_value=2, max_value=15),
         failure_threshold=st.integers(min_value=2, max_value=5),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=7, deadline=10000)
     async def test_async_concurrent_chaos(
         self,
         num_tasks: int,

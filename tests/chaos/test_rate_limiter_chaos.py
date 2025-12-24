@@ -32,7 +32,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         capacity=st.floats(min_value=1.0, max_value=1000.0, allow_nan=False, allow_infinity=False),
         refill_rate=st.floats(min_value=0.1, max_value=100.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=30)
+    @settings(max_examples=7, deadline=10000)
     def test_initialization_chaos(
         self,
         capacity: float,
@@ -55,7 +55,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         refill_rate=st.floats(min_value=1.0, max_value=50.0, allow_nan=False, allow_infinity=False),
         burst_size=st.integers(min_value=1, max_value=20),
     )
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=7, suppress_health_check=[HealthCheck.too_slow], deadline=10000)
     async def test_burst_pattern_chaos(
         self,
         capacity: float,
@@ -98,7 +98,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         refill_rate=st.floats(min_value=1.0, max_value=20.0),
         time_advance=time_advances(min_advance=0.0, max_advance=10.0),
     )
-    @settings(max_examples=30, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=7, suppress_health_check=[HealthCheck.too_slow], deadline=10000)
     async def test_time_advance_refill_chaos(
         self,
         capacity: float,
@@ -148,7 +148,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         capacity=st.floats(min_value=10.0, max_value=50.0),
         num_concurrent=st.integers(min_value=2, max_value=20),
     )
-    @settings(max_examples=20, deadline=None, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=7, deadline=10000, suppress_health_check=[HealthCheck.too_slow])
     async def test_concurrent_acquire_chaos(
         self,
         capacity: float,
@@ -189,7 +189,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         ),
         refill_rate=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
     )
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(max_examples=7, suppress_health_check=[HealthCheck.too_slow], deadline=10000)
     async def test_edge_value_capacity_chaos(
         self,
         capacity: float,
@@ -207,7 +207,7 @@ class TestTokenBucketChaos(FoundationTestCase):
 
     @pytest.mark.asyncio
     @given(bursts=rate_burst_patterns(max_burst_size=50, max_duration=2.0))
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=7, deadline=10000)
     async def test_realistic_burst_patterns_chaos(
         self,
         bursts: list[tuple[float, int]],

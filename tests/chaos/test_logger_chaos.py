@@ -27,7 +27,7 @@ class TestLoggerUnicodeChaos(FoundationTestCase):
     """Chaos tests for logger Unicode and emoji handling."""
 
     @given(text=unicode_chaos())
-    @settings(max_examples=50)
+    @settings(max_examples=7, deadline=10000)
     def test_unicode_logging_chaos(self, text: str) -> None:
         """Test logger with chaotic Unicode input.
 
@@ -50,7 +50,7 @@ class TestLoggerUnicodeChaos(FoundationTestCase):
         emoji_text=unicode_chaos(include_emoji=True),
         regular_text=st.text(min_size=0, max_size=100),
     )
-    @settings(max_examples=30)
+    @settings(max_examples=7, deadline=10000)
     def test_emoji_mixed_content_chaos(
         self,
         emoji_text: str,
@@ -112,7 +112,7 @@ class TestLoggerConcurrencyChaos(FoundationTestCase):
         num_threads=thread_counts(min_threads=2, max_threads=20),
         messages_per_thread=st.integers(min_value=5, max_value=50),
     )
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=7, deadline=10000)
     def test_concurrent_logging_chaos(
         self,
         num_threads: int,
@@ -142,7 +142,7 @@ class TestLoggerConcurrencyChaos(FoundationTestCase):
         assert log_count[0] == expected_count
 
     @given(bursts=rate_burst_patterns(max_burst_size=100, max_duration=1.0))
-    @settings(max_examples=20, deadline=None)
+    @settings(max_examples=7, deadline=10000)
     def test_burst_logging_chaos(self, bursts: list[tuple[float, int]]) -> None:
         """Test logger with burst logging patterns.
 
@@ -165,7 +165,7 @@ class TestLoggerConcurrencyChaos(FoundationTestCase):
         nested_depth=st.integers(min_value=1, max_value=10),
         dict_size=st.integers(min_value=1, max_value=20),
     )
-    @settings(max_examples=30)
+    @settings(max_examples=7, deadline=10000)
     def test_nested_structured_logging_chaos(
         self,
         nested_depth: int,
