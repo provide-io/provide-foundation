@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import os
 import sys
 
 from provide.testkit import FoundationTestCase
@@ -109,6 +110,25 @@ class TestShouldUseJson(FoundationTestCase):
 
 class TestShouldUseColor(FoundationTestCase):
     """Test _should_use_color function."""
+
+    def setup_method(self) -> None:
+        """Ensure color environment variables are cleared for tests."""
+        self.original_no_color = os.environ.get("NO_COLOR")
+        self.original_force_color = os.environ.get("FORCE_COLOR")
+        os.environ.pop("NO_COLOR", None)
+        os.environ.pop("FORCE_COLOR", None)
+
+    def teardown_method(self) -> None:
+        """Restore color environment variables after tests."""
+        if self.original_no_color is not None:
+            os.environ["NO_COLOR"] = self.original_no_color
+        else:
+            os.environ.pop("NO_COLOR", None)
+
+        if self.original_force_color is not None:
+            os.environ["FORCE_COLOR"] = self.original_force_color
+        else:
+            os.environ.pop("FORCE_COLOR", None)
 
     def test_should_use_color_with_stream_tty(self) -> None:
         """Test _should_use_color with a stream that is TTY."""

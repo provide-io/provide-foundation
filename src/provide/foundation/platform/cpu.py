@@ -71,7 +71,16 @@ def get_cpu_info() -> dict[str, str | int | list[str] | None]:
     """
     if _HAS_CPUINFO:
         try:
-            info = cpuinfo.get_cpu_info()
+            info = cpuinfo.get_cpu_info() or {}
+            if not isinstance(info, dict):
+                info = {}
+            if not info.get("brand_raw") and not info.get("brand"):
+                fallback_brand = platform.processor() or platform.uname().processor or platform.machine()
+                info = dict(info)
+                info["brand"] = fallback_brand or "Unknown"
+            if not info.get("arch") and not info.get("arch_string_raw"):
+                info = dict(info)
+                info["arch"] = platform.machine()
             log.debug(
                 "Detailed CPU info gathered",
                 brand=info.get("brand_raw"),

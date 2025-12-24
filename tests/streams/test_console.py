@@ -367,6 +367,25 @@ class TestWriteToConsole(FoundationTestCase):
 class TestConsoleIntegration(FoundationTestCase):
     """Test integration scenarios for console functions."""
 
+    def setup_method(self) -> None:
+        """Ensure color environment variables are cleared for tests."""
+        self.original_no_color = os.environ.get("NO_COLOR")
+        self.original_force_color = os.environ.get("FORCE_COLOR")
+        os.environ.pop("NO_COLOR", None)
+        os.environ.pop("FORCE_COLOR", None)
+
+    def teardown_method(self) -> None:
+        """Restore color environment variables after tests."""
+        if self.original_no_color is not None:
+            os.environ["NO_COLOR"] = self.original_no_color
+        else:
+            os.environ.pop("NO_COLOR", None)
+
+        if self.original_force_color is not None:
+            os.environ["FORCE_COLOR"] = self.original_force_color
+        else:
+            os.environ.pop("FORCE_COLOR", None)
+
     def test_write_to_console_respects_log_stream_changes(self) -> None:
         """Test that write_to_console respects log stream changes."""
         from provide.foundation.streams.core import set_log_stream_for_testing

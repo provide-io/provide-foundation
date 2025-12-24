@@ -12,7 +12,7 @@ from __future__ import annotations
 import sys
 from typing import TextIO
 
-from provide.foundation.streams.config import get_stream_config
+from provide.foundation.streams.config import StreamConfig
 from provide.foundation.streams.core import get_log_stream
 
 """Console stream utilities for Foundation.
@@ -33,7 +33,7 @@ def is_tty() -> bool:
 
 def supports_color() -> bool:
     """Check if the current stream supports color output."""
-    config = get_stream_config()
+    config = StreamConfig.from_env()
 
     if config.no_color:
         return False
