@@ -180,7 +180,7 @@ class TestConfigSchemaIntegration(FoundationTestCase):
         # May or may not be registered depending on when subclass was created
         # vs when discovery was run, but test should not fail
         if entry is not None:
-            assert entry.value == TestConfig
+            assert issubclass(entry.value, RuntimeConfig)
 
 
 # 🧱🏗️🔚

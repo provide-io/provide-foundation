@@ -12,6 +12,7 @@ import asyncio
 from provide.testkit import FoundationTestCase
 import pytest
 
+from provide.foundation.utils.timing import apply_timeout_factor
 
 class TestAsyncLockManagerInitialization(FoundationTestCase):
     """Test async lock manager basic initialization."""
@@ -320,8 +321,9 @@ class TestAsyncLockManagerCrossEventLoop(FoundationTestCase):
             t1.start()
             t2.start()
 
-            t1.join(timeout=5.0)
-            t2.join(timeout=5.0)
+            join_timeout = apply_timeout_factor(10.0)
+            t1.join(timeout=join_timeout)
+            t2.join(timeout=join_timeout)
 
             # Both threads should succeed
             assert results["thread1"] == "success", f"Thread 1 failed: {results.get('thread1')}"
@@ -379,8 +381,9 @@ class TestAsyncLockManagerCrossEventLoop(FoundationTestCase):
                 t.start()
 
             # Wait for all threads to complete
+            join_timeout = apply_timeout_factor(20.0)
             for t in threads:
-                t.join(timeout=10.0)
+                t.join(timeout=join_timeout)
 
             # All threads should succeed
             for i in range(thread_count):

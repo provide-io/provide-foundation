@@ -397,10 +397,14 @@ class TestFileOperationIntegration(FoundationTestCase):
         file2 = temp_dir / "file2.txt"
 
         file1.write_text("Content 1")
-        time.sleep(0.6)  # Wait longer than default time window
+        time.sleep(0.05)
+        file1.write_text("Content 1 updated")
+        time.sleep(0.75)  # Wait longer than default time window
 
         file2.write_text("Content 2")
-        time.sleep(0.15)  # Allow filesystem events to be captured
+        time.sleep(0.05)
+        file2.write_text("Content 2 updated")
+        time.sleep(0.25)  # Allow filesystem events to be captured
 
         # Ensure events were captured
         wait_for_file_events(file_monitor)
@@ -408,7 +412,7 @@ class TestFileOperationIntegration(FoundationTestCase):
 
         # Should be detected as separate operations
         detector = OperationDetector(DetectorConfig(time_window_ms=500))
-        operations = detector.detect(file_monitor.events)
+        operations = detect_operations(detector, file_monitor, timeout=5.0, delay=0.2)
 
         # Events should be in separate groups
         assert len(operations) >= 1
