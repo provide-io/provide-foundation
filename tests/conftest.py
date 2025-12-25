@@ -21,6 +21,18 @@ import sys
 import provide.testkit  # noqa: F401 - Installs setproctitle blocker early
 import pytest
 
+# Mock opentelemetry module for tests when it's not available
+# This must be done before any test imports try to use OTLP client
+if "opentelemetry" not in sys.modules:
+    from unittest.mock import MagicMock
+
+    mock_opentelemetry = MagicMock()
+    mock_opentelemetry._logs = MagicMock()
+    mock_opentelemetry._logs.LogRecord = MagicMock()
+    mock_opentelemetry._logs.SeverityNumber = MagicMock()
+    sys.modules["opentelemetry"] = mock_opentelemetry
+    sys.modules["opentelemetry._logs"] = mock_opentelemetry._logs
+
 # Register plugins for assertion rewriting at the root level
 pytest_plugins = [
     "provide.testkit.hub.fixtures",
