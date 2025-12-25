@@ -363,10 +363,12 @@ class TestGetCurrentTraceLogsUnit(FoundationTestCase):
         tracer have an active trace, which should return None.
         """
         mock_client = Mock()
+        mock_response = SearchResponse(hits=[], total=0, took=10, scan_size=0)
+        mock_client.search = AsyncMock(return_value=mock_response)
 
         result = await get_current_trace_logs(client=mock_client)
 
-        # Should return None when no active trace
+        # Should return None when no active trace or a SearchResponse
         # This exercises all the ImportError and None check paths
         assert result is None or hasattr(result, "hits")
 
