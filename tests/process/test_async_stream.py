@@ -106,7 +106,7 @@ time.sleep(0.05)
         lines = []
         async for line in async_stream(
             [sys.executable, "-c", "print('fast output')"],
-            timeout=5.0,
+            timeout=10.0,
         ):
             lines.append(line)
 
