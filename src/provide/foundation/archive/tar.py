@@ -125,7 +125,7 @@ class TarArchive(BaseArchive):
         except Exception as e:
             raise ArchiveError(f"Failed to create TAR archive: {e}") from e
 
-    def extract(self, archive: Path, output: Path, limits: ArchiveLimits | None = None) -> Path:  # noqa: C901
+    def extract(self, archive: Path, output: Path, limits: ArchiveLimits | None = None) -> Path:
         """Extract TAR archive to output directory with decompression bomb protection.
 
         Args:
