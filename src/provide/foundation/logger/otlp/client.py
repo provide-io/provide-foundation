@@ -128,7 +128,7 @@ class OTLPLogClient:
             headers=headers,
             service_name=config.service_name or "foundation",
             service_version=config.service_version,
-            environment=None,  # TODO: Add environment to TelemetryConfig
+            environment=getattr(config, "environment", None),
         )
 
     def send_log(
