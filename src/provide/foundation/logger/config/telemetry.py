@@ -21,6 +21,7 @@ from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.config.logging import LoggingConfig
 from provide.foundation.logger.defaults import default_logging_config
 from provide.foundation.telemetry.defaults import (
+    DEFAULT_ENVIRONMENT,
     DEFAULT_METRICS_ENABLED,
     DEFAULT_OTLP_PROTOCOL,
     DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
@@ -35,6 +36,11 @@ from provide.foundation.telemetry.defaults import (
 def _get_service_name() -> str | None:
     """Get service name from OTEL_SERVICE_NAME or PROVIDE_SERVICE_NAME (OTEL takes precedence)."""
     return os.getenv("OTEL_SERVICE_NAME") or os.getenv("PROVIDE_SERVICE_NAME")
+
+
+def _get_environment() -> str | None:
+    """Get environment from OTEL_DEPLOYMENT_ENVIRONMENT or PROVIDE_ENVIRONMENT (OTEL takes precedence)."""
+    return os.getenv("OTEL_DEPLOYMENT_ENVIRONMENT") or os.getenv("PROVIDE_ENVIRONMENT")
 
 
 def _get_service_version() -> str | None:
@@ -119,6 +125,10 @@ class TelemetryConfig(RuntimeConfig):
         converter=parse_sample_rate,
         validator=validate_sample_rate,
         description="Sampling rate for traces (0.0 to 1.0)",
+    )
+    environment: str | None = field(
+        factory=_get_environment,
+        description="Deployment environment from OTEL_DEPLOYMENT_ENVIRONMENT or PROVIDE_ENVIRONMENT",
     )
 
     @classmethod
