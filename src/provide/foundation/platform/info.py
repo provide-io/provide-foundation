@@ -15,7 +15,7 @@ import sys
 
 from attrs import define
 
-from provide.foundation.logger import get_logger
+from provide.foundation.logger.setup.coordinator import get_system_logger
 from provide.foundation.platform.detection import (
     get_arch_name,
     get_cpu_type,
@@ -27,7 +27,9 @@ from provide.foundation.utils.caching import cached
 
 """System information gathering utilities."""
 
-log = get_logger(__name__)
+# Use get_system_logger to avoid triggering full Foundation init during module import
+# This prevents stdout pollution that breaks tools like uv
+log = get_system_logger(__name__)
 
 
 @define(slots=True)

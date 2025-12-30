@@ -14,7 +14,7 @@ import time
 
 from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
 from provide.foundation.errors.resources import LockError
-from provide.foundation.logger import get_logger
+from provide.foundation.logger.setup.coordinator import get_system_logger
 from provide.foundation.serialization import json_dumps, json_loads
 from provide.foundation.utils.timing import apply_timeout_factor
 
@@ -25,7 +25,9 @@ When psutil is not available, falls back to basic PID existence checking.
 Thread-safe for concurrent access within a single process.
 """
 
-log = get_logger(__name__)
+# Use get_system_logger to avoid triggering full Foundation init during module import
+# This prevents stdout pollution that breaks tools like uv
+log = get_system_logger(__name__)
 
 # Try to import psutil for PID recycling protection
 try:
