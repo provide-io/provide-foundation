@@ -30,16 +30,27 @@ Thread-safe for concurrent access within a single process.
 log = get_system_logger(__name__)
 
 # Try to import psutil for PID recycling protection
+# Note: We defer logging the missing psutil until first actual use of FileLock
+# to avoid polluting stdout during module initialization (breaks tools like uv)
+_HAS_PSUTIL = False
+_PSUTIL_WARNING_LOGGED = False
 try:
     import psutil
 
     _HAS_PSUTIL = True
 except ImportError:
-    _HAS_PSUTIL = False
-    log.debug(
-        "psutil not available, using basic PID validation",
-        hint="For PID recycling protection, install with: pip install provide-foundation[process]",
-    )
+    pass
+
+
+def _log_psutil_warning_once() -> None:
+    """Log psutil unavailability warning once on first FileLock use."""
+    global _PSUTIL_WARNING_LOGGED
+    if not _HAS_PSUTIL and not _PSUTIL_WARNING_LOGGED:
+        _PSUTIL_WARNING_LOGGED = True
+        log.debug(
+            "psutil not available, using basic PID validation",
+            hint="For PID recycling protection, install with: pip install provide-foundation[process]",
+        )
 
 
 class FileLock:
@@ -73,6 +84,9 @@ class FileLock:
             check_interval: Seconds between lock checks
 
         """
+        # Log psutil warning once on first FileLock instantiation
+        _log_psutil_warning_once()
+
         self.path = Path(path)
         self.timeout = apply_timeout_factor(timeout)
         self.check_interval = check_interval
