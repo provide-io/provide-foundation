@@ -7,9 +7,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 import io
 import os
-from collections.abc import Callable
 
 from provide.testkit import TestEnvironment, isolated_cli_runner
 from provide.testkit.mocking import patch
@@ -32,6 +32,7 @@ def setup_json_logging(setup_func: Callable[[TelemetryConfig | None], None]) -> 
         logging=LoggingConfig(console_formatter="json", default_level="DEBUG"),
     )
     setup_func(config)
+
 
 # Mark all tests in this file to run serially to avoid global state pollution
 pytestmark = pytest.mark.serial

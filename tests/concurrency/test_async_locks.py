@@ -14,6 +14,7 @@ import pytest
 
 from provide.foundation.utils.timing import apply_timeout_factor
 
+
 class TestAsyncLockManagerInitialization(FoundationTestCase):
     """Test async lock manager basic initialization."""
 

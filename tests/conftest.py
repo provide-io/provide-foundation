@@ -34,7 +34,6 @@ if "opentelemetry" not in sys.modules:
     mock_opentelemetry._logs.SeverityNumber = MagicMock()
 
     # Mock trace submodule for trace context extraction
-    from unittest.mock import AsyncMock
 
     mock_trace = MagicMock()
     mock_span = MagicMock()
@@ -48,6 +47,7 @@ if "opentelemetry" not in sys.modules:
     # Create proper mock trace and span IDs that support formatting
     class FormattableMock(MagicMock):
         """Mock that supports format() operations."""
+
         def __format__(self, format_spec):
             if format_spec == "032x":
                 return "0" * 32

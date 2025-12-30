@@ -21,7 +21,6 @@ from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.config.logging import LoggingConfig
 from provide.foundation.logger.defaults import default_logging_config
 from provide.foundation.telemetry.defaults import (
-    DEFAULT_ENVIRONMENT,
     DEFAULT_METRICS_ENABLED,
     DEFAULT_OTLP_PROTOCOL,
     DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
