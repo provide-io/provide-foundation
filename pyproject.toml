@@ -26,6 +26,8 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: System :: Logging",
     "Topic :: System :: Monitoring",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -279,6 +281,7 @@ line-ending = "auto"
 
 [tool.mypy]
 mypy_path = "src"
+strict = true
 # Show error codes in output.
 show_error_codes = true
 # Show column numbers in output.
@@ -327,7 +330,7 @@ omit = [
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
-fail_under = 80 # Set this to a realistic target once you get >0%
+fail_under = 70
 precision = 2
 exclude_lines = [
     "pragma: no cover",
