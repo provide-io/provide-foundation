@@ -184,6 +184,8 @@ ignore = [
     "ANN401",   # any-type (too restrictive)
     "BLE001",   # blind-except (too restrictive for cleanup patterns)
     "B008",     # function-call-in-default-argument (Click uses this pattern)
+    "D203",     # one-blank-line-before-class (conflicts with D211)
+    "D213",     # multi-line-summary-second-line (conflicts with D212)
     "E501",     # line-too-long (handled by formatter)
     "S101",     # assert (valid in tests)
     "S104",     # binding-to-all-interfaces (intentional for servers)
@@ -210,8 +212,8 @@ ignore = [
     "ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN206",  # Type annotations
     "C901",      # Complexity
     "B017",      # pytest.raises(Exception)
-    "SIM117", "SIM105",  # Style preferences
-    "RUF012", "RUF009", "RUF043",  # Ruff-specific
+    "SIM105", "SIM108", "SIM117",  # Style preferences
+    "RUF009", "RUF012", "RUF022", "RUF043",  # Ruff-specific
     "UP007", "UP045",  # Pyupgrade
     "E402",      # Imports after code
     "D",         # No docstrings required in tests
