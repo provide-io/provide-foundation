@@ -20,8 +20,8 @@ import pytest
 from provide.foundation.resilience.circuit_async import AsyncCircuitBreaker
 from provide.foundation.resilience.circuit_sync import CircuitState, SyncCircuitBreaker
 from provide.foundation.testmode.internal import (
-    reset_circuit_breaker_state,
     _reset_direct_circuit_breaker_instances,
+    reset_circuit_breaker_state,
 )
 
 
