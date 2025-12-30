@@ -32,9 +32,9 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "attrs>=25.3.0",
-    "structlog>=25.3.0",
-    "tomli_w>=1.0.0",
+    "attrs>=25.4.0",
+    "structlog>=25.5.0",
+    "tomli_w>=1.2.0",
 ]
 
 [project.urls]
@@ -47,10 +47,10 @@ Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
 
 [project.optional-dependencies]
 cli = [
-    "click>=8.1.8",
+    "click>=8.3.1",
 ]
 compression = [
-    "zstandard>=0.22.0",
+    "zstandard>=0.25.0",
 ]
 crypto = [
     "cryptography>=45.0.7",
@@ -66,15 +66,15 @@ opentelemetry = [
 ]
 # Platform utilities (system/OS info and integration)
 platform = [
-    "psutil>=3.3.11",
+    "psutil>=7.0.0",
     "py-cpuinfo>=9.0.0",
     # Linux-only: sdnotify>=0.3.2 (optional - gracefully degrades if not installed)
     # Install manually on Linux: uv pip install sdnotify
 ]
 # Process utilities (process control and lifecycle)
 process = [
-    "psutil>=3.3.11",
-    "setproctitle>=1.3.3",
+    "psutil>=7.0.0",
+    "setproctitle>=1.3.7",
     # Linux-only: python-prctl>=1.8.1 (optional - gracefully degrades if not installed)
     # Install manually on Linux: uv pip install python-prctl
 ]
