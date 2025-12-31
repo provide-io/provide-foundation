@@ -1,5 +1,7 @@
 #
-# pyproject.toml
+# provide-foundation/pyproject.toml
+#
+# Comprehensive Python foundation library for building robust applications
 #
 
 [build-system]
