@@ -116,7 +116,8 @@ class OpenObserveClientBase:
         try:
             error_data = response.json()
             if isinstance(error_data, dict) and "message" in error_data:
-                return error_data["message"]
+                msg: str = error_data["message"]
+                return msg
         except Exception:
             pass
         return default_msg
@@ -178,7 +179,8 @@ class OpenObserveClientBase:
             if not response.body:
                 return {}
 
-            return response.json()
+            result: dict[str, Any] = response.json()
+            return result
 
         except TransportConnectionError as e:
             raise OpenObserveConnectionError(f"Failed to connect to OpenObserve: {e}") from e

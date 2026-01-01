@@ -42,7 +42,8 @@ class MetricsOperationsMixin(_MixinBase):
 
         # Response format: {"status": "success", "data": ["metric1", "metric2", ...]}
         if response.get("status") == "success":
-            return response.get("data", [])
+            data: list[str] = response.get("data", [])
+            return data
 
         return []
 
@@ -165,7 +166,8 @@ class MetricsOperationsMixin(_MixinBase):
 
         # Response format: {"status": "success", "data": {"metric_name": [{"type": "...", "help": "...", ...}]}}
         if response.get("status") == "success":
-            return response.get("data", {})
+            metadata: dict[str, list[dict[str, Any]]] = response.get("data", {})
+            return metadata
 
         return {}
 
@@ -192,7 +194,8 @@ class MetricsOperationsMixin(_MixinBase):
 
         # Response format: {"status": "success", "data": ["label1", "label2", ...]}
         if response.get("status") == "success":
-            return response.get("data", [])
+            labels: list[str] = response.get("data", [])
+            return labels
 
         return []
 
@@ -223,7 +226,8 @@ class MetricsOperationsMixin(_MixinBase):
 
         # Response format: {"status": "success", "data": ["value1", "value2", ...]}
         if response.get("status") == "success":
-            return response.get("data", [])
+            values: list[str] = response.get("data", [])
+            return values
 
         return []
 

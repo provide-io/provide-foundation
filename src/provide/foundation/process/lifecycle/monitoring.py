@@ -160,7 +160,9 @@ def _read_stdout_chunk(process: ManagedProcess, buffer_size: int) -> str:
     return chunk.decode("utf-8", errors="replace")
 
 
-def _start_stdout_read(process: ManagedProcess, loop: asyncio.AbstractEventLoop) -> asyncio.Future | None:
+def _start_stdout_read(
+    process: ManagedProcess, loop: asyncio.AbstractEventLoop
+) -> asyncio.Future[bytes] | None:
     """Start a single background readline on stdout without cancellation."""
     if not process._process or not process._process.stdout:
         return None

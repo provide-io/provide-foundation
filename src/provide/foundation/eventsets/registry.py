@@ -71,7 +71,7 @@ class EventSetRegistry(Registry):
             NotFoundError: If no event set with this name exists
 
         """
-        event_set = self.get(name, "eventset")
+        event_set: EventSet | None = self.get(name, "eventset")
         if event_set is None:
             raise NotFoundError(f"Event set '{name}' not found")
         return event_set

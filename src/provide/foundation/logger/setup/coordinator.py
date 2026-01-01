@@ -272,7 +272,7 @@ def _configure_stdlib_module_logging(module_levels: dict[str, str] | dict[str, A
             module_logger.setLevel(numeric_level)
 
 
-def get_system_logger(name: str, config: TelemetryConfig | None = None) -> object:
+def get_system_logger(name: str, config: TelemetryConfig | None = None) -> StructuredStdlibLogger:
     """Get a vanilla Python logger without Foundation enhancements.
 
     This provides a plain Python logger that respects FOUNDATION_LOG_LEVEL

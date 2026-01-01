@@ -344,7 +344,8 @@ class CoreHub:
             cli = click_module.version_option(version=version)(cli)
 
         self._cli_group = cli
-        return cli
+        result: click.Group = cli
+        return result
 
     def add_cli_group(self, group: click.Group) -> None:
         """Add an existing Click group to the hub.

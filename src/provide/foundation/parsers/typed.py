@@ -49,7 +49,7 @@ def _parse_list_type(value: str, target_type: type) -> list[Any]:
         return parse_list(value)
 
 
-def _parse_tuple_type(value: str, target_type: type) -> tuple:
+def _parse_tuple_type(value: str, target_type: type) -> tuple[Any, ...]:
     """Parse parameterized tuple types."""
     args = get_args(target_type)
     if args and len(args) > 0:
@@ -62,7 +62,7 @@ def _parse_tuple_type(value: str, target_type: type) -> tuple:
     return parse_tuple(value)
 
 
-def _parse_set_type(value: str, target_type: type) -> set:
+def _parse_set_type(value: str, target_type: type) -> set[Any]:
     """Parse parameterized set types."""
     args = get_args(target_type)
     if args and len(args) > 0:
@@ -173,17 +173,20 @@ def extract_concrete_type(annotation: Any) -> type:
 
         if non_none_types:
             # Return the first non-None type
-            return non_none_types[0]
+            first_type: type[Any] = non_none_types[0]
+            return first_type
 
         # If only None, default to str
         return str
 
     # For generic types, return as-is (e.g., list[int])
     if origin is not None:
-        return annotation
+        result: type[Any] = annotation
+        return result
 
     # For non-generic types, return as-is
-    return annotation
+    final_result: type[Any] = annotation
+    return final_result
 
 
 def parse_typed_value(value: str, target_type: type) -> Any:
