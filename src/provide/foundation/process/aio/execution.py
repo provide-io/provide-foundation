@@ -271,7 +271,7 @@ async def cleanup_process(process: asyncio.subprocess.Process | None) -> None:
         process.stdin.close()
     if process.stdout and not process.stdout.at_eof():
         process.stdout.feed_eof()
-    if process.stderr and process.stderr != asyncio.subprocess.PIPE and not process.stderr.at_eof():
+    if process.stderr and process.stderr != asyncio.subprocess.PIPE and not process.stderr.at_eof():  # type: ignore[comparison-overlap]
         process.stderr.feed_eof()
 
     # Ensure process is terminated

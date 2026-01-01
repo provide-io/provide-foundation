@@ -31,6 +31,12 @@ This module provides the core retry functionality used throughout foundation,
 eliminating duplication between decorators and middleware.
 """
 
+__all__ = [
+    "BackoffStrategy",
+    "RetryExecutor",
+    "RetryPolicy",
+]
+
 T = TypeVar("T")
 
 

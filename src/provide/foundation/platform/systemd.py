@@ -33,7 +33,7 @@ _IS_LINUX = sys.platform.startswith("linux")
 _HAS_SDNOTIFY = False
 if _IS_LINUX:
     try:
-        import sdnotify
+        import sdnotify  # type: ignore[import-not-found]
 
         _HAS_SDNOTIFY = True
         _notifier = sdnotify.SystemdNotifier()

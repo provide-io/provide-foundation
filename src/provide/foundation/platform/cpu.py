@@ -25,7 +25,7 @@ log = get_logger(__name__)
 
 # Try to import py-cpuinfo
 try:
-    import cpuinfo
+    import cpuinfo  # type: ignore[import-untyped]
 
     _HAS_CPUINFO = True
 except ImportError:
