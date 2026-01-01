@@ -8,8 +8,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 import re
+from typing import Any
 
 
 def is_temp_file(path: Path) -> bool:
