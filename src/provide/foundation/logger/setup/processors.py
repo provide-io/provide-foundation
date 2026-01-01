@@ -107,8 +107,8 @@ def handle_globally_disabled_setup() -> None:
     def strip_foundation_context(
         _logger: Any,
         _method_name: str,
-        event_dict: dict,
-    ) -> dict:
+        event_dict: dict[str, object],
+    ) -> dict[str, object]:
         """Strip Foundation-specific bound context before rendering."""
         event_dict.pop("logger_name", None)
         event_dict.pop("_foundation_level_hint", None)
