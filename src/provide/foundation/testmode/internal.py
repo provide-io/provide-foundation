@@ -93,8 +93,8 @@ def reset_structlog_state() -> None:
     def _strip_foundation_context(
         _logger: object,
         _method_name: str,
-        event_dict: dict,
-    ) -> dict:
+        event_dict: dict[str, object],
+    ) -> dict[str, object]:
         """Strip Foundation-specific bound context before rendering.
 
         Foundation binds logger_name and other context that PrintLogger
