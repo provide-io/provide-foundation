@@ -49,7 +49,7 @@ class FallbackChain:
                 "Primary function succeeded",
                 func=getattr(primary_func, "__name__", "anonymous"),
             )
-            return result  # type: ignore[no-any-return]
+            return result
         except Exception as e:
             primary_exception = e
             if not isinstance(e, self.expected_exceptions):
@@ -78,7 +78,7 @@ class FallbackChain:
                     fallback_index=i,
                     fallback_name=getattr(fallback_func, "__name__", "anonymous"),
                 )
-                return result  # type: ignore[no-any-return]
+                return result
             except Exception as e:
                 last_exception = e
                 logger.warning(
