@@ -79,7 +79,8 @@ def get_transport_for_scheme(scheme: str) -> type[Transport]:
             schemes = entry.metadata.get("schemes", [])
             if scheme.lower() in schemes:
                 log.trace(f"Found transport {entry.value.__name__} for scheme '{scheme}'")
-                return entry.value
+                transport_class: type[Transport] = entry.value
+                return transport_class
 
     raise TransportNotFoundError(
         f"No transport registered for scheme: {scheme}",

@@ -200,7 +200,7 @@ class ConfigSchema:
         return cls(schema_fields)
 
     @staticmethod
-    def _attr_to_schema_field(attr: Attribute) -> SchemaField:
+    def _attr_to_schema_field(attr: Attribute[Any]) -> SchemaField:
         """Convert attrs attribute to schema field."""
         # Determine if required
         required = attr.default is None and getattr(attr, "factory", None) is None

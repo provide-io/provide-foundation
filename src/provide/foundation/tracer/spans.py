@@ -174,7 +174,8 @@ class Span:
         # start_time is guaranteed to be set in __attrs_post_init__
         start = self.start_time if self.start_time is not None else 0.0
         if self.end_time is None:
-            return (self._time_source() - start) * 1000
+            duration: float = (self._time_source() - start) * 1000
+            return duration
         return (self.end_time - start) * 1000
 
     def to_dict(self) -> dict[str, Any]:

@@ -99,7 +99,9 @@ class FoundationLogger:
         Returns:
             True if emergency fallback should be used
         """
-        return _LAZY_SETUP_STATE["in_progress"] or _LAZY_SETUP_STATE["error"]
+        in_progress: bool = _LAZY_SETUP_STATE["in_progress"]
+        has_error: bool = bool(_LAZY_SETUP_STATE["error"])
+        return in_progress or has_error
 
     def _perform_locked_setup(self) -> None:
         """Perform setup within the lock."""
@@ -313,7 +315,9 @@ def get_global_logger() -> FoundationLogger:
     from provide.foundation.hub.manager import get_hub
 
     hub = get_hub()
-    logger_instance = hub._component_registry.get("foundation.logger.instance", "singleton")
+    logger_instance: FoundationLogger | None = hub._component_registry.get(
+        "foundation.logger.instance", "singleton"
+    )
 
     if logger_instance:
         return logger_instance

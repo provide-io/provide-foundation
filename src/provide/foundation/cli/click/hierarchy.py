@@ -128,7 +128,7 @@ def validate_command_entry(entry: Any) -> CommandInfo | None:
     if not entry:
         return None
 
-    info = entry.metadata.get("info")
+    info: CommandInfo | None = entry.metadata.get("info")
     if not info:
         return None
 

@@ -66,7 +66,7 @@ def execute_error_handlers(exception: Exception, context: dict[str, Any]) -> dic
     for entry in handlers:
         handler = entry.value
         try:
-            result = handler(exception, context)
+            result: dict[str, Any] | None = handler(exception, context)
             if result is not None:
                 return result
         except Exception as handler_error:

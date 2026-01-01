@@ -70,7 +70,9 @@ def create_x509_certificate(
         san_list = [x509.DNSName(name) for name in (alt_names or []) if name]
         if san_list:
             # DNSName is a subtype of GeneralName, but mypy needs help understanding this
-            builder = builder.add_extension(x509.SubjectAlternativeName(cast(list, san_list)), critical=False)
+            builder = builder.add_extension(
+                x509.SubjectAlternativeName(cast(list[x509.GeneralName], san_list)), critical=False
+            )
 
         builder = builder.add_extension(
             x509.BasicConstraints(ca=is_ca, path_length=None),
@@ -167,14 +169,14 @@ def validate_signature(
             return False
 
         if isinstance(signing_public_key, rsa.RSAPublicKey):
-            cast("rsa.RSAPublicKey", signing_public_key).verify(
+            signing_public_key.verify(
                 signature,
                 tbs_certificate_bytes,
                 padding.PKCS1v15(),
                 signature_hash_algorithm,
             )
         elif isinstance(signing_public_key, ec.EllipticCurvePublicKey):
-            cast("ec.EllipticCurvePublicKey", signing_public_key).verify(
+            signing_public_key.verify(
                 signature,
                 tbs_certificate_bytes,
                 ec.ECDSA(signature_hash_algorithm),

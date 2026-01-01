@@ -114,7 +114,8 @@ def _process_stream_line(line: str) -> list[dict[str, Any]]:
         parsed_data = json_loads(line)
         if isinstance(parsed_data, dict):
             if "hits" in parsed_data:
-                return parsed_data["hits"]
+                hits: list[dict[str, Any]] = parsed_data["hits"]
+                return hits
             return [parsed_data]
     except Exception:
         pass

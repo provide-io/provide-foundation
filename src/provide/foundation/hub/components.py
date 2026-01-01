@@ -107,7 +107,8 @@ def check_component_health(name: str, dimension: str) -> dict[str, Any]:
 
     if hasattr(component, "health_check"):
         try:
-            return component.health_check()
+            result: dict[str, Any] = component.health_check()
+            return result
         except Exception as e:
             return {"status": "error", "error": str(e)}
 
