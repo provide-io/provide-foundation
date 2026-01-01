@@ -36,6 +36,7 @@ SAFE_ENV_ALLOWLIST = {
     "PYTHONHASHSEED",
     "PYTHONDONTWRITEBYTECODE",
     "PYTHONUNBUFFERED",
+    "VIRTUAL_ENV",
     # User info (generally safe)
     "USER",
     "USERNAME",
@@ -55,6 +56,11 @@ SAFE_ENV_ALLOWLIST = {
     "GITHUB_ACTIONS",
     "GITLAB_CI",
     "JENKINS_HOME",
+    # pytest-xdist worker env vars (needed for test context detection)
+    "PYTEST_CURRENT_TEST",
+    "PYTEST_XDIST_WORKER",
+    "PYTEST_XDIST_WORKER_COUNT",
+    "PYTEST_XDIST_TESTRUNUID",
     # Platform identifiers
     "OS",
     "OSTYPE",
