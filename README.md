@@ -6,16 +6,40 @@
 
 **provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
 
+## Key Features
+- Structured logging, error handling, and diagnostics for production apps.
+- CLI utilities and configuration helpers for consistent tooling.
+- Reusable building blocks for transport, tracing, and common workflows.
+
+## Quick Start
+1. Install: `pip install provide-foundation`
+2. Read the [Quick Start guide](https://github.com/provide-io/provide-foundation/blob/main/docs/getting-started/quick-start.md).
+3. Explore runnable examples in [examples/README.md](https://github.com/provide-io/provide-foundation/blob/main/examples/README.md).
+
+## Documentation
+- [Documentation index](https://github.com/provide-io/provide-foundation/blob/main/docs/index.md)
+- [Getting started](https://github.com/provide-io/provide-foundation/blob/main/docs/getting-started/index.md)
+- [Reference](https://github.com/provide-io/provide-foundation/blob/main/docs/reference/index.md)
+
+## Development
+- See [CLAUDE.md](https://github.com/provide-io/provide-foundation/blob/main/CLAUDE.md) for local development notes.
+- Tests live under `tests/` and `examples/`.
+
+## Contributing
+See [CONTRIBUTING.md](https://github.com/provide-io/provide-foundation/blob/main/CONTRIBUTING.md) for contribution guidelines.
+
+## License
+See [LICENSE](https://github.com/provide-io/provide-foundation/blob/main/LICENSE) for license details.
+
 ## Quality Standards
 
-**provide.foundation** maintains high standards for code quality, testing, and reliability:
+**provide.foundation** focuses on code quality, testing, and reliability:
 
-- **High Test Coverage (>80%)** with 1000+ comprehensive tests
-- **Extensive 100% coverage** of core components and critical modules
-- **Comprehensive Security Testing** with path traversal, symlink validation, and input sanitization
-- **Performance Benchmarked** logging, transport, and archive operations
-- **Type-Safe Codebase** with comprehensive type annotations
-- **Automated Quality Checks** with ruff, mypy, and bandit
+- **Test Coverage** is tracked and enforced in CI.
+- **Security Checks** include path traversal and symlink validation tests.
+- **Performance Benchmarks** cover logging, transport, and archive operations.
+- **Type Checking** is enforced with `mypy`.
+- **Linting and Formatting** are enforced with `ruff`.
 
 ---
 
@@ -96,3 +120,5 @@ provide.foundation is intentionally designed as a **foundation layer**, not a fu
 <p align="center">
   Built by <a href="https://provide.io">provide.io</a>
 </p>
+
+Copyright (c) Provide.io LLC.
