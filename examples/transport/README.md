@@ -49,7 +49,5 @@ The example demonstrates several usage patterns:
 
 ## Related Documentation
 
-- [Transport API](../../docs/api/transport/) - Complete transport system documentation
-- [Transport Client](../../docs/api/transport/client.md) - UniversalClient reference
-- [Transport Middleware](../../docs/api/transport/middleware.md) - Middleware system
-- [Transport Registry](../../docs/api/transport/registry.md) - Protocol registration
+- [HTTP Requests Guide](../../docs/how-to-guides/http/requests.md) - HTTP client usage patterns
+- [HTTP Middleware Guide](../../docs/how-to-guides/http/middleware.md) - Middleware configuration and examples
