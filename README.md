@@ -12,7 +12,7 @@
 - Reusable building blocks for transport, tracing, and common workflows.
 
 ## Quick Start
-1. Install: `pip install provide-foundation`
+1. Install: `uv add provide-foundation`
 2. Read the [Quick Start guide](https://github.com/provide-io/provide-foundation/blob/main/docs/getting-started/quick-start.md).
 3. Explore runnable examples in [examples/README.md](https://github.com/provide-io/provide-foundation/blob/main/examples/README.md).
 
@@ -49,12 +49,12 @@ provide.foundation has optional feature sets that require additional dependencie
 
 | Feature | Install Command | Required For |
 |---------|----------------|--------------|
-| **Basic logging** | `pip install provide-foundation` | Core logging functionality |
-| **CLI framework** | `pip install provide-foundation[cli]` | Command-line interface features |
-| **Cryptography** | `pip install provide-foundation[crypto]` | Hash functions, digital signatures, certificates |
-| **HTTP Transport** | `pip install provide-foundation[transport]` | HTTP client utilities and transport features |
-| **OpenTelemetry** | `pip install provide-foundation[opentelemetry]` | Distributed tracing and metrics |
-| **All features** | `pip install provide-foundation[all]` | Everything above |
+| **Basic logging** | `uv add provide-foundation` | Core logging functionality |
+| **CLI framework** | `uv add provide-foundation[cli]` | Command-line interface features |
+| **Cryptography** | `uv add provide-foundation[crypto]` | Hash functions, digital signatures, certificates |
+| **HTTP Transport** | `uv add provide-foundation[transport]` | HTTP client utilities and transport features |
+| **OpenTelemetry** | `uv add provide-foundation[opentelemetry]` | Distributed tracing and metrics |
+| **All features** | `uv add provide-foundation[all]` | Everything above |
 
 > **Quick Start Tip**: For immediate use with just logging, install the base package. Add extras as needed.
 
