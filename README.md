@@ -1,15 +1,25 @@
-# provide.foundation
+# 🧱🏗️ Provide Foundation
 
-**A Comprehensive Python Foundation Library for Modern Applications**
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![uv](https://img.shields.io/badge/uv-package_manager-FF6B35.svg)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![CI](https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml/badge.svg)](https://github.com/provide-io/provide-foundation/actions)
 
----
+**A comprehensive Python foundation library for modern applications**
 
-**provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
+provide.foundation offers structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
 
-## Key Features
-- Structured logging, error handling, and diagnostics for production apps.
-- CLI utilities and configuration helpers for consistent tooling.
-- Reusable building blocks for transport, tracing, and common workflows.
+## ✨ Key Features
+
+- 📝 **Structured Logging** - Beautiful, performant logging with emoji-enhanced visual parsing
+- 🛡️ **Error Handling** - Comprehensive error handling with retry logic and error boundaries
+- ⚙️ **Configuration Management** - Flexible configuration with environment variables and files
+- 🔧 **CLI Framework** - Build command-line interfaces with automatic help generation
+- 🔐 **Cryptographic Utilities** - Modern algorithms and secure defaults
+- 📁 **File Operations** - Atomic file operations with format support and safety guarantees
+- 🔄 **Resilience Patterns** - Retry, circuit breaker, and bulkhead decorators
+- ⚡ **Async Support** - High-level utilities for managing asynchronous tasks
 
 ## Quick Start
 1. Install: `uv add provide-foundation`
