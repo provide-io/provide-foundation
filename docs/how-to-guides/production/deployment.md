@@ -34,7 +34,7 @@ kubectl version --client
 helm version
 
 # Foundation with production extras
-pip install provide-foundation[production]
+uv add provide-foundation[production]
 ```
 
 ## Docker Deployment
@@ -54,7 +54,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install UV package manager
-RUN pip install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Copy dependency files
 WORKDIR /app

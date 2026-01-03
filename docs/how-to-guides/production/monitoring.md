@@ -28,13 +28,13 @@ Production monitoring is essential for maintaining reliable services. Foundation
 
 ```bash
 # Core observability
-pip install provide-foundation
+uv add provide-foundation
 
 # OpenTelemetry support
-pip install provide-foundation[otel]
+uv add provide-foundation[otel]
 
 # Prometheus metrics export
-pip install provide-foundation[prometheus]
+uv add provide-foundation[prometheus]
 ```
 
 ## Structured Logging for Observability
