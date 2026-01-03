@@ -60,12 +60,12 @@ Foundation has modular installation options:
 
 | Feature | Install Command | When You Need It |
 |---------|----------------|------------------|
-| **Basic logging** | `pip install provide-foundation` | Core functionality |
-| **CLI framework** | `pip install provide-foundation[cli]` | Building command-line tools |
-| **Cryptography** | `pip install provide-foundation[crypto]` | Hashing, signing, certificates |
-| **HTTP Transport** | `pip install provide-foundation[transport]` | HTTP client utilities |
-| **OpenTelemetry** | `pip install provide-foundation[opentelemetry]` | Distributed tracing |
-| **All features** | `pip install provide-foundation[all]` | Everything above |
+| **Basic logging** | `uv add provide-foundation` | Core functionality |
+| **CLI framework** | `uv add provide-foundation[cli]` | Building command-line tools |
+| **Cryptography** | `uv add provide-foundation[crypto]` | Hashing, signing, certificates |
+| **HTTP Transport** | `uv add provide-foundation[transport]` | HTTP client utilities |
+| **OpenTelemetry** | `uv add provide-foundation[opentelemetry]` | Distributed tracing |
+| **All features** | `uv add provide-foundation[all]` | Everything above |
 
 ## Need Help?
 

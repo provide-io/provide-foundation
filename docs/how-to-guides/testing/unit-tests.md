@@ -17,7 +17,9 @@ Foundation provides `provide-testkit`, a comprehensive testing toolkit that ensu
 
 Install testing dependencies:
 ```bash
-pip install provide-testkit pytest pytest-asyncio
+uv add provide-testkit
+uv add pytest
+uv add pytest-asyncio
 ```
 
 ## Basic Test Setup

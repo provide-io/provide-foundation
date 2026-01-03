@@ -9,7 +9,7 @@ Clone the repository and run any example:
 ```bash
 git clone https://github.com/provide-io/provide-foundation.git
 cd provide-foundation
-pip install -e ".[all]"
+uv pip install -e ".[all]"
 
 # Run an example
 python examples/telemetry/01_basic_logging.py

@@ -18,7 +18,7 @@ Foundation provides a powerful HTTP client with automatic retries, logging, midd
 
 Install transport extras:
 ```bash
-pip install "provide-foundation[transport]"
+uv add provide-foundation[transport]
 ```
 
 ## Basic Requests

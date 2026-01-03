@@ -380,20 +380,21 @@ Test Results
 
 4. **Generate Documentation** (plating)
    ```bash
-   uv add plating
+   uv tool install plating
    plating adorn --component-type resource
    plating plate --output-dir docs/
    ```
 
 5. **Test Provider** (provide-testkit, tofusoup)
    ```bash
-   uv add provide-testkit tofusoup
+   uv add provide-testkit
+   uv tool install tofusoup
    pytest tests/
    ```
 
 6. **Package Provider** (flavorpack, optional)
    ```bash
-   uv add flavorpack
+   uv tool install flavorpack
    flavorpack package --format pspf
    ```
 
@@ -418,7 +419,7 @@ Test Results
 
 3. **Package** (flavorpack)
    ```bash
-   uv add flavorpack
+   uv tool install flavorpack
    flavorpack package --format pspf
    ```
 
@@ -593,7 +594,7 @@ A: We recommend **uv** for faster dependency resolution. Both work:
 uv add pyvider
 
 # Also works
-pip install pyvider
+uv add pyvider
 ```
 
 **Q: Can I install from source?**
