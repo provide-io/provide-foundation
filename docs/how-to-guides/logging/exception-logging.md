@@ -625,7 +625,7 @@ except Exception:
 ### Error Handling & Resilience
 - **[Retry Patterns](../resilience/retry.md)**: Automatically retry failed operations
 - **[Circuit Breakers](../resilience/circuit-breaker.md)**: Prevent cascading failures
-- **[Production Monitoring](../production/monitoring.md)**: Production-ready error handling
+- **[Production Monitoring](../production/monitoring.md)**: Production-focused error handling
 
 ### Examples
 - See `examples/telemetry/05_exception_handling.py` for comprehensive exception logging examples

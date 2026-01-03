@@ -73,7 +73,7 @@ pending_ops = detector.flush()
 - Watchdog integration
 - Converting filesystem events to FileEvents
 - Real editor save pattern simulation
-- Production-ready monitoring setup
+- Production-focused monitoring setup
 
 **Key concepts**:
 ```python

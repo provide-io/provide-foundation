@@ -18,7 +18,7 @@ Deploying Foundation applications to production requires careful consideration o
 
 **Key Features:**
 - 🐳 **Docker**: Optimized multi-stage builds
-- ☸️ **Kubernetes**: Production-ready manifests
+- ☸️ **Kubernetes**: Production-focused manifests
 - 🔒 **Secret Management**: Secure secret handling
 - 🌍 **Multi-Environment**: Dev, staging, production configs
 - 🚀 **Zero-Downtime**: Rolling updates and health checks

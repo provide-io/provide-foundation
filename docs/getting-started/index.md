@@ -4,7 +4,7 @@ Welcome to provide.foundation! This section will guide you through installation 
 
 ## What is provide.foundation?
 
-provide.foundation is a comprehensive Python library for building robust, production-ready applications with:
+provide.foundation is a comprehensive Python library for building robust, production-focused applications with:
 
 - **Structured Logging**: Beautiful, performant logging with zero configuration
 - **CLI Framework**: Build command-line tools with declarative commands
