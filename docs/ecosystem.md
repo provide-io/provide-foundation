@@ -651,7 +651,7 @@ uv sync
 - Enterprise features
 - Advanced capabilities system
 
-See individual project roadmaps for detailed timelines.
+See individual project roadmaps for current status; timelines may change or be removed.
 
 ---
 
