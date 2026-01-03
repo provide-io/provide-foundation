@@ -103,7 +103,7 @@ Polyglot dependency injection patterns:
 
 ### Production Patterns
 
-Production-ready application patterns:
+Production-focused application patterns:
 
 - **01_production_patterns.py** - Production logging and monitoring
 - **02_error_handling.py** - Comprehensive error handling with resilience

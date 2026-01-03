@@ -121,4 +121,4 @@ provide.foundation is intentionally designed as a **foundation layer**, not a fu
   Built by <a href="https://provide.io">provide.io</a>
 </p>
 
-Copyright (c) Provide.io LLC.
+Copyright (c) provide.io LLC.

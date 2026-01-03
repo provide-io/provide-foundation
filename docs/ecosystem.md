@@ -111,7 +111,7 @@ Choose your journey based on your goals:
 ---
 
 #### terraform-provider-pyvider
-**Purpose:** Production-ready Terraform provider built with pyvider (POC)
+**Purpose:** Production-focused Terraform provider built with pyvider (POC)
 
 **Features:**
 - File operations resources
@@ -523,7 +523,7 @@ Test Results
 | pyvider-components | v0.0.x | Alpha | 3.11+ | 1.0+ |
 | terraform-provider-pyvider | v0.0.x | Alpha POC | 3.11+ | 1.0+ |
 | pyvider-cty | v0.0.1026 | Alpha | 3.11+ | - |
-| pyvider-hcl | v0.0.1000 | Alpha | 3.11+ | - |
+| pyvider-hcl | v0.3.0 | Pre-release | 3.11+ | - |
 | pyvider-rpcplugin | v1.x.x | Production | 3.11+ | 1.0+ |
 | flavorpack | v0.2.0 | Alpha | 3.11+ | - |
 | plating | v0.0.1026 | Beta | 3.11+ | - |
@@ -561,11 +561,10 @@ A: No. Projects are modular. Use only what you need:
 **Q: What's the relationship between pyvider-components and terraform-provider-pyvider?**
 A: pyvider-components is an **example library** for learning. terraform-provider-pyvider is a **production provider** built using those components. Use components for learning; use provider for actual Terraform usage.
 
-**Q: Are these projects production-ready?**
-A: Status varies:
-- **Production:** pyvider-rpcplugin
-- **Beta:** provide-foundation, plating
-- **Alpha:** Most others (APIs may change)
+**Q: Are these projects production-focused?**
+A: Status varies, but most packages are pre-release:
+- **Pre-release:** Most packages (APIs may change)
+- **Maturing:** pyvider-rpcplugin and provide-foundation (stable core, evolving surface area)
 
 ---
 
@@ -578,7 +577,7 @@ A: Yes. pyvider providers are standard Terraform providers. They work with any T
 A: No. pyvider is pure Python. No Go toolchain required.
 
 **Q: Can I package non-Python applications with flavorpack?**
-A: Currently, flavorpack focuses on Python applications. Other language support is planned.
+A: Currently, flavorpack focuses on Python applications. Other language support is exploratory and may change or be removed.
 
 **Q: What's the difference between provide-foundation and provide-foundry?**
 A: provide-foundation is the active core framework. provide-foundry may be a separate/older project. Use **provide-foundation**.

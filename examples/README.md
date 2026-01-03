@@ -49,7 +49,7 @@ This directory contains practical examples demonstrating various features and us
 - `01_polyglot_di_pattern.py` - Polyglot dependency injection patterns
 
 ### [production/](production/) - Production Patterns
-- `01_production_patterns.py` - Production-ready logging and monitoring
+- `01_production_patterns.py` - Production-focused logging and monitoring
 - `02_error_handling.py` - Comprehensive error handling with resilience patterns
 
 ## Running Examples
