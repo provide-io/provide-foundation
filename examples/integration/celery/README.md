@@ -6,7 +6,7 @@ This directory contains a comprehensive example of integrating provide.foundatio
 
 ```bash
 # Install Celery (required)
-pip install celery
+uv add celery
 
 # No additional dependencies required - uses filesystem transport
 ```

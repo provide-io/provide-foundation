@@ -83,7 +83,7 @@ class FileOperationMonitor(FileSystemEventHandler):
         operation = self.detector.detect_streaming(file_event)
 ```
 
-**Requirements**: `pip install watchdog`
+**Requirements**: `uv add watchdog`
 **Run with**: `python 03_real_filesystem_monitoring.py`
 
 ## Common Patterns
