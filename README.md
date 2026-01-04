@@ -35,8 +35,21 @@ provide.foundation offers structured logging, CLI utilities, configuration manag
 - [Reference](https://github.com/provide-io/provide-foundation/blob/main/docs/reference/index.md)
 
 ## Development
-- See [CLAUDE.md](https://github.com/provide-io/provide-foundation/blob/main/CLAUDE.md) for local development notes.
-- Tests live under `tests/` and `examples/`.
+
+### Quick Start
+
+```bash
+# Set up environment
+uv sync
+
+# Run common tasks
+we test           # Run tests
+we lint           # Check code
+we format         # Format code
+we tasks          # See all available commands
+```
+
+See [CLAUDE.md](https://github.com/provide-io/provide-foundation/blob/main/CLAUDE.md) for detailed development instructions and architecture information.
 
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/provide-io/provide-foundation/blob/main/CONTRIBUTING.md) for contribution guidelines.
