@@ -22,6 +22,9 @@ provide.foundation offers structured logging, CLI utilities, configuration manag
 - ⚡ **Async Support** - High-level utilities for managing asynchronous tasks
 
 ## Quick Start
+
+> **Note**: provide-foundation is in pre-release (v0.x.x). APIs and features may change before 1.0 release.
+
 1. Install: `uv add provide-foundation`
 2. Read the [Quick Start guide](https://github.com/provide-io/provide-foundation/blob/main/docs/getting-started/quick-start.md).
 3. Explore runnable examples in [examples/README.md](https://github.com/provide-io/provide-foundation/blob/main/examples/README.md).
