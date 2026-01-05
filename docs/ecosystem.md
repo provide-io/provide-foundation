@@ -605,48 +605,6 @@ cd pyvider
 uv sync
 ```
 
----
-
-## Roadmap Focus
-
-**provide-foundation:**
-- Complete API reference documentation
-- Stabilize core APIs
-
-**pyvider:**
-- Diátaxis documentation restructure
-- Complete migration guides
-- Move toward Beta status
-
-**flavorpack:**
-- Windows support improvements
-- Packaging feature planning
-- Advanced packaging features
-
-**plating:**
-- Stable 1.0 release
-- Performance optimizations
-
-**Ecosystem:**
-- Unified documentation site
-- Cross-project examples
-- Automated compatibility testing
-
-**New Features:**
-- Enhanced testing utilities
-- Advanced provider capabilities
-- Integration templates
-
-**Longer-horizon ideas:**
-- Marketplace for components
-- Cloud provider templates
-- Enterprise features
-- Advanced capabilities system
-
-See individual project roadmaps for current status; priorities may change or be removed.
-
----
-
 ## Getting Help
 
 ### Documentation
