@@ -1,7 +1,7 @@
 # Welcome to provide.foundation
 
 !!! warning "Pre-release"
-    This documentation covers a pre-release. APIs and features may change, and some documented or roadmap items are exploratory and may change or be removed.
+    This documentation covers a pre-release. APIs and features may change, and some documented items are exploratory and may change or be removed.
 
 
 **provide.foundation** is a comprehensive Python 3.11+ library for building robust, operationally excellent applications. It provides a cohesive, "batteries-included" toolkit that addresses common challenges in modern application development.
@@ -10,7 +10,7 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, `pr
 
 !!! info "Release Status"
     provide-foundation is in its pre-release series.
-    Some documented or roadmap items are exploratory and may change or be removed.
+    Some documented items are exploratory and may change or be removed.
 
     - **Current version:** v0.3.0
     - **Status:** Pre-release
