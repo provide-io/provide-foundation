@@ -607,9 +607,7 @@ uv sync
 
 ---
 
-## Roadmap
-
-### Short Term (Q4 2025)
+## Roadmap Focus
 
 **provide-foundation:**
 - Complete API reference documentation
@@ -629,10 +627,6 @@ uv sync
 - Stable 1.0 release
 - Performance optimizations
 
----
-
-### Medium Term (Q1-Q2 2026)
-
 **Ecosystem:**
 - Unified documentation site
 - Cross-project examples
@@ -643,16 +637,13 @@ uv sync
 - Advanced provider capabilities
 - Integration templates
 
----
-
-### Long Term (2026+)
-
+**Longer-horizon ideas:**
 - Marketplace for components
 - Cloud provider templates
 - Enterprise features
 - Advanced capabilities system
 
-See individual project roadmaps for current status; timelines may change or be removed.
+See individual project roadmaps for current status; priorities may change or be removed.
 
 ---
 
