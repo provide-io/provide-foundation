@@ -796,7 +796,7 @@ This is expected behavior when a circuit breaker trips. Options:
 
 ## Still Having Issues?
 
-1. **Review the documentation:** [docs.provide.io](https://foundry.provide.io/foundation/)
+1. **Review the documentation:** [foundry.provide.io](https://foundry.provide.io/provide-foundation/)
 2. **Check examples:** Look at `examples/` in the repository
 3. **Ask for help:** Open a [GitHub Discussion](https://github.com/provide-io/provide-foundation/discussions)
 4. **Report bugs:** Create an [Issue](https://github.com/provide-io/provide-foundation/issues)
