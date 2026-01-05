@@ -611,7 +611,7 @@ uv sync
 
 **provide-foundation:**
 - Complete API reference documentation
-- Stabilize core APIs for 1.0
+- Stabilize core APIs
 
 **pyvider:**
 - Diátaxis documentation restructure
@@ -620,7 +620,7 @@ uv sync
 
 **flavorpack:**
 - Windows support improvements
-- Version 1.0 planning
+- Packaging feature planning
 - Advanced packaging features
 
 **plating:**
