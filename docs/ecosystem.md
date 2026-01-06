@@ -1,6 +1,6 @@
 # provide.io Ecosystem Overview
 
-**Last Updated:** October 30, 2025
+**Last Updated:** January 05, 2026
 
 Welcome to the provide.io ecosystem! This guide helps you understand how our 11+ projects work together to provide a comprehensive suite of tools for Python and Terraform development.
 
@@ -14,9 +14,9 @@ Choose your journey based on your goals:
 
 **Path:** pyvider → pyvider-components → terraform-provider-pyvider
 
-1. **[pyvider](../pyvider/)** - Learn the framework for building Terraform providers
-2. **[pyvider-components](../pyvider-components/)** - Study 100+ example components
-3. **[terraform-provider-pyvider](../terraform-provider-pyvider/)** - See a complete working provider
+1. **[pyvider](https://foundry.provide.io/pyvider/)** - Learn the framework for building Terraform providers
+2. **[pyvider-components](https://foundry.provide.io/pyvider-components/)** - Study 100+ example components
+3. **[terraform-provider-pyvider](https://foundry.provide.io/terraform-provider-pyvider/)** - See a complete working provider
 
 **Time to first provider:** 2-4 hours
 
@@ -26,8 +26,8 @@ Choose your journey based on your goals:
 
 **Path:** provide-foundation → flavorpack
 
-1. **[provide-foundation](../provide-foundation/)** - Core utilities and patterns
-2. **[flavorpack](../flavorpack/)** - PSPF packaging system
+1. **[provide-foundation](https://foundry.provide.io/foundation/)** - Core utilities and patterns
+2. **[flavorpack](https://foundry.provide.io/flavorpack/)** - PSPF packaging system
 
 **Time to first package:** 1-2 hours
 
@@ -37,8 +37,8 @@ Choose your journey based on your goals:
 
 **Path:** provide-foundation → provide-testkit
 
-1. **[provide-foundation](../provide-foundation/)** - Core testing utilities
-2. **[provide-testkit](../provide-testkit/)** - Advanced testing patterns
+1. **[provide-foundation](https://foundry.provide.io/foundation/)** - Core testing utilities
+2. **[provide-testkit](https://foundry.provide.io/provide-testkit/)** - Advanced testing patterns
 
 **Time to first test:** 30 minutes
 
@@ -48,8 +48,8 @@ Choose your journey based on your goals:
 
 **Path:** pyvider → plating
 
-1. **[pyvider](../pyvider/)** - Build your provider
-2. **[plating](../plating/)** - Generate Terraform Registry docs
+1. **[pyvider](https://foundry.provide.io/pyvider/)** - Build your provider
+2. **[plating](https://foundry.provide.io/plating/)** - Generate Terraform Registry docs
 
 **Time to documentation:** 1 hour
 
@@ -71,7 +71,7 @@ Choose your journey based on your goals:
 
 **Status:** Beta (v0.0.1026)
 **When to use:** Building any Python project in the ecosystem
-**Documentation:** [provide-foundation docs](../provide-foundation/)
+**Documentation:** [provide-foundation docs](https://foundry.provide.io/foundation/)
 
 ---
 
@@ -90,7 +90,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha (active development)
 **When to use:** Building custom Terraform providers in Python
-**Documentation:** [pyvider docs](../pyvider/)
+**Documentation:** [pyvider docs](https://foundry.provide.io/pyvider/)
 
 ---
 
@@ -106,7 +106,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha (example library)
 **When to use:** Learning pyvider or referencing component patterns
-**Documentation:** [pyvider-components docs](../pyvider-components/)
+**Documentation:** [pyvider-components docs](https://foundry.provide.io/pyvider-components/)
 
 ---
 
@@ -122,7 +122,7 @@ Choose your journey based on your goals:
 
 **Status:** Pre-release
 **When to use:** Testing pyvider concepts, learning provider usage
-**Documentation:** [terraform-provider-pyvider docs](../terraform-provider-pyvider/)
+**Documentation:** [terraform-provider-pyvider docs](https://foundry.provide.io/terraform-provider-pyvider/)
 
 ---
 
@@ -140,7 +140,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha
 **When to use:** Working with Terraform types in Python
-**Documentation:** [pyvider-cty docs](../pyvider-cty/)
+**Documentation:** [pyvider-cty docs](https://foundry.provide.io/pyvider-cty/)
 
 ---
 
@@ -156,7 +156,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha
 **When to use:** Parsing HCL configurations in Python
-**Documentation:** [pyvider-hcl docs](../pyvider-hcl/)
+**Documentation:** [pyvider-hcl docs](https://foundry.provide.io/pyvider-hcl/)
 
 ---
 
@@ -172,7 +172,7 @@ Choose your journey based on your goals:
 
 **Status:** Production
 **When to use:** Implementing Terraform provider protocol
-**Documentation:** [pyvider-rpcplugin docs](../pyvider-rpcplugin/)
+**Documentation:** [pyvider-rpcplugin docs](https://foundry.provide.io/pyvider-rpcplugin/)
 
 ---
 
@@ -190,7 +190,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha
 **When to use:** Packaging Python applications for distribution
-**Documentation:** [flavorpack docs](../flavorpack/)
+**Documentation:** [flavorpack docs](https://foundry.provide.io/flavorpack/)
 
 ---
 
@@ -208,7 +208,7 @@ Choose your journey based on your goals:
 
 **Status:** Beta
 **When to use:** Generating Terraform provider documentation
-**Documentation:** [plating docs](../plating/)
+**Documentation:** [plating docs](https://foundry.provide.io/plating/)
 
 ---
 
@@ -226,7 +226,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha
 **When to use:** Testing Python infrastructure code
-**Documentation:** [provide-testkit docs](../provide-testkit/)
+**Documentation:** [provide-testkit docs](https://foundry.provide.io/provide-testkit/)
 
 ---
 
@@ -241,7 +241,7 @@ Choose your journey based on your goals:
 
 **Status:** Alpha
 **When to use:** Testing Terraform provider implementations
-**Documentation:** [tofusoup docs](../tofusoup/)
+**Documentation:** [tofusoup docs](https://foundry.provide.io/tofusoup/)
 
 ---
 
@@ -515,7 +515,7 @@ Test Results
 
 ## Version Compatibility
 
-### Current Versions (October 2025)
+### Current Versions (January 2026)
 
 | Project | Version | Status | Python | Terraform |
 |---------|---------|--------|--------|-----------|
@@ -634,10 +634,10 @@ The provide.io ecosystem provides a comprehensive suite of tools for:
 5. **Core utilities for all projects** (provide-foundation)
 
 **Start with:**
-- Building providers? → [pyvider](../pyvider/)
-- Packaging apps? → [flavorpack](../flavorpack/)
-- Testing code? → [provide-testkit](../provide-testkit/)
-- Core utilities? → [provide-foundation](../provide-foundation/)
+- Building providers? → [pyvider](https://foundry.provide.io/pyvider/)
+- Packaging apps? → [flavorpack](https://foundry.provide.io/flavorpack/)
+- Testing code? → [provide-testkit](https://foundry.provide.io/provide-testkit/)
+- Core utilities? → [provide-foundation](https://foundry.provide.io/foundation/)
 
 ---
 
