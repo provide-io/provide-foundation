@@ -335,7 +335,7 @@ class TestRequireDependency(FoundationTestCase):
                 require_dependency("missing_lib")
 
             assert "Optional dependency 'missing_lib' is required" in str(exc_info.value)
-            assert "pip install 'provide-foundation[missing_lib]'" in str(exc_info.value)
+            assert "uv add 'provide-foundation[missing_lib]'" in str(exc_info.value)
 
 
 class TestGetAvailableFeatures(FoundationTestCase):

@@ -78,7 +78,7 @@ class TestOptionalCryptoDependency(FoundationTestCase):
 
             with pytest.raises(
                 ImportError,
-                match="pip install 'provide-foundation\\[crypto\\]'",
+                match="uv add 'provide-foundation\\[crypto\\]'",
             ):
                 CertificateBase.create(config)
 
@@ -92,13 +92,13 @@ class TestOptionalCryptoDependency(FoundationTestCase):
 
             with pytest.raises(
                 ImportError,
-                match="pip install 'provide-foundation\\[crypto\\]'",
+                match="uv add 'provide-foundation\\[crypto\\]'",
             ):
                 create_self_signed("test.com")
 
             with pytest.raises(
                 ImportError,
-                match="pip install 'provide-foundation\\[crypto\\]'",
+                match="uv add 'provide-foundation\\[crypto\\]'",
             ):
                 create_ca("Test CA")
 
@@ -112,13 +112,13 @@ class TestOptionalCryptoDependency(FoundationTestCase):
 
             with pytest.raises(
                 ImportError,
-                match="pip install 'provide-foundation\\[crypto\\]'",
+                match="uv add 'provide-foundation\\[crypto\\]'",
             ):
                 Ed25519Signer.generate()
 
             with pytest.raises(
                 ImportError,
-                match="pip install 'provide-foundation\\[crypto\\]'",
+                match="uv add 'provide-foundation\\[crypto\\]'",
             ):
                 Ed25519Verifier(b"fake_key")
 
@@ -185,7 +185,7 @@ class TestCryptoModuleImport(FoundationTestCase):
             except ImportError as e:
                 error_msg = str(e)
                 assert "Cryptography features require optional dependencies" in error_msg
-                assert "pip install 'provide-foundation[crypto]'" in error_msg
+                assert "uv add 'provide-foundation[crypto]'" in error_msg
 
     def test_signatures_error_message_format(self) -> None:
         """Test that signature error messages are properly formatted."""
@@ -198,7 +198,7 @@ class TestCryptoModuleImport(FoundationTestCase):
             except ImportError as e:
                 error_msg = str(e)
                 assert "Cryptography features require optional dependencies" in error_msg
-                assert "pip install 'provide-foundation[crypto]'" in error_msg
+                assert "uv add 'provide-foundation[crypto]'" in error_msg
 
 
 class TestCryptoFallbackBehavior(FoundationTestCase):
@@ -245,7 +245,7 @@ class TestCryptoInstallationMessage(FoundationTestCase):
 
     def test_installation_message_consistency(self) -> None:
         """Test that all crypto modules provide consistent installation messages."""
-        expected_message_parts = ["pip install 'provide-foundation[crypto]'"]
+        expected_message_parts = ["uv add 'provide-foundation[crypto]'"]
 
         # Test certificates module message
         with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):

@@ -56,7 +56,7 @@ class TestCLIErrors(FoundationTestCase):
         assert error.framework == "click"
         assert error.package == "cli"
         assert error.code == "CLI_ADAPTER_NOT_FOUND"
-        assert "pip install 'provide-foundation[cli]'" in str(error)
+        assert "uv add 'provide-foundation[cli]'" in str(error)
 
     def test_cli_adapter_not_found_default_package(self) -> None:
         """Test CLIAdapterNotFoundError with default package."""

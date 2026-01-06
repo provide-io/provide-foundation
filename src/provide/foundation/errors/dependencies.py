@@ -21,7 +21,7 @@ class DependencyError(FoundationError):
 
     Examples:
         >>> raise DependencyError("cryptography", feature="crypto")
-        >>> raise DependencyError("requests", install_command="pip install requests")
+        >>> raise DependencyError("requests", install_command="uv add requests")
 
     """
 
@@ -36,11 +36,11 @@ class DependencyError(FoundationError):
         # Determine the installation command
         # Feature takes priority over custom install_command
         if feature:
-            cmd = f"pip install 'provide-foundation[{feature}]'"
+            cmd = f"uv add 'provide-foundation[{feature}]'"
         elif install_command:
             cmd = install_command
         else:
-            cmd = f"pip install {package}"
+            cmd = f"uv add {package}"
 
         # Create the error message
         message = f"Optional dependency '{package}' is required for this feature. Install with: {cmd}"
@@ -83,7 +83,7 @@ class DependencyMismatchError(FoundationError):
         message = (
             f"Package '{package}' version {current_version} does not meet "
             f"requirement {required_version}. Please upgrade with: "
-            f"pip install '{package}{required_version}'"
+            f"uv add '{package}{required_version}'"
         )
 
         # Add context

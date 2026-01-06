@@ -76,7 +76,7 @@ class TestDepsCommandWithClick(FoundationTestCase):
             assert exc_info.value.code == 1
             assert mock_pout.call_count == 2
             mock_pout.assert_any_call("❌ crypto: Missing")
-            mock_pout.assert_any_call("Install with: pip install 'provide-foundation[crypto]'")
+            mock_pout.assert_any_call("Install with: uv add 'provide-foundation[crypto]'")
 
     def test_deps_command_check_specific_quiet(self) -> None:
         """Test checking specific dependency in quiet mode."""

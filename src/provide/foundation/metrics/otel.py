@@ -48,7 +48,7 @@ def _require_otel_metrics() -> None:
     if not _HAS_OTEL_METRICS:
         raise ImportError(
             "OpenTelemetry metrics require optional dependencies. "
-            "Install with: pip install 'provide-foundation[opentelemetry]'",
+            "Install with: uv add 'provide-foundation[opentelemetry]'",
         )
 
 
