@@ -578,7 +578,7 @@ A: Yes. pyvider providers are standard Terraform providers. They work with any T
 A: No. pyvider is pure Python. No Go toolchain required.
 
 **Q: Can I package non-Python applications with flavorpack?**
-A: Currently, flavorpack focuses on Python applications. Other language support is exploratory and may change or be removed.
+A: Currently, flavorpack focuses on Python applications. Other language support is not available yet.
 
 **Q: What's the difference between provide-foundation and provide-foundry?**
 A: provide-foundation is the active core framework. provide-foundry may be a separate/older project. Use **provide-foundation**.
