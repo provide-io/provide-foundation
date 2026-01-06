@@ -110,7 +110,7 @@ def status_command(verbose: bool = False):
 **Features:**
 - **aliases:** Alternative command names (`st`, `info`)
 - **category:** Group commands in help output
-- **tags:** Metadata for filtering/searching (exploratory feature)
+- **tags:** Metadata for filtering/searching
 
 ## User-Facing Output
 
