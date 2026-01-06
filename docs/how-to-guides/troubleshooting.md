@@ -32,7 +32,7 @@ ImportError: No module named 'provide.foundation'
 2. **Check virtual environment:**
    ```bash
    which python  # Should point to your venv
-   pip list | grep provide-foundation
+   uv pip list | grep provide-foundation
    ```
 
 3. **Verify Python version:**
@@ -686,7 +686,7 @@ python your_script.py
 
 Verify you're using compatible versions:
 ```bash
-pip list | grep provide
+uv pip list | grep provide
 python --version
 ```
 

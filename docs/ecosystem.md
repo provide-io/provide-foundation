@@ -587,13 +587,10 @@ A: provide-foundation is the active core framework. provide-foundry may be a sep
 
 ### Installation Questions
 
-**Q: Should I use pip or uv?**
-A: We recommend **uv** for faster dependency resolution. Both work:
+**Q: Should I use uv?**
+A: Yes. The ecosystem standardizes on **uv** for dependency management:
 ```bash
 # Recommended
-uv add pyvider
-
-# Also works
 uv add pyvider
 ```
 
