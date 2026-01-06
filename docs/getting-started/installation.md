@@ -5,12 +5,12 @@ This guide covers installing provide.foundation and setting up your development 
 ## Requirements
 
 - **Python 3.11 or higher** - Foundation uses modern Python features
-- **pip or uv** - Package manager for installation
+- **uv** - Package manager for installation
 - **Virtual environment** (recommended) - For isolated dependencies
 
 ## Basic Installation
 
-### Using pip
+### Using uv (Quick install)
 
 The simplest installation provides core logging functionality:
 
@@ -33,7 +33,7 @@ For faster dependency resolution:
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install Foundation
-uv uv add provide-foundation
+uv add provide-foundation
 ```
 
 ## Installation Options
@@ -151,7 +151,7 @@ source .venv/bin/activate  # macOS/Linux
 # or: .venv\Scripts\activate  # Windows
 
 # Install Foundation
-uv uv add provide-foundation[all]
+uv add provide-foundation[all]
 ```
 
 ## Verify Installation
@@ -233,7 +233,7 @@ pytest
 **Solution:** Ensure virtual environment is activated and Foundation is installed:
 ```bash
 source .venv/bin/activate
-pip list | grep provide-foundation
+uv pip list | grep provide-foundation
 ```
 
 ### Cryptography Installation Fails
