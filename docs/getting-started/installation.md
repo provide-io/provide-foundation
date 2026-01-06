@@ -233,7 +233,7 @@ pytest
 **Solution:** Ensure virtual environment is activated and Foundation is installed:
 ```bash
 source .venv/bin/activate
-uv pip list | grep provide-foundation
+uv run python -c "import importlib.metadata as m; print(m.version('provide-foundation'))"
 ```
 
 ### Cryptography Installation Fails
