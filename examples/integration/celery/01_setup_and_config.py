@@ -63,7 +63,7 @@ def setup_celery_logging() -> None:
 
 if not CELERY_AVAILABLE:
     perr("❌ Celery is not installed!")
-    perr("💡 Install with: pip install celery")
+    perr("💡 Install with: uv add celery")
     perr("📝 This example uses filesystem backend (no Redis required)")
     exit(1)
 

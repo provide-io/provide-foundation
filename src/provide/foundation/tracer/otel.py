@@ -62,7 +62,7 @@ def _require_otel() -> None:
     if not _HAS_OTEL:
         raise ImportError(
             "OpenTelemetry features require optional dependencies. "
-            "Install with: pip install 'provide-foundation[opentelemetry]'",
+            "Install with: uv add 'provide-foundation[opentelemetry]'",
         )
 
 

@@ -52,7 +52,7 @@ def requires_click(func: Callable[P, R]) -> Callable[P, R]:
         if not _HAS_CLICK:
             raise ImportError(
                 "CLI commands require optional dependencies. "
-                "Install with: pip install 'provide-foundation[cli]'"
+                "Install with: uv add 'provide-foundation[cli]'"
             )
         return func(*args, **kwargs)
 

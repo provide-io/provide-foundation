@@ -49,7 +49,7 @@ def _log_psutil_warning_once() -> None:
         _PSUTIL_WARNING_LOGGED = True
         log.debug(
             "psutil not available, using basic PID validation",
-            hint="For PID recycling protection, install with: pip install provide-foundation[process]",
+            hint="For PID recycling protection, install with: uv add provide-foundation[process]",
         )
 
 
@@ -357,7 +357,7 @@ class FileLock:
                         "Removing stale lock - process not found (basic check)",
                         path=str(self.path),
                         stale_pid=lock_pid,
-                        hint="For PID recycling protection, install psutil: pip install provide-foundation[process]",
+                        hint="For PID recycling protection, install psutil: uv add provide-foundation[process]",
                     )
                     try:
                         self.path.unlink()

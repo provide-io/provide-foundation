@@ -29,9 +29,9 @@ class TestDependencyError(FoundationTestCase):
 
         assert error.code == "DEPENDENCY_MISSING"
         assert "cryptography" in str(error)
-        assert "pip install cryptography" in str(error)
+        assert "uv add cryptography" in str(error)
         assert error.context["dependency.package"] == "cryptography"
-        assert error.context["dependency.install_command"] == "pip install cryptography"
+        assert error.context["dependency.install_command"] == "uv add cryptography"
 
     def test_dependency_error_with_feature(self) -> None:
         """Test DependencyError with feature parameter."""
@@ -39,10 +39,10 @@ class TestDependencyError(FoundationTestCase):
 
         assert error.code == "DEPENDENCY_MISSING"
         assert "cryptography" in str(error)
-        assert "pip install 'provide-foundation[crypto]'" in str(error)
+        assert "uv add 'provide-foundation[crypto]'" in str(error)
         assert error.context["dependency.package"] == "cryptography"
         assert error.context["dependency.feature"] == "crypto"
-        assert error.context["dependency.install_command"] == "pip install 'provide-foundation[crypto]'"
+        assert error.context["dependency.install_command"] == "uv add 'provide-foundation[crypto]'"
 
     def test_dependency_error_with_custom_install_command(self) -> None:
         """Test DependencyError with custom install command."""
@@ -77,11 +77,11 @@ class TestDependencyError(FoundationTestCase):
 
     def test_dependency_error_feature_priority_over_custom_command(self) -> None:
         """Test that feature parameter takes priority over custom install command."""
-        error = DependencyError("cryptography", feature="crypto", install_command="pip install cryptography")
+        error = DependencyError("cryptography", feature="crypto", install_command="uv add cryptography")
 
         # Feature should override custom install command
-        assert "pip install 'provide-foundation[crypto]'" in str(error)
-        assert error.context["dependency.install_command"] == "pip install 'provide-foundation[crypto]'"
+        assert "uv add 'provide-foundation[crypto]'" in str(error)
+        assert error.context["dependency.install_command"] == "uv add 'provide-foundation[crypto]'"
 
     def test_dependency_error_with_cause(self) -> None:
         """Test DependencyError with an underlying cause."""
@@ -111,7 +111,7 @@ class TestDependencyMismatchError(FoundationTestCase):
         assert "cryptography" in str(error)
         assert ">=3.0.0" in str(error)
         assert "2.9.2" in str(error)
-        assert "pip install 'cryptography>=3.0.0'" in str(error)
+        assert "uv add 'cryptography>=3.0.0'" in str(error)
 
         assert error.context["dependency.package"] == "cryptography"
         assert error.context["dependency.required_version"] == ">=3.0.0"

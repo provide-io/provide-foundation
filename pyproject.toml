@@ -73,14 +73,14 @@ platform = [
     "psutil>=7.0.0",
     "py-cpuinfo>=9.0.0",
     # Linux-only: sdnotify>=0.3.2 (optional - gracefully degrades if not installed)
-    # Install manually on Linux: uv pip install sdnotify
+    # Install manually on Linux: uv add sdnotify
 ]
 # Process utilities (process control and lifecycle)
 process = [
     "psutil>=7.0.0",
     "setproctitle>=1.3.7",
     # Linux-only: python-prctl>=1.8.1 (optional - gracefully degrades if not installed)
-    # Install manually on Linux: uv pip install python-prctl
+    # Install manually on Linux: uv add python-prctl
 ]
 # Convenience groups
 extended = [

@@ -21,7 +21,7 @@ prevent systemd notifications during testing, which would interfere with
 test isolation and aren't meaningful in test contexts.
 
 This module is Linux-specific and requires the optional 'sdnotify' package.
-Install with: pip install provide-foundation[platform-linux]
+Install with: uv add provide-foundation[platform-linux]
 """
 
 log = get_logger(__name__)
@@ -41,7 +41,7 @@ if _IS_LINUX:
         _notifier = None
         log.debug(
             "sdnotify not available, systemd integration disabled",
-            hint="Install with: pip install provide-foundation[platform-linux]",
+            hint="Install with: uv add provide-foundation[platform-linux]",
         )
 else:
     _notifier = None
@@ -72,7 +72,7 @@ def notify_ready() -> bool:
     if not _HAS_SDNOTIFY or _notifier is None:
         log.debug(
             "Cannot notify systemd - sdnotify not available",
-            hint="Install with: pip install provide-foundation[platform-linux]",
+            hint="Install with: uv add provide-foundation[platform-linux]",
         )
         return False
 

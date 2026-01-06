@@ -107,7 +107,7 @@ def get_system_info() -> SystemInfo:
             _PSUTIL_WARNING_LOGGED = True
             log.debug(
                 "psutil not available, memory info unavailable",
-                hint="Install with: pip install provide-foundation[platform]",
+                hint="Install with: uv add provide-foundation[platform]",
             )
     except Exception as e:
         log.debug("Failed to get memory info", error=str(e))
