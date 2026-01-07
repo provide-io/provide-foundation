@@ -371,6 +371,22 @@ explicit = true
 [tool.bandit]
 exclude_dirs = [".venv", "tests"]
 
+################################################################################
+# Security Scanning Allowlist
+################################################################################
+
+[tool.security]
+# Paths to exclude from secret scanning (TruffleHog, GitGuardian, Gitleaks)
+# Run: we security generate (via wrknv) to regenerate tool configs
+description = "Test fixtures and documentation examples - intentionally committed"
+allowed_paths = [
+    # Documentation with example credentials
+    "docs/**/*.md",
+    # Test fixtures with example EC private keys
+    "src/provide/foundation/testing/crypto.py",
+    "tests/fixtures/crypto.py",
+]
+
 [tool.pyrefly]
 project_includes = [
     "src",
