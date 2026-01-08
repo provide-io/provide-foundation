@@ -385,6 +385,16 @@ allowed_paths = [
     # Test fixtures with example EC private keys
     "src/provide/foundation/testing/crypto.py",
     "tests/fixtures/crypto.py",
+    # Crypto module code (false positives on type hints like Ed25519PrivateKey)
+    "src/provide/foundation/crypto/**",
+    # Sanitization processor (contains example secrets for testing sanitization)
+    "src/provide/foundation/logger/processors/sanitization.py",
+    # Test files with example credentials
+    "tests/**",
+    # Mutation testing output
+    "mutants/**",
+    # Responsum game context (auto-generated game tokens)
+    ".rsp_context.json",
 ]
 
 [tool.pyrefly]
