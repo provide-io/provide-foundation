@@ -26,13 +26,13 @@ ImportError: No module named 'provide.foundation'
 
 1. **Install the package:**
    ```bash
-   pip install provide-foundation
+   uv add provide-foundation
    ```
 
 2. **Check virtual environment:**
    ```bash
    which python  # Should point to your venv
-   pip list | grep provide-foundation
+   uv run python -c "import importlib.metadata as m; print(m.version('provide-foundation'))"
    ```
 
 3. **Verify Python version:**
@@ -54,13 +54,13 @@ ImportError: cannot import name 'pout' from 'provide.foundation'
 1. **Check if you need an optional dependency:**
    ```bash
    # CLI features require [cli] extra
-   pip install "provide-foundation[cli]"
+   uv add provide-foundation[cli]
 
    # Crypto features require [crypto] extra
-   pip install "provide-foundation[crypto]"
+   uv add provide-foundation[crypto]
 
    # Or install everything
-   pip install "provide-foundation[all]"
+   uv add provide-foundation[all]
    ```
 
 2. **Verify import path:**
@@ -85,7 +85,7 @@ ModuleNotFoundError: No module named 'click'
 
 Install CLI extras:
 ```bash
-pip install "provide-foundation[cli]"
+uv add provide-foundation[cli]
 ```
 
 ---
@@ -547,7 +547,7 @@ hosts = get_list("HOSTS")  # Expected list, got string
 
 1. **Use provide-testkit:**
    ```bash
-   pip install provide-testkit
+   uv add provide-testkit
    ```
 
 2. **Reset Foundation state:**
@@ -686,7 +686,7 @@ python your_script.py
 
 Verify you're using compatible versions:
 ```bash
-pip list | grep provide
+uv run python -c "import importlib.metadata as m; print(m.version('provide-foundation'))"
 python --version
 ```
 
@@ -796,7 +796,7 @@ This is expected behavior when a circuit breaker trips. Options:
 
 ## Still Having Issues?
 
-1. **Review the documentation:** [docs.provide.io](https://foundry.provide.io/foundation/)
+1. **Review the documentation:** [foundry.provide.io](https://foundry.provide.io/provide-foundation/)
 2. **Check examples:** Look at `examples/` in the repository
 3. **Ask for help:** Open a [GitHub Discussion](https://github.com/provide-io/provide-foundation/discussions)
 4. **Report bugs:** Create an [Issue](https://github.com/provide-io/provide-foundation/issues)

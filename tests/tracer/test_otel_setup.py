@@ -33,7 +33,7 @@ class TestRequireOtel(FoundationTestCase):
                 _require_otel()
 
             assert "OpenTelemetry features require optional dependencies" in str(exc_info.value)
-            assert "pip install 'provide-foundation[opentelemetry]'" in str(exc_info.value)
+            assert "uv add 'provide-foundation[opentelemetry]'" in str(exc_info.value)
 
 
 class TestSetupOpentelemetryTracing(FoundationTestCase):

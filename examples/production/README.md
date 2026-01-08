@@ -1,6 +1,6 @@
 # Production Examples
 
-Production-ready patterns and best practices for provide-foundation.
+Production-focused patterns and best practices for provide-foundation.
 
 ## Examples
 

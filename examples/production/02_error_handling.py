@@ -18,7 +18,7 @@ Key Features Demonstrated:
 - Integration with Foundation's logging system
 
 Requirements:
-    pip install provide-foundation
+    uv add provide-foundation
 
 Usage:
     python examples/production/02_error_handling.py

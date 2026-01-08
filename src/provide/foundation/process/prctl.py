@@ -17,7 +17,7 @@ Provides access to Linux process control operations like capabilities,
 death signals, and process restrictions.
 
 This module is Linux-specific and requires the optional 'python-prctl' package.
-Install with: pip install provide-foundation[process-linux]
+Install with: uv add provide-foundation[process-linux]
 """
 
 log = get_logger(__name__)
@@ -29,13 +29,13 @@ _IS_LINUX = sys.platform.startswith("linux")
 _HAS_PRCTL = False
 if _IS_LINUX:
     try:
-        import prctl
+        import prctl  # type: ignore[import-not-found]
 
         _HAS_PRCTL = True
     except ImportError:
         log.debug(
             "python-prctl not available, Linux process control features disabled",
-            hint="Install with: pip install provide-foundation[process-linux]",
+            hint="Install with: uv add provide-foundation[process-linux]",
         )
 else:
     log.debug("prctl features only available on Linux", platform=sys.platform)
@@ -53,7 +53,7 @@ def _require_prctl() -> None:
         raise PlatformError(
             "python-prctl is not installed",
             code="DEPENDENCY_MISSING",
-            hint="Install with: pip install provide-foundation[process-linux]",
+            hint="Install with: uv add provide-foundation[process-linux]",
         )
 
 
@@ -177,7 +177,8 @@ def get_name() -> str | None:
     _require_prctl()
 
     try:
-        return prctl.get_name()
+        name: str | None = prctl.get_name()
+        return name
     except Exception as e:
         log.debug("Failed to get process name", error=str(e))
         return None

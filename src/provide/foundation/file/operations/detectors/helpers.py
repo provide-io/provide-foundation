@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import re
+from typing import Any
 
 
 def is_temp_file(path: Path) -> bool:
@@ -136,7 +137,7 @@ def extract_base_name(path: Path) -> str | None:
     return base_name if base_name and base_name != name else None
 
 
-def find_real_file_from_events(events: list) -> Path | None:
+def find_real_file_from_events(events: list[Any]) -> Path | None:
     """Find the real (non-temp) file path from a list of events.
 
     Args:
@@ -149,10 +150,12 @@ def find_real_file_from_events(events: list) -> Path | None:
     for event in reversed(events):  # Start from most recent
         # Check dest_path first (for move/rename operations)
         if hasattr(event, "dest_path") and event.dest_path and not is_temp_file(event.dest_path):
-            return event.dest_path
+            dest: Path = event.dest_path
+            return dest
         # Then check regular path
         if not is_temp_file(event.path):
-            return event.path
+            path: Path = event.path
+            return path
 
     # If all files are temp files, try to extract the base name
     for event in events:
@@ -160,13 +163,15 @@ def find_real_file_from_events(events: list) -> Path | None:
             base_name = extract_base_name(event.dest_path)
             if base_name:
                 # Try to construct real path from base name
-                real_path = event.dest_path.parent / base_name
+                dest_parent: Path = event.dest_path.parent
+                real_path: Path = dest_parent / base_name
                 if real_path != event.dest_path:
                     return real_path
 
         base_name = extract_base_name(event.path)
         if base_name:
-            real_path = event.path.parent / base_name
+            event_parent: Path = event.path.parent
+            real_path = event_parent / base_name
             if real_path != event.path:
                 return real_path
 

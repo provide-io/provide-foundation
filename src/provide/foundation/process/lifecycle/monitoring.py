@@ -12,9 +12,9 @@ import select
 
 from provide.foundation.errors.process import ProcessError
 from provide.foundation.logger import get_logger
-from provide.foundation.utils.timing import apply_timeout_factor
 from provide.foundation.process.defaults import DEFAULT_PROCESS_WAIT_TIMEOUT
 from provide.foundation.process.lifecycle.managed import ManagedProcess
+from provide.foundation.utils.timing import apply_timeout_factor
 
 """Process output monitoring utilities.
 
@@ -45,7 +45,9 @@ def _drain_remaining_output(process: ManagedProcess, buffer: str, buffer_size: i
         if process._process.poll() is not None:
             stdout_data, _ = process._process.communicate(timeout=1.0)
             if stdout_data:
-                buffer += stdout_data if isinstance(stdout_data, str) else stdout_data.decode("utf-8", "replace")
+                buffer += (
+                    stdout_data if isinstance(stdout_data, str) else stdout_data.decode("utf-8", "replace")
+                )
             return buffer
     except (OSError, ValueError, AttributeError, TimeoutError):
         pass
@@ -158,7 +160,9 @@ def _read_stdout_chunk(process: ManagedProcess, buffer_size: int) -> str:
     return chunk.decode("utf-8", errors="replace")
 
 
-def _start_stdout_read(process: ManagedProcess, loop: asyncio.AbstractEventLoop) -> asyncio.Future | None:
+def _start_stdout_read(
+    process: ManagedProcess, loop: asyncio.AbstractEventLoop
+) -> asyncio.Future[bytes] | None:
     """Start a single background readline on stdout without cancellation."""
     if not process._process or not process._process.stdout:
         return None

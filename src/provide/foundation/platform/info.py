@@ -15,7 +15,7 @@ import sys
 
 from attrs import define
 
-from provide.foundation.logger import get_logger
+from provide.foundation.logger.setup.coordinator import get_system_logger
 from provide.foundation.platform.detection import (
     get_arch_name,
     get_cpu_type,
@@ -27,7 +27,12 @@ from provide.foundation.utils.caching import cached
 
 """System information gathering utilities."""
 
-log = get_logger(__name__)
+# Use get_system_logger to avoid triggering full Foundation init during module import
+# This prevents stdout pollution that breaks tools like uv
+log = get_system_logger(__name__)
+
+# Track if we've logged the psutil warning to avoid spam
+_PSUTIL_WARNING_LOGGED = False
 
 
 @define(slots=True)
@@ -96,10 +101,14 @@ def get_system_info() -> SystemInfo:
         total_memory = mem.total
         available_memory = mem.available
     except ImportError:
-        log.debug(
-            "psutil not available, memory info unavailable",
-            hint="Install with: pip install provide-foundation[platform]",
-        )
+        # Only log psutil warning once to avoid spam during module imports
+        global _PSUTIL_WARNING_LOGGED
+        if not _PSUTIL_WARNING_LOGGED:
+            _PSUTIL_WARNING_LOGGED = True
+            log.debug(
+                "psutil not available, memory info unavailable",
+                hint="Install with: uv add provide-foundation[platform]",
+            )
     except Exception as e:
         log.debug("Failed to get memory info", error=str(e))
 

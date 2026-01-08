@@ -7,7 +7,7 @@ This directory contains examples demonstrating Foundation's OpenObserve integrat
 ### 1. Install Foundation with OpenObserve support
 
 ```bash
-pip install 'provide-foundation[openobserve]'
+uv add 'provide-foundation[openobserve]'
 ```
 
 ### 2. Run OpenObserve

@@ -28,10 +28,10 @@ Log processors are the heart of Foundation's logging pipeline. They transform lo
 
 ```bash
 # Foundation includes structlog processors
-pip install provide-foundation
+uv add provide-foundation
 
 # For advanced async processing
-pip install provide-foundation[async]
+uv add provide-foundation[async]
 ```
 
 ## Processor Basics

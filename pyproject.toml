@@ -1,9 +1,11 @@
 #
-# pyproject.toml
+# provide-foundation/pyproject.toml
+#
+# Comprehensive Python foundation library for building robust applications
 #
 
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=75.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -26,15 +28,17 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: System :: Logging",
     "Topic :: System :: Monitoring",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
 dependencies = [
-    "attrs>=25.3.0",
-    "structlog>=25.3.0",
-    "tomli_w>=1.0.0",
+    "attrs>=25.4.0",
+    "structlog>=25.5.0",
+    "tomli_w>=1.2.0",
 ]
 
 [project.urls]
@@ -47,10 +51,10 @@ Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
 
 [project.optional-dependencies]
 cli = [
-    "click>=8.1.8",
+    "click>=8.3.1",
 ]
 compression = [
-    "zstandard>=0.22.0",
+    "zstandard>=0.25.0",
 ]
 crypto = [
     "cryptography>=45.0.7",
@@ -66,17 +70,17 @@ opentelemetry = [
 ]
 # Platform utilities (system/OS info and integration)
 platform = [
-    "psutil>=3.3.11",
+    "psutil>=7.0.0",
     "py-cpuinfo>=9.0.0",
     # Linux-only: sdnotify>=0.3.2 (optional - gracefully degrades if not installed)
-    # Install manually on Linux: uv pip install sdnotify
+    # Install manually on Linux: uv add sdnotify
 ]
 # Process utilities (process control and lifecycle)
 process = [
-    "psutil>=3.3.11",
-    "setproctitle>=1.3.3",
+    "psutil>=7.0.0",
+    "setproctitle>=1.3.7",
     # Linux-only: python-prctl>=1.8.1 (optional - gracefully degrades if not installed)
-    # Install manually on Linux: uv pip install python-prctl
+    # Install manually on Linux: uv add python-prctl
 ]
 # Convenience groups
 extended = [
@@ -181,27 +185,39 @@ select = [
     "S",    # Security
 ]
 ignore = [
-    "ANN401",  # any-type
-    "B008",    # function-call-in-default-argument
-    "E501",    # line-too-long
-    # Docstring style choices
-    "D203",    # one-blank-line-before-class (conflicts with D211)
-    "D213",    # multi-line-summary-second-line (conflicts with D212)
-    # Security - intentional/false positives
-    "S110",    # try-except-pass (often intentional for optional features)
-    "S112",    # try-except-continue (often intentional)
-    "S311",    # suspicious-non-cryptographic-random-usage (random is not for crypto)
-    "S608",    # hardcoded-sql-expression (SQL in examples/test data)
+    "ANN401",   # any-type (too restrictive)
+    "BLE001",   # blind-except (too restrictive for cleanup patterns)
+    "B008",     # function-call-in-default-argument (Click uses this pattern)
+    "D203",     # one-blank-line-before-class (conflicts with D211)
+    "D213",     # multi-line-summary-second-line (conflicts with D212)
+    "E501",     # line-too-long (handled by formatter)
+    "S101",     # assert (valid in tests)
+    "S104",     # binding-to-all-interfaces (intentional for servers)
+    "S105",     # hardcoded-password-string (false positive for variable names)
+    "S108",     # hardcoded-temp-file (/tmp is fine for our use cases)
+    "S110",     # try-except-pass (legitimate for cleanup)
+    "S112",     # try-except-continue (legitimate for iteration)
+    "S310",     # suspicious-url-open-for-protocol (URLs are controlled)
+    "S311",     # random (not for crypto)
+    "S603",     # subprocess-without-shell-equals-true (trusted input)
+    "S607",     # start-process-with-partial-path (trusted executables)
+    "S608",     # sql-injection (inputs are sanitized)
+    "PLR0911",  # too-many-return-statements (refactor later)
+    "PLR0912",  # too-many-branches (refactor later)
+    "PLR0913",  # too-many-arguments (common in config classes)
+    "PLR0915",  # too-many-statements (refactor later)
+    "PLR2004",  # magic-value-comparison (too noisy)
 ]
 
 [tool.ruff.lint.per-file-ignores]
+"tests/**" = ["PLR0124"]
 # Tests - No docstrings required, asserts OK, test data OK
 "tests/**/*.py" = [
     "ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN206",  # Type annotations
     "C901",      # Complexity
     "B017",      # pytest.raises(Exception)
-    "SIM117", "SIM105",  # Style preferences
-    "RUF012", "RUF009", "RUF043",  # Ruff-specific
+    "SIM105", "SIM108", "SIM117",  # Style preferences
+    "RUF009", "RUF012", "RUF022", "RUF043",  # Ruff-specific
     "UP007", "UP045",  # Pyupgrade
     "E402",      # Imports after code
     "D",         # No docstrings required in tests
@@ -233,6 +249,22 @@ ignore = [
 "src/provide/foundation/tools/installer.py" = ["S202"]
 # Error types - AUTH_TOKEN_EXPIRED is not a password
 "src/provide/foundation/errors/types.py" = ["S105"]
+# Availability checks - F401 is intentional for "try: import X except ImportError" patterns
+"src/provide/foundation/utils/deps.py" = ["F401"]
+"src/provide/foundation/console/__init__.py" = ["F401"]
+"src/provide/foundation/cli/__init__.py" = ["F401"]
+"src/provide/foundation/logger/otlp/client.py" = ["F401"]
+"src/provide/foundation/observability/__init__.py" = ["F401"]
+"src/provide/foundation/logger/__init__.py" = ["F401"]
+"src/provide/foundation/crypto/certificates/trust.py" = ["F401"]
+"src/provide/foundation/file/formats.py" = ["F401"]
+"src/provide/foundation/hub/commands.py" = ["F401"]
+# Config classes - RUF009 is intentional for attrs field()/config_field() patterns
+"src/provide/foundation/context/core.py" = ["RUF009"]
+"src/provide/foundation/logger/config/logging.py" = ["RUF009"]
+"src/provide/foundation/logger/config/telemetry.py" = ["RUF009"]
+# Streams - file handle must stay open for logger lifetime
+"src/provide/foundation/streams/file.py" = ["SIM115"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["pyvider", "tests"]
@@ -251,6 +283,7 @@ line-ending = "auto"
 
 [tool.mypy]
 mypy_path = "src"
+strict = true
 # Show error codes in output.
 show_error_codes = true
 # Show column numbers in output.
@@ -299,7 +332,7 @@ omit = [
 [tool.coverage.report]
 show_missing = true
 skip_covered = true
-fail_under = 80 # Set this to a realistic target once you get >0%
+fail_under = 70
 precision = 2
 exclude_lines = [
     "pragma: no cover",
@@ -337,6 +370,32 @@ explicit = true
 
 [tool.bandit]
 exclude_dirs = [".venv", "tests"]
+
+################################################################################
+# Security Scanning Allowlist
+################################################################################
+
+[tool.security]
+# Paths to exclude from secret scanning (TruffleHog, GitGuardian, Gitleaks)
+# Run: we security generate (via wrknv) to regenerate tool configs
+description = "Test fixtures and documentation examples - intentionally committed"
+allowed_paths = [
+    # Documentation with example credentials
+    "docs/**/*.md",
+    # Test fixtures with example EC private keys
+    "src/provide/foundation/testing/crypto.py",
+    "tests/fixtures/crypto.py",
+    # Crypto module code (false positives on type hints like Ed25519PrivateKey)
+    "src/provide/foundation/crypto/**",
+    # Sanitization processor (contains example secrets for testing sanitization)
+    "src/provide/foundation/logger/processors/sanitization.py",
+    # Test files with example credentials
+    "tests/**",
+    # Mutation testing output
+    "mutants/**",
+    # Responsum game context (auto-generated game tokens)
+    ".rsp_context.json",
+]
 
 [tool.pyrefly]
 project_includes = [

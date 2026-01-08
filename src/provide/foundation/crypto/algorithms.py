@@ -118,7 +118,8 @@ def get_digest_size(algorithm: str) -> int:
 
     """
     hasher = get_hasher(algorithm)
-    return hasher.digest_size
+    result: int = hasher.digest_size
+    return result
 
 
 # 🧱🏗️🔚

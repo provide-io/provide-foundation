@@ -4,7 +4,7 @@ Learn how to make HTTP requests with Foundation's transport client built on http
 
 ## Overview
 
-Foundation provides a powerful HTTP client with automatic retries, logging, middleware support, and async/await patterns. Built on httpx, it adds production-ready features while maintaining a familiar API.
+Foundation provides a powerful HTTP client with automatic retries, logging, middleware support, and async/await patterns. Built on httpx, it adds production-focused features while maintaining a familiar API.
 
 **Key features:**
 - Async-first with httpx backend
@@ -18,7 +18,7 @@ Foundation provides a powerful HTTP client with automatic retries, logging, midd
 
 Install transport extras:
 ```bash
-pip install "provide-foundation[transport]"
+uv add provide-foundation[transport]
 ```
 
 ## Basic Requests

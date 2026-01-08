@@ -76,7 +76,7 @@ class AsyncCircuitBreaker:
         """Check if the circuit can attempt recovery."""
         return self._time_source() >= (self._last_failure_time or 0) + self.recovery_timeout
 
-    async def call(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
+    async def call(self, func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
         """Execute an asynchronous function through the circuit breaker.
 
         Args:

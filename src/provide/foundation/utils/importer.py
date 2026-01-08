@@ -24,8 +24,8 @@ MAX_LAZY_IMPORT_DEPTH = 5
 
 # Modules that require special error handling with helpful install messages
 SPECIAL_MODULES = {
-    "cli": "CLI features require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
-    "transport": "HTTP/HTTPS transport requires optional dependencies. Install with: pip install 'provide-foundation[transport]'",
+    "cli": "CLI features require optional dependencies. Install with: uv add 'provide-foundation[cli]'",
+    "transport": "HTTP/HTTPS transport requires optional dependencies. Install with: uv add 'provide-foundation[transport]'",
 }
 
 

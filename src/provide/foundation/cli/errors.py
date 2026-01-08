@@ -78,7 +78,7 @@ class CLIAdapterNotFoundError(CLIError):
         """
         pkg = package or framework
         super().__init__(
-            f"CLI adapter for '{framework}' requires: pip install 'provide-foundation[{pkg}]'",
+            f"CLI adapter for '{framework}' requires: uv add 'provide-foundation[{pkg}]'",
             code="CLI_ADAPTER_NOT_FOUND",
             framework=framework,
             package=pkg,

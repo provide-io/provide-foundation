@@ -38,7 +38,7 @@ class TestCreateDependencyStub(FoundationTestCase):
 
         error_msg = str(exc_info.value)
         assert "httpx" in error_msg
-        assert "pip install" in error_msg
+        assert "uv add" in error_msg
         assert "provide-foundation[transport]" in error_msg
 
     def test_stub_raises_on_call(self) -> None:

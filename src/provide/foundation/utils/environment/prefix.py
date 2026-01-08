@@ -71,7 +71,7 @@ class EnvPrefix:
             Full environment variable name with prefix
         """
         # Check cache first
-        cached_name = self._name_cache.get(name)
+        cached_name: str | None = self._name_cache.get(name)
         if cached_name is not None:
             return cached_name
 

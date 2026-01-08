@@ -29,7 +29,7 @@ def _set_title_impl(title: str) -> None:
     if not has_setproctitle():
         log.warning("Process title support not available")
         perr("⚠️  Process title support not available")
-        perr("Install with: pip install 'provide-foundation[process]'")
+        perr("Install with: uv add 'provide-foundation[process]'")
         return
 
     set_process_title(title)
@@ -43,7 +43,7 @@ def _get_title_impl() -> None:
     if not has_setproctitle():
         log.warning("Process title support not available")
         perr("⚠️  Process title support not available")
-        perr("Install with: pip install 'provide-foundation[process]'")
+        perr("Install with: uv add 'provide-foundation[process]'")
         return
 
     title = get_process_title()
@@ -63,7 +63,7 @@ def _info_impl() -> None:
     else:
         log.warning("Process title support not available")
         pout("⚠️  Process title support: Not available")
-        pout("Install with: pip install 'provide-foundation[process]'")
+        pout("Install with: uv add 'provide-foundation[process]'")
 
 
 @click.group("process")
@@ -71,7 +71,7 @@ def process_group() -> None:
     """Process management commands.
 
     Commands for managing process titles and process information.
-    Requires the 'process' extra: pip install 'provide-foundation[process]'
+    Requires the 'process' extra: uv add 'provide-foundation[process]'
     """
 
 

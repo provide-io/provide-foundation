@@ -332,7 +332,7 @@ class CoreHub:
         """
         click_module, has_click = _get_click()
         if not has_click:
-            raise ImportError("CLI creation requires: pip install 'provide-foundation[cli]'")
+            raise ImportError("CLI creation requires: uv add 'provide-foundation[cli]'")
 
         from provide.foundation.hub.commands import create_command_group
 
@@ -344,7 +344,8 @@ class CoreHub:
             cli = click_module.version_option(version=version)(cli)
 
         self._cli_group = cli
-        return cli
+        result: click.Group = cli
+        return result
 
     def add_cli_group(self, group: click.Group) -> None:
         """Add an existing Click group to the hub.

@@ -73,7 +73,7 @@ pending_ops = detector.flush()
 - Watchdog integration
 - Converting filesystem events to FileEvents
 - Real editor save pattern simulation
-- Production-ready monitoring setup
+- Production-focused monitoring setup
 
 **Key concepts**:
 ```python
@@ -83,7 +83,7 @@ class FileOperationMonitor(FileSystemEventHandler):
         operation = self.detector.detect_streaming(file_event)
 ```
 
-**Requirements**: `pip install watchdog`
+**Requirements**: `uv add watchdog`
 **Run with**: `python 03_real_filesystem_monitoring.py`
 
 ## Common Patterns

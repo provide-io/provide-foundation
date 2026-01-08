@@ -9,10 +9,10 @@ Clone the repository and run any example:
 ```bash
 git clone https://github.com/provide-io/provide-foundation.git
 cd provide-foundation
-pip install -e ".[all]"
+uv sync --all-extras
 
 # Run an example
-python examples/telemetry/01_basic_logging.py
+uv run python examples/telemetry/01_basic_logging.py
 ```
 
 ## Example Categories
@@ -103,7 +103,7 @@ Polyglot dependency injection patterns:
 
 ### Production Patterns
 
-Production-ready application patterns:
+Production-focused application patterns:
 
 - **01_production_patterns.py** - Production logging and monitoring
 - **02_error_handling.py** - Comprehensive error handling with resilience

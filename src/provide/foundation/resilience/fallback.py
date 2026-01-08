@@ -117,7 +117,7 @@ class FallbackChain:
                 "Primary function succeeded",
                 func=getattr(primary_func, "__name__", "anonymous"),
             )
-            return result
+            return result  # type: ignore[no-any-return]
         except Exception as e:
             primary_exception = e
             if not isinstance(e, self.expected_exceptions):
@@ -149,7 +149,7 @@ class FallbackChain:
                     fallback_index=i,
                     fallback_name=getattr(fallback_func, "__name__", "anonymous"),
                 )
-                return result
+                return result  # type: ignore[no-any-return]
             except Exception as e:
                 last_exception = e
                 logger.warning(
@@ -176,7 +176,7 @@ class FallbackChain:
         raise RuntimeError("Fallback chain execution failed with no recorded exceptions")
 
 
-def fallback(*fallback_funcs: Callable[..., T]) -> Callable:
+def fallback(*fallback_funcs: Callable[..., T]) -> Callable[..., Any]:
     """Decorator to add fallback functions to a primary function.
 
     Args:
