@@ -51,8 +51,7 @@ def requires_click(func: Callable[P, R]) -> Callable[P, R]:
     def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
         if not _HAS_CLICK:
             raise ImportError(
-                "CLI commands require optional dependencies. "
-                "Install with: uv add 'provide-foundation[cli]'"
+                "CLI commands require optional dependencies. Install with: uv add 'provide-foundation[cli]'"
             )
         return func(*args, **kwargs)
 
