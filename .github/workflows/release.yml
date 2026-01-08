@@ -81,40 +81,22 @@ jobs:
           python scripts/version_checker.py
 
   # ==================================================================================
-  # 📦 Build Package
+  # 📦 Download CI Artifacts
   # ==================================================================================
-  build-package:
-    name: 📦 Build Package
+  download-artifacts:
+    name: 📥 Download CI Artifacts
     runs-on: ubuntu-latest
     needs: [validate]
     if: always() && (needs.validate.result == 'success' || github.event.inputs.force_deploy == 'true')
     steps:
-      - name: 📥 Checkout Code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Download artifacts from CI
+        uses: dawidd6/action-download-artifact@v6
         with:
-          fetch-depth: 0
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          version: ${{ env.UV_VERSION }}
-
-      - name: 📦 Build Package
-        run: |
-          uv build
-          ls -la dist/
-
-      - name: 🔍 Validate Package
-        run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install twine
-          python -m twine check dist/*
+          workflow: ci.yml
+          name: dist
+          path: dist/
 
       - name: 📈 Upload Package Artifacts
         uses: actions/upload-artifact@v4
@@ -128,7 +110,7 @@ jobs:
   deploy-test-pypi:
     name: 🧪 Deploy to Test PyPI
     runs-on: ubuntu-latest
-    needs: [build-package]
+    needs: [download-artifacts]
     if: github.event.inputs.deploy_target == 'test-pypi'
     environment: test-pypi
     steps:
@@ -165,7 +147,7 @@ jobs:
   deploy-pypi:
     name: 🚀 Deploy to Production PyPI
     runs-on: ubuntu-latest
-    needs: [build-package]
+    needs: [download-artifacts]
     if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.deploy_target == 'pypi'
     environment: pypi
     permissions:
@@ -212,7 +194,7 @@ jobs:
   summary:
     name: 📋 Deployment Summary
     runs-on: ubuntu-latest
-    needs: [validate, build-package, deploy-test-pypi, deploy-pypi]
+    needs: [validate, download-artifacts, deploy-test-pypi, deploy-pypi]
     if: always()
     steps:
       - name: 📊 Report Deployment Results
@@ -222,6 +204,6 @@ jobs:
           echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| 🔍 Validation | ${{ needs.validate.result == 'success' && '✅ Pass' || needs.validate.result == 'skipped' && '⏭️ Skipped' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 📦 Build Package | ${{ needs.build-package.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📥 Download Artifacts | ${{ needs.download-artifacts.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🧪 Test PyPI | ${{ needs.deploy-test-pypi.result == 'success' && '✅ Deployed' || needs.deploy-test-pypi.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🚀 Production PyPI | ${{ needs.deploy-pypi.result == 'success' && '✅ Deployed' || needs.deploy-pypi.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
