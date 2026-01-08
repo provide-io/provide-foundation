@@ -29,10 +29,10 @@ Digital signatures provide cryptographic proof of authenticity and integrity. Fo
 
 ```bash
 # Core cryptography support (included by default)
-uv add provide-foundation
+pip install provide-foundation
 
 # For JWT support (optional)
-uv add provide-foundation[jwt]
+pip install provide-foundation[jwt]
 ```
 
 ## Basic Signing & Verification

@@ -102,8 +102,7 @@ def create_command_group(
                 if info:
                     add_command_to_group(info, groups, group, reg)
 
-        result: Group = group
-        return result
+        return group
 
     except Exception as e:
         if isinstance(e, CLIBuildError):

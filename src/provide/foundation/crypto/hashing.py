@@ -71,7 +71,7 @@ def hash_file(
             while chunk := f.read(chunk_size):
                 hasher.update(chunk)
 
-        hash_value: str = hasher.hexdigest()
+        hash_value = hasher.hexdigest()
         log.debug(
             "🔐 Hashed file",
             path=str(path),
@@ -109,7 +109,7 @@ def hash_data(
     hasher = get_hasher(algorithm)
     hasher.update(data)
 
-    hash_value: str = hasher.hexdigest()
+    hash_value = hasher.hexdigest()
     log.debug(
         "🔐 Hashed data",
         algorithm=algorithm,
@@ -168,7 +168,7 @@ def hash_stream(
         hasher.update(chunk)
         bytes_read += len(chunk)
 
-    hash_value: str = hasher.hexdigest()
+    hash_value = hasher.hexdigest()
     log.debug(
         "🔐 Hashed stream",
         algorithm=algorithm,
@@ -269,7 +269,7 @@ def hash_chunks(
         hasher.update(chunk)
         bytes_processed += len(chunk)
 
-    hash_value: str = hasher.hexdigest()
+    hash_value = hasher.hexdigest()
     log.debug(
         "🔐 Hashed chunks",
         algorithm=algorithm,

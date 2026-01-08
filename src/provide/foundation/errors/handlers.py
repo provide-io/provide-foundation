@@ -100,7 +100,7 @@ def error_boundary(
             raise
 
         # Return fallback value if not re-raising
-        return fallback  # type: ignore[no-any-return]
+        return fallback
 
 
 @contextmanager

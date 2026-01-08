@@ -141,8 +141,7 @@ def _format_with_tabulate(hits: list[dict[str, Any]], columns: list[str]) -> str
             row.append(formatted_value)
         rows.append(row)
 
-    result: str = tabulate(rows, headers=columns, tablefmt="grid")
-    return result
+    return tabulate(rows, headers=columns, tablefmt="grid")
 
 
 def _format_simple_table(hits: list[dict[str, Any]], columns: list[str]) -> str:

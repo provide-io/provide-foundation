@@ -30,7 +30,7 @@ Create a new project directory:
 ```bash
 mkdir task-manager
 cd task-manager
-uv add provide-foundation[all]
+pip install "provide-foundation[all]"
 ```
 
 ## 2. Create the Application

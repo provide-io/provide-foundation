@@ -108,6 +108,8 @@ __all__ = [
     # Resilience - Circuit Breaker (async)
     "AsyncCircuitBreaker",
     "BackoffStrategy",
+    # Archive module
+    "archive",
     # New foundation modules
     "CLIContext",
     "CircuitState",
@@ -137,8 +139,6 @@ __all__ = [
     "TokenBucketRateLimiter",
     # Version
     "__version__",
-    # Archive module
-    "archive",
     # Dependency checking utility
     "check_optional_deps",
     "circuit_breaker",

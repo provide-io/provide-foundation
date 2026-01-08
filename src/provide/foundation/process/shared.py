@@ -136,7 +136,7 @@ def check_process_exit_code(process: Any, cmd_str: str) -> None:
         )
 
 
-def filter_subprocess_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+def filter_subprocess_kwargs(kwargs: dict) -> dict:
     """Filter kwargs to only include valid subprocess parameters.
 
     Args:
