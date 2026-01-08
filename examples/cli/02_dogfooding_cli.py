@@ -3,28 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""TODO: Add module docstring."""
-
-from __future__ import annotations
-
-from pathlib import Path
-
-from attrs import define
-
-from provide.foundation.cli import echo_error, echo_info, echo_success, echo_warning
-from provide.foundation.config import RuntimeConfig, env_field
-from provide.foundation.console.output import perr, pout
-from provide.foundation.crypto.hashing import hash_file
-from provide.foundation.errors.decorators import resilient
-from provide.foundation.file.atomic import atomic_write_text
-from provide.foundation.file.safe import safe_read_text
-from provide.foundation.hub import Hub, register_command
-from provide.foundation.logger import get_logger
-from provide.foundation.parsers.primitives import parse_bool
-from provide.foundation.parsers.typed import parse_typed_value
-from provide.foundation.process.sync.execution import run, run_simple
-from provide.foundation.utils.environment import get_bool, get_int, get_str
-
 """CLI Dogfooding Example - Using Foundation's Own Features
 
 This example demonstrates how to build CLI applications that "dogfood"
@@ -81,6 +59,26 @@ Usage:
     python examples/cli/02_dogfooding_cli.py hash-demo --file README.md
 
 """
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from attrs import define
+
+from provide.foundation.cli import echo_error, echo_info, echo_success, echo_warning
+from provide.foundation.config import RuntimeConfig, env_field
+from provide.foundation.console.output import perr, pout
+from provide.foundation.crypto.hashing import hash_file
+from provide.foundation.errors.decorators import resilient
+from provide.foundation.file.atomic import atomic_write_text
+from provide.foundation.file.safe import safe_read_text
+from provide.foundation.hub import Hub, register_command
+from provide.foundation.logger import get_logger
+from provide.foundation.parsers.primitives import parse_bool
+from provide.foundation.parsers.typed import parse_typed_value
+from provide.foundation.process.sync.execution import run, run_simple
+from provide.foundation.utils.environment import get_bool, get_int, get_str
 
 log = get_logger(__name__)
 

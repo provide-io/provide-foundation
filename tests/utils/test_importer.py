@@ -255,7 +255,7 @@ class TestLazyImportEdgeCases:
         from provide.foundation.utils.importer import SPECIAL_MODULES
 
         assert "cli" in SPECIAL_MODULES
-        assert "pip install" in SPECIAL_MODULES["cli"]
+        assert "uv add" in SPECIAL_MODULES["cli"]
         assert "provide-foundation[cli]" in SPECIAL_MODULES["cli"]
 
 

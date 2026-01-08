@@ -7,7 +7,7 @@ Get started with provide.foundation in under 5 minutes. This guide shows you the
 First, install the library:
 
 ```bash
-pip install "provide-foundation[all]"
+uv add provide-foundation[all]
 ```
 
 Verify the installation:

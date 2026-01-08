@@ -1,6 +1,6 @@
 # Use Cases
 
-provide.foundation is designed as a foundation layer for building production-ready Python applications. This page explains when to use it and what kinds of applications it's best suited for.
+provide.foundation is designed as a foundation layer for building production-focused Python applications. This page explains when to use it and what kinds of applications it's best suited for.
 
 ## When to Use provide.foundation
 
@@ -26,7 +26,7 @@ Perfect for command-line tools that need structured logging, configuration manag
 **See:** [CLI Application Tutorial](../getting-started/first-app.md)
 
 #### Microservices with Structured Logging
-Services that need production-ready logging and observability.
+Services that need production-focused logging and observability.
 
 **Why it fits:**
 - Structured logging ready for log aggregation

@@ -37,6 +37,11 @@ def _get_service_name() -> str | None:
     return os.getenv("OTEL_SERVICE_NAME") or os.getenv("PROVIDE_SERVICE_NAME")
 
 
+def _get_environment() -> str | None:
+    """Get environment from OTEL_DEPLOYMENT_ENVIRONMENT or PROVIDE_ENVIRONMENT (OTEL takes precedence)."""
+    return os.getenv("OTEL_DEPLOYMENT_ENVIRONMENT") or os.getenv("PROVIDE_ENVIRONMENT")
+
+
 def _get_service_version() -> str | None:
     """Get service version from package metadata.
 
@@ -119,6 +124,10 @@ class TelemetryConfig(RuntimeConfig):
         converter=parse_sample_rate,
         validator=validate_sample_rate,
         description="Sampling rate for traces (0.0 to 1.0)",
+    )
+    environment: str | None = field(
+        factory=_get_environment,
+        description="Deployment environment from OTEL_DEPLOYMENT_ENVIRONMENT or PROVIDE_ENVIRONMENT",
     )
 
     @classmethod

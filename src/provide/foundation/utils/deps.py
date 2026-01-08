@@ -196,14 +196,14 @@ def check_optional_deps(*, quiet: bool = False, return_status: bool = False) -> 
             log.info(f"  {status_icon} {dep.name}{version_info}")
             log.info(f"     {dep.description}")
             if not dep.available:
-                log.info(f"     Install with: pip install 'provide-foundation[{dep.name}]'")
+                log.info(f"     Install with: uv add 'provide-foundation[{dep.name}]'")
 
         log.info(f"📊 Summary: {available_count}/{total_count} optional dependencies available")
 
         if available_count == total_count:
             log.info("🎉 All optional features are available!")
         elif available_count == 0:
-            log.info("💡 Install optional features with: pip install 'provide-foundation[all]'")
+            log.info("💡 Install optional features with: uv add 'provide-foundation[all]'")
         else:
             missing = [dep.name for dep in deps if not dep.available]
             log.info(f"💡 Missing features: {', '.join(missing)}")
@@ -243,7 +243,7 @@ def require_dependency(name: str) -> None:
     if not has_dependency(name):
         raise ImportError(
             f"Optional dependency '{name}' is required for this feature. "
-            f"Install with: pip install 'provide-foundation[{name}]'",
+            f"Install with: uv add 'provide-foundation[{name}]'",
         )
 
 

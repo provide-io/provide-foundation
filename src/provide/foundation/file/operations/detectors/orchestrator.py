@@ -309,7 +309,8 @@ class OperationDetector:
                     confidence=best_confidence,
                     is_temp=is_temp_file(best_operation.primary_path),
                 )
-            return best_operation
+            result: FileOperation = best_operation
+            return result
 
         return None
 

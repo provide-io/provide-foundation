@@ -105,7 +105,7 @@ class LRUCache:
             }
 
 
-def cached(maxsize: int = 128, enabled: bool | None = None) -> Callable:
+def cached(maxsize: int = 128, enabled: bool | None = None) -> Callable[..., Any]:
     """Decorator to cache function results with LRU eviction.
 
     Args:

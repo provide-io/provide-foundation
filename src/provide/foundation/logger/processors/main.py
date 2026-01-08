@@ -188,6 +188,20 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
         ]
     )
 
+    # Strip Foundation-specific context keys that shouldn't be passed to underlying logger
+    # This must happen BEFORE formatter processors to prevent PrintLogger.msg() errors
+    def strip_foundation_context(
+        _logger: object,
+        _method_name: str,
+        event_dict: structlog.types.EventDict,
+    ) -> structlog.types.EventDict:
+        # Remove Foundation-specific keys that PrintLogger doesn't accept as kwargs
+        event_dict.pop("logger_name", None)
+        event_dict.pop("_foundation_level_hint", None)
+        return event_dict
+
+    processors.append(cast("StructlogProcessor", strip_foundation_context))
+
     # Add rate limiting processor if enabled
     if log_cfg.rate_limit_enabled:
         from provide.foundation.logger.ratelimit import create_rate_limiter_processor

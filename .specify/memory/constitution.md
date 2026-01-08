@@ -38,7 +38,7 @@ If a different tool is required, record the rationale in `DECISIONS.md`.
 
 ## 4) Project-specific constraints
 
-- **No backward compatibility**: This is a pre-release project. Implement features in their target state without migration logic, compatibility shims, or transition code.
+- **No backward compatibility**: This is a pre-release project. Implement features in their target state without migration logic, compatibility shims, or transition code. Some APIs may change during the pre-release series.
 - **Absolute imports only**: Never use relative imports. All imports must be absolute.
 - **No inline defaults**: Defaults must be stored in `defaults.py` or `constants.py` files, never inline in field definitions.
 

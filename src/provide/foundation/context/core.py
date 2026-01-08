@@ -178,11 +178,14 @@ class CLIContext(RuntimeConfig):
     def _load_config_data(self, path: Path) -> dict[str, Any]:
         """Load configuration data from file based on extension."""
         if path.suffix in (".toml", ".tml"):
-            return read_toml(path)
+            data: dict[str, Any] = read_toml(path)
+            return data
         elif path.suffix == ".json":
-            return read_json(path)
+            json_data: dict[str, Any] = read_json(path)
+            return json_data
         elif path.suffix in (".yaml", ".yml"):
-            return read_yaml(path)
+            yaml_data: dict[str, Any] = read_yaml(path)
+            return yaml_data
         else:
             raise ConfigurationError(
                 f"Unsupported config format: {path.suffix}",

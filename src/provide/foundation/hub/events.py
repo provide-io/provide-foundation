@@ -54,7 +54,7 @@ class EventBus:
 
     def __init__(self) -> None:
         """Initialize empty event bus."""
-        self._handlers: dict[str, list[weakref.ReferenceType]] = {}
+        self._handlers: dict[str, list[weakref.ReferenceType[Callable[..., Any]]]] = {}
         self._cleanup_threshold = 10  # Clean up after this many operations
         self._operation_count = 0
         self._lock = threading.RLock()  # RLock for thread safety
@@ -110,7 +110,9 @@ class EventBus:
                 self._cleanup_dead_references()
                 self._operation_count = 0
 
-    def _handle_handler_error(self, event: Event | RegistryEvent, handler: Callable, error: Exception) -> None:
+    def _handle_handler_error(
+        self, event: Event | RegistryEvent, handler: Callable[..., Any], error: Exception
+    ) -> None:
         """Handle and log event handler errors.
 
         Args:

@@ -18,21 +18,21 @@ and architecture details.
 
 Requires the optional 'py-cpuinfo' package for detailed information.
 Falls back to stdlib platform module when not available.
-Install with: pip install provide-foundation[platform]
+Install with: uv add provide-foundation[platform]
 """
 
 log = get_logger(__name__)
 
 # Try to import py-cpuinfo
 try:
-    import cpuinfo
+    import cpuinfo  # type: ignore[import-untyped]
 
     _HAS_CPUINFO = True
 except ImportError:
     _HAS_CPUINFO = False
     log.debug(
         "py-cpuinfo not available, using basic CPU info from platform module",
-        hint="For detailed CPU info, install with: pip install provide-foundation[platform]",
+        hint="For detailed CPU info, install with: uv add provide-foundation[platform]",
     )
 
 

@@ -13,9 +13,9 @@ which automatically configures logging, tracing, and metrics. It shows:
 - When tracing/metrics features are available
 
 Requirements:
-    pip install provide-foundation[opentelemetry]  # For tracing/metrics
+    uv add provide-foundation[opentelemetry]  # For tracing/metrics
     # OR
-    pip install provide-foundation                 # Basic logging only
+    uv add provide-foundation                 # Basic logging only
 
 Usage:
     python examples/telemetry/02_structured_logging.py

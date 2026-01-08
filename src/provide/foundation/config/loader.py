@@ -137,7 +137,8 @@ class FileConfigLoader(ConfigLoader):
             )
 
         if self.format == ConfigFormat.JSON:
-            return json_loads(content)
+            result: ConfigDict = json_loads(content)
+            return result
         if self.format == ConfigFormat.YAML:
             data = yaml_loads(content)
             # yaml_loads returns None for empty content or comments-only files

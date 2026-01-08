@@ -214,8 +214,8 @@ class RetryMiddleware(Middleware):
 class MetricsMiddleware(Middleware):
     """Middleware for collecting transport metrics using foundation.metrics."""
 
-    _counter_func: Callable = field(default=counter)
-    _histogram_func: Callable = field(default=histogram)
+    _counter_func: Callable[..., Any] = field(default=counter)
+    _histogram_func: Callable[..., Any] = field(default=histogram)
 
     # Create metrics instances
     _request_counter: Any = field(init=False)

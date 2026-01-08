@@ -14,7 +14,7 @@ import time
 
 from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
 from provide.foundation.errors.resources import LockError
-from provide.foundation.logger import get_logger
+from provide.foundation.logger.setup.coordinator import get_system_logger
 from provide.foundation.serialization import json_dumps, json_loads
 from provide.foundation.utils.timing import apply_timeout_factor
 
@@ -25,19 +25,32 @@ When psutil is not available, falls back to basic PID existence checking.
 Thread-safe for concurrent access within a single process.
 """
 
-log = get_logger(__name__)
+# Use get_system_logger to avoid triggering full Foundation init during module import
+# This prevents stdout pollution that breaks tools like uv
+log = get_system_logger(__name__)
 
 # Try to import psutil for PID recycling protection
+# Note: We defer logging the missing psutil until first actual use of FileLock
+# to avoid polluting stdout during module initialization (breaks tools like uv)
+_HAS_PSUTIL = False
+_PSUTIL_WARNING_LOGGED = False
 try:
     import psutil
 
     _HAS_PSUTIL = True
 except ImportError:
-    _HAS_PSUTIL = False
-    log.debug(
-        "psutil not available, using basic PID validation",
-        hint="For PID recycling protection, install with: pip install provide-foundation[process]",
-    )
+    pass
+
+
+def _log_psutil_warning_once() -> None:
+    """Log psutil unavailability warning once on first FileLock use."""
+    global _PSUTIL_WARNING_LOGGED
+    if not _HAS_PSUTIL and not _PSUTIL_WARNING_LOGGED:
+        _PSUTIL_WARNING_LOGGED = True
+        log.debug(
+            "psutil not available, using basic PID validation",
+            hint="For PID recycling protection, install with: uv add provide-foundation[process]",
+        )
 
 
 class FileLock:
@@ -71,6 +84,9 @@ class FileLock:
             check_interval: Seconds between lock checks
 
         """
+        # Log psutil warning once on first FileLock instantiation
+        _log_psutil_warning_once()
+
         self.path = Path(path)
         self.timeout = apply_timeout_factor(timeout)
         self.check_interval = check_interval
@@ -341,7 +357,7 @@ class FileLock:
                         "Removing stale lock - process not found (basic check)",
                         path=str(self.path),
                         stale_pid=lock_pid,
-                        hint="For PID recycling protection, install psutil: pip install provide-foundation[process]",
+                        hint="For PID recycling protection, install psutil: uv add provide-foundation[process]",
                     )
                     try:
                         self.path.unlink()

@@ -74,7 +74,7 @@ def toml_loads(s: str, *, use_cache: bool = True) -> dict[str, Any]:
     # Check cache first if enabled
     if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "toml")
-        cached = get_serialization_cache().get(cache_key)
+        cached: dict[str, Any] | None = get_serialization_cache().get(cache_key)
         if cached is not None:
             return cached
 

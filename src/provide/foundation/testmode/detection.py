@@ -172,18 +172,19 @@ def configure_structlog_for_test_safety() -> None:
 
     Should be called automatically when is_in_test_mode() returns True.
     """
-    import logging as stdlib_logging
     import sys
 
     import structlog
 
     # Configure structlog to use stdout (safe for multiprocessing)
+    # Use BoundLogger instead of make_filtering_bound_logger to preserve
+    # custom log levels like trace
     structlog.configure(
         processors=[
             structlog.processors.TimeStamper(fmt="iso"),
             structlog.dev.ConsoleRenderer(),
         ],
-        wrapper_class=structlog.make_filtering_bound_logger(stdlib_logging.INFO),
+        wrapper_class=structlog.BoundLogger,
         context_class=dict,
         logger_factory=structlog.PrintLoggerFactory(file=sys.stdout),
         cache_logger_on_first_use=False,  # Disable caching for test isolation

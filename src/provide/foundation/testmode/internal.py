@@ -79,12 +79,45 @@ def reset_test_mode_cache() -> None:
 
 
 def reset_structlog_state() -> None:
-    """Reset structlog configuration to defaults.
+    """Reset structlog configuration to a test-safe state.
 
-    This is the most fundamental reset - it clears all structlog
-    configuration and returns it to an unconfigured state.
+    This resets structlog but configures it with a wrapper class that
+    supports the trace method. Using reset_defaults() alone would
+    result in BoundLoggerFilteringAtNotset which lacks trace().
     """
+    import sys
+
+    # Reset first to clear any cached loggers
     structlog.reset_defaults()
+
+    def _strip_foundation_context(
+        _logger: object,
+        _method_name: str,
+        event_dict: dict[str, object],
+    ) -> dict[str, object]:
+        """Strip Foundation-specific bound context before rendering.
+
+        Foundation binds logger_name and other context that PrintLogger
+        doesn't accept as kwargs. This processor removes them.
+        """
+        # Remove Foundation-specific keys that shouldn't be passed to PrintLogger
+        event_dict.pop("logger_name", None)
+        event_dict.pop("_foundation_level_hint", None)
+        return event_dict
+
+    # Reconfigure with BoundLogger which supports trace via Foundation's patching
+    # Using PrintLoggerFactory with stdout for test safety (parallel test compat)
+    structlog.configure(
+        processors=[
+            structlog.processors.TimeStamper(fmt="iso"),
+            _strip_foundation_context,
+            structlog.dev.ConsoleRenderer(),
+        ],
+        wrapper_class=structlog.BoundLogger,
+        context_class=dict,
+        logger_factory=structlog.PrintLoggerFactory(file=sys.stdout),
+        cache_logger_on_first_use=False,  # Disable caching for test isolation
+    )
 
 
 def reset_logger_state() -> None:
@@ -461,7 +494,7 @@ def reset_version_cache() -> None:
     version resolution scenarios.
     """
     try:
-        from provide.foundation._version import (
+        from provide.foundation._version import (  # type: ignore[import-untyped]
             reset_version_cache as _reset_cache,
         )
 

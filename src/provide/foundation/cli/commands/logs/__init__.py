@@ -60,7 +60,7 @@ else:
     def logs_group(*args: object, **kwargs: object) -> None:
         """Logs command stub when click is not available."""
         raise ImportError(
-            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
+            "CLI commands require optional dependencies. Install with: uv add 'provide-foundation[cli]'",
         )
 
     __all__ = []

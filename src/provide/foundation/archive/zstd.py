@@ -36,7 +36,7 @@ class ZstdCompressor(BaseCompressor):
     - 22: Best compression, much slower
 
     Note: Requires the 'zstandard' package to be installed.
-          Install with: pip install provide-foundation[compression]
+          Install with: uv add provide-foundation[compression]
     """
 
     level: int = field(
@@ -56,7 +56,7 @@ class ZstdCompressor(BaseCompressor):
         except ImportError as e:
             raise ImportError(
                 "ZSTD compression requires 'zstandard' package. "
-                "Install with: pip install provide-foundation[compression]"
+                "Install with: uv add provide-foundation[compression]"
             ) from e
 
         cctx = zstd.ZstdCompressor(level=self.level)
@@ -70,7 +70,7 @@ class ZstdCompressor(BaseCompressor):
         except ImportError as e:
             raise ImportError(
                 "ZSTD decompression requires 'zstandard' package. "
-                "Install with: pip install provide-foundation[compression]"
+                "Install with: uv add provide-foundation[compression]"
             ) from e
 
         dctx = zstd.ZstdDecompressor()
@@ -84,7 +84,7 @@ class ZstdCompressor(BaseCompressor):
         except ImportError as e:
             raise ImportError(
                 "ZSTD compression requires 'zstandard' package. "
-                "Install with: pip install provide-foundation[compression]"
+                "Install with: uv add provide-foundation[compression]"
             ) from e
 
         cctx = zstd.ZstdCompressor(level=self.level)
@@ -97,7 +97,7 @@ class ZstdCompressor(BaseCompressor):
         except ImportError as e:
             raise ImportError(
                 "ZSTD decompression requires 'zstandard' package. "
-                "Install with: pip install provide-foundation[compression]"
+                "Install with: uv add provide-foundation[compression]"
             ) from e
 
         dctx = zstd.ZstdDecompressor()

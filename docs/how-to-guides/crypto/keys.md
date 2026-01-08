@@ -27,10 +27,10 @@ Foundation provides comprehensive utilities for generating and managing cryptogr
 
 ```bash
 # Core cryptography support (included by default)
-pip install provide-foundation
+uv add provide-foundation
 
 # For advanced crypto features (optional)
-pip install provide-foundation[crypto]
+uv add provide-foundation[crypto]
 ```
 
 ## Basic Key Generation

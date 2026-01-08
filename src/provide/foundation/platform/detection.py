@@ -15,6 +15,16 @@ from provide.foundation.utils.caching import cached
 
 """Core platform detection functions."""
 
+__all__ = [
+    "PlatformError",
+    "get_arch_name",
+    "get_cpu_type",
+    "get_os_name",
+    "get_os_version",
+    "get_platform_string",
+    "normalize_platform_components",
+]
+
 log = get_logger(__name__)
 
 

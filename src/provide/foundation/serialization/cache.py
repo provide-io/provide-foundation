@@ -40,13 +40,15 @@ def _get_cache_config() -> Any:  # SerializationCacheConfig
 def get_cache_enabled() -> bool:
     """Whether caching is enabled."""
     config = _get_cache_config()
-    return config.cache_enabled
+    result: bool = config.cache_enabled
+    return result
 
 
 def get_cache_size() -> int:
     """Cache size limit."""
     config = _get_cache_config()
-    return config.cache_size
+    result: int = config.cache_size
+    return result
 
 
 def get_serialization_cache() -> Any:  # LRUCache

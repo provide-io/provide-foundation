@@ -17,9 +17,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 # On Windows.
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# Using pipx (if you prefer)
-pipx install uv
-
 # Update UV to latest version
 uv self update
 ```

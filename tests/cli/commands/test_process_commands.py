@@ -45,7 +45,7 @@ class TestProcessCommandsWithSetproctitle(FoundationTestCase):
 
             assert mock_perr.call_count == 2
             mock_perr.assert_any_call("⚠️  Process title support not available")
-            mock_perr.assert_any_call("Install with: pip install 'provide-foundation[process]'")
+            mock_perr.assert_any_call("Install with: uv add 'provide-foundation[process]'")
 
     def test_get_title_implementation(self) -> None:
         """Test get-title command implementation."""
@@ -117,7 +117,7 @@ class TestProcessCommandsWithSetproctitle(FoundationTestCase):
 
             assert mock_pout.call_count == 2
             mock_pout.assert_any_call("⚠️  Process title support: Not available")
-            mock_pout.assert_any_call("Install with: pip install 'provide-foundation[process]'")
+            mock_pout.assert_any_call("Install with: uv add 'provide-foundation[process]'")
 
     def test_process_group_exists(self) -> None:
         """Test that process_group command group exists."""

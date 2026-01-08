@@ -10,11 +10,8 @@ accuracy, and performance of file operation detection algorithms."""
 
 from __future__ import annotations
 
-from provide.foundation.file.quality.analyzer import (
-    AnalysisMetric,
-    QualityAnalyzer,
-    QualityResult,
-)
+from provide.foundation.file.quality.analyzer import QualityAnalyzer
+from provide.foundation.file.quality.metrics import AnalysisMetric, QualityResult
 from provide.foundation.file.quality.operation_scenarios import (
     OperationScenario,
     create_scenarios_from_patterns,

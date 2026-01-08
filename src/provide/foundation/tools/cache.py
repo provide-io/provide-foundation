@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Any
 
 from provide.foundation.errors import FoundationError
 from provide.foundation.file.formats import read_json, write_json
@@ -46,14 +47,15 @@ class ToolCache:
         self.metadata_file = self.cache_dir / "metadata.json"
         self.metadata = self._load_metadata()
 
-    def _load_metadata(self) -> dict[str, dict]:
+    def _load_metadata(self) -> dict[str, dict[str, Any]]:
         """Load cache metadata from disk.
 
         Returns:
             Cache metadata dictionary.
 
         """
-        return read_json(self.metadata_file, default={})
+        result: dict[str, dict[str, Any]] = read_json(self.metadata_file, default={})
+        return result
 
     def _save_metadata(self) -> None:
         """Save cache metadata to disk."""
@@ -143,7 +145,7 @@ class ToolCache:
 
         self._save_metadata()
 
-    def _is_expired(self, entry: dict) -> bool:
+    def _is_expired(self, entry: dict[str, Any]) -> bool:
         """Check if cache entry is expired.
 
         Args:
@@ -173,7 +175,7 @@ class ToolCache:
         self._save_metadata()
         log.info("Cleared tool cache")
 
-    def list_cached(self) -> list[dict]:
+    def list_cached(self) -> list[dict[str, Any]]:
         """List all cached tools.
 
         Returns:

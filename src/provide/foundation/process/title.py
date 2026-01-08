@@ -19,7 +19,7 @@ prevent test interference and ensure proper test isolation, especially with
 parallel test execution (pytest-xdist).
 
 Requires the optional 'setproctitle' package for full functionality.
-Install with: pip install provide-foundation[process]
+Install with: uv add provide-foundation[process]
 """
 
 log = get_logger(__name__)
@@ -33,7 +33,7 @@ except ImportError:
     _HAS_SETPROCTITLE = False
     log.debug(
         "setproctitle not available, process title management disabled",
-        hint="Install with: pip install provide-foundation[process]",
+        hint="Install with: uv add provide-foundation[process]",
     )
 
 
@@ -66,7 +66,7 @@ def set_process_title(title: str) -> bool:
         log.debug(
             "Cannot set process title - setproctitle not available",
             title=title,
-            hint="Install with: pip install provide-foundation[process]",
+            hint="Install with: uv add provide-foundation[process]",
         )
         return False
 

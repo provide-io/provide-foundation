@@ -41,7 +41,7 @@ def _require_crypto() -> None:
     if not _HAS_CRYPTO:
         raise ImportError(
             "Cryptography features require optional dependencies. Install with: "
-            "pip install 'provide-foundation[crypto]'",
+            "uv add 'provide-foundation[crypto]'",
         )
 
 

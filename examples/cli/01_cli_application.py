@@ -3,14 +3,6 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""TODO: Add module docstring."""
-
-from __future__ import annotations
-
-from provide.foundation.cli import echo_info, echo_success, echo_warning
-from provide.foundation.context import CLIContext
-from provide.foundation.hub import Hub, register_command
-
 """CLI Application Example - Complete Hub and Command System
 
 This comprehensive example demonstrates building a full CLI application
@@ -63,6 +55,12 @@ See Also:
     - examples/10_production_patterns.py for production CLI patterns
 
 """
+
+from __future__ import annotations
+
+from provide.foundation.cli import echo_info, echo_success, echo_warning
+from provide.foundation.context import CLIContext
+from provide.foundation.hub import Hub, register_command
 
 # ==============================================================================
 # COMPONENTS
