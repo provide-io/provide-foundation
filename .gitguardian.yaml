@@ -9,3 +9,8 @@ secret:
   - docs/**/*.md
   - src/provide/foundation/testing/crypto.py
   - tests/fixtures/crypto.py
+  - src/provide/foundation/crypto/**
+  - src/provide/foundation/logger/processors/sanitization.py
+  - tests/**
+  - mutants/**
+  - .rsp_context.json
