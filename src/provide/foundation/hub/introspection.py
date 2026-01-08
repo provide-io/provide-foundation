@@ -171,7 +171,7 @@ def introspect_parameters(func: Callable[..., Any]) -> list[ParameterInfo]:
             base_type, cli_hint = extract_cli_hint(annotation, param_name)
 
         # Extract concrete type for framework use
-        concrete = str if base_type == inspect.Parameter.empty else extract_concrete_type(base_type)  # type: ignore[comparison-overlap]
+        concrete = str if base_type == inspect.Parameter.empty else extract_concrete_type(base_type)
 
         # Determine default and required status
         has_default = param.default != inspect.Parameter.empty

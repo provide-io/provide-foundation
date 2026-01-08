@@ -82,45 +82,10 @@ def configure_structlog_output(
 
 
 def handle_globally_disabled_setup() -> None:
-    """Configure structlog for globally disabled telemetry (no-op mode).
-
-    Uses a null logger factory that drops all output. The processor chain
-    must still strip Foundation-specific context to avoid errors.
-    """
-
-    class NullLogger:
-        """Logger that silently drops all output."""
-
-        def msg(self, message: str) -> None:
-            """Drop the message."""
-
-        def __getattr__(self, name: str) -> Any:
-            """Return self for any attribute access (debug, info, etc.)."""
-            return self.msg
-
-    class NullLoggerFactory:
-        """Factory that returns NullLogger instances."""
-
-        def __call__(self, *args: Any, **kwargs: Any) -> NullLogger:
-            return NullLogger()
-
-    def strip_foundation_context(
-        _logger: Any,
-        _method_name: str,
-        event_dict: dict[str, object],
-    ) -> dict[str, object]:
-        """Strip Foundation-specific bound context before rendering."""
-        event_dict.pop("logger_name", None)
-        event_dict.pop("_foundation_level_hint", None)
-        return event_dict
-
+    """Configure structlog for globally disabled telemetry (no-op mode)."""
     structlog.configure(
-        processors=[
-            strip_foundation_context,
-            structlog.dev.ConsoleRenderer(),
-        ],
-        wrapper_class=structlog.BoundLogger,
-        logger_factory=NullLoggerFactory(),
+        processors=[],
+        logger_factory=structlog.ReturnLoggerFactory(),
         cache_logger_on_first_use=True,
     )
 

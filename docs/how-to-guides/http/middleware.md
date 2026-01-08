@@ -18,7 +18,7 @@ Foundation's middleware system is compatible with modern Python HTTP clients and
 
 Install transport extras:
 ```bash
-uv add provide-foundation[transport]
+pip install "provide-foundation[transport]"
 ```
 
 ## Basic Middleware

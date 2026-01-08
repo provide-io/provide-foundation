@@ -1,4 +1,4 @@
-name: 🏷️ GitHub Release
+name: 🚀 Release & Deployment
 
 on:
   push:
@@ -21,7 +21,7 @@ on:
         type: boolean
 
 env:
-  UV_VERSION: "0.9.13"
+  UV_VERSION: "0.7.8"
 
 jobs:
   # ==================================================================================
@@ -69,7 +69,11 @@ jobs:
       - name: 🚀 Run Performance Validation
         run: |
           source .venv/bin/activate
-          python scripts/benchmark_performance.py
+          if [ -f scripts/benchmark_performance.py ]; then
+            python scripts/benchmark_performance.py
+          else
+            echo "Performance benchmark script not found, skipping"
+          fi
 
       - name: 🔍 Version Consistency Check
         run: |
@@ -89,7 +93,7 @@ jobs:
         uses: dawidd6/action-download-artifact@v6
         with:
           workflow: ci.yml
-          name: dist
+          name: package-dist
           path: dist/
           if_no_artifact_found: fail
 

@@ -62,8 +62,7 @@ def _extract_field_type(attr: Any) -> type | None:
         if isinstance(field_type, str):
             return None
 
-    result: type[Any] = field_type
-    return result
+    return field_type
 
 
 def auto_parse(attr: Any, value: str) -> Any:

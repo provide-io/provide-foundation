@@ -9,7 +9,7 @@ This example demonstrates the simplest possible usage of provide.foundation.
 No setup required - just import and use the logger immediately.
 
 Usage:
-    uv add provide-foundation
+    pip install provide-foundation
     python examples/telemetry/01_basic_logging.py
 
 Expected output:
@@ -38,7 +38,7 @@ def simple_logging_example() -> None:
 
     Key points:
     - No setup_telemetry() call needed
-    - Works with base install: uv add provide-foundation
+    - Works with base install: pip install provide-foundation
     - Automatic initialization on first use
     - Structured logging with emoji prefixes
     """

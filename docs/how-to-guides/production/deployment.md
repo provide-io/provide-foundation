@@ -18,7 +18,7 @@ Deploying Foundation applications to production requires careful consideration o
 
 **Key Features:**
 - 🐳 **Docker**: Optimized multi-stage builds
-- ☸️ **Kubernetes**: Production-focused manifests
+- ☸️ **Kubernetes**: Production-ready manifests
 - 🔒 **Secret Management**: Secure secret handling
 - 🌍 **Multi-Environment**: Dev, staging, production configs
 - 🚀 **Zero-Downtime**: Rolling updates and health checks
@@ -34,7 +34,7 @@ kubectl version --client
 helm version
 
 # Foundation with production extras
-uv add provide-foundation[production]
+pip install provide-foundation[production]
 ```
 
 ## Docker Deployment
@@ -54,7 +54,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install UV package manager
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+RUN pip install uv
 
 # Copy dependency files
 WORKDIR /app
@@ -97,7 +97,7 @@ ENV PATH="/app/.venv/bin:$PATH" \
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8080/health/live')"
+    CMD python -c "import requests; requests.get('http://localhost:8000/health/live')"
 
 # Run application
 CMD ["python", "-m", "myapp"]

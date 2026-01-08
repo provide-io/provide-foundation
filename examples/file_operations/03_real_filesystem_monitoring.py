@@ -25,7 +25,7 @@ try:
 
     WATCHDOG_AVAILABLE = True
 except ImportError:
-    print("⚠️  Watchdog not available. Install with: uv add watchdog")
+    print("⚠️  Watchdog not available. Install with: pip install watchdog")
     WATCHDOG_AVAILABLE = False
 
 from provide.foundation.file.operations import (
@@ -243,7 +243,7 @@ def main() -> None:
 
     if not WATCHDOG_AVAILABLE:
         print("This example requires the watchdog library.")
-        print("Install it with: uv add watchdog")
+        print("Install it with: pip install watchdog")
         return
 
     print("=" * 55)

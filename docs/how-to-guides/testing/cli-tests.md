@@ -19,8 +19,7 @@ Testing CLI applications requires special tools to simulate command execution, c
 
 Install testing dependencies:
 ```bash
-uv add provide-testkit
-uv add pytest
+pip install provide-testkit pytest
 ```
 
 ## Basic CLI Testing

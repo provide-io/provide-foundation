@@ -87,7 +87,7 @@ def build_click_command_from_info(info: CommandInfo) -> Command:
             decorated_func = apply_click_argument(decorated_func, param)
 
         # Create the Click command with the decorated function
-        cmd: Command = click.Command(
+        cmd = click.Command(
             name=info.name,
             callback=decorated_func,
             help=info.description,

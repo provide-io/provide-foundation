@@ -5,17 +5,17 @@ This guide covers installing provide.foundation and setting up your development 
 ## Requirements
 
 - **Python 3.11 or higher** - Foundation uses modern Python features
-- **uv** - Package manager for installation
+- **pip or uv** - Package manager for installation
 - **Virtual environment** (recommended) - For isolated dependencies
 
 ## Basic Installation
 
-### Using uv (Quick install)
+### Using pip
 
 The simplest installation provides core logging functionality:
 
 ```bash
-uv add provide-foundation
+pip install provide-foundation
 ```
 
 This installs the base package with essential dependencies:
@@ -30,10 +30,10 @@ For faster dependency resolution:
 
 ```bash
 # Install uv if you haven't already
-curl -LsSf https://astral.sh/uv/install.sh | sh
+pip install uv
 
 # Install Foundation
-uv add provide-foundation
+uv pip install provide-foundation
 ```
 
 ## Installation Options
@@ -45,7 +45,7 @@ Foundation offers modular installation through "extras" that add optional featur
 For the complete experience:
 
 ```bash
-uv add provide-foundation[all]
+pip install "provide-foundation[all]"
 ```
 
 ### Specific Features
@@ -54,7 +54,7 @@ Install only what you need:
 
 #### CLI Framework
 ```bash
-uv add provide-foundation[cli]
+pip install "provide-foundation[cli]"
 ```
 **Adds:** `click` for command-line interface building
 
@@ -62,7 +62,7 @@ uv add provide-foundation[cli]
 
 #### Cryptography
 ```bash
-uv add provide-foundation[crypto]
+pip install "provide-foundation[crypto]"
 ```
 **Adds:** `cryptography` library for secure operations
 
@@ -70,7 +70,7 @@ uv add provide-foundation[crypto]
 
 #### HTTP Transport
 ```bash
-uv add provide-foundation[transport]
+pip install "provide-foundation[transport]"
 ```
 **Adds:** `httpx` for HTTP client operations
 
@@ -78,7 +78,7 @@ uv add provide-foundation[transport]
 
 #### OpenTelemetry
 ```bash
-uv add provide-foundation[opentelemetry]
+pip install "provide-foundation[opentelemetry]"
 ```
 **Adds:** OpenTelemetry SDK for distributed tracing
 
@@ -86,7 +86,7 @@ uv add provide-foundation[opentelemetry]
 
 #### Compression
 ```bash
-uv add provide-foundation[compression]
+pip install "provide-foundation[compression]"
 ```
 **Adds:** `zstandard` for high-performance compression
 
@@ -94,7 +94,7 @@ uv add provide-foundation[compression]
 
 #### Platform Utilities
 ```bash
-uv add provide-foundation[platform]
+pip install "provide-foundation[platform]"
 ```
 **Adds:** `psutil`, `py-cpuinfo` for system information
 
@@ -102,7 +102,7 @@ uv add provide-foundation[platform]
 
 #### Process Utilities
 ```bash
-uv add provide-foundation[process]
+pip install "provide-foundation[process]"
 ```
 **Adds:** `psutil`, `setproctitle` for process control
 
@@ -110,7 +110,7 @@ uv add provide-foundation[process]
 
 #### Extended Utilities
 ```bash
-uv add provide-foundation[extended]
+pip install "provide-foundation[extended]"
 ```
 **Adds:** Combination of platform and process utilities
 
@@ -121,7 +121,7 @@ uv add provide-foundation[extended]
 Install multiple features:
 
 ```bash
-uv add provide-foundation[cli,crypto]
+pip install "provide-foundation[cli,crypto]"
 ```
 
 ## Virtual Environment Setup
@@ -139,7 +139,7 @@ source .venv/bin/activate
 .venv\Scripts\activate
 
 # Install Foundation
-uv add provide-foundation[all]
+pip install "provide-foundation[all]"
 ```
 
 ### Using uv venv (Faster)
@@ -151,7 +151,7 @@ source .venv/bin/activate  # macOS/Linux
 # or: .venv\Scripts\activate  # Windows
 
 # Install Foundation
-uv add provide-foundation[all]
+uv pip install "provide-foundation[all]"
 ```
 
 ## Verify Installation
@@ -233,7 +233,7 @@ pytest
 **Solution:** Ensure virtual environment is activated and Foundation is installed:
 ```bash
 source .venv/bin/activate
-uv run python -c "import importlib.metadata as m; print(m.version('provide-foundation'))"
+pip list | grep provide-foundation
 ```
 
 ### Cryptography Installation Fails
@@ -263,7 +263,8 @@ sudo yum install gcc libffi-devel python3-devel
 
 **Solution:** Use a fresh virtual environment or update conflicting packages:
 ```bash
-uv add provide-foundation[all] --upgrade
+pip install --upgrade pip
+pip install "provide-foundation[all]" --upgrade
 ```
 
 ## Next Steps

@@ -1,71 +1,21 @@
-# 🧱🏗️ Provide Foundation
+# provide.foundation
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![uv](https://img.shields.io/badge/uv-package_manager-FF6B35.svg)](https://github.com/astral-sh/uv)
-[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![CI](https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml/badge.svg)](https://github.com/provide-io/provide-foundation/actions)
+**A Comprehensive Python Foundation Library for Modern Applications**
 
-**A comprehensive Python foundation library for modern applications**
+---
 
-provide.foundation offers structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
-
-## ✨ Key Features
-
-- 📝 **Structured Logging** - Beautiful, performant logging with emoji-enhanced visual parsing
-- 🛡️ **Error Handling** - Comprehensive error handling with retry logic and error boundaries
-- ⚙️ **Configuration Management** - Flexible configuration with environment variables and files
-- 🔧 **CLI Framework** - Build command-line interfaces with automatic help generation
-- 🔐 **Cryptographic Utilities** - Modern algorithms and secure defaults
-- 📁 **File Operations** - Atomic file operations with format support and safety guarantees
-- 🔄 **Resilience Patterns** - Retry, circuit breaker, and bulkhead decorators
-- ⚡ **Async Support** - High-level utilities for managing asynchronous tasks
-
-## Quick Start
-
-> **Note**: provide-foundation is in pre-release (v0.x.x). APIs and features may change before 1.0 release.
-
-1. Install: `uv add provide-foundation`
-2. Read the [Quick Start guide](https://github.com/provide-io/provide-foundation/blob/main/docs/getting-started/quick-start.md).
-3. Explore runnable examples in [examples/README.md](https://github.com/provide-io/provide-foundation/blob/main/examples/README.md).
-
-## Documentation
-- [Documentation index](https://github.com/provide-io/provide-foundation/blob/main/docs/index.md)
-- [Getting started](https://github.com/provide-io/provide-foundation/blob/main/docs/getting-started/index.md)
-- [Reference](https://github.com/provide-io/provide-foundation/blob/main/docs/reference/index.md)
-
-## Development
-
-### Quick Start
-
-```bash
-# Set up environment
-uv sync
-
-# Run common tasks
-we run test       # Run tests
-we run lint       # Check code
-we run format     # Format code
-we tasks          # See all available commands
-```
-
-See [CLAUDE.md](https://github.com/provide-io/provide-foundation/blob/main/CLAUDE.md) for detailed development instructions and architecture information.
-
-## Contributing
-See [CONTRIBUTING.md](https://github.com/provide-io/provide-foundation/blob/main/CONTRIBUTING.md) for contribution guidelines.
-
-## License
-See [LICENSE](https://github.com/provide-io/provide-foundation/blob/main/LICENSE) for license details.
+**provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
 
 ## Quality Standards
 
-**provide.foundation** focuses on code quality, testing, and reliability:
+**provide.foundation** maintains high standards for code quality, testing, and reliability:
 
-- **Test Coverage** is tracked and enforced in CI.
-- **Security Checks** include path traversal and symlink validation tests.
-- **Performance Benchmarks** cover logging, transport, and archive operations.
-- **Type Checking** is enforced with `mypy`.
-- **Linting and Formatting** are enforced with `ruff`.
+- **High Test Coverage (>80%)** with 1000+ comprehensive tests
+- **Extensive 100% coverage** of core components and critical modules
+- **Comprehensive Security Testing** with path traversal, symlink validation, and input sanitization
+- **Performance Benchmarked** logging, transport, and archive operations
+- **Type-Safe Codebase** with comprehensive type annotations
+- **Automated Quality Checks** with ruff, mypy, and bandit
 
 ---
 
@@ -75,12 +25,12 @@ provide.foundation has optional feature sets that require additional dependencie
 
 | Feature | Install Command | Required For |
 |---------|----------------|--------------|
-| **Basic logging** | `uv add provide-foundation` | Core logging functionality |
-| **CLI framework** | `uv add provide-foundation[cli]` | Command-line interface features |
-| **Cryptography** | `uv add provide-foundation[crypto]` | Hash functions, digital signatures, certificates |
-| **HTTP Transport** | `uv add provide-foundation[transport]` | HTTP client utilities and transport features |
-| **OpenTelemetry** | `uv add provide-foundation[opentelemetry]` | Distributed tracing and metrics |
-| **All features** | `uv add provide-foundation[all]` | Everything above |
+| **Basic logging** | `pip install provide-foundation` | Core logging functionality |
+| **CLI framework** | `pip install provide-foundation[cli]` | Command-line interface features |
+| **Cryptography** | `pip install provide-foundation[crypto]` | Hash functions, digital signatures, certificates |
+| **HTTP Transport** | `pip install provide-foundation[transport]` | HTTP client utilities and transport features |
+| **OpenTelemetry** | `pip install provide-foundation[opentelemetry]` | Distributed tracing and metrics |
+| **All features** | `pip install provide-foundation[all]` | Everything above |
 
 > **Quick Start Tip**: For immediate use with just logging, install the base package. Add extras as needed.
 
@@ -146,5 +96,3 @@ provide.foundation is intentionally designed as a **foundation layer**, not a fu
 <p align="center">
   Built by <a href="https://provide.io">provide.io</a>
 </p>
-
-Copyright (c) provide.io LLC.

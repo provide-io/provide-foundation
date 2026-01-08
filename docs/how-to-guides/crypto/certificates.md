@@ -16,7 +16,7 @@ X.509 certificates are digital documents that bind a public key to an identity. 
 
 Install crypto extras:
 ```bash
-uv add provide-foundation[crypto]
+pip install "provide-foundation[crypto]"
 ```
 
 ## Generate Self-Signed Certificate
