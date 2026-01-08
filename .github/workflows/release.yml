@@ -1,209 +1,26 @@
-name: 🚀 Release & Deployment
+name: 🚀 Release
 
 on:
   push:
-    tags: [ 'v*' ]
+    tags: ['v*']
   workflow_dispatch:
     inputs:
-      deploy_target:
-        description: 'Deployment target'
-        required: true
-        default: 'none'
-        type: choice
-        options:
-          - 'none'
-          - 'test-pypi'
-          - 'pypi'
-      force_deploy:
-        description: 'Force deployment (bypass checks)'
-        required: false
-        default: false
+      publish-testpypi:
+        description: 'Publish to TestPyPI'
         type: boolean
-
-env:
-  UV_VERSION: "0.7.8"
+        default: false
+      publish-pypi:
+        description: 'Publish to PyPI'
+        type: boolean
+        default: false
 
 jobs:
-  # ==================================================================================
-  # 🔍 Pre-Release Validation
-  # ==================================================================================
-  validate:
-    name: 🔍 Pre-Release Validation
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        python-version: ["3.11", "3.12"]
-    if: github.event.inputs.force_deploy != 'true'
-    steps:
-      - name: 📥 Checkout Code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: 🐍 Setup Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          version: ${{ env.UV_VERSION }}
-
-      - name: 📦 Setup Environment
-        run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install -e .
-          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
-          uv sync --all-groups --dev --prerelease=allow
-
-      - name: 🧪 Run Critical Tests
-        run: |
-          source .venv/bin/activate
-          pytest tests/ -n auto --cov=provide.foundation --cov-fail-under=95 -x
-        continue-on-error: true
-
-      - name: 🚀 Run Performance Validation
-        run: |
-          source .venv/bin/activate
-          if [ -f scripts/benchmark_performance.py ]; then
-            python scripts/benchmark_performance.py
-          else
-            echo "Performance benchmark script not found, skipping"
-          fi
-
-      - name: 🔍 Version Consistency Check
-        run: |
-          source .venv/bin/activate
-          python scripts/version_checker.py
-
-  # ==================================================================================
-  # 📦 Download CI Artifacts
-  # ==================================================================================
-  download-artifacts:
-    name: 📥 Download CI Artifacts
-    runs-on: ubuntu-latest
-    needs: [validate]
-    if: always() && (needs.validate.result == 'success' || github.event.inputs.force_deploy == 'true')
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download artifacts from CI
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          workflow: ci.yml
-          name: dist
-          path: dist/
-
-      - name: 📈 Upload Package Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-package-${{ github.sha }}
-          path: dist/
-
-  # ==================================================================================
-  # 🧪 Deploy to Test PyPI
-  # ==================================================================================
-  deploy-test-pypi:
-    name: 🧪 Deploy to Test PyPI
-    runs-on: ubuntu-latest
-    needs: [download-artifacts]
-    if: github.event.inputs.deploy_target == 'test-pypi'
-    environment: test-pypi
-    steps:
-      - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          version: ${{ env.UV_VERSION }}
-
-      - name: 📤 Download Package Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: release-package-${{ github.sha }}
-          path: dist/
-
-      - name: 🧪 Publish to Test PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          verbose: true
-          print-hash: true
-
-      - name: 📝 Test Installation from Test PyPI
-        run: |
-          for i in {1..45}; do echo -n "$i "; sleep 1; done;
-          uv venv .venv_test_install
-          source .venv_test_install/bin/activate
-          uv pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ provide-foundation
-          python -c "from provide.foundation import logger; logger.info('Test PyPI installation successful')"
-
-  # ==================================================================================
-  # 🚀 Deploy to Production PyPI
-  # ==================================================================================
-  deploy-pypi:
-    name: 🚀 Deploy to Production PyPI
-    runs-on: ubuntu-latest
-    needs: [download-artifacts]
-    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.deploy_target == 'pypi'
-    environment: pypi
-    permissions:
-      contents: write
-      id-token: write  # For trusted publishing
-    steps:
-      - name: 📥 Checkout Code
-        uses: actions/checkout@v4
-
-      - name: 📤 Download Package Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: release-package-${{ github.sha }}
-          path: dist/
-
-      - name: 🚀 Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          verbose: true
-          print-hash: true
-
-      - name: 🏷️ Create GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/*
-          generate_release_notes: true
-          append_body: |
-
-            ## 📦 Installation
-
-            ```bash
-            uv install provide-foundation
-            ```
-
-            ## 🚀 What's New
-
-            See the [changelog](CHANGELOG.md) for detailed changes.
-
-  # ==================================================================================
-  # 📋 Deployment Summary
-  # ==================================================================================
-  summary:
-    name: 📋 Deployment Summary
-    runs-on: ubuntu-latest
-    needs: [validate, download-artifacts, deploy-test-pypi, deploy-pypi]
-    if: always()
-    steps:
-      - name: 📊 Report Deployment Results
-        run: |
-          echo "## 🚀 Foundation Telemetry Deployment Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔍 Validation | ${{ needs.validate.result == 'success' && '✅ Pass' || needs.validate.result == 'skipped' && '⏭️ Skipped' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 📥 Download Artifacts | ${{ needs.download-artifacts.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🧪 Test PyPI | ${{ needs.deploy-test-pypi.result == 'success' && '✅ Deployed' || needs.deploy-test-pypi.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🚀 Production PyPI | ${{ needs.deploy-pypi.result == 'success' && '✅ Deployed' || needs.deploy-pypi.result == 'skipped' && '⏭️ Skipped' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+  release:
+    uses: provide-io/ci-tooling/.github/workflows/python-release.yml@main
+    with:
+      python-version: '3.11'
+      run-tests: true
+      test-repository: false
+      publish-testpypi: ${{ inputs.publish-testpypi || false }}
+      publish-pypi: ${{ inputs.publish-pypi || false }}
+    secrets: inherit
