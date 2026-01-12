@@ -20,11 +20,11 @@ env:
 jobs:
   docs:
     name: 📚 Documentation Validation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-24.04]
         python-version: ["3.12"]
     steps:
       - name: 📥 Checkout Code
