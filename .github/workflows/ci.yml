@@ -7,8 +7,8 @@ on:
     branches: [ main, develop ]
   workflow_dispatch:
     inputs:
-      extended-matrix:
-        description: 'Run extended platform matrix (all OS/arch combinations)'
+      include-windows:
+        description: 'Include Windows platforms in testing'
         type: boolean
         default: false
 
@@ -26,7 +26,7 @@ jobs:
   # ==================================================================================
   quality:
     name: 🔧 Code Quality
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
@@ -69,59 +69,45 @@ jobs:
         continue-on-error: true
 
   # ==================================================================================
-  # 🧪 Testing Matrix - Multi-Platform Support
+  # 🧪 Testing Matrix - Standard Platforms (Linux + macOS)
   # ==================================================================================
   test:
-    name: 🧪 Tests (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    name: 🧪 Tests (${{ matrix.platform }}, Python ${{ matrix.python-version }})
     needs: quality
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
-        # Core platform matrix (Python 3.11 only)
         include:
           # Ubuntu x86_64
-          - os: ubuntu-latest
+          - runner: ubuntu-24.04
             python-version: "3.11"
             arch: "x64"
-            platform: "linux/amd64"
+            platform: "linux_amd64"
 
-          # Ubuntu ARM64 (GitHub-hosted ARM64 runner - public beta)
-          - os: ubuntu-24.04-arm
+          # Ubuntu ARM64
+          - runner: ubuntu-24.04-arm
             python-version: "3.11"
             arch: "arm64"
-            platform: "linux/arm64"
+            platform: "linux_arm64"
 
           # macOS ARM64 (M1/M2)
-          - os: macos-14
+          - runner: macos-15
             python-version: "3.11"
             arch: "arm64"
-            platform: "darwin/arm64"
+            platform: "darwin_arm64"
 
           # macOS Intel x86_64
-          - os: macos-13
+          - runner: macos-15-intel
             python-version: "3.11"
             arch: "x64"
-            platform: "darwin/amd64"
-
-          # Windows x86_64
-          - os: windows-2022
-            python-version: "3.11"
-            arch: "x64"
-            platform: "windows/amd64"
-
-          # Windows ARM64 (GitHub-hosted - public preview)
-          - os: windows-11-arm
-            python-version: "3.11"
-            arch: "arm64"
-            platform: "windows/arm64"
+            platform: "darwin_amd64"
 
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
       - name: 🔐 Setup GitHub Auth
-        if: runner.os != 'Windows'  # Git config approach doesn't work well on Windows
         uses: provide-io/ci-tooling/actions/setup-github-auth@main
         env:
           GH_ORG_HELPERS: ${{ secrets.GH_ORG_HELPERS }}
@@ -137,8 +123,7 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
 
-      - name: 📦 Setup Environment (Unix)
-        if: runner.os != 'Windows'
+      - name: 📦 Setup Environment
         shell: bash
         run: |
           uv venv .venv
@@ -147,18 +132,7 @@ jobs:
           uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
           uv sync --all-groups --dev --prerelease=allow
 
-      - name: 📦 Setup Environment (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          uv venv .venv
-          .venv\Scripts\Activate.ps1
-          uv pip install -e .
-          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
-          uv sync --all-groups --dev --prerelease=allow
-
-      - name: 🧪 Run Tests with Coverage (Unix)
-        if: runner.os != 'Windows'
+      - name: 🧪 Run Tests with Coverage
         shell: bash
         run: |
           source .venv/bin/activate
@@ -169,25 +143,13 @@ jobs:
             --junitxml=junit.xml -o junit_family=legacy
         continue-on-error: true
 
-      - name: 🧪 Run Tests with Coverage (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          .venv\Scripts\Activate.ps1
-          pytest tests/ -n auto `
-            --cov=provide.foundation `
-            --cov-report=xml `
-            --cov-branch `
-            --junitxml=junit.xml -o junit_family=legacy
-        continue-on-error: true
-
       - name: 📊 Upload Coverage to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v5
         with:
-          name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.arch }}
+          name: codecov-${{ matrix.platform }}-py${{ matrix.python-version }}
           files: ./coverage.xml
-          flags: unittests,${{ matrix.os }},${{ matrix.arch }}
+          flags: unittests,${{ matrix.platform }}
           token: ${{ secrets.CODECOV_TOKEN }}
         continue-on-error: true
 
@@ -202,7 +164,86 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: test-results-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.arch }}
+          name: test-results-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: |
+            junit.xml
+            coverage.xml
+          retention-days: 30
+
+  # ==================================================================================
+  # 🧪 Windows Testing (Optional)
+  # ==================================================================================
+  test-windows:
+    name: 🧪 Tests (${{ matrix.platform }}, Python ${{ matrix.python-version }})
+    needs: quality
+    if: inputs.include-windows
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Windows x86_64
+          - runner: windows-2022
+            python-version: "3.11"
+            arch: "x64"
+            platform: "windows_amd64"
+
+          # Windows ARM64
+          - runner: windows-11-arm
+            python-version: "3.11"
+            arch: "arm64"
+            platform: "windows_arm64"
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.arch }}
+
+      - name: ⚡ Install UV
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Setup Environment (Windows)
+        shell: pwsh
+        run: |
+          uv venv .venv
+          .venv\Scripts\Activate.ps1
+          uv pip install -e .
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv sync --all-groups --dev --prerelease=allow
+
+      - name: 🧪 Run Tests with Coverage (Windows)
+        shell: pwsh
+        run: |
+          .venv\Scripts\Activate.ps1
+          pytest tests/ -n auto `
+            --cov=provide.foundation `
+            --cov-report=xml `
+            --cov-branch `
+            --junitxml=junit.xml -o junit_family=legacy
+        continue-on-error: true
+
+      - name: 📊 Upload Coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          name: codecov-${{ matrix.platform }}-py${{ matrix.python-version }}
+          files: ./coverage.xml
+          flags: unittests,${{ matrix.platform }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
+
+      - name: 📈 Upload Test Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.platform }}-py${{ matrix.python-version }}
           path: |
             junit.xml
             coverage.xml
@@ -213,7 +254,7 @@ jobs:
   # ==================================================================================
   package:
     name: 📦 Package Build & Test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [test]
     steps:
       - name: 📥 Checkout Code
@@ -284,7 +325,7 @@ jobs:
   # ==================================================================================
   integration:
     name: 🏁 Integration Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [quality, test]
     steps:
       - name: 📥 Checkout Code
@@ -323,8 +364,8 @@ jobs:
   # ==================================================================================
   summary:
     name: 📋 CI Summary
-    runs-on: ubuntu-latest
-    needs: [quality, test, package, integration]
+    runs-on: ubuntu-24.04
+    needs: [quality, test, test-windows, package, integration]
     if: always()
     steps:
       - name: 📊 Report Results
@@ -332,18 +373,25 @@ jobs:
           echo "## 🧪 provide-foundation CI Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Platform Coverage (Python 3.11)" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Ubuntu x86_64" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Ubuntu ARM64 (GitHub-hosted beta)" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ macOS ARM64 / M1" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ macOS Intel x86_64" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Windows x86_64" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Windows ARM64 (GitHub-hosted preview)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Ubuntu x86_64 (ubuntu-24.04)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Ubuntu ARM64 (ubuntu-24.04-arm)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ macOS ARM64 (macos-15)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ macOS Intel (macos-15-intel)" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ inputs.include-windows }}" = "true" ]; then
+            echo "- ✅ Windows x86_64 (windows-2022)" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Windows ARM64 (windows-11-arm)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ⏭️ Windows (skipped - enable with include-windows input)" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Job Results" >> $GITHUB_STEP_SUMMARY
           echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| 🔧 Code Quality | ${{ needs.quality.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🧪 Multi-Platform Tests | ${{ needs.test.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Standard Platform Tests | ${{ needs.test.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ inputs.include-windows }}" = "true" ]; then
+            echo "| 🧪 Windows Tests | ${{ needs.test-windows.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "| 📦 Package Build | ${{ needs.package.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| 🏁 Integration | ${{ needs.integration.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -353,9 +401,3 @@ jobs:
           else
             echo "⚠️ **Some checks failed.** Review results before proceeding." >> $GITHUB_STEP_SUMMARY
           fi
-
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "**Notes:**" >> $GITHUB_STEP_SUMMARY
-          echo "- Ubuntu ARM64: Uses organization runner \`ubuntu-24.04-arm\` with 'Ubuntu 24.04 by Arm Limited' image" >> $GITHUB_STEP_SUMMARY
-          echo "- Windows ARM64: Uses GitHub-hosted \`windows-11-arm\` runner (public preview, may have longer queue times)" >> $GITHUB_STEP_SUMMARY
