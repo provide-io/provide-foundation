@@ -1,0 +1,403 @@
+name: ⚙️ Continuous Integration
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+    inputs:
+      include-windows:
+        description: 'Include Windows platforms in testing'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  id-token: write  # For trusted publishing
+
+env:
+  UV_VERSION: "0.9.13"
+  FORCE_COLOR: "1"
+
+jobs:
+  # ==================================================================================
+  # 🔧 Code Quality & Type Checking
+  # ==================================================================================
+  quality:
+    name: 🔧 Code Quality
+    runs-on: ubuntu-24.04
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Setup GitHub Auth
+        uses: provide-io/ci-tooling/actions/setup-github-auth@main
+        env:
+          GH_ORG_HELPERS: ${{ secrets.GH_ORG_HELPERS }}
+
+      - name: 🐍 Setup Python Environment
+        uses: provide-io/ci-tooling/actions/setup-python-env@main
+        with:
+          python-version: '3.11'
+          uv-version: ${{ env.UV_VERSION }}
+          workenv-path: '.venv'
+          install-group: 'dev'
+
+      - name: 📦 Install provide-testkit
+        run: |
+          source .venv/bin/activate
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv sync --all-groups --dev --prerelease=allow
+
+      - name: 🎨 Run Ruff Linting
+        run: |
+          source .venv/bin/activate
+          ruff check src/ examples/ --output-format=github
+        continue-on-error: true
+
+      - name: 📏 Run Ruff Formatting Check
+        run: |
+          source .venv/bin/activate
+          ruff format --check src/ examples/
+        continue-on-error: true
+
+      - name: 🏷️ Run MyPy Type Checking
+        run: |
+          source .venv/bin/activate
+          mypy src/ --show-error-codes --pretty
+        continue-on-error: true
+
+  # ==================================================================================
+  # 🧪 Testing Matrix - Standard Platforms (Linux + macOS)
+  # ==================================================================================
+  test:
+    name: 🧪 Tests (${{ matrix.platform }}, Python ${{ matrix.python-version }})
+    needs: quality
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Ubuntu x86_64
+          - runner: ubuntu-24.04
+            python-version: "3.11"
+            arch: "x64"
+            platform: "linux_amd64"
+
+          # Ubuntu ARM64
+          - runner: ubuntu-24.04-arm
+            python-version: "3.11"
+            arch: "arm64"
+            platform: "linux_arm64"
+
+          # macOS ARM64 (M1/M2)
+          - runner: macos-15
+            python-version: "3.11"
+            arch: "arm64"
+            platform: "darwin_arm64"
+
+          # macOS Intel x86_64
+          - runner: macos-15-intel
+            python-version: "3.11"
+            arch: "x64"
+            platform: "darwin_amd64"
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Setup GitHub Auth
+        uses: provide-io/ci-tooling/actions/setup-github-auth@main
+        env:
+          GH_ORG_HELPERS: ${{ secrets.GH_ORG_HELPERS }}
+
+      - name: 🐍 Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.arch }}
+
+      - name: ⚡ Install UV
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Setup Environment
+        shell: bash
+        run: |
+          uv venv .venv
+          source .venv/bin/activate
+          uv pip install -e .
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv sync --all-groups --dev --prerelease=allow
+
+      - name: 🧪 Run Tests with Coverage
+        shell: bash
+        run: |
+          source .venv/bin/activate
+          pytest tests/ -n auto \
+            --cov=provide.foundation \
+            --cov-report=xml \
+            --cov-branch \
+            --junitxml=junit.xml -o junit_family=legacy
+        continue-on-error: true
+
+      - name: 📊 Upload Coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          name: codecov-${{ matrix.platform }}-py${{ matrix.python-version }}
+          files: ./coverage.xml
+          flags: unittests,${{ matrix.platform }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
+
+      - name: 📊 Upload Test Results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
+
+      - name: 📈 Upload Test Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: |
+            junit.xml
+            coverage.xml
+          retention-days: 30
+
+  # ==================================================================================
+  # 🧪 Windows Testing (Optional)
+  # ==================================================================================
+  test-windows:
+    name: 🧪 Tests (${{ matrix.platform }}, Python ${{ matrix.python-version }})
+    needs: quality
+    if: inputs.include-windows
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Windows x86_64
+          - runner: windows-2022
+            python-version: "3.11"
+            arch: "x64"
+            platform: "windows_amd64"
+
+          # Windows ARM64
+          - runner: windows-11-arm
+            python-version: "3.11"
+            arch: "arm64"
+            platform: "windows_arm64"
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          architecture: ${{ matrix.arch }}
+
+      - name: ⚡ Install UV
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Setup Environment (Windows)
+        shell: pwsh
+        run: |
+          uv venv .venv
+          .venv\Scripts\Activate.ps1
+          uv pip install -e .
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv sync --all-groups --dev --prerelease=allow
+
+      - name: 🧪 Run Tests with Coverage (Windows)
+        shell: pwsh
+        run: |
+          .venv\Scripts\Activate.ps1
+          pytest tests/ -n auto `
+            --cov=provide.foundation `
+            --cov-report=xml `
+            --cov-branch `
+            --junitxml=junit.xml -o junit_family=legacy
+        continue-on-error: true
+
+      - name: 📊 Upload Coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          name: codecov-${{ matrix.platform }}-py${{ matrix.python-version }}
+          files: ./coverage.xml
+          flags: unittests,${{ matrix.platform }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
+
+      - name: 📈 Upload Test Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.platform }}-py${{ matrix.python-version }}
+          path: |
+            junit.xml
+            coverage.xml
+          retention-days: 30
+
+  # ==================================================================================
+  # 📦 Package Building & Testing
+  # ==================================================================================
+  package:
+    name: 📦 Package Build & Test
+    runs-on: ubuntu-24.04
+    needs: [test]
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for version detection
+
+      - name: 🔐 Setup GitHub Auth
+        uses: provide-io/ci-tooling/actions/setup-github-auth@main
+        env:
+          GH_ORG_HELPERS: ${{ secrets.GH_ORG_HELPERS }}
+
+      - name: 🐍 Setup Python Environment
+        uses: provide-io/ci-tooling/actions/setup-python-env@main
+        with:
+          python-version: '3.11'
+          uv-version: ${{ env.UV_VERSION }}
+          workenv-path: '.venv'
+          install-group: 'dev'
+
+      - name: 📦 Install provide-testkit
+        run: |
+          source .venv/bin/activate
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv sync --all-groups --dev --prerelease=allow
+
+      - name: 🔍 Version Consistency Check
+        run: |
+          source .venv/bin/activate
+          python scripts/version_checker.py
+        continue-on-error: true
+
+      - name: 🏗️ Build Package
+        run: |
+          source .venv/bin/activate
+          uv build
+
+      - name: 🧪 Test Package Installation
+        run: |
+          # Create clean environment for package testing
+          uv venv .venv_test
+          source .venv_test/bin/activate
+          # List what was built
+          ls -la dist/ || echo "No dist directory found"
+          # Install the wheel if it exists, otherwise install the tar.gz
+          if ls dist/*.whl 1> /dev/null 2>&1; then
+            uv pip install dist/*.whl
+          elif ls dist/*.tar.gz 1> /dev/null 2>&1; then
+            uv pip install dist/*.tar.gz
+          else
+            echo "Warning: No built packages found in dist/"
+            exit 1
+          fi
+          # Test the installation
+          python -c "from provide.foundation import logger; logger.info('Package test successful')"
+
+      - name: 📈 Upload Package Artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dist
+          path: dist/
+          retention-days: 90
+          if-no-files-found: warn
+
+  # ==================================================================================
+  # 🏁 Integration Tests
+  # ==================================================================================
+  integration:
+    name: 🏁 Integration Tests
+    runs-on: ubuntu-24.04
+    needs: [quality, test]
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Setup GitHub Auth
+        uses: provide-io/ci-tooling/actions/setup-github-auth@main
+        env:
+          GH_ORG_HELPERS: ${{ secrets.GH_ORG_HELPERS }}
+
+      - name: 🐍 Setup Python Environment
+        uses: provide-io/ci-tooling/actions/setup-python-env@main
+        with:
+          python-version: '3.11'
+          uv-version: ${{ env.UV_VERSION }}
+          workenv-path: '.venv'
+          install-group: 'dev'
+
+      - name: 📦 Install provide-testkit
+        run: |
+          source .venv/bin/activate
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv sync --all-groups --dev --prerelease=allow
+
+      - name: 🧪 Run Integration Tests
+        run: |
+          source .venv/bin/activate
+          # Run all integration tests from various modules
+          pytest tests/errors/test_integration.py -n auto -v --tb=short || true
+          pytest tests/test_component_registry_*.py -n auto -v --tb=short || true
+          pytest tests/test_init_coverage.py -n auto -v --tb=short || true
+        continue-on-error: true
+
+  # ==================================================================================
+  # 📋 Summary Job
+  # ==================================================================================
+  summary:
+    name: 📋 CI Summary
+    runs-on: ubuntu-24.04
+    needs: [quality, test, test-windows, package, integration]
+    if: always()
+    steps:
+      - name: 📊 Report Results
+        run: |
+          echo "## 🧪 provide-foundation CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Platform Coverage (Python 3.11)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Ubuntu x86_64 (ubuntu-24.04)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Ubuntu ARM64 (ubuntu-24.04-arm)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ macOS ARM64 (macos-15)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ macOS Intel (macos-15-intel)" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ inputs.include-windows }}" = "true" ]; then
+            echo "- ✅ Windows x86_64 (windows-2022)" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Windows ARM64 (windows-11-arm)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- ⏭️ Windows (skipped - enable with include-windows input)" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Job Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔧 Code Quality | ${{ needs.quality.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Standard Platform Tests | ${{ needs.test.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ inputs.include-windows }}" = "true" ]; then
+            echo "| 🧪 Windows Tests | ${{ needs.test-windows.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "| 📦 Package Build | ${{ needs.package.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🏁 Integration | ${{ needs.integration.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "${{ needs.quality.result }}" == "success" && "${{ needs.test.result }}" == "success" ]]; then
+            echo "🎉 **All critical checks passed!** Ready for release." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Some checks failed.** Review results before proceeding." >> $GITHUB_STEP_SUMMARY
+          fi

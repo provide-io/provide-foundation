@@ -1,0 +1,335 @@
+#
+# SPDX-FileCopyrightText: Copyright (c) provide.io llc. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+#
+
+"""TDD tests for error handler components and thread-safe registry access.
+
+This test suite covers error handler registration, exception type matching,
+priority chains, and thread-safe component access patterns."""
+
+from __future__ import annotations
+
+import asyncio
+import threading
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
+
+
+class TestErrorHandlerComponents(FoundationTestCase):
+    """Test error handler component registration and management."""
+
+    def test_error_handlers_register_in_error_handler_category(self) -> None:
+        """Error handlers must register in ERROR_HANDLER category."""
+        from provide.foundation.hub.components import (
+            ComponentCategory,
+            get_component_registry,
+        )
+
+        registry = get_component_registry()
+
+        # Create test error handler
+        def test_error_handler(exception, context):
+            return {"handled": True, "error": str(exception)}
+
+        registry.register(
+            name="test_error_handler",
+            value=test_error_handler,
+            dimension=ComponentCategory.ERROR_HANDLER.value,
+            metadata={
+                "priority": 100,
+                "exception_types": ["ValueError", "TypeError"],
+                "async": False,
+            },
+        )
+
+        retrieved = registry.get(
+            "test_error_handler",
+            ComponentCategory.ERROR_HANDLER.value,
+        )
+        assert retrieved is test_error_handler
+
+    def test_error_handler_exception_type_matching(self) -> None:
+        """Error handlers must be matched by exception type."""
+        from provide.foundation.hub.components import get_handlers_for_exception
+
+        handlers = get_handlers_for_exception(ValueError("test"))
+
+        assert isinstance(handlers, list)
+        # Should contain handlers that can handle ValueError
+        for handler in handlers:
+            exception_types = handler.metadata.get("exception_types", [])
+            assert any("ValueError" in exc_type for exc_type in exception_types)
+
+    def test_error_handler_priority_chain(self) -> None:
+        """Error handlers must execute in priority order until handled."""
+        from provide.foundation.hub.components import (
+            ComponentCategory,
+            get_component_registry,
+        )
+
+        registry = get_component_registry()
+
+        # High priority handler that doesn't handle
+        def high_priority_handler(exception, context) -> None:
+            return None  # Don't handle
+
+        registry.register(
+            name="high_priority",
+            value=high_priority_handler,
+            dimension=ComponentCategory.ERROR_HANDLER.value,
+            metadata={"priority": 90, "exception_types": ["Exception"]},
+        )
+
+        # Low priority handler that handles
+        def low_priority_handler(exception, context):
+            return {"handled": True, "handler": "low_priority"}
+
+        registry.register(
+            name="low_priority",
+            value=low_priority_handler,
+            dimension=ComponentCategory.ERROR_HANDLER.value,
+            metadata={"priority": 10, "exception_types": ["Exception"]},
+        )
+
+        # Test the handlers are registered correctly
+        handlers = registry.list_dimension(ComponentCategory.ERROR_HANDLER.value)
+        assert "high_priority" in handlers
+        assert "low_priority" in handlers
+
+        # Test priority ordering (get metadata from registry entries)
+        high_entry = registry.get_entry(
+            "high_priority",
+            ComponentCategory.ERROR_HANDLER.value,
+        )
+        low_entry = registry.get_entry(
+            "low_priority",
+            ComponentCategory.ERROR_HANDLER.value,
+        )
+        assert high_entry.metadata["priority"] > low_entry.metadata["priority"]
+
+    async def test_async_error_handler_support(self) -> None:
+        """Error handlers must support async execution."""
+        from provide.foundation.hub.components import (
+            ComponentCategory,
+            get_component_registry,
+        )
+
+        registry = get_component_registry()
+
+        async def async_error_handler(exception, context):
+            await asyncio.sleep(0)  # Simulate async work
+            return {"handled": True, "async": True}
+
+        registry.register(
+            name="async_error_handler",
+            value=async_error_handler,
+            dimension=ComponentCategory.ERROR_HANDLER.value,
+            metadata={"async": True, "priority": 50},
+        )
+
+        retrieved = registry.get(
+            "async_error_handler",
+            ComponentCategory.ERROR_HANDLER.value,
+        )
+        assert retrieved is async_error_handler
+
+
+class TestThreadSafeComponentAccess(FoundationTestCase):
+    """Test thread-safe component access and initialization."""
+
+    def test_concurrent_component_registration(self) -> None:
+        """Component registration must be thread-safe."""
+        from provide.foundation.hub.components import get_component_registry
+
+        registry = get_component_registry()
+        results = []
+        errors = []
+
+        def register_component(i) -> None:
+            try:
+                component = Mock()
+                component.id = i
+                registry.register(
+                    name=f"concurrent_component_{i}",
+                    value=component,
+                    dimension="test",
+                )
+                results.append(i)
+            except Exception as e:
+                errors.append((i, e))
+
+        # Register components concurrently
+        threads = []
+        for i in range(10):
+            thread = threading.Thread(daemon=True, target=register_component, args=(i,))
+            threads.append(thread)
+            thread.start()
+
+        for thread in threads:
+            thread.join(timeout=10.0)
+
+        # All registrations should succeed
+        assert len(errors) == 0
+        assert len(results) == 10
+
+        # All components should be retrievable
+        for i in range(10):
+            component = registry.get(f"concurrent_component_{i}", "test")
+            assert component.id == i
+
+    def test_concurrent_component_access(self) -> None:
+        """Component access must be thread-safe."""
+        from provide.foundation.hub.components import get_component_registry
+
+        registry = get_component_registry()
+
+        # Create lock first so increment can capture it
+        lock = threading.Lock()
+
+        # Register a component with thread-safe increment
+        test_component = Mock()
+        test_component.access_count = 0
+
+        # Define increment as a proper function that captures the lock
+        def _thread_safe_increment() -> None:
+            with lock:
+                test_component.access_count += 1
+
+        test_component.increment = _thread_safe_increment
+
+        registry.register(
+            name="shared_component",
+            value=test_component,
+            dimension="test",
+        )
+
+        results = []
+
+        def access_component() -> None:
+            component = registry.get("shared_component", "test")
+            component.increment()
+            with lock:
+                results.append(component.access_count)
+
+        # Access component concurrently
+        threads = []
+        for _i in range(50):
+            thread = threading.Thread(daemon=True, target=access_component)
+            threads.append(thread)
+            thread.start()
+
+        for thread in threads:
+            thread.join(timeout=10.0)
+
+        # All accesses should get the same component
+        assert len(results) == 50
+        assert test_component.access_count == 50
+
+    def test_lazy_component_initialization(self) -> None:
+        """Components must support lazy initialization."""
+        from provide.foundation.hub.components import (
+            get_component_registry,
+            get_or_initialize_component,
+        )
+
+        registry = get_component_registry()
+
+        # Component factory
+        initialization_count = 0
+
+        def component_factory():
+            nonlocal initialization_count
+            initialization_count += 1
+            component = Mock()
+            component.initialized = True
+            return component
+
+        registry.register(
+            name="lazy_component",
+            value=None,  # Not initialized yet
+            dimension="test",
+            metadata={
+                "lazy": True,
+                "factory": component_factory,
+            },
+        )
+
+        # Should not be initialized yet
+        assert initialization_count == 0
+
+        # First access should initialize
+        component1 = get_or_initialize_component("lazy_component", "test")
+        assert initialization_count == 1
+        assert component1.initialized is True
+
+        # Second access should return same instance
+        component2 = get_or_initialize_component("lazy_component", "test")
+        assert initialization_count == 1
+        assert component2 is component1
+
+    async def test_async_component_initialization(self) -> None:
+        """Components must support async initialization."""
+        from provide.foundation.hub.components import (
+            get_component_registry,
+            initialize_async_component,
+        )
+
+        registry = get_component_registry()
+
+        # Async component factory with minimal sleep to avoid event loop issues
+        async def async_component_factory():
+            # Use asyncio.sleep(0) instead of 0.01 to avoid timing issues in parallel tests
+            await asyncio.sleep(0)  # Minimal async yield
+            component = Mock()
+            component.async_initialized = True
+            return component
+
+        registry.register(
+            name="async_component",
+            value=None,
+            dimension="test",
+            metadata={
+                "async": True,
+                "factory": async_component_factory,
+            },
+        )
+
+        try:
+            component = await initialize_async_component("async_component", "test")
+            assert component.async_initialized is True
+        finally:
+            # Clean up registry to prevent state contamination
+            try:
+                registry.remove("async_component", "test")
+            except Exception:
+                pass  # Registry might not have remove method
+
+    def test_component_cleanup_on_shutdown(self) -> None:
+        """Components must support cleanup on shutdown."""
+        from provide.foundation.hub.components import (
+            cleanup_all_components,
+            get_component_registry,
+        )
+
+        registry = get_component_registry()
+
+        # Component with cleanup
+        cleanup_called = []
+        component_with_cleanup = Mock()
+        component_with_cleanup.cleanup = lambda: cleanup_called.append("cleaned")
+
+        registry.register(
+            name="cleanup_component",
+            value=component_with_cleanup,
+            dimension="test",
+            metadata={"supports_cleanup": True},
+        )
+
+        # Cleanup should call component cleanup
+        cleanup_all_components("test")
+        assert "cleaned" in cleanup_called
+
+
+# 🧱🏗️🔚

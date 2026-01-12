@@ -1,0 +1,58 @@
+{
+  "tool": "security",
+  "passed": true,
+  "score": 84.0,
+  "details": {
+    "total_files": 1,
+    "total_issues": 3,
+    "severity_breakdown": {
+      "HIGH": 1,
+      "MEDIUM": 1,
+      "LOW": 1
+    },
+    "confidence_breakdown": {
+      "HIGH": 3,
+      "MEDIUM": 0,
+      "LOW": 0
+    },
+    "score": 84.0,
+    "thresholds": {
+      "max_high_severity": 2,
+      "max_medium_severity": 5,
+      "min_score": 50.0
+    },
+    "issues": [
+      {
+        "filename": "/private/var/folders/sg/wy47gw996f78fznt898m8x540000gn/T/pytest-of-tim/pytest-368/popen-gw18/test_real_security_integration0/vulnerable.py",
+        "line_number": 2,
+        "test_id": "B404",
+        "test_name": "blacklist",
+        "severity": "LOW",
+        "confidence": "HIGH",
+        "text": "Consider possible security implications associated with the subprocess module.",
+        "code": "1 \n2 import subprocess\n3 \n"
+      },
+      {
+        "filename": "/private/var/folders/sg/wy47gw996f78fznt898m8x540000gn/T/pytest-of-tim/pytest-368/popen-gw18/test_real_security_integration0/vulnerable.py",
+        "line_number": 6,
+        "test_id": "B602",
+        "test_name": "subprocess_popen_with_shell_equals_true",
+        "severity": "HIGH",
+        "confidence": "HIGH",
+        "text": "subprocess call with shell=True identified, security issue.",
+        "code": "5     # This should trigger a security warning\n6     subprocess.call(user_input, shell=True)\n7 \n"
+      },
+      {
+        "filename": "/private/var/folders/sg/wy47gw996f78fznt898m8x540000gn/T/pytest-of-tim/pytest-368/popen-gw18/test_real_security_integration0/vulnerable.py",
+        "line_number": 13,
+        "test_id": "B102",
+        "test_name": "exec_used",
+        "severity": "MEDIUM",
+        "confidence": "HIGH",
+        "text": "Use of exec detected.",
+        "code": "12     # Another potential issue\n13     exec(\"print('executed')\")\n"
+      }
+    ]
+  },
+  "execution_time": 0.0014467239379882812
+}

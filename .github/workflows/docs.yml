@@ -1,0 +1,75 @@
+name: 📚 Documentation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'README.md'
+      - 'docs/**'
+      - 'examples/**'
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'docs/**'
+      - 'examples/**'
+  workflow_dispatch:
+
+env:
+  UV_VERSION: "0.9.13"
+
+jobs:
+  docs:
+    name: 📚 Documentation Validation
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04]
+        python-version: ["3.12"]
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: ⚡ Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Setup Environment
+        run: |
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e .
+          uv sync --all-groups --dev --prerelease=allow
+
+      - name: 📖 Test Example Scripts
+        run: |
+          source .venv/bin/activate
+          for example in examples/*.py; do
+              python ${example}
+          done
+
+      - name: 📚 Build and Validate MkDocs
+        run: |
+          source .venv/bin/activate
+          # Build with strict mode (fails on warnings)
+          mkdocs build --clean --strict
+          echo "✅ MkDocs build completed successfully with no warnings"
+
+      - name: 🔗 Validate README Links
+        run: |
+          # Install markdown link checker
+          npm install -g markdown-link-check
+          markdown-link-check README.md --config .github/markdown-link-check.json
+        continue-on-error: true
+
+      - name: 🔗 Check Documentation Links
+        run: |
+          # Check all markdown files in docs directory
+          find docs -name "*.md" -exec markdown-link-check {} \;
+        continue-on-error: true

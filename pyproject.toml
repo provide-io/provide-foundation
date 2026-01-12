@@ -1,0 +1,414 @@
+#
+# provide-foundation/pyproject.toml
+#
+# Comprehensive Python foundation library for building robust applications
+#
+
+[build-system]
+requires = ["setuptools>=75.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "provide-foundation"
+description = "A comprehensive Python foundation library for building robust applications with structured logging, CLI framework, configuration management, and essential building blocks."
+dynamic = ["version"]
+requires-python = ">=3.11"
+readme = "README.md"
+license = "Apache-2.0"
+authors = [
+    { name = "Tim Perkins", email = "code@tim.life" },
+]
+maintainers = [
+    { name = "provide.io", email = "code@provide.io" },
+]
+keywords = ["telemetry", "logging", "tracing", "python", "pyvider"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: System :: Logging",
+    "Topic :: System :: Monitoring",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "attrs>=25.4.0",
+    "structlog>=25.5.0",
+    "tomli_w>=1.2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/provide-io/provide-foundation"
+Documentation = "https://foundry.provide.io/foundation/"
+Repository = "https://github.com/provide-io/provide-foundation"
+Issues = "https://github.com/provide-io/provide-foundation/issues"
+Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
+
+
+[project.optional-dependencies]
+cli = [
+    "click>=8.3.1",
+]
+compression = [
+    "zstandard>=0.25.0",
+]
+crypto = [
+    "cryptography>=45.0.7",
+]
+transport = [
+    "httpx>=0.28.1",
+]
+opentelemetry = [
+    "opentelemetry-api>=1.22.0",
+    "opentelemetry-sdk>=1.22.0",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.22.0",
+    "opentelemetry-exporter-otlp-proto-http>=1.22.0",
+]
+# Platform utilities (system/OS info and integration)
+platform = [
+    "psutil>=7.0.0",
+    "py-cpuinfo>=9.0.0",
+    # Linux-only: sdnotify>=0.3.2 (optional - gracefully degrades if not installed)
+    # Install manually on Linux: uv add sdnotify
+]
+# Process utilities (process control and lifecycle)
+process = [
+    "psutil>=7.0.0",
+    "setproctitle>=1.3.7",
+    # Linux-only: python-prctl>=1.8.1 (optional - gracefully degrades if not installed)
+    # Install manually on Linux: uv add python-prctl
+]
+# Convenience groups
+extended = [
+    "provide-foundation[platform,process]",
+]
+all = [
+    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]",
+]
+
+[project.scripts]
+foundation = "provide.foundation.cli.main:cli [cli]"
+
+[dependency-groups]
+dev = [
+    # Core testing dependencies (avoiding circular dep with provide-testkit)
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.0.0",
+    "pytest-mock>=3.15.1",
+    "pytest-xdist>=3.8.0",
+    # Quality tools
+    "ruff",
+    "mypy",
+]
+docs = [
+    "mkdocs-material>=9.7.1",
+]
+protobuf = [
+    "protobuf>=6.32.0",
+]
+
+################################################################################
+# Pytest Configuration
+################################################################################
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_default_test_loop_scope = "function"
+
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*", "*Tests"]
+python_functions = ["test_*", "*_test"]
+addopts = "-m 'not integration and not benchmark and not slow and not time_sensitive and not external_service' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean"
+# Parallel execution: pytest -n <workers> (range: 2-16, recommend: CPU cores or 8, max: 16 to avoid xdist hang)
+markers = [
+    "serial: run tests serially to avoid event loop conflicts",
+    "time_sensitive: tests with strict timing requirements (run serially)",
+    "async_unsafe: async tests that must run serially",
+    "unit: fast unit tests",
+    "integration: integration tests requiring setup",
+    "integration.openobserve: OpenObserve integration tests",
+    "slow: tests taking >1s",
+    "fast: tests taking <100ms",
+    # Time-sensitive markers
+    "benchmark: performance/timing sensitive tests",
+    "flaky: tests known to be intermittently failing",
+    # External service markers
+    "external_service: tests requiring external services",
+    # Module markers
+    "archive: archive module tests",
+    "process: process/subprocess tests",
+    "network: network/transport tests",
+    "config: configuration tests",
+    "logger: logging tests",
+    # Chaos testing markers
+    "chaos: property-based chaos testing with Hypothesis",
+    "chaos_slow: long-running chaos tests",
+    "chaos_concurrent: concurrency chaos tests",
+    "chaos_io: I/O chaos tests",
+    # Skip conditions
+    "requires_docker: skip if docker not available",
+    "requires_network: skip if offline",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore:cannot collect test class 'Test.*' because it has a __init__ constructor:pytest.PytestCollectionWarning",
+    "ignore:cannot collect test class .* because it has a __init__ constructor:pytest.PytestCollectionWarning",
+    "ignore:.* KqueueSelector constructor:pytest.PytestCollectionWarning",
+    "ignore:.* KqueueSelector constructor:pytest.PytestCollectionWarning",
+    "ignore:coroutine .* was never awaited:RuntimeWarning",
+    "ignore:Module already imported so cannot be rewritten:pytest.PytestAssertRewriteWarning",
+]
+norecursedirs = [
+    ".git", ".hg", ".svn", "*_build", "build", "dist", "*.egg-info",
+    ".venv", "venv", # Added venv as it's a common default
+    "htmlcov", "docs/_build",
+    ".hypothesis", # Added to address the warning
+]
+# Changed from -ra to -rFE to suppress skipped test output
+
+################################################################################
+# Ruff Linter and Formatter Configuration
+################################################################################
+
+[tool.ruff]
+line-length = 111
+indent-width = 4
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "W", "I", "UP", "ANN", "B", "C90", "SIM", "PTH", "RUF",
+    "D",    # Docstrings
+    "S",    # Security
+]
+ignore = [
+    "ANN401",   # any-type (too restrictive)
+    "BLE001",   # blind-except (too restrictive for cleanup patterns)
+    "B008",     # function-call-in-default-argument (Click uses this pattern)
+    "D203",     # one-blank-line-before-class (conflicts with D211)
+    "D213",     # multi-line-summary-second-line (conflicts with D212)
+    "E501",     # line-too-long (handled by formatter)
+    "S101",     # assert (valid in tests)
+    "S104",     # binding-to-all-interfaces (intentional for servers)
+    "S105",     # hardcoded-password-string (false positive for variable names)
+    "S108",     # hardcoded-temp-file (/tmp is fine for our use cases)
+    "S110",     # try-except-pass (legitimate for cleanup)
+    "S112",     # try-except-continue (legitimate for iteration)
+    "S310",     # suspicious-url-open-for-protocol (URLs are controlled)
+    "S311",     # random (not for crypto)
+    "S603",     # subprocess-without-shell-equals-true (trusted input)
+    "S607",     # start-process-with-partial-path (trusted executables)
+    "S608",     # sql-injection (inputs are sanitized)
+    "PLR0911",  # too-many-return-statements (refactor later)
+    "PLR0912",  # too-many-branches (refactor later)
+    "PLR0913",  # too-many-arguments (common in config classes)
+    "PLR0915",  # too-many-statements (refactor later)
+    "PLR2004",  # magic-value-comparison (too noisy)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["PLR0124"]
+# Tests - No docstrings required, asserts OK, test data OK
+"tests/**/*.py" = [
+    "ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN206",  # Type annotations
+    "C901",      # Complexity
+    "B017",      # pytest.raises(Exception)
+    "SIM105", "SIM108", "SIM117",  # Style preferences
+    "RUF009", "RUF012", "RUF022", "RUF043",  # Ruff-specific
+    "UP007", "UP045",  # Pyupgrade
+    "E402",      # Imports after code
+    "D",         # No docstrings required in tests
+    "S",         # Security rules don't apply to test data (asserts, hardcoded passwords, temp files, etc.)
+]
+# Examples - Show best practices, no docstrings required
+"examples/**/*.py" = [
+    "ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204", "ANN206",
+    "C901", "E402",
+    "D",         # No docstrings required in examples
+    "S",         # Security rules don't apply to example code
+]
+# Scripts - No docstrings required, allow some flexibility
+"scripts/**/*.py" = [
+    "ANN001", "ANN002", "ANN003", "ANN201", "ANN202", "ANN204",
+    "C901", "E402",
+    "UP031",     # Printf formatting OK
+    "RUF001",    # Unicode OK
+    "B007",      # Unused loop vars OK
+    "D",         # No docstrings required in scripts
+    "S603", "S604", "S607",  # subprocess calls OK in scripts
+]
+# Root demo files
+"*.py" = ["ANN001", "ANN201", "ANN202", "C901", "RUF001", "RUF002", "D", "S108"]  # Temp files OK in demos
+# Process modules - shell=True and subprocess are intentional
+"src/provide/foundation/process/**/*.py" = ["S603", "S604"]
+# Archive modules - extractall is validated
+"src/provide/foundation/archive/**/*.py" = ["S202"]
+"src/provide/foundation/tools/installer.py" = ["S202"]
+# Error types - AUTH_TOKEN_EXPIRED is not a password
+"src/provide/foundation/errors/types.py" = ["S105"]
+# Availability checks - F401 is intentional for "try: import X except ImportError" patterns
+"src/provide/foundation/utils/deps.py" = ["F401"]
+"src/provide/foundation/console/__init__.py" = ["F401"]
+"src/provide/foundation/cli/__init__.py" = ["F401"]
+"src/provide/foundation/logger/otlp/client.py" = ["F401"]
+"src/provide/foundation/observability/__init__.py" = ["F401"]
+"src/provide/foundation/logger/__init__.py" = ["F401"]
+"src/provide/foundation/crypto/certificates/trust.py" = ["F401"]
+"src/provide/foundation/file/formats.py" = ["F401"]
+"src/provide/foundation/hub/commands.py" = ["F401"]
+# Config classes - RUF009 is intentional for attrs field()/config_field() patterns
+"src/provide/foundation/context/core.py" = ["RUF009"]
+"src/provide/foundation/logger/config/logging.py" = ["RUF009"]
+"src/provide/foundation/logger/config/telemetry.py" = ["RUF009"]
+# Streams - file handle must stay open for logger lifetime
+"src/provide/foundation/streams/file.py" = ["SIM115"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pyvider", "tests"]
+force-sort-within-sections = true
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+################################################################################
+# MyPy Static Type Checker Configuration
+################################################################################
+
+[tool.mypy]
+mypy_path = "src"
+strict = true
+# Show error codes in output.
+show_error_codes = true
+# Show column numbers in output.
+show_column_numbers = true
+# Use visually nicer output in error messages:
+pretty = true
+# Use current Python version.
+python_version = "3.11"
+# Warn about unused '# type: ignore' comments.
+warn_unused_ignores = true
+# Warn about unused '[mypy-pattern]'  config sections.
+warn_unused_configs = true
+# Do not follow imports to .pyi stubs for external libraries.
+follow_imports = "normal"  # Changed global strategy
+# Do not check that test functions are annotated.
+disallow_untyped_decorators = false
+
+[[tool.mypy.overrides]]
+module = [
+    "structlog",
+    "structlog.*"
+]
+follow_imports = "skip" # Keep structlog skipped
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "opentelemetry",
+    "opentelemetry.*"
+]
+ignore_missing_imports = true
+
+################################################################################
+# Coverage.py Configuration
+################################################################################
+
+[tool.coverage.run]
+source = ["src/provide/foundation"]
+branch = true
+parallel = true
+omit = [
+    "*/provide/foundation/testing/*",
+    "*/testing/*"
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 70
+precision = 2
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "def __repr__",
+    "def __str__",
+    "@(abc\\.)?abstractmethod",
+    "pass",
+    # This is usually fine, but double-check it's not too greedy for your codebase
+    "logger\\.(debug|info|warning|error|exception|critical|trace)\\(",
+    "import logging", # Excluding all import logging lines might be too much
+    "from logging import", # Same as above
+    "print\\(",
+]
+
+[tool.coverage.html]
+directory = "htmlcov" # Using an absolute path
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[tool.setuptools]
+packages = {find = {where = ["src"]}}
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[tool.bandit]
+exclude_dirs = [".venv", "tests"]
+
+################################################################################
+# Security Scanning Allowlist
+################################################################################
+
+[tool.security]
+# Paths to exclude from secret scanning (TruffleHog, GitGuardian, Gitleaks)
+# Run: we security generate (via wrknv) to regenerate tool configs
+description = "Test fixtures and documentation examples - intentionally committed"
+allowed_paths = [
+    # Documentation with example credentials
+    "docs/**/*.md",
+    # Test fixtures with example EC private keys
+    "src/provide/foundation/testing/crypto.py",
+    "tests/fixtures/crypto.py",
+    # Crypto module code (false positives on type hints like Ed25519PrivateKey)
+    "src/provide/foundation/crypto/**",
+    # Sanitization processor (contains example secrets for testing sanitization)
+    "src/provide/foundation/logger/processors/sanitization.py",
+    # Test files with example credentials
+    "tests/**",
+    # Mutation testing output
+    "mutants/**",
+    # Responsum game context (auto-generated game tokens)
+    ".rsp_context.json",
+]
+
+[tool.pyrefly]
+project_includes = [
+    "src",
+    "tests",
+]
+
+# 🐍🏗️⚙️

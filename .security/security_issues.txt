@@ -1,0 +1,34 @@
+Security Issues Report
+==================================================
+
+Issue #1:
+  File: /private/var/folders/sg/wy47gw996f78fznt898m8x540000gn/T/pytest-of-tim/pytest-368/popen-gw18/test_real_security_integration0/vulnerable.py:2
+  Test: blacklist (B404)
+  Severity: LOW | Confidence: HIGH
+  Description: Consider possible security implications associated with the subprocess module.
+
+  Code:
+    1 
+    2 import subprocess
+    3 
+
+Issue #2:
+  File: /private/var/folders/sg/wy47gw996f78fznt898m8x540000gn/T/pytest-of-tim/pytest-368/popen-gw18/test_real_security_integration0/vulnerable.py:6
+  Test: subprocess_popen_with_shell_equals_true (B602)
+  Severity: HIGH | Confidence: HIGH
+  Description: subprocess call with shell=True identified, security issue.
+
+  Code:
+    5     # This should trigger a security warning
+    6     subprocess.call(user_input, shell=True)
+    7 
+
+Issue #3:
+  File: /private/var/folders/sg/wy47gw996f78fznt898m8x540000gn/T/pytest-of-tim/pytest-368/popen-gw18/test_real_security_integration0/vulnerable.py:13
+  Test: exec_used (B102)
+  Severity: MEDIUM | Confidence: HIGH
+  Description: Use of exec detected.
+
+  Code:
+    12     # Another potential issue
+    13     exec("print('executed')")

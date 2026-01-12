@@ -1,0 +1,203 @@
+# Inherit shared configuration from provide-foundry
+INHERIT: .provide/foundry/base-mkdocs.yml
+
+# Project-Specific Configuration
+site_name: provide-foundation
+site_description: Beautiful, Performant, Structured Logging for Python - Enterprise-grade telemetry built on structlog
+site_author: provide.io
+site_url: https://foundry.provide.io/foundation/
+repo_url: https://github.com/provide-io/provide-foundation
+repo_name: provide-io/provide-foundation
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2024-2025 provide.io
+
+# Development server configuration
+dev_addr: 127.0.0.1:11001
+
+# Standalone mode settings
+docs_dir: docs
+
+theme:
+  name: material
+  language: en
+  logo: assets/images/officium-light.svg
+  favicon: assets/images/officium-light.svg
+
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.path
+    - navigation.top
+    - header.autohide
+    - content.code.copy
+    - content.tabs.link
+
+plugins:
+  - search
+  - autorefs
+  - gen-files:
+      scripts:
+        - .provide/foundry/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+            show_bases: true
+            show_inheritance_diagram: false
+            merge_init_into_class: true
+            separate_signature: true
+            members_order: source
+            inherited_members: true
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.highlight:
+      use_pygments: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+# CSS and JavaScript are inherited from base-mkdocs.yml
+
+nav:
+  - Home: index.md
+  - Ecosystem: ecosystem.md
+
+  - Overview:
+    - Features: information/features.md
+    - Use Cases: information/use-cases.md
+    - What's New: information/changelog.md
+
+  - Getting Started:
+    - getting-started/index.md
+    - Installation: getting-started/installation.md
+    - 5-Minute Quick Start: getting-started/quick-start.md
+    - Build a CLI App Tutorial: getting-started/first-app.md
+    - More Examples: getting-started/examples.md
+
+  - How-To Guides:
+    - Logging:
+      - Basic Logging: how-to-guides/logging/basic-logging.md
+      - Exception Logging: how-to-guides/logging/exception-logging.md
+      - Structured Events: how-to-guides/logging/structured-events.md
+      - Custom Processors: how-to-guides/logging/custom-processors.md
+    - Configuration:
+      - Environment Variables: how-to-guides/configuration/env-variables.md
+      - File-Based Config: how-to-guides/configuration/file-config.md
+      - Secret Management: how-to-guides/configuration/secrets.md
+    - CLI:
+      - Building Commands: how-to-guides/cli/commands.md
+      - Argument Parsing: how-to-guides/cli/arguments.md
+      - Interactive Prompts: how-to-guides/cli/prompts.md
+    - File Operations:
+      - Atomic Writes: how-to-guides/file/atomic-writes.md
+      - File Watching: how-to-guides/file/watching.md
+    - Cryptography:
+      - Key Generation: how-to-guides/crypto/keys.md
+      - Signing & Verification: how-to-guides/crypto/signing.md
+      - Certificates: how-to-guides/crypto/certificates.md
+    - HTTP & APIs:
+      - Making Requests: how-to-guides/http/requests.md
+      - Custom Middleware: how-to-guides/http/middleware.md
+    - Testing:
+      - Unit Testing: how-to-guides/testing/unit-tests.md
+      - Testing CLI Commands: how-to-guides/testing/cli-tests.md
+    - Resilience:
+      - Retry Patterns: how-to-guides/resilience/retry.md
+      - Circuit Breakers: how-to-guides/resilience/circuit-breaker.md
+    - Production:
+      - Deployment Patterns: how-to-guides/production/deployment.md
+      - Monitoring & Observability: how-to-guides/production/monitoring.md
+    - Troubleshooting: how-to-guides/troubleshooting.md
+
+  - Concepts:
+    - How Foundation Works: explanation/architecture.md
+    - Dependency Injection: explanation/dependency-injection.md
+
+  - Reference:
+    - Overview: reference/index.md
+    - Core:
+      - Logger: reference/provide/foundation/logger/index.md
+      - Hub: reference/provide/foundation/hub/index.md
+      - Config: reference/provide/foundation/config/index.md
+      - Errors: reference/provide/foundation/errors/index.md
+      - State: reference/provide/foundation/state/index.md
+    - CLI & Console:
+      - CLI: reference/provide/foundation/cli/index.md
+      - Console: reference/provide/foundation/console/index.md
+      - Context: reference/provide/foundation/context/index.md
+    - Resilience & Observability:
+      - Resilience: reference/provide/foundation/resilience/index.md
+      - Metrics: reference/provide/foundation/metrics/index.md
+      - Tracer: reference/provide/foundation/tracer/index.md
+      - Observability: reference/provide/foundation/observability/index.md
+    - Data & Files:
+      - File: reference/provide/foundation/file/index.md
+      - Archive: reference/provide/foundation/archive/index.md
+      - Serialization: reference/provide/foundation/serialization/index.md
+      - Streams: reference/provide/foundation/streams/index.md
+    - Security:
+      - Crypto: reference/provide/foundation/crypto/index.md
+      - Security: reference/provide/foundation/security/index.md
+    - Utilities:
+      - Utils: reference/provide/foundation/utils/index.md
+      - Concurrency: reference/provide/foundation/concurrency/index.md
+      - Formatting: reference/provide/foundation/formatting/index.md
+      - Time: reference/provide/foundation/time/index.md
+      - Process: reference/provide/foundation/process/index.md
+      - Platform: reference/provide/foundation/platform/index.md
+      - Transport: reference/provide/foundation/transport/index.md
+      - Parsers: reference/provide/foundation/parsers/index.md
+    - Advanced:
+      - Tools: reference/provide/foundation/tools/index.md
+      - Profiling: reference/provide/foundation/profiling/index.md
+      - Testmode: reference/provide/foundation/testmode/index.md
+      - Integrations: reference/provide/foundation/integrations/index.md
+
+  - Specs: specs/index.md
