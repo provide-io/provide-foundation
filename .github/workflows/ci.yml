@@ -42,7 +42,7 @@ jobs:
           python-version: '3.11'
           uv-version: ${{ env.UV_VERSION }}
           workenv-path: '.venv'
-          install-extras: 'dev'
+          install-group: 'dev'
 
       - name: 📦 Install provide-testkit
         run: |
@@ -273,7 +273,7 @@ jobs:
           python-version: '3.11'
           uv-version: ${{ env.UV_VERSION }}
           workenv-path: '.venv'
-          install-extras: 'dev'
+          install-group: 'dev'
 
       - name: 📦 Install provide-testkit
         run: |
@@ -342,7 +342,7 @@ jobs:
           python-version: '3.11'
           uv-version: ${{ env.UV_VERSION }}
           workenv-path: '.venv'
-          install-extras: 'dev'
+          install-group: 'dev'
 
       - name: 📦 Install provide-testkit
         run: |
