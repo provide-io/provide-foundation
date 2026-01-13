@@ -95,18 +95,10 @@ foundation = "provide.foundation.cli.main:cli [cli]"
 
 [dependency-groups]
 dev = [
-    # Core testing dependencies (avoiding circular dep with provide-testkit)
-    "pytest>=9.0.2",
-    "pytest-asyncio>=1.3.0",
-    "pytest-cov>=7.0.0",
-    "pytest-mock>=3.15.1",
-    "pytest-xdist>=3.8.0",
-    # Quality tools
-    "ruff",
-    "mypy",
+    "provide-testkit[advanced-testing,build,standard,typecheck,utils] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.0",
 ]
 docs = [
-    "mkdocs-material>=9.7.1",
+    "provide-testkit[docs] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.0",
 ]
 protobuf = [
     "protobuf>=6.32.0",
@@ -321,6 +313,22 @@ ignore_missing_imports = true
 module = [
     "opentelemetry",
     "opentelemetry.*"
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# Optional dependencies - ignore missing imports when not installed
+module = [
+    "click",
+    "click.*",
+    "cryptography",
+    "cryptography.*",
+    "yaml",
+    "httpx",
+    "httpx.*",
+    "zstandard",
+    "psutil",
+    "cpuinfo",
 ]
 ignore_missing_imports = true
 
