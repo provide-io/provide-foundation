@@ -95,10 +95,10 @@ foundation = "provide.foundation.cli.main:cli [cli]"
 
 [dependency-groups]
 dev = [
-    "provide-testkit[advanced-testing,build,standard,typecheck,utils]",
+    "provide-testkit[advanced-testing,build,standard,typecheck,utils] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.0",
 ]
 docs = [
-    "provide-testkit[docs]",
+    "provide-testkit[docs] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.0",
 ]
 protobuf = [
     "protobuf>=6.32.0",
@@ -313,6 +313,22 @@ ignore_missing_imports = true
 module = [
     "opentelemetry",
     "opentelemetry.*"
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+# Optional dependencies - ignore missing imports when not installed
+module = [
+    "click",
+    "click.*",
+    "cryptography",
+    "cryptography.*",
+    "yaml",
+    "httpx",
+    "httpx.*",
+    "zstandard",
+    "psutil",
+    "cpuinfo",
 ]
 ignore_missing_imports = true
 
