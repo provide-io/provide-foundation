@@ -95,10 +95,10 @@ foundation = "provide.foundation.cli.main:cli [cli]"
 
 [dependency-groups]
 dev = [
-    "provide-testkit[advanced-testing,build,standard,typecheck,utils] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.0",
+    "provide-testkit[advanced-testing,build,standard,typecheck,utils] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.1",
 ]
 docs = [
-    "provide-testkit[docs] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.0",
+    "provide-testkit[docs] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.1",
 ]
 protobuf = [
     "protobuf>=6.32.0",
