@@ -106,7 +106,7 @@ class _LevelFilter:
         event_level_str_from_dict = event_dict.get("level", "info")
 
         # Fast path: direct lookup for common level strings (avoids normalize_level + get_numeric_level)
-        event_num_level = self._FAST_LEVEL_LOOKUP.get(event_level_str_from_dict)  # type: ignore[arg-type]
+        event_num_level = self._FAST_LEVEL_LOOKUP.get(event_level_str_from_dict)
         if event_num_level is None:
             # Slow path: normalize and look up for unusual level strings
             normalized_level = normalize_level(str(event_level_str_from_dict))

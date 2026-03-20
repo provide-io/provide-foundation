@@ -105,9 +105,7 @@ class EventBus:
 
             # Only rebuild list if dead references were found
             if has_dead:
-                self._handlers[event.name] = [
-                    wr for wr in handlers if wr() is not None
-                ]
+                self._handlers[event.name] = [wr for wr in handlers if wr() is not None]
 
             # Periodic cleanup of all dead references (less frequent)
             self._operation_count += 1
