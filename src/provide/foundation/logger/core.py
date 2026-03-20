@@ -366,13 +366,19 @@ class GlobalLoggerProxy:
         return getattr(get_global_logger(), name)
 
     # Forward common logger methods to help mypy.
-    # FilteringBoundLogger makes methods below the configured level literal
-    # `return None` at the structlog layer — no proxy-level guards needed.
+    # debug() and trace() have fast-path level guards to avoid entering
+    # structlog's processor pipeline when these levels are filtered out.
     def trace(self, event: str, *args: Any, **kwargs: Any) -> None:
-        return get_global_logger().trace(event, *args, **kwargs)
+        _logger = get_global_logger()
+        if _logger._effective_level > _TRACE_LEVEL:
+            return
+        _logger.trace(event, *args, **kwargs)
 
     def debug(self, event: str, *args: Any, **kwargs: Any) -> None:
-        return get_global_logger().debug(event, *args, **kwargs)
+        _logger = get_global_logger()
+        if _logger._effective_level > _DEBUG_LEVEL:
+            return
+        _logger.debug(event, *args, **kwargs)
 
     def info(self, event: str, *args: Any, **kwargs: Any) -> None:
         return get_global_logger().info(event, *args, **kwargs)

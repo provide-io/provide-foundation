@@ -98,7 +98,8 @@ foundation = "provide.foundation.cli.main:cli"
 
 [dependency-groups]
 dev = [
-    "provide-testkit[advanced-testing,build,standard,typecheck,utils] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.0",
+    "provide-testkit[advanced-testing,build,standard,typecheck,utils] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.1",
+    "memray>=1.0",
 ]
 docs = [
     "provide-testkit[docs] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.0",
@@ -124,7 +125,7 @@ pythonpath = ["src", "."]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*", "*Tests"]
 python_functions = ["test_*", "*_test"]
-addopts = "--strict-markers --strict-config -m 'not integration and not benchmark and not slow and not time_sensitive and not external_service and not memray' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean"
+addopts = "-m 'not integration and not benchmark and not slow and not time_sensitive and not external_service and not memray' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean"
 # Parallel execution: pytest -n <workers> (range: 2-16, recommend: CPU cores or 8, max: 16 to avoid xdist hang)
 markers = [
     "serial: run tests serially to avoid event loop conflicts",

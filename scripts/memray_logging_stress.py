@@ -42,9 +42,8 @@ def warmup() -> None:
 
 def run_stress() -> None:
     """Run the logging stress test."""
-    from provide.testkit import reset_foundation_setup_for_testing, set_log_stream_for_testing
-
     from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
+    from provide.testkit import reset_foundation_setup_for_testing, set_log_stream_for_testing
 
     message_count = 50_000
     stream = io.StringIO()
