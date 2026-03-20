@@ -35,10 +35,10 @@ _DEFAULT_QUICK_CHECK_KEYWORDS: tuple[str, ...] = (
     "auth",
     "credential",
     "-p ",
-    "api",      # covers api_key, api-key, apikey, api_token, api-token
-    "access",   # covers access_key, access-key
-    "key=",     # covers [A-Z_]+KEY= env var patterns (after lowering)
-    "key:",     # covers [A-Z_]+KEY: env var patterns (after lowering)
+    "api",  # covers api_key, api-key, apikey, api_token, api-token
+    "access",  # covers access_key, access-key
+    "key=",  # covers [A-Z_]+KEY= env var patterns (after lowering)
+    "key:",  # covers [A-Z_]+KEY: env var patterns (after lowering)
 )
 
 # Cache for custom pattern compilations
