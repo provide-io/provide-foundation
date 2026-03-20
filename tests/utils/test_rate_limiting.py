@@ -162,10 +162,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     def test_logger_none_suppresses_logging(self) -> None:
         """Test that passing logger=None suppresses all logging."""
         limiter = TokenBucketRateLimiter(
-            capacity=1.0,
-            refill_rate=1.0,
-            time_source=self.get_time,
-            logger=None,
+            capacity=1.0, refill_rate=1.0, time_source=self.get_time, logger=None,
         )
         assert limiter._logger is None
 
@@ -173,10 +170,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     async def test_logger_none_operations_work(self) -> None:
         """Test that operations work correctly with logger=None."""
         limiter = TokenBucketRateLimiter(
-            capacity=2.0,
-            refill_rate=1.0,
-            time_source=self.get_time,
-            logger=None,
+            capacity=2.0, refill_rate=1.0, time_source=self.get_time, logger=None,
         )
         assert limiter._logger is None
         # Operations should work without logging
@@ -190,10 +184,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
 
         custom_logger = MagicMock()
         limiter = TokenBucketRateLimiter(
-            capacity=1.0,
-            refill_rate=1.0,
-            time_source=self.get_time,
-            logger=custom_logger,
+            capacity=1.0, refill_rate=1.0, time_source=self.get_time, logger=custom_logger,
         )
         assert limiter._logger is custom_logger
         # Custom logger should NOT have been called with init message
@@ -203,9 +194,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     def test_logger_omitted_auto_creates(self) -> None:
         """Test that omitting logger parameter auto-creates from Foundation."""
         limiter = TokenBucketRateLimiter(
-            capacity=1.0,
-            refill_rate=1.0,
-            time_source=self.get_time,
+            capacity=1.0, refill_rate=1.0, time_source=self.get_time,
         )
         # Should auto-create a logger (existing behavior)
         assert limiter._logger is not None
