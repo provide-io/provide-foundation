@@ -63,6 +63,10 @@ def _make_filtering_bound_logger_with_trace(level: int) -> type:
         def _trace(self: Any, event: Any, *args: Any, **kw: Any) -> Any:
             kw["_foundation_level_hint"] = "trace"
             return self.msg(event, *args, **kw)
+    else:
+
+        def _trace(*args: Any, **kw: Any) -> None:
+            return None
 
         cls.trace = _trace
     else:
