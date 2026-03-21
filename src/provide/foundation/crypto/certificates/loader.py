@@ -48,7 +48,8 @@ def load_from_uri_or_pem(data: str) -> str:
                     path_str = "/" + path_str
                 path = Path(path_str)
 
-            logger.debug(f"📜📂🚀 Loading data from file: {path}")
+            if logger.is_debug_enabled():
+                logger.debug(f"📜📂🚀 Loading data from file: {path}")
             with path.open("r", encoding="utf-8") as f:
                 loaded_data = f.read().strip()
             return loaded_data

@@ -179,7 +179,8 @@ def generate_certificate(
             gen_key_size=gen_key_size,
             gen_curve=gen_curve,
         )
-        logger.debug(f"📜🔑🚀 Generation config: {conf}")
+        if logger.is_debug_enabled():
+            logger.debug(f"📜🔑🚀 Generation config: {conf}")
 
         # Generate base certificate and private key
         base, private_key = CertificateBase.create(conf)

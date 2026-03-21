@@ -80,7 +80,8 @@ class RSASigner:
             RSASigner: Signer with newly generated keypair
         """
         _require_crypto()
-        logger.debug(f"🔐 Generating new RSA signer ({key_size} bits)")
+        if logger.is_debug_enabled():
+            logger.debug(f"🔐 Generating new RSA signer ({key_size} bits)")
 
         private_key_obj = rsa.generate_private_key(
             public_exponent=65537,
@@ -134,7 +135,8 @@ class RSASigner:
             format=serialization.PublicFormat.SubjectPublicKeyInfo,
         )
 
-        logger.debug(f"🔑 Derived RSA public key ({self.key_size} bits)")
+        if logger.is_debug_enabled():
+            logger.debug(f"🔑 Derived RSA public key ({self.key_size} bits)")
         return public_key_bytes.decode("utf-8")
 
     def sign(self, data: bytes) -> bytes:
@@ -152,7 +154,8 @@ class RSASigner:
         Raises:
             CryptoSignatureError: If signature generation fails
         """
-        logger.debug(f"🔏 Signing {len(data)} bytes with RSA-PSS")
+        if logger.is_debug_enabled():
+            logger.debug(f"🔏 Signing {len(data)} bytes with RSA-PSS")
 
         try:
             signature = self._private_key_obj.sign(
@@ -227,7 +230,8 @@ class RSAVerifier:
         Returns:
             bool: True if signature is valid, False otherwise
         """
-        logger.debug(f"🔍 Verifying RSA-PSS signature for {len(data)} bytes")
+        if logger.is_debug_enabled():
+            logger.debug(f"🔍 Verifying RSA-PSS signature for {len(data)} bytes")
 
         try:
             self._public_key_obj.verify(
@@ -241,7 +245,8 @@ class RSAVerifier:
             )
             return True
         except Exception as e:
-            logger.debug(f"❌ Invalid RSA-PSS signature: {e}")
+            if logger.is_debug_enabled():
+                logger.debug(f"❌ Invalid RSA-PSS signature: {e}")
             return False
 
 
