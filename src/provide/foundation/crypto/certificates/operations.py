@@ -188,7 +188,8 @@ def validate_signature(
         return True
 
     except Exception as e:
-        logger.debug(f"📜🔍❌ Signature validation failed: {type(e).__name__}: {e}")
+        if logger.is_debug_enabled():
+            logger.debug(f"📜🔍❌ Signature validation failed: {type(e).__name__}: {e}")
         return False
 
 
