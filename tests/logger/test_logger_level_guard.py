@@ -56,9 +56,7 @@ class TestFoundationLoggerEffectiveLevel(FoundationTestCase):
         mock_config.logging.default_level = "INFO"
 
         with patch("provide.foundation.logger.core.internal_setup", create=True):
-            with patch(
-                "provide.foundation.logger.setup.coordinator.internal_setup"
-            ):
+            with patch("provide.foundation.logger.setup.coordinator.internal_setup"):
                 try:
                     logger.setup(mock_config)
                 except Exception:
@@ -73,9 +71,7 @@ class TestFoundationLoggerEffectiveLevel(FoundationTestCase):
         mock_config = MagicMock()
         mock_config.logging.default_level = "DEBUG"
 
-        with patch(
-            "provide.foundation.logger.setup.coordinator.internal_setup"
-        ):
+        with patch("provide.foundation.logger.setup.coordinator.internal_setup"):
             try:
                 logger.setup(mock_config)
             except Exception:
@@ -90,9 +86,7 @@ class TestFoundationLoggerEffectiveLevel(FoundationTestCase):
         mock_config = MagicMock()
         mock_config.logging.default_level = "TRACE"
 
-        with patch(
-            "provide.foundation.logger.setup.coordinator.internal_setup"
-        ):
+        with patch("provide.foundation.logger.setup.coordinator.internal_setup"):
             try:
                 logger.setup(mock_config)
             except Exception:
