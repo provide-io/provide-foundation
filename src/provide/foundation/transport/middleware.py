@@ -285,14 +285,16 @@ class MiddlewarePipeline:
     def add(self, middleware: Middleware) -> None:
         """Add middleware to the pipeline."""
         self.middleware.append(middleware)
-        log.trace(f"Added middleware: {middleware.__class__.__name__}")
+        if log.is_trace_enabled():
+            log.trace(f"Added middleware: {middleware.__class__.__name__}")
 
     def remove(self, middleware_class: type[Middleware]) -> bool:
         """Remove middleware by class type."""
         for i, mw in enumerate(self.middleware):
             if isinstance(mw, middleware_class):
                 del self.middleware[i]
-                log.trace(f"Removed middleware: {middleware_class.__name__}")
+                if log.is_trace_enabled():
+                    log.trace(f"Removed middleware: {middleware_class.__name__}")
                 return True
         return False
 

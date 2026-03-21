@@ -40,7 +40,8 @@ class Request:
         try:
             return TransportType(scheme)
         except ValueError:
-            log.trace(f"Unknown scheme '{scheme}', defaulting to HTTP")
+            if log.is_trace_enabled():
+                log.trace(f"Unknown scheme '{scheme}', defaulting to HTTP")
             return TransportType.HTTP
 
     @property
