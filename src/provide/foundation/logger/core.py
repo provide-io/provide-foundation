@@ -275,6 +275,20 @@ class FoundationLogger:
         formatted_event = self._format_message_with_args(event, args)
         self._log_with_level("critical", formatted_event, **kwargs)
 
+    def is_debug_enabled(self) -> bool:
+        """Check if debug-level logging is enabled.
+
+        Use this to guard expensive argument construction::
+
+            if logger.is_debug_enabled():
+                logger.debug("result", payload=model.model_dump_json())
+        """
+        return self._effective_level <= _DEBUG_LEVEL
+
+    def is_trace_enabled(self) -> bool:
+        """Check if trace-level logging is enabled."""
+        return self._effective_level <= _TRACE_LEVEL
+
     def bind(self, **kwargs: Any) -> Any:
         """Create a new logger with additional context bound to it.
 
@@ -387,6 +401,14 @@ class GlobalLoggerProxy:
 
     def exception(self, event: str, *args: Any, **kwargs: Any) -> None:
         return get_global_logger().exception(event, *args, **kwargs)
+
+    def is_debug_enabled(self) -> bool:
+        """Check if debug-level logging is enabled."""
+        return get_global_logger().is_debug_enabled()
+
+    def is_trace_enabled(self) -> bool:
+        """Check if trace-level logging is enabled."""
+        return get_global_logger().is_trace_enabled()
 
     def __setattr__(self, name: str, value: Any) -> None:
         """Allow tests to set internal state on the underlying logger."""

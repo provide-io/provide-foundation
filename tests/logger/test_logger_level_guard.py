@@ -215,4 +215,66 @@ class TestGlobalLoggerProxyLevelGuard(FoundationTestCase):
         mock_logger.debug.assert_not_called()
 
 
+class TestIsDebugEnabled(FoundationTestCase):
+    """Test is_debug_enabled() and is_trace_enabled() on both classes."""
+
+    def test_foundation_logger_is_debug_enabled_at_debug(self) -> None:
+        logger = FoundationLogger()
+        logger._effective_level = 10  # DEBUG
+        assert logger.is_debug_enabled() is True
+
+    def test_foundation_logger_is_debug_enabled_at_info(self) -> None:
+        logger = FoundationLogger()
+        logger._effective_level = 20  # INFO
+        assert logger.is_debug_enabled() is False
+
+    def test_foundation_logger_is_debug_enabled_at_trace(self) -> None:
+        logger = FoundationLogger()
+        logger._effective_level = 5  # TRACE
+        assert logger.is_debug_enabled() is True
+
+    def test_foundation_logger_is_debug_enabled_unconfigured(self) -> None:
+        """Unconfigured (level 0) should return True — let everything through."""
+        logger = FoundationLogger()
+        assert logger._effective_level == 0
+        assert logger.is_debug_enabled() is True
+
+    def test_foundation_logger_is_trace_enabled_at_trace(self) -> None:
+        logger = FoundationLogger()
+        logger._effective_level = 5
+        assert logger.is_trace_enabled() is True
+
+    def test_foundation_logger_is_trace_enabled_at_debug(self) -> None:
+        logger = FoundationLogger()
+        logger._effective_level = 10
+        assert logger.is_trace_enabled() is False
+
+    def test_foundation_logger_is_trace_enabled_at_info(self) -> None:
+        logger = FoundationLogger()
+        logger._effective_level = 20
+        assert logger.is_trace_enabled() is False
+
+    def test_proxy_is_debug_enabled(self) -> None:
+        proxy = GlobalLoggerProxy()
+        mock_logger = MagicMock(spec=FoundationLogger)
+        mock_logger.is_debug_enabled.return_value = False
+
+        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
+            result = proxy.is_debug_enabled()
+
+        assert result is False
+        mock_logger.is_debug_enabled.assert_called_once()
+
+    def test_proxy_is_trace_enabled(self) -> None:
+        proxy = GlobalLoggerProxy()
+        mock_logger = MagicMock(spec=FoundationLogger)
+        mock_logger.is_trace_enabled.return_value = True
+
+        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
+            result = proxy.is_trace_enabled()
+
+        assert result is True
+        mock_logger.is_trace_enabled.assert_called_once()
+
+
 # 🧱🏗️🔚
