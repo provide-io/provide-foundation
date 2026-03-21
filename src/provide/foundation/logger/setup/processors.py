@@ -57,20 +57,29 @@ def _make_filtering_bound_logger_with_trace(level: int) -> type:
         if method_level < level:
             setattr(cls, method_name, _permissive_nop)
 
+    # --- Permissive no-op ---
+    # structlog's _nop requires a positional `event` arg, but Foundation
+    # callers sometimes pass only kwargs: ``log.debug(command="x")``.
+    # Replace all nop methods with a permissive version.
+    _standard_levels = {"debug": 10, "info": 20, "warning": 30, "error": 40, "critical": 50}
+
+    def _permissive_nop(*_args: Any, **_kw: Any) -> None:
+        return None
+
+    for method_name, method_level in _standard_levels.items():
+        if method_level < level:
+            setattr(cls, method_name, _permissive_nop)
+
     # --- .trace() ---
     if level <= _TRACE_LEVEL:
 
         def _trace(self: Any, event: Any, *args: Any, **kw: Any) -> Any:
             kw["_foundation_level_hint"] = "trace"
             return self.msg(event, *args, **kw)
-    else:
 
-        def _trace(*args: Any, **kw: Any) -> None:
-            return None
-
-        cls.trace = _trace
+        cls.trace = _trace  # type: ignore[attr-defined]
     else:
-        cls.trace = _permissive_nop
+        cls.trace = _permissive_nop  # type: ignore[attr-defined]
 
     # --- .is_debug_enabled() / .is_trace_enabled() ---
     # Baked in at class-creation time — zero overhead bool returns.
