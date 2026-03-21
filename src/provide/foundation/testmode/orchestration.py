@@ -260,6 +260,10 @@ def reset_foundation_state() -> None:
         except ImportError:
             pass
 
+        # Clear detection caches LAST — reset_streams_state() calls
+        # is_in_click_testing() which re-populates the cache during teardown.
+        reset_test_mode_cache()
+
 
 def reset_foundation_for_testing() -> None:
     """Complete Foundation reset for testing with transport re-registration.

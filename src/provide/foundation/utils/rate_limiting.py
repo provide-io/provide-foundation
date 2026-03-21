@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable
 import time
-from typing import final
+from typing import Any, final
 
 """Rate limiting utilities for Foundation.
 
@@ -26,11 +26,14 @@ class TokenBucketRateLimiter:
     at a constant rate. It is designed to be thread-safe using an asyncio.Lock.
     """
 
+    _UNSET: object = object()
+
     def __init__(
         self,
         capacity: float,
         refill_rate: float,
         time_source: Callable[[], float] | None = None,
+        logger: Any = _UNSET,
     ) -> None:
         """Initialize the TokenBucketRateLimiter.
 
@@ -40,6 +43,8 @@ class TokenBucketRateLimiter:
             refill_rate: The rate at which tokens are refilled per second.
             time_source: Optional callable that returns current time (for testing).
                         Defaults to time.monotonic.
+            logger: Optional logger instance. Pass ``None`` to suppress all logging.
+                    Omit (or pass sentinel) to auto-create from Foundation logger.
 
         """
         if capacity <= 0:
@@ -54,18 +59,24 @@ class TokenBucketRateLimiter:
         self._last_refill_timestamp: float = self._time_source()
         self._lock = asyncio.Lock()
 
-        # Cache logger instance to avoid repeated imports
-        self._logger = None
-        try:
-            from provide.foundation.logger import get_logger
+        # Resolve logger: None = suppress, _UNSET = auto-create, otherwise use provided
+        if logger is None:
+            self._logger = None
+        elif logger is not self._UNSET:
+            self._logger = logger
+        else:
+            # Auto-create (existing behavior)
+            self._logger = None
+            try:
+                from provide.foundation.logger import get_logger
 
-            self._logger = get_logger(__name__)
-            self._logger.debug(
-                f"🔩🗑️ TokenBucketRateLimiter initialized: capacity={capacity}, refill_rate={refill_rate}",
-            )
-        except ImportError:
-            # Fallback if logger not available
-            pass
+                self._logger = get_logger(__name__)
+                self._logger.debug(
+                    f"🔩🗑️ TokenBucketRateLimiter initialized: capacity={capacity}, refill_rate={refill_rate}",
+                )
+            except ImportError:
+                # Fallback if logger not available
+                pass
 
     async def _refill_tokens(self) -> None:
         """Refills tokens based on the elapsed time since the last refill.

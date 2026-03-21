@@ -55,7 +55,7 @@ class EventBus:
     def __init__(self) -> None:
         """Initialize empty event bus."""
         self._handlers: dict[str, list[weakref.ReferenceType[Callable[..., Any]]]] = {}
-        self._cleanup_threshold = 10  # Clean up after this many operations
+        self._cleanup_threshold = 100  # Clean up after this many operations
         self._operation_count = 0
         self._lock = threading.RLock()  # RLock for thread safety
         self._failed_handler_count = 0  # Track handler failures for monitoring
@@ -86,25 +86,30 @@ class EventBus:
             event: Event to emit
         """
         with self._lock:
-            if event.name not in self._handlers:
+            handlers = self._handlers.get(event.name)
+            if not handlers:
                 return
 
-            # Clean up dead references and call live handlers
-            live_handlers = []
-            for weak_handler in self._handlers[event.name]:
+            # Call live handlers, tracking if any are dead to avoid
+            # rebuilding the list when all references are alive.
+            has_dead = False
+            for weak_handler in handlers:
                 handler = weak_handler()
                 if handler is not None:
-                    live_handlers.append(weak_handler)
                     try:
                         handler(event)
                     except Exception as e:
-                        # Log error but continue processing other handlers
                         self._handle_handler_error(event, handler, e)
+                else:
+                    has_dead = True
 
-            # Update handler list with only live references
-            self._handlers[event.name] = live_handlers
+            # Only rebuild list if dead references were found
+            if has_dead:
+                self._handlers[event.name] = [
+                    wr for wr in handlers if wr() is not None
+                ]
 
-            # Periodic cleanup of all dead references
+            # Periodic cleanup of all dead references (less frequent)
             self._operation_count += 1
             if self._operation_count >= self._cleanup_threshold:
                 self._cleanup_dead_references()
@@ -171,17 +176,17 @@ class EventBus:
 
     def _cleanup_dead_references(self) -> None:
         """Clean up all dead weak references across all event types."""
-        for event_name in list(self._handlers.keys()):
-            live_handlers = []
-            for weak_handler in self._handlers[event_name]:
-                if weak_handler() is not None:
-                    live_handlers.append(weak_handler)
-
-            if live_handlers:
-                self._handlers[event_name] = live_handlers
-            else:
-                # Remove empty event lists
-                del self._handlers[event_name]
+        empty_events = []
+        for event_name, handlers in self._handlers.items():
+            # Check if any references are dead before rebuilding
+            if any(wr() is None for wr in handlers):
+                live = [wr for wr in handlers if wr() is not None]
+                if live:
+                    self._handlers[event_name] = live
+                else:
+                    empty_events.append(event_name)
+        for event_name in empty_events:
+            del self._handlers[event_name]
 
     def get_memory_stats(self) -> dict[str, Any]:
         """Get memory usage statistics for the event bus."""

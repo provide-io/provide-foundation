@@ -122,8 +122,9 @@ class TestCacheKeyGeneration:
         """Should generate cache key from content and format."""
         key = cache.get_cache_key('{"test": "data"}', "json")
 
-        assert key.startswith("json:")
-        assert len(key) > 6  # format + ':' + hash
+        assert isinstance(key, tuple)
+        assert key[0] == "json"
+        assert isinstance(key[1], int)
 
     def test_cache_key_deterministic(self) -> None:
         """Same content should generate same key."""
@@ -149,27 +150,26 @@ class TestCacheKeyGeneration:
         key2 = cache.get_cache_key(content, "toml")
 
         assert key1 != key2
-        assert key1.startswith("yaml:")
-        assert key2.startswith("toml:")
+        assert key1[0] == "yaml"
+        assert key2[0] == "toml"
 
     def test_cache_key_empty_content(self) -> None:
         """Should handle empty content."""
         key = cache.get_cache_key("", "json")
 
-        assert key.startswith("json:")
+        assert key[0] == "json"
 
     def test_cache_key_unicode_content(self) -> None:
         """Should handle Unicode content."""
         key = cache.get_cache_key('{"emoji": "🎉"}', "json")
 
-        assert key.startswith("json:")
+        assert key[0] == "json"
 
-    def test_cache_key_hash_length(self) -> None:
-        """Hash should be truncated to 16 characters."""
+    def test_cache_key_hashable(self) -> None:
+        """Cache key should be usable as a dictionary key."""
         key = cache.get_cache_key("test content", "json")
-        hash_part = key.split(":")[1]
-
-        assert len(hash_part) == 16
+        d = {key: "value"}
+        assert d[key] == "value"
 
 
 class TestCacheOperations:

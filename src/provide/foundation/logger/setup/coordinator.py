@@ -50,10 +50,10 @@ def format_foundation_log_message(
     Returns:
         Formatted log string
     """
-    import datetime
+    from datetime import datetime as _datetime
 
     # Format timestamp with microseconds
-    ct = datetime.datetime.fromtimestamp(timestamp)
+    ct = _datetime.fromtimestamp(timestamp)
     timestamp_str = ct.strftime("%Y-%m-%d %H:%M:%S.%f")
 
     # Lowercase level name with padding
@@ -164,18 +164,20 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
     log_level_threshold = get_foundation_log_level()
 
     # Create a filtering processor that respects FOUNDATION_LOG_LEVEL
+    # Pre-build the level map once in closure scope (not per-call)
+    _level_map = {
+        "debug": stdlib_logging.DEBUG,
+        "info": stdlib_logging.INFO,
+        "warning": stdlib_logging.WARNING,
+        "error": stdlib_logging.ERROR,
+        "critical": stdlib_logging.CRITICAL,
+        "trace": 5,  # TRACE level
+    }
+    _info_level = stdlib_logging.INFO
+
     def filter_by_foundation_level(logger: Any, method_name: str, event_dict: Any) -> Any:
         """Filter log entries by Foundation log level threshold."""
-        # Get numeric level for the current log method
-        level_map = {
-            "debug": stdlib_logging.DEBUG,
-            "info": stdlib_logging.INFO,
-            "warning": stdlib_logging.WARNING,
-            "error": stdlib_logging.ERROR,
-            "critical": stdlib_logging.CRITICAL,
-            "trace": 5,  # TRACE level
-        }
-        current_level = level_map.get(method_name, stdlib_logging.INFO)
+        current_level = _level_map.get(method_name, _info_level)
 
         # Drop the event if it's below the threshold
         if current_level < log_level_threshold:
@@ -187,16 +189,16 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
     is_tty = hasattr(foundation_stream, "isatty") and foundation_stream.isatty()
 
     # Create custom structlog processor that uses the shared formatter
+    import time as _time_module
+
     def shared_formatter_processor(logger: Any, method_name: str, event_dict: Any) -> str:
         """Structlog processor that uses the shared formatting function."""
-        import time
-
         # Get timestamp from event_dict or use current time
-        timestamp = event_dict.get("timestamp", time.time())
+        timestamp = event_dict.get("timestamp", _time_module.time())
         if isinstance(timestamp, str):
             # If timestamp is already formatted (from TimeStamper), parse it back
             # For simplicity, use current time
-            timestamp = time.time()
+            timestamp = _time_module.time()
 
         # Get level from event_dict
         level_name = event_dict.get("level", method_name).upper()
