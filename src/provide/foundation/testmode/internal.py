@@ -336,6 +336,17 @@ def _reset_direct_circuit_breaker_instances() -> None:
     - If called from an async context (running loop), the reset is skipped
       (it will be reset when called from sync context, e.g., during fixture teardown)
     """
+    import sys
+
+    # Fast path: skip the expensive gc.get_objects() scan entirely if the
+    # circuit breaker modules haven't even been imported. This avoids
+    # walking all Python objects on every test teardown.
+    if (
+        "provide.foundation.resilience.circuit_sync" not in sys.modules
+        and "provide.foundation.resilience.circuit_async" not in sys.modules
+    ):
+        return
+
     import asyncio
     import gc
 
@@ -345,6 +356,7 @@ def _reset_direct_circuit_breaker_instances() -> None:
         from provide.foundation.resilience.circuit_sync import SyncCircuitBreaker
 
         registry = get_hub()._component_registry
+        cb_types = (SyncCircuitBreaker, AsyncCircuitBreaker)
 
         # Get all decorator-tracked instances from registry
         decorator_tracked_ids = set()
@@ -354,44 +366,35 @@ def _reset_direct_circuit_breaker_instances() -> None:
                 if breaker:
                     decorator_tracked_ids.add(id(breaker))
 
-        # Find all CircuitBreaker instances in memory using garbage collector
-        # Only reset those NOT tracked by decorators (i.e., created directly)
+        # Use gc.get_referrers on the classes instead of scanning all objects.
+        # This is much faster than gc.get_objects() which returns every object
+        # in the Python heap.
+        seen = set()
         instances_found = 0
-        for obj in gc.get_objects():
-            if (
-                isinstance(obj, (SyncCircuitBreaker, AsyncCircuitBreaker))
-                and id(obj) not in decorator_tracked_ids
-            ):
-                try:
-                    # Only reset instances that are still alive and not tracked by decorators
-                    if obj is not None:
-                        # Reset each circuit breaker instance to clean state
-                        # Handle both sync (SyncCircuitBreaker) and async (AsyncCircuitBreaker)
-                        reset_result = obj.reset()
+        for cls in cb_types:
+            for referrer in gc.get_referrers(cls):
+                if isinstance(referrer, cls) and id(referrer) not in decorator_tracked_ids:
+                    if id(referrer) in seen:
+                        continue
+                    seen.add(id(referrer))
+                    try:
+                        reset_result = referrer.reset()
 
-                        # If reset() returns a coroutine (AsyncCircuitBreaker), run it
                         if asyncio.iscoroutine(reset_result):
-                            # Check if we're in an async context (running event loop)
                             try:
                                 asyncio.get_running_loop()
-                                # We're in an async context - can't block waiting for reset
-                                # Skip the reset now; it will happen when called from sync context
-                                reset_result.close()  # Clean up the coroutine
+                                reset_result.close()
                             except RuntimeError:
-                                # No running loop - safe to use asyncio.run()
                                 asyncio.run(reset_result)
 
                         instances_found += 1
-                except Exception:
-                    # Skip instances that can't be reset (might be in an inconsistent state)
-                    pass
+                    except Exception:
+                        pass
 
-        # Force garbage collection to clean up any dead references
         if instances_found > 0:
             gc.collect()
 
     except ImportError:
-        # Circuit breaker module not available, skip
         pass
 
 

@@ -56,22 +56,33 @@ def create_sanitization_processor(
         if not enabled:
             return event_dict
 
-        # Create a new dict to avoid modifying the original
-        sanitized = event_dict.copy()
+        # Avoid copying the dict unless we actually need to modify something.
+        # Most log messages contain no secrets, so this saves an allocation
+        # on every single log call.
+        sanitized = None
 
         # Sanitize dictionary values (headers, config, etc.)
         if sanitize_dicts:
-            for key, value in list(sanitized.items()):
+            for key, value in event_dict.items():
                 if isinstance(value, dict):
-                    sanitized[key] = sanitize_dict(value)
+                    new_value = sanitize_dict(value)
+                    if new_value is not value:
+                        if sanitized is None:
+                            sanitized = event_dict.copy()
+                        sanitized[key] = new_value
 
         # Mask secrets in string values
         if mask_patterns:
-            for key, value in list(sanitized.items()):
+            source = sanitized if sanitized is not None else event_dict
+            for key, value in source.items():
                 if isinstance(value, str):
-                    sanitized[key] = mask_secrets(value)
+                    masked_value = mask_secrets(value)
+                    if masked_value is not value:
+                        if sanitized is None:
+                            sanitized = event_dict.copy()
+                        sanitized[key] = masked_value
 
-        return sanitized
+        return sanitized if sanitized is not None else event_dict
 
     return sanitization_processor
 

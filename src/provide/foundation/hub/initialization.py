@@ -24,6 +24,24 @@ thread-safe state machine that uses the LockManager for coordination.
 """
 
 
+class _HubWrapper:
+    """Lightweight hub wrapper for logger initialization.
+
+    Defined once at module level to avoid creating a dynamic class
+    via type() on every initialization cycle.
+    """
+
+    __slots__ = ("_component_registry", "_foundation_config")
+
+    def __init__(self, registry: Any, config: Any) -> None:
+        self._component_registry = registry
+        self._foundation_config = config
+
+    def get_foundation_config(self) -> Any:
+        """Return the foundation config."""
+        return self._foundation_config
+
+
 class InitState(Enum):
     """Initialization states."""
 
@@ -294,9 +312,7 @@ class InitializationCoordinator:
         """Initialize logger instance."""
         from provide.foundation.logger.core import FoundationLogger
 
-        # Create hub wrapper for logger
-        hub_wrapper = type("HubWrapper", (), {"_component_registry": registry, "_foundation_config": config})()
-
+        hub_wrapper = _HubWrapper(registry, config)
         logger_instance = FoundationLogger(hub=hub_wrapper)
         logger_instance.setup(config)
 

@@ -90,6 +90,7 @@ def yaml_loads(s: str, *, use_cache: bool = True) -> Any:
         raise ImportError("PyYAML is required for YAML operations") from e
 
     # Check cache first if enabled
+    cache_key = None
     if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "yaml")
         cached = get_serialization_cache().get(cache_key)
@@ -101,9 +102,8 @@ def yaml_loads(s: str, *, use_cache: bool = True) -> Any:
     except yaml.YAMLError as e:
         raise ValidationError(f"Invalid YAML string: {e}") from e
 
-    # Cache result
-    if use_cache and get_cache_enabled():
-        cache_key = get_cache_key(s, "yaml")
+    # Cache result (reuse cache_key from above)
+    if cache_key is not None:
         get_serialization_cache().set(cache_key, result)
 
     return result

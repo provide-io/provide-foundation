@@ -72,6 +72,7 @@ def toml_loads(s: str, *, use_cache: bool = True) -> dict[str, Any]:
         raise ValidationError("Input must be a string")
 
     # Check cache first if enabled
+    cache_key = None
     if use_cache and get_cache_enabled():
         cache_key = get_cache_key(s, "toml")
         cached: dict[str, Any] | None = get_serialization_cache().get(cache_key)
@@ -83,9 +84,8 @@ def toml_loads(s: str, *, use_cache: bool = True) -> dict[str, Any]:
     except Exception as e:
         raise ValidationError(f"Invalid TOML string: {e}") from e
 
-    # Cache result
-    if use_cache and get_cache_enabled():
-        cache_key = get_cache_key(s, "toml")
+    # Cache result (reuse cache_key from above)
+    if cache_key is not None:
         get_serialization_cache().set(cache_key, result)
 
     return result

@@ -159,6 +159,46 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
         limiter = TokenBucketRateLimiter(capacity=1.0, refill_rate=1.0, time_source=self.get_time)
         assert limiter._logger is None
 
+    def test_logger_none_suppresses_logging(self) -> None:
+        """Test that passing logger=None suppresses all logging."""
+        limiter = TokenBucketRateLimiter(
+            capacity=1.0, refill_rate=1.0, time_source=self.get_time, logger=None,
+        )
+        assert limiter._logger is None
+
+    @pytest.mark.asyncio
+    async def test_logger_none_operations_work(self) -> None:
+        """Test that operations work correctly with logger=None."""
+        limiter = TokenBucketRateLimiter(
+            capacity=2.0, refill_rate=1.0, time_source=self.get_time, logger=None,
+        )
+        assert limiter._logger is None
+        # Operations should work without logging
+        assert await limiter.is_allowed() is True
+        assert await limiter.is_allowed() is True
+        assert await limiter.is_allowed() is False
+
+    def test_logger_custom_instance(self) -> None:
+        """Test that passing a custom logger uses it directly."""
+        from unittest.mock import MagicMock
+
+        custom_logger = MagicMock()
+        limiter = TokenBucketRateLimiter(
+            capacity=1.0, refill_rate=1.0, time_source=self.get_time, logger=custom_logger,
+        )
+        assert limiter._logger is custom_logger
+        # Custom logger should NOT have been called with init message
+        # (only auto-created loggers get the init debug message)
+        custom_logger.debug.assert_not_called()
+
+    def test_logger_omitted_auto_creates(self) -> None:
+        """Test that omitting logger parameter auto-creates from Foundation."""
+        limiter = TokenBucketRateLimiter(
+            capacity=1.0, refill_rate=1.0, time_source=self.get_time,
+        )
+        # Should auto-create a logger (existing behavior)
+        assert limiter._logger is not None
+
     @pytest.mark.asyncio
     async def test_very_long_wait_periods(self) -> None:
         """Test behavior after very long idle periods."""

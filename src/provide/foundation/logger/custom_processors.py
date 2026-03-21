@@ -10,7 +10,7 @@ from __future__ import annotations
 # custom_processors.py
 #
 import logging as stdlib_logging
-from typing import Any, Protocol
+from typing import Any, ClassVar, Protocol
 
 import structlog
 
@@ -65,6 +65,24 @@ def add_log_level_custom(
 
 
 class _LevelFilter:
+    # Fast lookup for lowercase level strings produced by add_log_level_custom.
+    # Avoids normalize_level() (upper+strip) and get_numeric_level() per message.
+    _FAST_LEVEL_LOOKUP: ClassVar[dict[str, int]] = {
+        "critical": stdlib_logging.CRITICAL,
+        "error": stdlib_logging.ERROR,
+        "warning": stdlib_logging.WARNING,
+        "info": stdlib_logging.INFO,
+        "debug": stdlib_logging.DEBUG,
+        "trace": TRACE_LEVEL_NUM,
+        # Also include uppercase variants to handle edge cases
+        "CRITICAL": stdlib_logging.CRITICAL,
+        "ERROR": stdlib_logging.ERROR,
+        "WARNING": stdlib_logging.WARNING,
+        "INFO": stdlib_logging.INFO,
+        "DEBUG": stdlib_logging.DEBUG,
+        "TRACE": TRACE_LEVEL_NUM,
+    }
+
     def __init__(
         self,
         default_level_str: LogLevelStr,
@@ -85,14 +103,18 @@ class _LevelFilter:
         event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
         logger_name: str = event_dict.get("logger_name", "unnamed_filter_target")
-        event_level_str_from_dict = str(event_dict.get("level", "info"))
+        event_level_str_from_dict = event_dict.get("level", "info")
 
-        # Normalize the level and get numeric value safely
-        normalized_level = normalize_level(event_level_str_from_dict)
-        event_num_level: int = get_numeric_level(
-            normalized_level,
-            fallback=DEFAULT_FALLBACK_NUMERIC,
-        )
+        # Fast path: direct lookup for common level strings (avoids normalize_level + get_numeric_level)
+        event_num_level = self._FAST_LEVEL_LOOKUP.get(event_level_str_from_dict)  # type: ignore[arg-type]
+        if event_num_level is None:
+            # Slow path: normalize and look up for unusual level strings
+            normalized_level = normalize_level(str(event_level_str_from_dict))
+            event_num_level = get_numeric_level(
+                normalized_level,
+                fallback=DEFAULT_FALLBACK_NUMERIC,
+            )
+
         threshold_num_level: int = self.default_numeric_level
         for path_prefix in self.sorted_module_paths:
             if logger_name.startswith(path_prefix):

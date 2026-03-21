@@ -130,10 +130,28 @@ def reset_event_enrichment_state() -> None:
 
 def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProcessor]:
     log_cfg = config.logging
+    has_otlp = bool(config.otlp_endpoint)
+
+    # Build the level filter once — used in either early or late position
+    level_filter = cast(
+        "StructlogProcessor",
+        filter_by_level_custom(
+            default_level_str=log_cfg.default_level,
+            module_levels=log_cfg.module_levels,
+            level_to_numeric_map=LEVEL_TO_NUMERIC,
+        ),
+    )
+
     processors: list[StructlogProcessor] = [
         structlog.contextvars.merge_contextvars,
         cast("StructlogProcessor", add_log_level_custom),
     ]
+
+    # When OTLP is NOT configured, place level filter early to skip
+    # TimeStamper/emoji/sanitization for filtered-out messages.
+    # When OTLP IS configured, filter is placed late so OTLP sees all levels.
+    if not has_otlp:
+        processors.append(level_filter)
 
     # Add timestamps, service name, and trace context early
     processors.extend(_config_create_timestamp_processors(log_cfg.omit_timestamp))
@@ -162,24 +180,15 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
 
     # Add OTLP processor AFTER enrichment but BEFORE level filtering
     # This ensures emoji-enriched logs are sent to OpenTelemetry/OpenObserve for ALL log levels
-    if config.otlp_endpoint:
+    if has_otlp:
         from provide.foundation.logger.processors.otlp import create_otlp_processor
 
         otlp_processor = create_otlp_processor(config)
         if otlp_processor is not None:
             processors.append(cast("StructlogProcessor", otlp_processor))
 
-    # Add level filter for console output (this doesn't affect OTLP which already processed logs)
-    processors.append(
-        cast(
-            "StructlogProcessor",
-            filter_by_level_custom(
-                default_level_str=log_cfg.default_level,
-                module_levels=log_cfg.module_levels,
-                level_to_numeric_map=LEVEL_TO_NUMERIC,
-            ),
-        )
-    )
+        # Level filter placed late when OTLP is active (doesn't affect OTLP export)
+        processors.append(level_filter)
 
     processors.extend(
         [

@@ -47,7 +47,7 @@ jobs:
       - name: 📦 Install provide-testkit
         run: |
           source .venv/bin/activate
-          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.1"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🎨 Run Ruff Linting
@@ -129,7 +129,7 @@ jobs:
           uv venv .venv
           source .venv/bin/activate
           uv pip install -e .
-          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.1"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🧪 Run Tests with Coverage
@@ -215,7 +215,7 @@ jobs:
           uv venv .venv
           .venv\Scripts\Activate.ps1
           uv pip install -e .
-          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.1"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🧪 Run Tests with Coverage (Windows)
@@ -278,7 +278,7 @@ jobs:
       - name: 📦 Install provide-testkit
         run: |
           source .venv/bin/activate
-          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.1"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🔍 Version Consistency Check
@@ -347,7 +347,7 @@ jobs:
       - name: 📦 Install provide-testkit
         run: |
           source .venv/bin/activate
-          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.1"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🧪 Run Integration Tests

@@ -6,7 +6,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import threading
 from typing import Any
 
@@ -86,19 +85,25 @@ CACHE_SIZE = get_cache_size
 serialization_cache = get_serialization_cache
 
 
-def get_cache_key(content: str, format: str) -> str:
+def get_cache_key(content: str, format: str) -> tuple[str, int]:
     """Generate cache key from content and format.
+
+    Uses a (format, hash) tuple as the key to avoid intermediate string
+    allocations. Python's built-in hash() is a single C-level operation
+    that returns an int — no encode(), no hexdigest(), no slicing.
+
+    Note: hash() is not stable across Python processes (PYTHONHASHSEED),
+    but that's fine for an in-process LRU cache.
 
     Args:
         content: String content to hash
         format: Format identifier (json, yaml, toml, etc.)
 
     Returns:
-        Cache key string
+        Cache key tuple
 
     """
-    content_hash = hashlib.sha256(content.encode()).hexdigest()[:16]
-    return f"{format}:{content_hash}"
+    return (format, hash(content))
 
 
 __all__ = [

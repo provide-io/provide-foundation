@@ -10,6 +10,7 @@ from __future__ import annotations
 # core.py
 #
 import contextlib
+import logging as _stdlib_logging
 from typing import TYPE_CHECKING, Any
 
 import structlog
@@ -26,6 +27,22 @@ if TYPE_CHECKING:
 
 _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress": False}
 
+# Numeric log levels for fast comparison in level guards.
+# Mirrors stdlib logging levels + custom TRACE.
+_LEVEL_TO_NUMERIC: dict[str, int] = {
+    "TRACE": 5,
+    "DEBUG": 10,
+    "INFO": 20,
+    "WARNING": 30,
+    "ERROR": 40,
+    "CRITICAL": 50,
+    "NOTSET": 0,
+}
+
+# Thresholds for guarded levels
+_DEBUG_LEVEL: int = _LEVEL_TO_NUMERIC["DEBUG"]  # 10
+_TRACE_LEVEL: int = _LEVEL_TO_NUMERIC["TRACE"]  # 5
+
 
 class FoundationLogger:
     """A `structlog`-based logger providing a standardized logging interface."""
@@ -37,6 +54,9 @@ class FoundationLogger:
         self._is_configured_by_setup: bool = False
         self._active_config: TelemetryConfig | None = None
         self._hub = hub  # Hub dependency for DI pattern
+        # Effective numeric level for fast short-circuit checks.
+        # 0 (NOTSET) means "not yet configured — let everything through".
+        self._effective_level: int = 0
 
     def setup(self, config: TelemetryConfig) -> None:
         """Setup the logger with configuration from Hub.
@@ -47,6 +67,12 @@ class FoundationLogger:
         """
         self._active_config = config
         self._is_configured_by_setup = True
+
+        # Cache the effective numeric level for fast short-circuit checks
+        self._effective_level = _LEVEL_TO_NUMERIC.get(
+            getattr(getattr(config, "logging", None), "default_level", "INFO"),
+            _stdlib_logging.INFO,
+        )
 
         # Run the internal setup process
         try:
@@ -332,9 +358,20 @@ class GlobalLoggerProxy:
     def __getattr__(self, name: str) -> Any:
         return getattr(get_global_logger(), name)
 
-    # Forward common logger methods to help mypy
+    # Forward common logger methods to help mypy.
+    # debug() and trace() have fast-path level guards to avoid entering
+    # structlog's processor pipeline when these levels are filtered out.
+    def trace(self, event: str, *args: Any, **kwargs: Any) -> None:
+        _logger = get_global_logger()
+        if _logger._effective_level > _TRACE_LEVEL:
+            return
+        _logger.trace(event, *args, **kwargs)
+
     def debug(self, event: str, *args: Any, **kwargs: Any) -> None:
-        return get_global_logger().debug(event, *args, **kwargs)
+        _logger = get_global_logger()
+        if _logger._effective_level > _DEBUG_LEVEL:
+            return
+        _logger.debug(event, *args, **kwargs)
 
     def info(self, event: str, *args: Any, **kwargs: Any) -> None:
         return get_global_logger().info(event, *args, **kwargs)

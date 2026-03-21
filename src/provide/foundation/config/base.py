@@ -15,6 +15,10 @@ from attrs import NOTHING, Attribute, define, field as attrs_field, fields
 
 from provide.foundation.config.types import ConfigDict, ConfigSource
 
+# Cache for field names per config class — attrs fields are constant after
+# class creation, so we avoid rebuilding the set on every from_data() call.
+_field_names_cache: dict[type, frozenset[str]] = {}
+
 __all__ = [
     "BaseConfig",
     "ConfigDict",
@@ -192,8 +196,12 @@ class BaseConfig:
             ValidationError: If validation fails
 
         """
-        # Filter data to only include fields defined in the class, excluding private fields
-        field_names = {f.name for f in fields(cls) if not f.name.startswith("_")}
+        # Filter data to only include fields defined in the class, excluding private fields.
+        # Field names are cached per class since attrs fields are constant.
+        field_names = _field_names_cache.get(cls)
+        if field_names is None:
+            field_names = frozenset(f.name for f in fields(cls) if not f.name.startswith("_"))
+            _field_names_cache[cls] = field_names
         filtered_data = {k: v for k, v in data.items() if k in field_names}
 
         # Create instance

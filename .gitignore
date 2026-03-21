@@ -416,3 +416,6 @@ docs/.shared-theme/
 # Bfiles artifacts
 bf-*.txt
 *.bf.txt
+
+# Memray output
+memray-output/

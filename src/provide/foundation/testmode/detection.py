@@ -23,6 +23,9 @@ and adjusting Foundation behavior accordingly.
 # Test mode doesn't change during runtime, so we can cache aggressively
 _test_mode_cache: bool | None = None
 
+# Cache for click testing detection — inspect.stack() is expensive
+_click_testing_cache: bool | None = None
+
 
 def _clear_test_mode_cache() -> None:
     """Clear the test mode detection cache.
@@ -30,8 +33,9 @@ def _clear_test_mode_cache() -> None:
     This is primarily for test isolation - allows tests to reset the cache
     when they need to test different detection scenarios.
     """
-    global _test_mode_cache
+    global _test_mode_cache, _click_testing_cache
     _test_mode_cache = None
+    _click_testing_cache = None
 
 
 def is_in_test_mode() -> bool:
@@ -89,15 +93,24 @@ def is_in_click_testing() -> bool:
     This detects Click's CliRunner testing context to prevent stream
     manipulation that could interfere with Click's output capture.
 
+    Results are cached to avoid expensive inspect.stack() calls on
+    every stream redirect. Cache is cleared via _clear_test_mode_cache().
+
     Returns:
         True if running in Click testing context, False otherwise
     """
+    global _click_testing_cache
+
+    if _click_testing_cache is not None:
+        return _click_testing_cache
+
     from provide.foundation.streams.config import get_stream_config
 
     config = get_stream_config()
 
-    # Check environment variables for Click testing
+    # Check environment variables for Click testing (fast path)
     if config.click_testing:
+        _click_testing_cache = True
         return True
 
     # Check the call stack for Click's testing module or CLI integration tests
@@ -106,6 +119,7 @@ def is_in_click_testing() -> bool:
         filename = frame_info.filename or ""
 
         if "click.testing" in module or "test_cli_integration" in filename:
+            _click_testing_cache = True
             return True
 
         # Also check for common Click testing patterns
@@ -113,8 +127,10 @@ def is_in_click_testing() -> bool:
         if locals_self is not None and hasattr(locals_self, "runner"):
             runner = locals_self.runner
             if hasattr(runner, "invoke") and "CliRunner" in str(type(runner)):
+                _click_testing_cache = True
                 return True
 
+    _click_testing_cache = False
     return False
 
 
