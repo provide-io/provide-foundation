@@ -373,19 +373,13 @@ class GlobalLoggerProxy:
         return getattr(get_global_logger(), name)
 
     # Forward common logger methods to help mypy.
-    # debug() and trace() have fast-path level guards to avoid entering
-    # structlog's processor pipeline when these levels are filtered out.
+    # FilteringBoundLogger makes methods below the configured level literal
+    # `return None` at the structlog layer — no proxy-level guards needed.
     def trace(self, event: str, *args: Any, **kwargs: Any) -> None:
-        _logger = get_global_logger()
-        if _logger._effective_level > _TRACE_LEVEL:
-            return
-        _logger.trace(event, *args, **kwargs)
+        return get_global_logger().trace(event, *args, **kwargs)
 
     def debug(self, event: str, *args: Any, **kwargs: Any) -> None:
-        _logger = get_global_logger()
-        if _logger._effective_level > _DEBUG_LEVEL:
-            return
-        _logger.debug(event, *args, **kwargs)
+        return get_global_logger().debug(event, *args, **kwargs)
 
     def info(self, event: str, *args: Any, **kwargs: Any) -> None:
         return get_global_logger().info(event, *args, **kwargs)
@@ -425,5 +419,23 @@ class GlobalLoggerProxy:
 
 # Global logger instance (now a proxy)
 logger = GlobalLoggerProxy()
+
+
+def is_debug_enabled() -> bool:
+    """Standalone check if debug-level logging is enabled.
+
+    Use to guard expensive argument construction::
+
+        from provide.foundation.logger import is_debug_enabled
+        if is_debug_enabled():
+            logger.debug("result", payload=model.model_dump_json())
+    """
+    return get_global_logger().is_debug_enabled()
+
+
+def is_trace_enabled() -> bool:
+    """Standalone check if trace-level logging is enabled."""
+    return get_global_logger().is_trace_enabled()
+
 
 # 🧱🏗️🔚

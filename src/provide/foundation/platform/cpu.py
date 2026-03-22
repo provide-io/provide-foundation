@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import platform
+from typing import Any
 
 from provide.foundation.logger import get_logger
 from provide.foundation.utils.caching import cached
@@ -23,17 +24,28 @@ Install with: uv add provide-foundation[platform]
 
 log = get_logger(__name__)
 
-# Try to import py-cpuinfo
-try:
-    import cpuinfo  # type: ignore[import-untyped]
+# Lazy-load py-cpuinfo on first use (~19ms saved at import time)
+_HAS_CPUINFO: bool | None = None
+_cpuinfo_module: Any = None
 
-    _HAS_CPUINFO = True
-except ImportError:
-    _HAS_CPUINFO = False
-    log.debug(
-        "py-cpuinfo not available, using basic CPU info from platform module",
-        hint="For detailed CPU info, install with: uv add provide-foundation[platform]",
-    )
+
+def _ensure_cpuinfo() -> bool:
+    """Lazy-load py-cpuinfo on first use."""
+    global _HAS_CPUINFO, _cpuinfo_module
+    if _HAS_CPUINFO is not None:
+        return _HAS_CPUINFO
+    try:
+        import cpuinfo  # type: ignore[import-untyped]
+
+        _cpuinfo_module = cpuinfo
+        _HAS_CPUINFO = True
+    except ImportError:
+        _HAS_CPUINFO = False
+        log.debug(
+            "py-cpuinfo not available, using basic CPU info from platform module",
+            hint="For detailed CPU info, install with: uv add provide-foundation[platform]",
+        )
+    return _HAS_CPUINFO
 
 
 @cached()
@@ -69,9 +81,9 @@ def get_cpu_info() -> dict[str, str | int | list[str] | None]:
         True
 
     """
-    if _HAS_CPUINFO:
+    if _ensure_cpuinfo():
         try:
-            info = cpuinfo.get_cpu_info() or {}
+            info = _cpuinfo_module.get_cpu_info() or {}
             if not isinstance(info, dict):
                 info = {}
             if not info.get("brand_raw") and not info.get("brand"):
@@ -209,7 +221,7 @@ def has_cpuinfo() -> bool:
         ...     pass
 
     """
-    return _HAS_CPUINFO
+    return _ensure_cpuinfo()
 
 
 __all__ = [

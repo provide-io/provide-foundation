@@ -254,9 +254,14 @@ def _register_command_func(
     func.__registry_dimension__ = ComponentCategory.COMMAND.value  # type: ignore[attr-defined]
     func.__registry_info__ = info  # type: ignore[attr-defined]
 
-    _log = get_foundation_logger()
-    if _log.is_trace_enabled():
-        _log.trace(f"Registered command: {full_name}")
+    try:
+        _log = get_foundation_logger()
+        if _log.is_trace_enabled():
+            _log.trace(f"Registered command: {full_name}")
+    except (AttributeError, Exception):
+        # During early initialization, the logger may be a raw structlog BoundLogger
+        # that doesn't have is_trace_enabled() — safe to skip trace logging
+        pass
 
     return func
 

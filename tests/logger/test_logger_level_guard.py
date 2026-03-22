@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-"""Tests for debug/trace level guards in GlobalLoggerProxy and FoundationLogger."""
+"""Tests for level guards, FilteringBoundLogger integration, and is_*_enabled helpers."""
 
 from __future__ import annotations
 
@@ -17,6 +17,8 @@ from provide.foundation.logger.core import (
     _TRACE_LEVEL,
     FoundationLogger,
     GlobalLoggerProxy,
+    is_debug_enabled,
+    is_trace_enabled,
 )
 
 
@@ -101,23 +103,40 @@ class TestFoundationLoggerEffectiveLevel(FoundationTestCase):
         assert logger._effective_level == 5  # TRACE
 
 
-class TestGlobalLoggerProxyLevelGuard(FoundationTestCase):
-    """Test that GlobalLoggerProxy.debug() and .trace() short-circuit when level is too high."""
+class TestGlobalLoggerProxyForwarding(FoundationTestCase):
+    """Test that GlobalLoggerProxy forwards all methods.
 
-    def test_debug_skipped_at_info_level(self) -> None:
-        """debug() should not call through when effective level is INFO (20)."""
+    With FilteringBoundLogger as wrapper_class, methods below the configured
+    level are literal ``return None`` at the structlog layer.  The proxy no
+    longer needs its own guards — it simply forwards to FoundationLogger.
+    """
+
+    def test_debug_always_forwarded(self) -> None:
+        """debug() should always forward (FilteringBoundLogger handles filtering)."""
         proxy = GlobalLoggerProxy()
 
         mock_logger = MagicMock(spec=FoundationLogger)
-        mock_logger._effective_level = 20  # INFO
+        mock_logger._effective_level = 20  # INFO — previously would have been skipped
 
         with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
-            proxy.debug("this should be skipped", key="value")
+            proxy.debug("this forwards now", key="value")
 
-        mock_logger.debug.assert_not_called()
+        mock_logger.debug.assert_called_once_with("this forwards now", key="value")
 
-    def test_debug_allowed_at_debug_level(self) -> None:
-        """debug() should call through when effective level is DEBUG (10)."""
+    def test_trace_always_forwarded(self) -> None:
+        """trace() should always forward (FilteringBoundLogger handles filtering)."""
+        proxy = GlobalLoggerProxy()
+
+        mock_logger = MagicMock(spec=FoundationLogger)
+        mock_logger._effective_level = 10  # DEBUG — previously would have been skipped
+
+        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
+            proxy.trace("this forwards now", extra="data")
+
+        mock_logger.trace.assert_called_once_with("this forwards now", extra="data")
+
+    def test_debug_forwarded_at_debug_level(self) -> None:
+        """debug() forwards when effective level is DEBUG."""
         proxy = GlobalLoggerProxy()
 
         mock_logger = MagicMock(spec=FoundationLogger)
@@ -128,56 +147,8 @@ class TestGlobalLoggerProxyLevelGuard(FoundationTestCase):
 
         mock_logger.debug.assert_called_once_with("this should pass", key="value")
 
-    def test_debug_allowed_at_trace_level(self) -> None:
-        """debug() should call through when effective level is TRACE (5)."""
-        proxy = GlobalLoggerProxy()
-
-        mock_logger = MagicMock(spec=FoundationLogger)
-        mock_logger._effective_level = 5  # TRACE
-
-        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
-            proxy.debug("this should pass")
-
-        mock_logger.debug.assert_called_once_with("this should pass")
-
-    def test_debug_allowed_at_notset_level(self) -> None:
-        """debug() should call through when effective level is 0 (unconfigured)."""
-        proxy = GlobalLoggerProxy()
-
-        mock_logger = MagicMock(spec=FoundationLogger)
-        mock_logger._effective_level = 0  # NOTSET / unconfigured
-
-        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
-            proxy.debug("unconfigured should pass")
-
-        mock_logger.debug.assert_called_once_with("unconfigured should pass")
-
-    def test_trace_skipped_at_debug_level(self) -> None:
-        """trace() should not call through when effective level is DEBUG (10)."""
-        proxy = GlobalLoggerProxy()
-
-        mock_logger = MagicMock(spec=FoundationLogger)
-        mock_logger._effective_level = 10  # DEBUG
-
-        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
-            proxy.trace("this should be skipped")
-
-        mock_logger.trace.assert_not_called()
-
-    def test_trace_skipped_at_info_level(self) -> None:
-        """trace() should not call through when effective level is INFO (20)."""
-        proxy = GlobalLoggerProxy()
-
-        mock_logger = MagicMock(spec=FoundationLogger)
-        mock_logger._effective_level = 20  # INFO
-
-        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
-            proxy.trace("this should be skipped")
-
-        mock_logger.trace.assert_not_called()
-
-    def test_trace_allowed_at_trace_level(self) -> None:
-        """trace() should call through when effective level is TRACE (5)."""
+    def test_trace_forwarded_at_trace_level(self) -> None:
+        """trace() forwards when effective level is TRACE."""
         proxy = GlobalLoggerProxy()
 
         mock_logger = MagicMock(spec=FoundationLogger)
@@ -199,20 +170,6 @@ class TestGlobalLoggerProxyLevelGuard(FoundationTestCase):
             proxy.info("always passes")
 
         mock_logger.info.assert_called_once_with("always passes")
-
-    def test_debug_skipped_avoids_arg_formatting(self) -> None:
-        """When debug is skipped, positional args should NOT be formatted."""
-        proxy = GlobalLoggerProxy()
-
-        mock_logger = MagicMock(spec=FoundationLogger)
-        mock_logger._effective_level = 20  # INFO
-
-        # If args were formatted, this would raise TypeError (wrong format specifiers)
-        # The fact it doesn't raise proves the guard works before any formatting
-        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
-            proxy.debug("message with %s and %d", "string", 42)
-
-        mock_logger.debug.assert_not_called()
 
 
 class TestIsDebugEnabled(FoundationTestCase):
@@ -275,6 +232,38 @@ class TestIsDebugEnabled(FoundationTestCase):
 
         assert result is True
         mock_logger.is_trace_enabled.assert_called_once()
+
+
+class TestStandaloneHelpers(FoundationTestCase):
+    """Test standalone is_debug_enabled() and is_trace_enabled() functions."""
+
+    def test_standalone_is_debug_enabled_true(self) -> None:
+        mock_logger = MagicMock(spec=FoundationLogger)
+        mock_logger.is_debug_enabled.return_value = True
+
+        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
+            assert is_debug_enabled() is True
+
+    def test_standalone_is_debug_enabled_false(self) -> None:
+        mock_logger = MagicMock(spec=FoundationLogger)
+        mock_logger.is_debug_enabled.return_value = False
+
+        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
+            assert is_debug_enabled() is False
+
+    def test_standalone_is_trace_enabled_true(self) -> None:
+        mock_logger = MagicMock(spec=FoundationLogger)
+        mock_logger.is_trace_enabled.return_value = True
+
+        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
+            assert is_trace_enabled() is True
+
+    def test_standalone_is_trace_enabled_false(self) -> None:
+        mock_logger = MagicMock(spec=FoundationLogger)
+        mock_logger.is_trace_enabled.return_value = False
+
+        with patch("provide.foundation.logger.core.get_global_logger", return_value=mock_logger):
+            assert is_trace_enabled() is False
 
 
 # 🧱🏗️🔚

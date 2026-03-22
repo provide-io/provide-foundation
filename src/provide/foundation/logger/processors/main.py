@@ -147,11 +147,10 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
         cast("StructlogProcessor", add_log_level_custom),
     ]
 
-    # When OTLP is NOT configured, place level filter early to skip
-    # TimeStamper/emoji/sanitization for filtered-out messages.
-    # When OTLP IS configured, filter is placed late so OTLP sees all levels.
-    if not has_otlp:
-        processors.append(level_filter)
+    # FilteringBoundLogger (wrapper_class) handles default-level filtering
+    # at zero cost — methods below the threshold are literal `return None`.
+    # _LevelFilter is placed late and handles per-module level overrides
+    # and trace-via-msg() filtering only.
 
     # Add timestamps, service name, and trace context early
     processors.extend(_config_create_timestamp_processors(log_cfg.omit_timestamp))
@@ -178,8 +177,9 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
     # Add event enrichment (emojis) BEFORE OTLP so enriched logs are exported
     processors.extend(_config_create_event_enrichment_processors(log_cfg))
 
-    # Add OTLP processor AFTER enrichment but BEFORE level filtering
-    # This ensures emoji-enriched logs are sent to OpenTelemetry/OpenObserve for ALL log levels
+    # Add OTLP processor AFTER enrichment
+    # OTLP respects FilteringBoundLogger's level — to export debug via OTLP,
+    # set default_level=DEBUG.
     if has_otlp:
         from provide.foundation.logger.processors.otlp import create_otlp_processor
 
@@ -187,8 +187,8 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
         if otlp_processor is not None:
             processors.append(cast("StructlogProcessor", otlp_processor))
 
-        # Level filter placed late when OTLP is active (doesn't affect OTLP export)
-        processors.append(level_filter)
+    # Level filter always late — handles per-module overrides and trace-via-msg()
+    processors.append(level_filter)
 
     processors.extend(
         [

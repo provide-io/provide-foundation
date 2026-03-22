@@ -122,6 +122,7 @@ def run(
             )
 
         log.debug(
+            "✅ Command completed",
             command=cmd_str,
             returncode=result.returncode,
         )

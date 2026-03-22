@@ -224,7 +224,10 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
             timestamp=timestamp, level_name=level_name, message=message, use_colors=is_tty
         )
 
-    # Configure structlog for core setup logger with shared formatting
+    # Configure structlog for core setup logger with shared formatting.
+    # Keep BoundLogger here (not FilteringBoundLogger) because the setup
+    # logger calls .trace() which doesn't exist on FilteringBoundLogger.
+    # Filtering is handled by the filter_by_foundation_level processor.
     structlog.configure(
         processors=[
             filter_by_foundation_level,
