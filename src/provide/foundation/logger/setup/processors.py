@@ -23,6 +23,47 @@ from provide.foundation.logger.processors import (
 Handles the assembly of structlog processor chains including emoji processing.
 """
 
+_TRACE_LEVEL: int = 5
+
+
+_DEBUG_LEVEL: int = 10
+
+
+def _make_filtering_bound_logger_with_trace(level: int) -> type:
+    """Create a FilteringBoundLogger class with Foundation extensions.
+
+    ``structlog.make_filtering_bound_logger`` only creates methods for standard
+    log levels (debug, info, warning, error, critical).  Foundation adds:
+
+    - ``.trace()`` — custom TRACE level (5) via ``msg()`` + level hint
+    - ``.is_debug_enabled()`` / ``.is_trace_enabled()`` — level-check helpers
+      that callers use to guard expensive argument construction
+    """
+    cls = structlog.make_filtering_bound_logger(level)
+
+    # --- .trace() ---
+    if level <= _TRACE_LEVEL:
+        def _trace(self: Any, event: Any, *args: Any, **kw: Any) -> Any:
+            kw["_foundation_level_hint"] = "trace"
+            return self.msg(event, *args, **kw)
+    else:
+        def _trace(*args: Any, **kw: Any) -> None:
+            return None
+
+    cls.trace = _trace  # type: ignore[attr-defined]
+
+    # --- .is_debug_enabled() / .is_trace_enabled() ---
+    # These are used by callers to guard expensive work (serialization, dumps)
+    # before calling logger.debug(...).  The level is baked in at class-creation
+    # time so these are simple bool returns — zero overhead.
+    _debug_ok = level <= _DEBUG_LEVEL
+    _trace_ok = level <= _TRACE_LEVEL
+
+    cls.is_debug_enabled = lambda self: _debug_ok  # type: ignore[attr-defined]
+    cls.is_trace_enabled = lambda self: _trace_ok  # type: ignore[attr-defined]
+
+    return cls
+
 
 def build_complete_processor_chain(
     config: TelemetryConfig,
@@ -43,12 +84,19 @@ def build_complete_processor_chain(
     return cast("list[Any]", core_processors + formatter_processors)
 
 
-def apply_structlog_configuration(processors: list[Any], log_stream: TextIO) -> None:
+def apply_structlog_configuration(
+    processors: list[Any], log_stream: TextIO, effective_level: int = 20
+) -> None:
     """Apply the processor configuration to structlog.
+
+    Uses ``structlog.make_filtering_bound_logger`` so that methods below
+    *effective_level* are literal ``return None`` — zero overhead, no
+    processor entry, no f-string evaluation needed.
 
     Args:
         processors: List of processors to configure
         log_stream: Output stream for logging
+        effective_level: Numeric log level threshold (default 20 / INFO)
 
     """
     # Check if force stream redirect is enabled (for testing)
@@ -61,7 +109,7 @@ def apply_structlog_configuration(processors: list[Any], log_stream: TextIO) -> 
     structlog.configure(
         processors=processors,
         logger_factory=structlog.PrintLoggerFactory(file=log_stream),
-        wrapper_class=cast("type[structlog.types.BindableLogger]", structlog.BoundLogger),
+        wrapper_class=_make_filtering_bound_logger_with_trace(effective_level),
         cache_logger_on_first_use=cache_loggers,
     )
 
@@ -77,8 +125,11 @@ def configure_structlog_output(
         log_stream: Output stream for logging
 
     """
+    from provide.foundation.logger.constants import LEVEL_TO_NUMERIC
+
     processors = build_complete_processor_chain(config, log_stream)
-    apply_structlog_configuration(processors, log_stream)
+    effective_level = LEVEL_TO_NUMERIC.get(config.logging.default_level, 20)
+    apply_structlog_configuration(processors, log_stream, effective_level)
 
 
 def handle_globally_disabled_setup() -> None:

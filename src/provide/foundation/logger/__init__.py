@@ -19,6 +19,10 @@ from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
+from provide.foundation.logger.core import (
+    is_debug_enabled,
+    is_trace_enabled,
+)
 
 """Foundation Telemetry Logger Sub-package.
 Re-exports key components related to logging functionality.
@@ -29,6 +33,8 @@ __all__ = [
     "LoggingConfig",
     "TelemetryConfig",
     "get_logger",
+    "is_debug_enabled",
+    "is_trace_enabled",
     "logger",
 ]
 

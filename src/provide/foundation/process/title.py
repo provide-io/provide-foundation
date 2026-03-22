@@ -6,6 +6,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from provide.foundation.logger import get_logger
 from provide.foundation.testmode.decorators import skip_in_test_mode
 
@@ -24,17 +26,28 @@ Install with: uv add provide-foundation[process]
 
 log = get_logger(__name__)
 
-# Try to import setproctitle
-try:
-    import setproctitle
+# Lazy-load setproctitle on first use (~10ms saved at import time)
+_HAS_SETPROCTITLE: bool | None = None
+_setproctitle_module: Any = None
 
-    _HAS_SETPROCTITLE = True
-except ImportError:
-    _HAS_SETPROCTITLE = False
-    log.debug(
-        "setproctitle not available, process title management disabled",
-        hint="Install with: uv add provide-foundation[process]",
-    )
+
+def _ensure_setproctitle() -> bool:
+    """Lazy-load setproctitle on first use."""
+    global _HAS_SETPROCTITLE, _setproctitle_module
+    if _HAS_SETPROCTITLE is not None:
+        return _HAS_SETPROCTITLE
+    try:
+        import setproctitle
+
+        _setproctitle_module = setproctitle
+        _HAS_SETPROCTITLE = True
+    except ImportError:
+        _HAS_SETPROCTITLE = False
+        log.debug(
+            "setproctitle not available, process title management disabled",
+            hint="Install with: uv add provide-foundation[process]",
+        )
+    return _HAS_SETPROCTITLE
 
 
 @skip_in_test_mode(return_value=True, reason="Process title changes interfere with test isolation")
@@ -62,7 +75,7 @@ def set_process_title(title: str) -> bool:
         >>> # Process will now show as "my-worker-process" in ps/top
 
     """
-    if not _HAS_SETPROCTITLE:
+    if not _ensure_setproctitle():
         log.debug(
             "Cannot set process title - setproctitle not available",
             title=title,
@@ -71,7 +84,7 @@ def set_process_title(title: str) -> bool:
         return False
 
     try:
-        setproctitle.setproctitle(title)
+        _setproctitle_module.setproctitle(title)
         log.debug("Process title set", title=title)
         return True
     except Exception as e:
@@ -98,11 +111,11 @@ def get_process_title() -> str | None:
         'my-process'
 
     """
-    if not _HAS_SETPROCTITLE:
+    if not _ensure_setproctitle():
         return None
 
     try:
-        return setproctitle.getproctitle()
+        return _setproctitle_module.getproctitle()
     except Exception as e:
         log.debug("Failed to get process title", error=str(e))
         return None
@@ -121,7 +134,7 @@ def has_setproctitle() -> bool:
         ...     pass
 
     """
-    return _HAS_SETPROCTITLE
+    return _ensure_setproctitle()
 
 
 @skip_in_test_mode(return_value=True, reason="Process title changes interfere with test isolation")
