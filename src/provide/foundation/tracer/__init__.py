@@ -29,15 +29,15 @@ OpenTelemetry imports are lazy-loaded on first access (~18ms saved at import tim
 """
 
 if TYPE_CHECKING:
-    from opentelemetry import trace as otel_trace
+    from opentelemetry import trace as otel_trace  # noqa: F401
     from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
-        OTLPSpanExporter as OTLPGrpcSpanExporter,
+        OTLPSpanExporter as OTLPGrpcSpanExporter,  # noqa: F401
     )
     from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
-        OTLPSpanExporter as OTLPHttpSpanExporter,
+        OTLPSpanExporter as OTLPHttpSpanExporter,  # noqa: F401
     )
-    from opentelemetry.sdk.trace import TracerProvider
-    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.sdk.trace import TracerProvider  # noqa: F401
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor  # noqa: F401
 
 # Lazy-load state for OpenTelemetry
 _otel_loaded: bool = False
@@ -62,13 +62,15 @@ def _ensure_otel_available() -> bool:
         from opentelemetry.sdk.trace import TracerProvider as _TP
         from opentelemetry.sdk.trace.export import BatchSpanProcessor as _BSP
 
-        _otel_cache.update({
-            "otel_trace": _trace,
-            "TracerProvider": _TP,
-            "BatchSpanProcessor": _BSP,
-            "OTLPGrpcSpanExporter": _GrpcExporter,
-            "OTLPHttpSpanExporter": _HttpExporter,
-        })
+        _otel_cache.update(
+            {
+                "otel_trace": _trace,
+                "TracerProvider": _TP,
+                "BatchSpanProcessor": _BSP,
+                "OTLPGrpcSpanExporter": _GrpcExporter,
+                "OTLPHttpSpanExporter": _HttpExporter,
+            }
+        )
         _otel_available = True
     except ImportError:
         _otel_available = False
@@ -80,8 +82,11 @@ def __getattr__(name: str) -> Any:
     if name == "_HAS_OTEL":
         return _ensure_otel_available()
     otel_names = {
-        "otel_trace", "TracerProvider", "BatchSpanProcessor",
-        "OTLPGrpcSpanExporter", "OTLPHttpSpanExporter",
+        "otel_trace",
+        "TracerProvider",
+        "BatchSpanProcessor",
+        "OTLPGrpcSpanExporter",
+        "OTLPHttpSpanExporter",
     }
     if name in otel_names:
         _ensure_otel_available()
@@ -91,8 +96,8 @@ def __getattr__(name: str) -> Any:
 
 __all__ = [
     "_HAS_OTEL",  # For internal use
-    "_ensure_otel_available",
     "Span",
+    "_ensure_otel_available",
     "get_current_span",
     "get_current_trace_id",
     "get_trace_context",

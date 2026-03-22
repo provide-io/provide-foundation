@@ -84,10 +84,10 @@ process = [
 ]
 # Convenience groups
 extended = [
-    "provide-foundation[platform,process]",
+    "provide-foundation[platform,process]>=0.3.21",
 ]
 all = [
-    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]",
+    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]>=0.3.21",
 ]
 
 [project.scripts]
