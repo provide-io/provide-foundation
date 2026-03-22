@@ -150,7 +150,7 @@ class TestCPUInfo(FoundationTestCase):
     def test_get_cpu_info_handles_cpuinfo_exception(self) -> None:
         """Test get_cpu_info handles exceptions from py-cpuinfo gracefully."""
         with patch("provide.foundation.platform.cpu._HAS_CPUINFO", True):
-            with patch("provide.foundation.platform.cpu.cpuinfo") as mock_cpuinfo:
+            with patch("provide.foundation.platform.cpu._cpuinfo_module") as mock_cpuinfo:
                 mock_cpuinfo.get_cpu_info = MagicMock(side_effect=RuntimeError("Test error"))
 
                 from provide.foundation.platform.cpu import get_cpu_info

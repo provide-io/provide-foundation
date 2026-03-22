@@ -39,23 +39,37 @@ def _make_filtering_bound_logger_with_trace(level: int) -> type:
     - ``.is_debug_enabled()`` / ``.is_trace_enabled()`` — level-check helpers
       that callers use to guard expensive argument construction
     """
-    cls = structlog.make_filtering_bound_logger(level)
+    # structlog only knows standard levels (10+).  TRACE (5) is Foundation's
+    # custom level routed through msg(), so clamp to DEBUG for structlog.
+    structlog_level = max(level, _DEBUG_LEVEL)
+    cls = structlog.make_filtering_bound_logger(structlog_level)
+
+    # --- Permissive no-op ---
+    # structlog's _nop requires a positional `event` arg, but Foundation
+    # callers sometimes pass only kwargs: ``log.debug(command="x")``.
+    # Replace all nop methods with a permissive version.
+    _standard_levels = {"debug": 10, "info": 20, "warning": 30, "error": 40, "critical": 50}
+
+    def _permissive_nop(*_args: Any, **_kw: Any) -> None:
+        return None
+
+    for method_name, method_level in _standard_levels.items():
+        if method_level < level:
+            setattr(cls, method_name, _permissive_nop)
 
     # --- .trace() ---
     if level <= _TRACE_LEVEL:
+
         def _trace(self: Any, event: Any, *args: Any, **kw: Any) -> Any:
             kw["_foundation_level_hint"] = "trace"
             return self.msg(event, *args, **kw)
-    else:
-        def _trace(*args: Any, **kw: Any) -> None:
-            return None
 
-    cls.trace = _trace  # type: ignore[attr-defined]
+        cls.trace = _trace  # type: ignore[attr-defined]
+    else:
+        cls.trace = _permissive_nop  # type: ignore[attr-defined]
 
     # --- .is_debug_enabled() / .is_trace_enabled() ---
-    # These are used by callers to guard expensive work (serialization, dumps)
-    # before calling logger.debug(...).  The level is baked in at class-creation
-    # time so these are simple bool returns — zero overhead.
+    # Baked in at class-creation time — zero overhead bool returns.
     _debug_ok = level <= _DEBUG_LEVEL
     _trace_ok = level <= _TRACE_LEVEL
 
@@ -129,6 +143,16 @@ def configure_structlog_output(
 
     processors = build_complete_processor_chain(config, log_stream)
     effective_level = LEVEL_TO_NUMERIC.get(config.logging.default_level, 20)
+
+    # FilteringBoundLogger must use the minimum of all configured levels so
+    # module-level overrides (e.g. auth=DEBUG when default=INFO) can reach
+    # the _LevelFilter processor which evaluates per-module thresholds.
+    if config.logging.module_levels:
+        for module_level_str in config.logging.module_levels.values():
+            module_numeric = LEVEL_TO_NUMERIC.get(module_level_str, 20)
+            if module_numeric < effective_level:
+                effective_level = module_numeric
+
     apply_structlog_configuration(processors, log_stream, effective_level)
 
 
