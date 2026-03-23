@@ -207,6 +207,7 @@ class AutoFlushHandler:
         if has_real_file:
             # Operation touches at least one real file - emit it
             log.info(
+                "✅ REAL FILE OPERATION - EMITTING",
                 operation_type=operation.operation_type.value,
                 primary_file=operation.primary_path.name,
                 event_count=len(operation.events),
@@ -259,6 +260,7 @@ class AutoFlushHandler:
             else:
                 # Event touches a real file - emit it
                 log.info(
+                    "  ✅ Emitting real file event",
                     file=event.path.name,
                     event_type=event.event_type,
                 )

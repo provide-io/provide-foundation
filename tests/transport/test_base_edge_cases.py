@@ -162,8 +162,8 @@ class TestTransportBaseEdgeCases(FoundationTestCase):
         """Test TransportBase creates logger correctly."""
         transport = self.MockTransport()
         assert transport._logger is not None
-        # Logger name should contain the class name somehow
-        assert hasattr(transport._logger, "name")
+        # Logger name should contain the class name in structlog context
+        assert "MockTransport" in str(transport._logger)
 
     async def test_transport_base_connect_default(self) -> None:
         """Test default connect implementation."""
