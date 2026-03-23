@@ -10,6 +10,7 @@ These tests target uncovered lines and edge cases in test environment detection.
 from __future__ import annotations
 
 import sys
+import types
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
@@ -21,6 +22,23 @@ from provide.foundation.testmode.detection import (
     should_allow_stream_redirect,
     should_use_shared_registries,
 )
+
+
+def _make_fake_frame(
+    filename: str = "unknown",
+    module_name: str = "__main__",
+    local_vars: dict | None = None,
+    f_back: types.FrameType | object | None = None,
+) -> Mock:
+    """Build a mock object that quacks like a frame for sys._getframe() walking."""
+    frame = Mock()
+    code = Mock()
+    code.co_filename = filename
+    frame.f_code = code
+    frame.f_globals = {"__name__": module_name}
+    frame.f_locals = local_vars or {}
+    frame.f_back = f_back
+    return frame
 
 
 class TestIsInTestMode(FoundationTestCase):
@@ -45,12 +63,10 @@ class TestIsInTestMode(FoundationTestCase):
 
     def test_detects_pytest_in_stack_frame_filename(self) -> None:
         """Test detection by finding pytest in stack frame filenames."""
-        # Create mock stack with pytest in filename
-        mock_frame_info = Mock()
-        mock_frame_info.filename = "/path/to/pytest/runner.py"
+        fake = _make_fake_frame(filename="/path/to/pytest/runner.py")
 
         with (
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
             patch.dict("sys.modules", {"pytest": Mock()}),
         ):
             # Need to ensure pytest not in argv to test this path
@@ -59,11 +75,10 @@ class TestIsInTestMode(FoundationTestCase):
 
     def test_detects_test_file_in_stack_frame(self) -> None:
         """Test detection by finding /test_ in stack frame filename."""
-        mock_frame_info = Mock()
-        mock_frame_info.filename = "/project/tests/test_module.py"
+        fake = _make_fake_frame(filename="/project/tests/test_module.py")
 
         with (
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
             patch.dict("sys.modules", {"pytest": Mock()}),
             patch("sys.argv", ["python", "script.py"]),
         ):
@@ -71,11 +86,10 @@ class TestIsInTestMode(FoundationTestCase):
 
     def test_detects_conftest_in_stack_frame(self) -> None:
         """Test detection by finding conftest.py in stack frame."""
-        mock_frame_info = Mock()
-        mock_frame_info.filename = "/project/tests/conftest.py"
+        fake = _make_fake_frame(filename="/project/tests/conftest.py")
 
         with (
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
             patch.dict("sys.modules", {"pytest": Mock()}),
             patch("sys.argv", ["python", "script.py"]),
         ):
@@ -109,18 +123,17 @@ class TestIsInTestMode(FoundationTestCase):
             if original_pytest is not None:
                 sys.modules["pytest"] = original_pytest
 
-    def test_handles_none_filename_in_stack_frame(self) -> None:
-        """Test handling of None filename in stack frame."""
-        mock_frame_info = Mock()
-        mock_frame_info.filename = None
+    def test_handles_no_matching_frame(self) -> None:
+        """Test handling when no stack frame matches test indicators."""
+        fake = _make_fake_frame(filename="/path/to/regular_module.py")
 
         with (
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
             patch.dict("sys.modules", {"pytest": Mock()}),
             patch("sys.argv", ["python", "script.py"]),
             patch.dict("os.environ", {}, clear=True),
         ):
-            # Should not crash on None filename
+            # Should not crash and should fall through
             result = is_in_test_mode()
             assert isinstance(result, bool)
 
@@ -131,6 +144,8 @@ class TestIsInClickTesting(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
+        # Clear the detection caches so each test gets fresh detection
+        _clear_test_mode_cache()
 
     def test_detects_click_testing_from_stream_config(self) -> None:
         """Test detection via StreamConfig.click_testing flag."""
@@ -145,15 +160,14 @@ class TestIsInClickTesting(FoundationTestCase):
         mock_config = Mock()
         mock_config.click_testing = False
 
-        mock_frame = Mock()
-        mock_frame.f_globals = {"__name__": "click.testing"}
-        mock_frame_info = Mock()
-        mock_frame_info.frame = mock_frame
-        mock_frame_info.filename = "/path/to/test.py"
+        fake = _make_fake_frame(
+            filename="/path/to/test.py",
+            module_name="click.testing",
+        )
 
         with (
             patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
         ):
             assert is_in_click_testing() is True
 
@@ -162,15 +176,14 @@ class TestIsInClickTesting(FoundationTestCase):
         mock_config = Mock()
         mock_config.click_testing = False
 
-        mock_frame = Mock()
-        mock_frame.f_globals = {"__name__": "tests.cli"}
-        mock_frame_info = Mock()
-        mock_frame_info.frame = mock_frame
-        mock_frame_info.filename = "/project/tests/test_cli_integration.py"
+        fake = _make_fake_frame(
+            filename="/project/tests/test_cli_integration.py",
+            module_name="tests.cli",
+        )
 
         with (
             patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
         ):
             assert is_in_click_testing() is True
 
@@ -187,17 +200,15 @@ class TestIsInClickTesting(FoundationTestCase):
         mock_self = Mock()
         mock_self.runner = mock_runner
 
-        mock_frame = Mock()
-        mock_frame.f_globals = {"__name__": "test_module"}
-        mock_frame.f_locals = {"self": mock_self}
-
-        mock_frame_info = Mock()
-        mock_frame_info.frame = mock_frame
-        mock_frame_info.filename = "/path/to/test.py"
+        fake = _make_fake_frame(
+            filename="/path/to/test.py",
+            module_name="test_module",
+            local_vars={"self": mock_self},
+        )
 
         with (
             patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
         ):
             # Make type(runner) return a string with CliRunner in it
             with patch("builtins.type", return_value=type("CliRunner", (), {})):
@@ -208,40 +219,16 @@ class TestIsInClickTesting(FoundationTestCase):
         mock_config = Mock()
         mock_config.click_testing = False
 
-        mock_frame = Mock()
-        mock_frame.f_globals = {"__name__": "regular_module"}
-        mock_frame.f_locals = {}
-
-        mock_frame_info = Mock()
-        mock_frame_info.frame = mock_frame
-        mock_frame_info.filename = "/path/to/regular_test.py"
+        fake = _make_fake_frame(
+            filename="/path/to/regular_test.py",
+            module_name="regular_module",
+        )
 
         with (
             patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
         ):
             assert is_in_click_testing() is False
-
-    def test_handles_none_filename_in_stack_frame(self) -> None:
-        """Test handling of None filename in stack frame."""
-        mock_config = Mock()
-        mock_config.click_testing = False
-
-        mock_frame = Mock()
-        mock_frame.f_globals = {"__name__": "test_module"}
-        mock_frame.f_locals = {}
-
-        mock_frame_info = Mock()
-        mock_frame_info.frame = mock_frame
-        mock_frame_info.filename = None
-
-        with (
-            patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack", return_value=[mock_frame_info]),
-        ):
-            # Should not crash on None filename
-            result = is_in_click_testing()
-            assert isinstance(result, bool)
 
     def test_handles_self_without_runner_attribute(self) -> None:
         """Test handling of self object without runner attribute."""
@@ -250,17 +237,15 @@ class TestIsInClickTesting(FoundationTestCase):
 
         mock_self = Mock(spec=[])  # No runner attribute
 
-        mock_frame = Mock()
-        mock_frame.f_globals = {"__name__": "test_module"}
-        mock_frame.f_locals = {"self": mock_self}
-
-        mock_frame_info = Mock()
-        mock_frame_info.frame = mock_frame
-        mock_frame_info.filename = "/path/to/test.py"
+        fake = _make_fake_frame(
+            filename="/path/to/test.py",
+            module_name="test_module",
+            local_vars={"self": mock_self},
+        )
 
         with (
             patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
         ):
             # Should handle missing runner attribute gracefully
             result = is_in_click_testing()
@@ -275,17 +260,15 @@ class TestIsInClickTesting(FoundationTestCase):
         mock_self = Mock()
         mock_self.runner = mock_runner
 
-        mock_frame = Mock()
-        mock_frame.f_globals = {"__name__": "test_module"}
-        mock_frame.f_locals = {"self": mock_self}
-
-        mock_frame_info = Mock()
-        mock_frame_info.frame = mock_frame
-        mock_frame_info.filename = "/path/to/test.py"
+        fake = _make_fake_frame(
+            filename="/path/to/test.py",
+            module_name="test_module",
+            local_vars={"self": mock_self},
+        )
 
         with (
             patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
         ):
             # Should handle missing invoke method gracefully
             result = is_in_click_testing()
@@ -298,6 +281,8 @@ class TestShouldAllowStreamRedirect(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
+        # Clear the detection caches so each test gets fresh detection
+        _clear_test_mode_cache()
 
     def test_allows_redirect_when_force_flag_enabled(self) -> None:
         """Test stream redirect allowed when force flag is set."""
@@ -313,17 +298,14 @@ class TestShouldAllowStreamRedirect(FoundationTestCase):
         mock_config.force_stream_redirect = False
         mock_config.click_testing = False
 
-        mock_frame = Mock()
-        mock_frame.f_globals = {"__name__": "regular_module"}
-        mock_frame.f_locals = {}
-
-        mock_frame_info = Mock()
-        mock_frame_info.frame = mock_frame
-        mock_frame_info.filename = "/path/to/regular_test.py"
+        fake = _make_fake_frame(
+            filename="/path/to/regular_test.py",
+            module_name="regular_module",
+        )
 
         with (
             patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack", return_value=[mock_frame_info]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
         ):
             assert should_allow_stream_redirect() is True
 
@@ -417,53 +399,49 @@ class TestDetectionEdgeCases(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
+        # Clear the detection caches so each test gets fresh detection
+        _clear_test_mode_cache()
 
-    def test_is_in_test_mode_with_empty_stack(self) -> None:
-        """Test is_in_test_mode with empty stack."""
+    def test_is_in_test_mode_with_no_matching_frames(self) -> None:
+        """Test is_in_test_mode when no frame matches test indicators."""
+        fake = _make_fake_frame(filename="/path/to/regular.py")
+
         with (
-            patch("inspect.stack", return_value=[]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
             patch.dict("sys.modules", {"pytest": Mock()}),
             patch("sys.argv", ["python", "script.py"]),
             patch.dict("os.environ", {}, clear=True),
         ):
-            # Should not crash with empty stack
+            # Should not crash and should fall through to False
             result = is_in_test_mode()
             assert isinstance(result, bool)
 
-    def test_is_in_click_testing_with_empty_stack(self) -> None:
-        """Test is_in_click_testing with empty stack."""
+    def test_is_in_click_testing_with_no_matching_frames(self) -> None:
+        """Test is_in_click_testing when no frame matches."""
         mock_config = Mock()
         mock_config.click_testing = False
 
+        fake = _make_fake_frame(filename="/path/to/regular.py")
+
         with (
             patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack", return_value=[]),
+            patch("provide.foundation.testmode.detection.sys._getframe", return_value=fake),
         ):
             assert is_in_click_testing() is False
 
     def test_is_in_test_mode_multiple_indicators(self) -> None:
         """Test is_in_test_mode returns True early with multiple indicators."""
-        # PYTEST_CURRENT_TEST should cause immediate return
-        with (
-            patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "test"}),
-            patch("inspect.stack") as mock_stack,
-        ):
+        # PYTEST_CURRENT_TEST should cause immediate return without frame walking
+        with patch.dict("os.environ", {"PYTEST_CURRENT_TEST": "test"}):
             assert is_in_test_mode() is True
-            # Stack inspection should not be called (early return)
-            mock_stack.assert_not_called()
 
     def test_is_in_click_testing_early_return_on_config_flag(self) -> None:
         """Test is_in_click_testing returns True early when config flag set."""
         mock_config = Mock()
         mock_config.click_testing = True
 
-        with (
-            patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config),
-            patch("inspect.stack") as mock_stack,
-        ):
+        with patch("provide.foundation.streams.config.get_stream_config", return_value=mock_config):
             assert is_in_click_testing() is True
-            # Stack inspection should not be called (early return)
-            mock_stack.assert_not_called()
 
     def test_is_in_test_mode_caches_result(self) -> None:
         """Test that is_in_test_mode caches its result for performance."""

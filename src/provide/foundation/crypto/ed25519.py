@@ -133,8 +133,7 @@ class Ed25519Signer:
                 code="CRYPTO_INVALID_PUBLIC_KEY_SIZE",
             )
 
-        if logger.is_debug_enabled():
-            logger.debug(f"🔑 Derived Ed25519 public key ({len(public_key_bytes)} bytes)")
+        logger.debug(f"🔑 Derived Ed25519 public key ({len(public_key_bytes)} bytes)")
         return public_key_bytes
 
     def sign(self, data: bytes) -> bytes:
@@ -149,8 +148,7 @@ class Ed25519Signer:
         Raises:
             CryptoSignatureError: If signature generation fails
         """
-        if logger.is_debug_enabled():
-            logger.debug(f"🔏 Signing {len(data)} bytes with Ed25519")
+        logger.debug(f"🔏 Signing {len(data)} bytes with Ed25519")
 
         signature = self._private_key_obj.sign(data)
 
@@ -223,15 +221,13 @@ class Ed25519Verifier:
             )
             return False
 
-        if logger.is_debug_enabled():
-            logger.debug(f"🔍 Verifying Ed25519 signature for {len(data)} bytes")
+        logger.debug(f"🔍 Verifying Ed25519 signature for {len(data)} bytes")
 
         try:
             self._public_key_obj.verify(signature, data)
             return True
         except Exception as e:
-            if logger.is_debug_enabled():
-                logger.debug(f"❌ Invalid Ed25519 signature: {e}")
+            logger.debug(f"❌ Invalid Ed25519 signature: {e}")
             return False
 
 

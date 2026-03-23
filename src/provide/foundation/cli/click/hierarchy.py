@@ -81,8 +81,7 @@ def ensure_parent_groups(parent_path: str, registry: Registry) -> None:
                 },
             )
 
-            if logger.is_debug_enabled():
-                logger.debug(f"Auto-created group: {group_path}")  # type: ignore[attr-defined]
+            logger.debug(f"Auto-created group: {group_path}")  # type: ignore[attr-defined]
 
 
 def create_subgroup(cmd_name: str, entry: Any, groups: dict[str, Group], root_group: Group) -> None:

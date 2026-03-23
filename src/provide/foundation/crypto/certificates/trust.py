@@ -62,8 +62,7 @@ def verify_trust(
         return True
 
     for trusted_cert in trust_chain:
-        if logger.is_debug_enabled():
-            logger.debug(f"📜🔍🔁 Checking signature against trusted cert S/N {trusted_cert.serial_number}")
+        logger.debug(f"📜🔍🔁 Checking signature against trusted cert S/N {trusted_cert.serial_number}")
         if validate_signature_wrapper(signed_cert=other_cert, signing_cert=trusted_cert):
             logger.debug(
                 "📜🔍✅ Trust verification succeeded: Signature validated against trusted cert",

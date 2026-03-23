@@ -67,15 +67,24 @@ def reset_time_machine_state() -> None:
 
 
 def reset_test_mode_cache() -> None:
-    """Reset test mode detection cache.
+    """Pin test mode cache to True; preserve click-testing cache.
 
-    This clears the cached test mode detection result, allowing fresh
-    detection on the next call. This is important for test isolation
-    when tests manipulate environment variables or sys.modules.
+    During a test run, test mode is always True.  Previous behavior
+    cleared both caches (setting them to None), which forced expensive
+    sys._getframe() walks (or worse, inspect.stack() + getmodule()) on
+    every subsequent Foundation re-initialization — ~17 GB of allocations
+    across 10K resets.
+
+    Now we pin ``_test_mode_cache = True`` so the fast-path cache hit
+    fires immediately, and leave ``_click_testing_cache`` untouched
+    because Click-testing status also doesn't change mid-run.
+
+    Tests that specifically need to exercise detection logic can call
+    ``_clear_test_mode_cache()`` directly from detection.py.
     """
-    from provide.foundation.testmode.detection import _clear_test_mode_cache
+    import provide.foundation.testmode.detection as _det
 
-    _clear_test_mode_cache()
+    _det._test_mode_cache = True
 
 
 def reset_structlog_state() -> None:
