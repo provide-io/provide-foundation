@@ -49,6 +49,9 @@ def verify_trust(
         f"against chain of S/N {cert.serial_number}",
     )
 
+    if other_cert in trust_chain:
+        return True
+
     if not other_cert.is_valid:
         logger.debug("📜🔍⚠️ Trust verification failed: Other certificate is not valid")
         return False
@@ -56,9 +59,6 @@ def verify_trust(
         raise CertificateError("Cannot verify trust: Other certificate has no public key")
 
     if cert == other_cert:
-        return True
-
-    if other_cert in trust_chain:
         return True
 
     for trusted_cert in trust_chain:
