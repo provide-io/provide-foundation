@@ -22,8 +22,8 @@ from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 
-# Default chunk size for file reading (8KB)
-DEFAULT_CHUNK_SIZE = 8192
+# Default chunk size for file reading (1MB)
+DEFAULT_CHUNK_SIZE = 1_048_576
 
 
 def hash_file(

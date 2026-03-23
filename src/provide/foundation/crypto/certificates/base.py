@@ -125,13 +125,11 @@ class CertificateBase:
             match config["key_type"]:
                 case KeyType.RSA:
                     key_size = config.get("key_size", DEFAULT_RSA_KEY_SIZE)
-                    if logger.is_debug_enabled():
-                        logger.debug(f"📜🔑🚀 Generating RSA key (size: {key_size})")
+                    logger.debug(f"📜🔑🚀 Generating RSA key (size: {key_size})")
                     private_key = rsa.generate_private_key(public_exponent=65537, key_size=key_size)
                 case KeyType.ECDSA:
                     curve_choice = config.get("curve", CurveType.SECP384R1)
-                    if logger.is_debug_enabled():
-                        logger.debug(f"📜🔑🚀 Generating ECDSA key (curve: {curve_choice})")
+                    logger.debug(f"📜🔑🚀 Generating ECDSA key (curve: {curve_choice})")
                     curve = getattr(ec, curve_choice.name)()
                     private_key = ec.generate_private_key(curve)
                 case _:
