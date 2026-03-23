@@ -14,8 +14,8 @@ Exit codes:
 
 from __future__ import annotations
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 EXCLUDED_PATTERNS = [
     ".venv/",
@@ -31,7 +31,7 @@ def is_nearly_empty(file_path: Path) -> bool:
     """Check if __init__.py is nearly empty (skip requirement)."""
     if file_path.name == "__init__.py":
         content = file_path.read_text()
-        lines = content.strip().split('\n')
+        lines = content.strip().split("\n")
         return len(lines) <= 3
     return False
 
@@ -39,10 +39,10 @@ def is_nearly_empty(file_path: Path) -> bool:
 def check_file_has_header(file_path: Path) -> bool:
     """Check if file has SPDX header in first 15 lines."""
     content = file_path.read_text()
-    lines = content.split('\n')[:15]
+    lines = content.split("\n")[:15]
 
-    has_copyright = any('SPDX-FileCopyrightText' in line for line in lines)
-    has_license = any('SPDX-License-Identifier: Apache-2.0' in line for line in lines)
+    has_copyright = any("SPDX-FileCopyrightText" in line for line in lines)
+    has_license = any("SPDX-License-Identifier: Apache-2.0" in line for line in lines)
 
     return has_copyright and has_license
 
@@ -55,10 +55,7 @@ def should_skip(file_path: Path) -> bool:
             return True
 
     # Skip nearly empty __init__.py files
-    if is_nearly_empty(file_path):
-        return True
-
-    return False
+    return bool(is_nearly_empty(file_path))
 
 
 def find_python_files(root: Path) -> list[Path]:
