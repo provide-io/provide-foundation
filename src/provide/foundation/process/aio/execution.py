@@ -353,6 +353,7 @@ async def async_run(
             check_process_success(process, cmd_str, capture_output, completed.stdout, completed.stderr, check)
 
             log.debug(
+                "✅ Async command completed",
                 command=cmd_str,
                 returncode=process.returncode,
             )
