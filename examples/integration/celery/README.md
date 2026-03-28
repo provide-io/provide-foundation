@@ -51,7 +51,6 @@ python examples/integration/celery/04_runner.py
 - Detailed transaction logging
 
 ### 2. **Report Generation with Progress** (`generate_report`)
-
 - Long-running task with progress tracking
 - Real-time status updates
 - Step-by-step execution logging

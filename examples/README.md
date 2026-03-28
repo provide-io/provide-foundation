@@ -121,7 +121,6 @@ All examples demonstrate these Foundation patterns:
 ## Documentation
 
 For complete API documentation, see:
-
-- [Foundation Documentation](https://github.com/provide-io/provide-foundation/tree/main/docs/)
-- [API Reference](https://github.com/provide-io/provide-foundation/tree/main/docs/reference/)
-- [How-To Guides](https://github.com/provide-io/provide-foundation/tree/main/docs/how-to-guides/)
+- [Foundation Documentation](../docs/)
+- [API Reference](../docs/reference/)
+- [How-To Guides](../docs/how-to-guides/)
