@@ -135,6 +135,8 @@ def is_in_click_testing() -> bool:
                 _click_testing_cache = True
                 return True
 
+        cur_frame = cur_frame.f_back
+
     _click_testing_cache = False
     return False
 
