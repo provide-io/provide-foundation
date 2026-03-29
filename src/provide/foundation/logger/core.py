@@ -329,12 +329,6 @@ class FoundationLogger:
         log = self.get_logger()
         return log.try_unbind(*keys)
 
-    def __setattr__(self, name: str, value: Any) -> None:
-        """Override setattr to prevent accidental modification of logger state."""
-        if hasattr(self, name) and name.startswith("_"):
-            super().__setattr__(name, value)
-        else:
-            super().__setattr__(name, value)
 
 
 # Global logger function - gets logger through Hub
