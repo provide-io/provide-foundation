@@ -91,16 +91,16 @@ all = [
 ]
 
 [project.scripts]
-foundation = "provide.foundation.cli.main:cli [cli]"
+foundation = "provide.foundation.cli.main:cli"
 
 [dependency-groups]
 dev = [
-    "provide-testkit[advanced-testing,build,standard,typecheck,utils] @ git+https://github.com/provide-io/provide-testkit.git@main",
+    "provide-testkit[advanced-testing,build,standard,typecheck,utils] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.28",
     "memray>=1.0",
     "wrknv @ git+https://github.com/provide-io/wrknv.git@main",
 ]
 docs = [
-    "provide-testkit[docs] @ git+https://github.com/provide-io/provide-testkit.git@main",
+    "provide-testkit[docs] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.28",
 ]
 protobuf = [
     "protobuf>=6.32.0",
