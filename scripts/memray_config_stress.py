@@ -27,10 +27,11 @@ def warmup() -> None:
 
 def run_stress() -> None:
     """Run the config stress test."""
+    from provide.testkit import reset_foundation_setup_for_testing, set_log_stream_for_testing
+
     from provide.foundation import LoggingConfig, TelemetryConfig, get_hub
     from provide.foundation.utils.environment import EnvPrefix
     from provide.foundation.utils.environment.parsers import parse_duration, parse_size
-    from provide.testkit import reset_foundation_setup_for_testing, set_log_stream_for_testing
 
     # Phase 1: parse_duration() — 10K calls with mixed cached/uncached inputs
     duration_count = 10_000

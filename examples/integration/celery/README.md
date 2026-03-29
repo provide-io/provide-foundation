@@ -48,7 +48,7 @@ python examples/integration/celery/04_runner.py
 - Transient error handling
 - Detailed transaction logging
 
-### 2. **Report Generation with Progress** (`generate_report`) 
+### 2. **Report Generation with Progress** (`generate_report`)
 - Long-running task with progress tracking
 - Real-time status updates
 - Step-by-step execution logging
@@ -90,7 +90,7 @@ All task operations produce structured JSON logs with rich context:
 ```json
 {
   "timestamp": "2024-01-15T10:30:45.123456Z",
-  "level": "info", 
+  "level": "info",
   "event": "task_completed",
   "task_id": "abc123",
   "task_name": "process_payment",

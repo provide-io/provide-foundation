@@ -114,9 +114,11 @@ class ManagedProcess:
         return self._process.poll() is None
 
     @resilient(
-        error_mapper=lambda e: ProcessError(f"Failed to launch process: {e}")
-        if not isinstance(e, (ProcessError, StateError))
-        else e,
+        error_mapper=lambda e: (
+            ProcessError(f"Failed to launch process: {e}")
+            if not isinstance(e, (ProcessError, StateError))
+            else e
+        ),
     )
     def launch(self) -> None:
         """Launch the managed process.

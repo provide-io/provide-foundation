@@ -35,7 +35,7 @@ def _ensure_cpuinfo() -> bool:
     if _HAS_CPUINFO is not None:
         return _HAS_CPUINFO
     try:
-        import cpuinfo  # type: ignore[import-untyped]
+        import cpuinfo
 
         _cpuinfo_module = cpuinfo
         _HAS_CPUINFO = True

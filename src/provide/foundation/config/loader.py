@@ -98,13 +98,15 @@ class FileConfigLoader(ConfigLoader):
 
     @resilient(
         context_provider=lambda: {"loader": FileConfigLoader},
-        error_mapper=lambda e: ConfigurationError(
-            f"Failed to load configuration: {e}",
-            code="CONFIG_LOAD_ERROR",
-            cause=e,
-        )
-        if not isinstance(e, ConfigurationError | NotFoundError)
-        else e,
+        error_mapper=lambda e: (
+            ConfigurationError(
+                f"Failed to load configuration: {e}",
+                code="CONFIG_LOAD_ERROR",
+                cause=e,
+            )
+            if not isinstance(e, ConfigurationError | NotFoundError)
+            else e
+        ),
     )
     def load(self, config_class: type[T]) -> T:
         """Load configuration from file."""

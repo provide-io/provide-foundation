@@ -11,6 +11,7 @@ from __future__ import annotations
 #
 import os
 import sys
+from types import FrameType
 
 """Test Mode Detection for Foundation.
 
@@ -71,13 +72,13 @@ def is_in_test_mode() -> bool:
         # Last resort: Walk the call stack via sys._getframe() which is much
         # cheaper than inspect.stack() (avoids inspect.getmodule() and source
         # context lookup per frame).
-        frame = sys._getframe()
-        while frame is not None:
-            filename = frame.f_code.co_filename
+        cur_frame: FrameType | None = sys._getframe()
+        while cur_frame is not None:
+            filename = cur_frame.f_code.co_filename
             if "pytest" in filename or "/test_" in filename or "conftest.py" in filename:
                 _test_mode_cache = True
                 return True
-            frame = frame.f_back
+            cur_frame = cur_frame.f_back
 
     # Check for unittest runner in active execution (FAST)
     if "unittest" in sys.modules and any("unittest" in arg for arg in sys.argv):
@@ -117,24 +118,24 @@ def is_in_click_testing() -> bool:
 
     # Walk the call stack via sys._getframe() — avoids the overhead of
     # inspect.stack() (no getmodule() / source context per frame).
-    frame = sys._getframe()
-    while frame is not None:
-        module = frame.f_globals.get("__name__", "")
-        filename = frame.f_code.co_filename
+    cur_frame: FrameType | None = sys._getframe()
+    while cur_frame is not None:
+        module = cur_frame.f_globals.get("__name__", "")
+        filename = cur_frame.f_code.co_filename
 
         if "click.testing" in module or "test_cli_integration" in filename:
             _click_testing_cache = True
             return True
 
         # Also check for common Click testing patterns
-        locals_self = frame.f_locals.get("self")
+        locals_self = cur_frame.f_locals.get("self")
         if locals_self is not None and hasattr(locals_self, "runner"):
             runner = locals_self.runner
             if hasattr(runner, "invoke") and "CliRunner" in str(type(runner)):
                 _click_testing_cache = True
                 return True
 
-        frame = frame.f_back
+        cur_frame = cur_frame.f_back
 
     _click_testing_cache = False
     return False

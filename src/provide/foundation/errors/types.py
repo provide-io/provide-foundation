@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from attrs import define, field
@@ -20,7 +20,7 @@ Provides error codes, metadata structures, and retry policies.
 """
 
 
-class ErrorCode(str, Enum):
+class ErrorCode(StrEnum):
     """Standard error codes for programmatic error handling.
 
     Use these codes for consistent error identification across the system.
