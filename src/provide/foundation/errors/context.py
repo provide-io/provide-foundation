@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from attrs import define, field
@@ -19,7 +19,7 @@ monitoring, and diagnostic purposes.
 """
 
 
-class ErrorSeverity(str, Enum):
+class ErrorSeverity(StrEnum):
     """Error severity levels for prioritization and alerting."""
 
     LOW = "low"
@@ -28,7 +28,7 @@ class ErrorSeverity(str, Enum):
     CRITICAL = "critical"
 
 
-class ErrorCategory(str, Enum):
+class ErrorCategory(StrEnum):
     """Error categorization for routing and handling."""
 
     USER = "user"  # User error (bad input, etc.)

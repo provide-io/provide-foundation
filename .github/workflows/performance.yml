@@ -90,11 +90,11 @@ jobs:
                 const pytestResults = JSON.parse(fs.readFileSync('pytest-benchmark-results.json', 'utf8'));
                 const fastestTest = pytestResults.benchmarks?.[0];
                 const slowestTest = pytestResults.benchmarks?.[pytestResults.benchmarks.length - 1];
-                
+
                 if (fastestTest && slowestTest) {
                   pytestBenchmarks = `
               ## 📊 pytest-benchmark Results
-              
+
               | Test | Ops/Sec | Mean Time |
               |------|---------|-----------|
               | Fastest: ${fastestTest.name} | ${Math.round(fastestTest.stats.ops)} | ${(fastestTest.stats.mean * 1000000).toFixed(1)}μs |
@@ -112,10 +112,10 @@ jobs:
               | Basic Logging | ${Math.round(basicThroughput)} msg/sec | ${basicThroughput > 1000 ? '✅' : '❌'} |
               | JSON Formatting | ${Math.round(jsonThroughput)} msg/sec | ${jsonThroughput > 500 ? '✅' : '❌'} |
               | Multithreaded | ${Math.round(multiThroughput)} msg/sec | ${multiThroughput > 1000 ? '✅' : '❌'} |
-              
+
               **Performance Targets**: Basic >1000 msg/sec, JSON >500 msg/sec, Multithreaded >1000 msg/sec
               ${pytestBenchmarks}
-              
+
               📈 **Result**: All performance targets met with substantial headroom!`;
 
               github.rest.issues.createComment({

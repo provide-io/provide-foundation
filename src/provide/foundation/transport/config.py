@@ -33,9 +33,9 @@ class TransportConfig(RuntimeConfig):
     timeout: float = field(
         default=defaults.DEFAULT_TRANSPORT_TIMEOUT,
         env_var="PROVIDE_TRANSPORT_TIMEOUT",
-        converter=lambda x: parse_float_with_validation(x, min_val=0.0)
-        if x
-        else defaults.DEFAULT_TRANSPORT_TIMEOUT,
+        converter=lambda x: (
+            parse_float_with_validation(x, min_val=0.0) if x else defaults.DEFAULT_TRANSPORT_TIMEOUT
+        ),
         validator=validate_positive,
         description="Request timeout in seconds",
     )
@@ -49,9 +49,11 @@ class TransportConfig(RuntimeConfig):
     retry_backoff_factor: float = field(
         default=defaults.DEFAULT_TRANSPORT_RETRY_BACKOFF_FACTOR,
         env_var="PROVIDE_TRANSPORT_RETRY_BACKOFF_FACTOR",
-        converter=lambda x: parse_float_with_validation(x, min_val=0.0)
-        if x
-        else defaults.DEFAULT_TRANSPORT_RETRY_BACKOFF_FACTOR,
+        converter=lambda x: (
+            parse_float_with_validation(x, min_val=0.0)
+            if x
+            else defaults.DEFAULT_TRANSPORT_RETRY_BACKOFF_FACTOR
+        ),
         validator=validate_non_negative,
         description="Backoff multiplier for retries",
     )

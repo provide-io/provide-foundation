@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import Enum, StrEnum
 
 """Type definitions for resilience patterns."""
 
@@ -19,7 +19,7 @@ class CircuitState(Enum):
     HALF_OPEN = "half_open"  # Testing if service has recovered
 
 
-class BackoffStrategy(str, Enum):
+class BackoffStrategy(StrEnum):
     """Backoff strategies for retry delays."""
 
     FIXED = "fixed"  # Same delay every time

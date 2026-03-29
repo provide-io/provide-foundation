@@ -78,13 +78,15 @@ class CoreHub:
 
     @resilient(
         context_provider=lambda: {"hub": "add_component"},
-        error_mapper=lambda e: ValidationError(
-            f"Failed to add component: {e}",
-            code="HUB_COMPONENT_ADD_ERROR",
-            cause=e,
-        )
-        if not isinstance(e, AlreadyExistsError | ValidationError)
-        else e,
+        error_mapper=lambda e: (
+            ValidationError(
+                f"Failed to add component: {e}",
+                code="HUB_COMPONENT_ADD_ERROR",
+                cause=e,
+            )
+            if not isinstance(e, AlreadyExistsError | ValidationError)
+            else e
+        ),
     )
     def add_component(
         self,

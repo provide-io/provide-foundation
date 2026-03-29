@@ -6,7 +6,7 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any, TypeAlias
 
 """Transport type definitions and enums."""
@@ -16,7 +16,7 @@ Params: TypeAlias = dict[str, Any]
 Data: TypeAlias = dict[str, Any] | bytes | str | None
 
 
-class TransportType(str, Enum):
+class TransportType(StrEnum):
     """Supported transport types."""
 
     HTTP = "http"
@@ -29,7 +29,7 @@ class TransportType(str, Enum):
     MQTT = "mqtt"
 
 
-class HTTPMethod(str, Enum):
+class HTTPMethod(StrEnum):
     """HTTP methods."""
 
     GET = "GET"

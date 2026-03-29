@@ -64,19 +64,19 @@ def _make_filtering_bound_logger_with_trace(level: int) -> type:
             kw["_foundation_level_hint"] = "trace"
             return self.msg(event, *args, **kw)
 
-        cls.trace = _trace  # type: ignore[attr-defined]
+        cls.trace = _trace
     else:
-        cls.trace = _permissive_nop  # type: ignore[attr-defined]
+        cls.trace = _permissive_nop
 
     # --- .is_debug_enabled() / .is_trace_enabled() ---
     # Baked in at class-creation time — zero overhead bool returns.
     _debug_ok = level <= _DEBUG_LEVEL
     _trace_ok = level <= _TRACE_LEVEL
 
-    cls.is_debug_enabled = lambda self: _debug_ok  # type: ignore[attr-defined]
-    cls.is_trace_enabled = lambda self: _trace_ok  # type: ignore[attr-defined]
+    cls.is_debug_enabled = lambda self: _debug_ok
+    cls.is_trace_enabled = lambda self: _trace_ok
 
-    return cls
+    return cast(type, cls)
 
 
 def build_complete_processor_chain(

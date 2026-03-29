@@ -115,7 +115,7 @@ def get_process_title() -> str | None:
         return None
 
     try:
-        return _setproctitle_module.getproctitle()
+        return str(_setproctitle_module.getproctitle())
     except Exception as e:
         log.debug("Failed to get process title", error=str(e))
         return None
