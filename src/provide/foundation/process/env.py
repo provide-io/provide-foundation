@@ -64,6 +64,17 @@ SAFE_ENV_ALLOWLIST = {
     # Platform identifiers
     "OS",
     "OSTYPE",
+    # Windows system variables required for Python runtime to function
+    # Without SYSTEMROOT, the Python C runtime cannot find Windows DLLs,
+    # causing cryptic failures (e.g., NameError in asyncio.__init__) when
+    # .pth files trigger imports that transitively reach asyncio.
+    "SYSTEMROOT",
+    "SYSTEMDRIVE",
+    "APPDATA",
+    "LOCALAPPDATA",
+    "USERPROFILE",
+    "WINDIR",
+    "COMSPEC",
 }
 
 # Sensitive patterns in environment variable names
