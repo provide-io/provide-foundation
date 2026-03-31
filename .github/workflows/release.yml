@@ -1,64 +1,152 @@
-name: 🚀 Release
+name: Release
 
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
-    inputs:
-      publish-testpypi:
-        description: 'Publish to TestPyPI'
-        type: boolean
-        default: false
 
 permissions:
   contents: write
   id-token: write
 
 jobs:
-  release:
-    uses: provide-io/ci-tooling/.github/workflows/python-release.yml@main
-    with:
-      python-version: '3.11'
-      run-tests: true
-    secrets: inherit
+  # ── Build & Test ──────────────────────────────────────────────
+  build:
+    name: Build & Test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Setup uv + Python
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run tests
+        run: uv run pytest --no-header -q
+
+      - name: Build distributions
+        run: uv run python -m build
+
+      - name: Check distributions
+        run: uv run twine check dist/*
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Generate SBOM
+        run: uv run cyclonedx-bom -o sbom.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+
+  # ── Publish to TestPyPI ───────────────────────────────────────
   publish-testpypi:
-    name: 📦 Publish to TestPyPI
-    needs: [release]
-    if: github.event_name == 'workflow_dispatch' && inputs.publish-testpypi
+    name: Publish to TestPyPI
+    needs: build
     runs-on: ubuntu-24.04
     environment: testpypi
     permissions:
       id-token: write
     steps:
-      - name: 📦 Download Build Artifacts
+      - name: Download dist artifact
         uses: actions/download-artifact@v4
         with:
-          name: release-artifacts
+          name: dist
           path: dist/
 
-      - name: 📤 Publish to TestPyPI
+      - name: Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
 
+  # ── Verify TestPyPI ──────────────────────────────────────────
+  verify-testpypi:
+    name: Verify TestPyPI
+    needs: publish-testpypi
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for TestPyPI indexing
+        run: sleep 30
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install from TestPyPI
+        run: |
+          pip install \
+            --index-url https://test.pypi.org/simple/ \
+            --extra-index-url https://pypi.org/simple/ \
+            provide-foundation==${{ steps.version.outputs.version }}
+
+      - name: Verify import and version
+        run: |
+          python -c "
+          from provide.foundation import __version__
+          assert __version__ == '${{ steps.version.outputs.version }}', \
+              f'Version mismatch: {__version__} != ${{ steps.version.outputs.version }}'
+          print(f'provide-foundation {__version__} OK')
+          "
+
+  # ── Publish to PyPI ──────────────────────────────────────────
   publish-pypi:
-    name: 🚀 Publish to PyPI
-    needs: [release]
-    if: startsWith(github.ref, 'refs/tags/v')
+    name: Publish to PyPI
+    needs: [build, verify-testpypi]
     runs-on: ubuntu-24.04
     environment: pypi
     permissions:
       id-token: write
     steps:
-      - name: 📦 Download Build Artifacts
+      - name: Download dist artifact
         uses: actions/download-artifact@v4
         with:
-          name: release-artifacts
+          name: dist
           path: dist/
 
-      - name: 📤 Publish to PyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           skip-existing: true
+
+  # ── Sign & Upload to Release ─────────────────────────────────
+  sign-and-upload:
+    name: Sign & Upload to Release
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Sign with Sigstore
+        uses: sigstore/gh-action-sigstore-python@v3
+        with:
+          inputs: dist/*
+
+      - name: Upload to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY"
