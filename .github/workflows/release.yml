@@ -1,6 +1,3 @@
-# SPDX-FileCopyrightText: Copyright (c) 2026 provide.io llc. All rights reserved.
-# SPDX-License-Identifier: Apache-2.0
-
 name: 🚀 Release
 
 on:
@@ -11,12 +8,156 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
-    uses: provide-io/ci-tooling/.github/workflows/python-release.yml@main
-    with:
-      python-version: '3.11'
-      run-tests: true
-      test-repository: ${{ inputs.publish-testpypi || false }}
-      publish-testpypi: ${{ inputs.publish-testpypi || false }}
-      publish-pypi: ${{ inputs.publish-pypi || false }}
-    secrets: inherit
+  # ── Build & Test ──────────────────────────────────────────────
+  build:
+    name: Build & Test
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup uv + Python
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run tests
+        run: uv run pytest --no-header -q
+
+      - name: Build distributions
+        run: uv run python -m build
+
+      - name: Check distributions
+        run: uv run twine check dist/*
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Generate SBOM
+        run: |
+          uv run pip install cyclonedx-bom
+          uv run cyclonedx-py environment --output-format json -o sbom-python.cdx.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-python
+          path: sbom-python.cdx.json
+
+  # ── Publish to TestPyPI ───────────────────────────────────────
+  publish-testpypi:
+    name: Publish to TestPyPI
+    needs: build
+    runs-on: ubuntu-24.04
+    environment: testpypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+
+  # ── Verify TestPyPI ──────────────────────────────────────────
+  verify-testpypi:
+    name: Verify TestPyPI
+    needs: publish-testpypi
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for TestPyPI indexing
+        run: sleep 30
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install from TestPyPI
+        run: |
+          pip install \
+            --index-url https://test.pypi.org/simple/ \
+            --extra-index-url https://pypi.org/simple/ \
+            provide-foundation==${{ steps.version.outputs.version }}
+
+      - name: Verify import and version
+        run: |
+          python -c "
+          from provide.foundation import __version__
+          assert __version__ == '${{ steps.version.outputs.version }}', \
+              f'Version mismatch: {__version__} != ${{ steps.version.outputs.version }}'
+          print(f'provide-foundation {__version__} OK')
+          "
+
+  # ── Publish to PyPI ──────────────────────────────────────────
+  publish-pypi:
+    name: Publish to PyPI
+    needs: [build, verify-testpypi]
+    if: github.event_name == 'release'
+    runs-on: ubuntu-24.04
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  # ── Sign & Upload to Release ─────────────────────────────────
+  sign-and-upload:
+    name: Sign & Upload to Release
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Download SBOM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom-python
+          path: sbom/
+
+      - name: Sign with Sigstore
+        uses: sigstore/gh-action-sigstore-python@v3
+        with:
+          inputs: dist/*.whl dist/*.tar.gz
+
+      - name: Upload to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            dist/*.whl dist/*.tar.gz dist/*.sigstore.json \
+            sbom/sbom-python.cdx.json \
+            --clobber
