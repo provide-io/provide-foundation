@@ -148,7 +148,7 @@ jobs:
           path: sbom/
 
       - name: Sign with Sigstore
-        uses: sigstore/gh-action-sigstore-python@v3
+        uses: sigstore/gh-action-sigstore-python@v3.0.0
         with:
           inputs: dist/*.whl dist/*.tar.gz
 
