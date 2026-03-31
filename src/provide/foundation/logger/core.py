@@ -330,7 +330,6 @@ class FoundationLogger:
         return log.try_unbind(*keys)
 
 
-
 # Global logger function - gets logger through Hub
 def get_global_logger() -> FoundationLogger:
     """Get the global FoundationLogger instance through Hub.
