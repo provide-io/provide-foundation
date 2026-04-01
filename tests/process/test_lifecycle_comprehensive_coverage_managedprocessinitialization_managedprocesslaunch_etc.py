@@ -151,7 +151,7 @@ class TestManagedProcessLaunch(FoundationTestCase):
 
     def test_properties_after_launch(self) -> None:
         """Test properties after successful launch."""
-        proc = ManagedProcess(["sleep", "0.1"])
+        proc = ManagedProcess(["sleep", "2"])
         proc.launch()
 
         assert proc.process is not None
