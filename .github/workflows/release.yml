@@ -1,19 +1,19 @@
-name: Release
+name: 🚀 Release
 
 on:
   push:
     tags: ['v*']
+  release:
+    types: [published]
   workflow_dispatch:
-
-permissions:
-  contents: write
-  id-token: write
 
 jobs:
   # ── Build & Test ──────────────────────────────────────────────
   build:
     name: Build & Test
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,13 +42,15 @@ jobs:
           path: dist/
 
       - name: Generate SBOM
-        run: uv run cyclonedx-bom -o sbom.json
+        run: |
+          uv run pip install cyclonedx-bom
+          uv run cyclonedx-py environment --output-format json -o sbom-python.cdx.json
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
         with:
-          name: sbom
-          path: sbom.json
+          name: sbom-python
+          path: sbom-python.cdx.json
 
   # ── Publish to TestPyPI ───────────────────────────────────────
   publish-testpypi:
@@ -109,6 +111,7 @@ jobs:
   publish-pypi:
     name: Publish to PyPI
     needs: [build, verify-testpypi]
+    if: github.event_name == 'release'
     runs-on: ubuntu-24.04
     environment: pypi
     permissions:
@@ -122,8 +125,6 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          skip-existing: true
 
   # ── Sign & Upload to Release ─────────────────────────────────
   sign-and-upload:
@@ -141,12 +142,22 @@ jobs:
           name: dist
           path: dist/
 
+      - name: Download SBOM artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom-python
+          path: sbom/
+
       - name: Sign with Sigstore
         uses: sigstore/gh-action-sigstore-python@v3
         with:
-          inputs: dist/*
+          inputs: dist/*.whl dist/*.tar.gz
 
       - name: Upload to GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY"
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            dist/*.whl dist/*.tar.gz dist/*.sigstore.json \
+            sbom/sbom-python.cdx.json \
+            --clobber
