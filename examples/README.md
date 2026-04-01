@@ -4,7 +4,7 @@ This directory contains practical examples demonstrating various features and us
 
 ## Directory Structure
 
-### [telemetry/](telemetry/) - Core Logging and Telemetry
+### [telemetry/](https://github.com/provide-io/provide-foundation/tree/main/examples/telemetry/) - Core Logging and Telemetry
 - `01_basic_logging.py` - Zero-setup logging with Foundation
 - `02_structured_logging.py` - Structured logging with full telemetry setup
 - `03_named_loggers.py` - Component-specific named loggers  
@@ -13,27 +13,27 @@ This directory contains practical examples demonstrating various features and us
 - `06_trace_logging.py` - TRACE level logging for verbose output
 - `07_module_filtering.py` - Module-specific log level configuration
 
-### [configuration/](configuration/) - Configuration Management
+### [configuration/](https://github.com/provide-io/provide-foundation/tree/main/examples/configuration/) - Configuration Management
 - `01_custom_config.py` - Custom TelemetryConfig and LoggingConfig
 - `02_env_variables.py` - Environment variable configuration
 - `03_config_management.py` - Complete configuration system with file loading
 
-### [async/](async/) - Asynchronous Programming
+### [async/](https://github.com/provide-io/provide-foundation/tree/main/examples/async/) - Asynchronous Programming
 - `01_async_usage.py` - Using Foundation with asyncio applications
 
-### [cli/](cli/) - Command Line Interface Development
+### [cli/](https://github.com/provide-io/provide-foundation/tree/main/examples/cli/) - Command Line Interface Development
 - `01_cli_application.py` - Complete CLI with Hub and command system
 
-### [transport/](transport/) - HTTP Client and Networking
+### [transport/](https://github.com/provide-io/provide-foundation/tree/main/examples/transport/) - HTTP Client and Networking
 - `01_http_client.py` - HTTP requests with middleware and error handling
 
-### [tracing/](tracing/) - Distributed Tracing
+### [tracing/](https://github.com/provide-io/provide-foundation/tree/main/examples/tracing/) - Distributed Tracing
 - `01_simple_tracing.py` - Basic tracing with Foundation
 - `02_distributed_tracing.py` - Distributed tracing across services
 
-### [integration/](integration/) - Third-Party Integrations
+### [integration/](https://github.com/provide-io/provide-foundation/tree/main/examples/integration/) - Third-Party Integrations
 - `01a_basic_task_queue.py` - Task queue patterns with async workers (no external deps)
-- [celery/](integration/celery/) - Celery task queue integration
+- [celery/](https://github.com/provide-io/provide-foundation/tree/main/examples/integration/celery/) - Celery task queue integration
   - `01_setup_and_config.py` - Celery setup and configuration
   - `02_metrics_and_signals.py` - Metrics collection and signal handling
   - `03_tasks.py` - Task definitions and execution
@@ -41,14 +41,14 @@ This directory contains practical examples demonstrating various features and us
   - `05_cut_up_chuck_tasks.py` - Advanced task patterns
   - `06_cut_up_chuck_runner.py` - Advanced runner patterns
 
-### [openobserve/](openobserve/) - OpenObserve Integration
+### [openobserve/](https://github.com/provide-io/provide-foundation/tree/main/examples/openobserve/) - OpenObserve Integration
 - `01_openobserve_integration.py` - Log aggregation with OpenObserve
 - `02_metrics_integration.py` - Metrics integration with OpenObserve
 
-### [di/](di/) - Dependency Injection
+### [di/](https://github.com/provide-io/provide-foundation/tree/main/examples/di/) - Dependency Injection
 - `01_polyglot_di_pattern.py` - Polyglot dependency injection patterns
 
-### [production/](production/) - Production Patterns
+### [production/](https://github.com/provide-io/provide-foundation/tree/main/examples/production/) - Production Patterns
 - `01_production_patterns.py` - Production-focused logging and monitoring
 - `02_error_handling.py` - Comprehensive error handling with resilience patterns
 
@@ -107,6 +107,6 @@ All examples demonstrate these Foundation patterns:
 ## Documentation
 
 For complete API documentation, see:
-- [Foundation Documentation](../docs/)
-- [API Reference](../docs/reference/)
-- [How-To Guides](../docs/how-to-guides/)
+- [Foundation Documentation](https://github.com/provide-io/provide-foundation/tree/main/docs/)
+- [API Reference](https://github.com/provide-io/provide-foundation/tree/main/docs/reference/)
+- [How-To Guides](https://github.com/provide-io/provide-foundation/tree/main/docs/how-to-guides/)
