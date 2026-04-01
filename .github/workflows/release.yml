@@ -30,10 +30,10 @@ jobs:
         run: uv run pytest --no-header -q
 
       - name: Build distributions
-        run: uv run python -m build
+        run: uv build
 
       - name: Check distributions
-        run: uv run twine check dist/*
+        run: uvx twine check dist/*
 
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
@@ -43,8 +43,7 @@ jobs:
 
       - name: Generate SBOM
         run: |
-          uv run pip install cyclonedx-bom
-          uv run cyclonedx-py environment --output-format json -o sbom-python.cdx.json
+          uvx cyclonedx-py environment --output-format json -o sbom-python.cdx.json
 
       - name: Upload SBOM artifact
         uses: actions/upload-artifact@v4
@@ -149,7 +148,7 @@ jobs:
           path: sbom/
 
       - name: Sign with Sigstore
-        uses: sigstore/gh-action-sigstore-python@v3
+        uses: sigstore/gh-action-sigstore-python@v3.0.0
         with:
           inputs: dist/*.whl dist/*.tar.gz
 
@@ -160,4 +159,5 @@ jobs:
           gh release upload "${{ github.event.release.tag_name }}" \
             dist/*.whl dist/*.tar.gz dist/*.sigstore.json \
             sbom/sbom-python.cdx.json \
+            --repo "$GITHUB_REPOSITORY" \
             --clobber
