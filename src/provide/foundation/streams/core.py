@@ -19,7 +19,9 @@ from provide.foundation.concurrency.locks import get_lock_manager
 Handles log streams, file handles, and output configuration.
 """
 
-_PROVIDE_LOG_STREAM: TextIO = sys.stderr
+from provide.foundation.utils.streams import ensure_utf8_stream
+
+_PROVIDE_LOG_STREAM: TextIO = ensure_utf8_stream(sys.stderr)
 _LOG_FILE_HANDLE: TextIO | None = None
 
 
@@ -40,7 +42,7 @@ def get_log_stream() -> TextIO:
     global _PROVIDE_LOG_STREAM
     if not _get_stream_lock().acquire(timeout=5.0):
         # If we can't acquire the lock within 5 seconds, return stderr as fallback
-        return sys.stderr
+        return ensure_utf8_stream(sys.stderr)
     try:
         # Only validate real streams, not mock objects
         # Check if this is a real stream that can be closed
@@ -161,7 +163,7 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
         if not should_allow_stream_redirect():
             return
 
-        _PROVIDE_LOG_STREAM = stream if stream is not None else sys.stderr
+        _PROVIDE_LOG_STREAM = ensure_utf8_stream(stream) if stream is not None else ensure_utf8_stream(sys.stderr)
 
         # Reconfigure structlog to use the new stream
         _reconfigure_structlog_stream()
@@ -177,7 +179,7 @@ def ensure_stderr_default() -> None:
         return
     try:
         if _PROVIDE_LOG_STREAM is sys.stdout:
-            _PROVIDE_LOG_STREAM = sys.stderr
+            _PROVIDE_LOG_STREAM = ensure_utf8_stream(sys.stderr)
     finally:
         _get_stream_lock().release()
 

@@ -13,6 +13,63 @@ from typing import TextIO
 """Stream utilities for foundation library."""
 
 
+def ensure_utf8_stream(stream: TextIO) -> TextIO:
+    """Ensure a text stream uses UTF-8 encoding with error replacement.
+
+    On Windows, console streams default to legacy encodings (e.g., cp1252)
+    which cannot encode Unicode characters like emoji. This function
+    reconfigures or wraps such streams to use UTF-8 with 'replace' error
+    handling, preventing UnicodeEncodeError in logging paths.
+
+    On non-Windows platforms or for streams that already use UTF-8 or
+    have no encoding attribute (e.g., StringIO), the stream is returned
+    unchanged.
+
+    Args:
+        stream: A text stream to ensure UTF-8 encoding on.
+
+    Returns:
+        The stream, possibly reconfigured or wrapped for UTF-8 safety.
+
+    """
+    if stream is None:
+        return stream
+
+    # Only act on streams that have a non-UTF-8 encoding
+    encoding = getattr(stream, "encoding", None)
+    if encoding is None:
+        return stream
+
+    # Already UTF-8 — nothing to do
+    if encoding.lower().replace("-", "").replace("_", "") == "utf8":
+        return stream
+
+    # Try reconfigure (available on Python 3.7+ for standard streams)
+    if hasattr(stream, "reconfigure"):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+            return stream
+        except Exception:
+            # reconfigure may fail on non-standard streams
+            pass
+
+    # Fallback: wrap the underlying buffer with a UTF-8 TextIOWrapper
+    buffer = getattr(stream, "buffer", None)
+    if buffer is not None:
+        try:
+            wrapper = io.TextIOWrapper(
+                buffer, encoding="utf-8", errors="replace", line_buffering=True
+            )
+            # Prevent the wrapper from closing the underlying buffer on GC
+            wrapper._owner = False  # type: ignore[attr-defined]
+            return wrapper
+        except Exception:
+            pass
+
+    # Cannot reconfigure — return as-is (best effort)
+    return stream
+
+
 def get_safe_stderr() -> TextIO:
     """Get a safe stderr stream, falling back to StringIO if stderr is not available.
 
@@ -29,7 +86,7 @@ def get_safe_stderr() -> TextIO:
         and sys.stderr is not None
         and not (hasattr(sys.stderr, "closed") and sys.stderr.closed)
     ):
-        return sys.stderr
+        return ensure_utf8_stream(sys.stderr)
     else:
         return io.StringIO()
 
@@ -51,7 +108,7 @@ def get_foundation_log_stream(output_setting: str) -> TextIO:
 
     """
     if output_setting == "stdout":
-        return sys.stdout
+        return ensure_utf8_stream(sys.stdout)
     if output_setting == "main":
         # Import here to avoid circular dependency
         try:

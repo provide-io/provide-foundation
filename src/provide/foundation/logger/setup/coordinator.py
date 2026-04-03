@@ -315,7 +315,9 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> Struc
             temp_config = TelemetryConfig.from_env()
             output = temp_config.logging.foundation_log_output.lower()
 
-        stream = sys.stderr if output != "stdout" else sys.stdout
+        from provide.foundation.utils.streams import ensure_utf8_stream
+
+        stream = ensure_utf8_stream(sys.stderr if output != "stdout" else sys.stdout)
 
         # Check if output stream is a TTY for color support
         is_tty = hasattr(stream, "isatty") and stream.isatty()
