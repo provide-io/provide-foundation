@@ -167,7 +167,8 @@ def cleanup_all_components(dimension: str | None = None) -> None:
                                 loop.run_until_complete(cleanup_func())
                         except RuntimeError:
                             # Create new loop if none exists
-                            loop = asyncio.new_event_loop()
+                            from provide.foundation.utils.async_helpers import _new_event_loop
+                            loop = _new_event_loop()
                             loop.run_until_complete(cleanup_func())
                             loop.close()
                     else:
