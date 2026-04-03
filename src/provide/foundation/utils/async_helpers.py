@@ -13,9 +13,21 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Awaitable, Coroutine
 import contextlib
+import sys
 from typing import TypeVar
 
 T = TypeVar("T")
+
+
+def _new_event_loop() -> asyncio.AbstractEventLoop:
+    """Create a new event loop appropriate for the current platform.
+
+    On Windows, creates a ProactorEventLoop which supports subprocess
+    operations. On other platforms, uses the default (SelectorEventLoop).
+    """
+    if sys.platform == "win32":
+        return asyncio.ProactorEventLoop()
+    return asyncio.new_event_loop()
 
 
 def run_async(coro: Coroutine[None, None, T] | Awaitable[T], *, warn: bool = False) -> T:
@@ -102,7 +114,7 @@ def run_async(coro: Coroutine[None, None, T] | Awaitable[T], *, warn: bool = Fal
         loop = asyncio.get_event_loop()
         if loop.is_closed():
             # Loop exists but is closed, create a new one
-            loop = asyncio.new_event_loop()
+            loop = _new_event_loop()
             asyncio.set_event_loop(loop)
             created_loop = True
         else:
