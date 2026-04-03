@@ -127,11 +127,21 @@ class ResilientErrorHandler:
 
         # Check if we should suppress this error
         if self.should_suppress(exception):
-            self.log_suppressed(exception, func_name, log_context)
+            try:
+                self.log_suppressed(exception, func_name, log_context)
+            except Exception:
+                # Logging must never prevent error handling from completing.
+                # Swallow logging failures (e.g., KeyError in structlog processors,
+                # UnicodeEncodeError on Windows) so the decorator contract is upheld.
+                pass
             return self.fallback
 
-        # Log the error if configured
-        self.log_error(exception, func_name, log_context)
+        # Log the error if configured — wrapped so logging failures
+        # never mask the original application error.
+        try:
+            self.log_error(exception, func_name, log_context)
+        except Exception:
+            pass
 
         # If reraise=False, return fallback instead of raising
         if not self.reraise:
@@ -311,21 +321,24 @@ def suppress_and_log(
             try:
                 return func(*args, **kwargs)
             except exceptions as e:
-                # Get appropriate log method
-                from provide.foundation.hub.foundation import get_foundation_logger
+                try:
+                    from provide.foundation.hub.foundation import get_foundation_logger
 
-                if log_level in ("debug", "info", "warning", "error", "critical"):
-                    log_method = getattr(get_foundation_logger(), log_level)
-                else:
-                    log_method = get_foundation_logger().warning
+                    if log_level in ("debug", "info", "warning", "error", "critical"):
+                        log_method = getattr(get_foundation_logger(), log_level)
+                    else:
+                        log_method = get_foundation_logger().warning
 
-                log_method(
-                    f"Suppressed {type(e).__name__} in {getattr(func, '__name__', '<anonymous>')}: {e}",
-                    function=getattr(func, "__name__", "<anonymous>"),
-                    error_type=type(e).__name__,
-                    error=str(e),
-                    fallback=fallback,
-                )
+                    log_method(
+                        f"Suppressed {type(e).__name__} in {getattr(func, '__name__', '<anonymous>')}: {e}",
+                        function=getattr(func, "__name__", "<anonymous>"),
+                        error_type=type(e).__name__,
+                        error=str(e),
+                        fallback=fallback,
+                    )
+                except Exception:
+                    # Logging must never prevent suppression from working
+                    pass
 
                 return fallback
 
@@ -367,28 +380,36 @@ def fallback_on_error(
                 return func(*args, **kwargs)
             except catch_types as e:
                 if log_errors:
-                    from provide.foundation.hub.foundation import get_foundation_logger
+                    try:
+                        from provide.foundation.hub.foundation import get_foundation_logger
 
-                    get_foundation_logger().warning(
-                        f"Using fallback for {getattr(func, '__name__', '<anonymous>')} due to {type(e).__name__}",
-                        function=getattr(func, "__name__", "<anonymous>"),
-                        error_type=type(e).__name__,
-                        error=str(e),
-                        fallback=getattr(fallback_func, "__name__", "<anonymous>"),
-                    )
+                        get_foundation_logger().warning(
+                            f"Using fallback for {getattr(func, '__name__', '<anonymous>')} due to {type(e).__name__}",
+                            function=getattr(func, "__name__", "<anonymous>"),
+                            error_type=type(e).__name__,
+                            error=str(e),
+                            fallback=getattr(fallback_func, "__name__", "<anonymous>"),
+                        )
+                    except Exception:
+                        # Logging must never prevent fallback from executing
+                        pass
 
                 # Call fallback with same arguments
                 try:
                     return fallback_func(*args, **kwargs)
                 except Exception as fallback_error:
-                    from provide.foundation.hub.foundation import get_foundation_logger
+                    try:
+                        from provide.foundation.hub.foundation import get_foundation_logger
 
-                    get_foundation_logger().error(
-                        f"Fallback function {getattr(fallback_func, '__name__', '<anonymous>')} also failed",
-                        exc_info=True,
-                        original_error=str(e),
-                        fallback_error=str(fallback_error),
-                    )
+                        get_foundation_logger().error(
+                            f"Fallback function {getattr(fallback_func, '__name__', '<anonymous>')} also failed",
+                            exc_info=True,
+                            original_error=str(e),
+                            fallback_error=str(fallback_error),
+                        )
+                    except Exception:
+                        # Logging must never mask the fallback error
+                        pass
                     # Re-raise the fallback error
                     raise fallback_error from e
 

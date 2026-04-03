@@ -58,6 +58,18 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
     try:
         target_stream.write(message)
         target_stream.flush()
+    except UnicodeEncodeError:
+        # Stream cannot encode the message (e.g., emoji on Windows cp1252).
+        # Encode to UTF-8 with replacement and decode back to get safe text.
+        safe_message = message.encode("utf-8", errors="replace").decode("ascii", errors="replace")
+        try:
+            target_stream.write(safe_message)
+            target_stream.flush()
+        except Exception:
+            # Last resort: write to stderr
+            sys.stderr.write(safe_message)
+            sys.stderr.flush()
+        return
     except Exception as e:
         # Log the fallback for debugging if requested
         if log_fallback:
