@@ -17,7 +17,7 @@ permissions:
   id-token: write  # For trusted publishing
 
 env:
-  UV_VERSION: "0.9.13"
+  UV_VERSION: "0.11.3"
   FORCE_COLOR: "1"
 
 jobs:
