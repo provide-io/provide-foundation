@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: Copyright (c) 2026 provide.io llc. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
 // Polyglot Dependency Injection Pattern - Go Example
 //
 // This example demonstrates the SAME dependency injection pattern as the
