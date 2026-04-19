@@ -43,10 +43,9 @@ provide.foundation offers structured logging, CLI utilities, configuration manag
 uv sync
 
 # Run common tasks
-we run test       # Run tests
-we run lint       # Check code
-we run format     # Format code
-we tasks          # See all available commands
+uv run pytest             # Run tests
+uv run ruff check .       # Check code
+uv run ruff format .      # Format code
 ```
 
 See [CLAUDE.md](https://github.com/provide-io/provide-foundation/blob/main/CLAUDE.md) for detailed development instructions and architecture information.
