@@ -19,12 +19,14 @@ The file operations module provides sophisticated detection of file operation pa
 **Purpose**: Introduction to core concepts and basic API usage.
 
 **What it demonstrates**:
+
 - Temporary file pattern detection
 - Creating and analyzing file events
 - Custom detector configuration
 - Working with real files
 
 **Key concepts**:
+
 ```python
 from provide.foundation.file.operations import (
     OperationDetector,
@@ -49,12 +51,14 @@ operations = detector.detect(events)
 **Purpose**: Real-time event processing for continuous monitoring.
 
 **What it demonstrates**:
+
 - Streaming vs batch processing
 - Time-window based flushing
 - Async-compatible processing
 - Handling event sequences
 
 **Key concepts**:
+
 ```python
 # Process events as they arrive
 operation = detector.detect_streaming(event)
@@ -70,12 +74,14 @@ pending_ops = detector.flush()
 **Purpose**: Integration with watchdog for actual filesystem monitoring.
 
 **What it demonstrates**:
+
 - Watchdog integration
 - Converting filesystem events to FileEvents
 - Real editor save pattern simulation
 - Production-focused monitoring setup
 
 **Key concepts**:
+
 ```python
 class FileOperationMonitor(FileSystemEventHandler):
     def on_created(self, event):
@@ -83,8 +89,7 @@ class FileOperationMonitor(FileSystemEventHandler):
         operation = self.detector.detect_streaming(file_event)
 ```
 
-**Requirements**: `uv add watchdog`
-**Run with**: `python 03_real_filesystem_monitoring.py`
+**Requirements**: `uv add watchdog` **Run with**: `python 03_real_filesystem_monitoring.py`
 
 ## Common Patterns
 
@@ -131,23 +136,25 @@ pending_operations = detector.flush()
 
 The detector can identify these operation types:
 
-| Type | Description | Example |
-|------|-------------|---------|
-| `ATOMIC_SAVE` | Atomic file replacement via temp file | VSCode save pattern |
-| `SAFE_WRITE` | Write with backup creation | Editor with backup |
-| `BATCH_UPDATE` | Multiple files changed rapidly | Code formatter |
-| `RENAME_SEQUENCE` | Chain of file renames | File reorganization |
-| `BACKUP_CREATE` | Backup file creation | Manual backup |
+| Type              | Description                           | Example             |
+| ----------------- | ------------------------------------- | ------------------- |
+| `ATOMIC_SAVE`     | Atomic file replacement via temp file | VSCode save pattern |
+| `SAFE_WRITE`      | Write with backup creation            | Editor with backup  |
+| `BATCH_UPDATE`    | Multiple files changed rapidly        | Code formatter      |
+| `RENAME_SEQUENCE` | Chain of file renames                 | File reorganization |
+| `BACKUP_CREATE`   | Backup file creation                  | Manual backup       |
 
 ## Editor Patterns Detected
 
 ### VSCode/Sublime Text
+
 ```
 1. Create: document.txt.tmp.12345
 2. Move: document.txt.tmp.12345 → document.txt
 ```
 
 ### Vim/Emacs
+
 ```
 1. Delete: document.txt
 2. Create: document.txt~ (backup)
@@ -155,6 +162,7 @@ The detector can identify these operation types:
 ```
 
 ### Safe Write
+
 ```
 1. Create: document.txt.bak
 2. Modify: document.txt
@@ -188,6 +196,7 @@ metadata = FileEventMetadata(
 ## Integration Examples
 
 ### With File Watchers
+
 ```python
 class MyFileHandler(FileSystemEventHandler):
     def __init__(self):
@@ -202,6 +211,7 @@ class MyFileHandler(FileSystemEventHandler):
 ```
 
 ### With Async Frameworks
+
 ```python
 async def process_file_events(event_stream):
     detector = OperationDetector()
@@ -215,6 +225,7 @@ async def process_file_events(event_stream):
 ## Testing
 
 The examples include test scenarios that verify:
+
 - ✅ Atomic save detection (VSCode pattern)
 - ✅ Backup-based saves (Vim pattern)
 - ✅ Batch operations (formatters)
@@ -224,6 +235,7 @@ The examples include test scenarios that verify:
 - ✅ Real filesystem integration
 
 Run the integration tests with:
+
 ```bash
 cd /path/to/provide-foundation
 pytest tests/test_file_operations_integration.py -v

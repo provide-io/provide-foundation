@@ -42,9 +42,9 @@ provide.foundation is a comprehensive Python library for building robust, produc
 We recommend following this path:
 
 1. **[Installation](installation.md)** - Set up your environment (2 minutes)
-2. **[Quick Start](quick-start.md)** - Write your first logs (5 minutes)
-3. **[First Application](first-app.md)** - Build a CLI tool (15 minutes)
-4. **[Examples](examples.md)** - Explore specific features (ongoing)
+1. **[Quick Start](quick-start.md)** - Write your first logs (5 minutes)
+1. **[First Application](first-app.md)** - Build a CLI tool (15 minutes)
+1. **[Examples](examples.md)** - Explore specific features (ongoing)
 
 After completing these, dive into the [How-To Guides](../how-to-guides/logging/basic-logging.md) for specific use cases.
 
@@ -58,14 +58,14 @@ After completing these, dive into the [How-To Guides](../how-to-guides/logging/b
 
 Foundation has modular installation options:
 
-| Feature | Install Command | When You Need It |
-|---------|----------------|------------------|
-| **Basic logging** | `uv add provide-foundation` | Core functionality |
-| **CLI framework** | `uv add provide-foundation[cli]` | Building command-line tools |
-| **Cryptography** | `uv add provide-foundation[crypto]` | Hashing, signing, certificates |
-| **HTTP Transport** | `uv add provide-foundation[transport]` | HTTP client utilities |
-| **OpenTelemetry** | `uv add provide-foundation[opentelemetry]` | Distributed tracing |
-| **All features** | `uv add provide-foundation[all]` | Everything above |
+| Feature            | Install Command                            | When You Need It               |
+| ------------------ | ------------------------------------------ | ------------------------------ |
+| **Basic logging**  | `uv add provide-foundation`                | Core functionality             |
+| **CLI framework**  | `uv add provide-foundation[cli]`           | Building command-line tools    |
+| **Cryptography**   | `uv add provide-foundation[crypto]`        | Hashing, signing, certificates |
+| **HTTP Transport** | `uv add provide-foundation[transport]`     | HTTP client utilities          |
+| **OpenTelemetry**  | `uv add provide-foundation[opentelemetry]` | Distributed tracing            |
+| **All features**   | `uv add provide-foundation[all]`           | Everything above               |
 
 ## Need Help?
 
@@ -73,6 +73,6 @@ Foundation has modular installation options:
 - **Examples:** Check the [Examples](examples.md) for working code
 - **Issues:** Report bugs on [GitHub Issues](https://github.com/provide-io/provide-foundation/issues)
 
----
+______________________________________________________________________
 
 Ready to begin? Start with [Installation](installation.md) →

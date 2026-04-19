@@ -7,6 +7,7 @@ Learn how to monitor Foundation applications in production with structured loggi
 Production monitoring is essential for maintaining reliable services. Foundation provides built-in support for structured logging, metrics collection, distributed tracing, and integration with observability platforms. This guide shows you how to implement comprehensive monitoring for your applications.
 
 **What you'll learn:**
+
 - Configure structured JSON logging for log aggregation
 - Collect and export application metrics
 - Implement distributed tracing
@@ -17,6 +18,7 @@ Production monitoring is essential for maintaining reliable services. Foundation
 - Troubleshoot production issues
 
 **Key Features:**
+
 - 📊 **Structured Logging**: JSON logs with semantic events
 - 📈 **Metrics Collection**: Built-in counters, gauges, and histograms
 - 🔍 **Distributed Tracing**: OpenTelemetry integration
@@ -69,6 +71,7 @@ logger.info(
 ```
 
 **Output:**
+
 ```json
 {
   "event": "user_login",
@@ -736,18 +739,21 @@ for log_line in logs:
 ## Next Steps
 
 ### Related Guides
+
 - **[Deployment Patterns](deployment.md)**: Deploy to production
 - **[Structured Events](../logging/structured-events.md)**: Event naming conventions
 - **[Basic Logging](../logging/basic-logging.md)**: Logging fundamentals
 
 ### Examples
+
 - See `examples/production/08_monitoring.py` for monitoring examples
 - See `examples/production/09_health_checks.py` for health check patterns
 
 ### API Reference
+
 - **[Metrics API](../../reference/provide/foundation/metrics/index.md)**: Metrics collection
 - **[Tracer API](../../reference/provide/foundation/tracer/index.md)**: Distributed tracing
 
----
+______________________________________________________________________
 
 **Tip**: Start with structured JSON logging and basic metrics. Add distributed tracing as your system grows. Focus on monitoring what matters: error rates, latency, and business metrics. Use health checks to enable zero-downtime deployments.

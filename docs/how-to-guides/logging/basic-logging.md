@@ -56,18 +56,21 @@ logger.info(
 ### Why Structured Logging?
 
 Traditional logging:
+
 ```python
 # ❌ Hard to parse, search, and analyze
 logging.info(f"User user_123 started session sess_456 from web_app")
 ```
 
 Structured logging:
+
 ```python
 # ✅ Easy to parse, search, filter, and aggregate
 logger.info("session_started", user_id="user_123", session_id="sess_456", source="web_app")
 ```
 
 Benefits:
+
 - **Searchable**: Find all logs for `user_id="user_123"`
 - **Aggregatable**: Count sessions by `source`
 - **Analyzable**: Track patterns across fields
@@ -111,6 +114,7 @@ logger.error("connection_failed", emoji="❌", service="database")
 ```
 
 Output:
+
 ```
 🚀 app_started
 📊 data_loaded | records=1000
@@ -134,6 +138,7 @@ get_hub().initialize_foundation(
 ```
 
 Or via environment variables:
+
 ```bash
 export PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED=false
 export PROVIDE_LOG_DAS_EMOJI_ENABLED=false
@@ -190,6 +195,7 @@ def handle_request(request_id: str, user_id: str):
 ```
 
 This is extremely useful for:
+
 - **Request tracing**: Track a request through your application
 - **User context**: Include user information in all relevant logs
 - **Transaction tracking**: Follow a database transaction
@@ -200,6 +206,7 @@ This is extremely useful for:
 ### Console vs JSON Output
 
 **Console** (default for development):
+
 ```python
 from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
@@ -212,11 +219,13 @@ get_hub().initialize_foundation(config)
 ```
 
 Output:
+
 ```
 2025-10-24 14:30:15 [INFO] user_login | user_id=user_123 | ip=192.168.1.1
 ```
 
 **JSON** (recommended for production):
+
 ```python
 from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
@@ -229,6 +238,7 @@ get_hub().initialize_foundation(config)
 ```
 
 Output:
+
 ```json
 {"timestamp": "2025-10-24T14:30:15.123Z", "level": "info", "event": "user_login", "user_id": "user_123", "ip": "192.168.1.1"}
 ```
@@ -251,11 +261,12 @@ get_hub().initialize_foundation(config)
 ```
 
 Log levels (in order of severity):
+
 1. **DEBUG**: Detailed diagnostic information
-2. **INFO**: General informational messages (default)
-3. **WARNING**: Warning messages
-4. **ERROR**: Error messages
-5. **CRITICAL**: Critical failures
+1. **INFO**: General informational messages (default)
+1. **WARNING**: Warning messages
+1. **ERROR**: Error messages
+1. **CRITICAL**: Critical failures
 
 ### Module-Level Log Control
 
@@ -279,6 +290,7 @@ get_hub().initialize_foundation(config)
 ```
 
 Or via environment variable:
+
 ```bash
 export PROVIDE_LOG_MODULE_LEVELS="urllib3:WARNING,asyncio:INFO,myapp.database:DEBUG"
 ```
@@ -519,18 +531,21 @@ def execute_query(sql, params):
 ## Next Steps
 
 ### Related Logging Guides
+
 - **[Exception Logging](exception-logging.md)**: Learn how to log exceptions with full context
 - **[Structured Events](structured-events.md)**: Advanced patterns for event-driven logging
 - **[Custom Processors](custom-processors.md)**: Extend logging with custom processors
 
 ### Integration & Production
+
 - **[CLI Commands](../cli/commands.md)**: Use Foundation logging in CLI applications
 - **[Production Patterns](../production/monitoring.md)**: Production logging best practices
 - **[Configuration](../configuration/env-variables.md)**: Configure logging via environment variables
 
 ### Understanding Foundation
+
 - **[Architecture](../../explanation/architecture.md)**: Understand how the logging system works
 
----
+______________________________________________________________________
 
 **Tip**: Start with simple `logger.info()` calls and add structure as your needs grow. Foundation makes it easy to evolve from basic to advanced logging patterns.

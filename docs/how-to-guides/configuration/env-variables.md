@@ -8,14 +8,14 @@ Foundation provides two complementary APIs for working with environment variable
 
 ### When to Use Each API
 
-| Use Case | API to Use | Why | Example |
-|----------|-----------|-----|---------|
-| **Simple scripts** | Direct Access (`utils.environment`) | Quick one-off reads, no class overhead | `get_bool("DEBUG")` |
-| **Utility scripts** | Direct Access | Minimal boilerplate for throwaway code | `get_int("PORT")` |
-| **Application config** | Structured Config (`config.env`) | Type safety, validation, IDE autocomplete | `BaseConfig.from_env()` |
-| **Secret management** | Structured Config | Built-in `file://` prefix support | `password: str = env_field(...)` |
-| **Complex validation** | Structured Config | Use attrs validators for constraints | Custom validators on fields |
-| **Shared configuration** | Structured Config | Pass config objects between modules | Single source of truth |
+| Use Case                 | API to Use                          | Why                                       | Example                          |
+| ------------------------ | ----------------------------------- | ----------------------------------------- | -------------------------------- |
+| **Simple scripts**       | Direct Access (`utils.environment`) | Quick one-off reads, no class overhead    | `get_bool("DEBUG")`              |
+| **Utility scripts**      | Direct Access                       | Minimal boilerplate for throwaway code    | `get_int("PORT")`                |
+| **Application config**   | Structured Config (`config.env`)    | Type safety, validation, IDE autocomplete | `BaseConfig.from_env()`          |
+| **Secret management**    | Structured Config                   | Built-in `file://` prefix support         | `password: str = env_field(...)` |
+| **Complex validation**   | Structured Config                   | Use attrs validators for constraints      | Custom validators on fields      |
+| **Shared configuration** | Structured Config                   | Pass config objects between modules       | Single source of truth           |
 
 ### Decision Flow
 
@@ -197,6 +197,7 @@ Are you building user-facing configuration classes?
 #### The Two Approaches
 
 **1. `env_field()` - Convenience wrapper (recommended for user code):**
+
 ```python
 from provide.foundation.config import env_field
 
@@ -205,6 +206,7 @@ port: int = env_field(env_var="PORT", default=8080)
 ```
 
 **2. `field()` - Direct approach (used in Foundation internals):**
+
 ```python
 from provide.foundation.config.base import field
 
@@ -216,6 +218,7 @@ default_level: str = field(
 ```
 
 **Key Points:**
+
 - Both work identically - `env_field()` internally calls `field()`
 - `env_field()` is more concise for simple use cases
 - `field()` supports additional metadata like descriptions
@@ -292,6 +295,7 @@ print(config.database_password)  # Contents of /run/secrets/db_password
 ```
 
 This is especially useful for:
+
 - **Docker secrets**: `/run/secrets/secret_name`
 - **Kubernetes secrets**: Mounted as files
 - **AWS Secrets Manager**: Via file mounts
@@ -600,6 +604,6 @@ debug = config.debug
 - **[Secret Management](secrets.md)**: Advanced secret handling patterns
 - **[Architecture](../../explanation/architecture.md)**: Understand the configuration system
 
----
+______________________________________________________________________
 
 **Tip**: Start with direct access for scripts, but migrate to structured config as your application grows. The type safety and validation are worth the small upfront cost.

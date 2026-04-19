@@ -407,16 +407,19 @@ def resilient_service_call():
 ## Next Steps
 
 ### Related Resilience Patterns
+
 - **[Circuit Breakers](circuit-breaker.md)**: Prevent cascading failures
 - **[Production Monitoring](../production/monitoring.md)**: Monitor retry behavior
 
 ### Examples
+
 - See `examples/production/02_error_handling.py` for comprehensive retry examples
 - See `examples/transport/01_http_client.py` for HTTP retry patterns
 
 ### API Reference
+
 - **[API Reference: Resilience](../../reference/provide/foundation/resilience/index.md)**: Complete API documentation
 
----
+______________________________________________________________________
 
 **Tip**: Start with simple fixed retries and add exponential backoff with jitter for production use. Always set reasonable `max_attempts` and `max_delay` limits.

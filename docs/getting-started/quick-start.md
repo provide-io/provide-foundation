@@ -11,6 +11,7 @@ uv add provide-foundation[all]
 ```
 
 Verify the installation:
+
 ```bash
 python -c "from provide.foundation import logger; logger.info('Installation successful!')"
 ```
@@ -84,9 +85,9 @@ INFO Application shutting down
 ### Key Features You're Seeing:
 
 1. **Emoji & Level Prefixes**: Visual markers (`⚠️`, `❌`) provide immediate context
-2. **Event Name**: First argument (`"user_logged_in"`) identifies the event
-3. **Structured Context**: Keyword arguments formatted as `key=value` pairs
-4. **Exception Information**: Full traceback automatically captured with `logger.exception()`
+1. **Event Name**: First argument (`"user_logged_in"`) identifies the event
+1. **Structured Context**: Keyword arguments formatted as `key=value` pairs
+1. **Exception Information**: Full traceback automatically captured with `logger.exception()`
 
 ## 5. Adding User-Facing Output
 
@@ -115,6 +116,7 @@ def process_file(filename: str):
 ```
 
 ### Output Separation:
+
 - **`logger.*`**: System logs for debugging and monitoring
 - **`pout()`**: Success messages for users (stdout)
 - **`perr()`**: Error messages for users (stderr)
@@ -126,12 +128,14 @@ Foundation works with zero configuration, but you can customize it when needed.
 ### When to Initialize Explicitly
 
 **Auto-initialization (default) - Use for:**
+
 - ✅ Simple scripts and utilities
 - ✅ Development and experimentation
 - ✅ When default configuration is sufficient
 - ✅ Quick prototypes
 
 **Explicit initialization - Use for:**
+
 - ✅ Production applications
 - ✅ Custom configuration requirements
 - ✅ Integration with web frameworks (FastAPI, Flask, Django)
@@ -162,15 +166,12 @@ logger.info("app_started", version="1.0.0")
 
 ## What You've Learned
 
-✅ **Zero-configuration logging** - Just import and use
-✅ **Structured logging** - Key-value pairs for machine-readable logs
-✅ **Exception handling** - Automatic traceback capture
-✅ **Output separation** - Logs vs user-facing messages
-✅ **Optional configuration** - Customize when needed
+✅ **Zero-configuration logging** - Just import and use ✅ **Structured logging** - Key-value pairs for machine-readable logs ✅ **Exception handling** - Automatic traceback capture ✅ **Output separation** - Logs vs user-facing messages ✅ **Optional configuration** - Customize when needed
 
 ## Next Steps
 
 ### Build a Complete Application
+
 Continue to [First Application](first-app.md) to build a full CLI task manager (15 minutes).
 
 ### Explore Specific Features
@@ -182,12 +183,13 @@ Continue to [First Application](first-app.md) to build a full CLI task manager (
 ### See More Examples
 
 Browse the [Examples](examples.md) section for:
+
 - Configuration management
 - Async logging
 - HTTP client usage
 - Distributed tracing
 - Production patterns
 
----
+______________________________________________________________________
 
 **Questions?** Check the [How-To Guides](../how-to-guides/logging/basic-logging.md) or [API Reference](../reference/index.md).

@@ -73,10 +73,10 @@ python examples/01_quick_start.py
 ### Architecture Principles
 
 1. **Immutable Configuration**: Use `attrs` frozen dataclasses
-2. **Lazy Initialization**: Avoid import-time side effects
-3. **Thread Safety**: All operations must be thread-safe
-4. **Optional Dependencies**: Core functionality must work without extras
-5. **Modern Standards**: Follow current Python best practices
+1. **Lazy Initialization**: Avoid import-time side effects
+1. **Thread Safety**: All operations must be thread-safe
+1. **Optional Dependencies**: Core functionality must work without extras
+1. **Modern Standards**: Follow current Python best practices
 
 ### Dependencies
 
@@ -114,6 +114,7 @@ pytest -vvv
 - Include property-based tests where applicable
 
 Example:
+
 ```python
 import pytest
 from provide.foundation import logger
@@ -130,21 +131,22 @@ async def test_async_logging():
 ### Before Submitting
 
 1. **Tests Pass**: Ensure all tests pass locally
-2. **Code Quality**: Run linting and type checking
-3. **Documentation**: Update docs for any API changes
-4. **Examples**: Add/update examples if adding features
+1. **Code Quality**: Run linting and type checking
+1. **Documentation**: Update docs for any API changes
+1. **Examples**: Add/update examples if adding features
 
 ### Pull Request Process
 
 1. **Fork** the repository
-2. **Create** a feature branch from `main`
-3. **Implement** your changes following the guidelines
-4. **Test** thoroughly with various scenarios
-5. **Submit** a pull request with clear description
+1. **Create** a feature branch from `main`
+1. **Implement** your changes following the guidelines
+1. **Test** thoroughly with various scenarios
+1. **Submit** a pull request with clear description
 
 ### Commit Message Format
 
 Use clear, concise commit messages:
+
 ```
 feat: add new emoji set for database operations
 fix: handle missing OpenTelemetry dependencies gracefully

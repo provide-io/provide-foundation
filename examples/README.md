@@ -5,33 +5,40 @@ This directory contains practical examples demonstrating various features and us
 ## Directory Structure
 
 ### [telemetry/](https://github.com/provide-io/provide-foundation/tree/main/examples/telemetry/) - Core Logging and Telemetry
+
 - `01_basic_logging.py` - Zero-setup logging with Foundation
 - `02_structured_logging.py` - Structured logging with full telemetry setup
-- `03_named_loggers.py` - Component-specific named loggers  
+- `03_named_loggers.py` - Component-specific named loggers
 - `04_das_pattern.py` - Domain-Action-Status structured logging
 - `05_exception_handling.py` - Exception logging with automatic tracebacks
 - `06_trace_logging.py` - TRACE level logging for verbose output
 - `07_module_filtering.py` - Module-specific log level configuration
 
 ### [configuration/](https://github.com/provide-io/provide-foundation/tree/main/examples/configuration/) - Configuration Management
+
 - `01_custom_config.py` - Custom TelemetryConfig and LoggingConfig
 - `02_env_variables.py` - Environment variable configuration
 - `03_config_management.py` - Complete configuration system with file loading
 
 ### [async/](https://github.com/provide-io/provide-foundation/tree/main/examples/async/) - Asynchronous Programming
+
 - `01_async_usage.py` - Using Foundation with asyncio applications
 
 ### [cli/](https://github.com/provide-io/provide-foundation/tree/main/examples/cli/) - Command Line Interface Development
+
 - `01_cli_application.py` - Complete CLI with Hub and command system
 
 ### [transport/](https://github.com/provide-io/provide-foundation/tree/main/examples/transport/) - HTTP Client and Networking
+
 - `01_http_client.py` - HTTP requests with middleware and error handling
 
 ### [tracing/](https://github.com/provide-io/provide-foundation/tree/main/examples/tracing/) - Distributed Tracing
+
 - `01_simple_tracing.py` - Basic tracing with Foundation
 - `02_distributed_tracing.py` - Distributed tracing across services
 
 ### [integration/](https://github.com/provide-io/provide-foundation/tree/main/examples/integration/) - Third-Party Integrations
+
 - `01a_basic_task_queue.py` - Task queue patterns with async workers (no external deps)
 - [celery/](https://github.com/provide-io/provide-foundation/tree/main/examples/integration/celery/) - Celery task queue integration
   - `01_setup_and_config.py` - Celery setup and configuration
@@ -42,13 +49,16 @@ This directory contains practical examples demonstrating various features and us
   - `06_cut_up_chuck_runner.py` - Advanced runner patterns
 
 ### [openobserve/](https://github.com/provide-io/provide-foundation/tree/main/examples/openobserve/) - OpenObserve Integration
+
 - `01_openobserve_integration.py` - Log aggregation with OpenObserve
 - `02_metrics_integration.py` - Metrics integration with OpenObserve
 
 ### [di/](https://github.com/provide-io/provide-foundation/tree/main/examples/di/) - Dependency Injection
+
 - `01_polyglot_di_pattern.py` - Polyglot dependency injection patterns
 
 ### [production/](https://github.com/provide-io/provide-foundation/tree/main/examples/production/) - Production Patterns
+
 - `01_production_patterns.py` - Production-focused logging and monitoring
 - `02_error_handling.py` - Comprehensive error handling with resilience patterns
 
@@ -77,15 +87,19 @@ python 01_cli_application.py
 ## Example Categories
 
 ### Getting Started
+
 Start with `telemetry/01_basic_logging.py` for the simplest introduction, then explore `telemetry/02_structured_logging.py` for a complete setup.
 
 ### Configuration
+
 Learn how to configure Foundation through code (`configuration/01_custom_config.py`) or environment variables (`configuration/02_env_variables.py`).
 
 ### Production Use
+
 See `production/01_production_patterns.py` for patterns suitable for production deployments with structured JSON logging and health metrics.
 
 ### Advanced Features
+
 Explore tracing, transport clients, and integrations for building robust distributed systems.
 
 ## Common Patterns
@@ -107,6 +121,7 @@ All examples demonstrate these Foundation patterns:
 ## Documentation
 
 For complete API documentation, see:
+
 - [Foundation Documentation](https://github.com/provide-io/provide-foundation/tree/main/docs/)
 - [API Reference](https://github.com/provide-io/provide-foundation/tree/main/docs/reference/)
 - [How-To Guides](https://github.com/provide-io/provide-foundation/tree/main/docs/how-to-guides/)

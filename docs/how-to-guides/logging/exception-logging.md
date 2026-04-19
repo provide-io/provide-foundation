@@ -5,6 +5,7 @@ Properly logging exceptions is crucial for debugging and operational visibility.
 ## Overview
 
 Exception logging serves multiple purposes:
+
 - **Debugging** - Understand what went wrong and where
 - **Monitoring** - Alert on error rates and patterns
 - **Auditing** - Track failures for compliance
@@ -35,6 +36,7 @@ except Exception:
 ```
 
 **Output includes:**
+
 - Event message: "Operation failed unexpectedly"
 - Structured fields: `operation_name`, `user_id`
 - Full stack trace with file names and line numbers
@@ -255,6 +257,7 @@ def api_handler(request):
 ```
 
 **Benefits:**
+
 - Track errors across microservices
 - Correlate logs from different systems
 - Debug distributed request flows
@@ -619,18 +622,21 @@ except Exception:
 ## Next Steps
 
 ### Related Guides
+
 - **[Basic Logging](basic-logging.md)**: Core logging patterns
 - **[Structured Events](structured-events.md)**: Event-driven logging
 
 ### Error Handling & Resilience
+
 - **[Retry Patterns](../resilience/retry.md)**: Automatically retry failed operations
 - **[Circuit Breakers](../resilience/circuit-breaker.md)**: Prevent cascading failures
 - **[Production Monitoring](../production/monitoring.md)**: Production-focused error handling
 
 ### Examples
+
 - See `examples/telemetry/05_exception_handling.py` for comprehensive exception logging examples
 - See `examples/production/02_error_handling.py` for production error patterns
 
----
+______________________________________________________________________
 
 **Tip**: Always log exceptions with `logger.exception()` or `exc_info=True` to preserve stack traces. Add structured context fields to make errors searchable and debuggable.

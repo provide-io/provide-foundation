@@ -7,6 +7,7 @@ Learn how to use structured event logging with Domain-Action-Status patterns for
 Structured events provide a consistent way to log important application events with rich context that's both human-readable and machine-parseable. Foundation's Domain-Action-Status (DAS) pattern creates predictable, searchable log events that work seamlessly with log aggregation systems.
 
 **Key benefits:**
+
 - **Searchability** - Consistent naming makes events easy to find
 - **Aggregation** - Group related events for metrics
 - **Alerting** - Pattern-based alerts on event types
@@ -39,6 +40,7 @@ logger.info(
 ```
 
 **Output:**
+
 ```json
 {
   "event": "user_login",
@@ -239,6 +241,7 @@ request_logger.info("page_exit", time_on_page_s=45)
 ```
 
 **Output:**
+
 ```json
 {
   "event": "page_view",
@@ -774,17 +777,20 @@ logger.error(Events.PAYMENT_PROCESS_FAILED, order_id="ORD-123")
 ## Next Steps
 
 ### Related Guides
+
 - **[Basic Logging](basic-logging.md)**: Core logging patterns
 - **[Exception Logging](exception-logging.md)**: Error logging with context
 - **[Custom Processors](custom-processors.md)**: Extend logging with processors
 
 ### Examples
+
 - See `examples/telemetry/04_das_pattern.py` for DAS pattern examples
 - See `examples/production/01_production_patterns.py` for production event patterns
 
 ### API Reference
+
 - **[API Reference: Logger](../../reference/provide/foundation/logger/index.md)**: Complete logger API
 
----
+______________________________________________________________________
 
 **Tip**: Start with basic DAS naming (domain_action_status) and add rich context. Use log aggregation queries to validate your event structure is searchable and useful.

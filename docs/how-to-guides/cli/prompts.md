@@ -164,6 +164,6 @@ version = prompt("🔢 Version: ", default="1.0.0")
 - **[Argument Parsing](arguments.md)** - Handle arguments
 - **[API Reference: Console](../../reference/provide/foundation/console/index.md)** - Complete console API
 
----
+______________________________________________________________________
 
 **See also:** [examples/cli/](https://github.com/provide-io/provide-foundation/tree/main/examples/cli)

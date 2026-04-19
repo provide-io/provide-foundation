@@ -14,7 +14,7 @@ uv add celery
 ## File Structure
 
 - **`01_setup_and_config.py`** - Celery app configuration and logging setup
-- **`02_metrics_and_signals.py`** - Task metrics tracking and signal handlers  
+- **`02_metrics_and_signals.py`** - Task metrics tracking and signal handlers
 - **`03_tasks.py`** - Example task definitions with real-world patterns
 - **`04_runner.py`** - Task workflow runner and orchestration
 
@@ -26,10 +26,11 @@ python examples/integration/celery/04_runner.py
 ```
 
 This will:
+
 1. Start an in-process Celery worker using filesystem transport
-2. Execute various task patterns with comprehensive logging
-3. Display metrics and results
-4. Demonstrate real-world Celery + Foundation patterns
+1. Execute various task patterns with comprehensive logging
+1. Display metrics and results
+1. Demonstrate real-world Celery + Foundation patterns
 
 **Alternative**: Run individual worker and submit tasks separately:
 
@@ -44,31 +45,37 @@ python examples/integration/celery/04_runner.py
 ## Featured Patterns
 
 ### 1. **Payment Processing with Retries** (`process_payment`)
+
 - Automatic retry with exponential backoff
 - Transient error handling
 - Detailed transaction logging
 
 ### 2. **Report Generation with Progress** (`generate_report`)
+
 - Long-running task with progress tracking
 - Real-time status updates
 - Step-by-step execution logging
 
 ### 3. **Multi-Channel Notifications** (`send_notification`)
+
 - Parallel delivery across multiple channels (email, SMS, push)
 - Per-channel success/failure tracking
 - Delivery confirmation logging
 
 ### 4. **Batch Processing** (`process_batch_data`)
+
 - Item-level error handling
 - Success rate calculation
 - Failed item tracking and reporting
 
 ### 5. **Data Cleanup Operations** (`cleanup_old_data`)
+
 - Scheduled maintenance tasks
 - Space utilization tracking
 - Multi-category cleanup reporting
 
 ### 6. **Task Workflows**
+
 - Task chains (sequential execution)
 - Parallel task groups
 - Complex workflow orchestration
@@ -121,6 +128,7 @@ export PROVIDE_LOG_MODULE_LEVELS="celery.worker:INFO,celery.task:INFO"
 ### Filesystem Transport
 
 The example uses filesystem transport stored in `/tmp/celery_foundation/`:
+
 - **Broker messages**: `/tmp/celery_foundation/out/`
 - **Processed messages**: `/tmp/celery_foundation/processed/`
 - **Task results**: `/tmp/celery_foundation/results/`
@@ -131,7 +139,7 @@ The example includes a comprehensive metrics system that tracks:
 
 - Task execution counts
 - Average execution duration
-- Success/failure rates  
+- Success/failure rates
 - Retry counts
 - Worker health status
 
@@ -142,12 +150,12 @@ Metrics are logged periodically and on worker shutdown for operational visibilit
 This example demonstrates how to:
 
 1. **Configure Celery** with provide.foundation logging and filesystem transport
-2. **Set up signal handlers** for comprehensive task lifecycle tracking
-3. **Implement retry logic** with structured logging and exponential backoff
-4. **Track metrics** across task executions with thread-safe collection
-5. **Monitor worker health** with periodic reporting and system info
-6. **Handle errors gracefully** while preserving context and maintaining observability
-7. **Use task workflows** (chains, groups, parallel execution)
-8. **Self-contained operation** without external dependencies like Redis
+1. **Set up signal handlers** for comprehensive task lifecycle tracking
+1. **Implement retry logic** with structured logging and exponential backoff
+1. **Track metrics** across task executions with thread-safe collection
+1. **Monitor worker health** with periodic reporting and system info
+1. **Handle errors gracefully** while preserving context and maintaining observability
+1. **Use task workflows** (chains, groups, parallel execution)
+1. **Self-contained operation** without external dependencies like Redis
 
 The patterns shown here can be adapted for production use cases requiring reliable task processing with comprehensive observability. The filesystem transport makes this example perfect for development, testing, and environments where simplicity is preferred over high-throughput messaging systems.
