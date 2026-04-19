@@ -100,7 +100,6 @@ foundation = "provide.foundation.cli.main:cli"
 dev = [
     "provide-testkit[advanced-testing,build,standard,typecheck,utils]>=0.3.28",
     "memray>=1.0",
-    "wrknv>=0.3.21",
 ]
 docs = [
     "provide-testkit[docs]>=0.3.28",
@@ -400,7 +399,6 @@ exclude_dirs = [".venv", "tests"]
 
 [tool.security]
 # Paths to exclude from secret scanning (TruffleHog, GitGuardian, Gitleaks)
-# Run: we security generate (via wrknv) to regenerate tool configs
 description = "Test fixtures and documentation examples - intentionally committed"
 allowed_paths = [
     # Documentation with example credentials
