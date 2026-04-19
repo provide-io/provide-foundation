@@ -82,6 +82,6 @@ if need_profiling:
 - **[Logging](../logging/basic-logging.md)**: Structured logging
 - **[Metrics](../observability/metrics.md)**: Application metrics
 
----
+______________________________________________________________________
 
 **Note**: Profiling is designed for Foundation internals. For application-level profiling, use Python's built-in profilers or external tools.

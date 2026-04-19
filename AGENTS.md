@@ -9,6 +9,7 @@ This file provides guidance for AI assistants when working with code in this rep
 ## Development Environment Setup
 
 **IMPORTANT**: Use standard Python virtual environment setup with UV. The environment setup handles:
+
 - Python 3.11+ requirement
 - UV package manager for dependency management
 
@@ -54,12 +55,14 @@ allowed_hosts = get_list("ALLOWED_HOSTS", default=["localhost"])
 ```
 
 **When to use**:
+
 - Scripts and utilities
 - Simple configuration needs
 - One-off environment variable reads
 - Quick prototyping
 
 **Available functions**:
+
 - `get_bool(name, default=None, required=False)` - Parse boolean values ("true", "1", "yes")
 - `get_int(name, default=None, required=False)` - Parse integers
 - `get_float(name, default=None, required=False)` - Parse floating point numbers
@@ -92,6 +95,7 @@ config = DatabaseConfig.from_env()
 ```
 
 **When to use**:
+
 - Application-wide configuration
 - Configuration classes with validation
 - Secret management (supports `file://` prefix for reading from secret files)
@@ -99,6 +103,7 @@ config = DatabaseConfig.from_env()
 - Type safety and IDE autocomplete
 
 **Features**:
+
 - Type validation through attrs
 - Support for `file://` prefix to read secrets from files
 - Automatic parsing based on field types
@@ -107,6 +112,7 @@ config = DatabaseConfig.from_env()
 ### Examples
 
 **Simple script**:
+
 ```python
 from provide.foundation.utils.environment import get_int, get_bool
 
@@ -115,6 +121,7 @@ debug = get_bool("DEBUG", default=False)
 ```
 
 **Application configuration**:
+
 ```python
 from provide.foundation.config import RuntimeConfig, env_field
 from attrs import define
@@ -133,18 +140,21 @@ config = AppConfig.from_env()
 ### Core Components
 
 1. **Logger System** (`src/provide/foundation/logger/`)
+
    - `base.py`: FoundationLogger class and global logger instance
    - `config/`: TelemetryConfig and LoggingConfig data classes
    - `processors/`: Log processing pipeline
    - `setup/`: Logger initialization and coordination
    - Event sets in `src/provide/foundation/eventsets/`: Emoji mapping system for visual log parsing
 
-2. **Configuration System** (`src/provide/foundation/config/`)
+1. **Configuration System** (`src/provide/foundation/config/`)
+
    - Async-first configuration loading system
    - Environment variable support
    - YAML/JSON file loading capabilities
 
-3. **Emoji Sets** (`src/provide/foundation/logger/emoji/sets.py`)
+1. **Emoji Sets** (`src/provide/foundation/logger/emoji/sets.py`)
+
    - Extensible domain-specific logging emoji sets (LLM, HTTP, Database)
    - Custom emoji mapping per domain
    - Falls back to classic Domain-Action-Status pattern
@@ -152,19 +162,19 @@ config = AppConfig.from_env()
 ### Key Design Patterns
 
 1. **Lazy Initialization**: Logger uses lazy setup to avoid import-time side effects
-2. **Immutable Configuration**: Uses `attrs` with frozen dataclasses
-3. **Modern Python Typing**: Uses Python 3.11+ type hints (no Dict/List/Optional)
-4. **Emoji System**: Visual log parsing through contextual emoji prefixes
+1. **Immutable Configuration**: Uses `attrs` with frozen dataclasses
+1. **Modern Python Typing**: Uses Python 3.11+ type hints (no Dict/List/Optional)
+1. **Emoji System**: Visual log parsing through contextual emoji prefixes
 
 ### Important Implementation Notes
 
 1. **Unified Initialization**: The Hub provides `initialize_foundation()` as the single entry point for library setup, replacing all deprecated `setup_*` functions.
 
-2. **Global Logger Instance**: The `logger` object in `logger/base.py` is the primary interface for logging throughout applications.
+1. **Global Logger Instance**: The `logger` object in `logger/base.py` is the primary interface for logging throughout applications.
 
-3. **Thread Safety**: All logging operations are thread-safe and async-compatible.
+1. **Thread Safety**: All logging operations are thread-safe and async-compatible.
 
-4. **Performance**: Benchmarked at >14,000 msg/sec with emoji processing enabled.
+1. **Performance**: Benchmarked at >14,000 msg/sec with emoji processing enabled.
 
 ## Testing Strategy
 
@@ -267,6 +277,7 @@ This pattern ensures compatibility with FoundationTestCase's internal state mana
 ### Development Requirement
 
 If `provide-testkit` is not available in the environment, **PAUSE DEVELOPMENT** and install it:
+
 ```bash
 uv add provide-testkit --group dev
 ```
@@ -274,9 +285,9 @@ uv add provide-testkit --group dev
 ## Common Issues & Solutions
 
 1. **ModuleNotFoundError for dependencies**: Ensure virtual environment is activated with `source .venv/bin/activate` and dependencies are installed with `uv sync`
-2. **Hub Initialization**: Use `get_hub().initialize_foundation()` for proper library setup instead of deprecated setup functions
-3. **Import errors**: Ensure PYTHONPATH includes both `src/` and project root
-4. **Asyncio debug messages**: The logger automatically suppresses asyncio DEBUG messages (e.g., "Using selector: KqueueSelector") via module-level configuration. Override with `PROVIDE_LOG_MODULE_LEVELS="asyncio:DEBUG"` if needed.
+1. **Hub Initialization**: Use `get_hub().initialize_foundation()` for proper library setup instead of deprecated setup functions
+1. **Import errors**: Ensure PYTHONPATH includes both `src/` and project root
+1. **Asyncio debug messages**: The logger automatically suppresses asyncio DEBUG messages (e.g., "Using selector: KqueueSelector") via module-level configuration. Override with `PROVIDE_LOG_MODULE_LEVELS="asyncio:DEBUG"` if needed.
 
 ## Development Guidelines
 
@@ -301,15 +312,18 @@ uv add provide-testkit --group dev
 **IMPORTANT**: Use the correct output method for the context:
 
 - **CLI User-Facing Output**: Use `pout()` for standard output and `perr()` for error messages
+
   - These are in `provide.foundation.console.output`
   - Never use `print()` directly in CLI commands
   - Example: `pout("✅ Operation successful")` or `perr("❌ Operation failed")`
 
 - **Application Logging**: Use `logger` strictly for internal logging/debugging
+
   - Import with: `from provide.foundation import logger`
   - Example: `logger.debug("Internal state changed", state=new_state)`
 
 - **Low-Level Infrastructure**: Only use `print()` to stderr where using Foundation logger would create circular dependencies
+
   - Example: In `streams/file.py` where the logger itself depends on these components
 
 ## Third-Party Module Log Control

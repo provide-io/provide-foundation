@@ -129,6 +129,6 @@ def process(workers: int):
 - **[Interactive Prompts](prompts.md)** - User input
 - **[API Reference: CLI](../../reference/provide/foundation/cli/index.md)** - Complete CLI API
 
----
+______________________________________________________________________
 
 **See also:** [examples/cli/01_cli_application.py](https://github.com/provide-io/provide-foundation/blob/main/examples/cli/01_cli_application.py)

@@ -44,6 +44,7 @@ print(requests.value)  # 6
 ```
 
 **Use counters for:**
+
 - Total requests processed
 - Total errors encountered
 - Total bytes sent/received
@@ -73,6 +74,7 @@ print(memory_usage.value)
 ```
 
 **Use gauges for:**
+
 - Current memory usage
 - Active connections
 - Queue size
@@ -105,6 +107,7 @@ print(stats["mean"])   # Average value
 ```
 
 **Use histograms for:**
+
 - Request/response latencies
 - Request sizes
 - Response sizes
@@ -281,6 +284,6 @@ export OTEL_SERVICE_NAME=my-service
 - **[Architecture](../../explanation/architecture.md)**: Understanding Foundation's design
 - **[Logging](../logging/basic-logging.md)**: Combine metrics with structured logging
 
----
+______________________________________________________________________
 
 **Tip**: Start with simple counters and gauges, then add histograms when you need distribution data.

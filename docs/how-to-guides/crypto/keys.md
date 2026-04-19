@@ -7,6 +7,7 @@ Learn how to generate, store, and manage cryptographic keys with Foundation's se
 Foundation provides comprehensive utilities for generating and managing cryptographic keys with secure defaults. The crypto module supports modern elliptic curve cryptography (Ed25519, ECDSA) and traditional RSA keys, with built-in security best practices.
 
 **What you'll learn:**
+
 - Generate Ed25519, RSA, and ECDSA keypairs
 - Store keys securely with proper file permissions
 - Convert between key formats (PEM, DER, raw bytes)
@@ -16,6 +17,7 @@ Foundation provides comprehensive utilities for generating and managing cryptogr
 - Apply security best practices
 
 **Key Features:**
+
 - 🔐 **Secure Defaults**: All keys generated with cryptographically secure randomness
 - 🎯 **Modern Algorithms**: Ed25519 (recommended), ECDSA, RSA support
 - 💾 **Safe Storage**: Atomic writes with restricted file permissions
@@ -857,19 +859,22 @@ def test_with_mock_keys():
 ## Next Steps
 
 ### Related Guides
+
 - **[Signing & Verification](signing.md)**: Use keys to sign and verify data
 - **[Certificates](certificates.md)**: Generate X.509 certificates from keys
 - **[Basic Logging](../logging/basic-logging.md)**: Log key management operations
 
 ### Examples
+
 - See `examples/crypto/01_key_generation.py` for key generation examples
 - See `examples/crypto/02_key_rotation.py` for rotation patterns
 - See `examples/production/05_secret_management.py` for production key management
 
 ### API Reference
+
 - **[Crypto Module](../../reference/provide/foundation/crypto/index.md)**: Complete crypto API
 - **[File Operations](../../reference/provide/foundation/file/index.md)**: Atomic file writes
 
----
+______________________________________________________________________
 
 **Tip**: Prefer Ed25519 for new applications - it's faster, more secure, and has smaller key sizes than RSA. Always store private keys with 0600 permissions and never commit them to version control.

@@ -18,6 +18,7 @@ def init_command(name: str = "myproject", template: str = "default"):
 ```
 
 **Key Points:**
+
 - Function name becomes the command handler
 - Function parameters become CLI arguments/options
 - Docstring becomes the help text
@@ -44,6 +45,7 @@ def deploy_command(
 ```
 
 **Usage:**
+
 ```bash
 # Required argument
 ./mycli deploy production
@@ -77,6 +79,7 @@ def database_status():
 ```
 
 **Usage:**
+
 ```bash
 ./mycli db migrate
 ./mycli db seed --dataset production
@@ -84,6 +87,7 @@ def database_status():
 ```
 
 **Output:**
+
 ```
 Usage: mycli [OPTIONS] COMMAND [ARGS]...
 
@@ -108,6 +112,7 @@ def status_command(verbose: bool = False):
 ```
 
 **Features:**
+
 - **aliases:** Alternative command names (`st`, `info`)
 - **category:** Group commands in help output
 - **tags:** Metadata for filtering/searching
@@ -211,6 +216,7 @@ def batch_process_command(
 ```
 
 **Usage:**
+
 ```bash
 ./mycli batch-process --files "data1.txt,data2.txt,data3.txt" --formats "json,xml"
 ```
@@ -281,6 +287,7 @@ if __name__ == "__main__":
 ```
 
 **Alternative - With Context:**
+
 ```python
 from provide.foundation.context import CLIContext
 from provide.foundation.hub import Hub
@@ -506,19 +513,22 @@ def cleanup_command(path: str, dry_run: bool = False):
 ## Next Steps
 
 ### Building CLI Features
+
 - **[Argument Parsing](arguments.md)**: Advanced argument handling patterns
 - **[Interactive Prompts](prompts.md)**: Building interactive CLIs
 - **[First Application](../../getting-started/first-app.md)**: Complete CLI tutorial
 
 ### Testing & Production
+
 - **[Testing CLI Commands](../testing/cli-tests.md)**: Write tests for your CLI applications
 - **[Production Deployment](../production/deployment.md)**: Deploy CLI tools to production
 
 ### Related Guides
+
 - **[Basic Logging](../logging/basic-logging.md)**: Add structured logging to commands
 - **[Configuration](../configuration/env-variables.md)**: Configure CLI tools via environment
 - **[Error Handling](../resilience/retry.md)**: Add resilience to CLI operations
 
----
+______________________________________________________________________
 
 **See Also:** Check `examples/cli/01_cli_application.py` for a comprehensive example.

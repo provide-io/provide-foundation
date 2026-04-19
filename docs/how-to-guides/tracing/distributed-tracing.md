@@ -124,6 +124,6 @@ logger.info("operation_completed", trace_id=trace_id)
 - **[Logging](../logging/basic-logging.md)**: Combine tracing with logging
 - **[Metrics](../observability/metrics.md)**: Complete observability stack
 
----
+______________________________________________________________________
 
 **Tip**: See `examples/tracing/` for complete examples of distributed tracing.

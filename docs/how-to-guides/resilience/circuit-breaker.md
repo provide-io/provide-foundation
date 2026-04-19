@@ -36,16 +36,19 @@ The circuit breaker has three states:
 ```
 
 ### Closed State
+
 - **Normal operation** - All requests pass through
 - **Monitoring** - Counts failures
 - **Transition** - Opens when failure threshold is exceeded
 
 ### Open State
+
 - **Protection mode** - Requests fail immediately with `CircuitBreakerOpen` exception
 - **No service calls** - Gives failing service time to recover
 - **Transition** - Moves to half-open after timeout period
 
 ### Half-Open State
+
 - **Recovery testing** - Allows limited test requests
 - **Evaluation** - Monitors if service has recovered
 - **Transition** - Returns to closed if tests succeed, back to open if they fail
@@ -63,6 +66,7 @@ def call_external_api():
 ```
 
 **How it works:**
+
 - After **5 consecutive failures**, the circuit opens
 - Circuit stays open for **60 seconds**
 - After timeout, allows one test request (half-open)
@@ -507,11 +511,14 @@ def resilient_api_call():
 ```
 
 **Order matters:**
+
 - **Circuit breaker outside, retry inside** (recommended)
+
   - Circuit tracks overall failures including retries
   - If service is down, circuit opens and stops retry attempts
 
 - **Retry outside, circuit breaker inside** (not recommended)
+
   - Retry will attempt even when circuit is open
   - Wastes resources on calls that will fail immediately
 
@@ -577,16 +584,19 @@ def test_circuit_half_open_recovery():
 ## Next Steps
 
 ### Related Resilience Patterns
+
 - **[Retry Patterns](retry.md)**: Automatically retry failed operations
 - **[Production Monitoring](../production/monitoring.md)**: Monitor circuit breaker metrics
 
 ### Examples
+
 - See `examples/production/02_error_handling.py` for circuit breaker examples
 - See `examples/transport/01_http_client.py` for HTTP circuit protection
 
 ### API Reference
+
 - **[API Reference: Resilience](../../reference/provide/foundation/resilience/index.md)**: Complete API documentation
 
----
+______________________________________________________________________
 
 **Tip**: Start with conservative thresholds (5-10 failures) and adjust based on your service's behavior. Always implement fallbacks for when circuits open.

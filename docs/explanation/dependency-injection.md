@@ -7,6 +7,7 @@ A core architectural philosophy of `provide.foundation` is to promote a dependen
 Dependency Injection is a design pattern where objects receive their dependencies from external sources rather than creating them internally. Foundation embraces a **constructor injection** pattern that works identically across Python, Go, and Rust, making it easier for polyglot teams to maintain consistent architecture.
 
 **Key benefits:**
+
 - **Testability** - Easy to mock dependencies in tests
 - **Flexibility** - Swap implementations without changing code
 - **Clarity** - Dependencies are explicit and visible
@@ -22,6 +23,7 @@ The polyglot DI pattern consists of two key principles:
 Components declare their dependencies as constructor arguments:
 
 **Python:**
+
 ```python
 class UserService:
     def __init__(self, user_repo: UserRepository, logger: Logger):
@@ -30,6 +32,7 @@ class UserService:
 ```
 
 **Go:**
+
 ```go
 type UserService struct {
     userRepo *UserRepository
@@ -42,6 +45,7 @@ func NewUserService(userRepo *UserRepository, logger *Logger) *UserService {
 ```
 
 **Rust:**
+
 ```rust
 struct UserService {
     user_repo: UserRepository,
@@ -702,13 +706,15 @@ class Service:
 ## Next Steps
 
 ### Related Guides
+
 - **[Testing](../how-to-guides/testing/unit-tests.md)**: Testing with dependency injection
 - **[Architecture](architecture.md)**: Overall Foundation architecture
 
 ### Examples
+
 - See `examples/di/01_polyglot_di_pattern.py` for polyglot DI examples
 - See `examples/cli/` for CLI applications using DI
 
----
+______________________________________________________________________
 
 **Tip**: Start with constructor injection and explicit wiring in your composition root. Use Foundation's Hub for automatic dependency resolution once you're comfortable with the pattern.

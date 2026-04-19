@@ -124,6 +124,6 @@ service_config = ServiceConfig(**data["service"])
 - **[Secret Management](secrets.md)** - Secure configuration
 - **[API Reference: Config](../../reference/provide/foundation/config/index.md)** - Complete config API
 
----
+______________________________________________________________________
 
 **See also:** [examples/configuration/03_config_management.py](https://github.com/provide-io/provide-foundation/blob/main/examples/configuration/03_config_management.py)

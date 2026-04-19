@@ -175,6 +175,6 @@ await detector.stop()
 - **[Atomic Writes](atomic-writes.md)** - Safe file writes
 - **[API Reference: File Operations](../../reference/provide/foundation/file/operations/index.md)** - Complete file operations API
 
----
+______________________________________________________________________
 
 **See also:** [examples/file_operations/02_streaming_detection.py](https://github.com/provide-io/provide-foundation/blob/main/examples/file_operations/02_streaming_detection.py)

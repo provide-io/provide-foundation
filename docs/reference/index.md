@@ -14,14 +14,14 @@ from provide.foundation.hub import register_command
 from provide.foundation.resilience import retry
 ```
 
-| Import | Purpose | Documentation |
-|--------|---------|---------------|
-| `logger` | Global logger instance for structured logging | [logger docs](provide/foundation/logger/index.md) |
-| `pout()` | User-facing output to stdout (with colors) | [console docs](provide/foundation/console/index.md) |
-| `perr()` | User-facing errors to stderr (with colors) | [console docs](provide/foundation/console/index.md) |
-| `get_hub()` | Access the central component registry | [hub docs](provide/foundation/hub/index.md) |
-| `@register_command` | Register CLI commands | [CLI docs](provide/foundation/cli/index.md) |
-| `@retry` | Retry decorator with exponential backoff | [resilience docs](provide/foundation/resilience/index.md) |
+| Import              | Purpose                                       | Documentation                                             |
+| ------------------- | --------------------------------------------- | --------------------------------------------------------- |
+| `logger`            | Global logger instance for structured logging | [logger docs](provide/foundation/logger/index.md)         |
+| `pout()`            | User-facing output to stdout (with colors)    | [console docs](provide/foundation/console/index.md)       |
+| `perr()`            | User-facing errors to stderr (with colors)    | [console docs](provide/foundation/console/index.md)       |
+| `get_hub()`         | Access the central component registry         | [hub docs](provide/foundation/hub/index.md)               |
+| `@register_command` | Register CLI commands                         | [CLI docs](provide/foundation/cli/index.md)               |
+| `@retry`            | Retry decorator with exponential backoff      | [resilience docs](provide/foundation/resilience/index.md) |
 
 ### Configuration Classes
 
@@ -30,11 +30,11 @@ from provide.foundation.config import BaseConfig, env_field
 from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 ```
 
-| Class | Purpose | Documentation |
-|-------|---------|---------------|
-| `BaseConfig` | Base class for configuration objects | [config docs](provide/foundation/config/index.md) |
-| `TelemetryConfig` | Configure logging and telemetry | [logger config docs](provide/foundation/logger/config/index.md) |
-| `LoggingConfig` | Detailed logging configuration | [logger config docs](provide/foundation/logger/config/index.md) |
+| Class             | Purpose                              | Documentation                                                   |
+| ----------------- | ------------------------------------ | --------------------------------------------------------------- |
+| `BaseConfig`      | Base class for configuration objects | [config docs](provide/foundation/config/index.md)               |
+| `TelemetryConfig` | Configure logging and telemetry      | [logger config docs](provide/foundation/logger/config/index.md) |
+| `LoggingConfig`   | Detailed logging configuration       | [logger config docs](provide/foundation/logger/config/index.md) |
 
 ### Utilities
 
@@ -46,13 +46,13 @@ from provide.foundation.eventsets.display import show_event_matrix
 from provide.foundation import shutdown_foundation
 ```
 
-| Function | Purpose | Documentation |
-|----------|---------|---------------|
-| `get_bool()`, `get_int()`, `get_str()` | Environment variable helpers | [environment docs](provide/foundation/utils/environment/index.md) |
-| `atomic_write()` | Safe atomic file writes | [file docs](provide/foundation/file/index.md) |
-| `provide_dumps()`, `provide_loads()` | JSON serialization | [serialization docs](provide/foundation/serialization/index.md) |
-| `show_event_matrix()` | Display event set emoji matrix | [eventsets docs](provide/foundation/eventsets/index.md) |
-| `shutdown_foundation()` | Graceful shutdown and cleanup | [setup docs](provide/foundation/setup/index.md) |
+| Function                               | Purpose                        | Documentation                                                     |
+| -------------------------------------- | ------------------------------ | ----------------------------------------------------------------- |
+| `get_bool()`, `get_int()`, `get_str()` | Environment variable helpers   | [environment docs](provide/foundation/utils/environment/index.md) |
+| `atomic_write()`                       | Safe atomic file writes        | [file docs](provide/foundation/file/index.md)                     |
+| `provide_dumps()`, `provide_loads()`   | JSON serialization             | [serialization docs](provide/foundation/serialization/index.md)   |
+| `show_event_matrix()`                  | Display event set emoji matrix | [eventsets docs](provide/foundation/eventsets/index.md)           |
+| `shutdown_foundation()`                | Graceful shutdown and cleanup  | [setup docs](provide/foundation/setup/index.md)                   |
 
 ### Advanced Features
 
@@ -62,14 +62,14 @@ from provide.foundation.hub.container import Container, create_container
 from provide.foundation.eventsets.types import EventSet, EventMapping
 ```
 
-| Feature | Purpose | Documentation |
-|---------|---------|---------------|
-| `@injectable` | Mark classes for dependency injection | [hub docs](provide/foundation/hub/index.md) |
-| `Container` | Dependency injection container | [container docs](provide/foundation/hub/container/index.md) |
-| `EventSet` | Define custom event sets with emojis | [eventsets docs](provide/foundation/eventsets/index.md) |
-| `EventMapping` | Map events to emoji representations | [eventsets docs](provide/foundation/eventsets/index.md) |
+| Feature        | Purpose                               | Documentation                                               |
+| -------------- | ------------------------------------- | ----------------------------------------------------------- |
+| `@injectable`  | Mark classes for dependency injection | [hub docs](provide/foundation/hub/index.md)                 |
+| `Container`    | Dependency injection container        | [container docs](provide/foundation/hub/container/index.md) |
+| `EventSet`     | Define custom event sets with emojis  | [eventsets docs](provide/foundation/eventsets/index.md)     |
+| `EventMapping` | Map events to emoji representations   | [eventsets docs](provide/foundation/eventsets/index.md)     |
 
----
+______________________________________________________________________
 
 ## Quick Navigation
 
@@ -120,6 +120,6 @@ For a complete hierarchical view of all modules, classes, and functions:
 
 This reference documents **36 foundation modules** with **352 API pages**.
 
----
+______________________________________________________________________
 
 **Tip:** Use your browser's search (Ctrl+F / Cmd+F) within individual module pages to quickly find specific functions or classes.

@@ -115,6 +115,7 @@ Production-focused application patterns:
 Third-party integrations:
 
 #### Celery Integration
+
 - **01_setup_and_config.py** - Celery setup and configuration
 - **02_metrics_and_signals.py** - Metrics collection and signal handling
 - **03_tasks.py** - Task definitions
@@ -123,12 +124,14 @@ Third-party integrations:
 **[View Celery examples](https://github.com/provide-io/provide-foundation/tree/main/examples/integration/celery)**
 
 #### OpenObserve Integration
+
 - **01_openobserve_integration.py** - Log aggregation with OpenObserve
 - **02_metrics_integration.py** - Metrics integration with OpenObserve
 
 **[View OpenObserve examples](https://github.com/provide-io/provide-foundation/tree/main/examples/openobserve)**
 
 #### Task Queue Patterns
+
 - **01a_basic_task_queue.py** - Task queue patterns with async workers (no external dependencies)
 
 **[View all integration examples](https://github.com/provide-io/provide-foundation/tree/main/examples/integration)**
@@ -147,6 +150,7 @@ Each example includes:
 All examples demonstrate these Foundation patterns:
 
 ### Structured Logging
+
 ```python
 from provide.foundation import logger
 
@@ -159,6 +163,7 @@ logger.info(
 ```
 
 ### Configuration
+
 ```python
 from provide.foundation import get_hub
 from provide.foundation.logger.config import TelemetryConfig
@@ -170,6 +175,7 @@ hub.initialize_foundation(
 ```
 
 ### Error Handling
+
 ```python
 from provide.foundation import logger
 
@@ -182,6 +188,7 @@ except Exception as e:
 ```
 
 ### Output Separation
+
 ```python
 from provide.foundation import logger, pout, perr
 
@@ -209,9 +216,9 @@ done
 Examples are always welcome! If you've built something useful:
 
 1. Fork the repository
-2. Add your example to the appropriate category
-3. Include documentation and expected output
-4. Submit a pull request
+1. Add your example to the appropriate category
+1. Include documentation and expected output
+1. Submit a pull request
 
 See [CONTRIBUTING.md](https://github.com/provide-io/provide-foundation/blob/main/CONTRIBUTING.md) for guidelines.
 
@@ -223,6 +230,6 @@ After exploring examples:
 - **[API Reference](../reference/index.md)** - Detailed API documentation
 - **[Explanation](../explanation/architecture.md)** - Understand architecture
 
----
+______________________________________________________________________
 
 **Browse all examples:** [github.com/provide-io/provide-foundation/tree/main/examples](https://github.com/provide-io/provide-foundation/tree/main/examples)

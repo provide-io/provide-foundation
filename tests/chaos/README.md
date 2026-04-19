@@ -15,6 +15,7 @@ The chaos testing infrastructure consists of:
 30+ reusable Hypothesis strategies for chaos testing:
 
 - **Core Strategies** (`strategies.py`):
+
   - `chaos_timings()` - Unpredictable timing values
   - `failure_patterns()` - When and how failures should occur
   - `malformed_inputs()` - Edge-case inputs (huge values, empty, special chars)
@@ -23,6 +24,7 @@ The chaos testing infrastructure consists of:
   - `resource_limits()` - System resource constraints
 
 - **Time Strategies** (`time_strategies.py`):
+
   - `time_advances()` - Time progression patterns
   - `rate_burst_patterns()` - Traffic burst patterns
   - `retry_backoff_patterns()` - Retry/backoff configurations
@@ -32,6 +34,7 @@ The chaos testing infrastructure consists of:
   - `duration_patterns()` - Duration values with edge cases
 
 - **Concurrency Strategies** (`concurrency_strategies.py`):
+
   - `thread_counts()` - Thread count variations
   - `pid_recycling_scenarios()` - PID recycling attack scenarios
   - `lock_contention_patterns()` - Lock contention scenarios
@@ -42,6 +45,7 @@ The chaos testing infrastructure consists of:
   - `resource_exhaustion_patterns()` - Resource exhaustion scenarios
 
 - **I/O Strategies** (`io_strategies.py`):
+
   - `file_path_chaos()` - Problematic file paths
   - `file_size_patterns()` - File size variations
   - `io_error_patterns()` - I/O error scenarios
@@ -131,14 +135,17 @@ cat chaos_test_output.log
 Hypothesis successfully discovered these edge cases that traditional testing would have missed:
 
 1. **✅ Rate limiter NaN handling** - Implementation accepts NaN/inf values without raising errors
+
    - Fixed: Added `assume()` filters to skip invalid values that don't provide meaningful behavior
    - Pattern: `assume(not math.isnan(capacity))` and `assume(capacity > 0)`
 
-2. **✅ Retry timeout edge cases** - Strategy can generate unrealistically short timeouts (4.8ms)
+1. **✅ Retry timeout edge cases** - Strategy can generate unrealistically short timeouts (4.8ms)
+
    - Fixed: Added `assume(timeout >= 0.1)` to filter unrealistic values
    - Pattern: Filter at test level for values that don't match real-world usage
 
-3. **✅ Deadline exceeded for slow operations** - Retry/concurrent tests naturally take longer than 200ms default
+1. **✅ Deadline exceeded for slow operations** - Retry/concurrent tests naturally take longer than 200ms default
+
    - Fixed: Added `deadline=None` to @settings for tests with inherent delays
    - Applied to: retry exhaustion, async backoff, concurrent logging, FileLock async tests
 
@@ -147,7 +154,9 @@ Hypothesis successfully discovered these edge cases that traditional testing wou
 Through property-based testing with Hypothesis, we established these patterns for handling edge cases:
 
 ### 1. Edge Value Filtering with `assume()`
+
 When implementation accepts invalid values but they don't provide meaningful test coverage:
+
 ```python
 from hypothesis import assume
 import math
@@ -159,7 +168,9 @@ assume(capacity > 0)
 ```
 
 ### 2. Realistic Constraint Filtering
+
 Filter unrealistic generated values at test level:
+
 ```python
 # Skip unrealistic timeouts for concurrent async operations
 if timeout is not None:
@@ -167,14 +178,18 @@ if timeout is not None:
 ```
 
 ### 3. Deadline Management for Slow Operations
+
 Use `deadline=None` for tests with intentional delays:
+
 ```python
 @settings(max_examples=30, deadline=None)  # Retries/concurrent ops take time
 def test_retry_exhaustion(...):
 ```
 
 ### 4. Health Check Suppression
+
 Combine multiple health check suppressions for complex tests:
+
 ```python
 @settings(
     max_examples=20,
@@ -184,7 +199,9 @@ Combine multiple health check suppressions for complex tests:
 ```
 
 ### 5. Chaos Slow Marker
+
 Use `@pytest.mark.chaos_slow` for long-running tests to exclude from regular runs:
+
 ```python
 @pytest.mark.chaos_slow
 @given(...)
@@ -201,6 +218,7 @@ pytest tests/chaos/ -v
 ```
 
 Files:
+
 - `test_strategies.py` - Validates core chaos strategies
 - `test_time_strategies.py` - Validates time-based strategies
 - `test_fixtures.py` - Validates ChaosTimeSource and ChaosFailureInjector
@@ -267,6 +285,7 @@ jobs:
 ### Option 3: Manual Only
 
 Keep chaos tests for local development and manual deep testing:
+
 - Run before major refactors
 - Use for investigating specific edge cases
 - Execute during debugging sessions
@@ -278,6 +297,7 @@ Current status: **Option 3 (Manual Only)** - Run locally as needed
 After fixing all edge cases discovered by Hypothesis:
 
 ### Full Chaos Profile (1000 examples per test)
+
 - ✅ **24/24 fast tests passing** (100% success rate, 24,000 total test cases)
 - ✅ **6/6 slow tests passing** (FileLock marked as `chaos_slow`, 6,000 total test cases)
 - ✅ Circuit Breaker: 5/5 tests passing (5,000 examples)
@@ -293,14 +313,16 @@ After fixing all edge cases discovered by Hypothesis:
 The chaos testing infrastructure is now complete and functional:
 
 ### ✅ Completed
+
 1. **Infrastructure built** - 30+ reusable Hypothesis strategies in provide-testkit
-2. **Tests created** - 5 chaos test files covering circuit breaker, retry, rate limiter, logger, and file locks
-3. **Edge cases discovered and fixed** - Hypothesis found NaN handling, timeout edge cases, and deadline issues
-4. **Health check configuration** - Proper suppression for function-scoped fixtures and slow operations
-5. **Hypothesis statistics enabled** - `print_blob=True` in all profiles for coverage insights
-6. **Full verification complete** - 30/30 tests passing with 30,000 property-based test cases (1000 examples × 30 tests)
+1. **Tests created** - 5 chaos test files covering circuit breaker, retry, rate limiter, logger, and file locks
+1. **Edge cases discovered and fixed** - Hypothesis found NaN handling, timeout edge cases, and deadline issues
+1. **Health check configuration** - Proper suppression for function-scoped fixtures and slow operations
+1. **Hypothesis statistics enabled** - `print_blob=True` in all profiles for coverage insights
+1. **Full verification complete** - 30/30 tests passing with 30,000 property-based test cases (1000 examples × 30 tests)
 
 ### 🎯 Final Status
+
 - **All Tests Passing**: 30/30 tests (100% success rate with chaos profile)
   - Fast tests: 24/24 (Circuit Breaker 5/5, Logger 6/6, Rate Limiter 6/6, Retry 6/6, FileLock reentrant 1/1) - 24,000 test cases
   - Slow tests: 6/6 (FileLock marked `chaos_slow` - excluded from regular runs) - 6,000 test cases

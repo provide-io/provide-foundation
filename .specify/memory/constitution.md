@@ -7,22 +7,24 @@ This repository is developed using a spec-driven workflow. Specs and decisions a
 ## 1) Workflow (default order)
 
 1. Clarify requirements and constraints when they materially affect APIs, data models, or persistence.
-2. Write/update a spec (problem, goals/non-goals, acceptance criteria).
-3. Produce a plan (architecture + approach) that maps to the spec.
-4. Produce tasks that are independently checkable.
-5. Implement only after tasks exist.
+1. Write/update a spec (problem, goals/non-goals, acceptance criteria).
+1. Produce a plan (architecture + approach) that maps to the spec.
+1. Produce tasks that are independently checkable.
+1. Implement only after tasks exist.
 
 If steps are skipped, the reason must be recorded in `DECISIONS.md`.
 
 ## 2) Repo layout conventions
 
 - Specs live under `specs/<id>-<slug>/` and contain:
+
   - `spec.md` (what/why + acceptance criteria)
   - `plan.md` (how)
   - `tasks.md` (what to do)
   - optional: `notes.md` (research links, experiments)
 
 - Decisions are appended to `DECISIONS.md` as short entries:
+
   - Date, decision, rationale, consequences.
 
 ## 3) Tooling constraints
@@ -57,6 +59,7 @@ If a different tool is required, record the rationale in `DECISIONS.md`.
 ## 6) Engineering standards (definition of done)
 
 A change is "done" when:
+
 - `uv run ruff check .` passes
 - `uv run ruff format .` has been applied (or formatting is already compliant)
 - `uv run mypy src/` passes
@@ -64,16 +67,19 @@ A change is "done" when:
 - Coverage threshold (80%) is maintained for modified code
 
 Security gate:
+
 - `uv run bandit -r src/` passes (excluding test directories)
 
 ## 7) Decision policy (when to ask vs decide)
 
 Ask a clarifying question when:
+
 - the choice affects a public API, wire format, schema, or persisted data
 - the change may break existing functionality
 - there are multiple valid approaches with different tradeoffs
 
 Decide autonomously when:
+
 - the choice is internal-only and reversible
 - conventions already exist in this repo
 - performance/security implications are minimal and testable
@@ -83,6 +89,6 @@ Decide autonomously when:
 - Specs may evolve, but acceptance criteria must remain testable.
 - If implementation deviates from spec, update the spec and record why in `DECISIONS.md`.
 
----
+______________________________________________________________________
 
 **Version**: 1.0.0 | **Ratified**: 2025-12-19 | **Last Amended**: 2025-12-19

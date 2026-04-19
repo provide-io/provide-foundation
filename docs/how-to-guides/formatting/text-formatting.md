@@ -165,6 +165,6 @@ pout(f"Processed {1234567} records")  # Hard to read
 - **[Console I/O](../console/console-io.md)**: Output formatted text
 - **[Logging](../logging/basic-logging.md)**: Log formatted data
 
----
+______________________________________________________________________
 
 **Tip**: Use formatting utilities for consistent, readable output across your application.
