@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+import contextlib
 import functools
 import inspect
 from typing import Any, Protocol, TypeVar, overload
@@ -127,21 +128,17 @@ class ResilientErrorHandler:
 
         # Check if we should suppress this error
         if self.should_suppress(exception):
-            try:
+            # Logging must never prevent error handling from completing.
+            # Swallow logging failures (e.g., KeyError in structlog processors,
+            # UnicodeEncodeError on Windows) so the decorator contract is upheld.
+            with contextlib.suppress(Exception):
                 self.log_suppressed(exception, func_name, log_context)
-            except Exception:
-                # Logging must never prevent error handling from completing.
-                # Swallow logging failures (e.g., KeyError in structlog processors,
-                # UnicodeEncodeError on Windows) so the decorator contract is upheld.
-                pass
             return self.fallback
 
         # Log the error if configured — wrapped so logging failures
         # never mask the original application error.
-        try:
+        with contextlib.suppress(Exception):
             self.log_error(exception, func_name, log_context)
-        except Exception:
-            pass
 
         # If reraise=False, return fallback instead of raising
         if not self.reraise:

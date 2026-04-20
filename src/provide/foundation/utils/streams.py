@@ -57,9 +57,7 @@ def ensure_utf8_stream(stream: TextIO) -> TextIO:
     buffer = getattr(stream, "buffer", None)
     if buffer is not None:
         try:
-            wrapper = io.TextIOWrapper(
-                buffer, encoding="utf-8", errors="replace", line_buffering=True
-            )
+            wrapper = io.TextIOWrapper(buffer, encoding="utf-8", errors="replace", line_buffering=True)
             # Prevent the wrapper from closing the underlying buffer on GC
             wrapper._owner = False  # type: ignore[attr-defined]
             return wrapper
