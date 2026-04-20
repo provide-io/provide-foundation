@@ -340,6 +340,13 @@ module = [
 ]
 ignore_missing_imports = true
 
+# The local crypto wrapper module hits cryptography's enum-as-string typing
+# quirks across many call sites (Encoding.PEM etc.). Runtime behavior is
+# covered by tests; silence the type-checker for this submodule.
+[[tool.mypy.overrides]]
+module = ["provide.foundation.crypto.*"]
+ignore_errors = true
+
 ################################################################################
 # Coverage.py Configuration
 ################################################################################
