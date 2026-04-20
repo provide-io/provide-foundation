@@ -79,7 +79,7 @@ Fine-grained control over log levels per module.
 ## Running Order
 
 1. Start with `01_basic_logging.py` for the simplest introduction
-2. Move to `02_structured_logging.py` for complete setup
-3. Explore `04_das_pattern.py` for semantic logging patterns
-4. Use `05_exception_handling.py` for error handling patterns
-5. Try `03_named_loggers.py` and `07_module_filtering.py` for organization
+1. Move to `02_structured_logging.py` for complete setup
+1. Explore `04_das_pattern.py` for semantic logging patterns
+1. Use `05_exception_handling.py` for error handling patterns
+1. Try `03_named_loggers.py` and `07_module_filtering.py` for organization

@@ -4,21 +4,17 @@
 #
 
 
+"""Core stream management for Foundation.
+Handles log streams, file handles, and output configuration.
+"""
+
 from __future__ import annotations
 
-#
-# core.py
-#
 import sys
 import threading
 from typing import TextIO
 
 from provide.foundation.concurrency.locks import get_lock_manager
-
-"""Core stream management for Foundation.
-Handles log streams, file handles, and output configuration.
-"""
-
 from provide.foundation.utils.streams import ensure_utf8_stream
 
 _PROVIDE_LOG_STREAM: TextIO = ensure_utf8_stream(sys.stderr)
@@ -163,7 +159,9 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
         if not should_allow_stream_redirect():
             return
 
-        _PROVIDE_LOG_STREAM = ensure_utf8_stream(stream) if stream is not None else ensure_utf8_stream(sys.stderr)
+        _PROVIDE_LOG_STREAM = (
+            ensure_utf8_stream(stream) if stream is not None else ensure_utf8_stream(sys.stderr)
+        )
 
         # Reconfigure structlog to use the new stream
         _reconfigure_structlog_stream()
