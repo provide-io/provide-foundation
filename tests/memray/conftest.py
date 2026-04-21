@@ -5,4 +5,4 @@
 
 """Memray stress test fixtures — provided by wrknv.memray."""
 
-from wrknv.memray.fixtures import *  # noqa: F403
+# from wrknv.memray.fixtures import *  # noqa: F403

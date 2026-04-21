@@ -5,14 +5,12 @@ Build a complete CLI task manager in 15 minutes. This tutorial demonstrates how 
 ## What We'll Build
 
 A command-line task manager with:
-
 - Add, complete, and list tasks
 - Structured logging for every action
 - Clean separation of logs from user output
 - Beautiful console output with colors and emojis
 
 **Final result:**
-
 ```bash
 $ task-manager add "Write documentation"
 ✅ Successfully added task 1: 'Write documentation'
@@ -194,7 +192,6 @@ def add_task(title: str):
 ```
 
 Foundation automatically:
-
 - Converts function parameters to CLI arguments
 - Generates help text from docstrings
 - Handles type conversion (str, int, bool, etc.)
@@ -211,7 +208,6 @@ cli = hub.create_cli(
 ```
 
 **Parameters:**
-
 - `name` (str): CLI name shown in help text (default: "cli")
 - `version` (str | None): Optional version for `--version` flag
 - `**kwargs`: Additional Click Group options (e.g., `help`, `context_settings`)
@@ -225,7 +221,6 @@ logger.info("task_created", task_id=task.id, title=task.title, emoji="✅")
 ```
 
 Benefits:
-
 - Easy to search logs for specific events (`task_created`)
 - Filterable by any field (`task_id=123`)
 - Machine-readable for log aggregation systems
@@ -243,7 +238,6 @@ pout("✅ Successfully added task", color="green")
 ```
 
 This allows you to:
-
 - Send logs to files/services without cluttering user output
 - Format user messages beautifully with colors
 - Keep structured logs for analysis
@@ -289,7 +283,11 @@ def load_tasks():
 
 ## 6. What You've Learned
 
-✅ **Declarative CLI** - Define commands with `@register_command` ✅ **Structured Logging** - Track actions with key-value logging ✅ **Output Separation** - Logs for operators, `pout`/`perr` for users ✅ **Hub System** - Central registry for commands and components ✅ **Beautiful Console** - Colors and emojis for better UX
+✅ **Declarative CLI** - Define commands with `@register_command`
+✅ **Structured Logging** - Track actions with key-value logging
+✅ **Output Separation** - Logs for operators, `pout`/`perr` for users
+✅ **Hub System** - Central registry for commands and components
+✅ **Beautiful Console** - Colors and emojis for better UX
 
 ## Next Steps
 
@@ -302,7 +300,6 @@ def load_tasks():
 ### See More Examples
 
 Browse the [Examples](examples.md) section for:
-
 - Configuration management
 - HTTP client usage
 - Async programming
@@ -315,7 +312,7 @@ Browse the [Examples](examples.md) section for:
 - Add metrics and monitoring
 - Deploy as a package
 
-______________________________________________________________________
+---
 
 **Congratulations!** You've built a complete CLI application with Foundation.
 

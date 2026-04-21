@@ -7,7 +7,6 @@ Learn how to create custom log processors to transform, enrich, filter, and sani
 Log processors are the heart of Foundation's logging pipeline. They transform log events before they're written, allowing you to add context, filter sensitive data, format output, and implement custom logic. Foundation uses a processor chain where each processor can modify the event dictionary.
 
 **What you'll learn:**
-
 - Create custom processors for event transformation
 - Add contextual information to logs
 - Filter and sanitize sensitive data
@@ -18,7 +17,6 @@ Log processors are the heart of Foundation's logging pipeline. They transform lo
 - Optimize processor performance
 
 **Key Features:**
-
 - 🔧 **Flexible API**: Simple function-based processor interface
 - 📊 **Event Enrichment**: Add context, metrics, and metadata
 - 🔒 **Data Sanitization**: Remove or mask sensitive information
@@ -905,21 +903,18 @@ def sampling_processor(logger_instance, method_name, event_dict):
 ## Next Steps
 
 ### Related Guides
-
 - **[Structured Events](structured-events.md)**: Learn event naming conventions
 - **[Basic Logging](basic-logging.md)**: Foundation logging basics
 - **[Exception Logging](exception-logging.md)**: Log and handle exceptions
 
 ### Examples
-
 - See `examples/telemetry/03_custom_processors.py` for processor examples
 - See `examples/production/07_log_pipeline.py` for production patterns
 
 ### API Reference
-
 - **[Processors API](../../reference/provide/foundation/logger/processors/index.md)**: Built-in processors
 - **[Logger Config](../../reference/provide/foundation/logger/config/index.md)**: Configuration options
 
-______________________________________________________________________
+---
 
 **Tip**: Keep processors fast and focused on a single concern. Use processor chaining to build complex pipelines from simple, testable components. Always handle errors gracefully to avoid breaking the logging pipeline.

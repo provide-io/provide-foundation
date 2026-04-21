@@ -38,7 +38,6 @@ print(new_state.count)  # 1 (new state)
 ```
 
 **Key features:**
-
 - Thread-safe access
 - Immutable by design
 - Type-safe attribute access
@@ -47,7 +46,6 @@ print(new_state.count)  # 1 (new state)
 ### Use Cases
 
 **1. Request Context:**
-
 ```python
 from provide.foundation.state import ImmutableState
 
@@ -70,7 +68,6 @@ def handle_request(request_id: str):
 ```
 
 **2. Transaction State:**
-
 ```python
 from provide.foundation.state import ImmutableState
 
@@ -448,6 +445,6 @@ global_config["timeout"] = 60  # No audit trail
 - **[Architecture](../../explanation/architecture.md)**: Understanding Foundation's design
 - **[Logging](../logging/basic-logging.md)**: Combine with structured logging
 
-______________________________________________________________________
+---
 
 **Tip**: Use ImmutableState for thread-safe data, StateMachine for workflows, and ConfigManager for dynamic configuration.

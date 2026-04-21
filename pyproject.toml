@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 #
-# provide-foundation/pyproject.toml
+# provide-foundation>=0.4.0/pyproject.toml
 #
 # Comprehensive Python foundation library for building robust applications
 #
@@ -24,7 +24,7 @@ authors = [
 maintainers = [
     { name = "provide.io", email = "code@provide.io" },
 ]
-keywords = ["telemetry", "logging", "tracing", "python", "pyvider"]
+keywords = ["telemetry", "logging", "tracing", "python", "pyvider>=0.4.0"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -87,10 +87,10 @@ process = [
 ]
 # Convenience groups
 extended = [
-    "provide-foundation[platform,process]>=0.3.21",
+    "provide-foundation[platform,process]>=0.4.0",
 ]
 all = [
-    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]>=0.3.21",
+    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]>=0.4.0",
 ]
 
 [project.scripts]
@@ -98,11 +98,11 @@ foundation = "provide.foundation.cli.main:cli"
 
 [dependency-groups]
 dev = [
-    "provide-testkit[advanced-testing,build,standard,typecheck,utils] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.28",
+    "provide-testkit[advanced-testing,build,standard,typecheck,utils]>=0.4.0",
     "memray>=1.0",
 ]
 docs = [
-    "provide-testkit[docs] @ git+https://github.com/provide-io/provide-testkit.git@v0.3.28",
+    "provide-testkit[docs]>=0.4.0",
 ]
 protobuf = [
     "protobuf>=6.32.0",

@@ -7,7 +7,6 @@ Learn how to generate and manage X.509 certificates for secure communication.
 X.509 certificates are digital documents that bind a public key to an identity. Foundation provides utilities for creating self-signed certificates, certificate signing requests (CSRs), and managing certificate chains.
 
 **Common use cases:**
-
 - Development TLS/SSL certificates
 - Internal service authentication
 - Client certificates for mutual TLS
@@ -16,7 +15,6 @@ X.509 certificates are digital documents that bind a public key to an identity. 
 ## Prerequisites
 
 Install crypto extras:
-
 ```bash
 uv add provide-foundation[crypto]
 ```
@@ -42,7 +40,6 @@ Path("key.pem").write_text(private_key_pem)
 ```
 
 **Output:**
-
 - `cert.pem`: Public certificate in PEM format
 - `key.pem`: Private key in PEM format
 
@@ -68,7 +65,6 @@ cert_pem, key_pem = generate_self_signed_cert(
 ```
 
 **When to use SAN:**
-
 - Multiple subdomains on same certificate
 - Load balancers with multiple backends
 - Development environments with various hostnames
@@ -118,11 +114,11 @@ cert_pem, key_pem = generate_self_signed_cert(
 
 **Algorithm comparison:**
 
-| Algorithm | Key Size  | Speed     | Security  | Use Case                   |
-| --------- | --------- | --------- | --------- | -------------------------- |
-| RSA-2048  | 2048 bits | Medium    | High      | Standard web servers       |
-| RSA-4096  | 4096 bits | Slow      | Very High | High-security applications |
-| ED25519   | 256 bits  | Very Fast | High      | Modern applications, IoT   |
+| Algorithm | Key Size | Speed | Security | Use Case |
+|-----------|----------|-------|----------|----------|
+| RSA-2048  | 2048 bits | Medium | High | Standard web servers |
+| RSA-4096  | 4096 bits | Slow | Very High | High-security applications |
+| ED25519   | 256 bits | Very Fast | High | Modern applications, IoT |
 
 ## Certificate Signing Request (CSR)
 
@@ -147,11 +143,10 @@ Path("private.key").write_text(private_key_pem)
 ```
 
 **Next steps with CSR:**
-
 1. Submit CSR to Certificate Authority (Let's Encrypt, DigiCert, etc.)
-1. Complete domain validation
-1. Receive signed certificate from CA
-1. Use signed certificate with your private key
+2. Complete domain validation
+3. Receive signed certificate from CA
+4. Use signed certificate with your private key
 
 ## Certificate Chain
 
@@ -619,19 +614,16 @@ def verify_cert_chain(server_cert, intermediate_cert, root_cert):
 ## Next Steps
 
 ### Related Guides
-
 - **[Key Generation](keys.md)**: Generate cryptographic keys
 - **[Signing & Verification](signing.md)**: Sign and verify data
 
 ### Examples
-
 - See `examples/crypto/` for certificate examples
 - See `examples/production/` for TLS configuration patterns
 
 ### API Reference
-
 - **[API Reference: Crypto](../../reference/provide/foundation/crypto/index.md)**: Complete API documentation
 
-______________________________________________________________________
+---
 
 **Tip**: For development, self-signed certificates are fine. For production, always use certificates from a trusted CA like Let's Encrypt (free and automated) or a commercial provider.

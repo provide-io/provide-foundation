@@ -2,21 +2,21 @@
 
 Built on industry-standard libraries like `structlog`, `click`, and `attrs`, `provide.foundation` offers a superior developer experience with beautiful console output, powerful error handling, and cross-platform system utilities.
 
-!!! info "Release Status" provide-foundation is in its pre-release series. Some APIs may change during the pre-release series.
+!!! info "Release Status"
+    provide-foundation is in its pre-release series.
+    Some APIs may change during the pre-release series.
 
-```
-- **Current version:** v0.3.0
-- **Status:** Pre-release
-```
+    - **Current version:** v0.3.0
+    - **Status:** Pre-release
 
 ## Why provide.foundation?
 
-| For Developers                                               | For Teams                                                     |
-| :----------------------------------------------------------- | :------------------------------------------------------------ |
+| For Developers | For Teams |
+| :--- | :--- |
 | ✅ **Zero Configuration**: Works beautifully out of the box. | 🤝 **Consistent**: Standardized patterns across all services. |
-| ✅ **Type Safe**: Full type hints and runtime validation.    | 🔭 **Observable**: Structured logs ready for analysis.        |
-| ✅ **Fast**: Optimized for production (>14,000 msg/sec).     | 🛠️ **Maintainable**: Clean, well-documented APIs.             |
-| ✅ **Testable**: Built-in testing utilities and patterns.    | 🧩 **Extensible**: Plugin system for customization.           |
+| ✅ **Type Safe**: Full type hints and runtime validation. | 🔭 **Observable**: Structured logs ready for analysis. |
+| ✅ **Fast**: Optimized for production (>14,000 msg/sec). | 🛠️ **Maintainable**: Clean, well-documented APIs. |
+| ✅ **Testable**: Built-in testing utilities and patterns. | 🧩 **Extensible**: Plugin system for customization. |
 
 ## Learning Path
 
@@ -88,14 +88,14 @@ This project is part of a larger ecosystem of tools for Python and Terraform dev
 
 Understand how provide-foundation, pyvider, flavorpack, and other projects work together.
 
-______________________________________________________________________
+---
 
 ## System Requirements
 
-- Python 3.11 or higher
-- Works on Linux, macOS, and Windows
-- Minimal core dependencies (`structlog`, `attrs`, `click`)
+-   Python 3.11 or higher
+-   Works on Linux, macOS, and Windows
+-   Minimal core dependencies (`structlog`, `attrs`, `click`)
 
-______________________________________________________________________
+---
 
 Ready to get started? Head to the **[Quick Start Tutorial](getting-started/quick-start.md)**.

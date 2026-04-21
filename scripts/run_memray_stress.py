@@ -7,7 +7,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-import subprocess
+import subprocess  # nosec
 import sys
 
 SCRIPTS_DIR = Path(__file__).parent

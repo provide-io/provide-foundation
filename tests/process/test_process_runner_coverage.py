@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-import subprocess
+import subprocess  # nosec
 import sys
 import tempfile
 from typing import Any

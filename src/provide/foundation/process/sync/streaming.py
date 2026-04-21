@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Iterator, Mapping
 from pathlib import Path
-import subprocess
+import subprocess  # nosec
 import sys
 from typing import Any
 

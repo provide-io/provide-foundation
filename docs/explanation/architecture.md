@@ -37,10 +37,10 @@ graph TD
 provide.foundation is structured around several key design principles:
 
 1. **Foundation Layer, Not Framework**: Provides building blocks rather than dictating application structure
-1. **Lazy Initialization**: Minimal overhead until features are actively used
-1. **Global Singletons for Ergonomics**: Balanced with testing utilities for clean test isolation
-1. **Type Safety**: Comprehensive type hints with runtime validation where needed
-1. **Production-First Design**: Thread-safe, performant, and observable by default
+2. **Lazy Initialization**: Minimal overhead until features are actively used
+3. **Global Singletons for Ergonomics**: Balanced with testing utilities for clean test isolation
+4. **Type Safety**: Comprehensive type hints with runtime validation where needed
+5. **Production-First Design**: Thread-safe, performant, and observable by default
 
 ## Core Components
 
@@ -49,7 +49,6 @@ provide.foundation is structured around several key design principles:
 The **Hub** (`provide.foundation.hub`) is the architectural cornerstone, providing:
 
 #### Component Registry
-
 - **Centralized component management** with lifecycle control
 - **Dependency injection** for loosely-coupled architecture
 - **Thread-safe registration** using `threading.RLock`
@@ -64,7 +63,6 @@ db = hub.get_component("database")
 ```
 
 #### Command Registry
-
 - **Declarative CLI command registration** via `@register_command`
 - **Automatic help generation** from docstrings and type hints
 - **Nested command hierarchies** with dot notation
@@ -80,7 +78,6 @@ def migrate_database():
 ```
 
 #### Design Decisions
-
 - **Threading Model**: Uses `threading.RLock` rather than `asyncio.Lock` for broader compatibility
 - **Performance Impact**: Negligible for typical use cases (CLI apps, initialization-time registration)
 - **Trade-off**: Not optimized for high-throughput async services with runtime registration in hot paths
@@ -90,7 +87,6 @@ def migrate_database():
 The **Logger** (`provide.foundation.logger`) provides structured logging built on `structlog`:
 
 #### Key Features
-
 - **Lazy Initialization**: Logger auto-initializes on first use to avoid import-time side effects
 - **Event-Driven Enrichment**: Structured logging with Domain-Action-Status patterns
 - **Emoji-Enhanced Output**: Visual parsing for human-readable logs (configurable)
@@ -98,7 +94,6 @@ The **Logger** (`provide.foundation.logger`) provides structured logging built o
 - **Thread-Safe**: All logging operations are thread-safe and async-compatible
 
 #### Processor Pipeline
-
 ```mermaid
 graph LR
     A[Log Event] --> B[Context Processors]
@@ -109,7 +104,6 @@ graph LR
 ```
 
 Processors include:
-
 - **Context injection** (timestamp, caller info, thread ID)
 - **Event enrichment** (emoji mapping, domain/action/status extraction)
 - **Filtering** (log level, module-level configuration)
@@ -117,7 +111,6 @@ Processors include:
 - **Output** (stdout, stderr, file, custom streams)
 
 #### Configuration
-
 ```python
 from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
@@ -152,7 +145,6 @@ hub.initialize_foundation(advanced_config)
 The **Config** (`provide.foundation.config`) module provides:
 
 #### BaseConfig Pattern
-
 ```python
 from provide.foundation.config import BaseConfig, env_field
 from attrs import define
@@ -168,7 +160,6 @@ config = DatabaseConfig.from_env()
 ```
 
 #### Features
-
 - **Type validation** through `attrs`
 - **Environment variable parsing** with automatic type coercion
 - **Secret management** with `file://` prefix support
@@ -180,7 +171,6 @@ config = DatabaseConfig.from_env()
 Foundation provides two complementary APIs:
 
 **1. Direct Access** (`utils.environment`):
-
 ```python
 from provide.foundation.utils.environment import get_bool, get_int, get_str
 
@@ -189,7 +179,6 @@ port = get_int("PORT", default=8080)
 ```
 
 **2. Structured Config** (`config.env`):
-
 ```python
 from provide.foundation.config import BaseConfig, env_field
 
@@ -210,7 +199,6 @@ The **State** (`provide.foundation.state`) module provides:
 - **VersionedConfig**: Configuration with change tracking
 
 Useful for:
-
 - Application lifecycle state tracking
 - Configuration hot-reloading
 - Audit trails for state changes
@@ -221,7 +209,6 @@ Useful for:
 The **CLI** (`provide.foundation.cli`) module provides a declarative framework built on `click`:
 
 #### Features
-
 - **Automatic command discovery** via `@register_command`
 - **Type-safe arguments** with automatic validation
 - **Rich output utilities** (`pout()`, `perr()` for user-facing output)
@@ -229,7 +216,6 @@ The **CLI** (`provide.foundation.cli`) module provides a declarative framework b
 - **Context management** for CLI runtime state
 
 #### Design Pattern
-
 ```python
 from provide.foundation.hub import register_command
 from provide.foundation.cli import pout, perr
@@ -258,7 +244,6 @@ def deploy_app(environment: str, force: bool = False):
 The **Resilience** (`provide.foundation.resilience`) module provides:
 
 #### Retry Pattern
-
 ```python
 from provide.foundation.resilience import retry
 from provide.foundation.errors import NetworkError
@@ -270,14 +255,12 @@ def fetch_data():
 ```
 
 Features:
-
 - **Exponential backoff** with configurable multiplier
 - **Maximum attempts** and timeout support
 - **Exception filtering** (only retry specific exceptions)
 - **Jitter** for distributed system resilience
 
 #### Circuit Breaker
-
 ```python
 from provide.foundation.resilience import circuit_breaker
 
@@ -292,20 +275,17 @@ States: **Closed → Open → Half-Open → Closed**
 ### Data & Serialization
 
 #### File Operations
-
 - **Atomic writes** to prevent partial writes
 - **Change detection** for file watching
 - **Format support** (JSON, YAML, TOML, text)
 - **Safety guarantees** (temp files, rename operations)
 
 #### Archive Operations
-
 - **TAR, ZIP, GZIP, BZIP2** support
 - **Streaming** for large files
 - **Compression** with zstandard (optional)
 
 #### Serialization
-
 - **Type-safe JSON** serialization with `provide_dumps`/`provide_loads`
 - **Custom encoders** for complex types
 - **Schema validation** support
@@ -324,7 +304,6 @@ The **Concurrency** (`provide.foundation.concurrency`) module provides:
 Foundation includes comprehensive utilities:
 
 #### Time Utilities
-
 ```python
 from provide.foundation.time import provide_now, provide_sleep
 
@@ -333,7 +312,6 @@ await provide_sleep(1.0)  # Async-compatible sleep
 ```
 
 #### Formatting Utilities
-
 ```python
 from provide.foundation.formatting import format_table, format_bytes, to_snake_case
 
@@ -348,7 +326,6 @@ print(to_snake_case("CamelCase"))  # "camel_case"
 ```
 
 #### Platform Detection
-
 ```python
 from provide.foundation.platform import get_os_info, is_macos
 
@@ -362,7 +339,6 @@ if is_macos():
 ### Initialization Patterns
 
 #### 1. Zero Configuration (Recommended for Simple Cases)
-
 ```python
 from provide.foundation import logger
 
@@ -371,7 +347,6 @@ logger.info("app_started")
 ```
 
 #### 2. Explicit Initialization (Recommended for Production)
-
 ```python
 from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
@@ -389,7 +364,6 @@ hub.initialize_foundation(config)
 ```
 
 #### 3. Advanced Configuration
-
 ```python
 from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
 
@@ -424,10 +398,10 @@ graph LR
 ```
 
 1. **Import Time**: Minimal overhead, no side effects
-1. **Lazy Initialization**: Components initialize on first use
-1. **Component Registration**: Register custom components, commands
-1. **Runtime**: Normal application execution
-1. **Shutdown**: Graceful cleanup of resources
+2. **Lazy Initialization**: Components initialize on first use
+3. **Component Registration**: Register custom components, commands
+4. **Runtime**: Normal application execution
+5. **Shutdown**: Graceful cleanup of resources
 
 ### Graceful Shutdown
 
@@ -441,14 +415,12 @@ shutdown_foundation()
 ```
 
 This function:
-
 - Flushes any pending log messages
 - Closes file handlers
 - Releases resources
 - Resets internal state (useful for testing)
 
 **When to use:**
-
 - Before process termination in CLI applications
 - In web framework shutdown hooks (FastAPI `@app.on_event("shutdown")`)
 - Between test runs (handled automatically by `provide-testkit`)
@@ -456,7 +428,6 @@ This function:
 ### Shutdown Examples for Web Frameworks
 
 #### FastAPI
-
 ```python
 from fastapi import FastAPI
 from provide.foundation import shutdown_foundation
@@ -470,7 +441,6 @@ async def shutdown():
 ```
 
 #### Flask
-
 ```python
 from flask import Flask
 from provide.foundation import shutdown_foundation
@@ -491,7 +461,6 @@ def teardown(exception=None):
 ```
 
 #### Django
-
 ```python
 # In your Django app's apps.py
 
@@ -513,7 +482,6 @@ class MyAppConfig(AppConfig):
 ```
 
 #### Signal Handlers (for CLI tools)
-
 ```python
 import signal
 import sys
@@ -598,31 +566,26 @@ Foundation provides an **Event Set** system for domain-specific emoji mapping an
 Foundation includes pre-configured event sets for common domains:
 
 - **`http`** - HTTP request/response operations
-
   - Maps HTTP methods (GET→📥, POST→📤, DELETE→🗑️)
   - Maps status codes (2xx→✅, 4xx→⚠️, 5xx→🔥)
   - Adds metadata for success/error classification
 
 - **`database`** - Database operations
-
   - Maps operations (SELECT→📖, INSERT→➕, UPDATE→✏️, DELETE→🗑️)
   - Tracks query performance
   - Connection pool events
 
 - **`llm`** - Large Language Model operations
-
   - Maps LLM providers (OpenAI→🤖, Anthropic→🧠)
   - Token usage tracking
   - Model performance metrics
 
 - **`task_queue`** - Background job processing
-
   - Task lifecycle events (queued→📥, running→⚙️, completed→✅)
   - Worker status tracking
   - Retry and failure handling
 
 - **`das`** - Domain-Action-Status pattern
-
   - Generic domain/action/status enrichment
   - Fallback for custom event patterns
 
@@ -711,14 +674,12 @@ logger.info(
 #### When to Use Event Sets vs. Manual Emojis
 
 **Use Event Sets when:**
-
 - You have a domain with consistent event patterns
 - You want automatic enrichment across many log statements
 - You need metadata injection based on field values
 - You're building reusable logging patterns
 
 **Use Manual Emojis when:**
-
 - You have one-off log statements
 - The emoji doesn't fit a pattern
 - You want explicit control
@@ -753,15 +714,13 @@ logger.info("http_request", http_method="get")  # Auto-adds 📥
 - **Lock contention**: Minimal for typical CLI/service patterns
 
 **Not optimized for**:
-
-- Ultra-low latency (\<100μs) requirements
+- Ultra-low latency (<100μs) requirements
 - High-throughput async services with hot-path registration
 - Massive concurrent writes to shared state
 
 ## Integration Patterns
 
 ### With FastAPI
-
 ```python
 from fastapi import FastAPI
 from provide.foundation import logger
@@ -779,7 +738,6 @@ async def root():
 ```
 
 ### With Django
-
 ```python
 # settings.py
 from provide.foundation import get_hub, LoggingConfig, TelemetryConfig
@@ -800,7 +758,6 @@ class MyView(View):
 ```
 
 ### With Celery
-
 ```python
 from celery import Celery
 from provide.foundation import logger
@@ -842,13 +799,11 @@ def reset_foundation():
 **Decision**: Use global singletons (`get_hub()`, `logger`)
 
 **Benefits**:
-
 - Ergonomic API without passing objects everywhere
 - Consistent access patterns across modules
 - Simple integration with existing code
 
 **Mitigation**:
-
 - `provide-testkit` provides clean test isolation
 - Lazy initialization minimizes side effects
 - Clear initialization points for configuration
@@ -858,43 +813,39 @@ def reset_foundation():
 **Decision**: Use `threading.RLock` in registry, not `asyncio.Lock`
 
 **Rationale**:
-
 - Broader compatibility (sync and async code)
 - Negligible overhead for typical use cases
 - Simpler mental model for CLI applications
 
 **When to reconsider**:
-
 - Building ultra-high-throughput async services
 - Hot-path registration in async request handlers
-- > 10k req/sec with runtime component registration
+- >10k req/sec with runtime component registration
 
 ### Opinionated Stack
 
 **Decision**: Tightly integrated with `structlog`, `attrs`, `click`
 
 **Benefits**:
-
 - Cohesive, well-tested integration
 - Superior developer experience
 - Consistent patterns across features
 
 **Trade-offs**:
-
 - Less flexibility to swap dependencies
 - Learning curve if unfamiliar with chosen tools
 - May conflict with existing tool choices
 
-______________________________________________________________________
+---
 
 ## Summary
 
 provide.foundation's architecture prioritizes:
 
 1. **Developer Experience**: Intuitive APIs, minimal boilerplate
-1. **Production Readiness**: Thread-safe, performant, observable
-1. **Extensibility**: Clear extension points for customization
-1. **Testing**: First-class testing support with clean isolation
-1. **Framework Agnostic**: Works with any Python framework or standalone
+2. **Production Readiness**: Thread-safe, performant, observable
+3. **Extensibility**: Clear extension points for customization
+4. **Testing**: First-class testing support with clean isolation
+5. **Framework Agnostic**: Works with any Python framework or standalone
 
 The result is a foundation layer that provides robust infrastructure without dictating application architecture.

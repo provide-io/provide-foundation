@@ -7,7 +7,6 @@ Learn how to sign data and verify signatures using cryptographic keys with Found
 Digital signatures provide cryptographic proof of authenticity and integrity. Foundation supports multiple signature algorithms including Ed25519 (recommended), RSA, and ECDSA, with simple APIs for signing messages, files, and structured data.
 
 **What you'll learn:**
-
 - Sign and verify data with Ed25519, RSA, and ECDSA
 - Sign files and verify file integrity
 - Implement detached signatures
@@ -18,7 +17,6 @@ Digital signatures provide cryptographic proof of authenticity and integrity. Fo
 - Follow security best practices
 
 **Key Features:**
-
 - 🔐 **Multiple Algorithms**: Ed25519, RSA, ECDSA support
 - ⚡ **High Performance**: Fast signature generation and verification
 - 📝 **Message Signing**: Sign arbitrary data and messages
@@ -1004,23 +1002,20 @@ def test_api_request_signing():
 ## Next Steps
 
 ### Related Guides
-
 - **[Key Generation](keys.md)**: Generate cryptographic keys for signing
 - **[Certificates](certificates.md)**: X.509 certificates and PKI
 - **[Basic Logging](../logging/basic-logging.md)**: Log signature operations
 
 ### Examples
-
 - See `examples/crypto/03_digital_signatures.py` for signature examples
 - See `examples/crypto/04_jwt_signing.py` for JWT patterns
 - See `examples/production/06_api_signing.py` for API authentication
 
 ### API Reference
-
 - **[Crypto Module](../../reference/provide/foundation/crypto/index.md)**: Complete crypto API
 - **[Ed25519 Functions](../../reference/provide/foundation/crypto/ed25519.md)**: Ed25519 signatures
 - **[RSA Functions](../../reference/provide/foundation/crypto/rsa.md)**: RSA signatures
 
-______________________________________________________________________
+---
 
 **Tip**: Prefer Ed25519 signatures for new applications - they're faster and more secure than RSA while providing smaller signature sizes. Always verify signatures before trusting data, and include timestamps or nonces to prevent replay attacks.

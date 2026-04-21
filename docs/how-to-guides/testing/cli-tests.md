@@ -7,7 +7,6 @@ Learn how to test CLI applications built with Foundation using Click's testing u
 Testing CLI applications requires special tools to simulate command execution, capture output, and verify behavior. Foundation provides comprehensive testing support for CLI commands through integration with Click's test runner and provide-testkit.
 
 **What you'll learn:**
-
 - Basic CLI command testing
 - Testing with arguments and options
 - Capturing and verifying output
@@ -19,7 +18,6 @@ Testing CLI applications requires special tools to simulate command execution, c
 ## Prerequisites
 
 Install testing dependencies:
-
 ```bash
 uv add provide-testkit
 uv add pytest
@@ -724,20 +722,17 @@ def test_full_workflow():
 ## Next Steps
 
 ### Related Guides
-
 - **[Unit Testing](unit-tests.md)**: General unit testing with provide-testkit
 - **[Building Commands](../cli/commands.md)**: Create CLI commands
 - **[CLI Arguments](../cli/arguments.md)**: Advanced argument handling
 
 ### Examples
-
 - See `examples/cli/` for CLI application examples
 - See `tests/cli/` in the repository for more test patterns
 
 ### API Reference
-
 - **[API Reference: CLI](../../reference/provide/foundation/cli/index.md)**: Complete CLI API documentation
 
-______________________________________________________________________
+---
 
 **Tip**: Always use `CliRunner` in isolated filesystem mode for file operations to avoid test pollution. Use `reset_foundation_setup_for_testing()` to ensure clean state between tests.

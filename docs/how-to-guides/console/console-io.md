@@ -37,7 +37,6 @@ pout("Done!", color="green")
 ```
 
 **Available parameters:**
-
 - `message`: Content to output (any type)
 - `color`: Color name (red, green, yellow, blue, cyan, magenta, white)
 - `bold`: Bold text (default: False)
@@ -219,7 +218,6 @@ pout({"status": "success", "records": 42}, json_key="result")
 ```
 
 **Enable JSON mode:**
-
 ```python
 from provide.foundation.context import CLIContext
 from provide.foundation import pout
@@ -402,6 +400,6 @@ def greet(name: str, confirm: bool):
 - **[Logging](../logging/basic-logging.md)**: Use logging for debugging
 - **[Architecture](../../explanation/architecture.md)**: Understand Foundation's design
 
-______________________________________________________________________
+---
 
 **Tip**: Always use `pout()`/`perr()` for user-facing output and `logger` for system logging.
