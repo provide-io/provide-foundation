@@ -125,7 +125,6 @@ def update_config(key: str, value: str):
 ## Why Atomic Writes Matter
 
 **Without atomic writes:**
-
 ```python
 # ❌ Dangerous - can corrupt file if interrupted
 with open("config.json", "w") as f:
@@ -134,7 +133,6 @@ with open("config.json", "w") as f:
 ```
 
 **With atomic writes:**
-
 ```python
 # ✅ Safe - original file unchanged until write completes
 atomic_write(
@@ -164,6 +162,6 @@ except FileOperationError as e:
 - **[File Watching](watching.md)** - Monitor file changes
 - **[API Reference: File](../../reference/provide/foundation/file/index.md)** - Complete file API
 
-______________________________________________________________________
+---
 
 **See also:** [examples/file_operations/01_basic_usage.py](https://github.com/provide-io/provide-foundation/blob/main/examples/file_operations/01_basic_usage.py)

@@ -5,7 +5,6 @@ Learn how to create custom HTTP middleware for logging, authentication, rate lim
 ## Overview
 
 Middleware allows you to intercept and modify HTTP requests and responses, enabling cross-cutting concerns like:
-
 - **Logging** - Track all requests and responses
 - **Authentication** - Verify API keys, tokens, or sessions
 - **Rate Limiting** - Protect against abuse
@@ -18,7 +17,6 @@ Foundation's middleware system is compatible with modern Python HTTP clients and
 ## Prerequisites
 
 Install transport extras:
-
 ```bash
 uv add provide-foundation[transport]
 ```
@@ -778,20 +776,17 @@ async def good_middleware(request, call_next):
 ## Next Steps
 
 ### Related Guides
-
 - **[Making Requests](requests.md)**: HTTP request patterns
 - **[Retry Patterns](../resilience/retry.md)**: Retry logic
 - **[Circuit Breakers](../resilience/circuit-breaker.md)**: Circuit breaker pattern
 
 ### Examples
-
 - See `examples/transport/01_http_client.py` for middleware examples
 - See `examples/production/` for production middleware patterns
 
 ### API Reference
-
 - **[API Reference: Transport](../../reference/provide/foundation/transport/index.md)**: Complete API documentation
 
-______________________________________________________________________
+---
 
 **Tip**: Keep middleware focused on a single responsibility. Combine multiple simple middleware instead of creating one complex middleware that does everything.

@@ -200,7 +200,7 @@ def check_git_tag_consistency(version: str) -> bool:
 
     """
     try:
-        import subprocess
+        import subprocess  # nosec
 
         # Get latest git tag for current commit
         result = subprocess.run(

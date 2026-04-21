@@ -54,7 +54,6 @@ spec:
 ## Environment Variable Best Practices
 
 **❌ Don't:**
-
 ```python
 # Never hardcode secrets
 API_KEY = "sk_live_abc123..."
@@ -64,7 +63,6 @@ logger.info("api_call", api_key=api_key)  # BAD!
 ```
 
 **✅ Do:**
-
 ```python
 # Load from environment
 from provide.foundation.utils.environment import get_str
@@ -164,6 +162,6 @@ def load_vault_secret(path: str, key: str) -> str:
 - **[File-Based Config](file-config.md)** - Loading from files
 - **[Production Deployment](../production/deployment.md)** - Production patterns
 
-______________________________________________________________________
+---
 
 **Security Tip:** Never commit secrets to version control. Use `.gitignore` to exclude secret files.

@@ -318,7 +318,7 @@ def suppress_and_log(
             try:
                 return func(*args, **kwargs)
             except exceptions as e:
-                try:
+                with contextlib.suppress(Exception):
                     from provide.foundation.hub.foundation import get_foundation_logger
 
                     if log_level in ("debug", "info", "warning", "error", "critical"):
@@ -333,9 +333,6 @@ def suppress_and_log(
                         error=str(e),
                         fallback=fallback,
                     )
-                except Exception:
-                    # Logging must never prevent suppression from working
-                    pass
 
                 return fallback
 
@@ -377,7 +374,7 @@ def fallback_on_error(
                 return func(*args, **kwargs)
             except catch_types as e:
                 if log_errors:
-                    try:
+                    with contextlib.suppress(Exception):
                         from provide.foundation.hub.foundation import get_foundation_logger
 
                         get_foundation_logger().warning(
@@ -387,15 +384,12 @@ def fallback_on_error(
                             error=str(e),
                             fallback=getattr(fallback_func, "__name__", "<anonymous>"),
                         )
-                    except Exception:
-                        # Logging must never prevent fallback from executing
-                        pass
 
                 # Call fallback with same arguments
                 try:
                     return fallback_func(*args, **kwargs)
                 except Exception as fallback_error:
-                    try:
+                    with contextlib.suppress(Exception):
                         from provide.foundation.hub.foundation import get_foundation_logger
 
                         get_foundation_logger().error(
@@ -404,9 +398,6 @@ def fallback_on_error(
                             original_error=str(e),
                             fallback_error=str(fallback_error),
                         )
-                    except Exception:
-                        # Logging must never mask the fallback error
-                        pass
                     # Re-raise the fallback error
                     raise fallback_error from e
 

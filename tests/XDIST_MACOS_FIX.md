@@ -3,7 +3,6 @@
 ## Problem Summary
 
 When running `pytest -n 24` (or any high worker count) on macOS, the **entire macOS GUI freezes**:
-
 - All Terminal.app windows become unresponsive
 - Mouse/keyboard input to GUI apps stops working
 - SSH sessions continue to work fine (showing pytest is still running)
@@ -14,7 +13,6 @@ When running `pytest -n 24` (or any high worker count) on macOS, the **entire ma
 **NOT a pytest bug** - this is a macOS system resource exhaustion issue caused by:
 
 ### 1. Excessive Diagnostic Logging (Primary Cause)
-
 - **Location**: `tests/conftest.py` lines 184-190, 195-198
 - **Issue**: Logging on EVERY test start/end for EVERY worker
 - **Impact**: 24 workers × 5640 tests × 2 log lines = **270,720+ stderr writes**
@@ -25,7 +23,6 @@ When running `pytest -n 24` (or any high worker count) on macOS, the **entire ma
   - This blocks the main GUI event loop, freezing all macOS UI
 
 ### 2. File Descriptor Limits (Secondary Issue)
-
 - **Issue**: macOS defaults to 256 FDs per process (`launchctl limit maxfiles`)
 - **Impact**: 24 workers × ~15 FDs each = 360 FDs needed > 256 limit
 - **Symptom**: Can cause additional terminal blocking
@@ -37,14 +34,12 @@ When running `pytest -n 24` (or any high worker count) on macOS, the **entire ma
 **File**: `tests/conftest.py`
 
 **Before**:
-
 ```python
 if os.getenv("PYTEST_XDIST_WORKER"):
     conftest_diag_logger.debug(f"[Worker {worker_id}] Starting test: {test_name}")
 ```
 
 **After**:
-
 ```python
 # Only log if explicitly enabled via PYTEST_XDIST_DEBUG=1
 if os.getenv("PYTEST_XDIST_DEBUG") and os.getenv("PYTEST_XDIST_WORKER"):
@@ -70,14 +65,12 @@ sudo launchctl limit maxfiles 65536 unlimited
 ## How to Use
 
 ### Run Tests Normally (No GUI Freeze)
-
 ```bash
 pytest -n 24
 pytest -n auto
 ```
 
 ### Enable Diagnostic Logging (For Debugging Only)
-
 ```bash
 export PYTEST_XDIST_DEBUG=1
 pytest -n 4  # Use fewer workers when debugging
@@ -93,7 +86,6 @@ pytest -n 4  # Use fewer workers when debugging
 ## Technical Details
 
 ### macOS Logging Architecture
-
 ```
 pytest → stderr → Console.app → unified logging system
                 ↓
@@ -101,12 +93,11 @@ pytest → stderr → Console.app → unified logging system
 ```
 
 With 270K+ rapid log messages:
-
 1. Console.app buffers overflow
-1. WindowServer blocks waiting for rendering
-1. Main GUI event loop freezes
-1. All Terminal.app windows hang
-1. Mouse/keyboard stop responding
+2. WindowServer blocks waiting for rendering
+3. Main GUI event loop freezes
+4. All Terminal.app windows hang
+5. Mouse/keyboard stop responding
 
 ### Why This Only Affects macOS
 
@@ -117,29 +108,24 @@ With 270K+ rapid log messages:
 ## Files Modified
 
 1. **tests/conftest.py** (lines 183-198):
-
    - Added `PYTEST_XDIST_DEBUG` env var check
    - Disabled diagnostic logging by default
    - Added explanatory comments
 
-1. **scripts/fix_macos_fd_limit.sh** (NEW):
-
+2. **scripts/fix_macos_fd_limit.sh** (NEW):
    - Script to increase FD limits if needed
 
-1. **scripts/debug_xdist_freeze.sh** (NEW):
-
+3. **scripts/debug_xdist_freeze.sh** (NEW):
    - Debugging tool for investigating issues
 
 ## Verification
 
 Run full test suite with 24 workers:
-
 ```bash
 pytest -n 24 -v
 ```
 
 Should complete in ~77 seconds with:
-
 - ✅ No GUI freeze
 - ✅ No terminal hangs
 - ✅ All workers complete successfully
@@ -147,13 +133,12 @@ Should complete in ~77 seconds with:
 ## Related Issues
 
 This fix also resolves:
-
 - GC scanning overhead in xdist workers (separate fix)
 - Session-scoped HTTP fixture contention (separate fix)
 - Event loop cleanup issues in xdist (separate fix)
 
 See commit history for full details.
 
-______________________________________________________________________
+---
 
 **Bottom Line**: The macOS GUI freeze was caused by overwhelming the macOS logging/rendering subsystem with 270K+ diagnostic log messages, not by pytest-xdist itself.

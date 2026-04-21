@@ -7,7 +7,6 @@ Learn how to make HTTP requests with Foundation's transport client built on http
 Foundation provides a powerful HTTP client with automatic retries, logging, middleware support, and async/await patterns. Built on httpx, it adds production-focused features while maintaining a familiar API.
 
 **Key features:**
-
 - Async-first with httpx backend
 - Automatic request/response logging
 - Middleware support for cross-cutting concerns
@@ -18,7 +17,6 @@ Foundation provides a powerful HTTP client with automatic retries, logging, midd
 ## Prerequisites
 
 Install transport extras:
-
 ```bash
 uv add provide-foundation[transport]
 ```
@@ -781,20 +779,17 @@ class RateLimitedClient:
 ## Next Steps
 
 ### Related Guides
-
 - **[Custom Middleware](middleware.md)**: Add middleware for auth, logging, retries
 - **[Retry Patterns](../resilience/retry.md)**: Automatically retry failed requests
 - **[Circuit Breakers](../resilience/circuit-breaker.md)**: Protect against cascading failures
 
 ### Examples
-
 - See `examples/transport/01_http_client.py` for comprehensive HTTP client examples
 - See `examples/production/` for production HTTP patterns
 
 ### API Reference
-
 - **[API Reference: Transport](../../reference/provide/foundation/transport/index.md)**: Complete API documentation
 
-______________________________________________________________________
+---
 
 **Tip**: Always use async context managers (`async with`) with HTTPClient to ensure proper connection cleanup. Set appropriate timeouts to prevent hanging requests.

@@ -39,7 +39,6 @@ export OPENOBSERVE_STREAM="default"  # Optional
 ### 01_openobserve_integration.py
 
 Complete end-to-end example demonstrating:
-
 - Sending logs to OpenObserve (via OTLP or bulk API)
 - Querying logs with SQL
 - Searching by level, trace ID, service
@@ -123,21 +122,18 @@ This allows you to use OpenTelemetry SDKs with OpenObserve automatically.
 ## Features
 
 ### Log Querying
-
 - Full SQL query support
 - Time range filtering (relative and absolute)
 - Multiple output formats (JSON, table, CSV, log format)
 - Pagination support
 
 ### Log Streaming
-
 - Real-time log tailing (like `tail -f`)
 - Filter-based streaming
 - HTTP/2 streaming support
 - Polling-based streaming fallback
 
 ### Search Operations
-
 - Search by log level
 - Search by trace ID
 - Search by service name
@@ -145,7 +141,6 @@ This allows you to use OpenTelemetry SDKs with OpenObserve automatically.
 - Custom SQL queries
 
 ### Formatters
-
 - **JSON**: Machine-readable output
 - **Table**: Columnar display
 - **Log**: Human-readable log format

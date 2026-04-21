@@ -156,6 +156,6 @@ logger.info(
 - **[Process Execution](../process/subprocess.md)**: Platform-aware process execution
 - **[Configuration](../configuration/env-variables.md)**: Platform-specific configuration
 
-______________________________________________________________________
+---
 
 **Tip**: Install `provide-foundation[platform]` for full CPU detection capabilities.

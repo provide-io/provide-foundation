@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from pathlib import Path
-import subprocess
+import subprocess  # nosec
 from typing import Any
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError

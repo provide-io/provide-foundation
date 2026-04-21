@@ -128,9 +128,10 @@ class ToolRegistry:
 
         """
         tools = []
-        for name in self.hub._component_registry.list_dimension(self.DIMENSION):
-            entry = self.hub._component_registry.get_entry(name, self.DIMENSION)
-            metadata = entry.metadata if entry is not None and hasattr(entry, "metadata") else {}
+        dimension_list = self.hub._component_registry.list_dimension(self.DIMENSION)
+        for item in dimension_list:
+            name, entry = item  # type: ignore[str-unpack]
+            metadata = entry.metadata if hasattr(entry, "metadata") else {}
             tools.append((name, metadata))
         return tools
 

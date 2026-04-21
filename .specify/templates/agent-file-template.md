@@ -25,5 +25,4 @@ Auto-generated from all feature plans. Last updated: [DATE]
 [LAST 3 FEATURES AND WHAT THEY ADDED]
 
 <!-- MANUAL ADDITIONS START -->
-
 <!-- MANUAL ADDITIONS END -->

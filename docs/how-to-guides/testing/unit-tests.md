@@ -7,7 +7,6 @@ Learn how to write comprehensive unit tests for Foundation applications using pr
 Foundation provides `provide-testkit`, a comprehensive testing toolkit that ensures clean state between tests, proper resource cleanup, and easy log capture. It integrates seamlessly with pytest for a powerful testing experience.
 
 **Key features:**
-
 - **State reset** - Clean Foundation state for each test
 - **Log capture** - Capture and verify log output
 - **FoundationTestCase** - Base test class with setup/teardown
@@ -17,7 +16,6 @@ Foundation provides `provide-testkit`, a comprehensive testing toolkit that ensu
 ## Prerequisites
 
 Install testing dependencies:
-
 ```bash
 uv add provide-testkit
 uv add pytest
@@ -683,16 +681,14 @@ def test_time_dependent(mock_datetime):
 ## Next Steps
 
 ### Related Guides
-
 - **[Testing CLI Commands](cli-tests.md)**: Test CLI applications
 - **[Basic Logging](../logging/basic-logging.md)**: Understand logging for tests
 - **[Dependency Injection](../../explanation/dependency-injection.md)**: DI makes testing easier
 
 ### Examples
-
 - See `tests/` directory in the repository for comprehensive test examples
 - See `examples/testing/` for testing patterns
 
-______________________________________________________________________
+---
 
 **Tip**: Always reset Foundation state with `reset_foundation_setup_for_testing()` before each test. Use `FoundationTestCase` as your base class for automatic setup/teardown.

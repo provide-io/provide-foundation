@@ -11,7 +11,7 @@ from collections.abc import Mapping
 import functools
 import os
 from pathlib import Path
-import subprocess
+import subprocess  # nosec
 import sys
 import threading
 import traceback

@@ -26,7 +26,6 @@ print(masked)
 ```
 
 **Default patterns masked:**
-
 - API keys (api_key, apikey)
 - Tokens (token, auth_token, access_token)
 - Passwords (password, passwd, pwd)
@@ -103,7 +102,6 @@ print(safe_headers)
 ```
 
 **Default sensitive headers:**
-
 - Authorization
 - X-API-Key, API-Key
 - Cookie, Set-Cookie
@@ -124,7 +122,6 @@ print(safe_uri)
 ```
 
 **Default sensitive parameters:**
-
 - api_key, apikey
 - token, access_token, auth_token
 - password, passwd
@@ -339,6 +336,6 @@ def log_application_config(config: dict):
 - **[Configuration](../configuration/env-variables.md)**: Secure configuration management
 - **[Process Execution](../process/subprocess.md)**: Secure command execution
 
-______________________________________________________________________
+---
 
 **Tip**: Always sanitize data before logging to prevent accidental secret exposure.

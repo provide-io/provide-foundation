@@ -7,7 +7,6 @@ Learn best practices for deploying Foundation applications to production environ
 Deploying Foundation applications to production requires careful consideration of configuration management, secret handling, logging, health checks, and scaling. This guide provides battle-tested deployment patterns for containerized environments, cloud platforms, and orchestration systems.
 
 **What you'll learn:**
-
 - Build production Docker images
 - Deploy to Kubernetes with best practices
 - Manage secrets securely
@@ -18,7 +17,6 @@ Deploying Foundation applications to production requires careful consideration o
 - Monitor deployments
 
 **Key Features:**
-
 - 🐳 **Docker**: Optimized multi-stage builds
 - ☸️ **Kubernetes**: Production-focused manifests
 - 🔒 **Secret Management**: Secure secret handling
@@ -883,21 +881,18 @@ signal.signal(signal.SIGTERM, graceful_shutdown)
 ## Next Steps
 
 ### Related Guides
-
 - **[Monitoring & Observability](monitoring.md)**: Monitor production deployments
 - **[Basic Logging](../logging/basic-logging.md)**: Production logging setup
 - **[Configuration](../configuration/env-variables.md)**: Environment configuration
 
 ### Examples
-
 - See `examples/deployment/` for deployment templates
 - See `examples/production/10_graceful_shutdown.py` for shutdown patterns
 
 ### API Reference
-
 - **[Hub API](../../reference/provide/foundation/hub/index.md)**: Application lifecycle
 - **[Config API](../../reference/provide/foundation/config/index.md)**: Configuration management
 
-______________________________________________________________________
+---
 
 **Tip**: Start with Docker Compose for local development, then move to Kubernetes for production. Always use health checks, resource limits, and graceful shutdown. Implement rolling updates for zero-downtime deployments. Keep secrets in secure stores, never in code or config files.
