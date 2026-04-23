@@ -207,19 +207,6 @@ wheels = [
 ]
 
 [[package]]
-name = "cattrs"
-version = "26.1.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "attrs" },
-    { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a0/ec/ba18945e7d6e55a58364d9fb2e46049c1c2998b3d805f19b703f14e81057/cattrs-26.1.0.tar.gz", hash = "sha256:fa239e0f0ec0715ba34852ce813986dfed1e12117e209b816ab87401271cdd40", size = 495672, upload-time = "2026-02-18T22:15:19.406Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/56/60547f7801b97c67e97491dc3d9ade9fbccbd0325058fd3dfcb2f5d98d90/cattrs-26.1.0-py3-none-any.whl", hash = "sha256:d1e0804c42639494d469d08d4f26d6b9de9b8ab26b446db7b5f8c2e97f7c3096", size = 73054, upload-time = "2026-02-18T22:15:17.958Z" },
-]
-
-[[package]]
 name = "certifi"
 version = "2026.2.25"
 source = { registry = "https://pypi.org/simple" }
@@ -2278,7 +2265,6 @@ transport = [
 dev = [
     { name = "memray" },
     { name = "provide-testkit", extra = ["advanced-testing", "build", "standard", "typecheck", "utils"] },
-    { name = "wrknv" },
 ]
 docs = [
     { name = "provide-testkit", extra = ["docs"] },
@@ -2297,8 +2283,8 @@ requires-dist = [
     { name = "opentelemetry-exporter-otlp-proto-grpc", marker = "extra == 'opentelemetry'", specifier = ">=1.22.0" },
     { name = "opentelemetry-exporter-otlp-proto-http", marker = "extra == 'opentelemetry'", specifier = ">=1.22.0" },
     { name = "opentelemetry-sdk", marker = "extra == 'opentelemetry'", specifier = ">=1.22.0" },
-    { name = "provide-foundation", extras = ["cli", "compression", "crypto", "extended", "opentelemetry", "transport"], marker = "extra == 'all'", specifier = ">=0.3.21" },
-    { name = "provide-foundation", extras = ["platform", "process"], marker = "extra == 'extended'", specifier = ">=0.3.21" },
+    { name = "provide-foundation", extras = ["cli", "compression", "crypto", "extended", "opentelemetry", "transport"], marker = "extra == 'all'", specifier = ">=0.4.0" },
+    { name = "provide-foundation", extras = ["platform", "process"], marker = "extra == 'extended'", specifier = ">=0.4.0" },
     { name = "psutil", marker = "extra == 'platform'", specifier = ">=7.0.0" },
     { name = "psutil", marker = "extra == 'process'", specifier = ">=7.0.0" },
     { name = "py-cpuinfo", marker = "extra == 'platform'", specifier = ">=9.0.0" },
@@ -2312,16 +2298,15 @@ provides-extras = ["cli", "compression", "crypto", "transport", "opentelemetry",
 [package.metadata.requires-dev]
 dev = [
     { name = "memray", specifier = ">=1.0" },
-    { name = "provide-testkit", extras = ["advanced-testing", "build", "standard", "typecheck", "utils"], git = "https://github.com/provide-io/provide-testkit.git?rev=v0.4.0" },
-    { name = "wrknv", git = "https://github.com/provide-io/wrknv.git?rev=v0.4.0" },
+    { name = "provide-testkit", extras = ["advanced-testing", "build", "standard", "typecheck", "utils"], specifier = ">=0.4.0" },
 ]
-docs = [{ name = "provide-testkit", extras = ["docs"], git = "https://github.com/provide-io/provide-testkit.git?rev=v0.4.0" }]
+docs = [{ name = "provide-testkit", extras = ["docs"], specifier = ">=0.4.0" }]
 protobuf = [{ name = "protobuf", specifier = ">=6.32.0" }]
 
 [[package]]
 name = "provide-testkit"
 version = "0.4.0"
-source = { git = "https://github.com/provide-io/provide-testkit.git?rev=v0.4.0#ab9f13cf53c6c27222558529bc0b35db7aaa3831" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
     { name = "click" },
@@ -2332,6 +2317,10 @@ dependencies = [
     { name = "pytest-cov" },
     { name = "pytest-mock" },
     { name = "pytest-xdist" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/be/4e/bea7ab0635d111a841f0710344be50fedf617d3ed73a331270eb18178c05/provide_testkit-0.4.0.tar.gz", hash = "sha256:020d109e74997ef8dd73f1a54397f8ae51c0ebc6d62f5841ab842dca1bf5364c", size = 134087, upload-time = "2026-04-21T01:23:59.101Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/99/57/73ed450a8beefffcc6b9afd0dd7dd4986a78c2a778e37fb258a99f4274f2/provide_testkit-0.4.0-py3-none-any.whl", hash = "sha256:acf431696f9e697f277a7b0d141f08348ec5de215e13616bb4c9ce030b7fb338", size = 182980, upload-time = "2026-04-21T01:23:57.408Z" },
 ]
 
 [package.optional-dependencies]
@@ -2999,15 +2988,6 @@ wheels = [
 ]
 
 [[package]]
-name = "semver"
-version = "3.0.4"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/72/d1/d3159231aec234a59dd7d601e9dd9fe96f3afff15efd33c1070019b26132/semver-3.0.4.tar.gz", hash = "sha256:afc7d8c584a5ed0a11033af086e8af226a9c0b206f313e0301f8dd7b6b589602", size = 269730, upload-time = "2025-01-24T13:19:27.617Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/24/4d91e05817e92e3a61c8a21e08fd0f390f5301f1c448b137c57c4bc6e543/semver-3.0.4-py3-none-any.whl", hash = "sha256:9c824d87ba7f7ab4a1890799cec8596f15c1241cb473404ea1cb0c55e4b04746", size = 17912, upload-time = "2025-01-24T13:19:24.949Z" },
-]
-
-[[package]]
 name = "setproctitle"
 version = "1.3.7"
 source = { registry = "https://pypi.org/simple" }
@@ -3553,22 +3533,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/35/a2/8e3becb46433538a38726c948d3399905a4c7cabd0df578ede5dc51f0ec2/wcwidth-0.6.0.tar.gz", hash = "sha256:cdc4e4262d6ef9a1a57e018384cbeb1208d8abbc64176027e2c2455c81313159", size = 159684, upload-time = "2026-02-06T19:19:40.919Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/68/5a/199c59e0a824a3db2b89c5d2dade7ab5f9624dbf6448dc291b46d5ec94d3/wcwidth-0.6.0-py3-none-any.whl", hash = "sha256:1a3a1e510b553315f8e146c54764f4fb6264ffad731b3d78088cdb1478ffbdad", size = 94189, upload-time = "2026-02-06T19:19:39.646Z" },
-]
-
-[[package]]
-name = "wrknv"
-version = "0.4.0"
-source = { git = "https://github.com/provide-io/wrknv.git?rev=v0.4.0#41fc3fd536de6ca68687bfcdc491291195593028" }
-dependencies = [
-    { name = "attrs" },
-    { name = "cattrs" },
-    { name = "click" },
-    { name = "jinja2" },
-    { name = "packaging" },
-    { name = "provide-foundation", extra = ["all"] },
-    { name = "pyyaml" },
-    { name = "rich" },
-    { name = "semver" },
 ]
 
 [[package]]
