@@ -10,6 +10,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+
+pytest.importorskip("wrknv.memray.runner", reason="wrknv extra not installed")
 from wrknv.memray.runner import run_memray_stress
 
 SCRIPTS_DIR = Path(__file__).parent.parent.parent / "scripts"
