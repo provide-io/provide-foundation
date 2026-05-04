@@ -75,6 +75,23 @@ class TestInputHandling(FoundationTestCase):
         result = run(["echo", "test"], input=None)
         assert result.returncode == 0
 
+    def test_text_mode_decodes_non_utf8_bytes_safely(self, tmp_path: Any) -> None:
+        """Output containing bytes invalid for the locale codec must not raise.
+
+        Regression for cp1252 default on Windows where helper-binary stdout can
+        carry bytes (e.g. 0x90) outside the locale codec, crashing the reader
+        thread before subprocess.run can return.
+        """
+        script = tmp_path / "emit.py"
+        script.write_text(
+            "import sys; sys.stdout.buffer.write(b'pre\\x90post\\n')",
+            encoding="utf-8",
+        )
+        result = run(["python3", str(script)], text=True, capture_output=True)
+        assert result.returncode == 0
+        assert "pre" in result.stdout
+        assert "post" in result.stdout
+
 
 class TestErrorHandling(FoundationTestCase):
     """Test error handling paths in runner."""

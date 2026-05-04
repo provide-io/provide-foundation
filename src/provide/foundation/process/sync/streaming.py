@@ -205,6 +205,10 @@ def stream(
     run_env = prepare_environment(env)
     cwd = normalize_cwd(cwd)
 
+    # Force UTF-8 with replacement so Windows does not fall back to cp1252.
+    kwargs.setdefault("encoding", "utf-8")
+    kwargs.setdefault("errors", "replace")
+
     try:
         process = subprocess.Popen(
             cmd,

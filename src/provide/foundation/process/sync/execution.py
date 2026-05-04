@@ -79,6 +79,13 @@ def run(
     # Prepare input
     subprocess_input = prepare_input(input, text)
 
+    # When decoding to text, force UTF-8 with replacement so Windows does not
+    # fall back to cp1252 (which raises UnicodeDecodeError on non-ASCII bytes
+    # emitted by helper binaries).
+    if text:
+        kwargs.setdefault("encoding", "utf-8")
+        kwargs.setdefault("errors", "replace")
+
     try:
         # Prepare command for subprocess
         subprocess_cmd = cmd_str if shell else cmd
