@@ -233,15 +233,22 @@ class TestHubInitialization(FoundationTestCase):
         assert all(logger is not None for logger in loggers)
 
     def test_hub_performance_requirements(self) -> None:
-        """Test that Hub meets performance requirements."""
+        """Test that Hub meets performance requirements.
+
+        Thresholds are generous on purpose: this asserts against absolute
+        wall-clock time on a shared CI runner under pytest-xdist parallel
+        load, not a dedicated benchmark machine, so it needs headroom for
+        scheduling jitter rather than a tight microbenchmark budget. The
+        intent is catching gross regressions (10x+), not measuring precise
+        performance.
+        """
         # Test initialization speed
         start_time = time.time()
         hub = Hub()
         hub.initialize_foundation()
         init_time = time.time() - start_time
 
-        # Should initialize in <100ms
-        assert init_time < 0.1, f"Initialization took {init_time:.3f}s, expected <0.1s"
+        assert init_time < 1.0, f"Initialization took {init_time:.3f}s, expected <1.0s"
 
         # Test logger creation speed
         start_time = time.time()
@@ -252,8 +259,7 @@ class TestHubInitialization(FoundationTestCase):
         create_time = time.time() - start_time
         avg_time = create_time / 1000
 
-        # Should create logger in <1ms average
-        assert avg_time < 0.001, f"Logger creation averaged {avg_time:.6f}s, expected <0.001s"
+        assert avg_time < 0.005, f"Logger creation averaged {avg_time:.6f}s, expected <0.005s"
 
 
 # 🧱🏗️🔚

@@ -261,9 +261,13 @@ class TestFileOperationIntegration(FoundationTestCase):
 
         time.sleep(0.25)  # Allow events to be captured
 
-        # Analyze events
+        # Analyze events. time_window_ms is generous (well beyond the 50ms
+        # spread of the writes above): under pytest-xdist parallel load the
+        # PollingObserver's scan thread can be scheduled late enough to push
+        # a straggler event past a tighter window, splitting one batch into
+        # two and undercounting event_count.
         wait_for_file_events(file_monitor)
-        detector = OperationDetector(DetectorConfig(time_window_ms=200))
+        detector = OperationDetector(DetectorConfig(time_window_ms=1000))
         operations = detect_operations(detector, file_monitor, timeout=5.0, delay=0.2)
 
         # Should detect batch operation

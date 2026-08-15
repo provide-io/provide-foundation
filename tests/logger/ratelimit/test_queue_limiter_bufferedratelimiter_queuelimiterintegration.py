@@ -80,8 +80,16 @@ class TestBufferedRateLimiter(FoundationTestCase):
         assert reason is not None
         assert "Rate limit exceeded" in reason
 
-    def test_buffered_rate_limiter_refill_tokens(self) -> None:
-        """Test token refilling over time."""
+    def test_buffered_rate_limiter_refill_tokens(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Test token refilling over time.
+
+        Uses a fake clock instead of a real sleep: the real-time.sleep(0.15)
+        version raced refill_rate=10.0 (1 token/100ms) against CI scheduling
+        jitter, which can overshoot 0.15s enough to refill past 2 tokens and
+        flip the second assertion.
+        """
+        fake_now = 0.0
+        monkeypatch.setattr(time, "monotonic", lambda: fake_now)
         limiter = BufferedRateLimiter(capacity=2.0, refill_rate=10.0)
 
         # Exhaust tokens
@@ -90,8 +98,8 @@ class TestBufferedRateLimiter(FoundationTestCase):
         allowed, _ = limiter.is_allowed()
         assert allowed is False
 
-        # Wait for refill
-        time.sleep(0.15)  # 1.5 tokens
+        # Advance the fake clock instead of sleeping
+        fake_now += 0.15  # 1.5 tokens
 
         allowed, _ = limiter.is_allowed()
         assert allowed is True
