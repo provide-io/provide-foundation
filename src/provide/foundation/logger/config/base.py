@@ -20,6 +20,7 @@ def get_config_logger() -> Any:
     """Get logger for config warnings that respects FOUNDATION_LOG_OUTPUT."""
     import structlog
 
+    from provide.foundation.logger.defaults import safe_console_renderer
     from provide.foundation.utils.streams import get_foundation_log_stream
 
     try:
@@ -31,14 +32,14 @@ def get_config_logger() -> Any:
     try:
         config = structlog.get_config()
         structlog.configure(
-            processors=config.get("processors", [structlog.dev.ConsoleRenderer()]),
+            processors=config.get("processors", [safe_console_renderer()]),
             logger_factory=structlog.PrintLoggerFactory(file=output_stream),
             wrapper_class=config.get("wrapper_class", structlog.BoundLogger),
             cache_logger_on_first_use=config.get("cache_logger_on_first_use", True),
         )
     except Exception:
         structlog.configure(
-            processors=[structlog.dev.ConsoleRenderer()],
+            processors=[safe_console_renderer()],
             logger_factory=structlog.PrintLoggerFactory(file=output_stream),
             wrapper_class=structlog.BoundLogger,
             cache_logger_on_first_use=True,

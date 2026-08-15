@@ -21,6 +21,7 @@ from provide.foundation.logger.custom_processors import (
     add_logger_name_emoji_prefix,
     filter_by_level_custom,
 )
+from provide.foundation.logger.defaults import safe_console_renderer
 from provide.foundation.logger.processors.trace import inject_trace_context
 from provide.foundation.serialization import json_dumps
 
@@ -251,7 +252,7 @@ def _config_create_keyvalue_formatter_processors(
     is_tty = hasattr(output_stream, "isatty") and output_stream.isatty()
     return [
         cast("StructlogProcessor", pop_logger_name_processor),
-        structlog.dev.ConsoleRenderer(colors=is_tty, exception_formatter=structlog.dev.plain_traceback),
+        safe_console_renderer(colors=is_tty),
     ]
 
 

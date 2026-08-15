@@ -193,11 +193,12 @@ class FoundationLogger:
 
     def _setup_emergency_fallback(self) -> None:
         """Set up emergency fallback logging when normal setup fails."""
+        from provide.foundation.logger.defaults import safe_console_renderer
         from provide.foundation.utils.streams import get_safe_stderr
 
         with contextlib.suppress(Exception):
             structlog.configure(
-                processors=[structlog.dev.ConsoleRenderer()],
+                processors=[safe_console_renderer()],
                 logger_factory=structlog.PrintLoggerFactory(file=get_safe_stderr()),
                 wrapper_class=structlog.BoundLogger,
                 cache_logger_on_first_use=True,

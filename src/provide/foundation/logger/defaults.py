@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+import structlog
+
 if TYPE_CHECKING:
     from provide.foundation.logger.config.logging import LoggingConfig
 
@@ -70,6 +72,21 @@ def default_logging_config() -> LoggingConfig:
     return LoggingConfig.from_env()
 
 
+def safe_console_renderer(**kwargs: object) -> structlog.dev.ConsoleRenderer:
+    """Factory for a ConsoleRenderer that never leaks stack-frame locals.
+
+    structlog's built-in default `exception_formatter` is
+    `RichTracebackFormatter(show_locals=True)`, which renders local variables
+    from every frame in a traceback. Any `logger.error(..., exc_info=True)`
+    call on an exception whose locals (or a caller's locals further up the
+    stack) hold sensitive values will leak them into the rendered output.
+    This factory pins `exception_formatter` to `structlog.dev.plain_traceback`
+    unless the caller explicitly passes their own.
+    """
+    kwargs.setdefault("exception_formatter", structlog.dev.plain_traceback)
+    return structlog.dev.ConsoleRenderer(**kwargs)
+
+
 __all__ = [
     "DEFAULT_CONSOLE_FORMATTER",
     "DEFAULT_DAS_EMOJI_ENABLED",
@@ -91,6 +108,7 @@ __all__ = [
     "default_logging_config",
     "default_module_levels",
     "default_rate_limits",
+    "safe_console_renderer",
 ]
 
 # 🧱🏗️🔚

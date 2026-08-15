@@ -199,13 +199,15 @@ def configure_structlog_for_test_safety() -> None:
 
     import structlog
 
+    from provide.foundation.logger.defaults import safe_console_renderer
+
     # Configure structlog to use stdout (safe for multiprocessing)
     # Use BoundLogger instead of make_filtering_bound_logger to preserve
     # custom log levels like trace
     structlog.configure(
         processors=[
             structlog.processors.TimeStamper(fmt="iso"),
-            structlog.dev.ConsoleRenderer(),
+            safe_console_renderer(),
         ],
         wrapper_class=structlog.BoundLogger,
         context_class=dict,

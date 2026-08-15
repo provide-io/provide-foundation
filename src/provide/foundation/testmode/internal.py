@@ -11,6 +11,8 @@ from __future__ import annotations
 #
 import structlog
 
+from provide.foundation.logger.defaults import safe_console_renderer
+
 """Internal Reset APIs for Foundation Testing.
 
 This module provides low-level reset functions that testing frameworks
@@ -120,7 +122,7 @@ def reset_structlog_state() -> None:
         processors=[
             structlog.processors.TimeStamper(fmt="iso"),
             _strip_foundation_context,
-            structlog.dev.ConsoleRenderer(),
+            safe_console_renderer(),
         ],
         wrapper_class=structlog.BoundLogger,
         context_class=dict,

@@ -14,6 +14,7 @@ from typing import Any, TextIO, cast
 import structlog
 
 from provide.foundation.logger.config import TelemetryConfig
+from provide.foundation.logger.defaults import safe_console_renderer
 from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
@@ -192,7 +193,7 @@ def handle_globally_disabled_setup() -> None:
     structlog.configure(
         processors=[
             strip_foundation_context,
-            structlog.dev.ConsoleRenderer(),
+            safe_console_renderer(),
         ],
         wrapper_class=structlog.BoundLogger,
         logger_factory=NullLoggerFactory(),
