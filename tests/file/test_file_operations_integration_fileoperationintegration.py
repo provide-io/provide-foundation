@@ -363,9 +363,13 @@ class TestFileOperationIntegration(FoundationTestCase):
         events_with_size = [e for e in file_monitor.events if e.metadata.size_after is not None]
         assert len(events_with_size) >= 1
 
-        # Verify size information is reasonable
-        for event in events_with_size:
-            assert event.metadata.size_after > 0
+        # Verify size information is reasonable. Checks that ANY captured event
+        # has a positive size, not all of them: write_text() truncates to 0
+        # bytes on open before writing, so a PollingObserver scan that lands in
+        # that open-then-write window legitimately stats the file at 0 bytes --
+        # more likely under CPU contention delaying the write. That's a benign
+        # polling race, not a defect in size tracking.
+        assert any(event.metadata.size_after > 0 for event in events_with_size)
 
     def test_streaming_detection_real_time(self, temp_dir: Path, file_monitor: FileEventCapture) -> None:
         """Test streaming detection with real filesystem events."""
