@@ -424,7 +424,10 @@ class TestFileLockAsyncChaos(FoundationTestCase):
     @settings(
         max_examples=7,
         suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
-        deadline=10000,
+        # Up to 10 tasks each individually able to wait timeout=5.0s on a real
+        # filesystem lock via thread-pool dispatch -- a legitimate example can
+        # exceed a wall-clock deadline by design, not just under CI load.
+        deadline=None,
     )
     async def test_async_concurrent_access_chaos(
         self,
