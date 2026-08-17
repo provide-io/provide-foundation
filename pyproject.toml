@@ -87,10 +87,10 @@ process = [
 ]
 # Convenience groups
 extended = [
-    "provide-foundation[platform,process]>=0.4.0",
+    "provide-foundation[platform,process]>=0.5.0",
 ]
 all = [
-    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]>=0.4.0",
+    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]>=0.5.0",
 ]
 
 [project.scripts]
@@ -98,11 +98,11 @@ foundation = "provide.foundation.cli.main:cli"
 
 [dependency-groups]
 dev = [
-    "provide-testkit[advanced-testing,build,standard,typecheck,utils]>=0.4.0",
+    "provide-testkit[advanced-testing,build,standard,typecheck,utils]>=0.5.0",
     "memray>=1.0",
 ]
 docs = [
-    "provide-testkit[docs]>=0.4.0",
+    "provide-testkit[docs]>=0.5.0",
 ]
 protobuf = [
     "protobuf>=6.32.0",
@@ -433,5 +433,13 @@ project_includes = [
     "src",
     "tests",
 ]
+
+# Local development resolves sibling suite packages from source, so a change in
+# one repo is exercised by its consumers immediately rather than at release. uv
+# does not propagate a dependency's sources into published metadata, so this is
+# invisible to consumers of the built wheel. CI passes --no-sources to verify the
+# published story instead.
+[tool.uv.sources]
+provide-testkit = { path = "../provide-testkit", editable = true }
 
 # 🐍🏗️⚙️
