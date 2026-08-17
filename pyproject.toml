@@ -185,7 +185,7 @@ indent-width = 4
 target-version = "py311"
 # ruff >=0.16 formats Python blocks inside Markdown; docs prose is not ours to
 # restyle, so keep .md out of both check and format.
-exclude = ["**/*.md"]
+extend-exclude = ["**/*.md"]
 
 [tool.ruff.lint]
 select = [
