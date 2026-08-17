@@ -183,6 +183,9 @@ norecursedirs = [
 line-length = 111
 indent-width = 4
 target-version = "py311"
+# ruff >=0.16 formats Python blocks inside Markdown; docs prose is not ours to
+# restyle, so keep .md out of both check and format.
+exclude = ["**/*.md"]
 
 [tool.ruff.lint]
 select = [
@@ -310,7 +313,6 @@ disallow_untyped_decorators = false
 [[tool.mypy.overrides]]
 module = [
     "structlog",
-    "structlog.*"
 ]
 follow_imports = "skip" # Keep structlog skipped
 ignore_missing_imports = true
