@@ -87,22 +87,28 @@ process = [
 ]
 # Convenience groups
 extended = [
-    "provide-foundation[platform,process]>=0.5.0",
+    "provide-foundation[platform,process]>=0.4.0",
 ]
 all = [
-    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]>=0.5.0",
+    "provide-foundation[cli,compression,crypto,transport,opentelemetry,extended]>=0.4.0",
 ]
 
 [project.scripts]
 foundation = "provide.foundation.cli.main:cli"
 
 [dependency-groups]
+# provide-testkit depends on provide-foundation, so flooring it at a version of
+# this package that is not published yet makes the pair unresolvable: neither can
+# be installed from the registry until the other is released. The floor stays at
+# the last published series deliberately -- published testkit requires
+# provide-foundation with no upper bound, so it resolves against whatever this
+# package currently is, and CI can build a dev environment with no local checkout.
 dev = [
-    "provide-testkit[advanced-testing,build,standard,typecheck,utils]>=0.5.0",
+    "provide-testkit[advanced-testing,build,standard,typecheck,utils]>=0.4.0",
     "memray>=1.0",
 ]
 docs = [
-    "provide-testkit[docs]>=0.5.0",
+    "provide-testkit[docs]>=0.4.0",
 ]
 protobuf = [
     "protobuf>=6.32.0",
