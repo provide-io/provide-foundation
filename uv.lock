@@ -2643,14 +2643,15 @@ provides-extras = ["cli", "compression", "crypto", "transport", "opentelemetry",
 [package.metadata.requires-dev]
 dev = [
     { name = "memray", specifier = ">=1.0" },
-    { name = "provide-testkit", extras = ["advanced-testing", "build", "standard", "typecheck", "utils"], editable = "../provide-testkit" },
+    { name = "provide-testkit", extras = ["advanced-testing", "build", "standard", "typecheck", "utils"], specifier = ">=0.4.0" },
 ]
-docs = [{ name = "provide-testkit", extras = ["docs"], editable = "../provide-testkit" }]
+docs = [{ name = "provide-testkit", extras = ["docs"], specifier = ">=0.4.0" }]
 protobuf = [{ name = "protobuf", specifier = ">=6.32.0" }]
 
 [[package]]
 name = "provide-testkit"
-source = { editable = "../provide-testkit" }
+version = "0.4.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
     { name = "click" },
@@ -2661,6 +2662,10 @@ dependencies = [
     { name = "pytest-cov" },
     { name = "pytest-mock" },
     { name = "pytest-xdist" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/be/4e/bea7ab0635d111a841f0710344be50fedf617d3ed73a331270eb18178c05/provide_testkit-0.4.0.tar.gz", hash = "sha256:020d109e74997ef8dd73f1a54397f8ae51c0ebc6d62f5841ab842dca1bf5364c", size = 134087, upload-time = "2026-04-21T01:23:59.101Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/99/57/73ed450a8beefffcc6b9afd0dd7dd4986a78c2a778e37fb258a99f4274f2/provide_testkit-0.4.0-py3-none-any.whl", hash = "sha256:acf431696f9e697f277a7b0d141f08348ec5de215e13616bb4c9ce030b7fb338", size = 182980, upload-time = "2026-04-21T01:23:57.408Z" },
 ]
 
 [package.optional-dependencies]
@@ -2742,112 +2747,6 @@ utils = [
     { name = "sapp" },
     { name = "tabulate" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "attrs", specifier = ">=25.4.0" },
-    { name = "bandit", marker = "extra == 'quality'" },
-    { name = "bandit", marker = "extra == 'security'" },
-    { name = "behave", marker = "extra == 'advanced-testing'" },
-    { name = "click", specifier = ">=8.3.1" },
-    { name = "coverage", extras = ["toml"], marker = "extra == 'quality'" },
-    { name = "cryptography", marker = "extra == 'crypto'", specifier = ">=45.0.7" },
-    { name = "freezegun", marker = "extra == 'advanced-testing'" },
-    { name = "griffe", marker = "extra == 'docs'" },
-    { name = "grpc-stubs", marker = "extra == 'grpc'" },
-    { name = "grpcio", marker = "extra == 'grpc'", specifier = ">=1.76.0" },
-    { name = "grpcio-health-checking", marker = "extra == 'grpc'" },
-    { name = "grpcio-tools", marker = "extra == 'grpc'" },
-    { name = "h2", marker = "extra == 'transport'" },
-    { name = "hatch", marker = "extra == 'build'" },
-    { name = "httpx", marker = "extra == 'transport'", specifier = ">=0.28.1" },
-    { name = "hypothesis", marker = "extra == 'advanced-testing'" },
-    { name = "interrogate", marker = "extra == 'quality'" },
-    { name = "linkchecker", marker = "extra == 'docs'" },
-    { name = "markdown-callouts", marker = "extra == 'docs'" },
-    { name = "markdown-exec", marker = "extra == 'docs'" },
-    { name = "markdown-include", marker = "extra == 'docs'" },
-    { name = "memray", marker = "extra == 'profiling'" },
-    { name = "mike", marker = "extra == 'docs'" },
-    { name = "mkdocs", marker = "extra == 'docs'" },
-    { name = "mkdocs-autorefs", marker = "extra == 'docs'" },
-    { name = "mkdocs-coverage", marker = "extra == 'docs'" },
-    { name = "mkdocs-gen-files", marker = "extra == 'docs'" },
-    { name = "mkdocs-git-revision-date-localized-plugin", marker = "extra == 'docs'" },
-    { name = "mkdocs-htmlproofer-plugin", marker = "extra == 'docs'" },
-    { name = "mkdocs-include-markdown-plugin", marker = "extra == 'docs'" },
-    { name = "mkdocs-literate-nav", marker = "extra == 'docs'" },
-    { name = "mkdocs-llmstxt", marker = "extra == 'docs'" },
-    { name = "mkdocs-macros-plugin", marker = "extra == 'docs'" },
-    { name = "mkdocs-material", specifier = ">=9.7.1" },
-    { name = "mkdocs-material", marker = "extra == 'docs'" },
-    { name = "mkdocs-minify-plugin", marker = "extra == 'docs'" },
-    { name = "mkdocs-redirects", marker = "extra == 'docs'" },
-    { name = "mkdocs-section-index", marker = "extra == 'docs'" },
-    { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'" },
-    { name = "mutmut", marker = "extra == 'quality'" },
-    { name = "mypy", marker = "extra == 'quality'" },
-    { name = "mypy", marker = "extra == 'typecheck'" },
-    { name = "pip-audit", marker = "extra == 'security'" },
-    { name = "pre-commit", marker = "extra == 'build'" },
-    { name = "provide-foundation", editable = "." },
-    { name = "provide-testkit", extras = ["advanced-testing", "build", "crypto", "docs", "fuzzing", "grpc", "process", "profiling", "quality", "security", "transport", "typecheck", "utils"], marker = "extra == 'all'", specifier = ">=0.4.0" },
-    { name = "provide-testkit", extras = ["advanced-testing", "build", "grpc", "profiling", "security", "standard", "typecheck"], marker = "extra == 'pyvider-dev'", specifier = ">=0.4.0" },
-    { name = "provide-testkit", extras = ["advanced-testing", "quality"], marker = "extra == 'dev'", specifier = ">=0.4.0" },
-    { name = "provide-testkit", extras = ["crypto", "process", "quality", "transport"], marker = "extra == 'standard'", specifier = ">=0.4.0" },
-    { name = "provide-testkit", extras = ["docs"], marker = "extra == 'docs-standalone'", specifier = ">=0.4.0" },
-    { name = "provide-testkit", extras = ["grpc", "standard", "typecheck"], marker = "extra == 'grpc-dev'", specifier = ">=0.4.0" },
-    { name = "psutil", marker = "extra == 'process'", specifier = ">=7.0.0" },
-    { name = "pygments", marker = "extra == 'docs'" },
-    { name = "pymdown-extensions", marker = "extra == 'docs'" },
-    { name = "pynguin", marker = "extra == 'fuzzing'" },
-    { name = "pyre-check", marker = "extra == 'typecheck'" },
-    { name = "pyre-extensions", marker = "extra == 'typecheck'" },
-    { name = "pyrefly", marker = "extra == 'typecheck'" },
-    { name = "pyright", marker = "extra == 'typecheck'" },
-    { name = "pytest", specifier = ">=9.0.2" },
-    { name = "pytest-asyncio", specifier = ">=1.3.0" },
-    { name = "pytest-benchmark", marker = "extra == 'advanced-testing'" },
-    { name = "pytest-cov", specifier = ">=6.0.0" },
-    { name = "pytest-httpx", marker = "extra == 'transport'" },
-    { name = "pytest-json-report", marker = "extra == 'advanced-testing'" },
-    { name = "pytest-mock", specifier = ">=3.15.1" },
-    { name = "pytest-testmon", marker = "extra == 'advanced-testing'" },
-    { name = "pytest-xdist", specifier = ">=3.8.0" },
-    { name = "pyyaml", marker = "extra == 'docs'" },
-    { name = "pyyaml", marker = "extra == 'utils'" },
-    { name = "radon", marker = "extra == 'quality'" },
-    { name = "reuse", marker = "extra == 'utils'" },
-    { name = "ruff", marker = "extra == 'quality'" },
-    { name = "safety", marker = "extra == 'security'" },
-    { name = "sapp", marker = "extra == 'utils'" },
-    { name = "setproctitle", marker = "extra == 'process'", specifier = ">=1.3.7" },
-    { name = "tabulate", marker = "extra == 'utils'" },
-    { name = "twine", marker = "extra == 'build'" },
-    { name = "ty", marker = "extra == 'typecheck'" },
-    { name = "types-click", marker = "extra == 'typecheck'" },
-    { name = "types-cryptography", marker = "extra == 'crypto'" },
-    { name = "types-cryptography", marker = "extra == 'typecheck'" },
-    { name = "types-grpcio", marker = "extra == 'typecheck'" },
-    { name = "types-protobuf", marker = "extra == 'typecheck'" },
-    { name = "types-psutil", marker = "extra == 'typecheck'" },
-    { name = "types-pyyaml", marker = "extra == 'typecheck'" },
-    { name = "types-toml", marker = "extra == 'typecheck'" },
-    { name = "uv", marker = "extra == 'build'" },
-    { name = "viztracer", marker = "extra == 'profiling'" },
-    { name = "watchdog", marker = "extra == 'docs'" },
-]
-provides-extras = ["quality", "typecheck", "advanced-testing", "profiling", "transport", "crypto", "process", "grpc", "build", "docs", "utils", "fuzzing", "security", "standard", "grpc-dev", "pyvider-dev", "all", "dev", "docs-standalone"]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "mkdocs-autorefs" },
-    { name = "mkdocs-macros-plugin" },
-    { name = "mkdocstrings" },
-    { name = "mkdocstrings-python" },
-    { name = "provide-testkit", extras = ["quality", "advanced-testing"], specifier = ">=0.4.0" },
-]
-docs = []
 
 [[package]]
 name = "psutil"

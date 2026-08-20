@@ -440,12 +440,4 @@ project_includes = [
     "tests",
 ]
 
-# Local development resolves sibling suite packages from source, so a change in
-# one repo is exercised by its consumers immediately rather than at release. uv
-# does not propagate a dependency's sources into published metadata, so this is
-# invisible to consumers of the built wheel. CI passes --no-sources to verify the
-# published story instead.
-[tool.uv.sources]
-provide-testkit = { path = "../provide-testkit", editable = true }
-
 # 🐍🏗️⚙️
