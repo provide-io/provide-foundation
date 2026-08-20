@@ -15,10 +15,14 @@ import threading
 from typing import TextIO
 
 from provide.foundation.concurrency.locks import get_lock_manager
+from provide.foundation.errors.base import FoundationError
 from provide.foundation.utils.streams import ensure_utf8_stream
 
 _PROVIDE_LOG_STREAM: TextIO = ensure_utf8_stream(sys.stderr)
 _LOG_FILE_HANDLE: TextIO | None = None
+
+# How long any of the stream operations below will wait for the stream lock.
+_STREAM_LOCK_TIMEOUT_SECONDS = 5.0
 
 
 def _get_stream_lock() -> threading.RLock:
@@ -142,22 +146,51 @@ def _reconfigure_structlog_stream() -> None:
         pass
 
 
+class StreamRedirectRefusedError(FoundationError):
+    """A test-stream redirect was asked for and not performed.
+
+    Both refusals below used to return quietly. A caller that had asked to
+    capture logs then held a buffer nothing was writing to, and found out via
+    whatever it asserted about the contents -- typically `len(lines) == 1`
+    failing with 0, in a test that had nothing to do with streams. The reason
+    is known at the point of refusal and is worth raising there.
+    """
+
+    def _default_code(self) -> str:
+        return "STREAM_REDIRECT_REFUSED"
+
+
 def set_log_stream_for_testing(stream: TextIO | None) -> None:
     """Set the log stream for testing purposes.
 
     This function not only sets the stream but also reconfigures structlog
     if it's already configured to ensure logs actually go to the test stream.
+
+    Raises:
+        StreamRedirectRefusedError: If the redirect could not be performed.
+            Never returns without having installed `stream`.
     """
     from provide.foundation.testmode.detection import should_allow_stream_redirect
 
     global _PROVIDE_LOG_STREAM
-    if not _get_stream_lock().acquire(timeout=5.0):
-        # If we can't acquire the lock within 5 seconds, skip the operation
-        return
+    if not _get_stream_lock().acquire(timeout=_STREAM_LOCK_TIMEOUT_SECONDS):
+        raise StreamRedirectRefusedError(
+            f"Timed out after {_STREAM_LOCK_TIMEOUT_SECONDS}s waiting for the "
+            f"foundation.stream lock; the log stream was left unchanged.",
+            reason="lock_timeout",
+        )
     try:
-        # Use testmode to determine if redirect is allowed
-        if not should_allow_stream_redirect():
-            return
+        # The Click guard exists to stop Click's own output capture being
+        # hijacked. Restoring the default stream hijacks nothing, so a reset is
+        # always honoured -- refusing one would strand a caller on whatever
+        # buffer it was tearing down.
+        if stream is not None and not should_allow_stream_redirect():
+            raise StreamRedirectRefusedError(
+                "Stream redirection is blocked inside Click's testing context, so "
+                "Click's own output capture is not disturbed. Set "
+                "FOUNDATION_FORCE_STREAM_REDIRECT=true to redirect anyway.",
+                reason="click_testing",
+            )
 
         _PROVIDE_LOG_STREAM = (
             ensure_utf8_stream(stream) if stream is not None else ensure_utf8_stream(sys.stderr)

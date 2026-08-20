@@ -104,8 +104,18 @@ def is_in_click_testing() -> bool:
     """
     global _click_testing_cache
 
-    if _click_testing_cache is not None:
-        return _click_testing_cache
+    # Only the environment-variable answer is cached. It describes the process
+    # and cannot change during it; the stack walk below describes *this call*
+    # and nothing more.
+    #
+    # Caching the stack-derived answer latched the first Click test's verdict
+    # for every later caller in the same process. Under xdist that meant one
+    # Click test silently switched off stream redirection for the rest of its
+    # worker: `set_log_stream_for_testing` returned without installing the
+    # buffer, and tests capturing logs saw an empty one. Measured on this suite,
+    # 48 tests were being denied a redirect they had asked for.
+    if _click_testing_cache:
+        return True
 
     from provide.foundation.streams.config import get_stream_config
 
@@ -124,7 +134,6 @@ def is_in_click_testing() -> bool:
         filename = cur_frame.f_code.co_filename
 
         if "click.testing" in module or "test_cli_integration" in filename:
-            _click_testing_cache = True
             return True
 
         # Also check for common Click testing patterns
@@ -132,12 +141,10 @@ def is_in_click_testing() -> bool:
         if locals_self is not None and hasattr(locals_self, "runner"):
             runner = locals_self.runner
             if hasattr(runner, "invoke") and "CliRunner" in str(type(runner)):
-                _click_testing_cache = True
                 return True
 
         cur_frame = cur_frame.f_back
 
-    _click_testing_cache = False
     return False
 
 

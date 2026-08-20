@@ -14,8 +14,10 @@ import sys
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, Mock, patch
+import pytest
 
 from provide.foundation.streams.core import (
+    StreamRedirectRefusedError,
     ensure_stderr_default,
     get_log_stream,
     set_log_stream_for_testing,
@@ -99,29 +101,46 @@ class TestSetLogStreamForTesting(FoundationTestCase):
         assert stream is not None
 
     def test_set_log_stream_for_testing_in_non_test_mode(self) -> None:
-        """Test stream setting is blocked in non-test mode."""
+        """A blocked redirect raises rather than leaving the stream unchanged.
+
+        It used to return quietly, so a caller asking to capture logs got a
+        buffer nothing wrote to and discovered it through whatever it asserted
+        about the contents -- usually a count coming back zero, in a test with
+        no obvious connection to streams.
+        """
         test_stream = io.StringIO()
 
         with patch("provide.foundation.testmode.detection.should_allow_stream_redirect", return_value=False):
             original_stream = get_log_stream()
-            set_log_stream_for_testing(test_stream)
 
-            # Stream should not change
-            stream = get_log_stream()
-            assert stream is original_stream
+            with pytest.raises(StreamRedirectRefusedError) as caught:
+                set_log_stream_for_testing(test_stream)
+
+            assert caught.value.context["reason"] == "click_testing"
+            # The stream is still left alone; the change is that we say so.
+            assert get_log_stream() is original_stream
+
+    def test_a_reset_is_honoured_even_when_a_redirect_is_blocked(self) -> None:
+        """The guard protects Click's capture from being hijacked, and restoring
+        the default stream hijacks nothing -- refusing it would strand a caller
+        on the buffer it was tearing down."""
+        with patch("provide.foundation.testmode.detection.should_allow_stream_redirect", return_value=False):
+            set_log_stream_for_testing(None)
+
+        assert get_log_stream() is not None
 
     def test_set_log_stream_for_testing_with_lock_timeout(self) -> None:
-        """Test set_log_stream_for_testing handles lock timeout."""
+        """A timeout raises instead of silently declining the redirect."""
         mock_lock = MagicMock()
         mock_lock.acquire.return_value = False  # Timeout
 
         test_stream = io.StringIO()
 
         with patch("provide.foundation.streams.core._get_stream_lock", return_value=mock_lock):
-            # Should return early without setting
-            set_log_stream_for_testing(test_stream)
+            with pytest.raises(StreamRedirectRefusedError) as caught:
+                set_log_stream_for_testing(test_stream)
 
-            # Lock acquire should have been called
+            assert caught.value.context["reason"] == "lock_timeout"
             mock_lock.acquire.assert_called_once()
 
 
