@@ -22,7 +22,7 @@ jobs:
     with:
       python-version: '3.11'
       platform-preset: standard
-      include-windows: ${{ inputs.include-windows || false }}
+      include-windows: ${{ inputs.include-windows || true }}
       coverage-threshold: 0
       run-security: true
       run-secret-scan: true
