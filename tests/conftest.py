@@ -21,6 +21,28 @@ import sys
 import provide.testkit  # noqa: F401 - Installs setproctitle blocker early
 import pytest
 
+# Foundation's loggers prefix events with emoji, and Windows console streams
+# default to cp1252, which cannot encode them. structlog's PrintLogger saves its
+# file object once, and colorama's AnsiToWin32 proxy writes through to whatever
+# stream it wrapped, so a stream that was cp1252 at wrap time stays cp1252 no
+# matter what Foundation reconfigures afterwards -- and every emitted log line
+# raises UnicodeEncodeError from deep inside an unrelated test.
+#
+# Reconfiguring the underlying streams here, before anything caches them, fixes
+# all the write paths at once. The same fix, for the same reason, is in
+# pyvider's conftest.
+if sys.platform == "win32":
+    for _stream in (sys.__stdout__, sys.__stderr__, sys.stdout, sys.stderr):
+        if _stream is None:
+            continue
+        for _target in (_stream, getattr(_stream, "wrapped", None), getattr(_stream, "stream", None)):
+            if _target is None or not hasattr(_target, "reconfigure"):
+                continue
+            try:
+                _target.reconfigure(encoding="utf-8", errors="replace")
+            except Exception:
+                pass
+
 # Mock opentelemetry module for tests when it's not available
 # This must be done before any test imports try to use OTLP client
 if "opentelemetry" not in sys.modules:
