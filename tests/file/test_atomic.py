@@ -17,6 +17,7 @@ from provide.foundation.file.atomic import (
     atomic_write,
     atomic_write_text,
 )
+from tests.file._platform import requires_posix_permissions
 
 
 class TestAtomicFileOperations(FoundationTestCase):
@@ -50,6 +51,7 @@ class TestAtomicFileOperations(FoundationTestCase):
 
         assert path.read_bytes() == new_data
 
+    @requires_posix_permissions
     def test_atomic_write_with_mode(self, temp_directory: Path) -> None:
         """Test atomic write sets file permissions."""
         path = temp_directory / "test.txt"
@@ -155,6 +157,7 @@ class TestAtomicFileOperations(FoundationTestCase):
         temp_files = list(temp_directory.glob(".actually_a_dir.*.tmp"))
         assert len(temp_files) == 0
 
+    @requires_posix_permissions
     def test_atomic_write_preserves_permissions(self, temp_directory: Path) -> None:
         """Test atomic write preserves existing file permissions by default."""
         path = temp_directory / "test.txt"

@@ -19,6 +19,7 @@ import pytest
 from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_stream
+from tests.process._platform import requires_posix_shell
 
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial
@@ -49,6 +50,7 @@ time.sleep(0.05)
         assert "line2" in all_output
         assert len(lines) >= 1  # At least one line received
 
+    @requires_posix_shell
     async def test_stream_with_cwd_string(self) -> None:
         """Test stream execution with cwd as string."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -58,6 +60,7 @@ time.sleep(0.05)
 
             assert any(tmpdir in line for line in lines)
 
+    @requires_posix_shell
     async def test_stream_with_cwd_path(self) -> None:
         """Test stream execution with cwd as Path."""
         with tempfile.TemporaryDirectory() as tmpdir:

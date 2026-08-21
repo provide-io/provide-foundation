@@ -17,8 +17,10 @@ from provide.foundation.file.atomic import (
     atomic_write,
     atomic_write_text,
 )
+from tests.file._platform import requires_posix_permissions
 
 
+@requires_posix_permissions
 class TestAtomicPermissions(FoundationTestCase):
     """Test atomic file operations permission handling."""
 

@@ -161,7 +161,11 @@ class TestConverterFunctions(FoundationTestCase):
         """Test path_converter with valid string."""
         result = path_converter("/path/to/file")
         assert isinstance(result, Path)
-        assert str(result) == "/path/to/file"
+        # Compared through Path so the separator is the host's own: the
+        # converter returns a Path, and str() of one spells "/a/b" as
+        # "\\a\\b" on Windows. Asserting the POSIX literal tested the
+        # platform rather than the converter.
+        assert str(result) == str(Path("/path/to/file"))
 
     def test_path_converter_with_none(self) -> None:
         """Test path_converter with None."""
@@ -177,13 +181,13 @@ class TestConverterFunctions(FoundationTestCase):
         """Test path_converter with relative path."""
         result = path_converter("relative/path")
         assert isinstance(result, Path)
-        assert str(result) == "relative/path"
+        assert str(result) == str(Path("relative/path"))
 
     def test_path_converter_with_home_directory(self) -> None:
         """Test path_converter with home directory."""
         result = path_converter("~/config.yaml")
         assert isinstance(result, Path)
-        assert str(result) == "~/config.yaml"
+        assert str(result) == str(Path("~/config.yaml"))
 
     def test_path_converter_type_annotations(self) -> None:
         """Test path_converter handles type annotations correctly."""

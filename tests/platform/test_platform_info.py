@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from provide.testkit import FoundationTestCase
@@ -93,7 +94,7 @@ class TestSystemInfo(FoundationTestCase):
         # Verify system info
         assert info.hostname == "test-hostname"
         assert info.username == "testuser"
-        assert info.home_dir == "/Users/test"
+        assert info.home_dir == str(Path("/Users/test"))
         assert info.temp_dir == "/tmp"
         assert info.num_cpus == 8
 
@@ -147,7 +148,7 @@ class TestSystemInfo(FoundationTestCase):
         # Verify optional fields are None
         assert info.hostname is None
         assert info.username is None
-        assert info.home_dir == "/home/user"
+        assert info.home_dir == str(Path("/home/user"))
         # temp_dir should be the actual system temp directory when no env vars set
         from provide.foundation.file.temp import system_temp_dir
 
