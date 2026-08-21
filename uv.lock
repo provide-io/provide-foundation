@@ -2608,7 +2608,7 @@ transport = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "memray" },
+    { name = "memray", marker = "sys_platform != 'win32'" },
     { name = "provide-testkit", extra = ["advanced-testing", "build", "standard", "typecheck", "utils"] },
 ]
 docs = [
@@ -2642,7 +2642,7 @@ provides-extras = ["cli", "compression", "crypto", "transport", "opentelemetry",
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "memray", specifier = ">=1.0" },
+    { name = "memray", marker = "sys_platform != 'win32'", specifier = ">=1.0" },
     { name = "provide-testkit", extras = ["advanced-testing", "build", "standard", "typecheck", "utils"], specifier = ">=0.4.0" },
 ]
 docs = [{ name = "provide-testkit", extras = ["docs"], specifier = ">=0.4.0" }]
@@ -2650,7 +2650,7 @@ protobuf = [{ name = "protobuf", specifier = ">=6.32.0" }]
 
 [[package]]
 name = "provide-testkit"
-version = "0.4.0"
+version = "0.4.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
@@ -2663,9 +2663,9 @@ dependencies = [
     { name = "pytest-mock" },
     { name = "pytest-xdist" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/be/4e/bea7ab0635d111a841f0710344be50fedf617d3ed73a331270eb18178c05/provide_testkit-0.4.0.tar.gz", hash = "sha256:020d109e74997ef8dd73f1a54397f8ae51c0ebc6d62f5841ab842dca1bf5364c", size = 134087, upload-time = "2026-04-21T01:23:59.101Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ef/ae/f0e13e888f81026dbb1e8d12134b054200732c34f89e06ccffbc3a7c9383/provide_testkit-0.4.2.tar.gz", hash = "sha256:8ab2486ea00ff79af649dc2ab613c461c209dc96d06782ab80ab7f7c208fff59", size = 134677, upload-time = "2026-08-21T01:39:47.394Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/99/57/73ed450a8beefffcc6b9afd0dd7dd4986a78c2a778e37fb258a99f4274f2/provide_testkit-0.4.0-py3-none-any.whl", hash = "sha256:acf431696f9e697f277a7b0d141f08348ec5de215e13616bb4c9ce030b7fb338", size = 182980, upload-time = "2026-04-21T01:23:57.408Z" },
+    { url = "https://files.pythonhosted.org/packages/47/c4/c40428e9a5b2a569a343a0541202a1029fb842ce3a1d504ab01192da8ca9/provide_testkit-0.4.2-py3-none-any.whl", hash = "sha256:ef5e0fc32d310f675e5e040d66d5f70484c27e7a8ea892d55bb35ce1da71589c", size = 183041, upload-time = "2026-08-21T01:39:45.79Z" },
 ]
 
 [package.optional-dependencies]
@@ -2728,7 +2728,7 @@ standard = [
 ]
 typecheck = [
     { name = "mypy" },
-    { name = "pyre-check" },
+    { name = "pyre-check", marker = "sys_platform != 'win32'" },
     { name = "pyre-extensions" },
     { name = "pyrefly" },
     { name = "pyright" },
