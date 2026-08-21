@@ -19,8 +19,10 @@ from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.atomic import atomic_replace, atomic_write, atomic_write_text
+from tests.file._platform import requires_posix_permissions, requires_posix_replace_semantics
 
 
+@requires_posix_permissions
 class TestAtomicWritePermissionSecurity(FoundationTestCase):
     """Test atomic write permission security."""
 
@@ -100,6 +102,7 @@ class TestAtomicWritePermissionSecurity(FoundationTestCase):
         assert not (actual_mode & stat.S_IWOTH), "Should not be world writable"
 
 
+@requires_posix_replace_semantics
 class TestAtomicWriteConcurrency(FoundationTestCase):
     """Test concurrent atomic write operations."""
 
@@ -296,6 +299,7 @@ class TestAtomicWriteEdgeCases(FoundationTestCase):
         no_write_dir.chmod(0o755)
 
 
+@requires_posix_permissions
 class TestAtomicWritePermissionTransitions(FoundationTestCase):
     """Test permission transitions during atomic writes."""
 

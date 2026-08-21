@@ -15,6 +15,7 @@ import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_run, async_shell, async_stream
+from tests.process._platform import requires_posix_shell
 
 
 class TestAsyncRunCommand(FoundationTestCase):
@@ -53,6 +54,7 @@ class TestAsyncRunCommand(FoundationTestCase):
         assert result.returncode != 0
 
     @pytest.mark.asyncio
+    @requires_posix_shell
     async def test_command_with_cwd(self, tmp_path: Path) -> None:
         """Test command with working directory."""
         result = await async_run(["pwd"], cwd=tmp_path)

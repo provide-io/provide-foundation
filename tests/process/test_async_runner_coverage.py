@@ -17,6 +17,7 @@ import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_run, async_shell, async_stream
+from tests.process._platform import requires_posix_shell
 
 
 class TestAsyncInputHandling(FoundationTestCase):
@@ -96,6 +97,7 @@ class TestAsyncShellExecution(FoundationTestCase):
         assert "hello" in result.stdout
 
     @pytest.mark.asyncio
+    @requires_posix_shell
     async def test_async_shell_with_environment_variables(self) -> None:
         """Test async shell execution with custom environment."""
         result = await async_shell("echo $TEST_VAR", env={"TEST_VAR": "test_value"}, allow_shell_features=True)

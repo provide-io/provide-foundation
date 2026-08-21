@@ -20,6 +20,7 @@ from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_run
 from provide.foundation.process.shared import CompletedProcess
+from tests.process._platform import requires_posix_shell
 
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial
@@ -47,6 +48,7 @@ class TestAsyncRunCommand(FoundationTestCase):
         assert result.returncode == 0
         assert "hello" in result.stdout
 
+    @requires_posix_shell
     async def test_command_with_cwd_string(self) -> None:
         """Test command execution with cwd as string."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -54,6 +56,7 @@ class TestAsyncRunCommand(FoundationTestCase):
 
             assert tmpdir in result.stdout
 
+    @requires_posix_shell
     async def test_command_with_cwd_path(self) -> None:
         """Test command execution with cwd as Path."""
         with tempfile.TemporaryDirectory() as tmpdir:

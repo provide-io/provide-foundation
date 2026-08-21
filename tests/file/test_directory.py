@@ -19,6 +19,7 @@ from provide.foundation.file.directory import (
     ensure_parent_dir,
     safe_rmtree,
 )
+from tests.file._platform import requires_posix_permissions
 
 
 class TestDirectoryOperations(FoundationTestCase):
@@ -65,6 +66,7 @@ class TestDirectoryOperations(FoundationTestCase):
         assert path.parent.exists()
         assert path.parent.parent.exists()
 
+    @requires_posix_permissions
     def test_ensure_dir_with_mode(self, temp_directory: Path) -> None:
         """Test ensure_dir sets permissions."""
         path = temp_directory / "dir_with_mode"
@@ -108,6 +110,7 @@ class TestDirectoryOperations(FoundationTestCase):
         assert file_path.parent.parent.exists()
         assert file_path.parent.parent.parent.exists()
 
+    @requires_posix_permissions
     def test_ensure_parent_dir_with_mode(self, temp_directory: Path) -> None:
         """Test ensure_parent_dir sets mode."""
 

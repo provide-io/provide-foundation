@@ -16,6 +16,7 @@ import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.sync import run, shell, stream
+from tests.process._platform import requires_posix_shell
 
 
 class TestInputHandling(FoundationTestCase):
@@ -153,6 +154,7 @@ class TestShellExecution(FoundationTestCase):
         assert result.returncode == 0
         assert "hello" in result.stdout
 
+    @requires_posix_shell
     def test_shell_with_environment_variables(self) -> None:
         """Test shell execution with custom environment."""
         result = shell("echo $TEST_VAR", env={"TEST_VAR": "test_value"}, allow_shell_features=True)

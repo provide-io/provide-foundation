@@ -20,11 +20,13 @@ import pytest
 from provide.foundation.errors import ProcessError
 from provide.foundation.errors.process import ProcessTimeoutError
 from provide.foundation.process.sync import run, run_simple, shell, stream
+from tests.process._platform import requires_posix_shell
 
 
 class TestProcessRunnerCoverage(FoundationTestCase):
     """Test process runner functionality for improved coverage."""
 
+    @requires_posix_shell
     def test_run_with_path_cwd(self) -> None:
         """Test run with Path object as cwd."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -81,6 +83,7 @@ class TestProcessRunnerCoverage(FoundationTestCase):
         output = run_simple(["echo", "  test  "])
         assert output == "test"
 
+    @requires_posix_shell
     def test_stream_with_path_cwd(self) -> None:
         """Test stream with Path object as cwd."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -145,6 +148,7 @@ class TestProcessRunnerCoverage(FoundationTestCase):
         with pytest.raises(ProcessError):
             shell("exit 1", check=True)
 
+    @requires_posix_shell
     def test_shell_with_cwd_path(self) -> None:
         """Test shell with Path object as cwd."""
         with tempfile.TemporaryDirectory() as tmpdir:

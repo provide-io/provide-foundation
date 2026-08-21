@@ -19,6 +19,7 @@ import pytest
 from provide.foundation.errors.process import ProcessError
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess
+from tests.process._platform import requires_posix_shell
 
 
 class TestManagedProcessInitialization(FoundationTestCase):
@@ -46,6 +47,7 @@ class TestManagedProcessInitialization(FoundationTestCase):
 
         assert proc.cwd == cwd
 
+    @requires_posix_shell
     def test_initialization_with_cwd_path(self) -> None:
         """Test initialization with cwd as Path object."""
         command = ["pwd"]
@@ -132,6 +134,7 @@ class TestManagedProcessLaunch(FoundationTestCase):
         with pytest.raises(ProcessError, match="Failed to launch process"):
             proc.launch()
 
+    @requires_posix_shell
     def test_launch_with_working_directory(self) -> None:
         """Test launch with specific working directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -316,6 +319,7 @@ class TestManagedProcessTermination(FoundationTestCase):
 
         proc.cleanup()
 
+    @requires_posix_shell
     def test_terminate_gracefully_timeout(self) -> None:
         """Test graceful termination with timeout (kill)."""
         # Create a process that ignores SIGTERM and confirms handler installation

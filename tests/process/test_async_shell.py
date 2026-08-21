@@ -16,6 +16,7 @@ import pytest
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_shell
 from provide.foundation.process.shared import CompletedProcess
+from tests.process._platform import requires_posix_shell
 
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial
@@ -33,6 +34,7 @@ class TestAsyncRunShell(FoundationTestCase):
         assert result.returncode == 0
         assert "shell test" in result.stdout
 
+    @requires_posix_shell
     async def test_shell_with_cwd(self) -> None:
         """Test shell command with working directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -41,6 +43,7 @@ class TestAsyncRunShell(FoundationTestCase):
             assert tmpdir in result.stdout
             assert result.cwd == tmpdir
 
+    @requires_posix_shell
     async def test_shell_with_env(self) -> None:
         """Test shell command with environment."""
         custom_env = {"SHELL_TEST_VAR": "shell_value"}
