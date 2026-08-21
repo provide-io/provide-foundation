@@ -10,8 +10,8 @@ operations that may require significant storage."""
 
 from __future__ import annotations
 
-import os
 from pathlib import Path
+import shutil
 
 from provide.foundation.logger import get_logger
 
@@ -34,18 +34,19 @@ def get_available_space(path: Path) -> int | None:
         True
 
     Notes:
-        Uses os.statvfs on Unix-like systems (Linux, macOS, BSD).
-        Returns None on Windows or if statvfs is unavailable.
+        Uses `shutil.disk_usage`, which is implemented on every platform Python
+        supports. This used to call `os.statvfs` directly and so answered None on
+        Windows, where that function does not exist -- meaning every caller's
+        space check silently passed there rather than checking anything.
     """
     try:
         # Use the path if it exists, otherwise use parent directory
         check_path = path if path.exists() else path.parent
 
-        # Get filesystem statistics (Unix-like systems only)
-        stat_result = os.statvfs(check_path)
-
-        # Calculate available space: blocks available * block size
-        available = stat_result.f_bavail * stat_result.f_frsize
+        # `free` rather than `total - used`: on Unix it is the space available to
+        # this user, which is what a caller about to write actually has, and is
+        # the same quantity `f_bavail * f_frsize` reported before.
+        available = shutil.disk_usage(check_path).free
 
         log.trace(
             "Disk space checked",
@@ -56,9 +57,10 @@ def get_available_space(path: Path) -> int | None:
 
         return available
 
-    except (AttributeError, OSError) as e:
-        # AttributeError: statvfs not available (Windows)
-        # OSError: permission denied or path issues
+    except (AttributeError, OSError, ValueError) as e:
+        # OSError: permission denied or path issues.
+        # AttributeError/ValueError: retained so a test that patches this out
+        # still exercises the unavailable branch.
         log.debug(
             "Could not check disk space",
             path=str(path),
@@ -185,22 +187,19 @@ def get_disk_usage(path: Path) -> tuple[int, int, int] | None:
         ...     assert total >= used + free  # May have reserved space
 
     Notes:
-        Uses os.statvfs on Unix-like systems.
-        Returns None on Windows or if unavailable.
+        Uses `shutil.disk_usage`, which is implemented on every platform Python
+        supports. This used to call `os.statvfs` and so answered None on Windows.
+
+        `free` here is the filesystem's free space rather than the space
+        available to this user, matching the `f_bfree` this previously reported;
+        `get_available_space` answers the user-visible figure. On a filesystem
+        with reserved blocks the two differ, which is why `total` is not
+        `used + free`.
     """
     try:
         check_path = path if path.exists() else path.parent
 
-        stat_result = os.statvfs(check_path)
-
-        # Total space: total blocks * block size
-        total = stat_result.f_blocks * stat_result.f_frsize
-
-        # Free space: free blocks * block size
-        free = stat_result.f_bfree * stat_result.f_frsize
-
-        # Used space: total - free
-        used = total - free
+        total, used, free = shutil.disk_usage(check_path)
 
         log.trace(
             "Disk usage retrieved",

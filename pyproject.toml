@@ -42,6 +42,12 @@ dependencies = [
     "attrs>=25.4.0",
     "structlog>=25.5.0",
     "tomli_w>=1.2.0",
+    # `provide_now(tz)` resolves a zone through `zoneinfo.ZoneInfo`, which reads
+    # the *system* tz database. Windows does not ship one, so every zoned call
+    # raises ZoneInfoNotFoundError there -- for any consumer, not only for tests.
+    # tzdata is the first-party fallback zoneinfo looks for when the system has
+    # no database, and is needed nowhere else.
+    "tzdata; sys_platform == 'win32'",
 ]
 
 [project.urls]
