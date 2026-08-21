@@ -105,7 +105,10 @@ foundation = "provide.foundation.cli.main:cli"
 # package currently is, and CI can build a dev environment with no local checkout.
 dev = [
     "provide-testkit[advanced-testing,build,standard,typecheck,utils]>=0.4.0",
-    "memray>=1.0",
+    # memray is a POSIX profiler: it publishes no Windows wheel and its build
+    # refuses outright ("memray does not support this platform (win32)"), which
+    # fails the whole resolution rather than skipping the profiler.
+    "memray>=1.0; sys_platform != 'win32'",
 ]
 docs = [
     "provide-testkit[docs]>=0.4.0",
