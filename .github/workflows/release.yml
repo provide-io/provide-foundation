@@ -90,17 +90,23 @@ jobs:
         with:
           skip-existing: true
 
-  # Generate SBOM, sign artifacts, attach everything to the GH release.
-  sign-and-upload:
-    needs: [publish-pypi]
-    if: github.event_name == 'release'
+  # SBOM for the built wheel and its dependencies. Its own job, with a
+  # read-only token and no OIDC, because it installs the wheel's dependency
+  # closure and the (pinned) cyclonedx-bom from PyPI and runs them: that must
+  # not happen in the job that holds the sigstore signing identity and a
+  # writable repository token, as it did before this job existed. Not gated
+  # on the release event, so a dispatch dry run exercises it.
+  sbom:
+    needs: release
     runs-on: ubuntu-24.04
     permissions:
-      contents: write
-      id-token: write
+      contents: read
     steps:
+      # Only the script is needed from the checkout; no token is left behind.
       - name: 📥 Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          persist-credentials: false
       - name: 🐍 Setup uv
         uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57  # v8.0.0
         with:
@@ -110,8 +116,39 @@ jobs:
         with:
           name: release-artifacts
           path: dist
+      # Describes the built wheel and its dependencies, installed into a fresh
+      # venv. `uvx cyclonedx-py environment` on its own described the uvx tool
+      # venv -- cyclonedx-bom and friends, not this package.
       - name: 🧾 Generate Python SBOM
         run: scripts/sbom_from_wheel.sh dist sbom-python.cdx.json
+      - name: ⬆️ Upload SBOM
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0
+        with:
+          name: sbom
+          path: sbom-python.cdx.json
+          if-no-files-found: error
+
+  # Sign artifacts and attach everything, SBOM included, to the GH release.
+  # No checkout and no package installs here: this job runs nothing but the
+  # pinned actions and `gh`, so nothing fetched from a registry executes next
+  # to the signing identity.
+  sign-and-upload:
+    needs: [publish-pypi, sbom]
+    if: github.event_name == 'release'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: 📦 Download artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: release-artifacts
+          path: dist
+      - name: 📦 Download SBOM
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c  # v8.0.1
+        with:
+          name: sbom
       - name: 🔏 Sigstore sign artifacts
         uses: sigstore/gh-action-sigstore-python@f514d46b907ebcd5bedc05145c03b69c1edd8b46  # v3.0.0
         with:
