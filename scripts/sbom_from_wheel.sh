@@ -12,41 +12,116 @@
 # That mistake published 77 SBOMs across this ecosystem, every one listing the
 # same 34 packages and none of them the release they claimed to describe. It is
 # worse than shipping nothing: a CVE sweep querying it gets a confident wrong
-# answer. The check at the end exists so it cannot happen quietly again.
+# answer. The checks at the end exist so it cannot happen quietly again.
 #
-# Usage: scripts/sbom_from_wheel.sh <dist-dir> <output-file>
+# Usage: scripts/sbom_from_wheel.sh <dist-dir> <output-file> [pyproject.toml]
 set -euo pipefail
 
 # Pinned: this runs code fetched from PyPI inside the release workflow. Bump
 # deliberately, and re-run the script locally against a fresh `uv build` first.
 CYCLONEDX_BOM_VERSION="7.3.1"
 
-DIST_DIR="${1:?usage: sbom_from_wheel.sh <dist-dir> <output-file>}"
-OUT="${2:?usage: sbom_from_wheel.sh <dist-dir> <output-file>}"
+# CycloneDX type of the root component: `library` for a distribution other code
+# imports, `application` for a CLI-first one. Only affects how consumers
+# classify the subject, not what is recorded.
+MC_TYPE="${SBOM_MC_TYPE:-library}"
+
+DIST_DIR="${1:?usage: sbom_from_wheel.sh <dist-dir> <output-file> [pyproject.toml]}"
+OUT="${2:?usage: sbom_from_wheel.sh <dist-dir> <output-file> [pyproject.toml]}"
+PYPROJECT="${3:-pyproject.toml}"
 
 VENV="$(mktemp -d)/sbom-venv"
 uv venv --quiet "$VENV"
 uv pip install --quiet --python "$VENV/bin/python" "$DIST_DIR"/*.whl
-uvx --from "cyclonedx-bom==${CYCLONEDX_BOM_VERSION}" cyclonedx-py environment "$VENV/bin/python" --output-format json -o "$OUT"
 
-# The SBOM must name the package its own wheel filename says it describes.
+# --pyproject is what gives the document a root component -- a statement of
+# what the SBOM is *about*, rather than 58 peers with the subject buried among
+# them. Without it `metadata.component` is null and tooling that keys off the
+# root subject finds nothing.
+uvx --from "cyclonedx-bom==${CYCLONEDX_BOM_VERSION}" cyclonedx-py environment "$VENV/bin/python" \
+  --pyproject "$PYPROJECT" \
+  --mc-type "$MC_TYPE" \
+  --output-format json -o "$OUT"
+
 python3 - "$DIST_DIR" "$OUT" <<'PYEOF'
+"""Complete the root component from the wheel, then verify the SBOM.
+
+Every project here declares `dynamic = ["version"]`, so cyclonedx-py reads the
+name out of pyproject.toml and leaves the version null -- it does not build the
+project to resolve one. The wheel filename is the authority for both, and the
+purl follows from them.
+"""
+
 import json
 import pathlib
+import re
 import sys
+import zipfile
 
 dist, out = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
-wheel = next(iter(sorted(dist.glob("*.whl"))), None)
-if wheel is None:
-    print(f"::error::no wheel in {dist}/ to check the SBOM against")
+
+
+def fail(message: str) -> None:
+    print(f"::error::{message}")
     raise SystemExit(1)
 
-expected = wheel.name.split("-")[0].replace("_", "-").lower()
-names = {c["name"].replace("_", "-").lower() for c in json.loads(out.read_text())["components"]}
-if expected not in names:
-    print(f"::error::SBOM names {len(names)} packages but not {expected} -- it is describing the wrong environment")
-    raise SystemExit(1)
-print(f"SBOM names {expected} among {len(names)} components")
+
+def normalize(name: str) -> str:
+    # PEP 503 normalization: the wheel filename escapes the name, the SBOM does not.
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+
+wheel = next(iter(sorted(dist.glob("*.whl"))), None)
+if wheel is None:
+    fail(f"no wheel in {dist}/ to check the SBOM against")
+
+raw_name, version = wheel.name.split("-")[:2]
+expected = normalize(raw_name)
+
+# Requires-Dist from the wheel's own metadata, minus anything gated behind an
+# extra: those are not installed, so they are legitimately absent below.
+requires = set()
+with zipfile.ZipFile(wheel) as zf:
+    metadata_name = next((n for n in zf.namelist() if n.endswith(".dist-info/METADATA")), None)
+    if metadata_name is None:
+        fail(f"{wheel.name} has no .dist-info/METADATA")
+    for line in zf.read(metadata_name).decode("utf-8", "replace").splitlines():
+        if not line.startswith("Requires-Dist:"):
+            continue
+        spec = line.split(":", 1)[1].strip()
+        if "extra ==" in spec:
+            continue
+        requires.add(normalize(re.split(r"[\s<>=!~;\[(]", spec, maxsplit=1)[0]))
+
+bom = json.loads(out.read_text())
+components = bom.get("components") or []
+present = {normalize(c["name"]) for c in components}
+
+root = bom.setdefault("metadata", {}).get("component")
+if root is None:
+    fail("SBOM has no metadata.component -- it does not declare what it describes")
+if normalize(root.get("name", "")) != expected:
+    fail(f"SBOM root component is {root.get('name')!r}, expected {expected!r}")
+
+if not root.get("version"):
+    root["version"] = version
+elif root["version"] != version:
+    fail(f"SBOM root version {root['version']!r} disagrees with the wheel's {version!r}")
+if not root.get("purl"):
+    root["purl"] = f"pkg:pypi/{expected}@{version}"
+
+# The root component alone does not prove the right environment was described:
+# it comes from pyproject.toml and would be correct even if the venv install
+# had silently produced nothing. The dependency closure is what proves it.
+missing = sorted(requires - present)
+if missing:
+    fail(
+        f"SBOM lists {len(components)} components but is missing {len(missing)} of "
+        f"{expected}'s dependencies ({', '.join(missing[:5])}) -- wrong environment"
+    )
+
+out.write_text(json.dumps(bom, indent=2) + "\n")
+print(f"SBOM describes {expected} {version} with {len(components)} dependencies")
 PYEOF
 
 echo "SBOM written to $OUT"
