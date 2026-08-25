@@ -1,6 +1,11 @@
 name: 🚀 Release
 
-# Release is driven by a user-created GitHub Release (or manual dispatch for dry runs).
+# Release is driven by a user-created GitHub Release. A manual dispatch is a
+# dry run: it builds, tests and generates the SBOM, and every job that
+# publishes anywhere is gated on the release event, so dispatching from a
+# branch cannot reach TestPyPI or PyPI. (It could once -- the publish jobs had
+# no event guard, and only the version-verify step failing on a non-tag ref
+# kept PyPI out of reach.)
 # Tag-push auto-release is deliberately not wired up yet — flip when ready.
 on:
   release:
@@ -23,6 +28,7 @@ jobs:
   # are not matched by PyPI's publisher config).
   publish-testpypi:
     needs: release
+    if: github.event_name == 'release'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
@@ -46,6 +52,7 @@ jobs:
   # Uses the helper scripts from ci-tooling/scripts/release/.
   verify-testpypi:
     needs: publish-testpypi
+    if: github.event_name == 'release'
     runs-on: ubuntu-24.04
     steps:
       - name: 📥 Checkout ci-tooling helpers
@@ -72,6 +79,7 @@ jobs:
   # PyPI publish via trusted publisher bound to this repo's release.yml + env `pypi`.
   publish-pypi:
     needs: verify-testpypi
+    if: github.event_name == 'release'
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
