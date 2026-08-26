@@ -211,10 +211,20 @@ class OperationDetector:
     def _analyze_event_group(self, events: list[FileEvent], emit_logs: bool = True) -> FileOperation | None:
         """Analyze a group of events to detect an operation using registry-based detectors.
 
-        Performance optimizations:
+        Selection:
         - Registry-based detector lookup (extensible)
         - Priority-ordered execution (highest priority first)
-        - Early termination on high-confidence matches (>=0.95)
+        - The highest-priority detector that matches wins; confidence only
+          breaks ties between detectors registered at the same priority.
+
+        Priority encodes how *specific* a pattern is (see the band table in
+        ``detectors/__init__.py``), so a more general detector must not
+        displace a more specific one. Confidence is a within-detector score --
+        one detector's 0.85 and another's 0.80 are not on a common scale, and
+        comparing them across detectors let ``detect_batch_update`` (priority
+        73) swallow ``detect_rename_sequence`` (priority 75) whenever the
+        watcher happened to report a directory-level event alongside the
+        renames.
         """
         if not events:
             return None
@@ -227,36 +237,16 @@ class OperationDetector:
         best_operation = None
         best_confidence = 0.0
         best_detector_name = None
-        # Early termination threshold - stop searching if we find a very high confidence match
-        HIGH_CONFIDENCE_THRESHOLD = 0.95
+        best_priority: int | None = None
 
         for detector_name, detect_func, priority in detectors:
+            # Detectors are sorted highest-priority first, so once one has
+            # matched, every detector left is more general. Stop.
+            if best_priority is not None and priority < best_priority:
+                break
+
             try:
                 operation = detect_func(events)
-                if operation and operation.confidence > best_confidence:
-                    best_operation = operation
-                    best_confidence = operation.confidence
-                    best_detector_name = detector_name
-                    if emit_logs:
-                        log.debug(
-                            "Found better operation match",
-                            detector=detector_name,
-                            priority=priority,
-                            confidence=operation.confidence,
-                            operation_type=operation.operation_type.value,
-                            primary_path=str(operation.primary_path),
-                        )
-
-                    # Early termination: if we found a very high confidence match, stop searching
-                    if best_confidence >= HIGH_CONFIDENCE_THRESHOLD:
-                        if emit_logs:
-                            log.debug(
-                                "Early termination on high confidence match",
-                                confidence=best_confidence,
-                                detector=detector_name,
-                            )
-                        break
-
             except Exception as e:
                 log.warning(
                     "Detector failed",
@@ -264,8 +254,29 @@ class OperationDetector:
                     priority=priority,
                     error=str(e),
                 )
+                continue
 
-        if best_operation and best_confidence >= self.config.min_confidence:
+            if operation is None or operation.confidence < self.config.min_confidence:
+                continue
+            # Same priority band only: a tie is broken by confidence.
+            if operation.confidence <= best_confidence:
+                continue
+
+            best_operation = operation
+            best_confidence = operation.confidence
+            best_detector_name = detector_name
+            best_priority = priority
+            if emit_logs:
+                log.debug(
+                    "Found better operation match",
+                    detector=detector_name,
+                    priority=priority,
+                    confidence=operation.confidence,
+                    operation_type=operation.operation_type.value,
+                    primary_path=str(operation.primary_path),
+                )
+
+        if best_operation:
             if (
                 best_detector_name == "detect_simple_operation"
                 and best_operation.operation_type == OperationType.BACKUP_CREATE
