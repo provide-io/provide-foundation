@@ -11,12 +11,21 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Repair an existing release: re-attach and sign the artifacts PyPI holds for this tag (e.g. v0.6.1). Leave blank for a dry run.'
+        required: false
+        default: ''
+        type: string
 
 jobs:
   # Delegate tests + build + (optional) GH release to the ci-tooling reusable.
   # GH release creation is suppressed because `release: published` means one already exists.
   release:
     uses: provide-io/ci-tooling/.github/workflows/python-release.yml@v0.4.3
+    # Skipped for a repair dispatch: that path attaches the artifacts PyPI
+    # already holds, so building a fresh set here would only be discarded.
+    if: github.event_name == 'release' || inputs.release_tag == ''
     permissions:
       contents: write
     with:
@@ -167,3 +176,47 @@ jobs:
           TAG: ${{ github.event.release.tag_name }}
         run: |
           gh release upload "$TAG" dist/*.whl dist/*.tar.gz dist/*.sigstore.json sbom-python.cdx.json --repo "$GITHUB_REPOSITORY" --clobber
+
+  # Repair path for a release whose sign-and-upload failed, leaving the GitHub
+  # release without the artifacts that reached PyPI.
+  #
+  # The artifacts come from PyPI, not from a rebuild. A `release` event runs the
+  # workflow frozen at its tag, so a release broken by a workflow bug cannot be
+  # re-run into success; and rebuilding from today's tree produces bytes that
+  # were never published under that version, which is worse than attaching
+  # nothing. The script verifies each file against PyPI's own sha256 before it
+  # is written.
+  #
+  # The signature is made now, by this workflow. It attests that these bytes are
+  # the ones PyPI holds -- not that they were signed at release time. PyPI's
+  # Trusted Publishing attestation remains the release-time provenance record.
+  #
+  # No SBOM is produced here on purpose: its dependency closure would be today's
+  # resolution rather than the release's, and an SBOM that is confidently wrong
+  # about what shipped is the failure this ecosystem has already had once.
+  repair-release:
+    if: github.event_name == 'workflow_dispatch' && inputs.release_tag != ''
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      # Only the fetch script is needed; no token is left behind.
+      - name: 📥 Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          persist-credentials: false
+      - name: 📦 Fetch the published artifacts from PyPI
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python3 scripts/fetch_pypi_artifacts.py provide-foundation "$RELEASE_TAG" dist
+      - name: 🔏 Sigstore sign artifacts
+        uses: sigstore/gh-action-sigstore-python@f514d46b907ebcd5bedc05145c03b69c1edd8b46  # v3.0.0
+        with:
+          inputs: dist/*.whl dist/*.tar.gz
+      - name: ⬆️ Attach artifacts to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.release_tag }}
+        run: |
+          gh release upload "$TAG" dist/*.whl dist/*.tar.gz dist/*.sigstore.json --repo "$GITHUB_REPOSITORY" --clobber
