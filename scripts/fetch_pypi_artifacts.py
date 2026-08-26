@@ -35,7 +35,10 @@ def fail(message: str) -> None:
 def fetch(url: str) -> bytes:
     try:
         with urllib.request.urlopen(url, timeout=TIMEOUT) as response:
-            return response.read()
+            # Bound to a typed name: urlopen's read() is Any in typeshed, and
+            # returning it directly trips mypy's no-any-return under strict.
+            payload: bytes = response.read()
+        return payload
     except urllib.error.HTTPError as exc:
         fail(f"{url} returned HTTP {exc.code}")
     except Exception as exc:  # network, DNS, TLS
