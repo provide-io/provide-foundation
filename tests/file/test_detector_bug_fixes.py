@@ -356,4 +356,48 @@ class TestIntegrationBugFixes(FoundationTestCase):
         assert not is_temp_file(operation.primary_path), "Primary path should not be temp"
 
 
+class TestTempModifyEventCountBugFix(FoundationTestCase):
+    """Test that detect_temp_modify_pattern does not count the rename twice."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        self.detector = TempPatternDetector()
+        self.base_time = datetime.now()
+
+    def test_rename_event_counted_once(self) -> None:
+        """The rename is keyed on the temp path, so it is already in temp_events."""
+        temp_file = Path(".test.py.tmp.456")
+        final_file = Path("test.py")
+
+        events = [
+            FileEvent(
+                path=temp_file,
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=self.base_time, sequence_number=1),
+            ),
+            FileEvent(
+                path=temp_file,
+                event_type="modified",
+                metadata=FileEventMetadata(
+                    timestamp=self.base_time + timedelta(milliseconds=5), sequence_number=2
+                ),
+            ),
+            FileEvent(
+                path=temp_file,
+                event_type="moved",
+                dest_path=final_file,
+                metadata=FileEventMetadata(
+                    timestamp=self.base_time + timedelta(milliseconds=10), sequence_number=3
+                ),
+            ),
+        ]
+
+        operation = self.detector.detect_temp_modify_pattern(events)
+
+        assert operation is not None, "Should detect the temp modify pattern"
+        assert operation.event_count == 3, "Should report the three real events, not four"
+        assert operation.primary_path == final_file
+
+
 # 🧱🏗️🔚

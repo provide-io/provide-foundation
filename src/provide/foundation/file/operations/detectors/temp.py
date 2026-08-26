@@ -141,7 +141,12 @@ class TempPatternDetector:
 
                 if rename_events:
                     rename_event = rename_events[0]
-                    all_events = [*temp_events, rename_event]
+                    # The rename is keyed on the temp path, so it is already in
+                    # temp_events -- appending it unconditionally counted it
+                    # twice and inflated event_count by one.
+                    all_events = list(temp_events)
+                    if not any(e is rename_event for e in all_events):
+                        all_events.append(rename_event)
                     all_events.sort(key=lambda e: e.timestamp)
 
                     time_span = (all_events[-1].timestamp - all_events[0].timestamp).total_seconds() * 1000
