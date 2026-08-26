@@ -42,8 +42,11 @@ class TestMockContext(FoundationTestCase):
         """Test that save_config calls are tracked."""
         ctx = MockContext()
 
-        with tempfile.NamedTemporaryFile(suffix=".json") as tmp:
-            tmp_path = Path(tmp.name)
+        # A directory, not NamedTemporaryFile: Windows holds the latter open
+        # exclusively, so save_config reopening it by name fails with
+        # PermissionError [WinError 5]. Only the path is needed here.
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_path = Path(tmpdir) / "config.json"
             ctx.save_config(tmp_path)
 
         assert str(tmp_path) in [str(p) for p in ctx.saved_configs]

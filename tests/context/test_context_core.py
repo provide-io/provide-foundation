@@ -91,8 +91,10 @@ class TestContext(FoundationTestCase):
         assert data["profile"] == "test"
         assert data["debug"] is True
         assert data["json_output"] is True
-        assert data["config_file"] == "/path/to/config"
-        assert data["log_file"] == "/path/to/log"
+        # Compared through Path so the assertion is about the value surviving
+        # to_dict(), not about which separator the platform renders it with.
+        assert data["config_file"] == str(Path("/path/to/config"))
+        assert data["log_file"] == str(Path("/path/to/log"))
 
     def test_context_from_dict(self) -> None:
         """Test creating context from dictionary."""

@@ -21,6 +21,7 @@ from provide.foundation.file.permissions import (
     parse_permissions,
     set_file_permissions,
 )
+from tests.file._platform import requires_posix_permissions
 
 
 class TestParsePermissions:
@@ -103,6 +104,7 @@ class TestFormatPermissions:
 class TestSetAndGetPermissions:
     """Tests for set_file_permissions and get_permissions functions."""
 
+    @requires_posix_permissions
     def test_set_and_get_permissions_on_file(self, tmp_path: Path) -> None:
         """Should set and get permissions on a file."""
         test_file = tmp_path / "test.txt"
@@ -114,6 +116,7 @@ class TestSetAndGetPermissions:
         set_file_permissions(test_file, 0o600)
         assert get_permissions(test_file) == 0o600
 
+    @requires_posix_permissions
     def test_set_and_get_permissions_on_directory(self, tmp_path: Path) -> None:
         """Should set and get permissions on a directory."""
         test_dir = tmp_path / "testdir"
@@ -137,6 +140,7 @@ class TestSetAndGetPermissions:
             set_file_permissions(nonexistent, 0o644)
 
 
+@requires_posix_permissions
 class TestEnsureSecurePermissions:
     """Tests for ensure_secure_permissions function."""
 
@@ -208,6 +212,7 @@ class TestPermissionsRoundTrip:
             formatted = format_permissions(parsed)
             assert formatted == value
 
+    @requires_posix_permissions
     def test_set_get_round_trip(self, tmp_path: Path) -> None:
         """Should round-trip set and get permissions correctly."""
         test_file = tmp_path / "test.txt"
@@ -237,6 +242,7 @@ class TestPermissionsConstants:
         assert DEFAULT_EXECUTABLE_PERMS == 0o755
 
 
+@requires_posix_permissions
 class TestPermissionsIntegration:
     """Integration tests combining multiple permission functions."""
 

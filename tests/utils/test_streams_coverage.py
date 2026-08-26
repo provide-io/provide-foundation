@@ -74,21 +74,16 @@ class TestStreamsCoverage(FoundationTestCase):
 
     def test_get_foundation_log_stream_main_import_error(self) -> None:
         """Test get_foundation_log_stream with main setting - ImportError fallback."""
-        # Force ImportError by removing the module from sys.modules if it exists
-        original_modules = sys.modules.copy()
-
-        # Remove the module to simulate ImportError
-        if "provide.foundation.streams" in sys.modules:
-            del sys.modules["provide.foundation.streams"]
-
-        try:
+        # Binding the name to None is what actually makes `import` raise
+        # ImportError. Deleting the entry instead only forces a re-import, which
+        # succeeds -- so this test never reached the fallback it is named for,
+        # and passed because get_log_stream() happens to return sys.stderr on
+        # POSIX. On Windows it returns a colorama-wrapped stream and the
+        # identity check failed, which is what exposed this.
+        with patch.dict(sys.modules, {"provide.foundation.streams": None}):
             stream = get_foundation_log_stream("main")
-            # Should fallback to safe stderr
-            assert stream is sys.stderr
-        finally:
-            # Restore original modules
-            sys.modules.clear()
-            sys.modules.update(original_modules)
+
+        assert stream is get_safe_stderr()
 
     def test_get_foundation_log_stream_invalid_value_with_logger(self) -> None:
         """Test get_foundation_log_stream with invalid value and logger available."""

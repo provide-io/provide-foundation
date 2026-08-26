@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import signal
+import sys
 import threading
 from typing import Any
 
@@ -65,7 +66,14 @@ class TestSignalHandlerManagement:
 
         # Should be different from original
         assert current_sigint != self.original_sigint
-        assert current_sigterm != self.original_sigterm
+
+        # register_cleanup_handlers only installs a SIGTERM handler off Windows
+        # (cli/shutdown.py guards it the same way), because Windows raises
+        # SIGTERM for nothing -- there is no process able to send it. Asserting
+        # it changed there would be asserting against our own deliberate
+        # behaviour, so only SIGINT is checked on Windows.
+        if sys.platform != "win32":
+            assert current_sigterm != self.original_sigterm
 
     def test_register_without_signal_management_preserves_handlers(self) -> None:
         """Test that registering without signal management preserves handlers."""

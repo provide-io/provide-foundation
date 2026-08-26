@@ -19,6 +19,7 @@ from provide.foundation.file.safe import (
     safe_read,
     safe_read_text,
 )
+from tests.file._platform import requires_posix_permissions
 
 
 class TestSafeFileOperations(FoundationTestCase):
@@ -213,6 +214,7 @@ class TestSafeFileOperations(FoundationTestCase):
         assert dst.exists()
         assert dst.read_text() == content
 
+    @requires_posix_permissions
     def test_safe_copy_preserves_mode(self, temp_directory: Path) -> None:
         """Test safe copy preserves file permissions."""
 
@@ -225,6 +227,7 @@ class TestSafeFileOperations(FoundationTestCase):
 
         assert dst.stat().st_mode & 0o777 == 0o600
 
+    @requires_posix_permissions
     def test_safe_copy_no_preserve_mode(self, temp_directory: Path) -> None:
         """Test safe copy without preserving mode."""
 
