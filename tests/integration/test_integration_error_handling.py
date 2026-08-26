@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import tempfile
 from typing import Never
 
@@ -79,7 +80,7 @@ class TestErrorHandlingIntegration(FoundationTestCase):
             await loader.load(TestConfig)
 
         assert exc_info.value.code == "CONFIG_FILE_NOT_FOUND"
-        assert "/non/existent/file.json" in str(exc_info.value)
+        assert str(Path("/non/existent/file.json")) in str(exc_info.value)
 
         # Test with unknown format
         with tempfile.NamedTemporaryFile(suffix=".xyz") as f:

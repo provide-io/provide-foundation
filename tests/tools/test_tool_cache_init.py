@@ -114,16 +114,20 @@ class TestToolCacheInit(FoundationTestCase):
 
     def test_save_metadata_error_handling(self, cache: ToolCache) -> None:
         """Test save metadata error handling."""
-        # Make the directory read-only to trigger write error
-        cache.cache_dir.chmod(0o444)
-
-        with patch("provide.foundation.tools.cache.log") as mock_log:
-            with pytest.raises(Exception):  # write_json will raise after logging
+        # The failure is injected rather than provoked with chmod: Windows
+        # ignores POSIX mode bits, so a read-only directory there stays
+        # writable and nothing raised. Patching the write exercises the
+        # log-then-reraise path on every platform instead of only on POSIX.
+        with (
+            patch("provide.foundation.tools.cache.log") as mock_log,
+            patch(
+                "provide.foundation.tools.cache.write_json",
+                side_effect=OSError("disk full"),
+            ),
+        ):
+            with pytest.raises(OSError, match="disk full"):
                 cache._save_metadata()
             mock_log.error.assert_called_once()
-
-        # Restore permissions
-        cache.cache_dir.chmod(0o755)
 
 
 # 🧱🏗️🔚

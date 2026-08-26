@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
@@ -108,7 +109,7 @@ class TestLoggingConfigCoverage:
         with patch.dict(os.environ, {"PROVIDE_LOG_FILE": "/tmp/test.log"}):
             config = LoggingConfig.from_env()
             assert config.log_file is not None
-            assert str(config.log_file) == "/tmp/test.log"
+            assert str(config.log_file) == str(Path("/tmp/test.log"))
 
     def test_logging_config_no_emoji_sets_fields(self) -> None:
         """Test that deprecated emoji sets fields don't exist."""

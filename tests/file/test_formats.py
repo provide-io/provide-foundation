@@ -40,7 +40,7 @@ class TestFileFormats(FoundationTestCase):
         """Test reading JSON file."""
         path = temp_directory / "test.json"
         data = {"name": "test", "value": 42, "items": [1, 2, 3]}
-        path.write_text(json.dumps(data))
+        path.write_text(json.dumps(data), encoding="utf-8")
 
         result = read_json(path)
         assert result == data
@@ -61,7 +61,7 @@ class TestFileFormats(FoundationTestCase):
         """Test reading invalid JSON returns default."""
 
         path = temp_directory / "invalid.json"
-        path.write_text("not valid json {]")
+        path.write_text("not valid json {]", encoding="utf-8")
 
         result = read_json(path)
         assert result is None
@@ -74,7 +74,7 @@ class TestFileFormats(FoundationTestCase):
         """Test reading empty JSON file returns default."""
 
         path = temp_directory / "empty.json"
-        path.write_text("")
+        path.write_text("", encoding="utf-8")
 
         result = read_json(path)
         assert result is None
@@ -88,7 +88,7 @@ class TestFileFormats(FoundationTestCase):
         write_json(path, data)
 
         assert path.exists()
-        loaded = json.loads(path.read_text())
+        loaded = json.loads(path.read_text(encoding="utf-8"))
         assert loaded == data
 
     def test_write_json_pretty(self, temp_directory: Path) -> None:
@@ -99,7 +99,7 @@ class TestFileFormats(FoundationTestCase):
 
         write_json(path, data, indent=4)
 
-        content = path.read_text()
+        content = path.read_text(encoding="utf-8")
         assert '{\n    "a": 1' in content
 
     def test_write_json_compact(self, temp_directory: Path) -> None:
@@ -110,7 +110,7 @@ class TestFileFormats(FoundationTestCase):
 
         write_json(path, data, indent=None)
 
-        content = path.read_text()
+        content = path.read_text(encoding="utf-8")
         assert content == '{"a": 1, "b": 2}' or content == '{"a":1,"b":2}'
 
     def test_write_json_sorted_keys(self, temp_directory: Path) -> None:
@@ -121,7 +121,7 @@ class TestFileFormats(FoundationTestCase):
 
         write_json(path, data, sort_keys=True)
 
-        content = path.read_text()
+        content = path.read_text(encoding="utf-8")
         # Keys should appear in alphabetical order
         assert content.index('"a"') < content.index('"m"') < content.index('"z"')
 
@@ -133,7 +133,7 @@ class TestFileFormats(FoundationTestCase):
 
         write_json(path, data)
 
-        loaded = json.loads(path.read_text())
+        loaded = json.loads(path.read_text(encoding="utf-8"))
         assert loaded == data
 
     def test_write_json_creates_parent_dirs(self, temp_directory: Path) -> None:
@@ -145,7 +145,7 @@ class TestFileFormats(FoundationTestCase):
         write_json(path, data)
 
         assert path.exists()
-        assert json.loads(path.read_text()) == data
+        assert json.loads(path.read_text(encoding="utf-8")) == data
 
     def test_write_json_non_atomic(self, temp_directory: Path) -> None:
         """Test non-atomic JSON write."""
@@ -156,7 +156,7 @@ class TestFileFormats(FoundationTestCase):
         write_json(path, data, atomic=False)
 
         assert path.exists()
-        assert json.loads(path.read_text()) == data
+        assert json.loads(path.read_text(encoding="utf-8")) == data
 
     # YAML Tests
 
@@ -166,7 +166,7 @@ class TestFileFormats(FoundationTestCase):
 
         path = temp_directory / "test.yaml"
         data = {"name": "test", "value": 42, "items": [1, 2, 3]}
-        path.write_text(yaml.dump(data))
+        path.write_text(yaml.dump(data), encoding="utf-8")
 
         result = read_yaml(path)
         assert result == data
@@ -187,7 +187,7 @@ class TestFileFormats(FoundationTestCase):
         """Test reading invalid YAML returns default."""
         pytest.importorskip("yaml")
         path = temp_directory / "invalid.yaml"
-        path.write_text("@invalid: [yaml content")
+        path.write_text("@invalid: [yaml content", encoding="utf-8")
 
         result = read_yaml(path)
         assert result is None
@@ -201,7 +201,7 @@ class TestFileFormats(FoundationTestCase):
         write_yaml(path, data)
 
         assert path.exists()
-        loaded = yaml.safe_load(path.read_text())
+        loaded = yaml.safe_load(path.read_text(encoding="utf-8"))
         assert loaded == data
 
     def test_write_yaml_flow_style(self, temp_directory: Path) -> None:
@@ -212,7 +212,7 @@ class TestFileFormats(FoundationTestCase):
 
         write_yaml(path, data, default_flow_style=True)
 
-        content = path.read_text()
+        content = path.read_text(encoding="utf-8")
         assert "{a: [1, 2, 3]}" in content
 
     def test_write_yaml_unicode(self, temp_directory: Path) -> None:
@@ -223,7 +223,7 @@ class TestFileFormats(FoundationTestCase):
 
         write_yaml(path, data)
 
-        loaded = yaml.safe_load(path.read_text())
+        loaded = yaml.safe_load(path.read_text(encoding="utf-8"))
         assert loaded == data
 
     # TOML Tests
@@ -240,7 +240,7 @@ class TestFileFormats(FoundationTestCase):
 [dependencies]
 foo = "1.2.3"
 """
-        path.write_text(toml_content)
+        path.write_text(toml_content, encoding="utf-8")
 
         result = read_toml(path)
         assert result["package"]["name"] == "test"
@@ -262,7 +262,7 @@ foo = "1.2.3"
         """Test reading invalid TOML returns default."""
 
         path = temp_directory / "invalid.toml"
-        path.write_text("[invalid toml content")
+        path.write_text("[invalid toml content", encoding="utf-8")
 
         result = read_toml(path)
         assert result == {}
@@ -271,7 +271,7 @@ foo = "1.2.3"
         """Test reading empty TOML file."""
 
         path = temp_directory / "empty.toml"
-        path.write_text("")
+        path.write_text("", encoding="utf-8")
 
         result = read_toml(path)
         assert result == {}
@@ -290,7 +290,7 @@ foo = "1.2.3"
         write_toml(path, data)
 
         assert path.exists()
-        loaded = tomllib.loads(path.read_text())
+        loaded = tomllib.loads(path.read_text(encoding="utf-8"))
         assert loaded == data
 
     def test_write_toml_creates_parent_dirs(self, temp_directory: Path) -> None:

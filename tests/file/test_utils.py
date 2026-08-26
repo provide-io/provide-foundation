@@ -20,6 +20,7 @@ from provide.foundation.file.utils import (
     get_size,
     touch,
 )
+from tests.file._platform import requires_posix_permissions
 
 
 class TestFileUtils(FoundationTestCase):
@@ -128,6 +129,7 @@ class TestFileUtils(FoundationTestCase):
         # Content should be preserved
         assert path.read_text() == "content"
 
+    @requires_posix_permissions
     def test_touch_with_mode(self, temp_directory: Path) -> None:
         """Test touch creates file with specific mode."""
 
@@ -312,6 +314,7 @@ class TestFileUtils(FoundationTestCase):
 
         assert backup_path is None
 
+    @requires_posix_permissions
     def test_backup_file_preserves_metadata(self, temp_directory: Path) -> None:
         """Test backup preserves file metadata."""
 

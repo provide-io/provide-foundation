@@ -276,6 +276,7 @@ class TestAtomicWriteEdgeCases(FoundationTestCase):
         expected = 0o666 & ~current_umask
         assert actual_mode == expected
 
+    @requires_posix_permissions
     def test_atomic_write_cleanup_on_failure(self) -> None:
         """Test that temp files are cleaned up on write failure."""
         Path(self.temp_dir) / "fail.txt"

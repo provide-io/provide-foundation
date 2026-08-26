@@ -22,6 +22,7 @@ import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+from provide.foundation.streams.file import close_log_streams
 
 
 class TestPredictableInitialization(FoundationTestCase):
@@ -239,13 +240,20 @@ class TestPredictableInitialization(FoundationTestCase):
             hub = Hub()
             hub.initialize_foundation(config)
 
-            logger = hub.get_foundation_logger("test.file")
-            logger.info("Test file message")
+            try:
+                logger = hub.get_foundation_logger("test.file")
+                logger.info("Test file message")
 
-            # File should be created and contain message
-            # Note: Actual file writing depends on setup completion
-            # This test mainly ensures no errors occur
-            assert True  # If we get here, file logging didn't crash
+                # File should be created and contain message
+                # Note: Actual file writing depends on setup completion
+                # This test mainly ensures no errors occur
+                assert True  # If we get here, file logging didn't crash
+            finally:
+                # Release the handle Foundation holds on the log file. POSIX
+                # lets TemporaryDirectory unlink a file that is still open, so
+                # leaking it here was invisible; Windows refuses, and the
+                # cleanup raised PermissionError [WinError 32] instead.
+                close_log_streams()
 
     @pytest.mark.skip(reason="Global hub state isolation complex - defer until needed")
     def test_multiple_hubs_independent(self) -> None:
