@@ -16,7 +16,7 @@ jobs:
   # Delegate tests + build + (optional) GH release to the ci-tooling reusable.
   # GH release creation is suppressed because `release: published` means one already exists.
   release:
-    uses: provide-io/ci-tooling/.github/workflows/python-release.yml@v0.4.2
+    uses: provide-io/ci-tooling/.github/workflows/python-release.yml@v0.4.3
     permissions:
       contents: write
     with:
@@ -59,7 +59,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           repository: provide-io/ci-tooling
-          ref: v0.4.2
+          ref: v0.4.3
           path: .ci-tooling
       - name: 🐍 Setup Python
         uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57  # v8.0.0
