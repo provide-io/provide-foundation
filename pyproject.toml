@@ -123,7 +123,12 @@ docs = [
     # .gitignore excludes .provide/foundry/ because it is an extract of this
     # package. scripts/extract_docs_scaffolding.py writes it, and needs the
     # package installed to do so.
-    "provide-foundry>=0.4.0",
+    #
+    # Floored at 0.4.1, not 0.4.0: the gen_ref_pages.py that 0.4.0 extracts
+    # never invokes itself under mkdocs-gen-files, so the reference section
+    # comes out empty and --strict fails on the dangling links out of
+    # docs/reference/index.md. 0.4.1 is the first release where this builds.
+    "provide-foundry>=0.4.1",
 ]
 protobuf = [
     "protobuf>=6.32.0",
