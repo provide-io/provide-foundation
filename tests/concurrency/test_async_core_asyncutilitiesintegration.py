@@ -116,27 +116,42 @@ class TestAsyncUtilitiesIntegration(MinimalTestCase):
 
     @pytest.mark.asyncio
     async def test_performance_comparison(self) -> None:
-        """Test performance characteristics of async utilities."""
+        """Test performance characteristics of async utilities.
+
+        The per-task sleep has to stay well clear of scheduler noise. At 1ms a
+        loaded CI runner can deschedule the gather long enough to make the
+        concurrent run measure *slower* than the sequential one, which is how
+        this test used to fail -- 14.2ms against 13.4ms, comparing overhead
+        rather than concurrency. At 20ms the expected gap is roughly tenfold, so
+        the margin below is about the code and not about the machine.
+        """
+        task_count = 10
+        sleep_seconds = 0.02
+        sequential_estimate = task_count * sleep_seconds
 
         async def fast_task(n):
-            await async_sleep(0.001)
+            await async_sleep(sleep_seconds)
             return n
 
         # Sequential execution
-        start = time.time()
+        start = time.monotonic()
         sequential_results = []
-        for i in range(10):
+        for i in range(task_count):
             result = await fast_task(i)
             sequential_results.append(result)
-        sequential_time = time.time() - start
+        sequential_time = time.monotonic() - start
 
         # Concurrent execution with async_gather
-        start = time.time()
-        concurrent_results = await async_gather(*[fast_task(i) for i in range(10)])
-        concurrent_time = time.time() - start
+        start = time.monotonic()
+        concurrent_results = await async_gather(*[fast_task(i) for i in range(task_count)])
+        concurrent_time = time.monotonic() - start
 
-        # Concurrent should be faster
-        assert concurrent_time < sequential_time
+        # Concurrent should be substantially faster, not merely faster by a
+        # margin a rescheduled task could erase.
+        assert concurrent_time < sequential_time / 2, (
+            f"concurrent {concurrent_time:.4f}s vs sequential {sequential_time:.4f}s "
+            f"(expected roughly {sleep_seconds:.3f}s vs {sequential_estimate:.3f}s)"
+        )
         assert sequential_results == concurrent_results
 
     def test_async_utilities_error_messages(self) -> None:
