@@ -116,7 +116,7 @@ with zipfile.ZipFile(wheel) as zf:
         try:
             req = Requirement(spec)
         except InvalidRequirement as exc:
-            fail(f"{wheel.name} has an unparseable Requires-Dist {spec!r}: {exc}")
+            fail(f"{wheel.name} has an unparsable Requires-Dist {spec!r}: {exc}")
         if req.marker is not None and not req.marker.evaluate({"extra": ""}):
             continue
         requires.add(normalize(req.name))
