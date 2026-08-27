@@ -196,7 +196,7 @@ def handle_error(
         The fallback value if not re-raising.
 
     Raises:
-        The original error if reraise=True.
+        Exception: The error passed in, re-raised unchanged, when reraise=True.
 
     Examples:
         >>> try:
@@ -277,7 +277,8 @@ class ErrorHandler:
             Result from the handler function.
 
         Raises:
-            The original error if reraise_unhandled=True and no handler matches.
+            Exception: The error passed in, re-raised unchanged, when
+                reraise_unhandled=True and no policy matches it.
 
         Examples:
             >>> result = handler.handle(ValidationError("Invalid"))
