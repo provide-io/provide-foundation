@@ -2674,14 +2674,14 @@ dev = [
     { name = "provide-testkit", extras = ["advanced-testing", "build", "standard", "typecheck", "utils"], specifier = ">=0.4.0" },
 ]
 docs = [
-    { name = "provide-foundry", specifier = ">=0.4.0" },
+    { name = "provide-foundry", specifier = ">=0.4.1" },
     { name = "provide-testkit", extras = ["docs"], specifier = ">=0.4.0" },
 ]
 protobuf = [{ name = "protobuf", specifier = ">=6.32.0" }]
 
 [[package]]
 name = "provide-foundry"
-version = "0.4.0"
+version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mike" },
@@ -2699,9 +2699,9 @@ dependencies = [
     { name = "provide-foundation" },
     { name = "tomli" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/96/2eac0d1c6943ac6b52ac1cfd4cf7c8e29a205664ddf55a4a9c227b2a4fa3/provide_foundry-0.4.0.tar.gz", hash = "sha256:e84152515b1d32210c6e867e2bec39a87acf055b430d5d1b99b5b3805bdd0e78", size = 74389, upload-time = "2026-04-22T01:34:04.984Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a3/ec/e2b4d6313243939e85f35306580b5d220010f6224e43aa8482b013429f05/provide_foundry-0.4.1.tar.gz", hash = "sha256:6f0834195e2d2505d2daab339ec9f11890ea4f685407877e93201688c554cdd2", size = 75117, upload-time = "2026-08-27T08:47:57.805Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ee/ec/c8b81c3ab278a5f3b91ee7b21b08b6c9ea130e7e9dd76bda0e40f1af4144/provide_foundry-0.4.0-py3-none-any.whl", hash = "sha256:ae4cb721244ab9cc1fd0f073ad5e1197de51cc4a90a9ec5be666f8e880bf38d2", size = 87445, upload-time = "2026-04-22T01:34:03.3Z" },
+    { url = "https://files.pythonhosted.org/packages/58/e4/5e961a4b8c592d1700597b15f8fb4a1cf65a99218a0d107c39bbb1bad560/provide_foundry-0.4.1-py3-none-any.whl", hash = "sha256:e74fa8195f3513487140df4b5063b88697b8aa8eebb2b2a4f2a960f1254df011", size = 88266, upload-time = "2026-08-27T08:47:56.215Z" },
 ]
 
 [[package]]
