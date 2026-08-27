@@ -54,12 +54,17 @@ jobs:
               python ${example}
           done
 
+      # mkdocs.yml inherits .provide/foundry/base-mkdocs.yml, which is
+      # gitignored because it is an extract of provide-foundry rather than
+      # source of ours. Without this the build dies at config load, before it
+      # reads a page -- which is what every run of this workflow has done.
+      - name: 🏗️ Extract docs scaffolding
+        run: uv run --group docs python scripts/extract_docs_scaffolding.py
+
+      # Strict mode: any mkdocs warning fails the build, dangling links and
+      # griffe docstring complaints included.
       - name: 📚 Build and Validate MkDocs
-        run: |
-          source .venv/bin/activate
-          # Build with strict mode (fails on warnings)
-          mkdocs build --clean --strict
-          echo "✅ MkDocs build completed successfully with no warnings"
+        run: uv run --group docs mkdocs build --clean --strict
 
       - name: 🔗 Validate README Links
         run: |

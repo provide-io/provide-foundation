@@ -118,6 +118,12 @@ dev = [
 ]
 docs = [
     "provide-testkit[docs]>=0.4.0",
+    # mkdocs.yml inherits .provide/foundry/base-mkdocs.yml and runs
+    # .provide/foundry/gen_ref_pages.py, neither of which is in this repo:
+    # .gitignore excludes .provide/foundry/ because it is an extract of this
+    # package. scripts/extract_docs_scaffolding.py writes it, and needs the
+    # package installed to do so.
+    "provide-foundry>=0.4.0",
 ]
 protobuf = [
     "protobuf>=6.32.0",
