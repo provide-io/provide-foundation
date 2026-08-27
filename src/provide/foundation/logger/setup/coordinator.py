@@ -34,6 +34,26 @@ _FOUNDATION_LOG_LEVEL: int | None = None
 _CACHED_SETUP_LOGGER: Any | None = None
 
 
+def _config_from_env_safely() -> Any:
+    """Load TelemetryConfig from the environment, falling back to defaults.
+
+    Foundation builds its own setup logger before the configuration is
+    initialized, so an unguarded `from_env()` here aborts initialization
+    outright -- defeating the fallback that
+    `FoundationInitializer._initialize_config` exists to provide, and turning a
+    single malformed environment variable into a failure to start.
+
+    Import errors still propagate: those mean the package is broken rather than
+    the environment, which is the same line `_initialize_config` draws.
+    """
+    try:
+        return TelemetryConfig.from_env()
+    except Exception as e:
+        if "import" in str(e).lower():
+            raise
+        return TelemetryConfig()
+
+
 def format_foundation_log_message(
     timestamp: float, level_name: str, message: str, use_colors: bool = False
 ) -> str:
@@ -111,7 +131,7 @@ def get_foundation_log_level(config: TelemetryConfig | None = None) -> int:
     # Otherwise use cached value or load from config
     if _FOUNDATION_LOG_LEVEL is None:
         # Load config to get foundation_setup_log_level
-        temp_config = TelemetryConfig.from_env()
+        temp_config = _config_from_env_safely()
         level_str = temp_config.logging.foundation_setup_log_level.upper()
 
         # Validate and map to numeric level
@@ -312,7 +332,7 @@ def get_system_logger(name: str, config: TelemetryConfig | None = None) -> Struc
             output = config.logging.foundation_log_output.lower()
         else:
             # Load config to get foundation_log_output
-            temp_config = TelemetryConfig.from_env()
+            temp_config = _config_from_env_safely()
             output = temp_config.logging.foundation_log_output.lower()
 
         from provide.foundation.utils.streams import ensure_utf8_stream
