@@ -422,3 +422,9 @@ memray-output/
 
 # Local act CI config (machine-specific)
 .actrc
+
+# Generated API reference. mkdocs-gen-files keeps these in a temp overlay
+# during a build, but running .provide/foundry/gen_ref_pages.py directly
+# writes them here for real -- 351 files that are not ours to commit.
+docs/reference/provide/
+docs/reference/SUMMARY.md
