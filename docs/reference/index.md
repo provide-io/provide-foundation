@@ -65,7 +65,7 @@ from provide.foundation.eventsets.types import EventSet, EventMapping
 | Feature | Purpose | Documentation |
 |---------|---------|---------------|
 | `@injectable` | Mark classes for dependency injection | [hub docs](provide/foundation/hub/index.md) |
-| `Container` | Dependency injection container | [container docs](provide/foundation/hub/container/index.md) |
+| `Container` | Dependency injection container | [container docs](provide/foundation/hub/container.md) |
 | `EventSet` | Define custom event sets with emojis | [eventsets docs](provide/foundation/eventsets/index.md) |
 | `EventMapping` | Map events to emoji representations | [eventsets docs](provide/foundation/eventsets/index.md) |
 
@@ -114,7 +114,7 @@ from provide.foundation.eventsets.types import EventSet, EventMapping
 
 For a complete hierarchical view of all modules, classes, and functions:
 
-**[📑 Full Module Index](SUMMARY/)** - Complete navigation tree
+**[📑 Full Module Index](SUMMARY.md)** - Complete navigation tree
 
 ## Module Count
 

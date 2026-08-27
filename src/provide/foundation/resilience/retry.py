@@ -223,7 +223,8 @@ class RetryExecutor:
             Result from successful execution
 
         Raises:
-            Last exception if all retries are exhausted
+            Exception: The last exception raised by func, once every attempt
+                allowed by the policy has been used.
 
         """
         last_exception = None
@@ -295,7 +296,8 @@ class RetryExecutor:
             Result from successful execution
 
         Raises:
-            Last exception if all retries are exhausted
+            Exception: The last exception raised by func, once every attempt
+                allowed by the policy has been used.
 
         """
         last_exception = None

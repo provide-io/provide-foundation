@@ -115,10 +115,11 @@ def register_command(  # type: ignore[misc]
         category: Command category for grouping
         group: Whether this is a command group (not a command)
         replace: Whether to replace existing registration
-        force_options: If True, all parameters with defaults become --options
-                      (disables Position-Based Hybrid for first parameter)
         registry: Custom registry (defaults to global)
-        **metadata: Additional metadata stored in CommandInfo.metadata
+        **metadata: Additional metadata stored in CommandInfo.metadata. The CLI
+            builder reads `force_options` from here: if True, every parameter
+            with a default becomes a --option, disabling the Position-Based
+            Hybrid rule for the first parameter.
 
     Returns:
         Decorator function or decorated function
