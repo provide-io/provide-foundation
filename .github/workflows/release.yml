@@ -175,7 +175,7 @@ jobs:
       - name: 🔏 Sigstore sign artifacts
         uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9  # v3.5.0
         with:
-          inputs: dist/*.whl dist/*.tar.gz
+          inputs: dist/*.whl dist/*.tar.gz sbom-python.cdx.json
       - name: ⬆️ Attach artifacts to release
         env:
           GH_TOKEN: ${{ github.token }}
