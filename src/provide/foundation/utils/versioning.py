@@ -37,8 +37,23 @@ def reset_version_cache(package_name: str | None = None) -> None:
             _cached_versions.pop(package_name, None)
 
 
+def _is_environment_root(path: Path) -> bool:
+    """Whether `path` is the root of an installed environment rather than a project.
+
+    An installed package lives under site-packages, which lives inside an
+    environment, which very often lives inside some *other* project's checkout --
+    `.venv/` at the top of the repo that created it. Every dependency installed
+    there sits a few levels below that repo's own VERSION file.
+    """
+    return path.name in ("site-packages", "dist-packages") or (path / "pyvenv.cfg").is_file()
+
+
 def _find_project_root(start_path: Path) -> Path | None:
     """Find the project root directory by looking for VERSION file.
+
+    The search stops at an environment root. A VERSION file above that point
+    belongs to whichever project happens to host the environment, and reporting
+    it would give every installed package that project's version.
 
     Args:
         start_path: Directory to start searching from
@@ -53,6 +68,8 @@ def _find_project_root(start_path: Path) -> Path | None:
         version_file = current / "VERSION"
         if version_file.exists():
             return current
+        if _is_environment_root(current):
+            return None
         current = current.parent
 
     return None
@@ -131,6 +148,7 @@ def get_version(package_name: str, caller_file: str | Path | None = None) -> str
 
 __all__ = [
     "_find_project_root",
+    "_is_environment_root",
     "get_version",
     "reset_version_cache",
 ]
