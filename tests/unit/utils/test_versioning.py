@@ -97,6 +97,79 @@ def test_find_project_root_finds_version_file(tmp_path: Path) -> None:
     assert result == root
 
 
+def _installed_layout(tmp_path: Path, *, outer_version: str = "9.9.9") -> Path:
+    """An installed package inside a virtualenv inside another project's checkout.
+
+    This is the ordinary shape of a `uv sync`ed workspace: the venv lives in the
+    project that created it, and every dependency installed into it sits several
+    levels below that project's own VERSION file.
+    """
+    outer = tmp_path / "outer-project"
+    (outer / "src").mkdir(parents=True)
+    (outer / "VERSION").write_text(outer_version, encoding="utf-8")
+
+    venv = outer / ".venv"
+    venv.mkdir()
+    (venv / "pyvenv.cfg").write_text("home = /usr/bin\n", encoding="utf-8")
+
+    package = venv / "lib" / "python3.13" / "site-packages" / "installed_pkg"
+    package.mkdir(parents=True)
+    return package
+
+
+def test_find_project_root_stops_at_site_packages(tmp_path: Path) -> None:
+    """An installed package must not inherit the VERSION of the project hosting its venv.
+
+    Walking up from site-packages reaches the outer checkout, whose VERSION file
+    describes a different distribution entirely.
+    """
+    package = _installed_layout(tmp_path)
+
+    assert _find_project_root(package) is None
+
+
+def test_find_project_root_stops_at_a_venv_without_site_packages(tmp_path: Path) -> None:
+    """`pyvenv.cfg` marks the environment root even when the layout is unusual."""
+    outer = tmp_path / "outer-project"
+    outer.mkdir()
+    (outer / "VERSION").write_text("9.9.9", encoding="utf-8")
+
+    venv = outer / "env"
+    nested = venv / "some" / "vendored" / "place"
+    nested.mkdir(parents=True)
+    (venv / "pyvenv.cfg").write_text("home = /usr/bin\n", encoding="utf-8")
+
+    assert _find_project_root(nested) is None
+
+
+def test_find_project_root_still_finds_a_version_shipped_in_the_package(tmp_path: Path) -> None:
+    """A VERSION inside the installed package is its own, and is below the boundary."""
+    package = _installed_layout(tmp_path)
+    (package / "VERSION").write_text("1.2.3", encoding="utf-8")
+
+    assert _find_project_root(package) == package
+
+
+def test_get_version_of_an_installed_package_falls_back_to_metadata(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The regression: reported version came from the venv's host project.
+
+    With no VERSION file of its own, an installed package must report what its
+    installed metadata says, not the 9.9.9 sitting at the top of the checkout.
+    """
+    reset_version_cache("installed-pkg")
+    package = _installed_layout(tmp_path)
+
+    def _metadata_version(name: str) -> str:
+        assert name == "installed-pkg"
+        return "0.5.2"
+
+    monkeypatch.setattr("importlib.metadata.version", _metadata_version)
+
+    assert get_version("installed-pkg", caller_file=package / "__init__.py") == "0.5.2"
+
+
 def test_find_project_root_returns_none_when_not_found(tmp_path: Path) -> None:
     """Test that _find_project_root returns None when no VERSION file is found."""
     # Create a directory without VERSION file
