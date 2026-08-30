@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import shutil
-from typing import Any, BinaryIO, cast
+from typing import Any, BinaryIO
 
 from attrs import Attribute, define, validators
 
@@ -88,7 +88,8 @@ class ZstdCompressor(BaseCompressor):
             ) from e
 
         cctx = zstd.ZstdCompressor(level=self.level)
-        return cast("bytes", cctx.compress(data))
+        # zstandard ships annotations now, so a cast here is redundant.
+        return cctx.compress(data)
 
     def _decompress_bytes_impl(self, data: bytes) -> bytes:
         """Library-specific bytes decompression implementation."""
@@ -101,7 +102,7 @@ class ZstdCompressor(BaseCompressor):
             ) from e
 
         dctx = zstd.ZstdDecompressor()
-        return cast("bytes", dctx.decompress(data))
+        return dctx.decompress(data)
 
 
 # <3 🧱🤝📦🪄
