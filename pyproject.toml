@@ -24,7 +24,7 @@ authors = [
 maintainers = [
     { name = "provide.io", email = "code@provide.io" },
 ]
-keywords = ["telemetry", "logging", "tracing", "python", "pyvider>=0.4.0"]
+keywords = ["telemetry", "logging", "tracing", "python", "pyvider"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
