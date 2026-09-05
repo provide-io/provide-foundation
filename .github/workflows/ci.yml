@@ -25,6 +25,10 @@ jobs:
       include-windows: ${{ inputs.include-windows || true }}
       coverage-threshold: 0
       run-security: true
+      # A known vulnerability in the lock reddens this build rather
+      # than filing a report nobody reads. The lock is clean: 160
+      # packages, no advisories.
+      fail-on-vulnerability: true
       run-secret-scan: true
       upload-coverage: true
       parallel-testing: true
