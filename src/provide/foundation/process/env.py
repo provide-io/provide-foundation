@@ -75,6 +75,10 @@ SAFE_ENV_ALLOWLIST = {
     "USERPROFILE",
     "WINDIR",
     "COMSPEC",
+    # PATHEXT is how Windows resolves a command given without a suffix. A
+    # subprocess told to run "uv" rather than "uv.exe" has nothing to expand the
+    # name with when this is dropped.
+    "PATHEXT",
 }
 
 # Sensitive patterns in environment variable names
