@@ -35,19 +35,24 @@ class _ColoramaLikeProxy:
 
     It reports the encoding of the stream it wrapped and forwards writes to it,
     which is how a cp1252 stream survives behind something that looks reconfigured.
+
+    It exposes neither `reconfigure` nor `buffer`. A proxy that forwarded those
+    would let ensure_utf8_stream reach the inner stream by accident, and the
+    test would pass without the helper ever following `wrapped`.
     """
 
     def __init__(self, wrapped: io.TextIOWrapper) -> None:
         self.wrapped = wrapped
+
+    @property
+    def encoding(self) -> str:
+        return self.wrapped.encoding
 
     def write(self, text: str) -> int:
         return self.wrapped.write(text)
 
     def flush(self) -> None:
         self.wrapped.flush()
-
-    def __getattr__(self, name: str) -> object:
-        return getattr(self.wrapped, name)
 
 
 def test_test_safety_config_gives_structlog_an_encodable_stream(monkeypatch) -> None:
