@@ -10,7 +10,6 @@ from __future__ import annotations
 # base.py
 #
 import os
-import sys
 from typing import Any
 
 """Base configuration utilities for Foundation logger."""
@@ -21,13 +20,17 @@ def get_config_logger() -> Any:
     import structlog
 
     from provide.foundation.logger.defaults import safe_console_renderer
-    from provide.foundation.utils.streams import get_foundation_log_stream
+    from provide.foundation.utils.streams import get_foundation_log_stream, get_safe_stderr
 
     try:
         foundation_output = os.getenv("FOUNDATION_LOG_OUTPUT", "stderr").lower()
         output_stream = get_foundation_log_stream(foundation_output)
     except Exception:
-        output_stream = sys.stderr
+        # get_safe_stderr, not sys.stderr: this logger carries emoji like every
+        # other, and a raw cp1252 console stream raises UnicodeEncodeError on
+        # the first line. This branch runs when stream selection has already
+        # failed, so it is the one that can least afford to raise again.
+        output_stream = get_safe_stderr()
 
     try:
         config = structlog.get_config()
