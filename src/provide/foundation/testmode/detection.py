@@ -207,6 +207,7 @@ def configure_structlog_for_test_safety() -> None:
     import structlog
 
     from provide.foundation.logger.defaults import safe_console_renderer
+    from provide.foundation.utils.streams import ensure_utf8_stream
 
     # Configure structlog to use stdout (safe for multiprocessing)
     # Use BoundLogger instead of make_filtering_bound_logger to preserve
@@ -218,7 +219,12 @@ def configure_structlog_for_test_safety() -> None:
         ],
         wrapper_class=structlog.BoundLogger,
         context_class=dict,
-        logger_factory=structlog.PrintLoggerFactory(file=sys.stdout),
+        # Through ensure_utf8_stream, because every event Foundation logs is
+        # emoji-prefixed and a Windows console stream is cp1252, which has no
+        # mapping for them. PrintLogger keeps the file object it is given, so a
+        # raw stream here makes every later log call raise UnicodeEncodeError
+        # into whatever called the logger.
+        logger_factory=structlog.PrintLoggerFactory(file=ensure_utf8_stream(sys.stdout)),
         cache_logger_on_first_use=False,  # Disable caching for test isolation
     )
 
