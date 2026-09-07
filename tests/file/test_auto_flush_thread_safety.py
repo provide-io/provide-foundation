@@ -328,9 +328,16 @@ class TestAutoFlushHandlerStressTest(FoundationTestCase):
             self.operations_emitted.append(operation)
 
     def test_high_frequency_adds(self, handler_cleanup: list) -> None:
-        """Test high-frequency event additions."""
+        """Test high-frequency event additions.
+
+        The window has to outlast the loop. `pending_events` holds what has not
+        been flushed yet, so a window that expires while the events are still
+        being added leaves the assertion counting whatever arrived after the
+        last flush -- 183 of 1000 on a loaded runner. The sibling contention
+        test uses a wide window for the same reason.
+        """
         handler = AutoFlushHandler(
-            time_window_ms=50,
+            time_window_ms=60_000,
             on_operation_complete=self._emit_operation,
         )
         handler_cleanup.append(handler)
