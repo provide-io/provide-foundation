@@ -68,7 +68,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
         with:
           repository: provide-io/ci-tooling
-          ref: v0.8.4
+          ref: v0.8.7
           path: .ci-tooling
       - name: 🐍 Setup Python
         uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57  # v8.0.0
@@ -106,6 +106,45 @@ jobs:
         uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e  # release/v1
         with:
           skip-existing: true
+
+  # Upload returning 200 is not the version being resolvable. PyPI serves the
+  # simple index through a CDN, and for a minute or several a resolver asking
+  # for the new version is told it does not exist -- so a release that ends at
+  # upload reports success into that window, and whatever runs off it (a
+  # downstream floor bump, a packaging build pinning the exact version) fails
+  # on a package that is genuinely published. Holding the release open until
+  # the index agrees keeps that failure here instead of in someone else's CI.
+  verify-pypi:
+    needs: publish-pypi
+    if: github.event_name == 'release'
+    runs-on: ubuntu-24.04
+    steps:
+      # The gate is a script in ci-tooling, so its checkout has to come first.
+      - name: 📥 Checkout ci-tooling helpers
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          repository: provide-io/ci-tooling
+          ref: v0.8.7
+          path: .ci-tooling
+
+      # pip is what reads the index the gate polls.
+      - name: 🐍 Setup Python
+        uses: astral-sh/setup-uv@cec208311dfd045dd5311c1add060b2062131d57  # v8.0.0
+        with:
+          python-version: "3.11"
+          enable-cache: false
+
+      # The tag is the authority on what was just published.
+      - name: 🔖 Resolve version
+        id: ver
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: .ci-tooling/scripts/release/resolve-tag-version.sh >> "$GITHUB_OUTPUT"
+
+      # Blocks until a resolver can see the version, or fails saying it cannot.
+      - name: ⏳ Wait for PyPI to serve the new version
+        run: .ci-tooling/scripts/release/wait-for-pypi.sh provide-foundation "${{ steps.ver.outputs.version }}"
 
   # SBOM for the built wheel and its dependencies. Its own job, with a
   # read-only token and no OIDC, because it installs the wheel's dependency
