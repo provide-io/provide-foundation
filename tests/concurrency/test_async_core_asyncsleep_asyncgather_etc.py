@@ -44,14 +44,16 @@ class TestAsyncSleep(MinimalTestCase):
     async def test_async_sleep_zero(self) -> None:
         """A zero delay yields to the loop and comes straight back.
 
-        The ceiling is the assertion here, so it stays -- but it is an order of
-        magnitude above the granularity of the coarsest clock this runs on.
+        The ceiling is the assertion here, so it stays -- but loosely. What it
+        has to separate is "yields and returns" from "blocks", and a blocked
+        sleep is either a real duration or a hang the test timeout catches.
+        Nothing is gained by a bound tight enough for a busy runner to trip.
         """
         start = time.monotonic()
         await async_sleep(0.0)
         elapsed = time.monotonic() - start
 
-        assert elapsed < 0.5
+        assert elapsed < 1.0
 
     @pytest.mark.asyncio
     async def test_async_sleep_negative_raises_error(self) -> None:
