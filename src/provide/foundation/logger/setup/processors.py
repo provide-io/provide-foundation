@@ -118,12 +118,18 @@ def apply_structlog_configuration(
     # Disable caching to allow stream redirection to work properly
     from provide.foundation.streams.config import get_stream_config
 
+    # Imported here, like the line above: this module is reached during logger
+    # setup, and pulling the utils package in at import time closes a cycle.
+    from provide.foundation.utils.streams import UnicodeSafeStream
+
     stream_config = get_stream_config()
     cache_loggers = not stream_config.force_stream_redirect
 
     structlog.configure(
         processors=processors,
-        logger_factory=structlog.PrintLoggerFactory(file=log_stream),
+        # structlog's PrintLogger writes straight to this file, so it never
+        # reaches write_to_console and its UnicodeEncodeError handling.
+        logger_factory=structlog.PrintLoggerFactory(file=UnicodeSafeStream(log_stream)),
         wrapper_class=_make_filtering_bound_logger_with_trace(effective_level),
         cache_logger_on_first_use=cache_loggers,
     )
