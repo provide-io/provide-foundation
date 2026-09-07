@@ -41,6 +41,15 @@ class TestSafeEnvAllowlist(FoundationTestCase):
         assert "DATABASE_URL" not in SAFE_ENV_ALLOWLIST
         assert "API_KEY" not in SAFE_ENV_ALLOWLIST
 
+    def test_allowlist_includes_windows_executable_resolution(self) -> None:
+        """PATHEXT is how Windows resolves a command given without a suffix.
+
+        A scrubbed subprocess that runs "uv" or "git" rather than "uv.exe" has
+        nothing to expand the name with when PATHEXT is dropped, so the lookup
+        depends on the caller having spelled the extension out.
+        """
+        assert "PATHEXT" in SAFE_ENV_ALLOWLIST
+
     def test_allowlist_includes_provide_vars(self) -> None:
         """Test allowlist includes Foundation-specific variables."""
         assert "PROVIDE_TELEMETRY_DISABLED" in SAFE_ENV_ALLOWLIST
