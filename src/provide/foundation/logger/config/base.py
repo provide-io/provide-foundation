@@ -20,7 +20,11 @@ def get_config_logger() -> Any:
     import structlog
 
     from provide.foundation.logger.defaults import safe_console_renderer
-    from provide.foundation.utils.streams import get_foundation_log_stream, get_safe_stderr
+    from provide.foundation.utils.streams import (
+        get_foundation_log_stream,
+        get_safe_stderr,
+        unicode_safe,
+    )
 
     try:
         foundation_output = os.getenv("FOUNDATION_LOG_OUTPUT", "stderr").lower()
@@ -36,14 +40,14 @@ def get_config_logger() -> Any:
         config = structlog.get_config()
         structlog.configure(
             processors=config.get("processors", [safe_console_renderer()]),
-            logger_factory=structlog.PrintLoggerFactory(file=output_stream),
+            logger_factory=structlog.PrintLoggerFactory(file=unicode_safe(output_stream)),
             wrapper_class=config.get("wrapper_class", structlog.BoundLogger),
             cache_logger_on_first_use=config.get("cache_logger_on_first_use", True),
         )
     except Exception:
         structlog.configure(
             processors=[safe_console_renderer()],
-            logger_factory=structlog.PrintLoggerFactory(file=output_stream),
+            logger_factory=structlog.PrintLoggerFactory(file=unicode_safe(output_stream)),
             wrapper_class=structlog.BoundLogger,
             cache_logger_on_first_use=True,
         )

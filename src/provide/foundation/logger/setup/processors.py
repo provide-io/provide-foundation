@@ -120,7 +120,7 @@ def apply_structlog_configuration(
 
     # Imported here, like the line above: this module is reached during logger
     # setup, and pulling the utils package in at import time closes a cycle.
-    from provide.foundation.utils.streams import UnicodeSafeStream
+    from provide.foundation.utils.streams import unicode_safe
 
     stream_config = get_stream_config()
     cache_loggers = not stream_config.force_stream_redirect
@@ -129,7 +129,7 @@ def apply_structlog_configuration(
         processors=processors,
         # structlog's PrintLogger writes straight to this file, so it never
         # reaches write_to_console and its UnicodeEncodeError handling.
-        logger_factory=structlog.PrintLoggerFactory(file=UnicodeSafeStream(log_stream)),
+        logger_factory=structlog.PrintLoggerFactory(file=unicode_safe(log_stream)),
         wrapper_class=_make_filtering_bound_logger_with_trace(effective_level),
         cache_logger_on_first_use=cache_loggers,
     )
