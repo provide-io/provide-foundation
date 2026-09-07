@@ -118,6 +118,8 @@ def reset_structlog_state() -> None:
 
     # Reconfigure with BoundLogger which supports trace via Foundation's patching
     # Using PrintLoggerFactory with stdout for test safety (parallel test compat)
+    from provide.foundation.utils.streams import unicode_safe
+
     structlog.configure(
         processors=[
             structlog.processors.TimeStamper(fmt="iso"),
@@ -126,7 +128,7 @@ def reset_structlog_state() -> None:
         ],
         wrapper_class=structlog.BoundLogger,
         context_class=dict,
-        logger_factory=structlog.PrintLoggerFactory(file=sys.stdout),
+        logger_factory=structlog.PrintLoggerFactory(file=unicode_safe(sys.stdout)),
         cache_logger_on_first_use=False,  # Disable caching for test isolation
     )
 

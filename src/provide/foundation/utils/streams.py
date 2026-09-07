@@ -110,6 +110,21 @@ class UnicodeSafeStream:
         return getattr(self._stream, name)
 
 
+def unicode_safe(stream: TextIO) -> TextIO:
+    """The stream, wrapped so a character it cannot encode never raises.
+
+    Every place that hands a stream to structlog goes through here. Wrapping at
+    setup alone is not enough: swapping the log stream rebuilds the logger
+    factory, and a rebuild that reached for the raw stream dropped the wrapping
+    and let a UnicodeEncodeError back into the caller.
+
+    Idempotent, so a stream reconfigured many times does not accumulate proxies.
+    """
+    if isinstance(stream, UnicodeSafeStream):
+        return stream
+    return UnicodeSafeStream(stream)  # type: ignore[return-value]
+
+
 def ensure_utf8_stream(stream: TextIO) -> TextIO:
     """Ensure a text stream uses UTF-8 encoding with error replacement.
 

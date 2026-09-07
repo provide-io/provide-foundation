@@ -16,7 +16,7 @@ from typing import TextIO
 
 from provide.foundation.concurrency.locks import get_lock_manager
 from provide.foundation.errors.base import FoundationError
-from provide.foundation.utils.streams import ensure_utf8_stream
+from provide.foundation.utils.streams import ensure_utf8_stream, unicode_safe
 
 _PROVIDE_LOG_STREAM: TextIO = ensure_utf8_stream(sys.stderr)
 _LOG_FILE_HANDLE: TextIO | None = None
@@ -136,7 +136,7 @@ def _reconfigure_structlog_stream() -> None:
 
             # Reconfigure with the new stream while preserving other config
             new_config = {**current_config}
-            new_config["logger_factory"] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
+            new_config["logger_factory"] = structlog.PrintLoggerFactory(file=unicode_safe(_PROVIDE_LOG_STREAM))
             new_config["cache_logger_on_first_use"] = cache_loggers
             structlog.configure(**new_config)
     except Exception:
