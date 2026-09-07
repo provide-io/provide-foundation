@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import ipaddress
 import traceback
 from typing import TYPE_CHECKING, cast
 
@@ -18,6 +19,22 @@ from provide.foundation.crypto.certificates.base import (
 )
 
 """Certificate operations: CA creation, signing, and trust verification."""
+
+
+def _general_name(name: str) -> x509.GeneralName:
+    """Classify a subject alternative name by what it actually is.
+
+    An address has to be emitted as an iPAddress entry. `x509.DNSName("127.0.0.1")`
+    is a certificate vouching for a *hostname* that happens to be spelled like an
+    address, and a TLS client connecting to that address checks iPAddress entries
+    and finds none. The certificate reads correctly in any listing and fails every
+    handshake, with nothing to say why.
+    """
+    try:
+        return x509.IPAddress(ipaddress.ip_address(name))
+    except ValueError:
+        return x509.DNSName(name)
+
 
 if TYPE_CHECKING:
     from cryptography import x509
@@ -67,7 +84,7 @@ def create_x509_certificate(
             .not_valid_after(base.not_valid_after)
         )
 
-        san_list = [x509.DNSName(name) for name in (alt_names or []) if name]
+        san_list = [_general_name(name) for name in (alt_names or []) if name]
         if san_list:
             # DNSName is a subtype of GeneralName, but mypy needs help understanding this
             builder = builder.add_extension(
