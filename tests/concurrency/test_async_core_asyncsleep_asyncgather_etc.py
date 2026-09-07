@@ -27,25 +27,33 @@ class TestAsyncSleep(MinimalTestCase):
 
     @pytest.mark.asyncio
     async def test_async_sleep_actually_sleeps(self) -> None:
-        """Test async_sleep actually sleeps for the specified duration."""
-        start = time.time()
-        await async_sleep(0.1)
-        end = time.time()
+        """The delay is waited out rather than returning early.
 
-        # Allow some tolerance for timing
-        elapsed = end - start
-        assert 0.05 <= elapsed <= 0.2
+        Only the floor is asserted. How far a sleep overruns is the scheduler's
+        business, not this function's: Windows' default timer granularity is
+        about 15.6ms, and a loaded runner can overrun any ceiling tight enough
+        to be worth writing. `monotonic` because a wall clock can step.
+        """
+        start = time.monotonic()
+        await async_sleep(0.1)
+        elapsed = time.monotonic() - start
+
+        assert elapsed >= 0.05
 
     @pytest.mark.asyncio
     async def test_async_sleep_zero(self) -> None:
-        """Test async_sleep with zero duration."""
-        start = time.time()
-        await async_sleep(0.0)
-        end = time.time()
+        """A zero delay yields to the loop and comes straight back.
 
-        # Should return immediately, with a small tolerance for the event loop.
-        elapsed = end - start
-        assert elapsed < 0.05
+        The ceiling is the assertion here, so it stays -- but loosely. What it
+        has to separate is "yields and returns" from "blocks", and a blocked
+        sleep is either a real duration or a hang the test timeout catches.
+        Nothing is gained by a bound tight enough for a busy runner to trip.
+        """
+        start = time.monotonic()
+        await async_sleep(0.0)
+        elapsed = time.monotonic() - start
+
+        assert elapsed < 1.0
 
     @pytest.mark.asyncio
     async def test_async_sleep_negative_raises_error(self) -> None:
@@ -63,13 +71,17 @@ class TestAsyncSleep(MinimalTestCase):
 
     @pytest.mark.asyncio
     async def test_async_sleep_with_float_seconds(self) -> None:
-        """Test async_sleep works with float values."""
-        start = time.time()
-        await async_sleep(0.05)
-        end = time.time()
+        """A float delay is accepted and waited out.
 
-        elapsed = end - start
-        assert 0.04 <= elapsed <= 0.1
+        The ceiling this used to carry is what failed on Windows: a 50ms sleep
+        measured 109.7ms, which is a timer-granularity artefact rather than a
+        defect in `async_sleep`.
+        """
+        start = time.monotonic()
+        await async_sleep(0.05)
+        elapsed = time.monotonic() - start
+
+        assert elapsed >= 0.04
 
     @pytest.mark.asyncio
     async def test_async_sleep_cancellation(self) -> None:
