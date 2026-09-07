@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import io
 import sys
-from typing import TextIO
+from typing import Any, TextIO
 
 """Stream utilities for foundation library."""
 
@@ -69,6 +69,45 @@ def _secure_proxied_streams(stream: object) -> bool:
             pending.append(nested)
 
     return secured
+
+
+class UnicodeSafeStream:
+    """A stream whose writes cannot fail on a character it cannot encode.
+
+    `ensure_utf8_stream` covers the ordinary case by reconfiguring the stream
+    itself, but that is a fact about the stream at one moment. A proxy inserted
+    afterwards encodes with whatever it captured -- colorama wraps the console
+    on Windows and holds its own reference -- so a write can still raise long
+    after the stream was secured.
+
+    Raising there turns a log line into an application error: the exception
+    surfaces from whatever the caller was doing, replacing a real failure with
+    a UnicodeEncodeError, or failing an operation that had otherwise succeeded.
+    A logger has no business doing that, so an unencodable character is
+    replaced rather than raised.
+
+    Everything other than `write` is delegated, so the wrapped stream's
+    `isatty`, `flush` and `encoding` continue to answer for themselves.
+    """
+
+    # `__weakref__` is listed because structlog takes a weak reference to the
+    # file it logs through; without it `configure` raises and leaves the logger
+    # half-built, which surfaces much later as a missing `trace` method.
+    __slots__ = ("__weakref__", "_stream")
+
+    def __init__(self, stream: TextIO) -> None:
+        self._stream = stream
+
+    def write(self, text: str) -> int:
+        try:
+            return self._stream.write(text)
+        except UnicodeEncodeError:
+            encoding = getattr(self._stream, "encoding", None) or "ascii"
+            safe = text.encode(encoding, errors="replace").decode(encoding, errors="replace")
+            return self._stream.write(safe)
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._stream, name)
 
 
 def ensure_utf8_stream(stream: TextIO) -> TextIO:
