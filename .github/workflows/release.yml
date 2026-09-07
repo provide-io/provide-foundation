@@ -112,8 +112,14 @@ jobs:
   # for the new version is told it does not exist -- so a release that ends at
   # upload reports success into that window, and whatever runs off it (a
   # downstream floor bump, a packaging build pinning the exact version) fails
-  # on a package that is genuinely published. Holding the release open until
-  # the index agrees keeps that failure here instead of in someone else's CI.
+  # on a package that is genuinely published.
+  #
+  # What this buys is a red run here rather than a green one: it does not hold
+  # anything open. The workflow is triggered by `release: published`, so the
+  # release is already public before this job starts, and a consumer reacting
+  # to that event can still beat the index. Making that impossible means
+  # publishing the release only after verification -- a larger change than
+  # this job.
   verify-pypi:
     needs: publish-pypi
     if: github.event_name == 'release'
