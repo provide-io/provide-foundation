@@ -22,7 +22,7 @@ from provide.foundation.logger.setup.processors import (
 )
 from provide.foundation.logger.setup.stdlib_wrapper import StructuredStdlibLogger
 from provide.foundation.streams import get_log_stream
-from provide.foundation.utils.streams import get_safe_stderr
+from provide.foundation.utils.streams import UnicodeSafeStream, get_safe_stderr
 
 """Main setup coordination for Foundation Telemetry.
 Handles the core setup logic, state management, and setup logger creation.
@@ -254,7 +254,8 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
             structlog.processors.add_log_level,
             shared_formatter_processor,
         ],
-        logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
+        # As above: PrintLogger writes to this file directly.
+        logger_factory=structlog.PrintLoggerFactory(file=UnicodeSafeStream(foundation_stream)),
         wrapper_class=structlog.BoundLogger,
         cache_logger_on_first_use=True,
     )
