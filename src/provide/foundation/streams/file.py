@@ -60,10 +60,12 @@ def configure_file_logging(log_file_path: str | None) -> None:
                 core_module._LOG_FILE_HANDLE.close()
             core_module._LOG_FILE_HANDLE = None
 
-        # Check if we're in testing mode
-        is_test_stream = core_module._PROVIDE_LOG_STREAM is not sys.stderr and not isinstance(
-            core_module._PROVIDE_LOG_STREAM,
-            io.TextIOWrapper,
+        # Check if we're in testing mode. None means the stream follows stderr,
+        # which is the default rather than a stream a test installed.
+        is_test_stream = (
+            core_module._PROVIDE_LOG_STREAM is not None
+            and core_module._PROVIDE_LOG_STREAM is not sys.stderr
+            and not isinstance(core_module._PROVIDE_LOG_STREAM, io.TextIOWrapper)
         )
 
         if log_file_path:
@@ -112,7 +114,7 @@ def close_log_streams() -> None:
 
         # Don't reset stream to stderr if we're in Click testing context
         if not is_in_click_testing():
-            core_module._PROVIDE_LOG_STREAM = sys.stderr
+            core_module._PROVIDE_LOG_STREAM = None  # resume following stderr
             # Reconfigure structlog to use stderr
             _reconfigure_structlog_stream()
 
