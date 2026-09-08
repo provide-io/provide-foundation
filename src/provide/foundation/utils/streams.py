@@ -71,6 +71,40 @@ def _secure_proxied_streams(stream: object) -> bool:
     return secured
 
 
+def _writable_byte_layer(stream: object) -> Any:
+    """The stream's byte layer, when writing under the text layer is both
+    possible and worth doing.
+
+    None whenever the text layer already encodes UTF-8 -- there is nothing to
+    gain and the host's own buffering to lose -- or when there is no byte layer
+    to reach, which is the case for StringIO and for the proxies a host
+    substitutes.
+    """
+    encoding = getattr(stream, "encoding", None)
+    if not isinstance(encoding, str) or _is_utf8(encoding):
+        return None
+    buffer = getattr(stream, "buffer", None)
+    if buffer is None or not callable(getattr(buffer, "write", None)):
+        return None
+    return buffer
+
+
+def _quiet_flush(target: object) -> None:
+    """Flush target, tolerating a stream that has already been closed.
+
+    Logging outlives most things in a shutting-down process, and a flush that
+    raises inside a handler becomes a traceback on stderr in place of the
+    record the caller asked for.
+    """
+    flush = getattr(target, "flush", None)
+    if flush is None:
+        return
+    try:
+        flush()
+    except (OSError, ValueError):
+        return
+
+
 class UnicodeSafeStream:
     """A stream whose writes cannot fail on a character it cannot encode.
 
@@ -83,8 +117,13 @@ class UnicodeSafeStream:
     Raising there turns a log line into an application error: the exception
     surfaces from whatever the caller was doing, replacing a real failure with
     a UnicodeEncodeError, or failing an operation that had otherwise succeeded.
-    A logger has no business doing that, so an unencodable character is
-    replaced rather than raised.
+    A logger has no business doing that.
+
+    So a write goes under the text layer where there is one, encoding UTF-8
+    straight to the byte layer: the text layer's encoding cannot reject what it
+    never sees, and the characters arrive intact rather than as the `?` a
+    re-encode through cp1252 would leave. A stream with no byte layer to reach
+    -- StringIO, a host's own proxy -- keeps the text write, guarded.
 
     Everything other than `write` is delegated, so the wrapped stream's
     `isatty`, `flush` and `encoding` continue to answer for themselves.
@@ -99,12 +138,25 @@ class UnicodeSafeStream:
         self._stream = stream
 
     def write(self, text: str) -> int:
+        buffer = _writable_byte_layer(self._stream)
+        if buffer is not None:
+            # The host writes through the text layer and this writes under it,
+            # so the text layer is drained first: two layers over one
+            # descriptor interleave in whatever order they flush.
+            _quiet_flush(self._stream)
+            buffer.write(text.encode("utf-8", "backslashreplace"))
+            return len(text)
+
         try:
-            return self._stream.write(text)
+            written = self._stream.write(text)
         except UnicodeEncodeError:
             encoding = getattr(self._stream, "encoding", None) or "ascii"
-            safe = text.encode(encoding, errors="replace").decode(encoding, errors="replace")
-            return self._stream.write(safe)
+            safe = text.encode(encoding, "backslashreplace").decode(encoding, "replace")
+            self._stream.write(safe)
+            return len(text)
+        # colorama's Windows wrapper returns None rather than a count, so the
+        # length of what was handed over stands in for it.
+        return written if isinstance(written, int) else len(text)
 
     def __getattr__(self, name: str) -> Any:
         return getattr(self._stream, name)

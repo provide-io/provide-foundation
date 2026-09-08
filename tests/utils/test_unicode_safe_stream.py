@@ -104,3 +104,27 @@ def test_a_proxy_that_cannot_be_reconfigured_is_still_safe() -> None:
     proxy = Proxy(_cp1252_stream())
 
     UnicodeSafeStream(proxy).write(EMOJI)
+
+
+def test_the_emoji_itself_survives_as_utf8() -> None:
+    """The byte layer takes UTF-8 regardless of what the text layer encodes.
+
+    Re-encoding the text through cp1252 is the lossy path: every unencodable
+    character collapses to the same `?`, so a log line naming which resource
+    failed reads identically to one naming a different resource. Writing UTF-8
+    under the text layer keeps the characters.
+    """
+    stream = _cp1252_stream()
+
+    UnicodeSafeStream(stream).write(EMOJI)
+
+    assert stream.buffer.getvalue().decode("utf-8") == EMOJI
+
+
+def test_a_stream_with_no_byte_layer_still_does_not_raise() -> None:
+    """StringIO and test doubles have no `buffer` to write under."""
+    stream = io.StringIO()
+
+    UnicodeSafeStream(stream).write(EMOJI)
+
+    assert stream.getvalue() == EMOJI
