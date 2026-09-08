@@ -18,7 +18,10 @@ from provide.foundation.concurrency.locks import get_lock_manager
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.utils.streams import ensure_utf8_stream, unicode_safe
 
-_PROVIDE_LOG_STREAM: TextIO = ensure_utf8_stream(sys.stderr)
+# None means "follow sys.stderr". Capturing the stream here instead would bind
+# whatever sys.stderr was at import: Click's CliRunner and pytest both replace
+# it afterwards, and a captured stream keeps writing to what they replaced.
+_PROVIDE_LOG_STREAM: TextIO | None = None
 _LOG_FILE_HANDLE: TextIO | None = None
 
 # How long any of the stream operations below will wait for the stream lock.
@@ -34,6 +37,14 @@ def _get_stream_lock() -> threading.RLock:
     return get_lock_manager().get_lock("foundation.stream")
 
 
+def _resolved_stream() -> TextIO:
+    """The stream to write to now, reading sys.stderr afresh when unset."""
+    stream = _PROVIDE_LOG_STREAM
+    if stream is None:
+        return ensure_utf8_stream(sys.stderr)
+    return stream
+
+
 def get_log_stream() -> TextIO:
     """Get the current log stream.
 
@@ -46,10 +57,11 @@ def get_log_stream() -> TextIO:
     try:
         # Only validate real streams, not mock objects
         # Check if this is a real stream that can be closed
+        current = _resolved_stream()
         if (
-            hasattr(_PROVIDE_LOG_STREAM, "closed")
-            and not hasattr(_PROVIDE_LOG_STREAM, "_mock_name")  # Skip mock objects
-            and _PROVIDE_LOG_STREAM.closed
+            hasattr(current, "closed")
+            and not hasattr(current, "_mock_name")  # Skip mock objects
+            and current.closed
         ):
             # Stream is closed, reset to stderr
             try:
@@ -112,7 +124,7 @@ def get_log_stream() -> TextIO:
                     # No stderr available - this is a critical error
                     raise ValueError("Stream validation failed - no stderr available") from e
 
-        return _PROVIDE_LOG_STREAM
+        return _resolved_stream()
     finally:
         _get_stream_lock().release()
 
@@ -136,7 +148,7 @@ def _reconfigure_structlog_stream() -> None:
 
             # Reconfigure with the new stream while preserving other config
             new_config = {**current_config}
-            new_config["logger_factory"] = structlog.PrintLoggerFactory(file=unicode_safe(_PROVIDE_LOG_STREAM))
+            new_config["logger_factory"] = structlog.PrintLoggerFactory(file=unicode_safe(_resolved_stream()))
             new_config["cache_logger_on_first_use"] = cache_loggers
             structlog.configure(**new_config)
     except Exception:
@@ -192,9 +204,9 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
                 reason="click_testing",
             )
 
-        _PROVIDE_LOG_STREAM = (
-            ensure_utf8_stream(stream) if stream is not None else ensure_utf8_stream(sys.stderr)
-        )
+        # A reset resumes following stderr rather than pinning it, so a later
+        # swap by Click or pytest is still seen.
+        _PROVIDE_LOG_STREAM = ensure_utf8_stream(stream) if stream is not None else None
 
         # Reconfigure structlog to use the new stream
         _reconfigure_structlog_stream()
@@ -210,7 +222,7 @@ def ensure_stderr_default() -> None:
         return
     try:
         if _PROVIDE_LOG_STREAM is sys.stdout:
-            _PROVIDE_LOG_STREAM = ensure_utf8_stream(sys.stderr)
+            _PROVIDE_LOG_STREAM = None  # resume following stderr
     finally:
         _get_stream_lock().release()
 
